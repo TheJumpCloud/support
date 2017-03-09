@@ -19,7 +19,7 @@ curl \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -H "x-api-key: ${apiKey}" \
-  -d '{ "account_locked" : "false" } ' \
+  -d '{ "lastname" : "newLastName" } ' \
   "https://console.jumpcloud.com/api/systemusers/:id"
 
 }

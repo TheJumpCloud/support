@@ -11,7 +11,6 @@ fi
 }
 
 # API call example
-
 apiCall() { 
 
 curl \
@@ -19,8 +18,8 @@ curl \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -H "x-api-key: ${apiKey}" \
-  -d '{ "name" : "myNewTag" } ' \
-  "https://console.jumpcloud.com/api/"
+  -d '{"isSelectAll":false,"models":[{"_id":"SYSTEM_USER_ID"}]}' \
+  "https://console.jumpcloud.com/api/systemusers/reactivate"
 
 }
 

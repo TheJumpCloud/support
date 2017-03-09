@@ -11,15 +11,15 @@ fi
 }
 
 # API call example
+
 apiCall() { 
 
 curl \
-  -X '' \
+  -X 'GET' \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -H "x-api-key: ${apiKey}" \
-  -d ' ' \
-  "https://console.jumpcloud.com/api/"
+  "https://console.jumpcloud.com/api/tags"
 
 }
 

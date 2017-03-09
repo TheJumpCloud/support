@@ -1,6 +1,7 @@
 # Require API Key to run
 
 readApiKey() {
+
 echo -n "Enter your API Key: "
         read apiKey;
 if [ -z "$apiKey" ]
@@ -8,6 +9,7 @@ if [ -z "$apiKey" ]
                 echo "Input cannot be null"; readApiKey;
         else apiCall;
 fi
+
 }
 
 # API call example
@@ -15,12 +17,11 @@ fi
 apiCall() { 
 
 curl \
-  -X 'POST' \
+  -X 'DELETE' \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -H "x-api-key: ${apiKey}" \
-  -d '{ "name" : "myNewTag" } ' \
-  "https://console.jumpcloud.com/api/"
+  "https://console.jumpcloud.com/api/commandresults/:id"
 
 }
 

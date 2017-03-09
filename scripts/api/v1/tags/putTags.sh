@@ -11,15 +11,16 @@ fi
 }
 
 # API call example
+
 apiCall() { 
 
 curl \
-  -X '' \
+  -X 'PUT' \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -H "x-api-key: ${apiKey}" \
-  -d ' ' \
-  "https://console.jumpcloud.com/api/"
+  -d '{ "name" : "myModifiedTagName" } ' \
+  "https://console.jumpcloud.com/api/:id|name"
 
 }
 

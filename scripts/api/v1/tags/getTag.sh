@@ -15,12 +15,11 @@ fi
 apiCall() { 
 
 curl \
-  -X 'POST' \
+  -X 'GET' \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -H "x-api-key: ${apiKey}" \
-  -d '{ "name" : "myNewTag" } ' \
-  "https://console.jumpcloud.com/api/"
+  "https://console.jumpcloud.com/api/tags/:id|name"
 
 }
 
