@@ -15,11 +15,12 @@ fi
 apiCall() { 
 
 curl \
-  -X 'DELETE' \
+  -X 'POST' \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -H "x-api-key: ${apiKey}" \
-  "https://console.jumpcloud.com/api/tags/:id|name"
+  -d '{ "name" : "myNewRadiusServer", "sharedSecret" : "myNewSharedSecret", "networkSourceIp":"my.public.ip.addr"}' \
+  "https://console.jumpcloud.com/api/radiusservers"
 
 }
 

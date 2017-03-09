@@ -15,11 +15,12 @@ fi
 apiCall() { 
 
 curl \
-  -X 'DELETE' \
+  -X 'PUT' \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -H "x-api-key: ${apiKey}" \
-  "https://console.jumpcloud.com/api/tags/:id|name"
+  -d '{"networkSourceIp":"104.154.139.31"}' \
+  "https://console.jumpcloud.com/api/radiusservers/570e70336824324e358bd1b4"
 
 }
 

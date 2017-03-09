@@ -15,11 +15,11 @@ fi
 apiCall() { 
 
 curl \
-  -X 'DELETE' \
+  -X 'GET' \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -H "x-api-key: ${apiKey}" \
-  "https://console.jumpcloud.com/api/tags/:id|name"
+  "https://console.jumpcloud.com/api/radiusservers"
 
 }
 
