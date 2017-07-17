@@ -19,8 +19,8 @@ curl \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -H "x-api-key: ${apiKey}" \
-  -d '{"networkSourceIp":"104.154.139.31"}' \
-  "https://console.jumpcloud.com/api/radiusservers/570e70336824324e358bd1b4"
+  -d '{"networkSourceIp":"my.public.ip.addr"}' \
+  "https://console.jumpcloud.com/api/radiusservers/:id"
 
 }
 
