@@ -26,7 +26,7 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 # Define Vars
-apiKey=a340da49f5801a0f8bae9e8375ddc3001dd3dfd6
+apiKey=
 radiusId=
 newIp=$(wget http://ipecho.net/plain -O - -q)
 
