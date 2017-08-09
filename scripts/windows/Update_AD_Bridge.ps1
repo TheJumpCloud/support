@@ -1,18 +1,23 @@
+$EXE_URL = "https://s3.amazonaws.com/jumpcloud-windows-agent/production/adint.exe"
+$EXE_FILEPATH = "C:\\Program Files\\JumpCloud AD Bridge\\adint.exe"
+$TMP_FILEPATH = "C:\\Windows\\Temp\\adint.exe"
+
 $ErrorActionPreference = "Stop"
 "Updating JumpCloud AD Bridge to latest version..."
 
 & Stop-Service adint
 "Downloading AD Bridge update..."
-& Invoke-WebRequest "https://s3.amazonaws.com/jumpcloud-windows-agent/production/adint.exe" -OutFile "C:\\Windows\\Temp\\adint.exe"
+& Invoke-WebRequest $EXE_URL -OutFile $TMP_FILEPATH
 "Download successful. Updating AD Bridge agent..."
-copy "C:\Windows\Temp\adint.exe" "C:\Program Files\JumpCloud AD Bridge\adint.exe"
+copy $TMP_FILEPATH $EXE_FILEPATH
+del $TMP_FILEPATH
 & Start-Service adint
 "AD Bridge Agent updated successfully."
 # SIG # Begin signature block
 # MIIXtQYJKoZIhvcNAQcCoIIXpjCCF6ICAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUddy9LKnYGAbvb3MRgnKPeaAc
-# RcGgghLwMIID7jCCA1egAwIBAgIQfpPr+3zGTlnqS5p31Ab8OzANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUvljFi0jxNlyL7tF9dpep+UZi
+# kAmgghLwMIID7jCCA1egAwIBAgIQfpPr+3zGTlnqS5p31Ab8OzANBgkqhkiG9w0B
 # AQUFADCBizELMAkGA1UEBhMCWkExFTATBgNVBAgTDFdlc3Rlcm4gQ2FwZTEUMBIG
 # A1UEBxMLRHVyYmFudmlsbGUxDzANBgNVBAoTBlRoYXd0ZTEdMBsGA1UECxMUVGhh
 # d3RlIENlcnRpZmljYXRpb24xHzAdBgNVBAMTFlRoYXd0ZSBUaW1lc3RhbXBpbmcg
@@ -118,22 +123,22 @@ copy "C:\Windows\Temp\adint.exe" "C:\Program Files\JumpCloud AD Bridge\adint.exe
 # RGlnaUNlcnQgU0hBMiBBc3N1cmVkIElEIENvZGUgU2lnbmluZyBDQQIQCGSIzdKb
 # DTQsiLCAbBkghjAJBgUrDgMCGgUAoHAwEAYKKwYBBAGCNwIBDDECMAAwGQYJKoZI
 # hvcNAQkDMQwGCisGAQQBgjcCAQQwHAYKKwYBBAGCNwIBCzEOMAwGCisGAQQBgjcC
-# ARUwIwYJKoZIhvcNAQkEMRYEFG0Nz7vuTOrfqStbXue7+afyZX7zMA0GCSqGSIb3
-# DQEBAQUABIIBANJzZekvFJkWoDYrIpJjEODsw4oicOARIsVDg0ct6cqWBUi7Bizb
-# H4GbuJg/Qx+xZ2ueB6W5DTiJHwMy8j2j3Z6EPbYRYVbQpK3lmv4ZDMCaDkrXLv3J
-# zoiXNXGiOwDWZYufC88yQ1TegNKU1k+VwGjBBEroEEmYrT2jrMFzpg+MT/tM3Dps
-# Zj5VdPbv+pCupcwTRLKCrJhRVdzgrHiP1Qy4fRJPK7NLJDZlPmYnIzNKZYeIROQv
-# OXoWZZYSBZn9Q0+pjArrhdpkqt6ODxvvw6sw843xncIRlCFCWhdonYNFuYNxLEB1
-# rU1yOvwRay3JglKL0ovBY3gkHF54JhVonHuhggILMIICBwYJKoZIhvcNAQkGMYIB
+# ARUwIwYJKoZIhvcNAQkEMRYEFDqzLvfkm9KxJN7NKp/uyKZ32YELMA0GCSqGSIb3
+# DQEBAQUABIIBAFVgpxMw7vVrZXck0rkFe7nFb/wwyC2lONOP690XS130/54ePXLK
+# 2ITydZ+UG5gvVAur/yqEJjg1KHNWkb9/lhTORKQhxobZj614kGKP7h18k2TAaLky
+# CeZuKGSNX3bQkKyY8L6Y5fcTp8eXj+MitkBkZ/SNlp0ypNIWjBgnyQzS5pcD82yY
+# /VC22j+RbO49CcLg3tZ5lhemEBEjro/LDu5i4xXbI7weE3DZsTYGJTq1jWR5c4wG
+# RQWsaIzzbkMdiYt4ofVlZcDKIsSZS9xzM7OcBlIseJ2ZWAYi6oCa6WdJkp0F6FZg
+# 1NJkUR0gV8YpPIyddI1WSZ/dQxnAq3uPeKWhggILMIICBwYJKoZIhvcNAQkGMYIB
 # +DCCAfQCAQEwcjBeMQswCQYDVQQGEwJVUzEdMBsGA1UEChMUU3ltYW50ZWMgQ29y
 # cG9yYXRpb24xMDAuBgNVBAMTJ1N5bWFudGVjIFRpbWUgU3RhbXBpbmcgU2Vydmlj
 # ZXMgQ0EgLSBHMgIQDs/0OMj+vzVuBNhqmBsaUDAJBgUrDgMCGgUAoF0wGAYJKoZI
-# hvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMTcwODA5MTczMjE0
-# WjAjBgkqhkiG9w0BCQQxFgQUC5+/VNUcj3glAnCqoTmJSHrmjJ0wDQYJKoZIhvcN
-# AQEBBQAEggEAC+GUAG/kjNEm00KFfWFZqJg+QdQD5ny4ogZyDhNBELMyVI3sgaph
-# iKvJzve+g8+i00pxKb4ouKlzSMYwX/ErxJ2N79C8D3OaSTH42lHKHYyZ+Iv6hCEj
-# YvJomwKCCLZkyX4uEHFFxafix02AViRREs2kp/SCVp4SePQ+KHmK/bQ3pRXopg+U
-# gtp078mLCymXRwZ7PmdD/L2DCXQHbhAmqDzjN98MiUJSWqqsH0ncf9xi78oJXINy
-# qsPlHF3aLwLYWCnJ2Dy7OAqGE8/GEbH/2gFEJ1tV1gV9Ewq+BnZkwRgrpfvoPAky
-# WClVii+p750GbU81yZ1ABQ7Sg2JrGi7ReQ==
+# hvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMTcwODA5MTkwNDEx
+# WjAjBgkqhkiG9w0BCQQxFgQU2uIhewbPg8hhiSsh9fpHzQrkrC4wDQYJKoZIhvcN
+# AQEBBQAEggEAMZjSBxqRDnsbhX0fZcJJbbR643vcWOls8EfNTfBpmSssfXsv4Qxr
+# iJ4kbA/zqSQdU4WWag3uyAXb7LrhuM6qKROBXFn85NF5YPWpGjF0Ay2f900vQDLb
+# c+QVFQ54NZsdwu9Kv54q6cUCAwI/xuCpn+Kt9NZGI7XVsklI7//SPQ8RbN1myqnI
+# 3tec02Grh5oFmaAeF/NrlCzyMyiyY1VwhK2suwu+WggZXWKVlDWshlTUC67PDz8i
+# 4IsSBYjIesfHrV8OCZhUpkh1H4Q9vRpgL1rn3F3Asqz6U067i9FUAZwOLd+m5aQJ
+# rirhSTTXG/aad+F7t1gZO3jKPs8GkSxFnw==
 # SIG # End signature block
