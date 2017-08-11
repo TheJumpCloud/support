@@ -5,19 +5,34 @@ $TMP_FILEPATH = "C:\\Windows\\Temp\\adint.exe"
 $ErrorActionPreference = "Stop"
 "Updating JumpCloud AD Bridge to latest version..."
 
+# stop the AD Bridge service:
 & Stop-Service adint
+
 "Downloading AD Bridge update..."
+# check the PowerShell version: Invoke-WebRequest is a PowerShell 3 command, so use WebClient on earlier versions:
+$PSVersionExists = Test-Path variable:global:PSVersionTable
+If ($PSVersionExists -eq $true -And $PSVersionTable.PSVersion.Major -ge 3) {
 & Invoke-WebRequest $EXE_URL -OutFile $TMP_FILEPATH
+}
+Else { # on anything less that PS3, use WebClient:
+$WebClient = New-Object System.Net.WebClient
+$WebClient.DownloadFile($EXE_URL, $TMP_FILEPATH)
+}
 "Download successful. Updating AD Bridge agent..."
+
+# copy file to final destination and remove tmp file:
 copy $TMP_FILEPATH $EXE_FILEPATH
 del $TMP_FILEPATH
+
+# restart the service:
 & Start-Service adint
 "AD Bridge Agent updated successfully."
+
 # SIG # Begin signature block
 # MIIXtQYJKoZIhvcNAQcCoIIXpjCCF6ICAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUvljFi0jxNlyL7tF9dpep+UZi
-# kAmgghLwMIID7jCCA1egAwIBAgIQfpPr+3zGTlnqS5p31Ab8OzANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUvuNZgdHwJTLd64DsM8hGHx3b
+# pGCgghLwMIID7jCCA1egAwIBAgIQfpPr+3zGTlnqS5p31Ab8OzANBgkqhkiG9w0B
 # AQUFADCBizELMAkGA1UEBhMCWkExFTATBgNVBAgTDFdlc3Rlcm4gQ2FwZTEUMBIG
 # A1UEBxMLRHVyYmFudmlsbGUxDzANBgNVBAoTBlRoYXd0ZTEdMBsGA1UECxMUVGhh
 # d3RlIENlcnRpZmljYXRpb24xHzAdBgNVBAMTFlRoYXd0ZSBUaW1lc3RhbXBpbmcg
@@ -123,22 +138,22 @@ del $TMP_FILEPATH
 # RGlnaUNlcnQgU0hBMiBBc3N1cmVkIElEIENvZGUgU2lnbmluZyBDQQIQCGSIzdKb
 # DTQsiLCAbBkghjAJBgUrDgMCGgUAoHAwEAYKKwYBBAGCNwIBDDECMAAwGQYJKoZI
 # hvcNAQkDMQwGCisGAQQBgjcCAQQwHAYKKwYBBAGCNwIBCzEOMAwGCisGAQQBgjcC
-# ARUwIwYJKoZIhvcNAQkEMRYEFDqzLvfkm9KxJN7NKp/uyKZ32YELMA0GCSqGSIb3
-# DQEBAQUABIIBAFVgpxMw7vVrZXck0rkFe7nFb/wwyC2lONOP690XS130/54ePXLK
-# 2ITydZ+UG5gvVAur/yqEJjg1KHNWkb9/lhTORKQhxobZj614kGKP7h18k2TAaLky
-# CeZuKGSNX3bQkKyY8L6Y5fcTp8eXj+MitkBkZ/SNlp0ypNIWjBgnyQzS5pcD82yY
-# /VC22j+RbO49CcLg3tZ5lhemEBEjro/LDu5i4xXbI7weE3DZsTYGJTq1jWR5c4wG
-# RQWsaIzzbkMdiYt4ofVlZcDKIsSZS9xzM7OcBlIseJ2ZWAYi6oCa6WdJkp0F6FZg
-# 1NJkUR0gV8YpPIyddI1WSZ/dQxnAq3uPeKWhggILMIICBwYJKoZIhvcNAQkGMYIB
+# ARUwIwYJKoZIhvcNAQkEMRYEFHmH97tkVbImBMXQRfLCh/5bw+EJMA0GCSqGSIb3
+# DQEBAQUABIIBAAhCMd2fwh+zqLqiSFBTD2+v/iVfWwN3NwAXaNufCT8D/6S0hmNX
+# P6slpJ0N8MT/99bkPw7QIZGX7fRZqSikzeso0rXBGfiB5/kGJZ+moyRMAGuWLorz
+# /IYOYkq86G7h/5c/zzFZp+aIpLACdY9o5AcrycLTGUfsTWSkjWQhdDIS3mLHY771
+# 0QcXt6zPQumYsvwDp4R7ZM8x6b8Gd2b+3rOoqWVTOHdzVAZJFOmVkCiW+DnygQIV
+# jZm22VO1eSCG8cXAng1/bOKHF+pcx8uarUN1A4Fz00jCy9PcG/B531ZLFLc1/jpl
+# fwWYsqxDIu/MerBwxTlDWl/Qj9NPGIrul26hggILMIICBwYJKoZIhvcNAQkGMYIB
 # +DCCAfQCAQEwcjBeMQswCQYDVQQGEwJVUzEdMBsGA1UEChMUU3ltYW50ZWMgQ29y
 # cG9yYXRpb24xMDAuBgNVBAMTJ1N5bWFudGVjIFRpbWUgU3RhbXBpbmcgU2Vydmlj
 # ZXMgQ0EgLSBHMgIQDs/0OMj+vzVuBNhqmBsaUDAJBgUrDgMCGgUAoF0wGAYJKoZI
-# hvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMTcwODA5MTkwNDEx
-# WjAjBgkqhkiG9w0BCQQxFgQU2uIhewbPg8hhiSsh9fpHzQrkrC4wDQYJKoZIhvcN
-# AQEBBQAEggEAMZjSBxqRDnsbhX0fZcJJbbR643vcWOls8EfNTfBpmSssfXsv4Qxr
-# iJ4kbA/zqSQdU4WWag3uyAXb7LrhuM6qKROBXFn85NF5YPWpGjF0Ay2f900vQDLb
-# c+QVFQ54NZsdwu9Kv54q6cUCAwI/xuCpn+Kt9NZGI7XVsklI7//SPQ8RbN1myqnI
-# 3tec02Grh5oFmaAeF/NrlCzyMyiyY1VwhK2suwu+WggZXWKVlDWshlTUC67PDz8i
-# 4IsSBYjIesfHrV8OCZhUpkh1H4Q9vRpgL1rn3F3Asqz6U067i9FUAZwOLd+m5aQJ
-# rirhSTTXG/aad+F7t1gZO3jKPs8GkSxFnw==
+# hvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMTcwODExMTYxMTM5
+# WjAjBgkqhkiG9w0BCQQxFgQUdd+tAtdkpZGXufKZJQiWmDWsZjswDQYJKoZIhvcN
+# AQEBBQAEggEAQ3jhopwScIhLkBTuPHuYWW0wGTn30lfZRE9BAMU/vnq0MMhecpkS
+# iKi+PzjjKhvwxIrHIe67WEqiAPVjUp4XQuspMs8y68Vr96lRIdEPVlnckBR1P1z6
+# 4vK7EtL3CUTmjs093vnUGkZdoIQ7RhWEg5hy8muT0IxhqUKlDFQWvH/3V6zPrD2H
+# QR1TgYe5KCfOzOjuBv08pjaGhgLOoj97rElAWp+Dxaeu0wgdXN5Xy2Nl56J4GELj
+# /bzdvGWLysBc6856bfDnMfLHLCM522z2zINoaFRkM9GNMMTLx7rij3KyGWGVPgT3
+# v4ge9J4TpLpOJ8mZ4rSHePhJ7vC3qVjPBw==
 # SIG # End signature block
