@@ -4,7 +4,6 @@ import json
 import sys
 import requests
 from tqdm import tqdm #tqdm is not necessary for this script to run properly; however, it provides a nice means of viewing the progress of the script.
-from pick import pick
 
 
 # This section captures the company's API Key, Attribute, and Directory
