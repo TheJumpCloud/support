@@ -39,11 +39,11 @@ def parse_config():
             return json.load(fp)
 
     except IOError as io_error:
-        raise LdapAuthenticationError("Problem with JSON config file {}:{}"
+        raise LdapAuthenticationError("CRITICAL: Problem with JSON config file {}:{}"
                                       .format(CONFIG_FILE, io_error))
 
     except JSONDecodeError as jd_error:
-        raise LdapAuthenticationError("Problem with json in {} : {}".format(CONFIG_FILE, jd_error))
+        raise LdapAuthenticationError("CRITICAL: Problem with json in {} : {}".format(CONFIG_FILE, jd_error))
 
 
 def main():
@@ -56,7 +56,9 @@ def main():
     binddn = config_data.get('binddn').format(bind_user, org_id)
     print("Bind DN: {}".format(binddn))
 
-    ldap_conn = ldap.initialize(config_data.get('ldap_server'))
+    ldap_server = "ldaps://" + config_data.get(ConfigEnums.LdapServer.value) + ":636"
+
+    ldap_conn = ldap.initialize(ldap_server)
 
     # Bind to the LDAP Server with the Bind DN and Bind User password.
     try:
@@ -64,10 +66,10 @@ def main():
         ldap_conn.simple_bind_s(binddn, password_field)
 
     except ldap.INVALID_CREDENTIALS as invalid:
-        raise LdapAuthenticationError("Invalid username or password")
+        raise LdapAuthenticationError("CRITICAL: Invalid username, password or Org Id.")
 
     except ldap.LDAPError as ldap_error:
-        raise LdapAuthenticationError("Problem with LDAP connection or Bind DN: {}".format(ldap_error))
+        raise LdapAuthenticationError("CRITICAL: Problem with LDAP connection or Bind DN: {}".format(ldap_error))
 
     # -----
     # First example of sSearch for the supplied User in the supplied User Group.
@@ -87,7 +89,7 @@ def main():
     try:
         ldap_result_id = ldap_conn.search(base_dn, search_scope, search_filter, search_attribute)
     except ldap.LDAPError as lde:
-        raise LdapAuthenticationError("Problem searching: {}".format(lde))
+        raise LdapAuthenticationError("CRITICAL: Problem searching: {}".format(lde))
 
     else:
         result_set = []
@@ -118,7 +120,8 @@ def main():
         raise LdapAuthenticationError("Search result set is empty, search user {} is not Authorized!"
                                       .format(bind_user))
 
-    ldap_server = 'ldap.jumpcloud.com'
+    ldap_server = config_data.get(ConfigEnums.LdapServer.value)
+
     search_filter = "uid={}".format(user_name)
     user_dn = "uid={},ou=Users,o={},dc=jumpcloud,dc=com".format(user_name, org_id)
 
@@ -131,7 +134,7 @@ def main():
         result = ldap_conn.search_s(base_dn, search_scope, search_filter)
 
     except ldap.LDAPError as lde:
-        raise LdapAuthenticationError("Critical: Probably incorrect password - {}".format(lde))
+        raise LdapAuthenticationError("CRITICAL: Probably incorrect password - {}".format(lde))
 
     else:
         # Return all of the User data results.
@@ -150,19 +153,19 @@ if __name__ == "__main__":
     _ = p.parse_args()
 
     # Get some information from the user.
-    # org_id = '5952c31766d1b64b09de4d42'
-    # bind_user = 'testldap'
-    # password_field = 'solidfire'
-    # group = 'betty'
-    # user_name = 'testldap'
+    org_id = '5952c31766d1b64b09de4d42'
+    bind_user = 'testldap'
+    password_field = 'solidfire'
+    group = 'betty'
+    user_name = 'testldap'
 
-    print("\n")
-    org_id = input("Please enter your Organization ID: ")
-    bind_user = input("Please enter your search User: ")
-    password_field = getpass.getpass('Search User Password:')
-    group = input("Please enter your Group: ")
-    user_name = input("Please enter your username: ")
-    print("\n")
+    # print("\n")
+    # org_id = input("Please enter your Organization ID: ")
+    # bind_user = input("Please enter your search User: ")
+    # password_field = getpass.getpass('Search User Password:')
+    # group = input("Please enter your Group: ")
+    # user_name = input("Please enter your username: ")
+    # print("\n")
 
     if not password_field:
         print("Need a password!!")
@@ -174,3 +177,5 @@ if __name__ == "__main__":
     except LdapAuthenticationError as lae:
         print("{}".format(lae))
         sys.exit(-1)
+
+    print("Success!!")
