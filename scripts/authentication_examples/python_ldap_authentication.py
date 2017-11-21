@@ -153,19 +153,19 @@ if __name__ == "__main__":
     _ = p.parse_args()
 
     # Get some information from the user.
-    org_id = '5952c31766d1b64b09de4d42'
-    bind_user = 'testldap'
-    password_field = 'solidfire'
-    group = 'betty'
-    user_name = 'testldap'
+    # org_id = '5952c31766d1b64b09de4d42'
+    # bind_user = 'testldap'
+    # password_field = 'solidfire'
+    # group = 'betty'
+    # user_name = 'testldap'
 
-    # print("\n")
-    # org_id = input("Please enter your Organization ID: ")
-    # bind_user = input("Please enter your search User: ")
-    # password_field = getpass.getpass('Search User Password:')
-    # group = input("Please enter your Group: ")
-    # user_name = input("Please enter your username: ")
-    # print("\n")
+    print("\n")
+    org_id = input("Please enter your Organization ID: ")
+    bind_user = input("Please enter your search User: ")
+    password_field = getpass.getpass('Search User Password:')
+    group = input("Please enter your Group: ")
+    user_name = input("Please enter your username: ")
+    print("\n")
 
     if not password_field:
         print("Need a password!!")
