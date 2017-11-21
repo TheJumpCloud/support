@@ -4,6 +4,10 @@
 
 ### Python
 
+#### List of Python Dependencies
+
+* LDAP Server Integration - [pyldap](https://github.com/pyldap/pyldap/) - We use pyldap instead of python-ldap for compatibility between Python2 & Python3
+
 ### Ruby
 
 It assumed that you have installed a recent version of Ruby for your
