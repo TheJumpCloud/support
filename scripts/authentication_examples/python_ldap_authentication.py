@@ -12,7 +12,6 @@ import getpass
 import argparse
 
 from json import JSONDecodeError
-from typing import Optional
 
 import ldap
 
@@ -29,22 +28,22 @@ class ConfigEnums(enum.Enum):
     SearchAttribute = "search_attribute"
 
 
-def parse_config(config_file: Optional[str] = 'config.json'):
+def parse_config():
     """ Parse the default JSON config file
 
     :param config_file: str Path to JSON config file.
     :returns: JSON
     """
     try:
-        with open(config_file) as fp:
+        with open(CONFIG_FILE) as fp:
             return json.load(fp)
 
     except IOError as io_error:
         raise LdapAuthenticationError("Problem with JSON config file {}:{}"
-                                      .format(config_file, io_error))
+                                      .format(CONFIG_FILE, io_error))
 
     except JSONDecodeError as jd_error:
-        raise LdapAuthenticationError("Problem with json in {} : {}".format(config_file, jd_error))
+        raise LdapAuthenticationError("Problem with json in {} : {}".format(CONFIG_FILE, jd_error))
 
 
 def main():
@@ -145,22 +144,25 @@ def main():
 
 if __name__ == "__main__":
 
+    CONFIG_FILE = 'config.json'
+
     p = argparse.ArgumentParser(description=__doc__)
     _ = p.parse_args()
 
     # Get some information from the user.
-    org_id = '5952c31766d1b64b09de4d42'
-    bind_user = 'testldap'
-    password_field = 'solidfire'
-    group = 'betty'
-    user_name = 'testldap'
-    # print("\n")
-    # org_id = input("Please enter your Organization ID: ")
-    # bind_user = input("Please enter your search User: ")
-    # password_field = getpass.getpass('Search User Password:')
-    # group = input("Please enter your Group: ")
-    # user_name = input("Please enter your username: ")
-    # print("\n")
+    # org_id = '5952c31766d1b64b09de4d42'
+    # bind_user = 'testldap'
+    # password_field = 'solidfire'
+    # group = 'betty'
+    # user_name = 'testldap'
+
+    print("\n")
+    org_id = input("Please enter your Organization ID: ")
+    bind_user = input("Please enter your search User: ")
+    password_field = getpass.getpass('Search User Password:')
+    group = input("Please enter your Group: ")
+    user_name = input("Please enter your username: ")
+    print("\n")
 
     if not password_field:
         print("Need a password!!")
