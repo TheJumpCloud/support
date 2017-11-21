@@ -43,7 +43,8 @@ def parse_config():
                                       .format(CONFIG_FILE, io_error))
 
     except JSONDecodeError as jd_error:
-        raise LdapAuthenticationError("CRITICAL: Problem with json in {} : {}".format(CONFIG_FILE, jd_error))
+        raise LdapAuthenticationError("CRITICAL: Problem with json in {} : {}"
+                                      .format(CONFIG_FILE, jd_error))
 
 
 def main():
@@ -69,7 +70,8 @@ def main():
         raise LdapAuthenticationError("CRITICAL: Invalid username, password or Org Id.")
 
     except ldap.LDAPError as ldap_error:
-        raise LdapAuthenticationError("CRITICAL: Problem with LDAP connection or Bind DN: {}".format(ldap_error))
+        raise LdapAuthenticationError("CRITICAL: Problem with LDAP connection or Bind DN: {}"
+                                      .format(ldap_error))
 
     # -----
     # First example of sSearch for the supplied User in the supplied User Group.
