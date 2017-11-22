@@ -154,19 +154,27 @@ if __name__ == "__main__":
     p = argparse.ArgumentParser(description=__doc__)
     _ = p.parse_args()
 
-    # Get some information from the user.
+    # Get some information.
+    # Organization ID: The ID of the Organization containing our Bind User.
+    # Bind User: User name of the User bound to the LDAP Server.
+    # Bind User Password: Self explanatory.
+    # Group: The User Group Name containing the User we are searching for.
+    # Username: Name of the User to search for.
+    # Userpassword: Password of the above User.
     # org_id = '5952c31766d1b64b09de4d42'
     # bind_user = 'testldap'
     # password_field = 'solidfire'
     # group = 'betty'
     # user_name = 'testldap'
+    # user_password = 'solidfire'
 
     print("\n")
     org_id = input("Please enter your Organization ID: ")
     bind_user = input("Please enter your search User: ")
     password_field = getpass.getpass('Search User Password:')
     group = input("Please enter your Group: ")
-    user_name = input("Please enter your username: ")
+    user_name = input("Please enter User: ")
+    user_password = getpass.getpass("Please enter User Password: ")
     print("\n")
 
     if not password_field:
