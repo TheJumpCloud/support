@@ -1,21 +1,27 @@
-#Populate below variables to run successful tests using the -ByID parameter
+# To run all the Pester Tests you will need to have a tenant that matches the below criteria.
 
-$SystemID = '59f2c305383cba7e369df7c2' # A System ID in your test tenant
-$SystemGroupName = 'PesterTest_SystemGroup' # A System GroupName in your test tenant
-$SystemGroupID = '5a09f3df232e11453476baa6'  # The corresponding System GroupID in your test tenant
+# For Command Results Tests - Have at least 5 command results present in your Org
+# For Commands Tests - Have at least 2 JumpCloud commands that are set to run via the 'Run on Trigger' event
+# For Groups Tests - Have at least 2 JumpCloud User Groups and 2 JumpCloud System Groups
+# For Systems Tests - Have at least 2 JumpCloud Systems present in your Org.
+# For Users Tests - Have at least 2 JumpCloud Users present in your Org.
 
+#Additionally you must populate the below variables to run successful tests using the -ByID parameter
 
-$Username = 'Pester.tester' # An active users username to test with
-$UserID = '5a09f350f48df47c08b8becf' # The corresponding UserID
-$UserGroupName = 'PesterTest_UserGroup'  #A User GroupName in your test tenant
-$UserGroupID = '5a0a002bccf291174e89bb61'  # The corresponding User GroupID in your test tenant
+$SystemID = '' # Enter the System ID for a system in your test tenant. **Note users will be added and removed from this system during the tests
 
-
-$NewJCSystemGroup = 'NewSystemGroup' #You can leave this
-$NewJCUserGroup = 'NewUserGroup' #And this
-
+$Username = 'Pester.tester' # Create a user with username 'Pester.Tester'
+$UserID = '' # Paste the UserID for the user with username Pester.Tester
 
 
+$UserGroupName = 'PesterTest_UserGroup'  #Create a user group named PesterTest_UserGroup within your environment
+$UserGroupID = ''  # Paste the corresponding GroupID for the user group named PesterTest_UserGroup
+
+$SystemGroupName = 'PesterTest_SystemGroup' # Create a sytem group named PesterTest_SystemGroup within your environment
+$SystemGroupID = ''  # Paste the corresponding GroupID for the sytem group named PesterTest_SystemGroup
+
+$NewJCSystemGroup = 'NewSystemGroup' #Do not modify this
+$NewJCUserGroup = 'NewUserGroup' #Do not modify this
 
 #Test Functions
 
@@ -36,7 +42,7 @@ function New-RandomUser  ()
 
     if (($PSCmdlet.ParameterSetName -eq 'NoAttributes'))
     {
-        $username = -join ((65..90) + (97..122) | Get-Random -Count 8 | % {[char]$_})
+        $username = -join ((65..90) + (97..122) | Get-Random -Count 8 | ForEach-Object {[char]$_})
         $email =  $username + "@$Domain.com"
 
         $RandomUser = [ordered]@{
@@ -52,7 +58,7 @@ function New-RandomUser  ()
 
     if (($PSCmdlet.ParameterSetName -eq 'Attributes'))
     {
-        $username = -join ((65..90) + (97..122) | Get-Random -Count 8 | % {[char]$_})
+        $username = -join ((65..90) + (97..122) | Get-Random -Count 8 | ForEach-Object {[char]$_})
         $email =  $username + "@$Domain.com"
 
         $RandomUser = [ordered]@{
@@ -75,6 +81,28 @@ function New-RandomUser  ()
 
     return $NewRandomUser
 }
+Function New-RandomString () {
+    [CmdletBinding()]
+
+    param(
+
+    [Parameter(Mandatory)] ##Test this to see if this can be modified.
+    [ValidateRange(0,52)]
+    [Int]
+    $NumberOfChars
+
+    )
+    begin {}
+    process{
+        $Random = -join ((65..90) + (97..122) | Get-Random -Count $NumberOfChars | % {[char]$_})
+    }
+    end{Return $Random}
+
+
+}
+
+$Random = New-RandomString '8'
+$RandomEmail = "$Random@$Random.com"
 
 $ModuleManifestName = 'JumpCloud.psd1'
 $ModuleManifestPath = "$PSScriptRoot\..\$ModuleManifestName"
@@ -93,13 +121,7 @@ $CommandResults = Get-JCCommandResult #Ensure there are command results to test
 
 if ($CommandResults._id.Count -lt 5) #If there are not at least five command results then use the Invoke-JCCommand to populate four command results
 {
-   1..5 | % {Invoke-JCCommand -trigger GetUsers}
-
-    While($CommandResults._id.Count -lt 5)
-    {
-        $CommandResults = Get-JCCommandResult
-        Start-Sleep 5
-    }
+    Write-Error 'You must have at least 5 Command Results to run the Pester tests'
 }
 
 Write-Host "There are $($CommandResults._id.Count) command results"
@@ -117,7 +139,7 @@ Describe 'Get-JCCommandResults'{
 
    It "Gets a single JumpCloud command result using -ByID" {
 
-        $SingleCommand = Get-JCCommandResult | select -Last 1
+        $SingleCommand = Get-JCCommandResult | Select-Object -Last 1
         $SingleCommandResult = Get-JCCommandResult -ByID $SingleCommand._id
         $SingleCommandResult.output | Should -Not -BeNullOrEmpty
 
@@ -125,7 +147,7 @@ Describe 'Get-JCCommandResults'{
 
    It "Gets a single JumpCloud command result without declaring -ByID" {
 
-        $SingleCommand = Get-JCCommandResult | select -Last 1
+        $SingleCommand = Get-JCCommandResult | Select-Object -Last 1
         $SingleCommandResult = Get-JCCommandResult $SingleCommand._id
         $SingleCommandResult.output | Should -Not -BeNullOrEmpty
 
@@ -133,7 +155,7 @@ Describe 'Get-JCCommandResults'{
 
    It "Gets a single JumpCloud command result declaring CommandResultID" {
 
-        $SingleCommand = Get-JCCommandResult | select -Last 1
+        $SingleCommand = Get-JCCommandResult | Select-Object -Last 1
         $SingleCommandResult = Get-JCCommandResult -CommandResultID $SingleCommand._id
         $SingleCommandResult.output | Should -Not -BeNullOrEmpty
 
@@ -141,13 +163,13 @@ Describe 'Get-JCCommandResults'{
 
     It "Gets a single JumpCloud command result using -ByID passed through the pipeline" {
 
-        $SingleCommandResult = Get-JCCommandResult | select -Last 1 | Get-JCCommandResult -ByID
+        $SingleCommandResult = Get-JCCommandResult | Select-Object -Last 1 | Get-JCCommandResult -ByID
         $SingleCommandResult.output | Should -Not -BeNullOrEmpty
     }
 
     It "Gets a single JumpCloud command result passed through the pipeline without declaring -ByID" {
 
-        $SingleCommandResult = Get-JCCommandResult | select -Last 1 | Get-JCCommandResult
+        $SingleCommandResult = Get-JCCommandResult | Select-Object -Last 1 | Get-JCCommandResult
         $SingleCommandResult.output | Should -Not -BeNullOrEmpty
     }
 
@@ -170,27 +192,27 @@ Describe 'Get-JCCommandResults'{
 Describe 'Remove-JCCommandResult'{
 
     It "Ensures the warning message is displayed by default, Deletes a single JumpCloud command result declaring -CommandResultIT" {
-        $SingleCommandResult = Get-JCCommandResult | select -Last 1
+        $SingleCommandResult = Get-JCCommandResult | Select-Object -Last 1
         $DeletedResult = Remove-JCCommandResult -CommandResultID $SingleCommandResult._id
         $DeletedResult._id.count | Should -Be 1
     }
 
 
     It "Removes a JumpCloud command result using -CommandResultID with the force paramter"{
-        $SingleCommandResult = Get-JCCommandResult | select -Last 1
+        $SingleCommandResult = Get-JCCommandResult | Select-Object -Last 1
         $DeletedResult = Remove-JCCommandResult -CommandResultID $SingleCommandResult._id -force
         $DeletedResult._id.count | Should -Be 1
     }
 
     It "Removes a JumpCloud command result passed through the pipeline with the force parameter without declaring -CommandResultID"{
 
-        $DeletedResult = Get-JCCommandResult | select -Last 1 | Remove-JCCommandResult -force
+        $DeletedResult = Get-JCCommandResult | Select-Object -Last 1 | Remove-JCCommandResult -force
         $DeletedResult._id.count | Should -Be 1
 
     }
 
     It "Removes two JumpCloud command results passed through the pipeline with force parameter without declaring -CommandResultID"{
-        $DeletedResult = Get-JCCommandResult | select -Last 2 | Remove-JCCommandResult -force
+        $DeletedResult = Get-JCCommandResult | Select-Object -Last 2 | Remove-JCCommandResult -force
         $DeletedResult._id.count | Should -Be 2
 
     }
@@ -210,7 +232,7 @@ if ($($Commands._id.Count) -le 1)
 
 Write-Host "There are $($Commands.Count) commands"
 
-$Triggers = $Commands | Where-Object trigger -ne '' | measure
+$Triggers = $Commands | Where-Object trigger -ne '' | Measure-Object
 
 if ($Triggers.Count -lt 2 )
 {Write-Error 'You must have at least 2 JumpCloud commands with command triggers to run the Pester tests'
@@ -225,26 +247,26 @@ Describe 'Get-JCCommand'{
     }
 
     It "Gets a single JumpCloud command  declaring -CommandID"{
-        $SingleCommand = Get-JCCommand | select -Last 1
+        $SingleCommand = Get-JCCommand | Select-Object -Last 1
         $SingleResult = Get-JCCommand -CommandID $SingleCommand._id
         $SingleResult._id.Count | Should Be 1
 
     }
 
     It "Gets a single JumpCloud command  without declaring -CommandID"{
-        $SingleCommand = Get-JCCommand | select -Last 1
+        $SingleCommand = Get-JCCommand | Select-Object -Last 1
         $SingleResult = Get-JCCommand $SingleCommand._id
         $SingleResult._id.Count | Should Be 1
 
     }
 
     It "Gets a single JumpCloud command using -ByID passed through the pipeline"{
-        $SingleResult = Get-JCCommand | select -Last 1 | Get-JCCommand -ByID
+        $SingleResult = Get-JCCommand | Select-Object -Last 1 | Get-JCCommand -ByID
         $SingleResult._id.Count | Should Be 1
     }
 
     It "Gets a single JumpCloud command passed through the pipeline without declaring -ByID"{
-        $SingleResult = Get-JCCommand | select -Last 1 | Get-JCCommand
+        $SingleResult = Get-JCCommand | Select-Object -Last 1 | Get-JCCommand
         $SingleResult._id.Count | Should Be 1
     }
 
@@ -265,19 +287,19 @@ Describe 'Get-JCCommand'{
 Describe 'Invoke-JCCommand'{
 
     It "Invokes a single JumpCloud command declaring the -trigger"{
-        $SingleTrigger = Get-JCCommand | Where-Object trigger -ne '' | Select -Last 1 | select trigger
+        $SingleTrigger = Get-JCCommand | Where-Object trigger -ne '' | Select-Object -Last 1 | Select-Object trigger
         $SingleResult = Invoke-JCCommand -trigger $SingleTrigger.trigger
         $SingleResult.triggered.Count | Should Be 1
 
     }
 
     It "Invokes a single JumpCloud command passed through the pipeline from Get-JCCommand without declaring -trigger"{
-        $SingleResult = Get-JCCommand | Where-Object trigger -ne '' | Select -Last 1 | Invoke-JCCommand
+        $SingleResult = Get-JCCommand | Where-Object trigger -ne '' | Select-Object -Last 1 | Invoke-JCCommand
         $SingleResult.triggered.Count | Should Be 1
     }
 
     It "Invokes two JumpCloud command passed through the pipeline from Get-JCCommand without declaring -trigger"{
-        $MultiResult = Get-JCCommand | Where-Object trigger -ne '' | Select -Last 2 | Invoke-JCCommand
+        $MultiResult = Get-JCCommand | Where-Object trigger -ne '' | Select-Object -Last 2 | Invoke-JCCommand
         $MultiResult.triggered.Count | Should Be 2
     }
 
@@ -331,23 +353,23 @@ Describe 'Add-JCSystemGroupMember and Remove-JCSystemGroupmember'{
     }
 
     It "Adds two JumpCloud systems to a JumpCloud system group using the pipeline"{
-        $MultiSystemGroupAdd = Get-JCSystem | select -Last 2 | Add-JCSystemGroupMember -GroupName $SystemGroupName
+        $MultiSystemGroupAdd = Get-JCSystem | Select-Object -Last 2 | Add-JCSystemGroupMember -GroupName $SystemGroupName
         $MultiSystemGroupAdd.Status | Select-Object -Unique | Should Be 'Added'
     }
 
     It "Removes two JumpCloud systems from a JumpCloud system group using the pipeline" {
-        $MultiSystemGroupRemove =  Get-JCSystem | select -Last 2 | Remove-JCSystemGroupMember -GroupName $SystemGroupName
+        $MultiSystemGroupRemove =  Get-JCSystem | Select-Object -Last 2 | Remove-JCSystemGroupMember -GroupName $SystemGroupName
         $MultiSystemGroupRemove.Status | Select-Object -Unique | Should Be 'Removed'
 
     }
 
     It "Adds two JumpCloud systems to a JumpCloud system group using the pipeline using -ByID"{
-        $MultiSystemGroupAdd = Get-JCSystem | select -Last 2 | Add-JCSystemGroupMember -GroupName $SystemGroupName -ByID
+        $MultiSystemGroupAdd = Get-JCSystem | Select-Object -Last 2 | Add-JCSystemGroupMember -GroupName $SystemGroupName -ByID
         $MultiSystemGroupAdd.Status | Select-Object -Unique | Should Be 'Added'
     }
 
     It "Removes two JumpCloud systems from a JumpCloud system group using the pipeline using -ByID" {
-        $MultiSystemGroupRemove =  Get-JCSystem | select -Last 2 | Remove-JCSystemGroupMember -GroupName $SystemGroupName -ByID
+        $MultiSystemGroupRemove =  Get-JCSystem | Select-Object -Last 2 | Remove-JCSystemGroupMember -GroupName $SystemGroupName -ByID
         $MultiSystemGroupRemove.Status | Select-Object -Unique | Should Be 'Removed'
 
     }
@@ -380,21 +402,21 @@ Describe 'Add-JCUserGroupMember and Remove-JCUserGroupMember'{
     }
 
     It "Adds two JumpCLoud users to a JumpCloud user group using the pipeline"{
-        $MultiUserGroupAdd = Get-JCUser | select -Last 2 | Add-JCUserGroupMember -GroupName $UserGroupName
+        $MultiUserGroupAdd = Get-JCUser | Select-Object -Last 2 | Add-JCUserGroupMember -GroupName $UserGroupName
         $MultiUserGroupAdd.Status | Select-Object -Unique | Should Be 'Added'
     }
 
     It "Removes two JumpCLoud users from a JumpCloud user group using the pipeline"{
-        $MultiUserGroupAdd = Get-JCUser | select -Last 2 | Remove-JCUserGroupMember -GroupName $UserGroupName
+        $MultiUserGroupAdd = Get-JCUser | Select-Object -Last 2 | Remove-JCUserGroupMember -GroupName $UserGroupName
         $MultiUserGroupAdd.Status | Select-Object -Unique | Should Be 'Removed'
     }
     It "Adds two JumpCLoud users to a JumpCloud user group using the pipeline using -ByID"{
-        $MultiUserGroupAdd = Get-JCUser | select -Last 2 | Add-JCUserGroupMember -GroupName $UserGroupName -ByID
+        $MultiUserGroupAdd = Get-JCUser | Select-Object -Last 2 | Add-JCUserGroupMember -GroupName $UserGroupName -ByID
         $MultiUserGroupAdd.Status | Select-Object -Unique | Should Be 'Added'
     }
 
     It "Removes two JumpCLoud users from a JumpCloud user group using the pipeline using -ByID"{
-        $MultiUserGroupAdd = Get-JCUser | select -Last 2 | Remove-JCUserGroupMember -GroupName $UserGroupName  -ByID
+        $MultiUserGroupAdd = Get-JCUser | Select-Object -Last 2 | Remove-JCUserGroupMember -GroupName $UserGroupName  -ByID
         $MultiUserGroupAdd.Status | Select-Object -Unique | Should Be 'Removed'
     }
 
@@ -409,14 +431,14 @@ Describe 'Get-JCGroup'{
     IT 'Gets all groups: System and User'{
 
         $Groups = Get-JCGroup
-        $TwoGroups = $Groups.type | select -Unique | measure
+        $TwoGroups = $Groups.type | Select-Object -Unique | Measure-Object
         $TwoGroups.Count | Should -Be 2
     }
 
     IT 'Gets all JumpCloud User Groups'{
 
         $UserGroups = Get-JCGroup -Type User
-        $OneGroup = $UserGroups.type | select -Unique | measure
+        $OneGroup = $UserGroups.type | Select-Object -Unique | Measure-Object
         $OneGroup.Count | Should -Be 1
 
     }
@@ -424,7 +446,7 @@ Describe 'Get-JCGroup'{
     IT 'Gets all JumpCloud System Groups'{
 
         $SystemGroups = Get-JCGroup -Type System
-        $OneGroup = $SystemGroups.type | select -Unique | measure
+        $OneGroup = $SystemGroups.type | Select-Object -Unique | Measure-Object
         $OneGroup.Count | Should -Be 1
 
     }
@@ -434,7 +456,7 @@ Describe 'Get-JCGroup'{
 Describe 'Get-JCSystemGroupMember'{
 
     It "Adds two JumpCloud systems to a JumpCloud system group using the pipeline"{
-    $MultiSystemGroupAdd = Get-JCSystem | select -Last 2 | Add-JCSystemGroupMember -GroupName $SystemGroupName
+    $MultiSystemGroupAdd = Get-JCSystem | Select-Object -Last 2 | Add-JCSystemGroupMember -GroupName $SystemGroupName
     $MultiSystemGroupAdd.Status | Select-Object -Unique | Should Be 'Added'
     }
 
@@ -558,12 +580,12 @@ Describe 'Add-JCSystemUser and Remove-JCSystemUser'{
     }
 
     IT "Adds two users to a single system using the pipeline and system ID"{
-        $MultiUserAdd = Get-JCUser | select -Last 2 | Add-JCSystemUser -SystemID $SystemID
+        $MultiUserAdd = Get-JCUser | Select-Object -Last 2 | Add-JCSystemUser -SystemID $SystemID
         $MultiUserAdd.Status.Count | Should Be 2
     }
 
     IT "Removes two users from a single system using the pipeline and system ID using the -force paramter"{
-        $MultiUserRemove = Get-JCUser | select -Last 2 | Remove-JCSystemUser -SystemID $SystemID -force
+        $MultiUserRemove = Get-JCUser | Select-Object -Last 2 | Remove-JCSystemUser -SystemID $SystemID -force
         $MultiUserRemove.Status.Count | Should Be 2
     }
 }
@@ -597,7 +619,7 @@ Describe 'Get-JCSystemUser'{
     IT "Gets all JumpCloud system user associations using Get-JCsystem and the pipeline"{
 
         $AllSystemUsers = Get-JCSystem | Get-JCSystemUser
-        $Systems = $AllSystemUsers.SystemID | select -Unique | measure
+        $Systems = $AllSystemUsers.SystemID | Select-Object -Unique | Measure-Object
         $Systems.Count| Should -BeGreaterThan 1
     }
 }
@@ -613,7 +635,7 @@ Describe 'Remove-JCSystem'{
 Describe 'Set-JCSystem'{
 
     It "Updates the DisplyName and then set it back"{
-        $CurrentDisplayName = Get-JCSystem -SystemID $SystemID | Select DisplayName
+        $CurrentDisplayName = Get-JCSystem -SystemID $SystemID | Select-Object DisplayName
         $UpdatedSystem = Set-JCSystem -SystemID $SystemID -displayName 'NewName'
         $UpdatedSystem.displayName | Should -be 'NewName'
         Set-JCSystem -SystemID $SystemID -displayName $CurrentDisplayName.displayName | Out-Null
@@ -691,7 +713,7 @@ Describe 'Get-JCUser'{
     }
 
     IT 'Get multiple JumpCloud users via the pipeline using -ByID'{
-        $Users = Get-JCUser | select -Last 2 | Get-JCUser -ByID
+        $Users = Get-JCUser | Select-Object -Last 2 | Get-JCUser -ByID
         $Users._id.count | Should -Be 2
     }
 }
@@ -812,7 +834,7 @@ Describe 'New-JCUser and Remove-JCuser'{
 Describe 'Set-JCUser'{
 
     IT "Updates the firstname and then sets it back using -ByID and -UserID"{
-        $CurrentFirstName = Get-JCUser -ByID -UserID $UserID | select firstname
+        $CurrentFirstName = Get-JCUser -ByID -UserID $UserID | Select-Object firstname
         $NewFirstName = Set-JCUser -ByID -UserID $UserID -firstname 'NewFirstName'
         $NewFirstName.firstname | Should -be 'NewFirstName'
         Set-JCUser -ByID -UserID $UserID -firstname $CurrentFirstName.firstname | Out-Null
@@ -820,7 +842,7 @@ Describe 'Set-JCUser'{
     }
 
     IT "Updates the firstname and then sets it back using -Username"{
-        $CurrentFirstName = Get-JCUser -ByID -UserID $UserID | select firstname
+        $CurrentFirstName = Get-JCUser -ByID -UserID $UserID | Select-Object firstname
         $NewFirstName = Set-JCUser -Username $Username -firstname 'NewFirstName'
         $NewFirstName.firstname | Should -be 'NewFirstName'
         Set-JCUser -ByID -UserID $UserID -firstname $CurrentFirstName.firstname | Out-Null
@@ -828,7 +850,7 @@ Describe 'Set-JCUser'{
     }
 
     IT "Updates the lastname and then sets it back using -ByID and -UserID"{
-        $Currentlastname = Get-JCUser -ByID -UserID $UserID | select lastname
+        $Currentlastname = Get-JCUser -ByID -UserID $UserID | Select-Object lastname
         $Newlastname = Set-JCUser -ByID -UserID $UserID -lastname 'NewLastName'
         $Newlastname.lastname | Should -be 'NewLastName'
         Set-JCUser -ByID -UserID $UserID -lastname $Currentlastname.lastname | Out-Null
@@ -836,7 +858,7 @@ Describe 'Set-JCUser'{
     }
 
     IT "Updates the lastname and then sets it back using -Username"{
-        $Currentlastname = Get-JCUser -ByID -UserID $UserID | select lastname
+        $Currentlastname = Get-JCUser -ByID -UserID $UserID | Select-Object lastname
         $Newlastname = Set-JCUser -Username $Username -lastname 'NewLastName'
         $Newlastname.lastname | Should -be 'NewLastName'
         Set-JCUser -ByID -UserID $UserID -lastname $Currentlastname.lastname | Out-Null
@@ -844,17 +866,17 @@ Describe 'Set-JCUser'{
     }
 
     IT "Updates the email and then sets it back using -ByID and -UserID"{
-        $Currentemail = Get-JCUser -ByID -UserID $UserID | select email
-        $Newemail = Set-JCUser -ByID -UserID $UserID -email 'Newemail@Pester.tester.com'
-        $Newemail.email | Should -be 'Newemail@Pester.tester.com'
+        $Currentemail = Get-JCUser -ByID -UserID $UserID | Select-Object email
+        $Newemail = Set-JCUser -ByID -UserID $UserID -email $RandomEmail
+        $Newemail.email | Should -be $RandomEmail
         Set-JCUser -ByID -UserID $UserID -email $Currentemail.email | Out-Null
 
     }
 
     IT "Updates the email and then sets it back using -Username"{
-        $Currentemail = Get-JCUser -ByID -UserID $UserID | select email
-        $Newemail = Set-JCUser -Username $Username -email 'Newemail@Pester.tester.com'
-        $Newemail.email | Should -be 'Newemail@Pester.tester.com'
+        $Currentemail = Get-JCUser -ByID -UserID $UserID | Select-Object email
+        $Newemail = Set-JCUser -Username $Username -email $RandomEmail
+        $Newemail.email | Should -be $RandomEmail
         Set-JCUser -ByID -UserID $UserID -email $Currentemail.email | Out-Null
 
     }
@@ -1031,7 +1053,7 @@ Describe 'Set-JCUser'{
 
 
     IT "Updates the unix_uid and then sets it back using -ByID and -UserID"{
-        $Currentunix_uid = Get-JCUser -ByID -UserID $UserID | select unix_uid
+        $Currentunix_uid = Get-JCUser -ByID -UserID $UserID | Select-Object unix_uid
         $100 = Set-JCUser -ByID -UserID $UserID -unix_uid '100'
         $100.unix_uid | Should -be '100'
         Set-JCUser -ByID -UserID $UserID -unix_uid $Currentunix_uid.unix_uid | Out-Null
@@ -1039,7 +1061,7 @@ Describe 'Set-JCUser'{
     }
 
     IT "Updates the unix_uid and then sets it back using -Username"{
-        $Currentunix_uid = Get-JCUser -ByID -UserID $UserID | select unix_uid
+        $Currentunix_uid = Get-JCUser -ByID -UserID $UserID | Select-Object unix_uid
         $100 = Set-JCUser -Username $Username -unix_uid '100'
         $100.unix_uid | Should -be '100'
         Set-JCUser -ByID -UserID $UserID -unix_uid $Currentunix_uid.unix_uid | Out-Null
@@ -1047,7 +1069,7 @@ Describe 'Set-JCUser'{
     }
 
     IT "Updates the unix_guid and then sets it back using -ByID and -UserID"{
-        $Currentunix_guid = Get-JCUser -ByID -UserID $UserID | select unix_guid
+        $Currentunix_guid = Get-JCUser -ByID -UserID $UserID | Select-Object unix_guid
         $100 = Set-JCUser -ByID -UserID $UserID -unix_guid '100'
         $100.unix_guid | Should -be '100'
         Set-JCUser -ByID -UserID $UserID -unix_guid $Currentunix_guid.unix_guid | Out-Null
@@ -1055,7 +1077,7 @@ Describe 'Set-JCUser'{
     }
 
     IT "Updates the unix_guid and then sets it back using -Username"{
-        $Currentunix_guid = Get-JCUser -ByID -UserID $UserID | select unix_guid
+        $Currentunix_guid = Get-JCUser -ByID -UserID $UserID | Select-Object unix_guid
         $100 = Set-JCUser -Username $Username -unix_guid '100'
         $100.unix_guid | Should -be '100'
         Set-JCUser -ByID -UserID $UserID -unix_guid $Currentunix_guid.unix_guid | Out-Null

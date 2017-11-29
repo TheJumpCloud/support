@@ -2,15 +2,18 @@
     about_jumpcloud
 
 SHORT DESCRIPTION
-   The JumpCloud Module allows a JumpCloud administrator to interact with the JumpCloud API using PowerShell functions
+    PowerShell functions to configure, audit, automate, and manage a JumpCloud
+    DaaS
 
 LONG DESCRIPTION
-    The JumpCloud Module provides a way to
+    The JumpCloud Module provides a way to:
+
     -Import JumpCloud Users and associate them with JumpCloud User Groups and
-    Systems during import -Create and remove JumpCloud Users -Modify JumpCloud
-    User and System properties in bulk -Modify JumpCloud User and System Groups
-    and System and User Group membership -Trigger JumpCloud commands and read
-    CommandResult Output
+    Systems during import 
+    -Create and remove JumpCloud Users 
+    -Modify JumpCloud User and System properties in bulk 
+    -Modify JumpCloud User and System Group membership 
+    -Trigger JumpCloud commands and read CommandResult Output
 
 EXAMPLES
     Connect-JCOnline
@@ -24,9 +27,5 @@ TROUBLESHOOTING NOTE
     reset this API key from this settings page.
 
 SEE ALSO
-    - Connnect-JCOnline
-    - New-JCUser
-    - Get-JCUser
-    - Set-JCUser
-    - Remove-JCUser
+    https://github.com/TheJumpCloud/support/wiki/
 
