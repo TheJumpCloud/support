@@ -1,3 +1,0 @@
-pyldap==2.4.37
-# Uncomment if you want to use ipython to play around with the code.
-# ipython

@@ -1,7 +1,0 @@
-{
-    "ldap_server": "ldap.jumpcloud.com",
-    "binddn": "uid={},ou=Users,o={},dc=jumpcloud,dc=com",
-    "basedn": "ou=Users,o={},dc=jumpcloud,dc=com",
-    "search_filter": "(&(objectClass=inetOrgPerson)(memberOf=cn={},ou=Users,o={},dc=jumpcloud,dc=com)(uid={}))",
-    "search_attribute": ["mail", "uid"]
-}
