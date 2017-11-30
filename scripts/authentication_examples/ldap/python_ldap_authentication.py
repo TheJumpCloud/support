@@ -161,21 +161,14 @@ if __name__ == "__main__":
     # Group: The User Group Name containing the User we are searching for.
     # Username: Name of the User to search for.
     # Userpassword: Password of the above User.
-    org_id = '5952c31766d1b64b09de4d42'
-    bind_user = 'testldap'
-    password_field = 'solidfire'
-    group = 'betty'
-    user_name = 'testldap'
-    user_password = 'solidfire'
-
-    # print("\n")
-    # org_id = input("Please enter your Organization ID: ")
-    # bind_user = input("Please enter your search User: ")
-    # password_field = getpass.getpass('Search User Password:')
-    # group = input("Please enter your Group: ")
-    # user_name = input("Please enter User: ")
-    # user_password = getpass.getpass("Please enter User Password: ")
-    # print("\n")
+    print("\n")
+    org_id = input("Please enter your Organization ID: ")
+    bind_user = input("Please enter your search User: ")
+    password_field = getpass.getpass('Search User Password:')
+    group = input("Please enter your Group: ")
+    user_name = input("Please enter User: ")
+    user_password = getpass.getpass("Please enter User Password: ")
+    print("\n")
 
     if not password_field:
         print("Need a password!!")
