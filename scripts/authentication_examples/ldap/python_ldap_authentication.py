@@ -132,7 +132,7 @@ def main():
 
     try:
         ldap_conn = ldap.open(ldap_server)
-        ldap_conn.bind_s(user_dn, password_field)
+        ldap_conn.bind_s(user_dn, user_password)
         result = ldap_conn.search_s(base_dn, search_scope, search_filter)
 
     except ldap.INVALID_CREDENTIALS as invalid:
