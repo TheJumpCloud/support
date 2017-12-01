@@ -78,7 +78,7 @@ PrivateData = @{
         ProjectUri = 'https://github.com/TheJumpCloud/support/tree/master/PowerShell'
 
         # A URL to an icon representing this module.
-        # IconUri = ''
+        IconUri = 'https://avatars1.githubusercontent.com/u/4927461?s=200&v=4'
 
         # ReleaseNotes of this module
         ReleaseNotes = 'Version 1.0.0 of the JumpCloud PowerShell module'
