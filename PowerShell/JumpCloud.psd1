@@ -69,19 +69,19 @@ PrivateData = @{
     PSData = @{
 
         # Tags applied to this module. These help with module discovery in online galleries.
-        # Tags = @()
+        Tags = @('JumpCloud','DaaS','Jump','Cloud','Directory')
 
         # A URL to the license for this module.
-        # LicenseUri = ''
+        LicenseUri = 'https://github.com/TheJumpCloud/support/blob/master/PowerShell/LICENSE'
 
         # A URL to the main website for this project.
-        # ProjectUri = ''
+        ProjectUri = 'https://github.com/TheJumpCloud/support/tree/master/PowerShell'
 
         # A URL to an icon representing this module.
         # IconUri = ''
 
         # ReleaseNotes of this module
-        # ReleaseNotes = ''
+        ReleaseNotes = 'Version 1.0.0 of the JumpCloud PowerShell module'
 
     } # End of PSData hashtable
 
