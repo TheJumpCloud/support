@@ -135,8 +135,11 @@ def main():
         ldap_conn.bind_s(user_dn, password_field)
         result = ldap_conn.search_s(base_dn, search_scope, search_filter)
 
+    except ldap.INVALID_CREDENTIALS as invalid:
+        raise LdapAuthenticationError("CRITICAL: Invalid username, password or Org Id.")
+
     except ldap.LDAPError as lde:
-        raise LdapAuthenticationError("CRITICAL: Probably incorrect password - {}".format(lde))
+        raise LdapAuthenticationError("CRITICAL: LDAP Exception - {}".format(lde))
 
     else:
         # Return all of the User data results.
