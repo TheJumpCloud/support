@@ -62,14 +62,6 @@ group = cli.ask 'Please enter your Group: '
 user_name = cli.ask 'Please enter User: '
 user_password = cli.ask('Please enter User Password: ') { |q| q.echo = false }
 
-# TODO: Remove when done testing
-# org_id = '5952c31766d1b64b09de4d42'
-# bind_user = 'testldap'
-# password_field = 'solidfire'
-# group = 'betty'
-# user_name = 'testldap'
-# user_password = 'solidfire'
-
 puts "Your Org ID: #{org_id}"
 puts "Bind User: #{bind_user}"
 puts "User Group: #{group}"
@@ -96,9 +88,16 @@ ldap = Net::LDAP.new :host => ldap_server,
 if ldap.bind
   puts 'Bind Authentication successful!'
 else
+	# get_operation_result.result_code & result_message come from constants in the
+	# Net::LDAP code. Not every error returned from the LDAP server has a
+	# corresponding code+message constant.
 	rcode = ldap2.get_operation_result.result_code
 	rmsg = ldap2.get_operation_result.result_message
-  puts "Bind Authentication failed! Code: #{rcode} - #{rmsg}"
+	if rcode
+		puts "Bind Authentication failed! Code: #{rcode} - #{rmsg}"
+	else
+		puts "Bind Authentication failed! Probably invalid credentials."
+	end
 end
 
 #---- First search example. ----#
@@ -131,15 +130,27 @@ ldap2 = Net::LDAP.new :host => ldap_server,
 if ldap2.bind
   puts '2nd Bind Authentication succeeded'
 else
+	# See the previous authentication example for an explanation of result_code
+	# and result_message
   rcode = ldap2.get_operation_result.result_code
   rmsg = ldap2.get_operation_result.result_message
-  puts "2nd Bind Authentication failed! Code: #{rcode} - #{rmsg}"
+	if rcode
+    puts "2nd Bind Authentication failed! Code: #{rcode} - #{rmsg}"
+	else
+		puts "2nd Bind Authentication failed!  Probably invalid credentials."
+	end
 end
 
 #---- Second search example. Search by uid ----#
 puts '2nd Search example'
 treebase = "ou=Users,o=#{org_id},dc=jumpcloud,dc=com"
-search_filter2 = Net::LDAP::Filter.eq('uid', "#{user_name}*")
+
+# A simple search filter.
+# search_filter2 = Net::LDAP::Filter.eq('uid', "#{user_name}*")
+
+# A constructed search filter using LDAP search query syntax.
+search_filter2 = Net::LDAP::Filter.construct("(&(objectClass=inetOrgPerson)(memberOf=cn=#{group},ou=Users,o=#{org_id},dc=jumpcloud,dc=com)(uid=#{user_name}))")
+puts "constructed search query: #{search_filter2}"
 
 ldap2.search(:base => treebase, :filter => search_filter2, :return_result => false) do |entry|
 	entry.each do |attr, values|
