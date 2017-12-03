@@ -24,16 +24,6 @@ def parse_json
   JSON.parse(json)
 end
 
-# Parse out the response.
-def get_ldap_response(ldap)
-	rcode = ldap.get_operation_result.code
-	if rcode != 0
-		code = "Response Code: #{rcode}"
-		msg = "Message: #{ldap.get_operation_result.message}"
-		err_msg = "CRITICAL: #{rcode_msg}, #{msg}"
-		raise err_msg
-	end
-end
 # Command line help.
 opts = GetoptLong.new(
   ['--help', '-h', GetoptLong::NO_ARGUMENT]
@@ -135,9 +125,9 @@ else
   rcode = ldap2.get_operation_result.result_code
   rmsg = ldap2.get_operation_result.result_message
 	if rcode
-    puts "2nd Bind Authentication failed! Code: #{rcode} - #{rmsg}"
+   puts "2nd Bind Authentication failed! Code: #{rcode} - #{rmsg}"
 	else
-		puts "2nd Bind Authentication failed!  Probably invalid credentials."
+   puts '2nd Bind Authentication failed!  Probably invalid credentials.'
 	end
 end
 
