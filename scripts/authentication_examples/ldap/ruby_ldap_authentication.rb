@@ -44,13 +44,14 @@ end
 # Group: The User Group Name containing the User we are searching for.
 # Username: Name of the User to search for.
 # Userpassword: Password of the above User.
-# cli = HighLine.new
-# org_id = cli.ask 'Please enter your Organization ID: '
-# bind_user = cli.ask 'Please enter your search User: '
-# password_field = cli.ask('Search User Password: ') { |q| q.echo = false }
-# group = cli.ask 'Please enter your Group: '
-# user_name = cli.ask 'Please enter User: '
-# user_password = cli.ask('Please enter User Password: ') { |q| q.echo = false }
+cli = HighLine.new
+org_id = cli.ask 'Please enter your Organization ID: '
+bind_user = cli.ask 'Please enter your search User: '
+password_field = cli.ask('Search User Password: ') { |q| q.echo = false }
+group = cli.ask 'Please enter your Group: '
+user_name = cli.ask 'Please enter User: '
+user_password = cli.ask('Please enter User Password: ') { |q| q.echo = false }
+
 puts "Your Org ID: #{org_id}"
 puts "Bind User: #{bind_user}"
 puts "User Group: #{group}"
