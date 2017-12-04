@@ -44,14 +44,13 @@ end
 # Group: The User Group Name containing the User we are searching for.
 # Username: Name of the User to search for.
 # Userpassword: Password of the above User.
-cli = HighLine.new
-org_id = cli.ask 'Please enter your Organization ID: '
-bind_user = cli.ask 'Please enter your search User: '
-password_field = cli.ask('Search User Password: ') { |q| q.echo = false }
-group = cli.ask 'Please enter your Group: '
-user_name = cli.ask 'Please enter User: '
-user_password = cli.ask('Please enter User Password: ') { |q| q.echo = false }
-
+# cli = HighLine.new
+# org_id = cli.ask 'Please enter your Organization ID: '
+# bind_user = cli.ask 'Please enter your search User: '
+# password_field = cli.ask('Search User Password: ') { |q| q.echo = false }
+# group = cli.ask 'Please enter your Group: '
+# user_name = cli.ask 'Please enter User: '
+# user_password = cli.ask('Please enter User Password: ') { |q| q.echo = false }
 puts "Your Org ID: #{org_id}"
 puts "Bind User: #{bind_user}"
 puts "User Group: #{group}"
@@ -97,7 +96,7 @@ treebase = "ou=Users,o=#{org_id},dc=jumpcloud,dc=com"
 search_filter = Net::LDAP::Filter.eq('mail', "#{user_name}*.com")
 
 # We are setting :return_result to false because we aren't using the results
-# outside of the block.  This also avoids a memory leak ->
+# outside of the block.  This also avoids a memory leak (unclear if leak is fixed) ->
 #   https://stackoverflow.com/questions/3320054/memory-leak-in-ruby-net-ldap-module?rq=1
 ldap.search(:filter => search_filter,
 						:attributes => search_attributes,
@@ -142,7 +141,15 @@ treebase = "ou=Users,o=#{org_id},dc=jumpcloud,dc=com"
 search_filter2 = Net::LDAP::Filter.construct("(&(objectClass=inetOrgPerson)(memberOf=cn=#{group},ou=Users,o=#{org_id},dc=jumpcloud,dc=com)(uid=#{user_name}))")
 puts "constructed search query: #{search_filter2}"
 
-ldap2.search(:base => treebase, :filter => search_filter2, :return_result => false) do |entry|
+# We change :return_result to true here in order to test the result_set - this is not great for large
+# data sets.
+result_set = ldap2.search(:base => treebase, :filter => search_filter2, :return_result => true);
+
+if result_set.empty?
+  puts "Search result set is empty, search user #{user_name} is not Authorized!"
+end
+
+result_set.each do |entry|
 	entry.each do |attr, values|
 		values.each do |value|
 			puts "\t#{attr} - #{value}"
