@@ -1,14 +1,30 @@
-# Authentication Examples
+# LDAP Authentication Examples
 
-## LDAP
+## Python
 
-### Python
+The Python script "should" be able to run with python 2.7+ but has been tested primarily with
+python 3.6+
 
-#### List of Python Dependencies
+[Pip](https://pypi.python.org/pypi/pip/) is used to install the python script dependencies.  The dependencies
+are listed in the requirements.txt file.
 
-* LDAP Server Integration - [pyldap](https://github.com/pyldap/pyldap/) - We use pyldap instead of python-ldap for compatibility between Python2 & Python3
+### Installation of Python Dependencies
 
-### Ruby
+1. Install [pip](https://pypi.python.org/pypi/pip/) for your Operating System.
+2. Install the python script dependencies:
+
+`pip install -r requirements.txt`
+
+### Example Script Execution.
+
+`python python_ldap_authentication.py`
+
+### Dependency reference.
+
+* [pyldap](https://github.com/pyldap/pyldap/) - an object-oriented API to access LDAP directory servers
+from Python.  Supports both python 2.7+ and python 3.x
+
+## Ruby
 
 It assumed that you have installed a recent version of Ruby for your
 Operating System.
@@ -18,7 +34,7 @@ We use the default Ruby package manager
  in conjunction with [bundler](http://bundler.io/) to manage Ruby dependency
 installation.
 
-#### Installation of Dependencies
+### Installation of Ruby Dependencies
 
 1. install bundler
    `gem install bundler`
@@ -26,13 +42,14 @@ installation.
 2. Install the ruby_ldap_authentication.rb dependencies.
    `bundle install`
 
-#### Example Script Execution
+### Example Script Execution
 
+`ruby ruby_ldap_authentication.rb`
 
-#### List of Ruby Dependencies
+### Dependency reference.
 
-* LDAP Server interation - [net-ldap](https://github.com/ruby-ldap/ruby-net-ldap/)
-
+* [net-ldap](https://github.com/ruby-ldap/ruby-net-ldap/) - A pure Ruby implementation of LDAP for client
+access to LDAP directory servers.
 
 ## Troubleshooting
 
