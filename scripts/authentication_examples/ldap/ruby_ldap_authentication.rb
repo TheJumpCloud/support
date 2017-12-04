@@ -52,6 +52,13 @@ group = cli.ask 'Please enter your Group: '
 user_name = cli.ask 'Please enter User: '
 user_password = cli.ask('Please enter User Password: ') { |q| q.echo = false }
 
+# org_id = '5952c31766d1b64b09de4d42'
+# bind_user = 'testldap'
+# password_field = 'solidfire'
+# group = 'bobby'
+# user_name = 'testldap'
+# user_password = 'solidfire'
+
 puts "Your Org ID: #{org_id}"
 puts "Bind User: #{bind_user}"
 puts "User Group: #{group}"
@@ -142,18 +149,32 @@ treebase = "ou=Users,o=#{org_id},dc=jumpcloud,dc=com"
 search_filter2 = Net::LDAP::Filter.construct("(&(objectClass=inetOrgPerson)(memberOf=cn=#{group},ou=Users,o=#{org_id},dc=jumpcloud,dc=com)(uid=#{user_name}))")
 puts "constructed search query: #{search_filter2}"
 
-# We change :return_result to true here in order to test the result_set - this is not great for large
-# data sets.
-result_set = ldap2.search(:base => treebase, :filter => search_filter2, :return_result => true);
-
-if result_set.empty?
-  puts "Search result set is empty, search user #{user_name} is not Authorized!"
-end
-
-result_set.each do |entry|
+i = 0
+ldap2.search(:base => treebase, :filter => search_filter2, :return_result => false) do |entry|
 	entry.each do |attr, values|
+		i += 1
 		values.each do |value|
 			puts "\t#{attr} - #{value}"
 		end
 	end
 end
+
+if i.zero?
+  puts "Search result set is empty, search user #{user_name} is not Authorized!"
+end
+
+# We change :return_result to true here in order to test the result_set - this is not great for large
+# data sets.
+# result_set = ldap2.search(:base => treebase, :filter => search_filter2, :return_result => true);
+
+# if result_set.empty?
+#   puts "Search result set is empty, search user #{user_name} is not Authorized!"
+# end
+
+# result_set.each do |entry|
+# 	entry.each do |attr, values|
+# 		values.each do |value|
+# 			puts "\t#{attr} - #{value}"
+# 		end
+# 	end
+# end
