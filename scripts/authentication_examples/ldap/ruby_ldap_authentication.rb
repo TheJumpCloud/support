@@ -42,6 +42,7 @@ end
 # Bind User: User name of the User bound to the LDAP Server.
 # Bind User Password: Self explanatory.
 # Group: The User Group Name containing the User we are searching for.
+
 # Username: Name of the User to search for.
 # Userpassword: Password of the above User.
 cli = HighLine.new
@@ -55,8 +56,8 @@ user_password = cli.ask('Please enter User Password: ') { |q| q.echo = false }
 # org_id = '5952c31766d1b64b09de4d42'
 # bind_user = 'testldap'
 # password_field = 'solidfire'
-# group = 'bobby'
-# user_name = 'testldap'
+# group = 'ldap'
+# user_name = 'bobby'
 # user_password = 'solidfire'
 
 puts "Your Org ID: #{org_id}"
@@ -117,26 +118,26 @@ ldap.search(:filter => search_filter,
 }
 
 #---- Simple LDAP connection. ----#
-ldap2 = Net::LDAP.new :host => ldap_server,
-										 :port => 389,
-										 :auth => {
-												:method => :simple,
-												:username => "uid=#{user_name},ou=Users,o=#{org_id},dc=jumpcloud,dc=com",
-												:password => user_password
-										 }
-if ldap2.bind
-  puts '2nd Bind Authentication succeeded'
-else
-	# See the previous authentication example for an explanation of result_code
-	# and result_message
-  rcode = ldap2.get_operation_result.result_code
-  rmsg = ldap2.get_operation_result.result_message
-	if rcode
-   puts "2nd Bind Authentication failed! Code: #{rcode} - #{rmsg}"
-	else
-   puts '2nd Bind Authentication failed!  Probably invalid credentials.'
-	end
-end
+#ldap2 = Net::LDAP.new :host => ldap_server,
+#										 :port => 389,
+#										 :auth => {
+#												:method => :simple,
+#												:username => "uid=#{user_name},ou=Users,o=#{org_id},dc=jumpcloud,dc=com",
+#												:password => user_password
+#										 }
+#if ldap2.bind
+#  puts '2nd Bind Authentication succeeded'
+#else
+#	# See the previous authentication example for an explanation of result_code
+#	# and result_message
+#  rcode = ldap2.get_operation_result.result_code
+#  rmsg = ldap2.get_operation_result.result_message
+#	if rcode
+#   puts "2nd Bind Authentication failed! Code: #{rcode} - #{rmsg}"
+#	else
+#   puts '2nd Bind Authentication failed!  Probably invalid credentials.'
+#	end
+#end
 
 #---- Second search example. Search by uid ----#
 puts '2nd Search example'
@@ -150,7 +151,7 @@ search_filter2 = Net::LDAP::Filter.construct("(&(objectClass=inetOrgPerson)(memb
 puts "constructed search query: #{search_filter2}"
 
 i = 0
-ldap2.search(:base => treebase, :filter => search_filter2, :return_result => false) do |entry|
+ldap.search(:base => treebase, :filter => search_filter2, :return_result => false) do |entry|
 	entry.each do |attr, values|
 		i += 1
 		values.each do |value|
