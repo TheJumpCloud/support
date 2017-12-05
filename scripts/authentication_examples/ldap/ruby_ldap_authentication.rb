@@ -42,23 +42,23 @@ end
 # Bind User: User name of the User bound to the LDAP Server.
 # Bind User Password: Self explanatory.
 # Group: The User Group Name containing the User we are searching for.
-
 # Username: Name of the User to search for.
 # Userpassword: Password of the above User.
-cli = HighLine.new
-org_id = cli.ask 'Please enter your Organization ID: '
-bind_user = cli.ask 'Please enter your search User: '
-password_field = cli.ask('Search User Password: ') { |q| q.echo = false }
-group = cli.ask 'Please enter your Group: '
-user_name = cli.ask 'Please enter User: '
-user_password = cli.ask('Please enter User Password: ') { |q| q.echo = false }
 
-# org_id = '5952c31766d1b64b09de4d42'
-# bind_user = 'testldap'
-# password_field = 'solidfire'
-# group = 'ldap'
-# user_name = 'bobby'
-# user_password = 'solidfire'
+# cli = HighLine.new
+# org_id = cli.ask 'Please enter your Organization ID: '
+# bind_user = cli.ask 'Please enter your search User: '
+# password_field = cli.ask('Search User Password: ') { |q| q.echo = false }
+# group = cli.ask 'Please enter your Group: '
+# user_name = cli.ask 'Please enter User: '
+# user_password = cli.ask('Please enter User Password: ') { |q| q.echo = false }
+
+org_id = '5952c31766d1b64b09de4d42'
+bind_user = 'testldap'
+password_field = 'solidfire'
+group = 'ldap'
+user_name = 'bobby'
+user_password = 'solidfire'
 
 puts "Your Org ID: #{org_id}"
 puts "Bind User: #{bind_user}"
@@ -89,8 +89,8 @@ else
 	# get_operation_result.result_code & result_message come from constants in the
 	# Net::LDAP code. Not every error returned from the LDAP server has a
 	# corresponding code+message constant.
-	rcode = ldap2.get_operation_result.result_code
-	rmsg = ldap2.get_operation_result.result_message
+	rcode = ldap.get_operation_result.result_code
+	rmsg = ldap.get_operation_result.result_message
 	if rcode
 		puts "Bind Authentication failed! Code: #{rcode} - #{rmsg}"
 	else
