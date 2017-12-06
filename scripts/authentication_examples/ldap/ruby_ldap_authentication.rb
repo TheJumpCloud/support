@@ -53,13 +53,6 @@ group = cli.ask 'Please enter your Group: '
 user_name = cli.ask 'Please enter User: '
 user_password = cli.ask('Please enter User Password: ') { |q| q.echo = false }
 
-# org_id = '5952c31766d1b64b09de4d42'
-# bind_user = 'testldap'
-# password_field = 'solidfire'
-# group = 'ldap'
-# user_name = 'bobby'
-# user_password = 'solidfire'
-
 puts "Your Org ID: #{org_id}"
 puts "Bind User: #{bind_user}"
 puts "User Group: #{group}"
@@ -118,26 +111,26 @@ ldap.search(:filter => search_filter,
 }
 
 #---- Simple LDAP connection. ----#
-#ldap2 = Net::LDAP.new :host => ldap_server,
-#										 :port => 389,
-#										 :auth => {
-#												:method => :simple,
-#												:username => "uid=#{user_name},ou=Users,o=#{org_id},dc=jumpcloud,dc=com",
-#												:password => user_password
-#										 }
-#if ldap2.bind
-#  puts '2nd Bind Authentication succeeded'
-#else
-#	# See the previous authentication example for an explanation of result_code
-#	# and result_message
-#  rcode = ldap2.get_operation_result.result_code
-#  rmsg = ldap2.get_operation_result.result_message
-#	if rcode
-#   puts "2nd Bind Authentication failed! Code: #{rcode} - #{rmsg}"
-#	else
-#   puts '2nd Bind Authentication failed!  Probably invalid credentials.'
-#	end
-#end
+ldap2 = Net::LDAP.new :host => ldap_server,
+										 :port => 389,
+										 :auth => {
+												:method => :simple,
+												:username => "uid=#{user_name},ou=Users,o=#{org_id},dc=jumpcloud,dc=com",
+												:password => user_password
+										 }
+if ldap2.bind
+ puts '2nd Bind Authentication succeeded'
+else
+	# See the previous authentication example for an explanation of result_code
+	# and result_message
+ rcode = ldap2.get_operation_result.result_code
+ rmsg = ldap2.get_operation_result.result_message
+	if rcode
+  puts "2nd Bind Authentication failed! Code: #{rcode} - #{rmsg}"
+	else
+  puts '2nd Bind Authentication failed!  Probably invalid credentials.'
+	end
+end
 
 #---- Second search example. Search by uid ----#
 puts '2nd Search example'
