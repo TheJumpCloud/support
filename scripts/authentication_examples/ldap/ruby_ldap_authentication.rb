@@ -45,20 +45,20 @@ end
 # Username: Name of the User to search for.
 # Userpassword: Password of the above User.
 
-# cli = HighLine.new
-# org_id = cli.ask 'Please enter your Organization ID: '
-# bind_user = cli.ask 'Please enter your search User: '
-# password_field = cli.ask('Search User Password: ') { |q| q.echo = false }
-# group = cli.ask 'Please enter your Group: '
-# user_name = cli.ask 'Please enter User: '
-# user_password = cli.ask('Please enter User Password: ') { |q| q.echo = false }
+cli = HighLine.new
+org_id = cli.ask 'Please enter your Organization ID: '
+bind_user = cli.ask 'Please enter your search User: '
+password_field = cli.ask('Search User Password: ') { |q| q.echo = false }
+group = cli.ask 'Please enter your Group: '
+user_name = cli.ask 'Please enter User: '
+user_password = cli.ask('Please enter User Password: ') { |q| q.echo = false }
 
-org_id = '5952c31766d1b64b09de4d42'
-bind_user = 'testldap'
-password_field = 'solidfire'
-group = 'ldap'
-user_name = 'bobby'
-user_password = 'solidfire'
+# org_id = '5952c31766d1b64b09de4d42'
+# bind_user = 'testldap'
+# password_field = 'solidfire'
+# group = 'ldap'
+# user_name = 'bobby'
+# user_password = 'solidfire'
 
 puts "Your Org ID: #{org_id}"
 puts "Bind User: #{bind_user}"
