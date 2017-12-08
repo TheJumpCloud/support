@@ -120,7 +120,7 @@ def main():
     # -----
     if not result_set:
         raise LdapAuthenticationError("Search result set is empty, search user {} is not Authorized!"
-                                      .format(bind_user))
+                                      .format(user_name))
 
     ldap_server = config_data.get(ConfigEnums.LdapServer.value)
 
