@@ -22,7 +22,7 @@ are listed in the requirements.txt file.
 ### Dependency reference.
 
 * [pyldap](https://github.com/pyldap/pyldap/) - an object-oriented API to access LDAP directory servers
-from Python.  Supports both python 2.7+ and python 3.x
+from Python.  Supports both python 2.7+ and python 3.x - it wraps the OpenLDAP client
 
 ## Ruby
 
