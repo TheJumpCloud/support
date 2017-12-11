@@ -1,8 +1,8 @@
 # Uses
 
-The purpose of these scripts is to help you boot strap your development to allow you to integrate with JumpCloud's LDAP as a Service to manage the authentication and authorization of your JumpCloud manage users to 3rd party applications that support LDAP Authentication. 
+The purpose of these scripts is to help you boot strap your development to allow you to integrate with JumpCloud's LDAP-as-a-Service to manage the authentication and authorization of your JumpCloud manage users to 3rd party applications that support LDAP Authentication. 
 
-This functionality replace the use of [JumpCloud's Auth API](https://support.jumpcloud.com/customer/en/portal/articles/2475857-rest-based-authentication-and-authorization-api-) feature, which will be deprecated in early 2018. 
+This functionality replaces the use of [JumpCloud's Auth API](https://support.jumpcloud.com/customer/en/portal/articles/2475857-rest-based-authentication-and-authorization-api-) feature, which will be deprecated in early 2018. 
 
 # LDAP Authentication Examples
 
