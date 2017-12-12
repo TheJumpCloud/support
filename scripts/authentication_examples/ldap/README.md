@@ -19,11 +19,15 @@ are listed in the requirements.txt file.
 1. Install [pip](https://pypi.python.org/pypi/pip/) for your Operating System.
 2. Install the python script dependencies:
 
-`pip install -r requirements.txt`
+`pip3 install -r requirements.txt`
+
+3. Install pyldap dependency:
+
+ `pip3 install ldap`
 
 ### Example Script Execution.
 
-`python python_ldap_authentication.py`
+`python3 python_ldap_authentication.py`
 
 ### Dependency reference.
 
