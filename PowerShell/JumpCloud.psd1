@@ -7,7 +7,7 @@ RootModule = 'JumpCloud.psm1'
 GUID = '31c023d1-a901-48c4-90a3-082f91b31646'
 
 # Version number of this module.
-ModuleVersion = '1.0.0'
+ModuleVersion = '1.1.0'
 
 # Author of this module
 Author = 'Scott Reed'
@@ -19,7 +19,7 @@ CompanyName = 'JumpCloud'
 Copyright = '(c) JumpCloud. All rights reserved.'
 
 # Description of the functionality provided by this module
-Description = 'PowerShell functions to configure, audit, automate, and manage a JumpCloud DaaS'
+Description = 'PowerShell functions to manage a JumpCloud Directory-as-a-Service'
 
 # Minimum version of the Windows PowerShell engine required by this module
  PowerShellVersion = '4.0'
@@ -51,6 +51,7 @@ FunctionsToExport = @(  "Connect-JCOnline",
                         "Remove-JCUserGroupMember",
                         "Set-JCSystem",
                         "Set-JCUser",
+                        "Set-JCSystemUser",
                         "Import-JCUsersFromCSV","New-JCImportTemplate")
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
@@ -81,7 +82,7 @@ PrivateData = @{
         IconUri = 'https://avatars1.githubusercontent.com/u/4927461?s=200&v=4'
 
         # ReleaseNotes of this module
-        ReleaseNotes = 'Version 1.0.0 of the JumpCloud PowerShell module'
+        ReleaseNotes = 'https://github.com/TheJumpCloud/support/blob/master/PowerShell/CHANGELOG.md'
 
     } # End of PSData hashtable
 
