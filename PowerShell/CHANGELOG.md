@@ -15,6 +15,7 @@ IMPROVEMENTS:
 - Updated Function: Import-JCUserFromCSV to accept 'True/$True' and 'False/$False' or blank for the 'Administrator' header in the .csv import file
 - Updated Function: Import-JCUserFromCSV has switch '-Force' parameter to skip the Import GUI and data validation when importing users
 - Updated Function: Import-JCUserFromCSV to look for duplicate email addresses and usernames in import .csv as part of data validation
+- Updated Function: Get-JCGroup has -Name parameter which can be used to find attributes like the POSIX group number of a given group 
 
 
 
