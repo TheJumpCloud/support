@@ -22,6 +22,7 @@ IMPROVEMENTS:
 BUG FIXES:
 
 - Updated Function: Get-JCSystemUser to properly clear '$resultsArray' to display accurate results when recursivly listing system users
+- Updated Function: Connect-JCOnline and removed conflicting script variable scoping
 
 
 ## 1.0.0 (November 29, 2017)
