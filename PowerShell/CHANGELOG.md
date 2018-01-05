@@ -23,6 +23,7 @@ BUG FIXES:
 
 - Updated Function: Get-JCSystemUser to properly clear '$resultsArray' to display accurate results when recursivly listing system users
 - Updated Function: Connect-JCOnline and removed conflicting script variable scoping
+- Updated Function: Import-JCUserFromCSV will no longer inaccurately show 'Added' for users were not bound to a system during import in the import results
 
 
 ## 1.0.0 (November 29, 2017)
