@@ -25,9 +25,11 @@ $SystemGroupID = ''  # Paste the corresponding GroupID for the sytem group named
 $NewJCSystemGroup = 'NewSystemGroup' #Do not modify this
 $NewJCUserGroup = 'NewUserGroup' #Do not modify this
 
+$CSVPath = '' #Path to ImportExample_Pester_Tests_1.1.0.csv //REQUIRED update the system under 'SystemID' in the .CSV file
+                
 #Test Functions
 
-function New-RandomUser  ()
+Function New-RandomUser  ()
 {
     [CmdletBinding(DefaultParameterSetName='NoAttributes')]
     param
@@ -111,7 +113,7 @@ Describe 'Set-JCSystemUser'{
 
     It "Sets a standard user to an admin user using username"{
         
-        Set-JCSystemUser -SystemID $SystemID -Username $Username -Administrator $False #Sets to standard user
+        Add-JCSystemUser -SystemID $SystemID -Username $Username -Administrator $False #Sets to standard user
         $CommandResults = Set-JCSystemUser -SystemID $SystemID -Username $Username -Administrator $True
         $CommandResults.Administrator | Should -Be $True
         $GetSystem = Get-JCSystemUser -SystemID $SystemID | ? Username -EQ $Username | Select Administrator
@@ -243,7 +245,7 @@ Describe 'Import-JCUserFromCSV'{
 
     IT "Imports users from the ImportExample_Pester_Test using -Force" {
 
-        $UserImport = Import-JCUsersFromCSV -CSVFilePath '/Users/sreed/Git/support/PowerShell/test/ImportExample_Pester_Tests_1.1.0.csv' -force
+        $UserImport = Import-JCUsersFromCSV -CSVFilePath  $CSVpath -force
 
     }
 

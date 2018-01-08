@@ -26,11 +26,9 @@ $SystemGroupID = ''  # Paste the corresponding GroupID for the sytem group named
 $NewJCSystemGroup = 'NewSystemGroup' #Do not modify this
 $NewJCUserGroup = 'NewUserGroup' #Do not modify this
 
-
-
 #Test Functions
 
-function New-RandomUser  ()
+Function New-RandomUser  ()
 {
     [CmdletBinding(DefaultParameterSetName='NoAttributes')]
     param
@@ -146,7 +144,7 @@ Describe 'Get-JCCommandResults'{
 
         $SingleCommand = Get-JCCommandResult | Select-Object -Last 1
         $SingleCommandResult = Get-JCCommandResult -ByID $SingleCommand._id
-        $SingleCommandResult.output | Should -Not -BeNullOrEmpty
+        $SingleCommandResult._id | Should -Not -BeNullOrEmpty
 
     }
 
@@ -154,7 +152,7 @@ Describe 'Get-JCCommandResults'{
 
         $SingleCommand = Get-JCCommandResult | Select-Object -Last 1
         $SingleCommandResult = Get-JCCommandResult $SingleCommand._id
-        $SingleCommandResult.output | Should -Not -BeNullOrEmpty
+        $SingleCommandResult._id | Should -Not -BeNullOrEmpty
 
     }
 
@@ -162,33 +160,33 @@ Describe 'Get-JCCommandResults'{
 
         $SingleCommand = Get-JCCommandResult | Select-Object -Last 1
         $SingleCommandResult = Get-JCCommandResult -CommandResultID $SingleCommand._id
-        $SingleCommandResult.output | Should -Not -BeNullOrEmpty
+        $SingleCommandResult._id | Should -Not -BeNullOrEmpty
 
     }
 
     It "Gets a single JumpCloud command result using -ByID passed through the pipeline" {
 
         $SingleCommandResult = Get-JCCommandResult | Select-Object -Last 1 | Get-JCCommandResult -ByID
-        $SingleCommandResult.output | Should -Not -BeNullOrEmpty
+        $SingleCommandResult._id | Should -Not -BeNullOrEmpty
     }
 
     It "Gets a single JumpCloud command result passed through the pipeline without declaring -ByID" {
 
         $SingleCommandResult = Get-JCCommandResult | Select-Object -Last 1 | Get-JCCommandResult
-        $SingleCommandResult.output | Should -Not -BeNullOrEmpty
+        $SingleCommandResult._id | Should -Not -BeNullOrEmpty
     }
 
     It "Gets all JumpCloud commandresults using -ByID passed through the pipeline" {
 
         $CommandResults = Get-JCCommandResult | Get-JCCommandResult -ByID
-        $CommandResults.output.count | Should -BeGreaterThan 1
+        $CommandResults._id.count | Should -BeGreaterThan 1
 
     }
 
     It "Gets all JumpCloud commandresults passed through the pipeline with out declaring -ByID" {
 
         $CommandResults = Get-JCCommandResult | Get-JCCommandResult
-        $CommandResults.output.count | Should -BeGreaterThan 1
+        $CommandResults._id.count | Should -BeGreaterThan 1
 
     }
 
@@ -424,7 +422,10 @@ Describe 'Add-JCUserGroupMember and Remove-JCUserGroupMember'{
         $MultiUserGroupAdd = Get-JCUser | Select-Object -Last 2 | Remove-JCUserGroupMember -GroupName $UserGroupName  -ByID
         $MultiUserGroupAdd.Status | Select-Object -Unique | Should Be 'Removed'
     }
-
+        It "Adds back two JumpCLoud users to a JumpCloud user group using the pipeline using -ByID"{
+        $MultiUserGroupAdd = Get-JCUser | Select-Object -Last 2 | Add-JCUserGroupMember -GroupName $UserGroupName -ByID
+        $MultiUserGroupAdd.Status | Select-Object -Unique | Should Be 'Added'
+    }
 
 
 
@@ -592,6 +593,11 @@ Describe 'Add-JCSystemUser and Remove-JCSystemUser'{
     IT "Removes two users from a single system using the pipeline and system ID using the -force paramter"{
         $MultiUserRemove = Get-JCUser | Select-Object -Last 2 | Remove-JCSystemUser -SystemID $SystemID -force
         $MultiUserRemove.Status.Count | Should Be 2
+    }
+
+    IT "Adds back two users to a single system using the pipeline and system ID"{
+    $MultiUserAdd = Get-JCUser | Select-Object -Last 2 | Add-JCSystemUser -SystemID $SystemID
+    $MultiUserAdd.Status.Count | Should Be 2
     }
 }
 
