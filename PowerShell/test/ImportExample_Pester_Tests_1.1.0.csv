@@ -1,0 +1,27 @@
+Description,FirstName,LastName,Username,Email,Password,SystemID,Administrator,Group1,Group2,Group3,Group4,Group5,Attribute1_name,Attribute1_value,Attribute2_name,Attribute2_value,Attribute3_name,Attribute3_value,Attribute4_name,Attribute4_value,Attribute5_name,Attribute5_value
+Standard Inactive,Delete,Me,ia.user,ia.user@pleasedelete.com,,,,,,,,,,,,,,,,,,
+Standard Active,Delete,Me,a.user,a.user@pleasedelete.com,Temp123!,,,,,,,,,,,,,,,,,
+Active Bound Blank,Delete,Me,a.bound.std,a.bound.std@pleasedelete.com,Temp123!,5a4fea5a906181196b366162,,,,,,,,,,,,,,,,
+Active Bound $True,Delete,Me,a.bound.True1,a.bound.True1@pleasedelete.com,Temp123!,5a4fea5a906181196b366162,$True,,,,,,,,,,,,,,,
+Active Bound $False,Delete,Me,a.bound.False1,a.bound.False1@pleasedelete.com,Temp123!,5a4fea5a906181196b366162,$False,,,,,,,,,,,,,,,
+Active Bound False,Delete,Me,a.bound.False2,a.bound.False2@pleasedelete.com,Temp123!,5a4fea5a906181196b366162,FALSE,,,,,,,,,,,,,,,
+Active Bound True,Delete,Me,a.bound.True2,a.bound.True2@pleasedelete.com,Temp123!,5a4fea5a906181196b366162,TRUE,,,,,,,,,,,,,,,
+Inactive Bound Blank,Delete,Me,ia.bound.std,ia.bound.std@pleasedelete.com,,5a4fea5a906181196b366162,,,,,,,,,,,,,,,,
+Inactive Bound $True,Delete,Me,ia.bound.True1,ia.bound.True1@pleasedelete.com,,5a4fea5a906181196b366162,$True,,,,,,,,,,,,,,,
+Inactive Bound $False,Delete,Me,ia.bound.False1,ia.bound.False1@pleasedelete.com,,5a4fea5a906181196b366162,$False,,,,,,,,,,,,,,,
+Inactive Bound False,Delete,Me,ia.bound.False2,ia.bound.False2@pleasedelete.com,,5a4fea5a906181196b366162,FALSE,,,,,,,,,,,,,,,
+Inactive Bound True,Delete,Me,ia.bound.True2,ia.bound.True2@pleasedelete.com,,5a4fea5a906181196b366162,TRUE,,,,,,,,,,,,,,,
+Active 1 Group,Delete,Me,a.1group,a.1group@pleasedelete.com,Temp123!,,,One,,,,,,,,,,,,,,
+Inactive 1 Group,Delete,Me,ia.1group,ia.1group@pleasedelete.com,,,,One,,,,,,,,,,,,,,
+Active 2 Groups,Delete,Me,a.2group,a.2group@pleasedelete.com,Temp123!,,,One,Two,,,,,,,,,,,,,
+Inactive 2 Groups,Delete,Me,ia.2group,ia.2group@pleasedelete.com,,,,One,Two,,,,,,,,,,,,,
+Active 5 Groups,Delete,Me,a.5group,a.5group@pleasedelete.com,Temp123!,,,One,Two,Three,Four,Five,,,,,,,,,,
+Inactie 5 Groups,Delete,Me,ia.5group,ia.5group@pleasedelete.com,,,,One,Two,Three,Four,Five,,,,,,,,,,
+Active 1 Attr,Delete,Me,a.1attr,a.1attr@pleasedelete.com,Temp123!,,,,,,,,Attr1,One,,,,,,,,
+Inactive 1 Attr,Delete,Me,ia.1attr,ia.1attr@pleasedelete.com,,,,,,,,,Attr1,One,,,,,,,,
+Active 2 Attr,Delete,Me,a.2attr,a.2attr@pleasedelete.com,Temp123!,,,,,,,,Attr1,One,Attr2,Two,,,,,,
+Inactive 2 Attr,Delete,Me,ia.2attr,ia.2attr@pleasedelete.com,,,,,,,,,Attr1,One,Attr2,Two,,,,,,
+Active 5 Attr,Delete,Me,a.5attr,a.5attr@pleasedelete.com,Temp123!,,,,,,,,Attr1,One,Attr2,Two,Attr3,Three,Attr4,Four,Attr5,Five
+Inactive 5 Attr,Delete,Me,ia.5attr,ia.5attr@pleasedelete.com,,,,,,,,,Attr1,One,Attr2,Two,Attr3,Three,Attr4,Four,Attr5,Five
+Active 5G 5Attr Bound Admin,Delete,Me,a.all,a.all@pleasedelete.com,Temp123!,5a4fea5a906181196b366162,$True,One,Two,Three,Four,Five,Attr1,One,Attr2,Two,Attr3,Three,Attr4,Four,Attr5,Five
+Inactive 5G 5Attr Bound Admin,Delete,Me,ia.all,ia.all@pleasedelete.com,,5a4fea5a906181196b366162,$True,One,Two,Three,Four,Five,Attr1,One,Attr2,Two,Attr3,Three,Attr4,Four,Attr5,Five

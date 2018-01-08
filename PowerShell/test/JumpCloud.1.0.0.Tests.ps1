@@ -1,6 +1,8 @@
+#Tests for JumpCloud Module Version 1.0.0
+
 # To run all the Pester Tests you will need to have a tenant that matches the below criteria.
 
-# For Command Results Tests - Have at least 5 command results present in your Org
+# For Command Results Tests - Have at least 5 command results present in your Org (These results will be deleted)
 # For Commands Tests - Have at least 2 JumpCloud commands that are set to run via the 'Run on Trigger' event
 # For Groups Tests - Have at least 2 JumpCloud User Groups and 2 JumpCloud System Groups
 # For Systems Tests - Have at least 2 JumpCloud Systems present in your Org.
@@ -8,10 +10,11 @@
 
 #Additionally you must populate the below variables to run successful tests using the -ByID parameter
 
+
 $SystemID = '' # Enter the System ID for a system in your test tenant. **Note users will be added and removed from this system during the tests
 
-$Username = 'Pester.tester' # Create a user with username 'Pester.Tester'
-$UserID = '' # Paste the UserID for the user with username Pester.Tester
+$Username = 'pester.tester' # Create a user with username 'pester.tester'
+$UserID = '' # Paste the UserID for the user with username pester.tester
 
 
 $UserGroupName = 'PesterTest_UserGroup'  #Create a user group named PesterTest_UserGroup within your environment
@@ -22,6 +25,8 @@ $SystemGroupID = ''  # Paste the corresponding GroupID for the sytem group named
 
 $NewJCSystemGroup = 'NewSystemGroup' #Do not modify this
 $NewJCUserGroup = 'NewUserGroup' #Do not modify this
+
+
 
 #Test Functions
 

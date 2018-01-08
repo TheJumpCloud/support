@@ -29,7 +29,7 @@ Function Connect-JCOnline ()
         }
 
         $URL = "https://console.jumpcloud.com/api"
-        Write-debug $URL
+        Write-Verbose $URL
     }
 
     process
@@ -41,8 +41,8 @@ Function Connect-JCOnline ()
         }
         catch
         {
-            Write-Host "Incorrect API key OR no network connectivity. To locate your JumpCloud API key log into the JumpCloud admin portal. The API key is located with 'API Settings' accessible from the drop down in the top right hand corner of the screen"
-            $script:JCAPIKEY = $null
+            Write-Host "Incorrect API key OR no network connectivity. To locate your JumpCloud API key log into the JumpCloud admin portal. The API key is located with 'APoI Settings' accessible from the drop down in the top right hand corner of the screen"
+            $global:JCAPIKEY = $null
             break
         }
     }
