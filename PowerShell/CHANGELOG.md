@@ -9,21 +9,21 @@ FEATURES:
 
 IMPROVEMENTS:
 
-- Updated Function: Add-JCSystemUser has boolean parameter '-Administrator' for setting system permissions during add
-- Updated Function: Get-JCSystemUser to show system permissions 'Administrator: $true/$false' and system DisplayName
-- Updated Function: New-JCImportTemplate to add in 'Administrator' header to .csv file when 'Y' is selected for 'Do you want to bind your new users to existing JumpCloud systems during import?'
-- Updated Function: Import-JCUserFromCSV to accept 'True/$True' and 'False/$False' or blank for the 'Administrator' header in the .csv import file
-- Updated Function: Import-JCUserFromCSV has switch '-Force' parameter to skip the Import GUI and data validation when importing users
-- Updated Function: Import-JCUserFromCSV to look for duplicate email addresses and usernames in import .csv as part of data validation
-- Updated Function: Get-JCGroup has -Name parameter which can be used to find attributes like the POSIX group number of a given group 
+- Updated Function: [Add-JCSystemUser](https://github.com/TheJumpCloud/support/wiki/Add-JCSystemUser) has boolean parameter '-Administrator' for setting system permissions during add
+- Updated Function: [Get-JCSystemUser](https://github.com/TheJumpCloud/support/wiki/Get-JCSystemUser) to show system permissions 'Administrator: $true/$false' and system DisplayName
+- Updated Function: [New-JCImportTemplate](https://github.com/TheJumpCloud/support/wiki/New-JCImportTemplate) to add in 'Administrator' header to .csv file when 'Y' is selected for 'Do you want to bind your new users to existing JumpCloud systems during import?'
+- Updated Function: [Import-JCUserFromCSV](https://github.com/TheJumpCloud/support/wiki/Import-JCUsersFromCSV) to accept 'True/$True' and 'False/$False' or blank for the 'Administrator' header in the .csv import file
+- Updated Function: [Import-JCUserFromCSV](https://github.com/TheJumpCloud/support/wiki/Import-JCUsersFromCSV) has switch '-Force' parameter to skip the Import GUI and data validation when importing users
+- Updated Function: [Import-JCUserFromCSV](https://github.com/TheJumpCloud/support/wiki/Import-JCUsersFromCSV) to look for duplicate email addresses and usernames in import .csv as part of data validation
+- Updated Function: [Get-JCGroup](https://github.com/TheJumpCloud/support/wiki/Get-JCGroup) has -Name parameter which can be used to find attributes like the POSIX group number of a given group 
 
 
 
 BUG FIXES:
 
-- Updated Function: Get-JCSystemUser to properly clear '$resultsArray' to display accurate results when recursivly listing system users
-- Updated Function: Connect-JCOnline and removed conflicting script variable scoping
-- Updated Function: Import-JCUserFromCSV will no longer inaccurately show 'Added' for users were not bound to a system during import in the import results
+- Updated Function: [Get-JCSystemUser](https://github.com/TheJumpCloud/support/wiki/Get-JCSystemUser) to properly clear '$resultsArray' to display accurate results when recursivly listing system users
+- Updated Function: [Connect-JCOnline](https://github.com/TheJumpCloud/support/wiki/Connect-JCOnline) and removed conflicting script variable scoping
+- Updated Function: [Import-JCUserFromCSV](https://github.com/TheJumpCloud/support/wiki/Import-JCUsersFromCSV) will no longer inaccurately show 'Added' for users were not bound to a system during import in the import results
 
 ```PowerShell
 
