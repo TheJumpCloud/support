@@ -1,4 +1,4 @@
-## Next version (Unreleased)
+## 1.1.0 (January 8, 2018)
 
 FEATURES:
 
@@ -24,6 +24,44 @@ BUG FIXES:
 - Updated Function: Get-JCSystemUser to properly clear '$resultsArray' to display accurate results when recursivly listing system users
 - Updated Function: Connect-JCOnline and removed conflicting script variable scoping
 - Updated Function: Import-JCUserFromCSV will no longer inaccurately show 'Added' for users were not bound to a system during import in the import results
+
+```PowerShell
+
+PS> Get-Command -Module JumpCloud
+
+CommandType     Name                                               Version    Source
+-----------     ----                                               -------    ------
+Function        Add-JCSystemGroupMember                            1.1.0      JumpCloud
+Function        Add-JCSystemUser                                   1.1.0      JumpCloud
+Function        Add-JCUserGroupMember                              1.1.0      JumpCloud
+Function        Connect-JCOnline                                   1.1.0      JumpCloud
+Function        Get-JCCommand                                      1.1.0      JumpCloud
+Function        Get-JCCommandResult                                1.1.0      JumpCloud
+Function        Get-JCGroup                                        1.1.0      JumpCloud
+Function        Get-JCSystem                                       1.1.0      JumpCloud
+Function        Get-JCSystemGroupMember                            1.1.0      JumpCloud
+Function        Get-JCSystemUser                                   1.1.0      JumpCloud
+Function        Get-JCUser                                         1.1.0      JumpCloud
+Function        Get-JCUserGroupMember                              1.1.0      JumpCloud
+Function        Import-JCUsersFromCSV                              1.1.0      JumpCloud
+Function        Invoke-JCCommand                                   1.1.0      JumpCloud
+Function        New-JCImportTemplate                               1.1.0      JumpCloud
+Function        New-JCSystemGroup                                  1.1.0      JumpCloud
+Function        New-JCUser                                         1.1.0      JumpCloud
+Function        New-JCUserGroup                                    1.1.0      JumpCloud
+Function        Remove-JCCommandResult                             1.1.0      JumpCloud
+Function        Remove-JCSystem                                    1.1.0      JumpCloud
+Function        Remove-JCSystemGroup                               1.1.0      JumpCloud
+Function        Remove-JCSystemGroupMember                         1.1.0      JumpCloud
+Function        Remove-JCSystemUser                                1.1.0      JumpCloud
+Function        Remove-JCUser                                      1.1.0      JumpCloud
+Function        Remove-JCUserGroup                                 1.1.0      JumpCloud
+Function        Remove-JCUserGroupMember                           1.1.0      JumpCloud
+Function        Set-JCSystem                                       1.1.0      JumpCloud
+Function        Set-JCSystemUser                                   1.1.0      JumpCloud
+Function        Set-JCUser                                         1.1.0      JumpCloud
+
+```
 
 
 ## 1.0.0 (November 29, 2017)
