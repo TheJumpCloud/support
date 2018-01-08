@@ -1,4 +1,4 @@
-#Tests for JumpCloud Module Version 1.0.0
+#Tests for JumpCloud Module Version 1.1.0
 
 # To run all the Pester Tests you will need to have a tenant that matches the below criteria.
 
