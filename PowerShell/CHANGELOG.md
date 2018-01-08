@@ -2,7 +2,7 @@
 
 FEATURES:
 
-- New Function: [Set JCSystemUser] can modify user/system permissions and change the user from a standard user to an administrator or vice versa
+- New Function: [Set-JCSystemUser](https://github.com/TheJumpCloud/support/wiki/Set-JCSystemUser) can modify user/system permissions and change the user from a standard user to an administrator or vice versa
 - New Helper Function: Get-Hash_ID_Sudo hash table of UserID and ($true/$false) for Sudo parameter
 - New Helper Function: Get-Hash_SystemID_HostName hash table of SystemID and system DisplayName
 
