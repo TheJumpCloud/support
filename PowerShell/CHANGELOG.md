@@ -1,3 +1,4 @@
+
 ## 1.1.0 (January 8, 2018)
 
 FEATURES:
@@ -23,7 +24,7 @@ BUG FIXES:
 
 - Updated Function: [Get-JCSystemUser](https://github.com/TheJumpCloud/support/wiki/Get-JCSystemUser) to properly clear '$resultsArray' to display accurate results when recursivly listing system users
 - Updated Function: [Connect-JCOnline](https://github.com/TheJumpCloud/support/wiki/Connect-JCOnline) and removed conflicting script variable scoping
-- Updated Function: [Import-JCUserFromCSV](https://github.com/TheJumpCloud/support/wiki/Import-JCUsersFromCSV) will no longer inaccurately show 'Added' for users were not bound to a system during import in the import results
+- Updated Function: [Import-JCUserFromCSV](https://github.com/TheJumpCloud/support/wiki/Import-JCUsersFromCSV) will no longer inaccurately show 'Added' for users who were not bound to a system during import in the import results
 
 ```PowerShell
 
@@ -63,6 +64,8 @@ Function        Set-JCUser                                         1.1.0      Ju
 
 ```
 
+###
+[How to update to the latest version of the JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Updating-the-JumpCloud-PowerShell-Module)
 
 ## 1.0.0 (November 29, 2017)
 
