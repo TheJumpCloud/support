@@ -29,7 +29,7 @@ Function Connect-JCOnline ()
         }
 
         $URL = "https://console.jumpcloud.com/api"
-        Write-debug $URL
+        Write-Verbose $URL
     }
 
     process
@@ -41,8 +41,8 @@ Function Connect-JCOnline ()
         }
         catch
         {
-            Write-Host "Incorrect API key OR no network connectivity. To locate your JumpCloud API key log into the JumpCloud admin portal. The API key is located with 'API Settings' accessible from the drop down in the top right hand corner of the screen"
-            $script:JCAPIKEY = $null
+            Write-Host "Incorrect API key OR no network connectivity. To locate your JumpCloud API key log into the JumpCloud admin portal. The API key is located with 'APoI Settings' accessible from the drop down in the top right hand corner of the screen"
+            $global:JCAPIKEY = $null
             break
         }
     }
@@ -83,26 +83,25 @@ Function New-JCImportTemplate()
         $fileName = 'JCUserImport_' + $date + '.csv'
         Write-Debug $fileName
 
-        $Heading1 = 'The CSV file:'
-        $Heading2 = 'Will be created within the directory:'
+       $Heading1 = 'The CSV file:'
+       $Heading2 ='Will be created within the directory:'
         
-        Clear-host
+       Clear-host
 
-        Write-Host $Banner -ForegroundColor Green
-        Write-Host $Heading1 -NoNewline
-        Write-Host " $fileName" -ForegroundColor Yellow
-        Write-Host $Heading2 -NoNewline
-        Write-Host " $home" -ForegroundColor Yellow
-        Write-Host ""
+       Write-Host $Banner -ForegroundColor Green
+       Write-Host $Heading1 -NoNewline
+       Write-Host " $fileName" -ForegroundColor Yellow
+       Write-Host $Heading2 -NoNewline
+       Write-Host " $home" -ForegroundColor Yellow
+       Write-Host ""
 
 
         while ($ConfirmFile -ne 'Y' -and $ConfirmFile -ne 'N')
-        {
-            $ConfirmFile = Read-Host  "Enter Y to confirm or N to change $fileName output location" #Confirm .csv file location creation
-        }
+            {
+                $ConfirmFile = Read-Host  "Enter Y to confirm or N to change $fileName output location" #Confirm .csv file location creation
+            }
 
-        if ($ConfirmFile -eq 'Y')
-        {
+        if ($ConfirmFile -eq 'Y'){
 
             $ExportLocation = $home
         }
@@ -129,117 +128,117 @@ Function New-JCImportTemplate()
     {
         $CSV = [ordered]@{
             FirstName = $null
-            LastName  = $null
-            Username  = $null
-            Email     = $null
-            Password  = $null
-        }
+            LastName = $null
+            Username = $null
+            Email = $null
+            Password = $null
+            }
 
         Write-Host ""
         Write-Host 'Do you want to bind your new users to existing JumpCloud systems during import?'
 
-        while ($ConfirmSystem -ne 'Y' -and $ConfirmSystem -ne 'N')
-        {
-            $ConfirmSystem = Read-Host  "Enter Y for Yes or N for No"
-        }
+                while ($ConfirmSystem -ne 'Y' -and $ConfirmSystem -ne 'N')
+                {
+                        $ConfirmSystem = Read-Host  "Enter Y for Yes or N for No"
+                }
 
-        if ($ConfirmSystem -eq 'Y')
-        {
+                    if ($ConfirmSystem -eq 'Y')
+                    {
 
-            $CSV.add('SystemID', $null)
+                        $CSV.add('SystemID', $null)
+                        $CSV.add('Administrator', $null)
 
-            $ExistingSystems = Get-JCSystem | Select-Object HostName, DisplayName, @{Name = 'SystemID'; Expression = {$_._id}}, lastContact
+                        $ExistingSystems = Get-JCSystem | Select-Object HostName, DisplayName, @{Name='SystemID';Expression={$_._id}}, lastContact
 
-            $SystemsName = 'JCSystems_' + $date + '.csv'
+                        $SystemsName = 'JCSystems_' + $date + '.csv'
 
-            $ExistingSystems | Export-Csv -path "$ExportLocation/$SystemsName" -NoTypeInformation
+                        $ExistingSystems | Export-Csv -path "$ExportLocation/$SystemsName" -NoTypeInformation
 
-            Write-Host 'Creating file '  -NoNewline
-            Write-Host $SystemsName -ForegroundColor Yellow -NoNewline
-            Write-Host ' with all existing systems in the location' -NoNewline
-            Write-Host " $ExportLocation" -ForegroundColor Yellow
+                        Write-Host 'Creating file '  -NoNewline
+                        Write-Host $SystemsName -ForegroundColor Yellow -NoNewline
+                        Write-Host ' with all existing systems in the location' -NoNewline
+                        Write-Host " $ExportLocation" -ForegroundColor Yellow
 
-        }
+                    }
 
-        elseif ($ConfirmAttributes -eq 'N') {}
+                    elseif ($ConfirmAttributes-eq 'N') {}
 
         Write-Host ""
         Write-Host 'Do you want to add the new users to JumpCloud user groups during import?'
 
-        while ($ConfirmGroups -ne 'Y' -and $ConfirmGroups -ne 'N')
-        {
-            $ConfirmGroups = Read-Host  "Enter Y for Yes or N for No"
-        }
-
-        if ($ConfirmGroups -eq 'Y')
-        {
-            [int]$GroupNumber = Read-Host  "What is the maximum number of groups you want to add a single user to during import? ENTER A NUMBER"
-            [int]$NewGroup = 0
-            [int]$GroupID = 1
-            $GroupsArray = @()
-
-            while ($NewGroup -ne $GroupNumber)
+            while ($ConfirmGroups -ne 'Y' -and $ConfirmGroups -ne 'N')
             {
-                $GroupsArray += "Group$GroupID"
-                $NewGroup++
-                $GroupID++
+                    $ConfirmGroups = Read-Host  "Enter Y for Yes or N for No"
             }
 
-            foreach ($Group in $GroupsArray)
-            {
-                $CSV.add($Group, $null)
-            }
+                if ($ConfirmGroups -eq 'Y')
+                {
+                    [int]$GroupNumber = Read-Host  "What is the maximum number of groups you want to add a single user to during import? ENTER A NUMBER"
+                    [int]$NewGroup = 0
+                    [int]$GroupID = 1
+                    $GroupsArray = @()
 
-        }
+                    while ($NewGroup -ne $GroupNumber)
+                    {
+                        $GroupsArray += "Group$GroupID"
+                        $NewGroup++
+                        $GroupID++
+                    }
 
-        elseif ($ConfirmGroups -eq 'N') {}
+                    foreach ($Group in $GroupsArray)
+                    {
+                        $CSV.add($Group, $null)
+                    }
+
+                }
+
+                elseif ($ConfirmGroups -eq 'N') {}
 
 
         Write-Host ""
         Write-Host 'Do you want to add any custom attributes to your users during import?'
 
-        while ($ConfirmAttributes -ne 'Y' -and $ConfirmAttributes -ne 'N')
-        {
-            $ConfirmAttributes = Read-Host  "Enter Y for Yes or N for No"
-        }
+                while ($ConfirmAttributes -ne 'Y' -and $ConfirmAttributes -ne 'N')
+                {
+                        $ConfirmAttributes = Read-Host  "Enter Y for Yes or N for No"
+                }
 
-        if ($ConfirmAttributes -eq 'Y')
-        {
-            [int]$AttributeNumber = Read-Host  "What is the maximum number of custom attributes you want to add to a single user during import? ENTER A NUMBER"
-            [int]$NewAttribute = 0
-            [int]$AttributeID = 1
-            $NewAttributeArrayList = New-Object System.Collections.ArrayList
+                    if ($ConfirmAttributes -eq 'Y')
+                    {
+                        [int]$AttributeNumber = Read-Host  "What is the maximum number of custom attributes you want to add to a single user during import? ENTER A NUMBER"
+                        [int]$NewAttribute = 0
+                        [int]$AttributeID = 1
+                        $NewAttributeArrayList = New-Object System.Collections.ArrayList
 
-            while ($NewAttribute -ne $AttributeNumber)
-            {
-                $temp = New-Object PSObject
-                $temp | Add-Member -MemberType NoteProperty -Name AttributeName  -Value "Attribute$AttributeID`_name"
-                $temp | Add-Member -MemberType NoteProperty -Name AttributeValue  -Value "Attribute$AttributeID`_value"
-                $NewAttributeArrayList.Add($temp) | Out-Null
-                $NewAttribute ++
-                $AttributeID ++
-            }
+                        while ($NewAttribute -ne $AttributeNumber)
+                        {
+                            $temp = New-Object PSObject
+                            $temp | Add-Member -MemberType NoteProperty -Name AttributeName  -Value "Attribute$AttributeID`_name"
+                            $temp | Add-Member -MemberType NoteProperty -Name AttributeValue  -Value "Attribute$AttributeID`_value"
+                            $NewAttributeArrayList.Add($temp) | Out-Null
+                            $NewAttribute ++
+                            $AttributeID ++
+                        }
 
 
-            foreach ($Attribute in $NewAttributeArrayList)
-            {
-                $CSV.add($Attribute.AttributeName, $null)
-                $CSV.add($Attribute.AttributeValue, $null)
-            }
+                        foreach ($Attribute in $NewAttributeArrayList)
+                        {
+                            $CSV.add($Attribute.AttributeName, $null)
+                            $CSV.add($Attribute.AttributeValue, $null)
+                        }
 
-        }
+                }
 
-        elseif ($ConfirmAttributes -eq 'N') {}
+                elseif ($ConfirmAttributes-eq 'N') {}
 
-        $CSVheader = New-Object psobject -Property $Csv
+                $CSVheader =  New-Object psobject -Property $Csv
     }
 
 
     end
     {
         $ExportPath = Test-Path ("$ExportLocation/$FileName")
-        if (!$ExportPath )
-        {
+        if (!$ExportPath ) {
             Write-Host ""
             $CSVheader  | Export-Csv -path "$ExportLocation/$FileName" -NoTypeInformation
             Write-Host 'Creating file'  -NoNewline
@@ -247,8 +246,7 @@ Function New-JCImportTemplate()
             Write-Host ' in the location' -NoNewline
             Write-Host " $ExportLocation" -ForegroundColor Yellow
         }
-        else
-        {
+        else {
             Write-Host ""
             Write-Warning "The file $fileName already exists do you want to overwrite it?" -WarningAction Inquire
             Write-Host ""
@@ -273,32 +271,48 @@ Function New-JCImportTemplate()
             Invoke-Item -path "$ExportLocation/$FileName"
 
         }
-        if ($Open -eq 'N') {}
+        if ($Open -eq 'N'){}
     }
 
 }
 Function Import-JCUsersFromCSV ()
 {
-    [CmdletBinding(DefaultParameterSetName = 'GUI')]
-    param
+    [CmdletBinding(DefaultParameterSetName='GUI')]
+     param
     (
         [Parameter(Mandatory,
-            position = 0,
-            ParameterSetName = 'GUI')]
-        [ValidateScript( { Test-Path -Path $_ -PathType Leaf})]
+        position=0,
+        ParameterSetName='GUI')]
+        [ValidateScript({ Test-Path -Path $_ -PathType Leaf})]
         [ValidatePattern( '\.csv$' )]
 
-        [string]$CSVFilePath
+        [Parameter(Mandatory,
+        position=0,
+        ParameterSetName='force')]
+        [ValidateScript({ Test-Path -Path $_ -PathType Leaf})]
+        [ValidatePattern( '\.csv$' )]
+
+        [string]$CSVFilePath,
+
+        [Parameter(
+        ParameterSetName ='force')]
+        [Switch]
+        $force
+
 
     )
 
     begin
     {
+        Write-Verbose "$($PSCmdlet.ParameterSetName)"
 
-        Write-Debug 'Verifying JCAPI Key'
+        if ($PSCmdlet.ParameterSetName -eq 'GUI')
+    {
+
+        Write-Verbose 'Verifying JCAPI Key'
         if ($JCAPIKEY.length -ne 40) {Connect-JConline}
 
-        $Banner = @"
+    $Banner = @"
            __
           / /  __  __   ____ ___     ____
      __  / /  / / / /  / __  __ \   / __ \
@@ -321,19 +335,29 @@ Function Import-JCUsersFromCSV ()
         Write-Host ""
         Write-Host -BackgroundColor Green -ForegroundColor Black "Validating $($NewUsers.count) Usernames"
 
-        $UsernameCheck = Get-Hash_UserName_ID
+        $ExistingUsernameCheck = Get-Hash_UserName_ID
 
         foreach ($User in $NewUsers)
         {
-            if ($UsernameCheck.ContainsKey($User.Username))
-            {
-                Write-Warning "A user with username: $($User.Username) already exisits this user will not be created would you like to continue?" -WarningAction Inquire
-            }
-            else
-            {
-                Write-Debug "$($User.Username) does not exist"
+           if ($ExistingUsernameCheck.ContainsKey($User.Username))
+           {
+               Write-Warning "A user with username: $($User.Username) already exisits this user will not be created would you like to continue?" -WarningAction Inquire
+           }
+           else {
+               Write-Verbose "$($User.Username) does not exist"
+           }
+        }
+
+
+        $UsernameDup = $NewUsers | Group-Object Username
+
+        ForEach ($U in $UsernameDup ) {
+            if ($U.count -gt 1) {
+
+                Write-Warning "Duplicate username for username $($U.name) in import file. Usernames must be unique. To resolve elminiate the duplicate username and then retry import" -WarningAction Inquire
             }
         }
+
 
         Write-Host -BackgroundColor Green -ForegroundColor Black "Username check complete"
         Write-Host ""
@@ -341,17 +365,25 @@ Function Import-JCUsersFromCSV ()
         Write-Host ""
         Write-Host -BackgroundColor Green -ForegroundColor Black "Validating $($NewUsers.count) Emails Addresses"
 
-        $EmailCheck = Get-Hash_Email_ID
+        $ExistingEmailCheck = Get-Hash_Email_ID
 
         foreach ($User in $NewUsers)
         {
-            if ($EmailCheck.ContainsKey($User.email))
-            {
-                Write-Warning "A user with email address: $($User.email) already exisits this user will not be created would you like to continue?" -WarningAction Inquire
-            }
-            else
-            {
-                Write-Debug "$($User.email) does not exist"
+           if ($ExistingEmailCheck.ContainsKey($User.email))
+           {
+               Write-Warning "A user with email address: $($User.email) already exisits this user will not be created would you like to continue?" -WarningAction Inquire
+           }
+           else {
+               Write-Verbose "$($User.email) does not exist"
+           }
+        }
+
+        $EmailDup = $NewUsers | Group-Object Email
+
+        ForEach ($U in $EmailDup) {
+            if ($U.count -gt 1) {
+
+                Write-Warning "Duplicate email for email $($U.name) in import file. Emails must be unique. To resolve elminiate the duplicate emails and then retry import" -WarningAction Inquire
             }
         }
 
@@ -371,14 +403,26 @@ Function Import-JCUsersFromCSV ()
 
                 if ($SystemCheck.ContainsKey($User.SystemID))
                 {
-                    Write-Debug "$($User.SystemID) exists"
+                    Write-Verbose "$($User.SystemID) exists"
                 }
-                else
-                {
-                    Write-Warning "A system with SystemID: $($User.SystemID) does not exist and will not be bound to user $($User.Username)" -WarningAction Inquire
+                else {
+                        Write-Warning "A system with SystemID: $($User.SystemID) does not exist and will not be bound to user $($User.Username)" -WarningAction Inquire
                 }
             }
-            else {Write-Debug "No system"}
+            else {Write-Verbose "No system"}
+        }
+
+        $Permissions = $NewUsers.Administrator | Where-Object Length -gt 1 | Select-Object -unique
+
+        foreach ($Value in $Permissions) {
+
+            if ( ($Value -notlike "*true" -and $Value -notlike "*false") ) {
+
+                Write-Warning "Administrator must be a boolean value and set to either '`$True/True' or '`$False/False' please correct value: $Value " -WarningAction Inquire
+
+                
+            }
+
         }
 
 
@@ -388,16 +432,15 @@ Function Import-JCUsersFromCSV ()
 
         $GroupArrayList = New-Object System.Collections.ArrayList
 
-        ForEach ($User in $NewUsers)
-        {
+        ForEach ($User in $NewUsers) {
 
             $Groups = $User | Get-Member -Name Group* | Select-Object Name
 
             foreach ($Group in $Groups)
             {
                 $CheckGroup = [pscustomobject]@{
-                    Type  = 'GroupName'
-                    Value = $User.($Group.Name)
+                Type =  'GroupName'
+                Value =  $User.($Group.Name)
                 }
 
                 if ($CheckGroup.Value.Length -gt 1)
@@ -421,17 +464,17 @@ Function Import-JCUsersFromCSV ()
 
         foreach ($GroupTest in $UniqueGroups)
         {
-            if ($GroupCheck.ContainsKey($GroupTest.Value))
-            {
-                Write-Debug "$($GroupTest.Value) exists"
-            }
-            else
-            {
+           if ($GroupCheck.ContainsKey($GroupTest.Value))
+           {
+             Write-Verbose "$($GroupTest.Value) exists"
+           }
+           else
+           {
                 Write-Host ""
                 Write-Host "The JumpCloud Group:" -NoNewLine
                 Write-Host " $($GroupTest.Value)" -ForegroundColor Yellow -NoNewLine
                 Write-Host " does not exist. Users will not be added to this Group."
-            }
+           }
         }
 
         Write-Host -BackgroundColor Green -ForegroundColor Black "Group check complete"
@@ -439,14 +482,12 @@ Function Import-JCUsersFromCSV ()
 
         $ResultsArrayList = New-Object System.Collections.ArrayList
 
-        $NumberOfNewUsers = $NewUsers.count
+        $NumberOfNewUsers = $NewUsers.email.count
 
         $title = "Import Summary:"
         $menuwidth = 30
-        #calculate how much to pad left to center the title
-        [int]$pad = ($menuwidth / 2) + ($title.length / 2)
+        [int]$pad = ($menuwidth/2)+($title.length/2)
 
-        #define a here string for the menu options
         $menu = @"
 
     Number Of Users To Import = $NumberOfNewUsers
@@ -464,8 +505,7 @@ Function Import-JCUsersFromCSV ()
             $Confirm = Read-Host "Press Y to confirm or N to quit"
         }
 
-        if ($Confirm -eq 'Y')
-        {
+        if ($Confirm -eq 'Y'){
 
             Write-Host ''
             Write-Host "Hang tight! Creating your users. " -NoNewline
@@ -484,6 +524,14 @@ Function Import-JCUsersFromCSV ()
 
     }
 
+    elseif ($PSCmdlet.ParameterSetName -eq 'force') {
+
+        $NewUsers = Import-Csv -Path $CSVFilePath
+        $ResultsArrayList = New-Object System.Collections.ArrayList
+    }
+
+    } #begin block end
+
     process
     {
         foreach ($UserAdd in $NewUsers)
@@ -491,32 +539,66 @@ Function Import-JCUsersFromCSV ()
 
             $CustomAttributes = $UserAdd | Get-Member -Name *Attribute* | Where-Object {$_.Definition -NotLike "*=" -and $_.Definition -NotLike "*null"} | Select-Object Name
 
-            Write-Debug $CustomAttributes.name.count
+            Write-Verbose $CustomAttributes.name.count
 
             if ($CustomAttributes.name.count -gt 1)
             {
                 try
                 {   
-                    $NumberOfCustomAttributes = ($CustomAttributes.name.count) / 2
+                    $NumberOfCustomAttributes = ($CustomAttributes.name.count)/2
                     $NewUser = $UserAdd | New-JCUser -NumberOfCustomAttributes $NumberOfCustomAttributes
                     $Status = 'User Created'
 
                     try #User is created
                     {
-                        if ($UserAdd.SystemID)
-                        {
-                            try
-                            {
-                                $SystemAdd = Add-JCSystemUser -SystemID $UserAdd.SystemID -UserID $NewUser._id
-                                $SystemAddStatus = $SystemAdd.Status
-                            }
-                            catch
-                            {
-                                $SystemAddStatus = $_.ErrorDetails
+                        if ($UserAdd.SystemID) {
+
+                            if ($UserAdd.Administrator) {
+
+                                if ($UserAdd.Administrator -like "*True") {
+
+                                    Write-Verbose "Admin set to true"
+
+                                    try {
+                                        $SystemAdd = Add-JCSystemUser -SystemID $UserAdd.SystemID -UserID $NewUser._id -Administrator $true
+                                        $SystemAddStatus = $SystemAdd.Status
+                                    }
+                                    catch {
+                                        $SystemAddStatus = $_.ErrorDetails
+                                    }
+                                }
+
+                                elseif ($UserAdd.Administrator -like "*False") {
+
+                                    Write-Verbose "Admin set to false"
+
+                                    try {
+                                        $SystemAdd = Add-JCSystemUser -SystemID $UserAdd.SystemID -UserID $NewUser._id -Administrator $false
+                                        $SystemAddStatus = $SystemAdd.Status
+                                    }
+                                    catch {
+                                        $SystemAddStatus = $_.ErrorDetails
+                                    }
+                                    
+                                }
+                                
                             }
 
+                            else {
+                                
+                                Write-Verbose "No admin set"
+
+                                try {
+                                    $SystemAdd = Add-JCSystemUser -SystemID $UserAdd.SystemID -UserID $NewUser._id
+                                    Write-Verbose  "$($SystemAdd.Status)"
+                                    $SystemAddStatus = $SystemAdd.Status
+                                }
+                                catch {
+                                    $SystemAddStatus = $_.ErrorDetails
+                                }
+
+                            }
                         }
-
                         $CustomGroupArrayList = New-Object System.Collections.ArrayList
 
                         $CustomGroups = $UserAdd | Get-Member -Name *Group* | Select-Object Name
@@ -524,8 +606,8 @@ Function Import-JCUsersFromCSV ()
                         foreach ($Group in $CustomGroups)
                         {
                             $GetGroup = [pscustomobject]@{
-                                Type  = 'GroupName'
-                                Value = $UserAdd.($Group.Name)
+                            Type =  'GroupName'
+                            Value =  $UserAdd.($Group.Name)
                             }
 
                             $CustomGroupArrayList.Add($GetGroup) | Out-Null
@@ -543,7 +625,7 @@ Function Import-JCUsersFromCSV ()
 
                                 $FormatGroupOutput = [PSCustomObject]@{
 
-                                    'Group'  = $Group.value
+                                    'Group' = $Group.value
                                     'Status' = $GroupAdd.Status
                                 }
 
@@ -555,7 +637,7 @@ Function Import-JCUsersFromCSV ()
 
                                 $FormatGroupOutput = [PSCustomObject]@{
 
-                                    'Group'  = $Group.value
+                                    'Group' = $Group.value
                                     'Status' = $_.ErrorDetails
                                 }
 
@@ -568,17 +650,18 @@ Function Import-JCUsersFromCSV ()
 
                     }
 
-                    $FormattedResults = [PSCustomObject]@{
+                    $FormattedResults =[PSCustomObject]@{
 
-                        'Username'  = $NewUser.username
-                        'Status'    = $Status
-                        'UserID'    = $NewUser._id
-                        'GroupsAdd' = $UserGroupArrayList
-                        'SystemID'  = $UserAdd.SystemID
-                        'SystemAdd' = $SystemAddStatus
+                    'Username' = $NewUser.username
+                    'Status' = $Status
+                    'UserID' = $NewUser._id
+                    'GroupsAdd' = $UserGroupArrayList
+                    'SystemID' = $UserAdd.SystemID
+                    'SystemAdd' = $SystemAddStatus
 
                     }
 
+                    
 
                 }
 
@@ -587,19 +670,23 @@ Function Import-JCUsersFromCSV ()
 
                     $Status = $_.ErrorDetails
 
-                    $FormattedResults = [PSCustomObject]@{
+                    $FormattedResults =[PSCustomObject]@{
 
-                        'Username'  = $NewUser.username
-                        'Status'    = $Status
-                        'UserID'    = $NewUser._id
-                        'GroupsAdd' = $UserGroupArrayList
-                        'SystemID'  = $UserAdd.SystemID
-                        'SystemAdd' = $SystemAddStatus
+                    'Username' = $NewUser.username
+                    'Status' = $Status
+                    'UserID' = $NewUser._id
+                    'GroupsAdd' = $UserGroupArrayList
+                    'SystemID' = $UserAdd.SystemID
+                    'SystemAdd' = $SystemAddStatus
 
                     }
+
+                    
                 }
 
                 $ResultsArrayList.Add($FormattedResults) | Out-Null
+                $SystemAddStatus = $null
+                
 
             }
 
@@ -612,17 +699,58 @@ Function Import-JCUsersFromCSV ()
 
                     try #User is created
                     {
-                        if ($UserAdd.SystemID)
-                        {
-                            try
-                            {
-                                $SystemAdd = Add-JCSystemUser -SystemID $UserAdd.SystemID -UserID $NewUser._id
-                                $SystemAddStatus = $SystemAdd.Status
+                        if ($UserAdd.SystemID) {
+
+                            if ($UserAdd.Administrator) {
+
+                                Write-Verbose "Admin set"
+
+                                if ($UserAdd.Administrator -like "*True") {
+
+                                    Write-Verbose "Admin set to true"
+
+                                    try {
+                                        $SystemAdd = Add-JCSystemUser -SystemID $UserAdd.SystemID -UserID $NewUser._id -Administrator $true
+                                        $SystemAddStatus = $SystemAdd.Status
+                                    }
+                                    catch {
+                                        $SystemAddStatus = $_.ErrorDetails
+                                    }
+                                }
+
+                                elseif ($UserAdd.Administrator -like "*False") {
+
+                                    Write-Verbose "Admin set to false"
+
+                                    try {
+                                        $SystemAdd = Add-JCSystemUser -SystemID $UserAdd.SystemID -UserID $NewUser._id -Administrator $false
+                                        $SystemAddStatus = $SystemAdd.Status
+                                    }
+                                    catch {
+                                        $SystemAddStatus = $_.ErrorDetails
+                                    }
+                                    
+                                }
+                                    
+                                
                             }
-                            catch
-                            {
-                                $SystemAddStatus = $_.ErrorDetails
+
+                            else {
+                                
+                                Write-Verbose "No admin set"
+
+                                try {
+                                    $SystemAdd = Add-JCSystemUser -SystemID $UserAdd.SystemID -UserID $NewUser._id
+                                    Write-Verbose  "$($SystemAdd.Status)"
+                                    $SystemAddStatus = $SystemAdd.Status
+                                }
+                                catch {
+                                    $SystemAddStatus = $_.ErrorDetails
+                                }
+
                             }
+                        
+
 
                         }
 
@@ -633,8 +761,8 @@ Function Import-JCUsersFromCSV ()
                         foreach ($Group in $CustomGroups)
                         {
                             $GetGroup = [pscustomobject]@{
-                                Type  = 'GroupName'
-                                Value = $UserAdd.($Group.Name)
+                            Type =  'GroupName'
+                            Value =  $UserAdd.($Group.Name)
                             }
 
                             $CustomGroupArrayList.Add($GetGroup) | Out-Null
@@ -652,7 +780,7 @@ Function Import-JCUsersFromCSV ()
 
                                 $FormatGroupOutput = [PSCustomObject]@{
 
-                                    'Group'  = $Group.value
+                                    'Group' = $Group.value
                                     'Status' = $GroupAdd.Status
                                 }
 
@@ -664,7 +792,7 @@ Function Import-JCUsersFromCSV ()
 
                                 $FormatGroupOutput = [PSCustomObject]@{
 
-                                    'Group'  = $Group.value
+                                    'Group' = $Group.value
                                     'Status' = $_.ErrorDetails
                                 }
 
@@ -677,16 +805,18 @@ Function Import-JCUsersFromCSV ()
 
                     }
 
-                    $FormattedResults = [PSCustomObject]@{
+                    $FormattedResults =[PSCustomObject]@{
 
-                        'Username'  = $NewUser.username
-                        'Status'    = $Status
-                        'UserID'    = $NewUser._id
-                        'GroupsAdd' = $UserGroupArrayList
-                        'SystemID'  = $UserAdd.SystemID
-                        'SystemAdd' = $SystemAddStatus
+                    'Username' = $NewUser.username
+                    'Status' = $Status
+                    'UserID' = $NewUser._id
+                    'GroupsAdd' = $UserGroupArrayList
+                    'SystemID' = $UserAdd.SystemID
+                    'SystemAdd' = $SystemAddStatus
 
                     }
+
+                    
 
 
                 }
@@ -696,19 +826,23 @@ Function Import-JCUsersFromCSV ()
 
                     $Status = $_.ErrorDetails
 
-                    $FormattedResults = [PSCustomObject]@{
+                    $FormattedResults =[PSCustomObject]@{
 
-                        'Username'  = $NewUser.username
-                        'Status'    = $Status
-                        'UserID'    = $NewUser._id
-                        'GroupsAdd' = $UserGroupArrayList
-                        'SystemID'  = $UserAdd.SystemID
-                        'SystemAdd' = $SystemAddStatus
+                    'Username' = $NewUser.username
+                    'Status' = $Status
+                    'UserID' = $NewUser._id
+                    'GroupsAdd' = $UserGroupArrayList
+                    'SystemID' = $UserAdd.SystemID
+                    'SystemAdd' = $SystemAddStatus
 
                     }
+
+                    
                 }
 
                 $ResultsArrayList.Add($FormattedResults) | Out-Null
+                $SystemAddStatus = $null
+            
             }
         }
     }
@@ -1072,88 +1206,155 @@ Function Get-JCGroup ()
     param
     (
         [Parameter(
-            ParameterSetName = 'Type',
-            Position = 0)]
-        [ValidateSet('User', 'System')]
+        ParameterSetName ='Type',
+        Position=0)]
+        [ValidateSet('User','System')]
         [string]
         $Type
     )
 
-    begin
-
+    DynamicParam
     {
-        Write-Debug 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {Connect-JConline}
 
-        Write-Debug 'Populating API headers'
-        $hdrs = @{
-
-            'Content-Type' = 'application/json'
-            'Accept'       = 'application/json'
-            'X-API-KEY'    = $JCAPIKEY
-
+        If ($Type)
+        {
+            $attr = New-Object System.Management.Automation.ParameterAttribute
+            $attr.HelpMessage = "Enter the group name"
+            $attr.Mandatory = $false
+            $attr.ValueFromPipelineByPropertyName = $true
+            $attrColl = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
+            $attrColl.Add($attr)
+            $param = New-Object System.Management.Automation.RuntimeDefinedParameter('Name',[string],$attrColl)
+            $dict = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
+            $dict.Add('Name',$param)
+            return $dict
         }
 
-        [int]$limit = '100'
-        Write-Debug "Setting limit to $limit"
+    }    
 
-        Write-Debug 'Initilizing resultsArray and resultsArrayByType'
-        $resultsArray = @()
-        $resultsArrayByType = @()
-    }
+    begin
+
+        {
+            Write-Debug 'Verifying JCAPI Key'
+            if ($JCAPIKEY.length -ne 40) {Connect-JConline}
+
+            Write-Debug 'Populating API headers'
+            $hdrs = @{
+
+                'Content-Type' = 'application/json'
+                'Accept' = 'application/json'
+                'X-API-KEY' = $JCAPIKEY
+
+            }
+
+            [int]$limit = '100'
+            Write-Debug "Setting limit to $limit"
+
+            Write-Debug 'Initilizing resultsArray'
+            $resultsArray = @()
+
+            if ($param.IsSet) {
+               
+                if ($Type -eq 'System') {
+                    
+                    Write-Verbose 'Populating SystemGroupHash'
+                    $SystemGroupHash = Get-Hash_SystemGroupName_ID
+                    
+                }
+                elseif ($Type  -eq 'User') {
+
+                    Write-Verbose 'Populating UserGroupHash'
+                    $UserGroupHash = Get-Hash_UserGroupName_ID
+                    
+                }
+
+            }
+
+        }
 
 
     process
 
-    {
+        {
 
         if ($PSCmdlet.ParameterSetName -eq 'ReturnAll')
 
-        {
-
-            Write-Debug 'Setting skip to zero'
-            [int]$skip = 0 #Do not change!
-
-            while ($resultsArray.Count -ge $skip)
             {
-                $limitURL = "https://console.jumpcloud.com/api/v2/groups?sort=type,name&limit=$limit&skip=$skip"
-                Write-Debug $limitURL
 
-                $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs
+                Write-Debug 'Setting skip to zero'
+                [int]$skip = 0 #Do not change!
 
-                $skip += $limit
-                Write-Debug "Setting skip to $skip"
+                while ($resultsArray.Count -ge $skip)
+                {
+                    $limitURL = "https://console.jumpcloud.com/api/v2/groups?sort=type,name&limit=$limit&skip=$skip"
+                    Write-Debug $limitURL
 
-                $resultsArray += $results
-                $count = ($resultsArray.results).Count
-                Write-Debug "Results count equals $count"
+                    $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs
+
+                    $skip += $limit
+                    Write-Debug "Setting skip to $skip"
+
+                    $resultsArray += $results
+                    $count = ($resultsArray.results).Count
+                    Write-Debug "Results count equals $count"
+                }
+
+            }
+
+
+            elseif (($PSCmdlet.ParameterSetName -eq 'Type') -and !($param.IsSet))
+            {
+
+                if ($type -eq 'User')
+                {
+                    $resultsArray = Get-JCGroup | Where-Object type -EQ 'user_group'
+
+                }
+                elseif ($type -eq 'System')
+                {
+                    $resultsArray = Get-JCGroup | Where-Object type -EQ 'system_group'
+
+                }
+            }
+
+            elseif (($PSCmdlet.ParameterSetName -eq 'Type') -and ($param.IsSet))
+            {
+                if ($Type -eq 'System') {
+
+                    $GID = $SystemGroupHash.Get_Item($param.Value)
+                    $GURL = "https://console.jumpcloud.com/api/v2/systemgroups/$GID"
+                    $result = Invoke-RestMethod -Method GET -Uri $GURL -Header $hdrs
+                    $resultsArray += $result    
+                }
+                elseif ($Type -eq 'User') {
+
+                    $GID = $UserGroupHash.Get_Item($param.Value)
+                    $GURL = "https://console.jumpcloud.com/api/v2/usergroups/$GID"
+                    $result = Invoke-RestMethod -Method GET -Uri $GURL -Header $hdrs
+                    
+                    $formattedResult = [PSCustomObject]@{
+
+                        name = $result.name
+                        ldapGroups = $result.attributes.ldapGroups
+                        posixGroups = $result.attributes.posixGroups
+                        id = $result.id
+                        type = $result.type
+
+                    }
+
+                    $resultsArray += $formattedResult    
+                    
+                    
+                }
+
             }
 
         }
-
-
-        elseif ($PSCmdlet.ParameterSetName -eq 'Type')
-        {
-
-            if ($type -eq 'User')
-            {
-                $resultsArrayByType = Get-JCGroup | Where-Object type -EQ 'user_group'
-
-            }
-            elseif ($type -eq 'System')
-            {
-                $resultsArrayByType = Get-JCGroup | Where-Object type -EQ 'system_group'
-
-            }
-        }
-
-    }
     end
-    {
-        if ($PSCmdlet.ParameterSetName -eq 'ReturnAll') {return $resultsArray}
+        {
+           return $resultsArray
 
-        elseif ($PSCmdlet.ParameterSetName -eq 'Type') {return $resultsArrayByType}
-    }
+        }
 }
 function Add-JCSystemGroupMember ()
 {
@@ -2598,7 +2799,7 @@ Function Get-JCSystem ()
         return $resultsArray
     }
 }
-Function Get-JCSystemUser ()
+function Get-JCSystemUser ()
 {
     [CmdletBinding()]
 
@@ -2614,10 +2815,10 @@ Function Get-JCSystemUser ()
     begin
 
     {
-        Write-Debug 'Verifying JCAPI Key'
+        Write-Verbose 'Verifying JCAPI Key'
         if ($JCAPIKEY.length -ne 40) {Connect-JConline}
 
-        Write-Debug 'Populating API headers'
+        Write-Verbose 'Populating API headers'
         $hdrs = @{
 
             'Content-Type' = 'application/json'
@@ -2627,44 +2828,51 @@ Function Get-JCSystemUser ()
         }
 
         [int]$limit = '100'
-        Write-Debug "Setting limit to $limit"
+        Write-Verbose "Setting limit to $limit"
 
-        Write-Debug 'Initilizing resultsArrayList and resultsArray'
+        Write-Verbose 'Initilizing resultsArrayList and resultsArray'
         $resultsArrayList = New-Object System.Collections.ArrayList
         $resultsArray = @()
 
-        Write-Debug 'Populating UserIDHash'
+        Write-Verbose 'Populating UserIDHash'
         $UserIDHash = Get-Hash_ID_Username
 
-        Write-Debug 'Populating SystemIDHash'
+        Write-Verbose 'Populating SystemIDHash'
         $SystemIDHash = Get-Hash_SystemID_HostName
+
+        Write-Verbose 'Populating DisplayNameHash'
+        $DisplayNameHash = Get-Hash_SystemID_DisplayName
+
+        Write-Verbose 'Populating SudoHash'
+        $SudoHash = Get-Hash_ID_Sudo
 
     }
 
     process
     {
-        Write-Debug 'Setting skip to zero'
+        Write-Verbose 'Setting skip to zero'
         [int]$skip = 0 #Do not change!
 
         while (($resultsArray.results).Count -ge $skip)
         {
             $URI = "https://console.jumpcloud.com/api/v2/systems/$SystemID/users?sort=type,_id&limit=$limit&skip=$skip"
 
-            Write-Debug $URI
+            Write-Verbose $URI
 
             $APIresults = Invoke-RestMethod -Method GET -Uri $URI -Body $jsonbody -Header $hdrs
 
             $skip += $limit
-            Write-Debug "Setting skip to $skip"
+            Write-Verbose "Setting skip to $skip"
 
             $resultsArray += $APIresults
 
             $count = ($resultsArray).Count
-            Write-Debug "Results count equals $count"
+            Write-Verbose "Results count equals $count"
         }
 
 
         $Hostname = $SystemIDHash.Get_Item($SystemID)
+        $DisplayName = $DisplayNameHash.Get_Item($SystemID)
 
         foreach ($result in $resultsArray)
         {
@@ -2685,16 +2893,41 @@ Function Get-JCSystemUser ()
                 $DirectBind = $true
             }
 
+            if ($result.compiledAttributes.sudo.enabled -eq $true){
+
+                $Admin = $true
+            }
+            else {
+
+                $Sudo = $SudoHash.Get_Item($UserID)
+
+                if ($Sudo -eq $true) {
+
+                    $Admin = $true
+                    
+                }
+
+                else {
+                    $Admin = $false 
+                }
+
+            }
+
             $SystemUser = [pscustomobject]@{
+                'DisplayName' = $DisplayName
                 'HostName' = $Hostname
                 'SystemID' = $SystemID
                 'Username' = $Username
+                'Administrator' = $Admin
                 'DirectBind' = $DirectBind
                 'BindGroups' = @($Groups)
             }
 
             $resultsArrayList.Add($SystemUser) | Out-Null
+
         }
+
+        $resultsArray = $null
 
     }
 
@@ -2957,17 +3190,28 @@ Function Add-JCSystemUser ()
 
         [string]
         [alias("_id")]
-        $SystemID
+        $SystemID,
+
+        [Parameter(
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'ByName',
+            Position = 2)]
+
+        [Parameter(
+            ValueFromPipelineByPropertyName = $true,
+            ParameterSetName = 'ByID')]
+        [bool]
+        $Administrator = $false
 
     )
 
     begin
 
     {
-        Write-Debug 'Verifying JCAPI Key'
+        Write-Verbose 'Verifying JCAPI Key'
         if ($JCAPIKEY.length -ne 40) {Connect-JConline}
 
-        Write-Debug 'Populating API headers'
+        Write-Verbose 'Populating API headers'
         $hdrs = @{
 
             'Content-Type' = 'application/json'
@@ -2976,20 +3220,24 @@ Function Add-JCSystemUser ()
 
         }
 
-        Write-Debug 'Initilizing SystemUpdateArray'
+        Write-Verbose 'Initilizing SystemUpdateArray'
         $SystemUpdateArray = @()
 
         if ($PSCmdlet.ParameterSetName -eq 'ByName')
         {
-            Write-Debug $PSCmdlet.ParameterSetName
+            Write-Verbose $PSCmdlet.ParameterSetName
 
-            Write-Debug 'Populating HostNameHash'
+            Write-Verbose 'Populating HostNameHash'
             $HostNameHash = Get-Hash_SystemID_HostName
-            Write-Debug 'Populating UserNameHash'
+
+            Write-Verbose 'Populating UserNameHash'
             $UserNameHash = Get-Hash_UserName_ID
         }
 
-        Write-Debug $PSCmdlet.ParameterSetName
+        Write-Verbose 'Populating SudoHash'
+        $SudoHash = Get-Hash_ID_Sudo
+
+        Write-Verbose $PSCmdlet.ParameterSetName
     }
 
     process
@@ -2999,29 +3247,61 @@ Function Add-JCSystemUser ()
         {
             if ($HostNameHash.containsKey($SystemID)) {}
 
-            else { Throw "SystemID does not exist. Run 'Get-JCsystem | Select-Object Hostname, _id' to see a list of all your JumpCloud systems and the associated _id."}
+            else { Throw "SystemID does not exist. Run 'Get-JCsystem | select Hostname, _id' to see a list of all your JumpCloud systems and the associated _id."}
 
             if ($UserNameHash.containsKey($Username)) {}
 
-            else { Throw "Username does not exist. Run 'Get-JCUser | Select-Object username' to see a list of all your JumpCloud users."}
+            else { Throw "Username does not exist. Run 'Get-JCUser | select username' to see a list of all your JumpCloud users."}
 
             $UserID = $UserNameHash.Get_Item($Username)
+
             $HostName = $HostNameHash.Get_Item($SystemID)
 
-            $body = @{
+            $GlobalAdmin = $SudoHash.Get_Item($UserID)
 
-                op         = "add"
-                type       = "user"
-                id         = $UserID
-                attributes = $null
+            if ($GlobalAdmin -eq $true)
+            {
+                $Administrator = $true           
+            }
+
+            if ($Administrator -eq $true)
+            {
+
+                $body = @{
+
+                    op         = "add"
+                    type       = "user"
+                    id         = $UserID
+                    attributes = @{
+                        sudo = @{
+                            enabled         = $true
+                            withoutPassword = $false
+                    
+                        }
+                    }
+                }
+
+            }
+
+            else
+            {
+
+                $body = @{
+
+                    op         = "add"
+                    type       = "user"
+                    id         = $UserID
+                    attributes = $null
+    
+                }
 
             }
 
             $jsonbody = $body | ConvertTo-Json
-            Write-Debug $jsonbody
+            Write-Verbose $jsonbody
 
             $URL = "https://console.jumpcloud.com/api/v2/systems/$SystemID/associations"
-            Write-Debug $URL
+            Write-Verbose $URL
 
 
             try
@@ -3037,10 +3317,11 @@ Function Add-JCSystemUser ()
 
             $FormattedResults = [PSCustomObject]@{
 
-                'System'   = $HostName
-                'SystemID' = $SystemID
-                'Username' = $Username
-                'Status'   = $Status
+                'System'        = $HostName
+                'SystemID'      = $SystemID
+                'Username'      = $Username
+                'Status'        = $Status
+                'Administrator' = $Administrator
             }
 
 
@@ -3050,20 +3331,52 @@ Function Add-JCSystemUser ()
 
         elseif ($PSCmdlet.ParameterSetName -eq 'ByID')
         {
-            $body = @{
 
-                op         = "add"
-                type       = "user"
-                id         = $UserID
-                attributes = $null
+            $GlobalAdmin = $SudoHash.Get_Item($UserID)
+
+            if ($GlobalAdmin -eq $true)
+            {
+                $Administrator = $true        
+            }
+
+            if ($Administrator -eq $true)
+            {
+
+                $body = @{
+
+                    op         = "add"
+                    type       = "user"
+                    id         = $UserID
+                    attributes = @{
+                        sudo = @{
+                            enabled         = $true
+                            withoutPassword = $false
+                    
+                        }
+                    }
+                }
+
+            }
+
+            else
+            {
+
+                $body = @{
+
+                    op         = "add"
+                    type       = "user"
+                    id         = $UserID
+                    attributes = $null
+    
+                }
 
             }
 
             $jsonbody = $body | ConvertTo-Json
-            Write-Debug $jsonbody
+            Write-Verbose $jsonbody
 
             $URL = "https://console.jumpcloud.com/api/v2/systems/$SystemID/associations"
-            Write-Debug $URL
+            Write-Verbose $URL
 
             try
             {
@@ -3081,6 +3394,252 @@ Function Add-JCSystemUser ()
                 'SystemID' = $SystemID
                 'UserID'   = $UserID
                 'Status'   = $Status
+                'Administrator' = $Administrator
+            }   
+
+            $SystemUpdateArray += $FormattedResults
+        }
+    }
+
+    end
+
+    {
+        return $SystemUpdateArray
+    }
+
+}
+Function Set-JCSystemUser ()
+{
+    [CmdletBinding(DefaultParameterSetName = 'ByName')]
+
+    param
+    (
+        [Parameter(Mandatory,
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'ByName',
+            Position = 0)]
+        [String]$Username,
+
+        [Parameter(Mandatory,
+            ValueFromPipelineByPropertyName = $true,
+            ParameterSetName = 'ByID')]
+        [string]
+        $UserID,
+
+        [Parameter(Mandatory,
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'ByName',
+            Position = 1)]
+
+        [Parameter(Mandatory,
+            ValueFromPipelineByPropertyName = $true,
+            ParameterSetName = 'ByID')]
+
+        [string]
+        [alias("_id")]
+        $SystemID,
+
+        [Parameter(Mandatory,
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'ByName',
+            Position = 2)]
+
+        [Parameter(Mandatory,
+            ValueFromPipelineByPropertyName = $true,
+            ParameterSetName = 'ByID')]
+
+        [bool]
+        $Administrator
+
+    )
+
+    begin
+
+    {
+        Write-Verbose 'Verifying JCAPI Key'
+        if ($JCAPIKEY.length -ne 40) {Connect-JConline}
+
+        Write-Verbose 'Populating API headers'
+        $hdrs = @{
+
+            'Content-Type' = 'application/json'
+            'Accept'       = 'application/json'
+            'X-API-KEY'    = $JCAPIKEY
+
+        }
+
+        Write-Verbose 'Initilizing SystemUpdateArray'
+        $SystemUpdateArray = @()
+
+        if ($PSCmdlet.ParameterSetName -eq 'ByName')
+        {
+            Write-Verbose $PSCmdlet.ParameterSetName
+
+            Write-Verbose 'Populating HostNameHash'
+            $HostNameHash = Get-Hash_SystemID_HostName
+            Write-Verbose 'Populating UserNameHash'
+            $UserNameHash = Get-Hash_UserName_ID
+        }
+
+        Write-Verbose $PSCmdlet.ParameterSetName
+    }
+
+    process
+
+    {
+        if ($PSCmdlet.ParameterSetName -eq 'ByName')
+        {
+            if ($HostNameHash.containsKey($SystemID)) {}
+
+            else { Throw "SystemID does not exist. Run 'Get-JCsystem | select Hostname, _id' to see a list of all your JumpCloud systems and the associated _id."}
+
+            if ($UserNameHash.containsKey($Username)) {}
+
+            else { Throw "Username does not exist. Run 'Get-JCUser | select username' to see a list of all your JumpCloud users."}
+
+            $UserID = $UserNameHash.Get_Item($Username)
+            $HostName = $HostNameHash.Get_Item($SystemID)
+
+            if ($Administrator -eq $true)
+            {
+
+                $body = @{
+
+                    op         = "update"
+                    type       = "user"
+                    id         = $UserID
+                    attributes = @{
+                        sudo = @{
+                            enabled         = $true
+                            withoutPassword = $false
+                    
+                        }
+                    }
+    
+                }
+                    
+            }
+
+            elseif ($Administrator -eq $false)
+            {
+
+                $body = @{
+
+                    op         = "update"
+                    type       = "user"
+                    id         = $UserID
+                    attributes = @{
+                        sudo = @{
+                            enabled         = $false
+                            withoutPassword = $false
+                    
+                        }
+                    }
+    
+                }
+                    
+                    
+            }
+
+            $jsonbody = $body | ConvertTo-Json
+            Write-Verbose $jsonbody
+
+            $URL = "https://console.jumpcloud.com/api/v2/systems/$SystemID/associations"
+
+            Write-Verbose $URL
+
+
+            try
+            {
+                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Header $hdrs
+                $Status = 'Updated'
+
+            }
+            catch
+            {
+                $Status = $_.ErrorDetails
+            }
+
+            $FormattedResults = [PSCustomObject]@{
+
+                'System'        = $HostName
+                'SystemID'      = $SystemID
+                'Username'      = $Username
+                'Status'        = $Status
+                'Administrator' = $Administrator
+            }
+
+
+            $SystemUpdateArray += $FormattedResults
+
+        }
+
+        elseif ($PSCmdlet.ParameterSetName -eq 'ByID')
+        {
+            if ($Administrator -eq $true)
+            {
+
+                $body = @{
+
+                    op         = "update"
+                    type       = "user"
+                    id         = $UserID
+                    attributes = @{
+                        sudo = @{
+                            enabled         = $true
+                            withoutPassword = $false
+                    
+                        }
+                    }
+    
+                }
+                    
+            }
+
+            elseif ($Administrator -eq $false)
+            {
+
+                $body = @{
+
+                    op         = "update"
+                    type       = "user"
+                    id         = $UserID
+                    attributes = @{
+                        sudo = @{
+                            enabled         = $false
+                            withoutPassword = $false
+                    
+                        }
+                    }
+    
+                }
+                    
+                    
+            }
+
+            $jsonbody = $body | ConvertTo-Json
+            Write-Verbose $jsonbody
+
+            $URL = "https://console.jumpcloud.com/api/v2/systems/$SystemID/associations"
+            Write-Verbose $URL
+
+            try
+            {
+                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Header $hdrs
+                $Status = 'Updated'
+
+            }
+            catch
+            {
+                $Status = $_.ErrorDetails
+            }
+
+            $FormattedResults = [PSCustomObject]@{
+
+                'SystemID'      = $SystemID
+                'UserID'        = $UserID
+                'Status'        = $Status
+                'Administrator' = $Administrator
             }   
 
             $SystemUpdateArray += $FormattedResults
@@ -4487,4 +5046,34 @@ Function Get-Hash_UserName_ID ()
     return $UsersHash
 }
 
-Export-ModuleMember -Function Connect-JCOnline, Get-JCCommandResult, Remove-JCCommandResult, Invoke-JCCommand, Get-JCCommand, Remove-JCUserGroupMember, Remove-JCUserGroup, Remove-JCSystemGroupMember, Remove-JCSystemGroup, New-JCUserGroup, New-JCSystemGroup, Add-JCSystemGroupMember, Get-JCSystemGroupMember, Get-JCGroup, Add-JCUserGroupMember, Get-JCUserGroupMember, Set-JCSystem, Get-JCSystemUser, Remove-JCSystem, Get-JCSystem, Remove-JCSystemUser, Add-JCSystemUser, Get-JCUser, New-JCUser, Remove-JCUser, Set-JCUser, Import-JCUsersFromCSV, New-JCImportTemplate
+Function Get-Hash_ID_Sudo()
+{
+
+    $UsersHash = New-Object System.Collections.Hashtable
+
+    $Users = Get-JCUser
+
+        foreach ($User in $Users)
+        {
+            $UsersHash.Add($User._id, $User.sudo)
+
+        }
+    return $UsersHash
+}
+
+Function Get-Hash_SystemID_DisplayName ()
+{
+
+    $SystemsHash =  New-Object System.Collections.Hashtable
+
+    $Systems = Get-JCsystem
+
+        foreach ($System in $Systems)
+        {
+            $SystemsHash.Add($System._id, $System.DisplayName)
+
+        }
+    return $SystemsHash
+}
+
+Export-ModuleMember -Function Connect-JCOnline, Get-JCCommandResult, Remove-JCCommandResult, Invoke-JCCommand, Get-JCCommand, Remove-JCUserGroupMember, Remove-JCUserGroup, Remove-JCSystemGroupMember, Remove-JCSystemGroup, New-JCUserGroup, New-JCSystemGroup, Add-JCSystemGroupMember, Get-JCSystemGroupMember, Get-JCGroup, Add-JCUserGroupMember, Get-JCUserGroupMember, Set-JCSystem, Get-JCSystemUser, Remove-JCSystem, Get-JCSystem, Remove-JCSystemUser, Add-JCSystemUser, Set-JCSystemUser, Get-JCUser, New-JCUser, Remove-JCUser, Set-JCUser, Import-JCUsersFromCSV, New-JCImportTemplate

@@ -12,7 +12,7 @@ LONG DESCRIPTION
     Systems during import 
     -Create and remove JumpCloud Users 
     -Modify JumpCloud User and System properties in bulk 
-    -Modify JumpCloud User and System Group membership 
+    -Modify JumpCloud User and System Group membership
     -Trigger JumpCloud commands and read CommandResult Output
 
 EXAMPLES
