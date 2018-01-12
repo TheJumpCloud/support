@@ -1,3 +1,12 @@
+## Next version (Unreleased)
+
+IMPROVEMENTS:
+
+- Updated Function: Add-JCUserGroupMember with 'name' alias for 'GroupName' parameter to allow the command to accept pipeline input from the 'Get-JCGroup' command
+- Updated Function: Add-JCSystemGroupMember with 'name' alias for 'GroupName' parameter to allow the command to accept pipeline input from the 'Get-JCGroup' command
+- Updated Function: Remove-JCUserGroupMember with 'name' alias for 'GroupName' parameter to allow the command to accept pipeline input from the 'Get-JCGroup' command
+- Updated Function: Remove-JCSystemGroupMember with 'name' alias for 'GroupName' parameter to allow the command to accept pipeline input from the 'Get-JCGroup' command
+
 
 ## 1.1.0 (January 8, 2018)
 
