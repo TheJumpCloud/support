@@ -1,9 +1,12 @@
 ## Next version (Unreleased)
 
-IMPROVEMENTS:
+FEATURES:
 
 - New Function: New-JCCommand to create JumpCloud commands from the shell or from a .XML file
 - New Function: Remove-JCCommand to delete JumpCloud commands
+
+IMPROVEMENTS:
+
 - Updated Function: Invoke-Command to add '-targets' paramter to run command on specific Systems or SystemGroups
 - Updated Function: Get-JCCommand to add '-ExportToXML' paramter to export command to an .XML file
 - Updated Function: Add-JCUserGroupMember with 'name' alias for 'GroupName' parameter to allow the command to accept pipeline input from the 'Get-JCGroup' command
