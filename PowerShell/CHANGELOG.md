@@ -4,19 +4,17 @@ FEATURES:
 
 - New Function: New-JCCommand to create JumpCloud commands from the shell or from a .XML file
 - New Function: Remove-JCCommand to delete JumpCloud commands
+- Updated Function: Invoke-Command to add '-targets' paramter to run command on specific Systems or SystemGroups
+- Updated Function: Get-JCCommand to add '-ExportToXML' paramter to export command to an .XML file
+- Updated Function: New-JCUser to allow for all user parameters to be set during user creation per the JumpCloud API docs - https://docs.jumpcloud.com/1.0/systemusers/create-a-system-user
+- Updated Function: Set-JCUser to allow for all parameters to be udpated per the JumpCloud API docs - https://docs.jumpcloud.com/1.0/systemusers/update-a-system-user
 
 IMPROVEMENTS:
 
-- Updated Function: Invoke-Command to add '-targets' paramter to run command on specific Systems or SystemGroups
-- Updated Function: Get-JCCommand to add '-ExportToXML' paramter to export command to an .XML file
 - Updated Function: Add-JCUserGroupMember with 'name' alias for 'GroupName' parameter to allow the command to accept pipeline input from the 'Get-JCGroup' command
 - Updated Function: Add-JCSystemGroupMember with 'name' alias for 'GroupName' parameter to allow the command to accept pipeline input from the 'Get-JCGroup' command
 - Updated Function: Remove-JCUserGroupMember with 'name' alias for 'GroupName' parameter to allow the command to accept pipeline input from the 'Get-JCGroup' command
 - Updated Function: Remove-JCSystemGroupMember with 'name' alias for 'GroupName' parameter to allow the command to accept pipeline input from the 'Get-JCGroup' command
-- Updated Function: New-JCUser to allow for all user parameters to be set during user creation per the JumpCloud API docs - https://docs.jumpcloud.com/1.0/systemusers/create-a-system-user
-- Updated Function: Set-JCUser to allow for all parameters to be udpated per the JumpCloud API docs - https://docs.jumpcloud.com/1.0/systemusers/update-a-system-user
-
-
 
 ## 1.1.0 (January 8, 2018)
 
