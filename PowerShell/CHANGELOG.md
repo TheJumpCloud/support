@@ -23,7 +23,7 @@ Release Date: January 8, 2018
 
 ```
 New function Set-JCSystemUser to set user / system permissions to standard or administrator. 
-Updated import functions and Add/Get-JCSystemUser to accomodate for user / system permissions. 
+Updated import functions and Add/Get-JCSystemUser to accommodate for user / system permissions. 
 ```
 
 #### FEATURES:
