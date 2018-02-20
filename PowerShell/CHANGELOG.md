@@ -1,6 +1,6 @@
 ## Next version (Unreleased)
 
-FEATURES:
+#### FEATURES:
 
 - New Function: New-JCCommand to create JumpCloud commands from the shell
 - New Function: Set-JCCommand to update a JumpCloud command from the shell
@@ -9,23 +9,23 @@ FEATURES:
 - Updated Function: Connect-JCOnline added banner to display current JumpCloud module version information. Added paramter sets for 'Interactive' and 'Force' modes. 'Interactive' displays banner and automatic module update options when new version becomes avaliable. 'Force' can be used in automation scenarios to connect to JumpCloud and set $JCAPIKEY variable. 
 
 
-IMPROVEMENTS:
+#### IMPROVEMENTS:
 
 - Updated Function: Add-JCUserGroupMember with 'name' alias for 'GroupName' parameter to allow the command to accept pipeline input from the 'Get-JCGroup' command
 - Updated Function: Add-JCSystemGroupMember with 'name' alias for 'GroupName' parameter to allow the command to accept pipeline input from the 'Get-JCGroup' command
 - Updated Function: Remove-JCUserGroupMember with 'name' alias for 'GroupName' parameter to allow the command to accept pipeline input from the 'Get-JCGroup' command
 - Updated Function: Remove-JCSystemGroupMember with 'name' alias for 'GroupName' parameter to allow the command to accept pipeline input from the 'Get-JCGroup' command
 
-## 1.1.0 (January 8, 2018)
-
-FEATURES:
+## 1.1.0 
+Release Date: January 8, 2018
+#### FEATURES:
 
 - New Function: [Set-JCSystemUser](https://github.com/TheJumpCloud/support/wiki/Set-JCSystemUser) can modify user/system permissions and change the user from a standard user to an administrator or vice versa
 - New Helper Function: Get-Hash_ID_Sudo hash table of UserID and ($true/$false) for Sudo parameter
 - New Helper Function: Get-Hash_SystemID_HostName hash table of SystemID and system DisplayName
 
 
-IMPROVEMENTS:
+#### IMPROVEMENTS:
 
 - Updated Function: [Add-JCSystemUser](https://github.com/TheJumpCloud/support/wiki/Add-JCSystemUser) has boolean parameter '-Administrator' for setting system permissions during add
 - Updated Function: [Get-JCSystemUser](https://github.com/TheJumpCloud/support/wiki/Get-JCSystemUser) to show system permissions 'Administrator: $true/$false' and system DisplayName
@@ -37,7 +37,7 @@ IMPROVEMENTS:
 
 
 
-BUG FIXES:
+#### BUG FIXES:
 
 - Updated Function: [Get-JCSystemUser](https://github.com/TheJumpCloud/support/wiki/Get-JCSystemUser) to properly clear '$resultsArray' to display accurate results when recursivly listing system users
 - Updated Function: [Connect-JCOnline](https://github.com/TheJumpCloud/support/wiki/Connect-JCOnline) and removed conflicting script variable scoping
@@ -84,8 +84,8 @@ Function        Set-JCUser                                         1.1.0      Ju
 ###
 [How to update to the latest version of the JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Updating-the-JumpCloud-PowerShell-Module)
 
-## 1.0.0 (November 29, 2017)
-
+## 1.0.0 
+Release Date November 29, 2017
 ```PowerShell
 
 PS > Get-Command -Module JumpCloud
