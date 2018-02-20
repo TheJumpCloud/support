@@ -18,6 +18,14 @@
 
 ## 1.1.0 
 Release Date: January 8, 2018
+
+#### RELEASE NOTES
+
+```
+New function Set-JCSystemUser to set user / system permissions to standard or administrator. 
+Updated import functions and Add/Get-JCSystemUser to accomodate for user / system permissions. 
+```
+
 #### FEATURES:
 
 - New Function: [Set-JCSystemUser](https://github.com/TheJumpCloud/support/wiki/Set-JCSystemUser) can modify user/system permissions and change the user from a standard user to an administrator or vice versa
