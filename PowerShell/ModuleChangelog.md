@@ -4,7 +4,7 @@
 
 - New Function: New-JCCommand to create JumpCloud commands from the shell
 - New Function: Remove-JCCommand to delete JumpCloud commands
-- New Function: Import-JCCommand to import JumpCloud commands from a URL or through an interactive menu
+- New Function: Import-JCCommand to import JumpCloud commands from a URL
 - Updated Function: Connect-JCOnline added banner to display current JumpCloud module version information. Added paramter sets for 'Interactive' and 'Force' modes. 'Interactive' displays banner and automatic module update options when new version becomes avaliable. 'Force' can be used in automation scenarios to connect to JumpCloud and set $JCAPIKEY variable. 
 
 
