@@ -10,12 +10,10 @@
 
 #Additionally you must populate the below variables to run successful tests using the -ByID parameter
 
-
 $SystemID = '' # Enter the System ID for a system in your test tenant. **Note users will be added and removed from this system during the tests
 
 $Username = 'pester.tester' # Create a user with username 'pester.tester'
 $UserID = '' # Paste the UserID for the user with username pester.tester
-
 
 $UserGroupName = 'PesterTest_UserGroup'  #Create a user group named PesterTest_UserGroup within your environment
 $UserGroupID = ''  # Paste the corresponding GroupID for the user group named PesterTest_UserGroup
@@ -290,19 +288,19 @@ Describe 'Get-JCCommand'{
 Describe 'Invoke-JCCommand'{
 
     It "Invokes a single JumpCloud command declaring the -trigger"{
-        $SingleTrigger = Get-JCCommand | Where-Object trigger -ne '' | Select-Object -Last 1 | Select-Object trigger
+        $SingleTrigger = Get-JCCommand | Where-Object trigger -NotLike '' | Select-Object -Last 1 | Select-Object trigger
         $SingleResult = Invoke-JCCommand -trigger $SingleTrigger.trigger
         $SingleResult.triggered.Count | Should Be 1
 
     }
 
     It "Invokes a single JumpCloud command passed through the pipeline from Get-JCCommand without declaring -trigger"{
-        $SingleResult = Get-JCCommand | Where-Object trigger -ne '' | Select-Object -Last 1 | Invoke-JCCommand
+        $SingleResult = Get-JCCommand | Where-Object trigger -NotLike '' | Select-Object -Last 1 | Invoke-JCCommand
         $SingleResult.triggered.Count | Should Be 1
     }
 
     It "Invokes two JumpCloud command passed through the pipeline from Get-JCCommand without declaring -trigger"{
-        $MultiResult = Get-JCCommand | Where-Object trigger -ne '' | Select-Object -Last 2 | Invoke-JCCommand
+        $MultiResult = Get-JCCommand | Where-Object trigger -NotLike '' | Select-Object -Last 2 | Invoke-JCCommand
         $MultiResult.triggered.Count | Should Be 2
     }
 
@@ -405,6 +403,7 @@ Describe 'Add-JCUserGroupMember and Remove-JCUserGroupMember'{
     }
 
     It "Adds two JumpCLoud users to a JumpCloud user group using the pipeline"{
+        $MultiUserGroupRemove = Get-JCUser | Select-Object -Last 2 | Remove-JCUserGroupMember -GroupName $UserGroupName
         $MultiUserGroupAdd = Get-JCUser | Select-Object -Last 2 | Add-JCUserGroupMember -GroupName $UserGroupName
         $MultiUserGroupAdd.Status | Select-Object -Unique | Should Be 'Added'
     }
@@ -566,6 +565,7 @@ if ($($Systems._id.Count) -le 1)
 Describe 'Add-JCSystemUser and Remove-JCSystemUser'{
 
     IT "Adds a single user to a single system by Username and SystemID"{
+        $UserRemove = Remove-JCSystemUser -Username $Username -SystemID $SystemID    
         $UserAdd = Add-JCSystemUser -Username $Username -SystemID $SystemID
         $UserAdd.Status | Should Be 'Added'
     }
@@ -723,8 +723,8 @@ Describe 'Get-JCUser'{
         $User._id.count | Should -Be 1
     }
 
-    IT 'Get multiple JumpCloud users via the pipeline using -ByID'{
-        $Users = Get-JCUser | Select-Object -Last 2 | Get-JCUser -ByID
+    IT 'Get multiple JumpCloud users via the pipeline using User ID'{
+        $Users = Get-JCUser | Select-Object -Last 2 | %  {Get-JCUser -UserID $_._id}
         $Users._id.count | Should -Be 2
     }
 }
@@ -845,7 +845,7 @@ Describe 'New-JCUser and Remove-JCuser'{
 Describe 'Set-JCUser'{
 
     IT "Updates the firstname and then sets it back using -ByID and -UserID"{
-        $CurrentFirstName = Get-JCUser -ByID -UserID $UserID | Select-Object firstname
+        $CurrentFirstName = Get-JCUser -UserID $UserID | Select-Object firstname
         $NewFirstName = Set-JCUser -ByID -UserID $UserID -firstname 'NewFirstName'
         $NewFirstName.firstname | Should -be 'NewFirstName'
         Set-JCUser -ByID -UserID $UserID -firstname $CurrentFirstName.firstname | Out-Null
@@ -853,7 +853,7 @@ Describe 'Set-JCUser'{
     }
 
     IT "Updates the firstname and then sets it back using -Username"{
-        $CurrentFirstName = Get-JCUser -ByID -UserID $UserID | Select-Object firstname
+        $CurrentFirstName = Get-JCUser -UserID $UserID | Select-Object firstname
         $NewFirstName = Set-JCUser -Username $Username -firstname 'NewFirstName'
         $NewFirstName.firstname | Should -be 'NewFirstName'
         Set-JCUser -ByID -UserID $UserID -firstname $CurrentFirstName.firstname | Out-Null
@@ -861,7 +861,7 @@ Describe 'Set-JCUser'{
     }
 
     IT "Updates the lastname and then sets it back using -ByID and -UserID"{
-        $Currentlastname = Get-JCUser -ByID -UserID $UserID | Select-Object lastname
+        $Currentlastname = Get-JCUser -UserID $UserID | Select-Object lastname
         $Newlastname = Set-JCUser -ByID -UserID $UserID -lastname 'NewLastName'
         $Newlastname.lastname | Should -be 'NewLastName'
         Set-JCUser -ByID -UserID $UserID -lastname $Currentlastname.lastname | Out-Null
@@ -869,7 +869,7 @@ Describe 'Set-JCUser'{
     }
 
     IT "Updates the lastname and then sets it back using -Username"{
-        $Currentlastname = Get-JCUser -ByID -UserID $UserID | Select-Object lastname
+        $Currentlastname = Get-JCUser -UserID $UserID | Select-Object lastname
         $Newlastname = Set-JCUser -Username $Username -lastname 'NewLastName'
         $Newlastname.lastname | Should -be 'NewLastName'
         Set-JCUser -ByID -UserID $UserID -lastname $Currentlastname.lastname | Out-Null
@@ -877,7 +877,7 @@ Describe 'Set-JCUser'{
     }
 
     IT "Updates the email and then sets it back using -ByID and -UserID"{
-        $Currentemail = Get-JCUser -ByID -UserID $UserID | Select-Object email
+        $Currentemail = Get-JCUser -UserID $UserID | Select-Object email
         $Newemail = Set-JCUser -ByID -UserID $UserID -email $RandomEmail
         $Newemail.email | Should -be $RandomEmail
         Set-JCUser -ByID -UserID $UserID -email $Currentemail.email | Out-Null
@@ -885,7 +885,7 @@ Describe 'Set-JCUser'{
     }
 
     IT "Updates the email and then sets it back using -Username"{
-        $Currentemail = Get-JCUser -ByID -UserID $UserID | Select-Object email
+        $Currentemail = Get-JCUser -UserID $UserID | Select-Object email
         $Newemail = Set-JCUser -Username $Username -email $RandomEmail
         $Newemail.email | Should -be $RandomEmail
         Set-JCUser -ByID -UserID $UserID -email $Currentemail.email | Out-Null
@@ -1064,7 +1064,7 @@ Describe 'Set-JCUser'{
 
 
     IT "Updates the unix_uid and then sets it back using -ByID and -UserID"{
-        $Currentunix_uid = Get-JCUser -ByID -UserID $UserID | Select-Object unix_uid
+        $Currentunix_uid = Get-JCUser -UserID $UserID | Select-Object unix_uid
         $100 = Set-JCUser -ByID -UserID $UserID -unix_uid '100'
         $100.unix_uid | Should -be '100'
         Set-JCUser -ByID -UserID $UserID -unix_uid $Currentunix_uid.unix_uid | Out-Null
@@ -1072,7 +1072,7 @@ Describe 'Set-JCUser'{
     }
 
     IT "Updates the unix_uid and then sets it back using -Username"{
-        $Currentunix_uid = Get-JCUser -ByID -UserID $UserID | Select-Object unix_uid
+        $Currentunix_uid = Get-JCUser -UserID $UserID | Select-Object unix_uid
         $100 = Set-JCUser -Username $Username -unix_uid '100'
         $100.unix_uid | Should -be '100'
         Set-JCUser -ByID -UserID $UserID -unix_uid $Currentunix_uid.unix_uid | Out-Null
@@ -1080,7 +1080,7 @@ Describe 'Set-JCUser'{
     }
 
     IT "Updates the unix_guid and then sets it back using -ByID and -UserID"{
-        $Currentunix_guid = Get-JCUser -ByID -UserID $UserID | Select-Object unix_guid
+        $Currentunix_guid = Get-JCUser -UserID $UserID | Select-Object unix_guid
         $100 = Set-JCUser -ByID -UserID $UserID -unix_guid '100'
         $100.unix_guid | Should -be '100'
         Set-JCUser -ByID -UserID $UserID -unix_guid $Currentunix_guid.unix_guid | Out-Null
@@ -1088,7 +1088,7 @@ Describe 'Set-JCUser'{
     }
 
     IT "Updates the unix_guid and then sets it back using -Username"{
-        $Currentunix_guid = Get-JCUser -ByID -UserID $UserID | Select-Object unix_guid
+        $Currentunix_guid = Get-JCUser -UserID $UserID | Select-Object unix_guid
         $100 = Set-JCUser -Username $Username -unix_guid '100'
         $100.unix_guid | Should -be '100'
         Set-JCUser -ByID -UserID $UserID -unix_guid $Currentunix_guid.unix_guid | Out-Null
@@ -1099,7 +1099,7 @@ Describe 'Set-JCUser'{
 Describe "Set-JCUser - CustomAttributes"{
 
     It "Updates a custom attribute on a User"{
-        $NewUser = New-RandomUser -Attributes -Domain DeleteMe | New-JCUser -NumberOfCustomAttributes 3
+        $NewUser = New-RandomUserCustom -Attributes -Domain DeleteMe | New-JCUser -NumberOfCustomAttributes 3
         $UpdatedUser = Set-JCUser $NewUser.username -NumberOfCustomAttributes 1 -Attribute1_name 'Department' -Attribute1_value 'IT'
 
         [string]$NewUserAttr = $NewUser.attributes.name | Sort-Object
@@ -1116,7 +1116,7 @@ Describe "Set-JCUser - CustomAttributes"{
     }
 
     It "Adds a custom attribute to a User"{
-        $NewUser = New-RandomUser -Attributes -Domain DeleteMe | New-JCUser -NumberOfCustomAttributes 3
+        $NewUser = New-RandomUserCustom -Attributes -Domain DeleteMe | New-JCUser -NumberOfCustomAttributes 3
         $UpdatedUser = Set-JCUser $NewUser.username -NumberOfCustomAttributes 1 -Attribute1_name 'NewAttribute' -Attribute1_value 'IT'
 
         [int]$NewUserAttr = $NewUser.attributes.name.count
@@ -1135,7 +1135,7 @@ Describe "Set-JCUser - CustomAttributes"{
     }
 
     It "Removes a custom attribute from a User"{
-        $NewUser = New-RandomUser -Attributes -Domain DeleteMe | New-JCUser -NumberOfCustomAttributes 3
+        $NewUser = New-RandomUserCustom -Attributes -Domain DeleteMe | New-JCUser -NumberOfCustomAttributes 3
         $UpdatedUser = Set-JCUser $NewUser.username -RemoveAttribute 'Department'
 
         [int]$NewUserAttr = $NewUser.attributes.name.count
