@@ -15,7 +15,7 @@
     <command:syntax>
       <command:syntaxItem>
         <maml:name>Add-JCSystemGroupMember</maml:name>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="name">
           <maml:name>GroupName</maml:name>
           <maml:Description>
             <maml:para>The name of the JumpCloud System Group that you want to add the System to.</maml:para>
@@ -71,7 +71,7 @@
       </command:syntaxItem>
       <command:syntaxItem>
         <maml:name>Add-JCSystemGroupMember</maml:name>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="name">
           <maml:name>GroupName</maml:name>
           <maml:Description>
             <maml:para>The name of the JumpCloud System Group that you want to add the System to.</maml:para>
@@ -128,7 +128,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="name">
         <maml:name>GroupName</maml:name>
         <maml:Description>
           <maml:para>The name of the JumpCloud System Group that you want to add the System to.</maml:para>
@@ -455,7 +455,7 @@
     <command:syntax>
       <command:syntaxItem>
         <maml:name>Add-JCUserGroupMember</maml:name>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="name">
           <maml:name>GroupName</maml:name>
           <maml:Description>
             <maml:para>The name of the JumpCloud User Group that you want to add the User to.</maml:para>
@@ -514,7 +514,7 @@
       </command:syntaxItem>
       <command:syntaxItem>
         <maml:name>Add-JCUserGroupMember</maml:name>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="name">
           <maml:name>GroupName</maml:name>
           <maml:Description>
             <maml:para>The name of the JumpCloud User Group that you want to add the User to.</maml:para>
@@ -568,7 +568,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="name">
         <maml:name>GroupName</maml:name>
         <maml:Description>
           <maml:para>The name of the JumpCloud User Group that you want to add the User to.</maml:para>
@@ -684,6 +684,8 @@
     </command:details>
     <maml:description>
       <maml:para>By calling the Connect-JConline function you are setting the variable $JCAPIKEY within the global scope. By setting this variable in the global scope the variable $JCAPIKEY can be reused by other functions in the JumpCloud module. If you wish to change the API key to connect to another JumpCloud org simply call the Connect-JConline function and enter the alternative API key.</maml:para>
+      <maml:para>Introduced in JumpCloud module version 1.2 the Connect-JCOnline function will also check to ensure you are running the latest version of the JumpCloud PowerShell module and offer to update the module if there is an update avaliable.</maml:para>
+      <maml:para>To prevent the module update check the '-force' paramter can be used.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -701,6 +703,32 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
       </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Connect-JCOnline</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+          <maml:name>JumpCloudAPIKey</maml:name>
+          <maml:Description>
+            <maml:para>Your JumpCloud API key. This can be found in the JumpCloud admin console within 'API Settings' accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console. Note that each administrator within a JumpCloud tenant has their own unique API key and can reset this API key from this settings page.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>force</maml:name>
+          <maml:Description>
+            <maml:para>A SwitchParameter which skips the module update check when setting the JCAPIKey and connecting to JumpCloud.</maml:para>
+          </maml:Description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
     </command:syntax>
     <command:parameters>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
@@ -714,6 +742,18 @@
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>force</maml:name>
+        <maml:Description>
+          <maml:para>A SwitchParameter which skips the module update check when setting the JCAPIKey and connecting to JumpCloud.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
       </command:parameter>
     </command:parameters>
     <command:inputTypes />
@@ -729,6 +769,13 @@
         <dev:code>Connect-JCOnline lu8792c9d4y2398is1tb6h0b83ebf0e92s97t382</dev:code>
         <dev:remarks>
           <maml:para></maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>Connect-JCOnline lu8792c9d4y2398is1tb6h0b83ebf0e92s97t382 -force</dev:code>
+        <dev:remarks>
+          <maml:para>Using the "-Force" paramter the module update check is skipped. The '-Force' parameter should be used when using the JumpCloud module in scripts or other automation environments.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -1053,18 +1100,6 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True" position="named" aliases="none">
-          <maml:name>Name</maml:name>
-          <maml:Description>
-            <maml:para>The name of the specific group you want to query. Use this to find group attribues or to lookup posixGroups information. The 'Type' paramter must be set to use the '-Name' paramter. This is a dynamic paramter</maml:para>
-          </maml:Description>
-          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-          <dev:type>
-            <maml:name>String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
@@ -1072,18 +1107,6 @@
         <maml:name>Type</maml:name>
         <maml:Description>
           <maml:para>The type of JumpCloud group you want to return. Note there are only two options - User and System.</maml:para>
-        </maml:Description>
-        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-        <dev:type>
-          <maml:name>String</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True" position="named" aliases="none">
-        <maml:name>Name</maml:name>
-        <maml:Description>
-          <maml:para>The name of the specific group you want to query. Use this to find group attribues or to lookup posixGroups information. The 'Type' paramter must be set to use the '-Name' paramter. This is a dynamic paramter</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -1541,7 +1564,7 @@
       <command:verb>Get</command:verb>
       <command:noun>JCUser</command:noun>
       <maml:description>
-        <maml:para>Returns all JumpCloud Users within a JumpCloud tenant or a single JumpCloud User using the -ByID Parameter.</maml:para>
+        <maml:para>Returns all JumpCloud Users within a JumpCloud tenant or searches for a JumpCloud User by 'username', 'firstname', 'lastname', or 'email'.</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
@@ -1550,24 +1573,11 @@
     <command:syntax>
       <command:syntaxItem>
         <maml:name>Get-JCUser</maml:name>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-          <maml:name>ByID</maml:name>
-          <maml:Description>
-            <maml:para>Use the -ByID parameter when the UserID is being passed over the pipeline to the Set-JCUser function. The -ByID SwitchParameter will set the ParameterSet to 'ByID' which will increase the function speed and performance.</maml:para>
-          </maml:Description>
-          <dev:type>
-            <maml:name>SwitchParameter</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>False</dev:defaultValue>
-        </command:parameter>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="_id, id">
           <maml:name>UserID</maml:name>
           <maml:Description>
             <maml:para>The _id of the User which you want to modify.</maml:para>
             <maml:para>To find a JumpCloud UserID run the command:</maml:para>
-            <maml:para></maml:para>
-            <maml:para></maml:para>
             <maml:para>PS C:&gt; Get-JCUser | Select username, _id</maml:para>
             <maml:para>The UserID will be the 24 character string populated for the _id field.</maml:para>
             <maml:para>UserID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically.</maml:para>
@@ -1585,7 +1595,52 @@
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
           <maml:name>Username</maml:name>
           <maml:Description>
-            <maml:para>The Username of the JumpCloud user you wish to return.</maml:para>
+            <maml:para>The Username of the JumpCloud user you wish to search for.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Get-JCUser</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>Email</maml:name>
+          <maml:Description>
+            <maml:para>The Email of the JumpCloud user you wish to search for.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Get-JCUser</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>FirstName</maml:name>
+          <maml:Description>
+            <maml:para>The First Name of the JumpCloud user you wish to search for.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Get-JCUser</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>LastName</maml:name>
+          <maml:Description>
+            <maml:para>The Last Name of the JumpCloud user you wish to search for.</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -1597,25 +1652,11 @@
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-        <maml:name>ByID</maml:name>
-        <maml:Description>
-          <maml:para>Use the -ByID parameter when the UserID is being passed over the pipeline to the Set-JCUser function. The -ByID SwitchParameter will set the ParameterSet to 'ByID' which will increase the function speed and performance.</maml:para>
-        </maml:Description>
-        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
-        <dev:type>
-          <maml:name>SwitchParameter</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>False</dev:defaultValue>
-      </command:parameter>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="_id, id">
         <maml:name>UserID</maml:name>
         <maml:Description>
           <maml:para>The _id of the User which you want to modify.</maml:para>
           <maml:para>To find a JumpCloud UserID run the command:</maml:para>
-          <maml:para></maml:para>
-          <maml:para></maml:para>
           <maml:para>PS C:&gt; Get-JCUser | Select username, _id</maml:para>
           <maml:para>The UserID will be the 24 character string populated for the _id field.</maml:para>
           <maml:para>UserID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically.</maml:para>
@@ -1630,7 +1671,43 @@
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
         <maml:name>Username</maml:name>
         <maml:Description>
-          <maml:para>The Username of the JumpCloud user you wish to return.</maml:para>
+          <maml:para>The Username of the JumpCloud user you wish to search for.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>Email</maml:name>
+        <maml:Description>
+          <maml:para>The Email of the JumpCloud user you wish to search for.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>FirstName</maml:name>
+        <maml:Description>
+          <maml:para>The First Name of the JumpCloud user you wish to search for.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>LastName</maml:name>
+        <maml:Description>
+          <maml:para>The Last Name of the JumpCloud user you wish to search for.</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -1675,7 +1752,7 @@
       </command:example>
       <command:example>
         <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCUser cclemons</dev:code>
+        <dev:code>PS C:\&gt; Get-JCUser -Username cclemons</dev:code>
         <dev:remarks>
           <maml:para>Returns the information describing the JumpCloud User with Username cclemons</maml:para>
         </dev:remarks>
@@ -1831,6 +1908,90 @@
       <maml:navigationLink>
         <maml:linkText>Online Help Get-JCUserGroupMember</maml:linkText>
         <maml:uri>https://github.com/TheJumpCloud/support/wiki/Get-JCUserGroupMember</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Import-JCCommand</command:name>
+      <command:verb>Import</command:verb>
+      <command:noun>JCCommand</command:noun>
+      <maml:description>
+        <maml:para>Imports a Mac, Linux or Windows JumpCloud Command into the JumpCloud admin portal from a URL</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>The Import-JCCommand command can be used to import curated JumpCloud Mac, Linux, and Windows commands into a JumpCloud tenant</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Import-JCCommand</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
+          <maml:name>URL</maml:name>
+          <maml:Description>
+            <maml:para>The URL of the JumpCloud command to import into a JumpCloud tenant.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
+        <maml:name>URL</maml:name>
+        <maml:Description>
+          <maml:para>The URL of the JumpCloud command to import into a JumpCloud tenant.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para></maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- Example 1 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Import-JCCommand -URL 'https://git.io/JCXC-Windows-ListAllUsers'</dev:code>
+        <dev:remarks>
+          <maml:para>Imports the JumpCloud command located at the URL 'https://git.io/JCXC-Windows-ListAllUsers' into a JumpCloud tenant.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Help Import-JCCommand</maml:linkText>
+        <maml:uri>https://github.com/TheJumpCloud/support/wiki/Import-JCCommand</maml:uri>
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
@@ -2063,6 +2224,221 @@
       <maml:navigationLink>
         <maml:linkText>Online Help Invoke-JCCommand</maml:linkText>
         <maml:uri>https://github.com/TheJumpCloud/support/wiki/Invoke-JCCommand</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>New-JCCommand</command:name>
+      <command:verb>New</command:verb>
+      <command:noun>JCCommand</command:noun>
+      <maml:description>
+        <maml:para>Creates a new JumpCloud Mac, Linux, or Windows command</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Creates a new JumpCloud Mac, Linux, or Windows command</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>New-JCCommand</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
+          <maml:name>name</maml:name>
+          <maml:Description>
+            <maml:para>The name of the new JumpCloud command.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="1" aliases="none">
+          <maml:name>commandType</maml:name>
+          <maml:Description>
+            <maml:para>The type of JumpCloud command. Options are windows, mac, or linux.</maml:para>
+          </maml:Description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">windows</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">mac</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">linux</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="2" aliases="none">
+          <maml:name>command</maml:name>
+          <maml:Description>
+            <maml:para>The script or command to run using the command.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="3" aliases="none">
+          <maml:name>launchType</maml:name>
+          <maml:Description>
+            <maml:para>The launch type for the new command. The default is manual.</maml:para>
+          </maml:Description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">trigger</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">manual</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">repeated</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">one-time</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="4" aliases="none">
+          <maml:name>timeout</maml:name>
+          <maml:Description>
+            <maml:para>The time the command will run before it times out. The default is 120 seconds.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>user</maml:name>
+          <maml:Description>
+            <maml:para>Only needed for Mac and Linux commands. If not entered Mac and Linux commands will default to the root users. If entering a user a UserID must be entered.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="2" aliases="none">
+        <maml:name>command</maml:name>
+        <maml:Description>
+          <maml:para>The script or command to run using the command.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="1" aliases="none">
+        <maml:name>commandType</maml:name>
+        <maml:Description>
+          <maml:para>The type of JumpCloud command. Options are windows, mac, or linux.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="3" aliases="none">
+        <maml:name>launchType</maml:name>
+        <maml:Description>
+          <maml:para>The launch type for the new command. The default is manual.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
+        <maml:name>name</maml:name>
+        <maml:Description>
+          <maml:para>The name of the new JumpCloud command.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="4" aliases="none">
+        <maml:name>timeout</maml:name>
+        <maml:Description>
+          <maml:para>The time the command will run before it times out. The default is 120 seconds.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>user</maml:name>
+        <maml:Description>
+          <maml:para>Only needed for Mac and Linux commands. If not entered Mac and Linux commands will default to the root users. If entering a user a UserID must be entered.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para></maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- Example 1 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; New-JCCommand -commandType windows -name 'PowerShell version' -command '$PSVersionTable'</dev:code>
+        <dev:remarks>
+          <maml:para>Creates a JumpCloud windows command named 'PowerShell version' which will return the PowerShell version installed on Windows endpoints when run.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Help New-JCCommand</maml:linkText>
+        <maml:uri>https://github.com/TheJumpCloud/support/wiki/New-JCCommand</maml:uri>
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
@@ -2710,6 +3086,130 @@
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
+      <command:name>Remove-JCCommand</command:name>
+      <command:verb>Remove</command:verb>
+      <command:noun>JCCommand</command:noun>
+      <maml:description>
+        <maml:para>Removes a JumpCloud command</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>The Remove-JCCommand can remove a single JumpCloud command or multiple commands that are passed to the command over the pipeline. The default behavior is to prompt with a warning message when deleting a command result but this can be suppressed with the -force Parameter.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Remove-JCCommand</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="_id, id">
+          <maml:name>CommandID</maml:name>
+          <maml:Description>
+            <maml:para>The _id of the JumpCloud Command  you wish to query.</maml:para>
+            <maml:para>To find a JumpCloud CommandID run the command:</maml:para>
+            <maml:para></maml:para>
+            <maml:para>PS C:&gt; Get-JCCommand | Select name, _id</maml:para>
+            <maml:para>The CommandID will be the 24 character string populated for the _id field.</maml:para>
+            <maml:para>CommandID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using a function that returns the JumpCloud CommandID.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>force</maml:name>
+          <maml:Description>
+            <maml:para>A SwitchParameter which removes the warning message when removing a JumpCloud Command.</maml:para>
+          </maml:Description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="_id, id">
+        <maml:name>CommandID</maml:name>
+        <maml:Description>
+          <maml:para>The _id of the JumpCloud Command  you wish to query.</maml:para>
+          <maml:para>To find a JumpCloud CommandID run the command:</maml:para>
+          <maml:para></maml:para>
+          <maml:para>PS C:&gt; Get-JCCommand | Select name, _id</maml:para>
+          <maml:para>The CommandID will be the 24 character string populated for the _id field.</maml:para>
+          <maml:para>CommandID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using a function that returns the JumpCloud CommandID.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>force</maml:name>
+        <maml:Description>
+          <maml:para>A SwitchParameter which removes the warning message when removing a JumpCloud Command.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para></maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- Example 1 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Remove-JCCommand -CommandID 5j09o6f23dan6f4n035601d5</dev:code>
+        <dev:remarks>
+          <maml:para>Removes the JumpCloud Command with a CommandID of '5j09o6f23dan6f4n035601d5'. A warning message will be presented to confirm this operation.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Remove-JCCommand -CommandID 5j09o6f23dan6f4n035601d5 -Force</dev:code>
+        <dev:remarks>
+          <maml:para>Removes the JumpCloud Command with a CommandID of '5j09o6f23dan6f4n035601d5'. A warning message will not be presented to confirm this operation because the '-Force' parameter is used.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Help Remove-JCCommand</maml:linkText>
+        <maml:uri>https://github.com/TheJumpCloud/support/wiki/Remove-JCCommand</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
       <command:name>Remove-JCCommandResult</command:name>
       <command:verb>Remove</command:verb>
       <command:noun>JCCommandResult</command:noun>
@@ -3117,7 +3617,7 @@
     <command:syntax>
       <command:syntaxItem>
         <maml:name>Remove-JCSystemGroupMember</maml:name>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="name">
           <maml:name>GroupName</maml:name>
           <maml:Description>
             <maml:para>The name of the JumpCloud System Group that you want to remove the System from.</maml:para>
@@ -3176,7 +3676,7 @@
       </command:syntaxItem>
       <command:syntaxItem>
         <maml:name>Remove-JCSystemGroupMember</maml:name>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="name">
           <maml:name>GroupName</maml:name>
           <maml:Description>
             <maml:para>The name of the JumpCloud System Group that you want to remove the System from.</maml:para>
@@ -3236,7 +3736,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="name">
         <maml:name>GroupName</maml:name>
         <maml:Description>
           <maml:para>The name of the JumpCloud System Group that you want to remove the System from.</maml:para>
@@ -3923,7 +4423,7 @@
     <command:syntax>
       <command:syntaxItem>
         <maml:name>Remove-JCUserGroupMember</maml:name>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="name">
           <maml:name>GroupName</maml:name>
           <maml:Description>
             <maml:para>The name of the JumpCloud User Group that you want to remove the User from.</maml:para>
@@ -3982,7 +4482,7 @@
       </command:syntaxItem>
       <command:syntaxItem>
         <maml:name>Remove-JCUserGroupMember</maml:name>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="name">
           <maml:name>GroupName</maml:name>
           <maml:Description>
             <maml:para>The name of the JumpCloud User Group that you want to remove the User from.</maml:para>
@@ -4036,7 +4536,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="name">
         <maml:name>GroupName</maml:name>
         <maml:Description>
           <maml:para>The name of the JumpCloud User Group that you want to remove the User from.</maml:para>

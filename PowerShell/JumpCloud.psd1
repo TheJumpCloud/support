@@ -7,7 +7,7 @@ RootModule = 'JumpCloud.psm1'
 GUID = '31c023d1-a901-48c4-90a3-082f91b31646'
 
 # Version number of this module.
-ModuleVersion = '1.1.0'
+ModuleVersion = '1.2.0'
 
 # Author of this module
 Author = 'Scott Reed'
@@ -22,7 +22,7 @@ Copyright = '(c) JumpCloud. All rights reserved.'
 Description = 'PowerShell functions to manage a JumpCloud Directory-as-a-Service'
 
 # Minimum version of the Windows PowerShell engine required by this module
- PowerShellVersion = '4.0'
+ PowerShellVersion = '5.0'
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
 FunctionsToExport = @(  "Connect-JCOnline",
@@ -52,6 +52,9 @@ FunctionsToExport = @(  "Connect-JCOnline",
                         "Set-JCSystem",
                         "Set-JCUser",
                         "Set-JCSystemUser",
+                        "Remove-JCCommand",
+                        "New-JCCommand",
+                        "Import-JCCommand",
                         "Import-JCUsersFromCSV","New-JCImportTemplate")
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
@@ -76,13 +79,13 @@ PrivateData = @{
         LicenseUri = 'https://github.com/TheJumpCloud/support/blob/master/PowerShell/LICENSE'
 
         # A URL to the main website for this project.
-        ProjectUri = 'https://github.com/TheJumpCloud/support/tree/master/PowerShell'
+        ProjectUri = 'https://github.com/TheJumpCloud/support/wiki'
 
         # A URL to an icon representing this module.
         IconUri = 'https://avatars1.githubusercontent.com/u/4927461?s=200&v=4'
 
         # ReleaseNotes of this module
-        ReleaseNotes = 'https://github.com/TheJumpCloud/support/blob/master/PowerShell/CHANGELOG.md'
+        ReleaseNotes = 'https://git.io/jc-pwsh-releasenotes'
 
     } # End of PSData hashtable
 
