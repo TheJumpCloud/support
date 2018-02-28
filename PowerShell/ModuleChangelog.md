@@ -1,4 +1,14 @@
-## Next version (Unreleased)
+## 1.2.0
+Release Date: February 28, 2018
+
+#### RELEASE NOTES
+
+```
+New Function New-JCCommand and Remove-JCCommand to create and remove JumpCloud commands from the shell.
+New Function Import-JCCommand to import JumpCloud commands from a URL
+Updated Function Get-JCUser to search users via username, firstname, lastname, or email
+Updated Function Connect-JCOnline to check for and install module updates and added '-force' parameter for use in scripts and automation 
+```
 
 #### FEATURES:
 
