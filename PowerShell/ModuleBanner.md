@@ -7,7 +7,7 @@
 #### Banner Current
 
 ```
-Module up-to-date! Do you know about Import-JCCommand? Enter 'Help Import-JCCommand -online' to learn more. 
+Module up-to-date! New examples are live! Go to 'https://git.io/jc-pwsh-examples' to check them out. 
 ```
 
 #### Banner Old
