@@ -42,6 +42,7 @@ By modifying the 'backgroundURL' and matching the 'fileType' to the type of file
 
 **Important** this command can only be run on one system at a time and must be "RUN AS:" (This setting lives in the top right corner of command screen) the user on the system whose desktop background you wish to set.
 
+![Set Custom background](https://raw.githubusercontent.com/TheJumpCloud/support/master/PowerShell/JumpCloud%20Commands%20Gallery/Files/Set%20Custom%20Desktop%20Background.png)
 
 #### *Import This Command*
 
