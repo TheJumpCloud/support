@@ -1,6 +1,6 @@
 #### Name
 
-Mac - Set Custom Desktop Background | v1.0 JCCG
+Mac - Set Desktop Background | v1.0 JCCG
 
 #### commandType
 
