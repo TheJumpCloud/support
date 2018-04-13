@@ -9,8 +9,8 @@
 
 #### BUG FIXES:
 
-- Updated fucntions Add-JCUser and Set-JCUser to allow UNIX_UID and UNIX_GUID to a value in the range 0-4294967295.
-- Updated function Get-JCSystemGroupMember to properly display output when using the 'ByID' paramter set.
+- Updated Functions Add-JCUser and Set-JCUser to allow UNIX_UID and UNIX_GUID to a value in the range 0-4294967295.
+- Updated Function Get-JCSystemGroupMember to properly display output when using the 'ByID' paramter set.
 
 
 ## 1.2.0
