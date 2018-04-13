@@ -1,3 +1,18 @@
+## Next version (Unreleased)
+
+#### FEATURES:
+
+- New Function: Set-JCUserGroupLDAP to toggle the LDAP presentation on/off for JumpCloud user groups.
+- New Function: Get-JCCommandTarget to query the JumpCloud systems or system groups associated with a JumpCloud command.
+- New Function: Add-JCCommandTarget to add JumpCloud system or system group associations with JumpCloud commands.
+- New Function: Remove-JCCommandTarget to remove JumpCloud system or system group associations with JumpCloud commands. 
+
+#### BUG FIXES:
+
+- Updated fucntions Add-JCUser and Set-JCUser to allow UNIX_UID and UNIX_GUID to a value in the range 0-4294967295.
+- Updated function Get-JCSystemGroupMember to properly display output when using the 'ByID' paramter set.
+
+
 ## 1.2.0
 Release Date: February 28, 2018
 
