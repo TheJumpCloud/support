@@ -6,6 +6,8 @@
 - New Function: Get-JCCommandTarget to query the JumpCloud systems or system groups associated with a JumpCloud command.
 - New Function: Add-JCCommandTarget to add JumpCloud system or system group associations to JumpCloud commands.
 - New Function: Remove-JCCommandTarget to remove JumpCloud system or system group associations from JumpCloud commands. 
+- Updated Functions: Add-JCUser and Set-JCUser with parameter 'password_never_expires'. 
+
 
 #### BUG FIXES:
 
