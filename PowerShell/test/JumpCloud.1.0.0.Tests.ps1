@@ -467,12 +467,12 @@ Describe 'Get-JCSystemGroupMember'{
 
     IT 'Gets a System Groups membership by Groupname'{
         $SystemGroupMembers = Get-JCSystemGroupMember -GroupName $SystemGroupName
-        $SystemGroupMembers.id.Count | Should -BeGreaterThan 0
+        $SystemGroupMembers.SystemID.Count | Should -BeGreaterThan 0
     }
 
     IT 'Gets a System Groups membership -ByID'{
         $SystemGroupMembers = Get-JCSystemGroupMember -ByID $SystemGroupID
-        $SystemGroupMembers.to.id.Count | Should -BeGreaterThan 0
+        $SystemGroupMembers.SystemID.Count | Should -BeGreaterThan 0
     }
 
     It 'Gets all System Group members using Get-JCGroup -type system and the pipeline'{
