@@ -1,12 +1,25 @@
 ## Next version (Unreleased)
 
+## 1.3.0
+Release Date: April 27, 2018
+
+#### RELEASE NOTES
+
+```
+New Function: Set-JCUserGroupLDAP to toggle the LDAP presentation on/off for JumpCloud user groups.
+New Function: Get-JCCommandTarget to query the JumpCloud systems or system groups associated with a JumpCloud command.
+New Function: Add-JCCommandTarget to add JumpCloud system or system group associations to JumpCloud commands.
+New Function: Remove-JCCommandTarget to remove JumpCloud system or system group associations from JumpCloud commands. 
+Updated Functions: Add-JCUser and Set-JCUser with boolean parameter '-password_never_expires' 
+```
+
 #### FEATURES:
 
 - New Function: Set-JCUserGroupLDAP to toggle the LDAP presentation on/off for JumpCloud user groups.
 - New Function: Get-JCCommandTarget to query the JumpCloud systems or system groups associated with a JumpCloud command.
 - New Function: Add-JCCommandTarget to add JumpCloud system or system group associations to JumpCloud commands.
 - New Function: Remove-JCCommandTarget to remove JumpCloud system or system group associations from JumpCloud commands. 
-- Updated Functions: Add-JCUser and Set-JCUser with parameter 'password_never_expires'. 
+- Updated Functions: Add-JCUser and Set-JCUser with boolean parameter 'password_never_expires'. 
 
 
 #### BUG FIXES:
