@@ -22,7 +22,7 @@ To build this command within your JumpCloud tenant follow the below steps.
 
 ##### Step 1 - Download the .ps1 file
 
-Download the [WindowsUpdates.ps1](https://github.com/TheJumpCloud/support/blob/master/PowerShell/JumpCloud%20Commands%20Gallery/Files/WindowsUpdates.ps1)
+Download the [WindowsUpdates.ps1](https://raw.githubusercontent.com/TheJumpCloud/support/master/PowerShell/JumpCloud%20Commands%20Gallery/Files/WindowsUpdates.ps1)
 file to your local computer. 
 
 Click the above link and then right click and select 'Save As'
