@@ -12,7 +12,7 @@ windows
 
 #### Description
 
-After the command executes a log of the downloaded and installed, updates will be present in the users C:\Windows\ directory.
+After the command executes a log of the downloaded and installed updates will be present in the users C:\Windows\ directory.
 
 This log file will be named 'JC_WinUpdate_Report_mmDDYYThhmmss' where 'mmDDYYThhmmss' corresponds to the date and time the command was run.
 
