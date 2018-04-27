@@ -27,7 +27,11 @@ file to your local computer.
 
 Click the above link and then right click and select 'Save As'
 
+![Save As](https://raw.githubusercontent.com/TheJumpCloud/support/master/PowerShell/JumpCloud%20Commands%20Gallery/Files/Windows%20-%20Install%20Updates%20SaveAs.png)
+
 ** Be sure to save the file as a .ps1 file and not a .txt file **
+
+![Save As Ps1](https://raw.githubusercontent.com/TheJumpCloud/support/master/PowerShell/JumpCloud%20Commands%20Gallery/Files/Windows%20-%20Install%20Updates%20SaveAsPS1.png)
 
 ##### Step 2 - Create the command
 
@@ -51,6 +55,8 @@ Leave the 'Windows PowerShell' box **unchecked***
 Click the 'Upload File' button and upload the file 'WindowsUpdates.ps1' which you downloaded in Step 1
 
 Leave the Event type to 'Run Manually' and the Timeout to '120'
+
+![Final Command](https://raw.githubusercontent.com/TheJumpCloud/support/master/PowerShell/JumpCloud%20Commands%20Gallery/Files/Windows%20-%20Install%20Updates%20FinalCommand.png)
 
 Save the command.
 
