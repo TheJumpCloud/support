@@ -7,7 +7,7 @@
 #### Banner Current
 
 ```
-Module up-to-date! New examples are live! Go to 'https://git.io/jc-pwsh-examples' to check them out. 
+Module up-to-date. Check out the new functions in version 1.3.0 https://git.io/jc-pwsh-releasenotes 
 ```
 
 #### Banner Old
