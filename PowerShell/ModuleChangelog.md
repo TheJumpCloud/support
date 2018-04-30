@@ -1,5 +1,9 @@
 ## Next version (Unreleased)
 
+#### FEATURES:
+
+- Updated Function:  Invoke-JCCommand has added parameter '-NumberOfVariables' for passing in arguments for JumpCloud commands. This paramter will create additional paramters dynamically based on the number of variables being passed. Learn more about passing objects to JumpCloud commands under the heading 'Sending data with triggers' [here](https://support.jumpcloud.com/customer/en/portal/articles/2443894-how-to-use-command-triggers).
+
 ## 1.3.0
 Release Date: April 27, 2018
 
