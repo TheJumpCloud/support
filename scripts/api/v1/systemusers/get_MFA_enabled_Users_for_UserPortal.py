@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 # Use this script to return all users in your Organization that have MFA enabled for their User Portal.
+# This script works in Python3 only.
 
 import json
 import sys
