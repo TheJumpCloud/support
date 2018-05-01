@@ -14,7 +14,8 @@ stat -f "%Su" /dev/console
 
 #### Description
 
-The owner of the /dev/console file will reprepsent the currently logged in user to the OSX GUI. This command ouputs this user. 
+The owner of the /dev/console file will reprepsent the currently logged in user to the OSX GUI. This command ouputs this user.
+If the command returns **root** then no user has signed in and the machine is online at the login screen. 
 
 #### *Import This Command*
 
