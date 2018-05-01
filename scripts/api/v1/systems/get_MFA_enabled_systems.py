@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 # Use this script to return all systems in your Organization that have MFA enabled.
+# You will need to paginate this script as response limit is default 10. 
 # This script works in Python3 only.
 
 import json
