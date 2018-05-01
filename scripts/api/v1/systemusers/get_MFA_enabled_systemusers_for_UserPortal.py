@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 # Use this script to return all users in your Organization that have MFA enabled for their User Portal.
+# You will need to paginate this script as response limit is default 10. 
 # This script works in Python3 only.
 
 import json
