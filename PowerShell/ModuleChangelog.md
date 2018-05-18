@@ -9,7 +9,7 @@ Optimized functions allow for searching using wildcards on all string properties
 boolean filters, a new -filterDateProperty parameter. 
 The awesome news is these actions happen server side which speeds things up immensely. 
 Updated Functions: Invoke-JCCommand has added parameter '-NumberOfVariables' 
-This allowsfor passing in variables into existing JumpCloud commands.
+This allows admins to pass variables into existing JumpCloud commands.
 Bug fixes: Connect-JCOnline, Add-JCUserGroupMember, and Get-JCSystemGroupMember
 Improvements: Optimized Helper Hash Functions to speed up hash table creation and overall performance. 
 ```
