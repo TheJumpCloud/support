@@ -2,7 +2,12 @@
 
 #### FEATURES:
 
-- Updated Function:  Invoke-JCCommand has added parameter '-NumberOfVariables' for passing in arguments for JumpCloud commands. This paramter will create additional paramters dynamically based on the number of variables being passed. Learn more about passing objects to JumpCloud commands under the heading 'Sending data with triggers' [here](https://support.jumpcloud.com/customer/en/portal/articles/2443894-how-to-use-command-triggers).
+- Updated Function:  Invoke-JCCommand has added parameter '-NumberOfVariables' for passing in variables to JumpCloud commands. This paramter will create additional paramters dynamically based on the number of variables being passed. Learn more about passing objects to JumpCloud commands under the heading 'Sending data with triggers' [here](https://support.jumpcloud.com/customer/en/portal/articles/2443894-how-to-use-command-triggers).
+- Updated Function: Get-JCSystem to use the [/search/systems API endpoint](https://docs.jumpcloud.com/1.0/search/search-systems). 
+  - Get-JCSystem can now do front and end wild card searches on all string properties
+    - Example 'Get-JCsystem -hostname '\*admin\*'
+  - Get-JCSystem can now do date searches on 'Created' date using new paramter -filterDateProperty
+  - Get-JCSystem can now return only specific properties using new paramter -returnProperties
 
 #### BUG FIXES:
 
