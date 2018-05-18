@@ -6,14 +6,25 @@
 - Updated Function: Get-JCSystem to use the [/search/systems API endpoint](https://docs.jumpcloud.com/1.0/search/search-systems). 
   - Get-JCSystem can now do front and end wild card searches on all string properties
     - Example 'Get-JCsystem -hostname '\*admin\*'
-  - Get-JCSystem can now do date searches on 'Created' date using new paramter -filterDateProperty
+  - Get-JCSystem can now do date searches on 'Created' date field using new paramter -filterDateProperty
   - Get-JCSystem can now return only specific properties using new paramter -returnProperties
+- Updated Function: Get-JCUser to use the [/search/systemusers API endpoint](https://docs.jumpcloud.com/1.0/search/list-system-users). 
+  - Get-JCUser can now do front and end wild card searches on all string properties
+    - Example 'Get-JCUser -username '\*bob\*'
+  - Get-JCUser can now do date searches on 'Created' and 'password_expiration_date' date fields using new paramter -filterDateProperty
+  - Get-JCUser can now return only specific properties using new paramter -returnProperties
+  
 
 #### BUG FIXES:
 
 - Updated Functions: Get-JCSystemGroupMember to properly paginate results greater than 100 system group members. 
 - Updated Function:  Add-JCUserGroupMember to handle user error additions more gracefully. 
 - Updated Function: Connect-JCOnline to Write-Error instead of Write-Output if API key validation fails
+
+#### IMPROVEMENTS:
+
+- Updated Helper Hash Functions to leverage the -returnProperties which speeds up hash table creation and overall performance. 
+  
 
 ## 1.3.0
 Release Date: April 27, 2018
