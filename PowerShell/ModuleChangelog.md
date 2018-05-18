@@ -4,8 +4,8 @@ Release Date: May 18, 2018
 #### RELEASE NOTES
 
 ```
-Optimized Functions: Get-JCUser and Get-JCSystem have been overhauled.
-Omptimzied functions allow for searching using wildcards on all string properties, 
+Optimized Functions: Get-JCUser and Get-JCSystem have been overhauled!! 
+Optimized functions allow for searching using wildcards on all string properties, 
 boolean filters, a new -filterDateProperty parameter. 
 The awesome news is these actions happen server side which speeds things up immensely. 
 Updated Functions: Invoke-JCCommand has added parameter '-NumberOfVariables' 
