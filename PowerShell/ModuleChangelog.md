@@ -1,4 +1,19 @@
-## Next version (Unreleased)
+## 1.4.0
+Release Date: May 18, 2018
+
+#### RELEASE NOTES
+
+```
+Updated Functions: Get-JCUser can now do front and end wild card searches on all string properties
+Get-JCUser can now do date searches on 'Created' and 'password_expiration_date' date fields using new paramter -filterDateProperty
+Get-JCUser can now return only specific properties using new paramter -returnProperties
+Updated Functions: Get-JCSystem can now do front and end wild card searches on all string properties
+Get-JCSystem can now do date searches on 'Created' date field using new paramter -filterDateProperty
+Get-JCSystem can now return only specific properties using new paramter -returnProperties
+Updated Functions: Invoke-JCCommand has added parameter '-NumberOfVariables' for passing in variables to JumpCloud commands.
+Bug fixes for: Connect-JCOnline, Add-JCUserGroupMember, and Get-JCSystemGroupMember
+Improvements: Updated Helper Hash Functions to leverage the -returnProperties which speeds up hash table creation and overall performance. 
+```
 
 #### FEATURES:
 
