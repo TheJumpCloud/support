@@ -4,10 +4,14 @@ Release Date: May 18, 2018
 #### RELEASE NOTES
 
 ```
-Optimized Functions: Get-JCUser and Get-JCSystem have been overhauled to allow for searching using wildcards on all string properties, boolean filters, a new -filterDateProperty parameter. The awesome news is these actions happen server side which speeds things up immensely. 
-Updated Functions: Invoke-JCCommand has added parameter '-NumberOfVariables' for passing in variables to JumpCloud commands.
-Bug fixes for: Connect-JCOnline, Add-JCUserGroupMember, and Get-JCSystemGroupMember
-Improvements: Updated Helper Hash Functions to leverage the -returnProperties which speed up hash table creation and overall performance. 
+Optimized Functions: Get-JCUser and Get-JCSystem have been overhauled.
+Omptimzied functions allow for searching using wildcards on all string properties, 
+boolean filters, a new -filterDateProperty parameter. 
+The awesome news is these actions happen server side which speeds things up immensely. 
+Updated Functions: Invoke-JCCommand has added parameter '-NumberOfVariables' 
+This allowsfor passing in variables into existing JumpCloud commands.
+Bug fixes: Connect-JCOnline, Add-JCUserGroupMember, and Get-JCSystemGroupMember
+Improvements: Optimized Helper Hash Functions to speed up hash table creation and overall performance. 
 ```
 
 #### FEATURES:
