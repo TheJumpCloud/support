@@ -13,5 +13,5 @@ Module up-to-date. Check out the new functions in version 1.3.0 https://git.io/j
 #### Banner Old
 
 ```
-SURPRISE! New JumpCloud module avaliable!
+Have a need for speed? New JumpCloud module update avaliable with performance increases!
 ```
