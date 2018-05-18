@@ -1510,12 +1510,7 @@
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="_id, id">
           <maml:name>SystemID</maml:name>
           <maml:Description>
-            <maml:para>The _id of the System which you want to query.</maml:para>
-            <maml:para>To find a JumpCloud SystemID run the command:</maml:para>
-            <maml:para></maml:para>
-            <maml:para></maml:para>
-            <maml:para>PS C:&gt; Get-JCSystem | Select hostname, _id</maml:para>
-            <maml:para>The SystemID will be the 24 character string populated for the _id field.</maml:para>
+            <maml:para>The _id or id of the System which you want to query.</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -1524,41 +1519,448 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-          <maml:name>ByID</maml:name>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Get-JCSystem</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>active</maml:name>
           <maml:Description>
-            <maml:para>Use the -ByID parameter when you want to query a specific System or if the -SystemID property is being passed over the pipeline. The -ByID SwitchParameter will set the ParameterSet to 'ByID' which queries one JumpCloud command at a time.</maml:para>
+            <maml:para></maml:para>
           </maml:Description>
+          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
           <dev:type>
-            <maml:name>SwitchParameter</maml:name>
+            <maml:name>Boolean</maml:name>
             <maml:uri />
           </dev:type>
-          <dev:defaultValue>False</dev:defaultValue>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="true" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>agentVersion</maml:name>
+          <maml:Description>
+            <maml:para>A search filter to search systems by the agentVersion.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>allowMultiFactorAuthentication</maml:name>
+          <maml:Description>
+            <maml:para>A search filter to show systems that are enabled ($true) or disabled ($true) for allowMultiFactorAuthentication</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <dev:type>
+            <maml:name>Boolean</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>allowPublicKeyAuthentication</maml:name>
+          <maml:Description>
+            <maml:para>A search filter to show systems that are enabled ($true) or disabled ($true) for allowMultiFactorAuthentication</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <dev:type>
+            <maml:name>Boolean</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>allowSshPasswordAuthentication</maml:name>
+          <maml:Description>
+            <maml:para>A search filter to show systems that are enabled ($true) or disabled ($true) for allowMultiFactorAuthentication</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <dev:type>
+            <maml:name>Boolean</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>allowSshRootLogin</maml:name>
+          <maml:Description>
+            <maml:para>A search filter to show systems that are enabled ($true) or disabled ($true) for allowMultiFactorAuthentication</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <dev:type>
+            <maml:name>Boolean</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="true" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>arch</maml:name>
+          <maml:Description>
+            <maml:para>A search filter to search systems by the processor arch.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="true" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>displayName</maml:name>
+          <maml:Description>
+            <maml:para>A search filter to search systems by the displayName.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>filterDateProperty</maml:name>
+          <maml:Description>
+            <maml:para>A paramter that can filter on the property 'created'. This parameter if used creates two more dynamic parameters 'dateFilter' and 'date'. See EXAMPLE 5 above for full syntax.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="true" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>hostname</maml:name>
+          <maml:Description>
+            <maml:para>A search filter to search systems by the hostname.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>modifySSHDConfig</maml:name>
+          <maml:Description>
+            <maml:para>A search filter to show systems that are enabled ($true) or disabled ($true) for modifySSHDConfig</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <dev:type>
+            <maml:name>Boolean</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="true" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>os</maml:name>
+          <maml:Description>
+            <maml:para>A search filter to search systems by the OS.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="true" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>remoteIP</maml:name>
+          <maml:Description>
+            <maml:para>A search filter to search systems by the remoteIP.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>returnProperties</maml:name>
+          <maml:Description>
+            <maml:para>Allows you to return select properties on JumpCloud system objects. Specifying what properties are returned can drastically increase the speed of the API call with a large data set. Valid properties that can be returned are: 'created', 'active', 'agentVersion', 'allowMultiFactorAuthentication', 'allowPublicKeyAuthentication', 'allowSshPasswordAuthentication', 'allowSshRootLogin', 'arch', 'created', 'displayName', 'hostname', 'lastContact', 'modifySSHDConfig', 'organization', 'os', 'remoteIP', 'serialNumber', 'sshdParams', 'systemTimezone', 'templateName', 'version'</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+          <dev:type>
+            <maml:name>String[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="true" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>serialNumber</maml:name>
+          <maml:Description>
+            <maml:para>A search filter to search systems by the serialNumber.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>systemTimezone</maml:name>
+          <maml:Description>
+            <maml:para>A search filter to search systems by the serialNumber. This field DOES NOT take wildcard input.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="true" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>templateName</maml:name>
+          <maml:Description>
+            <maml:para>A search filter to search systems by the templateName.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="true" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>version</maml:name>
+          <maml:Description>
+            <maml:para>A search filter to search systems by the version.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-        <maml:name>ByID</maml:name>
-        <maml:Description>
-          <maml:para>Use the -ByID parameter when you want to query a specific System or if the -SystemID property is being passed over the pipeline. The -ByID SwitchParameter will set the ParameterSet to 'ByID' which queries one JumpCloud command at a time.</maml:para>
-        </maml:Description>
-        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
-        <dev:type>
-          <maml:name>SwitchParameter</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>False</dev:defaultValue>
-      </command:parameter>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="_id, id">
         <maml:name>SystemID</maml:name>
         <maml:Description>
-          <maml:para>The _id of the System which you want to query.</maml:para>
-          <maml:para>To find a JumpCloud SystemID run the command:</maml:para>
+          <maml:para>The _id or id of the System which you want to query.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>active</maml:name>
+        <maml:Description>
           <maml:para></maml:para>
-          <maml:para></maml:para>
-          <maml:para>PS C:&gt; Get-JCSystem | Select hostname, _id</maml:para>
-          <maml:para>The SystemID will be the 24 character string populated for the _id field.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+        <dev:type>
+          <maml:name>Boolean</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="true" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>agentVersion</maml:name>
+        <maml:Description>
+          <maml:para>A search filter to search systems by the agentVersion.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>allowMultiFactorAuthentication</maml:name>
+        <maml:Description>
+          <maml:para>A search filter to show systems that are enabled ($true) or disabled ($true) for allowMultiFactorAuthentication</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+        <dev:type>
+          <maml:name>Boolean</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>allowPublicKeyAuthentication</maml:name>
+        <maml:Description>
+          <maml:para>A search filter to show systems that are enabled ($true) or disabled ($true) for allowMultiFactorAuthentication</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+        <dev:type>
+          <maml:name>Boolean</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>allowSshPasswordAuthentication</maml:name>
+        <maml:Description>
+          <maml:para>A search filter to show systems that are enabled ($true) or disabled ($true) for allowMultiFactorAuthentication</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+        <dev:type>
+          <maml:name>Boolean</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>allowSshRootLogin</maml:name>
+        <maml:Description>
+          <maml:para>A search filter to show systems that are enabled ($true) or disabled ($true) for allowMultiFactorAuthentication</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+        <dev:type>
+          <maml:name>Boolean</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="true" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>arch</maml:name>
+        <maml:Description>
+          <maml:para>A search filter to search systems by the processor arch.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="true" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>displayName</maml:name>
+        <maml:Description>
+          <maml:para>A search filter to search systems by the displayName.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>filterDateProperty</maml:name>
+        <maml:Description>
+          <maml:para>A paramter that can filter on the property 'created'. This parameter if used creates two more dynamic parameters 'dateFilter' and 'date'. See EXAMPLE 5 above for full syntax.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="true" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>hostname</maml:name>
+        <maml:Description>
+          <maml:para>A search filter to search systems by the hostname.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>modifySSHDConfig</maml:name>
+        <maml:Description>
+          <maml:para>A search filter to show systems that are enabled ($true) or disabled ($true) for modifySSHDConfig</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+        <dev:type>
+          <maml:name>Boolean</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="true" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>os</maml:name>
+        <maml:Description>
+          <maml:para>A search filter to search systems by the OS.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="true" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>remoteIP</maml:name>
+        <maml:Description>
+          <maml:para>A search filter to search systems by the remoteIP.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>returnProperties</maml:name>
+        <maml:Description>
+          <maml:para>Allows you to return select properties on JumpCloud system objects. Specifying what properties are returned can drastically increase the speed of the API call with a large data set. Valid properties that can be returned are: 'created', 'active', 'agentVersion', 'allowMultiFactorAuthentication', 'allowPublicKeyAuthentication', 'allowSshPasswordAuthentication', 'allowSshRootLogin', 'arch', 'created', 'displayName', 'hostname', 'lastContact', 'modifySSHDConfig', 'organization', 'os', 'remoteIP', 'serialNumber', 'sshdParams', 'systemTimezone', 'templateName', 'version'</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+        <dev:type>
+          <maml:name>String[]</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="true" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>serialNumber</maml:name>
+        <maml:Description>
+          <maml:para>A search filter to search systems by the serialNumber.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>systemTimezone</maml:name>
+        <maml:Description>
+          <maml:para>A search filter to search systems by the serialNumber. This field DOES NOT take wildcard input.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="true" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>templateName</maml:name>
+        <maml:Description>
+          <maml:para>A search filter to search systems by the templateName.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="true" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>version</maml:name>
+        <maml:Description>
+          <maml:para>A search filter to search systems by the version.</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -1596,30 +1998,44 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCSystem</dev:code>
+        <dev:code>Get-JCSystem</dev:code>
         <dev:remarks>
           <maml:para>Returns all JumpCloud managed systems and the information describing these systems.</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
         <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCSystemUser -SystemID 5n0795a712704la4eve154r</dev:code>
+        <dev:code>Get-JCSystemUser -SystemID 5n0795a712704la4eve154r</dev:code>
         <dev:remarks>
           <maml:para>Returns a single JumpCloud System with SystemID '5n0795a712704la4eve154r'.</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
         <maml:title>-------------------------- Example 3 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCSystem | Where-Object active -EQ $true</dev:code>
+        <dev:code>Get-JCSystem -active $true</dev:code>
         <dev:remarks>
           <maml:para>Returns all active JumpCloud Systems and the information describing these systems.</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
         <maml:title>-------------------------- Example 4 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCSystem | Where-Object {$_.agentVersion -NE '0.9.633' -and $_.os -like '*Mac*'}</dev:code>
+        <dev:code>Get-JCSystem -agentVersion '0.9.6*' -os '*Mac*'</dev:code>
         <dev:remarks>
-          <maml:para>Returns all JumpCloud systems where the agentVersion is not equal to '0.9.633' and the operating system is like ' Mac '</maml:para>
+          <maml:para>Returns all JumpCloud systems where the agentVersion is '0.9.6. ' and the operating system is like ' Mac*'</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 5 --------------------------</maml:title>
+        <dev:code>Get-JCSystem -filterDateProperty created -dateFilter after -date 01/01/2018</dev:code>
+        <dev:remarks>
+          <maml:para>Returns all JumpCloud systems that were created after 01/01/2018 using the parameter -filterDateProperty and the dynamic parameters -dateFilter and -date</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 6 --------------------------</maml:title>
+        <dev:code>Get-JCSystem -returnProperties remoteIP, active</dev:code>
+        <dev:remarks>
+          <maml:para>Returns all JumpCloud systems and the properties remoteIP and active. The default properties that return are lastContact and _id.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -1887,27 +2303,8 @@
     <command:syntax>
       <command:syntaxItem>
         <maml:name>Get-JCUser</maml:name>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="_id, id">
-          <maml:name>UserID</maml:name>
-          <maml:Description>
-            <maml:para>The _id of the User which you want to modify.</maml:para>
-            <maml:para>To find a JumpCloud UserID run the command:</maml:para>
-            <maml:para>PS C:&gt; Get-JCUser | Select username, _id</maml:para>
-            <maml:para>The UserID will be the 24 character string populated for the _id field.</maml:para>
-            <maml:para>UserID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically.</maml:para>
-          </maml:Description>
-          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-          <dev:type>
-            <maml:name>String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-      </command:syntaxItem>
-      <command:syntaxItem>
-        <maml:name>Get-JCUser</maml:name>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
-          <maml:name>Username</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="true" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
+          <maml:name>username</maml:name>
           <maml:Description>
             <maml:para>The Username of the JumpCloud user you wish to search for.</maml:para>
           </maml:Description>
@@ -1918,11 +2315,44 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-      </command:syntaxItem>
-      <command:syntaxItem>
-        <maml:name>Get-JCUser</maml:name>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
-          <maml:name>Email</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>account_locked</maml:name>
+          <maml:Description>
+            <maml:para>A search filter to return users that are in a locked ($true) or unlocked ($false) state.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <dev:type>
+            <maml:name>Boolean</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>activated</maml:name>
+          <maml:Description>
+            <maml:para>A search filter to return users that are activated ($true) or those that have not set a password ($false).</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <dev:type>
+            <maml:name>Boolean</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>allow_public_key</maml:name>
+          <maml:Description>
+            <maml:para>A search filter to show accounts that are enabled ($true) or disabled ($true) to allow_public_key</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <dev:type>
+            <maml:name>Boolean</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="true" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>email</maml:name>
           <maml:Description>
             <maml:para>The Email of the JumpCloud user you wish to search for.</maml:para>
           </maml:Description>
@@ -1933,13 +2363,190 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-      </command:syntaxItem>
-      <command:syntaxItem>
-        <maml:name>Get-JCUser</maml:name>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
-          <maml:name>FirstName</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>enable_managed_uid</maml:name>
+          <maml:Description>
+            <maml:para>A search filter to show accounts that are enabled ($true) or disabled ($false) for enable_managed_uid</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <dev:type>
+            <maml:name>Boolean</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>enable_user_portal_multifactor</maml:name>
+          <maml:Description>
+            <maml:para>A search filter to show accounts that are enabled ($true) or disabled ($false) for enable_user_portal_multifactor</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <dev:type>
+            <maml:name>Boolean</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>externally_managed</maml:name>
+          <maml:Description>
+            <maml:para>A search filter to show accounts that are enabled ($true) or disabled ($false) for externally_managed</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <dev:type>
+            <maml:name>Boolean</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>filterDateProperty</maml:name>
+          <maml:Description>
+            <maml:para>A paramter that can filter the properties 'created' or 'password_expiration_date'. This parameter if used creates two more dynamic parameters 'dateFilter' and 'date'. See EXAMPLE 4 above for full syntax.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="true" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>firstname</maml:name>
           <maml:Description>
             <maml:para>The First Name of the JumpCloud user you wish to search for.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="true" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>lastname</maml:name>
+          <maml:Description>
+            <maml:para>The Last Name of the JumpCloud user you wish to search for.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>ldap_binding_user</maml:name>
+          <maml:Description>
+            <maml:para>A search filter to show accounts that are enabled ($true) or disabled ($false) for ldap_binding_user</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <dev:type>
+            <maml:name>Boolean</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>password_expired</maml:name>
+          <maml:Description>
+            <maml:para>A search filter to show accounts that have expired passwords ($true) or valid passwords ($false)</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <dev:type>
+            <maml:name>Boolean</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>password_never_expires</maml:name>
+          <maml:Description>
+            <maml:para>A search filter to show accounts that are enabled ($true) or disabled ($false) for password_never_expires</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <dev:type>
+            <maml:name>Boolean</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>passwordless_sudo</maml:name>
+          <maml:Description>
+            <maml:para>A search filter to show accounts that are enabled ($true) or disabled ($false) for passwordless_sudo</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <dev:type>
+            <maml:name>Boolean</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>returnProperties</maml:name>
+          <maml:Description>
+            <maml:para>Allows you to return select properties on JumpCloud user objects. Specifying what properties are returned can drastically increase the speed of the API call with a large data set. Valid properties that can be returned are: 'created', 'password_expiration_date', 'account_locked', 'activated', 'addresses', 'allow_public_key', 'attributes', 'email', 'enable_managed_uid', 'enable_user_portal_multifactor', 'externally_managed', 'firstname', 'lastname', 'ldap_binding_user', 'passwordless_sudo', 'password_expired', 'password_never_expires', 'phoneNumbers', 'samba_service_user', 'ssh_keys', 'sudo', 'totp_enabled', 'unix_guid', 'unix_uid', 'username'</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+          <dev:type>
+            <maml:name>String[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>samba_service_user</maml:name>
+          <maml:Description>
+            <maml:para>A search filter to show accounts that are enabled ($true) or disabled ($false) for samba_service_user</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <dev:type>
+            <maml:name>Boolean</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>sudo</maml:name>
+          <maml:Description>
+            <maml:para>A search filter to show accounts that are enabled ($true) or disabled ($false) for sudo</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <dev:type>
+            <maml:name>Boolean</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>totp_enabled</maml:name>
+          <maml:Description>
+            <maml:para>A search filter to show accounts that are enabled ($true) or disabled ($false) for totp_enabled</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <dev:type>
+            <maml:name>Boolean</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>unix_guid</maml:name>
+          <maml:Description>
+            <maml:para>A search filter to search for users with a specific unix_gid. DOES NOT accept wild card input.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>unix_uid</maml:name>
+          <maml:Description>
+            <maml:para>A search filter to search for users with a specific unix_uid. DOES NOT accept wild card input.</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -1951,10 +2558,11 @@
       </command:syntaxItem>
       <command:syntaxItem>
         <maml:name>Get-JCUser</maml:name>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
-          <maml:name>LastName</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="_id, id">
+          <maml:name>userid</maml:name>
           <maml:Description>
-            <maml:para>The Last Name of the JumpCloud user you wish to search for.</maml:para>
+            <maml:para>The _id of the User which you want to modify.</maml:para>
+            <maml:para>UserID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically.</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -1966,36 +2574,44 @@
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="_id, id">
-        <maml:name>UserID</maml:name>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>account_locked</maml:name>
         <maml:Description>
-          <maml:para>The _id of the User which you want to modify.</maml:para>
-          <maml:para>To find a JumpCloud UserID run the command:</maml:para>
-          <maml:para>PS C:&gt; Get-JCUser | Select username, _id</maml:para>
-          <maml:para>The UserID will be the 24 character string populated for the _id field.</maml:para>
-          <maml:para>UserID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically.</maml:para>
+          <maml:para>A search filter to return users that are in a locked ($true) or unlocked ($false) state.</maml:para>
         </maml:Description>
-        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
         <dev:type>
-          <maml:name>String</maml:name>
+          <maml:name>Boolean</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
-        <maml:name>Username</maml:name>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>activated</maml:name>
         <maml:Description>
-          <maml:para>The Username of the JumpCloud user you wish to search for.</maml:para>
+          <maml:para>A search filter to return users that are activated ($true) or those that have not set a password ($false).</maml:para>
         </maml:Description>
-        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
         <dev:type>
-          <maml:name>String</maml:name>
+          <maml:name>Boolean</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
-        <maml:name>Email</maml:name>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>allow_public_key</maml:name>
+        <maml:Description>
+          <maml:para>A search filter to show accounts that are enabled ($true) or disabled ($true) to allow_public_key</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+        <dev:type>
+          <maml:name>Boolean</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="true" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>email</maml:name>
         <maml:Description>
           <maml:para>The Email of the JumpCloud user you wish to search for.</maml:para>
         </maml:Description>
@@ -2006,8 +2622,56 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
-        <maml:name>FirstName</maml:name>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>enable_managed_uid</maml:name>
+        <maml:Description>
+          <maml:para>A search filter to show accounts that are enabled ($true) or disabled ($false) for enable_managed_uid</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+        <dev:type>
+          <maml:name>Boolean</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>enable_user_portal_multifactor</maml:name>
+        <maml:Description>
+          <maml:para>A search filter to show accounts that are enabled ($true) or disabled ($false) for enable_user_portal_multifactor</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+        <dev:type>
+          <maml:name>Boolean</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>externally_managed</maml:name>
+        <maml:Description>
+          <maml:para>A search filter to show accounts that are enabled ($true) or disabled ($false) for externally_managed</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+        <dev:type>
+          <maml:name>Boolean</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>filterDateProperty</maml:name>
+        <maml:Description>
+          <maml:para>A paramter that can filter the properties 'created' or 'password_expiration_date'. This parameter if used creates two more dynamic parameters 'dateFilter' and 'date'. See EXAMPLE 4 above for full syntax.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="true" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>firstname</maml:name>
         <maml:Description>
           <maml:para>The First Name of the JumpCloud user you wish to search for.</maml:para>
         </maml:Description>
@@ -2018,10 +2682,155 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
-        <maml:name>LastName</maml:name>
+      <command:parameter required="false" variableLength="true" globbing="true" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>lastname</maml:name>
         <maml:Description>
           <maml:para>The Last Name of the JumpCloud user you wish to search for.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>ldap_binding_user</maml:name>
+        <maml:Description>
+          <maml:para>A search filter to show accounts that are enabled ($true) or disabled ($false) for ldap_binding_user</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+        <dev:type>
+          <maml:name>Boolean</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>password_expired</maml:name>
+        <maml:Description>
+          <maml:para>A search filter to show accounts that have expired passwords ($true) or valid passwords ($false)</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+        <dev:type>
+          <maml:name>Boolean</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>password_never_expires</maml:name>
+        <maml:Description>
+          <maml:para>A search filter to show accounts that are enabled ($true) or disabled ($false) for password_never_expires</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+        <dev:type>
+          <maml:name>Boolean</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>passwordless_sudo</maml:name>
+        <maml:Description>
+          <maml:para>A search filter to show accounts that are enabled ($true) or disabled ($false) for passwordless_sudo</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+        <dev:type>
+          <maml:name>Boolean</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>returnProperties</maml:name>
+        <maml:Description>
+          <maml:para>Allows you to return select properties on JumpCloud user objects. Specifying what properties are returned can drastically increase the speed of the API call with a large data set. Valid properties that can be returned are: 'created', 'password_expiration_date', 'account_locked', 'activated', 'addresses', 'allow_public_key', 'attributes', 'email', 'enable_managed_uid', 'enable_user_portal_multifactor', 'externally_managed', 'firstname', 'lastname', 'ldap_binding_user', 'passwordless_sudo', 'password_expired', 'password_never_expires', 'phoneNumbers', 'samba_service_user', 'ssh_keys', 'sudo', 'totp_enabled', 'unix_guid', 'unix_uid', 'username'</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+        <dev:type>
+          <maml:name>String[]</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>samba_service_user</maml:name>
+        <maml:Description>
+          <maml:para>A search filter to show accounts that are enabled ($true) or disabled ($false) for samba_service_user</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+        <dev:type>
+          <maml:name>Boolean</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>sudo</maml:name>
+        <maml:Description>
+          <maml:para>A search filter to show accounts that are enabled ($true) or disabled ($false) for sudo</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+        <dev:type>
+          <maml:name>Boolean</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>totp_enabled</maml:name>
+        <maml:Description>
+          <maml:para>A search filter to show accounts that are enabled ($true) or disabled ($false) for totp_enabled</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+        <dev:type>
+          <maml:name>Boolean</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>unix_guid</maml:name>
+        <maml:Description>
+          <maml:para>A search filter to search for users with a specific unix_gid. DOES NOT accept wild card input.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>unix_uid</maml:name>
+        <maml:Description>
+          <maml:para>A search filter to search for users with a specific unix_uid. DOES NOT accept wild card input.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="_id, id">
+        <maml:name>userid</maml:name>
+        <maml:Description>
+          <maml:para>The _id of the User which you want to modify.</maml:para>
+          <maml:para>UserID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="true" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
+        <maml:name>username</maml:name>
+        <maml:Description>
+          <maml:para>The Username of the JumpCloud user you wish to search for.</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -2066,30 +2875,30 @@
       </command:example>
       <command:example>
         <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCUser -Username cclemons</dev:code>
+        <dev:code>Get-JCUser -Username cclemons</dev:code>
         <dev:remarks>
           <maml:para>Returns the information describing the JumpCloud User with Username cclemons</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
         <maml:title>-------------------------- Example 3 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCUser | Where-Object account_locked -EQ $true</dev:code>
+        <dev:code>Get-JCUser -Username *clemons</dev:code>
         <dev:remarks>
-          <maml:para>Returns all JumpCloud users that are currently in an locked out state</maml:para>
+          <maml:para>Returns all JumpCloud users that usernames end with clemons using the wildcard character '*'</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
         <maml:title>-------------------------- Example 4 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCUser | Where-Object created -gt (Get-Date).AddDays(-7)</dev:code>
+        <dev:code>Get-JCUser -filterDateProperty created -dateFilter after -date 01/01/2018</dev:code>
         <dev:remarks>
-          <maml:para>Returns all JumpCloud users that were created in the last seven days.</maml:para>
+          <maml:para>Returns all JumpCloud users that were created after '01/01/2018'. The parameter '-filterDateProperty' takes both 'created' and 'password_expiration_date' as input and creates two dynamic parameters '-dateFilter' which takes "before" or "after" as input and "-date" which takes a date value as input.</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
         <maml:title>-------------------------- Example 5 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCUser | Select-Object username, @{name='Attribute Name'; expression={$_.attributes.name}} | Where-Object 'Attribute Name' -Like *Department*</dev:code>
+        <dev:code>Get-JCUser -returnProperties username, sudo</dev:code>
         <dev:remarks>
-          <maml:para>Returns all JumpCloud users that have an Custom Attribute with the name 'Department' using the pipeline, Parameter Binding, and a calculated property.</maml:para>
+          <maml:para>Returns all JumpCloud users and only the username and sudo Properties of their JumpCloud user object.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -2453,14 +3262,24 @@
           <maml:Description>
             <maml:para>When creating a JumpCloud command that can be run via the Invoke-JCCommand function the command must be configured for 'Launch Event - Event type: Run on Trigger (webhook)' During command configuration a 'Trigger Name' is required. The value of this trigger name is what must be populated when using the Invoke-JCCommand function.</maml:para>
             <maml:para>To find all JumpCloud Command triggers run:</maml:para>
-            <maml:para></maml:para>
-            <maml:para></maml:para>
             <maml:para>PS C:&gt; Get-JCCommand | Where-Object launchType -EQ 'trigger'  | Select-Object name, trigger</maml:para>
             <maml:para>You can leverage the pipeline and Parameter Binding to populate the -trigger Parameter. This is shown in EXAMPLES 2 and 3.</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
             <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>NumberOfVariables</maml:name>
+          <maml:Description>
+            <maml:para>Denotes the number of variables you wish to send to the JumpCloud command. This parameter creates two dynamic parameters for each variable added. -Variable_1Name = the variable name -Variable1_Value = the value to pass. See EXAMPLE 2 above for full syntax.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+          <dev:type>
+            <maml:name>Int32</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -2473,14 +3292,24 @@
         <maml:Description>
           <maml:para>When creating a JumpCloud command that can be run via the Invoke-JCCommand function the command must be configured for 'Launch Event - Event type: Run on Trigger (webhook)' During command configuration a 'Trigger Name' is required. The value of this trigger name is what must be populated when using the Invoke-JCCommand function.</maml:para>
           <maml:para>To find all JumpCloud Command triggers run:</maml:para>
-          <maml:para></maml:para>
-          <maml:para></maml:para>
           <maml:para>PS C:&gt; Get-JCCommand | Where-Object launchType -EQ 'trigger'  | Select-Object name, trigger</maml:para>
           <maml:para>You can leverage the pipeline and Parameter Binding to populate the -trigger Parameter. This is shown in EXAMPLES 2 and 3.</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
           <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>NumberOfVariables</maml:name>
+        <maml:Description>
+          <maml:para>Denotes the number of variables you wish to send to the JumpCloud command. This parameter creates two dynamic parameters for each variable added. -Variable_1Name = the variable name -Variable1_Value = the value to pass. See EXAMPLE 2 above for full syntax.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+        <dev:type>
+          <maml:name>Int32</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -2514,21 +3343,28 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Invoke-JCCommand -trigger 'GetJCAgentLog'</dev:code>
+        <dev:code>Invoke-JCCommand -trigger 'GetJCAgentLog'</dev:code>
         <dev:remarks>
           <maml:para>Runs the command with a trigger of 'GetJCAgentLog' on all associated systems associated with this JumpCloud command.</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
         <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCCommand | Where-Object launchType -EQ 'trigger' | Invoke-JCCommand</dev:code>
+        <dev:code>Invoke-JCCommand -trigger 'InstallApp' -NumberOfVariables 1 -Variable1_name 'URL' -Variable1_value 'www.pathtoinstallfile.com'</dev:code>
+        <dev:remarks>
+          <maml:para>Runs the command with a trigger of 'GetJCAgentLog' and passes the variable 'URL' with value 'www.pathtoinstallfile.com' to the JumpCloud command.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
+        <dev:code>Get-JCCommand | Where-Object launchType -EQ 'trigger' | Invoke-JCCommand</dev:code>
         <dev:remarks>
           <maml:para>Runs all JumpCloud commands that can be run by the Invoke-JCCommand by passing the -Trigger Parameter over the pipeline using Parameter Binding.</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
-        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCCommand | Where-Object trigger -Like '*NewMacInstall*' | Invoke-JCCommand</dev:code>
+        <maml:title>-------------------------- Example 4 --------------------------</maml:title>
+        <dev:code>Get-JCCommand | Where-Object trigger -Like '*NewMacInstall*' | Invoke-JCCommand</dev:code>
         <dev:remarks>
           <maml:para>Runs all JumpCloud commands with a trigger that matches the expression -like ' NewMacInstall '. Use this Example to run multiple commands that have a common trigger naming convention.</maml:para>
         </dev:remarks>
@@ -6621,6 +7457,33 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
       </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Set-JCUserGroupLDAP</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>LDAPEnabled</maml:name>
+          <maml:Description>
+            <maml:para>A boolean $true/$false value to enable or disable LDAP for a group</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <dev:type>
+            <maml:name>Boolean</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="id, _id">
+          <maml:name>GroupID</maml:name>
+          <maml:Description>
+            <maml:para>{{Fill GroupID Description}}</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
     </command:syntax>
     <command:parameters>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="name">
@@ -6643,6 +7506,18 @@
         <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
         <dev:type>
           <maml:name>Boolean</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="id, _id">
+        <maml:name>GroupID</maml:name>
+        <maml:Description>
+          <maml:para>{{Fill GroupID Description}}</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>

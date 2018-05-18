@@ -6,16 +6,16 @@ Function Connect-JCOnline ()
     param
     (
         [Parameter(
-            ParameterSetName ='force',
+            ParameterSetName = 'force',
             Mandatory,
             ValueFromPipelineByPropertyName,
-            Position=0)]
+            Position = 0)]
         
         [Parameter(Mandatory = $True,
-            ParameterSetName ='Interactive',
-            Position=0,
+            ParameterSetName = 'Interactive',
+            Position = 0,
             HelpMessage = "Please enter your JumpCloud API key. This can be found in the JumpCloud admin console within 'API Settings' accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console.") ]
-            [ValidateScript( {
+        [ValidateScript( {
                 If (($_).Length -ne 40)
                 {
                     Throw "Please enter your API key. This can be found in the JumpCloud admin console within 'API Settings' accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console."
@@ -28,7 +28,7 @@ Function Connect-JCOnline ()
         [string]$JumpCloudAPIKey,
 
         [Parameter(
-        ParameterSetName ='force')]
+            ParameterSetName = 'force')]
         [Switch]
         $force
     )
@@ -56,11 +56,11 @@ Function Connect-JCOnline ()
 
         try
         {
-            Invoke-RestMethod -Method GET -Uri $ConnectionTestURL -Headers $hdrs -UserAgent 'Pwsh_1.3.0'  | Out-Null
+            Invoke-RestMethod -Method GET -Uri $ConnectionTestURL -Headers $hdrs -UserAgent 'Pwsh_1.4.0'  | Out-Null
         }
         catch
         {
-            Write-Output "Incorrect API key OR no network connectivity. To locate your JumpCloud API key log into the JumpCloud admin portal. The API key is located with 'API Settings' accessible from the drop down in the top right hand corner of the screen"
+            Write-Error "Incorrect API key OR no network connectivity. To locate your JumpCloud API key log into the JumpCloud admin portal. The API key is located with 'API Settings' accessible from the drop down in the top right hand corner of the screen"
             $global:JCAPIKEY = $null
             break
         }
@@ -70,7 +70,8 @@ Function Connect-JCOnline ()
     {
         $global:JCAPIKEY = $JumpCloudAPIKey
 
-        if ($PSCmdlet.ParameterSetName -eq 'Interactive') {
+        if ($PSCmdlet.ParameterSetName -eq 'Interactive')
+        {
 
             Write-Host -BackgroundColor Green -ForegroundColor Black "Successfully connected to JumpCloud"
 
@@ -78,20 +79,22 @@ Function Connect-JCOnline ()
 
             $CurrentBanner = ((((($GitHubModuleInfo -split "</a>Banner Current</h4>")[1]) -split "<pre><code>")[1]) -split "`n")[0]
 
-            $OldBanner =  ((((($GitHubModuleInfo -split "</a>Banner Old</h4>")[1]) -split "<pre><code>")[1]) -split "`n")[0]
+            $OldBanner = ((((($GitHubModuleInfo -split "</a>Banner Old</h4>")[1]) -split "<pre><code>")[1]) -split "`n")[0]
 
             $LatestVersion = ((((($GitHubModuleInfo -split "</a>Latest Version</h4>")[1]) -split "<pre><code>")[1]) -split "`n")[0]
     
     
             $InstalledModuleVersion = Get-InstalledModule -Name JumpCloud | Select-Object -ExpandProperty Version
     
-            if ($InstalledModuleVersion -eq $LatestVersion) {
+            if ($InstalledModuleVersion -eq $LatestVersion)
+            {
     
                 Write-Host -BackgroundColor Green -ForegroundColor Black "$CurrentBanner Module version: $InstalledModuleVersion" 
                 
             }
     
-            elseif ($InstalledModuleVersion -ne $LatestVersion) {
+            elseif ($InstalledModuleVersion -ne $LatestVersion)
+            {
     
                 Write-Host "$OldBanner" 
                 Write-Host -BackgroundColor Yellow -ForegroundColor Black  "Installed Version: $InstalledModuleVersion " -NoNewline
@@ -102,18 +105,21 @@ Function Connect-JCOnline ()
                 $Accept = Read-Host  "`nEnter 'Y' if you wish to update to version $LatestVersion or 'N' to continue using version: $InstalledModuleVersion"
 
 
-                if ($Accept -eq 'N') {
+                if ($Accept -eq 'N')
+                {
 
                     return #Exit the function
                 }
 
-                While ($Accept -notcontains 'Y'){
+                While ($Accept -notcontains 'Y')
+                {
 
                     write-warning " Typo? $Accept != 'Y'"
 
                     $Accept = Read-Host "`nEnter 'Y' if you wish to update to the latest version or 'N' to continue using version: $InstalledModuleVersion `n"
 
-                    if ($Accept -eq 'N') {
+                    if ($Accept -eq 'N')
+                    {
 
                         return # Exist the function
                     }
@@ -121,9 +127,11 @@ Function Connect-JCOnline ()
                 }
 
 
-                if ($PSVersionTable.PSVersion.Major -eq '5') {
+                if ($PSVersionTable.PSVersion.Major -eq '5')
+                {
 
-                    If (-NOT ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")){
+                    If (-NOT ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
+                    {
 
                         Write-Warning "You must have Administrative rights to update the module! To retry close this PowerShell session and open a new PowerShell session with Administrator permissions (Right click the PowerShell application and select 'Run as Administrator') and run the Connect-JCOnline command."
             
@@ -136,9 +144,11 @@ Function Connect-JCOnline ()
                     Install-Module -Name JumpCloud -Scope CurrentUser
                 }
 
-                elseif ($PSVersionTable.PSVersion.Major -ge 6) {
+                elseif ($PSVersionTable.PSVersion.Major -ge 6)
+                {
 
-                    if ($PSVersionTable.Platform -eq 'Unix') {
+                    if ($PSVersionTable.Platform -eq 'Unix')
+                    {
 
                         Uninstall-Module -Name JumpCloud -RequiredVersion $InstalledModuleVersion
 
@@ -146,9 +156,11 @@ Function Connect-JCOnline ()
                                 
                     }
 
-                    elseif ($PSVersionTable.Platform -like "*Win*") {
+                    elseif ($PSVersionTable.Platform -like "*Win*")
+                    {
 
-                        If (-NOT ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")){
+                        If (-NOT ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
+                        {
 
                             Write-Warning "You must have Administrative rights to update the module! To retry close this PowerShell session and open a new PowerShell session with Administrator permissions (Right click the PowerShell application and select 'Run as Administrator') and run the Connect-JCOnline command."
                 
@@ -167,11 +179,12 @@ Function Connect-JCOnline ()
                     
                 $UpdatedModuleVersion = Get-InstalledModule -Name JumpCloud | Select-Object -ExpandProperty Version
 
-                if ($UpdatedModuleVersion -eq $LatestVersion) {
+                if ($UpdatedModuleVersion -eq $LatestVersion)
+                {
 
                     Clear-Host
                 
-                    $ReleaseNotesRaw =  Invoke-WebRequest -uri $ReleaseNotesURL -UseBasicParsing #for backwards compatibility
+                    $ReleaseNotesRaw = Invoke-WebRequest -uri $ReleaseNotesURL -UseBasicParsing #for backwards compatibility
 
                     $ReleaseNotes = ((((($ReleaseNotesRaw.RawContent -split "</a>$LatestVersion</h2>")[1]) -split "<pre><code>")[1]) -split "</code>")[0]
 
@@ -292,7 +305,7 @@ Function New-JCImportTemplate()
                         $CSV.add('SystemID', $null)
                         $CSV.add('Administrator', $null)
 
-                        $ExistingSystems = Get-JCSystem | Select-Object HostName, DisplayName, @{Name='SystemID';Expression={$_._id}}, lastContact
+                        $ExistingSystems = Get-JCSystem -returnProperties hostname,displayName | Select-Object HostName, DisplayName, @{Name='SystemID';Expression={$_._id}}, lastContact
 
                         $SystemsName = 'JCSystems_' + $date + '.csv'
 
@@ -1054,7 +1067,7 @@ Function Get-JCCommandResult ()
                 $limitURL = "https://console.jumpcloud.com/api/commandresults?sort=type,_id&limit=$limit&skip=$skip"
                 Write-Debug $limitURL
 
-                $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+                $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
 
                 $skip += $limit
                 Write-Debug "Setting skip to $skip"
@@ -1076,7 +1089,7 @@ Function Get-JCCommandResult ()
                 $URL = "https://console.jumpcloud.com/api/commandresults/$uid"
                 Write-Debug $URL
 
-                $CommandResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+                $CommandResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
 
                 $FormattedResults = [PSCustomObject]@{
 
@@ -1170,7 +1183,7 @@ Function Remove-JCCommandResult ()
 
             Write-Warning "Are you sure you wish to delete object: $result ?" -WarningAction Inquire
 
-            $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+            $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
 
             $deleteArray += $delete
         }
@@ -1180,7 +1193,7 @@ Function Remove-JCCommandResult ()
 
             $URI = "https://console.jumpcloud.com/api/commandresults/$CommandResultID"
 
-            $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+            $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
 
             $deleteArray += $delete
         }
@@ -1253,7 +1266,7 @@ Function Get-JCCommand ()
                 $limitURL = "https://console.jumpcloud.com/api/commands?sort=type,_id&limit=$limit&skip=$skip"
                 Write-Debug $limitURL
 
-                $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+                $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
 
                 $skip += $limit
                 Write-Debug "Setting skip to $skip"
@@ -1271,7 +1284,7 @@ Function Get-JCCommand ()
             {
                 $URL = "https://console.jumpcloud.com/api/commands/$uid"
                 Write-Debug $URL
-                $CommandResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+                $CommandResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
                 $resultsArray += $CommandResults
 
             }
@@ -1285,25 +1298,70 @@ Function Get-JCCommand ()
         return $resultsArray
     }
 }
-Function Invoke-JCCommand ()
+Function Invoke-JCCommand () 
 {
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = 'NoVariables')]
 
     param
     (
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName,
             Position = 0)]
-        [String]$trigger
+        [String]$trigger,
+
+        [Parameter(ParameterSetName = 'Variables')] 
+        [int]
+        $NumberOfVariables
     )
+
+    DynamicParam
+    {
+
+        If ($PSCmdlet.ParameterSetName -eq 'Variables')
+        {
+            $dict = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
+
+            [int]$NewParams = 0
+            [int]$ParamNumber = 1
+
+            while ($NewParams -ne $NumberOfVariables)
+            {
+
+                $attr = New-Object System.Management.Automation.ParameterAttribute
+                $attr.HelpMessage = "Enter a variable name"
+                $attr.Mandatory = $true
+                $attr.ValueFromPipelineByPropertyName = $true
+                $attrColl = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
+                $attrColl.Add($attr)
+                $param = New-Object System.Management.Automation.RuntimeDefinedParameter("Variable$ParamNumber`_name", [string], $attrColl)
+                $dict.Add("Variable$ParamNumber`_name", $param)
+
+                $attr1 = New-Object System.Management.Automation.ParameterAttribute
+                $attr1.HelpMessage = "Enter the Variables value"
+                $attr1.Mandatory = $true
+                $attr1.ValueFromPipelineByPropertyName = $true
+                $attrColl1 = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
+                $attrColl1.Add($attr1)
+                $param1 = New-Object System.Management.Automation.RuntimeDefinedParameter("Variable$ParamNumber`_value", [string], $attrColl1)
+                $dict.Add("Variable$ParamNumber`_value", $param1)
+
+                $NewParams++
+                $ParamNumber++
+            }
+
+            return $dict
+
+        }     
+        
+    }
 
     begin
 
     {
-        Write-Debug 'Verifying JCAPI Key'
+        Write-Verbose 'Verifying JCAPI Key'
         if ($JCAPIKEY.length -ne 40) {Connect-JConline}
 
-        Write-Debug 'Populating API headers'
+        Write-Verbose 'Populating API headers'
         $hdrs = @{
 
             'Accept'    = 'application/json'
@@ -1311,28 +1369,67 @@ Function Invoke-JCCommand ()
 
         }
 
-        Write-Debug 'Initilizing resultsArray'
+        Write-Verbose 'Initilizing resultsArray'
         $resultsArray = @()
+
+        Write-Debug $PSCmdlet.ParameterSetName
 
     }
 
     process
 
     {
-
-        foreach ($uid in $trigger)
-
+            
+        if ($PSCmdlet.ParameterSetName -eq 'Variables')
         {
 
-            $URL = "https://console.jumpcloud.com/api/command/trigger/$uid"
-            Write-Debug $URL
+            $Variables = @{}
 
-            $CommandResults = Invoke-RestMethod -Method POST -Uri $URL -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+            $VariableArrayList = New-Object System.Collections.ArrayList
 
-            $resultsArray += $CommandResults
+            foreach ($param in $PSBoundParameters.GetEnumerator())
+            {
+
+
+                if ($param.Key -like "Variable*")
+                {
+                    $RawObject = [pscustomobject]@{
+
+                        ObjectNumber = ($Param.key).Split('_')[0]
+                        Type         = ($Param.key).Split('_')[1]
+                        Value        = $Param.value
+                    }
+
+                    $VariableArrayList.Add($RawObject) | Out-Null
+
+                    $UniqueVariables = $VariableArrayList | select ObjectNumber -Unique
+
+                }
+                      
+
+            }
+
+            foreach ($O in  $UniqueVariables)
+            {
+                $Props = $VariableArrayList | ? ObjectNumber -EQ $O.ObjectNumber
+
+                $VariableName = $Props | ? Type -EQ 'Name'
+                $VariableValue = $Props | ? Type -EQ 'Value'
+
+                $Variables.add($VariableName.value, $VariableValue.value)
+
+            }
+
 
         }
+     
+        $URL = "https://console.jumpcloud.com/api/command/trigger/$trigger"
+        Write-Verbose $URL
 
+
+        $CommandResults = Invoke-RestMethod -Method POST -Uri $URL -Headers $hdrs -Body $Variables
+
+        $resultsArray += $CommandResults
 
     }
 
@@ -1433,7 +1530,7 @@ Function Get-JCGroup ()
                     $limitURL = "https://console.jumpcloud.com/api/v2/groups?sort=type,name&limit=$limit&skip=$skip"
                     Write-Debug $limitURL
 
-                    $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+                    $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
 
                     $skip += $limit
                     Write-Debug "Setting skip to $skip"
@@ -1467,14 +1564,14 @@ Function Get-JCGroup ()
 
                     $GID = $SystemGroupHash.Get_Item($param.Value)
                     $GURL = "https://console.jumpcloud.com/api/v2/systemgroups/$GID"
-                    $result = Invoke-RestMethod -Method GET -Uri $GURL -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+                    $result = Invoke-RestMethod -Method GET -Uri $GURL -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
                     $resultsArray += $result    
                 }
                 elseif ($Type -eq 'User') {
 
                     $GID = $UserGroupHash.Get_Item($param.Value)
                     $GURL = "https://console.jumpcloud.com/api/v2/usergroups/$GID"
-                    $result = Invoke-RestMethod -Method GET -Uri $GURL -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+                    $result = Invoke-RestMethod -Method GET -Uri $GURL -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
                     
                     $formattedResult = [PSCustomObject]@{
 
@@ -1596,7 +1693,7 @@ Function Add-JCSystemGroupMember ()
                 Write-Debug $GroupsURL
 
                     try {
-                        $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+                        $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
                         $Status = 'Added'
                     }
                     catch {
@@ -1643,7 +1740,7 @@ Function Add-JCSystemGroupMember ()
                 Write-Debug $GroupsURL
 
                 try {
-                    $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+                    $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
                     $Status = 'Added'
                 }
                 catch {
@@ -1749,48 +1846,67 @@ Function Add-JCUserGroupMember ()
 
                 else { Throw "Group does not exist. Run 'Get-JCGroup -type User' to see a list of all your JumpCloud user groups."}
 
-                if ($UserNameHash.containsKey($Username)){}
+                if ($UserNameHash.containsKey($Username)){
 
-                else { Throw "Username does not exist. Run 'Get-JCUser | select username' to see a list of all your JumpCloud users."}
+                    $GroupID = $GroupNameHash.Get_Item($GroupName)
+                    $UserID = $UserNameHash.Get_Item($Username)
+    
+                    $body =  @{
+    
+                        type = "user"
+                        op = "add"
+                        id = $UserID
+    
+                    }
+    
+                    $jsonbody = $body | ConvertTo-Json
+                    Write-Debug $jsonbody
+    
+    
+                    $GroupsURL =  "https://console.jumpcloud.com/api/v2/usergroups/$GroupID/members"
+                    Write-Debug $GroupsURL
+    
+                    try
+                        {
+                            $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+                            $Status = 'Added'
+                        }
+                    catch
+                        {
+                            $Status = $_.ErrorDetails
+                        }
+    
+                    $FormattedResults =[PSCustomObject]@{
+    
+                        'GroupName' =  $GroupName
+                        'Username' = $Username
+                        'UserID' = $UserID
+                        'Status' = $Status
+    
+                    }
+    
+                    $resultsArray += $FormattedResults
 
-                $GroupID = $GroupNameHash.Get_Item($GroupName)
-                $UserID = $UserNameHash.Get_Item($Username)
 
-                $body =  @{
-
-                    type = "user"
-                    op = "add"
-                    id = $UserID
 
                 }
 
-                $jsonbody = $body | ConvertTo-Json
-                Write-Debug $jsonbody
+                else { 
 
+                    $FormattedResults =[PSCustomObject]@{
+        
+                        'GroupName' =  $GroupName
+                        'Username' = $Username
+                        'UserID' = "User does not exist"
+                        'Status' =  "Error"
 
-                $GroupsURL =  "https://console.jumpcloud.com/api/v2/usergroups/$GroupID/members"
-                Write-Debug $GroupsURL
-
-                try
-                    {
-                        $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
-                        $Status = 'Added'
-                    }
-                catch
-                    {
-                        $Status = $_.ErrorDetails
                     }
 
-                $FormattedResults =[PSCustomObject]@{
-
-                    'GroupName' =  $GroupName
-                    'Username' = $Username
-                    'UserID' = $UserID
-                    'Status' = $Status
-
+                    $resultsArray += $FormattedResults
+            
                 }
 
-                $resultsArray += $FormattedResults
+               
 
 
             }
@@ -1820,7 +1936,7 @@ Function Add-JCUserGroupMember ()
                 Write-Debug $GroupsURL
 
                 try {
-                    $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+                    $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
                     $Status = 'Added'
                 }
                 catch {
@@ -1843,7 +1959,6 @@ Function Add-JCUserGroupMember ()
         {
             return $resultsArray
         }
-
 }
 
 
@@ -1853,156 +1968,126 @@ Function Get-JCSystemGroupMember ()
 
     param
     (
-        [Parameter(Mandatory,ValueFromPipelineByPropertyName,
-        ParameterSetName ='ByGroup',
-        Position=0)]
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName,
+            ParameterSetName = 'ByGroup',
+            Position = 0)]
         [Alias('name')]
         [String]$GroupName,
 
         [Parameter(Mandatory,
-        ValueFromPipelineByPropertyName,
-        ParameterSetName ='ByID')]
-        [Alias('_id','id')]
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'ByID')]
+        [Alias('_id', 'id')]
         [String]$ByID
     )
 
     begin
 
-        {
-            Write-Verbose 'Verifying JCAPI Key'
-            if ($JCAPIKEY.length -ne 40) {Connect-JConline}
+    {
+        Write-Debug 'Verifying JCAPI Key'
+        if ($JCAPIKEY.length -ne 40) {Connect-JConline}
 
-            Write-Verbose 'Populating API headers'
-            $hdrs = @{
+        Write-Debug 'Populating API headers'
+        $hdrs = @{
 
-                'Content-Type' = 'application/json'
-                'Accept' = 'application/json'
-                'X-API-KEY' = $JCAPIKEY
-
-            }
-
-            [int]$limit = '100'
-            Write-Verbose "Setting limit to $limit"
-
-            Write-Verbose 'Initilizing resultsArray and results ArraryByID'
-            $rawResults = @()
-            $resultsArray = @()
-
-            Write-Debug "ParameterSet: $($PSCmdlet.ParameterSetName)"
-
-            if ($PSCmdlet.ParameterSetName -eq 'ByGroup')
-            {
-                Write-Verbose 'Populating GroupNameHash'
-                $GroupNameHash = Get-Hash_SystemGroupName_ID
-                Write-Verbose 'Populating SystemIDHash'
-                $SystemIDHash = Get-Hash_SystemID_HostName
-            }
-
-
-            if ($PSCmdlet.ParameterSetName -eq 'ByID')
-            {
-                Write-Verbose 'Populating SystemGroupNameHash'
-                $SystemGroupNameHash = Get-Hash_ID_SystemGroupName
-                Write-Verbose 'Populating SystemIDHash'
-                $SystemIDHash = Get-Hash_SystemID_HostName
-            }
-
+            'Content-Type' = 'application/json'
+            'Accept'       = 'application/json'
+            'X-API-KEY'    = $JCAPIKEY
 
         }
+
+        [int]$limit = '100'
+        Write-Debug "Setting limit to $limit"
+
+        Write-Debug 'Initilizing resultsArray and results ArraryByID'
+        $rawResults = @()
+        $resultsArray = @()
+
+        if ($PSCmdlet.ParameterSetName -eq 'ByGroup')
+        {
+            Write-Debug 'Populating GroupNameHash'
+            $GroupNameHash = Get-Hash_SystemGroupName_ID
+            Write-Debug 'Populating SystemIDHash'
+            $SystemIDHash = Get-Hash_SystemID_HostName
+        }
+
+    }
 
 
     process
 
+    {
+
+        if ($PSCmdlet.ParameterSetName -eq 'ByGroup')
+
         {
-
-            if ($PSCmdlet.ParameterSetName -eq 'ByGroup')
-
-                {
-                    foreach ($Group in $GroupName)
-
-                    {
-                        if ($GroupNameHash.containsKey($Group))
-
-                        {
-                            $Group_ID = $GroupNameHash.Get_Item($Group)
-                            Write-Verbose "$Group_ID"
-
-                            [int]$skip = 0 #Do not change!
-                            Write-Verbose "Setting skip to $skip"
-
-                            while ($resultsArray.Count -ge $skip)
-                            {
-                                $limitURL = "https://console.jumpcloud.com/api/v2/Systemgroups/$Group_ID/members?limit=$limit&skip=$skip"
-                                Write-Verbose $limitURL
-                                $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
-                                $skip += $limit
-                                $rawResults += $results
-                            }
-
-                            foreach ($uid in $rawResults)
-                            {
-                                $Systemname = $SystemIDHash.Get_Item($uid.to.id)
-
-                                $FomattedResult = [pscustomobject]@{
-
-                                    'GroupName' = $GroupName
-                                    'System' = $Systemname
-                                    'SystemID' = $uid.to.id
-                                }
-
-                                $resultsArray += $FomattedResult
-                            }
-
-                            $rawResults = $null
-
-                        }
-
-                        else { Throw "Group does not exist. Run 'Get-JCGroup -type System' to see a list of all your JumpCloud System groups."}
-
-                    }
-                }
-
-            elseif ($PSCmdlet.ParameterSetName -eq 'ByID')
+            foreach ($Group in $GroupName)
 
             {
-                [int]$skip = 0 #Do not change!
+                if ($GroupNameHash.containsKey($Group))
 
-                while ($resultsArray.Count -ge $skip)
                 {
+                    $Group_ID = $GroupNameHash.Get_Item($Group)
+                    Write-Debug "$Group_ID"
 
-                    $limitURL = "https://console.jumpcloud.com/api/v2/Systemgroups/$ByID/members?limit=$limit&skip=$skip"
-                    Write-Verbose $limitURL
-                    $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
-                    $skip += $limit
-                    $rawResults += $results
-                }
+                    [int]$skip = 0 #Do not change!
+                    Write-Debug "Setting skip to $skip"
 
-                foreach ($result in $rawResults)
-                {
-                    $Systemname = $SystemIDHash.Get_Item($result.to.id)
-                    $GroupName = $SystemGroupNameHash.Get_Item($ByID)
-
-
-                    $FomattedResult = [pscustomobject]@{
-
-                        'GroupName' = $GroupName
-                        'System' = $Systemname
-                        'SystemID' = $result.to.id
+                    while ($rawResults.Count -ge $skip)
+                    {
+                        $limitURL = "https://console.jumpcloud.com/api/v2/Systemgroups/$Group_ID/members?limit=$limit&skip=$skip"
+                        Write-Debug $limitURL
+                        $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs
+                        $skip += $limit
+                        $rawResults += $results
                     }
 
-                    $resultsArray += $FomattedResult
+                    foreach ($uid in $rawResults)
+                    {
+                        $Systemname = $SystemIDHash.Get_Item($uid.to.id)
+
+                        $FomattedResult = [pscustomobject]@{
+
+                            'GroupName' = $GroupName
+                            'System'    = $Systemname
+                            'SystemID'  = $uid.to.id
+                        }
+
+                        $resultsArray += $FomattedResult
+                    }
 
                     $rawResults = $null
+
                 }
+
+                else { Throw "Group does not exist. Run 'Get-JCGroup -type System' to see a list of all your JumpCloud System groups."}
 
             }
         }
-    end
-        {
-            return $resultsArray
-        }
-}
 
+        elseif ($PSCmdlet.ParameterSetName -eq 'ByID')
+
+        {
+            [int]$skip = 0 #Do not change!
+
+            while ($resultsArray.Count -ge $skip)
+            {
+
+                $limitURL = "https://console.jumpcloud.com/api/v2/Systemgroups/$ByID/members?limit=$limit&skip=$skip"
+                Write-Debug $limitURL
+                $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs
+                $skip += $limit
+                $resultsArray += $results
+            }
+
+        }
+    }
+    end
+    {
+        return $resultsArray
+    }
+}
 Function Get-JCUserGroupMember ()
 {
     [CmdletBinding(DefaultParameterSetName = 'ByGroup')]
@@ -2078,7 +2163,7 @@ Function Get-JCUserGroupMember ()
                     {
                         $limitURL = "https://console.jumpcloud.com/api/v2/usergroups/$Group_ID/members?limit=$limit&skip=$skip"
                         Write-Debug $limitURL
-                        $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+                        $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
                         $skip += $limit
                         $rawResults += $results
                     }
@@ -2116,7 +2201,7 @@ Function Get-JCUserGroupMember ()
 
                 $limitURL = "https://console.jumpcloud.com/api/v2/usergroups/$ByID/members?limit=$limit&skip=$skip"
                 Write-Debug $limitURL
-                $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+                $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
                 $skip += $limit
                 $resultsArray += $results
             }
@@ -2174,7 +2259,7 @@ Function New-JCSystemGroup ()
 
             try
             {
-                $NewGroup = Invoke-RestMethod -Method POST -Uri $URI  -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+                $NewGroup = Invoke-RestMethod -Method POST -Uri $URI  -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
                 $Status = 'Created'
             }
             catch
@@ -2243,7 +2328,7 @@ Function New-JCUserGroup ()
 
             try
             {
-                $NewGroup = Invoke-RestMethod -Method POST -Uri $URI  -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+                $NewGroup = Invoke-RestMethod -Method POST -Uri $URI  -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
                 $Status = 'Created'
             }
             catch
@@ -2337,7 +2422,7 @@ Function Remove-JCSystemGroup ()
 
                     $URI = "https://console.jumpcloud.com/api/v2/systemgroups/$GID"
 
-                    $DeletedGroup = Invoke-RestMethod -Method DELETE -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+                    $DeletedGroup = Invoke-RestMethod -Method DELETE -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
 
                     $Status = 'Deleted'
 
@@ -2368,7 +2453,7 @@ Function Remove-JCSystemGroup ()
                 try
                 {
                     $URI = "https://console.jumpcloud.com/api/v2/systemgroups/$GID"
-                    $DeletedGroup = Invoke-RestMethod -Method DELETE -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+                    $DeletedGroup = Invoke-RestMethod -Method DELETE -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
                     $Status = 'Deleted'
                 }
                 catch
@@ -2489,7 +2574,7 @@ Function Remove-JCSystemGroupMember ()
                 Write-Debug $GroupsURL
 
                     try {
-                        $GroupRemove = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+                        $GroupRemove = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
                         $Status = 'Removed'
                     }
                     catch {
@@ -2536,7 +2621,7 @@ Function Remove-JCSystemGroupMember ()
                 Write-Debug $GroupsURL
 
                 try {
-                    $GroupRemove = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+                    $GroupRemove = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
                     $Status = 'Removed'
                 }
                 catch {
@@ -2632,7 +2717,7 @@ Function Remove-JCUserGroup ()
 
                     $URI = "https://console.jumpcloud.com/api/v2/usergroups/$GID"
 
-                    $DeletedGroup = Invoke-RestMethod -Method DELETE -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+                    $DeletedGroup = Invoke-RestMethod -Method DELETE -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
 
                     $Status = 'Deleted'
 
@@ -2663,7 +2748,7 @@ Function Remove-JCUserGroup ()
                 try
                 {
                     $URI = "https://console.jumpcloud.com/api/v2/usergroups/$GID"
-                    $DeletedGroup = Invoke-RestMethod -Method DELETE -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+                    $DeletedGroup = Invoke-RestMethod -Method DELETE -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
                     $Status = 'Deleted'
                 }
                 catch
@@ -2795,7 +2880,7 @@ Function Remove-JCUserGroupMember ()
 
                 try
                     {
-                        $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+                        $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
                         $Status = 'Removed'
                     }
                 catch
@@ -2842,7 +2927,7 @@ Function Remove-JCUserGroupMember ()
                 Write-Debug $GroupsURL
 
                 try {
-                    $GroupRemove = $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+                    $GroupRemove = $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
                     $Status = 'Removed'
                 }
                 catch {
@@ -2870,34 +2955,189 @@ Function Remove-JCUserGroupMember ()
 
 Function Get-JCSystem ()
 {
-    [CmdletBinding(DefaultParameterSetName = 'ReturnAll')]
+    [CmdletBinding(DefaultParameterSetName = 'SearchFilter')]
 
     param
     (
+        #Strings 
+
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'ByID',
-            Position = 0)]
-
+            ParameterSetName = 'ByID')]
         [Alias('_id', 'id')]
         [String]$SystemID,
+    
+
+        [Parameter(
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter',
+            Position = 0)]
+        [String]$hostname,
+
+        [Parameter(
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter'
+        )]
+        [String]$displayName,
+
+        [Parameter(
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter'
+        )]
+        [String]$version,
+
+        [Parameter(
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter'
+        )]
+        [String]$templateName,
+
+        [Parameter(
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter'
+        )]
+        [String]$os,
+
+        [Parameter(
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter'
+        )]
+        [String]$remoteIP,
+
+        [Parameter(
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter'
+        )]
+        [String]$serialNumber,
+
+        [Parameter(
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter'
+        )]
+        [String]$arch,
+
+        [Parameter(
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter'
+        )]
+        [String]$agentVersion,
+
+        [Parameter(
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter'
+        )]
+        [String]$systemTimezone,
+
+        ## Boolean 
+
+        [Parameter(
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter'
+        )]
+        [bool]$active,
+
+        [Parameter(
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter'
+        )]
+        [bool]$allowMultiFactorAuthentication,
+
+        [Parameter(
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter'
+        )]
+        [bool]$allowPublicKeyAuthentication,
+
+        [Parameter(
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter'
+        )]
+        [bool]$allowSshPasswordAuthentication,
+        
+        [Parameter(
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter'
+        )]
+        [bool]$allowSshRootLogin,
+                
+        [Parameter(
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter'
+        )]
+        [bool]$modifySSHDConfig,
 
 
         [Parameter(
-            ParameterSetName = 'ByID')]
-        [Switch]
-        $ByID
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter')]
+        [ValidateSet('created')]
+        [String]$filterDateProperty,
+
+        [Parameter(
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter')]
+        [ValidateSet('created', 'active', 'agentVersion', 'allowMultiFactorAuthentication', 'allowPublicKeyAuthentication', 'allowSshPasswordAuthentication', 'allowSshRootLogin', 'arch', 'created', 'displayName', 'hostname', 'lastContact', 'modifySSHDConfig', 'organization', 'os', 'remoteIP', 'serialNumber', 'sshdParams', 'systemTimezone', 'templateName', 'version')]
+        [String[]]$returnProperties
 
     )
 
+    DynamicParam
+    {
+        if ($filterDateProperty)
+        {
+
+            # Create the dictionary 
+            $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
+
+
+            # Set the dynamic parameters' name
+            $ParamName_Filter = 'dateFilter'
+            # Create the collection of attributes
+            $AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
+            # Create and set the parameters' attributes
+            $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
+            $ParameterAttribute.Mandatory = $true
+            # Generate and set the ValidateSet 
+            $arrSet = @("before", "after")
+            $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($arrSet)    
+            # Add the ValidateSet to the attributes collection
+            $AttributeCollection.Add($ValidateSetAttribute)
+            # Add the attributes to the attributes collection
+            $AttributeCollection.Add($ParameterAttribute) 
+            # Create and return the dynamic parameter
+            $RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter($ParamName_Filter, [string], $AttributeCollection)
+            $RuntimeParameterDictionary.Add($ParamName_Filter, $RuntimeParameter)
+    
+            
+            # Set the dynamic parameters' name
+            $ParamName_FilterDate = 'date'
+            # Create the collection of attributes
+            $AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
+            # Create and set the parameters' attributes
+            $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
+            $ParameterAttribute.Mandatory = $true
+            # Add the attributes to the attributes collection
+            $AttributeCollection.Add($ParameterAttribute) 
+            # Create and return the dynamic parameter
+            $RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter($ParamName_FilterDate, [string], $AttributeCollection)
+            $RuntimeParameterDictionary.Add($ParamName_FilterDate, $RuntimeParameter)
+
+     
+
+            # Returns the dictionary
+            return $RuntimeParameterDictionary
+
+        }
+
+    }
 
     begin
 
     {
-        Write-Debug 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {Connect-JConline}
+        Write-Verbose 'Verifying JCAPI Key'
+        if ($JCAPIKEY.length -ne 40) {Connect-JCOnline}
 
-        Write-Debug 'Populating API headers'
+        Write-Verbose 'Populating API headers'
         $hdrs = @{
 
             'Content-Type' = 'application/json'
@@ -2906,66 +3146,194 @@ Function Get-JCSystem ()
 
         }
 
-        [int]$limit = '100'
-        Write-Debug "Setting limit to $limit"
+        Write-Verbose 'Initilizing resultsArray'
 
-        Write-Debug 'Initilizing resultsArray and resultsArrayByID'
-        $resultsArray = @()
-        #$resultsArrayByID = @()
+        $resultsArrayList = New-Object -TypeName System.Collections.ArrayList
+
+        Write-Verbose "Parameter Set: $($PSCmdlet.ParameterSetName)"
+
     }
 
     process
 
     {
+        [int]$limit = '1000'
+        Write-Verbose "Setting limit to $limit"
 
-        if ($PSCmdlet.ParameterSetName -eq 'ReturnAll')
+        [int]$skip = '0'
+        Write-Verbose "Setting limit to $limit"
 
+        [int]$Counter = 0
+
+        switch ($PSCmdlet.ParameterSetName)
         {
 
-            Write-Debug 'Setting skip to zero'
-            [int]$skip = 0 #Do not change!
-
-            while (($resultsArray.results).Count -ge $skip)
-
-            {
-                $limitURL = "https://console.jumpcloud.com/api/Systems?sort=type,_id&limit=$limit&skip=$skip"
-                Write-Debug $limitURL
-
-                $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
-
-                $skip += $limit
-                Write-Debug "Setting skip to $skip"
-
-                $resultsArray += $results.results
-                $count = ($resultsArray).Count
-                Write-Debug "Results count equals $count"
-            }
-        }
-
-        elseif ($PSCmdlet.ParameterSetName -eq 'ByID')
-
-        {
-
-            foreach ($uid in $SystemID)
-
+            SearchFilter
             {
 
-                $URL = "https://console.jumpcloud.com/api/Systems/$uid"
-                Write-Debug $URL
-                $CommandResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
-                $resultsArray += $CommandResults
 
+                while (($resultsArray.Count) -ge $Counter)
+                {
+
+ 
+                    if ($returnProperties)
+                    {
+    
+                        $Search = @{
+                            filter = @(
+                                @{
+                                }
+                            )
+                            limit  = $limit
+                            skip   = $skip
+                            fields = $returnProperties
+                        } #Initialize search
+    
+                    }
+    
+                    else
+                    {
+                    
+                        $Search = @{
+                            filter = @(
+                                @{
+                                }
+                            )
+                            limit  = $limit
+                            skip   = $skip
+    
+                        } #Initialize search
+    
+                    }
+    
+
+                    foreach ($param in $PSBoundParameters.GetEnumerator())
+                    {
+                        if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }
+
+                        if ($param.value -is [Boolean])
+                        {
+                            (($Search.filter).GetEnumerator()).add($param.Key, $param.value)
+
+                            continue
+                        }
+
+                        if ($param.key -eq 'returnProperties')
+                        {
+                            continue
+                        }
+
+                        if ($param.key -eq 'filterDateProperty')
+                        {
+                            $DateProperty = $param.value
+
+                            continue
+                        }
+
+
+                        if ($param.key -eq 'dateFilter')
+                        {
+                            switch ($param.value)
+                            {
+                                before { $DateQuery = '$lt' }
+                                after { $DateQuery = '$gt'}
+                            }
+
+                            continue
+                        }
+
+                        if ($param.key -eq 'date')
+                        {   
+
+                            $ConvertDate = [DateTime]$param.value
+                            $Timestamp = Get-Date $ConvertDate -format o
+
+                            continue
+                        }
+
+                        $Value = ($param.value).replace('*', '')
+
+                        if (($param.Value -match '.+?\*$') -and ($param.Value -match '^\*.+?'))
+                        {
+                            # Front and back wildcard 
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "$Value"})
+                        }
+                        elseif ($param.Value -match '.+?\*$')
+                        {
+                            # Back wildcard
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "^$Value"})
+                        }
+                        elseif ($param.Value -match '^\*.+?')
+                        {
+                            # Front wild card
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "$Value`$"})
+                        }
+                        else
+                        {
+                            (($Search.filter).GetEnumerator()).add($param.Key, $Value)
+                        }
+                            
+
+                    } # End foreach
+
+                    if ($filterDateProperty)
+                    {
+                        (($Search.filter).GetEnumerator()).add($DateProperty, @{$DateQuery = $Timestamp})
+                    }
+
+
+                    $SearchJSON = $Search | ConvertTo-Json -Compress -Depth 4
+
+                    Write-Debug $SearchJSON
+
+                    $URL = 'https://console.jumpcloud.com/api/search/systems'
+
+                    $Results = Invoke-RestMethod -Method POST -Uri $Url  -Header $hdrs -Body $SearchJSON
+
+                    $null = $resultsArrayList.Add($Results)
+
+                    $Skip += $limit
+
+                    $Counter += $limit
+                } #End While
+
+            } #End search
+      
+            ByID
+            {
+
+                $URL = "https://console.jumpcloud.com/api/Systems/$SystemID"
+                Write-Verbose $URL
+                $results = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+                $null = $resultsArrayList.add($Results)
             }
-        }
 
-    }
+        } # End switch
+    } # End process 
 
     end
-
     {
-        return $resultsArray
+
+        switch ($PSCmdlet.ParameterSetName)
+        {
+            SearchFilter
+            {
+                return $resultsArrayList.Results | Select-Object -Property *  -ExcludeProperty associatedTagCount, id, sshRootEnabled
+            }
+            ByID
+            {
+                return $resultsArrayList | Select-Object -Property *  -ExcludeProperty associatedTagCount
+            }
+
+        }
+
     }
+
 }
+
+
+
+
 function Get-JCSystemUser ()
 {
     [CmdletBinding()]
@@ -3026,7 +3394,7 @@ function Get-JCSystemUser ()
 
             Write-Verbose $URI
 
-            $APIresults = Invoke-RestMethod -Method GET -Uri $URI -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+            $APIresults = Invoke-RestMethod -Method GET -Uri $URI -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
 
             $skip += $limit
             Write-Verbose "Setting skip to $skip"
@@ -3217,7 +3585,7 @@ Function Remove-JCSystemUser ()
 
             try
             {
-                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
                 $Status = 'Removed'
 
             }
@@ -3261,7 +3629,7 @@ Function Remove-JCSystemUser ()
 
             try
             {
-                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
                 $Status = 'Removed'
 
             }
@@ -3301,7 +3669,7 @@ Function Remove-JCSystemUser ()
 
             try
             {
-                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
                 $Status = 'Removed'
 
             }
@@ -3473,7 +3841,7 @@ Function Add-JCSystemUser ()
 
             try
             {
-                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
                 $Status = 'Added'
 
             }
@@ -3547,7 +3915,7 @@ Function Add-JCSystemUser ()
 
             try
             {
-                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
                 $Status = 'Added'
 
             }
@@ -3718,7 +4086,7 @@ Function Set-JCSystemUser ()
 
             try
             {
-                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
                 $Status = 'Updated'
 
             }
@@ -3792,7 +4160,7 @@ Function Set-JCSystemUser ()
 
             try
             {
-                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
                 $Status = 'Updated'
 
             }
@@ -3880,7 +4248,7 @@ Function Remove-JCSystem ()
             {
 
                 $URI = "https://console.jumpcloud.com/api/systems/$SystemID"
-                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
                 $Status = 'Deleted'
             }
             catch
@@ -3906,7 +4274,7 @@ Function Remove-JCSystem ()
             {
 
                 $URI = "https://console.jumpcloud.com/api/systems/$SystemID"
-                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
                 $Status = 'Deleted'
             }
             catch
@@ -4008,7 +4376,7 @@ Function Set-JCSystem ()
 
         Write-Debug $URL
 
-        $System = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+        $System = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
 
         $UpdatedSystems += $System
     }
@@ -4023,218 +4391,398 @@ Function Set-JCSystem ()
 
 Function Get-JCUser ()
 {
-    [CmdletBinding(DefaultParameterSetName = 'ReturnAll')]
+    [CmdletBinding(DefaultParameterSetName = 'SearchFilter')]
 
     param
     (
 
-        [Parameter(Mandatory,
-        ValueFromPipelineByPropertyName,
-        ParameterSetName ='Username',
-        Position=0)]
-        [String]$Username,
+        [Parameter(
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter',
+            Position = 0)]
+        [String]$username,
+
 
         [Parameter(Mandatory,
-        ValueFromPipelineByPropertyName,
-        ParameterSetName ='FirstName'
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'ByID')]
+        [Alias('_id', 'id')]
+        [String]$userid,
+
+
+        [Parameter(
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter'
         )]
-        [String]$FirstName,
+        [String]$firstname,
 
-        [Parameter(Mandatory,
-        ValueFromPipelineByPropertyName,
-        ParameterSetName ='LastName'
+        [Parameter(
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter'
         )]
-        [String]$LastName,
+        [String]$lastname,
 
-        [Parameter(Mandatory,
-        ValueFromPipelineByPropertyName,
-        ParameterSetName ='Email'
+        [Parameter(
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter'
         )]
-        [String]$Email,
+        [String]$email,
 
-        [Parameter(Mandatory,
-        ValueFromPipelineByPropertyName,
-        ParameterSetName ='UserID')]
-        [Alias('_id','id')]
-        [String]$UserID
 
+        [Parameter(
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter'
+        )]
+        [String]$unix_guid,
+
+
+        [Parameter(
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter'
+        )]
+        [String]$unix_uid,
+
+
+        [Parameter(
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter'
+        )]
+        [bool]$sudo,
+
+        [Parameter(
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter'
+        )]
+        [bool]$enable_managed_uid,
+
+        [Parameter(
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter'
+        )]
+        [bool]$activated,
+
+        [Parameter(
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter'
+        )]
+        [bool]$password_expired,
+
+        [Parameter(
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter'
+        )]
+        [bool]$account_locked,
+    
+        [Parameter(
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter'
+        )]
+        [bool]$passwordless_sudo,
+
+        [Parameter(
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter'
+        )]
+        [bool]$externally_managed,
+
+        [Parameter(
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter'
+        )]
+        [bool]$ldap_binding_user,
+
+        [Parameter(
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter'
+        )]
+        [bool]$enable_user_portal_multifactor,
+
+        [Parameter(
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter'
+        )]
+        [bool]$totp_enabled,
+
+        [Parameter(
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter'
+        )]
+        [bool]$allow_public_key,
+
+        [Parameter(
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter'
+        )]
+        [bool]$samba_service_user,
+
+        [Parameter(
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter'
+        )]
+        [bool]$password_never_expires,
+
+        [Parameter(
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter')]
+        [ValidateSet('created', 'password_expiration_date')]
+        [String]$filterDateProperty,
+
+        [Parameter(
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter')]
+        [ValidateSet('created', 'password_expiration_date', 'account_locked', 'activated', 'addresses', 'allow_public_key', 'attributes', 'email', 'enable_managed_uid', 'enable_user_portal_multifactor', 'externally_managed', 'firstname', 'lastname', 'ldap_binding_user', 'passwordless_sudo', 'password_expired', 'password_never_expires', 'phoneNumbers', 'samba_service_user', 'ssh_keys', 'sudo', 'totp_enabled', 'unix_guid', 'unix_uid', 'username')]
+        [String[]]$returnProperties
 
     )
 
-    begin
-
+    DynamicParam
+    {
+        if ($filterDateProperty)
         {
-            Write-Verbose 'Verifying JCAPI Key'
-            if ($JCAPIKEY.length -ne 40) {Connect-JConline}
 
-            Write-Verbose 'Populating API headers'
-            $hdrs = @{
+            # Create the dictionary 
+            $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
 
-                'Content-Type' = 'application/json'
-                'Accept' = 'application/json'
-                'X-API-KEY' = $JCAPIKEY
 
-            }
+            # Set the dynamic parameters' name
+            $ParamName_Filter = 'dateFilter'
+            # Create the collection of attributes
+            $AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
+            # Create and set the parameters' attributes
+            $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
+            $ParameterAttribute.Mandatory = $true
+            # Generate and set the ValidateSet 
+            $arrSet = @("before", "after")
+            $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($arrSet)    
+            # Add the ValidateSet to the attributes collection
+            $AttributeCollection.Add($ValidateSetAttribute)
+            # Add the attributes to the attributes collection
+            $AttributeCollection.Add($ParameterAttribute) 
+            # Create and return the dynamic parameter
+            $RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter($ParamName_Filter, [string], $AttributeCollection)
+            $RuntimeParameterDictionary.Add($ParamName_Filter, $RuntimeParameter)
+    
+            
+            # Set the dynamic parameters' name
+            $ParamName_FilterDate = 'date'
+            # Create the collection of attributes
+            $AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
+            # Create and set the parameters' attributes
+            $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
+            $ParameterAttribute.Mandatory = $true
+            # Add the attributes to the attributes collection
+            $AttributeCollection.Add($ParameterAttribute) 
+            # Create and return the dynamic parameter
+            $RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter($ParamName_FilterDate, [string], $AttributeCollection)
+            $RuntimeParameterDictionary.Add($ParamName_FilterDate, $RuntimeParameter)
 
-            [int]$limit = '1000'
-            Write-Verbose "Setting limit to $limit"
+     
 
-            Write-Verbose 'Initilizing resultsArray'
-            $resultsArray = @()
+            # Returns the dictionary
+            return $RuntimeParameterDictionary
 
         }
+
+    }
+
+
+    begin
+
+    {
+        Write-Verbose 'Verifying JCAPI Key'
+        if ($JCAPIKEY.length -ne 40) {Connect-JCOnline}
+
+        Write-Verbose 'Populating API headers'
+        $hdrs = @{
+
+            'Content-Type' = 'application/json'
+            'Accept'       = 'application/json'
+            'X-API-KEY'    = $JCAPIKEY
+
+        }
+
+
+        Write-Verbose 'Initilizing resultsArray'
+
+        $resultsArrayList = New-Object -TypeName System.Collections.ArrayList
+
+        Write-Verbose "Parameter Set: $($PSCmdlet.ParameterSetName)"
+
+    }
 
     process
 
+    {
+        [int]$limit = '1000'
+        Write-Verbose "Setting limit to $limit"
+
+        [int]$skip = '0'
+        Write-Verbose "Setting limit to $limit"
+
+        [int]$Counter = 0
+
+        switch ($PSCmdlet.ParameterSetName)
         {
+            SearchFilter
+            {
 
-            switch ($PSCmdlet.ParameterSetName) {
 
-                ReturnAll { 
+                while ((($resultsArrayList.Results).Count) -ge $Counter)
+                {
 
-                    [int]$skip = 0 #Do not change!
-                    Write-Verbose "Setting skip to $skip"
-    
-                    while (($resultsArray).Count -ge $skip)
-    
+                    if ($returnProperties)
                     {
-                        $limitURL = "https://console.jumpcloud.com/api/Systemusers?sort=type,_id&limit=$limit&skip=$skip"
-                        Write-Verbose $limitURL
     
-                        $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+                        $Search = @{
+                            filter = @(
+                                @{
+                                }
+                            )
+                            limit  = $limit
+                            skip   = $skip
+                            fields = $returnProperties
+                        } #Initialize search
     
-                        $skip += $limit
-                        Write-Verbose "Setting skip to $skip"
+                    }
     
-                        $resultsArray += $results.results
+                    else
+                    {
+                    
+                        $Search = @{
+                            filter = @(
+                                @{
+                                }
+                            )
+                            limit  = $limit
+                            skip   = $skip
     
-                        $count = ($resultsArray).Count
-                        Write-Verbose "Results count equals $count"
+                        } #Initialize search
+    
+                    }
+    
+
+                    foreach ($param in $PSBoundParameters.GetEnumerator())
+                    {
+                        if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }
+
+                        if ($param.value -is [Boolean])
+                        {
+                            (($Search.filter).GetEnumerator()).add($param.Key, $param.value)
+
+                            continue
+                        }
+
+                        if ($param.key -eq 'returnProperties')
+                        {
+                            continue
+                        }
+
+                        if ($param.key -eq 'filterDateProperty')
+                        {
+                            $DateProperty = $param.value
+
+                            continue
+                        }
+
+
+                        if ($param.key -eq 'dateFilter')
+                        {
+                            switch ($param.value)
+                            {
+                                before { $DateQuery = '$lt' }
+                                after { $DateQuery = '$gt'}
+                            }
+
+                            continue
+                        }
+
+                        if ($param.key -eq 'date')
+                        {   
+
+                            $ConvertDate = [DateTime]$param.value
+                            $Timestamp = Get-Date $ConvertDate -format o
+
+                            continue
+                        }
+
+
+                        $Value = ($param.value).replace('*', '')
+
+                        if (($param.Value -match '.+?\*$') -and ($param.Value -match '^\*.+?'))
+                        {
+                            # Front and back wildcard
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "$Value"})
+                        }
+                        elseif ($param.Value -match '.+?\*$')
+                        {
+                            # Back wildcard
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "^$Value"})
+                        }
+                        elseif ($param.Value -match '^\*.+?')
+                        {
+                            # Front wild card
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "$Value`$"})
+                        }
+                        else
+                        {
+                            (($Search.filter).GetEnumerator()).add($param.Key, $Value)
+                        }
+
+
+                    } # End foreach
+
+                    if ($filterDateProperty)
+                    {
+                        (($Search.filter).GetEnumerator()).add($DateProperty, @{$DateQuery = $Timestamp})
                     }
 
-                }
+                    $SearchJSON = $Search | ConvertTo-Json -Compress -Depth 4
 
-                UserID {
+                    Write-Debug $SearchJSON
 
-                    $URL = "https://console.jumpcloud.com/api/Systemusers/$UserID"
-                    Write-Verbose $URL
-                    $results = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
-                    $resultsArray += $results
+                    $URL = 'https://console.jumpcloud.com/api/search/systemusers'
 
-                } 
+                    $Results = Invoke-RestMethod -Method POST -Uri $Url  -Header $hdrs -Body $SearchJSON
 
-                Username {
+                    $null = $resultsArrayList.Add($Results)
 
-                    [int]$skip = 0 #Do not change!
-                    Write-Verbose "Setting skip to $skip"
-    
-                    while (($resultsArray).Count -ge $skip)
-    
-                    {
-                        $UserNameSearch = "https://console.jumpcloud.com/api/systemusers?skip=$skip&limit=$limit&sort=lastname&search%5Bfields%5D%5B%5D=username&search%5BsearchTerm%5D=$Username"
-                        Write-Verbose $UserNameSearch
-    
-                        $results = Invoke-RestMethod -Method GET -Uri $UserNameSearch -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
-    
-                        $skip += $limit
-                        Write-Verbose "Setting skip to $skip"
-    
-                        $resultsArray += $results.results
-    
-                        $count = ($resultsArray).Count
-                        Write-Verbose "Results count equals $count"
-                    }
+                    $Skip += $limit
 
-                }
+                    $Counter += $limit
 
+                } #End While
 
-                Firstname {
+            } #End search
 
-                    [int]$skip = 0 #Do not change!
-                    Write-Verbose "Setting skip to $skip"
-                
-                    while (($resultsArray).Count -ge $skip)
-                
-                    {
-                        $FirstnameSearch = "https://console.jumpcloud.com/api/systemusers?skip=$skip&limit=$limit&sort=lastname&search%5Bfields%5D%5B%5D=firstname&search%5BsearchTerm%5D=$Firstname"
+            ByID
+            {
 
-                        Write-Verbose $FirstnameSearch
-                
-                        $results = Invoke-RestMethod -Method GET -Uri $FirstnameSearch -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
-                
-                        $skip += $limit
-                        Write-Verbose "Setting skip to $skip"
-                
-                        $resultsArray += $results.results
-                
-                        $count = ($resultsArray).Count
-                        Write-Verbose "Results count equals $count"
-                    }
-                
-                }
-
-                LastName {
-
-                    [int]$skip = 0 #Do not change!
-                    Write-Verbose "Setting skip to $skip"
-                
-                    while (($resultsArray).Count -ge $skip)
-                
-                    {
-                        $LastNameSearch = "https://console.jumpcloud.com/api/systemusers?skip=$skip&limit=$limit&sort=lastname&search%5Bfields%5D%5B%5D=lastname&search%5BsearchTerm%5D=$LastName"
-                        Write-Verbose $LastNameSearch
-                
-                        $results = Invoke-RestMethod -Method GET -Uri $LastNameSearch -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
-                
-                        $skip += $limit
-                        Write-Verbose "Setting skip to $skip"
-                
-                        $resultsArray += $results.results
-                
-                        $count = ($resultsArray).Count
-                        Write-Verbose "Results count equals $count"
-                    }
-                
-                }
-
-                Email {
-
-                    [int]$skip = 0 #Do not change!
-                    Write-Verbose "Setting skip to $skip"
-                
-                    while (($resultsArray).Count -ge $skip)
-                
-                    {
-                        $EmailSearch = "https://console.jumpcloud.com/api/systemusers?skip=$skip&limit=$limit&sort=lastname&search%5Bfields%5D%5B%5D=email&search%5BsearchTerm%5D=$Email"
-                        Write-Verbose $EmailSearch
-                
-                        $results = Invoke-RestMethod -Method GET -Uri $EmailSearch -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
-                
-                        $skip += $limit
-                        Write-Verbose "Setting skip to $skip"
-                
-                        $resultsArray += $results.results
-                
-                        $count = ($resultsArray).Count
-                        Write-Verbose "Results count equals $count"
-                    }
-                
-                }
-
-                Default {}
+                $URL = "https://console.jumpcloud.com/api/Systemusers/$Userid"
+                Write-Verbose $URL
+                $results = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+                $null = $resultsArrayList.add($Results)
             }
 
-
-        }
+        } # End switch
+    } # End process
 
     end
 
+    {
+        
+        switch ($PSCmdlet.ParameterSetName)
         {
-            return $resultsArray
+            SearchFilter
+            {
+                return $resultsArrayList.Results | Select-Object -Property *  -ExcludeProperty associatedTagCount
+            }
+            ByID
+            {
+                return $resultsArrayList | Select-Object -Property *  -ExcludeProperty associatedTagCount
+            }
         }
-
+    }   
 }
-
 
 Function New-JCUser ()
 {
@@ -4396,7 +4944,7 @@ Function New-JCUser ()
 
             Write-Debug $jsonbody
 
-            $NewUserInfo = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+            $NewUserInfo = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
 
             $NewUserArrary += $NewUserInfo
         }
@@ -4461,7 +5009,7 @@ Function New-JCUser ()
 
             Write-Debug $jsonbody
 
-            $NewUserInfo = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+            $NewUserInfo = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
 
             $NewUserArrary += $NewUserInfo
         }
@@ -4554,7 +5102,7 @@ function Remove-JCUser ()
                 {
                     $URI = "https://console.jumpcloud.com/api/systemusers/$UserID"
                     Write-Warning "Are you sure you wish to delete user: $Username ?" -WarningAction Inquire
-                    $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+                    $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
                     $Status = 'Deleted'
                 }
                 catch
@@ -4579,7 +5127,7 @@ function Remove-JCUser ()
             try
             {
                 $URI = "https://console.jumpcloud.com/api/systemusers/$UserID"
-                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
                 $Status = 'Deleted'
             }
             catch
@@ -4605,7 +5153,7 @@ function Remove-JCUser ()
             {
                 $URI = "https://console.jumpcloud.com/api/systemusers/$UserID"
                 Write-Warning "Are you sure you wish to delete user: $Username ?" -WarningAction Inquire
-                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
                 $Status = 'Deleted'
             }
             catch
@@ -4627,7 +5175,7 @@ function Remove-JCUser ()
             try
             {
                 $URI = "https://console.jumpcloud.com/api/systemusers/$UserID"
-                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
                 $Status = 'Deleted'
             }
             catch
@@ -4850,7 +5398,7 @@ Function Set-JCUser ()
 
                 Write-Debug $jsonbody
 
-                $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+                $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
 
                 $UpdatedUserArray += $NewUserInfo
 
@@ -4973,7 +5521,7 @@ Function Set-JCUser ()
 
                 Write-Debug $jsonbody
 
-                $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+                $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
 
                 $UpdatedUserArray += $NewUserInfo
 
@@ -5047,7 +5595,7 @@ Function Set-JCUser ()
 
                 Write-Debug $jsonbody
 
-                $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+                $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
 
                 $UpdatedUserArray += $NewUserInfo
 
@@ -5084,7 +5632,7 @@ Function Set-JCUser ()
 
             Write-Debug $jsonbody
 
-            $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+            $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
 
             $UpdatedUserArray += $NewUserInfo
 
@@ -5202,7 +5750,7 @@ Function Set-JCUser ()
 
             Write-Debug $jsonbody
 
-            $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+            $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
 
             $UpdatedUserArray += $NewUserInfo
 
@@ -5557,7 +6105,7 @@ Function New-JCCommand {
 
         $jsonbody = $body | ConvertTo-Json
 
-        $NewCommand = Invoke-RestMethod -Uri $URL -Method POST -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+        $NewCommand = Invoke-RestMethod -Uri $URL -Method POST -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
 
         $NewCommandsArray += $NewCommand
 
@@ -5711,7 +6259,7 @@ Function Get-JCCommandTarget {
         
                     Write-Verbose $SystemURL
         
-                    $APIresults = Invoke-RestMethod -Method GET -Uri  $SystemURL  -Header $hdrs -UserAgent 'Pwsh_1.3.0'
+                    $APIresults = Invoke-RestMethod -Method GET -Uri  $SystemURL  -Header $hdrs -UserAgent 'Pwsh_1.4.0'
         
                     $skip += $limit
                     Write-Verbose "Setting skip to  $skip"
@@ -5757,7 +6305,7 @@ Function Get-JCCommandTarget {
         
                     Write-Verbose $SystemGroupsURL
         
-                    $APIresults = Invoke-RestMethod -Method GET -Uri  $SystemGroupsURL  -Header $hdrs -UserAgent 'Pwsh_1.3.0'
+                    $APIresults = Invoke-RestMethod -Method GET -Uri  $SystemGroupsURL  -Header $hdrs -UserAgent 'Pwsh_1.4.0'
         
                     $skip += $limit
                     Write-Verbose "Setting skip to  $skip"
@@ -5954,7 +6502,7 @@ Function Add-JCCommandTarget {
 
             try {
 
-                $APIresults = Invoke-RestMethod -Method Post -Uri  $URL  -Header $hdrs -Body $jsonbody -UserAgent 'Pwsh_1.3.0'
+                $APIresults = Invoke-RestMethod -Method Post -Uri  $URL  -Header $hdrs -Body $jsonbody -UserAgent 'Pwsh_1.4.0'
                 $Status = 'Added'
                 
             }
@@ -6114,7 +6662,7 @@ Function Remove-JCCommandTarget {
 
         try {
 
-            $APIresults = Invoke-RestMethod -Method Post -Uri  $URL  -Header $hdrs -Body $jsonbody -UserAgent 'Pwsh_1.3.0'
+            $APIresults = Invoke-RestMethod -Method Post -Uri  $URL  -Header $hdrs -Body $jsonbody -UserAgent 'Pwsh_1.4.0'
             $Status = 'Removed'
             
         }
@@ -6208,7 +6756,7 @@ Function Set-JCUserGroupLDAP {
 
         $LDAPURL = "https://console.jumpcloud.com/api/v2/ldapservers"
 
-        $LDAPServer =  Invoke-RestMethod -Method GET -Uri $LDAPURL  -Header $hdrs -UserAgent 'Pwsh_1.3.0'
+        $LDAPServer =  Invoke-RestMethod -Method GET -Uri $LDAPURL  -Header $hdrs -UserAgent 'Pwsh_1.4.0'
         
         if ($LDAPServer.Count -gt 1) {
             Write-Error "More than 1 LDAP Server. Action aborted"
@@ -6253,7 +6801,7 @@ Function Set-JCUserGroupLDAP {
 
             try {
             
-                $LDAPUpdate = Invoke-RestMethod -Method Post -Uri $POSTUrl -Body $JsonPostBody -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+                $LDAPUpdate = Invoke-RestMethod -Method Post -Uri $POSTUrl -Body $JsonPostBody -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
 
                 $Results = [PSCustomObject]@{
 
@@ -6309,7 +6857,7 @@ Function Set-JCUserGroupLDAP {
 
             try {
             
-                $LDAPUpdate = Invoke-RestMethod -Method Post -Uri $POSTUrl -Body $JsonPostBody -Headers $hdrs -UserAgent 'Pwsh_1.3.0'
+                $LDAPUpdate = Invoke-RestMethod -Method Post -Uri $POSTUrl -Body $JsonPostBody -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
 
                 $Results = [PSCustomObject]@{
 
@@ -6350,7 +6898,7 @@ Function Get-Hash_Email_ID ()
 
     $UsersHash = New-Object System.Collections.Hashtable
 
-    $Users = Get-JCUser
+    $Users = Get-JCUser -returnProperties email
 
     foreach ($User in $Users)
     {
@@ -6364,7 +6912,7 @@ Function Get-Hash_ID_Username ()
 
     $UsersHash = New-Object System.Collections.Hashtable
 
-    $Users = Get-JCUser
+    $Users = Get-JCUser -returnProperties username
 
     foreach ($User in $Users)
     {
@@ -6391,7 +6939,7 @@ Function Get-Hash_SystemID_HostName ()
 
     $SystemsHash = New-Object System.Collections.Hashtable
 
-    $Systems = Get-JCsystem
+    $Systems = Get-JCsystem -returnProperties hostname
 
     foreach ($System in $Systems)
     {
@@ -6419,7 +6967,7 @@ Function Get-Hash_UserName_ID ()
 
     $UsersHash = New-Object System.Collections.Hashtable
 
-    $Users = Get-JCUser
+    $Users = Get-JCUser -returnProperties username
 
     foreach ($User in $Users)
     {
@@ -6434,7 +6982,7 @@ Function Get-Hash_ID_Sudo()
 
     $UsersHash = New-Object System.Collections.Hashtable
 
-    $Users = Get-JCUser
+    $Users = Get-JCUser -returnProperties sudo
 
         foreach ($User in $Users)
         {
@@ -6449,7 +6997,7 @@ Function Get-Hash_SystemID_DisplayName ()
 
     $SystemsHash =  New-Object System.Collections.Hashtable
 
-    $Systems = Get-JCsystem
+    $Systems = Get-JCSystem -returnProperties displayName
 
         foreach ($System in $Systems)
         {
@@ -6582,12 +7130,13 @@ Function Get-Hash_SystemID_OS ()
 
     $SystemHash =  New-Object System.Collections.Hashtable
 
-    $Systems = Get-JCSystem
+    $Systems = Get-JCSystem -returnProperties os
 
         foreach ($System in $Systems)
         {
-            $SystemHash.Add($System.id, $System.os)
+            $SystemHash.Add($System._id, $System.os)
         }
+        
     return $SystemHash
 }
 
@@ -6617,6 +7166,5 @@ Function Get-Hash_CommandID_Name ()
         }
     return $CommandHash
 }
-
 
 Export-ModuleMember -Function Connect-JCOnline, Get-JCCommandResult, Remove-JCCommandResult, Invoke-JCCommand, Get-JCCommand, Remove-JCUserGroupMember, Remove-JCUserGroup, Remove-JCSystemGroupMember, Remove-JCSystemGroup, New-JCUserGroup, New-JCSystemGroup, Add-JCSystemGroupMember, Get-JCSystemGroupMember, Get-JCGroup, Add-JCUserGroupMember, Get-JCUserGroupMember, Set-JCSystem, Get-JCSystemUser, Remove-JCSystem, Get-JCSystem, Remove-JCSystemUser, Add-JCSystemUser, Set-JCSystemUser, Get-JCUser, New-JCUser, Remove-JCUser, Set-JCUser, Import-JCUsersFromCSV, New-JCImportTemplate, Remove-JCCommand, New-JCCommand, Import-JCCommand, Add-JCCommandTarget, Get-JCCommandTarget, Remove-JCCommandTarget, Set-JCUserGroupLDAP
