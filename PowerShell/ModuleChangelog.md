@@ -13,6 +13,7 @@
 
 - Updated Functions: Get-JCSystemGroupMember to properly paginate results greater than 100 system group members. 
 - Updated Function:  Add-JCUserGroupMember to handle user error additions more gracefully. 
+- Updated Function: Connect-JCOnline to Write-Error instead of Write-Output if API key validation fails
 
 ## 1.3.0
 Release Date: April 27, 2018
