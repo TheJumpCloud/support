@@ -1,13 +1,13 @@
 #### Latest Version
 
 ```
-1.4.0
+1.4.1
 ```
 
 #### Banner Current
 
 ```
-Module up-to-date. Check out the updated (faster) functions https://git.io/jc-pwsh-releasenotes 
+Module up-to-date. Check out the new parameters on Get-JCCommandResult https://git.io/jc-pwsh-releasenotes 
 ```
 
 #### Banner Old
