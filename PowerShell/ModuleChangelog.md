@@ -1,3 +1,23 @@
+## 1.4.1
+Release Date: May 25, 2018
+
+#### RELEASE NOTES
+
+```
+Updated Function: Get-JCCommandResult with new parameters '-TotalCount' and '-Skip'
+'-TotalCount' returns the number of command results
+'-Skip' returns only the results after a specified number
+Bug fix for 'Get-JCSystem' to allow for pagination of over 1000 results. 
+```
+#### FEATURES:
+
+- Updated Function: Get-JCCommandResult with new parameters '-TotalCount' to return the total number of command results and '-Skip' to return only command results after a specificed number. Using '-TotalCount' to first find the total number of results before running a command you can then use '-Skip' to query the new command results after running the command.  
+
+#### BUG FIXES:
+
+- Updated Functions: Get-JCSystem to allow for pagination of over 1000 results.
+
+
 ## 1.4.0
 Release Date: May 18, 2018
 
