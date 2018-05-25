@@ -1147,16 +1147,10 @@
           <maml:name>CommandResultID</maml:name>
           <maml:Description>
             <maml:para>The _id of the JumpCloud Command Result you wish to query.</maml:para>
-            <maml:para>To find a JumpCloud Command Result run the command:</maml:para>
-            <maml:para></maml:para>
-            <maml:para></maml:para>
-            <maml:para>PS C:&gt; Get-JCCommandResult | Select name, _id</maml:para>
-            <maml:para>The CommandResultID will be the 24 character string populated for the _id field.</maml:para>
-            <maml:para>CommandResultID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using a function that returns the JumpCloud CommandResultID. This is shown in EXAMPLES 3 and 4.</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>String[]</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -1165,6 +1159,47 @@
           <maml:name>ByID</maml:name>
           <maml:Description>
             <maml:para>Use the -ByID parameter when you want to query the contents of a specific Command Result or if the -CommandResultID is being passed over the pipeline to return the full contents of a JumpCloud Command Result. The -ByID SwitchParameter will set the ParameterSet to 'ByID' which queries one JumpCloud Command Result at a time.</maml:para>
+          </maml:Description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Get-JCCommandResult</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>limit</maml:name>
+          <maml:Description>
+            <maml:para>How many command results to return in each API call.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+          <dev:type>
+            <maml:name>Int32</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>skip</maml:name>
+          <maml:Description>
+            <maml:para>The number of command results to skip over before returning results.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+          <dev:type>
+            <maml:name>Int32</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Get-JCCommandResult</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>TotalCount</maml:name>
+          <maml:Description>
+            <maml:para>A switch parameter to only return the number of command results.</maml:para>
           </maml:Description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
@@ -1191,19 +1226,49 @@
         <maml:name>CommandResultID</maml:name>
         <maml:Description>
           <maml:para>The _id of the JumpCloud Command Result you wish to query.</maml:para>
-          <maml:para>To find a JumpCloud Command Result run the command:</maml:para>
-          <maml:para></maml:para>
-          <maml:para></maml:para>
-          <maml:para>PS C:&gt; Get-JCCommandResult | Select name, _id</maml:para>
-          <maml:para>The CommandResultID will be the 24 character string populated for the _id field.</maml:para>
-          <maml:para>CommandResultID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using a function that returns the JumpCloud CommandResultID. This is shown in EXAMPLES 3 and 4.</maml:para>
         </maml:Description>
-        <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
-          <maml:name>String[]</maml:name>
+          <maml:name>String</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>limit</maml:name>
+        <maml:Description>
+          <maml:para>How many command results to return in each API call.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+        <dev:type>
+          <maml:name>Int32</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>skip</maml:name>
+        <maml:Description>
+          <maml:para>The number of command results to skip over before returning results.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+        <dev:type>
+          <maml:name>Int32</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>TotalCount</maml:name>
+        <maml:Description>
+          <maml:para>A switch parameter to only return the number of command results.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
       </command:parameter>
     </command:parameters>
     <command:inputTypes>
@@ -1259,6 +1324,20 @@
         <dev:remarks>
           <maml:para>Returns the output for all JumpCloud Command results that were run within the last hour using the -ByID Parameter and Parameter Binding.</maml:para>
           <maml:para>Note that when running this command the time for the output to display will be directly proportionate to how many JumpCloud commands that match the criteria. The command 'Get-JCCommandResult -ByID' runs once for every JumpCloud command result that matches the criteria Where-Object criteria.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 5 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Get-JCCommandResult -TotalCount</dev:code>
+        <dev:remarks>
+          <maml:para>Returns the total number of JumpCloud command results</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 6 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Get-JCCommandResult -Skip 100</dev:code>
+        <dev:remarks>
+          <maml:para>Skips returning the first 100 command results and only returns the results after 100. Command results are sorted by execution time.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>

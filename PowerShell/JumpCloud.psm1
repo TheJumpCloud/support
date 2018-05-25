@@ -56,7 +56,7 @@ Function Connect-JCOnline ()
 
         try
         {
-            Invoke-RestMethod -Method GET -Uri $ConnectionTestURL -Headers $hdrs -UserAgent 'Pwsh_1.4.0'  | Out-Null
+            Invoke-RestMethod -Method GET -Uri $ConnectionTestURL -Headers $hdrs -UserAgent 'Pwsh_1.4.1'  | Out-Null
         }
         catch
         {
@@ -1009,7 +1009,7 @@ Function Import-JCUsersFromCSV ()
         return $ResultsArrayList
     }
 }
-Function Get-JCCommandResult ()
+Function Get-JCCommandResult () #Pester Ready
 {
     [CmdletBinding(DefaultParameterSetName = 'ReturnAll')]
 
@@ -1020,12 +1020,25 @@ Function Get-JCCommandResult ()
             ParameterSetName = 'ByID',
             Position = 0)]
         [Alias('_id', 'id')]
-        [String[]]$CommandResultID,
+        [String]$CommandResultID,
 
         [Parameter(
             ParameterSetName = 'ByID')]
         [Switch]
-        $ByID
+        $ByID,
+
+        [Parameter(
+            ParameterSetName = 'TotalCount')]
+        [Switch]
+        $TotalCount,
+
+        [Parameter(
+            ParameterSetName = 'ReturnAll')]
+        [int]$skip = 0, 
+
+        [Parameter(
+            ParameterSetName = 'ReturnAll')]
+        [int]$limit = 100
     )
 
 
@@ -1044,52 +1057,54 @@ Function Get-JCCommandResult ()
 
         }
 
-        [int]$limit = '100'
-        Write-Debug "Setting limit to $limit"
-
-        Write-Debug 'Initilizing resultsArray and resultsArrayByID'
-        $resultsArray = @()
+        Write-Debug 'Initilizing resultsArraylist'
+        $resultsArrayList = New-Object -TypeName System.Collections.ArrayList
     }
 
     process
 
     {
 
-        if ($PSCmdlet.ParameterSetName -eq 'ReturnAll')
-
+        switch ($PSCmdlet.ParameterSetName)
         {
+            TotalCount
+            { 
 
-            Write-Debug 'Setting skip to zero'
-            [int]$skip = 0 #Do not change!
+                $CountURL = "https://console.jumpcloud.com/api/commandresults?sort=type,_id&limit=1&skip=0"
+                $results = Invoke-RestMethod -Method GET -Uri  $CountURL -Headers $hdrs
+                $null = $resultsArrayList.Add($results.totalCount)
 
-            while (($resultsArray).Count -ge $skip)
-            {
-                $limitURL = "https://console.jumpcloud.com/api/commandresults?sort=type,_id&limit=$limit&skip=$skip"
-                Write-Debug $limitURL
 
-                $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
-
-                $skip += $limit
+            }
+            ReturnAll
+            { 
                 Write-Debug "Setting skip to $skip"
 
-                $resultsArray += $results.results
-                $count = ($resultsArray).Count
-                Write-Debug "Results count equals $count"
+                [int]$Counter = 0 
+    
+                while (($resultsArrayList.results).count -ge $Counter)
+                {
+                    $limitURL = "https://console.jumpcloud.com/api/commandresults?sort=type,_id&limit=$limit&skip=$skip"
+                    Write-Debug $limitURL
+    
+                    $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs
+    
+                    $skip += $limit
+                    $Counter += $limit
+                    Write-Debug "Setting skip to $skip"
+                    Write-Debug "Setting Counter to $Counter"
+    
+                    $null = $resultsArrayList.Add($results)
+                    $count = ($resultsArrayList).Count
+                    Write-Debug "Results count equals $count"
+                }
             }
-        }
-
-        elseif ($PSCmdlet.ParameterSetName -eq 'ByID')
-
-        {
-
-            foreach ($uid in $CommandResultID)
-
+            ByID
             {
-
-                $URL = "https://console.jumpcloud.com/api/commandresults/$uid"
+                $URL = "https://console.jumpcloud.com/api/commandresults/$CommandResultID"
                 Write-Debug $URL
 
-                $CommandResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+                $CommandResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs
 
                 $FormattedResults = [PSCustomObject]@{
 
@@ -1110,18 +1125,21 @@ Function Get-JCCommandResult ()
 
                 }
 
-
-                $resultsArray += $FormattedResults
+                $null = $resultsArrayList.Add($FormattedResults)
 
             }
         }
-
     }
 
     end
 
     {
-        return $resultsArray
+        switch ($PSCmdlet.ParameterSetName)
+        {
+            ReturnAll {Return $resultsArrayList.results}
+            TotalCount {Return  $resultsArrayList }
+            ByID {Return  $resultsArrayList }
+        }
     }
 }
 Function Remove-JCCommandResult ()
@@ -1183,7 +1201,7 @@ Function Remove-JCCommandResult ()
 
             Write-Warning "Are you sure you wish to delete object: $result ?" -WarningAction Inquire
 
-            $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+            $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
 
             $deleteArray += $delete
         }
@@ -1193,7 +1211,7 @@ Function Remove-JCCommandResult ()
 
             $URI = "https://console.jumpcloud.com/api/commandresults/$CommandResultID"
 
-            $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+            $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
 
             $deleteArray += $delete
         }
@@ -1266,7 +1284,7 @@ Function Get-JCCommand ()
                 $limitURL = "https://console.jumpcloud.com/api/commands?sort=type,_id&limit=$limit&skip=$skip"
                 Write-Debug $limitURL
 
-                $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+                $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
 
                 $skip += $limit
                 Write-Debug "Setting skip to $skip"
@@ -1284,7 +1302,7 @@ Function Get-JCCommand ()
             {
                 $URL = "https://console.jumpcloud.com/api/commands/$uid"
                 Write-Debug $URL
-                $CommandResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+                $CommandResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
                 $resultsArray += $CommandResults
 
             }
@@ -1530,7 +1548,7 @@ Function Get-JCGroup ()
                     $limitURL = "https://console.jumpcloud.com/api/v2/groups?sort=type,name&limit=$limit&skip=$skip"
                     Write-Debug $limitURL
 
-                    $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+                    $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
 
                     $skip += $limit
                     Write-Debug "Setting skip to $skip"
@@ -1564,14 +1582,14 @@ Function Get-JCGroup ()
 
                     $GID = $SystemGroupHash.Get_Item($param.Value)
                     $GURL = "https://console.jumpcloud.com/api/v2/systemgroups/$GID"
-                    $result = Invoke-RestMethod -Method GET -Uri $GURL -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+                    $result = Invoke-RestMethod -Method GET -Uri $GURL -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
                     $resultsArray += $result    
                 }
                 elseif ($Type -eq 'User') {
 
                     $GID = $UserGroupHash.Get_Item($param.Value)
                     $GURL = "https://console.jumpcloud.com/api/v2/usergroups/$GID"
-                    $result = Invoke-RestMethod -Method GET -Uri $GURL -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+                    $result = Invoke-RestMethod -Method GET -Uri $GURL -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
                     
                     $formattedResult = [PSCustomObject]@{
 
@@ -1693,7 +1711,7 @@ Function Add-JCSystemGroupMember ()
                 Write-Debug $GroupsURL
 
                     try {
-                        $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+                        $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
                         $Status = 'Added'
                     }
                     catch {
@@ -1740,7 +1758,7 @@ Function Add-JCSystemGroupMember ()
                 Write-Debug $GroupsURL
 
                 try {
-                    $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+                    $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
                     $Status = 'Added'
                 }
                 catch {
@@ -1868,7 +1886,7 @@ Function Add-JCUserGroupMember ()
     
                     try
                         {
-                            $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+                            $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
                             $Status = 'Added'
                         }
                     catch
@@ -1936,7 +1954,7 @@ Function Add-JCUserGroupMember ()
                 Write-Debug $GroupsURL
 
                 try {
-                    $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+                    $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
                     $Status = 'Added'
                 }
                 catch {
@@ -2163,7 +2181,7 @@ Function Get-JCUserGroupMember ()
                     {
                         $limitURL = "https://console.jumpcloud.com/api/v2/usergroups/$Group_ID/members?limit=$limit&skip=$skip"
                         Write-Debug $limitURL
-                        $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+                        $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
                         $skip += $limit
                         $rawResults += $results
                     }
@@ -2201,7 +2219,7 @@ Function Get-JCUserGroupMember ()
 
                 $limitURL = "https://console.jumpcloud.com/api/v2/usergroups/$ByID/members?limit=$limit&skip=$skip"
                 Write-Debug $limitURL
-                $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+                $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
                 $skip += $limit
                 $resultsArray += $results
             }
@@ -2259,7 +2277,7 @@ Function New-JCSystemGroup ()
 
             try
             {
-                $NewGroup = Invoke-RestMethod -Method POST -Uri $URI  -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+                $NewGroup = Invoke-RestMethod -Method POST -Uri $URI  -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
                 $Status = 'Created'
             }
             catch
@@ -2328,7 +2346,7 @@ Function New-JCUserGroup ()
 
             try
             {
-                $NewGroup = Invoke-RestMethod -Method POST -Uri $URI  -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+                $NewGroup = Invoke-RestMethod -Method POST -Uri $URI  -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
                 $Status = 'Created'
             }
             catch
@@ -2422,7 +2440,7 @@ Function Remove-JCSystemGroup ()
 
                     $URI = "https://console.jumpcloud.com/api/v2/systemgroups/$GID"
 
-                    $DeletedGroup = Invoke-RestMethod -Method DELETE -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+                    $DeletedGroup = Invoke-RestMethod -Method DELETE -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
 
                     $Status = 'Deleted'
 
@@ -2453,7 +2471,7 @@ Function Remove-JCSystemGroup ()
                 try
                 {
                     $URI = "https://console.jumpcloud.com/api/v2/systemgroups/$GID"
-                    $DeletedGroup = Invoke-RestMethod -Method DELETE -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+                    $DeletedGroup = Invoke-RestMethod -Method DELETE -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
                     $Status = 'Deleted'
                 }
                 catch
@@ -2574,7 +2592,7 @@ Function Remove-JCSystemGroupMember ()
                 Write-Debug $GroupsURL
 
                     try {
-                        $GroupRemove = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+                        $GroupRemove = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
                         $Status = 'Removed'
                     }
                     catch {
@@ -2621,7 +2639,7 @@ Function Remove-JCSystemGroupMember ()
                 Write-Debug $GroupsURL
 
                 try {
-                    $GroupRemove = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+                    $GroupRemove = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
                     $Status = 'Removed'
                 }
                 catch {
@@ -2717,7 +2735,7 @@ Function Remove-JCUserGroup ()
 
                     $URI = "https://console.jumpcloud.com/api/v2/usergroups/$GID"
 
-                    $DeletedGroup = Invoke-RestMethod -Method DELETE -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+                    $DeletedGroup = Invoke-RestMethod -Method DELETE -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
 
                     $Status = 'Deleted'
 
@@ -2748,7 +2766,7 @@ Function Remove-JCUserGroup ()
                 try
                 {
                     $URI = "https://console.jumpcloud.com/api/v2/usergroups/$GID"
-                    $DeletedGroup = Invoke-RestMethod -Method DELETE -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+                    $DeletedGroup = Invoke-RestMethod -Method DELETE -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
                     $Status = 'Deleted'
                 }
                 catch
@@ -2880,7 +2898,7 @@ Function Remove-JCUserGroupMember ()
 
                 try
                     {
-                        $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+                        $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
                         $Status = 'Removed'
                     }
                 catch
@@ -2927,7 +2945,7 @@ Function Remove-JCUserGroupMember ()
                 Write-Debug $GroupsURL
 
                 try {
-                    $GroupRemove = $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+                    $GroupRemove = $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
                     $Status = 'Removed'
                 }
                 catch {
@@ -3172,7 +3190,7 @@ Function Get-JCSystem ()
             {
 
 
-                while (($resultsArray.Count) -ge $Counter)
+                while ((($resultsArrayList.results).Count) -ge $Counter)
                 {
 
  
@@ -3304,7 +3322,7 @@ Function Get-JCSystem ()
 
                 $URL = "https://console.jumpcloud.com/api/Systems/$SystemID"
                 Write-Verbose $URL
-                $results = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+                $results = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
                 $null = $resultsArrayList.add($Results)
             }
 
@@ -3330,6 +3348,7 @@ Function Get-JCSystem ()
     }
 
 }
+
 
 
 
@@ -3394,7 +3413,7 @@ function Get-JCSystemUser ()
 
             Write-Verbose $URI
 
-            $APIresults = Invoke-RestMethod -Method GET -Uri $URI -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+            $APIresults = Invoke-RestMethod -Method GET -Uri $URI -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
 
             $skip += $limit
             Write-Verbose "Setting skip to $skip"
@@ -3585,7 +3604,7 @@ Function Remove-JCSystemUser ()
 
             try
             {
-                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
                 $Status = 'Removed'
 
             }
@@ -3629,7 +3648,7 @@ Function Remove-JCSystemUser ()
 
             try
             {
-                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
                 $Status = 'Removed'
 
             }
@@ -3669,7 +3688,7 @@ Function Remove-JCSystemUser ()
 
             try
             {
-                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
                 $Status = 'Removed'
 
             }
@@ -3841,7 +3860,7 @@ Function Add-JCSystemUser ()
 
             try
             {
-                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
                 $Status = 'Added'
 
             }
@@ -3915,7 +3934,7 @@ Function Add-JCSystemUser ()
 
             try
             {
-                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
                 $Status = 'Added'
 
             }
@@ -4086,7 +4105,7 @@ Function Set-JCSystemUser ()
 
             try
             {
-                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
                 $Status = 'Updated'
 
             }
@@ -4160,7 +4179,7 @@ Function Set-JCSystemUser ()
 
             try
             {
-                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
                 $Status = 'Updated'
 
             }
@@ -4248,7 +4267,7 @@ Function Remove-JCSystem ()
             {
 
                 $URI = "https://console.jumpcloud.com/api/systems/$SystemID"
-                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
                 $Status = 'Deleted'
             }
             catch
@@ -4274,7 +4293,7 @@ Function Remove-JCSystem ()
             {
 
                 $URI = "https://console.jumpcloud.com/api/systems/$SystemID"
-                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
                 $Status = 'Deleted'
             }
             catch
@@ -4376,7 +4395,7 @@ Function Set-JCSystem ()
 
         Write-Debug $URL
 
-        $System = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+        $System = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
 
         $UpdatedSystems += $System
     }
@@ -4759,7 +4778,7 @@ Function Get-JCUser ()
 
                 $URL = "https://console.jumpcloud.com/api/Systemusers/$Userid"
                 Write-Verbose $URL
-                $results = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+                $results = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
                 $null = $resultsArrayList.add($Results)
             }
 
@@ -4944,7 +4963,7 @@ Function New-JCUser ()
 
             Write-Debug $jsonbody
 
-            $NewUserInfo = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+            $NewUserInfo = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
 
             $NewUserArrary += $NewUserInfo
         }
@@ -5009,7 +5028,7 @@ Function New-JCUser ()
 
             Write-Debug $jsonbody
 
-            $NewUserInfo = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+            $NewUserInfo = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
 
             $NewUserArrary += $NewUserInfo
         }
@@ -5102,7 +5121,7 @@ function Remove-JCUser ()
                 {
                     $URI = "https://console.jumpcloud.com/api/systemusers/$UserID"
                     Write-Warning "Are you sure you wish to delete user: $Username ?" -WarningAction Inquire
-                    $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+                    $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
                     $Status = 'Deleted'
                 }
                 catch
@@ -5127,7 +5146,7 @@ function Remove-JCUser ()
             try
             {
                 $URI = "https://console.jumpcloud.com/api/systemusers/$UserID"
-                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
                 $Status = 'Deleted'
             }
             catch
@@ -5153,7 +5172,7 @@ function Remove-JCUser ()
             {
                 $URI = "https://console.jumpcloud.com/api/systemusers/$UserID"
                 Write-Warning "Are you sure you wish to delete user: $Username ?" -WarningAction Inquire
-                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
                 $Status = 'Deleted'
             }
             catch
@@ -5175,7 +5194,7 @@ function Remove-JCUser ()
             try
             {
                 $URI = "https://console.jumpcloud.com/api/systemusers/$UserID"
-                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
                 $Status = 'Deleted'
             }
             catch
@@ -5398,7 +5417,7 @@ Function Set-JCUser ()
 
                 Write-Debug $jsonbody
 
-                $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+                $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
 
                 $UpdatedUserArray += $NewUserInfo
 
@@ -5521,7 +5540,7 @@ Function Set-JCUser ()
 
                 Write-Debug $jsonbody
 
-                $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+                $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
 
                 $UpdatedUserArray += $NewUserInfo
 
@@ -5595,7 +5614,7 @@ Function Set-JCUser ()
 
                 Write-Debug $jsonbody
 
-                $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+                $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
 
                 $UpdatedUserArray += $NewUserInfo
 
@@ -5632,7 +5651,7 @@ Function Set-JCUser ()
 
             Write-Debug $jsonbody
 
-            $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+            $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
 
             $UpdatedUserArray += $NewUserInfo
 
@@ -5750,7 +5769,7 @@ Function Set-JCUser ()
 
             Write-Debug $jsonbody
 
-            $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+            $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
 
             $UpdatedUserArray += $NewUserInfo
 
@@ -6105,7 +6124,7 @@ Function New-JCCommand {
 
         $jsonbody = $body | ConvertTo-Json
 
-        $NewCommand = Invoke-RestMethod -Uri $URL -Method POST -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+        $NewCommand = Invoke-RestMethod -Uri $URL -Method POST -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
 
         $NewCommandsArray += $NewCommand
 
@@ -6259,7 +6278,7 @@ Function Get-JCCommandTarget {
         
                     Write-Verbose $SystemURL
         
-                    $APIresults = Invoke-RestMethod -Method GET -Uri  $SystemURL  -Header $hdrs -UserAgent 'Pwsh_1.4.0'
+                    $APIresults = Invoke-RestMethod -Method GET -Uri  $SystemURL  -Header $hdrs -UserAgent 'Pwsh_1.4.1'
         
                     $skip += $limit
                     Write-Verbose "Setting skip to  $skip"
@@ -6305,7 +6324,7 @@ Function Get-JCCommandTarget {
         
                     Write-Verbose $SystemGroupsURL
         
-                    $APIresults = Invoke-RestMethod -Method GET -Uri  $SystemGroupsURL  -Header $hdrs -UserAgent 'Pwsh_1.4.0'
+                    $APIresults = Invoke-RestMethod -Method GET -Uri  $SystemGroupsURL  -Header $hdrs -UserAgent 'Pwsh_1.4.1'
         
                     $skip += $limit
                     Write-Verbose "Setting skip to  $skip"
@@ -6502,7 +6521,7 @@ Function Add-JCCommandTarget {
 
             try {
 
-                $APIresults = Invoke-RestMethod -Method Post -Uri  $URL  -Header $hdrs -Body $jsonbody -UserAgent 'Pwsh_1.4.0'
+                $APIresults = Invoke-RestMethod -Method Post -Uri  $URL  -Header $hdrs -Body $jsonbody -UserAgent 'Pwsh_1.4.1'
                 $Status = 'Added'
                 
             }
@@ -6662,7 +6681,7 @@ Function Remove-JCCommandTarget {
 
         try {
 
-            $APIresults = Invoke-RestMethod -Method Post -Uri  $URL  -Header $hdrs -Body $jsonbody -UserAgent 'Pwsh_1.4.0'
+            $APIresults = Invoke-RestMethod -Method Post -Uri  $URL  -Header $hdrs -Body $jsonbody -UserAgent 'Pwsh_1.4.1'
             $Status = 'Removed'
             
         }
@@ -6756,7 +6775,7 @@ Function Set-JCUserGroupLDAP {
 
         $LDAPURL = "https://console.jumpcloud.com/api/v2/ldapservers"
 
-        $LDAPServer =  Invoke-RestMethod -Method GET -Uri $LDAPURL  -Header $hdrs -UserAgent 'Pwsh_1.4.0'
+        $LDAPServer =  Invoke-RestMethod -Method GET -Uri $LDAPURL  -Header $hdrs -UserAgent 'Pwsh_1.4.1'
         
         if ($LDAPServer.Count -gt 1) {
             Write-Error "More than 1 LDAP Server. Action aborted"
@@ -6801,7 +6820,7 @@ Function Set-JCUserGroupLDAP {
 
             try {
             
-                $LDAPUpdate = Invoke-RestMethod -Method Post -Uri $POSTUrl -Body $JsonPostBody -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+                $LDAPUpdate = Invoke-RestMethod -Method Post -Uri $POSTUrl -Body $JsonPostBody -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
 
                 $Results = [PSCustomObject]@{
 
@@ -6857,7 +6876,7 @@ Function Set-JCUserGroupLDAP {
 
             try {
             
-                $LDAPUpdate = Invoke-RestMethod -Method Post -Uri $POSTUrl -Body $JsonPostBody -Headers $hdrs -UserAgent 'Pwsh_1.4.0'
+                $LDAPUpdate = Invoke-RestMethod -Method Post -Uri $POSTUrl -Body $JsonPostBody -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
 
                 $Results = [PSCustomObject]@{
 
