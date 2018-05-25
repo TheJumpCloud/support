@@ -13,5 +13,5 @@ Module up-to-date. Check out the new parameters on Get-JCCommandResult https://g
 #### Banner Old
 
 ```
-Have a need for speed? New JumpCloud module update available with serious performance increases!
+Surprise! JumpCloud module update available.
 ```
