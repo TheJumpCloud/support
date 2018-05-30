@@ -26,3 +26,5 @@ To import this command into your JumpCloud tenant run the below command using th
 ```
 Import-JCCommand -URL 'https://git.io/jccg-Windows-ListInstalledUpdates'
 ```
+
+#### Related Commands
