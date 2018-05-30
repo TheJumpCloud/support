@@ -29,3 +29,6 @@ To import this command into your JumpCloud tenant run the below command using th
 Import-JCCommand -URL 'https://git.io/jccg-Windows-RunAutomaticUpdates'
 ```
 #### Related Commands
+- [Schedule Automatic Updates](https://github.com/TheJumpCloud/support/blob/master/PowerShell/JumpCloud%20Commands%20Gallery/Windows%20Commands/Windows%20Updates/Windows%20-%20Schedule%20Automatic%20Updates.md)
+- [Show Installed Updates](https://github.com/TheJumpCloud/support/blob/master/PowerShell/JumpCloud%20Commands%20Gallery/Windows%20Commands/Windows%20Updates/Windows%20-%20Show%20Installed%20Updates.md)
+- [Remove Automatic Updates](https://github.com/TheJumpCloud/support/blob/master/PowerShell/JumpCloud%20Commands%20Gallery/Windows%20Commands/Windows%20Updates/Windows%20-%20Remove%20Automatic%20Updates.md)

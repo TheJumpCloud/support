@@ -28,3 +28,6 @@ Import-JCCommand -URL 'https://git.io/jccg-Windows-ShowInstalledUpdates'
 ```
 
 #### Related Commands
+- [Schedule Automatic Updates](https://github.com/TheJumpCloud/support/blob/master/PowerShell/JumpCloud%20Commands%20Gallery/Windows%20Commands/Windows%20Updates/Windows%20-%20Schedule%20Automatic%20Updates.md)
+- [Run Automatic Updates](https://github.com/TheJumpCloud/support/blob/master/PowerShell/JumpCloud%20Commands%20Gallery/Windows%20Commands/Windows%20Updates/Windows%20-%20Run%20Automatic%20Updates.md)
+- [Remove Automatic Updates](https://github.com/TheJumpCloud/support/blob/master/PowerShell/JumpCloud%20Commands%20Gallery/Windows%20Commands/Windows%20Updates/Windows%20-%20Remove%20Automatic%20Updates.md)
