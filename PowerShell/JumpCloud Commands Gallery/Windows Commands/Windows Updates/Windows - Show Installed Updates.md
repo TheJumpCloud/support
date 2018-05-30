@@ -1,6 +1,6 @@
 #### Name
 
-Windows - List Installed Updates | v1.0 JCCG
+Windows - Show Installed Updates | v1.0 JCCG
 
 
 #### commandType
