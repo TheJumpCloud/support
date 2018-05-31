@@ -1,6 +1,6 @@
 #### Name
 
-Windows - List All Users
+Windows - List All Users | v1.0 JCCG
 
 #### commandType
 
@@ -16,12 +16,12 @@ Write-Output $UserAccounts
 
 #### Description
 
-Lists all users from a Windows system
+Lists all user accounts on a Windows system and shows if the account is enabled or disabled
 
 #### *Import This Command*
 
 To import this command into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
 
 ```
-Import-JCCommand -URL ''
+Import-JCCommand -URL 'https://git.io/jccg-Windows-ListAllUsers'
 ```

@@ -1,6 +1,6 @@
 #### Name
 
-Mac - Set Custom Desktop Background | v1.0 JCCG
+Mac - Set Desktop Background | v1.0 JCCG
 
 #### commandType
 
@@ -42,13 +42,14 @@ By modifying the 'backgroundURL' and matching the 'fileType' to the type of file
 
 **Important** this command can only be run on one system at a time and must be "RUN AS:" (This setting lives in the top right corner of command screen) the user on the system whose desktop background you wish to set.
 
+![Set Custom background](https://raw.githubusercontent.com/TheJumpCloud/support/master/PowerShell/JumpCloud%20Commands%20Gallery/Files/Set%20Custom%20Desktop%20Background.png)
 
 #### *Import This Command*
 
 To import this command into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
 
 ```
-Import-JCCommand -URL 'Create and enter Git.io URL'
+Import-JCCommand -URL 'https://git.io/jccg-Mac-SetDesktopBackground'
 ```
 
 #### **Troubleshooting Tips**

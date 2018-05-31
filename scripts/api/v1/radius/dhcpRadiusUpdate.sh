@@ -11,7 +11,7 @@
 #      *** If there are multiple RADIUS Ids, this is potentially destructive.  
 #      Know which record is being updated.***
 #
-#      REQUIRED: root, wget, curl, jq, JumpCloud API Key
+#      REQUIRED: wget, curl, jq, JumpCloud API Key
 #      USAGE: This can be set to run as a cron, e.g., every hour at minute 0:
 #      
 #      $ crontab -e
@@ -19,24 +19,17 @@
 #
 ###############################################################################
 
-# Got root?
-
-if [[ $EUID -ne 0 ]]; then
-   echo "This script must be run as root" && exit 1
-fi
-
 # Define Vars
+
 apiKey=
 radiusId=
 newIp=$(wget http://ipecho.net/plain -O - -q)
 
-# Check if newIp exited 0
+# If newIp can't be defined, bail
 
 if [ $? -ne 0 ]; then
-    echo "Unable to determine newIp, exiting..." && exit 1
+  echo "Unable to determine newIp, exiting..." && exit 1
 fi
-
-# Get the currentIp
 
 getCurrentIp() {
 
@@ -49,8 +42,6 @@ curl \
 
 }
 
-# Get the RADIUS Id
-
 getRadiusId() {
 
 curl \
@@ -61,8 +52,6 @@ curl \
   "https://console.jumpcloud.com/api/radiusservers"
 
 }
-
-# Update the RADIUS IP
 
 putRadius() {
 
@@ -76,26 +65,22 @@ curl \
 
 }
 
-# Got apiKey?
-
 if [ -z ${apiKey} ]; then
-    echo "apiKey must be defined, exiting..." && exit 1
+  echo "apiKey must be defined, exiting..." && exit 1
 fi
 
-# Got radiusId?
-
-if [ -z ${radiusId} ]; then
-    current=($(getRadiusId | jq '.results[0]._id, .results[0].networkSourceIp' | sed s/\"//g))
-    radiusId=$(echo ${current[0]})
-    currentIp=$(echo ${current[1]}) # if radiusId is undefined, define currentIp at the same time
+if [ -z ${radiusId} ]; then # Use the radiusId and currentIp of the first record returned
+  current=($(getRadiusId | jq '.results[0]._id, .results[0].networkSourceIp' | sed s/\"//g))
+  radiusId=$(echo ${current[0]})
+  currentIp=$(echo ${current[1]})
 else # call the predefined radiusId and define currentIP
-    currentIp=($(getCurrentIp | jq '.networkSourceIp' | sed s/\"//g))
+  currentIp=($(getCurrentIp | jq '.networkSourceIp' | sed s/\"//g))
 fi
 
-# Compare current to new
+# Compare currentIp to newIp, bail if nothing's chainged
 
 if [[ ${currentIp} == ${newIp} ]]; then
-    echo "IP has not changed, have a nice day. ¯\_(ツ)_/¯" && exit 0
+  echo "IP has not changed, have a nice day. ¯\_(ツ)_/¯" && exit 0
 fi
 
 putRadius
