@@ -1170,7 +1170,21 @@
       <command:syntaxItem>
         <maml:name>Get-JCCommandResult</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-          <maml:name>limit</maml:name>
+          <maml:name>TotalCount</maml:name>
+          <maml:Description>
+            <maml:para>A switch parameter to only return the number of command results.</maml:para>
+          </maml:Description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Get-JCCommandResult</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Limit</maml:name>
           <maml:Description>
             <maml:para>How many command results to return in each API call.</maml:para>
           </maml:Description>
@@ -1182,7 +1196,7 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-          <maml:name>skip</maml:name>
+          <maml:name>Skip</maml:name>
           <maml:Description>
             <maml:para>The number of command results to skip over before returning results.</maml:para>
           </maml:Description>
@@ -1197,15 +1211,40 @@
       <command:syntaxItem>
         <maml:name>Get-JCCommandResult</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-          <maml:name>TotalCount</maml:name>
+          <maml:name>Limit</maml:name>
           <maml:Description>
-            <maml:para>A switch parameter to only return the number of command results.</maml:para>
+            <maml:para>How many command results to return in each API call.</maml:para>
           </maml:Description>
+          <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
           <dev:type>
-            <maml:name>SwitchParameter</maml:name>
+            <maml:name>Int32</maml:name>
             <maml:uri />
           </dev:type>
-          <dev:defaultValue>False</dev:defaultValue>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>MaxResults</maml:name>
+          <maml:Description>
+            <maml:para>The maximum number of results to return.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+          <dev:type>
+            <maml:name>Int32</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Skip</maml:name>
+          <maml:Description>
+            <maml:para>The number of command results to skip over before returning results.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+          <dev:type>
+            <maml:name>Int32</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
       </command:syntaxItem>
     </command:syntax>
@@ -1235,7 +1274,19 @@
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-        <maml:name>limit</maml:name>
+        <maml:name>TotalCount</maml:name>
+        <maml:Description>
+          <maml:para>A switch parameter to only return the number of command results.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Limit</maml:name>
         <maml:Description>
           <maml:para>How many command results to return in each API call.</maml:para>
         </maml:Description>
@@ -1247,9 +1298,9 @@
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-        <maml:name>skip</maml:name>
+        <maml:name>MaxResults</maml:name>
         <maml:Description>
-          <maml:para>The number of command results to skip over before returning results.</maml:para>
+          <maml:para>The maximum number of results to return.</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
         <dev:type>
@@ -1259,16 +1310,16 @@
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-        <maml:name>TotalCount</maml:name>
+        <maml:name>Skip</maml:name>
         <maml:Description>
-          <maml:para>A switch parameter to only return the number of command results.</maml:para>
+          <maml:para>The number of command results to skip over before returning results.</maml:para>
         </maml:Description>
-        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
         <dev:type>
-          <maml:name>SwitchParameter</maml:name>
+          <maml:name>Int32</maml:name>
           <maml:uri />
         </dev:type>
-        <dev:defaultValue>False</dev:defaultValue>
+        <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
     </command:parameters>
     <command:inputTypes>
@@ -1338,6 +1389,13 @@
         <dev:code>PS C:\&gt; Get-JCCommandResult -Skip 100</dev:code>
         <dev:remarks>
           <maml:para>Skips returning the first 100 command results and only returns the results after 100. Command results are sorted by execution time.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 6 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Get-JCCommandResult -Skip 100 -MaxResults 10</dev:code>
+        <dev:remarks>
+          <maml:para>Skips returning the first 100 command results and only returns the 10 results after  the first 100 results. Command results are sorted by execution time.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>

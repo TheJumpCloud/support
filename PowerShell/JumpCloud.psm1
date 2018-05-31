@@ -1009,7 +1009,7 @@ Function Import-JCUsersFromCSV ()
         return $ResultsArrayList
     }
 }
-Function Get-JCCommandResult () #Pester Ready
+function Get-JCCommandResult () 
 {
     [CmdletBinding(DefaultParameterSetName = 'ReturnAll')]
 
@@ -1034,21 +1034,35 @@ Function Get-JCCommandResult () #Pester Ready
 
         [Parameter(
             ParameterSetName = 'ReturnAll')]
-        [int]$skip = 0, 
+
+        [Parameter(
+            ParameterSetName = 'MaxResults')]
+
+        [int]$Skip = 0, 
 
         [Parameter(
             ParameterSetName = 'ReturnAll')]
-        [int]$limit = 100
+
+        [Parameter(
+            ParameterSetName = 'MaxResults')]
+
+        [int]$Limit = 1000,
+
+
+        [Parameter(
+            ParameterSetName = 'MaxResults')]
+        [Int]
+        $MaxResults
     )
 
 
     begin
 
     {
-        Write-Debug 'Verifying JCAPI Key'
+        Write-Verbose 'Verifying JCAPI Key'
         if ($JCAPIKEY.length -ne 40) {Connect-JConline}
 
-        Write-Debug 'Populating API headers'
+        Write-Verbose 'Populating API headers'
         $hdrs = @{
 
             'Content-Type' = 'application/json'
@@ -1057,7 +1071,7 @@ Function Get-JCCommandResult () #Pester Ready
 
         }
 
-        Write-Debug 'Initilizing resultsArraylist'
+        Write-Verbose 'Initilizing resultsArraylist'
         $resultsArrayList = New-Object -TypeName System.Collections.ArrayList
     }
 
@@ -1070,7 +1084,7 @@ Function Get-JCCommandResult () #Pester Ready
             TotalCount
             { 
 
-                $CountURL = "https://console.jumpcloud.com/api/commandresults?sort=type,_id&limit=1&skip=0"
+                $CountURL = "https://console.jumpcloud.com/api/commandresults?limit=1&skip=0"
                 $results = Invoke-RestMethod -Method GET -Uri  $CountURL -Headers $hdrs
                 $null = $resultsArrayList.Add($results.totalCount)
 
@@ -1078,31 +1092,88 @@ Function Get-JCCommandResult () #Pester Ready
             }
             ReturnAll
             { 
-                Write-Debug "Setting skip to $skip"
+                Write-Verbose "Setting skip to $skip"
 
                 [int]$Counter = 0 
     
                 while (($resultsArrayList.results).count -ge $Counter)
                 {
-                    $limitURL = "https://console.jumpcloud.com/api/commandresults?sort=type,_id&limit=$limit&skip=$skip"
-                    Write-Debug $limitURL
+                    $limitURL = "https://console.jumpcloud.com/api/commandresults?limit=$limit&skip=$skip"
+                    Write-Verbose $limitURL
     
                     $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs
     
                     $skip += $limit
                     $Counter += $limit
-                    Write-Debug "Setting skip to $skip"
-                    Write-Debug "Setting Counter to $Counter"
+                    Write-Verbose "Setting skip to $skip"
+                    Write-Verbose "Setting Counter to $Counter"
     
                     $null = $resultsArrayList.Add($results)
-                    $count = ($resultsArrayList).Count
-                    Write-Debug "Results count equals $count"
+                    $count = ($resultsArrayList.results.Count)
+                    Write-Verbose "Results count equals $count"
                 }
+            }
+            MaxResults
+            { 
+
+                switch ($MaxResults)
+                {
+                    { $_ -le $limit}
+                    { 
+
+                        $Limit = $MaxResults
+                        $limitURL = "https://console.jumpcloud.com/api/commandresults?limit=$limit&skip=$skip"
+                        Write-Verbose $limitURL
+    
+                        $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs
+    
+                    
+                        $null = $resultsArrayList.Add($results)
+                        $count = ($resultsArrayList).Count
+                        Write-Verbose "Results count equals $count"
+
+                    }
+                    {$_ -gt $limit}
+                    {
+
+                        Write-Verbose "Setting skip to $skip"
+
+                        [int]$Counter = 0 
+            
+                        while ($MaxResults -ne 0)
+                        {
+                            $limitURL = "https://console.jumpcloud.com/api/commandresults?limit=$limit&skip=$skip"
+                            Write-Verbose $limitURL
+            
+                            $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs
+
+                            $MaxResults = $MaxResults - $limit
+           
+                            $skip += $limit
+                            $Counter += $limit
+                            Write-Verbose "Setting skip to $skip"
+                            Write-Verbose "Setting Counter to $Counter"
+            
+                            $null = $resultsArrayList.Add($results)
+                            $count = ($resultsArrayList.results.Count)
+                            Write-Verbose "Results count equals $count"
+
+                            if ($MaxResults -le $limit)
+                            {
+                                $limit = $MaxResults                                
+                            }
+                        }
+
+
+                    }
+                }
+                
+                
             }
             ByID
             {
                 $URL = "https://console.jumpcloud.com/api/commandresults/$CommandResultID"
-                Write-Debug $URL
+                Write-Verbose $URL
 
                 $CommandResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs
 
@@ -1137,6 +1208,7 @@ Function Get-JCCommandResult () #Pester Ready
         switch ($PSCmdlet.ParameterSetName)
         {
             ReturnAll {Return $resultsArrayList.results}
+            MaxResults {Return $resultsArrayList.results}
             TotalCount {Return  $resultsArrayList }
             ByID {Return  $resultsArrayList }
         }
@@ -1163,7 +1235,7 @@ Function Remove-JCCommandResult ()
         )]
 
         [Alias('_id', 'id')]
-        [String[]] $CommandResultID,
+        [String] $CommandResultID,
 
         [Parameter(
             ParameterSetName = 'force')]
