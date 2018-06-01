@@ -127,7 +127,7 @@ Else
 
 New-Item -Path $FilePath -Name $FileName  -ItemType "file" -Value $FileContents
 
-# Schedules update script to run daily at 9 am under the name "JC Windows Updates" log file named "JC_WinUpdate_Report_`$Env:ComputerName_`$DateStamp.txt" will be located within folder "C:\Windows\Temp\JC_ScheduledTasks"
+# Schedules update script to run daily at 9 am under the name "JCWindowsUpdates" log files named "JC_WinUpdate_Report_`$Env:ComputerName_`$DateStamp.txt" will be located within folder "C:\Windows\Temp\JC_ScheduledTasks"
 
 SCHTASKS /create /tn "JCWindowsUpdates" /tr "powershell.exe -noprofile -executionpolicy Unrestricted -file $FilePath$FileName" /sc DAILY /st $RunTime /RU "NT AUTHORITY\SYSTEM"
 
