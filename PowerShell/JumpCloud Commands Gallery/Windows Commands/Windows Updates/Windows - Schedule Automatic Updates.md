@@ -50,7 +50,12 @@ If (`$Error)
 
 If (`$Result.Updates.Count -EQ 0)
 {
-    Write-Output "`t There are no applicable updates for this computer."
+   `$ReportFileName = "JC_WinUpdate_Report_`$Env:ComputerName_`$DateStamp.txt"
+   `$ReportFile = "C:\Windows\Temp\JC_ScheduledTasks\`$ReportFileName" 
+    New-Item `$ReportFile -Type File -Force -Value "Windows Update Report For Computer: `$Env:ComputerName`r`n" | Out-Null
+    Add-Content `$ReportFile "Report Created On: `$Today`r"
+    Add-Content `$ReportFile "==============================================================================`r`n"
+    Add-Content `$ReportFile "System Up To Date`r"
 }
 Else
 {
