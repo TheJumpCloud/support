@@ -12,7 +12,7 @@
     RootModule        = 'JumpCloud.Office365.SSO.psm1'
 
     # Version number of this module.
-    ModuleVersion     = '0.8.1'
+    ModuleVersion     = '0.9.0'
 
     # ID used to uniquely identify this module
     GUID              = 'e96fc334-5734-4705-b837-0ac564623803'
