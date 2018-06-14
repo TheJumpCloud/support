@@ -22,7 +22,7 @@
     Description       = 'PowerShell functions to manage a JumpCloud Directory-as-a-Service'
 
     # Minimum version of the Windows PowerShell engine required by this module
-    PowerShellVersion = '5.0'
+    PowerShellVersion = '4.0'
 
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
     FunctionsToExport = @(  "Connect-JCOnline",
