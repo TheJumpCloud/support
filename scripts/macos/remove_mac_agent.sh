@@ -16,3 +16,8 @@ fi
 
 rm -rf /Library/Security/SecurityAgentPlugins/jumpcloud-loginwindow.bundle
 rm -rf /opt/jc
+
+# if the service account is present, delete it:
+if (id -u _jumpcloudserviceaccount > /dev/null 2>&1); then
+    dscl . -delete /Users/_jumpcloudserviceaccount
+fi
