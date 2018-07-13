@@ -1,3 +1,22 @@
+## 1.4.2
+Release Date: May 31, 2018
+
+#### RELEASE NOTES
+
+```
+Updated Function: Get-JCCommandResult with new parameter '-MaxResult'
+Using the paramter '-Skip' and '-MaxResult' admins can return a specific subset of command results.
+Performance fix for 'Get-JCCommandResult' with increase default limit to 1000
+```
+#### FEATURES:
+
+- Updated Function: Get-JCCommandResult with new parameters '-MaxResult'. '-MaxResult' can be combinded with '-Skip' to return a specific subset of command results.
+
+#### IMPROVEMENTS:
+
+- Updated Function: Get-JCCommandResult speed and performance by removing sort.
+- Updated Function: Get-JCCommandResult increased default limit to 1000 results.
+
 ## 1.4.1
 Release Date: May 25, 2018
 

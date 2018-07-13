@@ -7,7 +7,7 @@
     GUID              = '31c023d1-a901-48c4-90a3-082f91b31646'
 
     # Version number of this module.
-    ModuleVersion     = '1.4.2'
+    ModuleVersion     = '1.5.0'
 
     # Author of this module
     Author            = 'Scott Reed'
@@ -59,7 +59,9 @@
         "Get-JCCommandTarget", 
         "Remove-JCCommandTarget", 
         "Set-JCUserGroupLDAP",
-        "Import-JCUsersFromCSV", "New-JCImportTemplate")
+        "Import-JCUsersFromCSV",
+        "Invoke-JCBackup", 
+        "New-JCImportTemplate")
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
     CmdletsToExport   = @()
