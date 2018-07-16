@@ -17,7 +17,6 @@ Performance fix for 'Get-JCCommandResult' with increase default limit to 1000
 - Updated Function: Get-JCCommandResult speed and performance by removing sort.
 - Updated Function: Get-JCCommandResult increased default limit to 1000 results.
 
-
 ## 1.4.1
 Release Date: May 25, 2018
 

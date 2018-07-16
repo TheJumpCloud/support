@@ -7,7 +7,7 @@
     GUID              = '31c023d1-a901-48c4-90a3-082f91b31646'
 
     # Version number of this module.
-    ModuleVersion     = '1.4.2'
+    ModuleVersion     = '1.5.0'
 
     # Author of this module
     Author            = 'Scott Reed'
@@ -22,7 +22,7 @@
     Description       = 'PowerShell functions to manage a JumpCloud Directory-as-a-Service'
 
     # Minimum version of the Windows PowerShell engine required by this module
-    PowerShellVersion = '5.0'
+    PowerShellVersion = '4.0'
 
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
     FunctionsToExport = @(  "Connect-JCOnline",
@@ -55,11 +55,13 @@
         "Remove-JCCommand",
         "New-JCCommand",
         "Import-JCCommand",
-        "Add-JCCommandTarget", 
-        "Get-JCCommandTarget", 
-        "Remove-JCCommandTarget", 
+        "Add-JCCommandTarget",
+        "Get-JCCommandTarget",
+        "Remove-JCCommandTarget",
         "Set-JCUserGroupLDAP",
-        "Import-JCUsersFromCSV", "New-JCImportTemplate")
+        "Import-JCUsersFromCSV",
+        "Get-JCBackup",
+        "New-JCImportTemplate")
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
     CmdletsToExport   = @()

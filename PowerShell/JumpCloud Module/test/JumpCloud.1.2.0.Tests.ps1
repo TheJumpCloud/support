@@ -1,4 +1,4 @@
-#Tests for JumpCloud Module Version 1.3.0
+#Tests for JumpCloud Module Version 1.2.0
 
 #Fill out below varibles to test
 
