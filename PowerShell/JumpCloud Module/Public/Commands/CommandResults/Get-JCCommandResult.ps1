@@ -171,6 +171,7 @@ function Get-JCCommandResult ()
                     name               = $CommandResults.name
                     command            = $CommandResults.command
                     system             = $CommandResults.system
+                    systemId           = $CommandResults.systemId
                     organization       = $CommandResults.organization
                     workflowId         = $CommandResults.workflowId
                     workflowInstanceId = $CommandResults.workflowInstanceId

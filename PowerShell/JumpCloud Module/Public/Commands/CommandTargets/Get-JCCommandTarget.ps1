@@ -99,7 +99,7 @@ Function Get-JCCommandTarget
         
                     Write-Verbose $SystemURL
         
-                    $APIresults = Invoke-RestMethod -Method GET -Uri  $SystemURL  -Header $hdrs -UserAgent 'Pwsh_1.4.1'
+                    $APIresults = Invoke-RestMethod -Method GET -Uri  $SystemURL  -Header $hdrs -UserAgent 'Pwsh_1.5.0'
         
                     $skip += $limit
                     Write-Verbose "Setting skip to  $skip"
@@ -147,7 +147,7 @@ Function Get-JCCommandTarget
         
                     Write-Verbose $SystemGroupsURL
         
-                    $APIresults = Invoke-RestMethod -Method GET -Uri  $SystemGroupsURL  -Header $hdrs -UserAgent 'Pwsh_1.4.1'
+                    $APIresults = Invoke-RestMethod -Method GET -Uri  $SystemGroupsURL  -Header $hdrs -UserAgent 'Pwsh_1.5.0'
         
                     $skip += $limit
                     Write-Verbose "Setting skip to  $skip"

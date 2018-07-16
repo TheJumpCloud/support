@@ -94,7 +94,7 @@ Function Add-JCSystemGroupMember ()
                 Write-Debug $GroupsURL
 
                     try {
-                        $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
+                        $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.5.0'
                         $Status = 'Added'
                     }
                     catch {
@@ -141,7 +141,7 @@ Function Add-JCSystemGroupMember ()
                 Write-Debug $GroupsURL
 
                 try {
-                    $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
+                    $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.5.0'
                     $Status = 'Added'
                 }
                 catch {

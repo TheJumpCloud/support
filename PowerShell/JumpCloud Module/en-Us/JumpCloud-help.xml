@@ -988,6 +988,246 @@
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
+      <command:name>Get-JCBackup</command:name>
+      <command:verb>Get</command:verb>
+      <command:noun>JCBackup</command:noun>
+      <maml:description>
+        <maml:para>Backs up JumpCloud directory information to CSV</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>The Get-JCBackup command saves JumpCloud directory information to CSV files. This command can be used to backup user, system user, system, user group, and system group information to CSV files. Specific items can be selected for CSV backup using the command or the '-All' switch paramter can be specified which will backup all items.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Get-JCBackup</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>All</maml:name>
+          <maml:Description>
+            <maml:para>A switch parameter that when called tells the command to back up JumpCloud user, system user, system, user group, and system group information to CSV files.</maml:para>
+          </maml:Description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>SystemGroups</maml:name>
+          <maml:Description>
+            <maml:para>A switch parameter that when called backs up JumpCloud system group membership to CSV.</maml:para>
+          </maml:Description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>SystemUsers</maml:name>
+          <maml:Description>
+            <maml:para>A switch parameter that when called backs up JumpCloud system user information to CSV.</maml:para>
+          </maml:Description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Systems</maml:name>
+          <maml:Description>
+            <maml:para>A switch parameter that when called backs up JumpCloud system information to CSV.</maml:para>
+          </maml:Description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>UserGroups</maml:name>
+          <maml:Description>
+            <maml:para>A switch parameter that when called backs up JumpCloud user group membership to CSV.</maml:para>
+          </maml:Description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Users</maml:name>
+          <maml:Description>
+            <maml:para>A switch parameter that when called backs up JumpCloud user information to CSV.</maml:para>
+          </maml:Description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>All</maml:name>
+        <maml:Description>
+          <maml:para>A switch parameter that when called tells the command to back up JumpCloud user, system user, system, user group, and system group information to CSV files.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>SystemGroups</maml:name>
+        <maml:Description>
+          <maml:para>A switch parameter that when called backs up JumpCloud system group membership to CSV.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>SystemUsers</maml:name>
+        <maml:Description>
+          <maml:para>A switch parameter that when called backs up JumpCloud system user information to CSV.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Systems</maml:name>
+        <maml:Description>
+          <maml:para>A switch parameter that when called backs up JumpCloud system information to CSV.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>UserGroups</maml:name>
+        <maml:Description>
+          <maml:para>A switch parameter that when called backs up JumpCloud user group membership to CSV.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Users</maml:name>
+        <maml:Description>
+          <maml:para>A switch parameter that when called backs up JumpCloud user information to CSV.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para></maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- Example 1 --------------------------</maml:title>
+        <dev:code>Get-JCBackup -All</dev:code>
+        <dev:remarks>
+          <maml:para>Backs up JumpCloud user, system user, system, user group, and system group information to CSV files. A CSV backup file will be created for each backup item within the current working directory when this command is run.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>Get-JCBackup -Users</dev:code>
+        <dev:remarks>
+          <maml:para>Backs up JumpCloud user information to CSV. A CSV backup file containing all user information will be created within the current working directory when this command is run.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
+        <dev:code>Get-JCBackup -SystemUsers</dev:code>
+        <dev:remarks>
+          <maml:para>Backs up JumpCloud system user information to CSV. A CSV backup file containing all system user information will be created within the current working directory when this command is run.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 4 --------------------------</maml:title>
+        <dev:code>Get-JCBackup -Systems</dev:code>
+        <dev:remarks>
+          <maml:para>Backs up JumpCloud system information to CSV. A CSV backup file containing all system information will be created within the current working directory when this command is run.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 5 --------------------------</maml:title>
+        <dev:code>Get-JCBackup -UserGroups</dev:code>
+        <dev:remarks>
+          <maml:para>Backs up JumpCloud user group membership to CSV. A CSV backup file containing all user group information will be created within the current working directory when this command is run.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 6 --------------------------</maml:title>
+        <dev:code>Get-JCBackup -SystemGroups</dev:code>
+        <dev:remarks>
+          <maml:para>Backs up JumpCloud system group membership to CSV. A CSV backup file containing all system group information will be created within the current working directory when this command is run.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 7 --------------------------</maml:title>
+        <dev:code>Get-JCBackup -Users -UserGroups</dev:code>
+        <dev:remarks>
+          <maml:para>More then one parameter can be specified at one time. The above example backs up JumpCloud user and user group information to CSV.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Help Get-JCBackup</maml:linkText>
+        <maml:uri>https://github.com/TheJumpCloud/support/wiki/Get-JCBackup</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
       <command:name>Get-JCCommand</command:name>
       <command:verb>Get</command:verb>
       <command:noun>JCCommand</command:noun>
@@ -4545,9 +4785,9 @@
             <maml:para>The CommandResultID will be the 24 character string populated for the _id field.</maml:para>
             <maml:para>CommandResultID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using a function that returns the JumpCloud CommandResultID. This is shown in EXAMPLES 3 and 4.</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>String[]</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -4577,9 +4817,9 @@
           <maml:para>The CommandResultID will be the 24 character string populated for the _id field.</maml:para>
           <maml:para>CommandResultID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using a function that returns the JumpCloud CommandResultID. This is shown in EXAMPLES 3 and 4.</maml:para>
         </maml:Description>
-        <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
-          <maml:name>String[]</maml:name>
+          <maml:name>String</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -7572,7 +7812,7 @@
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="name">
           <maml:name>GroupName</maml:name>
           <maml:Description>
-            <maml:para>The JumpCloud GroupName</maml:para>
+            <maml:para>The name of the JumpCloud user group to modify</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -7611,7 +7851,7 @@
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="id, _id">
           <maml:name>GroupID</maml:name>
           <maml:Description>
-            <maml:para>{{Fill GroupID Description}}</maml:para>
+            <maml:para>The ID of the JumpCloud user group to modify</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -7626,7 +7866,7 @@
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="name">
         <maml:name>GroupName</maml:name>
         <maml:Description>
-          <maml:para>The JumpCloud GroupName</maml:para>
+          <maml:para>The name of the JumpCloud user group to modify</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -7650,7 +7890,7 @@
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="id, _id">
         <maml:name>GroupID</maml:name>
         <maml:Description>
-          <maml:para>{{Fill GroupID Description}}</maml:para>
+          <maml:para>The ID of the JumpCloud user group to modify</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>

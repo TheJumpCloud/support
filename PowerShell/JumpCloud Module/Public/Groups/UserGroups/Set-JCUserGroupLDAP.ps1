@@ -61,7 +61,7 @@ Function Set-JCUserGroupLDAP
 
         $LDAPURL = "https://console.jumpcloud.com/api/v2/ldapservers"
 
-        $LDAPServer = Invoke-RestMethod -Method GET -Uri $LDAPURL  -Header $hdrs -UserAgent 'Pwsh_1.4.1'
+        $LDAPServer = Invoke-RestMethod -Method GET -Uri $LDAPURL  -Header $hdrs -UserAgent 'Pwsh_1.5.0'
         
         if ($LDAPServer.Count -gt 1)
         {
@@ -113,7 +113,7 @@ Function Set-JCUserGroupLDAP
             try
             {
             
-                $LDAPUpdate = Invoke-RestMethod -Method Post -Uri $POSTUrl -Body $JsonPostBody -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
+                $LDAPUpdate = Invoke-RestMethod -Method Post -Uri $POSTUrl -Body $JsonPostBody -Headers $hdrs -UserAgent 'Pwsh_1.5.0'
 
                 $Results = [PSCustomObject]@{
 
@@ -175,7 +175,7 @@ Function Set-JCUserGroupLDAP
             try
             {
             
-                $LDAPUpdate = Invoke-RestMethod -Method Post -Uri $POSTUrl -Body $JsonPostBody -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
+                $LDAPUpdate = Invoke-RestMethod -Method Post -Uri $POSTUrl -Body $JsonPostBody -Headers $hdrs -UserAgent 'Pwsh_1.5.0'
 
                 $Results = [PSCustomObject]@{
 

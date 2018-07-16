@@ -76,7 +76,7 @@ function Remove-JCUser ()
                 {
                     $URI = "https://console.jumpcloud.com/api/systemusers/$UserID"
                     Write-Warning "Are you sure you wish to delete user: $Username ?" -WarningAction Inquire
-                    $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
+                    $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.5.0'
                     $Status = 'Deleted'
                 }
                 catch
@@ -101,7 +101,7 @@ function Remove-JCUser ()
             try
             {
                 $URI = "https://console.jumpcloud.com/api/systemusers/$UserID"
-                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
+                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.5.0'
                 $Status = 'Deleted'
             }
             catch
@@ -127,7 +127,7 @@ function Remove-JCUser ()
             {
                 $URI = "https://console.jumpcloud.com/api/systemusers/$UserID"
                 Write-Warning "Are you sure you wish to delete user: $Username ?" -WarningAction Inquire
-                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
+                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.5.0'
                 $Status = 'Deleted'
             }
             catch
@@ -149,7 +149,7 @@ function Remove-JCUser ()
             try
             {
                 $URI = "https://console.jumpcloud.com/api/systemusers/$UserID"
-                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.4.1'
+                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.5.0'
                 $Status = 'Deleted'
             }
             catch

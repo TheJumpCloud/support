@@ -1,4 +1,4 @@
-function Invoke-JCBackup
+function Get-JCBackup
 {
     [CmdletBinding(DefaultParameterSetName = 'None')]
     param (
