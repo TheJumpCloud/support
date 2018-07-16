@@ -1,6 +1,11 @@
 MacOSMinorVersion=$(sw_vers -productVersion | cut -d '.' -f 2)
 MacOSPatchVersion=$(sw_vers -productVersion | cut -d '.' -f 3)
 
+if [[ $MacOSMinorVersion -lt 13 ]]; then
+    echo "Error:  Target system is not on macOS 10.13"
+    exit 2
+fi
+
 JCSA_Username="_jumpcloudserviceaccount"
 JCSA_FullName="JumpCloud Service Account"
 
@@ -26,4 +31,3 @@ if [[ -z $enabled ]]; then
 fi
 
 exit 0
-
