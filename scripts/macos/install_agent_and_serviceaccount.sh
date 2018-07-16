@@ -3,7 +3,7 @@
 if [[ $MacOSMinorVersion -lt 13 ]]; then
     echo "Error:  Target system is not on macOS 10.13"
     exit 2
-fi
+else
 
 curl -o /tmp/jumpcloud-agent.pkg "https://s3.amazonaws.com/jumpcloud-windows-agent/production/jumpcloud-agent.pkg"
 mkdir -p /opt/jc
@@ -21,3 +21,4 @@ cat <<-EOF > /var/run/JumpCloud-SecureToken-Creds.txt
 SECURETOKEN_ADMIN_USERNAME;SECURETOKEN_ADMIN_PASSWORD
 EOF
 installer -pkg /tmp/jumpcloud-agent.pkg -target / &
+fi
