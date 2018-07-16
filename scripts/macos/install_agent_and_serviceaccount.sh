@@ -1,5 +1,10 @@
 # Replace YOUR_CONNECT_KEY with your actual key found on the new system aside in the admin console
 
+if [[ $MacOSMinorVersion -lt 13 ]]; then
+    echo "Error:  Target system is not on macOS 10.13"
+    exit 2
+fi
+
 curl -o /tmp/jumpcloud-agent.pkg "https://s3.amazonaws.com/jumpcloud-windows-agent/production/jumpcloud-agent.pkg"
 mkdir -p /opt/jc
 cat <<-EOF > /opt/jc/agentBootstrap.json
