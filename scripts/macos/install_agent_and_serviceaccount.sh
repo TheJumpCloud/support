@@ -1,4 +1,11 @@
 # Replace YOUR_CONNECT_KEY with your actual key found on the new system aside in the admin console
+MacOSMinorVersion=$(sw_vers -productVersion | cut -d '.' -f 2)
+MacOSPatchVersion=$(sw_vers -productVersion | cut -d '.' -f 3)
+
+if [[ $MacOSMinorVersion -lt 13 ]]; then
+    echo "Error:  Target system is not on macOS 10.13"
+    exit 2
+else
 
 curl -o /tmp/jumpcloud-agent.pkg "https://s3.amazonaws.com/jumpcloud-windows-agent/production/jumpcloud-agent.pkg"
 mkdir -p /opt/jc
@@ -16,3 +23,4 @@ cat <<-EOF > /var/run/JumpCloud-SecureToken-Creds.txt
 SECURETOKEN_ADMIN_USERNAME;SECURETOKEN_ADMIN_PASSWORD
 EOF
 installer -pkg /tmp/jumpcloud-agent.pkg -target / &
+fi
