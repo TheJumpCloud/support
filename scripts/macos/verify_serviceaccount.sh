@@ -21,13 +21,14 @@ unknown_user=$(echo $result | grep "Unknown user $JCSA_Username")
 enabled=$(echo $result | grep "Secure token is ENABLED for user $JCSA_FullName")
 
 if [[ ! -z $unknown_user ]]; then
-    echo "Error:  jumpcloud service account not installed"
+    echo "Error:  JumpCloud Service Account not installed"
     exit 2
 fi
 
 if [[ -z $enabled ]]; then
-    echo "Error:  jumpcloud service account does not have a secure token"
+    echo "Error:  JumpCloud Service Account does not have a secure token"
     exit 3
 fi
 
+echo "Success: JumpCloud Service Account has been properly created"
 exit 0
