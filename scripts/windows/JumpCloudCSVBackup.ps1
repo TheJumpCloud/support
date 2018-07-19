@@ -4,7 +4,7 @@
 
 ## Populate the below variables before running the script
 
-$BackupLocation = "" # Enter full path to desired backup folder for CSV files. Example path on Mac "/Users/Buster/Backup/JCBackup"
+$BackupLocation = "" # Enter full path to desired backup folder for backup CSV files. Example path on Mac "/Users/Buster/Backup/JCBackup"
 
 $JumpCloudAPIKey = "" # The JumpCloud API key can be found in the admin console by selecting the drop down icon next to admin email in top right and selecting "API Settings"
 
