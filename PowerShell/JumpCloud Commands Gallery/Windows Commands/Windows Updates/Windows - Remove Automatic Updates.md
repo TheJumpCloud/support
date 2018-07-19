@@ -26,10 +26,10 @@ Remove-Item -Path $FilePath
 
 This command removes the scheduled task named "\JCWindowsUpdates" and removes the file 'JC_ScheduledWindowsUpdate.ps1' called by this scheduled task.
 
-### **Dependencies**
+### Dependencies
 
 This command is intended to be run after automatic updates are scheduled to be run under the task named "\JCWindowsUpdates" and is a roll back plan for the
-the command [Windows - Schedule Automatic Updates]()
+the command [Windows - Schedule Automatic Updates](https://github.com/TheJumpCloud/support/blob/master/PowerShell/JumpCloud%20Commands%20Gallery/Windows%20Commands/Windows%20Updates/Windows%20-%20Schedule%20Automatic%20Updates.md)
 
 
 #### *Import This Command*
@@ -37,7 +37,10 @@ the command [Windows - Schedule Automatic Updates]()
 To import this command into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
 
 ```
-Import-JCCommand -URL 'Create and enter Git.io URL'
+Import-JCCommand -URL 'https://git.io/jccg-Windows-RemoveAutomaticUpdates'
 ```
 
 #### Related Commands
+- [Schedule Automatic Updates](https://github.com/TheJumpCloud/support/blob/master/PowerShell/JumpCloud%20Commands%20Gallery/Windows%20Commands/Windows%20Updates/Windows%20-%20Schedule%20Automatic%20Updates.md)
+- [Run Automatic Updates](https://github.com/TheJumpCloud/support/blob/master/PowerShell/JumpCloud%20Commands%20Gallery/Windows%20Commands/Windows%20Updates/Windows%20-%20Run%20Automatic%20Updates.md)
+- [Show Installed Updates](https://github.com/TheJumpCloud/support/blob/master/PowerShell/JumpCloud%20Commands%20Gallery/Windows%20Commands/Windows%20Updates/Windows%20-%20Show%20Installed%20Updates.md)
