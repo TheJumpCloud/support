@@ -21,6 +21,11 @@ sudo -u $user osascript -e 'tell application (path to frontmost application as t
 
 #### Description
 
+Administrators that wish to send notification messages to the current logged in user of the target Mac machines can use this command. 
+
+To use this command enter the text to display through the notification in the Notification="" variable.
+
+Example: Notification="Your temp password is AwesomeBlossom123!"
 
 #### *Import This Command*
 
