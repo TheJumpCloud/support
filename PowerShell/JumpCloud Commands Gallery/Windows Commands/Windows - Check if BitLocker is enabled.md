@@ -1,6 +1,6 @@
 #### Name
 
-Check if BitLocker is enabled
+Windows - Check if BitLocker is enabled | v1.0 JCCG
 
 #### commandType
 
