@@ -24,7 +24,7 @@ Administrators that wish to send notification messages to the current logged in 
 
 To use this command enter the text to display through the notification in the $Notification="" variable.
 
-Example: $Notification="Fire drill on Monday at 10 am"
+Example: $Notification="Fire drill at 10 am on Monday"
 
 ![Example Notification](https://github.com/TheJumpCloud/support/blob/master/PowerShell/JumpCloud%20Commands%20Gallery/Files/Windows%20notification.png?raw=true)
 
