@@ -25,7 +25,10 @@ Administrators that wish to send notification messages to the current logged in 
 
 To use this command enter the text to display through the notification in the Notification="" variable.
 
-Example: Notification="Your temp password is AwesomeBlossom123!"
+Example: Notification="Fire drill on Monday at 10 am"
+
+![Example Notification](https://github.com/TheJumpCloud/support/blob/master/PowerShell/JumpCloud%20Commands%20Gallery/Files/Notification%20Example.png?raw=true)
+
 
 #### *Import This Command*
 
