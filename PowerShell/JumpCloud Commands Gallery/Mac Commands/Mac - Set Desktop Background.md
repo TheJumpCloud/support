@@ -1,6 +1,6 @@
 #### Name
 
-Mac - Set Desktop Background | v1.0 JCCG
+Mac - Set Desktop Background | v2.0 JCCG
 
 #### commandType
 
@@ -9,40 +9,33 @@ mac
 #### Command
 
 ```
-# *** Usage **
-#
-# This command can only be run on one system at a time
-# This command must be "RUN AS:" (This setting lives in the top right corner of command screen) 
-# .. the user on the system whose desktop # background you wish to set
-#
 # *** Customize ***  
 
 # 1. Update the 'backgroundURL' to the URL of your desired desktop image. A JumpCloud image is used by default.
 
 backgroundURL="https://raw.githubusercontent.com/TheJumpCloud/support/master/PowerShell/JumpCloud%20Commands%20Gallery/Files/JumpCloud_Background.png"
 
-# 2. Ensure the 'fileType' matches the file type of the desktop image (change to jpg if using a jpg)
+# 2. Ensure the 'fileType' matches the file type of the desktop image (change to jpg if using a jpg). 'png' is set by default.
 
 fileType="png"
 
-# 3. Change the "RUN AS:" to the user whose desktop you wish to set and then 'Save Command' and 'Run'
-
 # ------------Do not modify below this line------------- 
+
+user=`ls -la /dev/console | cut -d " " -f 4`
 
 date_val=$(date "+%Y-%m-%d-%H%M")
 
 curl -s -o /Users/Shared/desktopimage_$date_val.$fileType $backgroundURL
 
-osascript -e 'tell application "Finder" to set desktop picture to POSIX file "/Users/Shared/desktopimage_'"$date_val"'.'"$fileType"'"'
+sudo -u $user osascript -e 'tell application "Finder" to set desktop picture to POSIX file "/Users/Shared/desktopimage_'"$date_val"'.'"$fileType"'"'
 ```
 
 #### Description
 
-By modifying the 'backgroundURL' and matching the 'fileType' to the type of file for the background image you're downloading this command can set the desktop background on Mac workstations. 
+This command will set the desktop background for the current logged in user. 
 
-**Important** this command can only be run on one system at a time and must be "RUN AS:" (This setting lives in the top right corner of command screen) the user on the system whose desktop background you wish to set.
+By modifying the 'backgroundURL' variable and matching the 'fileType' variable to the type of file for the background image you're downloading this command will set the desktop background on Mac workstations. 
 
-![Set Custom background](https://raw.githubusercontent.com/TheJumpCloud/support/master/PowerShell/JumpCloud%20Commands%20Gallery/Files/Set%20Custom%20Desktop%20Background.png)
 
 #### *Import This Command*
 
@@ -54,7 +47,5 @@ Import-JCCommand -URL 'https://git.io/jccg-Mac-SetDesktopBackground'
 
 #### **Troubleshooting Tips**
 
-Check to see if the file is downloading on the machine by navigating to /Users/Shared 
+Check to see if the file is downloading on the machine by navigating to /Users/Shared folder.
 If the image file is not downloading to the machine it is likley that the 'fileType' has not been updated to match the file (png/jpg)
-
-If the file is downloaded the issue is likley the 'RUN AS' user has not been specificed. If the command is run as 'root' the file will download but not the background will not be applied. 'RUN AS' must be set to run as the user whose desktop image you wish to set. 
