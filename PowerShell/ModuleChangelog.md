@@ -1,3 +1,21 @@
+## 1.5.0
+Release Date: July 16, 2018
+
+#### RELEASE NOTES
+
+```
+New Function: Get-JCBackup to backup user, system user, system, group information to CSV. 
+Updated Function: Get-JCCommandResult to show SystemID
+```
+#### FEATURES:
+
+- New Function: Get-JCBackup to backup user, system user, system, user group, and system group information to CSV
+- Updated Function: Get-JCCommandResult to show SystemID when querying command results in bulk and '-ByID'
+
+#### IMPROVEMENTS:
+
+- Module structure updated. .PSM1 function monolithic broken out into single function .PS1 files in [Public](https://github.com/TheJumpCloud/support/tree/master/PowerShell/JumpCloud%20Module/Public) and [Private](https://github.com/TheJumpCloud/support/tree/master/PowerShell/JumpCloud%20Module/Private) folders. This allows for easier debugging and updating of the functions within the module. 
+
 ## 1.4.2
 Release Date: May 31, 2018
 
@@ -16,7 +34,6 @@ Performance fix for 'Get-JCCommandResult' with increase default limit to 1000
 
 - Updated Function: Get-JCCommandResult speed and performance by removing sort.
 - Updated Function: Get-JCCommandResult increased default limit to 1000 results.
-
 
 ## 1.4.1
 Release Date: May 25, 2018

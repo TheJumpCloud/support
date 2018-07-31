@@ -1,3 +1,14 @@
+#### Name
+
+Mac - Install Agent and Service Account | JCCG 1.0
+
+#### commandType
+
+mac
+
+#### Command
+
+```
 #
 # Populate the below variables before running the command
 #
@@ -39,3 +50,16 @@ EOF
 installer -pkg /tmp/jumpcloud-agent.pkg -target / &
 fi
 exit 0
+```
+
+#### Description
+
+After importing this command the variables YOUR_CONNECT_KEY="", SECURETOKEN_ADMIN_USERNAME="", and SECURETOKEN_ADMIN_PASSWORD="" must populated before the command can be run. This command will only run on MacOS systems running MacOS version 10.13 or later and will install the agent and enable the JumpCloud service account needed to manage FileVault users.
+
+#### *Import This Command*
+
+To import this command into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
+
+```
+Import-JCCommand -URL 'https://git.io/jccg-mac-installagentandserviceaccount'
+```

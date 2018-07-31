@@ -1,3 +1,14 @@
+#### Name
+
+Mac - Verify JumpCloud Service Account | JCCG 1.0
+
+#### commandType
+
+mac
+
+#### Command
+
+```
 MacOSMinorVersion=$(sw_vers -productVersion | cut -d '.' -f 2)
 MacOSPatchVersion=$(sw_vers -productVersion | cut -d '.' -f 3)
 
@@ -32,3 +43,17 @@ fi
 
 echo "Success: JumpCloud Service Account has been properly created"
 exit 0
+
+```
+
+#### Description
+
+The above command will verify the presence of the JumpCloud service account needed to manage users on MacOS systems on 10.13 where APFS drives are used and FileVault is enabled. 
+
+#### *Import This Command*
+
+To import this command into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
+
+```
+Import-JCCommand -URL 'https://git.io/jccg-mac-verifyjumpcloudserviceaccount'
+```
