@@ -1,6 +1,6 @@
 #### Name
 
-Mac - Get logged in user | JCCG 1.0
+Mac - Get logged in user | v1.0 JCCG 
 
 #### commandType
 
