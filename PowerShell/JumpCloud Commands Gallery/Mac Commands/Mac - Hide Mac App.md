@@ -21,7 +21,7 @@ touch /opt/jc_user_ro/dont_show_tray_app
 
 #### Description
 
-Hides the Mac menu bar app. After running the menu bar app will be hidden after the next user log out and login. 
+Hides the Mac menu bar app. After running this command the menu bar app will be hidden after the next user log out and login. 
 
 #### *Import This Command*
 
