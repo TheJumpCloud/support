@@ -1,6 +1,6 @@
 #### Name
 
-Mac - Check User for Secure Token | JCCG v1.1
+Mac - Check User for Secure Token | v1.1 JCCG 
 
 #### commandType
 
