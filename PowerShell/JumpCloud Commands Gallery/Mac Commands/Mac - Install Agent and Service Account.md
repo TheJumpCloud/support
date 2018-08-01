@@ -1,6 +1,6 @@
 #### Name
 
-Mac - Install Agent and Service Account | JCCG 1.0
+Mac - Install Agent and Service Account | v1.0 JCCG 
 
 #### commandType
 
