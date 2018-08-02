@@ -1,6 +1,6 @@
 #### Name
 
-Mac - Send Notification Message | JCCG v1.0
+Mac - Send Notification Message | v1.0 JCCG 
 
 #### commandType
 
