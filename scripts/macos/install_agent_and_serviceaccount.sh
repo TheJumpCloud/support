@@ -31,10 +31,6 @@ cat <<-EOF > /opt/jc/agentBootstrap.json
 }
 EOF
 
-<<<<<<< HEAD
-# Replace SECURETOKEN_ADMIN_USERNAME SECURETOKEN_ADMIN_PASSWORD with credentials of an admin with a secure token 
-=======
->>>>>>> caa82c9ee590ea005f444a4e010ce91694b2857d
 
 cat <<-EOF > /var/run/JumpCloud-SecureToken-Creds.txt
 $SECURETOKEN_ADMIN_USERNAME;$SECURETOKEN_ADMIN_PASSWORD
