@@ -1,3 +1,26 @@
+## 1.6.0
+Release Date: August 3, 2018
+
+#### RELEASE NOTES
+
+```
+Send activation/password reset emails with the new function Send-JCPasswordReset
+Multi tenant support has been added!
+Multi tenant admins will be asked to select the org they want to connect to during API authentication.
+Multi tenant admins can switch the org they are connected to using the Set-JCOrganization command.
+```
+
+#### FEATURES:
+
+- New Function: Send-JCPasswordReset allows admins to use the 'Resend email' button functionality programmatically to send reset/activation emails to targeted users.
+- New Function: Set-JCOrganization allows multi tenant admins to change the JumpCloud tenant they are conneted to. 
+- New Function: Get-JCOrganization allows multi tenant admins to see the JumpCloud tenants they have access to. 
+- Updated Function: Connect-JCOnline to prompt multi tenant admins to select their connected tenant. Admins can also skip this prompt by entering a 'JumpCloud OrgID' into the new '-JumpCloudOrgID' parameter to setup connection in automation scenarios.
+
+#### IMPROVEMENTS:
+
+- All Public functions have been updated to include the [x-org-id](https://docs.jumpcloud.com/2.0/authentication-and-authorization/multi-tenant-organization-api-header) header when a multi tenant API connection is established.
+
 ## 1.5.0
 Release Date: July 16, 2018
 
