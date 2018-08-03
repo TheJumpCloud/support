@@ -1,17 +1,17 @@
 #### Latest Version
 
 ```
-1.5.0
+1.6.0
 ```
 
 #### Banner Current
 
 ```
-Module up-to-date. Check out the new command Get-JCBackup https://git.io/jc-pwsh-releasenotes 
+Module up-to-date. Check out the new command Send-JCPasswordReset https://git.io/jc-pwsh-releasenotes 
 ```
 
 #### Banner Old
 
 ```
-Wahoo! JumpCloud module update available.
+Saweet! JumpCloud module update available.
 ```
