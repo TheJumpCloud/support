@@ -41,6 +41,11 @@ Function Remove-JCCommand () #Ready for pester
 
         }
 
+        if ($JCOrgID)
+        {
+            $hdrs.Add('x-org-id', "$($JCOrgID)")
+        }
+
         $deletedArray = @()
         $CommandNameHash = Get-Hash_ID_CommandName
 

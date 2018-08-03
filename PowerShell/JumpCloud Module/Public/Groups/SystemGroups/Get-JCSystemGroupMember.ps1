@@ -33,6 +33,11 @@ Function Get-JCSystemGroupMember ()
 
         }
 
+        if ($JCOrgID)
+        {
+            $hdrs.Add('x-org-id', "$($JCOrgID)")
+        }
+
         [int]$limit = '100'
         Write-Debug "Setting limit to $limit"
 

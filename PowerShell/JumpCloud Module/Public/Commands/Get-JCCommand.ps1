@@ -34,6 +34,11 @@ Function Get-JCCommand ()
 
         }
 
+        if ($JCOrgID)
+        {
+            $hdrs.Add('x-org-id', "$($JCOrgID)")
+        }
+
         [int]$limit = '100'
         Write-Debug "Setting limit to $limit"
 
@@ -57,7 +62,7 @@ Function Get-JCCommand ()
                 $limitURL = "https://console.jumpcloud.com/api/commands?sort=type,_id&limit=$limit&skip=$skip"
                 Write-Debug $limitURL
 
-                $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent 'Pwsh_1.5.0'
+                $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent 'Pwsh_1.6.0'
 
                 $skip += $limit
                 Write-Debug "Setting skip to $skip"
@@ -75,7 +80,7 @@ Function Get-JCCommand ()
             {
                 $URL = "https://console.jumpcloud.com/api/commands/$uid"
                 Write-Debug $URL
-                $CommandResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent 'Pwsh_1.5.0'
+                $CommandResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent 'Pwsh_1.6.0'
                 $resultsArray += $CommandResults
 
             }

@@ -60,6 +60,11 @@ function Get-JCCommandResult ()
 
         }
 
+        if ($JCOrgID)
+        {
+            $hdrs.Add('x-org-id', "$($JCOrgID)")
+        }
+
         Write-Verbose 'Initilizing resultsArraylist'
         $resultsArrayList = New-Object -TypeName System.Collections.ArrayList
     }

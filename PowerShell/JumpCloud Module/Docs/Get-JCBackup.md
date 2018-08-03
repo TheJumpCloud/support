@@ -27,42 +27,49 @@ The Get-JCBackup command saves JumpCloud directory information to CSV files. Thi
 ```powershell
 Get-JCBackup -All
 ```
+
 Backs up JumpCloud user, system user, system, user group, and system group information to CSV files. A CSV backup file will be created for each backup item within the current working directory when this command is run.
 
 ### Example 2
 ```powershell
 Get-JCBackup -Users
 ```
+
 Backs up JumpCloud user information to CSV. A CSV backup file containing all user information will be created within the current working directory when this command is run.
 
 ### Example 3
 ```powershell
 Get-JCBackup -SystemUsers
 ```
+
 Backs up JumpCloud system user information to CSV. A CSV backup file containing all system user information will be created within the current working directory when this command is run.
 
 ### Example 4
 ```powershell
 Get-JCBackup -Systems
 ```
+
 Backs up JumpCloud system information to CSV. A CSV backup file containing all system information will be created within the current working directory when this command is run.
 
 ### Example 5
 ```powershell
 Get-JCBackup -UserGroups
 ```
+
 Backs up JumpCloud user group membership to CSV. A CSV backup file containing all user group information will be created within the current working directory when this command is run.
 
 ### Example 6
 ```powershell
 Get-JCBackup -SystemGroups
 ```
+
 Backs up JumpCloud system group membership to CSV. A CSV backup file containing all system group information will be created within the current working directory when this command is run.
 
 ### Example 7
 ```powershell
 Get-JCBackup -Users -UserGroups
 ```
+
 More then one parameter can be specified at one time. The above example backs up JumpCloud user and user group information to CSV.
 
 ## PARAMETERS
@@ -166,13 +173,11 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
-This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable.
-For more information, see about_CommonParameters (http://go.microsoft.com/fwlink/?LinkID=113216).
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see about_CommonParameters (http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
 ### None
-
 
 ## OUTPUTS
 
@@ -181,4 +186,5 @@ For more information, see about_CommonParameters (http://go.microsoft.com/fwlink
 ## NOTES
 
 ## RELATED LINKS
+
 [Online Help Get-JCBackup](https://github.com/TheJumpCloud/support/wiki/Get-JCBackup)

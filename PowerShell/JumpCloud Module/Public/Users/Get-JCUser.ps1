@@ -210,6 +210,11 @@ Function Get-JCUser ()
 
         }
 
+        if ($JCOrgID)
+        {
+            $hdrs.Add('x-org-id', "$($JCOrgID)")
+        }
+
 
         Write-Verbose 'Initilizing resultsArray'
 
@@ -368,7 +373,7 @@ Function Get-JCUser ()
 
                 $URL = "https://console.jumpcloud.com/api/Systemusers/$Userid"
                 Write-Verbose $URL
-                $results = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent 'Pwsh_1.5.0'
+                $results = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent 'Pwsh_1.6.0'
                 $null = $resultsArrayList.add($Results)
             }
 

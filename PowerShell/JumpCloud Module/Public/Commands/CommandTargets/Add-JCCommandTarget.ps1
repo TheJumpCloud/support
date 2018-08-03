@@ -59,6 +59,11 @@ Function Add-JCCommandTarget
 
         }
 
+        if ($JCOrgID)
+        {
+            $hdrs.Add('x-org-id', "$($JCOrgID)")
+        }
+
 
         if ($PSCmdlet.ParameterSetName -eq 'GroupName')
         {
@@ -170,7 +175,7 @@ Function Add-JCCommandTarget
             try
             {
 
-                $APIresults = Invoke-RestMethod -Method Post -Uri  $URL  -Header $hdrs -Body $jsonbody -UserAgent 'Pwsh_1.5.0'
+                $APIresults = Invoke-RestMethod -Method Post -Uri  $URL  -Header $hdrs -Body $jsonbody -UserAgent 'Pwsh_1.6.0'
                 $Status = 'Added'
                 
             }

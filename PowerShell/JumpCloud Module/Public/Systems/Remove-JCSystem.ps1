@@ -41,6 +41,11 @@ Function Remove-JCSystem ()
 
         }
 
+        if ($JCOrgID)
+        {
+            $hdrs.Add('x-org-id', "$($JCOrgID)")
+        }
+
         $deletedArray = @()
         $HostNameHash = Get-Hash_SystemID_HostName
 
@@ -58,7 +63,7 @@ Function Remove-JCSystem ()
             {
 
                 $URI = "https://console.jumpcloud.com/api/systems/$SystemID"
-                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.5.0'
+                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.6.0'
                 $Status = 'Deleted'
             }
             catch
@@ -84,7 +89,7 @@ Function Remove-JCSystem ()
             {
 
                 $URI = "https://console.jumpcloud.com/api/systems/$SystemID"
-                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.5.0'
+                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.6.0'
                 $Status = 'Deleted'
             }
             catch

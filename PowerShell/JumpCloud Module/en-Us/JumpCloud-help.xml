@@ -902,6 +902,18 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>JumpCloudOrgID</maml:name>
+          <maml:Description>
+            <maml:para>Only needed for multi tenant admins. Organization ID can be found in the Settings page within the admin console.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
       <command:syntaxItem>
         <maml:name>Connect-JCOnline</maml:name>
@@ -927,6 +939,18 @@
             <maml:uri />
           </dev:type>
           <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>JumpCloudOrgID</maml:name>
+          <maml:Description>
+            <maml:para>Only needed for multi tenant admins. Organization ID can be found in the Settings page within the admin console.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
       </command:syntaxItem>
     </command:syntax>
@@ -955,6 +979,18 @@
         </dev:type>
         <dev:defaultValue>False</dev:defaultValue>
       </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>JumpCloudOrgID</maml:name>
+        <maml:Description>
+          <maml:para>Only needed for multi tenant admins. Organization ID can be found in the Settings page within the admin console.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
     </command:parameters>
     <command:inputTypes />
     <command:returnValues />
@@ -975,6 +1011,14 @@
         <maml:title>-------------------------- Example 2 --------------------------</maml:title>
         <dev:code>Connect-JCOnline lu8792c9d4y2398is1tb6h0b83ebf0e92s97t382 -force</dev:code>
         <dev:remarks>
+          <maml:para>Using the "-Force" paramter the module update check is skipped. The '-Force' parameter should be used when using the JumpCloud module in scripts or other automation environments.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
+        <dev:code>Connect-JCOnline -JumpCloudAPIKey lu8792c9d4y2398is1tb6h0b83ebf0e92s97t382 -JumpCloudOrgID 5b5o13o06tsand0c29a0t3s6 -force</dev:code>
+        <dev:remarks>
+          <maml:para>Providing the JumpCloudAPIKey key and the intended JumpCloudOrg ID to connect to multi tenant admins can skip the OrgID connection screen and directly connect to an Org.</maml:para>
           <maml:para>Using the "-Force" paramter the module update check is skipped. The '-Force' parameter should be used when using the JumpCloud module in scripts or other automation environments.</maml:para>
         </dev:remarks>
       </command:example>
@@ -1866,6 +1910,65 @@
       <maml:navigationLink>
         <maml:linkText>Online Help Get-JCGroup</maml:linkText>
         <maml:uri>https://github.com/TheJumpCloud/support/wiki/Get-JCGroup</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Get-JCOrganization</command:name>
+      <command:verb>Get</command:verb>
+      <command:noun>JCOrganization</command:noun>
+      <maml:description>
+        <maml:para>Returns all JumpCloud organizations associated with the authenticated JumpCloud admins account.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>The Get-JCOrganization command displays all JumpCloud organizations associated with the authenticated JumpCloud admins. JumpCloud admins configured for multi tenant administration can see the Organizations they have access to and the displayName and OrgID for these accounts.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Get-JCOrganization</maml:name>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters />
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para></maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- Example 1 --------------------------</maml:title>
+        <dev:code>Get-JCOrganization</dev:code>
+        <dev:remarks>
+          <maml:para>Displays the JumpCloud organizations associated with the authenticated JumpCloud admin.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Get-JCOrganization</maml:linkText>
+        <maml:uri>https://github.com/TheJumpCloud/support/wiki/Get-JCOrganization</maml:uri>
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
@@ -6389,6 +6492,245 @@
       <maml:navigationLink>
         <maml:linkText>Remove-JCUserGroupMember</maml:linkText>
         <maml:uri>https://github.com/TheJumpCloud/support/wiki/Remove-JCUserGroupMember</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Send-JCPasswordReset</command:name>
+      <command:verb>Send</command:verb>
+      <command:noun>JCPasswordReset</command:noun>
+      <maml:description>
+        <maml:para>Sends a JumpCloud activation/password reset email.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>The Send-JCPasswordReset command sends a JumpCloud activation/password reset email to targeted users. This function mimics the functionality of the 'resend email' button in the JumpCloud admin console. </maml:para>
+      <maml:para>Pending users will recieve an activation email. Active users will receive a password reset request.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Send-JCPasswordReset</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="_id, id">
+          <maml:name>UserID</maml:name>
+          <maml:Description>
+            <maml:para>The _id of the User which you want to send the email.</maml:para>
+            <maml:para>To find a JumpCloud UserID run the command:</maml:para>
+            <maml:para>PS C:&gt; Get-JCUser | Select username, _id</maml:para>
+            <maml:para>The UserID will be the 24 character string populated for the _id field.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">Object</command:parameterValue>
+          <dev:type>
+            <maml:name>Object</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Send-JCPasswordReset</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
+          <maml:name>username</maml:name>
+          <maml:Description>
+            <maml:para>The Username of the JumpCloud user you wish to send the email.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="_id, id">
+        <maml:name>UserID</maml:name>
+        <maml:Description>
+          <maml:para>The _id of the User which you want to send the email.</maml:para>
+          <maml:para>To find a JumpCloud UserID run the command:</maml:para>
+          <maml:para>PS C:&gt; Get-JCUser | Select username, _id</maml:para>
+          <maml:para>The UserID will be the 24 character string populated for the _id field.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">Object</command:parameterValue>
+        <dev:type>
+          <maml:name>Object</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
+        <maml:name>username</maml:name>
+        <maml:Description>
+          <maml:para>The Username of the JumpCloud user you wish to send the email.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>System.Object</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para></maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- Example 1 --------------------------</maml:title>
+        <dev:code>Send-JCPasswordReset -username jcuser.one</dev:code>
+        <dev:remarks>
+          <maml:para>Sends an activation or reset email to JumpCloud user with username 'jcuser.one'</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>Get-JCUserGroupMember -GroupName NewUsers | Send-JCPasswordReset</dev:code>
+        <dev:remarks>
+          <maml:para>Sends an activation or reset email to all members of the JumpCloud user group 'NewUsers'.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
+        <dev:code>Get-JCUser -activated $false | Send-JCPasswordReset</dev:code>
+        <dev:remarks>
+          <maml:para>Sends an activation email to all JumpCloud users who are in an inactive state. Users that are inactive have not yet set their JumpCloud user passwords.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 4 --------------------------</maml:title>
+        <dev:code>Get-JCUser -activated $false -filterDateProperty created -dateFilter after -date (Get-Date).AddDays(-7) -returnProperties username | Send-JCPasswordReset</dev:code>
+        <dev:remarks>
+          <maml:para>Sends an activation email to all JumpCloud users who are in an inactive state and were created in the last seven days. Users that are inactive have not yet set their JumpCloud user passwords.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Send-JCPasswordRest</maml:linkText>
+        <maml:uri>https://github.com/TheJumpCloud/support/wiki/Send-JCPasswordReset</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Set-JCOrganization</command:name>
+      <command:verb>Set</command:verb>
+      <command:noun>JCOrganization</command:noun>
+      <maml:description>
+        <maml:para>Allows a multi tenant admin to update their connection to a specific JumpCloud organization.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>The Set-JCOrganization command can only be run by JumpCloud admins with multi tenant (MT) associations. By default the Set-JCOrganization run without any parameters with prompt JumpCloud MT admins with a selection list of their available Organizations. Admins can use the '-OrgID' parameter to skip this prompt and set their Organization programmatically.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Set-JCOrganization</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
+          <maml:name>OrgID</maml:name>
+          <maml:Description>
+            <maml:para>Only needed for multi tenant admins. Organization ID can be found in the Settings page within the admin console.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
+        <maml:name>OrgID</maml:name>
+        <maml:Description>
+          <maml:para>Only needed for multi tenant admins. Organization ID can be found in the Settings page within the admin console.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para></maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- Example 1 --------------------------</maml:title>
+        <dev:code>Set-JCOrganization
+
+======== JumpCloud Multi Tenant Selector ======= 
+
+1. displayName: MSP One | OrgID:  5b5o13o06tsand0c29a0t3s6   
+2. displayName: MSP Two | OrgID:  5b5o13o06tsand0d29o0g3s6   
+
+Select the number of the JumpCloud tenant you wish to connect to
+
+Enter a value between 1 and 2:</dev:code>
+        <dev:remarks>
+          <maml:para>Displays a prompt for MT admins to select which organization to connect to.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>Set-JCOrganization -OrgID 5b5o13o06tsand0c29a0t3s6</dev:code>
+        <dev:remarks>
+          <maml:para>Uses the -OrgID parameter for MT admins to directly connect to a specific JumpCloud org.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Set-JCOrganization</maml:linkText>
+        <maml:uri>https://github.com/TheJumpCloud/support/wiki/Set-JCOrganization</maml:uri>
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>

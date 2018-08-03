@@ -26,6 +26,11 @@ function Get-JCSystemUser ()
 
         }
 
+        if ($JCOrgID)
+        {
+            $hdrs.Add('x-org-id', "$($JCOrgID)")
+        }
+
         [int]$limit = '100'
         Write-Verbose "Setting limit to $limit"
 
@@ -58,7 +63,7 @@ function Get-JCSystemUser ()
 
             Write-Verbose $URI
 
-            $APIresults = Invoke-RestMethod -Method GET -Uri $URI -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.5.0'
+            $APIresults = Invoke-RestMethod -Method GET -Uri $URI -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.6.0'
 
             $skip += $limit
             Write-Verbose "Setting skip to $skip"
