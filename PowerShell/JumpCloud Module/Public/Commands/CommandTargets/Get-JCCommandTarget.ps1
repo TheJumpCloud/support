@@ -38,6 +38,11 @@ Function Get-JCCommandTarget
 
         }
 
+        if ($JCOrgID)
+        {
+            $hdrs.Add('x-org-id', "$($JCOrgID)")
+        }
+
 
         if ($PSCmdlet.ParameterSetName -eq 'Groups')
         {
@@ -99,7 +104,7 @@ Function Get-JCCommandTarget
         
                     Write-Verbose $SystemURL
         
-                    $APIresults = Invoke-RestMethod -Method GET -Uri  $SystemURL  -Header $hdrs -UserAgent 'Pwsh_1.5.0'
+                    $APIresults = Invoke-RestMethod -Method GET -Uri  $SystemURL  -Header $hdrs -UserAgent 'Pwsh_1.6.0'
         
                     $skip += $limit
                     Write-Verbose "Setting skip to  $skip"
@@ -147,7 +152,7 @@ Function Get-JCCommandTarget
         
                     Write-Verbose $SystemGroupsURL
         
-                    $APIresults = Invoke-RestMethod -Method GET -Uri  $SystemGroupsURL  -Header $hdrs -UserAgent 'Pwsh_1.5.0'
+                    $APIresults = Invoke-RestMethod -Method GET -Uri  $SystemGroupsURL  -Header $hdrs -UserAgent 'Pwsh_1.6.0'
         
                     $skip += $limit
                     Write-Verbose "Setting skip to  $skip"

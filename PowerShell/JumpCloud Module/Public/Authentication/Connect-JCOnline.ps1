@@ -26,6 +26,20 @@ Function Connect-JCOnline ()
 
         [string]$JumpCloudAPIKey,
 
+
+        [Parameter(
+            ParameterSetName = 'force',
+            ValueFromPipelineByPropertyName,
+            Position = 1)]
+        
+        [Parameter(
+            ParameterSetName = 'Interactive',
+            Position = 1,
+            HelpMessage = "Using the JumpCloud multi tenant? Please enter your OrgID") ]
+
+        [string]$JumpCloudOrgID,
+
+
         [Parameter(
             ParameterSetName = 'force')]
         [Switch]
@@ -46,8 +60,7 @@ Function Connect-JCOnline ()
             'X-API-KEY'    = $JumpCloudAPIKey
         }
 
-        $ConnectionTestURL = "https://console.jumpcloud.com/api"
-
+        $global:JCOrgID = $null
     }
 
     process
@@ -55,13 +68,59 @@ Function Connect-JCOnline ()
 
         try
         {
-            Invoke-RestMethod -Method GET -Uri $ConnectionTestURL -Headers $hdrs -UserAgent 'Pwsh_1.5.0'  | Out-Null
+            $ConnectionTestURL = "https://console.jumpcloud.com/api"
+            Invoke-RestMethod -Method GET -Uri $ConnectionTestURL -Headers $hdrs -UserAgent 'Pwsh_1.6.0'  | Out-Null
         }
         catch
         {
-            Write-Error "Incorrect API key OR no network connectivity. To locate your JumpCloud API key log into the JumpCloud admin portal. The API key is located with 'API Settings' accessible from the drop down in the top right hand corner of the screen"
-            $global:JCAPIKEY = $null
-            break
+
+            if (Test-MultiTenant -JumpCloudAPIKey $JumpCloudAPIKey)
+            {
+
+                if (-not $JumpCloudOrgID)
+                {
+
+                    Invoke-SetJCOrganization -JumpCloudAPIKey $JumpCloudAPIKey                    
+                
+                }
+
+                else
+                {
+                    $global:JCOrgID = $JumpCloudOrgID
+
+                    try
+                    {
+                        $hdrs.Add('x-org-id', "$($JCOrgID)")
+                        $ConnectionTestURL = "https://console.jumpcloud.com/api"
+                        Invoke-RestMethod -Method GET -Uri $ConnectionTestURL -Headers $hdrs -UserAgent 'Pwsh_1.6.0'  | Out-Null
+
+                        if (-not $force)
+                        {
+                            Write-Host -BackgroundColor Green -ForegroundColor Black "Connected to JumpCloud Tenant OrgID: $JCOrgID"
+                        }
+                    }
+                    catch
+                    {
+    
+                        Write-Error "Incorrect OrgID OR no network connectivity. You can obtain your Organization ID below your Organization's Contact Information on the Settings page."
+                        $global:JCOrgID = $null
+                        break
+                        
+                    }
+                }
+
+        
+
+            }
+            
+            else
+            {
+                
+                Write-Error "Incorrect API key OR no network connectivity. To locate your JumpCloud API key log into the JumpCloud admin portal. The API key is located with 'API Settings' accessible from the drop down in the top right hand corner of the screen"
+                $global:JCAPIKEY = $null
+                break
+            }
+            
         }
     }
 

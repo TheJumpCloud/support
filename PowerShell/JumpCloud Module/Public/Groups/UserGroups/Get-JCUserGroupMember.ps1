@@ -32,6 +32,11 @@ Function Get-JCUserGroupMember ()
 
         }
 
+        if ($JCOrgID)
+        {
+            $hdrs.Add('x-org-id', "$($JCOrgID)")
+        }
+
         [int]$limit = '100'
         Write-Debug "Setting limit to $limit"
 
@@ -73,7 +78,7 @@ Function Get-JCUserGroupMember ()
                     {
                         $limitURL = "https://console.jumpcloud.com/api/v2/usergroups/$Group_ID/members?limit=$limit&skip=$skip"
                         Write-Debug $limitURL
-                        $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent 'Pwsh_1.5.0'
+                        $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent 'Pwsh_1.6.0'
                         $skip += $limit
                         $rawResults += $results
                     }
@@ -111,7 +116,7 @@ Function Get-JCUserGroupMember ()
 
                 $limitURL = "https://console.jumpcloud.com/api/v2/usergroups/$ByID/members?limit=$limit&skip=$skip"
                 Write-Debug $limitURL
-                $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent 'Pwsh_1.5.0'
+                $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent 'Pwsh_1.6.0'
                 $skip += $limit
                 $resultsArray += $results
             }

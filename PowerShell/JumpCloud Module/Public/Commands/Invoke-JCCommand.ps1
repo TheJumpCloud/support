@@ -69,6 +69,11 @@ Function Invoke-JCCommand ()
 
         }
 
+        if ($JCOrgID)
+        {
+            $hdrs.Add('x-org-id', "$($JCOrgID)")
+        }
+
         Write-Verbose 'Initilizing resultsArray'
         $resultsArray = @()
 

@@ -154,6 +154,11 @@ Function Set-JCUser ()
             'X-API-KEY'    = $JCAPIKEY
         }
 
+        if ($JCOrgID)
+        {
+            $hdrs.Add('x-org-id', "$($JCOrgID)")
+        }
+
         $UpdatedUserArray = @()
 
         if ($PSCmdlet.ParameterSetName -ne 'ByID')
@@ -194,7 +199,7 @@ Function Set-JCUser ()
 
                 Write-Debug $jsonbody
 
-                $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.5.0'
+                $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.6.0'
 
                 $UpdatedUserArray += $NewUserInfo
 
@@ -317,7 +322,7 @@ Function Set-JCUser ()
 
                 Write-Debug $jsonbody
 
-                $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.5.0'
+                $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.6.0'
 
                 $UpdatedUserArray += $NewUserInfo
 
@@ -391,7 +396,7 @@ Function Set-JCUser ()
 
                 Write-Debug $jsonbody
 
-                $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.5.0'
+                $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.6.0'
 
                 $UpdatedUserArray += $NewUserInfo
 
@@ -428,7 +433,7 @@ Function Set-JCUser ()
 
             Write-Debug $jsonbody
 
-            $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.5.0'
+            $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.6.0'
 
             $UpdatedUserArray += $NewUserInfo
 
@@ -546,7 +551,7 @@ Function Set-JCUser ()
 
             Write-Debug $jsonbody
 
-            $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.5.0'
+            $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.6.0'
 
             $UpdatedUserArray += $NewUserInfo
 

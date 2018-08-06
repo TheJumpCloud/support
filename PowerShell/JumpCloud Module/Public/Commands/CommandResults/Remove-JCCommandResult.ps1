@@ -42,6 +42,11 @@ Function Remove-JCCommandResult ()
 
         }
 
+        if ($JCOrgID)
+        {
+            $hdrs.Add('x-org-id', "$($JCOrgID)")
+        }
+
         Write-Debug 'Initilizing deleteArray'
         $deleteArray = @()
     }
@@ -57,7 +62,7 @@ Function Remove-JCCommandResult ()
 
             Write-Warning "Are you sure you wish to delete object: $result ?" -WarningAction Inquire
 
-            $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.5.0'
+            $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.6.0'
 
             $deleteArray += $delete
         }
@@ -67,7 +72,7 @@ Function Remove-JCCommandResult ()
 
             $URI = "https://console.jumpcloud.com/api/commandresults/$CommandResultID"
 
-            $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.5.0'
+            $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.6.0'
 
             $deleteArray += $delete
         }

@@ -15,12 +15,12 @@ The Connect-JCOnline function sets the global variable $JCAPIKEY
 
 ### Interactive (Default)
 ```
-Connect-JCOnline [-JumpCloudAPIKey] <String> [<CommonParameters>]
+Connect-JCOnline [-JumpCloudAPIKey] <String> [-JumpCloudOrgID <String>] [<CommonParameters>]
 ```
 
 ### force
 ```
-Connect-JCOnline [-JumpCloudAPIKey] <String> [-force] [<CommonParameters>]
+Connect-JCOnline [-JumpCloudAPIKey] <String> [-JumpCloudOrgID <String>] [-force] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -44,6 +44,15 @@ Connect-JCOnline lu8792c9d4y2398is1tb6h0b83ebf0e92s97t382
 ```PowerShell
 Connect-JCOnline lu8792c9d4y2398is1tb6h0b83ebf0e92s97t382 -force
 ```
+
+Using the "-Force" paramter the module update check is skipped. The '-Force' parameter should be used when using the JumpCloud module in scripts or other automation environments. 
+
+### Example 3
+
+```PowerShell
+Connect-JCOnline -JumpCloudAPIKey lu8792c9d4y2398is1tb6h0b83ebf0e92s97t382 -JumpCloudOrgID 5b5o13o06tsand0c29a0t3s6 -force
+```
+Providing the JumpCloudAPIKey key and the intended JumpCloudOrg ID to connect to multi tenant admins can skip the OrgID connection screen and directly connect to an Org.
 
 Using the "-Force" paramter the module update check is skipped. The '-Force' parameter should be used when using the JumpCloud module in scripts or other automation environments. 
 
@@ -84,6 +93,33 @@ A SwitchParameter which skips the module update check when setting the JCAPIKey 
 
 ```yaml
 Type: SwitchParameter
+Parameter Sets: force
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -JumpCloudOrgID
+Only needed for multi tenant admins. Organization ID can be found in the Settings page within the admin console.
+
+```yaml
+Type: String
+Parameter Sets: Interactive
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+```yaml
+Type: String
 Parameter Sets: force
 Aliases:
 

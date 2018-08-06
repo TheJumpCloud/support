@@ -55,6 +55,11 @@ Function Remove-JCUserGroupMember ()
 
         }
 
+        if ($JCOrgID)
+        {
+            $hdrs.Add('x-org-id', "$($JCOrgID)")
+        }
+
         Write-Debug 'Initilizing resultsArray'
         $resultsArray = @()
 
@@ -104,7 +109,7 @@ Function Remove-JCUserGroupMember ()
 
             try
             {
-                $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.5.0'
+                $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.6.0'
                 $Status = 'Removed'
             }
             catch
@@ -152,7 +157,7 @@ Function Remove-JCUserGroupMember ()
 
             try
             {
-                $GroupRemove = $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.5.0'
+                $GroupRemove = $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.6.0'
                 $Status = 'Removed'
             }
             catch

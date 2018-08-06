@@ -39,6 +39,11 @@ Function Remove-JCSystemGroup ()
 
         }
 
+        if ($JCOrgID)
+        {
+            $hdrs.Add('x-org-id', "$($JCOrgID)")
+        }
+
         Write-Debug 'Initilizing rawResults and results resultsArray'
         $resultsArray = @()
 
@@ -68,7 +73,7 @@ Function Remove-JCSystemGroup ()
 
                     $URI = "https://console.jumpcloud.com/api/v2/systemgroups/$GID"
 
-                    $DeletedGroup = Invoke-RestMethod -Method DELETE -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.5.0'
+                    $DeletedGroup = Invoke-RestMethod -Method DELETE -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.6.0'
 
                     $Status = 'Deleted'
 
@@ -99,7 +104,7 @@ Function Remove-JCSystemGroup ()
                 try
                 {
                     $URI = "https://console.jumpcloud.com/api/v2/systemgroups/$GID"
-                    $DeletedGroup = Invoke-RestMethod -Method DELETE -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.5.0'
+                    $DeletedGroup = Invoke-RestMethod -Method DELETE -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.6.0'
                     $Status = 'Deleted'
                 }
                 catch
