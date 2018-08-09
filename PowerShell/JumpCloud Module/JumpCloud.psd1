@@ -45,7 +45,7 @@
         "Remove-JCSystem",
         "Remove-JCSystemGroup",
         "Remove-JCSystemGroupMember",
-        "Remove-JCuser",
+        "Remove-JCUser",
         "Remove-JCSystemUser",
         "Remove-JCUserGroup",
         "Remove-JCUserGroupMember",
@@ -64,6 +64,9 @@
         "Send-JCPasswordReset",
         "Get-JCOrganization",
         "Set-JCOrganization",
+        "New-JCDeploymentTemplate",
+        "Invoke-JCDeployment",
+        "Set-JCCommand",
         "New-JCImportTemplate")
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.

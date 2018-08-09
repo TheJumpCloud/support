@@ -9,43 +9,39 @@ Function New-JCImportTemplate()
     begin
     {
         $Banner = @"
-           __
-          / /  __  __   ____ ___     ____
-     __  / /  / / / /  / __  __ \   / __ \
-    / /_/ /  / /_/ /  / / / / / /  / /_/ /
-    \____/   \____/  /_/ /_/ /_/  /  ___/
-                                 /_/
-   ______   __                      __
-  / ____/  / /  ____   __  __  ____/ /
- / /      / /  / __ \ / / / / / __  /
-/ /___   / /  / /_/ // /_/ / / /_/ /
-\____/  /_/   \____/ \____/  \____/
-
+       __                          ______ __                   __
+      / /__  __ ____ ___   ____   / ____// /____   __  __ ____/ /
+ __  / // / / // __  __ \ / __ \ / /    / // __ \ / / / // __  / 
+/ /_/ // /_/ // / / / / // /_/ // /___ / // /_/ // /_/ // /_/ /  
+\____/ \____//_/ /_/ /_// ____/ \____//_/ \____/ \____/ \____/   
+                       /_/                                                     
+                                    CSV User Import Template
 "@
 
         $date = Get-Date -Format MM-dd-yyyy
         $fileName = 'JCUserImport_' + $date + '.csv'
         Write-Debug $fileName
 
-       $Heading1 = 'The CSV file:'
-       $Heading2 ='Will be created within the directory:'
+        $Heading1 = 'The CSV file:'
+        $Heading2 = 'Will be created within the directory:'
         
-       Clear-host
+        Clear-host
 
-       Write-Host $Banner -ForegroundColor Green
-       Write-Host $Heading1 -NoNewline
-       Write-Host " $fileName" -ForegroundColor Yellow
-       Write-Host $Heading2 -NoNewline
-       Write-Host " $home" -ForegroundColor Yellow
-       Write-Host ""
+        Write-Host $Banner -ForegroundColor Green
+        Write-Host $Heading1 -NoNewline
+        Write-Host " $fileName" -ForegroundColor Yellow
+        Write-Host $Heading2 -NoNewline
+        Write-Host " $home" -ForegroundColor Yellow
+        Write-Host ""
 
 
         while ($ConfirmFile -ne 'Y' -and $ConfirmFile -ne 'N')
-            {
-                $ConfirmFile = Read-Host  "Enter Y to confirm or N to change $fileName output location" #Confirm .csv file location creation
-            }
+        {
+            $ConfirmFile = Read-Host  "Enter Y to confirm or N to change $fileName output location" #Confirm .csv file location creation
+        }
 
-        if ($ConfirmFile -eq 'Y'){
+        if ($ConfirmFile -eq 'Y')
+        {
 
             $ExportLocation = $home
         }
@@ -72,117 +68,118 @@ Function New-JCImportTemplate()
     {
         $CSV = [ordered]@{
             FirstName = $null
-            LastName = $null
-            Username = $null
-            Email = $null
-            Password = $null
-            }
+            LastName  = $null
+            Username  = $null
+            Email     = $null
+            Password  = $null
+        }
 
         Write-Host ""
         Write-Host 'Do you want to bind your new users to existing JumpCloud systems during import?'
 
-                while ($ConfirmSystem -ne 'Y' -and $ConfirmSystem -ne 'N')
-                {
-                        $ConfirmSystem = Read-Host  "Enter Y for Yes or N for No"
-                }
+        while ($ConfirmSystem -ne 'Y' -and $ConfirmSystem -ne 'N')
+        {
+            $ConfirmSystem = Read-Host  "Enter Y for Yes or N for No"
+        }
 
-                    if ($ConfirmSystem -eq 'Y')
-                    {
+        if ($ConfirmSystem -eq 'Y')
+        {
 
-                        $CSV.add('SystemID', $null)
-                        $CSV.add('Administrator', $null)
+            $CSV.add('SystemID', $null)
+            $CSV.add('Administrator', $null)
 
-                        $ExistingSystems = Get-JCSystem -returnProperties hostname,displayName | Select-Object HostName, DisplayName, @{Name='SystemID';Expression={$_._id}}, lastContact
+            $ExistingSystems = Get-JCSystem -returnProperties hostname, displayName | Select-Object HostName, DisplayName, @{Name = 'SystemID'; Expression = {$_._id}}, lastContact
 
-                        $SystemsName = 'JCSystems_' + $date + '.csv'
+            $SystemsName = 'JCSystems_' + $date + '.csv'
 
-                        $ExistingSystems | Export-Csv -path "$ExportLocation/$SystemsName" -NoTypeInformation
+            $ExistingSystems | Export-Csv -path "$ExportLocation/$SystemsName" -NoTypeInformation
 
-                        Write-Host 'Creating file '  -NoNewline
-                        Write-Host $SystemsName -ForegroundColor Yellow -NoNewline
-                        Write-Host ' with all existing systems in the location' -NoNewline
-                        Write-Host " $ExportLocation" -ForegroundColor Yellow
+            Write-Host 'Creating file '  -NoNewline
+            Write-Host $SystemsName -ForegroundColor Yellow -NoNewline
+            Write-Host ' with all existing systems in the location' -NoNewline
+            Write-Host " $ExportLocation" -ForegroundColor Yellow
 
-                    }
+        }
 
-                    elseif ($ConfirmAttributes-eq 'N') {}
+        elseif ($ConfirmAttributes -eq 'N') {}
 
         Write-Host ""
         Write-Host 'Do you want to add the new users to JumpCloud user groups during import?'
 
-            while ($ConfirmGroups -ne 'Y' -and $ConfirmGroups -ne 'N')
+        while ($ConfirmGroups -ne 'Y' -and $ConfirmGroups -ne 'N')
+        {
+            $ConfirmGroups = Read-Host  "Enter Y for Yes or N for No"
+        }
+
+        if ($ConfirmGroups -eq 'Y')
+        {
+            [int]$GroupNumber = Read-Host  "What is the maximum number of groups you want to add a single user to during import? ENTER A NUMBER"
+            [int]$NewGroup = 0
+            [int]$GroupID = 1
+            $GroupsArray = @()
+
+            while ($NewGroup -ne $GroupNumber)
             {
-                    $ConfirmGroups = Read-Host  "Enter Y for Yes or N for No"
+                $GroupsArray += "Group$GroupID"
+                $NewGroup++
+                $GroupID++
             }
 
-                if ($ConfirmGroups -eq 'Y')
-                {
-                    [int]$GroupNumber = Read-Host  "What is the maximum number of groups you want to add a single user to during import? ENTER A NUMBER"
-                    [int]$NewGroup = 0
-                    [int]$GroupID = 1
-                    $GroupsArray = @()
+            foreach ($Group in $GroupsArray)
+            {
+                $CSV.add($Group, $null)
+            }
 
-                    while ($NewGroup -ne $GroupNumber)
-                    {
-                        $GroupsArray += "Group$GroupID"
-                        $NewGroup++
-                        $GroupID++
-                    }
+        }
 
-                    foreach ($Group in $GroupsArray)
-                    {
-                        $CSV.add($Group, $null)
-                    }
-
-                }
-
-                elseif ($ConfirmGroups -eq 'N') {}
+        elseif ($ConfirmGroups -eq 'N') {}
 
 
         Write-Host ""
         Write-Host 'Do you want to add any custom attributes to your users during import?'
 
-                while ($ConfirmAttributes -ne 'Y' -and $ConfirmAttributes -ne 'N')
-                {
-                        $ConfirmAttributes = Read-Host  "Enter Y for Yes or N for No"
-                }
+        while ($ConfirmAttributes -ne 'Y' -and $ConfirmAttributes -ne 'N')
+        {
+            $ConfirmAttributes = Read-Host  "Enter Y for Yes or N for No"
+        }
 
-                    if ($ConfirmAttributes -eq 'Y')
-                    {
-                        [int]$AttributeNumber = Read-Host  "What is the maximum number of custom attributes you want to add to a single user during import? ENTER A NUMBER"
-                        [int]$NewAttribute = 0
-                        [int]$AttributeID = 1
-                        $NewAttributeArrayList = New-Object System.Collections.ArrayList
+        if ($ConfirmAttributes -eq 'Y')
+        {
+            [int]$AttributeNumber = Read-Host  "What is the maximum number of custom attributes you want to add to a single user during import? ENTER A NUMBER"
+            [int]$NewAttribute = 0
+            [int]$AttributeID = 1
+            $NewAttributeArrayList = New-Object System.Collections.ArrayList
 
-                        while ($NewAttribute -ne $AttributeNumber)
-                        {
-                            $temp = New-Object PSObject
-                            $temp | Add-Member -MemberType NoteProperty -Name AttributeName  -Value "Attribute$AttributeID`_name"
-                            $temp | Add-Member -MemberType NoteProperty -Name AttributeValue  -Value "Attribute$AttributeID`_value"
-                            $NewAttributeArrayList.Add($temp) | Out-Null
-                            $NewAttribute ++
-                            $AttributeID ++
-                        }
+            while ($NewAttribute -ne $AttributeNumber)
+            {
+                $temp = New-Object PSObject
+                $temp | Add-Member -MemberType NoteProperty -Name AttributeName  -Value "Attribute$AttributeID`_name"
+                $temp | Add-Member -MemberType NoteProperty -Name AttributeValue  -Value "Attribute$AttributeID`_value"
+                $NewAttributeArrayList.Add($temp) | Out-Null
+                $NewAttribute ++
+                $AttributeID ++
+            }
 
 
-                        foreach ($Attribute in $NewAttributeArrayList)
-                        {
-                            $CSV.add($Attribute.AttributeName, $null)
-                            $CSV.add($Attribute.AttributeValue, $null)
-                        }
+            foreach ($Attribute in $NewAttributeArrayList)
+            {
+                $CSV.add($Attribute.AttributeName, $null)
+                $CSV.add($Attribute.AttributeValue, $null)
+            }
 
-                }
+        }
 
-                elseif ($ConfirmAttributes-eq 'N') {}
+        elseif ($ConfirmAttributes -eq 'N') {}
 
-                $CSVheader =  New-Object psobject -Property $Csv
+        $CSVheader = New-Object psobject -Property $Csv
     }
 
 
     end
     {
         $ExportPath = Test-Path ("$ExportLocation/$FileName")
-        if (!$ExportPath ) {
+        if (!$ExportPath )
+        {
             Write-Host ""
             $CSVheader  | Export-Csv -path "$ExportLocation/$FileName" -NoTypeInformation
             Write-Host 'Creating file'  -NoNewline
@@ -190,7 +187,8 @@ Function New-JCImportTemplate()
             Write-Host ' in the location' -NoNewline
             Write-Host " $ExportLocation" -ForegroundColor Yellow
         }
-        else {
+        else
+        {
             Write-Host ""
             Write-Warning "The file $fileName already exists do you want to overwrite it?" -WarningAction Inquire
             Write-Host ""
@@ -215,7 +213,7 @@ Function New-JCImportTemplate()
             Invoke-Item -path "$ExportLocation/$FileName"
 
         }
-        if ($Open -eq 'N'){}
+        if ($Open -eq 'N') {}
     }
 
 }

@@ -69,7 +69,7 @@ Function Connect-JCOnline ()
         try
         {
             $ConnectionTestURL = "https://console.jumpcloud.com/api"
-            Invoke-RestMethod -Method GET -Uri $ConnectionTestURL -Headers $hdrs -UserAgent 'Pwsh_1.6.0'  | Out-Null
+            Invoke-RestMethod -Method GET -Uri $ConnectionTestURL -Headers $hdrs -UserAgent 'Pwsh_1.7.0'  | Out-Null
         }
         catch
         {
@@ -92,7 +92,7 @@ Function Connect-JCOnline ()
                     {
                         $hdrs.Add('x-org-id', "$($JCOrgID)")
                         $ConnectionTestURL = "https://console.jumpcloud.com/api"
-                        Invoke-RestMethod -Method GET -Uri $ConnectionTestURL -Headers $hdrs -UserAgent 'Pwsh_1.6.0'  | Out-Null
+                        Invoke-RestMethod -Method GET -Uri $ConnectionTestURL -Headers $hdrs -UserAgent 'Pwsh_1.7.0'  | Out-Null
 
                         if (-not $force)
                         {

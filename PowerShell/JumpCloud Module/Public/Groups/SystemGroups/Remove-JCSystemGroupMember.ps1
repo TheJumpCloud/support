@@ -99,7 +99,7 @@ Function Remove-JCSystemGroupMember ()
 
             try
             {
-                $GroupRemove = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.6.0'
+                $GroupRemove = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.7.0'
                 $Status = 'Removed'
             }
             catch
@@ -148,7 +148,7 @@ Function Remove-JCSystemGroupMember ()
 
             try
             {
-                $GroupRemove = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.6.0'
+                $GroupRemove = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.7.0'
                 $Status = 'Removed'
             }
             catch

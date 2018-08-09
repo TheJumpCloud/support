@@ -1,4 +1,4 @@
-Function Invoke-JCCommandDeployment () 
+Function Invoke-JCDeployment () 
 {
     [CmdletBinding(DefaultParameterSetName = 'NoVariables')]
 
@@ -10,12 +10,12 @@ Function Invoke-JCCommandDeployment ()
             ValueFromPipelineByPropertyName,
             Position = 0)]
         [Alias('_id', 'id')]
-        [String]$DeploymentCommandID,
+        [String]$CommandID,
 
         [Parameter(Mandatory)]
         [ValidateScript( { Test-Path -Path $_ -PathType Leaf})]
         [ValidatePattern( '\.csv$' )]
-        [string]$DeploymentCSVFilePath
+        [string]$CSVFilePath
         
 
     )
@@ -46,24 +46,24 @@ Function Invoke-JCCommandDeployment ()
         try
         {
 
-            $DeploymentCommand = Get-JCCommand -ByID $DeploymentCommandID
+            $DeploymentCommand = Get-JCCommand -ByID $CommandID
 
             if ( -not $DeploymentCommand)
             {
-                Write-Error "$DeploymentCommandID is not a valid CommandID. Run command 'Get-JCCommand | Select name, _id' to see a list of your commands"
+                Write-Error "$CommandID is not a valid CommandID. Run command 'Get-JCCommand | Select name, _id' to see a list of your commands"
                 Break
             }
         }
 
         catch
         {
-            Write-Error "$DeploymentCommandID is not a valid CommandID. Run command 'Get-JCCommand | Select name, _id' to see a list of your commands"
+            Write-Error "$CommandID is not a valid CommandID. Run command 'Get-JCCommand | Select name, _id' to see a list of your commands"
     
             Write-Error $_.ErrorDetails 
             Break   
         }
 
-        $Targets = Get-JCCommandTarget -CommandID $DeploymentCommandID
+        $Targets = Get-JCCommandTarget -CommandID $CommandID
 
         if ($Targets.count -gt 0)
         {
@@ -101,25 +101,25 @@ Function Invoke-JCCommandDeployment ()
             if ($ConfirmPrompt -eq $True)
             {
                     
-                $GroupTargets = Get-JCCommandTarget -CommandID $DeploymentCommandID -Groups
+                $GroupTargets = Get-JCCommandTarget -CommandID $CommandID -Groups
 
                 if ($GroupTargets.GroupID.count -gt 0)
                 {
 
-                    $GroupsRemove = $GroupTargets | % {Remove-JCCommandTarget -CommandID  $DeploymentCommandID -GroupID $_.GroupID}  
+                    $GroupsRemove = $GroupTargets | % {Remove-JCCommandTarget -CommandID  $CommandID -GroupID $_.GroupID}  
                         
                 }
 
-                $SystemTargets = Get-JCCommandTarget -CommandID $DeploymentCommandID 
+                $SystemTargets = Get-JCCommandTarget -CommandID $CommandID 
 
                 if ($SystemTargets.count -gt 0)
                 {
-                    $SystemRemove = $SystemTargets   | Remove-JCCommandTarget -CommandID $DeploymentCommandID          
+                    $SystemRemove = $SystemTargets   | Remove-JCCommandTarget -CommandID $CommandID          
                 }
 
             }
 
-            $NoTargets = Get-JCCommandTarget -CommandID $DeploymentCommandID
+            $NoTargets = Get-JCCommandTarget -CommandID $CommandID
 
             if ($NoTargets.count -gt 0)
             {
@@ -142,14 +142,17 @@ Function Invoke-JCCommandDeployment ()
     {
         $trigger = Get-Date -Format MMddyyTHHmmss
 
-        Set-JCCommand -CommandID $DeploymentCommandID -launchType trigger -trigger $trigger
+        $Command = Set-JCCommand -CommandID $CommandID -launchType trigger -trigger $trigger
 
-        $DeploymentInfo = Import-Csv $DeploymentCSVFilePath
+        $DeploymentInfo = Import-Csv $CSVFilePath
 
         $Variables = $DeploymentInfo[0].psobject.Properties.Name | Where-Object {$_ -ne "SystemID"}
 
         [int]$NumberOfVariables = $Variables.Count
 
+        [int]$ProgressCounter = 0
+
+        [int]$SystemCount = $DeploymentInfo.SystemID.Count
 
         foreach ($Target in $DeploymentInfo)
         {
@@ -158,11 +161,12 @@ Function Invoke-JCCommandDeployment ()
                 NumberOfVariables = "$numberofVariables"            
             }
             
-            Write-Verbose "Adding SYSTEM: $($Target.SystemID) to DEPLOY COMMAND: $($DeploymentCommandID)"
+            Write-Verbose "Adding SYSTEM: $($Target.SystemID) to DEPLOY COMMAND: $($CommandID)"
             
-            $TargetAdd = Add-JCCommandTarget -CommandID $DeploymentCommandID -SystemID $Target.SystemID
+            $TargetAdd = Add-JCCommandTarget -CommandID $CommandID -SystemID $Target.SystemID
 
-            $Counter = 1
+            [int]$Counter = 1
+
 
             foreach ($Var in $Variables)
             {
@@ -173,18 +177,26 @@ Function Invoke-JCCommandDeployment ()
                 $Counter++
             }
             
-            Write-Host $DeploymentParams
+            $null = Invoke-JCCommand @DeploymentParams
 
+            $TargetRemove = Remove-JCCommandTarget -CommandID $CommandID -SystemID $Target.SystemID
 
-            #Invoke-JCCommand @DeploymentParams
+            $ProgressCounter++
 
-            $TargetRemove = Remove-JCCommandTarget -CommandID $DeploymentCommandID -SystemID $Target.SystemID
+            $GroupAddProgressParams = @{
 
+                Activity        = "Deploying $($Command.name)"
+                Status          = "Command Deployment $Counter of $SystemCount "
+                PercentComplete = ($ProgressCounter / $SystemCount) * 100
+
+            }
+
+            Write-Progress @GroupAddProgressParams
 
             
         }
          
-        Set-JCCommand -CommandID $DeploymentCommandID -launchType manual
+        $null = Set-JCCommand -CommandID $CommandID -launchType manual
 
 
     }
@@ -195,5 +207,3 @@ Function Invoke-JCCommandDeployment ()
         return $resultsArray
     }
 }
-
-Invoke-JCCommandDeployment -DeploymentCommandID 5b69b3d5218978234805006d -DeploymentCSVFilePath /Users/sreed/Desktop/JCDeployment_080718T133743.csv

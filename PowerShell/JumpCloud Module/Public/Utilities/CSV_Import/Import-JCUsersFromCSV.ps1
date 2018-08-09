@@ -41,8 +41,8 @@ Function Import-JCUsersFromCSV ()
  __  / // / / // __  __ \ / __ \ / /    / // __ \ / / / // __  / 
 / /_/ // /_/ // / / / / // /_/ // /___ / // /_/ // /_/ // /_/ /  
 \____/ \____//_/ /_/ /_// ____/ \____//_/ \____/ \____/ \____/   
-                         /_/                                                      
-                                                User Import
+                       /_/                                                      
+                                                  User Import
 "@
 
             Clear-Host
@@ -59,7 +59,7 @@ Function Import-JCUsersFromCSV ()
             {
                 if ($ExistingUsernameCheck.ContainsKey($User.Username))
                 {
-                    Write-Warning "A user with username: $($User.Username) already exisits this user will not be created would you like to continue?" -WarningAction Inquire
+                    Write-Warning "A user with username: $($User.Username) already exists this user will not be created." 
                 }
                 else
                 {
@@ -75,7 +75,7 @@ Function Import-JCUsersFromCSV ()
                 if ($U.count -gt 1)
                 {
 
-                    Write-Warning "Duplicate username for username $($U.name) in import file. Usernames must be unique. To resolve elminiate the duplicate username and then retry import" -WarningAction Inquire
+                    Write-Warning "Duplicate username for username $($U.name) in import file. Usernames must be unique. To resolve eliminate the duplicate username and then retry import." 
                 }
             }
 
@@ -92,7 +92,7 @@ Function Import-JCUsersFromCSV ()
             {
                 if ($ExistingEmailCheck.ContainsKey($User.email))
                 {
-                    Write-Warning "A user with email address: $($User.email) already exisits this user will not be created would you like to continue?" -WarningAction Inquire
+                    Write-Warning "A user with email address: $($User.email) already exists this user will not be created." 
                 }
                 else
                 {
@@ -107,7 +107,7 @@ Function Import-JCUsersFromCSV ()
                 if ($U.count -gt 1)
                 {
 
-                    Write-Warning "Duplicate email for email $($U.name) in import file. Emails must be unique. To resolve elminiate the duplicate emails and then retry import" -WarningAction Inquire
+                    Write-Warning "Duplicate email for email $($U.name) in import file. Emails must be unique. To resolve eliminate the duplicate emails." 
                 }
             }
 
@@ -131,7 +131,7 @@ Function Import-JCUsersFromCSV ()
                     }
                     else
                     {
-                        Write-Warning "A system with SystemID: $($User.SystemID) does not exist and will not be bound to user $($User.Username)" -WarningAction Inquire
+                        Write-Warning "A system with SystemID: $($User.SystemID) does not exist and will not be bound to user $($User.Username)" 
                     }
                 }
                 else {Write-Verbose "No system"}
@@ -145,7 +145,7 @@ Function Import-JCUsersFromCSV ()
                 if ( ($Value -notlike "*true" -and $Value -notlike "*false") )
                 {
 
-                    Write-Warning "Administrator must be a boolean value and set to either '`$True/True' or '`$False/False' please correct value: $Value " -WarningAction Inquire
+                    Write-Warning "Administrator must be a boolean value and set to either '`$True/True' or '`$False/False' please correct value: $Value " 
 
                 
                 }
@@ -266,6 +266,10 @@ Function Import-JCUsersFromCSV ()
     {
         foreach ($UserAdd in $NewUsers)
         {
+            $NewUser = $Null
+            $Status = $Null
+            $UserGroupArrayList = $Null
+            $SystemAddStatus = $Null
 
             $CustomAttributes = $UserAdd | Get-Member -Name *Attribute* | Where-Object {$_.Definition -NotLike "*=" -and $_.Definition -NotLike "*null"} | Select-Object Name
 

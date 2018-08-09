@@ -175,7 +175,7 @@ Function Add-JCCommandTarget
             try
             {
 
-                $APIresults = Invoke-RestMethod -Method Post -Uri  $URL  -Header $hdrs -Body $jsonbody -UserAgent 'Pwsh_1.6.0'
+                $APIresults = Invoke-RestMethod -Method Post -Uri  $URL  -Header $hdrs -Body $jsonbody -UserAgent 'Pwsh_1.7.0'
                 $Status = 'Added'
                 
             }

@@ -142,7 +142,7 @@ Function Set-JCCommand
 
         $jsonbody = $body | ConvertTo-Json
 
-        $NewCommand = Invoke-RestMethod -Uri $URL -Method PUT -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.6.0'
+        $NewCommand = Invoke-RestMethod -Uri $URL -Method PUT -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.7.0'
 
         $NewCommandsArray += $NewCommand
 

@@ -15,7 +15,7 @@ Function New-JCDeploymentTemplate()
 / /_/ // /_/ // / / / / // /_/ // /___ / // /_/ // /_/ // /_/ /  
 \____/ \____//_/ /_/ /_// ____/ \____//_/ \____/ \____/ \____/   
                        /_/                                                      
-                                             Command Deployment
+                              CSV Command Deployment Template
 
 '@
         $Date = Get-Date -Format MMddyyTHHmmss
@@ -220,7 +220,7 @@ Function New-JCDeploymentTemplate()
 
         Write-Host "`nDo you want to export JumpCloud Command information to CSV?" -ForegroundColor Yellow
 
-        Write-Host "`n(You will need the JumpCloud CommandID to use the Invoke-JCCommandDeployment command)`n"
+        Write-Host "`n(You will need the JumpCloud CommandID to use the Invoke-JCDeployment command)`n"
 
         while ($ConfirmCommand -ne 'Y' -and $ConfirmCommand -ne 'N')
         {
