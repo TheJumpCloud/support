@@ -5,30 +5,32 @@ online version:
 schema: 2.0.0
 ---
 
-# Get-JCOrganization
+# New-JCDeploymentTemplate
 
 ## SYNOPSIS
 
-Returns all JumpCloud organizations associated with the authenticated JumpCloud admins account. 
+A guided walk through that creates a command deployment CSV file on your local machine.
 
 ## SYNTAX
 
 ```
-Get-JCOrganization [<CommonParameters>]
+New-JCDeploymentTemplate [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-The Get-JCOrganization command displays all JumpCloud organizations associated with the authenticated JumpCloud admins. JumpCloud admins configured for multi tenant administration can see the Organizations they have access to and the displayName and OrgID for these accounts. 
+The New-JCDeploymentTemplate command is a menu driven interactive function that guides admins through the process of creating a command deployment CSV file and assists in gathering the required information needed to populate the command deployment CSV file.
+
 
 ## EXAMPLES
 
 ### Example 1
 ```powershell
-Get-JCOrganization
+PS C:\> New-JCDeploymentTemplate
 ```
 
-Displays the JumpCloud organizations associated with the authenticated JumpCloud admin.
+Launches the New-JCDeploymentTemplate menu
+
 
 ## PARAMETERS
 
@@ -46,5 +48,3 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
-
-[Get-JCOrganization](https://github.com/TheJumpCloud/support/wiki/Get-JCOrganization)

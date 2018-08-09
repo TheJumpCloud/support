@@ -1,6 +1,6 @@
 Function Invoke-JCDeployment () 
 {
-    [CmdletBinding(DefaultParameterSetName = 'NoVariables')]
+    [CmdletBinding()]
 
     param
     (
@@ -51,7 +51,9 @@ Function Invoke-JCDeployment ()
             if ( -not $DeploymentCommand)
             {
                 Write-Error "$CommandID is not a valid CommandID. Run command 'Get-JCCommand | Select name, _id' to see a list of your commands"
-                Break
+
+                Exit
+                
             }
         }
 
@@ -60,21 +62,23 @@ Function Invoke-JCDeployment ()
             Write-Error "$CommandID is not a valid CommandID. Run command 'Get-JCCommand | Select name, _id' to see a list of your commands"
     
             Write-Error $_.ErrorDetails 
-            Break   
+
+            Exit
+               
         }
 
         $Targets = Get-JCCommandTarget -CommandID $CommandID
 
-        if ($Targets.count -gt 0)
+        if ($Targets.SystemID.count -gt 0)
         {
 
-            Write-Host "`nDeployment command: '$($DeploymentCommand.name)' has $($Targets.count) existing system associations.`n" -ForegroundColor Red
+            Write-Host "`nDeployment command: '$($DeploymentCommand.name)' has $($Targets.SystemID.count) existing system associations.`n" -ForegroundColor Red
 
             Write-Host "Deployment commands CAN NOT have any systems associated with them.`n" 
 
             Write-Host "During the deployment systems in the DEPLOYMENT CSV will be targeted and then removed from the deployment command.`n"
 
-            Write-Host "Would you like to remove the $($Targets.count) systems from the Deployment command: '$($DeploymentCommand.name)' to continue?`n" -ForegroundColor Yellow
+            Write-Host "Would you like to remove the $($Targets.SystemID.count) systems from the Deployment command: '$($DeploymentCommand.name)' to continue?`n" -ForegroundColor Yellow
 
             $ConfirmPrompt = $false
         
@@ -87,7 +91,10 @@ Function Invoke-JCDeployment ()
                     y {$ConfirmPrompt = $True}
                     n
                     {
-                        Return 
+                        
+                        Write-Output "Exited due to system associations" 
+                        Exit
+                        
                     } 
                     default
                     {
@@ -112,7 +119,7 @@ Function Invoke-JCDeployment ()
 
                 $SystemTargets = Get-JCCommandTarget -CommandID $CommandID 
 
-                if ($SystemTargets.count -gt 0)
+                if ($SystemTargets.SystemID.count -gt 0)
                 {
                     $SystemRemove = $SystemTargets   | Remove-JCCommandTarget -CommandID $CommandID          
                 }
@@ -121,12 +128,13 @@ Function Invoke-JCDeployment ()
 
             $NoTargets = Get-JCCommandTarget -CommandID $CommandID
 
-            if ($NoTargets.count -gt 0)
+            if ($NoTargets.SystemID.count -gt 0)
             {
 
-                Write-Error "`nDeployment command: '$($DeploymentCommand.name)' has $($NoTargets.count) existing system associations. Exiting`n" 
+                Write-Error "`nDeployment command: '$($DeploymentCommand.name)' has $($NoTargets.SystemID.count) existing system associations. Exiting`n" 
 
-                Break
+                Write-Output "Exited due to system associations" 
+                Exit
                     
             }
 
@@ -155,7 +163,9 @@ Function Invoke-JCDeployment ()
         [int]$SystemCount = $DeploymentInfo.SystemID.Count
 
         foreach ($Target in $DeploymentInfo)
-        {
+        {   
+            $SingleResult = $Null
+
             $DeploymentParams = @{
                 trigger           = "$trigger"
                 NumberOfVariables = "$numberofVariables"            
@@ -186,12 +196,20 @@ Function Invoke-JCDeployment ()
             $GroupAddProgressParams = @{
 
                 Activity        = "Deploying $($Command.name)"
-                Status          = "Command Deployment $Counter of $SystemCount "
+                Status          = "Command Deployment $ProgressCounter of $SystemCount "
                 PercentComplete = ($ProgressCounter / $SystemCount) * 100
 
             }
-
+            
             Write-Progress @GroupAddProgressParams
+
+            $SingleResult = [PSCustomObject]@{
+                SystemID  = $Target.SystemID
+                CommandID = $CommandID
+                Status    = "Deployed"
+            }
+
+            $resultsArray += $SingleResult
 
             
         }

@@ -9,7 +9,7 @@ schema: 2.0.0
 
 ## SYNOPSIS
 
-A guided walkthrough that creates a JumpCloud User Import .CSV file on your local machine
+A guided walk through that creates a JumpCloud User Import CSV file on your local machine.
 
 ## SYNTAX
 
@@ -19,7 +19,7 @@ New-JCImportTemplate [<CommonParameters>]
 
 ## DESCRIPTION
 
-The New-JCImportTemplate is a menu driven function that guides end users and creates a custom JumpCloud User Import .CSV file on their machine for populating with their users information for Importing into JumpCloud.
+The New-JCImportTemplate command is a menu driven function that guides end users and creates a custom JumpCloud User Import .CSV file on their machine for populating with their users information for Importing into JumpCloud.
 
 If users wish to bind users to existing JumpCloud systems the function will also output a .csv file with containing all existing JumpCloud machines to the users $Home directory. The user will need this file to associate SystemIDs with new users.
 
