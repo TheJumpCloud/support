@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [[ $UID != 0 ]]; then
+if [[ "${UID}" != 0 ]]; then
   (>&2 echo "Error:  $0 must be run as root")
   exit 1
 fi
