@@ -1,3 +1,73 @@
+## 1.7.0
+Release Date: August 14, 2018
+
+#### RELEASE NOTES
+
+```
+Take JumpCloud commands to the next level with Command Deployments!
+New functions New-JCDeploymentTemplate and Invoke-JCDeployment.
+Deployments are designed for automation scenarios where a 1:1 association between the command payload and JumpCloud system is required.
+Use system specific payloads in your JumpCloud commands with variables populated from a CSV file.
+```
+
+#### FEATURES:
+
+- New Function: New-JCDeploymentTemplate used to create a deployment CSV template file that maps to the corresponding JumpCloud command variables to CSV columns.
+- New Function: Invoke-JCDeployment for calling the command deployment and feeding the command the '-CommandID' of the target JumpCloud deploy command and the populated deployment CSV file.
+- New Function: Set-JCCommand to update JumpCloud commands programmatically. This command is used by the Invoke-JCDeployment command to update the '-launchType' to trigger and trigger the command.  
+
+#### IMPROVEMENTS:
+
+- Warning action "Inquire" removed from Import-JCUsersFromCSV command. Resolves repetitive "Press Y to continue"  message during user validation.
+- Streamlined JumpCloud banners. Because less is more.
+
+#### BUG FIXES:
+
+- Resolved bug on 'Import-JCUserFromCSV' where output for users that were not created due to duplicate username or email would show previously created user information.  
+- Resolved bug on 'Import-JCUserFromCSV' where output for users that were not created would show 'User created'.  
+
+
+## 1.6.0
+Release Date: August 3, 2018
+
+#### RELEASE NOTES
+
+```
+Send activation/password reset emails with the new function Send-JCPasswordReset
+Multi tenant support has been added!
+Multi tenant admins will be asked to select the org they want to connect to during API authentication.
+Multi tenant admins can switch the org they are connected to using the Set-JCOrganization command.
+```
+
+#### FEATURES:
+
+- New Function: Send-JCPasswordReset allows admins to use the 'Resend email' button functionality programmatically to send reset/activation emails to targeted users.
+- New Function: Set-JCOrganization allows multi tenant admins to change the JumpCloud tenant they are conneted to. 
+- New Function: Get-JCOrganization allows multi tenant admins to see the JumpCloud tenants they have access to. 
+- Updated Function: Connect-JCOnline to prompt multi tenant admins to select their connected tenant. Admins can also skip this prompt by entering a 'JumpCloud OrgID' into the new '-JumpCloudOrgID' parameter to setup connection in automation scenarios.
+
+#### IMPROVEMENTS:
+
+- All Public functions have been updated to include the [x-org-id](https://docs.jumpcloud.com/2.0/authentication-and-authorization/multi-tenant-organization-api-header) header when a multi tenant API connection is established.
+
+## 1.5.0
+Release Date: July 16, 2018
+
+#### RELEASE NOTES
+
+```
+New Function: Get-JCBackup to backup user, system user, system, group information to CSV. 
+Updated Function: Get-JCCommandResult to show SystemID
+```
+#### FEATURES:
+
+- New Function: Get-JCBackup to backup user, system user, system, user group, and system group information to CSV
+- Updated Function: Get-JCCommandResult to show SystemID when querying command results in bulk and '-ByID'
+
+#### IMPROVEMENTS:
+
+- Module structure updated. .PSM1 function monolithic broken out into single function .PS1 files in [Public](https://github.com/TheJumpCloud/support/tree/master/PowerShell/JumpCloud%20Module/Public) and [Private](https://github.com/TheJumpCloud/support/tree/master/PowerShell/JumpCloud%20Module/Private) folders. This allows for easier debugging and updating of the functions within the module. 
+
 ## 1.4.2
 Release Date: May 31, 2018
 
