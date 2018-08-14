@@ -115,4 +115,5 @@ System.Object
 ## NOTES
 
 ## RELATED LINKS
+
 [Send-JCPasswordRest](https://github.com/TheJumpCloud/support/wiki/Send-JCPasswordReset)

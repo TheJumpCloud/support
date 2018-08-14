@@ -5,37 +5,49 @@ online version:
 schema: 2.0.0
 ---
 
-# New-JCCommand
+# Set-JCCommand
 
 ## SYNOPSIS
 
-Creates a new JumpCloud Mac, Linux, or Windows command 
+Updates an existing JumpCloud command
 
 ## SYNTAX
 
 ```
-New-JCCommand [-name] <String> [-commandType] <String> [-command] <String> [[-launchType] <String>]
- [[-timeout] <String>] [-user <String>] [<CommonParameters>]
+Set-JCCommand [-CommandID] <String> [[-name] <String>] [[-command] <String>] [[-launchType] <String>]
+ [[-timeout] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-Creates a new JumpCloud Mac, Linux, or Windows command 
+Updates an existing JumpCloud command using the CommandID
 
 ## EXAMPLES
 
 ### Example 1
 ```powershell
-PS C:\> New-JCCommand -commandType windows -name 'PowerShell version' -command '$PSVersionTable'
+Set-JCCommand -CommandID 5g6o3lf95r1485193o8cks6 -launchType trigger -trigger getWinLog
 ```
 
-Creates a JumpCloud windows command named 'PowerShell version' which will return the PowerShell version installed on Windows endpoints when run.
+Updates the 'launchType' of command with CommandID '5g6o3lf95r1485193o8cks6' to trigger and sets the 'trigger' to getWinLog.
+
+### Example 2
+```powershell
+Set-JCCommand -CommandID 5g6o3lf95r1485193o8cks6 -name "Windows - Get Windows Event Log"
+```
+
+Updates the 'name' of command with CommandID '5g6o3lf95r1485193o8cks6' to "Windows - Get Windows Event Log".
 
 ## PARAMETERS
 
-### -command
+### -CommandID
 
-The script or command to run using the command. 
+The _id of the JumpCloud command you wish to update.
+To find a JumpCloud CommandID run the command:
+
+PS C:\> Get-JCCommand | Select name, _id
+
+The CommandID will be the 24 character string populated for the _id field.
 
 ```yaml
 Type: String
@@ -43,24 +55,23 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
-Position: 2
+Position: 0
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
-### -commandType
+### -command
 
-The type of JumpCloud command. Options are windows, mac, or linux. 
+The actual script or command.
 
 ```yaml
 Type: String
 Parameter Sets: (All)
 Aliases:
-Accepted values: windows, mac, linux
 
-Required: True
-Position: 1
+Required: False
+Position: 2
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -68,14 +79,14 @@ Accept wildcard characters: False
 
 ### -launchType
 
-The launch type for the new command. The default is manual. 
-
+The launch type of the command options are: trigger, manual, repeated, one-time.
 
 ```yaml
 Type: String
 Parameter Sets: (All)
 Aliases:
 Accepted values: trigger, manual
+
 Required: False
 Position: 3
 Default value: None
@@ -92,16 +103,15 @@ Type: String
 Parameter Sets: (All)
 Aliases:
 
-Required: True
-Position: 0
+Required: False
+Position: 1
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
 ### -timeout
-
-The time the command will run before it times out. The default is 120 seconds. 
+The time the command will run before it times out.
 
 ```yaml
 Type: String
@@ -110,22 +120,6 @@ Aliases:
 
 Required: False
 Position: 4
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -user
-
-Only needed for Mac and Linux commands. If not entered Mac and Linux commands will default to the root users. If entering a user a UserID must be entered. 
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -145,5 +139,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
-
-[Online Help New-JCCommand](https://github.com/TheJumpCloud/support/wiki/New-JCCommand)
+[Set-JCCommand](https://github.com/TheJumpCloud/support/wiki/Set-JCCommand)

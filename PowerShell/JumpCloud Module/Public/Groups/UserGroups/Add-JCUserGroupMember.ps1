@@ -107,7 +107,7 @@ Function Add-JCUserGroupMember ()
     
                 try
                 {
-                    $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.6.0'
+                    $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.7.0'
                     $Status = 'Added'
                 }
                 catch
@@ -177,7 +177,7 @@ Function Add-JCUserGroupMember ()
 
             try
             {
-                $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.6.0'
+                $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.7.0'
                 $Status = 'Added'
             }
             catch

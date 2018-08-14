@@ -73,7 +73,7 @@ Function Remove-JCUserGroup ()
 
                     $URI = "https://console.jumpcloud.com/api/v2/usergroups/$GID"
 
-                    $DeletedGroup = Invoke-RestMethod -Method DELETE -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.6.0'
+                    $DeletedGroup = Invoke-RestMethod -Method DELETE -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.7.0'
 
                     $Status = 'Deleted'
 
@@ -104,7 +104,7 @@ Function Remove-JCUserGroup ()
                 try
                 {
                     $URI = "https://console.jumpcloud.com/api/v2/usergroups/$GID"
-                    $DeletedGroup = Invoke-RestMethod -Method DELETE -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.6.0'
+                    $DeletedGroup = Invoke-RestMethod -Method DELETE -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.7.0'
                     $Status = 'Deleted'
                 }
                 catch
