@@ -21,7 +21,6 @@ New-JCDeploymentTemplate [<CommonParameters>]
 
 The New-JCDeploymentTemplate command is a menu driven interactive function that guides admins through the process of creating a command deployment CSV file and assists in gathering the required information needed to populate the command deployment CSV file.
 
-
 ## EXAMPLES
 
 ### Example 1
@@ -30,7 +29,6 @@ PS C:\> New-JCDeploymentTemplate
 ```
 
 Launches the New-JCDeploymentTemplate menu
-
 
 ## PARAMETERS
 
@@ -48,3 +46,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
+[Online Help New-JCDeploymentTemplate](https://github.com/TheJumpCloud/support/wiki/New-JCDeploymentTemplate)

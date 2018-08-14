@@ -883,9 +883,9 @@
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>By calling the Connect-JConline function you are setting the variable $JCAPIKEY within the global scope. By setting this variable in the global scope the variable $JCAPIKEY can be reused by other functions in the JumpCloud module. If you wish to change the API key to connect to another JumpCloud org simply call the Connect-JConline function and enter the alternative API key.</maml:para>
-      <maml:para>Introduced in JumpCloud module version 1.2 the Connect-JCOnline function will also check to ensure you are running the latest version of the JumpCloud PowerShell module and offer to update the module if there is an update avaliable.</maml:para>
-      <maml:para>To prevent the module update check the '-force' paramter can be used.</maml:para>
+      <maml:para>By calling the Connect-JCOnline function you are setting the variable $JCAPIKEY within the global scope. By setting this variable in the global scope the variable $JCAPIKEY can be reused by other functions in the JumpCloud module. If you wish to change the API key to connect to another JumpCloud org simply call the Connect-JCOnline function and enter the alternative API key.</maml:para>
+      <maml:para>Introduced in JumpCloud module version 1.2 the Connect-JCOnline function will also check to ensure you are running the latest version of the JumpCloud PowerShell module and offer to update the module if there is an update available.</maml:para>
+      <maml:para>To prevent the module update check the '-force' parameter can be used.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -1019,7 +1019,7 @@
         <dev:code>Connect-JCOnline -JumpCloudAPIKey lu8792c9d4y2398is1tb6h0b83ebf0e92s97t382 -JumpCloudOrgID 5b5o13o06tsand0c29a0t3s6 -force</dev:code>
         <dev:remarks>
           <maml:para>Providing the JumpCloudAPIKey key and the intended JumpCloudOrg ID to connect to multi tenant admins can skip the OrgID connection screen and directly connect to an Org.</maml:para>
-          <maml:para>Using the "-Force" paramter the module update check is skipped. The '-Force' parameter should be used when using the JumpCloud module in scripts or other automation environments.</maml:para>
+          <maml:para>Using the "-Force" parameter the module update check is skipped. The '-Force' parameter should be used when using the JumpCloud module in scripts or other automation environments.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -3859,6 +3859,134 @@
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
+      <command:name>Invoke-JCDeployment</command:name>
+      <command:verb>Invoke</command:verb>
+      <command:noun>JCDeployment</command:noun>
+      <maml:description>
+        <maml:para>Triggers a JumpCloud Command Deployment using the CommandID and a filled out deployment CSV file.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>JumpCloud command deployments are commands that are configured with system specific unique variables. These variables are deployed within the payload of the JumpCloud command from the values populated in the command deployment CSV file and create a 1:1 association between the payload of a JumpCloud command and the target system it is being run on. Using JumpCloud command deployments administrators can craft a single command that deploys with a system specific payload.</maml:para>
+      <maml:para>Deployment commands must have zero system associations at time of deployment. If any associations exist the command will alert the admin and prompt to remove any associations to continue.</maml:para>
+      <maml:para>This is because under the hood the Invoke-JCDeployment command makes three API calls for each target system in the CSV file. </maml:para>
+      <maml:para>The first add the system to the target command.</maml:para>
+      <maml:para>The second triggers the command with the system specific variables using the command 'Invoke-JCCommand' and the '-NumberOfVariables' parameter.</maml:para>
+      <maml:para>The third removes the system from the target command.</maml:para>
+      <maml:para>This process occurs for each system within the deployment CSV input file.</maml:para>
+      <maml:para>A progress bar shows a status of the deployment. Note systems must be online and reporting as Active to receive the deployment command.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Invoke-JCDeployment</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="_id, id">
+          <maml:name>CommandID</maml:name>
+          <maml:Description>
+            <maml:para>The _id of the JumpCloud command you wish to deploy.</maml:para>
+            <maml:para>To find a JumpCloud CommandID run the command:</maml:para>
+            <maml:para>PS C:&gt; Get-JCCommand | Select name, _id</maml:para>
+            <maml:para>The CommandID will be the 24 character string populated for the _id field.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>CSVFilePath</maml:name>
+          <maml:Description>
+            <maml:para>The full path to the CSV deployment file. You can use tab complete to search for .csv files.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>CSVFilePath</maml:name>
+        <maml:Description>
+          <maml:para>The full path to the CSV deployment file. You can use tab complete to search for .csv files.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="_id, id">
+        <maml:name>CommandID</maml:name>
+        <maml:Description>
+          <maml:para>The _id of the JumpCloud command you wish to deploy.</maml:para>
+          <maml:para>To find a JumpCloud CommandID run the command:</maml:para>
+          <maml:para>PS C:&gt; Get-JCCommand | Select name, _id</maml:para>
+          <maml:para>The CommandID will be the 24 character string populated for the _id field.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para></maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- Example 1 --------------------------</maml:title>
+        <dev:code>Invoke-JCDeployment -CommandID 5f6r55es2189782h48091999 -CSVFilePath ./JCDeployment_UsernameUpdate.csv 
+
+SystemID                 CommandID                Status
+--------                 ---------                ------
+5t5o055171de492597ath123 5f6r55es2189782h48091999 Deployed
+6t7o055171de492597ath456 5f6r55es2189782h48091999 Deployed
+8t9o055171de492597ath789 5f6r55es2189782h48091999 Deployed
+1t0o015171de492597ath101 5f6r55es2189782h48091999 Deployed</dev:code>
+        <dev:remarks>
+          <maml:para>Invokes the JumpCloud command with command ID '5f6r55es2189782h48091999' using the deployment csv file 'JCDeployment_UsernameUpdate.csv'. The output shows that the deployment CSV file contained four systems.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Help Invoke-JCDeployment</maml:linkText>
+        <maml:uri>https://github.com/TheJumpCloud/support/wiki/Invoke-JCDeployment</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
       <command:name>New-JCCommand</command:name>
       <command:verb>New</command:verb>
       <command:noun>JCCommand</command:noun>
@@ -3921,8 +4049,6 @@
           <command:parameterValueGroup>
             <command:parameterValue required="false" command:variableLength="false">trigger</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">manual</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">repeated</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">one-time</command:parameterValue>
           </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -4074,15 +4200,74 @@
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
+      <command:name>New-JCDeploymentTemplate</command:name>
+      <command:verb>New</command:verb>
+      <command:noun>JCDeploymentTemplate</command:noun>
+      <maml:description>
+        <maml:para>A guided walk through that creates a command deployment CSV file on your local machine.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>The New-JCDeploymentTemplate command is a menu driven interactive function that guides admins through the process of creating a command deployment CSV file and assists in gathering the required information needed to populate the command deployment CSV file.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>New-JCDeploymentTemplate</maml:name>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters />
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para></maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- Example 1 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; New-JCDeploymentTemplate</dev:code>
+        <dev:remarks>
+          <maml:para>Launches the New-JCDeploymentTemplate menu</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Help New-JCDeploymentTemplate</maml:linkText>
+        <maml:uri>https://github.com/TheJumpCloud/support/wiki/New-JCDeploymentTemplate</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
       <command:name>New-JCImportTemplate</command:name>
       <command:verb>New</command:verb>
       <command:noun>JCImportTemplate</command:noun>
       <maml:description>
-        <maml:para>A guided walkthrough that creates a JumpCloud User Import .CSV file on your local machine</maml:para>
+        <maml:para>A guided walk through that creates a JumpCloud User Import CSV file on your local machine.</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The New-JCImportTemplate is a menu driven function that guides end users and creates a custom JumpCloud User Import .CSV file on their machine for populating with their users information for Importing into JumpCloud.</maml:para>
+      <maml:para>The New-JCImportTemplate command is a menu driven function that guides end users and creates a custom JumpCloud User Import .CSV file on their machine for populating with their users information for Importing into JumpCloud.</maml:para>
       <maml:para>If users wish to bind users to existing JumpCloud systems the function will also output a .csv file with containing all existing JumpCloud machines to the users $Home directory. The user will need this file to associate SystemIDs with new users.</maml:para>
     </maml:description>
     <command:syntax>
@@ -6631,6 +6816,201 @@
       <maml:navigationLink>
         <maml:linkText>Send-JCPasswordRest</maml:linkText>
         <maml:uri>https://github.com/TheJumpCloud/support/wiki/Send-JCPasswordReset</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Set-JCCommand</command:name>
+      <command:verb>Set</command:verb>
+      <command:noun>JCCommand</command:noun>
+      <maml:description>
+        <maml:para>Updates an existing JumpCloud command</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Updates an existing JumpCloud command using the CommandID</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Set-JCCommand</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
+          <maml:name>CommandID</maml:name>
+          <maml:Description>
+            <maml:para>The _id of the JumpCloud command you wish to update. To find a JumpCloud CommandID run the command:</maml:para>
+            <maml:para>PS C:&gt; Get-JCCommand | Select name, _id</maml:para>
+            <maml:para>The CommandID will be the 24 character string populated for the _id field.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="1" aliases="none">
+          <maml:name>name</maml:name>
+          <maml:Description>
+            <maml:para>The name of the new JumpCloud command.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="2" aliases="none">
+          <maml:name>command</maml:name>
+          <maml:Description>
+            <maml:para>The actual script or command.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="3" aliases="none">
+          <maml:name>launchType</maml:name>
+          <maml:Description>
+            <maml:para>The launch type of the command options are: trigger, manual, repeated, one-time.</maml:para>
+          </maml:Description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">trigger</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">manual</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="4" aliases="none">
+          <maml:name>timeout</maml:name>
+          <maml:Description>
+            <maml:para>The time the command will run before it times out.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
+        <maml:name>CommandID</maml:name>
+        <maml:Description>
+          <maml:para>The _id of the JumpCloud command you wish to update. To find a JumpCloud CommandID run the command:</maml:para>
+          <maml:para>PS C:&gt; Get-JCCommand | Select name, _id</maml:para>
+          <maml:para>The CommandID will be the 24 character string populated for the _id field.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="2" aliases="none">
+        <maml:name>command</maml:name>
+        <maml:Description>
+          <maml:para>The actual script or command.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="3" aliases="none">
+        <maml:name>launchType</maml:name>
+        <maml:Description>
+          <maml:para>The launch type of the command options are: trigger, manual, repeated, one-time.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="1" aliases="none">
+        <maml:name>name</maml:name>
+        <maml:Description>
+          <maml:para>The name of the new JumpCloud command.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="4" aliases="none">
+        <maml:name>timeout</maml:name>
+        <maml:Description>
+          <maml:para>The time the command will run before it times out.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para></maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- Example 1 --------------------------</maml:title>
+        <dev:code>Set-JCCommand -CommandID 5g6o3lf95r1485193o8cks6 -launchType trigger -trigger getWinLog</dev:code>
+        <dev:remarks>
+          <maml:para>Updates the 'launchType' of command with CommandID '5g6o3lf95r1485193o8cks6' to trigger and sets the 'trigger' to getWinLog.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>Set-JCCommand -CommandID 5g6o3lf95r1485193o8cks6 -name "Windows - Get Windows Event Log"</dev:code>
+        <dev:remarks>
+          <maml:para>Updates the 'name' of command with CommandID '5g6o3lf95r1485193o8cks6' to "Windows - Get Windows Event Log".</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Set-JCCommand</maml:linkText>
+        <maml:uri>https://github.com/TheJumpCloud/support/wiki/Set-JCCommand</maml:uri>
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>

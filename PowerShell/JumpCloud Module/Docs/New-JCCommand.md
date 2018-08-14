@@ -75,8 +75,7 @@ The launch type for the new command. The default is manual.
 Type: String
 Parameter Sets: (All)
 Aliases:
-Accepted values: trigger, manual, repeated, one-time
-
+Accepted values: trigger, manual
 Required: False
 Position: 3
 Default value: None

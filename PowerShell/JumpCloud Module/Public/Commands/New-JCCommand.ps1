@@ -23,7 +23,7 @@ Function New-JCCommand
         [Parameter(
             ValueFromPipelineByPropertyName = $True)]
         [string]
-        [ValidateSet('trigger', 'manual', 'repeated', 'one-time')]
+        [ValidateSet('trigger', 'manual')]
         $launchType = 'manual', 
         
         [Parameter(
@@ -74,50 +74,6 @@ Function New-JCCommand
             $param = New-Object System.Management.Automation.RuntimeDefinedParameter('trigger', [string], $attrColl)
             $dict.Add('trigger', $param)
               
-        }
-
-        If ($launchType -eq "repeated")
-        {
-
-            $attr = New-Object System.Management.Automation.ParameterAttribute
-            $attr.HelpMessage = "Enter the schedule in crontab notation"
-            $attr.ValueFromPipelineByPropertyName = $true
-            $attr.Mandatory = $true
-            $attrColl = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
-            $attrColl.Add($attr)
-            $param = New-Object System.Management.Automation.RuntimeDefinedParameter('schedule', [string], $attrColl)
-            $dict.Add('schedule', $param)
-
-            $attr1 = New-Object System.Management.Automation.ParameterAttribute
-            $attr1.HelpMessage = "Enter the scheduleRepeatType"
-            $attr1.Mandatory = $true
-            $attr1.ValueFromPipelineByPropertyName = $true
-            $attrColl1 = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
-            $attrColl1.Add($attr1)
-            $param1 = New-Object System.Management.Automation.RuntimeDefinedParameter("scheduleRepeatType", [string], $attrColl1)
-            $dict.Add("scheduleRepeatType", $param1)
-                   
-        }
-
-        If ($launchType -eq "one-time")
-        {
-            $attr = New-Object System.Management.Automation.ParameterAttribute
-            $attr.HelpMessage = "Enter the schedule in crontab notation"
-            $attr.ValueFromPipelineByPropertyName = $true
-            $attr.Mandatory = $true
-            $attrColl = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
-            $attrColl.Add($attr)
-            $param = New-Object System.Management.Automation.RuntimeDefinedParameter('schedule', [string], $attrColl)
-            $dict.Add('schedule', $param)
-
-            $attr1 = New-Object System.Management.Automation.ParameterAttribute
-            $attr1.HelpMessage = "Enter the scheduleRepeatType"
-            $attr1.Mandatory = $true
-            $attr1.ValueFromPipelineByPropertyName = $true
-            $attrColl1 = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
-            $attrColl1.Add($attr1)
-            $param1 = New-Object System.Management.Automation.RuntimeDefinedParameter("scheduleRepeatType", [string], $attrColl1)
-            $dict.Add("scheduleRepeatType", $param1)
         }
 
         return $dict 
@@ -229,13 +185,6 @@ Function New-JCCommand
         {
 
             $body.Add('trigger', $PSBoundParameters['trigger'])
-
-        }
-
-        if (($PSBoundParameters['launchType'] -eq 'one-time') -or ($PSBoundParameters['launchType'] -eq 'repeated') )
-        {
-
-            Write-Debug $PSBoundParameters['launchType']
 
         }
 

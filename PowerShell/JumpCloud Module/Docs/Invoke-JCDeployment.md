@@ -11,7 +11,6 @@ schema: 2.0.0
 
 Triggers a JumpCloud Command Deployment using the CommandID and a filled out deployment CSV file.
 
-
 ## SYNTAX
 
 ```
@@ -40,7 +39,6 @@ A progress bar shows a status of the deployment. *Note* systems must be online a
 
 ### Example 1
 ```powershell
-
 Invoke-JCDeployment -CommandID 5f6r55es2189782h48091999 -CSVFilePath ./JCDeployment_UsernameUpdate.csv 
 
 SystemID                 CommandID                Status
@@ -49,9 +47,8 @@ SystemID                 CommandID                Status
 6t7o055171de492597ath456 5f6r55es2189782h48091999 Deployed
 8t9o055171de492597ath789 5f6r55es2189782h48091999 Deployed
 1t0o015171de492597ath101 5f6r55es2189782h48091999 Deployed
-
-
 ```
+
 Invokes the JumpCloud command with command ID '5f6r55es2189782h48091999' using the deployment csv file 'JCDeployment_UsernameUpdate.csv'. The output shows that the deployment CSV file contained four systems.
 
 ## PARAMETERS
@@ -108,3 +105,5 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
+
+[Online Help Invoke-JCDeployment](https://github.com/TheJumpCloud/support/wiki/Invoke-JCDeployment)

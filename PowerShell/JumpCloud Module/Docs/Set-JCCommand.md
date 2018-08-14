@@ -11,7 +11,6 @@ schema: 2.0.0
 
 Updates an existing JumpCloud command
 
-
 ## SYNTAX
 
 ```
@@ -38,7 +37,6 @@ Set-JCCommand -CommandID 5g6o3lf95r1485193o8cks6 -name "Windows - Get Windows Ev
 ```
 
 Updates the 'name' of command with CommandID '5g6o3lf95r1485193o8cks6' to "Windows - Get Windows Event Log".
-
 
 ## PARAMETERS
 
@@ -87,7 +85,7 @@ The launch type of the command options are: trigger, manual, repeated, one-time.
 Type: String
 Parameter Sets: (All)
 Aliases:
-Accepted values: trigger, manual, repeated, one-time
+Accepted values: trigger, manual
 
 Required: False
 Position: 3
@@ -141,3 +139,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
+[Set-JCCommand](https://github.com/TheJumpCloud/support/wiki/Set-JCCommand)
