@@ -1,3 +1,32 @@
+## 1.7.0
+Release Date: August 14, 2018
+
+#### RELEASE NOTES
+
+```
+Take JumpCloud commands to the next level with Command Deployments!
+New functions New-JCDeploymentTemplate and Invoke-JCDeployment.
+Deployments are designed for automation scenarios where a 1:1 association between the command payload and JumpCloud system is required.
+Use system specific payloads in your JumpCloud commands with variables populated from a CSV file.
+```
+
+#### FEATURES:
+
+- New Function: New-JCDeploymentTemplate used to create a deployment CSV template file that maps to the corresponding JumpCloud command variables to CSV columns.
+- New Function: Invoke-JCDeployment for calling the command deployment and feeding the command the '-CommandID' of the target JumpCloud deploy command and the populated deployment CSV file.
+- New Function: Set-JCCommand to update JumpCloud commands programmatically. This command is used by the Invoke-JCDeployment command to update the '-launchType' to trigger and trigger the command.  
+
+#### IMPROVEMENTS:
+
+- Warning action "Inquire" removed from Import-JCUsersFromCSV command. Resolves repetitive "Press Y to continue"  message during user validation.
+- Streamlined JumpCloud banners. Because less is more.
+
+#### BUG FIXES:
+
+- Resolved bug on 'Import-JCUserFromCSV' where output for users that were not created due to duplicate username or email would show previously created user information.  
+- Resolved bug on 'Import-JCUserFromCSV' where output for users that were not created would show 'User created'.  
+
+
 ## 1.6.0
 Release Date: August 3, 2018
 
