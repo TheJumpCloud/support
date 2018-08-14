@@ -281,7 +281,18 @@ Function Import-JCUsersFromCSV ()
                 {   
                     $NumberOfCustomAttributes = ($CustomAttributes.name.count) / 2
                     $NewUser = $UserAdd | New-JCUser -NumberOfCustomAttributes $NumberOfCustomAttributes
-                    $Status = 'User Created'
+
+                    if ($NewUser)
+                    {
+
+                        $Status = 'User Created'
+                    }
+
+                    elseif (-not $NewUser)
+                    {
+                        $Status = 'User Not Created'
+                    }
+                   
 
                     try #User is created
                     {
