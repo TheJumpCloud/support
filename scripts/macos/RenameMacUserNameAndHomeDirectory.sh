@@ -16,12 +16,6 @@
  NOTE: SCRIPT MUST BE RUN AS ROOT!
 '
 
-abort() {
-	errString=${*}
-	echo "$errString"
-	exit 1
-}
-
 if [[ ${#} -ne 2 ]]; then
 	echo "Usage: $0 oldUserName newUserName"
 	exit 1
@@ -37,7 +31,7 @@ if [[ -z "${newUser}" ]]; then
 fi
 
 #Test to ensure account update is needed
-if [ "$oldUser" = "$newUser" ]; then
+if [[ "$oldUser" == "$newUser" ]]; then
 	echo "No updates needed"
 	exit 0
 fi
@@ -67,13 +61,15 @@ if [[ " ${existingHomeFolders[@]} " =~ " ${newUser} " ]]; then
 fi
 
 #Checks if user is logged in
-killProcess=$(ps -Ajc | grep $oldUser | grep loginwindow | awk '{print $2}')
+loginCheck=$(ps -Ajc | grep $oldUser | grep loginwindow | awk '{print $2}')
 
-#Logs out user if they are logged in by killing their loginwindow process
-if [[ "${killProcess}" ]]; then
-	sudo kill -9 $killProcess
+#Logs out user if they are logged in
+while [[ "${loginCheck}" ]]; do
+	sudo launchctl bootout gui/$(id -u ${oldUser})
 	echo "$oldUser account was logged in. User logged off to complete username update."
-fi
+	Sleep 5
+	loginCheck=$(ps -Ajc | grep $oldUser | grep loginwindow | awk '{print $2}')
+done
 
 #Captures current "RealName" this is the displayName
 fullRealName=$(dscl . -read /Users/${oldUser} RealName)
@@ -102,7 +98,7 @@ fi
 sudo dscl . -change "/Users/${oldUser}" NFSHomeDirectory "${origHomeDir}" "/Users/${newUser}"
 
 err=$?
-if [ ${err} -ne 0 ]; then
+if [[ ${err} -ne 0 ]]; then
 	echo "Could not rename the user's home directory pointer, aborting further changes! - err=${err}"
 	exit 1
 fi
