@@ -82,13 +82,13 @@ fi
 loginCheck=$(ps -Ajc | grep ${oldUser} | grep loginwindow | awk '{print $2}')
 
 # Logs out user if they are logged in
-timeoutCounter=0
+timeoutCounter='0'
 while [[ "${loginCheck}" ]]; do
 	echo "${oldUser} account logged in. Logging user off to complete username update."
 	sudo launchctl bootout gui/$(id -u ${oldUser})
 	Sleep 5
 	loginCheck=$(ps -Ajc | grep ${oldUser} | grep loginwindow | awk '{print $2}')
-	timeoutCounter=$(${timeoutCounter} + 1)
+	timeoutCounter=$((${timeoutCounter} + 1))
 	if [[ ${timeoutCounter} -eq 4 ]]; then
 		echo "Timeout unable to log out ${oldUser} account."
 		exit 1
