@@ -13,17 +13,16 @@
  NOTE: SCRIPT MUST BE RUN AS ROOT
  NOTE: SYSTEM WILL RESTART AFTER SUCCESSFUL NAME UPDATE
 '
+# Ensures that script is run as ROOT
+if [[ "${UID}" != 0 ]]; then
+	(echo >&2 "Error: $0 script must be run as root")
+	exit 1
+fi
 
 # Ensures that the system is not domain bound
 readonly domainBoundCheck=$(dsconfigad -show)
 if [[ "${domainBoundCheck}" ]]; then
 	(echo >&2 "Cannot run on domain bound system. Unbind system and try again.")
-	exit 1
-fi
-
-# Ensures that script is run as ROOT
-if [[ "${UID}" != 0 ]]; then
-	(echo >&2 "Error: $0 script must be run as root")
 	exit 1
 fi
 
