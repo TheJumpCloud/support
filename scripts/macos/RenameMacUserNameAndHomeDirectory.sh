@@ -1,8 +1,8 @@
-#!/bin/bash -eu
+#!/bin/bash
 : '
  Script to rename the username of a user account on MacOS
 
- The script updates the users record name, RealName (displayName), and home directory
+ The script updates the users record name (username), RealName (displayName), and home directory
 
  If the user receiving the name change is signed in they will be signed out. 
 
@@ -10,9 +10,24 @@
 
  Above example would rename account cat to dog
 
- NOTE: SCRIPT MUST BE RUN AS ROOT!
+ NOTE: SCRIPT MUST BE RUN AS ROOT
+ NOTE: SYSTEM WILL RESTART AFTER SUCCESSFUL NAME UPDATE
 '
 
+# Ensures that the system is not domain bound
+readonly domainBoundCheck=$(dsconfigad -show)
+if [[ "${domainBoundCheck}" ]]; then
+	(echo >&2 "Cannot run on domain bound system. Unbind system and try again.")
+	exit 1
+fi
+
+# Ensures that script is run as ROOT
+if [[ "${UID}" != 0 ]]; then
+	(echo >&2 "Error: $0 script must be run as root")
+	exit 1
+fi
+
+# Ensures that parameters are entered
 if [[ ${#} -ne 2 ]]; then
 	echo "Usage: $0 oldUserName newUserName"
 	exit 1
@@ -21,6 +36,13 @@ fi
 oldUser=$1
 newUser=$2
 
+# Test to ensure logged in user is not being renamed
+readonly loggedInUser=$(ls -la /dev/console | cut -d " " -f 4)
+if [[ "${loggedInUser}" == "${oldUser}" ]]; then
+	echo "Cannot rename active GUI logged in user. Log in with another admin account and try again."
+	exit 1
+fi
+
 # Verify valid username
 if [[ -z "${newUser}" ]]; then
 	echo "New user name must not be empty!"
@@ -28,7 +50,7 @@ if [[ -z "${newUser}" ]]; then
 fi
 
 # Test to ensure account update is needed
-if [[ "$oldUser" == "$newUser" ]]; then
+if [[ "${oldUser}" == "${newUser}" ]]; then
 	echo "No updates needed"
 	exit 0
 fi
@@ -38,39 +60,38 @@ readonly existingUsers=($(dscl . -list /Users | grep -Ev "^_|com.*|root|nobody|d
 
 # Ensure old user account is correct and account exists on system
 if [[ ! " ${existingUsers[@]} " =~ " ${oldUser} " ]]; then
-	echo "$oldUser account not present on system to update"
+	echo "${oldUser} account not present on system to update"
 	exit 1
 fi
 
 # Ensure new user account is not already in use
 if [[ " ${existingUsers[@]} " =~ " ${newUser} " ]]; then
-	echo "$newUser account already present on system. Cannot add duplicate"
+	echo "${newUser} account already present on system. Cannot add duplicate"
 	exit 1
 fi
 
 # Query existing home folders
-existingHomeFolders=($(ls /Users))
+readonly existingHomeFolders=($(ls /Users))
 
 # Ensure existing home folder is not in use
 if [[ " ${existingHomeFolders[@]} " =~ " ${newUser} " ]]; then
-	echo "$newUser home folder already in use on system. Cannot add duplicate"
+	echo "${newUser} home folder already in use on system. Cannot add duplicate"
 	exit 1
 fi
 
 # Checks if user is logged in
-loginCheck=$(ps -Ajc | grep $oldUser | grep loginwindow | awk '{print $2}')
+loginCheck=$(ps -Ajc | grep ${oldUser} | grep loginwindow | awk '{print $2}')
 
 # Logs out user if they are logged in
 timeoutCounter=0
-
 while [[ "${loginCheck}" ]]; do
-	echo "$oldUser account logged in. Logging user off to complete username update."
+	echo "${oldUser} account logged in. Logging user off to complete username update."
 	sudo launchctl bootout gui/$(id -u ${oldUser})
 	Sleep 5
-	loginCheck=$(ps -Ajc | grep $oldUser | grep loginwindow | awk '{print $2}')
+	loginCheck=$(ps -Ajc | grep ${oldUser} | grep loginwindow | awk '{print $2}')
 	timeoutCounter=$(${timeoutCounter} + 1)
-	if [[ $timeoutCounter -eq 4 ]]; then
-		echo "Timeout unable to log out $oldUser account."
+	if [[ ${timeoutCounter} -eq 4 ]]; then
+		echo "Timeout unable to log out ${oldUser} account."
 		exit 1
 	fi
 done
@@ -79,20 +100,20 @@ done
 fullRealName=$(dscl . -read /Users/${oldUser} RealName)
 
 # Formats "RealName"
-origRealName=$(echo $fullRealName | cut -d' ' -f2-)
+readonly origRealName=$(echo ${fullRealName} | cut -d' ' -f2-)
 
 # Updates "RealName" to new username (Yes JCAgent will overwrite this after user/system association)
 sudo dscl . -change "/Users/${oldUser}" RealName "${origRealName}" "${newUser}"
 
 if [[ $? -ne 0 ]]; then
-	echo "Could not rename the user's RealName in dscl. - err=${err}"
+	echo "Could not rename the user's RealName in dscl. - err=$?"
 	echo "Reverting RealName changes"
 	sudo dscl . -change "/Users/${oldUser}" RealName "${origRealName}" "${origRealName}"
 	exit 1
 fi
 
 # Captures current NFS home directory
-origHomeDir=$(dscl . -read "/Users/${oldUser}" NFSHomeDirectory | awk '{print $2}' -)
+readonly origHomeDir=$(dscl . -read "/Users/${oldUser}" NFSHomeDirectory | awk '{print $2}' -)
 
 if [[ -z "${origHomeDir}" ]]; then
 	echo "Cannot obtain the original home directory name, is the oldUserName correct?"
@@ -105,7 +126,7 @@ fi
 sudo dscl . -change "/Users/${oldUser}" NFSHomeDirectory "${origHomeDir}" "/Users/${newUser}"
 
 if [[ $? -ne 0 ]]; then
-	echo "Could not rename the user's home directory pointer, aborting further changes! - err=${err}"
+	echo "Could not rename the user's home directory pointer, aborting further changes! - err=$?"
 	echo "Reverting Home Directory changes"
 	sudo dscl . -change "/Users/${oldUser}" NFSHomeDirectory "/Users/${newUser}" "${origHomeDir}"
 	echo "Reverting RealName changes"
@@ -142,21 +163,22 @@ if [[ $? -ne 0 ]]; then
 fi
 
 # Links old home directory to new. Fixes dock mapping issue
-ln -s "/Users/${newUser}" "/Users/${oldUser}"
-
-# Restarts the Mac menu bar to show the updated username in the fast user switching menu
-killall -SIGHUP SystemUIServer
+ln -s "/Users/${newUser}" "${origHomeDir}"
 
 # Success message
-
 read -r -d '' successOutput <<EOM
 Success ${oldUser} username has been updated to ${newUser}
 Folder "${origHomeDir}" has been renamed to "/Users/${newUser}"
 RecordName: ${newUser}
 RealName: ${newUser}
 NFSHomeDirectory: "/Users/${newUser}"
+
+SYSTEM RESTARTING in 5 seconds to complete username update.
 EOM
 
 echo "${successOutput}"
 
+# System restart
+Sleep 5
+osascript -e 'tell application "System Events" to restart'
 exit 0

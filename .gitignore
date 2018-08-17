@@ -1,8 +1,4 @@
 node_modules/
 build/
-PowerShell/.DS_Store
-PowerShell/JumpCloud Module/.DS_Store
-PowerShell/JumpCloud Module/Docs/.DS_Store
-PowerShell/JumpCloud Module/en-Us/.DS_Store
-.vscode/settings.json
-.vscode/settings.json
+.DS_Store
+
