@@ -58,13 +58,13 @@ fi
 readonly existingUsers=($(dscl . -list /Users | grep -Ev "^_|com.*|root|nobody|daemon|\/" | cut -d, -f1 | sed 's|CN=||g'))
 
 # Ensure old user account is correct and account exists on system
-if [[ ! " ${existingUsers[@]} " =~ " ${oldUser} " ]]; then
+if [[ ! "${existingUsers[@]}" =~ "${oldUser}" ]]; then
 	echo "${oldUser} account not present on system to update"
 	exit 1
 fi
 
 # Ensure new user account is not already in use
-if [[ " ${existingUsers[@]} " =~ " ${newUser} " ]]; then
+if [[ "${existingUsers[@]}" =~ "${newUser}" ]]; then
 	echo "${newUser} account already present on system. Cannot add duplicate"
 	exit 1
 fi
@@ -73,7 +73,7 @@ fi
 readonly existingHomeFolders=($(ls /Users))
 
 # Ensure existing home folder is not in use
-if [[ " ${existingHomeFolders[@]} " =~ " ${newUser} " ]]; then
+if [[ "${existingHomeFolders[@]}" =~ "${newUser}" ]]; then
 	echo "${newUser} home folder already in use on system. Cannot add duplicate"
 	exit 1
 fi
