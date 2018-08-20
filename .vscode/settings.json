@@ -23,6 +23,7 @@
         "restructuredtext",
         "rust",
         "scss",
+        "shellscript",
         "text",
         "typescript",
         "typescriptreact",
