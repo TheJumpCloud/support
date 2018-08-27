@@ -1,6 +1,6 @@
 #### Name
 
-Windows - Appx Removal Startup Script | v1.0 JCCG
+Windows - AppX Removal Startup Script | v1.0 JCCG
 
 #### commandType
 
