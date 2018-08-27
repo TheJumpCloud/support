@@ -60,6 +60,8 @@ New-Item -Path "C:\Users\$($user.name)\AppData\Roaming\Microsoft\Windows\Start M
 
 AppX applications are installed per user on a Windows machine. This command creates a .ps1 script and .bat file within each users profile where the payload of the .ps1 script uninstalls the listed AppX packages. Admins can add or remove AppX apps for the script to uninstall by modifying the $appname array.
 
+Find more info on removing AppX pacakages [here](https://www.pdq.com/blog/remove-appx-packages/#)
+
 #### *Import This Command*
 
 To import this command into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
