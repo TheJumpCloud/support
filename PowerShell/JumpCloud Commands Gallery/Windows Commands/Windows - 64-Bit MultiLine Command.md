@@ -27,7 +27,7 @@ Write-Host "Well $Hello $World"
 
 A template to use to execute a multiline PowerShell command in the 64-bit environment. By default, all JumpCloud PowerShell commands are executed in the 32-bit PowerShell environment. Some commands are only available for execution in the 64-bit environment. 
 
-To determine if a command is 32 or 64-bit discovery can be done using the command Get-Command to find the module that a command is loaded in and then checking for that command in a 32-bit session.
+To determine if a command is 32 or 64-bit discovery can be done using the command Get-Command to find the module that a command is loaded in and then checking for that module in a 32-bit session.
 
 The command Get-LocalUser is only available in the 64-bit environment.
 
