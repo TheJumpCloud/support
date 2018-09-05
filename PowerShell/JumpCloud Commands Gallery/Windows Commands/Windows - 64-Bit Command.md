@@ -72,5 +72,5 @@ This demonstrates why the Get-LoacalUser command must be called in a 64-bit envi
 To import this command into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
 
 ```
-Import-JCCommand -URL ''
+Import-JCCommand -URL 'https://git.io/jccg-windows-64-bitcommand'
 ```
