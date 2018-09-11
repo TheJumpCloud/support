@@ -10,7 +10,7 @@ windows
 
 ```
 $sys = (systeminfo /fo csv | ConvertFrom-Csv)
-return "HostName: " + ($sys.'Host Name') + "`n" + "OS Name: " + ($sys.'OS Name') + "`n" + "OS Version " +($sys.'OS Version')
+return "HostName: " + ($sys.'Host Name') + "`n" + "OS Name: " + ($sys.'OS Name') + "`n" + "OS Version: " +($sys.'OS Version')
 ```
 
 #### Description
