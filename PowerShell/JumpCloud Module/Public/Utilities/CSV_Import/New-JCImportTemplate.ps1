@@ -28,10 +28,10 @@ Function New-JCImportTemplate()
         Clear-host
 
         Write-Host $Banner -ForegroundColor Green
-        Write-Host $Heading1 -NoNewline
+        Write-Host `n$Heading1 -NoNewline
         Write-Host " $fileName" -ForegroundColor Yellow
-        Write-Host $Heading2 -NoNewline
-        Write-Host " $home" -ForegroundColor Yellow
+        Write-Host `n$Heading2 -NoNewline
+        Write-Host " $PWD" -ForegroundColor Yellow
         Write-Host ""
 
 
@@ -43,7 +43,7 @@ Function New-JCImportTemplate()
         if ($ConfirmFile -eq 'Y')
         {
 
-            $ExportLocation = $home
+            $ExportLocation = $PWD
         }
 
         elseif ($ConfirmFile -eq 'N')
@@ -74,8 +74,88 @@ Function New-JCImportTemplate()
             Password  = $null
         }
 
-        Write-Host ""
-        Write-Host 'Do you want to bind your new users to existing JumpCloud systems during import?'
+        Write-Host "`nDo you want to add extended user information attributes available over JumpCloud LDAP to your users during import?"
+        Write-Host 'Extended user information attributes include: ' -NoNewline
+        Write-host -ForegroundColor Yellow 'MiddleName, preferredName, jobTitle, employeeIdentifier, department, costCenter, company, employeeType, description, and location'
+
+
+        while ($ConfirmLDAPAttributes -ne 'Y' -and $ConfirmLDAPAttributes -ne 'N')
+        {
+            $ConfirmLDAPAttributes = Read-Host  "Enter Y for Yes or N for No"
+        }
+
+        if ($ConfirmLDAPAttributes -eq 'Y')
+        {
+
+            $CSV.add('MiddleName', $null)
+            $CSV.add('preferredName', $null)
+            $CSV.add('jobTitle', $null)
+            $CSV.add('employeeIdentifier', $null)
+            $CSV.add('department', $null)
+            $CSV.add('costCenter', $null)
+            $CSV.add('company', $null)
+            $CSV.add('employeeType', $null)
+            $CSV.add('description', $null)
+            $CSV.add('location', $null)
+
+        }
+
+        elseif ($ConfirmLDAPLocationAttributes -eq 'N') {}
+
+        Write-Host "`nDo you want to add extended user location attributes available over JumpCloud LDAP to your users during import?"
+        Write-Host 'Extended user location attributes include: ' -NoNewline
+        Write-Host -ForegroundColor Yellow 'home_streetAddress, home_poBox, home_city, home_state, home_postalCode, home_country, work_streetAddress, work_poBox, work_city, work_state, work_postalCode, work_country'
+
+
+        while ($ConfirmLDAPLocationAttributes -ne 'Y' -and $ConfirmLDAPLocationAttributes -ne 'N')
+        {
+            $ConfirmLDAPLocationAttributes = Read-Host  "Enter Y for Yes or N for No"
+        }
+
+        if ($ConfirmLDAPLocationAttributes -eq 'Y')
+        {
+
+            $CSV.add('home_streetAddress', $null)
+            $CSV.add('home_poBox', $null)
+            $CSV.add('home_city', $null)
+            $CSV.add('home_state', $null)
+            $CSV.add('home_postalCode', $null)
+            $CSV.add('home_country', $null)
+            $CSV.add('work_streetAddress', $null)
+            $CSV.add('work_poBox', $null)
+            $CSV.add('work_city', $null)
+            $CSV.add('work_state', $null)
+            $CSV.add('work_postalCode', $null)
+            $CSV.add('work_country', $null)
+
+        }
+
+        elseif ($ConfirmLDAPLocationAttributes -eq 'N') {}
+
+        Write-Host "`nDo you want to add extended user telephony attributes available over JumpCloud LDAP to your users during import?"
+        Write-Host 'Extended user telephony attributes include: ' -NoNewline
+        Write-Host  'mobile_number, home_number, work_number, work_mobile_number, work_fax_number' -ForegroundColor Yellow
+
+        while ($ConfirmLDAPTelephonyAttributes -ne 'Y' -and $ConfirmLDAPTelephonyAttributes -ne 'N')
+        {
+            $ConfirmLDAPTelephonyAttributes = Read-Host  "Enter Y for Yes or N for No"
+        }
+
+        if ($ConfirmLDAPTelephonyAttributes -eq 'Y')
+        {
+
+            $CSV.add('mobile_number', $null)
+            $CSV.add('home_number', $null)
+            $CSV.add('work_number', $null)
+            $CSV.add('work_mobile_number', $null)
+            $CSV.add('work_fax_number', $null)
+        }
+
+        elseif ($ConfirmLDAPTelephonyAttributes -eq 'N') {}
+
+
+
+        Write-Host "`nDo you want to bind your new users to existing JumpCloud systems during import?"
 
         while ($ConfirmSystem -ne 'Y' -and $ConfirmSystem -ne 'N')
         {

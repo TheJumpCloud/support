@@ -18,7 +18,14 @@ Creates a JumpCloud User
 New-JCUser -firstname <String> -lastname <String> -username <String> -email <String> [-password <String>]
  [-password_never_expires <Boolean>] [-allow_public_key <Boolean>] [-sudo <Boolean>]
  [-enable_managed_uid <Boolean>] [-unix_uid <Int32>] [-unix_guid <Int32>] [-passwordless_sudo <Boolean>]
- [-ldap_binding_user <Boolean>] [-enable_user_portal_multifactor <Boolean>] [<CommonParameters>]
+ [-ldap_binding_user <Boolean>] [-enable_user_portal_multifactor <Boolean>] [-middlename <String>]
+ [-displayname <String>] [-jobTitle <String>] [-employeeIdentifier <String>] [-department <String>]
+ [-costCenter <String>] [-company <String>] [-employeeType <String>] [-description <String>]
+ [-location <String>] [-work_streetAddress <String>] [-work_poBox <String>] [-work_locality <String>]
+ [-work_region <String>] [-work_postalCode <String>] [-work_country <String>] [-home_streetAddress <String>]
+ [-home_poBox <String>] [-home_locality <String>] [-home_region <String>] [-home_postalCode <String>]
+ [-home_country <String>] [-mobile_number <String>] [-home_number <String>] [-work_number <String>]
+ [-work_mobile_number <String>] [-work_fax_number <String>] [<CommonParameters>]
 ```
 
 ### Attributes
@@ -27,7 +34,13 @@ New-JCUser -firstname <String> -lastname <String> -username <String> -email <Str
  [-password_never_expires <Boolean>] [-allow_public_key <Boolean>] [-sudo <Boolean>]
  [-enable_managed_uid <Boolean>] [-unix_uid <Int32>] [-unix_guid <Int32>] [-passwordless_sudo <Boolean>]
  [-ldap_binding_user <Boolean>] [-enable_user_portal_multifactor <Boolean>] [-NumberOfCustomAttributes <Int32>]
- [<CommonParameters>]
+ [-middlename <String>] [-displayname <String>] [-jobTitle <String>] [-employeeIdentifier <String>]
+ [-department <String>] [-costCenter <String>] [-company <String>] [-employeeType <String>]
+ [-description <String>] [-location <String>] [-work_streetAddress <String>] [-work_poBox <String>]
+ [-work_locality <String>] [-work_region <String>] [-work_postalCode <String>] [-work_country <String>]
+ [-home_streetAddress <String>] [-home_poBox <String>] [-home_locality <String>] [-home_region <String>]
+ [-home_postalCode <String>] [-home_country <String>] [-mobile_number <String>] [-home_number <String>]
+ [-work_number <String>] [-work_mobile_number <String>] [-work_fax_number <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -298,6 +311,397 @@ A boolean $true/$false value for enabling password_never_expires
 
 ```yaml
 Type: Boolean
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -company
+Specifies the user's company. The LDAP displayName of this property is company.
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -costCenter
+Specifies the user's costCenter. The LDAP displayName of this property is businessCategory.
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -department
+Specifies the user's department. The LDAP displayName of this property is departmentNumber.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -description
+Specifies the user's description. The LDAP displayName of this property is description. This field is limited to 1024 characters.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -displayname
+Specifies the user's preferredName. The LDAP displayName of this property is displayName.
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases: preferredName
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -employeeIdentifier
+Specifies the user's employeeIdentifier. The LDAP displayName of this property is employeeNumber. Note this field must be unique per user.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -employeeType
+Specifies the user's employeeType. The LDAP displayName of this property is employeeType.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -home_country
+Specifies the user's country on the home address object. This property is nested within the LDAP property with the displayName homePostalAddress.
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -home_locality
+Specifies the user's city on their home address object. This property is nested within the LDAP property with the displayName homePostalAddress.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases: home_city
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -home_number
+Specifies the user's home number. The LDAP displayName of this property is homePhone.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -home_poBox
+Specifies the user's poBox on their home address object. This property is nested within the LDAP property with the displayName homePostalAddress.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -home_postalCode
+Specifies the user's postalCode on their home address object. This property is nested within the LDAP property with the displayName homePostalAddress.
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -home_region
+Specifies the user's state on their home address object. This property is nested within the LDAP property with the displayName homePostalAddress.
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases: home_state
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -home_streetAddress
+Specifies the user's streetAddress on their home address object. This property is nested within the LDAP property with the displayName homePostalAddress.
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -jobTitle
+Specifies the user's home number. The LDAP displayName of this property is title.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -location
+Specifies the user's home location. The LDAP displayName of this property is physicalDeliveryOfficeName.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -middlename
+Specifies the user's home location. The LDAP displayName of this property is initials.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -mobile_number
+Specifies the user's mobile number. The LDAP displayName of this property is mobile.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -work_country
+Specifies the user's country on the work address object. This property is nested within the LDAP property with the displayName postalAddress.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -work_fax_number
+Specifies the user's work fax number. The LDAP displayName of this property is facsimileTelephoneNumber.
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -work_locality
+Specifies the user's city on their work address object. The LDAP displayName of this property is l.
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases: work_city
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -work_mobile_number
+Specifies the user's work mobile number. The LDAP displayName of this property is pager.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -work_number
+Specifies the user's work number. The LDAP displayName of this property is telephoneNumber.
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -work_poBox
+Specifies the user's poBox on their work address object. The LDAP displayName of this property is postOfficeBox.
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -work_postalCode
+Specifies the user's postalCode on their work address object. The LDAP displayName of this property is postalCode.
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -work_region
+Specifies the user's state on their work address object. This property is nested within the LDAP property with the displayName postalAddress.
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases: work_state
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -work_streetAddress
+Specifies the user's streetAddress on their work address object. This property is nested within the LDAP property with the displayName postalAddress.
+```yaml
+Type: String
 Parameter Sets: (All)
 Aliases:
 

@@ -38,10 +38,10 @@ Function Import-JCUsersFromCSV ()
             $Banner = @"
        __                          ______ __                   __
       / /__  __ ____ ___   ____   / ____// /____   __  __ ____/ /
- __  / // / / // __  __ \ / __ \ / /    / // __ \ / / / // __  / 
-/ /_/ // /_/ // / / / / // /_/ // /___ / // /_/ // /_/ // /_/ /  
-\____/ \____//_/ /_/ /_// ____/ \____//_/ \____/ \____/ \____/   
-                       /_/                                                      
+ __  / // / / // __  __ \ / __ \ / /    / // __ \ / / / // __  /
+/ /_/ // /_/ // / / / / // /_/ // /___ / // /_/ // /_/ // /_/ /
+\____/ \____//_/ /_/ /_// ____/ \____//_/ \____/ \____/ \____/
+                       /_/
                                                   User Import
 "@
 
@@ -83,16 +83,15 @@ Function Import-JCUsersFromCSV ()
             Write-Host -BackgroundColor Green -ForegroundColor Black "Username check complete"
             Write-Host ""
 
-            Write-Host ""
             Write-Host -BackgroundColor Green -ForegroundColor Black "Validating $($NewUsers.count) Emails Addresses"
 
-            $ExistingEmailCheck = Get-Hash_Email_ID
+            $ExistingEmailCheck = Get-Hash_Email_Username
 
             foreach ($User in $NewUsers)
             {
                 if ($ExistingEmailCheck.ContainsKey($User.email))
                 {
-                    Write-Warning "A user with email address: $($User.email) already exists this user will not be created." 
+                    Write-Warning "The user $($ExistingEmailCheck.($User.email)) has the email address: $($User.email) $($User.username) will not be created."
                 }
                 else
                 {
@@ -112,50 +111,87 @@ Function Import-JCUsersFromCSV ()
             }
 
             Write-Host -BackgroundColor Green -ForegroundColor Black "Email check complete"
-            Write-Host ""
 
-            $SystemCount = $NewUsers.SystemID | Where-Object Length -gt 1 | Select-Object -unique
+            $employeeIdentifierCheck = $NewUsers | Where-Object employeeIdentifier -ne $Null
 
-            Write-Host ""
-            Write-Host -BackgroundColor Green -ForegroundColor Black "Validating $($SystemCount.count) Systems"
-            $SystemCheck = Get-Hash_SystemID_HostName
-
-            foreach ($User in $NewUsers)
+            if ($employeeIdentifierCheck.Count -gt 1)
             {
-                if (($User.SystemID).length -gt 1)
-                {
+                Write-Host ""
+                Write-Host -BackgroundColor Green -ForegroundColor Black "Validating $($employeeIdentifierCheck.employeeIdentifier.Count) employeeIdentifiers"
 
-                    if ($SystemCheck.ContainsKey($User.SystemID))
+                $ExistingEmployeeIdentifierCheck = Get-Hash_employeeIdentifier_username
+
+                foreach ($User in $NewUsers)
+                {
+                    if ($ExistingEmployeeIdentifierCheck.ContainsKey($User.employeeIdentifier))
                     {
-                        Write-Verbose "$($User.SystemID) exists"
+                        Write-Warning "The user $($ExistingEmployeeIdentifierCheck.($User.employeeIdentifier)) has the employeeIdentifier: $($User.employeeIdentifier). User $($User.username) will not be created."
                     }
                     else
                     {
-                        Write-Warning "A system with SystemID: $($User.SystemID) does not exist and will not be bound to user $($User.Username)" 
+                        Write-Verbose "$($User.employeeIdentifier) does not exist"
                     }
                 }
-                else {Write-Verbose "No system"}
-            }
 
-            $Permissions = $NewUsers.Administrator | Where-Object Length -gt 1 | Select-Object -unique
+                $employeeIdentifierDup = $NewUsers | Group-Object employeeIdentifier
 
-            foreach ($Value in $Permissions)
-            {
-
-                if ( ($Value -notlike "*true" -and $Value -notlike "*false") )
+                ForEach ($U in $employeeIdentifierDup)
                 {
+                    if ($U.count -gt 1)
+                    {
 
-                    Write-Warning "Administrator must be a boolean value and set to either '`$True/True' or '`$False/False' please correct value: $Value " 
-
-                
+                        Write-Warning "Duplicate employeeIdentifier: $($U.name) in import file. employeeIdentifier must be unique. To resolve eliminate the duplicate employeeIdentifiers."
+                    }
                 }
 
+                Write-Host -BackgroundColor Green -ForegroundColor Black "employeeIdentifier check complete"
+                Write-Host ""
             }
 
+            $SystemCount = $NewUsers.SystemID | Where-Object Length -gt 1 | Select-Object -unique
 
-            Write-Host -BackgroundColor Green -ForegroundColor Black "System check complete"
-            Write-Host ""
-            #Group Check
+            if ($SystemCount.count -gt 0)
+            {
+                Write-Host ""
+                Write-Host -BackgroundColor Green -ForegroundColor Black "Validating $($SystemCount.count) Systems"
+                $SystemCheck = Get-Hash_SystemID_HostName
+    
+                foreach ($User in $NewUsers)
+                {
+                    if (($User.SystemID).length -gt 1)
+                    {
+    
+                        if ($SystemCheck.ContainsKey($User.SystemID))
+                        {
+                            Write-Verbose "$($User.SystemID) exists"
+                        }
+                        else
+                        {
+                            Write-Warning "A system with SystemID: $($User.SystemID) does not exist and will not be bound to user $($User.Username)" 
+                        }
+                    }
+                    else {Write-Verbose "No system"}
+                }
+    
+                $Permissions = $NewUsers.Administrator | Where-Object Length -gt 1 | Select-Object -unique
+    
+                foreach ($Value in $Permissions)
+                {
+    
+                    if ( ($Value -notlike "*true" -and $Value -notlike "*false") )
+                    {
+    
+                        Write-Warning "Administrator must be a boolean value and set to either '`$True/True' or '`$False/False' please correct value: $Value " 
+    
+                    
+                    }
+    
+                }
+
+                Write-Host -BackgroundColor Green -ForegroundColor Black "System check complete"
+                Write-Host ""
+                #Group Check
+            }
 
             $GroupArrayList = New-Object System.Collections.ArrayList
 
@@ -186,35 +222,36 @@ Function Import-JCUsersFromCSV ()
 
             $UniqueGroups = $GroupArrayList | Select-Object Value -Unique
 
-            Write-Host ""
-            Write-Host -BackgroundColor Green -ForegroundColor Black "Validating $($UniqueGroups.count) Groups"
-            $GroupCheck = Get-Hash_UserGroupName_ID
-
-            foreach ($GroupTest in $UniqueGroups)
+            if ($UniqueGroups.count -gt 0)
             {
-                if ($GroupCheck.ContainsKey($GroupTest.Value))
+                Write-Host -BackgroundColor Green -ForegroundColor Black "Validating $($UniqueGroups.count) Groups"
+                $GroupCheck = Get-Hash_UserGroupName_ID
+
+                foreach ($GroupTest in $UniqueGroups)
                 {
-                    Write-Verbose "$($GroupTest.Value) exists"
+                    if ($GroupCheck.ContainsKey($GroupTest.Value))
+                    {
+                        Write-Verbose "$($GroupTest.Value) exists"
+                    }
+                    else
+                    {
+                        Write-Host "The JumpCloud Group:" -NoNewLine
+                        Write-Host " $($GroupTest.Value)" -ForegroundColor Yellow -NoNewLine
+                        Write-Host " does not exist. Users will not be added to this Group."
+                    }
                 }
-                else
-                {
-                    Write-Host ""
-                    Write-Host "The JumpCloud Group:" -NoNewLine
-                    Write-Host " $($GroupTest.Value)" -ForegroundColor Yellow -NoNewLine
-                    Write-Host " does not exist. Users will not be added to this Group."
-                }
+
+                Write-Host -BackgroundColor Green -ForegroundColor Black "Group check complete"
+                Write-Host ""
             }
 
-            Write-Host -BackgroundColor Green -ForegroundColor Black "Group check complete"
-            Write-Host ""
+
 
             $ResultsArrayList = New-Object System.Collections.ArrayList
 
             $NumberOfNewUsers = $NewUsers.email.count
 
             $title = "Import Summary:"
-            $menuwidth = 30
-            [int]$pad = ($menuwidth / 2) + ($title.length / 2)
 
             $menu = @"
 
@@ -270,8 +307,10 @@ Function Import-JCUsersFromCSV ()
             $Status = $Null
             $UserGroupArrayList = $Null
             $SystemAddStatus = $Null
+            $FormatGroupOutput = $Null
+            $CustomGroupArrayList = $Null
 
-            $CustomAttributes = $UserAdd | Get-Member -Name *Attribute* | Where-Object {$_.Definition -NotLike "*=" -and $_.Definition -NotLike "*null"} | Select-Object Name
+            $CustomAttributes = $UserAdd | Get-Member | Where-Object Name -Like "*Attribute*" | Where-Object {$_.Definition -NotLike "*=" -and $_.Definition -NotLike "*null"} | Select-Object Name
 
             Write-Verbose $CustomAttributes.name.count
 
@@ -293,7 +332,6 @@ Function Import-JCUsersFromCSV ()
                         $Status = 'User Not Created'
                     }
                    
-
                     try #User is created
                     {
                         if ($UserAdd.SystemID)
@@ -357,7 +395,7 @@ Function Import-JCUsersFromCSV ()
                         }
                         $CustomGroupArrayList = New-Object System.Collections.ArrayList
 
-                        $CustomGroups = $UserAdd | Get-Member -Name *Group* | Select-Object Name
+                        $CustomGroups = $UserAdd | Get-Member | Where-Object Name -Like "*Group*" | Where-Object {$_.Definition -NotLike "*=" -and $_.Definition -NotLike "*null"} | Select-Object Name
 
                         foreach ($Group in $CustomGroups)
                         {
@@ -534,8 +572,8 @@ Function Import-JCUsersFromCSV ()
 
                         $CustomGroupArrayList = New-Object System.Collections.ArrayList
 
-                        $CustomGroups = $UserAdd | Get-Member -Name *Group* | Select-Object Name
-
+                        $CustomGroups = $UserAdd | Get-Member | Where-Object Name -Like "*Group*" | Where-Object {$_.Definition -NotLike "*=" -and $_.Definition -NotLike "*null"} | Select-Object Name
+                        
                         foreach ($Group in $CustomGroups)
                         {
                             $GetGroup = [pscustomobject]@{
@@ -594,7 +632,7 @@ Function Import-JCUsersFromCSV ()
 
                     }
 
-                    
+
 
 
                 }
@@ -615,7 +653,7 @@ Function Import-JCUsersFromCSV ()
 
                     }
 
-                    
+
                 }
 
                 $ResultsArrayList.Add($FormattedResults) | Out-Null
