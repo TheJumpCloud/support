@@ -17,7 +17,7 @@ cat << EOF >> /etc/ssh/sshd_config
 Match All
   PasswordAuthentication yes
   PubkeyAuthentication yes
-  AuthenticationMethods password publickey
+  AuthenticationMethods password,publickey
 # GlobalExceptionsEnd
 EOF
 
