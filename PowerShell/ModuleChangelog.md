@@ -1,3 +1,44 @@
+## 1.8.0
+
+Release Date: September 20, 2018
+
+#### RELEASE NOTES
+
+```
+New LDAP user attribute support has been added!
+New LDAP user location, information, and telephony attributes.
+New function Update-JCUsersFromCSV to add or update all attributes including new LDAP attributes on your existing users.
+New function Update-JCUsersFromCSV to add users to groups or bind them to systems in bulk from a CSV file.
+Use the updated New-JCImportTemplate function to create a custom user update import CSV file pre-populated with your JumpCloud users to plug into Update-JCUsersFromCSV.
+Search for users by LDAP information attributes using Get-JCUser.
+Import-JCUsersFromCSV workflow has been updated to handle new attributes.
+```
+
+#### FEATURES:
+
+New LDAP extended user attributes: middlename, preferredName, jobTitle, employeeIdentifier (must be unique), department, costCenter, company, employeeType, description, location
+New LDAP telephony attributes: mobile_number, home_number, work_number, work_mobile_number, work_fax_number
+New LDAP location attributes: home_streetAddress, home_poBox home_city, home_state, home_postalCode, home_country, work_streetAddress, work_poBox, work_locality, work_region, work_postalCode, work_country
+
+- New Function: Update-JCUsersFromCSV to add or update all attributes including new LDAP attributes on your existing user , add users to groups, or bind them to systems in bulk from a CSV file.
+- Updated Function: New-JCImportTemplate can now create custom **user update CSV import files** pre-populated with your JumpCloud users to plug into the new Update-JCUsersFromCSV
+- Updated Function: New-JCUser has parameters for creating users with the new LDAP extended, telephony, and location attributes.
+- Updated Function: Set-JCUser has parameters for updating a modifying users LDAP extended, telephony, and location attributes.
+- Updated Function: Get-JCUser has the ability to search for a filter users based on extended LDAP users.
+- Updated Function: New-JCImportTemplate workflow has been updated to prompt users with options to add the new LDAP extended, telephony, and location attributes to their CSV import templates.
+- Updated Function: Import-JCUsersFromCSV will verify and error check the unique field employeeIdentifier. The output for Import-JCUsersfromCSV has also been cleaned up.
+
+#### IMPROVEMENTS:
+
+- Updated parameters on Set-JCSystem to allow for modification of parameters via PowerShell pipeline.
+- Removed 20 character limit on JumpCloud username field.
+- Removed method which forced JumpCloud usernames to be lowercase.
+- Updated New-JCImportTemplate to make CSV import file in current working directory.
+- Updated Import-JCCommand to call Connect-JCOnline and set TLS to 1.2.
+- Updated Function: Import-JCUsersFromCSV to use splatting which allows for CSV to contain columns with non JumpCloud user information
+- Progress bars on Import-JCUsersFromCSV and Update-JCUsersFromCSV
+
+
 ## 1.7.0
 Release Date: August 14, 2018
 
