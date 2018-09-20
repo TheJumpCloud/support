@@ -8,6 +8,7 @@
 
 ```
 Module up-to-date. New LDAP attributes are live! Use Update-JCUsersFromCSV to add them in bulk.
+```
 
 #### Banner Old
 
