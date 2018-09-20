@@ -19,25 +19,21 @@ Function New-JCImportTemplate()
 "@
 
         $date = Get-Date -Format MM-dd-yyyy
-        $fileName = 'JCUserImport_' + $date + '.csv'
-        Write-Debug $fileName
 
-        $Heading1 = 'The CSV file:'
-        $Heading2 = 'Will be created within the directory:'
+
+        $Heading2 = 'The CSV file will be created within the directory:'
         
         Clear-host
 
         Write-Host $Banner -ForegroundColor Green
-        Write-Host `n$Heading1 -NoNewline
-        Write-Host " $fileName" -ForegroundColor Yellow
-        Write-Host `n$Heading2 -NoNewline
+        Write-Host "`n$Heading2`n"
         Write-Host " $PWD" -ForegroundColor Yellow
         Write-Host ""
 
 
         while ($ConfirmFile -ne 'Y' -and $ConfirmFile -ne 'N')
         {
-            $ConfirmFile = Read-Host  "Enter Y to confirm or N to change $fileName output location" #Confirm .csv file location creation
+            $ConfirmFile = Read-Host  "Enter Y to confirm or N to change output location" #Confirm .csv file location creation
         }
 
         if ($ConfirmFile -eq 'Y')
@@ -48,16 +44,16 @@ Function New-JCImportTemplate()
 
         elseif ($ConfirmFile -eq 'N')
         {
-            $ExportLocation = Read-Host "Enter the full path to the folder you wish to create $fileName in"
+            $ExportLocation = Read-Host "Enter the full path to the folder you wish to create the import file in"
 
             while (-not(Test-Path -Path $ExportLocation -PathType Container))
             {
                 Write-Host -BackgroundColor Yellow -ForegroundColor Red "The location $ExportLocation does not exist. Try another"
-                $ExportLocation = Read-Host "Enter the full path to the folder you wish to create $fileName in"
+                $ExportLocation = Read-Host "Enter the full path to the folder you wish to create the import file in"
 
             }
             Write-Host ""
-            Write-Host -BackgroundColor Green -ForegroundColor Black "The .csv file $fileName will be created within the $ExportLocation directory"
+            Write-Host -BackgroundColor Green -ForegroundColor Black "The CSV file will be created within the $ExportLocation directory"
             Pause
 
         }
@@ -66,13 +62,61 @@ Function New-JCImportTemplate()
 
     process
     {
-        $CSV = [ordered]@{
-            FirstName = $null
-            LastName  = $null
-            Username  = $null
-            Email     = $null
-            Password  = $null
+        
+        Write-Host "`nDo you want to create an import CSV template for creating new users or for updating existing users?"
+        Write-Host 'Enter "N" for to create a template for ' -NoNewline
+        Write-host -ForegroundColor Yellow 'new users'
+        Write-Host 'Enter "U" for creating a template for ' -NoNewline
+        Write-host -ForegroundColor Yellow "updating existing users"
+
+
+        while ($ConfirmUpdateVsNew -ne 'N' -and $ConfirmUpdateVsNew -ne 'U')
+        {
+            $ConfirmUpdateVsNew = Read-Host  "Enter N for 'new users' or U for 'updating users'"
         }
+
+        if ($ConfirmUpdateVsNew -eq 'N')
+        {
+            $CSV = [ordered]@{
+                FirstName = $null
+                LastName  = $null
+                Username  = $null
+                Email     = $null
+                Password  = $null
+            }
+
+            $fileName = 'JCUserImport_' + $date + '.csv'
+            Write-Debug $fileName
+        }
+
+        elseif ($ConfirmUpdateVsNew -eq 'U')
+        {
+            $fileName = 'JCUserUpdateImport_' + $date + '.csv'
+            Write-Debug $fileName
+            
+            $CSV = [ordered]@{
+                Username = $null
+            }
+
+            Write-Host "`nWould you like to populate this update template with all of your existing users?"
+            Write-host -ForegroundColor Yellow 'You can remove users you do not wish to modify from the import file after it is created.'
+    
+    
+            while ($ConfirmUserPop -ne 'Y' -and $ConfirmUserPop -ne 'N')
+            {
+                $ConfirmUserPop = Read-Host  "Enter Y for Yes or N for No"
+            }
+    
+            if ($ConfirmUserPop -eq 'Y')
+            {
+                Write-Verbose 'Verifying JCAPI Key'
+                if ($JCAPIKEY.length -ne 40) {Connect-JConline}
+                $ExistingUsers = Get-Hash_ID_Username
+            }
+    
+            elseif ($ConfirmUserPop -eq 'N') {}
+        }
+
 
         Write-Host "`nDo you want to add extended user information attributes available over JumpCloud LDAP to your users during import?"
         Write-Host 'Extended user information attributes include: ' -NoNewline
@@ -155,7 +199,7 @@ Function New-JCImportTemplate()
 
 
 
-        Write-Host "`nDo you want to bind your new users to existing JumpCloud systems during import?"
+        Write-Host "`nDo you want to bind your users to existing JumpCloud systems during import?"
 
         while ($ConfirmSystem -ne 'Y' -and $ConfirmSystem -ne 'N')
         {
@@ -184,7 +228,7 @@ Function New-JCImportTemplate()
         elseif ($ConfirmAttributes -eq 'N') {}
 
         Write-Host ""
-        Write-Host 'Do you want to add the new users to JumpCloud user groups during import?'
+        Write-Host 'Do you want to add the users to JumpCloud user groups during import?'
 
         while ($ConfirmGroups -ne 'Y' -and $ConfirmGroups -ne 'N')
         {
@@ -252,6 +296,19 @@ Function New-JCImportTemplate()
         elseif ($ConfirmAttributes -eq 'N') {}
 
         $CSVheader = New-Object psobject -Property $Csv
+
+        if ($ExistingUsers)
+        {
+            $CSVheader = @()
+
+            foreach ($User in $ExistingUsers.GetEnumerator())
+            {
+                $CSVUserAdd = $CSV
+                $CSVUserAdd.Username = $User.value
+                $UserObject = New-Object psobject -Property $CSVUserAdd
+                $CSVheader += $UserObject
+            }
+        }
     }
 
 

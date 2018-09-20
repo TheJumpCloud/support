@@ -1,4 +1,4 @@
-Function Import-JCUsersFromCSV ()
+Function Update-JCUsersFromCSV ()
 {
     [CmdletBinding(DefaultParameterSetName = 'GUI')]
     param
@@ -27,6 +27,63 @@ Function Import-JCUsersFromCSV ()
 
     begin
     {
+        $UserUpdateParams = @{}
+        $UserUpdateParams.Add("Username", "Username")
+        $UserUpdateParams.Add("FirstName", "FirstName")
+        $UserUpdateParams.Add("LastName", "LastName")
+        $UserUpdateParams.Add("Email", "Email")
+        $UserUpdateParams.Add("Password", "Password")
+        $UserUpdateParams.Add("middlename", "middlename")
+        $UserUpdateParams.Add("preferredName", "preferredName")
+        $UserUpdateParams.Add("jobTitle", "jobTitle")
+        $UserUpdateParams.Add("employeeIdentifier", "employeeIdentifier")
+        $UserUpdateParams.Add("department", "department")
+        $UserUpdateParams.Add("costCenter", "costCenter")
+        $UserUpdateParams.Add("company", "company")
+        $UserUpdateParams.Add("employeeType", "employeeType")
+        $UserUpdateParams.Add("description", "description")
+        $UserUpdateParams.Add("location", "location")
+        $UserUpdateParams.Add("work_streetAddress", "work_streetAddress")
+        $UserUpdateParams.Add("work_poBox", "work_poBox")
+        $UserUpdateParams.Add("work_locality", "work_locality")
+        $UserUpdateParams.Add("work_region", "work_region")
+        $UserUpdateParams.Add("work_city", "work_city")
+        $UserUpdateParams.Add("work_state", "work_state")
+        $UserUpdateParams.Add("work_postalCode", "work_postalCode")
+        $UserUpdateParams.Add("work_country", "work_country")
+        $UserUpdateParams.Add("home_poBox", "home_poBox")
+        $UserUpdateParams.Add("home_locality", "home_locality")
+        $UserUpdateParams.Add("home_region", "home_region")
+        $UserUpdateParams.Add("home_city", "home_city")
+        $UserUpdateParams.Add("home_state", "home_state")
+        $UserUpdateParams.Add("home_postalCode", "home_postalCode")
+        $UserUpdateParams.Add("home_country", "home_country")
+        $UserUpdateParams.Add("home_streetAddress", "home_streetAddress")
+        $UserUpdateParams.Add("mobile_number", "mobile_number")
+        $UserUpdateParams.Add("home_number", "home_number")
+        $UserUpdateParams.Add("work_number", "work_number")
+        $UserUpdateParams.Add("work_mobile_number", "work_mobile_number")
+        $UserUpdateParams.Add("work_fax_number", "work_fax_number")
+        $UserUpdateParams.Add("account_locked", "account_locked")
+        $UserUpdateParams.Add("allow_public_key", "allow_public_key")
+        $UserUpdateParams.Add("enable_managed_uid", "enable_managed_uid")
+        $UserUpdateParams.Add("enable_user_portal_multifactor", "enable_user_portal_multifactor")
+        $UserUpdateParams.Add("externally_managed", "externally_managed")
+        $UserUpdateParams.Add("ldap_binding_user", "ldap_binding_user")
+        $UserUpdateParams.Add("passwordless_sudo", "passwordless_sudo")
+        $UserUpdateParams.Add("sudo", "sudo")
+        $UserUpdateParams.Add("unix_guid", "unix_guid")
+        $UserUpdateParams.Add("password_never_expires", "password_never_expires")
+
+    
+
+
+
+
+
+
+  
+
         Write-Verbose "$($PSCmdlet.ParameterSetName)"
 
         if ($PSCmdlet.ParameterSetName -eq 'GUI')
@@ -42,77 +99,24 @@ Function Import-JCUsersFromCSV ()
 / /_/ // /_/ // / / / / // /_/ // /___ / // /_/ // /_/ // /_/ /
 \____/ \____//_/ /_/ /_// ____/ \____//_/ \____/ \____/ \____/
                        /_/
-                                                  User Import
+                                                  User Update
 "@
 
             Clear-Host
             Write-Host $Banner -ForegroundColor Green
             Write-Host ""
 
-            $NewUsers = Import-Csv -Path $CSVFilePath
-            Write-Host ""
-            Write-Host -BackgroundColor Green -ForegroundColor Black "Validating $($NewUsers.count) Usernames"
+            $UpdateUsers = Import-Csv -Path $CSVFilePath
 
-            $ExistingUsernameCheck = Get-Hash_UserName_ID
+            $CustomAttributes = $UpdateUsers | Get-Member | Where-Object Name -Like "*Attribute*" | Select-Object Name
 
-            foreach ($User in $NewUsers)
+
+            foreach ($attr in $CustomAttributes )
             {
-                if ($ExistingUsernameCheck.ContainsKey($User.Username))
-                {
-                    Write-Warning "A user with username: $($User.Username) already exists this user will not be created." 
-                }
-                else
-                {
-                    Write-Verbose "$($User.Username) does not exist"
-                }
+                $UserUpdateParams.Add($attr.name, $attr.name)
             }
 
-
-            $UsernameDup = $NewUsers | Group-Object Username
-
-            ForEach ($U in $UsernameDup )
-            {
-                if ($U.count -gt 1)
-                {
-
-                    Write-Warning "Duplicate username for username $($U.name) in import file. Usernames must be unique. To resolve eliminate the duplicate username and then retry import." 
-                }
-            }
-
-
-            Write-Host -BackgroundColor Green -ForegroundColor Black "Username check complete"
-            Write-Host ""
-
-            Write-Host -BackgroundColor Green -ForegroundColor Black "Validating $($NewUsers.count) Emails Addresses"
-
-            $ExistingEmailCheck = Get-Hash_Email_Username
-
-            foreach ($User in $NewUsers)
-            {
-                if ($ExistingEmailCheck.ContainsKey($User.email))
-                {
-                    Write-Warning "The user $($ExistingEmailCheck.($User.email)) has the email address: $($User.email) $($User.username) will not be created."
-                }
-                else
-                {
-                    Write-Verbose "$($User.email) does not exist"
-                }
-            }
-
-            $EmailDup = $NewUsers | Group-Object Email
-
-            ForEach ($U in $EmailDup)
-            {
-                if ($U.count -gt 1)
-                {
-
-                    Write-Warning "Duplicate email for email $($U.name) in import file. Emails must be unique. To resolve eliminate the duplicate emails." 
-                }
-            }
-
-            Write-Host -BackgroundColor Green -ForegroundColor Black "Email check complete"
-
-            $employeeIdentifierCheck = $NewUsers | Where-Object employeeIdentifier -ne $Null
+            $employeeIdentifierCheck = $UpdateUsers | Where-Object {($_.employeeIdentifier -ne $Null) -and ($_.employeeIdentifier -ne "")}
 
             if ($employeeIdentifierCheck.Count -gt 1)
             {
@@ -121,11 +125,11 @@ Function Import-JCUsersFromCSV ()
 
                 $ExistingEmployeeIdentifierCheck = Get-Hash_employeeIdentifier_username
 
-                foreach ($User in $NewUsers)
+                foreach ($User in $UpdateUsers)
                 {
                     if ($ExistingEmployeeIdentifierCheck.ContainsKey($User.employeeIdentifier))
                     {
-                        Write-Warning "The user $($ExistingEmployeeIdentifierCheck.($User.employeeIdentifier)) has the employeeIdentifier: $($User.employeeIdentifier). User $($User.username) will not be created."
+                        Write-Warning "The user $($ExistingEmployeeIdentifierCheck.($User.employeeIdentifier)) has the employeeIdentifier: $($User.employeeIdentifier). User $($User.username) will not be updated."
                     }
                     else
                     {
@@ -133,7 +137,7 @@ Function Import-JCUsersFromCSV ()
                     }
                 }
 
-                $employeeIdentifierDup = $NewUsers | Group-Object employeeIdentifier
+                $employeeIdentifierDup = $UpdateUsers | Group-Object employeeIdentifier
 
                 ForEach ($U in $employeeIdentifierDup)
                 {
@@ -147,19 +151,19 @@ Function Import-JCUsersFromCSV ()
                 Write-Host -BackgroundColor Green -ForegroundColor Black "employeeIdentifier check complete"
             }
 
-            $SystemCount = $NewUsers.SystemID | Where-Object Length -gt 1 | Select-Object -unique
+            $SystemCount = $UpdateUsers.SystemID | Where-Object Length -gt 1 | Select-Object -unique
 
             if ($SystemCount.count -gt 0)
             {
                 Write-Host ""
                 Write-Host -BackgroundColor Green -ForegroundColor Black "Validating $($SystemCount.count) Systems"
                 $SystemCheck = Get-Hash_SystemID_HostName
-    
-                foreach ($User in $NewUsers)
+
+                foreach ($User in $UpdateUsers)
                 {
                     if (($User.SystemID).length -gt 1)
                     {
-    
+
                         if ($SystemCheck.ContainsKey($User.SystemID))
                         {
                             Write-Verbose "$($User.SystemID) exists"
@@ -172,7 +176,7 @@ Function Import-JCUsersFromCSV ()
                     else {Write-Verbose "No system"}
                 }
     
-                $Permissions = $NewUsers.Administrator | Where-Object Length -gt 1 | Select-Object -unique
+                $Permissions = $UpdateUsers.Administrator | Where-Object Length -gt 1 | Select-Object -unique
     
                 foreach ($Value in $Permissions)
                 {
@@ -194,7 +198,7 @@ Function Import-JCUsersFromCSV ()
 
             $GroupArrayList = New-Object System.Collections.ArrayList
 
-            ForEach ($User in $NewUsers)
+            ForEach ($User in $UpdateUsers)
             {
 
                 $Groups = $User | Get-Member -Name Group* | Select-Object Name
@@ -248,15 +252,15 @@ Function Import-JCUsersFromCSV ()
 
             $ResultsArrayList = New-Object System.Collections.ArrayList
 
-            $NumberOfNewUsers = $NewUsers.email.count
+            $NumberOfNewUsers = $UpdateUsers.username.count
 
             $title = "Import Summary:"
 
             $menu = @"
 
-    Number Of Users To Import = $NumberOfNewUsers
+    Number Of Users To Update = $NumberOfNewUsers
 
-    Would you like to import these users?
+    Would you like to update these users?
 
 "@
 
@@ -273,10 +277,8 @@ Function Import-JCUsersFromCSV ()
             {
 
                 Write-Host ''
-                Write-Host "Hang tight! Creating your users. " -NoNewline
+                Write-Host "Hang tight! Updating your users. " -NoNewline
                 Write-Host "DO NOT shutdown the console." -ForegroundColor Red
-                Write-Host ''
-                Write-Host "Feel free to watch your user count increase in the JumpCloud admin console!"
                 Write-Host ''
                 Write-Host "It takes ~ 1 minute per 100 users."
 
@@ -292,10 +294,17 @@ Function Import-JCUsersFromCSV ()
         elseif ($PSCmdlet.ParameterSetName -eq 'force')
         {
 
-            $NewUsers = Import-Csv -Path $CSVFilePath
+            $UpdateUsers = Import-Csv -Path $CSVFilePath
+            $NumberOfNewUsers = $UpdateUsers.username.count
             $ResultsArrayList = New-Object System.Collections.ArrayList
-            $NumberOfNewUsers = $NewUsers.email.count
 
+            $CustomAttributes = $UpdateUsers | Get-Member | Where-Object Name -Like "*Attribute*" | Select-Object Name
+
+
+            foreach ($attr in $CustomAttributes )
+            {
+                $UserUpdateParams.Add($attr.name, $attr.name)
+            }
         }
 
     } #begin block end
@@ -304,15 +313,26 @@ Function Import-JCUsersFromCSV ()
     {
         [int]$ProgressCounter = 0
 
-        foreach ($UserAdd in $NewUsers)
+        foreach ($UserUpdate in $UpdateUsers)
         {
+            $UpdateParamsRaw = $UserUpdate.psobject.properties | Where-Object {($_.Value -ne $Null) -and ($_.Value -ne "")} | Select-Object Name, Value
+            $UpdateParams = @{}
             
+            foreach ($Param in $UpdateParamsRaw)
+            {
+                if ($UserUpdateParams.$($Param.name))
+                {
+                    $UpdateParams.Add($Param.name, $Param.value)
+                }
+
+            }
+
             $ProgressCounter++
 
             $GroupAddProgressParams = @{
 
-                Activity        = "Adding $($UserAdd.username)"
-                Status          = "User import $ProgressCounter of $NumberOfNewUsers"
+                Activity        = "Updating $($UserUpdate.username)"
+                Status          = "User update $ProgressCounter of $NumberOfNewUsers"
                 PercentComplete = ($ProgressCounter / $NumberOfNewUsers) * 100
 
             }
@@ -326,7 +346,7 @@ Function Import-JCUsersFromCSV ()
             $FormatGroupOutput = $Null
             $CustomGroupArrayList = $Null
 
-            $CustomAttributes = $UserAdd | Get-Member | Where-Object Name -Like "*Attribute*" | Where-Object {$_.Definition -NotLike "*=" -and $_.Definition -NotLike "*null"} | Select-Object Name
+            $CustomAttributes = $UserUpdate | Get-Member | Where-Object Name -Like "*Attribute*" | Where-Object {$_.Definition -NotLike "*=" -and $_.Definition -NotLike "*null"} | Select-Object Name
 
             Write-Verbose $CustomAttributes.name.count
 
@@ -335,35 +355,42 @@ Function Import-JCUsersFromCSV ()
                 try
                 {   
                     $NumberOfCustomAttributes = ($CustomAttributes.name.count) / 2
-                    $NewUser = $UserAdd | New-JCUser -NumberOfCustomAttributes $NumberOfCustomAttributes
+
+                    $UpdateParams.Add("NumberOfCustomAttributes", $NumberOfCustomAttributes)
+
+                    $JSONParams = $UpdateParams | ConvertTo-Json
+
+                    Write-Verbose "$($JSONParams)"
+
+                    $NewUser = Set-JCUser @UpdateParams
 
                     if ($NewUser._id)
                     {
 
-                        $Status = 'User Created'
+                        $Status = 'User Updated'
                     }
 
                     elseif (-not $NewUser._id)
                     {
-                        $Status = 'User Not Created'
+                        $Status = 'User does not exist'
                     }
                    
                     try #User is created
                     {
-                        if ($UserAdd.SystemID)
+                        if ($UserUpdate.SystemID)
                         {
 
-                            if ($UserAdd.Administrator)
+                            if ($UserUpdate.Administrator)
                             {
 
-                                if ($UserAdd.Administrator -like "*True")
+                                if ($UserUpdate.Administrator -like "*True")
                                 {
 
                                     Write-Verbose "Admin set to true"
 
                                     try
                                     {
-                                        $SystemAdd = Add-JCSystemUser -SystemID $UserAdd.SystemID -UserID $NewUser._id -Administrator $true
+                                        $SystemAdd = Add-JCSystemUser -SystemID $UserUpdate.SystemID -UserID $NewUser._id -Administrator $true
                                         $SystemAddStatus = $SystemAdd.Status
                                     }
                                     catch
@@ -372,14 +399,14 @@ Function Import-JCUsersFromCSV ()
                                     }
                                 }
 
-                                elseif ($UserAdd.Administrator -like "*False")
+                                elseif ($UserUpdate.Administrator -like "*False")
                                 {
 
                                     Write-Verbose "Admin set to false"
 
                                     try
                                     {
-                                        $SystemAdd = Add-JCSystemUser -SystemID $UserAdd.SystemID -UserID $NewUser._id -Administrator $false
+                                        $SystemAdd = Add-JCSystemUser -SystemID $UserUpdate.SystemID -UserID $NewUser._id -Administrator $false
                                         $SystemAddStatus = $SystemAdd.Status
                                     }
                                     catch
@@ -398,7 +425,7 @@ Function Import-JCUsersFromCSV ()
 
                                 try
                                 {
-                                    $SystemAdd = Add-JCSystemUser -SystemID $UserAdd.SystemID -UserID $NewUser._id
+                                    $SystemAdd = Add-JCSystemUser -SystemID $UserUpdate.SystemID -UserID $NewUser._id
                                     Write-Verbose  "$($SystemAdd.Status)"
                                     $SystemAddStatus = $SystemAdd.Status
                                 }
@@ -411,13 +438,13 @@ Function Import-JCUsersFromCSV ()
                         }
                         $CustomGroupArrayList = New-Object System.Collections.ArrayList
 
-                        $CustomGroups = $UserAdd | Get-Member | Where-Object Name -Like "*Group*" | Where-Object {$_.Definition -NotLike "*=" -and $_.Definition -NotLike "*null"} | Select-Object Name
+                        $CustomGroups = $UserUpdate | Get-Member | Where-Object Name -Like "*Group*" | Where-Object {$_.Definition -NotLike "*=" -and $_.Definition -NotLike "*null"} | Select-Object Name
 
                         foreach ($Group in $CustomGroups)
                         {
                             $GetGroup = [pscustomobject]@{
                                 Type  = 'GroupName'
-                                Value = $UserAdd.($Group.Name)
+                                Value = $UserUpdate.($Group.Name)
                             }
 
                             $CustomGroupArrayList.Add($GetGroup) | Out-Null
@@ -466,7 +493,7 @@ Function Import-JCUsersFromCSV ()
                         'Status'    = $Status
                         'UserID'    = $NewUser._id
                         'GroupsAdd' = $UserGroupArrayList
-                        'SystemID'  = $UserAdd.SystemID
+                        'SystemID'  = $UserUpdate.SystemID
                         'SystemAdd' = $SystemAddStatus
 
                     }
@@ -478,15 +505,15 @@ Function Import-JCUsersFromCSV ()
                 catch
                 {
 
-                    $Status = $_.ErrorDetails
+                    $Status = 'User does not exist'
 
                     $FormattedResults = [PSCustomObject]@{
 
-                        'Username'  = $NewUser.username
+                        'Username'  = $UpdateParams.username
                         'Status'    = $Status
                         'UserID'    = $NewUser._id
                         'GroupsAdd' = $UserGroupArrayList
-                        'SystemID'  = $UserAdd.SystemID
+                        'SystemID'  = $UserUpdate.SystemID
                         'SystemAdd' = $SystemAddStatus
 
                     }
@@ -504,38 +531,42 @@ Function Import-JCUsersFromCSV ()
             {
                 try
                 {
-                    $NewUser = $UserAdd | New-JCUser
+                    $JSONParams = $UpdateParams | ConvertTo-Json
+
+                    Write-Verbose "$($JSONParams)"
+                    
+                    $NewUser = Set-JCUser @UpdateParams
                     
                     if ($NewUser._id)
                     {
 
-                        $Status = 'User Created'
+                        $Status = 'User Updated'
                     }
 
                     elseif (-not $NewUser._id)
                     {
-                        $Status = 'User Not Created'
+                        $Status = 'User does not exist'
                     }
                    
 
                     try #User is created
                     {
-                        if ($UserAdd.SystemID)
+                        if ($UserUpdate.SystemID)
                         {
 
-                            if ($UserAdd.Administrator)
+                            if ($UserUpdate.Administrator)
                             {
 
                                 Write-Verbose "Admin set"
 
-                                if ($UserAdd.Administrator -like "*True")
+                                if ($UserUpdate.Administrator -like "*True")
                                 {
 
                                     Write-Verbose "Admin set to true"
 
                                     try
                                     {
-                                        $SystemAdd = Add-JCSystemUser -SystemID $UserAdd.SystemID -UserID $NewUser._id -Administrator $true
+                                        $SystemAdd = Add-JCSystemUser -SystemID $UserUpdate.SystemID -UserID $NewUser._id -Administrator $true
                                         $SystemAddStatus = $SystemAdd.Status
                                     }
                                     catch
@@ -544,14 +575,14 @@ Function Import-JCUsersFromCSV ()
                                     }
                                 }
 
-                                elseif ($UserAdd.Administrator -like "*False")
+                                elseif ($UserUpdate.Administrator -like "*False")
                                 {
 
                                     Write-Verbose "Admin set to false"
 
                                     try
                                     {
-                                        $SystemAdd = Add-JCSystemUser -SystemID $UserAdd.SystemID -UserID $NewUser._id -Administrator $false
+                                        $SystemAdd = Add-JCSystemUser -SystemID $UserUpdate.SystemID -UserID $NewUser._id -Administrator $false
                                         $SystemAddStatus = $SystemAdd.Status
                                     }
                                     catch
@@ -571,7 +602,7 @@ Function Import-JCUsersFromCSV ()
 
                                 try
                                 {
-                                    $SystemAdd = Add-JCSystemUser -SystemID $UserAdd.SystemID -UserID $NewUser._id
+                                    $SystemAdd = Add-JCSystemUser -SystemID $UserUpdate.SystemID -UserID $NewUser._id
                                     Write-Verbose  "$($SystemAdd.Status)"
                                     $SystemAddStatus = $SystemAdd.Status
                                 }
@@ -588,13 +619,13 @@ Function Import-JCUsersFromCSV ()
 
                         $CustomGroupArrayList = New-Object System.Collections.ArrayList
 
-                        $CustomGroups = $UserAdd | Get-Member | Where-Object Name -Like "*Group*" | Where-Object {$_.Definition -NotLike "*=" -and $_.Definition -NotLike "*null"} | Select-Object Name
+                        $CustomGroups = $UserUpdate | Get-Member | Where-Object Name -Like "*Group*" | Where-Object {$_.Definition -NotLike "*=" -and $_.Definition -NotLike "*null"} | Select-Object Name
                         
                         foreach ($Group in $CustomGroups)
                         {
                             $GetGroup = [pscustomobject]@{
                                 Type  = 'GroupName'
-                                Value = $UserAdd.($Group.Name)
+                                Value = $UserUpdate.($Group.Name)
                             }
 
                             $CustomGroupArrayList.Add($GetGroup) | Out-Null
@@ -643,7 +674,7 @@ Function Import-JCUsersFromCSV ()
                         'Status'    = $Status
                         'UserID'    = $NewUser._id
                         'GroupsAdd' = $UserGroupArrayList
-                        'SystemID'  = $UserAdd.SystemID
+                        'SystemID'  = $UserUpdate.SystemID
                         'SystemAdd' = $SystemAddStatus
 
                     }
@@ -656,15 +687,15 @@ Function Import-JCUsersFromCSV ()
                 catch
                 {
 
-                    $Status = $_.ErrorDetails
+                    $Status = 'User does not exist'
 
                     $FormattedResults = [PSCustomObject]@{
 
-                        'Username'  = $NewUser.username
+                        'Username'  = $UpdateParams.username
                         'Status'    = $Status
                         'UserID'    = $NewUser._id
                         'GroupsAdd' = $UserGroupArrayList
-                        'SystemID'  = $UserAdd.SystemID
+                        'SystemID'  = $UserUpdate.SystemID
                         'SystemAdd' = $SystemAddStatus
 
                     }
@@ -676,6 +707,7 @@ Function Import-JCUsersFromCSV ()
                 $SystemAddStatus = $null
             
             }
+
         }
     }
 

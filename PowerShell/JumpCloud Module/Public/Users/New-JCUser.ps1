@@ -107,7 +107,7 @@ Function New-JCUser ()
 
         [Parameter(ValueFromPipelineByPropertyName = $True)]
         [string]
-        [ValidateLength(1, 1024)]
+        [ValidateLength(0, 1024)]
         $description,
 
         [Parameter(ValueFromPipelineByPropertyName = $True)]

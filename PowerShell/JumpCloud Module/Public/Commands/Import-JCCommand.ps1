@@ -9,16 +9,6 @@ Function Import-JCCommand
             Position = 0,
             ValueFromPipelineByPropertyName = $True)]
         [string]
-        [ValidateScript( {
-                If (Invoke-Webrequest $_ -UseBasicParsing)
-                {
-                    $True
-                }
-                else
-                {
-                    Throw "You are either offline or $_ is not a URL. Enter a URL"
-                }
-            })]
         $URL
 
     )
@@ -26,7 +16,8 @@ Function Import-JCCommand
     begin
     { 
 
-       
+        Write-Verbose 'Verifying JCAPI Key'
+        if ($JCAPIKEY.length -ne 40) {Connect-JConline}
         $NewCommandsArray = @() #Output new commands
         
     }
