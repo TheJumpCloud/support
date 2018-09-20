@@ -23,7 +23,10 @@ function Invoke-SetJCOrganization
 
         if ($MultiTenant -eq $false)
         {
+            Remove-Variable JCOrgID
+
             Write-Error "Your admin account is not configured for multi tenat. The Set-JCOrganization command can only be used by admins configured for multi tenant"
+
             break
         }
 
