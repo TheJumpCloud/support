@@ -1,7 +1,7 @@
 # Step 1 create/update markdown help files using platyPS
 
 Import-Module '~/Git/support/PowerShell/JumpCloud Module/JumpCloud.psd1'
-Update-MarkdownHelpModule -Path '~/Git/support/PowerShell/JumpCloud Module/Docs' 
+Update-MarkdownHelpModule -Path '~/Git/support/PowerShell/JumpCloud Module/Docs'
 
 # Step 2 update the new files or the existing files
 # Create online versions of the help files in the support.wiki

@@ -354,7 +354,7 @@ Function Get-JCSystem ()
 
                 $URL = "https://console.jumpcloud.com/api/Systems/$SystemID"
                 Write-Verbose $URL
-                $results = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent 'Pwsh_1.7.0'
+                $results = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent 'Pwsh_1.8.0'
                 $null = $resultsArrayList.add($Results)
             }
 

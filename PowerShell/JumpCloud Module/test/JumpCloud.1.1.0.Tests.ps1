@@ -24,21 +24,21 @@ $SystemGroupID = ''  # Paste the corresponding GroupID for the sytem group named
 $NewJCSystemGroup = 'NewSystemGroup' #Do not modify this
 $NewJCUserGroup = 'NewUserGroup' #Do not modify this
 
-$CSVPath = '' #Path to ImportExample_Pester_Tests_1.1.0.csv //REQUIRED update the system under 'SystemID' in the .CSV file
+$CSVPath = '' #Path to ImportExample_Pester_Tests_1.1.0.csv //REQUIRED update the system under 'SystemID' in the .CSV file.
            
 
 #Test Functions
 
 Function New-RandomUser  ()
 {
-    [CmdletBinding(DefaultParameterSetName='NoAttributes')]
+    [CmdletBinding(DefaultParameterSetName = 'NoAttributes')]
     param
     (
-        [Parameter(Mandatory,Position=0)]
+        [Parameter(Mandatory, Position = 0)]
         [String]
         $Domain,
 
-        [Parameter(ParameterSetName='Attributes')] ##Test this to see if this can be modified.
+        [Parameter(ParameterSetName = 'Attributes')] ##Test this to see if this can be modified.
         [switch]
         $Attributes
 
@@ -47,60 +47,62 @@ Function New-RandomUser  ()
     if (($PSCmdlet.ParameterSetName -eq 'NoAttributes'))
     {
         $username = -join ((65..90) + (97..122) | Get-Random -Count 8 | ForEach-Object {[char]$_})
-        $email =  $username + "@$Domain.com"
+        $email = $username + "@$Domain.com"
 
         $RandomUser = [ordered]@{
-        FirstName = 'Pester'
-        LastName = 'Test'
-        Username = $username
-        Email = $email
-        Password = 'Temp123!'
+            FirstName = 'Pester'
+            LastName  = 'Test'
+            Username  = $username
+            Email     = $email
+            Password  = 'Temp123!'
         }
 
-        $NewRandomUser =  New-Object psobject -Property $RandomUser
+        $NewRandomUser = New-Object psobject -Property $RandomUser
     }
 
     if (($PSCmdlet.ParameterSetName -eq 'Attributes'))
     {
         $username = -join ((65..90) + (97..122) | Get-Random -Count 8 | ForEach-Object {[char]$_})
-        $email =  $username + "@$Domain.com"
+        $email = $username + "@$Domain.com"
 
         $RandomUser = [ordered]@{
-        FirstName = 'Pester'
-        LastName = 'Test'
-        Username = $username
-        Email = $email
-        Password = 'Temp123!'
-        NumberOfCustomAttributes = 3
-        Attribute1_name = 'Department'
-        Attribute1_value = 'Sales'
-        Attribute2_name = 'Office'
-        Attribute2_value = '456789'
-        Attribute3_name = 'Lang'
-        Attribute3_value = 'French'
+            FirstName                = 'Pester'
+            LastName                 = 'Test'
+            Username                 = $username
+            Email                    = $email
+            Password                 = 'Temp123!'
+            NumberOfCustomAttributes = 3
+            Attribute1_name          = 'Department'
+            Attribute1_value         = 'Sales'
+            Attribute2_name          = 'Office'
+            Attribute2_value         = '456789'
+            Attribute3_name          = 'Lang'
+            Attribute3_value         = 'French'
         }
-        $NewRandomUser =  New-Object psobject -Property $RandomUser
+        $NewRandomUser = New-Object psobject -Property $RandomUser
     }
 
 
     return $NewRandomUser
 }
-Function New-RandomString () {
+Function New-RandomString ()
+{
     [CmdletBinding()]
 
     param(
 
-    [Parameter(Mandatory)] ##Test this to see if this can be modified.
-    [ValidateRange(0,52)]
-    [Int]
-    $NumberOfChars
+        [Parameter(Mandatory)] ##Test this to see if this can be modified.
+        [ValidateRange(0, 52)]
+        [Int]
+        $NumberOfChars
 
     )
     begin {}
-    process{
+    process
+    {
         $Random = -join ((65..90) + (97..122) | Get-Random -Count $NumberOfChars | % {[char]$_})
     }
-    end{Return $Random}
+    end {Return $Random}
 
 
 }
@@ -109,9 +111,9 @@ $Random = New-RandomString '8'
 $RandomEmail = "$Random@$Random.com"
 
 
-Describe 'Set-JCSystemUser'{
+Describe 'Set-JCSystemUser' {
 
-    It "Sets a standard user to an admin user using username"{
+    It "Sets a standard user to an admin user using username" {
         
         Add-JCSystemUser -SystemID $SystemID -Username $Username -Administrator $False #Sets to standard user
         $CommandResults = Set-JCSystemUser -SystemID $SystemID -Username $Username -Administrator $True
@@ -121,7 +123,7 @@ Describe 'Set-JCSystemUser'{
 
     }
 
-    It "Sets an admin user to a standard user using username"{
+    It "Sets an admin user to a standard user using username" {
         
         Set-JCSystemUser -SystemID $SystemID -Username $Username -Administrator $True #Sets to standard user
         $CommandResults = Set-JCSystemUser -SystemID $SystemID -Username $Username -Administrator $False
@@ -131,7 +133,7 @@ Describe 'Set-JCSystemUser'{
 
     }
 
-    It "Sets a standard user to an admin user using UserID"{
+    It "Sets a standard user to an admin user using UserID" {
         
         Set-JCSystemUser -SystemID $SystemID -UserID $UserID -Administrator $False #Sets to standard user
         $CommandResults = Set-JCSystemUser -SystemID $SystemID -UserID $UserID -Administrator $True
@@ -141,7 +143,7 @@ Describe 'Set-JCSystemUser'{
 
     }
 
-    It "Sets an admin user to a standard user using UserID"{
+    It "Sets an admin user to a standard user using UserID" {
         
         Set-JCSystemUser -SystemID $SystemID -UserID $UserID -Administrator $True #Sets to standard user
         $CommandResults = Set-JCSystemUser -SystemID $SystemID -UserID $UserID -Administrator $False
@@ -156,7 +158,7 @@ Describe 'Set-JCSystemUser'{
 
 Describe 'Add-JCSystemUser 1.1.0 and Get-JCSystemUser 1.1.0' {
 
-    IT "Adds a JumpCloud User to a JumpCloud System with admin `$False using username"{
+    IT "Adds a JumpCloud User to a JumpCloud System with admin `$False using username" {
 
         $User = New-RandomUserCustom -Domain 'pleasedelete' | New-JCUser
 
@@ -170,7 +172,7 @@ Describe 'Add-JCSystemUser 1.1.0 and Get-JCSystemUser 1.1.0' {
 
     }
 
-    IT "Adds a JumpCloud User to a JumpCloud System with admin $False using username"{
+    IT "Adds a JumpCloud User to a JumpCloud System with admin $False using username" {
 
         $User = New-RandomUserCustom -Domain 'pleasedelete' | New-JCUser
 
@@ -184,7 +186,7 @@ Describe 'Add-JCSystemUser 1.1.0 and Get-JCSystemUser 1.1.0' {
 
     }
 
-    IT "Adds a JumpCloud User to a JumpCloud System with admin `$False using UserID"{
+    IT "Adds a JumpCloud User to a JumpCloud System with admin `$False using UserID" {
 
         $User = New-RandomUserCustom -Domain 'pleasedelete' | New-JCUser
     
@@ -198,7 +200,7 @@ Describe 'Add-JCSystemUser 1.1.0 and Get-JCSystemUser 1.1.0' {
     
     }
 
-    IT "Adds a JumpCloud User to a JumpCloud System with admin `$True using UserID"{
+    IT "Adds a JumpCloud User to a JumpCloud System with admin `$True using UserID" {
 
         $User = New-RandomUserCustom -Domain 'pleasedelete' | New-JCUser
     
@@ -212,7 +214,7 @@ Describe 'Add-JCSystemUser 1.1.0 and Get-JCSystemUser 1.1.0' {
     
     }
 
-    IT "Adds a JumpCloud User to a JumpCloud System with admin $True using username"{
+    IT "Adds a JumpCloud User to a JumpCloud System with admin $True using username" {
 
         $User = New-RandomUserCustom -Domain 'pleasedelete' | New-JCUser
     
@@ -229,9 +231,9 @@ Describe 'Add-JCSystemUser 1.1.0 and Get-JCSystemUser 1.1.0' {
 
 } 
 
-Describe 'Get-JCGroup 1.1.0'{
+Describe 'Get-JCGroup 1.1.0' {
 
-    It "Gets a JumpCloud UserGroup by Name and Displays Attributes"{
+    It "Gets a JumpCloud UserGroup by Name and Displays Attributes" {
         
         $Posix = Get-JCGroup -Type User -Name $UserGroupName
 
@@ -241,7 +243,7 @@ Describe 'Get-JCGroup 1.1.0'{
 
 }
 
-Describe 'Import-JCUserFromCSV'{
+Describe 'Import-JCUserFromCSV' {
 
     IT "Imports users from the ImportExample_Pester_Test using -Force" {
 
@@ -252,23 +254,23 @@ Describe 'Import-JCUserFromCSV'{
 
     IT "Verifies a.user user" {
 
-       $User =  Get-JCUser -Username 'a.user' | ? Username -EQ 'a.user'
+        $User = Get-JCUser -Username 'a.user' | ? Username -EQ 'a.user'
 
-       $User.activated | Should be $True 
+        $User.activated | Should be $True 
 
     }
 
     IT "Verifies ia.user user" {
 
-        $User =  Get-JCUser -Username 'ia.user' | ? Username -EQ 'ia.user'
+        $User = Get-JCUser -Username 'ia.user' | ? Username -EQ 'ia.user'
 
 
         $User.activated | Should be $False
-     }
+    }
 
-     IT "Verifies a.bound.std user" {
+    IT "Verifies a.bound.std user" {
 
-        $User =  Get-JCUser -Username 'a.bound.std' | ? Username -EQ 'a.bound.std'
+        $User = Get-JCUser -Username 'a.bound.std' | ? Username -EQ 'a.bound.std'
 
         $User.activated | Should be $True
 
@@ -278,11 +280,11 @@ Describe 'Import-JCUserFromCSV'{
 
         $Bound.Administrator | Should Be $False
 
-     }
+    }
 
-     IT "Verifies a.bound.true1 user" {
+    IT "Verifies a.bound.true1 user" {
 
-        $User =  Get-JCUser -Username 'a.bound.true1' | ? username -EQ 'a.bound.true1'
+        $User = Get-JCUser -Username 'a.bound.true1' | ? username -EQ 'a.bound.true1'
 
         $User.activated | Should be $True
 
@@ -292,11 +294,11 @@ Describe 'Import-JCUserFromCSV'{
 
         $Bound.Administrator | Should Be $True
 
-     }
+    }
 
-     IT "Verifies a.bound.false1 user" {
+    IT "Verifies a.bound.false1 user" {
 
-        $User =  Get-JCUser -Username 'a.bound.false1' | ? username -EQ 'a.bound.false1'
+        $User = Get-JCUser -Username 'a.bound.false1' | ? username -EQ 'a.bound.false1'
 
         $User.activated | Should be $True
 
@@ -306,11 +308,11 @@ Describe 'Import-JCUserFromCSV'{
 
         $Bound.Administrator | Should Be $False
 
-     }
+    }
 
-     IT "Verifies a.bound.true2 user" {
+    IT "Verifies a.bound.true2 user" {
 
-        $User =  Get-JCUser -Username 'a.bound.true2' | ? username -EQ 'a.bound.true2'
+        $User = Get-JCUser -Username 'a.bound.true2' | ? username -EQ 'a.bound.true2'
 
         $User.activated | Should be $True
 
@@ -320,11 +322,11 @@ Describe 'Import-JCUserFromCSV'{
 
         $Bound.Administrator | Should Be $True
 
-     }
+    }
 
-     IT "Verifies a.bound.false2 user" {
+    IT "Verifies a.bound.false2 user" {
 
-        $User =  Get-JCUser -Username 'a.bound.false2' | ? username -EQ 'a.bound.false2'
+        $User = Get-JCUser -Username 'a.bound.false2' | ? username -EQ 'a.bound.false2'
 
         $User.activated | Should be $True
 
@@ -334,11 +336,11 @@ Describe 'Import-JCUserFromCSV'{
 
         $Bound.Administrator | Should Be $False
 
-     }
+    }
 
-     IT "Verifies ia.bound.std user" {
+    IT "Verifies ia.bound.std user" {
 
-        $User =  Get-JCUser -Username 'ia.bound.std' | ? username -EQ 'ia.bound.std'
+        $User = Get-JCUser -Username 'ia.bound.std' | ? username -EQ 'ia.bound.std'
     
         $User.activated | Should be $False
     
@@ -348,11 +350,11 @@ Describe 'Import-JCUserFromCSV'{
     
         $Bound.Administrator | Should Be $False
     
-     }
+    }
     
-     IT "Verifies ia.bound.true1 user" {
+    IT "Verifies ia.bound.true1 user" {
     
-        $User =  Get-JCUser -Username 'ia.bound.true1' | ? username -EQ 'ia.bound.true1'
+        $User = Get-JCUser -Username 'ia.bound.true1' | ? username -EQ 'ia.bound.true1'
     
         $User.activated | Should be $False
     
@@ -362,11 +364,11 @@ Describe 'Import-JCUserFromCSV'{
     
         $Bound.Administrator | Should Be $True
     
-     }
+    }
     
-     IT "Verifies ia.bound.false1 user" {
+    IT "Verifies ia.bound.false1 user" {
     
-        $User =  Get-JCUser -Username 'ia.bound.false1' | ? username -EQ 'ia.bound.false1'
+        $User = Get-JCUser -Username 'ia.bound.false1' | ? username -EQ 'ia.bound.false1'
     
         $User.activated | Should be $False
     
@@ -376,11 +378,11 @@ Describe 'Import-JCUserFromCSV'{
     
         $Bound.Administrator | Should Be $False
     
-     }
+    }
     
-     IT "Verifies ia.bound.true2 user" {
+    IT "Verifies ia.bound.true2 user" {
     
-        $User =  Get-JCUser -Username 'ia.bound.true2'
+        $User = Get-JCUser -Username 'ia.bound.true2'
     
         $User.activated | Should be $False
     
@@ -390,11 +392,11 @@ Describe 'Import-JCUserFromCSV'{
     
         $Bound.Administrator | Should Be $True
     
-     }
+    }
     
-     IT "Verifies ia.bound.false2 user" {
+    IT "Verifies ia.bound.false2 user" {
     
-        $User =  Get-JCUser -Username 'ia.bound.false2' | ? username -EQ 'ia.bound.false2'
+        $User = Get-JCUser -Username 'ia.bound.false2' | ? username -EQ 'ia.bound.false2'
     
         $User.activated | Should be $False
     
@@ -404,11 +406,11 @@ Describe 'Import-JCUserFromCSV'{
     
         $Bound.Administrator | Should Be $False
     
-     }
+    }
 
-     IT "Verifies a.1group user" {
+    IT "Verifies a.1group user" {
     
-        $User =  Get-JCUser -Username 'a.1group' | ? username -EQ 'a.1group'
+        $User = Get-JCUser -Username 'a.1group' | ? username -EQ 'a.1group'
     
         $User.activated | Should be $True
     
@@ -416,11 +418,11 @@ Describe 'Import-JCUserFromCSV'{
     
         $Groups.GroupName.count | Should Be 1
     
-     }
+    }
 
-     IT "Verifies ia.1group user" {
+    IT "Verifies ia.1group user" {
     
-        $User =  Get-JCUser -Username 'ia.1group' | ? username -EQ 'ia.1group'
+        $User = Get-JCUser -Username 'ia.1group' | ? username -EQ 'ia.1group'
     
         $User.activated | Should be $False
     
@@ -428,11 +430,11 @@ Describe 'Import-JCUserFromCSV'{
     
         $Groups.GroupName.count | Should Be 1
     
-     }
+    }
 
-     IT "Verifies a.2group user" {
+    IT "Verifies a.2group user" {
     
-        $User =  Get-JCUser -Username 'a.2group' | ? Username -EQ 'a.2group'
+        $User = Get-JCUser -Username 'a.2group' | ? Username -EQ 'a.2group'
     
         $User.activated | Should be $True
     
@@ -440,11 +442,11 @@ Describe 'Import-JCUserFromCSV'{
     
         $Groups.count | Should Be 2
     
-     }
+    }
 
-     IT "Verifies ia.2group user" {
+    IT "Verifies ia.2group user" {
     
-        $User =  Get-JCUser -Username 'ia.2group' | ? username -EQ 'ia.2group'
+        $User = Get-JCUser -Username 'ia.2group' | ? username -EQ 'ia.2group'
     
         $User.activated | Should be $False
     
@@ -452,11 +454,11 @@ Describe 'Import-JCUserFromCSV'{
     
         $Groups.count | Should Be 2
     
-     }
+    }
 
-     IT "Verifies a.2group user" {
+    IT "Verifies a.2group user" {
     
-        $User =  Get-JCUser -Username 'a.2group' | ? username -EQ 'a.2group'
+        $User = Get-JCUser -Username 'a.2group' | ? username -EQ 'a.2group'
     
         $User.activated | Should be $True
     
@@ -464,11 +466,11 @@ Describe 'Import-JCUserFromCSV'{
     
         $Groups.count | Should Be 2
     
-     }
+    }
 
-     IT "Verifies ia.2group user" {
+    IT "Verifies ia.2group user" {
     
-        $User =  Get-JCUser -Username 'ia.2group' | ? username -EQ 'ia.2group'
+        $User = Get-JCUser -Username 'ia.2group' | ? username -EQ 'ia.2group'
     
         $User.activated | Should be $False
     
@@ -476,11 +478,11 @@ Describe 'Import-JCUserFromCSV'{
     
         $Groups.count | Should Be 2
     
-     }
+    }
 
-     IT "Verifies a.5group user" {
+    IT "Verifies a.5group user" {
     
-        $User =  Get-JCUser -Username 'a.5group' | ? username -EQ 'a.5group'
+        $User = Get-JCUser -Username 'a.5group' | ? username -EQ 'a.5group'
     
         $User.activated | Should be $True
     
@@ -488,11 +490,11 @@ Describe 'Import-JCUserFromCSV'{
     
         $Groups.count | Should Be 5
     
-     }
+    }
     
-     IT "Verifies ia.5group user" {
+    IT "Verifies ia.5group user" {
     
-        $User =  Get-JCUser -Username 'ia.5group' | ? Username -EQ 'ia.5group'
+        $User = Get-JCUser -Username 'ia.5group' | ? Username -EQ 'ia.5group'
     
         $User.activated | Should be $False
     
@@ -500,21 +502,21 @@ Describe 'Import-JCUserFromCSV'{
     
         $Groups.count | Should Be 5
     
-     }
+    }
 
-     IT "Verifies a.1attr user" {
+    IT "Verifies a.1attr user" {
     
-        $User =  Get-JCUser -Username 'a.1attr' | ? username -EQ 'a.1attr'
+        $User = Get-JCUser -Username 'a.1attr' | ? username -EQ 'a.1attr'
     
         $User.activated | Should be $True
      
         $User.attributes._id.count | Should Be 1
     
-     }
+    }
     
-     IT "Verifies ia.1attr user" {
+    IT "Verifies ia.1attr user" {
     
-        $User =  Get-JCUser -Username 'ia.1attr' | ? username -Eq 'ia.1attr'
+        $User = Get-JCUser -Username 'ia.1attr' | ? username -Eq 'ia.1attr'
     
         $User.activated | Should be $False
     
@@ -522,21 +524,21 @@ Describe 'Import-JCUserFromCSV'{
     
         $User.attributes._id.count | Should Be 1
     
-     }
+    }
 
-     IT "Verifies a.2attr user" {
+    IT "Verifies a.2attr user" {
     
-        $User =  Get-JCUser -Username 'a.2attr' | ? username -EQ 'a.2attr'
+        $User = Get-JCUser -Username 'a.2attr' | ? username -EQ 'a.2attr'
     
         $User.activated | Should be $True
      
         $User.attributes._id.count | Should Be 2
     
-     }
+    }
     
-     IT "Verifies ia.2attr user" {
+    IT "Verifies ia.2attr user" {
     
-        $User =  Get-JCUser -Username 'ia.2attr' | ? username -EQ 'ia.2attr'
+        $User = Get-JCUser -Username 'ia.2attr' | ? username -EQ 'ia.2attr'
     
         $User.activated | Should be $False
     
@@ -544,21 +546,21 @@ Describe 'Import-JCUserFromCSV'{
     
         $User.attributes._id.count | Should Be 2
     
-     }
+    }
 
-     IT "Verifies a.5attr user" {
+    IT "Verifies a.5attr user" {
     
-        $User =  Get-JCUser -Username 'a.5attr' | ? username -EQ 'a.5attr'
+        $User = Get-JCUser -Username 'a.5attr' | ? username -EQ 'a.5attr'
     
         $User.activated | Should be $True
      
         $User.attributes._id.count | Should Be 5
     
-     }
+    }
     
-     IT "Verifies ia.5attr user" {
+    IT "Verifies ia.5attr user" {
     
-        $User =  Get-JCUser -Username 'ia.5attr' | ? username -EQ 'ia.5attr'
+        $User = Get-JCUser -Username 'ia.5attr' | ? username -EQ 'ia.5attr'
     
         $User.activated | Should be $False
     
@@ -566,11 +568,11 @@ Describe 'Import-JCUserFromCSV'{
     
         $User.attributes._id.count | Should Be 5
     
-     }
+    }
 
-     IT "Verifies a.all" {
+    IT "Verifies a.all" {
 
-        $User =  Get-JCUser -Username 'a.all' | ? username -EQ 'a.all'
+        $User = Get-JCUser -Username 'a.all' | ? username -EQ 'a.all'
     
         $User.activated | Should be $True
      
@@ -586,11 +588,11 @@ Describe 'Import-JCUserFromCSV'{
     
         $Bound.Administrator | Should Be $True
 
-     }
+    }
 
-     IT "Verifies ia.all" {
+    IT "Verifies ia.all" {
 
-        $User =  Get-JCUser -Username 'ia.all' | ? username -EQ 'ia.all'
+        $User = Get-JCUser -Username 'ia.all' | ? username -EQ 'ia.all'
     
         $User.activated | Should be $False
      

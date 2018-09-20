@@ -139,9 +139,49 @@ Function Get-JCUser ()
         [Parameter(
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'SearchFilter')]
-        [ValidateSet('created', 'password_expiration_date', 'account_locked', 'activated', 'addresses', 'allow_public_key', 'attributes', 'email', 'enable_managed_uid', 'enable_user_portal_multifactor', 'externally_managed', 'firstname', 'lastname', 'ldap_binding_user', 'passwordless_sudo', 'password_expired', 'password_never_expires', 'phoneNumbers', 'samba_service_user', 'ssh_keys', 'sudo', 'totp_enabled', 'unix_guid', 'unix_uid', 'username')]
-        [String[]]$returnProperties
+        [ValidateSet('created', 'password_expiration_date', 'account_locked', 'activated', 'addresses', 'allow_public_key', 'attributes', 'email', 'enable_managed_uid', 'enable_user_portal_multifactor', 'externally_managed', 'firstname', 'lastname', 'ldap_binding_user', 'passwordless_sudo', 'password_expired', 'password_never_expires', 'phoneNumbers', 'samba_service_user', 'ssh_keys', 'sudo', 'totp_enabled', 'unix_guid', 'unix_uid', 'username', 'middlename', 'displayname', 'jobTitle', 'employeeIdentifier', 'department', 'costCenter', 'company', 'employeeType', 'description', 'location')]
+        [String[]]$returnProperties,
 
+        #New parameters as of 1.8 release
+        [Parameter(ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter')]
+        [String]$middlename,
+
+        [Parameter(ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter')]
+        [String]$displayname,
+
+        [Parameter(ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter')]
+        [String]$jobTitle,
+
+        [Parameter(ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter')]
+        [String]$employeeIdentifier,
+
+        [Parameter(ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter')]
+        [String]$department,
+
+        [Parameter(ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter')]
+        [String]$costCenter,
+
+        [Parameter(ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter')]
+        [String]$company,
+
+        [Parameter(ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter')]
+        [String]$employeeType,
+
+        [Parameter(ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter')]
+        [String]$description,
+
+        [Parameter(ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter')]
+        [String]$location
     )
 
     DynamicParam
@@ -373,7 +413,7 @@ Function Get-JCUser ()
 
                 $URL = "https://console.jumpcloud.com/api/Systemusers/$Userid"
                 Write-Verbose $URL
-                $results = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent 'Pwsh_1.7.0'
+                $results = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent 'Pwsh_1.8.0'
                 $null = $resultsArrayList.add($Results)
             }
 

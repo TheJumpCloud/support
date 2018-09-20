@@ -76,6 +76,7 @@ Type: String
 Parameter Sets: (All)
 Aliases:
 Accepted values: trigger, manual
+
 Required: False
 Position: 3
 Default value: None

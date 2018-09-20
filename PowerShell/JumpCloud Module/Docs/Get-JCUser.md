@@ -21,7 +21,9 @@ Get-JCUser [[-username] <String>] [-firstname <String>] [-lastname <String>] [-e
  [-passwordless_sudo <Boolean>] [-externally_managed <Boolean>] [-ldap_binding_user <Boolean>]
  [-enable_user_portal_multifactor <Boolean>] [-totp_enabled <Boolean>] [-allow_public_key <Boolean>]
  [-samba_service_user <Boolean>] [-password_never_expires <Boolean>] [-filterDateProperty <String>]
- [-returnProperties <String[]>] [<CommonParameters>]
+ [-returnProperties <String[]>] [-middlename <String>] [-displayname <String>] [-jobTitle <String>]
+ [-employeeIdentifier <String>] [-department <String>] [-costCenter <String>] [-company <String>]
+ [-employeeType <String>] [-description <String>] [-location <String>] [<CommonParameters>]
 ```
 
 ### ByID
@@ -407,6 +409,150 @@ Position: 0
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: True
+```
+
+### -company
+The company of the JumpCloud user you wish to search for.
+```yaml
+Type: String
+Parameter Sets: SearchFilter
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -costCenter
+The costCenter of the JumpCloud user you wish to search for.
+
+```yaml
+Type: String
+Parameter Sets: SearchFilter
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -department
+The department of the JumpCloud user you wish to search for.
+
+```yaml
+Type: String
+Parameter Sets: SearchFilter
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -description
+The description of the JumpCloud user you wish to search for.
+
+```yaml
+Type: String
+Parameter Sets: SearchFilter
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -displayname
+The preferred name of the JumpCloud user you wish to search for.
+```yaml
+Type: String
+Parameter Sets: SearchFilter
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -employeeIdentifier
+The employeeIdentifier of the JumpCloud user you wish to search for.
+```yaml
+Type: String
+Parameter Sets: SearchFilter
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -employeeType
+The employeeType of the JumpCloud user you wish to search for.
+```yaml
+Type: String
+Parameter Sets: SearchFilter
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -jobTitle
+The jobTitle of the JumpCloud user you wish to search for.
+```yaml
+Type: String
+Parameter Sets: SearchFilter
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -location
+The location of the JumpCloud user you wish to search for.
+```yaml
+Type: String
+Parameter Sets: SearchFilter
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -middlename
+The middlename of the JumpCloud user you wish to search for.
+
+```yaml
+Type: String
+Parameter Sets: SearchFilter
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
 ```
 
 ### CommonParameters

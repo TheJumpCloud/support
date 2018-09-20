@@ -65,7 +65,7 @@ Function Set-JCUser ()
         [int]
         [ValidateRange(0, 4294967295)]
         $unix_guid,
-        
+
         [Parameter()]
         [bool]
         $account_locked,
@@ -96,7 +96,124 @@ Function Set-JCUser ()
 
         [Parameter(ParameterSetName = 'ByID')]
         [switch]
-        $ByID
+        $ByID,
+
+        # New attributes as of 1.8.0 release
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        $middlename,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        [Alias('preferredName')]
+        $displayname,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        $jobTitle,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        $employeeIdentifier,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        $department,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        $costCenter,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        $company,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        $employeeType,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        [ValidateLength(0, 1024)]
+        $description,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        $location,
+
+        #Objects
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        $work_streetAddress,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        $work_poBox,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        [Alias('work_city')]
+        $work_locality,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        [Alias('work_state')]
+        $work_region,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        $work_postalCode,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        $work_country,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        $home_streetAddress,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        $home_poBox,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        [Alias('home_city')]
+        $home_locality,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        [Alias('home_state')]
+        $home_region,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        $home_postalCode,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        $home_country,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        $mobile_number,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        $home_number,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        $work_number,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        $work_mobile_number,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        $work_fax_number
 
     )
 
@@ -168,10 +285,204 @@ Function Set-JCUser ()
             $UserCount = ($UserHash).Count
             Write-Debug "Populated UserHash with $UserCount users"
         }
+        $ObjectParams = @{}
+        $ObjectParams.Add("work_streetAddress", "addresses")
+        $ObjectParams.Add("work_poBox", "addresses")
+        $ObjectParams.Add("work_locality", "addresses")
+        $ObjectParams.Add("work_region", "addresses")
+        $ObjectParams.Add("work_postalCode", "addresses")
+        $ObjectParams.Add("work_country", "addresses")
+        $ObjectParams.Add("home_poBox", "addresses")
+        $ObjectParams.Add("home_locality", "addresses")
+        $ObjectParams.Add("home_region", "addresses")
+        $ObjectParams.Add("home_postalCode", "addresses")
+        $ObjectParams.Add("home_country", "addresses")
+        $ObjectParams.Add("home_streetAddress", "addresses")
+        $ObjectParams.Add("mobile_number", "phoneNumbers")
+        $ObjectParams.Add("home_number", "phoneNumbers")
+        $ObjectParams.Add("work_number", "phoneNumbers")
+        $ObjectParams.Add("work_mobile_number", "phoneNumbers")
+        $ObjectParams.Add("work_fax_number", "phoneNumbers")
+
+        if ($PSCmdlet.ParameterSetName -eq 'ByID')
+
+        {
+            $URL_ID = $UserID
+        }
+
     }
+
 
     process
     {
+        $body = @{}
+
+        if ($PSCmdlet.ParameterSetName -ne 'ByID')
+        {
+            if ($UserHash.ContainsKey($Username))
+
+            {
+                $URL_ID = $UserHash.Get_Item($Username)
+                Write-Debug $URL_ID
+            }
+
+            else
+            {
+                Throw "$Username does not exist. Run 'Get-JCUser | Select-Object username' to see a list of all your JumpCloud users."
+            }
+
+        }
+
+        $UpdateParms = $PSBoundParameters.GetEnumerator() | Select-Object Key
+        $UpdateObjectParams = @{}
+
+        foreach ($param in $UpdateParms)
+        {
+
+            if ($ObjectParams.ContainsKey($param.key))
+            {
+                $UpdateObjectParams.Add($param.key, $ObjectParams.($param.key))
+            }
+
+        }
+
+        if ($UpdateObjectParams.Count -gt 0)
+        {
+            $objectCheck = $UpdateObjectParams.Values | Select-Object -Unique
+
+            $UserObjectCheck = Get-JCUser -userid $URL_ID
+
+            if ($objectCheck.contains("phoneNumbers"))
+            {
+                $phoneNumbers = @()
+
+                $UpdatedNumbers = @{}
+
+                foreach ($param in $PSBoundParameters.GetEnumerator())
+                {
+
+                    if ($param.Key -like '*_number')
+                    {
+                        $Number = @{}
+                        $Number.Add("type", ($($param.Key -replace "_number", "")))
+                        $Number.Add("number", $param.Value)
+                        $UpdatedNumbers.Add(($($param.Key -replace "_number", "")), $param.Value)
+                        $phoneNumbers += $Number
+                        continue
+                    }
+
+                }
+
+                foreach ($ExitingNumber in $UserObjectCheck.phoneNumbers)
+                {
+                    if ($UpdatedNumbers.ContainsKey($ExitingNumber.type))
+                    {
+                        Continue
+                    }
+                    else
+                    {
+                        $Number = @{}
+                        $Number.Add("type", $ExitingNumber.type )
+                        $Number.Add("number", $ExitingNumber.number)
+                        $phoneNumbers += $Number
+                    }
+                }
+
+                $body.Add('phoneNumbers', $phoneNumbers)
+            }
+
+            if ($objectCheck.contains("addresses"))
+            {
+                $Addresses = @()
+
+                $WorkAddressParams = @{}
+                $WorkAddressParams.Add("type", "work")
+
+                $HomeAddressParams = @{}
+                $HomeAddressParams.Add("type", "home")
+
+                foreach ($param in $PSBoundParameters.GetEnumerator())
+                {
+                    if ($param.Key -like '*_number')
+                    {continue}
+
+                    if ($param.Key -like 'work_*')
+                    {
+                        $WorkAddressParams.Add(($($param.Key -split "_", 2)[1]), $param.Value)
+                        continue
+                    }
+
+                    if ($param.Key -like 'home_*')
+                    {
+                        $HomeAddressParams.Add(($($param.Key -split "_", 2)[1]), $param.Value)
+                        continue
+                    }
+
+                }
+
+            
+                $ExistingWorkParams = $UserObjectCheck.addresses | Where-Object Type -EQ "Work"
+
+                $ExistingWorkHash = @{}
+                $ExistingWorkHash.Add("country", $ExistingWorkParams.country)
+                $ExistingWorkHash.Add("locality", $ExistingWorkParams.locality)
+                $ExistingWorkHash.Add("poBox", $ExistingWorkParams.poBox)
+                $ExistingWorkHash.Add("postalCode", $ExistingWorkParams.postalCode)
+                $ExistingWorkHash.Add("region", $ExistingWorkParams.region)
+                $ExistingWorkHash.Add("streetAddress", $ExistingWorkParams.streetAddress)
+
+
+                foreach ($WorkParam in $ExistingWorkHash.GetEnumerator())
+                {
+
+                    if ($WorkAddressParams.ContainsKey($WorkParam.key))
+                    {
+                        Continue
+                    }
+
+                    else
+                    {
+                        $WorkAddressParams.Add($WorkParam.key, $WorkParam.value)
+                    }
+                }
+
+
+                $Addresses += $WorkAddressParams
+
+
+
+                $ExistingHomeParams = $UserObjectCheck.addresses | Where-Object Type -EQ "Home"
+
+                $ExistingHomeHash = @{}
+                $ExistingHomeHash.Add("country", $ExistingHomeParams.country)
+                $ExistingHomeHash.Add("locality", $ExistingHomeParams.locality)
+                $ExistingHomeHash.Add("poBox", $ExistingHomeParams.poBox)
+                $ExistingHomeHash.Add("postalCode", $ExistingHomeParams.postalCode)
+                $ExistingHomeHash.Add("region", $ExistingHomeParams.region)
+                $ExistingHomeHash.Add("streetAddress", $ExistingHomeParams.streetAddress)
+
+                foreach ($HomeParam in $ExistingHomeHash.GetEnumerator())
+                {
+
+                    if ($HomeAddressParams.ContainsKey($HomeParam.key))
+                    {
+                        Continue
+                    }
+
+                    else
+                    {
+                        $HomeAddressParams.Add($HomeParam.key, $HomeParam.value)
+                    }
+                }
+
+                $Addresses += $HomeAddressParams
+
+
+                $body.Add('addresses', $Addresses)
+            }
+
+        }
+
         if ($PSCmdlet.ParameterSetName -eq 'Username' -and !$NumberOfCustomAttributes)
         {
             if ($UserHash.ContainsKey($Username))
@@ -183,7 +494,6 @@ Function Set-JCUser ()
                 $URL = "https://console.jumpcloud.com/api/Systemusers/$URL_ID"
                 Write-Debug $URL
 
-                $body = @{}
 
                 foreach ($param in $PSBoundParameters.GetEnumerator())
                 {
@@ -191,22 +501,28 @@ Function Set-JCUser ()
 
                     if ($param.key -eq 'Username') { continue }
 
+                    if ($param.Key -like '*_number') {continue}
+
+                    if ($param.Key -like 'work_*') {continue}
+
+                    if ($param.Key -like 'home_*') {continue}
+
                     $body.add($param.Key, $param.Value)
 
                 }
 
-                $jsonbody = $body | ConvertTo-Json
+                $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
 
                 Write-Debug $jsonbody
 
-                $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.7.0'
+                $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.8.0'
 
                 $UpdatedUserArray += $NewUserInfo
 
 
             }
 
-            else { Throw "Username does not exist. Run 'Get-JCUser | Select-Object username' to see a list of all your JumpCloud users."}
+            else { Throw "$Username does not exist. Run 'Get-JCUser | Select-Object username' to see a list of all your JumpCloud users."}
 
         }
 
@@ -224,8 +540,6 @@ Function Set-JCUser ()
                 $CurrentAttributes = Get-JCUser -UserID $URL_ID | Select-Object -ExpandProperty attributes | Select-Object value, name
                 Write-Debug "There are $($CurrentAttributes.count) existing attributes"
 
-                $body = @{}
-
                 $CustomAttributeArrayList = New-Object System.Collections.ArrayList
 
 
@@ -236,6 +550,12 @@ Function Set-JCUser ()
                     if ($param.key -eq 'Username') { continue }
 
                     if ($param.key -eq 'NumberOfCustomAttributes') { continue }
+
+                    if ($param.Key -like '*_number') {continue}
+
+                    if ($param.Key -like 'work_*') {continue}
+
+                    if ($param.Key -like 'home_*') {continue}
 
                     if ($param.Key -like 'Attribute*')
                     {
@@ -318,18 +638,18 @@ Function Set-JCUser ()
 
                 $body.add('attributes', $UpdatedAttributeArrayList)
 
-                $jsonbody = $body | ConvertTo-Json
+                $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
 
                 Write-Debug $jsonbody
 
-                $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.7.0'
+                $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.8.0'
 
                 $UpdatedUserArray += $NewUserInfo
 
 
             }
 
-            else { Throw "Username does not exist. Run 'Get-JCUser | Select-Object username' to see a list of all your JumpCloud users."}
+            else { Throw "$Username does not exist. Run 'Get-JCUser | Select-Object username' to see a list of all your JumpCloud users."}
 
         }
 
@@ -343,11 +663,9 @@ Function Set-JCUser ()
 
                 $URL = "https://console.jumpcloud.com/api/Systemusers/$URL_ID"
                 Write-Debug $URL
-                    
+
                 $CurrentAttributes = Get-JCUser -UserID $URL_ID | Select-Object -ExpandProperty attributes | Select-Object value, name
                 Write-Debug "There are $($CurrentAttributes.count) existing attributes"
-
-                $body = @{}
 
                 foreach ($param in $PSBoundParameters.GetEnumerator())
                 {
@@ -356,6 +674,12 @@ Function Set-JCUser ()
                     if ($param.key -eq 'Username') { continue }
 
                     if ($param.key -eq 'RemoveAttribute') { continue}
+
+                    if ($param.Key -like '*_number') {continue}
+
+                    if ($param.Key -like 'work_*') {continue}
+
+                    if ($param.Key -like 'home_*') {continue}
 
                     $body.add($param.Key, $param.Value)
 
@@ -390,20 +714,20 @@ Function Set-JCUser ()
                     $UpdatedAttributeArrayList.Add($temp) | Out-Null
                 }
 
-                $body.add('attributes', $UpdatedAttributeArrayList)                    
+                $body.add('attributes', $UpdatedAttributeArrayList)
 
-                $jsonbody = $body | ConvertTo-Json
+                $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
 
                 Write-Debug $jsonbody
 
-                $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.7.0'
+                $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.8.0'
 
                 $UpdatedUserArray += $NewUserInfo
 
 
             }
 
-            else { Throw "Username does not exist. Run 'Get-JCUser | Select-Object username' to see a list of all your JumpCloud users."}
+            else { Throw "$Username does not exist. Run 'Get-JCUser | Select-Object username' to see a list of all your JumpCloud users."}
 
         }
 
@@ -415,11 +739,17 @@ Function Set-JCUser ()
 
             Write-Debug $URL
 
-            $body = @{}
+
 
             foreach ($param in $PSBoundParameters.GetEnumerator())
             {
                 if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }
+
+                if ($param.Key -like '*_number') {continue}
+
+                if ($param.Key -like 'work_*') {continue}
+
+                if ($param.Key -like 'home_*') {continue}
 
                 if ($param.key -eq 'UserID') { continue }
 
@@ -429,11 +759,11 @@ Function Set-JCUser ()
 
             }
 
-            $jsonbody = $body | ConvertTo-Json
+            $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
 
             Write-Debug $jsonbody
 
-            $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.7.0'
+            $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.8.0'
 
             $UpdatedUserArray += $NewUserInfo
 
@@ -449,7 +779,7 @@ Function Set-JCUser ()
             $CurrentAttributes = Get-JCUser -UserID $UserID | Select-Object -ExpandProperty attributes | Select-Object value, name
             Write-Debug "There are $($CurrentAttributes.count) existing attributes"
 
-            $body = @{}
+
 
             $CustomAttributeArrayList = New-Object System.Collections.ArrayList
 
@@ -465,6 +795,12 @@ Function Set-JCUser ()
                 if ($param.key -eq 'UserID') { continue }
 
                 if ($param.key -eq 'NumberOfCustomAttributes') { continue }
+
+                if ($param.Key -like '*_number') {continue}
+
+                if ($param.Key -like 'work_*') {continue}
+
+                if ($param.Key -like 'home_*') {continue}
 
                 if ($param.Key -like 'Attribute*')
                 {
@@ -547,11 +883,11 @@ Function Set-JCUser ()
 
             $body.add('attributes', $UpdatedAttributeArrayList)
 
-            $jsonbody = $body | ConvertTo-Json
+            $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
 
             Write-Debug $jsonbody
 
-            $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.7.0'
+            $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.8.0'
 
             $UpdatedUserArray += $NewUserInfo
 

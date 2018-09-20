@@ -18,7 +18,6 @@ Function New-JCUser ()
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName = $True)]
         [string]
-        [ValidateLength(0, 20)]
         $username,
 
         [Parameter(Mandatory,
@@ -70,7 +69,127 @@ Function New-JCUser ()
 
         [Parameter(ParameterSetName = 'Attributes')] ##Test this to see if this can be modified.
         [int]
-        $NumberOfCustomAttributes
+        $NumberOfCustomAttributes,
+
+        # New attributes as of 1.8.0 release
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        $middlename,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        [Alias('preferredName')]
+        $displayname,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        $jobTitle,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        $employeeIdentifier,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        $department,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        $costCenter,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        $company,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        $employeeType,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        [ValidateLength(0, 1024)]
+        $description,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        $location,
+
+        #Objects
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        $work_streetAddress,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        $work_poBox,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        [Alias('work_city')]
+        $work_locality,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        [Alias('work_state')]
+        $work_region,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        $work_postalCode,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        $work_country,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        $home_streetAddress,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        $home_poBox,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        [Alias('home_city')]
+        $home_locality,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        [Alias('home_state')]
+        $home_region,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        $home_postalCode,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        $home_country,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        $mobile_number,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        $home_number,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        $work_number,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        $work_mobile_number,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        $work_fax_number
+
+
+
     )
 
 
@@ -142,16 +261,39 @@ Function New-JCUser ()
         {
             $body = @{}
 
+            $WorkAddressParams = @{}
+            $WorkAddressParams.Add("type", "work")
+
+            $HomeAddressParams = @{}
+            $HomeAddressParams.Add("type", "home")
+
+            $phoneNumbers = @()
+            $Addresses = @()
+
             foreach ($param in $PSBoundParameters.GetEnumerator())
             {
                 if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }
 
                 if ($param.key -eq '_id', 'JCAPIKey') { continue }
 
-                if ($param.key -eq 'username')
+                if ($param.Key -like '*_number')
                 {
-                    Write-Debug 'Setting username to all lowercase'
-                    $body.Add($param.Key, ($param.Value).toLower())
+                    $Number = @{}
+                    $Number.Add("type", ($($param.Key -replace "_number", "")))
+                    $Number.Add("number", $param.Value)
+                    $phoneNumbers += $Number
+                    continue
+                }
+
+                if ($param.Key -like 'work_*')
+                {
+                    $WorkAddressParams.Add(($($param.Key -split "_", 2)[1]), $param.Value)
+                    continue
+                }
+
+                if ($param.Key -like 'home_*')
+                {
+                    $HomeAddressParams.Add(($($param.Key -split "_", 2)[1]), $param.Value)
                     continue
                 }
 
@@ -159,11 +301,32 @@ Function New-JCUser ()
 
             }
 
+            if ($WorkAddressParams.Count -gt 1)
+            {
+                $Addresses += $WorkAddressParams
+            }
+
+            if ($HomeAddressParams.Count -gt 1)
+            {
+                $Addresses += $HomeAddressParams
+            }
+
+            if ($Addresses)
+            {
+                $body.Add('addresses', $Addresses)
+            }
+
+
+            if ($phoneNumbers)
+            {
+                $body.Add('phoneNumbers', $phoneNumbers)
+            }
+
             $jsonbody = $body | ConvertTo-Json
 
             Write-Debug $jsonbody
 
-            $NewUserInfo = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.7.0'
+            $NewUserInfo = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.8.0'
 
             $NewUserArrary += $NewUserInfo
         }
@@ -172,6 +335,15 @@ Function New-JCUser ()
         {
             $body = @{}
 
+            $WorkAddressParams = @{}
+            $WorkAddressParams.Add("type", "work")
+
+            $HomeAddressParams = @{}
+            $HomeAddressParams.Add("type", "home")
+
+            $phoneNumbers = @()
+            $Addresses = @()
+
             $CustomAttributeArrayList = New-Object System.Collections.ArrayList
 
             foreach ($param in $PSBoundParameters.GetEnumerator())
@@ -179,13 +351,6 @@ Function New-JCUser ()
                 if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }
 
                 if ($param.key -eq '_id', 'JCAPIKey', 'NumberOfCustomAttributes') { continue }
-
-                if ($param.key -eq 'username')
-                {
-                    Write-Debug 'Setting username to all lowercase'
-                    $body.Add($param.Key, ($param.Value).toLower())
-                    continue
-                }
 
                 if ($param.Key -like 'Attribute*')
                 {
@@ -218,8 +383,50 @@ Function New-JCUser ()
                     continue
                 }
 
+                if ($param.Key -like '*_number')
+                {
+                    $Number = @{}
+                    $Number.Add("type", ($($param.Key -replace "_number", "")))
+                    $Number.Add("number", $param.Value)
+                    $phoneNumbers += $Number
+                    continue
+                }
+
+                if ($param.Key -like 'work_*')
+                {
+                    $WorkAddressParams.Add(($($param.Key -split "_", 2)[1]), $param.Value)
+                    continue
+                }
+
+                if ($param.Key -like 'home_*')
+                {
+                    $HomeAddressParams.Add(($($param.Key -split "_", 2)[1]), $param.Value)
+                    continue
+                }
+
                 $body.add($param.Key, $param.Value)
 
+            }
+
+            if ($WorkAddressParams.Count -gt 1)
+            {
+                $Addresses += $WorkAddressParams
+            }
+
+            if ($HomeAddressParams.Count -gt 1)
+            {
+                $Addresses += $HomeAddressParams
+            }
+
+            if ($Addresses)
+            {
+                $body.Add('addresses', $Addresses)
+            }
+
+
+            if ($phoneNumbers)
+            {
+                $body.Add('phoneNumbers', $phoneNumbers)
             }
 
             $body.add('attributes', $NewAttributes)
@@ -228,7 +435,7 @@ Function New-JCUser ()
 
             Write-Debug $jsonbody
 
-            $NewUserInfo = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.7.0'
+            $NewUserInfo = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.8.0'
 
             $NewUserArrary += $NewUserInfo
         }
@@ -237,7 +444,7 @@ Function New-JCUser ()
     end
     {
 
-        return $NewUserArrary ##Can we remove return?
+        return $NewUserArrary
     }
 
 }
