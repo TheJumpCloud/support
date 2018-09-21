@@ -12,7 +12,7 @@ function Test-MultiTenant
 
     try
     {
-        $ConnectionTestURL = "https://console.jumpcloud.com/api"
+        $ConnectionTestURL = "https://console.jumpcloud.com/api/settings"
         Invoke-RestMethod -Method GET -Uri $ConnectionTestURL -Headers $hdrs -UserAgent 'Pwsh_1.8.0'  | Out-Null
 
         Return $False
