@@ -1,3 +1,18 @@
+## 1.8.1
+
+Release Date: September 21, 2018
+
+#### RELEASE NOTES
+
+```
+Bug fix for Multi-Tenant orgs
+Check our full release notes to see new attribute additions released in 1.8.0
+```
+
+#### BUG FIXES:
+
+- Resolved bug on Connect-JCOnline where OrgID would not set correctly
+
 ## 1.8.0
 
 Release Date: September 20, 2018
