@@ -1,7 +1,7 @@
 #### Latest Version
 
 ```
-1.8.0
+1.8.1
 ```
 
 #### Banner Current
@@ -13,5 +13,5 @@ Module up-to-date. New LDAP attributes are live! Use Update-JCUsersFromCSV to ad
 #### Banner Old
 
 ```
-The day has come..attributes are here! JumpCloud module update available.
+Attributes are here! JumpCloud module update available.
 ```
