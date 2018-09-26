@@ -46,7 +46,7 @@ function Invoke-SetJCOrganization
             try
             {
                 $hdrs.Add('x-org-id', "$($Organizations.OrgID)")
-                $ConnectionTestURL = "https://console.jumpcloud.com/api/settings"
+                $ConnectionTestURL = "https://console.jumpcloud.com/api/organizations"
                 Invoke-RestMethod -Method GET -Uri $ConnectionTestURL -Headers $hdrs -UserAgent 'Pwsh_1.8.0'  | Out-Null
                 $global:JCOrgID = $($Organizations.OrgID)
                 Write-Host -BackgroundColor Green -ForegroundColor Black "Connected to JumpCloud Tenant: $($Organizations.displayName) | OrgID: $JCOrgID"
@@ -103,7 +103,7 @@ function Invoke-SetJCOrganization
                     {
                         $selection = [int]$selection
                         $hdrs.Add('x-org-id', "$($OrgIDHash.$selection)")
-                        $ConnectionTestURL = "https://console.jumpcloud.com/api/settings"
+                        $ConnectionTestURL = "https://console.jumpcloud.com/api/organizations"
                         Invoke-RestMethod -Method GET -Uri $ConnectionTestURL -Headers $hdrs -UserAgent 'Pwsh_1.8.0'  | Out-Null
 
                         $global:JCOrgID = $($OrgIDHash.$selection)
