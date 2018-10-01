@@ -62,6 +62,8 @@ Before running this command the variable **commandID=''** must be populated.
 
 To find the commandID within the JumpCloud admin console select the command to expand the command details. Within the URL of the selected command the commandID will be the 24 character string between 'commands/' and '/details' within the URL of the command. The JumpCloud PowerShell command [Get-JCCommand]() can also be used to find the commandID which will reveal the commandID in the '_id' field.
 
+![commanID example](https://github.com/TheJumpCloud/support/blob/master/PowerShell/JumpCloud%20Commands%20Gallery/Files/commandID.png?raw=true)
+
 Enter the payload of the command under the line '#--------------------Enter command below this line--------------------'
 
 After the command is run the system is removed from the command via the JumpCloud system context API. [Learn more about the JumpCloud system context API here](https://docs.jumpcloud.com/2.0/authentication-and-authorization/system-context). 
