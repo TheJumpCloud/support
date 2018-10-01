@@ -56,11 +56,11 @@ echo "JumpCloud system: ${systemID} removed from command target list"
 
 This template can be used to satisfy use cases where admins wish to run a command once on a number of target systems and have the system automatically removed from the commands system target list after the command is run.
 
-*Using a system group for associating systems with JumpCloud commands? [No problem refer to this template for removing systems from a JumpCloud command from an associated JumpCloud system group]().*
+*Using a system group for associating systems with JumpCloud commands? [No problem refer to this template for removing systems from a JumpCloud command from an associated JumpCloud system group](https://github.com/TheJumpCloud/support/blob/master/PowerShell/JumpCloud%20Commands%20Gallery/Mac%20Commands/Mac%20-%20Run%20Once%20Template%20-%20Remove%20System%20From%20Associated%20System%20Group.md).*
 
 Before running this command the variable **commandID=''** must be populated.
 
-To find the commandID within the JumpCloud admin console select the command to expand the command details. Within the URL of the selected command the commandID will be the 24 character string between 'commands/' and '/details' within the URL of the command. The JumpCloud PowerShell command [Get-JCCommand]() can also be used to find the commandID which will reveal the commandID in the '_id' field.
+To find the commandID within the JumpCloud admin console select the command to expand the command details. Within the URL of the selected command the commandID will be the 24 character string between 'commands/' and '/details' within the URL of the command. The JumpCloud PowerShell command [Get-JCCommand](https://github.com/TheJumpCloud/support/wiki/Get-JCCommand) can also be used to find the commandID which will reveal the commandID in the '_id' field.
 
 ![commanID example](https://github.com/TheJumpCloud/support/blob/master/PowerShell/JumpCloud%20Commands%20Gallery/Files/commandID.png?raw=true)
 
