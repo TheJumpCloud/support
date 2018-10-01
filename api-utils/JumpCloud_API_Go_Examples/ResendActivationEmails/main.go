@@ -39,6 +39,8 @@ func main() {
 	apiKey := flag.String("api-key", "", "Your JumpCloud Administrator API Key.")
 	activationFlag := flag.Bool("activation", false, "Set this flag to true to resend emails only to users who have not activated their system user account.")
 	pendingProvisioningFlag := flag.Bool("pendingProvisioning", false, "Set this flag to true to resend emails only to users who have not yet set their password as part of Google Apps provisioning.")
+	orgId := flag.String("orgId", "", "Your multi-tenant administrator's organization ID (optional)")
+	url := flag.String("url", URL_BASE, "The JumpCloud API url")
 
 	flag.Parse()
 
@@ -52,7 +54,16 @@ func main() {
 		log.Fatalf("Neither 'activation' nor 'pendingProvisioning' flags are set to true, no work to do.")
 	}
 
-	jc := jcapi.NewJCAPI(*apiKey, URL_BASE)
+	if *url != URL_BASE {
+		fmt.Printf("URL overridden from: %s to: %s", URL_BASE, *url)
+	}
+
+	jc := jcapi.NewJCAPI(*apiKey, *url)
+	if *orgId != "" {
+		jc.OrgId = *orgId
+	} else {
+		fmt.Println("You may specify an orgID for multi-tenant administrators.")
+	}
 
 	users, err := jc.GetSystemUsers(false)
 

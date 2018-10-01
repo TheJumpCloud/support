@@ -16,7 +16,7 @@ const (
 )
 
 // isGroupsOrg returns true if this org is groups enabled:
-func isGroupsOrg(urlBase string, apiKey string) (bool, error) {
+func isGroupsOrg(urlBase string, apiKey string, orgID string) (bool, error) {
 	// instantiate a new API client object:
 	client := jcapiv2.NewAPIClient(jcapiv2.NewConfiguration())
 	client.ChangeBasePath(urlBase + "/v2")
@@ -30,6 +30,10 @@ func isGroupsOrg(urlBase string, apiKey string) (bool, error) {
 	optionals := map[string]interface{}{
 		"limit": int32(1), // limit the query to return 1 item
 	}
+	if orgID != "" {
+		optionals["xOrgId"] = orgID
+	}
+
 	// in order to check for groups support, we just query for the list of User groups
 	// (we just ask to retrieve 1) and check the response status code:
 	_, res, err := client.UserGroupsApi.GroupsUserList(auth, contentType, accept, optionals)

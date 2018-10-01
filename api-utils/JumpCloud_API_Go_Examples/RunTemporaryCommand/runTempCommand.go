@@ -214,10 +214,21 @@ func main() {
 	shell := flag.String("shell", "powershell", "Shell (Windows-only) (powershell/cmd)")
 	osType := flag.String("os-type", "Windows.*", "A regular expression to match your systems for OS type")
 	deleteFlag := flag.Bool("delete-after-run", false, "When true, delete commands and results at completion.")
+	orgId := flag.String("org", "", "Your multi-tenant administrator's organization ID (optional)")
+	url := flag.String("url", URL_BASE, "Your Jumpcloud API URL (optional)")
 
 	flag.Parse()
 
-	jc := jcapi.NewJCAPI(*apiKey, URL_BASE)
+	if *url != URL_BASE {
+		fmt.Printf("URL overridden from: %s to: %s", URL_BASE, *url)
+	}
+
+	jc := jcapi.NewJCAPI(*apiKey, *url)
+	if *orgId != "" {
+		jc.OrgId = *orgId
+	} else {
+		fmt.Println("You may specify an orgID for multi-tenant administrators.")
+	}
 
 	// Generate a randomized command name
 	commandName := "CMD " + makeRandomString(COMMAND_NAME_RANDOM_PART)

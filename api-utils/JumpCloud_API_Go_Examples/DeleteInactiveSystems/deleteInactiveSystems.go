@@ -31,6 +31,8 @@ func main() {
 	daysSinceLastConnection := flag.Int("days-since-last-connect", 30,
 		"Systems that have not connected in this many days or more, will be deleted from JumpCloud.")
 	enableDelete := flag.Bool("enable-delete", false, "Enable this flag to actually delete servers.")
+	orgId := flag.String("org", "", "Your multi-tenant administrator's organization ID. (optional)")
+	url := flag.String("url", URL_BASE, "Your JumpCloud url")
 
 	flag.Parse()
 
@@ -38,7 +40,16 @@ func main() {
 		log.Fatalf("%s: You must specify an API key value (--api-key=keyValue)", os.Args[0])
 	}
 
-	jc := jcapi.NewJCAPI(*apiKey, URL_BASE)
+	if *url != URL_BASE {
+		fmt.Printf("URL overridden from: %s to %s", URL_BASE, *url)
+	}
+
+	jc := jcapi.NewJCAPI(*apiKey, *url)
+	if *orgId != "" {
+		jc.OrgId = *orgId
+	} else {
+		fmt.Println("You may specify an orgID for multi-tenant administrators.")
+	}
 
 	// Get all the systems in the account
 	systems, err := jc.GetSystems(false)

@@ -30,9 +30,12 @@ func endLine() {
 func main() {
 	var apiKey string
 	var apiUrl string
+	var orgId string
+
 	// Obtain the input parameters
 	flag.StringVar(&apiKey, "key", "", "-key=<API-key-value>")
 	flag.StringVar(&apiUrl, "url", apiUrlDefault, "-url=<jumpcloud-api-url>")
+	flag.StringVar(&orgId, "org", "", "-org=<organizationID> (optional for multi-tenant administrators)")
 	flag.Parse()
 
 	// if the api key isn't specified, try to obtain it through environment variable:
@@ -44,13 +47,18 @@ func main() {
 		fmt.Println("Usage:")
 		fmt.Println("  -key=\"\": -key=<API-key-value>")
 		fmt.Println("  -url=\"\": -url=<jumpcloud-api-url> (optional)")
+		fmt.Println("  -org=\"\": -org=<organizationID> (optional for multi-tenant administrators)")
 		fmt.Println("You can also set the API key via the JUMPCLOUD_APIKEY environment variable:")
 		fmt.Println("Run: export JUMPCLOUD_APIKEY=<your-JumpCloud-API-key>")
 		return
 	}
 
+	if apiUrl != apiUrlDefault {
+		fmt.Printf("URL overridden from: %s to: %s", apiUrlDefault, apiUrl)
+	}
+
 	// check if the org is on tags or groups:
-	isGroups, err := isGroupsOrg(apiUrl, apiKey)
+	isGroups, err := isGroupsOrg(apiUrl, apiKey, orgId)
 	if err != nil {
 		log.Fatalf("Could not determine your org type, err='%s'\n", err)
 	}
@@ -69,6 +77,11 @@ func main() {
 
 	// instantiate the API client v1:
 	apiClientV1 := jcapi.NewJCAPI(apiKey, apiUrl)
+	if orgId != "" {
+		apiClientV1.OrgId = orgId
+	} else {
+		fmt.Println("You may specify an orgID for multi-tenant administrators.")
+	}
 
 	// Grab all system users (with their tags if this is a Tags org):
 	userList, err := apiClientV1.GetSystemUsers(!isGroups)
@@ -114,6 +127,7 @@ func main() {
 				optionals := map[string]interface{}{
 					"limit": int32(searchLimit),
 					"skip":  int32(skip),
+					"xOrgId": orgId,
 				}
 				graphs, _, err := apiClientV2.UsersApi.GraphUserMemberOf(auth, user.Id, contentType, accept, optionals)
 

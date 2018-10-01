@@ -257,21 +257,38 @@ func main() {
 	// Input parameters
 	var apiKey string
 	var csvFile string
+	var orgId string
+	var url string
 
 	// Obtain the input parameters
 	flag.StringVar(&csvFile, "csv", "", "-csv=<filename>")
 	flag.StringVar(&apiKey, "key", "", "-key=<API-key-value>")
+	flag.StringVar(&orgId, "org", "", "-org=<organizationID> (optional for multi-tenant administrators)")
+	flag.StringVar(&url, "url", urlBase, "-url=<jumpcloud-api-url> (optional, use outside of production)")
 	flag.Parse()
 
 	if csvFile == "" || apiKey == "" {
 		fmt.Println("Usage of ./CSVImporter:")
 		fmt.Println("  -csv=\"\": -csv=<filename>")
 		fmt.Println("  -key=\"\": -key=<API-key-value>")
+		fmt.Println("  -org=\"\": -org=<organizationID> (optional for multi-tenant administrators)")
+		fmt.Println("  -url=\"\": -url=<jumpcloud-api-url> (optional, use outside of production)")
 		return
 	}
 
+	if orgId == "" {
+		fmt.Println("You may specify an orgID for multi-tenant administrators")
+	}
+
+	if url != urlBase {
+		fmt.Printf("URL overridden from: %s to %s", urlBase, url)
+	}
+
 	// Attach to JumpCloud
-	jc := jcapi.NewJCAPI(apiKey, urlBase)
+	jc := jcapi.NewJCAPI(apiKey, url)
+	if orgId != "" {
+		jc.OrgId = orgId
+	}
 
 	// Fetch all users in JumpCloud
 	userList, err := jc.GetSystemUsers(false)

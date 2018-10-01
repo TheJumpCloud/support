@@ -142,6 +142,7 @@ func main() {
 	inputFilePath := flag.String("input", "", "CSV file containing user identifier and attributes")
 	outputFilePath := flag.String("output", defaultOutFile, "Results file")
 	baseURL := flag.String("url", defaultURLBase, "Base API Url override")
+	orgId := flag.String("org", "", "Your multi-tenant administrator's organization ID (optional)")
 
 	flag.Parse()
 
@@ -150,8 +151,17 @@ func main() {
 		return
 	}
 
+	if *baseURL != defaultURLBase {
+		fmt.Printf("URL overridden from: %s to: %s", defaultURLBase, baseURL)
+	}
+
 	// Attach to JumpCloud API
 	jc := jcapi.NewJCAPI(*apiKey, *baseURL)
+	if *orgId != "" {
+		jc.OrgId = *orgId
+	} else {
+		fmt.Println("You may specify an orgID for multi-tenant administrators.")
+	}
 
 	// Setup access to input/output files
 	inputFile, err := os.Open(*inputFilePath)

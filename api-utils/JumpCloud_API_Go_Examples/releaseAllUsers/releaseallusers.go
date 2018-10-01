@@ -19,20 +19,32 @@ import (
 func main() {
 	var apiKey string
 	var urlBase string
+	var orgId string
 
 	// Obtain the input parameters
 	flag.StringVar(&apiKey, "key", "", "-key=<API-key-value>")
-	flag.StringVar(&urlBase, "url", "https://console.jumpcloud.com/api", "-url=<jumpcloud-api-url>")
+	flag.StringVar(&urlBase, "url", jcapi.StdUrlBase, "-url=<jumpcloud-api-url>")
+	flag.StringVar(&orgId, "org", "", "-org=<organizationID (optional for multi-tenant administrators)")
 	flag.Parse()
 
 	if apiKey == "" {
 		fmt.Println("Usage of ./releaseAllUsers:")
 		fmt.Println("  -key=\"\": -key=<API-key-value>")
 		fmt.Println("  -url=\"\": -url=<jumpcloud-api-url> (optional)")
+		fmt.Println("  -org=\"\": -org=<organizationID> (optional for multi-tenant administrators>")
 		return
 	}
 
+	if urlBase != jcapi.StdUrlBase {
+		fmt.Printf("URL overridden from: %s to: %s", jcapi.StdUrlBase, urlBase)
+	}
+
 	jc := jcapi.NewJCAPI(apiKey, urlBase)
+	if orgId != "" {
+		jc.OrgId = orgId
+	} else {
+		fmt.Println("You may specify an orgID for multi-tenant administrators.")
+	}
 
 	userList, err := jc.GetSystemUsers(false)
 	if err != nil {

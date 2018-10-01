@@ -58,10 +58,12 @@ func getUsersBoundToSystemV2(apiClientV2 *jcapiv2.APIClient, auth context.Contex
 func main() {
 	var apiKey string
 	var apiUrl string
+	var orgId string
 
 	// Obtain the input parameters: api key and url (if we want to override the default url)
 	flag.StringVar(&apiKey, "key", "", "-key=<API-key-value>")
 	flag.StringVar(&apiUrl, "url", apiUrlDefault, "-url=<jumpcloud-api-url>")
+	flag.StringVar(&orgId, "org", "", "-org=<organizationID>")
 	flag.Parse()
 
 	// if the api key isn't specified, try to obtain it through environment variable:
@@ -73,13 +75,23 @@ func main() {
 		fmt.Println("Usage:")
 		fmt.Println("  -key=\"\": -key=<API-key-value>")
 		fmt.Println("  -url=\"\": -url=<jumpcloud-api-url> (optional)")
+		fmt.Println("  -org=\"\": -org=<organizationID> (optional for multi-tenant administrators)")
 		fmt.Println("You can also set the API key via the JUMPCLOUD_APIKEY environment variable:")
 		fmt.Println("Run: export JUMPCLOUD_APIKEY=<your-JumpCloud-API-key>")
 		return
 	}
 
+	if apiUrl != apiUrlDefault {
+		fmt.Printf("URL overridden from: %s to: %s", apiUrlDefault, apiUrl)
+	}
+
 	// instantiate a new API v1 object for all v1 endpoints:
 	apiClientV1 := jcapi.NewJCAPI(apiKey, apiUrl)
+	if orgId != "" {
+		apiClientV1.OrgId = orgId
+	} else {
+		log.Println("You may specify an orgID for multi-tenant administrators.")
+	}
 
 	// check if this org is on Groups or Tags:
 	isGroups, err := isGroupsOrg(apiUrl, apiKey)
