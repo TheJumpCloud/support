@@ -60,9 +60,9 @@ This template can be used to satisfy use cases where admins wish to run a comman
 
 Before running this command the variable **commandID=''** must be populated.
 
-To find the commandID within the JumpCloud admin console select the command to expand the command details. Within the URL of the selected command the commandID will be the 24 character string between 'commands/' and '/details' within the URL of the command. The JumpCloud PowerShell command [Get-JCCommand](https://github.com/TheJumpCloud/support/wiki/Get-JCCommand) can also be used to find the commandID which will reveal the commandID in the '_id' field.
-
 ![commanID example](https://github.com/TheJumpCloud/support/blob/master/PowerShell/JumpCloud%20Commands%20Gallery/Files/commandID.png?raw=true)
+
+To find the commandID within the JumpCloud admin console select the command to expand the command details. Within the URL of the selected command the commandID will be the 24 character string between 'commands/' and '/details'. The JumpCloud PowerShell command [Get-JCCommand](https://github.com/TheJumpCloud/support/wiki/Get-JCCommand) can also be used to find the commandID which will reveal the commandID in the '_id' field.
 
 Enter the payload of the command under the line '#--------------------Enter command below this line--------------------'
 
