@@ -50,12 +50,12 @@ func getSystemGroupsforSystem(apiClientV2 *jcapiv2.APIClient, auth context.Conte
 func main() {
 	var apiKey string
 	var apiUrl string
-    var orgId string
+	var orgId string
 
 	// Obtain the input parameters: api key and url (if we want to override the default url)
 	flag.StringVar(&apiKey, "key", "", "-key=<API-key-value>")
 	flag.StringVar(&apiUrl, "url", apiUrlDefault, "-url=<jumpcloud-api-url>")
-    flag.StringVar(&orgId, "org", "", "-org=<organizationID> (optional for multi-tenant administrators)")
+	flag.StringVar(&orgId, "org", "", "-org=<organizationID> (optional for multi-tenant administrators)")
 	flag.Parse()
 
 	// if the api key isn't specified, try to obtain it through environment variable:
@@ -67,7 +67,7 @@ func main() {
 		fmt.Println("Usage:")
 		fmt.Println("  -key=\"\": -key=<API-key-value>")
 		fmt.Println("  -url=\"\": -url=<jumpcloud-api-url> (optional)")
-        fmt.Println("  -org=\"\": -org=<organizationID> (optional for multi-tenant administrators)")
+		fmt.Println("  -org=\"\": -org=<organizationID> (optional for multi-tenant administrators)")
 		fmt.Println("You can also set the API key via the JUMPCLOUD_APIKEY environment variable:")
 		fmt.Println("Run: export JUMPCLOUD_APIKEY=<your-JumpCloud-API-key>")
 		return
