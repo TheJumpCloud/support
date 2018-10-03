@@ -76,6 +76,13 @@ if [ $? != 0 ]
 		exit 1;
 fi
 
+# To make it a little bit easier to test against other than production.
+CONSOLE_URL="https://console.jumpcloud.com"
+if [ ! -z "${JUMPCLOUD_URL_OVERRIDE}" ]; then
+    CONSOLE_URL=${JUMPCLOUD_URL_OVERRIDE}
+fi
+
+echo "CONSOLE_URL=${CONSOLE_URL}"
 
 # Check account vars have been entered
 
@@ -230,7 +237,8 @@ curl  \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -H "x-api-key: ${api_key}" \
-     "https://console.jumpcloud.com/api/${api_object}${id}"
+  -H "x-org-id: ${org_id}" \
+     "${CONSOLE_URL}/api/${api_object}${id}"
 
 }
 
@@ -246,6 +254,16 @@ if [ -z "$api_key" ]
 fi
 }
 
+
+read_org_id() {
+echo -n "Enter the Org ID: "
+    read org_id;
+if [ -z "$org_id" ]
+    then
+        echo "Input cannot be null"; read_org_id;
+    else continue;
+fi
+}
 
 #
 # Define LDAP menu
@@ -393,7 +411,8 @@ curl \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -H "x-api-key: ${api_key}" \
-  "https://console.jumpcloud.com/api/search/systems?limit=200&skip=10"
+  -H "x-org-id: ${org_id}" \
+  "${CONSOLE_URL}/api/search/systems?limit=200&skip=10"
 
 }
 
@@ -543,7 +562,8 @@ curl \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -H "x-api-key: ${api_key}" \
-  "https://console.jumpcloud.com/api/search/systemusers?limit=200"
+  -H "x-org-id: ${org_id}" \
+  "${CONSOLE_URL}/api/search/systemusers?limit=200"
 
 }
 
@@ -808,10 +828,11 @@ cat << EOF
 ##########################
 
 1. Enter API Key (Required)
-2. Users
-3. Systems
-4. Commands
-5. Events (Prev 24 hrs UTC)
+2. Enter OrgId (Required for multi-tenant admin)
+3. Users
+4. Systems
+5. Commands
+6. Events (Prev 24 hrs UTC)
 0. Main Menu
 EOF
 
@@ -826,11 +847,12 @@ echo -ne "\nSelect an option: "
 	read api_option
 	case $api_option in
 		1) read_api_key;;
-		2) launch_user_menu;;
-		3) launch_system_menu;;
-		4) launch_command_menu;;
-		5) set_date;call_events | python -m json.tool | less;;
-                0) break;;
+		2) read_org_id; echo ${org_id} >> junk.txt;;
+		3) launch_user_menu;;
+		4) launch_system_menu;;
+		5) launch_command_menu;;
+		6) set_date;call_events | python -m json.tool | less;;
+                0) return;;
                 *) 
                 if [ -z "$api_option" ]
                         then
