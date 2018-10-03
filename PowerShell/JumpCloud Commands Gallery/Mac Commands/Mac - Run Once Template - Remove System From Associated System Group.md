@@ -60,7 +60,7 @@ This template can be modified to satisfy use cases where admins wish to run a co
 
 Before running this command the variable **systemGroupID=''** must be populated.
 
-To find the systemGroupID for a JumpCloud system group navigate to the "GROUPS" section of the JumpCloud admin portal and select the system group to bring up the system group details. Within the URL of the selected command the systemGroupID will be the 24 character string between 'system/' and '/details' within the URL of the command. The JumpCloud PowerShell command [Get-JCGroup](https://github.com/TheJumpCloud/support/wiki/Get-JCGroup) can also be used to find the systemGroupID. The systemGroupID is the 'id' value which will be displayed for each JumpCloud group when Get-JCGroup is called.
+To find the systemGroupID for a JumpCloud system group navigate to the "GROUPS" section of the JumpCloud admin portal and select the system group to bring up the system group details. Within the URL of the selected command the systemGroupID will be the 24 character string between 'system/' and '/details'. The JumpCloud PowerShell command [Get-JCGroup](https://github.com/TheJumpCloud/support/wiki/Get-JCGroup) can also be used to find the systemGroupID. The systemGroupID is the 'id' value which will be displayed for each JumpCloud group when Get-JCGroup is called.
 
 ![systemGroupID example](https://github.com/TheJumpCloud/support/blob/master/PowerShell/JumpCloud%20Commands%20Gallery/Files/systemGroupID.png?raw=true)
 
