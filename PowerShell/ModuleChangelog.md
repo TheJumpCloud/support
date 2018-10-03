@@ -35,6 +35,8 @@ New LDAP extended user attributes: middlename, preferredName, jobTitle, employee
 New LDAP telephony attributes: mobile_number, home_number, work_number, work_mobile_number, work_fax_number
 New LDAP location attributes: home_streetAddress, home_poBox home_city, home_state, home_postalCode, home_country, work_streetAddress, work_poBox, work_locality, work_region, work_postalCode, work_country
 
+[See how to update users in bulk using these new functions in this KB article](https://support.jumpcloud.com/customer/portal/articles/2956315)
+
 - New Function: Update-JCUsersFromCSV to add or update all attributes including new LDAP attributes on your existing user , add users to groups, or bind them to systems in bulk from a CSV file.
 - Updated Function: New-JCImportTemplate can now create custom **user update CSV import files** pre-populated with your JumpCloud users to plug into the new Update-JCUsersFromCSV
 - Updated Function: New-JCUser has parameters for creating users with the new LDAP extended, telephony, and location attributes.
