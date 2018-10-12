@@ -1,3 +1,23 @@
+## 1.8.2
+
+Release Date: October 12, 2018
+
+#### RELEASE NOTES
+
+```
+Bug fix for Get-JCCommandResult -limit parameter
+Increased stability for multi-tenant admins
+Check our full release notes to see new attribute additions released in 1.8.0
+```
+
+#### IMPROVEMENTS:
+
+- Increased stability for multi-tenant admins
+
+#### BUG FIXES:
+
+- Resolved bug on Get-JCCommandResult where the limit of value of 1000 would cause an error. Default limit value updated to 100.
+
 ## 1.8.1
 
 Release Date: September 21, 2018
