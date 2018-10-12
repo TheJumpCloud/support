@@ -267,7 +267,7 @@ Function Get-JCUser ()
     process
 
     {
-        [int]$limit = '1000'
+        [int]$limit = '100'
         Write-Verbose "Setting limit to $limit"
 
         [int]$skip = '0'
@@ -413,7 +413,7 @@ Function Get-JCUser ()
 
                 $URL = "https://console.jumpcloud.com/api/Systemusers/$Userid"
                 Write-Verbose $URL
-                $results = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent 'Pwsh_1.8.0'
+                $results = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent 'Pwsh_1.8.2'
                 $null = $resultsArrayList.add($Results)
             }
 

@@ -48,7 +48,7 @@ Function New-JCSystemGroup ()
 
             try
             {
-                $NewGroup = Invoke-RestMethod -Method POST -Uri $URI  -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.8.0'
+                $NewGroup = Invoke-RestMethod -Method POST -Uri $URI  -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.8.2'
                 $Status = 'Created'
             }
             catch

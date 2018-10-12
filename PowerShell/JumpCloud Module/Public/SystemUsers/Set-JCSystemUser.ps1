@@ -146,7 +146,7 @@ Function Set-JCSystemUser ()
 
             try
             {
-                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.8.0'
+                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.8.2'
                 $Status = 'Updated'
 
             }
@@ -220,7 +220,7 @@ Function Set-JCSystemUser ()
 
             try
             {
-                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.8.0'
+                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.8.2'
                 $Status = 'Updated'
 
             }
