@@ -16,9 +16,9 @@ import (
 // This script will have no effect on your JumpCloud account if you have no AD-managed
 // users in your account.
 //
-// Multi-tenant admins (admins associated to more than one organization)
-// cannot use this script because it does not support the `x-org-id`
-// HTTP header, which is required to specify which organization
+// Multi-tenant administrators (administrators associated to more than one
+// organization) cannot use this script because it does not support the
+// `x-org-id` HTTP header, which is required to specify which organization
 // users should be released from.
 //
 func main() {
