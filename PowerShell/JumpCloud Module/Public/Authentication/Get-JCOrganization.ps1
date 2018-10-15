@@ -33,7 +33,7 @@ function Get-JCOrganization
 
         $MultiTenantURL = "https://console.jumpcloud.com/api/organizations/"
 
-        $RawResults = Invoke-RestMethod -Method GET -Uri $MultiTenantURL -Headers $hdrs -UserAgent 'Pwsh_1.7.0' 
+        $RawResults = Invoke-RestMethod -Method GET -Uri $MultiTenantURL -Headers $hdrs -UserAgent 'Pwsh_1.8.2' 
 
         foreach ($org in $RawResults.results)
         {

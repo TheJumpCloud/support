@@ -27,7 +27,7 @@ function Get-JCCommandResult ()
         [Parameter(
             ParameterSetName = 'MaxResults')]
 
-        [int]$Skip = 0, 
+        [int]$Skip = 0,
 
         [Parameter(
             ParameterSetName = 'ReturnAll')]
@@ -35,8 +35,8 @@ function Get-JCCommandResult ()
         [Parameter(
             ParameterSetName = 'MaxResults')]
 
-        [int]$Limit = 1000,
-
+        [ValidateRange(0, 100)]
+        [int]$Limit = 100,
 
         [Parameter(
             ParameterSetName = 'MaxResults')]

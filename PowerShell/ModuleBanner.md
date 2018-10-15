@@ -1,17 +1,17 @@
 #### Latest Version
 
 ```
-1.7.0
+1.8.2
 ```
 
 #### Banner Current
 
 ```
-Module up-to-date. Check out command deployments! https://git.io/jc-pwsh-releasenotes 
+Module up-to-date. New LDAP attributes are live! Use Update-JCUsersFromCSV to add them in bulk.
 ```
 
 #### Banner Old
 
 ```
-Oh baby! JumpCloud module update available.
+Attributes have arrived! JumpCloud module update available.
 ```

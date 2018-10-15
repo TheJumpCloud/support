@@ -97,7 +97,7 @@ Function Get-JCGroup ()
                 $limitURL = "https://console.jumpcloud.com/api/v2/groups?sort=type,name&limit=$limit&skip=$skip"
                 Write-Debug $limitURL
 
-                $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent 'Pwsh_1.7.0'
+                $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent 'Pwsh_1.8.2'
 
                 $skip += $limit
                 Write-Debug "Setting skip to $skip"
@@ -132,7 +132,7 @@ Function Get-JCGroup ()
 
                 $GID = $SystemGroupHash.Get_Item($param.Value)
                 $GURL = "https://console.jumpcloud.com/api/v2/systemgroups/$GID"
-                $result = Invoke-RestMethod -Method GET -Uri $GURL -Headers $hdrs -UserAgent 'Pwsh_1.7.0'
+                $result = Invoke-RestMethod -Method GET -Uri $GURL -Headers $hdrs -UserAgent 'Pwsh_1.8.2'
                 $resultsArray += $result    
             }
             elseif ($Type -eq 'User')
@@ -140,7 +140,7 @@ Function Get-JCGroup ()
 
                 $GID = $UserGroupHash.Get_Item($param.Value)
                 $GURL = "https://console.jumpcloud.com/api/v2/usergroups/$GID"
-                $result = Invoke-RestMethod -Method GET -Uri $GURL -Headers $hdrs -UserAgent 'Pwsh_1.7.0'
+                $result = Invoke-RestMethod -Method GET -Uri $GURL -Headers $hdrs -UserAgent 'Pwsh_1.8.2'
                     
                 $formattedResult = [PSCustomObject]@{
 

@@ -10,23 +10,23 @@ Function Set-JCSystem ()
         [Alias('_id', 'id')]
         $SystemID,
 
-        [Parameter()]
+        [Parameter(ValueFromPipelineByPropertyName = $true)]
         [string]
         $displayName,
 
-        [Parameter()]
+        [Parameter(ValueFromPipelineByPropertyName = $true)]
         [bool]
         $allowSshPasswordAuthentication,
 
-        [Parameter()]
+        [Parameter(ValueFromPipelineByPropertyName = $true)]
         [bool]
         $allowSshRootLogin,
 
-        [Parameter()]
+        [Parameter(ValueFromPipelineByPropertyName = $true)]
         [bool]
         $allowMultiFactorAuthentication,
 
-        [Parameter()]
+        [Parameter(ValueFromPipelineByPropertyName = $true)]
         [bool]
         $allowPublicKeyAuthentication
     )
@@ -76,7 +76,7 @@ Function Set-JCSystem ()
 
         Write-Debug $URL
 
-        $System = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.7.0'
+        $System = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.8.2'
 
         $UpdatedSystems += $System
     }
