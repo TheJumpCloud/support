@@ -2,9 +2,9 @@
 : '
  Script to rename the username of a user account on MacOS
 
- The script updates the users record name (username), RealName (displayName), and home directory
+ The script updates the users record name (username), and home directory
 
- If the user receiving the name change is signed in they will be signed out. 
+ If the user receiving the name change is signed in they will be signed out.
 
  Example usage: sudo sh RenameMacUserNameAndHomeDirectory.sh cat dog
 
@@ -95,29 +95,11 @@ while [[ "${loginCheck}" ]]; do
 	fi
 done
 
-# Captures current "RealName" this is the displayName
-fullRealName=$(dscl . -read /Users/${oldUser} RealName)
-
-# Formats "RealName"
-readonly origRealName=$(echo ${fullRealName} | cut -d' ' -f2-)
-
-# Updates "RealName" to new username (Yes JCAgent will overwrite this after user/system association)
-sudo dscl . -change "/Users/${oldUser}" RealName "${origRealName}" "${newUser}"
-
-if [[ $? -ne 0 ]]; then
-	echo "Could not rename the user's RealName in dscl. - err=$?"
-	echo "Reverting RealName changes"
-	sudo dscl . -change "/Users/${oldUser}" RealName "${origRealName}" "${origRealName}"
-	exit 1
-fi
-
 # Captures current NFS home directory
 readonly origHomeDir=$(dscl . -read "/Users/${oldUser}" NFSHomeDirectory | awk '{print $2}' -)
 
 if [[ -z "${origHomeDir}" ]]; then
 	echo "Cannot obtain the original home directory name, is the oldUserName correct?"
-	echo "Reverting RealName changes"
-	sudo dscl . -change "/Users/${oldUser}" RealName "${newUser}" "${origRealName}"
 	exit 1
 fi
 
@@ -128,8 +110,6 @@ if [[ $? -ne 0 ]]; then
 	echo "Could not rename the user's home directory pointer, aborting further changes! - err=$?"
 	echo "Reverting Home Directory changes"
 	sudo dscl . -change "/Users/${oldUser}" NFSHomeDirectory "/Users/${newUser}" "${origHomeDir}"
-	echo "Reverting RealName changes"
-	sudo dscl . -change "/Users/${oldUser}" RealName "${newUser}" "${origRealName}"
 	exit 1
 fi
 
@@ -141,8 +121,6 @@ if [[ $? -ne 0 ]]; then
 	echo "Reverting Home Directory changes"
 	mv "/Users/${newUser}" "${origHomeDir}"
 	sudo dscl . -change "/Users/${oldUser}" NFSHomeDirectory "/Users/${newUser}" "${origHomeDir}"
-	echo "Reverting RealName changes"
-	sudo dscl . -change "/Users/${oldUser}" RealName "${newUser}" "${origRealName}"
 	exit 1
 fi
 
@@ -156,8 +134,6 @@ if [[ $? -ne 0 ]]; then
 	echo "Reverting Home Directory changes"
 	mv "/Users/${newUser}" "${origHomeDir}"
 	sudo dscl . -change "/Users/${oldUser}" NFSHomeDirectory "/Users/${newUser}" "${origHomeDir}"
-	echo "Reverting RealName changes"
-	sudo dscl . -change "/Users/${oldUser}" RealName "${newUser}" "${origRealName}"
 	exit 1
 fi
 
@@ -169,7 +145,6 @@ read -r -d '' successOutput <<EOM
 Success ${oldUser} username has been updated to ${newUser}
 Folder "${origHomeDir}" has been renamed to "/Users/${newUser}"
 RecordName: ${newUser}
-RealName: ${newUser}
 NFSHomeDirectory: "/Users/${newUser}"
 
 SYSTEM RESTARTING in 5 seconds to complete username update.
