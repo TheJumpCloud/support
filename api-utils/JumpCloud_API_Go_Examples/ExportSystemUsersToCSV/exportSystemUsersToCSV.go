@@ -23,13 +23,11 @@ func main() {
 	var commandID string
 	var url string
 	var outfile string
-	var orgId string
 
 	flag.StringVar(&apiKey, "key", "", "Your JumpCloud Administrator API Key")
 	flag.StringVar(&commandID, "commandid", "", "The id of the command to run")
 	flag.StringVar(&outfile, "out", "", "File path for CSV output")
 	flag.StringVar(&url, "url", URLBase, "Alternative Jumpcloud API URL (optional)")
-	flag.StringVar(&orgId, "org", "", "Your multi-tenant Administrator's organization ID. (optional)")
 	flag.Parse()
 
 	if apiKey == "" {
@@ -45,11 +43,6 @@ func main() {
 	}
 
 	api = jcapi.NewJCAPI(apiKey, url)
-	if orgId != "" {
-		api.OrgId = orgId
-	} else {
-		fmt.Println("You may specify an orgID for multi-tenant administrators.")
-	}
 
 	results, err := api.GetCommandResultsBySavedCommandID(commandID)
 	if err != nil {

@@ -8,7 +8,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/TheJumpCloud/jcapi"
+	jcapiv1 "github.com/TheJumpCloud/jcapi-go/v1"
 	jcapiv2 "github.com/TheJumpCloud/jcapi-go/v2"
 )
 
@@ -94,16 +94,24 @@ func main() {
 		})
 	}
 
+	apiClientV1 := jcapiv1.NewAPIClient(jcapiv1.NewConfiguration())
+	apiClientV1.ChangeBasePath(apiUrl)
+
+	authv1 := context.WithValue(context.TODO(), jcapiv1.ContextAPIKey, jcapiv1.APIKey{
+		Key: apiKey,
+	})
+
+	optionalsv1 := map[string]interface{}{
+		"xOrgId": orgId,
+	}
+
 	// instantiate an API client v1 for all v1 endpoints:
-	apiClientV1 := jcapi.NewJCAPI(apiKey, apiUrl)
-	if orgId != "" {
-		apiClientV1.OrgId = orgId
-	} else {
-		fmt.Printf("You may specify an orgID for multi-tenant administrators")
+	if orgId == "" {
+		_,_ = fmt.Fprintf(os.Stderr, "You may specify an orgID for multi-tenant administrators")
 	}
 
 	// Grab all systems (with their tags for a Tags)
-	systems, err := apiClientV1.GetSystems(!isGroups)
+	systemsList, _, err := apiClientV1.SystemsApi.SystemsList(authv1, contentType, accept, optionalsv1)
 	if err != nil {
 		log.Fatalf("Could not read systems, err='%s'\n", err)
 	}
@@ -120,11 +128,11 @@ func main() {
 		headers = append(headers, "Tags")
 	}
 
-	csvWriter.Write(headers)
+	_ = csvWriter.Write(headers)
 
-	for _, system := range systems {
+	for _, system := range systemsList.Results {
 		outLine := []string{system.Id, system.DisplayName, system.Hostname, fmt.Sprintf("%t", system.Active),
-			system.AmazonInstanceID, system.Os, system.Version, system.AgentVersion, system.Created,
+			/*system.AmazonInstanceID,*/ system.Os, system.Version, system.AgentVersion, system.Created,
 			system.LastContact}
 
 		if isGroups {
@@ -142,7 +150,7 @@ func main() {
 		} else {
 			// for Tags orgs, we've already retrieved the list of tags in GetSystems:
 			for _, tag := range system.Tags {
-				outLine = append(outLine, tag.Name)
+				outLine = append(outLine, tag)
 			}
 		}
 
