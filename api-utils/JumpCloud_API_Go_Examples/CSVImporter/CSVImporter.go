@@ -1,14 +1,17 @@
 package main
 
 import (
+	"context"
 	"encoding/csv"
 	"flag"
 	"fmt"
 	"io"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/TheJumpCloud/jcapi"
+	jcapiv1 "github.com/TheJumpCloud/jcapi-go/v1"
 )
 
 //
@@ -55,6 +58,8 @@ import (
 
 const (
 	urlBase string = "https://console.jumpcloud.com/api"
+	CONTENT_TYPE string = "application/json"
+	ACCEPT string = "application/json"
 )
 
 //
@@ -62,11 +67,11 @@ const (
 // list of users provided.  (helper function)
 //
 
-func GetUserIdFromUserName(users []jcapi.JCUser, name string) string {
+func GetUserIdFromUserName(users []jcapiv1.Systemuserreturn, name string) string {
 	returnVal := ""
 
 	for _, user := range users {
-		if user.UserName == name {
+		if user.Username == name {
 			returnVal = user.Id
 			break
 		}
@@ -75,11 +80,33 @@ func GetUserIdFromUserName(users []jcapi.JCUser, name string) string {
 	return returnVal
 }
 
+func returnToString(user jcapiv1.Systemuserreturn ) string {
+	returnVal := fmt.Sprintf("JCUSER: Id=[%s] - FName/LName=[%s/%s] - Email=[%s] - sudo=[%t] - Uid=%d - Gid=%d - enableManagedUid=%t\n",
+		user.Id, user.Firstname, user.Lastname, user.Email, user.Sudo, user.UnixUid, user.UnixGuid, user.EnableManagedUid)
+
+	return returnVal
+}
+
+func putToString(user jcapiv1.Systemuserputpost ) string {
+	returnVal := fmt.Sprintf("JCUSER: FName/LName=[%s/%s] - Email=[%s] - sudo=[%t] - Uid=%d - Gid=%d - enableManagedUid=%t\n",
+		user.Firstname, user.Lastname, user.Email, user.Sudo, user.UnixUid, user.UnixGuid, user.EnableManagedUid)
+
+	return returnVal
+}
+
+func tagToString(tag jcapiv1.Tag) string {
+	return fmt.Sprintf("tag id=%s - name='%s' - groupName='%s' - systems='%s' - systemusers='%s' - externally_managed='%t' (%s)",
+		tag.Id, tag.Name, tag.GroupName, strings.Join(tag.Systems, ","),
+		strings.Join(tag.Systemusers, ","), tag.ExternallyManaged, tag.ExternalDN)
+}
+
 //
 // Process the line read from the CSV file into JumpCloud. (helper function)
 //
+func ProcessCSVRecord(jc jcapiv1.APIClient, systemUsersList *jcapiv1.Systemuserslist, csvRecord []string,
+	auth context.Context, outerOptionals map[string]interface{}) (err error) {
+	userList := systemUsersList.Results
 
-func ProcessCSVRecord(jc jcapi.JCAPI, userList *[]jcapi.JCUser, csvRecord []string) (err error) {
 	// Verify the record is complete enough to process
 	if len(csvRecord) < 9 {
 		err = fmt.Errorf("Line is improperly formatted (missing fields), skipping line.")
@@ -87,20 +114,20 @@ func ProcessCSVRecord(jc jcapi.JCAPI, userList *[]jcapi.JCUser, csvRecord []stri
 	}
 
 	// Setup work variables
-	var currentUser jcapi.JCUser
+	var currentUser jcapiv1.Systemuserputpost
 	var currentHost string
 
 	currentAdmins := make(map[string]string) // "user name", "user id"
 
 	var fieldMap = map[int]*string{
-		0: &currentUser.FirstName,
-		1: &currentUser.LastName,
-		2: &currentUser.UserName,
+		0: &currentUser.Firstname,
+		1: &currentUser.Lastname,
+		2: &currentUser.Username,
 		3: &currentUser.Email,
-		4: &currentUser.Uid,
-		5: &currentUser.Gid,
+		//4: &currentUser.UnixUid,  // int32 in v1
+		//5: &currentUser.UnixGuid,  // int32 in v1
 		// "Sudo" boolean will be handled separately, so no 6
-		7: &currentUser.Password,
+		//7: &currentUser.Password,
 		8: &currentHost,
 	}
 
@@ -116,6 +143,30 @@ func ProcessCSVRecord(jc jcapi.JCAPI, userList *[]jcapi.JCUser, csvRecord []stri
 			currentUser.Sudo = jcapi.GetTrueOrFalse(element)
 		} else if i == 3 {
 			*fieldMap[i] = strings.ToLower(element)
+		} else if i == 4 {
+			if element == "" {
+				currentUser.UnixUid = 0
+			} else {
+				parsedInt, convErr := strconv.Atoi(element)
+				if convErr != nil {
+					err = fmt.Errorf("Value for UnixUid was not valid integer value")
+					return
+				}
+				currentUser.UnixUid = int32(parsedInt)
+			}
+		} else if i == 5 {
+			if element == "" {
+				currentUser.UnixGuid = 0
+			} else {
+				parsedInt, convErr := strconv.Atoi(element)
+				if convErr != nil {
+					err = fmt.Errorf("Value for UnixGuid was not valid integer value")
+					return
+				}
+				currentUser.UnixGuid = int32(parsedInt)
+			}
+		} else if i == 7 {
+			// In v1 we don't have the password in the user; ignore this field
 		} else {
 			// Default case is to move the string into the var
 			*fieldMap[i] = element
@@ -132,90 +183,99 @@ func ProcessCSVRecord(jc jcapi.JCAPI, userList *[]jcapi.JCUser, csvRecord []stri
 		// a single null element that is returned.  Account for that, but
 		// otherwise add-in the values found.
 		if tempAdmin != "" {
-			currentAdmins[tempAdmin] = GetUserIdFromUserName(*userList, tempAdmin)
+			currentAdmins[tempAdmin] = GetUserIdFromUserName(userList, tempAdmin)
 		}
 	}
 
 	// Determine operation to perform based on whether the current user
 	// is already in JumpCloud...
 	var opCode jcapi.JCOp
-	currentUserId := GetUserIdFromUserName(*userList, currentUser.UserName)
+	currentUserId := GetUserIdFromUserName(userList, currentUser.Username)
 
 	if currentUserId != "" {
 		opCode = jcapi.Update
-		currentUser.Id = currentUserId
 	} else {
 		opCode = jcapi.Insert
 	}
 
 	// Sanity-check any UID/GID pair supplied and set management mode accordingly
-	if (currentUser.Uid == "" && currentUser.Gid != "") || (currentUser.Uid != "" && currentUser.Gid == "") {
-		err = fmt.Errorf("Could not process user '%s', err=Invalid UID:GID pair '%s:%s', both must be specified", currentUser.ToString(), currentUser.Uid, currentUser.Gid)
+	if (currentUser.UnixUid == 0 && currentUser.UnixGuid != 0) || (currentUser.UnixUid != 0 && currentUser.UnixGuid == 0) {
+		err = fmt.Errorf("Could not process user '%s', err=Invalid UID:GID pair '%d:%d', both must be specified", putToString(currentUser), currentUser.UnixUid, currentUser.UnixGuid)
 		return
 	}
 
-	if currentUser.Uid != "" || currentUser.Gid != "" {
+	if currentUser.UnixUid != 0 || currentUser.UnixGuid != 0 {
 		currentUser.EnableManagedUid = true
 	}
 
 	// Perform the requested operation on the current user and report results
-	currentUserId, err = jc.AddUpdateUser(opCode, currentUser)
+	var resultUser jcapiv1.Systemuserreturn
+	var err2 error
 
-	if err != nil {
-		err = fmt.Errorf("Could not %s user '%s', err='%s'", jcapi.MapJCOpToHTTP(opCode), currentUser.ToString(), err)
+	optionals := map[string]interface{}{
+		"xOrgId": outerOptionals["xOrgId"],
+		"body": currentUser,
+	}
+
+	if opCode == jcapi.Update {
+		resultUser, _, err2 = jc.SystemusersApi.SystemusersPut(auth, currentUserId, CONTENT_TYPE, ACCEPT, optionals)
+	} else if opCode == jcapi.Insert {
+		resultUser, _, err2 = jc.SystemusersApi.SystemusersPost(auth, CONTENT_TYPE, ACCEPT, optionals)
+	}
+	if err2 != nil {
+		err = fmt.Errorf("Could not %s user '%s', err='%s'", jcapi.MapJCOpToHTTP(opCode), putToString(currentUser), err)
 		return
 	}
 
 	if opCode == jcapi.Update {
-		fmt.Printf("\tUser '%s' (ID '%s') updated from input file\n", currentUser.UserName, currentUserId)
+		fmt.Printf("\tUser '%s' (ID '%s') updated from input file\n", currentUser.Username, currentUserId)
 	} else {
-		fmt.Printf("\tLoaded user '%s' (ID '%s')\n", currentUser.UserName, currentUserId)
+		fmt.Printf("\tLoaded user '%s' (ID '%s')\n", currentUser.Username, currentUserId)
 		// Add this user to our list
-		currentUser.Id = currentUserId
-		*userList = append(*userList, currentUser)
+		resultUser.Id = currentUserId
+		userList = append(userList, resultUser)
 	}
 
 	// Create/associate JumpCloud tags for the host and user...
 	if currentHost != "" {
 		// Determine if the host specified is defined in JumpCloud
-		var currentJCSystem jcapi.JCSystem
-		var tempSysList []jcapi.JCSystem
+		var currentJCSystem jcapiv1.System
+		tempSysList, _, err2 := jc.SystemsApi.SystemsList(auth, CONTENT_TYPE, ACCEPT, optionals)
 
-		tempSysList, err = jc.GetSystemByHostName(currentHost, true)
-		if err != nil {
+		if err2 != nil {
 			err = fmt.Errorf("Look up for host '%s' failed - err='%s'", currentHost, err)
 			return
 		}
 
 		switch {
-		case len(tempSysList) > 1:
+		case tempSysList.TotalCount > 1:
 			err = fmt.Errorf("Found multiple hostnames for '%s', cannot build a tag for it.", currentHost)
 			return
-		case len(tempSysList) == 0:
+		case tempSysList.TotalCount == 0:
 			err = fmt.Errorf("Could not find a system for '%s', cannot build a tag for this user.", currentHost)
 			return
-		case len(tempSysList) == 1:
-			currentJCSystem = tempSysList[0]
+		case tempSysList.TotalCount == 1:
+			currentJCSystem = tempSysList.Results[0]
 		default:
 			return
 		}
 
 		// Construct the user's tag from the inputs
-		var tempTag jcapi.JCTag
+		var tempTag jcapiv1.Tag
 
 		tempTag.Name = currentHost + " - "
 
-		if currentUser.FirstName != "" && currentUser.LastName != "" {
-			tempTag.Name = tempTag.Name + currentUser.FirstName + " " + currentUser.LastName + " "
+		if currentUser.Firstname != "" && currentUser.Lastname != "" {
+			tempTag.Name = tempTag.Name + currentUser.Firstname + " " + currentUser.Lastname + " "
 		}
 
-		tempTag.Name = tempTag.Name + "(" + currentUser.UserName + ")"
+		tempTag.Name = tempTag.Name + "(" + currentUser.Username + ")"
 
 		// Does the tag already exist?
-		var tag jcapi.JCTag
+		var tag jcapiv1.Tag
 
-		tag, err = jc.GetTagByName(tempTag.Name)
-		if err != nil && !strings.Contains(err.Error(), "unexpected end of JSON input") {
+		tag, _, err2 = jc.TagsApi.TagsGet(auth, tempTag.Name, CONTENT_TYPE, ACCEPT, outerOptionals);
+		if err2 != nil && !strings.Contains(err.Error(), "unexpected end of JSON input") {
 			err = fmt.Errorf("Tag lookup failed for tag '%s', skipping this tag, err='%s'", tempTag.Name, err)
 			return
 		}
@@ -229,18 +289,22 @@ func ProcessCSVRecord(jc jcapi.JCAPI, userList *[]jcapi.JCUser, csvRecord []stri
 		opCode = jcapi.Insert
 
 		// Build a suitable tag from the request's elements
-		tempTag.ApplyToJumpCloud = true
 		tempTag.Systems = append(tempTag.Systems, currentJCSystem.Id)
-		tempTag.SystemUsers = append(tempTag.SystemUsers, currentUserId)
+		tempTag.Systemusers = append(tempTag.Systemusers, currentUserId)
 
 		for _, adminId := range currentAdmins {
-			tempTag.SystemUsers = append(tempTag.SystemUsers, adminId)
+			tempTag.Systemusers = append(tempTag.Systemusers, adminId)
 		}
 
 		// Create or modify the tag in JumpCloud
-		tempTag.Id, err = jc.AddUpdateTag(opCode, tempTag)
-		if err != nil {
-			err = fmt.Errorf("Could not POST tag '%s', err='%s'", tempTag.ToString(), err)
+		//tempTag.Id, err = jc.AddUpdateTag(opCode, tempTag)
+		optionals := map[string]interface{}{
+			"xOrgId": outerOptionals["xOrgId"],
+			"body": tempTag,
+		}
+		_, _, err2 = jc.TagsApi.TagsPut(auth, tempTag.Name, CONTENT_TYPE, ACCEPT, optionals);
+		if err2 != nil {
+			err = fmt.Errorf("Could not POST tag '%s', err='%s'", tagToString(tempTag), err)
 		} else {
 			fmt.Printf("\tCreated tag '%s' (ID '%s')\n", tempTag.Name, tempTag.Id)
 		}
@@ -281,17 +345,28 @@ func main() {
 	}
 
 	if url != urlBase {
-		fmt.Printf("URL overridden from: %s to %s", urlBase, url)
+		fmt.Printf("URL overridden from: %s to %s\n", urlBase, url)
+	}
+
+	config := jcapiv1.NewConfiguration()
+	var apiClientV1 *jcapiv1.APIClient
+	apiClientV1 = jcapiv1.NewAPIClient(config);
+	apiClientV1.ChangeBasePath(url);
+
+	var authv1 context.Context
+	authv1 = context.WithValue(context.TODO(), jcapiv1.ContextAPIKey, jcapiv1.APIKey{
+		Key: apiKey,
+	})
+
+	optionals := map[string]interface{}{
+		"xOrgId": orgId,
 	}
 
 	// Attach to JumpCloud
-	jc := jcapi.NewJCAPI(apiKey, url)
-	if orgId != "" {
-		jc.OrgId = orgId
-	}
+	result, _, err := apiClientV1.SystemusersApi.SystemusersList(authv1, CONTENT_TYPE, ACCEPT, optionals)
 
-	// Fetch all users in JumpCloud
-	userList, err := jc.GetSystemUsers(false)
+	//jc := jcapi.NewJCAPI(apiKey, url)
+	//userList, err := jc.GetSystemUsers(false);
 
 	if err != nil {
 		fmt.Printf("Could not read system users, err='%s'\n", err)
@@ -330,7 +405,8 @@ func main() {
 		fmt.Printf("Line #%d:\n", recordCount)
 
 		// Process this request record
-		err = ProcessCSVRecord(jc, &userList, record)
+		err = ProcessCSVRecord(*apiClientV1, &result, record, authv1, optionals)
+		//err = ProcessCSVRecord(jc, &userList, record)
 		if err != nil {
 			fmt.Printf("\tERROR: %s\n", err)
 		}
