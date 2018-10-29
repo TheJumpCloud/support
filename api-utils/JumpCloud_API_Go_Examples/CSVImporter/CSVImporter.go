@@ -124,10 +124,10 @@ func ProcessCSVRecord(jc jcapiv1.APIClient, systemUsersList *jcapiv1.Systemusers
 		1: &currentUser.Lastname,
 		2: &currentUser.Username,
 		3: &currentUser.Email,
-		//4: &currentUser.UnixUid,  // int32 in v1
-		//5: &currentUser.UnixGuid,  // int32 in v1
+		// "UnixUid" int32 handed separately, so no 4
+		// "UnixGuid" int32 handled separately, so no 5
 		// "Sudo" boolean will be handled separately, so no 6
-		//7: &currentUser.Password,
+		// "Password" not available in jcapi-go, so no 7
 		8: &currentHost,
 	}
 
@@ -138,7 +138,7 @@ func ProcessCSVRecord(jc jcapiv1.APIClient, systemUsersList *jcapiv1.Systemusers
 			break
 		}
 
-		// Special case for sole boolean to be parsed
+		// Special cases for the boolean and int32s to be parsed
 		if i == 6 {
 			currentUser.Sudo = jcapi.GetTrueOrFalse(element)
 		} else if i == 3 {
@@ -166,7 +166,7 @@ func ProcessCSVRecord(jc jcapiv1.APIClient, systemUsersList *jcapiv1.Systemusers
 				currentUser.UnixGuid = int32(parsedInt)
 			}
 		} else if i == 7 {
-			// In v1 we don't have the password in the user; ignore this field
+			// In jcapi-go we don't have the password in the user; ignore this field
 		} else {
 			// Default case is to move the string into the var
 			*fieldMap[i] = element
@@ -297,7 +297,6 @@ func ProcessCSVRecord(jc jcapiv1.APIClient, systemUsersList *jcapiv1.Systemusers
 		}
 
 		// Create or modify the tag in JumpCloud
-		//tempTag.Id, err = jc.AddUpdateTag(opCode, tempTag)
 		optionals := map[string]interface{}{
 			"xOrgId": outerOptionals["xOrgId"],
 			"body":   tempTag,
@@ -365,9 +364,6 @@ func main() {
 	// Attach to JumpCloud
 	result, _, err := apiClientV1.SystemusersApi.SystemusersList(authv1, CONTENT_TYPE, ACCEPT, optionals)
 
-	//jc := jcapi.NewJCAPI(apiKey, url)
-	//userList, err := jc.GetSystemUsers(false);
-
 	if err != nil {
 		fmt.Printf("Could not read system users, err='%s'\n", err)
 		return
@@ -406,7 +402,6 @@ func main() {
 
 		// Process this request record
 		err = ProcessCSVRecord(*apiClientV1, &result, record, authv1, optionals)
-		//err = ProcessCSVRecord(jc, &userList, record)
 		if err != nil {
 			fmt.Printf("\tERROR: %s\n", err)
 		}

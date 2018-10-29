@@ -58,12 +58,8 @@ func main() {
 		fmt.Printf("URL overridden from: %s to: %s\n", jcapi.StdUrlBase, urlBase)
 	}
 
-	if orgId != "" {
-		fmt.Println("You may specify an orgID for multi-tenant administrators.")
-	}
-
 	if orgId == "" {
-		fmt.Println("You may specify an orgID for multi-tenant administrators.\n")
+		fmt.Println("You may specify an orgID for multi-tenant administrators.")
 	}
 
 	// Attach to JumpCloud
@@ -101,7 +97,6 @@ func main() {
 
 			resultUser, _, err := apiClientV1.SystemusersApi.SystemusersPut(authv1, currentUser.Id, CONTENT_TYPE, ACCEPT, optionals)
 
-			//userId, err := jc.AddUpdateUser(3, userList[i])
 			if err != nil {
 				fmt.Printf("Could not update user '%s', err='%s'", returnToString(currentUser), err)
 				return
