@@ -13,9 +13,9 @@ import (
 )
 
 const (
-	URL_BASE string = "https://console.jumpcloud.com/api"
-	CONTENT_TYPE = "application/json"
-	ACCEPT = "application/json"
+	URL_BASE     string = "https://console.jumpcloud.com/api"
+	CONTENT_TYPE        = "application/json"
+	ACCEPT              = "application/json"
 )
 
 func dateBeforeNDays(date string, days int) (before bool, err error) {
@@ -47,7 +47,6 @@ func tagToString(tag jcapiv1.Tag) string {
 		tag.Id, tag.Name, tag.GroupName, strings.Join(tag.Systems, ","),
 		strings.Join(tag.Systemusers, ","), tag.ExternallyManaged, tag.ExternalDN)
 }
-
 
 func main() {
 	apiKey := flag.String("api-key", "", "Your JumpCloud Administrator API Key")

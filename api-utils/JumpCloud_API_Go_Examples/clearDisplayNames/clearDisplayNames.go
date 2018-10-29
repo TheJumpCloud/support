@@ -13,10 +13,10 @@ import (
 const (
 	JUMPCLOUD_APIKEY_VAR string = "JUMPCLOUD_APIKEY"
 	JUMPCLOUD_ORGID_VAR  string = "JUMPCLOUD_ORGID"
-	JUMPCLOUD_URL_VAR    string = "JUMPCLOUD_URL"  // in case want to do it locally.
+	JUMPCLOUD_URL_VAR    string = "JUMPCLOUD_URL" // in case want to do it locally.
 	URLBASE              string = "https://console.jumpcloud.com/api"
-	CONTENT_TYPE		 string = "application/json"
-	ACCEPT				 string = "application/json"
+	CONTENT_TYPE         string = "application/json"
+	ACCEPT               string = "application/json"
 )
 
 func main() {

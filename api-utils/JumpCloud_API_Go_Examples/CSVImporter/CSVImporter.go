@@ -57,9 +57,9 @@ import (
 //
 
 const (
-	urlBase string = "https://console.jumpcloud.com/api"
+	urlBase      string = "https://console.jumpcloud.com/api"
 	CONTENT_TYPE string = "application/json"
-	ACCEPT string = "application/json"
+	ACCEPT       string = "application/json"
 )
 
 //
@@ -80,14 +80,14 @@ func GetUserIdFromUserName(users []jcapiv1.Systemuserreturn, name string) string
 	return returnVal
 }
 
-func returnToString(user jcapiv1.Systemuserreturn ) string {
+func returnToString(user jcapiv1.Systemuserreturn) string {
 	returnVal := fmt.Sprintf("JCUSER: Id=[%s] - FName/LName=[%s/%s] - Email=[%s] - sudo=[%t] - Uid=%d - Gid=%d - enableManagedUid=%t\n",
 		user.Id, user.Firstname, user.Lastname, user.Email, user.Sudo, user.UnixUid, user.UnixGuid, user.EnableManagedUid)
 
 	return returnVal
 }
 
-func putToString(user jcapiv1.Systemuserputpost ) string {
+func putToString(user jcapiv1.Systemuserputpost) string {
 	returnVal := fmt.Sprintf("JCUSER: FName/LName=[%s/%s] - Email=[%s] - sudo=[%t] - Uid=%d - Gid=%d - enableManagedUid=%t\n",
 		user.Firstname, user.Lastname, user.Email, user.Sudo, user.UnixUid, user.UnixGuid, user.EnableManagedUid)
 
@@ -214,7 +214,7 @@ func ProcessCSVRecord(jc jcapiv1.APIClient, systemUsersList *jcapiv1.Systemusers
 
 	optionals := map[string]interface{}{
 		"xOrgId": outerOptionals["xOrgId"],
-		"body": currentUser,
+		"body":   currentUser,
 	}
 
 	if opCode == jcapi.Update {
@@ -274,7 +274,7 @@ func ProcessCSVRecord(jc jcapiv1.APIClient, systemUsersList *jcapiv1.Systemusers
 		// Does the tag already exist?
 		var tag jcapiv1.Tag
 
-		tag, _, err2 = jc.TagsApi.TagsGet(auth, tempTag.Name, CONTENT_TYPE, ACCEPT, outerOptionals);
+		tag, _, err2 = jc.TagsApi.TagsGet(auth, tempTag.Name, CONTENT_TYPE, ACCEPT, outerOptionals)
 		if err2 != nil && !strings.Contains(err.Error(), "unexpected end of JSON input") {
 			err = fmt.Errorf("Tag lookup failed for tag '%s', skipping this tag, err='%s'", tempTag.Name, err)
 			return
@@ -300,9 +300,9 @@ func ProcessCSVRecord(jc jcapiv1.APIClient, systemUsersList *jcapiv1.Systemusers
 		//tempTag.Id, err = jc.AddUpdateTag(opCode, tempTag)
 		optionals := map[string]interface{}{
 			"xOrgId": outerOptionals["xOrgId"],
-			"body": tempTag,
+			"body":   tempTag,
 		}
-		_, _, err2 = jc.TagsApi.TagsPut(auth, tempTag.Name, CONTENT_TYPE, ACCEPT, optionals);
+		_, _, err2 = jc.TagsApi.TagsPut(auth, tempTag.Name, CONTENT_TYPE, ACCEPT, optionals)
 		if err2 != nil {
 			err = fmt.Errorf("Could not POST tag '%s', err='%s'", tagToString(tempTag), err)
 		} else {
@@ -350,8 +350,8 @@ func main() {
 
 	config := jcapiv1.NewConfiguration()
 	var apiClientV1 *jcapiv1.APIClient
-	apiClientV1 = jcapiv1.NewAPIClient(config);
-	apiClientV1.ChangeBasePath(url);
+	apiClientV1 = jcapiv1.NewAPIClient(config)
+	apiClientV1.ChangeBasePath(url)
 
 	var authv1 context.Context
 	authv1 = context.WithValue(context.TODO(), jcapiv1.ContextAPIKey, jcapiv1.APIKey{

@@ -107,7 +107,7 @@ func main() {
 	}
 
 	if orgId == "" {
-		_,_ = fmt.Fprintf(os.Stderr, "You may specify an orgID for multi-tenant administrators\n")
+		_, _ = fmt.Fprintf(os.Stderr, "You may specify an orgID for multi-tenant administrators\n")
 	}
 
 	// Grab all systems (with their tags for a Tags)

@@ -11,10 +11,10 @@ import (
 
 const (
 	CONTENT_TYPE = "application/json"
-	ACCEPT = "application/json"
+	ACCEPT       = "application/json"
 )
 
-func returnToString(user jcapiv1.Systemuserreturn ) string {
+func returnToString(user jcapiv1.Systemuserreturn) string {
 	returnVal := fmt.Sprintf("JCUSER: Id=[%s] - FName/LName=[%s/%s] - Email=[%s] - sudo=[%t] - Uid=%d - Gid=%d - enableManagedUid=%t\n",
 		user.Id, user.Firstname, user.Lastname, user.Email, user.Sudo, user.UnixUid, user.UnixGuid, user.EnableManagedUid)
 
@@ -100,7 +100,6 @@ func main() {
 			optionals["body"] = userListResult.Results[i]
 
 			resultUser, _, err := apiClientV1.SystemusersApi.SystemusersPut(authv1, currentUser.Id, CONTENT_TYPE, ACCEPT, optionals)
-
 
 			//userId, err := jc.AddUpdateUser(3, userList[i])
 			if err != nil {

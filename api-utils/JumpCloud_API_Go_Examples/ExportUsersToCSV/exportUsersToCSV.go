@@ -138,8 +138,8 @@ func main() {
 		for skip := 0; skip == 0 || len(graphs) == searchLimit; skip += searchSkipInterval {
 			// set up optional parameters:
 			optionals := map[string]interface{}{
-				"limit": int32(searchLimit),
-				"skip":  int32(skip),
+				"limit":  int32(searchLimit),
+				"skip":   int32(skip),
 				"xOrgId": orgId,
 			}
 			graphs, _, err := apiClientV2.UsersApi.GraphUserMemberOf(authv2, user.Id, contentType, accept, optionals)

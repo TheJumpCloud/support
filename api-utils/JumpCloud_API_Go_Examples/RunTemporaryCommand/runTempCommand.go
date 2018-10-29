@@ -24,7 +24,7 @@ const (
 	URL_BASE string = "https://console.jumpcloud.com/api"
 
 	CONTENT_TYPE = "application/json"
-	ACCEPT = "application/json"
+	ACCEPT       = "application/json"
 )
 
 func makeImmediateCommand(name, command, commandType, shell, user string) jcapi.JCCommand {
@@ -235,8 +235,8 @@ func main() {
 
 	config := jcapiv1.NewConfiguration()
 	var apiClientV1 *jcapiv1.APIClient
-	apiClientV1 = jcapiv1.NewAPIClient(config);
-	apiClientV1.ChangeBasePath(*url);
+	apiClientV1 = jcapiv1.NewAPIClient(config)
+	apiClientV1.ChangeBasePath(*url)
 
 	var authv1 context.Context
 	authv1 = context.WithValue(context.TODO(), jcapiv1.ContextAPIKey, jcapiv1.APIKey{
