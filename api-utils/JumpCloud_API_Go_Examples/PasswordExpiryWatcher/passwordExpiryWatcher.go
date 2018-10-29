@@ -17,13 +17,11 @@ func main() {
 	// Input parameters
 	var apiKey string
 	var csvFile string
-	var orgId string
 	var url string
 
 	// Obtain the input parameters
 	flag.StringVar(&csvFile, "output", "", "-output=<filename>")
 	flag.StringVar(&apiKey, "key", "", "-key=<API-key-value>")
-	flag.StringVar(&orgId, "org", "", "-org=<organizationID> (optional for multi-tenant administrators)")
 	flag.StringVar(&url, "url", jcapi.StdUrlBase, "-url=<jumpcloud-api-url> (optional for use outside production")
 	flag.Parse()
 
@@ -31,7 +29,6 @@ func main() {
 		fmt.Println("Usage of ./CSVImporter:")
 		fmt.Println("  -output=\"\": -output=<filename>")
 		fmt.Println("  -key=\"\": -key=<API-key-value>")
-		fmt.Println("  -org=\"\": -org=<organizationID>")
 		fmt.Println("  -url=\"\": -url=<jumpcloud-api-url>")
 		return
 	}
@@ -42,11 +39,6 @@ func main() {
 
 	// Attach to JumpCloud
 	jc := jcapi.NewJCAPI(apiKey, url)
-	if orgId != "" {
-		jc.OrgId = orgId
-	} else {
-		fmt.Println("You may specify an orgID for multi-tenant administrators.")
-	}
 
 	// Fetch all users who's password expires between given dates in
 	userList, err := jc.GetSystemUsers(false)

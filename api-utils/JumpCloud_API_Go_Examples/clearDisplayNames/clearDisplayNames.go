@@ -59,7 +59,6 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Printf("systemsList: %+v", results)
 	systemsList := results.Results
 	for idx, _ := range systemsList {
 		if systemsList[idx].DisplayName != systemsList[idx].Hostname {

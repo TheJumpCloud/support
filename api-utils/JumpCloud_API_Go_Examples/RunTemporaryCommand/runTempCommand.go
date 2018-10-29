@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"log"
@@ -9,6 +10,7 @@ import (
 	"time"
 
 	"github.com/TheJumpCloud/jcapi"
+	jcapiv1 "github.com/TheJumpCloud/jcapi-go/v1"
 )
 
 const (
@@ -20,6 +22,9 @@ const (
 	RESULT_MAX_POLL_TIME int = 70 // Stop checking for results after RESULT_MAX_POLL_TIME_SECONDS (must be a minimum of 60 seconds)
 
 	URL_BASE string = "https://console.jumpcloud.com/api"
+
+	CONTENT_TYPE = "application/json"
+	ACCEPT = "application/json"
 )
 
 func makeImmediateCommand(name, command, commandType, shell, user string) jcapi.JCCommand {
@@ -66,7 +71,7 @@ func deleteCommandResultsByName(jc jcapi.JCAPI, commandName string) (err error) 
 	return
 }
 
-func findSystemsByOSType(systems []jcapi.JCSystem, osTypeRegEx string) (indices []int, err error) {
+func findSystemsByOSType(systems []jcapiv1.System, osTypeRegEx string) (indices []int, err error) {
 	r, err := regexp.Compile(osTypeRegEx)
 	if err != nil {
 		err = fmt.Errorf("Could not compile regex for '%s', err='%s'", osTypeRegEx, err.Error())
@@ -224,10 +229,22 @@ func main() {
 	}
 
 	jc := jcapi.NewJCAPI(*apiKey, *url)
-	if *orgId != "" {
-		jc.OrgId = *orgId
-	} else {
+	if *orgId == "" {
 		fmt.Println("You may specify an orgID for multi-tenant administrators.")
+	}
+
+	config := jcapiv1.NewConfiguration()
+	var apiClientV1 *jcapiv1.APIClient
+	apiClientV1 = jcapiv1.NewAPIClient(config);
+	apiClientV1.ChangeBasePath(*url);
+
+	var authv1 context.Context
+	authv1 = context.WithValue(context.TODO(), jcapiv1.ContextAPIKey, jcapiv1.APIKey{
+		Key: *apiKey,
+	})
+
+	optionals := map[string]interface{}{
+		"xOrgId": orgId,
 	}
 
 	// Generate a randomized command name
@@ -245,12 +262,12 @@ func main() {
 	//
 	// Get the list of matching servers and add them to the command
 	//
-	systems, err := jc.GetSystems(false)
+	systemsList, _, err := apiClientV1.SystemsApi.SystemsList(authv1, CONTENT_TYPE, ACCEPT, optionals)
 	if err != nil {
 		log.Fatalf("Could not get a list of all systems, err='%s'")
 	}
 
-	indices, err := findSystemsByOSType(systems, *osType)
+	indices, err := findSystemsByOSType(systemsList.Results, *osType)
 	if err != nil {
 		log.Fatalf("Could not search a list of systems for OS type matching '%s', err='%s'", *osType, err.Error())
 	}
@@ -263,9 +280,9 @@ func main() {
 	fmt.Printf("------------------------------------------\n")
 
 	for _, index := range indices {
-		fmt.Printf("%s\t%s\n", systems[index].Id, systems[index].Hostname)
+		fmt.Printf("%s\t%s\n", systemsList.Results[index].Id, systemsList.Results[index].Hostname)
 
-		commandObj.Systems = append(commandObj.Systems, systems[index].Id)
+		commandObj.Systems = append(commandObj.Systems, systemsList.Results[index].Id)
 	}
 
 	//
