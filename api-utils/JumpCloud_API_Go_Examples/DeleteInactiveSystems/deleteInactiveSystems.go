@@ -82,8 +82,6 @@ func main() {
 
 	// Get all the systems in the account
 	systems, _, err := apiClientV1.SystemsApi.SystemsList(authv1, CONTENT_TYPE, ACCEPT, optionals)
-
-	//systems, err := jc.GetSystems(false)
 	if err != nil {
 		log.Fatalf("Could not get all systems in the account, err='%s'", err.Error())
 	}
@@ -106,7 +104,6 @@ func main() {
 
 				if *enableDelete {
 					_, _, err2 := apiClientV1.SystemsApi.SystemsDelete(authv1, system.Id, CONTENT_TYPE, ACCEPT, optionals)
-					//err = jc.DeleteSystem(system)
 					if err2 != nil {
 						log.Fatalf("Delete failed, err='%s'\n", err.Error())
 					} else {

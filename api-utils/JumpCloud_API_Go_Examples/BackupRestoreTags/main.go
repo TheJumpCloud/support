@@ -134,7 +134,6 @@ func main() {
 	apiKey := flag.String("api-key", "", "Your JumpCloud Administrator API Key.")
 	backupTagRegex := flag.String("backup", "", "Set this flag to a regular expression that matches the tag names you want to backup to your local file system.")
 	restoreFile := flag.String("restore", "", "Set this flag to a filename that contains a tag you want to restore back to JumpCloud.")
-	orgId := flag.String("org", "", "Your multi-tenant administrator's organization ID. (optional)")
 	url := flag.String("url", URL_BASE, "An optional, override URL (for use outside production)")
 
 	flag.Parse()
@@ -156,11 +155,6 @@ func main() {
 	}
 
 	jc := jcapi.NewJCAPI(*apiKey, *url)
-	if *orgId != "" {
-		jc.OrgId = *orgId
-	} else {
-		fmt.Println("You may specify an orgID for multi-tenant administrators.")
-	}
 
 	tags, err := jc.GetAllTags()
 	if err != nil {

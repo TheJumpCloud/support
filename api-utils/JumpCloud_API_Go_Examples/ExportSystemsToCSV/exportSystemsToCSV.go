@@ -74,7 +74,7 @@ func main() {
 	}
 
 	if apiUrl != apiUrlDefault {
-		fmt.Printf("URL overridden from: %s to %s", apiUrlDefault, apiUrl)
+		fmt.Fprintf(os.Stderr, "URL overridden from: %s to %s\n", apiUrlDefault, apiUrl)
 	}
 
 	// check if this org is on Groups or Tags:
@@ -94,6 +94,7 @@ func main() {
 		})
 	}
 
+	// instantiate an API client v1 for all v1 endpoints:
 	apiClientV1 := jcapiv1.NewAPIClient(jcapiv1.NewConfiguration())
 	apiClientV1.ChangeBasePath(apiUrl)
 
@@ -105,9 +106,8 @@ func main() {
 		"xOrgId": orgId,
 	}
 
-	// instantiate an API client v1 for all v1 endpoints:
 	if orgId == "" {
-		_,_ = fmt.Fprintf(os.Stderr, "You may specify an orgID for multi-tenant administrators")
+		_,_ = fmt.Fprintf(os.Stderr, "You may specify an orgID for multi-tenant administrators\n")
 	}
 
 	// Grab all systems (with their tags for a Tags)

@@ -43,7 +43,6 @@ func main() {
 	}
 
 	api = jcapi.NewJCAPI(apiKey, url)
-
 	results, err := api.GetCommandResultsBySavedCommandID(commandID)
 	if err != nil {
 		log.Fatalln(err)
