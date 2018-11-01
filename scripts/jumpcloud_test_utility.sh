@@ -232,6 +232,14 @@ fi
 
 get_api() {
 
+if [ -z "$org_id" ]; then
+curl  \
+  -X 'GET' \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "x-api-key: ${api_key}" \
+     "${CONSOLE_URL}/api/${api_object}${id}"
+else
 curl  \
   -X 'GET' \
   -H 'Content-Type: application/json' \
@@ -239,6 +247,7 @@ curl  \
   -H "x-api-key: ${api_key}" \
   -H "x-org-id: ${org_id}" \
      "${CONSOLE_URL}/api/${api_object}${id}"
+fi
 
 }
 
@@ -847,12 +856,12 @@ echo -ne "\nSelect an option: "
 	read api_option
 	case $api_option in
 		1) read_api_key;;
-		2) read_org_id; echo ${org_id} >> junk.txt;;
+		2) read_org_id;;
 		3) launch_user_menu;;
 		4) launch_system_menu;;
 		5) launch_command_menu;;
 		6) set_date;call_events | python -m json.tool | less;;
-                0) return;;
+                0) break;;
                 *) 
                 if [ -z "$api_option" ]
                         then
