@@ -386,7 +386,7 @@ cat << EOF
 ##########################
 
 The user search parameter is case *insensitive*
-by default. Regex is accpeted.
+by default. Regex is accepted.
 
 EOF
         if [ -z "$system_search_field" ]
@@ -532,7 +532,7 @@ cat << EOF
 ##########################
 
 The user search parameter is case *insensitive* 
-by default. Regex is accpeted.
+by default. Regex is accepted.
 
 EOF
 	if [ -z "$user_search_field" ]
@@ -800,16 +800,35 @@ set_date() {
 
 end_date=`date -u +%Y-%m-%dT%H:%M:%SZ`
 
+months=(0 31 28 31 30 31 30 31 31 30 31 30 31)
+
 today=`date -u +%d`
 yesterday=`expr $today - 1`
+month=`date -u +%m`
+yestermonth=${month}
+year=`date -u +%Y`
+yesteryear=${year}
 
 if ((${yesterday} < 10))
         then
-yesterday=0${yesterday}
-
+        if ((${yesterday} == 0))
+            then
+                yestermonth=`expr $month - 1`
+                if ((${yestermonth} == 0))
+                    then
+                        yesteryear=`expr $year - 1`
+                        yestermonth=12
+                        yesterday=31
+                    else
+                        yesterday=${months[${yestermonth}]}
+                        yesteryear=${year}
+                fi
+        else
+            yesterday=0${yesterday}
+        fi
 fi
 
-start_date=`date -u +%Y-%m-${yesterday}T%H:%M:%SZ`
+start_date=`date -u +${yesteryear}-%${yestermonth}-${yesterday}T%H:%M:%SZ`
 
 }
 
