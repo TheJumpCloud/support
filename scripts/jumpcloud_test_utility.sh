@@ -232,7 +232,8 @@ fi
 
 get_api() {
 
-if [ -z "$org_id" ]; then
+if [ -z "${org_id}" ]
+    then
 curl  \
   -X 'GET' \
   -H 'Content-Type: application/json' \
@@ -267,7 +268,7 @@ fi
 read_org_id() {
 echo -n "Enter the Org ID: "
     read org_id;
-if [ -z "$org_id" ]
+if [ -z "${org_id}" ]
     then
         echo "Input cannot be null"; read_org_id;
     else continue;
@@ -414,6 +415,16 @@ fi
 
 system_search() {
 
+if [ -z "${org_id}" ]
+    then
+curl \
+  -d '{ "filter" : [{ "'"${system_search_field}"'" : { "$regex" : "(?i)'"${system_search_param}"'" }}]}' \
+  -X 'POST' \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "x-api-key: ${api_key}" \
+  "${CONSOLE_URL}/api/search/systems?limit=100&skip=10"
+else
 curl \
   -d '{ "filter" : [{ "'"${system_search_field}"'" : { "$regex" : "(?i)'"${system_search_param}"'" }}]}' \
   -X 'POST' \
@@ -422,6 +433,7 @@ curl \
   -H "x-api-key: ${api_key}" \
   -H "x-org-id: ${org_id}" \
   "${CONSOLE_URL}/api/search/systems?limit=100&skip=10"
+fi
 
 }
 
@@ -565,6 +577,16 @@ user_search() {
 #search="  -d '{ \"filter\" : [{\"${user_search_field}\" : { \"\\$regex\" : \"(?i)${user_search_param}\"}}]}'"
 #get_api | python -m json.tool | less
 
+if [ -z "${org_id}" ]
+    then
+curl \
+  -d '{ "filter" : [{ "'"${user_search_field}"'" : { "$regex" : "(?i)'"${user_search_param}"'" }}]}' \
+  -X 'POST' \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "x-api-key: ${api_key}" \
+  "${CONSOLE_URL}/api/search/systemusers?limit=100"
+else
 curl \
   -d '{ "filter" : [{ "'"${user_search_field}"'" : { "$regex" : "(?i)'"${user_search_param}"'" }}]}' \
   -X 'POST' \
@@ -573,6 +595,7 @@ curl \
   -H "x-api-key: ${api_key}" \
   -H "x-org-id: ${org_id}" \
   "${CONSOLE_URL}/api/search/systemusers?limit=100"
+fi
 
 }
 
@@ -834,7 +857,8 @@ start_date=`date -u +${yesteryear}-${yestermonth}-${yesterday}T%H:%M:%SZ`
 
 call_events() {
 
-if [ -z "${org_id}" ]; then
+if [ -z "${org_id}" ]
+    then
     curl \
      -G \
      -H "x-api-key: ${api_key}" \
