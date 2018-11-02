@@ -421,7 +421,7 @@ curl \
   -H 'Accept: application/json' \
   -H "x-api-key: ${api_key}" \
   -H "x-org-id: ${org_id}" \
-  "${CONSOLE_URL}/api/search/systems?limit=200&skip=10"
+  "${CONSOLE_URL}/api/search/systems?limit=100&skip=10"
 
 }
 
@@ -572,7 +572,7 @@ curl \
   -H 'Accept: application/json' \
   -H "x-api-key: ${api_key}" \
   -H "x-org-id: ${org_id}" \
-  "${CONSOLE_URL}/api/search/systemusers?limit=200"
+  "${CONSOLE_URL}/api/search/systemusers?limit=100"
 
 }
 
@@ -641,9 +641,9 @@ cat << EOF
 ###    Commands        ###
 ##########################
 
-1. Commands multi record GET (limit 200)
+1. Commands multi record GET (limit 100)
 2. Commands single record GET
-3. Command results multi record GET (limit 200)
+3. Command results multi record GET (limit 100)
 4. Command results single record GET
 0. API Menu
 EOF
@@ -659,9 +659,9 @@ api_object=commands
 echo -ne "\nSelect an option: "
         read command_option
         case $command_option in
-                1) api_object=$api_object?limit=200; get_api | python -m json.tool | less;;
+                1) api_object=$api_object?limit=100; get_api | python -m json.tool | less;;
                 2) single_get;;
-		3) api_object=commandresults?limit=200; get_api | python -m json.tool | less;;
+		3) api_object=commandresults?limit=100; get_api | python -m json.tool | less;;
 		4) api_object=commandresults; single_get;;
                 0) break;;
                 *)
@@ -697,7 +697,7 @@ cat << EOF
 ###      Systems       ###
 ##########################
 
-1. Multi record GET (limit 200)
+1. Multi record GET (limit 100)
 2. Single record GET
 3. Search
 0. API Menu
@@ -714,7 +714,7 @@ api_object=systems
 echo -ne "\nSelect an option: "
 	read system_option
 	case $system_option in
-		1) api_object=$api_object?limit=200; get_api | python -m json.tool | less;;
+		1) api_object=$api_object?limit=100; get_api | python -m json.tool | less;;
 		2) single_get;;
 		3) launch_system_search_menu;;
 		0) break;;
@@ -750,7 +750,7 @@ cat << EOF
 ###       Users        ###
 ##########################
 
-1. Multi record GET (limit 200)
+1. Multi record GET (limit 100)
 2. Single record GET
 3. Search
 0. API Menu
@@ -767,7 +767,7 @@ api_object=systemusers;
 echo -ne "\nSelect an option: "
         read user_option
         case $user_option in
-                1) api_object=$api_object?limit=200; get_api | python -m json.tool | less;;
+                1) api_object=$api_object?limit=100; get_api | python -m json.tool | less;;
                 2) single_get;;
                 3) launch_user_search_menu;;
                 0) break;;
@@ -834,12 +834,22 @@ start_date=`date -u +${yesteryear}-%${yestermonth}-${yesterday}T%H:%M:%SZ`
 
 call_events() {
 
-curl \
- -G \
- -H "x-api-key: ${api_key}" \
- -H "Content-Type:application/json" \
- --data-urlencode "startDate=${start_date}" \
- "https://events.jumpcloud.com/events"
+if [ -z "${org_id}" ]; then
+    curl \
+     -G \
+     -H "x-api-key: ${api_key}" \
+     -H "Content-Type:application/json" \
+     --data-urlencode "startDate=${start_date}" \
+     "https://events.jumpcloud.com/events"
+else
+    curl \
+     -G \
+     -H "x-api-key: ${api_key}" \
+     -H "x-org-id: ${org_id}" \
+     -H "Content-Type:application/json" \
+     --data-urlencode "startDate=${start_date}" \
+     "https://events.jumpcloud.com/events"
+fi
 
 }
 
