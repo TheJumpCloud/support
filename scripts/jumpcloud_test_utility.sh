@@ -828,7 +828,7 @@ if ((${yesterday} < 10))
         fi
 fi
 
-start_date=`date -u +${yesteryear}-%${yestermonth}-${yesterday}T%H:%M:%SZ`
+start_date=`date -u +${yesteryear}-${yestermonth}-${yesterday}T%H:%M:%SZ`
 
 }
 
