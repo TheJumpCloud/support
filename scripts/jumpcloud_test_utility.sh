@@ -91,7 +91,7 @@ if [ -n "${JUMPCLOUD_LDAP_DOMAIN_OVERRIDE}" ]
     LDAP_DOMAIN=${JUMPCLOUD_LDAP_DOMAIN_OVERRIDE}
 fi
 
-EVENTS_URL="https://events.jumpcloud.com/"
+EVENTS_URL="https://events.jumpcloud.com"
 if [ -n "${JUMPCLOUD_EVENTS_URL_OVERRIDE}" ]
     then
     EVENTS_URL=${JUMPCLOUD_EVENTS_URL_OVERRIDE}
