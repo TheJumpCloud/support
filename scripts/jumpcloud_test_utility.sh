@@ -78,11 +78,24 @@ fi
 
 # To make it a little bit easier to test against other than production.
 CONSOLE_URL="https://console.jumpcloud.com"
-if [ ! -z "${JUMPCLOUD_URL_OVERRIDE}" ]; then
-    CONSOLE_URL=${JUMPCLOUD_URL_OVERRIDE}
+if [ ! -z "${JUMPCLOUD_CONSOLE_URL_OVERRIDE}" ]
+    then
+    CONSOLE_URL=${JUMPCLOUD_CONSOLE_URL_OVERRIDE}
 fi
 
 echo "CONSOLE_URL=${CONSOLE_URL}"
+
+LDAP_DOMAIN="ldap.jumpcloud.com"
+if [ -n "${JUMPCLOUD_LDAP_DOMAIN_OVERRIDE}" ]
+    then
+    LDAP_DOMAIN=${JUMPCLOUD_LDAP_DOMAIN_OVERRIDE}
+fi
+
+EVENTS_URL="https://events.jumpcloud.com/"
+if [ -n "${JUMPCLOUD_EVENTS_URL_OVERRIDE}" ]
+    then
+    EVENTS_URL=${JUMPCLOUD_EVENTS_URL_OVERRIDE}
+fi
 
 # Check account vars have been entered
 
@@ -115,7 +128,7 @@ ldsearch() {
 
 check_ldap_config
 
-$ldapsearch -H ${uri}://ldap.jumpcloud.com:${port} -x -b "ou=Users,o=${oid},dc=jumpcloud,dc=com" -D "uid=${user},ou=Users,o=${oid},dc=jumpcloud,dc=com" -w "${pass}" "(objectClass=${search_param})" | less
+$ldapsearch -H ${uri}://${LDAP_DOMAIN}:${port} -x -b "ou=Users,o=${oid},dc=jumpcloud,dc=com" -D "uid=${user},ou=Users,o=${oid},dc=jumpcloud,dc=com" -w "${pass}" "(objectClass=${search_param})" | less
 
 }
 
@@ -144,7 +157,7 @@ ou=Users,o=${oid},dc=jumpcloud,dc=com
 
 ### LDAP Search Example ###
 
-$ldapsearch -H ${uri}://ldap.jumpcloud.com:${port} -x -b "ou=Users,o=${oid},dc=jumpcloud,dc=com" -D "uid=${user},ou=Users,o=${oid},dc=jumpcloud,dc=com" -w "${pass}" "(objectClass=inetOrgPerson)"
+$ldapsearch -H ${uri}://${LDAP_DOMAIN}:${port} -x -b "ou=Users,o=${oid},dc=jumpcloud,dc=com" -D "uid=${user},ou=Users,o=${oid},dc=jumpcloud,dc=com" -w "${pass}" "(objectClass=inetOrgPerson)"
 
 **If the above ldapsearch command results in invalid credentials, and the password contains special characters (!,@,#,etc...), replace the double quotes (") around the password with single quotes (') and retry
 
@@ -864,7 +877,7 @@ if [ -z "${org_id}" ]
      -H "x-api-key: ${api_key}" \
      -H "Content-Type:application/json" \
      --data-urlencode "startDate=${start_date}" \
-     "https://events.jumpcloud.com/events"
+     "${EVENTS_URL}/events"
 else
     curl \
      -G \
@@ -872,7 +885,7 @@ else
      -H "x-org-id: ${org_id}" \
      -H "Content-Type:application/json" \
      --data-urlencode "startDate=${start_date}" \
-     "https://events.jumpcloud.com/events"
+     "${EVENTS_URL}/events"
 fi
 
 }
