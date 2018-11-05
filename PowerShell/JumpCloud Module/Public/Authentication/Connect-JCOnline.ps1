@@ -9,7 +9,7 @@ Function Connect-JCOnline ()
             Mandatory,
             ValueFromPipelineByPropertyName,
             Position = 0)]
-        
+
         [Parameter(Mandatory = $True,
             ParameterSetName = 'Interactive',
             Position = 0,
@@ -31,7 +31,7 @@ Function Connect-JCOnline ()
             ParameterSetName = 'force',
             ValueFromPipelineByPropertyName,
             Position = 1)]
-        
+
         [Parameter(
             ParameterSetName = 'Interactive',
             Position = 1,
@@ -39,16 +39,47 @@ Function Connect-JCOnline ()
 
         [string]$JumpCloudOrgID,
 
+        [Parameter(
+            ParameterSetName = 'force',
+            ValueFromPipelineByPropertyName
+        )]
+
+        [Parameter(
+            ParameterSetName = 'Interactive',
+            ValueFromPipelineByPropertyName
+        )]
+
+        [ValidateSet('production', 'staging', 'local')]
+        $JCEnvironment = 'production',
 
         [Parameter(
             ParameterSetName = 'force')]
         [Switch]
-        $force
+        $force,
+
+        [string]$UserAgent = "Pwsh_1.8.3"
     )
 
     begin
     {
-        [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+        $global:JCUserAgent = $UserAgent
+
+        if ($JCEnvironment -eq 'local')
+        {
+            [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls
+        }
+
+        else
+        {
+            [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+        }
+
+        switch ($JCEnvironment)
+        {
+            'production' { $global:JCUrlBasePath = "https://console.jumpcloud.com" }
+            'staging' { $global:JCUrlBasePath = "https://console.awsstg.jumpcloud.com"}
+            'local' {$global:JCUrlBasePath = "http://localhost"}
+        }
 
         $GitHubModuleInfoURL = 'https://github.com/TheJumpCloud/support/blob/master/PowerShell/ModuleBanner.md'
 
@@ -68,8 +99,8 @@ Function Connect-JCOnline ()
 
         try
         {
-            $ConnectionTestURL = "https://console.jumpcloud.com/api/v2/ldapservers"
-            Invoke-RestMethod -Method GET -Uri $ConnectionTestURL -Headers $hdrs -UserAgent 'Pwsh_1.8.2'  | Out-Null
+            $ConnectionTestURL = "$JCUrlBasePath/api/v2/ldapservers"
+            Invoke-RestMethod -Method GET -Uri $ConnectionTestURL -Headers $hdrs -UserAgent $JCUserAgent  | Out-Null
         }
         catch
         {
@@ -91,8 +122,8 @@ Function Connect-JCOnline ()
                     try
                     {
                         $hdrs.Add('x-org-id', "$($JCOrgID)")
-                        $ConnectionTestURL = "https://console.jumpcloud.com/api/v2/ldapservers"
-                        Invoke-RestMethod -Method GET -Uri $ConnectionTestURL -Headers $hdrs -UserAgent 'Pwsh_1.8.2'  | Out-Null
+                        $ConnectionTestURL = "$JCUrlBasePath/api/v2/ldapservers"
+                        Invoke-RestMethod -Method GET -Uri $ConnectionTestURL -Headers $hdrs -UserAgent $JCUserAgent  | Out-Null
 
                         if (-not $force)
                         {

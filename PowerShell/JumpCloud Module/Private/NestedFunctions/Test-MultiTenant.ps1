@@ -12,8 +12,8 @@ function Test-MultiTenant
 
     try
     {
-        $ConnectionTestURL = "https://console.jumpcloud.com/api/v2/ldapservers"
-        Invoke-RestMethod -Method GET -Uri $ConnectionTestURL -Headers $hdrs -UserAgent 'Pwsh_1.8.2'  | Out-Null
+        $ConnectionTestURL = "$JCUrlBasePath/api/v2/ldapservers"
+        Invoke-RestMethod -Method GET -Uri $ConnectionTestURL -Headers $hdrs -UserAgent $JCUserAgent  | Out-Null
 
         Return $False
     }
@@ -22,9 +22,9 @@ function Test-MultiTenant
         
         try
         {   
-            $MultiTenantURL = "https://console.jumpcloud.com/api/organizations/"
+            $MultiTenantURL = "$JCUrlBasePath/api/organizations/"
 
-            Invoke-RestMethod -Method GET -Uri $MultiTenantURL -Headers $hdrs -UserAgent 'Pwsh_1.8.2'  | Out-Null
+            Invoke-RestMethod -Method GET -Uri $MultiTenantURL -Headers $hdrs -UserAgent $JCUserAgent  | Out-Null
 
             Return $true
             

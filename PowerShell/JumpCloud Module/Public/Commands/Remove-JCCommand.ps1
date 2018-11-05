@@ -62,7 +62,7 @@ Function Remove-JCCommand () #Ready for pester
             try
             {
 
-                $URI = "https://console.jumpcloud.com/api/commands/$CommandID"
+                $URI = "$JCUrlBasePath/api/commands/$CommandID"
                 $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs
                 $Status = 'Deleted'
             }
@@ -89,7 +89,7 @@ Function Remove-JCCommand () #Ready for pester
             {
                 $CommandName = $CommandNameHash.Get_Item($CommandID)
 
-                $URI = "https://console.jumpcloud.com/api/commands/$CommandID"
+                $URI = "$JCUrlBasePath/api/commands/$CommandID"
                 $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs
                 $Status = 'Deleted'
             }

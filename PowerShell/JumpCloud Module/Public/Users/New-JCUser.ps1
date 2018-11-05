@@ -250,7 +250,7 @@ Function New-JCUser ()
             $hdrs.Add('x-org-id', "$($JCOrgID)")
         }
 
-        $URL = "https://console.jumpcloud.com/api/systemusers"
+        $URL = "$JCUrlBasePath/api/systemusers"
 
         $NewUserArrary = @()
     }
@@ -326,7 +326,7 @@ Function New-JCUser ()
 
             Write-Debug $jsonbody
 
-            $NewUserInfo = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.8.2'
+            $NewUserInfo = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent $JCUserAgent
 
             $NewUserArrary += $NewUserInfo
         }
@@ -435,7 +435,7 @@ Function New-JCUser ()
 
             Write-Debug $jsonbody
 
-            $NewUserInfo = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.8.2'
+            $NewUserInfo = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent $JCUserAgent
 
             $NewUserArrary += $NewUserInfo
         }

@@ -30,7 +30,7 @@ Function New-JCUserGroup ()
             $hdrs.Add('x-org-id', "$($JCOrgID)")
         }
 
-        $URI = 'https://console.jumpcloud.com/api/v2/usergroups'
+        $URI = "$JCUrlBasePath/api/v2/usergroups"
         $NewGroupsArrary = @()
 
     }
@@ -48,7 +48,7 @@ Function New-JCUserGroup ()
 
             try
             {
-                $NewGroup = Invoke-RestMethod -Method POST -Uri $URI  -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.8.2'
+                $NewGroup = Invoke-RestMethod -Method POST -Uri $URI  -Body $jsonbody -Headers $hdrs -UserAgent $JCUserAgent
                 $Status = 'Created'
             }
             catch

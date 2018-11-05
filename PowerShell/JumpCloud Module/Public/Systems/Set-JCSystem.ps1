@@ -72,11 +72,11 @@ Function Set-JCSystem ()
 
         Write-Debug $jsonbody
 
-        $URL = "https://console.jumpcloud.com/api/systems/$SystemID"
+        $URL = "$JCUrlBasePath/api/systems/$SystemID"
 
         Write-Debug $URL
 
-        $System = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.8.2'
+        $System = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent $JCUserAgent
 
         $UpdatedSystems += $System
     }

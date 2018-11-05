@@ -62,8 +62,8 @@ Function Remove-JCSystem ()
             try
             {
 
-                $URI = "https://console.jumpcloud.com/api/systems/$SystemID"
-                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.8.2'
+                $URI = "$JCUrlBasePath/api/systems/$SystemID"
+                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent $JCUserAgent
                 $Status = 'Deleted'
             }
             catch
@@ -88,8 +88,8 @@ Function Remove-JCSystem ()
             try
             {
 
-                $URI = "https://console.jumpcloud.com/api/systems/$SystemID"
-                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.8.2'
+                $URI = "$JCUrlBasePath/api/systems/$SystemID"
+                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent $JCUserAgent
                 $Status = 'Deleted'
             }
             catch

@@ -59,11 +59,11 @@ function Get-JCSystemUser ()
 
         while (($resultsArray.results).Count -ge $skip)
         {
-            $URI = "https://console.jumpcloud.com/api/v2/systems/$SystemID/users?sort=type,_id&limit=$limit&skip=$skip"
+            $URI = "$JCUrlBasePath/api/v2/systems/$SystemID/users?sort=type,_id&limit=$limit&skip=$skip"
 
             Write-Verbose $URI
 
-            $APIresults = Invoke-RestMethod -Method GET -Uri $URI -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.8.2'
+            $APIresults = Invoke-RestMethod -Method GET -Uri $URI -Body $jsonbody -Headers $hdrs -UserAgent $JCUserAgent
 
             $skip += $limit
             Write-Verbose "Setting skip to $skip"

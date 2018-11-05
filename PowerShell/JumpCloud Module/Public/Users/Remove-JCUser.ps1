@@ -79,9 +79,9 @@ function Remove-JCUser ()
 
                 try
                 {
-                    $URI = "https://console.jumpcloud.com/api/systemusers/$UserID"
+                    $URI = "$JCUrlBasePath/api/systemusers/$UserID"
                     Write-Warning "Are you sure you wish to delete user: $Username ?" -WarningAction Inquire
-                    $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.8.2'
+                    $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent $JCUserAgent
                     $Status = 'Deleted'
                 }
                 catch
@@ -105,8 +105,8 @@ function Remove-JCUser ()
 
             try
             {
-                $URI = "https://console.jumpcloud.com/api/systemusers/$UserID"
-                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.8.2'
+                $URI = "$JCUrlBasePath/api/systemusers/$UserID"
+                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent $JCUserAgent
                 $Status = 'Deleted'
             }
             catch
@@ -130,9 +130,9 @@ function Remove-JCUser ()
         {
             try
             {
-                $URI = "https://console.jumpcloud.com/api/systemusers/$UserID"
+                $URI = "$JCUrlBasePath/api/systemusers/$UserID"
                 Write-Warning "Are you sure you wish to delete user: $Username ?" -WarningAction Inquire
-                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.8.2'
+                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent $JCUserAgent
                 $Status = 'Deleted'
             }
             catch
@@ -153,8 +153,8 @@ function Remove-JCUser ()
 
             try
             {
-                $URI = "https://console.jumpcloud.com/api/systemusers/$UserID"
-                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.8.2'
+                $URI = "$JCUrlBasePath/api/systemusers/$UserID"
+                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent $JCUserAgent
                 $Status = 'Deleted'
             }
             catch

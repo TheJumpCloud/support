@@ -71,9 +71,9 @@ Function Remove-JCUserGroup ()
 
                     Write-Warning "Are you sure you want to delete group: $Gname ?" -WarningAction Inquire
 
-                    $URI = "https://console.jumpcloud.com/api/v2/usergroups/$GID"
+                    $URI = "$JCUrlBasePath/api/v2/usergroups/$GID"
 
-                    $DeletedGroup = Invoke-RestMethod -Method DELETE -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.8.2'
+                    $DeletedGroup = Invoke-RestMethod -Method DELETE -Uri $URI -Headers $hdrs -UserAgent $JCUserAgent
 
                     $Status = 'Deleted'
 
@@ -103,8 +103,8 @@ Function Remove-JCUserGroup ()
 
                 try
                 {
-                    $URI = "https://console.jumpcloud.com/api/v2/usergroups/$GID"
-                    $DeletedGroup = Invoke-RestMethod -Method DELETE -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.8.2'
+                    $URI = "$JCUrlBasePath/api/v2/usergroups/$GID"
+                    $DeletedGroup = Invoke-RestMethod -Method DELETE -Uri $URI -Headers $hdrs -UserAgent $JCUserAgent
                     $Status = 'Deleted'
                 }
                 catch
