@@ -4,6 +4,7 @@ This tool allows you as a system administrator to add custom attributes to a sys
 to users through the user's email. Existing attributes that are not defined in the file will be retained. However, existing attributes that 
 exist in the file will be overwritten.
 
+
 ### To Install
 
 ##### I do not have the Go toolchain installed
@@ -80,7 +81,7 @@ For example:
 
 > If you have renamed your binary simply replace `importUserAttributes` with the new name
 
-> If you installed the binary with the Go toolchain and your `$GOBIN` is in your `$PATH` or `%PATH%`, or if you moved the binary to `/usr/local/bin` you
+> If you installed the binary with the Go toolchain and your `$GOBIN` is in your `$PATH` or `%PATH%`, or if you moved the binary to `/usr/local/bin` you 
 can run the above command at any time on your command line excluding the "./"
 
 ##### Windows Instructions
