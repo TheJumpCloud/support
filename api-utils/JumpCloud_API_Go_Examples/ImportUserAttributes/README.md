@@ -1,14 +1,8 @@
 ## User Attribute Importer
 
 This tool allows you as a system administrator to add custom attributes to a systemuser. The attributes are defined in a file and mapped
-to users through the user's email. Existing attributes that are not defined in the file will be retained. However, existing attributes that
+to users through the user's email. Existing attributes that are not defined in the file will be retained. However, existing attributes that 
 exist in the file will be overwritten.
-
-Multi-tenant administrators (administrators associated to more than one
-organization) cannot use this tool because it does not support the
-`x-org-id` HTTP header, which is required to specify which organization
-users should be released from. In addition, the functionality has not
-been ported/refactored to use attributes from the jcapi-go interface.
 
 ### To Install
 
@@ -19,24 +13,24 @@ been ported/refactored to use attributes from the jcapi-go interface.
 	- https://github.com/TheJumpCloud/jcapi/releases
 2. We have provided `.zip` files for most operating systems
 	- Note that macOS users will want to use the `darwin` binaries
-3. Download the zip file of your choice
+3. Download the zip file of your choice 
 	- We always recommend downloading from the latest release if possible
 	- Most Windows users will want the `386` zip
 4. Extract the files from the zip
 	- Right click on the zip file and click `Extract All` on Windows
 	- Double click on the zip file on macOS/Linux
 5. `importUserAttributes_myos_myarch` is the relevant binary
-	- Some may find this is an unwieldy name to type every time. Feel free to rename to your liking, in fact if this is a tool you plan on running
+	- Some may find this is an unwieldy name to type every time. Feel free to rename to your liking, in fact if this is a tool you plan on running 
     frequently we encourage this for ease of use.
 
 > If you'd like to be able to call this binary from an arbitrary directory you can move it to `/usr/local/bin` on Linux and macOS
->> On macOS the keyboard shortcut `⌘ + Shift + G` with an open Finder window will allow you to directly type in the directory you'd like to access.
-To move the binary to `/usr/local/bin` with Finder simply use that shortcut and copy/paste `/usr/local/bin` into the dialog box. You can now drag and
-drop the binary onto the Finder window to easily make it accessible without having to navigate to a specific folder to run it. If you do this we also
+>> On macOS the keyboard shortcut `⌘ + Shift + G` with an open Finder window will allow you to directly type in the directory you'd like to access. 
+To move the binary to `/usr/local/bin` with Finder simply use that shortcut and copy/paste `/usr/local/bin` into the dialog box. You can now drag and 
+drop the binary onto the Finder window to easily make it accessible without having to navigate to a specific folder to run it. If you do this we also 
 recommend renaming the binary before moving it to a more memorable name.
 
 ##### I have the Go toolchain installed
-> If you don't know what "Go" or "Golang" is we have provided pre-made binaries for your convenience. Installation instructions for these
+> If you don't know what "Go" or "Golang" is we have provided pre-made binaries for your convenience. Installation instructions for these 
 binaries is provided in the previous section
 
 1. Clone the `jcapi` repository (it doesn't matter where)
@@ -52,20 +46,20 @@ This will install a binary called `importUserAttributes` to your `$GOBIN`
 
 ### To Run
 
-To run this tool you will need to use the command line. On Windows you can use PowerShell and on OSX you can use Terminal.
+To run this tool you will need to use the command line. On Windows you can use PowerShell and on OSX you can use Terminal. 
 
-> While running this tool requires no previous experience with either of those programs some might feel wary or nervous working with a tool
-they don't understand. The following instructions in this section should provide you with all you need to get up and running, but if you would
-like to learn about the how and why of the command line we highly recommend the excellent (and free!)
-[Command Line Crash Course by Zed Shaw](http://cli.learncodethehardway.org/). Zed even provides a direct email hotline for users that get stuck.
+> While running this tool requires no previous experience with either of those programs some might feel wary or nervous working with a tool 
+they don't understand. The following instructions in this section should provide you with all you need to get up and running, but if you would 
+like to learn about the how and why of the command line we highly recommend the excellent (and free!) 
+[Command Line Crash Course by Zed Shaw](http://cli.learncodethehardway.org/). Zed even provides a direct email hotline for users that get stuck. 
 If problems persist, or you are unsure of where to begin contact JumpCloud support for assistance running this tool.
 
 The input file must be in comma-separated value format as follows:
 - First row (header) defines all attributes to be imported starting in the second column (first column of header row is ignored)
-- The values in the header row will become the attribute name
+- The values in the header row will become the attribute name 
 - Attribute names cannot exceed 32 characters, cannot contain spaces and must be alphanumeric
-- Subsequent rows define attribute values for individual users
-- The first column of the user rows must contain the user's email
+- Subsequent rows define attribute values for individual users 
+- The first column of the user rows must contain the user's email 
 - The remaining columns contain the attribute values for the user
 
 Input File Example:
@@ -92,7 +86,7 @@ can run the above command at any time on your command line excluding the "./"
 ##### Windows Instructions
 1. Open `PowerShell`
 2. Using the `cd` (stands for "Change Directory") command navigate to where you downloaded your binaries
-	- For example, if we downloaded and unzipped the binaries in our `Download` folder we just have to run: `cd Downloads\JumpCloudAPI_Examples_windows_386`.
+	- For example, if we downloaded and unzipped the binaries in our `Download` folder we just have to run: `cd Downloads\JumpCloudAPI_Examples_windows_386`. 
     If we downloaded to our desktop the command will probably look something like: `cd Desktop\JumpCloudAPI_Examples_windows_386`
 	- If you used the Go install instructions and your `$GOBIN` is in your `%PATH%` you can skip step 2 and go right to 3
 3. Grab your API key from the JumpCloud Admin console
@@ -100,18 +94,18 @@ can run the above command at any time on your command line excluding the "./"
 4. Run the command
 	- `./importUserAttributes.exe -api-key=YOUR_API_KEY_GOES_HERE -input=INPUT_FILE_GOES_HERE`
 
-> To run a command simply type it into the PowerShell window and hit `Enter` or `Return` when finished
+> To run a command simply type it into the PowerShell window and hit `Enter` or `Return` when finished 
 
 ##### macOS/Linux Instructions
 1. Open `Terminal` (this can be found in `Applications/Utilities`)
 2. Using the `cd` (stands for "Change Directory") command navigate to where you downloaded your binaries
-	- For example, if we downloaded and unzipped the binaries in our `Download` folder we just have to run: `cd Downloads/JumpCloudAPI_Examples_darwin_amd64`.
+	- For example, if we downloaded and unzipped the binaries in our `Download` folder we just have to run: `cd Downloads/JumpCloudAPI_Examples_darwin_amd64`. 
     If we downloaded to our desktop the command will probably look something like: `cd Desktop/JumpCloudAPI_Examples_darwin_amd64`
-	- If you used the Go install instructions and your `$GOBIN` is in your `$PATH`, or if you manually moved the binary to `/usr/local/bin` you can skip step 2
+	- If you used the Go install instructions and your `$GOBIN` is in your `$PATH`, or if you manually moved the binary to `/usr/local/bin` you can skip step 2 
     and go right to 3
 3. Grab your API key from the JumpCloud Admin console
 	- Click on your email on the top right hand corner to access the API Settings
 4. Run the command
 	- `./importUserAttributes.exe -api-key=YOUR_API_KEY_GOES_HERE -input=INPUT_FILE_GOES_HERE`
 
-> To run a command simply type it into the Terminal window and hit `Enter` or `Return` when finished
+> To run a command simply type it into the Terminal window and hit `Enter` or `Return` when finished 

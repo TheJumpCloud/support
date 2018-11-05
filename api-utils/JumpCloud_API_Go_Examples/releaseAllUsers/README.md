@@ -2,13 +2,6 @@
 
 This tool allows you as a system administrator to remove the AD management flag from your systemusers and move them to be fully managed by JumpCloud's Directory as a Service.
 
-~~Multi-tenant administrators (administrators associated to more than one
-organization) cannot use this tool because it does not support the
-`x-org-id` HTTP header, which is required to specify which organization
-users should be released from.~~
-
-This tool is modified to use an orgId passed using the -org command-line switch.
-
 ### To Install
 
 ##### I do not have the Go toolchain installed
@@ -18,7 +11,7 @@ This tool is modified to use an orgId passed using the -org command-line switch.
 	- https://github.com/TheJumpCloud/jcapi/releases
 2. We have provided `.zip` files for most operating systems
 	- Note that macOS users will want to use the `darwin` binaries
-3. Download the zip file of your choice
+3. Download the zip file of your choice 
 	- We always recommend downloading from the latest release if possible
 	- Most Windows users will want the `386` zip
 4. Extract the files from the zip
@@ -46,14 +39,13 @@ This will install a binary called `releaseAllUsers` to your `$GOBIN`
 
 ### To Run
 
-To run this tool you will need to use the command line. On Windows you can use PowerShell and on OSX you can use Terminal.
+To run this tool you will need to use the command line. On Windows you can use PowerShell and on OSX you can use Terminal. 
 
 > While running this tool requires no previous experience with either of those programs some might feel wary or nervous working with a tool they don't understand. The following instructions in this section should provide you with all you need to get up and running, but if you would like to learn about the how and why of the command line we highly recommend the excellent (and free!) [Command Line Crash Course by Zed Shaw](http://cli.learncodethehardway.org/). Zed even provides a direct email hotline for users that get stuck. If problems persist, or you are unsure of where to begin contact JumpCloud support for assistance running this tool.
 
-This tool only takes three arguments:
+This tool only takes two arguments:
 - `key` is your JumpCloud API key (required)
 - `url` is the JumpCloud API URL (optional)
-- `org` is the multi-tenant admin org ID (optional)
 
 For example:
 
@@ -77,7 +69,7 @@ Or:
 4. Run the command
 	- `./releaseAllUsers.exe -key=YOUR_API_KEY_GOES_HERE`
 
-> To run a command simply type it into the PowerShell window and hit `Enter` or `Return` when finished
+> To run a command simply type it into the PowerShell window and hit `Enter` or `Return` when finished 
 
 ##### macOS/Linux Instructions
 1. Open `Terminal` (this can be found in `Applications/Utilities`)
@@ -89,4 +81,4 @@ Or:
 4. Run the command
 	- `./releaseAllUsers -key=YOUR_API_KEY_GOES_HERE`
 
-> To run a command simply type it into the Terminal window and hit `Enter` or `Return` when finished
+> To run a command simply type it into the Terminal window and hit `Enter` or `Return` when finished 

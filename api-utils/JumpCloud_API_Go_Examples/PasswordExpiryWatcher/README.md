@@ -2,13 +2,6 @@
 
 This tool allows you as a system administrator to download a CSV of all of your users with each user's password expiration date. This allows monitoring of users with upcoming password expirations and for you the administrator to prevent these users from abruptly being cut out of their mission critical systems.
 
-Multi-tenant administrators (administrators associated to more than one
-organization) cannot use this tool because it does not support the
-`x-org-id` HTTP header, which is required to specify which organization
-users should be released from.
-
-Not able to use jcapi-go API as the PasswordExpirationDate is not exposed in the SystemusersApi.
-
 ### To Install
 
 ##### I do not have the Go toolchain installed
@@ -18,7 +11,7 @@ Not able to use jcapi-go API as the PasswordExpirationDate is not exposed in the
 	- https://github.com/TheJumpCloud/jcapi/releases
 2. We have provided `.zip` files for most operating systems
 	- Note that macOS users will want to use the `darwin` binaries
-3. Download the zip file of your choice
+3. Download the zip file of your choice 
 	- We always recommend downloading from the latest release if possible
 	- Most Windows users will want the `386` zip
 4. Extract the files from the zip
@@ -46,7 +39,7 @@ This will install a binary called `passwordExpiryWatcher` to your `$GOBIN`
 
 ### To Run
 
-To run this tool you will need to use the command line. On Windows you can use PowerShell and on OSX you can use Terminal.
+To run this tool you will need to use the command line. On Windows you can use PowerShell and on OSX you can use Terminal. 
 
 > While running this tool requires no previous experience with either of those programs some might feel wary or nervous working with a tool they don't understand. The following instructions in this section should provide you with all you need to get up and running, but if you would like to learn about the how and why of the command line we highly recommend the excellent (and free!) [Command Line Crash Course by Zed Shaw](http://cli.learncodethehardway.org/). Zed even provides a direct email hotline for users that get stuck. However if you are stuck and would rather just get your users' password expiration dates ASAP please don't hesitate to contact JumpCloud support for assistance running this tool.
 
@@ -72,10 +65,10 @@ For example:
 4. Run the command
 	- `./PasswordExpiryWatcher.exe -key=YOUR_API_KEY_GOES_HERE -output=CSV_FILE_OUTPUT_GOES_HERE`
 	- If you would like your CSV file to go somewhere else besides the current directory make sure you include the _full path_ of the file
-		- Good Example: `-output=C:\Users\MyUser\CSVFiles\password_expirations.csv`
+		- Good Example: `-output=C:\Users\MyUser\CSVFiles\password_expirations.csv` 
 		- Bad Example `-output=..\CSVFiles\password_expirations.csv`
 
-> To run a command simply type it into the PowerShell window and hit `Enter` or `Return` when finished
+> To run a command simply type it into the PowerShell window and hit `Enter` or `Return` when finished 
 
 ##### macOS/Linux Instructions
 1. Open `Terminal` (this can be found in `Applications/Utilities`)
@@ -87,7 +80,7 @@ For example:
 4. Run the command
 	- `./PasswordExpiryWatcher -key=YOUR_API_KEY_GOES_HERE -output=CSV_FILE_OUTPUT_GOES_HERE`
 
-> To run a command simply type it into the Terminal window and hit `Enter` or `Return` when finished
+> To run a command simply type it into the Terminal window and hit `Enter` or `Return` when finished 
 
 ### Example Output
 ![example csv output](https://cloud.githubusercontent.com/assets/712346/16528743/ed9b697e-3f7b-11e6-8410-d2020bf673bf.png)
