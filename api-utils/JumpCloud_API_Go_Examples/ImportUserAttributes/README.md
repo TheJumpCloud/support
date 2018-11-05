@@ -4,7 +4,7 @@ This tool allows you as a system administrator to add custom attributes to a sys
 to users through the user's email. Existing attributes that are not defined in the file will be retained. However, existing attributes that 
 exist in the file will be overwritten.
 
--
+
 ### To Install
 
 ##### I do not have the Go toolchain installed
