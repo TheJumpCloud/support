@@ -8,7 +8,7 @@ import (
 	"log"
 	"os"
 
-	jcapiv1 "github.com/TheJumpCloud/jcapi-go/v1"
+	"github.com/TheJumpCloud/jcapi"
 	jcapiv2 "github.com/TheJumpCloud/jcapi-go/v2"
 )
 
@@ -34,7 +34,7 @@ func getSystemGroupsforSystem(apiClientV2 *jcapiv2.APIClient, auth context.Conte
 		// add the retrieved system groups names to the list for the current system:
 		for _, graph := range graphs {
 			// get the details of the current system group:
-			systemGroup, _, err := apiClientV2.SystemGroupsApi.GroupsSystemGet(auth, graph.Id, contentType, accept, nil)
+			systemGroup, _, err := apiClientV2.SystemGroupsApi.GroupsSystemGet(auth, graph.Id, contentType, accept)
 			if err != nil {
 				// just log a message and skip the system group if there's an error retrieving details:
 				log.Printf("Could not retrieve info for system group ID %s, err='%s'\n", graph.Id, err)
@@ -50,12 +50,10 @@ func getSystemGroupsforSystem(apiClientV2 *jcapiv2.APIClient, auth context.Conte
 func main() {
 	var apiKey string
 	var apiUrl string
-	var orgId string
 
 	// Obtain the input parameters: api key and url (if we want to override the default url)
 	flag.StringVar(&apiKey, "key", "", "-key=<API-key-value>")
 	flag.StringVar(&apiUrl, "url", apiUrlDefault, "-url=<jumpcloud-api-url>")
-	flag.StringVar(&orgId, "org", "", "-org=<organizationID> (optional for multi-tenant administrators)")
 	flag.Parse()
 
 	// if the api key isn't specified, try to obtain it through environment variable:
@@ -67,18 +65,13 @@ func main() {
 		fmt.Println("Usage:")
 		fmt.Println("  -key=\"\": -key=<API-key-value>")
 		fmt.Println("  -url=\"\": -url=<jumpcloud-api-url> (optional)")
-		fmt.Println("  -org=\"\": -org=<organizationID> (optional for multi-tenant administrators)")
 		fmt.Println("You can also set the API key via the JUMPCLOUD_APIKEY environment variable:")
 		fmt.Println("Run: export JUMPCLOUD_APIKEY=<your-JumpCloud-API-key>")
 		return
 	}
 
-	if apiUrl != apiUrlDefault {
-		fmt.Fprintf(os.Stderr, "URL overridden from: %s to %s\n", apiUrlDefault, apiUrl)
-	}
-
 	// check if this org is on Groups or Tags:
-	isGroups, err := isGroupsOrg(apiUrl, apiKey, orgId)
+	isGroups, err := isGroupsOrg(apiUrl, apiKey)
 	if err != nil {
 		log.Fatalf("Could not determine your org type, err='%s'\n", err)
 	}
@@ -95,23 +88,10 @@ func main() {
 	}
 
 	// instantiate an API client v1 for all v1 endpoints:
-	apiClientV1 := jcapiv1.NewAPIClient(jcapiv1.NewConfiguration())
-	apiClientV1.ChangeBasePath(apiUrl)
-
-	authv1 := context.WithValue(context.TODO(), jcapiv1.ContextAPIKey, jcapiv1.APIKey{
-		Key: apiKey,
-	})
-
-	optionalsv1 := map[string]interface{}{
-		"xOrgId": orgId,
-	}
-
-	if orgId == "" {
-		_, _ = fmt.Fprintf(os.Stderr, "You may specify an orgID for multi-tenant administrators\n")
-	}
+	apiClientV1 := jcapi.NewJCAPI(apiKey, apiUrl)
 
 	// Grab all systems (with their tags for a Tags)
-	systemsList, _, err := apiClientV1.SystemsApi.SystemsList(authv1, contentType, accept, optionalsv1)
+	systems, err := apiClientV1.GetSystems(!isGroups)
 	if err != nil {
 		log.Fatalf("Could not read systems, err='%s'\n", err)
 	}
@@ -128,11 +108,11 @@ func main() {
 		headers = append(headers, "Tags")
 	}
 
-	_ = csvWriter.Write(headers)
+	csvWriter.Write(headers)
 
-	for _, system := range systemsList.Results {
+	for _, system := range systems {
 		outLine := []string{system.Id, system.DisplayName, system.Hostname, fmt.Sprintf("%t", system.Active),
-			/*system.AmazonInstanceID,*/ system.Os, system.Version, system.AgentVersion, system.Created,
+			system.AmazonInstanceID, system.Os, system.Version, system.AgentVersion, system.Created,
 			system.LastContact}
 
 		if isGroups {
@@ -150,7 +130,7 @@ func main() {
 		} else {
 			// for Tags orgs, we've already retrieved the list of tags in GetSystems:
 			for _, tag := range system.Tags {
-				outLine = append(outLine, tag)
+				outLine = append(outLine, tag.Name)
 			}
 		}
 

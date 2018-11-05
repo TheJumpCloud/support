@@ -78,10 +78,6 @@ func main() {
 		return
 	}
 
-	if apiUrl != apiUrlDefault {
-		fmt.Printf("URL overridden from: %s to: %s", apiUrlDefault, apiUrl)
-	}
-
 	// instantiate a new API v1 object for all v1 endpoints:
 	apiClientV1 := jcapi.NewJCAPI(apiKey, apiUrl)
 

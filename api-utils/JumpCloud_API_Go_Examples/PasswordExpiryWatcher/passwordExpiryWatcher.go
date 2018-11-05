@@ -17,28 +17,21 @@ func main() {
 	// Input parameters
 	var apiKey string
 	var csvFile string
-	var url string
 
 	// Obtain the input parameters
 	flag.StringVar(&csvFile, "output", "", "-output=<filename>")
 	flag.StringVar(&apiKey, "key", "", "-key=<API-key-value>")
-	flag.StringVar(&url, "url", jcapi.StdUrlBase, "-url=<jumpcloud-api-url> (optional for use outside production")
 	flag.Parse()
 
 	if csvFile == "" || apiKey == "" {
 		fmt.Println("Usage of ./CSVImporter:")
 		fmt.Println("  -output=\"\": -output=<filename>")
 		fmt.Println("  -key=\"\": -key=<API-key-value>")
-		fmt.Println("  -url=\"\": -url=<jumpcloud-api-url>")
 		return
 	}
 
-	if url != jcapi.StdUrlBase {
-		fmt.Printf("URL overridden from: %s to: %s", jcapi.StdUrlBase, url)
-	}
-
 	// Attach to JumpCloud
-	jc := jcapi.NewJCAPI(apiKey, url)
+	jc := jcapi.NewJCAPI(apiKey, jcapi.StdUrlBase)
 
 	// Fetch all users who's password expires between given dates in
 	userList, err := jc.GetSystemUsers(false)

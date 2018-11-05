@@ -150,10 +150,6 @@ func main() {
 		return
 	}
 
-	if *baseURL != defaultURLBase {
-		fmt.Printf("URL overridden from: %s to: %s", defaultURLBase, baseURL)
-	}
-
 	// Attach to JumpCloud API
 	jc := jcapi.NewJCAPI(*apiKey, *baseURL)
 

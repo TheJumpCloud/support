@@ -1,25 +1,11 @@
 package main
 
 import (
-	"context"
 	"flag"
 	"fmt"
 
 	"github.com/TheJumpCloud/jcapi"
-	jcapiv1 "github.com/TheJumpCloud/jcapi-go/v1"
 )
-
-const (
-	CONTENT_TYPE = "application/json"
-	ACCEPT       = "application/json"
-)
-
-func returnToString(user jcapiv1.Systemuserreturn) string {
-	returnVal := fmt.Sprintf("JCUSER: Id=[%s] - FName/LName=[%s/%s] - Email=[%s] - sudo=[%t] - Uid=%d - Gid=%d - enableManagedUid=%t\n",
-		user.Id, user.Firstname, user.Lastname, user.Email, user.Sudo, user.UnixUid, user.UnixGuid, user.EnableManagedUid)
-
-	return returnVal
-}
 
 //
 // This program will "release" all AD-owned user accounts that have been
@@ -38,47 +24,22 @@ func returnToString(user jcapiv1.Systemuserreturn) string {
 func main() {
 	var apiKey string
 	var urlBase string
-	var orgId string
 
 	// Obtain the input parameters
 	flag.StringVar(&apiKey, "key", "", "-key=<API-key-value>")
-	flag.StringVar(&urlBase, "url", jcapi.StdUrlBase, "-url=<jumpcloud-api-url>")
-	flag.StringVar(&orgId, "org", "", "-org=<organizationID (optional for multi-tenant administrators)")
+	flag.StringVar(&urlBase, "url", "https://console.jumpcloud.com/api", "-url=<jumpcloud-api-url>")
 	flag.Parse()
 
 	if apiKey == "" {
 		fmt.Println("Usage of ./releaseAllUsers:")
 		fmt.Println("  -key=\"\": -key=<API-key-value>")
 		fmt.Println("  -url=\"\": -url=<jumpcloud-api-url> (optional)")
-		fmt.Println("  -org=\"\": -org=<organizationID> (optional for multi-tenant administrators>")
 		return
 	}
 
-	if urlBase != jcapi.StdUrlBase {
-		fmt.Printf("URL overridden from: %s to: %s\n", jcapi.StdUrlBase, urlBase)
-	}
+	jc := jcapi.NewJCAPI(apiKey, urlBase)
 
-	if orgId == "" {
-		fmt.Println("You may specify an orgID for multi-tenant administrators.")
-	}
-
-	// Attach to JumpCloud
-	var apiClientV1 *jcapiv1.APIClient
-	apiClientV1 = jcapiv1.NewAPIClient(jcapiv1.NewConfiguration())
-	apiClientV1.ChangeBasePath(urlBase)
-
-	var authv1 context.Context
-	authv1 = context.WithValue(context.TODO(), jcapiv1.ContextAPIKey, jcapiv1.APIKey{
-		Key: apiKey,
-	})
-
-	optionals := map[string]interface{}{
-		"xOrgId": orgId,
-	}
-
-	// Fetch all users who's password expires between given dates in
-	userListResult, _, err := apiClientV1.SystemusersApi.SystemusersList(authv1, CONTENT_TYPE, ACCEPT, optionals)
-
+	userList, err := jc.GetSystemUsers(false)
 	if err != nil {
 		fmt.Printf("Could not read system users, err='%s'\n", err)
 		return
@@ -86,22 +47,18 @@ func main() {
 
 	var updateCount = 0
 
-	for i, _ := range userListResult.Results {
-		currentUser := userListResult.Results[i]
-		if currentUser.ExternallyManaged == true {
-			currentUser.ExternallyManaged = false
-			currentUser.ExternalDn = ""
-			currentUser.ExternalSourceType = ""
+	for i, _ := range userList {
+		if userList[i].ExternallyManaged == true {
+			userList[i].ExternallyManaged = false
+			userList[i].ExternalDN = ""
+			userList[i].ExternalSourceType = ""
 
-			optionals["body"] = userListResult.Results[i]
-
-			resultUser, _, err := apiClientV1.SystemusersApi.SystemusersPut(authv1, currentUser.Id, CONTENT_TYPE, ACCEPT, optionals)
-
+			userId, err := jc.AddUpdateUser(3, userList[i])
 			if err != nil {
-				fmt.Printf("Could not update user '%s', err='%s'", returnToString(currentUser), err)
+				fmt.Printf("Could not update user '%s', err='%s'", userList[i].ToString(), err)
 				return
 			} else {
-				fmt.Printf("Updated user ID '%s'\n", resultUser.Id)
+				fmt.Printf("Updated user ID '%s'\n", userId)
 			}
 
 			updateCount++

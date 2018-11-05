@@ -38,10 +38,6 @@ func main() {
 		log.Fatalln("Command id must be provided")
 	}
 
-	if url != URLBase {
-		fmt.Printf("URL overridden from: %s to: %s", URLBase, url)
-	}
-
 	api = jcapi.NewJCAPI(apiKey, url)
 	results, err := api.GetCommandResultsBySavedCommandID(commandID)
 	if err != nil {

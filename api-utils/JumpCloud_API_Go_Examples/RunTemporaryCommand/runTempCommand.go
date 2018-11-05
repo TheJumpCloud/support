@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"flag"
 	"fmt"
 	"log"
@@ -10,7 +9,6 @@ import (
 	"time"
 
 	"github.com/TheJumpCloud/jcapi"
-	jcapiv1 "github.com/TheJumpCloud/jcapi-go/v1"
 )
 
 const (
@@ -22,9 +20,6 @@ const (
 	RESULT_MAX_POLL_TIME int = 70 // Stop checking for results after RESULT_MAX_POLL_TIME_SECONDS (must be a minimum of 60 seconds)
 
 	URL_BASE string = "https://console.jumpcloud.com/api"
-
-	CONTENT_TYPE = "application/json"
-	ACCEPT       = "application/json"
 )
 
 func makeImmediateCommand(name, command, commandType, shell, user string) jcapi.JCCommand {
@@ -71,7 +66,7 @@ func deleteCommandResultsByName(jc jcapi.JCAPI, commandName string) (err error) 
 	return
 }
 
-func findSystemsByOSType(systems []jcapiv1.System, osTypeRegEx string) (indices []int, err error) {
+func findSystemsByOSType(systems []jcapi.JCSystem, osTypeRegEx string) (indices []int, err error) {
 	r, err := regexp.Compile(osTypeRegEx)
 	if err != nil {
 		err = fmt.Errorf("Could not compile regex for '%s', err='%s'", osTypeRegEx, err.Error())
@@ -219,33 +214,10 @@ func main() {
 	shell := flag.String("shell", "powershell", "Shell (Windows-only) (powershell/cmd)")
 	osType := flag.String("os-type", "Windows.*", "A regular expression to match your systems for OS type")
 	deleteFlag := flag.Bool("delete-after-run", false, "When true, delete commands and results at completion.")
-	orgId := flag.String("org", "", "Your multi-tenant administrator's organization ID (optional)")
-	url := flag.String("url", URL_BASE, "Your Jumpcloud API URL (optional)")
 
 	flag.Parse()
 
-	if *url != URL_BASE {
-		fmt.Printf("URL overridden from: %s to: %s", URL_BASE, *url)
-	}
-
-	jc := jcapi.NewJCAPI(*apiKey, *url)
-	if *orgId == "" {
-		fmt.Println("You may specify an orgID for multi-tenant administrators.")
-	}
-
-	config := jcapiv1.NewConfiguration()
-	var apiClientV1 *jcapiv1.APIClient
-	apiClientV1 = jcapiv1.NewAPIClient(config)
-	apiClientV1.ChangeBasePath(*url)
-
-	var authv1 context.Context
-	authv1 = context.WithValue(context.TODO(), jcapiv1.ContextAPIKey, jcapiv1.APIKey{
-		Key: *apiKey,
-	})
-
-	optionals := map[string]interface{}{
-		"xOrgId": orgId,
-	}
+	jc := jcapi.NewJCAPI(*apiKey, URL_BASE)
 
 	// Generate a randomized command name
 	commandName := "CMD " + makeRandomString(COMMAND_NAME_RANDOM_PART)
@@ -262,12 +234,12 @@ func main() {
 	//
 	// Get the list of matching servers and add them to the command
 	//
-	systemsList, _, err := apiClientV1.SystemsApi.SystemsList(authv1, CONTENT_TYPE, ACCEPT, optionals)
+	systems, err := jc.GetSystems(false)
 	if err != nil {
 		log.Fatalf("Could not get a list of all systems, err='%s'")
 	}
 
-	indices, err := findSystemsByOSType(systemsList.Results, *osType)
+	indices, err := findSystemsByOSType(systems, *osType)
 	if err != nil {
 		log.Fatalf("Could not search a list of systems for OS type matching '%s', err='%s'", *osType, err.Error())
 	}
@@ -280,9 +252,9 @@ func main() {
 	fmt.Printf("------------------------------------------\n")
 
 	for _, index := range indices {
-		fmt.Printf("%s\t%s\n", systemsList.Results[index].Id, systemsList.Results[index].Hostname)
+		fmt.Printf("%s\t%s\n", systems[index].Id, systems[index].Hostname)
 
-		commandObj.Systems = append(commandObj.Systems, systemsList.Results[index].Id)
+		commandObj.Systems = append(commandObj.Systems, systems[index].Id)
 	}
 
 	//

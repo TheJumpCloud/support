@@ -134,7 +134,6 @@ func main() {
 	apiKey := flag.String("api-key", "", "Your JumpCloud Administrator API Key.")
 	backupTagRegex := flag.String("backup", "", "Set this flag to a regular expression that matches the tag names you want to backup to your local file system.")
 	restoreFile := flag.String("restore", "", "Set this flag to a filename that contains a tag you want to restore back to JumpCloud.")
-	url := flag.String("url", URL_BASE, "An optional, override URL (for use outside production)")
 
 	flag.Parse()
 
@@ -147,14 +146,10 @@ func main() {
 	}
 
 	if *backupTagRegex != "" && *restoreFile != "" {
-		log.Fatalf("You may specify only one of 'backup' or 'restore'.")
+		log.Fatalf("You may specific only one of 'backup' or 'restore'.")
 	}
 
-	if *url != URL_BASE {
-		fmt.Printf("URL overridden from: %s to: %s", URL_BASE, *url)
-	}
-
-	jc := jcapi.NewJCAPI(*apiKey, *url)
+	jc := jcapi.NewJCAPI(*apiKey, URL_BASE)
 
 	tags, err := jc.GetAllTags()
 	if err != nil {
