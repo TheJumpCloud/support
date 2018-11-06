@@ -1,3 +1,24 @@
+## 1.8.3
+
+Release Date: November 6, 2018
+
+#### RELEASE NOTES
+
+```
+Bug fix for Get-JCGroup to display all group attributes.
+Added functionality for JumpCloud internal developers to connect to staging and test environments using the module.
+```
+
+#### IMPROVEMENTS:
+
+- Updated Function: Connect-JCOnline has new parameter '-JCEnvironment' which JumpCloud developers can use to connect to staging and local test environments.
+- Updated Function: Connect-JCOnline has new parameter '-UserAgent' which JumpCloud developers can use to set their UserAgent when using the module.
+
+#### BUG FIXES:
+
+- Resolved bug on Get-JCGroup where all group attributes would not display. 
+
+
 ## 1.8.2
 
 Release Date: October 12, 2018
