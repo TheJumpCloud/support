@@ -2,11 +2,6 @@
 
 This tool allows you as a system administrator to remove the AD management flag from your systemusers and move them to be fully managed by JumpCloud's Directory as a Service.
 
-Multi-tenant administrators (administrators associated to more than one
-organization) cannot use this tool because it does not support the
-`x-org-id` HTTP header, which is required to specify which organization
-users should be released from.
-
 ### To Install
 
 ##### I do not have the Go toolchain installed
