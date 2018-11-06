@@ -15,12 +15,14 @@ The Connect-JCOnline function sets the global variable $JCAPIKEY
 
 ### Interactive (Default)
 ```
-Connect-JCOnline [-JumpCloudAPIKey] <String> [-JumpCloudOrgID <String>] [<CommonParameters>]
+Connect-JCOnline [-JumpCloudAPIKey] <String> [-JumpCloudOrgID <String>] [-JCEnvironment <Object>]
+ [-UserAgent <String>] [<CommonParameters>]
 ```
 
 ### force
 ```
-Connect-JCOnline [-JumpCloudAPIKey] <String> [-JumpCloudOrgID <String>] [-force] [<CommonParameters>]
+Connect-JCOnline [-JumpCloudAPIKey] <String> [-JumpCloudOrgID <String>] [-JCEnvironment <Object>] [-force]
+ [-UserAgent <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -122,6 +124,40 @@ Accept wildcard characters: False
 ```yaml
 Type: String
 Parameter Sets: force
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -JCEnvironment
+
+Specific to JumpCloud development team to connect to staging and local dev environments.
+
+
+```yaml
+Type: Object
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -UserAgent
+
+UserAgent passed to JumpCloud during API connection.
+
+
+```yaml
+Type: String
+Parameter Sets: (All)
 Aliases:
 
 Required: False
