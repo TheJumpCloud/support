@@ -141,8 +141,8 @@ Function Get-JCGroup ()
                 $GID = $UserGroupHash.Get_Item($param.Value)
                 $GURL = "$JCUrlBasePath/api/v2/usergroups/$GID"
                 $result = Invoke-RestMethod -Method GET -Uri $GURL -Headers $hdrs -UserAgent $JCUserAgent
-                    
-                $formattedResult = [PSCustomObject]@{
+                <#
+                    $formattedResult = [PSCustomObject]@{
 
                     name        = $result.name
                     ldapGroups  = $result.attributes.ldapGroups
@@ -151,10 +151,9 @@ Function Get-JCGroup ()
                     type        = $result.type
 
                 }
+                #>
 
-                $resultsArray += $formattedResult    
-                    
-                    
+                $resultsArray += $result
             }
 
         }
