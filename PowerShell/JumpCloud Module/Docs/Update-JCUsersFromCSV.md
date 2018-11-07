@@ -9,6 +9,7 @@ schema: 2.0.0
 
 ## SYNOPSIS
 Updates a set of JumpCloud users from a CSV file created using the New-JCImportTemplate function.
+
 ## SYNTAX
 
 ### GUI (Default)
@@ -27,6 +28,7 @@ The Update-JCUsersFromCSV function does data validation when updating JumpCloud 
 The Update-JCUserFromCSV command can be used to update user attributes, add users to groups, and bind users to systems in bulk.
 
 The Update-JCUserFromCSV command also has a '-force' parameter which admins can use to skip the data validate or to use the function in an automation script.
+
 ## EXAMPLES
 
 ### Example 1
@@ -43,6 +45,7 @@ PS C:\> Update-JCUsersFromCSV ./JCUserUpdateImport_09-20-2018.csv -Force
 ```
 
 Uses the 'Force' parameter to skip the GUI and data validation and update users from the file 'JCUserUpdateImport_09-20-2018.csv
+
 ## PARAMETERS
 
 ### -CSVFilePath
@@ -75,13 +78,11 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
-This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable.
-For more information, see about_CommonParameters (http://go.microsoft.com/fwlink/?LinkID=113216).
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see about_CommonParameters (http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
 ### None
-
 
 ## OUTPUTS
 

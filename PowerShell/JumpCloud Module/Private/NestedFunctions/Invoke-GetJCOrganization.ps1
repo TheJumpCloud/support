@@ -28,9 +28,9 @@ function Invoke-GetJCOrganization
 
 
 
-        $MultiTenantURL = "https://console.jumpcloud.com/api/organizations/"
+        $MultiTenantURL = "$JCUrlBasePath/api/organizations/"
 
-        $RawResults = Invoke-RestMethod -Method GET -Uri $MultiTenantURL -Headers $hdrs -UserAgent 'Pwsh_1.8.2' 
+        $RawResults = Invoke-RestMethod -Method GET -Uri $MultiTenantURL -Headers $hdrs -UserAgent $JCUserAgent
 
         foreach ($org in $RawResults.results)
         {

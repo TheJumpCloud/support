@@ -336,7 +336,7 @@ Function Get-JCSystem ()
 
                     Write-Debug $SearchJSON
 
-                    $URL = 'https://console.jumpcloud.com/api/search/systems'
+                    $URL = "$JCUrlBasePath/api/search/systems"
 
                     $Results = Invoke-RestMethod -Method POST -Uri $Url  -Header $hdrs -Body $SearchJSON
 
@@ -352,9 +352,9 @@ Function Get-JCSystem ()
             ByID
             {
 
-                $URL = "https://console.jumpcloud.com/api/Systems/$SystemID"
+                $URL = "$JCUrlBasePath/api/Systems/$SystemID"
                 Write-Verbose $URL
-                $results = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent 'Pwsh_1.8.2'
+                $results = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent $JCUserAgent
                 $null = $resultsArrayList.add($Results)
             }
 

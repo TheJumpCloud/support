@@ -166,7 +166,7 @@ Function Add-JCCommandTarget
 
 
         $jsonbody = $body | ConvertTo-Json
-        $URL = "https://console.jumpcloud.com/api/v2/commands/$($CommandID)/associations"
+        $URL = "$JCUrlBasePath/api/v2/commands/$($CommandID)/associations"
 
         
         if ($OS_conflict -ne $true)
@@ -175,7 +175,7 @@ Function Add-JCCommandTarget
             try
             {
 
-                $APIresults = Invoke-RestMethod -Method Post -Uri  $URL  -Header $hdrs -Body $jsonbody -UserAgent 'Pwsh_1.8.2'
+                $APIresults = Invoke-RestMethod -Method Post -Uri  $URL  -Header $hdrs -Body $jsonbody -UserAgent $JCUserAgent
                 $Status = 'Added'
                 
             }

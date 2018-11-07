@@ -95,12 +95,12 @@ Function Add-JCSystemGroupMember ()
             Write-Debug $jsonbody
 
 
-            $GroupsURL = "https://console.jumpcloud.com/api/v2/systemgroups/$GroupID/members"
+            $GroupsURL = "$JCUrlBasePath/api/v2/systemgroups/$GroupID/members"
             Write-Debug $GroupsURL
 
             try
             {
-                $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.8.2'
+                $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent $JCUserAgent
                 $Status = 'Added'
             }
             catch
@@ -144,12 +144,12 @@ Function Add-JCSystemGroupMember ()
             Write-Debug $jsonbody
 
 
-            $GroupsURL = "https://console.jumpcloud.com/api/v2/systemgroups/$GroupID/members"
+            $GroupsURL = "$JCUrlBasePath/api/v2/systemgroups/$GroupID/members"
             Write-Debug $GroupsURL
 
             try
             {
-                $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent 'Pwsh_1.8.2'
+                $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent $JCUserAgent
                 $Status = 'Added'
             }
             catch

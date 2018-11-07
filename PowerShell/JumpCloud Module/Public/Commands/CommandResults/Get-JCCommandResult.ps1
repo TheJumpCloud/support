@@ -78,7 +78,7 @@ function Get-JCCommandResult ()
             TotalCount
             { 
 
-                $CountURL = "https://console.jumpcloud.com/api/commandresults?limit=1&skip=0"
+                $CountURL = "$JCUrlBasePath/api/commandresults?limit=1&skip=0"
                 $results = Invoke-RestMethod -Method GET -Uri  $CountURL -Headers $hdrs
                 $null = $resultsArrayList.Add($results.totalCount)
 
@@ -92,7 +92,7 @@ function Get-JCCommandResult ()
     
                 while (($resultsArrayList.results).count -ge $Counter)
                 {
-                    $limitURL = "https://console.jumpcloud.com/api/commandresults?limit=$limit&skip=$skip"
+                    $limitURL = "$JCUrlBasePath/api/commandresults?limit=$limit&skip=$skip"
                     Write-Verbose $limitURL
     
                     $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs
@@ -116,7 +116,7 @@ function Get-JCCommandResult ()
                     { 
 
                         $Limit = $MaxResults
-                        $limitURL = "https://console.jumpcloud.com/api/commandresults?limit=$limit&skip=$skip"
+                        $limitURL = "$JCUrlBasePath/api/commandresults?limit=$limit&skip=$skip"
                         Write-Verbose $limitURL
     
                         $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs
@@ -136,7 +136,7 @@ function Get-JCCommandResult ()
             
                         while ($MaxResults -ne 0)
                         {
-                            $limitURL = "https://console.jumpcloud.com/api/commandresults?limit=$limit&skip=$skip"
+                            $limitURL = "$JCUrlBasePath/api/commandresults?limit=$limit&skip=$skip"
                             Write-Verbose $limitURL
             
                             $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs
@@ -166,7 +166,7 @@ function Get-JCCommandResult ()
             }
             ByID
             {
-                $URL = "https://console.jumpcloud.com/api/commandresults/$CommandResultID"
+                $URL = "$JCUrlBasePath/api/commandresults/$CommandResultID"
                 Write-Verbose $URL
 
                 $CommandResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs

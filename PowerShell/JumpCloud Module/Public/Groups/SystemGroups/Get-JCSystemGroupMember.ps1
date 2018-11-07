@@ -77,7 +77,7 @@ Function Get-JCSystemGroupMember ()
 
                     while ($rawResults.Count -ge $skip)
                     {
-                        $limitURL = "https://console.jumpcloud.com/api/v2/Systemgroups/$Group_ID/members?limit=$limit&skip=$skip"
+                        $limitURL = "$JCUrlBasePath/api/v2/Systemgroups/$Group_ID/members?limit=$limit&skip=$skip"
                         Write-Debug $limitURL
                         $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs
                         $skip += $limit
@@ -115,7 +115,7 @@ Function Get-JCSystemGroupMember ()
             while ($resultsArray.Count -ge $skip)
             {
 
-                $limitURL = "https://console.jumpcloud.com/api/v2/Systemgroups/$ByID/members?limit=$limit&skip=$skip"
+                $limitURL = "$JCUrlBasePath/api/v2/Systemgroups/$ByID/members?limit=$limit&skip=$skip"
                 Write-Debug $limitURL
                 $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs
                 $skip += $limit

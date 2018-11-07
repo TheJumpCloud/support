@@ -142,13 +142,13 @@ Function Add-JCSystemUser ()
             $jsonbody = $body | ConvertTo-Json
             Write-Verbose $jsonbody
 
-            $URL = "https://console.jumpcloud.com/api/v2/systems/$SystemID/associations"
+            $URL = "$JCUrlBasePath/api/v2/systems/$SystemID/associations"
             Write-Verbose $URL
 
 
             try
             {
-                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.8.2'
+                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent $JCUserAgent
                 $Status = 'Added'
 
             }
@@ -217,12 +217,12 @@ Function Add-JCSystemUser ()
             $jsonbody = $body | ConvertTo-Json
             Write-Verbose $jsonbody
 
-            $URL = "https://console.jumpcloud.com/api/v2/systems/$SystemID/associations"
+            $URL = "$JCUrlBasePath/api/v2/systems/$SystemID/associations"
             Write-Verbose $URL
 
             try
             {
-                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.8.2'
+                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent $JCUserAgent
                 $Status = 'Added'
 
             }

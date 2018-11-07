@@ -491,7 +491,7 @@ Function Set-JCUser ()
                 $URL_ID = $UserHash.Get_Item($Username)
                 Write-Debug $URL_ID
 
-                $URL = "https://console.jumpcloud.com/api/Systemusers/$URL_ID"
+                $URL = "$JCUrlBasePath/api/Systemusers/$URL_ID"
                 Write-Debug $URL
 
 
@@ -515,7 +515,7 @@ Function Set-JCUser ()
 
                 Write-Debug $jsonbody
 
-                $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.8.2'
+                $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent $JCUserAgent
 
                 $UpdatedUserArray += $NewUserInfo
 
@@ -534,7 +534,7 @@ Function Set-JCUser ()
                 $URL_ID = $UserHash.Get_Item($Username)
                 Write-Debug $URL_ID
 
-                $URL = "https://console.jumpcloud.com/api/Systemusers/$URL_ID"
+                $URL = "$JCUrlBasePath/api/Systemusers/$URL_ID"
                 Write-Debug $URL
 
                 $CurrentAttributes = Get-JCUser -UserID $URL_ID | Select-Object -ExpandProperty attributes | Select-Object value, name
@@ -642,7 +642,7 @@ Function Set-JCUser ()
 
                 Write-Debug $jsonbody
 
-                $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.8.2'
+                $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent $JCUserAgent
 
                 $UpdatedUserArray += $NewUserInfo
 
@@ -661,7 +661,7 @@ Function Set-JCUser ()
                 $URL_ID = $UserHash.Get_Item($Username)
                 Write-Debug $URL_ID
 
-                $URL = "https://console.jumpcloud.com/api/Systemusers/$URL_ID"
+                $URL = "$JCUrlBasePath/api/Systemusers/$URL_ID"
                 Write-Debug $URL
 
                 $CurrentAttributes = Get-JCUser -UserID $URL_ID | Select-Object -ExpandProperty attributes | Select-Object value, name
@@ -720,7 +720,7 @@ Function Set-JCUser ()
 
                 Write-Debug $jsonbody
 
-                $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.8.2'
+                $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent $JCUserAgent
 
                 $UpdatedUserArray += $NewUserInfo
 
@@ -735,7 +735,7 @@ Function Set-JCUser ()
         {
             Write-Debug $UserID
 
-            $URL = "https://console.jumpcloud.com/api/Systemusers/$UserID"
+            $URL = "$JCUrlBasePath/api/Systemusers/$UserID"
 
             Write-Debug $URL
 
@@ -763,7 +763,7 @@ Function Set-JCUser ()
 
             Write-Debug $jsonbody
 
-            $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.8.2'
+            $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent $JCUserAgent
 
             $UpdatedUserArray += $NewUserInfo
 
@@ -774,7 +774,7 @@ Function Set-JCUser ()
         {
             Write-Debug $UserID
 
-            $URL = "https://console.jumpcloud.com/api/Systemusers/$UserID"
+            $URL = "$JCUrlBasePath/api/Systemusers/$UserID"
 
             $CurrentAttributes = Get-JCUser -UserID $UserID | Select-Object -ExpandProperty attributes | Select-Object value, name
             Write-Debug "There are $($CurrentAttributes.count) existing attributes"
@@ -887,7 +887,7 @@ Function Set-JCUser ()
 
             Write-Debug $jsonbody
 
-            $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.8.2'
+            $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent $JCUserAgent
 
             $UpdatedUserArray += $NewUserInfo
 

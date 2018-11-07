@@ -59,10 +59,10 @@ Function Get-JCCommand ()
 
             while (($resultsArray).Count -ge $skip)
             {
-                $limitURL = "https://console.jumpcloud.com/api/commands?sort=type,_id&limit=$limit&skip=$skip"
+                $limitURL = "$JCUrlBasePath/api/commands?sort=type,_id&limit=$limit&skip=$skip"
                 Write-Debug $limitURL
 
-                $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent 'Pwsh_1.8.2'
+                $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent $JCUserAgent
 
                 $skip += $limit
                 Write-Debug "Setting skip to $skip"
@@ -78,9 +78,9 @@ Function Get-JCCommand ()
         {
             foreach ($uid in $CommandID)
             {
-                $URL = "https://console.jumpcloud.com/api/commands/$uid"
+                $URL = "$JCUrlBasePath/api/commands/$uid"
                 Write-Debug $URL
-                $CommandResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent 'Pwsh_1.8.2'
+                $CommandResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent $JCUserAgent
                 $resultsArray += $CommandResults
 
             }

@@ -64,9 +64,9 @@ Function Set-JCUserGroupLDAP
         }
 
 
-        $LDAPURL = "https://console.jumpcloud.com/api/v2/ldapservers"
+        $LDAPURL = "$JCUrlBasePath/api/v2/ldapservers"
 
-        $LDAPServer = Invoke-RestMethod -Method GET -Uri $LDAPURL  -Header $hdrs -UserAgent 'Pwsh_1.8.2'
+        $LDAPServer = Invoke-RestMethod -Method GET -Uri $LDAPURL  -Header $hdrs -UserAgent $JCUserAgent
         
         if ($LDAPServer.Count -gt 1)
         {
@@ -86,7 +86,7 @@ Function Set-JCUserGroupLDAP
 
             $GroupID = $GroupNameHash.Get_Item($GroupName)
             
-            $POSTUrl = "https://console.jumpcloud.com/api/v2/usergroups/$GroupID/associations"
+            $POSTUrl = "$JCUrlBasePath/api/v2/usergroups/$GroupID/associations"
 
             switch ($LDAPEnabled)
             {
@@ -118,7 +118,7 @@ Function Set-JCUserGroupLDAP
             try
             {
             
-                $LDAPUpdate = Invoke-RestMethod -Method Post -Uri $POSTUrl -Body $JsonPostBody -Headers $hdrs -UserAgent 'Pwsh_1.8.2'
+                $LDAPUpdate = Invoke-RestMethod -Method Post -Uri $POSTUrl -Body $JsonPostBody -Headers $hdrs -UserAgent $JCUserAgent
 
                 $Results = [PSCustomObject]@{
 
@@ -148,7 +148,7 @@ Function Set-JCUserGroupLDAP
         elseif ($PSCmdlet.ParameterSetName -eq 'GroupID')
         {
             
-            $POSTUrl = "https://console.jumpcloud.com/api/v2/usergroups/$GroupID/associations"
+            $POSTUrl = "$JCUrlBasePath/api/v2/usergroups/$GroupID/associations"
 
             switch ($LDAPEnabled)
             {
@@ -180,7 +180,7 @@ Function Set-JCUserGroupLDAP
             try
             {
             
-                $LDAPUpdate = Invoke-RestMethod -Method Post -Uri $POSTUrl -Body $JsonPostBody -Headers $hdrs -UserAgent 'Pwsh_1.8.2'
+                $LDAPUpdate = Invoke-RestMethod -Method Post -Uri $POSTUrl -Body $JsonPostBody -Headers $hdrs -UserAgent $JCUserAgent
 
                 $Results = [PSCustomObject]@{
 

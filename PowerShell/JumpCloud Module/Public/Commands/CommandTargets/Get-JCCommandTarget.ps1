@@ -99,12 +99,12 @@ Function Get-JCCommandTarget
 
                 while ($count -ge $skip)
                 {        
-                    $SystemURL = "https://console.jumpcloud.com/api/v2/commands/$CommandID/systems?limit=$limit&skip=$skip"
+                    $SystemURL = "$JCUrlBasePath/api/v2/commands/$CommandID/systems?limit=$limit&skip=$skip"
                     
         
                     Write-Verbose $SystemURL
         
-                    $APIresults = Invoke-RestMethod -Method GET -Uri  $SystemURL  -Header $hdrs -UserAgent 'Pwsh_1.8.2'
+                    $APIresults = Invoke-RestMethod -Method GET -Uri  $SystemURL  -Header $hdrs -UserAgent $JCUserAgent
         
                     $skip += $limit
                     Write-Verbose "Setting skip to  $skip"
@@ -147,12 +147,12 @@ Function Get-JCCommandTarget
         
                 while ($count -ge $skip)
                 {
-                    $SystemGroupsURL = "https://console.jumpcloud.com/api/v2/commands/$CommandID/systemgroups?limit=$limit&skip=$skip"
+                    $SystemGroupsURL = "$JCUrlBasePath/api/v2/commands/$CommandID/systemgroups?limit=$limit&skip=$skip"
                     
         
                     Write-Verbose $SystemGroupsURL
         
-                    $APIresults = Invoke-RestMethod -Method GET -Uri  $SystemGroupsURL  -Header $hdrs -UserAgent 'Pwsh_1.8.2'
+                    $APIresults = Invoke-RestMethod -Method GET -Uri  $SystemGroupsURL  -Header $hdrs -UserAgent $JCUserAgent
         
                     $skip += $limit
                     Write-Verbose "Setting skip to  $skip"

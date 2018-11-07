@@ -84,7 +84,7 @@ Function Send-JCPasswordReset
                     $jsonbody = $Body | ConvertTo-Json -Depth 4 -Compress
                     
                     
-                    $URL = 'https://console.jumpcloud.com/api/systemusers/reactivate'
+                    $URL = "$JCUrlBasePath/api/systemusers/reactivate"
 
                     try
                     {
@@ -139,7 +139,7 @@ Function Send-JCPasswordReset
                 $jsonbody = $Body | ConvertTo-Json -Depth 4 -Compress
                     
                     
-                $URL = 'https://console.jumpcloud.com/api/systemusers/reactivate'
+                $URL = "$JCUrlBasePath/api/systemusers/reactivate"
 
                 try
                 {

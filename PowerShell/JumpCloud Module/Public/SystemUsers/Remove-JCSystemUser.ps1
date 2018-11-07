@@ -110,14 +110,14 @@ Function Remove-JCSystemUser ()
             $jsonbody = $body | ConvertTo-Json
             Write-Debug $jsonbody
 
-            $URL = "https://console.jumpcloud.com/api/v2/systems/$SystemID/associations"
+            $URL = "$JCUrlBasePath/api/v2/systems/$SystemID/associations"
             Write-Debug $URL
 
             Write-Warning "Are you sure you want to remove user: $Username from system: $HostName id: $SystemID ?" -WarningAction Inquire
 
             try
             {
-                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.8.2'
+                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent $JCUserAgent
                 $Status = 'Removed'
 
             }
@@ -156,12 +156,12 @@ Function Remove-JCSystemUser ()
             $jsonbody = $body | ConvertTo-Json
             Write-Debug $jsonbody
 
-            $URL = "https://console.jumpcloud.com/api/v2/systems/$SystemID/associations"
+            $URL = "$JCUrlBasePath/api/v2/systems/$SystemID/associations"
             Write-Debug $URL
 
             try
             {
-                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.8.2'
+                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent $JCUserAgent
                 $Status = 'Removed'
 
             }
@@ -196,12 +196,12 @@ Function Remove-JCSystemUser ()
             $jsonbody = $body | ConvertTo-Json
             Write-Debug $jsonbody
 
-            $URL = "https://console.jumpcloud.com/api/v2/systems/$SystemID/associations"
+            $URL = "$JCUrlBasePath/api/v2/systems/$SystemID/associations"
             Write-Debug $URL
 
             try
             {
-                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.8.2'
+                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent $JCUserAgent
                 $Status = 'Removed'
 
             }

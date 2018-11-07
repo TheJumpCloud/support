@@ -73,7 +73,7 @@ Function Set-JCCommand
             $hdrs.Add('x-org-id', "$($JCOrgID)")
         }
 
-        $URL = "https://console.jumpcloud.com/api/commands/$($CommandID)"
+        $URL = "$JCUrlBasePath/api/commands/$($CommandID)"
 
         Write-Verbose 'Initilizing NewCommandsArray'
         $NewCommandsArray = @()
@@ -98,7 +98,7 @@ Function Set-JCCommand
 
         $jsonbody = $body | ConvertTo-Json
 
-        $NewCommand = Invoke-RestMethod -Uri $URL -Method PUT -Body $jsonbody -Headers $hdrs -UserAgent 'Pwsh_1.8.2'
+        $NewCommand = Invoke-RestMethod -Uri $URL -Method PUT -Body $jsonbody -Headers $hdrs -UserAgent $JCUserAgent
 
         $NewCommandsArray += $NewCommand
 

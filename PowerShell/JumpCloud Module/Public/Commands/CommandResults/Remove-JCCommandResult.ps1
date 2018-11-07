@@ -56,13 +56,13 @@ Function Remove-JCCommandResult ()
         if ($PSCmdlet.ParameterSetName -eq 'warn')
 
         {
-            $URI = "https://console.jumpcloud.com/api/commandresults/$CommandResultID"
+            $URI = "$JCUrlBasePath/api/commandresults/$CommandResultID"
 
             $result = Get-JCcommandresult -ByID $CommandResultID | Select-Object -ExpandProperty Name #may need to modify this
 
             Write-Warning "Are you sure you wish to delete object: $result ?" -WarningAction Inquire
 
-            $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.8.2'
+            $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent $JCUserAgent
 
             $deleteArray += $delete
         }
@@ -70,9 +70,9 @@ Function Remove-JCCommandResult ()
         elseif ($PSCmdlet.ParameterSetName -eq 'force')
         {
 
-            $URI = "https://console.jumpcloud.com/api/commandresults/$CommandResultID"
+            $URI = "$JCUrlBasePath/api/commandresults/$CommandResultID"
 
-            $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent 'Pwsh_1.8.2'
+            $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent $JCUserAgent
 
             $deleteArray += $delete
         }

@@ -128,7 +128,7 @@ Function Invoke-JCCommand ()
 
         }
      
-        $URL = "https://console.jumpcloud.com/api/command/trigger/$trigger"
+        $URL = "$JCUrlBasePath/api/command/trigger/$trigger"
         Write-Verbose $URL
 
 

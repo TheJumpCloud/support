@@ -394,7 +394,7 @@ Function Get-JCUser ()
 
                     Write-Debug $SearchJSON
 
-                    $URL = 'https://console.jumpcloud.com/api/search/systemusers'
+                    $URL = "$JCUrlBasePath/api/search/systemusers"
 
                     $Results = Invoke-RestMethod -Method POST -Uri $Url  -Header $hdrs -Body $SearchJSON
 
@@ -411,9 +411,9 @@ Function Get-JCUser ()
             ByID
             {
 
-                $URL = "https://console.jumpcloud.com/api/Systemusers/$Userid"
+                $URL = "$JCUrlBasePath/api/Systemusers/$Userid"
                 Write-Verbose $URL
-                $results = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent 'Pwsh_1.8.2'
+                $results = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent $JCUserAgent
                 $null = $resultsArrayList.add($Results)
             }
 
