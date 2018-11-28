@@ -1,6 +1,6 @@
 #### Name
 
-Windows - Get Windows Defender Exclusions | v1.0 JCCG
+Windows - Get Windows Defender Settings | v1.0 JCCG
 
 #### commandType
 
