@@ -9,7 +9,7 @@ windows
 #### Command
 
 ```
-#$64BitCommand = "Add-MpPreference -ExclusionPath 'C:\Program Files (x86)\JumpCloud\jumpcloud-agent.exe'"
+$64BitCommand = "Add-MpPreference -ExclusionPath 'C:\Program Files (x86)\JumpCloud\jumpcloud-agent.exe'"
 
 & (Join-Path ($PSHOME -replace 'syswow64', 'sysnative') powershell.exe) -Command "& {$64BitCommand}"
 ```
