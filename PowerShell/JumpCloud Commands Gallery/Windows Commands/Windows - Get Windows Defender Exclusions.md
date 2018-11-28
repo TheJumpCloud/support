@@ -9,7 +9,7 @@ windows
 #### Command
 
 ```
-#$64BitCommand = "Get-MpPreference"
+$64BitCommand = "Get-MpPreference"
 
 & (Join-Path ($PSHOME -replace 'syswow64', 'sysnative') powershell.exe) -Command "& {$64BitCommand}"
 ```
