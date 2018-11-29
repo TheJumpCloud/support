@@ -1,3 +1,35 @@
+## 1.9.0
+
+Release Date: November 29, 2018
+
+#### RELEASE NOTES
+
+```
+Drastically increase the security of your networks using VLANs and RADIUS VLAN tagging!
+Use the new RADIUS reply attribute functions to authenticate and authorize users to VLANs using JumpCloud RADIUS.
+Add RADIUS reply attributes to JumpCloud user groups associated with RADIUS servers and implement dynamic per-user VLAN tagging on your network today.
+New functions:
+Add-JCRadiusReplyAttribute
+Get-JCRadiusReplyAttribute
+Set-JCRadiusReplyAttribute
+Remove-JCRadiusReplyAttribute
+```
+
+#### FEATURES:
+
+RADIUS reply attributes can now be configured on JumpCloud user groups using functions in the JumpCloud PowerShell module. When applied, these attributes will be returned in the Access-Accept message of a RADIUS request. Reply attributes are specified on JumpCloud user groups. Attributes can be applied across multiple users and RADIUS servers through the association of JumpCloud users to JumpCloud user groups and then the association of these JumpCloud user groups to RADIUS servers.
+
+Any RADIUS reply attributes configured on a JumpCloud user group which associates a user to a RADIUS server will be returned in the Access-Accept message sent to the endpoint configured to authenticate with JumpCloud Radius. If a user is a member of more then one JumpCloud user group associated with a given RADIUS server all Reply attributes for the groups that associate the user to the RADIUS server will be returned in the Access-Accept message.
+
+If a user is a member of more then one JumpCloud user group associated with a given RADIUS server and these groups are configured with conflicting RADIUS reply attributes then the values of the attributes for the group that was created most recently will be returned in the Access-Accept message.
+
+RADIUS reply attribute conflicts are resolved based on the creation date of the user group where groups that are created more recently take precedent over older groups. Conflicts occur when groups are configured with the same RADIUS reply attributes and have conflicting attribute values. RADIUS reply attributes with the same attribute names but different tag values do not create conflicts.
+
+- New Function: Add-JCRadiusReplyAttribute Adds Radius reply attributes to a JumpCloud user group.
+- New Function: Get-JCRadiusReplyAttribute Returns the Radius reply attributes associated with a JumpCloud user group.
+- New Function: Set-JCRadiusReplyAttribute Updates or adds Radius reply attributes to a JumpCloud user group.
+- New Function: Remove-JCRadiusReplyAttribute Removes Radius reply attributes from a JumpCloud user group.
+
 ## 1.8.3
 
 Release Date: November 6, 2018
