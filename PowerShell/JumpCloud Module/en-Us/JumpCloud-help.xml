@@ -202,6 +202,185 @@
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
+      <command:name>Add-JCRadiusReplyAttribute</command:name>
+      <command:verb>Add</command:verb>
+      <command:noun>JCRadiusReplyAttribute</command:noun>
+      <maml:description>
+        <maml:para>Adds Radius reply attributes to a JumpCloud user group.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Adds Radius reply attributes to a JumpCloud user group.</maml:para>
+      <maml:para>Any RADIUS reply attributes configured on a JumpCloud user group which associates a user to a RADIUS server will be returned in the Access-Accept message sent to the endpoint configured to authenticate with JumpCloud Radius. If a user is a member of more then one JumpCloud user group associated with a given RADIUS server all Reply attributes for the groups that associate the user to the RADIUS server will be returned in the Access-Accept message.</maml:para>
+      <maml:para>If a user is a member of more then one JumpCloud user group associated with a given RADIUS server and these groups are configured with conflicting RADIUS reply attributes then the values of the attributes for the group that was created most recently will be returned in the Access-Accept message.</maml:para>
+      <maml:para>RADIUS reply attribute conflicts are resolved based on the creation date of the user group where groups that are created more recently take precedent over older groups. Conflicts occur when groups are configured with the same RADIUS reply attributes and have conflicting attribute values. RADIUS reply attributes with the same attribute names but different tag values do not create conflicts.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Add-JCRadiusReplyAttribute</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="name">
+          <maml:name>GroupName</maml:name>
+          <maml:Description>
+            <maml:para>The JumpCloud user group to add the specified Radius reply attributes to.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>NumberOfAttributes</maml:name>
+          <maml:Description>
+            <maml:para>The number of RADIUS reply attributes you wish to add to a user group.</maml:para>
+            <maml:para>If an attributes exists with a name that matches the new attribute then the existing attribute will be updated.</maml:para>
+            <maml:para>Based on the NumberOfAttributes value two Dynamic Parameters will be created for each Attribute: Attribute_name and Attribute_value with an associated number.</maml:para>
+            <maml:para>See an example for working with Custom Attribute in EXAMPLE 3 above.</maml:para>
+            <maml:para>Attributes must be valid RADIUS attributes. Find a list of valid RADIUS attributes within the dictionary files of this repro broken down by vendor: github.com/FreeRADIUS/freeradius-server/tree/v3.0.x/share If an invalid attribute is configured on a user group this will prevent users within this group from being able to authenticate via RADIUS until the invalid attribute is removed.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+          <dev:type>
+            <maml:name>Int32</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>VLAN</maml:name>
+          <maml:Description>
+            <maml:para>By specifying the '-VLAN' parameter three radius attributes are added to the target user group.</maml:para>
+            <maml:para>These attributes and values are are:</maml:para>
+            <maml:para>name                    value ----                    ----- Tunnel-Medium-Type      IEEE-802 Tunnel-Type             VLAN Tunnel-Private-Group-Id VALUE of -VLAN The value specified for the '-VLAN' parameter is populated for the value of Tunnel-Private-Group-Id .</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="name">
+        <maml:name>GroupName</maml:name>
+        <maml:Description>
+          <maml:para>The JumpCloud user group to add the specified Radius reply attributes to.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>NumberOfAttributes</maml:name>
+        <maml:Description>
+          <maml:para>The number of RADIUS reply attributes you wish to add to a user group.</maml:para>
+          <maml:para>If an attributes exists with a name that matches the new attribute then the existing attribute will be updated.</maml:para>
+          <maml:para>Based on the NumberOfAttributes value two Dynamic Parameters will be created for each Attribute: Attribute_name and Attribute_value with an associated number.</maml:para>
+          <maml:para>See an example for working with Custom Attribute in EXAMPLE 3 above.</maml:para>
+          <maml:para>Attributes must be valid RADIUS attributes. Find a list of valid RADIUS attributes within the dictionary files of this repro broken down by vendor: github.com/FreeRADIUS/freeradius-server/tree/v3.0.x/share If an invalid attribute is configured on a user group this will prevent users within this group from being able to authenticate via RADIUS until the invalid attribute is removed.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+        <dev:type>
+          <maml:name>Int32</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>VLAN</maml:name>
+        <maml:Description>
+          <maml:para>By specifying the '-VLAN' parameter three radius attributes are added to the target user group.</maml:para>
+          <maml:para>These attributes and values are are:</maml:para>
+          <maml:para>name                    value ----                    ----- Tunnel-Medium-Type      IEEE-802 Tunnel-Type             VLAN Tunnel-Private-Group-Id VALUE of -VLAN The value specified for the '-VLAN' parameter is populated for the value of Tunnel-Private-Group-Id .</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>System.Int32</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para></maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- Example 1 --------------------------</maml:title>
+        <dev:code>Add-JCRadiusReplyAttribute -GroupName "BoulderOffice" -VLAN 24</dev:code>
+        <dev:remarks>
+          <maml:para>By specifying the '-VLAN' parameter three radius attributes are added to the JumpCloud user group 'BoulderOffice'.</maml:para>
+          <maml:para>These attributes are:</maml:para>
+          <maml:para>name                    value ----                    ----- Tunnel-Medium-Type      IEEE-802 Tunnel-Type             VLAN Tunnel-Private-Group-Id 24</maml:para>
+          <maml:para>The value specified for the '-VLAN' parameter is populated for the value of Tunnel-Private-Group-Id .</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>Add-JCRadiusReplyAttribute -GroupName "BoulderOffice" -VLAN 24 -VLANTag 3</dev:code>
+        <dev:remarks>
+          <maml:para>By specifying the '-VLAN' parameter three radius attributes are added to the JumpCloud user group 'BoulderOffice'. The use of '-VLANTag' appends each VLAN attribute name with a colon and the tag number specified.</maml:para>
+          <maml:para>These attributes are:</maml:para>
+          <maml:para>name                    value ----                    ----- Tunnel-Medium-Type:3      IEEE-802 Tunnel-Type:3             VLAN Tunnel-Private-Group-Id:3 24</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
+        <dev:code>Add-JCRadiusReplyAttribute -GroupName "BoulderOffice" -NumberOfCustomAttributes 2 -Attribute1_name "Session-Timeout" -Attribute1_value 100 -Attribute2_name "Termination-Action" -Attribute2_value 1</dev:code>
+        <dev:remarks>
+          <maml:para>Adds two Radius attributes to the JumpCloud user group 'BoulderOffice'.</maml:para>
+          <maml:para>These attribute are:</maml:para>
+          <maml:para>name               value ----               ----- Session-Timeout    100 Termination-Action 1</maml:para>
+          <maml:para>The parameter '-NumberOfCustomAttributes' is a dynamic parameter that generates two required parameters for each custom attribute specified. In this example these parameters are -Attribute1_name,-Attribute1_value, -Attribute2_name and -Attribute2_value.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 4 --------------------------</maml:title>
+        <dev:code>Add-JCRadiusReplyAttribute -GroupName "BoulderOffice" -VLAN 24 -NumberOfCustomAttributes 2 -Attribute1_name "Session-Timeout" -Attribute1_value 100 -Attribute2_name "Termination-Action" -Attribute2_value 1</dev:code>
+        <dev:remarks>
+          <maml:para>Adds five Radius reply attributes to the JumpCloud User group 'BoulderUsers'</maml:para>
+          <maml:para>These attributes are:</maml:para>
+          <maml:para>name                    value ----                    ----- Tunnel-Medium-Type      IEEE-802 Termination-Action      1 Tunnel-Type             VLAN Session-Timeout         100 Tunnel-Private-Group-Id 24</maml:para>
+          <maml:para>By specifying the '-VLAN' parameter three radius attributes are added to the JumpCloud user group 'BoulderOffice'. The value specified for the '-VLAN' parameter is populated for the value of Tunnel-Private-Group-Id .The parameter '-NumberOfCustomAttributes' is a dynamic parameter that generates two required parameters for each custom attribute specified. In this example these parameters are -Attribute1_name,-Attribute1_value, -Attribute2_name and -Attribute2_value.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Help Add-JCRadiusReplyAttribute</maml:linkText>
+        <maml:uri>https://github.com/TheJumpCloud/support/wiki/Add-JCRadiusReplyAttribute</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
       <command:name>Add-JCSystemGroupMember</command:name>
       <command:verb>Add</command:verb>
       <command:noun>JCSystemGroupMember</command:noun>
@@ -2041,6 +2220,93 @@
       <maml:navigationLink>
         <maml:linkText>Get-JCOrganization</maml:linkText>
         <maml:uri>https://github.com/TheJumpCloud/support/wiki/Get-JCOrganization</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Get-JCRadiusReplyAttribute</command:name>
+      <command:verb>Get</command:verb>
+      <command:noun>JCRadiusReplyAttribute</command:noun>
+      <maml:description>
+        <maml:para>Returns the Radius reply attributes associated with a JumpCloud user group.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Returns the Radius reply attributes associated with a JumpCloud user group. User authentication Radius requests will return with the Radius reply attributes configured on the JumpCloud user groups which associates the user to JumpCloud Radius.</maml:para>
+      <maml:para>Any RADIUS reply attributes configured on a JumpCloud user group which associates a user to a RADIUS server will be returned in the Access-Accept message sent to the endpoint configured to authenticate with JumpCloud Radius. If a user is a member of more then one JumpCloud user group associated with a given RADIUS server all Reply attributes for the groups that associate the user to the RADIUS server will be returned in the Access-Accept message.</maml:para>
+      <maml:para>If a user is a member of more then one JumpCloud user group associated with a given RADIUS server and these groups are configured with conflicting RADIUS reply attributes then the values of the attributes for the group that was created most recently will be returned in the Access-Accept message.</maml:para>
+      <maml:para>RADIUS reply attribute conflicts are resolved based on the creation date of the user group where groups that are created more recently take precedent over older groups. Conflicts occur when groups are configured with the same RADIUS reply attributes and have conflicting attribute values. RADIUS reply attributes with the same attribute names but different tag values do not create conflicts.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Get-JCRadiusReplyAttribute</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="name">
+          <maml:name>GroupName</maml:name>
+          <maml:Description>
+            <maml:para>The JumpCloud user group to query for Radius attributes.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="name">
+        <maml:name>GroupName</maml:name>
+        <maml:Description>
+          <maml:para>The JumpCloud user group to query for Radius attributes.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para></maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- Example 1 --------------------------</maml:title>
+        <dev:code>Get-JCRadiusReplyAttribute -GroupName BoulderOffice</dev:code>
+        <dev:remarks>
+          <maml:para>Returns the Radius reply attributes associated with the JumpCloud user group 'BoulderOffice'.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Help Get-JCRadiusReplyAttribute</maml:linkText>
+        <maml:uri>https://github.com/TheJumpCloud/support/wiki/Get-JCRadiusReplyAttribute</maml:uri>
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
@@ -6349,6 +6615,147 @@ SystemID                 CommandID                Status
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
+      <command:name>Remove-JCRadiusReplyAttribute</command:name>
+      <command:verb>Remove</command:verb>
+      <command:noun>JCRadiusReplyAttribute</command:noun>
+      <maml:description>
+        <maml:para>Removes Radius reply attributes from a JumpCloud user group.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Removes Radius reply attributes from a JumpCloud user group. User authentication Radius requests will return with the Radius reply attributes configured on the JumpCloud user groups which associates the user to JumpCloud Radius.</maml:para>
+      <maml:para>Any RADIUS reply attributes configured on a JumpCloud user group which associates a user to a RADIUS server will be returned in the Access-Accept message sent to the endpoint configured to authenticate with JumpCloud Radius. If a user is a member of more then one JumpCloud user group associated with a given RADIUS server all Reply attributes for the groups that associate the user to the RADIUS server will be returned in the Access-Accept message.</maml:para>
+      <maml:para>If a user is a member of more then one JumpCloud user group associated with a given RADIUS server and these groups are configured with conflicting RADIUS reply attributes then the values of the attributes for the group that was created most recently will be returned in the Access-Accept message.</maml:para>
+      <maml:para>RADIUS reply attribute conflicts are resolved based on the creation date of the user group where groups that are created more recently take precedent over older groups. Conflicts occur when groups are configured with the same RADIUS reply attributes and have conflicting attribute values. RADIUS reply attributes with the same attribute names but different tag values do not create conflicts.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Remove-JCRadiusReplyAttribute</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="name">
+          <maml:name>GroupName</maml:name>
+          <maml:Description>
+            <maml:para>The JumpCloud user group to remove the specified Radius reply attributes from.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>All</maml:name>
+          <maml:Description>
+            <maml:para>The '-All' parameter is a switch parameter which will clear all Radius reply attributes from a JumpCloud user group.</maml:para>
+          </maml:Description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>AttributeName</maml:name>
+          <maml:Description>
+            <maml:para>Attributes to remove from a target user group. To remove multiple attributes at one time separate the attribute names with commas.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+          <dev:type>
+            <maml:name>String[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>All</maml:name>
+        <maml:Description>
+          <maml:para>The '-All' parameter is a switch parameter which will clear all Radius reply attributes from a JumpCloud user group.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>AttributeName</maml:name>
+        <maml:Description>
+          <maml:para>Attributes to remove from a target user group. To remove multiple attributes at one time separate the attribute names with commas.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+        <dev:type>
+          <maml:name>String[]</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="name">
+        <maml:name>GroupName</maml:name>
+        <maml:Description>
+          <maml:para>The JumpCloud user group to remove the specified Radius reply attributes from.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>System.String[] System.Management.Automation.SwitchParameter</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para></maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- Example 1 --------------------------</maml:title>
+        <dev:code>Remove-JCRadiusReplyAttribute -GroupName BoulderOffice -All</dev:code>
+        <dev:remarks>
+          <maml:para>Removes all Radius reply attributes from the JumpCloud user group 'BoulderOffice' using the '-All' parameter.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>Remove-JCRadiusReplyAttribute -GroupName BoulderOffice -AttributeName "Session-Timeout", "Termination-Action"</dev:code>
+        <dev:remarks>
+          <maml:para>Removes attributes with the name "Session-Timeout", "Termination-Action" from the target user group 'BoulderOffice'. To remove multiple attributes at one time separate the attribute names with commas.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Help Remove-JCRadiusReplyAttribute</maml:linkText>
+        <maml:uri>https://github.com/TheJumpCloud/support/wiki/Remove-JCRadiusReplyAttribute</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
       <command:name>Remove-JCSystem</command:name>
       <command:verb>Remove</command:verb>
       <command:noun>JCSystem</command:noun>
@@ -8071,6 +8478,176 @@ Enter a value between 1 and 2:</dev:code>
       <maml:navigationLink>
         <maml:linkText>Set-JCOrganization</maml:linkText>
         <maml:uri>https://github.com/TheJumpCloud/support/wiki/Set-JCOrganization</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Set-JCRadiusReplyAttribute</command:name>
+      <command:verb>Set</command:verb>
+      <command:noun>JCRadiusReplyAttribute</command:noun>
+      <maml:description>
+        <maml:para>Updates or adds Radius reply attributes to a JumpCloud user group.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Updates or adds Radius reply attributes to a JumpCloud user group. User authentication Radius requests will return with the Radius reply attributes configured on the JumpCloud user groups which associates the user to JumpCloud Radius.</maml:para>
+      <maml:para>Any RADIUS reply attributes configured on a JumpCloud user group which associates a user to a RADIUS server will be returned in the Access-Accept message sent to the endpoint configured to authenticate with JumpCloud Radius. If a user is a member of more then one JumpCloud user group associated with a given RADIUS server all Reply attributes for the groups that associate the user to the RADIUS server will be returned in the Access-Accept message.</maml:para>
+      <maml:para>If a user is a member of more then one JumpCloud user group associated with a given RADIUS server and these groups are configured with conflicting RADIUS reply attributes then the values of the attributes for the group that was created most recently will be returned in the Access-Accept message.</maml:para>
+      <maml:para>RADIUS reply attribute conflicts are resolved based on the creation date of the user group where groups that are created more recently take precedent over older groups. Conflicts occur when groups are configured with the same RADIUS reply attributes and have conflicting attribute values. RADIUS reply attributes with the same attribute names but different tag values do not create conflicts.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Set-JCRadiusReplyAttribute</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="name">
+          <maml:name>GroupName</maml:name>
+          <maml:Description>
+            <maml:para>The JumpCloud user group to add or update the specified Radius reply attributes on.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>NumberOfAttributes</maml:name>
+          <maml:Description>
+            <maml:para>The number of RADIUS reply attributes you wish to add to a user group.</maml:para>
+            <maml:para>If an attributes exists with a name that matches the new attribute then the existing attribute will be updated.</maml:para>
+            <maml:para>Based on the NumberOfAttributes value two Dynamic Parameters will be created for each Attribute: Attribute_name and Attribute_value with an associated number.</maml:para>
+            <maml:para>See an example for working with Custom Attribute in EXAMPLE 3 above.</maml:para>
+            <maml:para>Attributes must be valid RADIUS attributes. Find a list of valid RADIUS attributes within the dictionary files of this repro broken down by vendor: github.com/FreeRADIUS/freeradius-server/tree/v3.0.x/share If an invalid attribute is configured on a user group this will prevent users within this group from being able to authenticate via RADIUS until the invalid attribute is removed.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+          <dev:type>
+            <maml:name>Int32</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>VLAN</maml:name>
+          <maml:Description>
+            <maml:para>By specifying the '-VLAN' parameter three radius attributes are added or updated on the target user group.</maml:para>
+            <maml:para>These attributes and values are are:</maml:para>
+            <maml:para>name                    value ----                    ----- Tunnel-Medium-Type      IEEE-802 Tunnel-Type             VLAN Tunnel-Private-Group-Id VALUE of -VLAN The value specified for the '-VLAN' parameter is populated for the value of Tunnel-Private-Group-Id .</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="name">
+        <maml:name>GroupName</maml:name>
+        <maml:Description>
+          <maml:para>The JumpCloud user group to add or update the specified Radius reply attributes on.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>NumberOfAttributes</maml:name>
+        <maml:Description>
+          <maml:para>The number of RADIUS reply attributes you wish to add to a user group.</maml:para>
+          <maml:para>If an attributes exists with a name that matches the new attribute then the existing attribute will be updated.</maml:para>
+          <maml:para>Based on the NumberOfAttributes value two Dynamic Parameters will be created for each Attribute: Attribute_name and Attribute_value with an associated number.</maml:para>
+          <maml:para>See an example for working with Custom Attribute in EXAMPLE 3 above.</maml:para>
+          <maml:para>Attributes must be valid RADIUS attributes. Find a list of valid RADIUS attributes within the dictionary files of this repro broken down by vendor: github.com/FreeRADIUS/freeradius-server/tree/v3.0.x/share If an invalid attribute is configured on a user group this will prevent users within this group from being able to authenticate via RADIUS until the invalid attribute is removed.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+        <dev:type>
+          <maml:name>Int32</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>VLAN</maml:name>
+        <maml:Description>
+          <maml:para>By specifying the '-VLAN' parameter three radius attributes are added or updated on the target user group.</maml:para>
+          <maml:para>These attributes and values are are:</maml:para>
+          <maml:para>name                    value ----                    ----- Tunnel-Medium-Type      IEEE-802 Tunnel-Type             VLAN Tunnel-Private-Group-Id VALUE of -VLAN The value specified for the '-VLAN' parameter is populated for the value of Tunnel-Private-Group-Id .</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>System.Int32</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para></maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- Example 1 --------------------------</maml:title>
+        <dev:code>Set-JCRadiusReplyAttribute -GroupName "BoulderOffice" -VLAN 24</dev:code>
+        <dev:remarks>
+          <maml:para>By specifying the '-VLAN' parameter three radius attributes are updated on the JumpCloud user group 'BoulderOffice'.</maml:para>
+          <maml:para>These attributes are:</maml:para>
+          <maml:para>name                    value ----                    ----- Tunnel-Medium-Type      IEEE-802 Tunnel-Type             VLAN Tunnel-Private-Group-Id 24</maml:para>
+          <maml:para>The value specified for the '-VLAN' parameter is populated for the value of Tunnel-Private-Group-Id .</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>Set-JCRadiusReplyAttribute -GroupName "BoulderOffice" -VLAN 24 -VLANTag 4</dev:code>
+        <dev:remarks>
+          <maml:para>By specifying the '-VLAN' parameter three radius attributes are update on the JumpCloud user group 'BoulderOffice'. The use of '-VLANTag' appends each VLAN attribute name with a colon and the tag number specified.</maml:para>
+          <maml:para>These attributes are:</maml:para>
+          <maml:para>name                    value ----                    ----- Tunnel-Medium-Type:4      IEEE-802 Tunnel-Type:4             VLAN Tunnel-Private-Group-Id:4 24</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
+        <dev:code>Set-JCRadiusReplyAttribute -GroupName "BoulderOffice" -NumberOfCustomAttributes 2 -Attribute1_name "Session-Timeout" -Attribute1_value 200 -Attribute2_name "Termination-Action" -Attribute2_value 2</dev:code>
+        <dev:remarks>
+          <maml:para>Updates two Radius attributes to the JumpCloud user group 'BoulderOffice'.</maml:para>
+          <maml:para>These attribute are:</maml:para>
+          <maml:para>name               value ----               ----- Session-Timeout    200 Termination-Action 2</maml:para>
+          <maml:para>The parameter '-NumberOfCustomAttributes' is a dynamic parameter that generates two required parameters for each custom attribute specified. In this example these parameters are -Attribute1_name,-Attribute1_value, -Attribute2_name and -Attribute2_value.</maml:para>
+          <maml:para>If the Radius reply attribute being updated already exists on the target user group the value for this attribute is updated. If the Radius reply attribute does not exist the attribute is added.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Help Set-JCRadiusReplyAttribute</maml:linkText>
+        <maml:uri>https://github.com/TheJumpCloud/support/wiki/Set-JCRadiusReplyAttribute</maml:uri>
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
