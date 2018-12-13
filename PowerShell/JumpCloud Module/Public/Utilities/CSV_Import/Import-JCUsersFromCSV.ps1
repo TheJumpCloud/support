@@ -212,7 +212,7 @@ Function Import-JCUsersFromCSV ()
                 Write-Host -BackgroundColor Green -ForegroundColor Black "Validating $($SystemCount.count) Systems"
                 $SystemCheck = Get-Hash_SystemID_HostName
     
-                foreach ($User in $NewUsers)
+                foreach ($User in $SystemCount)
                 {
                     if (($User.SystemID).length -gt 1)
                     {
