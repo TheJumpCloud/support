@@ -63,10 +63,12 @@ Function Get-JCPolicy ()
 
                 $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent $JCUserAgent
 
+                $formattedResults = $results | Select-object name, id
+
                 $skip += $limit
                 Write-Debug "Setting skip to $skip"
 
-                $resultsArray += $results
+                $resultsArray += $formattedResults
                 $count = ($resultsArray).Count
                 Write-Debug "Results count equals $count"
             }
@@ -80,7 +82,8 @@ Function Get-JCPolicy ()
                 $URL = "$JCUrlBasePath/api/v2/policies/$uid"
                 Write-Debug $URL
                 $PolicyResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent $JCUserAgent
-                $resultsArray += $PolicyResults
+                $formattedResults = $PolicyResults | Select-object name, id
+                $resultsArray += $formattedResults
 
             }
         }

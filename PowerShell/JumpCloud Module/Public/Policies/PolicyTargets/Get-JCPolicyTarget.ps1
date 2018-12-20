@@ -73,7 +73,7 @@ Function Get-JCPolicyTarget
         $RawResults = @()
         $resultsArrayList = New-Object System.Collections.ArrayList
 
-        Write-Verbose "Paramter set: $($PSCmdlet.ParameterSetName)"
+        Write-Verbose "Parameter set: $($PSCmdlet.ParameterSetName)"
 
     }
 
@@ -114,7 +114,6 @@ Function Get-JCPolicyTarget
                 {
 
                     $PolicyName = $PolicyNameHash.($PolicyID)
-                    $Trigger = $PolicyTriggerHash.($PolicyID)
                     $SystemID = $result.id
                     $Hostname = $SystemHostNameHash.($SystemID )
                     $Displyname = $SystemDisplayNameHash.($SystemID)
@@ -123,7 +122,6 @@ Function Get-JCPolicyTarget
 
                         'PolicyID'   = $PolicyID
                         'PolicyName' = $PolicyName
-                        'trigger'     = $Trigger
                         'SystemID'    = $SystemID
                         'DisplayName' = $Displyname
                         'HostName'    = $Hostname
