@@ -1,4 +1,4 @@
-Function Get-JCCommand ()
+Function Get-JCPolicy ()
 {
     [CmdletBinding(DefaultParameterSetName = 'ReturnAll')]
 
@@ -9,7 +9,7 @@ Function Get-JCCommand ()
             ParameterSetName = 'ByID',
             Position = 0)]
         [Alias('_id', 'id')]
-        [String[]]$CommandID,
+        [String[]]$PolicyID,
 
         [Parameter(
             ParameterSetName = 'ByID')]
@@ -58,7 +58,7 @@ Function Get-JCCommand ()
 
             while (($resultsArray).Count -ge $skip)
             {
-                $limitURL = "$JCUrlBasePath/api/commands?sort=type,_id&limit=$limit&skip=$skip"
+                $limitURL = "$JCUrlBasePath/api/v2/policies?limit=$limit&skip=$skip"
                 Write-Debug $limitURL
 
                 $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent $JCUserAgent
@@ -66,7 +66,7 @@ Function Get-JCCommand ()
                 $skip += $limit
                 Write-Debug "Setting skip to $skip"
 
-                $resultsArray += $results.results
+                $resultsArray += $results
                 $count = ($resultsArray).Count
                 Write-Debug "Results count equals $count"
             }
@@ -75,12 +75,12 @@ Function Get-JCCommand ()
         elseif ($PSCmdlet.ParameterSetName -eq 'ByID')
 
         {
-            foreach ($uid in $CommandID)
+            foreach ($uid in $PolicyID)
             {
-                $URL = "$JCUrlBasePath/api/commands/$uid"
+                $URL = "$JCUrlBasePath/api/v2/policies/$uid"
                 Write-Debug $URL
-                $CommandResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent $JCUserAgent
-                $resultsArray += $CommandResults
+                $PolicyResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent $JCUserAgent
+                $resultsArray += $PolicyResults
 
             }
         }

@@ -1,4 +1,4 @@
-Function Get-JCCommandTarget
+Function Get-JCPolicyTarget
 {
     [CmdletBinding(DefaultParameterSetName = 'Systems')]
     param (
@@ -15,7 +15,7 @@ Function Get-JCCommandTarget
 
 
         [Alias('_id', 'id')]
-        [String]$CommandID,
+        [String]$PolicyID,
 
         [Parameter(ParameterSetName = 'Groups')]
         [switch]
@@ -63,13 +63,8 @@ Function Get-JCCommandTarget
 
         }
 
-
-        Write-Verbose 'Populating CommandNameHash'
-        $CommandNameHash = Get-Hash_CommandID_Name
-
-        Write-Verbose 'Populating CommandTriggerHash'
-        $CommandTriggerHash = Get-Hash_CommandID_Trigger
-
+        Write-Verbose 'Populating PolicyNameHash'
+        $PolicyNameHash = Get-Hash_PolicyID_Name
 
         [int]$limit = '100'
         Write-Verbose "Setting limit to $limit"
@@ -79,7 +74,6 @@ Function Get-JCCommandTarget
         $resultsArrayList = New-Object System.Collections.ArrayList
 
         Write-Verbose "Paramter set: $($PSCmdlet.ParameterSetName)"
-
 
     }
 
@@ -99,7 +93,7 @@ Function Get-JCCommandTarget
 
                 while ($count -ge $skip)
                 {
-                    $SystemURL = "$JCUrlBasePath/api/v2/commands/$CommandID/systems?limit=$limit&skip=$skip"
+                    $SystemURL = "$JCUrlBasePath/api/v2/policies/$PolicyID/systems?limit=$limit&skip=$skip"
 
 
                     Write-Verbose $SystemURL
@@ -119,16 +113,16 @@ Function Get-JCCommandTarget
                 foreach ($result in $RawResults)
                 {
 
-                    $CommandName = $CommandNameHash.($CommandID)
-                    $Trigger = $CommandTriggerHash.($CommandID)
+                    $PolicyName = $PolicyNameHash.($PolicyID)
+                    $Trigger = $PolicyTriggerHash.($PolicyID)
                     $SystemID = $result.id
                     $Hostname = $SystemHostNameHash.($SystemID )
                     $Displyname = $SystemDisplayNameHash.($SystemID)
 
-                    $CommandTargetSystem = [pscustomobject]@{
+                    $PolicyTargetSystem = [pscustomobject]@{
 
-                        'CommandID'   = $CommandID
-                        'CommandName' = $CommandName
+                        'PolicyID'   = $PolicyID
+                        'PolicyName' = $PolicyName
                         'trigger'     = $Trigger
                         'SystemID'    = $SystemID
                         'DisplayName' = $Displyname
@@ -136,7 +130,7 @@ Function Get-JCCommandTarget
 
                     }
 
-                    $resultsArrayList.Add($CommandTargetSystem) | Out-Null
+                    $resultsArrayList.Add($PolicyTargetSystem) | Out-Null
 
                 } # end foreach
 
@@ -147,8 +141,7 @@ Function Get-JCCommandTarget
 
                 while ($count -ge $skip)
                 {
-                    $SystemGroupsURL = "$JCUrlBasePath/api/v2/commands/$CommandID/systemgroups?limit=$limit&skip=$skip"
-
+                    $SystemGroupsURL = "$JCUrlBasePath/api/v2/policies/$PolicyID/systemgroups?limit=$limit&skip=$skip"
 
                     Write-Verbose $SystemGroupsURL
 
@@ -166,30 +159,28 @@ Function Get-JCCommandTarget
                 foreach ($result in $RawResults)
                 {
 
-                    $CommandName = $CommandNameHash.($CommandID)
+                    $PolicyName = $PolicyNameHash.($PolicyID)
                     $GroupID = $result.id
                     $GroupName = $SystemGroupNameHash.($GroupID)
 
                     $Group = [pscustomobject]@{
 
-                        'CommandID'   = $CommandID
-                        'CommandName' = $CommandName
-                        'GroupID'     = $GroupID 
-                        'GroupName'   = $GroupName
+                        'PolicyID'   = $PolicyID
+                        'PolicyName' = $PolicyName
+                        'GroupID'    = $GroupID
+                        'GroupName'  = $GroupName
 
                     }
 
                     $resultsArrayList.Add($Group) | Out-Null
 
                 } # end foreach
-
             } # end Groups switch
         } # end switch
     } # end process
 
     end
     {
-
         Return $resultsArrayList
     }
 }
