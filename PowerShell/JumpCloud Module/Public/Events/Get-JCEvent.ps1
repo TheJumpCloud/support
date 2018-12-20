@@ -1,4 +1,5 @@
-Function Get-JCEvent () {
+Function Get-JCEvent ()
+{
     [CmdletBinding(DefaultParameterSetName = 'ReturnAll')]
     param
     (
@@ -21,15 +22,6 @@ Function Get-JCEvent () {
             })]
         [datetime]$EndDate = (Get-Date),
 
-        [Parameter(
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'TimeFrame',
-            Position = 0)]
-        [ValidateRange(0, 2)]
-        [ValidateScript( {
-                If (!((Get-Date).AddMonths(-$_) -ge (Get-Date).AddDays(-45) -and (Get-Date).AddMonths(-$_) -le (Get-date))) { Throw 'Value must be within 45 days of current date.'} Else { $true }
-            })]
-        [int]$Month = 0,
 
         [Parameter(
             ValueFromPipelineByPropertyName,
@@ -39,7 +31,7 @@ Function Get-JCEvent () {
         [ValidateScript( {
                 If (!((Get-Date).AddDays(-$_) -ge (Get-Date).AddDays(-45) -and (Get-Date).AddDays(-$_) -le (Get-date))) { Throw 'Value must be within 45 days of current date.'} Else { $true }
             })]
-        [int]$Day = 0,
+        [int]$Days = 0,
 
         [Parameter(
             ValueFromPipelineByPropertyName,
@@ -49,14 +41,14 @@ Function Get-JCEvent () {
         [ValidateScript( {
                 If (!((Get-Date).AddHours(-$_) -ge (Get-Date).AddDays(-45) -and (Get-Date).AddHours(-$_) -le (Get-date))) { Throw 'Value must be within 1080 hours of current date.'} Else { $true }
             })]
-        [int]$Hour = 0,
+        [int]$Hours = 0,
 
         [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'TimeFrame', Position = 3)]
         [ValidateRange(0, 64800)]
         [ValidateScript( {
                 If (!((Get-Date).AddMinutes(-$_) -ge (Get-Date).AddDays(-45) -and (Get-Date).AddMinutes(-$_) -le (Get-date))) { Throw 'Value must be within 64800 minutes of current date.'} Else { $true }
             })]
-        [int]$Minute = 0,
+        [int]$Minutes = 0,
 
         [Parameter(
             ValueFromPipelineByPropertyName,
@@ -66,9 +58,10 @@ Function Get-JCEvent () {
         [ValidateScript( {
                 If (!( (Get-Date).AddSeconds(-$_) -ge (Get-Date).AddDays(-45) -and (Get-Date).AddSeconds(-$_) -le (Get-date))) { Throw 'Value must be within 3888000 seconds of current date.'} Else { $true }
             })]
-        [int]$Second = 0
+        [int]$Seconds = 0
     )
-    Begin {
+    Begin
+    {
         Write-Verbose 'Verifying JCAPI Key'
         If ($JCAPIKEY.length -ne 40) {Connect-JCOnline}
         Write-Verbose 'Populating API headers'
@@ -77,7 +70,8 @@ Function Get-JCEvent () {
             'Accept'       = 'application/json'
             'X-API-KEY'    = $JCAPIKEY
         }
-        If ($JCOrgID) {
+        If ($JCOrgID)
+        {
             $hdrs.Add('x-org-id', "$($JCOrgID)")
         }
         Write-Verbose "Parameter Set: $($PSCmdlet.ParameterSetName)"
@@ -86,24 +80,30 @@ Function Get-JCEvent () {
         $Url_Template = 'https://events.jumpcloud.com/events?startDate={0}&endDate={1}'
         $DateFormat = 'yyyy-MM-ddTHH:mm:ss.fffffffZ'
     }
-    Process {
+    Process
+    {
         $CurrentDate = Get-Date
-        Switch ($PSCmdlet.ParameterSetName) {
-            'ReturnAll' {
+        Switch ($PSCmdlet.ParameterSetName)
+        {
+            'ReturnAll'
+            {
                 [datetime]$StartDate = $CurrentDate
                 [datetime]$EndDate = $CurrentDate
             }
-            'TimeFrame' {
-                [datetime]$StartDate = $CurrentDate.AddMonths(-$Month).AddDays(-$Day).AddHours(-$Hour).AddMinutes(-$Minute).AddSeconds(-$Second)
+            'TimeFrame'
+            {
+                [datetime]$StartDate = $CurrentDate.AddDays(-$Days).AddHours(-$Hours).AddMinutes(-$Minutes).AddSeconds(-$Seconds)
                 [datetime]$EndDate = $CurrentDate
             }
         }
         # Validate that the $EndDate is within the $DayLookBackLimit limit.
         $DateDiff = $EndDate - $StartDate
-        If ($DateDiff.Days -ge $DayLookBackLimit) {
+        If ($DateDiff.Days -ge $DayLookBackLimit)
+        {
             Write-Error ('The total time frame can not be greater than ' + $DayLookBackLimit + ' days. Current time frame is: ' + $DateDiff)
         }
-        Else {
+        Else
+        {
             # Format DateTime variables and convert into strings.
             $CurrentDateFormated = $CurrentDate.ToUniversalTime().ToString($DateFormat)
             $StartDateFormated = $StartDate.ToUniversalTime().ToString($DateFormat)
@@ -118,12 +118,14 @@ Function Get-JCEvent () {
             # Make events API call.
             $Results = Invoke-RestMethod -Method GET -Uri:($Uri) -Header:($hdrs)
             # Check to see if API call returned results.
-            If (!($Results)) {
+            If (!($Results))
+            {
                 Write-Warning -Message:('No events found within date range ' + $StartDateFormated + ' to ' + $EndDateFormated + '.')
             }
         }
     }
-    End {
+    End
+    {
         Return $Results
     }
 }

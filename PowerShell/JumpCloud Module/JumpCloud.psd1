@@ -7,7 +7,7 @@
     GUID              = '31c023d1-a901-48c4-90a3-082f91b31646'
 
     # Version number of this module.
-    ModuleVersion     = '1.9.0'
+    ModuleVersion     = '1.10.0'
 
     # Author of this module
     Author            = 'Scott Reed'
@@ -72,7 +72,8 @@
         "Add-JCRadiusReplyAttribute",
         "Set-JCRadiusReplyAttribute",
         "Get-JCRadiusReplyAttribute",
-        "Remove-JCRadiusReplyAttribute")
+        "Remove-JCRadiusReplyAttribute",
+        "Get-JCEvent")
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
     CmdletsToExport   = @()
