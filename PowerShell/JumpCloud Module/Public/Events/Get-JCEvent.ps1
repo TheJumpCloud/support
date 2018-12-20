@@ -116,7 +116,7 @@ Function Get-JCEvent () {
             Write-Verbose ('EndDate:       ' + $EndDateFormated)
             Write-Verbose ('Connecting to: ' + $Uri)
             # Make events API call.
-            $Results = Invoke-RestMethod -Method GET -Uri:($Uri) -Header:($hdrs) -Verbose
+            $Results = Invoke-RestMethod -Method GET -Uri:($Uri) -Header:($hdrs)
             # Check to see if API call returned results.
             If (!($Results)) {
                 Write-Warning -Message:('No events found within date range ' + $StartDateFormated + ' to ' + $EndDateFormated + '.')
