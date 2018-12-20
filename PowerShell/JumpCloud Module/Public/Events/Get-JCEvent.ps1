@@ -105,9 +105,9 @@ Function Get-JCEvent () {
         }
         Else {
             # Format DateTime variables and convert into strings.
-            $CurrentDateFormated = $CurrentDate.ToString($DateFormat)
-            $StartDateFormated = $StartDate.ToString($DateFormat) #.ToUniversalTime()
-            $EndDateFormated = $EndDate.ToString($DateFormat) #.ToUniversalTime()
+            $CurrentDateFormated = $CurrentDate.ToUniversalTime().ToString($DateFormat)
+            $StartDateFormated = $StartDate.ToUniversalTime().ToString($DateFormat)
+            $EndDateFormated = $EndDate.ToUniversalTime().ToString($DateFormat)
             # Build API URI.
             $Uri = $Url_Template -f $StartDateFormated, $EndDateFormated # Test that JC uses UTC. Convert to UTC.
             # Additional logging.
@@ -126,4 +126,4 @@ Function Get-JCEvent () {
     End {
         Return $Results
     }
-} 
+}
