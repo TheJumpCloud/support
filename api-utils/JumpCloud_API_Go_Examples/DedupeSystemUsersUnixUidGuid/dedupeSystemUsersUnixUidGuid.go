@@ -2,11 +2,11 @@ package main
 
 import (
 	"bufio"
-	"bytes"
 	"flag"
 	"fmt"
 	"github.com/TheJumpCloud/jcapi"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -19,9 +19,11 @@ var api jcapi.JCAPI
 func main() {
 	var apiKey string
 	var url string
+	var dryRun bool
 
 	flag.StringVar(&apiKey, "key", "", "Your JumpCloud Administrator API Key")
 	flag.StringVar(&url, "url", URLBase, "Alternative Jumpcloud API URL (optional)")
+	flag.BoolVar(&dryRun, "dryRun", true, "If false, send requests. If true, print out actions")
 	flag.Parse()
 
 	if apiKey == "" {
@@ -42,175 +44,102 @@ func main() {
 		return
 	}
 	fmt.Println("Users retrieved. Finding users with duplicate unix_uid and unix_guid values")
-	dupeUid, dupeGuid := findDupeUidGuids(userList)
-	printDupeUserValues(dupeUid, "unix_uid")
-	printDupeUserValues(dupeGuid, "unix_guid")
 
-	// Print out options for cleanup
+	dupeUsers, uidValues, seenUids, seenGuids := findDupeUsers(userList)
+
+	if len(dupeUsers) == 0 {
+		fmt.Println("No users have duplicate values! Nothing to do here")
+		return
+	}
+
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Println("Now we can help you fix your duplicate values")
 	fmt.Println("---------------------------------------------")
-	fmt.Println("Option 1: Start from the duplicate value and increment until all users have unique values")
-	fmt.Println("Option 2: Start from an admin specified value and increment until all users have unique values")
-	fmt.Println("Option 3: Print all affected user ids and do nothing")
-
-	var updateErr error
-	for unixUidValue, userList := range dupeUid {
-		updateErr = fixValuesInput(reader, "unix_uid", unixUidValue, userList)
-		if updateErr != nil {
-			fmt.Printf("Could not update users, err='%s'\n", err)
-			return
-		}
-	}
-	for unixGuidValue, userList := range dupeGuid {
-		updateErr = fixValuesInput(reader, "unix_guid", unixGuidValue, userList)
-		if updateErr != nil {
-			fmt.Printf("Could not update users, err='%s'\n", err)
-			return
-		}
-	}
-}
-
-func findDupeUidGuids(userList []jcapi.JCUser) (map[string][]jcapi.JCUser, map[string][]jcapi.JCUser) {
-	dupeUid := make(map[string][]jcapi.JCUser)
-	dupeGuid := make(map[string][]jcapi.JCUser)
-
-	for _, user := range userList {
-		dupeUid[user.Uid] = append(dupeUid[user.Uid], user)
-		dupeGuid[user.Gid] = append(dupeGuid[user.Gid], user)
+	fmt.Println("To fix the duplicate values, we are going to iterate through all users with duplicate values")
+	fmt.Println("And assign them the next available matching value for unix_uid and unix_guid")
+	fmt.Println("To continue with updating user values, type CONTINUE, otherwise type QUIT to stop script")
+	if dryRun {
+		fmt.Println("DRY RUN IS ON. USERS WILL NOT BE UPDATED. SET --dryRun=false TO UPDATE USER DATA")
 	}
 
-	dupeUid = deleteSingleUserValues(dupeUid)
-	dupeGuid = deleteSingleUserValues(dupeGuid)
-
-	return dupeUid, dupeGuid
-}
-
-func deleteSingleUserValues(userValueMap map[string][]jcapi.JCUser) map[string][]jcapi.JCUser {
-	for k, v := range userValueMap {
-		if len(v) <= 1 {
-			delete(userValueMap, k)
-		}
-	}
-	return userValueMap
-}
-
-func printDupeUserValues(userValueMap map[string][]jcapi.JCUser, field string) {
-	for k, v := range userValueMap {
-		fmt.Printf("%d users have the %s value: %s\n", len(v), field, k)
-	}
-}
-
-func incrementUnixValuesOnUsers(api jcapi.JCAPI, userList []jcapi.JCUser, field string, startingValue string, dryRun bool) error {
-	fmt.Printf("Incrementing values on field: %s for %d systemusers\n", field, len(userList))
-
-	// Update User Values, leaving the first in the list alone
-	// Field on the proto is a string, so to make things easier, we convert to int
-	// so math is easier
-	intValue, _ := strconv.Atoi(startingValue)
-	for idx := range userList {
-		if field == "unix_uid" {
-			userList[idx].Uid = strconv.Itoa(intValue)
-		} else { // unix_guid
-			userList[idx].Gid = strconv.Itoa(intValue)
-		}
-		if dryRun {
-			fmt.Printf("Updating user: %s field: %s with value: %d\n", userList[idx].Id, field, intValue)
-		} else { // Update User
-			userId, err := api.AddUpdateUser(3, userList[idx])
-			if err != nil {
-				fmt.Println("Error updating user. Bailing")
-				return err
-			}
-			fmt.Printf("User: %s successfully updated\n", userId)
-		}
-		intValue++
-	}
-	return nil
-}
-
-func usersToIdStr(userList []jcapi.JCUser) string {
-	var b bytes.Buffer
-	for idx := range userList {
-		b.WriteString(userList[idx].Id)
-		b.WriteString(" ")
-	}
-	return b.String()
-}
-
-func fixValuesInput(reader *bufio.Reader, field string, value string, userList []jcapi.JCUser) error {
-	fmt.Printf("How would you like to fix %s value: %s that appears on %d users?\n", field, value, len(userList))
-	var err error
+Loop:
 	for {
 		fmt.Print("-> ")
 		option, _ := reader.ReadString('\n')
 		option = strings.Replace(option, "\n", "", -1)
-		if strings.Compare("1", option) == 0 {
-			err = incrementUnixValuesOnUsers(api, userList, field, value, true)
-			if err != nil {
-				return err
-			}
-			fmt.Println("Please review the above values. If those values look good, type in EXECUTE. If not, type in BAIL")
-			fmt.Print("-> ")
-			execute, _ := reader.ReadString('\n')
-			execute = strings.Replace(execute, "\n", "", -1)
-			if strings.Compare("EXECUTE", execute) == 0 {
-				fmt.Println("THIS OPERATION WILL REQUIRE MANUAL CLEANUP IF VALUES ARE INCORRECT.")
-				fmt.Print("ARE YOU SURE? y/n? ")
-				yes, _ := reader.ReadString('\n')
-				yes = strings.Replace(yes, "\n", "", -1)
-				if strings.Compare("y", yes) == 0 {
-					fmt.Println("Updaing users!")
-					err = incrementUnixValuesOnUsers(api, userList, field, value, false)
-					if err != nil {
-						return err
-					}
-				} else {
-					fmt.Println("Not updating users")
-				}
-			} else {
-				fmt.Println("Not updating users")
-			}
-			break
-		} else if strings.Compare("2", option) == 0 {
-			fmt.Print("\nPlease specify which value to start with: ")
-			startingValue, _ := reader.ReadString('\n')
-			startingValue = strings.Replace(startingValue, "\n", "", -1)
-			err = incrementUnixValuesOnUsers(api, userList, field, startingValue, true)
-			if err != nil {
-				return err
-			}
-			fmt.Println("Please review the above values. If those values look good, type in EXECUTE. If not, type in BAIL")
-			fmt.Print("-> ")
-			execute, _ := reader.ReadString('\n')
-			execute = strings.Replace(execute, "\n", "", -1)
-			if strings.Compare("EXECUTE", execute) == 0 {
-				fmt.Println("THIS OPERATION WILL REQUIRE MANUAL CLEANUP IF VALUES ARE INCORRECT.")
-				fmt.Print("ARE YOU SURE? y/n? ")
-				yes, _ := reader.ReadString('\n')
-				yes = strings.Replace(yes, "\n", "", -1)
-				if strings.Compare("y", yes) == 0 {
-					fmt.Println("Updaing users!")
-					err = incrementUnixValuesOnUsers(api, userList, field, startingValue, false)
-					if err != nil {
-						return err
-					}
-				} else {
-					fmt.Println("Not updating users")
-				}
-			} else {
-				fmt.Println("Not updating users")
-			}
-			break
-		} else if strings.Compare("3", option) == 0 {
-			fmt.Printf("You have choosen to manually update your users %s values", field)
-			fmt.Printf("The following is a list of users with duplicate %s values", field)
-			userIdsStr := usersToIdStr(userList)
-			fmt.Printf("The following users have %s value: %s %s", field, value, userIdsStr)
-			break
-		} else {
-			fmt.Println("Please pick a valid option")
+		switch option {
+		case "CONTINUE":
+			break Loop
+		case "QUIT":
+			return
+		default:
+			fmt.Println("Enter a valid option to continue")
 		}
 	}
-	return nil
+	setValue := uidValues[0]
+	for _, user := range dupeUsers {
+		fmt.Printf("Updating user: %s\n", user.Id)
+		setValue = findNextAvaiableValue(setValue, seenUids, seenGuids)
+		if dryRun {
+			fmt.Printf("Previous values for user: %s unix_uid: %s unix_guid %s\n", user.Id, user.Uid, user.Gid)
+			fmt.Printf("Would update user: %s with unix_uid: %d unix_guid: %d\n", user.Id, setValue, setValue)
+		} else {
+			user.Uid = strconv.Itoa(setValue)
+			user.Gid = strconv.Itoa(setValue)
+			_, err := api.AddUpdateUser(jcapi.Update, user)
+			if err != nil {
+				fmt.Println("Error updating user: %s. Bailing", err)
+				return
+			}
+		}
+		fmt.Printf("User: %s updated\n", user.Id)
+	}
+	fmt.Printf("All users updated!\n")
+	return
+}
+
+func findDupeUsers(userList []jcapi.JCUser) ([]jcapi.JCUser, []int, map[int]bool, map[int]bool) {
+	seenUids := make(map[int]bool)
+	seenGuids := make(map[int]bool)
+	dupeUsers := make([]jcapi.JCUser, 0)
+	uidValues := make([]int, 0)
+	guidValues := make([]int, 0)
+
+	dupeUid := false
+	dupeGuid := false
+	for _, user := range userList {
+		uidInt, _ := strconv.Atoi(user.Uid)
+		guidInt, _ := strconv.Atoi(user.Uid)
+		if _, ok := seenUids[uidInt]; !ok { // uid not seen before
+			uidValues = append(uidValues, uidInt)
+			seenUids[uidInt] = true
+		} else {
+			dupeUid = true
+		}
+		if _, ok := seenGuids[guidInt]; !ok { // guid not seen before
+			guidValues = append(guidValues, guidInt)
+			seenGuids[guidInt] = true
+		} else {
+			dupeGuid = true
+		}
+		if dupeUid || dupeGuid {
+			dupeUsers = append(dupeUsers, user)
+		}
+		dupeUid = false
+		dupeGuid = false
+	}
+	sort.Ints(uidValues)
+	sort.Ints(guidValues)
+	return dupeUsers, uidValues, seenUids, seenGuids
+}
+
+func findNextAvaiableValue(startValue int, seenUids map[int]bool, seenGuids map[int]bool) int {
+	for {
+		if !seenUids[startValue] && !seenGuids[startValue] {
+			seenUids[startValue] = true
+			seenGuids[startValue] = true
+			return startValue
+		}
+		startValue++
+	}
 }
