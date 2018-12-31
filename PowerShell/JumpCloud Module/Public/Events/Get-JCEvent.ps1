@@ -9,7 +9,14 @@ Function Get-JCEvent ()
             ParameterSetName = 'DateRange',
             Position = 0)]
         [ValidateScript( {
-                If (!($_ -ge (Get-Date).AddDays(-45) -and $_ -lt (Get-Date))) { Throw 'Value must be within 45 days of current date.'} Else { $true }
+                If (!($_ -ge ((Get-Date).Date).AddDays(-45) -and $_ -lt ((Get-Date).Date)))
+                {
+                    Throw 'Value must be within 45 days of current date.'
+                }
+                Else
+                {
+                    $true
+                }
             })]
         [datetime]$StartDate,
 
@@ -18,7 +25,14 @@ Function Get-JCEvent ()
             ParameterSetName = 'DateRange',
             Position = 1)]
         [ValidateScript( {
-                If (!($_ -ge (Get-Date).AddDays(-45) -and $_ -lt (Get-Date))) { Throw 'Value must be within 45 days of current date.'} Else { $true }
+                If (!($_ -ge ((Get-Date).Date).AddDays(-45) -and $_ -lt ((Get-Date).Date)))
+                {
+                    Throw 'Value must be within 45 days of current date.'
+                }
+                Else
+                {
+                    $true
+                }
             })]
         [datetime]$EndDate = (Get-Date),
 
@@ -29,7 +43,14 @@ Function Get-JCEvent ()
             Position = 1)]
         [ValidateRange(0, 45)]
         [ValidateScript( {
-                If (!((Get-Date).AddDays(-$_) -ge (Get-Date).AddDays(-45) -and (Get-Date).AddDays(-$_) -le (Get-date))) { Throw 'Value must be within 45 days of current date.'} Else { $true }
+                If (!(((Get-Date).Date).AddDays(-$_) -ge ((Get-Date).Date).AddDays(-45) -and ((Get-Date).Date).AddDays(-$_) -le ((Get-Date).Date)))
+                {
+                    Throw 'Value must be within 45 days of current date.'
+                }
+                Else
+                {
+                    $true
+                }
             })]
         [int]$Days = 0,
 
@@ -39,14 +60,28 @@ Function Get-JCEvent ()
             Position = 2)]
         [ValidateRange(0, 1080)]
         [ValidateScript( {
-                If (!((Get-Date).AddHours(-$_) -ge (Get-Date).AddDays(-45) -and (Get-Date).AddHours(-$_) -le (Get-date))) { Throw 'Value must be within 1080 hours of current date.'} Else { $true }
+                If (!(((Get-Date).Date).AddHours(-$_) -ge ((Get-Date).Date).AddDays(-45) -and ((Get-Date).Date).AddHours(-$_) -le ((Get-Date).Date)))
+                {
+                    Throw 'Value must be within 1080 hours of current date.'
+                }
+                Else
+                {
+                    $true
+                }
             })]
         [int]$Hours = 0,
 
         [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'TimeFrame', Position = 3)]
         [ValidateRange(0, 64800)]
         [ValidateScript( {
-                If (!((Get-Date).AddMinutes(-$_) -ge (Get-Date).AddDays(-45) -and (Get-Date).AddMinutes(-$_) -le (Get-date))) { Throw 'Value must be within 64800 minutes of current date.'} Else { $true }
+                If (!(((Get-Date).Date).AddMinutes(-$_) -ge ((Get-Date).Date).AddDays(-45) -and ((Get-Date).Date).AddMinutes(-$_) -le ((Get-Date).Date)))
+                {
+                    Throw 'Value must be within 64800 minutes of current date.'
+                }
+                Else
+                {
+                    $true
+                }
             })]
         [int]$Minutes = 0,
 
@@ -56,7 +91,14 @@ Function Get-JCEvent ()
             Position = 4)]
         [ValidateRange(0, 3888000)]
         [ValidateScript( {
-                If (!( (Get-Date).AddSeconds(-$_) -ge (Get-Date).AddDays(-45) -and (Get-Date).AddSeconds(-$_) -le (Get-date))) { Throw 'Value must be within 3888000 seconds of current date.'} Else { $true }
+                If (!( ((Get-Date).Date).AddSeconds(-$_) -ge ((Get-Date).Date).AddDays(-45) -and ((Get-Date).Date).AddSeconds(-$_) -le ((Get-Date).Date))) 
+                {
+                    Throw 'Value must be within 3888000 seconds of current date.'
+                }
+                Else
+                {
+                    $true
+                }
             })]
         [int]$Seconds = 0
     )
@@ -98,9 +140,9 @@ Function Get-JCEvent ()
         }
         # Validate that the $EndDate is within the $DayLookBackLimit limit.
         $DateDiff = $EndDate - $StartDate
-        If ($DateDiff.Days -ge $DayLookBackLimit)
+        If ($DateDiff.Days -gt $DayLookBackLimit)
         {
-            Write-Error ('The total time frame can not be greater than ' + $DayLookBackLimit + ' days. Current time frame is: ' + $DateDiff)
+            Write-Error ('The total time frame can not be greater than ' + $DayLookBackLimit + ' days. Current time frame is: ' + $DateDiff.Days)
         }
         Else
         {
