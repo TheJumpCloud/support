@@ -9,7 +9,7 @@ function Get-JCPolicyResult ()
             ParameterSetName = 'ByID',
             Position = 0)]
         [Alias('_id', 'id')]
-        [String]$CommandResultID,
+        [String]$PolicyResultID,
 
         [Parameter(
             ParameterSetName = 'ByID')]
@@ -210,10 +210,10 @@ function Get-JCPolicyResult ()
             }
             ByID
             {
-                $URL = "$JCUrlBasePath/api/commandresults/$CommandResultID"
+                $URL = "$JCUrlBasePath/api/v2/policies$PolicyResultID/policystatuses"
                 Write-Verbose $URL
 
-                $CommandResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs
+                $PolicyResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs
 
                 $FormattedResults = [PSCustomObject]@{
 
