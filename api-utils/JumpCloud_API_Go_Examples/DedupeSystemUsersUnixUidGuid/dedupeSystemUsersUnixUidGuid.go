@@ -108,8 +108,16 @@ func findDupeUsers(userList []jcapi.JCUser) ([]jcapi.JCUser, []int, map[int]bool
 	dupeUid := false
 	dupeGuid := false
 	for _, user := range userList {
-		uidInt, _ := strconv.Atoi(user.Uid)
-		guidInt, _ := strconv.Atoi(user.Uid)
+		var uidInt int
+		var guidInt int
+		// If unix_uid or unix_guid is null in the database, we do not want to convert to integer
+		// Atoi will convert this to 0, and that will give false positive duplicate values
+		if user.Uid != "null" {
+			uidInt, _ = strconv.Atoi(user.Uid)
+		}
+		if user.Gid != "null" {
+			guidInt, _ = strconv.Atoi(user.Gid)
+		}
 		if _, ok := seenUids[uidInt]; !ok { // uid not seen before
 			uidValues = append(uidValues, uidInt)
 			seenUids[uidInt] = true
