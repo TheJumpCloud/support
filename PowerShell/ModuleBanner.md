@@ -1,17 +1,17 @@
 #### Latest Version
 
 ```
-1.7.0
+1.9.0
 ```
 
 #### Banner Current
 
 ```
-Module up-to-date. Check out command deployments! https://git.io/jc-pwsh-releasenotes 
+Module up-to-date. Secure your wifi networks with VLAN tagging! Use the new RADIUS reply attribute functions.
 ```
 
 #### Banner Old
 
 ```
-Oh baby! JumpCloud module update available.
+RADIUS reply attribute functions await! JumpCloud module update available.
 ```

@@ -1,3 +1,4 @@
 node_modules/
 build/
-PowerShell/.DS_Store
+.DS_Store
+

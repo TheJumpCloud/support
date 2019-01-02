@@ -178,7 +178,7 @@ Function Import-JCUsersFromCSV ()
 
                 $ExistingEmployeeIdentifierCheck = Get-Hash_employeeIdentifier_username
 
-                foreach ($User in $NewUsers)
+                foreach ($User in $employeeIdentifierCheck)
                 {
                     if ($ExistingEmployeeIdentifierCheck.ContainsKey($User.employeeIdentifier))
                     {
@@ -190,7 +190,7 @@ Function Import-JCUsersFromCSV ()
                     }
                 }
 
-                $employeeIdentifierDup = $NewUsers | Group-Object employeeIdentifier
+                $employeeIdentifierDup = $employeeIdentifierCheck | Group-Object employeeIdentifier
 
                 ForEach ($U in $employeeIdentifierDup)
                 {
@@ -212,7 +212,7 @@ Function Import-JCUsersFromCSV ()
                 Write-Host -BackgroundColor Green -ForegroundColor Black "Validating $($SystemCount.count) Systems"
                 $SystemCheck = Get-Hash_SystemID_HostName
     
-                foreach ($User in $NewUsers)
+                foreach ($User in $SystemCount)
                 {
                     if (($User.SystemID).length -gt 1)
                     {

@@ -76,6 +76,26 @@ if [ $? != 0 ]
 		exit 1;
 fi
 
+# To make it a little bit easier to test against other than production.
+CONSOLE_URL="https://console.jumpcloud.com"
+if [ ! -z "${JUMPCLOUD_CONSOLE_URL_OVERRIDE}" ]
+    then
+    CONSOLE_URL=${JUMPCLOUD_CONSOLE_URL_OVERRIDE}
+fi
+
+echo "CONSOLE_URL=${CONSOLE_URL}"
+
+LDAP_DOMAIN="ldap.jumpcloud.com"
+if [ -n "${JUMPCLOUD_LDAP_DOMAIN_OVERRIDE}" ]
+    then
+    LDAP_DOMAIN=${JUMPCLOUD_LDAP_DOMAIN_OVERRIDE}
+fi
+
+EVENTS_URL="https://events.jumpcloud.com"
+if [ -n "${JUMPCLOUD_EVENTS_URL_OVERRIDE}" ]
+    then
+    EVENTS_URL=${JUMPCLOUD_EVENTS_URL_OVERRIDE}
+fi
 
 # Check account vars have been entered
 
@@ -108,7 +128,7 @@ ldsearch() {
 
 check_ldap_config
 
-$ldapsearch -H ${uri}://ldap.jumpcloud.com:${port} -x -b "ou=Users,o=${oid},dc=jumpcloud,dc=com" -D "uid=${user},ou=Users,o=${oid},dc=jumpcloud,dc=com" -w "${pass}" "(objectClass=${search_param})" | less
+$ldapsearch -H ${uri}://${LDAP_DOMAIN}:${port} -x -b "ou=Users,o=${oid},dc=jumpcloud,dc=com" -D "uid=${user},ou=Users,o=${oid},dc=jumpcloud,dc=com" -w "${pass}" "(objectClass=${search_param})" | less
 
 }
 
@@ -137,7 +157,7 @@ ou=Users,o=${oid},dc=jumpcloud,dc=com
 
 ### LDAP Search Example ###
 
-$ldapsearch -H ${uri}://ldap.jumpcloud.com:${port} -x -b "ou=Users,o=${oid},dc=jumpcloud,dc=com" -D "uid=${user},ou=Users,o=${oid},dc=jumpcloud,dc=com" -w "${pass}" "(objectClass=inetOrgPerson)"
+$ldapsearch -H ${uri}://${LDAP_DOMAIN}:${port} -x -b "ou=Users,o=${oid},dc=jumpcloud,dc=com" -D "uid=${user},ou=Users,o=${oid},dc=jumpcloud,dc=com" -w "${pass}" "(objectClass=inetOrgPerson)"
 
 **If the above ldapsearch command results in invalid credentials, and the password contains special characters (!,@,#,etc...), replace the double quotes (") around the password with single quotes (') and retry
 
@@ -225,12 +245,23 @@ fi
 
 get_api() {
 
+if [ -z "${org_id}" ]
+    then
 curl  \
   -X 'GET' \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -H "x-api-key: ${api_key}" \
-     "https://console.jumpcloud.com/api/${api_object}${id}"
+     "${CONSOLE_URL}/api/${api_object}${id}"
+else
+curl  \
+  -X 'GET' \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "x-api-key: ${api_key}" \
+  -H "x-org-id: ${org_id}" \
+     "${CONSOLE_URL}/api/${api_object}${id}"
+fi
 
 }
 
@@ -246,6 +277,16 @@ if [ -z "$api_key" ]
 fi
 }
 
+
+read_org_id() {
+echo -n "Enter the Org ID: "
+    read org_id;
+if [ -z "${org_id}" ]
+    then
+        echo "Input cannot be null"; read_org_id;
+    else continue;
+fi
+}
 
 #
 # Define LDAP menu
@@ -359,7 +400,7 @@ cat << EOF
 ##########################
 
 The user search parameter is case *insensitive*
-by default. Regex is accpeted.
+by default. Regex is accepted.
 
 EOF
         if [ -z "$system_search_field" ]
@@ -387,13 +428,25 @@ fi
 
 system_search() {
 
+if [ -z "${org_id}" ]
+    then
 curl \
   -d '{ "filter" : [{ "'"${system_search_field}"'" : { "$regex" : "(?i)'"${system_search_param}"'" }}]}' \
   -X 'POST' \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -H "x-api-key: ${api_key}" \
-  "https://console.jumpcloud.com/api/search/systems?limit=200&skip=10"
+  "${CONSOLE_URL}/api/search/systems?limit=100&skip=10"
+else
+curl \
+  -d '{ "filter" : [{ "'"${system_search_field}"'" : { "$regex" : "(?i)'"${system_search_param}"'" }}]}' \
+  -X 'POST' \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "x-api-key: ${api_key}" \
+  -H "x-org-id: ${org_id}" \
+  "${CONSOLE_URL}/api/search/systems?limit=100&skip=10"
+fi
 
 }
 
@@ -504,7 +557,7 @@ cat << EOF
 ##########################
 
 The user search parameter is case *insensitive* 
-by default. Regex is accpeted.
+by default. Regex is accepted.
 
 EOF
 	if [ -z "$user_search_field" ]
@@ -537,13 +590,25 @@ user_search() {
 #search="  -d '{ \"filter\" : [{\"${user_search_field}\" : { \"\\$regex\" : \"(?i)${user_search_param}\"}}]}'"
 #get_api | python -m json.tool | less
 
+if [ -z "${org_id}" ]
+    then
 curl \
   -d '{ "filter" : [{ "'"${user_search_field}"'" : { "$regex" : "(?i)'"${user_search_param}"'" }}]}' \
   -X 'POST' \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -H "x-api-key: ${api_key}" \
-  "https://console.jumpcloud.com/api/search/systemusers?limit=200"
+  "${CONSOLE_URL}/api/search/systemusers?limit=100"
+else
+curl \
+  -d '{ "filter" : [{ "'"${user_search_field}"'" : { "$regex" : "(?i)'"${user_search_param}"'" }}]}' \
+  -X 'POST' \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "x-api-key: ${api_key}" \
+  -H "x-org-id: ${org_id}" \
+  "${CONSOLE_URL}/api/search/systemusers?limit=100"
+fi
 
 }
 
@@ -612,9 +677,9 @@ cat << EOF
 ###    Commands        ###
 ##########################
 
-1. Commands multi record GET (limit 200)
+1. Commands multi record GET (limit 100)
 2. Commands single record GET
-3. Command results multi record GET (limit 200)
+3. Command results multi record GET (limit 100)
 4. Command results single record GET
 0. API Menu
 EOF
@@ -630,9 +695,9 @@ api_object=commands
 echo -ne "\nSelect an option: "
         read command_option
         case $command_option in
-                1) api_object=$api_object?limit=200; get_api | python -m json.tool | less;;
+                1) api_object=$api_object?limit=100; get_api | python -m json.tool | less;;
                 2) single_get;;
-		3) api_object=commandresults?limit=200; get_api | python -m json.tool | less;;
+		3) api_object=commandresults?limit=100; get_api | python -m json.tool | less;;
 		4) api_object=commandresults; single_get;;
                 0) break;;
                 *)
@@ -668,7 +733,7 @@ cat << EOF
 ###      Systems       ###
 ##########################
 
-1. Multi record GET (limit 200)
+1. Multi record GET (limit 100)
 2. Single record GET
 3. Search
 0. API Menu
@@ -685,7 +750,7 @@ api_object=systems
 echo -ne "\nSelect an option: "
 	read system_option
 	case $system_option in
-		1) api_object=$api_object?limit=200; get_api | python -m json.tool | less;;
+		1) api_object=$api_object?limit=100; get_api | python -m json.tool | less;;
 		2) single_get;;
 		3) launch_system_search_menu;;
 		0) break;;
@@ -721,7 +786,7 @@ cat << EOF
 ###       Users        ###
 ##########################
 
-1. Multi record GET (limit 200)
+1. Multi record GET (limit 100)
 2. Single record GET
 3. Search
 0. API Menu
@@ -738,7 +803,7 @@ api_object=systemusers;
 echo -ne "\nSelect an option: "
         read user_option
         case $user_option in
-                1) api_object=$api_object?limit=200; get_api | python -m json.tool | less;;
+                1) api_object=$api_object?limit=100; get_api | python -m json.tool | less;;
                 2) single_get;;
                 3) launch_user_search_menu;;
                 0) break;;
@@ -771,27 +836,57 @@ set_date() {
 
 end_date=`date -u +%Y-%m-%dT%H:%M:%SZ`
 
+months=(0 31 28 31 30 31 30 31 31 30 31 30 31)
+
 today=`date -u +%d`
 yesterday=`expr $today - 1`
+month=`date -u +%m`
+yestermonth=${month}
+year=`date -u +%Y`
+yesteryear=${year}
 
 if ((${yesterday} < 10))
         then
-yesterday=0${yesterday}
-
+        if ((${yesterday} == 0))
+            then
+                yestermonth=`expr $month - 1`
+                if ((${yestermonth} == 0))
+                    then
+                        yesteryear=`expr $year - 1`
+                        yestermonth=12
+                        yesterday=31
+                    else
+                        yesterday=${months[${yestermonth}]}
+                        yesteryear=${year}
+                fi
+        else
+            yesterday=0${yesterday}
+        fi
 fi
 
-start_date=`date -u +%Y-%m-${yesterday}T%H:%M:%SZ`
+start_date=`date -u +${yesteryear}-${yestermonth}-${yesterday}T%H:%M:%SZ`
 
 }
 
 call_events() {
 
-curl \
- -G \
- -H "x-api-key: ${api_key}" \
- -H "Content-Type:application/json" \
- --data-urlencode "startDate=${start_date}" \
- "https://events.jumpcloud.com/events"
+if [ -z "${org_id}" ]
+    then
+    curl \
+     -G \
+     -H "x-api-key: ${api_key}" \
+     -H "Content-Type:application/json" \
+     --data-urlencode "startDate=${start_date}" \
+     "${EVENTS_URL}/events"
+else
+    curl \
+     -G \
+     -H "x-api-key: ${api_key}" \
+     -H "x-org-id: ${org_id}" \
+     -H "Content-Type:application/json" \
+     --data-urlencode "startDate=${start_date}" \
+     "${EVENTS_URL}/events"
+fi
 
 }
 
@@ -808,10 +903,11 @@ cat << EOF
 ##########################
 
 1. Enter API Key (Required)
-2. Users
-3. Systems
-4. Commands
-5. Events (Prev 24 hrs UTC)
+2. Enter OrgId (Required for multi-tenant admin)
+3. Users
+4. Systems
+5. Commands
+6. Events (Prev 24 hrs UTC)
 0. Main Menu
 EOF
 
@@ -826,10 +922,11 @@ echo -ne "\nSelect an option: "
 	read api_option
 	case $api_option in
 		1) read_api_key;;
-		2) launch_user_menu;;
-		3) launch_system_menu;;
-		4) launch_command_menu;;
-		5) set_date;call_events | python -m json.tool | less;;
+		2) read_org_id;;
+		3) launch_user_menu;;
+		4) launch_system_menu;;
+		5) launch_command_menu;;
+		6) set_date;call_events | python -m json.tool | less;;
                 0) break;;
                 *) 
                 if [ -z "$api_option" ]
