@@ -9,12 +9,17 @@ Function Get-JCPolicy ()
             ParameterSetName = 'ByID',
             Position = 0)]
         [Alias('_id', 'id')]
-        [String[]]$PolicyID,
+        [String]$PolicyID,
 
         [Parameter(
             ParameterSetName = 'ByID')]
         [Switch]
-        $ByID
+        $ByID,
+
+        [Parameter(
+            ParameterSetName = 'Name')]
+        [String]
+        $Name
     )
 
 
@@ -49,44 +54,71 @@ Function Get-JCPolicy ()
 
     {
 
-        if ($PSCmdlet.ParameterSetName -eq 'ReturnAll')
-
+        switch ($PSCmdlet.ParameterSetName) 
         {
+            "ReturnAll"
+            {              
+                
+                Write-Debug 'Setting skip to zero'
+                [int]$skip = 0 #Do not change!
 
-            Write-Debug 'Setting skip to zero'
-            [int]$skip = 0 #Do not change!
+                while (($resultsArray).Count -ge $skip)
+                {
+                    $limitURL = "$JCUrlBasePath/api/v2/policies?limit=$limit&skip=$skip"
+                    Write-Debug $limitURL
 
-            while (($resultsArray).Count -ge $skip)
+                    $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent $JCUserAgent
+
+                    $formattedResults = $results | Select-object name, id
+
+                    $skip += $limit
+                    Write-Debug "Setting skip to $skip"
+
+                    $resultsArray += $formattedResults
+                    $count = ($resultsArray).Count
+                    Write-Debug "Results count equals $count"
+                }
+            }
+            "ByID"
             {
-                $limitURL = "$JCUrlBasePath/api/v2/policies?limit=$limit&skip=$skip"
-                Write-Debug $limitURL
+                
+                foreach ($uid in $PolicyID)
+                {
+                    $URL = "$JCUrlBasePath/api/v2/policies/$uid"
+                    Write-Debug $URL
+                    $PolicyResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent $JCUserAgent
+                    $formattedResults = $PolicyResults | Select-object name, id
+                    $resultsArray += $formattedResults
+    
+                }
+            }
+            "Name"
+            {
 
-                $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent $JCUserAgent
+                Write-Debug 'Setting skip to zero'
+                [int]$skip = 0 #Do not change!
 
-                $formattedResults = $results | Select-object name, id
+                while (($resultsArray).Count -ge $skip)
+                {
+                    $limitURL = "$JCUrlBasePath/api/v2/policies?limit=$limit&skip=$skip&sort=name&filter=name%3Asearch%3A$Name"
+                    Write-Debug $limitURL
 
-                $skip += $limit
-                Write-Debug "Setting skip to $skip"
+                    $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent $JCUserAgent
 
-                $resultsArray += $formattedResults
-                $count = ($resultsArray).Count
-                Write-Debug "Results count equals $count"
+                    $formattedResults = $results | Select-object name, id
+
+                    $skip += $limit
+                    Write-Debug "Setting skip to $skip"
+
+                    $resultsArray += $formattedResults
+                    $count = ($resultsArray).Count
+                    Write-Debug "Results count equals $count"
+                }
+
             }
         }
-
-        elseif ($PSCmdlet.ParameterSetName -eq 'ByID')
-
-        {
-            foreach ($uid in $PolicyID)
-            {
-                $URL = "$JCUrlBasePath/api/v2/policies/$uid"
-                Write-Debug $URL
-                $PolicyResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent $JCUserAgent
-                $formattedResults = $PolicyResults | Select-object name, id
-                $resultsArray += $formattedResults
-
-            }
-        }
+        
+        
 
     }
 
