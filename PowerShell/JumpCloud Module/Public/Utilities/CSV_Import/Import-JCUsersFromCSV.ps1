@@ -169,9 +169,9 @@ Function Import-JCUsersFromCSV ()
 
             Write-Host -BackgroundColor Green -ForegroundColor Black "Email check complete"
 
-            $employeeIdentifierCheck = $NewUsers | Where-Object employeeIdentifier -ne $Null
+            $employeeIdentifierCheck = $NewUsers | Where-Object {($_.employeeIdentifier -ne $Null) -and ($_.employeeIdentifier -ne "")}
 
-            if ($employeeIdentifierCheck.Count -gt 1)
+            if ($employeeIdentifierCheck.Count -gt 0)
             {
                 Write-Host ""
                 Write-Host -BackgroundColor Green -ForegroundColor Black "Validating $($employeeIdentifierCheck.employeeIdentifier.Count) employeeIdentifiers"
@@ -748,7 +748,7 @@ Function Import-JCUsersFromCSV ()
                     $FormattedResults = [PSCustomObject]@{
 
                         'Username'  = $UserAdd.username
-                        'Status'    = "Not created, CSV format issue?"
+                        'Status'    = "$($_.ErrorDetails)"
                         'UserID'    = $Null
                         'GroupsAdd' = $Null
                         'SystemID'  = $Null
