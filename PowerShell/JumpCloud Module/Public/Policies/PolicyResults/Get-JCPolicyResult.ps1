@@ -6,10 +6,10 @@ function Get-JCPolicyResult ()
     (
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'ByID',
+            ParameterSetName = 'ByPolicyID',
             Position = 0)]
         [Alias('_id', 'id')]
-        [String]$PolicyResultID,
+        [String]$PolicyID,
 
         [Parameter(
             ParameterSetName = 'ByID')]
@@ -41,7 +41,12 @@ function Get-JCPolicyResult ()
         [Parameter(
             ParameterSetName = 'MaxResults')]
         [Int]
-        $MaxResults
+        $MaxResults,
+
+        [Parameter(
+            ParameterSetName = 'BySystemID')]
+        [String]
+        $SystemID
     )
 
 
@@ -67,21 +72,6 @@ function Get-JCPolicyResult ()
 
         Write-Verbose 'Initilizing resultsArraylist'
         $resultsArrayList = New-Object -TypeName System.Collections.ArrayList
-
-        #MESSING AROUND
-        $activepolicies = Get-jcpolicy | select id
-        $3 = New-Object -TypeName System.Collections.ArrayList
-
-            foreach ($1 in $activepolicies)
-            {
-                $2 = "https://console.jumpcloud.com/api/v2/policies/" + $1.id + "/policystatuses"
-                $PolicyResults = Invoke-RestMethod -Method GET -Uri $2 -Headers $hdrs -UserAgent $JCUserAgent
-                #$formattedResults = $PolicyResults | Select-object name, id
-                $3 += $PolicyResults
-                #$2
-                #$PolicyResults
-            }
-            "TotalCount = " + $3.count
     }
 
     process
@@ -100,18 +90,10 @@ function Get-JCPolicyResult ()
                     {
                         $2 = "https://console.jumpcloud.com/api/v2/policies/" + $1.id + "/policystatuses"
                         $PolicyResults = Invoke-RestMethod -Method GET -Uri $2 -Headers $hdrs -UserAgent $JCUserAgent
-                        #$formattedResults = $PolicyResults | Select-object name, id
                         $3 += $PolicyResults
-                        #$2
-                        #$PolicyResults
                     }
-                    "TotalCount = " + $3.count
 
-                #$CountURL = "$JCUrlBasePath/api/policyresults?limit=100&skip=0"
-                #$results = Invoke-RestMethod -Method GET -Uri  $CountURL -Headers $hdrs
-                #$null = $resultsArrayList.Add($results.totalCount)
-
-
+                $null = $resultsArrayList.Add($3.Count)
             }
             ReturnAll
             { 
@@ -123,10 +105,7 @@ function Get-JCPolicyResult ()
                     {
                         $2 = "https://console.jumpcloud.com/api/v2/policies/" + $1.id + "/policystatuses"
                         $PolicyResults = Invoke-RestMethod -Method GET -Uri $2 -Headers $hdrs -UserAgent $JCUserAgent
-                        #$formattedResults = $PolicyResults | Select-object name, id
                         $3 += $PolicyResults
-                        #$2
-                        #$PolicyResults
                     }
                     return $3
 
@@ -160,7 +139,7 @@ function Get-JCPolicyResult ()
                     { 
 
                         $Limit = $MaxResults
-                        $limitURL = "$JCUrlBasePath/api/commandresults?limit=$limit&skip=$skip"
+                        $limitURL = "$JCUrlBasePath/api/v2/policyresults?limit=$limit&skip=$skip"
                         Write-Verbose $limitURL
     
                         $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs
@@ -169,7 +148,6 @@ function Get-JCPolicyResult ()
                         $null = $resultsArrayList.Add($results)
                         $count = ($resultsArrayList).Count
                         Write-Verbose "Results count equals $count"
-
                     }
                     {$_ -gt $limit}
                     {
@@ -180,7 +158,7 @@ function Get-JCPolicyResult ()
             
                         while ($MaxResults -ne 0)
                         {
-                            $limitURL = "$JCUrlBasePath/api/commandresults?limit=$limit&skip=$skip"
+                            $limitURL = "$JCUrlBasePath/api/v2/policyresults?limit=$limit&skip=$skip"
                             Write-Verbose $limitURL
             
                             $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs
@@ -208,35 +186,23 @@ function Get-JCPolicyResult ()
                 
                 
             }
-            ByID
+            ByPolicyID
             {
-                $URL = "$JCUrlBasePath/api/v2/policies$PolicyResultID/policystatuses"
+                $URL = "$JCUrlBasePath/api/v2/policies/$PolicyID/policystatuses"
                 Write-Verbose $URL
 
                 $PolicyResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs
 
-                $FormattedResults = [PSCustomObject]@{
+                $null = $resultsArrayList.Add($PolicyResults)
+            }
+            BySystemID
+            {
+                $URL = "$JCUrlBasePath/api/v2/systems/$SystemID/policystatuses"
+                Write-Verbose $URL
 
-                    name               = $CommandResults.name
-                    command            = $CommandResults.command
-                    system             = $CommandResults.system
-                    systemId           = $CommandResults.systemId
-                    organization       = $CommandResults.organization
-                    workflowId         = $CommandResults.workflowId
-                    workflowInstanceId = $CommandResults.workflowInstanceId
-                    output             = $CommandResults.response.data.output
-                    exitCode           = $CommandResults.response.data.exitCode
-                    user               = $CommandResults.user
-                    sudo               = $CommandResults.sudo
-                    requestTime        = $CommandResults.requestTime
-                    responseTime       = $CommandResults.responseTime
-                    _id                = $CommandResults._id
-                    error              = $CommandResults.response.error
+                $PolicyResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs
 
-                }
-
-                $null = $resultsArrayList.Add($FormattedResults)
-
+                $null = $resultsArrayList.Add($PolicyResults)
             }
         }
     }
@@ -247,9 +213,10 @@ function Get-JCPolicyResult ()
         switch ($PSCmdlet.ParameterSetName)
         {
             ReturnAll {Return $resultsArrayList.results}
-            MaxResults {Return $resultsArrayList.results}
+            MaxResults {Return $resultsArrayList}
             TotalCount {Return  $resultsArrayList }
-            ByID {Return  $resultsArrayList }
+            ByPolicyID {Return  $resultsArrayList }
+            BySystemID {Return  $resultsArrayList }
         }
     }
 }
