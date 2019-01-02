@@ -12,11 +12,6 @@ function Get-JCPolicyResult ()
         [String]$PolicyID,
 
         [Parameter(
-            ParameterSetName = 'ByID')]
-        [Switch]
-        $ByID,
-
-        [Parameter(
             ParameterSetName = 'TotalCount')]
         [Switch]
         $TotalCount,
@@ -46,7 +41,12 @@ function Get-JCPolicyResult ()
         [Parameter(
             ParameterSetName = 'BySystemID')]
         [String]
-        $SystemID
+        $SystemID,
+
+        [Parameter(
+            ParameterSetName = 'ByPolicyResultID')]
+        [String]
+        $PolicyResultID
     )
 
 
@@ -204,6 +204,15 @@ function Get-JCPolicyResult ()
 
                 $null = $resultsArrayList.Add($PolicyResults)
             }
+            ByPolicyResultID
+            {
+                $URL = "$JCUrlBasePath/api/v2/policyresults/$PolicyResultID/"
+                Write-Verbose $URL
+
+                $PolicyResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs
+
+                $null = $resultsArrayList.Add($PolicyResults)
+            }
         }
     }
 
@@ -217,6 +226,7 @@ function Get-JCPolicyResult ()
             TotalCount {Return  $resultsArrayList }
             ByPolicyID {Return  $resultsArrayList }
             BySystemID {Return  $resultsArrayList }
+            ByPolicyResultID {Return  $resultsArrayList }
         }
     }
 }
