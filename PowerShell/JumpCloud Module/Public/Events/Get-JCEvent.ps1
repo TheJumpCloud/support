@@ -91,7 +91,7 @@ Function Get-JCEvent ()
             Position = 4)]
         [ValidateRange(0, 3888000)]
         [ValidateScript( {
-                If (!( ((Get-Date).Date).AddSeconds(-$_) -ge ((Get-Date).Date).AddDays(-45) -and ((Get-Date).Date).AddSeconds(-$_) -le ((Get-Date).Date))) 
+                If (!( ((Get-Date).Date).AddSeconds(-$_) -ge ((Get-Date).Date).AddDays(-45) -and ((Get-Date).Date).AddSeconds(-$_) -le ((Get-Date).Date)))
                 {
                     Throw 'Value must be within 3888000 seconds of current date.'
                 }
@@ -151,7 +151,7 @@ Function Get-JCEvent ()
             $StartDateFormated = $StartDate.ToUniversalTime().ToString($DateFormat)
             $EndDateFormated = $EndDate.ToUniversalTime().ToString($DateFormat)
             # Build API URI.
-            $Uri = $Url_Template -f $StartDateFormated, $EndDateFormated # Test that JC uses UTC. Convert to UTC.
+            $Uri = $Url_Template -f $StartDateFormated, $EndDateFormated
             # Additional logging.
             Write-Verbose ('CurrentDate:   ' + $CurrentDateFormated)
             Write-Verbose ('StartDate:     ' + $StartDateFormated)
