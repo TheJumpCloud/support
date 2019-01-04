@@ -72,6 +72,7 @@ function Get-JCPolicyResult ()
 
         Write-Verbose 'Initilizing resultsArraylist'
         $resultsArrayList = New-Object -TypeName System.Collections.ArrayList
+        #$Url_Template = 'https://events.jumpcloud.com/events?startDate={0}&endDate={1}'
     }
 
     process
