@@ -9,7 +9,7 @@ Function Connect-JCOnline ()
             Mandatory,
             ValueFromPipelineByPropertyName,
             Position = 0)]
-
+ 
         [Parameter(Mandatory = $True,
             ParameterSetName = 'Interactive',
             Position = 0,
@@ -101,22 +101,28 @@ Function Connect-JCOnline ()
 
         switch ($JCEnvironment)
         {
-            'production' { $global:JCUrlBasePath = "https://console.jumpcloud.com" }
-            'staging' { $global:JCUrlBasePath = "https://console.awsstg.jumpcloud.com"}
+            'production'
+            {
+                $global:JCUrlBasePath = "https://console.jumpcloud.com"
+                $global:JCEventsUrlBasePath = "https://events.jumpcloud.com"
+            }
+            'staging'
+            {
+                $global:JCUrlBasePath = "https://console.awsstg.jumpcloud.com"
+                $global:JCEventsUrlBasePath = "https://events.awsstg.jumpcloud.com"
+            }
             'local'
             {
-
                 if ($PSBoundParameters['ip'])
                 {
-                
                     $global:JCUrlBasePath = $PSBoundParameters['ip']
+                    $global:JCEventsUrlBasePath = $PSBoundParameters['ip']
                 }
-
                 else
                 {
                     $global:JCUrlBasePath = "http://localhost"
+                    $global:JCEventsUrlBasePath = "http://localhost"
                 }
-        
             }
         }
 

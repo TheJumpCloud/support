@@ -119,7 +119,7 @@ Function Get-JCEvent ()
         Write-Verbose "Parameter Set: $($PSCmdlet.ParameterSetName)"
         #####################################################################
         $DayLookBackLimit = 45
-        $Url_Template = 'https://events.jumpcloud.com/events?startDate={0}&endDate={1}'
+        $Url_Template = '{0}/events?startDate={1}&endDate={2}'
         $DateFormat = 'yyyy-MM-ddTHH:mm:ss.fffffffZ'
     }
     Process
@@ -151,7 +151,7 @@ Function Get-JCEvent ()
             $StartDateFormated = $StartDate.ToUniversalTime().ToString($DateFormat)
             $EndDateFormated = $EndDate.ToUniversalTime().ToString($DateFormat)
             # Build API URI.
-            $Uri = $Url_Template -f $StartDateFormated, $EndDateFormated
+            $Uri = $Url_Template -f $JCEventsUrlBasePath, $StartDateFormated, $EndDateFormated
             # Additional logging.
             Write-Verbose ('CurrentDate:   ' + $CurrentDateFormated)
             Write-Verbose ('StartDate:     ' + $StartDateFormated)
