@@ -67,6 +67,10 @@ Function New-JCUser ()
         [bool]
         $enable_user_portal_multifactor,
 
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [datetime]
+        $exclusionUntil = (Get-Date).AddDays(7),
+
         [Parameter(ParameterSetName = 'Attributes')] ##Test this to see if this can be modified.
         [int]
         $NumberOfCustomAttributes,
@@ -196,7 +200,7 @@ Function New-JCUser ()
     DynamicParam
     {
 
-        If ($PSCmdlet.ParameterSetName -eq 'Attributes')
+        If ($NumberOfCustomAttributes)
         {
             $dict = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
 
@@ -252,199 +256,133 @@ Function New-JCUser ()
 
         $URL = "$JCUrlBasePath/api/systemusers"
 
-        $NewUserArrary = @()
+        $NewUserArray = @()
     }
 
     process
     {
-        if ($PSCmdlet.ParameterSetName -eq 'NoAttributes')
+        $body = @{}
+
+        $WorkAddressParams = @{}
+        $WorkAddressParams.Add("type", "work")
+
+        $HomeAddressParams = @{}
+        $HomeAddressParams.Add("type", "home")
+
+        $phoneNumbers = @()
+        $Addresses = @()
+
+        $CustomAttributeArrayList = New-Object System.Collections.ArrayList
+
+        foreach ($param in $PSBoundParameters.GetEnumerator())
         {
-            $body = @{}
+            if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }
 
-            $WorkAddressParams = @{}
-            $WorkAddressParams.Add("type", "work")
+            if ($param.key -in ('_id', 'JCAPIKey', 'NumberOfCustomAttributes', 'exclusionUntil')) { continue }
 
-            $HomeAddressParams = @{}
-            $HomeAddressParams.Add("type", "home")
-
-            $phoneNumbers = @()
-            $Addresses = @()
-
-            foreach ($param in $PSBoundParameters.GetEnumerator())
+            if ($param.Key -like 'Attribute*')
             {
-                if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }
+                $CustomAttribute = [pscustomobject]@{
 
-                if ($param.key -eq '_id', 'JCAPIKey') { continue }
-
-                if ($param.Key -like '*_number')
-                {
-                    $Number = @{}
-                    $Number.Add("type", ($($param.Key -replace "_number", "")))
-                    $Number.Add("number", $param.Value)
-                    $phoneNumbers += $Number
-                    continue
+                    CustomAttribute = ($Param.key).Split('_')[0]
+                    Type            = ($Param.key).Split('_')[1]
+                    Value           = $Param.value
                 }
 
-                if ($param.Key -like 'work_*')
+                $CustomAttributeArrayList.Add($CustomAttribute) | Out-Null
+
+                $UniqueAttributes = $CustomAttributeArrayList | Select-Object CustomAttribute -Unique
+
+                $NewAttributes = New-Object System.Collections.ArrayList
+
+                foreach ($A in $UniqueAttributes )
                 {
-                    $WorkAddressParams.Add(($($param.Key -split "_", 2)[1]), $param.Value)
-                    continue
-                }
+                    $Props = $CustomAttributeArrayList | Where-Object CustomAttribute -EQ $A.CustomAttribute
 
-                if ($param.Key -like 'home_*')
-                {
-                    $HomeAddressParams.Add(($($param.Key -split "_", 2)[1]), $param.Value)
-                    continue
-                }
+                    $obj = New-Object PSObject
 
-                $body.add($param.Key, $param.Value)
-
-            }
-
-            if ($WorkAddressParams.Count -gt 1)
-            {
-                $Addresses += $WorkAddressParams
-            }
-
-            if ($HomeAddressParams.Count -gt 1)
-            {
-                $Addresses += $HomeAddressParams
-            }
-
-            if ($Addresses)
-            {
-                $body.Add('addresses', $Addresses)
-            }
-
-
-            if ($phoneNumbers)
-            {
-                $body.Add('phoneNumbers', $phoneNumbers)
-            }
-
-            $jsonbody = $body | ConvertTo-Json
-
-            Write-Debug $jsonbody
-
-            $NewUserInfo = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent $JCUserAgent
-
-            $NewUserArrary += $NewUserInfo
-        }
-
-        elseif ($PSCmdlet.ParameterSetName -eq 'Attributes')
-        {
-            $body = @{}
-
-            $WorkAddressParams = @{}
-            $WorkAddressParams.Add("type", "work")
-
-            $HomeAddressParams = @{}
-            $HomeAddressParams.Add("type", "home")
-
-            $phoneNumbers = @()
-            $Addresses = @()
-
-            $CustomAttributeArrayList = New-Object System.Collections.ArrayList
-
-            foreach ($param in $PSBoundParameters.GetEnumerator())
-            {
-                if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }
-
-                if ($param.key -eq '_id', 'JCAPIKey', 'NumberOfCustomAttributes') { continue }
-
-                if ($param.Key -like 'Attribute*')
-                {
-                    $CustomAttribute = [pscustomobject]@{
-
-                        CustomAttribute = ($Param.key).Split('_')[0]
-                        Type            = ($Param.key).Split('_')[1]
-                        Value           = $Param.value
-                    }
-
-                    $CustomAttributeArrayList.Add($CustomAttribute) | Out-Null
-
-                    $UniqueAttributes = $CustomAttributeArrayList | Select-Object CustomAttribute -Unique
-
-                    $NewAttributes = New-Object System.Collections.ArrayList
-
-                    foreach ($A in $UniqueAttributes )
+                    foreach ($Prop in $Props)
                     {
-                        $Props = $CustomAttributeArrayList | Where-Object CustomAttribute -EQ $A.CustomAttribute
-
-                        $obj = New-Object PSObject
-
-                        foreach ($Prop in $Props)
-                        {
-                            $obj | Add-Member -MemberType NoteProperty -Name $Prop.type -Value $Prop.value
-                        }
-
-                        $NewAttributes.Add($obj) | Out-Null
+                        $obj | Add-Member -MemberType NoteProperty -Name $Prop.type -Value $Prop.value
                     }
-                    continue
+
+                    $NewAttributes.Add($obj) | Out-Null
                 }
-
-                if ($param.Key -like '*_number')
-                {
-                    $Number = @{}
-                    $Number.Add("type", ($($param.Key -replace "_number", "")))
-                    $Number.Add("number", $param.Value)
-                    $phoneNumbers += $Number
-                    continue
-                }
-
-                if ($param.Key -like 'work_*')
-                {
-                    $WorkAddressParams.Add(($($param.Key -split "_", 2)[1]), $param.Value)
-                    continue
-                }
-
-                if ($param.Key -like 'home_*')
-                {
-                    $HomeAddressParams.Add(($($param.Key -split "_", 2)[1]), $param.Value)
-                    continue
-                }
-
-                $body.add($param.Key, $param.Value)
-
+                continue
             }
 
-            if ($WorkAddressParams.Count -gt 1)
+            if ($param.Key -like '*_number')
             {
-                $Addresses += $WorkAddressParams
+                $Number = @{}
+                $Number.Add("type", ($($param.Key -replace "_number", "")))
+                $Number.Add("number", $param.Value)
+                $phoneNumbers += $Number
+                continue
             }
 
-            if ($HomeAddressParams.Count -gt 1)
+            if ($param.Key -like 'work_*')
             {
-                $Addresses += $HomeAddressParams
+                $WorkAddressParams.Add(($($param.Key -split "_", 2)[1]), $param.Value)
+                continue
             }
 
-            if ($Addresses)
+            if ($param.Key -like 'home_*')
             {
-                $body.Add('addresses', $Addresses)
+                $HomeAddressParams.Add(($($param.Key -split "_", 2)[1]), $param.Value)
+                continue
             }
 
+            $body.add($param.Key, $param.Value)
 
-            if ($phoneNumbers)
-            {
-                $body.Add('phoneNumbers', $phoneNumbers)
-            }
-
-            $body.add('attributes', $NewAttributes)
-
-            $jsonbody = $body | ConvertTo-Json
-
-            Write-Debug $jsonbody
-
-            $NewUserInfo = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent $JCUserAgent
-
-            $NewUserArrary += $NewUserInfo
         }
-    }
 
+        if ($WorkAddressParams.Count -gt 1)
+        {
+            $Addresses += $WorkAddressParams
+        }
+
+        if ($HomeAddressParams.Count -gt 1)
+        {
+            $Addresses += $HomeAddressParams
+        }
+
+        if ($Addresses)
+        {
+            $body.Add('addresses', $Addresses)
+        }
+
+
+        if ($phoneNumbers)
+        {
+            $body.Add('phoneNumbers', $phoneNumbers)
+        }
+
+        if ($enable_user_portal_multifactor)
+        {
+            $mfaData = @{}
+            $mfaData.Add("exclusion", $true)
+            $mfaData.Add("exclusionUntil", $exclusionUntil)
+            $body.Add('mfaData', $mfaData)
+        }
+
+        If ($NewAttributes) {$body.add('attributes', $NewAttributes)}
+
+        $jsonbody = $body | ConvertTo-Json
+
+        Write-Debug $jsonbody
+
+        $NewUserInfo = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent $JCUserAgent
+
+        $NewUserArray += $NewUserInfo
+
+    }
     end
     {
 
-        return $NewUserArrary
+        return $NewUserArray
     }
 
 }
+
+Connect-JCOnline -JumpCloudAPIKey:('6dae5213406fcc50403bd112b6b0d3bfeb2b51f6')
+New-RandomUser | New-JCUser -enable_user_portal_multifactor:($true) -exclusionUntil:((Get-Date).AddDays(7)) -Verbose
