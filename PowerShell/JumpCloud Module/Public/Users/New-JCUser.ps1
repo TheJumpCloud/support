@@ -383,6 +383,3 @@ Function New-JCUser ()
     }
 
 }
-
-Connect-JCOnline -JumpCloudAPIKey:('6dae5213406fcc50403bd112b6b0d3bfeb2b51f6')
-New-RandomUser | New-JCUser -enable_user_portal_multifactor:($true) -exclusionUntil:((Get-Date).AddDays(7)) -Verbose
