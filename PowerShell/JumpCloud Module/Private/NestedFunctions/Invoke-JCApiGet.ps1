@@ -1,5 +1,6 @@
-Function Invoke-JCApiGet ()
-{
+Function Invoke-JCApiGet
+{ 
+    [CmdletBinding()]
     Param(
         [Parameter(Mandatory = $true, Position = 0)][ValidateNotNullOrEmpty()][string]$Url,
         [Parameter(Mandatory = $false, Position = 1)][ValidateNotNullOrEmpty()][int]$Limit = 100
@@ -17,6 +18,10 @@ Function Invoke-JCApiGet ()
         {
             $Skip += $Results.Count
             $Results_Output += $Results
+            If ($Results.Count -eq 1)
+            {
+                $PaginationExist = $false
+            }
         }
         Else
         {
