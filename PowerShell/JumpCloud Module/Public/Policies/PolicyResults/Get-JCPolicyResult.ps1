@@ -1,6 +1,6 @@
 function Get-JCPolicyResult () 
 {
-    [CmdletBinding(DefaultParameterSetName = 'ReturnAll')]
+    [CmdletBinding(DefaultParameterSetName = 'ByPolicyName')]
 
     param
     (
@@ -11,11 +11,24 @@ function Get-JCPolicyResult ()
         [Alias('_id', 'id')]
         [String]$PolicyID,
 
+        [Parameter(Mandatory,
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'ByPolicyName',
+            Position = 0)]
+        [Alias('name')]
+        [String]$PolicyName,
+
         [Parameter(
             ParameterSetName = 'ReturnAll')]
 
         [Parameter(
             ParameterSetName = 'MaxResults')]
+
+        [Parameter(
+            ParameterSetName = 'ByPolicyName')]
+
+        [Parameter(
+            ParameterSetName = 'ByPolicyID')]
 
         [int]$Skip = 0,
 
@@ -24,6 +37,12 @@ function Get-JCPolicyResult ()
 
         [Parameter(
             ParameterSetName = 'MaxResults')]
+
+        [Parameter(
+            ParameterSetName = 'ByPolicyName')]
+    
+        [Parameter(
+            ParameterSetName = 'ByPolicyID')]
 
         [ValidateRange(0, 100)]
         [int]$Limit = 1,
@@ -43,7 +62,7 @@ function Get-JCPolicyResult ()
         [String]
         $PolicyResultID
     
-        )
+    )
 
 
     begin
@@ -67,10 +86,17 @@ function Get-JCPolicyResult ()
         }
 
         Write-Verbose 'Initilizing resultsArraylist'
-        $resultsArrayList = New-Object -TypeName System.Collections.ArrayList
+        $resultsArray = @()
         $Url_Template1 = '{0}/api/v2/policies/{1}{2}'
         $Url_Template2 = '{0}/api/v2/policyresults{1}{2}'
         $Url_Template3 = '{0}/api/v2/systems{1}{2}'
+
+
+        if ($PSCmdlet.ParameterSetName -eq 'ByPolicyName')
+        {
+            Write-Debug 'Populating PolicyNameHash'
+            $PolicyNameHash = Get-Hash_PolicyName_ID
+        }
     }
 
     process
@@ -89,7 +115,7 @@ function Get-JCPolicyResult ()
 
                 #[int]$Counter = 0 
     
-                # while (($resultsArrayList.results).count -ge $Counter)
+                # while (($resultsArray.results).count -ge $Counter)
                 # {
                 #     foreach ($policy in $activepolicies)
                 #     {
@@ -106,8 +132,8 @@ function Get-JCPolicyResult ()
                 #     Write-Verbose "Setting skip to $skip"
                 #     Write-Verbose "Setting Counter to $Counter"
     
-                #     $null = $resultsArrayList.Add($results)
-                #     $count = ($resultsArrayList.results.Count)
+                #     $resultsArray += $results
+                #     $count = ($resultsArray.results.Count)
                 #     Write-Verbose "Results count equals $count"
                 #     }
                 # }
@@ -117,24 +143,24 @@ function Get-JCPolicyResult ()
                 $activepolicies = Get-jcpolicy | Select-Object id
                 $PolicyArrayList = New-Object -TypeName System.Collections.ArrayList
                 [int]$Counter = 0 
-                    #While($PolicyArrayList.Count -ge $counter)
-                        #{  
-                    foreach ($policy in $activepolicies)
-                    {
-                            $Uri = $Url_Template1 -f $JCUrlBasePath, $policy.id, "/policystatuses?skip=$Skip"
-                            Write-host $uri -BackgroundColor Cyan
-                            $PolicyResults = Invoke-RestMethod -Method GET -Uri $Uri -Headers $hdrs -UserAgent $JCUserAgent
-                            $PolicyArrayList += $PolicyResults
-                            #$skip += $Limit
-                            $Counter += $Limit
-                            write-output $PolicyResults.count
-                            Write-Output $PolicyArrayList.count
-                            Write-Output "Limit - $Limit"
-                            Write-Output "Counter - $Counter"
-                            Write-Output "Skip - $skip"
-                        #}
-                    }
-                    #return $PolicyArrayList
+                #While($PolicyArrayList.Count -ge $counter)
+                #{  
+                foreach ($policy in $activepolicies)
+                {
+                    $Uri = $Url_Template1 -f $JCUrlBasePath, $policy.id, "/policystatuses?skip=$Skip"
+                    Write-host $uri -BackgroundColor Cyan
+                    $PolicyResults = Invoke-RestMethod -Method GET -Uri $Uri -Headers $hdrs -UserAgent $JCUserAgent
+                    $PolicyArrayList += $PolicyResults
+                    #$skip += $Limit
+                    $Counter += $Limit
+                    write-output $PolicyResults.count
+                    Write-Output $PolicyArrayList.count
+                    Write-Output "Limit - $Limit"
+                    Write-Output "Counter - $Counter"
+                    Write-Output "Skip - $skip"
+                    #}
+                }
+                #return $PolicyArrayList
             }
             MaxResults
             { 
@@ -151,8 +177,8 @@ function Get-JCPolicyResult ()
                         $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs
     
                     
-                        $null = $resultsArrayList.Add($results)
-                        $count = ($resultsArrayList).Count
+                        $resultsArray += $results
+                        $count = ($resultsArray).Count
                         Write-Verbose "Results count equals $count"
                     }
                     {$_ -gt $limit}
@@ -176,8 +202,8 @@ function Get-JCPolicyResult ()
                             Write-Verbose "Setting skip to $skip"
                             Write-Verbose "Setting Counter to $Counter"
             
-                            $null = $resultsArrayList.Add($results)
-                            $count = ($resultsArrayList.results.Count)
+                            $resultsArray += $results
+                            $count = ($resultsArray.results.Count)
                             Write-Verbose "Results count equals $count"
 
                             if ($MaxResults -le $limit)
@@ -192,6 +218,26 @@ function Get-JCPolicyResult ()
                 
                 
             }
+            ByPolicyName
+            {
+
+                if ($PolicyNameHash.containsKey($PolicyName))
+                {
+
+                    $PolicyID = $PolicyNameHash.Get_Item($PolicyName)
+                }
+
+                else { Throw "Policy does not exist. Run 'Get-JCPolicy' to see a list of all your JumpCloud policies."}
+
+                ## Implement skip / limit... same 0, 100 logic
+
+                $URL = "$JCUrlBasePath/api/v2/policies/$PolicyID/policystatuses"
+                Write-Verbose $URL
+
+                $PolicyResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs
+
+                $resultsArray += $PolicyResults
+            }
             ByPolicyID
             {
                 $URL = "$JCUrlBasePath/api/v2/policies/$PolicyID/policystatuses"
@@ -199,7 +245,7 @@ function Get-JCPolicyResult ()
 
                 $PolicyResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs
 
-                $null = $resultsArrayList.Add($PolicyResults)
+                $resultsArray += $PolicyResults
             }
             BySystemID
             {
@@ -208,7 +254,7 @@ function Get-JCPolicyResult ()
 
                 $PolicyResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs
 
-                $null = $resultsArrayList.Add($PolicyResults)
+                $resultsArray += $PolicyResults
             }
             ByPolicyResultID
             {
@@ -217,7 +263,7 @@ function Get-JCPolicyResult ()
 
                 $PolicyResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs
 
-                $null = $resultsArrayList.Add($PolicyResults)
+                $resultsArray += $PolicyResults
             }
         }
     }
@@ -227,11 +273,11 @@ function Get-JCPolicyResult ()
     {
         switch ($PSCmdlet.ParameterSetName)
         {
-            ReturnAll {Return $resultsArrayList.results}
-            MaxResults {Return $resultsArrayList}
-            ByPolicyID {Return  $resultsArrayList }
-            BySystemID {Return  $resultsArrayList }
-            ByPolicyResultID {Return  $resultsArrayList }
+            # MaxResults {Return $resultsArray}
+            ByPolicyID {Return  $resultsArray}
+            BySystemID {Return  $resultsArray}
+            # ByPolicyResultID {Return  $resultsArray}
+            ByPolicyName {Return $resultsArray}
         }
     }
 }
