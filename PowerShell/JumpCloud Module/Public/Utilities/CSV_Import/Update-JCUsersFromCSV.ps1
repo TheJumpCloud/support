@@ -118,14 +118,14 @@ Function Update-JCUsersFromCSV ()
 
             $employeeIdentifierCheck = $UpdateUsers | Where-Object {($_.employeeIdentifier -ne $Null) -and ($_.employeeIdentifier -ne "")}
 
-            if ($employeeIdentifierCheck.Count -gt 1)
+            if ($employeeIdentifierCheck.Count -gt 0)
             {
                 Write-Host ""
                 Write-Host -BackgroundColor Green -ForegroundColor Black "Validating $($employeeIdentifierCheck.employeeIdentifier.Count) employeeIdentifiers"
 
                 $ExistingEmployeeIdentifierCheck = Get-Hash_employeeIdentifier_username
 
-                foreach ($User in $UpdateUsers)
+                foreach ($User in $employeeIdentifierCheck)
                 {
                     if ($ExistingEmployeeIdentifierCheck.ContainsKey($User.employeeIdentifier))
                     {
@@ -137,7 +137,7 @@ Function Update-JCUsersFromCSV ()
                     }
                 }
 
-                $employeeIdentifierDup = $UpdateUsers | Group-Object employeeIdentifier
+                $employeeIdentifierDup = $employeeIdentifierCheck | Group-Object employeeIdentifier
 
                 ForEach ($U in $employeeIdentifierDup)
                 {
@@ -686,13 +686,17 @@ Function Update-JCUsersFromCSV ()
 
                 catch
                 {
+                    $Status = "$($_.ErrorDetails)"
 
-                    $Status = 'User does not exist'
+                    if (-not (Get-JCUser -username $UpdateParams.username -returnProperties username))
+                    {
+                        $Status = 'User does not exist'
+                    }
 
                     $FormattedResults = [PSCustomObject]@{
 
                         'Username'  = $UpdateParams.username
-                        'Status'    = $Status
+                        'Status'    = "$Status"
                         'UserID'    = $NewUser._id
                         'GroupsAdd' = $UserGroupArrayList
                         'SystemID'  = $UserUpdate.SystemID
