@@ -104,24 +104,20 @@ Function Connect-JCOnline ()
             'production'
             {
                 $global:JCUrlBasePath = "https://console.jumpcloud.com"
-                $global:JCEventsUrlBasePath = "https://events.jumpcloud.com"
             }
             'staging'
             {
                 $global:JCUrlBasePath = "https://console.awsstg.jumpcloud.com"
-                $global:JCEventsUrlBasePath = "https://events.awsstg.jumpcloud.com"
             }
             'local'
             {
                 if ($PSBoundParameters['ip'])
                 {
                     $global:JCUrlBasePath = $PSBoundParameters['ip']
-                    $global:JCEventsUrlBasePath = $PSBoundParameters['ip']
                 }
                 else
                 {
                     $global:JCUrlBasePath = "http://localhost"
-                    $global:JCEventsUrlBasePath = "http://localhost"
                 }
             }
         }
@@ -218,7 +214,6 @@ Function Connect-JCOnline ()
                 $OldBanner = ((((($GitHubModuleInfo -split "</a>Banner Old</h4>")[1]) -split "<pre><code>")[1]) -split "`n")[0]
 
                 $LatestVersion = ((((($GitHubModuleInfo -split "</a>Latest Version</h4>")[1]) -split "<pre><code>")[1]) -split "`n")[0]
-
 
                 $InstalledModuleVersion = Get-InstalledModule -Name JumpCloud | Select-Object -ExpandProperty Version
 
