@@ -12,11 +12,6 @@ function Get-JCPolicyResult ()
         [String]$PolicyID,
 
         [Parameter(
-            ParameterSetName = 'TotalCount')]
-        [Switch]
-        $TotalCount,
-
-        [Parameter(
             ParameterSetName = 'ReturnAll')]
 
         [Parameter(
@@ -31,7 +26,7 @@ function Get-JCPolicyResult ()
             ParameterSetName = 'MaxResults')]
 
         [ValidateRange(0, 100)]
-        [int]$Limit = 100,
+        [int]$Limit = 1,
 
         [Parameter(
             ParameterSetName = 'MaxResults')]
@@ -47,7 +42,8 @@ function Get-JCPolicyResult ()
             ParameterSetName = 'ByPolicyResultID')]
         [String]
         $PolicyResultID
-    )
+    
+        )
 
 
     begin
@@ -72,7 +68,9 @@ function Get-JCPolicyResult ()
 
         Write-Verbose 'Initilizing resultsArraylist'
         $resultsArrayList = New-Object -TypeName System.Collections.ArrayList
-        #$Url_Template = 'https://events.jumpcloud.com/events?startDate={0}&endDate={1}'
+        $Url_Template1 = '{0}/api/v2/policies/{1}{2}'
+        $Url_Template2 = '{0}/api/v2/policyresults{1}{2}'
+        $Url_Template3 = '{0}/api/v2/systems{1}{2}'
     }
 
     process
@@ -81,46 +79,28 @@ function Get-JCPolicyResult ()
 
         switch ($PSCmdlet.ParameterSetName)
         {
-            TotalCount
-            { 
-
-                $activepolicies = Get-jcpolicy | select id
-                $3 = New-Object -TypeName System.Collections.ArrayList
-
-                    foreach ($1 in $activepolicies)
-                    {
-                        $2 = "https://console.jumpcloud.com/api/v2/policies/" + $1.id + "/policystatuses"
-                        $PolicyResults = Invoke-RestMethod -Method GET -Uri $2 -Headers $hdrs -UserAgent $JCUserAgent
-                        $3 += $PolicyResults
-                    }
-
-                $null = $resultsArrayList.Add($3.Count)
-            }
             ReturnAll
             { 
+                #$PolicyResults = @{}
+                #$activepolicies = Get-jcpolicy | Select-Object id
+                #$PolicyArrayList = New-Object -TypeName System.Collections.ArrayList
 
-                $activepolicies = Get-jcpolicy | select id
-                $3 = New-Object -TypeName System.Collections.ArrayList
+                #Write-Verbose "Setting skip to $skip"
 
-                    foreach ($1 in $activepolicies)
-                    {
-                        $2 = "https://console.jumpcloud.com/api/v2/policies/" + $1.id + "/policystatuses"
-                        $PolicyResults = Invoke-RestMethod -Method GET -Uri $2 -Headers $hdrs -UserAgent $JCUserAgent
-                        $3 += $PolicyResults
-                    }
-                    return $3
-
-                # Write-Verbose "Setting skip to $skip"
-
-                # [int]$Counter = 0 
+                #[int]$Counter = 0 
     
                 # while (($resultsArrayList.results).count -ge $Counter)
                 # {
+                #     foreach ($policy in $activepolicies)
+                #     {
+                #     $Uri = $Url_Template1 -f $JCUrlBasePath, $policy.id, "/policystatuses?limit=1&skip=$skip"
                 #     $limitURL = "$JCUrlBasePath/api/commandresults?limit=$limit&skip=$skip"
-                #     Write-Verbose $limitURL
+                #     Write-Verbose $Uri
     
+                #     $PolicyResults = Invoke-RestMethod -Method GET -Uri $Uri -Headers $hdrs -UserAgent $JCUserAgent
                 #     $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs
     
+                #     $PolicyArrayList += $PolicyResults
                 #     $skip += $limit
                 #     $Counter += $limit
                 #     Write-Verbose "Setting skip to $skip"
@@ -129,7 +109,32 @@ function Get-JCPolicyResult ()
                 #     $null = $resultsArrayList.Add($results)
                 #     $count = ($resultsArrayList.results.Count)
                 #     Write-Verbose "Results count equals $count"
+                #     }
                 # }
+                
+
+                $PolicyResults = @{}
+                $activepolicies = Get-jcpolicy | Select-Object id
+                $PolicyArrayList = New-Object -TypeName System.Collections.ArrayList
+                [int]$Counter = 0 
+                    #While($PolicyArrayList.Count -ge $counter)
+                        #{  
+                    foreach ($policy in $activepolicies)
+                    {
+                            $Uri = $Url_Template1 -f $JCUrlBasePath, $policy.id, "/policystatuses?skip=$Skip"
+                            Write-host $uri -BackgroundColor Cyan
+                            $PolicyResults = Invoke-RestMethod -Method GET -Uri $Uri -Headers $hdrs -UserAgent $JCUserAgent
+                            $PolicyArrayList += $PolicyResults
+                            #$skip += $Limit
+                            $Counter += $Limit
+                            write-output $PolicyResults.count
+                            Write-Output $PolicyArrayList.count
+                            Write-Output "Limit - $Limit"
+                            Write-Output "Counter - $Counter"
+                            Write-Output "Skip - $skip"
+                        #}
+                    }
+                    #return $PolicyArrayList
             }
             MaxResults
             { 
@@ -224,10 +229,10 @@ function Get-JCPolicyResult ()
         {
             ReturnAll {Return $resultsArrayList.results}
             MaxResults {Return $resultsArrayList}
-            TotalCount {Return  $resultsArrayList }
             ByPolicyID {Return  $resultsArrayList }
             BySystemID {Return  $resultsArrayList }
             ByPolicyResultID {Return  $resultsArrayList }
         }
     }
 }
+#Get-JCPolicyResult
