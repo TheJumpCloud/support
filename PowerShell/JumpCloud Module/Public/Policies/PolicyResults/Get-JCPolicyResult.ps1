@@ -75,11 +75,12 @@ function Get-JCPolicyResult ()
             ByPolicyResultID {$URL = "$JCUrlBasePath/api/v2/policyresults/$PolicyResultID/"}
             ByPolicyID {$URL = "$JCUrlBasePath/api/v2/policies/$PolicyID/policystatuses"}
         }
+        Invoke-JCApiGet -URL $URL
     }
 
     end
     
     {
-            Invoke-JCApiGet -URL $URL
+
     }
 }
