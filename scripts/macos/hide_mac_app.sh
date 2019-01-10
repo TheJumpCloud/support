@@ -1,6 +1,6 @@
-#!/bin/bash
-if [ $UID != 0 ]; then
-  (>&2 echo "Error:  $0 must be run as root")
+#!/usr/bin/env bash
+if [[ "$UID" -ne 0 ]]; then
+  (>&2 echo "Error: $0 must be run with root permissions.")
   exit 1
 fi
 defaults write /Library/LaunchAgents/com.jumpcloud.jcagent-tray Disabled -bool true

@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # Replace YOUR_CONNECT_KEY with your actual key found on the new system aside in the admin console
 
 curl -o /tmp/jumpcloud-agent.pkg "https://s3.amazonaws.com/jumpcloud-windows-agent/production/jumpcloud-agent.pkg"
