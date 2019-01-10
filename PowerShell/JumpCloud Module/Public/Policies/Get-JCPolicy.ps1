@@ -12,11 +12,6 @@ Function Get-JCPolicy ()
         [String]$PolicyID,
 
         [Parameter(
-            ParameterSetName = 'ByID')]
-        [Switch]
-        $ByID,
-
-        [Parameter(
             ParameterSetName = 'Name')]
         [String]
         $Name
