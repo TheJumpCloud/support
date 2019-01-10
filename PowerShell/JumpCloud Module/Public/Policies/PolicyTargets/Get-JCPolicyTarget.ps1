@@ -170,7 +170,7 @@ Function Get-JCPolicyTarget
 
                     }
 
-                    $resultsArrayList.Add($Group) | Out-Null
+                    $resultsArrayList.Add(($Group | Select-Object PolicyName, GroupName, GroupID)) | Out-Null 
 
                 } # end foreach
             } # end Groups switch

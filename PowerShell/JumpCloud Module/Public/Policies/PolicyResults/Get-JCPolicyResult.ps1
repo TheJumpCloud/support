@@ -24,9 +24,8 @@ function Get-JCPolicyResult ()
 
         [Parameter(
             ParameterSetName = 'ByPolicyResultID')]
-        [String]$PolicyResultID,
+        [String]$PolicyResultID
     
-        [int]$Skip = 0
     )
 
 
