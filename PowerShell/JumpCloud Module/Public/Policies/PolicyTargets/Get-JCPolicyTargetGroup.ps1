@@ -32,7 +32,7 @@ Function Get-JCPolicyTargetGroup
 
         If ($PolicyName)
         {
-            $PolicyId = Get-JCPolicy | Where-Object {$_.name -eq $PolicyName}
+            $PolicyId = (Get-JCPolicy -Name:($PolicyName)).id
             If (!($PolicyId))
             {
                 Throw ('Policy name "' + $PolicyName + '" does not exist. Run "Get-JCPolicy" to see a list of all your JumpCloud policies.')
