@@ -76,10 +76,4 @@ function Get-JCPolicyResult ()
         }
         Invoke-JCApiGet -URL $URL
     }
-
-    end
-    
-    {
-
-    }
 }
