@@ -43,32 +43,6 @@ Function Get-JCPolicyTarget
             $hdrs.Add('x-org-id', "$($JCOrgID)")
         }
 
-
-        if ($PSCmdlet.ParameterSetName -eq 'Groups')
-        {
-
-            Write-Verbose 'Populating SystemGroupNameHash'
-            $SystemGroupNameHash = Get-Hash_ID_SystemGroupName
-
-        }
-
-        if ($PSCmdlet.ParameterSetName -eq 'Systems')
-        {
-
-            Write-Verbose 'Populating SystemDisplayNameHash'
-            $SystemDisplayNameHash = Get-Hash_SystemID_DisplayName
-
-            Write-Verbose 'Populating SystemIDHash'
-            $SystemHostNameHash = Get-Hash_SystemID_HostName
-
-        }
-
-        Write-Verbose 'Populating PolicyNameHash'
-        $PolicyNameHash = Get-Hash_PolicyID_Name
-
-        [int]$limit = '100'
-        Write-Verbose "Setting limit to $limit"
-
         Write-Verbose 'Initilizing RawResults and resultsArrayList'
         $RawResults = @()
         $resultsArrayList = New-Object System.Collections.ArrayList
@@ -80,16 +54,25 @@ Function Get-JCPolicyTarget
     process
     {
 
-        [int]$skip = 0 #Do not change!
-        [int]$count = 0 #Do not change
-        Write-Verbose 'Setting skip and count to zero'
-        $RawResults = $null
+        $RawResults = @()
 
         switch ($PSCmdlet.ParameterSetName)
         {
 
             Systems
             {
+                Write-Verbose 'Populating PolicyNameHash'
+                
+                $PolicyNameHash = Get-Hash_PolicyID_Name
+        
+                Write-Verbose 'Populating SystemDisplayNameHash'
+                      
+                $SystemDisplayNameHash = Get-Hash_SystemID_DisplayName
+
+                Write-Verbose 'Populating SystemIDHash'
+                
+                $SystemHostNameHash = Get-Hash_SystemID_HostName
+            
                 $SystemURL = "$JCUrlBasePath/api/v2/policies/$PolicyID/systems"
                 
                 $RawResults = Invoke-JCApiGet -URL:($SystemURL)
@@ -120,6 +103,10 @@ Function Get-JCPolicyTarget
             Groups
             {
 
+                Write-Verbose 'Populating SystemGroupNameHash'
+                
+                $SystemGroupNameHash = Get-Hash_ID_SystemGroupName
+            
                 $SystemGroupsURL = "$JCUrlBasePath/api/v2/policies/$PolicyID/systemgroups"
 
                 $RawResults = Invoke-JCApiGet -URL:($SystemGroupsURL)
