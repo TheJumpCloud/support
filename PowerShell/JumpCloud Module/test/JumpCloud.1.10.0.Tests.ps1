@@ -3,7 +3,7 @@ Describe "Connect-JCOnline" {
 
     It "Connects to JumpCloud with a single admin API Key using force" {
         
-        $Connect = Connect-JCOnline -JumpCloudAPIKey $SingleAdminAPIKey -force
+        $Connect = Connect-JCOnline -JumpCloudAPIKey "$SingleAdminAPIKey" -force
         $Connect | Should -be $null
 
     }
@@ -65,31 +65,60 @@ Describe 'Get-JCPolicy' {
         $SingleResult.Name | Should Be $SinglePolicy.Name
     }
 }
-Describe 'Get-JCPolicyTarget' {
+Describe 'Get-JCPolicyTargetGroup' {
 
-    it "Returns all JumpCloud policy system targets" {
-        $SinglePolicy = Get-JCPolicy | Select-Object -Last 1
-        $SystemTarget = Get-JCPolicyTarget -PolicyID $SinglePolicy.id
-        $SystemTarget.SystemID.count | Should -BeGreaterThan 0
-    }
-
-    it "Returns all JumpCloud policy group targets by groupname" {
+    it "Returns all JumpCloud policy group targets by groupname using policyid" {
         $SinglePolicy = Get-JCPolicy | Select-Object -Last 1 
-        $SystemGroupTarget = Get-JCPolicyTarget -PolicyID $SinglePolicy.id -Groups
+        $SystemGroupTarget = Get-JCPolicyTargetGroup -PolicyID $SinglePolicy.id
         $SystemGroupTarget.Groupname.count | Should -BeGreaterThan 0
     }
 
-    it "Returns all JumpCloud policy system targets using the pipeline" {
-        $Allpolicy = Get-JCPolicy | Get-JCPolicyTarget 
+    it "Returns all JumpCloud policy group targets by groupname using policyname" {
+        $SinglePolicy = Get-JCPolicy | Select-Object -Last 1 
+        $SystemGroupTarget = Get-JCPolicyTargetGroup -PolicyName $SinglePolicy.name
+        $SystemGroupTarget.Groupname.count | Should -BeGreaterThan 0
+    }
+
+    it "Returns all JumpCloud policy system group targets using the pipeline and group id" {
+
+        $Allpolicy = (Get-JCPolicy) | %{ Get-JCPolicyTargetGroup $_.id}
         $Allpolicy.PolicyID.count | Should -BeGreaterThan 1
     }
 
-    it "Returns all JumpCloud policy system group targets using the pipeline" {
+    it "Returns all JumpCloud policy system group targets using the pipeline and group name" {
 
-        $Allpolicy = Get-JCPolicy | Get-JCPolicyTarget -Groups
+        $Allpolicy = (Get-JCPolicy) | %{ Get-JCPolicyTargetGroup -policyname:($_.name)}
         $Allpolicy.PolicyID.count | Should -BeGreaterThan 1
     }
 }
+
+Describe 'Get-JCPolicyTargetSystem' {
+
+    it "Returns all JumpCloud policy system targets using policyid" {
+        $SinglePolicy = Get-JCPolicy | Select-Object -Last 1
+        $SystemTarget = Get-JCPolicyTargetSystem -PolicyID $SinglePolicy.id
+        $SystemTarget.SystemID.count | Should -BeGreaterThan 0
+    }
+
+    it "Returns all JumpCloud policy system targets using policyname" {
+        $SinglePolicy = Get-JCPolicy | Select-Object -Last 1
+        $SystemTarget = Get-JCPolicyTargetSystem -PolicyName $SinglePolicy.name
+        $SystemTarget.SystemID.count | Should -BeGreaterThan 0
+    }
+
+    it "Returns all JumpCloud policy system targets using the pipeline and group id" {
+
+        $Allpolicy = (Get-JCPolicy) | %{ Get-JCPolicyTargetSystem $_.id}
+        $Allpolicy.PolicyID.count | Should -BeGreaterThan 1
+    }
+
+    it "Returns all JumpCloud policy system targets using the pipeline and group name" {
+
+        $Allpolicy = (Get-JCPolicy) | %{ Get-JCPolicyTargetSystem -policyname:($_.name)}
+        $Allpolicy.PolicyID.count | Should -BeGreaterThan 1
+    }
+}
+
 Describe "Get-JCPolicyResult" {
 
     It "Returns a policy result with the policyname" {
@@ -110,9 +139,4 @@ Describe "Get-JCPolicyResult" {
         $PolicyResult.id.count | Should -BeGreaterThan 0
     }
 
-    It "Returns a policy result with the PolicyResultID" {
-        $SinglePolicy = Get-JCPolicy | Select-Object -Last 1
-        $PolicyResult = Get-JCPolicyResult -PolicyID $SinglePolicy.id
-        $PolicyResult.id.count | Should -Be 1
-    }
 }
