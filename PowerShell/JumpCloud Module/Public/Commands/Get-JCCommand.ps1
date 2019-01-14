@@ -1,3 +1,4 @@
+
 Function Get-JCCommand ()
 {
     [CmdletBinding(DefaultParameterSetName = 'ReturnAll')]

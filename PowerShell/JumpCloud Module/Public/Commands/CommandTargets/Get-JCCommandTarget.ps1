@@ -20,9 +20,9 @@ Function Get-JCCommandTarget
         [Parameter(ParameterSetName = 'Groups')]
         [switch]
         $Groups
-
+        
     )
-
+    
     begin
     {
 
@@ -63,7 +63,7 @@ Function Get-JCCommandTarget
 
         }
 
-
+        
         Write-Verbose 'Populating CommandNameHash'
         $CommandNameHash = Get-Hash_CommandID_Name
 
@@ -73,16 +73,16 @@ Function Get-JCCommandTarget
 
         [int]$limit = '100'
         Write-Verbose "Setting limit to $limit"
-
+        
         Write-Verbose 'Initilizing RawResults and resultsArrayList'
         $RawResults = @()
         $resultsArrayList = New-Object System.Collections.ArrayList
 
         Write-Verbose "Paramter set: $($PSCmdlet.ParameterSetName)"
-
+        
 
     }
-
+    
     process
     {
 
@@ -93,24 +93,24 @@ Function Get-JCCommandTarget
 
         switch ($PSCmdlet.ParameterSetName)
         {
-
+            
             Systems
-            {
+            {  
 
                 while ($count -ge $skip)
-                {
+                {        
                     $SystemURL = "$JCUrlBasePath/api/v2/commands/$CommandID/systems?limit=$limit&skip=$skip"
-
-
+                    
+        
                     Write-Verbose $SystemURL
-
+        
                     $APIresults = Invoke-RestMethod -Method GET -Uri  $SystemURL  -Header $hdrs -UserAgent $JCUserAgent
-
+        
                     $skip += $limit
                     Write-Verbose "Setting skip to  $skip"
-
+        
                     $RawResults += $APIresults
-
+        
                     $count = ($RawResults).Count
                     Write-Verbose "Results count equals $count"
 
@@ -144,21 +144,21 @@ Function Get-JCCommandTarget
 
             Groups
             {
-
+        
                 while ($count -ge $skip)
                 {
                     $SystemGroupsURL = "$JCUrlBasePath/api/v2/commands/$CommandID/systemgroups?limit=$limit&skip=$skip"
-
-
+                    
+        
                     Write-Verbose $SystemGroupsURL
-
+        
                     $APIresults = Invoke-RestMethod -Method GET -Uri  $SystemGroupsURL  -Header $hdrs -UserAgent $JCUserAgent
-
+        
                     $skip += $limit
                     Write-Verbose "Setting skip to  $skip"
-
+        
                     $RawResults += $APIresults
-
+        
                     $count = ($RawResults).Count
                     Write-Verbose "Results count equals $count"
                 } # end while
@@ -185,8 +185,8 @@ Function Get-JCCommandTarget
 
             } # end Groups switch
         } # end switch
-    } # end process
-
+    } # end process 
+    
     end
     {
 
