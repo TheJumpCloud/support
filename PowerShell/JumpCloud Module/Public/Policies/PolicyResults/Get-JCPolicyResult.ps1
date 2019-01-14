@@ -58,16 +58,16 @@ function Get-JCPolicyResult ()
         {
             ByPolicyName
             {
-                Write-Debug 'Populating PolicyNameHash'
-                $PolicyNameHash = Get-Hash_PolicyName_ID
-                if ($PolicyNameHash.containsKey($PolicyName))
+                $Policy = Get-JCPolicy | Where-Object {$_.name -eq $PolicyName}
+                if ($Policy)
                 {
-                    $PolicyID = $PolicyNameHash.Get_Item($PolicyName)
-                }
-                else
+                    $PolicyID = $Policy.id
+                }              
+                Else
                 {
                     Throw "Policy does not exist. Run 'Get-JCPolicy' to see a list of all your JumpCloud policies."
                 }
+                
                 $URL = "$JCUrlBasePath/api/v2/policies/$PolicyID/policystatuses"
             }
             BySystemID {$URL = "$JCUrlBasePath/api/v2/systems/$SystemID/policystatuses"}

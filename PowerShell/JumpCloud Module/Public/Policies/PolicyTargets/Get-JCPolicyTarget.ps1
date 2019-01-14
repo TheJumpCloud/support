@@ -61,10 +61,7 @@ Function Get-JCPolicyTarget
 
             Systems
             {
-                Write-Verbose 'Populating PolicyNameHash'
-                
-                $PolicyNameHash = Get-Hash_PolicyID_Name
-        
+                    
                 Write-Verbose 'Populating SystemDisplayNameHash'
                       
                 $SystemDisplayNameHash = Get-Hash_SystemID_DisplayName
@@ -76,10 +73,19 @@ Function Get-JCPolicyTarget
                 $SystemURL = "$JCUrlBasePath/api/v2/policies/$PolicyID/systems"
                 
                 $RawResults = Invoke-JCApiGet -URL:($SystemURL)
+                
                 foreach ($result in $RawResults)
                 {
-
-                    $PolicyName = $PolicyNameHash.($PolicyID)
+                    $Policy = Get-JCPolicy | Where-Object {$_.id -eq $PolicyID}
+                    if ($Policy)
+                    {
+                        $PolicyName = $Policy.Name
+                    }              
+                    Else
+                    {
+                        Throw "Policy does not exist. Run 'Get-JCPolicy' to see a list of all your JumpCloud policies."
+                    }
+                    
                     $SystemID = $result.id
                     $Hostname = $SystemHostNameHash.($SystemID )
                     $Displyname = $SystemDisplayNameHash.($SystemID)
@@ -114,7 +120,15 @@ Function Get-JCPolicyTarget
                 foreach ($result in $RawResults)
                 {
 
-                    $PolicyName = $PolicyNameHash.($PolicyID)
+                    $Policy = Get-JCPolicy | Where-Object {$_.id -eq $PolicyID}
+                    if ($Policy)
+                    {
+                        $PolicyName = $Policy.Name
+                    }              
+                    Else
+                    {
+                        Throw "Policy does not exist. Run 'Get-JCPolicy' to see a list of all your JumpCloud policies."
+                    }
                     $GroupID = $result.id
                     $GroupName = $SystemGroupNameHash.($GroupID)
 
