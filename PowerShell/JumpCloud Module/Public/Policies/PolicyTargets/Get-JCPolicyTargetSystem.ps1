@@ -1,9 +1,9 @@
 Function Get-JCPolicyTargetSystem
 {
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = 'ID')]
     param (
-        [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName, Position = 0)][ValidateNotNullOrEmpty()][Alias('_id', 'id')][String]$PolicyID,
-        [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName, Position = 1)][ValidateNotNullOrEmpty()][String]$PolicyName
+        [Parameter(Mandatory = $True, ValueFromPipelineByPropertyName = $True, Position = 0, ParameterSetName = 'ID')][ValidateNotNullOrEmpty()][Alias('_id', 'id')][String]$PolicyID,
+        [Parameter(Mandatory = $True, ValueFromPipelineByPropertyName = $True, Position = 0, ParameterSetName = 'Name')][ValidateNotNullOrEmpty()][String]$PolicyName
     )
     begin
     {
