@@ -80,14 +80,12 @@ Describe 'Get-JCPolicyTargetGroup' {
     }
 
     it "Returns all JumpCloud policy system group targets using the pipeline and group id" {
-
-        $Allpolicy = (Get-JCPolicy) | %{ Get-JCPolicyTargetGroup $_.id}
+        $Allpolicy = Get-JCPolicy | Get-JCPolicyTargetGroup
         $Allpolicy.PolicyID.count | Should -BeGreaterThan 1
     }
 
     it "Returns all JumpCloud policy system group targets using the pipeline and group name" {
-
-        $Allpolicy = (Get-JCPolicy) | %{ Get-JCPolicyTargetGroup -policyname:($_.name)}
+        $Allpolicy = Get-JCPolicy | Get-JCPolicyTargetGroup -ByName
         $Allpolicy.PolicyID.count | Should -BeGreaterThan 1
     }
 }

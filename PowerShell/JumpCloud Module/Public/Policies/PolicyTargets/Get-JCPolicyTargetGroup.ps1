@@ -2,8 +2,9 @@ Function Get-JCPolicyTargetGroup
 {
     [CmdletBinding(DefaultParameterSetName = 'ID')]
     param (
+        [Parameter(ParameterSetName = 'Name')][Switch]$ByName,
         [Parameter(Mandatory = $True, ValueFromPipelineByPropertyName = $True, Position = 0, ParameterSetName = 'ID')][ValidateNotNullOrEmpty()][Alias('_id', 'id')][String]$PolicyID,
-        [Parameter(Mandatory = $True, ValueFromPipelineByPropertyName = $True, Position = 0, ParameterSetName = 'Name')][ValidateNotNullOrEmpty()][String]$PolicyName
+        [Parameter(Mandatory = $True, ValueFromPipelineByPropertyName = $True, Position = 0, ParameterSetName = 'Name')][ValidateNotNullOrEmpty()][Alias('Name')][String]$PolicyName
     )
     begin
     {
@@ -28,10 +29,7 @@ Function Get-JCPolicyTargetGroup
         Write-Verbose 'Initializing RawResults and resultsArrayList'
         $RawResults = @()
         $resultsArrayList = New-Object System.Collections.ArrayList
-    }
-    process
-    {
-        $RawResults = @()
+
         If ($PolicyName)
         {
             $PolicyId = Get-JCPolicy | Where-Object {$_.name -eq $PolicyName}
@@ -40,6 +38,10 @@ Function Get-JCPolicyTargetGroup
                 Throw ('Policy name "' + $PolicyName + '" does not exist. Run "Get-JCPolicy" to see a list of all your JumpCloud policies.')
             }
         }
+    }
+    process
+    {
+        $RawResults = @()
         $URL = "$JCUrlBasePath/api/v2/policies/$PolicyID/systemgroups"
         Write-Verbose 'Populating SystemGroupNameHash'
         $SystemGroupNameHash = Get-Hash_ID_SystemGroupName
