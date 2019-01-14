@@ -90,26 +90,9 @@ Function Get-JCPolicyTarget
 
             Systems
             {
-
-                while ($count -ge $skip)
-                {
-                    $SystemURL = "$JCUrlBasePath/api/v2/policies/$PolicyID/systems?limit=$limit&skip=$skip"
-
-
-                    Write-Verbose $SystemURL
-
-                    $APIresults = Invoke-RestMethod -Method GET -Uri  $SystemURL  -Header $hdrs -UserAgent $JCUserAgent
-
-                    $skip += $limit
-                    Write-Verbose "Setting skip to  $skip"
-
-                    $RawResults += $APIresults
-
-                    $count = ($RawResults).Count
-                    Write-Verbose "Results count equals $count"
-
-                } #end while
-
+                $SystemURL = "$JCUrlBasePath/api/v2/policies/$PolicyID/systems"
+                
+                $RawResults = Invoke-JCApiGet -URL:($SystemURL)
                 foreach ($result in $RawResults)
                 {
 
@@ -120,8 +103,8 @@ Function Get-JCPolicyTarget
 
                     $PolicyTargetSystem = [pscustomobject]@{
 
-                        'PolicyID'   = $PolicyID
-                        'PolicyName' = $PolicyName
+                        'PolicyID'    = $PolicyID
+                        'PolicyName'  = $PolicyName
                         'SystemID'    = $SystemID
                         'DisplayName' = $Displyname
                         'HostName'    = $Hostname
@@ -137,22 +120,9 @@ Function Get-JCPolicyTarget
             Groups
             {
 
-                while ($count -ge $skip)
-                {
-                    $SystemGroupsURL = "$JCUrlBasePath/api/v2/policies/$PolicyID/systemgroups?limit=$limit&skip=$skip"
+                $SystemGroupsURL = "$JCUrlBasePath/api/v2/policies/$PolicyID/systemgroups"
 
-                    Write-Verbose $SystemGroupsURL
-
-                    $APIresults = Invoke-RestMethod -Method GET -Uri  $SystemGroupsURL  -Header $hdrs -UserAgent $JCUserAgent
-
-                    $skip += $limit
-                    Write-Verbose "Setting skip to  $skip"
-
-                    $RawResults += $APIresults
-
-                    $count = ($RawResults).Count
-                    Write-Verbose "Results count equals $count"
-                } # end while
+                $RawResults = Invoke-JCApiGet -URL:($SystemGroupsURL)
 
                 foreach ($result in $RawResults)
                 {
@@ -170,15 +140,17 @@ Function Get-JCPolicyTarget
 
                     }
 
-                    $resultsArrayList.Add(($Group | Select-Object PolicyName, GroupName, GroupID)) | Out-Null 
+                    $resultsArrayList.Add(($Group) | Out-Null 
 
                 } # end foreach
             } # end Groups switch
         } # end switch
     } # end process
-
     end
     {
-        Return $resultsArrayList
+        If($resultsArrayList)
+        {
+            Return $resultsArrayList
+        }
     }
 }
