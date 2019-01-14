@@ -54,12 +54,9 @@ Function Get-JCPolicy ()
             "Name"      {$URL = "$JCUrlBasePath/api/v2/policies?sort=name&filter=name%3Asearch%3A$Name"}
         }
         $Result = Invoke-JCApiGet -URL $URL 
-        $Result | Select-object name, id
-    }
-
-    end
-
-    {
-
+        If($Result)
+        {
+            Return $Result
+        }
     }
 }
