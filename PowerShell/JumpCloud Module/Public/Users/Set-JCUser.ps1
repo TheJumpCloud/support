@@ -219,10 +219,31 @@ Function Set-JCUser ()
 
     DynamicParam
     {
+        $dict = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
+
+        If ($enable_user_portal_multifactor -eq $True)
+        {
+            # Set the dynamic parameters' name
+            $ParamName = 'EnrollmentDays'
+            # Create the collection of attributes
+            $AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
+            # Create and set the parameters' attributes
+            $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
+            $ParameterAttribute.Mandatory = $false
+            # Generate and set the ValidateSet
+            $ValidateRangeAttribute = New-Object System.Management.Automation.ValidateRangeAttribute('1', '365')    
+            # Add the ValidateSet to the attributes collection
+            $AttributeCollection.Add($ValidateRangeAttribute)
+            # Add the attributes to the attributes collection
+            $AttributeCollection.Add($ParameterAttribute) 
+            # Create and return the dynamic parameter
+            $RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter($ParamName, [Int32], $AttributeCollection)
+            $dict.Add($ParamName, $RuntimeParameter)
+
+        }
 
         If ($NumberOfCustomAttributes)
         {
-            $dict = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
 
             [int]$NewParams = 0
             [int]$ParamNumber = 1
@@ -252,8 +273,10 @@ Function Set-JCUser ()
                 $ParamNumber++
             }
 
-            return $dict
+            
         }
+
+        return $dict
     }
 
     begin
@@ -494,12 +517,11 @@ Function Set-JCUser ()
                 $URL = "$JCUrlBasePath/api/Systemusers/$URL_ID"
                 Write-Debug $URL
 
-
                 foreach ($param in $PSBoundParameters.GetEnumerator())
                 {
                     if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }
 
-                    if ($param.key -eq 'Username') { continue }
+                    if ($param.key -in ('Username', 'EnrollmentDays')) { continue }
 
                     if ($param.Key -like '*_number') {continue}
 
@@ -511,6 +533,23 @@ Function Set-JCUser ()
 
                 }
 
+                if ($enable_user_portal_multifactor -eq $True)
+                {
+                    if ($PSBoundParameters['EnrollmentDays'])
+                    {
+                        $exclusionUntil = (Get-Date).AddDays($PSBoundParameters['EnrollmentDays'])
+                    }
+                    else
+                    {
+                        $exclusionUntil = (Get-Date).AddDays(7)
+                    }
+
+                    $mfaData = @{}
+                    $mfaData.Add("exclusion", $true)
+                    $mfaData.Add("exclusionUntil", $exclusionUntil)
+                    $body.Add('mfaData', $mfaData)
+                }
+
                 $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
 
                 Write-Debug $jsonbody
@@ -518,8 +557,6 @@ Function Set-JCUser ()
                 $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent $JCUserAgent
 
                 $UpdatedUserArray += $NewUserInfo
-
-
             }
 
             else { Throw "$Username does not exist. Run 'Get-JCUser | Select-Object username' to see a list of all your JumpCloud users."}
@@ -547,7 +584,7 @@ Function Set-JCUser ()
                 {
                     if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }
 
-                    if ($param.key -eq 'Username') { continue }
+                    if ($param.key -in ('Username', 'EnrollmentDays')) { continue }
 
                     if ($param.key -eq 'NumberOfCustomAttributes') { continue }
 
@@ -637,6 +674,23 @@ Function Set-JCUser ()
                 }
 
                 $body.add('attributes', $UpdatedAttributeArrayList)
+               
+                if ($enable_user_portal_multifactor -eq $True)
+                {
+                    if ($PSBoundParameters['EnrollmentDays'])
+                    {
+                        $exclusionUntil = (Get-Date).AddDays($PSBoundParameters['EnrollmentDays'])
+                    }
+                    else
+                    {
+                        $exclusionUntil = (Get-Date).AddDays(7)
+                    }
+
+                    $mfaData = @{}
+                    $mfaData.Add("exclusion", $true)
+                    $mfaData.Add("exclusionUntil", $exclusionUntil)
+                    $body.Add('mfaData', $mfaData)
+                }
 
                 $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
 
@@ -671,7 +725,7 @@ Function Set-JCUser ()
                 {
                     if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }
 
-                    if ($param.key -eq 'Username') { continue }
+                    if ($param.key -in ('Username', 'EnrollmentDays')) { continue }
 
                     if ($param.key -eq 'RemoveAttribute') { continue}
 
@@ -716,6 +770,23 @@ Function Set-JCUser ()
 
                 $body.add('attributes', $UpdatedAttributeArrayList)
 
+                if ($enable_user_portal_multifactor -eq $True)
+                {
+                    if ($PSBoundParameters['EnrollmentDays'])
+                    {
+                        $exclusionUntil = (Get-Date).AddDays($PSBoundParameters['EnrollmentDays'])
+                    }
+                    else
+                    {
+                        $exclusionUntil = (Get-Date).AddDays(7)
+                    }
+
+                    $mfaData = @{}
+                    $mfaData.Add("exclusion", $true)
+                    $mfaData.Add("exclusionUntil", $exclusionUntil)
+                    $body.Add('mfaData', $mfaData)
+                }
+               
                 $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
 
                 Write-Debug $jsonbody
@@ -745,6 +816,8 @@ Function Set-JCUser ()
             {
                 if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }
 
+                if ($param.key -in ('EnrollmentDays')) { continue }
+
                 if ($param.Key -like '*_number') {continue}
 
                 if ($param.Key -like 'work_*') {continue}
@@ -759,6 +832,23 @@ Function Set-JCUser ()
 
             }
 
+            if ($enable_user_portal_multifactor -eq $True)
+            {
+                if ($PSBoundParameters['EnrollmentDays'])
+                {
+                    $exclusionUntil = (Get-Date).AddDays($PSBoundParameters['EnrollmentDays'])
+                }
+                else
+                {
+                    $exclusionUntil = (Get-Date).AddDays(7)
+                }
+    
+                $mfaData = @{}
+                $mfaData.Add("exclusion", $true)
+                $mfaData.Add("exclusionUntil", $exclusionUntil)
+                $body.Add('mfaData', $mfaData)
+            }
+                
             $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
 
             Write-Debug $jsonbody
@@ -779,16 +869,13 @@ Function Set-JCUser ()
             $CurrentAttributes = Get-JCUser -UserID $UserID | Select-Object -ExpandProperty attributes | Select-Object value, name
             Write-Debug "There are $($CurrentAttributes.count) existing attributes"
 
-
-
             $CustomAttributeArrayList = New-Object System.Collections.ArrayList
-
 
             foreach ($param in $PSBoundParameters.GetEnumerator())
             {
                 if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }
 
-                if ($param.key -eq 'Username') { continue }
+                if ($param.key -in ('Username', 'EnrollmentDays')) { continue }
 
                 if ($param.key -eq 'ByID') { continue }
 
@@ -883,6 +970,23 @@ Function Set-JCUser ()
 
             $body.add('attributes', $UpdatedAttributeArrayList)
 
+            if ($enable_user_portal_multifactor -eq $True)
+            {
+                if ($PSBoundParameters['EnrollmentDays'])
+                {
+                    $exclusionUntil = (Get-Date).AddDays($PSBoundParameters['EnrollmentDays'])
+                }
+                else
+                {
+                    $exclusionUntil = (Get-Date).AddDays(7)
+                }
+
+                $mfaData = @{}
+                $mfaData.Add("exclusion", $true)
+                $mfaData.Add("exclusionUntil", $exclusionUntil)
+                $body.Add('mfaData', $mfaData)
+            }
+
             $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
 
             Write-Debug $jsonbody
@@ -895,7 +999,6 @@ Function Set-JCUser ()
         }
 
     }
-
     end
     {
         return $UpdatedUserArray
