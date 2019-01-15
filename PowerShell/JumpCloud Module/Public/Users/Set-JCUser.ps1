@@ -87,10 +87,6 @@ Function Set-JCUser ()
         $enable_user_portal_multifactor,
 
         [Parameter()]
-        [datetime]
-        $exclusionUntil = (Get-Date).AddDays(7),
-
-        [Parameter()]
         [int]
         $NumberOfCustomAttributes,
 
@@ -223,10 +219,31 @@ Function Set-JCUser ()
 
     DynamicParam
     {
+        $dict = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
+
+        If ($enable_user_portal_multifactor -eq $True)
+        {
+            # Set the dynamic parameters' name
+            $ParamName = 'EnrollmentDays'
+            # Create the collection of attributes
+            $AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
+            # Create and set the parameters' attributes
+            $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
+            $ParameterAttribute.Mandatory = $false
+            # Generate and set the ValidateSet
+            $ValidateRangeAttribute = New-Object System.Management.Automation.ValidateRangeAttribute('1', '365')    
+            # Add the ValidateSet to the attributes collection
+            $AttributeCollection.Add($ValidateRangeAttribute)
+            # Add the attributes to the attributes collection
+            $AttributeCollection.Add($ParameterAttribute) 
+            # Create and return the dynamic parameter
+            $RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter($ParamName, [Int32], $AttributeCollection)
+            $dict.Add($ParamName, $RuntimeParameter)
+
+        }
 
         If ($NumberOfCustomAttributes)
         {
-            $dict = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
 
             [int]$NewParams = 0
             [int]$ParamNumber = 1
@@ -256,8 +273,10 @@ Function Set-JCUser ()
                 $ParamNumber++
             }
 
-            return $dict
+            
         }
+
+        return $dict
     }
 
     begin
@@ -502,7 +521,7 @@ Function Set-JCUser ()
                 {
                     if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }
 
-                    if ($param.key -in ('Username', 'exclusionUntil')) { continue }
+                    if ($param.key -in ('Username', 'EnrollmentDays')) { continue }
 
                     if ($param.Key -like '*_number') {continue}
 
@@ -514,8 +533,17 @@ Function Set-JCUser ()
 
                 }
 
-                if ($enable_user_portal_multifactor)
+                if ($enable_user_portal_multifactor -eq $True)
                 {
+                    if ($PSBoundParameters['EnrollmentDays'])
+                    {
+                        $exclusionUntil = (Get-Date).AddDays($PSBoundParameters['EnrollmentDays'])
+                    }
+                    else
+                    {
+                        $exclusionUntil = (Get-Date).AddDays(7)
+                    }
+
                     $mfaData = @{}
                     $mfaData.Add("exclusion", $true)
                     $mfaData.Add("exclusionUntil", $exclusionUntil)
@@ -556,7 +584,7 @@ Function Set-JCUser ()
                 {
                     if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }
 
-                    if ($param.key -in ('Username', 'exclusionUntil')) { continue }
+                    if ($param.key -in ('Username', 'EnrollmentDays')) { continue }
 
                     if ($param.key -eq 'NumberOfCustomAttributes') { continue }
 
@@ -647,8 +675,17 @@ Function Set-JCUser ()
 
                 $body.add('attributes', $UpdatedAttributeArrayList)
                
-                if ($enable_user_portal_multifactor)
+                if ($enable_user_portal_multifactor -eq $True)
                 {
+                    if ($PSBoundParameters['EnrollmentDays'])
+                    {
+                        $exclusionUntil = (Get-Date).AddDays($PSBoundParameters['EnrollmentDays'])
+                    }
+                    else
+                    {
+                        $exclusionUntil = (Get-Date).AddDays(7)
+                    }
+
                     $mfaData = @{}
                     $mfaData.Add("exclusion", $true)
                     $mfaData.Add("exclusionUntil", $exclusionUntil)
@@ -688,7 +725,7 @@ Function Set-JCUser ()
                 {
                     if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }
 
-                    if ($param.key -in ('Username', 'exclusionUntil')) { continue }
+                    if ($param.key -in ('Username', 'EnrollmentDays')) { continue }
 
                     if ($param.key -eq 'RemoveAttribute') { continue}
 
@@ -733,8 +770,17 @@ Function Set-JCUser ()
 
                 $body.add('attributes', $UpdatedAttributeArrayList)
 
-                if ($enable_user_portal_multifactor)
+                if ($enable_user_portal_multifactor -eq $True)
                 {
+                    if ($PSBoundParameters['EnrollmentDays'])
+                    {
+                        $exclusionUntil = (Get-Date).AddDays($PSBoundParameters['EnrollmentDays'])
+                    }
+                    else
+                    {
+                        $exclusionUntil = (Get-Date).AddDays(7)
+                    }
+
                     $mfaData = @{}
                     $mfaData.Add("exclusion", $true)
                     $mfaData.Add("exclusionUntil", $exclusionUntil)
@@ -770,7 +816,7 @@ Function Set-JCUser ()
             {
                 if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }
 
-                if ($param.key -in ('exclusionUntil')) { continue }
+                if ($param.key -in ('EnrollmentDays')) { continue }
 
                 if ($param.Key -like '*_number') {continue}
 
@@ -786,8 +832,17 @@ Function Set-JCUser ()
 
             }
 
-            if ($enable_user_portal_multifactor)
+            if ($enable_user_portal_multifactor -eq $True)
             {
+                if ($PSBoundParameters['EnrollmentDays'])
+                {
+                    $exclusionUntil = (Get-Date).AddDays($PSBoundParameters['EnrollmentDays'])
+                }
+                else
+                {
+                    $exclusionUntil = (Get-Date).AddDays(7)
+                }
+    
                 $mfaData = @{}
                 $mfaData.Add("exclusion", $true)
                 $mfaData.Add("exclusionUntil", $exclusionUntil)
@@ -820,7 +875,7 @@ Function Set-JCUser ()
             {
                 if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }
 
-                if ($param.key -in ('Username', 'exclusionUntil')) { continue }
+                if ($param.key -in ('Username', 'EnrollmentDays')) { continue }
 
                 if ($param.key -eq 'ByID') { continue }
 
@@ -915,8 +970,17 @@ Function Set-JCUser ()
 
             $body.add('attributes', $UpdatedAttributeArrayList)
 
-            if ($enable_user_portal_multifactor)
+            if ($enable_user_portal_multifactor -eq $True)
             {
+                if ($PSBoundParameters['EnrollmentDays'])
+                {
+                    $exclusionUntil = (Get-Date).AddDays($PSBoundParameters['EnrollmentDays'])
+                }
+                else
+                {
+                    $exclusionUntil = (Get-Date).AddDays(7)
+                }
+
                 $mfaData = @{}
                 $mfaData.Add("exclusion", $true)
                 $mfaData.Add("exclusionUntil", $exclusionUntil)

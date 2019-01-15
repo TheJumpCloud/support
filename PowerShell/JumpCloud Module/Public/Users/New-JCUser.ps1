@@ -63,15 +63,11 @@ Function New-JCUser ()
         [bool]
         $ldap_binding_user,
 
-        [Parameter(ValueFromPipelineByPropertyName = $True)] ##Test this to see if this can be modified.
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
         [bool]
         $enable_user_portal_multifactor,
 
-        [Parameter(ValueFromPipelineByPropertyName = $True)]
-        [datetime]
-        $exclusionUntil = (Get-Date).AddDays(7),
-
-        [Parameter(ParameterSetName = 'Attributes')] ##Test this to see if this can be modified.
+        [Parameter(ParameterSetName = 'Attributes')]
         [int]
         $NumberOfCustomAttributes,
 
@@ -196,14 +192,34 @@ Function New-JCUser ()
 
     )
 
-
     DynamicParam
     {
+        $dict = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
+
+
+        If ($enable_user_portal_multifactor -eq $True)
+        {
+            # Set the dynamic parameters' name
+            $ParamName = 'EnrollmentDays'
+            # Create the collection of attributes
+            $AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
+            # Create and set the parameters' attributes
+            $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
+            $ParameterAttribute.Mandatory = $false
+            # Generate and set the ValidateSet
+            $ValidateRangeAttribute = New-Object System.Management.Automation.ValidateRangeAttribute('1', '365')    
+            # Add the ValidateSet to the attributes collection
+            $AttributeCollection.Add($ValidateRangeAttribute)
+            # Add the attributes to the attributes collection
+            $AttributeCollection.Add($ParameterAttribute) 
+            # Create and return the dynamic parameter
+            $RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter($ParamName, [Int32], $AttributeCollection)
+            $dict.Add($ParamName, $RuntimeParameter)
+
+        }
 
         If ($NumberOfCustomAttributes)
         {
-            $dict = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
-
             [int]$NewParams = 0
             [int]$ParamNumber = 1
 
@@ -232,8 +248,10 @@ Function New-JCUser ()
                 $ParamNumber++
             }
 
-            return $dict
         }
+
+        return $dict
+
     }
 
     begin
@@ -278,7 +296,7 @@ Function New-JCUser ()
         {
             if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }
 
-            if ($param.key -in ('_id', 'JCAPIKey', 'NumberOfCustomAttributes', 'exclusionUntil')) { continue }
+            if ($param.key -in ('_id', 'JCAPIKey', 'NumberOfCustomAttributes', 'EnrollmentDays')) { continue }
 
             if ($param.Key -like 'Attribute*')
             {
@@ -357,8 +375,17 @@ Function New-JCUser ()
             $body.Add('phoneNumbers', $phoneNumbers)
         }
 
-        if ($enable_user_portal_multifactor)
+        if ($enable_user_portal_multifactor -eq $True)
         {
+            if ($PSBoundParameters['EnrollmentDays'])
+            {
+                $exclusionUntil = (Get-Date).AddDays($PSBoundParameters['EnrollmentDays'])
+            }
+            else
+            {
+                $exclusionUntil = (Get-Date).AddDays(7)
+            }
+
             $mfaData = @{}
             $mfaData.Add("exclusion", $true)
             $mfaData.Add("exclusionUntil", $exclusionUntil)
