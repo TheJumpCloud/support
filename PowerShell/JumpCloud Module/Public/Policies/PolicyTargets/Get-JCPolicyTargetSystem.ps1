@@ -1,12 +1,12 @@
 Function Get-JCPolicyTargetSystem
 {
-    [CmdletBinding(DefaultParameterSetName = 'ID')]
+    [CmdletBinding(DefaultParameterSetName = 'ById')]
     param (
-        [Parameter(ParameterSetName = 'Name')][Switch]$ByName,
-        [Parameter(Mandatory = $True, ValueFromPipelineByPropertyName = $True, Position = 0, ParameterSetName = 'ID')][ValidateNotNullOrEmpty()][Alias('_id', 'id')][String]$PolicyID,
-        [Parameter(Mandatory = $True, ValueFromPipelineByPropertyName = $True, Position = 0, ParameterSetName = 'Name')][ValidateNotNullOrEmpty()][Alias('Name')][String]$PolicyName
+        [Parameter(ParameterSetName = 'ByName')][Switch]$ByName,
+        [Parameter(Mandatory = $True, ValueFromPipelineByPropertyName = $True, Position = 0, ParameterSetName = 'ById')][ValidateNotNullOrEmpty()][Alias('_id', 'id')][String]$PolicyID,
+        [Parameter(Mandatory = $True, ValueFromPipelineByPropertyName = $True, Position = 0, ParameterSetName = 'ByName')][ValidateNotNullOrEmpty()][Alias('Name')][String]$PolicyName
     )
-    begin
+    Begin
     {
 
         Write-Verbose 'Verifying JCAPI Key'
@@ -21,7 +21,7 @@ Function Get-JCPolicyTargetSystem
 
         }
 
-        if ($JCOrgID)
+        If ($JCOrgID)
         {
             $hdrs.Add('x-org-id', "$($JCOrgID)")
         }
@@ -29,49 +29,52 @@ Function Get-JCPolicyTargetSystem
         Write-Verbose 'Initializing RawResults and resultsArrayList'
         $RawResults = @()
         $resultsArrayList = New-Object System.Collections.ArrayList
+        $URL_Template = "{0}/api/v2/policies/{1}/systems"
     }
-    process
+    Process
     {
-        If ($PolicyName)
+        If ($PSCmdlet.ParameterSetName -eq 'ByName')
         {
             $PolicyId = (Get-JCPolicy -Name:($PolicyName)).id
-            If (!($PolicyId))
-            {
-                Throw ('Policy name "' + $PolicyName + '" does not exist. Run "Get-JCPolicy" to see a list of all your JumpCloud policies.')
-            }
         }
-        $RawResults = @()
-        $URL = "$JCUrlBasePath/api/v2/policies/$PolicyID/systems"
-        Write-Verbose 'Populating SystemDisplayNameHash'
-        $SystemDisplayNameHash = Get-Hash_SystemID_DisplayName
-        Write-Verbose 'Populating SystemIDHash'
-        $SystemHostNameHash = Get-Hash_SystemID_HostName
-        $RawResults = Invoke-JCApiGet -URL:($URL)
-        foreach ($result in $RawResults)
+        If ($PolicyId)
         {
-            $Policy = Get-JCPolicy | Where-Object {$_.id -eq $PolicyID}
-            if ($Policy)
+            $URL = $URL_Template -f $JCUrlBasePath, $PolicyID
+            Write-Verbose 'Populating SystemDisplayNameHash'
+            $SystemDisplayNameHash = Get-Hash_SystemID_DisplayName
+            Write-Verbose 'Populating SystemIDHash'
+            $SystemHostNameHash = Get-Hash_SystemID_HostName
+            $RawResults = Invoke-JCApiGet -URL:($URL)
+            ForEach ($result In $RawResults)
             {
-                $PolicyName = $Policy.Name
-                $SystemID = $result.id
-                $Hostname = $SystemHostNameHash.($SystemID )
-                $DisplayName = $SystemDisplayNameHash.($SystemID)
-                $OutputObject = [PSCustomObject]@{
-                    'PolicyID'    = $PolicyID
-                    'PolicyName'  = $PolicyName
-                    'SystemID'    = $SystemID
-                    'DisplayName' = $DisplayName
-                    'HostName'    = $Hostname
+                $Policy = Get-JCPolicy | Where-Object {$_.id -eq $PolicyID}
+                If ($Policy)
+                {
+                    $PolicyName = $Policy.Name
+                    $SystemID = $result.id
+                    $Hostname = $SystemHostNameHash.($SystemID )
+                    $DisplayName = $SystemDisplayNameHash.($SystemID)
+                    $OutputObject = [PSCustomObject]@{
+                        'PolicyID'    = $PolicyID
+                        'PolicyName'  = $PolicyName
+                        'SystemID'    = $SystemID
+                        'DisplayName' = $DisplayName
+                        'HostName'    = $Hostname
+                    }
+                    $resultsArrayList.Add($OutputObject) | Out-Null
                 }
-                $resultsArrayList.Add($OutputObject) | Out-Null
-            }
-            Else
-            {
-                Throw "Policy does not exist. Run 'Get-JCPolicy' to see a list of all your JumpCloud policies."
-            }
-        } # end foreach
+                Else
+                {
+                    Throw "Policy does not exist. Run 'Get-JCPolicy' to see a list of all your JumpCloud policies."
+                }
+            } # end foreach
+        }
+        Else
+        {
+            Throw ('Policy name "' + $PolicyName + '" does not exist. Run "Get-JCPolicy" to see a list of all your JumpCloud policies.')
+        }
     } # end process
-    end
+    End
     {
         If ($resultsArrayList)
         {

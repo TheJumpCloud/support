@@ -19,7 +19,7 @@ Function Get-JCPolicy ()
             ParameterSetName = 'ByID')]
         [Switch]
         $ByID
-    
+
     )
 
     begin
@@ -47,13 +47,13 @@ Function Get-JCPolicy ()
 
     {
 
-        switch ($PSCmdlet.ParameterSetName) 
+        switch ($PSCmdlet.ParameterSetName)
         {
             "ReturnAll" {$URL = "$JCUrlBasePath/api/v2/policies"}
             "ByID" {$URL = "$JCUrlBasePath/api/v2/policies/$PolicyID"}
             "Name" {$URL = "$JCUrlBasePath/api/v2/policies?sort=name&filter=name%3Aeq%3A$Name"}
         }
-        $Result = Invoke-JCApiGet -URL $URL 
+        $Result = Invoke-JCApiGet -URL $URL
         If ($Result)
         {
             Return $Result

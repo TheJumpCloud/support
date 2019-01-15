@@ -1,16 +1,16 @@
 Function Get-JCPolicyTargetGroup
 {
-    [CmdletBinding(DefaultParameterSetName = 'ID')]
+    [CmdletBinding(DefaultParameterSetName = 'ById')]
     param (
-        [Parameter(ParameterSetName = 'Name')][Switch]$ByName,
-        [Parameter(Mandatory = $True, ValueFromPipelineByPropertyName = $True, Position = 0, ParameterSetName = 'ID')][ValidateNotNullOrEmpty()][Alias('_id', 'id')][String]$PolicyID,
-        [Parameter(Mandatory = $True, ValueFromPipelineByPropertyName = $True, Position = 0, ParameterSetName = 'Name')][ValidateNotNullOrEmpty()][Alias('Name')][String]$PolicyName
+        [Parameter(ParameterSetName = 'ByName')][Switch]$ByName,
+        [Parameter(Mandatory = $True, ValueFromPipelineByPropertyName = $True, Position = 0, ParameterSetName = 'ById')][ValidateNotNullOrEmpty()][Alias('_id', 'id')][String]$PolicyID,
+        [Parameter(Mandatory = $True, ValueFromPipelineByPropertyName = $True, Position = 0, ParameterSetName = 'ByName')][ValidateNotNullOrEmpty()][Alias('Name')][String]$PolicyName
     )
-    begin
+    Begin
     {
 
         Write-Verbose 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {Connect-JConline}
+        If ($JCAPIKEY.length -ne 40) {Connect-JConline}
 
         Write-Verbose 'Populating API headers'
         $hdrs = @{
@@ -29,45 +29,48 @@ Function Get-JCPolicyTargetGroup
         Write-Verbose 'Initializing RawResults and resultsArrayList'
         $RawResults = @()
         $resultsArrayList = New-Object System.Collections.ArrayList
+        $URL_Template = "{0}/api/v2/policies/{1}/systemgroups"
     }
-    process
+    Process
     {
-        If ($PolicyName)
+        If ($PSCmdlet.ParameterSetName -eq 'ByName')
         {
             $PolicyId = (Get-JCPolicy -Name:($PolicyName)).id
-            If (!($PolicyId))
-            {
-                Throw ('Policy name "' + $PolicyName + '" does not exist. Run "Get-JCPolicy" to see a list of all your JumpCloud policies.')
-            }
         }
-        $RawResults = @()
-        $URL = "$JCUrlBasePath/api/v2/policies/$PolicyID/systemgroups"
-        Write-Verbose 'Populating SystemGroupNameHash'
-        $SystemGroupNameHash = Get-Hash_ID_SystemGroupName
-        $RawResults = Invoke-JCApiGet -URL:($URL)
-        foreach ($result in $RawResults)
+        If ($PolicyId)
         {
-            $Policy = Get-JCPolicy | Where-Object {$_.id -eq $PolicyID}
-            if ($Policy)
+            $URL = $URL_Template -f $JCUrlBasePath, $PolicyID
+            Write-Verbose 'Populating SystemGroupNameHash'
+            $SystemGroupNameHash = Get-Hash_ID_SystemGroupName
+            $RawResults = Invoke-JCApiGet -URL:($URL)
+            ForEach ($result In $RawResults)
             {
-                $PolicyName = $Policy.Name
-                $GroupID = $result.id
-                $GroupName = $SystemGroupNameHash.($GroupID)
-                $OutputObject = [PSCustomObject]@{
-                    'PolicyID'   = $PolicyID
-                    'PolicyName' = $PolicyName
-                    'GroupID'    = $GroupID
-                    'GroupName'  = $GroupName
+                $Policy = Get-JCPolicy | Where-Object {$_.id -eq $PolicyID}
+                If ($Policy)
+                {
+                    $PolicyName = $Policy.Name
+                    $GroupID = $result.id
+                    $GroupName = $SystemGroupNameHash.($GroupID)
+                    $OutputObject = [PSCustomObject]@{
+                        'PolicyID'   = $PolicyID
+                        'PolicyName' = $PolicyName
+                        'GroupID'    = $GroupID
+                        'GroupName'  = $GroupName
+                    }
+                    $resultsArrayList.Add($OutputObject) | Out-Null
                 }
-                $resultsArrayList.Add($OutputObject) | Out-Null
-            }
-            Else
-            {
-                Throw "Policy does not exist. Run 'Get-JCPolicy' to see a list of all your JumpCloud policies."
-            }
-        } # end foreach
+                Else
+                {
+                    Throw "Policy does not exist. Run 'Get-JCPolicy' to see a list of all your JumpCloud policies."
+                }
+            } # end foreach
+        }
+        Else
+        {
+            Throw ('Policy name "' + $PolicyName + '" does not exist. Run "Get-JCPolicy" to see a list of all your JumpCloud policies.')
+        }
     } # end process
-    end
+    End
     {
         If ($resultsArrayList)
         {
