@@ -1,3 +1,25 @@
+## 1.10.0
+
+Release Date: January 15, 2019
+
+#### RELEASE NOTES
+
+```
+Use Get-JCPolicy, Get-JCPolicyResults, Get-JCPolicyTargetSystem and Get-JCPolicyTargetGroup to gather information on JumpCloud Policies. New-JCUser and Set-JCUser functions have been updated to support MFA enrollment peroids.
+```
+
+#### FEATURES:
+
+- New Function: Get-JCPolicy
+- New Function: Get-JCPolicyResults
+- New Function: Get-JCPolicyTargetSystem
+- New Function: Get-JCPolicyTargetGroup
+- Updated Function:
+
+#### IMPROVEMENTS:
+
+- Updated parameters on Set-JCSystem to allow for modification of parameters via PowerShell pipeline.
+
 ## 1.9.0
 
 Release Date: November 29, 2018
