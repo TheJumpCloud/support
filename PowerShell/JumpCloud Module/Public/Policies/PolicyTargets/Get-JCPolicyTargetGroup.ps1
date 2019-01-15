@@ -29,7 +29,9 @@ Function Get-JCPolicyTargetGroup
         Write-Verbose 'Initializing RawResults and resultsArrayList'
         $RawResults = @()
         $resultsArrayList = New-Object System.Collections.ArrayList
-
+    }
+    process
+    {
         If ($PolicyName)
         {
             $PolicyId = (Get-JCPolicy -Name:($PolicyName)).id
@@ -38,9 +40,6 @@ Function Get-JCPolicyTargetGroup
                 Throw ('Policy name "' + $PolicyName + '" does not exist. Run "Get-JCPolicy" to see a list of all your JumpCloud policies.')
             }
         }
-    }
-    process
-    {
         $RawResults = @()
         $URL = "$JCUrlBasePath/api/v2/policies/$PolicyID/systemgroups"
         Write-Verbose 'Populating SystemGroupNameHash'

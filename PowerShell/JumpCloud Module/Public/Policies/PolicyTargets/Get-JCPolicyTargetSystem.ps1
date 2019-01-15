@@ -29,7 +29,9 @@ Function Get-JCPolicyTargetSystem
         Write-Verbose 'Initializing RawResults and resultsArrayList'
         $RawResults = @()
         $resultsArrayList = New-Object System.Collections.ArrayList
-
+    }
+    process
+    {
         If ($PolicyName)
         {
             $PolicyId = (Get-JCPolicy -Name:($PolicyName)).id
@@ -38,11 +40,7 @@ Function Get-JCPolicyTargetSystem
                 Throw ('Policy name "' + $PolicyName + '" does not exist. Run "Get-JCPolicy" to see a list of all your JumpCloud policies.')
             }
         }
-    }
-    process
-    {
         $RawResults = @()
- 
         $URL = "$JCUrlBasePath/api/v2/policies/$PolicyID/systems"
         Write-Verbose 'Populating SystemDisplayNameHash'
         $SystemDisplayNameHash = Get-Hash_SystemID_DisplayName
