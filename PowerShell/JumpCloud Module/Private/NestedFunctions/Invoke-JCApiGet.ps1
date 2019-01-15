@@ -8,7 +8,7 @@ Function Invoke-JCApiGet {
     $UriQueryString_Template = '{0}{1}limit={2}&skip={3}'
     $Results_Output = @()
     $PaginationExist = $true
-    If ($Url -like '*?*') {
+    If ($Url -like '*`?*') {
         $SearchOperator = '&'
     }
     Else {
