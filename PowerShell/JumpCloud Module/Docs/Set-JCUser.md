@@ -107,6 +107,14 @@ PS C:\> Get-JCUserGroupMember -GroupName 'Sales' | Set-JCUser -RemoveAttribute D
 
 This example removes the Custom Attribute with the name 'Department' from all JumpCloud Users in the JumpCloud User Group 'Sales'
 
+### Example 6
+
+```PowerShell
+PS C:\> Set-JCUser -Username cclemons -enable_user_portal_multifactor $True -enrollmentdays 14
+```
+
+This example enables the account for the user with username cclemons for MFA login to the user portal and sets an enrollment period of 14 days.
+
 ## PARAMETERS
 
 ### -ByID
@@ -280,6 +288,22 @@ Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -enrollmentdays
+
+A dynamic parameter that can be set only if -enable_user_portal_multifactor is set to true. This will specify the enrollment period for users for enrolling into MFA via the users console. The default is 7 days if this value is not specified.
+
+```yaml
+Type: Int32
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
