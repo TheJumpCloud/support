@@ -1,4 +1,5 @@
-Function Invoke-JCApiGet { 
+Function Invoke-JCApiGet
+{ 
     [CmdletBinding()]
     Param(
         [Parameter(Mandatory = $true, Position = 0)][ValidateNotNullOrEmpty()][string]$Url,
@@ -8,28 +9,35 @@ Function Invoke-JCApiGet {
     $UriQueryString_Template = '{0}{1}limit={2}&skip={3}'
     $Results_Output = @()
     $PaginationExist = $true
-    If ($Url -like '*`?*') {
+    If ($Url -like '*`?*')
+    {
         $SearchOperator = '&'
     }
-    Else {
+    Else
+    {
         $SearchOperator = '?'
     }
-    While ($PaginationExist) {
+    While ($PaginationExist)
+    {
         $Uri = $UriQueryString_Template -f $Url, $SearchOperator, $Limit, $Skip
         Write-Debug ('Calling Uri: ' + $Uri)
         $Results = Invoke-RestMethod -Method:('GET') -Headers:($hdrs) -Uri:($Uri)
-        If ($Results) {
+        If ($Results)
+        {
             $Skip += $Results.Count
             $Results_Output += $Results
-            If ($Results.Count -eq 1) {
+            If ($Results.Count -eq 1)
+            {
                 $PaginationExist = $false
             }
         }
-        Else {
+        Else
+        {
             $PaginationExist = $false
         }
     }
-    If ($Results_Output) {
+    If ($Results_Output)
+    {
         Return $Results_Output
     }
 }
