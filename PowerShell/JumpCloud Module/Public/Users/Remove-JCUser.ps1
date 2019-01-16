@@ -1,40 +1,29 @@
 function Remove-JCUser ()
 {
-    [CmdletBinding(DefaultParameterSetName = 'warn')]
+    [CmdletBinding(DefaultParameterSetName = 'Username')]
 
     param
     (
         [Parameter(Mandatory,
-            ParameterSetName = 'warn',
+            ParameterSetName = 'Username',
             ValueFromPipelineByPropertyName,
             Position = 0)]
-
-        [Parameter(
-            ParameterSetName = 'force',
-            ValueFromPipelineByPropertyName,
-            Position = 0)]
-
         [String] $Username,
 
-        [Parameter(
-            ParameterSetName = 'warn',
-            ValueFromPipelineByPropertyName)]
-
-        [Parameter(
-            ParameterSetName = 'force',
+        [Parameter(Mandatory,
+            ParameterSetName = 'UserID',
             ValueFromPipelineByPropertyName)]
 
         [Alias('_id')]
         [String] $UserID,
 
-        [Parameter(
-            ParameterSetName = 'force')]
+        [Parameter(ParameterSetName = 'UserID')]
         [Switch]
-        $force,
+        $ByID,
 
         [Parameter()]
         [Switch]
-        $ByID
+        $force
     )
 
     begin
@@ -58,9 +47,8 @@ function Remove-JCUser ()
         }
 
         $deletedArray = @()
-            
-        if (!$ByID)
 
+        if ($PSCmdlet.ParameterSetName -eq 'Username' )
         {
             $UserHash = Get-Hash_UserName_ID
             $UserCount = ($UserHash).Count
@@ -71,62 +59,21 @@ function Remove-JCUser ()
     process
 
     {
-        if ($PSCmdlet.ParameterSetName -eq 'warn' -and !$ByID)
+        if ($PSCmdlet.ParameterSetName -eq 'Username' )
         {
             if ($UserHash.ContainsKey($Username))
             {
                 $UserID = $UserHash.Get_Item($Username)
-
-                try
-                {
-                    $URI = "$JCUrlBasePath/api/systemusers/$UserID"
-                    Write-Warning "Are you sure you wish to delete user: $Username ?" -WarningAction Inquire
-                    $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent $JCUserAgent
-                    $Status = 'Deleted'
-                }
-                catch
-                {
-                    $Status = $_.ErrorDetails
-                }
-
-                $FormattedResults = [PSCustomObject]@{
-                    'Username' = $Username 
-                    'Results'  = $Status
-                }
-
-                $deletedArray += $FormattedResults
             }
             else { Throw "Username does not exist. Run 'Get-JCUser | Select-Object username' to see a list of all your JumpCloud users."}
         }
 
-        if ($PSCmdlet.ParameterSetName -eq 'force' -and !$ByID)
+        if ($PSCmdlet.ParameterSetName -eq 'UserID' )
         {
-            $UserID = $UserHash.Get_Item($Username)
-
-            try
-            {
-                $URI = "$JCUrlBasePath/api/systemusers/$UserID"
-                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent $JCUserAgent
-                $Status = 'Deleted'
-            }
-            catch
-            {
-                $Status = $_.ErrorDetails
-            }
-
-            $FormattedResults = [PSCustomObject]@{
-                'Username' = $Username 
-                'Results'  = $Status
-            }
-
-            $deletedArray += $FormattedResults
-
+            $Username = $UserID
         }
-            
-            
-            
-        if ($PSCmdlet.ParameterSetName -eq 'warn' -and $ByID)
 
+        if (!$force)
         {
             try
             {
@@ -141,16 +88,16 @@ function Remove-JCUser ()
             }
 
             $FormattedResults = [PSCustomObject]@{
-                'UserID'  = $UserID
+                'User'    = $Username 
                 'Results' = $Status
             }
 
+            $deletedArray += $FormattedResults
 
         }
 
-        elseif ($PSCmdlet.ParameterSetName -eq 'force' -and $ByID)
+        if ($force)
         {
-
             try
             {
                 $URI = "$JCUrlBasePath/api/systemusers/$UserID"
@@ -163,13 +110,15 @@ function Remove-JCUser ()
             }
 
             $FormattedResults = [PSCustomObject]@{
-                'UserID'  = $UserID 
+                'User'    = $Username 
                 'Results' = $Status
             }
 
             $deletedArray += $FormattedResults
 
         }
+
+
     }
 
     end
