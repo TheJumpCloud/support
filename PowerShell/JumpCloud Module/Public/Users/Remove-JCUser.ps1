@@ -96,7 +96,7 @@ function Remove-JCUser ()
 
         }
 
-        if ( $force)
+        if ($force)
         {
             try
             {
