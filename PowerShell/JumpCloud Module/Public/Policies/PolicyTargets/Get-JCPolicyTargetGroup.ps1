@@ -27,47 +27,41 @@ Function Get-JCPolicyTargetGroup
         }
 
         Write-Verbose 'Initializing RawResults and resultsArrayList'
-        $RawResults = @()
+        $Results = @()
         $resultsArrayList = New-Object System.Collections.ArrayList
         $URL_Template = "{0}/api/v2/policies/{1}/systemgroups"
     }
     Process
     {
-        If ($PSCmdlet.ParameterSetName -eq 'ByName')
+        switch ($PSCmdlet.ParameterSetName)
         {
-            $PolicyId = (Get-JCPolicy -Name:($PolicyName)).id
+            'ByName' {$Policy = Get-JCPolicy -Name:($PolicyName)}
+            'ById' {$Policy = Get-JCPolicy -PolicyID:($PolicyID)}
         }
-        If ($PolicyId)
+        If ($Policy)
         {
+            $PolicyId = $Policy.id
+            $PolicyName = $Policy.Name
             $URL = $URL_Template -f $JCUrlBasePath, $PolicyID
             Write-Verbose 'Populating SystemGroupNameHash'
             $SystemGroupNameHash = Get-Hash_ID_SystemGroupName
-            $RawResults = Invoke-JCApiGet -URL:($URL)
-            ForEach ($result In $RawResults)
+            $Results = Invoke-JCApiGet -URL:($URL)
+            ForEach ($Result In $Results)
             {
-                $Policy = Get-JCPolicy | Where-Object {$_.id -eq $PolicyID}
-                If ($Policy)
-                {
-                    $PolicyName = $Policy.Name
-                    $GroupID = $result.id
-                    $GroupName = $SystemGroupNameHash.($GroupID)
-                    $OutputObject = [PSCustomObject]@{
-                        'PolicyID'   = $PolicyID
-                        'PolicyName' = $PolicyName
-                        'GroupID'    = $GroupID
-                        'GroupName'  = $GroupName
-                    }
-                    $resultsArrayList.Add($OutputObject) | Out-Null
+                $GroupID = $Result.id
+                $GroupName = $SystemGroupNameHash.($GroupID)
+                $OutputObject = [PSCustomObject]@{
+                    'PolicyID'   = $PolicyID
+                    'PolicyName' = $PolicyName
+                    'GroupID'    = $GroupID
+                    'GroupName'  = $GroupName
                 }
-                Else
-                {
-                    Throw "Policy does not exist. Run 'Get-JCPolicy' to see a list of all your JumpCloud policies."
-                }
+                $resultsArrayList.Add($OutputObject) | Out-Null
             } # end foreach
         }
         Else
         {
-            Throw ('Policy name "' + $PolicyName + '" does not exist. Run "Get-JCPolicy" to see a list of all your JumpCloud policies.')
+            Throw ('Policy provided does not exist. Run "Get-JCPolicy" to see a list of all your JumpCloud policies.')
         }
     } # end process
     End
