@@ -1,3 +1,4 @@
+## Generic Test
 $SingleAdminAPIKey = ''
 Describe "Connect-JCOnline" {
 
@@ -7,7 +8,7 @@ Describe "Connect-JCOnline" {
     }
 }
 #region policy test data validation
-$MultiplePolicyList = @('', '', '') #Populate with multiple policy names.
+$MultiplePolicyList = @('','','') #Populate with multiple policy names.
 $SinglePolicyList = @('') #Populate with single policy name.
 $Policies = Get-JCPolicy
 $SinglePolicy = $Policies | Where {$_.Name -eq $SinglePolicyList}
