@@ -1,11 +1,11 @@
 ## 1.10.0
 
-Release Date: January 17, 2019
+Release Date: January 15, 2019
 
 #### RELEASE NOTES
 
 ```
-Use Get-JCPolicy, Get-JCPolicyResults, Get-JCPolicyTargetSystem and Get-JCPolicyTargetGroup to gather information on JumpCloud policies. New-JCUser and Set-JCUser functions have been updated to support MFA enrollment periods. Bug fix on Radius Reply Attributes functions to support LDAP and Unix groups.
+Use Get-JCPolicy, Get-JCPolicyResults, Get-JCPolicyTargetSystem and Get-JCPolicyTargetGroup to gather information on JumpCloud Policies. New-JCUser and Set-JCUser functions have been updated to support MFA enrollment periods.
 ```
 
 #### FEATURES:
@@ -14,18 +14,15 @@ Use Get-JCPolicy, Get-JCPolicyResults, Get-JCPolicyTargetSystem and Get-JCPolicy
 - New Function: Get-JCPolicyResults
 - New Function: Get-JCPolicyTargetSystem
 - New Function: Get-JCPolicyTargetGroup
-- Updated Function: New-JCUser
-- Updated Function: Set-JCUser
+- Updated Function:
 
 #### IMPROVEMENTS:
 
 Increased -limit value when querying users and system users from 100 to 1000
-Increased performance of private Get-Hash_ID_Sudo command
 
 #### BUG FIXES:
 
 Fixed bug on Remove-JCUser command when trying to remove users by -UserID
-Fixed bug on RADIUS functions that prevented the addition or removal of Attributes on JumpCloud user groups configured for LDAP or as Linux groups.
 
 ## 1.9.0
 
