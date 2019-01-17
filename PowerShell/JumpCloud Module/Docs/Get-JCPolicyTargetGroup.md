@@ -8,7 +8,7 @@ schema: 2.0.0
 # Get-JCPolicyTargetGroup
 
 ## SYNOPSIS
-{{Fill in the Synopsis}}
+Returns all bound groups associated with a JumpCloud Policy within a JumpCloud tenant.
 
 ## SYNTAX
 
@@ -23,21 +23,35 @@ Get-JCPolicyTargetGroup [-ByName] [-PolicyName] <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-{{Fill in the Description}}
+The Get-JCPolicyTargetGroup returns information about all bound groups associated with a JumpCloud Policy within a JumpCloud tenant.
 
 ## EXAMPLES
 
 ### Example 1
 ```powershell
-PS C:\> {{ Add example code here }}
+PS C:\> Get-JCPolicyTargetGroup -PolicyId 123456789
 ```
 
-{{ Add example description here }}
+Returns the bound groups associated for a policy with the id of 123456789.
+
+### Example 2
+```powershell
+PS C:\> Get-JCPolicyTargetGroup -PolicyName 'HelloWorld'
+```
+
+Returns the bound groups associated for a policy with the name of HelloWorld.
+
+### Example 3
+```powershell
+PS C:\> Get-JCPolicy | Get-JCPolicyTargetGroup
+```
+
+Returns all policies within a JumpCloud tenant and the bound groups associated to those policies.
 
 ## PARAMETERS
 
 ### -ByName
-{{Fill ByName Description}}
+Use the -ByName parameter when you want to query a specific policy. The -ByName SwitchParameter will set the ParameterSet to 'ByName' which queries one JumpCloud policy at a time.
 
 ```yaml
 Type: SwitchParameter
@@ -52,7 +66,7 @@ Accept wildcard characters: False
 ```
 
 ### -PolicyID
-{{Fill PolicyID Description}}
+The PolicyID of the JumpCloud policy you wish to query.
 
 ```yaml
 Type: String
@@ -67,7 +81,7 @@ Accept wildcard characters: False
 ```
 
 ### -PolicyName
-{{Fill PolicyName Description}}
+The Name of the JumpCloud policy you wish to query.
 
 ```yaml
 Type: String
@@ -97,3 +111,5 @@ For more information, see about_CommonParameters (http://go.microsoft.com/fwlink
 ## NOTES
 
 ## RELATED LINKS
+
+[Online Help Get-JCCommand](https://github.com/TheJumpCloud/support/wiki/Get-JCPolicyTargetGroup)

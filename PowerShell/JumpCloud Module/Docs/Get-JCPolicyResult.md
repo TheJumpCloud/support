@@ -8,7 +8,7 @@ schema: 2.0.0
 # Get-JCPolicyResult
 
 ## SYNOPSIS
-{{Fill in the Synopsis}}
+Returns all JumpCloud results for a given policy within a JumpCloud tenant.
 
 ## SYNTAX
 
@@ -33,21 +33,35 @@ Get-JCPolicyResult [-PolicyResultID <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-{{Fill in the Description}}
+The Get-JCPolicyResult function returns the latest policy result information from a JumpCloud policy. You can search by a specific policy name to return results from the policy being applied. You can also search by a specific systemId to find the latest policy result for a specific system.
 
 ## EXAMPLES
 
 ### Example 1
 ```powershell
-PS C:\> {{ Add example code here }}
+PS C:\> Get-JCPolicyResult 'HelloWorld'
 ```
 
-{{ Add example description here }}
+Returns the latest policy result for the HelloWorld policy.
+
+### Example 2
+```powershell
+PS C:\> Get-JCPolicyResult -PolicyId 123456789
+```
+
+Returns the latest policy result for the policy with the id of 123456789.
+
+### Example 3
+```powershell
+PS C:\> Get-JCPolicyResult -SystemID 123456789
+```
+
+Returns the latest policy result for a system with the id of 123456789.
 
 ## PARAMETERS
 
 ### -PolicyID
-{{Fill PolicyID Description}}
+The PolicyID of the JumpCloud policy you wish to query.
 
 ```yaml
 Type: String
@@ -62,7 +76,7 @@ Accept wildcard characters: False
 ```
 
 ### -PolicyName
-{{Fill PolicyName Description}}
+The PolicyName of the JumpCloud policy you wish to query.
 
 ```yaml
 Type: String
@@ -77,7 +91,7 @@ Accept wildcard characters: False
 ```
 
 ### -PolicyResultID
-{{Fill PolicyResultID Description}}
+The PolicyResultID of the JumpCloud policy result you wish to query.
 
 ```yaml
 Type: String
@@ -92,7 +106,7 @@ Accept wildcard characters: False
 ```
 
 ### -SystemID
-{{Fill SystemID Description}}
+The SystemID of the JumpCloud system you wish to query the latest policy result of.
 
 ```yaml
 Type: String
@@ -114,7 +128,6 @@ For more information, see about_CommonParameters (http://go.microsoft.com/fwlink
 
 ### System.String
 
-
 ## OUTPUTS
 
 ### System.Object
@@ -122,3 +135,5 @@ For more information, see about_CommonParameters (http://go.microsoft.com/fwlink
 ## NOTES
 
 ## RELATED LINKS
+
+[Online Help Get-JCCommand](https://github.com/TheJumpCloud/support/wiki/Get-JCPolicyResult)

@@ -8,7 +8,7 @@ schema: 2.0.0
 # Get-JCPolicy
 
 ## SYNOPSIS
-{{Fill in the Synopsis}}
+Returns all JumpCloud Policies within a JumpCloud tenant.
 
 ## SYNTAX
 
@@ -28,21 +28,36 @@ Get-JCPolicy [-Name <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-{{Fill in the Description}}
+The Get-JCPolicy function returns all information describing JumpCloud policies within a JumpCloud tenant.
 
 ## EXAMPLES
 
 ### Example 1
 ```powershell
-PS C:\> {{ Add example code here }}
+PS C:\> Get-JCPolicy
 ```
 
-{{ Add example description here }}
+Returns all JumpCloud Policies populated within the Policies section of the JumpCloud admin console.
+
+### Example 2
+```powershell
+PS C:\> Get-JCPolicy -PolicyID 123456789
+```
+
+Returns the policy associated to the id of 123456789.
+
+### Example 3
+```powershell
+PS C:\> Get-JCPolicy -Name 'HelloWorld'
+```
+
+Returns the HelloWorld policy.
 
 ## PARAMETERS
 
 ### -ByID
-{{Fill ByID Description}}
+Use the -ByID parameter when you want to query a specific policy. The -ByID SwitchParameter will set the ParameterSet to 'ByID' which queries one JumpCloud policy at a time.
+
 
 ```yaml
 Type: SwitchParameter
@@ -57,7 +72,7 @@ Accept wildcard characters: False
 ```
 
 ### -Name
-{{Fill Name Description}}
+The Name of the JumpCloud policy you wish to query.
 
 ```yaml
 Type: String
@@ -72,7 +87,7 @@ Accept wildcard characters: False
 ```
 
 ### -PolicyID
-{{Fill PolicyID Description}}
+The PolicyID of the JumpCloud policy you wish to query.
 
 ```yaml
 Type: String
@@ -94,7 +109,6 @@ For more information, see about_CommonParameters (http://go.microsoft.com/fwlink
 
 ### System.String
 
-
 ## OUTPUTS
 
 ### System.Object
@@ -102,3 +116,5 @@ For more information, see about_CommonParameters (http://go.microsoft.com/fwlink
 ## NOTES
 
 ## RELATED LINKS
+
+[Online Help Get-JCCommand](https://github.com/TheJumpCloud/support/wiki/Get-JCPolicy)
