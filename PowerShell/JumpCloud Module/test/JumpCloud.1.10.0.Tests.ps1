@@ -7,46 +7,44 @@ Describe "Connect-JCOnline" {
     }
 }
 #region policy test data validation
+$MultiplePolicyList = @('', '', '') #Populate with multiple policy names.
+$SinglePolicyList = @('') #Populate with single policy name.
 $Policies = Get-JCPolicy
-$SinglePolicy = $Policies | Select-Object -Last 1
-$MultiplePolicy = $Policies | Select-Object -Last 5
+$SinglePolicy = $Policies | Where {$_.Name -eq $SinglePolicyList}
+$MultiplePolicy = $Policies | Where {$_.Name -in $MultiplePolicyList}
 If ($($Policies._id.Count) -le 1) {Write-Error 'You must have at least 2 JumpCloud policies to run the Pester tests'; break}
 Write-Host "There are $($Policies.Count) policies"
 #endregion policy test data validation
 Describe 'Get-JCPolicy' {
 
-    It "Returns all JumpCloud Policies" {
-        $Policies.id.Count | Should -BeGreaterThan 1
-    }
-
     It "Returns a single JumpCloud Policy declaring -PolicyId" {
         $SingleResult = Get-JCPolicy -PolicyId:($SinglePolicy.id)
-        $SingleResult.id.Count | Should Be 1
+        $SingleResult.id.Count | Should Be $SinglePolicyList.Count
     }
 
     It "Returns a single JumpCloud policy without declaring -PolicyId" {
         $SingleResult = Get-JCPolicy $SinglePolicy.id
-        $SingleResult.id.Count | Should Be 1
+        $SingleResult.id.Count | Should Be $SinglePolicyList.Count
     }
 
     It "Returns a single JumpCloud policy using -PolicyId passed through the pipeline" {
         $SingleResult = $SinglePolicy | Get-JCPolicy -ByID
-        $SingleResult.id.Count | Should Be 1
+        $SingleResult.id.Count | Should Be $SinglePolicyList.Count
     }
 
     It "Returns a single JumpCloud policy passed through the pipeline without declaring -ByID" {
         $SingleResult = $SinglePolicy | Get-JCPolicy
-        $SingleResult.id.Count | Should Be 1
+        $SingleResult.id.Count | Should Be $SinglePolicyList.Count
     }
 
     It "Returns all JumpCloud Policies passed through the pipeline declaring -ByID" {
-        $MultiResult = Get-JCPolicy | Get-JCPolicy -ByID
-        $MultiResult._id.Count | Should -BeGreaterThan 1
+        $MultiResult = $MultiplePolicy | Get-JCPolicy -ByID
+        $MultiResult._id.Count | Should Be $MultiplePolicyList.Count
     }
 
     It "Returns a single JumpCloud Policy declaring -Name" {
         $SingleResult = Get-JCPolicy -PolicyId:($SinglePolicy.id)
-        $SingleResult.id.Count | Should Be 1
+        $SingleResult.id.Count | Should Be $SinglePolicyList.Count
     }
 
     It "Returns a specific single JumpCloud Policy declaring -Name" {
@@ -68,12 +66,12 @@ Describe 'Get-JCPolicyTargetGroup' {
 
     It "Returns all JumpCloud policy system group targets using the pipeline and group id" {
         $AllPolicy = $MultiplePolicy | Get-JCPolicyTargetGroup
-        $AllPolicy.PolicyId.count | Should -BeGreaterThan 1
+        $AllPolicy.PolicyId.count | Should -BeGreaterThan 0
     }
 
     It "Returns all JumpCloud policy system group targets using the pipeline and group name" {
         $AllPolicy = $MultiplePolicy | Get-JCPolicyTargetGroup -ByName
-        $AllPolicy.PolicyId.count | Should -BeGreaterThan 1
+        $AllPolicy.PolicyId.count | Should -BeGreaterThan 0
     }
 }
 
@@ -91,12 +89,12 @@ Describe 'Get-JCPolicyTargetSystem' {
 
     It "Returns all JumpCloud policy system targets using the pipeline and group id" {
         $AllPolicy = $MultiplePolicy  | ForEach-Object { Get-JCPolicyTargetSystem $_.id}
-        $AllPolicy.PolicyId.count | Should -BeGreaterThan 1
+        $AllPolicy.PolicyId.count | Should -BeGreaterThan 0
     }
 
     It "Returns all JumpCloud policy system targets using the pipeline and group name" {
         $AllPolicy = $MultiplePolicy | ForEach-Object { Get-JCPolicyTargetSystem -PolicyName:($_.name)}
-        $AllPolicy.PolicyId.count | Should -BeGreaterThan 1
+        $AllPolicy.PolicyId.count | Should -BeGreaterThan 0
     }
 }
 
@@ -124,7 +122,7 @@ Describe "New-JCUser MFA with enrollment periods" {
 
     It "Creates a new user with enable_user_portal_multifactor -eq True" {
 
-        
+
         $Newuser = New-RandomUser | New-JCUser -enable_user_portal_multifactor $true
 
         $DateCheck = (Get-Date).AddDays(7).AddHours(7) # +7 hours for UTC offset
@@ -136,13 +134,13 @@ Describe "New-JCUser MFA with enrollment periods" {
         $DateConfirm.Seconds | Should -BeLessThan 1
 
         $Newuser  | Remove-JCUser -ByID -force
-       
+
     }
 
     It "Creates a new user with enable_user_portal_multifactor -eq True and a 30 days specified for EnrollmentDays" {
 
         $EnrollmentDays = 30
-        
+
         $Newuser = New-RandomUser | New-JCUser -enable_user_portal_multifactor $true -EnrollmentDays $EnrollmentDays
 
         $DateCheck = (Get-Date).AddDays($EnrollmentDays).AddHours(7) # +7 hours for UTC offset
@@ -160,7 +158,7 @@ Describe "New-JCUser MFA with enrollment periods" {
     It "Creates a new user with enable_user_portal_multifactor -eq True and a 365 days specified for EnrollmentDays" {
 
         $EnrollmentDays = 365
-        
+
         $Newuser = New-RandomUser | New-JCUser -enable_user_portal_multifactor $true -EnrollmentDays $EnrollmentDays
 
         $DateCheck = (Get-Date).AddDays($EnrollmentDays).AddHours(7) # +7 hours for UTC offset
@@ -172,7 +170,7 @@ Describe "New-JCUser MFA with enrollment periods" {
         $DateConfirm.Seconds | Should -BeLessThan 1
 
         $Newuser  | Remove-JCUser -ByID -force
-        
+
     }
 
     It "Creates a new user with enable_user_portal_multifactor -eq True and a 366 days specified for EnrollmentDays (invalid)" {
@@ -215,7 +213,7 @@ Describe "New-JCUser MFA with enrollment periods" {
         $DateConfirm.Seconds | Should -BeLessThan 1
 
         $Newuser  | Remove-JCUser -ByID -force
-        
+
     }
 
     It "Creates a new user with enable_user_portal_multifactor -eq True and a 30 days via the pipeline" {
@@ -230,11 +228,11 @@ Describe "New-JCUser MFA with enrollment periods" {
             Lastname                       = "Last"
             enable_user_portal_multifactor = $true
             EnrollmentDays                 = $EnrollmentDays
-        
+
         }
-        
+
         $newUserObj = New-Object -TypeName psobject -Property $objectProperty
-    
+
         $NewUser = $newUserObj | % {New-JCUser -enable_user_portal_multifactor $_.enable_user_portal_multifactor -EnrollmentDays $_.EnrollmentDays -firstName $_.firstName -lastName $_.Lastname -username $_.username -email $_.email}
 
         $DateCheck = (Get-Date).AddDays($EnrollmentDays).AddHours(7) # +7 hours for UTC offset
@@ -248,7 +246,7 @@ Describe "New-JCUser MFA with enrollment periods" {
         $Newuser  | Remove-JCUser -ByID -force
 
     }
-    
+
 }
 
 Describe "Set-JCUser MFA Enrollment periods" {
@@ -397,7 +395,7 @@ Describe "Set-JCUser MFA Enrollment periods" {
     It "Updates an existing user with enable_user_portal_multifactor -eq True and a 30 days specified for EnrollmentDays with Attributes" {
 
         $EnrollmentDays = 30
-        
+
         $CreateUser = New-RandomUser -Attributes | New-JCUser -NumberOfCustomAttributes 2 -enable_user_portal_multifactor $True
 
         $NewUser = $CreateUser | Set-JCUser -enable_user_portal_multifactor $true -EnrollmentDays $EnrollmentDays -NumberOfCustomAttributes 1 -Attribute1_name 'attr1' -Attribute1_value 'attr1v'
@@ -417,7 +415,7 @@ Describe "Set-JCUser MFA Enrollment periods" {
     }
 
     It "Updates an existing user with enable_user_portal_multifactor -eq True with removeAttributes" {
-        $CreateUser = New-RandomUser -Attributes | New-JCUser -NumberOfCustomAttributes 2 
+        $CreateUser = New-RandomUser -Attributes | New-JCUser -NumberOfCustomAttributes 2
 
         $NewUser = $CreateUser | Set-JCUser -enable_user_portal_multifactor $true -RemoveAttribute 'Department', 'Lang'
 
@@ -454,15 +452,13 @@ Describe "Set-JCUser MFA Enrollment periods" {
 
     }
 
-    
-
     It "Disabled MFA enrollment by setting  enable_user_portal_multifactor to False" {
 
         $CreateUser = New-RandomUser | New-JCUser -enable_user_portal_multifactor $true
 
         $EnrollmentDays = 30
 
-        $NewUser = $CreateUser | Set-JCUser -enable_user_portal_multifactor $false 
+        $NewUser = $CreateUser | Set-JCUser -enable_user_portal_multifactor $false
 
         $Newuser.mfaData.exclusion | Should -Be $false
 
