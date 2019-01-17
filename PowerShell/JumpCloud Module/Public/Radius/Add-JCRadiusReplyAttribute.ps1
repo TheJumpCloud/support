@@ -309,6 +309,11 @@ Function Add-JCRadiusReplyAttribute ()
                 $Body.attributes.Add("ldapGroups", @($ldapGroups))
             }
 
+            if ($GroupInfo.attributes.sambaEnabled -eq $True) 
+            {
+                $Body.attributes.Add("sambaEnabled", $True)
+            }
+
 
             $URL = "$JCUrlBasePath/api/v2/usergroups/$Group_ID"
 
