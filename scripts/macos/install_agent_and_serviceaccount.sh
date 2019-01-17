@@ -31,11 +31,10 @@ cat <<-EOF > /opt/jc/agentBootstrap.json
 }
 EOF
 
-
 cat <<-EOF > /var/run/JumpCloud-SecureToken-Creds.txt
 $SECURETOKEN_ADMIN_USERNAME;$SECURETOKEN_ADMIN_PASSWORD
 EOF
-
+# The file JumpCloud-SecureToken-Creds.txt IS DELETED during the agent install process
 installer -pkg /tmp/jumpcloud-agent.pkg -target / &
 fi
 exit 0
