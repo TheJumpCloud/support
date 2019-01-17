@@ -5,7 +5,7 @@ Release Date: January 15, 2019
 #### RELEASE NOTES
 
 ```
-Use Get-JCPolicy, Get-JCPolicyResults, Get-JCPolicyTargetSystem and Get-JCPolicyTargetGroup to gather information on JumpCloud Policies. New-JCUser and Set-JCUser functions have been updated to support MFA enrollment peroids.
+Use Get-JCPolicy, Get-JCPolicyResults, Get-JCPolicyTargetSystem and Get-JCPolicyTargetGroup to gather information on JumpCloud Policies. New-JCUser and Set-JCUser functions have been updated to support MFA enrollment periods.
 ```
 
 #### FEATURES:
@@ -18,7 +18,11 @@ Use Get-JCPolicy, Get-JCPolicyResults, Get-JCPolicyTargetSystem and Get-JCPolicy
 
 #### IMPROVEMENTS:
 
-- Updated parameters on Set-JCSystem to allow for modification of parameters via PowerShell pipeline.
+Increased -limit value when querying users and system users from 100 to 1000
+
+#### BUG FIXES:
+
+Fixed bug on Remove-JCUser command when trying to remove users by -UserID
 
 ## 1.9.0
 
