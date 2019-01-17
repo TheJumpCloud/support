@@ -90,6 +90,11 @@ function Remove-JCRadiusReplyAttribute
                 $Body.attributes.Add("ldapGroups", @($ldapGroups))
             }
 
+            if ($GroupInfo.attributes.sambaEnabled -eq $True) 
+            {
+                $Body.attributes.Add("sambaEnabled", $True)
+            }
+
 
             $jsonbody = $Body | ConvertTo-Json -Depth 5 -Compress
 
@@ -166,6 +171,11 @@ function Remove-JCRadiusReplyAttribute
                 $ldapGroups = New-Object PSObject
                 $ldapGroups | Add-Member -MemberType NoteProperty -Name name -Value $ExistingAttributes.ldapGroups.name
                 $Body.attributes.Add("ldapGroups", @($ldapGroups))
+            }
+
+            if ($GroupInfo.attributes.sambaEnabled -eq $True) 
+            {
+                $Body.attributes.Add("sambaEnabled", $True)
             }
 
 
