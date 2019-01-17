@@ -25,7 +25,8 @@ Increased performance of private Get-Hash_ID_Sudo command
 #### BUG FIXES:
 
 Fixed bug on Remove-JCUser command when trying to remove users by -UserID
-Fixed bug on RADIUS functions that prevented the addition or removal of Attributes on JumpCloud user groups configured for LDAP or as Linux groups.
+Fixed bug on RADIUS functions that prevented the addition or removal of Attributes on JumpCloud user groups configured for LDAP or as Linux groups
+Fixed bug in Import-JCUsersFromCSV and Update-JCUsersFromCSV where a null value for employeeIdentifier would report as duplicate
 
 ## 1.9.0
 
