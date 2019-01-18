@@ -10,6 +10,11 @@ function Get-JCPolicyResult ()
             Position = 0)]
         [Alias('_id', 'id')]
         [String]$PolicyID,
+
+        [Parameter(,
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'ByPolicyID')]
+        [Switch]$ByPolicyID,
     
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName,
@@ -18,9 +23,15 @@ function Get-JCPolicyResult ()
         [Alias('name')]
         [String]$PolicyName,
 
-        [Parameter(
+        [Parameter(Mandatory,
+            ValueFromPipelineByPropertyName,
             ParameterSetName = 'BySystemID')]
-        [String]$SystemID,
+        [string]$SystemID,
+
+        [Parameter(,
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'BySystemID')]
+        [Switch]$BySystemID,
 
         [Parameter(
             ParameterSetName = 'ByPolicyResultID')]
@@ -59,6 +70,7 @@ function Get-JCPolicyResult ()
             ByPolicyName
             {
                 $Policy = Get-JCPolicy | Where-Object {$_.name -eq $PolicyName}
+
                 if ($Policy)
                 {
                     $PolicyID = $Policy.id

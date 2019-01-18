@@ -30,6 +30,11 @@ Function Get-JCPolicyTargetSystem
         $RawResults = @()
         $resultsArrayList = New-Object System.Collections.ArrayList
         $URL_Template = "{0}/api/v2/policies/{1}/systems"
+
+        Write-Verbose 'Populating SystemDisplayNameHash'
+        $SystemDisplayNameHash = Get-Hash_SystemID_DisplayName
+        Write-Verbose 'Populating SystemIDHash'
+        $SystemHostNameHash = Get-Hash_SystemID_HostName
     }
     Process
     {
@@ -43,10 +48,7 @@ Function Get-JCPolicyTargetSystem
             $PolicyId = $Policy.id
             $PolicyName = $Policy.Name
             $URL = $URL_Template -f $JCUrlBasePath, $PolicyID
-            Write-Verbose 'Populating SystemDisplayNameHash'
-            $SystemDisplayNameHash = Get-Hash_SystemID_DisplayName
-            Write-Verbose 'Populating SystemIDHash'
-            $SystemHostNameHash = Get-Hash_SystemID_HostName
+
             $Results = Invoke-JCApiGet -URL:($URL)
             ForEach ($Result In $Results)
             {
@@ -70,9 +72,6 @@ Function Get-JCPolicyTargetSystem
     } # end process
     End
     {
-        If ($resultsArrayList)
-        {
-            Return $resultsArrayList
-        }
+        Return $resultsArrayList
     }
 }

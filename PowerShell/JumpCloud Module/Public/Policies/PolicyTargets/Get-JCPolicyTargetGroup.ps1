@@ -30,6 +30,8 @@ Function Get-JCPolicyTargetGroup
         $Results = @()
         $resultsArrayList = New-Object System.Collections.ArrayList
         $URL_Template = "{0}/api/v2/policies/{1}/systemgroups"
+        Write-Verbose 'Populating SystemGroupNameHash'
+        $SystemGroupNameHash = Get-Hash_ID_SystemGroupName 
     }
     Process
     {
@@ -43,8 +45,7 @@ Function Get-JCPolicyTargetGroup
             $PolicyId = $Policy.id
             $PolicyName = $Policy.Name
             $URL = $URL_Template -f $JCUrlBasePath, $PolicyID
-            Write-Verbose 'Populating SystemGroupNameHash'
-            $SystemGroupNameHash = Get-Hash_ID_SystemGroupName
+            
             $Results = Invoke-JCApiGet -URL:($URL)
             ForEach ($Result In $Results)
             {
@@ -66,9 +67,7 @@ Function Get-JCPolicyTargetGroup
     } # end process
     End
     {
-        If ($resultsArrayList)
-        {
-            Return $resultsArrayList
-        }
+        Return $resultsArrayList
+        
     }
 }
