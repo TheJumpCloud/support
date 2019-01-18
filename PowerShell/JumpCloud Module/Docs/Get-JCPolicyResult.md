@@ -19,12 +19,12 @@ Get-JCPolicyResult [-PolicyName] <String> [<CommonParameters>]
 
 ### ByPolicyID
 ```
-Get-JCPolicyResult [-PolicyID] <String> [<CommonParameters>]
+Get-JCPolicyResult [-PolicyID] <String> [-ByPolicyID] [<CommonParameters>]
 ```
 
 ### BySystemID
 ```
-Get-JCPolicyResult [-SystemID <String>] [<CommonParameters>]
+Get-JCPolicyResult -SystemID <String> [-BySystemID] [<CommonParameters>]
 ```
 
 ### ByPolicyResultID
@@ -113,16 +113,47 @@ Type: String
 Parameter Sets: BySystemID
 Aliases:
 
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -ByPolicyID
+
+The -ByPolicyID switch parameter will enforce the ByPolicyID parameter set and improve performance of gathering multiple policy results via the pipeline when the input object contains a property with PolicyID.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: ByPolicyID
+Aliases:
+
 Required: False
 Position: Named
 Default value: None
-Accept pipeline input: False
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -BySystemID
+
+The -BySystemID switch parameter will enforce the BySystemID parameter set and search for results by SystemID.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: BySystemID
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
 ### CommonParameters
-This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable.
-For more information, see about_CommonParameters (http://go.microsoft.com/fwlink/?LinkID=113216).
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see about_CommonParameters (http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 

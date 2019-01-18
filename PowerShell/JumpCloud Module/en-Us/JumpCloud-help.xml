@@ -2398,6 +2398,17 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>ByPolicyID</maml:name>
+          <maml:Description>
+            <maml:para>The -ByPolicyID switch parameter will enforce the ByPolicyID parameter set and improve performance of gathering multiple policy results via the pipeline when the input object contains a property with PolicyID.</maml:para>
+          </maml:Description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
       <command:syntaxItem>
         <maml:name>Get-JCPolicyResult</maml:name>
@@ -2431,7 +2442,7 @@
       </command:syntaxItem>
       <command:syntaxItem>
         <maml:name>Get-JCPolicyResult</maml:name>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
           <maml:name>SystemID</maml:name>
           <maml:Description>
             <maml:para>The SystemID of the JumpCloud system you wish to query the latest policy result of.</maml:para>
@@ -2442,6 +2453,17 @@
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>BySystemID</maml:name>
+          <maml:Description>
+            <maml:para>The -BySystemID switch parameter will enforce the BySystemID parameter set and search for results by SystemID.</maml:para>
+          </maml:Description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
         </command:parameter>
       </command:syntaxItem>
     </command:syntax>
@@ -2482,7 +2504,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
         <maml:name>SystemID</maml:name>
         <maml:Description>
           <maml:para>The SystemID of the JumpCloud system you wish to query the latest policy result of.</maml:para>
@@ -2493,6 +2515,30 @@
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>ByPolicyID</maml:name>
+        <maml:Description>
+          <maml:para>The -ByPolicyID switch parameter will enforce the ByPolicyID parameter set and improve performance of gathering multiple policy results via the pipeline when the input object contains a property with PolicyID.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>BySystemID</maml:name>
+        <maml:Description>
+          <maml:para>The -BySystemID switch parameter will enforce the BySystemID parameter set and search for results by SystemID.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
       </command:parameter>
     </command:parameters>
     <command:inputTypes>
@@ -8156,7 +8202,7 @@ SystemID                 CommandID                Status
           </dev:type>
           <dev:defaultValue>False</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="_id">
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="_id">
           <maml:name>UserID</maml:name>
           <maml:Description>
             <maml:para>The _id of the User which you want to delete.</maml:para>
@@ -8174,25 +8220,10 @@ SystemID                 CommandID                Status
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
-          <maml:name>Username</maml:name>
-          <maml:Description>
-            <maml:para>The Username of the JumpCloud user you wish to remove.</maml:para>
-          </maml:Description>
-          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-          <dev:type>
-            <maml:name>String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-      </command:syntaxItem>
-      <command:syntaxItem>
-        <maml:name>Remove-JCUser</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-          <maml:name>ByID</maml:name>
+          <maml:name>force</maml:name>
           <maml:Description>
-            <maml:para>Use the -ByID parameter when the UserID is passed over the pipeline to the Remove-JCUser function. The -ByID SwitchParameter will set the ParameterSet to 'ByID' which will increase the function speed and performance.</maml:para>
+            <maml:para>A SwitchParameter which suppresses the warning message when removing a JumpCloud User.</maml:para>
           </maml:Description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
@@ -8200,25 +8231,10 @@ SystemID                 CommandID                Status
           </dev:type>
           <dev:defaultValue>False</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="_id">
-          <maml:name>UserID</maml:name>
-          <maml:Description>
-            <maml:para>The _id of the User which you want to delete.</maml:para>
-            <maml:para>To find a JumpCloud UserID run the command:</maml:para>
-            <maml:para></maml:para>
-            <maml:para></maml:para>
-            <maml:para>PS C:&gt; Get-JCUser | Select username, _id</maml:para>
-            <maml:para>The UserID will be the 24 character string populated for the _id field.</maml:para>
-            <maml:para>UserID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically.</maml:para>
-          </maml:Description>
-          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-          <dev:type>
-            <maml:name>String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Remove-JCUser</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
           <maml:name>Username</maml:name>
           <maml:Description>
             <maml:para>The Username of the JumpCloud user you wish to remove.</maml:para>
@@ -8256,7 +8272,7 @@ SystemID                 CommandID                Status
         </dev:type>
         <dev:defaultValue>False</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="_id">
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="_id">
         <maml:name>UserID</maml:name>
         <maml:Description>
           <maml:para>The _id of the User which you want to delete.</maml:para>

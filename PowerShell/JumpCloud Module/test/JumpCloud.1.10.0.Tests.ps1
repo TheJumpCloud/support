@@ -7,6 +7,32 @@ Describe "Connect-JCOnline" {
         $Connect | Should -be $null
     }
 }
+
+Describe "Remove-JCUser" {
+
+    It "Removes JumpCloud User by Username and -force" {
+
+        $NewUser = New-RandomUser | New-JCUser
+
+        $RemoveUser = Remove-JCUser  -Username $NewUser.username -force
+    
+        $RemoveUser.Results | Should -be 'Deleted'
+
+    }
+
+    It "Removes JumpCloud User by UserID and -force" {
+
+        $NewUser = New-RandomUser | New-JCUser
+
+        $RemoveUser = Remove-JCUser  -UserID $NewUser._id -force
+    
+        $RemoveUser.Results | Should -be 'Deleted'
+
+    }
+
+}
+
+
 #region policy test data validation
 $MultiplePolicyList = @('', '', '') #Populate with multiple policy names.
 $SinglePolicyList = @('') #Populate with single policy name.
