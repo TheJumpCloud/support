@@ -8,7 +8,7 @@ Describe "Connect-JCOnline" {
     }
 }
 #region policy test data validation
-$MultiplePolicyList = @('','','') #Populate with multiple policy names.
+$MultiplePolicyList = @('', '', '') #Populate with multiple policy names.
 $SinglePolicyList = @('') #Populate with single policy name.
 $Policies = Get-JCPolicy
 $SinglePolicy = $Policies | Where {$_.Name -eq $SinglePolicyList}
@@ -466,5 +466,464 @@ Describe "Set-JCUser MFA Enrollment periods" {
         $Newuser.mfaData.exclusionUntil | Should -BeNullOrEmpty
 
     }
+
+}
+
+#region Radius Reply test data validation
+
+# No attributes
+$regularGroupName = 'regular_group'
+
+# Bound to LDAP
+$ldapGroupName = 'ldap_group'
+
+# Created as linux group
+$linuxGroupName = 'linux_group'
+
+#SMB LDAP Group
+$ldap_smbGroupName = 'smb_group'
+
+$ldap_linxGroupName = 'linux_ldap_group'
+
+$smb_linxGroupName = 'smb_linux_group'
+
+$ldap_smb_linuxGroupname = 'smb_linux_ldap_group'
+
+#endregion Radius Reply test data validation
+
+Describe "Add-JCRadiusReplyAttributes | Remove-JCRadiusReplyAttributes" {
+
+    It "Adds (and removes) VLAN attributes to a regular JC user group" {
+
+        $GroupBefore = Get-JCGroup -Type User -Name $regularGroupName
+
+        $VLAN = Get-Random -Minimum 1 -Maximum 4064
+
+        $AttributesAdd = Add-JCRadiusReplyAttribute -VLAN $VLAN -GroupName $regularGroupName
+
+        $TunnelType = $AttributesAdd | ? Name -EQ "Tunnel-Type" | Select-Object -ExpandProperty value
+
+        $TunnelType| Should -Be "VLAN"
+
+        $TunnelMediumType = $AttributesAdd | ? Name -EQ "Tunnel-Medium-Type" | Select-Object -ExpandProperty value
+
+        $TunnelMediumType| Should -Be "IEEE-802"
+
+        $TunnelPrivateGroupID = $AttributesAdd | ? Name -EQ "Tunnel-Private-Group-ID" | Select-Object -ExpandProperty value
+
+        $TunnelPrivateGroupID| Should -Be $VLAN
+
+        Remove-JCRadiusReplyAttribute -GroupName $regularGroupName -All
+
+        $GroupAfter = Get-JCGroup -Type User -Name $regularGroupName
+
+        $Compare = Compare-Object -ReferenceObject $GroupBefore -DifferenceObject $GroupAfter
+
+        $Compare | Should -BeNullOrEmpty
+
+    }
+
+    It "Adds (and removes) VLAN attributes to a ldap_group JC user group" {
+
+        $GroupBefore = Get-JCGroup -Type User -Name $ldapGroupName
+
+        $VLAN = Get-Random -Minimum 1 -Maximum 4064
+
+        $AttributesAdd = Add-JCRadiusReplyAttribute -VLAN $VLAN -GroupName $ldapGroupName
+
+        $TunnelType = $AttributesAdd | ? Name -EQ "Tunnel-Type" | Select-Object -ExpandProperty value
+
+        $TunnelType| Should -Be "VLAN"
+
+        $TunnelMediumType = $AttributesAdd | ? Name -EQ "Tunnel-Medium-Type" | Select-Object -ExpandProperty value
+
+        $TunnelMediumType| Should -Be "IEEE-802"
+
+        $TunnelPrivateGroupID = $AttributesAdd | ? Name -EQ "Tunnel-Private-Group-ID" | Select-Object -ExpandProperty value
+
+        $TunnelPrivateGroupID| Should -Be $VLAN
+
+        Remove-JCRadiusReplyAttribute -GroupName $ldapGroupName -All
+
+        $GroupAfter = Get-JCGroup -Type User -Name $ldapGroupName
+
+        $Compare = Compare-Object -ReferenceObject $GroupBefore -DifferenceObject $GroupAfter
+
+        $Compare | Should -BeNullOrEmpty
+
+    }
+
+    It "Adds (and removes) VLAN attributes to a linuxGroupName JC user group" {
+
+        $GroupBefore = Get-JCGroup -Type User -Name $linuxGroupName
+
+        $VLAN = Get-Random -Minimum 1 -Maximum 4064
+
+        $AttributesAdd = Add-JCRadiusReplyAttribute -VLAN $VLAN -GroupName $linuxGroupName
+
+        $TunnelType = $AttributesAdd | ? Name -EQ "Tunnel-Type" | Select-Object -ExpandProperty value
+
+        $TunnelType| Should -Be "VLAN"
+
+        $TunnelMediumType = $AttributesAdd | ? Name -EQ "Tunnel-Medium-Type" | Select-Object -ExpandProperty value
+
+        $TunnelMediumType| Should -Be "IEEE-802"
+
+        $TunnelPrivateGroupID = $AttributesAdd | ? Name -EQ "Tunnel-Private-Group-ID" | Select-Object -ExpandProperty value
+
+        $TunnelPrivateGroupID| Should -Be $VLAN
+
+        Remove-JCRadiusReplyAttribute -GroupName $linuxGroupName -All
+
+        $GroupAfter = Get-JCGroup -Type User -Name $linuxGroupName
+
+        $Compare = Compare-Object -ReferenceObject $GroupBefore -DifferenceObject $GroupAfter
+
+        $Compare | Should -BeNullOrEmpty
+
+    }
+
+    It "Adds (and removes) VLAN attributes to a ldap_smbGroupName JC user group" {
+
+        $GroupBefore = Get-JCGroup -Type User -Name $ldap_smbGroupName
+
+        $VLAN = Get-Random -Minimum 1 -Maximum 4064
+
+        $AttributesAdd = Add-JCRadiusReplyAttribute -VLAN $VLAN -GroupName $ldap_smbGroupName
+
+        $TunnelType = $AttributesAdd | ? Name -EQ "Tunnel-Type" | Select-Object -ExpandProperty value
+
+        $TunnelType| Should -Be "VLAN"
+
+        $TunnelMediumType = $AttributesAdd | ? Name -EQ "Tunnel-Medium-Type" | Select-Object -ExpandProperty value
+
+        $TunnelMediumType| Should -Be "IEEE-802"
+
+        $TunnelPrivateGroupID = $AttributesAdd | ? Name -EQ "Tunnel-Private-Group-ID" | Select-Object -ExpandProperty value
+
+        $TunnelPrivateGroupID| Should -Be $VLAN
+
+        Remove-JCRadiusReplyAttribute -GroupName $ldap_smbGroupName -All
+
+        $GroupAfter = Get-JCGroup -Type User -Name $ldap_smbGroupName
+
+        $Compare = Compare-Object -ReferenceObject $GroupBefore -DifferenceObject $GroupAfter
+
+        $Compare | Should -BeNullOrEmpty
+
+
+    }
+
+    It "Adds (and removes) VLAN attributes to a linux_ldap_group JC user group" {
+
+        $GroupBefore = Get-JCGroup -Type User -Name $ldap_linxGroupName
+
+        $VLAN = Get-Random -Minimum 1 -Maximum 4064
+
+        $AttributesAdd = Add-JCRadiusReplyAttribute -VLAN $VLAN -GroupName $ldap_linxGroupName
+
+        $TunnelType = $AttributesAdd | ? Name -EQ "Tunnel-Type" | Select-Object -ExpandProperty value
+
+        $TunnelType| Should -Be "VLAN"
+
+        $TunnelMediumType = $AttributesAdd | ? Name -EQ "Tunnel-Medium-Type" | Select-Object -ExpandProperty value
+
+        $TunnelMediumType| Should -Be "IEEE-802"
+
+        $TunnelPrivateGroupID = $AttributesAdd | ? Name -EQ "Tunnel-Private-Group-ID" | Select-Object -ExpandProperty value
+
+        $TunnelPrivateGroupID| Should -Be $VLAN
+
+        Remove-JCRadiusReplyAttribute -GroupName $ldap_linxGroupName -All
+
+        $GroupAfter = Get-JCGroup -Type User -Name $ldap_linxGroupName
+
+        $Compare = Compare-Object -ReferenceObject $GroupBefore -DifferenceObject $GroupAfter
+
+        $Compare | Should -BeNullOrEmpty
+
+
+    }
+
+    It "Adds (and removes) VLAN attributes to a smb_linxGroupName JC user group" {
+
+        $GroupBefore = Get-JCGroup -Type User -Name $smb_linxGroupName
+
+        $VLAN = Get-Random -Minimum 1 -Maximum 4064
+
+        $AttributesAdd = Add-JCRadiusReplyAttribute -VLAN $VLAN -GroupName $smb_linxGroupName
+
+        $TunnelType = $AttributesAdd | ? Name -EQ "Tunnel-Type" | Select-Object -ExpandProperty value
+
+        $TunnelType| Should -Be "VLAN"
+
+        $TunnelMediumType = $AttributesAdd | ? Name -EQ "Tunnel-Medium-Type" | Select-Object -ExpandProperty value
+
+        $TunnelMediumType| Should -Be "IEEE-802"
+
+        $TunnelPrivateGroupID = $AttributesAdd | ? Name -EQ "Tunnel-Private-Group-ID" | Select-Object -ExpandProperty value
+
+        $TunnelPrivateGroupID| Should -Be $VLAN
+
+        Remove-JCRadiusReplyAttribute -GroupName $smb_linxGroupName -All
+
+        $GroupAfter = Get-JCGroup -Type User -Name $smb_linxGroupName
+
+        $Compare = Compare-Object -ReferenceObject $GroupBefore -DifferenceObject $GroupAfter
+
+        $Compare | Should -BeNullOrEmpty
+
+
+    }
+
+    It "Adds (and removes) VLAN attributes to a ldap_smb_linuxGroupname JC user group" {
+
+        $GroupBefore = Get-JCGroup -Type User -Name $ldap_smb_linuxGroupname
+
+        $VLAN = Get-Random -Minimum 1 -Maximum 4064
+
+        $AttributesAdd = Add-JCRadiusReplyAttribute -VLAN $VLAN -GroupName $ldap_smb_linuxGroupname
+
+        $TunnelType = $AttributesAdd | ? Name -EQ "Tunnel-Type" | Select-Object -ExpandProperty value
+
+        $TunnelType| Should -Be "VLAN"
+
+        $TunnelMediumType = $AttributesAdd | ? Name -EQ "Tunnel-Medium-Type" | Select-Object -ExpandProperty value
+
+        $TunnelMediumType| Should -Be "IEEE-802"
+
+        $TunnelPrivateGroupID = $AttributesAdd | ? Name -EQ "Tunnel-Private-Group-ID" | Select-Object -ExpandProperty value
+
+        $TunnelPrivateGroupID| Should -Be $VLAN
+
+        Remove-JCRadiusReplyAttribute -GroupName $ldap_smb_linuxGroupname -All
+
+        $GroupAfter = Get-JCGroup -Type User -Name $ldap_smb_linuxGroupname
+
+        $Compare = Compare-Object -ReferenceObject $GroupBefore -DifferenceObject $GroupAfter
+
+        $Compare | Should -BeNullOrEmpty
+
+
+    }
+
+}
+
+Describe "Set-JCRadiusReplyAttributes | Remove-JCRadiusReplyAttributes" {
+
+    It "Adds (and removes) VLAN attributes to a regular JC user group" {
+
+        $GroupBefore = Get-JCGroup -Type User -Name $regularGroupName
+
+        $VLAN = Get-Random -Minimum 1 -Maximum 4064
+
+        $AttributesAdd = Set-JCRadiusReplyAttribute -VLAN $VLAN -GroupName $regularGroupName
+
+        $TunnelType = $AttributesAdd | ? Name -EQ "Tunnel-Type" | Select-Object -ExpandProperty value
+
+        $TunnelType| Should -Be "VLAN"
+
+        $TunnelMediumType = $AttributesAdd | ? Name -EQ "Tunnel-Medium-Type" | Select-Object -ExpandProperty value
+
+        $TunnelMediumType| Should -Be "IEEE-802"
+
+        $TunnelPrivateGroupID = $AttributesAdd | ? Name -EQ "Tunnel-Private-Group-ID" | Select-Object -ExpandProperty value
+
+        $TunnelPrivateGroupID| Should -Be $VLAN
+
+        Remove-JCRadiusReplyAttribute -GroupName $regularGroupName -All
+
+        $GroupAfter = Get-JCGroup -Type User -Name $regularGroupName
+
+        $Compare = Compare-Object -ReferenceObject $GroupBefore -DifferenceObject $GroupAfter
+
+        $Compare | Should -BeNullOrEmpty
+
+    }
+
+    It "Adds (and removes) VLAN attributes to a ldap_group JC user group" {
+
+        $GroupBefore = Get-JCGroup -Type User -Name $ldapGroupName
+
+        $VLAN = Get-Random -Minimum 1 -Maximum 4064
+
+        $AttributesAdd = Set-JCRadiusReplyAttribute -VLAN $VLAN -GroupName $ldapGroupName
+
+        $TunnelType = $AttributesAdd | ? Name -EQ "Tunnel-Type" | Select-Object -ExpandProperty value
+
+        $TunnelType| Should -Be "VLAN"
+
+        $TunnelMediumType = $AttributesAdd | ? Name -EQ "Tunnel-Medium-Type" | Select-Object -ExpandProperty value
+
+        $TunnelMediumType| Should -Be "IEEE-802"
+
+        $TunnelPrivateGroupID = $AttributesAdd | ? Name -EQ "Tunnel-Private-Group-ID" | Select-Object -ExpandProperty value
+
+        $TunnelPrivateGroupID| Should -Be $VLAN
+
+        Remove-JCRadiusReplyAttribute -GroupName $ldapGroupName -All
+
+        $GroupAfter = Get-JCGroup -Type User -Name $ldapGroupName
+
+        $Compare = Compare-Object -ReferenceObject $GroupBefore -DifferenceObject $GroupAfter
+
+        $Compare | Should -BeNullOrEmpty
+
+    }
+
+    It "Adds (and removes) VLAN attributes to a linuxGroupName JC user group" {
+
+        $GroupBefore = Get-JCGroup -Type User -Name $linuxGroupName
+
+        $VLAN = Get-Random -Minimum 1 -Maximum 4064
+
+        $AttributesAdd = Set-JCRadiusReplyAttribute -VLAN $VLAN -GroupName $linuxGroupName
+
+        $TunnelType = $AttributesAdd | ? Name -EQ "Tunnel-Type" | Select-Object -ExpandProperty value
+
+        $TunnelType| Should -Be "VLAN"
+
+        $TunnelMediumType = $AttributesAdd | ? Name -EQ "Tunnel-Medium-Type" | Select-Object -ExpandProperty value
+
+        $TunnelMediumType| Should -Be "IEEE-802"
+
+        $TunnelPrivateGroupID = $AttributesAdd | ? Name -EQ "Tunnel-Private-Group-ID" | Select-Object -ExpandProperty value
+
+        $TunnelPrivateGroupID| Should -Be $VLAN
+
+        Remove-JCRadiusReplyAttribute -GroupName $linuxGroupName -All
+
+        $GroupAfter = Get-JCGroup -Type User -Name $linuxGroupName
+
+        $Compare = Compare-Object -ReferenceObject $GroupBefore -DifferenceObject $GroupAfter
+
+        $Compare | Should -BeNullOrEmpty
+
+    }
+
+    It "Adds (and removes) VLAN attributes to a ldap_smbGroupName JC user group" {
+
+        $GroupBefore = Get-JCGroup -Type User -Name $ldap_smbGroupName
+
+        $VLAN = Get-Random -Minimum 1 -Maximum 4064
+
+        $AttributesAdd = Set-JCRadiusReplyAttribute -VLAN $VLAN -GroupName $ldap_smbGroupName
+
+        $TunnelType = $AttributesAdd | ? Name -EQ "Tunnel-Type" | Select-Object -ExpandProperty value
+
+        $TunnelType| Should -Be "VLAN"
+
+        $TunnelMediumType = $AttributesAdd | ? Name -EQ "Tunnel-Medium-Type" | Select-Object -ExpandProperty value
+
+        $TunnelMediumType| Should -Be "IEEE-802"
+
+        $TunnelPrivateGroupID = $AttributesAdd | ? Name -EQ "Tunnel-Private-Group-ID" | Select-Object -ExpandProperty value
+
+        $TunnelPrivateGroupID| Should -Be $VLAN
+
+        Remove-JCRadiusReplyAttribute -GroupName $ldap_smbGroupName -All
+
+        $GroupAfter = Get-JCGroup -Type User -Name $ldap_smbGroupName
+
+        $Compare = Compare-Object -ReferenceObject $GroupBefore -DifferenceObject $GroupAfter
+
+        $Compare | Should -BeNullOrEmpty
+
+
+    }
+
+    It "Adds (and removes) VLAN attributes to a linux_ldap_group JC user group" {
+
+        $GroupBefore = Get-JCGroup -Type User -Name $ldap_linxGroupName
+
+        $VLAN = Get-Random -Minimum 1 -Maximum 4064
+
+        $AttributesAdd = Set-JCRadiusReplyAttribute -VLAN $VLAN -GroupName $ldap_linxGroupName
+
+        $TunnelType = $AttributesAdd | ? Name -EQ "Tunnel-Type" | Select-Object -ExpandProperty value
+
+        $TunnelType| Should -Be "VLAN"
+
+        $TunnelMediumType = $AttributesAdd | ? Name -EQ "Tunnel-Medium-Type" | Select-Object -ExpandProperty value
+
+        $TunnelMediumType| Should -Be "IEEE-802"
+
+        $TunnelPrivateGroupID = $AttributesAdd | ? Name -EQ "Tunnel-Private-Group-ID" | Select-Object -ExpandProperty value
+
+        $TunnelPrivateGroupID| Should -Be $VLAN
+
+        Remove-JCRadiusReplyAttribute -GroupName $ldap_linxGroupName -All
+
+        $GroupAfter = Get-JCGroup -Type User -Name $ldap_linxGroupName
+
+        $Compare = Compare-Object -ReferenceObject $GroupBefore -DifferenceObject $GroupAfter
+
+        $Compare | Should -BeNullOrEmpty
+
+
+    }
+
+    It "Adds (and removes) VLAN attributes to a smb_linxGroupName JC user group" {
+
+        $GroupBefore = Get-JCGroup -Type User -Name $smb_linxGroupName
+
+        $VLAN = Get-Random -Minimum 1 -Maximum 4064
+
+        $AttributesAdd = Set-JCRadiusReplyAttribute -VLAN $VLAN -GroupName $smb_linxGroupName
+
+        $TunnelType = $AttributesAdd | ? Name -EQ "Tunnel-Type" | Select-Object -ExpandProperty value
+
+        $TunnelType| Should -Be "VLAN"
+
+        $TunnelMediumType = $AttributesAdd | ? Name -EQ "Tunnel-Medium-Type" | Select-Object -ExpandProperty value
+
+        $TunnelMediumType| Should -Be "IEEE-802"
+
+        $TunnelPrivateGroupID = $AttributesAdd | ? Name -EQ "Tunnel-Private-Group-ID" | Select-Object -ExpandProperty value
+
+        $TunnelPrivateGroupID| Should -Be $VLAN
+
+        Remove-JCRadiusReplyAttribute -GroupName $smb_linxGroupName -All
+
+        $GroupAfter = Get-JCGroup -Type User -Name $smb_linxGroupName
+
+        $Compare = Compare-Object -ReferenceObject $GroupBefore -DifferenceObject $GroupAfter
+
+        $Compare | Should -BeNullOrEmpty
+
+
+    }
+
+    It "Adds (and removes) VLAN attributes to a ldap_smb_linuxGroupname JC user group" {
+
+        $GroupBefore = Get-JCGroup -Type User -Name $ldap_smb_linuxGroupname
+
+        $VLAN = Get-Random -Minimum 1 -Maximum 4064
+
+        $AttributesAdd = Set-JCRadiusReplyAttribute -VLAN $VLAN -GroupName $ldap_smb_linuxGroupname
+
+        $TunnelType = $AttributesAdd | ? Name -EQ "Tunnel-Type" | Select-Object -ExpandProperty value
+
+        $TunnelType| Should -Be "VLAN"
+
+        $TunnelMediumType = $AttributesAdd | ? Name -EQ "Tunnel-Medium-Type" | Select-Object -ExpandProperty value
+
+        $TunnelMediumType| Should -Be "IEEE-802"
+
+        $TunnelPrivateGroupID = $AttributesAdd | ? Name -EQ "Tunnel-Private-Group-ID" | Select-Object -ExpandProperty value
+
+        $TunnelPrivateGroupID| Should -Be $VLAN
+
+        Remove-JCRadiusReplyAttribute -GroupName $ldap_smb_linuxGroupname -All
+
+        $GroupAfter = Get-JCGroup -Type User -Name $ldap_smb_linuxGroupname
+
+        $Compare = Compare-Object -ReferenceObject $GroupBefore -DifferenceObject $GroupAfter
+
+        $Compare | Should -BeNullOrEmpty
+
+
+    }
+
 
 }
