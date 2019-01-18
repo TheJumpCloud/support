@@ -11,6 +11,7 @@ Describe "Connect-JCOnline" {
 $MultiplePolicyList = @('','','') #Populate with multiple policy names.
 $SinglePolicyList = @('') #Populate with single policy name.
 $Policies = Get-JCPolicy
+$SystemIDWithPolicyResult = Get-JCSystem -SystemID ''
 $SinglePolicy = $Policies | Where {$_.Name -eq $SinglePolicyList}
 $MultiplePolicy = $Policies | Where {$_.Name -in $MultiplePolicyList}
 If ($($Policies._id.Count) -le 1) {Write-Error 'You must have at least 2 JumpCloud policies to run the Pester tests'; break}
@@ -113,8 +114,29 @@ Describe "Get-JCPolicyResult" {
 
     It "Returns a policy result with the SystemID" {
         $SingleSystem = Get-JCSystem | Select-Object -Last 1
-        $PolicyResult = Get-JCPolicyResult -SystemID:($SingleSystem._id)
+        $PolicyResult = Get-JCPolicyResult -SystemID:($SystemIDWithPolicyResult._id)
         $PolicyResult.id.count | Should -BeGreaterThan 0
+    }
+
+    It "Returns a policy result using the -ByPolicyID switch parameter via the pipeline" {
+
+
+        $PolicyResultVar = Get-JCPolicyResult -PolicyId:($SinglePolicy.id)
+
+        $PolicyResult = $PolicyResultVar | Get-JCPolicyResult -ByPolicyID
+
+        $PolicyResult.id.count | Should -BeGreaterThan 0
+    
+    }
+    
+    It "Returns a policy using the -BySystemID switch parameter via the pipeline " {
+
+        $PolicyResultVar = Get-JCPolicyResult -PolicyId:($SinglePolicy.id)
+
+        $PolicyResult = $PolicyResultVar | Get-JCPolicyResult -BySystemID
+
+        $PolicyResult.id.count | Should -BeGreaterThan 0
+
     }
 }
 
