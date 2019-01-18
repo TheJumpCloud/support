@@ -30,7 +30,6 @@ Function Get-JCPolicyTargetGroup
         $Results = @()
         $resultsArrayList = New-Object System.Collections.ArrayList
         $URL_Template = "{0}/api/v2/policies/{1}/systemgroups"
-        # Moved to begin block so this hash is only computed once if multiple objects passed via pipeline.
         Write-Verbose 'Populating SystemGroupNameHash'
         $SystemGroupNameHash = Get-Hash_ID_SystemGroupName 
     }
@@ -68,7 +67,6 @@ Function Get-JCPolicyTargetGroup
     } # end process
     End
     {
-        # Removed unnecessary if statement. If this was necessary please explain.
         Return $resultsArrayList
         
     }

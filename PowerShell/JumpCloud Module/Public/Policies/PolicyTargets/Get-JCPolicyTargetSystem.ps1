@@ -31,7 +31,6 @@ Function Get-JCPolicyTargetSystem
         $resultsArrayList = New-Object System.Collections.ArrayList
         $URL_Template = "{0}/api/v2/policies/{1}/systems"
 
-        # Moved to begin block so this hash is only computed once if multiple objects passed via pipeline.
         Write-Verbose 'Populating SystemDisplayNameHash'
         $SystemDisplayNameHash = Get-Hash_SystemID_DisplayName
         Write-Verbose 'Populating SystemIDHash'
@@ -73,7 +72,6 @@ Function Get-JCPolicyTargetSystem
     } # end process
     End
     {
-        # Removed unnecessary if statement. If this was necessary please explain.
         Return $resultsArrayList
     }
 }
