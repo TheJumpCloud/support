@@ -14,7 +14,7 @@ function Get-JCPolicyResult ()
         [Parameter(,
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'ByPolicyID')]
-        [Switch]$ByID,
+        [Switch]$ByPolicyID,
     
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName,
@@ -23,9 +23,15 @@ function Get-JCPolicyResult ()
         [Alias('name')]
         [String]$PolicyName,
 
-        [Parameter(
+        [Parameter(Mandatory,
+            ValueFromPipelineByPropertyName,
             ParameterSetName = 'BySystemID')]
-        [String]$SystemID,
+        [string]$SystemID,
+
+        [Parameter(,
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'BySystemID')]
+        [Switch]$BySystemID,
 
         [Parameter(
             ParameterSetName = 'ByPolicyResultID')]
