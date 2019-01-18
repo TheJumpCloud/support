@@ -49,7 +49,7 @@ Function Get-JCPolicyTargetSystem
             $PolicyId = $Policy.id
             $PolicyName = $Policy.Name
             $URL = $URL_Template -f $JCUrlBasePath, $PolicyID
-           
+
             $Results = Invoke-JCApiGet -URL:($URL)
             ForEach ($Result In $Results)
             {
@@ -72,6 +72,7 @@ Function Get-JCPolicyTargetSystem
         }
     } # end process
     End
+    {
         # Removed unnecessary if statement. If this was necessary please explain.
         Return $resultsArrayList
     }
