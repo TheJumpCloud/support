@@ -169,16 +169,16 @@ Function Import-JCUsersFromCSV ()
 
             Write-Host -BackgroundColor Green -ForegroundColor Black "Email check complete"
 
-            $employeeIdentifierCheck = $NewUsers | Where-Object employeeIdentifier -ne $Null
+            $employeeIdentifierCheck = $NewUsers | Where-Object {($_.employeeIdentifier -ne $Null) -and ($_.employeeIdentifier -ne "")}
 
-            if ($employeeIdentifierCheck.Count -gt 1)
+            if ($employeeIdentifierCheck.Count -gt 0)
             {
                 Write-Host ""
                 Write-Host -BackgroundColor Green -ForegroundColor Black "Validating $($employeeIdentifierCheck.employeeIdentifier.Count) employeeIdentifiers"
 
                 $ExistingEmployeeIdentifierCheck = Get-Hash_employeeIdentifier_username
 
-                foreach ($User in $NewUsers)
+                foreach ($User in $employeeIdentifierCheck)
                 {
                     if ($ExistingEmployeeIdentifierCheck.ContainsKey($User.employeeIdentifier))
                     {
@@ -190,7 +190,7 @@ Function Import-JCUsersFromCSV ()
                     }
                 }
 
-                $employeeIdentifierDup = $NewUsers | Group-Object employeeIdentifier
+                $employeeIdentifierDup = $employeeIdentifierCheck | Group-Object employeeIdentifier
 
                 ForEach ($U in $employeeIdentifierDup)
                 {
@@ -212,7 +212,7 @@ Function Import-JCUsersFromCSV ()
                 Write-Host -BackgroundColor Green -ForegroundColor Black "Validating $($SystemCount.count) Systems"
                 $SystemCheck = Get-Hash_SystemID_HostName
     
-                foreach ($User in $NewUsers)
+                foreach ($User in $SystemCount)
                 {
                     if (($User.SystemID).length -gt 1)
                     {
@@ -748,7 +748,7 @@ Function Import-JCUsersFromCSV ()
                     $FormattedResults = [PSCustomObject]@{
 
                         'Username'  = $UserAdd.username
-                        'Status'    = "Not created, CSV format issue?"
+                        'Status'    = "$($_.ErrorDetails)"
                         'UserID'    = $Null
                         'GroupsAdd' = $Null
                         'SystemID'  = $Null

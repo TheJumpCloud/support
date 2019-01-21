@@ -267,7 +267,7 @@ Function Get-JCUser ()
     process
 
     {
-        [int]$limit = '100'
+        [int]$limit = '1000'
         Write-Verbose "Setting limit to $limit"
 
         [int]$skip = '0'

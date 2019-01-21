@@ -13,14 +13,14 @@ Removes a JumpCloud User
 
 ## SYNTAX
 
-### warn (Default)
+### Username (Default)
 ```
-Remove-JCUser -Username <String> [-UserID <String>] [-ByID] [<CommonParameters>]
+Remove-JCUser -Username <String> [-force] [<CommonParameters>]
 ```
 
-### force
+### UserID
 ```
-Remove-JCUser [-Username <String>] [-UserID <String>] [-force] [-ByID] [<CommonParameters>]
+Remove-JCUser -UserID <String> [-ByID] [-force] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -53,7 +53,7 @@ Use the -ByID parameter when the UserID is passed over the pipeline to the Remov
 
 ```yaml
 Type: SwitchParameter
-Parameter Sets: (All)
+Parameter Sets: UserID
 Aliases:
 
 Required: False
@@ -79,10 +79,10 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
 ```yaml
 Type: String
-Parameter Sets: (All)
+Parameter Sets: UserID
 Aliases: _id
 
-Required: False
+Required: True
 Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
@@ -95,22 +95,10 @@ The Username of the JumpCloud user you wish to remove.
 
 ```yaml
 Type: String
-Parameter Sets: warn
+Parameter Sets: Username
 Aliases:
 
 Required: True
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-```yaml
-Type: String
-Parameter Sets: force
-Aliases:
-
-Required: False
 Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
@@ -123,7 +111,7 @@ A SwitchParameter which suppresses the warning message when removing a JumpCloud
 
 ```yaml
 Type: SwitchParameter
-Parameter Sets: force
+Parameter Sets: (All)
 Aliases:
 
 Required: False

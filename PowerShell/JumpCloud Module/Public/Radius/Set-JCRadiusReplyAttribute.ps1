@@ -5,7 +5,6 @@ Function Set-JCRadiusReplyAttribute ()
     param
     (
 
-
         [Parameter( Mandatory, position = 0, ValueFromPipelineByPropertyName,
             ParameterSetName = 'ByGroup')]
         [Alias('name')]
@@ -115,6 +114,8 @@ Function Set-JCRadiusReplyAttribute ()
 
             $LdapGroupName = $GroupInfo.attributes.ldapGroups.name
             Write-Verbose "$LdapGroupName"
+
+            $ExistingAttributes = $GroupInfo | Select-Object -ExpandProperty attributes
         }
         else { Throw "Group does not exist. Run 'Get-JCGroup -type User' to see a list of all your JumpCloud user groups."}
         
@@ -292,10 +293,33 @@ Function Set-JCRadiusReplyAttribute ()
                 "name"     = "$LdapGroupName"
             }
 
+            if ($ExistingAttributes.posixGroups)
+            {
+                $posixGroups = New-Object PSObject
+                $posixGroups | Add-Member -MemberType NoteProperty -Name name -Value $ExistingAttributes.posixGroups.name
+                $posixGroups | Add-Member -MemberType NoteProperty -Name id -Value $ExistingAttributes.posixGroups.id
+
+                $Body.attributes.Add("posixGroups", @($posixGroups))
+            }
+
+            if ($ExistingAttributes.ldapGroups) 
+            {
+                $ldapGroups = New-Object PSObject
+                $ldapGroups | Add-Member -MemberType NoteProperty -Name name -Value $ExistingAttributes.ldapGroups.name
+                $Body.attributes.Add("ldapGroups", @($ldapGroups))
+            }
+
+            if ($GroupInfo.attributes.sambaEnabled -eq $True) 
+            {
+                $Body.attributes.Add("sambaEnabled", $True)
+            }
+
+
             $URL = "$JCUrlBasePath/api/v2/usergroups/$Group_ID"
 
             $jsonbody = $Body | ConvertTo-Json -Depth 5 -Compress
 
+            Write-Verbose $Body
             Write-Debug $jsonbody
             Write-Verbose $jsonbody
 
@@ -315,4 +339,3 @@ Function Set-JCRadiusReplyAttribute ()
     }
 
 }
-

@@ -1,3 +1,33 @@
+## 1.10.0
+
+Release Date: January 17, 2019
+
+#### RELEASE NOTES
+
+```
+Use Get-JCPolicy, Get-JCPolicyResults, Get-JCPolicyTargetSystem and Get-JCPolicyTargetGroup to gather information on JumpCloud policies. New-JCUser and Set-JCUser functions have been updated to support MFA enrollment periods. Bug fix on Radius Reply Attributes functions for LDAP and Unix groups.
+```
+
+#### FEATURES:
+
+- New Function: Get-JCPolicy will return policies configured within the JumpCloud admin console.
+- New Function: Get-JCPolicyResults will return policy results for a given PolicyName or PolicyID.
+- New Function: Get-JCPolicyTargetSystem will return associated systems with a given PolicyName or PolicyID.
+- New Function: Get-JCPolicyTargetGroup will return associated groups with a given PolicyName or PolicyID.
+- Updated Function: New-JCUser to set a default enrollment peroid of 7 days for users that are created with '-enable_user_portal_multifactor' set to $true. If this value is set to $true the dynamic parameter -enrollmentDays can also be specified from 1 to 365.
+- Updated Function: Set-JCUser to set a default enrollment peroid of 7 days for users that are updated with '-enable_user_portal_multifactor' set to $true. If this value is set to $true the dynamic parameter -enrollmentDays can also be specified from 1 to 365.
+
+#### IMPROVEMENTS:
+
+Increased -limit value when querying users and system users from 100 to 1000
+Increased performance of private Get-Hash_ID_Sudo function.
+
+#### BUG FIXES:
+
+Fixed bug on Remove-JCUser command when trying to remove users by -UserID
+Fixed bug on RADIUS functions that prevented the addition or removal of Attributes on JumpCloud user groups configured for LDAP or set up as Linux groups
+Fixed bug in Import-JCUsersFromCSV and Update-JCUsersFromCSV where a null value for employeeIdentifier would report as duplicate
+
 ## 1.9.0
 
 Release Date: November 29, 2018
