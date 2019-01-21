@@ -1,6 +1,6 @@
 ## 1.10.0
 
-Release Date: January 17, 2019
+Release Date: January 21, 2019
 
 #### RELEASE NOTES
 
