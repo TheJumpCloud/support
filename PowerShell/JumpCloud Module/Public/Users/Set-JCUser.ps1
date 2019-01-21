@@ -546,7 +546,7 @@ Function Set-JCUser ()
 
                     $mfaData = @{}
                     $mfaData.Add("exclusion", $true)
-                    $mfaData.Add("exclusionUntil", $exclusionUntil)
+                    $mfaData.Add("exclusionUntil", [string]$exclusionUntil)
                     $body.Add('mfaData', $mfaData)
                 }
 
@@ -688,7 +688,7 @@ Function Set-JCUser ()
 
                     $mfaData = @{}
                     $mfaData.Add("exclusion", $true)
-                    $mfaData.Add("exclusionUntil", $exclusionUntil)
+                    $mfaData.Add("exclusionUntil", [string]$exclusionUntil)
                     $body.Add('mfaData', $mfaData)
                 }
 
@@ -783,7 +783,7 @@ Function Set-JCUser ()
 
                     $mfaData = @{}
                     $mfaData.Add("exclusion", $true)
-                    $mfaData.Add("exclusionUntil", $exclusionUntil)
+                    $mfaData.Add("exclusionUntil", [string]$exclusionUntil)
                     $body.Add('mfaData', $mfaData)
                 }
                
@@ -845,7 +845,7 @@ Function Set-JCUser ()
     
                 $mfaData = @{}
                 $mfaData.Add("exclusion", $true)
-                $mfaData.Add("exclusionUntil", $exclusionUntil)
+                $mfaData.Add("exclusionUntil", [string]$exclusionUntil)
                 $body.Add('mfaData', $mfaData)
             }
                 
@@ -983,7 +983,7 @@ Function Set-JCUser ()
 
                 $mfaData = @{}
                 $mfaData.Add("exclusion", $true)
-                $mfaData.Add("exclusionUntil", $exclusionUntil)
+                $mfaData.Add("exclusionUntil", [string]$exclusionUntil)
                 $body.Add('mfaData', $mfaData)
             }
 
