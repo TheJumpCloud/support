@@ -26,7 +26,7 @@ Function Invoke-JCApiGet
         {
             $Skip += $Results.Count
             $Results_Output += $Results
-            If ($Results.Count -eq 1)
+            If ($Results.Count -le 1)
             {
                 $PaginationExist = $false
             }
