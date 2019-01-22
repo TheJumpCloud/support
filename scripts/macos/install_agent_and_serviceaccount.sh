@@ -2,13 +2,13 @@
 # Populate the below variables before running the command
 #
 
-# Enter your connect key within the "" of YOUR_CONNECT_KEY="" with your orgs key found on the new system aside in the admin console
+# Enter your connect key within the '' of YOUR_CONNECT_KEY='' with your orgs key found on the new system aside in the admin console
 YOUR_CONNECT_KEY=''
 
-# Enter the SECURETOKEN_ADMIN_USERNAME within the "" of SECURETOKEN_ADMIN_USERNAME=""  
+# Enter the SECURETOKEN_ADMIN_USERNAME within the '' of SECURETOKEN_ADMIN_USERNAME=''  
 SECURETOKEN_ADMIN_USERNAME=''
 
-# Enter the SECURETOKEN_ADMIN_PASSWORD within the "" of SECURETOKEN_ADMIN_PASSWORD="" with the credentials of the admin with a secure token 
+# Enter the SECURETOKEN_ADMIN_PASSWORD within the '' of SECURETOKEN_ADMIN_PASSWORD='' with the credentials of the admin with a secure token 
 SECURETOKEN_ADMIN_PASSWORD=''
 
 #--------------------Do not modify below this line--------------------
