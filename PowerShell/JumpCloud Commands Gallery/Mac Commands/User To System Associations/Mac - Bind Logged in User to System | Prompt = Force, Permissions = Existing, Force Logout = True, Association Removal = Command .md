@@ -1,6 +1,6 @@
 #### Name
 
-Mac - Bind Logged in User to System | Prompt = Choice, Permissions = Existing, Force Logout = True, Association Removal = Command | JCCG v1.0
+Mac - Bind Logged in User to System | Prompt = Force, Permissions = Existing, Force Logout = True, Association Removal = Command | JCCG v1.0
 
 #### commandType
 
