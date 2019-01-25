@@ -241,5 +241,5 @@ If the command exits with an exitCode of 0 the target system will be removed fro
 To import this command into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
 
 ```
-Import-JCCommand -URL 'https://git.io/fh2jT'
+Import-JCCommand -URL 'https://git.io/fhKJL'
 ```
