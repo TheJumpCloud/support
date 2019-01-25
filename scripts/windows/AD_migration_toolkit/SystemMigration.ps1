@@ -5,7 +5,7 @@ $CONNECT_KEY = "" # <--- paste your organizations connect key between the " ". T
 # ------- DO NOT MODIFY BELOW THIS LINE ------------------------
 
 # JumpCloud Agent Installation Variables
-$AGENT_PATH = "${env:ProgramFiles(x86)}\JumpCloud"
+$AGENT_PATH = "${env:ProgramFiles}\JumpCloud"
 $AGENT_CONF_FILE = "\Plugins\Contrib\jcagent.conf"
 $AGENT_BINARY_NAME = "jumpcloud-agent.exe"
 $AGENT_SERVICE_NAME = "jumpcloud-agent"
