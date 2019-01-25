@@ -208,5 +208,5 @@ This command will query the current logged in user on the system and determine i
 To import this command into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
 
 ```
-Import-JCCommand -URL 'https://git.io/fh2jf'
+Import-JCCommand -URL 'https://git.io/fhKJT'
 ```
