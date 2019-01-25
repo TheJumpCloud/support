@@ -1,6 +1,6 @@
 #### Name
 
-Mac - Bind Logged in User to System | Prompt = Choice, Permissions = Existing, Force Logout = True, Association Removal = Command | JCCG v1.0
+Mac - Bind Logged in User to System-User Ok Prompt-Command Dissociation | JCCG v1.0
 
 #### commandType
 
@@ -116,10 +116,10 @@ fi
 # Prompt user for logout
 
 if [[ $activated == "true" ]]; then
-	userPrompt=$(sudo -u $username osascript -e 'display dialog "Complete JumpCloud account takeover for account: '$username'?\n\nAfter clicking YES the JumpCloud agent will update the system password for account: '$username' to the current JumpCloud password.\n\nAfter the password update you will be logged out and taken to login window to complete the account takeover.\n\nAt the login window enter your current computer password in the PREVIOUS PASSWORD box.\n\n In the PASSWORD box below this enter your JumpCloud password." buttons {"Yes", "No"}default button "Yes" giving up after 60' 2>/dev/null)
+	userPrompt=$(sudo -u $username osascript -e 'display dialog "JumpCloud account takeover for account: '$username'\n\nAfter clicking Ok the JumpCloud agent will update the system password for account: '$username' to the current JumpCloud password.\n\nAfter the password update you will be logged out and taken to login window to complete the account takeover.\n\nAt the login window enter your current computer password in the PREVIOUS PASSWORD box.\n\n In the PASSWORD box below this enter your JumpCloud password." buttons {"Ok"}default button "Ok" giving up after 120' 2>/dev/null)
 
-	if [ "$userPrompt" = "button returned:Yes, gave up:false" ]; then
-		echo "User said yes to prompt"
+	if [ "$userPrompt" = "button returned:Ok, gave up:false" ]; then
+		echo "User said Ok to prompt"
 
 		## Capture current logFile
 		logLinesRaw=$(wc -l /var/log/jcagent.log)
@@ -231,7 +231,7 @@ After importing this command the variables `JCAPIKey=''` and `commandID=''` must
 
 To find the `commandID` value within the JumpCloud admin console select the command to expand the command details. Within the URL of the selected command the commandID will be the 24 character string between 'commands/' and '/details'. The JumpCloud PowerShell command [Get-JCCommand](https://github.com/TheJumpCloud/support/wiki/Get-JCCommand) can also be used to find the commandID which will reveal the commandID in the '_id' field.
 
-This command will query the current logged in user on the system and determine if the logged in user is an active JumpCloud user. If the logged is user is an active JumpCloud user the command will query the system and determine if the user has already been bound to the system. If the user has not been bound to the system the command will prompt the user with a choice and inform them that the JumpCloud agent would like to takeover their local account. If users say **Yes** at the prompt the agent will bind the user to the system with their existing system permissions (admin or standard) and then log the user out and take them to the login window to ensure account takeover occurs. If users select **No** at the prompt, or if the prompt times out after 60 seconds, the command will return an exitCode of 1 and return this information to log section of the command result.
+This command will query the current logged in user on the system and determine if the logged in user is an active JumpCloud user. If the logged is user is an active JumpCloud user the command will query the system and determine if the user has already been bound to the system. If the user has not been bound to the system the command will prompt the user and inform them that the JumpCloud agent will takeover their local account. If users say **Ok** at the prompt the agent will bind the user to the system with their existing system permissions (admin or standard) and then log the user out and take them to the login window to ensure account takeover occurs. If the prompt times out after 120 seconds, the command will return an exitCode of 1 and return this information to log section of the command result.
 
 If the command exits with an exitCode of 0 the target system will be removed from the JumpCloud command using the `commandID=''` variable.
 
@@ -241,5 +241,5 @@ If the command exits with an exitCode of 0 the target system will be removed fro
 To import this command into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
 
 ```
-Import-JCCommand -URL 'https://git.io/fh2hN'
+Import-JCCommand -URL 'https://git.io/fhKJL'
 ```

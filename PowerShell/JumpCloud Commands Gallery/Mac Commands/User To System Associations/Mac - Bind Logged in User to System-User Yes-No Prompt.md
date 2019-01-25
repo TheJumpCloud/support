@@ -1,6 +1,6 @@
 #### Name
 
-Mac - Bind Logged in User to System | Prompt = Choice, Permissions = Existing, Force Logout = True | JCCG v1.0
+Mac - Bind Logged in User to System-User Yes-No Prompt | JCCG v1.0
 
 #### commandType
 

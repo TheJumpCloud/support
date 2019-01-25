@@ -1,6 +1,6 @@
 #### Name
 
-Mac - Bind Logged in User to System | Prompt = Choice, Permissions = Existing, Force Logout = True, Association Removal = systemGroup | JCCG v1.0
+Mac - Bind Logged in User to System-User Yes-No Prompt-System Group Dissociation | JCCG v1.0
 
 #### commandType
 
