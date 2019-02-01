@@ -1,6 +1,6 @@
 #### Name
 
-Mac - List All LaunchDaemons | v1.0 JCCG
+Mac - List All Launch Daemons | v1.0 JCCG
 
 #### commandType
 
