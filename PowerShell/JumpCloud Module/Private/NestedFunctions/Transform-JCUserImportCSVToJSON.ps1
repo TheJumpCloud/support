@@ -1,4 +1,4 @@
-Function New-JCUserPSObject ()
+Function Transform-JCUserImportCSVToJSON ()
 {
 
     [CmdletBinding(DefaultParameterSetName = 'NoAttributes')]
@@ -389,8 +389,9 @@ Function New-JCUserPSObject ()
     }
     end
     {
+        $JSONResults = $NewUserObjectArray | ConvertTo-Json -Depth 5
 
-        return $NewUserObjectArray
+        return $JSONResults
     }
 
 }

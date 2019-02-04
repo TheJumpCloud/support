@@ -1,4 +1,4 @@
-Function Set-JCUserPSObject ()
+Function Transform-JCUserUpdateCSVToJSON ()
 {
 
     [CmdletBinding(DefaultParameterSetName = 'Username')]
@@ -898,7 +898,8 @@ Function Set-JCUserPSObject ()
     }
     end
     {
-        return $UpdatedUserObjectArray
+        $JSONResults = $UpdatedUserObjectArray | ConvertTo-Json -Depth 5
+        return $JSONResults
 
     }
 
