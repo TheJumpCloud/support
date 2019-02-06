@@ -35,12 +35,12 @@ Function Remove-JCRadiusServer ()
             'ById'
             {
                 $Uri_RadiusServers = $Url_Template_RadiusServers -f $JCUrlBasePath
-                $JCRadiusServers = Get-JCRadiusServers -ById -RadiusServerId:($RadiusServerId)
+                $JCRadiusServers = Get-JCRadiusServer -ById -RadiusServerId:($RadiusServerId)
             }
             'ByName'
             {
                 $Uri_RadiusServers = $Url_Template_RadiusServers -f $JCUrlBasePath
-                $JCRadiusServers = Get-JCRadiusServers -ByName -RadiusServerName:($RadiusServerName)
+                $JCRadiusServers = Get-JCRadiusServer -ByName -RadiusServerName:($RadiusServerName)
             }
         }
         If ($JCRadiusServers)
@@ -50,7 +50,7 @@ Function Remove-JCRadiusServer ()
             # Send body to RadiusServers endpoint.
             Write-Verbose ('Connecting to: ' + $Uri_RadiusServers)
             Write-Verbose ('Sending JsonBody: ' + $JsonBody)
-            If($Write-Warning "Are you sure you wish to delete object: $result ?" -WarningAction Inquire
+            If ($force) {Write-Warning "Are you sure you wish to delete object: $result ?" -WarningAction Inquire}
             $Results_RadiusServers = Invoke-RestMethod -Method:($Method) -Uri:($Uri_RadiusServers) -Header:($hdrs) -Body:($JsonBody)
         }
         Else
