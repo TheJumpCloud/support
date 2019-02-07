@@ -10,7 +10,7 @@ Function New-JCRadiusServer ()
     )
     Begin
     {
-        Write-Verbose "Paramter Set: $($PSCmdlet.ParameterSetName)"
+        Write-Verbose "Parameter Set: $($PSCmdlet.ParameterSetName)"
         Write-Verbose 'Verifying JCAPI Key'
         If ($JCAPIKEY.length -ne 40) {Connect-JCOnline}
         Write-Verbose 'Populating API headers'
