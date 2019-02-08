@@ -1,3 +1,5 @@
+# Version 1.1 - Updates restart counter to 10 seconds and adds agent install validation for MS C++ 2013
+
 # Silent JumpCloud Agent Installation Script
  
 $CONNECT_KEY = "" # <--- paste your organizations connect key between the " ". This key can be found within the JumpCloud admin console on the 'Systems' tab by clicking the green (+) in the top left corner.
