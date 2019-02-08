@@ -46,7 +46,7 @@ Function Remove-JCRadiusServer ()
         If ($JCRadiusServers)
         {
             # Build body to be sent to RadiusServers endpoint.
-            $JsonBody = '{"isSelectAll":false,"models":[{"_id":"' + $JCRadiusServers.results._id + '"}]}'
+            $JsonBody = '{"isSelectAll":false,"models":[{"_id":"' + $JCRadiusServers._id + '"}]}'
             # Send body to RadiusServers endpoint.
             Write-Verbose ('Connecting to: ' + $Uri_RadiusServers)
             Write-Verbose ('Sending JsonBody: ' + $JsonBody)

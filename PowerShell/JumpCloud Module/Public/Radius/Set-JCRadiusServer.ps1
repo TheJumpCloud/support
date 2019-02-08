@@ -37,12 +37,12 @@ Function Set-JCRadiusServer ()
             'ById'
             {
                 $JCRadiusServers = Get-JCRadiusServer -ById -RadiusServerId:($RadiusServerId)
-                $Uri_RadiusServers = $Url_Template_RadiusServers -f $JCUrlBasePath, $JCRadiusServers.results._id
+                $Uri_RadiusServers = $Url_Template_RadiusServers -f $JCUrlBasePath, $JCRadiusServers._id
             }
             'ByName'
             {
                 $JCRadiusServers = Get-JCRadiusServer -ByName -RadiusServerName:($RadiusServerName)
-                $Uri_RadiusServers = $Url_Template_RadiusServers -f $JCUrlBasePath, $JCRadiusServers.results._id
+                $Uri_RadiusServers = $Url_Template_RadiusServers -f $JCUrlBasePath, $JCRadiusServers._id
             }
         }
         If ($JCRadiusServers)
