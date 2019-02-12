@@ -1,6 +1,6 @@
 #### Name
 
-Mac - Install FireFox DMG | v1.0 JCCG
+Mac - Install Firefox DMG | v1.0 JCCG
 
 #### commandType
 
