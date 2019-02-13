@@ -45,6 +45,6 @@ Function Get-JCRadiusServer ()
     }
     End
     {
-        Return $Results_RadiusServers.results
+        Return $Results_RadiusServers
     }
 }
