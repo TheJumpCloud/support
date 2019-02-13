@@ -15,23 +15,31 @@ Function Invoke-JCAssociation
     {
         # Set the dynamic parameters' name
         $ParameterName = 'TargetType'
-        # Create the dictionary
-        $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
         # Create the collection of attributes
         $AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
-        # Create and set the parameters' attributes
+        # Create the parameters attributes
         $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
+        # Set the parameters attributes
         $ParameterAttribute.Mandatory = $true
+        $ParameterAttribute.ValueFromPipelineByPropertyName = $true
         $ParameterAttribute.Position = 3
         # Add the attributes to the attributes collection
         $AttributeCollection.Add($ParameterAttribute)
-        # Generate and set the ValidateSet
-        $arrSet = Get-JCTypeAssociation -Source:($SourceType)
+        # Set the ValidateNotNullOrEmpty
+        $ValidateNotNullOrEmptyAttribute = New-Object System.Management.Automation.ValidateNotNullOrEmptyAttribute
+        # Add the ValidateNotNullOrEmpty to the attributes collection
+        $AttributeCollection.Add($ValidateNotNullOrEmptyAttribute)
+        # Generate the ValidateSet
+        $arrSet = (Get-JCTypeAssociation -Source:($SourceType)).Targets
+        # Set the ValidateSet
         $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($arrSet)
         # Add the ValidateSet to the attributes collection
         $AttributeCollection.Add($ValidateSetAttribute)
-        # Create and return the dynamic parameter
+        # Create the dynamic parameter
         $RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter($ParameterName, [string], $AttributeCollection)
+        # Create the parameter dictionary
+        $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
+        # Return the dynamic parameter to the parameter dictionary
         $RuntimeParameterDictionary.Add($ParameterName, $RuntimeParameter)
         Return $RuntimeParameterDictionary
     }
@@ -40,7 +48,7 @@ Function Invoke-JCAssociation
         # Bind the parameter to a friendly variable
         $TargetTypeOption = $PsBoundParameters[$ParameterName]
         #Set JC headers
-        Write-Verbose "Paramter Set: $($PSCmdlet.ParameterSetName)"
+        Write-Verbose "Parameter Set: $($PSCmdlet.ParameterSetName)"
         Write-Verbose 'Verifying JCAPI Key'
         If ($JCAPIKEY.length -ne 40) {Connect-JCOnline}
         Write-Verbose 'Populating API headers'
@@ -82,7 +90,7 @@ Function Invoke-JCAssociation
         $SourceObjectId = $SourceObject.$SourceObject_ById
         $SourceObjectName = $SourceObject.$SourceObject_ByName
         # Get Target object.
-        $TargetObject_CommandType = Get-CommandType -Type:($TargetType) -SearchBy:($SearchBy) -SearchByValue:($TargetSearchByValue)
+        $TargetObject_CommandType = Get-CommandType -Type:($TargetTypeOption) -SearchBy:($SearchBy) -SearchByValue:($TargetSearchByValue)
         $TargetObject_Command = $TargetObject_CommandType.Command
         $TargetObject_ByName = $TargetObject_CommandType.ByName
         $TargetObject_ById = $TargetObject_CommandType.ById
@@ -91,7 +99,7 @@ Function Invoke-JCAssociation
         $TargetObjectId = $TargetObject.$TargetObject_ById
         $TargetObjectName = $TargetObject.$TargetObject_ByName
         # Build body to be sent to endpoint.
-        $JsonBody = '{"op":"' + $Action + '","type":"' + $TargetType + '","id":"' + $TargetObjectId + '","attributes":null}'
+        $JsonBody = '{"op":"' + $Action + '","type":"' + $TargetTypeOption + '","id":"' + $TargetObjectId + '","attributes":null}'
         # Send body to endpoint.
         $Uri_Associations = $URL_Template_Associations -f $JCUrlBasePath, $SourceType, $SourceObjectId, $TargetTypeOption
         Write-Verbose ('Connecting to: ' + $Uri_Associations)
