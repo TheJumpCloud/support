@@ -42,7 +42,7 @@ Function Get-JCAssociationReport
         }
         $OutputObject = @()
         # Get Source object.
-        $SourceObject_CommandType = Get-CommandType -Type:($SourceType) -SearchBy:($SearchBy) -SearchByValue:($SourceSearchByValue)
+        $SourceObject_CommandType = Get-JCCommandType -Type:($SourceType) -SearchBy:($SearchBy) -SearchByValue:($SourceSearchByValue)
         $SourceObject_Command = $SourceObject_CommandType.Command
         $SourceObject_ByName = $SourceObject_CommandType.ByName
         $SourceObject_ById = $SourceObject_CommandType.ById
@@ -61,7 +61,7 @@ Function Get-JCAssociationReport
             $TargetType = $AssociationTargetTo.type
             $SearchBy = 'ById'
             # Get Target object.
-            $TargetObject_CommandType = Get-CommandType -Type:($TargetType) -SearchBy:($SearchBy) -SearchByValue:($TargetSearchByValue)
+            $TargetObject_CommandType = Get-JCCommandType -Type:($TargetType) -SearchBy:($SearchBy) -SearchByValue:($TargetSearchByValue)
             $TargetObject_Command = $TargetObject_CommandType.Command
             $TargetObject_ByName = $TargetObject_CommandType.ByName
             $TargetObject_ById = $TargetObject_CommandType.ById

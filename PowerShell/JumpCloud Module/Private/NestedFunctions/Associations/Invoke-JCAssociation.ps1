@@ -81,7 +81,7 @@ Function Invoke-JCAssociation
             }
         }
         # Get Source object.
-        $SourceObject_CommandType = Get-CommandType -Type:($SourceType) -SearchBy:($SearchBy) -SearchByValue:($SourceSearchByValue)
+        $SourceObject_CommandType = Get-JCCommandType -Type:($SourceType) -SearchBy:($SearchBy) -SearchByValue:($SourceSearchByValue)
         $SourceObject_Command = $SourceObject_CommandType.Command
         $SourceObject_ByName = $SourceObject_CommandType.ByName
         $SourceObject_ById = $SourceObject_CommandType.ById
@@ -90,7 +90,7 @@ Function Invoke-JCAssociation
         $SourceObjectId = $SourceObject.$SourceObject_ById
         $SourceObjectName = $SourceObject.$SourceObject_ByName
         # Get Target object.
-        $TargetObject_CommandType = Get-CommandType -Type:($TargetTypeOption) -SearchBy:($SearchBy) -SearchByValue:($TargetSearchByValue)
+        $TargetObject_CommandType = Get-JCCommandType -Type:($TargetTypeOption) -SearchBy:($SearchBy) -SearchByValue:($TargetSearchByValue)
         $TargetObject_Command = $TargetObject_CommandType.Command
         $TargetObject_ByName = $TargetObject_CommandType.ByName
         $TargetObject_ById = $TargetObject_CommandType.ById

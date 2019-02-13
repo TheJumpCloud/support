@@ -1,4 +1,4 @@
-Function Get-CommandType
+Function Get-JCCommandType
 {
     [CmdletBinding(DefaultParameterSetName = 'Default')]
     Param(
