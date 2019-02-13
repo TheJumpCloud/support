@@ -25,7 +25,7 @@ Function Get-JCAssociation
         # Add the ValidateNotNullOrEmpty to the attributes collection
         $AttributeCollection.Add($ValidateNotNullOrEmptyAttribute)
         # Generate the ValidateSet
-        $arrSet = (Get-JCTypeAssociation -Source:($SourceType)).Targets
+        $arrSet = (Get-JCAssociationType -Source:($SourceType)).Targets
         # Set the ValidateSet
         $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($arrSet)
         # Add the ValidateSet to the attributes collection
