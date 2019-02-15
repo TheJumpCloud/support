@@ -60,9 +60,7 @@ Function Get-JCAssociation
     }
     Process
     {
-        # Your code goes here
         $Uri_Associations = $URL_Template_Associations -f $JCUrlBasePath, $SourceType, $SourceId, $TargetTypeOption
-        Write-Verbose ('Connecting to: ' + $Uri_Associations)
         $Results_Associations = Invoke-JCApiGet -Url:($Uri_Associations)
     }
     End
