@@ -69,7 +69,7 @@ By default this value is set to 7 days.
 
 If it is determined that the users password will expire within the alert days threshold then a notification is displayed to the user.
 
-![Mac_PasswordExpiration_Notification](https://github.com/TheJumpCloud/support/blob/master/PowerShell/JumpCloud%20Commands%20Gallery/Files/Mac_PasswordExpiration_Notification?raw=true)
+![Mac_PasswordExpiration_Notification](https://github.com/TheJumpCloud/support/blob/master/PowerShell/JumpCloud%20Commands%20Gallery/Files/Mac_PasswordExpiration_Notification.png?raw=true)
 
 #### *Import This Command*
 
