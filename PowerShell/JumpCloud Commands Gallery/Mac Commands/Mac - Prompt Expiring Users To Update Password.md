@@ -50,7 +50,7 @@ echo "${user} password will expire in ${daysToExpiration} days"
 
 if [ "$daysToExpiration" -le "$alertDaysThreshold" ]; then
     echo "${daysToExpiration} within alertDaysThreshold of ${alertDaysThreshold} prompting user"
-    userPrompt=$(sudo -u $user osascript -e 'display dialog "Your JumpCloud password will expire in '"${daysToExpiration}"' days.\nClick on the JumpCloud icon in your menu bar ↑ and reset your password, so you do not lose access to critical resources." with title "JumpCloud Password Expiration Warning" with icon file "Applications:Jumpcloud.app:Contents:Resources:AppIcon.icns"' 2>/dev/null)
+    userPrompt=$(sudo -u $user osascript -e 'display dialog "Your JumpCloud password will expire in '"${daysToExpiration}"' days.\nClick on the JumpCloud icon in your menu bar and reset your password, so you do not lose access to critical resources." with title "JumpCloud Password Expiration Warning" with icon file "Applications:Jumpcloud.app:Contents:Resources:AppIcon.icns"' 2>/dev/null)
     echo "$userPrompt"
 
 else
