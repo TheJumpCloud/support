@@ -67,12 +67,12 @@ Function Invoke-JCApiGet
             }
             Else
             {
-                Write-Verbose ('No more results found.')
+                Write-Verbose ('No results found.')
             }
             # If ($Results) {Write-Host "Results are true" -BackgroundColor Cyan } Else {Write-Host "Results are false" -BackgroundColor red}
             # If ($ResultsCount -ge 1) {Write-Host ("Result count is greater than or equal to 1. Current count:" + [string]$ResultsCount ) -BackgroundColor Cyan} Else {Write-Host ("Result count is less than 1. Current count:" + [string]$ResultsCount ) -BackgroundColor red}
         }
-        While ($Results -and $ResultsCount -ge 1)
+        While ($ResultsCount -eq $Limit)
     }
     End
     {
