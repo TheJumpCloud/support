@@ -152,7 +152,7 @@ Function Invoke-PasswordResetNotification
                     $password_expiration_date = $SystemUser.password_expiration_date
                     #Convert dates to ToUniversalTime
                     $TodaysDate = (Get-Date).ToUniversalTime()
-                    $password_expiration_date_Universal = (Get-Date -Date:($password_expiration_date)).ToUniversalTime()
+                    $password_expiration_date_Universal = Get-Date -Date:($password_expiration_date)
                     # Get days till users password expires
                     $TimeSpan = New-TimeSpan -Start:($TodaysDate) -End:($password_expiration_date_Universal)
                     $DaysUntilPasswordExpire = $TimeSpan.Days
