@@ -10,12 +10,12 @@ windows
 
 ```
 ################## Invoke-PasswordResetNotification ##################
-$JCAPIKEY = '' # Populate variable with your api key.
+$JCAPIKEY = '88e32a0c8e89cb3f45c38b69231fac9118505337' # Populate variable with your api key.
 $MessageBoxStyle = 4 # Look inside the Invoke-BroadcastMessage function for options.
 $MessageTitle = 'JumpCloud Password About To Expire' # Text to display in the message box title.
 $MessageBody = 'Your password will expire in {0} days. Click "Yes" to send a JumpCloud password reset link to your email.' # Text to display in the message box body.
 $TimeOutSec = 60 # How long you want the message box to display to the user.
-$AlertDaysThreshold = 7 # Users whose passwords will expire in 7 days or less will receive a prompt to update.
+$AlertDaysThreshold = 100 # Users whose passwords will expire in 7 days or less will receive a prompt to update.
 #------- Do not modify below this line ------
 Function Invoke-BroadcastMessage
 {
@@ -143,14 +143,18 @@ Function Invoke-PasswordResetNotification
                 # Get user info
                 $SystemUser_URL = 'https://console.jumpcloud.com/api/systemusers?fields=username email password_expiration_date&search[fields]=username&search[searchTerm]=' + $UserName
                 $SystemUser = Invoke-RestMethod -Method:('GET') -Headers:($hdrs) -Uri:($SystemUser_URL)
-                If ($SystemUser.results)
+                $SystemUser = $SystemUser.results | Where-Object {$_.username -eq $UserName}
+                If ($SystemUser)
                 {
-                    $Id = $SystemUser.results._id
-                    $UserName = $SystemUser.results.UserName
-                    $email = $SystemUser.results.email
-                    $password_expiration_date = $SystemUser.results.password_expiration_date
+                    $Id = $SystemUser._id
+                    $UserName = $SystemUser.UserName
+                    $email = $SystemUser.email
+                    $password_expiration_date = $SystemUser.password_expiration_date
+                    #Convert dates to ToUniversalTime
+                    $TodaysDate = (Get-Date).ToUniversalTime()
+                    $password_expiration_date_Universal = (Get-Date -Date:($password_expiration_date)).ToUniversalTime()
                     # Get days till users password expires
-                    $TimeSpan = New-TimeSpan -Start:(Get-Date) -End:($password_expiration_date)
+                    $TimeSpan = New-TimeSpan -Start:($TodaysDate) -End:($password_expiration_date_Universal)
                     $DaysUntilPasswordExpire = $TimeSpan.Days
                     # If days until password expires is less than the alert threshold
                     If ($DaysUntilPasswordExpire -le $AlertDaysThreshold)
