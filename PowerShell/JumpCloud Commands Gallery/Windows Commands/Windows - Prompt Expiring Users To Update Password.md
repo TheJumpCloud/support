@@ -9,6 +9,7 @@ windows
 #### Command
 
 ```
+################## Invoke-PasswordResetNotification ##################
 $JCAPIKEY = '' # Populate variable with your api key.
 $MessageBoxStyle = 4 # Look inside the Invoke-BroadcastMessage function for options.
 $MessageTitle = 'JumpCloud Password About To Expire' # Text to display in the message box title.
@@ -161,7 +162,7 @@ Function Invoke-PasswordResetNotification
                             $PasswordReset = Invoke-RestMethod -Method:('POST') -Headers:($hdrs) -Uri:($PasswordReset_URL) -Body:($JsonBody)
                         }
                         $Response = Invoke-BroadcastMessage -SessionId:($SessionId) -MessageBoxStyle:($MessageBoxStyle) -MessageTitle:($MessageTitle) -MessageBody:($MessageBody -f $DaysUntilPasswordExpire) -ConfirmationAction:($ConfirmationAction) -TimeOutSec:($TimeOutSec)
-                        $Response | Select-Object *, @{Name = 'UserName'; Expression = {$UserName}}, @{Name = 'password_expiration_date'; Expression = {$password_expiration_date}}
+                        Return $Response | Where-Object {$_.ComputerName} | Select-Object ComputerName, SessionId, ResponseId, ResponseMessage, @{Name = 'UserName'; Expression = {$UserName}}, @{Name = 'password_expiration_date'; Expression = {$password_expiration_date}}
                     }
                 }
                 Else
@@ -191,7 +192,8 @@ Invoke-PasswordResetNotification -JCAPIKEY:($JCAPIKEY) -MessageBoxStyle:($Messag
 1. Runs "quser" command to get a list of all active sessions on the machine. 
 2. For each user with an active session query the users password expiration date. 
 3. If it is determined that the users password will expire within the alert days threshold then a notification is displayed to the user asking them to reset their password.   
-4. If the user selects "Yes" then the action will trigger a password reset email to be sent to their inbox. If the user selects "No" then no action will occure. 
+4. If the user selects "Yes" then the action will trigger a password reset email to be sent to their inbox. If the user selects "No" then no action will occur. 
+5. The output will contain the users response to the message box in the ResponseMessage field.
 
 Required Variables:
 * $JCAPIKEY - This must be populated with your your API key.
