@@ -10,12 +10,12 @@ windows
 
 ```
 ################## Invoke-PasswordResetNotification ##################
-$JCAPIKEY = '88e32a0c8e89cb3f45c38b69231fac9118505337' # Populate variable with your api key.
+$JCAPIKEY = '' # Populate variable with your api key.
 $MessageBoxStyle = 4 # Look inside the Invoke-BroadcastMessage function for options.
 $MessageTitle = 'JumpCloud Password About To Expire' # Text to display in the message box title.
 $MessageBody = 'Your password will expire in {0} days. Click "Yes" to send a JumpCloud password reset link to your email.' # Text to display in the message box body.
 $TimeOutSec = 60 # How long you want the message box to display to the user.
-$AlertDaysThreshold = 100 # Users whose passwords will expire in 7 days or less will receive a prompt to update.
+$AlertDaysThreshold = 7 # Users whose passwords will expire in 7 days or less will receive a prompt to update.
 #------- Do not modify below this line ------
 Function Invoke-BroadcastMessage
 {
