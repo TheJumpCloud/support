@@ -386,10 +386,10 @@ Function New-JCUser ()
                 $exclusionUntil = (Get-Date).AddDays(7)
             }
 
-            $mfaData = @{}
-            $mfaData.Add("exclusion", $true)
-            $mfaData.Add("exclusionUntil", [string]$exclusionUntil)
-            $body.Add('mfaData', $mfaData)
+            $mfa = @{}
+            $mfa.Add("exclusion", $true)
+            $mfa.Add("exclusionUntil", [string]$exclusionUntil)
+            $body.Add('mfa', $mfa)
         }
 
         If ($NewAttributes) {$body.add('attributes', $NewAttributes)}
