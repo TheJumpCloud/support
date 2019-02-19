@@ -389,7 +389,7 @@ Function New-JCUser ()
             $mfaData = @{}
             $mfaData.Add("exclusion", $true)
             $mfaData.Add("exclusionUntil", [string]$exclusionUntil)
-            $body.Add('mfaData', $mfaData)
+            $body.Add('mfa', $mfaData)
         }
 
         If ($NewAttributes) {$body.add('attributes', $NewAttributes)}

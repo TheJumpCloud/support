@@ -547,7 +547,7 @@ Function Set-JCUser ()
                     $mfaData = @{}
                     $mfaData.Add("exclusion", $true)
                     $mfaData.Add("exclusionUntil", [string]$exclusionUntil)
-                    $body.Add('mfaData', $mfaData)
+                    $body.Add('mfa', $mfaData)
                 }
 
                 $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
@@ -689,7 +689,7 @@ Function Set-JCUser ()
                     $mfaData = @{}
                     $mfaData.Add("exclusion", $true)
                     $mfaData.Add("exclusionUntil", [string]$exclusionUntil)
-                    $body.Add('mfaData', $mfaData)
+                    $body.Add('mfa', $mfaData)
                 }
 
                 $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
@@ -784,7 +784,7 @@ Function Set-JCUser ()
                     $mfaData = @{}
                     $mfaData.Add("exclusion", $true)
                     $mfaData.Add("exclusionUntil", [string]$exclusionUntil)
-                    $body.Add('mfaData', $mfaData)
+                    $body.Add('mfa', $mfaData)
                 }
                
                 $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
@@ -846,7 +846,7 @@ Function Set-JCUser ()
                 $mfaData = @{}
                 $mfaData.Add("exclusion", $true)
                 $mfaData.Add("exclusionUntil", [string]$exclusionUntil)
-                $body.Add('mfaData', $mfaData)
+                $body.Add('mfa', $mfaData)
             }
                 
             $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
@@ -984,7 +984,7 @@ Function Set-JCUser ()
                 $mfaData = @{}
                 $mfaData.Add("exclusion", $true)
                 $mfaData.Add("exclusionUntil", [string]$exclusionUntil)
-                $body.Add('mfaData', $mfaData)
+                $body.Add('mfa', $mfaData)
             }
 
             $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
