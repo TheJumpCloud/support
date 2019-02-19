@@ -1,3 +1,17 @@
+## 1.10.1
+
+Release Date: February 19, 2019
+
+#### RELEASE NOTES
+
+```
+Update New-JCUser and Set-JCUser to interact with the property mfa instead of the mfaData property when using the parameter enable_user_portal_multifactor to enable mfa for a user.
+```
+
+#### IMPROVEMENTS:
+
+- This change aligns with recent work done to improve the mfa workflow for JumpCloud end users.
+
 ## 1.10.0
 
 Release Date: January 21, 2019
