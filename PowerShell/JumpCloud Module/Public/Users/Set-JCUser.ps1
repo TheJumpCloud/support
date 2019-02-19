@@ -544,10 +544,10 @@ Function Set-JCUser ()
                         $exclusionUntil = (Get-Date).AddDays(7)
                     }
 
-                    $mfaData = @{}
-                    $mfaData.Add("exclusion", $true)
-                    $mfaData.Add("exclusionUntil", [string]$exclusionUntil)
-                    $body.Add('mfa', $mfaData)
+                    $mfa = @{}
+                    $mfa.Add("exclusion", $true)
+                    $mfa.Add("exclusionUntil", [string]$exclusionUntil)
+                    $body.Add('mfa', $mfa)
                 }
 
                 $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
@@ -686,10 +686,10 @@ Function Set-JCUser ()
                         $exclusionUntil = (Get-Date).AddDays(7)
                     }
 
-                    $mfaData = @{}
-                    $mfaData.Add("exclusion", $true)
-                    $mfaData.Add("exclusionUntil", [string]$exclusionUntil)
-                    $body.Add('mfa', $mfaData)
+                    $mfa = @{}
+                    $mfa.Add("exclusion", $true)
+                    $mfa.Add("exclusionUntil", [string]$exclusionUntil)
+                    $body.Add('mfa', $mfa)
                 }
 
                 $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
@@ -781,10 +781,10 @@ Function Set-JCUser ()
                         $exclusionUntil = (Get-Date).AddDays(7)
                     }
 
-                    $mfaData = @{}
-                    $mfaData.Add("exclusion", $true)
-                    $mfaData.Add("exclusionUntil", [string]$exclusionUntil)
-                    $body.Add('mfa', $mfaData)
+                    $mfa = @{}
+                    $mfa.Add("exclusion", $true)
+                    $mfa.Add("exclusionUntil", [string]$exclusionUntil)
+                    $body.Add('mfa', $mfa)
                 }
                
                 $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
@@ -843,10 +843,10 @@ Function Set-JCUser ()
                     $exclusionUntil = (Get-Date).AddDays(7)
                 }
     
-                $mfaData = @{}
-                $mfaData.Add("exclusion", $true)
-                $mfaData.Add("exclusionUntil", [string]$exclusionUntil)
-                $body.Add('mfa', $mfaData)
+                $mfa = @{}
+                $mfa.Add("exclusion", $true)
+                $mfa.Add("exclusionUntil", [string]$exclusionUntil)
+                $body.Add('mfa', $mfa)
             }
                 
             $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
@@ -981,10 +981,10 @@ Function Set-JCUser ()
                     $exclusionUntil = (Get-Date).AddDays(7)
                 }
 
-                $mfaData = @{}
-                $mfaData.Add("exclusion", $true)
-                $mfaData.Add("exclusionUntil", [string]$exclusionUntil)
-                $body.Add('mfa', $mfaData)
+                $mfa = @{}
+                $mfa.Add("exclusion", $true)
+                $mfa.Add("exclusionUntil", [string]$exclusionUntil)
+                $body.Add('mfa', $mfa)
             }
 
             $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
