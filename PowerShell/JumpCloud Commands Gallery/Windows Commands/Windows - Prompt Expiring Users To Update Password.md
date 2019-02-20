@@ -9,13 +9,22 @@ windows
 #### Command
 
 ```
-################## Invoke-PasswordResetNotification ##################
-$JCAPIKEY = '' # Populate variable with your api key.
+## Populate below variable before running command
+$JCAPIKEY = '' 
+
+## alertDaysThreshold set to '7' by default.
+## Users whose passwords will expire in 7 days or less will receive a prompt to update.
+## Update the value of the variable AlertDaysThreshold to modify the threshold.
+
+$AlertDaysThreshold = 7
+
+## Message Specific Variables
+
 $MessageBoxStyle = 4 # Look inside the Invoke-BroadcastMessage function for options.
 $MessageTitle = 'JumpCloud Password About To Expire' # Text to display in the message box title.
 $MessageBody = 'Your password will expire in {0} days. Click "Yes" to send a JumpCloud password reset link to your email.' # Text to display in the message box body.
 $TimeOutSec = 60 # How long you want the message box to display to the user.
-$AlertDaysThreshold = 7 # Users whose passwords will expire in 7 days or less will receive a prompt to update.
+
 #------- Do not modify below this line ------
 Function Invoke-BroadcastMessage
 {
@@ -155,7 +164,7 @@ Function Invoke-PasswordResetNotification
                     $password_expiration_date_Universal = Get-Date -Date:($password_expiration_date)
                     # Get days till users password expires
                     $TimeSpan = New-TimeSpan -Start:($TodaysDate) -End:($password_expiration_date_Universal)
-                    $DaysUntilPasswordExpire = $TimeSpan.Days
+                    $DaysUntilPasswordExpire = [math]::ceiling($TimeSpan.TotalDays)
                     # If days until password expires is less than the alert threshold
                     If ($DaysUntilPasswordExpire -le $AlertDaysThreshold)
                     {
@@ -188,6 +197,7 @@ Function Invoke-PasswordResetNotification
         Write-Error ($_.FullyQualifiedErrorId.ToString() + "`n" + $_.InvocationInfo.PositionMessage + "`n" + $Message)
     }
 }
+
 Invoke-PasswordResetNotification -JCAPIKEY:($JCAPIKEY) -MessageBoxStyle:($MessageBoxStyle) -MessageTitle:($MessageTitle) -MessageBody:($MessageBody) -TimeOutSec:($TimeOutSec) -AlertDaysThreshold:($AlertDaysThreshold)
 ```
 
