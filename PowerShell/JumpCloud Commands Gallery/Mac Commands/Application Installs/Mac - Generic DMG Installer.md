@@ -1,6 +1,6 @@
 #### Name
 
-Mac - Install DMG Template | v1.0 JCCG
+Mac - Generic DMG Installer | v1.0 JCCG
 
 #### commandType
 
