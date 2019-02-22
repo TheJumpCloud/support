@@ -11,21 +11,10 @@ Function Get-JCGroup2 ()
     )
     Begin
     {
-        Write-Verbose "Parameter Set: $($PSCmdlet.ParameterSetName)"
-        Write-Verbose 'Verifying JCAPI Key'
-        If ($JCAPIKEY.length -ne 40) {Connect-JCOnline}
-        Write-Verbose 'Populating API headers'
-        $hdrs = @{
-            'Content-Type' = 'application/json'
-            'Accept'       = 'application/json'
-            'X-API-KEY'    = $JCAPIKEY
-        }
-        If ($JCOrgID)
-        {
-            $hdrs.Add('x-org-id', "$($JCOrgID)")
-        }
+        Write-Verbose ('Parameter Set: ' + $PSCmdlet.ParameterSetName)
         $Url_Template_Groups = '{0}/api/v2/groups{1}'
         $SearchQuery_Template = '?filter={0}:eq:{1}'
+        $Method = 'GET'
     }
     Process
     {
@@ -35,10 +24,7 @@ Function Get-JCGroup2 ()
             'ById' {$SearchQuery = $SearchQuery_Template -f 'id', $GroupId}
             'ByName' {$SearchQuery = $SearchQuery_Template -f 'name', $GroupName}
         }
-        # Get Group endpoint.
-        $Uri_Groups = $Url_Template_Groups -f $JCUrlBasePath, $SearchQuery
-        Write-Verbose ('Connecting to: ' + $Uri_Groups)
-        $Results_Groups = Invoke-JCApiGet -Url:($Uri_Groups)
+        $Results_Groups = Invoke-JCApi -Url:($Url_Template_Groups -f $JCUrlBasePath, $SearchQuery) -Method:($Method) -Paginate
     }
     End
     {

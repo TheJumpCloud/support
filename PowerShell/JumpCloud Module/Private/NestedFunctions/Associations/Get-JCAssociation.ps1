@@ -40,28 +40,15 @@ Function Get-JCAssociation
     }
     Begin
     {
+        Write-Verbose ('Parameter Set: ' + $PSCmdlet.ParameterSetName)
         # Bind the parameter to a friendly variable
         $TargetTypeOption = $PsBoundParameters[$ParameterName]
-        #Set JC headers
-        Write-Verbose "Parameter Set: $($PSCmdlet.ParameterSetName)"
-        Write-Verbose 'Verifying JCAPI Key'
-        If ($JCAPIKEY.length -ne 40) {Connect-JCOnline}
-        Write-Verbose 'Populating API headers'
-        $hdrs = @{
-            'Content-Type' = 'application/json'
-            'Accept'       = 'application/json'
-            'X-API-KEY'    = $JCAPIKEY
-        }
-        If ($JCOrgID)
-        {
-            $hdrs.Add('x-org-id', "$($JCOrgID)")
-        }
         $URL_Template_Associations = '{0}/api/v2/{1}/{2}/associations?targets={3}'
+        $Method = 'GET'
     }
     Process
     {
-        $Uri_Associations = $URL_Template_Associations -f $JCUrlBasePath, $SourceType, $SourceId, $TargetTypeOption
-        $Results_Associations = Invoke-JCApiGet -Url:($Uri_Associations)
+        $Results_Associations = Invoke-JCApi -Url:($URL_Template_Associations -f $JCUrlBasePath, $SourceType, $SourceId, $TargetTypeOption) -Method:($Method) -Paginate
     }
     End
     {
