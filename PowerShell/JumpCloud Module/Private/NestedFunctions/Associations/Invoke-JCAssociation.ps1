@@ -45,22 +45,8 @@ Function Invoke-JCAssociation
     }
     Begin
     {
-        # Bind the parameter to a friendly variable
-        $TargetTypeOption = $PsBoundParameters[$ParameterName]
-        #Set JC headers
-        Write-Verbose "Parameter Set: $($PSCmdlet.ParameterSetName)"
-        Write-Verbose 'Verifying JCAPI Key'
-        If ($JCAPIKEY.length -ne 40) {Connect-JCOnline}
-        Write-Verbose 'Populating API headers'
-        $hdrs = @{
-            'Content-Type' = 'application/json'
-            'Accept'       = 'application/json'
-            'X-API-KEY'    = $JCAPIKEY
-        }
-        If ($JCOrgID)
-        {
-            $hdrs.Add('x-org-id', "$($JCOrgID)")
-        }
+        Write-Verbose ('Parameter Set: ' + $PSCmdlet.ParameterSetName)
+        $TargetType = $PsBoundParameters[$ParameterName]
         $URL_Template_Associations = '{0}/api/v2/{1}/{2}/associations?targets={3}'
         $Method = 'POST'
     }
@@ -81,31 +67,19 @@ Function Invoke-JCAssociation
             }
         }
         # Get Source object.
-        $SourceObject_CommandType = Get-JCCommandType -Type:($SourceType) -SearchBy:($SearchBy) -SearchByValue:($SourceSearchByValue)
-        $SourceObject_Command = $SourceObject_CommandType.Command
-        $SourceObject_ByName = $SourceObject_CommandType.ByName
-        $SourceObject_ById = $SourceObject_CommandType.ById
-        Write-Verbose ('Running command: ' + $SourceObject_Command)
-        $SourceObject = Invoke-Expression -Command:($SourceObject_Command)
-        $SourceObjectId = $SourceObject.$SourceObject_ById
-        $SourceObjectName = $SourceObject.$SourceObject_ByName
+        $SourceObject = Get-JCObject -Type:($SourceType) -SearchBy:($SearchBy) -SearchByValue:($SourceSearchByValue)
+        $SourceObjectId = $SourceObject.($SourceObject.ById)
+        $SourceObjectName = $SourceObject.($SourceObject.ByName)
         # Get Target object.
-        $TargetObject_CommandType = Get-JCCommandType -Type:($TargetTypeOption) -SearchBy:($SearchBy) -SearchByValue:($TargetSearchByValue)
-        $TargetObject_Command = $TargetObject_CommandType.Command
-        $TargetObject_ByName = $TargetObject_CommandType.ByName
-        $TargetObject_ById = $TargetObject_CommandType.ById
-        Write-Verbose ('Running command: ' + $TargetObject_Command)
-        $TargetObject = Invoke-Expression -Command:($TargetObject_Command)
-        $TargetObjectId = $TargetObject.$TargetObject_ById
-        $TargetObjectName = $TargetObject.$TargetObject_ByName
+        $TargetObject = Get-JCObject -Type:($TargetType) -SearchBy:($SearchBy) -SearchByValue:($TargetSearchByValue)
+        $TargetObjectId = $TargetObject.($TargetObject.ById)
+        $TargetObjectName = $TargetObject.($TargetObject.ByName)
         # Build body to be sent to endpoint.
-        $JsonBody = '{"op":"' + $Action + '","type":"' + $TargetTypeOption + '","id":"' + $TargetObjectId + '","attributes":null}'
+        $JsonBody = '{"op":"' + $Action + '","type":"' + $TargetType + '","id":"' + $TargetObjectId + '","attributes":null}'
         # Send body to endpoint.
-        $Uri_Associations = $URL_Template_Associations -f $JCUrlBasePath, $SourceType, $SourceObjectId, $TargetTypeOption
-        Write-Verbose ('Connecting to: ' + $Uri_Associations)
-        Write-Verbose ('Sending JsonBody: ' + $JsonBody)
-        Write-Host ("$Action association from '$SourceObjectName' to '$TargetObjectName'")
-        $Results_Associations = Invoke-RestMethod -Method:($Method) -Uri:($Uri_Associations) -Headers:($hdrs) -Body:($JsonBody)
+        $Uri_Associations = $URL_Template_Associations -f $JCUrlBasePath, $SourceType, $SourceObjectId, $TargetType
+        Write-Verbose ("$Action association from '$SourceObjectName' to '$TargetObjectName'")
+        $Results_Associations = Invoke-JCApi -Body:($JsonBody) -Method:($Method) -Url:($Uri_Associations) 
     }
     End
     {

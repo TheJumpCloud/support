@@ -11,20 +11,7 @@ Function Get-JCAssociationReport
     )
     Begin
     {
-        #Set JC headers
-        Write-Verbose "Paramter Set: $($PSCmdlet.ParameterSetName)"
-        Write-Verbose 'Verifying JCAPI Key'
-        If ($JCAPIKEY.length -ne 40) {Connect-JCOnline}
-        Write-Verbose 'Populating API headers'
-        $hdrs = @{
-            'Content-Type' = 'application/json'
-            'Accept'       = 'application/json'
-            'X-API-KEY'    = $JCAPIKEY
-        }
-        If ($JCOrgID)
-        {
-            $hdrs.Add('x-org-id', "$($JCOrgID)")
-        }
+        Write-Verbose ('Parameter Set: ' + $PSCmdlet.ParameterSetName)
     }
     Process
     {
@@ -42,14 +29,9 @@ Function Get-JCAssociationReport
         }
         $OutputObject = @()
         # Get Source object.
-        $SourceObject_CommandType = Get-JCCommandType -Type:($SourceType) -SearchBy:($SearchBy) -SearchByValue:($SourceSearchByValue)
-        $SourceObject_Command = $SourceObject_CommandType.Command
-        $SourceObject_ByName = $SourceObject_CommandType.ByName
-        $SourceObject_ById = $SourceObject_CommandType.ById
-        Write-Verbose ('Running command: ' + $SourceObject_Command)
-        $SourceObject = Invoke-Expression -Command:($SourceObject_Command)
-        $SourceObjectId = $SourceObject.$SourceObject_ById
-        $SourceObjectName = $SourceObject.$SourceObject_ByName
+        $SourceObject = Get-JCObject -Type:($SourceType) -SearchBy:($SearchBy) -SearchByValue:($SourceSearchByValue)
+        $SourceObjectId = $SourceObject.($SourceObject.ById)
+        $SourceObjectName = $SourceObject.($SourceObject.ByName)
         # Get target object ids associated with source object
         $AssociationTargets = Get-JCAssociation -SourceType:($SourceType) -SourceId:($SourceObjectId) -TargetType:($TargetType)
         ForEach ($AssociationTarget In $AssociationTargets)
@@ -61,14 +43,9 @@ Function Get-JCAssociationReport
             $TargetType = $AssociationTargetTo.type
             $SearchBy = 'ById'
             # Get Target object.
-            $TargetObject_CommandType = Get-JCCommandType -Type:($TargetType) -SearchBy:($SearchBy) -SearchByValue:($TargetSearchByValue)
-            $TargetObject_Command = $TargetObject_CommandType.Command
-            $TargetObject_ByName = $TargetObject_CommandType.ByName
-            $TargetObject_ById = $TargetObject_CommandType.ById
-            Write-Verbose ('Running command: ' + $TargetObject_Command)
-            $TargetObject = Invoke-Expression -Command:($TargetObject_Command)
-            $TargetObjectId = $TargetObject.$TargetObject_ById
-            $TargetObjectName = $TargetObject.$TargetObject_ByName
+            $TargetObject = Get-JCObject -Type:($TargetType) -SearchBy:($SearchBy) -SearchByValue:($TargetSearchByValue)
+            $TargetObjectId = $TargetObject.($TargetObject.ById)
+            $TargetObjectName = $TargetObject.($TargetObject.ByName)
             $OutputObject += [PSCustomObject]@{
                 'SourceType' = $SourceType;
                 'SourceId'   = $SourceObjectId;
