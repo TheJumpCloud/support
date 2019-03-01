@@ -2,18 +2,18 @@ Function Invoke-JCAssociation
 {
     [CmdletBinding(DefaultParameterSetName = 'Default')]
     Param(
-        [Parameter(Mandatory = $True, ValueFromPipelineByPropertyName, Position = 0)][ValidateNotNullOrEmpty()][ValidateSet('add', 'remove')][string]$Action,
-        [Parameter(Mandatory = $True, ValueFromPipelineByPropertyName, Position = 1)][ValidateNotNullOrEmpty()][string]$SourceType,
-        # DynamicParam $TargetType
-        [Parameter(Mandatory = $True, ValueFromPipelineByPropertyName, ParameterSetName = 'ById', Position = 3)][ValidateNotNullOrEmpty()][string]$SourceId,
-        [Parameter(Mandatory = $True, ValueFromPipelineByPropertyName, ParameterSetName = 'ById', Position = 4)][ValidateNotNullOrEmpty()][string]$TargetId,
-        [Parameter(Mandatory = $True, ValueFromPipelineByPropertyName, ParameterSetName = 'ByName', Position = 3)][ValidateNotNullOrEmpty()][string]$SourceName,
-        [Parameter(Mandatory = $True, ValueFromPipelineByPropertyName, ParameterSetName = 'ByName', Position = 4)][ValidateNotNullOrEmpty()][string]$TargetName
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName, Position = 0)][ValidateNotNullOrEmpty()][ValidateSet('add', 'get', 'remove')][string]$Action,
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName, Position = 1)][ValidateNotNullOrEmpty()][string]$InputObjectType,
+        # DynamicParam $TargetObjectType
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName, ParameterSetName = 'ById', Position = 3)][ValidateNotNullOrEmpty()][string]$InputObjectId,
+        [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName, ParameterSetName = 'ById', Position = 4)][ValidateNotNullOrEmpty()][string]$TargetObjectId,
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName, ParameterSetName = 'ByName', Position = 3)][ValidateNotNullOrEmpty()][string]$InputObjectName,
+        [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName, ParameterSetName = 'ByName', Position = 4)][ValidateNotNullOrEmpty()][string]$TargetObjectName
     )
     DynamicParam
     {
         # Set the dynamic parameters' name
-        $ParameterName = 'TargetType'
+        $ParameterName = 'TargetObjectType'
         # Create the collection of attributes
         $AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
         # Create the parameters attributes
@@ -29,7 +29,7 @@ Function Invoke-JCAssociation
         # Add the ValidateNotNullOrEmpty to the attributes collection
         $AttributeCollection.Add($ValidateNotNullOrEmptyAttribute)
         # Generate the ValidateSet
-        $arrSet = (Get-JCAssociationType -Source:($SourceType)).Targets
+        $arrSet = (Get-JCAssociationType -InputObject:($InputObjectType)).Targets
         # Set the ValidateSet
         $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($arrSet)
         # Add the ValidateSet to the attributes collection
@@ -45,9 +45,17 @@ Function Invoke-JCAssociation
     Begin
     {
         Write-Verbose ('Parameter Set: ' + $PSCmdlet.ParameterSetName)
-        $TargetType = $PsBoundParameters[$ParameterName]
-        $URL_Template_Associations = '{0}/api/v2/{1}/{2}/associations?targets={3}'
-        $Method = 'POST'
+        $TargetObjectType = $PsBoundParameters[$ParameterName]
+        $URL_Template_Associations = '/api/v2/{0}/{1}/associations?targets={2}'
+        If ($Action -eq 'get')
+        {
+            $Method = 'GET'
+        }
+        Else
+        {
+            $Method = 'POST'
+        }
+        $Results_Associations = @()
     }
     Process
     {
@@ -56,29 +64,71 @@ Function Invoke-JCAssociation
         {
             'ById'
             {
-                $SourceSearchByValue = $SourceId
-                $TargetSearchByValue = $TargetId
+                $InputObjectSearchByValue = $InputObjectId
+                $TargetObjectSearchByValue = $TargetObjectId
             }
             'ByName'
             {
-                $SourceSearchByValue = $SourceName
-                $TargetSearchByValue = $TargetName
+                $InputObjectSearchByValue = $InputObjectName
+                $TargetObjectSearchByValue = $TargetObjectName
             }
         }
-        # Get Source object.
-        $SourceObject = Get-JCObject -Type:($SourceType) -SearchBy:($SearchBy) -SearchByValue:($SourceSearchByValue)
-        $SourceObjectId = $SourceObject.($SourceObject.ById)
-        $SourceObjectName = $SourceObject.($SourceObject.ByName)
-        # Get Target object.
-        $TargetObject = Get-JCObject -Type:($TargetType) -SearchBy:($SearchBy) -SearchByValue:($TargetSearchByValue)
-        $TargetObjectId = $TargetObject.($TargetObject.ById)
-        $TargetObjectName = $TargetObject.($TargetObject.ByName)
-        # Build body to be sent to endpoint.
-        $JsonBody = '{"op":"' + $Action + '","type":"' + $TargetType + '","id":"' + $TargetObjectId + '","attributes":null}'
-        # Send body to endpoint.
-        $Uri_Associations = $URL_Template_Associations -f $JCUrlBasePath, $SourceType, $SourceObjectId, $TargetType
-        Write-Verbose ("$Action association from '$SourceObjectName' to '$TargetObjectName'")
-        $Results_Associations = Invoke-JCApi -Body:($JsonBody) -Method:($Method) -Url:($Uri_Associations)
+        # Get InputObject object.
+        $InputObject = Get-JCObject -Type:($InputObjectType) -SearchBy:($SearchBy) -SearchByValue:($InputObjectSearchByValue)
+        $InputObjectId = $InputObject.($InputObject.ById)
+        $InputObjectName = $InputObject.($InputObject.ByName)
+        #Build Url
+        $Uri_Associations = $URL_Template_Associations -f $InputObjectType, $InputObjectId, $TargetObjectType
+        If ($Action -eq 'get')
+        {
+            $InputObjectAssociations = Invoke-JCApi -Method:($Method) -Paginate:($true) -Url:($Uri_Associations)
+            # Get TargetObject object ids associated with InputObject
+            ForEach ($AssociationTargetObject In $InputObjectAssociations)
+            {
+                $AssociationTargetObjectAttributes = $AssociationTargetObject.attributes
+                $AssociationTargetObjectTo = $AssociationTargetObject.to
+                $AssociationTargetObjectToAttributes = $AssociationTargetObjectTo.attributes
+                $TargetObjectId = $AssociationTargetObjectTo.id
+                $TargetObjectType = $AssociationTargetObjectTo.type
+                # # Could potentially recurse to get all associations using this.
+                # # Update FunctionParameters with TargetObject values
+                # $FunctionParameters['InputObjectId'] = $TargetObjectId
+                # $FunctionParameters['InputObjectType'] = $TargetObjectType
+                # $FunctionParameters.Remove('Action') | Out-Null
+                # # Get TargetObject object
+                # Write-Verbose ('Invoke-JCAssociation ' + ($FunctionParameters.GetEnumerator() | Sort-Object Key | ForEach-Object { '-' + $_.Key + ":('" + ($_.Value -join "','") + "')"}).Replace("'True'", '$True').Replace("'False'", '$False'))
+                # $TargetObjectAssociations = Invoke-JCAssociation @FunctionParameters
+                # $TargetObject = $TargetObjectAssociations.InputObject | Select-Object -Unique
+                # $TargetObjectId = $TargetObject.($TargetObject.ById)
+                # $TargetObjectName = $TargetObject.($TargetObject.ByName)
+                $TargetObject = Get-JCObject -Type:($TargetObjectType) -SearchBy:('ById') -SearchByValue:($TargetObjectId)
+                $TargetObjectId = $TargetObject.($TargetObject.ById)
+                $TargetObjectName = $TargetObject.($TargetObject.ByName)
+                # Output InputObject and TargetObject
+                $Results_Associations += [PSCustomObject]@{
+                    'InputObjectType'  = $InputObjectType;
+                    'InputObjectId'    = $InputObjectId;
+                    'InputObjectName'  = $InputObjectName;
+                    'TargetObjectType' = $TargetObjectType;
+                    'TargetObjectId'   = $TargetObjectId;
+                    'TargetObjectName' = $TargetObjectName;
+                    'InputObject'      = $InputObject;
+                    'TargetObject'     = $TargetObject;
+                }
+            }
+        }
+        Else
+        {
+            # Get TargetObject object.
+            $TargetObject = Get-JCObject -Type:($TargetObjectType) -SearchBy:($SearchBy) -SearchByValue:($TargetObjectSearchByValue)
+            $TargetObjectId = $TargetObject.($TargetObject.ById)
+            $TargetObjectName = $TargetObject.($TargetObject.ByName)
+            # Build body to be sent to endpoint.
+            $JsonBody = '{"op":"' + $Action + '","type":"' + $TargetObjectType + '","id":"' + $TargetObjectId + '","attributes":null}'
+            # Send body to endpoint.
+            Write-Verbose ("$Action association from '$InputObjectName' to '$TargetObjectName'")
+            $Results_Associations += Invoke-JCApi -Body:($JsonBody) -Method:($Method) -Url:($Uri_Associations)
+        }
     }
     End
     {
