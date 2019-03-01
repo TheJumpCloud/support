@@ -48,7 +48,7 @@ Function Get-JCAssociation
     }
     Process
     {
-        $Results_Associations = Invoke-JCApi -Url:($URL_Template_Associations -f $JCUrlBasePath, $SourceType, $SourceId, $TargetTypeOption) -Method:($Method) -Paginate
+        $Results_Associations = Invoke-JCApi -Url:($URL_Template_Associations -f $JCUrlBasePath, $SourceType, $SourceId, $TargetTypeOption) -Method:($Method) -Paginate:($true)
     }
     End
     {
