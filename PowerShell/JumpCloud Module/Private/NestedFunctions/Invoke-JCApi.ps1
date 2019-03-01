@@ -133,7 +133,6 @@ Function Invoke-JCApi
                 }
                 If ($ResultsPopulated)
                 {
-                    Write-Verbose ('Returned ' + [string]$ResultsCount + ' results.')
                     $Skip += $ResultsCount
                     $Results_Output += $ResultObjects
                 }
@@ -143,7 +142,6 @@ Function Invoke-JCApi
                 If ($Paginate)
                 {
                     $ResultsCount = $Results.Count
-                    Write-Verbose ('No results found.')
                 }
             }
             Write-Debug ('Paginate:' + [string]$Paginate + ';ResultsCount:' + [string]$ResultsCount + ';Limit:' + [string]$Limit + ';')
@@ -157,7 +155,7 @@ Function Invoke-JCApi
         If ($Results_Output)
         {
             $Fields | ForEach-Object {
-                If ($_ -notin ($Results_Output | Get-Member).Name) 
+                If ($_ -notin ($Results_Output | Get-Member).Name)
                 {
                     Write-Warning ('API output does not contain the field "' + $_ + '". Please refer to https://docs.jumpcloud.com for API endpoint field names.')
                 }
