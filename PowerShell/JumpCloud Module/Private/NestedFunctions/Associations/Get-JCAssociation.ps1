@@ -1,4 +1,4 @@
-Function Get-JCAssociationReport
+Function Get-JCAssociation
 {
     [CmdletBinding(DefaultParameterSetName = 'Default')]
     Param(
