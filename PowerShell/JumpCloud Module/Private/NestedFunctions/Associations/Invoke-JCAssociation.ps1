@@ -79,7 +79,7 @@ Function Invoke-JCAssociation
         # Send body to endpoint.
         $Uri_Associations = $URL_Template_Associations -f $JCUrlBasePath, $SourceType, $SourceObjectId, $TargetType
         Write-Verbose ("$Action association from '$SourceObjectName' to '$TargetObjectName'")
-        $Results_Associations = Invoke-JCApi -Body:($JsonBody) -Method:($Method) -Url:($Uri_Associations) 
+        $Results_Associations = Invoke-JCApi -Body:($JsonBody) -Method:($Method) -Url:($Uri_Associations)
     }
     End
     {
