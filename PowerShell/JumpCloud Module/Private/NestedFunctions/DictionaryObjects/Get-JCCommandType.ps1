@@ -32,3 +32,22 @@ Function Get-JCCommandType
         Write-Error ('$Type of "' + $Type + '" not found. $Type must be:' + $TypeCommand.Type -join ',')
     }
 }
+# # # Example
+# # Get Source object.
+# $SourceObject_CommandType = Get-JCCommandType -Type:($SourceType) -SearchBy:($SearchBy) -SearchByValue:($SourceSearchByValue)
+# $SourceObject_Command = $SourceObject_CommandType.Command
+# $SourceObject_ByName = $SourceObject_CommandType.ByName
+# $SourceObject_ById = $SourceObject_CommandType.ById
+# Write-Verbose ('Running command: ' + $SourceObject_Command)
+# $SourceObject = Invoke-Expression -Command:($SourceObject_Command)
+# $SourceObjectId = $SourceObject.$SourceObject_ById
+# $SourceObjectName = $SourceObject.$SourceObject_ByName
+# # Get Target object.
+# $TargetObject_CommandType = Get-JCCommandType -Type:($TargetTypeOption) -SearchBy:($SearchBy) -SearchByValue:($TargetSearchByValue)
+# $TargetObject_Command = $TargetObject_CommandType.Command
+# $TargetObject_ByName = $TargetObject_CommandType.ByName
+# $TargetObject_ById = $TargetObject_CommandType.ById
+# Write-Verbose ('Running command: ' + $TargetObject_Command)
+# $TargetObject = Invoke-Expression -Command:($TargetObject_Command)
+# $TargetObjectId = $TargetObject.$TargetObject_ById
+# $TargetObjectName = $TargetObject.$TargetObject_ByName
