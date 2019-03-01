@@ -13,6 +13,7 @@ Function New-JCAssociation
     )
     Begin
     {
+        Write-Verbose ('Parameter Set: ' + $PSCmdlet.ParameterSetName)
         $Action = 'add'
     }
     Process
