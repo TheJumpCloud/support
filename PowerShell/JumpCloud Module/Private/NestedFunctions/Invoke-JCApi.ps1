@@ -1,13 +1,14 @@
 Function Invoke-JCApi
-{ 
+{
     [CmdletBinding()]
     Param(
         [Parameter(Mandatory = $true, Position = 0)][ValidateNotNullOrEmpty()][string]$Url,
         [Parameter(Mandatory = $true, Position = 1)][ValidateNotNullOrEmpty()][string]$Method,
         [Parameter(Mandatory = $false, Position = 2)][ValidateNotNullOrEmpty()][ValidateRange(1, [int]::MaxValue)][int]$Limit = 100,
-        [Parameter(Mandatory = $false, Position = 3)][ValidateNotNullOrEmpty()][array]$Fields = '',
-        [Parameter(Mandatory = $false, Position = 4)][ValidateNotNullOrEmpty()][string]$Body = '',
-        [Parameter(Mandatory = $false, Position = 5)][ValidateNotNullOrEmpty()][switch]$Paginate
+        [Parameter(Mandatory = $false, Position = 3)][ValidateNotNullOrEmpty()][ValidateRange(0, [int]::MaxValue)][int]$Skip = 0,
+        [Parameter(Mandatory = $false, Position = 4)][ValidateNotNull()][array]$Fields = @(),
+        [Parameter(Mandatory = $false, Position = 5)][ValidateNotNull()][string]$Body = '',
+        [Parameter(Mandatory = $false, Position = 6)][ValidateNotNullOrEmpty()][bool]$Paginate = $false
     )
     Begin
     {
@@ -15,20 +16,18 @@ Function Invoke-JCApi
         Write-Verbose 'Verifying JCAPI Key'
         If ($JCAPIKEY.length -ne 40) {Connect-JCOnline}
         Write-Verbose 'Populating API headers'
-        $hdrs = @{
+        $Headers = @{
             'Content-Type' = 'application/json'
             'Accept'       = 'application/json'
             'X-API-KEY'    = $JCAPIKEY
         }
         If ($JCOrgID)
         {
-            $hdrs.Add('x-org-id', "$($JCOrgID)")
+            $Headers.Add('x-org-id', "$($JCOrgID)")
         }
     }
     Process
     {
-        $Skip = 0
-        $UriQueryString_Template = '{0}{1}limit={2}&skip={3}&fields={4}'
         $Results_Output = @()
         If ($Url -notlike ('*' + $JCUrlBasePath + '*'))
         {
@@ -42,42 +41,78 @@ Function Invoke-JCApi
         {
             $SearchOperator = '?'
         }
-        $JoinedFields = ($Fields -join ' ')
+
+        # Convert passed in body to json
+        If ($Body)
+        {
+            $ObjectBody = $Body | ConvertFrom-Json
+        }
+        Else
+        {
+            $ObjectBody = ''
+        }
+        # Pagination
         Do
         {
-            # Build body to include skip and limit by default plus what ever else is passed in.
-            If ($Body)
+            $QueryStrings = @()
+            # Add fields
+            If ($Fields)
             {
-                $ObjectBody = $Body | ConvertFrom-Json
+                $JoinedFields = ($Fields -join ' ')
+                If ($ObjectBody.PSObject.Properties.name -eq 'fields')
+                {
+                    $JoinedFields = $ObjectBody.fields
+                }
+                Else
+                {
+                    $ObjectBody = $ObjectBody | Select-Object *, @{Name = 'fields'; Expression = {$JoinedFields}}
+                }
+                If ($Url -notlike '*fields*') {$QueryStrings += 'fields=' + $JoinedFields}
+            }
+            # Add limit
+            If ($ObjectBody.PSObject.Properties.name -eq 'limit')
+            {
+                $ObjectBody.limit = $Limit
             }
             Else
             {
-                $ObjectBody = ''
+                $ObjectBody = $ObjectBody | Select-Object *, @{Name = 'limit'; Expression = {$Limit}}
             }
+            If ($Url -notlike '*limit*') {$QueryStrings += 'limit=' + $Limit}
+            # Add skip
             If ($ObjectBody.PSObject.Properties.name -eq 'skip')
             {
                 $ObjectBody.skip = $Skip
             }
             Else
             {
-                $ObjectBody = $ObjectBody | Select-Object @{Name = 'skip'; Expression = {$Skip}}, *
+                $ObjectBody = $ObjectBody | Select-Object *, @{Name = 'skip'; Expression = {$Skip}}
             }
-            If (!($ObjectBody.PSObject.Properties.name -eq 'limit'))
-            {
-                $ObjectBody = $ObjectBody | Select-Object @{Name = 'limit'; Expression = {$Limit}}, *
-            }
-            If (!($ObjectBody.PSObject.Properties.name -eq 'fields'))
-            {
-                $ObjectBody = $ObjectBody | Select-Object @{Name = 'fields'; Expression = {$JoinedFields}}, *
-            }
+            If ($Url -notlike '*skip*') {$QueryStrings += 'skip=' + $Skip}
+            # Build url query string and body
             $ObjectBody = $ObjectBody | Select-Object -Property * -ExcludeProperty Length
-            $Body = $ObjectBody | ConvertTo-Json -Depth:(10) -Compress
-
-            # Build url and query string
-            $Uri = $UriQueryString_Template -f $Url, $SearchOperator, $Limit, $Skip, $JoinedFields
+            $Body = $ObjectBody | ConvertTo-Json -Depth:(10) -Compress | Sort-Object
+            If ($QueryStrings)
+            {
+                $Uri = $Url + $SearchOperator + (($QueryStrings | Sort-Object) -join '&')
+            }
+            Else
+            {
+                $Uri = $Url
+            }
+            # Run request
+            [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
             Write-Verbose ('Connecting to: ' + $Uri)
-            Write-Verbose ('Sending body: ' + $Body)
-            $Results = Invoke-RestMethod -Method:($Method) -Headers:($hdrs) -Uri:($Uri) -Body:($Body)
+            # PowerShell 5 won't let you send a GET with a body.
+            If ($Method -eq 'GET')
+            {
+                $Results = Invoke-RestMethod -Method:($Method) -Headers:($Headers) -Uri:($Uri) -UserAgent:($JCUserAgent)
+            }
+            Else
+            {
+                Write-Verbose ($Method + ' body: ' + $Body)
+                $Results = Invoke-RestMethod -Method:($Method) -Headers:($Headers) -Uri:($Uri) -UserAgent:($JCUserAgent) -Body:($Body)
+            }
             If ($Results)
             {
                 $ResultsPopulated = $false
@@ -105,18 +140,29 @@ Function Invoke-JCApi
             }
             Else
             {
-                Write-Verbose ('No results found.')
+                If ($Paginate)
+                {
+                    $ResultsCount = $Results.Count
+                    Write-Verbose ('No results found.')
+                }
             }
-            # If ($Results) {Write-Host "Results are true" -BackgroundColor Cyan } Else {Write-Host "Results are false" -BackgroundColor red}
-            # If ($ResultsCount -ge 1) {Write-Host ("Result count is greater than or equal to 1. Current count:" + [string]$ResultsCount ) -BackgroundColor Cyan} Else {Write-Host ("Result count is less than 1. Current count:" + [string]$ResultsCount ) -BackgroundColor red}
+            Write-Debug ('Paginate:' + [string]$Paginate + ';ResultsCount:' + [string]$ResultsCount + ';Limit:' + [string]$Limit + ';')
         }
         While ($Paginate -and $ResultsCount -eq $Limit)
+        Write-Verbose ('Returned ' + [string]$Results_Output.Count + ' total results.')
     }
     End
     {
+        # Validate that all fields passed into the function exist in the output
         If ($Results_Output)
         {
-            Return $Results_Output
+            $Fields | ForEach-Object {
+                If ($_ -notin ($Results_Output | Get-Member).Name) 
+                {
+                    Write-Warning ('API output does not contain the field "' + $_ + '". Please refer to https://docs.jumpcloud.com for API endpoint field names.')
+                }
+            }
         }
+        Return $Results_Output
     }
 }
