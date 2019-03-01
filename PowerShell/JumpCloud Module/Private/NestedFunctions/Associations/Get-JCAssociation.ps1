@@ -1,10 +1,10 @@
-Function Get-JCAssociation
+Function Get-JCAssociationReport
 {
     [CmdletBinding(DefaultParameterSetName = 'Default')]
     Param(
-        # Any other parameters can go here
         [Parameter(Mandatory = $True, ValueFromPipelineByPropertyName, Position = 0)][ValidateNotNullOrEmpty()]$SourceType,
-        [Parameter(Mandatory = $True, ValueFromPipelineByPropertyName, Position = 1)][ValidateNotNullOrEmpty()]$SourceId
+        [Parameter(Mandatory = $True, ValueFromPipelineByPropertyName, ParameterSetName = 'ById', Position = 1)][ValidateNotNullOrEmpty()][string]$SourceId,
+        [Parameter(Mandatory = $True, ValueFromPipelineByPropertyName, ParameterSetName = 'ByName', Position = 1)][ValidateNotNullOrEmpty()][string]$SourceName
     )
     DynamicParam
     {
@@ -42,16 +42,58 @@ Function Get-JCAssociation
     {
         Write-Verbose ('Parameter Set: ' + $PSCmdlet.ParameterSetName)
         # Bind the parameter to a friendly variable
-        $TargetTypeOption = $PsBoundParameters[$ParameterName]
-        $URL_Template_Associations = '{0}/api/v2/{1}/{2}/associations?targets={3}'
+        $TargetType = $PsBoundParameters[$ParameterName]
+        $URL_Template_Associations = '/api/v2/{0}/{1}/associations?targets={2}'
         $Method = 'GET'
     }
     Process
     {
-        $Results_Associations = Invoke-JCApi -Url:($URL_Template_Associations -f $JCUrlBasePath, $SourceType, $SourceId, $TargetTypeOption) -Method:($Method) -Paginate:($true)
+        $SearchBy = $PSCmdlet.ParameterSetName
+        Switch ($SearchBy)
+        {
+            'ById'
+            {
+                $SourceSearchByValue = $SourceId
+            }
+            'ByName'
+            {
+                $SourceSearchByValue = $SourceName
+            }
+        }
+        $OutputObject = @()
+        # Get Source object
+        $SourceObject = Get-JCObject -Type:($SourceType) -SearchBy:($SearchBy) -SearchByValue:($SourceSearchByValue)
+        $SourceObjectId = $SourceObject.($SourceObject.ById)
+        $SourceObjectName = $SourceObject.($SourceObject.ByName)
+        # Get target object ids associated with source object
+        $AssociationTargets = Invoke-JCApi -Url:($URL_Template_Associations -f $SourceType, $SourceObjectId, $TargetType) -Method:($Method) -Paginate:($true)
+        ForEach ($AssociationTarget In $AssociationTargets)
+        {
+            $AssociationTargetAttributes = $AssociationTarget.attributes
+            $AssociationTargetTo = $AssociationTarget.to
+            $AssociationTargetToAttributes = $AssociationTargetTo.attributes
+            $TargetSearchByValue = $AssociationTargetTo.id
+            $TargetType = $AssociationTargetTo.type
+            $SearchBy = 'ById'
+            # Get Target object
+            $TargetObject = Get-JCObject -Type:($TargetType) -SearchBy:($SearchBy) -SearchByValue:($TargetSearchByValue)
+            $TargetObjectId = $TargetObject.($TargetObject.ById)
+            $TargetObjectName = $TargetObject.($TargetObject.ByName)
+            # Output SourceObject and TargetObject
+            $OutputObject += [PSCustomObject]@{
+                'SourceType'   = $SourceType;
+                'SourceId'     = $SourceObjectId;
+                'SourceName'   = $SourceObjectName;
+                'TargetType'   = $TargetType;
+                'TargetId'     = $TargetObjectId;
+                'TargetName'   = $TargetObjectName;
+                'SourceObject' = $SourceObject;
+                'TargetObject' = $TargetObject;
+            }
+        }
     }
     End
     {
-        Return $Results_Associations
+        Return $OutputObject
     }
 }
