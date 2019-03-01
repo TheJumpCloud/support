@@ -1,4 +1,4 @@
-Function Get-Hash()
+Function Get-JCHash()
 {
     [CmdletBinding(DefaultParameterSetName = 'Default')]
     Param(
