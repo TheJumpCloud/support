@@ -1,6 +1,5 @@
 Function Get-JCGroup2 ()
 {
-    # This endpoint allows you to get a list of all RADIUS servers in your organization.
     [CmdletBinding(DefaultParameterSetName = 'ReturnAll')]
     param
     (
@@ -24,7 +23,7 @@ Function Get-JCGroup2 ()
             'ById' {$SearchQuery = $SearchQuery_Template -f 'id', $GroupId}
             'ByName' {$SearchQuery = $SearchQuery_Template -f 'name', $GroupName}
         }
-        $Results_Groups = Invoke-JCApi -Url:($Url_Template_Groups -f $JCUrlBasePath, $SearchQuery) -Method:($Method) -Paginate
+        $Results_Groups = Invoke-JCApi -Url:($Url_Template_Groups -f $JCUrlBasePath, $SearchQuery) -Method:($Method) -Paginate:($true)
     }
     End
     {
