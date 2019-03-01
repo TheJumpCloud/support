@@ -16,18 +16,16 @@ Function Remove-JCAssociation
     }
     Process
     {
-        $SearchBy = $PSCmdlet.ParameterSetName
-        Switch ($SearchBy)
-        {
-            'ById'
-            {
-                $Results_Associations = Invoke-JCAssociation -Action:($Action) -ById -SourceType:($SourceType) -SourceId:($SourceId) -TargetType:($TargetType) -TargetId:($TargetId)
-            }
-            'ByName'
-            {
-                $Results_Associations = Invoke-JCAssociation -Action:($Action) -ByName -SourceType:($SourceType) -SourceName:($SourceName) -TargetType:($TargetType) -TargetName:($TargetName)
-            }
+        $FunctionParameters = [ordered]@{}
+        # Get function parameters and filter out unnecessary parameters
+        $PSBoundParameters.GetEnumerator() | ForEach-Object {
+            $FunctionParameters.Add($_.Key, $_.Value) | Out-Null
         }
+        # Add parameters from the script to the FunctionParameters hashtable
+        $FunctionParameters.Add('Action', $Action) | Out-Null
+        # Run command
+        Write-Verbose ('Invoke-JCAssociation ' + ($FunctionParameters.GetEnumerator() | Sort-Object Key | ForEach-Object { '-' + $_.Key + ":('" + ($_.Value -join "','") + "')"}).Replace("'True'", '$True').Replace("'False'", '$False'))
+        $Results_Associations = Invoke-JCAssociation @FunctionParameters
     }
     End
     {
