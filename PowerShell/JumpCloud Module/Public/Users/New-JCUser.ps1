@@ -63,8 +63,9 @@ Function New-JCUser ()
         [bool]
         $ldap_binding_user,
 
-        [Parameter(ValueFromPipelineByPropertyName = $True)]
-        [bool]
+        [Parameter()]
+        [String]
+        [ValidateSet('True', 'False', '$True', '$False')]
         $enable_user_portal_multifactor,
 
         [Parameter(ParameterSetName = 'Attributes')]
@@ -197,19 +198,16 @@ Function New-JCUser ()
         $dict = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
 
 
-        If ($enable_user_portal_multifactor -eq $True)
+        If ($enable_user_portal_multifactor)
         {
             # Set the dynamic parameters' name
-            $ParamName = 'EnrollmentDays'
+            $ParamName = 'enrollmentDays'
             # Create the collection of attributes
             $AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
             # Create and set the parameters' attributes
             $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
             $ParameterAttribute.Mandatory = $false
-            # Generate and set the ValidateSet
-            $ValidateRangeAttribute = New-Object System.Management.Automation.ValidateRangeAttribute('1', '365')    
-            # Add the ValidateSet to the attributes collection
-            $AttributeCollection.Add($ValidateRangeAttribute)
+            $ParameterAttribute.ValueFromPipelineByPropertyName = $true
             # Add the attributes to the attributes collection
             $AttributeCollection.Add($ParameterAttribute) 
             # Create and return the dynamic parameter
@@ -279,6 +277,18 @@ Function New-JCUser ()
 
     process
     {
+        if ($enable_user_portal_multifactor)
+        {
+            switch ($enable_user_portal_multifactor)
+            {
+                'True' { [bool]$enable_user_portal_multifactor = $true}
+                '$True' { [bool]$enable_user_portal_multifactor = $true}
+                'False' { [bool]$enable_user_portal_multifactor = $false}
+                '$False' { [bool]$enable_user_portal_multifactor = $false}
+            }
+        }
+        
+        
         $body = @{}
 
         $WorkAddressParams = @{}
@@ -350,6 +360,21 @@ Function New-JCUser ()
                 continue
             }
 
+            if ($param.Key -eq 'enable_user_portal_multifactor')
+            {
+
+                switch ($param.Value)
+                {
+                    'True' { [bool]$enable_user_portal_multifactor = $true}
+                    '$True' { [bool]$enable_user_portal_multifactor = $true}
+                    'False' { [bool]$enable_user_portal_multifactor = $false}
+                    '$False' { [bool]$enable_user_portal_multifactor = $false}
+                }
+
+                $body.add($param.Key, $enable_user_portal_multifactor)
+                continue
+            }
+
             $body.add($param.Key, $param.Value)
 
         }
@@ -405,8 +430,6 @@ Function New-JCUser ()
     }
     end
     {
-
         return $NewUserArray
     }
-
 }
