@@ -10,38 +10,27 @@ Function New-JCRadiusServer ()
     )
     Begin
     {
-        Write-Verbose "Parameter Set: $($PSCmdlet.ParameterSetName)"
-        Write-Verbose 'Verifying JCAPI Key'
-        If ($JCAPIKEY.length -ne 40) {Connect-JCOnline}
-        Write-Verbose 'Populating API headers'
-        $hdrs = @{
-            'Content-Type' = 'application/json'
-            'Accept'       = 'application/json'
-            'X-API-KEY'    = $JCAPIKEY
-        }
-        If ($JCOrgID)
-        {
-            $hdrs.Add('x-org-id', "$($JCOrgID)")
-        }
         $Method = 'POST'
-        $Url_Template_RadiusServers = '{0}/api/radiusservers'
-        $Uri_RadiusServers = $Url_Template_RadiusServers -f $JCUrlBasePath
+        $Uri_RadiusServers = '/api/radiusservers'
     }
     Process
     {
         # Build body to be sent to RadiusServers endpoint.
-        $BodyObject = New-Object -TypeName PSObject
-        If ($RadiusServerName) {$BodyObject | Add-Member -MemberType:('NoteProperty') -Name:('name') -Value:($RadiusServerName)}
-        If ($networkSourceIp) {$BodyObject | Add-Member -MemberType:('NoteProperty') -Name:('networkSourceIp') -Value:($networkSourceIp)}
-        If ($sharedSecret) {$BodyObject | Add-Member -MemberType:('NoteProperty') -Name:('sharedSecret') -Value:($sharedSecret)}
+        $FunctionParameters = [ordered]@{}
+        # Get function parameters
+        $PSBoundParameters.GetEnumerator() | ForEach-Object {$FunctionParameters.Add($_.Key, $_.Value) | Out-Null}
+        # Remove PowerShell CommonParameters
+        @($FunctionParameters.Keys)| ForEach-Object {If ($_ -in @([System.Management.Automation.PSCmdlet]::CommonParameters)) {$FunctionParameters.Remove($_) | Out-Null}};
         # Convert body to json.
-        $JsonBody = $BodyObject | ConvertTo-Json -Depth 10
-        # Send body to RadiusServers endpoint.
-        Write-Verbose ('Connecting to: ' + $Uri_RadiusServers)
-        $Results_RadiusServers = Invoke-RestMethod -Method:($Method) -Uri:($Uri_RadiusServers) -Header:($hdrs) -Body:($JsonBody)
+        $JsonBody = $FunctionParameters | ConvertTo-Json -Depth 10 -Compress
+        # Run command
+        Write-Verbose ("Invoke-JCApi -Method:('$Method') -Url:('$Uri_RadiusServers') -Body:('$JsonBody')")
+        $Results = Invoke-JCApi -Method:($Method) -Url:($Uri_RadiusServers) -Body:($JsonBody)
     }
     End
     {
-        Return $Results_RadiusServers
+        Return $Results
     }
 }
+
+# New-JCRadiusServer -RadiusServerName:('SomeName') -networkSourceIp:('SomeIp') -sharedSecret:('SomeSecret') -Verbose
