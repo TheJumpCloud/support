@@ -24,69 +24,70 @@ Function Set-JCUser ()
         [Alias('_id', 'id')]
         [string]$UserID,
 
-        [Parameter()]
+        [Parameter(ValueFromPipelineByPropertyName = $true)]
         [string]
         $email,
 
-        [Parameter()]
+        [Parameter(ValueFromPipelineByPropertyName = $true)]
         [string]
         $firstname,
 
-        [Parameter()]
+        [Parameter(ValueFromPipelineByPropertyName = $true)]
         [string]
         $lastname,
 
-        [Parameter()]
+        [Parameter(ValueFromPipelineByPropertyName = $true)]
         [string]
         $password,
 
-        [Parameter()]
+        [Parameter(ValueFromPipelineByPropertyName = $true)]
         [bool]
         $password_never_expires,
 
-        [Parameter()]
+        [Parameter(ValueFromPipelineByPropertyName = $true)]
         [bool]
         $allow_public_key,
 
-        [Parameter()]
+        [Parameter(ValueFromPipelineByPropertyName = $true)]
         [bool]
         $sudo,
 
-        [Parameter()]
+        [Parameter(ValueFromPipelineByPropertyName = $true)]
         [bool]
         $enable_managed_uid,
 
-        [Parameter()]
+        [Parameter(ValueFromPipelineByPropertyName = $true)]
         [int]
         [ValidateRange(0, 4294967295)]
         $unix_uid,
 
-        [Parameter()]
+        [Parameter(ValueFromPipelineByPropertyName = $true)]
         [int]
         [ValidateRange(0, 4294967295)]
         $unix_guid,
 
-        [Parameter()]
+        [Parameter(ValueFromPipelineByPropertyName = $true)]
         [bool]
         $account_locked,
 
-        [Parameter()]
+        [Parameter(ValueFromPipelineByPropertyName = $true)]
         [bool]
         $passwordless_sudo,
 
-        [Parameter()]
+        [Parameter(ValueFromPipelineByPropertyName = $true)]
         [bool]
         $externally_managed,
 
-        [Parameter()]
+        [Parameter(ValueFromPipelineByPropertyName = $true)]
         [bool]
         $ldap_binding_user,
 
-        [Parameter()]
-        [bool]
+        [Parameter(ValueFromPipelineByPropertyName = $true)]
+        [String]
+        [ValidateSet('True', 'False', '$True', '$False')]
         $enable_user_portal_multifactor,
 
-        [Parameter()]
+        [Parameter(ValueFromPipelineByPropertyName = $true)]
         [int]
         $NumberOfCustomAttributes,
 
@@ -221,21 +222,17 @@ Function Set-JCUser ()
     {
         $dict = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
 
-        If ($enable_user_portal_multifactor -eq $True)
+        If ($enable_user_portal_multifactor)
         {
             # Set the dynamic parameters' name
-            $ParamName = 'EnrollmentDays'
+            $ParamName = 'enrollmentDays'
             # Create the collection of attributes
             $AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
             # Create and set the parameters' attributes
             $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
             $ParameterAttribute.Mandatory = $false
-            # Generate and set the ValidateSet
-            $ValidateRangeAttribute = New-Object System.Management.Automation.ValidateRangeAttribute('1', '365')    
-            # Add the ValidateSet to the attributes collection
-            $AttributeCollection.Add($ValidateRangeAttribute)
-            # Add the attributes to the attributes collection
-            $AttributeCollection.Add($ParameterAttribute) 
+            $ParameterAttribute.ValueFromPipelineByPropertyName = $true
+            $AttributeCollection.Add($ParameterAttribute)
             # Create and return the dynamic parameter
             $RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter($ParamName, [Int32], $AttributeCollection)
             $dict.Add($ParamName, $RuntimeParameter)
@@ -338,6 +335,17 @@ Function Set-JCUser ()
 
     process
     {
+        if ($enable_user_portal_multifactor)
+        {
+            switch ($enable_user_portal_multifactor)
+            {
+                'True' { [bool]$enable_user_portal_multifactor = $true}
+                '$True' { [bool]$enable_user_portal_multifactor = $true}
+                'False' { [bool]$enable_user_portal_multifactor = $false}
+                '$False' { [bool]$enable_user_portal_multifactor = $false}
+            }
+        }
+
         $body = @{}
 
         if ($PSCmdlet.ParameterSetName -ne 'ByID')
@@ -529,6 +537,21 @@ Function Set-JCUser ()
 
                     if ($param.Key -like 'home_*') {continue}
 
+                    if ($param.Key -eq 'enable_user_portal_multifactor')
+                    {
+
+                        switch ($param.Value)
+                        {
+                            'True' { [bool]$enable_user_portal_multifactor = $true}
+                            '$True' { [bool]$enable_user_portal_multifactor = $true}
+                            'False' { [bool]$enable_user_portal_multifactor = $false}
+                            '$False' { [bool]$enable_user_portal_multifactor = $false}
+                        }
+
+                        $body.add($param.Key, $enable_user_portal_multifactor)
+                        continue
+                    }
+
                     $body.add($param.Key, $param.Value)
 
                 }
@@ -593,6 +616,21 @@ Function Set-JCUser ()
                     if ($param.Key -like 'work_*') {continue}
 
                     if ($param.Key -like 'home_*') {continue}
+
+                    if ($param.Key -eq 'enable_user_portal_multifactor')
+                    {
+
+                        switch ($param.Value)
+                        {
+                            'True' { [bool]$enable_user_portal_multifactor = $true}
+                            '$True' { [bool]$enable_user_portal_multifactor = $true}
+                            'False' { [bool]$enable_user_portal_multifactor = $false}
+                            '$False' { [bool]$enable_user_portal_multifactor = $false}
+                        }
+
+                        $body.add($param.Key, $enable_user_portal_multifactor)
+                        continue
+                    }
 
                     if ($param.Key -like 'Attribute*')
                     {
@@ -735,6 +773,21 @@ Function Set-JCUser ()
 
                     if ($param.Key -like 'home_*') {continue}
 
+                    if ($param.Key -eq 'enable_user_portal_multifactor')
+                    {
+
+                        switch ($param.Value)
+                        {
+                            'True' { [bool]$enable_user_portal_multifactor = $true}
+                            '$True' { [bool]$enable_user_portal_multifactor = $true}
+                            'False' { [bool]$enable_user_portal_multifactor = $false}
+                            '$False' { [bool]$enable_user_portal_multifactor = $false}
+                        }
+
+                        $body.add($param.Key, $enable_user_portal_multifactor)
+                        continue
+                    }
+
                     $body.add($param.Key, $param.Value)
 
                 }
@@ -828,6 +881,21 @@ Function Set-JCUser ()
 
                 if ($param.key -eq 'ByID') { continue }
 
+                if ($param.Key -eq 'enable_user_portal_multifactor')
+                {
+
+                    switch ($param.Value)
+                    {
+                        'True' { [bool]$enable_user_portal_multifactor = $true}
+                        '$True' { [bool]$enable_user_portal_multifactor = $true}
+                        'False' { [bool]$enable_user_portal_multifactor = $false}
+                        '$False' { [bool]$enable_user_portal_multifactor = $false}
+                    }
+
+                    $body.add($param.Key, $enable_user_portal_multifactor)
+                    continue
+                }
+
                 $body.add($param.Key, $param.Value)
 
             }
@@ -888,6 +956,21 @@ Function Set-JCUser ()
                 if ($param.Key -like 'work_*') {continue}
 
                 if ($param.Key -like 'home_*') {continue}
+
+                if ($param.Key -eq 'enable_user_portal_multifactor')
+                {
+
+                    switch ($param.Value)
+                    {
+                        'True' { [bool]$enable_user_portal_multifactor = $true}
+                        '$True' { [bool]$enable_user_portal_multifactor = $true}
+                        'False' { [bool]$enable_user_portal_multifactor = $false}
+                        '$False' { [bool]$enable_user_portal_multifactor = $false}
+                    }
+
+                    $body.add($param.Key, $enable_user_portal_multifactor)
+                    continue
+                }
 
                 if ($param.Key -like 'Attribute*')
                 {
