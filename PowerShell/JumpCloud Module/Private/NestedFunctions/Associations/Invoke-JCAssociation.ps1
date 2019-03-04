@@ -84,11 +84,14 @@ Function Invoke-JCAssociation
             $InputObjectAssociations = Invoke-JCApi -Method:($Method) -Paginate:($true) -Url:($Uri_Associations)
             ##################################################
             ##################################################
+            # Get the input objects associations type
             $InputObjectAssociationsTypes = $InputObjectAssociations.to.type | Select-Object -Unique
             ForEach ($InputObjectAssociationsType In $InputObjectAssociationsTypes)
             {
-                $InputObjectAssociationsByType = $InputObjectAssociations | Where-Object {$_.to.Type -eq $InputObjectAssociationsType}
-                $TargetObjects = Get-JCObject -Type:($InputObjectAssociationsType) | Where-Object {$_.($_.ById) -in ($InputObjectAssociationsByType.to.id)}
+                # Get the input objects associations id's that match the specific type
+                $InputObjectAssociationsByType = ($InputObjectAssociations | Where-Object {$_.to.Type -eq $InputObjectAssociationsType}).to.id
+                # Get all target objects of that specific type and then filter them by id
+                $TargetObjects = Get-JCObject -Type:($InputObjectAssociationsType) | Where-Object {$_.($_.ById) -in $InputObjectAssociationsByType}
                 ForEach ($TargetObject In $TargetObjects)
                 {
                     $TargetObjectId = $TargetObject.($TargetObject.ById)
