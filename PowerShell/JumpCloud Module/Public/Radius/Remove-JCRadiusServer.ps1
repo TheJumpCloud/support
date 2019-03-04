@@ -1,57 +1,35 @@
 Function Remove-JCRadiusServer ()
 {
     # This endpoint allows you to update RADIUS servers in your organization.
-    [CmdletBinding(DefaultParameterSetName = 'ByName')]
+    [CmdletBinding(DefaultParameterSetName = 'ById')]
     param
     (
-        [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName, ParameterSetName = 'ById', Position = 0)][switch]$ById,
-        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName, ParameterSetName = 'ById', Position = 1)][ValidateNotNullOrEmpty()][Alias('_id', 'id')][string]$RadiusServerId,
-        [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName, ParameterSetName = 'ByName', Position = 0)][switch]$ByName,
-        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName, ParameterSetName = 'ByName', Position = 1)][ValidateNotNullOrEmpty()][Alias('Name')][string]$RadiusServerName,
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, ParameterSetName = 'ById', Position = 1)][ValidateNotNullOrEmpty()][Alias('_id', 'id')][string]$RadiusServerId,
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, ParameterSetName = 'ByName', Position = 1)][ValidateNotNullOrEmpty()][Alias('Name')][string]$RadiusServerName,
         [Parameter(ParameterSetName = 'force')][Switch]$force
     )
     Begin
     {
-        Write-Verbose "Parameter Set: $($PSCmdlet.ParameterSetName)"
-        Write-Verbose 'Verifying JCAPI Key'
-        If ($JCAPIKEY.length -ne 40) {Connect-JCOnline}
-        Write-Verbose 'Populating API headers'
-        $hdrs = @{
-            'Content-Type' = 'application/json'
-            'Accept'       = 'application/json'
-            'X-API-KEY'    = $JCAPIKEY
-        }
-        If ($JCOrgID)
-        {
-            $hdrs.Add('x-org-id', "$($JCOrgID)")
-        }
         $Method = 'DELETE'
         $Url_Template_RadiusServers = '{0}/api/radiusservers'
     }
     Process
     {
-        Switch ($PSCmdlet.ParameterSetName)
-        {
-            'ById'
-            {
-                $Uri_RadiusServers = $Url_Template_RadiusServers -f $JCUrlBasePath
-                $JCRadiusServers = Get-JCRadiusServer -ById -RadiusServerId:($RadiusServerId)
-            }
-            'ByName'
-            {
-                $Uri_RadiusServers = $Url_Template_RadiusServers -f $JCUrlBasePath
-                $JCRadiusServers = Get-JCRadiusServer -ByName -RadiusServerName:($RadiusServerName)
-            }
-        }
+        $FunctionParameters = [ordered]@{}
+        # Get function parameters
+        $PSBoundParameters.GetEnumerator() | ForEach-Object {$FunctionParameters.Add($_.Key, $_.Value) | Out-Null}
+        # Remove PowerShell CommonParameters
+        @($FunctionParameters.Keys)| ForEach-Object {If ($_ -in @([System.Management.Automation.PSCmdlet]::CommonParameters)) {$FunctionParameters.Remove($_) | Out-Null}};
+        # Run command
+        Write-Verbose ('Invoke-JCApi ' + ($FunctionParameters.GetEnumerator() | Sort-Object Key | ForEach-Object { '-' + $_.Key + ":('" + ($_.Value -join "','") + "')"}).Replace("'True'", '$True').Replace("'False'", '$False'))
+        $JCRadiusServers = Get-JCRadiusServer @FunctionParameters
         If ($JCRadiusServers)
         {
             # Build body to be sent to RadiusServers endpoint.
             $JsonBody = '{"isSelectAll":false,"models":[{"_id":"' + $JCRadiusServers._id + '"}]}'
             # Send body to RadiusServers endpoint.
-            Write-Verbose ('Connecting to: ' + $Uri_RadiusServers)
-            Write-Verbose ('Sending JsonBody: ' + $JsonBody)
-            If ($force) {Write-Warning "Are you sure you wish to delete object: $result ?" -WarningAction Inquire}
-            $Results_RadiusServers = Invoke-RestMethod -Method:($Method) -Uri:($Uri_RadiusServers) -Header:($hdrs) -Body:($JsonBody)
+            If ($force) {Write-Warning "Are you sure you wish to delete object: $result ?" -WarningAction:('Inquire')}
+            $Results_RadiusServers = Invoke-JCApi -Method:($Method) -Url:($Uri_RadiusServers) -Body:($JsonBody)
         }
         Else
         {
@@ -63,3 +41,7 @@ Function Remove-JCRadiusServer ()
         Return $Results_RadiusServers
     }
 }
+# Get-JCRadiusServer
+Remove-JCRadiusServer -RadiusServerName:('Test Me 2') -Verbose
+
+# New-JCRadiusServer -networkSourceIp:('233.233.233.233') -sharedSecret:('HqySCjDJU!7YsQTG2cTHNRV9pF6lSc5') -name:('Test Me 2')
