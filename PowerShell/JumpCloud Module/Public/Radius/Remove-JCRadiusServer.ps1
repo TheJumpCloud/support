@@ -11,7 +11,7 @@ Function Remove-JCRadiusServer ()
     Begin
     {
         $Method = 'DELETE'
-        $Url_Template_RadiusServers = '{0}/api/radiusservers'
+        $Uri_RadiusServers = '/api/radiusservers'
     }
     Process
     {
@@ -42,6 +42,6 @@ Function Remove-JCRadiusServer ()
     }
 }
 # Get-JCRadiusServer
-Remove-JCRadiusServer -RadiusServerName:('Test Me 2') -Verbose
-
-# New-JCRadiusServer -networkSourceIp:('233.233.233.233') -sharedSecret:('HqySCjDJU!7YsQTG2cTHNRV9pF6lSc5') -name:('Test Me 2')
+# Remove-JCRadiusServer -RadiusServerName:('Test Me 2') -Verbose
+# Remove-JCRadiusServer -RadiusServerId:('5c7db960de58b81706a68edd')
+# New-JCRadiusServer -networkSourceIp:('233.233.233.233') -sharedSecret:('HqySCjDJU!7YsQTG2cTHNRV9pF6lSc5') -name:('Test Me 2') -Verbose
