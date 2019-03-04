@@ -82,40 +82,66 @@ Function Invoke-JCAssociation
         If ($Action -eq 'get')
         {
             $InputObjectAssociations = Invoke-JCApi -Method:($Method) -Paginate:($true) -Url:($Uri_Associations)
-            # Get TargetObject object ids associated with InputObject
-            ForEach ($AssociationTargetObject In $InputObjectAssociations)
+            ##################################################
+            ##################################################
+            $InputObjectAssociationsTypes = $InputObjectAssociations.to.type | Select-Object -Unique
+            ForEach ($InputObjectAssociationsType In $InputObjectAssociationsTypes)
             {
-                $AssociationTargetObjectAttributes = $AssociationTargetObject.attributes
-                $AssociationTargetObjectTo = $AssociationTargetObject.to
-                $AssociationTargetObjectToAttributes = $AssociationTargetObjectTo.attributes
-                $TargetObjectId = $AssociationTargetObjectTo.id
-                $TargetObjectType = $AssociationTargetObjectTo.type
-                # # Could potentially recurse to get all associations using this.
-                # # Update FunctionParameters with TargetObject values
-                # $FunctionParameters['InputObjectId'] = $TargetObjectId
-                # $FunctionParameters['InputObjectType'] = $TargetObjectType
-                # $FunctionParameters.Remove('Action') | Out-Null
-                # # Get TargetObject object
-                # Write-Verbose ('Invoke-JCAssociation ' + ($FunctionParameters.GetEnumerator() | Sort-Object Key | ForEach-Object { '-' + $_.Key + ":('" + ($_.Value -join "','") + "')"}).Replace("'True'", '$True').Replace("'False'", '$False'))
-                # $TargetObjectAssociations = Invoke-JCAssociation @FunctionParameters
-                # $TargetObject = $TargetObjectAssociations.InputObject | Select-Object -Unique
-                # $TargetObjectId = $TargetObject.($TargetObject.ById)
-                # $TargetObjectName = $TargetObject.($TargetObject.ByName)
-                $TargetObject = Get-JCObject -Type:($TargetObjectType) -SearchBy:('ById') -SearchByValue:($TargetObjectId)
-                $TargetObjectId = $TargetObject.($TargetObject.ById)
-                $TargetObjectName = $TargetObject.($TargetObject.ByName)
-                # Output InputObject and TargetObject
-                $Results_Associations += [PSCustomObject]@{
-                    'InputObjectType'  = $InputObjectType;
-                    'InputObjectId'    = $InputObjectId;
-                    'InputObjectName'  = $InputObjectName;
-                    'TargetObjectType' = $TargetObjectType;
-                    'TargetObjectId'   = $TargetObjectId;
-                    'TargetObjectName' = $TargetObjectName;
-                    'InputObject'      = $InputObject;
-                    'TargetObject'     = $TargetObject;
+                $InputObjectAssociationsByType = $InputObjectAssociations | Where-Object {$_.to.Type -eq $InputObjectAssociationsType}
+                $TargetObjects = Get-JCObject -Type:($InputObjectAssociationsType) | Where-Object {$_.($_.ById) -in ($InputObjectAssociationsByType.to.id)}
+                ForEach ($TargetObject In $TargetObjects)
+                {
+                    $TargetObjectId = $TargetObject.($TargetObject.ById)
+                    $TargetObjectName = $TargetObject.($TargetObject.ByName)
+                    # Output InputObject and TargetObject
+                    $Results_Associations += [PSCustomObject]@{
+                        'InputObjectType'  = $InputObjectType;
+                        'InputObjectId'    = $InputObjectId;
+                        'InputObjectName'  = $InputObjectName;
+                        'TargetObjectType' = $TargetObjectType;
+                        'TargetObjectId'   = $TargetObjectId;
+                        'TargetObjectName' = $TargetObjectName;
+                        'InputObject'      = $InputObject;
+                        'TargetObject'     = $TargetObject;
+                    }
                 }
             }
+            ##################################################
+            ##################################################
+            # Get TargetObject object ids associated with InputObject
+            # ForEach ($AssociationTargetObject In $InputObjectAssociations)
+            # {
+            #     $AssociationTargetObjectAttributes = $AssociationTargetObject.attributes
+            #     $AssociationTargetObjectTo = $AssociationTargetObject.to
+            #     $AssociationTargetObjectToAttributes = $AssociationTargetObjectTo.attributes
+            #     $TargetObjectId = $AssociationTargetObjectTo.id
+            #     $TargetObjectType = $AssociationTargetObjectTo.type
+            #     # # Could potentially recurse to get all associations using this.
+            #     # # Update FunctionParameters with TargetObject values
+            #     # $FunctionParameters['InputObjectId'] = $TargetObjectId
+            #     # $FunctionParameters['InputObjectType'] = $TargetObjectType
+            #     # $FunctionParameters.Remove('Action') | Out-Null
+            #     # # Get TargetObject object
+            #     # Write-Verbose ('Invoke-JCAssociation ' + ($FunctionParameters.GetEnumerator() | Sort-Object Key | ForEach-Object { '-' + $_.Key + ":('" + ($_.Value -join "','") + "')"}).Replace("'True'", '$True').Replace("'False'", '$False'))
+            #     # $TargetObjectAssociations = Invoke-JCAssociation @FunctionParameters
+            #     # $TargetObject = $TargetObjectAssociations.InputObject | Select-Object -Unique
+            #     # $TargetObjectId = $TargetObject.($TargetObject.ById)
+            #     # $TargetObjectName = $TargetObject.($TargetObject.ByName)
+            #     $TargetObject = Get-JCObject -Type:($TargetObjectType) -SearchBy:('ById') -SearchByValue:($TargetObjectId)
+            #     $TargetObjectId = $TargetObject.($TargetObject.ById)
+            #     $TargetObjectName = $TargetObject.($TargetObject.ByName)
+            #     # Output InputObject and TargetObject
+            #     $Results_Associations += [PSCustomObject]@{
+            #         'InputObjectType'  = $InputObjectType;
+            #         'InputObjectId'    = $InputObjectId;
+            #         'InputObjectName'  = $InputObjectName;
+            #         'TargetObjectType' = $TargetObjectType;
+            #         'TargetObjectId'   = $TargetObjectId;
+            #         'TargetObjectName' = $TargetObjectName;
+            #         'InputObject'      = $InputObject;
+            #         'TargetObject'     = $TargetObject;
+            #     }
+            # }
         }
         Else
         {
