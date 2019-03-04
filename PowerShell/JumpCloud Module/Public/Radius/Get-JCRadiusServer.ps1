@@ -42,6 +42,43 @@ Function Get-JCRadiusServer ()
         Return $Results
     }
 }
+############################################################
+#########################Testing############################
+############################################################
 # Get-JCRadiusServer -Verbose
 # Get-JCRadiusServer -RadiusServerId:('5c5c371704c4b477964ab4fa') -Verbose
 # Get-JCRadiusServer -RadiusServerName:('Test Me') -Verbose
+############################################################
+
+
+
+############################################################
+#######################Simple version#######################
+############################################################
+# Function Get-JCRadiusServer ()
+# {
+#     # This endpoint allows you to get a list of all RADIUS servers in your organization.
+#     [CmdletBinding(DefaultParameterSetName = 'ReturnAll')]
+#     Param
+#     (
+#         [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, ParameterSetName = 'ById', Position = 0)][ValidateNotNullOrEmpty()][Alias('_id', 'id')][string]$RadiusServerId,
+#         [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, ParameterSetName = 'ByName', Position = 0)][ValidateNotNullOrEmpty()][Alias('Name')][string]$RadiusServerName
+#     )
+#     Begin
+#     {
+#         $Type = 'radiusservers'
+#     }
+#     Process
+#     {
+#         $Results = Switch ($PSCmdlet.ParameterSetName)
+#         {
+#             'ReturnAll' {Get-JCObject -Type:($Type); }
+#             'ById' {Get-JCObject -Type:($Type) -SearchBy:('ById') -SearchByValue:($RadiusServerId); }
+#             'ByName' {Get-JCObject -Type:($Type) -SearchBy:('ByName') -SearchByValue:($RadiusServerName); }
+#         }
+#     }
+#     End
+#     {
+#         Return $Results
+#     }
+# }
