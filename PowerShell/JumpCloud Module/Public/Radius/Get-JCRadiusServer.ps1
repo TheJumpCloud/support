@@ -2,49 +2,46 @@ Function Get-JCRadiusServer ()
 {
     # This endpoint allows you to get a list of all RADIUS servers in your organization.
     [CmdletBinding(DefaultParameterSetName = 'ReturnAll')]
-    param
+    Param
     (
-        [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName, ParameterSetName = 'ById', Position = 0)][switch]$ById,
-        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName, ParameterSetName = 'ById', Position = 1)][ValidateNotNullOrEmpty()][Alias('_id', 'id')][string]$RadiusServerId,
-        [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName, ParameterSetName = 'ByName', Position = 0)][switch]$ByName,
-        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName, ParameterSetName = 'ByName', Position = 1)][ValidateNotNullOrEmpty()][Alias('Name')][string]$RadiusServerName,
-        [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName, ParameterSetName = 'ByIp', Position = 0)][switch]$ByIp,
-        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName, ParameterSetName = 'ByIp', Position = 1)][ValidateNotNullOrEmpty()][Alias('Ip')][string]$RadiusServerIp
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, ParameterSetName = 'ById', Position = 0)][ValidateNotNullOrEmpty()][Alias('_id', 'id')][string]$RadiusServerId,
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, ParameterSetName = 'ByName', Position = 0)][ValidateNotNullOrEmpty()][Alias('Name')][string]$RadiusServerName
     )
     Begin
     {
-        Write-Verbose "Parameter Set: $($PSCmdlet.ParameterSetName)"
-        Write-Verbose 'Verifying JCAPI Key'
-        If ($JCAPIKEY.length -ne 40) {Connect-JCOnline}
-        Write-Verbose 'Populating API headers'
-        $hdrs = @{
-            'Content-Type' = 'application/json'
-            'Accept'       = 'application/json'
-            'X-API-KEY'    = $JCAPIKEY
-        }
-        If ($JCOrgID)
-        {
-            $hdrs.Add('x-org-id', "$($JCOrgID)")
-        }
-        $Url_Template_RadiusServers = '{0}/api/radiusservers{1}'
-        $SearchQuery_Template = '?filter={0}:eq:{1}'
+        $Type = 'radiusservers'
     }
     Process
     {
-        Switch ($PSCmdlet.ParameterSetName)
+        # Create $FunctionParameters hashtable for splatting
+        $FunctionParameters = [ordered]@{}
+        # Get function parameters and filter out unnecessary parameters
+        $PSBoundParameters.GetEnumerator() | ForEach-Object {$FunctionParameters.Add($_.Key, $_.Value) | Out-Null}
+        # Add parameters from the script to the FunctionParameters hashtable
+        $FunctionParameters.Add('Type', $Type) | Out-Null
+        If ($PSCmdlet.ParameterSetName -ne 'ReturnAll')
         {
-            'ReturnAll' {$SearchQuery = ''}
-            'ById' {$SearchQuery = $SearchQuery_Template -f '_id', $RadiusServerId}
-            'ByName' {$SearchQuery = $SearchQuery_Template -f 'name', $RadiusServerName}
-            'ByIp' {$SearchQuery = $SearchQuery_Template -f 'networkSourceIp', $RadiusServerIp}
+            $FunctionParameters.Add('SearchBy', $PSCmdlet.ParameterSetName) | Out-Null
+            # Rename parameters in the FunctionParameters hashtable
+            If ($FunctionParameters.Contains('RadiusServerId'))
+            {
+                $FunctionParameters.Add('SearchByValue', $FunctionParameters['RadiusServerId']) | Out-Null
+                $FunctionParameters.Remove('RadiusServerId') | Out-Null
+            }
+            If ($FunctionParameters.Contains('RadiusServerName'))
+            {
+                $FunctionParameters.Add('SearchByValue', $FunctionParameters['RadiusServerName']) | Out-Null
+                $FunctionParameters.Remove('RadiusServerName') | Out-Null
+            }
         }
-        # Get RadiusServer endpoint.
-        $Uri_RadiusServers = $Url_Template_RadiusServers -f $JCUrlBasePath, $SearchQuery
-        Write-Verbose ('Connecting to: ' + $Uri_RadiusServers)
-        $Results_RadiusServers = Invoke-JCApiGet -Url:($Uri_RadiusServers)
+        Write-Verbose ('Get-JCObject ' + ($FunctionParameters.GetEnumerator() | Sort-Object Key | ForEach-Object { '-' + $_.Key + ":('" + ($_.Value -join "','") + "')"}).Replace("'True'", '$True').Replace("'False'", '$False'))
+        $Results = Get-JCObject @FunctionParameters
     }
     End
     {
-        Return $Results_RadiusServers
+        Return $Results
     }
 }
+# Get-JCRadiusServer -Verbose
+# Get-JCRadiusServer -RadiusServerId:('5c5c371704c4b477964ab4fa') -Verbose
+# Get-JCRadiusServer -RadiusServerName:('Test Me') -Verbose
