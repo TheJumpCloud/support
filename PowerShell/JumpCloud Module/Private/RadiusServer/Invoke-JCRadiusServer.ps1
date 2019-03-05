@@ -30,6 +30,7 @@ Function Invoke-JCRadiusServer ()
             New-DynamicParameter -ParameterName:('networkSourceIp') -ParameterType:('string') -Position:(1) -Mandatory:($false) -ValueFromPipelineByPropertyName:($true) -ValidateNotNullOrEmpty:($true) -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
             New-DynamicParameter -ParameterName:('sharedSecret') -ParameterType:('string') -Position:(2) -Mandatory:($false) -ValueFromPipelineByPropertyName:($true) -ValidateNotNullOrEmpty:($true) -ValidateLength:(@(1, 31)) -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
         }
+        # Return functions parameters
         Return $RuntimeParameterDictionary
     }
     Begin
