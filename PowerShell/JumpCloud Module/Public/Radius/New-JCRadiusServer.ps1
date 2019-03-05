@@ -38,5 +38,3 @@ Function New-JCRadiusServer ()
         Return $Results
     }
 }
-
-# New-JCRadiusServer -RadiusServerName:('SomeName') -networkSourceIp:('SomeIp') -sharedSecret:('SomeSecret') -Verbose

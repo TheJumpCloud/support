@@ -41,7 +41,3 @@ Function Remove-JCRadiusServer ()
         Return $Results_RadiusServers
     }
 }
-# Get-JCRadiusServer
-# Remove-JCRadiusServer -RadiusServerName:('Test Me 2') -Verbose
-# Remove-JCRadiusServer -RadiusServerId:('5c7db960de58b81706a68edd')
-# New-JCRadiusServer -networkSourceIp:('233.233.233.233') -sharedSecret:('HqySCjDJU!7YsQTG2cTHNRV9pF6lSc5') -name:('Test Me 2') -Verbose
