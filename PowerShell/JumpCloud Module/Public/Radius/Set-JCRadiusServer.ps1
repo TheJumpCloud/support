@@ -1,6 +1,6 @@
 Function Set-JCRadiusServer ()
 {
-    # This endpoint allows you to update RADIUS servers in your organization.
+    # This endpoint allows you to update Radius Servers in your organization.
     [CmdletBinding(DefaultParameterSetName = 'ByName')]
     param
     (

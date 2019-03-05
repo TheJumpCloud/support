@@ -15,8 +15,14 @@ Function Get-JCRadiusServerGroup ()
     {
         $Results = Switch ($PSCmdlet.ParameterSetName)
         {
-            'ById' {Get-JCAssociation -InputObjectType:('radiusservers') -InputObjectId:($RadiusServerId)  -TargetObjectType:('user_group'); }
-            'ByName' {Get-JCAssociation -InputObjectType:('radiusservers') -InputObjectName:($RadiusServerName)  -TargetObjectType:('user_group'); }
+            'ById'
+            {
+                Get-JCAssociation -InputObjectType:('radiusservers') -InputObjectId:($RadiusServerId)  -TargetObjectType:('user_group');
+            }
+            'ByName'
+            {
+                Get-JCAssociation -InputObjectType:('radiusservers') -InputObjectName:($RadiusServerName)  -TargetObjectType:('user_group');
+            }
         }
     }
     End
