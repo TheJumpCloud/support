@@ -30,7 +30,7 @@ Function Remove-JCRadiusServer ()
         If ($RadiusServerObject)
         {
             # Send body to RadiusServers endpoint.
-            If (!($force)) {Write-Warning "Are you sure you wish to delete object: $result ?" -WarningAction:('Inquire')}
+            If (!($force)) {Write-Warning ('Are you sure you wish to delete object: ' + $RadiusServerObject.($RadiusServerObject.ByName) + ' ?') -WarningAction:('Inquire')}
             # Build body to be sent to RadiusServers endpoint.
             $JsonBody = '{"isSelectAll":false,"models":[{"_id":"' + $RadiusServerObject.($RadiusServerObject.ById) + '"}]}'
             # Send body to RadiusServers endpoint.
@@ -38,7 +38,7 @@ Function Remove-JCRadiusServer ()
         }
         Else
         {
-            Write-Error ('Unable to find radius server "' + $RadiusServerName + '". Run Get-JCRadiusServer to get a list of all radius servers.')
+            Write-Error ('Unable to find radius server. Run Get-JCRadiusServer to get a list of all radius servers.')
         }
     }
     End

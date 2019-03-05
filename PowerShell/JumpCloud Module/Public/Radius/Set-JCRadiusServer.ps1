@@ -43,7 +43,7 @@ Function Set-JCRadiusServer ()
         }
         Else
         {
-            Write-Error ('Unable to find radius server "' + $RadiusServerName + '". Run Get-JCRadiusServer to get a list of all radius servers.')
+            Write-Error ('Unable to find radius server. Run Get-JCRadiusServer to get a list of all radius servers.')
         }
     }
     End
