@@ -111,7 +111,7 @@ Function Invoke-JCAssociation
             }
             ##################################################
             ##################################################
-            # Get TargetObject object ids associated with InputObject
+            ## Get TargetObject object ids associated with InputObject
             # ForEach ($AssociationTargetObject In $InputObjectAssociations)
             # {
             #     $AssociationTargetObjectAttributes = $AssociationTargetObject.attributes
@@ -119,17 +119,6 @@ Function Invoke-JCAssociation
             #     $AssociationTargetObjectToAttributes = $AssociationTargetObjectTo.attributes
             #     $TargetObjectId = $AssociationTargetObjectTo.id
             #     $TargetObjectType = $AssociationTargetObjectTo.type
-            #     # # Could potentially recurse to get all associations using this.
-            #     # # Update FunctionParameters with TargetObject values
-            #     # $FunctionParameters['InputObjectId'] = $TargetObjectId
-            #     # $FunctionParameters['InputObjectType'] = $TargetObjectType
-            #     # $FunctionParameters.Remove('Action') | Out-Null
-            #     # # Get TargetObject object
-            #     # Write-Verbose ('Invoke-JCAssociation ' + ($FunctionParameters.GetEnumerator() | Sort-Object Key | ForEach-Object { '-' + $_.Key + ":('" + ($_.Value -join "','") + "')"}).Replace("'True'", '$True').Replace("'False'", '$False'))
-            #     # $TargetObjectAssociations = Invoke-JCAssociation @FunctionParameters
-            #     # $TargetObject = $TargetObjectAssociations.InputObject | Select-Object -Unique
-            #     # $TargetObjectId = $TargetObject.($TargetObject.ById)
-            #     # $TargetObjectName = $TargetObject.($TargetObject.ByName)
             #     $TargetObject = Get-JCObject -Type:($TargetObjectType) -SearchBy:('ById') -SearchByValue:($TargetObjectId)
             #     $TargetObjectId = $TargetObject.($TargetObject.ById)
             #     $TargetObjectName = $TargetObject.($TargetObject.ByName)

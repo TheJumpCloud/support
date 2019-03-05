@@ -36,25 +36,13 @@ Function Get-JCObject
             If ($TypeCommandItem)
             {
                 $TypeCommandItem.Type = $Type
+                $Url = $TypeCommandItem.Url
+                $Method = $TypeCommandItem.Method
                 $ById = $TypeCommandItem.ById
                 $ByName = $TypeCommandItem.ByName
+                $Paginate = $TypeCommandItem.Paginate
                 $SupportRegexFilter = $TypeCommandItem.SupportRegexFilter
-                # Create $FunctionParameters hashtable for splatting
-                $FunctionParameters = [ordered]@{}
-                # Get function parameters and filter out unnecessary parameters
-                $PSBoundParameters.GetEnumerator() | ForEach-Object {
-                    If ($_.Key -notin ('SearchBy', 'SearchByValue', 'Type'))
-                    {
-                        $FunctionParameters.Add($_.Key, $_.Value) | Out-Null
-                    }
-                }
-                # Get custom object parameters and filter out unnecessary parameters
-                $TypeCommandItem.PSObject.Properties | Where-Object {$_.Name -notin ('ById', 'ByName', 'SupportRegexFilter', 'Type')} | ForEach-Object {
-                    # Add parameters from the custom object to the FunctionParameters hashtable
-                    $FunctionParameters.Add($_.Name, $_.Value) | Out-Null
-                }
-                # Add Key value to the Values array
-                If (!($FunctionParameters.Contains('Limit'))) {$FunctionParameters.Add('Limit', $Limit) | Out-Null}
+                $Limit = $TypeCommandItem.Limit
                 # If searching ByValue add filters to query string and body.
                 If ($PSCmdlet.ParameterSetName -eq 'ByValue')
                 {
@@ -67,10 +55,10 @@ Function Get-JCObject
                         'ByName' {$TypeCommandItem.ByName};
                     }
                     # Populate Url placeholders. Assumption is that if an endpoint requires an Id to be passed in the Url that it does not require a filter because its looking for an exact match already.
-                    If ($FunctionParameters['Url'] -match '({)(.*?)(})')
+                    If ($Url -match '({)(.*?)(})')
                     {
                         Write-Verbose ('Populating ' + $Matches[0] + ' with ' + $SearchByValue)
-                        $FunctionParameters['Url'] = $FunctionParameters['Url'].Replace($Matches[0], $SearchByValue)
+                        $Url = $Url.Replace($Matches[0], $SearchByValue)
                     }
                     Else
                     {
@@ -83,7 +71,7 @@ Function Get-JCObject
                             }
                             Else
                             {
-                                Write-Error ('The endpoint ' + $FunctionParameters['Url'] + ' does not support wildcards in the $SearchByValue. Please remove "*" from "' + $SearchByValue + '".')
+                                Write-Error ('The endpoint ' + $Url + ' does not support wildcards in the $SearchByValue. Please remove "*" from "' + $SearchByValue + '".')
                             }
                         }
                         Else
@@ -102,16 +90,13 @@ Function Get-JCObject
                     }
                     If ($JoinedQueryStrings)
                     {
-                        $FunctionParameters['Url'] = $FunctionParameters['Url'] + '?' + $JoinedQueryStrings
+                        $Url = $Url + '?' + $JoinedQueryStrings
                     }
-                    # Add parameters from the script to the FunctionParameters hashtable
-                    $FunctionParameters.Add('Body', $Body) | Out-Null
                 }
                 ## Escape Url????
-                # $FunctionParameters['Url'] = ([uri]::EscapeDataString($FunctionParameters['Url'])
+                # $Url = ([uri]::EscapeDataString($Url)
                 # Run command
-                Write-Verbose ('Invoke-JCApi ' + ($FunctionParameters.GetEnumerator() | Sort-Object Key | ForEach-Object { '-' + $_.Key + ":('" + ($_.Value -join "','") + "')"}).Replace("'True'", '$True').Replace("'False'", '$False'))
-                $Results = Invoke-JCApi @FunctionParameters
+                $Results = Invoke-JCApi -Url:($Url) -Method:($Method) -Body:($Body) -Fields:($Fields) -Limit:($Limit) -Skip:($Skip) -Paginate:($Paginate)
                 If ($Results)
                 {
                     # Update results
