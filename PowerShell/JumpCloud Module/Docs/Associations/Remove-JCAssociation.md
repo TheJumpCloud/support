@@ -8,7 +8,7 @@ schema: 2.0.0
 # Remove-JCAssociation
 
 ## SYNOPSIS
-{{Fill in the Synopsis}}
+Remove an association between two object within the JumpCloud console.
 
 ## SYNTAX
 
@@ -36,15 +36,22 @@ Remove-JCAssociation [-InputObjectType] <String> [-TargetObjectType] <String> [-
 
 ### Example 1
 ```powershell
-PS C:\> {{ Add example code here }}
+PS C:\> Remove-JCAssociation -InputObjectType:('radiusservers') -InputObjectId:('5c5c371704c4b477964ab4fa') -TargetObjectType:('user_group') -TargetObjectId:('59f20255c9118021fa01b80f')
 ```
 
-{{ Add example description here }}
+Remove the association between the radius server "5c5c371704c4b477964ab4fa" and the user group "59f20255c9118021fa01b80f".
+
+### Example 2
+```powershell
+PS C:\> New-JCAssociation -InputObjectType:('radiusservers') -InputObjectName:('RadiusServer1') -TargetObjectType:('user_group') -TargetObjectName:('All Users')
+```
+
+Remove the association between the radius server "RadiusServer1" and the user group "All Users".
 
 ## PARAMETERS
 
 ### -InputObjectId
-{{Fill InputObjectId Description}}
+The id of the input object.
 
 ```yaml
 Type: String
@@ -59,7 +66,7 @@ Accept wildcard characters: False
 ```
 
 ### -InputObjectName
-{{Fill InputObjectName Description}}
+The name of the input object.
 
 ```yaml
 Type: String
@@ -74,7 +81,7 @@ Accept wildcard characters: False
 ```
 
 ### -InputObjectType
-{{Fill InputObjectType Description}}
+The type of the input object.
 
 ```yaml
 Type: String
@@ -89,7 +96,7 @@ Accept wildcard characters: False
 ```
 
 ### -TargetObjectId
-{{Fill TargetObjectId Description}}
+The id of the target object.
 
 ```yaml
 Type: String
@@ -104,7 +111,7 @@ Accept wildcard characters: False
 ```
 
 ### -TargetObjectName
-{{Fill TargetObjectName Description}}
+The name of the target object.
 
 ```yaml
 Type: String
@@ -119,7 +126,7 @@ Accept wildcard characters: False
 ```
 
 ### -TargetObjectType
-{{Fill TargetObjectType Description}}
+The type of the target object.
 
 ```yaml
 Type: String
