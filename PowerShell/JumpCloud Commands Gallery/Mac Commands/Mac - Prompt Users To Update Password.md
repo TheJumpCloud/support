@@ -1,4 +1,4 @@
-[](#### Name
+Name
 
 Mac - Prompt Users To Update Their Password | v1.0 JCCG
 
@@ -36,5 +36,5 @@ Displays a notification to the signed in user and informs them to update their p
 To import this command into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
 
 ```
-Import-JCCommand -URL ''
+Import-JCCommand -URL 'https://git.io/fhpfz'
 ```
