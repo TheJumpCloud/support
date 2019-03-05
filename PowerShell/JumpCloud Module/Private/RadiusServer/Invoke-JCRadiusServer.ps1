@@ -10,8 +10,8 @@ Function Invoke-JCRadiusServer ()
         # Create the parameter dictionary
         $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
         # Define the new parameters
-        New-DynamicParameter -ParameterName:('RadiusServerId') -ParameterType:('string') -Position:(0) -Mandatory:($true) -ValueFromPipelineByPropertyName:($true) -ParameterSetName:('ById') -ValidateNotNullOrEmpty:($true) -Alias:(@('_id', 'id')) -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
-        New-DynamicParameter -ParameterName:('RadiusServerName') -ParameterType:('string') -Position:(0) -Mandatory:($true) -ValueFromPipelineByPropertyName:($true) -ParameterSetName:('ByName') -ValidateNotNullOrEmpty:($true) -Alias:('Name') -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
+        New-DynamicParameter -ParameterName:('RadiusServerId') -ParameterType:('string') -Position:(1) -Mandatory:($true) -ValueFromPipelineByPropertyName:($true) -ParameterSetName:('ById') -ValidateNotNullOrEmpty:($true) -Alias:(@('_id', 'id')) -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
+        New-DynamicParameter -ParameterName:('RadiusServerName') -ParameterType:('string') -Position:(1) -Mandatory:($true) -ValueFromPipelineByPropertyName:($true) -ParameterSetName:('ByName') -ValidateNotNullOrEmpty:($true) -Alias:(@('Name')) -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
         If ($Action -eq 'GET')
         {
         }
@@ -27,8 +27,8 @@ Function Invoke-JCRadiusServer ()
         }
         ElseIf ($Action -eq 'POST')
         {
-            New-DynamicParameter -ParameterName:('networkSourceIp') -ParameterType:('string') -Position:(1) -Mandatory:($false) -ValueFromPipelineByPropertyName:($true) -ValidateNotNullOrEmpty:($true) -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
-            New-DynamicParameter -ParameterName:('sharedSecret') -ParameterType:('string') -Position:(2) -Mandatory:($false) -ValueFromPipelineByPropertyName:($true) -ValidateNotNullOrEmpty:($true) -ValidateLength:(@(1, 31)) -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
+            New-DynamicParameter -ParameterName:('networkSourceIp') -ParameterType:('string') -Position:(1) -Mandatory:($true) -ValueFromPipelineByPropertyName:($true) -ValidateNotNullOrEmpty:($true) -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
+            New-DynamicParameter -ParameterName:('sharedSecret') -ParameterType:('string') -Position:(2) -Mandatory:($true) -ValueFromPipelineByPropertyName:($true) -ValidateNotNullOrEmpty:($true) -ValidateLength:(@(1, 31)) -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
         }
         # Return functions parameters
         Return $RuntimeParameterDictionary

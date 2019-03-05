@@ -10,7 +10,7 @@ Function New-DynamicParameter ()
         [Parameter(Mandatory = $false, Position = 4)][ValidateNotNullOrEmpty()][bool]$Mandatory = $false,
         [Parameter(Mandatory = $false, Position = 5)][ValidateNotNullOrEmpty()][string]$ParameterSetName = '__AllParameterSets',
         [Parameter(Mandatory = $false, Position = 6)][ValidateNotNullOrEmpty()][int]$Position = 0,
-        [Parameter(Mandatory = $false, Position = 7)][ValidateNotNullOrEmpty()][bool]$Alias = @(),
+        [Parameter(Mandatory = $false, Position = 7)][ValidateNotNullOrEmpty()][array]$Alias = @(),
         [Parameter(Mandatory = $false, Position = 8)][ValidateNotNullOrEmpty()][bool]$ValueFromPipeline = $false,
         [Parameter(Mandatory = $false, Position = 9)][ValidateNotNullOrEmpty()][bool]$ValueFromPipelineByPropertyName = $false,
         [Parameter(Mandatory = $false, Position = 10)][ValidateNotNullOrEmpty()][bool]$ValueFromRemainingArguments = $false,
