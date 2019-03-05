@@ -1,34 +1,38 @@
 Function Invoke-JCRadiusServer ()
 {
-    # This endpoint allows you to update Radius Servers in your organization.
     [CmdletBinding(DefaultParameterSetName = 'ByName')]
     Param(
-        [Parameter(Mandatory = $true, Position = 0)][ValidateNotNullOrEmpty()][string]$Action
+        [Parameter(Mandatory = $true, Position = 0)][ValidateNotNullOrEmpty()][ValidateSet('GET', 'PUT', 'DELETE', 'POST')][string]$Action
     )
     DynamicParam
     {
         # Create the parameter dictionary
         $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
         # Define the new parameters
-        New-DynamicParameter -ParameterName:('RadiusServerId') -ParameterType:('string') -Position:(1) -Mandatory:($true) -ValueFromPipelineByPropertyName:($true) -ParameterSetName:('ById') -ValidateNotNullOrEmpty:($true) -Alias:(@('_id', 'id')) -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
-        New-DynamicParameter -ParameterName:('RadiusServerName') -ParameterType:('string') -Position:(1) -Mandatory:($true) -ValueFromPipelineByPropertyName:($true) -ParameterSetName:('ByName') -ValidateNotNullOrEmpty:($true) -Alias:(@('Name')) -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
         If ($Action -eq 'GET')
         {
+            New-DynamicParameter -ParameterName:('RadiusServerId') -ParameterType:('string') -Position:(1) -Mandatory:($false) -ValueFromPipelineByPropertyName:($true) -ParameterSetName:('ById') -ValidateNotNullOrEmpty:($true) -Alias:(@('_id', 'id')) -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
+            New-DynamicParameter -ParameterName:('RadiusServerName') -ParameterType:('string') -Position:(1) -Mandatory:($false) -ValueFromPipelineByPropertyName:($true) -ParameterSetName:('ByName') -ValidateNotNullOrEmpty:($true) -Alias:(@('Name')) -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
         }
-        ElseIf ($Action -eq 'PUT')
+        Else
         {
-            New-DynamicParameter -ParameterName:('NewRadiusServerName') -ParameterType:('string') -Position:(1) -Mandatory:($false) -ValueFromPipelineByPropertyName:($true)  -ValidateNotNullOrEmpty:($true) -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
-            New-DynamicParameter -ParameterName:('NewNetworkSourceIp') -ParameterType:('string') -Position:(2) -Mandatory:($false) -ValueFromPipelineByPropertyName:($true) -ValidateNotNullOrEmpty:($true) -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
-            New-DynamicParameter -ParameterName:('NewSharedSecret') -ParameterType:('string') -Position:(3) -Mandatory:($false) -ValueFromPipelineByPropertyName:($true) -ValidateNotNullOrEmpty:($true) -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
-        }
-        ElseIf ($Action -eq 'DELETE')
-        {
-            New-DynamicParameter -ParameterName:('force') -ParameterType:('switch') -Position:(1) -Mandatory:($false) -ValueFromPipelineByPropertyName:($true) -ValidateNotNullOrEmpty:($true) -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
-        }
-        ElseIf ($Action -eq 'POST')
-        {
-            New-DynamicParameter -ParameterName:('networkSourceIp') -ParameterType:('string') -Position:(1) -Mandatory:($true) -ValueFromPipelineByPropertyName:($true) -ValidateNotNullOrEmpty:($true) -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
-            New-DynamicParameter -ParameterName:('sharedSecret') -ParameterType:('string') -Position:(2) -Mandatory:($true) -ValueFromPipelineByPropertyName:($true) -ValidateNotNullOrEmpty:($true) -ValidateLength:(@(1, 31)) -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
+            New-DynamicParameter -ParameterName:('RadiusServerId') -ParameterType:('string') -Position:(1) -Mandatory:($true) -ValueFromPipelineByPropertyName:($true) -ParameterSetName:('ById') -ValidateNotNullOrEmpty:($true) -Alias:(@('_id', 'id')) -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
+            New-DynamicParameter -ParameterName:('RadiusServerName') -ParameterType:('string') -Position:(1) -Mandatory:($true) -ValueFromPipelineByPropertyName:($true) -ParameterSetName:('ByName') -ValidateNotNullOrEmpty:($true) -Alias:(@('Name')) -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
+            ElseIf ($Action -eq 'PUT')
+            {
+                New-DynamicParameter -ParameterName:('NewRadiusServerName') -ParameterType:('string') -Position:(1) -Mandatory:($false) -ValueFromPipelineByPropertyName:($true)  -ValidateNotNullOrEmpty:($true) -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
+                New-DynamicParameter -ParameterName:('NewNetworkSourceIp') -ParameterType:('string') -Position:(2) -Mandatory:($false) -ValueFromPipelineByPropertyName:($true) -ValidateNotNullOrEmpty:($true) -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
+                New-DynamicParameter -ParameterName:('NewSharedSecret') -ParameterType:('string') -Position:(3) -Mandatory:($false) -ValueFromPipelineByPropertyName:($true) -ValidateNotNullOrEmpty:($true) -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
+            }
+            ElseIf ($Action -eq 'DELETE')
+            {
+                New-DynamicParameter -ParameterName:('force') -ParameterType:('bool') -Position:(1) -Mandatory:($false) -ValueFromPipelineByPropertyName:($true) -ValidateNotNullOrEmpty:($true) -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
+            }
+            ElseIf ($Action -eq 'POST')
+            {
+                New-DynamicParameter -ParameterName:('networkSourceIp') -ParameterType:('string') -Position:(1) -Mandatory:($true) -ValueFromPipelineByPropertyName:($true) -ValidateNotNullOrEmpty:($true) -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
+                New-DynamicParameter -ParameterName:('sharedSecret') -ParameterType:('string') -Position:(2) -Mandatory:($true) -ValueFromPipelineByPropertyName:($true) -ValidateNotNullOrEmpty:($true) -ValidateLength:(@(1, 31)) -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
+            }
         }
         # Return functions parameters
         Return $RuntimeParameterDictionary

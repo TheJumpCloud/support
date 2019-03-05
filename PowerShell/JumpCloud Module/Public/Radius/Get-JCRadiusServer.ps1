@@ -13,28 +13,20 @@ Function Get-JCRadiusServer ()
     }
     Process
     {
-        $RadiusServerObject = Switch ($PSCmdlet.ParameterSetName)
+        $Results = Switch ($PSCmdlet.ParameterSetName)
         {
             'ReturnAll'
             {
-                Get-JCObject -Type:('radiusservers');
+                Invoke-JCRadiusServer -Action:('GET');
             }
             'ById'
             {
-                Get-JCObject -Type:('radiusservers') -SearchBy:('ById') -SearchByValue:($RadiusServerId);
+                Invoke-JCRadiusServer -Action:('GET') -RadiusServerId:($RadiusServerId)
             }
             'ByName'
             {
-                Get-JCObject -Type:('radiusservers') -SearchBy:('ByName') -SearchByValue:($RadiusServerName);
+                Invoke-JCRadiusServer -Action:('GET') -RadiusServerName:($RadiusServerName)
             }
-        }
-        If ($RadiusServerObject)
-        {
-            $Results = $RadiusServerObject
-        }
-        Else
-        {
-            Write-Error ('Unable to find radius server. Run Get-JCRadiusServer to get a list of all radius servers.')
         }
     }
     End

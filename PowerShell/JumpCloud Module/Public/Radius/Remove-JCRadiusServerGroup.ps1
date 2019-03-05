@@ -15,20 +15,17 @@ Function Remove-JCRadiusServerGroup ()
     }
     Process
     {
-        Switch ($PSCmdlet.ParameterSetName)
+        $Results = Switch ($PSCmdlet.ParameterSetName)
         {
             'ById'
             {
-                $RadiusServerObject = Get-JCObject -Type:('radiusservers') -SearchBy:('ById') -SearchByValue:($RadiusServerId);
-                $GroupObject = Get-JCObject -Type:('user_group') -SearchBy:('ById') -SearchByValue:($UserGroupId);
+                Invoke-JCRadiusServerGroup -Action:('REMOVE') -RadiusServerId:($RadiusServerId) -UserGroupId:($UserGroupId);
             }
             'ByName'
             {
-                $RadiusServerObject = Get-JCObject -Type:('radiusservers') -SearchBy:('ByName') -SearchByValue:($RadiusServerName);
-                $GroupObject = Get-JCObject -Type:('user_group') -SearchBy:('ByName') -SearchByValue:($UserGroupName);
+                Invoke-JCRadiusServerGroup -Action:('REMOVE') -RadiusServerName:($RadiusServerName) -UserGroupName:($UserGroupName);
             }
         }
-        $Results = Remove-JCAssociation -InputObjectType:('radiusservers') -InputObjectName:($RadiusServerObject.($RadiusServerObject.ByName)) -TargetObjectType:('user_group') -TargetObjectName:($GroupObject.($GroupObject.ByName))
     }
     End
     {

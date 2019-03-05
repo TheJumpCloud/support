@@ -11,15 +11,10 @@ Function New-JCRadiusServer ()
     Begin
     {
         Write-Verbose ('Parameter Set: ' + $PSCmdlet.ParameterSetName)
-        $Method = 'POST'
-        $Uri_RadiusServers = '/api/radiusservers'
     }
     Process
     {
-        # Build body to be sent to RadiusServers endpoint.
-        $JsonBody = '{"name":"' + $RadiusServerName + '","networkSourceIp":"' + $networkSourceIp + '","sharedSecret":"' + $sharedSecret + '"}'
-        # Send body to RadiusServers endpoint.
-        $Results = Invoke-JCApi -Method:($Method) -Url:($Uri_RadiusServers) -Body:($JsonBody)
+        $Results = Invoke-JCRadiusServer -Action:('POST') -RadiusServerName:($RadiusServerName) -networkSourceIp:($networkSourceIp) -sharedSecret:($sharedSecret)
     }
     End
     {

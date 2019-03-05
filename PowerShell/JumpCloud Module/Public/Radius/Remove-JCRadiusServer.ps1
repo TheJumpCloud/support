@@ -6,39 +6,24 @@ Function Remove-JCRadiusServer ()
     (
         [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, ParameterSetName = 'ById', Position = 0)][ValidateNotNullOrEmpty()][Alias('_id', 'id')][string]$RadiusServerId,
         [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, ParameterSetName = 'ByName', Position = 0)][ValidateNotNullOrEmpty()][Alias('Name')][string]$RadiusServerName,
-        [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 1)][ValidateNotNullOrEmpty()][Switch]$force
+        [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 1)][ValidateNotNullOrEmpty()][bool]$force = $false
     )
     Begin
     {
         Write-Verbose ('Parameter Set: ' + $PSCmdlet.ParameterSetName)
-        $Method = 'DELETE'
-        $Uri_RadiusServers = '/api/radiusservers'
     }
     Process
     {
-        $RadiusServerObject = Switch ($PSCmdlet.ParameterSetName)
+        $Results = Switch ($PSCmdlet.ParameterSetName)
         {
             'ById'
             {
-                Get-JCObject -Type:('radiusservers') -SearchBy:('ById') -SearchByValue:($RadiusServerId);
+                Invoke-JCRadiusServer -Action:('DELETE') -RadiusServerId:($RadiusServerId) -force:($force)
             }
             'ByName'
             {
-                Get-JCObject -Type:('radiusservers') -SearchBy:('ByName') -SearchByValue:($RadiusServerName);
+                Invoke-JCRadiusServer -Action:('DELETE') -RadiusServerName:($RadiusServerName) -force:($force)
             }
-        }
-        If ($RadiusServerObject)
-        {
-            # Send body to RadiusServers endpoint.
-            If (!($force)) {Write-Warning ('Are you sure you wish to delete object: ' + $RadiusServerObject.($RadiusServerObject.ByName) + ' ?') -WarningAction:('Inquire')}
-            # Build body to be sent to RadiusServers endpoint.
-            $JsonBody = '{"isSelectAll":false,"models":[{"_id":"' + $RadiusServerObject.($RadiusServerObject.ById) + '"}]}'
-            # Send body to RadiusServers endpoint.
-            $Results = Invoke-JCApi -Method:($Method) -Url:($Uri_RadiusServers) -Body:($JsonBody)
-        }
-        Else
-        {
-            Write-Error ('Unable to find radius server. Run Get-JCRadiusServer to get a list of all radius servers.')
         }
     }
     End
