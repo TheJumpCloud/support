@@ -1,6 +1,6 @@
 Function Invoke-JCRadiusServer ()
 {
-    [CmdletBinding(DefaultParameterSetName = 'ByName')]
+    [CmdletBinding(DefaultParameterSetName = 'ReturnAll')]
     Param(
         [Parameter(Mandatory = $true, Position = 0)][ValidateNotNullOrEmpty()][ValidateSet('GET', 'PUT', 'DELETE', 'POST')][string]$Action
     )
@@ -18,11 +18,11 @@ Function Invoke-JCRadiusServer ()
         {
             New-DynamicParameter -ParameterName:('RadiusServerId') -ParameterType:('string') -Position:(1) -Mandatory:($true) -ValueFromPipelineByPropertyName:($true) -ParameterSetName:('ById') -ValidateNotNullOrEmpty:($true) -Alias:(@('_id', 'id')) -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
             New-DynamicParameter -ParameterName:('RadiusServerName') -ParameterType:('string') -Position:(1) -Mandatory:($true) -ValueFromPipelineByPropertyName:($true) -ParameterSetName:('ByName') -ValidateNotNullOrEmpty:($true) -Alias:(@('Name')) -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
-            ElseIf ($Action -eq 'PUT')
+            If ($Action -eq 'PUT')
             {
-                New-DynamicParameter -ParameterName:('NewRadiusServerName') -ParameterType:('string') -Position:(1) -Mandatory:($false) -ValueFromPipelineByPropertyName:($true)  -ValidateNotNullOrEmpty:($true) -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
-                New-DynamicParameter -ParameterName:('NewNetworkSourceIp') -ParameterType:('string') -Position:(2) -Mandatory:($false) -ValueFromPipelineByPropertyName:($true) -ValidateNotNullOrEmpty:($true) -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
-                New-DynamicParameter -ParameterName:('NewSharedSecret') -ParameterType:('string') -Position:(3) -Mandatory:($false) -ValueFromPipelineByPropertyName:($true) -ValidateNotNullOrEmpty:($true) -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
+                New-DynamicParameter -ParameterName:('NewRadiusServerName') -ParameterType:('string') -Position:(1) -Mandatory:($false) -ValueFromPipelineByPropertyName:($true)  -ValidateNotNullOrEmpty:($false) -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
+                New-DynamicParameter -ParameterName:('NewNetworkSourceIp') -ParameterType:('string') -Position:(2) -Mandatory:($false) -ValueFromPipelineByPropertyName:($true) -ValidateNotNullOrEmpty:($false) -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
+                New-DynamicParameter -ParameterName:('NewSharedSecret') -ParameterType:('string') -Position:(3) -Mandatory:($false) -ValueFromPipelineByPropertyName:($true) -ValidateNotNullOrEmpty:($false) -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
             }
             ElseIf ($Action -eq 'DELETE')
             {
@@ -86,6 +86,8 @@ Function Invoke-JCRadiusServer ()
                 If (!($NewNetworkSourceIp)) {$NewNetworkSourceIp = $RadiusServerObject.networkSourceIp}
                 If (!($NewSharedSecret)) {$NewSharedSecret = $RadiusServerObject.sharedSecret}
                 $JsonBody = '{"name":"' + $NewRadiusServerName + '","networkSourceIp":"' + $NewNetworkSourceIp + '","sharedSecret":"' + $NewSharedSecret + '"}'
+                # Send body to RadiusServers endpoint.
+                $Results = Invoke-JCApi -Method:($Method) -Url:($Uri_RadiusServers) -Body:($JsonBody)
             }
             ElseIf ($Action -eq 'DELETE')
             {
@@ -93,18 +95,23 @@ Function Invoke-JCRadiusServer ()
                 If (!($force)) {Write-Warning ('Are you sure you wish to delete object: ' + $RadiusServerObject.($RadiusServerObject.ByName) + ' ?') -WarningAction:('Inquire')}
                 # Build body to be sent to RadiusServers endpoint.
                 $JsonBody = '{"isSelectAll":false,"models":[{"_id":"' + $RadiusServerObject.($RadiusServerObject.ById) + '"}]}'
+                # Send body to RadiusServers endpoint.
+                $Results = Invoke-JCApi -Method:($Method) -Url:($Uri_RadiusServers) -Body:($JsonBody)
             }
-            ElseIf ($Action -eq 'POST')
-            {
-                # Build body to be sent to RadiusServers endpoint.
-                $JsonBody = '{"name":"' + $RadiusServerName + '","networkSourceIp":"' + $networkSourceIp + '","sharedSecret":"' + $sharedSecret + '"}'
-            }
-            # Send body to RadiusServers endpoint.
-            $Results = Invoke-JCApi -Method:($Method) -Url:($Uri_RadiusServers) -Body:($JsonBody)
         }
         Else
         {
-            Write-Error ('Unable to find radius server. Run Get-JCRadiusServer to get a list of all radius servers.')
+            If ($Action -eq 'POST')
+            {
+                # Build body to be sent to RadiusServers endpoint.
+                $JsonBody = '{"name":"' + $RadiusServerName + '","networkSourceIp":"' + $networkSourceIp + '","sharedSecret":"' + $sharedSecret + '"}'
+                # Send body to RadiusServers endpoint.
+                $Results = Invoke-JCApi -Method:($Method) -Url:($Uri_RadiusServers) -Body:($JsonBody)
+            }
+            Else
+            {
+                Write-Error ('Unable to find radius server. Run Get-JCRadiusServer to get a list of all radius servers.')
+            }
         }
     }
     End
