@@ -1,6 +1,3 @@
-# Get-JCRadiusServerGroup
-# $URL = 'https://console.jumpcloud.com/api/v2/radiusservers/{RadiusServerId}/associations?targets=user_group'
-# $Method = 'GET'
 Function Get-JCRadiusServerGroup ()
 {
     # This endpoint allows you to get a list of all RADIUS servers in your organization.
@@ -24,20 +21,16 @@ Function Get-JCRadiusServerGroup ()
         # Add parameters from the script to the FunctionParameters hashtable
         $FunctionParameters.Add('InputObjectType', $InputObjectType) | Out-Null
         $FunctionParameters.Add('TargetObjectType', $TargetObjectType) | Out-Null
-        If ($PSCmdlet.ParameterSetName -ne 'ReturnAll')
+        # Rename parameters in the FunctionParameters hashtable
+        If ($FunctionParameters.Contains('RadiusServerId'))
         {
-            $FunctionParameters.Add('SearchBy', $PSCmdlet.ParameterSetName) | Out-Null
-            # Rename parameters in the FunctionParameters hashtable
-            If ($FunctionParameters.Contains('RadiusServerId'))
-            {
-                $FunctionParameters.Add('InputObjectId', $FunctionParameters['RadiusServerId']) | Out-Null
-                $FunctionParameters.Remove('RadiusServerId') | Out-Null
-            }
-            If ($FunctionParameters.Contains('RadiusServerName'))
-            {
-                $FunctionParameters.Add('InputObjectName', $FunctionParameters['RadiusServerName']) | Out-Null
-                $FunctionParameters.Remove('RadiusServerName') | Out-Null
-            }
+            $FunctionParameters.Add('InputObjectId', $FunctionParameters['RadiusServerId']) | Out-Null
+            $FunctionParameters.Remove('RadiusServerId') | Out-Null
+        }
+        If ($FunctionParameters.Contains('RadiusServerName'))
+        {
+            $FunctionParameters.Add('InputObjectName', $FunctionParameters['RadiusServerName']) | Out-Null
+            $FunctionParameters.Remove('RadiusServerName') | Out-Null
         }
         Write-Verbose ('Get-JCAssociation ' + ($FunctionParameters.GetEnumerator() | Sort-Object Key | ForEach-Object { '-' + $_.Key + ":('" + ($_.Value -join "','") + "')"}).Replace("'True'", '$True').Replace("'False'", '$False'))
         $Results = Get-JCAssociation @FunctionParameters
@@ -47,4 +40,3 @@ Function Get-JCRadiusServerGroup ()
         Return $Results
     }
 }
-Get-JCRadiusServer | Get-JCRadiusServerGroup -Verbose
