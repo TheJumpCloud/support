@@ -12,39 +12,38 @@ Function Set-JCRadiusServer ()
     )
     Begin
     {
+        Write-Verbose ('Parameter Set: ' + $PSCmdlet.ParameterSetName)
         $Method = 'PUT'
         $Url_Template_RadiusServers = '/api/radiusservers/{0}'
     }
     Process
     {
-        Switch ($PSCmdlet.ParameterSetName)
+        $RadiusServerObject = Switch ($PSCmdlet.ParameterSetName)
         {
             'ById'
             {
-                $JCRadiusServers = Get-JCRadiusServer -RadiusServerId:($RadiusServerId)
-                $Uri_RadiusServers = $Url_Template_RadiusServers -f $JCRadiusServers._id
+                Get-JCObject -Type:('radiusservers') -SearchBy:('ById') -SearchByValue:($RadiusServerId);
             }
             'ByName'
             {
-                $JCRadiusServers = Get-JCRadiusServer -RadiusServerName:($RadiusServerName)
-                $Uri_RadiusServers = $Url_Template_RadiusServers -f $JCRadiusServers._id
+                Get-JCObject -Type:('radiusservers') -SearchBy:('ByName') -SearchByValue:($RadiusServerName);
             }
         }
-        If ($JCRadiusServers)
+        If ($RadiusServerObject)
         {
-            # Build body to be sent to RadiusServers endpoint.
-            $BodyObject = New-Object -TypeName PSObject
-            If ($NewRadiusServerName) {$BodyObject | Add-Member -MemberType:('NoteProperty') -Name:('name') -Value:($NewRadiusServerName)}
-            If ($NewNetworkSourceIp) {$BodyObject | Add-Member -MemberType:('NoteProperty') -Name:('networkSourceIp') -Value:($NewNetworkSourceIp)}
-            If ($NewSharedSecret) {$BodyObject | Add-Member -MemberType:('NoteProperty') -Name:('sharedSecret') -Value:($NewSharedSecret)}
-            # Convert body to json.
-            $JsonBody = $BodyObject | ConvertTo-Json -Depth 10
+            # Build Url
+            $Uri_RadiusServers = $Url_Template_RadiusServers -f $RadiusServerObject.($RadiusServerObject.ById)
+            # Build Json body
+            If (!($NewRadiusServerName)) {$NewRadiusServerName = $RadiusServerObject.($RadiusServerObject.ByName)}
+            If (!($NewNetworkSourceIp)) {$NewNetworkSourceIp = $RadiusServerObject.networkSourceIp}
+            If (!($NewSharedSecret)) {$NewSharedSecret = $RadiusServerObject.sharedSecret}
+            $JsonBody = '{"name":"' + $NewRadiusServerName + '","networkSourceIp":"' + $NewNetworkSourceIp + '","sharedSecret":"' + $NewSharedSecret + '"}'
             # Send body to RadiusServers endpoint.
             $Results = Invoke-JCApi -Method:($Method) -Url:($Uri_RadiusServers) -Body:($JsonBody)
         }
-        else
+        Else
         {
-            Write-Error ('Unable to find radius server "' + $RadiusServerName + '". Run Get-JCRadiusServers to get a list of all radius servers.')
+            Write-Error ('Unable to find radius server "' + $RadiusServerName + '". Run Get-JCRadiusServer to get a list of all radius servers.')
         }
     }
     End

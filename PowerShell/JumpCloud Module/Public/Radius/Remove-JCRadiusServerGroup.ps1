@@ -1,7 +1,7 @@
 Function Remove-JCRadiusServerGroup ()
 {
     # This endpoint allows you to associate Radius Servers to User Groups within your organization.
-    [CmdletBinding(DefaultParameterSetName = 'ReturnAll')]
+    [CmdletBinding(DefaultParameterSetName = 'ById')]
     Param
     (
         [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, ParameterSetName = 'ById', Position = 0)][ValidateNotNullOrEmpty()][Alias('_id', 'id')][string]$RadiusServerId,
@@ -12,8 +12,6 @@ Function Remove-JCRadiusServerGroup ()
     Begin
     {
         Write-Verbose ('Parameter Set: ' + $PSCmdlet.ParameterSetName)
-        $InputObjectType = 'radiusservers'
-        $TargetObjectType = 'user_group'
     }
     Process
     {
@@ -21,16 +19,16 @@ Function Remove-JCRadiusServerGroup ()
         {
             'ById'
             {
-                $RadiusServerObject = Get-JCObject -Type:($InputObjectType) -SearchBy:($PSCmdlet.ParameterSetName) -SearchByValue:($RadiusServerId);
-                $GroupObject = Get-JCObject -Type:($TargetObjectType) -SearchBy:($PSCmdlet.ParameterSetName) -SearchByValue:($UserGroupId);
+                $RadiusServerObject = Get-JCObject -Type:('radiusservers') -SearchBy:('ById') -SearchByValue:($RadiusServerId);
+                $GroupObject = Get-JCObject -Type:('user_group') -SearchBy:('ById') -SearchByValue:($UserGroupId);
             }
             'ByName'
             {
-                $RadiusServerObject = Get-JCObject -Type:($InputObjectType) -SearchBy:($PSCmdlet.ParameterSetName) -SearchByValue:($RadiusServerName);
-                $GroupObject = Get-JCObject -Type:($TargetObjectType) -SearchBy:($PSCmdlet.ParameterSetName) -SearchByValue:($UserGroupName);
+                $RadiusServerObject = Get-JCObject -Type:('radiusservers') -SearchBy:('ByName') -SearchByValue:($RadiusServerName);
+                $GroupObject = Get-JCObject -Type:('user_group') -SearchBy:('ByName') -SearchByValue:($UserGroupName);
             }
         }
-        $Results = Remove-JCAssociation -InputObjectType:($InputObjectType) -InputObjectName:($RadiusServerObject.($RadiusServerObject.ByName)) -TargetObjectType:($TargetObjectType) -TargetObjectName:($GroupObject.($GroupObject.ByName))
+        $Results = Remove-JCAssociation -InputObjectType:('radiusservers') -InputObjectName:($RadiusServerObject.($RadiusServerObject.ByName)) -TargetObjectType:('user_group') -TargetObjectName:($GroupObject.($GroupObject.ByName))
     }
     End
     {
