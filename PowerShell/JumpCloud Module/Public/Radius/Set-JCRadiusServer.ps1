@@ -4,31 +4,16 @@ Function Set-JCRadiusServer ()
     [CmdletBinding(DefaultParameterSetName = 'ByName')]
     param
     (
-        [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName, ParameterSetName = 'ById', Position = 0)][switch]$ById,
-        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName, ParameterSetName = 'ById', Position = 1)][ValidateNotNullOrEmpty()][Alias('_id', 'id')][string]$RadiusServerId,
-        [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName, ParameterSetName = 'ByName', Position = 0)][switch]$ByName,
-        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName, ParameterSetName = 'ByName', Position = 1)][ValidateNotNullOrEmpty()][Alias('Name')][string]$RadiusServerName,
-        [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName, Position = 2)][ValidateNotNullOrEmpty()][string]$NewRadiusServerName,
-        [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName, Position = 3)][ValidateNotNullOrEmpty()][string]$NewNetworkSourceIp,
-        [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName, Position = 4)][ValidateNotNullOrEmpty()][string]$NewSharedSecret
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName, ParameterSetName = 'ById', Position = 0)][ValidateNotNullOrEmpty()][Alias('_id', 'id')][string]$RadiusServerId,
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName, ParameterSetName = 'ByName', Position = 0)][ValidateNotNullOrEmpty()][Alias('Name')][string]$RadiusServerName,
+        [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName, Position = 1)][ValidateNotNullOrEmpty()][string]$NewRadiusServerName,
+        [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName, Position = 2)][ValidateNotNullOrEmpty()][string]$NewNetworkSourceIp,
+        [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName, Position = 3)][ValidateNotNullOrEmpty()][string]$NewSharedSecret
     )
     Begin
     {
-        Write-Verbose "Parameter Set: $($PSCmdlet.ParameterSetName)"
-        Write-Verbose 'Verifying JCAPI Key'
-        If ($JCAPIKEY.length -ne 40) {Connect-JCOnline}
-        Write-Verbose 'Populating API headers'
-        $hdrs = @{
-            'Content-Type' = 'application/json'
-            'Accept'       = 'application/json'
-            'X-API-KEY'    = $JCAPIKEY
-        }
-        If ($JCOrgID)
-        {
-            $hdrs.Add('x-org-id', "$($JCOrgID)")
-        }
         $Method = 'PUT'
-        $Url_Template_RadiusServers = '{0}/api/radiusservers/{1}'
+        $Url_Template_RadiusServers = '/api/radiusservers/{0}'
     }
     Process
     {
@@ -36,13 +21,13 @@ Function Set-JCRadiusServer ()
         {
             'ById'
             {
-                $JCRadiusServers = Get-JCRadiusServer -ById -RadiusServerId:($RadiusServerId)
-                $Uri_RadiusServers = $Url_Template_RadiusServers -f $JCUrlBasePath, $JCRadiusServers._id
+                $JCRadiusServers = Get-JCRadiusServer -RadiusServerId:($RadiusServerId)
+                $Uri_RadiusServers = $Url_Template_RadiusServers -f $JCRadiusServers._id
             }
             'ByName'
             {
-                $JCRadiusServers = Get-JCRadiusServer -ByName -RadiusServerName:($RadiusServerName)
-                $Uri_RadiusServers = $Url_Template_RadiusServers -f $JCUrlBasePath, $JCRadiusServers._id
+                $JCRadiusServers = Get-JCRadiusServer -RadiusServerName:($RadiusServerName)
+                $Uri_RadiusServers = $Url_Template_RadiusServers -f $JCRadiusServers._id
             }
         }
         If ($JCRadiusServers)
@@ -55,8 +40,7 @@ Function Set-JCRadiusServer ()
             # Convert body to json.
             $JsonBody = $BodyObject | ConvertTo-Json -Depth 10
             # Send body to RadiusServers endpoint.
-            Write-Verbose ('Connecting to: ' + $Uri_RadiusServers)
-            $Results_RadiusServers = Invoke-RestMethod -Method:($Method) -Uri:($Uri_RadiusServers) -Header:($hdrs) -Body:($JsonBody)
+            $Results = Invoke-JCApi -Method:($Method) -Url:($Uri_RadiusServers) -Body:($JsonBody)
         }
         else
         {
@@ -65,6 +49,6 @@ Function Set-JCRadiusServer ()
     }
     End
     {
-        Return $Results_RadiusServers
+        Return $Results
     }
 }
