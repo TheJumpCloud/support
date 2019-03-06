@@ -6,51 +6,46 @@ Function Invoke-JCRadiusServer ()
     )
     DynamicParam
     {
-        # Create the parameter dictionary
-        $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
+        # Build parameter array
+        $Params = @()
         # Define the new parameters
         If ($Action -eq 'GET')
         {
-            New-DynamicParameter -ParameterName:('RadiusServerId') -ParameterType:('string') -Position:(1) -Mandatory:($false) -ValueFromPipelineByPropertyName:($true) -ParameterSetName:('ById') -ValidateNotNullOrEmpty:($true) -Alias:(@('_id', 'id')) -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
-            New-DynamicParameter -ParameterName:('RadiusServerName') -ParameterType:('string') -Position:(1) -Mandatory:($false) -ValueFromPipelineByPropertyName:($true) -ParameterSetName:('ByName') -ValidateNotNullOrEmpty:($true) -Alias:(@('Name')) -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
+            $Params += @{'Name' = 'RadiusServerId'; 'Type' = [System.String]; 'Position' = 1; 'ValueFromPipelineByPropertyName' = $true; 'ParameterSets' = @('ById'); 'ValidateNotNullOrEmpty' = $true; 'Alias' = @('_id', 'id'); }
+            $Params += @{'Name' = 'RadiusServerName'; 'Type' = [System.String]; 'Position' = 1; 'ValueFromPipelineByPropertyName' = $true; 'ParameterSets' = @('ByName'); 'ValidateNotNullOrEmpty' = $true; 'Alias' = @('Name'); }
         }
         Else
         {
-            New-DynamicParameter -ParameterName:('RadiusServerId') -ParameterType:('string') -Position:(1) -Mandatory:($true) -ValueFromPipelineByPropertyName:($true) -ParameterSetName:('ById') -ValidateNotNullOrEmpty:($true) -Alias:(@('_id', 'id')) -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
-            New-DynamicParameter -ParameterName:('RadiusServerName') -ParameterType:('string') -Position:(1) -Mandatory:($true) -ValueFromPipelineByPropertyName:($true) -ParameterSetName:('ByName') -ValidateNotNullOrEmpty:($true) -Alias:(@('Name')) -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
+            $Params += @{'Name' = 'RadiusServerId'; 'Type' = [System.String]; 'Position' = 1; 'Mandatory' = $true; 'ValueFromPipelineByPropertyName' = $true; 'ParameterSets' = @('ById'); 'ValidateNotNullOrEmpty' = $true; 'Alias' = @('_id', 'id'); }
+            $Params += @{'Name' = 'RadiusServerName'; 'Type' = [System.String]; 'Position' = 1; 'Mandatory' = $true; 'ValueFromPipelineByPropertyName' = $true; 'ParameterSets' = @('ByName'); 'ValidateNotNullOrEmpty' = $true; 'Alias' = @('Name'); }
             If ($Action -eq 'PUT')
             {
-                New-DynamicParameter -ParameterName:('NewRadiusServerName') -ParameterType:('string') -Position:(1) -Mandatory:($false) -ValueFromPipelineByPropertyName:($true)  -ValidateNotNullOrEmpty:($false) -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
-                New-DynamicParameter -ParameterName:('NewNetworkSourceIp') -ParameterType:('string') -Position:(2) -Mandatory:($false) -ValueFromPipelineByPropertyName:($true) -ValidateNotNullOrEmpty:($false) -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
-                New-DynamicParameter -ParameterName:('NewSharedSecret') -ParameterType:('string') -Position:(3) -Mandatory:($false) -ValueFromPipelineByPropertyName:($true) -ValidateNotNullOrEmpty:($false) -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
+                $Params += @{'Name' = 'NewRadiusServerName'; 'Type' = [System.String]; 'Position' = 1; 'ValueFromPipelineByPropertyName' = $true; }
+                $Params += @{'Name' = 'NewNetworkSourceIp'; 'Type' = [System.String]; 'Position' = 2; 'ValueFromPipelineByPropertyName' = $true; }
+                $Params += @{'Name' = 'NewSharedSecret'; 'Type' = [System.String]; 'Position' = 3; 'ValueFromPipelineByPropertyName' = $true; }
             }
             ElseIf ($Action -eq 'DELETE')
             {
-                New-DynamicParameter -ParameterName:('force') -ParameterType:('bool') -Position:(1) -Mandatory:($false) -ValueFromPipelineByPropertyName:($true) -ValidateNotNullOrEmpty:($true) -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
+                $Params += @{'Name' = 'force'; 'Type' = [bool]; 'Position' = 1; 'ValueFromPipelineByPropertyName' = $true; 'ValidateNotNullOrEmpty' = $true; }
             }
             ElseIf ($Action -eq 'POST')
             {
-                New-DynamicParameter -ParameterName:('networkSourceIp') -ParameterType:('string') -Position:(1) -Mandatory:($true) -ValueFromPipelineByPropertyName:($true) -ValidateNotNullOrEmpty:($true) -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
-                New-DynamicParameter -ParameterName:('sharedSecret') -ParameterType:('string') -Position:(2) -Mandatory:($true) -ValueFromPipelineByPropertyName:($true) -ValidateNotNullOrEmpty:($true) -ValidateLength:(@(1, 31)) -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
+                $Params += @{'Name' = 'networkSourceIp'; 'Type' = [System.String]; 'Position' = 1; 'Mandatory' = $true; 'ValueFromPipelineByPropertyName' = $true; 'ValidateNotNullOrEmpty' = $true; }
+                $Params += @{'Name' = 'sharedSecret'; 'Type' = [System.String]; 'Position' = 2; 'Mandatory' = $true; 'ValueFromPipelineByPropertyName' = $true; 'ValidateNotNullOrEmpty' = $true; 'ValidateLength' = @(1, 31); }
             }
         }
-        # Return functions parameters
-        Return $RuntimeParameterDictionary
+        # Create new parameters
+        Return $Params | ForEach-Object {
+            New-Object PSObject -Property:($_)
+        } | New-DynamicParameter
     }
     Begin
     {
-        Write-Verbose ('Parameter Set: ' + $PSCmdlet.ParameterSetName)
-        # Show all parameters
-        # $PsBoundParameters.GetEnumerator()
-        # Bind the parameter to a friendly variable
-        $RadiusServerId = $PsBoundParameters.RadiusServerId
-        $RadiusServerName = $PsBoundParameters.RadiusServerName
-        $NewRadiusServerName = $PsBoundParameters.NewRadiusServerName
-        $NewNetworkSourceIp = $PsBoundParameters.NewNetworkSourceIp
-        $NewSharedSecret = $PsBoundParameters.NewSharedSecret
-        $force = $PsBoundParameters.force
-        $networkSourceIp = $PsBoundParameters.networkSourceIp
-        $sharedSecret = $PsBoundParameters.sharedSecret
+        # Create new variables for script
+        $PsBoundParameters.GetEnumerator() | ForEach-Object {New-Variable -Name:($_.Key) -Value:($_.Value) -Force}
+        # Debug message for parameter call
+        Write-Debug ('[CallFunction]' + $MyInvocation.MyCommand.Name + ' ' + ($PsBoundParameters.GetEnumerator() | Sort-Object Key | ForEach-Object { '-' + $_.Key + ":('" + ($_.Value -join "','") + "')"}).Replace("'True'", '$True').Replace("'False'", '$False'))
+        If ($PSCmdlet.ParameterSetName -ne '__AllParameterSets') {Write-Verbose ('[ParameterSet]' + $MyInvocation.MyCommand.Name + ':' + $PSCmdlet.ParameterSetName)}
         $Method = $Action
     }
     Process

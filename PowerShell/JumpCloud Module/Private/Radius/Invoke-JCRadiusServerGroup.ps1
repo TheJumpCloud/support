@@ -6,32 +6,31 @@ Function Invoke-JCRadiusServerGroup ()
     )
     DynamicParam
     {
-        # Create the parameter dictionary
-        $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
+        # Build parameter array
+        $Params = @()
         # Define the new parameters
-        New-DynamicParameter -ParameterName:('RadiusServerId') -ParameterType:('string') -Position:(1) -Mandatory:($true) -ValueFromPipelineByPropertyName:($true) -ParameterSetName:('ById') -ValidateNotNullOrEmpty:($true) -Alias:(@('_id', 'id')) -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
-        New-DynamicParameter -ParameterName:('RadiusServerName') -ParameterType:('string') -Position:(1) -Mandatory:($true) -ValueFromPipelineByPropertyName:($true) -ParameterSetName:('ByName') -ValidateNotNullOrEmpty:($true) -Alias:(@('Name')) -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
+        $Params += @{'Name' = 'RadiusServerId'; 'Type' = [System.String]; 'Position' = 1; 'Mandatory' = $true; 'ValueFromPipelineByPropertyName' = $true; 'ParameterSets' = @('ById'); 'ValidateNotNullOrEmpty' = $true; 'Alias' = @('_id', 'id'); }
+        $Params += @{'Name' = 'RadiusServerName'; 'Type' = [System.String]; 'Position' = 1; 'Mandatory' = $true; 'ValueFromPipelineByPropertyName' = $true; 'ParameterSets' = @('ByName'); 'ValidateNotNullOrEmpty' = $true; 'Alias' = @('Name'); }
         If ($Action -eq 'GET')
         {
         }
         ElseIf ($Action -in ('NEW', 'REMOVE'))
         {
-            New-DynamicParameter -ParameterName:('UserGroupId') -ParameterType:('string') -Position:(2) -Mandatory:($true) -ValueFromPipelineByPropertyName:($true) -ParameterSetName:('ById') -ValidateNotNullOrEmpty:($true) -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
-            New-DynamicParameter -ParameterName:('UserGroupName') -ParameterType:('string') -Position:(2) -Mandatory:($true) -ValueFromPipelineByPropertyName:($true) -ParameterSetName:('ByName') -ValidateNotNullOrEmpty:($true) -RuntimeDefinedParameterDictionary:($RuntimeParameterDictionary)
+            $Params += @{'Name' = 'UserGroupId'; 'Type' = [System.String]; 'Position' = 2; 'Mandatory' = $true; 'ValueFromPipelineByPropertyName' = $true; 'ParameterSets' = @('ById'); 'ValidateNotNullOrEmpty' = $true; }
+            $Params += @{'Name' = 'UserGroupName'; 'Type' = [System.String]; 'Position' = 2; 'Mandatory' = $true; 'ValueFromPipelineByPropertyName' = $true; 'ParameterSets' = @('ByName'); 'ValidateNotNullOrEmpty' = $true; }
         }
-        # Return functions parameters
-        Return $RuntimeParameterDictionary
+        # Create new parameters
+        Return $Params | ForEach-Object {
+            New-Object PSObject -Property:($_)
+        } | New-DynamicParameter
     }
     Begin
     {
-        # Show all parameters
-        # $PsBoundParameters.GetEnumerator()
-        Write-Verbose ('Parameter Set: ' + $PSCmdlet.ParameterSetName)
-        # Bind the parameter to a friendly variable
-        $RadiusServerId = $PsBoundParameters.RadiusServerId
-        $RadiusServerName = $PsBoundParameters.RadiusServerName
-        $UserGroupId = $PsBoundParameters.UserGroupId
-        $UserGroupName = $PsBoundParameters.UserGroupName
+        # Create new variables for script
+        $PsBoundParameters.GetEnumerator() | ForEach-Object {New-Variable -Name:($_.Key) -Value:($_.Value) -Force}
+        # Debug message for parameter call
+        Write-Debug ('[CallFunction]' + $MyInvocation.MyCommand.Name + ' ' + ($PsBoundParameters.GetEnumerator() | Sort-Object Key | ForEach-Object { '-' + $_.Key + ":('" + ($_.Value -join "','") + "')"}).Replace("'True'", '$True').Replace("'False'", '$False'))
+        If ($PSCmdlet.ParameterSetName -ne '__AllParameterSets') {Write-Verbose ('[ParameterSet]' + $MyInvocation.MyCommand.Name + ':' + $PSCmdlet.ParameterSetName)}
     }
     Process
     {
