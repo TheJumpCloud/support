@@ -1,9 +1,9 @@
 Function Get-JCAssociationType
 {
-    [CmdletBinding(DefaultParameterSetName = 'Default')]
+    [CmdletBinding()]
     Param(
         # Any other parameters can go here
-        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName, Position = 0)][ValidateNotNullOrEmpty()]$InputObject
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0)][ValidateNotNullOrEmpty()]$InputObject
     )
     $AssociationTypes = @()
     $AssociationTypes += [PSCustomObject]@{'InputObject' = @('activedirectories'); 'Targets' = @('active_directory', 'application', 'command', 'g_suite', 'ldap_server', 'office_365', 'policy', 'radius_server', 'system', 'system_group', 'user', 'user_group'); }
