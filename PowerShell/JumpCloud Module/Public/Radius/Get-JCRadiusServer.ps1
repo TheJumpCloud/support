@@ -9,7 +9,7 @@ Function Get-JCRadiusServer ()
     )
     Begin
     {
-        Write-Verbose ('Parameter Set: ' + $PSCmdlet.ParameterSetName)
+        If ($PSCmdlet.ParameterSetName -ne '__AllParameterSets') {Write-Verbose ('[ParameterSet]' + $MyInvocation.MyCommand.Name + ':' + $PSCmdlet.ParameterSetName)}
     }
     Process
     {

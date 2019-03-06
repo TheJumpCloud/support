@@ -1,7 +1,7 @@
 Function New-JCRadiusServer ()
 {
     # This endpoint allows you to create new Radius Servers in your organization.
-    [CmdletBinding(DefaultParameterSetName = 'Default')]
+    [CmdletBinding()]
     param
     (
         [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName, Position = 0)][ValidateNotNullOrEmpty()][Alias('Name')][string]$RadiusServerName,
@@ -10,7 +10,7 @@ Function New-JCRadiusServer ()
     )
     Begin
     {
-        Write-Verbose ('Parameter Set: ' + $PSCmdlet.ParameterSetName)
+        If ($PSCmdlet.ParameterSetName -ne '__AllParameterSets') {Write-Verbose ('[ParameterSet]' + $MyInvocation.MyCommand.Name + ':' + $PSCmdlet.ParameterSetName)}
     }
     Process
     {
