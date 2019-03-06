@@ -35,9 +35,7 @@ Function Invoke-JCRadiusServer ()
             }
         }
         # Create new parameters
-        Return $Params | ForEach-Object {
-            New-Object PSObject -Property:($_)
-        } | New-DynamicParameter
+        Return $Params | ForEach-Object {New-Object PSObject -Property:($_)} | New-DynamicParameter
     }
     Begin
     {
