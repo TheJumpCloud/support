@@ -1,61 +1,42 @@
 Function Invoke-JCAssociation
 {
-    [CmdletBinding(DefaultParameterSetName = 'Default')]
+    [CmdletBinding()]
     Param(
-        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName, Position = 0)][ValidateNotNullOrEmpty()][ValidateSet('add', 'get', 'remove')][string]$Action,
-        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName, Position = 1)][ValidateNotNullOrEmpty()][string]$InputObjectType,
-        # DynamicParam $TargetObjectType
-        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName, ParameterSetName = 'ById', Position = 3)][ValidateNotNullOrEmpty()][string]$InputObjectId,
-        [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName, ParameterSetName = 'ById', Position = 4)][ValidateNotNullOrEmpty()][string]$TargetObjectId,
-        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName, ParameterSetName = 'ByName', Position = 3)][ValidateNotNullOrEmpty()][string]$InputObjectName,
-        [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName, ParameterSetName = 'ByName', Position = 4)][ValidateNotNullOrEmpty()][string]$TargetObjectName
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0)][ValidateNotNullOrEmpty()][ValidateSet('add', 'get', 'remove')][string]$Action
     )
     DynamicParam
     {
-        # Set the dynamic parameters' name
-        $ParameterName = 'TargetObjectType'
-        # Create the collection of attributes
-        $AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
-        # Create the parameters attributes
-        $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
-        # Set the parameters attributes
-        $ParameterAttribute.Mandatory = $true
-        $ParameterAttribute.ValueFromPipelineByPropertyName = $true
-        $ParameterAttribute.Position = 2
-        # Add the attributes to the attributes collection
-        $AttributeCollection.Add($ParameterAttribute)
-        # Set the ValidateNotNullOrEmpty
-        $ValidateNotNullOrEmptyAttribute = New-Object System.Management.Automation.ValidateNotNullOrEmptyAttribute
-        # Add the ValidateNotNullOrEmpty to the attributes collection
-        $AttributeCollection.Add($ValidateNotNullOrEmptyAttribute)
-        # Generate the ValidateSet
-        $arrSet = (Get-JCAssociationType -InputObject:($InputObjectType)).Targets
-        # Set the ValidateSet
-        $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($arrSet)
-        # Add the ValidateSet to the attributes collection
-        $AttributeCollection.Add($ValidateSetAttribute)
-        # Create the dynamic parameter
-        $RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter($ParameterName, [string], $AttributeCollection)
-        # Create the parameter dictionary
-        $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
-        # Return the dynamic parameter to the parameter dictionary
-        $RuntimeParameterDictionary.Add($ParameterName, $RuntimeParameter)
-        Return $RuntimeParameterDictionary
+        # Build parameter array
+        $Params = @()
+        # Define the new parameters
+        $Params += @{'Name' = 'InputObjectType'; 'Type' = [System.String]; 'Position' = 1; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ValidateSet' = (Get-JCAssociationType).InputObject; }
+        $Params += @{'Name' = 'TargetObjectType'; 'Type' = [System.String]; 'Position' = 2; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ValidateSet' = Get-JCAssociationType | ForEach-Object {$_.Targets} | Select-Object -Unique; }
+        $Params += @{'Name' = 'InputObjectId'; 'Type' = [System.String]; 'Position' = 3; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ById'); }
+        $Params += @{'Name' = 'TargetObjectId'; 'Type' = [System.String]; 'Position' = 4; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ById'); }
+        $Params += @{'Name' = 'InputObjectName'; 'Type' = [System.String]; 'Position' = 5; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ByName'); }
+        $Params += @{'Name' = 'TargetObjectName'; 'Type' = [System.String]; 'Position' = 6; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ByName'); }
+        # Create new parameters
+        Return $Params | ForEach-Object {New-Object PSObject -Property:($_)} | New-DynamicParameter
     }
     Begin
     {
-        Write-Verbose ('Parameter Set: ' + $PSCmdlet.ParameterSetName)
-        $TargetObjectType = $PsBoundParameters[$ParameterName]
+        # Create new variables for script
+        $PsBoundParameters.GetEnumerator() | ForEach-Object {New-Variable -Name:($_.Key) -Value:($_.Value) -Force}
+        # Debug message for parameter call
+        Write-Debug ('[CallFunction]' + $MyInvocation.MyCommand.Name + ' ' + ($PsBoundParameters.GetEnumerator() | Sort-Object Key | ForEach-Object { '-' + $_.Key + ":('" + ($_.Value -join "','") + "')"}).Replace("'True'", '$True').Replace("'False'", '$False'))
+        If ($PSCmdlet.ParameterSetName -ne '__AllParameterSets') {Write-Verbose ('[ParameterSet]' + $MyInvocation.MyCommand.Name + ':' + $PSCmdlet.ParameterSetName)}
+
         $URL_Template_Associations = '/api/v2/{0}/{1}/associations?targets={2}'
-        If ($Action -eq 'get')
+        $Method = Switch ($Action)
         {
-            $Method = 'GET'
-        }
-        Else
-        {
-            $Method = 'POST'
+            'get' {'GET'}
+            'add' {'POST'}
+            'remove' {'POST'}
         }
         $Results_Associations = @()
+        # Validate the InputObjectType and TargetObjectType parameter values.
+        $AssociationTypes = Get-JCAssociationType -InputObject:($InputObjectType)
+        If ($TargetObjectType -notin ($AssociationTypes.Targets)) {Write-Error ('The type "' + $InputObjectType + '" can only be associated to: ' + ($AssociationTypes.Targets -join ', ')); Break; }
     }
     Process
     {
