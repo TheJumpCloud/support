@@ -123,8 +123,9 @@ Function New-DynamicParameter ()
   .OUTPUTS
    System.Management.Automation.RuntimeDefinedParameterDictionary
   .NOTES
-            AUTHOR: Michael Haken
-   LAST UPDATE: 2/6/2018
+    AUTHOR: Michael Haken
+    LAST UPDATE: 2/6/2018
+    WEBSITE: https://www.powershellgallery.com/packages/BAMCIS.DynamicParam/1.0.0.0/Content/BAMCIS.DynamicParam.psm1
  #>
     [CmdletBinding()]
     [OutputType([System.Management.Automation.RuntimeDefinedParameterDictionary])]
