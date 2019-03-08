@@ -12,6 +12,7 @@
   - [Step 1 - Configuring JumpCloud and Jamf Zero-Touch Scripts](#step-1---configuring-jumpcloud-and-jamf-zero-touch-scripts)
   - [Step 2 - Configuring JumpCloud and Jamf Zero-Touch Policies](#step-2---configuring-jumpcloud-and-jamf-zero-touch-policies)
   - [Step 3 - Configuring a Jamf PreStage Enrollment Profile for a JumpCloud and Jamf Zero-Touch Workflow](#step-3---configuring-a-jamf-prestage-enrollment-profile-for-a-jumpcloud-and-jamf-zero-touch-workflow)
+- [Testing the workflow](#testing-the-workflow)
 
 
 
@@ -58,9 +59,10 @@ The seven policies call five scripts. These scripts are the meat and potatoes ne
 
 Create the below five scripts in Jamf pro by navigating to "Settings" >  "Computer Management" > "Scripts"
 
-1. - [jc_install_jcagent_and_service_account](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Jamf%20Pro/scripts/jc_install_jcagent_and_service_account.md) for Mac versions 10.13.x and above, where JumpCloud will manage Filevault users.
-     - Ensure that the credentials specified for the Jamf management account configured under "Settings" >  "Global Management" > "User-Initiated Enrollment" > "Platforms" > "macOS" align with the credentials specified for the `SECURETOKEN_ADMIN_USERNAME=''` and `SECURETOKEN_ADMIN_PASSWORD=''` in the configured Jamf script.
-     - To update and secure the credentials for this user you can use the JumpCloud agent to takeover this account and update the credentials post DEP enrollment.
+1. Create the script that aligns with your usecase. 
+    - [jc_install_jcagent_and_service_account](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Jamf%20Pro/scripts/jc_install_jcagent_and_service_account.md) for Mac versions 10.13.x and above, where JumpCloud will manage Filevault users.
+       - Ensure that the credentials specified for the Jamf management account configured under "Settings" >  "Global Management" > "User-Initiated Enrollment" > "Platforms" > "macOS" align with the credentials specified for the `SECURETOKEN_ADMIN_USERNAME=''` and `SECURETOKEN_ADMIN_PASSWORD=''` in the configured Jamf script.
+       - To update and secure the credentials for this user you can use the JumpCloud agent to takeover this account and update the credentials post DEP enrollment.
    - [jc_install_jcagent](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Jamf%20Pro/scripts/jc_install_jcagent.md) for Mac versions < 10.13.x or all versions where JumpCloud will not be managing Filevault users.
 2. [jc_five_second_pause](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Jamf%20Pro/scripts/jc_five_second_pause.md)
 3. [jc_account_association](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Jamf%20Pro/scripts/jc_account_association.md)
@@ -71,7 +73,7 @@ Create the below five scripts in Jamf pro by navigating to "Settings" >  "Comput
 
 Create the below six policies before creating the master orchestration policy.
 
-Note that the name of the policies do not have to be exact but the "Custom Event" names must be created accurately or the master orchestration script will fail.
+Note that the name of the policies and the "User Interaction" start and complete messages can be modified but the "Custom Event" names must be created accurately or the master orchestration script will fail.
 
 1. [Zero-Touch Step 1 - JumpCloud Agent Install](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Jamf%20Pro/policies/Zero-Touch%20Step%201%20-%20JumpCloud%20Agent%20Install.md)
 2. [Zero-Touch Step 2 - JumpCloud Agent Registration](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Jamf%20Pro/policies/Zero-Touch%20Step%202%20-%20JumpCloud%20Agent%20Registration.md)
@@ -87,6 +89,29 @@ After creating the above six policies create the mater zero-touch JumpCloud orch
 
 Within Jamf Pro navigate to "Computers" > "PreStage Enrollments".
 
-Under "Options" > "General" ensure that the profile is mapped to the correct "DEVICE ENROLLMENT PROGRAM INSTANCE" and the checkbox for "Automatically assign new devices " is selected.
+Under "Options" > "General" ensure that the profile is mapped to the correct "DEVICE ENROLLMENT PROGRAM INSTANCE" and that the checkbox for "Automatically assign new devices " is selected.
 
-Verify that JumpCloud LDAP is configured for 
+Select the checkbox fo "Require Authentication" which will require users to log in with their JumpCloud user name and password during enrollment.
+
+Note that for this to work the below prerequisites must be met!
+  - [A JumpCloud tenant configured for LDAP integration with a Jamf Pro tenant](#a-jumpcloud-tenant-configured-for-ldap-integration-with-a-jamf-pro-tenant)
+  - [Users who you wish to enroll using this zero-touch workflow added to the JumpCloud LDAP directory.](#users-who-you-wish-to-enroll-using-this-zero-touch-workflow-added-to-the-jumpcloud-ldap-directory)
+
+Specify an authentication message that will be useful for end users.
+
+Example message:
+
+```
+Log in with your JumpCloud username and password. DO NOT change the  "Account name" in the next screen.
+```
+
+Under "Options" > "Account Settings" >  select the type of account that you would like users to be created with. The [jc_account_association](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Jamf%20Pro/scripts/jc_account_association.md)script will respect this setting when binding users to their system in JumpCloud.
+
+If you are using the [jc_install_jcagent_and_service_account](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Jamf%20Pro/scripts/jc_install_jcagent_and_service_account.md) JumpCloud agent install script ensure the "Management Account" aligns under "Account Settings" aligns with the credentials entered for the values provided for the `SECURETOKEN_ADMIN_USERNAME=''` and
+`SECURETOKEN_ADMIN_PASSWORD=''` variables in this script.
+
+## Testing the workflow
+
+This article from SimpleMDM gvies a great tuturial for how to setup a test environment to test out the macOS zero-touch deployment workflow using virtual machines and VMWare Fusion, Parallels, or VirtualBox.
+
+[Test Apple DEP with VMware, Parallels, and VirtualBox](https://simplemdm.com/2018/04/03/apple-dep-vmware-parallels-virtualbox/)
