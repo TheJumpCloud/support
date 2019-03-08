@@ -114,6 +114,6 @@ If you are using the [jc_install_jcagent_and_service_account](https://github.com
 
 ## Testing the workflow
 
-This article from SimpleMDM gvies a great tuturial for how to setup a test environment to test out the macOS zero-touch deployment workflow using virtual machines and VMWare Fusion, Parallels, or VirtualBox.
+This article from SimpleMDM gvies a great tuturial for how to setup a DEP sandbox environment to test out the macOS zero-touch deployment workflow using virtual machines VMWare Fusion, Parallels, or VirtualBox.
 
 [Test Apple DEP with VMware, Parallels, and VirtualBox](https://simplemdm.com/2018/04/03/apple-dep-vmware-parallels-virtualbox/)
