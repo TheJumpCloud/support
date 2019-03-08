@@ -31,18 +31,6 @@
 
 ## Configuration Steps
 
-This guide is broken into three steps:
-
-- [Prerequisites](#prerequisites)
-  - [An Apple Device Enrollment (DEP) Account](#an-apple-device-enrollment-dep-account)
-  - [A Jamf Pro tenant configured as an MDM server within Apple Device Enrollment](#a-jamf-pro-tenant-configured-as-an-mdm-server-within-apple-device-enrollment)
-  - [A JumpCloud tenant configured for LDAP integration with a Jamf Pro tenant](#a-jumpcloud-tenant-configured-for-ldap-integration-with-a-jamf-pro-tenant)
-  - [Users who you wish to enroll using this zero-touch workflow added to the JumpCloud LDAP directory.](#users-who-you-wish-to-enroll-using-this-zero-touch-workflow-added-to-the-jumpcloud-ldap-directory)
-- [Configuration Steps](#configuration-steps)
-  - [Step 1 - Configuring JumpCloud and Jamf Zero-Touch Scripts](#step-1---configuring-jumpcloud-and-jamf-zero-touch-scripts)
-  - [Step 2 - Configuring JumpCloud and Jamf Zero-Touch Policies](#step-2---configuring-jumpcloud-and-jamf-zero-touch-policies)
-  - [Step 3 - Configuring a Jamf PreStage Enrollment Profile for a JumpCloud and Jamf Zero-Touch Workflow](#step-3---configuring-a-jamf-prestage-enrollment-profile-for-a-jumpcloud-and-jamf-zero-touch-workflow)
-
 The scripts configured in **Step 1** are used to configure the policies configured in **Step 2**.
 
 **Step 3** creates a prestage enrollment profile which will trigger the execution of the JumpCloud and Jamf "Zero-Touch" workflow and the automatic execution of the policies configured in **Step 2**.
