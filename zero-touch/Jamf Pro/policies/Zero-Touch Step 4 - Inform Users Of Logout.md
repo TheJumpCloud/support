@@ -1,5 +1,7 @@
 ## Options - General - DISPLAY NAME
 
+Zero-Touch Step 4 - Inform Users Of Logout
+
 ## Options - General - Trigger
 
 Custom
