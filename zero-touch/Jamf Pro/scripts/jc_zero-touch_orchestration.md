@@ -6,10 +6,10 @@ jc_zero-touch_orchestration
 
 ```bash
 # Installs the JumpCloud agent
-jamf policy -trigger install_jcagent
+jamf policy -trigger jc_install_agent
 
 # Waits for the JumpCloud agent to register
-jamf policy -trigger jc_agent_register
+jamf policy -trigger jc_register_agent
 
 # Associates the logged in user to their new system in JumpCloud
 jamf policy -trigger jc_account_association

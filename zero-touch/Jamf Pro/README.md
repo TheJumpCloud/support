@@ -40,7 +40,7 @@ A master orchestration policy which runs after DEP enrollment calls six Jamf pol
 
 1. Install the JumpCloud agent
 2. Wait for the JumpCloud agent to register with the associated JumpCloud tenant.
-3. Associate the logged in user to the newly registered system in the associated JumpCloud tenant.
+3. Associate the logged in user to their newly registered system in JumpCloud.
 4. Inform the user using "User Interaction" messages that they need to log out and log to complete onboarding.
 5. Inform the user to enter their current password for both the PREVIOUS PASSWORD and PASSWORD fields during login.
 6. Log the user out so they can log back in. The JumpCloud agent completes the necessary steps for account takeover during this login.
@@ -71,7 +71,7 @@ Create the below five scripts in Jamf pro by navigating to "Settings" >  "Comput
 
 ### Step 2 - Configuring JumpCloud and Jamf Zero-Touch Policies
 
-Create the below six policies before creating the master orchestration policy.
+Create the below six policies before creating the master orchestration policy by navigating to "Computers" > "Policies".
 
 Note that the name of the policies and the "User Interaction" start and complete messages can be modified but the "Custom Event" names must be created accurately or the master orchestration script will fail.
 

@@ -8,7 +8,7 @@ Custom
 
 ## Options - General - Trigger - Custom - CUSTOM EVENT
 
-01_jc_agent_install
+jc_install_agent
 
 ## Options - General - EXECUTION FREQUENCY
 
