@@ -14,10 +14,6 @@
   - [Step 3 - Configuring a Jamf PreStage Enrollment Profile for a JumpCloud and Jamf Zero-Touch Workflow](#step-3---configuring-a-jamf-prestage-enrollment-profile-for-a-jumpcloud-and-jamf-zero-touch-workflow)
 - [Testing the workflow](#testing-the-workflow)
 
-
-![Zero-TouchJamf.png](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Jamf%20Pro/diagrams/Zero-TouchJamf.png)
-
-
 ## Prerequisites
 
 ### An Apple Device Enrollment (DEP) Account
