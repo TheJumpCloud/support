@@ -15,6 +15,8 @@
 - [Testing the workflow](#testing-the-workflow)
 
 
+![Zero-TouchJamf.png](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Jamf%20Pro/diagrams/Zero-TouchJamf.png)
+
 
 ## Prerequisites
 
