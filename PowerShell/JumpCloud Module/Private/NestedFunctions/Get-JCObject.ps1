@@ -11,6 +11,8 @@ Function Get-JCObject
     )
     Begin
     {
+        Write-Debug ('[CallFunction]' + $MyInvocation.MyCommand.Name + ' ' + ($PsBoundParameters.GetEnumerator() | Sort-Object Key | ForEach-Object { '-' + $_.Key + ":('" + ($_.Value -join "','") + "')"}).Replace("'True'", '$True').Replace("'False'", '$False'))
+        If ($PSCmdlet.ParameterSetName -ne '__AllParameterSets') {Write-Verbose ('[ParameterSet]' + $MyInvocation.MyCommand.Name + ':' + $PSCmdlet.ParameterSetName)}
         $CurrentErrorActionPreference = $ErrorActionPreference
         $ErrorActionPreference = 'Stop'
         Write-Verbose ('Parameter Set: ' + $PSCmdlet.ParameterSetName)
@@ -18,20 +20,18 @@ Function Get-JCObject
         $TypeCommand += [PSCustomObject]@{'Type' = @('user', 'users'); 'Url' = '/api/search/systemusers'; 'Method' = 'POST'; 'ById' = '_id'; 'ByName' = 'username'; 'Paginate' = $true; 'SupportRegexFilter' = $true; 'Limit' = 100; }
         $TypeCommand += [PSCustomObject]@{'Type' = @('system', 'systems'); 'Url' = '/api/search/systems'; 'Method' = 'POST'; 'ById' = '_id'; 'ByName' = 'displayName'; 'Paginate' = $true; 'SupportRegexFilter' = $true; 'Limit' = 100; }
         $TypeCommand += [PSCustomObject]@{'Type' = @('policy', 'policies'); 'Url' = '/api/v2/policies'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = 'name'; 'Paginate' = $true; 'SupportRegexFilter' = $false; 'Limit' = 100; }
-        $TypeCommand += [PSCustomObject]@{'Type' = @('group', 'system_group', 'user_group'); 'Url' = '/api/v2/groups'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = 'name'; 'Paginate' = $true; 'SupportRegexFilter' = $false; 'Limit' = 100; }
+        $TypeCommand += [PSCustomObject]@{'Type' = @('group'); 'Url' = '/api/v2/groups'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = 'name'; 'Paginate' = $true; 'SupportRegexFilter' = $false; 'Limit' = 100; }
         $TypeCommand += [PSCustomObject]@{'Type' = @('application', 'applications'); 'Url' = '/api/applications'; 'Method' = 'GET'; 'ById' = '_id'; 'ByName' = 'displayName'; 'Paginate' = $true; 'SupportRegexFilter' = $false; 'Limit' = 100; }
         $TypeCommand += [PSCustomObject]@{'Type' = @('directory', 'directories'); 'Url' = '/api/v2/directories'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = 'name'; 'Paginate' = $true; 'SupportRegexFilter' = $false; 'Limit' = 100; }
         $TypeCommand += [PSCustomObject]@{'Type' = @('command', 'commands'); 'Url' = '/api/commands'; 'Method' = 'GET'; 'ById' = '_id'; 'ByName' = 'name'; 'Paginate' = $true; 'SupportRegexFilter' = $false; 'Limit' = 100; }
         $TypeCommand += [PSCustomObject]@{'Type' = @('radiusservers', 'radius_server'); 'Url' = '/api/radiusservers'; 'Method' = 'GET'; 'ById' = '_id'; 'ByName' = 'name'; 'Paginate' = $true; 'SupportRegexFilter' = $false; 'Limit' = 100; }
-
+        $TypeCommand += [PSCustomObject]@{'Type' = @('activedirectories', 'active_directory'); 'Url' = '/api/v2/activedirectories'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = 'domain'; 'Paginate' = $true; 'SupportRegexFilter' = $true; 'Limit' = 100; }
+        $TypeCommand += [PSCustomObject]@{'Type' = @('ldapservers', 'ldap_server'); 'Url' = '/api/v2/ldapservers'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = 'name'; 'Paginate' = $true; 'SupportRegexFilter' = $true; 'Limit' = 100; }
+        $TypeCommand += [PSCustomObject]@{'Type' = @('systemgroups', 'system_group'); 'Url' = '/api/v2/systemgroups'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = 'name'; 'Paginate' = $true; 'SupportRegexFilter' = $true; 'Limit' = 100; }
+        $TypeCommand += [PSCustomObject]@{'Type' = @('usergroups', 'user_group'); 'Url' = '/api/v2/usergroups'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = 'name'; 'Paginate' = $true; 'SupportRegexFilter' = $true; 'Limit' = 100; }
         $TypeCommand += [PSCustomObject]@{'Type' = @('policyresults'); 'Url' = '/api/v2/policies/{Policy_Id}/policyresults'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = $false; 'Paginate' = $true; 'SupportRegexFilter' = $false; 'Limit' = 100; }
         $TypeCommand += [PSCustomObject]@{'Type' = @('applicationUsers'); 'Url' = '/api/v2/applications/{Application_Id}/users'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = $false; 'Paginate' = $true; 'SupportRegexFilter' = $false; 'Limit' = 100; }
-        
-        $TypeCommand += [PSCustomObject]@{'Type' = @('activedirectories'); 'Url' = '/api/v2/activedirectories'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = 'domain'; 'Paginate' = $true; 'SupportRegexFilter' = $true; 'Limit' = 100; }
-        $TypeCommand += [PSCustomObject]@{'Type' = @('ldapservers', 'ldap_server'); 'Url' = '/api/v2/ldapservers'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = 'name'; 'Paginate' = $true; 'SupportRegexFilter' = $true; 'Limit' = 100; }
-        $TypeCommand += [PSCustomObject]@{'Type' = @('systemgroups'); 'Url' = '/api/v2/systemgroups'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = 'name'; 'Paginate' = $true; 'SupportRegexFilter' = $true; 'Limit' = 100; }
-        $TypeCommand += [PSCustomObject]@{'Type' = @('usergroups'); 'Url' = '/api/v2/usergroups'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = 'name'; 'Paginate' = $true; 'SupportRegexFilter' = $true; 'Limit' = 100; }
-        # 'active_directory', 'g_suite', 'office_365'
+        # 'g_suite', 'office_365'
     }
     Process
     {
