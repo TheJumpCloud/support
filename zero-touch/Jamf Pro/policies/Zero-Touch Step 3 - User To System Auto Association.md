@@ -8,7 +8,7 @@ Custom
 
 ## Options - General - Trigger - Custom - CUSTOM EVENT
 
-03_jc_account_association
+jc_account_association
 
 ## Options - General - EXECUTION FREQUENCY
 

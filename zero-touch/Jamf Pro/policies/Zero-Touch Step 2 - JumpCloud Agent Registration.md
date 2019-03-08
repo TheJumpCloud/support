@@ -8,7 +8,7 @@ Custom
 
 ## Options - General - Trigger - Custom - CUSTOM EVENT
 
-02_jc_agent_register
+jc_register_agent
 
 ## Options - General - EXECUTION FREQUENCY
 

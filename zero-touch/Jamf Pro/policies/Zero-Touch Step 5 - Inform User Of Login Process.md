@@ -1,12 +1,14 @@
 ## Options - General - DISPLAY NAME
 
+Zero-Touch Step 5 - Inform User Of Login Process
+
 ## Options - General - Trigger
 
 Custom
 
 ## Options - General - Trigger - Custom - CUSTOM EVENT
 
-05_jc_logout_info2
+jc_logout_info2
 
 ## Options - General - EXECUTION FREQUENCY
 

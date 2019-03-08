@@ -8,7 +8,7 @@ Custom
 
 ## Options - General - Trigger - Custom - CUSTOM EVENT
 
-06_jc_account_logout
+jc_account_logout
 
 ## Options - General - EXECUTION FREQUENCY
 
