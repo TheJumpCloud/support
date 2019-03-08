@@ -1,6 +1,6 @@
 **Configuring a Zero-Touch macOS Onboarding Experience Using the Apple Device Enrollment Program (DEP), jamf Pro, and JumpCloud**
 
-![zeroTouchJamfJumpCloudDiagram](https://github.com/TheJumpCloud/support/blob/sr-zero-touch-Jamf/zero-touch/Jamf%20Pro/diagrams/Zero-TouchJamf.png)
+![zeroTouchJamfJumpCloudDiagram](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Jamf%20Pro/diagrams/Zero-TouchJamf.png)
 
 **Table Of Contents**
 - [Prerequisites](#prerequisites)
