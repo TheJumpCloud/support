@@ -105,7 +105,7 @@ Log in with your JumpCloud username and password. DO NOT change the  "Account na
 
 Under "Options" > "Account Settings" >  select the type of account that you would like users to be created with. The [jc_account_association](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Jamf%20Pro/scripts/jc_account_association.md)script will respect this setting when binding users to their system in JumpCloud.
 
-If you are using the [jc_install_jcagent_and_service_account](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Jamf%20Pro/scripts/jc_install_jcagent_and_service_account.md) JumpCloud agent install script ensure the "Management Account" aligns under "Account Settings" aligns with the credentials entered for the values provided for the `SECURETOKEN_ADMIN_USERNAME=''` and
+If you are using the [jc_install_jcagent_and_service_account](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Jamf%20Pro/scripts/jc_install_jcagent_and_service_account.md) JumpCloud agent install script ensure the "Management Account" under "Account Settings" aligns with the credentials entered for the values provided for the `SECURETOKEN_ADMIN_USERNAME=''` and
 `SECURETOKEN_ADMIN_PASSWORD=''` variables in this script.
 
 ## Testing the workflow
