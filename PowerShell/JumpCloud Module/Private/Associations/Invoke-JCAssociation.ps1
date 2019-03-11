@@ -7,19 +7,17 @@ Function Invoke-JCAssociation
     )
     DynamicParam
     {
-        # $InputJCObject = Get-JCObject -Type:($InputObjectType);
-        # $InputJCObjectIds = $InputJCObject.($InputJCObject.ById | Select-Object -Unique);
-        # $InputJCObjectNames = $InputJCObject.($InputJCObject.ByName | Select-Object -Unique);
+        $InputJCObject = Get-JCObject -Type:($InputObjectType);
         $JCAssociationType = Get-JCAssociationType -InputObject:($InputObjectType);
         # Build parameter array
         $Params = @()
         # Define the new parameters
-        $Params += @{'Name' = 'TargetObjectType'; 'Type' = [System.String]; 'Position' = 2; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ValidateSet' = $JCAssociationType.Targets; }
-        $Params += @{'Name' = 'InputObjectId'; 'Type' = [System.String]; 'Position' = 3; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ById'); }# 'ValidateSet' = $InputJCObjectIds; }
-        $Params += @{'Name' = 'InputObjectName'; 'Type' = [System.String]; 'Position' = 4; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ByName'); }#}'ValidateSet' = $InputJCObjectNames; }
+        $Params += @{'Name' = 'InputObjectId'; 'Type' = [System.String]; 'Position' = 2; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ById'); 'ValidateSet' = @($InputJCObject.($InputJCObject.ById | Select-Object -Unique)); }
+        $Params += @{'Name' = 'InputObjectName'; 'Type' = [System.String]; 'Position' = 3; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ByName'); 'ValidateSet' = @($InputJCObject.($InputJCObject.ByName | Select-Object -Unique)); }
+        $Params += @{'Name' = 'TargetObjectType'; 'Type' = [System.String]; 'Position' = 4; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ValidateSet' = $JCAssociationType.Targets; }
         If ($Action -eq 'get')
         {
-            # $Params += @{'Name' = 'HideTargetData'; 'Type' = [System.Boolean]; 'Position' = 7; 'ValueFromPipelineByPropertyName' = $true; 'DontShow' = $true; 'ValidateSet' = ($true, $false); }
+            $Params += @{'Name' = 'HideTargetData'; 'Type' = [Switch]; 'Position' = 5; 'ValueFromPipelineByPropertyName' = $true; }
         }
         If ($Action -in ('add', 'remove'))
         {
@@ -63,6 +61,8 @@ Function Invoke-JCAssociation
                 $TargetObjectSearchByValue = $TargetObjectName
             }
         }
+        # Set the $InputObjectType to use the plural version of value
+        $InputObjectType = $JCAssociationType.InputObject
         # Get InputObject object.
         $InputObject = Get-JCObject -Type:($InputObjectType) -SearchBy:($SearchBy) -SearchByValue:($InputObjectSearchByValue)
         $InputObjectId = $InputObject.($InputObject.ById)

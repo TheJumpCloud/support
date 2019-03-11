@@ -6,15 +6,13 @@ Function Remove-JCAssociation
     )
     DynamicParam
     {
-        # $InputJCObject = Get-JCObject -Type:($InputObjectType);
-        # $InputJCObjectIds = $InputJCObject.($InputJCObject.ById | Select-Object -Unique);
-        # $InputJCObjectNames = $InputJCObject.($InputJCObject.ByName | Select-Object -Unique);
+        $InputJCObject = Get-JCObject -Type:($InputObjectType);
         $JCAssociationType = Get-JCAssociationType -InputObject:($InputObjectType);
         # Build parameter array
         $Params = @()
         # Define the new parameters
-        $Params += @{'Name' = 'InputObjectId'; 'Type' = [System.String]; 'Position' = 1; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ById'); }# 'ValidateSet' = $InputJCObjectIds; }
-        $Params += @{'Name' = 'InputObjectName'; 'Type' = [System.String]; 'Position' = 2; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ByName'); }# 'ValidateSet' = $InputJCObjectNames; }
+        $Params += @{'Name' = 'InputObjectId'; 'Type' = [System.String]; 'Position' = 1; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ById'); 'ValidateSet' = @($InputJCObject.($InputJCObject.ById | Select-Object -Unique)); }
+        $Params += @{'Name' = 'InputObjectName'; 'Type' = [System.String]; 'Position' = 2; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ByName'); 'ValidateSet' = @($InputJCObject.($InputJCObject.ByName | Select-Object -Unique)); }
         $Params += @{'Name' = 'TargetObjectType'; 'Type' = [System.String]; 'Position' = 3; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ValidateSet' = $JCAssociationType.Targets; }
         $Params += @{'Name' = 'TargetObjectId'; 'Type' = [System.String]; 'Position' = 4; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ById'); }
         $Params += @{'Name' = 'TargetObjectName'; 'Type' = [System.String]; 'Position' = 5; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ByName'); }
@@ -31,17 +29,17 @@ Function Remove-JCAssociation
     }
     Process
     {
-        $Results = Switch ($PSCmdlet.ParameterSetName)
-        {
-            'ById'
-            {
-                Invoke-JCAssociation -Action:('remove') -InputObjectType:($InputObjectType) -InputObjectId:($InputObjectId) -TargetObjectType:($TargetObjectType) -TargetObjectId:($TargetObjectId);
-            }
-            'ByName'
-            {
-                Invoke-JCAssociation -Action:('remove') -InputObjectType:($InputObjectType) -InputObjectName:($InputObjectName) -TargetObjectType:($TargetObjectType) -TargetObjectName:($TargetObjectName);
-            }
-        }
+        $Action = 'remove'
+        # Create hash table to store variables
+        $FunctionParameters = [ordered]@{}
+        # Add input parameters from function in to hash table and filter out unnecessary parameters
+        $PSBoundParameters.GetEnumerator() | ForEach-Object {$FunctionParameters.Add($_.Key, $_.Value) | Out-Null}
+        # Add parameters from the script to the FunctionParameters hashtable
+        $FunctionParameters.Add('Action', $Action) | Out-Null
+        Write-Debug ('Splatting Parameters');
+        If ($DebugPreference -ne 'SilentlyContinue') {$FunctionParameters}
+        # Run the command
+        $Results = Invoke-JCAssociation @FunctionParameters
     }
     End
     {
