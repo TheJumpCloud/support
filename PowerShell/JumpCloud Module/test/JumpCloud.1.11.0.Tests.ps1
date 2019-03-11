@@ -1,38 +1,11 @@
-## Generic Test
-# $SingleAdminAPIKey = ''
-# Describe "Connect-JCOnline" {
-
-#     It "Connects to JumpCloud with a single admin API Key using force" {
-#         $Connect = Connect-JCOnline -JumpCloudAPIKey "$SingleAdminAPIKey" -force
-#         $Connect | Should -be $null
-#     }
-# }
-. ('/Users/epanipinto/Documents/LoadJumpCloudModule.ps1')
-# # Generate $Associations object records by looping through each association type and its target types
-# $JCAssociationTypes = Get-JCAssociationType
-# ForEach ($JCAssociationType In $JCAssociationTypes)
-# {
-#     $InputObjectType = $JCAssociationType.InputObject
-#     $TargetObjectTypes = $JCAssociationType.Targets
-#     ForEach ($TargetObjectType In $TargetObjectTypes)
-#     {
-#         $InputObject = Get-JCObject -Type:([string]$InputObjectType) | Get-Random #| Select-Object -First 1
-#         $InputObjectId = $InputObject.($InputObject.ById)
-#         $InputObjectName = $InputObject.($InputObject.ByName)
-#         $TargetObject = Get-JCObject -Type:([string]$TargetObjectType) | Get-Random #| Select-Object -First 1
-#         $TargetObjectId = $TargetObject.($TargetObject.ById)
-#         $TargetObjectName = $TargetObject.($TargetObject.ByName)
-#         If (!($InputObjectType)) {$InputObjectType = 'UNKNOWN'}
-#         If (!($InputObjectId)) {$InputObjectId = 'UNKNOWN'}
-#         If (!($InputObjectName)) {$InputObjectName = 'UNKNOWN'}
-#         If (!($TargetObjectType)) {$TargetObjectType = 'UNKNOWN'}
-#         If (!($TargetObjectId)) {$TargetObjectId = 'UNKNOWN'}
-#         If (!($TargetObjectName)) {$TargetObjectName = 'UNKNOWN'}
-#         Write-Host ('$Associations' + " += [PSCustomObject]@{'InputObjectType' = '$InputObjectType'; 'InputObjectId' = '$InputObjectId'; 'InputObjectName' = '$InputObjectName'; 'TargetObjectType' = '$TargetObjectType'; 'TargetObjectId' = '$TargetObjectId'; 'TargetObjectName' = '$TargetObjectName'; }")
-#         # Write-Host ("$InputObjectType`t$InputObjectId`t$InputObjectName`t$TargetObjectType`t$TargetObjectId`t$TargetObjectName")
-#         # $Associations += [PSCustomObject]@{'InputObjectType' = $InputObjectType; 'InputObjectId' = $InputObjectId; 'InputObjectName' = $InputObjectName; 'TargetObjectType' = $TargetObjectType; 'TargetObjectId' = $TargetObjectId; 'TargetObjectName' = $TargetObjectName; }
-#     }
-# }
+# Generic Test
+$SingleAdminAPIKey = ''
+Describe "Connect-JCOnline" {
+    It "Connects to JumpCloud with a single admin API Key using force" {
+        $Connect = Connect-JCOnline -JumpCloudAPIKey "$SingleAdminAPIKey" -force
+        $Connect | Should -BeNullOrEmpty
+    }
+}
 Describe "Association Tests" {
     BeforeAll {
         # $DebugPreference = 'Continue'
@@ -46,57 +19,43 @@ Describe "Association Tests" {
     }
     # BeforeEach {}
     # AfterEach {}
-
-
-    # Get-JCAssociationType
-    # Invoke-JCAssociation
-
-    # New-JCAssociation
-    # Remove-JCAssociation
-    # Get-JCAssociation
-
-    # Get-JCHash
-    # Get-JCObject
-    # Invoke-JCApi
-    # New-DynamicParameter
-
-    # If exists - Get
-    # If not exist - Remove
-    # New
-    # Get
-    # Set
-    # Remove
-    
-    
+    $TestMethods = ('ById', 'ByName')
+    # Generate $Associations object records by looping through each association type and its target types
     $Associations = @()
-    $Associations += [PSCustomObject]@{'InputObjectType' = 'activedirectories'; 'InputObjectId' = 'UNKNOWN'; 'InputObjectName' = 'UNKNOWN'; 'TargetObjectType' = 'user'; 'TargetObjectId' = '5c75afc356b1317250b5fe54'; 'TargetObjectName' = 'Batman'; }
-    $Associations += [PSCustomObject]@{'InputObjectType' = 'activedirectories'; 'InputObjectId' = 'UNKNOWN'; 'InputObjectName' = 'UNKNOWN'; 'TargetObjectType' = 'user_group'; 'TargetObjectId' = '5c75afd145886d3955ae1703'; 'TargetObjectName' = 'MARVEL'; }
-    $Associations += [PSCustomObject]@{'InputObjectType' = 'commands'; 'InputObjectId' = '5c75afda56b1317250b5fe68'; 'InputObjectName' = 'Get Local Users'; 'TargetObjectType' = 'system'; 'TargetObjectId' = '5c75b034d4324071b68998dc'; 'TargetObjectName' = 'DESKTOP-UJIRR4U'; }
-    $Associations += [PSCustomObject]@{'InputObjectType' = 'commands'; 'InputObjectId' = '5c75afda56b1317250b5fe68'; 'InputObjectName' = 'Get Local Users'; 'TargetObjectType' = 'system_group'; 'TargetObjectId' = '5c785ca145886d3955aefb4a'; 'TargetObjectName' = 'SystemGroup1'; }
-    $Associations += [PSCustomObject]@{'InputObjectType' = 'ldapservers'; 'InputObjectId' = '5c0fdc5d45886d6cbd461378'; 'InputObjectName' = 'jumpcloud'; 'TargetObjectType' = 'user'; 'TargetObjectId' = '5c75afc14b697f234853b0d2'; 'TargetObjectName' = 'GreenLantern'; }
-    $Associations += [PSCustomObject]@{'InputObjectType' = 'ldapservers'; 'InputObjectId' = '5c0fdc5d45886d6cbd461378'; 'InputObjectName' = 'jumpcloud'; 'TargetObjectType' = 'user_group'; 'TargetObjectId' = '5c548360232e1164e94b8a6d'; 'TargetObjectName' = 'TestGroup'; }
-    $Associations += [PSCustomObject]@{'InputObjectType' = 'policies'; 'InputObjectId' = 'UNKNOWN'; 'InputObjectName' = 'UNKNOWN'; 'TargetObjectType' = 'system'; 'TargetObjectId' = '5c7858424345ab70018e08bb'; 'TargetObjectName' = 'darkhorse1'; }
-    $Associations += [PSCustomObject]@{'InputObjectType' = 'policies'; 'InputObjectId' = 'UNKNOWN'; 'InputObjectName' = 'UNKNOWN'; 'TargetObjectType' = 'system_group'; 'TargetObjectId' = '5c785cab45886d3955aefb4f'; 'TargetObjectName' = 'SystemGroup2'; }
-    $Associations += [PSCustomObject]@{'InputObjectType' = 'applications'; 'InputObjectId' = 'UNKNOWN'; 'InputObjectName' = 'UNKNOWN'; 'TargetObjectType' = 'user_group'; 'TargetObjectId' = '5c548360232e1164e94b8a6d'; 'TargetObjectName' = 'TestGroup'; }
-    $Associations += [PSCustomObject]@{'InputObjectType' = 'radiusservers'; 'InputObjectId' = '5c75bb9a2dff6d18cff199ca'; 'InputObjectName' = 'TestRadius'; 'TargetObjectType' = 'user_group'; 'TargetObjectId' = '5c75afd145886d3955ae1703'; 'TargetObjectName' = 'MARVEL'; }
-    $Associations += [PSCustomObject]@{'InputObjectType' = 'systemgroups'; 'InputObjectId' = '5c785cab45886d3955aefb4f'; 'InputObjectName' = 'SystemGroup2'; 'TargetObjectType' = 'policy'; 'TargetObjectId' = 'UNKNOWN'; 'TargetObjectName' = 'UNKNOWN'; }
-    $Associations += [PSCustomObject]@{'InputObjectType' = 'systemgroups'; 'InputObjectId' = '5c785ca145886d3955aefb4a'; 'InputObjectName' = 'SystemGroup1'; 'TargetObjectType' = 'user_group'; 'TargetObjectId' = '5c75afd145886d3955ae1703'; 'TargetObjectName' = 'MARVEL'; }
-    $Associations += [PSCustomObject]@{'InputObjectType' = 'systemgroups'; 'InputObjectId' = '5c785cab45886d3955aefb4f'; 'InputObjectName' = 'SystemGroup2'; 'TargetObjectType' = 'command'; 'TargetObjectId' = '5c75afda56b1317250b5fe68'; 'TargetObjectName' = 'Get Local Users'; }
-    $Associations += [PSCustomObject]@{'InputObjectType' = 'systems'; 'InputObjectId' = '5c75b034d4324071b68998dc'; 'InputObjectName' = 'DESKTOP-UJIRR4U'; 'TargetObjectType' = 'policy'; 'TargetObjectId' = 'UNKNOWN'; 'TargetObjectName' = 'UNKNOWN'; }
-    $Associations += [PSCustomObject]@{'InputObjectType' = 'systems'; 'InputObjectId' = '5c75b034d4324071b68998dc'; 'InputObjectName' = 'DESKTOP-UJIRR4U'; 'TargetObjectType' = 'user'; 'TargetObjectId' = '5c75afc72dff6d18cff194e6'; 'TargetObjectName' = 'Magneto'; }
-    $Associations += [PSCustomObject]@{'InputObjectType' = 'systems'; 'InputObjectId' = '5c75b034d4324071b68998dc'; 'InputObjectName' = 'DESKTOP-UJIRR4U'; 'TargetObjectType' = 'command'; 'TargetObjectId' = '5c75afda56b1317250b5fe68'; 'TargetObjectName' = 'Get Local Users'; }
-    $Associations += [PSCustomObject]@{'InputObjectType' = 'usergroups'; 'InputObjectId' = '5c75afd145886d3955ae1703'; 'InputObjectName' = 'MARVEL'; 'TargetObjectType' = 'active_directory'; 'TargetObjectId' = 'UNKNOWN'; 'TargetObjectName' = 'UNKNOWN'; }
-    $Associations += [PSCustomObject]@{'InputObjectType' = 'usergroups'; 'InputObjectId' = '5c75afce45886d3955ae1701'; 'InputObjectName' = 'D.C.'; 'TargetObjectType' = 'application'; 'TargetObjectId' = 'UNKNOWN'; 'TargetObjectName' = 'UNKNOWN'; }
-    $Associations += [PSCustomObject]@{'InputObjectType' = 'usergroups'; 'InputObjectId' = '5c75afce45886d3955ae1701'; 'InputObjectName' = 'D.C.'; 'TargetObjectType' = 'ldap_server'; 'TargetObjectId' = '5c0fdc5d45886d6cbd461378'; 'TargetObjectName' = 'jumpcloud'; }
-    $Associations += [PSCustomObject]@{'InputObjectType' = 'usergroups'; 'InputObjectId' = '5c548360232e1164e94b8a6d'; 'InputObjectName' = 'TestGroup'; 'TargetObjectType' = 'radius_server'; 'TargetObjectId' = '5c75bb9a2dff6d18cff199ca'; 'TargetObjectName' = 'TestRadius'; }
-    $Associations += [PSCustomObject]@{'InputObjectType' = 'usergroups'; 'InputObjectId' = '5c548360232e1164e94b8a6d'; 'InputObjectName' = 'TestGroup'; 'TargetObjectType' = 'system_group'; 'TargetObjectId' = '5c785cab45886d3955aefb4f'; 'TargetObjectName' = 'SystemGroup2'; }
-    $Associations += [PSCustomObject]@{'InputObjectType' = 'users'; 'InputObjectId' = '5c75afc14b697f234853b0d2'; 'InputObjectName' = 'GreenLantern'; 'TargetObjectType' = 'active_directory'; 'TargetObjectId' = 'UNKNOWN'; 'TargetObjectName' = 'UNKNOWN'; }
-    $Associations += [PSCustomObject]@{'InputObjectType' = 'users'; 'InputObjectId' = '5c75afc556b1317250b5fe5c'; 'InputObjectName' = 'Spiderman'; 'TargetObjectType' = 'ldap_server'; 'TargetObjectId' = '5c0fdc5d45886d6cbd461378'; 'TargetObjectName' = 'jumpcloud'; }
-    $Associations += [PSCustomObject]@{'InputObjectType' = 'users'; 'InputObjectId' = '5c75afc62f2a730f31771fe7'; 'InputObjectName' = 'DoctorDoom'; 'TargetObjectType' = 'system'; 'TargetObjectId' = '5c7858424345ab70018e08bb'; 'TargetObjectName' = 'darkhorse1'; }
+    $JCAssociationTypes = Get-JCAssociationType
+    ForEach ($JCAssociationType In $JCAssociationTypes)
+    {
+        $InputObjectType = $JCAssociationType.InputObject
+        $TargetObjectTypes = $JCAssociationType.Targets
+        ForEach ($TargetObjectType In $TargetObjectTypes)
+        {
+            $InputObject = Get-JCObject -Type:([string]$InputObjectType) | Get-Random #| Select-Object -First 1
+            $InputObjectId = $InputObject.($InputObject.ById)
+            $InputObjectName = $InputObject.($InputObject.ByName)
+            $TargetObject = Get-JCObject -Type:([string]$TargetObjectType) | Get-Random #| Select-Object -First 1
+            $TargetObjectId = $TargetObject.($TargetObject.ById)
+            $TargetObjectName = $TargetObject.($TargetObject.ByName)
+            If (!($InputObjectName)) {$InputObjectName = 'UNKNOWN'; Write-Error ("Need to create: $InputObjectType") -BackgroundColor:('Red') -ForegroundColor:('Black'); }
+            If (!($TargetObjectName)) {$TargetObjectName = 'UNKNOWN'; Write-Error ("Need to create: $TargetObjectType") -BackgroundColor:('Red') -ForegroundColor:('Black'); }
+            If (!($InputObjectType)) {$InputObjectType = 'UNKNOWN'; }
+            If (!($InputObjectId)) {$InputObjectId = 'UNKNOWN'; }
+            If (!($TargetObjectType)) {$TargetObjectType = 'UNKNOWN'; }
+            If (!($TargetObjectId)) {$TargetObjectId = 'UNKNOWN'; }
+            # Write-Host ('$Associations' + " += [PSCustomObject]@{'InputObjectType' = '$InputObjectType'; 'InputObjectId' = '$InputObjectId'; 'InputObjectName' = '$InputObjectName'; 'TargetObjectType' = '$TargetObjectType'; 'TargetObjectId' = '$TargetObjectId'; 'TargetObjectName' = '$TargetObjectName'; }")
+            # Write-Host ("$InputObjectType`t$InputObjectId`t$InputObjectName`t$TargetObjectType`t$TargetObjectId`t$TargetObjectName")
+            $Associations += [PSCustomObject]@{'InputObjectType' = $InputObjectType; 'InputObjectId' = $InputObjectId; 'InputObjectName' = $InputObjectName; 'TargetObjectType' = $TargetObjectType; 'TargetObjectId' = $TargetObjectId; 'TargetObjectName' = $TargetObjectName; }
+        }
+    }
+    # Filter out UNKNOWN's from the dataset.
     $AssociationObject = $Associations | Where-Object {$_.InputObjectId -ne 'UNKNOWN' -and $_.InputObjectName -ne 'UNKNOWN' -and $_.TargetObjectId -ne 'UNKNOWN' -and $_.TargetObjectName -ne 'UNKNOWN'}
-    # $TestMethods = ('ById', 'ByName')
-    # $TestMethods = ('ById')
-    $TestMethods = ('ByName')
+    Context ("Get each type of object association possible and build list of objects to test with.") {
+        It("Validate that all object types exist within the specified test environment.") {
+            $Associations | Where-Object {$_.InputObjectId -eq 'UNKNOWN'} | Should -BeNullOrEmpty
+            $Associations | Where-Object {$_.InputObjectName -eq 'UNKNOWN'} | Should -BeNullOrEmpty
+            $Associations | Where-Object {$_.TargetObjectId -eq 'UNKNOWN'} | Should -BeNullOrEmpty
+            $Associations | Where-Object {$_.TargetObjectName -eq 'UNKNOWN'} | Should -BeNullOrEmpty
+        }
+    }
     ForEach ($AssociationRecord In $AssociationObject)
     {
         $SourceInputObjectType = $AssociationRecord.InputObjectType
@@ -105,7 +64,6 @@ Describe "Association Tests" {
         $SourceTargetObjectType = $AssociationRecord.TargetObjectType
         $SourceTargetObjectId = $AssociationRecord.TargetObjectId
         $SourceTargetObjectName = $AssociationRecord.TargetObjectName
-
         ForEach ($TestMethod In  $TestMethods)
         {
             Context ("When Association functions are called with parameterSet '$TestMethod' for InputObjectType:'$SourceInputObjectType';InputObjectName:'$SourceInputObjectName';TargetObjectType:'$SourceTargetObjectType';TargetObjectName:'$SourceTargetObjectName';") {
@@ -214,179 +172,3 @@ Describe "Association Tests" {
         }
     }
 }
-
-
-
-# ############################################################
-# # Get-JCRadiusServer
-# ############################################################
-# Get-JCRadiusServer -Verbose | Select *
-# Get-JCRadiusServer -RadiusServerId:('5c5c371704c4b477964ab4fa') -Verbose
-# Get-JCRadiusServer -RadiusServerName:('Test Me') -Verbose -Debug
-# ############################################################
-# # Remove-JCRadiusServer
-# ############################################################
-# Remove-JCRadiusServer -RadiusServerName:('Test Me 2') -Verbose
-# Remove-JCRadiusServer -RadiusServerId:('5c7e7d6a48706b3edab8a69b')
-# Remove-JCRadiusServer -RadiusServerName:('Test Me 2') -force -Verbose
-# ############################################################
-# New-JCRadiusServer -networkSourceIp:('233.233.233.233') -sharedSecret:('HqySCjDJU!7YsQTG2cTHNRV9pF6lSc5') -name:('Test Me 2') -Verbose
-# ############################################################
-# # Set-JCRadiusServer
-# ############################################################
-# Set-JCRadiusServer  -RadiusServerName:('Test Me 2') -NewNetworkSourceIp:('233.233.233.234') -NewSharedSecret:('HqySCjDJU!7YsQTG2cTHNRV9pF6lSc5') -Verbose
-# Set-JCRadiusServer  -RadiusServerName:('Test Me 2') -NewSharedSecret:('HqySCjDJU!7YsQTG2cTHNRV9pF6lSc6') -Verbose
-# Set-JCRadiusServer  -RadiusServerName:('Test Me 2') -NewRadiusServerName:('Test Me 3') -Verbose
-# Set-JCRadiusServer  -RadiusServerName:('Test Me 3') -NewRadiusServerName:('Test Me 2') -NewNetworkSourceIp:('233.233.233.233') -NewSharedSecret:('HqySCjDJU!7YsQTG2cTHNRV9pF6lSc5') -Verbose
-# ############################################################
-# # Add-JCRadiusServerGroup
-# ############################################################
-# Add-JCRadiusServerGroup -RadiusServerName:('Test Me 2') -UserGroupName:('201') -Verbose
-# ############################################################
-# # Get-JCRadiusServerGroup
-# ############################################################
-# Get-JCRadiusServerGroup -RadiusServerName:('Test Me 2')  -Verbose
-# ############################################################
-# # Remove-JCRadiusServerGroup
-# ############################################################
-# Remove-JCRadiusServerGroup -RadiusServerName:('Test Me 2') -UserGroupName:('201') -Verbose
-
-
-
-
-
-
-
-# ##############################################################################################################################
-# # /Private/NestedFunctions/Associations/New-JCAssociation.ps1
-# ##############################################################################################################################
-# # New-JCAssociation -InputObjectType:('radiusservers') -InputObjectId:('5c5c371704c4b477964ab4fa') -TargetObjectType:('user_group') -TargetObjectId:('59f20255c9118021fa01b80f') -Verbose # The API does not allow you to filter groups by Id.
-# New-JCAssociation -InputObjectType:('radiusservers') -InputObjectName:('Test Me') -TargetObjectType:('user_group') -TargetObjectName:('All users') -Verbose
-# ##############################################################################################################################
-# # /Private/NestedFunctions/Associations/Remove-JCAssociation.ps1
-# ##############################################################################################################################
-# # Remove-JCAssociation -InputObjectType:('radiusservers') -InputObjectId:('5c5c371704c4b477964ab4fa') -TargetObjectType:('user_group') -TargetObjectId:('59f20255c9118021fa01b80f') -Verbose # The API does not allow you to filter groups by Id.
-# Remove-JCAssociation -InputObjectType:('radiusservers') -InputObjectName:('Test Me') -TargetObjectType:('user_group') -TargetObjectName:('All users') -Verbose
-# ##############################################################################################################################
-# # /Private/NestedFunctions/Associations/Get-JCAssociation.ps1
-# ##############################################################################################################################
-# # Users to Systems
-# Get-JCAssociation -InputObjectType:('users') -InputObjectId:('5ab915cf861178491b8fc399') -TargetObjectType:('system') -Verbose| FT
-# Get-JCAssociation -InputObjectType:('users') -InputObjectName:('cool.dude') -TargetObjectType:('system') -Verbose | FT
-# # Systems to Users
-# Get-JCAssociation -InputObjectType:('systems') -InputObjectId:('5b193f483839366dd7ee3981') -TargetObjectType:('user') -Verbose | FT
-# Get-JCAssociation -InputObjectType:('systems') -InputObjectName:('Active_AWS Linux') -TargetObjectType:('user') -Verbose | FT
-
-
-# Get-JCAssociation -InputObjectType:('radiusservers') -InputObjectName:'Test Me 2' -TargetObjectType:('user') -Verbose | FT
-# Get-JCAssociation -InputObjectType:'radiusservers' -InputObjectName:'Test Me 2' -TargetObjectType:'user_group' -Verbose
-
-# New-JCAssociation -InputObjectType:'radiusservers' -InputObjectName:'Test Me 2' -TargetObjectType:'user' -TargetObjectName:'cool.dude'
-# Remove-JCAssociation -InputObjectType:'radiusservers' -InputObjectName:'Test Me 2' -TargetObjectType:'user' -TargetObjectName:'cool.dude'
-
-
-
-# ##############################################################################################################################
-# # /Private/NestedFunctions/Associations/Invoke-JCAssociation.ps1
-# ##############################################################################################################################
-# # Add association
-# # Invoke-JCAssociation -Action:('add') -InputObjectType:('radiusservers') -InputObjectId:('5c5c371704c4b477964ab4fa') -TargetObjectType:('user_group') -TargetObjectId:('59f20255c9118021fa01b80f') -Verbose # The API does not allow you to filter groups by Id.
-# Invoke-JCAssociation -Action:('add') -InputObjectType:('radiusservers') -InputObjectName:('Test Me') -TargetObjectType:('user_group') -TargetObjectName:('All users') -Verbose -Debug
-# Invoke-JCAssociation -Action:('add') -InputObjectType:('radiusservers') -InputObjectName:('Test Me') -TargetObjectName:('All users')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# # Remove association
-# # Invoke-JCAssociation -Action:('remove') -InputObjectType:('radiusservers') -InputObjectId:('5c5c371704c4b477964ab4fa') -TargetObjectType:('user_group') -TargetObjectId:('59f20255c9118021fa01b80f') -Verbose # The API does not allow you to filter groups by Id.
-# Invoke-JCAssociation -Action:('remove') -InputObjectType:('radiusservers') -InputObjectName:('Test Me') -TargetObjectType:('user_group') -TargetObjectName:('All users') -Verbose
-
-# # Get association
-# # Users to Systems
-# Invoke-JCAssociation -Action:('get') -InputObjectType:('users') -InputObjectId:('5ab915cf861178491b8fc399') -TargetObjectType:('system') -Verbose
-# Invoke-JCAssociation -Action:('get') -InputObjectType:('users') -InputObjectName:('cool.dude') -TargetObjectType:('system') -Verbose
-# # Systems to Users
-# Invoke-JCAssociation -Action:('get') -InputObjectType:('systems') -InputObjectId:('5b193f483839366dd7ee3981') -TargetObjectType:('user') -Verbose
-# Invoke-JCAssociation -Action:('get') -InputObjectType:('systems') -InputObjectName:('Active_AWS Linux') -TargetObjectType:('user') -Verbose
-
-# ##############################################################################################################################
-# # /Private/HashFunctions/Get-JCHash.ps1 - Example 1
-# ##############################################################################################################################
-# # Get specific data
-# $UserHash = Get-JCHash -Url:('/api/search/systemusers') -Method:('POST') -Key:('username') -Values:(@('_id', 'email', 'firstname')) -Limit:(100) -Verbose
-# # Verify count of users
-# Write-Host ('Returning ' + [string]$UserHash.Count + ' users.') -BackgroundColor:('Cyan')
-# # Search data for specific record
-# $User = $UserHash.Get_Item('elliotttest')
-# # Do something with record
-# $User
-# ##############################################################################################################################
-# # /Private/HashFunctions/Get-JCHash.ps1 - Example 2
-# ##############################################################################################################################
-# # Get all data
-# $UserHash = Get-JCHash -Url:('/api/search/systemusers') -Method:('POST') -Key:('username') -Verbose -Limit:(100)
-# # Verify count of users
-# Write-Host ('Returning ' + [string]$UserHash.Count + ' users.') -BackgroundColor:('Cyan')
-# # Search data for specific record
-# $User = $UserHash.Get_Item('elliotttest')
-# # Do something with record
-# $User
-
-# ##############################################################################################################################
-# # /Private/NestedFunctions/Invoke-JCApi.ps1
-# ##############################################################################################################################
-# Invoke-JCApi -Url:('/api/search/systemusers?filter=username:eq:elliotttest') -Method:('POST') -Body:('{"filter":[{"username":"elliotttest"}]}') -Paginate:($False) -Fields:(@('activated', 'username'))
-# Invoke-JCApi -Url:('/api/search/systemusers') -Method:('POST') -Body:('{}') -Paginate:($True) -Fields:('') 
-
-# ##############################################################################################################################
-# # /Private/NestedFunctions/Get-JCObject.ps1
-# ##############################################################################################################################
-# $user = 'elliotttest'
-# $system = 'Active_AWS Linux'
-# $policies = 'Bespoke dog 1'
-# $group = '201'
-# $application = 'dropbox'
-# $directory = 'Google Apps'
-# $command = 'ElliottTest'
-# $radiusservers = 'Test Me'
-# # Get-JCObject -Type:('system') -SearchBy:('ByName') -SearchByValue:($system) -Verbose
-# # Get-JCObject -Type:('user') -SearchBy:('ByName') -SearchByValue:($user) -Fields:(@('activated', 'username')) -Verbose | Select *
-# # Get-JCObject -Type:('policies') -SearchBy:('ByName') -SearchByValue:($policies)
-# # Get-JCObject -Type:('group') -SearchBy:('ByName') -SearchByValue:($group)
-# # Get-JCObject -Type:('application') -SearchBy:('ByName') -SearchByValue:($application)
-# # Get-JCObject -Type:('directory') -SearchBy:('ByName') -SearchByValue:($directory)
-# # Get-JCObject -Type:('command') -SearchBy:('ByName') -SearchByValue:($command)
-# # Get-JCObject -Type:('radiusservers') -SearchBy:('ByName') -SearchByValue:($radiusservers)
-
-# # Get-JCObject -Type:('user') -ReturnAll -Verbose
-# # Get-JCObject -Type:('system') -ReturnAll
-# # Get-JCObject -Type:('policies') -ReturnAll
-# # Get-JCObject -Type:('group') -ReturnAll
-# # Get-JCObject -Type:('application') -ReturnAll
-# # Get-JCObject -Type:('directory') -ReturnAll
-# # Get-JCObject -Type:('command') -ReturnAll
-# # Get-JCObject -Type:('radiusservers') -ReturnAll
-
-# # Get-JCObject -Type:('policies') -SearchBy:('ByName') -SearchByValue:($policies) | Select-Object -Unique | ForEach-Object {Get-JCObject -Type:('policyresults') -SearchBy:('ById') -SearchByValue:($_.($_.ById)) -Verbose}
-# # Get-JCObject -Type:('application') -SearchBy:('ByName') -SearchByValue:($application) | Select-Object -Unique | ForEach-Object { Get-JCObject -Type:('applicationUsers') -SearchBy:('ById') -SearchByValue:($_.($_.ById)) -Verbose}
-
-# $Type = 'radiusservers'
-# $SearchValue = 'test'
-# $a = Get-JCObject -Type:($Type) -SearchBy:('ByName') -SearchByValue:($SearchValue) -Limit:(100) -Verbose | Select name
-# $b = Get-JCObject -Type:($Type) -Limit:(100) -Verbose | Select name | Where-Object {$_.name -like $SearchValue}
-# Compare-Object $a $b -IncludeEqual
-
-# Get-JCObject -Type:('systems') -SearchBy:('ByName') -SearchByValue:('*desktop*') -Fields:('displayname') -Verbose -Limit 2| Select *
-# Invoke-JCApi -Body:('{"filter":[{"displayName":"ElliottTest"}]}') -Fields:('displayName') -Method:('POST') -Paginate:($True) -Url:('/api/search/systems?filter=displayName:eq:ElliottTest') -Verbose:($True)
