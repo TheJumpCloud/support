@@ -24,9 +24,9 @@ Describe "Association Tests" {
     $Associations = @()
     $TypeExclusionList = @('gsuites', 'g_suite', 'office365s', 'office_365')
     $JCAssociationTypes = Get-JCAssociationType
-    ForEach ($JCAssociationType In $JCAssociationTypes | Where-Object {$_.InputObject -notin $TypeExclusionList})
+    ForEach ($JCAssociationType In $JCAssociationTypes | Where-Object {$_.Singular -notin $TypeExclusionList -and $_.Plural -notin $TypeExclusionList})
     {
-        $InputObjectType = $JCAssociationType.InputObject
+        $InputObjectType = $JCAssociationType.Plural
         $TargetObjectTypes = $JCAssociationType.Targets
         ForEach ($TargetObjectType In $TargetObjectTypes| Where-Object {$_ -notin $TypeExclusionList})
         {
