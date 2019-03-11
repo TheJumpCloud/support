@@ -6,8 +6,9 @@ Function Get-JCObject
         [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 1, ParameterSetName = 'ByValue')][ValidateNotNullOrEmpty()][ValidateSet('ById', 'ByName')][string]$SearchBy,
         [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 2, ParameterSetName = 'ByValue', HelpMessage = 'Specify the item which you want to search for. Supports wildcard searches using: *')][ValidateNotNullOrEmpty()][string]$SearchByValue,
         [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 3, HelpMessage = 'An array of the fields/properties/columns you want to return from the search.')][ValidateNotNullOrEmpty()][array]$Fields = @(),
-        [Parameter(Mandatory = $false, Position = 4)][ValidateNotNullOrEmpty()][ValidateRange(1, [int]::MaxValue)][int]$Limit = 100,
-        [Parameter(Mandatory = $false, Position = 5)][ValidateNotNullOrEmpty()][ValidateRange(0, [int]::MaxValue)][int]$Skip = 0
+        [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 4)][ValidateNotNullOrEmpty()][ValidateRange(1, [int]::MaxValue)][int]$Limit = 100,
+        [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 5)][ValidateNotNullOrEmpty()][ValidateRange(0, [int]::MaxValue)][int]$Skip = 0,
+        [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 6)][switch]$ReturnHashTable
     )
     Begin
     {
@@ -17,8 +18,10 @@ Function Get-JCObject
         $ErrorActionPreference = 'Stop'
         Write-Verbose ('Parameter Set: ' + $PSCmdlet.ParameterSetName)
         $TypeCommand = @()
-        $TypeCommand += [PSCustomObject]@{'Type' = @('user', 'users'); 'Url' = '/api/search/systemusers'; 'Method' = 'POST'; 'ById' = '_id'; 'ByName' = 'username'; 'Paginate' = $true; 'SupportRegexFilter' = $true; 'Limit' = 100; }
-        $TypeCommand += [PSCustomObject]@{'Type' = @('system', 'systems'); 'Url' = '/api/search/systems'; 'Method' = 'POST'; 'ById' = '_id'; 'ByName' = 'displayName'; 'Paginate' = $true; 'SupportRegexFilter' = $true; 'Limit' = 100; }
+        # $TypeCommand += [PSCustomObject]@{'Type' = @('user', 'users'); 'Url' = '/api/search/systemusers'; 'Method' = 'POST'; 'ById' = '_id'; 'ByName' = 'username'; 'Paginate' = $true; 'SupportRegexFilter' = $true; 'Limit' = 100; }
+        # $TypeCommand += [PSCustomObject]@{'Type' = @('system', 'systems'); 'Url' = '/api/search/systems'; 'Method' = 'POST'; 'ById' = '_id'; 'ByName' = 'displayName'; 'Paginate' = $true; 'SupportRegexFilter' = $true; 'Limit' = 100; }
+        $TypeCommand += [PSCustomObject]@{'Type' = @('user', 'users'); 'Url' = '/api/systemusers'; 'Method' = 'GET'; 'ById' = '_id'; 'ByName' = 'username'; 'Paginate' = $true; 'SupportRegexFilter' = $true; 'Limit' = 100; }
+        $TypeCommand += [PSCustomObject]@{'Type' = @('system', 'systems'); 'Url' = '/api/systems'; 'Method' = 'GET'; 'ById' = '_id'; 'ByName' = 'displayName'; 'Paginate' = $true; 'SupportRegexFilter' = $true; 'Limit' = 100; }
         $TypeCommand += [PSCustomObject]@{'Type' = @('policy', 'policies'); 'Url' = '/api/v2/policies'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = 'name'; 'Paginate' = $true; 'SupportRegexFilter' = $false; 'Limit' = 100; }
         $TypeCommand += [PSCustomObject]@{'Type' = @('group'); 'Url' = '/api/v2/groups'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = 'name'; 'Paginate' = $true; 'SupportRegexFilter' = $false; 'Limit' = 100; }
         $TypeCommand += [PSCustomObject]@{'Type' = @('application', 'applications'); 'Url' = '/api/applications'; 'Method' = 'GET'; 'ById' = '_id'; 'ByName' = 'displayName'; 'Paginate' = $true; 'SupportRegexFilter' = $false; 'Limit' = 100; }
@@ -68,22 +71,32 @@ Function Get-JCObject
                     }
                     Else
                     {
-                        # Add filters for exact match and wildcards
-                        If ($SearchByValue -match '\*')
+                        Switch ($SearchBy)
                         {
-                            If ($SupportRegexFilter)
+                            'ById'
                             {
-                                $BodyParts += ('"filter":[{"' + $PropertyIdentifier + '":{"$regex": "(?i)(' + $SearchByValue.Replace('*', ')(.*?)(') + ')"}}]').Replace('()', '')
+                                $Url = $Url + '/' + $SearchByValue
                             }
-                            Else
+                            'ByName'
                             {
-                                Write-Error ('The endpoint ' + $Url + ' does not support wildcards in the $SearchByValue. Please remove "*" from "' + $SearchByValue + '".')
+                                # Add filters for exact match and wildcards
+                                If ($SearchByValue -match '\*')
+                                {
+                                    If ($SupportRegexFilter)
+                                    {
+                                        $BodyParts += ('"filter":[{"' + $PropertyIdentifier + '":{"$regex": "(?i)(' + $SearchByValue.Replace('*', ')(.*?)(') + ')"}}]').Replace('()', '')
+                                    }
+                                    Else
+                                    {
+                                        Write-Error ('The endpoint ' + $Url + ' does not support wildcards in the $SearchByValue. Please remove "*" from "' + $SearchByValue + '".')
+                                    }
+                                }
+                                Else
+                                {
+                                    $QueryStrings += 'filter=' + $PropertyIdentifier + ':eq:' + $SearchByValue
+                                    $BodyParts += '"filter":[{"' + $PropertyIdentifier + '":"' + $SearchByValue + '"}]'
+                                }
                             }
-                        }
-                        Else
-                        {
-                            $QueryStrings += 'filter=' + $PropertyIdentifier + ':eq:' + $SearchByValue
-                            $BodyParts += '"filter":[{"' + $PropertyIdentifier + '":"' + $SearchByValue + '"}]'
                         }
                     }
                     # Build query string and body
@@ -102,7 +115,15 @@ Function Get-JCObject
                 ## Escape Url????
                 # $Url = ([uri]::EscapeDataString($Url)
                 # Run command
-                $Results = Invoke-JCApi -Url:($Url) -Method:($Method) -Body:($Body) -Fields:($Fields) -Limit:($Limit) -Skip:($Skip) -Paginate:($Paginate)
+                If ($ReturnHashTable)
+                {
+                    $Key = If ($PropertyIdentifier) {$PropertyIdentifier} Else {$ById}
+                    $Results = Get-JCHash -Url:($Url) -Method:($Method) -Body:($Body) -Key:($Key) -Values:($Fields) -Limit:($Limit) -Skip:($Skip)
+                }
+                Else
+                {
+                    $Results = Invoke-JCApi -Url:($Url) -Method:($Method) -Body:($Body) -Fields:($Fields) -Limit:($Limit) -Skip:($Skip) -Paginate:($Paginate)
+                }
                 If ($Results)
                 {
                     # Update results
