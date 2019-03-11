@@ -22,6 +22,7 @@ Describe "Association Tests" {
     $TestMethods = ('ById', 'ByName')
     # Generate $Associations object records by looping through each association type and its target types
     $Associations = @()
+    $TypeExclusionList = @('gsuites', 'g_suite','office365s', 'office_365') -Join ', '
     $JCAssociationTypes = Get-JCAssociationType
     ForEach ($JCAssociationType In $JCAssociationTypes)
     {
@@ -48,7 +49,8 @@ Describe "Association Tests" {
     }
     # Filter out UNKNOWN's from the dataset.
     $AssociationObject = $Associations | Where-Object {$_.InputObjectId -ne 'UNKNOWN' -and $_.InputObjectName -ne 'UNKNOWN' -and $_.TargetObjectId -ne 'UNKNOWN' -and $_.TargetObjectName -ne 'UNKNOWN'}
-    Context ("Get each type of object association possible and build list of objects to test with.") {
+
+    Context ("Get each type of object association possible and build list of objects to test with. Excluding types: $TypeExclusionList") {
         It("Validate that all object types exist within the specified test environment.") {
             $Associations | Where-Object {$_.InputObjectId -eq 'UNKNOWN'} | Should -BeNullOrEmpty
             $Associations | Where-Object {$_.InputObjectName -eq 'UNKNOWN'} | Should -BeNullOrEmpty
