@@ -102,6 +102,7 @@ Function Invoke-JCApi
             }
             # Run request
             [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+            Write-Debug("Invoke-RestMethod -Method:('$Method') -Headers:('" + ($Headers | ConvertTo-Json -Compress) + "') -Uri:('$Uri') -UserAgent:('$JCUserAgent') -Body:('$Body')")
             Write-Verbose ('Connecting to: ' + $Uri)
             # PowerShell 5 won't let you send a GET with a body.
             If ($Method -eq 'GET')
