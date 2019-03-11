@@ -34,7 +34,8 @@ Function Get-JCObject
         $TypeCommand += [PSCustomObject]@{'Type' = @('usergroups', 'user_group'); 'Url' = '/api/v2/usergroups'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = 'name'; 'Paginate' = $true; 'SupportRegexFilter' = $true; 'Limit' = 100; }
         $TypeCommand += [PSCustomObject]@{'Type' = @('policyresults'); 'Url' = '/api/v2/policies/{Policy_Id}/policyresults'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = $false; 'Paginate' = $true; 'SupportRegexFilter' = $false; 'Limit' = 100; }
         $TypeCommand += [PSCustomObject]@{'Type' = @('applicationUsers'); 'Url' = '/api/v2/applications/{Application_Id}/users'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = $false; 'Paginate' = $true; 'SupportRegexFilter' = $false; 'Limit' = 100; }
-        # 'g_suite', 'office_365'
+        $TypeCommand += [PSCustomObject]@{'Type' = @('gsuites', 'g_suite'); 'Url' = '/api/v2/directories'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = 'name'; 'Paginate' = $true; 'SupportRegexFilter' = $false; 'Limit' = 100; }
+        $TypeCommand += [PSCustomObject]@{'Type' = @('office365s', 'office_365'); 'Url' = '/api/v2/directories'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = 'name'; 'Paginate' = $true; 'SupportRegexFilter' = $false; 'Limit' = 100; }
     }
     Process
     {
@@ -124,6 +125,10 @@ Function Get-JCObject
                 {
                     $Results = Invoke-JCApi -Url:($Url) -Method:($Method) -Body:($Body) -Fields:($Fields) -Limit:($Limit) -Skip:($Skip) -Paginate:($Paginate)
                 }
+                # Hacky logic to get g_suite directories
+                If ($Type -in ('gsuites', 'g_suite')) {$Results = $Results | Where-Object {$_.Type -eq 'g_suite'} }
+                # Hacky logic to get office_365 directories
+                If ($Type -in ('office365s', 'office_365')) {$Results = $Results | Where-Object {$_.Type -eq 'office_365'} }
                 If ($Results)
                 {
                     # Update results

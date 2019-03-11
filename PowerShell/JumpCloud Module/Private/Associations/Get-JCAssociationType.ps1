@@ -15,16 +15,10 @@ Function Get-JCAssociationType
         $InputObjectNames += [PSCustomObject]@{'Plural' = 'systems'; 'Singular' = 'system'; }
         $InputObjectNames += [PSCustomObject]@{'Plural' = 'usergroups'; 'Singular' = 'user_group'; }
         $InputObjectNames += [PSCustomObject]@{'Plural' = 'users'; 'Singular' = 'user'; }
-        # $InputObjectNames += [PSCustomObject]@{'Plural' = 'gsuites'; 'Singular' = 'g_suite'; }
-        # $InputObjectNames += [PSCustomObject]@{'Plural' = 'office365s'; 'Singular' = 'office_365'; }
+        $InputObjectNames += [PSCustomObject]@{'Plural' = 'gsuites'; 'Singular' = 'g_suite'; }
+        $InputObjectNames += [PSCustomObject]@{'Plural' = 'office365s'; 'Singular' = 'office_365'; }
         $InputObjectNames = $InputObjectNames | Select-Object *, @{Name = 'Lookup'; Expression = {@($_.Plural, $_.Singular)}}
-        # # Build parameter array
-        # $Params = @()
-        # # Define the new parameters
-        # $Params += @{'Name' = 'InputObject'; 'Type' = [System.String]; 'ValueFromPipelineByPropertyName' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ByName'); 'ValidateSet' = ($InputObjectNames.Lookup); }
-        # # Create new parameters
-        # Return $Params | ForEach-Object {New-Object PSObject -Property:($_)} | New-DynamicParameter
-
+        # Build parameter array
         $RuntimeParameterDictionary = New-Object -TypeName System.Management.Automation.RuntimeDefinedParameterDictionary
         New-DynamicParameter -Name:('InputObject') -Type:([System.String]) -ValueFromPipelineByPropertyName -ValidateNotNullOrEmpty -ParameterSets:('ByName') -ValidateSet:($InputObjectNames.Lookup) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
         Return $RuntimeParameterDictionary
@@ -42,14 +36,14 @@ Function Get-JCAssociationType
         $AssociationTypes += [PSCustomObject]@{'InputObject' = 'commands'; 'Targets' = ('system', 'system_group'); }
         $AssociationTypes += [PSCustomObject]@{'InputObject' = 'ldapservers'; 'Targets' = ('user', 'user_group'); }
         $AssociationTypes += [PSCustomObject]@{'InputObject' = 'policies'; 'Targets' = ('system', 'system_group'); }
-        $AssociationTypes += [PSCustomObject]@{'InputObject' = 'applications'; 'Targets' = ('user_group'); } #'user'
-        $AssociationTypes += [PSCustomObject]@{'InputObject' = 'radiusservers'; 'Targets' = ('user_group'); } #'user'
-        $AssociationTypes += [PSCustomObject]@{'InputObject' = 'systemgroups'; 'Targets' = ('policy', 'user_group', 'command'); }#'user'
-        $AssociationTypes += [PSCustomObject]@{'InputObject' = 'systems'; 'Targets' = ('policy', 'user', 'command'); } #'user_group'
-        $AssociationTypes += [PSCustomObject]@{'InputObject' = 'usergroups'; 'Targets' = ('active_directory', 'application', 'ldap_server', 'radius_server', 'system_group'); } #'system','g_suite','office_365',
-        $AssociationTypes += [PSCustomObject]@{'InputObject' = 'users'; 'Targets' = ('active_directory', 'ldap_server', 'system'); }#'application','radius_server','system_group','g_suite','office_365',
-        # $AssociationTypes += [PSCustomObject]@{'InputObject' = 'gsuites'; 'Targets' = ('UNKNOWN'); }
-        # $AssociationTypes += [PSCustomObject]@{'InputObject' = 'office365s'; 'Targets' = ('UNKNOWN'); }
+        $AssociationTypes += [PSCustomObject]@{'InputObject' = 'applications'; 'Targets' = ('user_group'); } #'user',
+        $AssociationTypes += [PSCustomObject]@{'InputObject' = 'radiusservers'; 'Targets' = ('user_group'); } #'user',
+        $AssociationTypes += [PSCustomObject]@{'InputObject' = 'systemgroups'; 'Targets' = ('policy', 'user_group', 'command'); }#'user',
+        $AssociationTypes += [PSCustomObject]@{'InputObject' = 'systems'; 'Targets' = ('policy', 'user', 'command'); } #'user_group',
+        $AssociationTypes += [PSCustomObject]@{'InputObject' = 'usergroups'; 'Targets' = ('active_directory', 'application', 'g_suite', 'ldap_server', 'office_365', 'radius_server', 'system_group'); } #'system',
+        $AssociationTypes += [PSCustomObject]@{'InputObject' = 'users'; 'Targets' = ('active_directory', 'g_suite', 'ldap_server', 'office_365', 'system'); }#'application','radius_server','system_group',
+        $AssociationTypes += [PSCustomObject]@{'InputObject' = 'gsuites'; 'Targets' = ('user', 'user_group'); }
+        $AssociationTypes += [PSCustomObject]@{'InputObject' = 'office365s'; 'Targets' = ('user', 'user_group'); }
         ###All possible Targets####('active_directory', 'application', 'command', 'g_suite', 'ldap_server', 'office_365', 'policy', 'radius_server', 'system', 'system_group', 'user', 'user_group')
     }
     Process
