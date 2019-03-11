@@ -35,8 +35,6 @@ Function Invoke-JCAssociation
         # Debug message for parameter call
         Write-Debug ('[CallFunction]' + $MyInvocation.MyCommand.Name + ' ' + ($PsBoundParameters.GetEnumerator() | Sort-Object Key | ForEach-Object { '-' + $_.Key + ":('" + ($_.Value -join "','") + "')"}).Replace("'True'", '$True').Replace("'False'", '$False'))
         If ($PSCmdlet.ParameterSetName -ne '__AllParameterSets') {Write-Verbose ('[ParameterSet]' + $MyInvocation.MyCommand.Name + ':' + $PSCmdlet.ParameterSetName)}
-
-        $URL_Template_Associations = '/api/v2/{0}/{1}/associations?targets={2}'
         $Method = Switch ($Action)
         {
             'get' {'GET'}
@@ -62,16 +60,34 @@ Function Invoke-JCAssociation
             }
         }
         # Set the $InputObjectType to use the plural version of value
-        $InputObjectType = $JCAssociationType.InputObject
+        $InputObjectType = $JCAssociationType.Plural
         # Get InputObject object.
         $InputObject = Get-JCObject -Type:($InputObjectType) -SearchBy:($SearchBy) -SearchByValue:($InputObjectSearchByValue)
         $InputObjectId = $InputObject.($InputObject.ById)
         $InputObjectName = $InputObject.($InputObject.ByName)
         #Build Url
+        $URL_Template_Associations = '/api/v2/{0}/{1}/associations?targets={2}'
         $Uri_Associations = $URL_Template_Associations -f $InputObjectType, $InputObjectId, $TargetObjectType
+        # Exceptions for specific combinations
+        If (($InputObjectType -eq 'usergroups' -and $TargetObjectType -eq 'user') -or ($InputObjectType -eq 'systemgroups' -and $TargetObjectType -eq 'system'))
+        {
+            $URL_Template_Associations = '/api/v2/{0}/{1}/members'
+            $Uri_Associations = $URL_Template_Associations -f $InputObjectType, $InputObjectId
+        }
+        If ( $Action -eq 'get' -and ($InputObjectType -eq 'systems' -and $TargetObjectType -eq 'system_group') -or ($InputObjectType -eq 'users' -and $TargetObjectType -eq 'user_group'))
+        {
+            $URL_Template_Associations = '/api/v2/{0}/{1}/memberof'
+            $Uri_Associations = $URL_Template_Associations -f $InputObjectType, $InputObjectId
+        }
+
         If ($Action -eq 'get')
         {
             $InputObjectAssociations = Invoke-JCApi -Method:($Method) -Paginate:($true) -Url:($Uri_Associations)
+            # If using a member* path then get the paths attribute
+            If ($Uri_Associations -match 'memberof')
+            {
+                $InputObjectAssociations = $InputObjectAssociations.Paths
+            }
             ##################################################
             ##################################################
             # Get the input objects associations type
@@ -159,8 +175,18 @@ Function Invoke-JCAssociation
             $TargetObject = Get-JCObject -Type:($TargetObjectType) -SearchBy:($SearchBy) -SearchByValue:($TargetObjectSearchByValue)
             $TargetObjectId = $TargetObject.($TargetObject.ById)
             $TargetObjectName = $TargetObject.($TargetObject.ByName)
-            # Build body to be sent to endpoint.
-            $JsonBody = '{"op":"' + $Action + '","type":"' + $TargetObjectType + '","id":"' + $TargetObjectId + '","attributes":null}'
+            # Exceptions for specific combinations
+            If (($InputObjectType -eq 'systems' -and $TargetObjectType -eq 'system_group') -or ($InputObjectType -eq 'users' -and $TargetObjectType -eq 'user_group'))
+            {
+                $URL_Template_Associations = '/api/v2/{0}/{1}/members'
+                $Uri_Associations = $URL_Template_Associations -f $TargetObject.Plural, $TargetObjectId
+                $JsonBody = '{"op":"' + $Action + '","type":"' + $InputObject.Singular + '","id":"' + $InputObjectId + '","attributes":null}'
+            }
+            Else
+            {
+                # Build body to be sent to endpoint.
+                $JsonBody = '{"op":"' + $Action + '","type":"' + $TargetObject.Singular + '","id":"' + $TargetObjectId + '","attributes":null}'
+            }
             # Send body to endpoint.
             Write-Verbose ("$Action association from '$InputObjectName' to '$TargetObjectName'")
             $Results_Associations += Invoke-JCApi -Body:($JsonBody) -Method:($Method) -Url:($Uri_Associations)
