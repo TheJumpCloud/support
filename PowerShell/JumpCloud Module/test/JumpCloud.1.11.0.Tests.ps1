@@ -35,8 +35,8 @@ Describe "Association Tests" {
             $TargetObject = Get-JCObject -Type:([string]$TargetObjectType) | Get-Random #| Select-Object -First 1
             $TargetObjectId = $TargetObject.($TargetObject.ById)
             $TargetObjectName = $TargetObject.($TargetObject.ByName)
-            If (!($InputObjectName)) {$InputObjectName = 'UNKNOWN'; Write-Error ("Need to create: $InputObjectType") -BackgroundColor:('Red') -ForegroundColor:('Black'); }
-            If (!($TargetObjectName)) {$TargetObjectName = 'UNKNOWN'; Write-Error ("Need to create: $TargetObjectType") -BackgroundColor:('Red') -ForegroundColor:('Black'); }
+            If (!($InputObjectName)) {$InputObjectName = 'UNKNOWN'; Write-Error ("Need to create: $InputObjectType"); }
+            If (!($TargetObjectName)) {$TargetObjectName = 'UNKNOWN'; Write-Error ("Need to create: $TargetObjectType"); }
             If (!($InputObjectType)) {$InputObjectType = 'UNKNOWN'; }
             If (!($InputObjectId)) {$InputObjectId = 'UNKNOWN'; }
             If (!($TargetObjectType)) {$TargetObjectType = 'UNKNOWN'; }
