@@ -7,6 +7,9 @@ Describe "Connect-JCOnline" {
     }
 }
 Describe "Association Tests" {
+    # NOTE: To run these test manually comment out the line starting with "$Associations += [PSCustomObject]@{" and uncomment the line starting with "Write-Host ('$Associations' + " += [PSCustomObject]@{".
+    # Then run the ForEach loop "ForEach ($JCAssociationType In $JCAssociationTypes)" manually.
+    # Copy and paste the results from the output just after the ForEach loop previously mentioned and comment out the ForEach loop.
     BeforeAll {
         # $DebugPreference = 'Continue'
         # $VerbosePreference = 'Continue'
