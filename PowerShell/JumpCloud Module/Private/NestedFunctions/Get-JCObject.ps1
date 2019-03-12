@@ -11,59 +11,40 @@ Function Get-JCObject
     )
     DynamicParam
     {
-        $TypeCommand = @()
-        # $TypeCommand += [PSCustomObject]@{'Type' = @('user', 'users'); 'Url' = '/api/search/systemusers'; 'Method' = 'POST'; 'ById' = '_id'; 'ByName' = 'username'; 'Paginate' = $true; 'SupportRegexFilter' = $true; 'Limit' = 100; }
-        # $TypeCommand += [PSCustomObject]@{'Type' = @('system', 'systems'); 'Url' = '/api/search/systems'; 'Method' = 'POST'; 'ById' = '_id'; 'ByName' = 'displayName'; 'Paginate' = $true; 'SupportRegexFilter' = $true; 'Limit' = 100; }
-        $TypeCommand += [PSCustomObject]@{'Singular' = 'user'; 'Plural' = 'users'; 'Url' = '/api/systemusers'; 'Method' = 'GET'; 'ById' = '_id'; 'ByName' = 'username'; 'Paginate' = $true; 'SupportRegexFilter' = $true; 'Limit' = 100; }
-        $TypeCommand += [PSCustomObject]@{'Singular' = 'system'; 'Plural' = 'systems'; 'Url' = '/api/systems'; 'Method' = 'GET'; 'ById' = '_id'; 'ByName' = 'displayName'; 'Paginate' = $true; 'SupportRegexFilter' = $true; 'Limit' = 100; }
-        $TypeCommand += [PSCustomObject]@{'Singular' = 'policy'; 'Plural' = 'policies'; 'Url' = '/api/v2/policies'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = 'name'; 'Paginate' = $true; 'SupportRegexFilter' = $false; 'Limit' = 100; }
-        $TypeCommand += [PSCustomObject]@{'Singular' = 'group'; 'Plural' = 'groups'; 'Url' = '/api/v2/groups'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = 'name'; 'Paginate' = $true; 'SupportRegexFilter' = $false; 'Limit' = 100; }
-        $TypeCommand += [PSCustomObject]@{'Singular' = 'application'; 'Plural' = 'applications'; 'Url' = '/api/applications'; 'Method' = 'GET'; 'ById' = '_id'; 'ByName' = 'displayName'; 'Paginate' = $true; 'SupportRegexFilter' = $false; 'Limit' = 100; }
-        $TypeCommand += [PSCustomObject]@{'Singular' = 'directory'; 'Plural' = 'directories'; 'Url' = '/api/v2/directories'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = 'name'; 'Paginate' = $true; 'SupportRegexFilter' = $false; 'Limit' = 100; }
-        $TypeCommand += [PSCustomObject]@{'Singular' = 'command'; 'Plural' = 'commands'; 'Url' = '/api/commands'; 'Method' = 'GET'; 'ById' = '_id'; 'ByName' = 'name'; 'Paginate' = $true; 'SupportRegexFilter' = $false; 'Limit' = 100; }
-        $TypeCommand += [PSCustomObject]@{'Singular' = 'radius_server'; 'Plural' = 'radiusservers'; 'Url' = '/api/radiusservers'; 'Method' = 'GET'; 'ById' = '_id'; 'ByName' = 'name'; 'Paginate' = $true; 'SupportRegexFilter' = $false; 'Limit' = 100; }
-        $TypeCommand += [PSCustomObject]@{'Singular' = 'active_directory'; 'Plural' = 'activedirectories'; 'Url' = '/api/v2/activedirectories'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = 'domain'; 'Paginate' = $true; 'SupportRegexFilter' = $true; 'Limit' = 100; }
-        $TypeCommand += [PSCustomObject]@{'Singular' = 'ldap_server'; 'Plural' = 'ldapservers'; 'Url' = '/api/v2/ldapservers'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = 'name'; 'Paginate' = $true; 'SupportRegexFilter' = $true; 'Limit' = 100; }
-        $TypeCommand += [PSCustomObject]@{'Singular' = 'system_group'; 'Plural' = 'systemgroups'; 'Url' = '/api/v2/systemgroups'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = 'name'; 'Paginate' = $true; 'SupportRegexFilter' = $true; 'Limit' = 100; }
-        $TypeCommand += [PSCustomObject]@{'Singular' = 'user_group'; 'Plural' = 'usergroups'; 'Url' = '/api/v2/usergroups'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = 'name'; 'Paginate' = $true; 'SupportRegexFilter' = $true; 'Limit' = 100; }
-        $TypeCommand += [PSCustomObject]@{'Singular' = 'g_suite'; 'Plural' = 'gsuites'; 'Url' = '/api/v2/directories'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = 'name'; 'Paginate' = $true; 'SupportRegexFilter' = $false; 'Limit' = 100; }
-        $TypeCommand += [PSCustomObject]@{'Singular' = 'office_365'; 'Plural' = 'office365s'; 'Url' = '/api/v2/directories'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = 'name'; 'Paginate' = $true; 'SupportRegexFilter' = $false; 'Limit' = 100; }
-        # $TypeCommand += [PSCustomObject]@{'Singular' = 'policyresult'; 'Plural' = 'policyresults';  'Url' = '/api/v2/policies/{Policy_Id}/policyresults'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = $false; 'Paginate' = $true; 'SupportRegexFilter' = $false; 'Limit' = 100; }
-        # $TypeCommand += [PSCustomObject]@{'Singular' = 'applicationUser'; 'Plural' = 'applicationUsers';  'Url' = '/api/v2/applications/{Application_Id}/users'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = $false; 'Paginate' = $true; 'SupportRegexFilter' = $false; 'Limit' = 100; }
-        $TypeCommand = $TypeCommand | Select-Object *, @{Name = 'Type'; Expression = {@($_.Singular, $_.Plural)}}
+        $ObjectType = Get-JCObjectType
         # Build parameter array
         $RuntimeParameterDictionary = New-Object -TypeName System.Management.Automation.RuntimeDefinedParameterDictionary
-        New-DynamicParameter -Name:('Type') -Type:([System.String]) -Mandatory -Position:(0) -ValueFromPipelineByPropertyName -ValidateNotNullOrEmpty -ValidateSet:($TypeCommand.Type) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
+        New-DynamicParameter -Name:('Type') -Type:([System.String]) -Mandatory -Position:(0) -ValueFromPipelineByPropertyName -ValidateNotNullOrEmpty -ValidateSet:($ObjectType.Types) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
         Return $RuntimeParameterDictionary
     }
     Begin
     {
         # Create new variables for script
         $PsBoundParameters.GetEnumerator() | ForEach-Object {New-Variable -Name:($_.Key) -Value:($_.Value) -Force}
-        Write-Debug ('[CallFunction]' + $MyInvocation.MyCommand.Name + ' ' + ($PsBoundParameters.GetEnumerator() | Sort-Object Key | ForEach-Object { '-' + $_.Key + ":('" + ($_.Value -join "','") + "')"}).Replace("'True'", '$True').Replace("'False'", '$False'))
+        Write-Debug ('[CallFunction]' + $MyInvocation.MyCommand.Name + ' ' + ($PsBoundParameters.GetEnumerator() | Sort-Object Key | ForEach-Object { '-' + $_.Key + ":('" + ($_.Value -join "','").Replace("'True'", '$True').Replace("'False'", '$False') + "')"}) )
         If ($PSCmdlet.ParameterSetName -ne '__AllParameterSets') {Write-Verbose ('[ParameterSet]' + $MyInvocation.MyCommand.Name + ':' + $PSCmdlet.ParameterSetName)}
         $CurrentErrorActionPreference = $ErrorActionPreference
         $ErrorActionPreference = 'Stop'
-        Write-Verbose ('Parameter Set: ' + $PSCmdlet.ParameterSetName)
     }
     Process
     {
         Try
         {
             # Identify the command type to run to get the object for the specified item
-            $TypeCommandItem = $TypeCommand | Where-Object {$Type -in $_.Type}
-            If ($TypeCommandItem)
+            $ObjectTypeItem = $ObjectType | Where-Object {$Type -in $_.Types}
+            If ($ObjectTypeItem)
             {
-                $TypeCommandItem.Type = $Type
-                $Singular = $TypeCommandItem.Singular
-                $Plural = $TypeCommandItem.Plural
-                $Url = $TypeCommandItem.Url
-                $Method = $TypeCommandItem.Method
-                $ById = $TypeCommandItem.ById
-                $ByName = $TypeCommandItem.ByName
-                $Paginate = $TypeCommandItem.Paginate
-                $SupportRegexFilter = $TypeCommandItem.SupportRegexFilter
-                $Limit = $TypeCommandItem.Limit
+                $ObjectTypeItem.Types = $Type
+                $Singular = $ObjectTypeItem.Singular
+                $Plural = $ObjectTypeItem.Plural
+                $UrlOrg = $ObjectTypeItem.Url
+                $Url = $ObjectTypeItem.Url
+                $Method = $ObjectTypeItem.Method
+                $ById = $ObjectTypeItem.ById
+                $ByName = $ObjectTypeItem.ByName
+                $Paginate = $ObjectTypeItem.Paginate
+                $SupportRegexFilter = $ObjectTypeItem.SupportRegexFilter
+                $Limit = $ObjectTypeItem.Limit
                 # If searching ByValue add filters to query string and body.
                 If ($PSCmdlet.ParameterSetName -eq 'ByValue')
                 {
@@ -72,8 +53,8 @@ Function Get-JCObject
                     # Determine search method
                     $PropertyIdentifier = Switch ($SearchBy)
                     {
-                        'ById' {$TypeCommandItem.ById};
-                        'ByName' {$TypeCommandItem.ByName};
+                        'ById' {$ObjectTypeItem.ById};
+                        'ByName' {$ObjectTypeItem.ByName};
                     }
                     # Populate Url placeholders. Assumption is that if an endpoint requires an Id to be passed in the Url that it does not require a filter because its looking for an exact match already.
                     If ($Url -match '({)(.*?)(})')
@@ -127,19 +108,31 @@ Function Get-JCObject
                 ## Escape Url????
                 # $Url = ([uri]::EscapeDataString($Url)
                 # Run command
-                If ($ReturnHashTable)
+                # Hacky logic to get g_suite directories
+                If ($Type -in ('gsuites', 'g_suite'))
                 {
-                    $Key = If ($PropertyIdentifier) {$PropertyIdentifier} Else {$ById}
-                    $Results = Get-JCHash -Url:($Url) -Method:($Method) -Body:($Body) -Key:($Key) -Values:($Fields) -Limit:($Limit) -Skip:($Skip)
+                    $Results = Invoke-JCApi -Url:($UrlOrg) -Method:($Method) -Body:($Body) -Fields:($Fields) -Limit:($Limit) -Skip:($Skip) -Paginate:($Paginate)
+                    $Results = $Results | Where-Object {$_.Type -eq 'g_suite'}
+                }
+                # Hacky logic to get office_365 directories
+                ElseIf ($Type -in ('office365s', 'office_365'))
+                {
+                    $Results = Invoke-JCApi -Url:($UrlOrg) -Method:($Method) -Body:($Body) -Fields:($Fields) -Limit:($Limit) -Skip:($Skip) -Paginate:($Paginate)
+                    $Results = $Results | Where-Object {$_.Type -eq 'office_365'}
                 }
                 Else
                 {
-                    $Results = Invoke-JCApi -Url:($Url) -Method:($Method) -Body:($Body) -Fields:($Fields) -Limit:($Limit) -Skip:($Skip) -Paginate:($Paginate)
+                    # Normal logic
+                    If ($ReturnHashTable)
+                    {
+                        $Key = If ($PropertyIdentifier) {$PropertyIdentifier} Else {$ById}
+                        $Results = Get-JCHash -Url:($Url) -Method:($Method) -Body:($Body) -Key:($Key) -Values:($Fields) -Limit:($Limit) -Skip:($Skip)
+                    }
+                    Else
+                    {
+                        $Results = Invoke-JCApi -Url:($Url) -Method:($Method) -Body:($Body) -Fields:($Fields) -Limit:($Limit) -Skip:($Skip) -Paginate:($Paginate)
+                    }
                 }
-                # Hacky logic to get g_suite directories
-                If ($Type -in ('gsuites', 'g_suite')) {$Results = $Results | Where-Object {$_.Type -eq 'g_suite'} }
-                # Hacky logic to get office_365 directories
-                If ($Type -in ('office365s', 'office_365')) {$Results = $Results | Where-Object {$_.Type -eq 'office_365'} }
                 If ($Results)
                 {
                     # Update results
@@ -163,7 +156,7 @@ Function Get-JCObject
             }
             Else
             {
-                Write-Error ('$Type of "' + $Type + '" not found. $Type must be:' + $TypeCommand.Type -join ',')
+                Write-Error ('$Type of "' + $Type + '" not found. $Type must be:' + ($ObjectType.Types -join ','))
             }
         }
         Catch
