@@ -113,11 +113,11 @@ Function Invoke-JCAssociation
                             'InputObjectId'          = $InputObjectId;
                             'InputObjectName'        = $InputObjectName;
                             'InputObjectAttributes'  = $InputObjectAttributes;
+                            'InputObject'            = $InputObject;
                             'TargetObjectType'       = $TargetObjectType;
                             'TargetObjectId'         = $TargetObjectId;
                             'TargetObjectName'       = $null;
                             'TargetObjectAttributes' = $TargetObjectAttributes;
-                            'InputObject'            = $InputObject;
                             'TargetObject'           = $null;
                         }
                     }
@@ -134,10 +134,10 @@ Function Invoke-JCAssociation
                             'InputObjectType'  = $InputObjectType;
                             'InputObjectId'    = $InputObjectId;
                             'InputObjectName'  = $InputObjectName;
+                            'InputObject'      = $InputObject;
                             'TargetObjectType' = $TargetObjectType;
                             'TargetObjectId'   = $TargetObjectId;
                             'TargetObjectName' = $TargetObjectName;
-                            'InputObject'      = $InputObject;
                             'TargetObject'     = $TargetObject;
                         }
                     }
@@ -168,6 +168,22 @@ Function Invoke-JCAssociation
             #         'TargetObject'     = $TargetObject;
             #     }
             # }
+            If ($Results_Associations)
+            {
+                # Update results
+                $HiddenProperties = @('InputObjectType', 'InputObjectId', 'InputObjectName', 'InputObject', 'TargetObjectType')
+                $Results_Associations |  ForEach-Object {
+                    # Create the default property display set
+                    $defaultDisplayPropertySet = New-Object System.Management.Automation.PSPropertySet('DefaultDisplayPropertySet', [string[]]($_.PSObject.Properties.Name | Where-Object {$_ -notin $HiddenProperties}))
+                    $PSStandardMembers = [System.Management.Automation.PSMemberInfo[]]@($defaultDisplayPropertySet)
+                    # Add the list of standard members
+                    Add-Member -InputObject:($_) -MemberType:('MemberSet') -Name:('PSStandardMembers') -Value:($PSStandardMembers)
+                }
+            }
+            Else
+            {
+                Write-Verbose ('No results found.')
+            }
         }
         Else
         {
