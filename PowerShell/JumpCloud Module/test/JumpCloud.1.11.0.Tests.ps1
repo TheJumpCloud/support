@@ -65,6 +65,7 @@ Describe "Association Tests" {
         # Start tests
         ForEach ($TestMethod In  $TestMethods)
         {
+            $TestMethodIdentifier = $TestMethod.Replace('By', '')
             Context ("When Association functions are called with parameterSet: '$TestMethod'") {
                 ForEach ($AssociationRecord In $AssociationObject)
                 {
@@ -75,7 +76,6 @@ Describe "Association Tests" {
                     $SourceTargetObjectId = $AssociationRecord.TargetObjectId
                     $SourceTargetObjectName = $AssociationRecord.TargetObjectName
                     Context ("Running Association tests for InputObjectType:'$SourceInputObjectType';InputObjectName:'$SourceInputObjectName';TargetObjectType:'$SourceTargetObjectType';TargetObjectName:'$SourceTargetObjectName';") {
-                        $TestMethodIdentifier = $TestMethod.Replace('By', '')
                         $SourceInputSearchByValue = Switch ($TestMethod) {'ById' {$SourceInputObjectId}'ByName' {$SourceInputObjectName}}
                         $SourceTargetSearchByValue = Switch ($TestMethod) {'ById' {$SourceTargetObjectId}'ByName' {$SourceTargetObjectName}}
                         # Get InputObject
