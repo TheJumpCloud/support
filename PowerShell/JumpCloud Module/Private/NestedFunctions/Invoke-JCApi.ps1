@@ -8,7 +8,8 @@ Function Invoke-JCApi
         [Parameter(Mandatory = $false, Position = 3)][ValidateNotNullOrEmpty()][ValidateRange(0, [int]::MaxValue)][int]$Skip = 0,
         [Parameter(Mandatory = $false, Position = 4)][ValidateNotNull()][array]$Fields = @(),
         [Parameter(Mandatory = $false, Position = 5)][ValidateNotNull()][string]$Body = '',
-        [Parameter(Mandatory = $false, Position = 6)][ValidateNotNullOrEmpty()][bool]$Paginate = $false
+        [Parameter(Mandatory = $false, Position = 6)][ValidateNotNullOrEmpty()][bool]$Paginate = $false,
+        [Parameter(Mandatory = $false, Position = 7)][ValidateNotNullOrEmpty()][switch]$ReturnCount
     )
     Begin
     {
@@ -122,7 +123,15 @@ Function Invoke-JCApi
                     $ResultsCount = $Results.results.Count
                     If ($ResultsCount -gt 0)
                     {
-                        $ResultObjects = $Results.results
+                        If ($ReturnCount)
+                        {
+                            $ResultObjects = $Results | Select-Object totalCount
+                            $Paginate = $false
+                        }
+                        Else
+                        {
+                            $ResultObjects = $Results.results
+                        }
                         $ResultsPopulated = $true
                     }
                 }
