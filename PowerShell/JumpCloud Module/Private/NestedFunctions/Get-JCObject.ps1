@@ -7,7 +7,8 @@ Function Get-JCObject
         [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 3, HelpMessage = 'An array of the fields/properties/columns you want to return from the search.')][ValidateNotNullOrEmpty()][array]$Fields = @(),
         [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 4)][ValidateNotNullOrEmpty()][ValidateRange(1, [int]::MaxValue)][int]$Limit = 100,
         [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 5)][ValidateNotNullOrEmpty()][ValidateRange(0, [int]::MaxValue)][int]$Skip = 0,
-        [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 6)][switch]$ReturnHashTable
+        [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 6)][switch]$ReturnHashTable,
+        [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 7)][switch]$ReturnCount
     )
     DynamicParam
     {
@@ -20,8 +21,8 @@ Function Get-JCObject
     Begin
     {
         # Create new variables for script
-        $PsBoundParameters.GetEnumerator() | ForEach-Object {New-Variable -Name:($_.Key) -Value:($_.Value) -Force}
-        Write-Debug ('[CallFunction]' + $MyInvocation.MyCommand.Name + ' ' + ($PsBoundParameters.GetEnumerator() | Sort-Object Key | ForEach-Object { '-' + $_.Key + ":('" + ($_.Value -join "','").Replace("'True'", '$True').Replace("'False'", '$False') + "')"}) )
+        $PsBoundParameters.GetEnumerator() | ForEach-Object {Set-Variable -Name:($_.Key) -Value:($_.Value) -Force}
+        Write-Debug ('[CallFunction]' + $MyInvocation.MyCommand.Name + ' ' + ($PsBoundParameters.GetEnumerator() | Sort-Object Key | ForEach-Object { ('-' + $_.Key + ":('" + ($_.Value -join "','") + "')").Replace("'True'", '$True').Replace("'False'", '$False')}) )
         If ($PSCmdlet.ParameterSetName -ne '__AllParameterSets') {Write-Verbose ('[ParameterSet]' + $MyInvocation.MyCommand.Name + ':' + $PSCmdlet.ParameterSetName)}
         $CurrentErrorActionPreference = $ErrorActionPreference
         $ErrorActionPreference = 'Stop'
@@ -37,7 +38,6 @@ Function Get-JCObject
                 $ObjectTypeItem.Types = $Type
                 $Singular = $ObjectTypeItem.Singular
                 $Plural = $ObjectTypeItem.Plural
-                $UrlOrg = $ObjectTypeItem.Url
                 $Url = $ObjectTypeItem.Url
                 $Method = $ObjectTypeItem.Method
                 $ById = $ObjectTypeItem.ById
@@ -45,93 +45,104 @@ Function Get-JCObject
                 $Paginate = $ObjectTypeItem.Paginate
                 $SupportRegexFilter = $ObjectTypeItem.SupportRegexFilter
                 $Limit = $ObjectTypeItem.Limit
-                # If searching ByValue add filters to query string and body.
-                If ($PSCmdlet.ParameterSetName -eq 'ByValue')
+                # Hacky logic to get g_suite and office_365 directories
+                If ($Type -notin ('gsuites', 'g_suite', 'office365s', 'office_365'))
                 {
-                    $QueryStrings = @()
-                    $BodyParts = @()
-                    # Determine search method
-                    $PropertyIdentifier = Switch ($SearchBy)
+                    # If searching ByValue add filters to query string and body.
+                    If ($PSCmdlet.ParameterSetName -eq 'ByValue')
                     {
-                        'ById' {$ObjectTypeItem.ById};
-                        'ByName' {$ObjectTypeItem.ByName};
-                    }
-                    # Populate Url placeholders. Assumption is that if an endpoint requires an Id to be passed in the Url that it does not require a filter because its looking for an exact match already.
-                    If ($Url -match '({)(.*?)(})')
-                    {
-                        Write-Verbose ('Populating ' + $Matches[0] + ' with ' + $SearchByValue)
-                        $Url = $Url.Replace($Matches[0], $SearchByValue)
-                    }
-                    Else
-                    {
-                        Switch ($SearchBy)
+                        $QueryStrings = @()
+                        $BodyParts = @()
+                        # Determine search method
+                        $PropertyIdentifier = Switch ($SearchBy)
                         {
-                            'ById'
+                            'ById' {$ObjectTypeItem.ById};
+                            'ByName' {$ObjectTypeItem.ByName};
+                        }
+                        # Populate Url placeholders. Assumption is that if an endpoint requires an Id to be passed in the Url that it does not require a filter because its looking for an exact match already.
+                        If ($Url -match '({)(.*?)(})')
+                        {
+                            Write-Verbose ('Populating ' + $Matches[0] + ' with ' + $SearchByValue)
+                            $Url = $Url.Replace($Matches[0], $SearchByValue)
+                        }
+                        Else
+                        {
+                            Switch ($SearchBy)
                             {
-                                $Url = $Url + '/' + $SearchByValue
-                            }
-                            'ByName'
-                            {
-                                # Add filters for exact match and wildcards
-                                If ($SearchByValue -match '\*')
+                                'ById'
                                 {
-                                    If ($SupportRegexFilter)
+                                    $Url = $Url + '/' + $SearchByValue
+                                }
+                                'ByName'
+                                {
+                                    # Add filters for exact match and wildcards
+                                    If ($SearchByValue -match '\*')
                                     {
-                                        $BodyParts += ('"filter":[{"' + $PropertyIdentifier + '":{"$regex": "(?i)(' + $SearchByValue.Replace('*', ')(.*?)(') + ')"}}]').Replace('()', '')
+                                        If ($SupportRegexFilter)
+                                        {
+                                            $BodyParts += ('"filter":[{"' + $PropertyIdentifier + '":{"$regex": "(?i)(' + $SearchByValue.Replace('*', ')(.*?)(') + ')"}}]').Replace('()', '')
+                                        }
+                                        Else
+                                        {
+                                            Write-Error ('The endpoint ' + $Url + ' does not support wildcards in the $SearchByValue. Please remove "*" from "' + $SearchByValue + '".')
+                                        }
                                     }
                                     Else
                                     {
-                                        Write-Error ('The endpoint ' + $Url + ' does not support wildcards in the $SearchByValue. Please remove "*" from "' + $SearchByValue + '".')
+                                        $QueryStrings += 'filter=' + $PropertyIdentifier + ':eq:' + $SearchByValue
+                                        $BodyParts += '"filter":[{"' + $PropertyIdentifier + '":"' + $SearchByValue + '"}]'
                                     }
-                                }
-                                Else
-                                {
-                                    $QueryStrings += 'filter=' + $PropertyIdentifier + ':eq:' + $SearchByValue
-                                    $BodyParts += '"filter":[{"' + $PropertyIdentifier + '":"' + $SearchByValue + '"}]'
                                 }
                             }
                         }
-                    }
-                    # Build query string and body
-                    $JoinedQueryStrings = $QueryStrings -join '&'
-                    $JoinedBodyParts = $BodyParts -join ','
-                    # Build final body and url
-                    If ($JoinedBodyParts)
-                    {
-                        $Body = '{' + $JoinedBodyParts + '}'
-                    }
-                    If ($JoinedQueryStrings)
-                    {
-                        $Url = $Url + '?' + $JoinedQueryStrings
+                        # Build query string and body
+                        $JoinedQueryStrings = $QueryStrings -join '&'
+                        $JoinedBodyParts = $BodyParts -join ','
+                        # Build final body and url
+                        If ($JoinedBodyParts)
+                        {
+                            $Body = '{' + $JoinedBodyParts + '}'
+                        }
+                        If ($JoinedQueryStrings)
+                        {
+                            $Url = $Url + '?' + $JoinedQueryStrings
+                        }
                     }
                 }
                 ## Escape Url????
                 # $Url = ([uri]::EscapeDataString($Url)
-                # Run command
-                # Hacky logic to get g_suite directories
-                If ($Type -in ('gsuites', 'g_suite'))
+                # Build function parameters
+                $FunctionParameters = [ordered]@{}
+                If ($Url) {$FunctionParameters.Add('Url', $Url)}
+                If ($Method) {$FunctionParameters.Add('Method', $Method)}
+                If ($Body) {$FunctionParameters.Add('Body', $Body)}
+                If ($Limit) {$FunctionParameters.Add('Limit', $Limit)}
+                If ($Skip) {$FunctionParameters.Add('Skip', $Skip)}
+                If ($ReturnHashTable)
                 {
-                    $Results = Invoke-JCApi -Url:($UrlOrg) -Method:($Method) -Body:($Body) -Fields:($Fields) -Limit:($Limit) -Skip:($Skip) -Paginate:($Paginate)
-                    $Results = $Results | Where-Object {$_.Type -eq 'g_suite'}
-                }
-                # Hacky logic to get office_365 directories
-                ElseIf ($Type -in ('office365s', 'office_365'))
-                {
-                    $Results = Invoke-JCApi -Url:($UrlOrg) -Method:($Method) -Body:($Body) -Fields:($Fields) -Limit:($Limit) -Skip:($Skip) -Paginate:($Paginate)
-                    $Results = $Results | Where-Object {$_.Type -eq 'office_365'}
+                    $Values = $Fields
+                    $Key = If ($PropertyIdentifier) {$PropertyIdentifier} Else {$ById}
+                    If ($Key) {$FunctionParameters.Add('Key', $Key)}
+                    If ($Values) {$FunctionParameters.Add('Values', $Values)}
                 }
                 Else
                 {
-                    # Normal logic
-                    If ($ReturnHashTable)
-                    {
-                        $Key = If ($PropertyIdentifier) {$PropertyIdentifier} Else {$ById}
-                        $Results = Get-JCHash -Url:($Url) -Method:($Method) -Body:($Body) -Key:($Key) -Values:($Fields) -Limit:($Limit) -Skip:($Skip)
-                    }
-                    Else
-                    {
-                        $Results = Invoke-JCApi -Url:($Url) -Method:($Method) -Body:($Body) -Fields:($Fields) -Limit:($Limit) -Skip:($Skip) -Paginate:($Paginate)
-                    }
+                    If ($Fields) {$FunctionParameters.Add('Fields', $Fields)}
+                    $FunctionParameters.Add('Paginate', $Paginate)
+                    If ($ReturnCount) {$FunctionParameters.Add('ReturnCount', $ReturnCount)}
+                }
+                # Run command
+                Write-Debug ('Splatting Parameters');
+                If ($DebugPreference -ne 'SilentlyContinue') {$FunctionParameters}
+                $Results = Switch ($ReturnHashTable)
+                {
+                    $true {Get-JCHash @FunctionParameters}
+                    $false {Invoke-JCApi @FunctionParameters}
+                }
+                # Hacky logic to get g_suite and office_365directories
+                If ($Type -in ('gsuites', 'g_suite', 'office365s', 'office_365'))
+                {
+                    $Results = $Results | Where-Object {$_.Type -eq $Singular}
                 }
                 If ($Results)
                 {
