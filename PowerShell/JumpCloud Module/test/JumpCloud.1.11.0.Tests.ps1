@@ -29,7 +29,7 @@ Describe "Association Tests" {
         $JCAssociationTypes = Get-JCObjectType | Where-Object {$_.Category -eq 'JumpCloud'}
         ForEach ($JCAssociationType In $JCAssociationTypes)
         {
-            $InputObjectType = $JCAssociationType.Plural
+            $InputObjectType = $JCAssociationType.Singular
             $TargetObjectTypes = $JCAssociationType.Targets
             ForEach ($TargetObjectType In $TargetObjectTypes)
             {
