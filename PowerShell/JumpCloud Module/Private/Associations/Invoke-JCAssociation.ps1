@@ -52,7 +52,7 @@ Function Invoke-JCAssociation
             'add' {'POST'}
             'remove' {'POST'}
         }
-        $Results_Associations = @()
+        $Results = @()
     }
     Process
     {
@@ -99,8 +99,6 @@ Function Invoke-JCAssociation
             {
                 $InputObjectAssociations = $InputObjectAssociations.Paths
             }
-            ##################################################
-            ##################################################
             # Get the input objects associations type
             $InputObjectAssociationsTypes = $InputObjectAssociations.to.type | Select-Object -Unique
             ForEach ($InputObjectAssociationsType In $InputObjectAssociationsTypes)
@@ -108,82 +106,41 @@ Function Invoke-JCAssociation
                 # Get the input objects associations id's that match the specific type
                 $InputObjectAssociationsByType = ($InputObjectAssociations | Where-Object {$_.to.Type -eq $InputObjectAssociationsType})
                 # Get all target objects of that specific type and then filter them by id
-                If ($HideTargetData)
+                $TargetObjects = If (!($HideTargetData)) {Get-JCObject -Type:($InputObjectAssociationsType) | Where-Object {$_.($_.ById) -in $InputObjectAssociationsByType.to.id}}
+                # Get TargetObject object ids associated with InputObject
+                ForEach ($AssociationTargetObject In $InputObjectAssociationsByType)
                 {
-                    # Get TargetObject object ids associated with InputObject
-                    ForEach ($AssociationTargetObject In $InputObjectAssociationsByType)
-                    {
-                        $InputObjectAttributes = $AssociationTargetObject.attributes
-                        $AssociationTargetObjectTo = $AssociationTargetObject.to
-                        $TargetObjectAttributes = $AssociationTargetObjectTo.attributes
-                        $TargetObjectId = $AssociationTargetObjectTo.id
-                        $TargetObjectType = $AssociationTargetObjectTo.type
-                        # Output InputObject and TargetObject
-                        $Results_Associations += [PSCustomObject]@{
-                            'InputObjectType'        = $InputObjectType;
-                            'InputObjectId'          = $InputObjectId;
-                            'InputObjectName'        = $InputObjectName;
-                            'InputObjectAttributes'  = $InputObjectAttributes;
-                            'InputObject'            = $InputObject;
-                            'TargetObjectType'       = $TargetObjectType;
-                            'TargetObjectId'         = $TargetObjectId;
-                            'TargetObjectName'       = $null;
-                            'TargetObjectAttributes' = $TargetObjectAttributes;
-                            'TargetObject'           = $null;
-                        }
+                    $InputObjectAttributes = $AssociationTargetObject.attributes
+                    $AssociationTargetObjectTo = $AssociationTargetObject.to
+                    $TargetObjectAttributes = $AssociationTargetObjectTo.attributes
+                    $TargetObjectId = $AssociationTargetObjectTo.id
+                    $TargetObjectType = $AssociationTargetObjectTo.type
+                    $ResultRecord = [PSCustomObject]@{
+                        'InputObjectType'       = $InputObjectType;
+                        'InputObjectId'         = $InputObjectId;
+                        'InputObjectName'       = $InputObjectName;
+                        'InputObjectAttributes' = $InputObjectAttributes;
+                        'InputObject'           = $InputObject;
+                        'TargetObjectType'      = $TargetObjectType;
+                        'TargetObjectId'        = $TargetObjectId;
                     }
-                }
-                Else
-                {
-                    $TargetObjects = Get-JCObject -Type:($InputObjectAssociationsType) | Where-Object {$_.($_.ById) -in $InputObjectAssociationsByType.to.id}
-                    ForEach ($TargetObject In $TargetObjects)
+                    If (!($HideTargetData))
                     {
-                        $TargetObjectId = $TargetObject.($TargetObject.ById)
-                        $TargetObjectName = $TargetObject.($TargetObject.ByName)
-                        # Output InputObject and TargetObject
-                        $Results_Associations += [PSCustomObject]@{
-                            'InputObjectType'  = $InputObjectType;
-                            'InputObjectId'    = $InputObjectId;
-                            'InputObjectName'  = $InputObjectName;
-                            'InputObject'      = $InputObject;
-                            'TargetObjectType' = $TargetObjectType;
-                            'TargetObjectId'   = $TargetObjectId;
-                            'TargetObjectName' = $TargetObjectName;
-                            'TargetObject'     = $TargetObject;
-                        }
+                        # Find specific target object
+                        $TargetObject = $TargetObjects | Where-Object {$_.($_.ById) -eq $TargetObjectId}
+                        Add-Member -InputObject:($ResultRecord) -MemberType:('NoteProperty') -Name:('TargetObjectName') -Value:($TargetObject.($TargetObject.ByName))
                     }
+                    Add-Member -InputObject:($ResultRecord) -MemberType:('NoteProperty') -Name:('TargetObjectAttributes') -Value:($TargetObjectAttributes)
+                    If (!($HideTargetData)) {Add-Member -InputObject:($ResultRecord) -MemberType:('NoteProperty') -Name:('TargetObject') -Value:($TargetObject)}
+                    # Output InputObject and TargetObject
+                    $Results += $ResultRecord
                 }
             }
-            ##################################################
-            ##################################################
-            ## Get TargetObject object ids associated with InputObject
-            # ForEach ($AssociationTargetObject In $InputObjectAssociations)
-            # {
-            #     $AssociationTargetObjectAttributes = $AssociationTargetObject.attributes
-            #     $AssociationTargetObjectTo = $AssociationTargetObject.to
-            #     $AssociationTargetObjectToAttributes = $AssociationTargetObjectTo.attributes
-            #     $TargetObjectId = $AssociationTargetObjectTo.id
-            #     $TargetObjectType = $AssociationTargetObjectTo.type
-            #     $TargetObject = Get-JCObject -Type:($TargetObjectType) -SearchBy:('ById') -SearchByValue:($TargetObjectId)
-            #     $TargetObjectId = $TargetObject.($TargetObject.ById)
-            #     $TargetObjectName = $TargetObject.($TargetObject.ByName)
-            #     # Output InputObject and TargetObject
-            #     $Results_Associations += [PSCustomObject]@{
-            #         'InputObjectType'  = $InputObjectType;
-            #         'InputObjectId'    = $InputObjectId;
-            #         'InputObjectName'  = $InputObjectName;
-            #         'TargetObjectType' = $TargetObjectType;
-            #         'TargetObjectId'   = $TargetObjectId;
-            #         'TargetObjectName' = $TargetObjectName;
-            #         'InputObject'      = $InputObject;
-            #         'TargetObject'     = $TargetObject;
-            #     }
-            # }
-            If ($Results_Associations)
+            If ($Results)
             {
                 # Update results
-                $HiddenProperties = @('InputObjectType', 'InputObjectId', 'InputObjectName', 'InputObject', 'TargetObjectType')
-                $Results_Associations |  ForEach-Object {
+                $HiddenProperties = @('InputObject', 'InputObjectAttributes', 'InputObjectId', 'InputObjectName', 'InputObjectType')
+                $Results |  ForEach-Object {
                     # Create the default property display set
                     $defaultDisplayPropertySet = New-Object System.Management.Automation.PSPropertySet('DefaultDisplayPropertySet', [string[]]($_.PSObject.Properties.Name | Where-Object {$_ -notin $HiddenProperties}))
                     $PSStandardMembers = [System.Management.Automation.PSMemberInfo[]]@($defaultDisplayPropertySet)
@@ -216,11 +173,11 @@ Function Invoke-JCAssociation
             }
             # Send body to endpoint.
             Write-Verbose ("$Action association from '$InputObjectName' to '$TargetObjectName'")
-            $Results_Associations += Invoke-JCApi -Body:($JsonBody) -Method:($Method) -Url:($Uri_Associations)
+            $Results += Invoke-JCApi -Body:($JsonBody) -Method:($Method) -Url:($Uri_Associations)
         }
     }
     End
     {
-        Return $Results_Associations
+        Return $Results
     }
 }
