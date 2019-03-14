@@ -1,6 +1,6 @@
 **Configuring a Zero-Touch macOS Onboarding Experience Using the Apple Device Enrollment Program (DEP), Workspace ONE UEM, and JumpCloud**
 
-![Zero-TouchWorkspaceONEUEM.png]()
+![Zero-TouchWorkspaceONEUEM.png](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Workspace%20ONE%20UEM/diagrams/Zero-TouchWorkspaceONEUEM.png)
 
 **Table Of Contents**
 - [Prerequisites](#prerequisites)
@@ -20,7 +20,7 @@
 
 - The Apple DEP portal was initially launched as a stand alone console but now exists as a nested feature within Apple Business Manager.
 -  Need a DEP account? [Click here to sign up.](https://business.apple.com/#enrollment)
--  
+
 ### A Workspace ONE UEM tenant configured as an MDM server within Apple Device Enrollment
 
   - VMware KB article: [Apple DEP Integration](https://docs.vmware.com/en/VMware-Workspace-ONE-UEM/9.4/vmware-airwatch-guides-94/GUID-AW94-C_IntegrateWithDEP.html)
@@ -69,16 +69,16 @@ This log file is named jc-zero-touch_log.txt and can be queried using this JumpC
 Create the two below components by navigating to "DEVICES" >  "Provisioning" > "Components" in your Workspace ONE UEM administrative console.
 
 1. "Conditions" > "ADD CONDITION" 
-   - [JumpCloud zero-touch onboarding prompt]() 
+   - [JumpCloud zero-touch onboarding prompt](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Workspace%20ONE%20UEM/conditions/JumpCloud%20zero-touch%20onboarding%20prompt.md) 
 2. "Files/Actions" > "ADD FILES/ACTIONS"
-     -[JumpCloud zero-touch onboarding workflow]()
+     -[JumpCloud zero-touch onboarding workflow](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Workspace%20ONE%20UEM/files%26actions/JumpCloud%20zero-touch%20onboarding%20workflow.md)
 
 
 ### Step 2 - Configuring a Workspace ONE UEM JumpCloud Zero-Touch Product
 
 Create the below Workspace ONE UEM product by navigating to "DEVICES" >  "Provisioning" > "Product List View" and selecting "ADD PRODUCT".
 
-[JumpCloud zero-touch onboarding orchestration]()
+[JumpCloud zero-touch onboarding orchestration](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Workspace%20ONE%20UEM/products/JumpCloud%20zero-touch%20onboarding%20orchestration.md)
 
 ### Step 3 - Configuring a Workspace ONE UEM DEP Profile for a JumpCloud Zero-Touch Onboarding Workflow
 
@@ -90,7 +90,7 @@ Note that for this to work the below prerequisites must be met!
 
 In the Workspace ONE UEM admin console navigate to "Settings" > "Devices & Users" > "General" > "Message Templates"
 
-Click  the "ADD" button and create a new "Message Template" with the following settings: [DEP JumpCloud authentication prompt]()
+Click  the "ADD" button and create a new "Message Template" with the following settings: [DEP JumpCloud authentication prompt](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Workspace%20ONE%20UEM/message%20templates/DEP%20JumpCloud%20authentication%20prompt.md)
 
 Next, navigate to "Settings" > "Devices & Users" > "Apple" > "Apple macOS" > "Intelligent Hub Settings"
 
@@ -98,8 +98,7 @@ Ensure that `Install Hub after Enrollment` is set to **ENABLED**
 
 Finally navigate to "Settings" > "Devices & Users" > "Apple" > "Device Enrollment Program"
 
-Add a profile by clicking the `ADD PROFILE` button with the following settings: [JumpCloud authentication DEP profile]()
-
+Add a profile by clicking the `ADD PROFILE` button with the following settings: [JumpCloud authentication DEP profile](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Workspace%20ONE%20UEM/profiles/JumpCloud%20authentication%20DEP%20profile.md)
 
 ## Testing the workflow
 
