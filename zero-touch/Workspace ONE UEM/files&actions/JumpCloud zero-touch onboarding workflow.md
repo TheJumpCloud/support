@@ -21,6 +21,8 @@ Your Work Space ONE UEM organization
 
 [jc-zero-touch.sh](https://raw.githubusercontent.com/TheJumpCloud/support/master/zero-touch/Workspace%20ONE%20UEM/files%26actions/jc-zero-touch.sh)
 
+Download the above file by following the link and right clicking on the page and selecting "Save As.." or copy and save the contents of the script locally in a file named `jc-zero-touch.sh` using a text editor.
+
 ### Download path
 
 /tmp/jc-zero-touch.sh
