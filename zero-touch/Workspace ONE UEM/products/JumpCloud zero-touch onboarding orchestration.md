@@ -30,13 +30,13 @@ Install Files/Actions
 
 ### Add Manifest > Files/Actions
 
-[[JumpCloud zero-touch onboarding workflow]]()
+[JumpCloud zero-touch onboarding workflow](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Workspace%20ONE%20UEM/files%26actions/JumpCloud%20zero-touch%20onboarding%20workflow.md)
 
 ## Conditions
 
 ### Download Conditions
 
-[[JumpCloud zero-touch onboarding prompt]]()
+[JumpCloud zero-touch onboarding prompt](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Workspace%20ONE%20UEM/conditions/JumpCloud%20zero-touch%20onboarding%20prompt.md)
 
 ## Deployment
 

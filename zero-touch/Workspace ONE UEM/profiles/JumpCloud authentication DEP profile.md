@@ -20,7 +20,7 @@ On
 
 ### Message Template
 
-[DEP JumpCloud authentication prompt]()
+[DEP JumpCloud authentication prompt](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Workspace%20ONE%20UEM/message%20templates/DEP%20JumpCloud%20authentication%20prompt.md)
 
 ## MDM Features
 
