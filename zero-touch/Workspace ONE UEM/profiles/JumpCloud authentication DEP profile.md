@@ -40,7 +40,7 @@ If selecting "ADMINISTRATOR" set `Create New Admin Account` to **YES**
 
 ## Admin Account Creation
 
-The credentials configured here are passed in as command line arguments in the [JumpCloud zero-touch onboarding workflow](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Workspace%20ONE%20UEM/files%26actions/JumpCloud%20zero-touch%20onboarding%20workflow.md) file/action.
+The credentials configured here are passed in as command line arguments in the [JumpCloud zero-touch onboarding workflow](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Workspace%20ONE%20UEM/files%26actions/JumpCloud%20zero-touch%20onboarding%20workflow.md#command-line-and-arguments-to-run) file/action.
 
 Be sure that the information entered for the below fields align with the command line arguments entered in this file/action.
 
