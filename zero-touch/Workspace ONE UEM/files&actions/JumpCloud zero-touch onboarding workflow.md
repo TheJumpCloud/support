@@ -23,6 +23,8 @@ Your Work Space ONE UEM organization
 
 Download the above file by following the link and right clicking on the page and selecting "Save As.." or copy and save the contents of the script locally in a file named `jc-zero-touch.sh` using a text editor.
 
+After downloading the script locally upload it using the ADD FILES button on the `Files` tab.
+
 ### Download path
 
 /tmp/jc-zero-touch.sh
