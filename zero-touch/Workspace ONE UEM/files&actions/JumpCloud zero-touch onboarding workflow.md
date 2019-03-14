@@ -3,10 +3,11 @@
 ### Name
 JumpCloud zero-touch onboarding workflow
 
-### Description 
+### Description
+
 A script that runs post DEP enrollment to install the JumpCloud agent and auto-assign users to systems in JumpCloud
 
-### Platform 
+### Platform
 
 Apple macOS
 

@@ -2,7 +2,7 @@
 
 ### Name
 
-JumpCloud Onboarding Prompt
+JumpCloud zero-touch onboarding prompt
 
 ### Description
 
