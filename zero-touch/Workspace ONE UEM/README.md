@@ -78,7 +78,7 @@ Create the two below components by navigating to "DEVICES" >  "Provisioning" > "
 
 Create the below Workspace ONE UEM product by navigating to "DEVICES" >  "Provisioning" > "Product List View" and selecting "ADD PRODUCT".
 
-[JumpCloud zero-touch onboarding orchestration](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Workspace%20ONE%20UEM/products/JumpCloud%20zero-touch%20onboarding%20orchestration.md)
+   - [JumpCloud zero-touch onboarding orchestration](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Workspace%20ONE%20UEM/products/JumpCloud%20zero-touch%20onboarding%20orchestration.md)
 
 ### Step 3 - Configuring a Workspace ONE UEM DEP Profile for a JumpCloud Zero-Touch Onboarding Workflow
 
