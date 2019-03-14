@@ -71,7 +71,7 @@ Create the two below components by navigating to "DEVICES" >  "Provisioning" > "
 1. "Conditions" > "ADD CONDITION" 
    - [JumpCloud zero-touch onboarding prompt](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Workspace%20ONE%20UEM/conditions/JumpCloud%20zero-touch%20onboarding%20prompt.md) 
 2. "Files/Actions" > "ADD FILES/ACTIONS"
-     -[JumpCloud zero-touch onboarding workflow](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Workspace%20ONE%20UEM/files%26actions/JumpCloud%20zero-touch%20onboarding%20workflow.md)
+    - [JumpCloud zero-touch onboarding workflow](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Workspace%20ONE%20UEM/files%26actions/JumpCloud%20zero-touch%20onboarding%20workflow.md)
 
 
 ### Step 2 - Configuring a Workspace ONE UEM JumpCloud Zero-Touch Product
