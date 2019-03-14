@@ -19,7 +19,7 @@ Your Work Space ONE UEM organization
 
 ### File
 
-[[jc-zero-touch.sh]]
+[jc-zero-touch.sh](https://raw.githubusercontent.com/TheJumpCloud/support/master/zero-touch/Workspace%20ONE%20UEM/files%26actions/jc-zero-touch.sh)
 
 ### Download path
 
