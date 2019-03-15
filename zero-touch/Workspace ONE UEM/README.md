@@ -100,6 +100,10 @@ Finally navigate to "Settings" > "Devices & Users" > "Apple" > "Device Enrollmen
 
 Add a profile by clicking the `ADD PROFILE` button with the following settings: [JumpCloud authentication DEP profile](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Workspace%20ONE%20UEM/profiles/JumpCloud%20authentication%20DEP%20profile.md)
 
+After saving the profile set it as the **Default Profile Assigned for Newly Synced Devices** and save.
+
+If you have existing devices registered via DEP navigate to "Devices" > "Lifecycle" > "Enrollment Status", select the checkboxs next to the devices you wish to apply the DEP profile to, select "MORE ACTIONS" > "Assign DEP Profile" and select the newly created profile from the drop down list.
+
 ## Testing the workflow
 
 This article from SimpleMDM gives a great tutorial for how to setup a DEP sandbox environment to test out the macOS zero-touch deployment workflow using virtual machines VMWare Fusion, Parallels, or VirtualBox.

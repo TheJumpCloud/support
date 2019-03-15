@@ -18,11 +18,15 @@ Your Work Space ONE UEM organization
 
 ### Smart Groups
 
-Add a smart group which will apply to DEP enrolled machines.
+Create a smart group which will apply to DEP enrolled machines.
 
-`All Corporate Dedicated Devices` is the recommendation.
-
+Note once this product is saved and activated the workflow will kick off on all targeted machines.
+ 
+The "Exclusions" section can be used when creating a Smart Group to exclude existing devices from being targeted.
+ 
 ## Manifest
+
+ADD
 
 ### Add Manifest > Action(s) To Perform
 
@@ -45,3 +49,7 @@ N/A
 ## Dependencies
 
 N/A
+
+## Activate
+
+Select the "Activate" button to activate the workflow. **Note this will activate this workflow to run on all scoped devices which have been targeted by the "Smart Group".**

@@ -48,15 +48,27 @@ This is required by the JumpCloud agent in order to grant JumpCloud managed user
 
 ### User name
 
-Enter the username for your organizations universal local admin account
+Enter the "Admin_username" passed into command line arguments in the [JumpCloud zero-touch onboarding workflow](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Workspace%20ONE%20UEM/files%26actions/JumpCloud%20zero-touch%20onboarding%20workflow.md#command-line-and-arguments-to-run) file/action.
+
+```
+. /tmp/jc-zero-touch.sh "Your_JumpCloud_Connect_Key" "Admin_Username" "Admin_Password" "Your_JumpCloud_API_Key"
+```
 
 ### Full name
 
-Enter the full name for your organizations universal local admin account. This can be the same as the user name.
+Enter the "Admin_username" passed into command line arguments in the [JumpCloud zero-touch onboarding workflow](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Workspace%20ONE%20UEM/files%26actions/JumpCloud%20zero-touch%20onboarding%20workflow.md#command-line-and-arguments-to-run) file/action.
+
+```
+. /tmp/jc-zero-touch.sh "Your_JumpCloud_Connect_Key" "Admin_Username" "Admin_Password" "Your_JumpCloud_API_Key"
+```
 
 ### Password
 
-Enter the password for your organizations universal local admin account
+Enter the "Admin_Password" passed into command line arguments in the [JumpCloud zero-touch onboarding workflow](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Workspace%20ONE%20UEM/files%26actions/JumpCloud%20zero-touch%20onboarding%20workflow.md#command-line-and-arguments-to-run) file/action.
+
+```
+. /tmp/jc-zero-touch.sh "Your_JumpCloud_Connect_Key" "Admin_Username" "Admin_Password" "Your_JumpCloud_API_Key"
+```
 
 ### Hidden
 
