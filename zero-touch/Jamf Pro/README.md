@@ -36,12 +36,13 @@ The scripts configured in **Step 1** are used to configure the policies configur
 
 A master orchestration policy which runs after DEP enrollment calls six Jamf policies in sequence to:
 
-1. Install the JumpCloud agent
-2. Wait for the JumpCloud agent to register with the associated JumpCloud tenant.
-3. Associate the logged in user to their newly registered system in JumpCloud.
-4. Inform the user using "User Interaction" messages that they need to log out and log to complete onboarding.
+1. Installs the JumpCloud agent
+2. Waits for the JumpCloud agent to register with the associated JumpCloud tenant.
+3. Associates the logged in user to their newly registered system in JumpCloud.
+4. Informs the user using "User Interaction" messages that they need to log out and log to complete onboarding.
 5. Inform the user to enter their current password for both the PREVIOUS PASSWORD and PASSWORD fields during login.
 6. Log the user out so they can log back in. The JumpCloud agent completes the necessary steps for account takeover during this login.
+   - If using JumpCloud for FileVault management the user will receive their Secure Token during their next system login after account takeover.
 
 Steps are broken out into individual policies to leverage the "User Interaction" "Start" and "Complete" messages in Jamf and inform users as to what actions are occurring on their systems.
 

@@ -40,13 +40,14 @@ In **Step 3**  a DEP profile is created which will trigger the execution of the 
 
 The Product which runs after DEP enrollment executes a script which:
 
-1. Install the JumpCloud agent
-2. Wait for the JumpCloud agent to register with the associated JumpCloud tenant.
+1. Install the JumpCloud agents
+2. Waits for the JumpCloud agent to register with the associated JumpCloud tenant.
 3. Associates the logged in user to their newly registered system in JumpCloud.
-4. Informs the user using "AppleScript" messages that they need to log out and log to complete onboarding.
+4. Informs the user using "AppleScript" messages that they need to log out and log in to complete onboarding.
 5. Informs the user to enter their current password for both the PREVIOUS PASSWORD and PASSWORD fields during login.
-6. Log the user out so they can log back in.
+6. Logs the user out so they can log back in.
    - The JumpCloud agent completes the necessary steps for account takeover during this login.
+   - If using JumpCloud for FileVault management the user will receive their Secure Token during their next JumpCloud login after account takeover.
 
 This script is passed four parameters using the "Run" action within "Files/Actions". These parameters must be entered in a specific order.
 
@@ -58,11 +59,10 @@ Example:
 
 Notification messages are displayed to end users to inform them of the onboardings steps occurring on their systems using Apple Scripts called by the Workspace ONE UEM agent.
 
-A log file with time stamps and verbose information is outputted on machines to the /tmp folder by the [[jc-zero-touch.sh]] script.
+A log file with time stamps and verbose information is outputted on machines to the /tmp folder by the [jc-zero-touch.sh script]() named **jc-zero-touch_log.txt**.
 
-This log file is named jc-zero-touch_log.txt and can be queried using this JumpCloud command to see the result of the zero-touch workflow.
-    - [[Insert JumpCloud Command]]
-
+This log file can be queried using this JumpCloud command to see the result of the zero-touch workflow.
+    - [Mac - Pull Workspace ONE UEM zero-touch log](https://github.com/TheJumpCloud/support/blob/master/PowerShell/JumpCloud%20Commands%20Gallery/Mac%20Commands/Mac%20-%20Pull%20Workspace%20ONE%20UEM%20zero-touch%20log.md)
 
 ### Step 1 - Configuring Workspace ONE UEM JumpCloud Zero-Touch Components
 
