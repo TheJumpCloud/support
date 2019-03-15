@@ -48,22 +48,22 @@ EOF
     echo "$(date "+%Y-%m-%dT%H:%M:%S") JumpCloud agent installed" >>/tmp/jc-zero-touch_log.txt
 fi
 
-Sleep 5
+Sleep 8
 
 # Get the logged in user uid
 uid=$(id -u "$loggedInUser")
 echo "$(date "+%Y-%m-%dT%H:%M:%S") Logged in user uid: $uid" >>/tmp/jc-zero-touch_log.txt
 # Prompts user to tell them the JumpCloud agent is intalled
-agentInstalledPrompt=$(launchctl asuser "$uid" /usr/bin/osascript -e 'display dialog "JumpCloud agent installed!" with title "JumpCloud Onboarding" with icon file "Applications:Jumpcloud.app:Contents:Resources:AppIcon.icns" giving up after 5' 2>/dev/null)
+agentInstalledPrompt=$(launchctl asuser "$uid" /usr/bin/osascript -e 'display dialog "JumpCloud agent installed!" with title "JumpCloud Onboarding" with icon file "Applications:Jumpcloud.app:Contents:Resources:AppIcon.icns" giving up after 8' 2>/dev/null)
 
 echo "$(date "+%Y-%m-%dT%H:%M:%S") Agent installed prompt input: $agentInstalledPrompt" >>/tmp/jc-zero-touch_log.txt
 
-Sleep 5
+Sleep 8
 
 # logged in user auto-association to JumpCloud account
 
 # Prompts user to tell them about association
-autoAssociationPrompt=$(launchctl asuser "$uid" /usr/bin/osascript -e 'display dialog "Associating account with system in JumpCloud. This can take up to 60 seconds." with title "JumpCloud Onboarding" with icon file "Applications:Jumpcloud.app:Contents:Resources:AppIcon.icns" giving up after 5' 2>/dev/null)
+autoAssociationPrompt=$(launchctl asuser "$uid" /usr/bin/osascript -e 'display dialog "Associating account with system in JumpCloud. This can take up to 60 seconds." with title "JumpCloud Onboarding" with icon file "Applications:Jumpcloud.app:Contents:Resources:AppIcon.icns" giving up after 8' 2>/dev/null)
 
 echo "$(date "+%Y-%m-%dT%H:%M:%S") Account association prompt input: $autoAssociationPrompt" >>/tmp/jc-zero-touch_log.txt
 
@@ -189,7 +189,7 @@ if [[ $activated == "true" ]]; then
     done
 
     echo "$(date "+%Y-%m-%dT%H:%M:%S") JumpCloud agent local account takeover complete" >>/tmp/jc-zero-touch_log.txt
-    autoAssociationSuccessPrompt=$(launchctl asuser "$uid" /usr/bin/osascript -e 'display dialog "Association complete!" with title "JumpCloud Onboarding" with icon file "Applications:Jumpcloud.app:Contents:Resources:AppIcon.icns" giving up after 5' 2>/dev/null)
+    autoAssociationSuccessPrompt=$(launchctl asuser "$uid" /usr/bin/osascript -e 'display dialog "Association complete!" with title "JumpCloud Onboarding" with icon file "Applications:Jumpcloud.app:Contents:Resources:AppIcon.icns" giving up after 8' 2>/dev/null)
     echo "$(date "+%Y-%m-%dT%H:%M:%S") Account association success prompt input: $autoAssociationSuccessPrompt" >>/tmp/jc-zero-touch_log.txt
 
 else
@@ -202,33 +202,33 @@ fi
 
 ### Logout prompts to inform user of log out process
 
-logoutInfo1=$(launchctl asuser "$uid" /usr/bin/osascript -e 'display dialog "Preparing to log out. Log back in to complete onboarding." with title "JumpCloud Onboarding" with icon file "Applications:Jumpcloud.app:Contents:Resources:AppIcon.icns" giving up after 5' 2>/dev/null)
+logoutInfo1=$(launchctl asuser "$uid" /usr/bin/osascript -e 'display dialog "Preparing to log out. Log back in to complete onboarding." with title "JumpCloud Onboarding" with icon file "Applications:Jumpcloud.app:Contents:Resources:AppIcon.icns" giving up after 8' 2>/dev/null)
 
 if [ "$logoutInfo1" = "button returned:OK, gave up:false" ]; then
-    logoutInfo2=$(launchctl asuser "$uid" /usr/bin/osascript -e 'display dialog "During login you will be asked to enter a PREVIOUS PASSWORD and a PASSWORD." with title "JumpCloud Onboarding" with icon file "Applications:Jumpcloud.app:Contents:Resources:AppIcon.icns" giving up after 5' 2>/dev/null)
+    logoutInfo2=$(launchctl asuser "$uid" /usr/bin/osascript -e 'display dialog "During login you will be asked to enter a PREVIOUS PASSWORD and a PASSWORD." with title "JumpCloud Onboarding" with icon file "Applications:Jumpcloud.app:Contents:Resources:AppIcon.icns" giving up after 8' 2>/dev/null)
 else
 
-    logoutInfo2=$(launchctl asuser "$uid" /usr/bin/osascript -e 'display dialog "During login you will be asked to enter a PREVIOUS PASSWORD and a PASSWORD." with title "JumpCloud Onboarding" with icon file "Applications:Jumpcloud.app:Contents:Resources:AppIcon.icns" giving up after 5' 2>/dev/null)
+    logoutInfo2=$(launchctl asuser "$uid" /usr/bin/osascript -e 'display dialog "During login you will be asked to enter a PREVIOUS PASSWORD and a PASSWORD." with title "JumpCloud Onboarding" with icon file "Applications:Jumpcloud.app:Contents:Resources:AppIcon.icns" giving up after 8' 2>/dev/null)
 
 fi
 
 echo "$(date "+%Y-%m-%dT%H:%M:%S") Logout prompt 1 input: $logoutInfo1" >>/tmp/jc-zero-touch_log.txt
 
 if [ "$logoutInfo2" = "button returned:OK, gave up:false" ]; then
-    logoutInfo3=$(launchctl asuser "$uid" /usr/bin/osascript -e 'display dialog "Enter your current password into both the PREVIOUS PASSWORD and PASSWORD fields." with title "JumpCloud Onboarding" with icon file "Applications:Jumpcloud.app:Contents:Resources:AppIcon.icns" giving up after 5' 2>/dev/null)
+    logoutInfo3=$(launchctl asuser "$uid" /usr/bin/osascript -e 'display dialog "Enter your current password into both the PREVIOUS PASSWORD and PASSWORD fields." with title "JumpCloud Onboarding" with icon file "Applications:Jumpcloud.app:Contents:Resources:AppIcon.icns" giving up after 8' 2>/dev/null)
 else
 
-    logoutInfo3=$(launchctl asuser "$uid" /usr/bin/osascript -e 'display dialog "Enter your current password into both the PREVIOUS PASSWORD and PASSWORD fields." with title "JumpCloud Onboarding" with icon file "Applications:Jumpcloud.app:Contents:Resources:AppIcon.icns" giving up after 5' 2>/dev/null)
+    logoutInfo3=$(launchctl asuser "$uid" /usr/bin/osascript -e 'display dialog "Enter your current password into both the PREVIOUS PASSWORD and PASSWORD fields." with title "JumpCloud Onboarding" with icon file "Applications:Jumpcloud.app:Contents:Resources:AppIcon.icns" giving up after 8' 2>/dev/null)
 
 fi
 
 echo "$(date "+%Y-%m-%dT%H:%M:%S") Logout prompt 2 input: $logoutInfo2" >>/tmp/jc-zero-touch_log.txt
 
 if [ "$logoutInfo3" = "button returned:OK, gave up:false" ]; then
-    logoutInfo4=$(launchctl asuser "$uid" /usr/bin/osascript -e 'display dialog "Logging out" with title "JumpCloud Onboarding" with icon file "Applications:Jumpcloud.app:Contents:Resources:AppIcon.icns" giving up after 5' 2>/dev/null)
+    logoutInfo4=$(launchctl asuser "$uid" /usr/bin/osascript -e 'display dialog "Logging out" with title "JumpCloud Onboarding" with icon file "Applications:Jumpcloud.app:Contents:Resources:AppIcon.icns" giving up after 8' 2>/dev/null)
 else
 
-    logoutInfo4=$(launchctl asuser "$uid" /usr/bin/osascript -e 'display dialog "Logging out" with title "JumpCloud Onboarding" with icon file "Applications:Jumpcloud.app:Contents:Resources:AppIcon.icns" giving up after 5' 2>/dev/null)
+    logoutInfo4=$(launchctl asuser "$uid" /usr/bin/osascript -e 'display dialog "Logging out" with title "JumpCloud Onboarding" with icon file "Applications:Jumpcloud.app:Contents:Resources:AppIcon.icns" giving up after 8' 2>/dev/null)
 
 fi
 
@@ -237,7 +237,7 @@ echo "$(date "+%Y-%m-%dT%H:%M:%S") Logout prompt 3 input: $logoutInfo3" >>/tmp/j
 if [ "$logoutInfo4" = "button returned:OK, gave up:false" ]; then
     continue
 else
-    Sleep 5
+    Sleep 8
 fi
 
 echo "$(date "+%Y-%m-%dT%H:%M:%S") Logout prompt 4 input: $logoutInfo4" >>/tmp/jc-zero-touch_log.txt
@@ -253,7 +253,7 @@ timeoutCounter='0'
 while [[ "${loginCheck}" ]]; do
     # Logs out user if they are logged in
     sudo launchctl bootout gui/$(id -u ${user})
-    Sleep 5
+    Sleep 8
     loginCheck=$(ps -Ajc | grep ${user} | grep loginwindow | awk '{print $2}')
     timeoutCounter=$((${timeoutCounter} + 1))
     if [[ ${timeoutCounter} -eq 4 ]]; then
