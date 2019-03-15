@@ -20,7 +20,7 @@ All Computers
 
 ## User Interaction - START MESSAGE
 
-Agent Registering With JumpCloud
+Registering Agent with JumpCloud
 
 ## User Interaction - COMPLETE MESSAGE
 
