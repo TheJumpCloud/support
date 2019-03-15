@@ -1,4 +1,8 @@
-# General
+# Add Files/Actions
+
+Apple macOS
+
+## Add Files/Actions > General
 
 ### Name
 JumpCloud zero-touch onboarding workflow
@@ -15,7 +19,7 @@ Apple macOS
 
 Your Work Space ONE UEM organization
 
-# Files
+## Add Files/Actions > Files
 
 ### File
 
@@ -33,9 +37,9 @@ After downloading the script locally upload it using the ADD FILES button on the
 
 1.0
 
-# Manifest
+## Add Files/Actions >  Manifest > Install Manifest
 
-## Add Manifest
+ADD ACTION
 
 ### Action(s) To Perform
 

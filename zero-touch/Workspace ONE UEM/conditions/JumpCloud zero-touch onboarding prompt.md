@@ -1,4 +1,8 @@
-# Type
+# Add Condition
+
+Apple macOS
+
+## Create Condition > Type
 
 ### Name
 
@@ -16,7 +20,7 @@ Confirm
 
 Your Work Space ONE UEM organization
 
-# Details
+## Create Condition > Details
 
 ## Message to be displayed
 
