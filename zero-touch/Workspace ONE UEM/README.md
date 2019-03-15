@@ -61,8 +61,8 @@ Notification messages are displayed to end users to inform them of the onboardin
 
 A log file with time stamps and verbose information is outputted on machines to the /tmp folder by the [jc-zero-touch.sh script](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Workspace%20ONE%20UEM/files%26actions/jc-zero-touch.sh) named **jc-zero-touch_log.txt**.
 
-This log file can be queried using this JumpCloud command to see the result of the zero-touch workflow.
-    - [Mac - Pull Workspace ONE UEM zero-touch log](https://github.com/TheJumpCloud/support/blob/master/PowerShell/JumpCloud%20Commands%20Gallery/Mac%20Commands/Mac%20-%20Pull%20Workspace%20ONE%20UEM%20zero-touch%20log.md)
+This log file can be queried using the below JumpCloud command to see the result of the zero-touch workflow.
+ - [Mac - Pull Workspace ONE UEM zero-touch log](https://github.com/TheJumpCloud/support/blob/master/PowerShell/JumpCloud%20Commands%20Gallery/Mac%20Commands/Mac%20-%20Pull%20Workspace%20ONE%20UEM%20zero-touch%20log.md)
 
 ### Step 1 - Configuring Workspace ONE UEM JumpCloud Zero-Touch Components
 
