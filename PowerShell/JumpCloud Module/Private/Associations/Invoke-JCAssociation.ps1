@@ -7,10 +7,21 @@ Function Invoke-JCAssociation
     )
     DynamicParam
     {
-        # Get targets list
-        $JCAssociationType = Get-JCObjectType -Type:($InputObjectType) | Where-Object {$_.Category -eq 'JumpCloud'};
-        # Get count of InputJCObject to determine if script should load dynamic parameters
-        $InputJCObjectCount = (Get-JCObject -Type:($InputObjectType) -ReturnCount).totalCount
+        # Determine if help files are being built
+        If ((Get-PSCallStack).Command -eq 'Update-MarkdownHelpModule')
+        {
+            # Get targets list
+            $JCAssociationType = Get-JCObjectType | Where-Object {$_.Category -eq 'JumpCloud'};
+            # Get count of InputJCObject to determine if script should load dynamic parameters
+            $InputJCObjectCount = 999999
+        }
+        Else
+        {
+            # Get targets list
+            $JCAssociationType = Get-JCObjectType -Type:($InputObjectType) | Where-Object {$_.Category -eq 'JumpCloud'};
+            # Get count of InputJCObject to determine if script should load dynamic parameters
+            $InputJCObjectCount = (Get-JCObject -Type:($InputObjectType) -ReturnCount).totalCount
+        }
         # Build parameter array
         $Params = @()
         # Define the new parameters
