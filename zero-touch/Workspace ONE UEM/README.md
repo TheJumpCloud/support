@@ -26,7 +26,7 @@
   - VMware KB article: [Apple DEP Integration](https://docs.vmware.com/en/VMware-Workspace-ONE-UEM/9.4/vmware-airwatch-guides-94/GUID-AW94-C_IntegrateWithDEP.html)
 ### A JumpCloud tenant configured for LDAP integration with a Workspace ONE UEM tenant
 
-  - JumpCloud KB article: [Configuring AirWatch to use JumpCloud's LDAP-as-a-Service](https://support.jumpcloud.com/customer/portal/articles/2440026)
+  - JumpCloud KB article: [Configuring Workspace ONE UEM Directory Services to use JumpCloud's LDAP-as-a-Service](https://jumpcloud.desk.com/customer/portal/articles/2971642-configuring-workspace-one-uem-directory-services-to-use-jumpcloud-s-ldap-as-a-service)
 
 ### Users who you wish to enroll using this zero-touch workflow added to the JumpCloud LDAP directory.
 
@@ -86,7 +86,7 @@ Note that for this to work the below prerequisites must be met!
 - A Workspace ONE UEM tenant configured as an MDM server within Apple Device Enrollment
   - VMware KB article: [Apple DEP Integration](https://docs.vmware.com/en/VMware-Workspace-ONE-UEM/9.4/vmware-airwatch-guides-94/GUID-AW94-C_IntegrateWithDEP.html)
 -  A JumpCloud tenant configured for LDAP integration with a Workspace ONE UEM tenant
-     - JumpCloud KB article: [Configuring AirWatch to use JumpCloud's LDAP-as-a-Service](https://support.jumpcloud.com/customer/portal/articles/2440026)
+     - JumpCloud KB article: [Configuring Workspace ONE UEM Directory Services to use JumpCloud's LDAP-as-a-Service](https://jumpcloud.desk.com/customer/portal/articles/2971642-configuring-workspace-one-uem-directory-services-to-use-jumpcloud-s-ldap-as-a-service)
 
 In the Workspace ONE UEM admin console navigate to "Settings" > "Devices & Users" > "General" > "Message Templates"
 
