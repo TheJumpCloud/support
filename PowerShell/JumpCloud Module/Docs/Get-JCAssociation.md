@@ -1,7 +1,7 @@
 ---
 external help file: JumpCloud-help.xml
 Module Name: JumpCloud
-online version: 
+online version: https://github.com/TheJumpCloud/support/wiki/Get-JCAssociation
 schema: 2.0.0
 ---
 
@@ -25,31 +25,19 @@ Get-JCAssociation [-InputObjectType] <String> [-InputObjectName] <String> [-Targ
 ```
 
 ## DESCRIPTION
-The Get-JCAssociation function allows you to view the associations of a specific object to a target object. The following table shows the possible "InputObjectType" and its valid "TargetObjectType" options.
-active_directory = user, user_group
-application = user_group
-command = system, system_group
-g_suite = user, user_group
-ldap_server = user, user_group
-office_365 = user, user_group
-policy = system, system_group
-radius_server = user_group
-system_group = policy, user_group, command, system
-system = policy, user, command, system_group
-user_group = active_directory, application, g_suite, ldap_server, office_365, radius_server, system_group, user
-user = active_directory, g_suite, ldap_server, office_365, system, user_group
+The Get-JCAssociation function allows you to view the associations of a specific object to a target object.
 
 ## EXAMPLES
 
 ### Example 1
-```powershell
+```
 PS C:\> Get-JCAssociation -InputObjectType:('users') -InputObjectName:('Luke Skywalker') -TargetObjectType:('system') | Format-Table
 ```
 
 List all "systems" that are associated with the user "Luke Skywalker".
 
 ### Example 2
-```powershell
+```
 PS C:\> Get-JCAssociation -InputObjectType:('users') -InputObjectId:('5ab915cf861178491b8fc399') -TargetObjectType:('system') | Format-Table
 ```
 
@@ -67,7 +55,7 @@ Aliases:
 
 Required: False
 Position: 4
-Default value: None
+Default value: False
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
