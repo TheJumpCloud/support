@@ -2,9 +2,13 @@
 
 Zero-Touch JumpCloud Orchestration Policy
 
-## Trigger
+## Options - General - Trigger
 
-Enrollment Complete
+Custom
+
+## Options - General - Trigger - Custom - CUSTOM EVENT
+
+InitialConfig
 
 ## Execution Frequency
 

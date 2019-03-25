@@ -11,7 +11,8 @@
 - [Configuration Steps](#configuration-steps)
   - [Step 1 - Configuring JumpCloud and Jamf Zero-Touch Scripts](#step-1---configuring-jumpcloud-and-jamf-zero-touch-scripts)
   - [Step 2 - Configuring JumpCloud and Jamf Zero-Touch Policies](#step-2---configuring-jumpcloud-and-jamf-zero-touch-policies)
-  - [Step 3 - Configuring a Jamf PreStage Enrollment Profile for a JumpCloud and Jamf Zero-Touch Workflow](#step-3---configuring-a-jamf-prestage-enrollment-profile-for-a-jumpcloud-and-jamf-zero-touch-workflow)
+  - [Step 3 - Configure a JAMF Enrollment Kickstart Workflow](#step-3---configure-a-jamf-enrollment-kickstart-workflow)
+  - [Step 4 - Configuring a Jamf PreStage Enrollment Profile for a JumpCloud and Jamf Zero-Touch Workflow](#step-4---configuring-a-jamf-prestage-enrollment-profile-for-a-jumpcloud-and-jamf-zero-touch-workflow)
 - [Testing the workflow](#testing-the-workflow)
 
 ## Prerequisites
@@ -32,7 +33,9 @@
 
 The scripts configured in **Step 1** are used to configure the policies configured in **Step 2**.
 
-**Step 3** creates a prestage enrollment profile which will trigger the execution of the JumpCloud and Jamf "Zero-Touch" workflow and the automatic execution of the policies configured in **Step 2**.
+In **Step 3** a Jamf Enrollment Kickstart workflow is configured to ensure the execution of the zero-touch workflow.
+
+**Step 4** creates a prestage enrollment profile which will trigger the execution of the JumpCloud and Jamf zero-touch workflow and the automatic execution of the policies configured in **Steps 2 and 3**.
 
 A master orchestration policy which runs after DEP enrollment calls six Jamf policies in sequence to:
 
@@ -44,13 +47,19 @@ A master orchestration policy which runs after DEP enrollment calls six Jamf pol
 6. Log the user out so they can log back in. The JumpCloud agent completes the necessary steps for account takeover during this login.
    - If using JumpCloud for FileVault management the user will receive their Secure Token during their next system login after account takeover.
 
+A Jamf Enrollment Kickstart workflow is used to to ensure that the master orchestration policy runs on targeted machines post DEP enrollment.
+
 Steps are broken out into individual policies to leverage the "User Interaction" "Start" and "Complete" messages in Jamf and inform users as to what actions are occurring on their systems.
 
 Using individual policies vs a single master policy allows for more granular logging. These logs can come in very handy during troubleshooting events.
 
-The only policy that must be set to trigger on the event of "Enrollment" is the master  orchestration policy.
+The master orchestration policy is called by a launch daemon via the Jamf Enrollment Kickstart workflow.
 
-The six nested polices called by the orchestration script run by the orchestration policy are each set to a "Custom Event" where the event name is used by the orchestration script to ensure the nested polices run in a specific order.
+Shout out to [Yohan460(https://github.com/Yohan460) for creating and documenting a easy to use and reliable [Jamf Enrollment kickstart workflow](https://github.com/Yohan460/JAMF-Enrollment-Kickstart) which is leveraged in this guide.
+
+Reasoning for using a kickstart workflow over the Jamf "Enrollment Complete" tigger can be [found here](https://github.com/Yohan460/JAMF-Enrollment-Kickstart/wiki/10-Reasoning#reasoning).
+
+The six nested polices called by the orchestration script run using the "Custom Event" trigger where the event name is used by the orchestration script to ensure the nested polices run in a specific order.
 
 The seven policies call five scripts. These scripts are the meat and potatoes needed for the "Zero-Touch" JumpCloud workflow.
 
@@ -58,7 +67,7 @@ The seven policies call five scripts. These scripts are the meat and potatoes ne
 
 Create the below five scripts in Jamf pro by navigating to "Settings" >  "Computer Management" > "Scripts"
 
-1. Create the script that aligns with your usecase. 
+1. Create the script that aligns with your usecase.
     - [jc_install_jcagent_and_service_account](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Jamf%20Pro/scripts/jc_install_jcagent_and_service_account.md) for Mac versions 10.13.x and above, where JumpCloud will manage Filevault users.
        - Ensure that the credentials specified for the Jamf management account configured under "Settings" >  "Global Management" > "User-Initiated Enrollment" > "Platforms" > "macOS" align with the credentials specified for the `SECURETOKEN_ADMIN_USERNAME=''` and `SECURETOKEN_ADMIN_PASSWORD=''` in the configured Jamf script.
        - To update and secure the credentials for this user you can use the JumpCloud agent to takeover this account and update the credentials post DEP enrollment.
@@ -83,8 +92,23 @@ Note that the name of the policies and the "User Interaction" start and complete
 
 After creating the above six policies create the mater zero-touch JumpCloud orchestration policy: [Zero-Touch JumpCloud Orchestration Policy](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Jamf%20Pro/policies/Zero-Touch%20JumpCloud%20Orchestration%20Policy.md)
 
+### Step 3 - Configure a JAMF Enrollment Kickstart Workflow
 
-### Step 3 - Configuring a Jamf PreStage Enrollment Profile for a JumpCloud and Jamf Zero-Touch Workflow
+If you are introducing this workflow to a net new Jamf environment which has has no existing machine use the below guide.
+
+  - [New JSS configuration Guide](https://github.com/Yohan460/JAMF-Enrollment-Kickstart/wiki/40-New-JSS-configuration-Guide#new-jss-configuration-guide)
+
+If you are introducing zero-touch to an existing Jamf environment with existing machines use the below guide.
+
+  - [Pre-existing JSS configuration Guide](https://github.com/Yohan460/JAMF-Enrollment-Kickstart/wiki/50-Pre-existing-JSS-configuration-Guide)
+
+See the [Implementation Guide](https://github.com/Yohan460/JAMF-Enrollment-Kickstart/wiki/30-Implementation-Guide#jamf-enrollment-kickstart-implementation-guide) for additional information.
+
+Regardless of which method is used to setup the kickstart workflow the launch daemon calls the policy with a custom trigger specified as "InitialConfig" to invoke the zero-touch workflow.
+
+Ensure that the [Zero-Touch JumpCloud Orchestration Policy](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Jamf%20Pro/policies/Zero-Touch%20JumpCloud%20Orchestration%20Policy.md) is configured with a custom trigger set with an event name of `InitialConfig`.
+
+### Step 4 - Configuring a Jamf PreStage Enrollment Profile for a JumpCloud and Jamf Zero-Touch Workflow
 
 Within Jamf Pro navigate to "Computers" > "PreStage Enrollments".
 
@@ -111,6 +135,6 @@ If you are using the [jc_install_jcagent_and_service_account](https://github.com
 
 ## Testing the workflow
 
-This article from SimpleMDM gives a great tuturial for how to setup a DEP sandbox environment to test out the macOS zero-touch deployment workflow using virtual machines VMWare Fusion, Parallels, or VirtualBox.
+This article from SimpleMDM gives a great tutorial for how to setup a DEP sandbox environment to test out the macOS zero-touch deployment workflow using virtual machines VMWare Fusion, Parallels, or VirtualBox.
 
 [Test Apple DEP with VMware, Parallels, and VirtualBox](https://simplemdm.com/2018/04/03/apple-dep-vmware-parallels-virtualbox/)
