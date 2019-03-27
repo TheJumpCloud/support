@@ -58,6 +58,7 @@ Example:
 ```
 
 - Want to takeover this admin account during the DEP process and push down a secure password? See how to do this using the zero-touch [SystemGroupAddition](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Additions/SystemGroupAddition.md). This addition can be used to automatically add systems to a JumpCloud system group during enrollment. Any users that are in user groups that are bound to this system group will automatically be bound to these systems and their secure JumpCloud passwords will be pushed down.
+- Want to encrypt these parameters? [Find steps for how to create secure script parameters here](https://github.com/jamf/Encrypted-Script-Parameters#encrypted-script-parameters).
 
 Notification messages are displayed to end users to inform them of the onboardings steps occurring on their systems using Apple Scripts called by the Workspace ONE UEM agent.
 
