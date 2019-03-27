@@ -55,7 +55,7 @@ Using individual policies vs a single master policy allows for more granular log
 
 The master orchestration policy is called by a launch daemon via the Jamf Enrollment Kickstart workflow.
 
-Shout out to [Yohan460(https://github.com/Yohan460) for creating and documenting a easy to use and reliable [Jamf Enrollment kickstart workflow](https://github.com/Yohan460/JAMF-Enrollment-Kickstart) which is leveraged in this guide.
+Shout out to [Yohan460](https://github.com/Yohan460) for creating and documenting a easy to use and reliable [Jamf Enrollment kickstart workflow](https://github.com/Yohan460/JAMF-Enrollment-Kickstart) which is leveraged in this guide.
 
 Reasoning for using a kickstart workflow over the Jamf "Enrollment Complete" tigger can be [found here](https://github.com/Yohan460/JAMF-Enrollment-Kickstart/wiki/10-Reasoning#reasoning).
 
