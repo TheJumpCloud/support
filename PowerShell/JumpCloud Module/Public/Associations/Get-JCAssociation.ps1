@@ -7,7 +7,7 @@ Function Get-JCAssociation
     DynamicParam
     {
         # Determine if help files are being built
-        If ((Get-PSCallStack).Command -eq 'Update-MarkdownHelpModule')
+        If ((Get-PSCallStack).Command -like '*MarkdownHelp')
         {
             # Get targets list
             $JCAssociationType = Get-JCObjectType | Where-Object {$_.Category -eq 'JumpCloud'};
