@@ -26,7 +26,7 @@ Function Get-JCPolicy ()
 
     {
         Write-Debug 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {Connect-JConline}
+        if ($JCAPIKEY.length -ne 40) { Connect-JCOnline }
 
         Write-Debug 'Populating API headers'
         $hdrs = @{
@@ -49,11 +49,11 @@ Function Get-JCPolicy ()
 
         switch ($PSCmdlet.ParameterSetName)
         {
-            "ReturnAll" {$URL = "$JCUrlBasePath/api/v2/policies"}
-            "ByID" {$URL = "$JCUrlBasePath/api/v2/policies/$PolicyID"}
-            "Name" {$URL = "$JCUrlBasePath/api/v2/policies?sort=name&filter=name%3Aeq%3A$Name"}
+            "ReturnAll" { $URL = "$JCUrlBasePath/api/v2/policies" }
+            "ByID" { $URL = "$JCUrlBasePath/api/v2/policies/$PolicyID" }
+            "Name" { $URL = "$JCUrlBasePath/api/v2/policies?sort=name&filter=name%3Aeq%3A$Name" }
         }
-        $Result = Invoke-JCApiGet -URL $URL
+        $Result = Invoke-JCApi -Method:('GET') -Paginate:($true) -Url:($URL)
         If ($Result)
         {
             Return $Result

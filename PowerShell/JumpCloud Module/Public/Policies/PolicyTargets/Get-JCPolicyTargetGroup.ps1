@@ -10,7 +10,7 @@ Function Get-JCPolicyTargetGroup
     {
 
         Write-Verbose 'Verifying JCAPI Key'
-        If ($JCAPIKEY.length -ne 40) {Connect-JConline}
+        If ($JCAPIKEY.length -ne 40) { Connect-JCOnline }
 
         Write-Verbose 'Populating API headers'
         $hdrs = @{
@@ -31,22 +31,21 @@ Function Get-JCPolicyTargetGroup
         $resultsArrayList = New-Object System.Collections.ArrayList
         $URL_Template = "{0}/api/v2/policies/{1}/systemgroups"
         Write-Verbose 'Populating SystemGroupNameHash'
-        $SystemGroupNameHash = Get-Hash_ID_SystemGroupName 
+        $SystemGroupNameHash = Get-Hash_ID_SystemGroupName
     }
     Process
     {
         switch ($PSCmdlet.ParameterSetName)
         {
-            'ByName' {$Policy = Get-JCPolicy -Name:($PolicyName)}
-            'ById' {$Policy = Get-JCPolicy -PolicyID:($PolicyID)}
+            'ByName' { $Policy = Get-JCPolicy -Name:($PolicyName) }
+            'ById' { $Policy = Get-JCPolicy -PolicyID:($PolicyID) }
         }
         If ($Policy)
         {
             $PolicyId = $Policy.id
             $PolicyName = $Policy.Name
             $URL = $URL_Template -f $JCUrlBasePath, $PolicyID
-            
-            $Results = Invoke-JCApiGet -URL:($URL)
+            $Results = Invoke-JCApi -Method:('GET') -Paginate:($true) -Url:($URL)
             ForEach ($Result In $Results)
             {
                 $GroupID = $Result.id
@@ -68,6 +67,6 @@ Function Get-JCPolicyTargetGroup
     End
     {
         Return $resultsArrayList
-        
+
     }
 }
