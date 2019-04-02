@@ -3,41 +3,87 @@ Function Invoke-JCApiGet
     [CmdletBinding()]
     Param(
         [Parameter(Mandatory = $true, Position = 0)][ValidateNotNullOrEmpty()][string]$Url,
-        [Parameter(Mandatory = $false, Position = 1)][ValidateNotNullOrEmpty()][int]$Limit = 100
+        [Parameter(Mandatory = $false, Position = 1)][ValidateNotNullOrEmpty()][ValidateRange(1, [int]::MaxValue)][int]$Limit = 100,
+        [Parameter(Mandatory = $false, Position = 2)][ValidateNotNullOrEmpty()][array]$Fields = ''
     )
-    $Skip = 0
-    $UriQueryString_Template = '{0}{1}limit={2}&skip={3}'
-    $Results_Output = @()
-    $PaginationExist = $true
-    If ($Url -like '*`?*')
+    Begin
     {
-        $SearchOperator = '&'
-    }
-    Else
-    {
-        $SearchOperator = '?'
-    }
-    While ($PaginationExist)
-    {
-        $Uri = $UriQueryString_Template -f $Url, $SearchOperator, $Limit, $Skip
-        Write-Debug ('Calling Uri: ' + $Uri)
-        $Results = Invoke-RestMethod -Method:('GET') -Headers:($hdrs) -Uri:($Uri)
-        If ($Results)
+        #Set JC headers
+        Write-Verbose 'Verifying JCAPI Key'
+        If ($JCAPIKEY.length -ne 40) {Connect-JCOnline}
+        Write-Verbose 'Populating API headers'
+        $hdrs = @{
+            'Content-Type' = 'application/json'
+            'Accept'       = 'application/json'
+            'X-API-KEY'    = $JCAPIKEY
+        }
+        If ($JCOrgID)
         {
-            $Skip += $Results.Count
-            $Results_Output += $Results
-            If ($Results.Count -le 1)
-            {
-                $PaginationExist = $false
-            }
+            $hdrs.Add('x-org-id', "$($JCOrgID)")
+        }
+    }
+    Process
+    {
+        $Skip = 0
+        $UriQueryString_Template = '{0}{1}limit={2}&skip={3}&fields={4}'
+        $Results_Output = @()
+        If($Url -notlike ('*' + $JCUrlBasePath + '*'))
+        {
+            $Url = $JCUrlBasePath + $Url
+        }
+        If ($Url -like '*`?*')
+        {
+            $SearchOperator = '&'
         }
         Else
         {
-            $PaginationExist = $false
+            $SearchOperator = '?'
         }
+        $JoinedFields = ($Fields -join '&')
+        Do
+        {
+            $Uri = $UriQueryString_Template -f $Url, $SearchOperator, $Limit, $Skip, $JoinedFields
+            Write-Verbose ('Connecting to: ' + $Uri)
+            $Results = Invoke-RestMethod -Method:('GET') -Headers:($hdrs) -Uri:($Uri)
+            If ($Results)
+            {
+                $ResultsPopulated = $false
+                If ($Results | Get-Member | Where-Object {$_.Name -eq 'results'})
+                {
+                    $ResultsCount = $Results.results.Count
+                    If ($ResultsCount -gt 0)
+                    {
+                        $ResultObjects = $Results.results
+                        $ResultsPopulated = $true
+                    }
+                }
+                Else
+                {
+                    $ResultsCount = $Results.Count
+                    $ResultObjects = $Results
+                    $ResultsPopulated = $true
+                }
+                If ($ResultsPopulated)
+                {
+                    Write-Verbose ('Returned ' + [string]$ResultsCount + ' results.')
+                    $Skip += $ResultsCount
+                    $Results_Output += $ResultObjects
+                }
+            }
+            Else
+            {
+                Write-Verbose ('No results found.')
+            }
+            # If ($Results) {Write-Host "Results are true" -BackgroundColor Cyan } Else {Write-Host "Results are false" -BackgroundColor red}
+            # If ($ResultsCount -ge 1) {Write-Host ("Result count is greater than or equal to 1. Current count:" + [string]$ResultsCount ) -BackgroundColor Cyan} Else {Write-Host ("Result count is less than 1. Current count:" + [string]$ResultsCount ) -BackgroundColor red}
+        }
+        While ($ResultsCount -eq $Limit)
     }
-    If ($Results_Output)
+    End
     {
-        Return $Results_Output
+        If ($Results_Output)
+        {
+            Return $Results_Output
+        }
     }
 }
