@@ -20,9 +20,9 @@ Function Get-JCObject
     Begin
     {
         # Create new variables for script
-        $PsBoundParameters.GetEnumerator() | ForEach-Object {Set-Variable -Name:($_.Key) -Value:($_.Value) -Force}
-        Write-Debug ('[CallFunction]' + $MyInvocation.MyCommand.Name + ' ' + ($PsBoundParameters.GetEnumerator() | Sort-Object Key | ForEach-Object { ('-' + $_.Key + ":('" + ($_.Value -join "','") + "')").Replace("'True'", '$True').Replace("'False'", '$False')}) )
-        If ($PSCmdlet.ParameterSetName -ne '__AllParameterSets') {Write-Verbose ('[ParameterSet]' + $MyInvocation.MyCommand.Name + ':' + $PSCmdlet.ParameterSetName)}
+        $PsBoundParameters.GetEnumerator() | ForEach-Object { Set-Variable -Name:($_.Key) -Value:($_.Value) -Force }
+        Write-Debug ('[CallFunction]' + $MyInvocation.MyCommand.Name + ' ' + ($PsBoundParameters.GetEnumerator() | Sort-Object Key | ForEach-Object { ('-' + $_.Key + ":('" + ($_.Value -join "','") + "')").Replace("'True'", '$True').Replace("'False'", '$False') }) )
+        If ($PSCmdlet.ParameterSetName -ne '__AllParameterSets') { Write-Verbose ('[ParameterSet]' + $MyInvocation.MyCommand.Name + ':' + $PSCmdlet.ParameterSetName) }
         $CurrentErrorActionPreference = $ErrorActionPreference
         $ErrorActionPreference = 'Stop'
     }
@@ -31,7 +31,7 @@ Function Get-JCObject
         Try
         {
             # Identify the command type to run to get the object for the specified item
-            $ObjectTypeItem = $ObjectType | Where-Object {$Type -in $_.Types}
+            $ObjectTypeItem = $ObjectType | Where-Object { $Type -in $_.Types }
             If ($ObjectTypeItem)
             {
                 $ObjectTypeItem.Types = $Type
@@ -55,8 +55,8 @@ Function Get-JCObject
                         # Determine search method
                         $PropertyIdentifier = Switch ($SearchBy)
                         {
-                            'ById' {$ObjectTypeItem.ById};
-                            'ByName' {$ObjectTypeItem.ByName};
+                            'ById' { $ObjectTypeItem.ById };
+                            'ByName' { $ObjectTypeItem.ByName };
                         }
                         # Populate Url placeholders. Assumption is that if an endpoint requires an Id to be passed in the Url that it does not require a filter because its looking for an exact match already.
                         If ($Url -match '({)(.*?)(})')
@@ -111,37 +111,43 @@ Function Get-JCObject
                 ## Escape Url????
                 # $Url = ([uri]::EscapeDataString($Url)
                 # Build function parameters
-                $FunctionParameters = [ordered]@{}
-                If ($Url) {$FunctionParameters.Add('Url', $Url)}
-                If ($Method) {$FunctionParameters.Add('Method', $Method)}
-                If ($Body) {$FunctionParameters.Add('Body', $Body)}
-                If ($Limit) {$FunctionParameters.Add('Limit', $Limit)}
-                If ($Skip) {$FunctionParameters.Add('Skip', $Skip)}
+                $FunctionParameters = [ordered]@{ }
+                If ($Url) { $FunctionParameters.Add('Url', $Url) }
+                If ($Method) { $FunctionParameters.Add('Method', $Method) }
+                If ($Body) { $FunctionParameters.Add('Body', $Body) }
+                If ($Limit) { $FunctionParameters.Add('Limit', $Limit) }
+                If ($Skip) { $FunctionParameters.Add('Skip', $Skip) }
                 If ($ReturnHashTable)
                 {
                     $Values = $Fields
-                    $Key = If ($PropertyIdentifier) {$PropertyIdentifier} Else {$ById}
-                    If ($Key) {$FunctionParameters.Add('Key', $Key)}
-                    If ($Values) {$FunctionParameters.Add('Values', $Values)}
+                    $Key = If ($PropertyIdentifier) { $PropertyIdentifier } Else { $ById }
+                    If ($Key) { $FunctionParameters.Add('Key', $Key) }
+                    If ($Values) { $FunctionParameters.Add('Values', $Values) }
                 }
                 Else
                 {
-                    If ($Fields) {$FunctionParameters.Add('Fields', $Fields)}
+                    If ($Fields) { $FunctionParameters.Add('Fields', $Fields) }
                     $FunctionParameters.Add('Paginate', $Paginate)
-                    If ($ReturnCount) {$FunctionParameters.Add('ReturnCount', $ReturnCount)}
+                    If ($ReturnCount) { $FunctionParameters.Add('ReturnCount', $ReturnCount) }
+                }
+                # Hacky logic for organization
+                If ($Type -in ('organization', 'organizations'))
+                {
+                    $Organization = Invoke-JCApi @FunctionParameters
+                    $FunctionParameters['Url'] = $Url + '/' + $Organization.$ById
                 }
                 # Run command
                 Write-Debug ('Splatting Parameters');
-                If ($DebugPreference -ne 'SilentlyContinue') {$FunctionParameters}
+                If ($DebugPreference -ne 'SilentlyContinue') { $FunctionParameters }
                 $Results = Switch ($ReturnHashTable)
                 {
-                    $true {Get-JCHash @FunctionParameters}
-                    Default {Invoke-JCApi @FunctionParameters}
+                    $true { Get-JCHash @FunctionParameters }
+                    Default { Invoke-JCApi @FunctionParameters }
                 }
                 # Hacky logic to get g_suite and office_365directories
                 If ($Type -in ('gsuites', 'g_suite', 'office365s', 'office_365'))
                 {
-                    $Results = $Results | Where-Object {$_.Type -eq $Singular}
+                    $Results = $Results | Where-Object { $_.Type -eq $Singular }
                 }
                 If ($Results)
                 {
