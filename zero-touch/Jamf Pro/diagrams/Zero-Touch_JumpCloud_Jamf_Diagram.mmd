@@ -1,0 +1,19 @@
+sequenceDiagram
+    participant DEP as Device Enrollment Program
+    participant JP as jamf PRO
+    participant JC as JumpCloud
+
+    DEP->>JP: jamf configured as MDM Server in DEP
+    JP->>DEP: DEP configured within jamf
+    DEP-->>JP: MacOS devices assigned to jamf MDM server in DEP
+    JC->>JC: LDAP configured in JumpCloud
+    JP-->>JC: JumpCloud LDAP server configured in jamf
+    JP->>JP: PreStage enrollment profile configured in jamf
+    JP-->>JP: Prestage profile "Require Authentication" checkbox selected
+    DEP->>JC: Enabling "Require Authentication" turns on JumpCloud LDAP authenticate for users during "Setup Assistant"
+    JP-->>DEP: PreStage enrollment profile "Scope" shows MacOS devices assigned in DEP
+    JP->>JP: Policies configured in jamf configured to run on trigger "Enrollment"
+    JP-->>JC: Policy for JumpCloud agent installation configured
+    JP-->>JC: Policy for auto-association of logged in user to system in JumpCloud configured
+    JP-->>JC: Policies for JumpCloud local account takeover configured
+   Note over DEP, JC:MacOS devices assigned to jamf MDM server configured for zero-touch provisioning
