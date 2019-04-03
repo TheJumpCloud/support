@@ -4,6 +4,13 @@ if [[ $(id -u) -ne 0 ]]; then
     exit 1
 fi
 
+AGENT_UNINSTALL_SCRIPT="/opt/jc/bin/removeAgent"
+
+if [[ -f $AGENT_UNINSTALL_SCRIPT ]]; then
+    $AGENT_UNINSTALL_SCRIPT
+    exit $?
+fi
+
 launchctl remove com.jumpcloud.darwin-agent
 rm /Library/LaunchDaemons/com.jumpcloud.darwin-agent.plist
 
