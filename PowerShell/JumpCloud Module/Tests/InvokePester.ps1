@@ -3,4 +3,4 @@
 
 Connect-JCOnline $TestOrgAPIKey
 
-$PesterResults = Invoke-Pester -Script @{ Path = '/Users/sreed/Git/support/PowerShell/JumpCloud Module/Tests'; Parameters = $PesterParms; } -PassThru
+$PesterResults = Invoke-Pester -Script @{ Path = $PSScriptRoot; Parameters = $PesterParms; } -PassThru
