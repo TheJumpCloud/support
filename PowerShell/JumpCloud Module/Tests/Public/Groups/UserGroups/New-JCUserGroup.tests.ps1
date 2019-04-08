@@ -1,4 +1,6 @@
-Describe 'New-JCUserGroup' {
+Connect-JCTestOrg
+
+Describe 'New-JCUserGroup 1.0' {
 
     It "Creates a new user group" {
         $NewG = New-JCUserGroup -GroupName $(New-RandomString 8)

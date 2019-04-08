@@ -1,4 +1,6 @@
-Describe 'Set-JCSystem' {
+Connect-JCTestOrg
+
+Describe 'Set-JCSystem 1.0' {
 
     It "Updates the DisplyName and then set it back" {
         $CurrentDisplayName = Get-JCSystem -SystemID $PesterParams.SystemID | Select-Object DisplayName
@@ -25,10 +27,6 @@ Describe 'Set-JCSystem' {
     It "Updates a system allowSshRootLogin -eq False" {
         $Update = Set-JCSystem -SystemID $PesterParams.SystemID -allowSshRootLogin $false
         $Update.allowSshRootLogin | Should -Be False
-    }
-    It "Updates a system allowMultiFactorAuthentication -eq True" {
-        $Update = Set-JCSystem -SystemID $PesterParams.SystemID -allowMultiFactorAuthentication $true
-        $Update.allowMultiFactorAuthentication | Should -Be True
     }
 
     It "Updates a system allowMultiFactorAuthentication -eq False" {

@@ -1,4 +1,6 @@
-Describe 'Set-JCSystemUser' {
+Connect-JCTestOrg
+
+Describe 'Set-JCSystemUser 1.0' {
 
     It "Sets a standard user to an admin user using username" {
         

@@ -1,4 +1,6 @@
-Describe 'Get-JCCommand' {
+Connect-JCTestOrg
+
+Describe 'Get-JCCommand 1.0' {
 
     It "Gets all JumpCloud commands" {
         $AllCommands = Get-JCCommand

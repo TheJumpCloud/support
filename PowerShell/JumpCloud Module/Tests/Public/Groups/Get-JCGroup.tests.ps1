@@ -1,4 +1,6 @@
-Describe 'Get-JCGroup' {
+Connect-JCTestOrg
+
+Describe 'Get-JCGroup 1.0' {
 
     It 'Gets all groups: System and User' {
 
@@ -21,6 +23,17 @@ Describe 'Get-JCGroup' {
         $OneGroup = $SystemGroups.type | Select-Object -Unique | Measure-Object
         $OneGroup.Count | Should -Be 1
 
+    }
+
+}
+
+Describe 'Get-JCGroup 1.1.0' {
+
+    It "Gets a JumpCloud UserGroup by Name and Displays Attributes" {
+        
+        $Posix = Get-JCGroup -Type User -Name $PesterParams.UserGroupName
+
+        $Posix.Attributes | Should -Not -BeNullOrEmpty
     }
 
 }

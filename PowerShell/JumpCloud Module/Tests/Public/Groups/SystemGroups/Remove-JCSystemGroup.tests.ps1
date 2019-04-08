@@ -1,4 +1,6 @@
-Describe 'Remove-JCSystemGroup' {
+Connect-JCTestOrg
+
+Describe 'Remove-JCSystemGroup 1.0' {
 
     It "Removes a system group" {
         $NewG = New-JCSystemGroup -GroupName $(New-RandomString 8)
