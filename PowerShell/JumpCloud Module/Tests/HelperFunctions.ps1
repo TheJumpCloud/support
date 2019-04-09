@@ -133,6 +133,5 @@ Function New-RandomUserCustom  ()
 }
 Function Connect-JCTestOrg ()
 {
-
     $Connect = Connect-JCOnline -JumpCloudAPIKey $TestOrgAPIKey -force
 }
