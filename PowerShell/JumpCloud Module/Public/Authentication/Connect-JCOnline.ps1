@@ -20,7 +20,7 @@ Function Connect-JCOnline ()
                     Throw "Please enter your API key. This can be found in the JumpCloud admin console within 'API Settings' accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console."
                 }
 
-                Else {$true}
+                Else { $true }
             })]
 
 
@@ -141,7 +141,7 @@ Function Connect-JCOnline ()
         try
         {
             $ConnectionTestURL = "$JCUrlBasePath/api/v2/ldapservers"
-            Invoke-RestMethod -Method GET -Uri $ConnectionTestURL -Headers $hdrs -UserAgent $JCUserAgent  | Out-Null
+            Invoke-RestMethod -Method GET -Uri $ConnectionTestURL -Headers $hdrs -UserAgent $JCUserAgent | Out-Null
         }
         catch
         {
@@ -164,7 +164,7 @@ Function Connect-JCOnline ()
                     {
                         $hdrs.Add('x-org-id', "$($JCOrgID)")
                         $ConnectionTestURL = "$JCUrlBasePath/api/v2/ldapservers"
-                        Invoke-RestMethod -Method GET -Uri $ConnectionTestURL -Headers $hdrs -UserAgent $JCUserAgent  | Out-Null
+                        Invoke-RestMethod -Method GET -Uri $ConnectionTestURL -Headers $hdrs -UserAgent $JCUserAgent | Out-Null
 
                         if (-not $force)
                         {
@@ -245,7 +245,7 @@ Function Connect-JCOnline ()
                     While ($Accept -notcontains 'Y')
                     {
 
-                        write-warning " Typo? $Accept != 'Y'"
+                        Write-Warning " Typo? $Accept != 'Y'"
 
                         $Accept = Read-Host "`nEnter 'Y' if you wish to update to the latest version or 'N' to continue using version: $InstalledModuleVersion `n"
 
@@ -313,7 +313,11 @@ Function Connect-JCOnline ()
                     if ($UpdatedModuleVersion -eq $LatestVersion)
                     {
 
-                        Clear-Host
+                        If ($(Get-Host).Name -in ("ConsoleHost", " Visual Studio Code Host", "Windows PowerShell ISE Host"))
+                        {
+                            [System.Console]::Clear();
+                        }
+                
                 
                         $ReleaseNotesRaw = Invoke-WebRequest -uri $ReleaseNotesURL -UseBasicParsing #for backwards compatibility
 
