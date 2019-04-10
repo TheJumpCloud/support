@@ -85,10 +85,14 @@ Function Invoke-JCAssociation
         $Type = $JCAssociationType.Plural
         # Get Object.
         $Objects = Get-JCObject -Type:($Type) -SearchBy:($SearchBy) -SearchByValue:($ObjectSearchByValue)
-        ForEach ($Object In $Objects)
+        If ($Objects.Count -gt 0)
         {
-            $Id = $Object.($Object.ById)
-            $Name = $Object.($Object.ByName)
+            Write-Warning -Message:('Found ' + [string]$Objects.Count + ' ' + $Type + ' with the ' + $SearchBy.Replace('By', '').ToLower() + ' of "' + $ObjectSearchByValue + '"!')
+        }
+        ForEach ($Info In $Objects)
+        {
+            $Id = $Info.($Info.ById)
+            $Name = $Info.($Info.ByName)
             #Build Url
             $URL_Template_Associations = '/api/v2/{0}/{1}/associations?targets={2}'
             $Uri_Associations = $URL_Template_Associations -f $Type, $Id, $TargetType
@@ -105,45 +109,45 @@ Function Invoke-JCAssociation
             }
             If ($Action -eq 'get')
             {
-                $ObjectAssociations = Invoke-JCApi -Method:($Method) -Paginate:($true) -Url:($Uri_Associations)
+                $Associations = Invoke-JCApi -Method:($Method) -Paginate:($true) -Url:($Uri_Associations)
                 # If using a member* path then get the paths attribute
                 If ($Uri_Associations -match 'memberof')
                 {
-                    $ObjectAssociations = $ObjectAssociations.Paths
+                    $Associations = $Associations.Paths
                 }
                 # Get the input objects associations type
-                $ObjectAssociationsTypes = $ObjectAssociations.to.type | Select-Object -Unique
-                ForEach ($ObjectAssociationsType In $ObjectAssociationsTypes)
+                $AssociationsTypes = $Associations.to.type | Select-Object -Unique
+                ForEach ($AssociationsType In $AssociationsTypes)
                 {
                     # Get the input objects associations id's that match the specific type
-                    $ObjectAssociationsByType = ($ObjectAssociations | Where-Object {$_.to.Type -eq $ObjectAssociationsType})
+                    $AssociationsByType = ($Associations | Where-Object {$_.to.Type -eq $AssociationsType})
                     # Get all target objects of that specific type and then filter them by id
-                    $Targets = If (!($HideTargetData)) {Get-JCObject -Type:($ObjectAssociationsType) | Where-Object {$_.($_.ById) -in $ObjectAssociationsByType.to.id}}
+                    $Targets = If (!($HideTargetData)) {Get-JCObject -Type:($AssociationsType) | Where-Object {$_.($_.ById) -in $AssociationsByType.to.id}}
                     # Get Target object ids associated with Object
-                    ForEach ($AssociationTarget In $ObjectAssociationsByType)
+                    ForEach ($AssociationTarget In $AssociationsByType)
                     {
-                        $ObjectAttributes = $AssociationTarget.attributes
+                        $Attributes = $AssociationTarget.attributes
                         $AssociationTargetTo = $AssociationTarget.to
                         $TargetAttributes = $AssociationTargetTo.attributes
                         $TargetId = $AssociationTargetTo.id
                         $TargetType = $AssociationTargetTo.type
                         $ResultRecord = [PSCustomObject]@{
-                            'Type'             = $Type;
-                            'Id'               = $Id;
-                            'Name'             = $Name;
-                            'ObjectAttributes' = $ObjectAttributes;
-                            'Object'           = $Object;
-                            'TargetType'       = $TargetType;
-                            'TargetId'         = $TargetId;
+                            'Type'       = $Type;
+                            'Id'         = $Id;
+                            'Name'       = $Name;
+                            'Attributes' = $Attributes;
+                            'Info'       = $Info;
+                            'TargetType' = $TargetType;
+                            'TargetId'   = $TargetId;
                         }
                         If (!($HideTargetData))
                         {
                             # Find specific target object
-                            $Target = $Targets | Where-Object {$_.($_.ById) -eq $TargetId}
-                            Add-Member -InputObject:($ResultRecord) -MemberType:('NoteProperty') -Name:('TargetName') -Value:($Target.($Target.ByName))
+                            $TargetInfo = $Targets | Where-Object {$_.($_.ById) -eq $TargetId}
+                            Add-Member -InputObject:($ResultRecord) -MemberType:('NoteProperty') -Name:('TargetName') -Value:($TargetInfo.($TargetInfo.ByName))
                         }
                         Add-Member -InputObject:($ResultRecord) -MemberType:('NoteProperty') -Name:('TargetAttributes') -Value:($TargetAttributes)
-                        If (!($HideTargetData)) {Add-Member -InputObject:($ResultRecord) -MemberType:('NoteProperty') -Name:('Target') -Value:($Target)}
+                        If (!($HideTargetData)) {Add-Member -InputObject:($ResultRecord) -MemberType:('NoteProperty') -Name:('TargetInfo') -Value:($TargetInfo)}
                         # Output Object and Target
                         $Results += $ResultRecord
                     }
@@ -160,7 +164,7 @@ Function Invoke-JCAssociation
                 {
                     $URL_Template_Associations = '/api/v2/{0}/{1}/members'
                     $Uri_Associations = $URL_Template_Associations -f $Target.Plural, $TargetId
-                    $JsonBody = '{"op":"' + $Action + '","type":"' + $Object.Singular + '","id":"' + $Id + '","attributes":null}'
+                    $JsonBody = '{"op":"' + $Action + '","type":"' + $Info.Singular + '","id":"' + $Id + '","attributes":null}'
                 }
                 Else
                 {
@@ -171,22 +175,6 @@ Function Invoke-JCAssociation
                 Write-Verbose ("$Action association from '$Name' to '$TargetName'")
                 $Results += Invoke-JCApi -Body:($JsonBody) -Method:($Method) -Url:($Uri_Associations)
             }
-        }
-        If ($Results)
-        {
-            # Update results
-            $HiddenProperties = @('Object', 'ObjectAttributes', 'Id', 'Name', 'Type')
-            $Results |  ForEach-Object {
-                # Create the default property display set
-                $defaultDisplayPropertySet = New-Object System.Management.Automation.PSPropertySet('DefaultDisplayPropertySet', [string[]]($_.PSObject.Properties.Name | Where-Object {$_ -notin $HiddenProperties}))
-                $PSStandardMembers = [System.Management.Automation.PSMemberInfo[]]@($defaultDisplayPropertySet)
-                # Add the list of standard members
-                Add-Member -InputObject:($_) -MemberType:('MemberSet') -Name:('PSStandardMembers') -Value:($PSStandardMembers)
-            }
-        }
-        Else
-        {
-            Write-Verbose ('No results found.')
         }
     }
     End
