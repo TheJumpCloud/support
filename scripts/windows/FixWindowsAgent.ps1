@@ -14,10 +14,13 @@
     FixWindowsAgent.ps1
 #>
 
-#
-# Update with your own JumpCloud connect key
-#
-$CONNECT_KEY="your-JumpCloud-Connect-Key-here"
+# Get jumpcloud connect key from flag or env var
+Param(
+    [String]$JcConnectKey = $env:JC_CONNECT_KEY
+)
+if(-not($JcConnectKey)) { Throw "-JcConnectKey is required" }
+
+$CONNECT_KEY="${JcConnectKey}"
 
 $AGENT_PATH="${env:ProgramFiles}\JumpCloud"
 $AGENT_CONF_FILE="\Plugins\Contrib\jcagent.conf"
@@ -39,6 +42,21 @@ $INSTALLER_BINARY_NAMES="JumpCloudInstaller.exe,JumpCloudInstaller.tmp"
 # Agent Installer Funcs
 #
 #########################################################################################
+Function InstallAgentDependency() {
+    # Install VcRedist https://docs.stealthpuppy.com/docs/vcredist
+    Install-PackageProvider -Name NuGet -Force
+    Install-Module -Name VcRedist -Force
+    Import-Module -Name VcRedist -Force
+
+    # Get and install VC++ 2013 Redistributable package (x86 and x64)
+    New-Item $env:TEMP\VcRedist -ItemType Directory -Force
+    $VcList = Get-VcList -Release 2013
+    $VcList | Save-VcRedist -ForceWebRequest -Path $env:TEMP\VcRedist
+    Install-VcRedist -Silent -Path $env:TEMP\VcRedist -VcList $VcList
+    Write-Host "Installed VC++ Distributions: "
+    Get-InstalledVcRedist | Select Name, Version, ProductCode
+}
+
 Function DownloadAgentInstaller() {
     (New-Object System.Net.WebClient).DownloadFile("${AGENT_INSTALLER_URL}", "${AGENT_INSTALLER_PATH}")
 }
@@ -110,7 +128,7 @@ Function DeleteAgent() {
 # Service Manager Funcs
 #
 #########################################################################################
-Function AgentIsInServiceManager() {    
+Function AgentIsInServiceManager() {
     try {
         $services = Get-Service -Name "${AGENT_SERVICE_NAME}" -ErrorAction Stop
         $true
@@ -159,7 +177,7 @@ Function CheckForAndUninstallExistingAgent() {
     if (InstallerIsRunning) {
         # Yep, kill it
         KillInstaller
-        
+
         Write-Host "Killed running agent installer."
     }
 
@@ -169,7 +187,7 @@ Function CheckForAndUninstallExistingAgent() {
     if (AgentIsRunning) {
         # Yep, kill it
         KillAgent
-        
+
         Write-Host "Killed running agent binary."
     }
 
@@ -179,7 +197,7 @@ Function CheckForAndUninstallExistingAgent() {
     if (AgentIsInstalled) {
         # Yep, try a normal uninstall
         UninstallAgent
-        
+
         Write-Host "Completed agent uninstall."
     }
 }
@@ -196,13 +214,13 @@ Function CleanUpAgentLeftovers() {
         # where the service is "marked for deletion" (requires reboot before further
         # modifications can be done on this service).
         RemoveAgentService
-        
+
         if (AgentIsInServiceManager) {
             Write-Host "Unable to remove agent service, this system needs to be rebooted."
             Write-Host "Then you can re-run this script to re-install the agent."
             exit 1
         }
-        
+
         Write-Host "Removed agent service entry."
     }
 
@@ -212,7 +230,7 @@ Function CleanUpAgentLeftovers() {
     if (AgentIsOnFileSystem) {
         # Yes, the installer was unsuccessful in removing it.
         DeleteAgent
-        
+
         Write-Host "Removed remaining agent binary file."
     }
 }
@@ -243,8 +261,8 @@ Function DownloadAndInstallAgent() {
                 Write-Error "Agent installation failed. Please rerun this script,`nand if that doesn't work, please reboot and try again.`nIf neither work, please contact support@jumpcloud.com"
                 exit 1
             } else {
-               Write-Host "`n* * * SUCCESS! Agent installation complete. * * *" 
-            }                
+               Write-Host "`n* * * SUCCESS! Agent installation complete. * * *"
+            }
         } else {
             Write-Error "Could not download agent installer from ${AGENT_INSTALLER_URL}. Install FAILED."
             exit 1
@@ -253,6 +271,8 @@ Function DownloadAndInstallAgent() {
         Write-Host "Agent is already installed, not installing again."
     }
 }
+
+InstallAgentDependency
 
 CheckForAndUninstallExistingAgent
 
