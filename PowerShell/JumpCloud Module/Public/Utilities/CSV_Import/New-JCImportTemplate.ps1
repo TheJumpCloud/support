@@ -23,9 +23,13 @@ Function New-JCImportTemplate()
 
         $Heading2 = 'The CSV file will be created within the directory:'
         
-        If ($(Get-Host).Name -in ("ConsoleHost", " Visual Studio Code Host", "Windows PowerShell ISE Host"))
+        If ($($PSVersionTable.Platform) -eq "Unix")
         {
             [System.Console]::Clear();
+        }
+        else
+        {
+            Clear-Host
         }
 
         Write-Host $Banner -ForegroundColor Green

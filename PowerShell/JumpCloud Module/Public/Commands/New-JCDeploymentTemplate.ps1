@@ -25,9 +25,13 @@ Function New-JCDeploymentTemplate()
         $Heading1 = 'The CSV file:'
         $Heading2 = 'Will be created within the directory:'
         
-        If ($(Get-Host).Name -in ("ConsoleHost", " Visual Studio Code Host", "Windows PowerShell ISE Host"))
+        If ($($PSVersionTable.Platform) -eq "Unix")
         {
             [System.Console]::Clear();
+        }
+        else
+        {
+            Clear-Host
         }
 
         Write-Host $Banner -ForegroundColor Green
@@ -78,9 +82,13 @@ Function New-JCDeploymentTemplate()
         while ($Done -eq $false)
         {
 
-            If ($(Get-Host).Name -in ("ConsoleHost", " Visual Studio Code Host", "Windows PowerShell ISE Host"))
+            If ($($PSVersionTable.Platform) -eq "Unix")
             {
                 [System.Console]::Clear();
+            }
+            else
+            {
+                Clear-Host
             }
 
             Write-Host $Banner -ForegroundColor Green

@@ -313,11 +313,14 @@ Function Connect-JCOnline ()
                     if ($UpdatedModuleVersion -eq $LatestVersion)
                     {
 
-                        If ($(Get-Host).Name -in ("ConsoleHost", " Visual Studio Code Host", "Windows PowerShell ISE Host"))
+                        If ($($PSVersionTable.Platform) -eq "Unix")
                         {
                             [System.Console]::Clear();
                         }
-                
+                        else
+                        {
+                            Clear-Host
+                        }
                 
                         $ReleaseNotesRaw = Invoke-WebRequest -uri $ReleaseNotesURL -UseBasicParsing #for backwards compatibility
 

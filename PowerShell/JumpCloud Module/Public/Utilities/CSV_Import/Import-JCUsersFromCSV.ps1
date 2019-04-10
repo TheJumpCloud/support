@@ -93,10 +93,15 @@ Function Import-JCUsersFromCSV ()
                                                   User Import
 "@
 
-            If ($(Get-Host).Name -in ("ConsoleHost", " Visual Studio Code Host", "Windows PowerShell ISE Host"))
+            If ($($PSVersionTable.Platform) -eq "Unix")
             {
                 [System.Console]::Clear();
             }
+            else
+            {
+                Clear-Host
+            }
+
             Write-Host $Banner -ForegroundColor Green
             Write-Host ""
 
