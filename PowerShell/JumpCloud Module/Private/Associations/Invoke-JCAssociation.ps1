@@ -3,7 +3,7 @@ Function Invoke-JCAssociation
     [CmdletBinding(DefaultParameterSetName = 'ById')]
     Param(
         [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0)][ValidateNotNullOrEmpty()][ValidateSet('add', 'get', 'remove')][string]$Action,
-        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 1)][ValidateNotNullOrEmpty()][ValidateSet('active_directory', 'command', 'ldap_server', 'policy', 'application', 'radius_server', 'system_group', 'system', 'user_group', 'user', 'g_suite', 'office_365')][string]$InputObjectType
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 1)][ValidateNotNullOrEmpty()][ValidateSet('active_directory', 'command', 'ldap_server', 'policy', 'application', 'radius_server', 'system_group', 'system', 'user_group', 'user', 'g_suite', 'office_365')][string]$Type
     )
     DynamicParam
     {
@@ -12,39 +12,39 @@ Function Invoke-JCAssociation
         {
             # Get targets list
             $JCAssociationType = Get-JCObjectType | Where-Object {$_.Category -eq 'JumpCloud'};
-            # Get count of InputJCObject to determine if script should load dynamic parameters
-            $InputJCObjectCount = 999999
+            # Get count of JCObject to determine if script should load dynamic parameters
+            $JCObjectCount = 999999
         }
         Else
         {
             # Get targets list
-            $JCAssociationType = Get-JCObjectType -Type:($InputObjectType) | Where-Object {$_.Category -eq 'JumpCloud'};
-            # Get count of InputJCObject to determine if script should load dynamic parameters
-            $InputJCObjectCount = (Get-JCObject -Type:($InputObjectType) -ReturnCount).totalCount
+            $JCAssociationType = Get-JCObjectType -Type:($Type) | Where-Object {$_.Category -eq 'JumpCloud'};
+            # Get count of JCObject to determine if script should load dynamic parameters
+            $JCObjectCount = (Get-JCObject -Type:($Type) -ReturnCount).totalCount
         }
         # Build parameter array
         $Params = @()
         # Define the new parameters
-        If ($InputJCObjectCount -le 500)
+        If ($JCObjectCount -le 500)
         {
-            $InputJCObject = Get-JCObject -Type:($InputObjectType);
-            $Params += @{'Name' = 'InputObjectId'; 'Type' = [System.String]; 'Position' = 2; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ById'); 'Alias' = (@('id', '_id')); 'ValidateSet' = @($InputJCObject.($InputJCObject.ById | Select-Object -Unique)); }
-            $Params += @{'Name' = 'InputObjectName'; 'Type' = [System.String]; 'Position' = 3; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ByName'); 'Alias' = (@('name', 'username', 'groupName')); 'ValidateSet' = @($InputJCObject.($InputJCObject.ByName | Select-Object -Unique)); }
+            $JCObject = Get-JCObject -Type:($Type);
+            $Params += @{'Name' = 'Id'; 'Type' = [System.String]; 'Position' = 2; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ById'); 'Alias' = (@('_id')); 'ValidateSet' = @($JCObject.($JCObject.ById | Select-Object -Unique)); }
+            $Params += @{'Name' = 'Name'; 'Type' = [System.String]; 'Position' = 3; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ByName'); 'Alias' = (@('username', 'groupName')); 'ValidateSet' = @($JCObject.($JCObject.ByName | Select-Object -Unique)); }
         }
         Else
         {
-            $Params += @{'Name' = 'InputObjectId'; 'Type' = [System.String]; 'Position' = 2; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'Alias' = (@('id', '_id')); 'ParameterSets' = @('ById'); }
-            $Params += @{'Name' = 'InputObjectName'; 'Type' = [System.String]; 'Position' = 3; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'Alias' = (@('name', 'username', 'groupName')); 'ParameterSets' = @('ByName'); }
+            $Params += @{'Name' = 'Id'; 'Type' = [System.String]; 'Position' = 2; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'Alias' = (@('_id')); 'ParameterSets' = @('ById'); }
+            $Params += @{'Name' = 'Name'; 'Type' = [System.String]; 'Position' = 3; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'Alias' = (@('username', 'groupName')); 'ParameterSets' = @('ByName'); }
         }
-        $Params += @{'Name' = 'TargetObjectType'; 'Type' = [System.String]; 'Position' = 4; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ValidateSet' = $JCAssociationType.Targets; }
+        $Params += @{'Name' = 'TargetType'; 'Type' = [System.String]; 'Position' = 4; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ValidateSet' = $JCAssociationType.Targets; }
         If ($Action -eq 'get')
         {
             $Params += @{'Name' = 'HideTargetData'; 'Type' = [Switch]; 'Position' = 5; 'ValueFromPipelineByPropertyName' = $true; }
         }
         If ($Action -in ('add', 'remove'))
         {
-            $Params += @{'Name' = 'TargetObjectId'; 'Type' = [System.String]; 'Position' = 5; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ById'); }
-            $Params += @{'Name' = 'TargetObjectName'; 'Type' = [System.String]; 'Position' = 6; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ByName'); }
+            $Params += @{'Name' = 'TargetId'; 'Type' = [System.String]; 'Position' = 5; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ById'); }
+            $Params += @{'Name' = 'TargetName'; 'Type' = [System.String]; 'Position' = 6; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ByName'); }
         }
         # Create new parameters
         Return $Params | ForEach-Object {New-Object PSObject -Property:($_)} | New-DynamicParameter
@@ -72,85 +72,85 @@ Function Invoke-JCAssociation
         {
             'ById'
             {
-                $InputObjectSearchByValue = $InputObjectId
-                $TargetObjectSearchByValue = $TargetObjectId
+                $ObjectSearchByValue = $Id
+                $TargetSearchByValue = $TargetId
             }
             'ByName'
             {
-                $InputObjectSearchByValue = $InputObjectName
-                $TargetObjectSearchByValue = $TargetObjectName
+                $ObjectSearchByValue = $Name
+                $TargetSearchByValue = $TargetName
             }
         }
-        # Set the $InputObjectType to use the plural version of value
-        $InputObjectType = $JCAssociationType.Plural
-        # Get InputObject object.
-        $InputObject = Get-JCObject -Type:($InputObjectType) -SearchBy:($SearchBy) -SearchByValue:($InputObjectSearchByValue)
-        $InputObjectId = $InputObject.($InputObject.ById)
-        $InputObjectName = $InputObject.($InputObject.ByName)
+        # Set the $Type to use the plural version of value
+        $Type = $JCAssociationType.Plural
+        # Get Object.
+        $Object = Get-JCObject -Type:($Type) -SearchBy:($SearchBy) -SearchByValue:($ObjectSearchByValue)
+        $Id = $Object.($Object.ById)
+        $Name = $Object.($Object.ByName)
         #Build Url
         $URL_Template_Associations = '/api/v2/{0}/{1}/associations?targets={2}'
-        $Uri_Associations = $URL_Template_Associations -f $InputObjectType, $InputObjectId, $TargetObjectType
+        $Uri_Associations = $URL_Template_Associations -f $Type, $Id, $TargetType
         # Exceptions for specific combinations
-        If (($InputObjectType -eq 'usergroups' -and $TargetObjectType -eq 'user') -or ($InputObjectType -eq 'systemgroups' -and $TargetObjectType -eq 'system'))
+        If (($Type -eq 'usergroups' -and $TargetType -eq 'user') -or ($Type -eq 'systemgroups' -and $TargetType -eq 'system'))
         {
             $URL_Template_Associations = '/api/v2/{0}/{1}/members'
-            $Uri_Associations = $URL_Template_Associations -f $InputObjectType, $InputObjectId
+            $Uri_Associations = $URL_Template_Associations -f $Type, $Id
         }
-        If ( $Action -eq 'get' -and ($InputObjectType -eq 'systems' -and $TargetObjectType -eq 'system_group') -or ($InputObjectType -eq 'users' -and $TargetObjectType -eq 'user_group'))
+        If ( $Action -eq 'get' -and ($Type -eq 'systems' -and $TargetType -eq 'system_group') -or ($Type -eq 'users' -and $TargetType -eq 'user_group'))
         {
             $URL_Template_Associations = '/api/v2/{0}/{1}/memberof'
-            $Uri_Associations = $URL_Template_Associations -f $InputObjectType, $InputObjectId
+            $Uri_Associations = $URL_Template_Associations -f $Type, $Id
         }
 
         If ($Action -eq 'get')
         {
-            $InputObjectAssociations = Invoke-JCApi -Method:($Method) -Paginate:($true) -Url:($Uri_Associations)
+            $ObjectAssociations = Invoke-JCApi -Method:($Method) -Paginate:($true) -Url:($Uri_Associations)
             # If using a member* path then get the paths attribute
             If ($Uri_Associations -match 'memberof')
             {
-                $InputObjectAssociations = $InputObjectAssociations.Paths
+                $ObjectAssociations = $ObjectAssociations.Paths
             }
             # Get the input objects associations type
-            $InputObjectAssociationsTypes = $InputObjectAssociations.to.type | Select-Object -Unique
-            ForEach ($InputObjectAssociationsType In $InputObjectAssociationsTypes)
+            $ObjectAssociationsTypes = $ObjectAssociations.to.type | Select-Object -Unique
+            ForEach ($ObjectAssociationsType In $ObjectAssociationsTypes)
             {
                 # Get the input objects associations id's that match the specific type
-                $InputObjectAssociationsByType = ($InputObjectAssociations | Where-Object {$_.to.Type -eq $InputObjectAssociationsType})
+                $ObjectAssociationsByType = ($ObjectAssociations | Where-Object {$_.to.Type -eq $ObjectAssociationsType})
                 # Get all target objects of that specific type and then filter them by id
-                $TargetObjects = If (!($HideTargetData)) {Get-JCObject -Type:($InputObjectAssociationsType) | Where-Object {$_.($_.ById) -in $InputObjectAssociationsByType.to.id}}
-                # Get TargetObject object ids associated with InputObject
-                ForEach ($AssociationTargetObject In $InputObjectAssociationsByType)
+                $Targets = If (!($HideTargetData)) {Get-JCObject -Type:($ObjectAssociationsType) | Where-Object {$_.($_.ById) -in $ObjectAssociationsByType.to.id}}
+                # Get Target object ids associated with Object
+                ForEach ($AssociationTarget In $ObjectAssociationsByType)
                 {
-                    $InputObjectAttributes = $AssociationTargetObject.attributes
-                    $AssociationTargetObjectTo = $AssociationTargetObject.to
-                    $TargetObjectAttributes = $AssociationTargetObjectTo.attributes
-                    $TargetObjectId = $AssociationTargetObjectTo.id
-                    $TargetObjectType = $AssociationTargetObjectTo.type
+                    $ObjectAttributes = $AssociationTarget.attributes
+                    $AssociationTargetTo = $AssociationTarget.to
+                    $TargetAttributes = $AssociationTargetTo.attributes
+                    $TargetId = $AssociationTargetTo.id
+                    $TargetType = $AssociationTargetTo.type
                     $ResultRecord = [PSCustomObject]@{
-                        'InputObjectType'       = $InputObjectType;
-                        'InputObjectId'         = $InputObjectId;
-                        'InputObjectName'       = $InputObjectName;
-                        'InputObjectAttributes' = $InputObjectAttributes;
-                        'InputObject'           = $InputObject;
-                        'TargetObjectType'      = $TargetObjectType;
-                        'TargetObjectId'        = $TargetObjectId;
+                        'Type'       = $Type;
+                        'Id'         = $Id;
+                        'Name'       = $Name;
+                        'ObjectAttributes' = $ObjectAttributes;
+                        'Object'           = $Object;
+                        'TargetType'      = $TargetType;
+                        'TargetId'        = $TargetId;
                     }
                     If (!($HideTargetData))
                     {
                         # Find specific target object
-                        $TargetObject = $TargetObjects | Where-Object {$_.($_.ById) -eq $TargetObjectId}
-                        Add-Member -InputObject:($ResultRecord) -MemberType:('NoteProperty') -Name:('TargetObjectName') -Value:($TargetObject.($TargetObject.ByName))
+                        $Target = $Targets | Where-Object {$_.($_.ById) -eq $TargetId}
+                        Add-Member -InputObject:($ResultRecord) -MemberType:('NoteProperty') -Name:('TargetName') -Value:($Target.($Target.ByName))
                     }
-                    Add-Member -InputObject:($ResultRecord) -MemberType:('NoteProperty') -Name:('TargetObjectAttributes') -Value:($TargetObjectAttributes)
-                    If (!($HideTargetData)) {Add-Member -InputObject:($ResultRecord) -MemberType:('NoteProperty') -Name:('TargetObject') -Value:($TargetObject)}
-                    # Output InputObject and TargetObject
+                    Add-Member -InputObject:($ResultRecord) -MemberType:('NoteProperty') -Name:('TargetAttributes') -Value:($TargetAttributes)
+                    If (!($HideTargetData)) {Add-Member -InputObject:($ResultRecord) -MemberType:('NoteProperty') -Name:('Target') -Value:($Target)}
+                    # Output Object and Target
                     $Results += $ResultRecord
                 }
             }
             If ($Results)
             {
                 # Update results
-                $HiddenProperties = @('InputObject', 'InputObjectAttributes', 'InputObjectId', 'InputObjectName', 'InputObjectType')
+                $HiddenProperties = @('Object', 'ObjectAttributes', 'Id', 'Name', 'Type')
                 $Results |  ForEach-Object {
                     # Create the default property display set
                     $defaultDisplayPropertySet = New-Object System.Management.Automation.PSPropertySet('DefaultDisplayPropertySet', [string[]]($_.PSObject.Properties.Name | Where-Object {$_ -notin $HiddenProperties}))
@@ -166,24 +166,24 @@ Function Invoke-JCAssociation
         }
         Else
         {
-            # Get TargetObject object.
-            $TargetObject = Get-JCObject -Type:($TargetObjectType) -SearchBy:($SearchBy) -SearchByValue:($TargetObjectSearchByValue)
-            $TargetObjectId = $TargetObject.($TargetObject.ById)
-            $TargetObjectName = $TargetObject.($TargetObject.ByName)
+            # Get Target object.
+            $Target = Get-JCObject -Type:($TargetType) -SearchBy:($SearchBy) -SearchByValue:($TargetSearchByValue)
+            $TargetId = $Target.($Target.ById)
+            $TargetName = $Target.($Target.ByName)
             # Exceptions for specific combinations
-            If (($InputObjectType -eq 'systems' -and $TargetObjectType -eq 'system_group') -or ($InputObjectType -eq 'users' -and $TargetObjectType -eq 'user_group'))
+            If (($Type -eq 'systems' -and $TargetType -eq 'system_group') -or ($Type -eq 'users' -and $TargetType -eq 'user_group'))
             {
                 $URL_Template_Associations = '/api/v2/{0}/{1}/members'
-                $Uri_Associations = $URL_Template_Associations -f $TargetObject.Plural, $TargetObjectId
-                $JsonBody = '{"op":"' + $Action + '","type":"' + $InputObject.Singular + '","id":"' + $InputObjectId + '","attributes":null}'
+                $Uri_Associations = $URL_Template_Associations -f $Target.Plural, $TargetId
+                $JsonBody = '{"op":"' + $Action + '","type":"' + $Object.Singular + '","id":"' + $Id + '","attributes":null}'
             }
             Else
             {
                 # Build body to be sent to endpoint.
-                $JsonBody = '{"op":"' + $Action + '","type":"' + $TargetObject.Singular + '","id":"' + $TargetObjectId + '","attributes":null}'
+                $JsonBody = '{"op":"' + $Action + '","type":"' + $Target.Singular + '","id":"' + $TargetId + '","attributes":null}'
             }
             # Send body to endpoint.
-            Write-Verbose ("$Action association from '$InputObjectName' to '$TargetObjectName'")
+            Write-Verbose ("$Action association from '$Name' to '$TargetName'")
             $Results += Invoke-JCApi -Body:($JsonBody) -Method:($Method) -Url:($Uri_Associations)
         }
     }

@@ -21,42 +21,42 @@ Describe "Association Tests" {
         $JCAssociationTypes = Get-JCObjectType | Where-Object { $_.Category -eq 'JumpCloud' }
         ForEach ($JCAssociationType In $JCAssociationTypes)
         {
-            $InputObjectType = $JCAssociationType.Singular
-            $TargetObjectTypes = $JCAssociationType.Targets
-            ForEach ($TargetObjectType In $TargetObjectTypes)
+            $Type = $JCAssociationType.Singular
+            $TargetTypes = $JCAssociationType.Targets
+            ForEach ($TargetType In $TargetTypes)
             {
-                $InputObject = Get-JCObject -Type:([string]$InputObjectType) | Get-Random #| Select-Object -First 1
-                $InputObjectId = $InputObject.($InputObject.ById)
-                $InputObjectName = $InputObject.($InputObject.ByName)
-                $TargetObject = Get-JCObject -Type:([string]$TargetObjectType) | Get-Random #| Select-Object -First 1
-                $TargetObjectId = $TargetObject.($TargetObject.ById)
-                $TargetObjectName = $TargetObject.($TargetObject.ByName)
-                If (!($InputObjectName)) { $InputObjectName = 'UNKNOWN'; }
-                If (!($TargetObjectName)) { $TargetObjectName = 'UNKNOWN'; }
-                If (!($InputObjectType)) { $InputObjectType = 'UNKNOWN'; }
-                If (!($InputObjectId)) { $InputObjectId = 'UNKNOWN'; }
-                If (!($TargetObjectType)) { $TargetObjectType = 'UNKNOWN'; }
-                If (!($TargetObjectId)) { $TargetObjectId = 'UNKNOWN'; }
-                # Write-Host ('$Associations' + " += [PSCustomObject]@{'InputObjectType' = '$InputObjectType'; 'InputObjectId' = '$InputObjectId'; 'InputObjectName' = '$InputObjectName'; 'TargetObjectType' = '$TargetObjectType'; 'TargetObjectId' = '$TargetObjectId'; 'TargetObjectName' = '$TargetObjectName'; }")
-                # Write-Host ("$InputObjectType`t$InputObjectId`t$InputObjectName`t$TargetObjectType`t$TargetObjectId`t$TargetObjectName")
-                $Associations += [PSCustomObject]@{'InputObjectType' = $InputObjectType; 'InputObjectId' = $InputObjectId; 'InputObjectName' = $InputObjectName; 'TargetObjectType' = $TargetObjectType; 'TargetObjectId' = $TargetObjectId; 'TargetObjectName' = $TargetObjectName; }
+                $Object = Get-JCObject -Type:([string]$Type) | Get-Random #| Select-Object -First 1
+                $Id = $Object.($Object.ById)
+                $Name = $Object.($Object.ByName)
+                $Target = Get-JCObject -Type:([string]$TargetType) | Get-Random #| Select-Object -First 1
+                $TargetId = $Target.($Target.ById)
+                $TargetName = $Target.($Target.ByName)
+                If (!($Name)) { $Name = 'UNKNOWN'; }
+                If (!($TargetName)) { $TargetName = 'UNKNOWN'; }
+                If (!($Type)) { $Type = 'UNKNOWN'; }
+                If (!($Id)) { $Id = 'UNKNOWN'; }
+                If (!($TargetType)) { $TargetType = 'UNKNOWN'; }
+                If (!($TargetId)) { $TargetId = 'UNKNOWN'; }
+                # Write-Host ('$Associations' + " += [PSCustomObject]@{'Type' = '$Type'; 'Id' = '$Id'; 'Name' = '$Name'; 'TargetType' = '$TargetType'; 'TargetId' = '$TargetId'; 'TargetName' = '$TargetName'; }")
+                # Write-Host ("$Type`t$Id`t$Name`t$TargetType`t$TargetId`t$TargetName")
+                $Associations += [PSCustomObject]@{'Type' = $Type; 'Id' = $Id; 'Name' = $Name; 'TargetType' = $TargetType; 'TargetId' = $TargetId; 'TargetName' = $TargetName; }
             }
         }
         # Test to see if there are any UNKNOWN values found in the dataset
         It("Validate that all object types exist within the specified test environment.") {
-            $Associations | Where-Object { $_.InputObjectId -eq 'UNKNOWN' } | Should -BeNullOrEmpty
-            $Associations | Where-Object { $_.InputObjectName -eq 'UNKNOWN' } | Should -BeNullOrEmpty
-            $Associations | Where-Object { $_.TargetObjectId -eq 'UNKNOWN' } | Should -BeNullOrEmpty
-            $Associations | Where-Object { $_.TargetObjectName -eq 'UNKNOWN' } | Should -BeNullOrEmpty
+            $Associations | Where-Object { $_.Id -eq 'UNKNOWN' } | Should -BeNullOrEmpty
+            $Associations | Where-Object { $_.Name -eq 'UNKNOWN' } | Should -BeNullOrEmpty
+            $Associations | Where-Object { $_.TargetId -eq 'UNKNOWN' } | Should -BeNullOrEmpty
+            $Associations | Where-Object { $_.TargetName -eq 'UNKNOWN' } | Should -BeNullOrEmpty
         }
-        If ($Associations | Where-Object { $_.InputObjectType -eq 'UNKNOWN' }) { Write-Error ("Need to create: $InputObjectType"); }
-        If ($Associations | Where-Object { $_.TargetObjectType -eq 'UNKNOWN' }) { Write-Error ("Need to create: $TargetObjectType"); }
-        If ($Associations | Where-Object { $_.InputObjectName -eq 'UNKNOWN' }) { Write-Error ("Need to create: $InputObjectName"); }
-        If ($Associations | Where-Object { $_.TargetObjectName -eq 'UNKNOWN' }) { Write-Error ("Need to create: $TargetObjectName"); }
-        If ($Associations | Where-Object { $_.InputObjectId -eq 'UNKNOWN' }) { Write-Error ("Need to create: $InputObjectId"); }
-        If ($Associations | Where-Object { $_.TargetObjectId -eq 'UNKNOWN' }) { Write-Error ("Need to create: $TargetObjectId"); }
+        If ($Associations | Where-Object { $_.Type -eq 'UNKNOWN' }) { Write-Error ("Need to create: $Type"); }
+        If ($Associations | Where-Object { $_.TargetType -eq 'UNKNOWN' }) { Write-Error ("Need to create: $TargetType"); }
+        If ($Associations | Where-Object { $_.Name -eq 'UNKNOWN' }) { Write-Error ("Need to create: $Name"); }
+        If ($Associations | Where-Object { $_.TargetName -eq 'UNKNOWN' }) { Write-Error ("Need to create: $TargetName"); }
+        If ($Associations | Where-Object { $_.Id -eq 'UNKNOWN' }) { Write-Error ("Need to create: $Id"); }
+        If ($Associations | Where-Object { $_.TargetId -eq 'UNKNOWN' }) { Write-Error ("Need to create: $TargetId"); }
         # Filter out UNKNOWN's from the dataset
-        $AssociationObject = $Associations | Where-Object { $_.InputObjectId -ne 'UNKNOWN' -and $_.InputObjectName -ne 'UNKNOWN' -and $_.TargetObjectId -ne 'UNKNOWN' -and $_.TargetObjectName -ne 'UNKNOWN' }
+        $AssociationObject = $Associations | Where-Object { $_.Id -ne 'UNKNOWN' -and $_.Name -ne 'UNKNOWN' -and $_.TargetId -ne 'UNKNOWN' -and $_.TargetName -ne 'UNKNOWN' }
         # Start tests
         ForEach ($TestMethod In  $TestMethods)
         {
@@ -64,124 +64,124 @@ Describe "Association Tests" {
             Context ("When Association functions are called with parameterSet: '$TestMethod'") {
                 ForEach ($AssociationRecord In $AssociationObject)
                 {
-                    $SourceInputObjectType = $AssociationRecord.InputObjectType
-                    $SourceInputObjectId = $AssociationRecord.InputObjectId
-                    $SourceInputObjectName = $AssociationRecord.InputObjectName
-                    $SourceTargetObjectType = $AssociationRecord.TargetObjectType
-                    $SourceTargetObjectId = $AssociationRecord.TargetObjectId
-                    $SourceTargetObjectName = $AssociationRecord.TargetObjectName
-                    Context ("Running Association tests for InputObjectType:'$SourceInputObjectType';InputObjectName:'$SourceInputObjectName';TargetObjectType:'$SourceTargetObjectType';TargetObjectName:'$SourceTargetObjectName';") {
-                        $SourceInputSearchByValue = Switch ($TestMethod) { 'ById' { $SourceInputObjectId }'ByName' { $SourceInputObjectName } }
-                        $SourceTargetSearchByValue = Switch ($TestMethod) { 'ById' { $SourceTargetObjectId }'ByName' { $SourceTargetObjectName } }
-                        # Get InputObject
-                        $InputObject = Get-JCObject -Type:($SourceInputObjectType) -SearchBy:($TestMethod) -SearchByValue:($SourceInputSearchByValue);
-                        It ("Test if InputObject exists by running: Get-JCObject -Type:('$SourceInputObjectType') -SearchBy:('$TestMethod') -SearchByValue:('$SourceInputSearchByValue');") {
-                            $InputObject | Should -Not -BeNullOrEmpty
-                            $InputObject.($InputObject.($TestMethod)) | Should -Be $SourceInputSearchByValue
+                    $SourceType = $AssociationRecord.Type
+                    $SourceId = $AssociationRecord.Id
+                    $SourceName = $AssociationRecord.Name
+                    $SourceTargetType = $AssociationRecord.TargetType
+                    $SourceTargetId = $AssociationRecord.TargetId
+                    $SourceTargetName = $AssociationRecord.TargetName
+                    Context ("Running Association tests for Type:'$SourceType';Name:'$SourceName';TargetType:'$SourceTargetType';TargetName:'$SourceTargetName';") {
+                        $SourceSearchByValue = Switch ($TestMethod) { 'ById' { $SourceId }'ByName' { $SourceName } }
+                        $SourceTargetSearchByValue = Switch ($TestMethod) { 'ById' { $SourceTargetId }'ByName' { $SourceTargetName } }
+                        # Get Object
+                        $Object = Get-JCObject -Type:($SourceType) -SearchBy:($TestMethod) -SearchByValue:($SourceSearchByValue);
+                        It ("Test if Object exists by running: Get-JCObject -Type:('$SourceType') -SearchBy:('$TestMethod') -SearchByValue:('$SourceSearchByValue');") {
+                            $Object | Should -Not -BeNullOrEmpty
+                            $Object.($Object.($TestMethod)) | Should -Be $SourceSearchByValue
                         }
-                        If (!($InputObject)) { Write-Error ('InputObject does not exist:' + $SourceInputObjectType + ':' + $SourceInputSearchByValue); }
-                        # Get TargetObject
-                        $TargetObject = Get-JCObject -Type:($SourceTargetObjectType) -SearchBy:($TestMethod) -SearchByValue:($SourceTargetSearchByValue);
-                        It ("Test if TargetObject exists by running: Get-JCObject -Type:('$SourceTargetObjectType') -SearchBy:('$TestMethod') -SearchByValue:('$SourceTargetSearchByValue');") {
-                            $TargetObject | Should -Not -BeNullOrEmpty
-                            $TargetObject.($TargetObject.($TestMethod)) | Should -Be $SourceTargetSearchByValue
+                        If (!($Object)) { Write-Error ('Object does not exist:' + $SourceType + ':' + $SourceSearchByValue); }
+                        # Get Target
+                        $Target = Get-JCObject -Type:($SourceTargetType) -SearchBy:($TestMethod) -SearchByValue:($SourceTargetSearchByValue);
+                        It ("Test if Target exists by running: Get-JCObject -Type:('$SourceTargetType') -SearchBy:('$TestMethod') -SearchByValue:('$SourceTargetSearchByValue');") {
+                            $Target | Should -Not -BeNullOrEmpty
+                            $Target.($Target.($TestMethod)) | Should -Be $SourceTargetSearchByValue
                         }
-                        If (!($TargetObject)) { Write-Error ('TargetObject does not exist:' + $SourceTargetObjectType + ':' + $SourceTargetSearchByValue); }
-                        # Get the InputObject and TargetObject Id and Name
-                        $InputObjectId = $InputObject.($InputObject.ById)
-                        $InputObjectName = $InputObject.($InputObject.ByName)
-                        $TargetObjectId = $TargetObject.($TargetObject.ById)
-                        $TargetObjectName = $TargetObject.($TargetObject.ByName)
-                        $InputSearchByValue = Switch ($TestMethod) { 'ById' { $InputObjectId }'ByName' { $InputObjectName } }
-                        $TargetSearchByValue = Switch ($TestMethod) { 'ById' { $TargetObjectId }'ByName' { $TargetObjectName } }
-                        # Test if the association already exists between $InputObjectId and $TargetObjectId
+                        If (!($Target)) { Write-Error ('Target does not exist:' + $SourceTargetType + ':' + $SourceTargetSearchByValue); }
+                        # Get the Object and Target Id and Name
+                        $Id = $Object.($Object.ById)
+                        $Name = $Object.($Object.ByName)
+                        $TargetId = $Target.($Target.ById)
+                        $TargetName = $Target.($Target.ByName)
+                        $SourceSearchByValue = Switch ($TestMethod) { 'ById' { $Id }'ByName' { $Name } }
+                        $TargetSearchByValue = Switch ($TestMethod) { 'ById' { $TargetId }'ByName' { $TargetName } }
+                        # Test if the association already exists between $Id and $TargetId
                         $GetJCAssociation = Switch ($TestMethod)
                         {
-                            'ById' { Get-JCAssociation -InputObjectType:($SourceInputObjectType) -InputObjectId:($InputObjectId) -TargetObjectType:($SourceTargetObjectType) | Where-Object { $_.TargetObjectId -eq $TargetObjectId }; }
-                            'ByName' { Get-JCAssociation -InputObjectType:($SourceInputObjectType) -InputObjectName:($InputObjectName) -TargetObjectType:($SourceTargetObjectType) | Where-Object { $_.TargetObjectName -eq $TargetObjectName }; }
+                            'ById' { Get-JCAssociation -Type:($SourceType) -Id:($Id) -TargetType:($SourceTargetType) | Where-Object { $_.TargetId -eq $TargetId }; }
+                            'ByName' { Get-JCAssociation -Type:($SourceType) -Name:($Name) -TargetType:($SourceTargetType) | Where-Object { $_.TargetName -eq $TargetName }; }
                         }
                         #If the association exists
                         If ($GetJCAssociation)
                         {
-                            $GetJCAssociation_InputObjectId = $GetJCAssociation.InputObjectId
-                            $GetJCAssociation_InputObjectName = $GetJCAssociation.InputObjectName
-                            $GetJCAssociation_TargetObjectId = $GetJCAssociation.TargetObjectId
-                            $GetJCAssociation_TargetObjectName = $GetJCAssociation.TargetObjectName
-                            $GetJCAssociation_InputSearchByValue = Switch ($TestMethod) { 'ById' { $GetJCAssociation_InputObjectId }'ByName' { $GetJCAssociation_InputObjectName } }
-                            $GetJCAssociation_TargetSearchByValue = Switch ($TestMethod) { 'ById' { $GetJCAssociation_TargetObjectId }'ByName' { $GetJCAssociation_TargetObjectName } }
-                            # Remove the association between $InputObjectId and $TargetObjectId
+                            $GetJCAssociation_Id = $GetJCAssociation.Id
+                            $GetJCAssociation_Name = $GetJCAssociation.Name
+                            $GetJCAssociation_TargetId = $GetJCAssociation.TargetId
+                            $GetJCAssociation_TargetName = $GetJCAssociation.TargetName
+                            $GetJCAssociation_SourceSearchByValue = Switch ($TestMethod) { 'ById' { $GetJCAssociation_Id }'ByName' { $GetJCAssociation_Name } }
+                            $GetJCAssociation_TargetSearchByValue = Switch ($TestMethod) { 'ById' { $GetJCAssociation_TargetId }'ByName' { $GetJCAssociation_TargetName } }
+                            # Remove the association between $Id and $TargetId
                             $RemoveAssociation = Switch ($TestMethod)
                             {
-                                'ById' { Remove-JCAssociation -InputObjectType:($SourceInputObjectType) -InputObjectId:($GetJCAssociation_InputObjectId) -TargetObjectType:($SourceTargetObjectType) -TargetObjectId:($GetJCAssociation_TargetObjectId); }
-                                'ByName' { Remove-JCAssociation -InputObjectType:($SourceInputObjectType) -InputObjectName:($GetJCAssociation_InputObjectName) -TargetObjectType:($SourceTargetObjectType) -TargetObjectName:($GetJCAssociation_TargetObjectName); }
+                                'ById' { Remove-JCAssociation -Type:($SourceType) -Id:($GetJCAssociation_Id) -TargetType:($SourceTargetType) -TargetId:($GetJCAssociation_TargetId); }
+                                'ByName' { Remove-JCAssociation -Type:($SourceType) -Name:($GetJCAssociation_Name) -TargetType:($SourceTargetType) -TargetName:($GetJCAssociation_TargetName); }
                             }
-                            It ("If the association exists then remove the association by running: Remove-JCAssociation -InputObjectType:('$SourceInputObjectType') -InputObject$TestMethodIdentifier`:('$GetJCAssociation_InputSearchByValue') -TargetObjectType:('$SourceTargetObjectType') -TargetObject$TestMethodIdentifier`:('$GetJCAssociation_TargetSearchByValue');") {
+                            It ("If the association exists then remove the association by running: Remove-JCAssociation -Type:('$SourceType') -$TestMethodIdentifier`:('$GetJCAssociation_SourceSearchByValue') -TargetType:('$SourceTargetType') -Target$TestMethodIdentifier`:('$GetJCAssociation_TargetSearchByValue');") {
                                 $RemoveAssociation | Should -BeNullOrEmpty
                             }
                         }
-                        # Create new association between $InputObjectName and $TargetObjectName
+                        # Create new association between $Name and $TargetName
                         $NewAssociation = Switch ($TestMethod)
                         {
-                            'ById' { New-JCAssociation -InputObjectType:($SourceInputObjectType) -InputObjectId:($InputObjectId) -TargetObjectType:($SourceTargetObjectType) -TargetObjectId:($TargetObjectId); }
-                            'ByName' { New-JCAssociation -InputObjectType:($SourceInputObjectType) -InputObjectName:($InputObjectName) -TargetObjectType:($SourceTargetObjectType) -TargetObjectName:($TargetObjectName); }
+                            'ById' { New-JCAssociation -Type:($SourceType) -Id:($Id) -TargetType:($SourceTargetType) -TargetId:($TargetId); }
+                            'ByName' { New-JCAssociation -Type:($SourceType) -Name:($Name) -TargetType:($SourceTargetType) -TargetName:($TargetName); }
                         }
-                        It ("Create new association by running: New-JCAssociation -InputObjectType:('$SourceInputObjectType') -InputObject$TestMethodIdentifier`:('$InputSearchByValue') -TargetObjectType:('$SourceTargetObjectType') -TargetObject$TestMethodIdentifier`:('$TargetSearchByValue');") {
+                        It ("Create new association by running: New-JCAssociation -Type:('$SourceType') -$TestMethodIdentifier`:('$SourceSearchByValue') -TargetType:('$SourceTargetType') -Target$TestMethodIdentifier`:('$TargetSearchByValue');") {
                             $NewAssociation | Should -BeNullOrEmpty
                         }
-                        # Validate that the new association has been created between $InputSearchByValue and $TargetSearchByValue
-                        $InputToTargetAssociation = Get-JCAssociation -InputObjectType:($SourceInputObjectType) -InputObjectName:($InputObjectName) -TargetObjectType:($SourceTargetObjectType) | Where-Object { $_.TargetObjectName -eq $TargetObjectName }
-                        # Get the InputObject and TargetObject Id and Name
-                        $InputToTargetAssociation_InputObjectId = $InputToTargetAssociation.InputObjectId
-                        $InputToTargetAssociation_InputObjectName = $InputToTargetAssociation.InputObjectName
-                        $InputToTargetAssociation_TargetObjectId = $InputToTargetAssociation.TargetObjectId
-                        $InputToTargetAssociation_TargetObjectName = $InputToTargetAssociation.TargetObjectName
-                        $InputToTargetAssociation_InputSearchByValue = Switch ($TestMethod) { 'ById' { $InputToTargetAssociation_InputObjectId }'ByName' { $InputToTargetAssociation_InputObjectName } }
-                        $InputToTargetAssociation_TargetSearchByValue = Switch ($TestMethod) { 'ById' { $InputToTargetAssociation_TargetObjectId }'ByName' { $InputToTargetAssociation_TargetObjectName } }
-                        It ("Validate that the new association has been created by running: Get-JCAssociation -InputObjectType:('$SourceInputObjectType') -InputObjectName:('$InputObjectName') -TargetObjectType:('$SourceTargetObjectType') | Where-Object {`$_.TargetObjectName -eq '$TargetObjectName'};") {
-                            $InputToTargetAssociation | Should -Not -BeNullOrEmpty
-                            $InputToTargetAssociation_InputObjectName | Should -Be $InputObjectName
-                            $InputToTargetAssociation_TargetObjectName | Should -Be $TargetObjectName
+                        # Validate that the new association has been created between $SourceSearchByValue and $TargetSearchByValue
+                        $SourceToTargetAssociation = Get-JCAssociation -Type:($SourceType) -Name:($Name) -TargetType:($SourceTargetType) | Where-Object { $_.TargetName -eq $TargetName }
+                        # Get the Object and Target Id and Name
+                        $SourceToTargetAssociation_Id = $SourceToTargetAssociation.Id
+                        $SourceToTargetAssociation_Name = $SourceToTargetAssociation.Name
+                        $SourceToTargetAssociation_TargetId = $SourceToTargetAssociation.TargetId
+                        $SourceToTargetAssociation_TargetName = $SourceToTargetAssociation.TargetName
+                        $SourceToTargetAssociation_SourceSearchByValue = Switch ($TestMethod) { 'ById' { $SourceToTargetAssociation_Id }'ByName' { $SourceToTargetAssociation_Name } }
+                        $SourceToTargetAssociation_TargetSearchByValue = Switch ($TestMethod) { 'ById' { $SourceToTargetAssociation_TargetId }'ByName' { $SourceToTargetAssociation_TargetName } }
+                        It ("Validate that the new association has been created by running: Get-JCAssociation -Type:('$SourceType') -Name:('$Name') -TargetType:('$SourceTargetType') | Where-Object {`$_.TargetName -eq '$TargetName'};") {
+                            $SourceToTargetAssociation | Should -Not -BeNullOrEmpty
+                            $SourceToTargetAssociation_Name | Should -Be $Name
+                            $SourceToTargetAssociation_TargetName | Should -Be $TargetName
                         }
-                        If (!($InputToTargetAssociation)) { Write-Error ("$InputToTargetAssociation_InputSearchByValue does not have an association with $InputToTargetAssociation_TargetSearchByValue!"); }
+                        If (!($SourceToTargetAssociation)) { Write-Error ("$SourceToTargetAssociation_SourceSearchByValue does not have an association with $SourceToTargetAssociation_TargetSearchByValue!"); }
                         # Test that Get-JCAssociation works
                         $GetJCAssociationTest = Switch ($TestMethod)
                         {
-                            'ById' { Get-JCAssociation -InputObjectType:($SourceInputObjectType) -InputObjectId:($InputToTargetAssociation_InputObjectId) -TargetObjectType:($SourceTargetObjectType); }
-                            'ByName' { Get-JCAssociation -InputObjectType:($SourceInputObjectType) -InputObjectName:($InputToTargetAssociation_InputObjectName) -TargetObjectType:($SourceTargetObjectType); }
+                            'ById' { Get-JCAssociation -Type:($SourceType) -Id:($SourceToTargetAssociation_Id) -TargetType:($SourceTargetType); }
+                            'ByName' { Get-JCAssociation -Type:($SourceType) -Name:($SourceToTargetAssociation_Name) -TargetType:($SourceTargetType); }
                         }
-                        It ("Validate that the Get-JCAssociation returns associations for the InputObject and the TargetObject by running: Get-JCAssociation -InputObjectType:('$SourceInputObjectType') -InputObject$TestMethodIdentifier`:('$InputToTargetAssociation_InputSearchByValue') -TargetObjectType:('$SourceTargetObjectType');") {
+                        It ("Validate that the Get-JCAssociation returns associations for the Object and the Target by running: Get-JCAssociation -Type:('$SourceType') -$TestMethodIdentifier`:('$SourceToTargetAssociation_SourceSearchByValue') -TargetType:('$SourceTargetType');") {
                             $GetJCAssociationTest | Should -Not -BeNullOrEmpty
-                            ($GetJCAssociationTest.InputObjectName | Select-Object -Unique) | Should -Be $InputObjectName
-                            ($GetJCAssociationTest.TargetObjectName | Select-Object -Unique) | Should -Not -BeNullOrEmpty
+                            ($GetJCAssociationTest.Name | Select-Object -Unique) | Should -Be $Name
+                            ($GetJCAssociationTest.TargetName | Select-Object -Unique) | Should -Not -BeNullOrEmpty
                         }
                         # Test that Get-JCAssociation works with -HideTargetData
                         $GetJCAssociationTest = Switch ($TestMethod)
                         {
-                            'ById' { Get-JCAssociation -InputObjectType:($SourceInputObjectType) -InputObjectId:($InputToTargetAssociation_InputObjectId) -TargetObjectType:($SourceTargetObjectType) -HideTargetData; }
-                            'ByName' { Get-JCAssociation -InputObjectType:($SourceInputObjectType) -InputObjectName:($InputToTargetAssociation_InputObjectName) -TargetObjectType:($SourceTargetObjectType) -HideTargetData; }
+                            'ById' { Get-JCAssociation -Type:($SourceType) -Id:($SourceToTargetAssociation_Id) -TargetType:($SourceTargetType) -HideTargetData; }
+                            'ByName' { Get-JCAssociation -Type:($SourceType) -Name:($SourceToTargetAssociation_Name) -TargetType:($SourceTargetType) -HideTargetData; }
                         }
-                        It ("Validate that the Get-JCAssociation returns associations for the InputObject but not the TargetObject by running: Get-JCAssociation -InputObjectType:('$SourceInputObjectType') -InputObject$TestMethodIdentifier`:('$InputToTargetAssociation_InputSearchByValue') -TargetObjectType:('$SourceTargetObjectType') -HideTargetData;") {
+                        It ("Validate that the Get-JCAssociation returns associations for the Object but not the Target by running: Get-JCAssociation -Type:('$SourceType') -$TestMethodIdentifier`:('$SourceToTargetAssociation_SourceSearchByValue') -TargetType:('$SourceTargetType') -HideTargetData;") {
                             $GetJCAssociationTest | Should -Not -BeNullOrEmpty
-                            ($GetJCAssociationTest.InputObjectName | Select-Object -Unique) | Should -Be $InputObjectName
-                            ($GetJCAssociationTest.TargetObjectName | Select-Object -Unique) | Should -BeNullOrEmpty
+                            ($GetJCAssociationTest.Name | Select-Object -Unique) | Should -Be $Name
+                            ($GetJCAssociationTest.TargetName | Select-Object -Unique) | Should -BeNullOrEmpty
                         }
-                        # Remove the association between $InputSearchByValue and $TargetSearchByValue
+                        # Remove the association between $SourceSearchByValue and $TargetSearchByValue
                         $RemoveAssociation_Cleanup = Switch ($TestMethod)
                         {
-                            'ById' { Remove-JCAssociation -InputObjectType:($SourceInputObjectType) -InputObjectId:($InputToTargetAssociation_InputObjectId) -TargetObjectType:($SourceTargetObjectType) -TargetObjectId:($InputToTargetAssociation_TargetObjectId); }
-                            'ByName' { Remove-JCAssociation -InputObjectType:($SourceInputObjectType) -InputObjectName:($InputToTargetAssociation_InputObjectName) -TargetObjectType:($SourceTargetObjectType) -TargetObjectName:($InputToTargetAssociation_TargetObjectName); }
+                            'ById' { Remove-JCAssociation -Type:($SourceType) -Id:($SourceToTargetAssociation_Id) -TargetType:($SourceTargetType) -TargetId:($SourceToTargetAssociation_TargetId); }
+                            'ByName' { Remove-JCAssociation -Type:($SourceType) -Name:($SourceToTargetAssociation_Name) -TargetType:($SourceTargetType) -TargetName:($SourceToTargetAssociation_TargetName); }
                         }
-                        It ("If the association exists then remove the association by running: Remove-JCAssociation -InputObjectType:('$SourceInputObjectType') -InputObject$TestMethodIdentifier`:('$InputToTargetAssociation_InputSearchByValue') -TargetObjectType:('$SourceTargetObjectType') -TargetObject$TestMethodIdentifier`:('$InputToTargetAssociation_TargetSearchByValue');") {
+                        It ("If the association exists then remove the association by running: Remove-JCAssociation -Type:('$SourceType') -$TestMethodIdentifier`:('$SourceToTargetAssociation_SourceSearchByValue') -TargetType:('$SourceTargetType') -Target$TestMethodIdentifier`:('$SourceToTargetAssociation_TargetSearchByValue');") {
                             $RemoveAssociation_Cleanup | Should -BeNullOrEmpty
                         }
-                        # Test to see that the InputObject does not have an association with the TargetObject
-                        $InputToTargetDissociation = Switch ($TestMethod)
+                        # Test to see that the Object does not have an association with the Target
+                        $SourceToTargetDissociation = Switch ($TestMethod)
                         {
-                            'ById' { Get-JCAssociation -InputObjectType:($SourceInputObjectType) -InputObjectId:($InputToTargetAssociation_InputObjectId) -TargetObjectType:($SourceTargetObjectType) | Where-Object { $_.TargetObjectId -eq $InputToTargetAssociation_TargetObjectId }; }
-                            'ByName' { Get-JCAssociation -InputObjectType:($SourceInputObjectType) -InputObjectName:($InputToTargetAssociation_InputObjectName) -TargetObjectType:($SourceTargetObjectType) | Where-Object { $_.TargetObjectName -eq $InputToTargetAssociation_TargetObjectName }; }
+                            'ById' { Get-JCAssociation -Type:($SourceType) -Id:($SourceToTargetAssociation_Id) -TargetType:($SourceTargetType) | Where-Object { $_.TargetId -eq $SourceToTargetAssociation_TargetId }; }
+                            'ByName' { Get-JCAssociation -Type:($SourceType) -Name:($SourceToTargetAssociation_Name) -TargetType:($SourceTargetType) | Where-Object { $_.TargetName -eq $SourceToTargetAssociation_TargetName }; }
                         }
-                        It ("Validate that the association has been dissociated by running: Get-JCAssociation -InputObjectType:('$SourceInputObjectType)' -InputObject$TestMethodIdentifier`:('$InputToTargetAssociation_TargetSearchByValue') -TargetObjectType:('$SourceTargetObjectType') | Where-Object {`$_.TargetObject$TestMethodIdentifier -eq '$InputToTargetAssociation_TargetSearchByValue'};") {
-                            $InputToTargetDissociation | Should -BeNullOrEmpty
+                        It ("Validate that the association has been dissociated by running: Get-JCAssociation -Type:('$SourceType)' -$TestMethodIdentifier`:('$SourceToTargetAssociation_TargetSearchByValue') -TargetType:('$SourceTargetType') | Where-Object {`$_.Target$TestMethodIdentifier -eq '$SourceToTargetAssociation_TargetSearchByValue'};") {
+                            $SourceToTargetDissociation | Should -BeNullOrEmpty
                         }
                     }
                 }

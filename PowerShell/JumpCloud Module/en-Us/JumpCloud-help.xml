@@ -1,6 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<helpItems schema="maml" xmlns="http://msh">
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+<helpItems schema="maml"
+  xmlns="http://msh">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>Add-JCCommandTarget</command:name>
       <command:verb>Add</command:verb>
@@ -200,7 +204,10 @@
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>Add-JCRadiusReplyAttribute</command:name>
       <command:verb>Add</command:verb>
@@ -379,7 +386,10 @@
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>Add-JCSystemGroupMember</command:name>
       <command:verb>Add</command:verb>
@@ -600,7 +610,10 @@
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>Add-JCSystemUser</command:name>
       <command:verb>Add</command:verb>
@@ -819,7 +832,10 @@
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>Add-JCUserGroupMember</command:name>
       <command:verb>Add</command:verb>
@@ -1052,7 +1068,10 @@
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>Connect-JCOnline</command:name>
       <command:verb>Connect</command:verb>
@@ -1281,7 +1300,10 @@
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>Get-JCAssociation</command:name>
       <command:verb>Get</command:verb>
@@ -1297,7 +1319,7 @@
       <command:syntaxItem>
         <maml:name>Get-JCAssociation</maml:name>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
-          <maml:name>InputObjectType</maml:name>
+          <maml:name>Type</maml:name>
           <maml:Description>
             <maml:para>The type of the input object.</maml:para>
           </maml:Description>
@@ -1323,7 +1345,7 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="1" aliases="id, _id">
-          <maml:name>InputObjectId</maml:name>
+          <maml:name>Id</maml:name>
           <maml:Description>
             <maml:para>The id of the input object.</maml:para>
           </maml:Description>
@@ -1335,7 +1357,7 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="3" aliases="none">
-          <maml:name>TargetObjectType</maml:name>
+          <maml:name>TargetType</maml:name>
           <maml:Description>
             <maml:para>The type of the target object.</maml:para>
           </maml:Description>
@@ -1399,7 +1421,7 @@
       <command:syntaxItem>
         <maml:name>Get-JCAssociation</maml:name>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
-          <maml:name>InputObjectType</maml:name>
+          <maml:name>Type</maml:name>
           <maml:Description>
             <maml:para>The type of the input object.</maml:para>
           </maml:Description>
@@ -1425,7 +1447,7 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="2" aliases="name, username, groupName">
-          <maml:name>InputObjectName</maml:name>
+          <maml:name>Name</maml:name>
           <maml:Description>
             <maml:para>The name of the input object.</maml:para>
           </maml:Description>
@@ -1437,7 +1459,7 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="3" aliases="none">
-          <maml:name>TargetObjectType</maml:name>
+          <maml:name>TargetType</maml:name>
           <maml:Description>
             <maml:para>The type of the target object.</maml:para>
           </maml:Description>
@@ -1513,7 +1535,7 @@
         <dev:defaultValue>False</dev:defaultValue>
       </command:parameter>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="1" aliases="id, _id">
-        <maml:name>InputObjectId</maml:name>
+        <maml:name>Id</maml:name>
         <maml:Description>
           <maml:para>The id of the input object.</maml:para>
         </maml:Description>
@@ -1525,7 +1547,7 @@
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="2" aliases="name, username, groupName">
-        <maml:name>InputObjectName</maml:name>
+        <maml:name>Name</maml:name>
         <maml:Description>
           <maml:para>The name of the input object.</maml:para>
         </maml:Description>
@@ -1537,7 +1559,7 @@
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
-        <maml:name>InputObjectType</maml:name>
+        <maml:name>Type</maml:name>
         <maml:Description>
           <maml:para>The type of the input object.</maml:para>
         </maml:Description>
@@ -1549,7 +1571,7 @@
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="3" aliases="none">
-        <maml:name>TargetObjectType</maml:name>
+        <maml:name>TargetType</maml:name>
         <maml:Description>
           <maml:para>The type of the target object.</maml:para>
         </maml:Description>
@@ -1597,14 +1619,14 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCAssociation -InputObjectType:('users') -InputObjectName:('Luke Skywalker') -TargetObjectType:('system') | Format-Table</dev:code>
+        <dev:code>PS C:\&gt; Get-JCAssociation -Type:('users') -Name:('Luke Skywalker') -TargetType:('system') | Format-Table</dev:code>
         <dev:remarks>
           <maml:para>List all "systems" that are associated with the user "Luke Skywalker".</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
         <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCAssociation -InputObjectType:('users') -InputObjectId:('5ab915cf861178491b8fc399') -TargetObjectType:('system') | Format-Table</dev:code>
+        <dev:code>PS C:\&gt; Get-JCAssociation -Type:('users') -Id:('5ab915cf861178491b8fc399') -TargetType:('system') | Format-Table</dev:code>
         <dev:remarks>
           <maml:para>List all "systems" that are associated with the userId "5ab915cf861178491b8fc399".</maml:para>
         </dev:remarks>
@@ -1617,7 +1639,10 @@
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>Get-JCBackup</command:name>
       <command:verb>Get</command:verb>
@@ -1857,7 +1882,10 @@
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>Get-JCCommand</command:name>
       <command:verb>Get</command:verb>
@@ -1999,7 +2027,10 @@
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>Get-JCCommandResult</command:name>
       <command:verb>Get</command:verb>
@@ -2277,7 +2308,10 @@
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>Get-JCCommandTarget</command:name>
       <command:verb>Get</command:verb>
@@ -2391,7 +2425,10 @@
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>Get-JCGroup</command:name>
       <command:verb>Get</command:verb>
@@ -2500,7 +2537,10 @@
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>Get-JCOrganization</command:name>
       <command:verb>Get</command:verb>
@@ -2559,7 +2599,10 @@
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>Get-JCPolicy</command:name>
       <command:verb>Get</command:verb>
@@ -2707,7 +2750,10 @@
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>Get-JCPolicyResult</command:name>
       <command:verb>Get</command:verb>
@@ -2932,7 +2978,10 @@
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>Get-JCPolicyTargetGroup</command:name>
       <command:verb>Get</command:verb>
@@ -3080,7 +3129,10 @@
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>Get-JCPolicyTargetSystem</command:name>
       <command:verb>Get</command:verb>
@@ -3228,7 +3280,10 @@
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>Get-JCRadiusReplyAttribute</command:name>
       <command:verb>Get</command:verb>
@@ -3315,7 +3370,10 @@
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>Get-JCSystem</command:name>
       <command:verb>Get</command:verb>
@@ -3869,7 +3927,10 @@
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>Get-JCSystemGroupMember</command:name>
       <command:verb>Get</command:verb>
@@ -3994,7 +4055,10 @@
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>Get-JCSystemUser</command:name>
       <command:verb>Get</command:verb>
@@ -4111,7 +4175,10 @@
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>Get-JCUser</command:name>
       <command:verb>Get</command:verb>
@@ -4972,7 +5039,10 @@
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>Get-JCUserGroupMember</command:name>
       <command:verb>Get</command:verb>
@@ -5097,7 +5167,10 @@
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>Import-JCCommand</command:name>
       <command:verb>Import</command:verb>
@@ -5181,7 +5254,10 @@
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>Import-JCUsersFromCSV</command:name>
       <command:verb>Import</command:verb>
@@ -5305,7 +5381,10 @@
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>Invoke-JCCommand</command:name>
       <command:verb>Invoke</command:verb>
@@ -5440,7 +5519,10 @@
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>Invoke-JCDeployment</command:name>
       <command:verb>Invoke</command:verb>
@@ -5548,7 +5630,7 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>Invoke-JCDeployment -CommandID 5f6r55es2189782h48091999 -CSVFilePath ./JCDeployment_UsernameUpdate.csv 
+        <dev:code>Invoke-JCDeployment -CommandID 5f6r55es2189782h48091999 -CSVFilePath ./JCDeployment_UsernameUpdate.csv
 
 SystemID                 CommandID                Status
 --------                 ---------                ------
@@ -5568,7 +5650,10 @@ SystemID                 CommandID                Status
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>New-JCAssociation</command:name>
       <command:verb>New</command:verb>
@@ -5584,7 +5669,7 @@ SystemID                 CommandID                Status
       <command:syntaxItem>
         <maml:name>New-JCAssociation</maml:name>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
-          <maml:name>InputObjectType</maml:name>
+          <maml:name>Type</maml:name>
           <maml:Description>
             <maml:para>The type of the input object.</maml:para>
           </maml:Description>
@@ -5610,7 +5695,7 @@ SystemID                 CommandID                Status
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="1" aliases="id, _id">
-          <maml:name>InputObjectId</maml:name>
+          <maml:name>Id</maml:name>
           <maml:Description>
             <maml:para>The id of the input object.</maml:para>
           </maml:Description>
@@ -5622,7 +5707,7 @@ SystemID                 CommandID                Status
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="3" aliases="none">
-          <maml:name>TargetObjectType</maml:name>
+          <maml:name>TargetType</maml:name>
           <maml:Description>
             <maml:para>The type of the target object.</maml:para>
           </maml:Description>
@@ -5672,7 +5757,7 @@ SystemID                 CommandID                Status
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="4" aliases="none">
-          <maml:name>TargetObjectId</maml:name>
+          <maml:name>TargetId</maml:name>
           <maml:Description>
             <maml:para>The id of the target object.</maml:para>
           </maml:Description>
@@ -5687,7 +5772,7 @@ SystemID                 CommandID                Status
       <command:syntaxItem>
         <maml:name>New-JCAssociation</maml:name>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
-          <maml:name>InputObjectType</maml:name>
+          <maml:name>Type</maml:name>
           <maml:Description>
             <maml:para>The type of the input object.</maml:para>
           </maml:Description>
@@ -5713,7 +5798,7 @@ SystemID                 CommandID                Status
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="2" aliases="name, username, groupName">
-          <maml:name>InputObjectName</maml:name>
+          <maml:name>Name</maml:name>
           <maml:Description>
             <maml:para>The name of the input object.</maml:para>
           </maml:Description>
@@ -5725,7 +5810,7 @@ SystemID                 CommandID                Status
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="3" aliases="none">
-          <maml:name>TargetObjectType</maml:name>
+          <maml:name>TargetType</maml:name>
           <maml:Description>
             <maml:para>The type of the target object.</maml:para>
           </maml:Description>
@@ -5775,7 +5860,7 @@ SystemID                 CommandID                Status
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="5" aliases="none">
-          <maml:name>TargetObjectName</maml:name>
+          <maml:name>TargetName</maml:name>
           <maml:Description>
             <maml:para>The name of the target object.</maml:para>
           </maml:Description>
@@ -5790,7 +5875,7 @@ SystemID                 CommandID                Status
     </command:syntax>
     <command:parameters>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="1" aliases="id, _id">
-        <maml:name>InputObjectId</maml:name>
+        <maml:name>Id</maml:name>
         <maml:Description>
           <maml:para>The id of the input object.</maml:para>
         </maml:Description>
@@ -5802,7 +5887,7 @@ SystemID                 CommandID                Status
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="2" aliases="name, username, groupName">
-        <maml:name>InputObjectName</maml:name>
+        <maml:name>Name</maml:name>
         <maml:Description>
           <maml:para>The name of the input object.</maml:para>
         </maml:Description>
@@ -5814,7 +5899,7 @@ SystemID                 CommandID                Status
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
-        <maml:name>InputObjectType</maml:name>
+        <maml:name>Type</maml:name>
         <maml:Description>
           <maml:para>The type of the input object.</maml:para>
         </maml:Description>
@@ -5826,7 +5911,7 @@ SystemID                 CommandID                Status
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="4" aliases="none">
-        <maml:name>TargetObjectId</maml:name>
+        <maml:name>TargetId</maml:name>
         <maml:Description>
           <maml:para>The id of the target object.</maml:para>
         </maml:Description>
@@ -5838,7 +5923,7 @@ SystemID                 CommandID                Status
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="5" aliases="none">
-        <maml:name>TargetObjectName</maml:name>
+        <maml:name>TargetName</maml:name>
         <maml:Description>
           <maml:para>The name of the target object.</maml:para>
         </maml:Description>
@@ -5850,7 +5935,7 @@ SystemID                 CommandID                Status
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="3" aliases="none">
-        <maml:name>TargetObjectType</maml:name>
+        <maml:name>TargetType</maml:name>
         <maml:Description>
           <maml:para>The type of the target object.</maml:para>
         </maml:Description>
@@ -5890,14 +5975,14 @@ SystemID                 CommandID                Status
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; New-JCAssociation -InputObjectType:('radiusservers') -InputObjectId:('5c5c371704c4b477964ab4fa') -TargetObjectType:('user_group') -TargetObjectId:('59f20255c9118021fa01b80f')</dev:code>
+        <dev:code>PS C:\&gt; New-JCAssociation -Type:('radiusservers') -Id:('5c5c371704c4b477964ab4fa') -TargetType:('user_group') -TargetId:('59f20255c9118021fa01b80f')</dev:code>
         <dev:remarks>
           <maml:para>Create an association between the radius server "5c5c371704c4b477964ab4fa" and the user group "59f20255c9118021fa01b80f".</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
         <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; New-JCAssociation -InputObjectType:('radiusservers') -InputObjectName:('RadiusServer1') -TargetObjectType:('user_group') -TargetObjectName:('All Users')</dev:code>
+        <dev:code>PS C:\&gt; New-JCAssociation -Type:('radiusservers') -Name:('RadiusServer1') -TargetType:('user_group') -TargetName:('All Users')</dev:code>
         <dev:remarks>
           <maml:para>Create an association between the radius server "RadiusServer1" and the user group "All Users".</maml:para>
         </dev:remarks>
@@ -5910,7 +5995,10 @@ SystemID                 CommandID                Status
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>New-JCCommand</command:name>
       <command:verb>New</command:verb>
@@ -6123,7 +6211,10 @@ SystemID                 CommandID                Status
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>New-JCDeploymentTemplate</command:name>
       <command:verb>New</command:verb>
@@ -6182,7 +6273,10 @@ SystemID                 CommandID                Status
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>New-JCImportTemplate</command:name>
       <command:verb>New</command:verb>
@@ -6242,7 +6336,10 @@ SystemID                 CommandID                Status
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>New-JCSystemGroup</command:name>
       <command:verb>New</command:verb>
@@ -6326,7 +6423,10 @@ SystemID                 CommandID                Status
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>New-JCUser</command:name>
       <command:verb>New</command:verb>
@@ -7436,7 +7536,10 @@ SystemID                 CommandID                Status
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>New-JCUserGroup</command:name>
       <command:verb>New</command:verb>
@@ -7520,7 +7623,10 @@ SystemID                 CommandID                Status
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>Remove-JCAssociation</command:name>
       <command:verb>Remove</command:verb>
@@ -7536,7 +7642,7 @@ SystemID                 CommandID                Status
       <command:syntaxItem>
         <maml:name>Remove-JCAssociation</maml:name>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
-          <maml:name>InputObjectType</maml:name>
+          <maml:name>Type</maml:name>
           <maml:Description>
             <maml:para>The type of the input object.</maml:para>
           </maml:Description>
@@ -7562,7 +7668,7 @@ SystemID                 CommandID                Status
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="1" aliases="id, _id">
-          <maml:name>InputObjectId</maml:name>
+          <maml:name>Id</maml:name>
           <maml:Description>
             <maml:para>The id of the input object.</maml:para>
           </maml:Description>
@@ -7574,7 +7680,7 @@ SystemID                 CommandID                Status
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="3" aliases="none">
-          <maml:name>TargetObjectType</maml:name>
+          <maml:name>TargetType</maml:name>
           <maml:Description>
             <maml:para>The type of the target object.</maml:para>
           </maml:Description>
@@ -7624,7 +7730,7 @@ SystemID                 CommandID                Status
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="4" aliases="none">
-          <maml:name>TargetObjectId</maml:name>
+          <maml:name>TargetId</maml:name>
           <maml:Description>
             <maml:para>The id of the target object.</maml:para>
           </maml:Description>
@@ -7639,7 +7745,7 @@ SystemID                 CommandID                Status
       <command:syntaxItem>
         <maml:name>Remove-JCAssociation</maml:name>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
-          <maml:name>InputObjectType</maml:name>
+          <maml:name>Type</maml:name>
           <maml:Description>
             <maml:para>The type of the input object.</maml:para>
           </maml:Description>
@@ -7665,7 +7771,7 @@ SystemID                 CommandID                Status
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="2" aliases="name, username, groupName">
-          <maml:name>InputObjectName</maml:name>
+          <maml:name>Name</maml:name>
           <maml:Description>
             <maml:para>The name of the input object.</maml:para>
           </maml:Description>
@@ -7677,7 +7783,7 @@ SystemID                 CommandID                Status
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="3" aliases="none">
-          <maml:name>TargetObjectType</maml:name>
+          <maml:name>TargetType</maml:name>
           <maml:Description>
             <maml:para>The type of the target object.</maml:para>
           </maml:Description>
@@ -7727,7 +7833,7 @@ SystemID                 CommandID                Status
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="5" aliases="none">
-          <maml:name>TargetObjectName</maml:name>
+          <maml:name>TargetName</maml:name>
           <maml:Description>
             <maml:para>The name of the target object.</maml:para>
           </maml:Description>
@@ -7742,7 +7848,7 @@ SystemID                 CommandID                Status
     </command:syntax>
     <command:parameters>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="1" aliases="id, _id">
-        <maml:name>InputObjectId</maml:name>
+        <maml:name>Id</maml:name>
         <maml:Description>
           <maml:para>The id of the input object.</maml:para>
         </maml:Description>
@@ -7754,7 +7860,7 @@ SystemID                 CommandID                Status
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="2" aliases="name, username, groupName">
-        <maml:name>InputObjectName</maml:name>
+        <maml:name>Name</maml:name>
         <maml:Description>
           <maml:para>The name of the input object.</maml:para>
         </maml:Description>
@@ -7766,7 +7872,7 @@ SystemID                 CommandID                Status
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
-        <maml:name>InputObjectType</maml:name>
+        <maml:name>Type</maml:name>
         <maml:Description>
           <maml:para>The type of the input object.</maml:para>
         </maml:Description>
@@ -7778,7 +7884,7 @@ SystemID                 CommandID                Status
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="4" aliases="none">
-        <maml:name>TargetObjectId</maml:name>
+        <maml:name>TargetId</maml:name>
         <maml:Description>
           <maml:para>The id of the target object.</maml:para>
         </maml:Description>
@@ -7790,7 +7896,7 @@ SystemID                 CommandID                Status
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="5" aliases="none">
-        <maml:name>TargetObjectName</maml:name>
+        <maml:name>TargetName</maml:name>
         <maml:Description>
           <maml:para>The name of the target object.</maml:para>
         </maml:Description>
@@ -7802,7 +7908,7 @@ SystemID                 CommandID                Status
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="3" aliases="none">
-        <maml:name>TargetObjectType</maml:name>
+        <maml:name>TargetType</maml:name>
         <maml:Description>
           <maml:para>The type of the target object.</maml:para>
         </maml:Description>
@@ -7842,14 +7948,14 @@ SystemID                 CommandID                Status
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Remove-JCAssociation -InputObjectType:('radiusservers') -InputObjectId:('5c5c371704c4b477964ab4fa') -TargetObjectType:('user_group') -TargetObjectId:('59f20255c9118021fa01b80f')</dev:code>
+        <dev:code>PS C:\&gt; Remove-JCAssociation -Type:('radiusservers') -Id:('5c5c371704c4b477964ab4fa') -TargetType:('user_group') -TargetId:('59f20255c9118021fa01b80f')</dev:code>
         <dev:remarks>
           <maml:para>Remove the association between the radius server "5c5c371704c4b477964ab4fa" and the user group "59f20255c9118021fa01b80f".</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
         <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; New-JCAssociation -InputObjectType:('radiusservers') -InputObjectName:('RadiusServer1') -TargetObjectType:('user_group') -TargetObjectName:('All Users')</dev:code>
+        <dev:code>PS C:\&gt; New-JCAssociation -Type:('radiusservers') -Name:('RadiusServer1') -TargetType:('user_group') -TargetName:('All Users')</dev:code>
         <dev:remarks>
           <maml:para>Remove the association between the radius server "RadiusServer1" and the user group "All Users".</maml:para>
         </dev:remarks>
@@ -7862,7 +7968,10 @@ SystemID                 CommandID                Status
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>Remove-JCCommand</command:name>
       <command:verb>Remove</command:verb>
@@ -7986,7 +8095,10 @@ SystemID                 CommandID                Status
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>Remove-JCCommandResult</command:name>
       <command:verb>Remove</command:verb>
@@ -8126,7 +8238,10 @@ SystemID                 CommandID                Status
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>Remove-JCCommandTarget</command:name>
       <command:verb>Remove</command:verb>
@@ -8326,7 +8441,10 @@ SystemID                 CommandID                Status
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>Remove-JCRadiusReplyAttribute</command:name>
       <command:verb>Remove</command:verb>
@@ -8467,7 +8585,10 @@ SystemID                 CommandID                Status
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>Remove-JCSystem</command:name>
       <command:verb>Remove</command:verb>
@@ -8607,7 +8728,10 @@ SystemID                 CommandID                Status
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>Remove-JCSystemGroup</command:name>
       <command:verb>Remove</command:verb>
@@ -8721,7 +8845,10 @@ SystemID                 CommandID                Status
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>Remove-JCSystemGroupMember</command:name>
       <command:verb>Remove</command:verb>
@@ -8941,7 +9068,10 @@ SystemID                 CommandID                Status
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>Remove-JCSystemUser</command:name>
       <command:verb>Remove</command:verb>
@@ -9196,7 +9326,10 @@ SystemID                 CommandID                Status
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>Remove-JCUser</command:name>
       <command:verb>Remove</command:verb>
@@ -9383,7 +9516,10 @@ SystemID                 CommandID                Status
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>Remove-JCUserGroup</command:name>
       <command:verb>Remove</command:verb>
@@ -9497,7 +9633,10 @@ SystemID                 CommandID                Status
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>Remove-JCUserGroupMember</command:name>
       <command:verb>Remove</command:verb>
@@ -9730,7 +9869,10 @@ SystemID                 CommandID                Status
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>Send-JCPasswordReset</command:name>
       <command:verb>Send</command:verb>
@@ -9869,7 +10011,10 @@ SystemID                 CommandID                Status
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>Set-JCCommand</command:name>
       <command:verb>Set</command:verb>
@@ -10064,7 +10209,10 @@ SystemID                 CommandID                Status
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>Set-JCOrganization</command:name>
       <command:verb>Set</command:verb>
@@ -10135,12 +10283,10 @@ SystemID                 CommandID                Status
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>Set-JCOrganization
+        <dev:code>Set-JCOrganization ======== JumpCloud Multi Tenant Selector =======
 
-======== JumpCloud Multi Tenant Selector ======= 
-
-1. displayName: MSP One | OrgID:  5b5o13o06tsand0c29a0t3s6   
-2. displayName: MSP Two | OrgID:  5b5o13o06tsand0d29o0g3s6   
+1. displayName: MSP One | OrgID:  5b5o13o06tsand0c29a0t3s6
+2. displayName: MSP Two | OrgID:  5b5o13o06tsand0d29o0g3s6
 
 Select the number of the JumpCloud tenant you wish to connect to
 
@@ -10164,7 +10310,10 @@ Enter a value between 1 and 2:</dev:code>
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>Set-JCRadiusReplyAttribute</command:name>
       <command:verb>Set</command:verb>
@@ -10334,7 +10483,10 @@ Enter a value between 1 and 2:</dev:code>
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>Set-JCSystem</command:name>
       <command:verb>Set</command:verb>
@@ -10549,7 +10701,10 @@ Enter a value between 1 and 2:</dev:code>
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>Set-JCSystemUser</command:name>
       <command:verb>Set</command:verb>
@@ -10746,7 +10901,10 @@ Enter a value between 1 and 2:</dev:code>
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>Set-JCUser</command:name>
       <command:verb>Set</command:verb>
@@ -13086,7 +13244,10 @@ Enter a value between 1 and 2:</dev:code>
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>Set-JCUserGroupLDAP</command:name>
       <command:verb>Set</command:verb>
@@ -13248,7 +13409,10 @@ Enter a value between 1 and 2:</dev:code>
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+    xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+    xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10"
+    xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
       <command:name>Update-JCUsersFromCSV</command:name>
       <command:verb>Update</command:verb>
