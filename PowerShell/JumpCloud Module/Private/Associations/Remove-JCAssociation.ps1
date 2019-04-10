@@ -7,7 +7,7 @@ Function Remove-JCAssociation
     DynamicParam
     {
         # Determine if help files are being built
-        If ((Get-PSCallStack).Command -eq 'Update-MarkdownHelpModule')
+        If ((Get-PSCallStack).Command -like '*MarkdownHelp')
         {
             # Get targets list
             $JCAssociationType = Get-JCObjectType | Where-Object {$_.Category -eq 'JumpCloud'};
@@ -27,8 +27,15 @@ Function Remove-JCAssociation
         If ($JCObjectCount -le 500)
         {
             $JCObject = Get-JCObject -Type:($Type);
+            If ($JCObjectCount -eq 1)
+            {
+                $Params += @{'Name' = 'Id'; 'Type' = [System.String]; 'Position' = 1; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $false; 'ValidateNotNullOrEmpty' = $true; 'Alias' = (@('_id')); 'ParameterSets' = @('ById'); 'DefaultValue' = $JCObject.($JCObject.ById)}
+            }
+            Else
+            {
             $Params += @{'Name' = 'Id'; 'Type' = [System.String]; 'Position' = 1; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ById'); 'Alias' = (@('_id')); 'ValidateSet' = @($JCObject.($JCObject.ById | Select-Object -Unique)); }
             $Params += @{'Name' = 'Name'; 'Type' = [System.String]; 'Position' = 2; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ByName'); 'Alias' = (@('username', 'groupName')); 'ValidateSet' = @($JCObject.($JCObject.ByName | Select-Object -Unique)); }
+            }
         }
         Else
         {
@@ -39,7 +46,11 @@ Function Remove-JCAssociation
         $Params += @{'Name' = 'TargetId'; 'Type' = [System.String]; 'Position' = 4; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ById'); }
         $Params += @{'Name' = 'TargetName'; 'Type' = [System.String]; 'Position' = 5; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ByName'); }
         # Create new parameters
-        Return $Params | ForEach-Object {New-Object PSObject -Property:($_)} | New-DynamicParameter
+        $NewParams = $Params | ForEach-Object {New-Object PSObject -Property:($_)} | New-DynamicParameter
+        # For parameters with a default value set that value
+        $NewParams.Values | Where-Object {$_.IsSet} | ForEach-Object {$PSBoundParameters[$_.Name] = $_.Value}
+        # Return new parameters
+        Return $NewParams
     }
     Begin
     {

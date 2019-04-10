@@ -8,7 +8,7 @@ Function Invoke-JCAssociation
     DynamicParam
     {
         # Determine if help files are being built
-        If ((Get-PSCallStack).Command -eq 'Update-MarkdownHelpModule')
+        If ((Get-PSCallStack).Command -like '*MarkdownHelp')
         {
             # Get targets list
             $JCAssociationType = Get-JCObjectType | Where-Object {$_.Category -eq 'JumpCloud'};
@@ -28,8 +28,15 @@ Function Invoke-JCAssociation
         If ($JCObjectCount -le 500)
         {
             $JCObject = Get-JCObject -Type:($Type);
+            If ($JCObjectCount -eq 1)
+            {
+                $Params += @{'Name' = 'Id'; 'Type' = [System.String]; 'Position' = 2; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $false; 'ValidateNotNullOrEmpty' = $true; 'Alias' = (@('_id')); 'ParameterSets' = @('ById'); 'DefaultValue' = $JCObject.($JCObject.ById)}
+            }
+            Else
+            {
             $Params += @{'Name' = 'Id'; 'Type' = [System.String]; 'Position' = 2; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ById'); 'Alias' = (@('_id')); 'ValidateSet' = @($JCObject.($JCObject.ById | Select-Object -Unique)); }
             $Params += @{'Name' = 'Name'; 'Type' = [System.String]; 'Position' = 3; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ByName'); 'Alias' = (@('username', 'groupName')); 'ValidateSet' = @($JCObject.($JCObject.ByName | Select-Object -Unique)); }
+	    }
         }
         Else
         {
@@ -39,7 +46,7 @@ Function Invoke-JCAssociation
         $Params += @{'Name' = 'TargetType'; 'Type' = [System.String]; 'Position' = 4; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ValidateSet' = $JCAssociationType.Targets; }
         If ($Action -eq 'get')
         {
-            $Params += @{'Name' = 'HideTargetData'; 'Type' = [Switch]; 'Position' = 5; 'ValueFromPipelineByPropertyName' = $true; }
+            $Params += @{'Name' = 'HideTargetData'; 'Type' = [Switch]; 'Position' = 5; 'ValueFromPipelineByPropertyName' = $true; 'DefaultValue' = $false; }
         }
         If ($Action -in ('add', 'remove'))
         {
@@ -47,13 +54,16 @@ Function Invoke-JCAssociation
             $Params += @{'Name' = 'TargetName'; 'Type' = [System.String]; 'Position' = 6; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ByName'); }
         }
         # Create new parameters
-        Return $Params | ForEach-Object {New-Object PSObject -Property:($_)} | New-DynamicParameter
+        $NewParams = $Params | ForEach-Object {New-Object PSObject -Property:($_)} | New-DynamicParameter
+        # For parameters with a default value set that value
+        $NewParams.Values | Where-Object {$_.IsSet} | ForEach-Object {$PSBoundParameters[$_.Name] = $_.Value}
+        # Return new parameters
+        Return $NewParams
     }
     Begin
     {
-        If (!($PsBoundParameters.HideTargetData)) {$PsBoundParameters.HideTargetData = $false}
         # Create new variables for script
-        $PsBoundParameters.GetEnumerator() | ForEach-Object {New-Variable -Name:($_.Key) -Value:($_.Value) -Force}
+        $PsBoundParameters.GetEnumerator() | ForEach-Object {Set-Variable -Name:($_.Key) -Value:($_.Value) -Force}
         # Debug message for parameter call
         Write-Debug ('[CallFunction]' + $MyInvocation.MyCommand.Name + ' ' + ($PsBoundParameters.GetEnumerator() | Sort-Object Key | ForEach-Object { ('-' + $_.Key + ":('" + ($_.Value -join "','") + "')").Replace("'True'", '$True').Replace("'False'", '$False')}) )
         If ($PSCmdlet.ParameterSetName -ne '__AllParameterSets') {Write-Verbose ('[ParameterSet]' + $MyInvocation.MyCommand.Name + ':' + $PSCmdlet.ParameterSetName)}

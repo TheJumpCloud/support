@@ -27,8 +27,15 @@ Function Get-JCAssociation
         If ($JCObjectCount -le 500)
         {
             $JCObject = Get-JCObject -Type:($Type);
-            $Params += @{'Name' = 'Id'; 'Type' = [System.String]; 'Position' = 1; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ById'); 'Alias' = (@('_id')); 'ValidateSet' = @($JCObject.($JCObject.ById | Select-Object -Unique)); }
-            $Params += @{'Name' = 'Name'; 'Type' = [System.String]; 'Position' = 2; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ByName'); 'Alias' = (@('username', 'groupName')); 'ValidateSet' = @($JCObject.($JCObject.ByName | Select-Object -Unique)); }
+            If ($JCObjectCount -eq 1)
+            {
+                $Params += @{'Name' = 'Id'; 'Type' = [System.String]; 'Position' = 1; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $false; 'ValidateNotNullOrEmpty' = $true; 'Alias' = (@('_id')); 'ParameterSets' = @('ById'); 'DefaultValue' = $JCObject.($JCObject.ById)}
+            }
+            Else
+            {
+                $Params += @{'Name' = 'Id'; 'Type' = [System.String]; 'Position' = 1; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ById'); 'Alias' = (@('_id')); 'ValidateSet' = @($JCObject.($JCObject.ById | Select-Object -Unique)); }
+                $Params += @{'Name' = 'Name'; 'Type' = [System.String]; 'Position' = 2; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ByName'); 'Alias' = (@('username', 'groupName')); 'ValidateSet' = @($JCObject.($JCObject.ByName | Select-Object -Unique)); }
+            }
         }
         Else
         {
@@ -36,14 +43,18 @@ Function Get-JCAssociation
             $Params += @{'Name' = 'Name'; 'Type' = [System.String]; 'Position' = 2; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'Alias' = (@('username', 'groupName')); 'ParameterSets' = @('ByName'); }
         }
         $Params += @{'Name' = 'TargetType'; 'Type' = [System.String]; 'Position' = 3; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ValidateSet' = $JCAssociationType.Targets; }
-        $Params += @{'Name' = 'HideTargetData'; 'Type' = [Switch]; 'Position' = 4; 'ValueFromPipelineByPropertyName' = $true; }
+        $Params += @{'Name' = 'HideTargetData'; 'Type' = [Switch]; 'Position' = 4; 'ValueFromPipelineByPropertyName' = $true; 'DefaultValue' = $false; }
         # Create new parameters
-        Return $Params | ForEach-Object {New-Object PSObject -Property:($_)} | New-DynamicParameter
+        $NewParams = $Params | ForEach-Object {New-Object PSObject -Property:($_)} | New-DynamicParameter
+        # For parameters with a default value set that value
+        $NewParams.Values | Where-Object {$_.IsSet} | ForEach-Object {$PSBoundParameters[$_.Name] = $_.Value}
+        # Return new parameters
+        Return $NewParams
     }
     Begin
     {
         # Create new variables for script
-        $PsBoundParameters.GetEnumerator() | ForEach-Object {New-Variable -Name:($_.Key) -Value:($_.Value) -Force}
+        $PsBoundParameters.GetEnumerator() | ForEach-Object {Set-Variable -Name:($_.Key) -Value:($_.Value) -Force}
         # Debug message for parameter call
         Write-Debug ('[CallFunction]' + $MyInvocation.MyCommand.Name + ' ' + ($PsBoundParameters.GetEnumerator() | Sort-Object Key | ForEach-Object { ('-' + $_.Key + ":('" + ($_.Value -join "','") + "')").Replace("'True'", '$True').Replace("'False'", '$False')}) )
         If ($PSCmdlet.ParameterSetName -ne '__AllParameterSets') {Write-Verbose ('[ParameterSet]' + $MyInvocation.MyCommand.Name + ':' + $PSCmdlet.ParameterSetName)}
