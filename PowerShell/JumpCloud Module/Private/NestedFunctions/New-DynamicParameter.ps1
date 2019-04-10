@@ -141,6 +141,7 @@ Function New-DynamicParameter ()
         [Parameter(ValueFromPipelineByPropertyName = $true)][Switch]$ValueFromRemainingArguments,
         [Parameter(ValueFromPipelineByPropertyName = $true)][ValidateNotNullOrEmpty()][System.String]$HelpMessage,
         [Parameter(ValueFromPipelineByPropertyName = $true)][Switch]$DontShow,
+        [Parameter(ValueFromPipelineByPropertyName = $true)][ValidateNotNullOrEmpty()]$DefaultValue,
         # These parameters are each their own attribute
         [Parameter(ValueFromPipelineByPropertyName = $true)][System.String[]]$Alias = @(),
         [Parameter(ValueFromPipelineByPropertyName = $true)][Switch]$ValidateNotNull,
@@ -268,6 +269,10 @@ Function New-DynamicParameter ()
         If (-not $RuntimeParameterDictionary.ContainsKey($Name))
         {
             $RuntimeParameter = New-Object -TypeName System.Management.Automation.RuntimeDefinedParameter($Name, $Type, $AttributeCollection)
+            If ($DefaultValue)
+            {
+                $RuntimeParameter.Value = $DefaultValue
+            }
             $RuntimeParameterDictionary.Add($Name, $RuntimeParameter)
         }
         Else
