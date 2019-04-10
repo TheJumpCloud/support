@@ -123,23 +123,23 @@ Function Invoke-JCApi
                     $ResultsCount = $Results.results.Count
                     If ($ResultsCount -gt 0)
                     {
+                        $ResultsPopulated = $true
                         If ($ReturnCount)
                         {
-                            $ResultObjects = $Results | Select-Object totalCount
+                            $ResultObjects = $Results
                             $Paginate = $false
                         }
                         Else
                         {
                             $ResultObjects = $Results.results
                         }
-                        $ResultsPopulated = $true
                     }
                 }
                 Else
                 {
                     $ResultsCount = $Results.Count
-                    $ResultObjects = $Results
                     $ResultsPopulated = $true
+                    $ResultObjects = $Results
                 }
                 If ($ResultsPopulated)
                 {
@@ -169,6 +169,14 @@ Function Invoke-JCApi
                 {
                     Write-Warning ('API output does not contain the field "' + $_ + '". Please refer to https://docs.jumpcloud.com for API endpoint field names.')
                 }
+            }
+        }
+        # Account for ReturnCount switch and when you need to paginate through the api endpoint
+        If ($ReturnCount)
+        {
+            If ($Results_Output | Get-Member | Where-Object {$_.Name -ne 'results'})
+            {
+                $Results_Output = [PSCustomObject]@{'totalCount' = $Results_Output.Count; 'results' = $Results_Output }
             }
         }
         Return $Results_Output

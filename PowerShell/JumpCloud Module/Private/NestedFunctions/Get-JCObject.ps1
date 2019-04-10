@@ -147,7 +147,15 @@ Function Get-JCObject
                 # Hacky logic to get g_suite and office_365directories
                 If ($Type -in ('gsuites', 'g_suite', 'office365s', 'office_365'))
                 {
-                    $Results = $Results | Where-Object { $_.Type -eq $Singular }
+                    If ($ReturnCount)
+                    {
+                        $Results.totalCount = ($Results.results | Where-Object { $_.Type -eq $Singular }).Count
+                        $Results.results = ($Results.results | Where-Object { $_.Type -eq $Singular })
+                    }
+                    Else
+                    {
+                        $Results = $Results | Where-Object { $_.Type -eq $Singular }
+                    }
                 }
                 If ($Results)
                 {
