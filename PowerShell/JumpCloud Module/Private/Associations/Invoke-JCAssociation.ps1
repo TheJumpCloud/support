@@ -85,7 +85,7 @@ Function Invoke-JCAssociation
         $Type = $JCAssociationType.Plural
         # Get Object.
         $Objects = Get-JCObject -Type:($Type) -SearchBy:($SearchBy) -SearchByValue:($ObjectSearchByValue)
-        If ($Objects.Count -gt 0)
+        If ($Objects.Count -gt 1)
         {
             Write-Warning -Message:('Found ' + [string]$Objects.Count + ' ' + $Type + ' with the ' + $SearchBy.Replace('By', '').ToLower() + ' of "' + $ObjectSearchByValue + '"!')
         }
