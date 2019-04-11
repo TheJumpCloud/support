@@ -67,12 +67,10 @@ The seven policies call five scripts. These scripts are the meat and potatoes ne
 
 Create the below five scripts in Jamf pro by navigating to "Settings" >  "Computer Management" > "Scripts"
 
-1. Create the script that aligns with your usecase.
-    - [jc_install_jcagent_and_service_account](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Jamf%20Pro/scripts/jc_install_jcagent_and_service_account.md) for Mac versions 10.13.x and above, where JumpCloud will manage Filevault users.
+1. [jc_install_jcagent_and_service_account](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Jamf%20Pro/scripts/jc_install_jcagent_and_service_account.md) required for Mac versions 10.13.x and above, where JumpCloud will manage Filevault users.
        - Ensure that the credentials specified for the Jamf management account configured under "Settings" >  "Global Management" > "User-Initiated Enrollment" > "Platforms" > "macOS" align with the credentials specified for the `SECURETOKEN_ADMIN_USERNAME=''` and `SECURETOKEN_ADMIN_PASSWORD=''` in the configured Jamf script.
        - Want to takeover this admin account during the DEP process and push down a secure password? See how to do this using the zero-touch [SystemGroupAddition](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Additions/SystemGroupAddition.md). This addition can be used to automatically add systems to a JumpCloud system group during enrollment. Any users that are in user groups that are bound to this system group will automatically be bound to these systems and their secure JumpCloud passwords will be pushed down.
        - Want to encrypt these parameters? [Find steps for how to create secure script parameters here](https://github.com/jamf/Encrypted-Script-Parameters#encrypted-script-parameters).
-   - [jc_install_jcagent](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Jamf%20Pro/scripts/jc_install_jcagent.md) for Mac versions < 10.13.x or all versions where JumpCloud will not be managing Filevault users.
 2. [jc_five_second_pause](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Jamf%20Pro/scripts/jc_five_second_pause.md)
 3. [jc_account_association](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Jamf%20Pro/scripts/jc_account_association.md)
 4. [jc_account_logout](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Jamf%20Pro/scripts/jc_account_logout.md)
