@@ -137,8 +137,6 @@ Function Get-JCObject
                     $FunctionParameters['Url'] = $Url + '/' + $Organization.$ById
                 }
                 # Run command
-                Write-Debug ('Splatting Parameters');
-                If ($DebugPreference -ne 'SilentlyContinue') { $FunctionParameters }
                 $Results = Switch ($ReturnHashTable)
                 {
                     $true { Get-JCHash @FunctionParameters }
@@ -149,8 +147,9 @@ Function Get-JCObject
                 {
                     If ($ReturnCount)
                     {
-                        $Results.totalCount = ($Results.results | Where-Object { $_.Type -eq $Singular }).Count
-                        $Results.results = ($Results.results | Where-Object { $_.Type -eq $Singular })
+                        $Directory = $Results.results | Where-Object { $_.Type -eq $Singular }
+                        $Results.totalCount = $Directory.Count
+                        $Results.results = $Directory
                     }
                     Else
                     {
@@ -159,7 +158,8 @@ Function Get-JCObject
                 }
                 If ($Results)
                 {
-                    # Update results
+                    # Set some properties to be hidden in the results
+                    $HiddenProperties = @('ById', 'ByName', 'Singular', 'Plural')
                     $Results | ForEach-Object {
                         # Create the default property display set
                         $defaultDisplayPropertySet = New-Object System.Management.Automation.PSPropertySet('DefaultDisplayPropertySet', [string[]]$_.PSObject.Properties.Name)
@@ -167,15 +167,15 @@ Function Get-JCObject
                         # Add the list of standard members
                         Add-Member -InputObject:($_) -MemberType:('MemberSet') -Name:('PSStandardMembers') -Value:($PSStandardMembers)
                         # Add ById and ByName as hidden properties to results
-                        Add-Member -InputObject:($_) -MemberType:('NoteProperty') -Name:('ById') -Value:($ById)
-                        Add-Member -InputObject:($_) -MemberType:('NoteProperty') -Name:('ByName') -Value:($ByName)
-                        Add-Member -InputObject:($_) -MemberType:('NoteProperty') -Name:('Singular') -Value:($Singular)
-                        Add-Member -InputObject:($_) -MemberType:('NoteProperty') -Name:('Plural') -Value:($Plural)
+                        ForEach ($HiddenProperty In $HiddenProperties)
+                        {
+                            Add-Member -InputObject:($_) -MemberType:('NoteProperty') -Name:($HiddenProperty) -Value:(Get-Variable -Name:($HiddenProperty) -ValueOnly)
+                        }
                     }
                 }
                 Else
                 {
-                    Write-Verbose ('No results found.')
+                    Write-Warning ('No ' + $Plural + ' exist in org.')
                 }
             }
             Else

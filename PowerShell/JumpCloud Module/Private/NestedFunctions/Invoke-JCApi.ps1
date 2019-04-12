@@ -13,6 +13,9 @@ Function Invoke-JCApi
     )
     Begin
     {
+        # Debug message for parameter call
+        Write-Debug ('[CallFunction]' + $MyInvocation.MyCommand.Name + ' ' + ($PsBoundParameters.GetEnumerator() | Sort-Object Key | ForEach-Object { ('-' + $_.Key + ":('" + ($_.Value -join "','") + "')").Replace("'True'", '$True').Replace("'False'", '$False')}) )
+        If ($PSCmdlet.ParameterSetName -ne '__AllParameterSets') {Write-Verbose ('[ParameterSet]' + $MyInvocation.MyCommand.Name + ':' + $PSCmdlet.ParameterSetName)}
         #Set JC headers
         Write-Verbose 'Verifying JCAPI Key'
         If ($JCAPIKEY.length -ne 40) {Connect-JCOnline}
@@ -103,7 +106,7 @@ Function Invoke-JCApi
             }
             # Run request
             [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-            Write-Debug("Invoke-RestMethod -Method:('$Method') -Headers:('" + ($Headers | ConvertTo-Json -Compress) + "') -Uri:('$Uri') -UserAgent:('$JCUserAgent') -Body:('$Body')")
+            Write-Debug("[CallFunction]Invoke-RestMethod -Method:('$Method') -Headers:(@" + ($Headers | ConvertTo-Json -Compress).Replace('":"', '" = "').Replace('","', '"; "') + ") -Uri:('$Uri') -UserAgent:('$JCUserAgent') -Body:('$Body')")
             Write-Verbose ('Connecting to: ' + $Uri)
             # PowerShell 5 won't let you send a GET with a body.
             If ($Method -eq 'GET')
@@ -118,7 +121,8 @@ Function Invoke-JCApi
             If ($Results)
             {
                 $ResultsPopulated = $false
-                If ($Results | Get-Member | Where-Object {$_.Name -eq 'results'})
+                # Specific logic for v1 and v2 api specs
+                If ($Url -like '*/api/*' -and ($Url -notlike '*/api/v2/*' -and $Results.PSObject.Properties.name -eq 'results'))
                 {
                     $ResultsCount = $Results.results.Count
                     If ($ResultsCount -gt 0)
@@ -135,11 +139,27 @@ Function Invoke-JCApi
                         }
                     }
                 }
-                Else
+                ElseIf ($Url -like '*/api/*' -and ($Url -like '*/api/v2/*' -or $Results.PSObject.Properties.name -ne 'results'))
                 {
                     $ResultsCount = $Results.Count
-                    $ResultsPopulated = $true
-                    $ResultObjects = $Results
+                    If ($ResultsCount -gt 0)
+                    {
+                        $ResultsPopulated = $true
+                        If ($ReturnCount)
+                        {
+                            Write-Debug("[CallFunction]Invoke-WebRequest -Method:('$Method') -Headers:(@" + ($Headers | ConvertTo-Json -Compress).Replace('":"', '" = "').Replace('","', '"; "') + ") -Uri:('$Uri') -UserAgent:('$JCUserAgent')")
+                            $ResultObjects = [PSCustomObject]@{'totalCount' = (Invoke-WebRequest -Method:($Method) -Headers:($Headers) -Uri:($Uri) -UserAgent:($JCUserAgent)).Headers.'X-Total-Count' -join ''; 'results' = $Results; }
+                            $Paginate = $false
+                        }
+                        Else
+                        {
+                            $ResultObjects = $Results
+                        }
+                    }
+                }
+                Else
+                {
+                    Write-Error ('Url is not a valid JumpCloud V1 or V2 endpoint')
                 }
                 If ($ResultsPopulated)
                 {
@@ -169,14 +189,6 @@ Function Invoke-JCApi
                 {
                     Write-Warning ('API output does not contain the field "' + $_ + '". Please refer to https://docs.jumpcloud.com for API endpoint field names.')
                 }
-            }
-        }
-        # Account for ReturnCount switch and when you need to paginate through the api endpoint
-        If ($ReturnCount)
-        {
-            If ($Results_Output | Get-Member | Where-Object {$_.Name -ne 'results'})
-            {
-                $Results_Output = [PSCustomObject]@{'totalCount' = $Results_Output.Count; 'results' = $Results_Output }
             }
         }
         Return $Results_Output
