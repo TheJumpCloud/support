@@ -144,26 +144,42 @@ Describe "Association Tests" {
                         }
                         If (!($SourceToTargetAssociation)) { Write-Error ("$SourceToTargetAssociation_SourceSearchByValue does not have an association with $SourceToTargetAssociation_TargetSearchByValue!"); }
                         # Test that Get-JCAssociation works
-                        $GetJCAssociationTest = Switch ($TestMethod)
-                        {
-                            'ById' { Get-JCAssociation -Type:($SourceType) -Id:($SourceToTargetAssociation_Id) -TargetType:($SourceTargetType); }
-                            'ByName' { Get-JCAssociation -Type:($SourceType) -Name:($SourceToTargetAssociation_Name) -TargetType:($SourceTargetType); }
-                        }
                         It ("Validate that the Get-JCAssociation returns associations for the Object and the Target by running: Get-JCAssociation -Type:('$SourceType') -$TestMethodIdentifier`:('$SourceToTargetAssociation_SourceSearchByValue') -TargetType:('$SourceTargetType');") {
+                            $GetJCAssociationTest = Switch ($TestMethod)
+                            {
+                                'ById' { Get-JCAssociation -Type:($SourceType) -Id:($SourceToTargetAssociation_Id) -TargetType:($SourceTargetType); }
+                                'ByName' { Get-JCAssociation -Type:($SourceType) -Name:($SourceToTargetAssociation_Name) -TargetType:($SourceTargetType); }
+                            }
+                            ($GetJCAssociationTest | Get-Member) | Where-Object {$_.Name -in ('TargetInfo', 'TargetName')} | Should -Not -BeNullOrEmpty
                             $GetJCAssociationTest | Should -Not -BeNullOrEmpty
                             ($GetJCAssociationTest.Name | Select-Object -Unique) | Should -Be $Name
                             ($GetJCAssociationTest.TargetName | Select-Object -Unique) | Should -Not -BeNullOrEmpty
                         }
                         # Test that Get-JCAssociation works with -HideTargetData
-                        $GetJCAssociationTest = Switch ($TestMethod)
-                        {
-                            'ById' { Get-JCAssociation -Type:($SourceType) -Id:($SourceToTargetAssociation_Id) -TargetType:($SourceTargetType) -HideTargetData; }
-                            'ByName' { Get-JCAssociation -Type:($SourceType) -Name:($SourceToTargetAssociation_Name) -TargetType:($SourceTargetType) -HideTargetData; }
-                        }
                         It ("Validate that the Get-JCAssociation returns associations for the Object but not the Target by running: Get-JCAssociation -Type:('$SourceType') -$TestMethodIdentifier`:('$SourceToTargetAssociation_SourceSearchByValue') -TargetType:('$SourceTargetType') -HideTargetData;") {
+                            $GetJCAssociationTest = Switch ($TestMethod)
+                            {
+                                'ById' { Get-JCAssociation -Type:($SourceType) -Id:($SourceToTargetAssociation_Id) -TargetType:($SourceTargetType) -HideTargetData; }
+                                'ByName' { Get-JCAssociation -Type:($SourceType) -Name:($SourceToTargetAssociation_Name) -TargetType:($SourceTargetType) -HideTargetData; }
+                            }
                             $GetJCAssociationTest | Should -Not -BeNullOrEmpty
                             ($GetJCAssociationTest.Name | Select-Object -Unique) | Should -Be $Name
                             ($GetJCAssociationTest.TargetName | Select-Object -Unique) | Should -BeNullOrEmpty
+                            ($GetJCAssociationTest | Get-Member) | Where-Object {$_.Name -in ('TargetInfo', 'TargetName')} | Should -BeNullOrEmpty
+                        }
+                        # Test that Get-JCAssociation works when you don't provide a name or id for items in the console that there is only 1 of
+                        If ($SourceType -in ('ldap_server', 'g_suite', 'office_365'))
+                        {
+                            It ("Validate that the Get-JCAssociation returns associations when you don't provide a name or id for items that there is only 1 of: Get-JCAssociation -Type:('$SourceType') -TargetType:('$SourceTargetType');") {
+                                $GetJCAssociationTest = Switch ($TestMethod)
+                                {
+                                    'ById' { Get-JCAssociation -Type:($SourceType) -TargetType:($SourceTargetType); }
+                                    'ByName' { Get-JCAssociation -Type:($SourceType) -TargetType:($SourceTargetType); }
+                                }
+                                $GetJCAssociationTest.Count | Should -Be 1
+                                $GetJCAssociationTest | Should -Not -BeNullOrEmpty
+                                ($GetJCAssociationTest.Name | Select-Object -Unique) | Should -Be $Name
+                            }
                         }
                         # Remove the association between $SourceSearchByValue and $TargetSearchByValue
                         $RemoveAssociation_Cleanup = Switch ($TestMethod)
