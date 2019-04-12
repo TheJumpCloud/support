@@ -148,7 +148,7 @@ Function Invoke-JCApi
                         If ($ReturnCount)
                         {
                             Write-Debug("[CallFunction]Invoke-WebRequest -Method:('$Method') -Headers:(@" + ($Headers | ConvertTo-Json -Compress).Replace('":"', '" = "').Replace('","', '"; "') + ") -Uri:('$Uri') -UserAgent:('$JCUserAgent')")
-                            $ResultObjects = [PSCustomObject]@{'totalCount' = (Invoke-WebRequest -Method:($Method) -Headers:($Headers) -Uri:($Uri) -UserAgent:($JCUserAgent)).Headers.'X-Total-Count' -join ''; 'results' = $Results; }
+                            $ResultObjects = [PSCustomObject]@{'totalCount' = [int]((Invoke-WebRequest -Method:($Method) -Headers:($Headers) -Uri:($Uri) -UserAgent:($JCUserAgent)).Headers.'X-Total-Count' -join ','); 'results' = $Results; }
                             $Paginate = $false
                         }
                         Else
