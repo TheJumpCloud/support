@@ -175,7 +175,7 @@ Function Get-JCObject
                 }
                 Else
                 {
-                    Write-Warning ('No ' + $Plural + ' exist in org.')
+                    Write-Warning ('No ' + $Plural + ' called ' + $SearchByValue + ' exist or no ' + $Plural + ' have been setup in your org. Note the search is case sensitive.')
                 }
             }
             Else
