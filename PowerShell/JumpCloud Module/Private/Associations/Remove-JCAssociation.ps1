@@ -6,61 +6,64 @@ Function Remove-JCAssociation
     )
     DynamicParam
     {
-        $Action = 'remove'
-        # Determine if help files are being built
-        If ((Get-PSCallStack).Command -like '*MarkdownHelp')
+        If ($Type)
         {
-            # Get targets list
-            $JCAssociationType = Get-JCObjectType | Where-Object {$_.Category -eq 'JumpCloud'};
-            # Get count of JCObject to determine if script should load dynamic parameters
-            $JCObjectCount = 999999
-        }
-        Else
-        {
-            # Get targets list
-            $JCAssociationType = Get-JCObjectType -Type:($Type) | Where-Object {$_.Category -eq 'JumpCloud'};
-            # Get count of JCObject to determine if script should load dynamic parameters
-            $JCObjectCount = (Get-JCObject -Type:($Type) -ReturnCount).totalCount
-        }
-        # Build parameter array
-        $Params = @()
-        # Define the new parameters
-        If ($JCObjectCount -ge 1 -and $JCObjectCount -le 300)
-        {
-            $JCObject = Get-JCObject -Type:($Type);
-            If ($JCObjectCount -eq 1)
+            $Action = 'remove'
+            # Determine if help files are being built
+            If ((Get-PSCallStack).Command -like '*MarkdownHelp')
             {
-                # Don't require Id and Name to be passed through and set a default value
-                $Params += @{'Name' = 'Id'; 'Type' = [System.String]; 'Position' = 2; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $false; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ById'); 'Alias' = (@('_id')); 'DefaultValue' = $JCObject.($JCObject.ById)}
-                $Params += @{'Name' = 'Name'; 'Type' = [System.String]; 'Position' = 3; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $false; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ByName'); 'Alias' = (@('username', 'groupName')); 'DefaultValue' = $JCObject.($JCObject.ByName)}
+                # Get targets list
+                $JCAssociationType = Get-JCObjectType | Where-Object {$_.Category -eq 'JumpCloud'};
+                # Get count of JCObject to determine if script should load dynamic parameters
+                $JCObjectCount = 999999
             }
             Else
             {
-                # Do populate validate set with list of items
-                $Params += @{'Name' = 'Id'; 'Type' = [System.String]; 'Position' = 2; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ById'); 'Alias' = (@('_id')); 'ValidateSet' = @($JCObject.($JCObject.ById | Select-Object -Unique)); }
-                $Params += @{'Name' = 'Name'; 'Type' = [System.String]; 'Position' = 3; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ByName'); 'Alias' = (@('username', 'groupName')); 'ValidateSet' = @($JCObject.($JCObject.ByName | Select-Object -Unique)); }
+                # Get targets list
+                $JCAssociationType = Get-JCObjectType -Type:($Type) | Where-Object {$_.Category -eq 'JumpCloud'};
+                # Get count of JCObject to determine if script should load dynamic parameters
+                $JCObjectCount = (Get-JCObject -Type:($Type) -ReturnCount).totalCount
             }
+            # Build parameter array
+            $Params = @()
+            # Define the new parameters
+            If ($JCObjectCount -ge 1 -and $JCObjectCount -le 300)
+            {
+                $JCObject = Get-JCObject -Type:($Type);
+                If ($JCObjectCount -eq 1)
+                {
+                    # Don't require Id and Name to be passed through and set a default value
+                    $Params += @{'Name' = 'Id'; 'Type' = [System.String]; 'Position' = 2; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $false; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ById'); 'Alias' = (@('_id')); 'DefaultValue' = $JCObject.($JCObject.ById)}
+                    $Params += @{'Name' = 'Name'; 'Type' = [System.String]; 'Position' = 3; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $false; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ByName'); 'Alias' = (@('username', 'groupName')); 'DefaultValue' = $JCObject.($JCObject.ByName)}
+                }
+                Else
+                {
+                    # Do populate validate set with list of items
+                    $Params += @{'Name' = 'Id'; 'Type' = [System.String]; 'Position' = 2; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ById'); 'Alias' = (@('_id')); 'ValidateSet' = @($JCObject.($JCObject.ById | Select-Object -Unique)); }
+                    $Params += @{'Name' = 'Name'; 'Type' = [System.String]; 'Position' = 3; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ByName'); 'Alias' = (@('username', 'groupName')); 'ValidateSet' = @($JCObject.($JCObject.ByName | Select-Object -Unique)); }
+                }
+            }
+            Else
+            {
+                # Don't populate validate set
+                $Params += @{'Name' = 'Id'; 'Type' = [System.String]; 'Position' = 2; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'Alias' = (@('_id')); 'ParameterSets' = @('ById'); }
+                $Params += @{'Name' = 'Name'; 'Type' = [System.String]; 'Position' = 3; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'Alias' = (@('username', 'groupName')); 'ParameterSets' = @('ByName'); }
+            }
+            $Params += @{'Name' = 'TargetType'; 'Type' = [System.String]; 'Position' = 4; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ValidateSet' = $JCAssociationType.Targets; }
+            If ($Action -in ('add', 'remove'))
+            {
+                $Params += @{'Name' = 'TargetId'; 'Type' = [System.String]; 'Position' = 5; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ById'); }
+                $Params += @{'Name' = 'TargetName'; 'Type' = [System.String]; 'Position' = 6; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ByName'); }
+            }
+            If ($Action -eq 'get')
+            {
+                $Params += @{'Name' = 'HideTargetData'; 'Type' = [Switch]; 'Position' = 7; 'ValueFromPipelineByPropertyName' = $true; 'DefaultValue' = $false; }
+            }
+            # Create new parameters
+            $NewParams = $Params | ForEach-Object {New-Object PSObject -Property:($_)} | New-DynamicParameter
+            # Return new parameters
+            Return $NewParams
         }
-        Else
-        {
-            # Don't populate validate set
-            $Params += @{'Name' = 'Id'; 'Type' = [System.String]; 'Position' = 2; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'Alias' = (@('_id')); 'ParameterSets' = @('ById'); }
-            $Params += @{'Name' = 'Name'; 'Type' = [System.String]; 'Position' = 3; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'Alias' = (@('username', 'groupName')); 'ParameterSets' = @('ByName'); }
-        }
-        $Params += @{'Name' = 'TargetType'; 'Type' = [System.String]; 'Position' = 4; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ValidateSet' = $JCAssociationType.Targets; }
-        If ($Action -in ('add', 'remove'))
-        {
-            $Params += @{'Name' = 'TargetId'; 'Type' = [System.String]; 'Position' = 5; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ById'); }
-            $Params += @{'Name' = 'TargetName'; 'Type' = [System.String]; 'Position' = 6; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ByName'); }
-        }
-        If ($Action -eq 'get')
-        {
-            $Params += @{'Name' = 'HideTargetData'; 'Type' = [Switch]; 'Position' = 7; 'ValueFromPipelineByPropertyName' = $true; 'DefaultValue' = $false; }
-        }
-        # Create new parameters
-        $NewParams = $Params | ForEach-Object {New-Object PSObject -Property:($_)} | New-DynamicParameter
-        # Return new parameters
-        Return $NewParams
     }
     Begin
     {
