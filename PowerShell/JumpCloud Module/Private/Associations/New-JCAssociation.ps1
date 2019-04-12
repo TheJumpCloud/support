@@ -6,6 +6,7 @@ Function New-JCAssociation
     )
     DynamicParam
     {
+        $Action = 'add'
         # Determine if help files are being built
         If ((Get-PSCallStack).Command -like '*MarkdownHelp')
         {
@@ -24,22 +25,25 @@ Function New-JCAssociation
         # Build parameter array
         $Params = @()
         # Define the new parameters
-        If ($JCObjectCount -le 300)
+        If ($JCObjectCount -ge 1 -and $JCObjectCount -le 300)
         {
             $JCObject = Get-JCObject -Type:($Type);
             If ($JCObjectCount -eq 1)
             {
+                # Don't require Id and Name to be passed through and set a default value
                 $Params += @{'Name' = 'Id'; 'Type' = [System.String]; 'Position' = 2; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $false; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ById'); 'Alias' = (@('_id')); 'DefaultValue' = $JCObject.($JCObject.ById)}
-                $Params += @{'Name' = 'Name'; 'Type' = [System.String]; 'Position' = 3; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $false; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ByName'); 'Alias' = (@('username', 'groupName')); }
+                $Params += @{'Name' = 'Name'; 'Type' = [System.String]; 'Position' = 3; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $false; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ByName'); 'Alias' = (@('username', 'groupName')); 'DefaultValue' = $JCObject.($JCObject.ByName)}
             }
             Else
             {
+                # Do populate validate set with list of items
                 $Params += @{'Name' = 'Id'; 'Type' = [System.String]; 'Position' = 2; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ById'); 'Alias' = (@('_id')); 'ValidateSet' = @($JCObject.($JCObject.ById | Select-Object -Unique)); }
                 $Params += @{'Name' = 'Name'; 'Type' = [System.String]; 'Position' = 3; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ByName'); 'Alias' = (@('username', 'groupName')); 'ValidateSet' = @($JCObject.($JCObject.ByName | Select-Object -Unique)); }
             }
         }
         Else
         {
+            # Don't populate validate set
             $Params += @{'Name' = 'Id'; 'Type' = [System.String]; 'Position' = 2; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'Alias' = (@('_id')); 'ParameterSets' = @('ById'); }
             $Params += @{'Name' = 'Name'; 'Type' = [System.String]; 'Position' = 3; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'Alias' = (@('username', 'groupName')); 'ParameterSets' = @('ByName'); }
         }
@@ -55,13 +59,13 @@ Function New-JCAssociation
         }
         # Create new parameters
         $NewParams = $Params | ForEach-Object {New-Object PSObject -Property:($_)} | New-DynamicParameter
-        # For parameters with a default value set that value
-        $NewParams.Values | Where-Object {$_.IsSet} | ForEach-Object {$PSBoundParameters[$_.Name] = $_.Value}
         # Return new parameters
         Return $NewParams
     }
     Begin
     {
+        # For parameters with a default value set that value
+        $NewParams.Values | Where-Object {$_.IsSet -and $_.Attributes.ParameterSetName -eq $PSCmdlet.ParameterSetName} | ForEach-Object {$PSBoundParameters[$_.Name] = $_.Value}
         # Create new variables for script
         $PsBoundParameters.GetEnumerator() | ForEach-Object {Set-Variable -Name:($_.Key) -Value:($_.Value) -Force}
         # Debug message for parameter call
@@ -70,15 +74,12 @@ Function New-JCAssociation
     }
     Process
     {
-        $Action = 'add'
         # Create hash table to store variables
         $FunctionParameters = [ordered]@{}
         # Add input parameters from function in to hash table and filter out unnecessary parameters
         $PSBoundParameters.GetEnumerator() | ForEach-Object {$FunctionParameters.Add($_.Key, $_.Value) | Out-Null}
         # Add parameters from the script to the FunctionParameters hashtable
         $FunctionParameters.Add('Action', $Action) | Out-Null
-        Write-Debug ('Splatting Parameters');
-        If ($DebugPreference -ne 'SilentlyContinue') {$FunctionParameters}
         # Run the command
         $Results = Invoke-JCAssociation @FunctionParameters
     }
