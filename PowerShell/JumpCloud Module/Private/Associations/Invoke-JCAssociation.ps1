@@ -84,6 +84,9 @@ Function Invoke-JCAssociation
     }
     Process
     {
+        $URL_Template_Associations_Targets = '/api/v2/{0}/{1}/associations?targets={2}'
+        $URL_Template_Associations_Members = '/api/v2/{0}/{1}/members'
+        $URL_Template_Associations_MemberOf = '/api/v2/{0}/{1}/memberof'
         $SearchBy = $PSCmdlet.ParameterSetName
         Switch ($SearchBy)
         {
@@ -110,22 +113,23 @@ Function Invoke-JCAssociation
         {
             $Id = $Info.($Info.ById)
             $Name = $Info.($Info.ByName)
-            #Build Url
-            $URL_Template_Associations = '/api/v2/{0}/{1}/associations?targets={2}'
-            $Uri_Associations = $URL_Template_Associations -f $TypePlural, $Id, $TargetType
+            # Build Url
             # Exceptions for specific combinations
-            If (($TypePlural -eq 'usergroups' -and $TargetType -eq 'user') -or ($TypePlural -eq 'systemgroups' -and $TargetType -eq 'system'))
+            If (($TypePlural -eq 'systemgroups' -and $TargetType -eq 'system') -or ($TypePlural -eq 'usergroups' -and $TargetType -eq 'user'))
             {
-                $URL_Template_Associations = '/api/v2/{0}/{1}/members'
-                $Uri_Associations = $URL_Template_Associations -f $TypePlural, $Id
+                $Uri_Associations = $URL_Template_Associations_Members -f $TypePlural, $Id
             }
-            If ( $Action -eq 'get' -and ($TypePlural -eq 'systems' -and $TargetType -eq 'system_group') -or ($TypePlural -eq 'users' -and $TargetType -eq 'user_group'))
+            Else
             {
-                $URL_Template_Associations = '/api/v2/{0}/{1}/memberof'
-                $Uri_Associations = $URL_Template_Associations -f $TypePlural, $Id
+                $Uri_Associations = $URL_Template_Associations_Targets -f $TypePlural, $Id, $TargetType
             }
             If ($Action -eq 'get')
             {
+                # Exceptions for specific combinations
+                If (($TypePlural -eq 'systems' -and $TargetType -eq 'system_group') -or ($TypePlural -eq 'users' -and $TargetType -eq 'user_group'))
+                {
+                    $Uri_Associations = $URL_Template_Associations_MemberOf -f $TypePlural, $Id
+                }
                 $Associations = Invoke-JCApi -Method:($Method) -Paginate:($true) -Url:($Uri_Associations)
                 # If using a member* path then get the paths attribute
                 If ($Uri_Associations -match 'memberof')
@@ -179,8 +183,7 @@ Function Invoke-JCAssociation
                 # Exceptions for specific combinations
                 If (($TypePlural -eq 'systems' -and $TargetType -eq 'system_group') -or ($TypePlural -eq 'users' -and $TargetType -eq 'user_group'))
                 {
-                    $URL_Template_Associations = '/api/v2/{0}/{1}/members'
-                    $Uri_Associations = $URL_Template_Associations -f $Target.Plural, $TargetId
+                    $Uri_Associations = $URL_Template_Associations_Members -f $Target.Plural, $TargetId
                     $JsonBody = '{"op":"' + $Action + '","type":"' + $Info.Singular + '","id":"' + $Id + '","attributes":null}'
                 }
                 Else
