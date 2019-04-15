@@ -4,34 +4,35 @@ Function Get-JCObjectType
     Param()
     DynamicParam
     {
-        $ObjectTypes = @()
-        $ObjectTypes += [PSCustomObject]@{'Category' = 'JumpCloud'; 'Singular' = 'active_directory'; 'Plural' = 'activedirectories'; 'Targets' = ('user', 'user_group'); 'Url' = '/api/v2/activedirectories'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = 'domain'; 'Paginate' = $true; 'SupportRegexFilter' = $true; 'Limit' = 100; }
-        $ObjectTypes += [PSCustomObject]@{'Category' = 'JumpCloud'; 'Singular' = 'application'; 'Plural' = 'applications'; 'Targets' = ('user_group'); 'Url' = '/api/applications'; 'Method' = 'GET'; 'ById' = '_id'; 'ByName' = 'displayName'; 'Paginate' = $true; 'SupportRegexFilter' = $false; 'Limit' = 100; 'TargetsExcluded' = ('user'); }
-        $ObjectTypes += [PSCustomObject]@{'Category' = 'JumpCloud'; 'Singular' = 'command'; 'Plural' = 'commands'; 'Targets' = ('system', 'system_group'); 'Url' = '/api/commands'; 'Method' = 'GET'; 'ById' = '_id'; 'ByName' = 'name'; 'Paginate' = $true; 'SupportRegexFilter' = $false; 'Limit' = 100; }
-        $ObjectTypes += [PSCustomObject]@{'Category' = 'JumpCloud'; 'Singular' = 'g_suite'; 'Plural' = 'gsuites'; 'Targets' = ('user', 'user_group'); 'Url' = '/api/v2/directories'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = 'name'; 'Paginate' = $true; 'SupportRegexFilter' = $false; 'Limit' = 100; }
-        $ObjectTypes += [PSCustomObject]@{'Category' = 'JumpCloud'; 'Singular' = 'ldap_server'; 'Plural' = 'ldapservers'; 'Targets' = ('user', 'user_group'); 'Url' = '/api/v2/ldapservers'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = 'name'; 'Paginate' = $true; 'SupportRegexFilter' = $true; 'Limit' = 100; }
-        $ObjectTypes += [PSCustomObject]@{'Category' = 'JumpCloud'; 'Singular' = 'office_365'; 'Plural' = 'office365s'; 'Targets' = ('user', 'user_group'); 'Url' = '/api/v2/directories'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = 'name'; 'Paginate' = $true; 'SupportRegexFilter' = $false; 'Limit' = 100; }
-        $ObjectTypes += [PSCustomObject]@{'Category' = 'JumpCloud'; 'Singular' = 'policy'; 'Plural' = 'policies'; 'Targets' = ('system', 'system_group'); 'Url' = '/api/v2/policies'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = 'name'; 'Paginate' = $true; 'SupportRegexFilter' = $false; 'Limit' = 100; }
-        $ObjectTypes += [PSCustomObject]@{'Category' = 'JumpCloud'; 'Singular' = 'radius_server'; 'Plural' = 'radiusservers'; 'Targets' = ('user_group'); 'Url' = '/api/radiusservers'; 'Method' = 'GET'; 'ById' = '_id'; 'ByName' = 'name'; 'Paginate' = $true; 'SupportRegexFilter' = $false; 'Limit' = 100; 'TargetsExcluded' = ('user'); }
-        $ObjectTypes += [PSCustomObject]@{'Category' = 'JumpCloud'; 'Singular' = 'system_group'; 'Plural' = 'systemgroups'; 'Targets' = ('policy', 'user_group', 'command', 'system'); 'Url' = '/api/v2/systemgroups'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = 'name'; 'Paginate' = $true; 'SupportRegexFilter' = $true; 'Limit' = 100; 'TargetsExcluded' = ('user'); }
-        $ObjectTypes += [PSCustomObject]@{'Category' = 'JumpCloud'; 'Singular' = 'system'; 'Plural' = 'systems'; 'Targets' = ('policy', 'user', 'command', 'system_group'); 'Url' = '/api/systems'; 'Method' = 'GET'; 'ById' = '_id'; 'ByName' = 'displayName'; 'Paginate' = $true; 'SupportRegexFilter' = $true; 'Limit' = 100; 'TargetsExcluded' = ('user_group'); }
-        $ObjectTypes += [PSCustomObject]@{'Category' = 'JumpCloud'; 'Singular' = 'user_group'; 'Plural' = 'usergroups'; 'Targets' = ('active_directory', 'application', 'g_suite', 'ldap_server', 'office_365', 'radius_server', 'system_group', 'user'); 'Url' = '/api/v2/usergroups'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = 'name'; 'Paginate' = $true; 'SupportRegexFilter' = $true; 'Limit' = 100; 'TargetsExcluded' = ('system'); }
-        $ObjectTypes += [PSCustomObject]@{'Category' = 'JumpCloud'; 'Singular' = 'user'; 'Plural' = 'users'; 'Targets' = ('active_directory', 'g_suite', 'ldap_server', 'office_365', 'system', 'user_group'); 'Url' = '/api/systemusers'; 'Method' = 'GET'; 'ById' = '_id'; 'ByName' = 'username'; 'Paginate' = $true; 'SupportRegexFilter' = $true; 'Limit' = 100; 'TargetsExcluded' = ('application', 'radius_server', 'system_group'); }
-        # Custom Types
-        $ObjectTypes += [PSCustomObject]@{'Category' = 'Custom'; 'Singular' = 'directory'; 'Plural' = 'directories'; 'Targets' = ($NULL); 'Url' = '/api/v2/directories'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = 'name'; 'Paginate' = $true; 'SupportRegexFilter' = $false; 'Limit' = 100; }
-        $ObjectTypes += [PSCustomObject]@{'Category' = 'Custom'; 'Singular' = 'group'; 'Plural' = 'groups'; 'Targets' = ($NULL); 'Url' = '/api/v2/groups'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = 'name'; 'Paginate' = $true; 'SupportRegexFilter' = $false; 'Limit' = 100; }
-        # $ObjectTypes += [PSCustomObject]@{'Category' = 'Custom';'Singular' = 'policyresult'; 'Plural' = 'policyresults';  'Url' = '/api/v2/policies/{Policy_Id}/policyresults'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = $false; 'Paginate' = $true; 'SupportRegexFilter' = $false; 'Limit' = 100; }
-        # $ObjectTypes += [PSCustomObject]@{'Category' = 'Custom';'Singular' = 'applicationUser'; 'Plural' = 'applicationUsers';  'Url' = '/api/v2/applications/{Application_Id}/users'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = $false; 'Paginate' = $true; 'SupportRegexFilter' = $false; 'Limit' = 100; }
-        $ObjectTypes += [PSCustomObject]@{'Category' = 'Custom'; 'Singular' = 'organization'; 'Plural' = 'organizations'; 'Targets' = ($NULL); 'Url' = '/api/organizations'; 'Method' = 'GET'; 'ById' = '_id'; 'ByName' = 'displayName'; 'Paginate' = $true; 'SupportRegexFilter' = $false; 'Limit' = 100; }
-        $ObjectTypes += [PSCustomObject]@{'Category' = 'Custom'; 'Singular' = 'search_user'; 'Plural' = 'search_users'; 'Targets' = ('active_directory', 'g_suite', 'ldap_server', 'office_365', 'system', 'user_group'); 'Url' = '/api/search/systemusers'; 'Method' = 'POST'; 'ById' = '_id'; 'ByName' = 'username'; 'Paginate' = $true; 'SupportRegexFilter' = $true; 'Limit' = 100; }
-        $ObjectTypes += [PSCustomObject]@{'Category' = 'Custom'; 'Singular' = 'search_system'; 'Plural' = 'search_systems'; 'Targets' = ('policy', 'user', 'command', 'system_group'); 'Url' = '/api/search/systems'; 'Method' = 'POST'; 'ById' = '_id'; 'ByName' = 'displayName'; 'Paginate' = $true; 'SupportRegexFilter' = $true; 'Limit' = 100; }
-        # Templates
-        # $ObjectTypes += [PSCustomObject]@{'Singular' = ''; 'Plural' = ''; 'Targets' = (''); 'Url' = ''; 'Method' = ''; 'ById' = ''; 'ByName' = ''; 'Paginate' = $true; 'SupportRegexFilter' = $true; 'Limit' = 100; }
+        # $JCTypes = @()
+        # $JCTypes += [PSCustomObject]@{'Category' = 'JumpCloud'; 'Singular' = 'active_directory'; 'Plural' = 'activedirectories'; 'Targets' = ('user', 'user_group'); 'PluralTargets' = ('users', 'usergroups'); 'Url' = '/api/v2/activedirectories'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = 'domain'; 'Paginate' = $true; 'SupportRegexFilter' = $true; 'Limit' = 100; }
+        # $JCTypes += [PSCustomObject]@{'Category' = 'JumpCloud'; 'Singular' = 'application'; 'Plural' = 'applications'; 'Targets' = ('user_group'); 'PluralTargets' = ('usergroups'); 'Url' = '/api/applications'; 'Method' = 'GET'; 'ById' = '_id'; 'ByName' = 'displayName'; 'Paginate' = $true; 'SupportRegexFilter' = $false; 'Limit' = 100; 'TargetsExcluded' = ('user'); }
+        # $JCTypes += [PSCustomObject]@{'Category' = 'JumpCloud'; 'Singular' = 'command'; 'Plural' = 'commands'; 'Targets' = ('system', 'system_group'); 'PluralTargets' = ('systems', 'systemgroups'); 'Url' = '/api/commands'; 'Method' = 'GET'; 'ById' = '_id'; 'ByName' = 'name'; 'Paginate' = $true; 'SupportRegexFilter' = $false; 'Limit' = 100; }
+        # $JCTypes += [PSCustomObject]@{'Category' = 'JumpCloud'; 'Singular' = 'g_suite'; 'Plural' = 'gsuites'; 'Targets' = ('user', 'user_group'); 'PluralTargets' = ('users', 'usergroups'); 'Url' = '/api/v2/directories'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = 'name'; 'Paginate' = $true; 'SupportRegexFilter' = $false; 'Limit' = 100; }
+        # $JCTypes += [PSCustomObject]@{'Category' = 'JumpCloud'; 'Singular' = 'ldap_server'; 'Plural' = 'ldapservers'; 'Targets' = ('user', 'user_group'); 'PluralTargets' = ('users', 'usergroups'); 'Url' = '/api/v2/ldapservers'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = 'name'; 'Paginate' = $true; 'SupportRegexFilter' = $true; 'Limit' = 100; }
+        # $JCTypes += [PSCustomObject]@{'Category' = 'JumpCloud'; 'Singular' = 'office_365'; 'Plural' = 'office365s'; 'Targets' = ('user', 'user_group'); 'PluralTargets' = ('users', 'usergroups'); 'Url' = '/api/v2/directories'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = 'name'; 'Paginate' = $true; 'SupportRegexFilter' = $false; 'Limit' = 100; }
+        # $JCTypes += [PSCustomObject]@{'Category' = 'JumpCloud'; 'Singular' = 'policy'; 'Plural' = 'policies'; 'Targets' = ('system', 'system_group'); 'PluralTargets' = ('systems', 'systemgroups'); 'Url' = '/api/v2/policies'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = 'name'; 'Paginate' = $true; 'SupportRegexFilter' = $false; 'Limit' = 100; }
+        # $JCTypes += [PSCustomObject]@{'Category' = 'JumpCloud'; 'Singular' = 'radius_server'; 'Plural' = 'radiusservers'; 'Targets' = ('user_group'); 'PluralTargets' = ('usergroups'); 'Url' = '/api/radiusservers'; 'Method' = 'GET'; 'ById' = '_id'; 'ByName' = 'name'; 'Paginate' = $true; 'SupportRegexFilter' = $false; 'Limit' = 100; 'TargetsExcluded' = ('user'); }
+        # $JCTypes += [PSCustomObject]@{'Category' = 'JumpCloud'; 'Singular' = 'system_group'; 'Plural' = 'systemgroups'; 'Targets' = ('policy', 'user_group', 'command', 'system'); 'PluralTargets' = ('policies', 'usergroups', 'commands', 'systems'); 'Url' = '/api/v2/systemgroups'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = 'name'; 'Paginate' = $true; 'SupportRegexFilter' = $true; 'Limit' = 100; 'TargetsExcluded' = ('user'); }
+        # $JCTypes += [PSCustomObject]@{'Category' = 'JumpCloud'; 'Singular' = 'system'; 'Plural' = 'systems'; 'Targets' = ('policy', 'user', 'command', 'system_group'); 'PluralTargets' = ('policies', 'usergroups', 'commands', 'systemgroups'); 'Url' = '/api/systems'; 'Method' = 'GET'; 'ById' = '_id'; 'ByName' = 'displayName'; 'Paginate' = $true; 'SupportRegexFilter' = $true; 'Limit' = 100; 'TargetsExcluded' = ('user_group'); }
+        # $JCTypes += [PSCustomObject]@{'Category' = 'JumpCloud'; 'Singular' = 'user_group'; 'Plural' = 'usergroups'; 'Targets' = ('active_directory', 'application', 'g_suite', 'ldap_server', 'office_365', 'radius_server', 'system_group', 'user'); 'PluralTargets' = ('activedirectories', 'applications', 'gsuites', 'ldapservers', 'office365s', 'radiusservers', 'systemgroups', 'users'); 'Url' = '/api/v2/usergroups'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = 'name'; 'Paginate' = $true; 'SupportRegexFilter' = $true; 'Limit' = 100; 'TargetsExcluded' = ('system'); }
+        # $JCTypes += [PSCustomObject]@{'Category' = 'JumpCloud'; 'Singular' = 'user'; 'Plural' = 'users'; 'Targets' = ('active_directory', 'g_suite', 'ldap_server', 'office_365', 'system', 'user_group'); 'PluralTargets' = ('activedirectories', 'gsuites', 'ldapservers', 'office365s', 'systems', 'usergroups'); 'Url' = '/api/systemusers'; 'Method' = 'GET'; 'ById' = '_id'; 'ByName' = 'username'; 'Paginate' = $true; 'SupportRegexFilter' = $true; 'Limit' = 100; 'TargetsExcluded' = ('application', 'radius_server', 'system_group'); }
+        # # Custom Types
+        # $JCTypes += [PSCustomObject]@{'Category' = 'Custom'; 'Singular' = 'directory'; 'Plural' = 'directories'; 'Targets' = ($NULL); 'Url' = '/api/v2/directories'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = 'name'; 'Paginate' = $true; 'SupportRegexFilter' = $false; 'Limit' = 100; }
+        # $JCTypes += [PSCustomObject]@{'Category' = 'Custom'; 'Singular' = 'group'; 'Plural' = 'groups'; 'Targets' = ($NULL); 'Url' = '/api/v2/groups'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = 'name'; 'Paginate' = $true; 'SupportRegexFilter' = $false; 'Limit' = 100; }
+        # # $JCTypes += [PSCustomObject]@{'Category' = 'Custom';'Singular' = 'policyresult'; 'Plural' = 'policyresults';  'Url' = '/api/v2/policies/{Policy_Id}/policyresults'; 'Method' = 'GET'; 'ById' = 'id'; 'ByName' = $false; 'Paginate' = $true; 'SupportRegexFilter' = $false; 'Limit' = 100; }
+        # $JCTypes += [PSCustomObject]@{'Category' = 'Custom'; 'Singular' = 'organization'; 'Plural' = 'organizations'; 'Targets' = ($NULL); 'Url' = '/api/organizations'; 'Method' = 'GET'; 'ById' = '_id'; 'ByName' = 'displayName'; 'Paginate' = $true; 'SupportRegexFilter' = $false; 'Limit' = 100; }
+        # $JCTypes += [PSCustomObject]@{'Category' = 'Custom'; 'Singular' = 'search_user'; 'Plural' = 'search_users'; 'Targets' = ('active_directory', 'g_suite', 'ldap_server', 'office_365', 'system', 'user_group'); 'PluralTargets' = ('activedirectories', 'gsuites', 'ldapservers', 'office365s', 'systems', 'usergroups'); 'Url' = '/api/search/systemusers'; 'Method' = 'POST'; 'ById' = '_id'; 'ByName' = 'username'; 'Paginate' = $true; 'SupportRegexFilter' = $true; 'Limit' = 100; }
+        # $JCTypes += [PSCustomObject]@{'Category' = 'Custom'; 'Singular' = 'search_system'; 'Plural' = 'search_systems'; 'Targets' = ('policy', 'user', 'command', 'system_group'); 'PluralTargets' = ('polipoliciescy', 'usergroups', 'commands', 'systemgroups'); 'Url' = '/api/search/systems'; 'Method' = 'POST'; 'ById' = '_id'; 'ByName' = 'displayName'; 'Paginate' = $true; 'SupportRegexFilter' = $true; 'Limit' = 100; }
+        # # Templates
+        # # $JCTypes += [PSCustomObject]@{'Singular' = ''; 'Plural' = ''; 'Targets' = ('')																																												; 'Url' = ''; 'Method' = ''; 'ById' = ''; 'ByName' = ''; 'Paginate' = $true; 'SupportRegexFilter' = $true; 'Limit' = 100; }
         ###All possible Targets####('active_directory', 'application', 'command', 'g_suite', 'ldap_server', 'office_365', 'policy', 'radius_server', 'system', 'system_group', 'user', 'user_group')
-        $ObjectTypes = $ObjectTypes | Select-Object *, @{Name = 'Types'; Expression = { @($_.Singular, $_.Plural) } }
+        # $JCTypes = $JCTypes | Select-Object *, @{Name = 'Types'; Expression = { @($_.Name.Singular, $_.Name.Plural) } }
+        $JCTypeContent = Get-Content -Raw -Path:($PSScriptRoot + '/JCTypes.json')
+        $JCTypes = ($JCTypeContent | ConvertFrom-Json) | Select-Object *, @{Name = 'Types'; Expression = { @($_.Name.Singular, $_.Name.Plural) } }
         # Build parameter array
         $RuntimeParameterDictionary = New-Object -TypeName System.Management.Automation.RuntimeDefinedParameterDictionary
-        New-DynamicParameter -Name:('Type') -Type:([System.String]) -ValueFromPipelineByPropertyName -ValidateNotNullOrEmpty -ParameterSets:('ByName') -ValidateSet:($ObjectTypes.Types) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
+        New-DynamicParameter -Name:('Type') -Type:([System.String]) -ValueFromPipelineByPropertyName -ValidateNotNullOrEmpty -ParameterSets:('ByName') -ValidateSet:($JCTypes.Types) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
         Return $RuntimeParameterDictionary
     }
     Begin
@@ -44,21 +45,21 @@ Function Get-JCObjectType
     }
     Process
     {
-        $ObjectTypeOutput = Switch ($PSCmdlet.ParameterSetName)
+        $JCTypeOutput = Switch ($PSCmdlet.ParameterSetName)
         {
-            'ByName' { $ObjectTypes | Where-Object { $Type -in $_.Types } }
-            Default { $ObjectTypes }
+            'ByName' { $JCTypes | Where-Object { $Type -in $_.Types } }
+            Default { $JCTypes }
         }
     }
     End
     {
-        If ($ObjectTypeOutput)
+        If ($JCTypeOutput)
         {
-            Return $ObjectTypeOutput
+            Return $JCTypeOutput
         }
         Else
         {
-            Write-Error ('The type "' + $Type + '" does not exist. Available types are (' + ($ObjectTypes.Types -join ', ') + ')')
+            Write-Error ('The type "' + $Type + '" does not exist. Available types are (' + ($JCTypes.Types -join ', ') + ')')
         }
     }
 }

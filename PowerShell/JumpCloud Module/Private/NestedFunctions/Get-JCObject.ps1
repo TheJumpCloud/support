@@ -35,8 +35,8 @@ Function Get-JCObject
             If ($ObjectTypeItem)
             {
                 $ObjectTypeItem.Types = $Type
-                $Singular = $ObjectTypeItem.Singular
-                $Plural = $ObjectTypeItem.Plural
+                $Singular = $ObjectTypeItem.Name.Singular
+                $Plural = $ObjectTypeItem.Name.Plural
                 $Url = $ObjectTypeItem.Url
                 $Method = $ObjectTypeItem.Method
                 $ById = $ObjectTypeItem.ById
