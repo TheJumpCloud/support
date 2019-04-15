@@ -1,4 +1,3 @@
-. ('/Users/epanipinto/Documents/LoadJumpCloudModule.ps1')
 Describe "Association Tests" {
     BeforeAll {
         # $DebugPreference = 'Continue'
@@ -15,31 +14,31 @@ Describe "Association Tests" {
     $TestMethods = ('ById', 'ByName')
     # Generate $Associations object records by looping through each association type and its target types
     Context ("Get each type of object association possible and build list of objects to test with") {
-        # $Associations = @()
-        # $JCAssociationTypes = Get-JCObjectType | Where-Object { $_.Category -eq 'JumpCloud' }
-        # ForEach ($JCAssociationType In $JCAssociationTypes)
-        # {
-        #     $Type = $JCAssociationType.Singular
-        #     $TargetTypes = $JCAssociationType.Targets
-        #     ForEach ($TargetType In $TargetTypes)
-        #     {
-        #         $Object = Get-JCObject -Type:([string]$Type) | Select-Object -First 1 #| Get-Random
-        #         $Id = $Object.($Object.ById)
-        #         $Name = $Object.($Object.ByName)
-        #         $Target = Get-JCObject -Type:([string]$TargetType) | Select-Object -First 1 #| Get-Random
-        #         $TargetId = $Target.($Target.ById)
-        #         $TargetName = $Target.($Target.ByName)
-        #         $AssociationsRecord = [PSCustomObject]@{'Type' = $Type; 'Id' = $Id; 'Name' = $Name; 'TargetType' = $TargetType; 'TargetId' = $TargetId; 'TargetName' = $TargetName; }
-        #         # Replace NULLs with UNKNOWN
-        #         $AssociationsRecord.PSObject.Properties.name | ForEach-Object {If (!($AssociationsRecord.($_))) { $AssociationsRecord.($_) = 'UNKNOWN'; }}
-        #         $Associations += $AssociationsRecord
-        #     }
-        # }
+        $Associations = @()
+        $JCAssociationTypes = Get-JCObjectType | Where-Object { $_.Category -eq 'JumpCloud' }
+        ForEach ($JCAssociationType In $JCAssociationTypes)
+        {
+            $Type = $JCAssociationType.Singular
+            $TargetTypes = $JCAssociationType.Targets
+            ForEach ($TargetType In $TargetTypes)
+            {
+                $Object = Get-JCObject -Type:([string]$Type) | Select-Object -First 1 #| Get-Random
+                $Id = $Object.($Object.ById)
+                $Name = $Object.($Object.ByName)
+                $Target = Get-JCObject -Type:([string]$TargetType) | Select-Object -First 1 #| Get-Random
+                $TargetId = $Target.($Target.ById)
+                $TargetName = $Target.($Target.ByName)
+                $AssociationsRecord = [PSCustomObject]@{'Type' = $Type; 'Id' = $Id; 'Name' = $Name; 'TargetType' = $TargetType; 'TargetId' = $TargetId; 'TargetName' = $TargetName; }
+                # Replace NULLs with UNKNOWN
+                $AssociationsRecord.PSObject.Properties.name | ForEach-Object {If (!($AssociationsRecord.($_))) { $AssociationsRecord.($_) = 'UNKNOWN'; }}
+                $Associations += $AssociationsRecord
+            }
+        }
         # Export data to file
         # ($Associations | ConvertTo-JSON) | Out-File -Path:($PSScriptRoot + '/Get-JCAssociation.Tests.BigOrg.json')
         # Import data for testing manually
-        $AssociationsContent = Get-Content -Raw -Path:($PSScriptRoot + '/Get-JCAssociation.Tests.BigOrg.json')
-        $Associations = $AssociationsContent | ConvertFrom-Json
+        # $AssociationsContent = Get-Content -Raw -Path:($PSScriptRoot + '/Get-JCAssociation.Tests.BigOrg.json')
+        # $Associations = $AssociationsContent | ConvertFrom-Json
         # Test to see if there are any UNKNOWN values found in the dataset
         It("Validate that all object types exist within the specified test environment.") {
             $Associations | Where-Object { $_.Id -eq 'UNKNOWN' } | Should -BeNullOrEmpty
