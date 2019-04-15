@@ -7,6 +7,7 @@ fi
 AGENT_UNINSTALL_SCRIPT="/opt/jc/bin/removeAgent"
 
 if [[ -f $AGENT_UNINSTALL_SCRIPT ]]; then
+    chmod 0700 $AGENT_UNINSTALL_SCRIPT
     $AGENT_UNINSTALL_SCRIPT
     exit $?
 fi
