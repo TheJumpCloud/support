@@ -1,18 +1,18 @@
 [
   {
     "Category": "JumpCloud",
-    "Name": {
-      "Singular": "active_directory",
-      "Plural": "activedirectories"
+    "TypeName": {
+      "TypeNameSingular": "active_directory",
+      "TypeNamePlural": "activedirectories"
     },
     "Targets": [
       {
-        "Singular": "user",
-        "Plural": "users"
+        "TargetSingular": "user",
+        "TargetPlural": "users"
       },
       {
-        "Singular": "user_group",
-        "Plural": "usergroups"
+        "TargetSingular": "user_group",
+        "TargetPlural": "usergroups"
       }
     ],
     "Url": "/api/v2/activedirectories",
@@ -25,14 +25,14 @@
   },
   {
     "Category": "JumpCloud",
-    "Name": {
-      "Singular": "application",
-      "Plural": "applications"
+    "TypeName": {
+      "TypeNameSingular": "application",
+      "TypeNamePlural": "applications"
     },
     "Targets": [
       {
-        "Singular": "user_group",
-        "Plural": "usergroups"
+        "TargetSingular": "user_group",
+        "TargetPlural": "usergroups"
       }
     ],
     "Url": "/api/applications",
@@ -44,25 +44,25 @@
     "Limit": 100,
     "TargetsExcluded": [
       {
-        "Singular": "user",
-        "Plural": "users"
+        "TargetExcludedSingular": "user",
+        "TargetExcludedPlural": "users"
       }
     ]
   },
   {
     "Category": "JumpCloud",
-    "Name": {
-      "Singular": "command",
-      "Plural": "commands"
+    "TypeName": {
+      "TypeNameSingular": "command",
+      "TypeNamePlural": "commands"
     },
     "Targets": [
       {
-        "Singular": "system",
-        "Plural": "systems"
+        "TargetSingular": "system",
+        "TargetPlural": "systems"
       },
       {
-        "Singular": "system_group",
-        "Plural": "systemgroups"
+        "TargetSingular": "system_group",
+        "TargetPlural": "systemgroups"
       }
     ],
     "Url": "/api/commands",
@@ -75,18 +75,18 @@
   },
   {
     "Category": "JumpCloud",
-    "Name": {
-      "Singular": "g_suite",
-      "Plural": "gsuites"
+    "TypeName": {
+      "TypeNameSingular": "g_suite",
+      "TypeNamePlural": "gsuites"
     },
     "Targets": [
       {
-        "Singular": "user",
-        "Plural": "users"
+        "TargetSingular": "user",
+        "TargetPlural": "users"
       },
       {
-        "Singular": "user_group",
-        "Plural": "usergroups"
+        "TargetSingular": "user_group",
+        "TargetPlural": "usergroups"
       }
     ],
     "Url": "/api/v2/directories",
@@ -99,18 +99,18 @@
   },
   {
     "Category": "JumpCloud",
-    "Name": {
-      "Singular": "ldap_server",
-      "Plural": "ldapservers"
+    "TypeName": {
+      "TypeNameSingular": "ldap_server",
+      "TypeNamePlural": "ldapservers"
     },
     "Targets": [
       {
-        "Singular": "user",
-        "Plural": "users"
+        "TargetSingular": "user",
+        "TargetPlural": "users"
       },
       {
-        "Singular": "user_group",
-        "Plural": "usergroups"
+        "TargetSingular": "user_group",
+        "TargetPlural": "usergroups"
       }
     ],
     "Url": "/api/v2/ldapservers",
@@ -123,18 +123,18 @@
   },
   {
     "Category": "JumpCloud",
-    "Name": {
-      "Singular": "office_365",
-      "Plural": "office365s"
+    "TypeName": {
+      "TypeNameSingular": "office_365",
+      "TypeNamePlural": "office365s"
     },
     "Targets": [
       {
-        "Singular": "user",
-        "Plural": "users"
+        "TargetSingular": "user",
+        "TargetPlural": "users"
       },
       {
-        "Singular": "user_group",
-        "Plural": "usergroups"
+        "TargetSingular": "user_group",
+        "TargetPlural": "usergroups"
       }
     ],
     "Url": "/api/v2/directories",
@@ -147,18 +147,18 @@
   },
   {
     "Category": "JumpCloud",
-    "Name": {
-      "Singular": "policy",
-      "Plural": "policies"
+    "TypeName": {
+      "TypeNameSingular": "policy",
+      "TypeNamePlural": "policies"
     },
     "Targets": [
       {
-        "Singular": "system",
-        "Plural": "systems"
+        "TargetSingular": "system",
+        "TargetPlural": "systems"
       },
       {
-        "Singular": "system_group",
-        "Plural": "systemgroups"
+        "TargetSingular": "system_group",
+        "TargetPlural": "systemgroups"
       }
     ],
     "Url": "/api/v2/policies",
@@ -171,14 +171,14 @@
   },
   {
     "Category": "JumpCloud",
-    "Name": {
-      "Singular": "radius_server",
-      "Plural": "radiusservers"
+    "TypeName": {
+      "TypeNameSingular": "radius_server",
+      "TypeNamePlural": "radiusservers"
     },
     "Targets": [
       {
-        "Singular": "user_group",
-        "Plural": "usergroups"
+        "TargetSingular": "user_group",
+        "TargetPlural": "usergroups"
       }
     ],
     "Url": "/api/radiusservers",
@@ -190,33 +190,33 @@
     "Limit": 100,
     "TargetsExcluded": [
       {
-        "Singular": "user",
-        "Plural": "users"
+        "TargetExcludedSingular": "user",
+        "TargetExcludedPlural": "users"
       }
     ]
   },
   {
     "Category": "JumpCloud",
-    "Name": {
-      "Singular": "system_group",
-      "Plural": "systemgroups"
+    "TypeName": {
+      "TypeNameSingular": "system_group",
+      "TypeNamePlural": "systemgroups"
     },
     "Targets": [
       {
-        "Singular": "policy",
-        "Plural": "policies"
+        "TargetSingular": "policy",
+        "TargetPlural": "policies"
       },
       {
-        "Singular": "user_group",
-        "Plural": "usergroups"
+        "TargetSingular": "user_group",
+        "TargetPlural": "usergroups"
       },
       {
-        "Singular": "command",
-        "Plural": "commands"
+        "TargetSingular": "command",
+        "TargetPlural": "commands"
       },
       {
-        "Singular": "system",
-        "Plural": "systems"
+        "TargetSingular": "system",
+        "TargetPlural": "systems"
       }
     ],
     "Url": "/api/v2/systemgroups",
@@ -228,33 +228,33 @@
     "Limit": 100,
     "TargetsExcluded": [
       {
-        "Singular": "user",
-        "Plural": "users"
+        "TargetExcludedSingular": "user",
+        "TargetExcludedPlural": "users"
       }
     ]
   },
   {
     "Category": "JumpCloud",
-    "Name": {
-      "Singular": "system",
-      "Plural": "systems"
+    "TypeName": {
+      "TypeNameSingular": "system",
+      "TypeNamePlural": "systems"
     },
     "Targets": [
       {
-        "Singular": "policy",
-        "Plural": "policies"
+        "TargetSingular": "policy",
+        "TargetPlural": "policies"
       },
       {
-        "Singular": "user",
-        "Plural": "usergroups"
+        "TargetSingular": "user",
+        "TargetPlural": "usergroups"
       },
       {
-        "Singular": "command",
-        "Plural": "commands"
+        "TargetSingular": "command",
+        "TargetPlural": "commands"
       },
       {
-        "Singular": "system_group",
-        "Plural": "systemgroups"
+        "TargetSingular": "system_group",
+        "TargetPlural": "systemgroups"
       }
     ],
     "Url": "/api/systems",
@@ -266,49 +266,49 @@
     "Limit": 100,
     "TargetsExcluded": [
       {
-        "Singular": "user_group",
-        "Plural": "usergroups"
+        "TargetExcludedSingular": "user_group",
+        "TargetExcludedPlural": "usergroups"
       }
     ]
   },
   {
     "Category": "JumpCloud",
-    "Name": {
-      "Singular": "user_group",
-      "Plural": "usergroups"
+    "TypeName": {
+      "TypeNameSingular": "user_group",
+      "TypeNamePlural": "usergroups"
     },
     "Targets": [
       {
-        "Singular": "active_directory",
-        "Plural": "activedirectories"
+        "TargetSingular": "active_directory",
+        "TargetPlural": "activedirectories"
       },
       {
-        "Singular": "application",
-        "Plural": "applications"
+        "TargetSingular": "application",
+        "TargetPlural": "applications"
       },
       {
-        "Singular": "g_suite",
-        "Plural": "gsuites"
+        "TargetSingular": "g_suite",
+        "TargetPlural": "gsuites"
       },
       {
-        "Singular": "ldap_server",
-        "Plural": "ldapservers"
+        "TargetSingular": "ldap_server",
+        "TargetPlural": "ldapservers"
       },
       {
-        "Singular": "office_365",
-        "Plural": "office365s"
+        "TargetSingular": "office_365",
+        "TargetPlural": "office365s"
       },
       {
-        "Singular": "radius_server",
-        "Plural": "radiusservers"
+        "TargetSingular": "radius_server",
+        "TargetPlural": "radiusservers"
       },
       {
-        "Singular": "system_group",
-        "Plural": "systemgroups"
+        "TargetSingular": "system_group",
+        "TargetPlural": "systemgroups"
       },
       {
-        "Singular": "user",
-        "Plural": "users"
+        "TargetSingular": "user",
+        "TargetPlural": "users"
       }
     ],
     "Url": "/api/v2/usergroups",
@@ -320,41 +320,41 @@
     "Limit": 100,
     "TargetsExcluded": [
       {
-        "Singular": "system",
-        "Plural": "systems"
+        "TargetExcludedSingular": "system",
+        "TargetExcludedPlural": "systems"
       }
     ]
   },
   {
     "Category": "JumpCloud",
-    "Name": {
-      "Singular": "user",
-      "Plural": "users"
+    "TypeName": {
+      "TypeNameSingular": "user",
+      "TypeNamePlural": "users"
     },
     "Targets": [
       {
-        "Singular": "active_directory",
-        "Plural": "activedirectories"
+        "TargetSingular": "active_directory",
+        "TargetPlural": "activedirectories"
       },
       {
-        "Singular": "g_suite",
-        "Plural": "gsuites"
+        "TargetSingular": "g_suite",
+        "TargetPlural": "gsuites"
       },
       {
-        "Singular": "ldap_server",
-        "Plural": "ldapservers"
+        "TargetSingular": "ldap_server",
+        "TargetPlural": "ldapservers"
       },
       {
-        "Singular": "office_365",
-        "Plural": "office365s"
+        "TargetSingular": "office_365",
+        "TargetPlural": "office365s"
       },
       {
-        "Singular": "system",
-        "Plural": "systems"
+        "TargetSingular": "system",
+        "TargetPlural": "systems"
       },
       {
-        "Singular": "user_group",
-        "Plural": "usergroups"
+        "TargetSingular": "user_group",
+        "TargetPlural": "usergroups"
       }
     ],
     "Url": "/api/systemusers",
@@ -366,24 +366,24 @@
     "Limit": 100,
     "TargetsExcluded": [
       {
-        "Singular": "application",
-        "Plural": "applications"
+        "TargetExcludedSingular": "application",
+        "TargetExcludedPlural": "applications"
       },
       {
-        "Singular": "radius_server",
-        "Plural": "radiusservers"
+        "TargetExcludedSingular": "radius_server",
+        "TargetExcludedPlural": "radiusservers"
       },
       {
-        "Singular": "system_group",
-        "Plural": "systemgroups"
+        "TargetExcludedSingular": "system_group",
+        "TargetExcludedPlural": "systemgroups"
       }
     ]
   },
   {
     "Category": "Custom",
-    "Name": {
-      "Singular": "directory",
-      "Plural": "directories"
+    "TypeName": {
+      "TypeNameSingular": "directory",
+      "TypeNamePlural": "directories"
     },
     "Targets": null,
     "Url": "/api/v2/directories",
@@ -396,9 +396,9 @@
   },
   {
     "Category": "Custom",
-    "Name": {
-      "Singular": "group",
-      "Plural": "groups"
+    "TypeName": {
+      "TypeNameSingular": "group",
+      "TypeNamePlural": "groups"
     },
     "Targets": null,
     "Url": "/api/v2/groups",
@@ -411,9 +411,9 @@
   },
   {
     "Category": "Custom",
-    "Name": {
-      "Singular": "organization",
-      "Plural": "organizations"
+    "TypeName": {
+      "TypeNameSingular": "organization",
+      "TypeNamePlural": "organizations"
     },
     "Targets": null,
     "Url": "/api/organizations",
@@ -426,34 +426,34 @@
   },
   {
     "Category": "Custom",
-    "Name": {
-      "Singular": "search_user",
-      "Plural": "search_users"
+    "TypeName": {
+      "TypeNameSingular": "search_user",
+      "TypeNamePlural": "search_users"
     },
     "Targets": [
       {
-        "Singular": "active_directory",
-        "Plural": "activedirectories"
+        "TargetSingular": "active_directory",
+        "TargetPlural": "activedirectories"
       },
       {
-        "Singular": "g_suite",
-        "Plural": "gsuites"
+        "TargetSingular": "g_suite",
+        "TargetPlural": "gsuites"
       },
       {
-        "Singular": "ldap_server",
-        "Plural": "ldapservers"
+        "TargetSingular": "ldap_server",
+        "TargetPlural": "ldapservers"
       },
       {
-        "Singular": "office_365",
-        "Plural": "office365s"
+        "TargetSingular": "office_365",
+        "TargetPlural": "office365s"
       },
       {
-        "Singular": "system",
-        "Plural": "systems"
+        "TargetSingular": "system",
+        "TargetPlural": "systems"
       },
       {
-        "Singular": "user_group",
-        "Plural": "usergroups"
+        "TargetSingular": "user_group",
+        "TargetPlural": "usergroups"
       }
     ],
     "Url": "/api/search/systemusers",
@@ -466,26 +466,26 @@
   },
   {
     "Category": "Custom",
-    "Name": {
-      "Singular": "search_system",
-      "Plural": "search_systems"
+    "TypeName": {
+      "TypeNameSingular": "search_system",
+      "TypeNamePlural": "search_systems"
     },
     "Targets": [
       {
-        "Singular": "policy",
-        "Plural": "policies"
+        "TargetSingular": "policy",
+        "TargetPlural": "policies"
       },
       {
-        "Singular": "user",
-        "Plural": "users"
+        "TargetSingular": "user",
+        "TargetPlural": "users"
       },
       {
-        "Singular": "command",
-        "Plural": "commands"
+        "TargetSingular": "command",
+        "TargetPlural": "commands"
       },
       {
-        "Singular": "system_group",
-        "Plural": "systemgroups"
+        "TargetSingular": "system_group",
+        "TargetPlural": "systemgroups"
       }
     ],
     "Url": "/api/search/systems",

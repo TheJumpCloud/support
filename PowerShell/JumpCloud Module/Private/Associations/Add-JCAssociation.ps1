@@ -1,4 +1,4 @@
-Function Remove-JCAssociation
+Function Add-JCAssociation
 {
     [CmdletBinding(DefaultParameterSetName = 'ById')]
     Param(
@@ -6,7 +6,7 @@ Function Remove-JCAssociation
     )
     DynamicParam
     {
-        $Action = 'remove'
+        $Action = 'add'
         # Build parameter array
         $Params = @()
         # Get type list

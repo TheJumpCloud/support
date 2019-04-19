@@ -1,11 +1,11 @@
 ---
 external help file: JumpCloud-help.xml
 Module Name: JumpCloud
-online version: https://github.com/TheJumpCloud/support/wiki/New-JCAssociation
+online version: https://github.com/TheJumpCloud/support/wiki/Add-JCAssociation
 schema: 2.0.0
 ---
 
-# New-JCAssociation
+# Add-JCAssociation
 
 ## SYNOPSIS
 Create an association between two object within the JumpCloud console.
@@ -14,31 +14,31 @@ Create an association between two object within the JumpCloud console.
 
 ### ById (Default)
 ```
-New-JCAssociation [-Type] <String> [-Id] <String> [-TargetType] <String>
+Add-JCAssociation [-Type] <String> [-Id] <String> [-TargetType] <String>
  [-TargetId] <String> [<CommonParameters>]
 ```
 
 ### ByName
 ```
-New-JCAssociation [-Type] <String> [-Name] <String> [-TargetType] <String>
+Add-JCAssociation [-Type] <String> [-Name] <String> [-TargetType] <String>
  [-TargetName] <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-The New-JCAssociation function allows you to create associations of a specific object to a target object.
+The Add-JCAssociation function allows you to create associations of a specific object to a target object.
 
 ## EXAMPLES
 
 ### Example 1
 ```powershell
-PS C:\> New-JCAssociation -Type:('radiusservers') -Id:('5c5c371704c4b477964ab4fa') -TargetType:('user_group') -TargetId:('59f20255c9118021fa01b80f')
+PS C:\> Add-JCAssociation -Type:('radiusservers') -Id:('5c5c371704c4b477964ab4fa') -TargetType:('user_group') -TargetId:('59f20255c9118021fa01b80f')
 ```
 
 Create an association between the radius server "5c5c371704c4b477964ab4fa" and the user group "59f20255c9118021fa01b80f".
 
 ### Example 2
 ```powershell
-PS C:\> New-JCAssociation -Type:('radiusservers') -Name:('RadiusServer1') -TargetType:('user_group') -TargetName:('All Users')
+PS C:\> Add-JCAssociation -Type:('radiusservers') -Name:('RadiusServer1') -TargetType:('user_group') -TargetName:('All Users')
 ```
 
 Create an association between the radius server "RadiusServer1" and the user group "All Users".
