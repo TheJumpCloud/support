@@ -56,6 +56,10 @@ Function Add-JCAssociation
             $Params += @{'Name' = 'Name'; 'Type' = [System.String[]]; 'Position' = 3; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'Alias' = ($JCTypes.ByName).Where( {$_ -ne 'Name'}) | Select-Object -Unique; 'ParameterSets' = @('ByName'); }
             $Params += @{'Name' = 'TargetType'; 'Type' = [System.String[]]; 'Position' = 4; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'Alias' = ('TargetSingular'); 'ValidateSet' = $JCTypes.Targets.TargetSingular; }
         }
+        If ($Action -eq 'get')
+        {
+            $Params += @{'Name' = 'Direct'; 'Type' = [Switch]; 'Position' = 5; 'ValueFromPipelineByPropertyName' = $true; 'DefaultValue' = $false; }
+        }
         If ($Action -in ('add', 'remove'))
         {
             $Params += @{'Name' = 'TargetId'; 'Type' = [System.String]; 'Position' = 5; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ById'); }

@@ -56,6 +56,10 @@ Function Invoke-JCAssociation
             $Params += @{'Name' = 'Name'; 'Type' = [System.String[]]; 'Position' = 3; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'Alias' = ($JCTypes.ByName).Where( { $_ -ne 'Name' }) | Select-Object -Unique; 'ParameterSets' = @('ByName'); }
             $Params += @{'Name' = 'TargetType'; 'Type' = [System.String[]]; 'Position' = 4; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'Alias' = ('TargetSingular'); 'ValidateSet' = $JCTypes.Targets.TargetSingular; }
         }
+        If ($Action -eq 'get')
+        {
+            $Params += @{'Name' = 'Direct'; 'Type' = [Switch]; 'Position' = 5; 'ValueFromPipelineByPropertyName' = $true; 'DefaultValue' = $false; }
+        }
         If ($Action -in ('add', 'remove'))
         {
             $Params += @{'Name' = 'TargetId'; 'Type' = [System.String]; 'Position' = 5; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ById'); }
@@ -129,12 +133,18 @@ Function Invoke-JCAssociation
                 # Build Url based upon source and target combinations
                 If (($SourceItemTypeNamePlural -eq 'systems' -and $SourceItemTargetPlural -eq 'systemgroups') -or ($SourceItemTypeNamePlural -eq 'users' -and $SourceItemTargetPlural -eq 'usergroups'))
                 {
-                    Write-Debug ('UrlTemplate:' + $URL_Template_Associations_MemberOf + ';SourcePlural:"' + $SourceItemTypeNamePlural + '";SourceTargetPlural:"' + $SourceItemTargetPlural + '"')
                     $Uri_Associations = $URL_Template_Associations_MemberOf -f $SourceItemTypeNamePlural, $SourceItemId
                 }
                 ElseIf (($SourceItemTypeNamePlural -eq 'systemgroups' -and $SourceItemTargetPlural -eq 'systems') -or ($SourceItemTypeNamePlural -eq 'usergroups' -and $SourceItemTargetPlural -eq 'users'))
                 {
-                    $Uri_Associations = $URL_Template_Associations_Membership -f $SourceItemTypeNamePlural, $SourceItemId
+                    If ($Direct -eq $true)
+                    {
+                        $Uri_Associations = $URL_Template_Associations_Members -f $SourceItemTypeNamePlural, $SourceItemId
+                    }
+                    Else
+                    {
+                        $Uri_Associations = $URL_Template_Associations_Membership -f $SourceItemTypeNamePlural, $SourceItemId
+                    }
                 }
                 ElseIf (($SourceItemTypeNamePlural -eq 'activedirectories' -and $SourceItemTargetPlural -eq 'users') -or ($SourceItemTypeNamePlural -eq 'users' -and $SourceItemTargetPlural -eq 'activedirectories'))
                 {
@@ -142,13 +152,32 @@ Function Invoke-JCAssociation
                 }
                 Else
                 {
-                    $Uri_Associations = $URL_Template_Associations_TargetType -f $SourceItemTypeNamePlural, $SourceItemId, $SourceItemTargetPlural
+                    If ($Direct -eq $true)
+                    {
+                        $Uri_Associations = $URL_Template_Associations_Targets -f $SourceItemTypeNamePlural, $SourceItemId, $SourceItemTargetSingular
+                    }
+                    Else
+                    {
+                        $Uri_Associations = $URL_Template_Associations_TargetType -f $SourceItemTypeNamePlural, $SourceItemId, $SourceItemTargetPlural
+                    }
                 }
                 # Call endpoint
                 If ($Action -eq 'get')
                 {
                     Write-Debug ('UrlTemplate:' + $Uri_Associations)
-                    $Associations = Invoke-JCApi -Method:($Method) -Paginate:($true) -Url:($Uri_Associations)
+                    $Association = Invoke-JCApi -Method:($Method) -Paginate:($true) -Url:($Uri_Associations)
+                    If ($Direct -eq $true)
+                    {
+                        If (($SourceItemTypeNamePlural -eq 'systems' -and $SourceItemTargetPlural -eq 'systemgroups') -or ($SourceItemTypeNamePlural -eq 'users' -and $SourceItemTargetPlural -eq 'usergroups'))
+                        {
+                            $Association = $Association.paths
+                        }
+                        $Associations = $Association | ForEach-Object {$_ | Select-Object @{Name = 'id'; Expression = {$_.to.id}}, @{Name = 'type'; Expression = {$_.to.type}}, *}
+                    }
+                    Else
+                    {
+                        $Associations = $Association
+                    }
                     $Results += $Associations
                 }
                 Else
