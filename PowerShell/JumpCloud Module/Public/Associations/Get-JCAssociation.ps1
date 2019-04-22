@@ -32,28 +32,28 @@ Function Get-JCAssociation
                 If ($JCObjectCount -eq 1)
                 {
                     # Don't require Id and Name to be passed through and set a default value
-                    $Params += @{'Name' = 'Id'; 'Type' = [System.String]; 'Position' = 2; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $false; 'ValidateNotNullOrEmpty' = $true; 'Alias' = ($JCTypes.ById).Where( {$_ -ne 'Id'}) | Select-Object -Unique; 'ParameterSets' = @('ById'); 'DefaultValue' = $JCObject.($JCObject.ById)}
-                    $Params += @{'Name' = 'Name'; 'Type' = [System.String]; 'Position' = 3; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $false; 'ValidateNotNullOrEmpty' = $true; 'Alias' = ($JCTypes.ByName).Where( {$_ -ne 'Name'}) | Select-Object -Unique; 'ParameterSets' = @('ByName'); 'DefaultValue' = $JCObject.($JCObject.ByName)}
+                    $Params += @{'Name' = 'Id'; 'Type' = [System.String[]]; 'Position' = 2; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $false; 'ValidateNotNullOrEmpty' = $true; 'Alias' = ($JCTypes.ById).Where( {$_ -ne 'Id'}) | Select-Object -Unique; 'ParameterSets' = @('ById'); 'DefaultValue' = $JCObject.($JCObject.ById)}
+                    $Params += @{'Name' = 'Name'; 'Type' = [System.String[]]; 'Position' = 3; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $false; 'ValidateNotNullOrEmpty' = $true; 'Alias' = ($JCTypes.ByName).Where( {$_ -ne 'Name'}) | Select-Object -Unique; 'ParameterSets' = @('ByName'); 'DefaultValue' = $JCObject.($JCObject.ByName)}
                 }
                 Else
                 {
                     # Do populate validate set with list of items
-                    $Params += @{'Name' = 'Id'; 'Type' = [System.String]; 'Position' = 2; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'Alias' = ($JCTypes.ById).Where( {$_ -ne 'Id'}) | Select-Object -Unique; 'ValidateSet' = @($JCObject.($JCObject.ById | Select-Object -Unique)); 'ParameterSets' = @('ById'); }
-                    $Params += @{'Name' = 'Name'; 'Type' = [System.String]; 'Position' = 3; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'Alias' = ($JCTypes.ByName).Where( {$_ -ne 'Name'}) | Select-Object -Unique; 'ValidateSet' = @($JCObject.($JCObject.ByName | Select-Object -Unique)); 'ParameterSets' = @('ByName'); }
+                    $Params += @{'Name' = 'Id'; 'Type' = [System.String[]]; 'Position' = 2; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'Alias' = ($JCTypes.ById).Where( {$_ -ne 'Id'}) | Select-Object -Unique; 'ValidateSet' = @($JCObject.($JCObject.ById | Select-Object -Unique)); 'ParameterSets' = @('ById'); }
+                    $Params += @{'Name' = 'Name'; 'Type' = [System.String[]]; 'Position' = 3; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'Alias' = ($JCTypes.ByName).Where( {$_ -ne 'Name'}) | Select-Object -Unique; 'ValidateSet' = @($JCObject.($JCObject.ByName | Select-Object -Unique)); 'ParameterSets' = @('ByName'); }
                 }
             }
             Else
             {
                 # Don't populate validate set
-                $Params += @{'Name' = 'Id'; 'Type' = [System.String]; 'Position' = 2; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'Alias' = ($JCTypes.ById).Where( {$_ -ne 'Id'}) | Select-Object -Unique; 'ParameterSets' = @('ById'); }
-                $Params += @{'Name' = 'Name'; 'Type' = [System.String]; 'Position' = 3; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'Alias' = ($JCTypes.ByName).Where( {$_ -ne 'Name'}) | Select-Object -Unique; 'ParameterSets' = @('ByName'); }
+                $Params += @{'Name' = 'Id'; 'Type' = [System.String[]]; 'Position' = 2; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'Alias' = ($JCTypes.ById).Where( {$_ -ne 'Id'}) | Select-Object -Unique; 'ParameterSets' = @('ById'); }
+                $Params += @{'Name' = 'Name'; 'Type' = [System.String[]]; 'Position' = 3; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'Alias' = ($JCTypes.ByName).Where( {$_ -ne 'Name'}) | Select-Object -Unique; 'ParameterSets' = @('ByName'); }
             }
             $Params += @{'Name' = 'TargetType'; 'Type' = [System.String[]]; 'Position' = 4; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'Alias' = ('TargetSingular'); 'ValidateSet' = $JCTypes.Targets.TargetSingular; }
         }
         Else
         {
-            $Params += @{'Name' = 'Id'; 'Type' = [System.String]; 'Position' = 2; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'Alias' = ($JCTypes.ById).Where( {$_ -ne 'Id'}) | Select-Object -Unique; 'ParameterSets' = @('ById'); }
-            $Params += @{'Name' = 'Name'; 'Type' = [System.String]; 'Position' = 3; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'Alias' = ($JCTypes.ByName).Where( {$_ -ne 'Name'}) | Select-Object -Unique; 'ParameterSets' = @('ByName'); }
+            $Params += @{'Name' = 'Id'; 'Type' = [System.String[]]; 'Position' = 2; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'Alias' = ($JCTypes.ById).Where( {$_ -ne 'Id'}) | Select-Object -Unique; 'ParameterSets' = @('ById'); }
+            $Params += @{'Name' = 'Name'; 'Type' = [System.String[]]; 'Position' = 3; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'Alias' = ($JCTypes.ByName).Where( {$_ -ne 'Name'}) | Select-Object -Unique; 'ParameterSets' = @('ByName'); }
             $Params += @{'Name' = 'TargetType'; 'Type' = [System.String[]]; 'Position' = 4; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'Alias' = ('TargetSingular'); 'ValidateSet' = $JCTypes.Targets.TargetSingular; }
         }
         If ($Action -in ('add', 'remove'))
@@ -71,6 +71,7 @@ Function Get-JCAssociation
         # Debug message for parameter call
         Write-Debug ('[CallFunction]' + $MyInvocation.MyCommand.Name + ' ' + ($PsBoundParameters.GetEnumerator() | Sort-Object Key | ForEach-Object { ('-' + $_.Key + ":('" + ($_.Value -join "','") + "')").Replace("'True'", '$True').Replace("'False'", '$False')}) )
         If ($PSCmdlet.ParameterSetName -ne '__AllParameterSets') {Write-Verbose ('[ParameterSet]' + $MyInvocation.MyCommand.Name + ':' + $PSCmdlet.ParameterSetName)}
+        $Results = @()
     }
     Process
     {
@@ -85,7 +86,7 @@ Function Get-JCAssociation
         # Add parameters from the script to the FunctionParameters hashtable
         $FunctionParameters.Add('Action', $Action) | Out-Null
         # Run the command
-        $Results = Invoke-JCAssociation @FunctionParameters
+        $Results += Invoke-JCAssociation @FunctionParameters
     }
     End
     {
