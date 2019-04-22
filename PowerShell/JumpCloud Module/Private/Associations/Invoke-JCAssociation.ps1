@@ -10,7 +10,7 @@ Function Invoke-JCAssociation
         # Build parameter array
         $Params = @()
         # Get type list
-        $JCTypes = Get-JCObjectType | Where-Object { $_.Category -eq 'JumpCloud' };
+        $JCTypes = Get-JCType | Where-Object { $_.Category -eq 'JumpCloud' };
         If ($Action -and $Type)
         {
             # Determine if help files are being built
@@ -168,7 +168,6 @@ Function Invoke-JCAssociation
                     Else
                     {
                         $Uri_Associations = $URL_Template_Associations_Targets -f $SourceItemTypeNamePlural, $SourceItemId, $SourceItemTargetSingular
-                        # Build body to be sent to endpoint.
                         $JsonBody = '{"op":"' + $Action + '","type":"' + $TargetTypeNameSingular + '","id":"' + $TargetId + '","attributes":null}'
                     }
                     # Send body to endpoint.

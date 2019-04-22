@@ -1,4 +1,4 @@
-Function Get-JCObjectType
+Function Get-JCType
 {
     [CmdletBinding()]
     Param()

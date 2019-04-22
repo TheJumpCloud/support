@@ -10,7 +10,7 @@ Function Get-JCAssociation
         # Build parameter array
         $Params = @()
         # Get type list
-        $JCTypes = Get-JCObjectType | Where-Object {$_.Category -eq 'JumpCloud'};
+        $JCTypes = Get-JCType | Where-Object {$_.Category -eq 'JumpCloud'};
         If ($Type)
         {
             # Determine if help files are being built

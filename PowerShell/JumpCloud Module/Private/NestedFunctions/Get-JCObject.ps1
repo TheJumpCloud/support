@@ -4,7 +4,7 @@ Function Get-JCObject
     Param()
     DynamicParam
     {
-        $JCTypes = Get-JCObjectType
+        $JCTypes = Get-JCType
         # Build parameter array
         $RuntimeParameterDictionary = New-Object -TypeName System.Management.Automation.RuntimeDefinedParameterDictionary
         New-DynamicParameter -Name:('Type') -Type:([System.String]) -Mandatory -Position:(0) -ValueFromPipelineByPropertyName -ValidateNotNullOrEmpty -ValidateSet:($JCTypes.Types) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null

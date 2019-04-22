@@ -15,7 +15,7 @@ Describe "Association Tests" {
     # Generate $Associations object records by looping through each association type and its target types
     Context ("Get each type of object association possible and build list of objects to test with") {
         $Associations = @()
-        $JCAssociationTypes = Get-JCObjectType | Where-Object { $_.Category -eq 'JumpCloud' }
+        $JCAssociationTypes = Get-JCType | Where-Object { $_.Category -eq 'JumpCloud' }
         ForEach ($JCAssociationType In $JCAssociationTypes)
         {
             $Type = $JCAssociationType.Singular
