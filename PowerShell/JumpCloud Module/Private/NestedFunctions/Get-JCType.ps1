@@ -19,14 +19,28 @@ Function Get-JCType
     }
     Process
     {
-        # For parameters with a default value set that value
-        $NewParams.Values | Where-Object { $_.IsSet -and $_.Attributes.ParameterSetName -eq $PSCmdlet.ParameterSetName } | ForEach-Object { $PSBoundParameters[$_.Name] = $_.Value }
-        # Create new variables for script
-        $PsBoundParameters.GetEnumerator() | ForEach-Object { Set-Variable -Name:($_.Key) -Value:($_.Value) -Force }
-        $JCTypeOutput = Switch ($PSCmdlet.ParameterSetName)
+        Try
         {
-            'ByName' { $JCTypes | Where-Object { $Type -in $_.Types } }
-            Default { $JCTypes }
+            # For parameters with a default value set that value
+            $NewParams.Values | Where-Object { $_.IsSet -and $_.Attributes.ParameterSetName -eq $PSCmdlet.ParameterSetName } | ForEach-Object { $PSBoundParameters[$_.Name] = $_.Value }
+            # Create new variables for script
+            $PsBoundParameters.GetEnumerator() | ForEach-Object { Set-Variable -Name:($_.Key) -Value:($_.Value) -Force }
+            $JCTypeOutput = Switch ($PSCmdlet.ParameterSetName)
+            {
+                'ByName' { $JCTypes | Where-Object { $Type -in $_.Types } }
+                Default { $JCTypes }
+            }
+        }
+        Catch
+        {
+            $Exception = $_.Exception
+            $Message = $Exception.Message
+            While ($Exception.InnerException)
+            {
+                $Exception = $Exception.InnerException
+                $Message += "`n" + $Exception.Message
+            }
+            Write-Error ($_.FullyQualifiedErrorId.ToString() + "`n" + $_.InvocationInfo.PositionMessage + "`n" + $Message)
         }
     }
     End

@@ -32,152 +32,166 @@ Function Invoke-JCApi
     }
     Process
     {
-        $Results_Output = @()
-        If ($Url -notlike ('*' + $JCUrlBasePath + '*'))
+        Try
         {
-            $Url = $JCUrlBasePath + $Url
-        }
-        If ($Url -like '*`?*')
-        {
-            $SearchOperator = '&'
-        }
-        Else
-        {
-            $SearchOperator = '?'
-        }
+            $Results_Output = @()
+            If ($Url -notlike ('*' + $JCUrlBasePath + '*'))
+            {
+                $Url = $JCUrlBasePath + $Url
+            }
+            If ($Url -like '*`?*')
+            {
+                $SearchOperator = '&'
+            }
+            Else
+            {
+                $SearchOperator = '?'
+            }
 
-        # Convert passed in body to json
-        If ($Body)
-        {
-            $ObjectBody = $Body | ConvertFrom-Json
-        }
-        Else
-        {
-            $ObjectBody = ''
-        }
-        # Pagination
-        Do
-        {
-            $QueryStrings = @()
-            # Add fields
-            If ($Fields)
+            # Convert passed in body to json
+            If ($Body)
             {
-                $JoinedFields = ($Fields -join ' ')
-                If ($ObjectBody.PSObject.Properties.name -eq 'fields')
+                $ObjectBody = $Body | ConvertFrom-Json
+            }
+            Else
+            {
+                $ObjectBody = ''
+            }
+            # Pagination
+            Do
+            {
+                $QueryStrings = @()
+                # Add fields
+                If ($Fields)
                 {
-                    $JoinedFields = $ObjectBody.fields
+                    $JoinedFields = ($Fields -join ' ')
+                    If ($ObjectBody.PSObject.Properties.name -eq 'fields')
+                    {
+                        $JoinedFields = $ObjectBody.fields
+                    }
+                    Else
+                    {
+                        $ObjectBody = $ObjectBody | Select-Object *, @{Name = 'fields'; Expression = {$JoinedFields}}
+                    }
+                    If ($Url -notlike '*fields*') {$QueryStrings += 'fields=' + $JoinedFields}
+                }
+                # Add limit
+                If ($ObjectBody.PSObject.Properties.name -eq 'limit')
+                {
+                    $ObjectBody.limit = $Limit
                 }
                 Else
                 {
-                    $ObjectBody = $ObjectBody | Select-Object *, @{Name = 'fields'; Expression = {$JoinedFields}}
+                    $ObjectBody = $ObjectBody | Select-Object *, @{Name = 'limit'; Expression = {$Limit}}
                 }
-                If ($Url -notlike '*fields*') {$QueryStrings += 'fields=' + $JoinedFields}
-            }
-            # Add limit
-            If ($ObjectBody.PSObject.Properties.name -eq 'limit')
-            {
-                $ObjectBody.limit = $Limit
-            }
-            Else
-            {
-                $ObjectBody = $ObjectBody | Select-Object *, @{Name = 'limit'; Expression = {$Limit}}
-            }
-            If ($Url -notlike '*limit*') {$QueryStrings += 'limit=' + $Limit}
-            # Add skip
-            If ($ObjectBody.PSObject.Properties.name -eq 'skip')
-            {
-                $ObjectBody.skip = $Skip
-            }
-            Else
-            {
-                $ObjectBody = $ObjectBody | Select-Object *, @{Name = 'skip'; Expression = {$Skip}}
-            }
-            If ($Url -notlike '*skip*') {$QueryStrings += 'skip=' + $Skip}
-            # Build url query string and body
-            $ObjectBody = $ObjectBody | Select-Object -Property * -ExcludeProperty Length
-            $Body = $ObjectBody | ConvertTo-Json -Depth:(10) -Compress | Sort-Object
-            If ($QueryStrings)
-            {
-                $Uri = $Url + $SearchOperator + (($QueryStrings | Sort-Object) -join '&')
-            }
-            Else
-            {
-                $Uri = $Url
-            }
-            # Run request
-            [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-            Write-Debug("[CallFunction]Invoke-RestMethod -Method:('$Method') -Headers:(@" + ($Headers | ConvertTo-Json -Compress).Replace('":"', '" = "').Replace('","', '"; "') + ") -Uri:('$Uri') -UserAgent:('$JCUserAgent') -Body:('$Body')")
-            Write-Verbose ('Connecting to: ' + $Uri)
-            # PowerShell 5 won't let you send a GET with a body.
-            If ($Method -eq 'GET')
-            {
-                $Results = Invoke-RestMethod -Method:($Method) -Headers:($Headers) -Uri:($Uri) -UserAgent:($JCUserAgent)
-            }
-            Else
-            {
-                Write-Verbose ($Method + ' body: ' + $Body)
-                $Results = Invoke-RestMethod -Method:($Method) -Headers:($Headers) -Uri:($Uri) -UserAgent:($JCUserAgent) -Body:($Body)
-            }
-            If ($Results)
-            {
-                $ResultsPopulated = $false
-                # Specific logic for v1 and v2 api specs
-                If ($Url -like '*/api/*' -and ($Url -notlike '*/api/v2/*' -and $Results.PSObject.Properties.name -eq 'results'))
+                If ($Url -notlike '*limit*') {$QueryStrings += 'limit=' + $Limit}
+                # Add skip
+                If ($ObjectBody.PSObject.Properties.name -eq 'skip')
                 {
-                    $ResultsCount = $Results.results.Count
-                    If ($ResultsCount -gt 0)
+                    $ObjectBody.skip = $Skip
+                }
+                Else
+                {
+                    $ObjectBody = $ObjectBody | Select-Object *, @{Name = 'skip'; Expression = {$Skip}}
+                }
+                If ($Url -notlike '*skip*') {$QueryStrings += 'skip=' + $Skip}
+                # Build url query string and body
+                $ObjectBody = $ObjectBody | Select-Object -Property * -ExcludeProperty Length
+                $Body = $ObjectBody | ConvertTo-Json -Depth:(10) -Compress | Sort-Object
+                If ($QueryStrings)
+                {
+                    $Uri = $Url + $SearchOperator + (($QueryStrings | Sort-Object) -join '&')
+                }
+                Else
+                {
+                    $Uri = $Url
+                }
+                # Run request
+                [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+                Write-Debug("[CallFunction]Invoke-RestMethod -Method:('$Method') -Headers:(@" + ($Headers | ConvertTo-Json -Compress).Replace('":"', '" = "').Replace('","', '"; "') + ") -Uri:('$Uri') -UserAgent:('$JCUserAgent') -Body:('$Body')")
+                Write-Verbose ('Connecting to: ' + $Uri)
+                # PowerShell 5 won't let you send a GET with a body.
+                If ($Method -eq 'GET')
+                {
+                    $Results = Invoke-RestMethod -Method:($Method) -Headers:($Headers) -Uri:($Uri) -UserAgent:($JCUserAgent)
+                }
+                Else
+                {
+                    Write-Verbose ($Method + ' body: ' + $Body)
+                    $Results = Invoke-RestMethod -Method:($Method) -Headers:($Headers) -Uri:($Uri) -UserAgent:($JCUserAgent) -Body:($Body)
+                }
+                If ($Results)
+                {
+                    $ResultsPopulated = $false
+                    # Specific logic for v1 and v2 api specs
+                    If ($Url -like '*/api/*' -and ($Url -notlike '*/api/v2/*' -and $Results.PSObject.Properties.name -eq 'results'))
                     {
-                        $ResultsPopulated = $true
-                        If ($ReturnCount)
+                        $ResultsCount = $Results.results.Count
+                        If ($ResultsCount -gt 0)
                         {
-                            $ResultObjects = $Results
-                            $Paginate = $false
-                        }
-                        Else
-                        {
-                            $ResultObjects = $Results.results
+                            $ResultsPopulated = $true
+                            If ($ReturnCount)
+                            {
+                                $ResultObjects = $Results
+                                $Paginate = $false
+                            }
+                            Else
+                            {
+                                $ResultObjects = $Results.results
+                            }
                         }
                     }
-                }
-                ElseIf ($Url -like '*/api/*' -and ($Url -like '*/api/v2/*' -or $Results.PSObject.Properties.name -ne 'results'))
-                {
-                    $ResultsCount = $Results.Count
-                    If ($ResultsCount -gt 0)
+                    ElseIf ($Url -like '*/api/*' -and ($Url -like '*/api/v2/*' -or $Results.PSObject.Properties.name -ne 'results'))
                     {
-                        $ResultsPopulated = $true
-                        If ($ReturnCount)
+                        $ResultsCount = $Results.Count
+                        If ($ResultsCount -gt 0)
                         {
-                            Write-Debug("[CallFunction]Invoke-WebRequest -Method:('$Method') -Headers:(@" + ($Headers | ConvertTo-Json -Compress).Replace('":"', '" = "').Replace('","', '"; "') + ") -Uri:('$Uri') -UserAgent:('$JCUserAgent')")
-                            $ResultObjects = [PSCustomObject]@{'totalCount' = [int]((Invoke-WebRequest -Method:($Method) -Headers:($Headers) -Uri:($Uri) -UserAgent:($JCUserAgent)).Headers.'X-Total-Count' -join ','); 'results' = $Results; }
-                            $Paginate = $false
+                            $ResultsPopulated = $true
+                            If ($ReturnCount)
+                            {
+                                Write-Debug("[CallFunction]Invoke-WebRequest -Method:('$Method') -Headers:(@" + ($Headers | ConvertTo-Json -Compress).Replace('":"', '" = "').Replace('","', '"; "') + ") -Uri:('$Uri') -UserAgent:('$JCUserAgent')")
+                                $ResultObjects = [PSCustomObject]@{'totalCount' = [int]((Invoke-WebRequest -Method:($Method) -Headers:($Headers) -Uri:($Uri) -UserAgent:($JCUserAgent)).Headers.'X-Total-Count' -join ','); 'results' = $Results; }
+                                $Paginate = $false
+                            }
+                            Else
+                            {
+                                $ResultObjects = $Results
+                            }
                         }
-                        Else
-                        {
-                            $ResultObjects = $Results
-                        }
+                    }
+                    Else
+                    {
+                        Write-Error ('Url is not a valid JumpCloud V1 or V2 endpoint')
+                    }
+                    If ($ResultsPopulated)
+                    {
+                        $Skip += $ResultsCount
+                        $Results_Output += $ResultObjects
                     }
                 }
                 Else
                 {
-                    Write-Error ('Url is not a valid JumpCloud V1 or V2 endpoint')
+                    If ($Paginate)
+                    {
+                        $ResultsCount = $Results.Count
+                    }
                 }
-                If ($ResultsPopulated)
-                {
-                    $Skip += $ResultsCount
-                    $Results_Output += $ResultObjects
-                }
+                Write-Debug ('Paginate:' + [string]$Paginate + ';ResultsCount:' + [string]$ResultsCount + ';Limit:' + [string]$Limit + ';')
             }
-            Else
-            {
-                If ($Paginate)
-                {
-                    $ResultsCount = $Results.Count
-                }
-            }
-            Write-Debug ('Paginate:' + [string]$Paginate + ';ResultsCount:' + [string]$ResultsCount + ';Limit:' + [string]$Limit + ';')
+            While ($Paginate -and $ResultsCount -eq $Limit)
+            Write-Verbose ('Returned ' + [string]$Results_Output.Count + ' total results.')
         }
-        While ($Paginate -and $ResultsCount -eq $Limit)
-        Write-Verbose ('Returned ' + [string]$Results_Output.Count + ' total results.')
+        Catch
+        {
+            $Exception = $_.Exception
+            $Message = $Exception.Message
+            While ($Exception.InnerException)
+            {
+                $Exception = $Exception.InnerException
+                $Message += "`n" + $Exception.Message
+            }
+            Write-Error ($_.FullyQualifiedErrorId.ToString() + "`n" + $_.InvocationInfo.PositionMessage + "`n" + $Message)
+        }
     }
     End
     {
