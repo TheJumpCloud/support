@@ -65,6 +65,11 @@ Function Add-JCAssociation
         {
             $Params += @{'Name' = 'TargetId'; 'Type' = [System.String]; 'Position' = 5; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ById'); }
             $Params += @{'Name' = 'TargetName'; 'Type' = [System.String]; 'Position' = 6; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ByName'); }
+            $Params += @{'Name' = 'Force'; 'Type' = [Switch]; 'Position' = 8; 'ValueFromPipelineByPropertyName' = $true; 'DefaultValue' = $false; }
+        }
+        If ($Action -eq 'add')
+        {
+            $Params += @{'Name' = 'Attributes'; 'Type' = [System.Management.Automation.PSObject]; 'Position' = 7; 'ValueFromPipelineByPropertyName' = $true; 'Alias' = 'compiledAttributes'; }
         }
         # Create new parameters
         $NewParams = $Params | ForEach-Object {New-Object PSObject -Property:($_)} | New-DynamicParameter

@@ -65,6 +65,11 @@ Function Invoke-JCAssociation
         {
             $Params += @{'Name' = 'TargetId'; 'Type' = [System.String]; 'Position' = 5; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ById'); }
             $Params += @{'Name' = 'TargetName'; 'Type' = [System.String]; 'Position' = 6; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ByName'); }
+            $Params += @{'Name' = 'Force'; 'Type' = [Switch]; 'Position' = 8; 'ValueFromPipelineByPropertyName' = $true; 'DefaultValue' = $false; }
+        }
+        If ($Action -eq 'add')
+        {
+            $Params += @{'Name' = 'Attributes'; 'Type' = [System.Management.Automation.PSObject]; 'Position' = 7; 'ValueFromPipelineByPropertyName' = $true; 'Alias' = 'compiledAttributes'; }
         }
         # Create new parameters
         $NewParams = $Params | ForEach-Object { New-Object PSObject -Property:($_) } | New-DynamicParameter
@@ -80,18 +85,28 @@ Function Invoke-JCAssociation
     }
     Process
     {
+        # For parameters with a default value set that value
+        $NewParams.Values | Where-Object { $_.IsSet -and $_.Attributes.ParameterSetName -eq $PSCmdlet.ParameterSetName } | ForEach-Object { $PSBoundParameters[$_.Name] = $_.Value }
+        # Create new variables for script
+        $PsBoundParameters.GetEnumerator() | ForEach-Object { Set-Variable -Name:($_.Key) -Value:($_.Value) -Force }
         Try
         {
-            # For parameters with a default value set that value
-            $NewParams.Values | Where-Object { $_.IsSet -and $_.Attributes.ParameterSetName -eq $PSCmdlet.ParameterSetName } | ForEach-Object { $PSBoundParameters[$_.Name] = $_.Value }
-            # Create new variables for script
-            $PsBoundParameters.GetEnumerator() | ForEach-Object { Set-Variable -Name:($_.Key) -Value:($_.Value) -Force }
-            # Associate the action to a http method
-            $Method = Switch ($Action)
-            {
-                'get' { 'GET' }
-                'add' { 'POST' }
-                'remove' { 'POST' }
+            # Scriptblock used for building get associations results
+            $AssociationResults = {
+                Param($Action, $Uri, $Method, $SourceId, $SourceType)
+                Write-Debug ('UrlTemplate:' + $Uri)
+                Return Invoke-JCApi -Method:($Method) -Paginate:($true) -Url:($Uri) | Select-Object @{Name = 'action'; Expression = {$Action}} `
+                    , @{Name = 'associationType'; Expression = {
+                        If (($_.paths | ForEach-Object {$_.Count}) -eq 1) {'direct'}
+                        ElseIf (($_.paths | ForEach-Object {$_.Count}) -gt 1) {'indirect'}
+                        Else {'unknown'}}
+                } `
+                    , @{Name = 'id'; Expression = {$SourceId}} `
+                    , @{Name = 'type'; Expression = {$SourceType}} `
+                    , @{Name = 'targetId'; Expression = {$_.id}} `
+                    , @{Name = 'targetType'; Expression = {$_.type}} `
+                    , compiledAttributes `
+                    , paths
             }
             # All the bindings, recursive , both direct and indirect
             $URL_Template_Associations_MemberOf = '/api/v2/{0}/{1}/memberof' # $SourcePlural, $SourceId
@@ -136,41 +151,41 @@ Function Invoke-JCAssociation
                     # Build Url based upon source and target combinations
                     If (($SourceItemTypeNamePlural -eq 'systems' -and $SourceItemTargetPlural -eq 'systemgroups') -or ($SourceItemTypeNamePlural -eq 'users' -and $SourceItemTargetPlural -eq 'usergroups'))
                     {
-                        $Uri_Associations = $URL_Template_Associations_MemberOf -f $SourceItemTypeNamePlural, $SourceItemId
+                        $Uri_Associations_GET = $URL_Template_Associations_MemberOf -f $SourceItemTypeNamePlural, $SourceItemId
                     }
                     ElseIf (($SourceItemTypeNamePlural -eq 'systemgroups' -and $SourceItemTargetPlural -eq 'systems') -or ($SourceItemTypeNamePlural -eq 'usergroups' -and $SourceItemTargetPlural -eq 'users'))
                     {
-                        $Uri_Associations = $URL_Template_Associations_Membership -f $SourceItemTypeNamePlural, $SourceItemId
+                        $Uri_Associations_GET = $URL_Template_Associations_Membership -f $SourceItemTypeNamePlural, $SourceItemId
                     }
                     ElseIf (($SourceItemTypeNamePlural -eq 'activedirectories' -and $SourceItemTargetPlural -eq 'users') -or ($SourceItemTypeNamePlural -eq 'users' -and $SourceItemTargetPlural -eq 'activedirectories'))
                     {
-                        $Uri_Associations = $URL_Template_Associations_Targets -f $SourceItemTypeNamePlural, $SourceItemId, $SourceItemTargetSingular
+                        $Uri_Associations_GET = $URL_Template_Associations_Targets -f $SourceItemTypeNamePlural, $SourceItemId, $SourceItemTargetSingular
                     }
                     Else
                     {
-                        $Uri_Associations = $URL_Template_Associations_TargetType -f $SourceItemTypeNamePlural, $SourceItemId, $SourceItemTargetPlural
+                        $Uri_Associations_GET = $URL_Template_Associations_TargetType -f $SourceItemTypeNamePlural, $SourceItemId, $SourceItemTargetPlural
                     }
                     # Call endpoint
                     If ($Action -eq 'get')
                     {
-                        Write-Debug ('UrlTemplate:' + $Uri_Associations)
-                        $Association = Invoke-JCApi -Method:($Method) -Paginate:($true) -Url:($Uri_Associations)
+                        $Association = & $AssociationResults -Action:($Action) -Uri:($Uri_Associations_GET) -Method:('GET') -SourceId:($SourceItemId) -SourceType:($SourceItemTypeNameSingular)
                         If ($Direct -eq $true)
                         {
-                            $Associations = $Association | Where-Object {($_.paths | ForEach-Object {$_.Count}) -eq 1}
+                            $Results += $Association.Where( {$_.associationType -eq 'direct'} )
                         }
-                        ElseIf ($Indirect -eq $true)
+                        If ($Indirect -eq $true)
                         {
-                            $Associations = $Association | Where-Object {($_.paths | ForEach-Object {$_.Count}) -gt 1}
+                            $Results += $Association.Where( {$_.associationType -eq 'indirect'} )
                         }
-                        Else
+                        If (!($Direct) -and !($Indirect))
                         {
-                            $Associations = $Association
+                            $Results += $Association
                         }
-                        $Results += $Associations
                     }
                     Else
                     {
+                        # Build the attributes for the json body string
+                        $AttributesValue = If ($Action -eq 'add' -and $Attributes) {$Attributes | ConvertTo-Json -Depth:(100) -Compress}Else {'null'}
                         # Get Target object
                         $Target = Get-JCObject -Type:($SourceItemTargetSingular) -SearchBy:($SearchBy) -SearchByValue:($TargetSearchByValue)
                         ForEach ($TargetItem In $Target)
@@ -179,21 +194,43 @@ Function Invoke-JCAssociation
                             $TargetItemName = $TargetItem.($TargetItem.ByName)
                             $TargetItemTypeNameSingular = $TargetItem.TypeName.TypeNameSingular
                             $TargetItemTypeNamePlural = $TargetItem.TypeName.TypeNamePlural
-                            # Exceptions for specific combinations
-                            If (($SourceItemTypeNamePlural -eq 'systems' -and $SourceItemTargetPlural -eq 'systemgroups') -or ($SourceItemTypeNamePlural -eq 'users' -and $SourceItemTargetPlural -eq 'usergroups'))
+                            # Get the existing association before removing it
+                            If ($Action -eq 'remove')
                             {
-                                $Uri_Associations = $URL_Template_Associations_Members -f $TargetItemTypeNamePlural, $TargetItemId
-                                $JsonBody = '{"op":"' + $Action + '","type":"' + $SourceItemTypeNameSingular + '","id":"' + $SourceItemId + '","attributes":null}'
+                                $RemoveAssociation = & $AssociationResults -Action:($Action) -Uri:($Uri_Associations_GET) -Method:('GET') -SourceId:($SourceItemId) -SourceType:($SourceItemTypeNameSingular) | Where-Object {$_.TargetId -eq $TargetItemId}
+                                $IndirectAssociations = $RemoveAssociation.Where( {$_.associationType -ne 'direct'} )
+                                $Results += $RemoveAssociation.Where( {$_.associationType -eq 'direct'} )
                             }
-                            Else
+                            If ($TargetItemId -ne $IndirectAssociations.targetId)
                             {
-                                $Uri_Associations = $URL_Template_Associations_Targets -f $SourceItemTypeNamePlural, $SourceItemId, $SourceItemTargetSingular
-                                $JsonBody = '{"op":"' + $Action + '","type":"' + $TargetItemTypeNameSingular + '","id":"' + $TargetItemId + '","attributes":null}'
+                                # Build uri and body
+                                If (($SourceItemTypeNamePlural -eq 'systems' -and $SourceItemTargetPlural -eq 'systemgroups') -or ($SourceItemTypeNamePlural -eq 'users' -and $SourceItemTargetPlural -eq 'usergroups'))
+                                {
+                                    $Uri_Associations_POST = $URL_Template_Associations_Members -f $TargetItemTypeNamePlural, $TargetItemId
+                                    $JsonBody = '{"op":"' + $Action + '","type":"' + $SourceItemTypeNameSingular + '","id":"' + $SourceItemId + '","attributes":' + $AttributesValue + '}'
+                                }
+                                Else
+                                {
+                                    $Uri_Associations_POST = $URL_Template_Associations_Targets -f $SourceItemTypeNamePlural, $SourceItemId, $SourceItemTargetSingular
+                                    $JsonBody = '{"op":"' + $Action + '","type":"' + $TargetItemTypeNameSingular + '","id":"' + $TargetItemId + '","attributes":' + $AttributesValue + '}'
+                                }
+                                # Send body to endpoint.
+                                Write-Verbose ('"' + $Action + '" the association between the "' + $SourceItemTypeNameSingular + '" "' + $SourceItemName + '" and the "' + $TargetItemTypeNameSingular + '" "' + $TargetItemName + '"')
+                                Write-Debug ('UrlTemplate:' + $Uri_Associations_POST + '; Body:' + $JsonBody + ';')
+                                If (!($Force))
+                                {
+                                    $HostResponse = (Read-Host -Prompt:('Are you sure you want to "' + $Action + '" the association between the "' + $SourceItemTypeNameSingular + '" called "' + $SourceItemName + '" and the "' + $TargetItemTypeNameSingular + '" called "' + $TargetItemName + '"?[Y/N]')).ToLower()
+                                }
+                                If ($HostResponse -eq 'y' -or $Force)
+                                {
+                                    $Results += Invoke-JCApi -Body:($JsonBody) -Method:('POST') -Url:($Uri_Associations_POST)
+                                }
                             }
-                            # Send body to endpoint.
-                            Write-Verbose ("$Action association from '$SourceItemName' to '$TargetItemName'")
-                            Write-Debug ('UrlTemplate:' + $Uri_Associations + '; Body:' + $JsonBody + ';')
-                            $Results += Invoke-JCApi -Body:($JsonBody) -Method:($Method) -Url:($Uri_Associations)
+                            # Get the newly created association
+                            If ($Action -eq 'add')
+                            {
+                                $Results += & $AssociationResults -Action:($Action) -Uri:($Uri_Associations_GET) -Method:('GET') -SourceId:($SourceItemId) -SourceType:($SourceItemTypeNameSingular) | Where-Object {$_.TargetId -eq $TargetItemId}
+                            }
                         }
                     }
                 }
@@ -201,18 +238,11 @@ Function Invoke-JCAssociation
         }
         Catch
         {
-            $Exception = $_.Exception
-            $Message = $Exception.Message
-            While ($Exception.InnerException)
-            {
-                $Exception = $Exception.InnerException
-                $Message += "`n" + $Exception.Message
-            }
-            Write-Error ($_.FullyQualifiedErrorId.ToString() + "`n" + $_.InvocationInfo.PositionMessage + "`n" + $Message)
+            Invoke-Command -ScriptBlock:($TryCatchError) -ArgumentList:($_)
         }
     }
     End
     {
-        Return $Results
+        Return $Results #| Select-Object -ExcludeProperty:('associationType')
     }
 }

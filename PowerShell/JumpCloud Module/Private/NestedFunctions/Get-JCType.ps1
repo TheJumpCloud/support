@@ -33,14 +33,7 @@ Function Get-JCType
         }
         Catch
         {
-            $Exception = $_.Exception
-            $Message = $Exception.Message
-            While ($Exception.InnerException)
-            {
-                $Exception = $Exception.InnerException
-                $Message += "`n" + $Exception.Message
-            }
-            Write-Error ($_.FullyQualifiedErrorId.ToString() + "`n" + $_.InvocationInfo.PositionMessage + "`n" + $Message)
+            Invoke-Command -ScriptBlock:($TryCatchError) -ArgumentList:($_)
         }
     }
     End
