@@ -59,6 +59,7 @@ Function Invoke-JCAssociation
         If ($Action -eq 'get')
         {
             $Params += @{'Name' = 'Direct'; 'Type' = [Switch]; 'Position' = 5; 'ValueFromPipelineByPropertyName' = $true; 'DefaultValue' = $false; }
+            $Params += @{'Name' = 'Indirect'; 'Type' = [Switch]; 'Position' = 6; 'ValueFromPipelineByPropertyName' = $true; 'DefaultValue' = $false; }
         }
         If ($Action -in ('add', 'remove'))
         {
@@ -137,14 +138,7 @@ Function Invoke-JCAssociation
                 }
                 ElseIf (($SourceItemTypeNamePlural -eq 'systemgroups' -and $SourceItemTargetPlural -eq 'systems') -or ($SourceItemTypeNamePlural -eq 'usergroups' -and $SourceItemTargetPlural -eq 'users'))
                 {
-                    If ($Direct -eq $true)
-                    {
-                        $Uri_Associations = $URL_Template_Associations_Members -f $SourceItemTypeNamePlural, $SourceItemId
-                    }
-                    Else
-                    {
-                        $Uri_Associations = $URL_Template_Associations_Membership -f $SourceItemTypeNamePlural, $SourceItemId
-                    }
+                    $Uri_Associations = $URL_Template_Associations_Membership -f $SourceItemTypeNamePlural, $SourceItemId
                 }
                 ElseIf (($SourceItemTypeNamePlural -eq 'activedirectories' -and $SourceItemTargetPlural -eq 'users') -or ($SourceItemTypeNamePlural -eq 'users' -and $SourceItemTargetPlural -eq 'activedirectories'))
                 {
@@ -152,14 +146,7 @@ Function Invoke-JCAssociation
                 }
                 Else
                 {
-                    If ($Direct -eq $true)
-                    {
-                        $Uri_Associations = $URL_Template_Associations_Targets -f $SourceItemTypeNamePlural, $SourceItemId, $SourceItemTargetSingular
-                    }
-                    Else
-                    {
-                        $Uri_Associations = $URL_Template_Associations_TargetType -f $SourceItemTypeNamePlural, $SourceItemId, $SourceItemTargetPlural
-                    }
+                    $Uri_Associations = $URL_Template_Associations_TargetType -f $SourceItemTypeNamePlural, $SourceItemId, $SourceItemTargetPlural
                 }
                 # Call endpoint
                 If ($Action -eq 'get')
@@ -168,11 +155,11 @@ Function Invoke-JCAssociation
                     $Association = Invoke-JCApi -Method:($Method) -Paginate:($true) -Url:($Uri_Associations)
                     If ($Direct -eq $true)
                     {
-                        If (($SourceItemTypeNamePlural -eq 'systems' -and $SourceItemTargetPlural -eq 'systemgroups') -or ($SourceItemTypeNamePlural -eq 'users' -and $SourceItemTargetPlural -eq 'usergroups'))
-                        {
-                            $Association = $Association.paths
-                        }
-                        $Associations = $Association | ForEach-Object {$_ | Select-Object @{Name = 'id'; Expression = {$_.to.id}}, @{Name = 'type'; Expression = {$_.to.type}}, *}
+                        $Associations = $Association | Where-Object {($_.paths | ForEach-Object {$_.Count}) -eq 1}
+                    }
+                    ElseIf ($Indirect -eq $true)
+                    {
+                        $Associations = $Association | Where-Object {($_.paths | ForEach-Object {$_.Count}) -gt 1}
                     }
                     Else
                     {
@@ -182,27 +169,30 @@ Function Invoke-JCAssociation
                 }
                 Else
                 {
-                    # Get Target object.
+                    # Get Target object
                     $Target = Get-JCObject -Type:($SourceItemTargetSingular) -SearchBy:($SearchBy) -SearchByValue:($TargetSearchByValue)
-                    $TargetId = $Target.($Target.ById)
-                    $TargetName = $Target.($Target.ByName)
-                    $TargetTypeNameSingular = $Target.TypeName.TypeNameSingular
-                    $TargetTypeNamePlural = $Target.TypeName.TypeNamePlural
-                    # Exceptions for specific combinations
-                    If (($SourceItemTypeNamePlural -eq 'systems' -and $TargetType -eq 'system_group') -or ($SourceItemTypeNamePlural -eq 'users' -and $TargetType -eq 'user_group'))
+                    ForEach ($TargetItem In $Target)
                     {
-                        $Uri_Associations = $URL_Template_Associations_Members -f $TargetTypeNamePlural, $TargetId
-                        $JsonBody = '{"op":"' + $Action + '","type":"' + $SourceItemTypeNameSingular + '","id":"' + $SourceItemId + '","attributes":null}'
+                        $TargetItemId = $TargetItem.($TargetItem.ById)
+                        $TargetItemName = $TargetItem.($TargetItem.ByName)
+                        $TargetItemTypeNameSingular = $TargetItem.TypeName.TypeNameSingular
+                        $TargetItemTypeNamePlural = $TargetItem.TypeName.TypeNamePlural
+                        # Exceptions for specific combinations
+                        If (($SourceItemTypeNamePlural -eq 'systems' -and $SourceItemTargetPlural -eq 'systemgroups') -or ($SourceItemTypeNamePlural -eq 'users' -and $SourceItemTargetPlural -eq 'usergroups'))
+                        {
+                            $Uri_Associations = $URL_Template_Associations_Members -f $TargetItemTypeNamePlural, $TargetItemId
+                            $JsonBody = '{"op":"' + $Action + '","type":"' + $SourceItemTypeNameSingular + '","id":"' + $SourceItemId + '","attributes":null}'
+                        }
+                        Else
+                        {
+                            $Uri_Associations = $URL_Template_Associations_Targets -f $SourceItemTypeNamePlural, $SourceItemId, $SourceItemTargetSingular
+                            $JsonBody = '{"op":"' + $Action + '","type":"' + $TargetItemTypeNameSingular + '","id":"' + $TargetItemId + '","attributes":null}'
+                        }
+                        # Send body to endpoint.
+                        Write-Verbose ("$Action association from '$SourceItemName' to '$TargetItemName'")
+                        Write-Debug ('UrlTemplate:' + $Uri_Associations + '; Body:' + $JsonBody + ';')
+                        $Results += Invoke-JCApi -Body:($JsonBody) -Method:($Method) -Url:($Uri_Associations)
                     }
-                    Else
-                    {
-                        $Uri_Associations = $URL_Template_Associations_Targets -f $SourceItemTypeNamePlural, $SourceItemId, $SourceItemTargetSingular
-                        $JsonBody = '{"op":"' + $Action + '","type":"' + $TargetTypeNameSingular + '","id":"' + $TargetId + '","attributes":null}'
-                    }
-                    # Send body to endpoint.
-                    Write-Verbose ("$Action association from '$SourceItemName' to '$TargetName'")
-                    Write-Debug ('UrlTemplate:' + $Uri_Associations + '; Body:' + $JsonBody)
-                    $Results += Invoke-JCApi -Body:($JsonBody) -Method:($Method) -Url:($Uri_Associations)
                 }
             }
         }

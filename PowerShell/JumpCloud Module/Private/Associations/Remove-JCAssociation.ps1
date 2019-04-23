@@ -59,6 +59,7 @@ Function Remove-JCAssociation
         If ($Action -eq 'get')
         {
             $Params += @{'Name' = 'Direct'; 'Type' = [Switch]; 'Position' = 5; 'ValueFromPipelineByPropertyName' = $true; 'DefaultValue' = $false; }
+            $Params += @{'Name' = 'Indirect'; 'Type' = [Switch]; 'Position' = 6; 'ValueFromPipelineByPropertyName' = $true; 'DefaultValue' = $false; }
         }
         If ($Action -in ('add', 'remove'))
         {
