@@ -205,7 +205,7 @@ Describe "Association Tests" {
                         }
                         Catch
                         {
-                            Invoke-Command -ScriptBlock:($TryCatchError) -ArgumentList:($_)
+                            Invoke-Command -ScriptBlock:($ScriptBlock_TryCatchError) -ArgumentList:($_)
                         }
                         Finally
                         {

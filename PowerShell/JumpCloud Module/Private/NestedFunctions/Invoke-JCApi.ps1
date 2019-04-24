@@ -183,7 +183,7 @@ Function Invoke-JCApi
         }
         Catch
         {
-            Invoke-Command -ScriptBlock:($TryCatchError) -ArgumentList:($_)
+            Invoke-Command -ScriptBlock:($ScriptBlock_TryCatchError) -ArgumentList:($_)
         }
     }
     End

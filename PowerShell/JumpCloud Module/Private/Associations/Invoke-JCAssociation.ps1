@@ -219,7 +219,11 @@ Function Invoke-JCAssociation
                                 Write-Debug ('UrlTemplate:' + $Uri_Associations_POST + '; Body:' + $JsonBody + ';')
                                 If (!($Force))
                                 {
-                                    $HostResponse = (Read-Host -Prompt:('Are you sure you want to "' + $Action + '" the association between the "' + $SourceItemTypeNameSingular + '" called "' + $SourceItemName + '" and the "' + $TargetItemTypeNameSingular + '" called "' + $TargetItemName + '"?[Y/N]')).ToLower()
+                                    Do
+                                    {
+                                        $HostResponse = Read-Host -Prompt:('Are you sure you want to "' + $Action + '" the association between the "' + $SourceItemTypeNameSingular + '" called "' + $SourceItemName + '" and the "' + $TargetItemTypeNameSingular + '" called "' + $TargetItemName + '"?[Y/N]')
+                                    }
+                                    Until ($HostResponse -in ('y', 'n'))
                                 }
                                 If ($HostResponse -eq 'y' -or $Force)
                                 {
@@ -238,7 +242,7 @@ Function Invoke-JCAssociation
         }
         Catch
         {
-            Invoke-Command -ScriptBlock:($TryCatchError) -ArgumentList:($_)
+            Invoke-Command -ScriptBlock:($ScriptBlock_TryCatchError) -ArgumentList:($_)
         }
     }
     End

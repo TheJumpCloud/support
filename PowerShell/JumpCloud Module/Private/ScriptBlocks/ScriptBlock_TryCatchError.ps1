@@ -1,4 +1,4 @@
-$TryCatchError = {
+$ScriptBlock_TryCatchError = {
     Param($ErrorObject)
     $Exception = $ErrorObject.Exception
     $Message = $Exception.Message
