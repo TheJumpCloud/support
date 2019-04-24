@@ -1,5 +1,7 @@
 $ScriptBlock_TryCatchError = {
-    Param($ErrorObject)
+    Param(
+        $ErrorObject
+    )
     $Exception = $ErrorObject.Exception
     $Message = $Exception.Message
     While ($Exception.InnerException)
