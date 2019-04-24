@@ -8,8 +8,6 @@ Building the ScriptBlock. Make sure that all ScriptBlocks are prefixed with "Scr
         # Do stuff
         Write-Host ($Param1)
         Write-Host ($Param2)
-        # Reset the error
-        $Error.Clear()
     }
 
 Calling the ScriptBlock.
