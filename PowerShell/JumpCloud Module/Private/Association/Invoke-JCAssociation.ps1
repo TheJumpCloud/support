@@ -13,7 +13,7 @@ Function Invoke-JCAssociation
     Begin
     {
         # Debug message for parameter call
-        Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDebugMessageBegin) -ArgumentList:($MyInvocation, $PsBoundParameters, $PSCmdlet) -NoNewScope
+        Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDebugMessageBegin) -ArgumentList:($MyInvocation, $PsBoundParameters, $PSCmdlet, $true, 'White', 'Black') -NoNewScope
         $Results = @()
     }
     Process
@@ -22,23 +22,6 @@ Function Invoke-JCAssociation
         Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDynamicParamProcess) -ArgumentList:($PsBoundParameters, $PSCmdlet, $RuntimeParameterDictionary) -NoNewScope
         Try
         {
-            # ScriptBlock used for building get associations results
-            $AssociationResults = {
-                Param($Action, $Uri, $Method, $SourceId, $SourceType)
-                Write-Debug ('UrlTemplate:' + $Uri)
-                Return Invoke-JCApi -Method:($Method) -Paginate:($true) -Url:($Uri) | Select-Object @{Name = 'action'; Expression = {$Action}} `
-                    , @{Name = 'associationType'; Expression = {
-                        If (($_.paths | ForEach-Object {$_.Count}) -eq 1) {'direct'}
-                        ElseIf (($_.paths | ForEach-Object {$_.Count}) -gt 1) {'indirect'}
-                        Else {'unknown'}}
-                } `
-                    , @{Name = 'id'; Expression = {$SourceId}} `
-                    , @{Name = 'type'; Expression = {$SourceType}} `
-                    , @{Name = 'targetId'; Expression = {$_.id}} `
-                    , @{Name = 'targetType'; Expression = {$_.type}} `
-                    , compiledAttributes `
-                    , paths
-            }
             # All the bindings, recursive , both direct and indirect
             $URL_Template_Associations_MemberOf = '/api/v2/{0}/{1}/memberof' # $SourcePlural, $SourceId
             $URL_Template_Associations_Membership = '/api/v2/{0}/{1}/membership' # $SourcePlural (systemgroups,usergroups), $SourceId
@@ -61,7 +44,24 @@ Function Invoke-JCAssociation
                     $TargetSearchByValue = $TargetName
                 }
             }
-
+            # ScriptBlock used for building get associations results
+            $AssociationResults = {
+                Param($Action, $Uri, $Method, $SourceId, $SourceType)
+                Write-Debug ('[UrlTemplate]:' + $Uri)
+                Write-Host ('[UrlTemplate]:' + $Uri) -BackgroundColor:('Cyan') -ForegroundColor:('Black')
+                Return Invoke-JCApi -Method:($Method) -Paginate:($true) -Url:($Uri) | Select-Object @{Name = 'action'; Expression = {$Action}} `
+                    , @{Name = 'associationType'; Expression = {
+                        If (($_.paths | ForEach-Object {$_.Count}) -eq 1) {'direct'}
+                        ElseIf (($_.paths | ForEach-Object {$_.Count}) -gt 1) {'indirect'}
+                        Else {'unknown'}}
+                } `
+                    , @{Name = 'id'; Expression = {$SourceId}} `
+                    , @{Name = 'type'; Expression = {$SourceType}} `
+                    , @{Name = 'targetId'; Expression = {$_.id}} `
+                    , @{Name = 'targetType'; Expression = {$_.type}} `
+                    , compiledAttributes `
+                    , paths
+            }
             # Get SourceInfo
             $Source = Get-JCObject -Type:($Type) -SearchBy:($SearchBy) -SearchByValue:($SourceItemSearchByValue)
             If ($Source.Count -gt 1)
@@ -100,7 +100,7 @@ Function Invoke-JCAssociation
                     # Call endpoint
                     If ($Action -eq 'get')
                     {
-                        $Association = & $AssociationResults -Action:($Action) -Uri:($Uri_Associations_GET) -Method:('GET') -SourceId:($SourceItemId) -SourceType:($SourceItemTypeNameSingular)
+                        $Association = Invoke-Command -ScriptBlock:($AssociationResults) -ArgumentList:($Action, $Uri_Associations_GET, 'GET', $SourceItemId, $SourceItemTypeNameSingular) -NoNewScope
                         If ($Direct -eq $true)
                         {
                             $Results += $Association.Where( {$_.associationType -eq 'direct'} )
@@ -129,7 +129,7 @@ Function Invoke-JCAssociation
                             # Get the existing association before removing it
                             If ($Action -eq 'remove')
                             {
-                                $RemoveAssociation = & $AssociationResults -Action:($Action) -Uri:($Uri_Associations_GET) -Method:('GET') -SourceId:($SourceItemId) -SourceType:($SourceItemTypeNameSingular) | Where-Object {$_.TargetId -eq $TargetItemId}
+                                $RemoveAssociation = Invoke-Command -ScriptBlock:($AssociationResults) -ArgumentList:($Action, $Uri_Associations_GET, 'GET', $SourceItemId, $SourceItemTypeNameSingular) -NoNewScope | Where-Object {$_.TargetId -eq $TargetItemId}
                                 $IndirectAssociations = $RemoveAssociation.Where( {$_.associationType -ne 'direct'} )
                                 $Results += $RemoveAssociation.Where( {$_.associationType -eq 'direct'} )
                             }
@@ -148,7 +148,8 @@ Function Invoke-JCAssociation
                                 }
                                 # Send body to endpoint.
                                 Write-Verbose ('"' + $Action + '" the association between the "' + $SourceItemTypeNameSingular + '" "' + $SourceItemName + '" and the "' + $TargetItemTypeNameSingular + '" "' + $TargetItemName + '"')
-                                Write-Debug ('UrlTemplate:' + $Uri_Associations_POST + '; Body:' + $JsonBody + ';')
+                                Write-Debug ('[UrlTemplate]:' + $Uri_Associations_POST + '; Body:' + $JsonBody + ';')
+                                Write-Host ('[UrlTemplate]:' + $Uri_Associations_POST + '; Body:' + $JsonBody + ';') -BackgroundColor:('Green') -ForegroundColor:('Black')
                                 If (!($Force))
                                 {
                                     Do
@@ -165,7 +166,7 @@ Function Invoke-JCAssociation
                             # Get the newly created association
                             If ($Action -eq 'add')
                             {
-                                $Results += & $AssociationResults -Action:($Action) -Uri:($Uri_Associations_GET) -Method:('GET') -SourceId:($SourceItemId) -SourceType:($SourceItemTypeNameSingular) | Where-Object {$_.TargetId -eq $TargetItemId}
+                                $Results += Invoke-Command -ScriptBlock:($AssociationResults) -ArgumentList:($Action, $Uri_Associations_GET, 'GET', $SourceItemId, $SourceItemTypeNameSingular) -NoNewScope | Where-Object {$_.TargetId -eq $TargetItemId}
                             }
                         }
                     }
