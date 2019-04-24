@@ -1,5 +1,5 @@
-# Clone-JCAssociation -type:() -Id:() -TargetId:() -KeepExisting -Force
-Function Clone-JCAssociation
+# Copy-JCAssociation -type:() -Id:() -TargetId:() -KeepExisting -Force
+Function Copy-JCAssociation
 {
     [CmdletBinding(DefaultParameterSetName = 'ById')]
     Param(
@@ -8,7 +8,8 @@ Function Clone-JCAssociation
         [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 3, ParameterSetName = 'ByName')][ValidateNotNullOrEmpty()][string]$Name,
         [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 4, ParameterSetName = 'ById')][ValidateNotNullOrEmpty()][string]$TargetId,
         [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 5, ParameterSetName = 'ByName')][ValidateNotNullOrEmpty()][string]$TargetName,
-        [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 5)][ValidateNotNullOrEmpty()][switch]$KeepExisting
+        [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 5)][ValidateNotNullOrEmpty()][switch]$KeepExisting,
+        [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 6)][ValidateNotNullOrEmpty()][switch]$Force
     )
     Begin
     {
@@ -63,7 +64,7 @@ Function Clone-JCAssociation
                 $AssociationsToAdd = $CompareResults.Where( {$_.SideIndicator -eq '<=' -and $_.associationType -eq 'Direct' -and $_.TargetId -notin ($AssociationsToSame.targetId) })
                 $AssociationsToRemove = $CompareResults.Where( { $_.SideIndicator -eq '=>' -and $_.associationType -eq 'Direct' -and $_.TargetId -notin ($AssociationsToSame.targetId) })
                 # Send the results of the ones that are the same to the output
-                $Results += $AssociationsToSame
+                $Results += $TargetAssociations.Where( {$_.TargetId -in ($AssociationsToSame.targetId)} )
                 If ($KeepExisting)
                 {
                     # Send the existing association results to the output
@@ -72,12 +73,26 @@ Function Clone-JCAssociation
                 Else
                 {
                     # Remove exist associations from target
-                    $TargetAssociationsRemoved = $AssociationsToRemove | Get-JCAssociation | Remove-JCAssociation -Force
+                    $TargetAssociationsRemoved = If ($Force)
+                    {
+                        $AssociationsToRemove | Get-JCAssociation | Remove-JCAssociation -Force
+                    }
+                    Else
+                    {
+                        $AssociationsToRemove | Get-JCAssociation | Remove-JCAssociation
+                    }
                     # Send the results of the removal to the output
                     $Results += $TargetAssociationsRemoved
                 }
                 # Add the associations to the target
-                $TargetAssociationsAdded = $AssociationsToAdd | Add-JCAssociation -Id:($Target.($Target.ById)) -Force
+                $TargetAssociationsAdded = If ($Force)
+                {
+                    $AssociationsToAdd | Add-JCAssociation -Id:($Target.($Target.ById)) -Force
+                }
+                Else
+                {
+                    $AssociationsToAdd | Add-JCAssociation -Id:($Target.($Target.ById))
+                }
                 # Send the results of the addition to the output
                 $Results += $TargetAssociationsAdded
                 If (!($Results))
