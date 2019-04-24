@@ -13,7 +13,7 @@ Function Invoke-JCAssociation
     Begin
     {
         # Debug message for parameter call
-        Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDebugMessageBegin) -ArgumentList:($MyInvocation, $PsBoundParameters, $PSCmdlet, $true, 'White', 'Black') -NoNewScope
+        Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDebugMessageBegin) -ArgumentList:($MyInvocation, $PsBoundParameters, $PSCmdlet) -NoNewScope
         $Results = @()
     }
     Process
@@ -48,7 +48,6 @@ Function Invoke-JCAssociation
             $AssociationResults = {
                 Param($Action, $Uri, $Method, $SourceId, $SourceType)
                 Write-Debug ('[UrlTemplate]:' + $Uri)
-                Write-Host ('[UrlTemplate]:' + $Uri) -BackgroundColor:('Cyan') -ForegroundColor:('Black')
                 Return Invoke-JCApi -Method:($Method) -Paginate:($true) -Url:($Uri) | Select-Object @{Name = 'action'; Expression = {$Action}} `
                     , @{Name = 'associationType'; Expression = {
                         If (($_.paths | ForEach-Object {$_.Count}) -eq 1) {'direct'}
@@ -149,7 +148,6 @@ Function Invoke-JCAssociation
                                 # Send body to endpoint.
                                 Write-Verbose ('"' + $Action + '" the association between the "' + $SourceItemTypeNameSingular + '" "' + $SourceItemName + '" and the "' + $TargetItemTypeNameSingular + '" "' + $TargetItemName + '"')
                                 Write-Debug ('[UrlTemplate]:' + $Uri_Associations_POST + '; Body:' + $JsonBody + ';')
-                                Write-Host ('[UrlTemplate]:' + $Uri_Associations_POST + '; Body:' + $JsonBody + ';') -BackgroundColor:('Green') -ForegroundColor:('Black')
                                 If (!($Force))
                                 {
                                     Do
