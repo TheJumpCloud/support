@@ -8,18 +8,18 @@ Function Get-JCAssociation
     {
         $Action = 'get'
         # Build dynamic parameters
-        Return (& $ScriptBlock_DynamicParamAssociation -Action:($Action) -Type:($Type))
+        Return Invoke-Command -ScriptBlock:($ScriptBlock_DynamicParamAssociation) -ArgumentList:($Action, $Type) -NoNewScope
     }
     Begin
     {
         # Debug message for parameter call
-        & $ScriptBlock_DefaultDebugMessageBegin -ScriptMyInvocation:($MyInvocation) -ScriptPsBoundParameters:($PsBoundParameters) -ScriptPSCmdlet:($PSCmdlet)
+        Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDebugMessageBegin) -ArgumentList:($MyInvocation, $PsBoundParameters, $PSCmdlet) -NoNewScope
         $Results = @()
     }
     Process
     {
         # For DynamicParam with a default value set that value and then convert the DynamicParam inputs into new variables for the script to use
-        & $ScriptBlock_DefaultDynamicParamProcess -ScriptPsBoundParameters:($PsBoundParameters) -ScriptPSCmdlet:($PSCmdlet) -DynamicParams:($RuntimeParameterDictionary)
+        Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDynamicParamProcess) -ArgumentList:($PsBoundParameters, $PSCmdlet, $RuntimeParameterDictionary) -NoNewScope
         # Create hash table to store variables
         $FunctionParameters = [ordered]@{}
         # Add input parameters from function in to hash table and filter out unnecessary parameters

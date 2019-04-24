@@ -8,21 +8,21 @@ Function Invoke-JCAssociation
     DynamicParam
     {
         # Build dynamic parameters
-        Return (& $ScriptBlock_DynamicParamAssociation -Action:($Action) -Type:($Type))
+        Return Invoke-Command -ScriptBlock:($ScriptBlock_DynamicParamAssociation) -ArgumentList:($Action, $Type) -NoNewScope
     }
     Begin
     {
         # Debug message for parameter call
-        & $ScriptBlock_DefaultDebugMessageBegin -ScriptMyInvocation:($MyInvocation) -ScriptPsBoundParameters:($PsBoundParameters) -ScriptPSCmdlet:($PSCmdlet)
+        Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDebugMessageBegin) -ArgumentList:($MyInvocation, $PsBoundParameters, $PSCmdlet) -NoNewScope
         $Results = @()
     }
     Process
     {
         # For DynamicParam with a default value set that value and then convert the DynamicParam inputs into new variables for the script to use
-        & $ScriptBlock_DefaultDynamicParamProcess -ScriptPsBoundParameters:($PsBoundParameters) -ScriptPSCmdlet:($PSCmdlet) -DynamicParams:($RuntimeParameterDictionary)
+        Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDynamicParamProcess) -ArgumentList:($PsBoundParameters, $PSCmdlet, $RuntimeParameterDictionary) -NoNewScope
         Try
         {
-            # Scriptblock used for building get associations results
+            # ScriptBlock used for building get associations results
             $AssociationResults = {
                 Param($Action, $Uri, $Method, $SourceId, $SourceType)
                 Write-Debug ('UrlTemplate:' + $Uri)
@@ -61,6 +61,7 @@ Function Invoke-JCAssociation
                     $TargetSearchByValue = $TargetName
                 }
             }
+
             # Get SourceInfo
             $Source = Get-JCObject -Type:($Type) -SearchBy:($SearchBy) -SearchByValue:($SourceItemSearchByValue)
             If ($Source.Count -gt 1)
