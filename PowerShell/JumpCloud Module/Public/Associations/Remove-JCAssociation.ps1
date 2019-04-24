@@ -8,21 +8,18 @@ Function Remove-JCAssociation
     {
         $Action = 'remove'
         # Build dynamic parameters
-        Return (& $ScriptBlock_AssociationDynamicParam -Action:($Action) -Type:($Type))
+        Return (& $ScriptBlock_DynamicParamAssociation -Action:($Action) -Type:($Type))
     }
     Begin
     {
         # Debug message for parameter call
-        Write-Debug ('[CallFunction]' + $MyInvocation.MyCommand.Name + ' ' + ($PsBoundParameters.GetEnumerator() | Sort-Object Key | ForEach-Object { ('-' + $_.Key + ":('" + ($_.Value -join "','") + "')").Replace("'True'", '$True').Replace("'False'", '$False')}) )
-        If ($PSCmdlet.ParameterSetName -ne '__AllParameterSets') {Write-Verbose ('[ParameterSet]' + $MyInvocation.MyCommand.Name + ':' + $PSCmdlet.ParameterSetName)}
+        & $ScriptBlock_DefaultDebugMessageBegin -ScriptMyInvocation:($MyInvocation) -ScriptPsBoundParameters:($PsBoundParameters) -ScriptPSCmdlet:($PSCmdlet)
         $Results = @()
     }
     Process
     {
-        # For parameters with a default value set that value
-        $NewParams.Values | Where-Object {$_.IsSet -and $_.Attributes.ParameterSetName -eq $PSCmdlet.ParameterSetName} | ForEach-Object {$PSBoundParameters[$_.Name] = $_.Value}
-        # Create new variables for script
-        $PsBoundParameters.GetEnumerator() | ForEach-Object { Set-Variable -Name:($_.Key) -Value:($_.Value) -Force}
+        # For DynamicParam with a default value set that value and then convert the DynamicParam inputs into new variables for the script to use
+        & $ScriptBlock_DefaultDynamicParamProcess -ScriptPsBoundParameters:($PsBoundParameters) -ScriptPSCmdlet:($PSCmdlet) -DynamicParams:($RuntimeParameterDictionary)
         # Create hash table to store variables
         $FunctionParameters = [ordered]@{}
         # Add input parameters from function in to hash table and filter out unnecessary parameters

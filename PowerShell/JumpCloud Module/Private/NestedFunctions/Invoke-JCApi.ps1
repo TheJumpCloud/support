@@ -14,8 +14,7 @@ Function Invoke-JCApi
     Begin
     {
         # Debug message for parameter call
-        Write-Debug ('[CallFunction]' + $MyInvocation.MyCommand.Name + ' ' + ($PsBoundParameters.GetEnumerator() | Sort-Object Key | ForEach-Object { ('-' + $_.Key + ":('" + ($_.Value -join "','") + "')").Replace("'True'", '$True').Replace("'False'", '$False')}) )
-        If ($PSCmdlet.ParameterSetName -ne '__AllParameterSets') {Write-Verbose ('[ParameterSet]' + $MyInvocation.MyCommand.Name + ':' + $PSCmdlet.ParameterSetName)}
+        & $ScriptBlock_DefaultDebugMessageBegin -ScriptMyInvocation:($MyInvocation) -ScriptPsBoundParameters:($PsBoundParameters) -ScriptPSCmdlet:($PSCmdlet)
         #Set JC headers
         Write-Verbose 'Verifying JCAPI Key'
         If ($JCAPIKEY.length -ne 40) {Connect-JCOnline}
@@ -47,7 +46,6 @@ Function Invoke-JCApi
             {
                 $SearchOperator = '?'
             }
-
             # Convert passed in body to json
             If ($Body)
             {

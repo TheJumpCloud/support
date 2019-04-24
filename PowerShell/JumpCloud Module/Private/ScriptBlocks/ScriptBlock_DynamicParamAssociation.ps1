@@ -1,4 +1,10 @@
-$ScriptBlock_AssociationDynamicParam = {
+<#
+.EXAMPLE
+& $ScriptBlock_DynamicParamAssociation -Action:('Get') -Type:('Users')
+.EXAMPLE
+Invoke-Command -ScriptBlock:($ScriptBlock_DynamicParamAssociation) -ArgumentList:('get','users')
+#>
+$ScriptBlock_DynamicParamAssociation = {
     Param(
         [string]$Action
         , [string]$Type
@@ -68,7 +74,7 @@ $ScriptBlock_AssociationDynamicParam = {
         $Params += @{'Name' = 'Attributes'; 'Type' = [System.Management.Automation.PSObject]; 'Position' = 7; 'ValueFromPipelineByPropertyName' = $true; 'Alias' = 'compiledAttributes'; }
     }
     # Create new parameters
-    $NewParams = $Params | ForEach-Object { New-Object PSObject -Property:($_) } | New-DynamicParameter
+    $RuntimeParameterDictionary = $Params | ForEach-Object { New-Object PSObject -Property:($_) } | New-DynamicParameter
     # Return parameters
-    Return $NewParams
+    Return $RuntimeParameterDictionary
 }

@@ -15,24 +15,24 @@ Function Get-JCObject
         New-DynamicParameter -Name:('Fields') -Type:([System.Array]) -Position:(3) -ValueFromPipelineByPropertyName -ValidateNotNullOrEmpty -HelpMessage:('An array of the fields/properties/columns you want to return from the search.') -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
         New-DynamicParameter -Name:('Limit') -Type:([System.Int32]) -Position:(4) -ValueFromPipelineByPropertyName -ValidateRange:(1, [int]::MaxValue) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
         New-DynamicParameter -Name:('Skip') -Type:([System.Int32]) -Position:(5) -ValueFromPipelineByPropertyName -ValidateRange:(1, [int]::MaxValue) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
-        New-DynamicParameter -Name:('ReturnHashTable') -Type:([switch]) -Position:(6) -ValueFromPipelineByPropertyName -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
-        New-DynamicParameter -Name:('ReturnCount') -Type:([switch]) -Position:(7) -ValueFromPipelineByPropertyName -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
+        New-DynamicParameter -Name:('ReturnHashTable') -Type:([switch]) -Position:(6) -ValueFromPipelineByPropertyName -RuntimeParameterDictionary:($RuntimeParameterDictionary) -DefaultValue:($false) | Out-Null
+        New-DynamicParameter -Name:('ReturnCount') -Type:([switch]) -Position:(7) -ValueFromPipelineByPropertyName -RuntimeParameterDictionary:($RuntimeParameterDictionary) -DefaultValue:($false) | Out-Null
         Return $RuntimeParameterDictionary
     }
     Begin
     {
-        Write-Debug ('[CallFunction]' + $MyInvocation.MyCommand.Name + ' ' + ($PsBoundParameters.GetEnumerator() | Sort-Object Key | ForEach-Object { ('-' + $_.Key + ":('" + ($_.Value -join "','") + "')").Replace("'True'", '$True').Replace("'False'", '$False') }) )
-        If ($PSCmdlet.ParameterSetName -ne '__AllParameterSets') { Write-Verbose ('[ParameterSet]' + $MyInvocation.MyCommand.Name + ':' + $PSCmdlet.ParameterSetName) }
+        # Debug message for parameter call
+        & $ScriptBlock_DefaultDebugMessageBegin -ScriptMyInvocation:($MyInvocation) -ScriptPsBoundParameters:($PsBoundParameters) -ScriptPSCmdlet:($PSCmdlet)
+        $Results = @()
         $CurrentErrorActionPreference = $ErrorActionPreference
         $ErrorActionPreference = 'Stop'
-        $Results = @()
     }
     Process
     {
+        # For DynamicParam with a default value set that value and then convert the DynamicParam inputs into new variables for the script to use
+        & $ScriptBlock_DefaultDynamicParamProcess -ScriptPsBoundParameters:($PsBoundParameters) -ScriptPSCmdlet:($PSCmdlet) -DynamicParams:($RuntimeParameterDictionary)
         Try
         {
-            # Create new variables for script
-            $PsBoundParameters.GetEnumerator() | ForEach-Object { Set-Variable -Name:($_.Key) -Value:($_.Value) -Force }
             # Identify the command type to run to get the object for the specified item
             $JCTypeItem = $JCTypes | Where-Object { $Type -in $_.Types }
             If ($JCTypeItem)
@@ -170,7 +170,7 @@ Function Get-JCObject
                     {
                         If ($Fields) { $FunctionParameters.Add('Fields', $Fields) }
                         $FunctionParameters.Add('Paginate', $Paginate)
-                        If ($ReturnCount) { $FunctionParameters.Add('ReturnCount', $ReturnCount) }
+                        If ($ReturnCount -eq $true) { $FunctionParameters.Add('ReturnCount', $ReturnCount) }
                     }
                     # Hacky logic for organization
                     If ($Type -in ('organization', 'organizations'))
@@ -187,7 +187,7 @@ Function Get-JCObject
                     # Hacky logic to get g_suite and office_365directories
                     If ($Type -in ('gsuites', 'g_suite', 'office365s', 'office_365'))
                     {
-                        If ($ReturnCount)
+                        If ($ReturnCount -eq $true)
                         {
                             $Directory = $Result.results | Where-Object { $_.Type -eq $TypeNameSingular }
                             $Result.totalCount = $Directory.Count

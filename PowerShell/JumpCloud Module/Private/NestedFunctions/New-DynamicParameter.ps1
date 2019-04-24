@@ -101,14 +101,13 @@ Function New-DynamicParameter ()
         }
         Begin
         {
-            # Create new variables for script
-            $PsBoundParameters.GetEnumerator() | ForEach-Object { Set-Variable -Name:($_.Key) -Value:($_.Value) -Force}
             # Debug message for parameter call
-            Write-Debug ('[CallFunction]' + $MyInvocation.MyCommand.Name + ' ' + ($PsBoundParameters.GetEnumerator() | Sort-Object Key | ForEach-Object { ('-' + $_.Key + ":('" + ($_.Value -join "','") + "')").Replace("'True'", '$True').Replace("'False'", '$False')}) )
-            If($PSCmdlet.ParameterSetName -ne '__AllParameterSets'){Write-Verbose ('[ParameterSet]' + $MyInvocation.MyCommand.Name + ':' + $PSCmdlet.ParameterSetName)}
+            & $ScriptBlock_DefaultDebugMessageBegin -ScriptMyInvocation:($MyInvocation) -ScriptPsBoundParameters:($PsBoundParameters) -ScriptPSCmdlet:($PSCmdlet)
         }
         Process
         {
+            # For DynamicParam with a default value set that value and then convert the DynamicParam inputs into new variables for the script to use
+            & $ScriptBlock_DefaultDynamicParamProcess -ScriptPsBoundParameters:($PsBoundParameters) -ScriptPSCmdlet:($PSCmdlet) -DynamicParams:($RuntimeParameterDictionary)
             Write-Output ('')
             Write-Output ('Numbers: ' + [string]$Numbers + '; FirstName: ' + $FirstName + ';')
         }
@@ -141,7 +140,7 @@ Function New-DynamicParameter ()
         [Parameter(ValueFromPipelineByPropertyName = $true)][Switch]$ValueFromRemainingArguments,
         [Parameter(ValueFromPipelineByPropertyName = $true)][ValidateNotNullOrEmpty()][System.String]$HelpMessage,
         [Parameter(ValueFromPipelineByPropertyName = $true)][Switch]$DontShow,
-        [Parameter(ValueFromPipelineByPropertyName = $true)][ValidateNotNullOrEmpty()]$DefaultValue,
+        [Parameter(ValueFromPipelineByPropertyName = $true)][ValidateNotNullOrEmpty()]$DefaultValue = $null,
         # These parameters are each their own attribute
         [Parameter(ValueFromPipelineByPropertyName = $true)][System.String[]]$Alias = @(),
         [Parameter(ValueFromPipelineByPropertyName = $true)][Switch]$ValidateNotNull,
@@ -269,10 +268,7 @@ Function New-DynamicParameter ()
         If (-not $RuntimeParameterDictionary.ContainsKey($Name))
         {
             $RuntimeParameter = New-Object -TypeName System.Management.Automation.RuntimeDefinedParameter($Name, $Type, $AttributeCollection)
-            If ($DefaultValue)
-            {
-                $RuntimeParameter.Value = $DefaultValue
-            }
+            $RuntimeParameter.Value = $DefaultValue
             $RuntimeParameterDictionary.Add($Name, $RuntimeParameter)
         }
         Else
