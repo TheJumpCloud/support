@@ -2,9 +2,9 @@
 .EXAMPLE
 & $ScriptBlock_DefaultDebugMessageBegin -ScriptMyInvocation:($MyInvocation) -ScriptPsBoundParameters:($PsBoundParameters) -ScriptPSCmdlet:($PSCmdlet)
 .EXAMPLE
-Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDebugMessageBegin) -ArgumentList:($MyInvocation,$PsBoundParameters,$PSCmdlet)
+Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDebugMessageBegin) -ArgumentList:($MyInvocation,$PsBoundParameters,$PSCmdlet) -NoNewScope
 .EXAMPLE
-& $ScriptBlock_DefaultDebugMessageBegin -ScriptMyInvocation:($MyInvocation) -ScriptPsBoundParameters:($PsBoundParameters) -ScriptPSCmdlet:($PSCmdlet) -ShowInConsole:($true) -BackgroundColor:('Green') -ForegroundColor:('Black')
+Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDebugMessageBegin) -ArgumentList:($MyInvocation,$PsBoundParameters,$PSCmdlet, $true, 'Green', 'Black') -NoNewScope
 #>
 $ScriptBlock_DefaultDebugMessageBegin = {
     Param(

@@ -2,7 +2,7 @@
 .EXAMPLE
 & $ScriptBlock_DefaultDynamicParamProcess -ScriptPsBoundParameters:($PsBoundParameters) -ScriptPSCmdlet:($PSCmdlet) -DynamicParams:($RuntimeParameterDictionary)
 .EXAMPLE
-Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDynamicParamProcess) -ArgumentList:($PsBoundParameters,$PSCmdlet,$RuntimeParameterDictionary)
+Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDynamicParamProcess) -ArgumentList:($PsBoundParameters,$PSCmdlet,$RuntimeParameterDictionary) -NoNewScope
 #>
 $ScriptBlock_DefaultDynamicParamProcess = {
     Param(

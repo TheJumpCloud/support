@@ -2,7 +2,7 @@
 .EXAMPLE
 & $ScriptBlock_DynamicParamAssociation -Action:('Get') -Type:('Users')
 .EXAMPLE
-Invoke-Command -ScriptBlock:($ScriptBlock_DynamicParamAssociation) -ArgumentList:('get','users')
+Invoke-Command -ScriptBlock:($ScriptBlock_DynamicParamAssociation) -ArgumentList:('get','users') -NoNewScope
 #>
 $ScriptBlock_DynamicParamAssociation = {
     Param(
