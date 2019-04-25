@@ -31,7 +31,7 @@ Function Invoke-JCAssociation
             $URL_Template_Associations_Targets = '/api/v2/{0}/{1}/associations?targets={2}' # $SourcePlural, $SourceId, $TargetSingular
             $URL_Template_Associations_Members = '/api/v2/{0}/{1}/members' # $SourcePlural, $SourceId
             # Determine to search by id or name
-            $SearchBy = $PSCmdlet.ParameterSetName
+            $SearchBy = ($PSCmdlet.ParameterSetName).Split(':')[0]
             Switch ($SearchBy)
             {
                 'ById'
