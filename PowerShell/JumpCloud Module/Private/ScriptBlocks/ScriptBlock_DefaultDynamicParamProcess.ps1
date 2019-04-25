@@ -6,9 +6,9 @@ Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDynamicParamProcess) -ArgumentL
 #>
 $ScriptBlock_DefaultDynamicParamProcess = {
     Param(
-        $ScriptPsBoundParameters
-        , $ScriptPSCmdlet
-        , $DynamicParams
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0)]$ScriptPsBoundParameters
+        , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 1)][ValidateNotNullOrEmpty()]$ScriptPSCmdlet
+        , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 2)][ValidateNotNullOrEmpty()]$DynamicParams
     )
     # For DynamicParam with a default value set that value
     $DynamicParams.Values |

@@ -6,8 +6,8 @@ Invoke-Command -ScriptBlock:($ScriptBlock_DynamicParamAssociation) -ArgumentList
 #>
 $ScriptBlock_DynamicParamAssociation = {
     Param(
-        [string]$Action
-        , [string]$Type
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0)][ValidateNotNullOrEmpty()][string]$Action
+        , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 1)][string]$Type
     )
     # Build parameter array
     $Params = @()

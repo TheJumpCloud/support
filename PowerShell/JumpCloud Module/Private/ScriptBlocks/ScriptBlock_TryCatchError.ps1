@@ -1,6 +1,6 @@
 $ScriptBlock_TryCatchError = {
     Param(
-        $ErrorObject
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0)]$ErrorObject
     )
     $Exception = $ErrorObject.Exception
     $Message = $Exception.Message

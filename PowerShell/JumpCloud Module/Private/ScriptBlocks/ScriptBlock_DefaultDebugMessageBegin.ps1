@@ -8,12 +8,12 @@ Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDebugMessageBegin) -ArgumentLis
 #>
 $ScriptBlock_DefaultDebugMessageBegin = {
     Param(
-        $ScriptMyInvocation
-        , $ScriptPsBoundParameters
-        , $ScriptPSCmdlet
-        , [bool]$ShowInConsole = $false
-        , [ValidateSet('Black', 'DarkBlue', 'DarkGreen', 'DarkCyan', 'DarkRed', 'DarkMagenta', 'DarkYellow', 'Gray', 'DarkGray', 'Blue', 'Green', 'Cyan', 'Red', 'Magenta', 'Yellow', 'White')]$BackgroundColor = 'Cyan'
-        , [ValidateSet('Black', 'DarkBlue', 'DarkGreen', 'DarkCyan', 'DarkRed', 'DarkMagenta', 'DarkYellow', 'Gray', 'DarkGray', 'Blue', 'Green', 'Cyan', 'Red', 'Magenta', 'Yellow', 'White')]$ForegroundColor = 'Black'
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0)][ValidateNotNullOrEmpty()]$ScriptMyInvocation
+        , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 1)]$ScriptPsBoundParameters
+        , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 2)][ValidateNotNullOrEmpty()]$ScriptPSCmdlet
+        , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 3)][bool]$ShowInConsole = $false
+        , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 4)][ValidateSet('Black', 'DarkBlue', 'DarkGreen', 'DarkCyan', 'DarkRed', 'DarkMagenta', 'DarkYellow', 'Gray', 'DarkGray', 'Blue', 'Green', 'Cyan', 'Red', 'Magenta', 'Yellow', 'White')]$BackgroundColor = 'Cyan'
+        , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 5)][ValidateSet('Black', 'DarkBlue', 'DarkGreen', 'DarkCyan', 'DarkRed', 'DarkMagenta', 'DarkYellow', 'Gray', 'DarkGray', 'Blue', 'Green', 'Cyan', 'Red', 'Magenta', 'Yellow', 'White')]$ForegroundColor = 'Black'
     )
     # Debug message for parameter call
     If ($ShowInConsole)
