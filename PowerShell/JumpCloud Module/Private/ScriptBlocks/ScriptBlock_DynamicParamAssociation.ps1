@@ -62,12 +62,12 @@ $ScriptBlock_DynamicParamAssociation = {
     }
     If ($Action -eq 'get')
     {
-        $Params += @{'Name' = 'Direct'; 'Type' = [Switch]; 'Position' = 5; 'ValueFromPipelineByPropertyName' = $true; 'DefaultValue' = $false; }
-        $Params += @{'Name' = 'Indirect'; 'Type' = [Switch]; 'Position' = 6; 'ValueFromPipelineByPropertyName' = $true; 'DefaultValue' = $false; }
-        $Params += @{'Name' = 'ReturnInfo'; 'Type' = [Switch]; 'Position' = 7; 'ValueFromPipelineByPropertyName' = $true; 'DefaultValue' = $false; }
-        $Params += @{'Name' = 'ReturnNames'; 'Type' = [Switch]; 'Position' = 8; 'ValueFromPipelineByPropertyName' = $true; 'DefaultValue' = $false; }
-        $Params += @{'Name' = 'ReturnVisualPath'; 'Type' = [Switch]; 'Position' = 9; 'ValueFromPipelineByPropertyName' = $true; 'DefaultValue' = $false; }
-        $Params += @{'Name' = 'Raw'; 'Type' = [Switch]; 'Position' = 10; 'ValueFromPipelineByPropertyName' = $true; 'DefaultValue' = $false; }
+        $Params += @{'Name' = 'Direct'; 'Type' = [Switch]; 'Position' = 5; 'ValueFromPipelineByPropertyName' = $true; 'ParameterSets' = @('ById', 'ByName', 'Default', 'Raw'); 'DefaultValue' = $false; }
+        $Params += @{'Name' = 'Indirect'; 'Type' = [Switch]; 'Position' = 6; 'ValueFromPipelineByPropertyName' = $true; 'ParameterSets' = @('ById', 'ByName', 'Default', 'Raw'); 'DefaultValue' = $false; }
+        $Params += @{'Name' = 'ReturnInfo'; 'Type' = [Switch]; 'Position' = 7; 'ValueFromPipelineByPropertyName' = $true; 'ParameterSets' = @('ById', 'ByName', 'Default'); 'DefaultValue' = $false; }
+        $Params += @{'Name' = 'ReturnNames'; 'Type' = [Switch]; 'Position' = 8; 'ValueFromPipelineByPropertyName' = $true; 'ParameterSets' = @('ById', 'ByName', 'Default'); 'DefaultValue' = $false; }
+        $Params += @{'Name' = 'ReturnVisualPath'; 'Type' = [Switch]; 'Position' = 9; 'ValueFromPipelineByPropertyName' = $true; 'ParameterSets' = @('ById', 'ByName', 'Default'); 'DefaultValue' = $false; }
+        $Params += @{'Name' = 'Raw'; 'Type' = [Switch]; 'Position' = 10; 'ValueFromPipelineByPropertyName' = $true; 'ParameterSets' = @('ById', 'ByName', 'Raw'); 'DefaultValue' = $false; }
     }
     If ($Action -in ('add', 'remove'))
     {
