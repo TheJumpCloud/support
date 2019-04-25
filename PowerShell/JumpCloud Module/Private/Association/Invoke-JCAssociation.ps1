@@ -49,18 +49,20 @@ Function Invoke-JCAssociation
                 Param($Action, $Uri, $Method, $Source, $ReturnInfo, $ReturnNames, $ReturnVisualPath, $Raw)
                 Write-Debug ('[UrlTemplate]:' + $Uri)
                 $Associations = Invoke-JCApi -Method:($Method) -Paginate:($true) -Url:($Uri)
-                If ($Raw)
+
+                $AssociationsOut = @()
+                ForEach ($Association In $Associations)
                 {
-                    $AssociationsOut = $Associations
-                }
-                Else
-                {
-                    $AssociationsOut = @()
-                    ForEach ($Association In $Associations)
+                    $associationType = If (($Association | ForEach-Object {$_.paths.Count}) -eq 1) {'direct'}
+                    ElseIf (($Association | ForEach-Object {$_.paths.Count}) -gt 1) {'indirect'}
+                    Else {'unknown'}
+                    If ($Raw)
                     {
-                        $associationType = If (($Association.paths | ForEach-Object {$_.Count}) -eq 1) {'direct'}
-                        ElseIf (($Association.paths | ForEach-Object {$_.Count}) -gt 1) {'indirect'}
-                        Else {'unknown'}
+                        Add-Member -InputObject:($Association) -NotePropertyName:('associationType') -NotePropertyValue:($associationType);
+                        $AssociationsOut += $Association
+                    }
+                    Else
+                    {
                         $AssociationHash = [ordered]@{
                             'action'           = $Action;
                             'associationType'  = $associationType;
@@ -175,15 +177,23 @@ Function Invoke-JCAssociation
                             $Association = Invoke-Command -ScriptBlock:($ScriptBlock_AssociationResults) -ArgumentList:($Action, $Uri_Associations_GET, 'GET', $SourceItem, $ReturnInfo, $ReturnNames, $ReturnVisualPath, $Raw)
                             If ($Direct -eq $true)
                             {
-                                $Results += $Association.Where( {$_.associationType -eq 'direct'} )
+                                $AssociationOut = $Association.Where( {$_.associationType -eq 'direct'} )
                             }
                             If ($Indirect -eq $true)
                             {
-                                $Results += $Association.Where( {$_.associationType -eq 'indirect'} )
+                                $AssociationOut = $Association.Where( {$_.associationType -eq 'indirect'} )
                             }
                             If (!($Direct) -and !($Indirect))
                             {
-                                $Results += $Association
+                                $AssociationOut = $Association
+                            }
+                            If ($Raw)
+                            {
+                                $Results += $AssociationOut | Select-Object -ExcludeProperty:('associationType')
+                            }
+                            Else
+                            {
+                                $Results += $AssociationOut
                             }
                         }
                         Else
