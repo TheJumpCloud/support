@@ -172,14 +172,14 @@ Function Get-DynamicParamAssociation
     }
     If ($Action -eq 'get')
     {
-        # $Params += @{
-        #     'Name'                            = 'Raw';
-        #     'Type'                            = [Switch];
-        #     'Position'                        = 5;
-        #     'ValueFromPipelineByPropertyName' = $true;
-        #     'ParameterSets'                   = @('ById:Raw');
-        #     'DefaultValue'                    = $false;
-        # }
+        $Params += @{
+            'Name'                            = 'Raw';
+            'Type'                            = [Switch];
+            'Position'                        = 5;
+            'ValueFromPipelineByPropertyName' = $true;
+            'ParameterSets'                   = @('ById:Return', 'ByName:Return');
+            'DefaultValue'                    = $false;
+        }
         $Params += @{
             'Name'                            = 'ReturnInfo';
             'Type'                            = [Switch];
