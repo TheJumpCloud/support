@@ -37,7 +37,7 @@ Function Get-DynamicParamAssociation
                     'Mandatory'                       = $false;
                     'ValidateNotNullOrEmpty'          = $true;
                     'Alias'                           = ($JCTypes.ById).Where( { $_ -ne 'Id' }) | Select-Object -Unique;
-                    'ParameterSets'                   = @('ById:Show');
+                    'ParameterSets'                   = @('ById');
                     'DefaultValue'                    = $JCObject.($JCObject.ById)
                 }
                 $Params += @{
@@ -48,7 +48,7 @@ Function Get-DynamicParamAssociation
                     'Mandatory'                       = $false;
                     'ValidateNotNullOrEmpty'          = $true;
                     'Alias'                           = ($JCTypes.ByName).Where( { $_ -ne 'Name' }) | Select-Object -Unique;
-                    'ParameterSets'                   = @('ByName:Show');
+                    'ParameterSets'                   = @('ByName');
                     'DefaultValue'                    = $JCObject.($JCObject.ByName)
                 }
                 $Params += @{
@@ -75,7 +75,7 @@ Function Get-DynamicParamAssociation
                     'ValidateNotNullOrEmpty'          = $true;
                     'Alias'                           = ($JCTypes.ById).Where( { $_ -ne 'Id' }) | Select-Object -Unique;
                     'ValidateSet'                     = @($JCObject.($JCObject.ById | Select-Object -Unique));
-                    'ParameterSets'                   = @('ById:Show');
+                    'ParameterSets'                   = @('ById');
                 }
                 $Params += @{
                     'Name'                            = 'Name';
@@ -86,7 +86,7 @@ Function Get-DynamicParamAssociation
                     'ValidateNotNullOrEmpty'          = $true;
                     'Alias'                           = ($JCTypes.ByName).Where( { $_ -ne 'Name' }) | Select-Object -Unique;
                     'ValidateSet'                     = @($JCObject.($JCObject.ByName | Select-Object -Unique));
-                    'ParameterSets'                   = @('ByName:Show');
+                    'ParameterSets'                   = @('ByName');
                 }
                 $Params += @{
                     'Name'                            = 'TargetType';
@@ -112,7 +112,7 @@ Function Get-DynamicParamAssociation
                 'Mandatory'                       = $true;
                 'ValidateNotNullOrEmpty'          = $true;
                 'Alias'                           = ($JCTypes.ById).Where( { $_ -ne 'Id' }) | Select-Object -Unique;
-                'ParameterSets'                   = @('ById:Show');
+                'ParameterSets'                   = @('ById');
             }
             $Params += @{
                 'Name'                            = 'Name';
@@ -122,7 +122,7 @@ Function Get-DynamicParamAssociation
                 'Mandatory'                       = $true;
                 'ValidateNotNullOrEmpty'          = $true;
                 'Alias'                           = ($JCTypes.ByName).Where( { $_ -ne 'Name' }) | Select-Object -Unique;
-                'ParameterSets'                   = @('ByName:Show');
+                'ParameterSets'                   = @('ByName');
             }
             $Params += @{
                 'Name'                            = 'TargetType';
@@ -147,7 +147,7 @@ Function Get-DynamicParamAssociation
             'Mandatory'                       = $true;
             'ValidateNotNullOrEmpty'          = $true;
             'Alias'                           = ($JCTypes.ById).Where( { $_ -ne 'Id' }) | Select-Object -Unique;
-            'ParameterSets'                   = @('ById:Show');
+            'ParameterSets'                   = @('ById');
         }
         $Params += @{
             'Name'                            = 'Name';
@@ -157,7 +157,7 @@ Function Get-DynamicParamAssociation
             'Mandatory'                       = $true;
             'ValidateNotNullOrEmpty'          = $true;
             'Alias'                           = ($JCTypes.ByName).Where( { $_ -ne 'Name' }) | Select-Object -Unique;
-            'ParameterSets'                   = @('ByName:Show');
+            'ParameterSets'                   = @('ByName');
         }
         $Params += @{
             'Name'                            = 'TargetType';
@@ -177,43 +177,43 @@ Function Get-DynamicParamAssociation
             'Type'                            = [Switch];
             'Position'                        = 5;
             'ValueFromPipelineByPropertyName' = $true;
-            'ParameterSets'                   = @('ById:Show', 'ByName:Show');
+            'ParameterSets'                   = @('ById', 'ByName');
             'DefaultValue'                    = $false;
             'DontShow'                        = $true;
         }
         $Params += @{
-            'Name'                            = 'ShowInfo';
+            'Name'                            = 'IncludeInfo';
             'Type'                            = [Switch];
             'Position'                        = 5;
             'ValueFromPipelineByPropertyName' = $true;
-            'ParameterSets'                   = @('ById:Show', 'ByName:Show');
+            'ParameterSets'                   = @('ById', 'ByName');
             'DefaultValue'                    = $false;
         }
         $Params += @{
-            'Name'                            = 'ShowNames';
+            'Name'                            = 'IncludeNames';
             'Type'                            = [Switch];
             'Position'                        = 6;
             'ValueFromPipelineByPropertyName' = $true;
-            'ParameterSets'                   = @('ById:Show', 'ByName:Show');
+            'ParameterSets'                   = @('ById', 'ByName');
             'DefaultValue'                    = $false;
         }
         $Params += @{
-            'Name'                            = 'ShowVisualPath';
+            'Name'                            = 'IncludeVisualPath';
             'Type'                            = [Switch];
             'Position'                        = 7;
             'ValueFromPipelineByPropertyName' = $true;
-            'ParameterSets'                   = @('ById:Show', 'ByName:Show');
+            'ParameterSets'                   = @('ById', 'ByName');
             'DefaultValue'                    = $false;
         }
         $Params += @{
-            'Name'                            = 'ShowDirect';
+            'Name'                            = 'Direct';
             'Type'                            = [Switch];
             'Position'                        = 8;
             'ValueFromPipelineByPropertyName' = $true;
             'DefaultValue'                    = $false;
         }
         $Params += @{
-            'Name'                            = 'ShowIndirect';
+            'Name'                            = 'Indirect';
             'Type'                            = [Switch];
             'Position'                        = 8;
             'ValueFromPipelineByPropertyName' = $true;
@@ -229,7 +229,7 @@ Function Get-DynamicParamAssociation
             'ValueFromPipelineByPropertyName' = $true;
             'Mandatory'                       = $true;
             'ValidateNotNullOrEmpty'          = $true;
-            'ParameterSets'                   = @('ById:Show');
+            'ParameterSets'                   = @('ById');
         }
         $Params += @{
             'Name'                            = 'TargetName';
@@ -238,7 +238,7 @@ Function Get-DynamicParamAssociation
             'ValueFromPipelineByPropertyName' = $true;
             'Mandatory'                       = $true;
             'ValidateNotNullOrEmpty'          = $true;
-            'ParameterSets'                   = @('ByName:Show');
+            'ParameterSets'                   = @('ByName');
         }
         $Params += @{
             'Name'                            = 'Force';

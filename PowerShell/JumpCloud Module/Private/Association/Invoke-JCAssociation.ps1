@@ -47,7 +47,7 @@ Function Invoke-JCAssociation
             }
             # ScriptBlock used for building get associations results
             $ScriptBlock_AssociationResults = {
-                Param($Action, $Uri, $Method, $Source, $ShowInfo, $ShowNames, $ShowVisualPath, $Raw)
+                Param($Action, $Uri, $Method, $Source, $IncludeInfo, $IncludeNames, $IncludeVisualPath, $Raw)
                 Write-Debug ('[UrlTemplate]:' + $Uri)
                 $Associations = Invoke-JCApi -Method:($Method) -Paginate:($true) -Url:($Uri)
 
@@ -86,24 +86,24 @@ Function Invoke-JCAssociation
                             Where-Object {$_ -notin ('id', 'type')} |
                             ForEach-Object {$AssociationHash.Add($_, $Association.($_)) | Out-Null}
                         # If any "Return*" switch is provided get the target object
-                        If ($ShowInfo -or $ShowNames -or $ShowVisualPath)
+                        If ($IncludeInfo -or $IncludeNames -or $IncludeVisualPath)
                         {
                             $Target = Get-JCObject -Type:($Association.type) -Id:($Association.id)
                         }
                         # Show source and target info
-                        If ($ShowInfo)
+                        If ($IncludeInfo)
                         {
                             $AssociationHash.info = $Source
                             $AssociationHash.targetInfo = $Target
                         }
                         # Show names of source and target
-                        If ($ShowNames)
+                        If ($IncludeNames)
                         {
                             $AssociationHash.name = $Source.($Source.ByName)
                             $AssociationHash.targetName = $Target.($Target.ByName)
                         }
                         # Map out the associations path and show
-                        If ($ShowVisualPath)
+                        If ($IncludeVisualPath)
                         {
                             class AssociationMap
                             {
@@ -175,16 +175,16 @@ Function Invoke-JCAssociation
                         # Call endpoint
                         If ($Action -eq 'get')
                         {
-                            $Association = Invoke-Command -ScriptBlock:($ScriptBlock_AssociationResults) -ArgumentList:($Action, $Uri_Associations_GET, 'GET', $SourceItem, $ShowInfo, $ShowNames, $ShowVisualPath, $Raw)
-                            If ($ShowDirect -eq $true)
+                            $Association = Invoke-Command -ScriptBlock:($ScriptBlock_AssociationResults) -ArgumentList:($Action, $Uri_Associations_GET, 'GET', $SourceItem, $IncludeInfo, $IncludeNames, $IncludeVisualPath, $Raw)
+                            If ($Direct -eq $true)
                             {
                                 $AssociationOut = $Association.Where( {$_.associationType -eq 'direct'} )
                             }
-                            If ($ShowIndirect -eq $true)
+                            If ($Indirect -eq $true)
                             {
                                 $AssociationOut = $Association.Where( {$_.associationType -eq 'indirect'} )
                             }
-                            If (!($ShowDirect) -and !($ShowIndirect))
+                            If (!($Direct) -and !($Indirect))
                             {
                                 $AssociationOut = $Association
                             }
@@ -216,7 +216,7 @@ Function Invoke-JCAssociation
                                 # Get the existing association before removing it
                                 If ($Action -eq 'remove')
                                 {
-                                    $RemoveAssociation = Invoke-Command -ScriptBlock:($ScriptBlock_AssociationResults) -ArgumentList:($Action, $Uri_Associations_GET, 'GET', $SourceItem, $ShowInfo, $ShowNames, $ShowVisualPath, $Raw) |
+                                    $RemoveAssociation = Invoke-Command -ScriptBlock:($ScriptBlock_AssociationResults) -ArgumentList:($Action, $Uri_Associations_GET, 'GET', $SourceItem, $IncludeInfo, $IncludeNames, $IncludeVisualPath, $Raw) |
                                         Where-Object {$_.TargetId -eq $TargetItemId}
                                     $IndirectAssociations = $RemoveAssociation.Where( {$_.associationType -ne 'direct'} )
                                     $Results += $RemoveAssociation.Where( {$_.associationType -eq 'direct'} )
@@ -253,7 +253,7 @@ Function Invoke-JCAssociation
                                 # Get the newly created association
                                 If ($Action -eq 'add')
                                 {
-                                    $Results += Invoke-Command -ScriptBlock:($ScriptBlock_AssociationResults) -ArgumentList:($Action, $Uri_Associations_GET, 'GET', $SourceItem, $ShowInfo, $ShowNames, $ShowVisualPath, $Raw) |
+                                    $Results += Invoke-Command -ScriptBlock:($ScriptBlock_AssociationResults) -ArgumentList:($Action, $Uri_Associations_GET, 'GET', $SourceItem, $IncludeInfo, $IncludeNames, $IncludeVisualPath, $Raw) |
                                         Where-Object {$_.TargetId -eq $TargetItemId}
                                 }
                             }
