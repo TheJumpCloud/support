@@ -182,23 +182,21 @@ Function Get-DynamicParamAssociation
             'DontShow'                        = $true;
         }
         $Params += @{
-            'Name'                            = 'IncludeInfo';
+            'Name'                            = 'Direct';
             'Type'                            = [Switch];
             'Position'                        = 5;
             'ValueFromPipelineByPropertyName' = $true;
-            'ParameterSets'                   = @('ById', 'ByName');
             'DefaultValue'                    = $false;
         }
         $Params += @{
-            'Name'                            = 'IncludeNames';
+            'Name'                            = 'Indirect';
             'Type'                            = [Switch];
             'Position'                        = 6;
             'ValueFromPipelineByPropertyName' = $true;
-            'ParameterSets'                   = @('ById', 'ByName');
             'DefaultValue'                    = $false;
         }
         $Params += @{
-            'Name'                            = 'IncludeVisualPath';
+            'Name'                            = 'IncludeInfo';
             'Type'                            = [Switch];
             'Position'                        = 7;
             'ValueFromPipelineByPropertyName' = $true;
@@ -206,17 +204,19 @@ Function Get-DynamicParamAssociation
             'DefaultValue'                    = $false;
         }
         $Params += @{
-            'Name'                            = 'Direct';
+            'Name'                            = 'IncludeNames';
             'Type'                            = [Switch];
             'Position'                        = 8;
             'ValueFromPipelineByPropertyName' = $true;
+            'ParameterSets'                   = @('ById', 'ByName');
             'DefaultValue'                    = $false;
         }
         $Params += @{
-            'Name'                            = 'Indirect';
+            'Name'                            = 'IncludeVisualPath';
             'Type'                            = [Switch];
-            'Position'                        = 8;
+            'Position'                        = 9;
             'ValueFromPipelineByPropertyName' = $true;
+            'ParameterSets'                   = @('ById', 'ByName');
             'DefaultValue'                    = $false;
         }
     }
