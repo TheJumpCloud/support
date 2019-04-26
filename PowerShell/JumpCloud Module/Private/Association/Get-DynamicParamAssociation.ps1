@@ -1,10 +1,5 @@
-<#
-.EXAMPLE
-& $ScriptBlock_DynamicParamAssociation -Action:('Get') -Type:('Users')
-.EXAMPLE
-Invoke-Command -ScriptBlock:($ScriptBlock_DynamicParamAssociation) -ArgumentList:('get','users') -NoNewScope
-#>
-$ScriptBlock_DynamicParamAssociation = {
+Function Get-DynamicParamAssociation
+{
     Param(
         [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0)][ValidateNotNullOrEmpty()][string]$Action
         , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 1)][string]$Type

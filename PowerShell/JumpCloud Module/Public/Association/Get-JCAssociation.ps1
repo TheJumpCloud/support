@@ -8,7 +8,7 @@ Function Get-JCAssociation
     {
         $Action = 'get'
         # Build dynamic parameters
-        $RuntimeParameterDictionary = Invoke-Command -ScriptBlock:($ScriptBlock_DynamicParamAssociation) -ArgumentList:($Action, $Type)
+        $RuntimeParameterDictionary = Get-DynamicParamAssociation -Action:($Action) -Type:($Type)
         Return $RuntimeParameterDictionary
     }
     Begin
