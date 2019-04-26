@@ -43,7 +43,6 @@ $ScriptBlock_DynamicParamAssociation = {
                     'ValidateNotNullOrEmpty'          = $true;
                     'Alias'                           = ($JCTypes.ById).Where( { $_ -ne 'Id' }) | Select-Object -Unique;
                     'ParameterSets'                   = @('ById:Return');
-                    # 'ParameterSets'                   = @('ById:Return', 'ById:Raw');
                     'DefaultValue'                    = $JCObject.($JCObject.ById)
                 }
                 $Params += @{
@@ -54,7 +53,7 @@ $ScriptBlock_DynamicParamAssociation = {
                     'Mandatory'                       = $false;
                     'ValidateNotNullOrEmpty'          = $true;
                     'Alias'                           = ($JCTypes.ByName).Where( { $_ -ne 'Name' }) | Select-Object -Unique;
-                    'ParameterSets'                   = @('ByName:Return', 'ByName:Raw');
+                    'ParameterSets'                   = @('ByName:Return');
                     'DefaultValue'                    = $JCObject.($JCObject.ByName)
                 }
                 $Params += @{
@@ -82,7 +81,6 @@ $ScriptBlock_DynamicParamAssociation = {
                     'Alias'                           = ($JCTypes.ById).Where( { $_ -ne 'Id' }) | Select-Object -Unique;
                     'ValidateSet'                     = @($JCObject.($JCObject.ById | Select-Object -Unique));
                     'ParameterSets'                   = @('ById:Return');
-                    # 'ParameterSets'                   = @('ById:Return', 'ById:Raw');
                 }
                 $Params += @{
                     'Name'                            = 'Name';
@@ -94,7 +92,6 @@ $ScriptBlock_DynamicParamAssociation = {
                     'Alias'                           = ($JCTypes.ByName).Where( { $_ -ne 'Name' }) | Select-Object -Unique;
                     'ValidateSet'                     = @($JCObject.($JCObject.ByName | Select-Object -Unique));
                     'ParameterSets'                   = @('ByName:Return');
-                    # 'ParameterSets' = @('ByName:Return', 'ByName:Raw');
                 }
                 $Params += @{
                     'Name'                            = 'TargetType';
@@ -121,7 +118,6 @@ $ScriptBlock_DynamicParamAssociation = {
                 'ValidateNotNullOrEmpty'          = $true;
                 'Alias'                           = ($JCTypes.ById).Where( { $_ -ne 'Id' }) | Select-Object -Unique;
                 'ParameterSets'                   = @('ById:Return');
-                # 'ParameterSets'                   = @('ById:Return', 'ById:Raw');
             }
             $Params += @{
                 'Name'                            = 'Name';
@@ -131,7 +127,7 @@ $ScriptBlock_DynamicParamAssociation = {
                 'Mandatory'                       = $true;
                 'ValidateNotNullOrEmpty'          = $true;
                 'Alias'                           = ($JCTypes.ByName).Where( { $_ -ne 'Name' }) | Select-Object -Unique;
-                'ParameterSets'                   = @('ByName:Return', 'ByName:Raw');
+                'ParameterSets'                   = @('ByName:Return');
             }
             $Params += @{
                 'Name'                            = 'TargetType';
@@ -157,7 +153,6 @@ $ScriptBlock_DynamicParamAssociation = {
             'ValidateNotNullOrEmpty'          = $true;
             'Alias'                           = ($JCTypes.ById).Where( { $_ -ne 'Id' }) | Select-Object -Unique;
             'ParameterSets'                   = @('ById:Return');
-            # 'ParameterSets'                   = @('ById:Return', 'ById:Raw');
         }
         $Params += @{
             'Name'                            = 'Name';
@@ -167,7 +162,7 @@ $ScriptBlock_DynamicParamAssociation = {
             'Mandatory'                       = $true;
             'ValidateNotNullOrEmpty'          = $true;
             'Alias'                           = ($JCTypes.ByName).Where( { $_ -ne 'Name' }) | Select-Object -Unique;
-            'ParameterSets'                   = @('ByName:Return', 'ByName:Raw');
+            'ParameterSets'                   = @('ByName:Return');
         }
         $Params += @{
             'Name'                            = 'TargetType';
@@ -182,14 +177,14 @@ $ScriptBlock_DynamicParamAssociation = {
     }
     If ($Action -eq 'get')
     {
-        $Params += @{
-            'Name'                            = 'Raw';
-            'Type'                            = [Switch];
-            'Position'                        = 5;
-            'ValueFromPipelineByPropertyName' = $true;
-            'ParameterSets'                   = @('ById:Raw', 'ByName:Raw');
-            'DefaultValue'                    = $false;
-        }
+        # $Params += @{
+        #     'Name'                            = 'Raw';
+        #     'Type'                            = [Switch];
+        #     'Position'                        = 5;
+        #     'ValueFromPipelineByPropertyName' = $true;
+        #     'ParameterSets'                   = @('ById:Raw');
+        #     'DefaultValue'                    = $false;
+        # }
         $Params += @{
             'Name'                            = 'ReturnInfo';
             'Type'                            = [Switch];
@@ -239,7 +234,6 @@ $ScriptBlock_DynamicParamAssociation = {
             'Mandatory'                       = $true;
             'ValidateNotNullOrEmpty'          = $true;
             'ParameterSets'                   = @('ById:Return');
-            # 'ParameterSets'                   = @('ById:Return', 'ById:Raw');
         }
         $Params += @{
             'Name'                            = 'TargetName';
@@ -248,7 +242,7 @@ $ScriptBlock_DynamicParamAssociation = {
             'ValueFromPipelineByPropertyName' = $true;
             'Mandatory'                       = $true;
             'ValidateNotNullOrEmpty'          = $true;
-            'ParameterSets'                   = @('ByName:Return', 'ByName:Raw');
+            'ParameterSets'                   = @('ByName:Return');
         }
         $Params += @{
             'Name'                            = 'Force';
