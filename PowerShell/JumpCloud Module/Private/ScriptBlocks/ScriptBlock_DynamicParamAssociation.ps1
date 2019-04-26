@@ -34,50 +34,239 @@ $ScriptBlock_DynamicParamAssociation = {
             If ($JCObjectCount -eq 1)
             {
                 # Don't require Id and Name to be passed through and set a default value
-                $Params += @{'Name' = 'Id'; 'Type' = [System.String[]]; 'Position' = 2; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $false; 'ValidateNotNullOrEmpty' = $true; 'Alias' = ($JCTypes.ById).Where( { $_ -ne 'Id' }) | Select-Object -Unique; 'ParameterSets' = @('ById:Return', 'ById:Raw'); 'DefaultValue' = $JCObject.($JCObject.ById) }
-                $Params += @{'Name' = 'Name'; 'Type' = [System.String[]]; 'Position' = 3; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $false; 'ValidateNotNullOrEmpty' = $true; 'Alias' = ($JCTypes.ByName).Where( { $_ -ne 'Name' }) | Select-Object -Unique; 'ParameterSets' = @('ByName:Return', 'ByName:Raw'); 'DefaultValue' = $JCObject.($JCObject.ByName) }
-                $Params += @{'Name' = 'TargetType'; 'Type' = [System.String[]]; 'Position' = 4; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $false; 'ValidateNotNullOrEmpty' = $true; 'Alias' = ('TargetSingular'); 'ValidateSet' = ($JCObject.Targets.TargetSingular | Select-Object -Unique); 'DefaultValue' = ($JCObject.Targets.TargetSingular | Select-Object -Unique); }
+                $Params += @{
+                    'Name'                            = 'Id';
+                    'Type'                            = [System.String[]];
+                    'Position'                        = 2;
+                    'ValueFromPipelineByPropertyName' = $true;
+                    'Mandatory'                       = $false;
+                    'ValidateNotNullOrEmpty'          = $true;
+                    'Alias'                           = ($JCTypes.ById).Where( { $_ -ne 'Id' }) | Select-Object -Unique;
+                    'ParameterSets'                   = @('ById:Return');
+                    # 'ParameterSets'                   = @('ById:Return', 'ById:Raw');
+                    'DefaultValue'                    = $JCObject.($JCObject.ById)
+                }
+                $Params += @{
+                    'Name'                            = 'Name';
+                    'Type'                            = [System.String[]];
+                    'Position'                        = 3;
+                    'ValueFromPipelineByPropertyName' = $true;
+                    'Mandatory'                       = $false;
+                    'ValidateNotNullOrEmpty'          = $true;
+                    'Alias'                           = ($JCTypes.ByName).Where( { $_ -ne 'Name' }) | Select-Object -Unique;
+                    'ParameterSets'                   = @('ByName:Return', 'ByName:Raw');
+                    'DefaultValue'                    = $JCObject.($JCObject.ByName)
+                }
+                $Params += @{
+                    'Name'                            = 'TargetType';
+                    'Type'                            = [System.String[]];
+                    'Position'                        = 4;
+                    'ValueFromPipelineByPropertyName' = $true;
+                    'Mandatory'                       = $false;
+                    'ValidateNotNullOrEmpty'          = $true;
+                    'Alias'                           = ('TargetSingular');
+                    'ValidateSet'                     = ($JCObject.Targets.TargetSingular | Select-Object -Unique);
+                    'DefaultValue'                    = ($JCObject.Targets.TargetSingular | Select-Object -Unique);
+                }
             }
             Else
             {
                 # Do populate validate set with list of items
-                $Params += @{'Name' = 'Id'; 'Type' = [System.String[]]; 'Position' = 2; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'Alias' = ($JCTypes.ById).Where( { $_ -ne 'Id' }) | Select-Object -Unique; 'ValidateSet' = @($JCObject.($JCObject.ById | Select-Object -Unique)); 'ParameterSets' = @('ById:Return', 'ById:Raw'); }
-                $Params += @{'Name' = 'Name'; 'Type' = [System.String[]]; 'Position' = 3; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'Alias' = ($JCTypes.ByName).Where( { $_ -ne 'Name' }) | Select-Object -Unique; 'ValidateSet' = @($JCObject.($JCObject.ByName | Select-Object -Unique)); 'ParameterSets' = @('ByName:Return', 'ByName:Raw'); }
-                $Params += @{'Name' = 'TargetType'; 'Type' = [System.String[]]; 'Position' = 4; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $false; 'ValidateNotNullOrEmpty' = $true; 'Alias' = ('TargetSingular'); 'ValidateSet' = ($JCObject.Targets.TargetSingular | Select-Object -Unique); 'DefaultValue' = ($JCObject.Targets.TargetSingular | Select-Object -Unique); }
+                $Params += @{
+                    'Name'                            = 'Id';
+                    'Type'                            = [System.String[]];
+                    'Position'                        = 2;
+                    'ValueFromPipelineByPropertyName' = $true;
+                    'Mandatory'                       = $true;
+                    'ValidateNotNullOrEmpty'          = $true;
+                    'Alias'                           = ($JCTypes.ById).Where( { $_ -ne 'Id' }) | Select-Object -Unique;
+                    'ValidateSet'                     = @($JCObject.($JCObject.ById | Select-Object -Unique));
+                    'ParameterSets'                   = @('ById:Return');
+                    # 'ParameterSets'                   = @('ById:Return', 'ById:Raw');
+                }
+                $Params += @{
+                    'Name'                            = 'Name';
+                    'Type'                            = [System.String[]];
+                    'Position'                        = 3;
+                    'ValueFromPipelineByPropertyName' = $true;
+                    'Mandatory'                       = $true;
+                    'ValidateNotNullOrEmpty'          = $true;
+                    'Alias'                           = ($JCTypes.ByName).Where( { $_ -ne 'Name' }) | Select-Object -Unique;
+                    'ValidateSet'                     = @($JCObject.($JCObject.ByName | Select-Object -Unique));
+                    'ParameterSets'                   = @('ByName:Return');
+                    # 'ParameterSets' = @('ByName:Return', 'ByName:Raw');
+                }
+                $Params += @{
+                    'Name'                            = 'TargetType';
+                    'Type'                            = [System.String[]];
+                    'Position'                        = 4;
+                    'ValueFromPipelineByPropertyName' = $true;
+                    'Mandatory'                       = $false;
+                    'ValidateNotNullOrEmpty'          = $true;
+                    'Alias'                           = ('TargetSingular');
+                    'ValidateSet'                     = ($JCObject.Targets.TargetSingular | Select-Object -Unique);
+                    'DefaultValue'                    = ($JCObject.Targets.TargetSingular | Select-Object -Unique);
+                }
             }
         }
         Else
         {
             # Don't populate validate set
-            $Params += @{'Name' = 'Id'; 'Type' = [System.String[]]; 'Position' = 2; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'Alias' = ($JCTypes.ById).Where( { $_ -ne 'Id' }) | Select-Object -Unique; 'ParameterSets' = @('ById:Return', 'ById:Raw'); }
-            $Params += @{'Name' = 'Name'; 'Type' = [System.String[]]; 'Position' = 3; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'Alias' = ($JCTypes.ByName).Where( { $_ -ne 'Name' }) | Select-Object -Unique; 'ParameterSets' = @('ByName:Return', 'ByName:Raw'); }
-            $Params += @{'Name' = 'TargetType'; 'Type' = [System.String[]]; 'Position' = 4; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'Alias' = ('TargetSingular'); 'ValidateSet' = ($JCTypes.Targets.TargetSingular | Select-Object -Unique); 'DefaultValue' = ($JCTypes.Targets.TargetSingular | Select-Object -Unique); }
+            $Params += @{
+                'Name'                            = 'Id';
+                'Type'                            = [System.String[]];
+                'Position'                        = 2;
+                'ValueFromPipelineByPropertyName' = $true;
+                'Mandatory'                       = $true;
+                'ValidateNotNullOrEmpty'          = $true;
+                'Alias'                           = ($JCTypes.ById).Where( { $_ -ne 'Id' }) | Select-Object -Unique;
+                'ParameterSets'                   = @('ById:Return');
+                # 'ParameterSets'                   = @('ById:Return', 'ById:Raw');
+            }
+            $Params += @{
+                'Name'                            = 'Name';
+                'Type'                            = [System.String[]];
+                'Position'                        = 3;
+                'ValueFromPipelineByPropertyName' = $true;
+                'Mandatory'                       = $true;
+                'ValidateNotNullOrEmpty'          = $true;
+                'Alias'                           = ($JCTypes.ByName).Where( { $_ -ne 'Name' }) | Select-Object -Unique;
+                'ParameterSets'                   = @('ByName:Return', 'ByName:Raw');
+            }
+            $Params += @{
+                'Name'                            = 'TargetType';
+                'Type'                            = [System.String[]];
+                'Position'                        = 4;
+                'ValueFromPipelineByPropertyName' = $true;
+                'Mandatory'                       = $true;
+                'ValidateNotNullOrEmpty'          = $true;
+                'Alias'                           = ('TargetSingular');
+                'ValidateSet'                     = ($JCTypes.Targets.TargetSingular | Select-Object -Unique);
+                'DefaultValue'                    = ($JCTypes.Targets.TargetSingular | Select-Object -Unique);
+            }
         }
     }
     Else
     {
-        $Params += @{'Name' = 'Id'; 'Type' = [System.String[]]; 'Position' = 2; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'Alias' = ($JCTypes.ById).Where( { $_ -ne 'Id' }) | Select-Object -Unique; 'ParameterSets' = @('ById:Return', 'ById:Raw'); }
-        $Params += @{'Name' = 'Name'; 'Type' = [System.String[]]; 'Position' = 3; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'Alias' = ($JCTypes.ByName).Where( { $_ -ne 'Name' }) | Select-Object -Unique; 'ParameterSets' = @('ByName:Return', 'ByName:Raw'); }
-        $Params += @{'Name' = 'TargetType'; 'Type' = [System.String[]]; 'Position' = 4; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'Alias' = ('TargetSingular'); 'ValidateSet' = ($JCTypes.Targets.TargetSingular | Select-Object -Unique); }
+        $Params += @{
+            'Name'                            = 'Id';
+            'Type'                            = [System.String[]];
+            'Position'                        = 2;
+            'ValueFromPipelineByPropertyName' = $true;
+            'Mandatory'                       = $true;
+            'ValidateNotNullOrEmpty'          = $true;
+            'Alias'                           = ($JCTypes.ById).Where( { $_ -ne 'Id' }) | Select-Object -Unique;
+            'ParameterSets'                   = @('ById:Return');
+            # 'ParameterSets'                   = @('ById:Return', 'ById:Raw');
+        }
+        $Params += @{
+            'Name'                            = 'Name';
+            'Type'                            = [System.String[]];
+            'Position'                        = 3;
+            'ValueFromPipelineByPropertyName' = $true;
+            'Mandatory'                       = $true;
+            'ValidateNotNullOrEmpty'          = $true;
+            'Alias'                           = ($JCTypes.ByName).Where( { $_ -ne 'Name' }) | Select-Object -Unique;
+            'ParameterSets'                   = @('ByName:Return', 'ByName:Raw');
+        }
+        $Params += @{
+            'Name'                            = 'TargetType';
+            'Type'                            = [System.String[]];
+            'Position'                        = 4;
+            'ValueFromPipelineByPropertyName' = $true;
+            'Mandatory'                       = $true;
+            'ValidateNotNullOrEmpty'          = $true;
+            'Alias'                           = ('TargetSingular');
+            'ValidateSet'                     = ($JCTypes.Targets.TargetSingular | Select-Object -Unique);
+        }
     }
     If ($Action -eq 'get')
     {
-        $Params += @{'Name' = 'Raw'; 'Type' = [Switch]; 'Position' = 5; 'ValueFromPipelineByPropertyName' = $true; 'ParameterSets' = @('ById:Raw', 'ByName:Raw'); 'DefaultValue' = $false; }
-        $Params += @{'Name' = 'ReturnInfo'; 'Type' = [Switch]; 'Position' = 5; 'ValueFromPipelineByPropertyName' = $true; 'ParameterSets' = @('ById:Return', 'ByName:Return'); 'DefaultValue' = $false; }
-        $Params += @{'Name' = 'ReturnNames'; 'Type' = [Switch]; 'Position' = 6; 'ValueFromPipelineByPropertyName' = $true; 'ParameterSets' = @('ById:Return', 'ByName:Return'); 'DefaultValue' = $false; }
-        $Params += @{'Name' = 'ReturnVisualPath'; 'Type' = [Switch]; 'Position' = 7; 'ValueFromPipelineByPropertyName' = $true; 'ParameterSets' = @('ById:Return', 'ByName:Return'); 'DefaultValue' = $false; }
-        $Params += @{'Name' = 'Direct'; 'Type' = [Switch]; 'Position' = 8; 'ValueFromPipelineByPropertyName' = $true; 'DefaultValue' = $false; }
-        $Params += @{'Name' = 'Indirect'; 'Type' = [Switch]; 'Position' = 8; 'ValueFromPipelineByPropertyName' = $true; 'DefaultValue' = $false; }
+        $Params += @{
+            'Name'                            = 'Raw';
+            'Type'                            = [Switch];
+            'Position'                        = 5;
+            'ValueFromPipelineByPropertyName' = $true;
+            'ParameterSets'                   = @('ById:Raw', 'ByName:Raw');
+            'DefaultValue'                    = $false;
+        }
+        $Params += @{
+            'Name'                            = 'ReturnInfo';
+            'Type'                            = [Switch];
+            'Position'                        = 5;
+            'ValueFromPipelineByPropertyName' = $true;
+            'ParameterSets'                   = @('ById:Return', 'ByName:Return');
+            'DefaultValue'                    = $false;
+        }
+        $Params += @{
+            'Name'                            = 'ReturnNames';
+            'Type'                            = [Switch];
+            'Position'                        = 6;
+            'ValueFromPipelineByPropertyName' = $true;
+            'ParameterSets'                   = @('ById:Return', 'ByName:Return');
+            'DefaultValue'                    = $false;
+        }
+        $Params += @{
+            'Name'                            = 'ReturnVisualPath';
+            'Type'                            = [Switch];
+            'Position'                        = 7;
+            'ValueFromPipelineByPropertyName' = $true;
+            'ParameterSets'                   = @('ById:Return', 'ByName:Return');
+            'DefaultValue'                    = $false;
+        }
+        $Params += @{
+            'Name'                            = 'Direct';
+            'Type'                            = [Switch];
+            'Position'                        = 8;
+            'ValueFromPipelineByPropertyName' = $true;
+            'DefaultValue'                    = $false;
+        }
+        $Params += @{
+            'Name'                            = 'Indirect';
+            'Type'                            = [Switch];
+            'Position'                        = 8;
+            'ValueFromPipelineByPropertyName' = $true;
+            'DefaultValue'                    = $false;
+        }
     }
     If ($Action -in ('add', 'remove'))
     {
-        $Params += @{'Name' = 'TargetId'; 'Type' = [System.String]; 'Position' = 5; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ById:Return', 'ById:Raw'); }
-        $Params += @{'Name' = 'TargetName'; 'Type' = [System.String]; 'Position' = 6; 'ValueFromPipelineByPropertyName' = $true; 'Mandatory' = $true; 'ValidateNotNullOrEmpty' = $true; 'ParameterSets' = @('ByName:Return', 'ByName:Raw'); }
-        $Params += @{'Name' = 'Force'; 'Type' = [Switch]; 'Position' = 8; 'ValueFromPipelineByPropertyName' = $true; 'DefaultValue' = $false; }
+        $Params += @{
+            'Name'                            = 'TargetId';
+            'Type'                            = [System.String];
+            'Position'                        = 5;
+            'ValueFromPipelineByPropertyName' = $true;
+            'Mandatory'                       = $true;
+            'ValidateNotNullOrEmpty'          = $true;
+            'ParameterSets'                   = @('ById:Return');
+            # 'ParameterSets'                   = @('ById:Return', 'ById:Raw');
+        }
+        $Params += @{
+            'Name'                            = 'TargetName';
+            'Type'                            = [System.String];
+            'Position'                        = 6;
+            'ValueFromPipelineByPropertyName' = $true;
+            'Mandatory'                       = $true;
+            'ValidateNotNullOrEmpty'          = $true;
+            'ParameterSets'                   = @('ByName:Return', 'ByName:Raw');
+        }
+        $Params += @{
+            'Name'                            = 'Force';
+            'Type'                            = [Switch];
+            'Position'                        = 8;
+            'ValueFromPipelineByPropertyName' = $true;
+            'DefaultValue'                    = $false;
+        }
     }
     If ($Action -eq 'add')
     {
-        $Params += @{'Name' = 'Attributes'; 'Type' = [System.Management.Automation.PSObject]; 'Position' = 7; 'ValueFromPipelineByPropertyName' = $true; 'Alias' = 'compiledAttributes'; }
+        $Params += @{
+            'Name'                            = 'Attributes';
+            'Type'                            = [System.Management.Automation.PSObject];
+            'Position'                        = 7;
+            'ValueFromPipelineByPropertyName' = $true;
+            'Alias'                           = 'compiledAttributes';
+        }
     }
     # Create new parameters
     $RuntimeParameterDictionary = $Params | ForEach-Object { New-Object PSObject -Property:($_) } | New-DynamicParameter
