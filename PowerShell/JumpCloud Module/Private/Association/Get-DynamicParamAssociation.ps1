@@ -129,7 +129,7 @@ Function Get-DynamicParamAssociation
                 'Type'                            = [System.String[]];
                 'Position'                        = 4;
                 'ValueFromPipelineByPropertyName' = $true;
-                'Mandatory'                       = $true;
+                'Mandatory'                       = $false;
                 'ValidateNotNullOrEmpty'          = $true;
                 'Alias'                           = ('TargetSingular');
                 'ValidateSet'                     = ($JCTypes.Targets.TargetSingular | Select-Object -Unique);
@@ -164,11 +164,10 @@ Function Get-DynamicParamAssociation
             'Type'                            = [System.String[]];
             'Position'                        = 4;
             'ValueFromPipelineByPropertyName' = $true;
-            'Mandatory'                       = $false;
+            'Mandatory'                       = $true;
             'ValidateNotNullOrEmpty'          = $true;
             'Alias'                           = ('TargetSingular');
             'ValidateSet'                     = ($JCTypes.Targets.TargetSingular | Select-Object -Unique);
-            'DefaultValue'                    = ($JCTypes.Targets.TargetSingular | Select-Object -Unique);
         }
     }
     If ($Action -eq 'get')
