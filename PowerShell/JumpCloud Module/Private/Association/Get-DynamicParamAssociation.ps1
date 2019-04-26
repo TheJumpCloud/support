@@ -179,6 +179,7 @@ Function Get-DynamicParamAssociation
             'ValueFromPipelineByPropertyName' = $true;
             'ParameterSets'                   = @('ById:Show', 'ByName:Show');
             'DefaultValue'                    = $false;
+            'DontShow'                        = $true;
         }
         $Params += @{
             'Name'                            = 'ShowInfo';
@@ -258,7 +259,9 @@ Function Get-DynamicParamAssociation
         }
     }
     # Create new parameters
-    $RuntimeParameterDictionary = $Params | ForEach-Object { New-Object PSObject -Property:($_) } | New-DynamicParameter
+    $RuntimeParameterDictionary = $Params |
+        ForEach-Object { New-Object PSObject -Property:($_) } |
+        New-DynamicParameter
     # Return parameters
     Return $RuntimeParameterDictionary
 }
