@@ -176,15 +176,15 @@ Function Invoke-JCAssociation
                         If ($Action -eq 'get')
                         {
                             $Association = Invoke-Command -ScriptBlock:($ScriptBlock_AssociationResults) -ArgumentList:($Action, $Uri_Associations_GET, 'GET', $SourceItem, $ShowInfo, $ShowNames, $ShowVisualPath, $Raw)
-                            If ($Direct -eq $true)
+                            If ($ShowDirect -eq $true)
                             {
                                 $AssociationOut = $Association.Where( {$_.associationType -eq 'direct'} )
                             }
-                            If ($Indirect -eq $true)
+                            If ($ShowIndirect -eq $true)
                             {
                                 $AssociationOut = $Association.Where( {$_.associationType -eq 'indirect'} )
                             }
-                            If (!($Direct) -and !($Indirect))
+                            If (!($ShowDirect) -and !($ShowIndirect))
                             {
                                 $AssociationOut = $Association
                             }

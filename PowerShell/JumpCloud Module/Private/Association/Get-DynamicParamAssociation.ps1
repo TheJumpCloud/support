@@ -205,14 +205,14 @@ Function Get-DynamicParamAssociation
             'DefaultValue'                    = $false;
         }
         $Params += @{
-            'Name'                            = 'Direct';
+            'Name'                            = 'ShowDirect';
             'Type'                            = [Switch];
             'Position'                        = 8;
             'ValueFromPipelineByPropertyName' = $true;
             'DefaultValue'                    = $false;
         }
         $Params += @{
-            'Name'                            = 'Indirect';
+            'Name'                            = 'ShowIndirect';
             'Type'                            = [Switch];
             'Position'                        = 8;
             'ValueFromPipelineByPropertyName' = $true;
