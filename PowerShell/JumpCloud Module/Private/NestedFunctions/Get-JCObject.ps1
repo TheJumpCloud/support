@@ -220,7 +220,7 @@ Function Get-JCObject
                     {
                         If ($SearchByValue)
                         {
-                            Write-Warning ('No "' + $TypeNamePlural + '" called "' + $SearchByValue + '" exist or no "' + $TypeNamePlural + '" have been setup in your org. Note the search is case sensitive.')
+                            Write-Warning ('A ' + $TypeNameSingular + '" called "' + $SearchByValue + '" does not exist. Note the search is case sensitive.')
                         }
                         Else
                         {
