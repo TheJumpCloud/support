@@ -224,7 +224,7 @@ Function Get-JCObject
                         }
                         Else
                         {
-                            Write-Warning ('The search value is blank or no "' + $TypeNamePlural + '" have been setup in your org.')
+                            Write-Warning ('The search value is blank or no "' + $TypeNamePlural + '" have been setup in your org. SearchValue:"' + $SearchByValue + '"')
                         }
                     }
                 }
