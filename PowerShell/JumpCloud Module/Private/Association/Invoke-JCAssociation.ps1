@@ -46,17 +46,28 @@ Function Invoke-JCAssociation
                 }
             }
             # ScriptBlock used for building get associations results
-            $ScriptBlock_AssociationResults = {
-                Param($Action, $Uri, $Method, $Source, $IncludeInfo, $IncludeNames, $IncludeVisualPath, $Raw)
+            Function Format-JCAssociation
+            {
+                Param (
+                    [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0)][ValidateNotNullOrEmpty()][string]$Action
+                    , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 1)][ValidateNotNullOrEmpty()][string]$Uri
+                    , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 2)][ValidateNotNullOrEmpty()][string]$Method
+                    , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 3)][ValidateNotNullOrEmpty()][object]$Source
+                    , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 4)][ValidateNotNullOrEmpty()][switch]$IncludeInfo
+                    , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 5)][ValidateNotNullOrEmpty()][switch]$IncludeNames
+                    , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 6)][ValidateNotNullOrEmpty()][switch]$IncludeVisualPath
+                    , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 7)][ValidateNotNullOrEmpty()][switch]$Raw
+                )
                 Write-Debug ('[UrlTemplate]:' + $Uri)
                 $Associations = Invoke-JCApi -Method:($Method) -Paginate:($true) -Url:($Uri)
-
                 $AssociationsOut = @()
                 ForEach ($Association In $Associations)
                 {
+                    # Determine if association is direct or indirect
                     $associationType = If (($Association | ForEach-Object {$_.paths.Count}) -eq 1) {'direct'}
                     ElseIf (($Association | ForEach-Object {$_.paths.Count}) -gt 1) {'indirect'}
                     Else {'unknown'}
+                    # Raw switch allows for the user to return an unformatted version of what the api endpoint returns
                     If ($Raw)
                     {
                         Add-Member -InputObject:($Association) -NotePropertyName:('associationType') -NotePropertyValue:($associationType);
@@ -125,7 +136,7 @@ Function Invoke-JCAssociation
                                 }
                             }
                         }
-                        # Convert the hashtable to an object
+                        # Convert the hashtable to an object where the Value has been populated
                         $AssociationsUpdated = [PSCustomObject]@{}
                         $AssociationHash.GetEnumerator() |
                             ForEach-Object {If ($_.Value) {Add-Member -InputObject:($AssociationsUpdated) -NotePropertyName:($_.Key) -NotePropertyValue:($_.Value)}}
@@ -175,7 +186,7 @@ Function Invoke-JCAssociation
                         # Call endpoint
                         If ($Action -eq 'get')
                         {
-                            $Association = Invoke-Command -ScriptBlock:($ScriptBlock_AssociationResults) -ArgumentList:($Action, $Uri_Associations_GET, 'GET', $SourceItem, $IncludeInfo, $IncludeNames, $IncludeVisualPath, $Raw)
+                            $Association = Format-JCAssociation -Action:($Action) -Uri:($Uri_Associations_GET) -Method:('GET') -Source:($SourceItem) -IncludeInfo:($IncludeInfo) -IncludeNames:($IncludeNames) -IncludeVisualPath:($IncludeVisualPath) -Raw:($Raw)
                             If ($Direct -eq $true)
                             {
                                 $AssociationOut = $Association.Where( {$_.associationType -eq 'direct'} )
@@ -216,7 +227,7 @@ Function Invoke-JCAssociation
                                 # Get the existing association before removing it
                                 If ($Action -eq 'remove')
                                 {
-                                    $RemoveAssociation = Invoke-Command -ScriptBlock:($ScriptBlock_AssociationResults) -ArgumentList:($Action, $Uri_Associations_GET, 'GET', $SourceItem, $IncludeInfo, $IncludeNames, $IncludeVisualPath, $Raw) |
+                                    $RemoveAssociation = Format-JCAssociation -Action:($Action) -Uri:($Uri_Associations_GET) -Method:('GET') -Source:($SourceItem) -IncludeInfo:($IncludeInfo) -IncludeNames:($IncludeNames) -IncludeVisualPath:($IncludeVisualPath) -Raw:($Raw) |
                                         Where-Object {$_.TargetId -eq $TargetItemId}
                                     $IndirectAssociations = $RemoveAssociation.Where( {$_.associationType -ne 'direct'} )
                                     $Results += $RemoveAssociation.Where( {$_.associationType -eq 'direct'} )
@@ -253,7 +264,7 @@ Function Invoke-JCAssociation
                                 # Get the newly created association
                                 If ($Action -eq 'add')
                                 {
-                                    $Results += Invoke-Command -ScriptBlock:($ScriptBlock_AssociationResults) -ArgumentList:($Action, $Uri_Associations_GET, 'GET', $SourceItem, $IncludeInfo, $IncludeNames, $IncludeVisualPath, $Raw) |
+                                    $Results += Format-JCAssociation -Action:($Action) -Uri:($Uri_Associations_GET) -Method:('GET') -Source:($SourceItem) -IncludeInfo:($IncludeInfo) -IncludeNames:($IncludeNames) -IncludeVisualPath:($IncludeVisualPath) -Raw:($Raw) |
                                         Where-Object {$_.TargetId -eq $TargetItemId}
                                 }
                             }
