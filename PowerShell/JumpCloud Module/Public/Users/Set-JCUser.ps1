@@ -405,9 +405,13 @@ Function Set-JCUser ()
                     else
                     {
                         $Number = @{}
-                        $Number.Add("type", $ExitingNumber.type )
-                        $Number.Add("number", $ExitingNumber.number)
-                        $phoneNumbers += $Number
+                        if ($ExitingNumber.number) {
+                            $Number.Add("type", $ExitingNumber.type )
+                            $Number.Add("number", $ExitingNumber.number)
+                            $phoneNumbers += $Number
+
+                        }
+                       
                     }
                 }
 
@@ -465,7 +469,10 @@ Function Set-JCUser ()
 
                     else
                     {
-                        $WorkAddressParams.Add($WorkParam.key, $WorkParam.value)
+                        if ($WorkParam.value) {
+                            $WorkAddressParams.Add($WorkParam.key, $WorkParam.value)
+                        }
+                        
                     }
                 }
 
@@ -494,7 +501,9 @@ Function Set-JCUser ()
 
                     else
                     {
-                        $HomeAddressParams.Add($HomeParam.key, $HomeParam.value)
+                        if ($HomeParam.value) {
+                            $HomeAddressParams.Add($HomeParam.key, $HomeParam.value)
+                        }
                     }
                 }
 
