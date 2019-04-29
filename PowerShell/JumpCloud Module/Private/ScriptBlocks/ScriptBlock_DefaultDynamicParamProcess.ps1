@@ -1,4 +1,8 @@
 <#
+.DESCRIPTION
+This script block should be called within the Process block of all scripts that use the New-DynamicParameter function.
+It will apply the "DefaultValue" parameter to the dynamic parameter.
+It will create variables that can be used within the script from the dynamic parameters.
 .EXAMPLE
 & $ScriptBlock_DefaultDynamicParamProcess -ScriptPsBoundParameters:($PsBoundParameters) -ScriptPSCmdlet:($PSCmdlet) -DynamicParams:($RuntimeParameterDictionary)
 .EXAMPLE

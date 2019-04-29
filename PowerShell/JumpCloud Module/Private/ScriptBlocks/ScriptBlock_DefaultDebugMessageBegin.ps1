@@ -1,4 +1,6 @@
 <#
+.DESCRIPTION
+This script block should be called within the Begin block of all scripts. This will create a standard format for all debug messages making it easier to troubleshoot functions.
 .EXAMPLE
 & $ScriptBlock_DefaultDebugMessageBegin -ScriptMyInvocation:($MyInvocation) -ScriptPsBoundParameters:($PsBoundParameters) -ScriptPSCmdlet:($PSCmdlet)
 .EXAMPLE
