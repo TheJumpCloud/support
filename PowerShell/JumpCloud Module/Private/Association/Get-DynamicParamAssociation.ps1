@@ -1,5 +1,6 @@
 Function Get-DynamicParamAssociation
 {
+    [CmdletBinding()]
     Param(
         [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0)][ValidateNotNullOrEmpty()][string]$Action
         , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 1)][string]$Type
