@@ -1,3 +1,17 @@
+## 1.10.2
+
+Release Date: April 29, 2019
+
+#### RELEASE NOTES
+
+```
+Update Set-JCUser to not allow null values for nested properties
+```
+
+#### BUG FIXES:
+
+- Resolves an issue that would set null values when using Set-JCUser to update the nested "addresses" property.
+
 ## 1.10.1
 
 Release Date: February 19, 2019
