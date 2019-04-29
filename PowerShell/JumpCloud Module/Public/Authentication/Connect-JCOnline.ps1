@@ -57,7 +57,7 @@ Function Connect-JCOnline ()
         [Switch]
         $force,
 
-        [string]$UserAgent = "Pwsh_1.9.0"
+        [string]$UserAgent = "Pwsh_1.11.0"
     )
 
 
