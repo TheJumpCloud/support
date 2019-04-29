@@ -64,8 +64,8 @@ Function Invoke-JCAssociation
                 ForEach ($Association In $Associations)
                 {
                     # Determine if association is direct or indirect
-                    $associationType = If (($Association | ForEach-Object {$_.paths.Count}) -eq 1) {'direct'}
-                    ElseIf (($Association | ForEach-Object {$_.paths.Count}) -gt 1) {'indirect'}
+                    $associationType = If (($Association | ForEach-Object {$_.paths.to.Count}) -eq 1) {'direct'}
+                    ElseIf (($Association | ForEach-Object {$_.paths.to.Count}) -gt 1) {'indirect'}
                     Else {'unknown'}
                     # Raw switch allows for the user to return an unformatted version of what the api endpoint returns
                     If ($Raw)
