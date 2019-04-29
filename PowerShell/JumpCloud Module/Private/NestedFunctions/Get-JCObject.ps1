@@ -218,7 +218,14 @@ Function Get-JCObject
                     }
                     Else
                     {
-                        Write-Warning ('No "' + $TypeNamePlural + '" called "' + $SearchByValue + '" exist or no "' + $TypeNamePlural + '" have been setup in your org. Note the search is case sensitive.')
+                        If ($SearchByValue)
+                        {
+                            Write-Warning ('No "' + $TypeNamePlural + '" called "' + $SearchByValue + '" exist or no "' + $TypeNamePlural + '" have been setup in your org. Note the search is case sensitive.')
+                        }
+                        Else
+                        {
+                            Write-Warning ('The search value is blank or no "' + $TypeNamePlural + '" have been setup in your org.')
+                        }
                     }
                 }
             }
