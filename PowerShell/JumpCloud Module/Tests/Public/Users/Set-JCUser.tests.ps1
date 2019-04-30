@@ -1719,7 +1719,7 @@ Describe "Set-JCUser bug fix 1.10.2" {
 
         $NullCheck = Get-JCUser $CreateUser.username | ConvertTo-Json -Depth 5 | Select-String null
 
-        $NullCheck  | Should -BeNullOrEmpty
+        $NullCheck | Should -BeNullOrEmpty
 
         $Newuser | Remove-JCUser -ByID -force
 
@@ -1735,7 +1735,7 @@ Describe "Set-JCUser bug fix 1.10.2" {
 
         $NullCheck = Get-JCUser $CreateUser.username | ConvertTo-Json -Depth 5 | Select-String null
 
-        $NullCheck  | Should -BeNullOrEmpty
+        $NullCheck | Should -BeNullOrEmpty
 
         $Newuser | Remove-JCUser -ByID -force
 
@@ -1751,7 +1751,7 @@ Describe "Set-JCUser bug fix 1.10.2" {
 
         $NullCheck = Get-JCUser $CreateUser.username | ConvertTo-Json -Depth 5 | Select-String null
 
-        $NullCheck  | Should -BeNullOrEmpty
+        $NullCheck | Should -BeNullOrEmpty
 
         $Newuser | Remove-JCUser -ByID -force
 
@@ -1771,12 +1771,11 @@ Describe "Set-JCUser bug fix 1.10.2" {
 
         $NullCheck = Get-JCUser $CreateUser.username | ConvertTo-Json -Depth 5 | Select-String null
 
-        $NullCheck  | Should -BeNullOrEmpty
+        $NullCheck | Should -BeNullOrEmpty
 
         $Newuser | Remove-JCUser -ByID -force
 
     }
-
 
     It "Updates a mobile_number and work_number" {
 
@@ -1792,7 +1791,7 @@ Describe "Set-JCUser bug fix 1.10.2" {
 
         $NullCheck = Get-JCUser $CreateUser.username | ConvertTo-Json -Depth 5 | Select-String null
 
-        $NullCheck  | Should -BeNullOrEmpty
+        $NullCheck | Should -BeNullOrEmpty
 
         $Newuser | Remove-JCUser -ByID -force
 
