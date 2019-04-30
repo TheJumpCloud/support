@@ -52,17 +52,6 @@ Function Get-DynamicParamAssociation
                     'ParameterSets'                   = @('ByName');
                     'DefaultValue'                    = $JCObject.($JCObject.ByName)
                 }
-                $Params += @{
-                    'Name'                            = 'TargetType';
-                    'Type'                            = [System.String[]];
-                    'Position'                        = 4;
-                    'ValueFromPipelineByPropertyName' = $true;
-                    'Mandatory'                       = $false;
-                    'ValidateNotNullOrEmpty'          = $true;
-                    'Alias'                           = ('TargetSingular');
-                    'ValidateSet'                     = ($JCObject.Targets.TargetSingular | Select-Object -Unique);
-                    'DefaultValue'                    = ($JCObject.Targets.TargetSingular | Select-Object -Unique);
-                }
             }
             Else
             {
@@ -89,6 +78,23 @@ Function Get-DynamicParamAssociation
                     'ValidateSet'                     = @($JCObject.($JCObject.ByName | Select-Object -Unique));
                     'ParameterSets'                   = @('ByName');
                 }
+            }
+            If ($Action -eq 'get')
+            {
+                $Params += @{
+                    'Name'                            = 'TargetType';
+                    'Type'                            = [System.String[]];
+                    'Position'                        = 4;
+                    'ValueFromPipelineByPropertyName' = $true;
+                    'Mandatory'                       = $false;
+                    'ValidateNotNullOrEmpty'          = $true;
+                    'Alias'                           = ('TargetSingular');
+                    'ValidateSet'                     = (($JCObject.Targets.TargetSingular | Select-Object -Unique) + ($JCObject.TargetsExcluded.TargetExcludedSingular | Select-Object -Unique));
+                    'DefaultValue'                    = (($JCObject.Targets.TargetSingular | Select-Object -Unique) + ($JCObject.TargetsExcluded.TargetExcludedSingular | Select-Object -Unique));
+                }
+            }
+            Else
+            {
                 $Params += @{
                     'Name'                            = 'TargetType';
                     'Type'                            = [System.String[]];
@@ -125,16 +131,33 @@ Function Get-DynamicParamAssociation
                 'Alias'                           = ($JCTypes.ByName).Where( { $_ -ne 'Name' }) | Select-Object -Unique;
                 'ParameterSets'                   = @('ByName');
             }
-            $Params += @{
-                'Name'                            = 'TargetType';
-                'Type'                            = [System.String[]];
-                'Position'                        = 4;
-                'ValueFromPipelineByPropertyName' = $true;
-                'Mandatory'                       = $false;
-                'ValidateNotNullOrEmpty'          = $true;
-                'Alias'                           = ('TargetSingular');
-                'ValidateSet'                     = ($JCTypes.Targets.TargetSingular | Select-Object -Unique);
-                'DefaultValue'                    = ($JCTypes.Targets.TargetSingular | Select-Object -Unique);
+            If ($Action -eq 'get')
+            {
+                $Params += @{
+                    'Name'                            = 'TargetType';
+                    'Type'                            = [System.String[]];
+                    'Position'                        = 4;
+                    'ValueFromPipelineByPropertyName' = $true;
+                    'Mandatory'                       = $false;
+                    'ValidateNotNullOrEmpty'          = $true;
+                    'Alias'                           = ('TargetSingular');
+                    'ValidateSet'                     = (($JCTypes.Targets.TargetSingular | Select-Object -Unique) + ($JCTypes.TargetsExcluded.TargetExcludedSingular | Select-Object -Unique));
+                    'DefaultValue'                    = (($JCTypes.Targets.TargetSingular | Select-Object -Unique) + ($JCTypes.TargetsExcluded.TargetExcludedSingular | Select-Object -Unique));
+                }
+            }
+            Else
+            {
+                $Params += @{
+                    'Name'                            = 'TargetType';
+                    'Type'                            = [System.String[]];
+                    'Position'                        = 4;
+                    'ValueFromPipelineByPropertyName' = $true;
+                    'Mandatory'                       = $false;
+                    'ValidateNotNullOrEmpty'          = $true;
+                    'Alias'                           = ('TargetSingular');
+                    'ValidateSet'                     = ($JCTypes.Targets.TargetSingular | Select-Object -Unique);
+                    'DefaultValue'                    = ($JCTypes.Targets.TargetSingular | Select-Object -Unique);
+                }
             }
         }
     }
@@ -160,15 +183,31 @@ Function Get-DynamicParamAssociation
             'Alias'                           = ($JCTypes.ByName).Where( { $_ -ne 'Name' }) | Select-Object -Unique;
             'ParameterSets'                   = @('ByName');
         }
-        $Params += @{
-            'Name'                            = 'TargetType';
-            'Type'                            = [System.String[]];
-            'Position'                        = 4;
-            'ValueFromPipelineByPropertyName' = $true;
-            'Mandatory'                       = $true;
-            'ValidateNotNullOrEmpty'          = $true;
-            'Alias'                           = ('TargetSingular');
-            'ValidateSet'                     = ($JCTypes.Targets.TargetSingular | Select-Object -Unique);
+        If ($Action -eq 'get')
+        {
+            $Params += @{
+                'Name'                            = 'TargetType';
+                'Type'                            = [System.String[]];
+                'Position'                        = 4;
+                'ValueFromPipelineByPropertyName' = $true;
+                'Mandatory'                       = $true;
+                'ValidateNotNullOrEmpty'          = $true;
+                'Alias'                           = ('TargetSingular');
+                'ValidateSet'                     = (($JCTypes.Targets.TargetSingular | Select-Object -Unique) + ($JCTypes.TargetsExcluded.TargetExcludedSingular | Select-Object -Unique));
+            }
+        }
+        Else
+        {
+            $Params += @{
+                'Name'                            = 'TargetType';
+                'Type'                            = [System.String[]];
+                'Position'                        = 4;
+                'ValueFromPipelineByPropertyName' = $true;
+                'Mandatory'                       = $true;
+                'ValidateNotNullOrEmpty'          = $true;
+                'Alias'                           = ('TargetSingular');
+                'ValidateSet'                     = ($JCTypes.Targets.TargetSingular | Select-Object -Unique);
+            }
         }
     }
     If ($Action -eq 'get')
