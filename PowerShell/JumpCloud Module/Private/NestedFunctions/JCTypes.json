@@ -246,7 +246,7 @@
       },
       {
         "TargetSingular": "user",
-        "TargetPlural": "usergroups"
+        "TargetPlural": "users"
       },
       {
         "TargetSingular": "command",
