@@ -37,7 +37,7 @@ Function Get-DynamicParamAssociation
                     'ValueFromPipelineByPropertyName' = $true;
                     'Mandatory'                       = $false;
                     'ValidateNotNullOrEmpty'          = $true;
-                    'Alias'                           = ($JCTypes.ById).Where( { $_ -ne 'Id' }) | Select-Object -Unique;
+                    'Alias'                           = ($JCObject.ById).Where( { $_ -ne 'Id' }) | Select-Object -Unique;
                     'ParameterSets'                   = @('ById');
                     'DefaultValue'                    = $JCObject.($JCObject.ById)
                 }
@@ -48,7 +48,7 @@ Function Get-DynamicParamAssociation
                     'ValueFromPipelineByPropertyName' = $true;
                     'Mandatory'                       = $false;
                     'ValidateNotNullOrEmpty'          = $true;
-                    'Alias'                           = ($JCTypes.ByName).Where( { $_ -ne 'Name' }) | Select-Object -Unique;
+                    'Alias'                           = ($JCObject.ByName).Where( { $_ -ne 'Name' }) | Select-Object -Unique;
                     'ParameterSets'                   = @('ByName');
                     'DefaultValue'                    = $JCObject.($JCObject.ByName)
                 }
@@ -63,7 +63,7 @@ Function Get-DynamicParamAssociation
                     'ValueFromPipelineByPropertyName' = $true;
                     'Mandatory'                       = $true;
                     'ValidateNotNullOrEmpty'          = $true;
-                    'Alias'                           = ($JCTypes.ById).Where( { $_ -ne 'Id' }) | Select-Object -Unique;
+                    'Alias'                           = ($JCObject.ById).Where( { $_ -ne 'Id' }) | Select-Object -Unique;
                     'ValidateSet'                     = @($JCObject.($JCObject.ById | Select-Object -Unique));
                     'ParameterSets'                   = @('ById');
                 }
@@ -74,7 +74,7 @@ Function Get-DynamicParamAssociation
                     'ValueFromPipelineByPropertyName' = $true;
                     'Mandatory'                       = $true;
                     'ValidateNotNullOrEmpty'          = $true;
-                    'Alias'                           = ($JCTypes.ByName).Where( { $_ -ne 'Name' }) | Select-Object -Unique;
+                    'Alias'                           = ($JCObject.ByName).Where( { $_ -ne 'Name' }) | Select-Object -Unique;
                     'ValidateSet'                     = @($JCObject.($JCObject.ByName | Select-Object -Unique));
                     'ParameterSets'                   = @('ByName');
                 }
