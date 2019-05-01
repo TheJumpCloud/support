@@ -1,4 +1,3 @@
-. ('/Users/epanipinto/Documents/LoadJumpCloudModule.ps1')
 Describe "Association Tests" {
     BeforeAll {
         # $DebugPreference = 'Continue' # SilentlyContinue (Default), Continue, Inquire, Stop
