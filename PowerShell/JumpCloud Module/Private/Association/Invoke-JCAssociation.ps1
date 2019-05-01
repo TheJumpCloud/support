@@ -45,7 +45,7 @@ Function Invoke-JCAssociation
             {
                 Write-Error ('-Id or -Name parameter must be populated') -ErrorAction:('Stop')
             }
-            If ($Action -ne 'get')
+            If ($Action -eq 'add' -or $Action -eq 'remove')
             {
                 If ($TargetId)
                 {
