@@ -217,7 +217,6 @@ Function Get-DynamicParamAssociation
             'Type'                            = [Switch];
             'Position'                        = 5;
             'ValueFromPipelineByPropertyName' = $true;
-            'ParameterSets'                   = @('ById', 'ByName');
             'DefaultValue'                    = $false;
             'DontShow'                        = $true;
         }
