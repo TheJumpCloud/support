@@ -302,7 +302,7 @@ Function Invoke-JCAssociation
         }
         Catch
         {
-            Invoke-Command -ScriptBlock:($ScriptBlock_TryCatchError) -ArgumentList:($_)
+            Invoke-Command -ScriptBlock:($ScriptBlock_TryCatchError) -ArgumentList:($_) -NoNewScope
         }
     }
     End

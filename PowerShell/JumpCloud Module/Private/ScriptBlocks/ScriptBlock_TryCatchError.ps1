@@ -20,5 +20,6 @@ $ScriptBlock_TryCatchError = {
     $OutputArray = @($Message, $ErrorObject.InvocationInfo.PositionMessage, $ErrorObject.FullyQualifiedErrorId.ToString())
     $OutputString = ($OutputArray -join "`n")
     Write-Error ($OutputString)
-    $Error.Clear()
+    # $Error.Clear()
+    Break
 }
