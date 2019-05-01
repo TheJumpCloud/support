@@ -30,19 +30,36 @@ Function Invoke-JCAssociation
             # Only direct bindings and don’t traverse through groups
             $URL_Template_Associations_Targets = '/api/v2/{0}/{1}/associations?targets={2}' # $SourcePlural, $SourceId, $TargetSingular
             $URL_Template_Associations_Members = '/api/v2/{0}/{1}/members' # $SourcePlural, $SourceId
-            # Determine to search by id or name
-            $SearchBy = ($PSCmdlet.ParameterSetName).Split(':')[0]
-            Switch ($SearchBy)
+            # Determine to search by id or name but always prefer id
+            If ($Id)
             {
-                'ById'
+                $SourceItemSearchByValue = $Id
+                $SourceSearchBy = 'ById'
+            }
+            ElseIf ($Name)
+            {
+                $SourceItemSearchByValue = $Name
+                $SourceSearchBy = 'ByName'
+            }
+            Else
+            {
+                Write-Error ('-Id or -Name parameter must be populated') -ErrorAction:('Stop')
+            }
+            If ($Action -ne 'get')
+            {
+                If ($TargetId)
                 {
-                    $SourceItemSearchByValue = $Id
                     $TargetSearchByValue = $TargetId
+                    $TargetSearchBy = 'ById'
                 }
-                'ByName'
+                ElseIf ($TargetName)
                 {
-                    $SourceItemSearchByValue = $Name
                     $TargetSearchByValue = $TargetName
+                    $TargetSearchBy = 'ByName'
+                }
+                Else
+                {
+                    Write-Error ('-TargetId or -TargetName parameter must be populated') -ErrorAction:('Stop')
                 }
             }
             # ScriptBlock used for building get associations results
@@ -146,12 +163,12 @@ Function Invoke-JCAssociation
                 Return $AssociationsOut
             }
             # Get SourceInfo
-            $Source = Get-JCObject -Type:($Type) -SearchBy:($SearchBy) -SearchByValue:($SourceItemSearchByValue)
+            $Source = Get-JCObject -Type:($Type) -SearchBy:($SourceSearchBy) -SearchByValue:($SourceItemSearchByValue)
             If ($Source)
             {
                 If ($Source.Count -gt 1)
                 {
-                    Write-Warning -Message:('Found "' + [string]$Source.Count + '" "' + $Type + '" with the "' + $SearchBy.Replace('By', '').ToLower() + '" of "' + $SourceItemSearchByValue + '"')
+                    Write-Warning -Message:('Found "' + [string]$Source.Count + '" "' + $Type + '" with the "' + $SourceSearchBy.Replace('By', '').ToLower() + '" of "' + $SourceItemSearchByValue + '"')
                 }
                 ForEach ($SourceItem In $Source)
                 {
@@ -217,7 +234,7 @@ Function Invoke-JCAssociation
                             }
                             Else {'null'}
                             # Get Target object
-                            $Target = Get-JCObject -Type:($SourceItemTargetSingular) -SearchBy:($SearchBy) -SearchByValue:($TargetSearchByValue)
+                            $Target = Get-JCObject -Type:($SourceItemTargetSingular) -SearchBy:($TargetSearchBy) -SearchByValue:($TargetSearchByValue)
                             ForEach ($TargetItem In $Target)
                             {
                                 $TargetItemId = $TargetItem.($TargetItem.ById)
