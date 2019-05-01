@@ -30,38 +30,6 @@ Function Invoke-JCAssociation
             # Only direct bindings and don’t traverse through groups
             $URL_Template_Associations_Targets = '/api/v2/{0}/{1}/associations?targets={2}' # $SourcePlural, $SourceId, $TargetSingular
             $URL_Template_Associations_Members = '/api/v2/{0}/{1}/members' # $SourcePlural, $SourceId
-            # Determine to search by id or name but always prefer id
-            If ($Id)
-            {
-                $SourceItemSearchByValue = $Id
-                $SourceSearchBy = 'ById'
-            }
-            ElseIf ($Name)
-            {
-                $SourceItemSearchByValue = $Name
-                $SourceSearchBy = 'ByName'
-            }
-            Else
-            {
-                Write-Error ('-Id or -Name parameter must be populated') -ErrorAction:('Stop')
-            }
-            If ($Action -eq 'add' -or $Action -eq 'remove')
-            {
-                If ($TargetId)
-                {
-                    $TargetSearchByValue = $TargetId
-                    $TargetSearchBy = 'ById'
-                }
-                ElseIf ($TargetName)
-                {
-                    $TargetSearchByValue = $TargetName
-                    $TargetSearchBy = 'ByName'
-                }
-                Else
-                {
-                    Write-Error ('-TargetId or -TargetName parameter must be populated') -ErrorAction:('Stop')
-                }
-            }
             # ScriptBlock used for building get associations results
             Function Format-JCAssociation
             {
@@ -80,7 +48,7 @@ Function Invoke-JCAssociation
                 $AssociationsOut = @()
                 ForEach ($Association In $Associations)
                 {
-                    # Determine if association is direct or indirect
+                    # For source determine if association is direct or indirect
                     $associationType = If (($Association | ForEach-Object {$_.paths.to.Count}) -eq 1) {'direct'}
                     ElseIf (($Association | ForEach-Object {$_.paths.to.Count}) -gt 1) {'indirect'}
                     Else {'unknown'}
@@ -96,12 +64,12 @@ Function Invoke-JCAssociation
                             'action'           = $Action;
                             'associationType'  = $associationType;
                             'id'               = $Source.($Source.ById);
-                            'name'             = $null;
                             'type'             = $Source.TypeNameSingular;
+                            'name'             = $null;
                             'info'             = $null;
                             'targetId'         = $Association.id;
-                            'targetName'       = $null;
                             'targetType'       = $Association.type;
+                            'targetName'       = $null;
                             'targetInfo'       = $null;
                             'visualPathById'   = $null;
                             'visualPathByName' = $null;
@@ -162,6 +130,21 @@ Function Invoke-JCAssociation
                 }
                 Return $AssociationsOut
             }
+            # Determine to search by id or name but always prefer id
+            If ($Id)
+            {
+                $SourceItemSearchByValue = $Id
+                $SourceSearchBy = 'ById'
+            }
+            ElseIf ($Name)
+            {
+                $SourceItemSearchByValue = $Name
+                $SourceSearchBy = 'ByName'
+            }
+            Else
+            {
+                Write-Error ('-Id or -Name parameter must be populated.') -ErrorAction:('Stop')
+            }
             # Get SourceInfo
             $Source = Get-JCObject -Type:($Type) -SearchBy:($SourceSearchBy) -SearchByValue:($SourceItemSearchByValue)
             If ($Source)
@@ -203,18 +186,19 @@ Function Invoke-JCAssociation
                         # Call endpoint
                         If ($Action -eq 'get')
                         {
+                            $AssociationOut = @()
                             $Association = Format-JCAssociation -Action:($Action) -Uri:($Uri_Associations_GET) -Method:('GET') -Source:($SourceItem) -IncludeInfo:($IncludeInfo) -IncludeNames:($IncludeNames) -IncludeVisualPath:($IncludeVisualPath) -Raw:($Raw)
                             If ($Direct -eq $true)
                             {
-                                $AssociationOut = $Association.Where( {$_.associationType -eq 'direct'} )
+                                $AssociationOut += $Association.Where( {$_.associationType -eq 'direct'} )
                             }
                             If ($Indirect -eq $true)
                             {
-                                $AssociationOut = $Association.Where( {$_.associationType -eq 'indirect'} )
+                                $AssociationOut += $Association.Where( {$_.associationType -eq 'indirect'} )
                             }
                             If (!($Direct) -and !($Indirect))
                             {
-                                $AssociationOut = $Association
+                                $AssociationOut += $Association
                             }
                             If ($Raw)
                             {
@@ -227,12 +211,25 @@ Function Invoke-JCAssociation
                         }
                         Else
                         {
-                            # Build the attributes for the json body string
-                            $AttributesValue = If ($Action -eq 'add' -and $Attributes)
+                            # For target determine to search by id or name but always prefer id
+                            If ($TargetId -and $TargetName)
                             {
-                                $Attributes | ConvertTo-Json -Depth:(100) -Compress
+                                Write-Error ('Both the -TargetId and -TargetName have been provided. Function only accepts -TargetId or -TargetName.') -ErrorAction:('Stop')
                             }
-                            Else {'null'}
+                            ElseIf ($TargetId)
+                            {
+                                $TargetSearchByValue = $TargetId
+                                $TargetSearchBy = 'ById'
+                            }
+                            ElseIf ($TargetName)
+                            {
+                                $TargetSearchByValue = $TargetName
+                                $TargetSearchBy = 'ByName'
+                            }
+                            Else
+                            {
+                                Write-Error ('-TargetId or -TargetName parameter must be populated.') -ErrorAction:('Stop')
+                            }
                             # Get Target object
                             $Target = Get-JCObject -Type:($SourceItemTargetSingular) -SearchBy:($TargetSearchBy) -SearchByValue:($TargetSearchByValue)
                             ForEach ($TargetItem In $Target)
@@ -241,6 +238,15 @@ Function Invoke-JCAssociation
                                 $TargetItemName = $TargetItem.($TargetItem.ByName)
                                 $TargetItemTypeNameSingular = $TargetItem.TypeName.TypeNameSingular
                                 $TargetItemTypeNamePlural = $TargetItem.TypeName.TypeNamePlural
+                                # Build the attributes for the json body string
+                                $AttributesValue = If ($Action -eq 'add' -and $Attributes)
+                                {
+                                    $Attributes | ConvertTo-Json -Depth:(100) -Compress
+                                }
+                                Else
+                                {
+                                    'null'
+                                }
                                 # Get the existing association before removing it
                                 If ($Action -eq 'remove')
                                 {
