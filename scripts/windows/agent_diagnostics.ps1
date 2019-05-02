@@ -1,4 +1,4 @@
-﻿## Get OS version and build info
+﻿# Get OS version and build info
 $UNAME=(Get-WmiObject Win32_OperatingSystem | select Caption, Version, BuildNumber)
 $SYSINFO=$UNAME.Caption
 $BUILD=$UNAME.Version
@@ -14,7 +14,7 @@ $ZIPFILE='jc'+$STAMP
 $OUTPUTFILE=$WRITEPATH+'output.log'
 
 function zipjc {
-    ## Take inventory of files to be zipped.
+    # Take inventory of files to be zipped.
     $TEMP=Join-Path -Path $(pwd) -ChildPath 'temp'
     $INVENTORY=(Get-ChildItem -Exclude *.crt, *.key -Recurse $JCPATH).Name
     if(Test-Path $WRITEPATH\$ZIPFILE) {
@@ -31,7 +31,7 @@ function zipjc {
 }
 
 function ziplog {
-    ## Zip the log files.
+    # Zip the log files.
     $LOGFILE="jcagent.log"
     cp $JCLOG\$LOGFILE $WRITEPATH\$LOGFILE
     Compress-Archive -Path $WRITEPATH\$LOGFILE -Update -DestinationPath $WRITEPATH\$ZIPFILE
@@ -41,7 +41,7 @@ function ziplog {
 }
 
 function users {
-    ## Get a list of users.
+    # Get a list of users.
     $USERLIST=(Get-WmiObject -Class Win32_UserAccount -Filter "LocalAccount='True'").name
     foreach($u in $USERLIST) {
         $users_out+=("`t$u`n")
@@ -50,7 +50,7 @@ function users {
 }
 
 function jconf {
-    ## Get and Format the contents of the jcagent.conf for quick display in the output.log.
+    # Get and Format the contents of the jcagent.conf for quick display in the output.log.
     $JCAGENTCONFIG=(Get-Content -Path $JCPATH\Plugins\Contrib\jcagent.conf).Split(',')
     foreach($l in $JCAGENTCONFIG) {
         $jconf_out+=("`t$($l -replace '[{}]', '')`n")
@@ -59,7 +59,7 @@ function jconf {
 }
 
 function info_out {
-    ## Write the output.log file.
+    # Write the output.log file.
     if(Test-Path $OUTPUTFILE) {
     mv $OUTPUTFILE $WRITEPATH\output$STAMP.log -Force
     }

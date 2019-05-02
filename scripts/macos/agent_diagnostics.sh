@@ -1,17 +1,17 @@
 #!/bin/bash
 
-## agent_diagnostics.sh collects all artifacts required for troubleshooting,
-## including logs, configuration files, and application files. Those artifacts
-## are compressed into a zip file, along with an output file of relevant information
-## about the system for quick referrence and an inventory of the files included
-## in the zip file.
+# agent_diagnostics.sh collects all artifacts required for troubleshooting,
+# including logs, configuration files, and application files. Those artifacts
+# are compressed into a zip file, along with an output file of relevant information
+# about the system for quick referrence and an inventory of the files included
+# in the zip file.
 
 if [[ "${UID}" != 0 ]]; then
   (>&2 echo "Error:  $0 must be run as root")
   exit 1
 fi
 
-## Some global variables
+# Some global variables
 JCPATH="/opt/jc"
 JCLOG="/var/log/"
 STAMP=$( date +"%Y%m%d%H%M%S" )
@@ -35,13 +35,13 @@ function indent() {
 }
 
 function zipjc() {
-  ## Take inventory of files to be zipped.
+  # Take inventory of files to be zipped.
   declare -a INVENTORY
   for i in *; do
     INVENTORY+=("${i}")
   done
 
-  ## check to see if zip exists.
+  # check to see if zip exists.
   if [[ "$ZPATH" = "false" ]]; then
     ZIPIT="zip is not installed. please send the following files with your support request:\n${INVENTORY[*]}"
   else
@@ -56,7 +56,7 @@ function zipjc() {
 }
 
 function ziplog() {
-  ## Zip the log files. 
+  # Zip the log files. 
   LOGFILES=("jcagent.log" "jcUpdate.log" "jclocalclient.log" "jctray.log" "jumpcloud-loginwindow/*")
   for i in "${LOGFILES[@]}"; do
     if [ -f "${JCLOG}""${i}" ]; then
@@ -69,7 +69,7 @@ function ziplog() {
 }
 
 function users() {
-  ## Get a list of users.
+  # Get a list of users.
   USERLIST=( $(dscl . list /Users | grep -v '_') )
   for i in "${USERLIST[@]}"; do
     if ! [[ ${i} == "root" ]] && ! [[ ${i} == "daemon" ]] && ! [[ ${i} == "nobody" ]]; then
@@ -79,7 +79,7 @@ function users() {
 }
 
 function sudoers() {
-  ## Get a list of the sudoers directory.
+  # Get a list of the sudoers directory.
   SUDODIR="/etc/sudoers.d"
   SUDOLIST=( $(ls ${SUDODIR}) )
   for i in "${SUDOLIST[@]}"; do
@@ -88,7 +88,7 @@ function sudoers() {
 }
 
 function jconf() {
-  ## Grab the contents of jconf for quick display in the output.log file.
+  # Grab the contents of jconf for quick display in the output.log file.
   JCAGENTCONFIG=( $(sed 's/,/\\\n/g' "${JCPATH}"/jcagent.conf | sed 's/[{}]//g') )
   for i in "${JCAGENTCONFIG[@]}"; do
     JCONF+=("${i}\n")
@@ -96,7 +96,7 @@ function jconf() {
 }
 
 function info_out() {
-  ## Write the output.log file.
+  # Write the output.log file.
   SERVICEVERSION=$( cat /opt/jc/version.txt )
   SYSINFO=$( uname -rs )
   STATUS=$( launchctl list | grep jumpcloud | cut -d'	' -f 1 )
