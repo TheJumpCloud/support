@@ -124,7 +124,7 @@ function info_out() {
   printf "%s\n" "${ZIPIT}" | indent
   printf "LOGS INCLUDED FROM %s:\n" "${JCLOG}"
   printf "%s\n" "${LOGIT[*]}" | indent
-  } > output.txt
+  } > output.log
   zip "${ZIPFILE}" ./output.log > /dev/null 1
 }
 
