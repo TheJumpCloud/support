@@ -45,13 +45,13 @@ function zipjc() {
 
   # check to see if zip exists.
   if [[ "$ZPATH" = "false" ]]; then
-    ZIPIT="zip is not installed. please send the following files with your support request:\n${INVENTORY[*]}"
+    ZIPIT="zip is not installed. please send the following files with your support request:\n${INVENTORY[@]}"
   else
     if [[ -f "${ZIPFILE}" ]]; then
       mv "${ZIPFILE}" ./jc"${STAMP}".bak.zip
       zip -r "*.crt" -r "${ZIPFILE}" "${JCPATH}" > /dev/null 1
     else
-      ZIPIT="${ZIPFILE} has been created, containing the following files:\n${INVENTORY[*]}"
+      ZIPIT="${ZIPFILE} has been created, containing the following files:\n${INVENTORY[@]}"
       zip -x "*.crt" -r "${ZIPFILE}" "${JCPATH}" > /dev/null 1
     fi
   fi
@@ -76,7 +76,7 @@ function users() {
   USERLIST=( $(grep -v "nologin" ${PSWDFILE} | cut -d':' -f 1) )
   for i in "${USERLIST[@]}"; do
     if ! [[ "${i}" == 'root' ]] && ! [[ "${i}" == 'halt' ]] && ! [[ "${i}" == 'restart' ]]; then
-    	USERS+=("${i}\n")
+    	USERS+=("${i}")
     fi
   done
 }
@@ -86,7 +86,7 @@ function sudoers() {
   SUDODIR="/etc/sudoers.d"
   SUDOLIST=( $(ls ${SUDODIR}) )
   for i in "${SUDOLIST[@]}"; do
-    SUDOERS+=("${i}\n")
+    SUDOERS+=("${i}")
   done
 }
 
@@ -94,7 +94,7 @@ function jconf() {
   # Get and format the contents of the jcagent.conf for quick display in the output.log.
   JCAGENTCONFIG=( $(sed 's/,/\n/g' "${JCPATH}"/jcagent.conf | sed 's/[{}]//g') )
   for i in "${JCAGENTCONFIG[@]}"; do
-    JCONF+=("${i}\n")
+    JCONF+=("${i}")
   done
 }
 
@@ -121,11 +121,11 @@ function info_out() {
   printf "TIMEZONE:\n"
   printf "%s\n" "${TZONE}" | indent
   printf "SYSTEM USERS:\n"
-  printf "%s\n" "${USERS[*]}" | indent
+  printf "%s\n" "${USERS[@]}" | indent
   printf "SUDOERS:\n"
-  printf "%s\n" "${SUDOERS[*]}" | indent
+  printf "%s\n" "${SUDOERS[@]}" | indent
   printf "JCAGENT CONFIGURATION:\n"
-  printf "%s\n" "${JCONF[*]}" | indent
+  printf "%s\n" "${JCONF[@]}" | indent
   printf "FILES INCLUDED:\n"
   printf "%s\n" "${ZIPIT}" | indent
   printf "LOGS INCLUDED FROM %s:\n" "${JCLOG}"

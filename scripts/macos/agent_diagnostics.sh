@@ -73,7 +73,7 @@ function users() {
   USERLIST=( $(dscl . list /Users | grep -v '_') )
   for i in "${USERLIST[@]}"; do
     if ! [[ ${i} == "root" ]] && ! [[ ${i} == "daemon" ]] && ! [[ ${i} == "nobody" ]]; then
-      USERS+=("${i}\n")
+      USERS+=("${i}")
     fi
   done
 }
@@ -83,7 +83,7 @@ function sudoers() {
   SUDODIR="/etc/sudoers.d"
   SUDOLIST=( $(ls ${SUDODIR}) )
   for i in "${SUDOLIST[@]}"; do
-    SUDOERS+=("${i}\n")
+    SUDOERS+=("${i}")
   done
 }
 
@@ -91,7 +91,7 @@ function jconf() {
   # Grab the contents of jconf for quick display in the output.log file.
   JCAGENTCONFIG=( $(sed 's/,/\\\n/g' "${JCPATH}"/jcagent.conf | sed 's/[{}]//g') )
   for i in "${JCAGENTCONFIG[@]}"; do
-    JCONF+=("${i}\n")
+    JCONF+=("${i}")
   done
 }
 
@@ -115,11 +115,11 @@ function info_out() {
   printf "TIMEZONE:\n"
   printf "%s\n" "${TZONE}" | indent
   printf "SYSTEM USERS:\n"
-  printf "%s\n" "${USERS[*]}" | indent
+  printf "%s\n" "${USERS[@]}" | indent
   printf "SUDOERS:\n"
-  printf "%s\n" "${SUDOERS[*]}" | indent
+  printf "%s\n" "${SUDOERS[@]}" | indent
   printf "JCAGENT CONFIGURATION:\n"
-  printf "%s\n" "${JCONF[*]}" | indent
+  printf "%s\n" "${JCONF[@]}" | indent
   printf "FILES INCLUDED:\n"
   printf "%s\n" "${ZIPIT}" | indent
   printf "LOGS INCLUDED FROM %s:\n" "${JCLOG}"
