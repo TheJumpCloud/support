@@ -40,6 +40,7 @@ Function Get-DynamicParamAssociation
                     'Alias'                           = @(($JCObject.ById).Where( { $_ -ne 'Id' }) | Select-Object -Unique);
                     'ParameterSets'                   = @('ById');
                     'DefaultValue'                    = $JCObject.($JCObject.ById);
+                    'HelpMessage'                     = 'The unique id of the object.'
                 }
                 $Params += @{
                     'Name'                            = 'Name';
@@ -51,6 +52,7 @@ Function Get-DynamicParamAssociation
                     'Alias'                           = @(($JCObject.ByName).Where( { $_ -ne 'Name' }) | Select-Object -Unique);
                     'ParameterSets'                   = @('ByName');
                     'DefaultValue'                    = $JCObject.($JCObject.ByName);
+                    'HelpMessage'                     = 'The name of the object.'
                 }
             }
             Else
@@ -66,6 +68,7 @@ Function Get-DynamicParamAssociation
                     'Alias'                           = @(($JCObject.ById).Where( { $_ -ne 'Id' }) | Select-Object -Unique);
                     'ValidateSet'                     = @($JCObject.($JCObject.ById | Select-Object -Unique));
                     'ParameterSets'                   = @('ById');
+                    'HelpMessage'                     = 'The unique id of the object.'
                 }
                 $Params += @{
                     'Name'                            = 'Name';
@@ -77,6 +80,7 @@ Function Get-DynamicParamAssociation
                     'Alias'                           = @(($JCObject.ByName).Where( { $_ -ne 'Name' }) | Select-Object -Unique);
                     'ValidateSet'                     = @($JCObject.($JCObject.ByName | Select-Object -Unique));
                     'ParameterSets'                   = @('ByName');
+                    'HelpMessage'                     = 'The name of the object.'
                 }
             }
             If ($Action -eq 'get')
@@ -91,6 +95,7 @@ Function Get-DynamicParamAssociation
                     'Alias'                           = ('TargetSingular');
                     'ValidateSet'                     = (($JCObject.Targets.TargetSingular | Select-Object -Unique) + ($JCObject.TargetsExcluded.TargetExcludedSingular | Select-Object -Unique));
                     'DefaultValue'                    = (($JCObject.Targets.TargetSingular | Select-Object -Unique) + ($JCObject.TargetsExcluded.TargetExcludedSingular | Select-Object -Unique));
+                    'HelpMessage'                     = 'The target object type.'
                 }
             }
             Else
@@ -105,6 +110,7 @@ Function Get-DynamicParamAssociation
                     'Alias'                           = ('TargetSingular');
                     'ValidateSet'                     = ($JCObject.Targets.TargetSingular | Select-Object -Unique);
                     'DefaultValue'                    = ($JCObject.Targets.TargetSingular | Select-Object -Unique);
+                    'HelpMessage'                     = 'The target object type.'
                 }
             }
         }
@@ -120,6 +126,7 @@ Function Get-DynamicParamAssociation
                 'ValidateNotNullOrEmpty'          = $true;
                 'Alias'                           = @(($JCTypes.ById).Where( { $_ -ne 'Id' }) | Select-Object -Unique);
                 'ParameterSets'                   = @('ById');
+                'HelpMessage'                     = 'The unique id of the object.'
             }
             $Params += @{
                 'Name'                            = 'Name';
@@ -130,6 +137,7 @@ Function Get-DynamicParamAssociation
                 'ValidateNotNullOrEmpty'          = $true;
                 'Alias'                           = @(($JCTypes.ByName).Where( { $_ -ne 'Name' }) | Select-Object -Unique);
                 'ParameterSets'                   = @('ByName');
+                'HelpMessage'                     = 'The name of the object.'
             }
             If ($Action -eq 'get')
             {
@@ -143,6 +151,7 @@ Function Get-DynamicParamAssociation
                     'Alias'                           = ('TargetSingular');
                     'ValidateSet'                     = (($JCTypes.Targets.TargetSingular | Select-Object -Unique) + ($JCTypes.TargetsExcluded.TargetExcludedSingular | Select-Object -Unique));
                     'DefaultValue'                    = (($JCTypes.Targets.TargetSingular | Select-Object -Unique) + ($JCTypes.TargetsExcluded.TargetExcludedSingular | Select-Object -Unique));
+                    'HelpMessage'                     = 'The target object type.'
                 }
             }
             Else
@@ -157,6 +166,7 @@ Function Get-DynamicParamAssociation
                     'Alias'                           = ('TargetSingular');
                     'ValidateSet'                     = ($JCTypes.Targets.TargetSingular | Select-Object -Unique);
                     'DefaultValue'                    = ($JCTypes.Targets.TargetSingular | Select-Object -Unique);
+                    'HelpMessage'                     = 'The target object type.'
                 }
             }
         }
@@ -172,6 +182,7 @@ Function Get-DynamicParamAssociation
             'ValidateNotNullOrEmpty'          = $true;
             'Alias'                           = @(($JCTypes.ById).Where( { $_ -ne 'Id' }) | Select-Object -Unique);
             'ParameterSets'                   = @('ById');
+            'HelpMessage'                     = 'The unique id of the object.'
         }
         $Params += @{
             'Name'                            = 'Name';
@@ -182,6 +193,7 @@ Function Get-DynamicParamAssociation
             'ValidateNotNullOrEmpty'          = $true;
             'Alias'                           = @(($JCTypes.ByName).Where( { $_ -ne 'Name' }) | Select-Object -Unique);
             'ParameterSets'                   = @('ByName');
+            'HelpMessage'                     = 'The name of the object.'
         }
         If ($Action -eq 'get')
         {
@@ -194,6 +206,7 @@ Function Get-DynamicParamAssociation
                 'ValidateNotNullOrEmpty'          = $true;
                 'Alias'                           = ('TargetSingular');
                 'ValidateSet'                     = (($JCTypes.Targets.TargetSingular | Select-Object -Unique) + ($JCTypes.TargetsExcluded.TargetExcludedSingular | Select-Object -Unique));
+                'HelpMessage'                     = 'The target object type.'
             }
         }
         Else
@@ -207,6 +220,7 @@ Function Get-DynamicParamAssociation
                 'ValidateNotNullOrEmpty'          = $true;
                 'Alias'                           = ('TargetSingular');
                 'ValidateSet'                     = ($JCTypes.Targets.TargetSingular | Select-Object -Unique);
+                'HelpMessage'                     = 'The target object type.'
             }
         }
     }
@@ -219,6 +233,7 @@ Function Get-DynamicParamAssociation
             'ValueFromPipelineByPropertyName' = $true;
             'DefaultValue'                    = $false;
             'DontShow'                        = $true;
+            'HelpMessage'                     = 'Returns the raw and unedited output from the api endpoint.'
         }
         $Params += @{
             'Name'                            = 'Direct';
@@ -226,6 +241,7 @@ Function Get-DynamicParamAssociation
             'Position'                        = 5;
             'ValueFromPipelineByPropertyName' = $true;
             'DefaultValue'                    = $false;
+            'HelpMessage'                     = 'Returns only "Direct" associations.'
         }
         $Params += @{
             'Name'                            = 'Indirect';
@@ -233,6 +249,7 @@ Function Get-DynamicParamAssociation
             'Position'                        = 6;
             'ValueFromPipelineByPropertyName' = $true;
             'DefaultValue'                    = $false;
+            'HelpMessage'                     = 'Returns only "Indirect" associations.'
         }
         $Params += @{
             'Name'                            = 'IncludeInfo';
@@ -241,6 +258,7 @@ Function Get-DynamicParamAssociation
             'ValueFromPipelineByPropertyName' = $true;
             'ParameterSets'                   = @('ById', 'ByName');
             'DefaultValue'                    = $false;
+            'HelpMessage'                     = 'Appends "Info" and "TargetInfo" properties to output.'
         }
         $Params += @{
             'Name'                            = 'IncludeNames';
@@ -249,6 +267,7 @@ Function Get-DynamicParamAssociation
             'ValueFromPipelineByPropertyName' = $true;
             'ParameterSets'                   = @('ById', 'ByName');
             'DefaultValue'                    = $false;
+            'HelpMessage'                     = 'Appends "Name" and "TargetName" properties to output.'
         }
         $Params += @{
             'Name'                            = 'IncludeVisualPath';
@@ -257,6 +276,7 @@ Function Get-DynamicParamAssociation
             'ValueFromPipelineByPropertyName' = $true;
             'ParameterSets'                   = @('ById', 'ByName');
             'DefaultValue'                    = $false;
+            'HelpMessage'                     = 'Appends "visualPathById", "visualPathByName", and "visualPathByType" properties to output.'
         }
     }
     If ($Action -in ('add', 'remove'))
@@ -266,12 +286,14 @@ Function Get-DynamicParamAssociation
             'Type'                            = [System.String];
             'Position'                        = 5;
             'ValueFromPipelineByPropertyName' = $true;
+            'HelpMessage'                     = 'The unique id of the target object.'
         }
         $Params += @{
             'Name'                            = 'TargetName';
             'Type'                            = [System.String];
             'Position'                        = 6;
             'ValueFromPipelineByPropertyName' = $true;
+            'HelpMessage'                     = 'The name of the target object.'
         }
         $Params += @{
             'Name'                            = 'Force';
@@ -279,6 +301,7 @@ Function Get-DynamicParamAssociation
             'Position'                        = 8;
             'ValueFromPipelineByPropertyName' = $true;
             'DefaultValue'                    = $false;
+            'HelpMessage'                     = 'Bypass user confirmation when adding or removing associations.'
         }
     }
     If ($Action -eq 'add')
@@ -289,6 +312,7 @@ Function Get-DynamicParamAssociation
             'Position'                        = 7;
             'ValueFromPipelineByPropertyName' = $true;
             'Alias'                           = 'compiledAttributes';
+            'HelpMessage'                     = 'Add attributes that define the association such as if they are an admin.'
         }
     }
     # Create new parameters
