@@ -24,7 +24,7 @@ if [[ ! -d "${JCPATH}" ]]; then
 fi
 
 # Is zip installed?
-if [ -z "$(which zip)" ]; then
+if [[ -z "$(which zip)" ]]; then
   ZPATH="false"
 else
   ZPATH=$(which zip)
@@ -44,10 +44,10 @@ function zipjc() {
   done
 
   ## check to see if zip exists.
-  if [ "$ZPATH" = "false" ]; then
+  if [[ "$ZPATH" = "false" ]]; then
     ZIPIT="zip is not installed. please send the following files with your support request:\n${INVENTORY[*]}"
   else
-    if [ -f "${ZIPFILE}" ]; then
+    if [[ -f "${ZIPFILE}" ]]; then
       mv "${ZIPFILE}" ./jc"${STAMP}".bak.zip
       zip -r "*.crt" -r "${ZIPFILE}" "${JCPATH}" > /dev/null 1
     else
@@ -75,7 +75,7 @@ function users() {
   PSWDFILE="/etc/passwd"
   USERLIST=( $(grep -v "nologin" ${PSWDFILE} | cut -d':' -f 1) )
   for i in "${USERLIST[@]}"; do
-    if ! [ "${i}" == 'root' ] && ! [ "${i}" == 'halt' ] && ! [ "${i}" == 'restart' ]; then
+    if ! [[ "${i}" == 'root' ]] && ! [[ "${i}" == 'halt' ]] && ! [[ "${i}" == 'restart' ]]; then
     	USERS+=("${i}\n")
     fi
   done
@@ -107,7 +107,7 @@ function info_out() {
   STATUS=$( service ${SERVICE} status )
   TZONE=$( date +"%Z %z" )
 
-  if [ -f ./output.log ]; then
+  if [[ -f ./output.log ]]; then
     mv output.log output."${STAMP}".log
   fi
   {
