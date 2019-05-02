@@ -31,9 +31,6 @@ Describe "Association Tests" {
             , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 10)][ValidateNotNullOrEmpty()][string]$TestMethod
             , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 11)][ValidateNotNullOrEmpty()][string]$TestMethodIdentifier
         )
-        $CommandVerb_Add = "Add"
-        $CommandVerb_Get = "Get"
-        $CommandVerb_Remove = "Remove"
         $CommandNoun = "JCAssociation"
         $Template_FunctionName = "{0}-$CommandNoun"
         $Template_SourceParameters = " -Type:('{0}') -{1}:('{2}') {3}"
