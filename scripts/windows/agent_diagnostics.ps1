@@ -5,27 +5,27 @@ $BUILD=$UNAME.Version
 $SERVICE='jumpcloud-agent'
 $JCPATH='C:\Program Files\JumpCloud'
 $SERVICEVERSION=(Get-Content -Path (Join-Path -Path $JCPATH -ChildPath Plugins\Contrib\version.txt))
-#$JCPATH='..\files\'
 $JCLOG='C:\Windows\Temp\'
 $STAMP=Get-Date -Format 'yyyyMMddhhmmss'
 $TZONE=([TimeZoneInfo]::Local).DisplayName
 $STATUS=(Get-Service $SERVICE).Status
+$WRITEPATH=$HOME+'\Desktop\'
 $ZIPFILE='jc'+$STAMP
-$OUTPUTFILE='.\output.log'
+$OUTPUTFILE=$WRITEPATH+'output.log'
 
 function zipjc {
     ## Take inventory of files to be zipped.
     $TEMP=Join-Path -Path $(pwd) -ChildPath 'temp'
     $INVENTORY=(Get-ChildItem -Exclude *.crt, *.key -Recurse $JCPATH).Name
-    if(Test-Path .\$ZIPFILE) {
+    if(Test-Path $WRITEPATH\$ZIPFILE) {
         $zipjc_out=("`t$ZIPFILE exists moving to $ZIPFILE.bak.zip")
-        mv .\$ZIPFILE.zip .\jc$STAMP.bak -Force
+        mv $WRITEPATH\$ZIPFILE.zip $WRITEPATH\jc$STAMP.bak -Force
         }
     $zipjc_out=("$(foreach($in in $INVENTORY) { ("`t$in`n") })")
     Get-ChildItem -Path $JCPATH | % {
         Copy-Item $_.FullName $TEMP -Recurse -Force -Exclude @("*.crt", "*.key")
 }
-    Compress-Archive -Path $TEMP -DestinationPath .\$ZIPFILE
+    Compress-Archive -Path $TEMP -DestinationPath $WRITEPATH\$ZIPFILE
     Remove-Item -Path $TEMP -Recurse
     return $zipjc_out
 }
@@ -33,9 +33,9 @@ function zipjc {
 function ziplog {
     ## Zip the log files.
     $LOGFILE="jcagent.log"
-    cp $JCLOG\$LOGFILE .\$LOGFILE
-    Compress-Archive -Path .\$LOGFILE -Update -DestinationPath .\$ZIPFILE
-    Remove-Item -Path $LOGFILE
+    cp $JCLOG\$LOGFILE $WRITEPATH\$LOGFILE
+    Compress-Archive -Path $WRITEPATH\$LOGFILE -Update -DestinationPath $WRITEPATH\$ZIPFILE
+    Remove-Item -Path $WRITEPATH\$LOGFILE
     $ziplog_out+=("`tjcagent.log has been added to $ZIPFILE.zip")
     return $ziplog_out
 }
@@ -60,8 +60,8 @@ function jconf {
 
 function info_out {
     ## Write the output.log file.
-    if(Test-Path .\output.log) {
-    mv output.log output$STAMP.log -Force
+    if(Test-Path $OUTPUTFILE) {
+    mv $OUTPUTFILE $WRITEPATH\output$STAMP.log -Force
     }
     $("`nOS/BUILD INFO:") | Out-file -Append -FilePath $OUTPUTFILE
     echo `t$SYSINFO | Out-File -Append -FilePath $OUTPUTFILE
@@ -80,8 +80,8 @@ function info_out {
     $(zipjc) | Out-File -Append -FilePath $OUTPUTFILE
     $("`nLOGS INCLUDED:") | Out-File -Append -FilePath $OUTPUTFILE
     $(ziplog) | Out-File -Append -FilePath $OUTPUTFILE
-
+    Compress-Archive -Path $OUTPUTFILE -Update -DestinationPath $WRITEPATH\$ZIPFILE
 }
 
 info_out
-cat .\output.log
+cat $OUTPUTFILE
