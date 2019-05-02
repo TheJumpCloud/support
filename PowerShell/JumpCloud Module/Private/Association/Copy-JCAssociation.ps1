@@ -2,7 +2,7 @@ Function Copy-JCAssociation
 {
     [CmdletBinding(DefaultParameterSetName = 'ById')]
     Param(
-        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 1)][ValidateNotNullOrEmpty()][string]$Type,
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 1, HelpMessage = 'The type of the object.')][ValidateNotNullOrEmpty()][string]$Type,
         [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 2, ParameterSetName = 'ById')][ValidateNotNullOrEmpty()][string]$Id,
         [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 3, ParameterSetName = 'ByName')][ValidateNotNullOrEmpty()][string]$Name,
         [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 4, ParameterSetName = 'ById')][ValidateNotNullOrEmpty()][string]$TargetId,
