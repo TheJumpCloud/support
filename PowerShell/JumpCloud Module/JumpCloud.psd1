@@ -10,7 +10,7 @@
     ModuleVersion     = '1.10.1'
 
     # Author of this module
-    Author            = 'Scott Reed, Elliott Panipinto, Brad Stevens'
+    Author            = 'JumpCloud Solutions Architect Team'
 
     # Company or vendor of this module
     CompanyName       = 'JumpCloud'
