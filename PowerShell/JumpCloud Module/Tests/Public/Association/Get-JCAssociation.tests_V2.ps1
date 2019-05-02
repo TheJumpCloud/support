@@ -13,6 +13,7 @@ Describe "Association Tests" {
     # AfterEach {}
     # Define misc. variables
     $TestMethods = ('ById', 'ByName')
+    $Mock = $false
     # Internal Functions
     Function Test-AssociationCommand
     {
@@ -86,58 +87,68 @@ Describe "Association Tests" {
         # Run command
         ForEach ($Command In $Commands)
         {
-            $ItMessage = $Template_Message -f $Verb, $Command
-            $Associations = Invoke-Expression -Command:($Command)
+            $ItMessage = $Template_Message -f $Verb, $Command.Replace('$Source', "Get-JCObject -Type:('$SourceType') -Id:('$SourceId')")
+            If ($Mock)
+            {
+                Write-Host ('[Mock]' + $Command.Replace('$Source', "Get-JCObject -Type:('$SourceType') -Id:('$SourceId')"))
+            }
+            Else
+            {
+                $Associations = Invoke-Expression -Command:($Command)
+            }
             # Run tests
             Context ($ItMessage) {
                 # Test results of action
-                It("Where action property should be $Verb") {$Associations.Action | Should -Be $Verb}
-                It("Where results should be not NullOrEmpty") {$Associations | Should -Not -BeNullOrEmpty}
-                It("Where results $($Associations.Id) should be $SourceId") {$Associations.Id | Should -Be $SourceId}
-                It("Where results $($Associations.Type) should be $SourceType") {$Associations.Type | Should -Be $SourceType}
-                It("Where results $($Associations.TargetId) should be $TargetId") {$Associations.TargetId | Should -Be $TargetId}
-                It("Where results $($Associations.TargetType) should be $TargetType") {$Associations.TargetType | Should -Be $TargetType}
-                It("Where results count should BeGreaterThan 0") {$Associations.Count | Should -BeGreaterThan 0}
-                If ($Verb -eq 'Get')
+                If (!($Mock))
                 {
-                    $AssociationsProperties = ($Associations | ForEach-Object {$_.PSObject.Properties.name} | Select-Object -Unique)
-                    $SwitchColumnHash.GetEnumerator() | ForEach-Object {
-                        $ParameterName = $_.Key
-                        $ExpectedColumns = $_.Value
-                        # $Command_Get_Switch = $FunctionName + ($Template_SourceParameters -f $SourceType, $TestMethodIdentifier, $SourceSearchByValue, $TargetType)
-                        If ($Command -match $ParameterName)
-                        {
-                            ForEach ($ExpectedColumn In $ExpectedColumns)
+                    It("Where action property should be $Verb") {$Associations.Action | Should -Be $Verb}
+                    It("Where results should be not NullOrEmpty") {$Associations | Should -Not -BeNullOrEmpty}
+                    It("Where results $($Associations.Id) should be $SourceId") {$Associations.Id | Should -Be $SourceId}
+                    It("Where results $($Associations.Type) should be $SourceType") {$Associations.Type | Should -Be $SourceType}
+                    It("Where results $($Associations.TargetId) should be $TargetId") {$Associations.TargetId | Should -Be $TargetId}
+                    It("Where results $($Associations.TargetType) should be $TargetType") {$Associations.TargetType | Should -Be $TargetType}
+                    It("Where results count should BeGreaterThan 0") {$Associations.Count | Should -BeGreaterThan 0}
+                    If ($Verb -eq 'Get')
+                    {
+                        $AssociationsProperties = ($Associations | ForEach-Object {$_.PSObject.Properties.name} | Select-Object -Unique)
+                        $SwitchColumnHash.GetEnumerator() | ForEach-Object {
+                            $ParameterName = $_.Key
+                            $ExpectedColumns = $_.Value
+                            # $Command_Get_Switch = $FunctionName + ($Template_SourceParameters -f $SourceType, $TestMethodIdentifier, $SourceSearchByValue, $TargetType)
+                            If ($Command -match $ParameterName)
                             {
-                                # It("Where '$ExpectedColumn' is a property in '$($AssociationsProperties -join ', ')'") {
-                                It("Where '$ExpectedColumn' is a property in the output from the command") {
-                                    $ExpectedColumn | Should -BeIn $AssociationsProperties
+                                ForEach ($ExpectedColumn In $ExpectedColumns)
+                                {
+                                    # It("Where '$ExpectedColumn' is a property in '$($AssociationsProperties -join ', ')'") {
+                                    It("Where '$ExpectedColumn' is a property in the output from the command") {
+                                        $ExpectedColumn | Should -BeIn $AssociationsProperties
+                                    }
                                 }
                             }
                         }
                     }
-                }
-                # Get the associations
-                $Associations_Validation = $Associations | Get-JCAssociation -Direct
-                # Test that the change was applied
-                If ($Verb -eq 'Remove')
-                {
-                    It("Where results validation should be NullOrEmpty") {$Associations_Validation | Should -BeNullOrEmpty}
-                    It("Where results validation $($Associations_Validation.Id) should be $SourceId") {$Associations_Validation.Id | Should -BeNullOrEmpty $SourceId}
-                    It("Where results validation $($Associations_Validation.Type) should be $SourceType") {$Associations_Validation.Type | Should -BeNullOrEmpty $SourceType}
-                    It("Where results validation $($Associations_Validation.TargetId) should be $TargetId") {$Associations_Validation.TargetId | Should -BeNullOrEmpty $TargetId}
-                    It("Where results validation $($Associations_Validation.TargetType) should be $TargetType") {$Associations_Validation.TargetType | Should -BeNullOrEmpty $TargetType}
-                    It("Where results validation count should be 0") {$Associations_Validation.Count | Should -Be 0}
-                }
-                Else
-                {
-                    It("Where results validation should be not NullOrEmpty") {$Associations_Validation | Should -Not -BeNullOrEmpty}
-                    It("Where results validation $($Associations_Validation.Id) should be $SourceId") {$Associations_Validation.Id | Should -Be $SourceId}
-                    It("Where results validation $($Associations_Validation.Type) should be $SourceType") {$Associations_Validation.Type | Should -Be $SourceType}
-                    It("Where results validation $($Associations_Validation.TargetId) should be $TargetId") {$Associations_Validation.TargetId | Should -Be $TargetId}
-                    It("Where results validation $($Associations_Validation.TargetType) should be $TargetType") {$Associations_Validation.TargetType | Should -Be $TargetType}
-                    It("Where results validation count should BeGreaterThan 0") {$Associations_Validation.Count | Should -BeGreaterThan 0}
-                    It("Where results validation count should be $($Associations.Count)") {$Associations_Validation.Count | Should -Be $Associations.Count}
+                    # Get the associations
+                    $Associations_Validation = $Associations | Get-JCAssociation -Direct
+                    # Test that the change was applied
+                    If ($Verb -eq 'Remove')
+                    {
+                        It("Where results validation should be NullOrEmpty") {$Associations_Validation | Should -BeNullOrEmpty}
+                        It("Where results validation $($Associations_Validation.Id) should be $SourceId") {$Associations_Validation.Id | Should -BeNullOrEmpty $SourceId}
+                        It("Where results validation $($Associations_Validation.Type) should be $SourceType") {$Associations_Validation.Type | Should -BeNullOrEmpty $SourceType}
+                        It("Where results validation $($Associations_Validation.TargetId) should be $TargetId") {$Associations_Validation.TargetId | Should -BeNullOrEmpty $TargetId}
+                        It("Where results validation $($Associations_Validation.TargetType) should be $TargetType") {$Associations_Validation.TargetType | Should -BeNullOrEmpty $TargetType}
+                        It("Where results validation count should be 0") {$Associations_Validation.Count | Should -Be 0}
+                    }
+                    Else
+                    {
+                        It("Where results validation should be not NullOrEmpty") {$Associations_Validation | Should -Not -BeNullOrEmpty}
+                        It("Where results validation $($Associations_Validation.Id) should be $SourceId") {$Associations_Validation.Id | Should -Be $SourceId}
+                        It("Where results validation $($Associations_Validation.Type) should be $SourceType") {$Associations_Validation.Type | Should -Be $SourceType}
+                        It("Where results validation $($Associations_Validation.TargetId) should be $TargetId") {$Associations_Validation.TargetId | Should -Be $TargetId}
+                        It("Where results validation $($Associations_Validation.TargetType) should be $TargetType") {$Associations_Validation.TargetType | Should -Be $TargetType}
+                        It("Where results validation count should BeGreaterThan 0") {$Associations_Validation.Count | Should -BeGreaterThan 0}
+                        It("Where results validation count should be $($Associations.Count)") {$Associations_Validation.Count | Should -Be $Associations.Count}
+                    }
                 }
             }
         }
@@ -206,10 +217,10 @@ Describe "Association Tests" {
         $InvalidAssociationItems = $AssociationDataSet.Where( {-not $_.ValidRecord -and -not $_.SourceId -and -not $_.TargetId}) |
             Select-Object @{Name = 'Status'; Expression = {'No "' + $_.SourceType + '" found within org. Please create a "' + $_.SourceType + '"'}} -Unique
         # Validate that org has been fully populated
-        It("Validate that all object types exist within the specified test environment.") {
-            $InvalidAssociationItems | Should -BeNullOrEmpty
-        }
-        If ($InvalidAssociationItems) { Write-Error ($InvalidAssociationItems.Status -join ', '); }
+        # It("Validate that all object types exist within the specified test environment.") {
+        #     $InvalidAssociationItems | Should -BeNullOrEmpty
+        # }
+        # If ($InvalidAssociationItems) { Write-Error ($InvalidAssociationItems.Status -join ', '); }
         # Using dataset run tests
         ForEach ($AssociationItem In $ValidAssociationItems)
         {
@@ -221,6 +232,15 @@ Describe "Association Tests" {
             $TargetId = $AssociationItem.TargetId
             $TargetName = $AssociationItem.TargetName
             $Target = $AssociationItem.Target
+
+            # # Define source and target variables
+            # $SourceType = $Source.TypeNameSingular
+            # $SourceId = $Source.($Source.ById)
+            # $SourceName = $Source.($Source.ByName)
+            # $TargetType = $Target.TypeNameSingular
+            # $TargetId = $Target.($Target.ById)
+            # $TargetName = $Target.($Target.ByName)
+
             # Start test for each test method
             ForEach ($TestMethod In $TestMethods)
             {
@@ -233,7 +253,14 @@ Describe "Association Tests" {
                         # Get current associations and save them to be reapplied later
                         $AssociationsOriginalCommand = "Get-JCAssociation -Type:('$SourceType') -$TestMethodIdentifier`:('$SourceSearchByValue') -Direct; "
                         Write-Host ('Backing up Source associations: ' + $AssociationsOriginalCommand)
-                        $AssociationsOriginal = Invoke-Expression -Command:($AssociationsOriginalCommand)
+                        If ($Mock)
+                        {
+                            Write-Host ('[Mock]' + $AssociationsOriginalCommand)
+                        }
+                        Else
+                        {
+                            $AssociationsOriginal = Invoke-Expression -Command:($AssociationsOriginalCommand)
+                        }
                         # Remove current associations
                         $ChangedOriginal = $false
                         If ($AssociationsOriginal)
@@ -266,22 +293,43 @@ Describe "Association Tests" {
                             # Get current associations and save them to be reapplied later
                             $AssociationsCurrentCommand = "Get-JCAssociation -Type:('$SourceType') -$TestMethodIdentifier`:('$SourceSearchByValue') -Direct; "
                             Write-Host ('Getting current Source associations: ' + $AssociationsCurrentCommand)
-                            $Associations_GetCurrent = Invoke-Expression -Command:($AssociationsCurrentCommand)
+                            If ($Mock)
+                            {
+                                Write-Host ('[Mock]' + $AssociationsCurrentCommand)
+                            }
+                            Else
+                            {
+                                $Associations_GetCurrent = Invoke-Expression -Command:($AssociationsCurrentCommand)
+                            }
                             If ($Associations_GetCurrent)
                             {
                                 $AssociationsRemoveCurrentCommand = '$Associations_GetCurrent | Remove-JCAssociation -Force'
                                 Write-Host ('Removing current Source associations: ' + $AssociationsRemoveCurrentCommand)
-                                # $Associations_RemoveCurrent =
-                                Invoke-Expression -Command:($AssociationsRemoveCurrentCommand) | Out-Null
-                                # $Associations_RemoveCurrent | Format-Table
+                                If ($Mock)
+                                {
+                                    Write-Host ('[Mock]' + $AssociationsRemoveCurrentCommand)
+                                }
+                                Else
+                                {
+                                    # $Associations_RemoveCurrent =
+                                    Invoke-Expression -Command:($AssociationsRemoveCurrentCommand) | Out-Null
+                                    # $Associations_RemoveCurrent | Format-Table
+                                }
                             }
                             If ($AssociationsOriginal)
                             {
                                 $AssociationsAddOriginalCommand = '$AssociationsOriginal | Add-JCAssociation -Force'
                                 Write-Host ('Removing current Source associations: ' + $AssociationsAddOriginalCommand)
-                                # $Associations_AddOriginal =
-                                Invoke-Expression -Command:($AssociationsAddOriginalCommand) | Out-Null
-                                # $CommandResults_AddOriginal | Format-Table
+                                If ($Mock)
+                                {
+                                    Write-Host ('[Mock]' + $AssociationsAddOriginalCommand)
+                                }
+                                Else
+                                {
+                                    # $Associations_AddOriginal =
+                                    Invoke-Expression -Command:($AssociationsAddOriginalCommand) | Out-Null
+                                    # $CommandResults_AddOriginal | Format-Table
+                                }
                             }
                         }
                     }
