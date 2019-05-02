@@ -14,13 +14,13 @@ Lists the associations of a specific object and a specific type of object within
 
 ### ById (Default)
 ```
-Get-JCAssociation [-InputObjectType] <String> [-InputObjectId] <String> [-TargetObjectType] <String>
+Get-JCAssociation [-Type] <String> [-Id] <String> [-TargetType] <String>
  [-HideTargetData] [<CommonParameters>]
 ```
 
 ### ByName
 ```
-Get-JCAssociation [-InputObjectType] <String> [-InputObjectName] <String> [-TargetObjectType] <String>
+Get-JCAssociation [-Type] <String> [-Name] <String> [-TargetType] <String>
  [-HideTargetData] [<CommonParameters>]
 ```
 
@@ -31,14 +31,14 @@ The Get-JCAssociation function allows you to view the associations of a specific
 
 ### Example 1
 ```
-PS C:\> Get-JCAssociation -InputObjectType:('users') -InputObjectName:('Luke Skywalker') -TargetObjectType:('system') | Format-Table
+PS C:\> Get-JCAssociation -Type:('users') -Name:('Luke Skywalker') -TargetType:('system') | Format-Table
 ```
 
 List all "systems" that are associated with the user "Luke Skywalker".
 
 ### Example 2
 ```
-PS C:\> Get-JCAssociation -InputObjectType:('users') -InputObjectId:('5ab915cf861178491b8fc399') -TargetObjectType:('system') | Format-Table
+PS C:\> Get-JCAssociation -Type:('users') -Id:('5ab915cf861178491b8fc399') -TargetType:('system') | Format-Table
 ```
 
 List all "systems" that are associated with the userId "5ab915cf861178491b8fc399".
@@ -60,7 +60,7 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
-### -InputObjectId
+### -Id
 The id of the input object.
 
 ```yaml
@@ -75,7 +75,7 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
-### -InputObjectName
+### -Name
 The name of the input object.
 
 ```yaml
@@ -90,7 +90,7 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
-### -InputObjectType
+### -Type
 The type of the input object.
 
 ```yaml
@@ -106,7 +106,7 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
-### -TargetObjectType
+### -TargetType
 The type of the target object.
 
 ```yaml

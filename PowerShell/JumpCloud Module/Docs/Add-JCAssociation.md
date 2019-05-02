@@ -1,11 +1,11 @@
 ---
 external help file: JumpCloud-help.xml
 Module Name: JumpCloud
-online version: https://github.com/TheJumpCloud/support/wiki/New-JCAssociation
+online version: https://github.com/TheJumpCloud/support/wiki/Add-JCAssociation
 schema: 2.0.0
 ---
 
-# New-JCAssociation
+# Add-JCAssociation
 
 ## SYNOPSIS
 Create an association between two object within the JumpCloud console.
@@ -14,38 +14,38 @@ Create an association between two object within the JumpCloud console.
 
 ### ById (Default)
 ```
-New-JCAssociation [-InputObjectType] <String> [-InputObjectId] <String> [-TargetObjectType] <String>
- [-TargetObjectId] <String> [<CommonParameters>]
+Add-JCAssociation [-Type] <String> [-Id] <String> [-TargetType] <String>
+ [-TargetId] <String> [<CommonParameters>]
 ```
 
 ### ByName
 ```
-New-JCAssociation [-InputObjectType] <String> [-InputObjectName] <String> [-TargetObjectType] <String>
- [-TargetObjectName] <String> [<CommonParameters>]
+Add-JCAssociation [-Type] <String> [-Name] <String> [-TargetType] <String>
+ [-TargetName] <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-The New-JCAssociation function allows you to create associations of a specific object to a target object.
+The Add-JCAssociation function allows you to create associations of a specific object to a target object.
 
 ## EXAMPLES
 
 ### Example 1
 ```powershell
-PS C:\> New-JCAssociation -InputObjectType:('radiusservers') -InputObjectId:('5c5c371704c4b477964ab4fa') -TargetObjectType:('user_group') -TargetObjectId:('59f20255c9118021fa01b80f')
+PS C:\> Add-JCAssociation -Type:('radiusservers') -Id:('5c5c371704c4b477964ab4fa') -TargetType:('user_group') -TargetId:('59f20255c9118021fa01b80f')
 ```
 
 Create an association between the radius server "5c5c371704c4b477964ab4fa" and the user group "59f20255c9118021fa01b80f".
 
 ### Example 2
 ```powershell
-PS C:\> New-JCAssociation -InputObjectType:('radiusservers') -InputObjectName:('RadiusServer1') -TargetObjectType:('user_group') -TargetObjectName:('All Users')
+PS C:\> Add-JCAssociation -Type:('radiusservers') -Name:('RadiusServer1') -TargetType:('user_group') -TargetName:('All Users')
 ```
 
 Create an association between the radius server "RadiusServer1" and the user group "All Users".
 
 ## PARAMETERS
 
-### -InputObjectId
+### -Id
 The id of the input object.
 
 ```yaml
@@ -60,7 +60,7 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
-### -InputObjectName
+### -Name
 The name of the input object.
 
 ```yaml
@@ -75,7 +75,7 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
-### -InputObjectType
+### -Type
 The type of the input object.
 
 ```yaml
@@ -91,7 +91,7 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
-### -TargetObjectId
+### -TargetId
 The id of the target object.
 
 ```yaml
@@ -106,7 +106,7 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
-### -TargetObjectName
+### -TargetName
 The name of the target object.
 
 ```yaml
@@ -121,7 +121,7 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
-### -TargetObjectType
+### -TargetType
 The type of the target object.
 
 ```yaml
