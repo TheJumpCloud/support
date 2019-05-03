@@ -1,17 +1,17 @@
 #### Latest Version
 
 ```
-1.9.0
+1.11.0
 ```
 
 #### Banner Current
 
 ```
-Module up-to-date. Secure your wifi networks with VLAN tagging! Use the new RADIUS reply attribute functions.
+Module up-to-date. Query associations between any two JumpCloud endpoints using Get-JCAssociation.
 ```
 
 #### Banner Old
 
 ```
-RADIUS reply attribute functions await! JumpCloud module update available.
+New function Get-JCAssociation FTW! JumpCloud module update available.
 ```

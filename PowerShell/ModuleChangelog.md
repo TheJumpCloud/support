@@ -1,3 +1,48 @@
+## 1.11.0
+
+Release Date: May 3, 2019
+
+```
+Use Get-JCAssociation to query associations between objects in JumpCloud.
+Report on the associations between any two objects.
+User/systems, systems/commands, user_group/applications...etc
+All available now directly from the Pwsh terminal!
+```
+
+- New Function: Get-JCAssociation leverages the V2 associations endpoint to return the associations between a input object and any of it's possible JumpCloud objects associations. See [How To Use The Associations Functions](https://github.com/TheJumpCloud/support/wiki/How-To-Use-The-Associations-Functions) for more information.
+
+## Improvements
+
+Added private functions to standardize API calls to policy endpoints.
+
+## 1.10.2
+
+Release Date: April 29, 2019
+
+#### RELEASE NOTES
+
+```
+Update Set-JCUser to not allow null values for nested properties
+```
+
+#### BUG FIXES:
+
+- Resolves an issue that would set null values when using Set-JCUser to update the nested "addresses" property.
+
+## 1.10.1
+
+Release Date: February 19, 2019
+
+#### RELEASE NOTES
+
+```
+Update New-JCUser and Set-JCUser to interact with the property mfa instead of the mfaData property when using the parameter enable_user_portal_multifactor to enable mfa for a user.
+```
+
+#### IMPROVEMENTS:
+
+- This change aligns with recent work done to improve the mfa workflow for JumpCloud end users.
+
 ## 1.10.0
 
 Release Date: January 17, 2019
