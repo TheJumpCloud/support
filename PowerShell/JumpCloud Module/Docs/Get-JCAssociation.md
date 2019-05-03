@@ -67,27 +67,12 @@ List all "users" that are associated with the system "5c9a95f84tdo1376318g5148" 
 ## PARAMETERS
 
 ### -Id
-The id of the input object.
+The unique id of the object.
 
 ```yaml
 Type: String[]
 Parameter Sets: ById
 Aliases: _id
-
-Required: True
-Position: 1
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -Name
-The name of the input object.
-
-```yaml
-Type: String[]
-Parameter Sets: ByName
-Aliases: domain, displayName, username
 
 Required: True
 Position: 2
@@ -96,8 +81,23 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
+### -Name
+The name of the object.
+
+```yaml
+Type: String[]
+Parameter Sets: ByName
+Aliases: domain, displayName, username
+
+Required: True
+Position: 3
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
 ### -Type
-The type of the input object.
+The type of the object.
 
 ```yaml
 Type: String
@@ -106,23 +106,23 @@ Aliases: TypeNameSingular
 Accepted values: active_directory, command, ldap_server, policy, application, radius_server, system_group, system, user_group, user, g_suite, office_365
 
 Required: True
-Position: 0
+Position: 1
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
 ### -TargetType
-The type of the target object.
+The target object type.
 
 ```yaml
 Type: String[]
 Parameter Sets: (All)
 Aliases: TargetSingular
-Accepted values: user, user_group, user_group, system, system_group, user, user_group, user, user_group, user, user_group, system, system_group, user_group, policy, user_group, command, system, policy, user, command, system_group, active_directory, application, g_suite, ldap_server, office_365, radius_server, system_group, user, active_directory, g_suite, ldap_server, office_365, system, user_group
+Accepted values: user, user_group, system, system_group, policy, command, active_directory, application, g_suite, ldap_server, office_365, radius_server, user, user_group, system, application, radius_server, system_group
 
 Required: True
-Position: 3
+Position: 4
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -137,52 +137,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -IncludeInfo
-Appends "Info" and "TargetInfo" properties to output.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -IncludeNames
-Appends "Name" and "TargetName" properties to output.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -IncludeVisualPath
-Appends "visualPathById", "visualPathByName", and "visualPathByType" properties to output.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
+Position: 5
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -197,7 +152,52 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 6
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -IncludeInfo
+Appends "Info" and "TargetInfo" properties to output.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 7
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -IncludeNames
+Appends "Name" and "TargetName" properties to output.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 8
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -IncludeVisualPath
+Appends "visualPathById", "visualPathByName", and "visualPathByType" properties to output.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 9
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -209,6 +209,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
+### System.String[]
 ### System.Management.Automation.SwitchParameter
 ## OUTPUTS
 
