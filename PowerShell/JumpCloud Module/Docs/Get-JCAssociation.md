@@ -14,14 +14,14 @@ Lists the associations of a specific object and a specific type of object within
 
 ### ById (Default)
 ```
-Get-JCAssociation [-Type] <String> [-Id] <String> [-TargetType] <String>
- [-HideTargetData] [<CommonParameters>]
+Get-JCAssociation [-Type] <String> [-Id] <String[]> [-TargetType] <String[]> [-Direct] [-Indirect]
+ [-IncludeInfo] [-IncludeNames] [-IncludeVisualPath] [<CommonParameters>]
 ```
 
 ### ByName
 ```
-Get-JCAssociation [-Type] <String> [-Name] <String> [-TargetType] <String>
- [-HideTargetData] [<CommonParameters>]
+Get-JCAssociation [-Type] <String> [-Name] <String[]> [-TargetType] <String[]> [-Direct] [-Indirect]
+ [-IncludeInfo] [-IncludeNames] [-IncludeVisualPath] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -31,42 +31,48 @@ The Get-JCAssociation function allows you to view the associations of a specific
 
 ### Example 1
 ```
-PS C:\> Get-JCAssociation -Type:('users') -Name:('Luke Skywalker') -TargetType:('system') | Format-Table
+PS C:\> Get-JCAssociation -Type:user_group -Name:employee -TargetType:users
 ```
 
-List all "systems" that are associated with the user "Luke Skywalker".
+List all "users" that are associated with the user_group "employee".
 
 ### Example 2
 ```
-PS C:\> Get-JCAssociation -Type:('users') -Id:('5ab915cf861178491b8fc399') -TargetType:('system') | Format-Table
+PS C:\> Get-JCAssociation -Type:system -Id:5c9a95f84tdo1376318g5148
 ```
 
-List all "systems" that are associated with the userId "5ab915cf861178491b8fc399".
+List all associations with the system "5c9a95f84tdo1376318g5148".
+
+### Example 3
+```
+PS C:\> Get-JCAssociation -Type:system  -Id:5c9a95f84tdo1376318g5148 -TargetType:users -Direct
+```
+
+List all "users" that have a direct association with the system "5c9a95f84tdo1376318g5148".
+
+### Example 4
+```
+PS C:\> Get-JCAssociation -Type:system  -Id:5c9a95f84tdo1376318g5148 -TargetType:users -Indirect
+```
+
+List all "users" that have a indirect association with the system "5c9a95f84tdo1376318g5148".
+
+### Example 5
+```
+PS C:\> Get-JCAssociation -Type:system  -Id:5c9a95f84tdo1376318g5148 -TargetType:users -IncludeInfo -IncludeNames -IncludeVisualPath
+```
+
+List all "users" that are associated with the system "5c9a95f84tdo1376318g5148" and also get additional metadata about each object.
 
 ## PARAMETERS
-
-### -HideTargetData
-Providing this parameter will suppress the target objects information from the result.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 4
-Default value: False
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
 
 ### -Id
 The id of the input object.
 
 ```yaml
-Type: String
+Type: String[]
 Parameter Sets: ById
-Aliases: id, _id
+Aliases: _id
 
 Required: True
 Position: 1
@@ -79,9 +85,9 @@ Accept wildcard characters: False
 The name of the input object.
 
 ```yaml
-Type: String
+Type: String[]
 Parameter Sets: ByName
-Aliases: name, username, groupName
+Aliases: domain, displayName, username
 
 Required: True
 Position: 2
@@ -96,7 +102,7 @@ The type of the input object.
 ```yaml
 Type: String
 Parameter Sets: (All)
-Aliases:
+Aliases: TypeNameSingular
 Accepted values: active_directory, command, ldap_server, policy, application, radius_server, system_group, system, user_group, user, g_suite, office_365
 
 Required: True
@@ -110,9 +116,9 @@ Accept wildcard characters: False
 The type of the target object.
 
 ```yaml
-Type: String
+Type: String[]
 Parameter Sets: (All)
-Aliases:
+Aliases: TargetSingular
 Accepted values: user, user_group, user_group, system, system_group, user, user_group, user, user_group, user, user_group, system, system_group, user_group, policy, user_group, command, system, policy, user, command, system_group, active_directory, application, g_suite, ldap_server, office_365, radius_server, system_group, user, active_directory, g_suite, ldap_server, office_365, system, user_group
 
 Required: True
@@ -122,8 +128,83 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
+### -Direct
+Returns only "Direct" associations.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -IncludeInfo
+Appends "Info" and "TargetInfo" properties to output.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -IncludeNames
+Appends "Name" and "TargetName" properties to output.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -IncludeVisualPath
+Appends "visualPathById", "visualPathByName", and "visualPathByType" properties to output.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Indirect
+Returns only "Indirect" associations.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
 ### CommonParameters
-This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see about_CommonParameters (http://go.microsoft.com/fwlink/?LinkID=113216).
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
