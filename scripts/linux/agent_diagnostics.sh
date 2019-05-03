@@ -16,6 +16,7 @@ JCPATH="/opt/jc"
 JCLOG="/var/log/"
 STAMP=$( date +"%Y%m%d%H%M%S" )
 ZIPFILE="./jc${STAMP}.zip"
+declare -a INVENTORY
 
 # Is jcagent installed? If not, exit.
 if [[ ! -d "${JCPATH}" ]]; then
@@ -37,8 +38,6 @@ function indent() {
 
 function zipjc() {
   # Take inventory of files to be zipped
-  # INVENTORY=$( ls ${JCPATH} | grep -v '.crt' )
-  declare -a INVENTORY
   for i in *; do
     INVENTORY+=("${i}")
   done
@@ -51,7 +50,7 @@ function zipjc() {
       mv "${ZIPFILE}" ./jc"${STAMP}".bak.zip
       zip -r "*.crt" -r "${ZIPFILE}" "${JCPATH}" > /dev/null 1
     else
-      ZIPIT="${ZIPFILE} has been created, containing the following files:\n${INVENTORY[@]}"
+      ZIPIT="${ZIPFILE} has been created, containing the following files:"
       zip -x "*.crt" -r "${ZIPFILE}" "${JCPATH}" > /dev/null 1
     fi
   fi
@@ -63,9 +62,9 @@ function ziplog() {
   for i in "${LOGFILES[@]}"; do
     if [ -f "${JCLOG}""${i}" ]; then
       zip "${ZIPFILE}" "${JCLOG}""${i}" > /dev/null 1
-      LOGIT+=("${JCLOG}${i} has been successfully added to ${ZIPFILE}.\n")
+      LOGIT+=("${JCLOG}${i} has been successfully added to ${ZIPFILE}.")
     else
-      LOGIT+=("${JCLOG}${i} doesn't exist.\n")
+      LOGIT+=("${JCLOG}${i} doesn't exist.")
     fi
   done
 }
