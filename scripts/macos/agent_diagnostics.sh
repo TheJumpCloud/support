@@ -122,9 +122,9 @@ function info_out() {
   printf "%s\n" "${JCONF[@]}" | indent
   printf "FILES INCLUDED:\n"
   printf "%s\n" "${ZIPIT}" | indent
-  printf "%s\n" "${INVENTORY}" | indent
+  printf "%s\n" "${INVENTORY[@]}" | indent
   printf "LOGS INCLUDED FROM %s:\n" "${JCLOG}"
-  printf "%s\n" "${LOGIT[*]}" | indent
+  printf "%s\n" "${LOGIT[@]}" | indent
   } > output.log
   zip "${ZIPFILE}" ./output.log > /dev/null 1
 }
