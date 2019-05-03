@@ -16,7 +16,7 @@ JCPATH="/opt/jc"
 JCLOG="/var/log/"
 STAMP=$( date +"%Y%m%d%H%M%S" )
 ZIPFILE="./jc${STAMP}.zip"
-declare -a iNVENTORY
+declare -a INVENTORY
 
 # Is jcagent installed? if not, exit.
 if [[ ! -d "${JCPATH}" ]]; then
@@ -25,7 +25,7 @@ if [[ ! -d "${JCPATH}" ]]; then
 fi
 
 # Is zip installed?
-if [[ -z $(which zip) ]]; then
+if ! which zip 2> /dev/null; then
   ZPATH="false"
 else
   ZPATH=$(which zip)
@@ -43,7 +43,7 @@ function zipjc() {
 
   # check to see if zip exists.
   if [[ "$ZPATH" = "false" ]]; then
-    ZIPIT="zip is not installed. please send the following files with your support request:\n${INVENTORY[@]}"
+    ZIPIT="zip is not installed. please send the following files with your support request:\n${INVENTORY[*]}"
   else
     if [[ -f "${ZIPFILE}" ]]; then
       mv "${ZIPFILE}" ./jc"${STAMP}".bak.zip
@@ -126,7 +126,9 @@ function info_out() {
   printf "LOGS INCLUDED FROM %s:\n" "${JCLOG}"
   printf "%s\n" "${LOGIT[@]}" | indent
   } > output.log
-  zip "${ZIPFILE}" ./output.log > /dev/null 1
+  if [[ "${ZPATH}" != "false" ]]; then
+    zip "${ZIPFILE}" ./output.log 1> /dev/null
+  fi
 }
 
 function main() {

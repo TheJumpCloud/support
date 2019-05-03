@@ -25,7 +25,7 @@ if [[ ! -d "${JCPATH}" ]]; then
 fi
 
 # Is zip installed?
-if [[ -z "$(which zip)" ]]; then
+if ! which zip 2> /dev/null; then
   ZPATH="false"
 else
   ZPATH=$(which zip)
@@ -38,13 +38,13 @@ function indent() {
 
 function zipjc() {
   # Take inventory of files to be zipped
-  for i in *; do
+  for i in "${JCPATH}"/*; do
     INVENTORY+=("${i}")
   done
 
   # check to see if zip exists.
   if [[ "$ZPATH" = "false" ]]; then
-    ZIPIT="zip is not installed. please send the following files with your support request:\n${INVENTORY[@]}"
+    ZIPIT="zip is not installed. please send the following files with your support request:"
   else
     if [[ -f "${ZIPFILE}" ]]; then
       mv "${ZIPFILE}" ./jc"${STAMP}".bak.zip
@@ -57,16 +57,18 @@ function zipjc() {
 }
 
 function ziplog() {
-  # Zip the log files. 
-  LOGFILES=("jcagent.log" "jcUpdate.log")
-  for i in "${LOGFILES[@]}"; do
-    if [ -f "${JCLOG}""${i}" ]; then
-      zip "${ZIPFILE}" "${JCLOG}""${i}" > /dev/null 1
-      LOGIT+=("${JCLOG}${i} has been successfully added to ${ZIPFILE}.")
-    else
-      LOGIT+=("${JCLOG}${i} doesn't exist.")
-    fi
-  done
+  # Zip the log files.
+  if [[ "${ZPATH}" = "false" ]]; then
+    LOGIT+=("Zip is not available.")
+  else  
+    LOGFILES=("jcagent.log" "jcUpdate.log")
+    for i in "${LOGFILES[@]}"; do
+      if [[ -f "${JCLOG}""${i}" ]]; then
+        zip "${ZIPFILE}" "${JCLOG}""${i}" > /dev/null 1
+        LOGIT+=("${JCLOG}${i} has been successfully added to ${ZIPFILE}.")
+      fi
+    done
+  fi
 }
 
 function users() {
@@ -103,7 +105,7 @@ function info_out() {
   SYSINFO=$( uname -rs )
   OS=$( grep PRETTY_NAME /etc/os-release | sed 's/\=/:/g' | cut -d':' -f 2 | sed 's/\"//g' )
   SERVICE="jcagent"
-  STATUS=$( service ${SERVICE} status )
+  STATUS=$( service ${SERVICE} status 2> /dev/null )
   TZONE=$( date +"%Z %z" )
 
   if [[ -f ./output.log ]]; then
@@ -131,7 +133,9 @@ function info_out() {
   printf "LOGS INCLUDED FROM %s:\n" "${JCLOG}"
   printf "%s\n" "${LOGIT[@]}" | indent
   } > output.log
-  zip "${ZIPFILE}" ./output.log > /dev/null 1
+  if [[ "${ZPATH}" != "false" ]]; then
+    zip "${ZIPFILE}" ./output.log 1> /dev/null
+  fi
 }
 
 function main() {
