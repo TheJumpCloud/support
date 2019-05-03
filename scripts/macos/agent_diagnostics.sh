@@ -16,6 +16,7 @@ JCPATH="/opt/jc"
 JCLOG="/var/log/"
 STAMP=$( date +"%Y%m%d%H%M%S" )
 ZIPFILE="./jc${STAMP}.zip"
+declare -a iNVENTORY
 
 # Is jcagent installed? if not, exit.
 if [[ ! -d "${JCPATH}" ]]; then
@@ -36,20 +37,19 @@ function indent() {
 
 function zipjc() {
   # Take inventory of files to be zipped.
-  declare -a INVENTORY
-  for i in *; do
+  for i in "${JCPATH}"/*; do
     INVENTORY+=("${i}")
   done
 
   # check to see if zip exists.
   if [[ "$ZPATH" = "false" ]]; then
-    ZIPIT="zip is not installed. please send the following files with your support request:\n${INVENTORY[*]}"
+    ZIPIT="zip is not installed. please send the following files with your support request:\n${INVENTORY[@]}"
   else
     if [[ -f "${ZIPFILE}" ]]; then
       mv "${ZIPFILE}" ./jc"${STAMP}".bak.zip
       zip -r "*.crt" -r "${ZIPFILE}" "${JCPATH}" > /dev/null 1
     else
-      ZIPIT="${ZIPFILE} has been created, containing the following files:\n${INVENTORY[*]}"
+      ZIPIT="${ZIPFILE} has been created, containing the following files:"
       zip -x "*.crt" -r "${ZIPFILE}" "${JCPATH}" > /dev/null 1
     fi
   fi
@@ -61,9 +61,9 @@ function ziplog() {
   for i in "${LOGFILES[@]}"; do
     if [ -f "${JCLOG}""${i}" ]; then
       zip "${ZIPFILE}" "${JCLOG}""${i}" > /dev/null 1
-      LOGIT+=("${JCLOG}${i} has been successfully added to ${ZIPFILE}.\n")
+      LOGIT+=("${JCLOG}${i} has been successfully added to ${ZIPFILE}.")
     else
-      LOGIT+=("${JCLOG}${i} doesn't exist.\n")
+      LOGIT+=("${JCLOG}${i} doesn't exist.")
     fi
   done
 }
@@ -89,7 +89,7 @@ function sudoers() {
 
 function jconf() {
   # Grab the contents of jconf for quick display in the output.log file.
-  JCAGENTCONFIG=( $(sed 's/,/\\\n/g' "${JCPATH}"/jcagent.conf | sed 's/[{}]//g') )
+  JCAGENTCONFIG=( $(sed 's/[{}]//g' "${JCPATH}"/jcagent.conf | tr ',' '\n') )
   for i in "${JCAGENTCONFIG[@]}"; do
     JCONF+=("${i}")
   done
@@ -122,6 +122,7 @@ function info_out() {
   printf "%s\n" "${JCONF[@]}" | indent
   printf "FILES INCLUDED:\n"
   printf "%s\n" "${ZIPIT}" | indent
+  printf "%s\n" "${INVENTORY}" | indent
   printf "LOGS INCLUDED FROM %s:\n" "${JCLOG}"
   printf "%s\n" "${LOGIT[*]}" | indent
   } > output.log
