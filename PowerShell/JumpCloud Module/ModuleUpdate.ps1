@@ -29,7 +29,7 @@ Write-Host ('[status]Creating/Updating help files')
     Else
     {
         # Write-Host ('Creating: ' + $FunctionName + '.md')
-        New-MarkdownHelp  -Command:($FunctionName) -OutputFolder:($FolderPath_Docs) -Force  -ExcludeDontShow -OnlineVersionUrl:($GitHubWikiUrl + $FunctionName) -WithModulePage
+        New-MarkdownHelp  -Command:($FunctionName) -OutputFolder:($FolderPath_Docs) -Force  -ExcludeDontShow -OnlineVersionUrl:($GitHubWikiUrl + $FunctionName)
     }
 }
 
