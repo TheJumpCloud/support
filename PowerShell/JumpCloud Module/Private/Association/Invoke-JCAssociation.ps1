@@ -1,4 +1,4 @@
-Function Invoke-JCAssociation
+﻿Function Invoke-JCAssociation
 {
     [CmdletBinding(DefaultParameterSetName = 'ById')]
     Param(
@@ -49,9 +49,9 @@ Function Invoke-JCAssociation
                 ForEach ($Association In $Associations)
                 {
                     # For source determine if association is direct or indirect
-                    $associationType = If (($Association | ForEach-Object {$_.paths.to.Count}) -eq 1) {'direct'}
+                    $associationType = If (($Association | ForEach-Object {$_.paths.to.Count}) -eq 1 -or ($Association | ForEach-Object {$_.paths.to.Count}) -eq 0) {'direct'}
                     ElseIf (($Association | ForEach-Object {$_.paths.to.Count}) -gt 1) {'indirect'}
-                    Else {'unknown'}
+                    Else {'unknown;The count of paths is:' + $_.paths.to.Count}
                     # Raw switch allows for the user to return an unformatted version of what the api endpoint returns
                     If ($Raw)
                     {
@@ -117,7 +117,8 @@ Function Invoke-JCAssociation
                                 ($AssociationVisualPath | ForEach-Object {$_.PSObject.Properties.name} |
                                         Select-Object -Unique) |
                                     ForEach-Object {
-                                    $AssociationHash.('visualPathBy' + $_) = ('"' + ($AssociationVisualPath.($_) -join '" -> "') + '"')
+                                    $KeyName_visualPath ='visualPathBy' + $_
+                                    $AssociationHash.($KeyName_visualPath) = ('"' + ($AssociationVisualPath.($_) -join '" -> "') + '"')
                                 }
                             }
                         }
