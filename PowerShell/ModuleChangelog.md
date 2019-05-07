@@ -1,6 +1,6 @@
 ## 1.11.0
 
-Release Date: May 3, 2019
+Release Date: May 7, 2019
 
 ```
 Use Get-JCAssociation to query associations between objects in JumpCloud.

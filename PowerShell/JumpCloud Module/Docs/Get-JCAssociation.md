@@ -8,7 +8,7 @@ schema: 2.0.0
 # Get-JCAssociation
 
 ## SYNOPSIS
-Lists the associations of a specific object and a specific type of object within JumpCloud.
+The function Get-JCAssociation can be used to query an object’s associations and then provide information about how objects are associated with one another.
 
 ## SYNTAX
 
