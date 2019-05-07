@@ -93,8 +93,8 @@ Function Get-DynamicParamAssociation
                     'Mandatory'                       = $false;
                     'ValidateNotNullOrEmpty'          = $true;
                     'Alias'                           = ('TargetSingular');
-                    'ValidateSet'                     = (($JCObject.Targets.TargetSingular | Select-Object -Unique) + ($JCObject.TargetsExcluded.TargetExcludedSingular | Select-Object -Unique));
-                    'DefaultValue'                    = (($JCObject.Targets.TargetSingular | Select-Object -Unique) + ($JCObject.TargetsExcluded.TargetExcludedSingular | Select-Object -Unique));
+                    'ValidateSet'                     = $JCObject.Targets.TargetSingular | Select-Object -Unique;
+                    'DefaultValue'                    = $JCObject.Targets.TargetSingular | Select-Object -Unique;
                     'HelpMessage'                     = 'The target object type.'
                 }
             }
@@ -149,8 +149,8 @@ Function Get-DynamicParamAssociation
                     'Mandatory'                       = $false;
                     'ValidateNotNullOrEmpty'          = $true;
                     'Alias'                           = ('TargetSingular');
-                    'ValidateSet'                     = (($JCTypes.Targets.TargetSingular | Select-Object -Unique) + ($JCTypes.TargetsExcluded.TargetExcludedSingular | Select-Object -Unique));
-                    'DefaultValue'                    = (($JCTypes.Targets.TargetSingular | Select-Object -Unique) + ($JCTypes.TargetsExcluded.TargetExcludedSingular | Select-Object -Unique));
+                    'ValidateSet'                     = $JCTypes.Targets.TargetSingular | Select-Object -Unique;
+                    'DefaultValue'                    = $JCTypes.Targets.TargetSingular | Select-Object -Unique;
                     'HelpMessage'                     = 'The target object type.'
                 }
             }
@@ -164,8 +164,8 @@ Function Get-DynamicParamAssociation
                     'Mandatory'                       = $false;
                     'ValidateNotNullOrEmpty'          = $true;
                     'Alias'                           = ('TargetSingular');
-                    'ValidateSet'                     = ($JCTypes.Targets.TargetSingular | Select-Object -Unique);
-                    'DefaultValue'                    = ($JCTypes.Targets.TargetSingular | Select-Object -Unique);
+                    'ValidateSet'                     = $JCTypes.Targets.TargetSingular | Select-Object -Unique;
+                    'DefaultValue'                    = $JCTypes.Targets.TargetSingular | Select-Object -Unique;
                     'HelpMessage'                     = 'The target object type.'
                 }
             }
@@ -205,7 +205,7 @@ Function Get-DynamicParamAssociation
                 'Mandatory'                       = $true;
                 'ValidateNotNullOrEmpty'          = $true;
                 'Alias'                           = ('TargetSingular');
-                'ValidateSet'                     = (($JCTypes.Targets.TargetSingular | Select-Object -Unique) + ($JCTypes.TargetsExcluded.TargetExcludedSingular | Select-Object -Unique));
+                'ValidateSet'                     = $JCTypes.Targets.TargetSingular | Select-Object -Unique
                 'HelpMessage'                     = 'The target object type.'
             }
         }
@@ -219,7 +219,7 @@ Function Get-DynamicParamAssociation
                 'Mandatory'                       = $true;
                 'ValidateNotNullOrEmpty'          = $true;
                 'Alias'                           = ('TargetSingular');
-                'ValidateSet'                     = ($JCTypes.Targets.TargetSingular | Select-Object -Unique);
+                'ValidateSet'                     = $JCTypes.Targets.TargetSingular | Select-Object -Unique;
                 'HelpMessage'                     = 'The target object type.'
             }
         }
