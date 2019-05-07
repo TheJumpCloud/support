@@ -160,6 +160,9 @@ Describe "Association Tests" {
                             {
                                 If ($ParameterName)
                                 {
+                                    It("Where properties returned '$($ExpectedColumns -join ", ")' should be '$($AssociationsProperties -join ", ")'") {
+                                        $ExpectedColumns | Should -Be $AssociationsProperties
+                                    }
                                     If ($ParameterName -in ('Direct')) #, 'Indirect'
                                     {
                                         If ($TestMethod -eq 'ById')
@@ -178,9 +181,6 @@ Describe "Association Tests" {
                                         {
                                             Write-Error ('Unknown')
                                         }
-                                    }
-                                    It("Where '$($ExpectedColumns -join ", ")' should be '$($AssociationsProperties -join ", ")'") {
-                                        $ExpectedColumns | Should -Be $AssociationsProperties
                                     }
                                 }
                             }
