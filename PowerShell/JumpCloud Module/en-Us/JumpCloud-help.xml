@@ -1302,7 +1302,6 @@
             <maml:para>The type of the object.</maml:para>
           </maml:Description>
           <command:parameterValueGroup>
-            <command:parameterValue required="false" command:variableLength="false">active_directory</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">command</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">ldap_server</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">policy</command:parameterValue>
@@ -1346,7 +1345,6 @@
             <command:parameterValue required="false" command:variableLength="false">system_group</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">policy</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">command</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">active_directory</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">application</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">g_suite</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">ldap_server</command:parameterValue>
@@ -1430,7 +1428,6 @@
             <maml:para>The type of the object.</maml:para>
           </maml:Description>
           <command:parameterValueGroup>
-            <command:parameterValue required="false" command:variableLength="false">active_directory</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">command</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">ldap_server</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">policy</command:parameterValue>
@@ -1474,7 +1471,6 @@
             <command:parameterValue required="false" command:variableLength="false">system_group</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">policy</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">command</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">active_directory</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">application</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">g_suite</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">ldap_server</command:parameterValue>
@@ -5677,7 +5673,7 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>Invoke-JCDeployment -CommandID 5f6r55es2189782h48091999 -CSVFilePath ./JCDeployment_UsernameUpdate.csv 
+        <dev:code>Invoke-JCDeployment -CommandID 5f6r55es2189782h48091999 -CSVFilePath ./JCDeployment_UsernameUpdate.csv
 
 SystemID                 CommandID                Status
 --------                 ---------                ------
@@ -9582,10 +9578,10 @@ SystemID                 CommandID                Status
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
         <dev:code>Set-JCOrganization
 
-======== JumpCloud Multi Tenant Selector ======= 
+======== JumpCloud Multi Tenant Selector =======
 
-1. displayName: MSP One | OrgID:  5b5o13o06tsand0c29a0t3s6   
-2. displayName: MSP Two | OrgID:  5b5o13o06tsand0d29o0g3s6   
+1. displayName: MSP One | OrgID:  5b5o13o06tsand0c29a0t3s6
+2. displayName: MSP Two | OrgID:  5b5o13o06tsand0d29o0g3s6
 
 Select the number of the JumpCloud tenant you wish to connect to
 

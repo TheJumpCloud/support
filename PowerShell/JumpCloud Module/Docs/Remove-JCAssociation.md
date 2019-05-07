@@ -82,7 +82,7 @@ The type of the input object.
 Type: String
 Parameter Sets: (All)
 Aliases:
-Accepted values: active_directory, command, ldap_server, policy, application, radius_server, system_group, system, user_group, user, g_suite, office_365
+Accepted values: command, ldap_server, policy, application, radius_server, system_group, system, user_group, user, g_suite, office_365
 
 Required: True
 Position: 0
@@ -128,7 +128,7 @@ The type of the target object.
 Type: String
 Parameter Sets: (All)
 Aliases:
-Accepted values: user, user_group, user_group, system, system_group, user, user_group, user, user_group, user, user_group, system, system_group, user_group, policy, user_group, command, system, policy, user, command, system_group, active_directory, application, g_suite, ldap_server, office_365, radius_server, system_group, user, active_directory, g_suite, ldap_server, office_365, system, user_group
+Accepted values: user, user_group, user_group, system, system_group, user, user_group, user, user_group, user, user_group, system, system_group, user_group, policy, user_group, command, system, policy, user, command, system_group, application, g_suite, ldap_server, office_365, radius_server, system_group, user, g_suite, ldap_server, office_365, system, user_group
 
 Required: True
 Position: 3

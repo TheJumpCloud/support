@@ -279,10 +279,6 @@
     },
     "Targets": [
       {
-        "TargetSingular": "active_directory",
-        "TargetPlural": "activedirectories"
-      },
-      {
         "TargetSingular": "application",
         "TargetPlural": "applications"
       },
@@ -322,6 +318,10 @@
       {
         "TargetExcludedSingular": "system",
         "TargetExcludedPlural": "systems"
+      },
+      {
+        "TargetExcludedSingular": "active_directory",
+        "TargetExcludedPlural": "activedirectories"
       }
     ]
   },
@@ -332,10 +332,6 @@
       "TypeNamePlural": "users"
     },
     "Targets": [
-      {
-        "TargetSingular": "active_directory",
-        "TargetPlural": "activedirectories"
-      },
       {
         "TargetSingular": "g_suite",
         "TargetPlural": "gsuites"
@@ -365,6 +361,10 @@
     "SupportRegexFilter": true,
     "Limit": 100,
     "TargetsExcluded": [
+      {
+        "TargetExcludedSingular": "active_directory",
+        "TargetExcludedPlural": "activedirectories"
+      },
       {
         "TargetExcludedSingular": "application",
         "TargetExcludedPlural": "applications"
@@ -432,10 +432,6 @@
     },
     "Targets": [
       {
-        "TargetSingular": "active_directory",
-        "TargetPlural": "activedirectories"
-      },
-      {
         "TargetSingular": "g_suite",
         "TargetPlural": "gsuites"
       },
@@ -462,7 +458,13 @@
     "ByName": "username",
     "Paginate": true,
     "SupportRegexFilter": true,
-    "Limit": 100
+    "Limit": 100,
+    "TargetsExcluded": [
+      {
+        "TargetExcludedSingular": "active_directory",
+        "TargetExcludedPlural": "activedirectories"
+      }
+    ]
   },
   {
     "Category": "Custom",

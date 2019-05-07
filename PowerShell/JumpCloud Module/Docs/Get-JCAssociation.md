@@ -103,7 +103,7 @@ The type of the object.
 Type: String
 Parameter Sets: (All)
 Aliases: TypeNameSingular
-Accepted values: active_directory, command, ldap_server, policy, application, radius_server, system_group, system, user_group, user, g_suite, office_365
+Accepted values: command, ldap_server, policy, application, radius_server, system_group, system, user_group, user, g_suite, office_365
 
 Required: True
 Position: 1
@@ -119,7 +119,7 @@ The target object type.
 Type: String[]
 Parameter Sets: (All)
 Aliases: TargetSingular
-Accepted values: user, user_group, system, system_group, policy, command, active_directory, application, g_suite, ldap_server, office_365, radius_server, user, user_group, system, application, radius_server, system_group
+Accepted values: user, user_group, system, system_group, policy, command, application, g_suite, ldap_server, office_365, radius_server, user, user_group, system, application, radius_server, system_group
 
 Required: True
 Position: 4
