@@ -17,7 +17,7 @@ Install-Module -Name:('PlatyPS') -Force -Scope:('CurrentUser')
 
 # Create/update markdown help files using platyPS
 Write-Host ('[status]Creating/Updating help files')
-(Get-ChildItem -Path:($FolderPath_Public) -File -Recurse).Where( {$_.Extension -eq '.ps1' -and $_.BaseName -notin $ExcludeList}) | ForEach-Object {
+(Get-ChildItem -Path:($FolderPath_Public) -File -Recurse) | Where-Object {$_.Extension -eq '.ps1' -and $_.BaseName -notin $ExcludeList} | ForEach-Object {
     $FunctionName = $_.BaseName
     $FunctionName
     $FilePath_Md = $FolderPath_Docs + '/' + $FunctionName + '.md'

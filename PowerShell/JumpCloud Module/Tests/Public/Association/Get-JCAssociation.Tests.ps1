@@ -309,14 +309,14 @@ Describe "Association Tests" {
         # $AssociationDataSet = $AssociationDataSetContent | ConvertFrom-Json
         ####################################################################################################
         # Get valid association items
-        $ValidAssociationItems = $AssociationDataSet.Where( {$_.ValidRecord -and $_.SourceId -and $_.TargetId})
+        $ValidAssociationItems = $AssociationDataSet | Where-Object {$_.ValidRecord -and $_.SourceId -and $_.TargetId}
         ################################################################################
         ################################## HACKS/TODO ########################################
-        $ValidAssociationItems = $ValidAssociationItems.Where( {$_.SourceType -ne 'active_directory' -and $_.TargetType -ne 'active_directory'})
+        $ValidAssociationItems = $ValidAssociationItems | Where-Object {$_.SourceType -ne 'active_directory' -and $_.TargetType -ne 'active_directory'}
         ################################################################################
         ################################################################################
         # Get invalid association items
-        $InvalidAssociationItems = $AssociationDataSet.Where( {-not $_.ValidRecord -and -not $_.SourceId -and -not $_.TargetId}) |
+        $InvalidAssociationItems = $AssociationDataSet | Where-Object {-not $_.ValidRecord -and -not $_.SourceId -and -not $_.TargetId} |
             Select-Object @{Name = 'Status'; Expression = {'No "' + $_.SourceType + '" found within org. Please create a "' + $_.SourceType + '"'}} -Unique
         # Validate that org has been fully populated
         It("Validate that all object types exist within the specified test environment.") {

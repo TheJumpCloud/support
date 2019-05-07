@@ -37,7 +37,7 @@ Function Get-DynamicParamAssociation
                     'ValueFromPipelineByPropertyName' = $true;
                     'Mandatory'                       = $false;
                     'ValidateNotNullOrEmpty'          = $true;
-                    'Alias'                           = @(($JCObject.ById).Where( { $_ -ne 'Id' }) | Select-Object -Unique);
+                    'Alias'                           = @(($JCObject.ById) | Where-Object { $_ -ne 'Id' }) | Select-Object -Unique;
                     'ParameterSets'                   = @('ById');
                     'DefaultValue'                    = $JCObject.($JCObject.ById);
                     'HelpMessage'                     = 'The unique id of the object.'
@@ -49,7 +49,7 @@ Function Get-DynamicParamAssociation
                     'ValueFromPipelineByPropertyName' = $true;
                     'Mandatory'                       = $false;
                     'ValidateNotNullOrEmpty'          = $true;
-                    'Alias'                           = @(($JCObject.ByName).Where( { $_ -ne 'Name' }) | Select-Object -Unique);
+                    'Alias'                           = @(($JCObject.ByName) | Where-Object { $_ -ne 'Name' }) | Select-Object -Unique;
                     'ParameterSets'                   = @('ByName');
                     'DefaultValue'                    = $JCObject.($JCObject.ByName);
                     'HelpMessage'                     = 'The name of the object.'
@@ -65,7 +65,7 @@ Function Get-DynamicParamAssociation
                     'ValueFromPipelineByPropertyName' = $true;
                     'Mandatory'                       = $true;
                     'ValidateNotNullOrEmpty'          = $true;
-                    'Alias'                           = @(($JCObject.ById).Where( { $_ -ne 'Id' }) | Select-Object -Unique);
+                    'Alias'                           = @(($JCObject.ById) | Where-Object { $_ -ne 'Id' }) | Select-Object -Unique;
                     'ValidateSet'                     = @($JCObject.($JCObject.ById | Select-Object -Unique));
                     'ParameterSets'                   = @('ById');
                     'HelpMessage'                     = 'The unique id of the object.'
@@ -77,7 +77,7 @@ Function Get-DynamicParamAssociation
                     'ValueFromPipelineByPropertyName' = $true;
                     'Mandatory'                       = $true;
                     'ValidateNotNullOrEmpty'          = $true;
-                    'Alias'                           = @(($JCObject.ByName).Where( { $_ -ne 'Name' }) | Select-Object -Unique);
+                    'Alias'                           = @(($JCObject.ByName) | Where-Object { $_ -ne 'Name' }) | Select-Object -Unique;
                     'ValidateSet'                     = @($JCObject.($JCObject.ByName | Select-Object -Unique));
                     'ParameterSets'                   = @('ByName');
                     'HelpMessage'                     = 'The name of the object.'
@@ -124,7 +124,7 @@ Function Get-DynamicParamAssociation
                 'ValueFromPipelineByPropertyName' = $true;
                 'Mandatory'                       = $true;
                 'ValidateNotNullOrEmpty'          = $true;
-                'Alias'                           = @(($JCTypes.ById).Where( { $_ -ne 'Id' }) | Select-Object -Unique);
+                'Alias'                           = @(($JCTypes.ById) | Where-Object { $_ -ne 'Id' }) | Select-Object -Unique;
                 'ParameterSets'                   = @('ById');
                 'HelpMessage'                     = 'The unique id of the object.'
             }
@@ -135,7 +135,7 @@ Function Get-DynamicParamAssociation
                 'ValueFromPipelineByPropertyName' = $true;
                 'Mandatory'                       = $true;
                 'ValidateNotNullOrEmpty'          = $true;
-                'Alias'                           = @(($JCTypes.ByName).Where( { $_ -ne 'Name' }) | Select-Object -Unique);
+                'Alias'                           = @(($JCTypes.ByName) | Where-Object { $_ -ne 'Name' }) | Select-Object -Unique;
                 'ParameterSets'                   = @('ByName');
                 'HelpMessage'                     = 'The name of the object.'
             }
@@ -180,7 +180,7 @@ Function Get-DynamicParamAssociation
             'ValueFromPipelineByPropertyName' = $true;
             'Mandatory'                       = $true;
             'ValidateNotNullOrEmpty'          = $true;
-            'Alias'                           = @(($JCTypes.ById).Where( { $_ -ne 'Id' }) | Select-Object -Unique);
+            'Alias'                           = @(($JCTypes.ById) | Where-Object { $_ -ne 'Id' }) | Select-Object -Unique;
             'ParameterSets'                   = @('ById');
             'HelpMessage'                     = 'The unique id of the object.'
         }
@@ -191,7 +191,7 @@ Function Get-DynamicParamAssociation
             'ValueFromPipelineByPropertyName' = $true;
             'Mandatory'                       = $true;
             'ValidateNotNullOrEmpty'          = $true;
-            'Alias'                           = @(($JCTypes.ByName).Where( { $_ -ne 'Name' }) | Select-Object -Unique);
+            'Alias'                           = @(($JCTypes.ByName) | Where-Object { $_ -ne 'Name' }) | Select-Object -Unique;
             'ParameterSets'                   = @('ByName');
             'HelpMessage'                     = 'The name of the object.'
         }

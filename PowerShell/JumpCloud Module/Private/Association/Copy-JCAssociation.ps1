@@ -52,15 +52,15 @@ Function Copy-JCAssociation
         #     }
         #     $_
         # }
-        $AssociationsToSame = $CompareResults.Where( {$_.SideIndicator -eq '=='} )
-        $AssociationsToAdd = $CompareResults.Where( {$_.SideIndicator -eq '<=' -and $_.associationType -eq 'Direct' -and $_.TargetId -notin ($AssociationsToSame.targetId) })
-        $AssociationsToRemove = $CompareResults.Where( { $_.SideIndicator -eq '=>' -and $_.associationType -eq 'Direct' -and $_.TargetId -notin ($AssociationsToSame.targetId) })
+        $AssociationsToSame = $CompareResults | Where-Object {$_.SideIndicator -eq '=='}
+        $AssociationsToAdd = $CompareResults | Where-Object {$_.SideIndicator -eq '<=' -and $_.associationType -eq 'Direct' -and $_.TargetId -notin ($AssociationsToSame.targetId) }
+        $AssociationsToRemove = $CompareResults | Where-Object { $_.SideIndicator -eq '=>' -and $_.associationType -eq 'Direct' -and $_.TargetId -notin ($AssociationsToSame.targetId) }
         # Send the results of the ones that are the same to the output
-        $Results += $TargetAssociations.Where( {$_.TargetId -in ($AssociationsToSame.targetId)} )
+        $Results += $TargetAssociations | Where-Object {$_.TargetId -in ($AssociationsToSame.targetId)}
         If ($KeepExisting)
         {
             # Send the existing association results to the output
-            $Results += $TargetAssociations.Where( {$_.TargetId -in ($AssociationsToRemove.targetId)} )
+            $Results += $TargetAssociations | Where-Object {$_.TargetId -in ($AssociationsToRemove.targetId)}
         }
         Else
         {

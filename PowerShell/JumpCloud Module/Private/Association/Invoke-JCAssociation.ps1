@@ -117,7 +117,7 @@
                                 ($AssociationVisualPath | ForEach-Object {$_.PSObject.Properties.name} |
                                         Select-Object -Unique) |
                                     ForEach-Object {
-                                    $KeyName_visualPath ='visualPathBy' + $_
+                                    $KeyName_visualPath = 'visualPathBy' + $_
                                     $AssociationHash.($KeyName_visualPath) = ('"' + ($AssociationVisualPath.($_) -join '" -> "') + '"')
                                 }
                             }
@@ -191,11 +191,11 @@
                             $Association = Format-JCAssociation -Action:($Action) -Uri:($Uri_Associations_GET) -Method:('GET') -Source:($SourceItem) -IncludeInfo:($IncludeInfo) -IncludeNames:($IncludeNames) -IncludeVisualPath:($IncludeVisualPath) -Raw:($Raw)
                             If ($Direct -eq $true)
                             {
-                                $AssociationOut += $Association.Where( {$_.associationType -eq 'direct'} )
+                                $AssociationOut += $Association | Where-Object {$_.associationType -eq 'direct'}
                             }
                             If ($Indirect -eq $true)
                             {
-                                $AssociationOut += $Association.Where( {$_.associationType -eq 'indirect'} )
+                                $AssociationOut += $Association | Where-Object {$_.associationType -eq 'indirect'}
                             }
                             If (!($Direct) -and !($Indirect))
                             {
@@ -253,8 +253,8 @@
                                 {
                                     $RemoveAssociation = Format-JCAssociation -Action:($Action) -Uri:($Uri_Associations_GET) -Method:('GET') -Source:($SourceItem) -IncludeInfo:($IncludeInfo) -IncludeNames:($IncludeNames) -IncludeVisualPath:($IncludeVisualPath) -Raw:($Raw) |
                                         Where-Object {$_.TargetId -eq $TargetItemId}
-                                    $IndirectAssociations = $RemoveAssociation.Where( {$_.associationType -ne 'direct'} )
-                                    $Results += $RemoveAssociation.Where( {$_.associationType -eq 'direct'} )
+                                    $IndirectAssociations = $RemoveAssociation | Where-Object {$_.associationType -ne 'direct'}
+                                    $Results += $RemoveAssociation | Where-Object {$_.associationType -eq 'direct'}
                                 }
                                 If ($TargetItemId -ne $IndirectAssociations.targetId)
                                 {
