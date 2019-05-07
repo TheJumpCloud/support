@@ -35,7 +35,7 @@ fi
 for uid in $(ps -axo uid,args | grep -i "[l]oginwindow.app" | awk '{ print $1 }')
 do
   if launchctl asuser "$uid" launchctl list 'com.jumpcloud.jcagent-tray' &> /dev/null; then
-  launchctl bootout gui/"$uid" '/Library/LaunchAgents/com.jumpcloud.jcagent-tray.plist'
+    launchctl bootout gui/"$uid" '/Library/LaunchAgents/com.jumpcloud.jcagent-tray.plist'
   fi
 done
 # then delete the app plist and app folder
