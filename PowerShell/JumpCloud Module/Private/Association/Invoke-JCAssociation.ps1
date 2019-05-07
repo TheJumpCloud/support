@@ -49,9 +49,9 @@
                 ForEach ($Association In $Associations)
                 {
                     # For source determine if association is direct or indirect
-                    $associationType = If (($Association | ForEach-Object {$_.paths.to.Count}) -eq 1 -or ($Association | ForEach-Object {$_.paths.to.Count}) -eq 0) {'direct'}
-                    ElseIf (($Association | ForEach-Object {$_.paths.to.Count}) -gt 1) {'indirect'}
-                    Else {'unknown;The count of paths is:' + $_.paths.to.Count}
+                    $associationType = If (($Association | ForEach-Object {($_.paths.to | Measure-Object).Count}) -eq 1 -or ($Association | ForEach-Object {($_.paths.to | Measure-Object).Count}) -eq 0) {'direct'}
+                    ElseIf (($Association | ForEach-Object {($_.paths.to | Measure-Object).Count}) -gt 1) {'indirect'}
+                    Else {'unknown;The count of paths is:' + ($_.paths.to | Measure-Object).Count}
                     # Raw switch allows for the user to return an unformatted version of what the api endpoint returns
                     If ($Raw)
                     {
@@ -203,7 +203,7 @@
                             }
                             If ($Raw)
                             {
-                                $Results += $AssociationOut | Select-Object -ExcludeProperty:('associationType')
+                                $Results += $AssociationOut | Select-Object -Property:('*') -ExcludeProperty:('associationType')
                             }
                             Else
                             {
