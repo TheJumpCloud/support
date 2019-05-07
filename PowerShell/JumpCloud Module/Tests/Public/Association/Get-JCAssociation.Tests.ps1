@@ -187,7 +187,7 @@ Describe "Association Tests" {
                         }
                     }
                     It("Where results should be not NullOrEmpty") {$Associations_Test | Should -Not -BeNullOrEmpty}
-                    It("Where results count should BeGreaterThan 0") {$Associations_Test.Count | Should -BeGreaterThan 0}
+                    It("Where results count should BeGreaterThan 0") {($Associations_Test | Measure-Object).Count | Should -BeGreaterThan 0}
                     If ($Associations_Test_Command -match '-Raw')
                     {
                         It("Where results TargetId '$($TargetId)' should be in '$($Associations_Test.Id -join ', ')'") {$TargetId | Should -BeIn $Associations_Test.Id}
@@ -212,13 +212,13 @@ Describe "Association Tests" {
                                 It("Where results validation Type '$($Associations_Validation.Type -join ', ')' should be NullOrEmpty") {$Associations_Validation.Type | Should -BeNullOrEmpty $SourceType}
                                 It("Where results validation TargetId '$($Associations_Validation.TargetId -join ', ')' should be NullOrEmpty") {$Associations_Validation.TargetId | Should -BeNullOrEmpty $TargetId}
                                 It("Where results validation TargetType '$($Associations_Validation.TargetType -join ', ')' should be NullOrEmpty") {$Associations_Validation.TargetType | Should -BeNullOrEmpty $TargetType}
-                                It("Where results validation count should be 0") {$Associations_Validation.Count | Should -Be 0}
+                                It("Where results validation count should be 0") {($Associations_Validation | Measure-Object).Count | Should -Be 0}
                             }
                             Else
                             {
                                 It("Where results validation should be not NullOrEmpty") {$Associations_Validation | Should -Not -BeNullOrEmpty}
-                                It("Where results validation count should BeGreaterThan 0") {$Associations_Validation.Count | Should -BeGreaterThan 0}
-                                It("Where results validation count should be '$($Associations_Test.Count)'") {$Associations_Validation.Count | Should -Be $Associations_Test.Count}
+                                It("Where results validation count should BeGreaterThan 0") {($Associations_Validation | Measure-Object).Count | Should -BeGreaterThan 0}
+                                It("Where results validation count should be '" + $(($Associations_Test | Measure-Object).Count) + "'") {($Associations_Validation | Measure-Object).Count | Should -Be ($Associations_Test | Measure-Object).Count}
                                 If ($TestMethod -eq 'ById')
                                 {
                                     It("Where results validation SourceId '$($Associations_Validation.Id -join ', ')' should be '$($SourceId)'") {$Associations_Validation.Id | Should -Be $SourceId}
@@ -324,7 +324,7 @@ Describe "Association Tests" {
         }
         If ($InvalidAssociationItems) { Write-Error ($InvalidAssociationItems.Status -join ', '); }
         $ValidAssociationItemsCounter = 0
-        $ValidAssociationItemsCount = $ValidAssociationItems.Count * $TestMethods.Count
+        $ValidAssociationItemsCount = ($ValidAssociationItems | Measure-Object).Count * ($TestMethods | Measure-Object).Count
         # Using dataset run tests
         ForEach ($AssociationItem In $ValidAssociationItems)
         {

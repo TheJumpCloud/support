@@ -124,7 +124,7 @@ Function Invoke-JCApi
                     # Specific logic for v1 and v2 api specs
                     If ($Url -like '*/api/*' -and ($Url -notlike '*/api/v2/*' -and $Results.PSObject.Properties.name -eq 'results'))
                     {
-                        $ResultsCount = $Results.results.Count
+                        $ResultsCount = ($Results.results | Measure-Object).Count
                         If ($ResultsCount -gt 0)
                         {
                             $ResultsPopulated = $true
@@ -141,7 +141,7 @@ Function Invoke-JCApi
                     }
                     ElseIf ($Url -like '*/api/*' -and ($Url -like '*/api/v2/*' -or $Results.PSObject.Properties.name -ne 'results'))
                     {
-                        $ResultsCount = $Results.Count
+                        $ResultsCount = ($Results | Measure-Object).Count
                         If ($ResultsCount -gt 0)
                         {
                             $ResultsPopulated = $true
@@ -171,13 +171,13 @@ Function Invoke-JCApi
                 {
                     If ($Paginate)
                     {
-                        $ResultsCount = $Results.Count
+                        $ResultsCount = ($Results | Measure-Object).Count
                     }
                 }
                 Write-Debug ('Paginate:' + [string]$Paginate + ';ResultsCount:' + [string]$ResultsCount + ';Limit:' + [string]$Limit + ';')
             }
             While ($Paginate -and $ResultsCount -eq $Limit)
-            Write-Verbose ('Returned ' + [string]$Results_Output.Count + ' total results.')
+            Write-Verbose ('Returned ' + [string]($Results_Output | Measure-Object).Count + ' total results.')
         }
         Catch
         {

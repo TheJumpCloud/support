@@ -190,7 +190,7 @@ Function Get-JCObject
                         If ($ReturnCount -eq $true)
                         {
                             $Directory = $Result.results | Where-Object { $_.Type -eq $TypeNameSingular }
-                            $Result.totalCount = $Directory.Count
+                            $Result.totalCount = ($Directory | Measure-Object).Count
                             $Result.results = $Directory
                         }
                         Else

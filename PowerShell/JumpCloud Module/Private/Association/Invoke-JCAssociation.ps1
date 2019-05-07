@@ -150,9 +150,9 @@
             $Source = Get-JCObject -Type:($Type) -SearchBy:($SourceSearchBy) -SearchByValue:($SourceItemSearchByValue)
             If ($Source)
             {
-                If ($Source.Count -gt 1)
+                If (($Source | Measure-Object).Count -gt 1)
                 {
-                    Write-Warning -Message:('Found "' + [string]$Source.Count + '" "' + $Type + '" with the "' + $SourceSearchBy.Replace('By', '').ToLower() + '" of "' + $SourceItemSearchByValue + '"')
+                    Write-Warning -Message:('Found "' + [string]($Source | Measure-Object).Count + '" "' + $Type + '" with the "' + $SourceSearchBy.Replace('By', '').ToLower() + '" of "' + $SourceItemSearchByValue + '"')
                 }
                 ForEach ($SourceItem In $Source)
                 {
