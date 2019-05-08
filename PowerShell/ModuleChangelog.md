@@ -14,6 +14,7 @@ All available now directly from the Pwsh terminal!
 ## Improvements
 
 Added private functions to standardize API calls to policy endpoints.
+Updated test file structure and methodology.
 
 ## 1.10.2
 
