@@ -40,7 +40,7 @@ Describe "Association Tests" {
         $Template_AllSourceParameters = "$Template_SourceParameters_TargetType -Target{1}:('{5}')"
         $Template_TargetParameters_TargetType = " -TargetType:('{0}') {1}"
         $Template_AllTargetParameters = "$Template_TargetParameters_TargetType -Target{2}:('{3}')"
-        $Template_Message = "$Template_FunctionName by running: {1}"
+        $Template_Message = "$Template_FunctionName with '{1}' parameters by running: {2}"
         $FunctionName = ($Template_FunctionName -f $Verb)
         # Hash for validating switch statements return the expected properties
         $SwitchColumnHash = [ordered]@{
@@ -112,7 +112,7 @@ Describe "Association Tests" {
         {
             $Associations_Test_Command = $Associations_Test_Command.Trim() + ';'
             $PrintCommand = $Associations_Test_Command.Replace('$Source', "Get-JCObject -Type:('$SourceType') -$TestMethodIdentifier`:('$SourceSearchByValue')")
-            $ItMessage = $Template_Message -f $Verb, $PrintCommand
+            $ItMessage = $Template_Message -f $Verb, $ExecutionType, $PrintCommand
             If ($Mock)
             {
                 ('$Associations_Test = ' + $PrintCommand + ' # [Mock-Tests]' | Tee-Object -FilePath:($MockFilePath) -Append)
@@ -249,7 +249,7 @@ Describe "Association Tests" {
     # Generate $AssociationDataSet object records by looping through each association type and its target types
     Context ("Get each type of JC object association possible and build list of source and targets to test with.") {
         $AssociationDataSet = @()
-        $JCAssociationTypes = Get-JCType | Where-Object { $_.Category -eq 'JumpCloud' }
+        $JCAssociationTypes = Get-JCType | Where-Object { $_.Category -eq 'JumpCloud'}
         $EmptySources = @()
         ForEach ($JCAssociationType In $JCAssociationTypes)
         {
