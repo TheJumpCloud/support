@@ -25,7 +25,7 @@ Function New-JCDeploymentTemplate()
         $Heading1 = 'The CSV file:'
         $Heading2 = 'Will be created within the directory:'
         
-        Clear-host
+        Clear-Host
 
         Write-Host $Banner -ForegroundColor Green
         Write-Host $Heading1 -NoNewline
@@ -75,7 +75,7 @@ Function New-JCDeploymentTemplate()
         while ($Done -eq $false)
         {
 
-            Clear-host
+            Clear-Host
 
             Write-Host $Banner -ForegroundColor Green
     
@@ -140,7 +140,7 @@ Function New-JCDeploymentTemplate()
         if (!$ExportPath )
         {
             Write-Host ""
-            $CSVheader  | Export-Csv -path "$ExportLocation/$FileName" -NoTypeInformation
+            $CSVheader | Export-Csv -path "$ExportLocation/$FileName" -NoTypeInformation
             Write-Host 'Creating file'  -NoNewline
             Write-Host " $fileName" -ForegroundColor Yellow -NoNewline
             Write-Host ' in the location' -NoNewline
@@ -151,7 +151,7 @@ Function New-JCDeploymentTemplate()
             Write-Host ""
             Write-Warning "The file $fileName already exists do you want to overwrite it?" -WarningAction Inquire
             Write-Host ""
-            $CSVheader  | Export-Csv -path "$ExportLocation/$FileName" -NoTypeInformation
+            $CSVheader | Export-Csv -path "$ExportLocation/$FileName" -NoTypeInformation
             Write-Host 'Creating file '  -NoNewline
             Write-Host $FileName -ForegroundColor Yellow -NoNewline
             Write-Host ' in the location' -NoNewline
@@ -174,7 +174,7 @@ Function New-JCDeploymentTemplate()
             $Open = $null
 
         }
-        if ($Open -eq 'N') {$Open = $null}
+        if ($Open -eq 'N') { $Open = $null }
 
         Write-Host "`nDo you want to export existing system information to CSV?" -ForegroundColor Yellow
 
@@ -189,7 +189,7 @@ Function New-JCDeploymentTemplate()
         {
 
 
-            $ExistingSystems = Get-JCSystem -returnProperties hostname, displayName, os, version | Select-Object hostname, displayName, os, version, @{Name = 'SystemID'; Expression = {$_._id}}, lastContact
+            $ExistingSystems = Get-JCSystem -returnProperties hostname, displayName, os, version | Select-Object hostname, displayName, os, version, @{Name = 'SystemID'; Expression = { $_._id } }, lastContact
 
             $SystemsCSV = 'JCSystems_' + $date + '.csv'
 
@@ -214,7 +214,7 @@ Function New-JCDeploymentTemplate()
                 Invoke-Item -path "$ExportLocation/$SystemsCSV"
                 $Open = $null
             }
-            if ($Open -eq 'N') {$Open = $null}
+            if ($Open -eq 'N') { $Open = $null }
 
         }
 
@@ -231,7 +231,7 @@ Function New-JCDeploymentTemplate()
         {
 
 
-            $ExistingCommands = Get-JCCommand | Select-Object Name, CommandType, @{Name = 'CommandID'; Expression = {$_._id}}
+            $ExistingCommands = Get-JCCommand | Select-Object Name, CommandType, @{Name = 'CommandID'; Expression = { $_._id } }
 
             $CommandsCSV = 'JCCommands_' + $date + '.csv'
 
@@ -257,7 +257,7 @@ Function New-JCDeploymentTemplate()
                 $Open = $null
 
             }
-            if ($Open -eq 'N') {$Open = $null}
+            if ($Open -eq 'N') { $Open = $null }
 
         }
 

@@ -6,11 +6,12 @@ SHORT DESCRIPTION
     DaaS
 
 LONG DESCRIPTION
-    The JumpCloud Module provides a way to:
-    -Import JumpCloud Users and associate them with JumpCloud User Groups and Systems during import 
-    -Create and remove JumpCloud Users -Modify JumpCloud User and System properties in bulk 
-    -Modify JumpCloud User and System Groups and System and User Group membership 
-    -Trigger JumpCloud commands and read CommandResult Output
+    The JumpCloud Module provides a way to
+    -Import JumpCloud Users and associate them with JumpCloud User Groups and
+    Systems during import -Create and remove JumpCloud Users -Modify JumpCloud
+    User and System properties in bulk -Modify JumpCloud User and System Groups
+    and System and User Group membership -Trigger JumpCloud commands and read
+    CommandResult Output
 
 EXAMPLES
     Connect-JCOnline
@@ -22,3 +23,7 @@ TROUBLESHOOTING NOTE
     in the top right corner of the JumpCloud admin console. Note that each
     administrator within a JumpCloud tenant has their own unique API key and can
     reset this API key from this settings page.
+
+SEE ALSO
+    # KEYWORDS
+

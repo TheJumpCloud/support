@@ -15,7 +15,7 @@ function Get-JCBackup
     begin
     {
         Write-Verbose 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {Connect-JCOnline}
+        if ($JCAPIKEY.length -ne 40) { Connect-JCOnline }
 
         if ($All)
         {
@@ -66,11 +66,11 @@ function Get-JCBackup
             try
             {
                 Get-JCUser | Select-Object * , `
-                @{Name = 'attributes'; Expression = {$_.attributes | ConvertTo-Json}}, `
-                @{Name = 'addresses'; Expression = {$_.addresses | ConvertTo-Json}}, `
-                @{Name = 'phonenumbers'; Expression = {$_.phonenumbers | ConvertTo-Json}}, `
-                @{Name = 'ssh_keys'; Expression = {$_.ssh_keys | ConvertTo-Json}} `
-                    -ExcludeProperty attributes, addresses, phonenumbers, ssh_keys | Export-CSV -Path "JumpCloudUsers_$(Get-Date -Format MMddyyyy).CSV" -NoTypeInformation -Force
+                @{Name = 'attributes'; Expression = { $_.attributes | ConvertTo-Json } }, `
+                @{Name = 'addresses'; Expression = { $_.addresses | ConvertTo-Json } }, `
+                @{Name = 'phonenumbers'; Expression = { $_.phonenumbers | ConvertTo-Json } }, `
+                @{Name = 'ssh_keys'; Expression = { $_.ssh_keys | ConvertTo-Json } } `
+                    -ExcludeProperty attributes, addresses, phonenumbers, ssh_keys | Export-Csv -Path "JumpCloudUsers_$(Get-Date -Format MMddyyyy).CSV" -NoTypeInformation -Force
 
                 Write-Host "JumpCloudUsers_$(Get-Date -Format MMddyyyy).CSV created.`n" -ForegroundColor Green
                     
@@ -89,7 +89,7 @@ function Get-JCBackup
 
             try
             {
-                Get-JCSystem | Get-JCSystemUser | Select-Object -Property * , @{Name = 'BindGroups'; Expression = {$_.BindGroups | ConvertTo-Json}} -ExcludeProperty BindGroups | Export-CSV -Path "JumpCloudSystemUsers_$(Get-Date -Format MMddyyyy).CSV" -NoTypeInformation -Force 
+                Get-JCSystem | Get-JCSystemUser | Select-Object -Property * , @{Name = 'BindGroups'; Expression = { $_.BindGroups | ConvertTo-Json } } -ExcludeProperty BindGroups | Export-Csv -Path "JumpCloudSystemUsers_$(Get-Date -Format MMddyyyy).CSV" -NoTypeInformation -Force 
 
                 Write-Host "JumpCloudSystemUsers_$(Get-Date -Format MMddyyyy).CSV created.`n" -ForegroundColor Green
                     
@@ -110,9 +110,9 @@ function Get-JCBackup
             try
             {
                 Get-JCSystem | Select-Object *, `
-                @{Name = 'networkInterfaces'; Expression = {$_.networkInterfaces | ConvertTo-Json}}, `
-                @{Name = 'sshdParams'; Expression = {$_.sshdParams | ConvertTo-Json}} `
-                    -ExcludeProperty networkInterfaces, sshdParams, connectionHistory | Export-CSV -Path "JumpCloudSystems_$(Get-Date -Format MMddyyyy).CSV" -NoTypeInformation -Force
+                @{Name = 'networkInterfaces'; Expression = { $_.networkInterfaces | ConvertTo-Json } }, `
+                @{Name = 'sshdParams'; Expression = { $_.sshdParams | ConvertTo-Json } } `
+                    -ExcludeProperty networkInterfaces, sshdParams, connectionHistory | Export-Csv -Path "JumpCloudSystems_$(Get-Date -Format MMddyyyy).CSV" -NoTypeInformation -Force
 
                 Write-Host "JumpCloudSystems_$(Get-Date -Format MMddyyyy).CSV created.`n" -ForegroundColor Green
 
@@ -134,7 +134,7 @@ function Get-JCBackup
 
             try
             {
-                Get-JCGroup -Type User | Get-JCUserGroupMember | Export-CSV -Path "JumpCloudUserGroupMembers_$(Get-Date -Format MMddyyyy).CSV" -NoTypeInformation -Force
+                Get-JCGroup -Type User | Get-JCUserGroupMember | Export-Csv -Path "JumpCloudUserGroupMembers_$(Get-Date -Format MMddyyyy).CSV" -NoTypeInformation -Force
 
                 Write-Host "JumpCloudUserGroupMembers_$(Get-Date -Format MMddyyyy).CSV created.`n" -ForegroundColor Green
 
@@ -154,7 +154,7 @@ function Get-JCBackup
 
             try
             {
-                Get-JCGroup -Type System | Get-JCSystemGroupMember | Export-CSV -Path "JumpCloudSystemGroupMembers_$(Get-Date -Format MMddyyyy).CSV" -NoTypeInformation -Force
+                Get-JCGroup -Type System | Get-JCSystemGroupMember | Export-Csv -Path "JumpCloudSystemGroupMembers_$(Get-Date -Format MMddyyyy).CSV" -NoTypeInformation -Force
 
                 Write-Host "JumpCloudSystemGroupMembers_$(Get-Date -Format MMddyyyy).CSV created.`n" -ForegroundColor Green
             }

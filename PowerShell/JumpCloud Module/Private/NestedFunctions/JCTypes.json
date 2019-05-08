@@ -1,0 +1,501 @@
+[
+  {
+    "Category": "JumpCloud",
+    "TypeName": {
+      "TypeNameSingular": "active_directory",
+      "TypeNamePlural": "activedirectories"
+    },
+    "Targets": [
+      {
+        "TargetSingular": "user",
+        "TargetPlural": "users"
+      },
+      {
+        "TargetSingular": "user_group",
+        "TargetPlural": "usergroups"
+      }
+    ],
+    "Url": "/api/v2/activedirectories",
+    "Method": "GET",
+    "ById": "id",
+    "ByName": "domain",
+    "Paginate": true,
+    "SupportRegexFilter": true,
+    "Limit": 100
+  },
+  {
+    "Category": "JumpCloud",
+    "TypeName": {
+      "TypeNameSingular": "application",
+      "TypeNamePlural": "applications"
+    },
+    "Targets": [
+      {
+        "TargetSingular": "user_group",
+        "TargetPlural": "usergroups"
+      }
+    ],
+    "Url": "/api/applications",
+    "Method": "GET",
+    "ById": "_id",
+    "ByName": "displayName",
+    "Paginate": true,
+    "SupportRegexFilter": false,
+    "Limit": 100,
+    "TargetsExcluded": [
+      {
+        "TargetExcludedSingular": "user",
+        "TargetExcludedPlural": "users"
+      }
+    ]
+  },
+  {
+    "Category": "JumpCloud",
+    "TypeName": {
+      "TypeNameSingular": "command",
+      "TypeNamePlural": "commands"
+    },
+    "Targets": [
+      {
+        "TargetSingular": "system",
+        "TargetPlural": "systems"
+      },
+      {
+        "TargetSingular": "system_group",
+        "TargetPlural": "systemgroups"
+      }
+    ],
+    "Url": "/api/commands",
+    "Method": "GET",
+    "ById": "_id",
+    "ByName": "name",
+    "Paginate": true,
+    "SupportRegexFilter": false,
+    "Limit": 100
+  },
+  {
+    "Category": "JumpCloud",
+    "TypeName": {
+      "TypeNameSingular": "g_suite",
+      "TypeNamePlural": "gsuites"
+    },
+    "Targets": [
+      {
+        "TargetSingular": "user",
+        "TargetPlural": "users"
+      },
+      {
+        "TargetSingular": "user_group",
+        "TargetPlural": "usergroups"
+      }
+    ],
+    "Url": "/api/v2/directories",
+    "Method": "GET",
+    "ById": "id",
+    "ByName": "name",
+    "Paginate": true,
+    "SupportRegexFilter": false,
+    "Limit": 100
+  },
+  {
+    "Category": "JumpCloud",
+    "TypeName": {
+      "TypeNameSingular": "ldap_server",
+      "TypeNamePlural": "ldapservers"
+    },
+    "Targets": [
+      {
+        "TargetSingular": "user",
+        "TargetPlural": "users"
+      },
+      {
+        "TargetSingular": "user_group",
+        "TargetPlural": "usergroups"
+      }
+    ],
+    "Url": "/api/v2/ldapservers",
+    "Method": "GET",
+    "ById": "id",
+    "ByName": "name",
+    "Paginate": true,
+    "SupportRegexFilter": true,
+    "Limit": 100
+  },
+  {
+    "Category": "JumpCloud",
+    "TypeName": {
+      "TypeNameSingular": "office_365",
+      "TypeNamePlural": "office365s"
+    },
+    "Targets": [
+      {
+        "TargetSingular": "user",
+        "TargetPlural": "users"
+      },
+      {
+        "TargetSingular": "user_group",
+        "TargetPlural": "usergroups"
+      }
+    ],
+    "Url": "/api/v2/directories",
+    "Method": "GET",
+    "ById": "id",
+    "ByName": "name",
+    "Paginate": true,
+    "SupportRegexFilter": false,
+    "Limit": 100
+  },
+  {
+    "Category": "JumpCloud",
+    "TypeName": {
+      "TypeNameSingular": "policy",
+      "TypeNamePlural": "policies"
+    },
+    "Targets": [
+      {
+        "TargetSingular": "system",
+        "TargetPlural": "systems"
+      },
+      {
+        "TargetSingular": "system_group",
+        "TargetPlural": "systemgroups"
+      }
+    ],
+    "Url": "/api/v2/policies",
+    "Method": "GET",
+    "ById": "id",
+    "ByName": "name",
+    "Paginate": true,
+    "SupportRegexFilter": false,
+    "Limit": 100
+  },
+  {
+    "Category": "JumpCloud",
+    "TypeName": {
+      "TypeNameSingular": "radius_server",
+      "TypeNamePlural": "radiusservers"
+    },
+    "Targets": [
+      {
+        "TargetSingular": "user_group",
+        "TargetPlural": "usergroups"
+      }
+    ],
+    "Url": "/api/radiusservers",
+    "Method": "GET",
+    "ById": "_id",
+    "ByName": "name",
+    "Paginate": true,
+    "SupportRegexFilter": false,
+    "Limit": 100,
+    "TargetsExcluded": [
+      {
+        "TargetExcludedSingular": "user",
+        "TargetExcludedPlural": "users"
+      }
+    ]
+  },
+  {
+    "Category": "JumpCloud",
+    "TypeName": {
+      "TypeNameSingular": "system_group",
+      "TypeNamePlural": "systemgroups"
+    },
+    "Targets": [
+      {
+        "TargetSingular": "policy",
+        "TargetPlural": "policies"
+      },
+      {
+        "TargetSingular": "user_group",
+        "TargetPlural": "usergroups"
+      },
+      {
+        "TargetSingular": "command",
+        "TargetPlural": "commands"
+      },
+      {
+        "TargetSingular": "system",
+        "TargetPlural": "systems"
+      }
+    ],
+    "Url": "/api/v2/systemgroups",
+    "Method": "GET",
+    "ById": "id",
+    "ByName": "name",
+    "Paginate": true,
+    "SupportRegexFilter": true,
+    "Limit": 100,
+    "TargetsExcluded": [
+      {
+        "TargetExcludedSingular": "user",
+        "TargetExcludedPlural": "users"
+      }
+    ]
+  },
+  {
+    "Category": "JumpCloud",
+    "TypeName": {
+      "TypeNameSingular": "system",
+      "TypeNamePlural": "systems"
+    },
+    "Targets": [
+      {
+        "TargetSingular": "policy",
+        "TargetPlural": "policies"
+      },
+      {
+        "TargetSingular": "user",
+        "TargetPlural": "users"
+      },
+      {
+        "TargetSingular": "command",
+        "TargetPlural": "commands"
+      },
+      {
+        "TargetSingular": "system_group",
+        "TargetPlural": "systemgroups"
+      }
+    ],
+    "Url": "/api/systems",
+    "Method": "GET",
+    "ById": "_id",
+    "ByName": "displayName",
+    "Paginate": true,
+    "SupportRegexFilter": true,
+    "Limit": 100,
+    "TargetsExcluded": [
+      {
+        "TargetExcludedSingular": "user_group",
+        "TargetExcludedPlural": "usergroups"
+      }
+    ]
+  },
+  {
+    "Category": "JumpCloud",
+    "TypeName": {
+      "TypeNameSingular": "user_group",
+      "TypeNamePlural": "usergroups"
+    },
+    "Targets": [
+      {
+        "TargetSingular": "application",
+        "TargetPlural": "applications"
+      },
+      {
+        "TargetSingular": "g_suite",
+        "TargetPlural": "gsuites"
+      },
+      {
+        "TargetSingular": "ldap_server",
+        "TargetPlural": "ldapservers"
+      },
+      {
+        "TargetSingular": "office_365",
+        "TargetPlural": "office365s"
+      },
+      {
+        "TargetSingular": "radius_server",
+        "TargetPlural": "radiusservers"
+      },
+      {
+        "TargetSingular": "system_group",
+        "TargetPlural": "systemgroups"
+      },
+      {
+        "TargetSingular": "user",
+        "TargetPlural": "users"
+      }
+    ],
+    "Url": "/api/v2/usergroups",
+    "Method": "GET",
+    "ById": "id",
+    "ByName": "name",
+    "Paginate": true,
+    "SupportRegexFilter": true,
+    "Limit": 100,
+    "TargetsExcluded": [
+      {
+        "TargetExcludedSingular": "system",
+        "TargetExcludedPlural": "systems"
+      },
+      {
+        "TargetExcludedSingular": "active_directory",
+        "TargetExcludedPlural": "activedirectories"
+      }
+    ]
+  },
+  {
+    "Category": "JumpCloud",
+    "TypeName": {
+      "TypeNameSingular": "user",
+      "TypeNamePlural": "users"
+    },
+    "Targets": [
+      {
+        "TargetSingular": "g_suite",
+        "TargetPlural": "gsuites"
+      },
+      {
+        "TargetSingular": "ldap_server",
+        "TargetPlural": "ldapservers"
+      },
+      {
+        "TargetSingular": "office_365",
+        "TargetPlural": "office365s"
+      },
+      {
+        "TargetSingular": "system",
+        "TargetPlural": "systems"
+      },
+      {
+        "TargetSingular": "user_group",
+        "TargetPlural": "usergroups"
+      }
+    ],
+    "Url": "/api/systemusers",
+    "Method": "GET",
+    "ById": "_id",
+    "ByName": "username",
+    "Paginate": true,
+    "SupportRegexFilter": true,
+    "Limit": 100,
+    "TargetsExcluded": [
+      {
+        "TargetExcludedSingular": "active_directory",
+        "TargetExcludedPlural": "activedirectories"
+      },
+      {
+        "TargetExcludedSingular": "application",
+        "TargetExcludedPlural": "applications"
+      },
+      {
+        "TargetExcludedSingular": "radius_server",
+        "TargetExcludedPlural": "radiusservers"
+      },
+      {
+        "TargetExcludedSingular": "system_group",
+        "TargetExcludedPlural": "systemgroups"
+      }
+    ]
+  },
+  {
+    "Category": "Custom",
+    "TypeName": {
+      "TypeNameSingular": "directory",
+      "TypeNamePlural": "directories"
+    },
+    "Targets": null,
+    "Url": "/api/v2/directories",
+    "Method": "GET",
+    "ById": "id",
+    "ByName": "name",
+    "Paginate": true,
+    "SupportRegexFilter": false,
+    "Limit": 100
+  },
+  {
+    "Category": "Custom",
+    "TypeName": {
+      "TypeNameSingular": "group",
+      "TypeNamePlural": "groups"
+    },
+    "Targets": null,
+    "Url": "/api/v2/groups",
+    "Method": "GET",
+    "ById": "id",
+    "ByName": "name",
+    "Paginate": true,
+    "SupportRegexFilter": false,
+    "Limit": 100
+  },
+  {
+    "Category": "Custom",
+    "TypeName": {
+      "TypeNameSingular": "organization",
+      "TypeNamePlural": "organizations"
+    },
+    "Targets": null,
+    "Url": "/api/organizations",
+    "Method": "GET",
+    "ById": "_id",
+    "ByName": "displayName",
+    "Paginate": true,
+    "SupportRegexFilter": false,
+    "Limit": 100
+  },
+  {
+    "Category": "Custom",
+    "TypeName": {
+      "TypeNameSingular": "search_user",
+      "TypeNamePlural": "search_users"
+    },
+    "Targets": [
+      {
+        "TargetSingular": "g_suite",
+        "TargetPlural": "gsuites"
+      },
+      {
+        "TargetSingular": "ldap_server",
+        "TargetPlural": "ldapservers"
+      },
+      {
+        "TargetSingular": "office_365",
+        "TargetPlural": "office365s"
+      },
+      {
+        "TargetSingular": "system",
+        "TargetPlural": "systems"
+      },
+      {
+        "TargetSingular": "user_group",
+        "TargetPlural": "usergroups"
+      }
+    ],
+    "Url": "/api/search/systemusers",
+    "Method": "POST",
+    "ById": "_id",
+    "ByName": "username",
+    "Paginate": true,
+    "SupportRegexFilter": true,
+    "Limit": 100,
+    "TargetsExcluded": [
+      {
+        "TargetExcludedSingular": "active_directory",
+        "TargetExcludedPlural": "activedirectories"
+      }
+    ]
+  },
+  {
+    "Category": "Custom",
+    "TypeName": {
+      "TypeNameSingular": "search_system",
+      "TypeNamePlural": "search_systems"
+    },
+    "Targets": [
+      {
+        "TargetSingular": "policy",
+        "TargetPlural": "policies"
+      },
+      {
+        "TargetSingular": "user",
+        "TargetPlural": "users"
+      },
+      {
+        "TargetSingular": "command",
+        "TargetPlural": "commands"
+      },
+      {
+        "TargetSingular": "system_group",
+        "TargetPlural": "systemgroups"
+      }
+    ],
+    "Url": "/api/search/systems",
+    "Method": "POST",
+    "ById": "_id",
+    "ByName": "displayName",
+    "Paginate": true,
+    "SupportRegexFilter": true,
+    "Limit": 100
+  }
+]

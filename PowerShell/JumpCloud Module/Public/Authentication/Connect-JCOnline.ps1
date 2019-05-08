@@ -9,7 +9,7 @@ Function Connect-JCOnline ()
             Mandatory,
             ValueFromPipelineByPropertyName,
             Position = 0)]
- 
+
         [Parameter(Mandatory = $True,
             ParameterSetName = 'Interactive',
             Position = 0,
@@ -20,7 +20,7 @@ Function Connect-JCOnline ()
                     Throw "Please enter your API key. This can be found in the JumpCloud admin console within 'API Settings' accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console."
                 }
 
-                Else {$true}
+                Else { $true }
             })]
 
 
@@ -57,7 +57,7 @@ Function Connect-JCOnline ()
         [Switch]
         $force,
 
-        [string]$UserAgent = "Pwsh_1.10.2"
+        [string]$UserAgent = "Pwsh_1.11.0"
     )
 
 
@@ -77,11 +77,11 @@ Function Connect-JCOnline ()
             $attrColl.Add($attr)
             $param = New-Object System.Management.Automation.RuntimeDefinedParameter('ip', [string], $attrColl)
             $dict.Add('ip', $param)
-              
+
         }
 
-        return $dict 
-        
+        return $dict
+
     }
 
     begin
@@ -141,7 +141,7 @@ Function Connect-JCOnline ()
         try
         {
             $ConnectionTestURL = "$JCUrlBasePath/api/v2/ldapservers"
-            Invoke-RestMethod -Method GET -Uri $ConnectionTestURL -Headers $hdrs -UserAgent $JCUserAgent  | Out-Null
+            Invoke-RestMethod -Method GET -Uri $ConnectionTestURL -Headers $hdrs -UserAgent $JCUserAgent | Out-Null
         }
         catch
         {
@@ -152,8 +152,8 @@ Function Connect-JCOnline ()
                 if (-not $JumpCloudOrgID)
                 {
 
-                    Invoke-SetJCOrganization -JumpCloudAPIKey $JumpCloudAPIKey                    
-                
+                    Invoke-SetJCOrganization -JumpCloudAPIKey $JumpCloudAPIKey
+
                 }
 
                 else
@@ -164,7 +164,7 @@ Function Connect-JCOnline ()
                     {
                         $hdrs.Add('x-org-id', "$($JCOrgID)")
                         $ConnectionTestURL = "$JCUrlBasePath/api/v2/ldapservers"
-                        Invoke-RestMethod -Method GET -Uri $ConnectionTestURL -Headers $hdrs -UserAgent $JCUserAgent  | Out-Null
+                        Invoke-RestMethod -Method GET -Uri $ConnectionTestURL -Headers $hdrs -UserAgent $JCUserAgent | Out-Null
 
                         if (-not $force)
                         {
@@ -173,26 +173,26 @@ Function Connect-JCOnline ()
                     }
                     catch
                     {
-    
+
                         Write-Error "Incorrect OrgID OR no network connectivity. You can obtain your Organization ID below your Organization's Contact Information on the Settings page."
                         $global:JCOrgID = $null
                         break
-                        
+
                     }
                 }
 
-        
+
 
             }
-            
+
             else
             {
-                
+
                 Write-Error "Incorrect API key OR no network connectivity. To locate your JumpCloud API key log into the JumpCloud admin portal. The API key is located with 'API Settings' accessible from the drop down in the top right hand corner of the screen"
                 $global:JCAPIKEY = $null
                 break
             }
-            
+
         }
     }
 
@@ -220,19 +220,19 @@ Function Connect-JCOnline ()
                 if ($InstalledModuleVersion -eq $LatestVersion)
                 {
 
-                    Write-Host -BackgroundColor Green -ForegroundColor Black "$CurrentBanner Module version: $InstalledModuleVersion" 
+                    Write-Host -BackgroundColor Green -ForegroundColor Black "$CurrentBanner Module version: $InstalledModuleVersion"
 
                 }
 
                 elseif ($InstalledModuleVersion -ne $LatestVersion)
                 {
-    
-                    Write-Host "$OldBanner" 
+
+                    Write-Host "$OldBanner"
                     Write-Host -BackgroundColor Yellow -ForegroundColor Black  "Installed Version: $InstalledModuleVersion " -NoNewline
                     Write-Host -BackgroundColor Green -ForegroundColor Black  " Latest Version: $LatestVersion "
 
                     Write-Host  "`nWould you like to upgrade to version: $LatestVersion ?"
-                
+
                     $Accept = Read-Host  "`nEnter 'Y' if you wish to update to version $LatestVersion or 'N' to continue using version: $InstalledModuleVersion"
 
 
@@ -245,7 +245,7 @@ Function Connect-JCOnline ()
                     While ($Accept -notcontains 'Y')
                     {
 
-                        write-warning " Typo? $Accept != 'Y'"
+                        Write-Warning " Typo? $Accept != 'Y'"
 
                         $Accept = Read-Host "`nEnter 'Y' if you wish to update to the latest version or 'N' to continue using version: $InstalledModuleVersion `n"
 
@@ -265,9 +265,9 @@ Function Connect-JCOnline ()
                         {
 
                             Write-Warning "You must have Administrative rights to update the module! To retry close this PowerShell session and open a new PowerShell session with Administrator permissions (Right click the PowerShell application and select 'Run as Administrator') and run the Connect-JCOnline command."
-            
+
                             Return
-            
+
                         }
 
                         Uninstall-Module -Name JumpCloud -RequiredVersion $InstalledModuleVersion
@@ -284,7 +284,7 @@ Function Connect-JCOnline ()
                             Uninstall-Module -Name JumpCloud -RequiredVersion $InstalledModuleVersion
 
                             Install-Module -Name JumpCloud -Scope CurrentUser
-                                
+
                         }
 
                         elseif ($PSVersionTable.Platform -like "*Win*")
@@ -294,20 +294,20 @@ Function Connect-JCOnline ()
                             {
 
                                 Write-Warning "You must have Administrative rights to update the module! To retry close this PowerShell session and open a new PowerShell session with Administrator permissions (Right click the PowerShell application and select 'Run as Administrator') and run the Connect-JCOnline command."
-                
+
                                 Return
-                
+
                             }
 
                             Uninstall-Module -Name JumpCloud -RequiredVersion $InstalledModuleVersion
 
                             Install-Module -Name JumpCloud -Scope CurrentUser
-                                
+
                         }
 
                     }
 
-                    
+
                     $UpdatedModuleVersion = Get-InstalledModule -Name JumpCloud | Select-Object -ExpandProperty Version
 
                     if ($UpdatedModuleVersion -eq $LatestVersion)
@@ -325,13 +325,13 @@ Function Connect-JCOnline ()
 
                         Write-Host $ReleaseNotes
 
-                        Write-Host "`nTo see the full release notes navigate to: `n" 
+                        Write-Host "`nTo see the full release notes navigate to: `n"
                         Write-Host "$ReleaseNotesURL`n"
 
                         Pause
-    
+
                     }
-                
+
                 }
 
 
@@ -340,7 +340,7 @@ Function Connect-JCOnline ()
 
         }
 
-        
+
     }#End endblock
 
 }
