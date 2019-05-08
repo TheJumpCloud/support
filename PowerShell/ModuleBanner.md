@@ -1,17 +1,17 @@
 #### Latest Version
 
 ```
-1.10.2
+1.11.0
 ```
 
 #### Banner Current
 
 ```
-Module up-to-date. Report on policies and policy results now using the Pwsh module.
+Module up-to-date. Learn how to use Get-JCAssociation here: https://git.io/fjcHC
 ```
 
 #### Banner Old
 
 ```
-Policy and policy result GET functions have been added! JumpCloud module update available.
+JumpCloud module update available. New function Get-JCAssociation is live!
 ```
