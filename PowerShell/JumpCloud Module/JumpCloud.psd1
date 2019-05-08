@@ -7,10 +7,10 @@
     GUID              = '31c023d1-a901-48c4-90a3-082f91b31646'
 
     # Version number of this module.
-    ModuleVersion     = '1.10.2'
+    ModuleVersion     = '1.11.0'
 
     # Author of this module
-    Author            = 'Scott Reed'
+    Author            = 'JumpCloud Solutions Architect Team'
 
     # Company or vendor of this module
     CompanyName       = 'JumpCloud'
@@ -76,7 +76,8 @@
         "Get-JCPolicy",
         "Get-JCPolicyResult",
         "Get-JCPolicyTargetSystem",
-        "Get-JCPolicyTargetGroup")
+        "Get-JCPolicyTargetGroup",
+        "Get-JCAssociation")
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
     CmdletsToExport   = @()
@@ -119,5 +120,3 @@
     # DefaultCommandPrefix = ''
 
 }
-
-

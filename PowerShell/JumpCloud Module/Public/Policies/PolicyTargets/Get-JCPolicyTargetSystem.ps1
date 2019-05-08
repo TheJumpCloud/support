@@ -10,7 +10,7 @@ Function Get-JCPolicyTargetSystem
     {
 
         Write-Verbose 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {Connect-JConline}
+        if ($JCAPIKEY.length -ne 40) { Connect-JCOnline }
 
         Write-Verbose 'Populating API headers'
         $hdrs = @{
@@ -40,16 +40,15 @@ Function Get-JCPolicyTargetSystem
     {
         switch ($PSCmdlet.ParameterSetName)
         {
-            'ByName' {$Policy = Get-JCPolicy -Name:($PolicyName)}
-            'ById' {$Policy = Get-JCPolicy -PolicyID:($PolicyID)}
+            'ByName' { $Policy = Get-JCPolicy -Name:($PolicyName) }
+            'ById' { $Policy = Get-JCPolicy -PolicyID:($PolicyID) }
         }
         If ($Policy)
         {
             $PolicyId = $Policy.id
             $PolicyName = $Policy.Name
             $URL = $URL_Template -f $JCUrlBasePath, $PolicyID
-
-            $Results = Invoke-JCApiGet -URL:($URL)
+            $Results = Invoke-JCApi -Method:('GET') -Paginate:($true) -Url:($URL)
             ForEach ($Result In $Results)
             {
                 $SystemID = $Result.id
