@@ -1287,7 +1287,7 @@
       <command:verb>Get</command:verb>
       <command:noun>JCAssociation</command:noun>
       <maml:description>
-        <maml:para>Lists the associations of a specific object and a specific type of object within JumpCloud.</maml:para>
+        <maml:para>The function Get-JCAssociation can be used to query an object's associations and then provide information about how objects are associated with one another.</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
@@ -5673,7 +5673,7 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>Invoke-JCDeployment -CommandID 5f6r55es2189782h48091999 -CSVFilePath ./JCDeployment_UsernameUpdate.csv
+        <dev:code>Invoke-JCDeployment -CommandID 5f6r55es2189782h48091999 -CSVFilePath ./JCDeployment_UsernameUpdate.csv 
 
 SystemID                 CommandID                Status
 --------                 ---------                ------
@@ -9578,10 +9578,10 @@ SystemID                 CommandID                Status
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
         <dev:code>Set-JCOrganization
 
-======== JumpCloud Multi Tenant Selector =======
+======== JumpCloud Multi Tenant Selector ======= 
 
-1. displayName: MSP One | OrgID:  5b5o13o06tsand0c29a0t3s6
-2. displayName: MSP Two | OrgID:  5b5o13o06tsand0d29o0g3s6
+1. displayName: MSP One | OrgID:  5b5o13o06tsand0c29a0t3s6   
+2. displayName: MSP Two | OrgID:  5b5o13o06tsand0d29o0g3s6   
 
 Select the number of the JumpCloud tenant you wish to connect to
 

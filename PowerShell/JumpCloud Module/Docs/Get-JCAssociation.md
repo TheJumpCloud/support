@@ -8,7 +8,7 @@ schema: 2.0.0
 # Get-JCAssociation
 
 ## SYNOPSIS
-The function Get-JCAssociation can be used to query an object’s associations and then provide information about how objects are associated with one another.
+The function Get-JCAssociation can be used to query an object's associations and then provide information about how objects are associated with one another.
 
 ## SYNTAX
 
