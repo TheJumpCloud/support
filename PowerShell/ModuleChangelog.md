@@ -1,6 +1,6 @@
 ## 1.11.0
 
-Release Date: May 7, 2019
+Release Date: May 8, 2019
 
 ```
 Use Get-JCAssociation to query associations between objects in JumpCloud.
@@ -9,7 +9,7 @@ User/systems, systems/commands, user_group/applications...etc
 All available now directly from the Pwsh terminal!
 ```
 
-- New Function: Get-JCAssociation leverages the V2 associations endpoint to return the associations between a input object and any of it's possible JumpCloud objects associations. See [How To Use The Associations Functions](https://github.com/TheJumpCloud/support/wiki/How-To-Use-The-Associations-Functions) for more information.
+- New Function: Get-JCAssociation leverages the V2 associations endpoint to return the associations between an input object and any of it's possible JumpCloud objects associations. See [How To Use The Associations Functions](https://github.com/TheJumpCloud/support/wiki/How-To-Use-The-Associations-Functions) for more information.
 
 ## Improvements
 

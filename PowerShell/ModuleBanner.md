@@ -7,11 +7,11 @@
 #### Banner Current
 
 ```
-Module up-to-date. Query associations between any two JumpCloud endpoints using Get-JCAssociation.
+Module up-to-date. Learn how to use Get-JCAssociation here: https://git.io/fjcHC
 ```
 
 #### Banner Old
 
 ```
-New function Get-JCAssociation FTW! JumpCloud module update available.
+JumpCloud module update available. New function Get-JCAssociation is live!
 ```
