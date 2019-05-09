@@ -33,7 +33,7 @@ Function Invoke-JCApi
     {
         Try
         {
-            $Results_Output = @()
+            $Results = @()
             If ($Url -notlike ('*' + $JCUrlBasePath + '*'))
             {
                 $Url = $JCUrlBasePath + $Url
@@ -106,54 +106,56 @@ Function Invoke-JCApi
                 }
                 # Run request
                 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-                Write-Debug("[CallFunction]Invoke-RestMethod -Method:('$Method') -Headers:(@" + ($Headers | ConvertTo-Json -Compress).Replace('":"', '" = "').Replace('","', '"; "') + ") -Uri:('$Uri') -UserAgent:('$JCUserAgent') -Body:('$Body')")
+                Write-Debug("[CallFunction]Invoke-WebRequest -Method:('$Method') -Headers:(@" + ($Headers | ConvertTo-Json -Compress).Replace('":"', '" = "').Replace('","', '"; "') + ") -Uri:('$Uri') -UserAgent:('$JCUserAgent') -Body:('$Body')")
                 Write-Verbose ('Connecting to: ' + $Uri)
                 # PowerShell 5 won't let you send a GET with a body.
                 If ($Method -eq 'GET')
                 {
-                    $Results = Invoke-RestMethod -Method:($Method) -Headers:($Headers) -Uri:($Uri) -UserAgent:($JCUserAgent)
+                    $RequestResult = Invoke-WebRequest -Method:($Method) -Headers:($Headers) -Uri:($Uri) -UserAgent:($JCUserAgent)
                 }
                 Else
                 {
                     Write-Verbose ($Method + ' body: ' + $Body)
-                    $Results = Invoke-RestMethod -Method:($Method) -Headers:($Headers) -Uri:($Uri) -UserAgent:($JCUserAgent) -Body:($Body)
+                    $RequestResult = Invoke-WebRequest -Method:($Method) -Headers:($Headers) -Uri:($Uri) -UserAgent:($JCUserAgent) -Body:($Body)
                 }
-                If ($Results)
+                $Result = $RequestResult.Content | ConvertFrom-Json
+                $HttpMetaData = $RequestResult | Select-Object -Property:('*') -ExcludeProperty:('Content')
+                If ($Result)
                 {
-                    $ResultsPopulated = $false
+                    $ResultPopulated = $false
                     # Specific logic for v1 and v2 api specs
-                    If ($Url -like '*/api/*' -and ($Url -notlike '*/api/v2/*' -and $Results.PSObject.Properties.name -eq 'results'))
+                    If ($Url -like '*/api/*' -and ($Url -notlike '*/api/v2/*' -and $Result.PSObject.Properties.name -eq 'results'))
                     {
-                        $ResultsCount = ($Results.results | Measure-Object).Count
-                        If ($ResultsCount -gt 0)
+                        $ResultCount = ($Result.results | Measure-Object).Count
+                        If ($ResultCount -gt 0)
                         {
-                            $ResultsPopulated = $true
+                            $ResultPopulated = $true
                             If ($ReturnCount)
                             {
-                                $ResultObjects = $Results
+                                $ResultObjects = $Result
                                 $Paginate = $false
                             }
                             Else
                             {
-                                $ResultObjects = $Results.results
+                                $ResultObjects = $Result.results
                             }
                         }
                     }
-                    ElseIf ($Url -like '*/api/*' -and ($Url -like '*/api/v2/*' -or $Results.PSObject.Properties.name -ne 'results'))
+                    ElseIf ($Url -like '*/api/*' -and ($Url -like '*/api/v2/*' -or $Result.PSObject.Properties.name -ne 'results'))
                     {
-                        $ResultsCount = ($Results | Measure-Object).Count
-                        If ($ResultsCount -gt 0)
+                        $ResultCount = ($Result | Measure-Object).Count
+                        If ($ResultCount -gt 0)
                         {
-                            $ResultsPopulated = $true
+                            $ResultPopulated = $true
                             If ($ReturnCount)
                             {
                                 Write-Debug("[CallFunction]Invoke-WebRequest -Method:('$Method') -Headers:(@" + ($Headers | ConvertTo-Json -Compress).Replace('":"', '" = "').Replace('","', '"; "') + ") -Uri:('$Uri') -UserAgent:('$JCUserAgent')")
-                                $ResultObjects = [PSCustomObject]@{'totalCount' = [int]((Invoke-WebRequest -Method:($Method) -Headers:($Headers) -Uri:($Uri) -UserAgent:($JCUserAgent)).Headers.'X-Total-Count' -join ','); 'results' = $Results; }
+                                $ResultObjects = [PSCustomObject]@{'totalCount' = [int]((Invoke-WebRequest -Method:($Method) -Headers:($Headers) -Uri:($Uri) -UserAgent:($JCUserAgent)).Headers.'X-Total-Count' -join ','); 'results' = $Result; }
                                 $Paginate = $false
                             }
                             Else
                             {
-                                $ResultObjects = $Results
+                                $ResultObjects = $Result
                             }
                         }
                     }
@@ -161,23 +163,36 @@ Function Invoke-JCApi
                     {
                         Write-Error ('Url is not a valid JumpCloud V1 or V2 endpoint')
                     }
-                    If ($ResultsPopulated)
+                    If ($ResultPopulated)
                     {
-                        $Skip += $ResultsCount
-                        $Results_Output += $ResultObjects
+                        $Skip += $ResultCount
+                        # List values to add to results
+                        $HiddenProperties = @('HttpMetaData')
+                        # Append meta info to each result record
+                        Get-Variable -Name:($HiddenProperties) |
+                            ForEach-Object {
+                            $Variable = $_
+                            $ResultObjects |
+                                ForEach-Object {
+                                Add-Member -InputObject:($_) -MemberType:('NoteProperty') -Name:($Variable.Name) -Value:($Variable.Value)
+                            }
+                        }
+                        # Set the meta info to be hidden by default
+                        $Results += Hide-ObjectProperty -Object:($ResultObjects) -HiddenProperties:($HiddenProperties)
                     }
                 }
                 Else
                 {
                     If ($Paginate)
                     {
-                        $ResultsCount = ($Results | Measure-Object).Count
+                        $ResultCount = ($Result | Measure-Object).Count
                     }
+                    $Results += [PSCustomObject]@{'HttpMetaData' = $HttpMetaData; }
                 }
-                Write-Debug ('Paginate:' + [string]$Paginate + ';ResultsCount:' + [string]$ResultsCount + ';Limit:' + [string]$Limit + ';')
+                Write-Debug ('Paginate:' + [string]$Paginate + ';ResultsCount:' + [string]$ResultCount + ';Limit:' + [string]$Limit + ';')
             }
-            While ($Paginate -and $ResultsCount -eq $Limit)
-            Write-Verbose ('Returned ' + [string]($Results_Output | Measure-Object).Count + ' total results.')
+            While ($Paginate -and $ResultCount -eq $Limit)
+            Write-Verbose ('Returned ' + [string]($Results | Measure-Object).Count + ' total results.')
         }
         Catch
         {
@@ -187,15 +202,15 @@ Function Invoke-JCApi
     End
     {
         # Validate that all fields passed into the function exist in the output
-        If ($Results_Output)
+        If ($Results)
         {
             $Fields | ForEach-Object {
-                If ($_ -notin ($Results_Output | Get-Member).Name)
+                If ($_ -notin ($Results | Get-Member).Name)
                 {
                     Write-Warning ('API output does not contain the field "' + $_ + '". Please refer to https://docs.jumpcloud.com for API endpoint field names.')
                 }
             }
         }
-        Return $Results_Output
+        Return $Results
     }
 }
