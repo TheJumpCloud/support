@@ -17,9 +17,11 @@ $ScriptBlock_TryCatchError = {
         $Exception = $Exception.InnerException
         $Message += "`n" + $Exception.Message
     }
+    # Build error message
     $OutputArray = @($Message, $ErrorObject.InvocationInfo.PositionMessage, $ErrorObject.FullyQualifiedErrorId.ToString())
     $OutputString = ($OutputArray -join "`n")
+    # Write Error
     Write-Error ($OutputString)
     # $Error.Clear()
-    Break
+    # Break
 }
