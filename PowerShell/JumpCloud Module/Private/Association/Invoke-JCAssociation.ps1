@@ -81,6 +81,11 @@
                             Select-Object -Unique |
                             Where-Object {$_ -notin ('id', 'type')} |
                             ForEach-Object {$AssociationHash.Add($_, $Association.($_)) | Out-Null}
+                        # $Association |
+                        #     ForEach-Object {$_ | Get-Member -MemberType:('MemberSet', 'NoteProperty')} |
+                        #     Select-Object -Unique |
+                        #     Where-Object {$_.Name -notin ('id', 'type')} |
+                        #     ForEach-Object {$AssociationHash.Add($_.Name, $Association.($_.Name)) | Out-Null}
                         # If any "Return*" switch is provided get the target object
                         If ($IncludeInfo -or $IncludeNames -or $IncludeVisualPath)
                         {
@@ -126,7 +131,8 @@
                         $AssociationsUpdated = [PSCustomObject]@{}
                         $AssociationHash.GetEnumerator() |
                             ForEach-Object {If ($_.Value) {Add-Member -InputObject:($AssociationsUpdated) -NotePropertyName:($_.Key) -NotePropertyValue:($_.Value)}}
-                        $AssociationsOut += $AssociationsUpdated
+                        $HiddenProperties = @('HttpMetaData')
+                        $AssociationsOut += Hide-ObjectProperty -Object:($AssociationsUpdated) -HiddenProperties:($HiddenProperties)
                     }
                 }
                 Return $AssociationsOut
@@ -203,11 +209,13 @@
                             }
                             If ($Raw)
                             {
-                                $Results += $AssociationOut | Select-Object -Property:('*') -ExcludeProperty:('associationType')
+                                $Result = $AssociationOut | Select-Object -Property:('*') -ExcludeProperty:('associationType')
+                                $Results += $Result
                             }
                             Else
                             {
-                                $Results += $AssociationOut
+                                $Result = $AssociationOut
+                                $Results += $Result
                             }
                         }
                         Else
@@ -254,7 +262,8 @@
                                     $RemoveAssociation = Format-JCAssociation -Action:($Action) -Uri:($Uri_Associations_GET) -Method:('GET') -Source:($SourceItem) -IncludeInfo:($IncludeInfo) -IncludeNames:($IncludeNames) -IncludeVisualPath:($IncludeVisualPath) -Raw:($Raw) |
                                         Where-Object {$_.TargetId -eq $TargetItemId}
                                     $IndirectAssociations = $RemoveAssociation | Where-Object {$_.associationType -ne 'direct'}
-                                    $Results += $RemoveAssociation | Where-Object {$_.associationType -eq 'direct'}
+                                    $Result = $RemoveAssociation | Where-Object {$_.associationType -eq 'direct'}
+                                    $Results += $Result
                                 }
                                 If ($TargetItemId -ne $IndirectAssociations.targetId)
                                 {
@@ -287,14 +296,37 @@
                                     }
                                     If ($HostResponse -eq 'y' -or $Force)
                                     {
-                                        $Results += Invoke-JCApi -Body:($JsonBody) -Method:('POST') -Url:($Uri_Associations_POST)
+                                        $ActionResult = Invoke-JCApi -Body:($JsonBody) -Method:('POST') -Url:($Uri_Associations_POST) -ErrorVariable:('HttpError')
                                     }
+                                }
+                                If ($Action -eq 'get')
+                                {
+                                    $Results += $ActionResult
                                 }
                                 # Get the newly created association
                                 If ($Action -eq 'add')
                                 {
-                                    $Results += Format-JCAssociation -Action:($Action) -Uri:($Uri_Associations_GET) -Method:('GET') -Source:($SourceItem) -IncludeInfo:($IncludeInfo) -IncludeNames:($IncludeNames) -IncludeVisualPath:($IncludeVisualPath) -Raw:($Raw) |
-                                        Where-Object {$_.TargetId -eq $TargetItemId}
+                                    $Status = If ($HttpError)
+                                    {
+                                        [PSCustomObject]@{
+                                            'HttpStatusCode'        = $HttpError.ErrorRecord.Exception.Response.StatusCode.value__
+                                            'HttpStatusDescription' = $HttpError.ErrorRecord.Exception.Response.StatusCode
+                                            'HttpMessage'           = $HttpError.Message
+                                            'HttpMetaData'          = $HttpError
+                                        }
+                                    }
+                                    Else
+                                    {
+                                        [PSCustomObject]@{
+                                            'HttpStatusCode'        = $ActionResult.HttpMetaData.StatusCode
+                                            'HttpStatusDescription' = $ActionResult.HttpMetaData.StatusDescription
+                                            'HttpMessage'           = $null
+                                            'HttpMetaData'          = $ActionResult.HttpMetaData
+                                        }
+                                    }
+                                    $Result = Format-JCAssociation -Action:($Action) -Uri:($Uri_Associations_GET) -Method:('GET') -Source:($SourceItem) -IncludeInfo:($IncludeInfo) -IncludeNames:($IncludeNames) -IncludeVisualPath:($IncludeVisualPath) -Raw:($Raw) |
+                                        Where-Object {$_.TargetId -eq $TargetItemId} | Select-Object -Property:('*', @{Name = 'status'; Expression = {$Status}}) -ExcludeProperty:('HttpMetaData')
+                                    $Results += $Result
                                 }
                             }
                         }
