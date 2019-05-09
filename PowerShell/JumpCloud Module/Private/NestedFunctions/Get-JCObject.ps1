@@ -203,7 +203,14 @@ Function Get-JCObject
                         # List values to add to results
                         $HiddenProperties = @('ById', 'ByName', 'TypeName', 'TypeNameSingular', 'TypeNamePlural', 'Targets', 'TargetSingular', 'TargetPlural')
                         # Append meta info to results
-                        Get-Variable -Name:($HiddenProperties) | ForEach-Object { Add-Member -InputObject:($Result) -MemberType:('NoteProperty') -Name:($_.Name) -Value:($_.Value)}
+                        Get-Variable -Name:($HiddenProperties) |
+                            ForEach-Object {
+                            $Variable = $_
+                            $Result |
+                                ForEach-Object {
+                                Add-Member -InputObject:($_) -MemberType:('NoteProperty') -Name:($Variable.Name) -Value:($Variable.Value)
+                            }
+                        }
                         # Set the meta info to be hidden by default
                         $Results += Hide-ObjectProperty -Object:($Result) -HiddenProperties:($HiddenProperties)
                     }
