@@ -200,21 +200,12 @@ Function Get-JCObject
                     }
                     If ($Result)
                     {
-                        # Set some properties to be hidden in the results
+                        # List values to add to results
                         $HiddenProperties = @('ById', 'ByName', 'TypeName', 'TypeNameSingular', 'TypeNamePlural', 'Targets', 'TargetSingular', 'TargetPlural')
-                        $Result | ForEach-Object {
-                            # Create the default property display set
-                            $defaultDisplayPropertySet = New-Object System.Management.Automation.PSPropertySet('DefaultDisplayPropertySet', [string[]]$_.PSObject.Properties.Name)
-                            $PSStandardMembers = [System.Management.Automation.PSMemberInfo[]]@($defaultDisplayPropertySet)
-                            # Add the list of standard members
-                            Add-Member -InputObject:($_) -MemberType:('MemberSet') -Name:('PSStandardMembers') -Value:($PSStandardMembers)
-                            # Add ById and ByName as hidden properties to results
-                            ForEach ($HiddenProperty In $HiddenProperties)
-                            {
-                                Add-Member -InputObject:($_) -MemberType:('NoteProperty') -Name:($HiddenProperty) -Value:(Get-Variable -Name:($HiddenProperty) -ValueOnly)
-                            }
-                        }
-                        $Results += $Result
+                        # Append meta info to results
+                        Get-Variable -Name:($HiddenProperties) | ForEach-Object { Add-Member -InputObject:($Result) -MemberType:('NoteProperty') -Name:($_.Name) -Value:($_.Value)}
+                        # Set the meta info to be hidden by default
+                        $Results += Hide-ObjectProperty -Object:($Result) -HiddenProperties:($HiddenProperties)
                     }
                     Else
                     {
