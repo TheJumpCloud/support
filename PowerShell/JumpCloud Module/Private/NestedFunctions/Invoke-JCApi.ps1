@@ -119,7 +119,7 @@ Function Invoke-JCApi
                     $RequestResult = Invoke-WebRequest -Method:($Method) -Headers:($Headers) -Uri:($Uri) -UserAgent:($JCUserAgent) -Body:($Body)
                 }
                 $Result = $RequestResult.Content | ConvertFrom-Json
-                $HttpMetaData = $RequestResult | Select-Object -Property:('*') -ExcludeProperty:('Content')
+                $HttpMetaData = $RequestResult
                 If ($Result)
                 {
                     $ResultPopulated = $false
