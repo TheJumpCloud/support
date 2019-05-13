@@ -45,7 +45,7 @@ rm -rf /Applications/Jumpcloud.app
 # verify no jumpcloud processes are still running. kill and straglers
 # implemented in response to desk case #28825.
 if (pgrep -fi "[j]umpcloud" &> /dev/null); then
-  for proc in $(pgrep -fi "[j]umpcloud" &> /dev/null); do
+  for proc in $(pgrep -fi "[j]umpcloud" 2> /dev/null); do
     kill -9 "${proc}"
   done
 fi
