@@ -263,7 +263,6 @@
                                         Where-Object {$_.TargetId -eq $TargetItemId}
                                     $IndirectAssociations = $RemoveAssociation | Where-Object {$_.associationType -ne 'direct'}
                                     $Result = $RemoveAssociation | Where-Object {$_.associationType -eq 'direct'}
-                                    $Results += $Result
                                 }
                                 If ($TargetItemId -ne $IndirectAssociations.targetId)
                                 {
@@ -297,36 +296,39 @@
                                     If ($HostResponse -eq 'y' -or $Force)
                                     {
                                         $ActionResult = Invoke-JCApi -Body:($JsonBody) -Method:('POST') -Url:($Uri_Associations_POST) -ErrorVariable:('HttpError')
+                                        $Status = If ($HttpError)
+                                        {
+                                            [PSCustomObject]@{
+                                                'HttpStatusCode'        = $HttpError.ErrorRecord.Exception.Response.StatusCode.value__
+                                                'HttpStatusDescription' = $HttpError.ErrorRecord.Exception.Response.StatusCode
+                                                'HttpMessage'           = $HttpError.Message
+                                                'HttpMetaData'          = $HttpError
+                                            }
+                                        }
+                                        Else
+                                        {
+                                            [PSCustomObject]@{
+                                                'HttpStatusCode'        = $ActionResult.HttpMetaData.StatusCode
+                                                'HttpStatusDescription' = $ActionResult.HttpMetaData.StatusDescription
+                                                'HttpMessage'           = $null
+                                                'HttpMetaData'          = $ActionResult.HttpMetaData
+                                            }
+                                        }
                                     }
+                                }
+                                # Get the newly created association
+                                If ($Action -eq 'add')
+                                {
+                                    $Result = Format-JCAssociation -Action:($Action) -Uri:($Uri_Associations_GET) -Method:('GET') -Source:($SourceItem) -IncludeInfo:($IncludeInfo) -IncludeNames:($IncludeNames) -IncludeVisualPath:($IncludeVisualPath) -Raw:($Raw) |
+                                        Where-Object {$_.TargetId -eq $TargetItemId}
                                 }
                                 If ($Action -eq 'get')
                                 {
                                     $Results += $ActionResult
                                 }
-                                # Get the newly created association
-                                If ($Action -eq 'add')
+                                Else
                                 {
-                                    $Status = If ($HttpError)
-                                    {
-                                        [PSCustomObject]@{
-                                            'HttpStatusCode'        = $HttpError.ErrorRecord.Exception.Response.StatusCode.value__
-                                            'HttpStatusDescription' = $HttpError.ErrorRecord.Exception.Response.StatusCode
-                                            'HttpMessage'           = $HttpError.Message
-                                            'HttpMetaData'          = $HttpError
-                                        }
-                                    }
-                                    Else
-                                    {
-                                        [PSCustomObject]@{
-                                            'HttpStatusCode'        = $ActionResult.HttpMetaData.StatusCode
-                                            'HttpStatusDescription' = $ActionResult.HttpMetaData.StatusDescription
-                                            'HttpMessage'           = $null
-                                            'HttpMetaData'          = $ActionResult.HttpMetaData
-                                        }
-                                    }
-                                    $Result = Format-JCAssociation -Action:($Action) -Uri:($Uri_Associations_GET) -Method:('GET') -Source:($SourceItem) -IncludeInfo:($IncludeInfo) -IncludeNames:($IncludeNames) -IncludeVisualPath:($IncludeVisualPath) -Raw:($Raw) |
-                                        Where-Object {$_.TargetId -eq $TargetItemId} | Select-Object -Property:('*', @{Name = 'status'; Expression = {$Status}}) -ExcludeProperty:('HttpMetaData')
-                                    $Results += $Result
+                                    $Results += $Result | Select-Object -Property:('*', @{Name = 'status'; Expression = {$Status}}) -ExcludeProperty:('HttpMetaData')
                                 }
                             }
                         }
