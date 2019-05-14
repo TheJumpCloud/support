@@ -1,5 +1,5 @@
 ﻿# Get OS version and build info
-$UNAME=(Get-WmiObject Win32_OperatingSystem | select Caption, Version, BuildNumber)
+$UNAME=(Get-CimInstance Win32_OperatingSystem | Select-Object Caption, Version, BuildNumber)
 $SYSINFO=$UNAME.Caption
 $BUILD=$UNAME.Version
 $SERVICE='jumpcloud-agent'
@@ -15,14 +15,14 @@ $OUTPUTFILE=$WRITEPATH+'output.log'
 
 function zipjc {
     # Take inventory of files to be zipped.
-    $TEMP=Join-Path -Path $(pwd) -ChildPath 'temp'
+    $TEMP=Join-Path -Path $(Get-Location) -ChildPath 'temp'
     $INVENTORY=(Get-ChildItem -Exclude *.crt, *.key -Recurse $JCPATH).Name
     if(Test-Path $WRITEPATH\$ZIPFILE) {
         $zipjc_out=("`t$ZIPFILE exists moving to $ZIPFILE.bak.zip")
-        mv $WRITEPATH\$ZIPFILE.zip $WRITEPATH\jc$STAMP.bak -Force
+        Move-Item $WRITEPATH\$ZIPFILE.zip $WRITEPATH\jc$STAMP.bak -Force
         }
     $zipjc_out=("$(foreach($in in $INVENTORY) { ("`t$in`n") })")
-    Get-ChildItem -Path $JCPATH | % {
+    Get-ChildItem -Path $JCPATH | ForEach-Object {
         Copy-Item $_.FullName $TEMP -Recurse -Force -Exclude @("*.crt", "*.key")
 }
     Compress-Archive -Path $TEMP -DestinationPath $WRITEPATH\$ZIPFILE
@@ -32,17 +32,19 @@ function zipjc {
 
 function ziplog {
     # Zip the log files.
-    $LOGFILE="jcagent.log"
-    cp $JCLOG\$LOGFILE $WRITEPATH\$LOGFILE
-    Compress-Archive -Path $WRITEPATH\$LOGFILE -Update -DestinationPath $WRITEPATH\$ZIPFILE
-    Remove-Item -Path $WRITEPATH\$LOGFILE
-    $ziplog_out+=("`tjcagent.log has been added to $ZIPFILE.zip")
+    $fileArray=(Get-ChildItem -Include jc*, Jump* -Name)
+    foreach($LOGFILE in $fileArray) {
+        Copy-Item $JCLOG\$LOGFILE $WRITEPATH\$LOGFILE
+        Compress-Archive -Path $WRITEPATH\$LOGFILE -Update -DestinationPath $WRITEPATH\$ZIPFILE
+        Remove-Item -Path $WRITEPATH\$LOGFILE
+        $ziplog_out+=("`t$LOGFILE has been added to $ZIPFILE.zip`n")
+        }
     return $ziplog_out
 }
 
 function users {
     # Get a list of users.
-    $USERLIST=(Get-WmiObject -Class Win32_UserAccount -Filter "LocalAccount='True'").name
+    $USERLIST=(Get-CimInstance -Class Win32_UserAccount -Filter "LocalAccount='True'").name
     foreach($u in $USERLIST) {
         $users_out+=("`t$u`n")
     }
@@ -61,17 +63,17 @@ function jconf {
 function info_out {
     # Write the output.log file.
     if(Test-Path $OUTPUTFILE) {
-    mv $OUTPUTFILE $WRITEPATH\output$STAMP.log -Force
+        Move-Item $OUTPUTFILE $WRITEPATH\output$STAMP.log -Force
     }
     $("`nOS/BUILD INFO:") | Out-file -Append -FilePath $OUTPUTFILE
-    echo `t$SYSINFO | Out-File -Append -FilePath $OUTPUTFILE
-    echo `t$BUILD | Out-File -Append -FilePath $OUTPUTFILE
+    Write-Output `t$SYSINFO | Out-File -Append -FilePath $OUTPUTFILE
+    Write-Output `t$BUILD | Out-File -Append -FilePath $OUTPUTFILE
     $("`nSERVICE VERSION:") | Out-File -Append -FilePath $OUTPUTFILE
-    echo `t$SERVICEVERSION | Out-File -Append -FilePath $OUTPUTFILE
+    Write-Output `t$SERVICEVERSION | Out-File -Append -FilePath $OUTPUTFILE
     $("`nJCAGENT STATUS:") | Out-file -Append -FilePath $OUTPUTFILE
-    echo `t$STATUS | Out-File -Append -FilePath $OUTPUTFILE
+    Write-Output `t$STATUS | Out-File -Append -FilePath $OUTPUTFILE
     $("`nTIMEZONE:") | Out-File -Append -FilePath $OUTPUTFILE
-    echo `t$TZONE | Out-File -Append -FilePath $OUTPUTFILE
+    Write-Output `t$TZONE | Out-File -Append -FilePath $OUTPUTFILE
     $("`nSYSTEM USERS:") | Out-File -Append -FilePath $OUTPUTFILE
     $(users) | Out-File -Append -FilePath $OUTPUTFILE
     $("`nJCAGENT CONFIGURATION:") | Out-File -Append -FilePath $OUTPUTFILE
@@ -84,4 +86,4 @@ function info_out {
 }
 
 info_out
-cat $OUTPUTFILE
+Get-Content $OUTPUTFILE
