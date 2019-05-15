@@ -20,7 +20,7 @@ declare -a INVENTORY
 
 # Is jcagent installed? If not, exit.
 if [[ ! -d "${JCPATH}" ]]; then
-  echo "JCAGENT IS NOT INSTALLED ON THIS MACHINE."
+  echo "Jcagent is not installed on this machine."
   exit 1
 fi
 
@@ -33,25 +33,28 @@ fi
 
 function indent() {
   # Formatting for output.log
-  sed 's/^/\t\t/g'
+  sed 's/^/'$'\t'$'\t/g'
 }
 
 function zipjc() {
   # Take inventory of files to be zipped
   for i in "${JCPATH}"/*; do
-    INVENTORY+=("${i}")
+    if [[ "${i}" != *.crt* ]] && [[ "${i}" != *.key* ]]; then
+      INVENTORY+=("${i}")
+    fi
   done
 
   # check to see if zip exists.
   if [[ "$ZPATH" = "false" ]]; then
-    ZIPIT="zip is not installed. please send the following files with your support request:"
+    ZIPIT="Zip is not installed, please install zip or send the following files with your support request:"
+
   else
     if [[ -f "${ZIPFILE}" ]]; then
       mv "${ZIPFILE}" ./jc"${STAMP}".bak.zip
-      zip -r "*.crt" -r "${ZIPFILE}" "${JCPATH}" > /dev/null 1
+      zip -r "${ZIPFILE}" "${JCPATH}" > /dev/null 1
     else
       ZIPIT="${ZIPFILE} has been created, containing the following files:"
-      zip -x "*.crt" -r "${ZIPFILE}" "${JCPATH}" > /dev/null 1
+      zip -r "${ZIPFILE}" "${JCPATH}" > /dev/null 1
     fi
   fi
 }
@@ -103,7 +106,7 @@ function info_out() {
   # Write the output.log file.
   SERVICEVERSION=$( cat /opt/jc/version.txt )
   SYSINFO=$( uname -rs )
-  OS=$( grep PRETTY_NAME /etc/os-release | sed 's/\=/:/g' | cut -d':' -f 2 | sed 's/\"//g' )
+  OS=$( grep PRETTY_NAME /etc/os-release | cut -d\" -f2)
   SERVICE="jcagent"
   STATUS=$( service ${SERVICE} status 2> /dev/null )
   TZONE=$( date +"%Z %z" )

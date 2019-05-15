@@ -32,7 +32,7 @@ else
 fi
 
 function indent() {
-	sed 's/^/'$'\t/g'
+	sed 's/^/'$'\t'$'\t/g'
 }
 
 function zipjc() {
@@ -45,7 +45,7 @@ function zipjc() {
 
   # check to see if zip exists.
   if [[ "$ZPATH" = "false" ]]; then
-    ZIPIT="zip is not installed. please send the following files with your support request:\n${INVENTORY[*]}"
+    ZIPIT="Zip is not installed, please install zip or send the following files with your support request:"
   else
     if [[ -f "${ZIPFILE}" ]]; then
       mv "${ZIPFILE}" ./jc"${STAMP}".bak.zip
