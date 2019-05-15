@@ -25,20 +25,22 @@ if [[ ! -d "${JCPATH}" ]]; then
 fi
 
 # Is zip installed?
-if ! which zip 2> /dev/null; then
+if ! which zip &> /dev/null; then
   ZPATH="false"
 else
   ZPATH=$(which zip)
 fi
 
 function indent() {
-	sed 's/^/		/g'
+	sed 's/^/\'$'\t/g'
 }
 
 function zipjc() {
   # Take inventory of files to be zipped.
   for i in "${JCPATH}"/*; do
-    INVENTORY+=("${i}")
+    if [[ "${i}" != *.crt* ]] && [[ "${i}" != *.key* ]]; then
+      INVENTORY+=("${i}")
+    fi
   done
 
   # check to see if zip exists.
@@ -47,20 +49,20 @@ function zipjc() {
   else
     if [[ -f "${ZIPFILE}" ]]; then
       mv "${ZIPFILE}" ./jc"${STAMP}".bak.zip
-      zip -r "*.crt" -r "${ZIPFILE}" "${JCPATH}" > /dev/null 1
+      zip -r "${ZIPFILE}" "${INVENTORY[@]}" > /dev/null 1
     else
       ZIPIT="${ZIPFILE} has been created, containing the following files:"
-      zip -x "*.crt" -r "${ZIPFILE}" "${JCPATH}" > /dev/null 1
+      zip -r "${ZIPFILE}" "${INVENTORY[@]}" > /dev/null 1
     fi
   fi
 }
 
 function ziplog() {
   # Zip the log files. 
-  LOGFILES=("jcagent.log" "jcUpdate.log" "jclocalclient.log" "jctray.log" "jumpcloud-loginwindow/*")
+  LOGFILES=("jcagent.log" "jcUpdate.log" "jclocalclient.log" "jctray.log" "jumpcloud-loginwindow")
   for i in "${LOGFILES[@]}"; do
-    if [ -f "${JCLOG}""${i}" ]; then
-      zip "${ZIPFILE}" "${JCLOG}""${i}" > /dev/null 1
+    if [[ -f "${JCLOG}""${i}" ]] || [[ -d "${JCLOG}""${i}" ]]; then
+      zip -r "${ZIPFILE}" "${JCLOG}""${i}" > /dev/null 1
       LOGIT+=("${JCLOG}${i} has been successfully added to ${ZIPFILE}.")
     else
       LOGIT+=("${JCLOG}${i} doesn't exist.")
@@ -98,7 +100,7 @@ function jconf() {
 function info_out() {
   # Write the output.log file.
   SERVICEVERSION=$( cat /opt/jc/version.txt )
-  SYSINFO=$( uname -rs )
+  SYSINFO=$( sw_vers )
   STATUS=$( launchctl list | grep jumpcloud | cut -d'	' -f 1 )
   TZONE=$( date +"%Z %z" )
 
