@@ -51,10 +51,10 @@ function zipjc() {
   else
     if [[ -f "${ZIPFILE}" ]]; then
       mv "${ZIPFILE}" ./jc"${STAMP}".bak.zip
-      zip -r "${ZIPFILE}" "${JCPATH}" > /dev/null 1
+      zip -r "${ZIPFILE}" "${INVENTORY[@]}" > /dev/null 1
     else
       ZIPIT="${ZIPFILE} has been created, containing the following files:"
-      zip -r "${ZIPFILE}" "${JCPATH}" > /dev/null 1
+      zip -r "${ZIPFILE}" "${INVENTORY[@]}" > /dev/null 1
     fi
   fi
 }
@@ -67,7 +67,7 @@ function ziplog() {
     LOGFILES=("jcagent.log" "jcUpdate.log")
     for i in "${LOGFILES[@]}"; do
       if [[ -f "${JCLOG}""${i}" ]]; then
-        zip "${ZIPFILE}" "${JCLOG}""${i}" > /dev/null 1
+        zip -r "${ZIPFILE}" "${JCLOG}""${i}" > /dev/null 1
         LOGIT+=("${JCLOG}${i} has been successfully added to ${ZIPFILE}.")
       fi
     done
