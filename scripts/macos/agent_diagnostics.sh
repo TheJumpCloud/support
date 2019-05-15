@@ -32,7 +32,7 @@ else
 fi
 
 function indent() {
-	sed 's/^/\'$'\t/g'
+	sed 's/^/'$'\t/g'
 }
 
 function zipjc() {
