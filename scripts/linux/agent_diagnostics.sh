@@ -46,7 +46,7 @@ function zipjc() {
   done
 
   # check to see if zip exists.
-  if [[ "$ZPATH" = "false" ]]; then
+  if [[ "${ZPATH}" = "false" ]]; then
     if [[ -f "${TARFILE}" ]]; then
       mv "${TARFILE}" ./jc"${STAMP}".bak.tar
       tar -rf "${TARFILE}" "${INVENTORY[@]}" 1> /dev/null
@@ -59,7 +59,7 @@ function zipjc() {
       mv "${ZIPFILE}" ./jc"${STAMP}".bak.zip
       zip -r "${ZIPFILE}" "${INVENTORY[@]}" 1> /dev/null
     else
-      ZIPIT="${ZIPFILE} has been created, containing the following files:"
+      ZIPIT="${ZIPFILE} has been created containing the following files:"
       zip -r "${ZIPFILE}" "${INVENTORY[@]}" 1> /dev/null
     fi
   fi
