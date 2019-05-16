@@ -16,6 +16,7 @@ JCPATH="/opt/jc"
 JCLOG="/var/log/"
 STAMP=$( date +"%Y%m%d%H%M%S" )
 ZIPFILE="./jc${STAMP}.zip"
+TARFILE="./jc${STAMP}.tar"
 declare -a INVENTORY
 
 # Is jcagent installed? if not, exit.
@@ -44,15 +45,21 @@ function zipjc() {
   done
 
   # check to see if zip exists.
-  if [[ "$ZPATH" = "false" ]]; then
-    ZIPIT="Zip is not installed, please install zip or send the following files with your support request:"
+  if [[ "${ZPATH}" = "false" ]]; then
+    if [[ -f "${TARFILE}" ]]; then
+      mv "${TARFILE}" ./jc"${STAMP}".bak.tar
+      tar -rf "${TARFILE}" "${INVENTORY[@]}" 1> /dev/null
+    else
+      ZIPIT="${TARFILE} has been created containing the following files:"
+      tar -rf "${TARFILE}" "${INVENTORY[@]}" 1> /dev/null
+    fi
   else
     if [[ -f "${ZIPFILE}" ]]; then
       mv "${ZIPFILE}" ./jc"${STAMP}".bak.zip
-      zip -r "${ZIPFILE}" "${INVENTORY[@]}" > /dev/null 1
+      zip -r "${ZIPFILE}" "${INVENTORY[@]}" 1> /dev/null
     else
-      ZIPIT="${ZIPFILE} has been created, containing the following files:"
-      zip -r "${ZIPFILE}" "${INVENTORY[@]}" > /dev/null 1
+      ZIPIT="${ZIPFILE} has been created containing the following files:"
+      zip -r "${ZIPFILE}" "${INVENTORY[@]}" 1> /dev/null
     fi
   fi
 }
@@ -60,14 +67,21 @@ function zipjc() {
 function ziplog() {
   # Zip the log files. 
   LOGFILES=("jcagent.log" "jcUpdate.log" "jclocalclient.log" "jctray.log" "jumpcloud-loginwindow")
-  for i in "${LOGFILES[@]}"; do
-    if [[ -f "${JCLOG}""${i}" ]] || [[ -d "${JCLOG}""${i}" ]]; then
-      zip -r "${ZIPFILE}" "${JCLOG}""${i}" > /dev/null 1
-      LOGIT+=("${JCLOG}${i} has been successfully added to ${ZIPFILE}.")
-    else
-      LOGIT+=("${JCLOG}${i} doesn't exist.")
-    fi
-  done
+  if [[ "${ZPATH}" = "false" ]]; then
+    for i in "${LOGFILES[@]}"; do
+      if [[ -f "${JCLOG}""${i}" ]] || [[ -d "${JCLOG}""${i}" ]]; then
+        tar -rf "${TARFILE}" "${JCLOG}""${i}" 1> /dev/null
+        LOGIT+=("${JCLOG}${i} has been added to ${TARFILE}.")
+      fi
+    done
+  else
+    for i in "${LOGFILES[@]}"; do
+      if [[ -f "${JCLOG}""${i}" ]] || [[ -d "${JCLOG}""${i}" ]]; then
+        zip -r "${ZIPFILE}" "${JCLOG}""${i}" > /dev/null 1
+        LOGIT+=("${JCLOG}${i} has been added to ${ZIPFILE}.")
+      fi
+    done
+  fi
 }
 
 function users() {
@@ -128,7 +142,9 @@ function info_out() {
   printf "LOGS INCLUDED FROM %s:\n" "${JCLOG}"
   printf "%s\n" "${LOGIT[@]}" | indent
   } > output.log
-  if [[ "${ZPATH}" != "false" ]]; then
+  if [[ "${ZPATH}" = "false" ]]; then
+    tar -rf "${TARFILE}" ./output.log 1> /dev/null
+  else
     zip "${ZIPFILE}" ./output.log 1> /dev/null
   fi
 }
