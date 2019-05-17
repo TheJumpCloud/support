@@ -117,9 +117,17 @@ function info_out() {
   # Write the output.log file.
   SERVICEVERSION=$( cat /opt/jc/version.txt )
   SYSINFO=$( uname -rs )
-  OS=$( grep PRETTY_NAME /etc/os-release | cut -d\" -f2)
+  if [[ -f /etc/os-release ]]; then
+    OS=$( grep PRETTY_NAME /etc/os-release | cut -d\" -f2 )
+  else
+    OS=$( grep release /etc/redhat-release )
+  fi
   SERVICE="jcagent"
   STATUS=$( service ${SERVICE} status 2> /dev/null )
+  if [[ -z "${STATUS}" ]]; then
+    STATUS=$( echo "PID  PATH" ; ps ax | grep [j]cagent | awk '{print $1" "$5}')
+  fi
+  OS=$( grep PRETTY_NAME /etc/os-release | cut -d\" -f2)
   TZONE=$( date +"%Z %z" )
 
   if [[ -f ./output.log ]]; then
