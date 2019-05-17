@@ -24,8 +24,6 @@ Function Get-JCObject
         # Debug message for parameter call
         Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDebugMessageBegin) -ArgumentList:($MyInvocation, $PsBoundParameters, $PSCmdlet) -NoNewScope
         $Results = @()
-        $CurrentErrorActionPreference = $ErrorActionPreference
-        $ErrorActionPreference = 'Stop'
     }
     Process
     {
@@ -140,9 +138,9 @@ Function Get-JCObject
                             $UrlOut = $UrlOut + '?' + $JoinedQueryStrings
                         }
                         $UrlObject += [PSCustomObject]@{
-                            'Url'           = $UrlOut;
-                            'Body'          = $Body;
-                            'SearchByValue' = $SearchByValue;
+                            'Url'               = $UrlOut;
+                            'Body'              = $Body;
+                            'SearchByValueItem' = $SearchByValueItem;
                         }
                     }
                 }
@@ -150,7 +148,7 @@ Function Get-JCObject
                 {
                     $Url = $UrlItem.Url
                     $Body = $UrlItem.Body
-                    $SearchByValue = $UrlItem.SearchByValue
+                    $SearchByValueItem = $UrlItem.SearchByValueItem
                     ## Escape Url????
                     # $Url = ([uri]::EscapeDataString($Url)
                     # Build function parameters
@@ -203,7 +201,7 @@ Function Get-JCObject
                     {
                         If ($SearchBy -and ($Result | Measure-Object).Count -gt 1)
                         {
-                            Write-Warning -Message:('Found "' + [string]($Result | Measure-Object).Count + '" "' + $TypeNamePlural + '" with the "' + $SearchBy.Replace('By', '').ToLower() + '" of "' + $SearchByValue + '"')
+                            Write-Warning -Message:('Found "' + [string]($Result | Measure-Object).Count + '" "' + $TypeNamePlural + '" with the "' + $SearchBy.Replace('By', '').ToLower() + '" of "' + $SearchByValueItem + '"')
                         }
                         # If ($PSCmdlet.ParameterSetName -eq 'Default' -and $TypeNameSingular -notin ('g_suite', 'office_365') -and $Url -notlike '*/api/v2/directories*' -and $Url -notlike '*/groups*' -and $Url -notlike '*/api/organizations*' -and $Url -notlike '*/api/search*')
                         # {
@@ -228,13 +226,13 @@ Function Get-JCObject
                     }
                     Else
                     {
-                        If ($SearchByValue)
+                        If ($SearchByValueItem)
                         {
-                            Write-Warning ('A "' + $TypeNameSingular + '" called "' + $SearchByValue + '" does not exist. Note the search is case sensitive.')
+                            Write-Warning ('A "' + $TypeNameSingular + '" called "' + $SearchByValueItem + '" does not exist. Note the search is case sensitive.')
                         }
                         Else
                         {
-                            Write-Warning ('The search value is blank or no "' + $TypeNamePlural + '" have been setup in your org. SearchValue:"' + $SearchByValue + '"')
+                            Write-Warning ('The search value is blank or no "' + $TypeNamePlural + '" have been setup in your org. SearchValue:"' + $SearchByValueItem + '"')
                         }
                     }
                     # }
@@ -253,6 +251,5 @@ Function Get-JCObject
     End
     {
         Return $Results
-        $ErrorActionPreference = $CurrentErrorActionPreference
     }
 }
