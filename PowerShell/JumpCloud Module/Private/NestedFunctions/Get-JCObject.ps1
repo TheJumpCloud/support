@@ -124,6 +124,7 @@ Function Get-JCObject
                                         $BodyParts += '"filter":[{"' + $PropertyIdentifier + '":"' + $SearchByValueItem + '"}]'
                                     }
                                 }
+                                Default {Write-Error ('Unknown $SearchBy value: ' + $SearchBy)}
                             }
                         }
                         # Build query string and body
@@ -200,9 +201,20 @@ Function Get-JCObject
                     }
                     If ($Result)
                     {
+                        If ($SearchBy -and ($Result | Measure-Object).Count -gt 1)
+                        {
+                            Write-Warning -Message:('Found "' + [string]($Result | Measure-Object).Count + '" "' + $TypeNamePlural + '" with the "' + $SearchBy.Replace('By', '').ToLower() + '" of "' + $SearchByValue + '"')
+                        }
+                        # If ($PSCmdlet.ParameterSetName -eq 'Default' -and $TypeNameSingular -notin ('g_suite', 'office_365') -and $Url -notlike '*/api/v2/directories*' -and $Url -notlike '*/groups*' -and $Url -notlike '*/api/organizations*' -and $Url -notlike '*/api/search*')
+                        # {
+                        #     $Results = $Result | ForEach-Object { Get-JCObject -Type:($TypeNameSingular) -Id:($_.($ById))}
+                        # }
+                        # Else
+                        # {
+
                         # List values to add to results
                         $HiddenProperties = @('ById', 'ByName', 'TypeName', 'TypeNameSingular', 'TypeNamePlural', 'Targets', 'TargetSingular', 'TargetPlural')
-                        # Append meta info to results
+                        # Append meta info to each result record
                         Get-Variable -Name:($HiddenProperties) |
                             ForEach-Object {
                             $Variable = $_
@@ -225,6 +237,7 @@ Function Get-JCObject
                             Write-Warning ('The search value is blank or no "' + $TypeNamePlural + '" have been setup in your org. SearchValue:"' + $SearchByValue + '"')
                         }
                     }
+                    # }
                 }
             }
             Else
@@ -234,7 +247,7 @@ Function Get-JCObject
         }
         Catch
         {
-            Invoke-Command -ScriptBlock:($ScriptBlock_TryCatchError) -ArgumentList:($_) -NoNewScope
+            Invoke-Command -ScriptBlock:($ScriptBlock_TryCatchError) -ArgumentList:($_, $true) -NoNewScope
         }
     }
     End
