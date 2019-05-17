@@ -38,10 +38,11 @@
                     , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 1)][ValidateNotNullOrEmpty()][string]$Uri
                     , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 2)][ValidateNotNullOrEmpty()][string]$Method
                     , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 3)][ValidateNotNullOrEmpty()][object]$Source
-                    , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 4)][ValidateNotNullOrEmpty()][switch]$IncludeInfo
-                    , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 5)][ValidateNotNullOrEmpty()][switch]$IncludeNames
-                    , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 6)][ValidateNotNullOrEmpty()][switch]$IncludeVisualPath
-                    , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 7)][ValidateNotNullOrEmpty()][switch]$Raw
+                    , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 4)][ValidateNotNullOrEmpty()][object]$Target
+                    , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 5)][ValidateNotNullOrEmpty()][bool]$IncludeInfo = $false
+                    , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 6)][ValidateNotNullOrEmpty()][bool]$IncludeNames = $false
+                    , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 7)][ValidateNotNullOrEmpty()][bool]$IncludeVisualPath = $false
+                    , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 8)][ValidateNotNullOrEmpty()][bool]$Raw = $false
                 )
                 Write-Debug ('[UrlTemplate]:' + $Uri)
                 $Associations = Invoke-JCApi -Method:($Method) -Paginate:($true) -Url:($Uri)
@@ -67,8 +68,8 @@
                             'type'             = $Source.TypeNameSingular;
                             'name'             = $null;
                             'info'             = $null;
-                            'targetId'         = $Association.id;
-                            'targetType'       = $Association.type;
+                            'targetId'         = $null;
+                            'targetType'       = $null;
                             'targetName'       = $null;
                             'targetInfo'       = $null;
                             'visualPathById'   = $null;
@@ -81,15 +82,20 @@
                             Select-Object -Unique |
                             Where-Object {$_ -notin ('id', 'type')} |
                             ForEach-Object {$AssociationHash.Add($_, $Association.($_)) | Out-Null}
-                        # $Association |
-                        #     ForEach-Object {$_ | Get-Member -MemberType:('MemberSet', 'NoteProperty')} |
-                        #     Select-Object -Unique |
-                        #     Where-Object {$_.Name -notin ('id', 'type')} |
-                        #     ForEach-Object {$AssociationHash.Add($_.Name, $Association.($_.Name)) | Out-Null}
                         # If any "Return*" switch is provided get the target object
                         If ($IncludeInfo -or $IncludeNames -or $IncludeVisualPath)
                         {
-                            $Target = Get-JCObject -Type:($Association.type) -Id:($Association.id)
+                            $Target = Get-JCObject -Type:($Source.TypeNameSingular) -Id:($Source.($Source.ById))
+                        }
+                        If ($Target)
+                        {
+                            $AssociationHash.targetId = $Target.($Target.ById)
+                            $AssociationHash.targetType = $Target.TypeNameSingular
+                        }
+                        Else
+                        {
+                            $AssociationHash.targetId = $Association.id
+                            $AssociationHash.targetType = $Association.type
                         }
                         # Show source and target info
                         If ($IncludeInfo)
@@ -131,8 +137,7 @@
                         $AssociationsUpdated = [PSCustomObject]@{}
                         $AssociationHash.GetEnumerator() |
                             ForEach-Object {If ($_.Value) {Add-Member -InputObject:($AssociationsUpdated) -NotePropertyName:($_.Key) -NotePropertyValue:($_.Value)}}
-                        $HiddenProperties = @('HttpMetaData')
-                        $AssociationsOut += Hide-ObjectProperty -Object:($AssociationsUpdated) -HiddenProperties:($HiddenProperties)
+                        $AssociationsOut += $AssociationsUpdated
                     }
                 }
                 Return $AssociationsOut
@@ -156,10 +161,6 @@
             $Source = Get-JCObject -Type:($Type) -SearchBy:($SourceSearchBy) -SearchByValue:($SourceItemSearchByValue)
             If ($Source)
             {
-                If (($Source | Measure-Object).Count -gt 1)
-                {
-                    Write-Warning -Message:('Found "' + [string]($Source | Measure-Object).Count + '" "' + $Type + '" with the "' + $SourceSearchBy.Replace('By', '').ToLower() + '" of "' + $SourceItemSearchByValue + '"')
-                }
                 ForEach ($SourceItem In $Source)
                 {
                     $SourceItemId = $SourceItem.($SourceItem.ById)
@@ -241,6 +242,8 @@
                             }
                             # Get Target object
                             $Target = Get-JCObject -Type:($SourceItemTargetSingular) -SearchBy:($TargetSearchBy) -SearchByValue:($TargetSearchByValue)
+                            # If ($Target)
+                            # {
                             ForEach ($TargetItem In $Target)
                             {
                                 $TargetItemId = $TargetItem.($TargetItem.ById)
@@ -256,14 +259,31 @@
                                 {
                                     'null'
                                 }
-                                # Get the existing association before removing it
-                                If ($Action -eq 'remove')
-                                {
-                                    $RemoveAssociation = Format-JCAssociation -Action:($Action) -Uri:($Uri_Associations_GET) -Method:('GET') -Source:($SourceItem) -IncludeInfo:($IncludeInfo) -IncludeNames:($IncludeNames) -IncludeVisualPath:($IncludeVisualPath) -Raw:($Raw) |
-                                        Where-Object {$_.TargetId -eq $TargetItemId}
-                                    $IndirectAssociations = $RemoveAssociation | Where-Object {$_.associationType -ne 'direct'}
-                                    $Result = $RemoveAssociation | Where-Object {$_.associationType -eq 'direct'}
-                                }
+                                # Validate that the association exists
+                                $TestAssociation = Format-JCAssociation -Action:($Action) -Uri:($Uri_Associations_GET) -Method:('GET') -Source:($SourceItem) -Target:($TargetItem) -IncludeNames:($true) # -IncludeInfo:($IncludeInfo) -IncludeNames:($IncludeNames) -IncludeVisualPath:($IncludeVisualPath) -Raw:($Raw) |
+                                Where-Object {$_.TargetId -eq $TargetItemId}
+                                $IndirectAssociations = $TestAssociation  | Where-Object {$_.associationType -ne 'direct'}
+                                $Result = $TestAssociation  | Where-Object {$_.associationType -eq 'direct'}
+
+                                # $Result = If ($TestAssociation)
+                                # {
+                                #     $IndirectAssociations = $TestAssociation  | Where-Object {$_.associationType -ne 'direct'}
+                                #     $TestAssociation  | Where-Object {$_.associationType -eq 'direct'}
+                                # }
+                                # Else
+                                # {
+                                #     [PSCustomObject]@{
+                                #         'action'          = $Action;
+                                #         'associationType' = $null;
+                                #         'id'              = $SourceItemId;
+                                #         'name'            = $SourceItemName;
+                                #         'type'            = $SourceItemTypeNameSingular;
+                                #         'targetId'        = $TargetItemId;
+                                #         'targetName'      = $TargetItemName;
+                                #         'targetType'      = $TargetItemTypeNameSingular;
+                                #         'extra'           = 'extra';
+                                #     }
+                                # }
                                 If ($TargetItemId -ne $IndirectAssociations.targetId)
                                 {
                                     # Build uri and body
@@ -295,42 +315,48 @@
                                     }
                                     If ($HostResponse -eq 'y' -or $Force)
                                     {
-                                        $ActionResult = Invoke-JCApi -Body:($JsonBody) -Method:('POST') -Url:($Uri_Associations_POST) -ErrorVariable:('HttpError')
-                                        $Status = If ($HttpError)
+                                        Try
                                         {
-                                            [PSCustomObject]@{
-                                                'HttpStatusCode'        = $HttpError.ErrorRecord.Exception.Response.StatusCode.value__
-                                                'HttpStatusDescription' = $HttpError.ErrorRecord.Exception.Response.StatusCode
-                                                'HttpMessage'           = $HttpError.Message
-                                                'HttpMetaData'          = $HttpError
+                                            $JCApi = Invoke-JCApi -Body:($JsonBody) -Method:('POST') -Url:($Uri_Associations_POST)
+                                            If ($JCApi)
+                                            {
+                                                $ActionResult = $JCApi | Select-Object *, @{Name = 'httpStatus'; Expression = {$JCApi.HTTPMetaData.StatusDescription}}, @{Name = 'error'; Expression = {$null}}
+                                            }
+                                            Else
+                                            {
+                                                $ActionResult = [PSCustomObject]@{
+                                                    'httpStatus' = $JCApi.HTTPMetaData.StatusDescription;
+                                                    'error'      = $null;
+                                                }
                                             }
                                         }
-                                        Else
+                                        Catch
                                         {
-                                            [PSCustomObject]@{
-                                                'HttpStatusCode'        = $ActionResult.HttpMetaData.StatusCode
-                                                'HttpStatusDescription' = $ActionResult.HttpMetaData.StatusDescription
-                                                'HttpMessage'           = $null
-                                                'HttpMetaData'          = $ActionResult.HttpMetaData
+                                            $ActionResult = [PSCustomObject]@{
+                                                'httpStatus' = $_.ErrorDetails.Message;
+                                                'error'      = $_;
                                             }
+                                            Write-Error ($_)
                                         }
                                     }
                                 }
                                 # Get the newly created association
                                 If ($Action -eq 'add')
                                 {
-                                    $Result = Format-JCAssociation -Action:($Action) -Uri:($Uri_Associations_GET) -Method:('GET') -Source:($SourceItem) -IncludeInfo:($IncludeInfo) -IncludeNames:($IncludeNames) -IncludeVisualPath:($IncludeVisualPath) -Raw:($Raw) |
-                                        Where-Object {$_.TargetId -eq $TargetItemId}
+                                    $Result = Format-JCAssociation -Action:($Action) -Uri:($Uri_Associations_GET) -Method:('GET') -Source:($SourceItem) -Target:($TargetItem) -IncludeNames:($true) #-IncludeInfo:($IncludeInfo) -IncludeNames:($IncludeNames) -IncludeVisualPath:($IncludeVisualPath) -Raw:($Raw) |
+                                    Where-Object {$_.TargetId -eq $TargetItemId}
                                 }
-                                If ($Action -eq 'get')
+                                # Append record status
+                                $Results += If ($Result)
                                 {
-                                    $Results += $ActionResult
-                                }
-                                Else
-                                {
-                                    $Results += $Result | Select-Object -Property:('*', @{Name = 'status'; Expression = {$Status}}) -ExcludeProperty:('HttpMetaData')
+                                    $Result | Select-Object *, @{Name = 'httpStatus'; Expression = {$ActionResult.httpStatus}}, @{Name = 'error'; Expression = {$ActionResult.error}}
                                 }
                             }
+                            # }
+                            # Else
+                            # {
+                            #     Write-Error ('Unable to find the target "' + $SourceItemTargetSingular + '" called "' + $TargetSearchByValue + '".')
+                            # }
                         }
                     }
                 }
@@ -342,11 +368,16 @@
         }
         Catch
         {
-            Invoke-Command -ScriptBlock:($ScriptBlock_TryCatchError) -ArgumentList:($_) -NoNewScope
+            Invoke-Command -ScriptBlock:($ScriptBlock_TryCatchError) -ArgumentList:($_, $true) -NoNewScope
         }
     }
     End
     {
-        Return $Results
+        If ($Results)
+        {
+            $HiddenProperties = @('HttpMetaData')
+            Return Hide-ObjectProperty -Object:($Results) -HiddenProperties:($HiddenProperties)
+            # Return $Results #| Select-Object -Property:('*') # -ExcludeProperty:('HttpMetaData') #'error',
+        }
     }
 }

@@ -390,7 +390,7 @@ Describe "Association Tests" {
                     }
                     Catch
                     {
-                        Invoke-Command -ScriptBlock:($ScriptBlock_TryCatchError) -ArgumentList:($_) -NoNewScope
+                        Invoke-Command -ScriptBlock:($ScriptBlock_TryCatchError) -ArgumentList:($_,$true) -NoNewScope
                     }
                     Finally
                     {

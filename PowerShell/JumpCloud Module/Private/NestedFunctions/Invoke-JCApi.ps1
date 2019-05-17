@@ -34,6 +34,7 @@ Function Invoke-JCApi
         Try
         {
             $Results = @()
+            # $JCUrlBasePath = "https://console.jumpcloud.com"
             If ($Url -notlike ('*' + $JCUrlBasePath + '*'))
             {
                 $Url = $JCUrlBasePath + $Url
@@ -118,76 +119,66 @@ Function Invoke-JCApi
                     Write-Verbose ($Method + ' body: ' + $Body)
                     $RequestResult = Invoke-WebRequest -Method:($Method) -Headers:($Headers) -Uri:($Uri) -UserAgent:($JCUserAgent) -Body:($Body)
                 }
-                $Result = $RequestResult.Content | ConvertFrom-Json
-                $HttpMetaData = $RequestResult
-                If ($Result)
+                If ($RequestResult)
                 {
-                    $ResultPopulated = $false
-                    # Specific logic for v1 and v2 api specs
-                    If ($Url -like '*/api/*' -and ($Url -notlike '*/api/v2/*' -and $Result.PSObject.Properties.name -eq 'results'))
+                    $Result = $RequestResult.Content | ConvertFrom-Json
+                    $HttpMetaData = $RequestResult | Select-Object -Property:('*') -ExcludeProperty:('Content')
+                    If ($Result)
                     {
-                        $ResultCount = ($Result.results | Measure-Object).Count
-                        If ($ResultCount -gt 0)
+                        $ResultPopulated = $false
+                        # Specific logic for v1 and v2 api specs
+                        If ($Url -like '*/api/*' -and ($Url -notlike '*/api/v2/*' -and $Result.PSObject.Properties.name -eq 'results'))
                         {
-                            $ResultPopulated = $true
-                            If ($ReturnCount)
+                            $ResultCount = ($Result.results | Measure-Object).Count
+                            If ($ResultCount -gt 0)
                             {
-                                $ResultObjects = $Result
-                                $Paginate = $false
-                            }
-                            Else
-                            {
-                                $ResultObjects = $Result.results
+                                $ResultPopulated = $true
+                                If ($ReturnCount)
+                                {
+                                    $ResultObjects = $Result
+                                    $Paginate = $false
+                                }
+                                Else
+                                {
+                                    $ResultObjects = $Result.results
+                                }
                             }
                         }
-                    }
-                    ElseIf ($Url -like '*/api/*' -and ($Url -like '*/api/v2/*' -or $Result.PSObject.Properties.name -ne 'results'))
-                    {
-                        $ResultCount = ($Result | Measure-Object).Count
-                        If ($ResultCount -gt 0)
+                        ElseIf ($Url -like '*/api/*' -and ($Url -like '*/api/v2/*' -or $Result.PSObject.Properties.name -ne 'results'))
                         {
-                            $ResultPopulated = $true
-                            If ($ReturnCount)
+                            $ResultCount = ($Result | Measure-Object).Count
+                            If ($ResultCount -gt 0)
                             {
-                                Write-Debug("[CallFunction]Invoke-WebRequest -Method:('$Method') -Headers:(@" + ($Headers | ConvertTo-Json -Compress).Replace('":"', '" = "').Replace('","', '"; "') + ") -Uri:('$Uri') -UserAgent:('$JCUserAgent')")
-                                $ResultObjects = [PSCustomObject]@{'totalCount' = [int]((Invoke-WebRequest -Method:($Method) -Headers:($Headers) -Uri:($Uri) -UserAgent:($JCUserAgent)).Headers.'X-Total-Count' -join ','); 'results' = $Result; }
-                                $Paginate = $false
+                                $ResultPopulated = $true
+                                If ($ReturnCount)
+                                {
+                                    Write-Debug("[CallFunction]Invoke-WebRequest -Method:('$Method') -Headers:(@" + ($Headers | ConvertTo-Json -Compress).Replace('":"', '" = "').Replace('","', '"; "') + ") -Uri:('$Uri') -UserAgent:('$JCUserAgent')")
+                                    $ResultObjects = [PSCustomObject]@{'totalCount' = [int]((Invoke-WebRequest -Method:($Method) -Headers:($Headers) -Uri:($Uri) -UserAgent:($JCUserAgent)).Headers.'X-Total-Count' -join ','); 'results' = $Result; }
+                                    $Paginate = $false
+                                }
+                                Else
+                                {
+                                    $ResultObjects = $Result
+                                }
                             }
-                            Else
-                            {
-                                $ResultObjects = $Result
-                            }
+                        }
+                        Else
+                        {
+                            Write-Error ('Url is not a valid JumpCloud V1 or V2 endpoint')
+                        }
+                        If ($ResultPopulated)
+                        {
+                            $Skip += $ResultCount
+                            $Results += $ResultObjects
                         }
                     }
                     Else
                     {
-                        Write-Error ('Url is not a valid JumpCloud V1 or V2 endpoint')
-                    }
-                    If ($ResultPopulated)
-                    {
-                        $Skip += $ResultCount
-                        # List values to add to results
-                        $HiddenProperties = @('HttpMetaData')
-                        # Append meta info to each result record
-                        Get-Variable -Name:($HiddenProperties) |
-                            ForEach-Object {
-                            $Variable = $_
-                            $ResultObjects |
-                                ForEach-Object {
-                                Add-Member -InputObject:($_) -MemberType:('NoteProperty') -Name:($Variable.Name) -Value:($Variable.Value)
-                            }
+                        If ($Paginate)
+                        {
+                            $ResultCount = ($Result | Measure-Object).Count
                         }
-                        # Set the meta info to be hidden by default
-                        $Results += Hide-ObjectProperty -Object:($ResultObjects) -HiddenProperties:($HiddenProperties)
                     }
-                }
-                Else
-                {
-                    If ($Paginate)
-                    {
-                        $ResultCount = ($Result | Measure-Object).Count
-                    }
-                    $Results += [PSCustomObject]@{'HttpMetaData' = $HttpMetaData; }
                 }
                 Write-Debug ('Paginate:' + [string]$Paginate + ';ResultsCount:' + [string]$ResultCount + ';Limit:' + [string]$Limit + ';')
             }
@@ -196,14 +187,37 @@ Function Invoke-JCApi
         }
         Catch
         {
-            Invoke-Command -ScriptBlock:($ScriptBlock_TryCatchError) -ArgumentList:($_) -NoNewScope
+            Invoke-Command -ScriptBlock:($ScriptBlock_TryCatchError) -ArgumentList:($_, $true) -NoNewScope
         }
     }
     End
     {
+        # List values to add to results
+        $HiddenProperties = @('HttpMetaData')
+        # Append meta info to each result record
+        Get-Variable -Name:($HiddenProperties) |
+            ForEach-Object {
+            $Variable = $_
+            If ($Results)
+            {
+                $Results |
+                    ForEach-Object {
+                    Add-Member -InputObject:($_) -MemberType:('NoteProperty') -Name:($Variable.Name) -Value:($Variable.Value)
+                }
+            }
+            Else
+            {
+
+                $Results += [PSCustomObject]@{
+                    'Filler'       = $null;
+                    'HttpMetaData' = $HttpMetaData;
+                }
+            }
+        }
         # Validate that all fields passed into the function exist in the output
         If ($Results)
         {
+            # Validate results properties returned
             $Fields | ForEach-Object {
                 If ($_ -notin ($Results | Get-Member).Name)
                 {
@@ -211,6 +225,7 @@ Function Invoke-JCApi
                 }
             }
         }
-        Return $Results
+        # Set the meta info to be hidden by default
+        Return Hide-ObjectProperty -Object:($Results) -HiddenProperties:($HiddenProperties)
     }
 }
