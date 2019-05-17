@@ -13,11 +13,11 @@ $ScriptBlock_TryCatchError = {
     )
     $CallStack = Get-PSCallStack
     [array]::Reverse($CallStack)
-    $DebugPreference = 'Continue' # SilentlyContinue (Default), Continue, Inquire, Stop
-    # Write-Debug ('Command: ' + ($CallStack.Command -join ' -> '))
-    # Write-Debug ('Arguments: ' + ($CallStack.Arguments -join ' -> '))
+    # $DebugPreference = 'Continue' # SilentlyContinue (Default), Continue, Inquire, Stop
+    Write-Debug ('Command: ' + ($CallStack.Command -join ' -> '))
+    Write-Debug ('Arguments: ' + ($CallStack.Arguments -join ' -> '))
     Write-Debug ('Location: ' + ($CallStack.Location -join ' -> '))
-    $DebugPreference = 'SilentlyContinue' # SilentlyContinue (Default), Continue, Inquire, Stop
+    # $DebugPreference = 'SilentlyContinue' # SilentlyContinue (Default), Continue, Inquire, Stop
     # $Error.Clear()
     # $EM_ErrorDetailsMessage = $ErrorObject.ErrorDetails.Message
     # $Exception = $ErrorObject.Exception
