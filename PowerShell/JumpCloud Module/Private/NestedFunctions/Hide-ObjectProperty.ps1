@@ -51,14 +51,24 @@ Function Hide-ObjectProperty
         # Write-Host ('PropertiesToHide:' + ($PropertiesToHide -join ', ')) -BackgroundColor Yellow -ForegroundColor Black
         # Write-Host ('PropertiesToShow:' + ($PropertiesToShow -join ', ')) -BackgroundColor Green -ForegroundColor Black
         # Create the default property display set
-        $defaultDisplayPropertySet = New-Object System.Management.Automation.PSPropertySet('DefaultDisplayPropertySet', [System.String[]]$PropertiesToShow)
-        $PSStandardMembers = [System.Management.Automation.PSMemberInfo[]]@($defaultDisplayPropertySet)
-        # Add the list of standard members
-        Add-Member -InputObject:($_) -MemberType:('MemberSet') -Name:('PSStandardMembers') -Value:($PSStandardMembers) -Force
-        ForEach ($HiddenProperty In $PropertiesToHide)
+        If ($PropertiesToShow)
         {
-            Add-Member -InputObject:($_) -MemberType:('NoteProperty') -Name:($HiddenProperty) -Value:($Record.$HiddenProperty) -Force
+            $defaultDisplayPropertySet = New-Object System.Management.Automation.PSPropertySet('DefaultDisplayPropertySet', [System.String[]]$PropertiesToShow)
+            $PSStandardMembers = [System.Management.Automation.PSMemberInfo[]]@($defaultDisplayPropertySet)
+            # Add the list of standard members
+            Add-Member -InputObject:($_) -MemberType:('MemberSet') -Name:('PSStandardMembers') -Value:($PSStandardMembers) -Force
+            ForEach ($HiddenProperty In $PropertiesToHide)
+            {
+                Add-Member -InputObject:($_) -MemberType:('NoteProperty') -Name:($HiddenProperty) -Value:($Record.$HiddenProperty) -Force
+            }
+        }
+        Else
+        {
+            Write-Error ('By hiding "' + ($PropertiesToHide -join '", "') + '" there are no properties to show. At least one property must be visitable.')
         }
     }
-    Return $Object
+    If (!($Error))
+    {
+        Return $Object
+    }
 }
