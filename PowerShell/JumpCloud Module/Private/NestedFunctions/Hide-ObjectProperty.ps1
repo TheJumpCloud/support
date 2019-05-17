@@ -64,10 +64,10 @@ Function Hide-ObjectProperty
         }
         Else
         {
-            Write-Error ('By hiding "' + ($PropertiesToHide -join '", "') + '" there are no properties to show. At least one property must be visitable.')
+            Throw ('By hiding "' + ($PropertiesToHide -join '", "') + '" there are no properties to show. At least one property must be visitable.')
         }
     }
-    If (!($Error))
+    If ($Object)
     {
         Return $Object
     }
