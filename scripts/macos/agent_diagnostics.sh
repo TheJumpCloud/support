@@ -26,7 +26,7 @@ if [[ ! -d "${JCPATH}" ]]; then
 fi
 
 # Is zip installed?
-if ! which zip &> /dev/null; then
+if ! which zip 1> /dev/null; then
   ZPATH="false"
 else
   ZPATH=$(which zip)
@@ -77,7 +77,7 @@ function ziplog() {
   else
     for i in "${LOGFILES[@]}"; do
       if [[ -f "${JCLOG}""${i}" ]] || [[ -d "${JCLOG}""${i}" ]]; then
-        zip -r "${ZIPFILE}" "${JCLOG}""${i}" > /dev/null 1
+        zip -r "${ZIPFILE}" "${JCLOG}""${i}" 1> /dev/null 
         LOGIT+=("${JCLOG}${i} has been added to ${ZIPFILE}.")
       fi
     done

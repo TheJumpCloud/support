@@ -26,7 +26,7 @@ if [[ ! -d "${JCPATH}" ]]; then
 fi
 
 # Is zip installed?
-if ! which zip &> /dev/null; then
+if ! which zip 1> /dev/null; then
   ZPATH="false"
 else
   ZPATH=$(which zip)
