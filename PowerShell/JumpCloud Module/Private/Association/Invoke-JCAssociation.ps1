@@ -333,7 +333,7 @@
                                         Catch
                                         {
                                             $ActionResult = [PSCustomObject]@{
-                                                'httpStatus' = $_.ErrorDetails.Message;
+                                                'httpStatus' = $_.Exception.Response.StatusCode; #$_.ErrorDetails.Message;
                                                 'error'      = $_;
                                             }
                                             Write-Error ($_)
