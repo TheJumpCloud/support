@@ -197,7 +197,7 @@ Function Get-JCObject
                             $Result = $Result | Where-Object { $_.Type -eq $TypeNameSingular }
                         }
                     }
-                    If ($Result)
+                    If ($Result -and $Result.PSObject.Properties.name -notcontains 'NoContent')
                     {
                         If ($SearchBy -and ($Result | Measure-Object).Count -gt 1)
                         {

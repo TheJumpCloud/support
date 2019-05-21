@@ -122,7 +122,7 @@ Function Invoke-JCApi
                 If ($RequestResult)
                 {
                     $Result = $RequestResult.Content | ConvertFrom-Json
-                    $HttpMetaData = $RequestResult | Select-Object -Property:('*') -ExcludeProperty:('Content')
+                    $httpMetaData = $RequestResult | Select-Object -Property:('*') -ExcludeProperty:('Content')
                     If ($Result)
                     {
                         $ResultPopulated = $false
@@ -193,7 +193,7 @@ Function Invoke-JCApi
     End
     {
         # List values to add to results
-        $HiddenProperties = @('HttpMetaData')
+        $HiddenProperties = @('httpMetaData')
         # Append meta info to each result record
         Get-Variable -Name:($HiddenProperties) |
             ForEach-Object {
@@ -209,8 +209,8 @@ Function Invoke-JCApi
             {
 
                 $Results += [PSCustomObject]@{
-                    'Filler'       = $null;
-                    'HttpMetaData' = $HttpMetaData;
+                    'NoContent'    = $null;
+                    'httpMetaData' = $httpMetaData;
                 }
             }
         }
