@@ -137,12 +137,12 @@ Function Get-DynamicParamAssociation
         $Param_TargetType.Add('Mandatory', $false)
         If ($JCObjectCount -ge 1 -and $JCObjectCount -le 300)
         {
+            # Get all objects of the specific type
+            $JCObject = Get-JCObject -Type:($Type);
             $Param_Id.Add('Alias', ($JCObject.ById | Where-Object { $_ -ne 'Id' } | Select-Object -Unique))
             $Param_Name.Add('Alias', ($JCObject.ByName | Where-Object { $_ -ne 'Name' } | Select-Object -Unique))
             $Param_TargetType.Add('DefaultValue', ($JCObject.Targets.TargetSingular | Select-Object -Unique))
             $Param_TargetType.Add('ValidateSet', ($JCObject.Targets.TargetSingular | Select-Object -Unique))
-            # Get all objects of the specific type
-            $JCObject = Get-JCObject -Type:($Type);
             If ($JCObjectCount -eq 1)
             {
                 # Don't require Id and Name to be passed through and set a default value
