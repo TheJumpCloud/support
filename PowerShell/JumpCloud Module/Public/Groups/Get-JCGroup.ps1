@@ -36,7 +36,7 @@ Function Get-JCGroup ()
 
     {
         Write-Debug 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {Connect-JConline}
+        if ($JCAPIKEY.length -ne 40) { Connect-JConline }
 
         Write-Debug 'Populating API headers'
         $hdrs = @{
@@ -131,16 +131,33 @@ Function Get-JCGroup ()
             {
 
                 $GID = $SystemGroupHash.Get_Item($param.Value)
-                $GURL = "$JCUrlBasePath/api/v2/systemgroups/$GID"
-                $result = Invoke-RestMethod -Method GET -Uri $GURL -Headers $hdrs -UserAgent $JCUserAgent
-                $resultsArray += $result    
+
+                if ($GID)
+                {
+                    $GURL = "$JCUrlBasePath/api/v2/systemgroups/$GID"
+                    $result = Invoke-RestMethod -Method GET -Uri $GURL -Headers $hdrs -UserAgent $JCUserAgent
+                    $resultsArray += $result
+                }
+                else
+                {
+                    Write-Error "There is no $Type group named $($param.Value). NOTE: Group names are case sensitive."
+                }
+
             }
             elseif ($Type -eq 'User')
             {
 
                 $GID = $UserGroupHash.Get_Item($param.Value)
-                $GURL = "$JCUrlBasePath/api/v2/usergroups/$GID"
-                $result = Invoke-RestMethod -Method GET -Uri $GURL -Headers $hdrs -UserAgent $JCUserAgent
+
+                if ($GID)
+                {
+                    $GURL = "$JCUrlBasePath/api/v2/usergroups/$GID"
+                    $result = Invoke-RestMethod -Method GET -Uri $GURL -Headers $hdrs -UserAgent $JCUserAgent
+                }
+                else
+                {
+                    Write-Error "There is no $Type group named $($param.Value). NOTE: Group names are case sensitive."
+                }
                 <#
                     $formattedResult = [PSCustomObject]@{
 
