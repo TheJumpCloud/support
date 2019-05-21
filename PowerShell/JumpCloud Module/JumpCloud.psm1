@@ -13,7 +13,5 @@ Foreach ($Import in @($Public + $Private))
         Write-Error -Message "Failed to import function $($Import.FullName): $_"
     }
 }
-# Function Aliases
-New-Alias -Name:('New-JCAssociation') -Value:('Add-JCAssociation')
 # Export Module Member
-Export-ModuleMember -Function $Public.BaseName -Alias *
+Export-ModuleMember -Function $Public.BaseName
