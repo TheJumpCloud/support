@@ -396,7 +396,7 @@ Function Get-JCUser ()
 
                     $URL = "$JCUrlBasePath/api/search/systemusers"
 
-                    $Results = Invoke-RestMethod -Method POST -Uri $Url  -Header $hdrs -Body $SearchJSON -UserAgent $JCUserAgent
+                    $Results = Invoke-RestMethod -Method POST -Uri $Url  -Header $hdrs -Body $SearchJSON -UserAgent:(Get-JCUserAgent -PSCallStack:(Get-PSCallStack))
 
                     $null = $resultsArrayList.Add($Results)
 
@@ -413,7 +413,7 @@ Function Get-JCUser ()
 
                 $URL = "$JCUrlBasePath/api/Systemusers/$Userid"
                 Write-Verbose $URL
-                $results = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent $JCUserAgent
+                $results = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent:(Get-JCUserAgent -PSCallStack:(Get-PSCallStack))
                 $null = $resultsArrayList.add($Results)
             }
 
