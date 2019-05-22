@@ -13,6 +13,6 @@ Function Get-JCUserAgent
     $UserFunction = $PSCallStack.Command[-2]
     $LastFunction = $PSCallStack.Command[0]
     $CustomUserAgent = $Template_UserAgent -f $ModuleName, $ModuleVersion, $PSVersion, $PSEdition, $OS, $Platform, $UserFunction, $LastFunction
-    Write-Host ($CustomUserAgent) -BackgroundColor:('Cyan') -ForegroundColor:('Black')
+    Write-Host ($CustomUserAgent + "`n") -BackgroundColor:('Cyan') -ForegroundColor:('Black')
     Return $CustomUserAgent
 }
