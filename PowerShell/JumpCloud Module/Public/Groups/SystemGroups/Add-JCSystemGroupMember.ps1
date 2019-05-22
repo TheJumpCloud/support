@@ -100,7 +100,7 @@ Function Add-JCSystemGroupMember ()
 
             try
             {
-                $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent $JCUserAgent
+                $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent:(Get-JCUserAgent -PSCallStack:(Get-PSCallStack))
                 $Status = 'Added'
             }
             catch
@@ -131,7 +131,7 @@ Function Add-JCSystemGroupMember ()
                 $GroupNameHash = Get-Hash_SystemGroupName_ID
                 $GroupID = $GroupNameHash.Get_Item($GroupName)
             }
-    
+
             $body = @{
 
                 type = "system"
@@ -149,7 +149,7 @@ Function Add-JCSystemGroupMember ()
 
             try
             {
-                $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent $JCUserAgent
+                $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent:(Get-JCUserAgent -PSCallStack:(Get-PSCallStack))
                 $Status = 'Added'
             }
             catch

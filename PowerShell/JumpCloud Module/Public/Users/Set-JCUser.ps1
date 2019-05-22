@@ -231,11 +231,11 @@ Function Set-JCUser ()
             $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
             $ParameterAttribute.Mandatory = $false
             # Generate and set the ValidateSet
-            $ValidateRangeAttribute = New-Object System.Management.Automation.ValidateRangeAttribute('1', '365')    
+            $ValidateRangeAttribute = New-Object System.Management.Automation.ValidateRangeAttribute('1', '365')
             # Add the ValidateSet to the attributes collection
             $AttributeCollection.Add($ValidateRangeAttribute)
             # Add the attributes to the attributes collection
-            $AttributeCollection.Add($ParameterAttribute) 
+            $AttributeCollection.Add($ParameterAttribute)
             # Create and return the dynamic parameter
             $RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter($ParamName, [Int32], $AttributeCollection)
             $dict.Add($ParamName, $RuntimeParameter)
@@ -273,7 +273,7 @@ Function Set-JCUser ()
                 $ParamNumber++
             }
 
-            
+
         }
 
         return $dict
@@ -411,7 +411,7 @@ Function Set-JCUser ()
                             $phoneNumbers += $Number
 
                         }
-                       
+
                     }
                 }
 
@@ -447,7 +447,7 @@ Function Set-JCUser ()
 
                 }
 
-            
+
                 $ExistingWorkParams = $UserObjectCheck.addresses | Where-Object Type -EQ "Work"
 
                 $ExistingWorkHash = @{}
@@ -472,7 +472,7 @@ Function Set-JCUser ()
                         if ($WorkParam.value) {
                             $WorkAddressParams.Add($WorkParam.key, $WorkParam.value)
                         }
-                        
+
                     }
                 }
 
@@ -563,7 +563,7 @@ Function Set-JCUser ()
 
                 Write-Debug $jsonbody
 
-                $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent $JCUserAgent
+                $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent -PSCallStack:(Get-PSCallStack))
 
                 $UpdatedUserArray += $NewUserInfo
             }
@@ -683,7 +683,7 @@ Function Set-JCUser ()
                 }
 
                 $body.add('attributes', $UpdatedAttributeArrayList)
-               
+
                 if ($enable_user_portal_multifactor -eq $True)
                 {
                     if ($PSBoundParameters['EnrollmentDays'])
@@ -705,7 +705,7 @@ Function Set-JCUser ()
 
                 Write-Debug $jsonbody
 
-                $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent $JCUserAgent
+                $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent -PSCallStack:(Get-PSCallStack))
 
                 $UpdatedUserArray += $NewUserInfo
 
@@ -795,12 +795,12 @@ Function Set-JCUser ()
                     $mfa.Add("exclusionUntil", [string]$exclusionUntil)
                     $body.Add('mfa', $mfa)
                 }
-               
+
                 $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
 
                 Write-Debug $jsonbody
 
-                $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent $JCUserAgent
+                $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent -PSCallStack:(Get-PSCallStack))
 
                 $UpdatedUserArray += $NewUserInfo
 
@@ -851,18 +851,18 @@ Function Set-JCUser ()
                 {
                     $exclusionUntil = (Get-Date).AddDays(7)
                 }
-    
+
                 $mfa = @{}
                 $mfa.Add("exclusion", $true)
                 $mfa.Add("exclusionUntil", [string]$exclusionUntil)
                 $body.Add('mfa', $mfa)
             }
-                
+
             $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
 
             Write-Debug $jsonbody
 
-            $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent $JCUserAgent
+            $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent -PSCallStack:(Get-PSCallStack))
 
             $UpdatedUserArray += $NewUserInfo
 
@@ -1000,7 +1000,7 @@ Function Set-JCUser ()
 
             Write-Debug $jsonbody
 
-            $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent $JCUserAgent
+            $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent -PSCallStack:(Get-PSCallStack))
 
             $UpdatedUserArray += $NewUserInfo
 

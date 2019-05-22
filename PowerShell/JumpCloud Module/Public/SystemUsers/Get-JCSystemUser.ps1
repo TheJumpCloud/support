@@ -63,7 +63,7 @@ function Get-JCSystemUser ()
 
             Write-Verbose $URI
 
-            $APIresults = Invoke-RestMethod -Method GET -Uri $URI -Body $jsonbody -Headers $hdrs -UserAgent $JCUserAgent
+            $APIresults = Invoke-RestMethod -Method GET -Uri $URI -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent -PSCallStack:(Get-PSCallStack))
 
             $skip += $limit
             Write-Verbose "Setting skip to $skip"
@@ -111,12 +111,12 @@ function Get-JCSystemUser ()
                 {
 
                     $Admin = $true
-                    
+
                 }
 
                 else
                 {
-                    $Admin = $false 
+                    $Admin = $false
                 }
 
             }

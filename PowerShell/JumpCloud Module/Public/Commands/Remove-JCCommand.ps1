@@ -63,7 +63,7 @@ Function Remove-JCCommand () #Ready for pester
             {
 
                 $URI = "$JCUrlBasePath/api/commands/$CommandID"
-                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent $JCUserAgent
+                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent:(Get-JCUserAgent -PSCallStack:(Get-PSCallStack))
                 $Status = 'Deleted'
             }
             catch
@@ -90,7 +90,7 @@ Function Remove-JCCommand () #Ready for pester
                 $CommandName = $CommandNameHash.Get_Item($CommandID)
 
                 $URI = "$JCUrlBasePath/api/commands/$CommandID"
-                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent $JCUserAgent
+                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent:(Get-JCUserAgent -PSCallStack:(Get-PSCallStack))
                 $Status = 'Deleted'
             }
             catch

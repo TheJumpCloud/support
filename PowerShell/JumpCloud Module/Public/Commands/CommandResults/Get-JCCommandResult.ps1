@@ -79,7 +79,7 @@ function Get-JCCommandResult ()
             {
 
                 $CountURL = "$JCUrlBasePath/api/commandresults?limit=1&skip=0"
-                $results = Invoke-RestMethod -Method GET -Uri  $CountURL -Headers $hdrs -UserAgent $JCUserAgent
+                $results = Invoke-RestMethod -Method GET -Uri  $CountURL -Headers $hdrs -UserAgent:(Get-JCUserAgent -PSCallStack:(Get-PSCallStack))
                 $null = $resultsArrayList.Add($results.totalCount)
 
 
@@ -95,7 +95,7 @@ function Get-JCCommandResult ()
                     $limitURL = "$JCUrlBasePath/api/commandresults?limit=$limit&skip=$skip"
                     Write-Verbose $limitURL
 
-                    $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent $JCUserAgent
+                    $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent:(Get-JCUserAgent -PSCallStack:(Get-PSCallStack))
 
                     $skip += $limit
                     $Counter += $limit
@@ -119,7 +119,7 @@ function Get-JCCommandResult ()
                         $limitURL = "$JCUrlBasePath/api/commandresults?limit=$limit&skip=$skip"
                         Write-Verbose $limitURL
 
-                        $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent $JCUserAgent
+                        $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent:(Get-JCUserAgent -PSCallStack:(Get-PSCallStack))
 
 
                         $null = $resultsArrayList.Add($results)
@@ -139,7 +139,7 @@ function Get-JCCommandResult ()
                             $limitURL = "$JCUrlBasePath/api/commandresults?limit=$limit&skip=$skip"
                             Write-Verbose $limitURL
 
-                            $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent $JCUserAgent
+                            $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent:(Get-JCUserAgent -PSCallStack:(Get-PSCallStack))
 
                             $MaxResults = $MaxResults - $limit
 
@@ -169,7 +169,7 @@ function Get-JCCommandResult ()
                 $URL = "$JCUrlBasePath/api/commandresults/$CommandResultID"
                 Write-Verbose $URL
 
-                $CommandResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent $JCUserAgent
+                $CommandResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent:(Get-JCUserAgent -PSCallStack:(Get-PSCallStack))
 
                 $FormattedResults = [PSCustomObject]@{
 

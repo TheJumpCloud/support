@@ -63,7 +63,7 @@ Function Remove-JCSystem ()
             {
 
                 $URI = "$JCUrlBasePath/api/systems/$SystemID"
-                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent $JCUserAgent
+                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent:(Get-JCUserAgent -PSCallStack:(Get-PSCallStack))
                 $Status = 'Deleted'
             }
             catch
@@ -89,7 +89,7 @@ Function Remove-JCSystem ()
             {
 
                 $URI = "$JCUrlBasePath/api/systems/$SystemID"
-                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent $JCUserAgent
+                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent:(Get-JCUserAgent -PSCallStack:(Get-PSCallStack))
                 $Status = 'Deleted'
             }
             catch

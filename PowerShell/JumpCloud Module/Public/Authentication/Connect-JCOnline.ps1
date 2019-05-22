@@ -141,7 +141,7 @@ Function Connect-JCOnline ()
         try
         {
             $ConnectionTestURL = "$JCUrlBasePath/api/v2/ldapservers"
-            Invoke-RestMethod -Method GET -Uri $ConnectionTestURL -Headers $hdrs -UserAgent $JCUserAgent | Out-Null
+            Invoke-RestMethod -Method GET -Uri $ConnectionTestURL -Headers $hdrs -UserAgent:(Get-JCUserAgent -PSCallStack:(Get-PSCallStack)) | Out-Null
         }
         catch
         {
@@ -164,7 +164,7 @@ Function Connect-JCOnline ()
                     {
                         $hdrs.Add('x-org-id', "$($JCOrgID)")
                         $ConnectionTestURL = "$JCUrlBasePath/api/v2/ldapservers"
-                        Invoke-RestMethod -Method GET -Uri $ConnectionTestURL -Headers $hdrs -UserAgent $JCUserAgent | Out-Null
+                        Invoke-RestMethod -Method GET -Uri $ConnectionTestURL -Headers $hdrs -UserAgent:(Get-JCUserAgent -PSCallStack:(Get-PSCallStack)) | Out-Null
 
                         if (-not $force)
                         {
@@ -314,7 +314,7 @@ Function Connect-JCOnline ()
                     {
 
                         Clear-Host
-                
+
                         $ReleaseNotesRaw = Invoke-WebRequest -uri $ReleaseNotesURL -UseBasicParsing #for backwards compatibility
 
                         $ReleaseNotes = ((((($ReleaseNotesRaw.RawContent -split "</a>$LatestVersion</h2>")[1]) -split "<pre><code>")[1]) -split "</code>")[0]

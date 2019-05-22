@@ -132,7 +132,7 @@ Function Invoke-JCCommand ()
         Write-Verbose $URL
 
 
-        $CommandResults = Invoke-RestMethod -Method POST -Uri $URL -Headers $hdrs -Body $Variables -UserAgent $JCUserAgent
+        $CommandResults = Invoke-RestMethod -Method POST -Uri $URL -Headers $hdrs -Body $Variables -UserAgent:(Get-JCUserAgent -PSCallStack:(Get-PSCallStack))
 
         $resultsArray += $CommandResults
 

@@ -103,7 +103,7 @@ Function Add-JCSystemUser ()
 
             if ($GlobalAdmin -eq $true)
             {
-                $Administrator = $true           
+                $Administrator = $true
             }
 
             if ($Administrator -eq $true)
@@ -118,7 +118,7 @@ Function Add-JCSystemUser ()
                         sudo = @{
                             enabled         = $true
                             withoutPassword = $false
-                    
+
                         }
                     }
                 }
@@ -134,7 +134,7 @@ Function Add-JCSystemUser ()
                     type       = "user"
                     id         = $UserID
                     attributes = $null
-    
+
                 }
 
             }
@@ -148,7 +148,7 @@ Function Add-JCSystemUser ()
 
             try
             {
-                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent $JCUserAgent
+                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent -PSCallStack:(Get-PSCallStack))
                 $Status = 'Added'
 
             }
@@ -178,7 +178,7 @@ Function Add-JCSystemUser ()
 
             if ($GlobalAdmin -eq $true)
             {
-                $Administrator = $true        
+                $Administrator = $true
             }
 
             if ($Administrator -eq $true)
@@ -193,7 +193,7 @@ Function Add-JCSystemUser ()
                         sudo = @{
                             enabled         = $true
                             withoutPassword = $false
-                    
+
                         }
                     }
                 }
@@ -209,7 +209,7 @@ Function Add-JCSystemUser ()
                     type       = "user"
                     id         = $UserID
                     attributes = $null
-    
+
                 }
 
             }
@@ -222,7 +222,7 @@ Function Add-JCSystemUser ()
 
             try
             {
-                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent $JCUserAgent
+                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent -PSCallStack:(Get-PSCallStack))
                 $Status = 'Added'
 
             }
@@ -237,7 +237,7 @@ Function Add-JCSystemUser ()
                 'UserID'        = $UserID
                 'Status'        = $Status
                 'Administrator' = $Administrator
-            }   
+            }
 
             $SystemUpdateArray += $FormattedResults
         }

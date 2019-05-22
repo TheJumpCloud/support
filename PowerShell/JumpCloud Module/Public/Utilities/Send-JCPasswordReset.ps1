@@ -89,7 +89,7 @@ Function Send-JCPasswordReset
                     try
                     {
 
-                        $SendInvite = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent $JCUserAgent
+                        $SendInvite = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent -PSCallStack:(Get-PSCallStack))
 
                         $InviteStatus = 'Sent'
 
@@ -144,7 +144,7 @@ Function Send-JCPasswordReset
                 try
                 {
 
-                    $SendInvite = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent $JCUserAgent
+                    $SendInvite = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent -PSCallStack:(Get-PSCallStack))
 
                     $InviteStatus = 'Sent'
 

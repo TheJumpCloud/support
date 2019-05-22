@@ -89,41 +89,41 @@ Function Add-JCUserGroupMember ()
 
                 $GroupID = $GroupNameHash.Get_Item($GroupName)
                 $UserID = $UserNameHash.Get_Item($Username)
-    
+
                 $body = @{
-    
+
                     type = "user"
                     op   = "add"
                     id   = $UserID
-    
+
                 }
-    
+
                 $jsonbody = $body | ConvertTo-Json
                 Write-Debug $jsonbody
-    
-    
+
+
                 $GroupsURL = "$JCUrlBasePath/api/v2/usergroups/$GroupID/members"
                 Write-Debug $GroupsURL
-    
+
                 try
                 {
-                    $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent $JCUserAgent
+                    $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent:(Get-JCUserAgent -PSCallStack:(Get-PSCallStack))
                     $Status = 'Added'
                 }
                 catch
                 {
                     $Status = $_.ErrorDetails
                 }
-    
+
                 $FormattedResults = [PSCustomObject]@{
-    
+
                     'GroupName' = $GroupName
                     'Username'  = $Username
                     'UserID'    = $UserID
                     'Status'    = $Status
-    
+
                 }
-    
+
                 $resultsArray += $FormattedResults
 
 
@@ -131,10 +131,10 @@ Function Add-JCUserGroupMember ()
             }
 
             else
-            { 
+            {
 
                 $FormattedResults = [PSCustomObject]@{
-        
+
                     'GroupName' = $GroupName
                     'Username'  = $Username
                     'UserID'    = "User does not exist"
@@ -143,10 +143,10 @@ Function Add-JCUserGroupMember ()
                 }
 
                 $resultsArray += $FormattedResults
-            
+
             }
 
-               
+
 
 
         }
@@ -177,7 +177,7 @@ Function Add-JCUserGroupMember ()
 
             try
             {
-                $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent $JCUserAgent
+                $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent:(Get-JCUserAgent -PSCallStack:(Get-PSCallStack))
                 $Status = 'Added'
             }
             catch
