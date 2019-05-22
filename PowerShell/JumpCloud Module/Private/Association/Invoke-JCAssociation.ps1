@@ -219,13 +219,16 @@
                             }
                             If ($Raw)
                             {
-                                $Result = $AssociationOut | Select-Object -Property:('*') -ExcludeProperty:('associationType')
+                                $Result = $AssociationOut | Select-Object -Property:('*') -ExcludeProperty:('associationType', 'httpMetaData')
                                 $Results += $Result
                             }
                             Else
                             {
                                 $Result = $AssociationOut
-                                $Results += $Result
+                                $Results += $Result | Select-Object * `
+                                    , @{Name = 'action'; Expression = {$Action}} `
+                                    , @{Name = 'IsSuccessStatusCode'; Expression = {$Association.httpMetaData.BaseResponse.IsSuccessStatusCode}} `
+                                    , @{Name = 'error'; Expression = {$null}}
                             }
                         }
                         Else

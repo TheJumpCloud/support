@@ -44,13 +44,13 @@ Describe "Association Tests" {
         $FunctionName = ($Template_FunctionName -f $Verb)
         # Hash for validating switch statements return the expected properties
         $SwitchColumnHash = [ordered]@{
-            ''                  = @('action', 'associationType', 'id', 'type', 'targetId', 'targetType', 'paths');
+            ''                  = @('action', 'associationType', 'id', 'type', 'targetId', 'targetType', 'paths', 'httpMetaData', 'IsSuccessStatusCode', 'error');
             'Raw'               = @('id', 'type', 'paths'); # 'compiledAttributes',
-            'Direct'            = @('action', 'associationType', 'id', 'type', 'targetId', 'targetType', 'paths');
-            # 'Indirect'          = @('action', 'associationType', 'id', 'type', 'targetId', 'targetType', 'paths'); # 'compiledAttributes',
-            'IncludeInfo'       = @('action', 'associationType', 'id', 'type', 'info', 'targetId', 'targetType', 'targetInfo', 'paths'); # 'compiledAttributes',
-            'IncludeNames'      = @('action', 'associationType', 'id', 'type', 'name', 'targetId', 'targetType', 'targetName', 'paths'); # 'compiledAttributes',
-            'IncludeVisualPath' = @('action', 'associationType', 'id', 'type', 'targetId', 'targetType', 'visualPathById', 'visualPathByName', 'visualPathByType', 'paths'); # 'compiledAttributes',
+            'Direct'            = @('action', 'associationType', 'id', 'type', 'targetId', 'targetType', 'paths', 'httpMetaData', 'IsSuccessStatusCode', 'error');
+            # 'Indirect'          = @('action', 'associationType', 'id', 'type', 'targetId', 'targetType', 'paths', 'httpMetaData', 'IsSuccessStatusCode', 'error'); # 'compiledAttributes',
+            'IncludeInfo'       = @('action', 'associationType', 'id', 'type', 'info', 'targetId', 'targetType', 'targetInfo', 'paths', 'httpMetaData', 'IsSuccessStatusCode', 'error'); # 'compiledAttributes',
+            'IncludeNames'      = @('action', 'associationType', 'id', 'type', 'name', 'targetId', 'targetType', 'targetName', 'paths', 'httpMetaData', 'IsSuccessStatusCode', 'error'); # 'compiledAttributes',
+            'IncludeVisualPath' = @('action', 'associationType', 'id', 'type', 'targetId', 'targetType', 'visualPathById', 'visualPathByName', 'visualPathByType', 'paths', 'httpMetaData', 'IsSuccessStatusCode', 'error'); # 'compiledAttributes',
         }
         # Build Get commands to test each switch
         $GetCommands = @()
@@ -200,6 +200,10 @@ Describe "Association Tests" {
                         It("Where results SourceType '$($SourceType)' should be in '$($Associations_Test.Type -join ', ')'") {$SourceType | Should -BeIn $Associations_Test.Type}
                         It("Where results TargetId '$($TargetId)' should be in '$($Associations_Test.TargetId -join ', ')'") {$TargetId | Should -BeIn $Associations_Test.TargetId}
                         It("Where results TargetType '$($TargetType)' should be in '$($Associations_Test.TargetType -join ', ')'") {$TargetType | Should -BeIn $Associations_Test.TargetType}
+                        It("Where results SourceId '$($SourceId)' should not the same as the TargetId '$($TargetId)'") {$SourceId | Should -Not -Be $TargetId}
+                        It("Where results SourceType '$($SourceType)' should not the same as the TargetType '$($TargetType)'") {$SourceType | Should -Not -Be $TargetType}
+                        It("Where results SourceId '$($SourceId)' should not be in TargetId '$($Associations_Test.TargetId -join ', ')'") {$SourceId | Should -Not -BeIn $Associations_Test.TargetId}
+                        It("Where results SourceType '$($SourceType)' should not be in TargetType '$($Associations_Test.TargetType -join ', ')'") {$SourceType | Should -Not -BeIn $Associations_Test.TargetType}
                         If ($Verb -in ('Add', 'Remove'))
                         {
                             # Get the associations
@@ -390,7 +394,7 @@ Describe "Association Tests" {
                     }
                     Catch
                     {
-                        Invoke-Command -ScriptBlock:($ScriptBlock_TryCatchError) -ArgumentList:($_,$true) -NoNewScope
+                        Invoke-Command -ScriptBlock:($ScriptBlock_TryCatchError) -ArgumentList:($_, $true) -NoNewScope
                     }
                     Finally
                     {
