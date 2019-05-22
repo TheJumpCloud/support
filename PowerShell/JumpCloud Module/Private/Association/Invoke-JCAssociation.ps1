@@ -47,7 +47,7 @@
                 Write-Debug ('[UrlTemplate]:' + $Uri)
                 $AssociationsOut = @()
                 $Associations = Invoke-JCApi -Method:($Method) -Paginate:($true) -Url:($Uri)
-                If (!($Associations.PSObject.Properties.name -contains 'NoContent'))
+                If ($Associations -and $Associations.PSObject.Properties.name -notcontains 'NoContent')
                 {
                     ForEach ($Association In $Associations)
                     {
@@ -83,11 +83,12 @@
                                 Select-Object -Unique |
                                 Where-Object {$_ -notin ('id', 'type')} |
                                 ForEach-Object {$AssociationHash.Add($_, $Association.($_)) | Out-Null}
-                            # If any "Return*" switch is provided get the target object
-                            If ($IncludeInfo -or $IncludeNames -or $IncludeVisualPath -and -not $Target)
+                            # If a $Target is not passed in and any "Include*" switch is provided get the target object
+                            If (-not $Target -and $IncludeInfo -or $IncludeNames -or $IncludeVisualPath)
                             {
-                                $Target = Get-JCObject -Type:($Source.TypeNameSingular) -Id:($Source.($Source.ById))
+                                $Target = Get-JCObject -Type:($Association.type) -Id:($Association.id)
                             }
+                            # If target is populated
                             If ($Target)
                             {
                                 $AssociationHash.targetId = $Target.($Target.ById)
