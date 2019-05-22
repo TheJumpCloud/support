@@ -5,13 +5,13 @@ $BUILD=$UNAME.Version
 $SERVICE='jumpcloud-agent'
 $JCPATH='C:\Program Files\JumpCloud'
 $SERVICEVERSION=(Get-Content -Path (Join-Path -Path $JCPATH -ChildPath Plugins\Contrib\version.txt))
-$JCLOG='C:\Windows\Temp\'
+$JCLOG='C:\Windows\Temp'
 $STAMP=Get-Date -Format 'yyyyMMddhhmmss'
 $TZONE=([TimeZoneInfo]::Local).DisplayName
 $STATUS=(Get-Service $SERVICE).Status
-$WRITEPATH=$HOME+'\Desktop\'
+$WRITEPATH=$HOME+'\Desktop'
 $ZIPFILE='jc'+$STAMP
-$OUTPUTFILE=$WRITEPATH+'output.log'
+$OUTPUTFILE=$WRITEPATH+'\output.log'
 
 function zipjc {
     # Take inventory of files to be zipped.
@@ -32,7 +32,7 @@ function zipjc {
 
 function ziplog {
     # Zip the log files.
-    $fileArray=(Get-ChildItem -Include jc*, Jump* -Name)
+    $fileArray=(Get-ChildItem -Path $JCLOG -Include jc*, Jump* -Name)
     foreach($LOGFILE in $fileArray) {
         Copy-Item $JCLOG\$LOGFILE $WRITEPATH\$LOGFILE
         Compress-Archive -Path $WRITEPATH\$LOGFILE -Update -DestinationPath $WRITEPATH\$ZIPFILE
