@@ -81,7 +81,7 @@ Function Get-JCUser ()
             ParameterSetName = 'SearchFilter'
         )]
         [bool]$account_locked,
-    
+
         [Parameter(
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'SearchFilter'
@@ -189,7 +189,7 @@ Function Get-JCUser ()
         if ($filterDateProperty)
         {
 
-            # Create the dictionary 
+            # Create the dictionary
             $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
 
 
@@ -200,18 +200,18 @@ Function Get-JCUser ()
             # Create and set the parameters' attributes
             $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
             $ParameterAttribute.Mandatory = $true
-            # Generate and set the ValidateSet 
+            # Generate and set the ValidateSet
             $arrSet = @("before", "after")
-            $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($arrSet)    
+            $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($arrSet)
             # Add the ValidateSet to the attributes collection
             $AttributeCollection.Add($ValidateSetAttribute)
             # Add the attributes to the attributes collection
-            $AttributeCollection.Add($ParameterAttribute) 
+            $AttributeCollection.Add($ParameterAttribute)
             # Create and return the dynamic parameter
             $RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter($ParamName_Filter, [string], $AttributeCollection)
             $RuntimeParameterDictionary.Add($ParamName_Filter, $RuntimeParameter)
-    
-            
+
+
             # Set the dynamic parameters' name
             $ParamName_FilterDate = 'date'
             # Create the collection of attributes
@@ -220,12 +220,12 @@ Function Get-JCUser ()
             $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
             $ParameterAttribute.Mandatory = $true
             # Add the attributes to the attributes collection
-            $AttributeCollection.Add($ParameterAttribute) 
+            $AttributeCollection.Add($ParameterAttribute)
             # Create and return the dynamic parameter
             $RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter($ParamName_FilterDate, [string], $AttributeCollection)
             $RuntimeParameterDictionary.Add($ParamName_FilterDate, $RuntimeParameter)
 
-     
+
 
             # Returns the dictionary
             return $RuntimeParameterDictionary
@@ -286,7 +286,7 @@ Function Get-JCUser ()
 
                     if ($returnProperties)
                     {
-    
+
                         $Search = @{
                             filter = @(
                                 @{
@@ -296,12 +296,12 @@ Function Get-JCUser ()
                             skip   = $skip
                             fields = $returnProperties
                         } #Initialize search
-    
+
                     }
-    
+
                     else
                     {
-                    
+
                         $Search = @{
                             filter = @(
                                 @{
@@ -309,11 +309,11 @@ Function Get-JCUser ()
                             )
                             limit  = $limit
                             skip   = $skip
-    
+
                         } #Initialize search
-    
+
                     }
-    
+
 
                     foreach ($param in $PSBoundParameters.GetEnumerator())
                     {
@@ -351,7 +351,7 @@ Function Get-JCUser ()
                         }
 
                         if ($param.key -eq 'date')
-                        {   
+                        {
 
                             $ConvertDate = [DateTime]$param.value
                             $Timestamp = Get-Date $ConvertDate -format o
@@ -396,7 +396,7 @@ Function Get-JCUser ()
 
                     $URL = "$JCUrlBasePath/api/search/systemusers"
 
-                    $Results = Invoke-RestMethod -Method POST -Uri $Url  -Header $hdrs -Body $SearchJSON
+                    $Results = Invoke-RestMethod -Method POST -Uri $Url  -Header $hdrs -Body $SearchJSON -UserAgent $JCUserAgent
 
                     $null = $resultsArrayList.Add($Results)
 
@@ -423,7 +423,7 @@ Function Get-JCUser ()
     end
 
     {
-        
+
         switch ($PSCmdlet.ParameterSetName)
         {
             SearchFilter
@@ -435,5 +435,5 @@ Function Get-JCUser ()
                 return $resultsArrayList | Select-Object -Property *  -ExcludeProperty associatedTagCount
             }
         }
-    }   
+    }
 }

@@ -1,4 +1,4 @@
-function Get-JCCommandResult () 
+function Get-JCCommandResult ()
 {
     [CmdletBinding(DefaultParameterSetName = 'ReturnAll')]
 
@@ -76,52 +76,52 @@ function Get-JCCommandResult ()
         switch ($PSCmdlet.ParameterSetName)
         {
             TotalCount
-            { 
+            {
 
                 $CountURL = "$JCUrlBasePath/api/commandresults?limit=1&skip=0"
-                $results = Invoke-RestMethod -Method GET -Uri  $CountURL -Headers $hdrs
+                $results = Invoke-RestMethod -Method GET -Uri  $CountURL -Headers $hdrs -UserAgent $JCUserAgent
                 $null = $resultsArrayList.Add($results.totalCount)
 
 
             }
             ReturnAll
-            { 
+            {
                 Write-Verbose "Setting skip to $skip"
 
-                [int]$Counter = 0 
-    
+                [int]$Counter = 0
+
                 while (($resultsArrayList.results).count -ge $Counter)
                 {
                     $limitURL = "$JCUrlBasePath/api/commandresults?limit=$limit&skip=$skip"
                     Write-Verbose $limitURL
-    
-                    $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs
-    
+
+                    $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent $JCUserAgent
+
                     $skip += $limit
                     $Counter += $limit
                     Write-Verbose "Setting skip to $skip"
                     Write-Verbose "Setting Counter to $Counter"
-    
+
                     $null = $resultsArrayList.Add($results)
                     $count = ($resultsArrayList.results.Count)
                     Write-Verbose "Results count equals $count"
                 }
             }
             MaxResults
-            { 
+            {
 
                 switch ($MaxResults)
                 {
                     { $_ -le $limit}
-                    { 
+                    {
 
                         $Limit = $MaxResults
                         $limitURL = "$JCUrlBasePath/api/commandresults?limit=$limit&skip=$skip"
                         Write-Verbose $limitURL
-    
-                        $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs
-    
-                    
+
+                        $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent $JCUserAgent
+
+
                         $null = $resultsArrayList.Add($results)
                         $count = ($resultsArrayList).Count
                         Write-Verbose "Results count equals $count"
@@ -132,44 +132,44 @@ function Get-JCCommandResult ()
 
                         Write-Verbose "Setting skip to $skip"
 
-                        [int]$Counter = 0 
-            
+                        [int]$Counter = 0
+
                         while ($MaxResults -ne 0)
                         {
                             $limitURL = "$JCUrlBasePath/api/commandresults?limit=$limit&skip=$skip"
                             Write-Verbose $limitURL
-            
-                            $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs
+
+                            $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent $JCUserAgent
 
                             $MaxResults = $MaxResults - $limit
-           
+
                             $skip += $limit
                             $Counter += $limit
                             Write-Verbose "Setting skip to $skip"
                             Write-Verbose "Setting Counter to $Counter"
-            
+
                             $null = $resultsArrayList.Add($results)
                             $count = ($resultsArrayList.results.Count)
                             Write-Verbose "Results count equals $count"
 
                             if ($MaxResults -le $limit)
                             {
-                                $limit = $MaxResults                                
+                                $limit = $MaxResults
                             }
                         }
 
 
                     }
                 }
-                
-                
+
+
             }
             ByID
             {
                 $URL = "$JCUrlBasePath/api/commandresults/$CommandResultID"
                 Write-Verbose $URL
 
-                $CommandResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs
+                $CommandResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent $JCUserAgent
 
                 $FormattedResults = [PSCustomObject]@{
 

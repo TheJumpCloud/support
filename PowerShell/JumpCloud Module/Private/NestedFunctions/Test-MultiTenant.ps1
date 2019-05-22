@@ -13,7 +13,7 @@ function Test-MultiTenant
     try
     {
         $ConnectionTestURL = "$JCUrlBasePath/api/v2/ldapservers"
-        Invoke-RestMethod -Method GET -Uri $ConnectionTestURL -Headers $hdrs -UserAgent $JCUserAgent  | Out-Null
+        Invoke-RestMethod -Method GET -Uri $ConnectionTestURL -Headers $hdrs -UserAgent $JCUserAgent | Out-Null
 
         Return $False
     }
@@ -24,7 +24,7 @@ function Test-MultiTenant
         {   
             $MultiTenantURL = "$JCUrlBasePath/api/organizations/"
 
-            Invoke-RestMethod -Method GET -Uri $MultiTenantURL -Headers $hdrs -UserAgent $JCUserAgent  | Out-Null
+            Invoke-RestMethod -Method GET -Uri $MultiTenantURL -Headers $hdrs -UserAgent $JCUserAgent | Out-Null
 
             Return $true
             
