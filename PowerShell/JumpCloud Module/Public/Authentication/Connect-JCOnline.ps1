@@ -121,6 +121,9 @@ Function Connect-JCOnline ()
                 }
             }
         }
+        # Get settings info
+        $global:JCSettingsUrl = $JCUrlBasePath + '/api/settings'
+        $global:JCSettings = Invoke-JCApi -Method:('GET') -Url:($JCSettingsUrl)
 
         $GitHubModuleInfoURL = 'https://github.com/TheJumpCloud/support/blob/master/PowerShell/ModuleBanner.md'
 
