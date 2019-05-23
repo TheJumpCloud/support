@@ -35,6 +35,7 @@ Function Get-JCUserAgent
     # Build UserAgent string
     $Template_UserAgent = '{0}/{1} (PSVersion:{2}; PSEdition:{3}; OS:{4}; Platform:{5}; IS_CUSTOMER:{6}; PrimaryFunction:{7}; NestedFunction:{8};)'
     $CustomUserAgent = $Template_UserAgent -f $UserAgent_ModuleName, $UserAgent_ModuleVersion, $UserAgent_PSVersion, $UserAgent_PSEdition, $UserAgent_OS, $UserAgent_Platform, $UserAgent_IS_CUSTOMER, $UserAgent_PrimaryFunction, $UserAgent_NestedFunction
-    Write-Host ($CustomUserAgent + "`n") -BackgroundColor:('Cyan') -ForegroundColor:('Black')
+    # Uncomment if you want to see what the UserAgent string looks like
+    # Write-Host ($CustomUserAgent + "`n") -BackgroundColor:('Green') -ForegroundColor:('Black')
     Return $CustomUserAgent
 }
