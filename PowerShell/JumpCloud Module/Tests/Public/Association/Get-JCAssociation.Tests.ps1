@@ -301,7 +301,17 @@ Describe "Association Tests" {
             {
                 $EmptySources += $JCAssociationType.TypeName.TypeNameSingular
                 $JCAssociationType.Targets | ForEach-Object {
-                    $AssociationDataSet += [AssociationItem]::new($JCAssociationType.TypeName.TypeNameSingular, $null, $null, $null, $_.TargetSingular, $null, $null, $null, $false)
+                    $AssociationDataSet += [PSCustomObject]@{
+                        'SourceType'  = $JCAssociationType.TypeName.TypeNameSingular
+                        'SourceId'    = $null
+                        'SourceName'  = $null
+                        'Source'      = $null
+                        'TargetType'  = $_.TargetSingular
+                        'TargetId'    = $null
+                        'TargetName'  = $null
+                        'Target'      = $null
+                        'ValidRecord' = $false
+                    }
                 }
             }
         }
