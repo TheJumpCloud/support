@@ -106,17 +106,17 @@ Function Invoke-JCApi
                 }
                 # Run request
                 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-                Write-Debug("[CallFunction]Invoke-RestMethod -Method:('$Method') -Headers:(@" + ($Headers | ConvertTo-Json -Compress).Replace('":"', '" = "').Replace('","', '"; "') + ") -Uri:('$Uri') -UserAgent:('Get-JCUserAgent -PSCallStack:(Get-PSCallStack)') -Body:('$Body')")
+                Write-Debug("[CallFunction]Invoke-RestMethod -Method:('$Method') -Headers:(@" + ($Headers | ConvertTo-Json -Compress).Replace('":"', '" = "').Replace('","', '"; "') + ") -Uri:('$Uri') -UserAgent:('Get-JCUserAgent') -Body:('$Body')")
                 Write-Verbose ('Connecting to: ' + $Uri)
                 # PowerShell 5 won't let you send a GET with a body.
                 If ($Method -eq 'GET')
                 {
-                    $Results = Invoke-RestMethod -Method:($Method) -Headers:($Headers) -Uri:($Uri) -UserAgent:(Get-JCUserAgent -PSCallStack:(Get-PSCallStack))
+                    $Results = Invoke-RestMethod -Method:($Method) -Headers:($Headers) -Uri:($Uri) -UserAgent:(Get-JCUserAgent)
                 }
                 Else
                 {
                     Write-Verbose ($Method + ' body: ' + $Body)
-                    $Results = Invoke-RestMethod -Method:($Method) -Headers:($Headers) -Uri:($Uri) -UserAgent:(Get-JCUserAgent -PSCallStack:(Get-PSCallStack)) -Body:($Body)
+                    $Results = Invoke-RestMethod -Method:($Method) -Headers:($Headers) -Uri:($Uri) -UserAgent:(Get-JCUserAgent) -Body:($Body)
                 }
                 If ($Results)
                 {
@@ -148,7 +148,7 @@ Function Invoke-JCApi
                             If ($ReturnCount)
                             {
                                 Write-Debug("[CallFunction]Invoke-WebRequest -Method:('$Method') -Headers:(@" + ($Headers | ConvertTo-Json -Compress).Replace('":"', '" = "').Replace('","', '"; "') + ") -Uri:('$Uri') -UserAgent:('$JCUserAgent')")
-                                $ResultObjects = [PSCustomObject]@{'totalCount' = [int]((Invoke-WebRequest -Method:($Method) -Headers:($Headers) -Uri:($Uri) -UserAgent:(Get-JCUserAgent -PSCallStack:(Get-PSCallStack))).Headers.'X-Total-Count' -join ','); 'results' = $Results; }
+                                $ResultObjects = [PSCustomObject]@{'totalCount' = [int]((Invoke-WebRequest -Method:($Method) -Headers:($Headers) -Uri:($Uri) -UserAgent:(Get-JCUserAgent)).Headers.'X-Total-Count' -join ','); 'results' = $Results; }
                                 $Paginate = $false
                             }
                             Else

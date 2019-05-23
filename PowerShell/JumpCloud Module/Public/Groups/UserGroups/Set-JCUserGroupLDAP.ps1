@@ -66,7 +66,7 @@ Function Set-JCUserGroupLDAP
 
         $LDAPURL = "$JCUrlBasePath/api/v2/ldapservers"
 
-        $LDAPServer = Invoke-RestMethod -Method GET -Uri $LDAPURL  -Header $hdrs -UserAgent:(Get-JCUserAgent -PSCallStack:(Get-PSCallStack))
+        $LDAPServer = Invoke-RestMethod -Method GET -Uri $LDAPURL  -Header $hdrs -UserAgent:(Get-JCUserAgent)
 
         if ($LDAPServer.Count -gt 1)
         {
@@ -118,7 +118,7 @@ Function Set-JCUserGroupLDAP
             try
             {
 
-                $LDAPUpdate = Invoke-RestMethod -Method Post -Uri $POSTUrl -Body $JsonPostBody -Headers $hdrs -UserAgent:(Get-JCUserAgent -PSCallStack:(Get-PSCallStack))
+                $LDAPUpdate = Invoke-RestMethod -Method Post -Uri $POSTUrl -Body $JsonPostBody -Headers $hdrs -UserAgent:(Get-JCUserAgent)
 
                 $Results = [PSCustomObject]@{
 
@@ -180,7 +180,7 @@ Function Set-JCUserGroupLDAP
             try
             {
 
-                $LDAPUpdate = Invoke-RestMethod -Method Post -Uri $POSTUrl -Body $JsonPostBody -Headers $hdrs -UserAgent:(Get-JCUserAgent -PSCallStack:(Get-PSCallStack))
+                $LDAPUpdate = Invoke-RestMethod -Method Post -Uri $POSTUrl -Body $JsonPostBody -Headers $hdrs -UserAgent:(Get-JCUserAgent)
 
                 $Results = [PSCustomObject]@{
 

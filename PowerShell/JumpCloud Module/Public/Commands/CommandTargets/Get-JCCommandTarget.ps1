@@ -104,7 +104,7 @@ Function Get-JCCommandTarget
 
                     Write-Verbose $SystemURL
 
-                    $APIresults = Invoke-RestMethod -Method GET -Uri  $SystemURL  -Header $hdrs -UserAgent:(Get-JCUserAgent -PSCallStack:(Get-PSCallStack))
+                    $APIresults = Invoke-RestMethod -Method GET -Uri  $SystemURL  -Header $hdrs -UserAgent:(Get-JCUserAgent)
 
                     $skip += $limit
                     Write-Verbose "Setting skip to  $skip"
@@ -152,7 +152,7 @@ Function Get-JCCommandTarget
 
                     Write-Verbose $SystemGroupsURL
 
-                    $APIresults = Invoke-RestMethod -Method GET -Uri  $SystemGroupsURL  -Header $hdrs -UserAgent:(Get-JCUserAgent -PSCallStack:(Get-PSCallStack))
+                    $APIresults = Invoke-RestMethod -Method GET -Uri  $SystemGroupsURL  -Header $hdrs -UserAgent:(Get-JCUserAgent)
 
                     $skip += $limit
                     Write-Verbose "Setting skip to  $skip"

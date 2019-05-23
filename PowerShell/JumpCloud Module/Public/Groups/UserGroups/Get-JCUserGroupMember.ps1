@@ -78,7 +78,7 @@ Function Get-JCUserGroupMember ()
                     {
                         $limitURL = "$JCUrlBasePath/api/v2/usergroups/$Group_ID/members?limit=$limit&skip=$skip"
                         Write-Debug $limitURL
-                        $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent:(Get-JCUserAgent -PSCallStack:(Get-PSCallStack))
+                        $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
                         $skip += $limit
                         $rawResults += $results
                     }
@@ -116,7 +116,7 @@ Function Get-JCUserGroupMember ()
 
                 $limitURL = "$JCUrlBasePath/api/v2/usergroups/$ByID/members?limit=$limit&skip=$skip"
                 Write-Debug $limitURL
-                $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent:(Get-JCUserAgent -PSCallStack:(Get-PSCallStack))
+                $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
                 $skip += $limit
                 $resultsArray += $results
             }

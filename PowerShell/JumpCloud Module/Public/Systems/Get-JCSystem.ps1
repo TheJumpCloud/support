@@ -338,7 +338,7 @@ Function Get-JCSystem ()
 
                     $URL = "$JCUrlBasePath/api/search/systems"
 
-                    $Results = Invoke-RestMethod -Method POST -Uri $Url  -Header $hdrs -Body $SearchJSON -UserAgent:(Get-JCUserAgent -PSCallStack:(Get-PSCallStack))
+                    $Results = Invoke-RestMethod -Method POST -Uri $Url  -Header $hdrs -Body $SearchJSON -UserAgent:(Get-JCUserAgent)
 
                     $null = $resultsArrayList.Add($Results)
 
@@ -354,7 +354,7 @@ Function Get-JCSystem ()
 
                 $URL = "$JCUrlBasePath/api/Systems/$SystemID"
                 Write-Verbose $URL
-                $results = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent:(Get-JCUserAgent -PSCallStack:(Get-PSCallStack))
+                $results = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
                 $null = $resultsArrayList.add($Results)
             }
 

@@ -101,7 +101,7 @@ function Remove-JCRadiusReplyAttribute
             Write-Debug $jsonbody
             Write-Verbose $jsonbody
 
-            $AttributeRemove = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent -PSCallStack:(Get-PSCallStack))
+            $AttributeRemove = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent)
 
             $ResultsArray += $AttributeRemove
 
@@ -184,7 +184,7 @@ function Remove-JCRadiusReplyAttribute
             Write-Debug $jsonbody
             Write-Verbose $jsonbody
 
-            $AttributeRemove = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent -PSCallStack:(Get-PSCallStack))
+            $AttributeRemove = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent)
 
             $FormattedResults = $AttributeRemove.attributes.radius.reply
 

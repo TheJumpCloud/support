@@ -137,7 +137,7 @@ Function Remove-JCCommandTarget
         try
         {
 
-            $APIresults = Invoke-RestMethod -Method Post -Uri  $URL  -Header $hdrs -Body $jsonbody -UserAgent:(Get-JCUserAgent -PSCallStack:(Get-PSCallStack))
+            $APIresults = Invoke-RestMethod -Method Post -Uri  $URL  -Header $hdrs -Body $jsonbody -UserAgent:(Get-JCUserAgent)
             $Status = 'Removed'
 
         }

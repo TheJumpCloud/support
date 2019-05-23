@@ -33,7 +33,7 @@ function Get-JCOrganization
 
         $MultiTenantURL = "$JCUrlBasePath/api/organizations/"
 
-        $RawResults = Invoke-RestMethod -Method GET -Uri $MultiTenantURL -Headers $hdrs -UserAgent:(Get-JCUserAgent -PSCallStack:(Get-PSCallStack))
+        $RawResults = Invoke-RestMethod -Method GET -Uri $MultiTenantURL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
 
         foreach ($org in $RawResults.results)
         {

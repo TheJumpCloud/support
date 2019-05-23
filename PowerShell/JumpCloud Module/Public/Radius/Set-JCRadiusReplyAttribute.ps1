@@ -323,7 +323,7 @@ Function Set-JCRadiusReplyAttribute ()
             Write-Debug $jsonbody
             Write-Verbose $jsonbody
 
-            $AttributeAdd = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent -PSCallStack:(Get-PSCallStack))
+            $AttributeAdd = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent)
 
             $FormattedResults = $AttributeAdd.attributes.radius.reply
 
