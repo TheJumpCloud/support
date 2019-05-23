@@ -59,7 +59,10 @@ Function Hide-ObjectProperty
             Add-Member -InputObject:($_) -MemberType:('MemberSet') -Name:('PSStandardMembers') -Value:($PSStandardMembers) -Force
             ForEach ($HiddenProperty In $PropertiesToHide)
             {
-                Add-Member -InputObject:($_) -MemberType:('NoteProperty') -Name:($HiddenProperty) -Value:($Record.$HiddenProperty) -Force
+                If($HiddenProperty -in $_.PSObject.Properties.Name)
+                {
+                    Add-Member -InputObject:($_) -MemberType:('NoteProperty') -Name:($HiddenProperty) -Value:($Record.$HiddenProperty) -Force
+                }
             }
         }
         Else
