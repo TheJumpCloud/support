@@ -121,10 +121,6 @@ Function Connect-JCOnline ()
                 }
             }
         }
-        # Get settings info
-        $global:JCSettingsUrl = $JCUrlBasePath + '/api/settings'
-        $global:JCSettings = Invoke-JCApi -Method:('GET') -Url:($JCSettingsUrl)
-
         $GitHubModuleInfoURL = 'https://github.com/TheJumpCloud/support/blob/master/PowerShell/ModuleBanner.md'
 
         $ReleaseNotesURL = 'https://git.io/jc-pwsh-releasenotes'
@@ -201,7 +197,11 @@ Function Connect-JCOnline ()
 
     end
     {
+        # Set JCAPIKEY to global to be used in other scripts
         $global:JCAPIKEY = $JumpCloudAPIKey
+        # Get settings info
+        $global:JCSettingsUrl = $JCUrlBasePath + '/api/settings'
+        $global:JCSettings = Invoke-JCApi -Method:('GET') -Url:($JCSettingsUrl)
 
         if ($JCEnvironment -ne "local")
         {
