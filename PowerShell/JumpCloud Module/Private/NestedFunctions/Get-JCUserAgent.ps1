@@ -10,9 +10,16 @@ Function Get-JCUserAgent
     {
         $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent
         $ModulePsd1 = Get-ChildItem -Path:($ModuleRoot) -Filter:('*.psd1')
-        $Psd1Info = Import-LocalizedData -BaseDirectory:($ModulePsd1.Directory) -FileName:($ModulePsd1.Name)
-        $UserAgent_ModuleName = $Psd1Info.RootModule.Replace('.psm1', '')
-        $UserAgent_ModuleVersion = $Psd1Info.ModuleVersion
+        If ($ModulePsd1)
+        {
+            $Psd1Info = Import-LocalizedData -BaseDirectory:($ModulePsd1.Directory) -FileName:($ModulePsd1.Name)
+            $UserAgent_ModuleName = $Psd1Info.RootModule.Replace('.psm1', '')
+            $UserAgent_ModuleVersion = $Psd1Info.ModuleVersion
+        }
+        Else
+        {
+            Write-Error ('Unable to locate the module psd1 file!')
+        }
     }
     # Get information about the version of PowerShell
     $UserAgent_PSVersion = [System.String]$PSVersionTable.PSVersion
