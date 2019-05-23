@@ -1,5 +1,8 @@
 Function Get-JCUserAgent
 {
+    param(
+        [switch]$ShowUserAgent
+    )
     # Get information about the module
     If ($MyInvocation.MyCommand.Module)
     {
@@ -35,7 +38,13 @@ Function Get-JCUserAgent
     # Build UserAgent string
     $Template_UserAgent = '{0}/{1} (PSVersion:{2}; PSEdition:{3}; OS:{4}; Platform:{5}; IS_CUSTOMER:{6}; PrimaryFunction:{7}; NestedFunction:{8};)'
     $CustomUserAgent = $Template_UserAgent -f $UserAgent_ModuleName, $UserAgent_ModuleVersion, $UserAgent_PSVersion, $UserAgent_PSEdition, $UserAgent_OS, $UserAgent_Platform, $UserAgent_IS_CUSTOMER, $UserAgent_PrimaryFunction, $UserAgent_NestedFunction
-    # Uncomment if you want to see what the UserAgent string looks like
-    # Write-Host ($CustomUserAgent + "`n") -BackgroundColor:('Green') -ForegroundColor:('Black')
+    # Show the UserAgent to the console if parameter is passed in
+    if ($PSBoundParameters.ShowUserAgent)
+    {
+        $CurrentVerbosePreference = $VerbosePreference
+        $VerbosePreference = 'Continue'
+        Write-Verbose ($CustomUserAgent)
+        $VerbosePreference = $CurrentVerbosePreference
+    }
     Return $CustomUserAgent
 }
