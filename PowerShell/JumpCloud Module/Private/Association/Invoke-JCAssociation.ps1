@@ -275,7 +275,8 @@
                                     $TestAssociation = Format-JCAssociation -Uri:($Uri_Associations_GET) -Method:('GET') -Source:($SourceItem) -Target:($TargetItem) -IncludeNames:($true)
                                     Where-Object {$_.TargetId -eq $TargetItemId}
                                     $IndirectAssociations = $TestAssociation  | Where-Object {$_.associationType -ne 'direct'}
-                                    $Result = $TestAssociation  | Where-Object {$_.associationType -eq 'direct'}
+                                    $DirectAssociations = $TestAssociation  | Where-Object {$_.associationType -eq 'direct'}
+                                    # If the target is not an indirect association
                                     If ($TargetItemId -ne $IndirectAssociations.targetId)
                                     {
                                         # Build uri and body
@@ -324,11 +325,32 @@
                                             }
                                         }
                                     }
-                                    # Get the newly created association
+
+                                    # Validate that the new association has been created
                                     If ($Action -eq 'add')
                                     {
-                                        $Result = Format-JCAssociation -Uri:($Uri_Associations_GET) -Method:('GET') -Source:($SourceItem) -Target:($TargetItem) -IncludeNames:($true)
-                                        Where-Object {$_.TargetId -eq $TargetItemId}
+                                        $AddAssociationValidation = Format-JCAssociation -Uri:($Uri_Associations_GET) -Method:('GET') -Source:($SourceItem) -Target:($TargetItem) -IncludeNames:($true) | Where-Object {$_.TargetId -eq $TargetItemId}
+                                        If ($AddAssociationValidation)
+                                        {
+                                            $Result = $AddAssociationValidation
+                                        }
+                                        Else
+                                        {
+                                            Write-Error ('Association not found. Unable to validate that the association between "' + $SourceItemSearchByValue + '" and "' + $TargetSearchByValue + '" was created.')
+                                        }
+                                    }
+                                    # Validate that the old association has been removed
+                                    If ($Action -eq 'remove')
+                                    {
+                                        $RemoveAssociationValidation = Format-JCAssociation -Uri:($Uri_Associations_GET) -Method:('GET') -Source:($SourceItem) -Target:($TargetItem) -IncludeNames:($true)
+                                        If (!($RemoveAssociationValidation))
+                                        {
+                                            $Result = $DirectAssociations
+                                        }
+                                        Else
+                                        {
+                                            Write-Error ('Association found. Unable to validate that the association between "' + $SourceItemSearchByValue + '" and "' + $TargetSearchByValue + '" has been removed.')
+                                        }
                                     }
                                     # Append record status
                                     $Results += If ($Result)
