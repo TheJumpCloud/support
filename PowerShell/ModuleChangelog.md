@@ -16,7 +16,7 @@ Added increased functionality to PowerShell user_agent
 
 ### BUG FIXES:
 
-Updated function: Get-JCGroup to return an error if a group is searched for by name and it does not exist.
+Fixed bug on Get-JCGroup to return an error if a group is searched for by name and it does not exist.
 
 ## 1.11.0
 
