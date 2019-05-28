@@ -1,3 +1,23 @@
+## 1.12.0
+
+Release Date: May 29, 2019
+
+```
+```
+
+### FEATURES
+
+- New-Function: Add-JCAssociation
+- New-Function: Remove-JCAssociation
+
+### IMPROVEMENTS:
+
+Added increased functionality to PowerShell user_agent
+
+### BUG FIXES:
+
+Fixed bug on Get-JCGroup to return an error if a group is searched for by name and it does not exist.
+
 ## 1.11.0
 
 Release Date: May 8, 2019
