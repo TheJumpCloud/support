@@ -124,68 +124,44 @@ Describe "Association Tests" {
             # Run tests
             Context ($ItMessage) {
                 # Test results of action
-                $Associations_Validation_Command = If ($Associations_Test_Command -match '-Direct' -and $Associations_Test_Command -match '-Indirect')
+                If ($Verb -eq 'Get')
                 {
-                    '$Associations_Test | Get-JCAssociation -Direct -Indirect'
-                }
-                ElseIf ($Associations_Test_Command -match '-Direct')
-                {
-                    '$Associations_Test | Get-JCAssociation -Direct'
-                }
-                ElseIf ($Associations_Test_Command -match '-Indirect')
-                {
-                    '$Associations_Test | Get-JCAssociation -Indirect'
-                }
-                Else
-                {
-                    '$Associations_Test | Get-JCAssociation'
-                }
-
-                If ($Mock)
-                {
-                    If ($Associations_Test_Command -notmatch '-Raw')
-                    {
-                        ($Associations_Validation_Command + ' # [Mock-Validation]') | Tee-Object -FilePath:($MockFilePath) -Append
-                    }
-                }
-                Else
-                {
-                    If ($Verb -eq 'Get')
-                    {
-                        $AssociationsProperties = ($Associations_Test | ForEach-Object {$_.PSObject.Properties.name} | Where-Object {$_ -ne 'compiledAttributes'} | Select-Object -Unique | Sort-Object)
-                        $SwitchColumnHash.GetEnumerator() | ForEach-Object {
-                            $ParameterName = $_.Key
-                            $ExpectedColumns = $_.Value | Sort-Object
-                            If ($Associations_Test_Command -match $ParameterName)
+                    $AssociationsProperties = ($Associations_Test | ForEach-Object {$_.PSObject.Properties.name} | Where-Object {$_ -ne 'compiledAttributes'} | Select-Object -Unique | Sort-Object)
+                    $SwitchColumnHash.GetEnumerator() | ForEach-Object {
+                        $ParameterName = $_.Key
+                        $ExpectedColumns = $_.Value | Sort-Object
+                        If ($Associations_Test_Command -match $ParameterName)
+                        {
+                            If ($ParameterName)
                             {
-                                If ($ParameterName)
+                                It("Where properties returned '$($ExpectedColumns -join ", ")' should be '$($AssociationsProperties -join ", ")'") {
+                                    $ExpectedColumns | Should -Be $AssociationsProperties
+                                }
+                                If ($ParameterName -in ('Direct')) #, 'Indirect'
                                 {
-                                    It("Where properties returned '$($ExpectedColumns -join ", ")' should be '$($AssociationsProperties -join ", ")'") {
-                                        $ExpectedColumns | Should -Be $AssociationsProperties
-                                    }
-                                    If ($ParameterName -in ('Direct')) #, 'Indirect'
+                                    If ($TestMethod -eq 'ById')
                                     {
-                                        If ($TestMethod -eq 'ById')
-                                        {
-                                            It("Where '$($Associations_Test.associationType)' match '$($ParameterName)'") {
-                                                $Associations_Test.associationType | Should -Be $ParameterName
-                                            }
+                                        It("Where '$($Associations_Test.associationType)' match '$($ParameterName)'") {
+                                            $Associations_Test.associationType | Should -Be $ParameterName
                                         }
-                                        ElseIf ($TestMethod -eq 'ByName')
-                                        {
-                                            It("Where '$($ParameterName)' match '$($Associations_Test.associationType)'") {
-                                                $ParameterName | Should -BeIn $Associations_Test.associationType
-                                            }
+                                    }
+                                    ElseIf ($TestMethod -eq 'ByName')
+                                    {
+                                        It("Where '$($ParameterName)' match '$($Associations_Test.associationType)'") {
+                                            $ParameterName | Should -BeIn $Associations_Test.associationType
                                         }
-                                        Else
-                                        {
-                                            Write-Error ('Unknown')
-                                        }
+                                    }
+                                    Else
+                                    {
+                                        Write-Error ('Unknown')
                                     }
                                 }
                             }
                         }
                     }
+                }
+                If (!($Mock))
+                {
                     It("Where results should be not NullOrEmpty") {$Associations_Test | Should -Not -BeNullOrEmpty}
                     It("Where results count should BeGreaterThan 0") {($Associations_Test | Measure-Object).Count | Should -BeGreaterThan 0}
                     If ($Associations_Test_Command -match '-Raw')
@@ -204,45 +180,6 @@ Describe "Association Tests" {
                         It("Where results SourceType '$($SourceType)' should not the same as the TargetType '$($TargetType)'") {$SourceType | Should -Not -Be $TargetType}
                         It("Where results SourceId '$($SourceId)' should not be in TargetId '$($Associations_Test.TargetId -join ', ')'") {$SourceId | Should -Not -BeIn $Associations_Test.TargetId}
                         It("Where results SourceType '$($SourceType)' should not be in TargetType '$($Associations_Test.TargetType -join ', ')'") {$SourceType | Should -Not -BeIn $Associations_Test.TargetType}
-                        If ($Verb -in ('Add', 'Remove'))
-                        {
-                            # Get the associations
-                            $Associations_Validation = Invoke-Expression -Command:($Associations_Validation_Command)
-                            # Test that the change was applied
-                            If ($Verb -eq 'Remove')
-                            {
-                                It("Where results validation should be NullOrEmpty") {$Associations_Validation | Should -BeNullOrEmpty}
-                                It("Where results validation Id '$($Associations_Validation.Id -join ', ')' should be NullOrEmpty") {$Associations_Validation.Id | Should -BeNullOrEmpty $SourceId}
-                                It("Where results validation Type '$($Associations_Validation.Type -join ', ')' should be NullOrEmpty") {$Associations_Validation.Type | Should -BeNullOrEmpty $SourceType}
-                                It("Where results validation TargetId '$($Associations_Validation.TargetId -join ', ')' should be NullOrEmpty") {$Associations_Validation.TargetId | Should -BeNullOrEmpty $TargetId}
-                                It("Where results validation TargetType '$($Associations_Validation.TargetType -join ', ')' should be NullOrEmpty") {$Associations_Validation.TargetType | Should -BeNullOrEmpty $TargetType}
-                                It("Where results validation count should be 0") {($Associations_Validation | Measure-Object).Count | Should -Be 0}
-                            }
-                            Else
-                            {
-                                It("Where results validation should be not NullOrEmpty") {$Associations_Validation | Should -Not -BeNullOrEmpty}
-                                It("Where results validation count should BeGreaterThan 0") {($Associations_Validation | Measure-Object).Count | Should -BeGreaterThan 0}
-                                It("Where results validation count should be '" + $(($Associations_Test | Measure-Object).Count) + "'") {($Associations_Validation | Measure-Object).Count | Should -Be ($Associations_Test | Measure-Object).Count}
-                                If ($TestMethod -eq 'ById')
-                                {
-                                    It("Where results validation SourceId '$($Associations_Validation.Id -join ', ')' should be '$($SourceId)'") {$Associations_Validation.Id | Should -Be $SourceId}
-                                    It("Where results validation SourceType '$($Associations_Validation.Type -join ', ')' should be '$($SourceType)'") {$Associations_Validation.Type | Should -Be $SourceType}
-                                    It("Where results validation TargetId '$($Associations_Validation.TargetId -join ', ')' should be '$($TargetId)'") {$Associations_Validation.TargetId | Should -Be $TargetId}
-                                    It("Where results validation TargetType '$($Associations_Validation.TargetType -join ', ')' should be '$($TargetType)'") {$Associations_Validation.TargetType | Should -Be $TargetType}
-                                }
-                                ElseIf ($TestMethod -eq 'ByName')
-                                {
-                                    It("Where results validation SourceId '$($SourceId)' should be in '$($Associations_Validation.Id -join ', ')'") {$SourceId | Should -BeIn $Associations_Validation.Id}
-                                    It("Where results validation SourceType '$($SourceType)' should be in '$($Associations_Validation.Type -join ', ')'") {$SourceType| Should -BeIn $Associations_Validation.Type }
-                                    It("Where results validation TargetId '$($TargetId)' should be in '$($Associations_Validation.TargetId -join ', ')'") {$TargetId | Should -BeIn $Associations_Validation.TargetId}
-                                    It("Where results validation TargetType '$($TargetType)' should be in '$($Associations_Validation.TargetType -join ', ')'") {$TargetType | Should -BeIn $Associations_Validation.TargetType}
-                                }
-                                Else
-                                {
-                                    Write-Error ('Unknown')
-                                }
-                            }
-                        }
                     }
                 }
             }
