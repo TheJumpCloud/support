@@ -14,7 +14,7 @@ Describe "Association Tests" {
     # AfterEach {}
     # Define misc. variables
     $TestMethods = ('ById', 'ByName')
-    $Mock = $true
+    $Mock = $false
     $MockFilePath = $PSScriptRoot + '/MockCommands.ps1'
     # Internal Functions
     Function Test-AssociationCommand
@@ -264,7 +264,6 @@ Describe "Association Tests" {
         ################################################################################
         ################################## HACKS/TODO ########################################
         $ValidAssociationItems = $ValidAssociationItems | Where-Object {$_.SourceType -ne 'active_directory' -and $_.TargetType -ne 'active_directory'}
-        $ValidAssociationItems = $ValidAssociationItems | Where-Object {$_.SourceType -eq 'user_group' -and $_.TargetType -eq 'application'}
         ################################################################################
         ################################################################################
         # Get invalid association items
