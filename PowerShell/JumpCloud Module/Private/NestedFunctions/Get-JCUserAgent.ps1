@@ -24,6 +24,7 @@ Function Get-JCUserAgent
             Write-Error ('Unable to locate the module psd1 file!')
         }
     }
+    $UserAgent_ModuleName = 'PSModule_' + $UserAgent_ModuleName
     # Get information about the version of PowerShell
     $UserAgent_PSVersion = [System.String]$PSVersionTable.PSVersion
     $UserAgent_PSEdition = [System.String]$PSVersionTable.PSEdition
