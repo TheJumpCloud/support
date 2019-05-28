@@ -79,7 +79,7 @@ function Remove-JCUser ()
             {
                 $URI = "$JCUrlBasePath/api/systemusers/$UserID"
                 Write-Warning "Are you sure you wish to delete user: $Username ?" -WarningAction Inquire
-                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent $JCUserAgent
+                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent:(Get-JCUserAgent)
                 $Status = 'Deleted'
             }
             catch
@@ -88,7 +88,7 @@ function Remove-JCUser ()
             }
 
             $FormattedResults = [PSCustomObject]@{
-                'User'    = $Username 
+                'User'    = $Username
                 'Results' = $Status
             }
 
@@ -101,7 +101,7 @@ function Remove-JCUser ()
             try
             {
                 $URI = "$JCUrlBasePath/api/systemusers/$UserID"
-                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent $JCUserAgent
+                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent:(Get-JCUserAgent)
                 $Status = 'Deleted'
             }
             catch
@@ -110,7 +110,7 @@ function Remove-JCUser ()
             }
 
             $FormattedResults = [PSCustomObject]@{
-                'User'    = $Username 
+                'User'    = $Username
                 'Results' = $Status
             }
 

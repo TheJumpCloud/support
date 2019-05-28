@@ -107,12 +107,12 @@ Function Set-JCSystemUser ()
                         sudo = @{
                             enabled         = $true
                             withoutPassword = $false
-                    
+
                         }
                     }
-    
+
                 }
-                    
+
             }
 
             elseif ($Administrator -eq $false)
@@ -127,13 +127,13 @@ Function Set-JCSystemUser ()
                         sudo = @{
                             enabled         = $false
                             withoutPassword = $false
-                    
+
                         }
                     }
-    
+
                 }
-                    
-                    
+
+
             }
 
             $jsonbody = $body | ConvertTo-Json
@@ -146,7 +146,7 @@ Function Set-JCSystemUser ()
 
             try
             {
-                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent $JCUserAgent
+                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent)
                 $Status = 'Updated'
 
             }
@@ -183,12 +183,12 @@ Function Set-JCSystemUser ()
                         sudo = @{
                             enabled         = $true
                             withoutPassword = $false
-                    
+
                         }
                     }
-    
+
                 }
-                    
+
             }
 
             elseif ($Administrator -eq $false)
@@ -203,13 +203,13 @@ Function Set-JCSystemUser ()
                         sudo = @{
                             enabled         = $false
                             withoutPassword = $false
-                    
+
                         }
                     }
-    
+
                 }
-                    
-                    
+
+
             }
 
             $jsonbody = $body | ConvertTo-Json
@@ -220,7 +220,7 @@ Function Set-JCSystemUser ()
 
             try
             {
-                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent $JCUserAgent
+                $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent)
                 $Status = 'Updated'
 
             }
@@ -235,7 +235,7 @@ Function Set-JCSystemUser ()
                 'UserID'        = $UserID
                 'Status'        = $Status
                 'Administrator' = $Administrator
-            }   
+            }
 
             $SystemUpdateArray += $FormattedResults
         }

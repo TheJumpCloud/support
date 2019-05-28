@@ -209,7 +209,7 @@ Function New-JCUser ()
             $ParameterAttribute.Mandatory = $false
             $ParameterAttribute.ValueFromPipelineByPropertyName = $true
             # Add the attributes to the attributes collection
-            $AttributeCollection.Add($ParameterAttribute) 
+            $AttributeCollection.Add($ParameterAttribute)
             # Create and return the dynamic parameter
             $RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter($ParamName, [Int32], $AttributeCollection)
             $dict.Add($ParamName, $RuntimeParameter)
@@ -287,8 +287,8 @@ Function New-JCUser ()
                 '$False' { [bool]$enable_user_portal_multifactor = $false}
             }
         }
-        
-        
+
+
         $body = @{}
 
         $WorkAddressParams = @{}
@@ -423,7 +423,7 @@ Function New-JCUser ()
 
         Write-Debug $jsonbody
 
-        $NewUserInfo = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent $JCUserAgent
+        $NewUserInfo = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent)
 
         $NewUserArray += $NewUserInfo
 

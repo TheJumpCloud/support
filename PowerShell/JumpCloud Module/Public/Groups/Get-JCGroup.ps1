@@ -30,7 +30,7 @@ Function Get-JCGroup ()
             return $dict
         }
 
-    }    
+    }
 
     begin
 
@@ -60,20 +60,20 @@ Function Get-JCGroup ()
 
         if ($param.IsSet)
         {
-               
+
             if ($Type -eq 'System')
             {
-                    
+
                 Write-Verbose 'Populating SystemGroupHash'
                 $SystemGroupHash = Get-Hash_SystemGroupName_ID
-                    
+
             }
             elseif ($Type -eq 'User')
             {
 
                 Write-Verbose 'Populating UserGroupHash'
                 $UserGroupHash = Get-Hash_UserGroupName_ID
-                    
+
             }
 
         }
@@ -97,7 +97,7 @@ Function Get-JCGroup ()
                 $limitURL = "$JCUrlBasePath/api/v2/groups?sort=type,name&limit=$limit&skip=$skip"
                 Write-Debug $limitURL
 
-                $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent $JCUserAgent
+                $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
 
                 $skip += $limit
                 Write-Debug "Setting skip to $skip"
@@ -135,7 +135,7 @@ Function Get-JCGroup ()
                 if ($GID)
                 {
                     $GURL = "$JCUrlBasePath/api/v2/systemgroups/$GID"
-                    $result = Invoke-RestMethod -Method GET -Uri $GURL -Headers $hdrs -UserAgent $JCUserAgent
+                    $result = Invoke-RestMethod -Method GET -Uri $GURL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
                     $resultsArray += $result
                 }
                 else
@@ -152,7 +152,7 @@ Function Get-JCGroup ()
                 if ($GID)
                 {
                     $GURL = "$JCUrlBasePath/api/v2/usergroups/$GID"
-                    $result = Invoke-RestMethod -Method GET -Uri $GURL -Headers $hdrs -UserAgent $JCUserAgent
+                    $result = Invoke-RestMethod -Method GET -Uri $GURL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
                 }
                 else
                 {

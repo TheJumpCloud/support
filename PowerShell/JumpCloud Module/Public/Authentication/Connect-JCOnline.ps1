@@ -121,7 +121,6 @@ Function Connect-JCOnline ()
                 }
             }
         }
-
         $GitHubModuleInfoURL = 'https://github.com/TheJumpCloud/support/blob/master/PowerShell/ModuleBanner.md'
 
         $ReleaseNotesURL = 'https://git.io/jc-pwsh-releasenotes'
@@ -141,7 +140,7 @@ Function Connect-JCOnline ()
         try
         {
             $ConnectionTestURL = "$JCUrlBasePath/api/v2/ldapservers"
-            Invoke-RestMethod -Method GET -Uri $ConnectionTestURL -Headers $hdrs -UserAgent $JCUserAgent | Out-Null
+            Invoke-RestMethod -Method GET -Uri $ConnectionTestURL -Headers $hdrs -UserAgent:(Get-JCUserAgent) | Out-Null
         }
         catch
         {
@@ -164,7 +163,7 @@ Function Connect-JCOnline ()
                     {
                         $hdrs.Add('x-org-id', "$($JCOrgID)")
                         $ConnectionTestURL = "$JCUrlBasePath/api/v2/ldapservers"
-                        Invoke-RestMethod -Method GET -Uri $ConnectionTestURL -Headers $hdrs -UserAgent $JCUserAgent | Out-Null
+                        Invoke-RestMethod -Method GET -Uri $ConnectionTestURL -Headers $hdrs -UserAgent:(Get-JCUserAgent) | Out-Null
 
                         if (-not $force)
                         {
@@ -198,7 +197,11 @@ Function Connect-JCOnline ()
 
     end
     {
+        # Set JCAPIKEY to global to be used in other scripts
         $global:JCAPIKEY = $JumpCloudAPIKey
+        # Get settings info
+        $global:JCSettingsUrl = $JCUrlBasePath + '/api/settings'
+        $global:JCSettings = Invoke-JCApi -Method:('GET') -Url:($JCSettingsUrl)
 
         if ($JCEnvironment -ne "local")
         {
@@ -207,7 +210,7 @@ Function Connect-JCOnline ()
 
                 Write-Host -BackgroundColor Green -ForegroundColor Black "Successfully connected to JumpCloud"
 
-                $GitHubModuleInfo = Invoke-WebRequest -uri  $GitHubModuleInfoURL -UseBasicParsing | Select-Object RawContent
+                $GitHubModuleInfo = Invoke-WebRequest -uri  $GitHubModuleInfoURL -UseBasicParsing -UserAgent:(Get-JCUserAgent) | Select-Object RawContent
 
                 $CurrentBanner = ((((($GitHubModuleInfo -split "</a>Banner Current</h4>")[1]) -split "<pre><code>")[1]) -split "`n")[0]
 
@@ -314,8 +317,8 @@ Function Connect-JCOnline ()
                     {
 
                         Clear-Host
-                
-                        $ReleaseNotesRaw = Invoke-WebRequest -uri $ReleaseNotesURL -UseBasicParsing #for backwards compatibility
+
+                        $ReleaseNotesRaw = Invoke-WebRequest -uri $ReleaseNotesURL -UseBasicParsing -UserAgent:(Get-JCUserAgent) #for backwards compatibility
 
                         $ReleaseNotes = ((((($ReleaseNotesRaw.RawContent -split "</a>$LatestVersion</h2>")[1]) -split "<pre><code>")[1]) -split "</code>")[0]
 

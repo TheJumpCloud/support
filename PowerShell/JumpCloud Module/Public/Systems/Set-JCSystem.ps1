@@ -76,7 +76,7 @@ Function Set-JCSystem ()
 
         Write-Debug $URL
 
-        $System = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent $JCUserAgent
+        $System = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent)
 
         $UpdatedSystems += $System
     }

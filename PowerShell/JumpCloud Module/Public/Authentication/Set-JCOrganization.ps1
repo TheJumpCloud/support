@@ -11,11 +11,11 @@ function Set-JCOrganization
         [String]$OrgID
 
     )
-    
+
     begin
     {
         Write-Verbose "Paramter Set: $($PSCmdlet.ParameterSetName)"
-       
+
         #if ($JCAPIKEY.length -ne 40) {Connect-JConline}
 
         Write-Verbose 'Populating API headers'
@@ -41,10 +41,10 @@ function Set-JCOrganization
             Write-Verbose 'Populating JCOrganizations'
 
             $Organizations = Invoke-GetJCOrganization -JumpCloudAPIKey $JCAPIKEY
-        }       
-        
+        }
+
     }
-    
+
     process
     {
 
@@ -52,13 +52,13 @@ function Set-JCOrganization
         {
 
             Entry
-            { 
+            {
 
                 try
                 {
                     $hdrs.Add('x-org-id', "$($OrgID)")
                     $ConnectionTestURL = "$JCUrlBasePath/api/v2/ldapservers"
-                    Invoke-RestMethod -Method GET -Uri $ConnectionTestURL -Headers $hdrs -UserAgent $JCUserAgent  | Out-Null
+                    Invoke-RestMethod -Method GET -Uri $ConnectionTestURL -Headers $hdrs -UserAgent:(Get-JCUserAgent) | Out-Null
                     $global:JCOrgID = $OrgID
                     Write-Host -BackgroundColor Green -ForegroundColor Black "Connected to JumpCloud Tenant OrgID: $JCOrgID"
 
@@ -70,7 +70,7 @@ function Set-JCOrganization
                     Write-Error "Incorrect OrgID OR no network connectivity. You can obtain your Organization ID below your Organization's Contact Information on the Settings page."
                     $global:JCOrgID = $null
                     break
-                    
+
                 }
 
             }
@@ -79,89 +79,89 @@ function Set-JCOrganization
 
                 if ($Organizations.count -eq 1)
                 {
-                
+
                     try
                     {
                         $hdrs.Add('x-org-id', "$($Organizations.OrgID)")
                         $ConnectionTestURL = "$JCUrlBasePath/api/v2/ldapservers"
-                        Invoke-RestMethod -Method GET -Uri $ConnectionTestURL -Headers $hdrs -UserAgent $JCUserAgent  | Out-Null
+                        Invoke-RestMethod -Method GET -Uri $ConnectionTestURL -Headers $hdrs -UserAgent:(Get-JCUserAgent) | Out-Null
                         $global:JCOrgID = $($Organizations.OrgID)
                         Write-Host -BackgroundColor Green -ForegroundColor Black "Connected to JumpCloud Tenant: $($Organizations.displayName) | OrgID: $JCOrgID"
-                        
-            
+
+
                     }
                     catch
                     {
-            
+
                         Write-Error "Incorrect OrgID OR no network connectivity. You can obtain your Organization ID below your Organization's Contact Information on the Settings page."
                         $global:JCOrgID = $null
                         break
-                                
+
                     }
-                
+
                 }
-        
+
                 elseif ($Organizations.count -gt 1)
                 {
-                  
+
                     $OrgIDHash = [ordered]@{}
                     $OrgNameHash = [ordered]@{}
                     [int]$menuNumber = 1
                     Write-Host "`n======== JumpCloud Multi Tenant Selector ======= `n"
-        
+
                     Foreach ($Org in $Organizations)
                     {
-                
+
                         Write-Host "$menuNumber. displayName: $($Org.displayName) | OrgID:  $($Org.OrgID)   "
                         $OrgIDHash.add($menuNumber, "$($Org.OrgID)")
                         $OrgNameHash.add($menuNumber, "$($Org.displayName)")
                         $menuNumber++
-                        
-                    } 
-        
+
+                    }
+
                     Write-Host "`nSelect the number of the JumpCloud tenant you wish to connect to`n" -ForegroundColor Yellow
-        
+
                     $selection = Read-Host "Enter a value between 1 and $($OrgIDHash.count)"
-        
+
                     while ($(1..$OrgIDHash.count) -notcontains $selection)
                     {
                         write-warning "$selection is not a valid choice"
                         $selection = $null
                         $selection = Read-Host "Enter a value between 1 and $($OrgIDHash.count)"
-        
+
                     }
-        
+
                     switch ($selection)
                     {
                         {$_ -le $OrgIDHash.count }
-                        { 
-                                        
+                        {
+
                             try
                             {
                                 $selection = [int]$selection
                                 $hdrs.Add('x-org-id', "$($OrgIDHash.$selection)")
                                 $ConnectionTestURL = "$JCUrlBasePath/api/v2/ldapservers"
-                                Invoke-RestMethod -Method GET -Uri $ConnectionTestURL -Headers $hdrs -UserAgent $JCUserAgent  | Out-Null
-        
+                                Invoke-RestMethod -Method GET -Uri $ConnectionTestURL -Headers $hdrs -UserAgent:(Get-JCUserAgent) | Out-Null
+
                                 $global:JCOrgID = $($OrgIDHash.$selection)
                                 Write-Host -BackgroundColor Green -ForegroundColor Black "Connected to JumpCloud Tenant: $($OrgNameHash.$selection) | OrgID: $JCOrgID"
-                        
+
                             }
                             catch
                             {
-                        
+
                                 Write-Error "Incorrect OrgID OR no network connectivity. You can obtain your Organization ID below your Organization's Contact Information on the Settings page."
                                 $global:JCOrgID = $null
                                 break
-                                            
+
                             }
-                                        
+
                         }
-                    
+
                     }
-                            
+
                 }
-                
+
             }
 
         }
@@ -169,9 +169,9 @@ function Set-JCOrganization
 
     }
 
-        
 
-    
+
+
     end
     {
     }

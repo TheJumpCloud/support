@@ -3,7 +3,7 @@ Function New-JCCommand
     [CmdletBinding()]
 
     param (
-        
+
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName = $True)]
         [string]
@@ -24,15 +24,15 @@ Function New-JCCommand
             ValueFromPipelineByPropertyName = $True)]
         [string]
         [ValidateSet('trigger', 'manual')]
-        $launchType = 'manual', 
-        
+        $launchType = 'manual',
+
         [Parameter(
             ValueFromPipelineByPropertyName = $True)]
         [string]
         $timeout = '120'
 
     )
-    
+
     DynamicParam
     {
 
@@ -48,7 +48,7 @@ Function New-JCCommand
             $attrColl.Add((New-Object System.Management.Automation.ValidateSetAttribute('powershell', 'cmd')))
             $param = New-Object System.Management.Automation.RuntimeDefinedParameter('shell', [string], $attrColl)
             $dict.Add('shell', $param)
-                    
+
         }
 
         If ($commandType -ne "windows")
@@ -60,7 +60,7 @@ Function New-JCCommand
             $attrColl.Add($attr)
             $param = New-Object System.Management.Automation.RuntimeDefinedParameter('user', [string], $attrColl)
             $dict.Add('user', $param)
-                    
+
         }
 
         If ($launchType -eq "trigger")
@@ -73,11 +73,11 @@ Function New-JCCommand
             $attrColl.Add($attr)
             $param = New-Object System.Management.Automation.RuntimeDefinedParameter('trigger', [string], $attrColl)
             $dict.Add('trigger', $param)
-              
+
         }
 
-        return $dict 
-        
+        return $dict
+
     }
 
     begin
@@ -104,7 +104,7 @@ Function New-JCCommand
         $NewCommandsArray = @()
 
     }
-    
+
     process
     {
 
@@ -129,7 +129,7 @@ Function New-JCCommand
                     timeout     = $timeout
                     user        = $PSBoundParameters["user"]
                 }
-              
+
             }
 
             windows
@@ -138,7 +138,7 @@ Function New-JCCommand
                 if ($PSBoundParameters["shell"] -eq $null)
                 {
                     $PSBoundParameters["shell"] = "powershell"`
-                
+
                 }
 
                 $body = @{
@@ -150,7 +150,7 @@ Function New-JCCommand
                     timeout     = $timeout
                     shell       = $PSBoundParameters["shell"]
                 }
-               
+
             }
 
             linux
@@ -170,7 +170,7 @@ Function New-JCCommand
                     timeout     = $timeout
                     user        = $PSBoundParameters["user"]
                 }
-               
+
             }
 
             Default
@@ -190,12 +190,12 @@ Function New-JCCommand
 
         $jsonbody = $body | ConvertTo-Json
 
-        $NewCommand = Invoke-RestMethod -Uri $URL -Method POST -Body $jsonbody -Headers $hdrs -UserAgent $JCUserAgent
+        $NewCommand = Invoke-RestMethod -Uri $URL -Method POST -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent)
 
         $NewCommandsArray += $NewCommand
 
     }
-    
+
     end
     {
 
