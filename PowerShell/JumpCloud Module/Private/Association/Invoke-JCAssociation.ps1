@@ -39,14 +39,19 @@
                     , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 1)][ValidateNotNullOrEmpty()][string]$Method
                     , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 2)][ValidateNotNullOrEmpty()][object]$Source
                     , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 3)][ValidateNotNullOrEmpty()][object]$Target
-                    , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 4)][ValidateNotNullOrEmpty()][bool]$IncludeInfo = $false
-                    , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 5)][ValidateNotNullOrEmpty()][bool]$IncludeNames = $false
-                    , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 6)][ValidateNotNullOrEmpty()][bool]$IncludeVisualPath = $false
-                    , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 7)][ValidateNotNullOrEmpty()][bool]$Raw = $false
+                    , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 4)][ValidateNotNullOrEmpty()][string]$TargetId
+                    , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 5)][ValidateNotNullOrEmpty()][bool]$IncludeInfo = $false
+                    , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 6)][ValidateNotNullOrEmpty()][bool]$IncludeNames = $false
+                    , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 7)][ValidateNotNullOrEmpty()][bool]$IncludeVisualPath = $false
+                    , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 8)][ValidateNotNullOrEmpty()][bool]$Raw = $false
                 )
                 Write-Debug ('[UrlTemplate]:' + $Uri)
                 $AssociationsOut = @()
                 $Associations = Invoke-JCApi -Method:($Method) -Paginate:($true) -Url:($Uri)
+                If ($TargetId)
+                {
+                    $Associations = $Associations | Where-Object {$_.id -eq $TargetId}
+                }
                 If ($Associations -and $Associations.PSObject.Properties.name -notcontains 'NoContent')
                 {
                     ForEach ($Association In $Associations)
@@ -272,7 +277,7 @@
                                         'null'
                                     }
                                     # Validate that the association exists
-                                    $TestAssociation = Format-JCAssociation -Uri:($Uri_Associations_GET) -Method:('GET') -Source:($SourceItem) -Target:($TargetItem) -IncludeNames:($true)
+                                    $TestAssociation = Format-JCAssociation -Uri:($Uri_Associations_GET) -Method:('GET') -Source:($SourceItem) -Target:($TargetItem) -TargetId:($TargetItemId) -IncludeNames:($true)
                                     Where-Object {$_.TargetId -eq $TargetItemId}
                                     $IndirectAssociations = $TestAssociation  | Where-Object {$_.associationType -ne 'direct'}
                                     $DirectAssociations = $TestAssociation  | Where-Object {$_.associationType -eq 'direct'}
@@ -329,7 +334,7 @@
                                     # Validate that the new association has been created
                                     If ($Action -eq 'add')
                                     {
-                                        $AddAssociationValidation = Format-JCAssociation -Uri:($Uri_Associations_GET) -Method:('GET') -Source:($SourceItem) -Target:($TargetItem) -IncludeNames:($true) | Where-Object {$_.TargetId -eq $TargetItemId}
+                                        $AddAssociationValidation = Format-JCAssociation -Uri:($Uri_Associations_GET) -Method:('GET') -Source:($SourceItem) -Target:($TargetItem) -TargetId:($TargetItemId) -IncludeNames:($true) | Where-Object {$_.TargetId -eq $TargetItemId}
                                         If ($AddAssociationValidation)
                                         {
                                             $Result = $AddAssociationValidation
@@ -342,7 +347,7 @@
                                     # Validate that the old association has been removed
                                     If ($Action -eq 'remove')
                                     {
-                                        $RemoveAssociationValidation = Format-JCAssociation -Uri:($Uri_Associations_GET) -Method:('GET') -Source:($SourceItem) -Target:($TargetItem) -IncludeNames:($true)
+                                        $RemoveAssociationValidation = Format-JCAssociation -Uri:($Uri_Associations_GET) -Method:('GET') -Source:($SourceItem) -Target:($TargetItem) -TargetId:($TargetItemId) -IncludeNames:($true)
                                         If (!($RemoveAssociationValidation))
                                         {
                                             $Result = $DirectAssociations
