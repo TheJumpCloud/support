@@ -39,9 +39,9 @@ Function Add-JCCommandTarget
             ParameterSetName = 'GroupID',
             Position = 1)]
         $GroupID
-        
+
     )
-    
+
     begin
     {
 
@@ -72,7 +72,7 @@ Function Add-JCCommandTarget
             $SystemGroupNameHash = Get-Hash_SystemGroupName_ID
 
         }
-        
+
 
 
         if ($PSCmdlet.ParameterSetName -eq 'SystemID')
@@ -87,25 +87,25 @@ Function Add-JCCommandTarget
 
         Write-Verbose 'Populating CommandNameHash'
         $CommandNameHash = Get-Hash_CommandID_Name
-        
+
         Write-Verbose 'Initilizing RawResults and resultsArrayList'
         $resultsArray = @()
-        
+
 
     }
-    
+
     process
     {
 
 
         switch ($PSCmdlet.ParameterSetName)
         {
-            
+
             SystemID
             {
 
                 $SystemOS_Raw = $SystemID_OSHash.($SystemID)
-                
+
                 $CommandType = $CommandID_TypeHash.($CommandID)
 
                 switch ($SystemOS_Raw)
@@ -132,8 +132,8 @@ Function Add-JCCommandTarget
                     op   = "add"
                     id   = $SystemID
 
-                }               
-                
+                }
+
             } # end SystemID switch
 
             GroupName
@@ -168,28 +168,28 @@ Function Add-JCCommandTarget
         $jsonbody = $body | ConvertTo-Json
         $URL = "$JCUrlBasePath/api/v2/commands/$($CommandID)/associations"
 
-        
+
         if ($OS_conflict -ne $true)
         {
 
             try
             {
 
-                $APIresults = Invoke-RestMethod -Method Post -Uri  $URL  -Header $hdrs -Body $jsonbody -UserAgent $JCUserAgent
+                $APIresults = Invoke-RestMethod -Method Post -Uri  $URL  -Header $hdrs -Body $jsonbody -UserAgent:(Get-JCUserAgent)
                 $Status = 'Added'
-                
+
             }
             catch
             {
-    
+
                 $Status = $_.ErrorDetails
-    
+
             }
 
         }
 
         $CommandName = $CommandNameHash.($CommandID)
-        
+
         $FormattedResults = [PSCustomObject]@{
 
             'CommandID'   = $CommandID
@@ -201,10 +201,10 @@ Function Add-JCCommandTarget
 
         $resultsArray += $FormattedResults
 
-            
 
-    } # end process 
-    
+
+    } # end process
+
     end
     {
 

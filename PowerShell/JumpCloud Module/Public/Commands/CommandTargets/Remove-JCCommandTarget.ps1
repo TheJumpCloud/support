@@ -39,9 +39,9 @@ Function Remove-JCCommandTarget
             ParameterSetName = 'GroupID',
             Position = 1)]
         $GroupID
-        
+
     )
-    
+
     begin
     {
 
@@ -75,22 +75,22 @@ Function Remove-JCCommandTarget
 
         Write-Verbose 'Populating CommandNameHash'
         $CommandNameHash = Get-Hash_CommandID_Name
-        
+
         Write-Verbose 'Initilizing RawResults and resultsArrayList'
         $resultsArray = @()
-        
+
 
     }
-    
+
     process
     {
 
 
         switch ($PSCmdlet.ParameterSetName)
         {
-            
+
             SystemID
-            {  
+            {
 
                 $body = @{
 
@@ -98,8 +98,8 @@ Function Remove-JCCommandTarget
                     op   = "remove"
                     id   = $SystemID
 
-                }               
-                
+                }
+
             } # end SystemID switch
 
             GroupName
@@ -137,9 +137,9 @@ Function Remove-JCCommandTarget
         try
         {
 
-            $APIresults = Invoke-RestMethod -Method Post -Uri  $URL  -Header $hdrs -Body $jsonbody -UserAgent $JCUserAgent
+            $APIresults = Invoke-RestMethod -Method Post -Uri  $URL  -Header $hdrs -Body $jsonbody -UserAgent:(Get-JCUserAgent)
             $Status = 'Removed'
-            
+
         }
         catch
         {
@@ -162,10 +162,10 @@ Function Remove-JCCommandTarget
 
         $resultsArray += $FormattedResults
 
-            
 
-    } # end process 
-    
+
+    } # end process
+
     end
     {
 
