@@ -14,7 +14,7 @@ Describe "Association Tests" {
     # AfterEach {}
     # Define misc. variables
     $TestMethods = ('ById', 'ByName')
-    $Mock = $false
+    $Mock = $true
     $MockFilePath = $PSScriptRoot + '/MockCommands.ps1'
     # Internal Functions
     Function Test-AssociationCommand
@@ -122,46 +122,46 @@ Describe "Association Tests" {
                 $Associations_Test = Invoke-Expression -Command:($Associations_Test_Command)
             }
             # Run tests
-            Context ($ItMessage) {
-                # Test results of action
-                If ($Verb -eq 'Get')
-                {
-                    $AssociationsProperties = ($Associations_Test | ForEach-Object {$_.PSObject.Properties.name} | Where-Object {$_ -ne 'compiledAttributes'} | Select-Object -Unique | Sort-Object)
-                    $SwitchColumnHash.GetEnumerator() | ForEach-Object {
-                        $ParameterName = $_.Key
-                        $ExpectedColumns = $_.Value | Sort-Object
-                        If ($Associations_Test_Command -match $ParameterName)
-                        {
-                            If ($ParameterName)
+            If (!($Mock))
+            {
+                Context ($ItMessage) {
+                    # Test results of action
+                    If ($Verb -eq 'Get')
+                    {
+                        $AssociationsProperties = ($Associations_Test | ForEach-Object {$_.PSObject.Properties.name} | Where-Object {$_ -ne 'compiledAttributes'} | Select-Object -Unique | Sort-Object)
+                        $SwitchColumnHash.GetEnumerator() | ForEach-Object {
+                            $ParameterName = $_.Key
+                            $ExpectedColumns = $_.Value | Sort-Object
+                            If ($Associations_Test_Command -match $ParameterName)
                             {
-                                It("Where properties returned '$($ExpectedColumns -join ", ")' should be '$($AssociationsProperties -join ", ")'") {
-                                    $ExpectedColumns | Should -Be $AssociationsProperties
-                                }
-                                If ($ParameterName -in ('Direct')) #, 'Indirect'
+                                If ($ParameterName)
                                 {
-                                    If ($TestMethod -eq 'ById')
-                                    {
-                                        It("Where '$($Associations_Test.associationType)' match '$($ParameterName)'") {
-                                            $Associations_Test.associationType | Should -Be $ParameterName
-                                        }
+                                    It("Where properties returned '$($ExpectedColumns -join ", ")' should be '$($AssociationsProperties -join ", ")'") {
+                                        $ExpectedColumns | Should -Be $AssociationsProperties
                                     }
-                                    ElseIf ($TestMethod -eq 'ByName')
+                                    If ($ParameterName -in ('Direct')) #, 'Indirect'
                                     {
-                                        It("Where '$($ParameterName)' match '$($Associations_Test.associationType)'") {
-                                            $ParameterName | Should -BeIn $Associations_Test.associationType
+                                        If ($TestMethod -eq 'ById')
+                                        {
+                                            It("Where '$($Associations_Test.associationType)' match '$($ParameterName)'") {
+                                                $Associations_Test.associationType | Should -Be $ParameterName
+                                            }
                                         }
-                                    }
-                                    Else
-                                    {
-                                        Write-Error ('Unknown')
+                                        ElseIf ($TestMethod -eq 'ByName')
+                                        {
+                                            It("Where '$($ParameterName)' match '$($Associations_Test.associationType)'") {
+                                                $ParameterName | Should -BeIn $Associations_Test.associationType
+                                            }
+                                        }
+                                        Else
+                                        {
+                                            Write-Error ('Unknown')
+                                        }
                                     }
                                 }
                             }
                         }
                     }
-                }
-                If (!($Mock))
-                {
                     It("Where results should be not NullOrEmpty") {$Associations_Test | Should -Not -BeNullOrEmpty}
                     It("Where results count should BeGreaterThan 0") {($Associations_Test | Measure-Object).Count | Should -BeGreaterThan 0}
                     If ($Associations_Test_Command -match '-Raw')
@@ -264,6 +264,7 @@ Describe "Association Tests" {
         ################################################################################
         ################################## HACKS/TODO ########################################
         $ValidAssociationItems = $ValidAssociationItems | Where-Object {$_.SourceType -ne 'active_directory' -and $_.TargetType -ne 'active_directory'}
+        $ValidAssociationItems = $ValidAssociationItems | Where-Object {$_.SourceType -eq 'user_group' -and $_.TargetType -eq 'application'}
         ################################################################################
         ################################################################################
         # Get invalid association items
