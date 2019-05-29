@@ -131,7 +131,11 @@ Function New-RandomUserCustom  ()
 
     return $NewRandomUser
 }
-Function Connect-JCTestOrg ()
+Function Connect-JCOnlineTest ()
 {
     $Connect = Connect-JCOnline -JumpCloudAPIKey $TestOrgAPIKey -force
+}
+Function Connect-JCOnlineMultiTenant ($JumpCloudOrgID)
+{
+    $Connect = Connect-JCOnline -JumpCloudAPIKey $MultiTenantAPIKey -force -JumpCloudOrgID $JumpCloudOrgID
 }
