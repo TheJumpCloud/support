@@ -1,4 +1,4 @@
-#Connect-JCTestOrg
+#Connect-JCOnlineTest
 
 Describe -Tag:('JCGroup') 'Get-JCGroup 1.0' {
 

@@ -1,4 +1,4 @@
-Connect-JCTestOrg
+Connect-JCOnlineTest
 Describe 'Invoke-JCCommand 1.0' {
 
     It "Invokes a single JumpCloud command declaring the -trigger" {

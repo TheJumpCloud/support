@@ -1,4 +1,4 @@
-Connect-JCTestOrg
+Connect-JCOnlineTest
 
 Describe 'Get-JCPolicyTargetSystem 1.10' {
 

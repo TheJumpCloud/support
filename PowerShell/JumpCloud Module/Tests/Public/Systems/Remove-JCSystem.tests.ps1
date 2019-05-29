@@ -1,7 +1,7 @@
 # Until we can auto create systems this test is out of the rotation.
 
 <#
-Connect-JCTestOrg
+Connect-JCOnlineTest
 
 
 Describe 'Remove-JCSystem 1.0' {
@@ -14,4 +14,3 @@ Describe 'Remove-JCSystem 1.0' {
 }
 
 #>
-

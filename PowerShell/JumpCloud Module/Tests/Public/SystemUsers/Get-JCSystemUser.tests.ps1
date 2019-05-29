@@ -1,4 +1,4 @@
-Connect-JCTestOrg
+Connect-JCOnlineTest
 
 Describe 'Get-JCSystemUser 1.0' {
 

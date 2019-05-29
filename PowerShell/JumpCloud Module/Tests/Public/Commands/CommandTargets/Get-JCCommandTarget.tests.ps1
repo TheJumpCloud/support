@@ -1,4 +1,4 @@
-Connect-JCTestOrg
+Connect-JCOnlineTest
 
 Describe 'Get-JCCommandTarget 1.3' {
 

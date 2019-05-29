@@ -1,4 +1,4 @@
-Connect-JCTestOrg
+Connect-JCOnlineTest
 Describe 'New-JCSystemGroup 1.0' {
 
     It "Creates a new system group" {

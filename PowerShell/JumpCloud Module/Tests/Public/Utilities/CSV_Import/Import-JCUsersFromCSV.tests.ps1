@@ -1,4 +1,4 @@
-Connect-JCTestOrg
+Connect-JCOnlineTest
 
 Describe 'Import-JCUserFromCSV 1.1' {
 
@@ -98,247 +98,247 @@ Describe 'Import-JCUserFromCSV 1.1' {
     It "Verifies ia.bound.std user" {
 
         $User = Get-JCUser -Username 'ia.bound.std' | Where-Object username -EQ 'ia.bound.std'
-    
+
         $User.activated | Should be $false
-    
+
         $Bound = Get-JCSystemUser -SystemID $PesterParams.SystemID | Where-Object username -EQ 'ia.bound.std'
-    
+
         $Bound.DirectBind | Should Be $true
-    
+
         $Bound.Administrator | Should Be $false
-    
+
     }
-    
+
     It "Verifies ia.bound.true1 user" {
-    
+
         $User = Get-JCUser -Username 'ia.bound.true1' | Where-Object username -EQ 'ia.bound.true1'
-    
+
         $User.activated | Should be $false
-    
+
         $Bound = Get-JCSystemUser -SystemID $PesterParams.SystemID | Where-Object username -EQ 'ia.bound.true1'
-    
+
         $Bound.DirectBind | Should Be $true
-    
+
         $Bound.Administrator | Should Be $true
-    
+
     }
-    
+
     It "Verifies ia.bound.false1 user" {
-    
+
         $User = Get-JCUser -Username 'ia.bound.false1' | Where-Object username -EQ 'ia.bound.false1'
-    
+
         $User.activated | Should be $false
-    
+
         $Bound = Get-JCSystemUser -SystemID $PesterParams.SystemID | Where-Object username -EQ 'ia.bound.false1'
-    
+
         $Bound.DirectBind | Should Be $true
-    
+
         $Bound.Administrator | Should Be $false
-    
+
     }
-    
+
     It "Verifies ia.bound.true2 user" {
-    
+
         $User = Get-JCUser -Username 'ia.bound.true2'
-    
+
         $User.activated | Should be $false
-    
+
         $Bound = Get-JCSystemUser -SystemID $PesterParams.SystemID | Where-Object username -EQ 'ia.bound.true2'
-    
+
         $Bound.DirectBind | Should Be $true
-    
+
         $Bound.Administrator | Should Be $true
-    
+
     }
-    
+
     It "Verifies ia.bound.false2 user" {
-    
+
         $User = Get-JCUser -Username 'ia.bound.false2' | Where-Object username -EQ 'ia.bound.false2'
-    
+
         $User.activated | Should be $false
-    
+
         $Bound = Get-JCSystemUser -SystemID $PesterParams.SystemID | Where-Object username -EQ 'ia.bound.false2'
-    
+
         $Bound.DirectBind | Should Be $true
-    
+
         $Bound.Administrator | Should Be $false
-    
+
     }
 
     It "Verifies a.1group user" {
-    
+
         $User = Get-JCUser -Username 'a.1group' | Where-Object username -EQ 'a.1group'
-    
+
         $User.activated | Should be $true
-    
+
         $Groups = Get-JCGroup -Type User | Get-JCUserGroupMember | Where-Object Username -EQ 'a.1group'
-    
+
         $Groups.GroupName.count | Should Be 1
-    
+
     }
 
     It "Verifies ia.1group user" {
-    
+
         $User = Get-JCUser -Username 'ia.1group' | Where-Object username -EQ 'ia.1group'
-    
+
         $User.activated | Should be $false
-    
+
         $Groups = Get-JCGroup -Type User | Get-JCUserGroupMember | Where-Object Username -EQ 'ia.1group'
-    
+
         $Groups.GroupName.count | Should Be 1
-    
+
     }
 
     It "Verifies a.2group user" {
-    
+
         $User = Get-JCUser -Username 'a.2group' | Where-Object Username -EQ 'a.2group'
-    
+
         $User.activated | Should be $true
-    
+
         $Groups = Get-JCGroup -Type User | Get-JCUserGroupMember | Where-Object Username -EQ 'a.2group'
-    
+
         $Groups.count | Should Be 2
-    
+
     }
 
     It "Verifies ia.2group user" {
-    
+
         $User = Get-JCUser -Username 'ia.2group' | Where-Object username -EQ 'ia.2group'
-    
+
         $User.activated | Should be $false
-    
+
         $Groups = Get-JCGroup -Type User | Get-JCUserGroupMember | Where-Object Username -EQ 'ia.2group'
-    
+
         $Groups.count | Should Be 2
-    
+
     }
 
     It "Verifies a.2group user" {
-    
+
         $User = Get-JCUser -Username 'a.2group' | Where-Object username -EQ 'a.2group'
-    
+
         $User.activated | Should be $true
-    
+
         $Groups = Get-JCGroup -Type User | Get-JCUserGroupMember | Where-Object Username -EQ 'a.2group'
-    
+
         $Groups.count | Should Be 2
-    
+
     }
 
     It "Verifies ia.2group user" {
-    
+
         $User = Get-JCUser -Username 'ia.2group' | Where-Object username -EQ 'ia.2group'
-    
+
         $User.activated | Should be $false
-    
+
         $Groups = Get-JCGroup -Type User | Get-JCUserGroupMember | Where-Object Username -EQ 'ia.2group'
-    
+
         $Groups.count | Should Be 2
-    
+
     }
 
     It "Verifies a.5group user" {
-    
+
         $User = Get-JCUser -Username 'a.5group' | Where-Object username -EQ 'a.5group'
-    
+
         $User.activated | Should be $true
-    
+
         $Groups = Get-JCGroup -Type User | Get-JCUserGroupMember | Where-Object Username -EQ 'a.5group'
-    
+
         $Groups.count | Should Be 5
-    
+
     }
-    
+
     It "Verifies ia.5group user" {
-    
+
         $User = Get-JCUser -Username 'ia.5group' | Where-Object Username -EQ 'ia.5group'
-    
+
         $User.activated | Should be $false
-    
+
         $Groups = Get-JCGroup -Type User | Get-JCUserGroupMember | Where-Object Username -EQ 'ia.5group'
-    
+
         $Groups.count | Should Be 5
-    
+
     }
 
     It "Verifies a.1attr user" {
-    
-        $User = Get-JCUser -Username 'a.1attr' 
-    
+
+        $User = Get-JCUser -Username 'a.1attr'
+
         $User.activated | Should be $true
-     
+
         $User.attributes.count | Should Be 1
-    
+
     }
-    
+
     It "Verifies ia.1attr user" {
-    
-        $User = Get-JCUser -Username 'ia.1attr' 
-    
+
+        $User = Get-JCUser -Username 'ia.1attr'
+
         $User.activated | Should be $false
-    
+
         $User.attributes.count | Should Be 1
-    
+
     }
 
     It "Verifies a.2attr user" {
-    
+
         $User = Get-JCUser -Username 'a.2attr' | Where-Object username -EQ 'a.2attr'
-    
+
         $User.activated | Should be $true
-     
+
         $User.attributes.count | Should Be 2
-    
+
     }
-    
+
     It "Verifies ia.2attr user" {
-    
+
         $User = Get-JCUser -Username 'ia.2attr' | Where-Object username -EQ 'ia.2attr'
-    
+
         $User.activated | Should be $false
-    
-    
+
+
         $User.attributes.count | Should Be 2
-    
+
     }
 
     It "Verifies a.5attr user" {
-    
+
         $User = Get-JCUser -Username 'a.5attr' | Where-Object username -EQ 'a.5attr'
-    
+
         $User.activated | Should be $true
-     
+
         $User.attributes.count | Should Be 5
-    
+
     }
-    
+
     It "Verifies ia.5attr user" {
-    
+
         $User = Get-JCUser -Username 'ia.5attr' | Where-Object username -EQ 'ia.5attr'
-    
+
         $User.activated | Should be $false
-    
-    
+
+
         $User.attributes.count | Should Be 5
-    
+
     }
 
     It "Verifies a.all" {
 
         $User = Get-JCUser -Username 'a.all' | Where-Object username -EQ 'a.all'
-    
+
         $User.activated | Should be $true
-     
+
         $User.attributes.count | Should Be 5
 
         $Groups = Get-JCGroup -Type User | Get-JCUserGroupMember | Where-Object Username -EQ 'a.all'
-    
+
         $Groups.count | Should Be 5
 
         $Bound = Get-JCSystemUser -SystemID $PesterParams.SystemID | Where-Object username -EQ 'a.all'
-    
+
         $Bound.DirectBind | Should Be $true
-    
+
         $Bound.Administrator | Should Be $true
 
     }
@@ -346,13 +346,13 @@ Describe 'Import-JCUserFromCSV 1.1' {
     It "Verifies ia.all" {
 
         $User = Get-JCUser -Username 'ia.all' | Where-Object username -EQ 'ia.all'
-    
+
         $User.activated | Should be $false
-     
+
         $User.attributes.count | Should Be 5
 
         $Groups = Get-JCGroup -Type User | Get-JCUserGroupMember | Where-Object Username -EQ 'ia.all'
-    
+
         $Groups.count | Should Be 5
 
         $Bound = Get-JCSystemUser -SystemID $PesterParams.SystemID | Where-Object username -EQ 'ia.all'
@@ -397,12 +397,12 @@ Describe "Import-JCUsersFromCSV 1.8.0" {
 
         $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath $ImportPath/ImportExample_userInformationAttributes.csv -force
         $UserImportInfo = Import-Csv $ImportPath/ImportExample_userInformationAttributes.csv
-    
+
         foreach ($User in $UserCSVImport)
         {
             $NewUserInfo = Get-JCUser -username $User.username
             $ImportCheck = $UserImportInfo | Where-Object Username -EQ "$($User.username)"
-    
+
             $ImportCheck.MiddleName | Should -be $NewUserInfo.middleName
             $ImportCheck.preferredName | Should -be $NewUserInfo.displayname
             $ImportCheck.jobTitle | Should -be $NewUserInfo.jobTitle
@@ -413,12 +413,12 @@ Describe "Import-JCUsersFromCSV 1.8.0" {
             $ImportCheck.employeeType | Should -be $NewUserInfo.employeeType
             $ImportCheck.decription | Should -be $NewUserInfo.decription
             $ImportCheck.location | Should -be $NewUserInfo.location
-    
+
         }
-        
+
 
         Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
-    
+
     }
 
     It "Imports users from a CSV populated with user location attributes" {
@@ -536,7 +536,7 @@ Describe "Import-JCUsersFromCSV 1.8.0" {
             $ImportCheck.work_country | Should -be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty country)
 
             $UserCSVImport | Where-Object Username -eq "$($User.username)" | Select-Object -ExpandProperty systemAdd | Should -be "Added"
-        
+
 
             $UserCSVImport | Where-Object Username -eq "$($User.username)" | Select-Object -ExpandProperty GroupsAdd | Select-Object Status -Unique | Select-Object -ExpandProperty Status | Should -be "Added"
         }
@@ -546,5 +546,3 @@ Describe "Import-JCUsersFromCSV 1.8.0" {
     }
 
 }
-
-

@@ -1,4 +1,4 @@
-Connect-JCTestOrg
+Connect-JCOnlineTest
 
 Describe "Set-JCRadiusReplyAttribute 1.9.0" {
 
@@ -74,7 +74,7 @@ Describe "Set-JCRadiusReplyAttribute 1.9.0" {
 
         $Attr2Value = "Attr2Value"
 
-        $AttributesAdd = Add-JCRadiusReplyAttribute -GroupName $NewGroup.Name -NumberOfAttributes 2 -Attribute1_name $Attr1Name -Attribute1_value $Attr1Value -Attribute2_name $Attr2Name -Attribute2_value $Attr2Value 
+        $AttributesAdd = Add-JCRadiusReplyAttribute -GroupName $NewGroup.Name -NumberOfAttributes 2 -Attribute1_name $Attr1Name -Attribute1_value $Attr1Value -Attribute2_name $Attr2Name -Attribute2_value $Attr2Value
 
         $Attr1UpdatedVal = "Attr1ValueUp"
 
@@ -91,7 +91,7 @@ Describe "Set-JCRadiusReplyAttribute 1.9.0" {
         $Attr2Verify | Should -Be $Attr2UpdatedValue
 
         Remove-JCUserGroup -GroupName $NewGroup.name -force
-    
+
     }
 
     It "Updates two custom radius attributes on a group and updates VLAN attributes" {

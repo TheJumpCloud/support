@@ -1,4 +1,4 @@
-Connect-JCTestOrg
+Connect-JCOnlineTest
 
 Describe 'Add-JCCommandTarget 1.3' {
 
@@ -41,7 +41,7 @@ Describe 'Add-JCCommandTarget 1.3' {
 
     }
 
-   
+
 
 
 }

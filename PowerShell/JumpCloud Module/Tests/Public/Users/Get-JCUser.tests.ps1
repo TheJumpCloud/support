@@ -1,4 +1,4 @@
-Connect-JCTestOrg
+Connect-JCOnlineTest
 
 Describe 'Get-JCUser 1.0' {
 
@@ -97,12 +97,12 @@ Describe "Get-JCUser 1.4" {
         $PesterUser = Get-JCUser -firstname "Peste*" -username $PesterParams.Username
         $PesterUser.username | Should -BeGreaterThan 0
     }
-    
+
     It "Searches for a JumpCloud user by firstname and wildcard beginning" {
         $PesterUser = Get-JCUser -firstname "*ester" -username $PesterParams.Username
         $PesterUser.username | Should -BeGreaterThan 0
     }
-    
+
     It "Searches for a JumpCloud user by firstname and wildcard beginning and wildcard end" {
         $PesterUser = Get-JCUser -firstname "*este*" -username $PesterParams.Username
         $PesterUser.username | Should -BeGreaterThan 0
@@ -112,12 +112,12 @@ Describe "Get-JCUser 1.4" {
         $PesterUser = Get-JCUser -lastname "Test*" -username $PesterParams.Username
         $PesterUser.username | Should -BeGreaterThan 0
     }
-    
+
     It "Searches for a JumpCloud user by lastname and wildcard beginning" {
         $PesterUser = Get-JCUser -lastname "*ester" -username $PesterParams.Username
         $PesterUser.username | Should -BeGreaterThan 0
     }
-    
+
     It "Searches for a JumpCloud user by lastname and wildcard beginning and wildcard end" {
         $PesterUser = Get-JCUser -lastname "*este*" -username $PesterParams.Username
         $PesterUser.username | Should -BeGreaterThan 0
@@ -127,7 +127,7 @@ Describe "Get-JCUser 1.4" {
         $PesterUser = Get-JCUser -email "*.com" -username $PesterParams.Username
         $PesterUser.username | Should -BeGreaterThan 0
     }
-    
+
     It "Searches for a JumpCloud user by email and wildcard beginning and wildcard end" {
         $PesterUser = Get-JCUser -email "*.co*" -username $PesterParams.Username
         $PesterUser.username | Should -BeGreaterThan 0
@@ -193,7 +193,7 @@ Describe "Get-JCUser 1.4" {
         $PesterUser = Get-JCUser -username $PesterParams.Username -password_never_expires $false
         $PesterUser.username | Should -be $PesterParams.Username
     }
-    
+
     It "Searches for a JumpCloud user using username, filterDateProperty created and before" {
 
         $PesterUser = Get-JCUser -username $PesterParams.Username -filterDateProperty created -dateFilter before -date '1/3/2018'
@@ -206,7 +206,7 @@ Describe "Get-JCUser 1.4" {
         $PesterUser = Get-JCUser -username $PesterParams.Username -filterDateProperty created -dateFilter after -date '1/1/2018'
         $PesterUser.username | Should -be $PesterParams.Username
 
-    } 
+    }
 
     It "Searches for a JumpCloud user using username and returns on the username property" {
         $PesterUser = Get-JCUser -username $PesterParams.Username -returnProperties username
@@ -239,15 +239,15 @@ Describe "Get-JCUser 1.4" {
         $PesterUser.unix_uid | Should -Not -Be $null
         $PesterUser.username | Should -Not -Be $null
 
-    } 
-    
+    }
+
 
 }
 
 Describe "Get-JCUser with new attributes 1.8.0" {
 
     $RandomString = (New-RandomString -NumberOfChars 8 ).ToLower()
-    
+
     $UserWithAttributes = @{
         Username           = "$(New-RandomString -NumberOfChars 8)"
         FirstName          = "Delete"

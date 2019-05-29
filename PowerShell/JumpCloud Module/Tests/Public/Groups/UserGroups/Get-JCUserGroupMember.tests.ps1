@@ -1,4 +1,4 @@
-Connect-JCTestOrg
+Connect-JCOnlineTest
 Describe 'Get-JCUserGroupMember 1.0' {
 
     It 'Gets a User Groups membership by Groupname' {

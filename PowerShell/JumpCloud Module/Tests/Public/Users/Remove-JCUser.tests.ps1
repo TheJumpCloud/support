@@ -1,4 +1,4 @@
-Connect-JCTestOrg
+Connect-JCOnlineTest
 
 It "Remove-JCUser 1.0" {
     $NewUser = New-RandomUser "PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser
@@ -14,7 +14,7 @@ Describe "Remove-JCUser 1.10" {
         $NewUser = New-RandomUser -domain "pleasedelete" | New-JCUser
 
         $RemoveUser = Remove-JCUser  -Username $NewUser.username -force
-    
+
         $RemoveUser.Results | Should -be 'Deleted'
 
     }
@@ -24,7 +24,7 @@ Describe "Remove-JCUser 1.10" {
         $NewUser = New-RandomUser -domain "pleasedelete" | New-JCUser
 
         $RemoveUser = Remove-JCUser  -UserID $NewUser._id -force
-    
+
         $RemoveUser.Results | Should -be 'Deleted'
 
     }

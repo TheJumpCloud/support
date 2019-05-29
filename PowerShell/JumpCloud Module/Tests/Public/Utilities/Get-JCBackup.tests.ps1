@@ -1,9 +1,9 @@
-Connect-JCTestOrg
+Connect-JCOnlineTest
 
 Describe "Get-JCBackup 1.5.0" {
 
     It "Backs up JumpCloud users" {
-        
+
         Get-JCBackup -All
 
         Test-Path ./"JumpCloudUsers_$(Get-Date -Format MMddyyyy).CSV" | Should -Be $true
@@ -58,5 +58,5 @@ Describe "Get-JCBackup 1.5.0" {
         Test-Path ./"JumpCloudUserGroupMembers_$(Get-Date -Format MMddyyyy).CSV" | Should -Be $true
         Remove-Item -Path ./"JumpCloudUserGroupMembers_$(Get-Date -Format MMddyyyy).CSV"
     }
- 
+
 }

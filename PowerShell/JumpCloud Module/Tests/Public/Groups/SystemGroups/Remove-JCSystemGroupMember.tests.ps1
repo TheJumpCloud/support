@@ -1,4 +1,4 @@
-Connect-JCTestOrg
+Connect-JCOnlineTest
 Describe 'Remove-JCSystemGroupMember 1.0' {
 
 

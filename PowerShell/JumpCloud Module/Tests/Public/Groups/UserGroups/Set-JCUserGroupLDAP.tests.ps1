@@ -1,4 +1,4 @@
-Connect-JCTestOrg
+Connect-JCOnlineTest
 
 Describe 'Set-JCUserGroupLDAP' {
 
@@ -15,7 +15,7 @@ Describe 'Set-JCUserGroupLDAP' {
         $UserGroupRemove = Remove-JCUserGroup -GroupName $PesterParams.UserGroupID -force
 
     }
-    
+
     It "Disables LDAP for a JumpCloud User Group using GroupName" {
 
         $PesterParams.UserGroupID = New-JCUserGroup -GroupName $(New-RandomString 8) | Select-Object -ExpandProperty Name
@@ -28,7 +28,7 @@ Describe 'Set-JCUserGroupLDAP' {
 
         $UserGroupRemove = Remove-JCUserGroup -GroupName $PesterParams.UserGroupID -force
 
-    } 
+    }
 
     It "Enables LDAP for a JumpCloud User Group using GroupID" {
 
@@ -41,7 +41,7 @@ Describe 'Set-JCUserGroupLDAP' {
         $UserGroupRemove = Remove-JCUserGroup -GroupName $UserGroup.name -force
 
     }
-    
+
     It "Disables LDAP for a JumpCloud User Group using GroupID" {
 
         $UserGroup = New-JCUserGroup -GroupName $(New-RandomString 8)
@@ -56,6 +56,6 @@ Describe 'Set-JCUserGroupLDAP' {
 
 
     }
-    
+
 
 }

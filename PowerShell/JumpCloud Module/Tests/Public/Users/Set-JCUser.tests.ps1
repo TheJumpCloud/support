@@ -1,5 +1,5 @@
 
-Connect-JCTestOrg
+Connect-JCOnlineTest
 
 Describe 'Set-JCUser 1.0' {
 
@@ -125,7 +125,7 @@ Describe 'Set-JCUser 1.0' {
 
     It "Updates a User enable_managed_uid -eq True using -ByID and -UserID" {
         $NewUser = New-RandomUser "PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser
-        $Update = Set-JCUser -ByID -UserID $NewUser._id -enable_managed_uid $true 
+        $Update = Set-JCUser -ByID -UserID $NewUser._id -enable_managed_uid $true
         $Update.enable_managed_uid | Should -Be True
         Remove-JCUser -UserID $NewUser._id -force
     }
@@ -401,8 +401,8 @@ Describe 'Set-JCUser 1.3.0' {
 
         Remove-JCUser -UserID $RandomUser._id -ByID -Force
 
-    } 
-    
+    }
+
     It "Updates a JumpCloud user to password_never_expires false " {
 
         $ExpTrue = New-RandomUser "PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser -password_never_expires $true
@@ -710,16 +710,16 @@ Describe "Set-JCUser 1.8.0" {
             description        = 'description'
             location           = 'location'
         }
-    
+
         $NewUser = New-JCUser @UserWithAttributes
-    
+
         $SetUser = Set-JCUser -UserID $NewUser._id -middlename "new_middle_name"
         $SetUser.middlename | Should -be "new_middle_name"
-    
+
     }
-    
+
     It "Updates a users displayName using userID" {
-    
+
         $UserWithAttributes = @{
             Username           = "$(New-RandomString -NumberOfChars 8)"
             FirstName          = "Delete"
@@ -1124,9 +1124,9 @@ Describe "Set-JCUser phoneNumbers 1.8.0" {
             work_mobile_number = "work_mobile_number"
             work_fax_number    = "work_fax_number"
         }
-    
+
         $NewUser = New-JCUser @UserWithNumbers
-    
+
         $NewUser.phoneNumbers | Where-Object type -EQ mobile | Select-Object -ExpandProperty number | Should -be "mobile_number"
         $NewUser.phoneNumbers | Where-Object type -EQ home | Select-Object -ExpandProperty number | Should -be "home_number"
         $NewUser.phoneNumbers | Where-Object type -EQ work | Select-Object -ExpandProperty number | Should -be "work_number"
@@ -1308,7 +1308,7 @@ Describe "Set-JCUser phoneNumbers 1.8.0" {
 }
 
 Describe "Set-JCuser users phoneNumbers and attributes 1.8.0" {
-    
+
     IT "Updates a number and adds an attribute" {
 
         $UserWithNumbers = @{
@@ -1322,18 +1322,18 @@ Describe "Set-JCuser users phoneNumbers and attributes 1.8.0" {
             work_mobile_number = "work_mobile_number"
             work_fax_number    = "work_fax_number"
         }
-    
+
         $NewUser = New-JCUser @UserWithNumbers
-    
+
         $NewUser.phoneNumbers | Where-Object type -EQ mobile | Select-Object -ExpandProperty number | Should -be "mobile_number"
         $NewUser.phoneNumbers | Where-Object type -EQ home | Select-Object -ExpandProperty number | Should -be "home_number"
         $NewUser.phoneNumbers | Where-Object type -EQ work | Select-Object -ExpandProperty number | Should -be "work_number"
         $NewUser.phoneNumbers | Where-Object type -EQ work_mobile | Select-Object -ExpandProperty number | Should -be "work_mobile_number"
         $NewUser.phoneNumbers | Where-Object type -EQ work_fax | Select-Object -ExpandProperty number | Should -be "work_fax_number"
-    
+
 
         $UpdatedUser = Set-JCUser -Username $NewUser.username -NumberOfCustomAttributes 1 -Attribute1_name 'attr1' -Attribute1_value 'one' -work_fax_number "new_work_fax_number"
-    
+
         $UpdatedUser.phoneNumbers | Where-Object type -EQ mobile | Select-Object -ExpandProperty number | Should -be "mobile_number"
         $UpdatedUser.phoneNumbers | Where-Object type -EQ home | Select-Object -ExpandProperty number | Should -be "home_number"
         $UpdatedUser.phoneNumbers | Where-Object type -EQ work | Select-Object -ExpandProperty number | Should -be "work_number"
@@ -1461,16 +1461,16 @@ Describe "Set-JCuser users phoneNumbers and attributes 1.8.0" {
             work_mobile_number = "work_mobile_number"
             work_fax_number    = "work_fax_number"
         }
-        
+
         $NewUser = New-JCUser @UserWithNumbers
-        
+
         $NewUser.phoneNumbers | Where-Object type -EQ mobile | Select-Object -ExpandProperty number | Should -be "mobile_number"
         $NewUser.phoneNumbers | Where-Object type -EQ home | Select-Object -ExpandProperty number | Should -be "home_number"
         $NewUser.phoneNumbers | Where-Object type -EQ work | Select-Object -ExpandProperty number | Should -be "work_number"
         $NewUser.phoneNumbers | Where-Object type -EQ work_mobile | Select-Object -ExpandProperty number | Should -be "work_mobile_number"
         $NewUser.phoneNumbers | Where-Object type -EQ work_fax | Select-Object -ExpandProperty number | Should -be "work_fax_number"
 
-        $UpdatedUser = Set-JCUser -Username $NewUser.username -NumberOfCustomAttributes 1 -Attribute1_name 'attr1' -Attribute1_value 'one' 
+        $UpdatedUser = Set-JCUser -Username $NewUser.username -NumberOfCustomAttributes 1 -Attribute1_name 'attr1' -Attribute1_value 'one'
 
         $UpdatedUser = Set-JCUser -Username $NewUser.username -RemoveAttribute 'attr1' -work_fax_number "new_work_fax_number"
 

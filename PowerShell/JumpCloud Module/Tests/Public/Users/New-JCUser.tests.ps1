@@ -1,4 +1,4 @@
-Connect-JCTestOrg
+Connect-JCOnlineTest
 
 Describe 'New-JCUser 1.0' {
 
@@ -118,15 +118,15 @@ Describe 'Add-JCUser 1.3.0' {
 
         Remove-JCUser -UserID $NewUser._id -ByID -Force
 
-    }    
+    }
 
     It "Adds a JumpCloud user with password_never_expires false " {
-        
+
         $ExpFalse = New-RandomUser -domain pleasedelete | New-JCUser -password_never_expires $false
 
         $ExpFalse.password_never_expires | Should Be $false
 
-        Remove-JCUser -userID $ExpFalse._id -force 
+        Remove-JCUser -userID $ExpFalse._id -force
 
     }
 
@@ -136,9 +136,9 @@ Describe 'Add-JCUser 1.3.0' {
 
         $ExpTrue.password_never_expires | Should Be $true
 
-        Remove-JCUser -userID $ExpTrue._id -force 
+        Remove-JCUser -userID $ExpTrue._id -force
 
-        
+
     }
 
 }
@@ -444,7 +444,7 @@ Describe "New-JCUser 1.8.0" {
 
         $NewUser.phoneNumbers | Where-Object type -EQ work_mobile | Select-Object -ExpandProperty number | Should -be "1234"
     }
-    
+
 
     It "Creates a user with work fax number" {
         $UserWithNumber = @{
