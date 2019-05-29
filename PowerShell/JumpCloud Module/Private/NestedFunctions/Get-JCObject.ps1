@@ -24,8 +24,6 @@ Function Get-JCObject
         # Debug message for parameter call
         Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDebugMessageBegin) -ArgumentList:($MyInvocation, $PsBoundParameters, $PSCmdlet) -NoNewScope
         $Results = @()
-        $CurrentErrorActionPreference = $ErrorActionPreference
-        $ErrorActionPreference = 'Stop'
     }
     Process
     {
@@ -124,6 +122,7 @@ Function Get-JCObject
                                         $BodyParts += '"filter":[{"' + $PropertyIdentifier + '":"' + $SearchByValueItem + '"}]'
                                     }
                                 }
+                                Default {Write-Error ('Unknown $SearchBy value: ' + $SearchBy)}
                             }
                         }
                         # Build query string and body
@@ -139,9 +138,9 @@ Function Get-JCObject
                             $UrlOut = $UrlOut + '?' + $JoinedQueryStrings
                         }
                         $UrlObject += [PSCustomObject]@{
-                            'Url'           = $UrlOut;
-                            'Body'          = $Body;
-                            'SearchByValue' = $SearchByValue;
+                            'Url'               = $UrlOut;
+                            'Body'              = $Body;
+                            'SearchByValueItem' = $SearchByValueItem;
                         }
                     }
                 }
@@ -149,7 +148,7 @@ Function Get-JCObject
                 {
                     $Url = $UrlItem.Url
                     $Body = $UrlItem.Body
-                    $SearchByValue = $UrlItem.SearchByValue
+                    $SearchByValueItem = $UrlItem.SearchByValueItem
                     ## Escape Url????
                     # $Url = ([uri]::EscapeDataString($Url)
                     # Build function parameters
@@ -198,35 +197,45 @@ Function Get-JCObject
                             $Result = $Result | Where-Object { $_.Type -eq $TypeNameSingular }
                         }
                     }
-                    If ($Result)
+                    If ($Result -and $Result.PSObject.Properties.name -notcontains 'NoContent')
                     {
-                        # Set some properties to be hidden in the results
+                        If ($SearchBy -and ($Result | Measure-Object).Count -gt 1)
+                        {
+                            Write-Warning -Message:('Found "' + [string]($Result | Measure-Object).Count + '" "' + $TypeNamePlural + '" with the "' + $SearchBy.Replace('By', '').ToLower() + '" of "' + $SearchByValueItem + '"')
+                        }
+                        # If ($PSCmdlet.ParameterSetName -eq 'Default' -and $TypeNameSingular -notin ('g_suite', 'office_365') -and $Url -notlike '*/api/v2/directories*' -and $Url -notlike '*/groups*' -and $Url -notlike '*/api/organizations*' -and $Url -notlike '*/api/search*')
+                        # {
+                        #     $Results = $Result | ForEach-Object { Get-JCObject -Type:($TypeNameSingular) -Id:($_.($ById))}
+                        # }
+                        # Else
+                        # {
+
+                        # List values to add to results
                         $HiddenProperties = @('ById', 'ByName', 'TypeName', 'TypeNameSingular', 'TypeNamePlural', 'Targets', 'TargetSingular', 'TargetPlural')
-                        $Result | ForEach-Object {
-                            # Create the default property display set
-                            $defaultDisplayPropertySet = New-Object System.Management.Automation.PSPropertySet('DefaultDisplayPropertySet', [string[]]$_.PSObject.Properties.Name)
-                            $PSStandardMembers = [System.Management.Automation.PSMemberInfo[]]@($defaultDisplayPropertySet)
-                            # Add the list of standard members
-                            Add-Member -InputObject:($_) -MemberType:('MemberSet') -Name:('PSStandardMembers') -Value:($PSStandardMembers)
-                            # Add ById and ByName as hidden properties to results
-                            ForEach ($HiddenProperty In $HiddenProperties)
-                            {
-                                Add-Member -InputObject:($_) -MemberType:('NoteProperty') -Name:($HiddenProperty) -Value:(Get-Variable -Name:($HiddenProperty) -ValueOnly)
+                        # Append meta info to each result record
+                        Get-Variable -Name:($HiddenProperties) |
+                            ForEach-Object {
+                            $Variable = $_
+                            $Result |
+                                ForEach-Object {
+                                Add-Member -InputObject:($_) -MemberType:('NoteProperty') -Name:($Variable.Name) -Value:($Variable.Value)
                             }
                         }
-                        $Results += $Result
+                        # Set the meta info to be hidden by default
+                        $Results += Hide-ObjectProperty -Object:($Result) -HiddenProperties:($HiddenProperties)
                     }
                     Else
                     {
-                        If ($SearchByValue)
+                        If ($SearchByValueItem)
                         {
-                            Write-Warning ('A "' + $TypeNameSingular + '" called "' + $SearchByValue + '" does not exist. Note the search is case sensitive.')
+                            Write-Warning ('A "' + $TypeNameSingular + '" called "' + $SearchByValueItem + '" does not exist. Note the search is case sensitive.')
                         }
                         Else
                         {
-                            Write-Warning ('The search value is blank or no "' + $TypeNamePlural + '" have been setup in your org. SearchValue:"' + $SearchByValue + '"')
+                            Write-Warning ('The search value is blank or no "' + $TypeNamePlural + '" have been setup in your org. SearchValue:"' + $SearchByValueItem + '"')
                         }
                     }
+                    # }
                 }
             }
             Else
@@ -236,12 +245,11 @@ Function Get-JCObject
         }
         Catch
         {
-            Invoke-Command -ScriptBlock:($ScriptBlock_TryCatchError) -ArgumentList:($_) -NoNewScope
+            Invoke-Command -ScriptBlock:($ScriptBlock_TryCatchError) -ArgumentList:($_, $true) -NoNewScope
         }
     }
     End
     {
         Return $Results
-        $ErrorActionPreference = $CurrentErrorActionPreference
     }
 }

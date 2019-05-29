@@ -30,7 +30,7 @@ Function Get-JCType
         }
         Catch
         {
-            Invoke-Command -ScriptBlock:($ScriptBlock_TryCatchError) -ArgumentList:($_) -NoNewScope
+            Invoke-Command -ScriptBlock:($ScriptBlock_TryCatchError) -ArgumentList:($Error, $true) -NoNewScope
         }
     }
     End
