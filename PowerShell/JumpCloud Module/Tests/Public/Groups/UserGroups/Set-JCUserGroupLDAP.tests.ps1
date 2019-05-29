@@ -1,32 +1,33 @@
+
 Connect-JCOnlineTest
 
 Describe -Tag:('JCUserGroupLDAP') 'Set-JCUserGroupLDAP' {
 
     It "Enables LDAP for a JumpCloud User Group using GroupName" {
 
-        $PesterParams.UserGroupID = New-JCUserGroup -GroupName $(New-RandomString 8) | Select-Object -ExpandProperty Name
+        $NewUserGroup = New-JCUserGroup -GroupName $(New-RandomString 8) | Select-Object -ExpandProperty Name
 
-        $DisableLDAP = Set-JCUserGroupLDAP -GroupName $PesterParams.UserGroupID -LDAPEnabled $false
+        $DisableLDAP = Set-JCUserGroupLDAP -GroupName $NewUserGroup -LDAPEnabled $false
 
-        $EnableLDAP = Set-JCUserGroupLDAP -GroupName $PesterParams.UserGroupID -LDAPEnabled $true
+        $EnableLDAP = Set-JCUserGroupLDAP -GroupName $NewUserGroup -LDAPEnabled $true
 
         $EnableLDAP.LDAPEnabled | Should be $true
 
-        $UserGroupRemove = Remove-JCUserGroup -GroupName $PesterParams.UserGroupID -force
+        $UserGroupRemove = Remove-JCUserGroup -GroupName $NewUserGroup -force
 
     }
 
     It "Disables LDAP for a JumpCloud User Group using GroupName" {
 
-        $PesterParams.UserGroupID = New-JCUserGroup -GroupName $(New-RandomString 8) | Select-Object -ExpandProperty Name
+        $NewUserGroup = New-JCUserGroup -GroupName $(New-RandomString 8) | Select-Object -ExpandProperty Name
 
-        $EnableLDAP = Set-JCUserGroupLDAP -GroupName $PesterParams.UserGroupID -LDAPEnabled $true
+        $EnableLDAP = Set-JCUserGroupLDAP -GroupName $NewUserGroup -LDAPEnabled $true
 
-        $DisableLDAP = Set-JCUserGroupLDAP -GroupName $PesterParams.UserGroupID -LDAPEnabled $false
+        $DisableLDAP = Set-JCUserGroupLDAP -GroupName $NewUserGroup -LDAPEnabled $false
 
         $DisableLDAP.LDAPEnabled | Should be $false
 
-        $UserGroupRemove = Remove-JCUserGroup -GroupName $PesterParams.UserGroupID -force
+        $UserGroupRemove = Remove-JCUserGroup -GroupName $NewUserGroup -force
 
     }
 
