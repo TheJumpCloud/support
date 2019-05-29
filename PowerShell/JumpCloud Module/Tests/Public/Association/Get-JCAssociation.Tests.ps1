@@ -1,5 +1,5 @@
 # NOTE TODO Add bespoke tests to validate the "-Indirect" parameter. Remove active_directory exclusion once bug has been fixed.
-Describe "Association Tests" {
+Describe -Tag:('JCAssociation') "Association Tests" {
     BeforeAll {
         # $DebugPreference = 'Continue' # SilentlyContinue (Default), Continue, Inquire, Stop
         # $VerbosePreference = 'Continue' # SilentlyContinue (Default), Continue, Inquire, Stop
