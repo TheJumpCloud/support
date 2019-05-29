@@ -1,6 +1,6 @@
 #Connect-JCTestOrg
 
-Describe 'Get-JCGroup 1.0' {
+Describe -Tag:('JCGroup') 'Get-JCGroup 1.0' {
 
     It 'Gets all groups: System and User' {
 
@@ -27,10 +27,10 @@ Describe 'Get-JCGroup 1.0' {
 
 }
 
-Describe 'Get-JCGroup 1.1.0' {
+Describe -Tag:('JCGroup') 'Get-JCGroup 1.1.0' {
 
     It "Gets a JumpCloud UserGroup by Name and Displays Attributes" {
-        
+
         $Posix = Get-JCGroup -Type User -Name $PesterParams.UserGroupName
 
         $Posix.Attributes | Should -Not -BeNullOrEmpty
@@ -38,7 +38,7 @@ Describe 'Get-JCGroup 1.1.0' {
 
 }
 
-Describe 'Get-JCGroup 1.12.0' {
+Describe -Tag:('JCGroup') 'Get-JCGroup 1.12.0' {
 
     It "Searches for a User group that does not exist and errors" {
 
@@ -46,9 +46,9 @@ Describe 'Get-JCGroup 1.12.0' {
 
         Get-JCGroup -Type User -Name $Random -ErrorVariable err -ErrorAction SilentlyContinue
 
-        $err.Count | Should Not Be 0
+        $err.Count | Should -Not -Be 0
 
-        $err[0].Exception.Message | Should Be "There is no User group named $Random. NOTE: Group names are case sensitive."
+        $err[0].Exception.Message | Should -Be "There is no User group named $Random. NOTE: Group names are case sensitive."
     }
 
     It "Searches for a System group that does not exist and errors" {
@@ -57,8 +57,8 @@ Describe 'Get-JCGroup 1.12.0' {
 
         Get-JCGroup -Type System -Name $Random -ErrorVariable err -ErrorAction SilentlyContinue
 
-        $err.Count | Should Not Be 0
+        $err.Count | Should -Not -Be 0
 
-        $err[0].Exception.Message | Should Be "There is no System group named $Random. NOTE: Group names are case sensitive."
+        $err[0].Exception.Message | Should -Be "There is no System group named $Random. NOTE: Group names are case sensitive."
     }
 }
