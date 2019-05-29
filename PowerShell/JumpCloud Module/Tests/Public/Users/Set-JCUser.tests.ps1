@@ -1610,7 +1610,7 @@ Describe -Tag:('JCUser') "Set-JCUser MFA Enrollment periods 1.10" {
 
         $EnrollmentDays = 366
 
-        { $NewUser = $CreateUser | Set-JCUser -enable_user_portal_multifactor $true -EnrollmentDays $EnrollmentDays } | Should Throw "Cannot validate argument on parameter 'EnrollmentDays'. The 366 argument is greater than the maximum allowed range of 365. Supply an argument that is less than or equal to 365 and then try the command again."
+        ($NewUser = $CreateUser | Set-JCUser -enable_user_portal_multifactor $true -EnrollmentDays $EnrollmentDays) | Should -Throw "Cannot validate argument on parameter 'EnrollmentDays'. The 366 argument is greater than the maximum allowed range of 365. Supply an argument that is less than or equal to 365 and then try the command again."
     }
 
     It "Updates an existing user with enable_user_portal_multifactor -eq True with Attributes" {
