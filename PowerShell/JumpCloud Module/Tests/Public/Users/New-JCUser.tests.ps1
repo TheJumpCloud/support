@@ -543,12 +543,18 @@ Describe -Tag:('JCUser') "New-JCUser MFA with enrollment periods 1.10" {
     }
 
     It "Creates a new user with enable_user_portal_multifactor -eq True and a 366 days specified for EnrollmentDays (invalid)" {
-
         $EnrollmentDays = 366
-
-        { $Newuser = New-RandomUser -domain "deleteme" | New-JCUser -enable_user_portal_multifactor $true -EnrollmentDays $EnrollmentDays } | Should Throw "Cannot validate argument on parameter 'EnrollmentDays'. The 366 argument is greater than the maximum allowed range of 365. Supply an argument that is less than or equal to 365 and then try the command again."
-
-
+        Switch ([environment]::OSVersion.Platform)
+        {
+            'Win32NT'
+            {
+                ($Newuser = New-RandomUser -domain "deleteme" | New-JCUser -enable_user_portal_multifactor $true -EnrollmentDays $EnrollmentDays) | Should -Throw 'The remote server returned an error: (400) Bad Request.'
+            }
+            'Unix'
+            {
+                ($Newuser = New-RandomUser -domain "deleteme" | New-JCUser -enable_user_portal_multifactor $true -EnrollmentDays $EnrollmentDays) | Should -Throw 'Response status code does not indicate success: 400 (Bad Request).'
+            }
+        }
     }
 
     It "Creates a new user with enable_user_portal_multifactor -eq True with Attributes" {
