@@ -1,6 +1,6 @@
 Connect-JCOnlineTest
 
-Describe 'Get-JCSystem 1.0' {
+Describe -Tag:('JCSystem') 'Get-JCSystem 1.0' {
 
     It "Gets all JumpCloud systems" {
         $Systems = Get-JCSystem
@@ -15,7 +15,7 @@ Describe 'Get-JCSystem 1.0' {
 }
 
 
-Describe "Get-JCSystem 1.4" {
+Describe -Tag:('JCSystem') "Get-JCSystem 1.4" {
 
     It "Gets a JumpCloud system by system ID" {
 

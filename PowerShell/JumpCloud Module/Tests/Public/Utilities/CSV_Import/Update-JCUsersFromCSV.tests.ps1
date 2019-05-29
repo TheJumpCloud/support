@@ -1,6 +1,6 @@
 Connect-JCOnlineTest
 
-Describe "Update-JCUsersFromCSV 1.8.0" {
+Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
 
     It "Updates users from a CSV populated with telephony attributes" {
 

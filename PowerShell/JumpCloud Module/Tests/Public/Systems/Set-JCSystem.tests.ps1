@@ -1,6 +1,6 @@
 Connect-JCOnlineTest
 
-Describe 'Set-JCSystem 1.0' {
+Describe -Tag:('JCSystem') 'Set-JCSystem 1.0' {
 
     It "Updates the DisplyName and then set it back" {
         $CurrentDisplayName = Get-JCSystem -SystemID $PesterParams.SystemID | Select-Object DisplayName

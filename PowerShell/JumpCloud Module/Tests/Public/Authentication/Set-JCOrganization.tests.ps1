@@ -1,4 +1,4 @@
-Describe "Set-JCOrganization" {
+Describe -Tag:('JCOrganization') "Set-JCOrganization" {
 
     It "Switches connection between two JumpCloud orgs for an admin with a multi tenant API connection" {
 

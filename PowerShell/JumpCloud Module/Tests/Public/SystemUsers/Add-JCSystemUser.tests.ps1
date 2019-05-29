@@ -1,6 +1,6 @@
 Connect-JCOnlineTest
 
-Describe 'Add-JCSystemUser 1.0' {
+Describe -Tag:('JCSystemUser') 'Add-JCSystemUser 1.0' {
 
     It "Adds a single user to a single system by Username and SystemID" {
         $UserRemove = Remove-JCSystemUser -Username $PesterParams.Username -SystemID $PesterParams.SystemID -force
@@ -23,7 +23,7 @@ Describe 'Add-JCSystemUser 1.0' {
 
 }
 
-Describe 'Add-JCSystemUser 1.1.0' {
+Describe -Tag:('JCSystemUser') 'Add-JCSystemUser 1.1.0' {
 
     It "Adds a JumpCloud User to a JumpCloud System with admin `$False using username" {
 

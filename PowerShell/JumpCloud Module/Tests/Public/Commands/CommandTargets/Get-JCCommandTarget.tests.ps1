@@ -1,6 +1,6 @@
 Connect-JCOnlineTest
 
-Describe 'Get-JCCommandTarget 1.3' {
+Describe -Tag:('JCCommandTarget') 'Get-JCCommandTarget 1.3' {
 
     It "Returns a JumpCloud commands system targets" {
 

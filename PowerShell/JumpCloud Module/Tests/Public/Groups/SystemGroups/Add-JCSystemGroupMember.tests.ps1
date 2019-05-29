@@ -1,6 +1,6 @@
 Connect-JCOnlineTest
 
-Describe 'Add-JCSystemGroupMember 1.0' {
+Describe -Tag:('JCSystemGroupMember') 'Add-JCSystemGroupMember 1.0' {
 
     It "Adds a JumpCloud system to a JumpCloud system group by System Groupname and SystemID" {
 

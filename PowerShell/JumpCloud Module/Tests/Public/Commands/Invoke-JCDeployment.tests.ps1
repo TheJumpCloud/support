@@ -1,5 +1,5 @@
 Connect-JCOnlineTest
-Describe "Invoke-JCDeployment 1.7.0" {
+Describe -Tag:('JCDeployment') "Invoke-JCDeployment 1.7.0" {
 
     It "Invokes a JumpCloud command deployment with 2 systems" {
 

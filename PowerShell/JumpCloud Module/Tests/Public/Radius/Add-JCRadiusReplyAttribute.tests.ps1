@@ -1,6 +1,6 @@
 Connect-JCOnlineTest
 
-Describe "Add-JCRadiusReplyAttribute 1.9.0" {
+Describe -Tag:('JCRadiusReplyAttribute') "Add-JCRadiusReplyAttribute 1.9.0" {
 
     It "Adds VLAN attributes to a group" {
 

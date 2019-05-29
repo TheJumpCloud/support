@@ -1,6 +1,6 @@
 Connect-JCOnlineTest
 
-Describe 'Import-JCUserFromCSV 1.1' {
+Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
     It "Imports users from the ImportExample_Pester_Test using -Force" {
 
@@ -369,7 +369,7 @@ Describe 'Import-JCUserFromCSV 1.1' {
 Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
 
 
-Describe "Import-JCUsersFromCSV 1.8.0" {
+Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
 
     It "Imports users from a CSV populated with telephony attributes" {
 

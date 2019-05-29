@@ -1,6 +1,6 @@
 Connect-JCOnlineTest
 
-Describe 'Add-JCUserGroupMember 1.0' {
+Describe -Tag:('JCUserGroupMember') 'Add-JCUserGroupMember 1.0' {
 
     It "Adds a JumpCloud user to a JumpCloud user group by User GroupName and Username" {
 

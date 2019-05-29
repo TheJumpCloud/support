@@ -1,6 +1,6 @@
 Connect-JCOnlineTest
 
-Describe 'Set-JCSystemUser 1.0' {
+Describe -Tag:('JCSystemUser') 'Set-JCSystemUser 1.0' {
 
     It "Sets a standard user to an admin user using username" {
 

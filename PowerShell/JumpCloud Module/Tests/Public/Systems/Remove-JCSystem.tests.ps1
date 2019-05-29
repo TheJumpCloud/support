@@ -4,7 +4,7 @@
 Connect-JCOnlineTest
 
 
-Describe 'Remove-JCSystem 1.0' {
+Describe -Tag:('JCSystem') 'Remove-JCSystem 1.0' {
 
     It "Removes a JumpCloud system with the default warning (Halted with H)" {
 

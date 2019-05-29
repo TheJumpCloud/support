@@ -1,6 +1,6 @@
 Connect-JCOnlineTest
 
-Describe 'Get-JCUser 1.0' {
+Describe -Tag:('JCUser') 'Get-JCUser 1.0' {
 
     It "Gets all JumpCloud users using Get-JCuser" { $Users = Get-JCUser
         $Users._id.count | Should -BeGreaterThan 1 }
@@ -21,7 +21,7 @@ Describe 'Get-JCUser 1.0' {
     }
 }
 
-Describe 'Get-JCUser 1.1' {
+Describe -Tag:('JCUser') 'Get-JCUser 1.1' {
 
     It "Searches a JumpCloud user by username" {
 
@@ -63,7 +63,7 @@ Describe 'Get-JCUser 1.1' {
 
 }
 
-Describe "Get-JCUser 1.4" {
+Describe -Tag:('JCUser') "Get-JCUser 1.4" {
 
     It "Returns a JumpCloud user by UserID" {
         $PesterUser = Get-JCUser -userid $PesterParams.UserID
@@ -244,7 +244,7 @@ Describe "Get-JCUser 1.4" {
 
 }
 
-Describe "Get-JCUser with new attributes 1.8.0" {
+Describe -Tag:('JCUser') "Get-JCUser with new attributes 1.8.0" {
 
     $RandomString = (New-RandomString -NumberOfChars 8 ).ToLower()
 

@@ -1,6 +1,6 @@
 Connect-JCOnlineTest
 
-Describe 'Set-JCUserGroupLDAP' {
+Describe -Tag:('JCUserGroupLDAP') 'Set-JCUserGroupLDAP' {
 
     It "Enables LDAP for a JumpCloud User Group using GroupName" {
 

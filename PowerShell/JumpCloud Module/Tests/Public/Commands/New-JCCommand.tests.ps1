@@ -1,5 +1,5 @@
 Connect-JCOnlineTest
-Describe 'New-JCCommand 1.2' {
+Describe -Tag:('JCCommand') 'New-JCCommand 1.2' {
 
     It "Creates a new Windows command" {
 

@@ -1,6 +1,6 @@
 Connect-JCOnlineTest
 
-Describe 'Remove-JCUserGroupMember 1.0' {
+Describe -Tag:('JCUserGroupMember') 'Remove-JCUserGroupMember 1.0' {
 
     It "Removes JumpCloud user from a JumpCloud user group by User GroupName and Username" {
 

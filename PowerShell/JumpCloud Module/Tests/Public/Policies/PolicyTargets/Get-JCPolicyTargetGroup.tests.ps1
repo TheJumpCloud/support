@@ -1,6 +1,6 @@
 Connect-JCOnlineTest
 
-Describe 'Get-JCPolicyTargetGroup 1.10' {
+Describe -Tag:('JCPolicyTargetGroup') 'Get-JCPolicyTargetGroup 1.10' {
 
     It "Returns all JumpCloud policy group targets by GroupName using PolicyId" {
         $SystemGroupTarget = Get-JCPolicyTargetGroup -PolicyId:($SinglePolicy.id)

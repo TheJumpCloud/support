@@ -1,4 +1,4 @@
-Describe "Get-JCOrganization 1.6" {
+Describe -Tag:('JCOrganization') "Get-JCOrganization 1.6" {
 
     It "Returns JumpCloud Organizations " {
 

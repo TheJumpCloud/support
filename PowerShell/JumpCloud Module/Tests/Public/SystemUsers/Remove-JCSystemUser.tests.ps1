@@ -1,6 +1,6 @@
 Connect-JCOnlineTest
 
-Describe 'Remove-JCSystemUser 1.0' {
+Describe -Tag:('JCSystemUser') 'Remove-JCSystemUser 1.0' {
 
     It "Adds a single user to a single system by Username and SystemID" {
         $UserRemove = Remove-JCSystemUser -Username $PesterParams.Username -SystemID $PesterParams.SystemID -force

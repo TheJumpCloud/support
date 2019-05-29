@@ -1,5 +1,5 @@
 Connect-JCOnlineTest
-Describe 'Remove-JCCommand 1.2' {
+Describe -Tag:('JCCommand') 'Remove-JCCommand 1.2' {
 
     It "Creates a new Windows command" {
 

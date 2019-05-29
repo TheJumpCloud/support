@@ -1,4 +1,4 @@
-Describe "Connect-JCOnline 1.6" {
+Describe -Tag:('JCOnline') "Connect-JCOnline 1.6" {
 
     It "Connects to JumpCloud with a single admin API Key using force" {
 

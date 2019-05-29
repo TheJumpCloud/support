@@ -1,6 +1,6 @@
 Connect-JCOnlineTest
 
-Describe "Get-JCPolicyResult 1.10" {
+Describe -Tag:('JCPolicyResult') "Get-JCPolicyResult 1.10" {
 
     It "Returns a policy result with the PolicyName" {
         $PolicyResult = Get-JCPolicyResult $SinglePolicy.Name

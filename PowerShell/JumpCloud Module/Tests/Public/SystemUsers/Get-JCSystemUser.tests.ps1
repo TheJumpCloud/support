@@ -1,6 +1,6 @@
 Connect-JCOnlineTest
 
-Describe 'Get-JCSystemUser 1.0' {
+Describe -Tag:('JCSystemUser') 'Get-JCSystemUser 1.0' {
 
     It "Gets JumpCloud system users for a system using SystemID" {
 

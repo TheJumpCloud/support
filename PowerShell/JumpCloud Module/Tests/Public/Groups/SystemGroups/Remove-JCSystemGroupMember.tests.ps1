@@ -1,5 +1,5 @@
 Connect-JCOnlineTest
-Describe 'Remove-JCSystemGroupMember 1.0' {
+Describe -Tag:('JCSystemGroupMember') 'Remove-JCSystemGroupMember 1.0' {
 
 
     It "Removes a JumpCloud system from a JumpCloud system group by System Groupname and SystemID" {

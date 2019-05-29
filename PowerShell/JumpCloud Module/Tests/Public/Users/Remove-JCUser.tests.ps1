@@ -7,7 +7,7 @@ It "Remove-JCUser 1.0" {
 }
 
 
-Describe "Remove-JCUser 1.10" {
+Describe -Tag:('JCUser') "Remove-JCUser 1.10" {
 
     It "Removes JumpCloud User by Username and -force" {
 

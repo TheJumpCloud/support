@@ -1,7 +1,7 @@
 
 Connect-JCOnlineTest
 
-Describe 'Set-JCUser 1.0' {
+Describe -Tag:('JCUser') 'Set-JCUser 1.0' {
 
     It "Updates the firstname using -ByID and -UserID" {
 
@@ -324,7 +324,7 @@ Describe 'Set-JCUser 1.0' {
     }
 }
 
-Describe "Set-JCUser - CustomAttributes 1.0" {
+Describe -Tag:('JCUser') "Set-JCUser - CustomAttributes 1.0" {
 
     It "Updates a custom attribute on a User" {
         $NewUser = New-RandomUserCustom -Attributes -Domain DeleteMe | New-JCUser -NumberOfCustomAttributes 3
@@ -387,7 +387,7 @@ Describe "Set-JCUser - CustomAttributes 1.0" {
 
 }
 
-Describe 'Set-JCUser 1.3.0' {
+Describe -Tag:('JCUser') 'Set-JCUser 1.3.0' {
     # Linux UID, GUID
     It "Updates the UID and GUID to 2000000" {
 
@@ -430,7 +430,7 @@ Describe 'Set-JCUser 1.3.0' {
 
 }
 
-Describe "Set-JCUser 1.8.0" {
+Describe -Tag:('JCUser') "Set-JCUser 1.8.0" {
 
     It "Updates a users middle name" {
 
@@ -956,7 +956,7 @@ Describe "Set-JCUser 1.8.0" {
 
 }
 
-Describe "Set-JCUser addresses 1.8.0" {
+Describe -Tag:('JCUser') "Set-JCUser addresses 1.8.0" {
 
     It "Updates a users work address" {
         $UserWithHomeAndWorkAddressAndAttributes = @{
@@ -1077,7 +1077,7 @@ Describe "Set-JCUser addresses 1.8.0" {
 
 }
 
-Describe "Set-JCUser phoneNumbers 1.8.0" {
+Describe -Tag:('JCUser') "Set-JCUser phoneNumbers 1.8.0" {
 
     It "Updates a users mobile number" {
 
@@ -1307,7 +1307,7 @@ Describe "Set-JCUser phoneNumbers 1.8.0" {
 
 }
 
-Describe "Set-JCuser users phoneNumbers and attributes 1.8.0" {
+Describe -Tag:('JCUser') "Set-JCuser users phoneNumbers and attributes 1.8.0" {
 
     IT "Updates a number and adds an attribute" {
 
@@ -1488,7 +1488,7 @@ Describe "Set-JCuser users phoneNumbers and attributes 1.8.0" {
 }
 
 
-Describe "Set-JCUser MFA Enrollment periods 1.10" {
+Describe -Tag:('JCUser') "Set-JCUser MFA Enrollment periods 1.10" {
 
     It "Updates an existing user with enable_user_portal_multifactor -eq False to enable_user_portal_multifactor -eq True " {
         $CreateUser = New-RandomUser -domain "deleteme" | New-JCUser -enable_user_portal_multifactor $false
@@ -1707,7 +1707,7 @@ Describe "Set-JCUser MFA Enrollment periods 1.10" {
 
 }
 
-Describe "Set-JCUser bug fix 1.10.2" {
+Describe -Tag:('JCUser') "Set-JCUser bug fix 1.10.2" {
 
     It "Updates a users home poBox" {
 

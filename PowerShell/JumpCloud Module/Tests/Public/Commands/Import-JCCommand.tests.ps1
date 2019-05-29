@@ -1,6 +1,6 @@
 Connect-JCOnlineTest
 
-Describe 'Import-JCCommand 1.1' {
+Describe -Tag:('JCCommand') 'Import-JCCommand 1.1' {
 
     It "Imports a JumpCloud command from a long URL" {
 

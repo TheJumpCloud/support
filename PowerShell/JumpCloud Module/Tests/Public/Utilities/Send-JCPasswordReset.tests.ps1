@@ -1,6 +1,6 @@
 Connect-JCOnlineTest
 
-Describe "Sent-JCPasswordReset 1.6.0" {
+Describe -Tag:('JCPasswordReset') "Sent-JCPasswordReset 1.6.0" {
 
     It "Sends a single password reset email by username" {
 
