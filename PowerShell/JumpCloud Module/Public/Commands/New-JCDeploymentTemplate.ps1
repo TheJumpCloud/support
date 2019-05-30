@@ -11,10 +11,10 @@ Function New-JCDeploymentTemplate()
         $Banner = @'
        __                          ______ __                   __
       / /__  __ ____ ___   ____   / ____// /____   __  __ ____/ /
- __  / // / / // __  __ \ / __ \ / /    / // __ \ / / / // __  / 
-/ /_/ // /_/ // / / / / // /_/ // /___ / // /_/ // /_/ // /_/ /  
-\____/ \____//_/ /_/ /_// ____/ \____//_/ \____/ \____/ \____/   
-                       /_/                                                      
+ __  / // / / // __  __ \ / __ \ / /    / // __ \ / / / // __  /
+/ /_/ // /_/ // / / / / // /_/ // /___ / // /_/ // /_/ // /_/ /
+\____/ \____//_/ /_/ /_// ____/ \____//_/ \____/ \____/ \____/
+                       /_/
                               CSV Command Deployment Template
 
 '@
@@ -24,8 +24,8 @@ Function New-JCDeploymentTemplate()
 
         $Heading1 = 'The CSV file:'
         $Heading2 = 'Will be created within the directory:'
-        
-        Clear-Host
+
+        If (!(Get-PSCallStack | Where-Object {$_.Command -match 'Pester'})) {Clear-Host}
 
         Write-Host $Banner -ForegroundColor Green
         Write-Host $Heading1 -NoNewline
@@ -75,20 +75,20 @@ Function New-JCDeploymentTemplate()
         while ($Done -eq $false)
         {
 
-            Clear-Host
+            If ((Get-PSCallStack).Command -notlike '*Pester*') {Clear-Host}
 
             Write-Host $Banner -ForegroundColor Green
-    
+
             Write-Host "Enter a column heading for each of the system specific unique variable within the deployment command. `n" -ForegroundColor Yellow
-    
+
             Write-Host "Global variables within the script DO NOT need to be added as column headings." -ForegroundColor Red
-            
+
             Write-Host "`n================ CURRENT DEPLOYMENT CSV TEMPLATE ================= `n"
 
             foreach ($heading in $CSV.GetEnumerator())
             {
                 Write-Host "$($heading.name)," -ForegroundColor Green -NoNewline
-               
+
             }
 
             Write-Host "`n`n================================================================== `n"
@@ -114,12 +114,12 @@ Function New-JCDeploymentTemplate()
                 Default
                 {
                     try
-                    {   
+                    {
                         if ($VariableName -ne "")
                         {
                             $CSV.add($VariableName, $null)
                         }
-                        
+
                     }
                     catch
                     {

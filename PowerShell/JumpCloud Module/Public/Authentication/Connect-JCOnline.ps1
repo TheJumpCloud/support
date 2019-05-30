@@ -316,7 +316,7 @@ Function Connect-JCOnline ()
                     if ($UpdatedModuleVersion -eq $LatestVersion)
                     {
 
-                        Clear-Host
+                        If (!(Get-PSCallStack | Where-Object {$_.Command -match 'Pester'})) {Clear-Host}
 
                         $ReleaseNotesRaw = Invoke-WebRequest -uri $ReleaseNotesURL -UseBasicParsing -UserAgent:(Get-JCUserAgent) #for backwards compatibility
 
