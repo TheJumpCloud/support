@@ -11,7 +11,7 @@ Function Get-JCUserAgent
     }
     Else
     {
-        $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent
+        $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent.FullName
         $ModulePsd1 = Get-ChildItem -Path:($ModuleRoot) -Filter:('*.psd1')
         If ($ModulePsd1)
         {
