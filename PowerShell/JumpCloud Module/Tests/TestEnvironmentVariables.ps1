@@ -35,7 +35,7 @@ Import-Module -Name:($ModuleManifestPath) -Force
 # Authenticate to JumpCloud
 Connect-JCOnlineTest
 # Policy Info
-$MultiplePolicyList = @('Disable Cortana 1', 'Disable Cortana 10', 'Disable Cortana 100', 'Disable USB Storage - Linux') #Populate with multiple policy names.
+$MultiplePolicyList = @('1 Linux', 'Disable USB Storage - Linux') #Populate with multiple policy names.
 $SinglePolicyList = @('Disable USB Storage - Linux') #Populate with single policy name.
 $SystemIDWithPolicyResult = Get-JCSystem -SystemID '5a4c05ccaad9ac5f68b31022'
 $Policies = Get-JCPolicy
