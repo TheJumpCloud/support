@@ -32,6 +32,8 @@ $ImportPath = "$PSScriptRoot/Csv_files/import"
 $UpdatePath = "$PSScriptRoot/Csv_files/update"
 # Import the module
 Import-Module -Name:($ModuleManifestPath) -Force
+#Load private functions
+Get-ChildItem -Path:("$PSScriptRoot\..\Private\*.ps1") -Recurse | ForEach-Object {. $_.FullName}
 # Authenticate to JumpCloud
 Connect-JCOnlineTest
 # Policy Info
