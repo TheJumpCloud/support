@@ -34,10 +34,19 @@ Function Get-DynamicParamAssociation
         'Alias'                           = ('TargetSingular');
         'HelpMessage'                     = 'The target object type.'
     }
+    $Param_associationType = @{
+        'Name'                            = 'associationType';
+        'Type'                            = [System.String[]];
+        'Position'                        = 6;
+        'ValueFromPipelineByPropertyName' = $true;
+        'DefaultValue'                    = $false;
+        'DontShow'                        = $true;
+        'HelpMessage'                     = 'Returns the raw and unedited output from the api endpoint.'
+    }
     $Param_Raw = @{
         'Name'                            = 'Raw';
         'Type'                            = [Switch];
-        'Position'                        = 6;
+        'Position'                        = 7;
         'ValueFromPipelineByPropertyName' = $true;
         'DefaultValue'                    = $false;
         'DontShow'                        = $true;
@@ -46,7 +55,7 @@ Function Get-DynamicParamAssociation
     $Param_Direct = @{
         'Name'                            = 'Direct';
         'Type'                            = [Switch];
-        'Position'                        = 7;
+        'Position'                        = 8;
         'ValueFromPipelineByPropertyName' = $true;
         'DefaultValue'                    = $false;
         'HelpMessage'                     = 'Returns only "Direct" associations.'
@@ -54,7 +63,7 @@ Function Get-DynamicParamAssociation
     $Param_Indirect = @{
         'Name'                            = 'Indirect';
         'Type'                            = [Switch];
-        'Position'                        = 8;
+        'Position'                        = 9;
         'ValueFromPipelineByPropertyName' = $true;
         'DefaultValue'                    = $false;
         'HelpMessage'                     = 'Returns only "Indirect" associations.'
@@ -62,7 +71,7 @@ Function Get-DynamicParamAssociation
     $Param_IncludeInfo = @{
         'Name'                            = 'IncludeInfo';
         'Type'                            = [Switch];
-        'Position'                        = 9;
+        'Position'                        = 10;
         'ValueFromPipelineByPropertyName' = $true;
         'ParameterSets'                   = @('ById', 'ByName');
         'DefaultValue'                    = $false;
@@ -71,7 +80,7 @@ Function Get-DynamicParamAssociation
     $Param_IncludeNames = @{
         'Name'                            = 'IncludeNames';
         'Type'                            = [Switch];
-        'Position'                        = 10;
+        'Position'                        = 11;
         'ValueFromPipelineByPropertyName' = $true;
         'ParameterSets'                   = @('ById', 'ByName');
         'DefaultValue'                    = $false;
@@ -80,7 +89,7 @@ Function Get-DynamicParamAssociation
     $Param_IncludeVisualPath = @{
         'Name'                            = 'IncludeVisualPath';
         'Type'                            = [Switch];
-        'Position'                        = 11;
+        'Position'                        = 12;
         'ValueFromPipelineByPropertyName' = $true;
         'ParameterSets'                   = @('ById', 'ByName');
         'DefaultValue'                    = $false;
@@ -89,21 +98,21 @@ Function Get-DynamicParamAssociation
     $Param_TargetId = @{
         'Name'                            = 'TargetId';
         'Type'                            = [System.String];
-        'Position'                        = 12;
+        'Position'                        = 13;
         'ValueFromPipelineByPropertyName' = $true;
         'HelpMessage'                     = 'The unique id of the target object.'
     }
     $Param_TargetName = @{
         'Name'                            = 'TargetName';
         'Type'                            = [System.String];
-        'Position'                        = 13;
+        'Position'                        = 14;
         'ValueFromPipelineByPropertyName' = $true;
         'HelpMessage'                     = 'The name of the target object.'
     }
     $Param_Attributes = @{
         'Name'                            = 'Attributes';
         'Type'                            = [System.Management.Automation.PSObject];
-        'Position'                        = 14;
+        'Position'                        = 15;
         'ValueFromPipelineByPropertyName' = $true;
         'Alias'                           = 'compiledAttributes';
         'HelpMessage'                     = 'Add attributes that define the association such as if they are an admin.'
@@ -193,6 +202,7 @@ Function Get-DynamicParamAssociation
     {
         $Params += $Param_TargetId
         $Params += $Param_TargetName
+        $Params += $Param_associationType
     }
     If ($Action -eq 'add')
     {
