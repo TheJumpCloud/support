@@ -291,13 +291,13 @@ Describe -Tag:('JCAssociation') "Association Tests" {
             ForEach ($TestMethod In $TestMethods)
             {
                 $ValidAssociationItemsCounter += 1
-                Context ("$ValidAssociationItemsCounter of $ValidAssociationItemsCount; When Association functions are called with parameterSet: '$TestMethod';SourceType:'$SourceType';SourceId:'$SourceId';SourceName:$SourceName';TargetType:$TargetType';TargetId:$TargetId';TargetName:$TargetName';") {
+                Context ("$ValidAssociationItemsCounter of $ValidAssociationItemsCount; When Association functions are called with parameterSet: '$TestMethod';SourceType:'$SourceType';SourceId:'$SourceId';SourceName:'$SourceName';TargetType:'$TargetType';TargetId:'$TargetId';TargetName:'$TargetName';") {
                     $TestMethodIdentifier = $TestMethod.Replace('By', '')
                     $SourceSearchByValue = Switch ($TestMethod) { 'ById' { $SourceId }'ByName' { $SourceName } }
                     $TargetSearchByValue = Switch ($TestMethod) { 'ById' { $TargetId }'ByName' { $TargetName } }
                     Try
                     {
-                        # Get current associations and save them to be reapplied later
+                        #Region Backup original associations
                         $Associations_Original_Command = "Get-JCAssociation -Type:('$SourceType') -$TestMethodIdentifier`:('$SourceSearchByValue') -Direct"
                         If ($Mock)
                         {
@@ -308,7 +308,8 @@ Describe -Tag:('JCAssociation') "Association Tests" {
                             Write-Host ('Backing up Source associations: ' + $Associations_Original_Command)
                             $Associations_Original = Invoke-Expression -Command:($Associations_Original_Command)
                         }
-                        # Remove current associations
+                        #EndRegion Backup original associations
+                        #Region Remove original associations
                         $ChangedOriginal = $false
                         If ($Associations_Original -or $Mock)
                         {
@@ -321,13 +322,15 @@ Describe -Tag:('JCAssociation') "Association Tests" {
                             Else
                             {
                                 Write-Host ('Removing Source associations: ' + $Associations_RemoveOriginal_Command)
-                                $Associations_RemoveOriginal = Invoke-Expression -Command:($Associations_RemoveOriginal_Command) | Out-Null
+                                $Associations_RemoveOriginal = Invoke-Expression -Command:($Associations_RemoveOriginal_Command)
                                 If ($Associations_RemoveOriginal)
                                 {
                                     $ChangedOriginal = $true
                                 }
                             }
                         }
+                        #EndRegion Remove original associations
+                        #Region Run associations tests
                         Context ("When Association functions are called by populating all parameters.") {
                             Test-AssociationCommand -ExecutionType:('Full') -Verb:('Add') -Source:($Source) -SourceId:($SourceId) -SourceType:($SourceType) -SourceSearchByValue:($SourceSearchByValue) -Target:($Target) -TargetId:($TargetId) -TargetType:($TargetType) -TargetSearchByValue:($TargetSearchByValue) -TestMethod:($TestMethod) -TestMethodIdentifier:($TestMethodIdentifier)
                             Test-AssociationCommand -ExecutionType:('Full') -Verb:('Get') -Source:($Source) -SourceId:($SourceId) -SourceType:($SourceType) -SourceSearchByValue:($SourceSearchByValue) -Target:($Target) -TargetId:($TargetId) -TargetType:($TargetType) -TargetSearchByValue:($TargetSearchByValue) -TestMethod:($TestMethod) -TestMethodIdentifier:($TestMethodIdentifier)
@@ -338,6 +341,7 @@ Describe -Tag:('JCAssociation') "Association Tests" {
                             Test-AssociationCommand -ExecutionType:('Pipe') -Verb:('Get') -Source:($Source) -SourceId:($SourceId) -SourceType:($SourceType) -SourceSearchByValue:($SourceSearchByValue) -Target:($Target) -TargetId:($TargetId) -TargetType:($TargetType) -TargetSearchByValue:($TargetSearchByValue) -TestMethod:($TestMethod) -TestMethodIdentifier:($TestMethodIdentifier)
                             Test-AssociationCommand -ExecutionType:('Pipe') -Verb:('Remove') -Source:($Source) -SourceId:($SourceId) -SourceType:($SourceType) -SourceSearchByValue:($SourceSearchByValue) -Target:($Target) -TargetId:($TargetId) -TargetType:($TargetType) -TargetSearchByValue:($TargetSearchByValue) -TestMethod:($TestMethod) -TestMethodIdentifier:($TestMethodIdentifier)
                         }
+                        #EndRegion Run associations tests
                     }
                     Catch
                     {
@@ -347,7 +351,7 @@ Describe -Tag:('JCAssociation') "Association Tests" {
                     {
                         If ($ChangedOriginal)
                         {
-                            # Get current associations and save them to be reapplied later
+                            #Region Get current associations
                             $Associations_Current_Command = "Get-JCAssociation -Type:('$SourceType') -$TestMethodIdentifier`:('$SourceSearchByValue') -Direct"
                             If ($Mock)
                             {
@@ -358,7 +362,8 @@ Describe -Tag:('JCAssociation') "Association Tests" {
                                 Write-Host ('Getting current Source associations: ' + $Associations_Current_Command)
                                 $Associations_Current = Invoke-Expression -Command:($Associations_Current_Command)
                             }
-                            # Remove all existing associations
+                            #EndRegion Get current associations
+                            #Region Remove current associations
                             If ($Associations_Current -or $Mock)
                             {
                                 $Associations_RemoveCurrent_Command = '$Associations_Current | Remove-JCAssociation -Force;'
@@ -372,7 +377,8 @@ Describe -Tag:('JCAssociation') "Association Tests" {
                                     $Associations_RemoveCurrent = Invoke-Expression -Command:($Associations_RemoveCurrent_Command)
                                 }
                             }
-                            # Add the original associations back
+                            #EndRegion Remove current associations
+                            #Region Restore original associations
                             If ($Associations_Original -or $Mock)
                             {
                                 $Associations_AddOriginal_Command = '$Associations_Original | Add-JCAssociation -Force;'
@@ -386,6 +392,7 @@ Describe -Tag:('JCAssociation') "Association Tests" {
                                     $Associations_AddOriginal = Invoke-Expression -Command:($Associations_AddOriginal_Command)
                                 }
                             }
+                            #EndRegion Restore original associations
                             # Add separating line for output
                             If ($Mock)
                             {
