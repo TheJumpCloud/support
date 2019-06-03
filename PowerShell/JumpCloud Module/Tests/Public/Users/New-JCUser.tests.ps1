@@ -542,14 +542,6 @@ Describe -Tag:('JCUser') "New-JCUser MFA with enrollment periods 1.10" {
 
     }
 
-    It "Creates a new user with enable_user_portal_multifactor -eq True and a 366 days specified for EnrollmentDays (invalid)" {
-
-        $EnrollmentDays = 366
-        
-        $Newuser = New-RandomUser -domain "deleteme" | New-JCUser -enable_user_portal_multifactor $true -EnrollmentDays $EnrollmentDays -ErrorVariable err -ErrorAction SilentlyContinue
-
-        $err.Count | Should -Not -Be 0
-    }
 
     It "Creates a new user with enable_user_portal_multifactor -eq True with Attributes" {
 
