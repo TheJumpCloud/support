@@ -107,16 +107,16 @@ Function Invoke-JCApi
                 # Run request
                 $UserAgent = Get-JCUserAgent
                 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-                Write-Debug("[CallFunction]Invoke-WebRequest -Method:('$Method') -Headers:(@" + ($Headers | ConvertTo-Json -Compress).Replace('":"', '" = "').Replace('","', '"; "') + ") -Uri:('$Uri') -UserAgent:('$UserAgent') -Body:('$Body')")
                 Write-Verbose ('Connecting to: ' + $Uri)
                 # PowerShell 5 won't let you send a GET with a body.
                 If ($Method -eq 'GET')
                 {
+                    Write-Debug("[CallFunction]Invoke-WebRequest -Method:('$Method') -Headers:('" + ($Headers | ConvertTo-Json -Compress) + "') -Uri:('$Uri') -UserAgent:('$UserAgent')")
                     $RequestResult = Invoke-WebRequest -Method:($Method) -Headers:($Headers) -Uri:($Uri) -UserAgent:($UserAgent)
                 }
                 Else
                 {
-                    Write-Verbose ($Method + ' body: ' + $Body)
+                    Write-Debug("[CallFunction]Invoke-WebRequest -Method:('$Method') -Headers:('" + ($Headers | ConvertTo-Json -Compress) + "') -Uri:('$Uri') -UserAgent:('$UserAgent') -Body:('$Body')")
                     $RequestResult = Invoke-WebRequest -Method:($Method) -Headers:($Headers) -Uri:($Uri) -UserAgent:($UserAgent) -Body:($Body)
                 }
                 If ($RequestResult)
