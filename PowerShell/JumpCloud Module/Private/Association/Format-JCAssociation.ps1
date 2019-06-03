@@ -52,7 +52,7 @@ Function Format-JCAssociation
                 $AssociationHash = [ordered]@{
                     'associationType'  = $associationType;
                     'id'               = $Source.($Source.ById);
-                    'type'             = $Source.TypeNameSingular;
+                    'type'             = $Source.TypeName.TypeNameSingular;
                     'name'             = $null;
                     'info'             = $null;
                     'targetId'         = $null;
@@ -87,7 +87,7 @@ Function Format-JCAssociation
                 If ($Target)
                 {
                     $AssociationHash.targetId = $Target.($Target.ById)
-                    $AssociationHash.targetType = $Target.TypeNameSingular
+                    $AssociationHash.targetType = $Target.TypeName.TypeNameSingular
                 }
                 Else
                 {
@@ -116,7 +116,7 @@ Function Format-JCAssociation
                     }
                     $_.paths | ForEach-Object {
                         $AssociationVisualPath = @()
-                        [AssociationMap]$AssociationVisualPathRecord = [AssociationMap]::new($Source.($Source.ById), $Source.($Source.ByName), $Source.TypeNameSingular)
+                        [AssociationMap]$AssociationVisualPathRecord = [AssociationMap]::new($Source.($Source.ById), $Source.($Source.ByName), $Source.TypeName.TypeNameSingular)
                         $AssociationVisualPath += $AssociationVisualPathRecord
                         $_.to | ForEach-Object {
                             $AssociationPathToItemInfo = Get-JCObject -Type:($_.type) -Id:($_.id)

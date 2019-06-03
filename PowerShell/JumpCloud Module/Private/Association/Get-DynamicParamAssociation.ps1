@@ -39,10 +39,10 @@ Function Get-DynamicParamAssociation
         'Type'                            = [System.String[]];
         'Position'                        = 6;
         'ValueFromPipelineByPropertyName' = $true;
-        'ValidateSet'                     = @('direct', 'direct/indirect', 'indirect');
-        'DefaultValue'                    = $false;
+        'ValidateSet'                     = @("direct", "direct`/indirect", "indirect");
         'DontShow'                        = $true;
         'HelpMessage'                     = 'Used for piping only to determine type of association when coming from Add-JCAssociation or Remove-JCAssociation.';
+        'Mandatory'                       = $false;
     }
     $Param_Raw = @{
         'Name'                            = 'Raw';

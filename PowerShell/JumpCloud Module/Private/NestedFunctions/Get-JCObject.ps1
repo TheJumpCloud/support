@@ -210,7 +210,7 @@ Function Get-JCObject
                         # {
 
                         # List values to add to results
-                        $HiddenProperties = @('ById', 'ByName', 'TypeName', 'Targets')
+                        $HiddenProperties = @('ById', 'ByName', 'TypeName', 'TypeNameSingular', 'TypeNamePlural', 'Targets', 'TargetSingular', 'TargetPlural')
                         # Append meta info to each result record
                         Get-Variable -Name:($HiddenProperties) |
                             ForEach-Object {

@@ -197,7 +197,7 @@ Describe -Tag:('JCAssociation') "Association Tests" {
             $Source = Get-JCObject -Type:($JCAssociationType.TypeName.TypeNameSingular) | Select-Object -First 1 # | Get-Random
             If ($Source)
             {
-                ForEach ($TargetSingular In $Source.TargetSingular)
+                ForEach ($TargetSingular In $Source.Targets.TargetSingular)
                 {
                     If ( $TargetSingular -notin $EmptySources)
                     {
@@ -205,11 +205,11 @@ Describe -Tag:('JCAssociation') "Association Tests" {
                         If ($Target)
                         {
                             $AssociationDataSet += [PSCustomObject]@{
-                                'SourceType'  = $Source.TypeNameSingular;
+                                'SourceType'  = $Source.TypeName.TypeNameSingular;
                                 'SourceId'    = $Source.($Source.ById);
                                 'SourceName'  = $Source.($Source.ByName);
                                 'Source'      = $Source;
-                                'TargetType'  = $Target.TypeNameSingular;
+                                'TargetType'  = $Target.TypeName.TypeNameSingular;
                                 'TargetId'    = $Target.($Target.ById);
                                 'TargetName'  = $Target.($Target.ByName);
                                 'Target'      = $Target;
@@ -220,7 +220,7 @@ Describe -Tag:('JCAssociation') "Association Tests" {
                         {
                             $EmptySources += $TargetSingular
                             $AssociationDataSet += [PSCustomObject]@{
-                                'SourceType'  = $Source.TypeNameSingular;
+                                'SourceType'  = $Source.TypeName.TypeNameSingular;
                                 'SourceId'    = $Source.($Source.ById);
                                 'SourceName'  = $Source.($Source.ByName);
                                 'Source'      = $Source;
@@ -243,7 +243,7 @@ Describe -Tag:('JCAssociation') "Association Tests" {
                         'SourceId'    = $null
                         'SourceName'  = $null
                         'Source'      = $null
-                        'TargetType'  = $_.TargetSingular
+                        'TargetType'  = $_.Targets.TargetSingular
                         'TargetId'    = $null
                         'TargetName'  = $null
                         'Target'      = $null

@@ -26,7 +26,7 @@ Function Get-JCAssociation
         # Create hash table to store variables
         $FunctionParameters = [ordered]@{}
         # Add input parameters from function in to hash table and filter out unnecessary parameters
-        $PSBoundParameters.GetEnumerator() | ForEach-Object {$FunctionParameters.Add($_.Key, $_.Value) | Out-Null}
+        $PSBoundParameters.GetEnumerator() | Where-Object {$_.Value} | ForEach-Object {$FunctionParameters.Add($_.Key, $_.Value) | Out-Null}
         # Run the command
         $Results += Invoke-JCAssociation @FunctionParameters
     }
