@@ -14,7 +14,7 @@ Function Get-DynamicParamAssociation
         'ValueFromPipelineByPropertyName' = $true;
         'ValidateNotNullOrEmpty'          = $true;
         'ParameterSets'                   = @('ById');
-        'HelpMessage'                     = 'The unique id of the object.'
+        'HelpMessage'                     = 'The unique id of the object.';
     }
     $Param_Name = @{
         'Name'                            = 'Name';
@@ -23,7 +23,7 @@ Function Get-DynamicParamAssociation
         'ValueFromPipelineByPropertyName' = $true;
         'ValidateNotNullOrEmpty'          = $true;
         'ParameterSets'                   = @('ByName');
-        'HelpMessage'                     = 'The name of the object.'
+        'HelpMessage'                     = 'The name of the object.';
     }
     $Param_TargetType = @{
         'Name'                            = 'TargetType';
@@ -32,16 +32,17 @@ Function Get-DynamicParamAssociation
         'ValueFromPipelineByPropertyName' = $true;
         'ValidateNotNullOrEmpty'          = $true;
         'Alias'                           = ('TargetSingular');
-        'HelpMessage'                     = 'The target object type.'
+        'HelpMessage'                     = 'The target object type.';
     }
     $Param_associationType = @{
         'Name'                            = 'associationType';
         'Type'                            = [System.String[]];
         'Position'                        = 6;
         'ValueFromPipelineByPropertyName' = $true;
+        'ValidateSet'                     = @('direct', 'direct/indirect', 'indirect');
         'DefaultValue'                    = $false;
         'DontShow'                        = $true;
-        'HelpMessage'                     = 'Returns the raw and unedited output from the api endpoint.'
+        'HelpMessage'                     = 'Used for piping only to determine type of association when coming from Add-JCAssociation or Remove-JCAssociation.';
     }
     $Param_Raw = @{
         'Name'                            = 'Raw';
@@ -50,7 +51,7 @@ Function Get-DynamicParamAssociation
         'ValueFromPipelineByPropertyName' = $true;
         'DefaultValue'                    = $false;
         'DontShow'                        = $true;
-        'HelpMessage'                     = 'Returns the raw and unedited output from the api endpoint.'
+        'HelpMessage'                     = 'Returns the raw and unedited output from the api endpoint.';
     }
     $Param_Direct = @{
         'Name'                            = 'Direct';
@@ -58,7 +59,7 @@ Function Get-DynamicParamAssociation
         'Position'                        = 8;
         'ValueFromPipelineByPropertyName' = $true;
         'DefaultValue'                    = $false;
-        'HelpMessage'                     = 'Returns only "Direct" associations.'
+        'HelpMessage'                     = 'Returns only "Direct" associations.';
     }
     $Param_Indirect = @{
         'Name'                            = 'Indirect';
@@ -66,7 +67,7 @@ Function Get-DynamicParamAssociation
         'Position'                        = 9;
         'ValueFromPipelineByPropertyName' = $true;
         'DefaultValue'                    = $false;
-        'HelpMessage'                     = 'Returns only "Indirect" associations.'
+        'HelpMessage'                     = 'Returns only "Indirect" associations.';
     }
     $Param_IncludeInfo = @{
         'Name'                            = 'IncludeInfo';
@@ -75,7 +76,7 @@ Function Get-DynamicParamAssociation
         'ValueFromPipelineByPropertyName' = $true;
         'ParameterSets'                   = @('ById', 'ByName');
         'DefaultValue'                    = $false;
-        'HelpMessage'                     = 'Appends "Info" and "TargetInfo" properties to output.'
+        'HelpMessage'                     = 'Appends "Info" and "TargetInfo" properties to output.';
     }
     $Param_IncludeNames = @{
         'Name'                            = 'IncludeNames';
@@ -84,7 +85,7 @@ Function Get-DynamicParamAssociation
         'ValueFromPipelineByPropertyName' = $true;
         'ParameterSets'                   = @('ById', 'ByName');
         'DefaultValue'                    = $false;
-        'HelpMessage'                     = 'Appends "Name" and "TargetName" properties to output.'
+        'HelpMessage'                     = 'Appends "Name" and "TargetName" properties to output.';
     }
     $Param_IncludeVisualPath = @{
         'Name'                            = 'IncludeVisualPath';
@@ -93,21 +94,21 @@ Function Get-DynamicParamAssociation
         'ValueFromPipelineByPropertyName' = $true;
         'ParameterSets'                   = @('ById', 'ByName');
         'DefaultValue'                    = $false;
-        'HelpMessage'                     = 'Appends "visualPathById", "visualPathByName", and "visualPathByType" properties to output.'
+        'HelpMessage'                     = 'Appends "visualPathById", "visualPathByName", and "visualPathByType" properties to output.';
     }
     $Param_TargetId = @{
         'Name'                            = 'TargetId';
         'Type'                            = [System.String];
         'Position'                        = 13;
         'ValueFromPipelineByPropertyName' = $true;
-        'HelpMessage'                     = 'The unique id of the target object.'
+        'HelpMessage'                     = 'The unique id of the target object.';
     }
     $Param_TargetName = @{
         'Name'                            = 'TargetName';
         'Type'                            = [System.String];
         'Position'                        = 14;
         'ValueFromPipelineByPropertyName' = $true;
-        'HelpMessage'                     = 'The name of the target object.'
+        'HelpMessage'                     = 'The name of the target object.';
     }
     $Param_Attributes = @{
         'Name'                            = 'Attributes';
@@ -115,7 +116,7 @@ Function Get-DynamicParamAssociation
         'Position'                        = 15;
         'ValueFromPipelineByPropertyName' = $true;
         'Alias'                           = 'compiledAttributes';
-        'HelpMessage'                     = 'Add attributes that define the association such as if they are an admin.'
+        'HelpMessage'                     = 'Add attributes that define the association such as if they are an admin.';
     }
     # Get type list
     $JCTypes = Get-JCType | Where-Object { $_.Category -eq 'JumpCloud' };
