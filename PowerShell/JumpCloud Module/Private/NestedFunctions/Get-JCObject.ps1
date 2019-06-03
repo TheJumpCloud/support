@@ -7,7 +7,7 @@ Function Get-JCObject
         $JCTypes = Get-JCType
         # Build parameter array
         $RuntimeParameterDictionary = New-Object -TypeName System.Management.Automation.RuntimeDefinedParameterDictionary
-        New-DynamicParameter -Name:('Type') -Type:([System.String]) -Mandatory -Position:(0) -ValueFromPipelineByPropertyName -ValidateNotNullOrEmpty -ValidateSet:($JCTypes.Types) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
+        New-DynamicParameter -Name:('Type') -Type:([System.String]) -Mandatory -Position:(0) -ValueFromPipelineByPropertyName -ValidateNotNullOrEmpty -ValidateSet:($JCTypes.TypeName.TypeNameSingular) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
         New-DynamicParameter -Name:('Id') -Type([System.String[]]) -Mandatory -Position(1) -ValueFromPipelineByPropertyName -ValidateNotNullOrEmpty -ParameterSets(@('ById')) -Alias:(($JCTypes.ById) | Where-Object {$_ -ne 'Id'} | Select-Object -Unique) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
         New-DynamicParameter -Name:('Name') -Type([System.String[]]) -Mandatory -Position(1) -ValueFromPipelineByPropertyName -ValidateNotNullOrEmpty -ParameterSets:(@('ByName')) -Alias:(($JCTypes.ByName) | Where-Object {$_ -ne 'Name'} | Select-Object -Unique) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
         New-DynamicParameter -Name:('SearchBy') -Type:([System.String]) -Mandatory -Position:(1) -ValueFromPipelineByPropertyName -ValidateNotNullOrEmpty -ParameterSets:('ByValue') -ValidateSet:(@('ById', 'ByName')) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
@@ -32,10 +32,9 @@ Function Get-JCObject
         Try
         {
             # Identify the command type to run to get the object for the specified item
-            $JCTypeItem = $JCTypes | Where-Object { $Type -in $_.Types }
+            $JCTypeItem = $JCTypes | Where-Object { $Type -in $_.TypeName.TypeNameSingular }
             If ($JCTypeItem)
             {
-                $JCTypeItem.Types = $Type
                 $TypeName = $JCTypeItem.TypeName
                 $TypeNameSingular = $TypeName.TypeNameSingular
                 $TypeNamePlural = $TypeName.TypeNamePlural
@@ -51,7 +50,7 @@ Function Get-JCObject
                 $Limit = $JCTypeItem.Limit
                 $UrlObject = @()
                 # If searching ByValue add filters to query string and body. # Hacky logic to get g_suite and office_365 directories
-                If ($PSCmdlet.ParameterSetName -eq 'Default' -or $Type -in ('gsuites', 'g_suite', 'office365s', 'office_365'))
+                If ($PSCmdlet.ParameterSetName -eq 'Default' -or $TypeNameSingular -in ('g_suite', 'office_365'))
                 {
                     $UrlObject += [PSCustomObject]@{
                         'Url'           = $Url;
@@ -172,7 +171,7 @@ Function Get-JCObject
                         If ($ReturnCount -eq $true) { $FunctionParameters.Add('ReturnCount', $ReturnCount) }
                     }
                     # Hacky logic for organization
-                    If ($Type -in ('organization', 'organizations'))
+                    If ($TypeNameSingular -eq 'organization')
                     {
                         $Organization = Invoke-JCApi @FunctionParameters
                         $FunctionParameters['Url'] = $Url + '/' + $Organization.$ById
@@ -184,7 +183,7 @@ Function Get-JCObject
                         Default { Invoke-JCApi @FunctionParameters }
                     }
                     # Hacky logic to get g_suite and office_365directories
-                    If ($Type -in ('gsuites', 'g_suite', 'office365s', 'office_365'))
+                    If ($TypeNameSingular -in ('g_suite', 'office_365'))
                     {
                         If ($ReturnCount -eq $true)
                         {
@@ -211,7 +210,7 @@ Function Get-JCObject
                         # {
 
                         # List values to add to results
-                        $HiddenProperties = @('ById', 'ByName', 'TypeName', 'TypeNameSingular', 'TypeNamePlural', 'Targets', 'TargetSingular', 'TargetPlural')
+                        $HiddenProperties = @('ById', 'ByName', 'TypeName', 'Targets')
                         # Append meta info to each result record
                         Get-Variable -Name:($HiddenProperties) |
                             ForEach-Object {
@@ -240,7 +239,7 @@ Function Get-JCObject
             }
             Else
             {
-                Write-Error ('$Type of "' + $Type + '" not found. $Type must be:' + ($JCTypes.Types -join ','))
+                Write-Error ('$Type of "' + $Type + '" not found. $Type must be:' + ($JCTypes.TypeName.TypeNameSingular -join ','))
             }
         }
         Catch
