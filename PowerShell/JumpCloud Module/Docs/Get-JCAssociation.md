@@ -14,13 +14,13 @@ The function Get-JCAssociation can be used to query an object's associations and
 
 ### ById (Default)
 ```
-Get-JCAssociation [-Type] <String> [-Id] <String[]> [-TargetType] <String[]> [-Direct] [-Indirect]
+Get-JCAssociation [-Type] <String> [-Force] [-Id] <String[]> [-TargetType] <String[]> [-Direct] [-Indirect]
  [-IncludeInfo] [-IncludeNames] [-IncludeVisualPath] [<CommonParameters>]
 ```
 
 ### ByName
 ```
-Get-JCAssociation [-Type] <String> [-Name] <String[]> [-TargetType] <String[]> [-Direct] [-Indirect]
+Get-JCAssociation [-Type] <String> [-Force] [-Name] <String[]> [-TargetType] <String[]> [-Direct] [-Indirect]
  [-IncludeInfo] [-IncludeNames] [-IncludeVisualPath] [<CommonParameters>]
 ```
 
@@ -198,6 +198,21 @@ Aliases:
 
 Required: False
 Position: 9
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Force
+Bypass user confirmation and ValidateSet when adding or removing associations.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False

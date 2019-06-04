@@ -14,14 +14,14 @@ Create an association between two object within the JumpCloud console.
 
 ### ById (Default)
 ```
-Add-JCAssociation [-Type] <String> [-Id] <String> [-TargetType] <String>
- [-TargetId] <String> [<CommonParameters>]
+Add-JCAssociation [-Type] <String> [-Force] [-Id] <String[]> [-TargetType] <String[]> [[-TargetId] <String>]
+ [[-TargetName] <String>] [[-Attributes] <PSObject>] [<CommonParameters>]
 ```
 
 ### ByName
 ```
-Add-JCAssociation [-Type] <String> [-Name] <String> [-TargetType] <String>
- [-TargetName] <String> [<CommonParameters>]
+Add-JCAssociation [-Type] <String> [-Force] [-Name] <String[]> [-TargetType] <String[]> [[-TargetId] <String>]
+ [[-TargetName] <String>] [[-Attributes] <PSObject>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -45,16 +45,46 @@ Create an association between the radius server "RadiusServer1" and the user gro
 
 ## PARAMETERS
 
+### -Attributes
+Add attributes that define the association such as if they are an admin.
+
+```yaml
+Type: PSObject
+Parameter Sets: (All)
+Aliases: compiledAttributes
+
+Required: False
+Position: 15
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Force
+Bypass user confirmation and ValidateSet when adding or removing associations.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 2
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
 ### -Id
 The id of the input object.
 
 ```yaml
-Type: String
+Type: String[]
 Parameter Sets: ById
-Aliases: id, _id
+Aliases: _id
 
 Required: True
-Position: 1
+Position: 3
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -64,12 +94,58 @@ Accept wildcard characters: False
 The name of the input object.
 
 ```yaml
-Type: String
+Type: String[]
 Parameter Sets: ByName
-Aliases: name, username, groupName
+Aliases: domain, displayName, username
 
 Required: True
-Position: 2
+Position: 4
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -TargetId
+The id of the target object.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 13
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -TargetName
+The name of the target object.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 14
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -TargetType
+The type of the target object.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases: TargetSingular
+Accepted values: user, user_group, system, system_group, policy, command, application, g_suite, ldap_server, office_365, radius_server
+
+Required: True
+Position: 5
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -81,68 +157,25 @@ The type of the input object.
 ```yaml
 Type: String
 Parameter Sets: (All)
-Aliases:
+Aliases: TypeNameSingular
 Accepted values: command, ldap_server, policy, application, radius_server, system_group, system, user_group, user, g_suite, office_365
 
 Required: True
-Position: 0
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -TargetId
-The id of the target object.
-
-```yaml
-Type: String
-Parameter Sets: ById
-Aliases:
-
-Required: True
-Position: 4
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -TargetName
-The name of the target object.
-
-```yaml
-Type: String
-Parameter Sets: ByName
-Aliases:
-
-Required: True
-Position: 5
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -TargetType
-The type of the target object.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-Accepted values: user, user_group, user_group, system, system_group, user, user_group, user, user_group, user, user_group, system, system_group, user_group, policy, user_group, command, system, policy, user, command, system_group, application, g_suite, ldap_server, office_365, radius_server, system_group, user, g_suite, ldap_server, office_365, system, user_group
-
-Required: True
-Position: 3
+Position: 1
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
 ### CommonParameters
-This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see about_CommonParameters (http://go.microsoft.com/fwlink/?LinkID=113216).
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
 ### System.String
+### System.Management.Automation.SwitchParameter
+### System.String[]
+### System.Management.Automation.PSObject
 ## OUTPUTS
 
 ### System.Object
