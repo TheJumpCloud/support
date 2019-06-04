@@ -2,6 +2,414 @@
 <helpItems schema="maml" xmlns="http://msh">
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
+      <command:name>Add-JCAssociation</command:name>
+      <command:verb>Add</command:verb>
+      <command:noun>JCAssociation</command:noun>
+      <maml:description>
+        <maml:para>Create an association between two object within the JumpCloud console.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>The Add-JCAssociation function allows you to create associations of a specific object to a target object.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Add-JCAssociation</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="1" aliases="TypeNameSingular">
+          <maml:name>Type</maml:name>
+          <maml:Description>
+            <maml:para>The type of the input object.</maml:para>
+          </maml:Description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">command</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">ldap_server</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">policy</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">application</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">radius_server</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">system_group</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">system</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">user_group</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">g_suite</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">office_365</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="13" aliases="none">
+          <maml:name>TargetId</maml:name>
+          <maml:Description>
+            <maml:para>The id of the target object.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="14" aliases="none">
+          <maml:name>TargetName</maml:name>
+          <maml:Description>
+            <maml:para>The name of the target object.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="15" aliases="compiledAttributes">
+          <maml:name>Attributes</maml:name>
+          <maml:Description>
+            <maml:para>Add attributes that define the association such as if they are an admin.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">PSObject</command:parameterValue>
+          <dev:type>
+            <maml:name>PSObject</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="2" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:Description>
+            <maml:para>Bypass user confirmation and ValidateSet when adding or removing associations.</maml:para>
+          </maml:Description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="3" aliases="_id">
+          <maml:name>Id</maml:name>
+          <maml:Description>
+            <maml:para>The id of the input object.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+          <dev:type>
+            <maml:name>String[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="5" aliases="TargetSingular">
+          <maml:name>TargetType</maml:name>
+          <maml:Description>
+            <maml:para>The type of the target object.</maml:para>
+          </maml:Description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">user_group</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">system</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">system_group</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">policy</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">command</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">application</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">g_suite</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">ldap_server</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">office_365</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">radius_server</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+          <dev:type>
+            <maml:name>String[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Add-JCAssociation</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="1" aliases="TypeNameSingular">
+          <maml:name>Type</maml:name>
+          <maml:Description>
+            <maml:para>The type of the input object.</maml:para>
+          </maml:Description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">command</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">ldap_server</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">policy</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">application</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">radius_server</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">system_group</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">system</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">user_group</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">g_suite</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">office_365</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="13" aliases="none">
+          <maml:name>TargetId</maml:name>
+          <maml:Description>
+            <maml:para>The id of the target object.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="14" aliases="none">
+          <maml:name>TargetName</maml:name>
+          <maml:Description>
+            <maml:para>The name of the target object.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="15" aliases="compiledAttributes">
+          <maml:name>Attributes</maml:name>
+          <maml:Description>
+            <maml:para>Add attributes that define the association such as if they are an admin.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">PSObject</command:parameterValue>
+          <dev:type>
+            <maml:name>PSObject</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="2" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:Description>
+            <maml:para>Bypass user confirmation and ValidateSet when adding or removing associations.</maml:para>
+          </maml:Description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="4" aliases="domain, displayName, username">
+          <maml:name>Name</maml:name>
+          <maml:Description>
+            <maml:para>The name of the input object.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+          <dev:type>
+            <maml:name>String[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="5" aliases="TargetSingular">
+          <maml:name>TargetType</maml:name>
+          <maml:Description>
+            <maml:para>The type of the target object.</maml:para>
+          </maml:Description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">user_group</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">system</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">system_group</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">policy</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">command</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">application</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">g_suite</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">ldap_server</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">office_365</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">radius_server</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+          <dev:type>
+            <maml:name>String[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="15" aliases="compiledAttributes">
+        <maml:name>Attributes</maml:name>
+        <maml:Description>
+          <maml:para>Add attributes that define the association such as if they are an admin.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">PSObject</command:parameterValue>
+        <dev:type>
+          <maml:name>PSObject</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="2" aliases="none">
+        <maml:name>Force</maml:name>
+        <maml:Description>
+          <maml:para>Bypass user confirmation and ValidateSet when adding or removing associations.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="3" aliases="_id">
+        <maml:name>Id</maml:name>
+        <maml:Description>
+          <maml:para>The id of the input object.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+        <dev:type>
+          <maml:name>String[]</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="4" aliases="domain, displayName, username">
+        <maml:name>Name</maml:name>
+        <maml:Description>
+          <maml:para>The name of the input object.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+        <dev:type>
+          <maml:name>String[]</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="13" aliases="none">
+        <maml:name>TargetId</maml:name>
+        <maml:Description>
+          <maml:para>The id of the target object.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="14" aliases="none">
+        <maml:name>TargetName</maml:name>
+        <maml:Description>
+          <maml:para>The name of the target object.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="5" aliases="TargetSingular">
+        <maml:name>TargetType</maml:name>
+        <maml:Description>
+          <maml:para>The type of the target object.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+        <dev:type>
+          <maml:name>String[]</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="1" aliases="TypeNameSingular">
+        <maml:name>Type</maml:name>
+        <maml:Description>
+          <maml:para>The type of the input object.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+      <command:inputType>
+        <dev:type>
+          <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+      <command:inputType>
+        <dev:type>
+          <maml:name>System.String[]</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+      <command:inputType>
+        <dev:type>
+          <maml:name>System.Management.Automation.PSObject</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para></maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- Example 1 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Add-JCAssociation -Type:('radiusservers') -Id:('5c5c371704c4b477964ab4fa') -TargetType:('user_group') -TargetId:('59f20255c9118021fa01b80f')</dev:code>
+        <dev:remarks>
+          <maml:para>Create an association between the radius server "5c5c371704c4b477964ab4fa" and the user group "59f20255c9118021fa01b80f".</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Add-JCAssociation -Type:('radiusservers') -Name:('RadiusServer1') -TargetType:('user_group') -TargetName:('All Users')</dev:code>
+        <dev:remarks>
+          <maml:para>Create an association between the radius server "RadiusServer1" and the user group "All Users".</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version:</maml:linkText>
+        <maml:uri>https://github.com/TheJumpCloud/support/wiki/Add-JCAssociation</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
       <command:name>Add-JCCommandTarget</command:name>
       <command:verb>Add</command:verb>
       <command:noun>JCCommandTarget</command:noun>
@@ -1419,6 +1827,17 @@
           </dev:type>
           <dev:defaultValue>False</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:Description>
+            <maml:para>Bypass user confirmation and ValidateSet when adding or removing associations.</maml:para>
+          </maml:Description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
       <command:syntaxItem>
         <maml:name>Get-JCAssociation</maml:name>
@@ -1545,6 +1964,17 @@
           </dev:type>
           <dev:defaultValue>False</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:Description>
+            <maml:para>Bypass user confirmation and ValidateSet when adding or removing associations.</maml:para>
+          </maml:Description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
@@ -1648,6 +2078,18 @@
         <maml:name>IncludeVisualPath</maml:name>
         <maml:Description>
           <maml:para>Appends "visualPathById", "visualPathByName", and "visualPathByType" properties to output.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>Force</maml:name>
+        <maml:Description>
+          <maml:para>Bypass user confirmation and ValidateSet when adding or removing associations.</maml:para>
         </maml:Description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
@@ -4623,6 +5065,30 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>external_dn</maml:name>
+          <maml:Description>
+            <maml:para>The distinguished name of the AD domain (ADB Externally managed users only)</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>external_source_type</maml:name>
+          <maml:Description>
+            <maml:para>The externally managed user source type (ADB Externally managed users only)</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
       <command:syntaxItem>
         <maml:name>Get-JCUser</maml:name>
@@ -5019,6 +5485,30 @@
         <maml:name>middlename</maml:name>
         <maml:Description>
           <maml:para>The middlename of the JumpCloud user you wish to search for.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>external_dn</maml:name>
+        <maml:Description>
+          <maml:para>The distinguished name of the AD domain (ADB Externally managed users only)</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>external_source_type</maml:name>
+        <maml:Description>
+          <maml:para>The externally managed user source type (ADB Externally managed users only)</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -6179,21 +6669,9 @@ SystemID                 CommandID                Status
           <maml:Description>
             <maml:para>A boolean $true/$false value for enabling MFA at the user portal</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>Boolean</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
-          <maml:name>enrollmentdays</maml:name>
-          <maml:Description>
-            <maml:para>A dynamic parameter that can be set only if -enable_user_portal_multifactor is set to true. This will specify the enrollment period for users for enrolling into MFA via the users console. The default is 7 days if this value is not specified.</maml:para>
-          </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
-          <dev:type>
-            <maml:name>Int32</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -6642,6 +7120,66 @@ SystemID                 CommandID                Status
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>Attribute1_name</maml:name>
+          <maml:Description>
+            <maml:para>Enter an attribute name</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>Attribute1_value</maml:name>
+          <maml:Description>
+            <maml:para>Enter an attribute value</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>Attribute2_name</maml:name>
+          <maml:Description>
+            <maml:para>Enter an attribute name</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>Attribute2_value</maml:name>
+          <maml:Description>
+            <maml:para>Enter an attribute value</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>enrollmentDays</maml:name>
+          <maml:Description>
+            <maml:para>A dynamic parameter that can be set only if -enable_user_portal_multifactor is set to true. This will specify the enrollment period for users for enrolling into MFA via the users console. The default is 7 days if this value is not specified.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+          <dev:type>
+            <maml:name>Int32</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
@@ -6700,21 +7238,9 @@ SystemID                 CommandID                Status
         <maml:Description>
           <maml:para>A boolean $true/$false value for enabling MFA at the user portal</maml:para>
         </maml:Description>
-        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
-          <maml:name>Boolean</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
-        <maml:name>enrollmentdays</maml:name>
-        <maml:Description>
-          <maml:para>A dynamic parameter that can be set only if -enable_user_portal_multifactor is set to true. This will specify the enrollment period for users for enrolling into MFA via the users console. The default is 7 days if this value is not specified.</maml:para>
-        </maml:Description>
-        <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
-        <dev:type>
-          <maml:name>Int32</maml:name>
+          <maml:name>String</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -7163,6 +7689,66 @@ SystemID                 CommandID                Status
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>Attribute1_name</maml:name>
+        <maml:Description>
+          <maml:para>Enter an attribute name</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>Attribute1_value</maml:name>
+        <maml:Description>
+          <maml:para>Enter an attribute value</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>Attribute2_name</maml:name>
+        <maml:Description>
+          <maml:para>Enter an attribute name</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>Attribute2_value</maml:name>
+        <maml:Description>
+          <maml:para>Enter an attribute value</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>enrollmentDays</maml:name>
+        <maml:Description>
+          <maml:para>A dynamic parameter that can be set only if -enable_user_portal_multifactor is set to true. This will specify the enrollment period for users for enrolling into MFA via the users console. The default is 7 days if this value is not specified.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+        <dev:type>
+          <maml:name>Int32</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
     </command:parameters>
     <command:inputTypes>
       <command:inputType>
@@ -7300,6 +7886,370 @@ SystemID                 CommandID                Status
       <maml:navigationLink>
         <maml:linkText>Online Help New-JCUserGroup</maml:linkText>
         <maml:uri>https://github.com/TheJumpCloud/support/wiki/New-JCUserGroup</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Remove-JCAssociation</command:name>
+      <command:verb>Remove</command:verb>
+      <command:noun>JCAssociation</command:noun>
+      <maml:description>
+        <maml:para>Remove an association between two object within the JumpCloud console.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>The Remove-JCAssociation function allows you to create associations of a specific object to a target object.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Remove-JCAssociation</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="1" aliases="TypeNameSingular">
+          <maml:name>Type</maml:name>
+          <maml:Description>
+            <maml:para>The type of the input object.</maml:para>
+          </maml:Description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">command</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">ldap_server</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">policy</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">application</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">radius_server</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">system_group</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">system</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">user_group</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">g_suite</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">office_365</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="13" aliases="none">
+          <maml:name>TargetId</maml:name>
+          <maml:Description>
+            <maml:para>The id of the target object.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="14" aliases="none">
+          <maml:name>TargetName</maml:name>
+          <maml:Description>
+            <maml:para>The name of the target object.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="2" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:Description>
+            <maml:para>Bypass user confirmation and ValidateSet when adding or removing associations.</maml:para>
+          </maml:Description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="3" aliases="_id">
+          <maml:name>Id</maml:name>
+          <maml:Description>
+            <maml:para>The id of the input object.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+          <dev:type>
+            <maml:name>String[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="5" aliases="TargetSingular">
+          <maml:name>TargetType</maml:name>
+          <maml:Description>
+            <maml:para>The type of the target object.</maml:para>
+          </maml:Description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">user_group</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">system</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">system_group</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">policy</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">command</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">application</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">g_suite</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">ldap_server</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">office_365</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">radius_server</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+          <dev:type>
+            <maml:name>String[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Remove-JCAssociation</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="1" aliases="TypeNameSingular">
+          <maml:name>Type</maml:name>
+          <maml:Description>
+            <maml:para>The type of the input object.</maml:para>
+          </maml:Description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">command</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">ldap_server</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">policy</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">application</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">radius_server</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">system_group</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">system</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">user_group</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">g_suite</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">office_365</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="13" aliases="none">
+          <maml:name>TargetId</maml:name>
+          <maml:Description>
+            <maml:para>The id of the target object.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="14" aliases="none">
+          <maml:name>TargetName</maml:name>
+          <maml:Description>
+            <maml:para>The name of the target object.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="2" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:Description>
+            <maml:para>Bypass user confirmation and ValidateSet when adding or removing associations.</maml:para>
+          </maml:Description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="4" aliases="domain, displayName, username">
+          <maml:name>Name</maml:name>
+          <maml:Description>
+            <maml:para>The name of the input object.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+          <dev:type>
+            <maml:name>String[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="5" aliases="TargetSingular">
+          <maml:name>TargetType</maml:name>
+          <maml:Description>
+            <maml:para>The type of the target object.</maml:para>
+          </maml:Description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">user_group</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">system</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">system_group</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">policy</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">command</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">application</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">g_suite</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">ldap_server</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">office_365</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">radius_server</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+          <dev:type>
+            <maml:name>String[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="2" aliases="none">
+        <maml:name>Force</maml:name>
+        <maml:Description>
+          <maml:para>Bypass user confirmation and ValidateSet when adding or removing associations.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="3" aliases="_id">
+        <maml:name>Id</maml:name>
+        <maml:Description>
+          <maml:para>The id of the input object.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+        <dev:type>
+          <maml:name>String[]</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="4" aliases="domain, displayName, username">
+        <maml:name>Name</maml:name>
+        <maml:Description>
+          <maml:para>The name of the input object.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+        <dev:type>
+          <maml:name>String[]</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="13" aliases="none">
+        <maml:name>TargetId</maml:name>
+        <maml:Description>
+          <maml:para>The id of the target object.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="14" aliases="none">
+        <maml:name>TargetName</maml:name>
+        <maml:Description>
+          <maml:para>The name of the target object.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="5" aliases="TargetSingular">
+        <maml:name>TargetType</maml:name>
+        <maml:Description>
+          <maml:para>The type of the target object.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+        <dev:type>
+          <maml:name>String[]</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="1" aliases="TypeNameSingular">
+        <maml:name>Type</maml:name>
+        <maml:Description>
+          <maml:para>The type of the input object.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+      <command:inputType>
+        <dev:type>
+          <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+      <command:inputType>
+        <dev:type>
+          <maml:name>System.String[]</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para></maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- Example 1 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Remove-JCAssociation -Type:('radiusservers') -Id:('5c5c371704c4b477964ab4fa') -TargetType:('user_group') -TargetId:('59f20255c9118021fa01b80f')</dev:code>
+        <dev:remarks>
+          <maml:para>Remove the association between the radius server "5c5c371704c4b477964ab4fa" and the user group "59f20255c9118021fa01b80f".</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; New-JCAssociation -Type:('radiusservers') -Name:('RadiusServer1') -TargetType:('user_group') -TargetName:('All Users')</dev:code>
+        <dev:remarks>
+          <maml:para>Remove the association between the radius server "RadiusServer1" and the user group "All Users".</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version:</maml:linkText>
+        <maml:uri>https://github.com/TheJumpCloud/support/wiki/Remove-JCAssociation</maml:uri>
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
@@ -10304,18 +11254,6 @@ Enter a value between 1 and 2:</dev:code>
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
-          <maml:name>enrollmentdays</maml:name>
-          <maml:Description>
-            <maml:para>A dynamic parameter that can be set only if -enable_user_portal_multifactor is set to true. This will specify the enrollment period for users for enrolling into MFA via the users console. The default is 7 days if this value is not specified.</maml:para>
-          </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
-          <dev:type>
-            <maml:name>Int32</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>externally_managed</maml:name>
           <maml:Description>
@@ -10752,6 +11690,30 @@ Enter a value between 1 and 2:</dev:code>
           <maml:name>work_streetAddress</maml:name>
           <maml:Description>
             <maml:para>Specifies the user's streetAddress on their work address object. This property is nested within the LDAP property with the displayName postalAddress.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>external_dn</maml:name>
+          <maml:Description>
+            <maml:para>{{ Fill external_dn Description }}</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>external_source_type</maml:name>
+          <maml:Description>
+            <maml:para>{{ Fill external_source_type Description }}</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -10862,18 +11824,6 @@ Enter a value between 1 and 2:</dev:code>
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
-          <maml:name>enrollmentdays</maml:name>
-          <maml:Description>
-            <maml:para>A dynamic parameter that can be set only if -enable_user_portal_multifactor is set to true. This will specify the enrollment period for users for enrolling into MFA via the users console. The default is 7 days if this value is not specified.</maml:para>
-          </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
-          <dev:type>
-            <maml:name>Int32</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>externally_managed</maml:name>
           <maml:Description>
@@ -11310,6 +12260,30 @@ Enter a value between 1 and 2:</dev:code>
           <maml:name>work_streetAddress</maml:name>
           <maml:Description>
             <maml:para>Specifies the user's streetAddress on their work address object. This property is nested within the LDAP property with the displayName postalAddress.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>external_dn</maml:name>
+          <maml:Description>
+            <maml:para>{{ Fill external_dn Description }}</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>external_source_type</maml:name>
+          <maml:Description>
+            <maml:para>{{ Fill external_source_type Description }}</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -11408,18 +12382,6 @@ Enter a value between 1 and 2:</dev:code>
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
-          <maml:name>enrollmentdays</maml:name>
-          <maml:Description>
-            <maml:para>A dynamic parameter that can be set only if -enable_user_portal_multifactor is set to true. This will specify the enrollment period for users for enrolling into MFA via the users console. The default is 7 days if this value is not specified.</maml:para>
-          </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
-          <dev:type>
-            <maml:name>Int32</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>externally_managed</maml:name>
           <maml:Description>
@@ -11856,6 +12818,30 @@ Enter a value between 1 and 2:</dev:code>
           <maml:name>work_streetAddress</maml:name>
           <maml:Description>
             <maml:para>Specifies the user's streetAddress on their work address object. This property is nested within the LDAP property with the displayName postalAddress.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>external_dn</maml:name>
+          <maml:Description>
+            <maml:para>{{ Fill external_dn Description }}</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>external_source_type</maml:name>
+          <maml:Description>
+            <maml:para>{{ Fill external_source_type Description }}</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -11990,18 +12976,6 @@ Enter a value between 1 and 2:</dev:code>
         <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
         <dev:type>
           <maml:name>Boolean</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
-        <maml:name>enrollmentdays</maml:name>
-        <maml:Description>
-          <maml:para>A dynamic parameter that can be set only if -enable_user_portal_multifactor is set to true. This will specify the enrollment period for users for enrolling into MFA via the users console. The default is 7 days if this value is not specified.</maml:para>
-        </maml:Description>
-        <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
-        <dev:type>
-          <maml:name>Int32</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -12442,6 +13416,30 @@ Enter a value between 1 and 2:</dev:code>
         <maml:name>work_streetAddress</maml:name>
         <maml:Description>
           <maml:para>Specifies the user's streetAddress on their work address object. This property is nested within the LDAP property with the displayName postalAddress.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>external_dn</maml:name>
+        <maml:Description>
+          <maml:para>{{ Fill external_dn Description }}</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>external_source_type</maml:name>
+        <maml:Description>
+          <maml:para>{{ Fill external_source_type Description }}</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
