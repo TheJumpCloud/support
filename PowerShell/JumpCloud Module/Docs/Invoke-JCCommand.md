@@ -88,6 +88,8 @@ Accept wildcard characters: False
 
 ### -NumberOfVariables
 Denotes the number of variables you wish to send to the JumpCloud command. This parameter creates two dynamic parameters for each variable added. -Variable_1Name = the variable name -Variable1_Value = the value to pass. See EXAMPLE 2 above for full syntax. 
+
+
 ```yaml
 Type: Int32
 Parameter Sets: Variables
@@ -101,16 +103,14 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
-This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see about_CommonParameters (http://go.microsoft.com/fwlink/?LinkID=113216).
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
 ### System.String
-
 ## OUTPUTS
 
 ### System.Object
-
 ## NOTES
 
 ## RELATED LINKS

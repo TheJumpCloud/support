@@ -117,6 +117,8 @@ Accept wildcard characters: False
 
 ### -agentVersion
 A search filter to search systems by the agentVersion. 
+
+
 ```yaml
 Type: String
 Parameter Sets: SearchFilter
@@ -131,6 +133,8 @@ Accept wildcard characters: True
 
 ### -allowMultiFactorAuthentication
 A search filter to show systems that are enabled ($true) or disabled ($true) for allowMultiFactorAuthentication
+
+
 ```yaml
 Type: Boolean
 Parameter Sets: SearchFilter
@@ -295,6 +299,8 @@ Accept wildcard characters: True
 
 ### -returnProperties
 Allows you to return select properties on JumpCloud system objects. Specifying what properties are returned can drastically increase the speed of the API call with a large data set. Valid properties that can be returned are: 'created', 'active', 'agentVersion', 'allowMultiFactorAuthentication', 'allowPublicKeyAuthentication', 'allowSshPasswordAuthentication', 'allowSshRootLogin', 'arch', 'created', 'displayName', 'hostname', 'lastContact', 'modifySSHDConfig', 'organization', 'os', 'remoteIP', 'serialNumber', 'sshdParams', 'systemTimezone', 'templateName', 'version'
+
+
 ```yaml
 Type: String[]
 Parameter Sets: SearchFilter
@@ -368,16 +374,14 @@ Accept wildcard characters: True
 ```
 
 ### CommonParameters
-This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see about_CommonParameters (http://go.microsoft.com/fwlink/?LinkID=113216).
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
 ### System.String
-
 ## OUTPUTS
 
 ### System.Object
-
 ## NOTES
 
 ## RELATED LINKS

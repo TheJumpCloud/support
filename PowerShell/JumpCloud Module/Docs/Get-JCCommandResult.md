@@ -165,6 +165,8 @@ Accept wildcard characters: False
 
 ### -MaxResults
 The maximum number of results to return. 
+
+
 ```yaml
 Type: Int32
 Parameter Sets: MaxResults
@@ -179,6 +181,8 @@ Accept wildcard characters: False
 
 ### -Skip
 The number of command results to skip over before returning results. 
+
+
 ```yaml
 Type: Int32
 Parameter Sets: ReturnAll, MaxResults
@@ -192,16 +196,14 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
-This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see about_CommonParameters (http://go.microsoft.com/fwlink/?LinkID=113216).
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
 ### System.String[]
-
 ## OUTPUTS
 
 ### System.Object
-
 ## NOTES
 
 ## RELATED LINKS
