@@ -181,7 +181,17 @@ Function Get-JCUser ()
 
         [Parameter(ValueFromPipelineByPropertyName,
             ParameterSetName = 'SearchFilter')]
-        [String]$location
+        [String]$location,
+
+        [Parameter(ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter')]
+        [String]$external_dn,
+
+        [Parameter(ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter')]
+        [String]$external_source_type
+
+
     )
 
     DynamicParam

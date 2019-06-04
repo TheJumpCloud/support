@@ -23,7 +23,8 @@ Get-JCUser [[-username] <String>] [-firstname <String>] [-lastname <String>] [-e
  [-samba_service_user <Boolean>] [-password_never_expires <Boolean>] [-filterDateProperty <String>]
  [-returnProperties <String[]>] [-middlename <String>] [-displayname <String>] [-jobTitle <String>]
  [-employeeIdentifier <String>] [-department <String>] [-costCenter <String>] [-company <String>]
- [-employeeType <String>] [-description <String>] [-location <String>] [<CommonParameters>]
+ [-employeeType <String>] [-description <String>] [-location <String>] [-external_dn <String>]
+ [-external_source_type <String>] [<CommonParameters>]
 ```
 
 ### ByID
@@ -112,6 +113,8 @@ Accept wildcard characters: False
 
 ### -allow_public_key
 A search filter to show accounts that are enabled ($true) or disabled ($true) to allow_public_key
+
+
 ```yaml
 Type: Boolean
 Parameter Sets: SearchFilter
@@ -247,6 +250,8 @@ Accept wildcard characters: False
 
 ### -password_expired
 A search filter to show accounts that have expired passwords ($true) or valid passwords ($false)
+
+
 ```yaml
 Type: Boolean
 Parameter Sets: SearchFilter
@@ -276,6 +281,8 @@ Accept wildcard characters: False
 
 ### -passwordless_sudo
 A search filter to show accounts that are enabled ($true) or disabled ($false) for passwordless_sudo
+
+
 ```yaml
 Type: Boolean
 Parameter Sets: SearchFilter
@@ -350,6 +357,8 @@ Accept wildcard characters: False
 
 ### -unix_guid
 A search filter to search for users with a specific unix_gid. DOES NOT accept wild card input.
+
+
 ```yaml
 Type: String
 Parameter Sets: SearchFilter
@@ -413,6 +422,8 @@ Accept wildcard characters: True
 
 ### -company
 The company of the JumpCloud user you wish to search for.
+
+
 ```yaml
 Type: String
 Parameter Sets: SearchFilter
@@ -472,6 +483,8 @@ Accept wildcard characters: False
 
 ### -displayname
 The preferred name of the JumpCloud user you wish to search for.
+
+
 ```yaml
 Type: String
 Parameter Sets: SearchFilter
@@ -486,6 +499,8 @@ Accept wildcard characters: False
 
 ### -employeeIdentifier
 The employeeIdentifier of the JumpCloud user you wish to search for.
+
+
 ```yaml
 Type: String
 Parameter Sets: SearchFilter
@@ -500,6 +515,8 @@ Accept wildcard characters: False
 
 ### -employeeType
 The employeeType of the JumpCloud user you wish to search for.
+
+
 ```yaml
 Type: String
 Parameter Sets: SearchFilter
@@ -514,6 +531,8 @@ Accept wildcard characters: False
 
 ### -jobTitle
 The jobTitle of the JumpCloud user you wish to search for.
+
+
 ```yaml
 Type: String
 Parameter Sets: SearchFilter
@@ -528,6 +547,8 @@ Accept wildcard characters: False
 
 ### -location
 The location of the JumpCloud user you wish to search for.
+
+
 ```yaml
 Type: String
 Parameter Sets: SearchFilter
@@ -555,17 +576,47 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
+### -external_dn
+
+The distinguished name of the AD domain (ADB Externally managed users only)
+
+```yaml
+Type: String
+Parameter Sets: SearchFilter
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -external_source_type
+
+The externally managed user source type (ADB Externally managed users only)
+
+```yaml
+Type: String
+Parameter Sets: SearchFilter
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
 ### CommonParameters
-This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see about_CommonParameters (http://go.microsoft.com/fwlink/?LinkID=113216).
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
 ### System.String
-
 ## OUTPUTS
 
 ### System.Object
-
 ## NOTES
 
 ## RELATED LINKS
