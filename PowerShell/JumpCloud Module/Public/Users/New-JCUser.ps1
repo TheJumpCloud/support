@@ -63,7 +63,7 @@ Function New-JCUser ()
         [bool]
         $ldap_binding_user,
 
-        [Parameter()]
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
         [String]
         [ValidateSet('True', 'False', '$True', '$False')]
         $enable_user_portal_multifactor,
@@ -256,7 +256,7 @@ Function New-JCUser ()
     {
 
         Write-Debug 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {Connect-JConline}
+        if ($JCAPIKEY.length -ne 40) { Connect-JConline }
 
         $hdrs = @{
 
@@ -281,20 +281,20 @@ Function New-JCUser ()
         {
             switch ($enable_user_portal_multifactor)
             {
-                'True' { [bool]$enable_user_portal_multifactor = $true}
-                '$True' { [bool]$enable_user_portal_multifactor = $true}
-                'False' { [bool]$enable_user_portal_multifactor = $false}
-                '$False' { [bool]$enable_user_portal_multifactor = $false}
+                'True' { [bool]$enable_user_portal_multifactor = $true }
+                '$True' { [bool]$enable_user_portal_multifactor = $true }
+                'False' { [bool]$enable_user_portal_multifactor = $false }
+                '$False' { [bool]$enable_user_portal_multifactor = $false }
             }
         }
 
 
-        $body = @{}
+        $body = @{ }
 
-        $WorkAddressParams = @{}
+        $WorkAddressParams = @{ }
         $WorkAddressParams.Add("type", "work")
 
-        $HomeAddressParams = @{}
+        $HomeAddressParams = @{ }
         $HomeAddressParams.Add("type", "home")
 
         $phoneNumbers = @()
@@ -341,7 +341,7 @@ Function New-JCUser ()
 
             if ($param.Key -like '*_number')
             {
-                $Number = @{}
+                $Number = @{ }
                 $Number.Add("type", ($($param.Key -replace "_number", "")))
                 $Number.Add("number", $param.Value)
                 $phoneNumbers += $Number
@@ -365,10 +365,10 @@ Function New-JCUser ()
 
                 switch ($param.Value)
                 {
-                    'True' { [bool]$enable_user_portal_multifactor = $true}
-                    '$True' { [bool]$enable_user_portal_multifactor = $true}
-                    'False' { [bool]$enable_user_portal_multifactor = $false}
-                    '$False' { [bool]$enable_user_portal_multifactor = $false}
+                    'True' { [bool]$enable_user_portal_multifactor = $true }
+                    '$True' { [bool]$enable_user_portal_multifactor = $true }
+                    'False' { [bool]$enable_user_portal_multifactor = $false }
+                    '$False' { [bool]$enable_user_portal_multifactor = $false }
                 }
 
                 $body.add($param.Key, $enable_user_portal_multifactor)
@@ -411,13 +411,13 @@ Function New-JCUser ()
                 $exclusionUntil = (Get-Date).AddDays(7)
             }
 
-            $mfa = @{}
+            $mfa = @{ }
             $mfa.Add("exclusion", $true)
             $mfa.Add("exclusionUntil", [string]$exclusionUntil)
             $body.Add('mfa', $mfa)
         }
 
-        If ($NewAttributes) {$body.add('attributes', $NewAttributes)}
+        If ($NewAttributes) { $body.add('attributes', $NewAttributes) }
 
         $jsonbody = $body | ConvertTo-Json
 
