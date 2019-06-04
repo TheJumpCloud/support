@@ -69,6 +69,8 @@ Function Update-JCUsersFromCSV ()
         $UserUpdateParams.Add("enable_managed_uid", "enable_managed_uid")
         $UserUpdateParams.Add("enable_user_portal_multifactor", "enable_user_portal_multifactor")
         $UserUpdateParams.Add("externally_managed", "externally_managed")
+        $UserUpdateParams.Add("external_dn", "external_dn")
+        $UserUpdateParams.Add("external_source_type", "external_source_type")
         $UserUpdateParams.Add("ldap_binding_user", "ldap_binding_user")
         $UserUpdateParams.Add("passwordless_sudo", "passwordless_sudo")
         $UserUpdateParams.Add("sudo", "sudo")
@@ -102,7 +104,7 @@ Function Update-JCUsersFromCSV ()
                                                   User Update
 "@
 
-            If (!(Get-PSCallStack | Where-Object {$_.Command -match 'Pester'})) {Clear-Host}
+            If (!(Get-PSCallStack | Where-Object { $_.Command -match 'Pester' })) { Clear-Host }
             Write-Host $Banner -ForegroundColor Green
             Write-Host ""
 
