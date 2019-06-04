@@ -26,7 +26,8 @@ Set-JCUser [-Username] <String> [-email <String>] [-firstname <String>] [-lastna
  [-work_region <String>] [-work_postalCode <String>] [-work_country <String>] [-home_streetAddress <String>]
  [-home_poBox <String>] [-home_locality <String>] [-home_region <String>] [-home_postalCode <String>]
  [-home_country <String>] [-mobile_number <String>] [-home_number <String>] [-work_number <String>]
- [-work_mobile_number <String>] [-work_fax_number <String>] [<CommonParameters>]
+ [-work_mobile_number <String>] [-work_fax_number <String>] [-external_dn <String>]
+ [-external_source_type <String>] [<CommonParameters>]
 ```
 
 ### RemoveAttribute
@@ -42,7 +43,8 @@ Set-JCUser [-Username] <String> [-email <String>] [-firstname <String>] [-lastna
  [-work_locality <String>] [-work_region <String>] [-work_postalCode <String>] [-work_country <String>]
  [-home_streetAddress <String>] [-home_poBox <String>] [-home_locality <String>] [-home_region <String>]
  [-home_postalCode <String>] [-home_country <String>] [-mobile_number <String>] [-home_number <String>]
- [-work_number <String>] [-work_mobile_number <String>] [-work_fax_number <String>] [<CommonParameters>]
+ [-work_number <String>] [-work_mobile_number <String>] [-work_fax_number <String>] [-external_dn <String>]
+ [-external_source_type <String>] [<CommonParameters>]
 ```
 
 ### ByID
@@ -58,7 +60,8 @@ Set-JCUser -UserID <String> [-email <String>] [-firstname <String>] [-lastname <
  [-work_region <String>] [-work_postalCode <String>] [-work_country <String>] [-home_streetAddress <String>]
  [-home_poBox <String>] [-home_locality <String>] [-home_region <String>] [-home_postalCode <String>]
  [-home_country <String>] [-mobile_number <String>] [-home_number <String>] [-work_number <String>]
- [-work_mobile_number <String>] [-work_fax_number <String>] [<CommonParameters>]
+ [-work_mobile_number <String>] [-work_fax_number <String>] [-external_dn <String>]
+ [-external_source_type <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -291,22 +294,6 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -enrollmentdays
-
-A dynamic parameter that can be set only if -enable_user_portal_multifactor is set to true. This will specify the enrollment period for users for enrolling into MFA via the users console. The default is 7 days if this value is not specified.
-
-```yaml
-Type: Int32
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
 ### -externally_managed
 
 A boolean $true/$false value for enabling externally_managed
@@ -468,6 +455,8 @@ Accept wildcard characters: False
 
 ### -company
 Specifies the user's company. The LDAP displayName of this property is company.
+
+
 ```yaml
 Type: String
 Parameter Sets: (All)
@@ -482,6 +471,8 @@ Accept wildcard characters: False
 
 ### -costCenter
 Specifies the user's costCenter. The LDAP displayName of this property is businessCategory.
+
+
 ```yaml
 Type: String
 Parameter Sets: (All)
@@ -526,6 +517,8 @@ Accept wildcard characters: False
 
 ### -displayname
 Specifies the user's preferredName. The LDAP displayName of this property is displayName.
+
+
 ```yaml
 Type: String
 Parameter Sets: (All)
@@ -570,6 +563,8 @@ Accept wildcard characters: False
 
 ### -home_country
 Specifies the user's country on the home address object. This property is nested within the LDAP property with the displayName homePostalAddress.
+
+
 ```yaml
 Type: String
 Parameter Sets: (All)
@@ -629,6 +624,8 @@ Accept wildcard characters: False
 
 ### -home_postalCode
 Specifies the user's postalCode on their home address object. This property is nested within the LDAP property with the displayName homePostalAddress.
+
+
 ```yaml
 Type: String
 Parameter Sets: (All)
@@ -643,6 +640,8 @@ Accept wildcard characters: False
 
 ### -home_region
 Specifies the user's state on their home address object. This property is nested within the LDAP property with the displayName homePostalAddress.
+
+
 ```yaml
 Type: String
 Parameter Sets: (All)
@@ -657,6 +656,8 @@ Accept wildcard characters: False
 
 ### -home_streetAddress
 Specifies the user's streetAddress on their home address object. This property is nested within the LDAP property with the displayName homePostalAddress.
+
+
 ```yaml
 Type: String
 Parameter Sets: (All)
@@ -746,6 +747,8 @@ Accept wildcard characters: False
 
 ### -work_fax_number
 Specifies the user's work fax number. The LDAP displayName of this property is facsimileTelephoneNumber.
+
+
 ```yaml
 Type: String
 Parameter Sets: (All)
@@ -760,6 +763,8 @@ Accept wildcard characters: False
 
 ### -work_locality
 Specifies the user's city on their work address object. The LDAP displayName of this property is l.
+
+
 ```yaml
 Type: String
 Parameter Sets: (All)
@@ -789,6 +794,8 @@ Accept wildcard characters: False
 
 ### -work_number
 Specifies the user's work number. The LDAP displayName of this property is telephoneNumber.
+
+
 ```yaml
 Type: String
 Parameter Sets: (All)
@@ -803,6 +810,8 @@ Accept wildcard characters: False
 
 ### -work_poBox
 Specifies the user's poBox on their work address object. The LDAP displayName of this property is postOfficeBox.
+
+
 ```yaml
 Type: String
 Parameter Sets: (All)
@@ -817,6 +826,8 @@ Accept wildcard characters: False
 
 ### -work_postalCode
 Specifies the user's postalCode on their work address object. The LDAP displayName of this property is postalCode.
+
+
 ```yaml
 Type: String
 Parameter Sets: (All)
@@ -831,6 +842,8 @@ Accept wildcard characters: False
 
 ### -work_region
 Specifies the user's state on their work address object. This property is nested within the LDAP property with the displayName postalAddress.
+
+
 ```yaml
 Type: String
 Parameter Sets: (All)
@@ -845,6 +858,38 @@ Accept wildcard characters: False
 
 ### -work_streetAddress
 Specifies the user's streetAddress on their work address object. This property is nested within the LDAP property with the displayName postalAddress.
+
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -external_dn
+{{ Fill external_dn Description }}
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -external_source_type
+{{ Fill external_source_type Description }}
+
 ```yaml
 Type: String
 Parameter Sets: (All)
@@ -858,16 +903,14 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
-This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see about_CommonParameters (http://go.microsoft.com/fwlink/?LinkID=113216).
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
 ### System.String
-
 ## OUTPUTS
 
 ### System.Object
-
 ## NOTES
 
 ## RELATED LINKS

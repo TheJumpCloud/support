@@ -139,7 +139,7 @@ Function Get-JCUser ()
         [Parameter(
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'SearchFilter')]
-        [ValidateSet('created', 'password_expiration_date', 'account_locked', 'activated', 'addresses', 'allow_public_key', 'attributes', 'email', 'enable_managed_uid', 'enable_user_portal_multifactor', 'externally_managed', 'firstname', 'lastname', 'ldap_binding_user', 'passwordless_sudo', 'password_expired', 'password_never_expires', 'phoneNumbers', 'samba_service_user', 'ssh_keys', 'sudo', 'totp_enabled', 'unix_guid', 'unix_uid', 'username', 'middlename', 'displayname', 'jobTitle', 'employeeIdentifier', 'department', 'costCenter', 'company', 'employeeType', 'description', 'location')]
+        [ValidateSet('created', 'password_expiration_date', 'account_locked', 'activated', 'addresses', 'allow_public_key', 'attributes', 'email', 'enable_managed_uid', 'enable_user_portal_multifactor', 'externally_managed', 'firstname', 'lastname', 'ldap_binding_user', 'passwordless_sudo', 'password_expired', 'password_never_expires', 'phoneNumbers', 'samba_service_user', 'ssh_keys', 'sudo', 'totp_enabled', 'unix_guid', 'unix_uid', 'username', 'middlename', 'displayname', 'jobTitle', 'employeeIdentifier', 'department', 'costCenter', 'company', 'employeeType', 'description', 'location', 'external_source_type', 'external_dn')]
         [String[]]$returnProperties,
 
         #New parameters as of 1.8 release
@@ -181,7 +181,17 @@ Function Get-JCUser ()
 
         [Parameter(ValueFromPipelineByPropertyName,
             ParameterSetName = 'SearchFilter')]
-        [String]$location
+        [String]$location,
+
+        [Parameter(ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter')]
+        [String]$external_dn,
+
+        [Parameter(ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter')]
+        [String]$external_source_type
+
+
     )
 
     DynamicParam
@@ -239,7 +249,7 @@ Function Get-JCUser ()
 
     {
         Write-Verbose 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {Connect-JCOnline}
+        if ($JCAPIKEY.length -ne 40) { Connect-JCOnline }
 
         Write-Verbose 'Populating API headers'
         $hdrs = @{
@@ -344,7 +354,7 @@ Function Get-JCUser ()
                             switch ($param.value)
                             {
                                 before { $DateQuery = '$lt' }
-                                after { $DateQuery = '$gt'}
+                                after { $DateQuery = '$gt' }
                             }
 
                             continue
@@ -365,17 +375,17 @@ Function Get-JCUser ()
                         if (($param.Value -match '.+?\*$') -and ($param.Value -match '^\*.+?'))
                         {
                             # Front and back wildcard
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "$Value"})
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "$Value" })
                         }
                         elseif ($param.Value -match '.+?\*$')
                         {
                             # Back wildcard
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "^$Value"})
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "^$Value" })
                         }
                         elseif ($param.Value -match '^\*.+?')
                         {
                             # Front wild card
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "$Value`$"})
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "$Value`$" })
                         }
                         else
                         {
@@ -387,7 +397,7 @@ Function Get-JCUser ()
 
                     if ($filterDateProperty)
                     {
-                        (($Search.filter).GetEnumerator()).add($DateProperty, @{$DateQuery = $Timestamp})
+                        (($Search.filter).GetEnumerator()).add($DateProperty, @{$DateQuery = $Timestamp })
                     }
 
                     $SearchJSON = $Search | ConvertTo-Json -Compress -Depth 4

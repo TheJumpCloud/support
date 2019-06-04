@@ -1789,3 +1789,46 @@ Describe -Tag:('JCUser') "Set-JCUser bug fix 1.10.2" {
 
     }
 }
+
+Describe -Tag:('JCUser') "Set-JCUser 1.12" {
+
+
+    It "Sets a users external_source_type" {
+
+        $Newuser = New-RandomUser -domain "deleteme" | New-JCUser
+        $Random1 = $(Get-Random)
+        $Random2 = $(Get-Random)
+        $SetUser = Set-JCUser -Username $Newuser.username -external_source_type "$Random1" -external_dn "$Random2"
+        $SearchUser = Get-JCUser -external_source_type $Random1
+        $RemoveUser = Remove-JCUser -UserID  $Newuser._id -force
+        $SearchUser.external_source_type | Should -be $SetUser.external_source_type
+
+    }
+
+
+    It "Sets a users external_dn" {
+
+        $Newuser = New-RandomUser -domain "deleteme" | New-JCUser
+        $Random1 = $(Get-Random)
+        $Random2 = $(Get-Random)
+        $SetUser = Set-JCUser -Username $Newuser.username -external_source_type "$Random1" -external_dn "$Random2"
+        $SearchUser = Get-JCUser -external_source_type $Random1
+        $RemoveUser = Remove-JCUser -UserID  $Newuser._id -force
+        $SearchUser.external_dn | Should -be $SetUser.external_dn
+
+    }
+
+    It "Sets a users external_dn and external_source_type" {
+
+        $Newuser = New-RandomUser -domain "deleteme" | New-JCUser
+        $Random1 = $(Get-Random)
+        $Random2 = $(Get-Random)
+        $SetUser = Set-JCUser -Username $Newuser.username -external_source_type "$Random1" -external_dn "$Random2"
+        $SearchUser = Get-JCUser -external_source_type "$Random1" -external_dn "$Random2"
+        $RemoveUser = Remove-JCUser -UserID  $Newuser._id -force
+        $SearchUser.external_dn | Should -be $SetUser.external_dn
+        $SearchUser.external_source_type | Should -be $SetUser.external_source_type
+
+    }
+
+}
