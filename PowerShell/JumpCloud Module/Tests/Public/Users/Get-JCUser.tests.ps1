@@ -310,3 +310,46 @@ Describe -Tag:('JCUser') "Get-JCUser with new attributes 1.8.0" {
         $Search.location | Should -be "location_$RandomString"
     }
 }
+
+
+Describe -Tag:('JCUser') "Get-JCUser 1.12" {
+
+
+    It "Searches for a user by external_source_type" {
+
+        $Newuser = New-RandomUser -domain "deleteme" | New-JCUser
+        $Random1 = $(Get-Random)
+        $Random2 = $(Get-Random)
+        $SetUser = Set-JCUser -Username $Newuser.username -external_source_type "$Random1" -external_dn "$Random2"
+        $SearchUser = Get-JCUser -external_source_type $Random1
+        $RemoveUser = Remove-JCUser -UserID  $Newuser._id -force
+        $SearchUser._id | Should -be $Newuser._id
+
+    }
+
+
+    It "Searches for a user by external_dn" {
+
+        $Newuser = New-RandomUser -domain "deleteme" | New-JCUser
+        $Random1 = $(Get-Random)
+        $Random2 = $(Get-Random)
+        $SetUser = Set-JCUser -Username $Newuser.username -external_source_type "$Random1" -external_dn "$Random2"
+        $SearchUser = Get-JCUser -external_source_type $Random1
+        $RemoveUser = Remove-JCUser -UserID  $Newuser._id -force
+        $SearchUser._id | Should -be $Newuser._id
+
+    }
+
+    It "Searches for a user by external_dn and external_source_type" {
+
+        $Newuser = New-RandomUser -domain "deleteme" | New-JCUser
+        $Random1 = $(Get-Random)
+        $Random2 = $(Get-Random)
+        $SetUser = Set-JCUser -Username $Newuser.username -external_source_type "$Random1" -external_dn "$Random2"
+        $SearchUser = Get-JCUser -external_source_type "$Random1" -external_dn "$Random2"
+        $RemoveUser = Remove-JCUser -UserID  $Newuser._id -force
+        $SearchUser._id | Should -be $Newuser._id
+
+    }
+
+}
