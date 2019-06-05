@@ -65,7 +65,6 @@ Accept wildcard characters: False
 ### -launchType
 The launch type for the new command. The default is manual.
 
-
 ```yaml
 Type: String
 Parameter Sets: (All)

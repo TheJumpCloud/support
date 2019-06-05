@@ -27,18 +27,21 @@ The Set-JCSystemUser function updates the permissions between a JumpCloud user a
 
 ## EXAMPLES
 
-### Example 1```powershell
+### Example 1
+```powershell
 PS C:\> Set-JCSystemUser -SystemID 5n0795a712704la4eve154r -Username cclemons -Administrator $True
 ```
 
 Sets user with username 'cclemons' as an Administrator on the JumpCloud system with SystemID '5n0795a712704la4eve154r'
 
-### Example 2```powershell
+### Example 2
+```powershell
 PS C:\> Set-JCSystemUser -SystemID 5n0795a712704la4eve154r -Username cclemons -Administrator $False
 ```
 
 Sets user with username 'cclemons' as a standard user on the JumpCloud system with SystemID '5n0795a712704la4eve154r'
-### Example 3```powershell
+### Example 3
+```powershell
 PS C:\> Get-JCSystemUser 5n0795a712704la4eve154r  | Set-JCSystemUser -Administrator $False
 ```
 

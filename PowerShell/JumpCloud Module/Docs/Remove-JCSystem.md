@@ -41,13 +41,15 @@ PS C:\> Remove-JCSystem -SystemID 5n0795a712704la4eve154r -Force
 
 Removes the JumpCloud System with SystemID '5n0795a712704la4eve154r' using the -Force Parameter. A warning message will not be presented to confirm this operation.
 
-### Example 3```powershell
+### Example 3
+```powershell
 PS C:\> Get-JCSystem | Where-Object lastContact -lt (Get-Date).AddDays(-30) | Remove-JCSystem
 ```
 
 Removes all JumpCloud Systems that have a lastContact date greater then 30 days. A warning message will be presented to confirm each operation.
 
-### Example 4```powershell
+### Example 4
+```powershell
 PS C:\> Get-JCSystem | Where-Object displayName -Like *Server10* | Remove-JCSystem -force
 ```
 

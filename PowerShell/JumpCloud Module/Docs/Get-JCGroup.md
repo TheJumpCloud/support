@@ -27,25 +27,29 @@ The Get-JCGroup function by default will return all JumpCloud System and User gr
 
 ## EXAMPLES
 
-### Example 1```powershell
+### Example 1
+```powershell
 PS C:\> Get-JCGroup
 ```
 
 Returns all JumpCloud User and System groups
 
-### Example 2```powershell
+### Example 2
+```powershell
 PS C:\> Get-JCGroup -Type User
 ```
 
 Returns all JumpCloud User groups
 
-### Example 3```powershell
+### Example 3
+```powershell
 PS C:\> Get-JCGroup -Type System
 ```
 
 Returns all JumpCloud System groups
 
-### Example 4```powershell
+### Example 4
+```powershell
 PS C:\> Get-JCGroup -Type User -Name 'The Band'
 ```
 

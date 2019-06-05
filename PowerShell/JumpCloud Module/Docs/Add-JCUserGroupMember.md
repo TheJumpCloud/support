@@ -27,25 +27,29 @@ The Add-JCUserGroupMember function is used to add a JumpCloud user to a JumpClou
 
 ## EXAMPLES
 
-### Example 1```powershell
+### Example 1
+```powershell
 PS C:\> Add-JCUserGroupMember -Username cclemons -GroupName 'The Band'
 ```
 
 Adds the JumpCloud user with Username 'cclemons' to the User Group 'The Band'
 
-### Example 2```powershell
+### Example 2
+```powershell
 PS C:\> Get-JCUser | Where-Object sudo -EQ $true | Add-JCUserGroupMember -GroupName 'Administrators'
 ```
 
 Adds all JumpCloud users where the 'sudo' attribute is equal to $true to the User Group 'Administrators'
 
-### Example 3```powershell
+### Example 3
+```powershell
 PS C:\> Get-JCUser | Where-Object created -gt (Get-Date).AddDays(-7) | Add-JCUserGroupMember -GroupName 'New Hires'
 ```
 
 Adds all JumpCloud users created within the last 7 days to the User Group 'New Hires'
 
-### Example 4```powershell
+### Example 4
+```powershell
 Get-JCUser | Select-Object username, @{name='Attribute Value'; expression={$_.attributes.value}} | Where-Object 'Attribute Value' -Like *Sales* | Add-JCUserGroupMember -GroupName Sales
 ```
 

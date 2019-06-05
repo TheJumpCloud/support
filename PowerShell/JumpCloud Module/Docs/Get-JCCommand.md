@@ -27,7 +27,8 @@ The Get-JCCommand function returns all information describing a JumpCloud comman
 
 ## EXAMPLES
 
-### Example 1```powershell
+### Example 1
+```powershell
 PS C:\> Get-JCCommand
 ```
 
@@ -39,7 +40,8 @@ PS C:\> Get-JCCommand -CommandID 5j09o6f23dan6f4n035601d5
 ```
 
 Returns a single JumpCloud command with CommandID '5j09o6f23dan6f4n035601d5'. Note that the contents of the command will be present in the output from this command.
-### Example 3```powershell
+### Example 3
+```powershell
 PS C:\> Get-JCCommand | Get-JCCommand -ByID
 ```
 
@@ -47,7 +49,8 @@ Returns all information describing all JumpCloud commands by passing the -Comman
 
 Note that when running this command the time for the output to display will be directly proportionate to how many JumpCloud commands you have. The command 'Get-JCCommand -ByID' runs once for every JumpCloud command within your tenant.
 
-### Example 4```powershell
+### Example 4
+```powershell
 PS C:\> Get-JCCommand | Where-Object launchType -EQ 'trigger' | Get-JCCommand -ByID
 ```
 

@@ -48,7 +48,8 @@ PS C:\> Get-JCCommandResult  | Where-Object system -EQ 'Server01' | Remove-JCCom
 
 Removes all JumpCloud Command Results that were run on target system with a hostname of 'Server01' A warning message will be present to confirm each operation. This warning could be suppressed using the -Force Parameter.
 
-### Example 4```powershell
+### Example 4
+```powershell
 PS C:\> Get-JCCommandResult | Where-Object {$_.requestTime -GT (Get-Date).AddHours(-1) -and $_.exitCode -eq 0} | Remove-JCCommandResult -force
 ```
 

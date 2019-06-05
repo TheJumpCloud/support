@@ -42,13 +42,15 @@ PS C:\> Get-JCUser | Where-Object sudo -EQ $false | Remove-JCUserGroupMember -Gr
 
 Removes all JumpCloud users where the 'sudo' attribute is equal to $false from the User Group 'Administrators'
 
-### Example 3```powershell
+### Example 3
+```powershell
 PS C:\> Get-JCUser | Where-Object created -lt (Get-Date).AddDays(-7) | Remove-JCUserGroupMember -GroupName 'New Hires'
 ```
 
 Removes all JumpCloud users not created within the last 7 days from the User Group 'New Hires'
 
-### Example 4```powershell
+### Example 4
+```powershell
 Get-JCUser | Select-Object username, @{name='Attribute Value'; expression={$_.attributes.value}} | Where-Object 'Attribute Value' -Like *Marketing* | Remove-JCUserGroupMember -GroupName Sales
 ```
 

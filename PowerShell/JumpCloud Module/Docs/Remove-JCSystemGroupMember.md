@@ -42,7 +42,8 @@ PS C:\> Get-JCSystem | Where-Object os -Like *Windows* | Remove-JCSystemGroupMem
 
 Removes all Systems with an operating system like 'Windows' from the System Group 'Mac Systems'
 
-### Example 3```powershell
+### Example 3
+```powershell
 Get-JCSystem | Where-Object active -EQ $false | Remove-JCSystemGroupMember -GroupName 'Active Systems'
 ```
 

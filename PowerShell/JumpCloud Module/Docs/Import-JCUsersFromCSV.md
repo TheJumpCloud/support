@@ -30,19 +30,22 @@ During import a JumpCloud administrator can ensure the import is working by watc
 
 ## EXAMPLES
 
-### Example 1```powershell
+### Example 1
+```powershell
 PS C:\> Import-JCUsersFromCSV -CSVFilePath \users\cclemons\JCUserImport_11-16-2017.csv
 ```
 
 Imports the .csv file 'JCUserImport_11-16-2017.csv' from the path \users\cclemons\
 
-### Example 2```powershell
+### Example 2
+```powershell
 PS C:\Users\busters> Import-JCUsersFromCSV -CSVFilePath .\Import10.csv
 ```
 
 Imports the .csv file 'Import10.csv' from the current directory using '. sourcing'
 
-### Example 3```powershell
+### Example 3
+```powershell
 PS C:\> Import-JCUsersFromCSV -CSVFilePath \users\cclemons\JCUserImport_11-16-2017.csv -Force
 ```
 

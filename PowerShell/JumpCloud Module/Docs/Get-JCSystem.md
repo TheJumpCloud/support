@@ -32,37 +32,43 @@ The Get-JCSystem function returns all information describing a JumpCloud system.
 
 ## EXAMPLES
 
-### Example 1```powershell
+### Example 1
+```powershell
 Get-JCSystem
 ```
 
 Returns all JumpCloud managed systems and the information describing these systems.
 
-### Example 2```powershell
+### Example 2
+```powershell
 Get-JCSystemUser -SystemID 5n0795a712704la4eve154r
 ```
 
 Returns a single JumpCloud System with SystemID '5n0795a712704la4eve154r'.
 
-### Example 3```powershell
+### Example 3
+```powershell
 Get-JCSystem -active $true
 ```
 
 Returns all active JumpCloud Systems and the information describing these systems.
 
-### Example 4```powershell
+### Example 4
+```powershell
 Get-JCSystem -agentVersion '0.9.6*' -os '*Mac*'
 ```
 
 Returns all JumpCloud systems where the agentVersion is '0.9.6.*' and the operating system is like '*Mac*'
 
-### Example 5```powershell
+### Example 5
+```powershell
 Get-JCSystem -filterDateProperty created -dateFilter after -date 01/01/2018
 ```
 
 Returns all JumpCloud systems that were created after 01/01/2018 using the parameter -filterDateProperty and the dynamic parameters -dateFilter and -date
 
-### Example 6```powershell
+### Example 6
+```powershell
 Get-JCSystem -returnProperties remoteIP, active
 ```
 
@@ -283,7 +289,6 @@ Accept wildcard characters: False
 
 ### -returnProperties
 Allows you to return select properties on JumpCloud system objects. Specifying what properties are returned can drastically increase the speed of the API call with a large data set. Valid properties that can be returned are: 'created', 'active', 'agentVersion', 'allowMultiFactorAuthentication', 'allowPublicKeyAuthentication', 'allowSshPasswordAuthentication', 'allowSshRootLogin', 'arch', 'created', 'displayName', 'hostname', 'lastContact', 'modifySSHDConfig', 'organization', 'os', 'remoteIP', 'serialNumber', 'sshdParams', 'systemTimezone', 'templateName', 'version'
-
 
 ```yaml
 Type: String[]

@@ -27,24 +27,28 @@ In order to use the Invoke-JCCommand the target JumpCloud command must have the 
 
 ## EXAMPLES
 
-### Example 1```powershell
+### Example 1
+```powershell
 Invoke-JCCommand -trigger 'GetJCAgentLog'
 ```
 
 Runs the command with a trigger of 'GetJCAgentLog' on all associated systems associated with this JumpCloud command.
 
-### Example 2```powershell
+### Example 2
+```powershell
 Invoke-JCCommand -trigger 'InstallApp' -NumberOfVariables 1 -Variable1_name 'URL' -Variable1_value 'www.pathtoinstallfile.com'
 ```
 
 Runs the command with a trigger of 'GetJCAgentLog' and passes the variable 'URL' with value 'www.pathtoinstallfile.com' to the JumpCloud command. 
-### Example 3```powershell
+### Example 3
+```powershell
 Get-JCCommand | Where-Object launchType -EQ 'trigger' | Invoke-JCCommand
 ```
 
 Runs all JumpCloud commands that can be run by the Invoke-JCCommand by passing the -Trigger Parameter over the pipeline using Parameter Binding.
 
-### Example 4```powershell
+### Example 4
+```powershell
 Get-JCCommand | Where-Object trigger -Like '*NewMacInstall*' | Invoke-JCCommand
 ```
 
