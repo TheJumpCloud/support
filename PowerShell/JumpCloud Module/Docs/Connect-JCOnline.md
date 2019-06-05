@@ -99,8 +99,7 @@ Accept wildcard characters: False
 ```
 
 ### -JumpCloudOrgID
-Using the JumpCloud multi tenant?
-Please enter your OrgID
+Only needed for multi tenant admins. Organization ID can be found in the Settings page within the admin console.
 
 ```yaml
 Type: String

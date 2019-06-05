@@ -152,8 +152,8 @@ Accept wildcard characters: False
 ```
 
 ### -Skip
-Ignores the specified number of objects and then gets the remaining objects.
-Enter the number of objects to skip.
+The number of command results to skip over before returning results. 
+
 
 ```yaml
 Type: Int32

@@ -92,7 +92,7 @@ Accept wildcard characters: False
 ```
 
 ### -active
-{{ Fill active Description }}
+Filter for systems that are online or offline.
 
 ```yaml
 Type: Boolean

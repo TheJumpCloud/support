@@ -109,7 +109,7 @@ Accept wildcard characters: False
 ```
 
 ### -user
-Enter run as user
+Only needed for Mac and Linux commands. If not entered Mac and Linux commands will default to the root users. If entering a user a UserID must be entered. 
 
 ```yaml
 Type: String
