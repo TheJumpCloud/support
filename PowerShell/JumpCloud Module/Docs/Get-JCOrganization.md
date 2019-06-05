@@ -1,14 +1,13 @@
 ---
 external help file: JumpCloud-help.xml
 Module Name: JumpCloud
-online version:
+online version: https://github.com/TheJumpCloud/support/wiki/Get-JCOrganization
 schema: 2.0.0
 ---
 
 # Get-JCOrganization
 
 ## SYNOPSIS
-
 Returns all JumpCloud organizations associated with the authenticated JumpCloud admins account. 
 
 ## SYNTAX
@@ -18,7 +17,6 @@ Get-JCOrganization [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-
 The Get-JCOrganization command displays all JumpCloud organizations associated with the authenticated JumpCloud admins. JumpCloud admins configured for multi tenant administration can see the Organizations they have access to and the displayName and OrgID for these accounts. 
 
 ## EXAMPLES
@@ -44,5 +42,3 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
-
-[Get-JCOrganization](https://github.com/TheJumpCloud/support/wiki/Get-JCOrganization)

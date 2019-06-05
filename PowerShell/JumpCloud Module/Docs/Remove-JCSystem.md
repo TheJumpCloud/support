@@ -1,14 +1,13 @@
 ---
 external help file: JumpCloud-help.xml
 Module Name: JumpCloud
-online version:
+online version: https://github.com/TheJumpCloud/support/wiki/Remove-JCSystem
 schema: 2.0.0
 ---
 
 # Remove-JCSystem
 
 ## SYNOPSIS
-
 Removes a JumpCloud system.
 
 ## SYNTAX
@@ -24,13 +23,11 @@ Remove-JCSystem [-SystemID] <String> [-force] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-
 The Remove-JCSystem removes a JumpCloud system. If the target system is online this command will uninstall the JumpCloud agent from the system. If the target machine is offline then at this next check in the JumpCloud agent will be removed. The only action completed on the target system is the removal of the JumpCloud agent. No modifications are made to local user accounts during the agent removal.
 
 ## EXAMPLES
 
 ### Example 1
-
 ```PowerShell
 PS C:\> Remove-JCSystem -SystemID 5n0795a712704la4eve154r
 ```
@@ -64,17 +61,10 @@ Removes all JumpCloud Systems that have a displayName like 'Server10'. A warning
 ## PARAMETERS
 
 ### -SystemID
-
 The _id of the System which you want to remove from JumpCloud .
-
 To find a JumpCloud SystemID run the command:
-
-
-
 PS C:\> Get-JCSystem | Select hostname, _id
-
 The SystemID will be the 24 character string populated for the _id field.
-
 SystemID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically by calling a JumpCloud function that returns the SystemID. This is shown in EXAMPLES 3 and 4.
 
 ```yaml
@@ -90,7 +80,6 @@ Accept wildcard characters: False
 ```
 
 ### -force
-
 A SwitchParameter which suppresses the warning message when removing a JumpCloud System.
 
 ```yaml
@@ -117,5 +106,3 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
-
-[Online Help Remove-JCSystem](https://github.com/TheJumpCloud/support/wiki/Remove-JCSystem)

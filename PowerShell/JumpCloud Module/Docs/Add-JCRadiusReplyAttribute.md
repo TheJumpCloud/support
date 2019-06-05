@@ -1,14 +1,13 @@
 ---
 external help file: JumpCloud-help.xml
 Module Name: JumpCloud
-online version:
+online version: https://github.com/TheJumpCloud/support/wiki/Add-JCRadiusReplyAttribute
 schema: 2.0.0
 ---
 
 # Add-JCRadiusReplyAttribute
 
 ## SYNOPSIS
-
 Adds Radius reply attributes to a JumpCloud user group.
 
 ## SYNTAX
@@ -19,13 +18,9 @@ Add-JCRadiusReplyAttribute [-GroupName] <String> [-VLAN <String>] [-NumberOfAttr
 ```
 
 ## DESCRIPTION
-
 Adds Radius reply attributes to a JumpCloud user group.
-
 Any RADIUS reply attributes configured on a JumpCloud user group which associates a user to a RADIUS server will be returned in the Access-Accept message sent to the endpoint configured to authenticate with JumpCloud Radius. If a user is a member of more then one JumpCloud user group associated with a given RADIUS server all Reply attributes for the groups that associate the user to the RADIUS server will be returned in the Access-Accept message.
-
 If a user is a member of more then one JumpCloud user group associated with a given RADIUS server and these groups are configured with conflicting RADIUS reply attributes then the values of the attributes for the group that was created most recently will be returned in the Access-Accept message.
-
 RADIUS reply attribute conflicts are resolved based on the creation date of the user group where groups that are created more recently take precedent over older groups. Conflicts occur when groups are configured with the same RADIUS reply attributes and have conflicting attribute values. RADIUS reply attributes with the same attribute names but different tag values do not create conflicts.
 
 ## EXAMPLES
@@ -101,7 +96,6 @@ By specifying the '-VLAN' parameter three radius attributes are added to the Jum
 ## PARAMETERS
 
 ### -GroupName
-
 The JumpCloud user group to add the specified Radius reply attributes to.
 
 ```yaml
@@ -117,15 +111,10 @@ Accept wildcard characters: False
 ```
 
 ### -NumberOfAttributes
-
 The number of RADIUS reply attributes you wish to add to a user group.
-
 If an attributes exists with a name that matches the new attribute then the existing attribute will be updated.
-
 Based on the NumberOfAttributes value two Dynamic Parameters will be created for each Attribute: Attribute_name and Attribute_value with an associated number.
-
 See an example for working with Custom Attribute in EXAMPLE 3 above.
-
 Attributes must be valid RADIUS attributes. Find a list of valid RADIUS attributes within the dictionary files of this repro broken down by vendor: github.com/FreeRADIUS/freeradius-server/tree/v3.0.x/share
 If an invalid attribute is configured on a user group this will prevent users within this group from being able to authenticate via RADIUS until the invalid attribute is removed.
 
@@ -142,17 +131,13 @@ Accept wildcard characters: False
 ```
 
 ### -VLAN
-
 By specifying the '-VLAN' parameter three radius attributes are added to the target user group.
-
 These attributes and values are are:
-
 name                    value
 ----                    -----
 Tunnel-Medium-Type      IEEE-802
 Tunnel-Type             VLAN
 Tunnel-Private-Group-Id **VALUE of -VLAN**
-
 The value specified for the '-VLAN' parameter is populated for the value of **Tunnel-Private-Group-Id**.
 
 
@@ -174,13 +159,10 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
-System.Int32
-
+### System.Int32
 ## OUTPUTS
 
 ### System.Object
 ## NOTES
 
 ## RELATED LINKS
-
-[Online Help Add-JCRadiusReplyAttribute](https://github.com/TheJumpCloud/support/wiki/Add-JCRadiusReplyAttribute)

@@ -1,14 +1,13 @@
 ---
 external help file: JumpCloud-help.xml
 Module Name: JumpCloud
-online version:
+online version: https://github.com/TheJumpCloud/support/wiki/Set-JCSystem
 schema: 2.0.0
 ---
 
 # Set-JCSystem
 
 ## SYNOPSIS
-
 Updates an existing JumpCloud System
 
 ## SYNTAX
@@ -20,7 +19,6 @@ Set-JCSystem [-SystemID] <String> [-displayName <String>] [-allowSshPasswordAuth
 ```
 
 ## DESCRIPTION
-
 The Set-JCSystem function updates an existing JumpCloud System. Common use cases are updated SSH parameters and the system displayName. Actions can be completed in bulk for multiple systems by using the pipeline and Parameter Binding to query system properties with the Get-JCSystem function and then applying updates with Set-JCSystem function.
 
 ## EXAMPLES
@@ -44,11 +42,8 @@ This example updates all Systems with an operating system like 'Mac' and allows 
 ## PARAMETERS
 
 ### -SystemID
-
 The _id of the System which you want to remove from JumpCloud.
-
 The SystemID will be the 24 character string populated for the _id field.
-
 SystemID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically by calling a JumpCloud function that returns the SystemID. This is shown in EXAMPLE 2
 
 ```yaml
@@ -64,7 +59,6 @@ Accept wildcard characters: False
 ```
 
 ### -allowMultiFactorAuthentication
-
 A boolean $true/$false value to allow for MFA during system login. Note this setting only applies systems running Linux or Mac.
 
 ```yaml
@@ -80,7 +74,6 @@ Accept wildcard characters: False
 ```
 
 ### -allowPublicKeyAuthentication
-
 A boolean $true/$false value to allow for public key authentication.
 
 ```yaml
@@ -96,7 +89,6 @@ Accept wildcard characters: False
 ```
 
 ### -allowSshPasswordAuthentication
-
 A boolean $true/$false value to allow for ssh password authentication.
 
 ```yaml
@@ -112,7 +104,6 @@ Accept wildcard characters: False
 ```
 
 ### -allowSshRootLogin
-
 A boolean $true/$false value to allow for ssh root login.
 
 ```yaml
@@ -128,7 +119,6 @@ Accept wildcard characters: False
 ```
 
 ### -displayName
-
 The system displayName. The displayName is set to the hostname of the system during agent installation. When the system hostname updates the displayName does not update. 
 
 ```yaml
@@ -149,11 +139,10 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
+### System.Boolean
 ## OUTPUTS
 
 ### System.Object
 ## NOTES
 
 ## RELATED LINKS
-
-[Set-JCSystem](https://github.com/TheJumpCloud/support/wiki/Set-JCSystem)

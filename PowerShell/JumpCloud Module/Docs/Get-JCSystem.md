@@ -1,21 +1,20 @@
 ---
 external help file: JumpCloud-help.xml
 Module Name: JumpCloud
-online version:
+online version: https://github.com/TheJumpCloud/support/wiki/Get-JCSystem
 schema: 2.0.0
 ---
 
 # Get-JCSystem
 
 ## SYNOPSIS
-
 Returns all JumpCloud Systems within a JumpCloud tenant or a single JumpCloud System using the -ByID Parameter.
 
 ## SYNTAX
 
 ### SearchFilter (Default)
 ```
-Get-JCSystem [-hostname <String>] [-displayName <String>] [-version <String>] [-templateName <String>]
+Get-JCSystem [[-hostname] <String>] [-displayName <String>] [-version <String>] [-templateName <String>]
  [-os <String>] [-remoteIP <String>] [-serialNumber <String>] [-arch <String>] [-agentVersion <String>]
  [-systemTimezone <String>] [-active <Boolean>] [-allowMultiFactorAuthentication <Boolean>]
  [-allowPublicKeyAuthentication <Boolean>] [-allowSshPasswordAuthentication <Boolean>]
@@ -25,11 +24,10 @@ Get-JCSystem [-hostname <String>] [-displayName <String>] [-version <String>] [-
 
 ### ByID
 ```
-Get-JCSystem [-SystemID] <String> [<CommonParameters>]
+Get-JCSystem -SystemID <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-
 The Get-JCSystem function returns all information describing a JumpCloud system. By default this will return all Systems.
 
 ## EXAMPLES
@@ -85,9 +83,7 @@ Returns all JumpCloud systems and the properties remoteIP and active. The defaul
 ## PARAMETERS
 
 ### -SystemID
-
 The _id or id of the System which you want to query.
-
 
 ```yaml
 Type: String
@@ -95,13 +91,14 @@ Parameter Sets: ByID
 Aliases: _id, id
 
 Required: True
-Position: 0
+Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
 ### -active
+{{ Fill active Description }}
 
 ```yaml
 Type: Boolean
@@ -118,7 +115,6 @@ Accept wildcard characters: False
 ### -agentVersion
 A search filter to search systems by the agentVersion. 
 
-
 ```yaml
 Type: String
 Parameter Sets: SearchFilter
@@ -128,12 +124,11 @@ Required: False
 Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: True
+Accept wildcard characters: False
 ```
 
 ### -allowMultiFactorAuthentication
 A search filter to show systems that are enabled ($true) or disabled ($true) for allowMultiFactorAuthentication
-
 
 ```yaml
 Type: Boolean
@@ -204,7 +199,7 @@ Required: False
 Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: True
+Accept wildcard characters: False
 ```
 
 ### -displayName
@@ -219,7 +214,7 @@ Required: False
 Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: True
+Accept wildcard characters: False
 ```
 
 ### -filterDateProperty
@@ -229,6 +224,7 @@ A paramter that can filter on the property 'created'. This parameter if used cre
 Type: String
 Parameter Sets: SearchFilter
 Aliases:
+Accepted values: created
 
 Required: False
 Position: Named
@@ -246,10 +242,10 @@ Parameter Sets: SearchFilter
 Aliases:
 
 Required: False
-Position: Named
+Position: 0
 Default value: None
 Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: True
+Accept wildcard characters: False
 ```
 
 ### -modifySSHDConfig
@@ -279,7 +275,7 @@ Required: False
 Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: True
+Accept wildcard characters: False
 ```
 
 ### -remoteIP
@@ -294,7 +290,7 @@ Required: False
 Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: True
+Accept wildcard characters: False
 ```
 
 ### -returnProperties
@@ -305,6 +301,7 @@ Allows you to return select properties on JumpCloud system objects. Specifying w
 Type: String[]
 Parameter Sets: SearchFilter
 Aliases:
+Accepted values: created, active, agentVersion, allowMultiFactorAuthentication, allowPublicKeyAuthentication, allowSshPasswordAuthentication, allowSshRootLogin, arch, created, displayName, hostname, lastContact, modifySSHDConfig, organization, os, remoteIP, serialNumber, sshdParams, systemTimezone, templateName, version
 
 Required: False
 Position: Named
@@ -325,7 +322,7 @@ Required: False
 Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: True
+Accept wildcard characters: False
 ```
 
 ### -systemTimezone
@@ -355,7 +352,7 @@ Required: False
 Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: True
+Accept wildcard characters: False
 ```
 
 ### -version
@@ -370,7 +367,7 @@ Required: False
 Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: True
+Accept wildcard characters: False
 ```
 
 ### CommonParameters
@@ -379,11 +376,11 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
+### System.Boolean
+### System.String[]
 ## OUTPUTS
 
 ### System.Object
 ## NOTES
 
 ## RELATED LINKS
-
-[Online Help Get-JCSystem](https://github.com/TheJumpCloud/support/wiki/Get-JCSystem)

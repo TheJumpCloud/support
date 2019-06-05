@@ -1,14 +1,13 @@
 ---
 external help file: JumpCloud-help.xml
 Module Name: JumpCloud
-online version:
+online version: https://github.com/TheJumpCloud/support/wiki/Remove-JCRadiusReplyAttribute
 schema: 2.0.0
 ---
 
 # Remove-JCRadiusReplyAttribute
 
 ## SYNOPSIS
-
 Removes Radius reply attributes from a JumpCloud user group.
 
 ## SYNTAX
@@ -18,19 +17,14 @@ Remove-JCRadiusReplyAttribute [-GroupName] <String> [-AttributeName <String[]>] 
 ```
 
 ## DESCRIPTION
-
 Removes Radius reply attributes from a JumpCloud user group. User authentication Radius requests will return with the Radius reply attributes configured on the JumpCloud user groups which associates the user to JumpCloud Radius.
-
 Any RADIUS reply attributes configured on a JumpCloud user group which associates a user to a RADIUS server will be returned in the Access-Accept message sent to the endpoint configured to authenticate with JumpCloud Radius. If a user is a member of more then one JumpCloud user group associated with a given RADIUS server all Reply attributes for the groups that associate the user to the RADIUS server will be returned in the Access-Accept message.
-
 If a user is a member of more then one JumpCloud user group associated with a given RADIUS server and these groups are configured with conflicting RADIUS reply attributes then the values of the attributes for the group that was created most recently will be returned in the Access-Accept message.
-
 RADIUS reply attribute conflicts are resolved based on the creation date of the user group where groups that are created more recently take precedent over older groups. Conflicts occur when groups are configured with the same RADIUS reply attributes and have conflicting attribute values. RADIUS reply attributes with the same attribute names but different tag values do not create conflicts.
 
 ## EXAMPLES
 
 ### Example 1
-
 ```powershell
 Remove-JCRadiusReplyAttribute -GroupName BoulderOffice -All
 ```
@@ -48,7 +42,6 @@ Removes attributes with the name "Session-Timeout", "Termination-Action" from th
 ## PARAMETERS
 
 ### -All
-
 The '-All' parameter is a switch parameter which will clear all Radius reply attributes from a JumpCloud user group.
 
 ```yaml
@@ -79,7 +72,6 @@ Accept wildcard characters: False
 ```
 
 ### -GroupName
-
 The JumpCloud user group to remove the specified Radius reply attributes from.
 
 
@@ -101,13 +93,11 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
-System.String[] System.Management.Automation.SwitchParameter
-
+### System.String[]
+### System.Management.Automation.SwitchParameter
 ## OUTPUTS
 
 ### System.Object
 ## NOTES
 
 ## RELATED LINKS
-
-[Online Help Remove-JCRadiusReplyAttribute](https://github.com/TheJumpCloud/support/wiki/Remove-JCRadiusReplyAttribute)

@@ -1,7 +1,7 @@
 ---
 external help file: JumpCloud-help.xml
 Module Name: JumpCloud
-online version:
+online version: https://github.com/TheJumpCloud/support/wiki/Get-JCPolicyTargetSystem
 schema: 2.0.0
 ---
 
@@ -107,5 +107,3 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
-
-[Online Help Get-JCCommand](https://github.com/TheJumpCloud/support/wiki/Get-JCPolicyTargetSystem)

@@ -1,14 +1,13 @@
 ---
 external help file: JumpCloud-help.xml
 Module Name: JumpCloud
-online version:
+online version: https://github.com/TheJumpCloud/support/wiki/Get-JCCommandTarget
 schema: 2.0.0
 ---
 
 # Get-JCCommandTarget
 
 ## SYNOPSIS
-
 Returns the JumpCloud systems or system groups associated with a JumpCloud command.
 
 ## SYNTAX
@@ -24,7 +23,6 @@ Get-JCCommandTarget [-CommandID] <String> [-Groups] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-
 Using the CommandID parameter the Get-JCCommandTarget command will return all the systems associated with a JumpCloud command. If the '-Groups' parameter is used the Get-JCCommandTarget command will return all the system groups associated with a JumpCloud command.
 
 ## EXAMPLES
@@ -88,5 +86,3 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
-
-[Online Help Get-JCCommandTarget](https://github.com/TheJumpCloud/support/wiki/Get-JCCommandTarget)

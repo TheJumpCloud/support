@@ -1,7 +1,7 @@
 ---
 external help file: JumpCloud-help.xml
 Module Name: JumpCloud
-online version:
+online version: https://github.com/TheJumpCloud/support/wiki/Get-JCPolicy
 schema: 2.0.0
 ---
 
@@ -58,7 +58,6 @@ Returns the HelloWorld policy.
 ### -ByID
 Use the -ByID parameter when you want to query a specific policy. The -ByID SwitchParameter will set the ParameterSet to 'ByID' which queries one JumpCloud policy at a time.
 
-
 ```yaml
 Type: SwitchParameter
 Parameter Sets: ByID
@@ -113,5 +112,3 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
-
-[Online Help Get-JCCommand](https://github.com/TheJumpCloud/support/wiki/Get-JCPolicy)

@@ -1,14 +1,13 @@
 ---
 external help file: JumpCloud-help.xml
 Module Name: JumpCloud
-online version:
+online version: https://github.com/TheJumpCloud/support/wiki/Get-JCSystemGroupMember
 schema: 2.0.0
 ---
 
 # Get-JCSystemGroupMember
 
 ## SYNOPSIS
-
 Returns the System Group members of a JumpCloud System Group.
 
 ## SYNTAX
@@ -24,7 +23,6 @@ Get-JCSystemGroupMember -ByID <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-
 The Get-JCSystemGroupMember function returns all the System Group members of a JumpCloud System Group.
 
 ## EXAMPLES
@@ -56,7 +54,6 @@ Returns all JumpCloud System Groups that the system with a hostname of 'Server01
 ## PARAMETERS
 
 ### -ByID
-
 If searching for a System Group using the GroupID populate the GroupID in the -ByID field.
 
 ```yaml
@@ -72,7 +69,6 @@ Accept wildcard characters: False
 ```
 
 ### -GroupName
-
 The name of the JumpCloud System Group you want to return the members of.
 
 ```yaml
@@ -99,5 +95,3 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
-
-[Online Help Get-JCSystemGroupMember](https://github.com/TheJumpCloud/support/wiki/Get-JCSystemGroupMember)

@@ -1,14 +1,13 @@
 ---
 external help file: JumpCloud-help.xml
 Module Name: JumpCloud
-online version:
+online version: https://github.com/TheJumpCloud/support/wiki/Send-JCPasswordReset
 schema: 2.0.0
 ---
 
 # Send-JCPasswordReset
 
 ## SYNOPSIS
-
 Sends a JumpCloud activation/password reset email. 
 
 ## SYNTAX
@@ -24,9 +23,7 @@ Send-JCPasswordReset [[-username] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-
 The Send-JCPasswordReset command sends a JumpCloud activation/password reset email to targeted users. This function mimics the functionality of the 'resend email' button in the JumpCloud admin console. 
-
 Pending users will recieve an activation email. Active users will receive a password reset request.
 
 ## EXAMPLES
@@ -62,13 +59,9 @@ Sends an activation email to all JumpCloud users who are in an inactive state an
 ## PARAMETERS
 
 ### -UserID
-
 The _id of the User which you want to send the email.
-
 To find a JumpCloud UserID run the command:
-
 PS C:\> Get-JCUser | Select username, _id
-
 The UserID will be the 24 character string populated for the _id field.
 
 ```yaml
@@ -84,7 +77,6 @@ Accept wildcard characters: False
 ```
 
 ### -username
-
 The Username of the JumpCloud user you wish to send the email.
 
 
@@ -106,13 +98,10 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
-System.Object
-
+### System.Object
 ## OUTPUTS
 
 ### System.Object
 ## NOTES
 
 ## RELATED LINKS
-
-[Send-JCPasswordRest](https://github.com/TheJumpCloud/support/wiki/Send-JCPasswordReset)

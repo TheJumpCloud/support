@@ -1,14 +1,13 @@
 ---
 external help file: JumpCloud-help.xml
 Module Name: JumpCloud
-online version:
+online version: https://github.com/TheJumpCloud/support/wiki/Add-JCUserGroupMember
 schema: 2.0.0
 ---
 
 # Add-JCUserGroupMember
 
 ## SYNOPSIS
-
 Adds a JumpCloud user to a JumpCloud User Group.
 
 ## SYNTAX
@@ -24,7 +23,6 @@ Add-JCUserGroupMember [[-GroupName] <String>] [-ByID] [-GroupID <String>] -UserI
 ```
 
 ## DESCRIPTION
-
 The Add-JCUserGroupMember function is used to add a JumpCloud user to a JumpCloud User Group. The new user can be added by Username or by UserID.
 
 ## EXAMPLES
@@ -64,7 +62,6 @@ Adds all JumpCloud users with a custom attribute value which contains 'Sales' to
 ## PARAMETERS
 
 ### -ByID
-
 Use the -ByID parameter when either the UserID or GroupID is being passed over the pipeline to the Add-JCUserGroupMember function. The -ByID SwitchParameter will set the ParameterSet to 'ByID' which will increase the function speed and performance.
 
 ```yaml
@@ -80,11 +77,7 @@ Accept wildcard characters: False
 ```
 
 ### -GroupID
-
 The GroupID is used in the ParameterSet 'ByID'. The GroupID for a User Group can be found by running the command:
-
-
-
 PS C:\> Get-JCGroup -type 'User'
 
 ```yaml
@@ -100,7 +93,6 @@ Accept wildcard characters: False
 ```
 
 ### -GroupName
-
 The name of the JumpCloud User Group that you want to add the User to.
 
 ```yaml
@@ -128,17 +120,10 @@ Accept wildcard characters: False
 ```
 
 ### -UserID
-
 The _id of the User which you want to add to the User Group.
-
 To find a JumpCloud UserID run the command:
-
-
-
 PS C:\> Get-JCUser | Select username, _id
-
 The UserID will be the 24 character string populated for the _id field.
-
 UserID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCUser function before calling Add-JCUserGroupMember. This is shown in EXAMPLES 2, 3, and 4.
 
 ```yaml
@@ -154,7 +139,6 @@ Accept wildcard characters: False
 ```
 
 ### -Username
-
 The Username of the JumpCloud user you wish to add to the User Group.
 
 ```yaml
@@ -181,5 +165,3 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
-
-[Online Help Add-JCUserGroupMember](https://github.com/TheJumpCloud/support/wiki/Add-JCUserGroupMember)

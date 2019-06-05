@@ -1,14 +1,13 @@
 ---
 external help file: JumpCloud-help.xml
 Module Name: JumpCloud
-online version:
+online version: https://github.com/TheJumpCloud/support/wiki/Remove-JCCommandResult
 schema: 2.0.0
 ---
 
 # Remove-JCCommandResult
 
 ## SYNOPSIS
-
 Removes a JumpCloud Command Result
 
 ## SYNTAX
@@ -24,13 +23,11 @@ Remove-JCCommandResult [-CommandResultID] <String> [-force] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-
 The Remove-JCCommandResult can remove a single JumpCloud command result or multiple command results that are passed to the command over the pipeline. The default behavior is to prompt with a warning message when deleting a command result but this can be suppressed with the -force Parameter.
 
 ## EXAMPLES
 
 ### Example 1
-
 ```PowerShell
 PS C:\> Remove-JCCommandResult -CommandResultID 5j09o6f23dan6f4n035601d5
 ```
@@ -64,17 +61,10 @@ Removes all JumpCloud commands that were run within the last hour and that had a
 ## PARAMETERS
 
 ### -CommandResultID
-
 The _id of the JumpCloud Command Result you wish to query.
-
 To find a JumpCloud Command Result run the command:
-
-
-
 PS C:\> Get-JCCommandResult | Select name, _id
-
 The CommandResultID will be the 24 character string populated for the _id field.
-
 CommandResultID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using a function that returns the JumpCloud CommandResultID. This is shown in EXAMPLES 3 and 4.
 
 ```yaml
@@ -90,7 +80,6 @@ Accept wildcard characters: False
 ```
 
 ### -force
-
 A SwitchParameter which removes the warning message when removing a JumpCloud Command Result.
 
 ```yaml
@@ -110,12 +99,10 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### System.String[]
+### System.String
 ## OUTPUTS
 
 ### System.Object
 ## NOTES
 
 ## RELATED LINKS
-
-[Online Help Remove-JCCommandResult](https://github.com/TheJumpCloud/support/wiki/Remove-JCCommandResult)

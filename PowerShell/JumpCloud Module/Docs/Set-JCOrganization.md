@@ -1,14 +1,13 @@
 ---
 external help file: JumpCloud-help.xml
 Module Name: JumpCloud
-online version:
+online version: https://github.com/TheJumpCloud/support/wiki/Set-JCOrganization
 schema: 2.0.0
 ---
 
 # Set-JCOrganization
 
 ## SYNOPSIS
-
 Allows a multi tenant admin to update their connection to a specific JumpCloud organization.
 
 ## SYNTAX
@@ -24,7 +23,6 @@ Set-JCOrganization [-OrgID] <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-
 The Set-JCOrganization command can only be run by JumpCloud admins with multi tenant (MT) associations. By default the Set-JCOrganization run without any parameters with prompt JumpCloud MT admins with a selection list of their available Organizations. Admins can use the '-OrgID' parameter to skip this prompt and set their Organization programmatically. 
 
 ## EXAMPLES
@@ -81,5 +79,3 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
-
-[Set-JCOrganization](https://github.com/TheJumpCloud/support/wiki/Set-JCOrganization)

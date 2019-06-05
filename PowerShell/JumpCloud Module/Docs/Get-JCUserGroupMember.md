@@ -1,14 +1,13 @@
 ---
 external help file: JumpCloud-help.xml
 Module Name: JumpCloud
-online version:
+online version: https://github.com/TheJumpCloud/support/wiki/Get-JCUserGroupMember
 schema: 2.0.0
 ---
 
 # Get-JCUserGroupMember
 
 ## SYNOPSIS
-
 Returns the User Group members of a JumpCloud User Group.
 
 ## SYNTAX
@@ -24,7 +23,6 @@ Get-JCUserGroupMember -ByID <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-
 The Get-JCUserGroupMember function returns all the User Group members of a JumpCloud User Group.
 
 ## EXAMPLES
@@ -56,7 +54,6 @@ Returns all the JumpCloud User Groups that the JumpCloud user with a username of
 ## PARAMETERS
 
 ### -ByID
-
 If searching for a User Group using the GroupID populate the GroupID in the -ByID field.
 
 ```yaml
@@ -72,7 +69,6 @@ Accept wildcard characters: False
 ```
 
 ### -GroupName
-
 The name of the JumpCloud User Group you want to return the members of.
 
 ```yaml
@@ -99,5 +95,3 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
-
-[Online Help Get-JCUserGroupMember](https://github.com/TheJumpCloud/support/wiki/Get-JCUserGroupMember)

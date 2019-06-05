@@ -1,14 +1,13 @@
 ---
 external help file: JumpCloud-help.xml
 Module Name: JumpCloud
-online version:
+online version: https://github.com/TheJumpCloud/support/wiki/Remove-JCCommand
 schema: 2.0.0
 ---
 
 # Remove-JCCommand
 
 ## SYNOPSIS
-
 Removes a JumpCloud command
 
 ## SYNTAX
@@ -24,7 +23,6 @@ Remove-JCCommand [-CommandID] <String> [-force] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-
 The Remove-JCCommand can remove a single JumpCloud command or multiple commands that are passed to the command over the pipeline. The default behavior is to prompt with a warning message when deleting a command result but this can be suppressed with the -force Parameter.
 
 ## EXAMPLES
@@ -46,16 +44,10 @@ Removes the JumpCloud Command with a CommandID of '5j09o6f23dan6f4n035601d5'. A 
 ## PARAMETERS
 
 ### -CommandID
-
 The _id of the JumpCloud Command  you wish to query.
-
 To find a JumpCloud CommandID run the command:
-
-
 PS C:\> Get-JCCommand | Select name, _id
-
 The CommandID will be the 24 character string populated for the _id field.
-
 CommandID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using a function that returns the JumpCloud CommandID.
 
 ```yaml
@@ -97,5 +89,3 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
-
-[Online Help Remove-JCCommand](https://github.com/TheJumpCloud/support/wiki/Remove-JCCommand)

@@ -1,14 +1,13 @@
 ---
 external help file: JumpCloud-help.xml
 Module Name: JumpCloud
-online version:
+online version: https://github.com/TheJumpCloud/support/wiki/Remove-JCUserGroup
 schema: 2.0.0
 ---
 
 # Remove-JCUserGroup
 
 ## SYNOPSIS
-
 Removes a JumpCloud User Group
 
 ## SYNTAX
@@ -24,7 +23,6 @@ Remove-JCUserGroup [-GroupName] <String> [-force] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-
 Removes a JumpCloud User Group. By default a warning message will be presented to confirm the operation.
 
 ## EXAMPLES
@@ -48,7 +46,6 @@ Removes the JumpCloud User Group with the name 'The Band' using the -Force Param
 ## PARAMETERS
 
 ### -GroupName
-
 The name of the User Group you want to remove.
 
 ```yaml
@@ -64,7 +61,6 @@ Accept wildcard characters: False
 ```
 
 ### -force
-
 A SwitchParameter which suppresses the warning message when removing a JumpCloud User Group.
 
 ```yaml
@@ -91,5 +87,3 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
-
-[Online Help Remove-JCUserGroup](https://github.com/TheJumpCloud/support/wiki/Remove-JCUserGroup)

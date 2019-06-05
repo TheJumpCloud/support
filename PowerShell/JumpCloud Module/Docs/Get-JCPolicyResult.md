@@ -1,7 +1,7 @@
 ---
 external help file: JumpCloud-help.xml
 Module Name: JumpCloud
-online version:
+online version: https://github.com/TheJumpCloud/support/wiki/Get-JCPolicyResult
 schema: 2.0.0
 ---
 
@@ -59,6 +59,36 @@ PS C:\> Get-JCPolicyResult -SystemID 123456789
 Returns the latest policy result for a system with the id of 123456789.
 
 ## PARAMETERS
+
+### -ByPolicyID
+The -ByPolicyID switch parameter will enforce the ByPolicyID parameter set and improve performance of gathering multiple policy results via the pipeline when the input object contains a property with PolicyID.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: ByPolicyID
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -BySystemID
+The -BySystemID switch parameter will enforce the BySystemID parameter set and search for results by SystemID.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: BySystemID
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
 
 ### -PolicyID
 The PolicyID of the JumpCloud policy you wish to query.
@@ -120,49 +150,16 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
-### -ByPolicyID
-
-The -ByPolicyID switch parameter will enforce the ByPolicyID parameter set and improve performance of gathering multiple policy results via the pipeline when the input object contains a property with PolicyID.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: ByPolicyID
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -BySystemID
-
-The -BySystemID switch parameter will enforce the BySystemID parameter set and search for results by SystemID.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: BySystemID
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
 ### System.String
+### System.Management.Automation.SwitchParameter
 ## OUTPUTS
 
 ### System.Object
 ## NOTES
 
 ## RELATED LINKS
-
-[Online Help Get-JCCommand](https://github.com/TheJumpCloud/support/wiki/Get-JCPolicyResult)

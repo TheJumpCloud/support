@@ -1,14 +1,13 @@
 ---
 external help file: JumpCloud-help.xml
 Module Name: JumpCloud
-online version:
+online version: https://github.com/TheJumpCloud/support/wiki/Get-JCSystemUser
 schema: 2.0.0
 ---
 
 # Get-JCSystemUser
 
 ## SYNOPSIS
-
 Returns all JumpCloud Users associated with a JumpCloud System.
 
 ## SYNTAX
@@ -18,7 +17,6 @@ Get-JCSystemUser [-SystemID] <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-
 The Get-JCSystemUser function returns all the JumpCloud Users associated with the system. Users can be associated with a JumpCloud system through a direct bind, a User Group, or both. The output of the Get-JCSystemUser identifies the associations between JumpCloud Users and the system.
 
 ## EXAMPLES
@@ -58,17 +56,10 @@ This example returns all the JumpCloud users whos have Administrator permissions
 ## PARAMETERS
 
 ### -SystemID
-
 The _id of the System which you want to query.
-
 To find a JumpCloud SystemID run the command:
-
-
-
 PS C:\> Get-JCSystem | Select hostname, _id
-
 The SystemID will be the 24 character string populated for the _id field.
-
 SystemID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCSystem function before calling Get-JCSystemUser. This is shown in EXAMPLES 2 and 3.
 
 ```yaml
@@ -95,5 +86,3 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
-
-[Online Help Get-JCSystemUser](https://github.com/TheJumpCloud/support/wiki/Get-JCSystemUser)
