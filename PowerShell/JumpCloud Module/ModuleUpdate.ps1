@@ -1,6 +1,5 @@
-# Issues with Add-JCRadiusReplyAttribute and Set-JCRadiusReplyAttribute
-$ExcludeList = @('Add-JCRadiusReplyAttribute', 'Set-JCRadiusReplyAttribute')
-
+# Populate if you want to exclude files from help file creation
+$ExcludeList = @('')
 # Define path variables
 $ModulePath = $PSScriptRoot
 $FilePath_Psd1 = $ModulePath + '/JumpCloud.psd1'
