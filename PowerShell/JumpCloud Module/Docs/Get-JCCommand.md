@@ -40,6 +40,7 @@ PS C:\> Get-JCCommand -CommandID 5j09o6f23dan6f4n035601d5
 ```
 
 Returns a single JumpCloud command with CommandID '5j09o6f23dan6f4n035601d5'. Note that the contents of the command will be present in the output from this command.
+
 ### Example 3
 ```powershell
 PS C:\> Get-JCCommand | Get-JCCommand -ByID

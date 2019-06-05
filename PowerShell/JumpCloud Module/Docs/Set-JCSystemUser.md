@@ -40,6 +40,7 @@ PS C:\> Set-JCSystemUser -SystemID 5n0795a712704la4eve154r -Username cclemons -A
 ```
 
 Sets user with username 'cclemons' as a standard user on the JumpCloud system with SystemID '5n0795a712704la4eve154r'
+
 ### Example 3
 ```powershell
 PS C:\> Get-JCSystemUser 5n0795a712704la4eve154r  | Set-JCSystemUser -Administrator $False

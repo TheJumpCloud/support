@@ -40,6 +40,7 @@ Invoke-JCCommand -trigger 'InstallApp' -NumberOfVariables 1 -Variable1_name 'URL
 ```
 
 Runs the command with a trigger of 'GetJCAgentLog' and passes the variable 'URL' with value 'www.pathtoinstallfile.com' to the JumpCloud command. 
+
 ### Example 3
 ```powershell
 Get-JCCommand | Where-Object launchType -EQ 'trigger' | Invoke-JCCommand

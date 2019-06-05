@@ -56,6 +56,7 @@ name                    value
 Tunnel-Medium-Type:3      IEEE-802
 Tunnel-Type:3             VLAN
 Tunnel-Private-Group-Id:3 24
+
 ### Example 3
 ```powershell
 Add-JCRadiusReplyAttribute -GroupName "BoulderOffice" -NumberOfCustomAttributes 2 -Attribute1_name "Session-Timeout" -Attribute1_value 100 -Attribute2_name "Termination-Action" -Attribute2_value 1
