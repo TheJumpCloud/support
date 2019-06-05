@@ -27,25 +27,19 @@ The Get-JCSystemGroupMember function returns all the System Group members of a J
 
 ## EXAMPLES
 
-### Example 1
-
-```PowerShell
+### Example 1```powershell
 PS C:\> Get-JCSystemGroupMember -GroupName 'OSX Group'
 ```
 
 Returns the JumpCloud Systems that are a member of the group 'OSX Group'
 
-### Example 2
-
-```PowerShell
+### Example 2```powershell
 PS C:\> Get-JCGroup -Type System | Get-JCSystemGroupMember
 ```
 
 Returns all JumpCloud System Groups and their System members.
 
-### Example 3
-
-```PowerShell
+### Example 3```powershell
 PS C:\> Get-JCGroup -Type System | Get-JCSystemGroupMember | Where-Object System -EQ 'Server01'
 ```
 

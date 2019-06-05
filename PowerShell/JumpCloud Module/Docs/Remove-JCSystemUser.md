@@ -34,31 +34,27 @@ Note* The Remove-JCSystemUser does not delete the account or any data from the t
 ## EXAMPLES
 
 ### Example 1
-```PowerShell
+```powershell
 PS C:\> Remove-JCSystemUser -Username cclemons -SystemID 5a0795nnie7127f4ev2erb154a
 ```
 
 Removes the JumpCloud user with the Username 'cclemons' from the System with a SystemID of '5a0795nnie7127f4ev2erb154a'. A warning message will be presented to confirm this operation.
 
 ### Example 2
-
-```PowerShell
+```powershell
 PS C:\> Remove-JCSystemUser -Username cclemons -SystemID 5a0795nnie7127f4ev2erb154a -force
 ```
 
 Removes the JumpCloud user with the Username 'cclemons' from the System with a SystemID of '5a0795nnie7127f4ev2erb154a' using the -force Parameter. A warning message will not be presented to confirm this operation.
 
 ### Example 3
-
-```PowerShell
+```powershell
 PS C:\> Get-JCSystemUser -SystemID 5a0795nnie7127f4ev2erb154a | Remove-JCSystemUser
 ```
 
 Removes all JumpCloud users bound directly to the System with a System ID of '5a0795nnie7127f4ev2erb154a' using Parameter binding and the pipeline. A warning message will be displayed to confirm each remove operation.
 
-### Example 4
-
-```PowerShell
+### Example 4```powershell
 PS C:\> Get-JCSystemUser -SystemID 5a0795nnie7127f4ev2erb154a | Remove-JCSystemUser -Force
 ```
 

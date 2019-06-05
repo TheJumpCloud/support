@@ -32,49 +32,37 @@ The Get-JCSystem function returns all information describing a JumpCloud system.
 
 ## EXAMPLES
 
-### Example 1
-
-```PowerShell
+### Example 1```powershell
 Get-JCSystem
 ```
 
 Returns all JumpCloud managed systems and the information describing these systems.
 
-### Example 2
-
-```PowerShell
+### Example 2```powershell
 Get-JCSystemUser -SystemID 5n0795a712704la4eve154r
 ```
 
 Returns a single JumpCloud System with SystemID '5n0795a712704la4eve154r'.
 
-### Example 3
-
-```PowerShell
+### Example 3```powershell
 Get-JCSystem -active $true
 ```
 
 Returns all active JumpCloud Systems and the information describing these systems.
 
-### Example 4
-
-```PowerShell
+### Example 4```powershell
 Get-JCSystem -agentVersion '0.9.6*' -os '*Mac*'
 ```
 
 Returns all JumpCloud systems where the agentVersion is '0.9.6.*' and the operating system is like '*Mac*'
 
-### Example 5
-
-```PowerShell
+### Example 5```powershell
 Get-JCSystem -filterDateProperty created -dateFilter after -date 01/01/2018
 ```
 
 Returns all JumpCloud systems that were created after 01/01/2018 using the parameter -filterDateProperty and the dynamic parameters -dateFilter and -date
 
-### Example 6
-
-```PowerShell
+### Example 6```powershell
 Get-JCSystem -returnProperties remoteIP, active
 ```
 
@@ -113,7 +101,7 @@ Accept wildcard characters: False
 ```
 
 ### -agentVersion
-A search filter to search systems by the agentVersion. 
+A search filter to search systems by the agentVersion.
 
 ```yaml
 Type: String
@@ -188,7 +176,7 @@ Accept wildcard characters: False
 ```
 
 ### -arch
-A search filter to search systems by the processor arch. 
+A search filter to search systems by the processor arch.
 
 ```yaml
 Type: String
@@ -203,7 +191,7 @@ Accept wildcard characters: False
 ```
 
 ### -displayName
-A search filter to search systems by the displayName. 
+A search filter to search systems by the displayName.
 
 ```yaml
 Type: String
@@ -218,7 +206,7 @@ Accept wildcard characters: False
 ```
 
 ### -filterDateProperty
-A paramter that can filter on the property 'created'. This parameter if used creates two more dynamic parameters 'dateFilter' and 'date'. See EXAMPLE 5 above for full syntax. 
+A paramter that can filter on the property 'created'. This parameter if used creates two more dynamic parameters 'dateFilter' and 'date'. See EXAMPLE 5 above for full syntax.
 
 ```yaml
 Type: String
@@ -234,7 +222,7 @@ Accept wildcard characters: False
 ```
 
 ### -hostname
-A search filter to search systems by the hostname. 
+A search filter to search systems by the hostname.
 
 ```yaml
 Type: String
@@ -264,7 +252,7 @@ Accept wildcard characters: False
 ```
 
 ### -os
-A search filter to search systems by the OS. 
+A search filter to search systems by the OS.
 
 ```yaml
 Type: String
@@ -279,7 +267,7 @@ Accept wildcard characters: False
 ```
 
 ### -remoteIP
-A search filter to search systems by the remoteIP. 
+A search filter to search systems by the remoteIP.
 
 ```yaml
 Type: String
@@ -311,7 +299,7 @@ Accept wildcard characters: False
 ```
 
 ### -serialNumber
-A search filter to search systems by the serialNumber. 
+A search filter to search systems by the serialNumber.
 
 ```yaml
 Type: String
@@ -326,7 +314,7 @@ Accept wildcard characters: False
 ```
 
 ### -systemTimezone
-A search filter to search systems by the serialNumber. This field DOES NOT take wildcard input. 
+A search filter to search systems by the serialNumber. This field DOES NOT take wildcard input.
 
 ```yaml
 Type: String
@@ -341,7 +329,7 @@ Accept wildcard characters: False
 ```
 
 ### -templateName
-A search filter to search systems by the templateName. 
+A search filter to search systems by the templateName.
 
 ```yaml
 Type: String
@@ -356,7 +344,7 @@ Accept wildcard characters: False
 ```
 
 ### -version
-A search filter to search systems by the version. 
+A search filter to search systems by the version.
 
 ```yaml
 Type: String

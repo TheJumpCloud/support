@@ -27,17 +27,13 @@ Removes a JumpCloud User Group. By default a warning message will be presented t
 
 ## EXAMPLES
 
-### Example 1
-
-```PowerShell
+### Example 1```powershell
 PS C:\> Remove-JCUserGroup -GroupName 'The Band'
 ```
 
 Removes the JumpCloud User Group with the name 'The Band'. A warning message will be presented to confirm the operation.
 
-### Example 2
-
-```PowerShell
+### Example 2```powershell
 PS C:\> Remove-JCUserGroup -GroupName 'The Band' -Force
 ```
 

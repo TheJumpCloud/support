@@ -32,7 +32,6 @@ Remove-JCRadiusReplyAttribute -GroupName BoulderOffice -All
 Removes all Radius reply attributes from the JumpCloud user group 'BoulderOffice' using the '-All' parameter.
 
 ### Example 2
-
 ```powershell
 Remove-JCRadiusReplyAttribute -GroupName BoulderOffice -AttributeName "Session-Timeout", "Termination-Action"
 ```

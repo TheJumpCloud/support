@@ -59,7 +59,7 @@ Accept wildcard characters: False
 ```
 
 ### -Groups
-A switch parameter to display any System Groups associated with a command. 
+A switch parameter to display any System Groups associated with a command.
 
 
 ```yaml

@@ -17,7 +17,7 @@ Import-JCCommand [-URL] <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-The Import-JCCommand command can be used to import curated JumpCloud Mac, Linux, and Windows commands into a JumpCloud tenant 
+The Import-JCCommand command can be used to import curated JumpCloud Mac, Linux, and Windows commands into a JumpCloud tenant
 
 ## EXAMPLES
 
@@ -26,7 +26,7 @@ The Import-JCCommand command can be used to import curated JumpCloud Mac, Linux,
 PS C:\> Import-JCCommand -URL 'https://git.io/JCXC-Windows-ListAllUsers'
 ```
 
-Imports the JumpCloud command located at the URL 'https://git.io/JCXC-Windows-ListAllUsers' into a JumpCloud tenant. 
+Imports the JumpCloud command located at the URL 'https://git.io/JCXC-Windows-ListAllUsers' into a JumpCloud tenant.
 
 ## PARAMETERS
 

@@ -43,7 +43,6 @@ Tunnel-Private-Group-Id 24
 The value specified for the '-VLAN' parameter is populated for the value of **Tunnel-Private-Group-Id**.
 
 ### Example 2
-
 ```powershell
 Set-JCRadiusReplyAttribute -GroupName "BoulderOffice" -VLAN 24 -VLANTag 4
 ```
@@ -58,9 +57,7 @@ Tunnel-Medium-Type:4      IEEE-802
 Tunnel-Type:4             VLAN
 Tunnel-Private-Group-Id:4 24
 
-### Example 3
-
-```powershell
+### Example 3```powershell
 Set-JCRadiusReplyAttribute -GroupName "BoulderOffice" -NumberOfCustomAttributes 2 -Attribute1_name "Session-Timeout" -Attribute1_value 200 -Attribute2_name "Termination-Action" -Attribute2_value 2
 ```
 

@@ -36,50 +36,40 @@ The Get-JCUser function returns all information describing a JumpCloud user. By 
 
 ## EXAMPLES
 
-### Example 1
-
-```PowerShell
+### Example 1```powershell
 PS C:\> Get-JCUser
 ```
 
 Returns all JumpCloud Users and the information describing these users.
 
-### Example 2
-
-```PowerShell
+### Example 2```powershell
 Get-JCUser -Username cclemons
 ```
 
 Returns the information describing the JumpCloud User with Username cclemons
 
-### Example 3
-
-```PowerShell
+### Example 3```powershell
 Get-JCUser -Username *clemons
 ```
 
 Returns all JumpCloud users that usernames end with clemons using the wildcard character '*'
 
-### Example 4
-
-```PowerShell
+### Example 4```powershell
 Get-JCUser -filterDateProperty created -dateFilter after -date 01/01/2018
 ```
 
 Returns all JumpCloud users that were created after '01/01/2018'. The parameter '-filterDateProperty' takes both 'created' and 'password_expiration_date' as input and creates two dynamic parameters '-dateFilter' which takes "before" or "after" as input and "-date" which takes a date value as input. 
 
-### Example 5
-
-```PowerShell
+### Example 5```powershell
 Get-JCUser -returnProperties username, sudo
 ```
 
-Returns all JumpCloud users and only the username and sudo Properties of their JumpCloud user object. 
+Returns all JumpCloud users and only the username and sudo Properties of their JumpCloud user object.
 
 ## PARAMETERS
 
 ### -account_locked
-A search filter to return users that are in a locked ($true) or unlocked ($false) state. 
+A search filter to return users that are in a locked ($true) or unlocked ($false) state.
 
 ```yaml
 Type: Boolean
@@ -94,7 +84,7 @@ Accept wildcard characters: False
 ```
 
 ### -activated
-A search filter to return users that are activated ($true) or those that have not set a password ($false). 
+A search filter to return users that are activated ($true) or those that have not set a password ($false).
 
 ```yaml
 Type: Boolean
@@ -319,7 +309,7 @@ Accept wildcard characters: False
 ```
 
 ### -filterDateProperty
-A paramter that can filter the properties 'created' or 'password_expiration_date'. This parameter if used creates two more dynamic parameters 'dateFilter' and 'date'. See EXAMPLE 4 above for full syntax. 
+A paramter that can filter the properties 'created' or 'password_expiration_date'. This parameter if used creates two more dynamic parameters 'dateFilter' and 'date'. See EXAMPLE 4 above for full syntax.
 
 ```yaml
 Type: String

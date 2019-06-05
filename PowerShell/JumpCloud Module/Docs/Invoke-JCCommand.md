@@ -27,33 +27,24 @@ In order to use the Invoke-JCCommand the target JumpCloud command must have the 
 
 ## EXAMPLES
 
-### Example 1
-
-```PowerShell
+### Example 1```powershell
 Invoke-JCCommand -trigger 'GetJCAgentLog'
 ```
 
 Runs the command with a trigger of 'GetJCAgentLog' on all associated systems associated with this JumpCloud command.
 
-### Example 2
-
-```PowerShell
+### Example 2```powershell
 Invoke-JCCommand -trigger 'InstallApp' -NumberOfVariables 1 -Variable1_name 'URL' -Variable1_value 'www.pathtoinstallfile.com'
 ```
 
 Runs the command with a trigger of 'GetJCAgentLog' and passes the variable 'URL' with value 'www.pathtoinstallfile.com' to the JumpCloud command. 
-
-### Example 3
-
-```PowerShell
+### Example 3```powershell
 Get-JCCommand | Where-Object launchType -EQ 'trigger' | Invoke-JCCommand
 ```
 
 Runs all JumpCloud commands that can be run by the Invoke-JCCommand by passing the -Trigger Parameter over the pipeline using Parameter Binding.
 
-### Example 4
-
-```PowerShell
+### Example 4```powershell
 Get-JCCommand | Where-Object trigger -Like '*NewMacInstall*' | Invoke-JCCommand
 ```
 
@@ -62,7 +53,7 @@ Runs all JumpCloud commands with a trigger that matches the expression -like '*N
 ## PARAMETERS
 
 ### -NumberOfVariables
-Denotes the number of variables you wish to send to the JumpCloud command. This parameter creates two dynamic parameters for each variable added. -Variable_1Name = the variable name -Variable1_Value = the value to pass. See EXAMPLE 2 above for full syntax. 
+Denotes the number of variables you wish to send to the JumpCloud command. This parameter creates two dynamic parameters for each variable added. -Variable_1Name = the variable name -Variable1_Value = the value to pass. See EXAMPLE 2 above for full syntax.
 
 ```yaml
 Type: Int32

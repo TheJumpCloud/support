@@ -29,31 +29,26 @@ The Remove-JCUserGroupMember function is used to remove a JumpCloud User from a 
 ## EXAMPLES
 
 ### Example 1
-```PowerShell
+```powershell
 PS C:\> Remove-JCUserGroupMember -Username cclemons -GroupName 'The Band'
 ```
 
 Removes the JumpCloud user with Username 'cclemons' from the User Group 'The Band'
 
 ### Example 2
-
-```PowerShell
+```powershell
 PS C:\> Get-JCUser | Where-Object sudo -EQ $false | Remove-JCUserGroupMember -GroupName 'Administrators'
 ```
 
 Removes all JumpCloud users where the 'sudo' attribute is equal to $false from the User Group 'Administrators'
 
-### Example 3
-
-```PowerShell
+### Example 3```powershell
 PS C:\> Get-JCUser | Where-Object created -lt (Get-Date).AddDays(-7) | Remove-JCUserGroupMember -GroupName 'New Hires'
 ```
 
 Removes all JumpCloud users not created within the last 7 days from the User Group 'New Hires'
 
-### Example 4
-
-```PowerShell
+### Example 4```powershell
 Get-JCUser | Select-Object username, @{name='Attribute Value'; expression={$_.attributes.value}} | Where-Object 'Attribute Value' -Like *Marketing* | Remove-JCUserGroupMember -GroupName Sales
 ```
 

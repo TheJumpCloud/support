@@ -23,7 +23,7 @@ Set-JCOrganization [-OrgID] <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-The Set-JCOrganization command can only be run by JumpCloud admins with multi tenant (MT) associations. By default the Set-JCOrganization run without any parameters with prompt JumpCloud MT admins with a selection list of their available Organizations. Admins can use the '-OrgID' parameter to skip this prompt and set their Organization programmatically. 
+The Set-JCOrganization command can only be run by JumpCloud admins with multi tenant (MT) associations. By default the Set-JCOrganization run without any parameters with prompt JumpCloud MT admins with a selection list of their available Organizations. Admins can use the '-OrgID' parameter to skip this prompt and set their Organization programmatically.
 
 ## EXAMPLES
 
@@ -31,24 +31,24 @@ The Set-JCOrganization command can only be run by JumpCloud admins with multi te
 ```powershell
 Set-JCOrganization
 
-======== JumpCloud Multi Tenant Selector ======= 
+======== JumpCloud Multi Tenant Selector =======
 
-1. displayName: MSP One | OrgID:  5b5o13o06tsand0c29a0t3s6   
-2. displayName: MSP Two | OrgID:  5b5o13o06tsand0d29o0g3s6   
+1. displayName: MSP One | OrgID:  5b5o13o06tsand0c29a0t3s6
+2. displayName: MSP Two | OrgID:  5b5o13o06tsand0d29o0g3s6
 
 Select the number of the JumpCloud tenant you wish to connect to
 
 Enter a value between 1 and 2:
 ```
 
-Displays a prompt for MT admins to select which organization to connect to. 
+Displays a prompt for MT admins to select which organization to connect to.
 
 ### Example 2
 ```powershell
 Set-JCOrganization -OrgID 5b5o13o06tsand0c29a0t3s6
 ```
 
-Uses the -OrgID parameter for MT admins to directly connect to a specific JumpCloud org. 
+Uses the -OrgID parameter for MT admins to directly connect to a specific JumpCloud org.
 
 ## PARAMETERS
 

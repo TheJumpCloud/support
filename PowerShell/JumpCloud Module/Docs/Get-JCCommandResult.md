@@ -45,24 +45,19 @@ PS C:\> Get-JCCommandResult
 Returns all JumpCloud Commands Results
 
 ### Example 2
-
 ```powershell
 PS C:\> Get-JCCommandResult -CommandResultID 5m0o65m6i4sb973059omb762
 ```
 
 Returns a single JumpCloud Command Result with CommandResultID '5j09o6f23dan6f4n035601d5'. Note that the command results output will be present in the output from this command.
 
-### Example 3
-
-```powershell
+### Example 3```powershell
 PS C:\> Get-JCCommandResult | Where-Object {$_.requestTime -GT (Get-Date).AddDays(-7) -and $_.exitCode -ne 0}
 ```
 
 Returns all JumpCloud Command Result that were run within the last seven days and that did not return an exitCode of '0'. Note an exitCode of zero generally represents a successful run of a command. This command returns all failed commands results for the past seven days.
 
-### Example 4
-
-```powershell
+### Example 4```powershell
 PS C:\> Get-JCCommandResult | Where-Object requestTime -GT (Get-Date).AddHours(-1) |  Get-JCCommandResult -ByID  | Select-Object -ExpandProperty output
 ```
 
@@ -70,29 +65,23 @@ Returns the output for all JumpCloud Command results that were run within the la
 
 Note that when running this command the time for the output to display will be directly proportionate to how many JumpCloud commands that match the criteria. The command 'Get-JCCommandResult -ByID' runs once for every JumpCloud command result that matches the criteria Where-Object criteria.
 
-### Example 5
-
-```powershell
+### Example 5```powershell
 PS C:\> Get-JCCommandResult -TotalCount
 ```
 
 Returns the total number of JumpCloud command results
 
-### Example 6
-
-```powershell
+### Example 6```powershell
 PS C:\> Get-JCCommandResult -Skip 100
 ```
 
-Skips returning the first 100 command results and only returns the results after 100. Command results are sorted by execution time. 
+Skips returning the first 100 command results and only returns the results after 100. Command results are sorted by execution time.
 
-### Example 6
-
-```powershell
+### Example 6```powershell
 PS C:\> Get-JCCommandResult -Skip 100 -MaxResults 10
 ```
 
-Skips returning the first 100 command results and only returns the 10 results after  the first 100 results. Command results are sorted by execution time. 
+Skips returning the first 100 command results and only returns the 10 results after  the first 100 results. Command results are sorted by execution time.
 
 ## PARAMETERS
 
@@ -143,7 +132,7 @@ Accept wildcard characters: False
 ```
 
 ### -MaxResults
-The maximum number of results to return. 
+The maximum number of results to return.
 
 ```yaml
 Type: Int32

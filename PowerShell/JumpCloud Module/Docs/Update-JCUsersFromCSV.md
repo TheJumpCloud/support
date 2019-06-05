@@ -37,8 +37,7 @@ PS C:\> Update-JCUsersFromCSV ./JCUserUpdateImport_09-20-2018.csv
 Updates users from the .csv file 'JCUserUpdateImport_09-20-2018.csv'
 
 ### Example 2
-
-```PowerShell
+```powershell
 PS C:\> Update-JCUsersFromCSV ./JCUserUpdateImport_09-20-2018.csv -Force
 ```
 
@@ -47,7 +46,7 @@ Uses the 'Force' parameter to skip the GUI and data validation and update users 
 ## PARAMETERS
 
 ### -CSVFilePath
-The full path to the CSV file you wish to import. You can use tab complete to search for .csv files. 
+The full path to the CSV file you wish to import. You can use tab complete to search for .csv files.
 
 ```yaml
 Type: String
@@ -62,7 +61,7 @@ Accept wildcard characters: False
 ```
 
 ### -force
-A SwitchParameter which suppresses the GUI and data validation when using the Update-JCUsersFromCSV command. 
+A SwitchParameter which suppresses the GUI and data validation when using the Update-JCUsersFromCSV command.
 
 ```yaml
 Type: SwitchParameter

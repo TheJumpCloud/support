@@ -8,7 +8,7 @@ schema: 2.0.0
 # Send-JCPasswordReset
 
 ## SYNOPSIS
-Sends a JumpCloud activation/password reset email. 
+Sends a JumpCloud activation/password reset email.
 
 ## SYNTAX
 
@@ -23,7 +23,7 @@ Send-JCPasswordReset [[-username] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-The Send-JCPasswordReset command sends a JumpCloud activation/password reset email to targeted users. This function mimics the functionality of the 'resend email' button in the JumpCloud admin console. 
+The Send-JCPasswordReset command sends a JumpCloud activation/password reset email to targeted users. This function mimics the functionality of the 'resend email' button in the JumpCloud admin console.
 Pending users will recieve an activation email. Active users will receive a password reset request.
 
 ## EXAMPLES
@@ -40,7 +40,7 @@ Sends an activation or reset email to JumpCloud user with username 'jcuser.one'
 Get-JCUserGroupMember -GroupName NewUsers | Send-JCPasswordReset
 ```
 
-Sends an activation or reset email to all members of the JumpCloud user group 'NewUsers'. 
+Sends an activation or reset email to all members of the JumpCloud user group 'NewUsers'.
 
 ### Example 3
 ```powershell

@@ -68,49 +68,37 @@ The Set-JCUser function updates an existing JumpCloud user account. Common use c
 
 ## EXAMPLES
 
-### Example 1
-
-```PowerShell
+### Example 1```powershell
 PS C:\> Set-JCUser -Username cclemons -account_locked $false
 ```
 
 This example unlocks the account for the user with username cclemons by setting the value of the property -account_locked to $false.
 
-### Example 2
-
-```PowerShell
+### Example 2```powershell
 PS C:\> Set-JCUser -Username cclemons -account_locked $true -email 'clarence@clemons.com'
 ```
 
 This example locks the account for user with username cclemons by setting the value of the property -account_locked to $true and also updates the email address for this user to 'clarence@clemons.com'.
 
-### Example 3
-
-```PowerShell
+### Example 3```powershell
 PS C:\> Get-JCUser | Select-Object _id, @{ Name = 'email'; Expression = { ($_.email).replace('olddomain.com','newdomain.com') }} | foreach {Set-JCUser -ByID -UserID $_._id -email $_.email}
 ```
 
 This example updates the domain on the email addresses associated with every user in the JumpCloud tenant using Parameter Binding, the pipeline, and a calculated property. The 'olddomain.com' would represent the current domain and the 'newdomain.com' would be the new domain.
 
-### Example 4
-
-```PowerShell
+### Example 4```powershell
 PS C:\> Get-JCUserGroupMember -GroupName 'Sales' | Set-JCUser -NumberOfCustomAttributes 1 -Attribute1_name 'Department' -Attribute1_value 'Sales'
 ```
 
 This example either updates or adds the Custom Attribute 'name = Department, value  = Sales' to all JumpCloud Users in the JumpCloud User Group 'Sales'
 
-### Example 5
-
-```PowerShell
+### Example 5```powershell
 PS C:\> Get-JCUserGroupMember -GroupName 'Sales' | Set-JCUser -RemoveAttribute Department
 ```
 
 This example removes the Custom Attribute with the name 'Department' from all JumpCloud Users in the JumpCloud User Group 'Sales'
 
-### Example 6
-
-```PowerShell
+### Example 6```powershell
 PS C:\> Set-JCUser -Username cclemons -enable_user_portal_multifactor $True -enrollmentdays 14
 ```
 

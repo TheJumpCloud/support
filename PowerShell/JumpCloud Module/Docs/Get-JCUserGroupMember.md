@@ -27,25 +27,19 @@ The Get-JCUserGroupMember function returns all the User Group members of a JumpC
 
 ## EXAMPLES
 
-### Example 1
-
-```PowerShell
+### Example 1```powershell
 PS C:\> Get-JCUserGroupMember -GroupName 'The Band'
 ```
 
 Returns the JumpCloud users that are a member of the group 'The Band'
 
-### Example 2
-
-```PowerShell
+### Example 2```powershell
 PS C:\> Get-JCGroup -Type User | Get-JCUserGroupMember
 ```
 
 Returns all the JumpCloud User Groups and their members.
 
-### Example 3
-
-```PowerShell
+### Example 3```powershell
 PS C:\> Get-JCGroup -Type User | Get-JCUserGroupMember | Where-Object Username -EQ 'cclemons'
 ```
 

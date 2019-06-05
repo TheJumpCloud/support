@@ -30,25 +30,19 @@ During import a JumpCloud administrator can ensure the import is working by watc
 
 ## EXAMPLES
 
-### Example 1
-
-```PowerShell
+### Example 1```powershell
 PS C:\> Import-JCUsersFromCSV -CSVFilePath \users\cclemons\JCUserImport_11-16-2017.csv
 ```
 
 Imports the .csv file 'JCUserImport_11-16-2017.csv' from the path \users\cclemons\
 
-### Example 2
-
-```PowerShell
+### Example 2```powershell
 PS C:\Users\busters> Import-JCUsersFromCSV -CSVFilePath .\Import10.csv
 ```
 
 Imports the .csv file 'Import10.csv' from the current directory using '. sourcing'
 
-### Example 3
-
-```PowerShell
+### Example 3```powershell
 PS C:\> Import-JCUsersFromCSV -CSVFilePath \users\cclemons\JCUserImport_11-16-2017.csv -Force
 ```
 
@@ -57,7 +51,7 @@ Uses the 'Force' paramter to skip the GUI and data validation and imports users 
 ## PARAMETERS
 
 ### -CSVFilePath
-The full path to the CSV file you wish to import. You can use tab complete to search for .csv files. 
+The full path to the CSV file you wish to import. You can use tab complete to search for .csv files.
 
 ```yaml
 Type: String
@@ -72,7 +66,7 @@ Accept wildcard characters: False
 ```
 
 ### -force
-A SwitchParameter which suppresses the GUI and data validation when using the Import-JCUsersFromCSV command. 
+A SwitchParameter which suppresses the GUI and data validation when using the Import-JCUsersFromCSV command.
 
 ```yaml
 Type: SwitchParameter

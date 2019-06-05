@@ -23,17 +23,13 @@ The Set-JCSystem function updates an existing JumpCloud System. Common use cases
 
 ## EXAMPLES
 
-### Example 1
-
-```PowerShell
+### Example 1```powershell
 PS C:\> Set-JCSystem -SystemID 5n0795a712704la4eve154r -displayName 'WorkStation001'
 ```
 
 This example updates the displayName of the System with SystemID '5n0795a712704la4eve154r' to 'WorkStation001'. Note the JumpCloud displayName is simply a text field and does not have any system impact.
 
-### Example 2
-
-```PowerShell
+### Example 2```powershell
 PS C:\> Get-JCSystem | Where-Object os -Like *Mac* | Set-JCSystem -allowMultiFactorAuthentication $true
 ```
 
@@ -119,7 +115,7 @@ Accept wildcard characters: False
 ```
 
 ### -displayName
-The system displayName. The displayName is set to the hostname of the system during agent installation. When the system hostname updates the displayName does not update. 
+The system displayName. The displayName is set to the hostname of the system during agent installation. When the system hostname updates the displayName does not update.
 
 ```yaml
 Type: String
