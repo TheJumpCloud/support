@@ -1,15 +1,14 @@
 ---
 external help file: JumpCloud-help.xml
 Module Name: JumpCloud
-online version:
+online version: https://github.com/TheJumpCloud/support/wiki/New-JCCommand
 schema: 2.0.0
 ---
 
 # New-JCCommand
 
 ## SYNOPSIS
-
-Creates a new JumpCloud Mac, Linux, or Windows command 
+Creates a new JumpCloud Mac, Linux, or Windows command
 
 ## SYNTAX
 
@@ -19,8 +18,7 @@ New-JCCommand [-name] <String> [-commandType] <String> [-command] <String> [[-la
 ```
 
 ## DESCRIPTION
-
-Creates a new JumpCloud Mac, Linux, or Windows command 
+Creates a new JumpCloud Mac, Linux, or Windows command
 
 ## EXAMPLES
 
@@ -34,8 +32,7 @@ Creates a JumpCloud windows command named 'PowerShell version' which will return
 ## PARAMETERS
 
 ### -command
-
-The script or command to run using the command. 
+The script or command to run using the command.
 
 ```yaml
 Type: String
@@ -50,8 +47,7 @@ Accept wildcard characters: False
 ```
 
 ### -commandType
-
-The type of JumpCloud command. Options are windows, mac, or linux. 
+The type of JumpCloud command. Options are windows, mac, or linux.
 
 ```yaml
 Type: String
@@ -67,9 +63,7 @@ Accept wildcard characters: False
 ```
 
 ### -launchType
-
-The launch type for the new command. The default is manual. 
-
+The launch type for the new command. The default is manual.
 
 ```yaml
 Type: String
@@ -85,7 +79,6 @@ Accept wildcard characters: False
 ```
 
 ### -name
-
 The name of the new JumpCloud command.
 
 ```yaml
@@ -101,8 +94,7 @@ Accept wildcard characters: False
 ```
 
 ### -timeout
-
-The time the command will run before it times out. The default is 120 seconds. 
+The time the command will run before it times out. The default is 120 seconds.
 
 ```yaml
 Type: String
@@ -117,7 +109,6 @@ Accept wildcard characters: False
 ```
 
 ### -user
-
 Only needed for Mac and Linux commands. If not entered Mac and Linux commands will default to the root users. If entering a user a UserID must be entered. 
 
 ```yaml
@@ -144,5 +135,3 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
-
-[Online Help New-JCCommand](https://github.com/TheJumpCloud/support/wiki/New-JCCommand)

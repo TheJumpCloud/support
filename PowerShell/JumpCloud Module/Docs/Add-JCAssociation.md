@@ -76,7 +76,7 @@ Accept wildcard characters: False
 ```
 
 ### -Id
-The id of the input object.
+The unique id of the object.
 
 ```yaml
 Type: String[]
@@ -91,7 +91,7 @@ Accept wildcard characters: False
 ```
 
 ### -Name
-The name of the input object.
+The name of the object.
 
 ```yaml
 Type: String[]
@@ -106,7 +106,7 @@ Accept wildcard characters: False
 ```
 
 ### -TargetId
-The id of the target object.
+The unique id of the target object.
 
 ```yaml
 Type: String
@@ -152,7 +152,7 @@ Accept wildcard characters: False
 ```
 
 ### -Type
-The type of the input object.
+The type of the object.
 
 ```yaml
 Type: String

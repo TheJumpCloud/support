@@ -1,14 +1,13 @@
 ---
 external help file: JumpCloud-help.xml
 Module Name: JumpCloud
-online version:
+online version: https://github.com/TheJumpCloud/support/wiki/Get-JCGroup
 schema: 2.0.0
 ---
 
 # Get-JCGroup
 
 ## SYNOPSIS
-
 Returns all JumpCloud System and User Groups.
 
 ## SYNTAX
@@ -24,47 +23,41 @@ Get-JCGroup [[-Type] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-
 The Get-JCGroup function by default will return all JumpCloud System and User groups. By using the -Type Parameter you can choose to return either System or User groups.
 
 ## EXAMPLES
 
 ### Example 1
-
-```PowerShell
+```powershell
 PS C:\> Get-JCGroup
 ```
 
 Returns all JumpCloud User and System groups
 
 ### Example 2
-
-```PowerShell
+```powershell
 PS C:\> Get-JCGroup -Type User
 ```
 
 Returns all JumpCloud User groups
 
 ### Example 3
-
-```PowerShell
+```powershell
 PS C:\> Get-JCGroup -Type System
 ```
 
 Returns all JumpCloud System groups
 
 ### Example 4
-
-```PowerShell
+```powershell
 PS C:\> Get-JCGroup -Type User -Name 'The Band'
 ```
 
-Returns the JumpCloud user group 'The Band' and the posixGroups information descripting this group 
+Returns the JumpCloud user group 'The Band' and the posixGroups information descripting this group
 
 ## PARAMETERS
 
 ### -Type
-
 The type of JumpCloud group you want to return.
 Note there are only two options - User and System.
 
@@ -93,5 +86,3 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
-
-[Online Help Get-JCGroup](https://github.com/TheJumpCloud/support/wiki/Get-JCGroup)

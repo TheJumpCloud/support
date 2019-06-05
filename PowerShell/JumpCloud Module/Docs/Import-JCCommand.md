@@ -1,14 +1,13 @@
 ---
 external help file: JumpCloud-help.xml
 Module Name: JumpCloud
-online version:
+online version: https://github.com/TheJumpCloud/support/wiki/Import-JCCommand
 schema: 2.0.0
 ---
 
 # Import-JCCommand
 
 ## SYNOPSIS
-
 Imports a Mac, Linux or Windows JumpCloud Command into the JumpCloud admin portal from a URL
 
 ## SYNTAX
@@ -18,8 +17,7 @@ Import-JCCommand [-URL] <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-
-The Import-JCCommand command can be used to import curated JumpCloud Mac, Linux, and Windows commands into a JumpCloud tenant 
+The Import-JCCommand command can be used to import curated JumpCloud Mac, Linux, and Windows commands into a JumpCloud tenant
 
 ## EXAMPLES
 
@@ -28,13 +26,12 @@ The Import-JCCommand command can be used to import curated JumpCloud Mac, Linux,
 PS C:\> Import-JCCommand -URL 'https://git.io/JCXC-Windows-ListAllUsers'
 ```
 
-Imports the JumpCloud command located at the URL 'https://git.io/JCXC-Windows-ListAllUsers' into a JumpCloud tenant. 
+Imports the JumpCloud command located at the URL 'https://git.io/JCXC-Windows-ListAllUsers' into a JumpCloud tenant.
 
 ## PARAMETERS
 
 ### -URL
 The URL of the JumpCloud command to import into a JumpCloud tenant.
-
 
 ```yaml
 Type: String
@@ -60,5 +57,3 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
-
-[Online Help Import-JCCommand](https://github.com/TheJumpCloud/support/wiki/Import-JCCommand)

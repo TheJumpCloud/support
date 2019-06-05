@@ -1,14 +1,13 @@
 ---
 external help file: JumpCloud-help.xml
 Module Name: JumpCloud
-online version:
+online version: https://github.com/TheJumpCloud/support/wiki/New-JCSystemGroup
 schema: 2.0.0
 ---
 
 # New-JCSystemGroup
 
 ## SYNOPSIS
-
 Creates a JumpCloud System Group
 
 ## SYNTAX
@@ -18,14 +17,12 @@ New-JCSystemGroup [-GroupName] <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-
 Creates a JumpCloud System Group. Note that a JumpCloud System Group must have a unique name.
 
 ## EXAMPLES
 
 ### Example 1
-
-```PowerShell
+```powershell
 PS C:\> New-JCSystemGroup -GroupName 'New System Group'
 ```
 
@@ -34,7 +31,6 @@ Creates a new JumpCloud System Group with the name 'New System Group'
 ## PARAMETERS
 
 ### -GroupName
-
 The name of the new JumpCloud System Group.
 
 ```yaml
@@ -61,5 +57,3 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
-
-[Online Help New-JCSystemGroup](https://github.com/TheJumpCloud/support/wiki/New-JCSystemGroup)

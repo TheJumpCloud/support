@@ -1,14 +1,13 @@
 ---
 external help file: JumpCloud-help.xml
 Module Name: JumpCloud
-online version:
+online version: https://github.com/TheJumpCloud/support/wiki/Set-JCUserGroupLDAP
 schema: 2.0.0
 ---
 
 # Set-JCUserGroupLDAP
 
 ## SYNOPSIS
-
 The Set-JCUserGroupLDAP command adds or removes a JumpCloud user group and the members to/from the JumpCloud LDAP directory.
 
 ## SYNTAX
@@ -20,13 +19,11 @@ Set-JCUserGroupLDAP [-GroupName] <String> -LDAPEnabled <Boolean> [<CommonParamet
 
 ### GroupID
 ```
-Set-JCUserGroupLDAP -GroupID <String> -LDAPEnabled <Boolean> [<CommonParameters>]
+Set-JCUserGroupLDAP [-GroupID] <String> -LDAPEnabled <Boolean> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-
 By default a JumpCloud user group and it's members are not added to the JumpCloud LDAP directory. To add a JumpCloud user group and its members to JumpCloud LDAP from within the admin console this can be toggled via the checkmark under the 'directories tab' for each user group.
-
 Alternatively this can be done using the 'Set-JCUserGroupLDAP' command and by leveraging this command with the 'Get-JCGroup -type User' command modifying JumpCloud User Group LDAP membership can be done in bulk.
 
 ## EXAMPLES
@@ -51,11 +48,24 @@ Get-JCGroup -Type User | Set-JCUserGroupLDAP -LDAPEnabled $true
 ```
 
 This command users the 'Get-JCGroup -Type User' command to pass all JumpCloud user groups to the 'Set-JCUserGroupLDAP' command and enables JumpCloud LDAP for all user groups within a JumpCloud tenant.
-
 ## PARAMETERS
 
-### -GroupName
+### -GroupID
+The ID of the JumpCloud user group to modify
 
+```yaml
+Type: String
+Parameter Sets: GroupID
+Aliases: id, _id
+
+Required: True
+Position: 0
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -GroupName
 The name of the JumpCloud user group to modify
 
 ```yaml
@@ -71,30 +81,12 @@ Accept wildcard characters: False
 ```
 
 ### -LDAPEnabled
-
 A boolean $true/$false value to enable or disable LDAP for a group
-
 
 ```yaml
 Type: Boolean
 Parameter Sets: (All)
 Aliases:
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -GroupID
-
-The ID of the JumpCloud user group to modify
-
-```yaml
-Type: String
-Parameter Sets: GroupID
-Aliases: id, _id
 
 Required: True
 Position: Named
@@ -109,13 +101,10 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
-System.Boolean
-
+### System.Boolean
 ## OUTPUTS
 
 ### System.Object
 ## NOTES
 
 ## RELATED LINKS
-
-[Online Help Set-JCUserGroupLDAP](https://github.com/TheJumpCloud/support/wiki/Set-JCUserGroupLDAP)

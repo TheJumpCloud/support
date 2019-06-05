@@ -1,14 +1,13 @@
 ---
 external help file: JumpCloud-help.xml
 Module Name: JumpCloud
-online version:
+online version: https://github.com/TheJumpCloud/support/wiki/Get-JCBackup
 schema: 2.0.0
 ---
 
 # Get-JCBackup
 
 ## SYNOPSIS
-
 Backs up JumpCloud directory information to CSV
 
 ## SYNTAX
@@ -18,7 +17,6 @@ Get-JCBackup [-All] [-Users] [-SystemUsers] [-Systems] [-UserGroups] [-SystemGro
 ```
 
 ## DESCRIPTION
-
 The Get-JCBackup command saves JumpCloud directory information to CSV files. This command can be used to backup user, system user, system, user group, and system group information to CSV files. Specific items can be selected for CSV backup using the command or the '-All' switch paramter can be specified which will backup all items.
 
 ## EXAMPLES
@@ -75,7 +73,6 @@ More then one parameter can be specified at one time. The above example backs up
 ## PARAMETERS
 
 ### -All
-
 A switch parameter that when called tells the command to back up JumpCloud user, system user, system, user group, and system group information to CSV files.
 
 
@@ -92,7 +89,6 @@ Accept wildcard characters: False
 ```
 
 ### -SystemGroups
-
 A switch parameter that when called backs up JumpCloud system group membership to CSV.
 
 
@@ -109,7 +105,6 @@ Accept wildcard characters: False
 ```
 
 ### -SystemUsers
-
 A switch parameter that when called backs up JumpCloud system user information to CSV.
 
 ```yaml
@@ -125,7 +120,6 @@ Accept wildcard characters: False
 ```
 
 ### -Systems
-
 A switch parameter that when called backs up JumpCloud system information to CSV.
 
 ```yaml
@@ -141,7 +135,6 @@ Accept wildcard characters: False
 ```
 
 ### -UserGroups
-
 A switch parameter that when called backs up JumpCloud user group membership to CSV.
 
 ```yaml
@@ -157,7 +150,6 @@ Accept wildcard characters: False
 ```
 
 ### -Users
-
 A switch parameter that when called backs up JumpCloud user information to CSV.
 
 ```yaml
@@ -184,5 +176,3 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
-
-[Online Help Get-JCBackup](https://github.com/TheJumpCloud/support/wiki/Get-JCBackup)

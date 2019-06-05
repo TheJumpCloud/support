@@ -1,14 +1,13 @@
 ---
 external help file: JumpCloud-help.xml
 Module Name: JumpCloud
-online version:
+online version: https://github.com/TheJumpCloud/support/wiki/Set-JCCommand
 schema: 2.0.0
 ---
 
 # Set-JCCommand
 
 ## SYNOPSIS
-
 Updates an existing JumpCloud command
 
 ## SYNTAX
@@ -19,7 +18,6 @@ Set-JCCommand [-CommandID] <String> [[-name] <String>] [[-command] <String>] [[-
 ```
 
 ## DESCRIPTION
-
 Updates an existing JumpCloud command using the CommandID
 
 ## EXAMPLES
@@ -37,16 +35,12 @@ Set-JCCommand -CommandID 5g6o3lf95r1485193o8cks6 -name "Windows - Get Windows Ev
 ```
 
 Updates the 'name' of command with CommandID '5g6o3lf95r1485193o8cks6' to "Windows - Get Windows Event Log".
-
 ## PARAMETERS
 
 ### -CommandID
-
 The _id of the JumpCloud command you wish to update.
 To find a JumpCloud CommandID run the command:
-
 PS C:\> Get-JCCommand | Select name, _id
-
 The CommandID will be the 24 character string populated for the _id field.
 
 ```yaml
@@ -62,7 +56,6 @@ Accept wildcard characters: False
 ```
 
 ### -command
-
 The actual script or command.
 
 ```yaml
@@ -78,7 +71,6 @@ Accept wildcard characters: False
 ```
 
 ### -launchType
-
 The launch type of the command options are: trigger, manual, repeated, one-time.
 
 ```yaml
@@ -95,7 +87,6 @@ Accept wildcard characters: False
 ```
 
 ### -name
-
 The name of the new JumpCloud command.
 
 ```yaml
@@ -137,5 +128,3 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
-
-[Set-JCCommand](https://github.com/TheJumpCloud/support/wiki/Set-JCCommand)

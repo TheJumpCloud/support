@@ -1,14 +1,13 @@
 ---
 external help file: JumpCloud-help.xml
 Module Name: JumpCloud
-online version:
+online version: https://github.com/TheJumpCloud/support/wiki/Remove-JCSystemGroup
 schema: 2.0.0
 ---
 
 # Remove-JCSystemGroup
 
 ## SYNOPSIS
-
 Removes a JumpCloud System Group
 
 ## SYNTAX
@@ -24,31 +23,26 @@ Remove-JCSystemGroup [-GroupName] <String> [-force] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-
 Removes a JumpCloud System Group. By default a warning message will be presented to confirm the operation.
 
 ## EXAMPLES
 
 ### Example 1
-
-```PowerShell
+```powershell
 PS C:\> Remove-JCSystemGroup -GroupName 'On Prem Systems'
 ```
 
 Removes the JumpCloud System Group with the name 'On Prem Systems'. A warning message will be presented to confirm the operation.
 
 ### Example 2
-
-```PowerShell
+```powershell
 PS C:\> Remove-JCSystemGroup -GroupName 'On Prem Systems' -Force
 ```
 
 Removes the JumpCloud System Group with the name 'On Prem Systems' using the -Force Parameter. A warning message will not be presented to confirm the operation.
-
 ## PARAMETERS
 
 ### -GroupName
-
 The name of the System Group you want to remove.
 
 ```yaml
@@ -64,7 +58,6 @@ Accept wildcard characters: False
 ```
 
 ### -force
-
 A SwitchParameter which suppresses the warning message when removing a JumpCloud System Group.
 
 ```yaml
@@ -91,5 +84,3 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
-
-[Online Help Remove-JCSystemGroup](https://github.com/TheJumpCloud/support/wiki/Remove-JCSystemGroup)

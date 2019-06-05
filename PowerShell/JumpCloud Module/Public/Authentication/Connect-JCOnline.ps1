@@ -35,7 +35,7 @@ Function Connect-JCOnline ()
         [Parameter(
             ParameterSetName = 'Interactive',
             Position = 1,
-            HelpMessage = "Using the JumpCloud multi tenant? Please enter your OrgID") ]
+            HelpMessage = "Only needed for multi tenant admins. Organization ID can be found in the Settings page within the admin console.") ]
 
         [string]$JumpCloudOrgID,
 
