@@ -74,7 +74,6 @@ Termination-Action 2
 The parameter '-NumberOfCustomAttributes' is a dynamic parameter that generates two required parameters for each custom attribute specified. In this example these parameters are -Attribute1_name,-Attribute1_value, -Attribute2_name and -Attribute2_value.
 
 If the Radius reply attribute being updated already exists on the target user group the value for this attribute is updated. If the Radius reply attribute does not exist the attribute is added.
-
 ## PARAMETERS
 
 ### -GroupName
@@ -121,7 +120,6 @@ Tunnel-Medium-Type      IEEE-802
 Tunnel-Type             VLAN
 Tunnel-Private-Group-Id **VALUE of -VLAN**
 The value specified for the '-VLAN' parameter is populated for the value of **Tunnel-Private-Group-Id**.
-
 
 ```yaml
 Type: String

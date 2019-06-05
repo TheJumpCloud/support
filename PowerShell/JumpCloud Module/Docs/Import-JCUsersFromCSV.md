@@ -50,7 +50,6 @@ PS C:\> Import-JCUsersFromCSV -CSVFilePath \users\cclemons\JCUserImport_11-16-20
 ```
 
 Uses the 'Force' paramter to skip the GUI and data validation and imports users from the file '\users\cclemons\JCUserImport_11-16-2017.csv'
-
 ## PARAMETERS
 
 ### -CSVFilePath

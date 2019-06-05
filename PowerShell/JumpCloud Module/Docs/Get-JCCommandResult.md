@@ -108,7 +108,6 @@ Accept wildcard characters: False
 ### -CommandResultID
 The _id of the JumpCloud Command Result you wish to query.
 
-
 ```yaml
 Type: String
 Parameter Sets: ByID
@@ -153,7 +152,6 @@ Accept wildcard characters: False
 
 ### -Skip
 The number of command results to skip over before returning results. 
-
 
 ```yaml
 Type: Int32

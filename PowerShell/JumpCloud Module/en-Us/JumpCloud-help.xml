@@ -1441,7 +1441,7 @@
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
           <maml:name>JumpCloudOrgID</maml:name>
           <maml:Description>
-            <maml:para>Using the JumpCloud multi tenant? Please enter your OrgID</maml:para>
+            <maml:para>Only needed for multi tenant admins. Organization ID can be found in the Settings page within the admin console.</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -1497,7 +1497,7 @@
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
           <maml:name>JumpCloudOrgID</maml:name>
           <maml:Description>
-            <maml:para>Using the JumpCloud multi tenant? Please enter your OrgID</maml:para>
+            <maml:para>Only needed for multi tenant admins. Organization ID can be found in the Settings page within the admin console.</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -1576,7 +1576,7 @@
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
         <maml:name>JumpCloudOrgID</maml:name>
         <maml:Description>
-          <maml:para>Using the JumpCloud multi tenant? Please enter your OrgID</maml:para>
+          <maml:para>Only needed for multi tenant admins. Organization ID can be found in the Settings page within the admin console.</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -2583,7 +2583,7 @@
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Skip</maml:name>
           <maml:Description>
-            <maml:para>Ignores the specified number of objects and then gets the remaining objects. Enter the number of objects to skip.</maml:para>
+            <maml:para>The number of command results to skip over before returning results.</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
           <dev:type>
@@ -2622,7 +2622,7 @@
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Skip</maml:name>
           <maml:Description>
-            <maml:para>Ignores the specified number of objects and then gets the remaining objects. Enter the number of objects to skip.</maml:para>
+            <maml:para>The number of command results to skip over before returning results.</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
           <dev:type>
@@ -2699,7 +2699,7 @@
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Skip</maml:name>
         <maml:Description>
-          <maml:para>Ignores the specified number of objects and then gets the remaining objects. Enter the number of objects to skip.</maml:para>
+          <maml:para>The number of command results to skip over before returning results.</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
         <dev:type>
@@ -3893,7 +3893,7 @@
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
           <maml:name>active</maml:name>
           <maml:Description>
-            <maml:para>{{ Fill active Description }}</maml:para>
+            <maml:para>Filter for systems that are online or offline.</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
           <dev:type>
@@ -4138,7 +4138,7 @@
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
         <maml:name>active</maml:name>
         <maml:Description>
-          <maml:para>{{ Fill active Description }}</maml:para>
+          <maml:para>Filter for systems that are online or offline.</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
         <dev:type>
@@ -6301,7 +6301,7 @@ SystemID                 CommandID                Status
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
           <maml:name>user</maml:name>
           <maml:Description>
-            <maml:para>Enter run as user</maml:para>
+            <maml:para>Only needed for Mac and Linux commands. If not entered Mac and Linux commands will default to the root users. If entering a user a UserID must be entered.</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -6376,7 +6376,7 @@ SystemID                 CommandID                Status
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
         <maml:name>user</maml:name>
         <maml:Description>
-          <maml:para>Enter run as user</maml:para>
+          <maml:para>Only needed for Mac and Linux commands. If not entered Mac and Linux commands will default to the root users. If entering a user a UserID must be entered.</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>

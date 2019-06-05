@@ -37,7 +37,6 @@ Remove-JCRadiusReplyAttribute -GroupName BoulderOffice -AttributeName "Session-T
 ```
 
 Removes attributes with the name "Session-Timeout", "Termination-Action" from the target user group 'BoulderOffice'. To remove multiple attributes at one time separate the attribute names with commas.
-
 ## PARAMETERS
 
 ### -All
@@ -72,7 +71,6 @@ Accept wildcard characters: False
 
 ### -GroupName
 The JumpCloud user group to remove the specified Radius reply attributes from.
-
 
 ```yaml
 Type: String

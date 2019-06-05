@@ -54,7 +54,6 @@ PS C:\> Get-JCCommandResult | Where-Object {$_.requestTime -GT (Get-Date).AddHou
 ```
 
 Removes all JumpCloud commands that were run within the last hour and that had an exitCode of '0' using the -Force Parameter. Note an exitCode of zero generally represents a successful run of a command. This command removes all success Commands Results run in the past hour.
-
 ## PARAMETERS
 
 ### -CommandResultID

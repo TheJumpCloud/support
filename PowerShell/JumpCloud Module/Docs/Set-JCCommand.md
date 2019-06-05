@@ -35,7 +35,6 @@ Set-JCCommand -CommandID 5g6o3lf95r1485193o8cks6 -name "Windows - Get Windows Ev
 ```
 
 Updates the 'name' of command with CommandID '5g6o3lf95r1485193o8cks6' to "Windows - Get Windows Event Log".
-
 ## PARAMETERS
 
 ### -CommandID

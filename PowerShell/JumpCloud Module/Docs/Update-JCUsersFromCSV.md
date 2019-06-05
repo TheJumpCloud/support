@@ -42,7 +42,6 @@ PS C:\> Update-JCUsersFromCSV ./JCUserUpdateImport_09-20-2018.csv -Force
 ```
 
 Uses the 'Force' parameter to skip the GUI and data validation and update users from the file 'JCUserUpdateImport_09-20-2018.csv
-
 ## PARAMETERS
 
 ### -CSVFilePath

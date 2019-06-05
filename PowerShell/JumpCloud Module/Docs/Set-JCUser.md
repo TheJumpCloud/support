@@ -109,7 +109,6 @@ PS C:\> Set-JCUser -Username cclemons -enable_user_portal_multifactor $True -enr
 ```
 
 This example enables the account for the user with username cclemons for MFA login to the user portal and sets an enrollment period of 14 days.
-
 ## PARAMETERS
 
 ### -ByID

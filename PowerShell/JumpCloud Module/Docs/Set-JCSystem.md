@@ -36,7 +36,6 @@ PS C:\> Get-JCSystem | Where-Object os -Like *Mac* | Set-JCSystem -allowMultiFac
 ```
 
 This example updates all Systems with an operating system like 'Mac' and allows for MFA login.
-
 ## PARAMETERS
 
 ### -SystemID

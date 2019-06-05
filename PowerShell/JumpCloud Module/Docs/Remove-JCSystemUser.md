@@ -61,7 +61,6 @@ PS C:\> Get-JCSystemUser -SystemID 5a0795nnie7127f4ev2erb154a | Remove-JCSystemU
 ```
 
 Removes all JumpCloud users bound directly to the System with a System ID of '5a0795nnie7127f4ev2erb154a' using Parameter binding and the pipeline. A warning message will not be displayed to confirm each remove operation because of the presence of the -Force Parameter.
-
 ## PARAMETERS
 
 ### -SystemID

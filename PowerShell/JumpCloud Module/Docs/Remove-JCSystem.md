@@ -54,7 +54,6 @@ PS C:\> Get-JCSystem | Where-Object displayName -Like *Server10* | Remove-JCSyst
 ```
 
 Removes all JumpCloud Systems that have a displayName like 'Server10'. A warning message will not be presented to confirm each operation.
-
 ## PARAMETERS
 
 ### -SystemID

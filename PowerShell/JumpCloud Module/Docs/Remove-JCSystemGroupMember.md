@@ -48,7 +48,6 @@ Get-JCSystem | Where-Object active -EQ $false | Remove-JCSystemGroupMember -Grou
 ```
 
 Removes all inactive systems from the System Group 'Active Systems'
-
 ## PARAMETERS
 
 ### -ByID

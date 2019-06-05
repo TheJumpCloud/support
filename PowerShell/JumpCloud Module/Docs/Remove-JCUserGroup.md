@@ -40,7 +40,6 @@ PS C:\> Remove-JCUserGroup -GroupName 'The Band' -Force
 ```
 
 Removes the JumpCloud User Group with the name 'The Band' using the -Force Parameter. A warning message will not be presented to confirm the operation.
-
 ## PARAMETERS
 
 ### -GroupName
