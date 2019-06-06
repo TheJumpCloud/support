@@ -643,6 +643,54 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>Attribute1_name</maml:name>
+          <maml:Description>
+            <maml:para>Enter an attribute name</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>Attribute1_value</maml:name>
+          <maml:Description>
+            <maml:para>Enter an attribute value</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>Attribute2_name</maml:name>
+          <maml:Description>
+            <maml:para>Enter an attribute name</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>Attribute2_value</maml:name>
+          <maml:Description>
+            <maml:para>Enter an attribute value</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
           <maml:name>NumberOfAttributes</maml:name>
           <maml:Description>
@@ -667,9 +715,103 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>VLANTag</maml:name>
+          <maml:Description>
+            <maml:para>Specifies the VLAN id which is applied to all attribute names.</maml:para>
+          </maml:Description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">0</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">1</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">2</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">3</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">4</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">5</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">6</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">7</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">8</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">9</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">10</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">11</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">12</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">13</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">14</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">15</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">16</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">17</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">18</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">19</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">20</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">21</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">22</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">23</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">24</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">25</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">26</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">27</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">28</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">29</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">30</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">31</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>Attribute1_name</maml:name>
+        <maml:Description>
+          <maml:para>Enter an attribute name</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>Attribute1_value</maml:name>
+        <maml:Description>
+          <maml:para>Enter an attribute value</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>Attribute2_name</maml:name>
+        <maml:Description>
+          <maml:para>Enter an attribute name</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>Attribute2_value</maml:name>
+        <maml:Description>
+          <maml:para>Enter an attribute value</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="name">
         <maml:name>GroupName</maml:name>
         <maml:Description>
@@ -698,6 +840,18 @@
         <maml:name>VLAN</maml:name>
         <maml:Description>
           <maml:para>By specifying the '-VLAN' parameter three radius attributes are added to the target user group. These attributes and values are are: name                    value ----                    ----- Tunnel-Medium-Type      IEEE-802 Tunnel-Type             VLAN Tunnel-Private-Group-Id VALUE of -VLAN The value specified for the '-VLAN' parameter is populated for the value of Tunnel-Private-Group-Id .</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>VLANTag</maml:name>
+        <maml:Description>
+          <maml:para>Specifies the VLAN id which is applied to all attribute names.</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -762,22 +916,22 @@
       </command:example>
       <command:example>
         <maml:title>-------------------------- Example 3 --------------------------</maml:title>
-        <dev:code>Add-JCRadiusReplyAttribute -GroupName "BoulderOffice" -NumberOfCustomAttributes 2 -Attribute1_name "Session-Timeout" -Attribute1_value 100 -Attribute2_name "Termination-Action" -Attribute2_value 1</dev:code>
+        <dev:code>Add-JCRadiusReplyAttribute -GroupName "BoulderOffice" -NumberOfAttributes 2 -Attribute1_name "Session-Timeout" -Attribute1_value 100 -Attribute2_name "Termination-Action" -Attribute2_value 1</dev:code>
         <dev:remarks>
           <maml:para>Adds two Radius attributes to the JumpCloud user group 'BoulderOffice'.</maml:para>
           <maml:para>These attribute are:</maml:para>
           <maml:para>name               value ----               ----- Session-Timeout    100 Termination-Action 1</maml:para>
-          <maml:para>The parameter '-NumberOfCustomAttributes' is a dynamic parameter that generates two required parameters for each custom attribute specified. In this example these parameters are -Attribute1_name,-Attribute1_value, -Attribute2_name and -Attribute2_value.</maml:para>
+          <maml:para>The parameter '-NumberOfAttributes' is a dynamic parameter that generates two required parameters for each custom attribute specified. In this example these parameters are -Attribute1_name,-Attribute1_value, -Attribute2_name and -Attribute2_value.</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
         <maml:title>-------------------------- Example 4 --------------------------</maml:title>
-        <dev:code>Add-JCRadiusReplyAttribute -GroupName "BoulderOffice" -VLAN 24 -NumberOfCustomAttributes 2 -Attribute1_name "Session-Timeout" -Attribute1_value 100 -Attribute2_name "Termination-Action" -Attribute2_value 1</dev:code>
+        <dev:code>Add-JCRadiusReplyAttribute -GroupName "BoulderOffice" -VLAN 24 -NumberOfAttributes 2 -Attribute1_name "Session-Timeout" -Attribute1_value 100 -Attribute2_name "Termination-Action" -Attribute2_value 1</dev:code>
         <dev:remarks>
           <maml:para>Adds five Radius reply attributes to the JumpCloud User group 'BoulderUsers'</maml:para>
           <maml:para>These attributes are:</maml:para>
           <maml:para>name                    value ----                    ----- Tunnel-Medium-Type      IEEE-802 Termination-Action      1 Tunnel-Type             VLAN Session-Timeout         100 Tunnel-Private-Group-Id 24</maml:para>
-          <maml:para>By specifying the '-VLAN' parameter three radius attributes are added to the JumpCloud user group 'BoulderOffice'. The value specified for the '-VLAN' parameter is populated for the value of Tunnel-Private-Group-Id .The parameter '-NumberOfCustomAttributes' is a dynamic parameter that generates two required parameters for each custom attribute specified. In this example these parameters are -Attribute1_name,-Attribute1_value, -Attribute2_name and -Attribute2_value.</maml:para>
+          <maml:para>By specifying the '-VLAN' parameter three radius attributes are added to the JumpCloud user group 'BoulderOffice'. The value specified for the '-VLAN' parameter is populated for the value of Tunnel-Private-Group-Id .The parameter '-NumberOfAttributes' is a dynamic parameter that generates two required parameters for each custom attribute specified. In this example these parameters are -Attribute1_name,-Attribute1_value, -Attribute2_name and -Attribute2_value.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -1429,7 +1583,7 @@
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
           <maml:name>JumpCloudAPIKey</maml:name>
           <maml:Description>
-            <maml:para>Please enter your JumpCloud API key. This can be found in the JumpCloud admin console within 'API Settings' accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console.</maml:para>
+            <maml:para>Please enter your JumpCloud API key. This can be found in the JumpCloud admin console within 'API Settings' accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console. Note that each administrator within a JumpCloud tenant has their own unique API key and can reset this API key from this settings page.</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -1479,13 +1633,25 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>ip</maml:name>
+          <maml:Description>
+            <maml:para>Enter an IP address</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
       <command:syntaxItem>
         <maml:name>Connect-JCOnline</maml:name>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
           <maml:name>JumpCloudAPIKey</maml:name>
           <maml:Description>
-            <maml:para>Please enter your JumpCloud API key. This can be found in the JumpCloud admin console within 'API Settings' accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console.</maml:para>
+            <maml:para>Please enter your JumpCloud API key. This can be found in the JumpCloud admin console within 'API Settings' accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console. Note that each administrator within a JumpCloud tenant has their own unique API key and can reset this API key from this settings page.</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -1546,6 +1712,18 @@
           </dev:type>
           <dev:defaultValue>False</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>ip</maml:name>
+          <maml:Description>
+            <maml:para>Enter an IP address</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
@@ -1564,7 +1742,7 @@
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
         <maml:name>JumpCloudAPIKey</maml:name>
         <maml:Description>
-          <maml:para>Please enter your JumpCloud API key. This can be found in the JumpCloud admin console within 'API Settings' accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console.</maml:para>
+          <maml:para>Please enter your JumpCloud API key. This can be found in the JumpCloud admin console within 'API Settings' accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console. Note that each administrator within a JumpCloud tenant has their own unique API key and can reset this API key from this settings page.</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -1608,6 +1786,18 @@
           <maml:uri />
         </dev:type>
         <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>ip</maml:name>
+        <maml:Description>
+          <maml:para>Enter an IP address</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
     </command:parameters>
     <command:inputTypes>
@@ -2167,7 +2357,37 @@
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Get-JCBackup command saves JumpCloud directory information to CSV files. This command can be used to backup user, system user, system, user group, and system group information to CSV files. Specific items can be selected for CSV backup using the command or the '-All' switch paramter can be specified which will backup all items.</maml:para>
+      <maml:para>The Get-JCBackup command saves JumpCloud directory information to CSV files. This command can be used to backup user, system user, system, user group, and system group information to CSV files. Specific items can be selected for CSV backup using the command or the '-All' switch paramter can be specified which will backup all items. How JCBackup works JumpCloud user information can be queried using the JumpCloud PowerShell module command Get-JCUser (https://github.com/TheJumpCloud/support/wiki/Get-JCUser)This command will by default return all JumpCloud user properties.</maml:para>
+      <maml:para>To export only the JumpCloud user information presented within the JumpCloud admin console ("First Name", "Last Name", "Username" and "Email") use the '-returnProperties' parameter of the Get-JCUser command as shown below. Note JumpCloud unique IDs (_id) are always returned when using the Get-JCUser command.</maml:para>
+      <maml:para></maml:para>
+      <maml:para>    Get-JCUser -returnProperties firstname, lastname, username, email | Export-CSV -Path "JumpCloudUsers_$(Get-Date -Format MMddyyyy).CSV" -NoTypeInformation</maml:para>
+      <maml:para></maml:para>
+      <maml:para>This command will export all JumpCloud users first name, last name, username, id, and email to a CSV file named JumpCloudUsers_CurrentDate.CSV created within the directory where the command is run.</maml:para>
+      <maml:para>If enforcing UID/GID consistency and you wish to export this information run the following command:</maml:para>
+      <maml:para>    Get-JCUser -returnProperties firstname, lastname, username, email, unix_uid, unix_guid | Export-CSV -Path "JumpCloudUsers_$(Get-Date -Format MMddyyyy).CSV" -NoTypeInformation</maml:para>
+      <maml:para>This command will export all JumpCloud users first name, last name, username, id, email, unix_guid, and unix_uid to a CSV file named JumpCloudUsers_CurrentDate.CSV created within the directory where the command is run.</maml:para>
+      <maml:para>To export all information describing JumpCloud users to CSV some additional object expansion must be done.</maml:para>
+      <maml:para>The properties "attributes", "addresses", "phonenumbers" and "ssh_keys" of JumpCloud users are returned as nested objects via the JumpCloud PowerShell module.</maml:para>
+      <maml:para>This means that if the objects are not expanded before exporting to CSV they will simply display as a 'System.Object[]' in the output CSV file.</maml:para>
+      <maml:para>To account for this find the below example which expands each nested object using PowerShell calculated properties and converts the objects to the JSON format. Note the backtick '`' escape character is used to break this command into multiple lines for readability.</maml:para>
+      <maml:para>    Get-JCUser | Select-Object * , `     @{Name = 'attributes'; Expression = {$_.attributes | ConvertTo-Json}}, `     @{Name = 'addresses'; Expression = {$_.addresses | ConvertTo-Json}}, `     @{Name = 'phonenumbers'; Expression = {$_.phonenumbers | ConvertTo-Json}}, `     @{Name = 'ssh_keys'; Expression = {$_.ssh_keys | ConvertTo-Json}} `     -ExcludeProperty attributes, addresses, phonenumbers, ssh_keys | Export-CSV -Path "JumpCloudUsers_$(Get-Date -Format MMddyyyy).CSV" -NoTypeInformation</maml:para>
+      <maml:para>This command will gather and format all JumpCloud user information and export it to a CSV file named JumpCloudUsers_CurrentDate.CSV created within the directory where the command is run. If you wish to exclude certain user properties you can append the '-ExcludeProperty' list with the properties you wish to exclude. Backing up JumpCloud System User Information JumpCloud system user associations can be queried using the JumpCloud PowerShell module command Get-JCSystemUser (https://github.com/TheJumpCloud/support/wiki/Get-JCUser)The Get-JCSystemUser command will show all JumpCloud users associated with a specific JumpCloud System using the JumpCloud System ID.</maml:para>
+      <maml:para>To export all JumpCloud system user information to CSV use the following example.</maml:para>
+      <maml:para>The property "BindGroups" is returned as a nested object via the JumpCloud PowerShell module.</maml:para>
+      <maml:para>This means that if the object is expanded before exporting to CSV it will simply display as a 'System.Object[]' in the output CSV file.</maml:para>
+      <maml:para>To account for this the "BindGroups" property is expanded using a PowerShell calculated property.</maml:para>
+      <maml:para>    Get-JCSystem | Get-JCSystemUser | Select-Object -Property * , @{Name = 'BindGroups'; Expression = {$ .BindGroups | ConvertTo-Json}} -ExcludeProperty BindGroups | Export-CSV -Path "JumpCloudSystemUsers $(Get-Date -Format MMddyyyy).CSV" -NoTypeInformation</maml:para>
+      <maml:para>This command will gather and format all JumpCloud system user associations and export them to a CSV file named JumpCloudSystemUsers_CurrentDate.CSV created within the directory where the command is run. Backing up JumpCloud System Information JumpCloud system information can be queried using the JumpCloud PowerShell module command Get-JCSystem (https://github.com/TheJumpCloud/support/wiki/Get-JCSystemUser)This command will by default return all JumpCloud system properties. Note The properties JumpCloud System ID (_id) and lastContact are always returned when using the Get-JCSystem command.</maml:para>
+      <maml:para>To only return and export specific system properties to CSV use the '-returnProperties' parameter of the Get-JCSystem command.</maml:para>
+      <maml:para>    Get-JCSystem -returnProperties hostname, os, version, serialNumber, remoteIP, systemTimezone | Export-CSV -Path "JumpCloudSystems_$(Get-Date -Format MMddyyyy).CSV" -NoTypeInformation</maml:para>
+      <maml:para>This command will export all JumpCloud Systems hostname, os, version, serial number, remoteIP, system time zone, system id, and last conntect time to a CSV file named JumpCloudSystems_CurrentDate.CSV created within the directory where the command is run.</maml:para>
+      <maml:para>The properties "networkInterfaces" and "sshdParams" of JumpCloud systems are returned as nested objects via the JumpCloud PowerShell module.</maml:para>
+      <maml:para>This means that if the objects are not expanded before exporting to CSV they will simply display as a 'System.Object[]' in the output CSV file.</maml:para>
+      <maml:para>To account for this find the below example which expands each nested object using PowerShell calculated properties and converts the objects to the JSON format. Note the back tick '`' escape character is used to break this command into multiple lines for readability.</maml:para>
+      <maml:para>    Get-JCSystem | Select-Object *, `     @{Name = 'networkInterfaces'; Expression = {$_.networkInterfaces | ConvertTo-Json}}, `     @{Name = 'sshdParams'; Expression = {$_.sshdParams | ConvertTo-Json}} `     -ExcludeProperty networkInterfaces, sshdParams, connectionHistory | Export-CSV -Path "JumpCloudSystems_$(Get-Date -Format MMddyyyy).CSV" -NoTypeInformation</maml:para>
+      <maml:para>This command will gather and format all JumpCloud system information and export it to a CSV file named JumpCloudSystems_CurrentDate.CSV created within the directory where the command is run. If you wish to exclude certain system properties you can append the '-ExcludeProperty' list with the properties you wish to exclude. Backing up JumpCloud User Groups JumpCloud user group membership can be queried using the JumpCloud PowerShell module command Get-JCUserGroupMember (https://github.com/TheJumpCloud/support/wiki/Get-JCUserGroupMember)Get-JCGroup -Type User | Get-JCUserGroupMember | Export-CSV -Path "JumpCloudUserGroupMembers_$(Get-Date -Format MMddyyyy).CSV" -NoTypeInformation</maml:para>
+      <maml:para>This command will save all JumpCloud user groups and the group members to a CSV file named JumpCloudUserGroupMember_CurrentDate.CSV created within the directory where the command is run. Backing up JumpCloud System Groups JumpCloud system group membership can be queried using the JumpCloud PowerShell module command Get-JCSystemGroupMember (https://github.com/TheJumpCloud/support/wiki/Get-JCSystemGroupMember)Get-JCGroup -Type System | Get-JCSystemGroupMember | Export-CSV -Path "JumpCloudSystemGroupMembers_$(Get-Date -Format MMddyyyy).CSV" -NoTypeInformation</maml:para>
+      <maml:para>This command will save all JumpCloud system groups and the group members to a CSV file named JumpCloudSystemGroupMember_CurrentDate.CSV created within the directory where the command is run.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -2950,9 +3170,33 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>Name</maml:name>
+          <maml:Description>
+            <maml:para>Enter the group name</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>Name</maml:name>
+        <maml:Description>
+          <maml:para>Enter the group name</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
         <maml:name>Type</maml:name>
         <maml:Description>
@@ -2969,7 +3213,7 @@
     <command:inputTypes>
       <command:inputType>
         <dev:type>
-          <maml:name>None</maml:name>
+          <maml:name>System.String</maml:name>
         </dev:type>
         <maml:description>
           <maml:para></maml:para>
@@ -3875,6 +4119,34 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>date</maml:name>
+          <maml:Description>
+            <maml:para>Date to filter on.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>dateFilter</maml:name>
+          <maml:Description>
+            <maml:para>Condition to filter date on.</maml:para>
+          </maml:Description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">before</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">after</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
       <command:syntaxItem>
         <maml:name>Get-JCSystem</maml:name>
@@ -3967,6 +4239,34 @@
           <maml:Description>
             <maml:para>A search filter to search systems by the processor arch.</maml:para>
           </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>date</maml:name>
+          <maml:Description>
+            <maml:para>Date to filter on.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>dateFilter</maml:name>
+          <maml:Description>
+            <maml:para>Condition to filter date on.</maml:para>
+          </maml:Description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">before</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">after</command:parameterValue>
+          </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
             <maml:name>String</maml:name>
@@ -4211,6 +4511,30 @@
         <maml:name>arch</maml:name>
         <maml:Description>
           <maml:para>A search filter to search systems by the processor arch.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>date</maml:name>
+        <maml:Description>
+          <maml:para>Date to filter on.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>dateFilter</maml:name>
+        <maml:Description>
+          <maml:para>Condition to filter date on.</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -4761,6 +5085,34 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>date</maml:name>
+          <maml:Description>
+            <maml:para>Date to filter on.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>dateFilter</maml:name>
+          <maml:Description>
+            <maml:para>Condition to filter date on.</maml:para>
+          </maml:Description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">before</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">after</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
           <maml:name>department</maml:name>
           <maml:Description>
@@ -5131,6 +5483,34 @@
       </command:syntaxItem>
       <command:syntaxItem>
         <maml:name>Get-JCUser</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>date</maml:name>
+          <maml:Description>
+            <maml:para>Date to filter on.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>dateFilter</maml:name>
+          <maml:Description>
+            <maml:para>Condition to filter date on.</maml:para>
+          </maml:Description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">before</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">after</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="_id, id">
           <maml:name>userid</maml:name>
           <maml:Description>
@@ -5198,6 +5578,30 @@
         <maml:name>costCenter</maml:name>
         <maml:Description>
           <maml:para>The costCenter of the JumpCloud user you wish to search for.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>date</maml:name>
+        <maml:Description>
+          <maml:para>Date to filter on.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>dateFilter</maml:name>
+        <maml:Description>
+          <maml:para>Condition to filter date on.</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -5776,6 +6180,7 @@
     </command:details>
     <maml:description>
       <maml:para>The Import-JCCommand command can be used to import curated JumpCloud Mac, Linux, and Windows commands into a JumpCloud tenant</maml:para>
+      <maml:para>See all available commands in the JumpCloud Commands Gallery (https://github.com/TheJumpCloud/support/tree/master/PowerShell/JumpCloud%20Commands%20Gallery)</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -5836,9 +6241,9 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Import-JCCommand -URL 'https://git.io/JCXC-Windows-ListAllUsers'</dev:code>
+        <dev:code>Import-JCCommand -URL 'https://git.io/jccg-Windows-ListAllUsers'</dev:code>
         <dev:remarks>
-          <maml:para>Imports the JumpCloud command located at the URL 'https://git.io/JCXC-Windows-ListAllUsers' into a JumpCloud tenant.</maml:para>
+          <maml:para>Imports the JumpCloud command located at the URL 'Import-JCCommand -URL 'https://git.io/jccg-Windows-ListAllUsers' into a JumpCloud tenant. This command lists all user accounts on a Windows system and shows if the account is enabled or disabled</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -5942,6 +6347,13 @@
     </maml:alertSet>
     <command:examples>
       <command:example>
+        <maml:title>----------------------- Video Tutorials -----------------------</maml:title>
+        <dev:code></dev:code>
+        <dev:remarks>
+          <maml:para></maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
         <dev:code>PS C:\&gt; Import-JCUsersFromCSV -CSVFilePath \users\cclemons\JCUserImport_11-16-2017.csv</dev:code>
         <dev:remarks>
@@ -6009,6 +6421,54 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>Variable1_name</maml:name>
+          <maml:Description>
+            <maml:para>Enter a variable name</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>Variable1_value</maml:name>
+          <maml:Description>
+            <maml:para>Enter the Variables value</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>Variable2_name</maml:name>
+          <maml:Description>
+            <maml:para>Enter a variable name</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>Variable2_value</maml:name>
+          <maml:Description>
+            <maml:para>Enter the Variables value</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
@@ -6020,6 +6480,54 @@
         <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
         <dev:type>
           <maml:name>Int32</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>Variable1_name</maml:name>
+        <maml:Description>
+          <maml:para>Enter a variable name</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>Variable1_value</maml:name>
+        <maml:Description>
+          <maml:para>Enter the Variables value</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>Variable2_name</maml:name>
+        <maml:Description>
+          <maml:para>Enter a variable name</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>Variable2_value</maml:name>
+        <maml:Description>
+          <maml:para>Enter the Variables value</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -6299,6 +6807,34 @@ SystemID                 CommandID                Status
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>shell</maml:name>
+          <maml:Description>
+            <maml:para>Enter shell type</maml:para>
+          </maml:Description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">powershell</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">cmd</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>trigger</maml:name>
+          <maml:Description>
+            <maml:para>Enter a trigger name. Triggers must be unique</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
           <maml:name>user</maml:name>
           <maml:Description>
             <maml:para>Only needed for Mac and Linux commands. If not entered Mac and Linux commands will default to the root users. If entering a user a UserID must be entered.</maml:para>
@@ -6361,10 +6897,34 @@ SystemID                 CommandID                Status
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>shell</maml:name>
+        <maml:Description>
+          <maml:para>Enter shell type</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="4" aliases="none">
         <maml:name>timeout</maml:name>
         <maml:Description>
           <maml:para>The time the command will run before it times out. The default is 120 seconds.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>trigger</maml:name>
+        <maml:Description>
+          <maml:para>Enter a trigger name. Triggers must be unique</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -6531,6 +7091,13 @@ SystemID                 CommandID                Status
     </maml:alertSet>
     <command:examples>
       <command:example>
+        <maml:title>----------------------- Video Tutorials -----------------------</maml:title>
+        <dev:code></dev:code>
+        <dev:remarks>
+          <maml:para></maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
         <dev:code>PS C:\&gt; New-JCImportTemplate</dev:code>
         <dev:remarks>
@@ -6639,7 +7206,7 @@ SystemID                 CommandID                Status
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The New-JCUser function creates a new JumpCloud user. Note a JumpCloud user must have a unique email address and username. If a JumpCloud user is created without a password specified then the user will be created in an 'inactive state' and an activation email will be sent to the email address tied to the new account with instructions to complete activation. If a password is set during user creation then no activation email is send and the user is created in an active status.  User activation can be seen in the boolean: 'activated' property of a JumpCloud user.</maml:para>
+      <maml:para>The New-JCUser function creates a new JumpCloud user. Note a JumpCloud user must have a unique email address and username. If a JumpCloud user is created without a password specified then the user will be created in an 'inactive state' and an activation email will be sent to the email address tied to the new account with instructions to complete activation. If a password is set during user creation then no activation email is send and the user is created in an active status. User activation can be seen in the boolean: 'activated' property of a JumpCloud user.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -9013,7 +9580,7 @@ SystemID                 CommandID                Status
       </command:example>
       <command:example>
         <maml:title>-------------------------- Example 3 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCSystem | Where-Object lastContact -lt (Get-Date).AddDays(-30) | Remove-JCSystem</dev:code>
+        <dev:code>Get-JCSystem | Where-Object lastContact -lT (Get-Date).AddDays(-30).ToString('yyy-MM-ddTHH:MM:ss') | Remove-JCSystem</dev:code>
         <dev:remarks>
           <maml:para>Removes all JumpCloud Systems that have a lastContact date greater then 30 days. A warning message will be presented to confirm each operation.</maml:para>
         </dev:remarks>
@@ -9023,6 +9590,14 @@ SystemID                 CommandID                Status
         <dev:code>PS C:\&gt; Get-JCSystem | Where-Object displayName -Like *Server10* | Remove-JCSystem -force</dev:code>
         <dev:remarks>
           <maml:para>Removes all JumpCloud Systems that have a displayName like 'Server10'. A warning message will not be presented to confirm each operation.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 5 --------------------------</maml:title>
+        <dev:code>Get-JCSystem -displayName System101 -returnProperties lastContact | Sort-Object lastContact -Descending | Select * -Skip 1 | Remove-JCSystem -force</dev:code>
+        <dev:remarks>
+          <maml:para>Removes all but the last system to contact JumpCloud with the display name 'System101'. This can be used to clean up duplicate systems that may have the same name by replacing 'System101' with the name of the system that contains duplicates.
+</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -10284,6 +10859,18 @@ SystemID                 CommandID                Status
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>trigger</maml:name>
+          <maml:Description>
+            <maml:para>Enter a trigger name. Triggers must be unique</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
@@ -10339,6 +10926,18 @@ SystemID                 CommandID                Status
         <maml:name>timeout</maml:name>
         <maml:Description>
           <maml:para>The time the command will run before it times out.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>trigger</maml:name>
+        <maml:Description>
+          <maml:para>Enter a trigger name. Triggers must be unique</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -10523,6 +11122,54 @@ Enter a value between 1 and 2:</dev:code>
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>Attribute1_name</maml:name>
+          <maml:Description>
+            <maml:para>Enter an attribute name</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>Attribute1_value</maml:name>
+          <maml:Description>
+            <maml:para>Enter an attribute value</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>Attribute2_name</maml:name>
+          <maml:Description>
+            <maml:para>Enter an attribute name</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>Attribute2_value</maml:name>
+          <maml:Description>
+            <maml:para>Enter an attribute value</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
           <maml:name>NumberOfAttributes</maml:name>
           <maml:Description>
@@ -10547,9 +11194,103 @@ Enter a value between 1 and 2:</dev:code>
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>VLANTag</maml:name>
+          <maml:Description>
+            <maml:para>Specifies the VLAN id which is applied to all attribute names.</maml:para>
+          </maml:Description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">0</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">1</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">2</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">3</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">4</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">5</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">6</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">7</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">8</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">9</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">10</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">11</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">12</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">13</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">14</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">15</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">16</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">17</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">18</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">19</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">20</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">21</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">22</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">23</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">24</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">25</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">26</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">27</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">28</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">29</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">30</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">31</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>Attribute1_name</maml:name>
+        <maml:Description>
+          <maml:para>Enter an attribute name</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>Attribute1_value</maml:name>
+        <maml:Description>
+          <maml:para>Enter an attribute value</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>Attribute2_name</maml:name>
+        <maml:Description>
+          <maml:para>Enter an attribute name</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>Attribute2_value</maml:name>
+        <maml:Description>
+          <maml:para>Enter an attribute value</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="name">
         <maml:name>GroupName</maml:name>
         <maml:Description>
@@ -10578,6 +11319,18 @@ Enter a value between 1 and 2:</dev:code>
         <maml:name>VLAN</maml:name>
         <maml:Description>
           <maml:para>By specifying the '-VLAN' parameter three radius attributes are added or updated on the target user group. These attributes and values are are: name                    value ----                    ----- Tunnel-Medium-Type      IEEE-802 Tunnel-Type             VLAN Tunnel-Private-Group-Id VALUE of -VLAN The value specified for the '-VLAN' parameter is populated for the value of Tunnel-Private-Group-Id .</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>VLANTag</maml:name>
+        <maml:Description>
+          <maml:para>Specifies the VLAN id which is applied to all attribute names.</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -10642,12 +11395,12 @@ Enter a value between 1 and 2:</dev:code>
       </command:example>
       <command:example>
         <maml:title>-------------------------- Example 3 --------------------------</maml:title>
-        <dev:code>Set-JCRadiusReplyAttribute -GroupName "BoulderOffice" -NumberOfCustomAttributes 2 -Attribute1_name "Session-Timeout" -Attribute1_value 200 -Attribute2_name "Termination-Action" -Attribute2_value 2</dev:code>
+        <dev:code>Set-JCRadiusReplyAttribute -GroupName "BoulderOffice" -NumberOfAttributes 2 -Attribute1_name "Session-Timeout" -Attribute1_value 200 -Attribute2_name "Termination-Action" -Attribute2_value 2</dev:code>
         <dev:remarks>
           <maml:para>Updates two Radius attributes to the JumpCloud user group 'BoulderOffice'.</maml:para>
           <maml:para>These attribute are:</maml:para>
           <maml:para>name               value ----               ----- Session-Timeout    200 Termination-Action 2</maml:para>
-          <maml:para>The parameter '-NumberOfCustomAttributes' is a dynamic parameter that generates two required parameters for each custom attribute specified. In this example these parameters are -Attribute1_name,-Attribute1_value, -Attribute2_name and -Attribute2_value.</maml:para>
+          <maml:para>The parameter '-NumberOfAttributes' is a dynamic parameter that generates two required parameters for each custom attribute specified. In this example these parameters are -Attribute1_name,-Attribute1_value, -Attribute2_name and -Attribute2_value.</maml:para>
           <maml:para>If the Radius reply attribute being updated already exists on the target user group the value for this attribute is updated. If the Radius reply attribute does not exist the attribute is added.</maml:para>
         </dev:remarks>
       </command:example>
@@ -11098,6 +11851,54 @@ Enter a value between 1 and 2:</dev:code>
     <command:syntax>
       <command:syntaxItem>
         <maml:name>Set-JCUser</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>Attribute1_name</maml:name>
+          <maml:Description>
+            <maml:para>Enter an attribute name</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>Attribute1_value</maml:name>
+          <maml:Description>
+            <maml:para>Enter an attribute value</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>Attribute2_name</maml:name>
+          <maml:Description>
+            <maml:para>Enter an attribute name</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>Attribute2_value</maml:name>
+          <maml:Description>
+            <maml:para>Enter an attribute value</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>ByID</maml:name>
           <maml:Description>
@@ -11108,6 +11909,18 @@ Enter a value between 1 and 2:</dev:code>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>EnrollmentDays</maml:name>
+          <maml:Description>
+            <maml:para>Number of days to allow for MFA enrollment.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+          <dev:type>
+            <maml:name>Int32</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>NumberOfCustomAttributes</maml:name>
@@ -11280,7 +12093,7 @@ Enter a value between 1 and 2:</dev:code>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
           <maml:name>external_dn</maml:name>
           <maml:Description>
-            <maml:para>{{ Fill external_dn Description }}</maml:para>
+            <maml:para>The distinguished name of the AD domain (ADB Externally managed users only)</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -11292,7 +12105,7 @@ Enter a value between 1 and 2:</dev:code>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
           <maml:name>external_source_type</maml:name>
           <maml:Description>
-            <maml:para>{{ Fill external_source_type Description }}</maml:para>
+            <maml:para>The externally managed user source type (ADB Externally managed users only)</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -11672,6 +12485,66 @@ Enter a value between 1 and 2:</dev:code>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
             <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>Attribute1_name</maml:name>
+          <maml:Description>
+            <maml:para>Enter an attribute name</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>Attribute1_value</maml:name>
+          <maml:Description>
+            <maml:para>Enter an attribute value</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>Attribute2_name</maml:name>
+          <maml:Description>
+            <maml:para>Enter an attribute name</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>Attribute2_value</maml:name>
+          <maml:Description>
+            <maml:para>Enter an attribute value</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>EnrollmentDays</maml:name>
+          <maml:Description>
+            <maml:para>Number of days to allow for MFA enrollment.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+          <dev:type>
+            <maml:name>Int32</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -11847,7 +12720,7 @@ Enter a value between 1 and 2:</dev:code>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
           <maml:name>external_dn</maml:name>
           <maml:Description>
-            <maml:para>{{ Fill external_dn Description }}</maml:para>
+            <maml:para>The distinguished name of the AD domain (ADB Externally managed users only)</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -11859,7 +12732,7 @@ Enter a value between 1 and 2:</dev:code>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
           <maml:name>external_source_type</maml:name>
           <maml:Description>
-            <maml:para>{{ Fill external_source_type Description }}</maml:para>
+            <maml:para>The externally managed user source type (ADB Externally managed users only)</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -12243,6 +13116,66 @@ Enter a value between 1 and 2:</dev:code>
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>Attribute1_name</maml:name>
+          <maml:Description>
+            <maml:para>Enter an attribute name</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>Attribute1_value</maml:name>
+          <maml:Description>
+            <maml:para>Enter an attribute value</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>Attribute2_name</maml:name>
+          <maml:Description>
+            <maml:para>Enter an attribute name</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>Attribute2_value</maml:name>
+          <maml:Description>
+            <maml:para>Enter an attribute value</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>EnrollmentDays</maml:name>
+          <maml:Description>
+            <maml:para>Number of days to allow for MFA enrollment.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+          <dev:type>
+            <maml:name>Int32</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>NumberOfCustomAttributes</maml:name>
           <maml:Description>
@@ -12402,7 +13335,7 @@ Enter a value between 1 and 2:</dev:code>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
           <maml:name>external_dn</maml:name>
           <maml:Description>
-            <maml:para>{{ Fill external_dn Description }}</maml:para>
+            <maml:para>The distinguished name of the AD domain (ADB Externally managed users only)</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -12414,7 +13347,7 @@ Enter a value between 1 and 2:</dev:code>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
           <maml:name>external_source_type</maml:name>
           <maml:Description>
-            <maml:para>{{ Fill external_source_type Description }}</maml:para>
+            <maml:para>The externally managed user source type (ADB Externally managed users only)</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -12786,6 +13719,54 @@ Enter a value between 1 and 2:</dev:code>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>Attribute1_name</maml:name>
+        <maml:Description>
+          <maml:para>Enter an attribute name</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>Attribute1_value</maml:name>
+        <maml:Description>
+          <maml:para>Enter an attribute value</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>Attribute2_name</maml:name>
+        <maml:Description>
+          <maml:para>Enter an attribute name</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>Attribute2_value</maml:name>
+        <maml:Description>
+          <maml:para>Enter an attribute value</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>ByID</maml:name>
         <maml:Description>
@@ -12797,6 +13778,18 @@ Enter a value between 1 and 2:</dev:code>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>EnrollmentDays</maml:name>
+        <maml:Description>
+          <maml:para>Number of days to allow for MFA enrollment.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+        <dev:type>
+          <maml:name>Int32</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>NumberOfCustomAttributes</maml:name>
@@ -12993,7 +13986,7 @@ Enter a value between 1 and 2:</dev:code>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
         <maml:name>external_dn</maml:name>
         <maml:Description>
-          <maml:para>{{ Fill external_dn Description }}</maml:para>
+          <maml:para>The distinguished name of the AD domain (ADB Externally managed users only)</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -13005,7 +13998,7 @@ Enter a value between 1 and 2:</dev:code>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
         <maml:name>external_source_type</maml:name>
         <maml:Description>
-          <maml:para>{{ Fill external_source_type Description }}</maml:para>
+          <maml:para>The externally managed user source type (ADB Externally managed users only)</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
