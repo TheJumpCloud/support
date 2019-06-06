@@ -73,7 +73,7 @@ Function Remove-JCSystemGroup ()
 
                     $URI = "$JCUrlBasePath/api/v2/systemgroups/$GID"
 
-                    $DeletedGroup = Invoke-RestMethod -Method DELETE -Uri $URI -Headers $hdrs -UserAgent $JCUserAgent
+                    $DeletedGroup = Invoke-RestMethod -Method DELETE -Uri $URI -Headers $hdrs -UserAgent:(Get-JCUserAgent)
 
                     $Status = 'Deleted'
 
@@ -104,7 +104,7 @@ Function Remove-JCSystemGroup ()
                 try
                 {
                     $URI = "$JCUrlBasePath/api/v2/systemgroups/$GID"
-                    $DeletedGroup = Invoke-RestMethod -Method DELETE -Uri $URI -Headers $hdrs -UserAgent $JCUserAgent
+                    $DeletedGroup = Invoke-RestMethod -Method DELETE -Uri $URI -Headers $hdrs -UserAgent:(Get-JCUserAgent)
                     $Status = 'Deleted'
                 }
                 catch

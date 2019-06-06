@@ -1,6 +1,6 @@
-Connect-JCTestOrg
+Connect-JCOnlineTest
 
-Describe 'Get-JCCommandResults 1.0' {
+Describe -Tag:('JCCommandResult') 'Get-JCCommandResults 1.0' {
 
     It "Gets all JumpCloud command results" {
 
@@ -62,7 +62,7 @@ Describe 'Get-JCCommandResults 1.0' {
 
 }
 
-Describe "Get-JCCommandResult 1.4.1" {
+Describe -Tag:('JCCommandResult') "Get-JCCommandResult 1.4.1" {
 
     It "Returns the total count of JumpCloud command results" {
         $TotalCount = Get-JCCommandResult -TotalCount
@@ -72,9 +72,9 @@ Describe "Get-JCCommandResult 1.4.1" {
     It "Uses the -Skip parameter of JumpCloud command results" {
 
         $TotalCount = Get-JCCommandResult -TotalCount
-        $Skip = 2 
+        $Skip = 2
         $SkipResults = Get-JCCommandResult -skip $Skip
-        $Total = $SkipResults.count + $Skip 
+        $Total = $SkipResults.count + $Skip
         $Total | Should -Be $TotalCount
     }
 
@@ -86,10 +86,10 @@ Describe "Get-JCCommandResult 1.4.1" {
 
 
     }
- 
+
 }
 
-Describe "Get-JCCommandResult 1.4.2" {
+Describe -Tag:('JCCommandResult') "Get-JCCommandResult 1.4.2" {
 
     It "Returns the max results" {
         $TotalCount = Get-JCCommandResult -TotalCount
@@ -106,13 +106,13 @@ Describe "Get-JCCommandResult 1.4.2" {
         $UniqueResults = $Results | Select-Object -Property _id -Unique
         $UniqueResults.count | Should -Be $MaxResults
     }
- 
+
 }
 
-Describe "Get-JCCommandResult 1.5.0" {
+Describe -Tag:('JCCommandResult') "Get-JCCommandResult 1.5.0" {
 
     It "Returns a command result with the SystemID" {
-        
+
         $CommandResult = Get-JCCommandResult -MaxResults 1
         $VerifySystemID = Get-JCSystem -SystemID $CommandResult.SystemID
         $CommandResult.system | Should -Be $VerifySystemID.displayname
@@ -120,10 +120,10 @@ Describe "Get-JCCommandResult 1.5.0" {
     }
 
     It "Returns a command result -byID with the SystemID" {
-        
+
         $CommandResult = Get-JCCommandResult -MaxResults 1 | Get-JCCommandResult -ByID
         $VerifySystemID = Get-JCSystem -SystemID $CommandResult.SystemID
         $CommandResult.system | Should -Be $VerifySystemID.displayname
- 
+
     }
 }

@@ -9,9 +9,9 @@ function Get-JCBackup
         [switch] $Systems,
         [switch] $UserGroups,
         [switch] $SystemGroups
-       
+
     )
-    
+
     begin
     {
         Write-Verbose 'Verifying JCAPI Key'
@@ -19,7 +19,7 @@ function Get-JCBackup
 
         if ($All)
         {
-            
+
             $Users = $true
             $SystemUsers = $true
             $Systems = $true
@@ -28,7 +28,7 @@ function Get-JCBackup
 
         }
 
-        
+
 
         if ((-not $All) -and (-not $Users) -and (-not $SystemUsers) -and (-not $Systems -and (-not $UserGroups) -and (-not $SystemGroups)))
         {
@@ -39,20 +39,20 @@ function Get-JCBackup
         $Banner = @"
        __                          ______ __                   __
       / /__  __ ____ ___   ____   / ____// /____   __  __ ____/ /
- __  / // / / // __  __ \ / __ \ / /    / // __ \ / / / // __  / 
-/ /_/ // /_/ // / / / / // /_/ // /___ / // /_/ // /_/ // /_/ /  
-\____/ \____//_/ /_/ /_// ____/ \____//_/ \____/ \____/ \____/   
-                       /_/                                                      
+ __  / // / / // __  __ \ / __ \ / /    / // __ \ / / / // __  /
+/ /_/ // /_/ // / / / / // /_/ // /___ / // /_/ // /_/ // /_/ /
+\____/ \____//_/ /_/ /_// ____/ \____//_/ \____/ \____/ \____/
+                       /_/
                                                CSV Backup
 "@
 
     }
-   
-    
+
+
     process
     {
-        
-        [System.Console]::Clear();
+
+        If (!(Get-PSCallStack | Where-Object {$_.Command -match 'Pester'})) {Clear-Host}
 
         Write-Host $Banner -ForegroundColor Green
 
@@ -73,13 +73,13 @@ function Get-JCBackup
                     -ExcludeProperty attributes, addresses, phonenumbers, ssh_keys | Export-Csv -Path "JumpCloudUsers_$(Get-Date -Format MMddyyyy).CSV" -NoTypeInformation -Force
 
                 Write-Host "JumpCloudUsers_$(Get-Date -Format MMddyyyy).CSV created.`n" -ForegroundColor Green
-                    
+
             }
             catch
             {
                 Write-Host "$($_.ErrorDetails)"
             }
-            
+
         }
 
         if ($SystemUsers)
@@ -89,17 +89,17 @@ function Get-JCBackup
 
             try
             {
-                Get-JCSystem | Get-JCSystemUser | Select-Object -Property * , @{Name = 'BindGroups'; Expression = { $_.BindGroups | ConvertTo-Json } } -ExcludeProperty BindGroups | Export-Csv -Path "JumpCloudSystemUsers_$(Get-Date -Format MMddyyyy).CSV" -NoTypeInformation -Force 
+                Get-JCSystem | Get-JCSystemUser | Select-Object -Property * , @{Name = 'BindGroups'; Expression = { $_.BindGroups | ConvertTo-Json } } -ExcludeProperty BindGroups | Export-Csv -Path "JumpCloudSystemUsers_$(Get-Date -Format MMddyyyy).CSV" -NoTypeInformation -Force
 
                 Write-Host "JumpCloudSystemUsers_$(Get-Date -Format MMddyyyy).CSV created.`n" -ForegroundColor Green
-                    
+
             }
             catch
             {
                 Write-Host "$($_.ErrorDetails)"
 
             }
-            
+
         }
 
         if ($Systems)
@@ -123,8 +123,8 @@ function Get-JCBackup
 
             }
 
-            
-           
+
+
         }
 
         if ($UserGroups)
@@ -144,7 +144,7 @@ function Get-JCBackup
                 Write-Host "$($_.ErrorDetails)"
 
             }
-            
+
         }
 
         if ($SystemGroups)
@@ -163,15 +163,15 @@ function Get-JCBackup
                 Write-Host "$($_.ErrorDetails)"
 
             }
-            
-        }   
-        
+
+        }
+
     }
 
     end
-    { 
-            
-            
+    {
+
+
     }
 
 }

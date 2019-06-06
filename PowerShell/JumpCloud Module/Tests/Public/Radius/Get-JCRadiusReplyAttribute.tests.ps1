@@ -1,6 +1,6 @@
-Connect-JCTestOrg
+Connect-JCOnlineTest
 
-Describe "Get-JCRadiusReplyAttribute 1.9.0" {
+Describe -Tag:('JCRadiusReplyAttribute') "Get-JCRadiusReplyAttribute 1.9.0" {
 
     It "Adds VLAN attributes to a group and uses Get-JCRadiusReplyAttributes to verify" {
 
@@ -187,7 +187,7 @@ Describe "Get-JCRadiusReplyAttribute 1.9.0" {
         Remove-JCUserGroup -GroupName $NewGroup.Name -force
 
     }
- 
+
     It "Adds a custom attribute to a group that already has VLAN attributes and uses Get-JCRadiusReplyAttributes to verify" {
 
         $NewGroup = New-JCUserGroup -GroupName $(New-RandomStringLower)

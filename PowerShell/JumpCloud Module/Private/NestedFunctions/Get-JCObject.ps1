@@ -7,7 +7,7 @@ Function Get-JCObject
         $JCTypes = Get-JCType
         # Build parameter array
         $RuntimeParameterDictionary = New-Object -TypeName System.Management.Automation.RuntimeDefinedParameterDictionary
-        New-DynamicParameter -Name:('Type') -Type:([System.String]) -Mandatory -Position:(0) -ValueFromPipelineByPropertyName -ValidateNotNullOrEmpty -ValidateSet:($JCTypes.Types) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
+        New-DynamicParameter -Name:('Type') -Type:([System.String]) -Mandatory -Position:(0) -ValueFromPipelineByPropertyName -ValidateNotNullOrEmpty -ValidateSet:($JCTypes.TypeName.TypeNameSingular) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
         New-DynamicParameter -Name:('Id') -Type([System.String[]]) -Mandatory -Position(1) -ValueFromPipelineByPropertyName -ValidateNotNullOrEmpty -ParameterSets(@('ById')) -Alias:(($JCTypes.ById) | Where-Object {$_ -ne 'Id'} | Select-Object -Unique) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
         New-DynamicParameter -Name:('Name') -Type([System.String[]]) -Mandatory -Position(1) -ValueFromPipelineByPropertyName -ValidateNotNullOrEmpty -ParameterSets:(@('ByName')) -Alias:(($JCTypes.ByName) | Where-Object {$_ -ne 'Name'} | Select-Object -Unique) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
         New-DynamicParameter -Name:('SearchBy') -Type:([System.String]) -Mandatory -Position:(1) -ValueFromPipelineByPropertyName -ValidateNotNullOrEmpty -ParameterSets:('ByValue') -ValidateSet:(@('ById', 'ByName')) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
@@ -24,8 +24,6 @@ Function Get-JCObject
         # Debug message for parameter call
         Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDebugMessageBegin) -ArgumentList:($MyInvocation, $PsBoundParameters, $PSCmdlet) -NoNewScope
         $Results = @()
-        $CurrentErrorActionPreference = $ErrorActionPreference
-        $ErrorActionPreference = 'Stop'
     }
     Process
     {
@@ -34,10 +32,9 @@ Function Get-JCObject
         Try
         {
             # Identify the command type to run to get the object for the specified item
-            $JCTypeItem = $JCTypes | Where-Object { $Type -in $_.Types }
+            $JCTypeItem = $JCTypes | Where-Object { $Type -in $_.TypeName.TypeNameSingular }
             If ($JCTypeItem)
             {
-                $JCTypeItem.Types = $Type
                 $TypeName = $JCTypeItem.TypeName
                 $TypeNameSingular = $TypeName.TypeNameSingular
                 $TypeNamePlural = $TypeName.TypeNamePlural
@@ -53,7 +50,7 @@ Function Get-JCObject
                 $Limit = $JCTypeItem.Limit
                 $UrlObject = @()
                 # If searching ByValue add filters to query string and body. # Hacky logic to get g_suite and office_365 directories
-                If ($PSCmdlet.ParameterSetName -eq 'Default' -or $Type -in ('gsuites', 'g_suite', 'office365s', 'office_365'))
+                If ($PSCmdlet.ParameterSetName -eq 'Default' -or $TypeNameSingular -in ('g_suite', 'office_365'))
                 {
                     $UrlObject += [PSCustomObject]@{
                         'Url'           = $Url;
@@ -124,6 +121,7 @@ Function Get-JCObject
                                         $BodyParts += '"filter":[{"' + $PropertyIdentifier + '":"' + $SearchByValueItem + '"}]'
                                     }
                                 }
+                                Default {Write-Error ('Unknown $SearchBy value: ' + $SearchBy)}
                             }
                         }
                         # Build query string and body
@@ -139,9 +137,9 @@ Function Get-JCObject
                             $UrlOut = $UrlOut + '?' + $JoinedQueryStrings
                         }
                         $UrlObject += [PSCustomObject]@{
-                            'Url'           = $UrlOut;
-                            'Body'          = $Body;
-                            'SearchByValue' = $SearchByValue;
+                            'Url'               = $UrlOut;
+                            'Body'              = $Body;
+                            'SearchByValueItem' = $SearchByValueItem;
                         }
                     }
                 }
@@ -149,7 +147,7 @@ Function Get-JCObject
                 {
                     $Url = $UrlItem.Url
                     $Body = $UrlItem.Body
-                    $SearchByValue = $UrlItem.SearchByValue
+                    $SearchByValueItem = $UrlItem.SearchByValueItem
                     ## Escape Url????
                     # $Url = ([uri]::EscapeDataString($Url)
                     # Build function parameters
@@ -173,7 +171,7 @@ Function Get-JCObject
                         If ($ReturnCount -eq $true) { $FunctionParameters.Add('ReturnCount', $ReturnCount) }
                     }
                     # Hacky logic for organization
-                    If ($Type -in ('organization', 'organizations'))
+                    If ($TypeNameSingular -eq 'organization')
                     {
                         $Organization = Invoke-JCApi @FunctionParameters
                         $FunctionParameters['Url'] = $Url + '/' + $Organization.$ById
@@ -185,7 +183,7 @@ Function Get-JCObject
                         Default { Invoke-JCApi @FunctionParameters }
                     }
                     # Hacky logic to get g_suite and office_365directories
-                    If ($Type -in ('gsuites', 'g_suite', 'office365s', 'office_365'))
+                    If ($TypeNameSingular -in ('g_suite', 'office_365'))
                     {
                         If ($ReturnCount -eq $true)
                         {
@@ -198,50 +196,59 @@ Function Get-JCObject
                             $Result = $Result | Where-Object { $_.Type -eq $TypeNameSingular }
                         }
                     }
-                    If ($Result)
+                    If ($Result -and $Result.PSObject.Properties.name -notcontains 'NoContent')
                     {
-                        # Set some properties to be hidden in the results
+                        If ($SearchBy -and ($Result | Measure-Object).Count -gt 1)
+                        {
+                            Write-Warning -Message:('Found "' + [string]($Result | Measure-Object).Count + '" "' + $TypeNamePlural + '" with the "' + $SearchBy.Replace('By', '').ToLower() + '" of "' + $SearchByValueItem + '"')
+                        }
+                        # If ($PSCmdlet.ParameterSetName -eq 'Default' -and $TypeNameSingular -notin ('g_suite', 'office_365') -and $Url -notlike '*/api/v2/directories*' -and $Url -notlike '*/groups*' -and $Url -notlike '*/api/organizations*' -and $Url -notlike '*/api/search*')
+                        # {
+                        #     $Results = $Result | ForEach-Object { Get-JCObject -Type:($TypeNameSingular) -Id:($_.($ById))}
+                        # }
+                        # Else
+                        # {
+
+                        # List values to add to results
                         $HiddenProperties = @('ById', 'ByName', 'TypeName', 'TypeNameSingular', 'TypeNamePlural', 'Targets', 'TargetSingular', 'TargetPlural')
-                        $Result | ForEach-Object {
-                            # Create the default property display set
-                            $defaultDisplayPropertySet = New-Object System.Management.Automation.PSPropertySet('DefaultDisplayPropertySet', [string[]]$_.PSObject.Properties.Name)
-                            $PSStandardMembers = [System.Management.Automation.PSMemberInfo[]]@($defaultDisplayPropertySet)
-                            # Add the list of standard members
-                            Add-Member -InputObject:($_) -MemberType:('MemberSet') -Name:('PSStandardMembers') -Value:($PSStandardMembers)
-                            # Add ById and ByName as hidden properties to results
-                            ForEach ($HiddenProperty In $HiddenProperties)
-                            {
-                                Add-Member -InputObject:($_) -MemberType:('NoteProperty') -Name:($HiddenProperty) -Value:(Get-Variable -Name:($HiddenProperty) -ValueOnly)
+                        # Append meta info to each result record
+                        Get-Variable -Name:($HiddenProperties) |
+                            ForEach-Object {
+                            $Variable = $_
+                            $Result |
+                                ForEach-Object {
+                                Add-Member -InputObject:($_) -MemberType:('NoteProperty') -Name:($Variable.Name) -Value:($Variable.Value)
                             }
                         }
-                        $Results += $Result
+                        # Set the meta info to be hidden by default
+                        $Results += Hide-ObjectProperty -Object:($Result) -HiddenProperties:($HiddenProperties)
                     }
                     Else
                     {
-                        If ($SearchByValue)
+                        If ($SearchByValueItem)
                         {
-                            Write-Warning ('A "' + $TypeNameSingular + '" called "' + $SearchByValue + '" does not exist. Note the search is case sensitive.')
+                            Write-Warning ('A "' + $TypeNameSingular + '" called "' + $SearchByValueItem + '" does not exist. Note the search is case sensitive.')
                         }
                         Else
                         {
-                            Write-Warning ('The search value is blank or no "' + $TypeNamePlural + '" have been setup in your org. SearchValue:"' + $SearchByValue + '"')
+                            Write-Warning ('The search value is blank or no "' + $TypeNamePlural + '" have been setup in your org. SearchValue:"' + $SearchByValueItem + '"')
                         }
                     }
+                    # }
                 }
             }
             Else
             {
-                Write-Error ('$Type of "' + $Type + '" not found. $Type must be:' + ($JCTypes.Types -join ','))
+                Write-Error ('$Type of "' + $Type + '" not found. $Type must be:' + ($JCTypes.TypeName.TypeNameSingular -join ','))
             }
         }
         Catch
         {
-            Invoke-Command -ScriptBlock:($ScriptBlock_TryCatchError) -ArgumentList:($_) -NoNewScope
+            Invoke-Command -ScriptBlock:($ScriptBlock_TryCatchError) -ArgumentList:($_, $true) -NoNewScope
         }
     }
     End
     {
         Return $Results
-        $ErrorActionPreference = $CurrentErrorActionPreference
     }
 }

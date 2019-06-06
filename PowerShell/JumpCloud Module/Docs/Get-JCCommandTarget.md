@@ -1,14 +1,13 @@
 ---
 external help file: JumpCloud-help.xml
 Module Name: JumpCloud
-online version:
+online version: https://github.com/TheJumpCloud/support/wiki/Get-JCCommandTarget
 schema: 2.0.0
 ---
 
 # Get-JCCommandTarget
 
 ## SYNOPSIS
-
 Returns the JumpCloud systems or system groups associated with a JumpCloud command.
 
 ## SYNTAX
@@ -24,7 +23,6 @@ Get-JCCommandTarget [-CommandID] <String> [-Groups] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-
 Using the CommandID parameter the Get-JCCommandTarget command will return all the systems associated with a JumpCloud command. If the '-Groups' parameter is used the Get-JCCommandTarget command will return all the system groups associated with a JumpCloud command.
 
 ## EXAMPLES
@@ -42,7 +40,6 @@ Get-JCCommandTarget -CommandID '5a99777710p3690onylo3e1g' -Groups
 ```
 
 Retrieves the JumpCloud system group targets that are associated the JumpCloud command with the Command ID '5a99777710p3690onylo3e1g'
-
 ## PARAMETERS
 
 ### -CommandID
@@ -61,8 +58,7 @@ Accept wildcard characters: False
 ```
 
 ### -Groups
-A switch parameter to display any System Groups associated with a command. 
-
+A switch parameter to display any System Groups associated with a command.
 
 ```yaml
 Type: SwitchParameter
@@ -77,18 +73,14 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
-This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see about_CommonParameters (http://go.microsoft.com/fwlink/?LinkID=113216).
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
 ### System.String
-
 ## OUTPUTS
 
 ### System.Object
-
 ## NOTES
 
 ## RELATED LINKS
-
-[Online Help Get-JCCommandTarget](https://github.com/TheJumpCloud/support/wiki/Get-JCCommandTarget)

@@ -1,6 +1,6 @@
-Connect-JCTestOrg
+Connect-JCOnlineTest
 
-Describe "Remove-JCRadiusReplyAttributes 1.9.0" {
+Describe -Tag:('JCRadiusReplyAttribute') "Remove-JCRadiusReplyAttributes 1.9.0" {
 
     It "Removes a single custom radius attribute from a group" {
 
@@ -56,7 +56,7 @@ Describe "Remove-JCRadiusReplyAttributes 1.9.0" {
 
         Remove-JCUserGroup -GroupName $NewGroup.Name -force
 
-    
+
     }
 
     It "Removes all radius attributes from a group" {

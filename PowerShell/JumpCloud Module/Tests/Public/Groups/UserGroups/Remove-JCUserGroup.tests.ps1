@@ -1,6 +1,6 @@
-Connect-JCTestOrg
+Connect-JCOnlineTest
 
-Describe 'New-JCUserGroup 1.0' {
+Describe -Tag:('JCUserGroup') 'New-JCUserGroup 1.0' {
 
     It "Creates a new user group" {
         $NewG = New-JCUserGroup -GroupName $(New-RandomString 8)

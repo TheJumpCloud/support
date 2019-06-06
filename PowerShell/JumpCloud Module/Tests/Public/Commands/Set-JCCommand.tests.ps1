@@ -1,6 +1,6 @@
-Connect-JCTestOrg
+Connect-JCOnlineTest
 
-Describe "Set-JCCommand 1.7" {
+Describe -Tag:('JCCommand') "Set-JCCommand 1.7" {
 
     It "Updates the command" {
         $CmdUpdate = Set-JCCommand -CommandID $PesterParams.SetCommandID -command "Updated command"

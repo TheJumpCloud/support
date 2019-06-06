@@ -1,6 +1,6 @@
-Connect-JCTestOrg
+Connect-JCOnlineTest
 
-Describe "Get-JCPolicyResult 1.10" {
+Describe -Tag:('JCPolicyResult') "Get-JCPolicyResult 1.10" {
 
     It "Returns a policy result with the PolicyName" {
         $PolicyResult = Get-JCPolicyResult $SinglePolicy.Name
@@ -26,9 +26,9 @@ Describe "Get-JCPolicyResult 1.10" {
         $PolicyResult = $PolicyResultVar | Get-JCPolicyResult -ByPolicyID
 
         $PolicyResult.id.count | Should -BeGreaterThan 0
-    
+
     }
-    
+
     It "Returns a policy using the -BySystemID switch parameter via the pipeline " {
 
         $PolicyResultVar = Get-JCPolicyResult -PolicyId:($SinglePolicy.id)

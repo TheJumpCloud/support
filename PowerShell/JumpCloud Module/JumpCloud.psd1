@@ -7,7 +7,7 @@
     GUID              = '31c023d1-a901-48c4-90a3-082f91b31646'
 
     # Version number of this module.
-    ModuleVersion     = '1.11.0'
+    ModuleVersion     = '1.12.0'
 
     # Author of this module
     Author            = 'JumpCloud Solutions Architect Team'
@@ -77,7 +77,9 @@
         "Get-JCPolicyResult",
         "Get-JCPolicyTargetSystem",
         "Get-JCPolicyTargetGroup",
-        "Get-JCAssociation")
+        "Get-JCAssociation",
+        "Add-JCAssociation",
+        "Remove-JCAssociation")
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
     CmdletsToExport   = @()
@@ -86,7 +88,7 @@
     VariablesToExport = @()
 
     # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
-    AliasesToExport   = @()
+    AliasesToExport   = @('New-JCAssociation')
 
 
     # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.

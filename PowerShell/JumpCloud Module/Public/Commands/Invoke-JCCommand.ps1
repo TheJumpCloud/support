@@ -1,4 +1,4 @@
-Function Invoke-JCCommand () 
+Function Invoke-JCCommand ()
 {
     [CmdletBinding(DefaultParameterSetName = 'NoVariables')]
 
@@ -9,15 +9,20 @@ Function Invoke-JCCommand ()
             Position = 0)]
         [String]$trigger,
 
-        [Parameter(ParameterSetName = 'Variables')] 
+        [Parameter(ParameterSetName = 'Variables')]
         [int]
         $NumberOfVariables
     )
 
     DynamicParam
     {
-
-        If ($PSCmdlet.ParameterSetName -eq 'Variables')
+        $ParameterSetName = $PSCmdlet.ParameterSetName
+        If ((Get-PSCallStack).Command -like '*MarkdownHelp')
+        {
+            $ParameterSetName = 'Variables'
+            $NumberOfVariables = 2
+        }
+        If ($ParameterSetName -eq 'Variables')
         {
             $dict = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
 
@@ -51,8 +56,8 @@ Function Invoke-JCCommand ()
 
             return $dict
 
-        }     
-        
+        }
+
     }
 
     begin
@@ -84,7 +89,7 @@ Function Invoke-JCCommand ()
     process
 
     {
-            
+
         if ($PSCmdlet.ParameterSetName -eq 'Variables')
         {
 
@@ -110,7 +115,7 @@ Function Invoke-JCCommand ()
                     $UniqueVariables = $VariableArrayList | select ObjectNumber -Unique
 
                 }
-                      
+
 
             }
 
@@ -127,12 +132,12 @@ Function Invoke-JCCommand ()
 
 
         }
-     
+
         $URL = "$JCUrlBasePath/api/command/trigger/$trigger"
         Write-Verbose $URL
 
 
-        $CommandResults = Invoke-RestMethod -Method POST -Uri $URL -Headers $hdrs -Body $Variables
+        $CommandResults = Invoke-RestMethod -Method POST -Uri $URL -Headers $hdrs -Body $Variables -UserAgent:(Get-JCUserAgent)
 
         $resultsArray += $CommandResults
 

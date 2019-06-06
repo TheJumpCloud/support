@@ -1,14 +1,13 @@
 ---
 external help file: JumpCloud-help.xml
 Module Name: JumpCloud
-online version:
+online version: https://github.com/TheJumpCloud/support/wiki/Remove-JCCommand
 schema: 2.0.0
 ---
 
 # Remove-JCCommand
 
 ## SYNOPSIS
-
 Removes a JumpCloud command
 
 ## SYNTAX
@@ -24,7 +23,6 @@ Remove-JCCommand [-CommandID] <String> [-force] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-
 The Remove-JCCommand can remove a single JumpCloud command or multiple commands that are passed to the command over the pipeline. The default behavior is to prompt with a warning message when deleting a command result but this can be suppressed with the -force Parameter.
 
 ## EXAMPLES
@@ -42,20 +40,13 @@ PS C:\> Remove-JCCommand -CommandID 5j09o6f23dan6f4n035601d5 -Force
 ```
 
 Removes the JumpCloud Command with a CommandID of '5j09o6f23dan6f4n035601d5'. A warning message will not be presented to confirm this operation because the '-Force' parameter is used.
-
 ## PARAMETERS
 
 ### -CommandID
-
 The _id of the JumpCloud Command  you wish to query.
-
 To find a JumpCloud CommandID run the command:
-
-
 PS C:\> Get-JCCommand | Select name, _id
-
 The CommandID will be the 24 character string populated for the _id field.
-
 CommandID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using a function that returns the JumpCloud CommandID.
 
 ```yaml
@@ -86,18 +77,14 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
-This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see about_CommonParameters (http://go.microsoft.com/fwlink/?LinkID=113216).
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
 ### System.String
-
 ## OUTPUTS
 
 ### System.Object
-
 ## NOTES
 
 ## RELATED LINKS
-
-[Online Help Remove-JCCommand](https://github.com/TheJumpCloud/support/wiki/Remove-JCCommand)

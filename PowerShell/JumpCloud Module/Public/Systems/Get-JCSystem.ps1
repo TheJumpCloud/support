@@ -4,14 +4,14 @@ Function Get-JCSystem ()
 
     param
     (
-        #Strings 
+        #Strings
 
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'ByID')]
         [Alias('_id', 'id')]
         [String]$SystemID,
-    
+
 
         [Parameter(
             ValueFromPipelineByPropertyName,
@@ -73,7 +73,7 @@ Function Get-JCSystem ()
         )]
         [String]$systemTimezone,
 
-        ## Boolean 
+        ## Boolean
 
         [Parameter(
             ValueFromPipelineByPropertyName,
@@ -98,13 +98,13 @@ Function Get-JCSystem ()
             ParameterSetName = 'SearchFilter'
         )]
         [bool]$allowSshPasswordAuthentication,
-        
+
         [Parameter(
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'SearchFilter'
         )]
         [bool]$allowSshRootLogin,
-                
+
         [Parameter(
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'SearchFilter'
@@ -128,10 +128,14 @@ Function Get-JCSystem ()
 
     DynamicParam
     {
+        If ((Get-PSCallStack).Command -like '*MarkdownHelp')
+        {
+            $filterDateProperty = 'created'
+        }
         if ($filterDateProperty)
         {
 
-            # Create the dictionary 
+            # Create the dictionary
             $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
 
 
@@ -142,18 +146,18 @@ Function Get-JCSystem ()
             # Create and set the parameters' attributes
             $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
             $ParameterAttribute.Mandatory = $true
-            # Generate and set the ValidateSet 
+            # Generate and set the ValidateSet
             $arrSet = @("before", "after")
-            $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($arrSet)    
+            $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($arrSet)
             # Add the ValidateSet to the attributes collection
             $AttributeCollection.Add($ValidateSetAttribute)
             # Add the attributes to the attributes collection
-            $AttributeCollection.Add($ParameterAttribute) 
+            $AttributeCollection.Add($ParameterAttribute)
             # Create and return the dynamic parameter
             $RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter($ParamName_Filter, [string], $AttributeCollection)
             $RuntimeParameterDictionary.Add($ParamName_Filter, $RuntimeParameter)
-    
-            
+
+
             # Set the dynamic parameters' name
             $ParamName_FilterDate = 'date'
             # Create the collection of attributes
@@ -162,12 +166,12 @@ Function Get-JCSystem ()
             $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
             $ParameterAttribute.Mandatory = $true
             # Add the attributes to the attributes collection
-            $AttributeCollection.Add($ParameterAttribute) 
+            $AttributeCollection.Add($ParameterAttribute)
             # Create and return the dynamic parameter
             $RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter($ParamName_FilterDate, [string], $AttributeCollection)
             $RuntimeParameterDictionary.Add($ParamName_FilterDate, $RuntimeParameter)
 
-     
+
 
             # Returns the dictionary
             return $RuntimeParameterDictionary
@@ -225,10 +229,10 @@ Function Get-JCSystem ()
                 while ((($resultsArrayList.results).Count) -ge $Counter)
                 {
 
- 
+
                     if ($returnProperties)
                     {
-    
+
                         $Search = @{
                             filter = @(
                                 @{
@@ -238,12 +242,12 @@ Function Get-JCSystem ()
                             skip   = $skip
                             fields = $returnProperties
                         } #Initialize search
-    
+
                     }
-    
+
                     else
                     {
-                    
+
                         $Search = @{
                             filter = @(
                                 @{
@@ -251,11 +255,11 @@ Function Get-JCSystem ()
                             )
                             limit  = $limit
                             skip   = $skip
-    
+
                         } #Initialize search
-    
+
                     }
-    
+
 
                     foreach ($param in $PSBoundParameters.GetEnumerator())
                     {
@@ -293,7 +297,7 @@ Function Get-JCSystem ()
                         }
 
                         if ($param.key -eq 'date')
-                        {   
+                        {
 
                             $ConvertDate = [DateTime]$param.value
                             $Timestamp = Get-Date $ConvertDate -format o
@@ -305,7 +309,7 @@ Function Get-JCSystem ()
 
                         if (($param.Value -match '.+?\*$') -and ($param.Value -match '^\*.+?'))
                         {
-                            # Front and back wildcard 
+                            # Front and back wildcard
                             (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "$Value"})
                         }
                         elseif ($param.Value -match '.+?\*$')
@@ -322,7 +326,7 @@ Function Get-JCSystem ()
                         {
                             (($Search.filter).GetEnumerator()).add($param.Key, $Value)
                         }
-                            
+
 
                     } # End foreach
 
@@ -338,7 +342,7 @@ Function Get-JCSystem ()
 
                     $URL = "$JCUrlBasePath/api/search/systems"
 
-                    $Results = Invoke-RestMethod -Method POST -Uri $Url  -Header $hdrs -Body $SearchJSON
+                    $Results = Invoke-RestMethod -Method POST -Uri $Url  -Header $hdrs -Body $SearchJSON -UserAgent:(Get-JCUserAgent)
 
                     $null = $resultsArrayList.Add($Results)
 
@@ -348,18 +352,18 @@ Function Get-JCSystem ()
                 } #End While
 
             } #End search
-      
+
             ByID
             {
 
                 $URL = "$JCUrlBasePath/api/Systems/$SystemID"
                 Write-Verbose $URL
-                $results = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent $JCUserAgent
+                $results = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
                 $null = $resultsArrayList.add($Results)
             }
 
         } # End switch
-    } # End process 
+    } # End process
 
     end
     {

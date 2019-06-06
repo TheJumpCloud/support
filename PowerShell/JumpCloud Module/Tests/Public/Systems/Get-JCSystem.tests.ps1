@@ -1,6 +1,6 @@
-Connect-JCTestOrg
+Connect-JCOnlineTest
 
-Describe 'Get-JCSystem 1.0' {
+Describe -Tag:('JCSystem') 'Get-JCSystem 1.0' {
 
     It "Gets all JumpCloud systems" {
         $Systems = Get-JCSystem
@@ -15,7 +15,7 @@ Describe 'Get-JCSystem 1.0' {
 }
 
 
-Describe "Get-JCSystem 1.4" {
+Describe -Tag:('JCSystem') "Get-JCSystem 1.4" {
 
     It "Gets a JumpCloud system by system ID" {
 
@@ -76,7 +76,7 @@ Describe "Get-JCSystem 1.4" {
 
 
     It "Searches for JumpCloud system by version" {
-        
+
 
         $SystemInfo = Get-JCSystem -SystemID $PesterParams.SystemID
         $PesterSystem = Get-JCSystem -version $SystemInfo.version
@@ -251,21 +251,21 @@ Describe "Get-JCSystem 1.4" {
         $PesterSystem._id.count | Should -BeGreaterThan 0
 
     }
-       
+
     It "Searches for a JumpCloud system and uses returns properties created" {
         $PesterSystem = Get-JCSystem  -returnProperties created
         $PesterSystem.created | Should -Not -Be $null
-    } 
-    
+    }
+
     It "Searches for a JumpCloud system and uses return properties active" {
         $PesterSystem = Get-JCSystem -returnProperties active
         $PesterSystem.active | Should -Not -Be $null
-    } 
-    
+    }
+
     It "Searches for a JumpCloud system using returns properties agentVersion" {
         $PesterSystem = Get-JCSystem -returnProperties agentVersion
         $PesterSystem.agentVersion | Should -Not -Be $null
-    }  
+    }
 
     It "Searches for a JumpCloud system using returns properties allowMultiFactorAuthentication" {
         $PesterSystem = Get-JCSystem -returnProperties allowMultiFactorAuthentication
@@ -274,7 +274,7 @@ Describe "Get-JCSystem 1.4" {
 
     It "Searches for a JumpCloud system using hostname and returns all properties " {
         $Sys = Get-JCSystem -systemID $PesterParams.SystemID
-        
+
         $PesterSystem = Get-JCSystem -hostname $Sys.hostname -returnProperties 'created', 'active', 'agentVersion', 'allowMultiFactorAuthentication', 'allowPublicKeyAuthentication', 'allowSshPasswordAuthentication', 'allowSshRootLogin', 'arch', 'created', 'displayName', 'hostname', 'lastContact', 'modifySSHDConfig', 'organization', 'os', 'remoteIP', 'serialNumber', 'systemTimezone', 'templateName', 'version'
         $PesterSystem.created | Should -Not -Be $null
         $PesterSystem.active | Should -Not -Be $null
@@ -296,6 +296,6 @@ Describe "Get-JCSystem 1.4" {
         $PesterSystem.systemTimezone | Should -Not -Be $null
         $PesterSystem.templateName | Should -Not -Be $null
         $PesterSystem.version | Should -Not -Be $null
-    }  
-       
+    }
+
 }

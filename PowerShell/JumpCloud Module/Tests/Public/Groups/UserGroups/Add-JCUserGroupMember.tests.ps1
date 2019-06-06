@@ -1,6 +1,6 @@
-Connect-JCTestOrg
+Connect-JCOnlineTest
 
-Describe 'Add-JCUserGroupMember 1.0' {
+Describe -Tag:('JCUserGroupMember') 'Add-JCUserGroupMember 1.0' {
 
     It "Adds a JumpCloud user to a JumpCloud user group by User GroupName and Username" {
 
@@ -25,9 +25,9 @@ Describe 'Add-JCUserGroupMember 1.0' {
 
     It "Adds two JumpCLoud users to a JumpCloud user group using the pipeline" {
 
-        $MultiUserGroupRemove = Get-JCUser | Select-Object -Last 2 | Remove-JCUserGroupMember -GroupName $PesterParams.UserGroupName  
+        $MultiUserGroupRemove = Get-JCUser | Select-Object -Last 2 | Remove-JCUserGroupMember -GroupName $PesterParams.UserGroupName
 
-        $MultiUserGroupAdd = Get-JCUser | Select-Object -Last 2 | Add-JCUserGroupMember -GroupName $PesterParams.UserGroupName  
+        $MultiUserGroupAdd = Get-JCUser | Select-Object -Last 2 | Add-JCUserGroupMember -GroupName $PesterParams.UserGroupName
 
         $MultiUserGroupAdd.Status | Select-Object -Unique | Should Be 'Added'
     }

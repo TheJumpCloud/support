@@ -14,7 +14,7 @@ Function Add-JCRadiusReplyAttribute ()
             ParameterSetName = 'ByGroup')]
         [String]$VLAN,
 
-        [Parameter(, ValueFromPipelineByPropertyName)] 
+        [Parameter(, ValueFromPipelineByPropertyName)]
         [int]
         $NumberOfAttributes
 
@@ -23,7 +23,11 @@ Function Add-JCRadiusReplyAttribute ()
 
     DynamicParam
     {
-
+        If ((Get-PSCallStack).Command -like '*MarkdownHelp')
+        {
+            $NumberOfAttributes = 2
+            $VLAN = 11
+        }
         $dict = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
 
         [int]$NewParams = 0
@@ -70,7 +74,7 @@ Function Add-JCRadiusReplyAttribute ()
         }
 
         return $dict
-        
+
     }
 
     begin
@@ -118,7 +122,7 @@ Function Add-JCRadiusReplyAttribute ()
             $ExistingAttributes = $GroupInfo | Select-Object -ExpandProperty attributes
         }
         else { Throw "Group does not exist. Run 'Get-JCGroup -type User' to see a list of all your JumpCloud user groups."}
-        
+
         $replyAttributes = New-Object System.Collections.ArrayList
 
         $CurrentAttributes = Get-JCGroup -Type User -Name $GroupName | Select-Object @{Name = "RadiusAttributes"; Expression = {$_.attributes.radius.reply}} | Select-Object -ExpandProperty RadiusAttributes
@@ -181,21 +185,21 @@ Function Add-JCRadiusReplyAttribute ()
                 $TunnelType = New-Object PSObject
                 $TunnelType | Add-Member -MemberType NoteProperty -Name "name" -Value "Tunnel-Type:$VLANTag"
                 $TunnelType | Add-Member -MemberType NoteProperty -Name "value" -Value "VLAN"
-    
+
                 $NewAttributesHash.Add($TunnelType.name, $TunnelType.value)
-    
+
                 $TunnelMediumType = New-Object PSObject
-    
+
                 $TunnelMediumType | Add-Member -MemberType NoteProperty -Name "name" -Value "Tunnel-Medium-Type:$VLANTag"
                 $TunnelMediumType | Add-Member -MemberType NoteProperty -Name "value" -Value "IEEE-802"
-    
+
                 $NewAttributesHash.Add($TunnelMediumType.name, $TunnelMediumType.value)
-    
+
                 $TunnelPrivateGroupID = New-Object PSObject
-    
+
                 $TunnelPrivateGroupID | Add-Member -MemberType NoteProperty -Name "name" -Value "Tunnel-Private-Group-Id:$VLANTag"
                 $TunnelPrivateGroupID | Add-Member -MemberType NoteProperty -Name "value" -Value "$($VLAN)"
-    
+
                 $NewAttributesHash.Add($TunnelPrivateGroupID.name, $TunnelPrivateGroupID.value)
             }
 
@@ -204,23 +208,23 @@ Function Add-JCRadiusReplyAttribute ()
                 $TunnelType = New-Object PSObject
                 $TunnelType | Add-Member -MemberType NoteProperty -Name "name" -Value "Tunnel-Type"
                 $TunnelType | Add-Member -MemberType NoteProperty -Name "value" -Value "VLAN"
-    
+
                 $NewAttributesHash.Add($TunnelType.name, $TunnelType.value)
-    
+
                 $TunnelMediumType = New-Object PSObject
-    
+
                 $TunnelMediumType | Add-Member -MemberType NoteProperty -Name "name" -Value "Tunnel-Medium-Type"
                 $TunnelMediumType | Add-Member -MemberType NoteProperty -Name "value" -Value "IEEE-802"
-    
+
                 $NewAttributesHash.Add($TunnelMediumType.name, $TunnelMediumType.value)
-    
+
                 $TunnelPrivateGroupID = New-Object PSObject
-    
+
                 $TunnelPrivateGroupID | Add-Member -MemberType NoteProperty -Name "name" -Value "Tunnel-Private-Group-Id"
                 $TunnelPrivateGroupID | Add-Member -MemberType NoteProperty -Name "value" -Value "$($VLAN)"
-    
+
                 $NewAttributesHash.Add($TunnelPrivateGroupID.name, $TunnelPrivateGroupID.value)
-                
+
             }
 
         }
@@ -302,14 +306,14 @@ Function Add-JCRadiusReplyAttribute ()
                 $Body.attributes.Add("posixGroups", @($posixGroups))
             }
 
-            if ($ExistingAttributes.ldapGroups) 
+            if ($ExistingAttributes.ldapGroups)
             {
                 $ldapGroups = New-Object PSObject
                 $ldapGroups | Add-Member -MemberType NoteProperty -Name name -Value $ExistingAttributes.ldapGroups.name
                 $Body.attributes.Add("ldapGroups", @($ldapGroups))
             }
 
-            if ($GroupInfo.attributes.sambaEnabled -eq $True) 
+            if ($GroupInfo.attributes.sambaEnabled -eq $True)
             {
                 $Body.attributes.Add("sambaEnabled", $True)
             }
@@ -323,7 +327,7 @@ Function Add-JCRadiusReplyAttribute ()
             Write-Debug $jsonbody
             Write-Verbose $jsonbody
 
-            $AttributeAdd = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent $JCUserAgent
+            $AttributeAdd = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent)
 
             $FormattedResults = $AttributeAdd.attributes.radius.reply
 

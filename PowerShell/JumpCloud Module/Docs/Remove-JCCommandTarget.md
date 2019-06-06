@@ -1,14 +1,13 @@
 ---
 external help file: JumpCloud-help.xml
 Module Name: JumpCloud
-online version:
+online version: https://github.com/TheJumpCloud/support/wiki/Remove-JCCommandTarget
 schema: 2.0.0
 ---
 
 # Remove-JCCommandTarget
 
 ## SYNOPSIS
-
 Removes the association between a JumpCloud system or a JumpCloud system group from a JumpCloud command
 
 ## SYNTAX
@@ -53,11 +52,9 @@ Remove-JCCommandTarget -CommandID 5b99777710a3690ssisr3a1w -GroupID 5j03458a232z
 ```
 
 Removes the JumpCloud system group with the GroupID '5j03458a232z115210z66913' and the systems within this group from the target list for the JumpCloud command with command ID '5b99777710a3690ssisr3a1w'
-
 ## PARAMETERS
 
 ### -CommandID
-
 The id value of the JumpCloud command. Use the command 'Get-JCCommand | Select-Object _id, name' to find the "_id" value for all the JumpCloud commands in your tenant.
 
 
@@ -74,7 +71,6 @@ Accept wildcard characters: False
 ```
 
 ### -GroupID
-
 The id value of a JumpCloud system group
 
 
@@ -91,7 +87,6 @@ Accept wildcard characters: False
 ```
 
 ### -GroupName
-
 The name of the JumpCloud system group. If the name includes a space enter the name within quotes. Example: -GroupName 'The Space'
 
 ```yaml
@@ -109,7 +104,6 @@ Accept wildcard characters: False
 ### -SystemID
 The _id of a JumpCloud system. To find the _id of all JumpCloud systems within your tenant run 'Get-JCSystem | select _id, hostname'
 
-
 ```yaml
 Type: Object
 Parameter Sets: SystemID
@@ -123,19 +117,15 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
-This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see about_CommonParameters (http://go.microsoft.com/fwlink/?LinkID=113216).
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
 ### System.String
-System.Object
-
+### System.Object
 ## OUTPUTS
 
 ### System.Object
-
 ## NOTES
 
 ## RELATED LINKS
-
-[Online Help Remove-JCCommandTarget](https://github.com/TheJumpCloud/support/wiki/Remove-JCCommandTarget)

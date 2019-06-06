@@ -1,6 +1,6 @@
-Connect-JCTestOrg
+Connect-JCOnlineTest
 
-Describe 'New-JCUser 1.0' {
+Describe -Tag:('JCUser') 'New-JCUser 1.0' {
 
     It "Creates a new user" {
         $NewUser = New-RandomUser -domain pleasedelete"PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser
@@ -107,7 +107,7 @@ Describe 'New-JCUser 1.0' {
 }
 
 
-Describe 'Add-JCUser 1.3.0' {
+Describe -Tag:('JCUser') 'Add-JCUser 1.3.0' {
     #Linux UID, GUID
     It "Adds a JumpCloud user with a high UID and GUID" {
 
@@ -118,15 +118,15 @@ Describe 'Add-JCUser 1.3.0' {
 
         Remove-JCUser -UserID $NewUser._id -ByID -Force
 
-    }    
+    }
 
     It "Adds a JumpCloud user with password_never_expires false " {
-        
+
         $ExpFalse = New-RandomUser -domain pleasedelete | New-JCUser -password_never_expires $false
 
         $ExpFalse.password_never_expires | Should Be $false
 
-        Remove-JCUser -userID $ExpFalse._id -force 
+        Remove-JCUser -userID $ExpFalse._id -force
 
     }
 
@@ -136,14 +136,14 @@ Describe 'Add-JCUser 1.3.0' {
 
         $ExpTrue.password_never_expires | Should Be $true
 
-        Remove-JCUser -userID $ExpTrue._id -force 
+        Remove-JCUser -userID $ExpTrue._id -force
 
-        
+
     }
 
 }
 
-Describe "New-JCUser 1.8.0" {
+Describe -Tag:('JCUser') "New-JCUser 1.8.0" {
 
     It "Creates a user with the extended attributes" {
 
@@ -444,7 +444,7 @@ Describe "New-JCUser 1.8.0" {
 
         $NewUser.phoneNumbers | Where-Object type -EQ work_mobile | Select-Object -ExpandProperty number | Should -be "1234"
     }
-    
+
 
     It "Creates a user with work fax number" {
         $UserWithNumber = @{
@@ -487,7 +487,7 @@ Describe "New-JCUser 1.8.0" {
 }
 
 
-Describe "New-JCUser MFA with enrollment periods 1.10" {
+Describe -Tag:('JCUser') "New-JCUser MFA with enrollment periods 1.10" {
 
     It "Creates a new user with enable_user_portal_multifactor -eq True" {
 
@@ -542,14 +542,6 @@ Describe "New-JCUser MFA with enrollment periods 1.10" {
 
     }
 
-    It "Creates a new user with enable_user_portal_multifactor -eq True and a 366 days specified for EnrollmentDays (invalid)" {
-
-        $EnrollmentDays = 366
-
-        { $Newuser = New-RandomUser -domain "deleteme" | New-JCUser -enable_user_portal_multifactor $true -EnrollmentDays $EnrollmentDays } | Should Throw "Cannot validate argument on parameter 'EnrollmentDays'. The 366 argument is greater than the maximum allowed range of 365. Supply an argument that is less than or equal to 365 and then try the command again."
-
-
-    }
 
     It "Creates a new user with enable_user_portal_multifactor -eq True with Attributes" {
 

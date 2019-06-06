@@ -81,7 +81,7 @@ Function Get-JCUser ()
             ParameterSetName = 'SearchFilter'
         )]
         [bool]$account_locked,
-    
+
         [Parameter(
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'SearchFilter'
@@ -139,7 +139,7 @@ Function Get-JCUser ()
         [Parameter(
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'SearchFilter')]
-        [ValidateSet('created', 'password_expiration_date', 'account_locked', 'activated', 'addresses', 'allow_public_key', 'attributes', 'email', 'enable_managed_uid', 'enable_user_portal_multifactor', 'externally_managed', 'firstname', 'lastname', 'ldap_binding_user', 'passwordless_sudo', 'password_expired', 'password_never_expires', 'phoneNumbers', 'samba_service_user', 'ssh_keys', 'sudo', 'totp_enabled', 'unix_guid', 'unix_uid', 'username', 'middlename', 'displayname', 'jobTitle', 'employeeIdentifier', 'department', 'costCenter', 'company', 'employeeType', 'description', 'location')]
+        [ValidateSet('created', 'password_expiration_date', 'account_locked', 'activated', 'addresses', 'allow_public_key', 'attributes', 'email', 'enable_managed_uid', 'enable_user_portal_multifactor', 'externally_managed', 'firstname', 'lastname', 'ldap_binding_user', 'passwordless_sudo', 'password_expired', 'password_never_expires', 'phoneNumbers', 'samba_service_user', 'ssh_keys', 'sudo', 'totp_enabled', 'unix_guid', 'unix_uid', 'username', 'middlename', 'displayname', 'jobTitle', 'employeeIdentifier', 'department', 'costCenter', 'company', 'employeeType', 'description', 'location', 'external_source_type', 'external_dn')]
         [String[]]$returnProperties,
 
         #New parameters as of 1.8 release
@@ -181,15 +181,29 @@ Function Get-JCUser ()
 
         [Parameter(ValueFromPipelineByPropertyName,
             ParameterSetName = 'SearchFilter')]
-        [String]$location
+        [String]$location,
+
+        [Parameter(ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter')]
+        [String]$external_dn,
+
+        [Parameter(ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter')]
+        [String]$external_source_type
+
+
     )
 
     DynamicParam
     {
+        If ((Get-PSCallStack).Command -like '*MarkdownHelp')
+        {
+            $filterDateProperty = 'created'
+        }
         if ($filterDateProperty)
         {
 
-            # Create the dictionary 
+            # Create the dictionary
             $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
 
 
@@ -200,18 +214,18 @@ Function Get-JCUser ()
             # Create and set the parameters' attributes
             $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
             $ParameterAttribute.Mandatory = $true
-            # Generate and set the ValidateSet 
+            # Generate and set the ValidateSet
             $arrSet = @("before", "after")
-            $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($arrSet)    
+            $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($arrSet)
             # Add the ValidateSet to the attributes collection
             $AttributeCollection.Add($ValidateSetAttribute)
             # Add the attributes to the attributes collection
-            $AttributeCollection.Add($ParameterAttribute) 
+            $AttributeCollection.Add($ParameterAttribute)
             # Create and return the dynamic parameter
             $RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter($ParamName_Filter, [string], $AttributeCollection)
             $RuntimeParameterDictionary.Add($ParamName_Filter, $RuntimeParameter)
-    
-            
+
+
             # Set the dynamic parameters' name
             $ParamName_FilterDate = 'date'
             # Create the collection of attributes
@@ -220,12 +234,12 @@ Function Get-JCUser ()
             $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
             $ParameterAttribute.Mandatory = $true
             # Add the attributes to the attributes collection
-            $AttributeCollection.Add($ParameterAttribute) 
+            $AttributeCollection.Add($ParameterAttribute)
             # Create and return the dynamic parameter
             $RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter($ParamName_FilterDate, [string], $AttributeCollection)
             $RuntimeParameterDictionary.Add($ParamName_FilterDate, $RuntimeParameter)
 
-     
+
 
             # Returns the dictionary
             return $RuntimeParameterDictionary
@@ -239,7 +253,7 @@ Function Get-JCUser ()
 
     {
         Write-Verbose 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {Connect-JCOnline}
+        if ($JCAPIKEY.length -ne 40) { Connect-JCOnline }
 
         Write-Verbose 'Populating API headers'
         $hdrs = @{
@@ -286,7 +300,7 @@ Function Get-JCUser ()
 
                     if ($returnProperties)
                     {
-    
+
                         $Search = @{
                             filter = @(
                                 @{
@@ -296,12 +310,12 @@ Function Get-JCUser ()
                             skip   = $skip
                             fields = $returnProperties
                         } #Initialize search
-    
+
                     }
-    
+
                     else
                     {
-                    
+
                         $Search = @{
                             filter = @(
                                 @{
@@ -309,11 +323,11 @@ Function Get-JCUser ()
                             )
                             limit  = $limit
                             skip   = $skip
-    
+
                         } #Initialize search
-    
+
                     }
-    
+
 
                     foreach ($param in $PSBoundParameters.GetEnumerator())
                     {
@@ -344,14 +358,14 @@ Function Get-JCUser ()
                             switch ($param.value)
                             {
                                 before { $DateQuery = '$lt' }
-                                after { $DateQuery = '$gt'}
+                                after { $DateQuery = '$gt' }
                             }
 
                             continue
                         }
 
                         if ($param.key -eq 'date')
-                        {   
+                        {
 
                             $ConvertDate = [DateTime]$param.value
                             $Timestamp = Get-Date $ConvertDate -format o
@@ -365,17 +379,17 @@ Function Get-JCUser ()
                         if (($param.Value -match '.+?\*$') -and ($param.Value -match '^\*.+?'))
                         {
                             # Front and back wildcard
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "$Value"})
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "$Value" })
                         }
                         elseif ($param.Value -match '.+?\*$')
                         {
                             # Back wildcard
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "^$Value"})
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "^$Value" })
                         }
                         elseif ($param.Value -match '^\*.+?')
                         {
                             # Front wild card
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "$Value`$"})
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "$Value`$" })
                         }
                         else
                         {
@@ -387,7 +401,7 @@ Function Get-JCUser ()
 
                     if ($filterDateProperty)
                     {
-                        (($Search.filter).GetEnumerator()).add($DateProperty, @{$DateQuery = $Timestamp})
+                        (($Search.filter).GetEnumerator()).add($DateProperty, @{$DateQuery = $Timestamp })
                     }
 
                     $SearchJSON = $Search | ConvertTo-Json -Compress -Depth 4
@@ -396,7 +410,7 @@ Function Get-JCUser ()
 
                     $URL = "$JCUrlBasePath/api/search/systemusers"
 
-                    $Results = Invoke-RestMethod -Method POST -Uri $Url  -Header $hdrs -Body $SearchJSON
+                    $Results = Invoke-RestMethod -Method POST -Uri $Url  -Header $hdrs -Body $SearchJSON -UserAgent:(Get-JCUserAgent)
 
                     $null = $resultsArrayList.Add($Results)
 
@@ -413,7 +427,7 @@ Function Get-JCUser ()
 
                 $URL = "$JCUrlBasePath/api/Systemusers/$Userid"
                 Write-Verbose $URL
-                $results = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent $JCUserAgent
+                $results = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
                 $null = $resultsArrayList.add($Results)
             }
 
@@ -423,7 +437,7 @@ Function Get-JCUser ()
     end
 
     {
-        
+
         switch ($PSCmdlet.ParameterSetName)
         {
             SearchFilter
@@ -435,5 +449,5 @@ Function Get-JCUser ()
                 return $resultsArrayList | Select-Object -Property *  -ExcludeProperty associatedTagCount
             }
         }
-    }   
+    }
 }

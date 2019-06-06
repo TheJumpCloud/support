@@ -1,5 +1,5 @@
-Connect-JCTestOrg
-Describe 'New-JCSystemGroup 1.0' {
+Connect-JCOnlineTest
+Describe -Tag:('JCSystemGroup') 'New-JCSystemGroup 1.0' {
 
     It "Creates a new system group" {
         $NewG = New-JCSystemGroup -GroupName $(New-RandomString 8)

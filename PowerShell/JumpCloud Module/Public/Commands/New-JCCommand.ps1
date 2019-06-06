@@ -3,7 +3,7 @@ Function New-JCCommand
     [CmdletBinding()]
 
     param (
-        
+
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName = $True)]
         [string]
@@ -24,18 +24,21 @@ Function New-JCCommand
             ValueFromPipelineByPropertyName = $True)]
         [string]
         [ValidateSet('trigger', 'manual')]
-        $launchType = 'manual', 
-        
+        $launchType = 'manual',
+
         [Parameter(
             ValueFromPipelineByPropertyName = $True)]
         [string]
         $timeout = '120'
 
     )
-    
+
     DynamicParam
     {
-
+        If ((Get-PSCallStack).Command -like '*MarkdownHelp')
+        {
+            $commandType = 'windows'
+        }
         $dict = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
 
         If ($commandType -eq "windows")
@@ -48,21 +51,27 @@ Function New-JCCommand
             $attrColl.Add((New-Object System.Management.Automation.ValidateSetAttribute('powershell', 'cmd')))
             $param = New-Object System.Management.Automation.RuntimeDefinedParameter('shell', [string], $attrColl)
             $dict.Add('shell', $param)
-                    
-        }
 
+        }
+        If ((Get-PSCallStack).Command -like '*MarkdownHelp')
+        {
+            $commandType = 'mac'
+        }
         If ($commandType -ne "windows")
         {
             $attr = New-Object System.Management.Automation.ParameterAttribute
-            $attr.HelpMessage = "Enter run as user"
+            $attr.HelpMessage = "Only needed for Mac and Linux commands. If not entered Mac and Linux commands will default to the root users. If entering a user a UserID must be entered."
             $attr.ValueFromPipelineByPropertyName = $true
             $attrColl = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
             $attrColl.Add($attr)
             $param = New-Object System.Management.Automation.RuntimeDefinedParameter('user', [string], $attrColl)
             $dict.Add('user', $param)
-                    
-        }
 
+        }
+        If ((Get-PSCallStack).Command -like '*MarkdownHelp')
+        {
+            $launchType = 'trigger'
+        }
         If ($launchType -eq "trigger")
         {
             $attr = New-Object System.Management.Automation.ParameterAttribute
@@ -73,11 +82,11 @@ Function New-JCCommand
             $attrColl.Add($attr)
             $param = New-Object System.Management.Automation.RuntimeDefinedParameter('trigger', [string], $attrColl)
             $dict.Add('trigger', $param)
-              
+
         }
 
-        return $dict 
-        
+        return $dict
+
     }
 
     begin
@@ -104,7 +113,7 @@ Function New-JCCommand
         $NewCommandsArray = @()
 
     }
-    
+
     process
     {
 
@@ -129,7 +138,7 @@ Function New-JCCommand
                     timeout     = $timeout
                     user        = $PSBoundParameters["user"]
                 }
-              
+
             }
 
             windows
@@ -138,7 +147,7 @@ Function New-JCCommand
                 if ($PSBoundParameters["shell"] -eq $null)
                 {
                     $PSBoundParameters["shell"] = "powershell"`
-                
+
                 }
 
                 $body = @{
@@ -150,7 +159,7 @@ Function New-JCCommand
                     timeout     = $timeout
                     shell       = $PSBoundParameters["shell"]
                 }
-               
+
             }
 
             linux
@@ -170,7 +179,7 @@ Function New-JCCommand
                     timeout     = $timeout
                     user        = $PSBoundParameters["user"]
                 }
-               
+
             }
 
             Default
@@ -190,12 +199,12 @@ Function New-JCCommand
 
         $jsonbody = $body | ConvertTo-Json
 
-        $NewCommand = Invoke-RestMethod -Uri $URL -Method POST -Body $jsonbody -Headers $hdrs -UserAgent $JCUserAgent
+        $NewCommand = Invoke-RestMethod -Uri $URL -Method POST -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent)
 
         $NewCommandsArray += $NewCommand
 
     }
-    
+
     end
     {
 

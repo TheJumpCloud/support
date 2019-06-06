@@ -1,6 +1,6 @@
-Connect-JCTestOrg
+Connect-JCOnlineTest
 
-Describe 'Get-JCCommand 1.0' {
+Describe -Tag:('JCCommand') 'Get-JCCommand 1.0' {
 
     It "Gets all JumpCloud commands" {
         $AllCommands = Get-JCCommand

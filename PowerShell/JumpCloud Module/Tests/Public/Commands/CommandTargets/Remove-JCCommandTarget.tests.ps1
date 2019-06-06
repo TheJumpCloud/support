@@ -1,6 +1,6 @@
-Connect-JCTestOrg
+Connect-JCOnlineTest
 
-Describe 'Add-JCCommandTarget 1.3' {
+Describe -Tag:('JCCommandTarget') 'Add-JCCommandTarget 1.3' {
 
     It "Removes a single system to a JupmCloud command" {
 

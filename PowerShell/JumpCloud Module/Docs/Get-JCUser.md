@@ -1,14 +1,13 @@
 ---
 external help file: JumpCloud-help.xml
 Module Name: JumpCloud
-online version:
+online version: https://github.com/TheJumpCloud/support/wiki/Get-JCUser
 schema: 2.0.0
 ---
 
 # Get-JCUser
 
 ## SYNOPSIS
-
 Returns all JumpCloud Users within a JumpCloud tenant or searches for a JumpCloud User by 'username', 'firstname', 'lastname', or 'email'.
 
 ## SYNTAX
@@ -23,65 +22,59 @@ Get-JCUser [[-username] <String>] [-firstname <String>] [-lastname <String>] [-e
  [-samba_service_user <Boolean>] [-password_never_expires <Boolean>] [-filterDateProperty <String>]
  [-returnProperties <String[]>] [-middlename <String>] [-displayname <String>] [-jobTitle <String>]
  [-employeeIdentifier <String>] [-department <String>] [-costCenter <String>] [-company <String>]
- [-employeeType <String>] [-description <String>] [-location <String>] [<CommonParameters>]
+ [-employeeType <String>] [-description <String>] [-location <String>] [-external_dn <String>]
+ [-external_source_type <String>] -dateFilter <String> -date <String> [<CommonParameters>]
 ```
 
 ### ByID
 ```
-Get-JCUser -userid <String> [<CommonParameters>]
+Get-JCUser -userid <String> -dateFilter <String> -date <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-
 The Get-JCUser function returns all information describing a JumpCloud user. By default it will return all Users.
 
 ## EXAMPLES
 
 ### Example 1
-
-```PowerShell
+```powershell
 PS C:\> Get-JCUser
 ```
 
 Returns all JumpCloud Users and the information describing these users.
 
 ### Example 2
-
-```PowerShell
+```powershell
 Get-JCUser -Username cclemons
 ```
 
 Returns the information describing the JumpCloud User with Username cclemons
 
 ### Example 3
-
-```PowerShell
+```powershell
 Get-JCUser -Username *clemons
 ```
 
 Returns all JumpCloud users that usernames end with clemons using the wildcard character '*'
 
 ### Example 4
-
-```PowerShell
+```powershell
 Get-JCUser -filterDateProperty created -dateFilter after -date 01/01/2018
 ```
 
-Returns all JumpCloud users that were created after '01/01/2018'. The parameter '-filterDateProperty' takes both 'created' and 'password_expiration_date' as input and creates two dynamic parameters '-dateFilter' which takes "before" or "after" as input and "-date" which takes a date value as input. 
+Returns all JumpCloud users that were created after '01/01/2018'. The parameter '-filterDateProperty' takes both 'created' and 'password_expiration_date' as input and creates two dynamic parameters '-dateFilter' which takes "before" or "after" as input and "-date" which takes a date value as input.
 
 ### Example 5
-
-```PowerShell
+```powershell
 Get-JCUser -returnProperties username, sudo
 ```
 
-Returns all JumpCloud users and only the username and sudo Properties of their JumpCloud user object. 
+Returns all JumpCloud users and only the username and sudo Properties of their JumpCloud user object.
 
 ## PARAMETERS
 
 ### -account_locked
-
-A search filter to return users that are in a locked ($true) or unlocked ($false) state. 
+A search filter to return users that are in a locked ($true) or unlocked ($false) state.
 
 ```yaml
 Type: Boolean
@@ -96,7 +89,7 @@ Accept wildcard characters: False
 ```
 
 ### -activated
-A search filter to return users that are activated ($true) or those that have not set a password ($false). 
+A search filter to return users that are activated ($true) or those that have not set a password ($false).
 
 ```yaml
 Type: Boolean
@@ -112,8 +105,115 @@ Accept wildcard characters: False
 
 ### -allow_public_key
 A search filter to show accounts that are enabled ($true) or disabled ($true) to allow_public_key
+
 ```yaml
 Type: Boolean
+Parameter Sets: SearchFilter
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -company
+The company of the JumpCloud user you wish to search for.
+
+```yaml
+Type: String
+Parameter Sets: SearchFilter
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -costCenter
+The costCenter of the JumpCloud user you wish to search for.
+
+```yaml
+Type: String
+Parameter Sets: SearchFilter
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -date
+Date to filter on.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -dateFilter
+Condition to filter date on.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+Accepted values: before, after
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -department
+The department of the JumpCloud user you wish to search for.
+
+```yaml
+Type: String
+Parameter Sets: SearchFilter
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -description
+The description of the JumpCloud user you wish to search for.
+
+```yaml
+Type: String
+Parameter Sets: SearchFilter
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -displayname
+The preferred name of the JumpCloud user you wish to search for.
+
+```yaml
+Type: String
 Parameter Sets: SearchFilter
 Aliases:
 
@@ -136,7 +236,37 @@ Required: False
 Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: True
+Accept wildcard characters: False
+```
+
+### -employeeIdentifier
+The employeeIdentifier of the JumpCloud user you wish to search for.
+
+```yaml
+Type: String
+Parameter Sets: SearchFilter
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -employeeType
+The employeeType of the JumpCloud user you wish to search for.
+
+```yaml
+Type: String
+Parameter Sets: SearchFilter
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
 ```
 
 ### -enable_managed_uid
@@ -169,6 +299,36 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
+### -external_dn
+The distinguished name of the AD domain (ADB Externally managed users only)
+
+```yaml
+Type: String
+Parameter Sets: SearchFilter
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -external_source_type
+The externally managed user source type (ADB Externally managed users only)
+
+```yaml
+Type: String
+Parameter Sets: SearchFilter
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
 ### -externally_managed
 A search filter to show accounts that are enabled ($true) or disabled ($false) for externally_managed
 
@@ -185,13 +345,13 @@ Accept wildcard characters: False
 ```
 
 ### -filterDateProperty
-A paramter that can filter the properties 'created' or 'password_expiration_date'. This parameter if used creates two more dynamic parameters 'dateFilter' and 'date'. See EXAMPLE 4 above for full syntax. 
-
+A paramter that can filter the properties 'created' or 'password_expiration_date'. This parameter if used creates two more dynamic parameters 'dateFilter' and 'date'. See EXAMPLE 4 above for full syntax.
 
 ```yaml
 Type: String
 Parameter Sets: SearchFilter
 Aliases:
+Accepted values: created, password_expiration_date
 
 Required: False
 Position: Named
@@ -212,7 +372,22 @@ Required: False
 Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: True
+Accept wildcard characters: False
+```
+
+### -jobTitle
+The jobTitle of the JumpCloud user you wish to search for.
+
+```yaml
+Type: String
+Parameter Sets: SearchFilter
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
 ```
 
 ### -lastname
@@ -227,7 +402,7 @@ Required: False
 Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: True
+Accept wildcard characters: False
 ```
 
 ### -ldap_binding_user
@@ -245,8 +420,39 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
+### -location
+The location of the JumpCloud user you wish to search for.
+
+```yaml
+Type: String
+Parameter Sets: SearchFilter
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -middlename
+The middlename of the JumpCloud user you wish to search for.
+
+```yaml
+Type: String
+Parameter Sets: SearchFilter
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
 ### -password_expired
 A search filter to show accounts that have expired passwords ($true) or valid passwords ($false)
+
 ```yaml
 Type: Boolean
 Parameter Sets: SearchFilter
@@ -276,6 +482,7 @@ Accept wildcard characters: False
 
 ### -passwordless_sudo
 A search filter to show accounts that are enabled ($true) or disabled ($false) for passwordless_sudo
+
 ```yaml
 Type: Boolean
 Parameter Sets: SearchFilter
@@ -295,6 +502,7 @@ Allows you to return select properties on JumpCloud user objects. Specifying wha
 Type: String[]
 Parameter Sets: SearchFilter
 Aliases:
+Accepted values: created, password_expiration_date, account_locked, activated, addresses, allow_public_key, attributes, email, enable_managed_uid, enable_user_portal_multifactor, externally_managed, firstname, lastname, ldap_binding_user, passwordless_sudo, password_expired, password_never_expires, phoneNumbers, samba_service_user, ssh_keys, sudo, totp_enabled, unix_guid, unix_uid, username, middlename, displayname, jobTitle, employeeIdentifier, department, costCenter, company, employeeType, description, location, external_source_type, external_dn
 
 Required: False
 Position: Named
@@ -350,6 +558,7 @@ Accept wildcard characters: False
 
 ### -unix_guid
 A search filter to search for users with a specific unix_gid. DOES NOT accept wild card input.
+
 ```yaml
 Type: String
 Parameter Sets: SearchFilter
@@ -378,10 +587,7 @@ Accept wildcard characters: False
 ```
 
 ### -userid
-
-The _id of the User which you want to modify.
-
-UserID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically.
+The _id of the User which you want to modify. UserID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically.
 
 ```yaml
 Type: String
@@ -396,7 +602,6 @@ Accept wildcard characters: False
 ```
 
 ### -username
-
 The Username of the JumpCloud user you wish to search for.
 
 ```yaml
@@ -408,166 +613,20 @@ Required: False
 Position: 0
 Default value: None
 Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: True
-```
-
-### -company
-The company of the JumpCloud user you wish to search for.
-```yaml
-Type: String
-Parameter Sets: SearchFilter
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -costCenter
-The costCenter of the JumpCloud user you wish to search for.
-
-```yaml
-Type: String
-Parameter Sets: SearchFilter
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -department
-The department of the JumpCloud user you wish to search for.
-
-```yaml
-Type: String
-Parameter Sets: SearchFilter
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -description
-The description of the JumpCloud user you wish to search for.
-
-```yaml
-Type: String
-Parameter Sets: SearchFilter
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -displayname
-The preferred name of the JumpCloud user you wish to search for.
-```yaml
-Type: String
-Parameter Sets: SearchFilter
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -employeeIdentifier
-The employeeIdentifier of the JumpCloud user you wish to search for.
-```yaml
-Type: String
-Parameter Sets: SearchFilter
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -employeeType
-The employeeType of the JumpCloud user you wish to search for.
-```yaml
-Type: String
-Parameter Sets: SearchFilter
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -jobTitle
-The jobTitle of the JumpCloud user you wish to search for.
-```yaml
-Type: String
-Parameter Sets: SearchFilter
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -location
-The location of the JumpCloud user you wish to search for.
-```yaml
-Type: String
-Parameter Sets: SearchFilter
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -middlename
-The middlename of the JumpCloud user you wish to search for.
-
-```yaml
-Type: String
-Parameter Sets: SearchFilter
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
 ### CommonParameters
-This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see about_CommonParameters (http://go.microsoft.com/fwlink/?LinkID=113216).
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
 ### System.String
-
+### System.Boolean
+### System.String[]
 ## OUTPUTS
 
 ### System.Object
-
 ## NOTES
 
 ## RELATED LINKS
-
-[Online Help Get-JCUser](https://github.com/TheJumpCloud/support/wiki/Get-JCUser)

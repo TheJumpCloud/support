@@ -1,5 +1,5 @@
-Connect-JCTestOrg
-Describe 'Get-JCUserGroupMember 1.0' {
+Connect-JCOnlineTest
+Describe -Tag:('JCUserGroupMember') 'Get-JCUserGroupMember 1.0' {
 
     It 'Gets a User Groups membership by Groupname' {
         $UserGroupMembers = Get-JCUserGroupMember -GroupName $PesterParams.UserGroupName

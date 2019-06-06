@@ -24,17 +24,20 @@ Function Set-JCCommand
         [string]
         [ValidateSet('trigger', 'manual')]
         $launchType,
-        
+
         [Parameter(
             ValueFromPipelineByPropertyName = $True)]
         [string]
         $timeout
 
     )
-    
+
     DynamicParam
     {
-
+        If ((Get-PSCallStack).Command -like '*MarkdownHelp')
+        {
+            $launchType = 'trigger'
+        }
         $dict = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
 
 
@@ -48,11 +51,11 @@ Function Set-JCCommand
             $attrColl.Add($attr)
             $param = New-Object System.Management.Automation.RuntimeDefinedParameter('trigger', [string], $attrColl)
             $dict.Add('trigger', $param)
-              
+
         }
 
-        return $dict 
-        
+        return $dict
+
     }
 
     begin
@@ -79,7 +82,7 @@ Function Set-JCCommand
         $NewCommandsArray = @()
 
     }
-    
+
     process
     {
 
@@ -98,12 +101,12 @@ Function Set-JCCommand
 
         $jsonbody = $body | ConvertTo-Json
 
-        $NewCommand = Invoke-RestMethod -Uri $URL -Method PUT -Body $jsonbody -Headers $hdrs -UserAgent $JCUserAgent
+        $NewCommand = Invoke-RestMethod -Uri $URL -Method PUT -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent)
 
         $NewCommandsArray += $NewCommand
 
     }
-    
+
     end
     {
 

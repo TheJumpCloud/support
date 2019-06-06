@@ -1,6 +1,6 @@
-Connect-JCTestOrg
+Connect-JCOnlineTest
 
-Describe 'Get-JCPolicy 1.10' {
+Describe -Tag:('JCPolicy') 'Get-JCPolicy 1.10' {
 
     It "Returns a single JumpCloud Policy declaring -PolicyId" {
         $SingleResult = Get-JCPolicy -PolicyId:($SinglePolicy.id)

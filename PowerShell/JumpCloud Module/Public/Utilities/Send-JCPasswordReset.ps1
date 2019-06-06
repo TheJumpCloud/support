@@ -17,9 +17,9 @@ Function Send-JCPasswordReset
         [Alias('_id', 'id')]
         $UserID
 
-        
+
     )
-    
+
     begin
     {
 
@@ -56,7 +56,7 @@ Function Send-JCPasswordReset
 
 
     }
-    
+
     process
     {
 
@@ -64,60 +64,60 @@ Function Send-JCPasswordReset
         {
             ByUsername
             {
-                
+
                 try
                 {
 
                     $UserID = $UserHash.$username
-                    
+
                     $Body = [ordered]@{
-    
+
                         isSelectAll = $false
                         models      = @(
                             @{
                                 _id = "$UserID"
                             }
                         )
-                    
+
                     }
-                    
+
                     $jsonbody = $Body | ConvertTo-Json -Depth 4 -Compress
-                    
-                    
+
+
                     $URL = "$JCUrlBasePath/api/systemusers/reactivate"
 
                     try
                     {
-                            
-                        $SendInvite = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs
+
+                        $SendInvite = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent)
 
                         $InviteStatus = 'Sent'
-                            
+
                     }
                     catch
                     {
 
                         $InviteStatus = "Error $($_.ErrorDetails)"
-                            
+
                     }
 
                     $Confirmation = [pscustomobject]@{
 
                         'Username'   = $username
                         'ResetEmail' = $InviteStatus
-    
+
                     }
-    
+
                     $resultsArrayList.Add($Confirmation) | Out-Null
-    
-                        
-                    
+
+
+
                 }
                 catch
                 {
 
                     Write-Error "$($_.ErrorDetails)"
-                    
+
                 }
 
 
@@ -126,53 +126,53 @@ Function Send-JCPasswordReset
             {
 
                 $Body = [ordered]@{
-    
+
                     isSelectAll = $false
                     models      = @(
                         @{
                             _id = "$UserID"
                         }
                     )
-                    
+
                 }
-                    
+
                 $jsonbody = $Body | ConvertTo-Json -Depth 4 -Compress
-                    
-                    
+
+
                 $URL = "$JCUrlBasePath/api/systemusers/reactivate"
 
                 try
                 {
-                            
-                    $SendInvite = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs
+
+                    $SendInvite = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent)
 
                     $InviteStatus = 'Sent'
-                            
+
                 }
                 catch
                 {
 
                     $InviteStatus = "Error $($_.ErrorDetails)"
-                            
+
                 }
 
                 $Confirmation = [pscustomobject]@{
 
                     'UserID'     = $UserID
                     'ResetEmail' = $InviteStatus
-    
+
                 }
-    
+
                 $resultsArrayList.Add($Confirmation) | Out-Null
-                
-                
+
+
 
 
 
             }
         }
     }
-    
+
     end
     {
 
@@ -180,4 +180,3 @@ Function Send-JCPasswordReset
 
     }
 }
-

@@ -63,7 +63,7 @@ Function New-JCUser ()
         [bool]
         $ldap_binding_user,
 
-        [Parameter()]
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
         [String]
         [ValidateSet('True', 'False', '$True', '$False')]
         $enable_user_portal_multifactor,
@@ -192,71 +192,38 @@ Function New-JCUser ()
 
 
     )
-
     DynamicParam
     {
-        $dict = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
-
-
+        # Build parameter array
+        $RuntimeParameterDictionary = New-Object -TypeName System.Management.Automation.RuntimeDefinedParameterDictionary
+        If ((Get-PSCallStack).Command -like '*MarkdownHelp')
+        {
+            $enable_user_portal_multifactor = $true
+            $NumberOfCustomAttributes = 2
+        }
         If ($enable_user_portal_multifactor)
         {
-            # Set the dynamic parameters' name
-            $ParamName = 'enrollmentDays'
-            # Create the collection of attributes
-            $AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
-            # Create and set the parameters' attributes
-            $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
-            $ParameterAttribute.Mandatory = $false
-            $ParameterAttribute.ValueFromPipelineByPropertyName = $true
-            # Add the attributes to the attributes collection
-            $AttributeCollection.Add($ParameterAttribute) 
-            # Create and return the dynamic parameter
-            $RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter($ParamName, [Int32], $AttributeCollection)
-            $dict.Add($ParamName, $RuntimeParameter)
-
+            New-DynamicParameter -Name:('enrollmentDays') -Type:([Int]) -ValueFromPipelineByPropertyName -HelpMessage:('A dynamic parameter that can be set only if -enable_user_portal_multifactor is set to true. This will specify the enrollment period for users for enrolling into MFA via the users console. The default is 7 days if this value is not specified.') -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
         }
-
         If ($NumberOfCustomAttributes)
         {
             [int]$NewParams = 0
             [int]$ParamNumber = 1
-
-            while ($NewParams -ne $NumberOfCustomAttributes)
+            While ($NewParams -ne $NumberOfCustomAttributes)
             {
-
-                $attr = New-Object System.Management.Automation.ParameterAttribute
-                $attr.HelpMessage = "Enter an attribute name"
-                $attr.Mandatory = $true
-                $attr.ValueFromPipelineByPropertyName = $true
-                $attrColl = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
-                $attrColl.Add($attr)
-                $param = New-Object System.Management.Automation.RuntimeDefinedParameter("Attribute$ParamNumber`_name", [string], $attrColl)
-                $dict.Add("Attribute$ParamNumber`_name", $param)
-
-                $attr1 = New-Object System.Management.Automation.ParameterAttribute
-                $attr1.HelpMessage = "Enter an attribute value"
-                $attr1.Mandatory = $true
-                $attr1.ValueFromPipelineByPropertyName = $true
-                $attrColl1 = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
-                $attrColl1.Add($attr1)
-                $param1 = New-Object System.Management.Automation.RuntimeDefinedParameter("Attribute$ParamNumber`_value", [string], $attrColl1)
-                $dict.Add("Attribute$ParamNumber`_value", $param1)
-
+                New-DynamicParameter -Name:("Attribute$ParamNumber`_name") -Type:([System.String]) -Mandatory -HelpMessage:('Enter an attribute name') -ValueFromPipelineByPropertyName -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
+                New-DynamicParameter -Name:("Attribute$ParamNumber`_value") -Type:([System.String]) -Mandatory -HelpMessage:('Enter an attribute value') -ValueFromPipelineByPropertyName -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
                 $NewParams++
                 $ParamNumber++
             }
-
         }
-
-        return $dict
-
+        Return $RuntimeParameterDictionary
     }
-
     begin
     {
 
         Write-Debug 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {Connect-JConline}
+        if ($JCAPIKEY.length -ne 40) { Connect-JConline }
 
         $hdrs = @{
 
@@ -281,20 +248,20 @@ Function New-JCUser ()
         {
             switch ($enable_user_portal_multifactor)
             {
-                'True' { [bool]$enable_user_portal_multifactor = $true}
-                '$True' { [bool]$enable_user_portal_multifactor = $true}
-                'False' { [bool]$enable_user_portal_multifactor = $false}
-                '$False' { [bool]$enable_user_portal_multifactor = $false}
+                'True' { [bool]$enable_user_portal_multifactor = $true }
+                '$True' { [bool]$enable_user_portal_multifactor = $true }
+                'False' { [bool]$enable_user_portal_multifactor = $false }
+                '$False' { [bool]$enable_user_portal_multifactor = $false }
             }
         }
-        
-        
-        $body = @{}
 
-        $WorkAddressParams = @{}
+
+        $body = @{ }
+
+        $WorkAddressParams = @{ }
         $WorkAddressParams.Add("type", "work")
 
-        $HomeAddressParams = @{}
+        $HomeAddressParams = @{ }
         $HomeAddressParams.Add("type", "home")
 
         $phoneNumbers = @()
@@ -341,7 +308,7 @@ Function New-JCUser ()
 
             if ($param.Key -like '*_number')
             {
-                $Number = @{}
+                $Number = @{ }
                 $Number.Add("type", ($($param.Key -replace "_number", "")))
                 $Number.Add("number", $param.Value)
                 $phoneNumbers += $Number
@@ -365,10 +332,10 @@ Function New-JCUser ()
 
                 switch ($param.Value)
                 {
-                    'True' { [bool]$enable_user_portal_multifactor = $true}
-                    '$True' { [bool]$enable_user_portal_multifactor = $true}
-                    'False' { [bool]$enable_user_portal_multifactor = $false}
-                    '$False' { [bool]$enable_user_portal_multifactor = $false}
+                    'True' { [bool]$enable_user_portal_multifactor = $true }
+                    '$True' { [bool]$enable_user_portal_multifactor = $true }
+                    'False' { [bool]$enable_user_portal_multifactor = $false }
+                    '$False' { [bool]$enable_user_portal_multifactor = $false }
                 }
 
                 $body.add($param.Key, $enable_user_portal_multifactor)
@@ -411,19 +378,19 @@ Function New-JCUser ()
                 $exclusionUntil = (Get-Date).AddDays(7)
             }
 
-            $mfa = @{}
+            $mfa = @{ }
             $mfa.Add("exclusion", $true)
             $mfa.Add("exclusionUntil", [string]$exclusionUntil)
             $body.Add('mfa', $mfa)
         }
 
-        If ($NewAttributes) {$body.add('attributes', $NewAttributes)}
+        If ($NewAttributes) { $body.add('attributes', $NewAttributes) }
 
         $jsonbody = $body | ConvertTo-Json
 
         Write-Debug $jsonbody
 
-        $NewUserInfo = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent $JCUserAgent
+        $NewUserInfo = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent)
 
         $NewUserArray += $NewUserInfo
 

@@ -1,5 +1,5 @@
-Connect-JCTestOrg
-Describe 'Get-JCSystemGroupMember 1.0' {
+Connect-JCOnlineTest
+Describe -Tag:('JCSystemGroupMember') 'Get-JCSystemGroupMember 1.0' {
 
     It 'Gets a System Groups membership by Groupname' {
 

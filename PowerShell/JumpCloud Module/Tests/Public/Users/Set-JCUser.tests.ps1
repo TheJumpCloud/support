@@ -1,7 +1,7 @@
 
-Connect-JCTestOrg
+Connect-JCOnlineTest
 
-Describe 'Set-JCUser 1.0' {
+Describe -Tag:('JCUser') 'Set-JCUser 1.0' {
 
     It "Updates the firstname using -ByID and -UserID" {
 
@@ -125,7 +125,7 @@ Describe 'Set-JCUser 1.0' {
 
     It "Updates a User enable_managed_uid -eq True using -ByID and -UserID" {
         $NewUser = New-RandomUser "PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser
-        $Update = Set-JCUser -ByID -UserID $NewUser._id -enable_managed_uid $true 
+        $Update = Set-JCUser -ByID -UserID $NewUser._id -enable_managed_uid $true
         $Update.enable_managed_uid | Should -Be True
         Remove-JCUser -UserID $NewUser._id -force
     }
@@ -324,7 +324,7 @@ Describe 'Set-JCUser 1.0' {
     }
 }
 
-Describe "Set-JCUser - CustomAttributes 1.0" {
+Describe -Tag:('JCUser') "Set-JCUser - CustomAttributes 1.0" {
 
     It "Updates a custom attribute on a User" {
         $NewUser = New-RandomUserCustom -Attributes -Domain DeleteMe | New-JCUser -NumberOfCustomAttributes 3
@@ -387,7 +387,7 @@ Describe "Set-JCUser - CustomAttributes 1.0" {
 
 }
 
-Describe 'Set-JCUser 1.3.0' {
+Describe -Tag:('JCUser') 'Set-JCUser 1.3.0' {
     # Linux UID, GUID
     It "Updates the UID and GUID to 2000000" {
 
@@ -401,8 +401,8 @@ Describe 'Set-JCUser 1.3.0' {
 
         Remove-JCUser -UserID $RandomUser._id -ByID -Force
 
-    } 
-    
+    }
+
     It "Updates a JumpCloud user to password_never_expires false " {
 
         $ExpTrue = New-RandomUser "PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser -password_never_expires $true
@@ -430,7 +430,7 @@ Describe 'Set-JCUser 1.3.0' {
 
 }
 
-Describe "Set-JCUser 1.8.0" {
+Describe -Tag:('JCUser') "Set-JCUser 1.8.0" {
 
     It "Updates a users middle name" {
 
@@ -710,16 +710,16 @@ Describe "Set-JCUser 1.8.0" {
             description        = 'description'
             location           = 'location'
         }
-    
+
         $NewUser = New-JCUser @UserWithAttributes
-    
+
         $SetUser = Set-JCUser -UserID $NewUser._id -middlename "new_middle_name"
         $SetUser.middlename | Should -be "new_middle_name"
-    
+
     }
-    
+
     It "Updates a users displayName using userID" {
-    
+
         $UserWithAttributes = @{
             Username           = "$(New-RandomString -NumberOfChars 8)"
             FirstName          = "Delete"
@@ -956,7 +956,7 @@ Describe "Set-JCUser 1.8.0" {
 
 }
 
-Describe "Set-JCUser addresses 1.8.0" {
+Describe -Tag:('JCUser') "Set-JCUser addresses 1.8.0" {
 
     It "Updates a users work address" {
         $UserWithHomeAndWorkAddressAndAttributes = @{
@@ -1077,7 +1077,7 @@ Describe "Set-JCUser addresses 1.8.0" {
 
 }
 
-Describe "Set-JCUser phoneNumbers 1.8.0" {
+Describe -Tag:('JCUser') "Set-JCUser phoneNumbers 1.8.0" {
 
     It "Updates a users mobile number" {
 
@@ -1124,9 +1124,9 @@ Describe "Set-JCUser phoneNumbers 1.8.0" {
             work_mobile_number = "work_mobile_number"
             work_fax_number    = "work_fax_number"
         }
-    
+
         $NewUser = New-JCUser @UserWithNumbers
-    
+
         $NewUser.phoneNumbers | Where-Object type -EQ mobile | Select-Object -ExpandProperty number | Should -be "mobile_number"
         $NewUser.phoneNumbers | Where-Object type -EQ home | Select-Object -ExpandProperty number | Should -be "home_number"
         $NewUser.phoneNumbers | Where-Object type -EQ work | Select-Object -ExpandProperty number | Should -be "work_number"
@@ -1307,8 +1307,8 @@ Describe "Set-JCUser phoneNumbers 1.8.0" {
 
 }
 
-Describe "Set-JCuser users phoneNumbers and attributes 1.8.0" {
-    
+Describe -Tag:('JCUser') "Set-JCuser users phoneNumbers and attributes 1.8.0" {
+
     IT "Updates a number and adds an attribute" {
 
         $UserWithNumbers = @{
@@ -1322,18 +1322,18 @@ Describe "Set-JCuser users phoneNumbers and attributes 1.8.0" {
             work_mobile_number = "work_mobile_number"
             work_fax_number    = "work_fax_number"
         }
-    
+
         $NewUser = New-JCUser @UserWithNumbers
-    
+
         $NewUser.phoneNumbers | Where-Object type -EQ mobile | Select-Object -ExpandProperty number | Should -be "mobile_number"
         $NewUser.phoneNumbers | Where-Object type -EQ home | Select-Object -ExpandProperty number | Should -be "home_number"
         $NewUser.phoneNumbers | Where-Object type -EQ work | Select-Object -ExpandProperty number | Should -be "work_number"
         $NewUser.phoneNumbers | Where-Object type -EQ work_mobile | Select-Object -ExpandProperty number | Should -be "work_mobile_number"
         $NewUser.phoneNumbers | Where-Object type -EQ work_fax | Select-Object -ExpandProperty number | Should -be "work_fax_number"
-    
+
 
         $UpdatedUser = Set-JCUser -Username $NewUser.username -NumberOfCustomAttributes 1 -Attribute1_name 'attr1' -Attribute1_value 'one' -work_fax_number "new_work_fax_number"
-    
+
         $UpdatedUser.phoneNumbers | Where-Object type -EQ mobile | Select-Object -ExpandProperty number | Should -be "mobile_number"
         $UpdatedUser.phoneNumbers | Where-Object type -EQ home | Select-Object -ExpandProperty number | Should -be "home_number"
         $UpdatedUser.phoneNumbers | Where-Object type -EQ work | Select-Object -ExpandProperty number | Should -be "work_number"
@@ -1461,16 +1461,16 @@ Describe "Set-JCuser users phoneNumbers and attributes 1.8.0" {
             work_mobile_number = "work_mobile_number"
             work_fax_number    = "work_fax_number"
         }
-        
+
         $NewUser = New-JCUser @UserWithNumbers
-        
+
         $NewUser.phoneNumbers | Where-Object type -EQ mobile | Select-Object -ExpandProperty number | Should -be "mobile_number"
         $NewUser.phoneNumbers | Where-Object type -EQ home | Select-Object -ExpandProperty number | Should -be "home_number"
         $NewUser.phoneNumbers | Where-Object type -EQ work | Select-Object -ExpandProperty number | Should -be "work_number"
         $NewUser.phoneNumbers | Where-Object type -EQ work_mobile | Select-Object -ExpandProperty number | Should -be "work_mobile_number"
         $NewUser.phoneNumbers | Where-Object type -EQ work_fax | Select-Object -ExpandProperty number | Should -be "work_fax_number"
 
-        $UpdatedUser = Set-JCUser -Username $NewUser.username -NumberOfCustomAttributes 1 -Attribute1_name 'attr1' -Attribute1_value 'one' 
+        $UpdatedUser = Set-JCUser -Username $NewUser.username -NumberOfCustomAttributes 1 -Attribute1_name 'attr1' -Attribute1_value 'one'
 
         $UpdatedUser = Set-JCUser -Username $NewUser.username -RemoveAttribute 'attr1' -work_fax_number "new_work_fax_number"
 
@@ -1488,7 +1488,7 @@ Describe "Set-JCuser users phoneNumbers and attributes 1.8.0" {
 }
 
 
-Describe "Set-JCUser MFA Enrollment periods 1.10" {
+Describe -Tag:('JCUser') "Set-JCUser MFA Enrollment periods 1.10" {
 
     It "Updates an existing user with enable_user_portal_multifactor -eq False to enable_user_portal_multifactor -eq True " {
         $CreateUser = New-RandomUser -domain "deleteme" | New-JCUser -enable_user_portal_multifactor $false
@@ -1604,14 +1604,6 @@ Describe "Set-JCUser MFA Enrollment periods 1.10" {
         $Newuser | Remove-JCUser -ByID -force
     }
 
-    It "Updates an existing user with enable_user_portal_multifactor -eq True and a 366 days specified for EnrollmentDays (invalid)" {
-
-        $CreateUser = New-RandomUser -domain "deleteme" | New-JCUser -enable_user_portal_multifactor $false
-
-        $EnrollmentDays = 366
-
-        { $NewUser = $CreateUser | Set-JCUser -enable_user_portal_multifactor $true -EnrollmentDays $EnrollmentDays } | Should Throw "Cannot validate argument on parameter 'EnrollmentDays'. The 366 argument is greater than the maximum allowed range of 365. Supply an argument that is less than or equal to 365 and then try the command again."
-    }
 
     It "Updates an existing user with enable_user_portal_multifactor -eq True with Attributes" {
 
@@ -1707,7 +1699,7 @@ Describe "Set-JCUser MFA Enrollment periods 1.10" {
 
 }
 
-Describe "Set-JCUser bug fix 1.10.2" {
+Describe -Tag:('JCUser') "Set-JCUser bug fix 1.10.2" {
 
     It "Updates a users home poBox" {
 
@@ -1796,4 +1788,47 @@ Describe "Set-JCUser bug fix 1.10.2" {
         $Newuser | Remove-JCUser -ByID -force
 
     }
+}
+
+Describe -Tag:('JCUser') "Set-JCUser 1.12" {
+
+
+    It "Sets a users external_source_type" {
+
+        $Newuser = New-RandomUser -domain "deleteme" | New-JCUser
+        $Random1 = $(Get-Random)
+        $Random2 = $(Get-Random)
+        $SetUser = Set-JCUser -Username $Newuser.username -external_source_type "$Random1" -external_dn "$Random2"
+        $SearchUser = Get-JCUser -external_source_type $Random1
+        $RemoveUser = Remove-JCUser -UserID  $Newuser._id -force
+        $SearchUser.external_source_type | Should -be $SetUser.external_source_type
+
+    }
+
+
+    It "Sets a users external_dn" {
+
+        $Newuser = New-RandomUser -domain "deleteme" | New-JCUser
+        $Random1 = $(Get-Random)
+        $Random2 = $(Get-Random)
+        $SetUser = Set-JCUser -Username $Newuser.username -external_source_type "$Random1" -external_dn "$Random2"
+        $SearchUser = Get-JCUser -external_source_type $Random1
+        $RemoveUser = Remove-JCUser -UserID  $Newuser._id -force
+        $SearchUser.external_dn | Should -be $SetUser.external_dn
+
+    }
+
+    It "Sets a users external_dn and external_source_type" {
+
+        $Newuser = New-RandomUser -domain "deleteme" | New-JCUser
+        $Random1 = $(Get-Random)
+        $Random2 = $(Get-Random)
+        $SetUser = Set-JCUser -Username $Newuser.username -external_source_type "$Random1" -external_dn "$Random2"
+        $SearchUser = Get-JCUser -external_source_type "$Random1" -external_dn "$Random2"
+        $RemoveUser = Remove-JCUser -UserID  $Newuser._id -force
+        $SearchUser.external_dn | Should -be $SetUser.external_dn
+        $SearchUser.external_source_type | Should -be $SetUser.external_source_type
+
+    }
+
 }

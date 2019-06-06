@@ -1,7 +1,7 @@
-Connect-JCTestOrg
+Connect-JCOnlineTest
 
-Describe "Update-JCUsersFromCSV 1.8.0" {
-    
+Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
+
     It "Updates users from a CSV populated with telephony attributes" {
 
         $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath $ImportPath/ImportExample_telephonyAttributes.csv -force
@@ -34,7 +34,7 @@ Describe "Update-JCUsersFromCSV 1.8.0" {
             $UpdateCheck.work_fax_number | Should -be $($UpdateUserInfo.phoneNumbers | ? type -eq work_fax | Select-Object -ExpandProperty number)
         }
     }
-    
+
 
     It "Updates users from a CSV populated with information attributes" {
 
@@ -306,7 +306,7 @@ Describe "Update-JCUsersFromCSV 1.8.0" {
             $UpdateCheck.work_fax_number | Should -be $($UpdateUserInfo.phoneNumbers | ? type -eq work_fax | Select-Object -ExpandProperty number)
 
             $GroupSysCheck | Where-Object Username -eq "$($UpdateUser.username)" | Select-Object -ExpandProperty systemAdd | Should -be '{"message":"Already Exists"}'
-        
+
 
             $GroupSysCheck | Where-Object Username -eq "$($UpdateUser.username)" | Select-Object -ExpandProperty GroupsAdd | Select-object Status -Unique | Select-Object -ExpandProperty Status | Should -be "Added"
 
@@ -317,7 +317,7 @@ Describe "Update-JCUsersFromCSV 1.8.0" {
 
     Get-JCUser | ? Email -like *pleasedelete* | Remove-JCUser -force
 
-    
+
     It "Updates users from a CSV populated with no information" {
 
         $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath $ImportPath/ImportExample_AllNewAttributesAndAllCustom.csv -force

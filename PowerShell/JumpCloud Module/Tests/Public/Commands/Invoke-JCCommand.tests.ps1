@@ -1,5 +1,5 @@
-Connect-JCTestOrg
-Describe 'Invoke-JCCommand 1.0' {
+Connect-JCOnlineTest
+Describe -Tag:('JCCommand') 'Invoke-JCCommand 1.0' {
 
     It "Invokes a single JumpCloud command declaring the -trigger" {
         $SingleTrigger = Get-JCCommand | Where-Object trigger -NotLike '' | Select-Object -Last 1 | Select-Object trigger
@@ -21,7 +21,7 @@ Describe 'Invoke-JCCommand 1.0' {
 }
 
 
-Describe "Invoke-JCCommand 1.4.0" {
+Describe -Tag:('JCCommand') "Invoke-JCCommand 1.4.0" {
 
     It "Triggers a command with one variable" {
 

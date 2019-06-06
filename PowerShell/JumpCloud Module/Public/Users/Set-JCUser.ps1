@@ -213,14 +213,29 @@ Function Set-JCUser ()
 
         [Parameter(ValueFromPipelineByPropertyName = $True)]
         [string]
-        $work_fax_number
+        $work_fax_number,
+
+        # New attributes as of 1.12.0 release
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        $external_dn,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]
+        $external_source_type
+
 
     )
 
     DynamicParam
     {
         $dict = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
-
+        If ((Get-PSCallStack).Command -like '*MarkdownHelp')
+        {
+            $enable_user_portal_multifactor = $true
+            $NumberOfCustomAttributes = 2
+        }
         If ($enable_user_portal_multifactor -eq $True)
         {
             # Set the dynamic parameters' name
@@ -231,11 +246,11 @@ Function Set-JCUser ()
             $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
             $ParameterAttribute.Mandatory = $false
             # Generate and set the ValidateSet
-            $ValidateRangeAttribute = New-Object System.Management.Automation.ValidateRangeAttribute('1', '365')    
+            $ValidateRangeAttribute = New-Object System.Management.Automation.ValidateRangeAttribute('1', '365')
             # Add the ValidateSet to the attributes collection
             $AttributeCollection.Add($ValidateRangeAttribute)
             # Add the attributes to the attributes collection
-            $AttributeCollection.Add($ParameterAttribute) 
+            $AttributeCollection.Add($ParameterAttribute)
             # Create and return the dynamic parameter
             $RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter($ParamName, [Int32], $AttributeCollection)
             $dict.Add($ParamName, $RuntimeParameter)
@@ -273,7 +288,7 @@ Function Set-JCUser ()
                 $ParamNumber++
             }
 
-            
+
         }
 
         return $dict
@@ -285,7 +300,7 @@ Function Set-JCUser ()
         Write-Debug "Parameter set $($PSCmdlet.ParameterSetName)"
 
         Write-Debug 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {Connect-JConline}
+        if ($JCAPIKEY.length -ne 40) { Connect-JConline }
 
         $hdrs = @{
 
@@ -308,7 +323,7 @@ Function Set-JCUser ()
             $UserCount = ($UserHash).Count
             Write-Debug "Populated UserHash with $UserCount users"
         }
-        $ObjectParams = @{}
+        $ObjectParams = @{ }
         $ObjectParams.Add("work_streetAddress", "addresses")
         $ObjectParams.Add("work_poBox", "addresses")
         $ObjectParams.Add("work_locality", "addresses")
@@ -338,7 +353,7 @@ Function Set-JCUser ()
 
     process
     {
-        $body = @{}
+        $body = @{ }
 
         if ($PSCmdlet.ParameterSetName -ne 'ByID')
         {
@@ -357,7 +372,7 @@ Function Set-JCUser ()
         }
 
         $UpdateParms = $PSBoundParameters.GetEnumerator() | Select-Object Key
-        $UpdateObjectParams = @{}
+        $UpdateObjectParams = @{ }
 
         foreach ($param in $UpdateParms)
         {
@@ -379,14 +394,14 @@ Function Set-JCUser ()
             {
                 $phoneNumbers = @()
 
-                $UpdatedNumbers = @{}
+                $UpdatedNumbers = @{ }
 
                 foreach ($param in $PSBoundParameters.GetEnumerator())
                 {
 
                     if ($param.Key -like '*_number')
                     {
-                        $Number = @{}
+                        $Number = @{ }
                         $Number.Add("type", ($($param.Key -replace "_number", "")))
                         $Number.Add("number", $param.Value)
                         $UpdatedNumbers.Add(($($param.Key -replace "_number", "")), $param.Value)
@@ -404,14 +419,15 @@ Function Set-JCUser ()
                     }
                     else
                     {
-                        $Number = @{}
-                        if ($ExitingNumber.number) {
+                        $Number = @{ }
+                        if ($ExitingNumber.number)
+                        {
                             $Number.Add("type", $ExitingNumber.type )
                             $Number.Add("number", $ExitingNumber.number)
                             $phoneNumbers += $Number
 
                         }
-                       
+
                     }
                 }
 
@@ -422,16 +438,16 @@ Function Set-JCUser ()
             {
                 $Addresses = @()
 
-                $WorkAddressParams = @{}
+                $WorkAddressParams = @{ }
                 $WorkAddressParams.Add("type", "work")
 
-                $HomeAddressParams = @{}
+                $HomeAddressParams = @{ }
                 $HomeAddressParams.Add("type", "home")
 
                 foreach ($param in $PSBoundParameters.GetEnumerator())
                 {
                     if ($param.Key -like '*_number')
-                    {continue}
+                    { continue }
 
                     if ($param.Key -like 'work_*')
                     {
@@ -447,10 +463,10 @@ Function Set-JCUser ()
 
                 }
 
-            
+
                 $ExistingWorkParams = $UserObjectCheck.addresses | Where-Object Type -EQ "Work"
 
-                $ExistingWorkHash = @{}
+                $ExistingWorkHash = @{ }
                 $ExistingWorkHash.Add("country", $ExistingWorkParams.country)
                 $ExistingWorkHash.Add("locality", $ExistingWorkParams.locality)
                 $ExistingWorkHash.Add("poBox", $ExistingWorkParams.poBox)
@@ -469,10 +485,11 @@ Function Set-JCUser ()
 
                     else
                     {
-                        if ($WorkParam.value) {
+                        if ($WorkParam.value)
+                        {
                             $WorkAddressParams.Add($WorkParam.key, $WorkParam.value)
                         }
-                        
+
                     }
                 }
 
@@ -483,7 +500,7 @@ Function Set-JCUser ()
 
                 $ExistingHomeParams = $UserObjectCheck.addresses | Where-Object Type -EQ "Home"
 
-                $ExistingHomeHash = @{}
+                $ExistingHomeHash = @{ }
                 $ExistingHomeHash.Add("country", $ExistingHomeParams.country)
                 $ExistingHomeHash.Add("locality", $ExistingHomeParams.locality)
                 $ExistingHomeHash.Add("poBox", $ExistingHomeParams.poBox)
@@ -501,7 +518,8 @@ Function Set-JCUser ()
 
                     else
                     {
-                        if ($HomeParam.value) {
+                        if ($HomeParam.value)
+                        {
                             $HomeAddressParams.Add($HomeParam.key, $HomeParam.value)
                         }
                     }
@@ -532,11 +550,11 @@ Function Set-JCUser ()
 
                     if ($param.key -in ('Username', 'EnrollmentDays')) { continue }
 
-                    if ($param.Key -like '*_number') {continue}
+                    if ($param.Key -like '*_number') { continue }
 
-                    if ($param.Key -like 'work_*') {continue}
+                    if ($param.Key -like 'work_*') { continue }
 
-                    if ($param.Key -like 'home_*') {continue}
+                    if ($param.Key -like 'home_*') { continue }
 
                     $body.add($param.Key, $param.Value)
 
@@ -553,7 +571,7 @@ Function Set-JCUser ()
                         $exclusionUntil = (Get-Date).AddDays(7)
                     }
 
-                    $mfa = @{}
+                    $mfa = @{ }
                     $mfa.Add("exclusion", $true)
                     $mfa.Add("exclusionUntil", [string]$exclusionUntil)
                     $body.Add('mfa', $mfa)
@@ -563,12 +581,12 @@ Function Set-JCUser ()
 
                 Write-Debug $jsonbody
 
-                $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent $JCUserAgent
+                $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent)
 
                 $UpdatedUserArray += $NewUserInfo
             }
 
-            else { Throw "$Username does not exist. Run 'Get-JCUser | Select-Object username' to see a list of all your JumpCloud users."}
+            else { Throw "$Username does not exist. Run 'Get-JCUser | Select-Object username' to see a list of all your JumpCloud users." }
 
         }
 
@@ -597,11 +615,11 @@ Function Set-JCUser ()
 
                     if ($param.key -eq 'NumberOfCustomAttributes') { continue }
 
-                    if ($param.Key -like '*_number') {continue}
+                    if ($param.Key -like '*_number') { continue }
 
-                    if ($param.Key -like 'work_*') {continue}
+                    if ($param.Key -like 'work_*') { continue }
 
-                    if ($param.Key -like 'home_*') {continue}
+                    if ($param.Key -like 'home_*') { continue }
 
                     if ($param.Key -like 'Attribute*')
                     {
@@ -642,7 +660,7 @@ Function Set-JCUser ()
                 }
 
 
-                $NewAttributesHash = @{}
+                $NewAttributesHash = @{ }
 
                 foreach ($NewA in $NewAttributes)
                 {
@@ -650,7 +668,7 @@ Function Set-JCUser ()
 
                 }
 
-                $CurrentAttributesHash = @{}
+                $CurrentAttributesHash = @{ }
 
                 foreach ($CurrentA in $CurrentAttributes)
                 {
@@ -683,7 +701,7 @@ Function Set-JCUser ()
                 }
 
                 $body.add('attributes', $UpdatedAttributeArrayList)
-               
+
                 if ($enable_user_portal_multifactor -eq $True)
                 {
                     if ($PSBoundParameters['EnrollmentDays'])
@@ -695,7 +713,7 @@ Function Set-JCUser ()
                         $exclusionUntil = (Get-Date).AddDays(7)
                     }
 
-                    $mfa = @{}
+                    $mfa = @{ }
                     $mfa.Add("exclusion", $true)
                     $mfa.Add("exclusionUntil", [string]$exclusionUntil)
                     $body.Add('mfa', $mfa)
@@ -705,14 +723,14 @@ Function Set-JCUser ()
 
                 Write-Debug $jsonbody
 
-                $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent $JCUserAgent
+                $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent)
 
                 $UpdatedUserArray += $NewUserInfo
 
 
             }
 
-            else { Throw "$Username does not exist. Run 'Get-JCUser | Select-Object username' to see a list of all your JumpCloud users."}
+            else { Throw "$Username does not exist. Run 'Get-JCUser | Select-Object username' to see a list of all your JumpCloud users." }
 
         }
 
@@ -736,19 +754,19 @@ Function Set-JCUser ()
 
                     if ($param.key -in ('Username', 'EnrollmentDays')) { continue }
 
-                    if ($param.key -eq 'RemoveAttribute') { continue}
+                    if ($param.key -eq 'RemoveAttribute') { continue }
 
-                    if ($param.Key -like '*_number') {continue}
+                    if ($param.Key -like '*_number') { continue }
 
-                    if ($param.Key -like 'work_*') {continue}
+                    if ($param.Key -like 'work_*') { continue }
 
-                    if ($param.Key -like 'home_*') {continue}
+                    if ($param.Key -like 'home_*') { continue }
 
                     $body.add($param.Key, $param.Value)
 
                 }
 
-                $CurrentAttributesHash = @{}
+                $CurrentAttributesHash = @{ }
 
                 foreach ($CurrentA in $CurrentAttributes)
                 {
@@ -790,24 +808,24 @@ Function Set-JCUser ()
                         $exclusionUntil = (Get-Date).AddDays(7)
                     }
 
-                    $mfa = @{}
+                    $mfa = @{ }
                     $mfa.Add("exclusion", $true)
                     $mfa.Add("exclusionUntil", [string]$exclusionUntil)
                     $body.Add('mfa', $mfa)
                 }
-               
+
                 $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
 
                 Write-Debug $jsonbody
 
-                $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent $JCUserAgent
+                $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent)
 
                 $UpdatedUserArray += $NewUserInfo
 
 
             }
 
-            else { Throw "$Username does not exist. Run 'Get-JCUser | Select-Object username' to see a list of all your JumpCloud users."}
+            else { Throw "$Username does not exist. Run 'Get-JCUser | Select-Object username' to see a list of all your JumpCloud users." }
 
         }
 
@@ -827,11 +845,11 @@ Function Set-JCUser ()
 
                 if ($param.key -in ('EnrollmentDays')) { continue }
 
-                if ($param.Key -like '*_number') {continue}
+                if ($param.Key -like '*_number') { continue }
 
-                if ($param.Key -like 'work_*') {continue}
+                if ($param.Key -like 'work_*') { continue }
 
-                if ($param.Key -like 'home_*') {continue}
+                if ($param.Key -like 'home_*') { continue }
 
                 if ($param.key -eq 'UserID') { continue }
 
@@ -851,18 +869,18 @@ Function Set-JCUser ()
                 {
                     $exclusionUntil = (Get-Date).AddDays(7)
                 }
-    
-                $mfa = @{}
+
+                $mfa = @{ }
                 $mfa.Add("exclusion", $true)
                 $mfa.Add("exclusionUntil", [string]$exclusionUntil)
                 $body.Add('mfa', $mfa)
             }
-                
+
             $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
 
             Write-Debug $jsonbody
 
-            $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent $JCUserAgent
+            $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent)
 
             $UpdatedUserArray += $NewUserInfo
 
@@ -892,11 +910,11 @@ Function Set-JCUser ()
 
                 if ($param.key -eq 'NumberOfCustomAttributes') { continue }
 
-                if ($param.Key -like '*_number') {continue}
+                if ($param.Key -like '*_number') { continue }
 
-                if ($param.Key -like 'work_*') {continue}
+                if ($param.Key -like 'work_*') { continue }
 
-                if ($param.Key -like 'home_*') {continue}
+                if ($param.Key -like 'home_*') { continue }
 
                 if ($param.Key -like 'Attribute*')
                 {
@@ -937,7 +955,7 @@ Function Set-JCUser ()
             }
 
 
-            $NewAttributesHash = @{}
+            $NewAttributesHash = @{ }
 
             foreach ($NewA in $NewAttributes)
             {
@@ -945,7 +963,7 @@ Function Set-JCUser ()
 
             }
 
-            $CurrentAttributesHash = @{}
+            $CurrentAttributesHash = @{ }
 
             foreach ($CurrentA in $CurrentAttributes)
             {
@@ -990,7 +1008,7 @@ Function Set-JCUser ()
                     $exclusionUntil = (Get-Date).AddDays(7)
                 }
 
-                $mfa = @{}
+                $mfa = @{ }
                 $mfa.Add("exclusion", $true)
                 $mfa.Add("exclusionUntil", [string]$exclusionUntil)
                 $body.Add('mfa', $mfa)
@@ -1000,7 +1018,7 @@ Function Set-JCUser ()
 
             Write-Debug $jsonbody
 
-            $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent $JCUserAgent
+            $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent)
 
             $UpdatedUserArray += $NewUserInfo
 
