@@ -19,12 +19,12 @@ Get-JCSystem [[-hostname] <String>] [-displayName <String>] [-version <String>] 
  [-systemTimezone <String>] [-active <Boolean>] [-allowMultiFactorAuthentication <Boolean>]
  [-allowPublicKeyAuthentication <Boolean>] [-allowSshPasswordAuthentication <Boolean>]
  [-allowSshRootLogin <Boolean>] [-modifySSHDConfig <Boolean>] [-filterDateProperty <String>]
- [-returnProperties <String[]>] [<CommonParameters>]
+ [-returnProperties <String[]>] -dateFilter <String> -date <String> [<CommonParameters>]
 ```
 
 ### ByID
 ```
-Get-JCSystem -SystemID <String> [<CommonParameters>]
+Get-JCSystem -SystemID <String> -dateFilter <String> -date <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -193,6 +193,37 @@ Required: False
 Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -date
+Date to filter on.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -dateFilter
+Condition to filter date on.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+Accepted values: before, after
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
 Accept wildcard characters: False
 ```
 

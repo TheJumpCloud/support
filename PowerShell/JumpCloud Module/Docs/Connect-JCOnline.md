@@ -15,13 +15,13 @@ The Connect-JCOnline function sets the global variable $JCAPIKEY
 ### Interactive (Default)
 ```
 Connect-JCOnline [-JumpCloudAPIKey] <String> [[-JumpCloudOrgID] <String>] [-JCEnvironment <Object>]
- [-UserAgent <String>] [<CommonParameters>]
+ [-UserAgent <String>] [-ip <String>] [<CommonParameters>]
 ```
 
 ### force
 ```
 Connect-JCOnline [-JumpCloudAPIKey] <String> [[-JumpCloudOrgID] <String>] [-JCEnvironment <Object>] [-force]
- [-UserAgent <String>] [<CommonParameters>]
+ [-UserAgent <String>] [-ip <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -72,7 +72,7 @@ Accept wildcard characters: False
 
 ### -JumpCloudAPIKey
 Please enter your JumpCloud API key.
-This can be found in the JumpCloud admin console within 'API Settings' accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console.
+This can be found in the JumpCloud admin console within 'API Settings' accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console. Note that each administrator within a JumpCloud tenant has their own unique API key and can reset this API key from this settings page.
 
 ```yaml
 Type: String
@@ -152,6 +152,21 @@ Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ip
+Enter an IP address
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 

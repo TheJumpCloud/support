@@ -23,12 +23,12 @@ Get-JCUser [[-username] <String>] [-firstname <String>] [-lastname <String>] [-e
  [-returnProperties <String[]>] [-middlename <String>] [-displayname <String>] [-jobTitle <String>]
  [-employeeIdentifier <String>] [-department <String>] [-costCenter <String>] [-company <String>]
  [-employeeType <String>] [-description <String>] [-location <String>] [-external_dn <String>]
- [-external_source_type <String>] [<CommonParameters>]
+ [-external_source_type <String>] -dateFilter <String> -date <String> [<CommonParameters>]
 ```
 
 ### ByID
 ```
-Get-JCUser -userid <String> [<CommonParameters>]
+Get-JCUser -userid <String> -dateFilter <String> -date <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -62,7 +62,7 @@ Returns all JumpCloud users that usernames end with clemons using the wildcard c
 Get-JCUser -filterDateProperty created -dateFilter after -date 01/01/2018
 ```
 
-Returns all JumpCloud users that were created after '01/01/2018'. The parameter '-filterDateProperty' takes both 'created' and 'password_expiration_date' as input and creates two dynamic parameters '-dateFilter' which takes "before" or "after" as input and "-date" which takes a date value as input. 
+Returns all JumpCloud users that were created after '01/01/2018'. The parameter '-filterDateProperty' takes both 'created' and 'password_expiration_date' as input and creates two dynamic parameters '-dateFilter' which takes "before" or "after" as input and "-date" which takes a date value as input.
 
 ### Example 5
 ```powershell
@@ -145,6 +145,37 @@ Required: False
 Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -date
+Date to filter on.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -dateFilter
+Condition to filter date on.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+Accepted values: before, after
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
@@ -556,8 +587,7 @@ Accept wildcard characters: False
 ```
 
 ### -userid
-The _id of the User which you want to modify.
-UserID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically.
+The _id of the User which you want to modify. UserID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically.
 
 ```yaml
 Type: String

@@ -22,6 +22,12 @@ If users wish to bind users to existing JumpCloud systems the function will also
 
 ## EXAMPLES
 
+### Video Tutorials 
+
+[Basic User Import](https://youtu.be/WSE5_uGYcIc)
+
+[Advanced User Import](https://youtu.be/L2hP-XtUJH8)
+
 ### Example 1
 ```powershell
 PS C:\> New-JCImportTemplate

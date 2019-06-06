@@ -14,7 +14,8 @@ Updates or adds Radius reply attributes to a JumpCloud user group.
 
 ```
 Set-JCRadiusReplyAttribute [-GroupName] <String> [-VLAN <String>] [-NumberOfAttributes <Int32>]
- [<CommonParameters>]
+ -Attribute1_name <String> -Attribute1_value <String> -Attribute2_name <String> -Attribute2_value <String>
+ [-VLANTag <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -59,7 +60,7 @@ Tunnel-Private-Group-Id:4 24
 
 ### Example 3
 ```powershell
-Set-JCRadiusReplyAttribute -GroupName "BoulderOffice" -NumberOfCustomAttributes 2 -Attribute1_name "Session-Timeout" -Attribute1_value 200 -Attribute2_name "Termination-Action" -Attribute2_value 2
+Set-JCRadiusReplyAttribute -GroupName "BoulderOffice" -NumberOfAttributes 2 -Attribute1_name "Session-Timeout" -Attribute1_value 200 -Attribute2_name "Termination-Action" -Attribute2_value 2
 ```
 
 Updates two Radius attributes to the JumpCloud user group 'BoulderOffice'.
@@ -71,10 +72,71 @@ name               value
 Session-Timeout    200
 Termination-Action 2
 
-The parameter '-NumberOfCustomAttributes' is a dynamic parameter that generates two required parameters for each custom attribute specified. In this example these parameters are -Attribute1_name,-Attribute1_value, -Attribute2_name and -Attribute2_value.
+The parameter '-NumberOfAttributes' is a dynamic parameter that generates two required parameters for each custom attribute specified. In this example these parameters are -Attribute1_name,-Attribute1_value, -Attribute2_name and -Attribute2_value.
 
 If the Radius reply attribute being updated already exists on the target user group the value for this attribute is updated. If the Radius reply attribute does not exist the attribute is added.
+
 ## PARAMETERS
+
+### -Attribute1_name
+Enter an attribute name
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Attribute1_value
+Enter an attribute value
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Attribute2_name
+Enter an attribute name
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Attribute2_value
+Enter an attribute value
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
 
 ### -GroupName
 The JumpCloud user group to add or update the specified Radius reply attributes on.
@@ -125,6 +187,22 @@ The value specified for the '-VLAN' parameter is populated for the value of **Tu
 Type: String
 Parameter Sets: (All)
 Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -VLANTag
+Specifies the VLAN id which is applied to all attribute names.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+Accepted values: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31
 
 Required: False
 Position: Named

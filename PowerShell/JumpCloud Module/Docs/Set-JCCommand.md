@@ -14,7 +14,7 @@ Updates an existing JumpCloud command
 
 ```
 Set-JCCommand [-CommandID] <String> [[-name] <String>] [[-command] <String>] [[-launchType] <String>]
- [[-timeout] <String>] [<CommonParameters>]
+ [[-timeout] <String>] -trigger <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -111,6 +111,22 @@ Aliases:
 
 Required: False
 Position: 4
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -trigger
+Enter a trigger name.
+Triggers must be unique
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False

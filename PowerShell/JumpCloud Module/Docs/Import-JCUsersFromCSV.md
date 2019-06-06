@@ -30,6 +30,12 @@ During import a JumpCloud administrator can ensure the import is working by watc
 
 ## EXAMPLES
 
+### Video Tutorials 
+
+[Basic User Import](https://youtu.be/WSE5_uGYcIc)
+
+[Advanced User Import](https://youtu.be/L2hP-XtUJH8)
+
 ### Example 1
 ```powershell
 PS C:\> Import-JCUsersFromCSV -CSVFilePath \users\cclemons\JCUserImport_11-16-2017.csv

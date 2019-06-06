@@ -43,7 +43,7 @@ Removes the JumpCloud System with SystemID '5n0795a712704la4eve154r' using the -
 
 ### Example 3
 ```powershell
-PS C:\> Get-JCSystem | Where-Object lastContact -lt (Get-Date).AddDays(-30) | Remove-JCSystem
+ Get-JCSystem | Where-Object lastContact -lT (Get-Date).AddDays(-30).ToString('yyy-MM-ddTHH:MM:ss') | Remove-JCSystem
 ```
 
 Removes all JumpCloud Systems that have a lastContact date greater then 30 days. A warning message will be presented to confirm each operation.
@@ -54,6 +54,17 @@ PS C:\> Get-JCSystem | Where-Object displayName -Like *Server10* | Remove-JCSyst
 ```
 
 Removes all JumpCloud Systems that have a displayName like 'Server10'. A warning message will not be presented to confirm each operation.
+
+### Example 5
+
+```PowerShell
+Get-JCSystem -displayName System101 -returnProperties lastContact | Sort-Object lastContact -Descending | Select * -Skip 1 | Remove-JCSystem -force  
+```
+
+Removes all but the last system to contact JumpCloud with the display name 'System101'. This can be used to clean up duplicate systems that may have the same name by replacing 'System101' with the name of the system that contains duplicates. 
+
+         
+
 ## PARAMETERS
 
 ### -SystemID

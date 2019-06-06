@@ -14,7 +14,7 @@ Creates a new JumpCloud Mac, Linux, or Windows command
 
 ```
 New-JCCommand [-name] <String> [-commandType] <String> [-command] <String> [[-launchType] <String>]
- [[-timeout] <String>] [-user <String>] [<CommonParameters>]
+ [[-timeout] <String>] [-shell <String>] [-user <String>] -trigger <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -93,6 +93,22 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
+### -shell
+Enter shell type
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+Accepted values: powershell, cmd
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
 ### -timeout
 The time the command will run before it times out. The default is 120 seconds.
 
@@ -108,8 +124,26 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
+### -trigger
+Enter a trigger name.
+Triggers must be unique
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
 ### -user
-Only needed for Mac and Linux commands. If not entered Mac and Linux commands will default to the root users. If entering a user a UserID must be entered. 
+Only needed for Mac and Linux commands.
+If not entered Mac and Linux commands will default to the root users.
+If entering a user a UserID must be entered.
 
 ```yaml
 Type: String

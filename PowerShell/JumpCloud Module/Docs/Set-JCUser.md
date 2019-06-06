@@ -26,7 +26,8 @@ Set-JCUser [-Username] <String> [-email <String>] [-firstname <String>] [-lastna
  [-home_poBox <String>] [-home_locality <String>] [-home_region <String>] [-home_postalCode <String>]
  [-home_country <String>] [-mobile_number <String>] [-home_number <String>] [-work_number <String>]
  [-work_mobile_number <String>] [-work_fax_number <String>] [-external_dn <String>]
- [-external_source_type <String>] [<CommonParameters>]
+ [-external_source_type <String>] [-EnrollmentDays <Int32>] -Attribute1_name <String>
+ -Attribute1_value <String> -Attribute2_name <String> -Attribute2_value <String> [<CommonParameters>]
 ```
 
 ### RemoveAttribute
@@ -43,7 +44,8 @@ Set-JCUser [-Username] <String> [-email <String>] [-firstname <String>] [-lastna
  [-home_streetAddress <String>] [-home_poBox <String>] [-home_locality <String>] [-home_region <String>]
  [-home_postalCode <String>] [-home_country <String>] [-mobile_number <String>] [-home_number <String>]
  [-work_number <String>] [-work_mobile_number <String>] [-work_fax_number <String>] [-external_dn <String>]
- [-external_source_type <String>] [<CommonParameters>]
+ [-external_source_type <String>] [-EnrollmentDays <Int32>] -Attribute1_name <String>
+ -Attribute1_value <String> -Attribute2_name <String> -Attribute2_value <String> [<CommonParameters>]
 ```
 
 ### ByID
@@ -60,7 +62,8 @@ Set-JCUser -UserID <String> [-email <String>] [-firstname <String>] [-lastname <
  [-home_poBox <String>] [-home_locality <String>] [-home_region <String>] [-home_postalCode <String>]
  [-home_country <String>] [-mobile_number <String>] [-home_number <String>] [-work_number <String>]
  [-work_mobile_number <String>] [-work_fax_number <String>] [-external_dn <String>]
- [-external_source_type <String>] [<CommonParameters>]
+ [-external_source_type <String>] [-EnrollmentDays <Int32>] -Attribute1_name <String>
+ -Attribute1_value <String> -Attribute2_name <String> -Attribute2_value <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -109,7 +112,68 @@ PS C:\> Set-JCUser -Username cclemons -enable_user_portal_multifactor $True -enr
 ```
 
 This example enables the account for the user with username cclemons for MFA login to the user portal and sets an enrollment period of 14 days.
+
 ## PARAMETERS
+
+### -Attribute1_name
+Enter an attribute name
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Attribute1_value
+Enter an attribute value
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Attribute2_name
+Enter an attribute name
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Attribute2_value
+Enter an attribute value
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
 
 ### -ByID
 Use the -ByID parameter when the UserID is being passed over the pipeline to the Set-JCUser function. The -ByID SwitchParameter will set the ParameterSet to 'ByID' which will increase the function speed and performance. You cannot use this with the 'RemoveAttribute' Parameter
@@ -117,6 +181,21 @@ Use the -ByID parameter when the UserID is being passed over the pipeline to the
 ```yaml
 Type: SwitchParameter
 Parameter Sets: ByID
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -EnrollmentDays
+Number of days to allow for MFA enrollment.
+
+```yaml
+Type: Int32
+Parameter Sets: (All)
 Aliases:
 
 Required: False
@@ -374,7 +453,7 @@ Accept wildcard characters: False
 ```
 
 ### -external_dn
-{{ Fill external_dn Description }}
+The distinguished name of the AD domain (ADB Externally managed users only)
 
 ```yaml
 Type: String
@@ -389,7 +468,7 @@ Accept wildcard characters: False
 ```
 
 ### -external_source_type
-{{ Fill external_source_type Description }}
+The externally managed user source type (ADB Externally managed users only)
 
 ```yaml
 Type: String

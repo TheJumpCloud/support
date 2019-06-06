@@ -48,9 +48,7 @@ New-JCUser -firstname <String> -lastname <String> -username <String> -email <Str
 ## DESCRIPTION
 The New-JCUser function creates a new JumpCloud user.
 Note a JumpCloud user must have a unique email address and username.
-If a JumpCloud user is created without a password specified then the user will be created in an 'inactive state' and an activation email will be sent to the email address tied to the new account with instructions to complete activation.
-If a password is set during user creation then no activation email is send and the user is created in an active status. 
-User activation can be seen in the boolean: 'activated' property of a JumpCloud user.
+If a JumpCloud user is created without a password specified then the user will be created in an 'inactive state' and an activation email will be sent to the email address tied to the new account with instructions to complete activation. If a password is set during user creation then no activation email is send and the user is created in an active status. User activation can be seen in the boolean: 'activated' property of a JumpCloud user.
 
 ## EXAMPLES
 
@@ -59,25 +57,21 @@ User activation can be seen in the boolean: 'activated' property of a JumpCloud 
 PS C:\> New-JCUser -firstname Clarence -lastname Clemons -username cclemons -email cclemons@theband.com
 ```
 
-This example creates the user with username cclemons.
-Because a password is not specified the user will be created in an inactive state and an activation email will be sent to 'cclemons@theband.com'.
+This example creates the user with username cclemons. Because a password is not specified the user will be created in an inactive state and an activation email will be sent to 'cclemons@theband.com'.
 
 ### Example 2
 ```powershell
 PS C:\> New-JCUser -firstname Clarence -lastname Clemons -username cclemons -email cclemons@theband.com -password Password1!
 ```
 
-This example creates the user with username cclemons.
-Because a password is specified the user will be created in an active state and no activation email will be sent.
+This example creates the user with username cclemons. Because a password is specified the user will be created in an active state and no activation email will be sent.
 
 ### Example 3
 ```powershell
 PS C:\> New-JCUser -firstname Clarence -lastname Clemons -username cclemons -email cclemons@theband.com -password Password1! -NumberOfCustomAttributes 2 -Attribute1_name 'Band' -Attribute1_value 'E Street' -Attribute2_name 'Instrument' -Attribute2_value 'Sax'
 ```
 
-This example creates the user with username cclemons and two Custom Attributes.
-Because a password is specified the user will be created in an active state and no activation email will be sent.
-When adding Custom Attributes the number of Custom Attributes being added must be declared by the -NumberOfCustomAttributes Parameter.
+This example creates the user with username cclemons and two Custom Attributes. Because a password is specified the user will be created in an active state and no activation email will be sent. When adding Custom Attributes the number of Custom Attributes being added must be declared by the -NumberOfCustomAttributes Parameter.
 
 ## PARAMETERS
 
@@ -174,8 +168,7 @@ Accept wildcard characters: False
 ```
 
 ### -company
-Specifies the user's company.
-The LDAP displayName of this property is company.
+Specifies the user's company. The LDAP displayName of this property is company.
 
 ```yaml
 Type: String
@@ -190,8 +183,7 @@ Accept wildcard characters: False
 ```
 
 ### -costCenter
-Specifies the user's costCenter.
-The LDAP displayName of this property is businessCategory.
+Specifies the user's costCenter. The LDAP displayName of this property is businessCategory.
 
 ```yaml
 Type: String
@@ -206,8 +198,7 @@ Accept wildcard characters: False
 ```
 
 ### -department
-Specifies the user's department.
-The LDAP displayName of this property is departmentNumber.
+Specifies the user's department. The LDAP displayName of this property is departmentNumber.
 
 ```yaml
 Type: String
@@ -222,9 +213,7 @@ Accept wildcard characters: False
 ```
 
 ### -description
-Specifies the user's description.
-The LDAP displayName of this property is description.
-This field is limited to 1024 characters.
+Specifies the user's description. The LDAP displayName of this property is description. This field is limited to 1024 characters.
 
 ```yaml
 Type: String
@@ -239,8 +228,7 @@ Accept wildcard characters: False
 ```
 
 ### -displayname
-Specifies the user's preferredName.
-The LDAP displayName of this property is displayName.
+Specifies the user's preferredName. The LDAP displayName of this property is displayName.
 
 ```yaml
 Type: String
@@ -255,8 +243,7 @@ Accept wildcard characters: False
 ```
 
 ### -email
-The email address for the user.
-This must be a unique value.
+The email address for the user. This must be a unique value.
 
 ```yaml
 Type: String
@@ -271,9 +258,7 @@ Accept wildcard characters: False
 ```
 
 ### -employeeIdentifier
-Specifies the user's employeeIdentifier.
-The LDAP displayName of this property is employeeNumber.
-Note this field must be unique per user.
+Specifies the user's employeeIdentifier. The LDAP displayName of this property is employeeNumber. Note this field must be unique per user.
 
 ```yaml
 Type: String
@@ -288,8 +273,7 @@ Accept wildcard characters: False
 ```
 
 ### -employeeType
-Specifies the user's employeeType.
-The LDAP displayName of this property is employeeType.
+Specifies the user's employeeType. The LDAP displayName of this property is employeeType.
 
 ```yaml
 Type: String
@@ -367,8 +351,7 @@ Accept wildcard characters: False
 ```
 
 ### -home_country
-Specifies the user's country on the home address object.
-This property is nested within the LDAP property with the displayName homePostalAddress.
+Specifies the user's country on the home address object. This property is nested within the LDAP property with the displayName homePostalAddress.
 
 ```yaml
 Type: String
@@ -383,8 +366,7 @@ Accept wildcard characters: False
 ```
 
 ### -home_locality
-Specifies the user's city on their home address object.
-This property is nested within the LDAP property with the displayName homePostalAddress.
+Specifies the user's city on their home address object. This property is nested within the LDAP property with the displayName homePostalAddress.
 
 ```yaml
 Type: String
@@ -399,8 +381,7 @@ Accept wildcard characters: False
 ```
 
 ### -home_number
-Specifies the user's home number.
-The LDAP displayName of this property is homePhone.
+Specifies the user's home number. The LDAP displayName of this property is homePhone.
 
 ```yaml
 Type: String
@@ -415,8 +396,7 @@ Accept wildcard characters: False
 ```
 
 ### -home_poBox
-Specifies the user's poBox on their home address object.
-This property is nested within the LDAP property with the displayName homePostalAddress.
+Specifies the user's poBox on their home address object. This property is nested within the LDAP property with the displayName homePostalAddress.
 
 ```yaml
 Type: String
@@ -431,8 +411,7 @@ Accept wildcard characters: False
 ```
 
 ### -home_postalCode
-Specifies the user's postalCode on their home address object.
-This property is nested within the LDAP property with the displayName homePostalAddress.
+Specifies the user's postalCode on their home address object. This property is nested within the LDAP property with the displayName homePostalAddress.
 
 ```yaml
 Type: String
@@ -447,8 +426,7 @@ Accept wildcard characters: False
 ```
 
 ### -home_region
-Specifies the user's state on their home address object.
-This property is nested within the LDAP property with the displayName homePostalAddress.
+Specifies the user's state on their home address object. This property is nested within the LDAP property with the displayName homePostalAddress.
 
 ```yaml
 Type: String
@@ -463,8 +441,7 @@ Accept wildcard characters: False
 ```
 
 ### -home_streetAddress
-Specifies the user's streetAddress on their home address object.
-This property is nested within the LDAP property with the displayName homePostalAddress.
+Specifies the user's streetAddress on their home address object. This property is nested within the LDAP property with the displayName homePostalAddress.
 
 ```yaml
 Type: String
@@ -479,8 +456,7 @@ Accept wildcard characters: False
 ```
 
 ### -jobTitle
-Specifies the user's home number.
-The LDAP displayName of this property is title.
+Specifies the user's home number. The LDAP displayName of this property is title.
 
 ```yaml
 Type: String
@@ -525,8 +501,7 @@ Accept wildcard characters: False
 ```
 
 ### -location
-Specifies the user's home location.
-The LDAP displayName of this property is physicalDeliveryOfficeName.
+Specifies the user's home location. The LDAP displayName of this property is physicalDeliveryOfficeName.
 
 ```yaml
 Type: String
@@ -541,8 +516,7 @@ Accept wildcard characters: False
 ```
 
 ### -middlename
-Specifies the user's home location.
-The LDAP displayName of this property is initials.
+Specifies the user's home location. The LDAP displayName of this property is initials.
 
 ```yaml
 Type: String
@@ -557,8 +531,7 @@ Accept wildcard characters: False
 ```
 
 ### -mobile_number
-Specifies the user's mobile number.
-The LDAP displayName of this property is mobile.
+Specifies the user's mobile number. The LDAP displayName of this property is mobile.
 
 ```yaml
 Type: String
@@ -633,8 +606,7 @@ Accept wildcard characters: False
 ```
 
 ### -unix_guid
-The unix_guid for the new user.
-Note this value must be an number.
+The unix_guid for the new user. Note this value must be an number.
 
 ```yaml
 Type: Int32
@@ -649,8 +621,7 @@ Accept wildcard characters: False
 ```
 
 ### -unix_uid
-The unix_uid for the new user.
-Note this value must be an number.
+The unix_uid for the new user. Note this value must be an number.
 
 ```yaml
 Type: Int32
@@ -665,9 +636,7 @@ Accept wildcard characters: False
 ```
 
 ### -username
-The username for the user.
-This must be a unique value.
-This value is not modifiable after user creation.
+The username for the user. This must be a unique value. This value is not modifiable after user creation.
 
 ```yaml
 Type: String
@@ -682,8 +651,7 @@ Accept wildcard characters: False
 ```
 
 ### -work_country
-Specifies the user's country on the work address object.
-This property is nested within the LDAP property with the displayName postalAddress.
+Specifies the user's country on the work address object. This property is nested within the LDAP property with the displayName postalAddress.
 
 ```yaml
 Type: String
@@ -698,8 +666,7 @@ Accept wildcard characters: False
 ```
 
 ### -work_fax_number
-Specifies the user's work fax number.
-The LDAP displayName of this property is facsimileTelephoneNumber.
+Specifies the user's work fax number. The LDAP displayName of this property is facsimileTelephoneNumber.
 
 ```yaml
 Type: String
@@ -714,8 +681,7 @@ Accept wildcard characters: False
 ```
 
 ### -work_locality
-Specifies the user's city on their work address object.
-The LDAP displayName of this property is l.
+Specifies the user's city on their work address object. The LDAP displayName of this property is l.
 
 ```yaml
 Type: String
@@ -730,8 +696,7 @@ Accept wildcard characters: False
 ```
 
 ### -work_mobile_number
-Specifies the user's work mobile number.
-The LDAP displayName of this property is pager.
+Specifies the user's work mobile number. The LDAP displayName of this property is pager.
 
 ```yaml
 Type: String
@@ -746,8 +711,7 @@ Accept wildcard characters: False
 ```
 
 ### -work_number
-Specifies the user's work number.
-The LDAP displayName of this property is telephoneNumber.
+Specifies the user's work number. The LDAP displayName of this property is telephoneNumber.
 
 ```yaml
 Type: String
@@ -762,8 +726,7 @@ Accept wildcard characters: False
 ```
 
 ### -work_poBox
-Specifies the user's poBox on their work address object.
-The LDAP displayName of this property is postOfficeBox.
+Specifies the user's poBox on their work address object. The LDAP displayName of this property is postOfficeBox.
 
 ```yaml
 Type: String
@@ -778,8 +741,7 @@ Accept wildcard characters: False
 ```
 
 ### -work_postalCode
-Specifies the user's postalCode on their work address object.
-The LDAP displayName of this property is postalCode.
+Specifies the user's postalCode on their work address object. The LDAP displayName of this property is postalCode.
 
 ```yaml
 Type: String
@@ -794,8 +756,7 @@ Accept wildcard characters: False
 ```
 
 ### -work_region
-Specifies the user's state on their work address object.
-This property is nested within the LDAP property with the displayName postalAddress.
+Specifies the user's state on their work address object. This property is nested within the LDAP property with the displayName postalAddress.
 
 ```yaml
 Type: String
@@ -810,8 +771,7 @@ Accept wildcard characters: False
 ```
 
 ### -work_streetAddress
-Specifies the user's streetAddress on their work address object.
-This property is nested within the LDAP property with the displayName postalAddress.
+Specifies the user's streetAddress on their work address object. This property is nested within the LDAP property with the displayName postalAddress.
 
 ```yaml
 Type: String

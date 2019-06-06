@@ -14,12 +14,14 @@ Triggers a JumpCloud Command to run by calling the trigger associated with the C
 
 ### NoVariables (Default)
 ```
-Invoke-JCCommand [-trigger] <String> [<CommonParameters>]
+Invoke-JCCommand [-trigger] <String> -Variable1_name <String> -Variable1_value <String>
+ -Variable2_name <String> -Variable2_value <String> [<CommonParameters>]
 ```
 
 ### Variables
 ```
-Invoke-JCCommand [-trigger] <String> [-NumberOfVariables <Int32>] [<CommonParameters>]
+Invoke-JCCommand [-trigger] <String> [-NumberOfVariables <Int32>] -Variable1_name <String>
+ -Variable1_value <String> -Variable2_name <String> -Variable2_value <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -69,6 +71,66 @@ Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Variable1_name
+Enter a variable name
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Variable1_value
+Enter the Variables value
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Variable2_name
+Enter a variable name
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Variable2_value
+Enter the Variables value
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 

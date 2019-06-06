@@ -14,12 +14,12 @@ Returns all JumpCloud System and User Groups.
 
 ### ReturnAll (Default)
 ```
-Get-JCGroup [<CommonParameters>]
+Get-JCGroup [-Name <String>] [<CommonParameters>]
 ```
 
 ### Type
 ```
-Get-JCGroup [[-Type] <String>] [<CommonParameters>]
+Get-JCGroup [[-Type] <String>] [-Name <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -57,6 +57,21 @@ Returns the JumpCloud user group 'The Band' and the posixGroups information desc
 
 ## PARAMETERS
 
+### -Name
+Enter the group name
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
 ### -Type
 The type of JumpCloud group you want to return.
 Note there are only two options - User and System.
@@ -79,7 +94,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### None
+### System.String
 ## OUTPUTS
 
 ### System.Object

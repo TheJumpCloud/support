@@ -19,14 +19,16 @@ Import-JCCommand [-URL] <String> [<CommonParameters>]
 ## DESCRIPTION
 The Import-JCCommand command can be used to import curated JumpCloud Mac, Linux, and Windows commands into a JumpCloud tenant
 
+See all available commands in the [JumpCloud Commands Gallery](https://github.com/TheJumpCloud/support/tree/master/PowerShell/JumpCloud%20Commands%20Gallery)
+
 ## EXAMPLES
 
 ### Example 1
 ```powershell
-PS C:\> Import-JCCommand -URL 'https://git.io/JCXC-Windows-ListAllUsers'
+Import-JCCommand -URL 'https://git.io/jccg-Windows-ListAllUsers'
 ```
 
-Imports the JumpCloud command located at the URL 'https://git.io/JCXC-Windows-ListAllUsers' into a JumpCloud tenant.
+Imports the JumpCloud command located at the URL 'Import-JCCommand -URL 'https://git.io/jccg-Windows-ListAllUsers' into a JumpCloud tenant. This command lists all user accounts on a Windows system and shows if the account is enabled or disabled
 
 ## PARAMETERS
 
