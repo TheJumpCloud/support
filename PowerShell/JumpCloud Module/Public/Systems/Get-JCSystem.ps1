@@ -128,6 +128,10 @@ Function Get-JCSystem ()
 
     DynamicParam
     {
+        If ((Get-PSCallStack).Command -like '*MarkdownHelp')
+        {
+            $filterDateProperty = 'created'
+        }
         if ($filterDateProperty)
         {
 

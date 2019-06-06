@@ -231,7 +231,11 @@ Function Set-JCUser ()
     DynamicParam
     {
         $dict = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
-
+        If ((Get-PSCallStack).Command -like '*MarkdownHelp')
+        {
+            $enable_user_portal_multifactor = $true
+            $NumberOfCustomAttributes = 2
+        }
         If ($enable_user_portal_multifactor -eq $True)
         {
             # Set the dynamic parameters' name

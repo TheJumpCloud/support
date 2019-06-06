@@ -35,7 +35,10 @@ Function New-JCCommand
 
     DynamicParam
     {
-
+        If ((Get-PSCallStack).Command -like '*MarkdownHelp')
+        {
+            $commandType = 'windows'
+        }
         $dict = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
 
         If ($commandType -eq "windows")
@@ -50,11 +53,14 @@ Function New-JCCommand
             $dict.Add('shell', $param)
 
         }
-
+        If ((Get-PSCallStack).Command -like '*MarkdownHelp')
+        {
+            $commandType = 'mac'
+        }
         If ($commandType -ne "windows")
         {
             $attr = New-Object System.Management.Automation.ParameterAttribute
-            $attr.HelpMessage = "Enter run as user"
+            $attr.HelpMessage = "Only needed for Mac and Linux commands. If not entered Mac and Linux commands will default to the root users. If entering a user a UserID must be entered."
             $attr.ValueFromPipelineByPropertyName = $true
             $attrColl = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
             $attrColl.Add($attr)
@@ -62,7 +68,10 @@ Function New-JCCommand
             $dict.Add('user', $param)
 
         }
-
+        If ((Get-PSCallStack).Command -like '*MarkdownHelp')
+        {
+            $launchType = 'trigger'
+        }
         If ($launchType -eq "trigger")
         {
             $attr = New-Object System.Management.Automation.ParameterAttribute

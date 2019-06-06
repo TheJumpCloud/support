@@ -34,7 +34,10 @@ Function Set-JCCommand
 
     DynamicParam
     {
-
+        If ((Get-PSCallStack).Command -like '*MarkdownHelp')
+        {
+            $launchType = 'trigger'
+        }
         $dict = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
 
 

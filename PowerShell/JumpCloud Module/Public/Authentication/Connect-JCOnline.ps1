@@ -64,7 +64,10 @@ Function Connect-JCOnline ()
 
     DynamicParam
     {
-
+        If ((Get-PSCallStack).Command -like '*MarkdownHelp')
+        {
+            $JCEnvironment = 'local'
+        }
         $dict = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
 
 

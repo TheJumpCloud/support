@@ -16,8 +16,13 @@ Function Invoke-JCCommand ()
 
     DynamicParam
     {
-
-        If ($PSCmdlet.ParameterSetName -eq 'Variables')
+        $ParameterSetName = $PSCmdlet.ParameterSetName
+        If ((Get-PSCallStack).Command -like '*MarkdownHelp')
+        {
+            $ParameterSetName = 'Variables'
+            $NumberOfVariables = 2
+        }
+        If ($ParameterSetName -eq 'Variables')
         {
             $dict = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
 

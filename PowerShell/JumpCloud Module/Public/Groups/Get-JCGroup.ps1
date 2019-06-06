@@ -15,7 +15,10 @@ Function Get-JCGroup ()
 
     DynamicParam
     {
-
+        If ((Get-PSCallStack).Command -like '*MarkdownHelp')
+        {
+            $Type = 'User'
+        }
         If ($Type)
         {
             $attr = New-Object System.Management.Automation.ParameterAttribute

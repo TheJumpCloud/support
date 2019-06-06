@@ -23,7 +23,11 @@ Function Add-JCRadiusReplyAttribute ()
 
     DynamicParam
     {
-
+        If ((Get-PSCallStack).Command -like '*MarkdownHelp')
+        {
+            $NumberOfAttributes = 2
+            $VLAN = 11
+        }
         $dict = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
 
         [int]$NewParams = 0
