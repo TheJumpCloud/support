@@ -1,17 +1,17 @@
 #### Latest Version
 
 ```
-1.11.0
+1.12.0
 ```
 
 #### Banner Current
 
 ```
-Module up-to-date. Learn how to use Get-JCAssociation here: https://git.io/fjcHC
+Module up-to-date. Add-JCAssociation and Remove-JCAssociation are now live!
 ```
 
 #### Banner Old
 
 ```
-JumpCloud module update available. New function Get-JCAssociation is live!
+JumpCloud module update available. Update now to use new functions Add-JCAssociation and Remove-JCAssociation!
 ```

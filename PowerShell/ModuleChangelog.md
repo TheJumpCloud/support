@@ -1,18 +1,22 @@
 ## 1.12.0
 
-Release Date: May 29, 2019
+Release Date: June 6, 2019
 
 ```
+Use Add-JCAssociation and Remove-JCAssociation to modify associations between objects in JumpCloud.
+Get-JCAssociation can be piped into Add-JCAssociation or Remove-JCAssociation to make modifications at scale.
+User/systems, systems/commands, user_group/applications...etc
 ```
 
 ### FEATURES
 
-- New-Function: Add-JCAssociation
-- New-Function: Remove-JCAssociation
+- New-Function: Add-JCAssociation leverages the V2 associations endpoint to add direct associations between an input object and any of it's possible JumpCloud objects associations.
+- New-Function: Remove-JCAssociation leverages the V2 associations endpoint to remove direct associations between an input object and any of it's possible JumpCloud objects associations.
 
 ### IMPROVEMENTS:
 
-Added increased functionality to PowerShell user_agent
+Added increased functionality to PowerShell user_agent.
+Added new attributes "external_dn" and "external_source_type" for managing ADB users to the Set-JCUser and Get-JCUser functions.
 
 ### BUG FIXES:
 

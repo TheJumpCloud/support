@@ -7,7 +7,7 @@
     GUID              = '31c023d1-a901-48c4-90a3-082f91b31646'
 
     # Version number of this module.
-    ModuleVersion     = '1.11.0'
+    ModuleVersion     = '1.12.0'
 
     # Author of this module
     Author            = 'JumpCloud Solutions Architect Team'
@@ -116,7 +116,7 @@
     } # End of PrivateData hashtable
 
     # HelpInfo URI of this module
-    HelpInfoURI       = 'https://github.com/TheJumpCloud/support/wiki/'
+    # HelpInfoURI = ''
 
     # Default prefix for commands exported from this module. Override the default prefix using Import-Module -Prefix.
     # DefaultCommandPrefix = ''
