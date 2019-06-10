@@ -1,20 +1,114 @@
 Function Add-JCRadiusReplyAttribute ()
 {
+    <#
+.SYNOPSIS
 
+Adds Radius reply attributes to a JumpCloud user group.
+
+.DESCRIPTION
+
+Adds Radius reply attributes to a JumpCloud user group.
+Any RADIUS reply attributes configured on a JumpCloud user group which associates a user to a RADIUS server will be returned in the Access-Accept message sent to the endpoint configured to authenticate with JumpCloud Radius.
+If a user is a member of more then one JumpCloud user group associated with a given RADIUS server all Reply attributes for the groups that associate the user to the RADIUS server will be returned in the Access-Accept message.
+
+If a user is a member of more then one JumpCloud user group associated with a given RADIUS server and these groups are configured with conflicting RADIUS reply attributes then the values of the attributes for the group that was created most recently will be returned in the Access-Accept message.
+
+RADIUS reply attribute conflicts are resolved based on the creation date of the user group where groups that are created more recently take precedent over older groups.
+Conflicts occur when groups are configured with the same RADIUS reply attributes and have conflicting attribute values.
+RADIUS reply attributes with the same attribute names but different tag values do not create conflicts.
+
+.EXAMPLE
+PS C:\> Add-JCRadiusReplyAttribute -GroupName "BoulderOffice" -VLAN 24
+
+By specifying the '-VLAN' parameter three radius attributes are added to the JumpCloud user group 'BoulderOffice'.
+
+These attributes are:
+
+name                    value
+----                    -----
+Tunnel-Medium-Type      IEEE-802
+Tunnel-Type             VLAN
+Tunnel-Private-Group-Id 24
+
+The value specified for the '-VLAN' parameter is populated for the value of **Tunnel-Private-Group-Id**.
+
+.EXAMPLE
+PS C:\> Add-JCRadiusReplyAttribute -GroupName "BoulderOffice" -VLAN 24 -VLANTag 3
+
+By specifying the '-VLAN' parameter three radius attributes are added to the JumpCloud user group 'BoulderOffice'. The use of '-VLANTag' appends each VLAN attribute name with a colon and the tag number specified.
+
+These attributes are:
+
+name                    value
+----                    -----
+Tunnel-Medium-Type:3      IEEE-802
+Tunnel-Type:3             VLAN
+Tunnel-Private-Group-Id:3 24
+
+.EXAMPLE
+PS C:\> Add-JCRadiusReplyAttribute -GroupName "BoulderOffice" -NumberOfAttributes 2 -Attribute1_name "Session-Timeout" -Attribute1_value 100 -Attribute2_name "Termination-Action" -Attribute2_value 1
+
+Adds two Radius attributes to the JumpCloud user group 'BoulderOffice'.
+
+These attribute are:
+
+name               value
+----               -----
+Session-Timeout    100
+Termination-Action 1
+
+The parameter '-NumberOfAttributes' is a dynamic parameter that generates two required parameters for each custom attribute specified. In this example these parameters are -Attribute1_name,-Attribute1_value, -Attribute2_name and -Attribute2_value.
+
+.EXAMPLE
+PS C:\> Add-JCRadiusReplyAttribute -GroupName "BoulderOffice" -VLAN 24 -NumberOfAttributes 2 -Attribute1_name "Session-Timeout" -Attribute1_value 100 -Attribute2_name "Termination-Action" -Attribute2_value 1
+
+Adds five Radius reply attributes to the JumpCloud User group 'BoulderUsers'
+
+These attributes are:
+
+name                    value
+----                    -----
+Tunnel-Medium-Type      IEEE-802
+Termination-Action      1
+Tunnel-Type             VLAN
+Session-Timeout         100
+Tunnel-Private-Group-Id 24
+
+By specifying the '-VLAN' parameter three radius attributes are added to the JumpCloud user group 'BoulderOffice'. The value specified for the '-VLAN' parameter is populated for the value of **Tunnel-Private-Group-Id**.The parameter '-NumberOfAttributes' is a dynamic parameter that generates two required parameters for each custom attribute specified. In this example these parameters are -Attribute1_name,-Attribute1_value, -Attribute2_name and -Attribute2_value.
+
+#>
     [CmdletBinding(DefaultParameterSetName = 'ByGroup')]
     param
     (
 
         [Parameter( Mandatory, position = 0, ValueFromPipelineByPropertyName,
-            ParameterSetName = 'ByGroup')]
+            ParameterSetName = 'ByGroup',
+            HelpMessage = 'The JumpCloud user group to add the specified Radius reply attributes to.'
+        )]
         [Alias('name')]
         [String]$GroupName,
 
         [Parameter( ValueFromPipelineByPropertyName,
-            ParameterSetName = 'ByGroup')]
+            ParameterSetName = 'ByGroup',
+            HelpMessage = 'By specifying the "-VLAN" parameter three radius attributes are added to the target user group.
+These attributes and values are are:
+name                    value
+----                    -----
+Tunnel-Medium-Type      IEEE-802
+Tunnel-Type             VLAN
+Tunnel-Private-Group-Id **VALUE of -VLAN**
+The value specified for the "-VLAN" parameter is populated for the value of **Tunnel-Private-Group-Id**.')]
         [String]$VLAN,
 
-        [Parameter(, ValueFromPipelineByPropertyName)]
+        [Parameter(, ValueFromPipelineByPropertyName,
+            HelpMessage = 'The number of RADIUS reply attributes you wish to add to a user group.
+If an attributes exists with a name that matches the new attribute then the existing attribute will be updated.
+Based on the NumberOfAttributes value two Dynamic Parameters will be created for each Attribute: Attribute_name and Attribute_value with an associated number.
+See an example for working with Custom Attribute in EXAMPLE 3 above.
+Attributes must be valid RADIUS attributes. Find a list of valid RADIUS attributes within the dictionary files of this repro broken down by vendor: github.com/FreeRADIUS/freeradius-server/tree/v3.0.x/share
+If an invalid attribute is configured on a user group this will prevent users within this group from being able to authenticate via RADIUS until the invalid attribute is removed.
+'
+        )]
         [int]
         $NumberOfAttributes
 
@@ -28,53 +122,23 @@ Function Add-JCRadiusReplyAttribute ()
             $NumberOfAttributes = 2
             $VLAN = 11
         }
-        $dict = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
+        $RuntimeParameterDictionary = New-Object -TypeName System.Management.Automation.RuntimeDefinedParameterDictionary
 
         [int]$NewParams = 0
         [int]$ParamNumber = 1
 
         while ($NewParams -ne $NumberOfAttributes)
         {
-
-            $attr = New-Object System.Management.Automation.ParameterAttribute
-            $attr.HelpMessage = "Enter an attribute name"
-            $attr.Mandatory = $true
-            $attr.ValueFromPipelineByPropertyName = $true
-            $attrColl = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
-            $attrColl.Add($attr)
-            $param = New-Object System.Management.Automation.RuntimeDefinedParameter("Attribute$ParamNumber`_name", [string], $attrColl)
-            $dict.Add("Attribute$ParamNumber`_name", $param)
-
-            $attr1 = New-Object System.Management.Automation.ParameterAttribute
-            $attr1.HelpMessage = "Enter an attribute value"
-            $attr1.Mandatory = $true
-            $attr1.ValueFromPipelineByPropertyName = $true
-            $attrColl1 = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
-            $attrColl1.Add($attr1)
-            $param1 = New-Object System.Management.Automation.RuntimeDefinedParameter("Attribute$ParamNumber`_value", [string], $attrColl1)
-            $dict.Add("Attribute$ParamNumber`_value", $param1)
-
+            New-DynamicParameter -Name:("Attribute$ParamNumber`_name") -Type:([System.String]) -HelpMessage:('Enter an attribute name') -Mandatory -ValueFromPipelineByPropertyName -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
+            New-DynamicParameter -Name:("Attribute$ParamNumber`_value") -Type:([System.String]) -HelpMessage:('Enter an attribute value') -Mandatory -ValueFromPipelineByPropertyName -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
             $NewParams++
             $ParamNumber++
         }
-
         if ($VLAN)
         {
-            $VLANattr = New-Object System.Management.Automation.ParameterAttribute
-            $VLANattr.Mandatory = $false
-            $VLANattr.ValueFromPipelineByPropertyName = $true
-            $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($(0..31))
-
-            $VLANattrColl = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
-            $VLANattrColl.Add($VLANattr)
-            $VLANattrColl.Add($ValidateSetAttribute)
-
-            $VLANparam = New-Object System.Management.Automation.RuntimeDefinedParameter("VLANTag", [string], $VLANattrColl)
-            $dict.Add("VLANTag", $VLANparam)
+            New-DynamicParameter -Name:('VLANTag') -Type:([System.String]) -HelpMessage:('Specifies the VLAN id which is applied to all attribute names.') -ValueFromPipelineByPropertyName -ValidateSet:($(0..31)) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
         }
-
-        return $dict
-
+        Return $RuntimeParameterDictionary
     }
 
     begin

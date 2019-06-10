@@ -10,17 +10,17 @@ Associates a JumpCloud system or a JumpCloud system group with a JumpCloud comma
 The Add-JCCommandTarget function allows you to add JumpCloud systems or JumpCloud system groups to the target list of a specific JumpCloud command. Group associations can be made by system group name or system group ID system associations can only be made using the SystemID. When JumpCloud commands are run they target all the systems on their target list.
 
 .EXAMPLE
-Add-JCCommandTarget -CommandID 5b99777710a3690ssisr3a1w -SystemID 5l0o2fu426041i79st3c35
+PS C:\> Add-JCCommandTarget -CommandID 5b99777710a3690ssisr3a1w -SystemID 5l0o2fu426041i79st3c35
 
 Adds the JumpCloud system with System ID '5l0o2fu426041i79st3c35' to the target list for the JumpCloud command with command ID '5b99777710a3690ssisr3a1w'
 
 .EXAMPLE
-Add-JCCommandTarget -CommandID 5b99777710a3690ssisr3a1w -GroupName WindowsMachines
+PS C:\> Add-JCCommandTarget -CommandID 5b99777710a3690ssisr3a1w -GroupName WindowsMachines
 
 Adds the JumpCloud system group 'WindowsMachines' and the systems within this group to the target list for the JumpCloud command with command ID '5b99777710a3690ssisr3a1w'
 
 .EXAMPLE
-Add-JCCommandTarget -CommandID 5b99777710a3690ssisr3a1w -GroupID 5j03458a232z115210z66913
+PS C:\> Add-JCCommandTarget -CommandID 5b99777710a3690ssisr3a1w -GroupID 5j03458a232z115210z66913
 
 Adds the JumpCloud system group with the GroupID '5j03458a232z115210z66913' and the systems within this group to the target list for the JumpCloud command with command ID '5b99777710a3690ssisr3a1w'
 
