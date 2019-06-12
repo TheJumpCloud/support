@@ -1,5 +1,5 @@
 $ModuleManifestName = 'JumpCloud.psd1'
-$ModuleManifestPath = "$PSScriptRoot\..\$ModuleManifestName"
+$ModuleManifestPath = "$PSScriptRoot/../$ModuleManifestName"
 $TestOrgAPIKey = ''
 $MultiTenantAPIKey = ''
 $PesterParams = @{
@@ -35,7 +35,7 @@ Install-Module -Name:('Pester') -Force -Scope:('CurrentUser')
 # Import the module
 Import-Module -Name:($ModuleManifestPath) -Force
 #Load private functions
-Get-ChildItem -Path:("$PSScriptRoot\..\Private\*.ps1") -Recurse | ForEach-Object {. $_.FullName}
+Get-ChildItem -Path:("$PSScriptRoot/../Private/*.ps1") -Recurse | ForEach-Object {. $_.FullName}
 # Authenticate to JumpCloud
 Connect-JCOnlineTest
 # Policy Info
