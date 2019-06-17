@@ -111,13 +111,13 @@ Function Invoke-JCApi
                 # PowerShell 5 won't let you send a GET with a body.
                 If ($Method -eq 'GET')
                 {
-                    Write-Debug("[CallFunction]Invoke-WebRequest -Method:('$Method') -Headers:('" + ($Headers | ConvertTo-Json -Compress) + "') -Uri:('$Uri') -UserAgent:('$UserAgent')")
-                    $RequestResult = Invoke-WebRequest -Method:($Method) -Headers:($Headers) -Uri:($Uri) -UserAgent:($UserAgent)
+                    Write-Debug("[CallFunction]Invoke-WebRequest -Method:('$Method') -Headers:('" + ($Headers | ConvertTo-Json -Compress) + "') -Uri:('$Uri') -UserAgent:('$UserAgent') -UseBasicParsing")
+                    $RequestResult = Invoke-WebRequest -Method:($Method) -Headers:($Headers) -Uri:($Uri) -UserAgent:($UserAgent) -UseBasicParsing
                 }
                 Else
                 {
-                    Write-Debug("[CallFunction]Invoke-WebRequest -Method:('$Method') -Headers:('" + ($Headers | ConvertTo-Json -Compress) + "') -Uri:('$Uri') -UserAgent:('$UserAgent') -Body:('$Body')")
-                    $RequestResult = Invoke-WebRequest -Method:($Method) -Headers:($Headers) -Uri:($Uri) -UserAgent:($UserAgent) -Body:($Body)
+                    Write-Debug("[CallFunction]Invoke-WebRequest -Method:('$Method') -Headers:('" + ($Headers | ConvertTo-Json -Compress) + "') -Uri:('$Uri') -UserAgent:('$UserAgent') -Body:('$Body') -UseBasicParsing")
+                    $RequestResult = Invoke-WebRequest -Method:($Method) -Headers:($Headers) -Uri:($Uri) -UserAgent:($UserAgent) -Body:($Body) -UseBasicParsing
                 }
                 If ($RequestResult)
                 {

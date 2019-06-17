@@ -7,7 +7,7 @@
     GUID              = '31c023d1-a901-48c4-90a3-082f91b31646'
 
     # Version number of this module.
-    ModuleVersion     = '1.12.0'
+    ModuleVersion     = '1.12.1'
 
     # Author of this module
     Author            = 'JumpCloud Solutions Architect Team'

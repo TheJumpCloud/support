@@ -37,7 +37,7 @@ Function Format-JCAssociation
                 }
                 Add-Member -InputObject:($_) -MemberType:('NoteProperty') -Name:('associationType') -Value:($associationType)
             }
-            $associationType = ($_.paths.associationType | Select-Object -Unique) -join '/'
+            $associationType = ($_.paths.associationType | Sort-Object | Select-Object -Unique) -join '/'
             #EndRegion Determine if association is 'direct', 'indirect', or "direct`/indirect" and apply label
             #Region Build record for each association
             If ($Raw)
