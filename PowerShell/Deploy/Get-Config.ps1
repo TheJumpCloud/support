@@ -1,3 +1,4 @@
+# Log statuses
 Write-Host ('[status]Platform: ' + [environment]::OSVersion.Platform)
 Write-Host ('[status]PowerShell Version: ' + ($PSVersionTable.PSVersion -join '.'))
 Write-Host ('[status]Host: ' + (Get-Host).Name)
