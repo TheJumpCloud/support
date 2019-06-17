@@ -1,7 +1,3 @@
-$ModuleManifestName = 'JumpCloud.psd1'
-$ModuleManifestPath = "$PSScriptRoot/../$ModuleManifestName"
-$TestOrgAPIKey = ''
-$MultiTenantAPIKey = ''
 $PesterParams = @{
     # Specific to MTP portal
     'MultiTenanntOrgID1' = "5b5a13f06fefdb0a29b0d306"
@@ -31,7 +27,7 @@ $JCDeployment_10_CSV = "$PSScriptRoot/Csv_Files/commandDeployment/JCDeployment_1
 $ImportPath = "$PSScriptRoot/Csv_files/import"
 $UpdatePath = "$PSScriptRoot/Csv_files/update"
 # Install Pester
-Install-Module -Name:('Pester') -Force -Scope:('CurrentUser')
+Install-Module -Name:('Pester') -Force -Scope:('CurrentUser') -SkipPublisherCheck
 # Import the module
 Import-Module -Name:($ModuleManifestPath) -Force
 #Load private functions

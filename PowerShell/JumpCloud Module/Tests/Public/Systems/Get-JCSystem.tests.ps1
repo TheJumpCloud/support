@@ -1,7 +1,5 @@
-Connect-JCOnlineTest
-
 Describe -Tag:('JCSystem') 'Get-JCSystem 1.0' {
-
+    Connect-JCOnlineTest
     It "Gets all JumpCloud systems" {
         $Systems = Get-JCSystem
         $Systems._id.Count | Should -BeGreaterThan 1

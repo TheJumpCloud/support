@@ -40,6 +40,7 @@ PS C:\> Remove-JCUser cclemons -Force
 ```
 
 Removes the JumpCloud User with Username 'cclemons' using the -Force Parameter. A warning message will not be presented to confirm this operation.
+
 ## PARAMETERS
 
 ### -ByID

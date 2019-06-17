@@ -1,7 +1,5 @@
-Connect-JCOnlineTest
-
 Describe -Tag:('JCSystemUser') 'Set-JCSystemUser 1.0' {
-
+    Connect-JCOnlineTest
     It "Sets a standard user to an admin user using username" {
 
         Add-JCSystemUser -SystemID $PesterParams.SystemID -Username $PesterParams.Username -Administrator $False #Sets to standard user

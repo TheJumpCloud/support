@@ -1,7 +1,5 @@
-Connect-JCOnlineTest
-
 Describe -Tag:('JCSystemGroupMember') 'Add-JCSystemGroupMember 1.0' {
-
+    Connect-JCOnlineTest
     It "Adds a JumpCloud system to a JumpCloud system group by System Groupname and SystemID" {
 
         $SingleSystemGroupRemove = Remove-JCSystemGroupMember -SystemID $PesterParams.SystemID -GroupName $PesterParams.SystemGroupName

@@ -1,7 +1,5 @@
-Connect-JCOnlineTest
-
 Describe -Tag:('JCCommandResult') 'Get-JCCommandResults 1.0' {
-
+    Connect-JCOnlineTest
     It "Gets all JumpCloud command results" {
 
         $CommandResults = Get-JCCommandResult
