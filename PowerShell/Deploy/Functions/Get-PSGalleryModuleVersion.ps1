@@ -33,8 +33,17 @@ Function Get-PSGalleryModuleVersion
         }
         Switch ($RELEASETYPE)
         {
-            'Major' { $ModuleVersion.Major = $ModuleVersion.Major + 1 }
-            'Minor' { $ModuleVersion.Minor = $ModuleVersion.Minor + 1 }
+            'Major'
+            {
+                $ModuleVersion.Major = $ModuleVersion.Major + 1
+                $ModuleVersion.Minor = 0
+                $ModuleVersion.Patch = 0
+            }
+            'Minor'
+            {
+                $ModuleVersion.Minor = $ModuleVersion.Minor + 1
+                $ModuleVersion.Patch = 0
+            }
             'Patch' { $ModuleVersion.Patch = $ModuleVersion.Patch + 1 }
         }
 
