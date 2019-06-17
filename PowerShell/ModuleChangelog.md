@@ -1,3 +1,20 @@
+## 1.12.1
+
+Release Date: June 17, 2019
+
+```
+Bug fixes for association functions.
+```
+
+### FEATURES
+
+### IMPROVEMENTS:
+
+### BUG FIXES:
+
+Resolved issue where association types would return incorrect order.
+Removed Windows dependency for IE by adding `-UseBasicParsing` to Invoke-Webrequest.
+
 ## 1.12.0
 
 Release Date: June 6, 2019
