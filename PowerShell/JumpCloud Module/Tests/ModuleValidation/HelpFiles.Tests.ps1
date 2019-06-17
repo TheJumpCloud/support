@@ -11,7 +11,7 @@ Describe -Tag:('ModuleValidation') 'Help File Tests' {
         }
     }
     Context ('Validating that the ModuleBanner and ModuleChangelog fields have been populated') {
-        $ModuleRoot.Parent  | Get-ChildItem -Filter:('*.md') | Select-String -Pattern:($Regex_FillInThe) | ForEach-Object {
+        Get-ChildItem -Path:($ModuleRoot.Parent.FullName + '/*.md') | Select-String -Pattern:($Regex_FillInThe) | ForEach-Object {
             It ('The file "' + $_.Path + '" needs to be populated on line number "' + $_.LineNumber + '" where "' + $_.Line + '" exists.') {
                 $_.Path | Should -Not -FileContentMatch ($Regex_FillInThePester)
             }
