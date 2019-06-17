@@ -1,7 +1,12 @@
-# Install latest PowerShellGet
-Install-Module –Name:('PowerShellGet') –Force -Scope:('CurrentUser')
 # Install Pester
-Install-Module -Name:('Pester') -Force -Scope:('CurrentUser') -SkipPublisherCheck
+If ($PSVersionTable.PSEdition -eq 'Core')
+{
+    Install-Module -Name:('Pester') -Force -Scope:('CurrentUser') -SkipPublisherCheck
+}
+Else
+{
+    Install-Module -Name:('Pester') -Force -Scope:('CurrentUser')
+}
 # Import the module
 Import-Module -Name:($ModuleManifestPath) -Force
 #Load private functions
