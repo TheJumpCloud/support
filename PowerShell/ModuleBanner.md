@@ -1,17 +1,17 @@
 #### Latest Version
 
 ```
-1.13.1
+1.12.1
 ```
 
 #### Banner Current
 
 ```
-{{Fill in the Banner Current}}
+Module up-to-date. Add-JCAssociation and Remove-JCAssociation are now live!
 ```
 
 #### Banner Old
 
 ```
-{{Fill in the Banner Old}}
+JumpCloud module update available. Update now to use new functions Add-JCAssociation and Remove-JCAssociation!
 ```
