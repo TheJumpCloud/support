@@ -1,3 +1,12 @@
+# Install latest PowerShellGet
+Install-Module –Name:('PowerShellGet') –Force -Scope:('CurrentUser')
+# Install Pester
+Install-Module -Name:('Pester') -Force -Scope:('CurrentUser') -SkipPublisherCheck
+# Import the module
+Import-Module -Name:($ModuleManifestPath) -Force
+#Load private functions
+Get-ChildItem -Path:("$PSScriptRoot/../Private/*.ps1") -Recurse | ForEach-Object {. $_.FullName}
+# Set test parameters
 $PesterParams = @{
     # Specific to MTP portal
     'MultiTenanntOrgID1' = "5b5a13f06fefdb0a29b0d306"
@@ -26,12 +35,6 @@ $JCDeployment_2_CSV = "$PSScriptRoot/Csv_Files/commandDeployment/JCDeployment_2.
 $JCDeployment_10_CSV = "$PSScriptRoot/Csv_Files/commandDeployment/JCDeployment_10.csv"
 $ImportPath = "$PSScriptRoot/Csv_files/import"
 $UpdatePath = "$PSScriptRoot/Csv_files/update"
-# Install Pester
-Install-Module -Name:('Pester') -Force -Scope:('CurrentUser') -SkipPublisherCheck
-# Import the module
-Import-Module -Name:($ModuleManifestPath) -Force
-#Load private functions
-Get-ChildItem -Path:("$PSScriptRoot/../Private/*.ps1") -Recurse | ForEach-Object {. $_.FullName}
 # Authenticate to JumpCloud
 Connect-JCOnlineTest
 # Policy Info
