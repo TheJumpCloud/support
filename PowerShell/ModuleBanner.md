@@ -7,11 +7,11 @@
 #### Banner Current
 
 ```
-{{Fill in the Banner Current}}
+Changes for automating build and testing of module.
 ```
 
 #### Banner Old
 
 ```
-{{Fill in the Banner Old}}
+N/A
 ```
