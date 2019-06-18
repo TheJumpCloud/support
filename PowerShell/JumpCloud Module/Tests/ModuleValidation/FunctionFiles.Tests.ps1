@@ -1,6 +1,6 @@
 Describe -Tag:('ModuleValidation') 'Function Format Tests' {
     $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent.FullName
-    $FunctionList = Get-FunctionReport -Folder:(($ModuleRoot + '/Public'), ($ModuleRoot + '/Private'))
+    $FunctionList = Get-FunctionReport -Folder:(($ModuleRoot + '/Public'), ($ModuleRoot + '/Private')) | Where-Object {$_.FileName -notlike 'ScriptBlock_*'}
     $FunctionList | ForEach-Object {
         Context ('Test that the file name matches the function name') {
             It ('When FileBaseName "' + $_.FileBaseName + '" equal Function "' + $_.Function + '" for file "' + $_.FileName + '"') {
