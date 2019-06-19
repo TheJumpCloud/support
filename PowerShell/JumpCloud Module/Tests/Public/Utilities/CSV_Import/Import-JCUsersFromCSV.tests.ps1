@@ -442,8 +442,8 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
 
     It "Imports users from a CSV populated with telephony, location, and user information attributes" {
 
-        $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath $ImportPath/ImportExample_AllNewAttributes.csv -force
-        $UserImportInfo = Import-Csv $ImportPath/ImportExample_AllNewAttributes.csv
+        $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath $ImportPath/ImportExample_allNewAttributes.csv -force
+        $UserImportInfo = Import-Csv $ImportPath/ImportExample_allNewAttributes.csv
 
         foreach ($User in $UserCSVImport)
         {
@@ -488,8 +488,8 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
 
     It "Imports users from a CSV populated with telephony, location, user information attributes, group additions, system binding, and custom attributes" {
 
-        $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath $ImportPath/ImportExample_AllNewAttributesAndAllCustom.csv -force
-        $UserImportInfo = Import-Csv $ImportPath/ImportExample_AllNewAttributesAndAllCustom.csv
+        $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath $ImportPath/ImportExample_allNewAttributesAndAllCustom.csv -force
+        $UserImportInfo = Import-Csv $ImportPath/ImportExample_allNewAttributesAndAllCustom.csv
 
         foreach ($User in $UserCSVImport)
         {
