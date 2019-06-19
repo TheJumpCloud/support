@@ -35,11 +35,11 @@ $PesterParams = @{
 $Random = New-RandomString '8'
 $RandomEmail = "$Random@$Random.com"
 # CSV Files
-$Import_JCUsersFromCSV_1_1_Tests = "$PSScriptRoot/Csv_files/import/ImportExample_Pester_Tests_1.1.0.csv" # This CSV file is specific to pester environment (SystemID's and Group Names)
+$Import_JCUsersFromCSV_1_1_Tests = "$PSScriptRoot/Csv_Files/import/ImportExample_Pester_Tests_1.1.0.csv" # This CSV file is specific to pester environment (SystemID's and Group Names)
 $JCDeployment_2_CSV = "$PSScriptRoot/Csv_Files/commandDeployment/JCDeployment_2.csv"
 $JCDeployment_10_CSV = "$PSScriptRoot/Csv_Files/commandDeployment/JCDeployment_10.csv"
-$ImportPath = "$PSScriptRoot/Csv_files/import"
-$UpdatePath = "$PSScriptRoot/Csv_files/update"
+$ImportPath = "$PSScriptRoot/Csv_Files/import"
+$UpdatePath = "$PSScriptRoot/Csv_Files/update"
 # Authenticate to JumpCloud
 Connect-JCOnlineTest
 # Policy Info
