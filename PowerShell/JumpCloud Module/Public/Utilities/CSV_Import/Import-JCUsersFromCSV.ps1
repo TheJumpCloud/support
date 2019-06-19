@@ -6,13 +6,13 @@ Function Import-JCUsersFromCSV ()
         [Parameter(Mandatory,
             position = 0,
             ParameterSetName = 'GUI')]
-        [ValidateScript( { Test-Path -Path:($_)})]
+        [ValidateScript( { Test-Path -Path $_ -PathType Leaf })]
         [ValidatePattern( '\.csv$' )]
 
         [Parameter(Mandatory,
             position = 0,
             ParameterSetName = 'force')]
-        [ValidateScript( { Test-Path -Path:($_)})]
+        [ValidateScript( { Test-Path -Path $_ -PathType Leaf })]
         [ValidatePattern( '\.csv$' )]
 
         [string]$CSVFilePath,
