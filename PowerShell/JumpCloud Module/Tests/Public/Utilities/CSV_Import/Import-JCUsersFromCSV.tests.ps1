@@ -1,8 +1,8 @@
 Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
     Connect-JCOnlineTest
     It "Imports users from the ImportExample_Pester_Test using -Force" {
-
-        $UserImport = Import-JCUsersFromCSV -CSVFilePath  $Import_JCUsersFromCSV_1_1_Tests -force
+        Write-Host ("[HELLOOOO!!!!] Import-JCUsersFromCSV -CSVFilePath $Import_JCUsersFromCSV_1_1_Tests -force")
+        $UserImport = Import-JCUsersFromCSV -CSVFilePath $Import_JCUsersFromCSV_1_1_Tests -force
 
     }
 
