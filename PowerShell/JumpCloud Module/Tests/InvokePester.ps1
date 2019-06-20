@@ -59,7 +59,7 @@ If ($FailedTests)
     Write-Error -Message:('Tests Failed: ' + [string]($FailedTests | Measure-Object).Count)
 }
 
-## Notes for future reporting dashboard for pester
+### Notes for future reporting dashboard for pester
 # Install-PackageProvider -Name:('NuGet')
 # Install-Package -Name:('extent')
 # Install-Package extent
