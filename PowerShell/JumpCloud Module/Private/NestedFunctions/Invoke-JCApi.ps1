@@ -213,7 +213,7 @@ Function Invoke-JCApi
             }
         }
         # Validate that all fields passed into the function exist in the output
-        If ($Results)
+        If (-not ([System.String]::IsNullOrEmpty($Results)))
         {
             # Validate results properties returned
             $Fields | ForEach-Object {
