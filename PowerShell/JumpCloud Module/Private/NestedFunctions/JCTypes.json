@@ -380,6 +380,33 @@
     ]
   },
   {
+    "Category": "SystemInsights",
+    "TypeName": {
+      "TypeNameSingular": "systeminsight",
+      "TypeNamePlural": "systeminsights"
+    },
+    "tables": [
+      "apps",
+      "browser_plugins",
+      "chrome_extensions",
+      "disk_encryption",
+      "firefox_addons",
+      "groups",
+      "interface_addresses",
+      "mounts",
+      "os_version",
+      "safari_extensions",
+      "system_info",
+      "users"
+    ],
+    "Url": "/api/v2/systeminsights",
+    "Method": "GET",
+    "ById": "jc_system_id",
+    "ByName": null,
+    "Paginate": true,
+    "Limit": 100
+  },
+  {
     "Category": "Custom",
     "TypeName": {
       "TypeNameSingular": "directory",
