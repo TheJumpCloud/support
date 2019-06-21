@@ -206,7 +206,6 @@ Function Invoke-JCApi
             }
             Else
             {
-
                 $Results += [PSCustomObject]@{
                     'NoContent'    = $null;
                     'httpMetaData' = $httpMetaData;
