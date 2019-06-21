@@ -2,26 +2,25 @@ Function Get-JCObject
 {
     [CmdletBinding(DefaultParameterSetName = 'Default')]
     Param(
-        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0, HelpMessage = 'The type of the object.')][ValidateNotNullOrEmpty()][ValidateSet('command', 'ldap_server', 'policy', 'application', 'radius_server', 'system_group', 'system', 'user_group', 'user', 'g_suite', 'office_365', 'systeminsight')][Alias('TypeNameSingular')][System.String]$Type
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0, HelpMessage = 'The type of the object.')][ValidateNotNullOrEmpty()][ValidateSet('command', 'ldap_server', 'policy', 'application', 'radius_server', 'system_group', 'system', 'user_group', 'user', 'g_suite', 'office_365')][Alias('TypeNameSingular')][System.String]$Type
     )
     DynamicParam
     {
-        $JCTypes = Get-JCType | Where-Object { $_.TypeName.TypeNameSingular -eq $Type };
+        $JCType = Get-JCType | Where-Object { $_.TypeName.TypeNameSingular -eq $Type };
         # Build parameter array
         $RuntimeParameterDictionary = New-Object -TypeName System.Management.Automation.RuntimeDefinedParameterDictionary
-        # New-DynamicParameter -Name:('Type') -Type:([System.String]) -Mandatory -Position:(0) -ValueFromPipelineByPropertyName -ValidateNotNullOrEmpty -ValidateSet:($JCTypes.TypeName.TypeNameSingular) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
-        New-DynamicParameter -Name:('Id') -Type([System.String[]]) -Mandatory -Position(1) -ValueFromPipelineByPropertyName -ValidateNotNullOrEmpty -ParameterSets(@('ById')) -Alias:(($JCTypes.ById) | Where-Object {$_ -ne 'Id'} | Select-Object -Unique) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
-        New-DynamicParameter -Name:('Name') -Type([System.String[]]) -Mandatory -Position(1) -ValueFromPipelineByPropertyName -ValidateNotNullOrEmpty -ParameterSets:(@('ByName')) -Alias:(($JCTypes.ByName) | Where-Object {$_ -ne 'Name'} | Select-Object -Unique) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
+        New-DynamicParameter -Name:('Id') -Type([System.String[]]) -Mandatory -Position(1) -ValueFromPipelineByPropertyName -ValidateNotNullOrEmpty -ParameterSets(@('ById')) -Alias:(($JCType.ById) | Where-Object {$_ -ne 'Id'} | Select-Object -Unique) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
+        New-DynamicParameter -Name:('Name') -Type([System.String[]]) -Mandatory -Position(1) -ValueFromPipelineByPropertyName -ValidateNotNullOrEmpty -ParameterSets:(@('ByName')) -Alias:(($JCType.ByName) | Where-Object {$_ -ne 'Name'} | Select-Object -Unique) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
         New-DynamicParameter -Name:('SearchBy') -Type:([System.String]) -Mandatory -Position:(1) -ValueFromPipelineByPropertyName -ValidateNotNullOrEmpty -ParameterSets:('ByValue') -ValidateSet:(@('ById', 'ByName')) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
         New-DynamicParameter -Name:('SearchByValue') -Type:([System.String[]]) -Mandatory -Position:(2) -ValueFromPipelineByPropertyName -ValidateNotNullOrEmpty -ParameterSets:('ByValue') -HelpMessage:('Specify the item which you want to search for. Supports wildcard searches using: *') -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
         New-DynamicParameter -Name:('Fields') -Type:([System.Array]) -Position:(3) -ValueFromPipelineByPropertyName -ValidateNotNullOrEmpty -HelpMessage:('An array of the fields/properties/columns you want to return from the search.') -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
-        New-DynamicParameter -Name:('Limit') -Type:([System.Int32]) -Position:(4) -ValueFromPipelineByPropertyName -ValidateRange:(1, [int]::MaxValue) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
+        New-DynamicParameter -Name:('Limit') -Type:([System.Int32]) -Position:(4) -ValueFromPipelineByPropertyName -ValidateRange:(1, [int]::MaxValue) -DefaultValue:($JCType.Limit) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
         New-DynamicParameter -Name:('Skip') -Type:([System.Int32]) -Position:(5) -ValueFromPipelineByPropertyName -ValidateRange:(1, [int]::MaxValue) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
         New-DynamicParameter -Name:('ReturnHashTable') -Type:([switch]) -Position:(6) -ValueFromPipelineByPropertyName -RuntimeParameterDictionary:($RuntimeParameterDictionary) -DefaultValue:($false) | Out-Null
         New-DynamicParameter -Name:('ReturnCount') -Type:([switch]) -Position:(7) -ValueFromPipelineByPropertyName -DefaultValue:($false) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
-        If ($Type -eq 'systeminsight')
+        If ('system' -in $JCType.TypeName.TypeNameSingular)
         {
-            New-DynamicParameter -Name:('Table') -Type:([System.String]) -Mandatory -Position:(8) -ValueFromPipelineByPropertyName -ValidateNotNullOrEmpty -ValidateSet:($JCTypes.tables) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
+            New-DynamicParameter -Name:('SystemInsights') -Type:([System.String]) -Position:(8) -ValueFromPipelineByPropertyName -ValidateNotNullOrEmpty -ValidateSet:($JCType.SystemInsights.tables) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
         }
         Return $RuntimeParameterDictionary
         # # Define the new parameters
@@ -33,7 +32,7 @@ Function Get-JCObject
         #     'ValueFromPipelineByPropertyName' = $true;
         #     'ValidateNotNullOrEmpty'          = $true;
         #     'ParameterSets'                   = 'ById';
-        #     'Alias'                           = ($JCTypes.ById) | Where-Object {$_ -ne 'Id'} | Select-Object -Unique;
+        #     'Alias'                           = ($JCType.ById) | Where-Object {$_ -ne 'Id'} | Select-Object -Unique;
         # }
         # $Param_Name = @{
         #     'Name'                            = 'Name';
@@ -43,7 +42,7 @@ Function Get-JCObject
         #     'ValueFromPipelineByPropertyName' = $true;
         #     'ValidateNotNullOrEmpty'          = $true;
         #     'ParameterSets'                   = 'ByName';
-        #     'Alias'                           = ($JCTypes.ByName) | Where-Object {$_ -ne 'Name'} | Select-Object -Unique;
+        #     'Alias'                           = ($JCType.ByName) | Where-Object {$_ -ne 'Name'} | Select-Object -Unique;
         # }
         # $Param_SearchBy = @{
         #     'Name'                            = 'SearchBy';
@@ -101,14 +100,14 @@ Function Get-JCObject
         #     'ValueFromPipelineByPropertyName' = $true;
         #     'DefaultValue'                    = $false;
         # }
-        # $Param_Table = @{
-        #     'Name'                            = 'Table';
+        # $Param_SystemInsights = @{
+        #     'Name'                            = 'SystemInsights';
         #     'Type'                            = [System.String[]];
         #     'Mandatory'                       = $false;
         #     'Position'                        = 8;
         #     'ValueFromPipelineByPropertyName' = $true;
         #     'ValidateNotNullOrEmpty'          = $true;
-        #     'ValidateSet'                     = $JCTypes.Tables;
+        #     'ValidateSet'                     = $JCType.Tables;
         # }
         # # Create the parameter array
         # $Params = @()
@@ -122,7 +121,7 @@ Function Get-JCObject
         # $Params += $Param_Skip
         # $Params += $Param_ReturnHashTable
         # $Params += $Param_ReturnCount
-        # $Params += $Param_Table
+        # $Params += $Param_SystemInsights
         # # Create new parameters
         # $RuntimeParameterDictionary = $Params |
         #     ForEach-Object { New-Object -TypeName:('PSObject') -Property:($_) } |
@@ -142,36 +141,21 @@ Function Get-JCObject
         Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDynamicParamProcess) -ArgumentList:($PsBoundParameters, $PSCmdlet, $RuntimeParameterDictionary) -NoNewScope
         Try
         {
-            # Identify the command type to run to get the object for the specified item
-            $JCTypeItem = $JCTypes | Where-Object { $Type -in $_.TypeName.TypeNameSingular }
-            If ($JCTypeItem)
+            If ($JCType)
             {
-                $TypeName = $JCTypeItem.TypeName
-                $TypeNameSingular = $TypeName.TypeNameSingular
-                $TypeNamePlural = $TypeName.TypeNamePlural
-                $Targets = $JCTypeItem.Targets
-                $TargetSingular = $Targets.TargetSingular
-                $TargetPlural = $Targets.TargetPlural
-                $Url = $JCTypeItem.Url
-                $Method = $JCTypeItem.Method
-                $ById = $JCTypeItem.ById
-                $ByName = $JCTypeItem.ByName
-                $Paginate = $JCTypeItem.Paginate
-                $SupportRegexFilter = $JCTypeItem.SupportRegexFilter
-                If (!($Limit)) { $Limit = $JCTypeItem.Limit }
                 $UrlObject = @()
                 # If searching ByValue add filters to query string and body.
                 If ($PSCmdlet.ParameterSetName -eq 'ById')
                 {
                     $SearchBy = 'ById'
                     $SearchByValue = $Id
-                    $PropertyIdentifier = $JCTypeItem.ById
+                    $PropertyIdentifier = $JCType.ById
                 }
                 ElseIf ($PSCmdlet.ParameterSetName -eq 'ByName')
                 {
                     $SearchBy = 'ByName'
                     $SearchByValue = $Name
-                    $PropertyIdentifier = $JCTypeItem.ByName
+                    $PropertyIdentifier = $JCType.ByName
                 }
                 ElseIf ($PSCmdlet.ParameterSetName -eq 'ByValue')
                 {
@@ -179,19 +163,19 @@ Function Get-JCObject
                     $SearchByValue = $SearchByValue
                     $PropertyIdentifier = Switch ($SearchBy)
                     {
-                        'ById' { $JCTypeItem.ById };
-                        'ByName' { $JCTypeItem.ByName };
+                        'ById' { $JCType.ById };
+                        'ByName' { $JCType.ByName };
                     }
                 }
-                ElseIf ($PSCmdlet.ParameterSetName -eq 'Default' -or $TypeNameSingular -in ('g_suite', 'office_365')) # Hacky logic to get g_suite and office_365 directories
+                ElseIf ($PSCmdlet.ParameterSetName -eq 'Default' -or $JCType.TypeName.TypeNameSingular -in ('g_suite', 'office_365')) # Hacky logic to get g_suite and office_365 directories
                 {
-                    If ($Type -eq 'SystemInsight')
+                    If ($SystemInsights)
                     {
-                        $UrlOut = $Url + '/' + $Table
+                        $UrlOut = $JCType.SystemInsights.Url + '/' + $SystemInsights
                     }
                     Else
                     {
-                        $UrlOut = $Url
+                        $UrlOut = $JCType.Url
                     }
                     # Build final body and url
                     $UrlObject += [PSCustomObject]@{
@@ -210,12 +194,12 @@ Function Get-JCObject
                 # Loop through each item passed in and build UrlObject
                 ForEach ($SearchByValueItem In $SearchByValue)
                 {
-                    If (!($PSCmdlet.ParameterSetName -eq 'Default' -or $TypeNameSingular -in ('g_suite', 'office_365'))) # Hacky logic to get g_suite and office_365 directories
+                    If (!($PSCmdlet.ParameterSetName -eq 'Default' -or $JCType.TypeName.TypeNameSingular -in ('g_suite', 'office_365'))) # Hacky logic to get g_suite and office_365 directories
                     {
                         $QueryStrings = @()
                         $BodyParts = @()
                         # Populate Url placeholders. Assumption is that if an endpoint requires an Id to be passed in the Url that it does not require a filter because its looking for an exact match already.
-                        If ($Url -match '({)(.*?)(})')
+                        If ($JCType.Url -match '({)(.*?)(})')
                         {
                             Write-Verbose ('Populating ' + $Matches[0] + ' with ' + $SearchByValueItem)
                             $UrlOut = $Url.Replace($Matches[0], $SearchByValueItem)
@@ -226,29 +210,22 @@ Function Get-JCObject
                             {
                                 'ById'
                                 {
-                                    If ($Type -eq 'SystemInsight')
+                                    If ($SystemInsights)
                                     {
-                                        $UrlOut = $Url + '/' + $SearchByValueItem + '/' + $Table
+                                        $UrlOut = $JCType.SystemInsights.Url + '/' + $SearchByValueItem + '/' + $SystemInsights
                                     }
                                     Else
                                     {
-                                        $UrlOut = $Url + '/' + $SearchByValueItem
+                                        $UrlOut = $JCType.Url + '/' + $SearchByValueItem
                                     }
                                 }
                                 'ByName'
                                 {
-                                    If ($Type -eq 'SystemInsight')
-                                    {
-                                        $UrlOut = $Url + '/' + $Table
-                                    }
-                                    Else
-                                    {
-                                        $UrlOut = $Url
-                                    }
+                                    $UrlOut = $JCType.Url
                                     # Add filters for exact match and wildcards
                                     If ($SearchByValueItem -match '\*')
                                     {
-                                        If ($SupportRegexFilter)
+                                        If ($JCType.SupportRegexFilter)
                                         {
                                             $BodyParts += ('"filter":[{"' + $PropertyIdentifier + '":{"$regex": "(?i)(' + $SearchByValueItem.Replace('*', ')(.*?)(') + ')"}}]').Replace('()', '')
                                         }
@@ -259,7 +236,7 @@ Function Get-JCObject
                                     }
                                     Else
                                     {
-                                        $QueryStrings += 'filter=' + $PropertyIdentifier + ':eq:' + $SearchByValueItem + '&fields=' + $ById
+                                        $QueryStrings += 'filter=' + $PropertyIdentifier + ':eq:' + $SearchByValueItem + '&fields=' + $JCType.ById
                                         $BodyParts += '"filter":[{"' + $PropertyIdentifier + '":"' + $SearchByValueItem + '"}]'
                                     }
                                 }
@@ -277,7 +254,7 @@ Function Get-JCObject
                         'SearchByValueItem' = If ($SearchByValueItem) {$SearchByValueItem} Else {$null};
                     }
                 }
-                ############################## $Results += $UrlObject
+                # Make each API call
                 ForEach ($UrlItem In $UrlObject)
                 {
                     $Url = If ($UrlItem.QueryString)
@@ -293,7 +270,7 @@ Function Get-JCObject
                     $SearchBy = $UrlItem.SearchBy
                     If ($SearchBy -eq 'ByName')
                     {
-                        $FieldsReturned = $ById
+                        $FieldsReturned = $JCType.ById
                     }
                     Else
                     {
@@ -304,28 +281,28 @@ Function Get-JCObject
                     # Build function parameters
                     $FunctionParameters = [ordered]@{ }
                     If ($Url) { $FunctionParameters.Add('Url', $Url) }
-                    If ($Method) { $FunctionParameters.Add('Method', $Method) }
+                    If ($JCType.Method) { $FunctionParameters.Add('Method', $JCType.Method) }
                     If ($Body) { $FunctionParameters.Add('Body', $Body) }
                     If ($Limit) { $FunctionParameters.Add('Limit', $Limit) }
                     If ($Skip) { $FunctionParameters.Add('Skip', $Skip) }
                     If ($ReturnHashTable)
                     {
                         $Values = $FieldsReturned
-                        $Key = If ($PropertyIdentifier) { $PropertyIdentifier } Else { $ById }
+                        $Key = If ($PropertyIdentifier) { $PropertyIdentifier } Else { $JCType.ById }
                         If ($Key) { $FunctionParameters.Add('Key', $Key) }
                         If ($Values) { $FunctionParameters.Add('Values', $Values) }
                     }
                     Else
                     {
                         If ($FieldsReturned) { $FunctionParameters.Add('Fields', $FieldsReturned) }
-                        $FunctionParameters.Add('Paginate', $Paginate)
+                        $FunctionParameters.Add('Paginate', $JCType.Paginate)
                         If ($ReturnCount -eq $true) { $FunctionParameters.Add('ReturnCount', $ReturnCount) }
                     }
                     # Hacky logic for organization
-                    If ($TypeNameSingular -eq 'organization')
+                    If ($JCType.TypeName.TypeNameSingular -eq 'organization')
                     {
                         $Organization = Invoke-JCApi @FunctionParameters
-                        $FunctionParameters['Url'] = $Url + '/' + $Organization.$ById
+                        $FunctionParameters['Url'] = $Url + '/' + $Organization.($JCType.ById)
                     }
                     # Run command
                     $Result = Switch ($ReturnHashTable)
@@ -334,46 +311,51 @@ Function Get-JCObject
                         Default { Invoke-JCApi @FunctionParameters }
                     }
                     # Hacky logic to get g_suite and office_365directories
-                    If ($TypeNameSingular -in ('g_suite', 'office_365'))
+                    If ($JCType.TypeName.TypeNameSingular -in ('g_suite', 'office_365'))
                     {
                         If ($ReturnCount -eq $true)
                         {
-                            $Directory = $Result.results | Where-Object { $_.Type -eq $TypeNameSingular }
+                            $Directory = $Result.results | Where-Object { $_.Type -eq $JCType.TypeName.TypeNameSingular }
                             $Result.totalCount = ($Directory | Measure-Object).Count
                             $Result.results = $Directory
                         }
                         Else
                         {
-                            $Result = $Result | Where-Object { $_.Type -eq $TypeNameSingular }
+                            $Result = $Result | Where-Object { $_.Type -eq $JCType.TypeName.TypeNameSingular }
                         }
                     }
                     # Validate results
                     If ($Result -and $Result.PSObject.Properties.name -notcontains 'NoContent')
                     {
-                        If ($SearchBy -and ($Result | Measure-Object).Count -gt 1 -and $Type -ne 'SystemInsight')
+                        If ($SearchBy -and ($Result | Measure-Object).Count -gt 1 -and $Url -notlike '*SystemInsights*')
                         {
-                            Write-Warning -Message:('Found "' + [string]($Result | Measure-Object).Count + '" "' + $TypeNamePlural + '" with the "' + $SearchBy.Replace('By', '').ToLower() + '" of "' + $SearchByValueItem + '"')
+                            Write-Warning -Message:('Found "' + [string]($Result | Measure-Object).Count + '" "' + $JCType.TypeName.TypeNamePlural + '" with the "' + $SearchBy.Replace('By', '').ToLower() + '" of "' + $SearchByValueItem + '"')
                         }
                         $Results += $Result
                     }
                     ElseIf ($SearchByValueItem)
                     {
-                        Switch ($Type)
+                        If ($SystemInsights)
                         {
-                            'SystemInsight' { Write-Warning ('Unable to find "' + $TypeNameSingular + '" "' + $Table + '" data for "' + $SearchByValueItem + '".') }
-                            Default { Write-Warning ('A "' + $TypeNameSingular + '" called "' + $SearchByValueItem + '" does not exist. Note the search is case sensitive.') }
+                            # Write-Warning ('Unable to find "' + $JCType.TypeName.TypeNameSingular + '" "' + $SystemInsights + '" data for "' + $SearchByValueItem + '".')
+                            # Write-Warning ('SystemInsights has not been enabled on the "' + $JCType.TypeName.TypeNameSingular + '" "' + $SearchByValueItem + '".')
+                            Write-Warning ('SystemInsights data not found in "' + $SystemInsights + '" where "' + $JCType.TypeName.TypeNameSingular + '" "' + $SearchBy.Replace('By', '').ToLower() + '" is "' + $SearchByValueItem + '".')
+                        }
+                        Else
+                        {
+                            Write-Warning ('A "' + $JCType.TypeName.TypeNameSingular + '" called "' + $SearchByValueItem + '" does not exist. Note the search is case sensitive.')
                         }
                     }
                     Else
                     {
-                        Write-Warning ('The search value is blank or no "' + $TypeNamePlural + '" have been setup in your org. SearchValue:"' + $SearchByValueItem + '"')
+                        Write-Warning ('The search value is blank or no "' + $JCType.TypeName.TypeNamePlural + '" have been setup in your org. SearchValue:"' + $SearchByValueItem + '"')
                     }
                 }
                 # Re-lookup object by id
-                If ($SearchBy -eq 'ByName')
+                If ($Results -and $SearchBy -eq 'ByName')
                 {
                     $PsBoundParameters.Remove('Name') | Out-Null
-                    $PsBoundParameters.Add('Id', $Results.$ById) | Out-Null
+                    $PsBoundParameters.Add('Id', $Results.($JCType.ById)) | Out-Null
                     $Results = Get-JCObject @PsBoundParameters
                 }
                 Else
@@ -389,7 +371,7 @@ Function Get-JCObject
             }
             Else
             {
-                Write-Error ('$Type of "' + $Type + '" not found. $Type must be:' + ($JCTypes.TypeName.TypeNameSingular -join ','))
+                Write-Error ('$Type of "' + $Type + '" not found. $Type must be:' + ($JCType.TypeName.TypeNameSingular -join ','))
             }
         }
         Catch
