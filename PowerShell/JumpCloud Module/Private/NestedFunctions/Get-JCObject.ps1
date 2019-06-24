@@ -18,7 +18,7 @@ Function Get-JCObject
         New-DynamicParameter -Name:('Skip') -Type:([System.Int32]) -Position:(5) -ValueFromPipelineByPropertyName -ValidateRange:(1, [int]::MaxValue) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
         If ('SystemInsights' -in $JCType.PSObject.Properties.Name -or (Get-PSCallStack).Command -like '*MarkdownHelp')
         {
-            New-DynamicParameter -Name:('SystemInsights') -Type:([System.String]) -Position:(6) -ValueFromPipelineByPropertyName -ValidateNotNullOrEmpty -ValidateSet:($JCType.SystemInsights.tables) -HelpMessage:('The SystemInsights table to query against.') -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
+            New-DynamicParameter -Name:('Table') -Type:([System.String]) -Position:(6) -ValueFromPipelineByPropertyName -ValidateNotNullOrEmpty -ValidateSet:($JCType.SystemInsights.tables) -HelpMessage:('The SystemInsights table to query against.') -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
         }
         New-DynamicParameter -Name:('ReturnHashTable') -Type:([switch]) -Position:(7) -ValueFromPipelineByPropertyName -RuntimeParameterDictionary:($RuntimeParameterDictionary) -DefaultValue:($false) | Out-Null
         New-DynamicParameter -Name:('ReturnCount') -Type:([switch]) -Position:(8) -ValueFromPipelineByPropertyName -DefaultValue:($false) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
@@ -64,9 +64,9 @@ Function Get-JCObject
                 }
                 ElseIf ($PSCmdlet.ParameterSetName -eq 'Default' -or $JCType.TypeName.TypeNameSingular -in ('g_suite', 'office_365')) # Hacky logic to get g_suite and office_365 directories
                 {
-                    If ($SystemInsights)
+                    If ($Table)
                     {
-                        $UrlOut = $JCType.SystemInsights.Url + '/' + $SystemInsights
+                        $UrlOut = $JCType.SystemInsights.Url + '/' + $Table
                     }
                     Else
                     {
@@ -105,9 +105,9 @@ Function Get-JCObject
                             {
                                 'ById'
                                 {
-                                    If ($SystemInsights)
+                                    If ($Table)
                                     {
-                                        $UrlOut = $JCType.SystemInsights.Url + '/' + $SearchByValueItem + '/' + $SystemInsights
+                                        $UrlOut = $JCType.SystemInsights.Url + '/' + $SearchByValueItem + '/' + $Table
                                     }
                                     Else
                                     {
@@ -230,11 +230,9 @@ Function Get-JCObject
                     }
                     ElseIf ($SearchByValueItem)
                     {
-                        If ($SystemInsights)
+                        If ($Table)
                         {
-                            # Write-Warning ('Unable to find "' + $JCType.TypeName.TypeNameSingular + '" "' + $SystemInsights + '" data for "' + $SearchByValueItem + '".')
-                            # Write-Warning ('SystemInsights has not been enabled on the "' + $JCType.TypeName.TypeNameSingular + '" "' + $SearchByValueItem + '".')
-                            Write-Warning ('SystemInsights data not found in "' + $SystemInsights + '" where "' + $JCType.TypeName.TypeNameSingular + '" "' + $SearchBy.Replace('By', '').ToLower() + '" is "' + $SearchByValueItem + '".')
+                            Write-Warning ('SystemInsights data not found in "' + $Table + '" where "' + $JCType.TypeName.TypeNameSingular + '" "' + $SearchBy.Replace('By', '').ToLower() + '" is "' + $SearchByValueItem + '".')
                         }
                         Else
                         {
@@ -255,6 +253,14 @@ Function Get-JCObject
                 }
                 Else
                 {
+                    $ById = $JCType.ById
+                    $ByName = $JCType.ByName
+                    $TypeName = $JCType.TypeName
+                    $TypeNameSingular = $TypeName.TypeNameSingular
+                    $TypeNamePlural = $TypeName.TypeNamePlural
+                    $Targets = $TypeName.Targets
+                    $TargetSingular = $Targets.TargetSingular
+                    $TargetPlural = $Targets.TargetPlural
                     # List values to add to results
                     $HiddenProperties = @('ById', 'ByName', 'TypeName', 'TypeNameSingular', 'TypeNamePlural', 'Targets', 'TargetSingular', 'TargetPlural')
                     # Set the meta info to be hidden by default
