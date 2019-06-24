@@ -3,16 +3,16 @@
 ![Zero-TouchWorkspaceONEUEM.png](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Workspace%20ONE%20UEM/diagrams/Zero-TouchWorkspaceONEUEM.png)
 
 **Table Of Contents**
-- [Prerequisites](#prerequisites)
-  - [An Apple Device Enrollment (DEP) Account](#an-apple-device-enrollment-dep-account)
-  - [A Workspace ONE UEM tenant configured as an MDM server within Apple Device Enrollment](#a-workspace-one-uem-tenant-configured-as-an-mdm-server-within-apple-device-enrollment)
-  - [A JumpCloud tenant configured for LDAP integration with a Workspace ONE UEM tenant](#a-jumpcloud-tenant-configured-for-ldap-integration-with-a-workspace-one-uem-tenant)
-  - [Users who you wish to enroll using this zero-touch workflow added to the JumpCloud LDAP directory.](#users-who-you-wish-to-enroll-using-this-zero-touch-workflow-added-to-the-jumpcloud-ldap-directory)
-- [Configuration Steps](#configuration-steps)
-  - [Step 1 - Configuring Workspace ONE UEM JumpCloud Zero-Touch Components](#step-1---configuring-workspace-one-uem-jumpcloud-zero-touch-components)
-  - [Step 2 - Configuring a Workspace ONE UEM JumpCloud Zero-Touch Product](#step-2---configuring-a-workspace-one-uem-jumpcloud-zero-touch-product)
-  - [Step 3 - Configuring a Workspace ONE UEM DEP Profile for a JumpCloud Zero-Touch Onboarding Workflow](#step-3---configuring-a-workspace-one-uem-dep-profile-for-a-jumpcloud-zero-touch-onboarding-workflow)
-- [Testing the workflow](#testing-the-workflow)
+- [Prerequisites](#Prerequisites)
+  - [An Apple Device Enrollment (DEP) Account](#An-Apple-Device-Enrollment-DEP-Account)
+  - [A Workspace ONE UEM tenant configured as an MDM server within Apple Device Enrollment](#A-Workspace-ONE-UEM-tenant-configured-as-an-MDM-server-within-Apple-Device-Enrollment)
+  - [A JumpCloud tenant configured for LDAP integration with a Workspace ONE UEM tenant](#A-JumpCloud-tenant-configured-for-LDAP-integration-with-a-Workspace-ONE-UEM-tenant)
+  - [Users who you wish to enroll using this zero-touch workflow added to the JumpCloud LDAP directory.](#Users-who-you-wish-to-enroll-using-this-zero-touch-workflow-added-to-the-JumpCloud-LDAP-directory)
+- [Configuration Steps](#Configuration-Steps)
+  - [Step 1 - Configuring Workspace ONE UEM JumpCloud Zero-Touch Components](#Step-1---Configuring-Workspace-ONE-UEM-JumpCloud-Zero-Touch-Components)
+  - [Step 2 - Configuring a Workspace ONE UEM JumpCloud Zero-Touch Product](#Step-2---Configuring-a-Workspace-ONE-UEM-JumpCloud-Zero-Touch-Product)
+  - [Step 3 - Configuring a Workspace ONE UEM DEP Profile for a JumpCloud Zero-Touch Onboarding Workflow](#Step-3---Configuring-a-Workspace-ONE-UEM-DEP-Profile-for-a-JumpCloud-Zero-Touch-Onboarding-Workflow)
+- [Testing the workflow](#Testing-the-workflow)
 
 ## Prerequisites
 
@@ -47,7 +47,6 @@ The Product which runs after DEP enrollment executes a script which:
 5. Informs the user to enter their current password for both the PREVIOUS PASSWORD and PASSWORD fields during login.
 6. Logs the user out so they can log back in.
    - The JumpCloud agent completes the necessary steps for account takeover during this login.
-   - If using JumpCloud for FileVault management the user will receive their Secure Token during their next JumpCloud login after account takeover.
 
 This script is passed four parameters using the "Run" action within "Files/Actions". These parameters must be entered in a specific order.
 
@@ -56,9 +55,6 @@ Example:
 ```
 . /tmp/jc-zero-touch.sh "Your_JumpCloud_Connect_Key" "Admin_Username" "Admin_Password" "Your_JumpCloud_API_Key"
 ```
-
-- Want to takeover this admin account during the DEP process and push down a secure password? See how to do this using the zero-touch [SystemGroupAddition](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Additions/SystemGroupAddition.md). This addition can be used to automatically add systems to a JumpCloud system group during enrollment. Any users that are in user groups that are bound to this system group will automatically be bound to these systems and their secure JumpCloud passwords will be pushed down.
-- Want to encrypt these parameters? [Find steps for how to create secure script parameters here](https://github.com/jamf/Encrypted-Script-Parameters#encrypted-script-parameters).
 
 Notification messages are displayed to end users to inform them of the onboardings steps occurring on their systems using Apple Scripts called by the Workspace ONE UEM agent.
 
