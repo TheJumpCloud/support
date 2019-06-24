@@ -16,118 +16,13 @@ Function Get-JCObject
         New-DynamicParameter -Name:('Fields') -Type:([System.Array]) -Position:(3) -ValueFromPipelineByPropertyName -ValidateNotNullOrEmpty -HelpMessage:('An array of the fields/properties/columns you want to return from the search.') -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
         New-DynamicParameter -Name:('Limit') -Type:([System.Int32]) -Position:(4) -ValueFromPipelineByPropertyName -ValidateRange:(1, [int]::MaxValue) -DefaultValue:($JCType.Limit) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
         New-DynamicParameter -Name:('Skip') -Type:([System.Int32]) -Position:(5) -ValueFromPipelineByPropertyName -ValidateRange:(1, [int]::MaxValue) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
-        New-DynamicParameter -Name:('ReturnHashTable') -Type:([switch]) -Position:(6) -ValueFromPipelineByPropertyName -RuntimeParameterDictionary:($RuntimeParameterDictionary) -DefaultValue:($false) | Out-Null
-        New-DynamicParameter -Name:('ReturnCount') -Type:([switch]) -Position:(7) -ValueFromPipelineByPropertyName -DefaultValue:($false) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
-        If ('system' -in $JCType.TypeName.TypeNameSingular)
+        If ('SystemInsights' -in $JCType.PSObject.Properties.Name -or (Get-PSCallStack).Command -like '*MarkdownHelp')
         {
-            New-DynamicParameter -Name:('SystemInsights') -Type:([System.String]) -Position:(8) -ValueFromPipelineByPropertyName -ValidateNotNullOrEmpty -ValidateSet:($JCType.SystemInsights.tables) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
+            New-DynamicParameter -Name:('SystemInsights') -Type:([System.String]) -Position:(6) -ValueFromPipelineByPropertyName -ValidateNotNullOrEmpty -ValidateSet:($JCType.SystemInsights.tables) -HelpMessage:('The SystemInsights table to query against.') -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
         }
+        New-DynamicParameter -Name:('ReturnHashTable') -Type:([switch]) -Position:(7) -ValueFromPipelineByPropertyName -RuntimeParameterDictionary:($RuntimeParameterDictionary) -DefaultValue:($false) | Out-Null
+        New-DynamicParameter -Name:('ReturnCount') -Type:([switch]) -Position:(8) -ValueFromPipelineByPropertyName -DefaultValue:($false) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
         Return $RuntimeParameterDictionary
-        # # Define the new parameters
-        # $Param_Id = @{
-        #     'Name'                            = 'Id';
-        #     'Type'                            = [System.String[]];
-        #     'Mandatory'                       = $true;
-        #     'Position'                        = 1;
-        #     'ValueFromPipelineByPropertyName' = $true;
-        #     'ValidateNotNullOrEmpty'          = $true;
-        #     'ParameterSets'                   = 'ById';
-        #     'Alias'                           = ($JCType.ById) | Where-Object {$_ -ne 'Id'} | Select-Object -Unique;
-        # }
-        # $Param_Name = @{
-        #     'Name'                            = 'Name';
-        #     'Type'                            = [System.String[]];
-        #     'Mandatory'                       = $true;
-        #     'Position'                        = 1;
-        #     'ValueFromPipelineByPropertyName' = $true;
-        #     'ValidateNotNullOrEmpty'          = $true;
-        #     'ParameterSets'                   = 'ByName';
-        #     'Alias'                           = ($JCType.ByName) | Where-Object {$_ -ne 'Name'} | Select-Object -Unique;
-        # }
-        # $Param_SearchBy = @{
-        #     'Name'                            = 'SearchBy';
-        #     'Type'                            = [System.String[]];
-        #     'Mandatory'                       = $true;
-        #     'Position'                        = 1;
-        #     'ValueFromPipelineByPropertyName' = $true;
-        #     'ValidateNotNullOrEmpty'          = $true;
-        #     'ParameterSets'                   = 'ByValue';
-        #     'ValidateSet'                     = @('ById', 'ByName');
-        # }
-        # $Param_SearchByValue = @{
-        #     'Name'                            = 'SearchByValue';
-        #     'Type'                            = [System.String[]];
-        #     'Mandatory'                       = $true;
-        #     'Position'                        = 2;
-        #     'ValueFromPipelineByPropertyName' = $true;
-        #     'ValidateNotNullOrEmpty'          = $true;
-        #     'ParameterSets'                   = 'ByValue';
-        #     'HelpMessage'                     = 'Specify the item which you want to search for. Supports wildcard searches using: *';
-        # }
-        # $Param_Fields = @{
-        #     'Name'                            = 'Fields';
-        #     'Type'                            = [System.Array];
-        #     'Position'                        = 3;
-        #     'ValueFromPipelineByPropertyName' = $true;
-        #     'ValidateNotNullOrEmpty'          = $true;
-        #     'HelpMessage'                     = 'An array of the fields/properties/columns you want to return from the search.';
-        # }
-        # $Param_Limit = @{
-        #     'Name'                            = 'Limit';
-        #     'Type'                            = [System.Int32];
-        #     'Position'                        = 4;
-        #     'ValueFromPipelineByPropertyName' = $true;
-        #     'ValidateRange'                   = (1, [int]::MaxValue);
-        # }
-        # $Param_Skip = @{
-        #     'Name'                            = 'Skip';
-        #     'Type'                            = [System.Int32];
-        #     'Position'                        = 5;
-        #     'ValueFromPipelineByPropertyName' = $true;
-        #     'ValidateRange'                   = (1, [int]::MaxValue);
-        # }
-        # $Param_ReturnHashTable = @{
-        #     'Name'                            = 'ReturnHashTable';
-        #     'Type'                            = [switch];
-        #     'Position'                        = 6;
-        #     'ValueFromPipelineByPropertyName' = $true;
-        #     'DefaultValue'                    = $false;
-        # }
-        # $Param_ReturnCount = @{
-        #     'Name'                            = 'ReturnCount';
-        #     'Type'                            = [switch];
-        #     'Position'                        = 7;
-        #     'ValueFromPipelineByPropertyName' = $true;
-        #     'DefaultValue'                    = $false;
-        # }
-        # $Param_SystemInsights = @{
-        #     'Name'                            = 'SystemInsights';
-        #     'Type'                            = [System.String[]];
-        #     'Mandatory'                       = $false;
-        #     'Position'                        = 8;
-        #     'ValueFromPipelineByPropertyName' = $true;
-        #     'ValidateNotNullOrEmpty'          = $true;
-        #     'ValidateSet'                     = $JCType.Tables;
-        # }
-        # # Create the parameter array
-        # $Params = @()
-        # # Add parameters to array
-        # $Params += $Param_Id
-        # $Params += $Param_Name
-        # $Params += $Param_SearchBy
-        # $Params += $Param_SearchByValue
-        # $Params += $Param_Fields
-        # $Params += $Param_Limit
-        # $Params += $Param_Skip
-        # $Params += $Param_ReturnHashTable
-        # $Params += $Param_ReturnCount
-        # $Params += $Param_SystemInsights
-        # # Create new parameters
-        # $RuntimeParameterDictionary = $Params |
-        #     ForEach-Object { New-Object -TypeName:('PSObject') -Property:($_) } |
-        #     New-DynamicParameter
-        # # Return parameters
-        # Return $RuntimeParameterDictionary
     }
     Begin
     {
