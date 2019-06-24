@@ -21,7 +21,8 @@
     "ByName": "domain",
     "Paginate": true,
     "SupportRegexFilter": true,
-    "Limit": 100
+    "Limit": 100,
+    "Skip": 0
   },
   {
     "Category": "JumpCloud",
@@ -42,6 +43,7 @@
     "Paginate": true,
     "SupportRegexFilter": false,
     "Limit": 100,
+    "Skip": 0,
     "TargetsExcluded": [
       {
         "TargetExcludedSingular": "user",
@@ -71,7 +73,8 @@
     "ByName": "name",
     "Paginate": true,
     "SupportRegexFilter": false,
-    "Limit": 100
+    "Limit": 100,
+    "Skip": 0
   },
   {
     "Category": "JumpCloud",
@@ -95,7 +98,8 @@
     "ByName": "name",
     "Paginate": true,
     "SupportRegexFilter": false,
-    "Limit": 100
+    "Limit": 100,
+    "Skip": 0
   },
   {
     "Category": "JumpCloud",
@@ -119,7 +123,8 @@
     "ByName": "name",
     "Paginate": true,
     "SupportRegexFilter": true,
-    "Limit": 100
+    "Limit": 100,
+    "Skip": 0
   },
   {
     "Category": "JumpCloud",
@@ -143,7 +148,8 @@
     "ByName": "name",
     "Paginate": true,
     "SupportRegexFilter": false,
-    "Limit": 100
+    "Limit": 100,
+    "Skip": 0
   },
   {
     "Category": "JumpCloud",
@@ -167,7 +173,8 @@
     "ByName": "name",
     "Paginate": true,
     "SupportRegexFilter": false,
-    "Limit": 100
+    "Limit": 100,
+    "Skip": 0
   },
   {
     "Category": "JumpCloud",
@@ -188,6 +195,7 @@
     "Paginate": true,
     "SupportRegexFilter": false,
     "Limit": 100,
+    "Skip": 0,
     "TargetsExcluded": [
       {
         "TargetExcludedSingular": "user",
@@ -226,6 +234,7 @@
     "Paginate": true,
     "SupportRegexFilter": true,
     "Limit": 100,
+    "Skip": 0,
     "TargetsExcluded": [
       {
         "TargetExcludedSingular": "user",
@@ -264,6 +273,7 @@
     "Paginate": true,
     "SupportRegexFilter": true,
     "Limit": 100,
+    "Skip": 0,
     "TargetsExcluded": [
       {
         "TargetExcludedSingular": "user_group",
@@ -290,7 +300,8 @@
       "ById": "jc_system_id",
       "ByName": null,
       "Paginate": true,
-      "Limit": 100
+      "Limit": 100,
+      "Skip": 0
     }
   },
   {
@@ -336,6 +347,7 @@
     "Paginate": true,
     "SupportRegexFilter": true,
     "Limit": 100,
+    "Skip": 0,
     "TargetsExcluded": [
       {
         "TargetExcludedSingular": "system",
@@ -382,6 +394,7 @@
     "Paginate": true,
     "SupportRegexFilter": true,
     "Limit": 100,
+    "Skip": 0,
     "TargetsExcluded": [
       {
         "TargetExcludedSingular": "active_directory",
@@ -414,7 +427,8 @@
     "ByName": "name",
     "Paginate": true,
     "SupportRegexFilter": false,
-    "Limit": 100
+    "Limit": 100,
+    "Skip": 0
   },
   {
     "Category": "Custom",
@@ -429,7 +443,8 @@
     "ByName": "name",
     "Paginate": true,
     "SupportRegexFilter": false,
-    "Limit": 100
+    "Limit": 100,
+    "Skip": 0
   },
   {
     "Category": "Custom",
@@ -444,7 +459,8 @@
     "ByName": "displayName",
     "Paginate": true,
     "SupportRegexFilter": false,
-    "Limit": 100
+    "Limit": 100,
+    "Skip": 0
   },
   {
     "Category": "Custom",
@@ -481,6 +497,7 @@
     "Paginate": true,
     "SupportRegexFilter": true,
     "Limit": 100,
+    "Skip": 0,
     "TargetsExcluded": [
       {
         "TargetExcludedSingular": "active_directory",
@@ -518,6 +535,7 @@
     "ByName": "displayName",
     "Paginate": true,
     "SupportRegexFilter": true,
-    "Limit": 100
+    "Limit": 100,
+    "Skip": 0
   }
 ]
