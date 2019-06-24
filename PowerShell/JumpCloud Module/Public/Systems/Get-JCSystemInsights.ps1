@@ -1,15 +1,13 @@
 Function Get-JCSystemInsights
 {
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = 'Default')]
     Param()
     DynamicParam
     {
-        $JCType = Get-JCType | Where-Object { $_.TypeName.TypeNameSingular -eq 'system' };
-        # Build parameter array
-        $RuntimeParameterDictionary = New-Object -TypeName System.Management.Automation.RuntimeDefinedParameterDictionary
-        New-DynamicParameter -Name:('Table') -Type:([System.String]) -Position:(0) -Mandatory -ValueFromPipelineByPropertyName -ValidateNotNullOrEmpty -HelpMessage:('The SystemInsights table to query against.') -ValidateSet:($JCType.SystemInsights.tables) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
-        New-DynamicParameter -Name:('Id') -Type:([System.String]) -Position:(1) -Mandatory -ValueFromPipelineByPropertyName -ValidateNotNullOrEmpty -ParameterSets:('ById') -HelpMessage:('Filter by the Id of the system') -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
-        New-DynamicParameter -Name:('Name') -Type:([System.String]) -Position:(2) -Mandatory -ValueFromPipelineByPropertyName -ValidateNotNullOrEmpty -ParameterSets:('ByName') -HelpMessage:('Filter by the Name of the system.') -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
+        $Type = 'system'
+        $JCTypes = Get-JCType | Where-Object { $_.TypeName.TypeNameSingular -eq $Type };
+        $RuntimeParameterDictionary = Get-JCCommonParameters -Type:($Type)
+        New-DynamicParameter -Name:('Table') -Type:([System.String]) -Position:(0) -Mandatory -ValueFromPipelineByPropertyName -ValidateNotNullOrEmpty -ParameterSets:('Default', 'ById', 'ByName') -HelpMessage:('The SystemInsights table to query against.') -ValidateSet:($JCTypes.SystemInsights.tables) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
         Return $RuntimeParameterDictionary
     }
     Begin
@@ -28,9 +26,7 @@ Function Get-JCSystemInsights
             $FunctionParameters = [ordered]@{}
             # Add input parameters from function in to hash table and filter out unnecessary parameters
             $PSBoundParameters.GetEnumerator() | Where-Object {$_.Value} | ForEach-Object {$FunctionParameters.Add($_.Key, $_.Value) | Out-Null}
-            $FunctionParameters.Add('Type', $JCType.TypeName.TypeNameSingular) | Out-Null
-            $FunctionParameters.Remove('Table') | Out-Null
-            $FunctionParameters.Add('SystemInsights', $Table) | Out-Null
+            $FunctionParameters.Add('Type', $JCTypes.TypeName.TypeNameSingular) | Out-Null
             # Run the command
             $Results += Get-JCObject @FunctionParameters
         }
