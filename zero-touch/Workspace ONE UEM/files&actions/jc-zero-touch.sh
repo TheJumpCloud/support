@@ -1,6 +1,5 @@
-# Create as action Type "Run" and pass in four arguments "Your_JumpCloud_Connect_Key" "Admin_username" "Admin_Password" "Your_JumpCloud_API_Key"
-# Example . /tmp/jc-zero-touch.sh "Your_JumpCloud_Connect_Key" "Admin_username" "Admin_Password" "Your_JumpCloud_API_Key"
-# Ensure that "Admin_username" and "Admin_Password" match the credentials entered in the "Admin Account Creation" settings for your Workspace One UEM DEP profile.
+# Create as action Type "Run" and pass in two arguments "Your_JumpCloud_Connect_Key" "Your_JumpCloud_API_Key"
+# Example . /tmp/jc-zero-touch.sh "Your_JumpCloud_Connect_Key" "Your_JumpCloud_API_Key"
 
 # Log file creation
 touch /tmp/jc-zero-touch_log.txt
@@ -11,42 +10,16 @@ loggedInUser=$(/usr/bin/python -c 'from SystemConfiguration import SCDynamicStor
 echo "$(date "+%Y-%m-%dT%H:%M:%S") Logged in user: $loggedInUser" >>/tmp/jc-zero-touch_log.txt
 
 # Installs JumpCloud Agent Install
-MacOSMinorVersion=$(sw_vers -productVersion | cut -d '.' -f 2)
-MacOSPatchVersion=$(sw_vers -productVersion | cut -d '.' -f 3)
-
-if [[ $MacOSMinorVersion -lt 13 ]]; then
-    echo "$(date "+%Y-%m-%dT%H:%M:%S") Target system is not on macOS 10.13 or greater" >>/tmp/jc-zero-touch_log.txt
-
-    curl -o /tmp/jumpcloud-agent.pkg "https://s3.amazonaws.com/jumpcloud-windows-agent/production/jumpcloud-agent.pkg"
-    mkdir -p /opt/jc
-    cat <<-EOF >/opt/jc/agentBootstrap.json
+curl -o /tmp/jumpcloud-agent.pkg "https://s3.amazonaws.com/jumpcloud-windows-agent/production/jumpcloud-agent.pkg"
+mkdir -p /opt/jc
+cat <<-EOF >/opt/jc/agentBootstrap.json
 {
 "publicKickstartUrl": "https://kickstart.jumpcloud.com:443",
 "privateKickstartUrl": "https://private-kickstart.jumpcloud.com:443",
 "connectKey": "$1"
 }
 EOF
-    installer -pkg /tmp/jumpcloud-agent.pkg -target /
-
-else
-    echo "$(date "+%Y-%m-%dT%H:%M:%S") Target system is on macOS 10.13 or greater" >>/tmp/jc-zero-touch_log.txt
-    curl --silent --output /tmp/jumpcloud-agent.pkg "https://s3.amazonaws.com/jumpcloud-windows-agent/production/jumpcloud-agent.pkg" >/dev/null
-    mkdir -p /opt/jc
-    cat <<-EOF >/opt/jc/agentBootstrap.json
-{
-"publicKickstartUrl": "https://kickstart.jumpcloud.com:443",
-"privateKickstartUrl": "https://private-kickstart.jumpcloud.com:443",
-"connectKey": "$1"
-}
-EOF
-
-    cat <<-EOF >/var/run/JumpCloud-SecureToken-Creds.txt
-$2;$3
-EOF
-    # The file JumpCloud-SecureToken-Creds.txt IS DELETED during the agent install process
-    installer -pkg /tmp/jumpcloud-agent.pkg -target /
-    echo "$(date "+%Y-%m-%dT%H:%M:%S") JumpCloud agent installed" >>/tmp/jc-zero-touch_log.txt
-fi
+installer -pkg /tmp/jumpcloud-agent.pkg -target /
 
 Sleep 8
 
@@ -91,7 +64,7 @@ userSearch=$(
         -d '{"filter":[{"username":"'${loggedInUser}'"}],"fields" : "username activated email"}' \
         -H 'Accept: application/json' \
         -H 'Content-Type: application/json' \
-        -H 'x-api-key: '${4}'' \
+        -H 'x-api-key: '${2}'' \
         "https://console.jumpcloud.com/api/search/systemusers"
 )
 
@@ -141,7 +114,7 @@ if [[ $activated == "true" ]]; then
             -X 'POST' \
             -H 'Accept: application/json' \
             -H 'Content-Type: application/json' \
-            -H 'x-api-key: '${4}'' \
+            -H 'x-api-key: '${2}'' \
             -d '{ "attributes": { "sudo": { "enabled": '${admin}',"withoutPassword": false}}   , "op": "add", "type": "user","id": "'${userID}'"}' \
             "https://console.jumpcloud.com/api/v2/systems/${systemID}/associations"
     )
@@ -152,7 +125,7 @@ if [[ $activated == "true" ]]; then
             -X 'GET' \
             -H 'Accept: application/json' \
             -H 'Content-Type: application/json' \
-            -H 'x-api-key: '${4}'' \
+            -H 'x-api-key: '${2}'' \
             "https://console.jumpcloud.com/api/v2/systems/${systemID}/associations?targets=user"
     )
 

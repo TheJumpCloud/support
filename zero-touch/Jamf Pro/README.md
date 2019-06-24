@@ -3,17 +3,17 @@
 ![zeroTouchJamfJumpCloudDiagram](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Jamf%20Pro/diagrams/Zero-TouchJamf.png)
 
 **Table Of Contents**
-- [Prerequisites](#prerequisites)
-  - [An Apple Device Enrollment (DEP) Account](#an-apple-device-enrollment-dep-account)
-  - [A Jamf Pro tenant configured as an MDM server within Apple Device Enrollment](#a-jamf-pro-tenant-configured-as-an-mdm-server-within-apple-device-enrollment)
-  - [A JumpCloud tenant configured for LDAP integration with a Jamf Pro tenant](#a-jumpcloud-tenant-configured-for-ldap-integration-with-a-jamf-pro-tenant)
-  - [Users who you wish to enroll using this zero-touch workflow added to the JumpCloud LDAP directory.](#users-who-you-wish-to-enroll-using-this-zero-touch-workflow-added-to-the-jumpcloud-ldap-directory)
-- [Configuration Steps](#configuration-steps)
-  - [Step 1 - Configuring JumpCloud and Jamf Zero-Touch Scripts](#step-1---configuring-jumpcloud-and-jamf-zero-touch-scripts)
-  - [Step 2 - Configuring JumpCloud and Jamf Zero-Touch Policies](#step-2---configuring-jumpcloud-and-jamf-zero-touch-policies)
-  - [Step 3 - Configure a JAMF Enrollment Kickstart Workflow](#step-3---configure-a-jamf-enrollment-kickstart-workflow)
-  - [Step 4 - Configuring a Jamf PreStage Enrollment Profile for a JumpCloud and Jamf Zero-Touch Workflow](#step-4---configuring-a-jamf-prestage-enrollment-profile-for-a-jumpcloud-and-jamf-zero-touch-workflow)
-- [Testing the workflow](#testing-the-workflow)
+- [Prerequisites](#Prerequisites)
+  - [An Apple Device Enrollment (DEP) Account](#An-Apple-Device-Enrollment-DEP-Account)
+  - [A Jamf Pro tenant configured as an MDM server within Apple Device Enrollment](#A-Jamf-Pro-tenant-configured-as-an-MDM-server-within-Apple-Device-Enrollment)
+  - [A JumpCloud tenant configured for LDAP integration with a Jamf Pro tenant](#A-JumpCloud-tenant-configured-for-LDAP-integration-with-a-Jamf-Pro-tenant)
+  - [Users who you wish to enroll using this zero-touch workflow added to the JumpCloud LDAP directory.](#Users-who-you-wish-to-enroll-using-this-zero-touch-workflow-added-to-the-JumpCloud-LDAP-directory)
+- [Configuration Steps](#Configuration-Steps)
+  - [Step 1 - Configuring JumpCloud and Jamf Zero-Touch Scripts](#Step-1---Configuring-JumpCloud-and-Jamf-Zero-Touch-Scripts)
+  - [Step 2 - Configuring JumpCloud and Jamf Zero-Touch Policies](#Step-2---Configuring-JumpCloud-and-Jamf-Zero-Touch-Policies)
+  - [Step 3 - Configure a JAMF Enrollment Kickstart Workflow](#Step-3---Configure-a-JAMF-Enrollment-Kickstart-Workflow)
+  - [Step 4 - Configuring a Jamf PreStage Enrollment Profile for a JumpCloud and Jamf Zero-Touch Workflow](#Step-4---Configuring-a-Jamf-PreStage-Enrollment-Profile-for-a-JumpCloud-and-Jamf-Zero-Touch-Workflow)
+- [Testing the workflow](#Testing-the-workflow)
 
 ## Prerequisites
 
@@ -45,7 +45,6 @@ A master orchestration policy which runs after DEP enrollment calls six Jamf pol
 4. Informs the user using "User Interaction" messages that they need to log out and log to complete onboarding.
 5. Inform the user to enter their current password for both the PREVIOUS PASSWORD and PASSWORD fields during login.
 6. Log the user out so they can log back in. The JumpCloud agent completes the necessary steps for account takeover during this login.
-   - If using JumpCloud for FileVault management the user will receive their Secure Token during their next system login after account takeover.
 
 A Jamf Enrollment Kickstart workflow is used to to ensure that the master orchestration policy runs on targeted machines post DEP enrollment.
 
@@ -67,10 +66,7 @@ The seven policies call five scripts. These scripts are the meat and potatoes ne
 
 Create the below five scripts in Jamf pro by navigating to "Settings" >  "Computer Management" > "Scripts"
 
-1. [jc_install_jcagent_and_service_account](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Jamf%20Pro/scripts/jc_install_jcagent_and_service_account.md) required for Mac versions 10.13.x and above, where JumpCloud will manage Filevault users.
-       - Ensure that the credentials specified for the Jamf management account configured under "Settings" >  "Global Management" > "User-Initiated Enrollment" > "Platforms" > "macOS" align with the credentials specified for the `SECURETOKEN_ADMIN_USERNAME=''` and `SECURETOKEN_ADMIN_PASSWORD=''` in the configured Jamf script.
-       - Want to takeover this admin account during the DEP process and push down a secure password? See how to do this using the zero-touch [SystemGroupAddition](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Additions/SystemGroupAddition.md). This addition can be used to automatically add systems to a JumpCloud system group during enrollment. Any users that are in user groups that are bound to this system group will automatically be bound to these systems and their secure JumpCloud passwords will be pushed down.
-       - Want to encrypt these parameters? [Find steps for how to create secure script parameters here](https://github.com/jamf/Encrypted-Script-Parameters#encrypted-script-parameters).
+1. [jc_install_jcagent](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Jamf%20Pro/scripts/jc_install_jcagent.md) 
 2. [jc_five_second_pause](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Jamf%20Pro/scripts/jc_five_second_pause.md)
 3. [jc_account_association](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Jamf%20Pro/scripts/jc_account_association.md)
 4. [jc_account_logout](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Jamf%20Pro/scripts/jc_account_logout.md)
@@ -129,8 +125,6 @@ Log in with your JumpCloud username and password. DO NOT change the  "Account na
 
 Under "Options" > "Account Settings" >  select the type of account that you would like users to be created with. The [jc_account_association](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Jamf%20Pro/scripts/jc_account_association.md) script will respect this setting when binding users to their system in JumpCloud.
 
-If you are using the [jc_install_jcagent_and_service_account](https://github.com/TheJumpCloud/support/blob/master/zero-touch/Jamf%20Pro/scripts/jc_install_jcagent_and_service_account.md) JumpCloud agent install script ensure the "Management Account" under "Account Settings" aligns with the credentials entered for the values provided for the `SECURETOKEN_ADMIN_USERNAME=''` and
-`SECURETOKEN_ADMIN_PASSWORD=''` variables in this script.
 
 ## Testing the workflow
 

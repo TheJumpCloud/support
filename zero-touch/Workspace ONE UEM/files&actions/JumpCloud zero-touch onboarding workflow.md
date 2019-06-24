@@ -50,7 +50,7 @@ Run
 ### Command Line and Arguments to run
 
 ```
-. /tmp/jc-zero-touch.sh "Your_JumpCloud_Connect_Key" "Admin_Username" "Admin_Password" "Your_JumpCloud_API_Key"
+. /tmp/jc-zero-touch.sh "Your_JumpCloud_Connect_Key" "Your_JumpCloud_API_Key"
 ```
 
 Ensure that "Admin_username" and "Admin_Password" match the credentials entered in the "Admin Account Creation" settings for your Workspace One UEM DEP profile.
@@ -63,11 +63,7 @@ These parameters are passed to the `/tmp/jc-zero-touch.sh` script and mapped to 
 
 `$1` = "Your_JumpCloud_Connect_Key"
 
-`$2` = "Admin_Username"
-
-`$3` = "Admin_Password"
-
-`$4` = "Your_JumpCloud_API_Key"
+`$2` = "Your_JumpCloud_API_Key"
 
 ### TimeOut (-1 for infinite)
 
