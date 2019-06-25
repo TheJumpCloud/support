@@ -32,7 +32,7 @@ Function Get-JCSystemInsights
         }
         Else
         {
-            Write-Error ('SystemInsights is not enabled for your org. Please email JumpCloud at {InsertEmailHere} to enable the SystemInsights feature.')
+            Write-Error ('SystemInsights is not enabled for your org. Please email JumpCloud at "accounts@jumpcloud.com" to enable the SystemInsights feature.')
         }
     }
     End
