@@ -14,14 +14,23 @@ Create an association between two object within the JumpCloud console.
 
 ### ById (Default)
 ```
-Add-JCAssociation [-Type] <String> [-Force] [-Id] <String[]> [-TargetType] <String[]> [[-TargetId] <String>]
- [[-TargetName] <String>] [[-Attributes] <PSObject>] [<CommonParameters>]
+Add-JCAssociation [-Type] <String> [-Force] [-Fields <Array>] [-Filter <String>] [-Id] <String[]>
+ [-Limit <Int32>] [-Skip <Int32>] [[-Attributes] <PSObject>] [[-TargetId] <String>] [[-TargetName] <String>]
+ [-TargetType] <String[]> [<CommonParameters>]
 ```
 
 ### ByName
 ```
-Add-JCAssociation [-Type] <String> [-Force] [-Name] <String[]> [-TargetType] <String[]> [[-TargetId] <String>]
- [[-TargetName] <String>] [[-Attributes] <PSObject>] [<CommonParameters>]
+Add-JCAssociation [-Type] <String> [-Force] [-Fields <Array>] [-Filter <String>] [-Limit <Int32>]
+ [-Name] <String[]> [-Skip <Int32>] [[-Attributes] <PSObject>] [[-TargetId] <String>] [[-TargetName] <String>]
+ [-TargetType] <String[]> [<CommonParameters>]
+```
+
+### ByValue
+```
+Add-JCAssociation [-Type] <String> [-Force] [-Fields <Array>] [-Filter <String>] [-Limit <Int32>]
+ -SearchBy <String> -SearchByValue <String[]> [-Skip <Int32>] [[-Attributes] <PSObject>] [[-TargetId] <String>]
+ [[-TargetName] <String>] [-TargetType] <String[]> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -162,6 +171,96 @@ Accepted values: command, ldap_server, policy, application, radius_server, syste
 
 Required: True
 Position: 1
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Fields
+An array of the fields/properties/columns you want to return from the search.
+
+```yaml
+Type: Array
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Filter
+Filters to narrow down search.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Limit
+{{ Fill Limit Description }}
+
+```yaml
+Type: Int32
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -SearchBy
+Specify how you want to search.
+
+```yaml
+Type: String
+Parameter Sets: ByValue
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -SearchByValue
+Specify the item which you want to search for. Supports wildcard searches using: *
+
+```yaml
+Type: String[]
+Parameter Sets: ByValue
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Skip
+Ignores the specified number of objects and then gets the remaining objects. Enter the number of objects to skip.
+
+```yaml
+Type: Int32
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
