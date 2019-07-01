@@ -1,13 +1,13 @@
 Function Get-JCSystemInsights
 {
-    [CmdletBinding(DefaultParameterSetName = 'Default')]
+    [CmdletBinding()]
     Param()
     DynamicParam
     {
         $Type = 'system'
         $JCTypes = Get-JCType | Where-Object { $_.TypeName.TypeNameSingular -eq $Type };
-        $RuntimeParameterDictionary = Get-JCCommonParameters -Type:($Type)
-        New-DynamicParameter -Name:('Table') -Type:([System.String]) -Position:(0) -Mandatory -ValueFromPipelineByPropertyName -ValidateNotNullOrEmpty -ParameterSets:('Default', 'ById', 'ByName') -HelpMessage:('The SystemInsights table to query against.') -ValidateSet:($JCTypes.SystemInsights.tables) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
+        $RuntimeParameterDictionary = New-DynamicParameter -Name:('Table') -Type:([System.String]) -Mandatory -ValueFromPipelineByPropertyName -ValidateNotNullOrEmpty -ParameterSets:('Default', 'ById', 'ByName') -HelpMessage:('The SystemInsights table to query against.') -ValidateSet:($JCTypes.SystemInsights.Table) #-RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
+        Get-JCCommonParameters -Type:($Type) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
         Return $RuntimeParameterDictionary
     }
     Begin

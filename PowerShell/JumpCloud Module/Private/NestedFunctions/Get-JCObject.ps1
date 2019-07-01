@@ -7,21 +7,20 @@ Function Get-JCObject
     DynamicParam
     {
         $JCType = Get-JCType | Where-Object { $_.TypeName.TypeNameSingular -eq $Type };
-        # Build parameter array
-        $RuntimeParameterDictionary = New-Object -TypeName System.Management.Automation.RuntimeDefinedParameterDictionary
-        New-DynamicParameter -Name:('Id') -Type([System.String[]]) -Mandatory -Position(1) -ValueFromPipelineByPropertyName -ValidateNotNullOrEmpty -ParameterSets(@('ById')) -Alias:(($JCType.ById) | Where-Object {$_ -ne 'Id'} | Select-Object -Unique) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
-        New-DynamicParameter -Name:('Name') -Type([System.String[]]) -Mandatory -Position(1) -ValueFromPipelineByPropertyName -ValidateNotNullOrEmpty -ParameterSets:(@('ByName')) -Alias:(($JCType.ByName) | Where-Object {$_ -ne 'Name'} | Select-Object -Unique) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
-        New-DynamicParameter -Name:('SearchBy') -Type:([System.String]) -Mandatory -Position:(1) -ValueFromPipelineByPropertyName -ValidateNotNullOrEmpty -ParameterSets:('ByValue') -ValidateSet:(@('ById', 'ByName')) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
-        New-DynamicParameter -Name:('SearchByValue') -Type:([System.String[]]) -Mandatory -Position:(2) -ValueFromPipelineByPropertyName -ValidateNotNullOrEmpty -ParameterSets:('ByValue') -HelpMessage:('Specify the item which you want to search for. Supports wildcard searches using: *') -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
-        New-DynamicParameter -Name:('Fields') -Type:([System.Array]) -Position:(3) -ValueFromPipelineByPropertyName -ValidateNotNullOrEmpty -HelpMessage:('An array of the fields/properties/columns you want to return from the search.') -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
-        New-DynamicParameter -Name:('Limit') -Type:([System.Int32]) -Position:(4) -ValueFromPipelineByPropertyName -ValidateRange:(1, [int]::MaxValue) -DefaultValue:($JCType.Limit) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
-        New-DynamicParameter -Name:('Skip') -Type:([System.Int32]) -Position:(5) -ValueFromPipelineByPropertyName -ValidateRange:(1, [int]::MaxValue) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
+        $RuntimeParameterDictionary = If ($Type)
+        {
+            Get-JCCommonParameters -Force:($true) -Type:($Type);
+        }
+        Else
+        {
+            Get-JCCommonParameters -Force:($true);
+        }
         If ('SystemInsights' -in $JCType.PSObject.Properties.Name -or (Get-PSCallStack).Command -like '*MarkdownHelp')
         {
-            New-DynamicParameter -Name:('Table') -Type:([System.String]) -Position:(6) -ValueFromPipelineByPropertyName -ValidateNotNullOrEmpty -ValidateSet:($JCType.SystemInsights.tables) -HelpMessage:('The SystemInsights table to query against.') -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
+            New-DynamicParameter -Name:('Table') -Type:([System.String]) -ValueFromPipelineByPropertyName -ValidateNotNullOrEmpty -ValidateSet:($JCType.SystemInsights.Table) -HelpMessage:('The SystemInsights table to query against.') -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
         }
-        New-DynamicParameter -Name:('ReturnHashTable') -Type:([switch]) -Position:(7) -ValueFromPipelineByPropertyName -RuntimeParameterDictionary:($RuntimeParameterDictionary) -DefaultValue:($false) | Out-Null
-        New-DynamicParameter -Name:('ReturnCount') -Type:([switch]) -Position:(8) -ValueFromPipelineByPropertyName -DefaultValue:($false) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
+        New-DynamicParameter -Name:('ReturnHashTable') -Type:([switch]) -ValueFromPipelineByPropertyName -RuntimeParameterDictionary:($RuntimeParameterDictionary) -DefaultValue:($false) | Out-Null
+        New-DynamicParameter -Name:('ReturnCount') -Type:([switch]) -ValueFromPipelineByPropertyName -DefaultValue:($false) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
         Return $RuntimeParameterDictionary
     }
     Begin
@@ -38,6 +37,15 @@ Function Get-JCObject
         {
             If ($JCType)
             {
+                # Set the location base location in the json config and elect the specific system insights table
+                $JCType = If ($Table -and $PSCmdlet.ParameterSetName -ne 'ByName')
+                {
+                    $JCType.SystemInsights | Where-Object {$_.Table -eq $Table}
+                }
+                Else
+                {
+                    $JCType
+                }
                 $UrlObject = @()
                 # If searching ByValue add filters to query string and body.
                 If ($PSCmdlet.ParameterSetName -eq 'ById')
@@ -64,22 +72,29 @@ Function Get-JCObject
                 }
                 ElseIf ($PSCmdlet.ParameterSetName -eq 'Default' -or $JCType.TypeName.TypeNameSingular -in ('g_suite', 'office_365')) # Hacky logic to get g_suite and office_365 directories
                 {
-                    If ($Table)
+                    # Populate url variables
+                    $UrlOut = If ($SearchBy -eq 'ById')
                     {
-                        $UrlOut = $JCType.SystemInsights.Url + '/' + $Table
+                        ($JCType.Url.Item).Replace($JCType.Url.variables, $SearchByValue)
                     }
                     Else
                     {
-                        $UrlOut = $JCType.Url
+                        $JCType.Url.List
+                    }
+                    # Populate query string filter
+                    If ($Filter)
+                    {
+                        $QueryString = '?filter=' + $Filter
                     }
                     # Build final body and url
                     $UrlObject += [PSCustomObject]@{
                         'Type'              = $Type;
                         'SearchBy'          = $null;
-                        'Url'               = $UrlOut;
-                        'QueryString'       = $null;
-                        'Body'              = $null;
                         'SearchByValueItem' = $null;
+                        'UrlPath'           = $UrlOut;
+                        'QueryString'       = $QueryString;
+                        'Body'              = $null;
+                        'UrlFull'           = $JCUrlBasePath + $UrlOut + $QueryString;
                     }
                 }
                 Else
@@ -93,73 +108,59 @@ Function Get-JCObject
                     {
                         $QueryStrings = @()
                         $BodyParts = @()
-                        # Populate Url placeholders. Assumption is that if an endpoint requires an Id to be passed in the Url that it does not require a filter because its looking for an exact match already.
-                        If ($JCType.Url -match '({)(.*?)(})')
+                        # Populate url variables
+                        $UrlOut = Switch ($SearchBy)
                         {
-                            Write-Verbose ('Populating ' + $Matches[0] + ' with ' + $SearchByValueItem)
-                            $UrlOut = $Url.Replace($Matches[0], $SearchByValueItem)
-                        }
-                        Else
-                        {
-                            Switch ($SearchBy)
+                            'ById'
                             {
-                                'ById'
+                                ($JCType.Url.Item).Replace($JCType.Url.variables, $SearchByValueItem)
+                            }
+                            'ByName'
+                            {
+                                $JCType.Url.List
+                            }
+                        }
+                        If ($SearchBy -eq 'ByName')
+                        {
+                            # Add filters for exact match and wildcards
+                            If ($SearchByValueItem -match '\*')
+                            {
+                                If ($JCType.SupportRegexFilter)
                                 {
-                                    If ($Table)
-                                    {
-                                        $UrlOut = $JCType.SystemInsights.Url + '/' + $SearchByValueItem + '/' + $Table
-                                    }
-                                    Else
-                                    {
-                                        $UrlOut = $JCType.Url + '/' + $SearchByValueItem
-                                    }
+                                    $BodyParts += ('"filter":[{"' + $PropertyIdentifier + '":{"$regex": "(?i)(' + $SearchByValueItem.Replace('*', ')(.*?)(') + ')"}}]').Replace('()', '')
                                 }
-                                'ByName'
+                                Else
                                 {
-                                    $UrlOut = $JCType.Url
-                                    # Add filters for exact match and wildcards
-                                    If ($SearchByValueItem -match '\*')
-                                    {
-                                        If ($JCType.SupportRegexFilter)
-                                        {
-                                            $BodyParts += ('"filter":[{"' + $PropertyIdentifier + '":{"$regex": "(?i)(' + $SearchByValueItem.Replace('*', ')(.*?)(') + ')"}}]').Replace('()', '')
-                                        }
-                                        Else
-                                        {
-                                            Write-Error ('The endpoint ' + $UrlOut + ' does not support wildcards in the $SearchByValueItem. Please remove "*" from "' + $SearchByValueItem + '".')
-                                        }
-                                    }
-                                    Else
-                                    {
-                                        $QueryStrings += 'filter=' + $PropertyIdentifier + ':eq:' + $SearchByValueItem + '&fields=' + $JCType.ById
-                                        $BodyParts += '"filter":[{"' + $PropertyIdentifier + '":"' + $SearchByValueItem + '"}]'
-                                    }
+                                    Write-Error ('The endpoint ' + $UrlOut + ' does not support wildcards in the $SearchByValueItem. Please remove "*" from "' + $SearchByValueItem + '".')
                                 }
-                                Default {Write-Error ('Unknown $SearchBy value: ' + $SearchBy)}
+                            }
+                            Else
+                            {
+                                $QueryStrings += 'filter=' + $PropertyIdentifier + ':eq:' + $SearchByValueItem + '&fields=' + $JCType.ById
+                                $BodyParts += '"filter":[{"' + $PropertyIdentifier + '":"' + $SearchByValueItem + '"}]'
                             }
                         }
                     }
                     # Build url info
+                    $QueryString = If ($QueryStrings) {'?' + ($QueryStrings -join '&')} Else {$null};
+                    $Body = If ($BodyParts) {'{' + ($BodyParts -join ',') + '}'} Else {$null};
                     $UrlObject += [PSCustomObject]@{
                         'Type'              = $Type;
                         'SearchBy'          = $SearchBy;
-                        'Url'               = $UrlOut;
-                        'QueryString'       = If ($QueryStrings) {'?' + ($QueryStrings -join '&')} Else {$null};
-                        'Body'              = If ($BodyParts) {'{' + ($BodyParts -join ',') + '}'} Else {$null};
-                        'SearchByValueItem' = If ($SearchByValueItem) {$SearchByValueItem} Else {$null};
+                        'SearchByValueItem' = $SearchByValueItem;
+                        'UrlPath'           = $UrlOut;
+                        'QueryString'       = $QueryString;
+                        'Body'              = $Body;
+                        'UrlFull'           = $JCUrlBasePath + $UrlOut + $QueryString;
                     }
                 }
+                #########################################################
+                # $UrlObject
+                #########################################################
                 # Make each API call
                 ForEach ($UrlItem In $UrlObject)
                 {
-                    $Url = If ($UrlItem.QueryString)
-                    {
-                        $UrlItem.Url + $UrlItem.QueryString
-                    }
-                    Else
-                    {
-                        $UrlItem.Url
-                    }
+                    $UrlFull = $UrlItem.UrlFull
                     $Body = $UrlItem.Body
                     $SearchByValueItem = $UrlItem.SearchByValueItem
                     $SearchBy = $UrlItem.SearchBy
@@ -172,10 +173,10 @@ Function Get-JCObject
                         $FieldsReturned = $Fields
                     }
                     ## Escape Url????
-                    # $Url = ([uri]::EscapeDataString($Url)
+                    # $UrlFull= ([uri]::EscapeDataString($UrlFull)
                     # Build function parameters
                     $FunctionParameters = [ordered]@{ }
-                    If ($Url) { $FunctionParameters.Add('Url', $Url) }
+                    If ($UrlFull) { $FunctionParameters.Add('Url', $UrlFull) }
                     If ($JCType.Method) { $FunctionParameters.Add('Method', $JCType.Method) }
                     If ($Body) { $FunctionParameters.Add('Body', $Body) }
                     If ($Limit) { $FunctionParameters.Add('Limit', $Limit) }
@@ -197,7 +198,7 @@ Function Get-JCObject
                     If ($JCType.TypeName.TypeNameSingular -eq 'organization')
                     {
                         $Organization = Invoke-JCApi @FunctionParameters
-                        $FunctionParameters['Url'] = $Url + '/' + $Organization.($JCType.ById)
+                        $FunctionParameters['Url'] = $UrlFull + '/' + $Organization.($JCType.ById)
                     }
                     # Run command
                     $Result = Switch ($ReturnHashTable)
@@ -222,7 +223,7 @@ Function Get-JCObject
                     # Validate results
                     If ($Result -and $Result.PSObject.Properties.name -notcontains 'NoContent')
                     {
-                        If ($SearchBy -and ($Result | Measure-Object).Count -gt 1 -and $Url -notlike '*SystemInsights*')
+                        If ($SearchBy -and ($Result | Measure-Object).Count -gt 1 -and $UrlFull -notlike '*SystemInsights*')
                         {
                             Write-Warning -Message:('Found "' + [string]($Result | Measure-Object).Count + '" "' + $JCType.TypeName.TypeNamePlural + '" with the "' + $SearchBy.Replace('By', '').ToLower() + '" of "' + $SearchByValueItem + '"')
                         }
@@ -248,6 +249,8 @@ Function Get-JCObject
                 If ($Results -and $SearchBy -eq 'ByName')
                 {
                     $PsBoundParameters.Remove('Name') | Out-Null
+                    $PsBoundParameters.Remove('SearchBy') | Out-Null
+                    $PsBoundParameters.Remove('SearchByValue') | Out-Null
                     $PsBoundParameters.Add('Id', $Results.($JCType.ById)) | Out-Null
                     $Results = Get-JCObject @PsBoundParameters
                 }
@@ -258,7 +261,7 @@ Function Get-JCObject
                     $TypeName = $JCType.TypeName
                     $TypeNameSingular = $TypeName.TypeNameSingular
                     $TypeNamePlural = $TypeName.TypeNamePlural
-                    $Targets = $TypeName.Targets
+                    $Targets = $JCType.Targets
                     $TargetSingular = $Targets.TargetSingular
                     $TargetPlural = $Targets.TargetPlural
                     # List values to add to results
