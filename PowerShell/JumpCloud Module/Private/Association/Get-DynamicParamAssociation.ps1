@@ -9,12 +9,10 @@ Function Get-DynamicParamAssociation
     {
         $RuntimeParameterDictionary = If ($Type)
         {
-            # Write-Warning ('Get-DynamicParamAssociation: TRUE')
             Get-JCCommonParameters -Force:($Force) -Type:($Type);
         }
         Else
         {
-            # Write-Warning ('Get-DynamicParamAssociation: FALSE')
             Get-JCCommonParameters -Force:($Force);
         }
         # Get type list
