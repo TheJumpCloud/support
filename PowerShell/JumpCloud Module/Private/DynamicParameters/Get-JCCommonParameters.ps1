@@ -101,6 +101,7 @@ Function Get-JCCommonParameters
             'ValueFromPipelineByPropertyName' = $true;
             'ValidateRange'                   = (1, [int]::MaxValue);
             'DefaultValue'                    = $JCType.Limit | Select-Object -Unique;
+            'HelpMessage'                     = 'The number of items you want to return per API call.';
         }
         $Param_Skip = @{
             'Name'                            = 'Skip';
@@ -108,6 +109,7 @@ Function Get-JCCommonParameters
             'ValueFromPipelineByPropertyName' = $true;
             'ValidateRange'                   = (0, [int]::MaxValue);
             'DefaultValue'                    = $JCType.Skip | Select-Object -Unique;
+            'HelpMessage'                     = 'The number of items you want to skip over per API call.';
         }
         # Add conditional parameter settings
         If ($Type -and -not $Force)
