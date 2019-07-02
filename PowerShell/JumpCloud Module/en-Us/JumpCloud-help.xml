@@ -151,7 +151,7 @@
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
           <maml:name>Limit</maml:name>
           <maml:Description>
-            <maml:para>{{ Fill Limit Description }}</maml:para>
+            <maml:para>The number of items you want to return per API call.</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
           <dev:type>
@@ -323,7 +323,7 @@
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
           <maml:name>Limit</maml:name>
           <maml:Description>
-            <maml:para>{{ Fill Limit Description }}</maml:para>
+            <maml:para>The number of items you want to return per API call.</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
           <dev:type>
@@ -482,7 +482,7 @@
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
         <maml:name>Limit</maml:name>
         <maml:Description>
-          <maml:para>{{ Fill Limit Description }}</maml:para>
+          <maml:para>The number of items you want to return per API call.</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
         <dev:type>
@@ -5307,7 +5307,7 @@
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
           <maml:name>Limit</maml:name>
           <maml:Description>
-            <maml:para>{{ Fill Limit Description }}</maml:para>
+            <maml:para>The number of items you want to return per API call.</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
           <dev:type>
@@ -5396,7 +5396,7 @@
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
           <maml:name>Limit</maml:name>
           <maml:Description>
-            <maml:para>{{ Fill Limit Description }}</maml:para>
+            <maml:para>The number of items you want to return per API call.</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
           <dev:type>
@@ -5509,7 +5509,7 @@
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
         <maml:name>Limit</maml:name>
         <maml:Description>
-          <maml:para>{{ Fill Limit Description }}</maml:para>
+          <maml:para>The number of items you want to return per API call.</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
         <dev:type>
@@ -5619,9 +5619,37 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
+        <dev:code>PS C:\&gt; Get-JCSystemInsights -Table:('os_version');</dev:code>
         <dev:remarks>
-          <maml:para>{{ Add example description here }}</maml:para>
+          <maml:para>Return os_version data for all systems that have system insights enabled.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Get-JCSystemInsights -Table:('os_version') -Id:('5d0917420905f70e36e3c0d3');</dev:code>
+        <dev:remarks>
+          <maml:para>Return os_version data for a system with a specified id.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Get-JCSystemInsights -Table:('os_version') -Id:('5d0917420905f70e36e3c0d3', '5d0bc68b8e41442ccd10254a');</dev:code>
+        <dev:remarks>
+          <maml:para>Return os_version data for systems with specific ids.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 4 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Get-JCSystemInsights -Table:('os_version') -Name:('MacBook-Pro.local_TEST');</dev:code>
+        <dev:remarks>
+          <maml:para>Return os_version data for a system with a specified name.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 5 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Get-JCSystemInsights -Table:('os_version') -Name:('MacBook-Pro.local_TEST', 'Holly-Flax-Mac.local_TEST');</dev:code>
+        <dev:remarks>
+          <maml:para>Return os_version data for systems with specific names.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -9382,7 +9410,7 @@ SystemID                 CommandID                Status
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
           <maml:name>Limit</maml:name>
           <maml:Description>
-            <maml:para>{{ Fill Limit Description }}</maml:para>
+            <maml:para>The number of items you want to return per API call.</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
           <dev:type>
@@ -9542,7 +9570,7 @@ SystemID                 CommandID                Status
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
           <maml:name>Limit</maml:name>
           <maml:Description>
-            <maml:para>{{ Fill Limit Description }}</maml:para>
+            <maml:para>The number of items you want to return per API call.</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
           <dev:type>
@@ -9689,7 +9717,7 @@ SystemID                 CommandID                Status
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
         <maml:name>Limit</maml:name>
         <maml:Description>
-          <maml:para>{{ Fill Limit Description }}</maml:para>
+          <maml:para>The number of items you want to return per API call.</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
         <dev:type>
