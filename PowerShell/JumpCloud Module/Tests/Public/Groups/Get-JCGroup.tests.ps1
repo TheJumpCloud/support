@@ -1,7 +1,5 @@
-#Connect-JCOnlineTest
-
 Describe -Tag:('JCGroup') 'Get-JCGroup 1.0' {
-
+    Connect-JCOnlineTest
     It 'Gets all groups: System and User' {
 
         $Groups = Get-JCGroup

@@ -1,11 +1,7 @@
-Connect-JCOnlineTest
-
 Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
-
+    Connect-JCOnlineTest
     It "Imports users from the ImportExample_Pester_Test using -Force" {
-
-        $UserImport = Import-JCUsersFromCSV -CSVFilePath  $Import_JCUsersFromCSV_1_1_Tests -force
-
+        $UserImport = Import-JCUsersFromCSV -CSVFilePath $Import_JCUsersFromCSV_1_1_Tests -force
     }
 
 
@@ -363,12 +359,8 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
 
     }
-
+    Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
 }
-
-Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
-
-
 Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
 
     It "Imports users from a CSV populated with telephony attributes" {
@@ -450,8 +442,8 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
 
     It "Imports users from a CSV populated with telephony, location, and user information attributes" {
 
-        $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath $ImportPath/ImportExample_AllNewAttributes.csv -force
-        $UserImportInfo = Import-Csv $ImportPath/ImportExample_AllNewAttributes.csv
+        $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath $ImportPath/ImportExample_allNewAttributes.csv -force
+        $UserImportInfo = Import-Csv $ImportPath/ImportExample_allNewAttributes.csv
 
         foreach ($User in $UserCSVImport)
         {
@@ -496,8 +488,8 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
 
     It "Imports users from a CSV populated with telephony, location, user information attributes, group additions, system binding, and custom attributes" {
 
-        $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath $ImportPath/ImportExample_AllNewAttributesAndAllCustom.csv -force
-        $UserImportInfo = Import-Csv $ImportPath/ImportExample_AllNewAttributesAndAllCustom.csv
+        $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath $ImportPath/ImportExample_allNewAttributesAndAllCustom.csv -force
+        $UserImportInfo = Import-Csv $ImportPath/ImportExample_allNewAttributesAndAllCustom.csv
 
         foreach ($User in $UserCSVImport)
         {

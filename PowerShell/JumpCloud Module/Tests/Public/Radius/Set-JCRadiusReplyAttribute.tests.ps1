@@ -1,7 +1,5 @@
-Connect-JCOnlineTest
-
 Describe -Tag:('JCRadiusReplyAttribute') "Set-JCRadiusReplyAttribute 1.9.0" {
-
+    Connect-JCOnlineTest
     It "Updates VLAN attributes on a group" {
 
         $NewGroup = New-JCUserGroup -GroupName $(New-RandomStringLower)

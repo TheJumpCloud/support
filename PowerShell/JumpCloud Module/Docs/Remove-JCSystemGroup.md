@@ -40,6 +40,7 @@ PS C:\> Remove-JCSystemGroup -GroupName 'On Prem Systems' -Force
 ```
 
 Removes the JumpCloud System Group with the name 'On Prem Systems' using the -Force Parameter. A warning message will not be presented to confirm the operation.
+
 ## PARAMETERS
 
 ### -GroupName

@@ -47,6 +47,7 @@ PS C:\> Get-JCSystemUser 5n0795a712704la4eve154r  | Set-JCSystemUser -Administra
 ```
 
 Gets all users bound to JumpCloud system with SystemID '5n0795a712704la4eve154r' and sets them as standard users. Note any users who have Global Administrator permissions would keep their Administrator permissions. To find users with Global Administrator permissions run the command: 'Get-JCUser | Where-Object sudo -EQ $true'
+
 ## PARAMETERS
 
 ### -Administrator

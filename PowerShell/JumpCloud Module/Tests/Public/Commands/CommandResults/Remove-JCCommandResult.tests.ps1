@@ -1,6 +1,5 @@
-Connect-JCOnlineTest
 Describe -Tag:('JCCommandResult') 'Remove-JCCommandResult 1.0' {
-
+    Connect-JCOnlineTest
     <#
     It "Ensures the warning message is displayed by default, Deletes a single JumpCloud command result declaring -CommandResultIT" {
         $SingleCommandResult = Get-JCCommandResult | Select-Object -Last 1

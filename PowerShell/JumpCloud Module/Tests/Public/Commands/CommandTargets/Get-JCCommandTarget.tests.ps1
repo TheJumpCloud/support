@@ -1,7 +1,5 @@
-Connect-JCOnlineTest
-
 Describe -Tag:('JCCommandTarget') 'Get-JCCommandTarget 1.3' {
-
+    Connect-JCOnlineTest
     It "Returns a JumpCloud commands system targets" {
 
         $SystemTarget = Get-JCCommandTarget -CommandID $PesterParams.CommandID
