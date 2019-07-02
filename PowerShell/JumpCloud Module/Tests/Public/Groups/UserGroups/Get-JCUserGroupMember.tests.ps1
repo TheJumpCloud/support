@@ -1,6 +1,5 @@
-Connect-JCOnlineTest
 Describe -Tag:('JCUserGroupMember') 'Get-JCUserGroupMember 1.0' {
-
+    Connect-JCOnlineTest
     It 'Gets a User Groups membership by Groupname' {
         $UserGroupMembers = Get-JCUserGroupMember -GroupName $PesterParams.UserGroupName
         $UserGroupMembers.id.Count | Should -BeGreaterThan 0

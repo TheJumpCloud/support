@@ -52,6 +52,7 @@ Remove-JCCommandTarget -CommandID 5b99777710a3690ssisr3a1w -GroupID 5j03458a232z
 ```
 
 Removes the JumpCloud system group with the GroupID '5j03458a232z115210z66913' and the systems within this group from the target list for the JumpCloud command with command ID '5b99777710a3690ssisr3a1w'
+
 ## PARAMETERS
 
 ### -CommandID

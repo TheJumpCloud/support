@@ -1,4 +1,16 @@
-#Requires -Modules Pester, JumpCloud
+Param(
+    [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0)][ValidateNotNullOrEmpty()][System.String]$TestOrgAPIKey,
+    [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 1)][ValidateNotNullOrEmpty()][System.String]$MultiTenantAPIKey,
+    [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 2)][System.String[]]$ExcludeTagList,
+    [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 3)][System.String[]]$IncludeTagList
+)
+$ModuleManifestName = 'JumpCloud.psd1'
+$ModuleManifestPath = "$PSScriptRoot/../$ModuleManifestName"
+# Install NuGet
+If (!(Get-PackageProvider -Name:('NuGet') -ErrorAction:('SilentlyContinue')))
+{
+    Install-PackageProvider NuGet -ForceBootstrap -Force | Out-Null
+}
 # Load config and helper files
 . ($PSScriptRoot + '/HelperFunctions.ps1')
 . ($PSScriptRoot + '/TestEnvironmentVariables.ps1')
@@ -24,8 +36,6 @@ $Tags = ForEach ($PesterTest In $PesterTests)
     }
 }
 # Filters on tags
-$ExcludeTagList = ('')
-$IncludeTagList = ('')
 $IncludeTags = If ($IncludeTagList)
 {
     $IncludeTagList
@@ -39,9 +49,17 @@ $PesterResultsFileXml = $PSScriptRoot + '/Pester.Tests.Results.xml'
 $PesterResultsFileCsv = $PSScriptRoot + '/Pester.Tests.Results.csv'
 $PesterResults = Invoke-Pester -Script:(@{ Path = $PSScriptRoot; Parameters = $PesterParams; }) -PassThru -Tag:($IncludeTags) -ExcludeTag:($ExcludeTagList) -OutputFormat:('NUnitXml') -OutputFile:($PesterResultsFileXml)
 # $PesterResults.TestResult | Where-Object {$_.Passed -eq $false} | Export-Csv $PesterResultsFileCsv
+$FailedTests = $PesterResults.TestResult | Where-Object {$_.Passed -eq $false}
+If ($FailedTests)
+{
+    Write-Host ('##############################################################################################################')
+    Write-Host ('##############################Error Description###############################################################')
+    Write-Host ('##############################################################################################################')
+    $FailedTests | ForEach-Object {$_.Name + '; ' + $_.FailureMessage + '; '}
+    Write-Error -Message:('Tests Failed: ' + [string]($FailedTests | Measure-Object).Count)
+}
 
-
-## Notes for future reporting dashboard for pester
+### Notes for future reporting dashboard for pester
 # Install-PackageProvider -Name:('NuGet')
 # Install-Package -Name:('extent')
 # Install-Package extent

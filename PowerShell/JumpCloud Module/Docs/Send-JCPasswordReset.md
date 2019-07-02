@@ -55,6 +55,7 @@ Get-JCUser -activated $false -filterDateProperty created -dateFilter after -date
 ```
 
 Sends an activation email to all JumpCloud users who are in an inactive state and were created in the last seven days. Users that are inactive have not yet set their JumpCloud user passwords.
+
 ## PARAMETERS
 
 ### -UserID

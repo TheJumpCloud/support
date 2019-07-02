@@ -1,7 +1,5 @@
-Connect-JCOnlineTest
-
 Describe -Tag:('JCPolicyTargetSystem') 'Get-JCPolicyTargetSystem 1.10' {
-
+    Connect-JCOnlineTest
     It "Returns all JumpCloud policy system targets using PolicyId" {
         $SystemTarget = Get-JCPolicyTargetSystem -PolicyId:($SinglePolicy.id)
         $SystemTarget.SystemID.count | Should -BeGreaterThan 0

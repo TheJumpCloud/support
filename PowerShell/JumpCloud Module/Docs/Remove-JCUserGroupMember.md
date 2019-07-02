@@ -55,6 +55,7 @@ Get-JCUser | Select-Object username, @{name='Attribute Value'; expression={$_.at
 ```
 
 Removes all JumpCloud users with a custom attribute value which contains 'Marketing' from the JumpCloud User Group 'Sales'. Note that to access the value of a nested property you must use Select-Object to access the nested property. In this example a calculated property is also used.
+
 ## PARAMETERS
 
 ### -ByID
