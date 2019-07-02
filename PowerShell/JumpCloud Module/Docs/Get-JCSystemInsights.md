@@ -8,7 +8,10 @@ schema: 2.0.0
 # Get-JCSystemInsights
 
 ## SYNOPSIS
-{{ Fill in the Synopsis }}
+JumpCloud’s System Insights feature provides admins with the ability to easily interrogate their
+fleet of systems to find important pieces of information. Using this function you
+can easily gather heightened levels of information from your fleet of JumpCloud managed
+systems.
 
 ## SYNTAX
 
@@ -37,7 +40,8 @@ Get-JCSystemInsights [-Fields <Array>] [-Filter <String>] [-Limit <Int32>] -Sear
 ```
 
 ## DESCRIPTION
-{{ Fill in the Description }}
+Using Get-JCSystemInsights will allow you to easily query JumpCloud’s RESTful API to return information from your fleet of JumpCloud managed
+systems.
 
 ## EXAMPLES
 
