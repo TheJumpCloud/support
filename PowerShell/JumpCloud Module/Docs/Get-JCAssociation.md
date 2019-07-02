@@ -15,22 +15,21 @@ The function Get-JCAssociation can be used to query an object's associations and
 ### ById (Default)
 ```
 Get-JCAssociation [-Type] <String> [-Force] [-Fields <Array>] [-Filter <String>] [-Id] <String[]>
- [-Limit <Int32>] [-Skip <Int32>] [-Direct] [-IncludeInfo] [-IncludeNames] [-IncludeVisualPath] [-Indirect]
- [-TargetType] <String[]> [<CommonParameters>]
+ [-Limit <Int32>] [-Paginate <Boolean>] [-Skip <Int32>] [-Direct] [-IncludeInfo] [-IncludeNames]
+ [-IncludeVisualPath] [-Indirect] [-TargetType] <String[]> [<CommonParameters>]
 ```
 
 ### ByName
 ```
 Get-JCAssociation [-Type] <String> [-Force] [-Fields <Array>] [-Filter <String>] [-Limit <Int32>]
- [-Name] <String[]> [-Skip <Int32>] [-Direct] [-IncludeInfo] [-IncludeNames] [-IncludeVisualPath] [-Indirect]
- [-TargetType] <String[]> [<CommonParameters>]
+ [-Name] <String[]> [-Paginate <Boolean>] [-Skip <Int32>] [-Direct] [-IncludeInfo] [-IncludeNames]
+ [-IncludeVisualPath] [-Indirect] [-TargetType] <String[]> [<CommonParameters>]
 ```
 
 ### ByValue
 ```
 Get-JCAssociation [-Type] <String> [-Force] [-Fields <Array>] [-Filter <String>] [-Limit <Int32>]
- -SearchBy <String> -SearchByValue <String[]> [-Skip <Int32>] [-Direct] [-Indirect] [-TargetType] <String[]>
- [<CommonParameters>]
+ [-Paginate <Boolean>] [-Skip <Int32>] [-Direct] [-Indirect] [-TargetType] <String[]> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -272,41 +271,26 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
-### -SearchBy
-Specify how you want to search.
-
-```yaml
-Type: String
-Parameter Sets: ByValue
-Aliases:
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -SearchByValue
-Specify the item which you want to search for. Supports wildcard searches using: *
-
-```yaml
-Type: String[]
-Parameter Sets: ByValue
-Aliases:
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
 ### -Skip
 Ignores the specified number of objects and then gets the remaining objects. Enter the number of objects to skip.
 
 ```yaml
 Type: Int32
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Paginate
+Whether or not you want to paginate through the results.
+
+```yaml
+Type: Boolean
 Parameter Sets: (All)
 Aliases:
 

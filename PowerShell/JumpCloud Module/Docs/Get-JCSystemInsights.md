@@ -8,7 +8,7 @@ schema: 2.0.0
 # Get-JCSystemInsights
 
 ## SYNOPSIS
-JumpCloud’s System Insights feature provides admins with the ability to easily interrogate their
+JumpCloud's System Insights feature provides admins with the ability to easily interrogate their
 fleet of systems to find important pieces of information. Using this function you
 can easily gather heightened levels of information from your fleet of JumpCloud managed
 systems.
@@ -17,30 +17,30 @@ systems.
 
 ### Default
 ```
-Get-JCSystemInsights -Table <String> [-Fields <Array>] [-Filter <String>] [-Limit <Int32>] [-Skip <Int32>]
- [<CommonParameters>]
+Get-JCSystemInsights -Table <String> [-Fields <Array>] [-Filter <String>] [-Limit <Int32>]
+ [-Paginate <Boolean>] [-Skip <Int32>] [<CommonParameters>]
 ```
 
 ### ById
 ```
 Get-JCSystemInsights -Table <String> [-Fields <Array>] [-Filter <String>] -Id <String[]> [-Limit <Int32>]
- [-Skip <Int32>] [<CommonParameters>]
+ [-Paginate <Boolean>] [-Skip <Int32>] [<CommonParameters>]
 ```
 
 ### ByName
 ```
 Get-JCSystemInsights -Table <String> [-Fields <Array>] [-Filter <String>] [-Limit <Int32>] -Name <String[]>
- [-Skip <Int32>] [<CommonParameters>]
+ [-Paginate <Boolean>] [-Skip <Int32>] [<CommonParameters>]
 ```
 
 ### ByValue
 ```
-Get-JCSystemInsights [-Fields <Array>] [-Filter <String>] [-Limit <Int32>] -SearchBy <String>
- -SearchByValue <String[]> [-Skip <Int32>] [<CommonParameters>]
+Get-JCSystemInsights -Table <String> [-Fields <Array>] [-Filter <String>] [-Limit <Int32>]
+ [-Paginate <Boolean>] [-Skip <Int32>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Using Get-JCSystemInsights will allow you to easily query JumpCloud’s RESTful API to return information from your fleet of JumpCloud managed
+Using Get-JCSystemInsights will allow you to easily query JumpCloud's RESTful API to return information from your fleet of JumpCloud managed
 systems.
 
 ## EXAMPLES
@@ -129,38 +129,6 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
-### -SearchBy
-Specify how you want to search.
-
-```yaml
-Type: String
-Parameter Sets: ByValue
-Aliases:
-Accepted values: ById, ByName
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -SearchByValue
-Specify the item which you want to search for.
-Supports wildcard searches using: *
-
-```yaml
-Type: String[]
-Parameter Sets: ByValue
-Aliases:
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
 ### -Skip
 Ignores the specified number of objects and then gets the remaining objects.
 Enter the number of objects to skip.
@@ -182,11 +150,26 @@ The SystemInsights table to query against.
 
 ```yaml
 Type: String
-Parameter Sets: Default, ById, ByName
+Parameter Sets: (All)
 Aliases:
 Accepted values: apps, browser_plugins, chrome_extensions, disk_encryption, firefox_addons, groups, interface_addresses, mounts, os_version, safari_extensions, system_info, users
 
 Required: True
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Paginate
+Whether or not you want to paginate through the results.
+
+```yaml
+Type: Boolean
+Parameter Sets: (All)
+Aliases:
+
+Required: False
 Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
@@ -199,13 +182,9 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
-
 ### System.Array
-
 ### System.String[]
-
 ### System.Int32
-
 ## OUTPUTS
 
 ### System.Object
