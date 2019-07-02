@@ -1,7 +1,5 @@
-Connect-JCOnlineTest
-
 Describe -Tag:('JCUser') 'Get-JCUser 1.0' {
-
+    Connect-JCOnlineTest
     It "Gets all JumpCloud users using Get-JCuser" { $Users = Get-JCUser
         $Users._id.count | Should -BeGreaterThan 1 }
 

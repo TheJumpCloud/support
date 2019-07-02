@@ -40,6 +40,7 @@ Get-JCCommandTarget -CommandID '5a99777710p3690onylo3e1g' -Groups
 ```
 
 Retrieves the JumpCloud system group targets that are associated the JumpCloud command with the Command ID '5a99777710p3690onylo3e1g'
+
 ## PARAMETERS
 
 ### -CommandID

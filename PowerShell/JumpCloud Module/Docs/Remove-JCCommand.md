@@ -40,6 +40,7 @@ PS C:\> Remove-JCCommand -CommandID 5j09o6f23dan6f4n035601d5 -Force
 ```
 
 Removes the JumpCloud Command with a CommandID of '5j09o6f23dan6f4n035601d5'. A warning message will not be presented to confirm this operation because the '-Force' parameter is used.
+
 ## PARAMETERS
 
 ### -CommandID

@@ -48,6 +48,7 @@ Get-JCGroup -Type User | Set-JCUserGroupLDAP -LDAPEnabled $true
 ```
 
 This command users the 'Get-JCGroup -Type User' command to pass all JumpCloud user groups to the 'Set-JCUserGroupLDAP' command and enables JumpCloud LDAP for all user groups within a JumpCloud tenant.
+
 ## PARAMETERS
 
 ### -GroupID

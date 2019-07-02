@@ -1,7 +1,5 @@
-Connect-JCOnlineTest
-
 Describe -Tag:('JCUser') 'New-JCUser 1.0' {
-
+Connect-JCOnlineTest
     It "Creates a new user" {
         $NewUser = New-RandomUser -domain pleasedelete"PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser
         $NewUser._id.count | Should -Be 1

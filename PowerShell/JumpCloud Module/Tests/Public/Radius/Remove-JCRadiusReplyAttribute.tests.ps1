@@ -1,7 +1,5 @@
-Connect-JCOnlineTest
-
 Describe -Tag:('JCRadiusReplyAttribute') "Remove-JCRadiusReplyAttributes 1.9.0" {
-
+    Connect-JCOnlineTest
     It "Removes a single custom radius attribute from a group" {
 
         $NewGroup = New-JCUserGroup -GroupName $(New-RandomStringLower)

@@ -1,6 +1,5 @@
-Connect-JCOnlineTest
 Describe -Tag:('JCSystemGroupMember') 'Get-JCSystemGroupMember 1.0' {
-
+    Connect-JCOnlineTest
     It 'Gets a System Groups membership by Groupname' {
 
         $MultiSystemGroupAdd = Get-JCSystem | Select-Object -Last 2 | Add-JCSystemGroupMember -GroupName $PesterParams.SystemGroupName

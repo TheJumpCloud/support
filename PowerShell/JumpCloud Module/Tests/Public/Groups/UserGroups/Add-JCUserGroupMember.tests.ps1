@@ -1,7 +1,5 @@
-Connect-JCOnlineTest
-
 Describe -Tag:('JCUserGroupMember') 'Add-JCUserGroupMember 1.0' {
-
+    Connect-JCOnlineTest
     It "Adds a JumpCloud user to a JumpCloud user group by User GroupName and Username" {
 
         $SingleUserGroupRemove = Remove-JCUserGroupMember -GroupName $PesterParams.UserGroupName -username $PesterParams.Username

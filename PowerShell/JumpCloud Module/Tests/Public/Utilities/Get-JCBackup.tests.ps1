@@ -1,7 +1,5 @@
-Connect-JCOnlineTest
-
 Describe -Tag:('JCBackup') "Get-JCBackup 1.5.0" {
-
+    Connect-JCOnlineTest
     It "Backs up JumpCloud users" {
 
         Get-JCBackup -All

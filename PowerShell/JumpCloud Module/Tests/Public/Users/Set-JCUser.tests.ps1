@@ -1,8 +1,5 @@
-
-Connect-JCOnlineTest
-
 Describe -Tag:('JCUser') 'Set-JCUser 1.0' {
-
+    Connect-JCOnlineTest
     It "Updates the firstname using -ByID and -UserID" {
 
         $NewUser = New-RandomUser "PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser
