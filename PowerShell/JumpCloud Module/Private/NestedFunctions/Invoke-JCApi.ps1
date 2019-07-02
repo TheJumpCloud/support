@@ -165,7 +165,7 @@ Function Invoke-JCApi
                         {
                             Write-Error ('Url is not a valid JumpCloud V1 or V2 endpoint')
                         }
-                        If ($ResultPopulated)
+                        If ($ResultPopulated -eq $true)
                         {
                             $Skip += $ResultCount
                             $Results += $ResultObjects
@@ -193,34 +193,31 @@ Function Invoke-JCApi
     {
         # List values to add to results
         $HiddenProperties = @('httpMetaData')
-        # Append meta info to each result record
-        Get-Variable -Name:($HiddenProperties) |
-            ForEach-Object {
-            $Variable = $_
-            If ($Results)
-            {
+        # Validate that all fields passed into the function exist in the output
+        If ($Results)
+        {
+            # Append meta info to each result record
+            Get-Variable -Name:($HiddenProperties) |
+                ForEach-Object {
+                $Variable = $_
                 $Results |
                     ForEach-Object {
                     Add-Member -InputObject:($_) -MemberType:('NoteProperty') -Name:($Variable.Name) -Value:($Variable.Value)
                 }
             }
-            Else
-            {
-                $Results += [PSCustomObject]@{
-                    'NoContent'    = $null;
-                    'httpMetaData' = $httpMetaData;
-                }
-            }
-        }
-        # Validate that all fields passed into the function exist in the output
-        If (-not ([System.String]::IsNullOrEmpty($Results)))
-        {
             # Validate results properties returned
             $Fields | ForEach-Object {
                 If ($_ -notin ($Results | Get-Member).Name)
                 {
                     Write-Warning ('API output does not contain the field "' + $_ + '". Please refer to https://docs.jumpcloud.com for API endpoint field names.')
                 }
+            }
+        }
+        Else
+        {
+            $Results += [PSCustomObject]@{
+                'NoContent'    = $null;
+                'httpMetaData' = $httpMetaData;
             }
         }
         # Set the meta info to be hidden by default

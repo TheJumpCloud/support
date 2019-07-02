@@ -38,9 +38,9 @@ Function Get-JCObject
             If ($JCType)
             {
                 # Set the location base location in the json config and elect the specific system insights table
-                $JCType = If ($Table -and $PSCmdlet.ParameterSetName -ne 'ByName')
+                $JCType = If ($PsBoundParameters.Table -and $PSCmdlet.ParameterSetName -ne 'ByName')
                 {
-                    $JCType.SystemInsights | Where-Object {$_.Table -eq $Table}
+                    $JCType.SystemInsights | Where-Object {$_.Table -eq $PsBoundParameters.Table}
                 }
                 Else
                 {
@@ -176,22 +176,22 @@ Function Get-JCObject
                     # $UrlFull= ([uri]::EscapeDataString($UrlFull)
                     # Build function parameters
                     $FunctionParameters = [ordered]@{ }
-                    If ($UrlFull) { $FunctionParameters.Add('Url', $UrlFull) }
-                    If ($JCType.Method) { $FunctionParameters.Add('Method', $JCType.Method) }
-                    If ($Body) { $FunctionParameters.Add('Body', $Body) }
-                    If ($Limit) { $FunctionParameters.Add('Limit', $Limit) }
-                    If ($Skip) { $FunctionParameters.Add('Skip', $Skip) }
+                    If (-not ([System.String]::IsNullOrEmpty($UrlFull))) { $FunctionParameters.Add('Url', $UrlFull) }
+                    If (-not ([System.String]::IsNullOrEmpty($JCType.Method))) { $FunctionParameters.Add('Method', $JCType.Method) }
+                    If (-not ([System.String]::IsNullOrEmpty($Body))) { $FunctionParameters.Add('Body', $Body) }
+                    If (-not ([System.String]::IsNullOrEmpty($Limit))) { $FunctionParameters.Add('Limit', $Limit) }
+                    If (-not ([System.String]::IsNullOrEmpty($Skip))) { $FunctionParameters.Add('Skip', $Skip) }
                     If ($ReturnHashTable)
                     {
                         $Values = $FieldsReturned
                         $Key = If ($PropertyIdentifier) { $PropertyIdentifier } Else { $JCType.ById }
-                        If ($Key) { $FunctionParameters.Add('Key', $Key) }
-                        If ($Values) { $FunctionParameters.Add('Values', $Values) }
+                        If (-not ([System.String]::IsNullOrEmpty($Key))) { $FunctionParameters.Add('Key', $Key) }
+                        If (-not ([System.String]::IsNullOrEmpty($Values))) { $FunctionParameters.Add('Values', $Values) }
                     }
                     Else
                     {
-                        If ($FieldsReturned) { $FunctionParameters.Add('Fields', $FieldsReturned) }
-                        $FunctionParameters.Add('Paginate', $JCType.Paginate)
+                        If (-not ([System.String]::IsNullOrEmpty($FieldsReturned))) { $FunctionParameters.Add('Fields', $FieldsReturned) }
+                        If (-not ([System.String]::IsNullOrEmpty($Paginate))) { $FunctionParameters.Add('Paginate', $Paginate) }
                         If ($ReturnCount -eq $true) { $FunctionParameters.Add('ReturnCount', $ReturnCount) }
                     }
                     # Hacky logic for organization
@@ -201,10 +201,13 @@ Function Get-JCObject
                         $FunctionParameters['Url'] = $UrlFull + '/' + $Organization.($JCType.ById)
                     }
                     # Run command
-                    $Result = Switch ($ReturnHashTable)
+                    $Result = If ($ReturnHashTable -eq $true)
                     {
-                        $true { Get-JCHash @FunctionParameters }
-                        Default { Invoke-JCApi @FunctionParameters }
+                        Get-JCHash @FunctionParameters
+                    }
+                    Else
+                    {
+                        Invoke-JCApi @FunctionParameters
                     }
                     # Hacky logic to get g_suite and office_365directories
                     If ($JCType.TypeName.TypeNameSingular -in ('g_suite', 'office_365'))
@@ -231,9 +234,9 @@ Function Get-JCObject
                     }
                     ElseIf ($SearchByValueItem)
                     {
-                        If ($Table)
+                        If ($PsBoundParameters.Table)
                         {
-                            Write-Warning ('SystemInsights data not found in "' + $Table + '" where "' + $JCType.TypeName.TypeNameSingular + '" "' + $SearchBy.Replace('By', '').ToLower() + '" is "' + $SearchByValueItem + '".')
+                            Write-Warning ('SystemInsights data not found in "' + $PsBoundParameters.Table + '" where "' + $SearchBy.Replace('By', '').ToLower() + '" is "' + $SearchByValueItem + '".')
                         }
                         Else
                         {
@@ -256,19 +259,32 @@ Function Get-JCObject
                 }
                 Else
                 {
-                    $ById = $JCType.ById
-                    $ByName = $JCType.ByName
-                    $TypeName = $JCType.TypeName
-                    $TypeNameSingular = $TypeName.TypeNameSingular
-                    $TypeNamePlural = $TypeName.TypeNamePlural
-                    $Targets = $JCType.Targets
-                    $TargetSingular = $Targets.TargetSingular
-                    $TargetPlural = $Targets.TargetPlural
-                    # List values to add to results
-                    $HiddenProperties = @('ById', 'ByName', 'TypeName', 'TypeNameSingular', 'TypeNamePlural', 'Targets', 'TargetSingular', 'TargetPlural')
-                    # Set the meta info to be hidden by default
                     If ($Results)
                     {
+                        $ById = $JCType.ById
+                        $ByName = $JCType.ByName
+                        $TypeName = $JCType.TypeName
+                        $TypeNameSingular = $TypeName.TypeNameSingular
+                        $TypeNamePlural = $TypeName.TypeNamePlural
+                        $Targets = $JCType.Targets
+                        $TargetSingular = $Targets.TargetSingular
+                        $TargetPlural = $Targets.TargetPlural
+                        $Table = $JCType.Table
+                        # List values to add to results
+                        $HiddenProperties = @('ById', 'ByName', 'TypeName', 'TypeNameSingular', 'TypeNamePlural', 'Targets', 'TargetSingular', 'TargetPlural', 'Table')
+                        # Append meta info to each result record
+                        Get-Variable -Name:($HiddenProperties) |
+                            ForEach-Object {
+                            $Variable = $_
+                            $Results |
+                                ForEach-Object {
+                                If (-not ([System.String]::IsNullOrEmpty($Variable.Value)))
+                                {
+                                    Add-Member -InputObject:($_) -MemberType:('NoteProperty') -Name:($Variable.Name) -Value:($Variable.Value);
+                                }
+                            }
+                        }
+                        # Set the meta info to be hidden by default
                         $Results = Hide-ObjectProperty -Object:($Results) -HiddenProperties:($HiddenProperties)
                     }
                 }

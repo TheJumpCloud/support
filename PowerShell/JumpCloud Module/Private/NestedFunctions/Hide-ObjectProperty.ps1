@@ -56,19 +56,6 @@ Function Hide-ObjectProperty
             $PSStandardMembers = [System.Management.Automation.PSMemberInfo[]]@($defaultDisplayPropertySet)
             # Add the list of standard members
             Add-Member -InputObject:($_) -MemberType:('MemberSet') -Name:('PSStandardMembers') -Value:($PSStandardMembers) -Force
-            # Append meta info to each object record
-            ForEach ($HiddenProperty In $PropertiesToHide)
-            {
-                $Variable = Get-Variable -Name:($HiddenProperty) -ErrorAction:('SilentlyContinue')
-                If ($Variable)
-                {
-                    Add-Member -InputObject:($_) -MemberType:('NoteProperty') -Name:($Variable.Name) -Value:($Variable.Value) -Force
-                }
-                Else
-                {
-                    Add-Member -InputObject:($_) -MemberType:('NoteProperty') -Name:($HiddenProperty) -Value:($_.$HiddenProperty) -Force
-                }
-            }
         }
         Else
         {

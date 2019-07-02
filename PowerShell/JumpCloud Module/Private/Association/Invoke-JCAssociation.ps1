@@ -272,7 +272,17 @@
     {
         If ($Results)
         {
+            # List values to add to results
             $HiddenProperties = @('httpMetaData')
+            # Append meta info to each result record
+            Get-Variable -Name:($HiddenProperties) |
+                ForEach-Object {
+                $Variable = $_
+                $Results |
+                    ForEach-Object {
+                    Add-Member -InputObject:($_) -MemberType:('NoteProperty') -Name:($Variable.Name) -Value:($Variable.Value)
+                }
+            }
             Return Hide-ObjectProperty -Object:($Results) -HiddenProperties:($HiddenProperties)
         }
     }
