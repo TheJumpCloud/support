@@ -7,8 +7,11 @@ Function Get-JCCommonParameters
     )
     Begin
     {
+    }
+    Process
+    {
         # Get type list
-        $JCType = If ($Type)
+        $script:JCType = If ($Type)
         {
             Get-JCType -Type:($Type) | Where-Object { $_.Category -eq 'JumpCloud'};
         }
@@ -16,9 +19,6 @@ Function Get-JCCommonParameters
         {
             Get-JCType | Where-Object { $_.Category -eq 'JumpCloud'};
         }
-    }
-    Process
-    {
         # Define the new parameters
         $Param_Id = @{
             'Name'                            = 'Id';
@@ -47,7 +47,7 @@ Function Get-JCCommonParameters
             'ParameterSets'                   = @('ByValue');
             'ValidateSet'                     = @('ById', 'ByName');
             'HelpMessage'                     = 'Specify how you want to search.';
-            'DontShow'                        = $false;
+            'DontShow'                        = $true;
         }
         $Param_SearchByValue = @{
             'Name'                            = 'SearchByValue';
@@ -57,7 +57,7 @@ Function Get-JCCommonParameters
             'ValidateNotNullOrEmpty'          = $true;
             'ParameterSets'                   = @('ByValue');
             'HelpMessage'                     = 'Specify the item which you want to search for. Supports wildcard searches using: *';
-            'DontShow'                        = $false;
+            'DontShow'                        = $true;
         }
         $Param_Fields = @{
             'Name'                            = 'Fields';
@@ -81,15 +81,15 @@ Function Get-JCCommonParameters
                 Else
                 {
                     $FilterParts = $_ -split ':'
-                    $FilterProperties = (($JCType.ByName, $JCType.ById) + $JCType.SystemInsights.ByName + $JCType.SystemInsights.ById) | Select-Object -Unique
+                    $FilterProperties = ((($JCType.ByName, $JCType.ById) + $JCType.SystemInsights.ByName + $JCType.SystemInsights.ById) | Select-Object -Unique)
                     $FilterOperators = $JCType.FilterOperators + $JCType.SystemInsights.FilterOperators | Select-Object -Unique
                     If ($FilterParts[0] -notin $FilterProperties)
                     {
-                        Throw ('Invalid filter property provided "' + $FilterParts[0] + '". Accepted filter properties: ' + ($FilterProperties -join ', '))
+                        Throw ('Invalid filter property provided "' + $FilterParts[0] + '". Accepted filter properties: "' + ($FilterProperties -join ', ') + '"')
                     }
                     If ($FilterParts[1] -notin $FilterOperators)
                     {
-                        Throw ('Invalid filter operator provided "' + $FilterParts[1] + '". Accepted filter operators: ' + $FilterOperators -join ', ')
+                        Throw ('Invalid filter operator provided "' + $FilterParts[1] + '". Accepted filter operators: "' + ($FilterOperators -join ', ') + '"')
                     }
                     $true
                 }
@@ -110,6 +110,13 @@ Function Get-JCCommonParameters
             'ValidateRange'                   = (0, [int]::MaxValue);
             'DefaultValue'                    = $JCType.Skip | Select-Object -Unique;
             'HelpMessage'                     = 'The number of items you want to skip over per API call.';
+        }
+        $Param_Paginate = @{
+            'Name'                            = 'Paginate';
+            'Type'                            = [System.Boolean];
+            'ValueFromPipelineByPropertyName' = $true;
+            'DefaultValue'                    = $JCType.Paginate | Select-Object -Unique;
+            'HelpMessage'                     = 'Whether or not you want to paginate through the results.';
         }
         # Add conditional parameter settings
         If ($Type -and -not $Force)
