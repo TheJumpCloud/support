@@ -47,10 +47,38 @@ systems.
 
 ### Example 1
 ```powershell
-PS C:\> {{ Add example code here }}
+PS C:\> Get-JCSystemInsights -Table:('os_version');
 ```
 
-{{ Add example description here }}
+Return os_version data for all systems that have system insights enabled.
+
+### Example 2
+```powershell
+PS C:\> Get-JCSystemInsights -Table:('os_version') -Id:('5d0917420905f70e36e3c0d3');
+```
+
+Return os_version data for a system with a specified id.
+
+### Example 3
+```powershell
+PS C:\> Get-JCSystemInsights -Table:('os_version') -Id:('5d0917420905f70e36e3c0d3', '5d0bc68b8e41442ccd10254a');
+```
+
+Return os_version data for systems with specific ids.
+
+### Example 4
+```powershell
+PS C:\> Get-JCSystemInsights -Table:('os_version') -Name:('MacBook-Pro.local_TEST');
+```
+
+Return os_version data for a system with a specified name.
+
+### Example 5
+```powershell
+PS C:\> Get-JCSystemInsights -Table:('os_version') -Name:('MacBook-Pro.local_TEST', 'Holly-Flax-Mac.local_TEST');
+```
+
+Return os_version data for systems with specific names.
 
 ## PARAMETERS
 
@@ -100,7 +128,7 @@ Accept wildcard characters: False
 ```
 
 ### -Limit
-{{ Fill Limit Description }}
+The number of items you want to return per API call.
 
 ```yaml
 Type: Int32

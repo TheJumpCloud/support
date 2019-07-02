@@ -192,7 +192,7 @@ Accept wildcard characters: False
 ```
 
 ### -Limit
-{{ Fill Limit Description }}
+The number of items you want to return per API call.
 
 ```yaml
 Type: Int32
