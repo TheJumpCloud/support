@@ -2214,7 +2214,7 @@
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
           <maml:name>Limit</maml:name>
           <maml:Description>
-            <maml:para>{{ Fill Limit Description }}</maml:para>
+            <maml:para>The number of items you want to return per API call.</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
           <dev:type>
@@ -2405,7 +2405,7 @@
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
           <maml:name>Limit</maml:name>
           <maml:Description>
-            <maml:para>{{ Fill Limit Description }}</maml:para>
+            <maml:para>The number of items you want to return per API call.</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
           <dev:type>
@@ -2588,7 +2588,7 @@
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
         <maml:name>Limit</maml:name>
         <maml:Description>
-          <maml:para>{{ Fill Limit Description }}</maml:para>
+          <maml:para>The number of items you want to return per API call.</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
         <dev:type>
