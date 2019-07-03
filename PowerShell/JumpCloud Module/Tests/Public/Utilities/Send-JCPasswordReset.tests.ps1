@@ -1,7 +1,5 @@
-Connect-JCOnlineTest
-
 Describe -Tag:('JCPasswordReset') "Sent-JCPasswordReset 1.6.0" {
-
+    Connect-JCOnlineTest
     It "Sends a single password reset email by username" {
 
         $SingleResetEmail = Send-JCPasswordReset -username $PesterParams.Username

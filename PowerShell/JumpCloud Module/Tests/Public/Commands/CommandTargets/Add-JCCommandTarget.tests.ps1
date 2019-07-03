@@ -1,7 +1,5 @@
-Connect-JCOnlineTest
-
 Describe -Tag:('JCCommandTarget') 'Add-JCCommandTarget 1.3' {
-
+    Connect-JCOnlineTest
     It "Adds a single system to a JupmCloud command" {
 
         $TargetRemove = Remove-JCCommandTarget -CommandID $PesterParams.CommandID -SystemID $PesterParams.SystemID

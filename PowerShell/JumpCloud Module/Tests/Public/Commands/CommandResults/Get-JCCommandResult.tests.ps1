@@ -1,7 +1,5 @@
-Connect-JCOnlineTest
-
 Describe -Tag:('JCCommandResult') 'Get-JCCommandResults 1.0' {
-
+    Connect-JCOnlineTest
     It "Gets all JumpCloud command results" {
 
         $CommandResults = Get-JCCommandResult
@@ -44,20 +42,6 @@ Describe -Tag:('JCCommandResult') 'Get-JCCommandResults 1.0' {
 
         $SingleCommandResult = Get-JCCommandResult | Select-Object -Last 1 | Get-JCCommandResult
         $SingleCommandResult._id | Should -Not -BeNullOrEmpty
-    }
-
-    It "Gets all JumpCloud commandresults using -ByID passed through the pipeline" {
-
-        $CommandResults = Get-JCCommandResult | Get-JCCommandResult -ByID
-        $CommandResults._id.count | Should -BeGreaterThan 1
-
-    }
-
-    It "Gets all JumpCloud commandresults passed through the pipeline with out declaring -ByID" {
-
-        $CommandResults = Get-JCCommandResult | Get-JCCommandResult
-        $CommandResults._id.count | Should -BeGreaterThan 1
-
     }
 
 }

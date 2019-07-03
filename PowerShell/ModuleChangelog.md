@@ -1,3 +1,26 @@
+## 1.13.0
+
+Release Date: June 17, 2019
+
+#### RELEASE NOTES
+
+```
+Changes for automating build and testing of module.
+```
+
+#### FEATURES:
+
+N/A
+
+#### IMPROVEMENTS:
+
+Updated test files to contain code within the describe blocks.
+Renamed private function files to match the same name of the function within.
+
+#### BUG FIXES:
+
+N/A
+
 ## 1.12.1
 
 Release Date: June 17, 2019
