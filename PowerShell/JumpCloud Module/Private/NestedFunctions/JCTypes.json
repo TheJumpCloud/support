@@ -112,10 +112,8 @@
     ],
     "Url": {
       "List": "/api/v2/directories",
-      "Item": "/api/v2/directories/{id}",
-      "Variables": [
-        "{id}"
-      ]
+      "Item": "/api/v2/directories",
+      "Variables": []
     },
     "Method": "GET",
     "ById": "id",
@@ -174,10 +172,8 @@
     ],
     "Url": {
       "List": "/api/v2/directories",
-      "Item": "/api/v2/directories/{id}",
-      "Variables": [
-        "{id}"
-      ]
+      "Item": "/api/v2/directories",
+      "Variables": []
     },
     "Method": "GET",
     "ById": "id",
@@ -714,10 +710,8 @@
     "Targets": null,
     "Url": {
       "List": "/api/v2/directories",
-      "Item": "/api/v2/directories/{id}",
-      "Variables": [
-        "{id}"
-      ]
+      "Item": "/api/v2/directories",
+      "Variables": []
     },
     "Method": "GET",
     "ById": "id",

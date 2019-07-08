@@ -70,12 +70,19 @@ Function Get-JCObject
                         'ByName' { $JCType.ByName };
                     }
                 }
-                ElseIf ($PSCmdlet.ParameterSetName -eq 'Default' -or $JCType.TypeName.TypeNameSingular -in ('g_suite', 'office_365')) # Hacky logic to get g_suite and office_365 directories
+                ElseIf ($PSCmdlet.ParameterSetName -eq 'Default')
                 {
                     # Populate url variables
                     $UrlOut = If ($SearchBy -eq 'ById')
                     {
-                        ($JCType.Url.Item).Replace($JCType.Url.variables, $SearchByValue)
+                        If ($JCType.Url.variables)
+                        {
+                            ($JCType.Url.Item).Replace($JCType.Url.variables, $SearchByValue)
+                        }
+                        Else
+                        {
+                            $JCType.Url.Item
+                        }
                     }
                     Else
                     {
@@ -104,7 +111,7 @@ Function Get-JCObject
                 # Loop through each item passed in and build UrlObject
                 ForEach ($SearchByValueItem In $SearchByValue)
                 {
-                    If (!($PSCmdlet.ParameterSetName -eq 'Default' -or $JCType.TypeName.TypeNameSingular -in ('g_suite', 'office_365'))) # Hacky logic to get g_suite and office_365 directories
+                    If (!($PSCmdlet.ParameterSetName -eq 'Default'))
                     {
                         $QueryStrings = @()
                         $BodyParts = @()
@@ -113,7 +120,14 @@ Function Get-JCObject
                         {
                             'ById'
                             {
-                                ($JCType.Url.Item).Replace($JCType.Url.variables, $SearchByValueItem)
+                                If ($JCType.Url.variables)
+                                {
+                                    ($JCType.Url.Item).Replace($JCType.Url.variables, $SearchByValueItem)
+                                }
+                                Else
+                                {
+                                    $JCType.Url.Item
+                                }
                             }
                             'ByName'
                             {
@@ -209,8 +223,7 @@ Function Get-JCObject
                     {
                         Invoke-JCApi @FunctionParameters
                     }
-                    # Hacky logic to get g_suite and office_365directories
-                    If ($JCType.TypeName.TypeNameSingular -in ('g_suite', 'office_365'))
+                    If ($JCType.TypeName.TypeNameSingular -in ('g_suite', 'office_365')) # Hacky logic to get g_suite and office_365 directories
                     {
                         If ($ReturnCount -eq $true)
                         {
@@ -249,7 +262,7 @@ Function Get-JCObject
                     }
                 }
                 # Re-lookup object by id
-                If ($Results -and $SearchBy -eq 'ByName')
+                If ($Results -and $SearchBy -eq 'ByName' -and $JCType.TypeName.TypeNameSingular -notin ('g_suite', 'office_365')) # Hacky logic to get g_suite and office_365 directories
                 {
                     $PsBoundParameters.Remove('Name') | Out-Null
                     $PsBoundParameters.Remove('SearchBy') | Out-Null
