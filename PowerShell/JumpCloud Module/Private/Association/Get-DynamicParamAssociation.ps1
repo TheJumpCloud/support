@@ -31,7 +31,7 @@ Function Get-DynamicParamAssociation
         $Param_TargetType = @{
             'Name'                            = 'TargetType';
             'Type'                            = [System.String[]];
-            'Mandatory'                       = $true;
+            'Mandatory'                       = $false;
             'ValueFromPipelineByPropertyName' = $true;
             'ValidateNotNullOrEmpty'          = $true;
             'Alias'                           = ('TargetSingular');
