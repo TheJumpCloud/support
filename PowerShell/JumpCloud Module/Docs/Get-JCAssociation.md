@@ -16,20 +16,20 @@ The function Get-JCAssociation can be used to query an object's associations and
 ```
 Get-JCAssociation [-Type] <String> [-Force] [-Fields <Array>] [-Filter <String>] [-Id] <String[]>
  [-Limit <Int32>] [-Paginate <Boolean>] [-Skip <Int32>] [-Direct] [-IncludeInfo] [-IncludeNames]
- [-IncludeVisualPath] [-Indirect] [-TargetType] <String[]> [<CommonParameters>]
+ [-IncludeVisualPath] [-Indirect] [[-TargetType] <String[]>] [<CommonParameters>]
 ```
 
 ### ByName
 ```
 Get-JCAssociation [-Type] <String> [-Force] [-Fields <Array>] [-Filter <String>] [-Limit <Int32>]
  [-Name] <String[]> [-Paginate <Boolean>] [-Skip <Int32>] [-Direct] [-IncludeInfo] [-IncludeNames]
- [-IncludeVisualPath] [-Indirect] [-TargetType] <String[]> [<CommonParameters>]
+ [-IncludeVisualPath] [-Indirect] [[-TargetType] <String[]>] [<CommonParameters>]
 ```
 
 ### ByValue
 ```
 Get-JCAssociation [-Type] <String> [-Force] [-Fields <Array>] [-Filter <String>] [-Limit <Int32>]
- [-Paginate <Boolean>] [-Skip <Int32>] [-Direct] [-Indirect] [-TargetType] <String[]> [<CommonParameters>]
+ [-Paginate <Boolean>] [-Skip <Int32>] [-Direct] [-Indirect] [[-TargetType] <String[]>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -203,7 +203,7 @@ Parameter Sets: (All)
 Aliases: TargetSingular
 Accepted values: user, user_group, system, system_group, policy, command, application, g_suite, ldap_server, office_365, radius_server
 
-Required: True
+Required: False
 Position: 5
 Default value: None
 Accept pipeline input: True (ByPropertyName)

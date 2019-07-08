@@ -16,21 +16,21 @@ Create an association between two object within the JumpCloud console.
 ```
 Add-JCAssociation [-Type] <String> [-Force] [-Fields <Array>] [-Filter <String>] [-Id] <String[]>
  [-Limit <Int32>] [-Paginate <Boolean>] [-Skip <Int32>] [[-Attributes] <PSObject>] [[-TargetId] <String>]
- [[-TargetName] <String>] [-TargetType] <String[]> [<CommonParameters>]
+ [[-TargetName] <String>] [[-TargetType] <String[]>] [<CommonParameters>]
 ```
 
 ### ByName
 ```
 Add-JCAssociation [-Type] <String> [-Force] [-Fields <Array>] [-Filter <String>] [-Limit <Int32>]
  [-Name] <String[]> [-Paginate <Boolean>] [-Skip <Int32>] [[-Attributes] <PSObject>] [[-TargetId] <String>]
- [[-TargetName] <String>] [-TargetType] <String[]> [<CommonParameters>]
+ [[-TargetName] <String>] [[-TargetType] <String[]>] [<CommonParameters>]
 ```
 
 ### ByValue
 ```
 Add-JCAssociation [-Type] <String> [-Force] [-Fields <Array>] [-Filter <String>] [-Limit <Int32>]
  [-Paginate <Boolean>] [-Skip <Int32>] [[-Attributes] <PSObject>] [[-TargetId] <String>]
- [[-TargetName] <String>] [-TargetType] <String[]> [<CommonParameters>]
+ [[-TargetName] <String>] [[-TargetType] <String[]>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -153,7 +153,7 @@ Parameter Sets: (All)
 Aliases: TargetSingular
 Accepted values: user, user_group, system, system_group, policy, command, application, g_suite, ldap_server, office_365, radius_server
 
-Required: True
+Required: False
 Position: 5
 Default value: None
 Accept pipeline input: True (ByPropertyName)
