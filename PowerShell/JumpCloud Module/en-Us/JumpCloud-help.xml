@@ -259,7 +259,7 @@
           </dev:type>
           <dev:defaultValue>False</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="4" aliases="domain, displayName, username">
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="4" aliases="displayName, username">
           <maml:name>Name</maml:name>
           <maml:Description>
             <maml:para>The name of the object.</maml:para>
@@ -395,7 +395,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="4" aliases="domain, displayName, username">
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="4" aliases="displayName, username">
         <maml:name>Name</maml:name>
         <maml:Description>
           <maml:para>The name of the object.</maml:para>
@@ -2319,7 +2319,7 @@
           </dev:type>
           <dev:defaultValue>False</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="4" aliases="domain, displayName, username">
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="4" aliases="displayName, username">
           <maml:name>Name</maml:name>
           <maml:Description>
             <maml:para>The name of the object.</maml:para>
@@ -2525,7 +2525,7 @@
         </dev:type>
         <dev:defaultValue>False</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="4" aliases="domain, displayName, username">
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="4" aliases="displayName, username">
         <maml:name>Name</maml:name>
         <maml:Description>
           <maml:para>The name of the object.</maml:para>
@@ -9506,7 +9506,7 @@ SystemID                 CommandID                Status
           </dev:type>
           <dev:defaultValue>False</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="4" aliases="domain, displayName, username">
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="4" aliases="displayName, username">
           <maml:name>Name</maml:name>
           <maml:Description>
             <maml:para>The name of the object.</maml:para>
@@ -9630,7 +9630,7 @@ SystemID                 CommandID                Status
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="4" aliases="domain, displayName, username">
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="4" aliases="displayName, username">
         <maml:name>Name</maml:name>
         <maml:Description>
           <maml:para>The name of the object.</maml:para>

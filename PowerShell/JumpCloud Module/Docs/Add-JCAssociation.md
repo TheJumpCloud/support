@@ -105,7 +105,7 @@ The name of the object.
 ```yaml
 Type: String[]
 Parameter Sets: ByName
-Aliases: domain, displayName, username
+Aliases: displayName, username
 
 Required: True
 Position: 4
