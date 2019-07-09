@@ -121,7 +121,7 @@ Function Get-JCSystem ()
         [Parameter(
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'SearchFilter')]
-        [ValidateSet('created', 'active', 'agentVersion', 'allowMultiFactorAuthentication', 'allowPublicKeyAuthentication', 'allowSshPasswordAuthentication', 'allowSshRootLogin', 'arch', 'created', 'displayName', 'hostname', 'lastContact', 'modifySSHDConfig', 'organization', 'os', 'remoteIP', 'serialNumber', 'sshdParams', 'systemTimezone', 'templateName', 'version')]
+        [ValidateSet('created', 'active', 'agentVersion', 'allowMultiFactorAuthentication', 'allowPublicKeyAuthentication', 'allowSshPasswordAuthentication', 'allowSshRootLogin', 'arch', 'created', 'displayName', 'hostname', 'lastContact', 'modifySSHDConfig', 'organization', 'os', 'remoteIP', 'serialNumber', 'sshdParams', 'systemTimezone', 'templateName', 'version', 'fde')]
         [String[]]$returnProperties
 
     )
@@ -184,7 +184,7 @@ Function Get-JCSystem ()
 
     {
         Write-Verbose 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {Connect-JCOnline}
+        if ($JCAPIKEY.length -ne 40) { Connect-JCOnline }
 
         Write-Verbose 'Populating API headers'
         $hdrs = @{
@@ -290,7 +290,7 @@ Function Get-JCSystem ()
                             switch ($param.value)
                             {
                                 before { $DateQuery = '$lt' }
-                                after { $DateQuery = '$gt'}
+                                after { $DateQuery = '$gt' }
                             }
 
                             continue
@@ -310,17 +310,17 @@ Function Get-JCSystem ()
                         if (($param.Value -match '.+?\*$') -and ($param.Value -match '^\*.+?'))
                         {
                             # Front and back wildcard
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "$Value"})
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "$Value" })
                         }
                         elseif ($param.Value -match '.+?\*$')
                         {
                             # Back wildcard
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "^$Value"})
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "^$Value" })
                         }
                         elseif ($param.Value -match '^\*.+?')
                         {
                             # Front wild card
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "$Value`$"})
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "$Value`$" })
                         }
                         else
                         {
@@ -332,7 +332,7 @@ Function Get-JCSystem ()
 
                     if ($filterDateProperty)
                     {
-                        (($Search.filter).GetEnumerator()).add($DateProperty, @{$DateQuery = $Timestamp})
+                        (($Search.filter).GetEnumerator()).add($DateProperty, @{$DateQuery = $Timestamp })
                     }
 
 
