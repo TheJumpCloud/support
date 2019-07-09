@@ -11,6 +11,7 @@ Function Invoke-GitCommit
     $UserName = 'AzurePipelines'
     Invoke-Git -Arguments:('config user.email "' + $UserEmail + '";')
     Invoke-Git -Arguments:('config user.name "' + $UserName + '";')
+    Invoke-Git -Arguments:('pull;')
     Invoke-Git -Arguments:('add -A;')
     Invoke-Git -Arguments:('status;')
     Invoke-Git -Arguments:('commit -m ' + '"' + $CommitMessage + '";')
