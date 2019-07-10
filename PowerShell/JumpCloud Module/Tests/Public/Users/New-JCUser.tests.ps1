@@ -492,13 +492,7 @@ Describe -Tag:('JCUser') "New-JCUser MFA with enrollment periods 1.10" {
 
         $Newuser = New-RandomUser -domain "deleteme" | New-JCUser -enable_user_portal_multifactor $true
 
-        $DateCheck = (Get-Date).AddDays(7).AddHours(7) # +7 hours for UTC offset
-
         $Newuser.mfa.exclusion | Should -Be $true
-
-        $DateConfirm = New-TimeSpan -Start $Newuser.mfa.exclusionUntil -End $DateCheck
-
-        $DateConfirm.Seconds | Should -BeLessThan 2
 
         $Newuser | Remove-JCUser -ByID -force
 
@@ -510,13 +504,7 @@ Describe -Tag:('JCUser') "New-JCUser MFA with enrollment periods 1.10" {
 
         $Newuser = New-RandomUser -domain "deleteme" | New-JCUser -enable_user_portal_multifactor $true -EnrollmentDays $EnrollmentDays
 
-        $DateCheck = (Get-Date).AddDays($EnrollmentDays).AddHours(7) # +7 hours for UTC offset
-
         $Newuser.mfa.exclusion | Should -Be $true
-
-        $DateConfirm = New-TimeSpan -Start $Newuser.mfa.exclusionUntil -End $DateCheck
-
-        $DateConfirm.Seconds | Should -BeLessThan 2
 
         $Newuser | Remove-JCUser -ByID -force
 
@@ -528,13 +516,7 @@ Describe -Tag:('JCUser') "New-JCUser MFA with enrollment periods 1.10" {
 
         $Newuser = New-RandomUser -domain "deleteme" | New-JCUser -enable_user_portal_multifactor $true -EnrollmentDays $EnrollmentDays
 
-        $DateCheck = (Get-Date).AddDays($EnrollmentDays).AddHours(7) # +7 hours for UTC offset
-
         $Newuser.mfa.exclusion | Should -Be $true
-
-        $DateConfirm = New-TimeSpan -Start $Newuser.mfa.exclusionUntil -End $DateCheck
-
-        $DateConfirm.Seconds | Should -BeLessThan 2
 
         $Newuser | Remove-JCUser -ByID -force
 
@@ -545,13 +527,7 @@ Describe -Tag:('JCUser') "New-JCUser MFA with enrollment periods 1.10" {
 
         $NewUser = New-RandomUser -domain "deleteme"-Attributes | New-JCUser -NumberOfCustomAttributes 2 -enable_user_portal_multifactor $True
 
-        $DateCheck = (Get-Date).AddDays(7).AddHours(7) # +7 hours for UTC offset
-
         $Newuser.mfa.exclusion | Should -Be $true
-
-        $DateConfirm = New-TimeSpan -Start $Newuser.mfa.exclusionUntil -End $DateCheck
-
-        $DateConfirm.Seconds | Should -BeLessThan 2
 
         $Newuser | Remove-JCUser -ByID -force
 
@@ -563,13 +539,7 @@ Describe -Tag:('JCUser') "New-JCUser MFA with enrollment periods 1.10" {
 
         $NewUser = New-RandomUser -domain "deleteme"-Attributes | New-JCUser -NumberOfCustomAttributes 2 -enable_user_portal_multifactor $True -EnrollmentDays $EnrollmentDays
 
-        $DateCheck = (Get-Date).AddDays($EnrollmentDays).AddHours(7) # +7 hours for UTC offset
-
         $Newuser.mfa.exclusion | Should -Be $true
-
-        $DateConfirm = New-TimeSpan -Start $Newuser.mfa.exclusionUntil -End $DateCheck
-
-        $DateConfirm.Seconds | Should -BeLessThan 2
 
         $Newuser | Remove-JCUser -ByID -force
 
@@ -594,13 +564,7 @@ Describe -Tag:('JCUser') "New-JCUser MFA with enrollment periods 1.10" {
 
         $NewUser = $newUserObj | % { New-JCUser -enable_user_portal_multifactor $_.enable_user_portal_multifactor -EnrollmentDays $_.EnrollmentDays -firstName $_.firstName -lastName $_.Lastname -username $_.username -email $_.email }
 
-        $DateCheck = (Get-Date).AddDays($EnrollmentDays).AddHours(7) # +7 hours for UTC offset
-
         $Newuser.mfa.exclusion | Should -Be $true
-
-        $DateConfirm = New-TimeSpan -Start $Newuser.mfa.exclusionUntil -End $DateCheck
-
-        $DateConfirm.Seconds | Should -BeLessThan 2
 
         $Newuser | Remove-JCUser -ByID -force
 
