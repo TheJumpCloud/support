@@ -127,7 +127,7 @@ The UID if this user is used to create the the **ENCRYPTED_KEY** variable.
 
 The enrollment user account will have the same displayName and username as the first account pushed down to your system via your MDM.
 
-Create an enrollment user account and set the password for this account to be exactly the same as the settings configured in [Step 7](Insert_Link)
+Create an enrollment user account and set the password for this account to be exactly the same as the settings configured in [Step 7](#Step-7---Configuring-MDM-PreStage-Settings)
 
 Example:
 
@@ -137,11 +137,11 @@ This account is taken over during DEP enrollment and then disabled on the machin
 
 - Decryption User
 
-The UID of the decryption user account will be used to populate the "ENCRYPTED_KEY=''" variable in [Step 3](Insert_Link). Create a JumpCloud account and set a secure password for this account.
+The UID of the decryption user account will be used to populate the "ENCRYPTED_KEY=''" variable in [Step 3](#Step-3---Populating-the-Bootstrap-template-script-variables). Create a JumpCloud account and set a secure password for this account.
 
 Under this users "User Security Settings and Permissions" check the box for "Enable as Admin/Sudo on all system associations" and "Enforce UID/GID consistency for all systems" and enter in a numerical "Unix UID" and "Unix GID" value over 7 characters.
 
-Take note of the value populated for the "Unix UID" as this will be used in [Step 3](Insert_Link) to create the "ENCRYPTED_KEY=''" variable.
+Take note of the value populated for the "Unix UID" as this will be used in [Step 3](#Step-3---Populating-the-Bootstrap-template-script-variables) to create the "ENCRYPTED_KEY=''" variable.
 
 Example:
 
@@ -404,7 +404,7 @@ The below workflows can be used to activate **Pending** JumpCloud users. Pending
 
 ![pending_user_company_email](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/pending_company_email.png?raw=true)
 
-- [pending_user_company_email]([insert_link](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/user_configuration_modules/pending_user_company_email.sh))
+- [pending_user_company_email](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/user_configuration_modules/pending_user_company_email.sh)
 
 The JumpCloud user "email" field is used to lookup and locate a user by company email.
 
@@ -420,7 +420,7 @@ The below workflows can be used to activate **Pending** or **Active** JumpCloud 
 
 ![pending_or_active_user_company_email_and_secret](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/company_secret.png?raw=true)
 
-- [pending_or_active_user_company_email_and_secret]([insert_link](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/user_configuration_modules/pending_or_active_user_company_email_and_secret.sh))
+- [pending_or_active_user_company_email_and_secret](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/user_configuration_modules/pending_or_active_user_company_email_and_secret.sh)
 
 The input fields "Company Email" is used to query the "EMAIL" attribute for existing JumpCloud users. The input field "Secret" is used to query the "employeeIdentifier" attribute. The "employeeIdentifier" field for users must be populated with a value for this workflow to succeed. The "employeeIdentifier" attribute is required to be unique per user.
 
