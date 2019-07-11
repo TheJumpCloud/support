@@ -58,7 +58,7 @@ The JumpCloud Bootstrap configuration script that is configured in this tutorial
 
 ## Zero-Touch Enrollment Workflow Diagram
 
-[Insert Image]()
+![zero_touch_enrollment_workflow](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/diagrams/zero_touch_enrollment_workflow.png?raw=true)
 
 ## Component Definitions
 
@@ -100,22 +100,20 @@ The JumpCloud Bootstrap configuration script that is configured in this tutorial
 
 ## Configuration Steps
 
-[Insert image]()
+![configuration_steps](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/diagrams/configuration_steps.png?raw=true)
 
 ### Step 1 - Download the JumpCloud Bootstrap template script
 
-Download the jumpcloud_bootstrap_template.sh file and open this file in your code editor of choice.
+Download the [jumpcloud_bootstrap_template.sh file](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/jumpcloud_bootstrap_template.sh) and open this file in your code editor of choice.
 
 The JumpCloud Solution Architecture team loves to work with SH files in the code editor Visual Studio Code.
 
   - Want to try VS Code? [Click here to download](https://code.visualstudio.com/) 
-
-
 ### Step 2 - Configuring the JumpCloud Tenant For DEP Zero-Touch
 
 **Configure JumpCloud Settings**
 
-[Insert image]()
+![Org Settings](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/UID_GID_Mgmt.png?raw=true)
 
 To configure a JumpCloud tenant for zero-touch DEP integration you will first need to enable the setting for `Enable UID/GID management for users` in the JumpCloud "Settings"->"General" pane.
 
@@ -133,7 +131,7 @@ Create an enrollment user account and set the password for this account to be ex
 
 Example:
 
-[Insert Image]()
+![Welcome User](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/Welcome_User.png?raw=true)
 
 This account is taken over during DEP enrollment and then disabled on the machine after DEP enrollment completes.
 
@@ -147,7 +145,7 @@ Take note of the value populated for the "Unix UID" as this will be used in [Ste
 
 Example:
 
-[Insert Image]()
+![Decryption User](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/IT_Service_UID.png?raw=true)
 
 - Default Admin (Optional)
 
@@ -157,17 +155,17 @@ For this user ensure that the box "Enable as Admin/Sudo on all system associatio
 
 Example:
 
-[Insert Image]()
+![Default Admin](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/Default_Admin.png?raw=true)
 
 **Configure JumpCloud Groups**
 
-- DEP  Group
+- DEP Enrollment User Group
 
-Create a JumpCloud User Group named "DEP  Group" under the "Users" settings for this group add two users: the **Enrollment User** and the **Decryption User**.
+Create a JumpCloud User Group named "DEP Enrollment User Group" under the "Users" settings for this group add two users: the **Enrollment User** and the **Decryption User**.
 
 Example: 
 
-[Insert Image]()
+![DEP E User Group](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/DEP_Enrollment_User_Group.png?raw=true)
 
 - DEP Enrollment System Group
 
@@ -175,7 +173,7 @@ Create a JumpCloud System Group named "DEP Enrollment System Group" under the "U
 
 Example:
 
-[Insert Image]()
+![Dep E System Group](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/DEP_Post_Enroll_System_Group.png?raw=true)
 
 After creating the group take note of the "DEP  Enrollment System Group" JumpCloud ID value.
 
@@ -183,20 +181,20 @@ To find the JumpCloud ID value for a JumpCloud system group navigate to the "GRO
 
 Example:
 
-[Insert Image]()
+![Dep E System Group ID](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/DEP_Enrollment_System_Group_ID.png?raw=true)
 
 
 - DEP Post Enrollment User Group
 
 Create a JumpCloud User Group named "DEP Post Enrollment User Group" under the "Users" settings for this group add one user: **Default Admin**.
 
-[Insert Image]()
+![DEP Post Enrollment User Group](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/DEP_Post_Enroll_User_Group.png?raw=true)
 
 - DEP Post Enrollment System Group
 
 Create a JumpCloud System Group named "DEP Post Enrollment System Group" under the "User Groups" settings for this group add the group "DEP Post Enrollment User Group"
 
-[Insert Image]()
+![DEP Post Enrollment System Group](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/DEP_Post_Enroll_System_Group.png?raw=true)
 
 After creating the group take note of the "DEP Post Enrollment System Group" JumpCloud ID value.
 
@@ -204,7 +202,7 @@ To find the JumpCloud ID value for a JumpCloud system group navigate to the "GRO
 
 Example:
 
-[Insert Image]()
+![DEP Post Enrollment System Group ID](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/DEP_Post_Enroll_System_Group_ID.png?raw=true)
 
 ### Step 3 - Populating the Bootstrap template script variables
 
@@ -288,13 +286,13 @@ Need help finding your JumpCloud API key? See KB:[Obtaining Your API Key](https:
 
 To find the UID of the **Decryption User** expand the "User Security Settings and Permissions" and find this value under "Unix UID"
 
-[Insert Image]()
+![UID Image](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/Decryption_User_UID_Circled.png?raw=true)
 
 3. JumpCloud Organization ID
 
 The JumpCloud Organization ID can be found under the "Settings"-> "General" pane in the JumpCloud admin console.
 
-[Insert Image]()
+![Organization ID Image](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/Org_ID_Circled.png?raw=true)
 
 Use the `EncryptKey()` function to generate the **ENCRYPTED_KEY** variable using these three parameters.
 
@@ -333,7 +331,7 @@ c57c341a4a38f132019770f1689bbe7530bdfef3
 ```
 
 - `DECRYPT_USER=''`
-  
+
 Enter the username (case sensitive) of the **Decryption User** created in [Step 2](#step-2---configuring-the-jumpcloud-tenant-for-dep-zero-touch)
 
 - `DEP_ENROLLMENT_GROUP_ID=''`
@@ -404,17 +402,15 @@ Within the  `prestage_user_enrollment` folder in the zero-touch support GitHub r
 
 The below workflows can be used to activate **Pending** JumpCloud users. Pending users are users who have not set a password.
 
-[Insert Image]()
+![pending_user_company_email](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/pending_company_email.png?raw=true)
 
-
-- [pending_user_company_email](insert_link)
+- [pending_user_company_email]([insert_link](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/user_configuration_modules/pending_user_company_email.sh))
 
 The JumpCloud user "email" field is used to lookup and locate a user by company email.
 
-[Insert Image]()
+![pending_user_personal_email](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/personal_email.png?raw=true)
 
-
-- [pending_user_personal_email]()
+- [pending_user_personal_email](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/user_configuration_modules/pending_user_personal_email.sh)
 
 There is no defined field for "personal email" in JumpCloud so the "description" field is used to lookup and locate a user by personal email. The "Description" field for users must be populated with a value for this workflow to succeed.
 
@@ -422,21 +418,22 @@ There is no defined field for "personal email" in JumpCloud so the "description"
 
 The below workflows can be used to activate **Pending** or **Active** JumpCloud users. Pending users are users who have not set a password. Active users are users who have already set a pass code. A "secret" is required for these workflows. This is a value that is populated for the JumpCloud "employeeIdentifier" field and provided to employees prior to zero-touch DEP enrollment. The secret secures the enrollment and provides an additional factor of verification to activate or update the JumpCloud account.
 
-- [pending_or_active_user_company_email_and_secret](insert_link)
+![pending_or_active_user_company_email_and_secret](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/company_secret.png?raw=true)
+
+- [pending_or_active_user_company_email_and_secret]([insert_link](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/user_configuration_modules/pending_or_active_user_company_email_and_secret.sh))
 
 The input fields "Company Email" is used to query the "EMAIL" attribute for existing JumpCloud users. The input field "Secret" is used to query the "employeeIdentifier" attribute. The "employeeIdentifier" field for users must be populated with a value for this workflow to succeed. The "employeeIdentifier" attribute is required to be unique per user.
 
-[Insert Image]()
+![pending_or_active_user_personal_email_and_secret](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/personal_email_secret.png?raw=true)
 
-- [pending_or_active_user_personal_email_and_secret](insert_link)
+- [pending_or_active_user_personal_email_and_secret](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/user_configuration_modules/pending_or_active_user_personal_email_and_secret.sh)
 
 The input fields "Personal Email" is used to query the "Description" attribute for existing JumpCloud users. The input field "Secret" is used to query the "employeeIdentifier" attribute. The "employeeIdentifier" field for users must be populated with a value for this workflow to succeed. The "employeeIdentifier" attribute is required to be unique per user.
 
-[Insert Image]()
+![pending_or_active_user_last_name_and_secret](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/lastname_secret.png?raw=true)
 
-- [pending_or_active_user_last_name_and_secret](insert_link)
+- [pending_or_active_user_last_name_and_secret](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/user_configuration_modules/pending_or_active_user_last_name_and_secret.sh)
 
-[Insert Image]()
 
 The input fields "Last Name" is used to query the "lastname" attribute for existing JumpCloud users. The input field "Secret" is used to query the "employeeIdentifier" attribute. The "employeeIdentifier" field for users must be populated with a value for this workflow to succeed. The "employeeIdentifier" attribute is required to be unique per user.
 
@@ -488,7 +485,7 @@ Need help? See:[Creating a new project](https://github.com/munki/munki-pkg#creat
 
 - Move the `jumpcloud_bootstrap_template.sh` to the project folder
 
-[Insert Image]()
+![payload move](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/payload_folder.png?raw=true)
 
 - Update the build-info file and add signing information
 
@@ -520,7 +517,7 @@ Example build-info.json:
 
 - Create a postinstall script file in the `scripts` folder
 
-[Insert Image]()
+![postinstall script](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/postinstall_script.png?raw=true)
 
 In the postinstall script add in the following payload
 
@@ -582,7 +579,7 @@ In the MDM DEP Apple PreStage settings enable the MDM to "Automatically create a
 
 Example: 
 
-[Insert Image]()
+![Simple Settings](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/mdm_enrollment_user.png?raw=true)
 
 ### Step 8 - Configuring the PKG for MDM deployment
 
@@ -590,17 +587,17 @@ Example:
 
 Upload the PKG to the MDM
 
-[Insert Image]()
+![PKG Upload](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/simple_mdm_pkg1.png?raw=true)
 
 - PKG Settings
 
 Ensure the PKG is configured for "Device Level Installation". By setting the PKG to "Device Level Installation" the PKG will install as soon as a device enrolls into MDM.
 
-[Insert Image]()
+![Device Level](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/simple_device_level_install.png?raw=true)
 
 - PKG Scoping
 
-Scope the PKG to auto deploy to the 
+Scope the PKG to auto deploy to the machines you wish to configure for zero-touch configuration.
 
 ### Step 9 - Creating a Privacy Preference Policy
 
@@ -618,7 +615,7 @@ Apple Event Targets
 **Code Requirement:**identifier "com.apple.systemevents" and anchor apple
 **Access:** Allow
 
-[Insert Image]()
+![Privacy P](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/privacy_preference.png?raw=true)
 
 ## Testing the workflow
 
