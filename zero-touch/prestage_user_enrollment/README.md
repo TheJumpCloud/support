@@ -604,15 +604,21 @@ Scope the PKG to auto deploy to the machines you wish to configure for zero-touc
 Create the below "Privacy Preference" profile. This will allow the osascript to run which prompts users to input a secure password.
 
 **Identifier type:** path
+
 **Identifier:**/System/Library/PrivateFrameworks/CommerceKit.framework/Versions/A/Resources/storedownloadd
+
 **Code requirement:** identifier "com.apple.storedownloadd" and anchor apple
+
 **Static code validation:** No
 
 Apple Event Targets
 
 **Identifier Type:** bundle ID
+
 **Identifier:** com.apple.systemevents
+
 **Code Requirement:**identifier "com.apple.systemevents" and anchor apple
+
 **Access:** Allow
 
 ![Privacy P](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/privacy_preference.png?raw=true)
