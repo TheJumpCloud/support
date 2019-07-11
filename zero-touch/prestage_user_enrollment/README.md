@@ -617,7 +617,7 @@ Apple Event Targets
 
 **Identifier:** com.apple.systemevents
 
-**Code Requirement:**identifier "com.apple.systemevents" and anchor apple
+**Code Requirement:** identifier "com.apple.systemevents" and anchor apple
 
 **Access:** Allow
 
