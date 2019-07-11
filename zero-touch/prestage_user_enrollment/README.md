@@ -173,7 +173,7 @@ Create a JumpCloud System Group named "DEP Enrollment System Group" under the "U
 
 Example:
 
-![Dep E System Group](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/DEP_Post_Enroll_System_Group.png?raw=true)
+![Dep E System Group](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/DEP_Enrollment_System_Group_ID.png?raw=true)
 
 After creating the group take note of the "DEP  Enrollment System Group" JumpCloud ID value.
 
