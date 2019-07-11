@@ -20,7 +20,7 @@
     - [Pending User Configuration Modules](#Pending-User-Configuration-Modules)
     - [Pending or Active User Configuration Modules](#Pending-or-Active-User-Configuration-Modules)
   - [Step 5 - Populating the Bootstrap template script with a User Configuration Module](#Step-5---Populating-the-Bootstrap-template-script-with-a-User-Configuration-Module)
-  - [Step 6 - Creaking a PKG from the Bootstrap template script using munkiPKG](#Step-6---Creaking-a-PKG-from-the-Bootstrap-template-script-using-munkiPKG)
+  - [Step 6 - Creating a PKG from the Bootstrap template script using munkiPKG](#Step-6---Creating-a-PKG-from-the-Bootstrap-template-script-using-munkiPKG)
   - [Step 7 - Configuring MDM PreStage Settings](#Step-7---Configuring-MDM-PreStage-Settings)
   - [Step 8 - Configuring the PKG for MDM deployment](#Step-8---Configuring-the-PKG-for-MDM-deployment)
   - [Step 9 - Creating a Privacy Preference Policy](#Step-9---Creating-a-Privacy-Preference-Policy)
@@ -471,7 +471,7 @@ Copy in the entire contents of the  **User Configuration Settings** code block f
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ```
 
-### Step 6 - Creaking a PKG from the Bootstrap template script using munkiPKG
+### Step 6 - Creating a PKG from the Bootstrap template script using munkiPKG
 
 - Creating a project using munkiPKG
 
