@@ -97,7 +97,7 @@ function DEPNotifyReset() {
     ACTIVE_USER=$(/usr/bin/python -c 'from SystemConfiguration import SCDynamicStoreCopyConsoleUser; import sys; username = (SCDynamicStoreCopyConsoleUser(None, None, None) or [None])[0]; username = [username,""][username in [u"loginwindow", None, u""]]; sys.stdout.write(username + "\n");')
     rm /var/tmp/depnotify* >/dev/null 2>&1
     rm /var/tmp/com.depnotify.* >/dev/null 2>&1
-    rm /Users/"$ACTIVE_USER"/Library/Preferences/menu.nomad.DEPNotify* >/dev/null 2>&1
+    rm "$ACTIVE_USER_HOME"/Library/Preferences/menu.nomad.DEPNotify* >/dev/null 2>&1
     killall cfprefsd
 }
 
@@ -158,10 +158,13 @@ done
 # Capture active user username
 ACTIVE_USER=$(/usr/bin/python -c 'from SystemConfiguration import SCDynamicStoreCopyConsoleUser; import sys; username = (SCDynamicStoreCopyConsoleUser(None, None, None) or [None])[0]; username = [username,""][username in [u"loginwindow", None, u""]]; sys.stdout.write(username + "\n");')
 
+# Capture active user home folder path
+ACTIVE_USER_HOME=$(eval echo ~$ACTIVE_USER)
+
 # Captures active users UID
 uid=$(id -u "$ACTIVE_USER")
-DEP_N_USER_INPUT_PLIST="/Users/$ACTIVE_USER/Library/Preferences/menu.nomad.DEPNotifyUserInput.plist"
-DEP_N_CONFIG_PLIST="/Users/$ACTIVE_USER/Library/Preferences/menu.nomad.DEPNotify.plist"
+DEP_N_USER_INPUT_PLIST="$ACTIVE_USER_HOME/Library/Preferences/menu.nomad.DEPNotifyUserInput.plist"
+DEP_N_CONFIG_PLIST="$ACTIVE_USER_HOME/Library/Preferences/menu.nomad.DEPNotify.plist"
 defaults write "$DEP_N_CONFIG_PLIST" pathToPlistFile "$DEP_N_USER_INPUT_PLIST"
 
 ################################################################################
@@ -255,12 +258,13 @@ DEPenrollmentGroupAdd=$(
 # Waiting for DECRYPT_USER_ID to be bound to system
 echo "Status: Pulling Security Settings from JumpCloud" >>"$DEP_N_LOG"
 
-DECRYPT_USER_ID=$(dscl . -read /Users/$DECRYPT_USER | grep UniqueID | cut -d " " -f 2)
+DECRYPT_USER_HOME=$(eval echo ~$DECRYPT_USER)
+DECRYPT_USER_ID=$(dscl . -read "$DECRYPT_USER_HOME" | grep UniqueID | cut -d " " -f 2)
 
 while [ -z "$DECRYPT_USER_ID" ]; do
     echo "$(date "+%Y-%m-%dT%H:%M:%S"): Waiting for DECRYPT_USER_ID for user $DECRYPT_USER" >>"$DEP_N_DEBUG"
     sleep 1
-    DECRYPT_USER_ID=$(dscl . -read /Users/$DECRYPT_USER | grep UniqueID | cut -d " " -f 2)
+    DECRYPT_USER_ID=$(dscl . -read "$DECRYPT_USER_HOME" | grep UniqueID | cut -d " " -f 2)
 done
 
 echo "Status: Security Settings Configured" >>"$DEP_N_LOG"
