@@ -2,15 +2,20 @@ Function Remove-JCAssociation
 {
     [CmdletBinding(DefaultParameterSetName = 'ById')]
     Param(
-        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 1, HelpMessage = 'The type of the object.')][ValidateNotNullOrEmpty()][ValidateSet('command', 'ldap_server', 'policy', 'application', 'radius_server', 'system_group', 'system', 'user_group', 'user', 'g_suite', 'office_365')][Alias('TypeNameSingular')][string]$Type
-        , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 2, HelpMessage = 'Bypass user confirmation and ValidateSet when adding or removing associations.')][ValidateNotNullOrEmpty()][Switch]$Force
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'The type of the object.')][ValidateNotNullOrEmpty()][ValidateSet('command', 'ldap_server', 'policy', 'application', 'radius_server', 'system_group', 'system', 'user_group', 'user', 'g_suite', 'office_365')][Alias('TypeNameSingular')][string]$Type
+        , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Bypass user prompts and dynamic ValidateSet.')][ValidateNotNullOrEmpty()][Switch]$Force
     )
     DynamicParam
     {
-        # Add Action
-        ($PsBoundParameters).Add('Action', 'remove') | Out-Null
-        # Build dynamic parameters
-        $RuntimeParameterDictionary = Get-DynamicParamAssociation @PsBoundParameters
+        $Action = 'remove'
+        $RuntimeParameterDictionary = If ($Type)
+        {
+            Get-DynamicParamAssociation -Action:($Action) -Force:($Force) -Type:($Type)
+        }
+        Else
+        {
+            Get-DynamicParamAssociation -Action:($Action) -Force:($Force)
+        }
         Return $RuntimeParameterDictionary
     }
     Begin
@@ -27,6 +32,8 @@ Function Remove-JCAssociation
         $FunctionParameters = [ordered]@{}
         # Add input parameters from function in to hash table and filter out unnecessary parameters
         $PSBoundParameters.GetEnumerator() | Where-Object {$_.Value} | ForEach-Object {$FunctionParameters.Add($_.Key, $_.Value) | Out-Null}
+        # Add action
+        ($FunctionParameters).Add('Action', $Action) | Out-Null
         # Run the command
         $Results += Invoke-JCAssociation @FunctionParameters
     }
