@@ -31,7 +31,6 @@ Function Hide-ObjectProperty
     )
     # Set some properties to be hidden in the results
     $Object | ForEach-Object {
-        $Record = $_
         # Get current object's properties
         $ObjectAllProperties = $_.PSObject.Properties.Name
         # Write-Host ('ObjectAllProperties:' + ($ObjectAllProperties -join ', ')) -BackgroundColor Gray -ForegroundColor Black
@@ -39,7 +38,7 @@ Function Hide-ObjectProperty
         If ($_.PSStandardMembers)
         {
             $ObjectShowProperties = $_.PSStandardMembers.DefaultDisplayPropertySet.ReferencedPropertyNames
-            $PropertiesToHide = @($ObjectAllProperties | Where-Object {$_ -notin $ObjectShowProperties -or $_ -in $HiddenProperties})
+            $PropertiesToHide = @($HiddenProperties + ($ObjectAllProperties | Where-Object {$_ -notin $ObjectShowProperties -or $_ -in $HiddenProperties}) | Select-Object -Unique)
             # Write-Host ('ObjectShowProperties:' + ($ObjectShowProperties -join ', ')) -BackgroundColor Yellow -ForegroundColor Black
         }
         Else
@@ -57,13 +56,6 @@ Function Hide-ObjectProperty
             $PSStandardMembers = [System.Management.Automation.PSMemberInfo[]]@($defaultDisplayPropertySet)
             # Add the list of standard members
             Add-Member -InputObject:($_) -MemberType:('MemberSet') -Name:('PSStandardMembers') -Value:($PSStandardMembers) -Force
-            ForEach ($HiddenProperty In $PropertiesToHide)
-            {
-                If($HiddenProperty -in $_.PSObject.Properties.Name)
-                {
-                    Add-Member -InputObject:($_) -MemberType:('NoteProperty') -Name:($HiddenProperty) -Value:($Record.$HiddenProperty) -Force
-                }
-            }
         }
         Else
         {
