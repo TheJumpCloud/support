@@ -15,13 +15,20 @@
         "TargetPlural": "usergroups"
       }
     ],
-    "Url": "/api/v2/activedirectories",
+    "Url": {
+      "List": "/api/v2/activedirectories",
+      "Item": "/api/v2/activedirectories/{id}",
+      "Variables": [
+        "{id}"
+      ]
+    },
     "Method": "GET",
     "ById": "id",
     "ByName": "domain",
     "Paginate": true,
     "SupportRegexFilter": true,
-    "Limit": 100
+    "Limit": 100,
+    "Skip": 0
   },
   {
     "Category": "JumpCloud",
@@ -35,13 +42,20 @@
         "TargetPlural": "usergroups"
       }
     ],
-    "Url": "/api/applications",
+    "Url": {
+      "List": "/api/applications",
+      "Item": "/api/applications/{id}",
+      "Variables": [
+        "{id}"
+      ]
+    },
     "Method": "GET",
     "ById": "_id",
     "ByName": "displayName",
     "Paginate": true,
     "SupportRegexFilter": false,
     "Limit": 100,
+    "Skip": 0,
     "TargetsExcluded": [
       {
         "TargetExcludedSingular": "user",
@@ -65,13 +79,20 @@
         "TargetPlural": "systemgroups"
       }
     ],
-    "Url": "/api/commands",
+    "Url": {
+      "List": "/api/commands",
+      "Item": "/api/commands/{id}",
+      "Variables": [
+        "{id}"
+      ]
+    },
     "Method": "GET",
     "ById": "_id",
     "ByName": "name",
     "Paginate": true,
     "SupportRegexFilter": false,
-    "Limit": 100
+    "Limit": 100,
+    "Skip": 0
   },
   {
     "Category": "JumpCloud",
@@ -89,13 +110,18 @@
         "TargetPlural": "usergroups"
       }
     ],
-    "Url": "/api/v2/directories",
+    "Url": {
+      "List": "/api/v2/directories",
+      "Item": "/api/v2/directories",
+      "Variables": []
+    },
     "Method": "GET",
     "ById": "id",
     "ByName": "name",
     "Paginate": true,
     "SupportRegexFilter": false,
-    "Limit": 100
+    "Limit": 100,
+    "Skip": 0
   },
   {
     "Category": "JumpCloud",
@@ -113,13 +139,20 @@
         "TargetPlural": "usergroups"
       }
     ],
-    "Url": "/api/v2/ldapservers",
+    "Url": {
+      "List": "/api/v2/ldapservers",
+      "Item": "/api/v2/ldapservers/{id}",
+      "Variables": [
+        "{id}"
+      ]
+    },
     "Method": "GET",
     "ById": "id",
     "ByName": "name",
     "Paginate": true,
     "SupportRegexFilter": true,
-    "Limit": 100
+    "Limit": 100,
+    "Skip": 0
   },
   {
     "Category": "JumpCloud",
@@ -137,13 +170,18 @@
         "TargetPlural": "usergroups"
       }
     ],
-    "Url": "/api/v2/directories",
+    "Url": {
+      "List": "/api/v2/directories",
+      "Item": "/api/v2/directories",
+      "Variables": []
+    },
     "Method": "GET",
     "ById": "id",
     "ByName": "name",
     "Paginate": true,
     "SupportRegexFilter": false,
-    "Limit": 100
+    "Limit": 100,
+    "Skip": 0
   },
   {
     "Category": "JumpCloud",
@@ -161,13 +199,20 @@
         "TargetPlural": "systemgroups"
       }
     ],
-    "Url": "/api/v2/policies",
+    "Url": {
+      "List": "/api/v2/policies",
+      "Item": "/api/v2/policies/{id}",
+      "Variables": [
+        "{id}"
+      ]
+    },
     "Method": "GET",
     "ById": "id",
     "ByName": "name",
     "Paginate": true,
     "SupportRegexFilter": false,
-    "Limit": 100
+    "Limit": 100,
+    "Skip": 0
   },
   {
     "Category": "JumpCloud",
@@ -181,13 +226,20 @@
         "TargetPlural": "usergroups"
       }
     ],
-    "Url": "/api/radiusservers",
+    "Url": {
+      "List": "/api/radiusservers",
+      "Item": "/api/radiusservers/{id}",
+      "Variables": [
+        "{id}"
+      ]
+    },
     "Method": "GET",
     "ById": "_id",
     "ByName": "name",
     "Paginate": true,
     "SupportRegexFilter": false,
     "Limit": 100,
+    "Skip": 0,
     "TargetsExcluded": [
       {
         "TargetExcludedSingular": "user",
@@ -219,13 +271,20 @@
         "TargetPlural": "systems"
       }
     ],
-    "Url": "/api/v2/systemgroups",
+    "Url": {
+      "List": "/api/v2/systemgroups",
+      "Item": "/api/v2/systemgroups/{id}",
+      "Variables": [
+        "{id}"
+      ]
+    },
     "Method": "GET",
     "ById": "id",
     "ByName": "name",
     "Paginate": true,
     "SupportRegexFilter": true,
     "Limit": 100,
+    "Skip": 0,
     "TargetsExcluded": [
       {
         "TargetExcludedSingular": "user",
@@ -257,17 +316,266 @@
         "TargetPlural": "systemgroups"
       }
     ],
-    "Url": "/api/systems",
+    "Url": {
+      "List": "/api/systems",
+      "Item": "/api/systems/{id}",
+      "Variables": [
+        "{id}"
+      ]
+    },
     "Method": "GET",
     "ById": "_id",
     "ByName": "displayName",
     "Paginate": true,
     "SupportRegexFilter": true,
     "Limit": 100,
+    "Skip": 0,
     "TargetsExcluded": [
       {
         "TargetExcludedSingular": "user_group",
         "TargetExcludedPlural": "usergroups"
+      }
+    ],
+    "SystemInsights": [
+      {
+        "Table": "apps",
+        "Url": {
+          "List": "/api/v2/systeminsights/apps",
+          "Item": "/api/v2/systeminsights/{system_id}/apps",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "jc_system_id",
+        "ByName": "bundle_name",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
+        "Table": "browser_plugins",
+        "Url": {
+          "List": "/api/v2/systeminsights/browser_plugins",
+          "Item": "/api/v2/systeminsights/{system_id}/browser_plugins",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "jc_system_id",
+        "ByName": "name",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
+        "Table": "chrome_extensions",
+        "Url": {
+          "List": "/api/v2/systeminsights/chrome_extensions",
+          "Item": "/api/v2/systeminsights/{system_id}/chrome_extensions",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "jc_system_id",
+        "ByName": "name",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
+        "Table": "disk_encryption",
+        "Url": {
+          "List": "/api/v2/systeminsights/disk_encryption",
+          "Item": "/api/v2/systeminsights/{system_id}/disk_encryption",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "jc_system_id",
+        "ByName": "encryption_status",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
+        "Table": "firefox_addons",
+        "Url": {
+          "List": "/api/v2/systeminsights/firefox_addons",
+          "Item": "/api/v2/systeminsights/{system_id}/firefox_addons",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "jc_system_id",
+        "ByName": "name",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
+        "Table": "groups",
+        "Url": {
+          "List": "/api/v2/systeminsights/groups",
+          "Item": "/api/v2/systeminsights/{system_id}/groups",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "jc_system_id",
+        "ByName": "groupname",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
+        "Table": "interface_addresses",
+        "Url": {
+          "List": "/api/v2/systeminsights/interface_addresses",
+          "Item": "/api/v2/systeminsights/{system_id}/interface_addresses",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "jc_system_id",
+        "ByName": "address",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
+        "Table": "mounts",
+        "Url": {
+          "List": "/api/v2/systeminsights/mounts",
+          "Item": "/api/v2/systeminsights/{system_id}/mounts",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "jc_system_id",
+        "ByName": "path",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
+        "Table": "os_version",
+        "Url": {
+          "List": "/api/v2/systeminsights/os_version",
+          "Item": "/api/v2/systeminsights/{system_id}/os_version",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "jc_system_id",
+        "ByName": "version",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
+        "Table": "safari_extensions",
+        "Url": {
+          "List": "/api/v2/systeminsights/safari_extensions",
+          "Item": "/api/v2/systeminsights/{system_id}/safari_extensions",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "jc_system_id",
+        "ByName": "name",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
+        "Table": "system_info",
+        "Url": {
+          "List": "/api/v2/systeminsights/system_info",
+          "Item": "/api/v2/systeminsights/{system_id}/system_info",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "jc_system_id",
+        "ByName": "cpu_subtype",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
+        "Table": "users",
+        "Url": {
+          "List": "/api/v2/systeminsights/users",
+          "Item": "/api/v2/systeminsights/{system_id}/users",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "jc_system_id",
+        "ByName": "username",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
       }
     ]
   },
@@ -307,13 +615,20 @@
         "TargetPlural": "users"
       }
     ],
-    "Url": "/api/v2/usergroups",
+    "Url": {
+      "List": "/api/v2/usergroups",
+      "Item": "/api/v2/usergroups/{id}",
+      "Variables": [
+        "{id}"
+      ]
+    },
     "Method": "GET",
     "ById": "id",
     "ByName": "name",
     "Paginate": true,
     "SupportRegexFilter": true,
     "Limit": 100,
+    "Skip": 0,
     "TargetsExcluded": [
       {
         "TargetExcludedSingular": "system",
@@ -353,13 +668,20 @@
         "TargetPlural": "usergroups"
       }
     ],
-    "Url": "/api/systemusers",
+    "Url": {
+      "List": "/api/systemusers",
+      "Item": "/api/systemusers/{id}",
+      "Variables": [
+        "{id}"
+      ]
+    },
     "Method": "GET",
     "ById": "_id",
     "ByName": "username",
     "Paginate": true,
     "SupportRegexFilter": true,
     "Limit": 100,
+    "Skip": 0,
     "TargetsExcluded": [
       {
         "TargetExcludedSingular": "active_directory",
@@ -386,13 +708,18 @@
       "TypeNamePlural": "directories"
     },
     "Targets": null,
-    "Url": "/api/v2/directories",
+    "Url": {
+      "List": "/api/v2/directories",
+      "Item": "/api/v2/directories",
+      "Variables": []
+    },
     "Method": "GET",
     "ById": "id",
     "ByName": "name",
     "Paginate": true,
     "SupportRegexFilter": false,
-    "Limit": 100
+    "Limit": 100,
+    "Skip": 0
   },
   {
     "Category": "Custom",
@@ -401,13 +728,20 @@
       "TypeNamePlural": "groups"
     },
     "Targets": null,
-    "Url": "/api/v2/groups",
+    "Url": {
+      "List": "/api/v2/groups",
+      "Item": "/api/v2/groups/{id}",
+      "Variables": [
+        "{id}"
+      ]
+    },
     "Method": "GET",
     "ById": "id",
     "ByName": "name",
     "Paginate": true,
     "SupportRegexFilter": false,
-    "Limit": 100
+    "Limit": 100,
+    "Skip": 0
   },
   {
     "Category": "Custom",
@@ -416,13 +750,20 @@
       "TypeNamePlural": "organizations"
     },
     "Targets": null,
-    "Url": "/api/organizations",
+    "Url": {
+      "List": "/api/organizations",
+      "Item": "/api/organizations/{id}",
+      "Variables": [
+        "{id}"
+      ]
+    },
     "Method": "GET",
     "ById": "_id",
     "ByName": "displayName",
     "Paginate": true,
     "SupportRegexFilter": false,
-    "Limit": 100
+    "Limit": 100,
+    "Skip": 0
   },
   {
     "Category": "Custom",
@@ -452,13 +793,20 @@
         "TargetPlural": "usergroups"
       }
     ],
-    "Url": "/api/search/systemusers",
+    "Url": {
+      "List": "/api/search/systemusers",
+      "Item": null,
+      "Variables": [
+        null
+      ]
+    },
     "Method": "POST",
     "ById": "_id",
     "ByName": "username",
     "Paginate": true,
     "SupportRegexFilter": true,
     "Limit": 100,
+    "Skip": 0,
     "TargetsExcluded": [
       {
         "TargetExcludedSingular": "active_directory",
@@ -490,12 +838,19 @@
         "TargetPlural": "systemgroups"
       }
     ],
-    "Url": "/api/search/systems",
+    "Url": {
+      "List": "/api/search/systems",
+      "Item": null,
+      "Variables": [
+        null
+      ]
+    },
     "Method": "POST",
     "ById": "_id",
     "ByName": "displayName",
     "Paginate": true,
     "SupportRegexFilter": true,
-    "Limit": 100
+    "Limit": 100,
+    "Skip": 0
   }
 ]
