@@ -118,46 +118,46 @@ Function Get-JCCommonParameters
             'DefaultValue'                    = $JCType.Paginate | Select-Object -Unique;
             'HelpMessage'                     = 'Whether or not you want to paginate through the results.';
         }
-        # Add conditional parameter settings
-        If ($Type -and -not $Force)
-        {
-            # Determine if help files are being built
-            If ((Get-PSCallStack).Command -like '*MarkdownHelp')
-            {
-                $JCObjectCount = 999999
-            }
-            Else
-            {
-                # Get count of JCObject to determine if script should load dynamic parameters
-                $JCObjectCount = (Get-JCObject -Type:($Type) -ReturnCount).totalCount
-            }
-        }
-        If ($Type -and -not $Force -and $JCObjectCount -le 300)
-        {
-            # Populate DefaultValue and ValidateSets
-            $JCObject = Get-JCObject -Type:($Type);
-            $Param_Id.Add('DefaultValue', $JCObject.($JCObject.ById | Select-Object -Unique));
-            $Param_Name.Add('DefaultValue', $JCObject.($JCObject.ByName | Select-Object -Unique));
-            $Param_Id.Add('ValidateSet', @($JCObject.($JCObject.ById | Select-Object -Unique)));
-            $Param_Name.Add('ValidateSet', @($JCObject.($JCObject.ByName | Select-Object -Unique)));
-            If ($JCObjectCount -eq 1)
-            {
-                # Allow Id and Name to use the default value
-                $Param_Id.Add('Mandatory', $false);
-                $Param_Name.Add('Mandatory', $false);
-            }
-            ElseIf ($JCObjectCount -ge 1)
-            {
-                # Don't allow Id and Name to use the default value
-                $Param_Id.Add('Mandatory', $true);
-                $Param_Name.Add('Mandatory', $true);
-            }
-        }
-        Else
-        {
-            $Param_Id.Add('Mandatory', $true);
-            $Param_Name.Add('Mandatory', $true);
-        }
+        # # Add conditional parameter settings
+        # If ($Type -and -not $Force)
+        # {
+        #     # Determine if help files are being built
+        #     If ((Get-PSCallStack).Command -like '*MarkdownHelp')
+        #     {
+        #         $JCObjectCount = 999999
+        #     }
+        #     Else
+        #     {
+        #         # Get count of JCObject to determine if script should load dynamic parameters
+        #         $JCObjectCount = (Get-JCObject -Type:($Type) -ReturnCount).totalCount
+        #     }
+        # }
+        # If ($Type -and -not $Force -and $JCObjectCount -le 300)
+        # {
+        #     # Populate DefaultValue and ValidateSets
+        #     $JCObject = Get-JCObject -Type:($Type);
+        #     $Param_Id.Add('DefaultValue', $JCObject.($JCObject.ById | Select-Object -Unique));
+        #     $Param_Name.Add('DefaultValue', $JCObject.($JCObject.ByName | Select-Object -Unique));
+        #     $Param_Id.Add('ValidateSet', @($JCObject.($JCObject.ById | Select-Object -Unique)));
+        #     $Param_Name.Add('ValidateSet', @($JCObject.($JCObject.ByName | Select-Object -Unique)));
+        #     If ($JCObjectCount -eq 1)
+        #     {
+        #         # Allow Id and Name to use the default value
+        #         $Param_Id.Add('Mandatory', $false);
+        #         $Param_Name.Add('Mandatory', $false);
+        #     }
+        #     ElseIf ($JCObjectCount -ge 1)
+        #     {
+        #         # Don't allow Id and Name to use the default value
+        #         $Param_Id.Add('Mandatory', $true);
+        #         $Param_Name.Add('Mandatory', $true);
+        #     }
+        # }
+        # Else
+        # {
+        $Param_Id.Add('Mandatory', $true);
+        $Param_Name.Add('Mandatory', $true);
+        # }
         # Build output
         $ParamVarPrefix = 'Param_'
         Get-Variable | Where-Object {$_.Name -like '*' + $ParamVarPrefix + '*'} | ForEach-Object {
