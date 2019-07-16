@@ -5675,6 +5675,13 @@
           <maml:para>Return os_version data for systems with specific names.</maml:para>
         </dev:remarks>
       </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 6 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Get-JCSystemInsights -Table users -Filter username:eq:jcadmin</dev:code>
+        <dev:remarks>
+          <maml:para>Filters the users table for any system with the username jcadmin.</maml:para>
+        </dev:remarks>
+      </command:example>
     </command:examples>
     <command:relatedLinks>
       <maml:navigationLink>
