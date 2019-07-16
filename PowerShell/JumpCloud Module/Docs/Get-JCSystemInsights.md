@@ -85,6 +85,8 @@ Return os_version data for systems with specific names.
 PS C:\> Get-JCSystemInsights -Table users -Filter username:eq:jcadmin
 ```
 
+Filters the users table for any system with the username jcadmin.
+
 ## PARAMETERS
 
 ### -Fields
