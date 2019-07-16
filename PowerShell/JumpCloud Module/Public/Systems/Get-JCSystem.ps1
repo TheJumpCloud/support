@@ -12,6 +12,11 @@ Function Get-JCSystem ()
         [Alias('_id', 'id')]
         [String]$SystemID,
 
+        [Parameter(
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'ByID')]
+        [bool]$SystemFDEKey,
+
 
         [Parameter(
             ValueFromPipelineByPropertyName,
@@ -356,8 +361,20 @@ Function Get-JCSystem ()
             ByID
             {
 
-                $URL = "$JCUrlBasePath/api/Systems/$SystemID"
-                Write-Verbose $URL
+    
+                if ($SystemFDEKey)
+                {
+                    $URL = "$JCUrlBasePath/api/systems/$SystemID/fdekey"
+                    Write-Verbose $URL
+
+                }
+
+                else
+                {
+                    $URL = "$JCUrlBasePath/api/Systems/$SystemID"
+                    Write-Verbose $URL
+                }
+
                 $results = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
                 $null = $resultsArrayList.add($Results)
             }
