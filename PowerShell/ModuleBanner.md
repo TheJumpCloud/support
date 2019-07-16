@@ -7,12 +7,11 @@
 #### Banner Current
 
 ```
-Changes for automating build and testing of module.
-New function Get-JCSystemInsights.
+Module up-to-date. Use Get-JCSystemInsights to query System Insights tables!
 ```
 
 #### Banner Old
 
 ```
-N/A
+Module update available! Query systemInsights tables and SystemFDEKeys!
 ```
