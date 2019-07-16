@@ -1,8 +1,5 @@
-
-Connect-JCOnlineTest
-
 Describe -Tag:('JCUserGroupLDAP') 'Set-JCUserGroupLDAP' {
-
+    Connect-JCOnlineTest
     It "Enables LDAP for a JumpCloud User Group using GroupName" {
 
         $NewUserGroup = New-JCUserGroup -GroupName $(New-RandomString 8) | Select-Object -ExpandProperty Name

@@ -22,7 +22,7 @@ If users wish to bind users to existing JumpCloud systems the function will also
 
 ## EXAMPLES
 
-### Video Tutorials 
+### Video Tutorials
 
 [Basic User Import](https://youtu.be/WSE5_uGYcIc)
 

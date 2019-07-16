@@ -1,3 +1,33 @@
+## 1.13.0
+
+Release Date: July 16, 2019
+
+#### RELEASE NOTES
+
+```
+Changes for automating build and testing of module.
+New function Get-JCSystemInsights.
+Updated Function: Get-JCSystem with new parameter "-SystemFDEKey"
+to return the SystemFDEKey.
+```
+
+#### FEATURES:
+
+- New Function: Use Get-JCSystemInsights to leverage the new EA system insights API endpoints. These endpoints allow admins to query additional system details for systems that are enabled for System Insights. [Find more information about System Insights here](https://jumpcloud-success.s3.amazonaws.com/resources/System+Insights+Early+Access.pdf)
+- Updated Function: Get-JCSystem to allow for revealing the FileVault or BitLocker key. Use the "Switch" parameter "-SystemFDEKey" to display this key from the PowerShell terminal.
+- Updated Function: Get-JCSystem "-returnProperties" parameter set to include "fde" and "systemInsights".
+
+#### IMPROVEMENTS:
+
+Remove dynamic validate set functionality for -Id and -Name parameters due to performance issues.
+Updated test files to contain code within the describe blocks.
+Renamed private function files to match the same name of the function within.
+New Get-JCCommonParameters function.
+
+#### BUG FIXES:
+
+N/A
+
 ## 1.12.1
 
 Release Date: June 17, 2019

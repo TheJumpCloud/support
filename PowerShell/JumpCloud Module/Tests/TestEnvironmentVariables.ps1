@@ -1,7 +1,17 @@
-$ModuleManifestName = 'JumpCloud.psd1'
-$ModuleManifestPath = "$PSScriptRoot/../$ModuleManifestName"
-$TestOrgAPIKey = ''
-$MultiTenantAPIKey = ''
+# Install Pester
+If ($PSVersionTable.PSEdition -eq 'Core')
+{
+    Install-Module -Name:('Pester') -Force -Scope:('CurrentUser') -SkipPublisherCheck
+}
+Else
+{
+    Install-Module -Name:('Pester') -Force -Scope:('CurrentUser')
+}
+# Import the module
+Import-Module -Name:($ModuleManifestPath) -Force
+#Load private functions
+Get-ChildItem -Path:("$PSScriptRoot/../Private/*.ps1") -Recurse | ForEach-Object {. $_.FullName}
+# Set test parameters
 $PesterParams = @{
     # Specific to MTP portal
     'MultiTenanntOrgID1' = "5b5a13f06fefdb0a29b0d306"
@@ -25,17 +35,11 @@ $PesterParams = @{
 $Random = New-RandomString '8'
 $RandomEmail = "$Random@$Random.com"
 # CSV Files
-$Import_JCUsersFromCSV_1_1_Tests = "$PSScriptRoot/csv_files/import/ImportExample_Pester_Tests_1.1.0.csv" # This CSV file is specific to pester environment (SystemID's and Group Names)
+$Import_JCUsersFromCSV_1_1_Tests = "$PSScriptRoot/Csv_Files/import/ImportExample_Pester_Tests_1.1.0.csv" # This CSV file is specific to pester environment (SystemID's and Group Names)
 $JCDeployment_2_CSV = "$PSScriptRoot/Csv_Files/commandDeployment/JCDeployment_2.csv"
 $JCDeployment_10_CSV = "$PSScriptRoot/Csv_Files/commandDeployment/JCDeployment_10.csv"
-$ImportPath = "$PSScriptRoot/Csv_files/import"
-$UpdatePath = "$PSScriptRoot/Csv_files/update"
-# Install Pester
-Install-Module -Name:('Pester') -Force -Scope:('CurrentUser')
-# Import the module
-Import-Module -Name:($ModuleManifestPath) -Force
-#Load private functions
-Get-ChildItem -Path:("$PSScriptRoot/../Private/*.ps1") -Recurse | ForEach-Object {. $_.FullName}
+$ImportPath = "$PSScriptRoot/Csv_Files/import"
+$UpdatePath = "$PSScriptRoot/Csv_Files/update"
 # Authenticate to JumpCloud
 Connect-JCOnlineTest
 # Policy Info

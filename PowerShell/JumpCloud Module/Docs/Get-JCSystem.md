@@ -24,7 +24,7 @@ Get-JCSystem [[-hostname] <String>] [-displayName <String>] [-version <String>] 
 
 ### ByID
 ```
-Get-JCSystem -SystemID <String> -dateFilter <String> -date <String> [<CommonParameters>]
+Get-JCSystem -SystemID <String> [-SystemFDEKey] -dateFilter <String> -date <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -385,6 +385,21 @@ A search filter to search systems by the version.
 ```yaml
 Type: String
 Parameter Sets: SearchFilter
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -SystemFDEKey
+A switch parameter to reveal the SystemFDEKey
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: ByID
 Aliases:
 
 Required: False

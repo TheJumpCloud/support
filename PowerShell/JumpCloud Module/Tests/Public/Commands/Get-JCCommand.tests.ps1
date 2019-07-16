@@ -1,7 +1,5 @@
-Connect-JCOnlineTest
-
 Describe -Tag:('JCCommand') 'Get-JCCommand 1.0' {
-
+    Connect-JCOnlineTest
     It "Gets all JumpCloud commands" {
         $AllCommands = Get-JCCommand
         $AllCommands._id.Count | Should -BeGreaterThan 1

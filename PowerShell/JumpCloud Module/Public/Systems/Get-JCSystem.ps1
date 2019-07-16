@@ -12,6 +12,11 @@ Function Get-JCSystem ()
         [Alias('_id', 'id')]
         [String]$SystemID,
 
+        [Parameter(
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'ByID', HelpMessage = 'A switch parameter to reveal the SystemFDEKey')]
+        [switch]$SystemFDEKey,
+
 
         [Parameter(
             ValueFromPipelineByPropertyName,
@@ -121,7 +126,7 @@ Function Get-JCSystem ()
         [Parameter(
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'SearchFilter')]
-        [ValidateSet('created', 'active', 'agentVersion', 'allowMultiFactorAuthentication', 'allowPublicKeyAuthentication', 'allowSshPasswordAuthentication', 'allowSshRootLogin', 'arch', 'created', 'displayName', 'hostname', 'lastContact', 'modifySSHDConfig', 'organization', 'os', 'remoteIP', 'serialNumber', 'sshdParams', 'systemTimezone', 'templateName', 'version')]
+        [ValidateSet('created', 'active', 'agentVersion', 'allowMultiFactorAuthentication', 'allowPublicKeyAuthentication', 'allowSshPasswordAuthentication', 'allowSshRootLogin', 'arch', 'created', 'displayName', 'hostname', 'lastContact', 'modifySSHDConfig', 'organization', 'os', 'remoteIP', 'serialNumber', 'sshdParams', 'systemTimezone', 'templateName', 'version', 'fde', 'systemInsights')]
         [String[]]$returnProperties
 
     )
@@ -184,7 +189,7 @@ Function Get-JCSystem ()
 
     {
         Write-Verbose 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {Connect-JCOnline}
+        if ($JCAPIKEY.length -ne 40) { Connect-JCOnline }
 
         Write-Verbose 'Populating API headers'
         $hdrs = @{
@@ -215,7 +220,7 @@ Function Get-JCSystem ()
         Write-Verbose "Setting limit to $limit"
 
         [int]$skip = '0'
-        Write-Verbose "Setting limit to $limit"
+        Write-Verbose "Setting skip to $skip"
 
         [int]$Counter = 0
 
@@ -290,7 +295,7 @@ Function Get-JCSystem ()
                             switch ($param.value)
                             {
                                 before { $DateQuery = '$lt' }
-                                after { $DateQuery = '$gt'}
+                                after { $DateQuery = '$gt' }
                             }
 
                             continue
@@ -310,17 +315,17 @@ Function Get-JCSystem ()
                         if (($param.Value -match '.+?\*$') -and ($param.Value -match '^\*.+?'))
                         {
                             # Front and back wildcard
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "$Value"})
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "$Value" })
                         }
                         elseif ($param.Value -match '.+?\*$')
                         {
                             # Back wildcard
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "^$Value"})
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "^$Value" })
                         }
                         elseif ($param.Value -match '^\*.+?')
                         {
                             # Front wild card
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "$Value`$"})
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "$Value`$" })
                         }
                         else
                         {
@@ -332,7 +337,7 @@ Function Get-JCSystem ()
 
                     if ($filterDateProperty)
                     {
-                        (($Search.filter).GetEnumerator()).add($DateProperty, @{$DateQuery = $Timestamp})
+                        (($Search.filter).GetEnumerator()).add($DateProperty, @{$DateQuery = $Timestamp })
                     }
 
 
@@ -356,10 +361,34 @@ Function Get-JCSystem ()
             ByID
             {
 
-                $URL = "$JCUrlBasePath/api/Systems/$SystemID"
-                Write-Verbose $URL
-                $results = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
-                $null = $resultsArrayList.add($Results)
+    
+                if ($SystemFDEKey)
+                {
+
+                    $URL = "$JCUrlBasePath/api/v2/systems/$SystemID/fdekey"
+                    Write-Verbose $URL
+
+                    $results = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
+
+                    $FormattedObject = [PSCustomObject]@{
+                        '_id' = $SystemID;
+                        'key' = $results.key;
+                    }
+
+                    $null = $resultsArrayList.add($FormattedObject)
+
+                }
+
+                else
+                {
+                    $URL = "$JCUrlBasePath/api/Systems/$SystemID"
+                    Write-Verbose $URL
+
+                    $results = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
+                    $null = $resultsArrayList.add($Results)
+                }
+
+
             }
 
         } # End switch

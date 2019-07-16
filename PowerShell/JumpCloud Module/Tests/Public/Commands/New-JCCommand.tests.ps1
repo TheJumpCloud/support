@@ -1,6 +1,5 @@
-Connect-JCOnlineTest
 Describe -Tag:('JCCommand') 'New-JCCommand 1.2' {
-
+    Connect-JCOnlineTest
     It "Creates a new Windows command" {
 
         $NewCommand = New-JCCommand -commandType windows -name windows_test -command 'dir'

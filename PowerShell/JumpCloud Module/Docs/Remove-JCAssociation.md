@@ -14,14 +14,23 @@ Remove an association between two object within the JumpCloud console.
 
 ### ById (Default)
 ```
-Remove-JCAssociation [-Type] <String> [-Force] [-Id] <String[]> [-TargetType] <String[]> [[-TargetId] <String>]
- [[-TargetName] <String>] [<CommonParameters>]
+Remove-JCAssociation [-Type] <String> [-Force] [-Fields <Array>] [-Filter <String>] [-Id] <String[]>
+ [-Limit <Int32>] [-Paginate <Boolean>] [-Skip <Int32>] [[-TargetId] <String>] [[-TargetName] <String>]
+ [[-TargetType] <String[]>] [<CommonParameters>]
 ```
 
 ### ByName
 ```
-Remove-JCAssociation [-Type] <String> [-Force] [-Name] <String[]> [-TargetType] <String[]>
- [[-TargetId] <String>] [[-TargetName] <String>] [<CommonParameters>]
+Remove-JCAssociation [-Type] <String> [-Force] [-Fields <Array>] [-Filter <String>] [-Limit <Int32>]
+ [-Name] <String[]> [-Paginate <Boolean>] [-Skip <Int32>] [[-TargetId] <String>] [[-TargetName] <String>]
+ [[-TargetType] <String[]>] [<CommonParameters>]
+```
+
+### ByValue
+```
+Remove-JCAssociation [-Type] <String> [-Force] [-Fields <Array>] [-Filter <String>] [-Limit <Int32>]
+ [-Paginate <Boolean>] [-Skip <Int32>] [[-TargetId] <String>] [[-TargetName] <String>]
+ [[-TargetType] <String[]>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -81,7 +90,7 @@ The name of the object.
 ```yaml
 Type: String[]
 Parameter Sets: ByName
-Aliases: domain, displayName, username
+Aliases: displayName, username
 
 Required: True
 Position: 4
@@ -129,7 +138,7 @@ Parameter Sets: (All)
 Aliases: TargetSingular
 Accepted values: user, user_group, system, system_group, policy, command, application, g_suite, ldap_server, office_365, radius_server
 
-Required: True
+Required: False
 Position: 5
 Default value: None
 Accept pipeline input: True (ByPropertyName)
@@ -147,6 +156,81 @@ Accepted values: command, ldap_server, policy, application, radius_server, syste
 
 Required: True
 Position: 1
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Fields
+An array of the fields/properties/columns you want to return from the search.
+
+```yaml
+Type: Array
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Filter
+Filters to narrow down search.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Limit
+The number of items you want to return per API call.
+
+```yaml
+Type: Int32
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Skip
+Ignores the specified number of objects and then gets the remaining objects. Enter the number of objects to skip.
+
+```yaml
+Type: Int32
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Paginate
+Whether or not you want to paginate through the results.
+
+```yaml
+Type: Boolean
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
