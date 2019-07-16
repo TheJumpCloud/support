@@ -8,6 +8,7 @@
 
 ```
 Changes for automating build and testing of module.
+New function Get-JCSystemInsights.
 ```
 
 #### Banner Old
