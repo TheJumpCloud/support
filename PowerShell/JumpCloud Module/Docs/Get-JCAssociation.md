@@ -29,7 +29,8 @@ Get-JCAssociation [-Type] <String> [-Force] [-Fields <Array>] [-Filter <String>]
 ### ByValue
 ```
 Get-JCAssociation [-Type] <String> [-Force] [-Fields <Array>] [-Filter <String>] [-Limit <Int32>]
- [-Paginate <Boolean>] [-Skip <Int32>] [-Direct] [-Indirect] [[-TargetType] <String[]>] [<CommonParameters>]
+ [-Paginate <Boolean>] [-Skip <Int32>] [-Direct] [-IncludeInfo] [-IncludeNames] [-IncludeVisualPath]
+ [-Indirect] [[-TargetType] <String[]>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -124,7 +125,7 @@ Appends "Info" and "TargetInfo" properties to output.
 
 ```yaml
 Type: SwitchParameter
-Parameter Sets: ById, ByName
+Parameter Sets: (All)
 Aliases:
 
 Required: False
@@ -139,7 +140,7 @@ Appends "Name" and "TargetName" properties to output.
 
 ```yaml
 Type: SwitchParameter
-Parameter Sets: ById, ByName
+Parameter Sets: (All)
 Aliases:
 
 Required: False
@@ -154,7 +155,7 @@ Appends "visualPathById", "visualPathByName", and "visualPathByType" properties 
 
 ```yaml
 Type: SwitchParameter
-Parameter Sets: ById, ByName
+Parameter Sets: (All)
 Aliases:
 
 Required: False
