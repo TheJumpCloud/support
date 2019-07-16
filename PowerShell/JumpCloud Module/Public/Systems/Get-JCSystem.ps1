@@ -14,7 +14,7 @@ Function Get-JCSystem ()
 
         [Parameter(
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'ByID')]
+            ParameterSetName = 'ByID', HelpMessage = 'A switch parameter to reveal the SystemFDEKey')]
         [switch]$SystemFDEKey,
 
 
