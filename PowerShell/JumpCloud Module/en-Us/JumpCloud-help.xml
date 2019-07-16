@@ -4510,7 +4510,7 @@
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
           <maml:name>SystemFDEKey</maml:name>
           <maml:Description>
-            <maml:para>{{ Fill SystemFDEKey Description }}</maml:para>
+            <maml:para>A switch parameter to reveal the SystemFDEKey</maml:para>
           </maml:Description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
@@ -5049,7 +5049,7 @@
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
         <maml:name>SystemFDEKey</maml:name>
         <maml:Description>
-          <maml:para>{{ Fill SystemFDEKey Description }}</maml:para>
+          <maml:para>A switch parameter to reveal the SystemFDEKey</maml:para>
         </maml:Description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
