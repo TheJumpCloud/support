@@ -12,6 +12,11 @@ Function Get-JCSystem ()
         [Alias('_id', 'id')]
         [String]$SystemID,
 
+        [Parameter(
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'ByID')]
+        [switch]$SystemFDEKey,
+
 
         [Parameter(
             ValueFromPipelineByPropertyName,
@@ -215,7 +220,7 @@ Function Get-JCSystem ()
         Write-Verbose "Setting limit to $limit"
 
         [int]$skip = '0'
-        Write-Verbose "Setting limit to $limit"
+        Write-Verbose "Setting skip to $skip"
 
         [int]$Counter = 0
 
@@ -356,10 +361,34 @@ Function Get-JCSystem ()
             ByID
             {
 
-                $URL = "$JCUrlBasePath/api/Systems/$SystemID"
-                Write-Verbose $URL
-                $results = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
-                $null = $resultsArrayList.add($Results)
+    
+                if ($SystemFDEKey)
+                {
+
+                    $URL = "$JCUrlBasePath/api/v2/systems/$SystemID/fdekey"
+                    Write-Verbose $URL
+
+                    $results = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
+
+                    $FormattedObject = [PSCustomObject]@{
+                        '_id' = $SystemID;
+                        'key' = $results.key;
+                    }
+
+                    $null = $resultsArrayList.add($FormattedObject)
+
+                }
+
+                else
+                {
+                    $URL = "$JCUrlBasePath/api/Systems/$SystemID"
+                    Write-Verbose $URL
+
+                    $results = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
+                    $null = $resultsArrayList.add($Results)
+                }
+
+
             }
 
         } # End switch
