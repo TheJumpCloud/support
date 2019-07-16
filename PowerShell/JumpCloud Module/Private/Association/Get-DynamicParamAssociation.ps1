@@ -74,7 +74,6 @@ Function Get-DynamicParamAssociation
             'Name'                            = 'IncludeInfo';
             'Type'                            = [Switch];
             'ValueFromPipelineByPropertyName' = $true;
-            'ParameterSets'                   = @('ById', 'ByName');
             'DefaultValue'                    = $false;
             'HelpMessage'                     = 'Appends "Info" and "TargetInfo" properties to output.';
         }
@@ -82,7 +81,6 @@ Function Get-DynamicParamAssociation
             'Name'                            = 'IncludeNames';
             'Type'                            = [Switch];
             'ValueFromPipelineByPropertyName' = $true;
-            'ParameterSets'                   = @('ById', 'ByName');
             'DefaultValue'                    = $false;
             'HelpMessage'                     = 'Appends "Name" and "TargetName" properties to output.';
         }
@@ -90,7 +88,6 @@ Function Get-DynamicParamAssociation
             'Name'                            = 'IncludeVisualPath';
             'Type'                            = [Switch];
             'ValueFromPipelineByPropertyName' = $true;
-            'ParameterSets'                   = @('ById', 'ByName');
             'DefaultValue'                    = $false;
             'HelpMessage'                     = 'Appends "visualPathById", "visualPathByName", and "visualPathByType" properties to output.';
         }
