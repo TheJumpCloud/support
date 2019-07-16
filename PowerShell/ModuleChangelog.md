@@ -6,6 +6,7 @@ Release Date: June 17, 2019
 
 ```
 Changes for automating build and testing of module.
+New function Get-JCSystemInsights.
 ```
 
 #### FEATURES:
@@ -14,8 +15,10 @@ N/A
 
 #### IMPROVEMENTS:
 
+Remove dynamic validate set functionality for -Id and -Name parameters due to performance issues.
 Updated test files to contain code within the describe blocks.
 Renamed private function files to match the same name of the function within.
+New Get-JCCommonParameters function.
 
 #### BUG FIXES:
 
