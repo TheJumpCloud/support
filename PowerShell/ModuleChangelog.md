@@ -1,17 +1,21 @@
 ## 1.13.0
 
-Release Date: June 17, 2019
+Release Date: July 16, 2019
 
 #### RELEASE NOTES
 
 ```
 Changes for automating build and testing of module.
 New function Get-JCSystemInsights.
+Updated Function: Get-JCSystem with new parameter "-SystemFDEKey"
+to return the SystemFDEKey.
 ```
 
 #### FEATURES:
 
-N/A
+- New Function: Use Get-JCSystemInsights to leverage the new EA system insights API endpoints. These endpoints allow admins to query additional system details for systems that are enabled for System Insights. [Find more information about System Insights here](https://jumpcloud-success.s3.amazonaws.com/resources/System+Insights+Early+Access.pdf)
+- Updated Function: Get-JCSystem to allow for revealing the FileVault or BitLocker key. Use the "Switch" parameter "-SystemFDEKey" to display this key from the PowerShell terminal.
+- Updated Function: Get-JCSystem "-returnProperties" parameter set to include "fde" and "systemInsights".
 
 #### IMPROVEMENTS:
 
