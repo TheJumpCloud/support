@@ -15,7 +15,7 @@ Function Get-JCSystem ()
         [Parameter(
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'ByID')]
-        [bool]$SystemFDEKey,
+        [switch]$SystemFDEKey,
 
 
         [Parameter(
@@ -364,7 +364,7 @@ Function Get-JCSystem ()
     
                 if ($SystemFDEKey)
                 {
-                    $URL = "$JCUrlBasePath/api/systems/$SystemID/fdekey"
+                    $URL = "$JCUrlBasePath/api/v2/systems/$SystemID/fdekey"
                     Write-Verbose $URL
 
                 }
