@@ -80,6 +80,11 @@ PS C:\> Get-JCSystemInsights -Table:('os_version') -Name:('MacBook-Pro.local_TES
 
 Return os_version data for systems with specific names.
 
+### Example 6
+```powershell
+PS C:\> Get-JCSystemInsights -Table users -Filter username:eq:jcadmin
+```
+
 ## PARAMETERS
 
 ### -Fields
