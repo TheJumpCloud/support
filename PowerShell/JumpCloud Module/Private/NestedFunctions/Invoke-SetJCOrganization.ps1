@@ -1,16 +1,13 @@
-function Invoke-SetJCOrganization
+Function Invoke-SetJCOrganization
 {
     [CmdletBinding()]
-    param (
-
+    Param (
         [String]$JumpCloudAPIKey
     )
-
-    begin
+    Begin
     {
-        Write-Verbose "Paramter Set: $($PSCmdlet.ParameterSetName)"
-
-        Write-Verbose 'Populating API headers'
+        Write-Verbose ("Parameter Set: $($PSCmdlet.ParameterSetName)")
+        Write-Verbose ('Populating API headers')
         $hdrs = @{
 
             'Content-Type' = 'application/json'
@@ -18,116 +15,80 @@ function Invoke-SetJCOrganization
             'X-API-KEY'    = "$JumpCloudAPIKey"
 
         }
-
         $MultiTenant = Test-MultiTenant -JumpCloudAPIKey $JumpCloudAPIKey
-
-        if ($MultiTenant -eq $false)
+        If ($MultiTenant -eq $false)
         {
-            Write-Error "Your admin account is not configured for multi tenat. The Set-JCOrganization command can only be used by admins configured for multi tenant"
-            break
+            Write-Error ("Your admin account is not configured for multi tenant. The Set-JCOrganization command can only be used by admins configured for multi tenant")
+            Break
         }
-
-
-
-        Write-Verbose 'Populating JCOrganizations'
-
+        Write-Verbose ('Populating JCOrganizations')
         $Organizations = Invoke-GetJCOrganization -JumpCloudAPIKey $JumpCloudAPIKey
-
-
     }
-
-    process
+    Process
     {
-
-
-        if ($Organizations.count -eq 1)
+        $OrgIDHash = [ordered]@{}
+        $OrgNameHash = [ordered]@{}
+        # Build user menu
+        [Int32]$menuNumber = 1
+        Write-Host ("`n======== JumpCloud Multi Tenant Selector ======= `n")
+        ForEach ($Org In $Organizations)
         {
 
-            try
+            Write-Host ("$menuNumber. displayName: $($Org.displayName) | OrgID:  $($Org.OrgID)   ")
+            $OrgIDHash.add($menuNumber, "$($Org.OrgID)")
+            $OrgNameHash.add($menuNumber, "$($Org.displayName)")
+            $menuNumber++
+
+        }
+        # Prompt user for org selection
+        Write-Host ("`nSelect the number of the JumpCloud tenant you wish to connect to`n") -ForegroundColor Yellow
+        Do
+        {
+            [Int32]$selection = Read-Host ("Enter a value between 1 and $($OrgIDHash.Count)")
+            If (!($selection -le $OrgIDHash.Count))
             {
-                $hdrs.Add('x-org-id', "$($Organizations.OrgID)")
+                Write-Warning ("$selection is not a valid choice")
+                $selection = $null
+            }
+        }
+        Until ($selection -le $OrgIDHash.Count)
+        # Run connection test
+        If ($selection -le $OrgIDHash.Count)
+        {
+            Try
+            {
+                If ($Organizations.Count -eq 1)
+                {
+                    $hdrs.Add('x-org-id', "$($Organizations.OrgID)")
+                    $global:JCOrgID = $($Organizations.OrgID)
+                    Write-Host ("Connected to JumpCloud Tenant: $($Organizations.displayName) | OrgID: $JCOrgID") -BackgroundColor:('Green') -ForegroundColor:('Black')
+                }
+                ElseIf ($Organizations.Count -gt 1)
+                {
+                    $hdrs.Add('x-org-id', "$($OrgIDHash.$selection)")
+                    $global:JCOrgID = $($OrgIDHash.$selection)
+                    Write-Host ("Connected to JumpCloud Tenant: $($OrgNameHash.$selection) | OrgID: $JCOrgID") -BackgroundColor:('Green') -ForegroundColor:('Black')
+                }
+                Else
+                {
+                    Write-Error ('Org count is less than 1')
+                }
                 $ConnectionTestURL = "$JCUrlBasePath/api/v2/ldapservers"
                 Invoke-RestMethod -Method GET -Uri $ConnectionTestURL -Headers $hdrs -UserAgent:(Get-JCUserAgent) | Out-Null
-                $global:JCOrgID = $($Organizations.OrgID)
-                Write-Host -BackgroundColor Green -ForegroundColor Black "Connected to JumpCloud Tenant: $($Organizations.displayName) | OrgID: $JCOrgID"
-
-
             }
-            catch
+            Catch
             {
-
-                Write-Error "Incorrect OrgID OR no network connectivity. You can obtain your Organization ID below your Organization's Contact Information on the Settings page."
+                Write-Error ("Incorrect OrgID OR no network connectivity. You can obtain your Organization ID below your Organization's Contact Information on the Settings page.")
                 $global:JCOrgID = $null
-                break
-
+                Break
             }
-
         }
-
-        elseif ($Organizations.count -gt 1)
+        Else
         {
-
-            $OrgIDHash = [ordered]@{}
-            $OrgNameHash = [ordered]@{}
-            [int]$menuNumber = 1
-            Write-Host "`n======== JumpCloud Multi Tenant Selector ======= `n"
-
-            Foreach ($Org in $Organizations)
-            {
-
-                Write-Host "$menuNumber. displayName: $($Org.displayName) | OrgID:  $($Org.OrgID)   "
-                $OrgIDHash.add($menuNumber, "$($Org.OrgID)")
-                $OrgNameHash.add($menuNumber, "$($Org.displayName)")
-                $menuNumber++
-
-            }
-
-            Write-Host "`nSelect the number of the JumpCloud tenant you wish to connect to`n" -ForegroundColor Yellow
-
-            $selection = Read-Host "Enter a value between 1 and $($OrgIDHash.count)"
-
-            while ($(1..$OrgIDHash.count) -notcontains $selection)
-            {
-                write-warning "$selection is not a valid choice"
-                $selection = $null
-                $selection = Read-Host "Enter a value between 1 and $($OrgIDHash.count)"
-
-            }
-
-            switch ($selection)
-            {
-                {$_ -le $OrgIDHash.count }
-                {
-
-                    try
-                    {
-                        $selection = [int]$selection
-                        $hdrs.Add('x-org-id', "$($OrgIDHash.$selection)")
-                        $ConnectionTestURL = "$JCUrlBasePath/api/v2/ldapservers"
-                        Invoke-RestMethod -Method GET -Uri $ConnectionTestURL -Headers $hdrs -UserAgent:(Get-JCUserAgent) | Out-Null
-
-                        $global:JCOrgID = $($OrgIDHash.$selection)
-                        Write-Host -BackgroundColor Green -ForegroundColor Black "Connected to JumpCloud Tenant: $($OrgNameHash.$selection) | OrgID: $JCOrgID"
-
-                    }
-                    catch
-                    {
-
-                        Write-Error "Incorrect OrgID OR no network connectivity. You can obtain your Organization ID below your Organization's Contact Information on the Settings page."
-                        $global:JCOrgID = $null
-                        break
-
-                    }
-
-                }
-
-            }
-
+            Write-Error ('Unable to validate user input.')
         }
-
     }
-
-    end
+    End
     {
     }
 
