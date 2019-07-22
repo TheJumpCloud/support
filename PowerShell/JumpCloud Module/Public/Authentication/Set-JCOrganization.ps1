@@ -40,7 +40,7 @@ function Set-JCOrganization
         {
             Write-Verbose 'Populating JCOrganizations'
 
-            $Organizations = Invoke-GetJCOrganization -JumpCloudAPIKey $JCAPIKEY
+            $Organizations = Get-JCObject -Type:('organization') -Fields:('displayName')
         }
 
     }

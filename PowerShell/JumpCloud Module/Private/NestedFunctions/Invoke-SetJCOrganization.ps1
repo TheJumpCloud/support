@@ -22,7 +22,7 @@ Function Invoke-SetJCOrganization
             Break
         }
         Write-Verbose ('Populating JCOrganizations')
-        $Organizations = Invoke-GetJCOrganization -JumpCloudAPIKey $JumpCloudAPIKey
+        $Organizations = Get-JCObject -Type:('organization') -Fields:('displayName')
     }
     Process
     {

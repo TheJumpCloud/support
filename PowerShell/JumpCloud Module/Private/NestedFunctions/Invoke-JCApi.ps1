@@ -24,7 +24,7 @@ Function Invoke-JCApi
             'Accept'       = 'application/json'
             'X-API-KEY'    = $JCAPIKEY
         }
-        If ($JCOrgID)
+        If ($JCOrgID -and $Url -notlike '*/api/organizations*')
         {
             $Headers.Add('x-org-id', "$($JCOrgID)")
         }
