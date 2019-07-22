@@ -1,17 +1,17 @@
 #### Latest Version
 
 ```
-1.13.0
+1.13.1
 ```
 
 #### Banner Current
 
 ```
-Module up-to-date. Use Get-JCSystemInsights to query System Insights tables!
+Module up-to-date. Bug fixes for MSP's that manage a large amount of organizations.
 ```
 
 #### Banner Old
 
 ```
-Module update available! Query systemInsights tables and SystemFDEKeys!
+Module update available! Bug fixes for MSP's with multiple organizations!
 ```
