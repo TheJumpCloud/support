@@ -16,17 +16,64 @@ Function Invoke-JCApi
         # Debug message for parameter call
         Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDebugMessageBegin) -ArgumentList:($MyInvocation, $PsBoundParameters, $PSCmdlet) -NoNewScope
         #Set JC headers
-        Write-Verbose 'Verifying JCAPI Key'
-        If ($JCAPIKEY.length -ne 40) {Connect-JCOnline}
         Write-Verbose 'Populating API headers'
         $Headers = @{
             'Content-Type' = 'application/json'
             'Accept'       = 'application/json'
-            'X-API-KEY'    = $JCAPIKEY
         }
-        If ($JCOrgID -and $Url -notlike '*/api/organizations*')
+        # Add x-api-key to headers
+        Write-Verbose 'Verifying JCAPI Key'
+        $xApiKey = If (-not ([System.String]::IsNullOrEmpty($JCAPIKEY)))
         {
-            $Headers.Add('x-org-id', "$($JCOrgID)")
+            $JCAPIKEY
+        }
+        ElseIf (-not ([System.String]::IsNullOrEmpty($JumpCloudAPIKey)))
+        {
+            $JumpCloudAPIKey
+        }
+        Else
+        {
+            Connect-JCOnline
+        }
+        # Validate API key
+        If (-not ([System.String]::IsNullOrEmpty($xApiKey)))
+        {
+            $Headers.Add('x-api-key', "$($xApiKey)") | Out-Null
+        }
+        Else
+        {
+            Write-Error ('x-api-key is not populated')
+        }
+        # Add x-org-id to headers
+        $xOrgId = If (-not ([System.String]::IsNullOrEmpty($JCOrgID)))
+        {
+            $JCOrgID
+        }
+        ElseIf (-not ([System.String]::IsNullOrEmpty($JumpCloudOrgID)))
+        {
+            $JumpCloudOrgID
+        }
+        # Else
+        # {
+        #     Connect-JCOnline -JumpCloudAPIKey:($xApiKey)
+        # }
+        # Validate OrgId
+        If (-not ([System.String]::IsNullOrEmpty($xOrgId)))
+        {
+            $Headers.Add('x-org-id', "$($xOrgId)") | Out-Null
+        }
+        Else
+        {
+            If ($Url -notlike '*/api/organizations*')
+            {
+                # Write-Error ('x-org-id is not populated')
+                Connect-JCOnline -JumpCloudAPIKey:($xApiKey)
+            }
+        }
+        # Organizations endpoint does not accept x-org-id in header
+        If ($Url -like '*/api/organizations*')
+        {
+            $Headers.Remove('x-org-id') | Out-Null
         }
     }
     Process
@@ -34,6 +81,10 @@ Function Invoke-JCApi
         Try
         {
             $Results = @()
+            If ([System.String]::IsNullOrEmpty($JCUrlBasePath))
+            {
+                $JCUrlBasePath = 'https://console.jumpcloud.com'
+            }
             If ($Url -notlike ('*' + $JCUrlBasePath + '*'))
             {
                 $Url = $JCUrlBasePath + $Url
