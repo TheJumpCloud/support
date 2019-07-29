@@ -28,7 +28,12 @@ Function Set-JCSystem ()
 
         [Parameter(ValueFromPipelineByPropertyName = $true)]
         [bool]
-        $allowPublicKeyAuthentication
+        $allowPublicKeyAuthentication,
+
+        [Parameter(ValueFromPipelineByPropertyName = $true,
+            HelpMessage = 'Setting this value to $true will enable systemInsights and collect data for this system. Setting this value to $false will disable systemInsights and data collection for the system.')]
+        [bool]
+        $systemInsights
     )
 
     begin
@@ -36,7 +41,7 @@ Function Set-JCSystem ()
     {
 
         Write-Debug 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {Connect-JConline}
+        if ($JCAPIKEY.length -ne 40) { Connect-JConline }
 
         $hdrs = @{
 
@@ -55,7 +60,7 @@ Function Set-JCSystem ()
 
     process
     {
-        $body = @{}
+        $body = @{ }
 
         foreach ($param in $PSBoundParameters.GetEnumerator())
         {
@@ -63,6 +68,18 @@ Function Set-JCSystem ()
             if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }
 
             if ($param.key -eq 'SystemID', 'JCAPIKey') { continue }
+
+            if ($param.key -eq 'systemInsights')
+            {
+                switch ($systemInsights)
+                {
+                    true { $state = 'enabled' }
+                    false { $state = 'deferred' }
+                }
+                $body.add('systemInsights', @{'state' = $state })
+
+                continue
+            }
 
             $body.add($param.Key, $param.Value)
 
