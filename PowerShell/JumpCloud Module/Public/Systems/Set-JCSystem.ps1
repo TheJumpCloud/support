@@ -71,10 +71,10 @@ Function Set-JCSystem ()
 
             if ($param.key -eq 'systemInsights')
             {
-                switch ($systemInsights)
+                $state = switch ($systemInsights)
                 {
-                    true { $state = 'enabled' }
-                    false { $state = 'deferred' }
+                    true { 'enabled' }
+                    false { 'deferred' }
                 }
                 $body.add('systemInsights', @{'state' = $state })
 
