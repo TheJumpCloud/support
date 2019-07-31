@@ -2,8 +2,8 @@ Function Set-JCOrganization
 {
     [CmdletBinding()]
     Param(
-        [Parameter(Mandatory = $true)][Alias('JCAPIKEY')][String]$JumpCloudAPIKey
-        , [Parameter(Mandatory = $false)][Alias('JCOrgID')][String]$JumpCloudOrgID = $null
+        [Parameter(Mandatory = $true)][System.String]$JumpCloudAPIKey
+        , [Parameter(Mandatory = $false)][System.String]$JumpCloudOrgID
     )
     Begin
     {
