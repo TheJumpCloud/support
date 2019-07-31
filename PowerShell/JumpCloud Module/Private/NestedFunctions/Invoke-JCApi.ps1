@@ -23,57 +23,29 @@ Function Invoke-JCApi
         }
         # Add x-api-key to headers
         Write-Verbose 'Verifying JCAPI Key'
-        $xApiKey = If (-not ([System.String]::IsNullOrEmpty($JCAPIKEY)))
-        {
-            $JCAPIKEY
-        }
-        ElseIf (-not ([System.String]::IsNullOrEmpty($JumpCloudAPIKey)))
-        {
-            $JumpCloudAPIKey
-        }
-        Else
-        {
-            Connect-JCOnline
-        }
         # Validate API key
-        If (-not ([System.String]::IsNullOrEmpty($xApiKey)))
+        If (-not ([System.String]::IsNullOrEmpty($env:JcApiKey)))
         {
-            $Headers.Add('x-api-key', "$($xApiKey)") | Out-Null
+            $Headers.Add('x-api-key', "$($env:JcApiKey)") | Out-Null
         }
         Else
         {
             Write-Error ('x-api-key is not populated')
-        }
-        # Add x-org-id to headers
-        $xOrgId = If (-not ([System.String]::IsNullOrEmpty($JCOrgID)))
-        {
-            $JCOrgID
-        }
-        ElseIf (-not ([System.String]::IsNullOrEmpty($JumpCloudOrgID)))
-        {
-            $JumpCloudOrgID
-        }
-        # Else
-        # {
-        #     Connect-JCOnline -JumpCloudAPIKey:($xApiKey)
-        # }
-        # Validate OrgId
-        If (-not ([System.String]::IsNullOrEmpty($xOrgId)))
-        {
-            $Headers.Add('x-org-id', "$($xOrgId)") | Out-Null
-        }
-        Else
-        {
-            If ($Url -notlike '*/api/organizations*')
-            {
-                # Write-Error ('x-org-id is not populated')
-                Connect-JCOnline -JumpCloudAPIKey:($xApiKey)
-            }
+            Connect-JCOnline
         }
         # Organizations endpoint does not accept x-org-id in header
-        If ($Url -like '*/api/organizations*')
+        If ($Url -notlike '*/api/organizations*')
         {
-            $Headers.Remove('x-org-id') | Out-Null
+            # Add x-org-id to headers
+            If (-not ([System.String]::IsNullOrEmpty($env:JcOrgId)))
+            {
+                $Headers.Add('x-org-id', "$($env:JcOrgId)") | Out-Null
+            }
+            Else
+            {
+                Write-Error ('x-org-id is not populated')
+                Connect-JCOnline -JumpCloudAPIKey:($env:JcApiKey)
+            }
         }
     }
     Process
