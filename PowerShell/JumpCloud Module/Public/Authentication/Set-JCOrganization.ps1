@@ -7,11 +7,11 @@ Function Set-JCOrganization
     )
     Begin
     {
-        If ([System.String]::IsNullOrEmpty($JumpCloudOrgID))
+        If (-not [System.String]::IsNullOrEmpty($JumpCloudAPIKey))
         {
             $env:JcApiKey = $JumpCloudAPIKey
         }
-        If ([System.String]::IsNullOrEmpty($JumpCloudOrgID))
+        If (-not [System.String]::IsNullOrEmpty($JumpCloudOrgID))
         {
             $env:JcOrgId = $JumpCloudOrgID
         }
@@ -83,6 +83,10 @@ Function Set-JCOrganization
     }
     End
     {
+
+        $env:JcOrgId = $OrgId
+        $global:JCOrgID = $env:JcOrgId
+
         If (-not ([System.String]::IsNullOrEmpty($OrgName)) -and -not ([System.String]::IsNullOrEmpty($OrgId)))
         {
             Write-Host ("Connected to JumpCloud Tenant: $($OrgName) | OrgId: $($OrgId)") -BackgroundColor:('Green') -ForegroundColor:('Black')
