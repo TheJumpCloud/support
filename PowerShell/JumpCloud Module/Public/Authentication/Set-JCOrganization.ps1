@@ -77,9 +77,9 @@ Function Set-JCOrganization
     {
         If (-not ([System.String]::IsNullOrEmpty($OrgName)) -and -not ([System.String]::IsNullOrEmpty($OrgId)))
         {
-            Write-Host ("Connected to JumpCloud Tenant: $($OrgName) | OrgID: $OrgId") -BackgroundColor:('Green') -ForegroundColor:('Black')
+            Write-Host ("Connected to JumpCloud Tenant: $($OrgName) | OrgId: $($OrgId)") -BackgroundColor:('Green') -ForegroundColor:('Black')
             Return [PSCustomObject]@{
-                'xOrgId'  = $OrgId;
+                'OrgId'   = $OrgId;
                 'OrgName' = $OrgName;
             }
         }

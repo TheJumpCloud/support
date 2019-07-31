@@ -129,10 +129,11 @@ Function Connect-JCOnline ()
             $global:JCAPIKEY = $env:JcApiKey
         }
         # If "$JumpCloudOrgID" is populated or if "$env:JcOrgId" is not set
-        If (-not ([System.String]::IsNullOrEmpty($JumpCloudOrgID)) -or ([System.String]::IsNullOrEmpty($env:JcOrgId)))
+        If (-not ([System.String]::IsNullOrEmpty($JumpCloudAPIKey)) -or -not ([System.String]::IsNullOrEmpty($JumpCloudOrgID)) -or ([System.String]::IsNullOrEmpty($env:JcOrgId)))
         {
             # Set JcOrgId
-            $env:JcOrgId = (Set-JCOrganization -JumpCloudAPIKey:($JumpCloudAPIKey) -JumpCloudOrgID:($JumpCloudOrgID)).xOrgId
+            $Org = Set-JCOrganization -JumpCloudAPIKey:($JumpCloudAPIKey) -JumpCloudOrgID:($JumpCloudOrgID)
+            $env:JcOrgId = $Org.OrgId
             $global:JCOrgID = $env:JcOrgId
             # Each time a new org is selected get settings info
             $global:JCSettingsUrl = $JCUrlBasePath + '/api/settings'
