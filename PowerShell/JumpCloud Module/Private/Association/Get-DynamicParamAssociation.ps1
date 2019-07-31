@@ -112,7 +112,7 @@ Function Get-DynamicParamAssociation
         }
         # Build output
         $ParamVarPrefix = 'Param_'
-        Get-Variable | Where-Object {$_.Name -like '*' + $ParamVarPrefix + '*'} | ForEach-Object {
+        Get-Variable -Scope:('Local') | Where-Object {$_.Name -like '*' + $ParamVarPrefix + '*'} | ForEach-Object {
             # Add RuntimeDictionary to each parameter
             $_.Value.Add('RuntimeParameterDictionary', $RuntimeParameterDictionary)
             # Creating each parameter
