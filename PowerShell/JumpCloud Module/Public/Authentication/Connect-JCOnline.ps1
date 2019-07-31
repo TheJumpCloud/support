@@ -132,7 +132,14 @@ Function Connect-JCOnline ()
         If (-not ([System.String]::IsNullOrEmpty($JumpCloudAPIKey)) -or -not ([System.String]::IsNullOrEmpty($JumpCloudOrgID)) -or ([System.String]::IsNullOrEmpty($env:JcOrgId)))
         {
             # Set JcOrgId
-            $Org = Set-JCOrganization -JumpCloudAPIKey:($JumpCloudAPIKey) -JumpCloudOrgID:($JumpCloudOrgID)
+            $Org = If ([System.String]::IsNullOrEmpty($JumpCloudOrgID))
+            {
+                Set-JCOrganization -JumpCloudAPIKey:($JumpCloudAPIKey)
+            }
+            Else
+            {
+                Set-JCOrganization -JumpCloudAPIKey:($JumpCloudAPIKey) -JumpCloudOrgID:($JumpCloudOrgID)
+            }
             $env:JcOrgId = $Org.OrgId
             $global:JCOrgID = $env:JcOrgId
             # Each time a new org is selected get settings info
@@ -162,7 +169,7 @@ Function Connect-JCOnline ()
     }
     End
     {
-        If ([System.String]::IsNullOrEmpty($env:JcUpdateModule) -or $env:JcUpdateModule -eq 'False')
+        If ([System.String]::IsNullOrEmpty($env:JcUpdateModule) -or $env:JcUpdateModule -ne 'False')
         {
             If ($JCEnvironment -ne 'local')
             {
