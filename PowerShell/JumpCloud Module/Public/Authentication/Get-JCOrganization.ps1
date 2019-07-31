@@ -8,8 +8,8 @@ Function Get-JCOrganization
     }
     Process
     {
-        $RawResults = Get-JCObject -Type:('organization') -Fields:('_id','displayName')
-        ForEach ($org In $RawResults.results)
+        $RawResults = Get-JCObject -Type:('organization') -Fields:('_id', 'displayName')
+        ForEach ($org In $RawResults)
         {
             $MSPOrg = [PSCustomObject]@{
                 'OrgID'       = $org._id
