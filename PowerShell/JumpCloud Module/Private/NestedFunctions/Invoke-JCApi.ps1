@@ -30,6 +30,7 @@ Function Invoke-JCApi
         }
         Else
         {
+            Write-Error ('x-api-key is not set')
             Connect-JCOnline
         }
         # Organizations endpoint does not accept x-org-id in header

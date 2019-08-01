@@ -140,7 +140,6 @@ Function Connect-JCOnline ()
             {
                 Set-JCOrganization -JumpCloudAPIKey:($JumpCloudAPIKey) -JumpCloudOrgID:($JumpCloudOrgID)
             }
-
             # Each time a new org is selected get settings info
             $global:JCSettingsUrl = $JCUrlBasePath + '/api/settings'
             $global:JCSettings = Invoke-JCApi -Method:('GET') -Url:($JCSettingsUrl)
