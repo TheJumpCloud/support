@@ -17,91 +17,116 @@
 #
 # Update with your own JumpCloud connect key
 #
-$CONNECT_KEY="your-JumpCloud-Connect-Key-here"
+$CONNECT_KEY = "your-JumpCloud-Connect-Key-here"
 
-$AGENT_PATH="${env:ProgramFiles}\JumpCloud"
-$AGENT_CONF_FILE="\Plugins\Contrib\jcagent.conf"
-$AGENT_BINARY_NAME="jumpcloud-agent.exe"
+$AGENT_PATH = "${env:ProgramFiles}\JumpCloud"
+$AGENT_CONF_FILE = "\Plugins\Contrib\jcagent.conf"
+$AGENT_BINARY_NAME = "jumpcloud-agent.exe"
 
-$AGENT_SERVICE_NAME="jumpcloud-agent"
+$AGENT_SERVICE_NAME = "jumpcloud-agent"
 
-$AGENT_INSTALLER_URL="https://s3.amazonaws.com/jumpcloud-windows-agent/production/JumpCloudInstaller.exe"
-$AGENT_INSTALLER_PATH="$env:TEMP\JumpCloudInstaller.exe"
-$AGENT_UNINSTALLER_NAME="unins000.exe"
+$AGENT_INSTALLER_URL = "https://s3.amazonaws.com/jumpcloud-windows-agent/production/JumpCloudInstaller.exe"
+$AGENT_INSTALLER_PATH = "$env:TEMP\JumpCloudInstaller.exe"
+$AGENT_UNINSTALLER_NAME = "unins000.exe"
 
 
-$EVENT_LOGGER_KEY_NAME="hklm:\SYSTEM\CurrentControlSet\services\eventlog\Application\jumpcloud-agent"
+$EVENT_LOGGER_KEY_NAME = "hklm:\SYSTEM\CurrentControlSet\services\eventlog\Application\jumpcloud-agent"
 
-$INSTALLER_BINARY_NAMES="JumpCloudInstaller.exe,JumpCloudInstaller.tmp"
+$INSTALLER_BINARY_NAMES = "JumpCloudInstaller.exe,JumpCloudInstaller.tmp"
 
 #########################################################################################
 #
 # Agent Installer Funcs
 #
 #########################################################################################
-Function DownloadAgentInstaller() {
+Function DownloadAgentInstaller()
+{
     (New-Object System.Net.WebClient).DownloadFile("${AGENT_INSTALLER_URL}", "${AGENT_INSTALLER_PATH}")
 }
 
-Function AgentInstallerExists() {
+Function AgentInstallerExists()
+{
     Test-Path ${AGENT_INSTALLER_PATH}
 }
 
-Function InstallAgent() {
+Function InstallAgent()
+{
     $params = ("${AGENT_INSTALLER_PATH}", "-k ${CONNECT_KEY}", "/VERYSILENT", "/NORESTART", "/SUPRESSMSGBOXES", "/NOCLOSEAPPLICATIONS", "/NORESTARTAPPLICATIONS", "/LOG=$env:TEMP\jcUpdate.log")
     Invoke-Expression "$params"
 }
 
-Function UninstallAgent() {
+Function UninstallAgent()
+{
     # Due to PowerShell's incredible weakness in dealing with paths containing SPACEs, we need to
     # to hard-code this path...
     $params = ('C:\Program?Files\JumpCloud\unins000.exe', "/VERYSILENT", "/SUPPRESSMSGBOXES")
     Invoke-Expression "$params"
 }
 
-Function KillInstaller() {
-    try {
+Function KillInstaller()
+{
+    try
+    {
         Stop-Process -processname ${INSTALLER_BINARY_NAMES} -ErrorAction Stop
-    } catch {
-        Write-Error "Could not kill JumpCloud installer processes"
+    }
+    catch
+    {
+        Write-Output "Could not kill JumpCloud installer processes"
     }
 }
 
-Function KillAgent() {
-    try {
+Function KillAgent()
+{
+    try
+    {
         Stop-Process -processname ${AGENT_BINARY_NAME} -ErrorAction Stop
-    } catch {
-        Write-Error "Could not kill running jumpcloud-agent process"
+    }
+    catch
+    {
+        Write-Output "Could not kill running jumpcloud-agent process"
     }
 }
 
-Function InstallerIsRunning() {
-    try {
+Function InstallerIsRunning()
+{
+    try
+    {
         Get-Process ${INSTALLER_BINARY_NAMES} -ErrorAction Stop
         $true
-    } catch {
+    }
+    catch
+    {
         $false
     }
 }
 
-Function AgentIsRunning() {
-    try {
+Function AgentIsRunning()
+{
+    try
+    {
         Get-Process ${AGENT_BINARY_NAME} -ErrorAction Stop
         $true
-    } catch {
+    }
+    catch
+    {
         $false
     }
 }
 
-Function AgentIsOnFileSystem() {
+Function AgentIsOnFileSystem()
+{
     Test-Path ${AGENT_PATH}/${AGENT_BINARY_NAME}
 }
 
-Function DeleteAgent() {
-    try {
+Function DeleteAgent()
+{
+    try
+    {
         Remove-Item ${AGENT_PATH}/${AGENT_BINARY_NAME} -ErrorAction Stop
-    } catch {
-        Write-Error "Could not remove remaining jumpcloud-agent.exe binary"
+    }
+    catch
+    {
+        Write-Output "Could not remove remaining jumpcloud-agent.exe binary"
     }
 }
 
@@ -110,31 +135,44 @@ Function DeleteAgent() {
 # Service Manager Funcs
 #
 #########################################################################################
-Function AgentIsInServiceManager() {    
-    try {
+Function AgentIsInServiceManager()
+{    
+    try
+    {
         $services = Get-Service -Name "${AGENT_SERVICE_NAME}" -ErrorAction Stop
         $true
-    } catch {
+    }
+    catch
+    {
         $false
     }
 }
 
-Function RemoveAgentService() {
+Function RemoveAgentService()
+{
     $service = Get-WmiObject -Class Win32_Service -Filter "Name='${AGENT_SERVICE_NAME}'"
-    if ($service) {
-        try {
+    if ($service)
+    {
+        try
+        {
             $service.Delete()
-        } catch {
-            Write-Error "Could not remove jumpcloud-agent service entry"
+        }
+        catch
+        {
+            Write-Output "Could not remove jumpcloud-agent service entry"
         }
     }
 }
 
-Function RemoveEventLoggerKey() {
-    try {
+Function RemoveEventLoggerKey()
+{
+    try
+    {
         Remove-Item -Path "$EVENT_LOGGER_KEY_NAME" -ErrorAction Stop
-    } catch {
-        Write-Error "Could not remove event logger key from registry"
+    }
+    catch
+    {
+        Write-Output "Could not remove event logger key from registry"
     }
 }
 
@@ -145,75 +183,84 @@ Function RemoveEventLoggerKey() {
 # Work functions (uninstall, clean up, and reinstall)
 #
 ############################################################################################
-Function AgentIsInstalled() {
+Function AgentIsInstalled()
+{
     $inServiceMgr = AgentIsInServiceManager
     $onFileSystem = AgentIsOnFileSystem
 
     $inServiceMgr -Or $onFileSystem
 }
 
-Function CheckForAndUninstallExistingAgent() {
+Function CheckForAndUninstallExistingAgent()
+{
     #
     # Is the installer running/hung?
     #
-    if (InstallerIsRunning) {
+    if (InstallerIsRunning)
+    {
         # Yep, kill it
         KillInstaller
         
-        Write-Host "Killed running agent installer."
+        Write-Output "Killed running agent installer."
     }
 
     #
     # Is the agent running/hung?
     #
-    if (AgentIsRunning) {
+    if (AgentIsRunning)
+    {
         # Yep, kill it
         KillAgent
         
-        Write-Host "Killed running agent binary."
+        Write-Output "Killed running agent binary."
     }
 
     #
     # Is the agent still fully installed in both the service manager and on the file system?
     #
-    if (AgentIsInstalled) {
+    if (AgentIsInstalled)
+    {
         # Yep, try a normal uninstall
         UninstallAgent
         
-        Write-Host "Completed agent uninstall."
+        Write-Output "Completed agent uninstall."
     }
 }
 
-Function CleanUpAgentLeftovers() {
+Function CleanUpAgentLeftovers()
+{
     # Remove any remaining event logger key...
     RemoveEventLoggerKey
 
     #
     # Is the agent still in the service manager?
     #
-    if (AgentIsInServiceManager) {
+    if (AgentIsInServiceManager)
+    {
         # Try to remove it, though it probably won't remove because we may in the state
         # where the service is "marked for deletion" (requires reboot before further
         # modifications can be done on this service).
         RemoveAgentService
         
-        if (AgentIsInServiceManager) {
-            Write-Host "Unable to remove agent service, this system needs to be rebooted."
-            Write-Host "Then you can re-run this script to re-install the agent."
+        if (AgentIsInServiceManager)
+        {
+            Write-Output "Unable to remove agent service, this system needs to be rebooted."
+            Write-Output "Then you can re-run this script to re-install the agent."
             exit 1
         }
         
-        Write-Host "Removed agent service entry."
+        Write-Output "Removed agent service entry."
     }
 
     #
     # Is the agent still on the file system?
     #
-    if (AgentIsOnFileSystem) {
+    if (AgentIsOnFileSystem)
+    {
         # Yes, the installer was unsuccessful in removing it.
         DeleteAgent
         
-        Write-Host "Removed remaining agent binary file."
+        Write-Output "Removed remaining agent binary file."
     }
 }
 
@@ -222,35 +269,45 @@ Function CleanUpAgentLeftovers() {
 # Do a normal agent install, and verify correct installation
 #
 ############################################################################################
-Function DownloadAndInstallAgent() {
+Function DownloadAndInstallAgent()
+{
     $agentIsInstalled = AgentIsInstalled
-    if (-Not $agentIsInstalled) {
-        Write-Host -nonewline "Downloading agent installer..."
+    if (-Not $agentIsInstalled)
+    {
+        Write-Output  "Downloading agent installer..."
 
         DownloadAgentInstaller
 
-        if (AgentInstallerExists) {
-            Write-Host " complete."
+        if (AgentInstallerExists)
+        {
+            Write-Output " complete."
 
-            Write-Host -nonewline "Installing agent..."
+            Write-Output  "Installing agent..."
             InstallAgent
             $exitCode = $?
             $agentIsInstalled = AgentIsInstalled
 
-            Write-Host " complete. (exit code=$exitCode)"
+            Write-Output " complete. (exit code=$exitCode)"
 
-            if ($exitCode -ne $true) {
+            if ($exitCode -ne $true)
+            {
                 Write-Error "Agent installation failed. Please rerun this script,`nand if that doesn't work, please reboot and try again.`nIf neither work, please contact support@jumpcloud.com"
                 exit 1
-            } else {
-               Write-Host "`n* * * SUCCESS! Agent installation complete. * * *" 
+            }
+            else
+            {
+                Write-Output "`n* * * SUCCESS! Agent installation complete. * * *" 
             }                
-        } else {
+        }
+        else
+        {
             Write-Error "Could not download agent installer from ${AGENT_INSTALLER_URL}. Install FAILED."
             exit 1
         }
-    } else {
-        Write-Host "Agent is already installed, not installing again."
+    }
+    else
+    {
+        Write-Output "Agent is already installed, not installing again."
     }
 }
 
