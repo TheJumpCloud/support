@@ -16,35 +16,28 @@ Function Invoke-JCApi
         # Debug message for parameter call
         Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDebugMessageBegin) -ArgumentList:($MyInvocation, $PsBoundParameters, $PSCmdlet) -NoNewScope
         #Set JC headers
-        Write-Verbose 'Populating API headers'
         $Headers = @{
-            'Content-Type' = 'application/json'
-            'Accept'       = 'application/json'
+            'Content-Type' = 'application/json';
+            'Accept'       = 'application/json';
+            'x-api-key'    = "$($env:JcApiKey)";
+            'x-org-id'     = "$($env:JcOrgId)";
         }
-        # Add x-api-key to headers
-        Write-Verbose 'Verifying JCAPI Key'
-        # Validate API key
-        If (-not ([System.String]::IsNullOrEmpty($env:JcApiKey)))
+        # Populate $env:JcApiKey if its not set
+        If ([System.String]::IsNullOrEmpty($env:JcApiKey))
         {
-            $Headers.Add('x-api-key', "$($env:JcApiKey)") | Out-Null
-        }
-        Else
-        {
-            Write-Error ('x-api-key is not set')
             Connect-JCOnline
         }
         # Organizations endpoint does not accept x-org-id in header
-        If ($Url -notlike '*/api/organizations*')
+        If ($Url -like '*/api/organizations*')
         {
-            # Add x-org-id to headers
-            If (-not ([System.String]::IsNullOrEmpty($env:JcOrgId)))
+            $Headers.Remove('x-org-id') | Out-Null
+        }
+        Else
+        {
+            # Populate $env:JcOrgId if its not set
+            If ([System.String]::IsNullOrEmpty($env:JcOrgId))
             {
-                $Headers.Add('x-org-id', "$($env:JcOrgId)") | Out-Null
-            }
-            Else
-            {
-                Write-Error ('x-org-id is not populated')
-                Connect-JCOnline -JumpCloudAPIKey:($env:JcApiKey)
+                Set-JCOrganization -JumpCloudAPIKey:($env:JcApiKey)
             }
         }
     }

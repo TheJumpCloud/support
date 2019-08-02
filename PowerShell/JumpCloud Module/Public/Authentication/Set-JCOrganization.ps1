@@ -7,12 +7,20 @@ Function Set-JCOrganization
     )
     Begin
     {
+        # Debug message for parameter call
+        Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDebugMessageBegin) -ArgumentList:($MyInvocation, $PsBoundParameters, $PSCmdlet) -NoNewScope
     }
     Process
     {
-        If ([System.String]::IsNullOrEmpty($JumpCloudAPIKey) -or [System.String]::IsNullOrEmpty($env:JcApiKey))
+        # If parameter $JumpCloudAPIKey is populated but $env:JcApiKey has not yet been set
+        If (-not [System.String]::IsNullOrEmpty($JumpCloudAPIKey) -and [System.String]::IsNullOrEmpty($env:JcApiKey))
         {
-            Connect-JCOnline
+            Return Connect-JCOnline -JumpCloudAPIKey:($JumpCloudAPIKey)
+        }
+        # If $env:JcApiKey has not yet been set or parameter $JumpCloudAPIKey does not equal $env:JcApiKey
+        ElseIf ([System.String]::IsNullOrEmpty($env:JcApiKey) -or $JumpCloudAPIKey -ne $env:JcApiKey)
+        {
+            Return Connect-JCOnline
         }
         Else
         {
@@ -78,19 +86,25 @@ Function Set-JCOrganization
                 $OrgId = ($Organizations | Where-Object {$_._id -eq $JumpCloudOrgID})._id
                 $OrgName = ($Organizations | Where-Object {$_._id -eq $JumpCloudOrgID}).displayName
             }
-            $env:JcOrgId = $OrgId
-            $global:JCOrgID = $env:JcOrgId
+            If (-not ([System.String]::IsNullOrEmpty($OrgName)) -and -not ([System.String]::IsNullOrEmpty($OrgId)))
+            {
+                $env:JcOrgId = $OrgId
+                $global:JCOrgID = $env:JcOrgId
+                $env:JcOrgName = $OrgName
+                Write-Host ("Connected to JumpCloud Tenant: $($OrgName) | OrgId: $($OrgId)") -BackgroundColor:('Green') -ForegroundColor:('Black')
+                Return [PSCustomObject]@{
+                    'JcApiKey'  = $env:JcApiKey;
+                    'JcOrgId'   = $env:JcOrgId;
+                    'JcOrgName' = $env:JcOrgName;
+                }
+            }
+            Else
+            {
+                Write-Error ('OrgId and OrgName have not been set.')
+            }
         }
     }
     End
     {
-        If (-not ([System.String]::IsNullOrEmpty($OrgName)) -and -not ([System.String]::IsNullOrEmpty($OrgId)))
-        {
-            Write-Host ("Connected to JumpCloud Tenant: $($OrgName) | OrgId: $($OrgId)") -BackgroundColor:('Green') -ForegroundColor:('Black')
-            Return [PSCustomObject]@{
-                'OrgId'   = $OrgId;
-                'OrgName' = $OrgName;
-            }
-        }
     }
 }

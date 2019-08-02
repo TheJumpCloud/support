@@ -129,10 +129,10 @@ Function Connect-JCOnline ()
             $global:JCAPIKEY = $env:JcApiKey
         }
         # If "$JumpCloudOrgID" is populated or if "$env:JcOrgId" is not set
-        If (-not ([System.String]::IsNullOrEmpty($JumpCloudAPIKey)) -or -not ([System.String]::IsNullOrEmpty($JumpCloudOrgID)) -or ([System.String]::IsNullOrEmpty($env:JcOrgId)))
+        If ($JumpCloudOrgID -ne $env:JcOrgId)
         {
             #  JcOrgId set in Set-JCOrganization
-            $Org = If ([System.String]::IsNullOrEmpty($JumpCloudOrgID))
+            $Auth = If ([System.String]::IsNullOrEmpty($JumpCloudOrgID))
             {
                 Set-JCOrganization -JumpCloudAPIKey:($JumpCloudAPIKey)
             }
@@ -167,6 +167,7 @@ Function Connect-JCOnline ()
     }
     End
     {
+        Return $Auth
         If ([System.String]::IsNullOrEmpty($env:JcUpdateModule) -or $env:JcUpdateModule -ne 'False')
         {
             If ($JCEnvironment -ne 'local')
