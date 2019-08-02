@@ -1,3 +1,19 @@
+<#
+.SYNOPSIS
+    Can be used to update or install the JumpCloud AD Import agent
+.DESCRIPTION
+    Downloads the AD Import agent and launches the installer
+.NOTES
+    Name: AD_Import_Configuration.ps1
+    Author: Scott Reed
+    Date created: 2019-07-29
+.LINK
+    http://support.jumpcloud.com
+.EXAMPLE
+    . .\AD_Import_Configuration.ps1 -UserDissociateAction "unbind" -UserTakeoverAction "retain"
+#>
+
+
 [CmdletBinding()]
 
 Param (
@@ -68,7 +84,7 @@ if (Get-Service $ServiceName -ErrorAction SilentlyContinue)
         $JCADB_Configfile.MainLoop.UserTakeoverAction = "$UserTakeoverAction"
 
     }
-	
+
     if ($UserFieldMapping)
     {
         $JCADB_Configfile.MainLoop.UserFieldMapping.username = "$UserFieldMapping"
