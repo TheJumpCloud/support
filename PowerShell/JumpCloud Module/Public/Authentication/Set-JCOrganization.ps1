@@ -2,8 +2,8 @@ Function Set-JCOrganization
 {
     [CmdletBinding()]
     Param(
-        [Parameter(HelpMessage = "Please enter your JumpCloud API key. This can be found in the JumpCloud admin console within 'API Settings' accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console.")][ValidateNotNullOrEmpty()][System.String]$JumpCloudAPIKey = $env:JcApiKey
-        , [Parameter(HelpMessage = 'Organization ID can be found in the Settings page within the admin console. Only needed for multi tenant admins.')][ValidateNotNullOrEmpty()][System.String]$JumpCloudOrgID
+        [Parameter(HelpMessage = "Please enter your JumpCloud API key. This can be found in the JumpCloud admin console within 'API Settings' accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console.")][ValidateNotNullOrEmpty()][System.String]$JumpCloudApiKey = $env:JcApiKey
+        , [Parameter(HelpMessage = 'Organization Id can be found in the Settings page within the admin console. Only needed for multi tenant admins.')][ValidateNotNullOrEmpty()][System.String]$JumpCloudOrgId
     )
     Begin
     {
@@ -12,34 +12,42 @@ Function Set-JCOrganization
     }
     Process
     {
-        # If parameter $JumpCloudAPIKey is populated but $env:JcApiKey has not yet been set
-        If (-not [System.String]::IsNullOrEmpty($JumpCloudAPIKey) -and [System.String]::IsNullOrEmpty($env:JcApiKey))
+        If ([System.String]::IsNullOrEmpty($JumpCloudApiKey) -and [System.String]::IsNullOrEmpty($env:JcApiKey))
         {
-            Return Connect-JCOnline -JumpCloudAPIKey:($JumpCloudAPIKey)
+            Connect-JCOnline
         }
-        # If $env:JcApiKey has not yet been set or parameter $JumpCloudAPIKey does not equal $env:JcApiKey
-        ElseIf ([System.String]::IsNullOrEmpty($env:JcApiKey) -or $JumpCloudAPIKey -ne $env:JcApiKey)
+        ElseIf ((-not [System.String]::IsNullOrEmpty($JumpCloudApiKey) -and [System.String]::IsNullOrEmpty($env:JcApiKey)))
         {
-            Return Connect-JCOnline
+            Connect-JCOnline -JumpCloudApiKey:($JumpCloudApiKey)
+        }
+        ElseIf ([System.String]::IsNullOrEmpty($JumpCloudApiKey) -and -not [System.String]::IsNullOrEmpty($env:JcApiKey))
+        {
+            Connect-JCOnline -JumpCloudApiKey:($env:JcApiKey)
+        }
+        ElseIf ((-not [System.String]::IsNullOrEmpty($JumpCloudApiKey) -and -not [System.String]::IsNullOrEmpty($env:JcApiKey)) -and $JumpCloudApiKey -ne $env:JcApiKey)
+        {
+            Connect-JCOnline -JumpCloudApiKey:($JumpCloudApiKey)
         }
         Else
         {
             Write-Verbose ("Parameter Set: $($PSCmdlet.ParameterSetName)")
             Write-Verbose ('Populating JCOrganizations')
             $Organizations = Get-JCObject -Type:('organization') -Fields:('_id', 'displayName')
-            If ([System.String]::IsNullOrEmpty($JumpCloudOrgID))
+            If ($Organizations.Count -gt 1)
             {
-                If ($Organizations.Count -gt 1)
+                # If not JumpCloudOrgId was specified or if the specified JumpCloudOrgId does not exist within the list of available organizations prompt for selection
+                If ([System.String]::IsNullOrEmpty($JumpCloudOrgId) -or $JumpCloudOrgId -notin $Organizations._id)
                 {
-                    $OrgIDHash = [ordered]@{}
+
+                    $OrgIdHash = [ordered]@{}
                     $OrgNameHash = [ordered]@{}
                     # Build user menu
                     [Int32]$menuNumber = 1
                     Write-Host ("`n======== JumpCloud Multi Tenant Selector ======= `n")
                     ForEach ($Org In $Organizations)
                     {
-                        Write-Host ("$menuNumber. Tenant: $($Org.displayName) | OrgID:  $($Org._id)   ")
-                        $OrgIDHash.add($menuNumber, "$($Org._id)")
+                        Write-Host ("$menuNumber. Tenant: $($Org.displayName) | OrgId:  $($Org._id)   ")
+                        $OrgIdHash.add($menuNumber, "$($Org._id)")
                         $OrgNameHash.add($menuNumber, "$($Org.displayName)")
                         $menuNumber++
                     }
@@ -47,49 +55,32 @@ Function Set-JCOrganization
                     Write-Host ("`nSelect the number of the JumpCloud tenant you wish to connect to`n") -ForegroundColor Yellow
                     Do
                     {
-                        [Int32]$selection = Read-Host ("Enter a value between 1 and $($OrgIDHash.Count)")
-                        If (!($selection -le $OrgIDHash.Count))
+                        [Int32]$selection = Read-Host ("Enter a value between 1 and $($OrgIdHash.Count)")
+                        If (!($selection -le $OrgIdHash.Count))
                         {
                             Write-Warning ("$selection is not a valid choice")
                             $selection = $null
                         }
                     }
-                    Until ($selection -le $OrgIDHash.Count)
-                    # Validate user input
-                    If ($selection -le $OrgIDHash.Count)
-                    {
-                        If ($Organizations.Count -gt 1)
-                        {
-                            $OrgId = $($OrgIDHash.$selection)
-                            $OrgName = $($OrgNameHash.$selection)
-                        }
-                        Else
-                        {
-                            $OrgId = $null
-                            $OrgName = $null
-                            Write-Error ('Org count is less than 1')
-                        }
-                    }
-                    Else
-                    {
-                        Write-Error ('Unable to validate user input.')
-                    }
+                    Until ($selection -le $OrgIdHash.Count)
+                    $OrgId = $($OrgIdHash.$selection)
+                    $OrgName = $($OrgNameHash.$selection)
                 }
                 Else
                 {
-                    $OrgId = $($Organizations._id)
-                    $OrgName = $($Organizations.displayName)
+                    $OrgId = ($Organizations | Where-Object {$_._id -eq $JumpCloudOrgId})._id
+                    $OrgName = ($Organizations | Where-Object {$_._id -eq $JumpCloudOrgId}).displayName
                 }
             }
             Else
             {
-                $OrgId = ($Organizations | Where-Object {$_._id -eq $JumpCloudOrgID})._id
-                $OrgName = ($Organizations | Where-Object {$_._id -eq $JumpCloudOrgID}).displayName
+                $OrgId = $($Organizations._id)
+                $OrgName = $($Organizations.displayName)
             }
             If (-not ([System.String]::IsNullOrEmpty($OrgName)) -and -not ([System.String]::IsNullOrEmpty($OrgId)))
             {
                 $env:JcOrgId = $OrgId
-                $global:JCOrgID = $env:JcOrgId
+                $global:JCOrgId = $env:JcOrgId
                 $env:JcOrgName = $OrgName
                 Write-Host ("Connected to JumpCloud Tenant: $($OrgName) | OrgId: $($OrgId)") -BackgroundColor:('Green') -ForegroundColor:('Black')
                 Return [PSCustomObject]@{

@@ -12,8 +12,8 @@ Function Connect-JCOnline ()
     )
     DynamicParam
     {
-        $Param_JumpCloudAPIKey = @{
-            'Name'                            = 'JumpCloudAPIKey';
+        $Param_JumpCloudApiKey = @{
+            'Name'                            = 'JumpCloudApiKey';
             'Type'                            = [System.String];
             'Position'                        = 0;
             'ValueFromPipelineByPropertyName' = $true;
@@ -22,28 +22,28 @@ Function Connect-JCOnline ()
             'ParameterSets'                   = ('force', 'Interactive');
             'HelpMessage'                     = "Please enter your JumpCloud API key. This can be found in the JumpCloud admin console within 'API Settings' accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console.";
         }
-        $Param_JumpCloudOrgID = @{
-            'Name'                            = 'JumpCloudOrgID';
+        $Param_JumpCloudOrgId = @{
+            'Name'                            = 'JumpCloudOrgId';
             'Type'                            = [System.String];
             'Position'                        = 1;
             'ValueFromPipelineByPropertyName' = $true;
             'ValidateNotNullOrEmpty'          = $true;
             'ParameterSets'                   = ('force', 'Interactive');
-            'HelpMessage'                     = 'Organization ID can be found in the Settings page within the admin console. Only needed for multi tenant admins.';
+            'HelpMessage'                     = 'Organization Id can be found in the Settings page within the admin console. Only needed for multi tenant admins.';
         }
-        # If the $env:JcApiKey is not set then make the JumpCloudAPIKey mandatory else set the default value to be the env variable
+        # If the $env:JcApiKey is not set then make the JumpCloudApiKey mandatory else set the default value to be the env variable
         If ([System.String]::IsNullOrEmpty($env:JcApiKey))
         {
-            $Param_JumpCloudAPIKey.Add('Mandatory', $true);
+            $Param_JumpCloudApiKey.Add('Mandatory', $true);
         }
         Else
         {
-            $Param_JumpCloudAPIKey.Add('Default', $env:JcApiKey);
+            $Param_JumpCloudApiKey.Add('Default', $env:JcApiKey);
         }
         # If the $env:JcOrgId is set then set the default value to be the env variable
         If (-not [System.String]::IsNullOrEmpty($env:JcOrgId))
         {
-            $Param_JumpCloudOrgID.Add('Default', $env:JcOrgId);
+            $Param_JumpCloudOrgId.Add('Default', $env:JcOrgId);
         }
         If ((Get-PSCallStack).Command -like '*MarkdownHelp')
         {
@@ -118,51 +118,74 @@ Function Connect-JCOnline ()
     }
     Process
     {
-        # For DynamicParam with a default value set that value and then convert the DynamicParam inputs into new variables for the script to use
-        Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDynamicParamProcess) -ArgumentList:($PsBoundParameters, $PSCmdlet, $RuntimeParameterDictionary) -NoNewScope
-        #Region Set environment variables that can be used by other scripts
-        # If "$JumpCloudAPIKey" is populated or if "$env:JcApiKey" is not set
-        If (-not ([System.String]::IsNullOrEmpty($JumpCloudAPIKey)))
+        Try
         {
-            # Set JcApiKey
-            $env:JcApiKey = $JumpCloudAPIKey
-            $global:JCAPIKEY = $env:JcApiKey
-        }
-        # If "$JumpCloudOrgID" is populated or if "$env:JcOrgId" is not set
-        If ($JumpCloudOrgID -ne $env:JcOrgId)
-        {
-            #  JcOrgId set in Set-JCOrganization
-            $Auth = If ([System.String]::IsNullOrEmpty($JumpCloudOrgID))
+            # For DynamicParam with a default value set that value and then convert the DynamicParam inputs into new variables for the script to use
+            Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDynamicParamProcess) -ArgumentList:($PsBoundParameters, $PSCmdlet, $RuntimeParameterDictionary) -NoNewScope
+            #Region Set environment variables that can be used by other scripts
+            # If "$JumpCloudApiKey" is populated or if "$env:JcApiKey" is not set
+            If (-not ([System.String]::IsNullOrEmpty($JumpCloudApiKey)))
             {
-                Set-JCOrganization -JumpCloudAPIKey:($JumpCloudAPIKey)
+                # Set $env:JcApiKey
+                $env:JcApiKey = $JumpCloudApiKey
+                $global:JCAPIKEY = $env:JcApiKey
+            }
+            # Set $env:JcOrgId in Set-JCOrganization
+            $Auth = If ([System.String]::IsNullOrEmpty($JumpCloudOrgId) -and [System.String]::IsNullOrEmpty($env:JcOrgId))
+            {
+                Set-JCOrganization -JumpCloudApiKey:($env:JcApiKey)
+            }
+            ElseIf (-not [System.String]::IsNullOrEmpty($JumpCloudOrgId) -and [System.String]::IsNullOrEmpty($env:JcOrgId))
+            {
+                Set-JCOrganization -JumpCloudApiKey:($env:JcApiKey) -JumpCloudOrgId:($JumpCloudOrgId)
+            }
+            ElseIf ([System.String]::IsNullOrEmpty($JumpCloudOrgId) -and -not [System.String]::IsNullOrEmpty($env:JcOrgId))
+            {
+                Set-JCOrganization -JumpCloudApiKey:($env:JcApiKey) -JumpCloudOrgId:($env:JcOrgId)
+            }
+            ElseIf (-not [System.String]::IsNullOrEmpty($JumpCloudOrgId) -and -not [System.String]::IsNullOrEmpty($env:JcOrgId) -and $JumpCloudOrgId -ne $env:JcOrgId)
+            {
+                Set-JCOrganization -JumpCloudApiKey:($env:JcApiKey) -JumpCloudOrgId:($JumpCloudOrgId)
             }
             Else
             {
-                Set-JCOrganization -JumpCloudAPIKey:($JumpCloudAPIKey) -JumpCloudOrgID:($JumpCloudOrgID)
+                Write-Debug ('The $JumpCloudOrgId supplied matches existing $env:JcOrgId.')
+                Set-JCOrganization -JumpCloudApiKey:($env:JcApiKey) -JumpCloudOrgId:($env:JcOrgId)
             }
-            # Each time a new org is selected get settings info
-            $global:JCSettingsUrl = $JCUrlBasePath + '/api/settings'
-            $global:JCSettings = Invoke-JCApi -Method:('GET') -Url:($JCSettingsUrl)
+            If (-not [System.String]::IsNullOrEmpty($Auth))
+            {
+                # Each time a new org is selected get settings info
+                $global:JCSettingsUrl = $JCUrlBasePath + '/api/settings'
+                $global:JCSettings = Invoke-JCApi -Method:('GET') -Url:($JCSettingsUrl)
+                # Set JCUserAgent to global to be used in other scripts
+                If ($UserAgent)
+                {
+                    $global:JCUserAgent = $UserAgent
+                }
+                Else
+                {
+                    $global:JCUserAgent = $null
+                }
+                #EndRegion Set environment variables that can be used by other scripts
+                If (([System.String]::IsNullOrEmpty($JCOrgId)) -or ([System.String]::IsNullOrEmpty($env:JcOrgId)))
+                {
+                    Write-Error "Incorrect OrgId OR no network connectivity. You can obtain your Organization Id below your Organization's Contact Information on the Settings page."
+                    Break
+                }
+                If (([System.String]::IsNullOrEmpty($JCAPIKEY)) -or ([System.String]::IsNullOrEmpty($env:JcApiKey)))
+                {
+                    Write-Error "Incorrect API key OR no network connectivity. To locate your JumpCloud API key log into the JumpCloud admin portal. The API key is located with 'API Settings' accessible from the drop down in the top right hand corner of the screen"
+                    Break
+                }
+            }
+            Else
+            {
+                Write-Error ('Unable to set module authentication.')
+            }
         }
-        # Set JCUserAgent to global to be used in other scripts
-        If ($UserAgent)
+        Catch
         {
-            $global:JCUserAgent = $UserAgent
-        }
-        Else
-        {
-            $global:JCUserAgent = $null
-        }
-        #EndRegion Set environment variables that can be used by other scripts
-        If (([System.String]::IsNullOrEmpty($JCOrgID)) -or ([System.String]::IsNullOrEmpty($env:JcOrgId)))
-        {
-            Write-Error "Incorrect OrgID OR no network connectivity. You can obtain your Organization ID below your Organization's Contact Information on the Settings page."
-            Break
-        }
-        If (([System.String]::IsNullOrEmpty($JCAPIKEY)) -or ([System.String]::IsNullOrEmpty($env:JcApiKey)))
-        {
-            Write-Error "Incorrect API key OR no network connectivity. To locate your JumpCloud API key log into the JumpCloud admin portal. The API key is located with 'API Settings' accessible from the drop down in the top right hand corner of the screen"
-            Break
+            Write-Error $_
         }
     }
     End
