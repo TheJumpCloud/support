@@ -64,7 +64,7 @@ Function Update-JCModule
             # Import latest version of module
             Import-Module -Name:('JumpCloud') -Force
             If (!(Get-PSCallStack | Where-Object {$_.Command -match 'Pester'})) {Clear-Host}
-            $ReleaseNotesRaw = Invoke-WebRequest -uri $ReleaseNotesURL -UseBasicParsing -UserAgent:(Get-JCUserAgent) #for backwards compatibility
+            $ReleaseNotesRaw = Invoke-WebRequest -Uri:($ReleaseNotesURL) -UseBasicParsing
             $ReleaseNotes = ((((($ReleaseNotesRaw.RawContent -split "</a>$LatestVersion</h2>")[1]) -split "<pre><code>")[1]) -split "</code>")[0]
             Write-Host ("Module updated to version: $LatestVersion`n")
             Write-Host ("Release Notes: `n")
