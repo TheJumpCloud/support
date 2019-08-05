@@ -129,6 +129,7 @@ Function Connect-JCOnline ()
                         $LatestVersion = $ModuleUpdate.LatestVersion
                         If ($InstalledVersion -eq $LatestVersion)
                         {
+                            Write-Host ('Update complete, please rerun the previous command.') -BackgroundColor:('Black') -ForegroundColor:('Yellow')
                             Break
                         }
                     }

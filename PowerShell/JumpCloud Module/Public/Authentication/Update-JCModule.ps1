@@ -56,6 +56,14 @@ Function Update-JCModule
             Write-Host ('Remove-Module: ' + $Module.Name + ' ' + $Module.Version) -BackgroundColor:('Yellow') -ForegroundColor:('Black')
             $Module | Remove-Module
         }
+        # Remove module specific functions from the current session
+        $ModuleFunctions = Get-ChildItem -Path:('function:') | Where-Object {$_.Source -eq 'JumpCloud'}
+        If ($ModuleFunctions)
+        {
+            $ModuleFunctions | ForEach-Object {
+                Remove-Item -Path:('function:\' + $_.Name)
+            }
+        }
         # Install module
         Install-Module -Name:('JumpCloud') -Scope:('CurrentUser')
         $UpdatedModuleVersion = Get-InstalledModule -Name:('JumpCloud') | Where-Object {$_.Version -eq $LatestVersion} | Select-Object -ExpandProperty Version
@@ -71,7 +79,6 @@ Function Update-JCModule
             Write-Host ($ReleaseNotes)
             Write-Host ("`nTo see the full release notes navigate to: `n")
             Write-Host ("$ReleaseNotesURL`n")
-            Write-Host ('Please restart your PowerShell session by closing and reopening the current PowerShell window.') -BackgroundColor:('Black') -ForegroundColor:('Yellow')
             Return [PSCustomObject]@{
                 'InstalledVersion' = $UpdatedModuleVersion;
                 'LatestVersion'    = $LatestVersion;
