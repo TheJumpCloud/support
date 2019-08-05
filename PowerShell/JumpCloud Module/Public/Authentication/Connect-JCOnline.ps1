@@ -178,14 +178,7 @@ Function Connect-JCOnline ()
                         If ([System.String]::IsNullOrEmpty($env:JcUpdateModule) -or $env:JcUpdateModule -eq 'True')
                         {
                             $env:JcUpdateModule = $false
-                            $ModuleUpdate = Update-JCModule
-                            $InstalledVersion = $ModuleUpdate.InstalledVersion
-                            $LatestVersion = $ModuleUpdate.LatestVersion
-                            If ($InstalledVersion -eq $LatestVersion)
-                            {
-                                Write-Host ('JumpCloud Module has been updated to the latest version: ' + $LatestVersion) -BackgroundColor:('Black') -ForegroundColor:('Yellow')
-                                # Break
-                            }
+                            Update-JCModule | Out-Null
                         }
                     }
                 }
