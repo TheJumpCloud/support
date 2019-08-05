@@ -82,7 +82,6 @@ Function Set-JCOrganization
                 $env:JcOrgId = $OrgId
                 $global:JCOrgId = $env:JcOrgId
                 $env:JcOrgName = $OrgName
-                Write-Host ("Connected to JumpCloud Tenant: $($OrgName) | OrgId: $($OrgId)") -BackgroundColor:('Green') -ForegroundColor:('Black')
                 Return [PSCustomObject]@{
                     'JcApiKey'  = $env:JcApiKey;
                     'JcOrgId'   = $env:JcOrgId;
