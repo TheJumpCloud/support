@@ -71,6 +71,7 @@ Function Update-JCModule
             Write-Host ($ReleaseNotes)
             Write-Host ("`nTo see the full release notes navigate to: `n")
             Write-Host ("$ReleaseNotesURL`n")
+            Write-Host ('Please restart your PowerShell session by closing and reopening the current PowerShell window.') -BackgroundColor:('Black') -ForegroundColor:('Yellow')
             Return [PSCustomObject]@{
                 'InstalledVersion' = $UpdatedModuleVersion;
                 'LatestVersion'    = $LatestVersion;

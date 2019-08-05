@@ -127,21 +127,9 @@ Function Connect-JCOnline ()
                         $ModuleUpdate = Update-JCModule
                         $InstalledVersion = $ModuleUpdate.InstalledVersion
                         $LatestVersion = $ModuleUpdate.LatestVersion
-                        $Message = $ModuleUpdate.Message
-
-                    }
-                    Else
-                    {
-                        $GitHubModuleInfo = Get-GitHubModuleInfo
-                        $InstalledVersion = Get-Module -All -Name:('JumpCloud') | Select-Object -ExpandProperty Version
-                        $LatestVersion = $GitHubModuleInfo.LatestVersion
-                        $Message = If ($InstalledVersion -ne $LatestVersion)
+                        If ($InstalledVersion -eq $LatestVersion)
                         {
-                            $GitHubModuleInfo.OldBanner
-                        }
-                        Else
-                        {
-                            $GitHubModuleInfo.CurrentBanner
+                            Break
                         }
                     }
                 }
@@ -202,12 +190,9 @@ Function Connect-JCOnline ()
                 }
                 Write-Host ('Successfully connected to JumpCloud!') -BackgroundColor:('Green') -ForegroundColor:('Black')
                 Return [PSCustomObject]@{
-                    'JcApiKey'         = $env:JcApiKey;
-                    'JcOrgId'          = $Auth.JcOrgId;
-                    'JcOrgName'        = $Auth.JcOrgName;
-                    'InstalledVersion' = $InstalledVersion;
-                    'LatestVersion'    = $LatestVersion;
-                    'Message'          = $Message;
+                    'JcApiKey'  = $env:JcApiKey;
+                    'JcOrgId'   = $Auth.JcOrgId;
+                    'JcOrgName' = $Auth.JcOrgName;
                 }
             }
             Else
