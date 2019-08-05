@@ -116,25 +116,6 @@ Function Connect-JCOnline ()
             # Update security protocol
             [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls, [System.Net.SecurityProtocolType]::Tls12
             #Region Set environment variables that can be used by other scripts
-            # Check for updates to the module and only prompt if user has not been prompted during the session already
-            If ($JCEnvironment -ne 'local')
-            {
-                If (!($force))
-                {
-                    If ([System.String]::IsNullOrEmpty($env:JcUpdateModule) -or $env:JcUpdateModule -eq 'True')
-                    {
-                        $env:JcUpdateModule = $false
-                        $ModuleUpdate = Update-JCModule
-                        $InstalledVersion = $ModuleUpdate.InstalledVersion
-                        $LatestVersion = $ModuleUpdate.LatestVersion
-                        If ($InstalledVersion -eq $LatestVersion)
-                        {
-                            Write-Host ('Update complete, please rerun the previous command.') -BackgroundColor:('Black') -ForegroundColor:('Yellow')
-                            Break
-                        }
-                    }
-                }
-            }
             # If "$JumpCloudApiKey" is populated or if "$env:JcApiKey" is not set
             If (-not ([System.String]::IsNullOrEmpty($JumpCloudApiKey)))
             {
@@ -188,6 +169,25 @@ Function Connect-JCOnline ()
                 {
                     Write-Error "Incorrect API key OR no network connectivity. To locate your JumpCloud API key log into the JumpCloud admin portal. The API key is located with 'API Settings' accessible from the drop down in the top right hand corner of the screen"
                     Break
+                }
+                # Check for updates to the module and only prompt if user has not been prompted during the session already
+                If ($JCEnvironment -ne 'local')
+                {
+                    If (!($force))
+                    {
+                        If ([System.String]::IsNullOrEmpty($env:JcUpdateModule) -or $env:JcUpdateModule -eq 'True')
+                        {
+                            $env:JcUpdateModule = $false
+                            $ModuleUpdate = Update-JCModule
+                            $InstalledVersion = $ModuleUpdate.InstalledVersion
+                            $LatestVersion = $ModuleUpdate.LatestVersion
+                            If ($InstalledVersion -eq $LatestVersion)
+                            {
+                                Write-Host ('JumpCloud Module has been updated to the latest version: ' + $LatestVersion) -BackgroundColor:('Black') -ForegroundColor:('Yellow')
+                                # Break
+                            }
+                        }
+                    }
                 }
                 Write-Host ('Successfully connected to JumpCloud!') -BackgroundColor:('Green') -ForegroundColor:('Black')
                 Return [PSCustomObject]@{

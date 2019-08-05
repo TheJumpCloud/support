@@ -52,7 +52,7 @@ Function Set-JCOrganization
                         $menuNumber++
                     }
                     # Prompt user for org selection
-                    Write-Host ("`nSelect the number of the JumpCloud tenant you wish to connect to`n") -ForegroundColor Yellow
+                    Write-Host ("`nSelect the number of the JumpCloud tenant you wish to connect to:`n") -ForegroundColor:('Yellow')
                     Do
                     {
                         [Int32]$selection = Read-Host ("Enter a value between 1 and $($OrgIdHash.Count)")

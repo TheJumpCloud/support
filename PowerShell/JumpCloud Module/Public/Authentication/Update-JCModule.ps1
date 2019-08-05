@@ -47,14 +47,14 @@ Function Update-JCModule
         If ($InstalledModule)
         {
             Write-Host ('Uninstall-Module: ' + $InstalledModule.Name + ' ' + $InstalledModule.Version ) -BackgroundColor:('Yellow') -ForegroundColor:('Black')
-            $InstalledModule | Uninstall-Module
+            $InstalledModule | Uninstall-Module -Force
         }
         # Remove Module
         $Module = Get-Module -Name:('JumpCloud') -All -ErrorAction:('SilentlyContinue')
         If ($Module)
         {
             Write-Host ('Remove-Module: ' + $Module.Name + ' ' + $Module.Version) -BackgroundColor:('Yellow') -ForegroundColor:('Black')
-            $Module | Remove-Module
+            $Module | Remove-Module -Force
         }
         # Remove module specific functions from the current session
         $ModuleFunctions = Get-ChildItem -Path:('function:') | Where-Object {$_.Source -eq 'JumpCloud'}
