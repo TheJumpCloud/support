@@ -303,7 +303,7 @@ Function Get-JCObject
         }
         Catch
         {
-            Invoke-Command -ScriptBlock:($ScriptBlock_TryCatchError) -ArgumentList:($_, $true) -NoNewScope
+            Write-Error ($_)
         }
     }
     End
