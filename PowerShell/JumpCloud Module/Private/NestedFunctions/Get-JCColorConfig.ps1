@@ -1,6 +1,6 @@
 <#
 .NOTES
-Function returns object with the color values
+Returns object with the color values
     $JCColorConfig.BackgroundColor
     $JCColorConfig.ForegroundColor_UserPrompt
     $JCColorConfig.ForegroundColor_Header
