@@ -47,10 +47,9 @@ Function Set-JCOrganization
                     $LengthDisplayName = ($Organizations.displayName | Measure-Object -Maximum -Property Length).Maximum
                     $LengthOrgId = ($Organizations._id | Measure-Object -Maximum -Property Length).Maximum
                     $MenuItemTemplate = "{0} {1,-$LengthDisplayName} | {2,-$LengthOrgId}"
-                    $MenuHeaderTemplate = "{0} {1,-$LengthDisplayName} | {2,-$LengthOrgId}"
                     [Int32]$menuNumber = 1
                     Write-Host ('======= JumpCloud Multi Tenant Selector =======') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
-                    Write-Host ($MenuHeaderTemplate -f '   ', 'JCOrgName', 'JCOrgId') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action)
+                    Write-Host ($MenuItemTemplate -f '   ', 'JCOrgName', 'JCOrgId') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action)
                     ForEach ($Org In $Organizations)
                     {
                         $FormattedMenuNumber = If (([System.String]$menuNumber).Length -eq 1)
