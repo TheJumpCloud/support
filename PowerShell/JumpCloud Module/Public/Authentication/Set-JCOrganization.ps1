@@ -93,7 +93,7 @@ Function Set-JCOrganization
                 $global:JCOrgId = $env:JCOrgId
                 $env:JCOrgName = $OrgName
                 Return [PSCustomObject]@{
-                    'JCApiKey'  = $env:JCApiKey;
+                    # 'JCApiKey'  = $env:JCApiKey;
                     'JCOrgId'   = $env:JCOrgId;
                     'JCOrgName' = $env:JCOrgName;
                 }

@@ -7,8 +7,7 @@ Function Connect-JCOnline ()
         [Parameter(ParameterSetName = 'Interactive', ValueFromPipelineByPropertyName)]
         [ValidateSet('production', 'staging', 'local')]
         [System.String]$JCEnvironment = 'production',
-        [Parameter(ParameterSetName = 'force')][Switch]$force,
-        [System.String]$UserAgent
+        [Parameter(ParameterSetName = 'force')][Switch]$force
     )
     DynamicParam
     {
@@ -152,15 +151,6 @@ Function Connect-JCOnline ()
                 # Each time a new org is selected get settings info
                 $global:JCSettingsUrl = $JCUrlBasePath + '/api/settings'
                 $global:JCSettings = Invoke-JCApi -Method:('GET') -Url:($JCSettingsUrl)
-                # Set JCUserAgent to global to be used in other scripts
-                If ($UserAgent)
-                {
-                    $global:JCUserAgent = $UserAgent
-                }
-                Else
-                {
-                    $global:JCUserAgent = $null
-                }
                 #EndRegion Set environment variables that can be used by other scripts
                 If (([System.String]::IsNullOrEmpty($JCOrgId)) -or ([System.String]::IsNullOrEmpty($env:JCOrgId)))
                 {
@@ -188,7 +178,7 @@ Function Connect-JCOnline ()
                 Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
                 Write-Host ('Successfully connected to JumpCloud!') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
                 Return [PSCustomObject]@{
-                    'JCApiKey'  = $env:JCApiKey;
+                    # 'JCApiKey'  = $env:JCApiKey;
                     'JCOrgId'   = $Auth.JCOrgId;
                     'JCOrgName' = $Auth.JCOrgName;
                 }
