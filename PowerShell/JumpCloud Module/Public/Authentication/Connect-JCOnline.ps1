@@ -20,7 +20,7 @@ Function Connect-JCOnline ()
             'ValidateNotNullOrEmpty'          = $true;
             'ValidateLength'                  = (40, 40);
             'ParameterSets'                   = ('force', 'Interactive');
-            'HelpMessage'                     = "Please enter your JumpCloud API key. This can be found in the JumpCloud admin console within 'API Settings' accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console.";
+            'HelpMessage'                     = 'Please enter your JumpCloud API key. This can be found in the JumpCloud admin console within "API Settings" accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console.';
         }
         $Param_JumpCloudOrgId = @{
             'Name'                            = 'JumpCloudOrgId';
@@ -31,19 +31,19 @@ Function Connect-JCOnline ()
             'ParameterSets'                   = ('force', 'Interactive');
             'HelpMessage'                     = 'Organization Id can be found in the Settings page within the admin console. Only needed for multi tenant admins.';
         }
-        # If the $env:JcApiKey is not set then make the JumpCloudApiKey mandatory else set the default value to be the env variable
-        If ([System.String]::IsNullOrEmpty($env:JcApiKey))
+        # If the $env:JCApiKey is not set then make the JumpCloudApiKey mandatory else set the default value to be the env variable
+        If ([System.String]::IsNullOrEmpty($env:JCApiKey))
         {
             $Param_JumpCloudApiKey.Add('Mandatory', $true);
         }
         Else
         {
-            $Param_JumpCloudApiKey.Add('Default', $env:JcApiKey);
+            $Param_JumpCloudApiKey.Add('Default', $env:JCApiKey);
         }
-        # If the $env:JcOrgId is set then set the default value to be the env variable
-        If (-not [System.String]::IsNullOrEmpty($env:JcOrgId))
+        # If the $env:JCOrgId is set then set the default value to be the env variable
+        If (-not [System.String]::IsNullOrEmpty($env:JCOrgId))
         {
-            $Param_JumpCloudOrgId.Add('Default', $env:JcOrgId);
+            $Param_JumpCloudOrgId.Add('Default', $env:JCOrgId);
         }
         If ((Get-PSCallStack).Command -like '*MarkdownHelp')
         {
@@ -83,6 +83,8 @@ Function Connect-JCOnline ()
     {
         # Debug message for parameter call
         Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDebugMessageBegin) -ArgumentList:($MyInvocation, $PsBoundParameters, $PSCmdlet) -NoNewScope
+        # Load color scheme
+        $JCColorConfig = Get-JCColorConfig
         Switch ($JCEnvironment)
         {
             'production'
@@ -116,34 +118,34 @@ Function Connect-JCOnline ()
             # Update security protocol
             [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls, [System.Net.SecurityProtocolType]::Tls12
             #Region Set environment variables that can be used by other scripts
-            # If "$JumpCloudApiKey" is populated or if "$env:JcApiKey" is not set
+            # If "$JumpCloudApiKey" is populated or if "$env:JCApiKey" is not set
             If (-not ([System.String]::IsNullOrEmpty($JumpCloudApiKey)))
             {
-                # Set $env:JcApiKey
-                $env:JcApiKey = $JumpCloudApiKey
-                $global:JCAPIKEY = $env:JcApiKey
+                # Set $env:JCApiKey
+                $env:JCApiKey = $JumpCloudApiKey
+                $global:JCAPIKEY = $env:JCApiKey
             }
-            # Set $env:JcOrgId in Set-JCOrganization
-            $Auth = If ([System.String]::IsNullOrEmpty($JumpCloudOrgId) -and [System.String]::IsNullOrEmpty($env:JcOrgId))
+            # Set $env:JCOrgId in Set-JCOrganization
+            $Auth = If ([System.String]::IsNullOrEmpty($JumpCloudOrgId) -and [System.String]::IsNullOrEmpty($env:JCOrgId))
             {
-                Set-JCOrganization -JumpCloudApiKey:($env:JcApiKey)
+                Set-JCOrganization -JumpCloudApiKey:($env:JCApiKey)
             }
-            ElseIf (-not [System.String]::IsNullOrEmpty($JumpCloudOrgId) -and [System.String]::IsNullOrEmpty($env:JcOrgId))
+            ElseIf (-not [System.String]::IsNullOrEmpty($JumpCloudOrgId) -and [System.String]::IsNullOrEmpty($env:JCOrgId))
             {
-                Set-JCOrganization -JumpCloudApiKey:($env:JcApiKey) -JumpCloudOrgId:($JumpCloudOrgId)
+                Set-JCOrganization -JumpCloudApiKey:($env:JCApiKey) -JumpCloudOrgId:($JumpCloudOrgId)
             }
-            ElseIf ([System.String]::IsNullOrEmpty($JumpCloudOrgId) -and -not [System.String]::IsNullOrEmpty($env:JcOrgId))
+            ElseIf ([System.String]::IsNullOrEmpty($JumpCloudOrgId) -and -not [System.String]::IsNullOrEmpty($env:JCOrgId))
             {
-                Set-JCOrganization -JumpCloudApiKey:($env:JcApiKey) -JumpCloudOrgId:($env:JcOrgId)
+                Set-JCOrganization -JumpCloudApiKey:($env:JCApiKey) -JumpCloudOrgId:($env:JCOrgId)
             }
-            ElseIf (-not [System.String]::IsNullOrEmpty($JumpCloudOrgId) -and -not [System.String]::IsNullOrEmpty($env:JcOrgId) -and $JumpCloudOrgId -ne $env:JcOrgId)
+            ElseIf (-not [System.String]::IsNullOrEmpty($JumpCloudOrgId) -and -not [System.String]::IsNullOrEmpty($env:JCOrgId) -and $JumpCloudOrgId -ne $env:JCOrgId)
             {
-                Set-JCOrganization -JumpCloudApiKey:($env:JcApiKey) -JumpCloudOrgId:($JumpCloudOrgId)
+                Set-JCOrganization -JumpCloudApiKey:($env:JCApiKey) -JumpCloudOrgId:($JumpCloudOrgId)
             }
             Else
             {
-                Write-Debug ('The $JumpCloudOrgId supplied matches existing $env:JcOrgId.')
-                Set-JCOrganization -JumpCloudApiKey:($env:JcApiKey) -JumpCloudOrgId:($env:JcOrgId)
+                Write-Debug ('The $JumpCloudOrgId supplied matches existing $env:JCOrgId.')
+                Set-JCOrganization -JumpCloudApiKey:($env:JCApiKey) -JumpCloudOrgId:($env:JCOrgId)
             }
             If (-not [System.String]::IsNullOrEmpty($Auth))
             {
@@ -160,14 +162,14 @@ Function Connect-JCOnline ()
                     $global:JCUserAgent = $null
                 }
                 #EndRegion Set environment variables that can be used by other scripts
-                If (([System.String]::IsNullOrEmpty($JCOrgId)) -or ([System.String]::IsNullOrEmpty($env:JcOrgId)))
+                If (([System.String]::IsNullOrEmpty($JCOrgId)) -or ([System.String]::IsNullOrEmpty($env:JCOrgId)))
                 {
-                    Write-Error "Incorrect OrgId OR no network connectivity. You can obtain your Organization Id below your Organization's Contact Information on the Settings page."
+                    Write-Error ('Incorrect OrgId OR no network connectivity. You can obtain your Organization Id below your Organization''s Contact Information on the Settings page.')
                     Break
                 }
-                If (([System.String]::IsNullOrEmpty($JCAPIKEY)) -or ([System.String]::IsNullOrEmpty($env:JcApiKey)))
+                If (([System.String]::IsNullOrEmpty($JCAPIKEY)) -or ([System.String]::IsNullOrEmpty($env:JCApiKey)))
                 {
-                    Write-Error "Incorrect API key OR no network connectivity. To locate your JumpCloud API key log into the JumpCloud admin portal. The API key is located with 'API Settings' accessible from the drop down in the top right hand corner of the screen"
+                    Write-Error ('Incorrect API key OR no network connectivity. To locate your JumpCloud API key log into the JumpCloud admin portal. The API key is located with "API Settings" accessible from the drop down in the top right hand corner of the screen')
                     Break
                 }
                 # Check for updates to the module and only prompt if user has not been prompted during the session already
@@ -182,11 +184,13 @@ Function Connect-JCOnline ()
                         }
                     }
                 }
-                Write-Host ('Successfully connected to JumpCloud!') -BackgroundColor:('Green') -ForegroundColor:('Black')
+                Write-Host ('Connection Status:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
+                Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
+                Write-Host ('Successfully connected to JumpCloud!') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
                 Return [PSCustomObject]@{
-                    'JcApiKey'  = $env:JcApiKey;
-                    'JcOrgId'   = $Auth.JcOrgId;
-                    'JcOrgName' = $Auth.JcOrgName;
+                    'JCApiKey'  = $env:JCApiKey;
+                    'JCOrgId'   = $Auth.JCOrgId;
+                    'JCOrgName' = $Auth.JCOrgName;
                 }
             }
             Else

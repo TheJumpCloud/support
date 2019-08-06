@@ -19,11 +19,11 @@ Function Invoke-JCApi
         $Headers = @{
             'Content-Type' = 'application/json';
             'Accept'       = 'application/json';
-            'x-api-key'    = "$($env:JcApiKey)";
-            'x-org-id'     = "$($env:JcOrgId)";
+            'x-api-key'    = "$($env:JCApiKey)";
+            'x-org-id'     = "$($env:JCOrgId)";
         }
-        # Populate $env:JcApiKey if its not set
-        If ([System.String]::IsNullOrEmpty($env:JcApiKey))
+        # Populate $env:JCApiKey if its not set
+        If ([System.String]::IsNullOrEmpty($env:JCApiKey))
         {
             Connect-JCOnline
         }
@@ -34,10 +34,10 @@ Function Invoke-JCApi
         }
         Else
         {
-            # Populate $env:JcOrgId if its not set
-            If ([System.String]::IsNullOrEmpty($env:JcOrgId))
+            # Populate $env:JCOrgId if its not set
+            If ([System.String]::IsNullOrEmpty($env:JCOrgId))
             {
-                Set-JCOrganization -JumpCloudAPIKey:($env:JcApiKey)
+                Set-JCOrganization -JumpCloudAPIKey:($env:JCApiKey)
             }
         }
     }
