@@ -1,7 +1,7 @@
 Function Update-JCModule
 {
     Param(
-        $ReleaseNotesURL = 'https://git.io/jc-pwsh-releasenotes'
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'Url to the release notes. Leave default value unless testing.')]$ReleaseNotesURL = 'https://git.io/jc-pwsh-releasenotes'
     )
     # Load color scheme
     $JCColorConfig = Get-JCColorConfig
