@@ -22,11 +22,11 @@ Function Get-JCColorConfig
     Return [PSCustomObject]@{
         'BackgroundColor'             = 'Black'
         'ForegroundColor_UserPrompt'  = 'Yellow'
-        'ForegroundColor_Header'      = 'DarkMagenta'
-        'ForegroundColor_Body'        = 'DarkGreen'
+        'ForegroundColor_Header'      = 'Magenta'
+        'ForegroundColor_Body'        = 'Green'
         'ForegroundColor_Indentation' = 'Gray'
         'ForegroundColor_Url'         = 'Blue'
-        'ForegroundColor_Action'      = 'DarkGray'
+        'ForegroundColor_Action'      = 'Gray'
         'IndentChar'                  = '    + '
     }
 }
