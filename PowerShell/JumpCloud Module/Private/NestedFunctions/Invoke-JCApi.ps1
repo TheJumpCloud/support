@@ -15,6 +15,16 @@ Function Invoke-JCApi
     {
         # Debug message for parameter call
         Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDebugMessageBegin) -ArgumentList:($MyInvocation, $PsBoundParameters, $PSCmdlet) -NoNewScope
+        # Populate $env:JCApiKey if its not set
+        If ([System.String]::IsNullOrEmpty($env:JCApiKey))
+        {
+            Connect-JCOnline | Out-Null
+        }
+        # Populate $env:JCOrgId if its not set
+        If (-not [System.String]::IsNullOrEmpty($env:JCApiKey) -and [System.String]::IsNullOrEmpty($env:JCOrgId) -and $Url -notlike '*/api/organizations*')
+        {
+            Set-JCOrganization -JumpCloudAPIKey:($env:JCApiKey) | Out-Null
+        }
         #Set JC headers
         $Headers = @{
             'Content-Type' = 'application/json';
@@ -22,23 +32,10 @@ Function Invoke-JCApi
             'x-api-key'    = "$($env:JCApiKey)";
             'x-org-id'     = "$($env:JCOrgId)";
         }
-        # Populate $env:JCApiKey if its not set
-        If ([System.String]::IsNullOrEmpty($env:JCApiKey))
-        {
-            Connect-JCOnline
-        }
         # Organizations endpoint does not accept x-org-id in header
         If ($Url -like '*/api/organizations*')
         {
             $Headers.Remove('x-org-id') | Out-Null
-        }
-        Else
-        {
-            # Populate $env:JCOrgId if its not set
-            If ([System.String]::IsNullOrEmpty($env:JCOrgId))
-            {
-                Set-JCOrganization -JumpCloudAPIKey:($env:JCApiKey)
-            }
         }
     }
     Process
