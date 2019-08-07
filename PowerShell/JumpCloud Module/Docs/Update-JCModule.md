@@ -13,7 +13,7 @@ Running this function will trigger the update of the JumpCloud PowerShell module
 ## SYNTAX
 
 ```
-Update-JCModule [[-ReleaseNotesURL] <Object>] [<CommonParameters>]
+Update-JCModule [-SkipUninstallOld] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -30,18 +30,18 @@ Running the function will trigger the update process.
 
 ## PARAMETERS
 
-### -ReleaseNotesURL
-Url to the release notes. Leave default value unless testing.
+### -SkipUninstallOld
+Skips the "Uninstall-Module" step that will uninstall old version of the module.
 
 ```yaml
-Type: Object
+Type: SwitchParameter
 Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 0
+Position: Named
 Default value: None
-Accept pipeline input: True (ByPropertyName)
+Accept pipeline input: False
 Accept wildcard characters: False
 ```
 

@@ -14,13 +14,13 @@ The Connect-JCOnline function sets the global variable $JCAPIKEY
 
 ### Interactive (Default)
 ```
-Connect-JCOnline [-JCEnvironment <String>] [-ip <String>] [-JumpCloudApiKey] <String>
+Connect-JCOnline [-JCEnvironment <String>] [-ip <String>] [[-JumpCloudApiKey] <String>]
  [[-JumpCloudOrgId] <String>] [<CommonParameters>]
 ```
 
 ### force
 ```
-Connect-JCOnline [-JCEnvironment <String>] [-force] [-ip <String>] [-JumpCloudApiKey] <String>
+Connect-JCOnline [-JCEnvironment <String>] [-force] [-ip <String>] [[-JumpCloudApiKey] <String>]
  [[-JumpCloudOrgId] <String>] [<CommonParameters>]
 ```
 
@@ -109,7 +109,7 @@ Type: String
 Parameter Sets: (All)
 Aliases:
 
-Required: True
+Required: False
 Position: 0
 Default value: None
 Accept pipeline input: True (ByPropertyName)
