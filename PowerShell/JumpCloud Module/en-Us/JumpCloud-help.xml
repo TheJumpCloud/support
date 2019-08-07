@@ -1760,7 +1760,7 @@
     <command:syntax>
       <command:syntaxItem>
         <maml:name>Connect-JCOnline</maml:name>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
           <maml:name>JumpCloudApiKey</maml:name>
           <maml:Description>
             <maml:para>Please enter your JumpCloud API key. This can be found in the JumpCloud admin console within 'API Settings' accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console. Note that each administrator within a JumpCloud tenant has their own unique API key and can reset this API key from this settings page.</maml:para>
@@ -1863,7 +1863,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
         <maml:name>JumpCloudApiKey</maml:name>
         <maml:Description>
           <maml:para>Please enter your JumpCloud API key. This can be found in the JumpCloud admin console within 'API Settings' accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console. Note that each administrator within a JumpCloud tenant has their own unique API key and can reset this API key from this settings page.</maml:para>
