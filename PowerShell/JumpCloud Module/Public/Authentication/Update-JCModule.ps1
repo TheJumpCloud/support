@@ -2,6 +2,7 @@ Function Update-JCModule
 {
     Param(
         [Parameter(HelpMessage = 'Skips the "Uninstall-Module" step that will uninstall old version of the module.')][Switch]$SkipUninstallOld
+        , [Parameter(HelpMessage = 'ByPasses user prompts.')][Switch]$Force
     )
     Begin
     {
@@ -58,13 +59,20 @@ Function Update-JCModule
                 Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
                 Write-Host ($ReleaseNotesURL.Trim()) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Url)
                 # Ask user if they want to install the module
-                Do
+                If (!($Force))
                 {
-                    Write-Host ('Enter ''Y'' to install the ' + $PowerShellGalleryModule.Name + ' PowerShell module or enter ''N'' to cancel:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_UserPrompt) -NoNewline
-                    Write-Host (' ') -NoNewLine
-                    $UserInput = Read-Host
+                    Do
+                    {
+                        Write-Host ('Enter ''Y'' to install the ' + $PowerShellGalleryModule.Name + ' PowerShell module or enter ''N'' to cancel:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_UserPrompt) -NoNewline
+                        Write-Host (' ') -NoNewLine
+                        $UserInput = Read-Host
+                    }
+                    Until ($UserInput.ToUpper() -in ('Y', 'N'))
                 }
-                Until ($UserInput.ToUpper() -in ('Y', 'N'))
+                Else
+                {
+                    $UserInput = 'Y'
+                }
                 If ($UserInput.ToUpper() -eq 'N')
                 {
                     Write-Host ('Exiting the ' + $PowerShellGalleryModule.Name + ' PowerShell module install process.') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action)
@@ -123,13 +131,20 @@ Function Update-JCModule
                     Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
                     Write-Host ($ReleaseNotesURL.Trim()) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Url)
                     # Ask user if they want to update the module
-                    Do
+                    If (!($Force))
                     {
-                        Write-Host ('Enter ''Y'' to update the ' + $PowerShellGalleryModule.Name + ' PowerShell module to the latest version or enter ''N'' to cancel:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_UserPrompt) -NoNewline
-                        Write-Host (' ') -NoNewLine
-                        $UserInput = Read-Host
+                        Do
+                        {
+                            Write-Host ('Enter ''Y'' to update the ' + $PowerShellGalleryModule.Name + ' PowerShell module to the latest version or enter ''N'' to cancel:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_UserPrompt) -NoNewline
+                            Write-Host (' ') -NoNewLine
+                            $UserInput = Read-Host
+                        }
+                        Until ($UserInput.ToUpper() -in ('Y', 'N'))
                     }
-                    Until ($UserInput.ToUpper() -in ('Y', 'N'))
+                    Else
+                    {
+                        $UserInput = 'Y'
+                    }
                     If ($UserInput.ToUpper() -eq 'N')
                     {
                         Write-Host ('Exiting the ' + $PowerShellGalleryModule.Name + ' PowerShell module update process.') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action)
