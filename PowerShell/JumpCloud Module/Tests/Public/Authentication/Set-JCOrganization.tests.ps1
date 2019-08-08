@@ -1,4 +1,6 @@
 Describe -Tag:('JCOrganization') 'Set-JCOrganization Tests' {
+    # Prevent the Update-JCModule from running
+    $env:JcUpdateModule = $false
     BeforeAll {
         $StartingApiKey = If (-not [System.String]::IsNullOrEmpty($env:JCApiKey)) {$env:JCApiKey}
         $StartingOrgId = If (-not [System.String]::IsNullOrEmpty($env:JCOrgId)) {$env:JCOrgId}
