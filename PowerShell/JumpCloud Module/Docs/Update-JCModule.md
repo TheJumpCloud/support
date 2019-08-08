@@ -13,7 +13,7 @@ Running this function will trigger the update of the JumpCloud PowerShell module
 ## SYNTAX
 
 ```
-Update-JCModule [-SkipUninstallOld] [<CommonParameters>]
+Update-JCModule [-SkipUninstallOld] [-Force] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -32,6 +32,21 @@ Running the function will trigger the update process.
 
 ### -SkipUninstallOld
 Skips the "Uninstall-Module" step that will uninstall old version of the module.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Force
+ByPasses user prompts.
 
 ```yaml
 Type: SwitchParameter
