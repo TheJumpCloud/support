@@ -1,9 +1,12 @@
 Describe -Tag:('JCModule') 'Test for Update-JCModule' {
+    Install-Module -Name:('JumpCloud') -RequiredVersion:('1.0.0') -Scope:('CurrentUser') -Force
+    $InitialModule = Get-Module -Name:('JumpCloud') -All | Where-Object {$_.Version -eq '1.0.0'}
     $PowerShellGalleryModule = Find-Module -Name:('JumpCloud') -ErrorAction:('Ignore')
     $LocalModulePre = Get-Module -Name:('JumpCloud')
     Write-Host ('PowerShellGallery Version: ' + $PowerShellGalleryModule.Version)
     Write-Host ('Local Version Before: ' + $LocalModulePre.Version)
     Update-JCModule -SkipUninstallOld -Force
+    $InitialModule | Remove-Module
     $LocalModulePost = Get-Module -Name:('JumpCloud') -All | Where-Object {$_.Version -eq $PowerShellGalleryModule.Version}
     If ($LocalModulePost)
     {
