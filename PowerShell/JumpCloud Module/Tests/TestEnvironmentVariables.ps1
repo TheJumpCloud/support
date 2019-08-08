@@ -14,8 +14,9 @@ Get-ChildItem -Path:("$PSScriptRoot/../Private/*.ps1") -Recurse | ForEach-Object
 # Set test parameters
 $PesterParams = @{
     # Specific to MTP portal
-    'MultiTenanntOrgID1' = "5b5a13f06fefdb0a29b0d306"
-    'MultiTenanntOrgID2' = "5b5a14d13f852310b1d689b1"
+    'SingleTernateOrgId' = '5a4bff7ab17d0c9f63bcd277'
+    'MultiTernateOrgId1' = "5b5a13f06fefdb0a29b0d306"
+    'MultiTernateOrgId2' = "5b5a14d13f852310b1d689b1"
     'SystemID'           = '5c2e83b2bc6fe97784a8749b' # Enter the System ID for a linux system
     'Username'           = 'pester.tester' # Create a user with username 'pester.tester'
     'UserID'             = '5a4c0216fbd238d531f253a6' # Paste the UserID for the user with username pester.tester
