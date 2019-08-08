@@ -1,32 +1,54 @@
-Describe -Tag:('JCOrganization') "Set-JCOrganization" {
-
-    It "Switches connection between two JumpCloud orgs for an admin with a multi tenant API connection" {
-
-        Connect-JCOnlineMultiTenant -JumpCloudOrgID $PesterParams.MultiTernateOrgId1
-        $ConnectedOrgID = Get-JCCommand | Select-Object -Last 1 | Select-Object -ExpandProperty organization
-        $ConnectedOrgID | Should -Be $PesterParams.MultiTernateOrgId1
-
-        Connect-JCOnlineMultiTenant -JumpCloudOrgID $PesterParams.MultiTernateOrgId2
-        $ConnectedOrgID = Get-JCCommand | Select-Object -Last 1 | Select-Object -ExpandProperty organization
-        $ConnectedOrgID | Should -Be $PesterParams.MultiTernateOrgId2
-
-
-
+Describe -Tag:('JCOrganization') 'Set-JCOrganization Single Org Tests' {
+    It ('Should connect using the JumpCloudApiKey and JumpCloudOrgId parameters.') {
+        $Connect = Set-JCOrganization -JumpCloudApiKey:($TestOrgAPIKey) -JumpCloudOrgId:($PesterParams.SingleTernateOrgId)
+        $TestOrgAPIKey | Should -Be $env:JCApiKey
+        $Connect.JCOrgId | Should -Be $env:JCOrgId
+        $Connect.JCOrgId | Should -Be $PesterParams.SingleTernateOrgId
     }
-
-    It "Switches connection back and forth between two JumpCloud orgs for an admin with a multi tenant API connection" {
-
-        Connect-JCOnlineMultiTenant -JumpCloudOrgID $PesterParams.MultiTernateOrgId1
-        $ConnectedOrgID = Get-JCCommand | Select-Object -Last 1 | Select-Object -ExpandProperty organization
-        $ConnectedOrgID | Should -Be $PesterParams.MultiTernateOrgId1
-
-        Connect-JCOnlineMultiTenant -JumpCloudOrgID $PesterParams.MultiTernateOrgId2
-        $ConnectedOrgID = Get-JCCommand | Select-Object -Last 1 | Select-Object -ExpandProperty organization
-        $ConnectedOrgID | Should -Be $PesterParams.MultiTernateOrgId2
-
-        Connect-JCOnlineMultiTenant -JumpCloudOrgID $PesterParams.MultiTernateOrgId1
-        $ConnectedOrgID = Get-JCCommand | Select-Object -Last 1 | Select-Object -ExpandProperty organization
-        $ConnectedOrgID | Should -Be $PesterParams.MultiTernateOrgId1
-
+    It ('Should connect using the JumpCloudApiKey parameter.') {
+        $Connect = Set-JCOrganization -JumpCloudApiKey:($TestOrgAPIKey)
+        $TestOrgAPIKey | Should -Be $env:JCApiKey
+        $Connect.JCOrgId | Should -Be $env:JCOrgId
+        $Connect.JCOrgId | Should -Be $PesterParams.SingleTernateOrgId
+    }
+    It ('Should connect using the JumpCloudOrgId parameter.') {
+        $Connect = Set-JCOrganization -JumpCloudOrgId:($TestOrgAPIKey)
+        $TestOrgAPIKey | Should -Be $env:JCApiKey
+        $Connect.JCOrgId | Should -Be $env:JCOrgId
+        $Connect.JCOrgId | Should -Be $PesterParams.SingleTernateOrgId
+    }
+    It('Should connect without parameters using the previously set env:jc* parameters.') {
+        $Connect = Set-JCOrganization
+        $TestOrgAPIKey | Should -Be $env:JCApiKey
+        $Connect.JCOrgId | Should -Be $env:JCOrgId
+        $Connect.JCOrgId | Should -Be $PesterParams.SingleTernateOrgId
+    }
+}
+Describe -Tag:('JCOrganization') 'Set-JCOrganization MSP OrgId 1 Tests' {
+    It ('Should connect using the JumpCloudApiKey and JumpCloudOrgId parameters.') {
+        $Connect = Set-JCOrganization -JumpCloudApiKey:($MultiTenantAPIKey) -JumpCloudOrgId:($PesterParams.MultiTernateOrgId1)
+        $MultiTenantAPIKey | Should -Be $env:JCApiKey
+        $Connect.JCOrgId | Should -Be $env:JCOrgId
+        $Connect.JCOrgId | Should -Be $PesterParams.MultiTernateOrgId1
+    }
+    It ('Should connect using the JumpCloudOrgId parameter.') {
+        $Connect = Set-JCOrganization -JumpCloudOrgId:($PesterParams.MultiTernateOrgId1)
+        $MultiTenantAPIKey | Should -Be $env:JCApiKey
+        $Connect.JCOrgId | Should -Be $env:JCOrgId
+        $Connect.JCOrgId | Should -Be $PesterParams.MultiTernateOrgId1
+    }
+}
+Describe -Tag:('JCOrganization') 'Set-JCOrganization MSP OrgId 2 Tests' {
+    It ('Should connect using the JumpCloudApiKey and JumpCloudOrgId parameters.') {
+        $Connect = Set-JCOrganization -JumpCloudApiKey:($MultiTenantAPIKey) -JumpCloudOrgId:($PesterParams.MultiTernateOrgId2)
+        $MultiTenantAPIKey | Should -Be $env:JCApiKey
+        $Connect.JCOrgId | Should -Be $env:JCOrgId
+        $Connect.JCOrgId | Should -Be $PesterParams.MultiTernateOrgId2
+    }
+    It ('Should connect using the JumpCloudOrgId parameter.') {
+        $Connect = Set-JCOrganization -JumpCloudOrgId:($PesterParams.MultiTernateOrgId2)
+        $MultiTenantAPIKey | Should -Be $env:JCApiKey
+        $Connect.JCOrgId | Should -Be $env:JCOrgId
+        $Connect.JCOrgId | Should -Be $PesterParams.MultiTernateOrgId2
     }
 }
