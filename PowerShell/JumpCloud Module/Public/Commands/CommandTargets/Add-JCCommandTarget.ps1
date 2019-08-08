@@ -6,17 +6,20 @@ Function Add-JCCommandTarget
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'SystemID',
-            Position = 0)]
+            Position = 0,
+            HelpMessage = 'Associates a JumpCloud system or a JumpCloud system group with a JumpCloud command')]
 
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'GroupName',
-            Position = 0)]
+            Position = 0,
+            HelpMessage = 'Associates a JumpCloud system or a JumpCloud system group with a JumpCloud command')]
 
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'GroupID',
-            Position = 0)]
+            Position = 0,
+            HelpMessage = 'Associates a JumpCloud system or a JumpCloud system group with a JumpCloud command')]
 
         [Alias('_id', 'id')]
         [String]$CommandID,
@@ -24,20 +27,23 @@ Function Add-JCCommandTarget
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'SystemID',
-            Position = 1)]
+            Position = 1,
+            HelpMessage = 'The _id of a JumpCloud system. To find the _id of all JumpCloud systems within your tenant run "Get-JCSystem | select _id, hostname"')]
         $SystemID,
 
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'GroupName',
-            Position = 1)]
+            Position = 1,
+            HelpMessage = 'The name of the JumpCloud system group. If the name includes a space enter the name within quotes. Example: -GroupName "The Space"')]
         [Alias('name')]
         $GroupName,
 
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'GroupID',
-            Position = 1)]
+            Position = 1,
+            HelpMessage = 'The id value of a JumpCloud system group')]
         $GroupID
 
     )

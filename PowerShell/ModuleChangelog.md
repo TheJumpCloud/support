@@ -1,3 +1,25 @@
+## 1.13.1
+
+Release Date: July 22, 2019
+
+#### RELEASE NOTES
+
+```
+Bug fixes for MSP's that manage a large amount of organizations.
+```
+
+#### FEATURES
+
+N/A
+
+#### IMPROVEMENTS
+
+Update underlying code for organizations to match current development standards.
+
+#### BUG FIXES
+
+Issues for MSP's that manage 10+ organizations have been resolved.
+
 ## 1.13.0
 
 Release Date: July 16, 2019

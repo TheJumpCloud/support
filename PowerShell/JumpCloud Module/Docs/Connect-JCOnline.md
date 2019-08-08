@@ -14,14 +14,14 @@ The Connect-JCOnline function sets the global variable $JCAPIKEY
 
 ### Interactive (Default)
 ```
-Connect-JCOnline [-JumpCloudAPIKey] <String> [[-JumpCloudOrgID] <String>] [-JCEnvironment <Object>]
- [-UserAgent <String>] [-ip <String>] [<CommonParameters>]
+Connect-JCOnline [-JCEnvironment <String>] [-ip <String>] [-JumpCloudApiKey] <String>
+ [[-JumpCloudOrgId] <String>] [<CommonParameters>]
 ```
 
 ### force
 ```
-Connect-JCOnline [-JumpCloudAPIKey] <String> [[-JumpCloudOrgID] <String>] [-JCEnvironment <Object>] [-force]
- [-UserAgent <String>] [-ip <String>] [<CommonParameters>]
+Connect-JCOnline [-JCEnvironment <String>] [-force] [-ip <String>] [-JumpCloudApiKey] <String>
+ [[-JumpCloudOrgId] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -58,7 +58,7 @@ Using the "-Force" parameter the module update check is skipped. The '-Force' pa
 Specific to JumpCloud development team to connect to staging and local dev environments.
 
 ```yaml
-Type: Object
+Type: String
 Parameter Sets: (All)
 Aliases:
 Accepted values: production, staging, local
@@ -67,76 +67,6 @@ Required: False
 Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -JumpCloudAPIKey
-Please enter your JumpCloud API key.
-This can be found in the JumpCloud admin console within 'API Settings' accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console. Note that each administrator within a JumpCloud tenant has their own unique API key and can reset this API key from this settings page.
-
-```yaml
-Type: String
-Parameter Sets: Interactive
-Aliases:
-
-Required: True
-Position: 0
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-```yaml
-Type: String
-Parameter Sets: force
-Aliases:
-
-Required: True
-Position: 0
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -JumpCloudOrgID
-Only needed for multi tenant admins. Organization ID can be found in the Settings page within the admin console.
-
-```yaml
-Type: String
-Parameter Sets: Interactive
-Aliases:
-
-Required: False
-Position: 1
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-```yaml
-Type: String
-Parameter Sets: force
-Aliases:
-
-Required: False
-Position: 1
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -UserAgent
-UserAgent passed to JumpCloud during API connection.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
@@ -165,6 +95,37 @@ Aliases:
 
 Required: False
 Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -JumpCloudApiKey
+Please enter your JumpCloud API key.
+This can be found in the JumpCloud admin console within 'API Settings' accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console. Note that each administrator within a JumpCloud tenant has their own unique API key and can reset this API key from this settings page.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: 0
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -JumpCloudOrgId
+Only needed for multi tenant admins. Organization ID can be found in the Settings page within the admin console.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 1
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False

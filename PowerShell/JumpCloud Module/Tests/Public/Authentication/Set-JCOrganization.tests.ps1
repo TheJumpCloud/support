@@ -6,8 +6,7 @@ Describe -Tag:('JCOrganization') "Set-JCOrganization" {
         $ConnectedOrgID = Get-JCCommand | Select-Object -Last 1 | Select-Object -ExpandProperty organization
         $ConnectedOrgID | Should -Be $PesterParams.MultiTenanntOrgID1
 
-        Set-JCOrganization -OrgID $PesterParams.MultiTenanntOrgID2
-
+        Connect-JCOnlineMultiTenant -JumpCloudOrgID $PesterParams.MultiTenanntOrgID2
         $ConnectedOrgID = Get-JCCommand | Select-Object -Last 1 | Select-Object -ExpandProperty organization
         $ConnectedOrgID | Should -Be $PesterParams.MultiTenanntOrgID2
 
@@ -21,16 +20,13 @@ Describe -Tag:('JCOrganization') "Set-JCOrganization" {
         $ConnectedOrgID = Get-JCCommand | Select-Object -Last 1 | Select-Object -ExpandProperty organization
         $ConnectedOrgID | Should -Be $PesterParams.MultiTenanntOrgID1
 
-        Set-JCOrganization -OrgID $PesterParams.MultiTenanntOrgID2
-
+        Connect-JCOnlineMultiTenant -JumpCloudOrgID $PesterParams.MultiTenanntOrgID2
         $ConnectedOrgID = Get-JCCommand | Select-Object -Last 1 | Select-Object -ExpandProperty organization
         $ConnectedOrgID | Should -Be $PesterParams.MultiTenanntOrgID2
 
-        Set-JCOrganization -OrgID $PesterParams.MultiTenanntOrgID1
-
+        Connect-JCOnlineMultiTenant -JumpCloudOrgID $PesterParams.MultiTenanntOrgID1
         $ConnectedOrgID = Get-JCCommand | Select-Object -Last 1 | Select-Object -ExpandProperty organization
         $ConnectedOrgID | Should -Be $PesterParams.MultiTenanntOrgID1
-
 
     }
 }

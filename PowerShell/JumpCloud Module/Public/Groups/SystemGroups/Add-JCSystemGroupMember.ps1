@@ -7,35 +7,49 @@ Function Add-JCSystemGroupMember ()
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'ByName',
-            Position = 0)]
+            Position = 0,
+            HelpMessage = 'The name of the JumpCloud System Group that you want to add the System to.')]
 
         [Parameter(
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'ByID',
-            Position = 0)]
+            Position = 0,
+            HelpMessage = 'The name of the JumpCloud System Group that you want to add the System to.')]
 
         [Alias('name')]
         [String]$GroupName,
 
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'ByName')]
+            ParameterSetName = 'ByName',
+            HelpMessage = 'The _id of the System which you want to add to the System Group.
+To find a JumpCloud SystemID run the command:
+PS C:\> Get-JCSystem | Select hostname, _id
+The SystemID will be the 24 character string populated for the _id field.
+SystemID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCSystem function before calling Add-JCSystemGroupMember. This is shown in EXAMPLES 2, 3, and 4.')]
 
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'ByID')]
+            ParameterSetName = 'ByID',
+            HelpMessage = 'The _id of the System which you want to add to the System Group.
+To find a JumpCloud SystemID run the command:
+PS C:\> Get-JCSystem | Select hostname, _id
+The SystemID will be the 24 character string populated for the _id field.
+SystemID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCSystem function before calling Add-JCSystemGroupMember. This is shown in EXAMPLES 2, 3, and 4.')]
 
         [Alias('_id', 'id')]
         [string]$SystemID,
 
         [Parameter(
-            ParameterSetName = 'ByID')]
+            ParameterSetName = 'ByID'
+            , HelpMessage = 'Use the -ByID parameter when the GroupID and SystemID are both being passed over the pipeline to the Add-JCSystemGroupMember function. The -ByID SwitchParameter will set the ParameterSet to "ByID" which will increase the function speed and performance.')]
         [Switch]
         $ByID,
 
         [Parameter(
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'ByID')]
+            ParameterSetName = 'ByID',
+            HelpMessage = 'The GroupID is used in the ParameterSet ''ByID''. The GroupID for a System Group can be found by running the command:')]
         [string]$GroupID
     )
     begin

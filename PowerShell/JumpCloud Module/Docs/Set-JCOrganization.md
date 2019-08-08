@@ -12,14 +12,8 @@ Allows a multi tenant admin to update their connection to a specific JumpCloud o
 
 ## SYNTAX
 
-### Choice (Default)
 ```
-Set-JCOrganization [<CommonParameters>]
-```
-
-### Entry
-```
-Set-JCOrganization [-OrgID] <String> [<CommonParameters>]
+Set-JCOrganization [-JumpCloudApiKey <String>] [-JumpCloudOrgId <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -52,18 +46,33 @@ Uses the -OrgID parameter for MT admins to directly connect to a specific JumpCl
 
 ## PARAMETERS
 
-### -OrgID
-Only needed for multi tenant admins. Organization ID can be found in the Settings page within the admin console.
+### -JumpCloudApiKey
+Please enter your JumpCloud API key. This can be found in the JumpCloud admin console within "API Settings" accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console.
 
 ```yaml
 Type: String
-Parameter Sets: Entry
+Parameter Sets: (All)
 Aliases:
 
-Required: True
-Position: 0
+Required: False
+Position: Named
 Default value: None
-Accept pipeline input: True (ByPropertyName)
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -JumpCloudOrgId
+Organization Id can be found in the Settings page within the admin console. Only needed for multi tenant admins.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
