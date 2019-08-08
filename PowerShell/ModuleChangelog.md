@@ -16,13 +16,15 @@ Enable SystemInsights for systems using new boolean parameter "-systemInsights" 
 
 - Updated Function: Set-JCSystem with boolean parameter "-systemInsights" to enable or disable SystemInsights reporting for systems for EA enabled orgs.
 
+- New Function: Update-JCModule allows the user to check and see if a module update is available and will return release notes.
+
 #### IMPROVEMENTS
 
-Updated Function: Connect-JCOnline with new logic an UI for display release notes and improved module auto update logic.
+- Updated Function: Connect-JCOnline with new logic an UI for display release notes and improved module auto update logic.
 
 #### BUG FIXES
 
-- Updated Function: Connect-JCOnline to allow admins to successfully connect to for MTP admins that manage 10+ organizations have been resolved.
+- Updated Function: Set-JCOrganization to allow admins to successfully connect to for MTP admins that manage 10+ organizations have been resolved.
 
 ## 1.13.0
 
