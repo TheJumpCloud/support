@@ -13,7 +13,7 @@ Describe -Tag:('JCModule') 'Test for Update-JCModule' {
         Write-Host ('Local Version After: ' + $LocalModulePost.Version)
         $LocalModulePost | Remove-Module
         It ('Where the local version number has been updated to match the PowerShell gallery version number') {
-            $LocalModulePost | Should -Be $PowerShellGalleryModule.Version
+            $LocalModulePost.Version | Should -Be $PowerShellGalleryModule.Version
             $LocalModulePost | Should -Not -BeNullOrEmpty
         }
     }
