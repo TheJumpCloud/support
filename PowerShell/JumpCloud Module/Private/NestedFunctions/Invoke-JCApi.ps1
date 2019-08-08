@@ -220,7 +220,7 @@ Function Invoke-JCApi
             }
             # Validate results properties returned
             $Fields | ForEach-Object {
-                If ($_ -notin ($Results | Get-Member).Name)
+                If ($_ -notin ($Results | ForEach-Object { $_.PSObject.Properties.Name} | Select-Object -Unique))
                 {
                     Write-Warning ('API output does not contain the field "' + $_ + '". Please refer to https://docs.jumpcloud.com for API endpoint field names.')
                 }
