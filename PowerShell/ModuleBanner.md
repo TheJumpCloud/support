@@ -7,11 +7,11 @@
 #### Banner Current
 
 ```
-Module up-to-date. Bug fixes for MSP's that manage a large amount of organizations.
+Use Get-JCSystem and the new parameter '-SystemFDEKey' to backup SystemFDEKeys.
 ```
 
 #### Banner Old
 
 ```
-Module update available! Bug fixes for MSP's with multiple organizations!
+Bug fixes for MTP tenants with multiple orgs and new features for managing systems.
 ```
