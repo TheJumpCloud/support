@@ -1,5 +1,5 @@
 Describe -Tag:('JCSystem') 'Get-JCSystem 1.0' {
-    Connect-JCOnlineTest
+    Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
     It "Gets all JumpCloud systems" {
         $Systems = Get-JCSystem
         $Systems._id.Count | Should -BeGreaterThan 1

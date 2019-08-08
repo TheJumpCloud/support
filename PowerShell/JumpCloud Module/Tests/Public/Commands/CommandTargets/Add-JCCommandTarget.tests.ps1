@@ -1,5 +1,5 @@
 Describe -Tag:('JCCommandTarget') 'Add-JCCommandTarget 1.3' {
-    Connect-JCOnlineTest
+    Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
     It "Adds a single system to a JupmCloud command" {
 
         $TargetRemove = Remove-JCCommandTarget -CommandID $PesterParams.CommandID -SystemID $PesterParams.SystemID

@@ -1,5 +1,5 @@
 Describe -Tag:('JCCommandTarget') 'Get-JCCommandTarget 1.3' {
-    Connect-JCOnlineTest
+    Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
     It "Returns a JumpCloud commands system targets" {
 
         $SystemTarget = Get-JCCommandTarget -CommandID $PesterParams.CommandID

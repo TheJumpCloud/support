@@ -1,5 +1,5 @@
 Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
-    Connect-JCOnlineTest
+    Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
     It "Updates users from a CSV populated with telephony attributes" {
 
         $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath $ImportPath/ImportExample_telephonyAttributes.csv -force

@@ -1,5 +1,5 @@
 Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
-    Connect-JCOnlineTest
+    Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
     It "Imports users from the ImportExample_Pester_Test using -Force" {
         $UserImport = Import-JCUsersFromCSV -CSVFilePath $Import_JCUsersFromCSV_1_1_Tests -force
     }

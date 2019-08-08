@@ -1,5 +1,5 @@
 Describe -Tag:('JCGroup') 'Get-JCGroup 1.0' {
-    Connect-JCOnlineTest
+    Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
     It 'Gets all groups: System and User' {
 
         $Groups = Get-JCGroup

@@ -1,3 +1,11 @@
+$TestOrgAPIKey = 'ff6006d0cd75d4c52eacf9da2aa7205595ef97bf'
+$MultiTenantAPIKey = '70a96c7196db6d4dac8a375b32686d07a641d671'
+$PesterParams = @{
+    # Specific to MTP portal
+    'SingleTernateOrgId' = '5a4bff7ab17d0c9f63bcd277'
+    'MultiTernateOrgId1' = "5b5a13f06fefdb0a29b0d306"
+    'MultiTernateOrgId2' = "5b5a14d13f852310b1d689b1"
+}
 Describe -Tag:('JCOnline') 'Connect-JCOnline Tests' {
     BeforeAll {
         $StartingApiKey = If (-not [System.String]::IsNullOrEmpty($env:JCApiKey)) {$env:JCApiKey}

@@ -42,7 +42,7 @@ $JCDeployment_10_CSV = "$PSScriptRoot/Csv_Files/commandDeployment/JCDeployment_1
 $ImportPath = "$PSScriptRoot/Csv_Files/import"
 $UpdatePath = "$PSScriptRoot/Csv_Files/update"
 # Authenticate to JumpCloud
-Connect-JCOnlineTest
+Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
 # Policy Info
 $MultiplePolicyList = @('1 Linux', 'Disable USB Storage - Linux') #Populate with multiple policy names.
 $SinglePolicyList = @('Disable USB Storage - Linux') #Populate with single policy name.
