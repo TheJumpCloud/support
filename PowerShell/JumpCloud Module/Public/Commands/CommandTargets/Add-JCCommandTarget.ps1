@@ -7,19 +7,19 @@ Function Add-JCCommandTarget
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'SystemID',
             Position = 0,
-            HelpMessage = 'Associates a JumpCloud system or a JumpCloud system group with a JumpCloud command')]
+            HelpMessage = 'The id value of the JumpCloud command. Use the command "Get-JCCommand | Select-Object _id, name" to find the "_id" value for all the JumpCloud commands in your tenant.')]
 
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'GroupName',
             Position = 0,
-            HelpMessage = 'Associates a JumpCloud system or a JumpCloud system group with a JumpCloud command')]
+            HelpMessage = 'The id value of the JumpCloud command. Use the command "Get-JCCommand | Select-Object _id, name" to find the "_id" value for all the JumpCloud commands in your tenant.')]
 
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'GroupID',
             Position = 0,
-            HelpMessage = 'Associates a JumpCloud system or a JumpCloud system group with a JumpCloud command')]
+            HelpMessage = 'The id value of the JumpCloud command. Use the command "Get-JCCommand | Select-Object _id, name" to find the "_id" value for all the JumpCloud commands in your tenant.')]
 
         [Alias('_id', 'id')]
         [String]$CommandID,
