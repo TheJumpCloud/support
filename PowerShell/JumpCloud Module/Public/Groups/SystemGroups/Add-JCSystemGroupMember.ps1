@@ -49,7 +49,7 @@ SystemID has an Alias of _id. This means you can leverage the PowerShell pipelin
         [Parameter(
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'ByID',
-            HelpMessage = 'The GroupID is used in the ParameterSet 'ByID'. The GroupID for a System Group can be found by running the command:')]
+            HelpMessage = 'The GroupID is used in the ParameterSet ''ByID''. The GroupID for a System Group can be found by running the command:')]
         [string]$GroupID
     )
     begin
