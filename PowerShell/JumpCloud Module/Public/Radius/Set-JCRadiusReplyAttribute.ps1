@@ -6,15 +6,30 @@ Function Set-JCRadiusReplyAttribute ()
     (
 
         [Parameter( Mandatory, position = 0, ValueFromPipelineByPropertyName,
-            ParameterSetName = 'ByGroup')]
+            ParameterSetName = 'ByGroup',
+            HelpMessage = 'The JumpCloud user group to add or update the specified Radius reply attributes on.')]
         [Alias('name')]
         [String]$GroupName,
 
         [Parameter( ValueFromPipelineByPropertyName,
-            ParameterSetName = 'ByGroup')]
+            ParameterSetName = 'ByGroup',
+            HelpMessage = 'By specifying the ''-VLAN'' parameter three radius attributes are added or updated on the target user group.
+These attributes and values are are:
+name                    value
+----                    -----
+Tunnel-Medium-Type      IEEE-802
+Tunnel-Type             VLAN
+Tunnel-Private-Group-Id **VALUE of -VLAN**
+The value specified for the ''-VLAN'' parameter is populated for the value of **Tunnel-Private-Group-Id**.')]
         [String]$VLAN,
 
-        [Parameter(, ValueFromPipelineByPropertyName)]
+        [Parameter(, ValueFromPipelineByPropertyName,
+            HelpMessage = 'The number of RADIUS reply attributes you wish to add to a user group.
+If an attributes exists with a name that matches the new attribute then the existing attribute will be updated.
+Based on the NumberOfAttributes value two Dynamic Parameters will be created for each Attribute: Attribute_name and Attribute_value with an associated number.
+See an example for working with Custom Attribute in EXAMPLE 3 above.
+Attributes must be valid RADIUS attributes. Find a list of valid RADIUS attributes within the dictionary files of this repro broken down by vendor: github.com/FreeRADIUS/freeradius-server/tree/v3.0.x/share
+If an invalid attribute is configured on a user group this will prevent users within this group from being able to authenticate via RADIUS until the invalid attribute is removed.')]
         [int]
         $NumberOfAttributes
 
@@ -63,6 +78,7 @@ Function Set-JCRadiusReplyAttribute ()
             $VLANattr = New-Object System.Management.Automation.ParameterAttribute
             $VLANattr.Mandatory = $false
             $VLANattr.ValueFromPipelineByPropertyName = $true
+            $VLANattr.HelpMessage = 'Specifies the VLAN id which is applied to all attribute names.'
             $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($(0..31))
 
             $VLANattrColl = New-Object System.Collections.ObjectModel.Collection[System.Attribute]

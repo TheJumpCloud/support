@@ -8,18 +8,21 @@ Function Remove-JCUserGroup ()
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'warn',
-            Position = 0)]
+            Position = 0,
+            HelpMessage = 'The name of the User Group you want to remove.')]
 
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'force',
-            Position = 0)]
+            Position = 0,
+            HelpMessage = 'The name of the User Group you want to remove.')]
 
         [Alias('name')]
         [String]$GroupName,
 
         [Parameter(
-            ParameterSetName = 'force')]
+            ParameterSetName = 'force',
+            HelpMessage = 'A SwitchParameter which suppresses the warning message when removing a JumpCloud User Group.')]
         [Switch]
         $force
     )

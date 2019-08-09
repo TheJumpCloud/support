@@ -5,28 +5,31 @@ Function Set-JCCommand
     param (
 
         [Parameter(Mandatory,
-            ValueFromPipelineByPropertyName = $True)]
+            ValueFromPipelineByPropertyName = $True, HelpMessage = 'The _id of the JumpCloud command you wish to update.
+To find a JumpCloud CommandID run the command:
+PS C:\> Get-JCCommand | Select name, _id
+The CommandID will be the 24 character string populated for the _id field.')]
         [string]
         $CommandID,
 
         [Parameter(
-            ValueFromPipelineByPropertyName = $True)]
+            ValueFromPipelineByPropertyName = $True, HelpMessage = 'The name of the new JumpCloud command.')]
         [string]
         $name,
 
         [Parameter(
-            ValueFromPipelineByPropertyName = $True)]
+            ValueFromPipelineByPropertyName = $True, HelpMessage = 'The actual script or command.')]
         [string]
         $command,
 
         [Parameter(
-            ValueFromPipelineByPropertyName = $True)]
+            ValueFromPipelineByPropertyName = $True, HelpMessage = 'The launch type of the command options are: trigger, manual, repeated, one-time.')]
         [string]
         [ValidateSet('trigger', 'manual')]
         $launchType,
 
         [Parameter(
-            ValueFromPipelineByPropertyName = $True)]
+            ValueFromPipelineByPropertyName = $True, HelpMessage = 'The time the command will run before it times out.')]
         [string]
         $timeout
 

@@ -2,9 +2,9 @@ Function Get-JCPolicyTargetSystem
 {
     [CmdletBinding(DefaultParameterSetName = 'ById')]
     param (
-        [Parameter(ParameterSetName = 'ByName')][Switch]$ByName,
-        [Parameter(Mandatory = $True, ValueFromPipelineByPropertyName = $True, Position = 0, ParameterSetName = 'ById')][ValidateNotNullOrEmpty()][Alias('_id', 'id')][String]$PolicyID,
-        [Parameter(Mandatory = $True, ValueFromPipelineByPropertyName = $True, Position = 0, ParameterSetName = 'ByName')][ValidateNotNullOrEmpty()][Alias('Name')][String]$PolicyName
+        [Parameter(ParameterSetName = 'ByName', HelpMessage = 'Use the -ByName parameter when you want to query a specific policy. The -ByName SwitchParameter will set the ParameterSet to ''ByName'' which queries one JumpCloud policy at a time.')][Switch]$ByName,
+        [Parameter(Mandatory = $True, ValueFromPipelineByPropertyName = $True, Position = 0, ParameterSetName = 'ById', HelpMessage = 'The PolicyID of the JumpCloud policy you wish to query.')][ValidateNotNullOrEmpty()][Alias('_id', 'id')][String]$PolicyID,
+        [Parameter(Mandatory = $True, ValueFromPipelineByPropertyName = $True, Position = 0, ParameterSetName = 'ByName', HelpMessage = 'The Name of the JumpCloud policy you wish to query.')][ValidateNotNullOrEmpty()][Alias('Name')][String]$PolicyName
     )
     Begin
     {

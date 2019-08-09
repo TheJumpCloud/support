@@ -3,11 +3,11 @@ Function Connect-JCOnline ()
     [CmdletBinding(DefaultParameterSetName = 'Interactive')]
     Param
     (
-        [Parameter(ParameterSetName = 'force', ValueFromPipelineByPropertyName)]
-        [Parameter(ParameterSetName = 'Interactive', ValueFromPipelineByPropertyName)]
+        [Parameter(ParameterSetName = 'force', ValueFromPipelineByPropertyName, HelpMessage = 'Specific to JumpCloud development team to connect to staging and local dev environments.')]
+        [Parameter(ParameterSetName = 'Interactive', ValueFromPipelineByPropertyName, HelpMessage = 'Specific to JumpCloud development team to connect to staging and local dev environments.')]
         [ValidateSet('production', 'staging', 'local')]
         [System.String]$JCEnvironment = 'production',
-        [Parameter(ParameterSetName = 'force')][Switch]$force
+        [Parameter(ParameterSetName = 'force', HelpMessage = 'Using the "-Force" parameter the module update check is skipped. The ''-Force'' parameter should be used when using the JumpCloud module in scripts or other automation environments.')][Switch]$force
     )
     DynamicParam
     {

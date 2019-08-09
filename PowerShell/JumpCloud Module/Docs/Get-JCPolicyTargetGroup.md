@@ -51,7 +51,8 @@ Returns all policies within a JumpCloud tenant and the bound groups associated t
 ## PARAMETERS
 
 ### -ByName
-Use the -ByName parameter when you want to query a specific policy. The -ByName SwitchParameter will set the ParameterSet to 'ByName' which queries one JumpCloud policy at a time.
+Use the -ByName parameter when you want to query a specific policy.
+The -ByName SwitchParameter will set the ParameterSet to 'ByName' which queries one JumpCloud policy at a time.
 
 ```yaml
 Type: SwitchParameter

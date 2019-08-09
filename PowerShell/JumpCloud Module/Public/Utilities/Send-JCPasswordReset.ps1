@@ -6,14 +6,16 @@ Function Send-JCPasswordReset
         [Parameter(
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'ByUsername',
-            Position = 0)]
+            Position = 0,
+            HelpMessage = 'The Username of the JumpCloud user you wish to send the email.')]
         [String]$username,
 
 
         [Parameter(
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'ByID',
-            Position = 0)]
+            Position = 0,
+            HelpMessage = 'The _id of the User which you want to send the email. To find a JumpCloud UserID run the command: PS C:\> Get-JCUser | Select username, _id The UserID will be the 24 character string populated for the _id field.')]
         [Alias('_id', 'id')]
         $UserID
 
