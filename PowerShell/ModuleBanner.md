@@ -1,17 +1,17 @@
 #### Latest Version
 
 ```
-1.13.0
+1.13.1
 ```
 
 #### Banner Current
 
 ```
-Module up-to-date. Use Get-JCSystemInsights to query System Insights tables!
+Use Get-JCSystem and the new parameter '-SystemFDEKey' to backup SystemFDEKeys.
 ```
 
 #### Banner Old
 
 ```
-Module update available! Query systemInsights tables and SystemFDEKeys!
+Bug fixes for MTP tenants with multiple orgs and new features for managing systems.
 ```

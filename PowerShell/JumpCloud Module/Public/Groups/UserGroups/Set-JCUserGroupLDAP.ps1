@@ -63,10 +63,7 @@ Function Set-JCUserGroupLDAP
 
         }
 
-
-        $LDAPURL = "$JCUrlBasePath/api/v2/ldapservers"
-
-        $LDAPServer = Invoke-RestMethod -Method GET -Uri $LDAPURL  -Header $hdrs -UserAgent:(Get-JCUserAgent)
+        $LDAPServer = Get-JCObject -Type:('ldap_server')
 
         if ($LDAPServer.Count -gt 1)
         {

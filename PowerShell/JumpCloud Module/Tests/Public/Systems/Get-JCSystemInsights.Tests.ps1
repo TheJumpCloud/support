@@ -1,5 +1,6 @@
 $FileBaseName = (Get-Item -Path:($MyInvocation.MyCommand.Path)).BaseName
 Describe -Tag:('JCSystemInsights') "Get-JCSystemInsights Tests" {
+    Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
     BeforeAll {
         # $DebugPreference = 'Continue' # SilentlyContinue (Default), Continue, Inquire, Stop
         # $VerbosePreference = 'Continue' # SilentlyContinue (Default), Continue, Inquire, Stop

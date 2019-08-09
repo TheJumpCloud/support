@@ -2,7 +2,7 @@ Function Get-JCObject
 {
     [CmdletBinding(DefaultParameterSetName = 'Default')]
     Param(
-        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0, HelpMessage = 'The type of the object.')][ValidateNotNullOrEmpty()][ValidateSet('command', 'ldap_server', 'policy', 'application', 'radius_server', 'system_group', 'system', 'user_group', 'user', 'g_suite', 'office_365')][Alias('TypeNameSingular')][System.String]$Type
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0, HelpMessage = 'The type of the object.')][ValidateNotNullOrEmpty()][ValidateSet('command', 'ldap_server', 'policy', 'application', 'radius_server', 'system_group', 'system', 'user_group', 'user', 'g_suite', 'office_365', 'organization')][Alias('TypeNameSingular')][System.String]$Type
     )
     DynamicParam
     {
@@ -208,12 +208,6 @@ Function Get-JCObject
                         If (-not ([System.String]::IsNullOrEmpty($Paginate))) { $FunctionParameters.Add('Paginate', $Paginate) }
                         If ($ReturnCount -eq $true) { $FunctionParameters.Add('ReturnCount', $ReturnCount) }
                     }
-                    # Hacky logic for organization
-                    If ($JCType.TypeName.TypeNameSingular -eq 'organization')
-                    {
-                        $Organization = Invoke-JCApi @FunctionParameters
-                        $FunctionParameters['Url'] = $UrlFull + '/' + $Organization.($JCType.ById)
-                    }
                     # Run command
                     $Result = If ($ReturnHashTable -eq $true)
                     {
@@ -309,7 +303,7 @@ Function Get-JCObject
         }
         Catch
         {
-            Invoke-Command -ScriptBlock:($ScriptBlock_TryCatchError) -ArgumentList:($_, $true) -NoNewScope
+            Write-Error ($_)
         }
     }
     End

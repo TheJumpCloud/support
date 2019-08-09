@@ -1,5 +1,5 @@
 Describe -Tag:('JCCommand') "Set-JCCommand 1.7" {
-    Connect-JCOnlineTest
+    Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
     It "Updates the command" {
         $CmdUpdate = Set-JCCommand -CommandID $PesterParams.SetCommandID -command "Updated command"
         $CmdUpdate.command | Should -be "Updated command"

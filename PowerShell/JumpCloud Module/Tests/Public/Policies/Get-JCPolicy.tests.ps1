@@ -1,5 +1,5 @@
 Describe -Tag:('JCPolicy') 'Get-JCPolicy 1.10' {
-    Connect-JCOnlineTest
+    Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
     It "Returns a single JumpCloud Policy declaring -PolicyId" {
         $SingleResult = Get-JCPolicy -PolicyId:($SinglePolicy.id)
         $SingleResult.id.Count | Should Be $SinglePolicyList.Count

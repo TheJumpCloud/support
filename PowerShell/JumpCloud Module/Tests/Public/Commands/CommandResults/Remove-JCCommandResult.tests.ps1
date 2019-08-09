@@ -1,5 +1,5 @@
 Describe -Tag:('JCCommandResult') 'Remove-JCCommandResult 1.0' {
-    Connect-JCOnlineTest
+    Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
     <#
     It "Ensures the warning message is displayed by default, Deletes a single JumpCloud command result declaring -CommandResultIT" {
         $SingleCommandResult = Get-JCCommandResult | Select-Object -Last 1

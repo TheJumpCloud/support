@@ -1,5 +1,5 @@
 Describe -Tag:('JCBackup') "Get-JCBackup 1.5.0" {
-    Connect-JCOnlineTest
+    Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
     It "Backs up JumpCloud users" {
 
         Get-JCBackup -All

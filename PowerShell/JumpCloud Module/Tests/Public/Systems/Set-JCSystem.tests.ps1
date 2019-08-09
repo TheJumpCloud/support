@@ -1,6 +1,6 @@
 Describe -Tag:('JCSystem') 'Set-JCSystem 1.0' {
-    Connect-JCOnlineTest
-    It "Updates the DisplyName and then set it back" {
+    Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
+    It "Updates the DisplayName and then set it back" {
         $CurrentDisplayName = Get-JCSystem -SystemID $PesterParams.SystemID | Select-Object DisplayName
         $UpdatedSystem = Set-JCSystem -SystemID $PesterParams.SystemID -displayName 'NewName'
         $UpdatedSystem.displayName | Should -be 'NewName'
@@ -40,5 +40,20 @@ Describe -Tag:('JCSystem') 'Set-JCSystem 1.0' {
     It "Updates a system allowPublicKeyAuthentication -eq False" {
         $Update = Set-JCSystem -SystemID $PesterParams.SystemID -allowPublicKeyAuthentication $false
         $Update.allowPublicKeyAuthentication | Should -Be False
+    }
+
+    # 1.13.1 Tests ## $PesterParams.SystemID MUST BE A WINDOWS OR MAC SYSTEM
+    # As of 7/29/19 systemInsights is only avaliable for Windows / Mac
+
+    It "Enables systemInsights for a system" {
+
+        Set-JCSystem -SystemID $PesterParams.SystemId_Windows -systemInsights $false
+        $Update = Set-JCSystem -SystemID $PesterParams.SystemId_Windows -systemInsights $true
+        $Update.systemInsights.state | Should -Be "enabled"
+    }
+
+    It "Disables systemInsights on a system" {
+        $Update = Set-JCSystem -SystemID $PesterParams.SystemId_Windows -systemInsights $false
+        $Update.systemInsights.state | Should -Be "deferred"
     }
 }

@@ -6,12 +6,21 @@ Function Add-JCRadiusReplyAttribute ()
     (
 
         [Parameter( Mandatory, position = 0, ValueFromPipelineByPropertyName,
-            ParameterSetName = 'ByGroup')]
+            ParameterSetName = 'ByGroup',
+            HelpMessage = 'The JumpCloud user group to add the specified Radius reply attributes to.')]
         [Alias('name')]
         [String]$GroupName,
 
         [Parameter( ValueFromPipelineByPropertyName,
-            ParameterSetName = 'ByGroup')]
+            ParameterSetName = 'ByGroup',
+            HelpMessage = 'By specifying the "-VLAN" parameter three radius attributes are added to the target user group.
+These attributes and values are are:
+name                    value
+----                    -----
+Tunnel-Medium-Type      IEEE-802
+Tunnel-Type             VLAN
+Tunnel-Private-Group-Id **VALUE of -VLAN**
+The value specified for the "-VLAN" parameter is populated for the value of **Tunnel-Private-Group-Id**.')]
         [String]$VLAN,
 
         [Parameter(, ValueFromPipelineByPropertyName)]
@@ -63,6 +72,7 @@ Function Add-JCRadiusReplyAttribute ()
             $VLANattr = New-Object System.Management.Automation.ParameterAttribute
             $VLANattr.Mandatory = $false
             $VLANattr.ValueFromPipelineByPropertyName = $true
+            $VLANattr.HelpMessage = 'Specifies the VLAN id which is applied to all attribute names.'
             $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($(0..31))
 
             $VLANattrColl = New-Object System.Collections.ObjectModel.Collection[System.Attribute]

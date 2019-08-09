@@ -14,9 +14,12 @@ Get-ChildItem -Path:("$PSScriptRoot/../Private/*.ps1") -Recurse | ForEach-Object
 # Set test parameters
 $PesterParams = @{
     # Specific to MTP portal
-    'MultiTenanntOrgID1' = "5b5a13f06fefdb0a29b0d306"
-    'MultiTenanntOrgID2' = "5b5a14d13f852310b1d689b1"
+    'SingleTernateOrgId' = '5a4bff7ab17d0c9f63bcd277'
+    'MultiTernateOrgId1' = "5b5a13f06fefdb0a29b0d306"
+    'MultiTernateOrgId2' = "5b5a14d13f852310b1d689b1"
     'SystemID'           = '5c2e83b2bc6fe97784a8749b' # Enter the System ID for a linux system
+    'SystemId_Windows'   = '5d24be43c9448f245effa736'
+    'SystemId_Mac'       = '5d24af30e72dab44aee39426'
     'Username'           = 'pester.tester' # Create a user with username 'pester.tester'
     'UserID'             = '5a4c0216fbd238d531f253a6' # Paste the UserID for the user with username pester.tester
     'UserGroupName'      = 'PesterTest_UserGroup'  #Create a user group named PesterTest_UserGroup within your environment
@@ -41,7 +44,7 @@ $JCDeployment_10_CSV = "$PSScriptRoot/Csv_Files/commandDeployment/JCDeployment_1
 $ImportPath = "$PSScriptRoot/Csv_Files/import"
 $UpdatePath = "$PSScriptRoot/Csv_Files/update"
 # Authenticate to JumpCloud
-Connect-JCOnlineTest
+Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
 # Policy Info
 $MultiplePolicyList = @('1 Linux', 'Disable USB Storage - Linux') #Populate with multiple policy names.
 $SinglePolicyList = @('Disable USB Storage - Linux') #Populate with single policy name.

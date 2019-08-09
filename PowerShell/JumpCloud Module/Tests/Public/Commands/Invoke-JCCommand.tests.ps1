@@ -1,5 +1,5 @@
 Describe -Tag:('JCCommand') 'Invoke-JCCommand 1.0' {
-    Connect-JCOnlineTest
+    Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
     It "Invokes a single JumpCloud command declaring the -trigger" {
         $SingleTrigger = Get-JCCommand | Where-Object trigger -NotLike '' | Select-Object -Last 1 | Select-Object trigger
         $SingleResult = Invoke-JCCommand -trigger $SingleTrigger.trigger

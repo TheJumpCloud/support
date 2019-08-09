@@ -15,18 +15,27 @@ Function Invoke-JCApi
     {
         # Debug message for parameter call
         Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDebugMessageBegin) -ArgumentList:($MyInvocation, $PsBoundParameters, $PSCmdlet) -NoNewScope
-        #Set JC headers
-        Write-Verbose 'Verifying JCAPI Key'
-        If ($JCAPIKEY.length -ne 40) {Connect-JCOnline}
-        Write-Verbose 'Populating API headers'
-        $Headers = @{
-            'Content-Type' = 'application/json'
-            'Accept'       = 'application/json'
-            'X-API-KEY'    = $JCAPIKEY
-        }
-        If ($JCOrgID)
+        # Populate $env:JCApiKey if its not set
+        If ([System.String]::IsNullOrEmpty($env:JCApiKey))
         {
-            $Headers.Add('x-org-id', "$($JCOrgID)")
+            Connect-JCOnline | Out-Null
+        }
+        # Populate $env:JCOrgId if its not set
+        If (-not [System.String]::IsNullOrEmpty($env:JCApiKey) -and [System.String]::IsNullOrEmpty($env:JCOrgId) -and $Url -notlike '*/api/organizations*')
+        {
+            Set-JCOrganization -JumpCloudAPIKey:($env:JCApiKey) | Out-Null
+        }
+        #Set JC headers
+        $Headers = @{
+            'Content-Type' = 'application/json';
+            'Accept'       = 'application/json';
+            'x-api-key'    = "$($env:JCApiKey)";
+            'x-org-id'     = "$($env:JCOrgId)";
+        }
+        # Organizations endpoint does not accept x-org-id in header
+        If ($Url -like '*/api/organizations*')
+        {
+            $Headers.Remove('x-org-id') | Out-Null
         }
     }
     Process
@@ -34,6 +43,10 @@ Function Invoke-JCApi
         Try
         {
             $Results = @()
+            If ([System.String]::IsNullOrEmpty($JCUrlBasePath))
+            {
+                $JCUrlBasePath = 'https://console.jumpcloud.com'
+            }
             If ($Url -notlike ('*' + $JCUrlBasePath + '*'))
             {
                 $Url = $JCUrlBasePath + $Url
@@ -207,7 +220,7 @@ Function Invoke-JCApi
             }
             # Validate results properties returned
             $Fields | ForEach-Object {
-                If ($_ -notin ($Results | Get-Member).Name)
+                If ($_ -notin ($Results | ForEach-Object { $_.PSObject.Properties.Name} | Select-Object -Unique))
                 {
                     Write-Warning ('API output does not contain the field "' + $_ + '". Please refer to https://docs.jumpcloud.com for API endpoint field names.')
                 }

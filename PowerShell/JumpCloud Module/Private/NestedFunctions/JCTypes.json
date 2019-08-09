@@ -763,7 +763,10 @@
     "Paginate": true,
     "SupportRegexFilter": false,
     "Limit": 100,
-    "Skip": 0
+    "Skip": 0,
+    "FilterOperators": [
+      "eq"
+    ]
   },
   {
     "Category": "Custom",

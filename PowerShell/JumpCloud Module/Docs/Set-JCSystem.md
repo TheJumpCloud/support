@@ -15,7 +15,7 @@ Updates an existing JumpCloud System
 ```
 Set-JCSystem [-SystemID] <String> [-displayName <String>] [-allowSshPasswordAuthentication <Boolean>]
  [-allowSshRootLogin <Boolean>] [-allowMultiFactorAuthentication <Boolean>]
- [-allowPublicKeyAuthentication <Boolean>] [<CommonParameters>]
+ [-allowPublicKeyAuthentication <Boolean>] [-systemInsights <Boolean>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -121,6 +121,21 @@ The system displayName. The displayName is set to the hostname of the system dur
 
 ```yaml
 Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -systemInsights
+Setting this value to $true will enable systemInsights and collect data for this system. Setting this value to $false will disable systemInsights and data collection for the system.
+
+```yaml
+Type: Boolean
 Parameter Sets: (All)
 Aliases:
 
