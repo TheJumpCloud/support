@@ -58,7 +58,8 @@ Adds all JumpCloud users with a custom attribute value which contains 'Sales' to
 ## PARAMETERS
 
 ### -ByID
-Use the -ByID parameter when either the UserID or GroupID is being passed over the pipeline to the Add-JCUserGroupMember function. The -ByID SwitchParameter will set the ParameterSet to 'ByID' which will increase the function speed and performance.
+Use the -ByID parameter when either the UserID or GroupID is being passed over the pipeline to the Add-JCUserGroupMember function.
+The -ByID SwitchParameter will set the ParameterSet to 'ByID' which will increase the function speed and performance.
 
 ```yaml
 Type: SwitchParameter
@@ -73,8 +74,9 @@ Accept wildcard characters: False
 ```
 
 ### -GroupID
-The GroupID is used in the ParameterSet 'ByID'. The GroupID for a User Group can be found by running the command:
-PS C:\> Get-JCGroup -type 'User'
+The GroupID is used in the ParameterSet 'ByID'.
+The GroupID for a User Group can be found by running the command:
+PS C:\\\> Get-JCGroup -type 'User'
 
 ```yaml
 Type: String
@@ -118,9 +120,11 @@ Accept wildcard characters: False
 ### -UserID
 The _id of the User which you want to add to the User Group.
 To find a JumpCloud UserID run the command:
-PS C:\> Get-JCUser | Select username, _id
+PS C:\\\> Get-JCUser | Select username, _id
 The UserID will be the 24 character string populated for the _id field.
-UserID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCUser function before calling Add-JCUserGroupMember. This is shown in EXAMPLES 2, 3, and 4.
+UserID has an Alias of _id.
+This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCUser function before calling Add-JCUserGroupMember.
+This is shown in EXAMPLES 2, 3, and 4.
 
 ```yaml
 Type: String

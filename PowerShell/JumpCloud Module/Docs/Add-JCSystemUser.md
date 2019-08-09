@@ -70,9 +70,10 @@ Accept wildcard characters: False
 ### -SystemID
 The _id of the System which you want to bind the JumpCloud user to.
 To find a JumpCloud SystemID run the command:
-PS C:\> Get-JCSystem | Select hostname, _id
+PS C:\\\> Get-JCSystem | Select hostname, _id
 The SystemID will be the 24 character string populated for the _id field.
-SystemID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically by calling a JumpCloud function that returns the SystemID.
+SystemID has an Alias of _id.
+This means you can leverage the PowerShell pipeline to populate this field automatically by calling a JumpCloud function that returns the SystemID.
 
 ```yaml
 Type: String
@@ -89,9 +90,11 @@ Accept wildcard characters: False
 ### -UserID
 The _id of the User which you want to add to the JumpCloud system.
 To find a JumpCloud UserID run the command:
-PS C:\> Get-JCUser | Select username, _id
+PS C:\\\> Get-JCUser | Select username, _id
 The UserID will be the 24 character string populated for the _id field.
-UserID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using a function that returns the JumpCloud UserID. This is shown in EXAMPLES 2, 3, and 4.
+UserID has an Alias of _id.
+This means you can leverage the PowerShell pipeline to populate this field automatically using a function that returns the JumpCloud UserID.
+This is shown in EXAMPLES 2, 3, and 4.
 
 ```yaml
 Type: String

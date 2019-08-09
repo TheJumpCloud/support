@@ -59,7 +59,8 @@ Adds all active systems with an operating system like 'Mac' to the System Group 
 ## PARAMETERS
 
 ### -ByID
-Use the -ByID parameter when the GroupID and SystemID are both being passed over the pipeline to the Add-JCSystemGroupMember function. The -ByID SwitchParameter will set the ParameterSet to 'ByID' which will increase the function speed and performance.
+Use the -ByID parameter when the GroupID and SystemID are both being passed over the pipeline to the Add-JCSystemGroupMember function.
+The -ByID SwitchParameter will set the ParameterSet to "ByID" which will increase the function speed and performance.
 
 ```yaml
 Type: SwitchParameter
@@ -74,7 +75,8 @@ Accept wildcard characters: False
 ```
 
 ### -GroupID
-The GroupID is used in the ParameterSet 'ByID'. The GroupID for a System Group can be found by running the command:
+The GroupID is used in the ParameterSet 'ByID'.
+The GroupID for a System Group can be found by running the command:
 
 ```yaml
 Type: String
@@ -118,9 +120,11 @@ Accept wildcard characters: False
 ### -SystemID
 The _id of the System which you want to add to the System Group.
 To find a JumpCloud SystemID run the command:
-PS C:\> Get-JCSystem | Select hostname, _id
+PS C:\\\> Get-JCSystem | Select hostname, _id
 The SystemID will be the 24 character string populated for the _id field.
-SystemID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCSystem function before calling Add-JCSystemGroupMember. This is shown in EXAMPLES 2, 3, and 4.
+SystemID has an Alias of _id.
+This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCSystem function before calling Add-JCSystemGroupMember.
+This is shown in EXAMPLES 2, 3, and 4.
 
 ```yaml
 Type: String
