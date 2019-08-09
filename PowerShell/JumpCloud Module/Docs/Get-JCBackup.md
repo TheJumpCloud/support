@@ -178,7 +178,6 @@ More then one parameter can be specified at one time. The above example backs up
 ### -All
 A switch parameter that when called tells the command to back up JumpCloud user, system user, system, user group, and system group information to CSV files.
 
-
 ```yaml
 Type: SwitchParameter
 Parameter Sets: (All)
@@ -193,7 +192,6 @@ Accept wildcard characters: False
 
 ### -SystemGroups
 A switch parameter that when called backs up JumpCloud system group membership to CSV.
-
 
 ```yaml
 Type: SwitchParameter

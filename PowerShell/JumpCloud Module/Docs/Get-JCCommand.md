@@ -62,7 +62,8 @@ Note that when running this command the time for the output to display will be d
 ## PARAMETERS
 
 ### -ByID
-Use the -ByID parameter when you want to query the contents of a specific command or if the -CommandID is being passed over the pipeline to return the full contents of a JumpCloud command. The -ByID SwitchParameter will set the ParameterSet to 'ByID' which queries one JumpCloud command at a time.
+Use the -ByID parameter when you want to query the contents of a specific command or if the -CommandID is being passed over the pipeline to return the full contents of a JumpCloud command.
+The -ByID SwitchParameter will set the ParameterSet to 'ByID' which queries one JumpCloud command at a time.
 
 ```yaml
 Type: SwitchParameter
@@ -79,9 +80,11 @@ Accept wildcard characters: False
 ### -CommandID
 The _id of the JumpCloud command you wish to query.
 To find a JumpCloud CommandID run the command:
-PS C:\> Get-JCCommand | Select name, _id
+PS C:\\\> Get-JCCommand | Select name, _id
 The CommandID will be the 24 character string populated for the _id field.
-CommandID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using a function that returns the JumpCloud CommandID. This is shown in EXAMPLES  3 and 4.
+CommandID has an Alias of _id.
+This means you can leverage the PowerShell pipeline to populate this field automatically using a function that returns the JumpCloud CommandID.
+This is shown in EXAMPLES  3 and 4.
 
 ```yaml
 Type: String[]
