@@ -1,23 +1,17 @@
-Function Invoke-JCDeployment () 
+Function Invoke-JCDeployment ()
 {
     [CmdletBinding()]
 
     param
     (
-        
-        
-        [Parameter(Mandatory,
-            ValueFromPipelineByPropertyName,
-            Position = 0)]
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, Position = 0, HelpMessage = 'The full path to the CSV deployment file. You can use tab complete to search for .csv files.')]
         [Alias('_id', 'id')]
         [String]$CommandID,
 
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory, HelpMessage = 'The _id of the JumpCloud command you wish to deploy. To find a JumpCloud CommandID run the command: `PS C:\> Get-JCCommand | Select name, _id`. The CommandID will be the 24 character string populated for the _id field.')]
         [ValidateScript( { Test-Path -Path $_ -PathType Leaf})]
         [ValidatePattern( '\.csv$' )]
         [string]$CSVFilePath
-        
-
     )
 
 
@@ -53,18 +47,18 @@ Function Invoke-JCDeployment ()
                 Write-Error "$CommandID is not a valid CommandID. Run command 'Get-JCCommand | Select name, _id' to see a list of your commands"
 
                 Exit
-                
+
             }
         }
 
         catch
         {
             Write-Error "$CommandID is not a valid CommandID. Run command 'Get-JCCommand | Select name, _id' to see a list of your commands"
-    
-            Write-Error $_.ErrorDetails 
+
+            Write-Error $_.ErrorDetails
 
             Exit
-               
+
         }
 
         $Targets = Get-JCCommandTarget -CommandID $CommandID
@@ -74,14 +68,14 @@ Function Invoke-JCDeployment ()
 
             Write-Host "`nDeployment command: '$($DeploymentCommand.name)' has $($Targets.SystemID.count) existing system associations.`n" -ForegroundColor Red
 
-            Write-Host "Deployment commands CAN NOT have any systems associated with them.`n" 
+            Write-Host "Deployment commands CAN NOT have any systems associated with them.`n"
 
             Write-Host "During the deployment systems in the DEPLOYMENT CSV will be targeted and then removed from the deployment command.`n"
 
             Write-Host "Would you like to remove the $($Targets.SystemID.count) systems from the Deployment command: '$($DeploymentCommand.name)' to continue?`n" -ForegroundColor Yellow
 
             $ConfirmPrompt = $false
-        
+
             while ($ConfirmPrompt -eq $false)
             {
                 $ConfirmRemoval = Read-Host "Enter 'Y' to remove systems and continue enter 'N' to exit"
@@ -91,11 +85,11 @@ Function Invoke-JCDeployment ()
                     y {$ConfirmPrompt = $True}
                     n
                     {
-                        
-                        Write-Output "Exited due to system associations" 
+
+                        Write-Output "Exited due to system associations"
                         Exit
-                        
-                    } 
+
+                    }
                     default
                     {
                         write-warning "$ConfirmPrompt is not a valid choice"
@@ -107,21 +101,21 @@ Function Invoke-JCDeployment ()
 
             if ($ConfirmPrompt -eq $True)
             {
-                    
+
                 $GroupTargets = Get-JCCommandTarget -CommandID $CommandID -Groups
 
                 if ($GroupTargets.GroupID.count -gt 0)
                 {
 
-                    $GroupsRemove = $GroupTargets | % {Remove-JCCommandTarget -CommandID  $CommandID -GroupID $_.GroupID}  
-                        
+                    $GroupsRemove = $GroupTargets | % {Remove-JCCommandTarget -CommandID  $CommandID -GroupID $_.GroupID}
+
                 }
 
-                $SystemTargets = Get-JCCommandTarget -CommandID $CommandID 
+                $SystemTargets = Get-JCCommandTarget -CommandID $CommandID
 
                 if ($SystemTargets.SystemID.count -gt 0)
                 {
-                    $SystemRemove = $SystemTargets   | Remove-JCCommandTarget -CommandID $CommandID          
+                    $SystemRemove = $SystemTargets   | Remove-JCCommandTarget -CommandID $CommandID
                 }
 
             }
@@ -131,18 +125,18 @@ Function Invoke-JCDeployment ()
             if ($NoTargets.SystemID.count -gt 0)
             {
 
-                Write-Error "`nDeployment command: '$($DeploymentCommand.name)' has $($NoTargets.SystemID.count) existing system associations. Exiting`n" 
+                Write-Error "`nDeployment command: '$($DeploymentCommand.name)' has $($NoTargets.SystemID.count) existing system associations. Exiting`n"
 
-                Write-Output "Exited due to system associations" 
+                Write-Output "Exited due to system associations"
                 Exit
-                    
+
             }
 
             Write-Verbose "Deploy command has zero targets"
-                
+
         }
 
-        
+
     }
 
     process
@@ -163,16 +157,16 @@ Function Invoke-JCDeployment ()
         [int]$SystemCount = $DeploymentInfo.SystemID.Count
 
         foreach ($Target in $DeploymentInfo)
-        {   
+        {
             $SingleResult = $Null
 
             $DeploymentParams = @{
                 trigger           = "$trigger"
-                NumberOfVariables = "$numberofVariables"            
+                NumberOfVariables = "$numberofVariables"
             }
-            
+
             Write-Verbose "Adding SYSTEM: $($Target.SystemID) to DEPLOY COMMAND: $($CommandID)"
-            
+
             $TargetAdd = Add-JCCommandTarget -CommandID $CommandID -SystemID $Target.SystemID
 
             [int]$Counter = 1
@@ -186,7 +180,7 @@ Function Invoke-JCDeployment ()
                 $DeploymentParams.Add("Variable" + $($Counter) + "_value", "$($Target | Select-Object -ExpandProperty $var)")
                 $Counter++
             }
-            
+
             $null = Invoke-JCCommand @DeploymentParams
 
             $TargetRemove = Remove-JCCommandTarget -CommandID $CommandID -SystemID $Target.SystemID
@@ -200,7 +194,7 @@ Function Invoke-JCDeployment ()
                 PercentComplete = ($ProgressCounter / $SystemCount) * 100
 
             }
-            
+
             Write-Progress @GroupAddProgressParams
 
             $SingleResult = [PSCustomObject]@{
@@ -211,9 +205,9 @@ Function Invoke-JCDeployment ()
 
             $resultsArray += $SingleResult
 
-            
+
         }
-         
+
         $null = Set-JCCommand -CommandID $CommandID -launchType manual
 
 

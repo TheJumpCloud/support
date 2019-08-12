@@ -4,32 +4,22 @@ Function New-JCCommand
 
     param (
 
-        [Parameter(Mandatory,
-            ValueFromPipelineByPropertyName = $True)]
-        [string]
-        $name,
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName = $True, HelpMessage = 'The name of the new JumpCloud command.')]
+        [string]$name,
 
-        [Parameter(Mandatory,
-            ValueFromPipelineByPropertyName = $True)]
-        [string]
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName = $True, HelpMessage = 'The type of JumpCloud command. Options are windows, mac, or linux.')]
         [ValidateSet('windows', 'mac', 'linux')]
-        $commandType,
+        [string]$commandType,
 
-        [Parameter(Mandatory,
-            ValueFromPipelineByPropertyName = $True)]
-        [string]
-        $command,
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName = $True, HelpMessage = 'The script or command to run using the command.')]
+        [string]$command,
 
-        [Parameter(
-            ValueFromPipelineByPropertyName = $True)]
-        [string]
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'The launch type for the new command. The default is manual.')]
         [ValidateSet('trigger', 'manual')]
-        $launchType = 'manual',
+        [string]$launchType = 'manual',
 
-        [Parameter(
-            ValueFromPipelineByPropertyName = $True)]
-        [string]
-        $timeout = '120'
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'The time the command will run before it times out. The default is 120 seconds.')]
+        [string]$timeout = '120'
 
     )
 

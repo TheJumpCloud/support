@@ -5,15 +5,11 @@ Function Get-JCUserGroupMember ()
     param
     (
 
-        [Parameter(Mandatory, ValueFromPipelineByPropertyName,
-            ParameterSetName = 'ByGroup',
-            Position = 0)]
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'ByGroup', Position = 0, HelpMessage = 'The name of the JumpCloud User Group you want to return the members of.')]
         [Alias('name')]
         [String]$GroupName,
 
-        [Parameter(Mandatory,
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'ByID')]
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'ByID', HelpMessage = 'If searching for a User Group using the GroupID populate the GroupID in the -ByID field.')]
         [String]$ByID
     )
 

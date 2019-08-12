@@ -4,49 +4,28 @@ function Get-JCCommandResult ()
 
     param
     (
-        [Parameter(Mandatory,
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'ByID',
-            Position = 0)]
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'ByID', Position = 0, HelpMessage = 'The _id of the JumpCloud Command Result you wish to query.')]
         [Alias('_id', 'id')]
         [String]$CommandResultID,
 
-        [Parameter(
-            ParameterSetName = 'ByID')]
-        [Switch]
-        $ByID,
+        [Parameter(ParameterSetName = 'ByID', HelpMessage = 'Use the -ByID parameter when you want to query the contents of a specific Command Result or if the -CommandResultID is being passed over the pipeline to return the full contents of a JumpCloud Command Result. The -ByID SwitchParameter will set the ParameterSet to ''ByID'' which queries one JumpCloud Command Result at a time.')]
+        [Switch]$ByID,
 
-        [Parameter(
-            ParameterSetName = 'TotalCount')]
-        [Switch]
-        $TotalCount,
+        [Parameter(ParameterSetName = 'TotalCount', HelpMessage = 'A switch parameter to only return the number of command results.')]
+        [Switch]$TotalCount,
 
-        [Parameter(
-            ParameterSetName = 'ReturnAll')]
-
-        [Parameter(
-            ParameterSetName = 'MaxResults')]
-
+        [Parameter(ParameterSetName = 'ReturnAll', HelpMessage = 'The number of command results to skip over before returning results. ')]
+        [Parameter(ParameterSetName = 'MaxResults', HelpMessage = 'The number of command results to skip over before returning results. ')]
         [int]$Skip = 0,
 
-        [Parameter(
-            ParameterSetName = 'ReturnAll')]
+        [Parameter(ParameterSetName = 'ReturnAll', HelpMessage = '')]
+        [Parameter(ParameterSetName = 'MaxResults', HelpMessage = 'How many command results to return in each API call.')]
+        [ValidateRange(0, 100)][int]$Limit = 100,
 
-        [Parameter(
-            ParameterSetName = 'MaxResults')]
-
-        [ValidateRange(0, 100)]
-        [int]$Limit = 100,
-
-        [Parameter(
-            ParameterSetName = 'MaxResults')]
-        [Int]
-        $MaxResults
+        [Parameter(ParameterSetName = 'MaxResults', HelpMessage = 'The maximum number of results to return.')]
+        [Int]$MaxResults
     )
-
-
     begin
-
     {
         Write-Verbose 'Verifying JCAPI Key'
         if ($JCAPIKEY.length -ne 40) {Connect-JConline}
