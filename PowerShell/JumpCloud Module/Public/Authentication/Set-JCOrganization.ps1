@@ -87,7 +87,7 @@ Function Set-JCOrganization
                 $OrgId = $($Organizations._id)
                 $OrgName = $($Organizations.displayName)
             }
-            If (-not ([System.String]::IsNullOrEmpty($OrgName)) -and -not ([System.String]::IsNullOrEmpty($OrgId)))
+            If (-not ([System.String]::IsNullOrEmpty($OrgId)))
             {
                 $env:JCOrgId = $OrgId
                 $global:JCOrgId = $env:JCOrgId
@@ -100,7 +100,7 @@ Function Set-JCOrganization
             }
             Else
             {
-                Write-Error ('OrgId and OrgName have not been set.')
+                Write-Error ('OrgId has not been set.')
             }
         }
     }
