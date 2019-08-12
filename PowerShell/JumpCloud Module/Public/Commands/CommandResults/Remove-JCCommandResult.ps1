@@ -9,7 +9,7 @@ Function Remove-JCCommandResult ()
         [Alias('_id', 'id')]
         [String] $CommandResultID,
 
-        [Parameter(ParameterSetName = 'force', HelpMessage = '')]
+        [Parameter(ParameterSetName = 'force', HelpMessage = 'A SwitchParameter which removes the warning message when removing a JumpCloud Command Result.')]
         [Switch]$force
     )
 

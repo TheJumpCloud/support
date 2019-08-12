@@ -30,9 +30,8 @@ Function Invoke-JCCommand ()
             {
 
                 $attr = New-Object System.Management.Automation.ParameterAttribute
-                $attr.HelpMessage = "Enter a variable name"
                 $attr.Mandatory = $true
-                $attr.HelpMessage = ''
+                $attr.HelpMessage = 'Enter a variable name'
                 $attr.ValueFromPipelineByPropertyName = $true
                 $attrColl = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
                 $attrColl.Add($attr)
@@ -40,8 +39,8 @@ Function Invoke-JCCommand ()
                 $dict.Add("Variable$ParamNumber`_name", $param)
 
                 $attr1 = New-Object System.Management.Automation.ParameterAttribute
-                $attr1.HelpMessage = "Enter the Variables value"
                 $attr1.Mandatory = $true
+                $attr1.HelpMessage = 'Enter the Variables value'
                 $attr1.ValueFromPipelineByPropertyName = $true
                 $attrColl1 = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
                 $attrColl1.Add($attr1)

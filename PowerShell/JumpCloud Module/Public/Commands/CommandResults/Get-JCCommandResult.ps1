@@ -18,7 +18,7 @@ function Get-JCCommandResult ()
         [Parameter(ParameterSetName = 'MaxResults', HelpMessage = 'The number of command results to skip over before returning results. ')]
         [int]$Skip = 0,
 
-        [Parameter(ParameterSetName = 'ReturnAll', HelpMessage = '')]
+        [Parameter(ParameterSetName = 'ReturnAll', HelpMessage = 'How many command results to return in each API call.')]
         [Parameter(ParameterSetName = 'MaxResults', HelpMessage = 'How many command results to return in each API call.')]
         [ValidateRange(0, 100)][int]$Limit = 100,
 
