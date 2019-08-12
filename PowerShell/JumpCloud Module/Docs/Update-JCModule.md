@@ -30,8 +30,8 @@ Running the function will trigger the update process.
 
 ## PARAMETERS
 
-### -SkipUninstallOld
-Skips the "Uninstall-Module" step that will uninstall old version of the module.
+### -Force
+ByPasses user prompts.
 
 ```yaml
 Type: SwitchParameter
@@ -45,8 +45,8 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Force
-ByPasses user prompts.
+### -SkipUninstallOld
+Skips the "Uninstall-Module" step that will uninstall old version of the module.
 
 ```yaml
 Type: SwitchParameter

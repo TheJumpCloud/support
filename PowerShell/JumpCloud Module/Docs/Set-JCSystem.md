@@ -42,7 +42,9 @@ This example updates all Systems with an operating system like 'Mac' and allows 
 ### -SystemID
 The _id of the System which you want to remove from JumpCloud.
 The SystemID will be the 24 character string populated for the _id field.
-SystemID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically by calling a JumpCloud function that returns the SystemID. This is shown in EXAMPLE 2
+SystemID has an Alias of _id.
+This means you can leverage the PowerShell pipeline to populate this field automatically by calling a JumpCloud function that returns the SystemID.
+This is shown in EXAMPLE 2
 
 ```yaml
 Type: String
@@ -57,7 +59,8 @@ Accept wildcard characters: False
 ```
 
 ### -allowMultiFactorAuthentication
-A boolean $true/$false value to allow for MFA during system login. Note this setting only applies systems running Linux or Mac.
+A boolean $true/$false value to allow for MFA during system login.
+Note this setting only applies systems running Linux or Mac.
 
 ```yaml
 Type: Boolean
@@ -117,7 +120,9 @@ Accept wildcard characters: False
 ```
 
 ### -displayName
-The system displayName. The displayName is set to the hostname of the system during agent installation. When the system hostname updates the displayName does not update.
+The system displayName.
+The displayName is set to the hostname of the system during agent installation.
+When the system hostname updates the displayName does not update.
 
 ```yaml
 Type: String
@@ -132,7 +137,8 @@ Accept wildcard characters: False
 ```
 
 ### -systemInsights
-Setting this value to $true will enable systemInsights and collect data for this system. Setting this value to $false will disable systemInsights and data collection for the system.
+Setting this value to $true will enable systemInsights and collect data for this system.
+Setting this value to $false will disable systemInsights and data collection for the system.
 
 ```yaml
 Type: Boolean

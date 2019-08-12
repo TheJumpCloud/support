@@ -8,7 +8,7 @@ schema: 2.0.0
 # Update-JCUsersFromCSV
 
 ## SYNOPSIS
-Updates a set of JumpCloud users from a CSV file created using the New-JCImportTemplate function.
+{{ Fill in the Synopsis }}
 
 ## SYNTAX
 
@@ -46,7 +46,8 @@ Uses the 'Force' parameter to skip the GUI and data validation and update users 
 ## PARAMETERS
 
 ### -CSVFilePath
-The full path to the CSV file you wish to import. You can use tab complete to search for .csv files.
+The full path to the CSV file you wish to import.
+You can use tab complete to search for .csv files.
 
 ```yaml
 Type: String
