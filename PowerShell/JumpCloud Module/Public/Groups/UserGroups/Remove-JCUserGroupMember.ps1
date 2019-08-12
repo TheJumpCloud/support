@@ -18,7 +18,8 @@ Function Remove-JCUserGroupMember ()
         [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'ByID', HelpMessage = 'The GroupID is used in the ParameterSet ''ByID''. The GroupID for a User Group can be found by running the command: PS C:\> Get-JCGroup -type ''User''')]
         [string]$GroupID,
 
-        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'ByID', HelpMessage = 'The _id of the User which you want to remove from the User Group. To find a JumpCloud UserID run the command: `PS C:\> Get-JCUser | Select username, _id`. The UserID will be the 24 character string populated for the _id field. UserID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCUser function before calling Remove-JCUserGroupMember. This is shown in EXAMPLES 2, 3, and 4.')]
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'ByID', HelpMessage = 'The _id of the User which you want to remove from the User Group. To find a JumpCloud UserID run the command: PS C:\> Get-JCUser | Select username, _id
+The UserID will be the 24 character string populated for the _id field. UserID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCUser function before calling Remove-JCUserGroupMember. This is shown in EXAMPLES 2, 3, and 4.')]
         [Alias('_id', 'id')]
         [string]$UserID
     )

@@ -8,15 +8,17 @@ Function Remove-JCSystemGroupMember ()
         [Alias('name')]
         [String]$GroupName,
 
-        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'ByName', HelpMessage = 'The _id of the System which you want to remove from the System Group. To find a JumpCloud SystemID run the command: `PS C:\> Get-JCSystem | Select hostname, _id`. The SystemID will be the 24 character string populated for the _id field. SystemID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCSystem function before calling Remove-JCSystemGroupMember. This is shown in EXAMPLES 2 and 3.')]
-        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'ByID', HelpMessage = 'The _id of the System which you want to remove from the System Group. To find a JumpCloud SystemID run the command: `PS C:\> Get-JCSystem | Select hostname, _id`. The SystemID will be the 24 character string populated for the _id field. SystemID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCSystem function before calling Remove-JCSystemGroupMember. This is shown in EXAMPLES 2 and 3.')]
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'ByName', HelpMessage = 'The _id of the System which you want to remove from the System Group. To find a JumpCloud SystemID run the command: PS C:\> Get-JCSystem | Select hostname, _id
+The SystemID will be the 24 character string populated for the _id field. SystemID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCSystem function before calling Remove-JCSystemGroupMember. This is shown in EXAMPLES 2 and 3.')]
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'ByID', HelpMessage = 'The _id of the System which you want to remove from the System Group. To find a JumpCloud SystemID run the command: PS C:\> Get-JCSystem | Select hostname, _id
+The SystemID will be the 24 character string populated for the _id field. SystemID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCSystem function before calling Remove-JCSystemGroupMember. This is shown in EXAMPLES 2 and 3.')]
         [Alias('id', '_id')]
         [string]$SystemID,
 
         [Parameter(ParameterSetName = 'ByID', HelpMessage = 'Use the -ByID parameter when the SystemID is passed over the pipeline to the Remove-JCSystemGroupMember function. The -ByID SwitchParameter will set the ParameterSet to ''ByID'' which will increase the function speed and performance.')]
         [Switch]$ByID,
 
-        [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'ByID', HelpMessage = 'The GroupID is used in the ParameterSet ''ByID''. The GroupID for a System Group can be found by running the command: `PS C:\> Get-JCGroup -type ''System''`')]
+        [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'ByID', HelpMessage = 'The GroupID is used in the ParameterSet ''ByID''. The GroupID for a System Group can be found by running the command: PS C:\> Get-JCGroup -type ''System''')]
         [string]$GroupID
     )
     begin

@@ -41,7 +41,7 @@ Runs the command with a trigger of 'GetJCAgentLog' on all associated systems ass
 Invoke-JCCommand -trigger 'InstallApp' -NumberOfVariables 1 -Variable1_name 'URL' -Variable1_value 'www.pathtoinstallfile.com'
 ```
 
-Runs the command with a trigger of 'GetJCAgentLog' and passes the variable 'URL' with value 'www.pathtoinstallfile.com' to the JumpCloud command. 
+Runs the command with a trigger of 'GetJCAgentLog' and passes the variable 'URL' with value 'www.pathtoinstallfile.com' to the JumpCloud command.
 
 ### Example 3
 ```powershell
@@ -140,7 +140,7 @@ Accept wildcard characters: False
 ### -trigger
 When creating a JumpCloud command that can be run via the Invoke-JCCommand function the command must be configured for 'Launch Event - Event type: Run on Trigger (webhook)' During command configuration a 'Trigger Name' is required.
 The value of this trigger name is what must be populated when using the Invoke-JCCommand function.
-To find all JumpCloud Command triggers run: \`PS C:\\\> Get-JCCommand | Where-Object launchType -EQ 'trigger'  | Select-Object name, trigger\`.
+To find all JumpCloud Command triggers run: PS C:\\\> Get-JCCommand | Where-Object launchType -EQ 'trigger'  | Select-Object name, trigger
 You can leverage the pipeline and Parameter Binding to populate the -trigger Parameter.
 This is shown in EXAMPLES 2 and 3.
 

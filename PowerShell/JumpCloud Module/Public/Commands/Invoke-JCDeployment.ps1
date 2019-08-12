@@ -4,7 +4,8 @@ Function Invoke-JCDeployment ()
 
     param
     (
-        [Parameter(Mandatory, ValueFromPipelineByPropertyName, Position = 0, HelpMessage = 'The _id of the JumpCloud command you wish to deploy. To find a JumpCloud CommandID run the command: `PS C:\> Get-JCCommand | Select name, _id`. The CommandID will be the 24 character string populated for the _id field.')]
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, Position = 0, HelpMessage = 'The _id of the JumpCloud command you wish to deploy. To find a JumpCloud CommandID run the command: PS C:\> Get-JCCommand | Select name, _id
+The CommandID will be the 24 character string populated for the _id field.')]
         [Alias('_id', 'id')]
         [String]$CommandID,
 
