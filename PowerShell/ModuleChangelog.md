@@ -381,7 +381,7 @@ Release Date: May 31, 2018
 
 ```
 Updated Function: Get-JCCommandResult with new parameter '-MaxResult'
-Using the paramter '-Skip' and '-MaxResult' admins can return a specific subset of command results.
+Using the parameter '-Skip' and '-MaxResult' admins can return a specific subset of command results.
 Performance fix for 'Get-JCCommandResult' with increase default limit to 1000
 ```
 #### FEATURES:
@@ -431,17 +431,17 @@ Improvements: Optimized Helper Hash Functions to speed up hash table creation an
 
 #### FEATURES:
 
-- Updated Function:  Invoke-JCCommand has added parameter '-NumberOfVariables' for passing in variables to JumpCloud commands. This paramter will create additional paramters dynamically based on the number of variables being passed. Learn more about passing objects to JumpCloud commands under the heading 'Sending data with triggers' [here](https://support.jumpcloud.com/customer/en/portal/articles/2443894-how-to-use-command-triggers).
+- Updated Function:  Invoke-JCCommand has added parameter '-NumberOfVariables' for passing in variables to JumpCloud commands. This parameter will create additional parameters dynamically based on the number of variables being passed. Learn more about passing objects to JumpCloud commands under the heading 'Sending data with triggers' [here](https://support.jumpcloud.com/customer/en/portal/articles/2443894-how-to-use-command-triggers).
 - Updated Function: Get-JCSystem to use the [/search/systems API endpoint](https://docs.jumpcloud.com/1.0/search/search-systems).
   - Get-JCSystem can now do front and end wild card searches on all string properties
     - Example 'Get-JCsystem -hostname '\*admin\*'
-  - Get-JCSystem can now do date searches on 'Created' date field using new paramter -filterDateProperty
-  - Get-JCSystem can now return only specific properties using new paramter -returnProperties
+  - Get-JCSystem can now do date searches on 'Created' date field using new parameter -filterDateProperty
+  - Get-JCSystem can now return only specific properties using new parameter -returnProperties
 - Updated Function: Get-JCUser to use the [/search/systemusers API endpoint](https://docs.jumpcloud.com/1.0/search/list-system-users).
   - Get-JCUser can now do front and end wild card searches on all string properties
     - Example 'Get-JCUser -username '\*bob\*'
-  - Get-JCUser can now do date searches on 'Created' and 'password_expiration_date' date fields using new paramter -filterDateProperty
-  - Get-JCUser can now return only specific properties using new paramter -returnProperties
+  - Get-JCUser can now do date searches on 'Created' and 'password_expiration_date' date fields using new parameter -filterDateProperty
+  - Get-JCUser can now return only specific properties using new parameter -returnProperties
 
 
 #### BUG FIXES:
@@ -480,7 +480,7 @@ Updated Functions: Add-JCUser and Set-JCUser with boolean parameter '-password_n
 #### BUG FIXES:
 
 - Updated Functions: Add-JCUser and Set-JCUser to allow UNIX_UID and UNIX_GUID to a value in the range 0-4294967295.
-- Updated Function: Get-JCSystemGroupMember to properly display output when using the 'ByID' paramter set.
+- Updated Function: Get-JCSystemGroupMember to properly display output when using the 'ByID' parameter set.
 
 
 ## 1.2.0
@@ -501,7 +501,7 @@ Updated Function Connect-JCOnline to check for and install module updates and ad
 - New Function: Remove-JCCommand to delete JumpCloud commands
 - New Function: Import-JCCommand to import JumpCloud commands from a URL
 - Updated Function: Get-JCUser to use the same search endpoint as the UI. Get-JCUser can now search via 'username','firstname','lastname', or 'email'. By default Get-JCUser still returns all users.
-- Updated Function: Connect-JCOnline added banner to display current JumpCloud module version information. Added paramter sets for 'Interactive' and 'Force' modes. 'Interactive' displays banner and automatic module update options when new version becomes avaliable. 'Force' can be used in automation scenarios to connect to JumpCloud and set $JCAPIKEY variable.
+- Updated Function: Connect-JCOnline added banner to display current JumpCloud module version information. Added parameter sets for 'Interactive' and 'Force' modes. 'Interactive' displays banner and automatic module update options when new version becomes available. 'Force' can be used in automation scenarios to connect to JumpCloud and set $JCAPIKEY variable.
 
 
 #### IMPROVEMENTS:
