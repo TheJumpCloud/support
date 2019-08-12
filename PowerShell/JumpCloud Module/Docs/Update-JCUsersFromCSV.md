@@ -8,7 +8,7 @@ schema: 2.0.0
 # Update-JCUsersFromCSV
 
 ## SYNOPSIS
-{{ Fill in the Synopsis }}
+Updates a set of JumpCloud users from a CSV file created using the New-JCImportTemplate function.
 
 ## SYNTAX
 

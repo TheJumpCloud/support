@@ -1784,7 +1784,7 @@
     <command:syntax>
       <command:syntaxItem>
         <maml:name>Connect-JCOnline</maml:name>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
           <maml:name>JumpCloudApiKey</maml:name>
           <maml:Description>
             <maml:para>Please enter your JumpCloud API key. This can be found in the JumpCloud admin console within "API Settings" accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console.</maml:para>
@@ -1863,7 +1863,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
         <maml:name>JumpCloudApiKey</maml:name>
         <maml:Description>
           <maml:para>Please enter your JumpCloud API key. This can be found in the JumpCloud admin console within "API Settings" accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console.</maml:para>
@@ -11626,9 +11626,9 @@ SystemID                 CommandID                Status
           <maml:Description>
             <maml:para>The _id of the User which you want to send the email. To find a JumpCloud UserID run the command: PS C:\&gt; Get-JCUser | Select username, _id The UserID will be the 24 character string populated for the _id field.</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Object</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>Object</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -11656,9 +11656,9 @@ SystemID                 CommandID                Status
         <maml:Description>
           <maml:para>The _id of the User which you want to send the email. To find a JumpCloud UserID run the command: PS C:\&gt; Get-JCUser | Select username, _id The UserID will be the 24 character string populated for the _id field.</maml:para>
         </maml:Description>
-        <command:parameterValue required="true" variableLength="false">Object</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
-          <maml:name>Object</maml:name>
+          <maml:name>String</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -15739,7 +15739,7 @@ Enter a value between 1 and 2:</dev:code>
       <command:verb>Update</command:verb>
       <command:noun>JCUsersFromCSV</command:noun>
       <maml:description>
-        <maml:para>{{ Fill in the Synopsis }}</maml:para>
+        <maml:para>Updates a set of JumpCloud users from a CSV file created using the New-JCImportTemplate function.</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
