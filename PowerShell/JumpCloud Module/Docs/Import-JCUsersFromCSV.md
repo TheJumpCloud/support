@@ -55,12 +55,13 @@ Imports the .csv file 'Import10.csv' from the current directory using '. sourcin
 PS C:\> Import-JCUsersFromCSV -CSVFilePath \users\cclemons\JCUserImport_11-16-2017.csv -Force
 ```
 
-Uses the 'Force' paramter to skip the GUI and data validation and imports users from the file '\users\cclemons\JCUserImport_11-16-2017.csv'
+Uses the 'Force' parameter to skip the GUI and data validation and imports users from the file '\users\cclemons\JCUserImport_11-16-2017.csv'
 
 ## PARAMETERS
 
 ### -CSVFilePath
-The full path to the CSV file you wish to import. You can use tab complete to search for .csv files.
+The full path to the CSV file you wish to import.
+You can use tab complete to search for .csv files.
 
 ```yaml
 Type: String

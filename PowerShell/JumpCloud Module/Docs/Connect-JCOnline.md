@@ -41,7 +41,7 @@ Connect-JCOnline lu8792c9d4y2398is1tb6h0b83ebf0e92s97t382
 Connect-JCOnline lu8792c9d4y2398is1tb6h0b83ebf0e92s97t382 -force
 ```
 
-Using the "-Force" paramter the module update check is skipped. The '-Force' parameter should be used when using the JumpCloud module in scripts or other automation environments. 
+Using the "-Force" parameter the module update check is skipped. The '-Force' parameter should be used when using the JumpCloud module in scripts or other automation environments.
 
 ### Example 3
 ```powershell

@@ -68,7 +68,7 @@ Function Get-JCCommandTarget
         $RawResults = @()
         $resultsArrayList = New-Object System.Collections.ArrayList
 
-        Write-Verbose "Paramter set: $($PSCmdlet.ParameterSetName)"
+        Write-Verbose "parameter set: $($PSCmdlet.ParameterSetName)"
 
 
     }

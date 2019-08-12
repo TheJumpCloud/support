@@ -17,7 +17,7 @@ Get-JCBackup [-All] [-Users] [-SystemUsers] [-Systems] [-UserGroups] [-SystemGro
 ```
 
 ## DESCRIPTION
-The Get-JCBackup command saves JumpCloud directory information to CSV files. This command can be used to backup user, system user, system, user group, and system group information to CSV files. Specific items can be selected for CSV backup using the command or the '-All' switch paramter can be specified which will backup all items.
+The Get-JCBackup command saves JumpCloud directory information to CSV files. This command can be used to backup user, system user, system, user group, and system group information to CSV files. Specific items can be selected for CSV backup using the command or the '-All' switch parameter can be specified which will backup all items.
 
 **How JCBackup works**
 JumpCloud user information can be queried using the JumpCloud PowerShell module command [Get-JCUser](https://github.com/TheJumpCloud/support/wiki/Get-JCUser)

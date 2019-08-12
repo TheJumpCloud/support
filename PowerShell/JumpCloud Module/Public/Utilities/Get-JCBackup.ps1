@@ -32,7 +32,7 @@ function Get-JCBackup
 
         if ((-not $All) -and (-not $Users) -and (-not $SystemUsers) -and (-not $Systems -and (-not $UserGroups) -and (-not $SystemGroups)))
         {
-            Write-Error "You must select item(s) to backup to CSV by settting paramter(s). Options include '-Users', '-SystemUsers', '-Systems','-UserGroups', '-SystemGroups', or '-All' to backup all items" -ErrorAction Stop
+            Write-Error "You must select item(s) to backup to CSV by setting parameter(s). Options include '-Users', '-SystemUsers', '-Systems','-UserGroups', '-SystemGroups', or '-All' to backup all items" -ErrorAction Stop
         }
 
 
