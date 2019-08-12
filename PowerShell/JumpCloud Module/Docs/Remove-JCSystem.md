@@ -63,8 +63,6 @@ Get-JCSystem -displayName System101 -returnProperties lastContact | Sort-Object 
 
 Removes all but the last system to contact JumpCloud with the display name 'System101'. This can be used to clean up duplicate systems that may have the same name by replacing 'System101' with the name of the system that contains duplicates.
 
-
-
 ## PARAMETERS
 
 ### -SystemID
