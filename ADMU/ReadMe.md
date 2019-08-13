@@ -134,7 +134,7 @@ If for example the .net4+ version is run on win7 system the user would see the f
 
 Regardless of how you deploy the ADMU the utility will leave the selected domain account that is being migrated **untouched and fully in tact**.
 The ADMU leverages the USMT and the default settings to migrates user data from a domain account to a net new local account.
-[Follow this link to see what get's migrated using the default settings of the USMT.](https://docs.microsoft.com/en-us/windows/deployment/usmt/usmt-what-does-usmt-migrate#bkmk-3)
+[Follow this link to see what gets migrated using the default settings of the USMT.](https://docs.microsoft.com/en-us/windows/deployment/usmt/usmt-what-does-usmt-migrate#bkmk-3)
 
 ## Download Links
 GUI - gui_jcadmu.exe
