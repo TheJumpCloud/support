@@ -17,7 +17,7 @@ Have feedback to share? Email support@jumpcloud.com to connect with a member of 
   - [Protected Content Migration Dialogue Prompt](#protected-content-migration-dialogue-prompt)
   - [Limitations of User Account Conversion](#limitations-of-user-account-conversion)
 - [ADMU Deployment Options](#admu-deployment-options)
-  - [Download Links](#Download-Links)
+  - [Download Links](#download-links)
   - [ADMU GUI](#admu-gui)
     - [Using the ADMU GUI](#using-the-admu-gui)
   - [ADMU Powershell Script](#admu-powershell-script)
@@ -134,12 +134,12 @@ If for example the .net4+ version is run on win7 system the user would see the f
 
 ## Download Links
 GUI - gui_jcadmu.exe
-* [GUI - Windows 7 / .net 3 ](https://github.com/TheJumpCloud/support/tree/master/ADMU/exe/Windows%207/gui_jcadmu.exe) 
-* [GUI - Windows 8.1-10 / .net 4 ](https://github.com/TheJumpCloud/support/tree/master/ADMU/exe/Windows%208-10/gui_jcadmu.exe) 
+* [GUI - Windows 7 / .net 3 ](https://github.com/TheJumpCloud/support/releases/download/ADMU/gui_jcadmu_win7.exe) 
+* [GUI - Windows 8.1-10 / .net 4 ](https://github.com/TheJumpCloud/support/releases/download/ADMU/gui_jcadmu_win10.exe) 
 
 EXE - jcadmu.exe
-* [JCADMU.exe - Windows 7 / .net 3 ](https://github.com/TheJumpCloud/support/tree/master/ADMU/exe/Windows%207/jcadmu.exe)
-* [JCADMU.exe - Windows 8.1-10 / .net 4 ](https://github.com/TheJumpCloud/support/tree/master/ADMU/exe/Windows%208-10/jcadmu.exe)
+* [JCADMU.exe - Windows 7 / .net 3 ](https://github.com/TheJumpCloud/support/releases/download/ADMU/jcadmu_win7.exe)
+* [JCADMU.exe - Windows 8.1-10 / .net 4 ](https://github.com/TheJumpCloud/support/releases/download/ADMU/jcadmu_win10.exe)
 
 Powershell - Migration.ps1 & Functions.ps1
 * [Powershell](https://github.com/TheJumpCloud/support/tree/master/ADMU/powershell)
