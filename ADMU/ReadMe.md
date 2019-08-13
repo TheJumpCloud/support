@@ -56,7 +56,7 @@ Have feedback to share? Email support@jumpcloud.com to connect with a member of 
 
  Currently both the GUI and EXE implementations require a specific .net version to load or run with no user interaction.
 
-To account for this we currently have 2 versions of `jcadmu.exe` & `form_jcadmu.exe`. The Windows 7 folder builds are based on `.net 3.5` and Windows 8-10 on `.net 4`.
+To account for this we currently have 2 versions of `jcadmu.exe` & `gui_jcadmu.exe`. The Windows 7 folder builds are based on `.net 3.5` and Windows 8-10 on `.net 4`.
 
 [ADMU EXE Directory Link](https://github.com/TheJumpCloud/support/tree/master/ADMU/exe)
 
@@ -133,9 +133,9 @@ If for example the .net4+ version is run on win7 system the user would see the f
 # ADMU Deployment Options
 
 ## Download Links
-GUI - form_jcadmu.exe
-* [GUI - Windows 7 / .net 3 ](https://github.com/TheJumpCloud/support/tree/master/ADMU/exe/Windows%207/form_jcadmu.exe) 
-* [GUI - Windows 8.1-10 / .net 4 ](https://github.com/TheJumpCloud/support/tree/master/ADMU/exe/Windows%208-10/form_jcadmu.exe) 
+GUI - gui_jcadmu.exe
+* [GUI - Windows 7 / .net 3 ](https://github.com/TheJumpCloud/support/tree/master/ADMU/exe/Windows%207/gui_jcadmu.exe) 
+* [GUI - Windows 8.1-10 / .net 4 ](https://github.com/TheJumpCloud/support/tree/master/ADMU/exe/Windows%208-10/gui_jcadmu.exe) 
 
 EXE - jcadmu.exe
 * [JCADMU.exe - Windows 7 / .net 3 ](https://github.com/TheJumpCloud/support/tree/master/ADMU/exe/Windows%207/jcadmu.exe)
@@ -153,7 +153,9 @@ Powershell - Migration.ps1 & Functions.ps1
 
 ### Using the ADMU GUI
 
-To use the GUI {{Insert steps (what to download and how to run)}}
+To use the GUI run the relevant .exe file for your system as administrator from the Download Links above. It may also be required to unblock the Security setting stating `This file came from another computer and might be blocked to help protect this computer`. This will be addressed by code signing in a future release and not be required.
+
+![image47](https://github.com/TheJumpCloud/support/blob/master/ADMU/images/img_47.png)
 
 ## ADMU Powershell Script
 
