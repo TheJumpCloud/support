@@ -111,6 +111,9 @@ If for example the .net4+ version is run on win7 system the user would see the f
 ## Limitations of User Account Conversion
 
  There are limitations to consider when using the USMT utility for user account conversion. Because of this it is recommended to follow a one, some, many approach for migration to understand what and how the tool can and can not do in your environment. This is where further investigation needs to be done on streamlining and improving/documenting common scenarios and workarounds.
+ 
+ [Follow this link to see what gets migrated using the default settings of the USMT.](https://docs.microsoft.com/en-us/windows/deployment/usmt/usmt-what-does-usmt-migrate#bkmk-3)
+
 
  It would be possible to utilize the tool on a testing machine, convert a local account, keep the system bound to the domain and run both accounts in parallel. Investigate and be sure the newly converted ‘local account’ runs all applications and has all files as expected. Then switch over to that account and unbind from the domain. Providing this phased approach could help reduce friction and uncertainty in the process.
 
