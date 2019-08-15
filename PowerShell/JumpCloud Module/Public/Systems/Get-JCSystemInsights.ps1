@@ -12,9 +12,7 @@ Function Get-JCSystemInsights
     }
     Begin
     {
-        Write-Verbose 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) { Connect-JCOnline }
-
+        Connect-JCOnline | Out-Null
         # Debug message for parameter call
         Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDebugMessageBegin) -ArgumentList:($MyInvocation, $PsBoundParameters, $PSCmdlet) -NoNewScope
         $Results = @()
