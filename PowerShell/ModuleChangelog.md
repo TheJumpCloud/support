@@ -1,3 +1,26 @@
+## 1.13.2
+
+Release Date: August 19, 2019
+
+#### RELEASE NOTES
+
+```
+Bug fixes for connecting to a JumpCloud organization with no name specified.
+Bug fix for calling associations function prior to calling Connect-JCOnline.
+Formatting update for Connect-JCOnline output.
+```
+
+#### FEATURES
+
+#### IMPROVEMENTS
+
+- Updated Function: Connect-JCOnline with output information formatting updates.
+
+#### BUG FIXES
+
+- Updated Function: Connect-JCOnline to return function output if called within the begin block of a function.
+- Updated Associations functions to call Connect-JCOnline to set API key if key is not set.
+
 ## 1.13.1
 
 Release Date: August 8, 2019
