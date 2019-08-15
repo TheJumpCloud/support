@@ -76,123 +76,123 @@ Function Connect-JCOnline ()
             Write-Error -Message:('Unable to create dynamic parameter:"' + $VarName.Replace($ParamVarPrefix, '') + '"; Error:' + $Error)
         }
     }
-    Return $RuntimeParameterDictionary
-    }
-    Begin
+Return $RuntimeParameterDictionary
+}
+Begin
+{
+    # Debug message for parameter call
+    Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDebugMessageBegin) -ArgumentList:($MyInvocation, $PsBoundParameters, $PSCmdlet) -NoNewScope
+    Switch ($JCEnvironment)
     {
-        # Debug message for parameter call
-        Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDebugMessageBegin) -ArgumentList:($MyInvocation, $PsBoundParameters, $PSCmdlet) -NoNewScope
-        Switch ($JCEnvironment)
+        'production'
         {
-            'production'
-            {
-                $global:JCUrlBasePath = "https://console.jumpcloud.com"
-            }
-            'staging'
-            {
-                $global:JCUrlBasePath = "https://console.awsstg.jumpcloud.com"
-            }
-            'local'
-            {
-                If ($PSBoundParameters['ip'])
-                {
-                    $global:JCUrlBasePath = $PSBoundParameters['ip']
-                }
-                Else
-                {
-                    $global:JCUrlBasePath = "http://localhost"
-                }
-            }
+            $global:JCUrlBasePath = "https://console.jumpcloud.com"
         }
-    }
-    Process
-    {
-        # Load color scheme
-        $JCColorConfig = Get-JCColorConfig
-        # For DynamicParam with a default value set that value and then convert the DynamicParam inputs into new variables for the script to use
-        Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDynamicParamProcess) -ArgumentList:($PsBoundParameters, $PSCmdlet, $RuntimeParameterDictionary) -NoNewScope
-        Try
+        'staging'
         {
-            # Update security protocol
-            [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls, [System.Net.SecurityProtocolType]::Tls12
-            #Region Set environment variables that can be used by other scripts
-            # If "$JumpCloudApiKey" is populated or if "$env:JCApiKey" is not set
-            If (-not ([System.String]::IsNullOrEmpty($JumpCloudApiKey)))
+            $global:JCUrlBasePath = "https://console.awsstg.jumpcloud.com"
+        }
+        'local'
+        {
+            If ($PSBoundParameters['ip'])
             {
-                # Set $env:JCApiKey
-                $env:JCApiKey = $JumpCloudApiKey
-                $global:JCAPIKEY = $env:JCApiKey
-            }
-            # Set $env:JCOrgId in Set-JCOrganization
-            $Auth = If ([System.String]::IsNullOrEmpty($JumpCloudOrgId) -and [System.String]::IsNullOrEmpty($env:JCOrgId))
-            {
-                Set-JCOrganization -JumpCloudApiKey:($env:JCApiKey)
-            }
-            ElseIf (-not [System.String]::IsNullOrEmpty($JumpCloudOrgId) -and [System.String]::IsNullOrEmpty($env:JCOrgId))
-            {
-                Set-JCOrganization -JumpCloudApiKey:($env:JCApiKey) -JumpCloudOrgId:($JumpCloudOrgId)
-            }
-            ElseIf ([System.String]::IsNullOrEmpty($JumpCloudOrgId) -and -not [System.String]::IsNullOrEmpty($env:JCOrgId))
-            {
-                Set-JCOrganization -JumpCloudApiKey:($env:JCApiKey) -JumpCloudOrgId:($env:JCOrgId)
-            }
-            ElseIf (-not [System.String]::IsNullOrEmpty($JumpCloudOrgId) -and -not [System.String]::IsNullOrEmpty($env:JCOrgId) -and $JumpCloudOrgId -ne $env:JCOrgId)
-            {
-                Set-JCOrganization -JumpCloudApiKey:($env:JCApiKey) -JumpCloudOrgId:($JumpCloudOrgId)
+                $global:JCUrlBasePath = $PSBoundParameters['ip']
             }
             Else
             {
-                Write-Debug ('The $JumpCloudOrgId supplied matches existing $env:JCOrgId.')
-                Set-JCOrganization -JumpCloudApiKey:($env:JCApiKey) -JumpCloudOrgId:($env:JCOrgId)
+                $global:JCUrlBasePath = "http://localhost"
             }
-            If (-not [System.String]::IsNullOrEmpty($Auth))
+        }
+    }
+}
+Process
+{
+    # Load color scheme
+    $JCColorConfig = Get-JCColorConfig
+    # For DynamicParam with a default value set that value and then convert the DynamicParam inputs into new variables for the script to use
+    Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDynamicParamProcess) -ArgumentList:($PsBoundParameters, $PSCmdlet, $RuntimeParameterDictionary) -NoNewScope
+    Try
+    {
+        # Update security protocol
+        [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls, [System.Net.SecurityProtocolType]::Tls12
+        #Region Set environment variables that can be used by other scripts
+        # If "$JumpCloudApiKey" is populated or if "$env:JCApiKey" is not set
+        If (-not ([System.String]::IsNullOrEmpty($JumpCloudApiKey)))
+        {
+            # Set $env:JCApiKey
+            $env:JCApiKey = $JumpCloudApiKey
+            $global:JCAPIKEY = $env:JCApiKey
+        }
+        # Set $env:JCOrgId in Set-JCOrganization
+        $Auth = If ([System.String]::IsNullOrEmpty($JumpCloudOrgId) -and [System.String]::IsNullOrEmpty($env:JCOrgId))
+        {
+            Set-JCOrganization -JumpCloudApiKey:($env:JCApiKey)
+        }
+        ElseIf (-not [System.String]::IsNullOrEmpty($JumpCloudOrgId) -and [System.String]::IsNullOrEmpty($env:JCOrgId))
+        {
+            Set-JCOrganization -JumpCloudApiKey:($env:JCApiKey) -JumpCloudOrgId:($JumpCloudOrgId)
+        }
+        ElseIf ([System.String]::IsNullOrEmpty($JumpCloudOrgId) -and -not [System.String]::IsNullOrEmpty($env:JCOrgId))
+        {
+            Set-JCOrganization -JumpCloudApiKey:($env:JCApiKey) -JumpCloudOrgId:($env:JCOrgId)
+        }
+        ElseIf (-not [System.String]::IsNullOrEmpty($JumpCloudOrgId) -and -not [System.String]::IsNullOrEmpty($env:JCOrgId) -and $JumpCloudOrgId -ne $env:JCOrgId)
+        {
+            Set-JCOrganization -JumpCloudApiKey:($env:JCApiKey) -JumpCloudOrgId:($JumpCloudOrgId)
+        }
+        Else
+        {
+            Write-Debug ('The $JumpCloudOrgId supplied matches existing $env:JCOrgId.')
+            Set-JCOrganization -JumpCloudApiKey:($env:JCApiKey) -JumpCloudOrgId:($env:JCOrgId)
+        }
+        If (-not [System.String]::IsNullOrEmpty($Auth))
+        {
+            # Each time a new org is selected get settings info
+            $global:JCSettingsUrl = $JCUrlBasePath + '/api/settings'
+            $global:JCSettings = Invoke-JCApi -Method:('GET') -Url:($JCSettingsUrl)
+            #EndRegion Set environment variables that can be used by other scripts
+            If (([System.String]::IsNullOrEmpty($JCOrgId)) -or ([System.String]::IsNullOrEmpty($env:JCOrgId)))
             {
-                # Each time a new org is selected get settings info
-                $global:JCSettingsUrl = $JCUrlBasePath + '/api/settings'
-                $global:JCSettings = Invoke-JCApi -Method:('GET') -Url:($JCSettingsUrl)
-                #EndRegion Set environment variables that can be used by other scripts
-                If (([System.String]::IsNullOrEmpty($JCOrgId)) -or ([System.String]::IsNullOrEmpty($env:JCOrgId)))
+                Write-Error ('Incorrect OrgId OR no network connectivity. You can obtain your Organization Id below your Organization''s Contact Information on the Settings page.')
+                Break
+            }
+            If (([System.String]::IsNullOrEmpty($JCAPIKEY)) -or ([System.String]::IsNullOrEmpty($env:JCApiKey)))
+            {
+                Write-Error ('Incorrect API key OR no network connectivity. To locate your JumpCloud API key log into the JumpCloud admin portal. The API key is located with "API Settings" accessible from the drop down in the top right hand corner of the screen')
+                Break
+            }
+            # Check for updates to the module and only prompt if user has not been prompted during the session already
+            If ($JCEnvironment -ne 'local')
+            {
+                If (!($force))
                 {
-                    Write-Error ('Incorrect OrgId OR no network connectivity. You can obtain your Organization Id below your Organization''s Contact Information on the Settings page.')
-                    Break
-                }
-                If (([System.String]::IsNullOrEmpty($JCAPIKEY)) -or ([System.String]::IsNullOrEmpty($env:JCApiKey)))
-                {
-                    Write-Error ('Incorrect API key OR no network connectivity. To locate your JumpCloud API key log into the JumpCloud admin portal. The API key is located with "API Settings" accessible from the drop down in the top right hand corner of the screen')
-                    Break
-                }
-                # Check for updates to the module and only prompt if user has not been prompted during the session already
-                If ($JCEnvironment -ne 'local')
-                {
-                    If (!($force))
+                    If ([System.String]::IsNullOrEmpty($env:JcUpdateModule) -or $env:JcUpdateModule -eq 'True')
                     {
-                        If ([System.String]::IsNullOrEmpty($env:JcUpdateModule) -or $env:JcUpdateModule -eq 'True')
-                        {
-                            $env:JcUpdateModule = $false
-                            Update-JCModule | Out-Null
-                    }
-                    Write-Host ('Connection Status:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
-                    Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
-                    Write-Host ('Successfully connected to JumpCloud!') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
-                    }
+                        $env:JcUpdateModule = $false
+                        Update-JCModule | Out-Null
                 }
-                Return [PSCustomObject]@{
-                    # 'JCApiKey'  = $env:JCApiKey;
-                    'JCOrgId'   = $Auth.JCOrgId;
-                    'JCOrgName' = $Auth.JCOrgName;
-                }
-            }
-            Else
-            {
-                Write-Error ('Unable to set module authentication')
+                Write-Host ('Connection Status:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
+                Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
+                Write-Host ('Successfully connected to JumpCloud! OrgId:"' + $Auth.JCOrgId + '"; OrgName:"' + $Auth.JCOrgName + '";') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
             }
         }
-        Catch
-        {
-            Write-Error $_
-        }
+        # Return [PSCustomObject]@{
+            # 'JCApiKey'  = $env:JCApiKey;
+            # 'JCOrgId'   = $Auth.JCOrgId;
+            # 'JCOrgName' = $Auth.JCOrgName;
+        # }
     }
-    End
+    Else
     {
+        Write-Error ('Unable to set module authentication')
     }
+}
+Catch
+{
+    Write-Error $_
+}
+}
+End
+{
+}
 }
