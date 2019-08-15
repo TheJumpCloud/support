@@ -6,7 +6,7 @@ Release Date: August 19, 2019
 
 ```
 Bug fixes for connecting to a JumpCloud organization with no name specified.
-Bug fix for calling associations function prior to calling Connect-JCOnline.
+Bug fix for functions to call Connect-JCOnline to set API key if key is not set.
 Formatting update for Connect-JCOnline output.
 ```
 
@@ -15,11 +15,12 @@ Formatting update for Connect-JCOnline output.
 #### IMPROVEMENTS
 
 - Updated Function: Connect-JCOnline with output information formatting updates.
+- Moved parameter help messages from help files to functions to assist with dynamic building of documentation.
 
 #### BUG FIXES
 
 - Updated Function: Connect-JCOnline to return function output if called within the begin block of a function.
-- Updated Associations functions to call Connect-JCOnline to set API key if key is not set.
+- Updated functions to call Connect-JCOnline to set API key if key is not set.
 
 ## 1.13.1
 
