@@ -61,7 +61,7 @@ Function Connect-JCOnline ()
         # Build parameter array
         $RuntimeParameterDictionary = New-Object -TypeName System.Management.Automation.RuntimeDefinedParameterDictionary
         $ParamVarPrefix = 'Param_'
-        Get-Variable -Scope:('Local') | Where-Object {$_.Name -like '*' + $ParamVarPrefix + '*'} | ForEach-Object {
+        Get-Variable -Scope:('Local') | Where-Object { $_.Name -like '*' + $ParamVarPrefix + '*' } | ForEach-Object {
             # Add RuntimeDictionary to each parameter
             $_.Value.Add('RuntimeParameterDictionary', $RuntimeParameterDictionary)
             # Creating each parameter
@@ -70,20 +70,18 @@ Function Connect-JCOnline ()
             Try
             {
                 New-DynamicParameter @VarValue | Out-Null
-            }
-            Catch
-            {
-                Write-Error -Message:('Unable to create dynamic parameter:"' + $VarName.Replace($ParamVarPrefix, '') + '"; Error:' + $Error)
-            }
         }
-        Return $RuntimeParameterDictionary
+        Catch
+        {
+            Write-Error -Message:('Unable to create dynamic parameter:"' + $VarName.Replace($ParamVarPrefix, '') + '"; Error:' + $Error)
+        }
+    }
+    Return $RuntimeParameterDictionary
     }
     Begin
     {
         # Debug message for parameter call
         Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDebugMessageBegin) -ArgumentList:($MyInvocation, $PsBoundParameters, $PSCmdlet) -NoNewScope
-        # Load color scheme
-        $JCColorConfig = Get-JCColorConfig
         Switch ($JCEnvironment)
         {
             'production'
@@ -109,7 +107,8 @@ Function Connect-JCOnline ()
     }
     Process
     {
-
+        # Load color scheme
+        $JCColorConfig = Get-JCColorConfig
         # For DynamicParam with a default value set that value and then convert the DynamicParam inputs into new variables for the script to use
         Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDynamicParamProcess) -ArgumentList:($PsBoundParameters, $PSCmdlet, $RuntimeParameterDictionary) -NoNewScope
         Try
@@ -171,10 +170,10 @@ Function Connect-JCOnline ()
                         {
                             $env:JcUpdateModule = $false
                             Update-JCModule | Out-Null
-                        }
-                        Write-Host ('Connection Status:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
-                        Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
-                        Write-Host ('Successfully connected to JumpCloud!') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
+                    }
+                    Write-Host ('Connection Status:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
+                    Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
+                    Write-Host ('Successfully connected to JumpCloud!') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
                     }
                 }
                 Return [PSCustomObject]@{

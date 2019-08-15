@@ -9,11 +9,11 @@ Function Set-JCOrganization
     {
         # Debug message for parameter call
         Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDebugMessageBegin) -ArgumentList:($MyInvocation, $PsBoundParameters, $PSCmdlet) -NoNewScope
-        # Load color scheme
-        $JCColorConfig = Get-JCColorConfig
     }
     Process
     {
+        # Load color scheme
+        $JCColorConfig = Get-JCColorConfig
         If ([System.String]::IsNullOrEmpty($JumpCloudApiKey) -and [System.String]::IsNullOrEmpty($env:JCApiKey))
         {
             Connect-JCOnline
@@ -41,70 +41,70 @@ Function Set-JCOrganization
                 If ([System.String]::IsNullOrEmpty($JumpCloudOrgId) -or $JumpCloudOrgId -notin $Organizations._id)
                 {
 
-                    $OrgIdHash = [ordered]@{}
-                    $OrgNameHash = [ordered]@{}
+                    $OrgIdHash = [ordered]@{ }
+                    $OrgNameHash = [ordered]@{ }
                     # Build user menu
                     $LengthDisplayName = ($Organizations.displayName | Measure-Object -Maximum -Property Length).Maximum
-                    $LengthOrgId = ($Organizations._id | Measure-Object -Maximum -Property Length).Maximum
-                    $MenuItemTemplate = "{0} {1,-$LengthDisplayName} | {2,-$LengthOrgId}"
-                    [Int32]$menuNumber = 1
-                    Write-Host ('======= JumpCloud Multi Tenant Selector =======') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
-                    Write-Host ($MenuItemTemplate -f '   ', 'JCOrgName', 'JCOrgId') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action)
-                    ForEach ($Org In $Organizations)
-                    {
-                        $FormattedMenuNumber = If (([System.String]$menuNumber).Length -eq 1)
-                        {
-                            ' ' + [System.String]$menuNumber
-                        }
-                        Else
-                        {
-                            [System.String]$menuNumber
-                        }
-                        Write-Host ($MenuItemTemplate -f ($FormattedMenuNumber + '.' ), $Org.displayName, $Org._id) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
-                        $OrgIdHash.add($menuNumber, $Org._id)
-                        $OrgNameHash.add($menuNumber, $Org.displayName)
-                        $menuNumber++
-                    }
-                    # Prompt user for org selection
-                    Do
-                    {
-                        Write-Host ('Select JumpCloud tenant you wish to connect to. Enter a value between 1 and ' + [System.String]$OrgIdHash.Count + ':') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_UserPrompt) -NoNewline
-                        Write-Host (' ') -NoNewLine
-                        [Int32]$UserSelection = Read-Host
-                    }
-                    Until ($UserSelection -le $OrgIdHash.Count)
-                    $OrgId = $($OrgIdHash.$UserSelection)
-                    $OrgName = $($OrgNameHash.$UserSelection)
+                $LengthOrgId = ($Organizations._id | Measure-Object -Maximum -Property Length).Maximum
+            $MenuItemTemplate = "{0} {1,-$LengthDisplayName} | {2,-$LengthOrgId}"
+            [Int32]$menuNumber = 1
+            Write-Host ('======= JumpCloud Multi Tenant Selector =======') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
+            Write-Host ($MenuItemTemplate -f '   ', 'JCOrgName', 'JCOrgId') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action)
+            ForEach ($Org In $Organizations)
+            {
+                $FormattedMenuNumber = If (([System.String]$menuNumber).Length -eq 1)
+                {
+                    ' ' + [System.String]$menuNumber
                 }
                 Else
                 {
-                    $OrgId = ($Organizations | Where-Object {$_._id -eq $JumpCloudOrgId})._id
-                    $OrgName = ($Organizations | Where-Object {$_._id -eq $JumpCloudOrgId}).displayName
+                    [System.String]$menuNumber
                 }
+                Write-Host ($MenuItemTemplate -f ($FormattedMenuNumber + '.' ), $Org.displayName, $Org._id) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
+                $OrgIdHash.add($menuNumber, $Org._id)
+                $OrgNameHash.add($menuNumber, $Org.displayName)
+                $menuNumber++
             }
-            Else
+            # Prompt user for org selection
+            Do
             {
-                $OrgId = $($Organizations._id)
-                $OrgName = $($Organizations.displayName)
+                Write-Host ('Select JumpCloud tenant you wish to connect to. Enter a value between 1 and ' + [System.String]$OrgIdHash.Count + ':') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_UserPrompt) -NoNewline
+                Write-Host (' ') -NoNewLine
+                [Int32]$UserSelection = Read-Host
             }
-            If (-not ([System.String]::IsNullOrEmpty($OrgId)))
-            {
-                $env:JCOrgId = $OrgId
-                $global:JCOrgId = $env:JCOrgId
-                $env:JCOrgName = $OrgName
-                Return [PSCustomObject]@{
-                    # 'JCApiKey'  = $env:JCApiKey;
-                    'JCOrgId'   = $env:JCOrgId;
-                    'JCOrgName' = $env:JCOrgName;
-                }
-            }
-            Else
-            {
-                Write-Error ('OrgId has not been set.')
-            }
+            Until ($UserSelection -le $OrgIdHash.Count)
+            $OrgId = $($OrgIdHash.$UserSelection)
+            $OrgName = $($OrgNameHash.$UserSelection)
         }
+        Else
+        {
+            $OrgId = ($Organizations | Where-Object { $_._id -eq $JumpCloudOrgId })._id
+        $OrgName = ($Organizations | Where-Object { $_._id -eq $JumpCloudOrgId }).displayName
+}
+}
+Else
+{
+    $OrgId = $($Organizations._id)
+    $OrgName = $($Organizations.displayName)
+}
+If (-not ([System.String]::IsNullOrEmpty($OrgId)))
+{
+    $env:JCOrgId = $OrgId
+    $global:JCOrgId = $env:JCOrgId
+    $env:JCOrgName = $OrgName
+    Return [PSCustomObject]@{
+        # 'JCApiKey'  = $env:JCApiKey;
+        'JCOrgId'   = $env:JCOrgId;
+        'JCOrgName' = $env:JCOrgName;
     }
-    End
-    {
-    }
+}
+Else
+{
+    Write-Error ('OrgId has not been set.')
+}
+}
+}
+End
+{
+}
 }
