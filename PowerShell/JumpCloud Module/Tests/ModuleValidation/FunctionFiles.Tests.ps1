@@ -21,6 +21,14 @@ Describe -Tag:('ModuleValidation') 'Function Format Tests' {
                 ($_.MatchValue | Measure-Object).Count | Should -BeExactly 1
             }
         }
+        If ($_.FolderLocation -eq 'Public' -and $_.FileName -ne 'New-JCDeploymentTemplate.ps1')
+        {
+            Context ('Test that Connect-JCOnline exists in each Public function') {
+                It ('When FileName "' + $_.FileName + '" does not contain "Connect-JCOnline"') {
+                    $_ | Where-Object {!( $_.Content | Select-String -Pattern:('(?i)(Connect-JCOnline)')) } | Should -BeNullOrEmpty
+                }
+            }
+        }
     }
     Context ('Test for duplicate functions') {
         ($FunctionList.FileBaseName | Group-Object) | ForEach-Object {
