@@ -139,9 +139,10 @@ Function Update-JCModule
                         Write-Host ($PowerShellGalleryModule.Version) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
                         $InstalledModulePreUpdate | Update-Module -Force -Scope:('CurrentUser')
                         # Remove existing module from the session
-                        Get-Module -Name:($PowerShellGalleryModule.Name) -All | Remove-Module -Force
-                        Write-Host ('Removing from session old ' + $PowerShellGalleryModule.Name + ' module version:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewline
-                        Write-Host ($PowerShellGalleryModule.Version) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
+                        $LocalModule = Get-Module -Name:($PowerShellGalleryModule.Name) -All
+                        $LocalModule | Remove-Module -Force
+                        Write-Host ('Removing from session old ' + $LocalModule.Name + ' module version:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewline
+                        Write-Host ($LocalModule.Version) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
                         # Uninstall previous versions
                         If (!($SkipUninstallOld))
                         {
