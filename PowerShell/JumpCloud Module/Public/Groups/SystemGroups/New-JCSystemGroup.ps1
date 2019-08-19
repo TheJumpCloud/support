@@ -3,15 +3,10 @@ Function New-JCSystemGroup ()
     [CmdletBinding()]
     param
     (
-
-        [Parameter(Mandatory,
-            ValueFromPipelineByPropertyName = $True)]
-        [string]
-        $GroupName
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName = $True, HelpMessage = 'The name of the new JumpCloud System Group.')]
+        [string]$GroupName
     )
-
     begin
-
     {
         Write-Debug 'Verifying JCAPI Key'
         if ($JCAPIKEY.length -ne 40) {Connect-JConline}
@@ -24,17 +19,13 @@ Function New-JCSystemGroup ()
             'X-API-KEY'    = $JCAPIKEY
 
         }
-
         if ($JCOrgID)
         {
             $hdrs.Add('x-org-id', "$($JCOrgID)")
         }
-
         $URI = "$JCUrlBasePath/api/v2/systemgroups"
         $NewGroupsArrary = @()
-
     }
-
     process
     {
 
@@ -65,7 +56,6 @@ Function New-JCSystemGroup ()
             $NewGroupsArrary += $FormattedResults
         }
     }
-
     end
     {
         return $NewGroupsArrary

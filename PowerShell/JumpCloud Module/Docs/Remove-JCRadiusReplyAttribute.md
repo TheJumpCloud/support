@@ -56,7 +56,8 @@ Accept wildcard characters: False
 ```
 
 ### -AttributeName
-Attributes to remove from a target user group. To remove multiple attributes at one time separate the attribute names with commas.
+Attributes to remove from a target user group.
+To remove multiple attributes at one time separate the attribute names with commas.
 
 ```yaml
 Type: String[]

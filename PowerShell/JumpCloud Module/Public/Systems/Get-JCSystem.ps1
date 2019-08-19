@@ -8,7 +8,8 @@ Function Get-JCSystem ()
 
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'ByID')]
+            ParameterSetName = 'ByID',
+            HelpMessage = 'The _id or id of the System which you want to query.')]
         [Alias('_id', 'id')]
         [String]$SystemID,
 
@@ -21,60 +22,69 @@ Function Get-JCSystem ()
         [Parameter(
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'SearchFilter',
-            Position = 0)]
+            Position = 0,
+            HelpMessage = 'A search filter to search systems by the hostname.')]
         [String]$hostname,
 
         [Parameter(
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'SearchFilter'
+            ParameterSetName = 'SearchFilter',
+            HelpMessage = 'A search filter to search systems by the displayName.'
         )]
         [String]$displayName,
 
         [Parameter(
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'SearchFilter'
+            ParameterSetName = 'SearchFilter',
+            HelpMessage = 'A search filter to search systems by the version.'
         )]
         [String]$version,
 
         [Parameter(
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'SearchFilter'
+            ParameterSetName = 'SearchFilter',
+            HelpMessage = 'A search filter to search systems by the templateName.'
         )]
         [String]$templateName,
 
         [Parameter(
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'SearchFilter'
+            ParameterSetName = 'SearchFilter',
+            HelpMessage = 'A search filter to search systems by the OS.'
         )]
         [String]$os,
 
         [Parameter(
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'SearchFilter'
+            ParameterSetName = 'SearchFilter',
+            HelpMessage = 'A search filter to search systems by the remoteIP.'
         )]
         [String]$remoteIP,
 
         [Parameter(
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'SearchFilter'
+            ParameterSetName = 'SearchFilter',
+            HelpMessage = 'A search filter to search systems by the serialNumber.'
         )]
         [String]$serialNumber,
 
         [Parameter(
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'SearchFilter'
+            ParameterSetName = 'SearchFilter',
+            HelpMessage = 'A search filter to search systems by the processor arch.'
         )]
         [String]$arch,
 
         [Parameter(
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'SearchFilter'
-        )]
+            ParameterSetName = 'SearchFilter',
+            HelpMessage = 'A search filter to search systems by the agentVersion.')]
         [String]$agentVersion,
 
         [Parameter(
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'SearchFilter'
+            ParameterSetName = 'SearchFilter',
+            HelpMessage = 'A search filter to search systems by the serialNumber. This field DOES NOT take wildcard input.'
         )]
         [String]$systemTimezone,
 
@@ -82,50 +92,54 @@ Function Get-JCSystem ()
 
         [Parameter(
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'SearchFilter'
-        )]
+            ParameterSetName = 'SearchFilter',
+            HelpMessage = 'Filter for systems that are online or offline.')]
         [bool]$active,
 
         [Parameter(
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'SearchFilter'
-        )]
+            ParameterSetName = 'SearchFilter',
+            HelpMessage = 'A search filter to show systems that are enabled ($true) or disabled ($true) for allowMultiFactorAuthentication')]
         [bool]$allowMultiFactorAuthentication,
 
         [Parameter(
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'SearchFilter'
-        )]
+            ParameterSetName = 'SearchFilter',
+            HelpMessage = 'A search filter to show systems that are enabled ($true) or disabled ($true) for allowMultiFactorAuthentication')]
         [bool]$allowPublicKeyAuthentication,
 
         [Parameter(
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'SearchFilter'
-        )]
+            ParameterSetName = 'SearchFilter',
+            HelpMessage = 'A search filter to show systems that are enabled ($true) or disabled ($true) for allowMultiFactorAuthentication')]
         [bool]$allowSshPasswordAuthentication,
 
         [Parameter(
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'SearchFilter'
+            ParameterSetName = 'SearchFilter',
+            HelpMessage = 'A search filter to show systems that are enabled ($true) or disabled ($true) for allowMultiFactorAuthentication'
         )]
         [bool]$allowSshRootLogin,
 
         [Parameter(
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'SearchFilter'
+            ParameterSetName = 'SearchFilter',
+            HelpMessage = 'A search filter to show systems that are enabled ($true) or disabled ($true) for modifySSHDConfig'
         )]
         [bool]$modifySSHDConfig,
 
 
         [Parameter(
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'SearchFilter')]
+            ParameterSetName = 'SearchFilter',
+            HelpMessage = 'A parameter that can filter on the property ''created''. This parameter if used creates two more dynamic parameters ''dateFilter'' and ''date''. See EXAMPLE 5 above for full syntax.')]
         [ValidateSet('created')]
         [String]$filterDateProperty,
 
         [Parameter(
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'SearchFilter')]
+            ParameterSetName = 'SearchFilter',
+            HelpMessage = 'Allows you to return select properties on JumpCloud system objects. Specifying what properties are returned can drastically increase the speed of the API call with a large data set. Valid properties that can be returned are: ''created'', ''active'', ''agentVersion'', ''allowMultiFactorAuthentication'', ''allowPublicKeyAuthentication'', ''allowSshPasswordAuthentication'', ''allowSshRootLogin'', ''arch'', ''created'', ''displayName'', ''hostname'', ''lastContact'', ''modifySSHDConfig'', ''organization'', ''os'', ''remoteIP'', ''serialNumber'', ''sshdParams'', ''systemTimezone'', ''templateName'', ''version''')]
         [ValidateSet('created', 'active', 'agentVersion', 'allowMultiFactorAuthentication', 'allowPublicKeyAuthentication', 'allowSshPasswordAuthentication', 'allowSshRootLogin', 'arch', 'created', 'displayName', 'hostname', 'lastContact', 'modifySSHDConfig', 'organization', 'os', 'remoteIP', 'serialNumber', 'sshdParams', 'systemTimezone', 'templateName', 'version', 'fde', 'systemInsights')]
         [String[]]$returnProperties
 
@@ -151,6 +165,7 @@ Function Get-JCSystem ()
             # Create and set the parameters' attributes
             $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
             $ParameterAttribute.Mandatory = $true
+            $ParameterAttribute.HelpMessage = 'Condition to filter date on.'
             # Generate and set the ValidateSet
             $arrSet = @("before", "after")
             $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($arrSet)
@@ -170,6 +185,7 @@ Function Get-JCSystem ()
             # Create and set the parameters' attributes
             $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
             $ParameterAttribute.Mandatory = $true
+            $ParameterAttribute.HelpMessage = 'Date to filter on.'
             # Add the attributes to the attributes collection
             $AttributeCollection.Add($ParameterAttribute)
             # Create and return the dynamic parameter
@@ -361,7 +377,7 @@ Function Get-JCSystem ()
             ByID
             {
 
-    
+
                 if ($SystemFDEKey)
                 {
 

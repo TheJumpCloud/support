@@ -76,6 +76,21 @@ Returns all JumpCloud systems and the properties remoteIP and active. The defaul
 
 ## PARAMETERS
 
+### -SystemFDEKey
+A switch parameter to reveal the SystemFDEKey
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: ByID
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
 ### -SystemID
 The _id or id of the System which you want to query.
 
@@ -243,7 +258,9 @@ Accept wildcard characters: False
 ```
 
 ### -filterDateProperty
-A paramter that can filter on the property 'created'. This parameter if used creates two more dynamic parameters 'dateFilter' and 'date'. See EXAMPLE 5 above for full syntax.
+A parameter that can filter on the property 'created'.
+This parameter if used creates two more dynamic parameters 'dateFilter' and 'date'.
+See EXAMPLE 5 above for full syntax.
 
 ```yaml
 Type: String
@@ -319,13 +336,15 @@ Accept wildcard characters: False
 ```
 
 ### -returnProperties
-Allows you to return select properties on JumpCloud system objects. Specifying what properties are returned can drastically increase the speed of the API call with a large data set. Valid properties that can be returned are: 'created', 'active', 'agentVersion', 'allowMultiFactorAuthentication', 'allowPublicKeyAuthentication', 'allowSshPasswordAuthentication', 'allowSshRootLogin', 'arch', 'created', 'displayName', 'hostname', 'lastContact', 'modifySSHDConfig', 'organization', 'os', 'remoteIP', 'serialNumber', 'sshdParams', 'systemTimezone', 'templateName', 'version'
+Allows you to return select properties on JumpCloud system objects.
+Specifying what properties are returned can drastically increase the speed of the API call with a large data set.
+Valid properties that can be returned are: 'created', 'active', 'agentVersion', 'allowMultiFactorAuthentication', 'allowPublicKeyAuthentication', 'allowSshPasswordAuthentication', 'allowSshRootLogin', 'arch', 'created', 'displayName', 'hostname', 'lastContact', 'modifySSHDConfig', 'organization', 'os', 'remoteIP', 'serialNumber', 'sshdParams', 'systemTimezone', 'templateName', 'version'
 
 ```yaml
 Type: String[]
 Parameter Sets: SearchFilter
 Aliases:
-Accepted values: created, active, agentVersion, allowMultiFactorAuthentication, allowPublicKeyAuthentication, allowSshPasswordAuthentication, allowSshRootLogin, arch, created, displayName, hostname, lastContact, modifySSHDConfig, organization, os, remoteIP, serialNumber, sshdParams, systemTimezone, templateName, version
+Accepted values: created, active, agentVersion, allowMultiFactorAuthentication, allowPublicKeyAuthentication, allowSshPasswordAuthentication, allowSshRootLogin, arch, created, displayName, hostname, lastContact, modifySSHDConfig, organization, os, remoteIP, serialNumber, sshdParams, systemTimezone, templateName, version, fde, systemInsights
 
 Required: False
 Position: Named
@@ -350,7 +369,8 @@ Accept wildcard characters: False
 ```
 
 ### -systemTimezone
-A search filter to search systems by the serialNumber. This field DOES NOT take wildcard input.
+A search filter to search systems by the serialNumber.
+This field DOES NOT take wildcard input.
 
 ```yaml
 Type: String
@@ -394,27 +414,13 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
-### -SystemFDEKey
-A switch parameter to reveal the SystemFDEKey
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: ByID
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
 ### System.String
+### System.Management.Automation.SwitchParameter
 ### System.Boolean
 ### System.String[]
 ## OUTPUTS

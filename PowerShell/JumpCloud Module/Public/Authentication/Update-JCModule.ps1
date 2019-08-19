@@ -6,25 +6,6 @@ Function Update-JCModule
     )
     Begin
     {
-        # Validate that the user is admin or that the PowerShell window has been started with admin privileges
-        If ($PSVersionTable.PSVersion.Major -eq '5')
-        {
-            If (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
-            {
-                Write-Warning ('You must have Administrative rights to update the module! To retry close this PowerShell session and open a new PowerShell session with Administrator permissions (Right click the PowerShell application and select "Run as Administrator") and run the Connect-JCOnline command.')
-                Return
-            }
-        }
-        ElseIf ($PSVersionTable.PSVersion.Major -ge 6 -and $PSVersionTable.Platform -like "*Win*")
-        {
-            If (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
-            {
-                Write-Warning ('You must have Administrative rights to update the module! To retry close this PowerShell session and open a new PowerShell session with Administrator permissions (Right click the PowerShell application and select "Run as Administrator") and run the Connect-JCOnline command.')
-                Return
-            }
-        }
-        # Load color scheme
-        $JCColorConfig = Get-JCColorConfig
         # Get the version of the module on the PowerShell Gallery
         $PowerShellGalleryModule = Find-Module -Name:('JumpCloud')
         # Get the version of the module installed locally
@@ -39,6 +20,8 @@ Function Update-JCModule
     }
     Process
     {
+        # Load color scheme
+        $JCColorConfig = Get-JCColorConfig
         Try
         {
             # Check to see if module is already installed
@@ -75,7 +58,7 @@ Function Update-JCModule
                 }
                 If ($UserInput.ToUpper() -eq 'N')
                 {
-                    Write-Host ('Exiting the ' + $PowerShellGalleryModule.Name + ' PowerShell module install process.') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action)
+                    Write-Host ('Exiting the ' + $PowerShellGalleryModule.Name + ' PowerShell module update process.') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action)
                 }
                 Else
                 {
@@ -118,7 +101,6 @@ Function Update-JCModule
                     Write-Host ('Latest Version:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
                     Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
                     Write-Host ($GitHubModuleInfo.LatestVersion) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
-
                     Write-Host ('Message:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
                     Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
                     Write-Host ($GitHubModuleInfo.CurrentBanner) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
@@ -155,7 +137,7 @@ Function Update-JCModule
                         # Update the module to the latest version
                         Write-Host ('Updating ' + $PowerShellGalleryModule.Name + ' module to version:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewline
                         Write-Host ($PowerShellGalleryModule.Version) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
-                        $InstalledModulePreUpdate | Update-Module -Force
+                        $InstalledModulePreUpdate | Update-Module -Force -Scope:('CurrentUser')
                         # Remove existing module from the session
                         Get-Module -Name:($PowerShellGalleryModule.Name) -All | Remove-Module -Force
                         Write-Host ('Removing from session old ' + $PowerShellGalleryModule.Name + ' module version:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewline

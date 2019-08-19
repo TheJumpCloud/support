@@ -14,7 +14,7 @@ softwareupdate -l
 
 #### Description
 
-Shows avaliable updates on a Mac system
+Shows available updates on a Mac system
 
 #### *Import This Command*
 

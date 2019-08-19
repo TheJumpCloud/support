@@ -14,7 +14,7 @@ Sends a JumpCloud activation/password reset email.
 
 ### ByID (Default)
 ```
-Send-JCPasswordReset [[-UserID] <Object>] [<CommonParameters>]
+Send-JCPasswordReset [[-UserID] <String>] [<CommonParameters>]
 ```
 
 ### ByUsername
@@ -60,12 +60,11 @@ Sends an activation email to all JumpCloud users who are in an inactive state an
 
 ### -UserID
 The _id of the User which you want to send the email.
-To find a JumpCloud UserID run the command:
-PS C:\> Get-JCUser | Select username, _id
+To find a JumpCloud UserID run the command: PS C:\\\> Get-JCUser | Select username, _id
 The UserID will be the 24 character string populated for the _id field.
 
 ```yaml
-Type: Object
+Type: String
 Parameter Sets: ByID
 Aliases: _id, id
 

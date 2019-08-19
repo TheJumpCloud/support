@@ -44,7 +44,8 @@ Retrieves the JumpCloud system group targets that are associated the JumpCloud c
 ## PARAMETERS
 
 ### -CommandID
-The id value of the JumpCloud command. Use the command 'Get-JCCommand | Select-Object _id, name' to find the "_id" value for all the JumpCloud commands in your tenant.
+The id value of the JumpCloud command.
+Use the command 'Get-JCCommand | Select-Object _id, name' to find the "_id" value for all the JumpCloud commands in your tenant.
 
 ```yaml
 Type: String

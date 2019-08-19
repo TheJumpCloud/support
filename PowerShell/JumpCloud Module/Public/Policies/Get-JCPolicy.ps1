@@ -7,16 +7,19 @@ Function Get-JCPolicy ()
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'ByID',
-            Position = 0)]
+            Position = 0,
+            HelpMessage = 'The PolicyID of the JumpCloud policy you wish to query.')]
         [Alias('_id', 'id')]
         [String]$PolicyID,
 
         [Parameter(
-            ParameterSetName = 'Name')]
+            ParameterSetName = 'Name',
+            HelpMessage = 'The Name of the JumpCloud policy you wish to query.')]
         [String]$Name,
 
         [Parameter(
-            ParameterSetName = 'ByID')]
+            ParameterSetName = 'ByID',
+            HelpMessage = 'Use the -ByID parameter when you want to query a specific policy. The -ByID SwitchParameter will set the ParameterSet to ''ByID'' which queries one JumpCloud policy at a time.')]
         [Switch]
         $ByID
 

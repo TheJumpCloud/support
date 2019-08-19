@@ -8,7 +8,7 @@ Describe -Tag:('JCCommandResult') 'Remove-JCCommandResult 1.0' {
     }
     #>
 
-    It "Removes a JumpCloud command result using -CommandResultID with the force paramter" {
+    It "Removes a JumpCloud command result using -CommandResultID with the force parameter" {
         $SingleCommandResult = Get-JCCommandResult | Select-Object -Last 1
         $DeletedResult = Remove-JCCommandResult -CommandResultID $SingleCommandResult._id -force
         $DeletedResult._id.count | Should -Be 1

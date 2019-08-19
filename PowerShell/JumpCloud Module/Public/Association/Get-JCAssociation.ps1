@@ -20,6 +20,7 @@ Function Get-JCAssociation
     }
     Begin
     {
+        Connect-JCOnline -force | Out-Null
         # Debug message for parameter call
         Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDebugMessageBegin) -ArgumentList:($MyInvocation, $PsBoundParameters, $PSCmdlet) -NoNewScope
         $Results = @()

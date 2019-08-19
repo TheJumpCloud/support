@@ -44,7 +44,8 @@ Removes the JumpCloud User with Username 'cclemons' using the -Force Parameter. 
 ## PARAMETERS
 
 ### -ByID
-Use the -ByID parameter when the UserID is passed over the pipeline to the Remove-JCUser function. The -ByID SwitchParameter will set the ParameterSet to 'ByID' which will increase the function speed and performance.
+Use the -ByID parameter when the UserID is passed over the pipeline to the Remove-JCUser function.
+The -ByID SwitchParameter will set the ParameterSet to 'ByID' which will increase the function speed and performance.
 
 ```yaml
 Type: SwitchParameter
@@ -61,9 +62,10 @@ Accept wildcard characters: False
 ### -UserID
 The _id of the User which you want to delete.
 To find a JumpCloud UserID run the command:
-PS C:\> Get-JCUser | Select username, _id
+PS C:\\\> Get-JCUser | Select username, _id
 The UserID will be the 24 character string populated for the _id field.
-UserID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically.
+UserID has an Alias of _id.
+This means you can leverage the PowerShell pipeline to populate this field automatically.
 
 ```yaml
 Type: String

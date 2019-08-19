@@ -7,7 +7,8 @@ Function Get-JCGroup ()
     (
         [Parameter(
             ParameterSetName = 'Type',
-            Position = 0)]
+            Position = 0,
+            HelpMessage = 'The type of JumpCloud group you want to return. Note there are only two options - User and System.')]
         [ValidateSet('User', 'System')]
         [string]
         $Type

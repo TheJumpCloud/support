@@ -3,12 +3,12 @@ function Get-JCBackup
     [CmdletBinding(DefaultParameterSetName = 'None')]
     param (
 
-        [switch] $All,
-        [switch] $Users,
-        [switch] $SystemUsers,
-        [switch] $Systems,
-        [switch] $UserGroups,
-        [switch] $SystemGroups
+        [Parameter(HelpMessage = 'A switch parameter that when called tells the command to back up JumpCloud user, system user, system, user group, and system group information to CSV files.')][switch] $All,
+        [Parameter(HelpMessage = 'A switch parameter that when called backs up JumpCloud user information to CSV.')][switch] $Users,
+        [Parameter(HelpMessage = 'A switch parameter that when called backs up JumpCloud system user information to CSV.')][switch] $SystemUsers,
+        [Parameter(HelpMessage = 'A switch parameter that when called backs up JumpCloud system information to CSV.')][switch] $Systems,
+        [Parameter(HelpMessage = 'A switch parameter that when called backs up JumpCloud user group membership to CSV.')][switch] $UserGroups,
+        [Parameter(HelpMessage = 'A switch parameter that when called backs up JumpCloud system group membership to CSV.')][switch] $SystemGroups
 
     )
 
@@ -32,7 +32,7 @@ function Get-JCBackup
 
         if ((-not $All) -and (-not $Users) -and (-not $SystemUsers) -and (-not $Systems -and (-not $UserGroups) -and (-not $SystemGroups)))
         {
-            Write-Error "You must select item(s) to backup to CSV by settting paramter(s). Options include '-Users', '-SystemUsers', '-Systems','-UserGroups', '-SystemGroups', or '-All' to backup all items" -ErrorAction Stop
+            Write-Error "You must select item(s) to backup to CSV by setting parameter(s). Options include '-Users', '-SystemUsers', '-Systems','-UserGroups', '-SystemGroups', or '-All' to backup all items" -ErrorAction Stop
         }
 
 

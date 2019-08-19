@@ -4,30 +4,17 @@ Function Remove-JCCommand () #Ready for pester
 
     param
     (
-        [Parameter(
-            ParameterSetName = 'warn',
-            Mandatory,
-            ValueFromPipelineByPropertyName,
-            Position = 0
-        )]
-
-        [Parameter(
-            ParameterSetName = 'force',
-            Mandatory,
-            ValueFromPipelineByPropertyName,
-            Position = 0
-        )]
+        [Parameter(ParameterSetName = 'warn', Mandatory, ValueFromPipelineByPropertyName, Position = 0, HelpMessage = 'The _id of the JumpCloud Command  you wish to query. To find a JumpCloud CommandID run the command: PS C:\> Get-JCCommand | Select name, _id
+The CommandID will be the 24 character string populated for the _id field. CommandID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using a function that returns the JumpCloud CommandID.')]
+        [Parameter(ParameterSetName = 'force', Mandatory, ValueFromPipelineByPropertyName, Position = 0, HelpMessage = 'The _id of the JumpCloud Command  you wish to query. To find a JumpCloud CommandID run the command: PS C:\> Get-JCCommand | Select name, _id
+The CommandID will be the 24 character string populated for the _id field. CommandID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using a function that returns the JumpCloud CommandID.')]
         [Alias('_id', 'id')]
         [String] $CommandID,
 
-        [Parameter(
-            ParameterSetName = 'force')]
-        [Switch]
-        $force
+        [Parameter(ParameterSetName = 'force', HelpMessage = 'A SwitchParameter which removes the warning message when removing a JumpCloud Command.')]
+        [Switch]$force
     )
-
     begin
-
     {
         Write-Debug 'Verifying JCAPI Key'
         if ($JCAPIKEY.length -ne 40) {Connect-JConline}

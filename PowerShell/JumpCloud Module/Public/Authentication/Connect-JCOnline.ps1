@@ -3,11 +3,11 @@ Function Connect-JCOnline ()
     [CmdletBinding(DefaultParameterSetName = 'Interactive')]
     Param
     (
-        [Parameter(ParameterSetName = 'force', ValueFromPipelineByPropertyName)]
-        [Parameter(ParameterSetName = 'Interactive', ValueFromPipelineByPropertyName)]
+        [Parameter(ParameterSetName = 'force', ValueFromPipelineByPropertyName, HelpMessage = 'Specific to JumpCloud development team to connect to staging and local dev environments.')]
+        [Parameter(ParameterSetName = 'Interactive', ValueFromPipelineByPropertyName, HelpMessage = 'Specific to JumpCloud development team to connect to staging and local dev environments.')]
         [ValidateSet('production', 'staging', 'local')]
         [System.String]$JCEnvironment = 'production',
-        [Parameter(ParameterSetName = 'force')][Switch]$force
+        [Parameter(ParameterSetName = 'force', HelpMessage = 'Using the "-Force" parameter the module update check is skipped. The ''-Force'' parameter should be used when using the JumpCloud module in scripts or other automation environments.')][Switch]$force
     )
     DynamicParam
     {
@@ -61,7 +61,7 @@ Function Connect-JCOnline ()
         # Build parameter array
         $RuntimeParameterDictionary = New-Object -TypeName System.Management.Automation.RuntimeDefinedParameterDictionary
         $ParamVarPrefix = 'Param_'
-        Get-Variable -Scope:('Local') | Where-Object {$_.Name -like '*' + $ParamVarPrefix + '*'} | ForEach-Object {
+        Get-Variable -Scope:('Local') | Where-Object { $_.Name -like '*' + $ParamVarPrefix + '*' } | ForEach-Object {
             # Add RuntimeDictionary to each parameter
             $_.Value.Add('RuntimeParameterDictionary', $RuntimeParameterDictionary)
             # Creating each parameter
@@ -76,14 +76,20 @@ Function Connect-JCOnline ()
                 Write-Error -Message:('Unable to create dynamic parameter:"' + $VarName.Replace($ParamVarPrefix, '') + '"; Error:' + $Error)
             }
         }
+        $IndShowMessages = If ([System.String]::IsNullOrEmpty($JumpCloudApiKey) -and [System.String]::IsNullOrEmpty($JumpCloudOrgId) -and -not [System.String]::IsNullOrEmpty($env:JCApiKey) -and -not [System.String]::IsNullOrEmpty($env:JCOrgId))
+        {
+            $false
+        }
+        Else
+        {
+            $true
+        }
         Return $RuntimeParameterDictionary
     }
     Begin
     {
         # Debug message for parameter call
         Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDebugMessageBegin) -ArgumentList:($MyInvocation, $PsBoundParameters, $PSCmdlet) -NoNewScope
-        # Load color scheme
-        $JCColorConfig = Get-JCColorConfig
         Switch ($JCEnvironment)
         {
             'production'
@@ -109,7 +115,8 @@ Function Connect-JCOnline ()
     }
     Process
     {
-
+        # Load color scheme
+        $JCColorConfig = Get-JCColorConfig
         # For DynamicParam with a default value set that value and then convert the DynamicParam inputs into new variables for the script to use
         Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDynamicParamProcess) -ArgumentList:($PsBoundParameters, $PSCmdlet, $RuntimeParameterDictionary) -NoNewScope
         Try
@@ -118,7 +125,7 @@ Function Connect-JCOnline ()
             [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls, [System.Net.SecurityProtocolType]::Tls12
             #Region Set environment variables that can be used by other scripts
             # If "$JumpCloudApiKey" is populated or if "$env:JCApiKey" is not set
-            If (-not ([System.String]::IsNullOrEmpty($JumpCloudApiKey)))
+            If (-not [System.String]::IsNullOrEmpty($JumpCloudApiKey))
             {
                 # Set $env:JCApiKey
                 $env:JCApiKey = $JumpCloudApiKey
@@ -172,16 +179,25 @@ Function Connect-JCOnline ()
                             $env:JcUpdateModule = $false
                             Update-JCModule | Out-Null
                         }
-                        Write-Host ('Connection Status:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
-                        Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
-                        Write-Host ('Successfully connected to JumpCloud!') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
+                        If ($IndShowMessages)
+                        {
+                            Write-Host ('Connection Status:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
+                            Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
+                            Write-Host ('Successfully connected to JumpCloud!') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
+                            Write-Host ('OrgId:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
+                            Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
+                            Write-Host ($Auth.JCOrgId) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
+                            Write-Host ('OrgName:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
+                            Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
+                            Write-Host ($Auth.JCOrgName) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
+                        }
                     }
                 }
-                Return [PSCustomObject]@{
-                    # 'JCApiKey'  = $env:JCApiKey;
-                    'JCOrgId'   = $Auth.JCOrgId;
-                    'JCOrgName' = $Auth.JCOrgName;
-                }
+                # Return [PSCustomObject]@{
+                # 'JCApiKey'  = $env:JCApiKey;
+                # 'JCOrgId'   = $Auth.JCOrgId;
+                # 'JCOrgName' = $Auth.JCOrgName;
+                # }
             }
             Else
             {

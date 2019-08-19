@@ -9,11 +9,11 @@ Function Set-JCOrganization
     {
         # Debug message for parameter call
         Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDebugMessageBegin) -ArgumentList:($MyInvocation, $PsBoundParameters, $PSCmdlet) -NoNewScope
-        # Load color scheme
-        $JCColorConfig = Get-JCColorConfig
     }
     Process
     {
+        # Load color scheme
+        $JCColorConfig = Get-JCColorConfig
         If ([System.String]::IsNullOrEmpty($JumpCloudApiKey) -and [System.String]::IsNullOrEmpty($env:JCApiKey))
         {
             Connect-JCOnline
@@ -32,6 +32,10 @@ Function Set-JCOrganization
         }
         Else
         {
+            # Auth has been verified
+        }
+        If ((-not [System.String]::IsNullOrEmpty($JumpCloudApiKey) -and -not [System.String]::IsNullOrEmpty($env:JCApiKey)) -and $JumpCloudApiKey -eq $env:JCApiKey)
+        {
             Write-Verbose ("Parameter Set: $($PSCmdlet.ParameterSetName)")
             Write-Verbose ('Populating JCOrganizations')
             $Organizations = Get-JCObject -Type:('organization') -Fields:('_id', 'displayName')
@@ -41,8 +45,8 @@ Function Set-JCOrganization
                 If ([System.String]::IsNullOrEmpty($JumpCloudOrgId) -or $JumpCloudOrgId -notin $Organizations._id)
                 {
 
-                    $OrgIdHash = [ordered]@{}
-                    $OrgNameHash = [ordered]@{}
+                    $OrgIdHash = [ordered]@{ }
+                    $OrgNameHash = [ordered]@{ }
                     # Build user menu
                     $LengthDisplayName = ($Organizations.displayName | Measure-Object -Maximum -Property Length).Maximum
                     $LengthOrgId = ($Organizations._id | Measure-Object -Maximum -Property Length).Maximum
@@ -78,8 +82,8 @@ Function Set-JCOrganization
                 }
                 Else
                 {
-                    $OrgId = ($Organizations | Where-Object {$_._id -eq $JumpCloudOrgId})._id
-                    $OrgName = ($Organizations | Where-Object {$_._id -eq $JumpCloudOrgId}).displayName
+                    $OrgId = ($Organizations | Where-Object { $_._id -eq $JumpCloudOrgId })._id
+                    $OrgName = ($Organizations | Where-Object { $_._id -eq $JumpCloudOrgId }).displayName
                 }
             }
             Else
@@ -87,7 +91,7 @@ Function Set-JCOrganization
                 $OrgId = $($Organizations._id)
                 $OrgName = $($Organizations.displayName)
             }
-            If (-not ([System.String]::IsNullOrEmpty($OrgName)) -and -not ([System.String]::IsNullOrEmpty($OrgId)))
+            If (-not ([System.String]::IsNullOrEmpty($OrgId)))
             {
                 $env:JCOrgId = $OrgId
                 $global:JCOrgId = $env:JCOrgId
@@ -100,7 +104,7 @@ Function Set-JCOrganization
             }
             Else
             {
-                Write-Error ('OrgId and OrgName have not been set.')
+                Write-Error ('OrgId has not been set.')
             }
         }
     }

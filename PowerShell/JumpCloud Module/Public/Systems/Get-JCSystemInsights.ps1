@@ -12,6 +12,7 @@ Function Get-JCSystemInsights
     }
     Begin
     {
+        Connect-JCOnline -force | Out-Null
         # Debug message for parameter call
         Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDebugMessageBegin) -ArgumentList:($MyInvocation, $PsBoundParameters, $PSCmdlet) -NoNewScope
         $Results = @()
@@ -23,9 +24,9 @@ Function Get-JCSystemInsights
         If ($JCSettings.SETTINGS.betaFeatures.systemInsights)
         {
             # Create hash table to store variables
-            $FunctionParameters = [ordered]@{}
+            $FunctionParameters = [ordered]@{ }
             # Add input parameters from function in to hash table and filter out unnecessary parameters
-            $PSBoundParameters.GetEnumerator() | Where-Object {$_.Value} | ForEach-Object {$FunctionParameters.Add($_.Key, $_.Value) | Out-Null}
+            $PSBoundParameters.GetEnumerator() | Where-Object { $_.Value } | ForEach-Object { $FunctionParameters.Add($_.Key, $_.Value) | Out-Null }
             $FunctionParameters.Add('Type', $JCTypes.TypeName.TypeNameSingular) | Out-Null
             # Run the command
             $Results += Get-JCObject @FunctionParameters

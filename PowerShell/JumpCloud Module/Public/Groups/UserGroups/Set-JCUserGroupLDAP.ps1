@@ -7,14 +7,16 @@ Function Set-JCUserGroupLDAP
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'GroupName',
-            Position = 0)]
+            Position = 0,
+            HelpMessage = 'The name of the JumpCloud user group to modify')]
         [Alias('name')]
         [String]$GroupName,
 
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'GroupID',
-            Position = 0)]
+            Position = 0,
+            HelpMessage = 'The ID of the JumpCloud user group to modify')]
         [Alias('id', '_id')]
         [String]$GroupID,
 
@@ -24,7 +26,8 @@ Function Set-JCUserGroupLDAP
 
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'GroupID')]
+            ParameterSetName = 'GroupID',
+            HelpMessage = 'A boolean $true/$false value to enable or disable LDAP for a group')]
 
         [Boolean]$LDAPEnabled
     )

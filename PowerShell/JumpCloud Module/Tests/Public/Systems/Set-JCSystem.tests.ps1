@@ -43,7 +43,7 @@ Describe -Tag:('JCSystem') 'Set-JCSystem 1.0' {
     }
 
     # 1.13.1 Tests ## $PesterParams.SystemID MUST BE A WINDOWS OR MAC SYSTEM
-    # As of 7/29/19 systemInsights is only avaliable for Windows / Mac
+    # As of 7/29/19 systemInsights is only available for Windows / Mac
 
     It "Enables systemInsights for a system" {
 

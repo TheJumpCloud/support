@@ -26,7 +26,7 @@ Describe -Tag:('JCSystemUser') 'Remove-JCSystemUser 1.0' {
         $MultiUserAdd.Status.Count | Should Be 2
     }
 
-    It "Removes two users from a single system using the pipeline and system ID using the -force paramter" {
+    It "Removes two users from a single system using the pipeline and system ID using the -force parameter" {
         $MultiUserRemove = Get-JCUser | Select-Object -Last 2 | Remove-JCSystemUser -SystemID $PesterParams.SystemID -force
         $MultiUserRemove.Status.Count | Should Be 2
     }

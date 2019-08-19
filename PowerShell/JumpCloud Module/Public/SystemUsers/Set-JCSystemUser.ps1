@@ -7,23 +7,27 @@ Function Set-JCSystemUser ()
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'ByName',
-            Position = 0)]
+            Position = 0,
+            HelpMessage = 'The Username of the JumpCloud User whose system permissions will be modified')]
         [String]$Username,
 
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName = $true,
-            ParameterSetName = 'ByID')]
+            ParameterSetName = 'ByID',
+            HelpMessage = 'The _id of the JumpCloud User whose system permissions will be modified')]
         [string]
         $UserID,
 
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'ByName',
-            Position = 1)]
+            Position = 1,
+            HelpMessage = 'The _id of the JumpCloud System which you want to modify the permissions on')]
 
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName = $true,
-            ParameterSetName = 'ByID')]
+            ParameterSetName = 'ByID',
+            HelpMessage = 'The _id of the JumpCloud System which you want to modify the permissions on')]
 
         [string]
         [alias("_id")]
@@ -32,11 +36,13 @@ Function Set-JCSystemUser ()
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'ByName',
-            Position = 2)]
+            Position = 2,
+            HelpMessage = 'A boolean $true/$false value to add or remove Administrator permissions on a target JumpCloud system')]
 
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName = $true,
-            ParameterSetName = 'ByID')]
+            ParameterSetName = 'ByID',
+            HelpMessage = 'A boolean $true/$false value to add or remove Administrator permissions on a target JumpCloud system')]
 
         [bool]
         $Administrator

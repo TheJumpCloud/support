@@ -13,7 +13,8 @@ Function Get-FunctionReport
         $FileBaseName = $File.BaseName
         # Parse the file and look for function syntax to identify functions
         [regex]$Function_Regex = '(?<=^Function)(.*?)(?=$|\{|\()'
-        $FunctionRegexMatch = Get-Content -Path:($FileFullName) | Select-String -Pattern:($Function_Regex) #| Where {-not [System.String]::IsNullOrEmpty($_)}
+        $FunctionContent = Get-Content -Path:($FileFullName)
+        $FunctionRegexMatch =  $FunctionContent | Select-String -Pattern:($Function_Regex) #| Where {-not [System.String]::IsNullOrEmpty($_)}
         $FunctionRegexMatchObject = $FunctionRegexMatch | Select-Object LineNumber, Line, @{Name = 'MatchValue'; Expression = { ($_.Matches.Value).Trim() } }
         # Load the function into the current runspace
         . ($FileFullName)
@@ -36,6 +37,7 @@ Function Get-FunctionReport
             'Verb'           = $ScriptFunctions.Verb
             'Noun'           = $ScriptFunctions.Noun
             'FolderLocation' = $FolderLocation
+            'Content'        = $FunctionContent
         }
     }
     Return $FunctionList

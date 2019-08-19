@@ -41,7 +41,7 @@ Connect-JCOnline lu8792c9d4y2398is1tb6h0b83ebf0e92s97t382
 Connect-JCOnline lu8792c9d4y2398is1tb6h0b83ebf0e92s97t382 -force
 ```
 
-Using the "-Force" paramter the module update check is skipped. The '-Force' parameter should be used when using the JumpCloud module in scripts or other automation environments. 
+Using the "-Force" parameter the module update check is skipped. The '-Force' parameter should be used when using the JumpCloud module in scripts or other automation environments.
 
 ### Example 3
 ```powershell
@@ -70,8 +70,41 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
+### -JumpCloudApiKey
+Please enter your JumpCloud API key.
+This can be found in the JumpCloud admin console within "API Settings" accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: 0
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -JumpCloudOrgId
+Organization Id can be found in the Settings page within the admin console.
+Only needed for multi tenant admins.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 1
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
 ### -force
-A SwitchParameter which skips the module update check when setting the JCAPIKey and connecting to JumpCloud.
+Using the "-Force" parameter the module update check is skipped.
+The '-Force' parameter should be used when using the JumpCloud module in scripts or other automation environments.
 
 ```yaml
 Type: SwitchParameter
@@ -100,44 +133,12 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
-### -JumpCloudApiKey
-Please enter your JumpCloud API key.
-This can be found in the JumpCloud admin console within 'API Settings' accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console. Note that each administrator within a JumpCloud tenant has their own unique API key and can reset this API key from this settings page.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: True
-Position: 0
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -JumpCloudOrgId
-Only needed for multi tenant admins. Organization ID can be found in the Settings page within the admin console.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 1
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
 ### System.String
-### System.Object
 ## OUTPUTS
 
 ### System.Object

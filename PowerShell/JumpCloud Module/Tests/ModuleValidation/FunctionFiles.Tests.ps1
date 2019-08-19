@@ -1,6 +1,6 @@
 Describe -Tag:('ModuleValidation') 'Function Format Tests' {
     $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent.FullName
-    $FunctionList = Get-FunctionReport -Folder:(($ModuleRoot + '/Public'), ($ModuleRoot + '/Private')) | Where-Object {$_.FileName -notlike 'ScriptBlock_*'}
+    $FunctionList = Get-FunctionReport -Folder:(($ModuleRoot + '/Public'), ($ModuleRoot + '/Private')) | Where-Object { $_.FileName -notlike 'ScriptBlock_*' }
     $FunctionList | ForEach-Object {
         Context ('Test that the file name matches the function name') {
             It ('When FileBaseName "' + $_.FileBaseName + '" equal Function "' + $_.Function + '" for file "' + $_.FileName + '"') {
@@ -19,6 +19,14 @@ Describe -Tag:('ModuleValidation') 'Function Format Tests' {
             It ('When FileName "' + $_.FileName + '" has exactly 1 function') {
                 ($_.Function | Measure-Object).Count | Should -BeExactly 1
                 ($_.MatchValue | Measure-Object).Count | Should -BeExactly 1
+            }
+        }
+        If ($_.FolderLocation -eq 'Public' -and $_.FileName -notin ('New-JCDeploymentTemplate.ps1', 'Update-JCModule.ps1'))
+        {
+            Context ('Test that Connect-JCOnline exists in each Public function') {
+                It ('When FileName "' + $_.FileName + '" does not contain "Connect-JCOnline"') {
+                    $_ | Where-Object { !( $_.Content | Select-String -Pattern:('(?i)(Connect-JCOnline)')) } | Should -BeNullOrEmpty
+                }
             }
         }
     }

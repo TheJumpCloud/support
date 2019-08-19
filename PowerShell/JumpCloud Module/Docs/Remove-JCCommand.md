@@ -45,10 +45,10 @@ Removes the JumpCloud Command with a CommandID of '5j09o6f23dan6f4n035601d5'. A 
 
 ### -CommandID
 The _id of the JumpCloud Command  you wish to query.
-To find a JumpCloud CommandID run the command:
-PS C:\> Get-JCCommand | Select name, _id
+To find a JumpCloud CommandID run the command: PS C:\\\> Get-JCCommand | Select name, _id
 The CommandID will be the 24 character string populated for the _id field.
-CommandID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using a function that returns the JumpCloud CommandID.
+CommandID has an Alias of _id.
+This means you can leverage the PowerShell pipeline to populate this field automatically using a function that returns the JumpCloud CommandID.
 
 ```yaml
 Type: String

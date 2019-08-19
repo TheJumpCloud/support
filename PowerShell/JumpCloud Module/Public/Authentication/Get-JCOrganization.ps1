@@ -4,6 +4,7 @@ Function Get-JCOrganization
     param ()
     Begin
     {
+        Connect-JCOnline -force | Out-Null
         $resultsArrayList = New-Object System.Collections.ArrayList
     }
     Process

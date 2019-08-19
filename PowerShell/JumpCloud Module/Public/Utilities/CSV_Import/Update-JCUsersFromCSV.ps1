@@ -5,20 +5,23 @@ Function Update-JCUsersFromCSV ()
     (
         [Parameter(Mandatory,
             position = 0,
-            ParameterSetName = 'GUI')]
+            ParameterSetName = 'GUI',
+            HelpMessage = 'The full path to the CSV file you wish to import. You can use tab complete to search for .csv files.')]
         [ValidateScript( { Test-Path -Path $_ -PathType Leaf })]
         [ValidatePattern( '\.csv$' )]
 
         [Parameter(Mandatory,
             position = 0,
-            ParameterSetName = 'force')]
+            ParameterSetName = 'force',
+            HelpMessage = 'The full path to the CSV file you wish to import. You can use tab complete to search for .csv files.')]
         [ValidateScript( { Test-Path -Path $_ -PathType Leaf })]
         [ValidatePattern( '\.csv$' )]
 
         [string]$CSVFilePath,
 
         [Parameter(
-            ParameterSetName = 'force')]
+            ParameterSetName = 'force',
+            HelpMessage = 'A SwitchParameter which suppresses the GUI and data validation when using the Update-JCUsersFromCSV command.')]
         [Switch]
         $force
 

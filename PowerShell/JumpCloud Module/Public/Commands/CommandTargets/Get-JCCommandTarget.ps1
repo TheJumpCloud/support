@@ -3,23 +3,13 @@ Function Get-JCCommandTarget
     [CmdletBinding(DefaultParameterSetName = 'Systems')]
     param (
 
-        [Parameter(Mandatory,
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'Systems',
-            Position = 0)]
-
-        [Parameter(Mandatory,
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'Groups',
-            Position = 0)]
-
-
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'Systems', Position = 0, HelpMessage = 'The id value of the JumpCloud command. Use the command ''Get-JCCommand | Select-Object _id, name'' to find the "_id" value for all the JumpCloud commands in your tenant.')]
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'Groups', Position = 0, HelpMessage = 'The id value of the JumpCloud command. Use the command ''Get-JCCommand | Select-Object _id, name'' to find the "_id" value for all the JumpCloud commands in your tenant.')]
         [Alias('_id', 'id')]
         [String]$CommandID,
 
-        [Parameter(ParameterSetName = 'Groups')]
-        [switch]
-        $Groups
+        [Parameter(ParameterSetName = 'Groups', HelpMessage = 'A switch parameter to display any System Groups associated with a command.')]
+        [switch]$Groups
 
     )
 
@@ -78,7 +68,7 @@ Function Get-JCCommandTarget
         $RawResults = @()
         $resultsArrayList = New-Object System.Collections.ArrayList
 
-        Write-Verbose "Paramter set: $($PSCmdlet.ParameterSetName)"
+        Write-Verbose "parameter set: $($PSCmdlet.ParameterSetName)"
 
 
     }

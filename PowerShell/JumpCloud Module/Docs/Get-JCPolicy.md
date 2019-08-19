@@ -56,7 +56,8 @@ Returns the HelloWorld policy.
 ## PARAMETERS
 
 ### -ByID
-Use the -ByID parameter when you want to query a specific policy. The -ByID SwitchParameter will set the ParameterSet to 'ByID' which queries one JumpCloud policy at a time.
+Use the -ByID parameter when you want to query a specific policy.
+The -ByID SwitchParameter will set the ParameterSet to 'ByID' which queries one JumpCloud policy at a time.
 
 ```yaml
 Type: SwitchParameter

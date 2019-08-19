@@ -1,27 +1,15 @@
 Function Remove-JCSystemGroup ()
 {
     [CmdletBinding(DefaultParameterSetName = 'warn')]
-
     param
     (
-
-        [Parameter(Mandatory,
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'warn',
-            Position = 0)]
-
-        [Parameter(Mandatory,
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'force',
-            Position = 0)]
-
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'warn', Position = 0, HelpMessage = 'The name of the System Group you want to remove.')]
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'force', Position = 0, HelpMessage = 'The name of the System Group you want to remove.')]
         [Alias('name')]
         [String]$GroupName,
 
-        [Parameter(
-            ParameterSetName = 'force')]
-        [Switch]
-        $force
+        [Parameter(ParameterSetName = 'force', HelpMessage = 'A SwitchParameter which suppresses the warning message when removing a JumpCloud System Group.')]
+        [Switch]$force
     )
 
     begin

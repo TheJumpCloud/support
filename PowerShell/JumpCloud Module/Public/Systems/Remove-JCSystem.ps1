@@ -4,26 +4,15 @@ Function Remove-JCSystem ()
 
     param
     (
-        [Parameter(
-            ParameterSetName = 'warn',
-            Mandatory,
-            ValueFromPipelineByPropertyName,
-            Position = 0
-        )]
-
-        [Parameter(
-            ParameterSetName = 'force',
-            Mandatory,
-            ValueFromPipelineByPropertyName,
-            Position = 0
-        )]
+        [Parameter(ParameterSetName = 'warn', Mandatory, ValueFromPipelineByPropertyName, Position = 0, HelpMessage = 'The _id of the System which you want to remove from JumpCloud. To find a JumpCloud SystemID run the command: PS C:\> Get-JCSystem | Select hostname, _id
+The SystemID will be the 24 character string populated for the _id field. SystemID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically by calling a JumpCloud function that returns the SystemID. This is shown in EXAMPLES 3 and 4.')]
+        [Parameter(ParameterSetName = 'force', Mandatory, ValueFromPipelineByPropertyName, Position = 0, HelpMessage = 'The _id of the System which you want to remove from JumpCloud. To find a JumpCloud SystemID run the command: PS C:\> Get-JCSystem | Select hostname, _id
+The SystemID will be the 24 character string populated for the _id field. SystemID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically by calling a JumpCloud function that returns the SystemID. This is shown in EXAMPLES 3 and 4.')]
         [Alias('_id', 'id')]
         [String] $SystemID,
 
-        [Parameter(
-            ParameterSetName = 'force')]
-        [Switch]
-        $force
+        [Parameter(ParameterSetName = 'force', HelpMessage = 'A SwitchParameter which suppresses the warning message when removing a JumpCloud System.')]
+        [Switch]$force
     )
 
     begin

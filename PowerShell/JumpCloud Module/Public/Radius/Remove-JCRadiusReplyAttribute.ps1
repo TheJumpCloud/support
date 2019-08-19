@@ -2,20 +2,15 @@ function Remove-JCRadiusReplyAttribute
 {
     [CmdletBinding()]
     param (
-        [Parameter( Mandatory, position = 0, ValueFromPipelineByPropertyName,
-            ParameterSetName = 'ByGroup')]
+        [Parameter( Mandatory, position = 0, ValueFromPipelineByPropertyName, ParameterSetName = 'ByGroup', HelpMessage = 'The JumpCloud user group to remove the specified Radius reply attributes from.')]
         [Alias('name')]
         [String]$GroupName,
 
-        [Parameter( ValueFromPipelineByPropertyName,
-            ParameterSetName = 'ByGroup')]
-        [String[]]
-        $AttributeName,
+        [Parameter( ValueFromPipelineByPropertyName, ParameterSetName = 'ByGroup', HelpMessage = 'Attributes to remove from a target user group. To remove multiple attributes at one time separate the attribute names with commas.')]
+        [String[]]$AttributeName,
 
-        [Parameter( ValueFromPipelineByPropertyName,
-            ParameterSetName = 'ByGroup')]
-        [switch]
-        $All
+        [Parameter( ValueFromPipelineByPropertyName, ParameterSetName = 'ByGroup', HelpMessage = 'The ''-All'' parameter is a switch parameter which will clear all Radius reply attributes from a JumpCloud user group.')]
+        [switch]$All
     )
 
     begin

@@ -45,7 +45,8 @@ Invokes the JumpCloud command with command ID '5f6r55es2189782h48091999' using t
 ## PARAMETERS
 
 ### -CSVFilePath
-The full path to the CSV deployment file. You can use tab complete to search for .csv files.
+The full path to the CSV deployment file.
+You can use tab complete to search for .csv files.
 
 ```yaml
 Type: String
@@ -61,8 +62,7 @@ Accept wildcard characters: False
 
 ### -CommandID
 The _id of the JumpCloud command you wish to deploy.
-To find a JumpCloud CommandID run the command:
-PS C:\> Get-JCCommand | Select name, _id
+To find a JumpCloud CommandID run the command: PS C:\\\> Get-JCCommand | Select name, _id
 The CommandID will be the 24 character string populated for the _id field.
 
 ```yaml

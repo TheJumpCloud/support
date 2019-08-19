@@ -345,7 +345,9 @@ Accept wildcard characters: False
 ```
 
 ### -filterDateProperty
-A paramter that can filter the properties 'created' or 'password_expiration_date'. This parameter if used creates two more dynamic parameters 'dateFilter' and 'date'. See EXAMPLE 4 above for full syntax.
+A parameter that can filter the properties 'created' or 'password_expiration_date'.
+This parameter if used creates two more dynamic parameters 'dateFilter' and 'date'.
+See EXAMPLE 4 above for full syntax.
 
 ```yaml
 Type: String
@@ -496,7 +498,9 @@ Accept wildcard characters: False
 ```
 
 ### -returnProperties
-Allows you to return select properties on JumpCloud user objects. Specifying what properties are returned can drastically increase the speed of the API call with a large data set. Valid properties that can be returned are: 'created', 'password_expiration_date', 'account_locked', 'activated', 'addresses', 'allow_public_key', 'attributes', 'email', 'enable_managed_uid', 'enable_user_portal_multifactor', 'externally_managed', 'firstname', 'lastname', 'ldap_binding_user', 'passwordless_sudo', 'password_expired', 'password_never_expires', 'phoneNumbers', 'samba_service_user', 'ssh_keys', 'sudo', 'totp_enabled', 'unix_guid', 'unix_uid', 'username'
+Allows you to return select properties on JumpCloud user objects.
+Specifying what properties are returned can drastically increase the speed of the API call with a large data set.
+Valid properties that can be returned are: 'created', 'password_expiration_date', 'account_locked', 'activated', 'addresses', 'allow_public_key', 'attributes', 'email', 'enable_managed_uid', 'enable_user_portal_multifactor', 'externally_managed', 'firstname', 'lastname', 'ldap_binding_user', 'passwordless_sudo', 'password_expired', 'password_never_expires', 'phoneNumbers', 'samba_service_user', 'ssh_keys', 'sudo', 'totp_enabled', 'unix_guid', 'unix_uid', 'username'
 
 ```yaml
 Type: String[]
@@ -557,7 +561,8 @@ Accept wildcard characters: False
 ```
 
 ### -unix_guid
-A search filter to search for users with a specific unix_gid. DOES NOT accept wild card input.
+A search filter to search for users with a specific unix_gid.
+DOES NOT accept wild card input.
 
 ```yaml
 Type: String
@@ -572,7 +577,8 @@ Accept wildcard characters: False
 ```
 
 ### -unix_uid
-A search filter to search for users with a specific unix_uid. DOES NOT accept wild card input.
+A search filter to search for users with a specific unix_uid.
+DOES NOT accept wild card input.
 
 ```yaml
 Type: String
@@ -587,7 +593,9 @@ Accept wildcard characters: False
 ```
 
 ### -userid
-The _id of the User which you want to modify. UserID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically.
+The _id of the User which you want to modify.
+UserID has an Alias of _id.
+This means you can leverage the PowerShell pipeline to populate this field automatically.
 
 ```yaml
 Type: String

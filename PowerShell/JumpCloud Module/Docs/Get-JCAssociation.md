@@ -14,23 +14,23 @@ The function Get-JCAssociation can be used to query an object's associations and
 
 ### ById (Default)
 ```
-Get-JCAssociation [-Type] <String> [-Force] [-Fields <Array>] [-Filter <String>] [-Id] <String[]>
+Get-JCAssociation [-Type] <String> [-Force] [-Fields <Array>] [-Filter <String>] -Id <String[]>
  [-Limit <Int32>] [-Paginate <Boolean>] [-Skip <Int32>] [-Direct] [-IncludeInfo] [-IncludeNames]
- [-IncludeVisualPath] [-Indirect] [[-TargetType] <String[]>] [<CommonParameters>]
+ [-IncludeVisualPath] [-Indirect] [-TargetType <String[]>] [<CommonParameters>]
 ```
 
 ### ByName
 ```
 Get-JCAssociation [-Type] <String> [-Force] [-Fields <Array>] [-Filter <String>] [-Limit <Int32>]
- [-Name] <String[]> [-Paginate <Boolean>] [-Skip <Int32>] [-Direct] [-IncludeInfo] [-IncludeNames]
- [-IncludeVisualPath] [-Indirect] [[-TargetType] <String[]>] [<CommonParameters>]
+ -Name <String[]> [-Paginate <Boolean>] [-Skip <Int32>] [-Direct] [-IncludeInfo] [-IncludeNames]
+ [-IncludeVisualPath] [-Indirect] [-TargetType <String[]>] [<CommonParameters>]
 ```
 
 ### ByValue
 ```
 Get-JCAssociation [-Type] <String> [-Force] [-Fields <Array>] [-Filter <String>] [-Limit <Int32>]
  [-Paginate <Boolean>] [-Skip <Int32>] [-Direct] [-IncludeInfo] [-IncludeNames] [-IncludeVisualPath]
- [-Indirect] [[-TargetType] <String[]>] [<CommonParameters>]
+ [-Indirect] [-TargetType <String[]>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -84,144 +84,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 8
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -Force
-Bypass user confirmation and ValidateSet when adding or removing associations.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 2
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -Id
-The unique id of the object.
-
-```yaml
-Type: String[]
-Parameter Sets: ById
-Aliases: _id
-
-Required: True
-Position: 3
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -IncludeInfo
-Appends "Info" and "TargetInfo" properties to output.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 10
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -IncludeNames
-Appends "Name" and "TargetName" properties to output.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 11
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -IncludeVisualPath
-Appends "visualPathById", "visualPathByName", and "visualPathByType" properties to output.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 12
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -Indirect
-Returns only "Indirect" associations.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 9
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -Name
-The name of the object.
-
-```yaml
-Type: String[]
-Parameter Sets: ByName
-Aliases: displayName, username
-
-Required: True
-Position: 4
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -TargetType
-The type of the target object.
-
-```yaml
-Type: String[]
-Parameter Sets: (All)
-Aliases: TargetSingular
-Accepted values: user, user_group, system, system_group, policy, command, application, g_suite, ldap_server, office_365, radius_server
-
-Required: False
-Position: 5
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -Type
-The type of the object.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases: TypeNameSingular
-Accepted values: command, ldap_server, policy, application, radius_server, system_group, system, user_group, user, g_suite, office_365
-
-Required: True
-Position: 1
+Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -257,6 +120,96 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
+### -Force
+Bypass user prompts and dynamic ValidateSet.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Id
+The unique id of the object.
+
+```yaml
+Type: String[]
+Parameter Sets: ById
+Aliases: _id
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -IncludeInfo
+Appends "Info" and "TargetInfo" properties to output.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -IncludeNames
+Appends "Name" and "TargetName" properties to output.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -IncludeVisualPath
+Appends "visualPathById", "visualPathByName", and "visualPathByType" properties to output.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Indirect
+Returns only "Indirect" associations.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
 ### -Limit
 The number of items you want to return per API call.
 
@@ -272,15 +225,15 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
-### -Skip
-Ignores the specified number of objects and then gets the remaining objects. Enter the number of objects to skip.
+### -Name
+The name of the object.
 
 ```yaml
-Type: Int32
-Parameter Sets: (All)
-Aliases:
+Type: String[]
+Parameter Sets: ByName
+Aliases: displayName, username
 
-Required: False
+Required: True
 Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
@@ -302,6 +255,53 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
+### -Skip
+The number of items you want to skip over per API call.
+
+```yaml
+Type: Int32
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -TargetType
+The type of the target object.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases: TargetSingular
+Accepted values: user_group, system, system_group, user, policy, command, application, g_suite, ldap_server, office_365, radius_server
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Type
+The type of the object.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases: TypeNameSingular
+Accepted values: command, ldap_server, policy, application, radius_server, system_group, system, user_group, user, g_suite, office_365
+
+Required: True
+Position: 0
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -309,7 +309,10 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ### System.String
 ### System.Management.Automation.SwitchParameter
+### System.Array
 ### System.String[]
+### System.Int32
+### System.Boolean
 ## OUTPUTS
 
 ### System.Object

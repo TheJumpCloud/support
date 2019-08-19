@@ -46,7 +46,8 @@ Uses the 'Force' parameter to skip the GUI and data validation and update users 
 ## PARAMETERS
 
 ### -CSVFilePath
-The full path to the CSV file you wish to import. You can use tab complete to search for .csv files.
+The full path to the CSV file you wish to import.
+You can use tab complete to search for .csv files.
 
 ```yaml
 Type: String

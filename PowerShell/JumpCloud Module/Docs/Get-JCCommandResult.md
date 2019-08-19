@@ -91,7 +91,8 @@ Skips returning the first 100 command results and only returns the 10 results af
 ## PARAMETERS
 
 ### -ByID
-Use the -ByID parameter when you want to query the contents of a specific Command Result or if the -CommandResultID is being passed over the pipeline to return the full contents of a JumpCloud Command Result. The -ByID SwitchParameter will set the ParameterSet to 'ByID' which queries one JumpCloud Command Result at a time.
+Use the -ByID parameter when you want to query the contents of a specific Command Result or if the -CommandResultID is being passed over the pipeline to return the full contents of a JumpCloud Command Result.
+The -ByID SwitchParameter will set the ParameterSet to 'ByID' which queries one JumpCloud Command Result at a time.
 
 ```yaml
 Type: SwitchParameter
@@ -151,7 +152,7 @@ Accept wildcard characters: False
 ```
 
 ### -Skip
-The number of command results to skip over before returning results. 
+The number of command results to skip over before returning results.
 
 ```yaml
 Type: Int32

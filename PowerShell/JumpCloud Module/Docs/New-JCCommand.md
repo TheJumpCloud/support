@@ -47,7 +47,8 @@ Accept wildcard characters: False
 ```
 
 ### -commandType
-The type of JumpCloud command. Options are windows, mac, or linux.
+The type of JumpCloud command.
+Options are windows, mac, or linux.
 
 ```yaml
 Type: String
@@ -63,7 +64,8 @@ Accept wildcard characters: False
 ```
 
 ### -launchType
-The launch type for the new command. The default is manual.
+The launch type for the new command.
+The default is manual.
 
 ```yaml
 Type: String
@@ -110,7 +112,8 @@ Accept wildcard characters: False
 ```
 
 ### -timeout
-The time the command will run before it times out. The default is 120 seconds.
+The time the command will run before it times out.
+The default is 120 seconds.
 
 ```yaml
 Type: String
