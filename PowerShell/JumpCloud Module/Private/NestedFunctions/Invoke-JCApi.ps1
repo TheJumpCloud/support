@@ -18,7 +18,7 @@ Function Invoke-JCApi
         # Populate $env:JCApiKey if its not set
         If ([System.String]::IsNullOrEmpty($env:JCApiKey))
         {
-            Connect-JCOnline | Out-Null
+            Connect-JCOnline -force | Out-Null
         }
         # Populate $env:JCOrgId if its not set
         If (-not [System.String]::IsNullOrEmpty($env:JCApiKey) -and [System.String]::IsNullOrEmpty($env:JCOrgId) -and $Url -notlike '*/api/organizations*')
@@ -82,9 +82,9 @@ Function Invoke-JCApi
                     }
                     Else
                     {
-                        $ObjectBody = $ObjectBody | Select-Object *, @{Name = 'fields'; Expression = {$JoinedFields}}
+                        $ObjectBody = $ObjectBody | Select-Object *, @{Name = 'fields'; Expression = { $JoinedFields } }
                     }
-                    If ($Url -notlike '*fields*') {$QueryStrings += 'fields=' + $JoinedFields}
+                    If ($Url -notlike '*fields*') { $QueryStrings += 'fields=' + $JoinedFields }
                 }
                 # Add limit
                 If ($ObjectBody.PSObject.Properties.name -eq 'limit')
@@ -93,9 +93,9 @@ Function Invoke-JCApi
                 }
                 Else
                 {
-                    $ObjectBody = $ObjectBody | Select-Object *, @{Name = 'limit'; Expression = {$Limit}}
+                    $ObjectBody = $ObjectBody | Select-Object *, @{Name = 'limit'; Expression = { $Limit } }
                 }
-                If ($Url -notlike '*limit*') {$QueryStrings += 'limit=' + $Limit}
+                If ($Url -notlike '*limit*') { $QueryStrings += 'limit=' + $Limit }
                 # Add skip
                 If ($ObjectBody.PSObject.Properties.name -eq 'skip')
                 {
@@ -103,9 +103,9 @@ Function Invoke-JCApi
                 }
                 Else
                 {
-                    $ObjectBody = $ObjectBody | Select-Object *, @{Name = 'skip'; Expression = {$Skip}}
+                    $ObjectBody = $ObjectBody | Select-Object *, @{Name = 'skip'; Expression = { $Skip } }
                 }
-                If ($Url -notlike '*skip*') {$QueryStrings += 'skip=' + $Skip}
+                If ($Url -notlike '*skip*') { $QueryStrings += 'skip=' + $Skip }
                 # Build url query string and body
                 $ObjectBody = $ObjectBody | Select-Object -Property * -ExcludeProperty Length
                 $Body = $ObjectBody | ConvertTo-Json -Depth:(10) -Compress | Sort-Object
@@ -211,16 +211,16 @@ Function Invoke-JCApi
         {
             # Append meta info to each result record
             Get-Variable -Name:($HiddenProperties) |
-                ForEach-Object {
+            ForEach-Object {
                 $Variable = $_
                 $Results |
-                    ForEach-Object {
+                ForEach-Object {
                     Add-Member -InputObject:($_) -MemberType:('NoteProperty') -Name:($Variable.Name) -Value:($Variable.Value)
                 }
             }
             # Validate results properties returned
             $Fields | ForEach-Object {
-                If ($_ -notin ($Results | ForEach-Object { $_.PSObject.Properties.Name} | Select-Object -Unique))
+                If ($_ -notin ($Results | ForEach-Object { $_.PSObject.Properties.Name } | Select-Object -Unique))
                 {
                     Write-Warning ('API output does not contain the field "' + $_ + '". Please refer to https://docs.jumpcloud.com for API endpoint field names.')
                 }
