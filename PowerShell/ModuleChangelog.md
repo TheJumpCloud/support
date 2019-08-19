@@ -6,7 +6,7 @@ Release Date: August 19, 2019
 
 ```
 Bug fixes for connecting to a JumpCloud organization with no name specified.
-Bug fix for functions to call Connect-JCOnline to set API key if key is not set.
+Bug fix for functions that call Connect-JCOnline to set an API key if key is not set.
 Formatting update for Connect-JCOnline output.
 ```
 

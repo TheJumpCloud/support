@@ -13,5 +13,5 @@ Use Get-JCSystem and the new parameter '-SystemFDEKey' to backup SystemFDEKeys.
 #### Banner Old
 
 ```
-Bug fixes for connecting to tenants and Connect-JCOnline formatting update.
+Bug fixes for authentication and formatting updates to Connect-JCOnline.
 ```
