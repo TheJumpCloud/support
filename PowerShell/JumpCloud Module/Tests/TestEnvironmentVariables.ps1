@@ -1,12 +1,6 @@
 # Install Pester
-If ($PSVersionTable.PSEdition -eq 'Core')
-{
-    Install-Module -Name:('Pester') -Force -Scope:('CurrentUser') -SkipPublisherCheck
-}
-Else
-{
-    Install-Module -Name:('Pester') -Force -Scope:('CurrentUser')
-}
+Install-Module -Name:('Pester') -Force -Scope:('CurrentUser') -SkipPublisherCheck
+
 # Import the module
 Import-Module -Name:($ModuleManifestPath) -Force
 #Load private functions
