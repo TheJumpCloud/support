@@ -58,7 +58,7 @@ Function Update-JCModule
                 }
                 If ($UserInput.ToUpper() -eq 'N')
                 {
-                    Write-Host ('Exiting the ' + $PowerShellGalleryModule.Name + ' PowerShell module install process.') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action)
+                    Write-Host ('Exiting the ' + $PowerShellGalleryModule.Name + ' PowerShell module update process.') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action)
                 }
                 Else
                 {
