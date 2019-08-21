@@ -162,7 +162,14 @@ Powershell - Migration.ps1 & Functions.ps1
 
 To use the GUI run the relevant .exe file for your system as administrator from the Download Links above. It may also be required to unblock the Security setting stating `This file came from another computer and might be blocked to help protect this computer`. This will be addressed by code signing in a future release and not be required.
 
+![image48](https://github.com/TheJumpCloud/support/blob/master/ADMU/images/img_48.png)
+
+To resolve this right click on the .exe that you wish to run and select "Properties".
+
+
 ![image47](https://github.com/TheJumpCloud/support/blob/master/ADMU/images/img_47.png)
+
+On the security tab check the box for "Unblock" click "Ok" and you will be able to open the .exe
 
 ## ADMU Powershell Script
 
@@ -216,8 +223,6 @@ c:\jcadmu.exe -arguments -domainusername 'bob.lazar' -jumpcloudusername 'blazar'
 ![image45](https://github.com/TheJumpCloud/support/blob/master/ADMU/images/img_45.png)
 
 ## Advanced Deployment Scenarios
-
-{{Break out into sub list}}
 
  The ADMU has been developed with large scale deployments in mind. As the tool stands today we are looking to gather customer input on the various environments and use cases, from this we can tweak and improve to the tool to solve a range of scenarios and stream line the account conversion process.
 
@@ -612,4 +617,3 @@ Reference: [https://docs.microsoft.com/en-us/azure/active-directory/devices/](ht
  * Show if account is in local admin group
  * Ability to change & edit username
  * etc.
-
