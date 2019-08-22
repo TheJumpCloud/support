@@ -1,5 +1,7 @@
 **Configuring a Zero-Touch macOS onboarding experience for PreStaging user and system enrollment using DEPNotify, munkiPKG, JumpCloud, and your MDM of choice.**
 
+*This example uses SimpleMDM*
+
 ![configuration_steps](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/diagrams/configuration_steps.png?raw=true)
 
 **Table Of Contents**
