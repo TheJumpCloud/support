@@ -1,6 +1,6 @@
 Function Connect-JCOnline ()
 {
-    [CmdletBinding(DefaultParameterSetName = 'Interactive')]
+    [CmdletBinding()]
     Param
     (
         [Parameter(ParameterSetName = 'force', HelpMessage = 'Using the "-Force" parameter the module update check is skipped. The ''-Force'' parameter should be used when using the JumpCloud module in scripts or other automation environments.')][Switch]$force
@@ -14,7 +14,6 @@ Function Connect-JCOnline ()
             'ValueFromPipelineByPropertyName' = $true;
             'ValidateNotNullOrEmpty'          = $true;
             'ValidateLength'                  = (40, 40);
-            'ParameterSets'                   = ('force', 'Interactive');
             'HelpMessage'                     = 'Please enter your JumpCloud API key. This can be found in the JumpCloud admin console within "API Settings" accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console.';
         }
         $Param_JumpCloudOrgId = @{
@@ -23,7 +22,6 @@ Function Connect-JCOnline ()
             'Position'                        = 1;
             'ValueFromPipelineByPropertyName' = $true;
             'ValidateNotNullOrEmpty'          = $true;
-            'ParameterSets'                   = ('force', 'Interactive');
             'HelpMessage'                     = 'Organization Id can be found in the Settings page within the admin console. Only needed for multi tenant admins.';
         }
         $Param_JCEnvironment = @{
@@ -32,7 +30,6 @@ Function Connect-JCOnline ()
             'Position'                        = 2;
             'ValueFromPipelineByPropertyName' = $true;
             'ValidateNotNullOrEmpty'          = $true;
-            'ParameterSets'                   = ('force', 'Interactive');
             'HelpMessage'                     = 'Specific to JumpCloud development team to connect to staging dev environment.';
             'ValidateSet'                     = ('production', 'staging');
         }
@@ -49,6 +46,15 @@ Function Connect-JCOnline ()
         If (-not [System.String]::IsNullOrEmpty($env:JCOrgId))
         {
             $Param_JumpCloudOrgId.Add('Default', $env:JCOrgId);
+        }
+        # If the $env:JCEnvironment is set then set the default value to be the env variable
+        If (-not [System.String]::IsNullOrEmpty($env:JCEnvironment))
+        {
+            $Param_JCEnvironment.Add('Default', $env:JCEnvironment);
+        }
+        Else
+        {
+            $Param_JCEnvironment.Add('Default', 'production');
         }
         # Build output
         # Build parameter array
@@ -92,38 +98,31 @@ Function Connect-JCOnline ()
         Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDynamicParamProcess) -ArgumentList:($PsBoundParameters, $PSCmdlet, $RuntimeParameterDictionary) -NoNewScope
         Try
         {
-            # Set the JCEnvironment variables
-            If ([System.String]::IsNullOrEmpty($JCEnvironment) -and [System.String]::IsNullOrEmpty($env:JCEnvironment))
-            {
-                $JCEnvironment = 'production'
-                $env:JCEnvironment = $JCEnvironment
-            }
-            ElseIf ((-not [System.String]::IsNullOrEmpty($JCEnvironment) -and [System.String]::IsNullOrEmpty($env:JCEnvironment)) -or (-not [System.String]::IsNullOrEmpty($JCEnvironment) -and $JCEnvironment -ne $env:JCEnvironment))
-            {
-                $env:JCEnvironment = $JCEnvironment
-            }
-            ElseIf ([System.String]::IsNullOrEmpty($JCEnvironment) -and -not [System.String]::IsNullOrEmpty($env:JCEnvironment))
-            {
-                $JCEnvironment = $env:JCEnvironment
-            }
-            Else
-            {
-                # Both are populated so don't do anything
-            }
-            Switch ($JCEnvironment)
-            {
-                'production'
-                {
-                    $global:JCUrlBasePath = "https://console.jumpcloud.com"
-                }
-                'staging'
-                {
-                    $global:JCUrlBasePath = "https://console.awsstg.jumpcloud.com"
-                }
-            }
             # Update security protocol
             [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls, [System.Net.SecurityProtocolType]::Tls12
             #Region Set environment variables that can be used by other scripts
+            # If "$JCEnvironment" is populated or if "$env:JCEnvironment" is not set
+            If (-not [System.String]::IsNullOrEmpty($JCEnvironment))
+            {
+                # Set $env:JCEnvironment
+                $env:JCEnvironment = $JCEnvironment
+                $global:JCEnvironment = $env:JCEnvironment
+            }
+            $global:JCUrlBasePath = Switch ($JCEnvironment)
+            {
+                'production'
+                {
+                    "https://console.jumpcloud.com"
+                }
+                'staging'
+                {
+                    "https://console.awsstg.jumpcloud.com"
+                }
+                Default
+                {
+                    Write-Error ('Unknown value for $JCEnvironment.')
+                }
+            }
             # If "$JumpCloudApiKey" is populated or if "$env:JCApiKey" is not set
             If (-not [System.String]::IsNullOrEmpty($JumpCloudApiKey))
             {
