@@ -35,10 +35,10 @@ fi
 while [ -z "$systemKey" ]; do
     echo "$(date "+%Y-%m-%dT%H:%M:%S"): Waiting for systemKey to register"
     sleep 1
+    conf="$(cat /opt/jc/jcagent.conf)"
     if [[ $conf =~ $regex ]]; then
         systemKey="${BASH_REMATCH[@]}"
     fi
-
 done
 
 echo "$(date "+%Y-%m-%dT%H:%M:%S"): JumpCloud agent installed!"
