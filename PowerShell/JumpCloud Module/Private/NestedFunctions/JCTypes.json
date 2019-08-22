@@ -338,6 +338,126 @@
     ],
     "SystemInsights": [
       {
+        "Table": "etc_hosts",
+        "Url": {
+          "List": "/api/v2/systeminsights/etc_hosts",
+          "Item": "/api/v2/systeminsights/{system_id}/etc_hosts",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "jc_system_id",
+        "ByName": "address",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
+        "Table": "logical_drives",
+        "Url": {
+          "List": "/api/v2/systeminsights/logical_drives",
+          "Item": "/api/v2/systeminsights/{system_id}/logical_drives",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "jc_system_id",
+        "ByName": "device_id",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
+        "Table": "disk_info",
+        "Url": {
+          "List": "/api/v2/systeminsights/disk_info",
+          "Item": "/api/v2/systeminsights/{system_id}/disk_info",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "jc_system_id",
+        "ByName": "disk_index",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
+        "Table": "bitlocker_info",
+        "Url": {
+          "List": "/api/v2/systeminsights/bitlocker_info",
+          "Item": "/api/v2/systeminsights/{system_id}/bitlocker_info",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "jc_system_id",
+        "ByName": "protection_status",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
+        "Table": "patches",
+        "Url": {
+          "List": "/api/v2/systeminsights/patches",
+          "Item": "/api/v2/systeminsights/{system_id}/patches",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "jc_system_id",
+        "ByName": "hotfix_id",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
+        "Table": "programs",
+        "Url": {
+          "List": "/api/v2/systeminsights/programs",
+          "Item": "/api/v2/systeminsights/{system_id}/programs",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "jc_system_id",
+        "ByName": "name",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
         "Table": "apps",
         "Url": {
           "List": "/api/v2/systeminsights/apps",
