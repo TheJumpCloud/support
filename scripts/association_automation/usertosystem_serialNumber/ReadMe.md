@@ -10,7 +10,7 @@
 
 # User To System Association via System Serial Number
 
-Admins that wish to create automation scenarios to for associating JumpCloud users to JumpCloud managed systems can use the "usertosystem_serialNumber.ps1" and the "usertosystem_serialNumber.csv" to accomplish this task.
+Admins that wish to create automation scenarios for associating JumpCloud users to JumpCloud managed systems can use the "usertosystem_serialNumber.ps1" and the "usertosystem_serialNumber.csv" to accomplish this task.
 
 The "usertosystem_serialNumber.ps1" leverages the JumpCloud PowerShell module to associate users to systems using the systems serialNumber and the users JumpCloud username.
 
