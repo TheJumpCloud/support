@@ -1,3 +1,22 @@
+## 1.13.3
+
+Release Date: August 28, 2019
+
+#### RELEASE NOTES
+
+```
+Systeminsights improvements.
+```
+
+#### FEATURES
+
+#### IMPROVEMENTS
+
+- Additional systeminsights tables have been added: etc_hosts, logical_drives, disk_info, bitlocker_info, patches, programs
+- Systeminsights id property has been renamed from `jc_system_id` to `system_id`.
+
+#### BUG FIXES
+
 ## 1.13.2
 
 Release Date: August 19, 2019
