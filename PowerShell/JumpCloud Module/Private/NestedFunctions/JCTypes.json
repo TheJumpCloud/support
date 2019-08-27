@@ -347,7 +347,7 @@
           ]
         },
         "Method": "GET",
-        "ById": "jc_system_id",
+        "ById": "system_id",
         "ByName": "address",
         "Paginate": true,
         "SupportRegexFilter": false,
@@ -367,7 +367,7 @@
           ]
         },
         "Method": "GET",
-        "ById": "jc_system_id",
+        "ById": "system_id",
         "ByName": "device_id",
         "Paginate": true,
         "SupportRegexFilter": false,
@@ -387,7 +387,7 @@
           ]
         },
         "Method": "GET",
-        "ById": "jc_system_id",
+        "ById": "system_id",
         "ByName": "disk_index",
         "Paginate": true,
         "SupportRegexFilter": false,
@@ -407,7 +407,7 @@
           ]
         },
         "Method": "GET",
-        "ById": "jc_system_id",
+        "ById": "system_id",
         "ByName": "protection_status",
         "Paginate": true,
         "SupportRegexFilter": false,
@@ -427,7 +427,7 @@
           ]
         },
         "Method": "GET",
-        "ById": "jc_system_id",
+        "ById": "system_id",
         "ByName": "hotfix_id",
         "Paginate": true,
         "SupportRegexFilter": false,
@@ -447,7 +447,7 @@
           ]
         },
         "Method": "GET",
-        "ById": "jc_system_id",
+        "ById": "system_id",
         "ByName": "name",
         "Paginate": true,
         "SupportRegexFilter": false,
@@ -467,7 +467,7 @@
           ]
         },
         "Method": "GET",
-        "ById": "jc_system_id",
+        "ById": "system_id",
         "ByName": "bundle_name",
         "Paginate": true,
         "SupportRegexFilter": false,
@@ -487,7 +487,7 @@
           ]
         },
         "Method": "GET",
-        "ById": "jc_system_id",
+        "ById": "system_id",
         "ByName": "name",
         "Paginate": true,
         "SupportRegexFilter": false,
@@ -507,7 +507,7 @@
           ]
         },
         "Method": "GET",
-        "ById": "jc_system_id",
+        "ById": "system_id",
         "ByName": "name",
         "Paginate": true,
         "SupportRegexFilter": false,
@@ -527,7 +527,7 @@
           ]
         },
         "Method": "GET",
-        "ById": "jc_system_id",
+        "ById": "system_id",
         "ByName": "encryption_status",
         "Paginate": true,
         "SupportRegexFilter": false,
@@ -547,7 +547,7 @@
           ]
         },
         "Method": "GET",
-        "ById": "jc_system_id",
+        "ById": "system_id",
         "ByName": "name",
         "Paginate": true,
         "SupportRegexFilter": false,
@@ -567,7 +567,7 @@
           ]
         },
         "Method": "GET",
-        "ById": "jc_system_id",
+        "ById": "system_id",
         "ByName": "groupname",
         "Paginate": true,
         "SupportRegexFilter": false,
@@ -587,7 +587,7 @@
           ]
         },
         "Method": "GET",
-        "ById": "jc_system_id",
+        "ById": "system_id",
         "ByName": "address",
         "Paginate": true,
         "SupportRegexFilter": false,
@@ -607,7 +607,7 @@
           ]
         },
         "Method": "GET",
-        "ById": "jc_system_id",
+        "ById": "system_id",
         "ByName": "path",
         "Paginate": true,
         "SupportRegexFilter": false,
@@ -627,7 +627,7 @@
           ]
         },
         "Method": "GET",
-        "ById": "jc_system_id",
+        "ById": "system_id",
         "ByName": "version",
         "Paginate": true,
         "SupportRegexFilter": false,
@@ -647,7 +647,7 @@
           ]
         },
         "Method": "GET",
-        "ById": "jc_system_id",
+        "ById": "system_id",
         "ByName": "name",
         "Paginate": true,
         "SupportRegexFilter": false,
@@ -667,7 +667,7 @@
           ]
         },
         "Method": "GET",
-        "ById": "jc_system_id",
+        "ById": "system_id",
         "ByName": "cpu_subtype",
         "Paginate": true,
         "SupportRegexFilter": false,
@@ -687,7 +687,7 @@
           ]
         },
         "Method": "GET",
-        "ById": "jc_system_id",
+        "ById": "system_id",
         "ByName": "username",
         "Paginate": true,
         "SupportRegexFilter": false,
