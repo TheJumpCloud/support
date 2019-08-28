@@ -5,7 +5,8 @@ Function New-JCUserGroup ()
     (
 
         [Parameter(Mandatory,
-            ValueFromPipelineByPropertyName = $True)]
+            ValueFromPipelineByPropertyName = $True,
+            HelpMessage = 'The name of the new JumpCloud User Group.')]
         [string]
         $GroupName
     )
@@ -48,7 +49,7 @@ Function New-JCUserGroup ()
 
             try
             {
-                $NewGroup = Invoke-RestMethod -Method POST -Uri $URI  -Body $jsonbody -Headers $hdrs -UserAgent $JCUserAgent
+                $NewGroup = Invoke-RestMethod -Method POST -Uri $URI  -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent)
                 $Status = 'Created'
             }
             catch

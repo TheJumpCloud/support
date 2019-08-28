@@ -1,21 +1,20 @@
 ---
 external help file: JumpCloud-help.xml
 Module Name: JumpCloud
-online version:
+online version: https://github.com/TheJumpCloud/support/wiki/Remove-JCUser
 schema: 2.0.0
 ---
 
 # Remove-JCUser
 
 ## SYNOPSIS
-
 Removes a JumpCloud User
 
 ## SYNTAX
 
 ### Username (Default)
 ```
-Remove-JCUser -Username <String> [-force] [<CommonParameters>]
+Remove-JCUser [-Username] <String> [-force] [<CommonParameters>]
 ```
 
 ### UserID
@@ -24,22 +23,19 @@ Remove-JCUser -UserID <String> [-ByID] [-force] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-
 The Remove-JCUser function will remove a JumpCloud user from the JumpCloud organization. This will remove the deleted users access to any JumpCloud bound resources.
 
 ## EXAMPLES
 
 ### Example 1
-
-```PowerShell
+```powershell
 PS C:\> Remove-JCUser cclemons
 ```
 
 Removes the JumpCloud User with Username 'cclemons'. A warning message will be presented to confirm this operation.
 
 ### Example 2
-
-```PowerShell
+```powershell
 PS C:\> Remove-JCUser cclemons -Force
 ```
 
@@ -48,8 +44,8 @@ Removes the JumpCloud User with Username 'cclemons' using the -Force Parameter. 
 ## PARAMETERS
 
 ### -ByID
-
-Use the -ByID parameter when the UserID is passed over the pipeline to the Remove-JCUser function. The -ByID SwitchParameter will set the ParameterSet to 'ByID' which will increase the function speed and performance.
+Use the -ByID parameter when the UserID is passed over the pipeline to the Remove-JCUser function.
+The -ByID SwitchParameter will set the ParameterSet to 'ByID' which will increase the function speed and performance.
 
 ```yaml
 Type: SwitchParameter
@@ -64,18 +60,12 @@ Accept wildcard characters: False
 ```
 
 ### -UserID
-
 The _id of the User which you want to delete.
-
 To find a JumpCloud UserID run the command:
-
-
-
-PS C:\> Get-JCUser | Select username, _id
-
+PS C:\\\> Get-JCUser | Select username, _id
 The UserID will be the 24 character string populated for the _id field.
-
-UserID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically.
+UserID has an Alias of _id.
+This means you can leverage the PowerShell pipeline to populate this field automatically.
 
 ```yaml
 Type: String
@@ -90,7 +80,6 @@ Accept wildcard characters: False
 ```
 
 ### -Username
-
 The Username of the JumpCloud user you wish to remove.
 
 ```yaml
@@ -99,14 +88,13 @@ Parameter Sets: Username
 Aliases:
 
 Required: True
-Position: Named
+Position: 0
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
 ### -force
-
 A SwitchParameter which suppresses the warning message when removing a JumpCloud User.
 
 ```yaml
@@ -122,18 +110,14 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
-This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see about_CommonParameters (http://go.microsoft.com/fwlink/?LinkID=113216).
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
 ### System.String
-
 ## OUTPUTS
 
 ### System.Object
-
 ## NOTES
 
 ## RELATED LINKS
-
-[Online Help Remove-JCUser](https://github.com/TheJumpCloud/support/wiki/Remove-JCUser)

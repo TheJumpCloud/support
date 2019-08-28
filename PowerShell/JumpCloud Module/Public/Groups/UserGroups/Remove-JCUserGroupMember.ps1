@@ -4,41 +4,24 @@ Function Remove-JCUserGroupMember ()
 
     param
     (
-        [Parameter(Mandatory,
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'ByName',
-            Position = 0)]
-
-        [Parameter(
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'ByID',
-            Position = 0)]
-
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'ByName', Position = 0, HelpMessage = 'The name of the JumpCloud User Group that you want to remove the User from.')]
+        [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'ByID', Position = 0, HelpMessage = 'The name of the JumpCloud User Group that you want to remove the User from.')]
         [Alias('name')]
         [String]$GroupName,
 
-        [Parameter(Mandatory,
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'ByName',
-            Position = 1)]
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'ByName', Position = 1, HelpMessage = 'The Username of the JumpCloud user you wish to remove from the User Group.')]
         [String]$Username,
 
-        [Parameter(
-            ParameterSetName = 'ByID')]
-        [Switch]
-        $ByID,
+        [Parameter(ParameterSetName = 'ByID', HelpMessage = 'Use the -ByID parameter when either the UserID or GroupID is passed over the pipeline to the Add-JCUserGroupMember function. The -ByID SwitchParameter will set the ParameterSet to ''ByID'' which will increase the function speed and performance.')]
+        [Switch]$ByID,
 
-        [Parameter(
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'ByID')]
+        [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'ByID', HelpMessage = 'The GroupID is used in the ParameterSet ''ByID''. The GroupID for a User Group can be found by running the command: PS C:\> Get-JCGroup -type ''User''')]
         [string]$GroupID,
 
-        [Parameter(Mandatory,
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'ByID')]
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'ByID', HelpMessage = 'The _id of the User which you want to remove from the User Group. To find a JumpCloud UserID run the command: PS C:\> Get-JCUser | Select username, _id
+The UserID will be the 24 character string populated for the _id field. UserID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCUser function before calling Remove-JCUserGroupMember. This is shown in EXAMPLES 2, 3, and 4.')]
         [Alias('_id', 'id')]
         [string]$UserID
-
     )
     begin
 
@@ -109,7 +92,7 @@ Function Remove-JCUserGroupMember ()
 
             try
             {
-                $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent $JCUserAgent
+                $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
                 $Status = 'Removed'
             }
             catch
@@ -157,7 +140,7 @@ Function Remove-JCUserGroupMember ()
 
             try
             {
-                $GroupRemove = $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent $JCUserAgent
+                $GroupRemove = $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
                 $Status = 'Removed'
             }
             catch

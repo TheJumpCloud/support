@@ -1,17 +1,17 @@
 #### Latest Version
 
 ```
-1.9.0
+1.13.2
 ```
 
 #### Banner Current
 
 ```
-Module up-to-date. Secure your wifi networks with VLAN tagging! Use the new RADIUS reply attribute functions.
+Use Get-JCSystem and the new parameter '-SystemFDEKey' to backup SystemFDEKeys.
 ```
 
 #### Banner Old
 
 ```
-RADIUS reply attribute functions await! JumpCloud module update available.
+Bug fixes for authentication and formatting updates to Connect-JCOnline.
 ```

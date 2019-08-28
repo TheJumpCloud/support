@@ -1,14 +1,13 @@
 ---
 external help file: JumpCloud-help.xml
 Module Name: JumpCloud
-online version:
+online version: https://github.com/TheJumpCloud/support/wiki/Remove-JCUserGroupMember
 schema: 2.0.0
 ---
 
 # Remove-JCUserGroupMember
 
 ## SYNOPSIS
-
 Removes a JumpCloud User from a JumpCloud User Group
 
 ## SYNTAX
@@ -25,38 +24,33 @@ Remove-JCUserGroupMember [[-GroupName] <String>] [-ByID] [-GroupID <String>] -Us
 ```
 
 ## DESCRIPTION
-
 The Remove-JCUserGroupMember function is used to remove a JumpCloud User from a JumpCloud User Group. The user can be removed by Username or by UserID.
 
 ## EXAMPLES
 
 ### Example 1
-
-```PowerShell
+```powershell
 PS C:\> Remove-JCUserGroupMember -Username cclemons -GroupName 'The Band'
 ```
 
 Removes the JumpCloud user with Username 'cclemons' from the User Group 'The Band'
 
 ### Example 2
-
-```PowerShell
+```powershell
 PS C:\> Get-JCUser | Where-Object sudo -EQ $false | Remove-JCUserGroupMember -GroupName 'Administrators'
 ```
 
 Removes all JumpCloud users where the 'sudo' attribute is equal to $false from the User Group 'Administrators'
 
 ### Example 3
-
-```PowerShell
+```powershell
 PS C:\> Get-JCUser | Where-Object created -lt (Get-Date).AddDays(-7) | Remove-JCUserGroupMember -GroupName 'New Hires'
 ```
 
 Removes all JumpCloud users not created within the last 7 days from the User Group 'New Hires'
 
 ### Example 4
-
-```PowerShell
+```powershell
 Get-JCUser | Select-Object username, @{name='Attribute Value'; expression={$_.attributes.value}} | Where-Object 'Attribute Value' -Like *Marketing* | Remove-JCUserGroupMember -GroupName Sales
 ```
 
@@ -65,8 +59,8 @@ Removes all JumpCloud users with a custom attribute value which contains 'Market
 ## PARAMETERS
 
 ### -ByID
-
-Use the -ByID parameter when either the UserID or GroupID is passed over the pipeline to the Add-JCUserGroupMember function. The -ByID SwitchParameter will set the ParameterSet to 'ByID' which will increase the function speed and performance.
+Use the -ByID parameter when either the UserID or GroupID is passed over the pipeline to the Add-JCUserGroupMember function.
+The -ByID SwitchParameter will set the ParameterSet to 'ByID' which will increase the function speed and performance.
 
 ```yaml
 Type: SwitchParameter
@@ -81,12 +75,10 @@ Accept wildcard characters: False
 ```
 
 ### -GroupID
+The GroupID is used in the ParameterSet 'ByID'.
+The GroupID for a User Group can be found by running the command: PS C:\\\> Get-JCGroup -type 'User'
 
-The GroupID is used in the ParameterSet 'ByID'. The GroupID for a User Group can be found by running the command:
-
-
-
-PS C:\> Get-JCGroup -type 'User'```yaml
+```yaml
 Type: String
 Parameter Sets: ByID
 Aliases:
@@ -99,7 +91,6 @@ Accept wildcard characters: False
 ```
 
 ### -GroupName
-
 The name of the JumpCloud User Group that you want to remove the User from.
 
 ```yaml
@@ -127,18 +118,12 @@ Accept wildcard characters: False
 ```
 
 ### -UserID
-
 The _id of the User which you want to remove from the User Group.
-
-To find a JumpCloud UserID run the command:
-
-
-
-PS C:\> Get-JCUser | Select username, _id
-
+To find a JumpCloud UserID run the command: PS C:\\\> Get-JCUser | Select username, _id
 The UserID will be the 24 character string populated for the _id field.
-
-UserID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCUser function before calling Remove-JCUserGroupMember. This is shown in EXAMPLES 2, 3, and 4.
+UserID has an Alias of _id.
+This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCUser function before calling Remove-JCUserGroupMember.
+This is shown in EXAMPLES 2, 3, and 4.
 
 ```yaml
 Type: String
@@ -153,7 +138,6 @@ Accept wildcard characters: False
 ```
 
 ### -Username
-
 The Username of the JumpCloud user you wish to remove from the User Group.
 
 ```yaml
@@ -169,18 +153,14 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
-This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see about_CommonParameters (http://go.microsoft.com/fwlink/?LinkID=113216).
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
 ### System.String
-
 ## OUTPUTS
 
 ### System.Object
-
 ## NOTES
 
 ## RELATED LINKS
-
-[Remove-JCUserGroupMember](https://github.com/TheJumpCloud/support/wiki/Remove-JCUserGroupMember)

@@ -1,25 +1,23 @@
 ---
 external help file: JumpCloud-help.xml
 Module Name: JumpCloud
-online version:
+online version: https://github.com/TheJumpCloud/support/wiki/Set-JCCommand
 schema: 2.0.0
 ---
 
 # Set-JCCommand
 
 ## SYNOPSIS
-
 Updates an existing JumpCloud command
 
 ## SYNTAX
 
 ```
 Set-JCCommand [-CommandID] <String> [[-name] <String>] [[-command] <String>] [[-launchType] <String>]
- [[-timeout] <String>] [<CommonParameters>]
+ [[-timeout] <String>] -trigger <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-
 Updates an existing JumpCloud command using the CommandID
 
 ## EXAMPLES
@@ -41,12 +39,9 @@ Updates the 'name' of command with CommandID '5g6o3lf95r1485193o8cks6' to "Windo
 ## PARAMETERS
 
 ### -CommandID
-
 The _id of the JumpCloud command you wish to update.
 To find a JumpCloud CommandID run the command:
-
-PS C:\> Get-JCCommand | Select name, _id
-
+PS C:\\\> Get-JCCommand | Select name, _id
 The CommandID will be the 24 character string populated for the _id field.
 
 ```yaml
@@ -62,7 +57,6 @@ Accept wildcard characters: False
 ```
 
 ### -command
-
 The actual script or command.
 
 ```yaml
@@ -78,7 +72,6 @@ Accept wildcard characters: False
 ```
 
 ### -launchType
-
 The launch type of the command options are: trigger, manual, repeated, one-time.
 
 ```yaml
@@ -95,7 +88,6 @@ Accept wildcard characters: False
 ```
 
 ### -name
-
 The name of the new JumpCloud command.
 
 ```yaml
@@ -125,19 +117,31 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
+### -trigger
+Enter a trigger name.
+Triggers must be unique
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
 ### CommonParameters
-This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see about_CommonParameters (http://go.microsoft.com/fwlink/?LinkID=113216).
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
 ### System.String
-
 ## OUTPUTS
 
 ### System.Object
-
 ## NOTES
 
 ## RELATED LINKS
-
-[Set-JCCommand](https://github.com/TheJumpCloud/support/wiki/Set-JCCommand)

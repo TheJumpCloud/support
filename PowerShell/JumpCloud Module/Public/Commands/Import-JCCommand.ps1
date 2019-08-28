@@ -1,43 +1,26 @@
 Function Import-JCCommand
 {
     [CmdletBinding(DefaultParameterSetName = 'URL')]
-    param (
-
-        [Parameter(
-            ParameterSetName = 'URL',
-            Mandatory,
-            Position = 0,
-            ValueFromPipelineByPropertyName = $True)]
-        [string]
-        $URL
-
+    Param (
+        [Parameter(ParameterSetName = 'URL', Mandatory, Position = 0, ValueFromPipelineByPropertyName = $True, HelpMessage = 'The URL of the JumpCloud command to import into a JumpCloud tenant.')]
+        [string]$URL
     )
-    
-    begin
-    { 
-
-        Write-Verbose 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {Connect-JConline}
-        $NewCommandsArray = @() #Output new commands
-        
-    }
-    
-    process 
+    Begin
     {
-
-        if ($PSCmdlet.ParameterSetName -eq 'URL')
+        Write-Verbose 'Verifying JCAPI Key'
+        If ($JCAPIKEY.length -ne 40) {Connect-JConline}
+        $NewCommandsArray = @() #Output new commands
+    }
+    Process
+    {
+        If ($PSCmdlet.ParameterSetName -eq 'URL')
         {
-
             $NewCommand = New-JCCommandFromURL -GitHubURL $URL
-            
             $NewCommandsArray += $NewCommand
         }
-
     } #End process
-        
-    end
+    End
     {
-
         Return $NewCommandsArray
     }
 }

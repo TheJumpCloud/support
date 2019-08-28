@@ -2,15 +2,15 @@ Function Get-JCPolicyTargetSystem
 {
     [CmdletBinding(DefaultParameterSetName = 'ById')]
     param (
-        [Parameter(ParameterSetName = 'ByName')][Switch]$ByName,
-        [Parameter(Mandatory = $True, ValueFromPipelineByPropertyName = $True, Position = 0, ParameterSetName = 'ById')][ValidateNotNullOrEmpty()][Alias('_id', 'id')][String]$PolicyID,
-        [Parameter(Mandatory = $True, ValueFromPipelineByPropertyName = $True, Position = 0, ParameterSetName = 'ByName')][ValidateNotNullOrEmpty()][Alias('Name')][String]$PolicyName
+        [Parameter(ParameterSetName = 'ByName', HelpMessage = 'Use the -ByName parameter when you want to query a specific policy. The -ByName SwitchParameter will set the ParameterSet to ''ByName'' which queries one JumpCloud policy at a time.')][Switch]$ByName,
+        [Parameter(Mandatory = $True, ValueFromPipelineByPropertyName = $True, Position = 0, ParameterSetName = 'ById', HelpMessage = 'The PolicyID of the JumpCloud policy you wish to query.')][ValidateNotNullOrEmpty()][Alias('_id', 'id')][String]$PolicyID,
+        [Parameter(Mandatory = $True, ValueFromPipelineByPropertyName = $True, Position = 0, ParameterSetName = 'ByName', HelpMessage = 'The Name of the JumpCloud policy you wish to query.')][ValidateNotNullOrEmpty()][Alias('Name')][String]$PolicyName
     )
     Begin
     {
 
         Write-Verbose 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {Connect-JConline}
+        if ($JCAPIKEY.length -ne 40) { Connect-JCOnline }
 
         Write-Verbose 'Populating API headers'
         $hdrs = @{
@@ -40,16 +40,15 @@ Function Get-JCPolicyTargetSystem
     {
         switch ($PSCmdlet.ParameterSetName)
         {
-            'ByName' {$Policy = Get-JCPolicy -Name:($PolicyName)}
-            'ById' {$Policy = Get-JCPolicy -PolicyID:($PolicyID)}
+            'ByName' { $Policy = Get-JCPolicy -Name:($PolicyName) }
+            'ById' { $Policy = Get-JCPolicy -PolicyID:($PolicyID) }
         }
         If ($Policy)
         {
             $PolicyId = $Policy.id
             $PolicyName = $Policy.Name
             $URL = $URL_Template -f $JCUrlBasePath, $PolicyID
-
-            $Results = Invoke-JCApiGet -URL:($URL)
+            $Results = Invoke-JCApi -Method:('GET') -Paginate:($true) -Url:($URL)
             ForEach ($Result In $Results)
             {
                 $SystemID = $Result.id

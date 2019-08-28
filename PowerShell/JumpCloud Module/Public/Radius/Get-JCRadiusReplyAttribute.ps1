@@ -6,7 +6,8 @@ Function Get-JCRadiusReplyAttribute ()
     (
 
         [Parameter(Mandatory, position = 0, ValueFromPipelineByPropertyName,
-            ParameterSetName = 'ByGroup')]
+            ParameterSetName = 'ByGroup',
+            HelpMessage = 'The JumpCloud user group to query for Radius attributes.')]
         [Alias('name')]
         [String]$GroupName
 
@@ -60,4 +61,3 @@ Function Get-JCRadiusReplyAttribute ()
     }
 
 }
-

@@ -2,20 +2,15 @@ function Remove-JCRadiusReplyAttribute
 {
     [CmdletBinding()]
     param (
-        [Parameter( Mandatory, position = 0, ValueFromPipelineByPropertyName,
-            ParameterSetName = 'ByGroup')]
+        [Parameter( Mandatory, position = 0, ValueFromPipelineByPropertyName, ParameterSetName = 'ByGroup', HelpMessage = 'The JumpCloud user group to remove the specified Radius reply attributes from.')]
         [Alias('name')]
         [String]$GroupName,
 
-        [Parameter( ValueFromPipelineByPropertyName,
-            ParameterSetName = 'ByGroup')]
-        [String[]]
-        $AttributeName,
+        [Parameter( ValueFromPipelineByPropertyName, ParameterSetName = 'ByGroup', HelpMessage = 'Attributes to remove from a target user group. To remove multiple attributes at one time separate the attribute names with commas.')]
+        [String[]]$AttributeName,
 
-        [Parameter( ValueFromPipelineByPropertyName,
-            ParameterSetName = 'ByGroup')]
-        [switch]
-        $All
+        [Parameter( ValueFromPipelineByPropertyName, ParameterSetName = 'ByGroup', HelpMessage = 'The ''-All'' parameter is a switch parameter which will clear all Radius reply attributes from a JumpCloud user group.')]
+        [switch]$All
     )
 
     begin
@@ -83,14 +78,14 @@ function Remove-JCRadiusReplyAttribute
                 $Body.attributes.Add("posixGroups", @($posixGroups))
             }
 
-            if ($ExistingAttributes.ldapGroups) 
+            if ($ExistingAttributes.ldapGroups)
             {
                 $ldapGroups = New-Object PSObject
                 $ldapGroups | Add-Member -MemberType NoteProperty -Name name -Value $ExistingAttributes.ldapGroups.name
                 $Body.attributes.Add("ldapGroups", @($ldapGroups))
             }
 
-            if ($GroupInfo.attributes.sambaEnabled -eq $True) 
+            if ($GroupInfo.attributes.sambaEnabled -eq $True)
             {
                 $Body.attributes.Add("sambaEnabled", $True)
             }
@@ -101,7 +96,7 @@ function Remove-JCRadiusReplyAttribute
             Write-Debug $jsonbody
             Write-Verbose $jsonbody
 
-            $AttributeRemove = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent $JCUserAgent
+            $AttributeRemove = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent)
 
             $ResultsArray += $AttributeRemove
 
@@ -166,14 +161,14 @@ function Remove-JCRadiusReplyAttribute
                 $Body.attributes.Add("posixGroups", @($posixGroups))
             }
 
-            if ($ExistingAttributes.ldapGroups) 
+            if ($ExistingAttributes.ldapGroups)
             {
                 $ldapGroups = New-Object PSObject
                 $ldapGroups | Add-Member -MemberType NoteProperty -Name name -Value $ExistingAttributes.ldapGroups.name
                 $Body.attributes.Add("ldapGroups", @($ldapGroups))
             }
 
-            if ($GroupInfo.attributes.sambaEnabled -eq $True) 
+            if ($GroupInfo.attributes.sambaEnabled -eq $True)
             {
                 $Body.attributes.Add("sambaEnabled", $True)
             }
@@ -184,7 +179,7 @@ function Remove-JCRadiusReplyAttribute
             Write-Debug $jsonbody
             Write-Verbose $jsonbody
 
-            $AttributeRemove = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent $JCUserAgent
+            $AttributeRemove = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent)
 
             $FormattedResults = $AttributeRemove.attributes.radius.reply
 

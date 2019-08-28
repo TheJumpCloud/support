@@ -11,10 +11,10 @@ Function New-JCImportTemplate()
         $Banner = @"
        __                          ______ __                   __
       / /__  __ ____ ___   ____   / ____// /____   __  __ ____/ /
- __  / // / / // __  __ \ / __ \ / /    / // __ \ / / / // __  / 
-/ /_/ // /_/ // / / / / // /_/ // /___ / // /_/ // /_/ // /_/ /  
-\____/ \____//_/ /_/ /_// ____/ \____//_/ \____/ \____/ \____/   
-                       /_/                                                     
+ __  / // / / // __  __ \ / __ \ / /    / // __ \ / / / // __  /
+/ /_/ // /_/ // / / / / // /_/ // /___ / // /_/ // /_/ // /_/ /
+\____/ \____//_/ /_/ /_// ____/ \____//_/ \____/ \____/ \____/
+                       /_/
                                     CSV User Import Template
 "@
 
@@ -22,8 +22,8 @@ Function New-JCImportTemplate()
 
 
         $Heading2 = 'The CSV file will be created within the directory:'
-        
-        Clear-host
+
+        If (!(Get-PSCallStack | Where-Object {$_.Command -match 'Pester'})) {Clear-Host}
 
         Write-Host $Banner -ForegroundColor Green
         Write-Host "`n$Heading2`n"
@@ -62,12 +62,12 @@ Function New-JCImportTemplate()
 
     process
     {
-        
+
         Write-Host "`nDo you want to create an import CSV template for creating new users or for updating existing users?"
         Write-Host 'Enter "N" for to create a template for ' -NoNewline
-        Write-host -ForegroundColor Yellow 'new users'
+        Write-Host -ForegroundColor Yellow 'new users'
         Write-Host 'Enter "U" for creating a template for ' -NoNewline
-        Write-host -ForegroundColor Yellow "updating existing users"
+        Write-Host -ForegroundColor Yellow "updating existing users"
 
 
         while ($ConfirmUpdateVsNew -ne 'N' -and $ConfirmUpdateVsNew -ne 'U')
@@ -93,34 +93,34 @@ Function New-JCImportTemplate()
         {
             $fileName = 'JCUserUpdateImport_' + $date + '.csv'
             Write-Debug $fileName
-            
+
             $CSV = [ordered]@{
                 Username = $null
             }
 
             Write-Host "`nWould you like to populate this update template with all of your existing users?"
-            Write-host -ForegroundColor Yellow 'You can remove users you do not wish to modify from the import file after it is created.'
-    
-    
+            Write-Host -ForegroundColor Yellow 'You can remove users you do not wish to modify from the import file after it is created.'
+
+
             while ($ConfirmUserPop -ne 'Y' -and $ConfirmUserPop -ne 'N')
             {
                 $ConfirmUserPop = Read-Host  "Enter Y for Yes or N for No"
             }
-    
+
             if ($ConfirmUserPop -eq 'Y')
             {
                 Write-Verbose 'Verifying JCAPI Key'
-                if ($JCAPIKEY.length -ne 40) {Connect-JConline}
+                if ($JCAPIKEY.length -ne 40) { Connect-JConline }
                 $ExistingUsers = Get-Hash_ID_Username
             }
-    
-            elseif ($ConfirmUserPop -eq 'N') {}
+
+            elseif ($ConfirmUserPop -eq 'N') { }
         }
 
 
         Write-Host "`nDo you want to add extended user information attributes available over JumpCloud LDAP to your users during import?"
         Write-Host 'Extended user information attributes include: ' -NoNewline
-        Write-host -ForegroundColor Yellow 'MiddleName, preferredName, jobTitle, employeeIdentifier, department, costCenter, company, employeeType, description, and location'
+        Write-Host -ForegroundColor Yellow 'MiddleName, preferredName, jobTitle, employeeIdentifier, department, costCenter, company, employeeType, description, and location'
 
 
         while ($ConfirmLDAPAttributes -ne 'Y' -and $ConfirmLDAPAttributes -ne 'N')
@@ -144,7 +144,7 @@ Function New-JCImportTemplate()
 
         }
 
-        elseif ($ConfirmLDAPLocationAttributes -eq 'N') {}
+        elseif ($ConfirmLDAPLocationAttributes -eq 'N') { }
 
         Write-Host "`nDo you want to add extended user location attributes available over JumpCloud LDAP to your users during import?"
         Write-Host 'Extended user location attributes include: ' -NoNewline
@@ -174,7 +174,7 @@ Function New-JCImportTemplate()
 
         }
 
-        elseif ($ConfirmLDAPLocationAttributes -eq 'N') {}
+        elseif ($ConfirmLDAPLocationAttributes -eq 'N') { }
 
         Write-Host "`nDo you want to add extended user telephony attributes available over JumpCloud LDAP to your users during import?"
         Write-Host 'Extended user telephony attributes include: ' -NoNewline
@@ -195,7 +195,7 @@ Function New-JCImportTemplate()
             $CSV.add('work_fax_number', $null)
         }
 
-        elseif ($ConfirmLDAPTelephonyAttributes -eq 'N') {}
+        elseif ($ConfirmLDAPTelephonyAttributes -eq 'N') { }
 
 
 
@@ -212,7 +212,7 @@ Function New-JCImportTemplate()
             $CSV.add('SystemID', $null)
             $CSV.add('Administrator', $null)
 
-            $ExistingSystems = Get-JCSystem -returnProperties hostname, displayName | Select-Object HostName, DisplayName, @{Name = 'SystemID'; Expression = {$_._id}}, lastContact
+            $ExistingSystems = Get-JCSystem -returnProperties hostname, displayName | Select-Object HostName, DisplayName, @{Name = 'SystemID'; Expression = { $_._id } }, lastContact
 
             $SystemsName = 'JCSystems_' + $date + '.csv'
 
@@ -225,7 +225,7 @@ Function New-JCImportTemplate()
 
         }
 
-        elseif ($ConfirmAttributes -eq 'N') {}
+        elseif ($ConfirmAttributes -eq 'N') { }
 
         Write-Host ""
         Write-Host 'Do you want to add the users to JumpCloud user groups during import?'
@@ -256,7 +256,7 @@ Function New-JCImportTemplate()
 
         }
 
-        elseif ($ConfirmGroups -eq 'N') {}
+        elseif ($ConfirmGroups -eq 'N') { }
 
 
         Write-Host ""
@@ -293,7 +293,7 @@ Function New-JCImportTemplate()
 
         }
 
-        elseif ($ConfirmAttributes -eq 'N') {}
+        elseif ($ConfirmAttributes -eq 'N') { }
 
         $CSVheader = New-Object psobject -Property $Csv
 
@@ -318,7 +318,7 @@ Function New-JCImportTemplate()
         if (!$ExportPath )
         {
             Write-Host ""
-            $CSVheader  | Export-Csv -path "$ExportLocation/$FileName" -NoTypeInformation
+            $CSVheader | Export-Csv -path "$ExportLocation/$FileName" -NoTypeInformation
             Write-Host 'Creating file'  -NoNewline
             Write-Host " $fileName" -ForegroundColor Yellow -NoNewline
             Write-Host ' in the location' -NoNewline
@@ -329,7 +329,7 @@ Function New-JCImportTemplate()
             Write-Host ""
             Write-Warning "The file $fileName already exists do you want to overwrite it?" -WarningAction Inquire
             Write-Host ""
-            $CSVheader  | Export-Csv -path "$ExportLocation/$FileName" -NoTypeInformation
+            $CSVheader | Export-Csv -path "$ExportLocation/$FileName" -NoTypeInformation
             Write-Host 'Creating file '  -NoNewline
             Write-Host $FileName -ForegroundColor Yellow -NoNewline
             Write-Host ' in the location' -NoNewline
@@ -350,7 +350,7 @@ Function New-JCImportTemplate()
             Invoke-Item -path "$ExportLocation/$FileName"
 
         }
-        if ($Open -eq 'N') {}
+        if ($Open -eq 'N') { }
     }
 
 }

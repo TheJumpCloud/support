@@ -5,36 +5,42 @@ Function Set-JCCommand
     param (
 
         [Parameter(Mandatory,
-            ValueFromPipelineByPropertyName = $True)]
+            ValueFromPipelineByPropertyName = $True, HelpMessage = 'The _id of the JumpCloud command you wish to update.
+To find a JumpCloud CommandID run the command:
+PS C:\> Get-JCCommand | Select name, _id
+The CommandID will be the 24 character string populated for the _id field.')]
         [string]
         $CommandID,
 
         [Parameter(
-            ValueFromPipelineByPropertyName = $True)]
+            ValueFromPipelineByPropertyName = $True, HelpMessage = 'The name of the new JumpCloud command.')]
         [string]
         $name,
 
         [Parameter(
-            ValueFromPipelineByPropertyName = $True)]
+            ValueFromPipelineByPropertyName = $True, HelpMessage = 'The actual script or command.')]
         [string]
         $command,
 
         [Parameter(
-            ValueFromPipelineByPropertyName = $True)]
+            ValueFromPipelineByPropertyName = $True, HelpMessage = 'The launch type of the command options are: trigger, manual, repeated, one-time.')]
         [string]
         [ValidateSet('trigger', 'manual')]
         $launchType,
-        
+
         [Parameter(
-            ValueFromPipelineByPropertyName = $True)]
+            ValueFromPipelineByPropertyName = $True, HelpMessage = 'The time the command will run before it times out.')]
         [string]
         $timeout
 
     )
-    
+
     DynamicParam
     {
-
+        If ((Get-PSCallStack).Command -like '*MarkdownHelp')
+        {
+            $launchType = 'trigger'
+        }
         $dict = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
 
 
@@ -48,11 +54,11 @@ Function Set-JCCommand
             $attrColl.Add($attr)
             $param = New-Object System.Management.Automation.RuntimeDefinedParameter('trigger', [string], $attrColl)
             $dict.Add('trigger', $param)
-              
+
         }
 
-        return $dict 
-        
+        return $dict
+
     }
 
     begin
@@ -79,7 +85,7 @@ Function Set-JCCommand
         $NewCommandsArray = @()
 
     }
-    
+
     process
     {
 
@@ -98,12 +104,12 @@ Function Set-JCCommand
 
         $jsonbody = $body | ConvertTo-Json
 
-        $NewCommand = Invoke-RestMethod -Uri $URL -Method PUT -Body $jsonbody -Headers $hdrs -UserAgent $JCUserAgent
+        $NewCommand = Invoke-RestMethod -Uri $URL -Method PUT -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent)
 
         $NewCommandsArray += $NewCommand
 
     }
-    
+
     end
     {
 

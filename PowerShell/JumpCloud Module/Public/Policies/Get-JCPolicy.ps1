@@ -7,16 +7,19 @@ Function Get-JCPolicy ()
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'ByID',
-            Position = 0)]
+            Position = 0,
+            HelpMessage = 'The PolicyID of the JumpCloud policy you wish to query.')]
         [Alias('_id', 'id')]
         [String]$PolicyID,
 
         [Parameter(
-            ParameterSetName = 'Name')]
+            ParameterSetName = 'Name',
+            HelpMessage = 'The Name of the JumpCloud policy you wish to query.')]
         [String]$Name,
 
         [Parameter(
-            ParameterSetName = 'ByID')]
+            ParameterSetName = 'ByID',
+            HelpMessage = 'Use the -ByID parameter when you want to query a specific policy. The -ByID SwitchParameter will set the ParameterSet to ''ByID'' which queries one JumpCloud policy at a time.')]
         [Switch]
         $ByID
 
@@ -26,7 +29,7 @@ Function Get-JCPolicy ()
 
     {
         Write-Debug 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {Connect-JConline}
+        if ($JCAPIKEY.length -ne 40) { Connect-JCOnline }
 
         Write-Debug 'Populating API headers'
         $hdrs = @{
@@ -49,11 +52,11 @@ Function Get-JCPolicy ()
 
         switch ($PSCmdlet.ParameterSetName)
         {
-            "ReturnAll" {$URL = "$JCUrlBasePath/api/v2/policies"}
-            "ByID" {$URL = "$JCUrlBasePath/api/v2/policies/$PolicyID"}
-            "Name" {$URL = "$JCUrlBasePath/api/v2/policies?sort=name&filter=name%3Aeq%3A$Name"}
+            "ReturnAll" { $URL = "$JCUrlBasePath/api/v2/policies" }
+            "ByID" { $URL = "$JCUrlBasePath/api/v2/policies/$PolicyID" }
+            "Name" { $URL = "$JCUrlBasePath/api/v2/policies?sort=name&filter=name%3Aeq%3A$Name" }
         }
-        $Result = Invoke-JCApiGet -URL $URL
+        $Result = Invoke-JCApi -Method:('GET') -Paginate:($true) -Url:($URL)
         If ($Result)
         {
             Return $Result

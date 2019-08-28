@@ -7,21 +7,28 @@ function Remove-JCUser ()
         [Parameter(Mandatory,
             ParameterSetName = 'Username',
             ValueFromPipelineByPropertyName,
-            Position = 0)]
+            Position = 0,
+            HelpMessage = 'The Username of the JumpCloud user you wish to remove.')]
         [String] $Username,
 
         [Parameter(Mandatory,
             ParameterSetName = 'UserID',
-            ValueFromPipelineByPropertyName)]
+            ValueFromPipelineByPropertyName,
+            HelpMessage = 'The _id of the User which you want to delete.
+To find a JumpCloud UserID run the command:
+PS C:\> Get-JCUser | Select username, _id
+The UserID will be the 24 character string populated for the _id field.
+UserID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically.')]
 
         [Alias('_id')]
         [String] $UserID,
 
-        [Parameter(ParameterSetName = 'UserID')]
+        [Parameter(ParameterSetName = 'UserID',
+            HelpMessage = 'Use the -ByID parameter when the UserID is passed over the pipeline to the Remove-JCUser function. The -ByID SwitchParameter will set the ParameterSet to ''ByID'' which will increase the function speed and performance.')]
         [Switch]
         $ByID,
 
-        [Parameter()]
+        [Parameter(HelpMessage = 'A SwitchParameter which suppresses the warning message when removing a JumpCloud User.')]
         [Switch]
         $force
     )
@@ -79,7 +86,7 @@ function Remove-JCUser ()
             {
                 $URI = "$JCUrlBasePath/api/systemusers/$UserID"
                 Write-Warning "Are you sure you wish to delete user: $Username ?" -WarningAction Inquire
-                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent $JCUserAgent
+                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent:(Get-JCUserAgent)
                 $Status = 'Deleted'
             }
             catch
@@ -88,7 +95,7 @@ function Remove-JCUser ()
             }
 
             $FormattedResults = [PSCustomObject]@{
-                'User'    = $Username 
+                'User'    = $Username
                 'Results' = $Status
             }
 
@@ -101,7 +108,7 @@ function Remove-JCUser ()
             try
             {
                 $URI = "$JCUrlBasePath/api/systemusers/$UserID"
-                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent $JCUserAgent
+                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent:(Get-JCUserAgent)
                 $Status = 'Deleted'
             }
             catch
@@ -110,7 +117,7 @@ function Remove-JCUser ()
             }
 
             $FormattedResults = [PSCustomObject]@{
-                'User'    = $Username 
+                'User'    = $Username
                 'Results' = $Status
             }
 

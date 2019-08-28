@@ -14,7 +14,7 @@ mac
 
 Notification=""
 
-------- Do not modify below this line ------
+#------- Do not modify below this line ------
 user=`ls -la /dev/console | cut -d " " -f 4`
 sudo -u $user osascript -e 'tell application (path to frontmost application as text) to display dialog "'"$Notification"'" buttons {"OK"} with icon stop'
 ```

@@ -3,23 +3,15 @@ Function Send-JCPasswordReset
     [CmdletBinding(DefaultParameterSetName = 'ByID')]
     param (
 
-        [Parameter(
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'ByUsername',
-            Position = 0)]
+        [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'ByUsername', Position = 0, HelpMessage = 'The Username of the JumpCloud user you wish to send the email.')]
         [String]$username,
 
-
-        [Parameter(
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'ByID',
-            Position = 0)]
+        [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'ByID', Position = 0, HelpMessage = 'The _id of the User which you want to send the email. To find a JumpCloud UserID run the command: PS C:\> Get-JCUser | Select username, _id
+The UserID will be the 24 character string populated for the _id field.')]
         [Alias('_id', 'id')]
-        $UserID
-
-        
+        [System.String]$UserID
     )
-    
+
     begin
     {
 
@@ -56,7 +48,7 @@ Function Send-JCPasswordReset
 
 
     }
-    
+
     process
     {
 
@@ -64,60 +56,60 @@ Function Send-JCPasswordReset
         {
             ByUsername
             {
-                
+
                 try
                 {
 
                     $UserID = $UserHash.$username
-                    
+
                     $Body = [ordered]@{
-    
+
                         isSelectAll = $false
                         models      = @(
                             @{
                                 _id = "$UserID"
                             }
                         )
-                    
+
                     }
-                    
+
                     $jsonbody = $Body | ConvertTo-Json -Depth 4 -Compress
-                    
-                    
+
+
                     $URL = "$JCUrlBasePath/api/systemusers/reactivate"
 
                     try
                     {
-                            
-                        $SendInvite = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs
+
+                        $SendInvite = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent)
 
                         $InviteStatus = 'Sent'
-                            
+
                     }
                     catch
                     {
 
                         $InviteStatus = "Error $($_.ErrorDetails)"
-                            
+
                     }
 
                     $Confirmation = [pscustomobject]@{
 
                         'Username'   = $username
                         'ResetEmail' = $InviteStatus
-    
+
                     }
-    
+
                     $resultsArrayList.Add($Confirmation) | Out-Null
-    
-                        
-                    
+
+
+
                 }
                 catch
                 {
 
                     Write-Error "$($_.ErrorDetails)"
-                    
+
                 }
 
 
@@ -126,53 +118,53 @@ Function Send-JCPasswordReset
             {
 
                 $Body = [ordered]@{
-    
+
                     isSelectAll = $false
                     models      = @(
                         @{
                             _id = "$UserID"
                         }
                     )
-                    
+
                 }
-                    
+
                 $jsonbody = $Body | ConvertTo-Json -Depth 4 -Compress
-                    
-                    
+
+
                 $URL = "$JCUrlBasePath/api/systemusers/reactivate"
 
                 try
                 {
-                            
-                    $SendInvite = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs
+
+                    $SendInvite = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent)
 
                     $InviteStatus = 'Sent'
-                            
+
                 }
                 catch
                 {
 
                     $InviteStatus = "Error $($_.ErrorDetails)"
-                            
+
                 }
 
                 $Confirmation = [pscustomobject]@{
 
                     'UserID'     = $UserID
                     'ResetEmail' = $InviteStatus
-    
+
                 }
-    
+
                 $resultsArrayList.Add($Confirmation) | Out-Null
-                
-                
+
+
 
 
 
             }
         }
     }
-    
+
     end
     {
 
@@ -180,4 +172,3 @@ Function Send-JCPasswordReset
 
     }
 }
-

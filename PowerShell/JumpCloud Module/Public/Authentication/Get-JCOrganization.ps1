@@ -1,56 +1,25 @@
-function Get-JCOrganization
+Function Get-JCOrganization
 {
     [CmdletBinding()]
-    param (
-        
-    )
-    
-    begin
+    param ()
+    Begin
     {
-        
-        Write-Verbose 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {Connect-JConline}
-
-        Write-Verbose 'Populating API headers'
-        
-        $hdrs = @{
-
-            'Content-Type' = 'application/json'
-            'Accept'       = 'application/json'
-            'X-API-KEY'    = "$JCAPIKEY"
-
-        }        
-
+        Connect-JCOnline -force | Out-Null
         $resultsArrayList = New-Object System.Collections.ArrayList
-    
-
     }
-    
-    process
+    Process
     {
-
-
-
-        $MultiTenantURL = "$JCUrlBasePath/api/organizations/"
-
-        $RawResults = Invoke-RestMethod -Method GET -Uri $MultiTenantURL -Headers $hdrs -UserAgent $JCUserAgent 
-
-        foreach ($org in $RawResults.results)
+        $RawResults = Get-JCObject -Type:('organization') -Fields:('_id', 'displayName')
+        ForEach ($org In $RawResults)
         {
-
             $MSPOrg = [PSCustomObject]@{
                 'OrgID'       = $org._id
                 'displayName' = $org.displayName
             }
-
             $resultsArrayList.add($MSPOrg) | Out-Null
-            
         }
-
-    
     }
-    
-    end
+    End
     {
         Return $resultsArrayList
     }

@@ -7,13 +7,15 @@ Function Get-JCSystemGroupMember ()
 
         [Parameter(Mandatory, ValueFromPipelineByPropertyName,
             ParameterSetName = 'ByGroup',
-            Position = 0)]
+            Position = 0,
+            HelpMessage = 'The name of the JumpCloud System Group you want to return the members of.')]
         [Alias('name')]
         [String]$GroupName,
 
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'ByID')]
+            ParameterSetName = 'ByID',
+            HelpMessage = 'If searching for a System Group using the GroupID populate the GroupID in the -ByID field.')]
         [Alias('_id', 'id')]
         [String]$ByID
     )
@@ -79,7 +81,7 @@ Function Get-JCSystemGroupMember ()
                     {
                         $limitURL = "$JCUrlBasePath/api/v2/Systemgroups/$Group_ID/members?limit=$limit&skip=$skip"
                         Write-Debug $limitURL
-                        $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs
+                        $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
                         $skip += $limit
                         $rawResults += $results
                     }
@@ -117,7 +119,7 @@ Function Get-JCSystemGroupMember ()
 
                 $limitURL = "$JCUrlBasePath/api/v2/Systemgroups/$ByID/members?limit=$limit&skip=$skip"
                 Write-Debug $limitURL
-                $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs
+                $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
                 $skip += $limit
                 $resultsArray += $results
             }

@@ -6,17 +6,20 @@ Function Add-JCCommandTarget
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'SystemID',
-            Position = 0)]
+            Position = 0,
+            HelpMessage = 'The id value of the JumpCloud command. Use the command "Get-JCCommand | Select-Object _id, name" to find the "_id" value for all the JumpCloud commands in your tenant.')]
 
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'GroupName',
-            Position = 0)]
+            Position = 0,
+            HelpMessage = 'The id value of the JumpCloud command. Use the command "Get-JCCommand | Select-Object _id, name" to find the "_id" value for all the JumpCloud commands in your tenant.')]
 
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'GroupID',
-            Position = 0)]
+            Position = 0,
+            HelpMessage = 'The id value of the JumpCloud command. Use the command "Get-JCCommand | Select-Object _id, name" to find the "_id" value for all the JumpCloud commands in your tenant.')]
 
         [Alias('_id', 'id')]
         [String]$CommandID,
@@ -24,28 +27,31 @@ Function Add-JCCommandTarget
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'SystemID',
-            Position = 1)]
+            Position = 1,
+            HelpMessage = 'The _id of a JumpCloud system. To find the _id of all JumpCloud systems within your tenant run "Get-JCSystem | select _id, hostname"')]
         $SystemID,
 
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'GroupName',
-            Position = 1)]
+            Position = 1,
+            HelpMessage = 'The name of the JumpCloud system group. If the name includes a space enter the name within quotes. Example: -GroupName "The Space"')]
         [Alias('name')]
         $GroupName,
 
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'GroupID',
-            Position = 1)]
+            Position = 1,
+            HelpMessage = 'The id value of a JumpCloud system group')]
         $GroupID
-        
+
     )
-    
+
     begin
     {
 
-        Write-Verbose "Paramter set: $($PSCmdlet.ParameterSetName)"
+        Write-Verbose "parameter set: $($PSCmdlet.ParameterSetName)"
 
         Write-Verbose 'Verifying JCAPI Key'
         if ($JCAPIKEY.length -ne 40) {Connect-JConline}
@@ -72,7 +78,7 @@ Function Add-JCCommandTarget
             $SystemGroupNameHash = Get-Hash_SystemGroupName_ID
 
         }
-        
+
 
 
         if ($PSCmdlet.ParameterSetName -eq 'SystemID')
@@ -87,25 +93,25 @@ Function Add-JCCommandTarget
 
         Write-Verbose 'Populating CommandNameHash'
         $CommandNameHash = Get-Hash_CommandID_Name
-        
+
         Write-Verbose 'Initilizing RawResults and resultsArrayList'
         $resultsArray = @()
-        
+
 
     }
-    
+
     process
     {
 
 
         switch ($PSCmdlet.ParameterSetName)
         {
-            
+
             SystemID
             {
 
                 $SystemOS_Raw = $SystemID_OSHash.($SystemID)
-                
+
                 $CommandType = $CommandID_TypeHash.($CommandID)
 
                 switch ($SystemOS_Raw)
@@ -132,8 +138,8 @@ Function Add-JCCommandTarget
                     op   = "add"
                     id   = $SystemID
 
-                }               
-                
+                }
+
             } # end SystemID switch
 
             GroupName
@@ -168,28 +174,28 @@ Function Add-JCCommandTarget
         $jsonbody = $body | ConvertTo-Json
         $URL = "$JCUrlBasePath/api/v2/commands/$($CommandID)/associations"
 
-        
+
         if ($OS_conflict -ne $true)
         {
 
             try
             {
 
-                $APIresults = Invoke-RestMethod -Method Post -Uri  $URL  -Header $hdrs -Body $jsonbody -UserAgent $JCUserAgent
+                $APIresults = Invoke-RestMethod -Method Post -Uri  $URL  -Header $hdrs -Body $jsonbody -UserAgent:(Get-JCUserAgent)
                 $Status = 'Added'
-                
+
             }
             catch
             {
-    
+
                 $Status = $_.ErrorDetails
-    
+
             }
 
         }
 
         $CommandName = $CommandNameHash.($CommandID)
-        
+
         $FormattedResults = [PSCustomObject]@{
 
             'CommandID'   = $CommandID
@@ -201,10 +207,10 @@ Function Add-JCCommandTarget
 
         $resultsArray += $FormattedResults
 
-            
 
-    } # end process 
-    
+
+    } # end process
+
     end
     {
 

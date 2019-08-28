@@ -1,70 +1,78 @@
 ---
 external help file: JumpCloud-help.xml
 Module Name: JumpCloud
-online version:
+online version: https://github.com/TheJumpCloud/support/wiki/Get-JCGroup
 schema: 2.0.0
 ---
 
 # Get-JCGroup
 
 ## SYNOPSIS
-
 Returns all JumpCloud System and User Groups.
 
 ## SYNTAX
 
 ### ReturnAll (Default)
 ```
-Get-JCGroup [<CommonParameters>]
+Get-JCGroup [-Name <String>] [<CommonParameters>]
 ```
 
 ### Type
 ```
-Get-JCGroup [[-Type] <String>] [<CommonParameters>]
+Get-JCGroup [[-Type] <String>] [-Name <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-
 The Get-JCGroup function by default will return all JumpCloud System and User groups. By using the -Type Parameter you can choose to return either System or User groups.
 
 ## EXAMPLES
 
 ### Example 1
-
-```PowerShell
+```powershell
 PS C:\> Get-JCGroup
 ```
 
 Returns all JumpCloud User and System groups
 
 ### Example 2
-
-```PowerShell
+```powershell
 PS C:\> Get-JCGroup -Type User
 ```
 
 Returns all JumpCloud User groups
 
 ### Example 3
-
-```PowerShell
+```powershell
 PS C:\> Get-JCGroup -Type System
 ```
 
 Returns all JumpCloud System groups
 
 ### Example 4
-
-```PowerShell
+```powershell
 PS C:\> Get-JCGroup -Type User -Name 'The Band'
 ```
 
-Returns the JumpCloud user group 'The Band' and the posixGroups information descripting this group 
+Returns the JumpCloud user group 'The Band' and the posixGroups information descripting this group
 
 ## PARAMETERS
 
-### -Type
+### -Name
+Enter the group name
 
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Type
 The type of JumpCloud group you want to return.
 Note there are only two options - User and System.
 
@@ -82,18 +90,14 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
-This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see about_CommonParameters (http://go.microsoft.com/fwlink/?LinkID=113216).
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
-### None
-
+### System.String
 ## OUTPUTS
 
 ### System.Object
-
 ## NOTES
 
 ## RELATED LINKS
-
-[Online Help Get-JCGroup](https://github.com/TheJumpCloud/support/wiki/Get-JCGroup)

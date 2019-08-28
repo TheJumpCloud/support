@@ -3,31 +3,22 @@ Function Import-JCUsersFromCSV ()
     [CmdletBinding(DefaultParameterSetName = 'GUI')]
     param
     (
-        [Parameter(Mandatory,
-            position = 0,
-            ParameterSetName = 'GUI')]
-        [ValidateScript( { Test-Path -Path $_ -PathType Leaf})]
+        [Parameter(Mandatory, Position = 0, ParameterSetName = 'GUI', HelpMessage = 'The full path to the CSV file you wish to import. You can use tab complete to search for .csv files.')]
+        [ValidateScript( { Test-Path -Path $_ -PathType Leaf })]
         [ValidatePattern( '\.csv$' )]
 
-        [Parameter(Mandatory,
-            position = 0,
-            ParameterSetName = 'force')]
-        [ValidateScript( { Test-Path -Path $_ -PathType Leaf})]
+        [Parameter(Mandatory, Position = 0, ParameterSetName = 'force', HelpMessage = 'The full path to the CSV file you wish to import. You can use tab complete to search for .csv files.')]
+        [ValidateScript( { Test-Path -Path $_ -PathType Leaf })]
         [ValidatePattern( '\.csv$' )]
-
         [string]$CSVFilePath,
 
-        [Parameter(
-            ParameterSetName = 'force')]
-        [Switch]
-        $force
-
-
+        [Parameter(ParameterSetName = 'force', HelpMessage = 'A SwitchParameter which suppresses the GUI and data validation when using the Import-JCUsersFromCSV command.')]
+        [Switch]$force
     )
 
     begin
     {
-        $UserUpdateParams = @{}
+        $UserUpdateParams = @{ }
         $UserUpdateParams.Add("Username", "Username")
         $UserUpdateParams.Add("FirstName", "FirstName")
         $UserUpdateParams.Add("LastName", "LastName")
@@ -74,14 +65,14 @@ Function Import-JCUsersFromCSV ()
         $UserUpdateParams.Add("sudo", "sudo")
         $UserUpdateParams.Add("unix_guid", "unix_guid")
         $UserUpdateParams.Add("password_never_expires", "password_never_expires")
-        
+
         Write-Verbose "$($PSCmdlet.ParameterSetName)"
 
         if ($PSCmdlet.ParameterSetName -eq 'GUI')
         {
 
             Write-Verbose 'Verifying JCAPI Key'
-            if ($JCAPIKEY.length -ne 40) {Connect-JConline}
+            if ($JCAPIKEY.length -ne 40) { Connect-JConline }
 
             $Banner = @"
        __                          ______ __                   __
@@ -93,7 +84,7 @@ Function Import-JCUsersFromCSV ()
                                                   User Import
 "@
 
-            Clear-Host
+            If (!(Get-PSCallStack | Where-Object {$_.Command -match 'Pester'})) {Clear-Host}
             Write-Host $Banner -ForegroundColor Green
             Write-Host ""
 
@@ -106,7 +97,7 @@ Function Import-JCUsersFromCSV ()
             {
                 $UserUpdateParams.Add($attr.name, $attr.name)
             }
-            
+
             Write-Host ""
             Write-Host -BackgroundColor Green -ForegroundColor Black "Validating $($NewUsers.count) Usernames"
 
@@ -116,7 +107,7 @@ Function Import-JCUsersFromCSV ()
             {
                 if ($ExistingUsernameCheck.ContainsKey($User.Username))
                 {
-                    Write-Warning "A user with username: $($User.Username) already exists this user will not be created." 
+                    Write-Warning "A user with username: $($User.Username) already exists this user will not be created."
                 }
                 else
                 {
@@ -132,7 +123,7 @@ Function Import-JCUsersFromCSV ()
                 if ($U.count -gt 1)
                 {
 
-                    Write-Warning "Duplicate username for username $($U.name) in import file. Usernames must be unique. To resolve eliminate the duplicate username and then retry import." 
+                    Write-Warning "Duplicate username for username $($U.name) in import file. Usernames must be unique. To resolve eliminate the duplicate username and then retry import."
                 }
             }
 
@@ -163,13 +154,13 @@ Function Import-JCUsersFromCSV ()
                 if ($U.count -gt 1)
                 {
 
-                    Write-Warning "Duplicate email for email $($U.name) in import file. Emails must be unique. To resolve eliminate the duplicate emails." 
+                    Write-Warning "Duplicate email for email $($U.name) in import file. Emails must be unique. To resolve eliminate the duplicate emails."
                 }
             }
 
             Write-Host -BackgroundColor Green -ForegroundColor Black "Email check complete"
 
-            $employeeIdentifierCheck = $NewUsers | Where-Object {($_.employeeIdentifier -ne $Null) -and ($_.employeeIdentifier -ne "")}
+            $employeeIdentifierCheck = $NewUsers | Where-Object { ($_.employeeIdentifier -ne $Null) -and ($_.employeeIdentifier -ne "") }
 
             if ($employeeIdentifierCheck.Count -gt 0)
             {
@@ -211,37 +202,37 @@ Function Import-JCUsersFromCSV ()
                 Write-Host ""
                 Write-Host -BackgroundColor Green -ForegroundColor Black "Validating $($SystemCount.count) Systems"
                 $SystemCheck = Get-Hash_SystemID_HostName
-    
+
                 foreach ($User in $SystemCount)
                 {
                     if (($User.SystemID).length -gt 1)
                     {
-    
+
                         if ($SystemCheck.ContainsKey($User.SystemID))
                         {
                             Write-Verbose "$($User.SystemID) exists"
                         }
                         else
                         {
-                            Write-Warning "A system with SystemID: $($User.SystemID) does not exist and will not be bound to user $($User.Username)" 
+                            Write-Warning "A system with SystemID: $($User.SystemID) does not exist and will not be bound to user $($User.Username)"
                         }
                     }
-                    else {Write-Verbose "No system"}
+                    else { Write-Verbose "No system" }
                 }
-    
+
                 $Permissions = $NewUsers.Administrator | Where-Object Length -gt 1 | Select-Object -unique
-    
+
                 foreach ($Value in $Permissions)
                 {
-    
+
                     if ( ($Value -notlike "*true" -and $Value -notlike "*false") )
                     {
-    
-                        Write-Warning "Administrator must be a boolean value and set to either '`$True/True' or '`$False/False' please correct value: $Value " 
-    
-                    
+
+                        Write-Warning "Administrator must be a boolean value and set to either '`$True/True' or '`$False/False' please correct value: $Value "
+
+
                     }
-    
+
                 }
 
                 Write-Host -BackgroundColor Green -ForegroundColor Black "System check complete"
@@ -270,7 +261,7 @@ Function Import-JCUsersFromCSV ()
 
                     }
 
-                    else {}
+                    else { }
 
                 }
 
@@ -371,9 +362,9 @@ Function Import-JCUsersFromCSV ()
 
         foreach ($UserAdd in $NewUsers)
         {
-            $UpdateParamsRaw = $UserAdd.psobject.properties | Where-Object {($_.Value -ne $Null) -and ($_.Value -ne "")} | Select-Object Name, Value
-            $UpdateParams = @{}
-            
+            $UpdateParamsRaw = $UserAdd.psobject.properties | Where-Object { ($_.Value -ne $Null) -and ($_.Value -ne "") } | Select-Object Name, Value
+            $UpdateParams = @{ }
+
             foreach ($Param in $UpdateParamsRaw)
             {
                 if ($UserUpdateParams.$($Param.name))
@@ -382,9 +373,9 @@ Function Import-JCUsersFromCSV ()
                 }
 
             }
-            
-            
-            
+
+
+
             $ProgressCounter++
 
             $GroupAddProgressParams = @{
@@ -404,14 +395,14 @@ Function Import-JCUsersFromCSV ()
             $FormatGroupOutput = $Null
             $CustomGroupArrayList = $Null
 
-            $CustomAttributes = $UserAdd | Get-Member | Where-Object Name -Like "*Attribute*" | Where-Object {$_.Definition -NotLike "*=" -and $_.Definition -NotLike "*null"} | Select-Object Name
+            $CustomAttributes = $UserAdd | Get-Member | Where-Object Name -Like "*Attribute*" | Where-Object { $_.Definition -NotLike "*=" -and $_.Definition -NotLike "*null" } | Select-Object Name
 
             Write-Verbose $CustomAttributes.name.count
 
             if ($CustomAttributes.name.count -gt 1)
             {
                 try
-                {   
+                {
                     $NumberOfCustomAttributes = ($CustomAttributes.name.count) / 2
 
                     $UpdateParams.Add("NumberOfCustomAttributes", $NumberOfCustomAttributes)
@@ -431,7 +422,7 @@ Function Import-JCUsersFromCSV ()
                     {
                         $Status = 'User Not Created'
                     }
-                   
+
                     try #User is created
                     {
                         if ($UserAdd.SystemID)
@@ -470,14 +461,14 @@ Function Import-JCUsersFromCSV ()
                                     {
                                         $SystemAddStatus = $_.ErrorDetails
                                     }
-                                    
+
                                 }
-                                
+
                             }
 
                             else
                             {
-                                
+
                                 Write-Verbose "No admin set"
 
                                 try
@@ -495,7 +486,7 @@ Function Import-JCUsersFromCSV ()
                         }
                         $CustomGroupArrayList = New-Object System.Collections.ArrayList
 
-                        $CustomGroups = $UserAdd | Get-Member | Where-Object Name -Like "*Group*" | Where-Object {$_.Definition -NotLike "*=" -and $_.Definition -NotLike "*null"} | Select-Object Name
+                        $CustomGroups = $UserAdd | Get-Member | Where-Object Name -Like "*Group*" | Where-Object { $_.Definition -NotLike "*=" -and $_.Definition -NotLike "*null" } | Select-Object Name
 
                         foreach ($Group in $CustomGroups)
                         {
@@ -555,7 +546,7 @@ Function Import-JCUsersFromCSV ()
 
                     }
 
-                    
+
 
                 }
 
@@ -575,12 +566,12 @@ Function Import-JCUsersFromCSV ()
 
                     }
 
-                    
+
                 }
 
                 $ResultsArrayList.Add($FormattedResults) | Out-Null
                 $SystemAddStatus = $null
-                
+
 
             }
 
@@ -591,9 +582,9 @@ Function Import-JCUsersFromCSV ()
                     $JSONParams = $UpdateParams | ConvertTo-Json
 
                     Write-Verbose "$($JSONParams)"
-                    
+
                     $NewUser = New-JCUser @UpdateParams
-                    
+
                     if ($NewUser._id)
                     {
 
@@ -604,7 +595,7 @@ Function Import-JCUsersFromCSV ()
                     {
                         $Status = 'User Not Created'
                     }
-                   
+
 
                     try #User is created
                     {
@@ -646,15 +637,15 @@ Function Import-JCUsersFromCSV ()
                                     {
                                         $SystemAddStatus = $_.ErrorDetails
                                     }
-                                    
+
                                 }
-                                    
-                                
+
+
                             }
 
                             else
                             {
-                                
+
                                 Write-Verbose "No admin set"
 
                                 try
@@ -669,15 +660,15 @@ Function Import-JCUsersFromCSV ()
                                 }
 
                             }
-                        
+
 
 
                         }
 
                         $CustomGroupArrayList = New-Object System.Collections.ArrayList
 
-                        $CustomGroups = $UserAdd | Get-Member | Where-Object Name -Like "*Group*" | Where-Object {$_.Definition -NotLike "*=" -and $_.Definition -NotLike "*null"} | Select-Object Name
-                        
+                        $CustomGroups = $UserAdd | Get-Member | Where-Object Name -Like "*Group*" | Where-Object { $_.Definition -NotLike "*=" -and $_.Definition -NotLike "*null" } | Select-Object Name
+
                         foreach ($Group in $CustomGroups)
                         {
                             $GetGroup = [pscustomobject]@{
@@ -761,7 +752,7 @@ Function Import-JCUsersFromCSV ()
 
                 $ResultsArrayList.Add($FormattedResults) | Out-Null
                 $SystemAddStatus = $null
-            
+
             }
         }
     }

@@ -2,50 +2,27 @@ Function Remove-JCCommandTarget
 {
     [CmdletBinding(DefaultParameterSetName = 'SystemID')]
     param (
-
-        [Parameter(Mandatory,
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'SystemID',
-            Position = 0)]
-
-        [Parameter(Mandatory,
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'GroupName',
-            Position = 0)]
-
-        [Parameter(Mandatory,
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'GroupID',
-            Position = 0)]
-
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'SystemID', Position = 0, HelpMessage = 'The id value of the JumpCloud command. Use the command ''Get-JCCommand | Select-Object _id, name'' to find the "_id" value for all the JumpCloud commands in your tenant.')]
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'GroupName', Position = 0, HelpMessage = 'The id value of the JumpCloud command. Use the command ''Get-JCCommand | Select-Object _id, name'' to find the "_id" value for all the JumpCloud commands in your tenant.')]
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'GroupID', Position = 0, HelpMessage = 'The id value of the JumpCloud command. Use the command ''Get-JCCommand | Select-Object _id, name'' to find the "_id" value for all the JumpCloud commands in your tenant.')]
         [Alias('_id', 'id')]
         [String]$CommandID,
 
-        [Parameter(Mandatory,
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'SystemID',
-            Position = 1)]
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'SystemID', Position = 1, HelpMessage = 'The _id of a JumpCloud system. To find the _id of all JumpCloud systems within your tenant run ''Get-JCSystem | select _id, hostname''')]
         $SystemID,
 
-        [Parameter(Mandatory,
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'GroupName',
-            Position = 1)]
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'GroupName', Position = 1, HelpMessage = 'The name of the JumpCloud system group. If the name includes a space enter the name within quotes. Example: -GroupName ''The Space''')]
         [Alias('name')]
         $GroupName,
 
-        [Parameter(Mandatory,
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'GroupID',
-            Position = 1)]
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'GroupID', Position = 1, HelpMessage = 'The id value of a JumpCloud system group')]
         $GroupID
-        
     )
-    
+
     begin
     {
 
-        Write-Verbose "Paramter set: $($PSCmdlet.ParameterSetName)"
+        Write-Verbose "parameter set: $($PSCmdlet.ParameterSetName)"
 
         Write-Verbose 'Verifying JCAPI Key'
         if ($JCAPIKEY.length -ne 40) {Connect-JConline}
@@ -75,22 +52,22 @@ Function Remove-JCCommandTarget
 
         Write-Verbose 'Populating CommandNameHash'
         $CommandNameHash = Get-Hash_CommandID_Name
-        
+
         Write-Verbose 'Initilizing RawResults and resultsArrayList'
         $resultsArray = @()
-        
+
 
     }
-    
+
     process
     {
 
 
         switch ($PSCmdlet.ParameterSetName)
         {
-            
+
             SystemID
-            {  
+            {
 
                 $body = @{
 
@@ -98,8 +75,8 @@ Function Remove-JCCommandTarget
                     op   = "remove"
                     id   = $SystemID
 
-                }               
-                
+                }
+
             } # end SystemID switch
 
             GroupName
@@ -137,9 +114,9 @@ Function Remove-JCCommandTarget
         try
         {
 
-            $APIresults = Invoke-RestMethod -Method Post -Uri  $URL  -Header $hdrs -Body $jsonbody -UserAgent $JCUserAgent
+            $APIresults = Invoke-RestMethod -Method Post -Uri  $URL  -Header $hdrs -Body $jsonbody -UserAgent:(Get-JCUserAgent)
             $Status = 'Removed'
-            
+
         }
         catch
         {
@@ -162,10 +139,10 @@ Function Remove-JCCommandTarget
 
         $resultsArray += $FormattedResults
 
-            
 
-    } # end process 
-    
+
+    } # end process
+
     end
     {
 

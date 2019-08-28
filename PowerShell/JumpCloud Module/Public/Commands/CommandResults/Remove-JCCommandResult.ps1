@@ -4,27 +4,15 @@ Function Remove-JCCommandResult ()
 
     param
     (
-        [Parameter(
-            ParameterSetName = 'warn',
-            Mandatory,
-            ValueFromPipelineByPropertyName,
-            Position = 0
-        )]
-
-        [Parameter(
-            ParameterSetName = 'force',
-            Mandatory,
-            ValueFromPipelineByPropertyName,
-            Position = 0
-        )]
-
+        [Parameter(ParameterSetName = 'warn', Mandatory, ValueFromPipelineByPropertyName, Position = 0, HelpMessage = 'The _id of the JumpCloud Command Result you wish to query. To find a JumpCloud Command Result run the command: PS C:\> Get-JCCommandResult | Select name, _id
+The CommandResultID will be the 24 character string populated for the _id field. CommandResultID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using a function that returns the JumpCloud CommandResultID. This is shown in EXAMPLES 3 and 4.')]
+        [Parameter(ParameterSetName = 'force', Mandatory, ValueFromPipelineByPropertyName, Position = 0, HelpMessage = 'The _id of the JumpCloud Command Result you wish to query. To find a JumpCloud Command Result run the command: PS C:\> Get-JCCommandResult | Select name, _id
+The CommandResultID will be the 24 character string populated for the _id field. CommandResultID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using a function that returns the JumpCloud CommandResultID. This is shown in EXAMPLES 3 and 4.')]
         [Alias('_id', 'id')]
         [String] $CommandResultID,
 
-        [Parameter(
-            ParameterSetName = 'force')]
-        [Switch]
-        $force
+        [Parameter(ParameterSetName = 'force', HelpMessage = 'A SwitchParameter which removes the warning message when removing a JumpCloud Command Result.')]
+        [Switch]$force
     )
 
     begin
@@ -62,7 +50,7 @@ Function Remove-JCCommandResult ()
 
             Write-Warning "Are you sure you wish to delete object: $result ?" -WarningAction Inquire
 
-            $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent $JCUserAgent
+            $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent:(Get-JCUserAgent)
 
             $deleteArray += $delete
         }
@@ -72,7 +60,7 @@ Function Remove-JCCommandResult ()
 
             $URI = "$JCUrlBasePath/api/commandresults/$CommandResultID"
 
-            $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent $JCUserAgent
+            $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent:(Get-JCUserAgent)
 
             $deleteArray += $delete
         }

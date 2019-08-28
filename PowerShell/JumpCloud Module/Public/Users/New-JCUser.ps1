@@ -4,261 +4,177 @@ Function New-JCUser ()
     [CmdletBinding(DefaultParameterSetName = 'NoAttributes')]
     param
     (
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName = $True, HelpMessage = 'The first name of the user')]
+        [string]$firstname,
 
-        [Parameter(Mandatory,
-            ValueFromPipelineByPropertyName = $True)]
-        [string]
-        $firstname,
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName = $True, HelpMessage = 'The last name of the user')]
+        [string]$lastname,
 
-        [Parameter(Mandatory,
-            ValueFromPipelineByPropertyName = $True)]
-        [string]
-        $lastname,
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName = $True, HelpMessage = 'The username for the user. This must be a unique value. This value is not modifiable after user creation.')]
+        [string]$username,
 
-        [Parameter(Mandatory,
-            ValueFromPipelineByPropertyName = $True)]
-        [string]
-        $username,
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName = $True, HelpMessage = 'The email address for the user. This must be a unique value.')]
+        [string]$email,
 
-        [Parameter(Mandatory,
-            ValueFromPipelineByPropertyName = $True)]
-        [string]
-        $email,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'The password for the user')]
+        [string]$password,
 
-        [Parameter(ValueFromPipelineByPropertyName = $True)]
-        [string]
-        $password,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'A boolean $true/$false value for enabling password_never_expires')]
+        [bool]$password_never_expires,
 
-        [Parameter(ValueFromPipelineByPropertyName = $True)]
-        [bool]
-        $password_never_expires,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'A boolean $true/$false value for allowing pubic key authentication')]
+        [bool]$allow_public_key,
 
-        [Parameter(ValueFromPipelineByPropertyName = $True)]
-        [bool]
-        $allow_public_key,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'A boolean $true/$false value if you want to enable the user to be an administrator on any and all systems the user is bound to.')]
+        [bool]$sudo,
 
-        [Parameter(ValueFromPipelineByPropertyName = $True)]
-        [bool]
-        $sudo,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'A boolean $true/$false value for enabling managed uid')]
+        [bool]$enable_managed_uid,
 
-        [Parameter(ValueFromPipelineByPropertyName = $True)]
-        [bool]
-        $enable_managed_uid,
-
-        [Parameter()]
-        [int]
+        [Parameter(HelpMessage = 'The unix_uid for the new user. Note this value must be an number.')]
         [ValidateRange(0, 4294967295)]
-        $unix_uid,
+        [int]$unix_uid,
 
-        [Parameter()]
-        [int]
+        [Parameter(HelpMessage = 'The unix_guid for the new user. Note this value must be an number.')]
         [ValidateRange(0, 4294967295)]
-        $unix_guid,
+        [int]$unix_guid,
 
-        [Parameter(ValueFromPipelineByPropertyName = $True)]
-        [bool]
-        $passwordless_sudo,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'A boolean $true/$false value if you want to enable passwordless_sudo')]
+        [bool]$passwordless_sudo,
 
-        [Parameter(ValueFromPipelineByPropertyName = $True)]
-        [bool]
-        $ldap_binding_user,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'A boolean $true/$false value to enable the user as an LDAP binding user')]
+        [bool]$ldap_binding_user,
 
-        [Parameter(ValueFromPipelineByPropertyName = $True)]
-        [bool]
-        $enable_user_portal_multifactor,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'A boolean $true/$false value for enabling MFA at the user portal')]
+        [ValidateSet('True', 'False', '$True', '$False')]
+        [String]$enable_user_portal_multifactor,
 
-        [Parameter(ParameterSetName = 'Attributes')]
-        [int]
-        $NumberOfCustomAttributes,
+        [Parameter(ParameterSetName = 'Attributes', HelpMessage = 'If you intend to create users with Custom Attributes you must declare how many Custom Attributes you intend to add. Based on the NumberOfCustomAttributes value two Dynamic Parameters will be created for each Custom Attribute: Attribute_name and Attribute_value with an associated number. See an example for adding a user with two Custom Attributes in EXAMPLE 3')]
+        [int]$NumberOfCustomAttributes,
 
         # New attributes as of 1.8.0 release
-        [Parameter(ValueFromPipelineByPropertyName = $True)]
-        [string]
-        $middlename,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s home location. The LDAP displayName of this property is initials.')]
+        [string]$middlename,
 
-        [Parameter(ValueFromPipelineByPropertyName = $True)]
-        [string]
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s preferredName. The LDAP displayName of this property is displayName.')]
         [Alias('preferredName')]
-        $displayname,
+        [string]$displayname,
 
-        [Parameter(ValueFromPipelineByPropertyName = $True)]
-        [string]
-        $jobTitle,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s home number. The LDAP displayName of this property is title.')]
+        [string]$jobTitle,
 
-        [Parameter(ValueFromPipelineByPropertyName = $True)]
-        [string]
-        $employeeIdentifier,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s employeeIdentifier. The LDAP displayName of this property is employeeNumber. Note this field must be unique per user.')]
+        [string]$employeeIdentifier,
 
-        [Parameter(ValueFromPipelineByPropertyName = $True)]
-        [string]
-        $department,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s department. The LDAP displayName of this property is departmentNumber.')]
+        [string]$department,
 
-        [Parameter(ValueFromPipelineByPropertyName = $True)]
-        [string]
-        $costCenter,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s costCenter. The LDAP displayName of this property is businessCategory.')]
+        [string]$costCenter,
 
-        [Parameter(ValueFromPipelineByPropertyName = $True)]
-        [string]
-        $company,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s company. The LDAP displayName of this property is company.')]
+        [string]$company,
 
-        [Parameter(ValueFromPipelineByPropertyName = $True)]
-        [string]
-        $employeeType,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s employeeType. The LDAP displayName of this property is employeeType.')]
+        [string]$employeeType,
 
-        [Parameter(ValueFromPipelineByPropertyName = $True)]
-        [string]
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s description. The LDAP displayName of this property is description. This field is limited to 1024 characters.')]
         [ValidateLength(0, 1024)]
-        $description,
+        [string]$description,
 
-        [Parameter(ValueFromPipelineByPropertyName = $True)]
-        [string]
-        $location,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s home location. The LDAP displayName of this property is physicalDeliveryOfficeName.')]
+        [string]$location,
 
         #Objects
 
-        [Parameter(ValueFromPipelineByPropertyName = $True)]
-        [string]
-        $work_streetAddress,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s streetAddress on their work address object. This property is nested within the LDAP property with the displayName postalAddress.')]
+        [string]$work_streetAddress,
 
-        [Parameter(ValueFromPipelineByPropertyName = $True)]
-        [string]
-        $work_poBox,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s poBox on their work address object. The LDAP displayName of this property is postOfficeBox.')]
+        [string]$work_poBox,
 
-        [Parameter(ValueFromPipelineByPropertyName = $True)]
-        [string]
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s city on their work address object. The LDAP displayName of this property is l.')]
         [Alias('work_city')]
-        $work_locality,
+        [string]$work_locality,
 
-        [Parameter(ValueFromPipelineByPropertyName = $True)]
-        [string]
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s state on their work address object. This property is nested within the LDAP property with the displayName postalAddress.')]
         [Alias('work_state')]
-        $work_region,
+        [string]$work_region,
 
-        [Parameter(ValueFromPipelineByPropertyName = $True)]
-        [string]
-        $work_postalCode,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s postalCode on their work address object. The LDAP displayName of this property is postalCode.')]
+        [string]$work_postalCode,
 
-        [Parameter(ValueFromPipelineByPropertyName = $True)]
-        [string]
-        $work_country,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s country on the work address object. This property is nested within the LDAP property with the displayName postalAddress.')]
+        [string]$work_country,
 
-        [Parameter(ValueFromPipelineByPropertyName = $True)]
-        [string]
-        $home_streetAddress,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s streetAddress on their home address object. This property is nested within the LDAP property with the displayName homePostalAddress.')]
+        [string]$home_streetAddress,
 
-        [Parameter(ValueFromPipelineByPropertyName = $True)]
-        [string]
-        $home_poBox,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s poBox on their home address object. This property is nested within the LDAP property with the displayName homePostalAddress.')]
+        [string]$home_poBox,
 
-        [Parameter(ValueFromPipelineByPropertyName = $True)]
-        [string]
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s city on their home address object. This property is nested within the LDAP property with the displayName homePostalAddress.')]
         [Alias('home_city')]
-        $home_locality,
+        [string]$home_locality,
 
-        [Parameter(ValueFromPipelineByPropertyName = $True)]
-        [string]
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s state on their home address object. This property is nested within the LDAP property with the displayName homePostalAddress.')]
         [Alias('home_state')]
-        $home_region,
+        [string]$home_region,
 
-        [Parameter(ValueFromPipelineByPropertyName = $True)]
-        [string]
-        $home_postalCode,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s postalCode on their home address object. This property is nested within the LDAP property with the displayName homePostalAddress.')]
+        [string]$home_postalCode,
 
-        [Parameter(ValueFromPipelineByPropertyName = $True)]
-        [string]
-        $home_country,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s country on the home address object. This property is nested within the LDAP property with the displayName homePostalAddress.')]
+        [string]$home_country,
 
-        [Parameter(ValueFromPipelineByPropertyName = $True)]
-        [string]
-        $mobile_number,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s mobile number. The LDAP displayName of this property is mobile.')]
+        [string]$mobile_number,
 
-        [Parameter(ValueFromPipelineByPropertyName = $True)]
-        [string]
-        $home_number,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s home number. The LDAP displayName of this property is homePhone.')]
+        [string]$home_number,
 
-        [Parameter(ValueFromPipelineByPropertyName = $True)]
-        [string]
-        $work_number,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s work number. The LDAP displayName of this property is telephoneNumber.')]
+        [string]$work_number,
 
-        [Parameter(ValueFromPipelineByPropertyName = $True)]
-        [string]
-        $work_mobile_number,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s work mobile number. The LDAP displayName of this property is pager.')]
+        [string]$work_mobile_number,
 
-        [Parameter(ValueFromPipelineByPropertyName = $True)]
-        [string]
-        $work_fax_number
-
-
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s work fax number. The LDAP displayName of this property is facsimileTelephoneNumber.')]
+        [string]$work_fax_number
 
     )
-
     DynamicParam
     {
-        $dict = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
-
-
-        If ($enable_user_portal_multifactor -eq $True)
+        # Build parameter array
+        $RuntimeParameterDictionary = New-Object -TypeName System.Management.Automation.RuntimeDefinedParameterDictionary
+        If ((Get-PSCallStack).Command -like '*MarkdownHelp')
         {
-            # Set the dynamic parameters' name
-            $ParamName = 'EnrollmentDays'
-            # Create the collection of attributes
-            $AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
-            # Create and set the parameters' attributes
-            $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
-            $ParameterAttribute.Mandatory = $false
-            # Generate and set the ValidateSet
-            $ValidateRangeAttribute = New-Object System.Management.Automation.ValidateRangeAttribute('1', '365')    
-            # Add the ValidateSet to the attributes collection
-            $AttributeCollection.Add($ValidateRangeAttribute)
-            # Add the attributes to the attributes collection
-            $AttributeCollection.Add($ParameterAttribute) 
-            # Create and return the dynamic parameter
-            $RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter($ParamName, [Int32], $AttributeCollection)
-            $dict.Add($ParamName, $RuntimeParameter)
-
+            $enable_user_portal_multifactor = $true
+            $NumberOfCustomAttributes = 2
         }
-
+        If ($enable_user_portal_multifactor)
+        {
+            New-DynamicParameter -Name:('enrollmentDays') -Type:([Int]) -ValueFromPipelineByPropertyName -HelpMessage:('A dynamic parameter that can be set only if -enable_user_portal_multifactor is set to true. This will specify the enrollment period for users for enrolling into MFA via the users console. The default is 7 days if this value is not specified.') -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
+        }
         If ($NumberOfCustomAttributes)
         {
             [int]$NewParams = 0
             [int]$ParamNumber = 1
-
-            while ($NewParams -ne $NumberOfCustomAttributes)
+            While ($NewParams -ne $NumberOfCustomAttributes)
             {
-
-                $attr = New-Object System.Management.Automation.ParameterAttribute
-                $attr.HelpMessage = "Enter an attribute name"
-                $attr.Mandatory = $true
-                $attr.ValueFromPipelineByPropertyName = $true
-                $attrColl = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
-                $attrColl.Add($attr)
-                $param = New-Object System.Management.Automation.RuntimeDefinedParameter("Attribute$ParamNumber`_name", [string], $attrColl)
-                $dict.Add("Attribute$ParamNumber`_name", $param)
-
-                $attr1 = New-Object System.Management.Automation.ParameterAttribute
-                $attr1.HelpMessage = "Enter an attribute value"
-                $attr1.Mandatory = $true
-                $attr1.ValueFromPipelineByPropertyName = $true
-                $attrColl1 = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
-                $attrColl1.Add($attr1)
-                $param1 = New-Object System.Management.Automation.RuntimeDefinedParameter("Attribute$ParamNumber`_value", [string], $attrColl1)
-                $dict.Add("Attribute$ParamNumber`_value", $param1)
-
+                New-DynamicParameter -Name:("Attribute$ParamNumber`_name") -Type:([System.String]) -Mandatory -HelpMessage:('Enter an attribute name') -ValueFromPipelineByPropertyName -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
+                New-DynamicParameter -Name:("Attribute$ParamNumber`_value") -Type:([System.String]) -Mandatory -HelpMessage:('Enter an attribute value') -ValueFromPipelineByPropertyName -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
                 $NewParams++
                 $ParamNumber++
             }
-
         }
-
-        return $dict
-
+        Return $RuntimeParameterDictionary
     }
-
     begin
     {
 
         Write-Debug 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {Connect-JConline}
+        if ($JCAPIKEY.length -ne 40) { Connect-JConline }
 
         $hdrs = @{
 
@@ -279,12 +195,23 @@ Function New-JCUser ()
 
     process
     {
-        $body = @{}
+        if ($enable_user_portal_multifactor)
+        {
+            switch ($enable_user_portal_multifactor)
+            {
+                'True' { [bool]$enable_user_portal_multifactor = $true }
+                '$True' { [bool]$enable_user_portal_multifactor = $true }
+                'False' { [bool]$enable_user_portal_multifactor = $false }
+                '$False' { [bool]$enable_user_portal_multifactor = $false }
+            }
+        }
 
-        $WorkAddressParams = @{}
+        $body = @{ }
+
+        $WorkAddressParams = @{ }
         $WorkAddressParams.Add("type", "work")
 
-        $HomeAddressParams = @{}
+        $HomeAddressParams = @{ }
         $HomeAddressParams.Add("type", "home")
 
         $phoneNumbers = @()
@@ -331,7 +258,7 @@ Function New-JCUser ()
 
             if ($param.Key -like '*_number')
             {
-                $Number = @{}
+                $Number = @{ }
                 $Number.Add("type", ($($param.Key -replace "_number", "")))
                 $Number.Add("number", $param.Value)
                 $phoneNumbers += $Number
@@ -347,6 +274,21 @@ Function New-JCUser ()
             if ($param.Key -like 'home_*')
             {
                 $HomeAddressParams.Add(($($param.Key -split "_", 2)[1]), $param.Value)
+                continue
+            }
+
+            if ($param.Key -eq 'enable_user_portal_multifactor')
+            {
+
+                switch ($param.Value)
+                {
+                    'True' { [bool]$enable_user_portal_multifactor = $true }
+                    '$True' { [bool]$enable_user_portal_multifactor = $true }
+                    'False' { [bool]$enable_user_portal_multifactor = $false }
+                    '$False' { [bool]$enable_user_portal_multifactor = $false }
+                }
+
+                $body.add($param.Key, $enable_user_portal_multifactor)
                 continue
             }
 
@@ -369,7 +311,6 @@ Function New-JCUser ()
             $body.Add('addresses', $Addresses)
         }
 
-
         if ($phoneNumbers)
         {
             $body.Add('phoneNumbers', $phoneNumbers)
@@ -386,27 +327,25 @@ Function New-JCUser ()
                 $exclusionUntil = (Get-Date).AddDays(7)
             }
 
-            $mfaData = @{}
-            $mfaData.Add("exclusion", $true)
-            $mfaData.Add("exclusionUntil", [string]$exclusionUntil)
-            $body.Add('mfaData', $mfaData)
+            $mfa = @{ }
+            $mfa.Add("exclusion", $true)
+            $mfa.Add("exclusionUntil", [string]$exclusionUntil)
+            $body.Add('mfa', $mfa)
         }
 
-        If ($NewAttributes) {$body.add('attributes', $NewAttributes)}
+        If ($NewAttributes) { $body.add('attributes', $NewAttributes) }
 
         $jsonbody = $body | ConvertTo-Json
 
         Write-Debug $jsonbody
 
-        $NewUserInfo = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent $JCUserAgent
+        $NewUserInfo = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent)
 
         $NewUserArray += $NewUserInfo
 
     }
     end
     {
-
         return $NewUserArray
     }
-
 }

@@ -8,18 +8,21 @@ Function Remove-JCUserGroup ()
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'warn',
-            Position = 0)]
+            Position = 0,
+            HelpMessage = 'The name of the User Group you want to remove.')]
 
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'force',
-            Position = 0)]
+            Position = 0,
+            HelpMessage = 'The name of the User Group you want to remove.')]
 
         [Alias('name')]
         [String]$GroupName,
 
         [Parameter(
-            ParameterSetName = 'force')]
+            ParameterSetName = 'force',
+            HelpMessage = 'A SwitchParameter which suppresses the warning message when removing a JumpCloud User Group.')]
         [Switch]
         $force
     )
@@ -73,7 +76,7 @@ Function Remove-JCUserGroup ()
 
                     $URI = "$JCUrlBasePath/api/v2/usergroups/$GID"
 
-                    $DeletedGroup = Invoke-RestMethod -Method DELETE -Uri $URI -Headers $hdrs -UserAgent $JCUserAgent
+                    $DeletedGroup = Invoke-RestMethod -Method DELETE -Uri $URI -Headers $hdrs -UserAgent:(Get-JCUserAgent)
 
                     $Status = 'Deleted'
 
@@ -104,7 +107,7 @@ Function Remove-JCUserGroup ()
                 try
                 {
                     $URI = "$JCUrlBasePath/api/v2/usergroups/$GID"
-                    $DeletedGroup = Invoke-RestMethod -Method DELETE -Uri $URI -Headers $hdrs -UserAgent $JCUserAgent
+                    $DeletedGroup = Invoke-RestMethod -Method DELETE -Uri $URI -Headers $hdrs -UserAgent:(Get-JCUserAgent)
                     $Status = 'Deleted'
                 }
                 catch

@@ -3,26 +3,16 @@ Function Get-JCCommandTarget
     [CmdletBinding(DefaultParameterSetName = 'Systems')]
     param (
 
-        [Parameter(Mandatory,
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'Systems',
-            Position = 0)]
-
-        [Parameter(Mandatory,
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'Groups',
-            Position = 0)]
-
-
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'Systems', Position = 0, HelpMessage = 'The id value of the JumpCloud command. Use the command ''Get-JCCommand | Select-Object _id, name'' to find the "_id" value for all the JumpCloud commands in your tenant.')]
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'Groups', Position = 0, HelpMessage = 'The id value of the JumpCloud command. Use the command ''Get-JCCommand | Select-Object _id, name'' to find the "_id" value for all the JumpCloud commands in your tenant.')]
         [Alias('_id', 'id')]
         [String]$CommandID,
 
-        [Parameter(ParameterSetName = 'Groups')]
-        [switch]
-        $Groups
-        
+        [Parameter(ParameterSetName = 'Groups', HelpMessage = 'A switch parameter to display any System Groups associated with a command.')]
+        [switch]$Groups
+
     )
-    
+
     begin
     {
 
@@ -63,7 +53,7 @@ Function Get-JCCommandTarget
 
         }
 
-        
+
         Write-Verbose 'Populating CommandNameHash'
         $CommandNameHash = Get-Hash_CommandID_Name
 
@@ -73,16 +63,16 @@ Function Get-JCCommandTarget
 
         [int]$limit = '100'
         Write-Verbose "Setting limit to $limit"
-        
+
         Write-Verbose 'Initilizing RawResults and resultsArrayList'
         $RawResults = @()
         $resultsArrayList = New-Object System.Collections.ArrayList
 
-        Write-Verbose "Paramter set: $($PSCmdlet.ParameterSetName)"
-        
+        Write-Verbose "parameter set: $($PSCmdlet.ParameterSetName)"
+
 
     }
-    
+
     process
     {
 
@@ -93,24 +83,24 @@ Function Get-JCCommandTarget
 
         switch ($PSCmdlet.ParameterSetName)
         {
-            
+
             Systems
-            {  
+            {
 
                 while ($count -ge $skip)
-                {        
+                {
                     $SystemURL = "$JCUrlBasePath/api/v2/commands/$CommandID/systems?limit=$limit&skip=$skip"
-                    
-        
+
+
                     Write-Verbose $SystemURL
-        
-                    $APIresults = Invoke-RestMethod -Method GET -Uri  $SystemURL  -Header $hdrs -UserAgent $JCUserAgent
-        
+
+                    $APIresults = Invoke-RestMethod -Method GET -Uri  $SystemURL  -Header $hdrs -UserAgent:(Get-JCUserAgent)
+
                     $skip += $limit
                     Write-Verbose "Setting skip to  $skip"
-        
+
                     $RawResults += $APIresults
-        
+
                     $count = ($RawResults).Count
                     Write-Verbose "Results count equals $count"
 
@@ -144,21 +134,21 @@ Function Get-JCCommandTarget
 
             Groups
             {
-        
+
                 while ($count -ge $skip)
                 {
                     $SystemGroupsURL = "$JCUrlBasePath/api/v2/commands/$CommandID/systemgroups?limit=$limit&skip=$skip"
-                    
-        
+
+
                     Write-Verbose $SystemGroupsURL
-        
-                    $APIresults = Invoke-RestMethod -Method GET -Uri  $SystemGroupsURL  -Header $hdrs -UserAgent $JCUserAgent
-        
+
+                    $APIresults = Invoke-RestMethod -Method GET -Uri  $SystemGroupsURL  -Header $hdrs -UserAgent:(Get-JCUserAgent)
+
                     $skip += $limit
                     Write-Verbose "Setting skip to  $skip"
-        
+
                     $RawResults += $APIresults
-        
+
                     $count = ($RawResults).Count
                     Write-Verbose "Results count equals $count"
                 } # end while
@@ -174,7 +164,7 @@ Function Get-JCCommandTarget
 
                         'CommandID'   = $CommandID
                         'CommandName' = $CommandName
-                        'GroupID'     = $GroupID 
+                        'GroupID'     = $GroupID
                         'GroupName'   = $GroupName
 
                     }
@@ -185,8 +175,8 @@ Function Get-JCCommandTarget
 
             } # end Groups switch
         } # end switch
-    } # end process 
-    
+    } # end process
+
     end
     {
 

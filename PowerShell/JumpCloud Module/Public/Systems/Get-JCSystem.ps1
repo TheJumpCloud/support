@@ -4,134 +4,157 @@ Function Get-JCSystem ()
 
     param
     (
-        #Strings 
+        #Strings
 
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'ByID')]
+            ParameterSetName = 'ByID',
+            HelpMessage = 'The _id or id of the System which you want to query.')]
         [Alias('_id', 'id')]
         [String]$SystemID,
-    
+
+        [Parameter(
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'ByID', HelpMessage = 'A switch parameter to reveal the SystemFDEKey')]
+        [switch]$SystemFDEKey,
+
 
         [Parameter(
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'SearchFilter',
-            Position = 0)]
+            Position = 0,
+            HelpMessage = 'A search filter to search systems by the hostname.')]
         [String]$hostname,
 
         [Parameter(
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'SearchFilter'
+            ParameterSetName = 'SearchFilter',
+            HelpMessage = 'A search filter to search systems by the displayName.'
         )]
         [String]$displayName,
 
         [Parameter(
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'SearchFilter'
+            ParameterSetName = 'SearchFilter',
+            HelpMessage = 'A search filter to search systems by the version.'
         )]
         [String]$version,
 
         [Parameter(
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'SearchFilter'
+            ParameterSetName = 'SearchFilter',
+            HelpMessage = 'A search filter to search systems by the templateName.'
         )]
         [String]$templateName,
 
         [Parameter(
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'SearchFilter'
+            ParameterSetName = 'SearchFilter',
+            HelpMessage = 'A search filter to search systems by the OS.'
         )]
         [String]$os,
 
         [Parameter(
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'SearchFilter'
+            ParameterSetName = 'SearchFilter',
+            HelpMessage = 'A search filter to search systems by the remoteIP.'
         )]
         [String]$remoteIP,
 
         [Parameter(
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'SearchFilter'
+            ParameterSetName = 'SearchFilter',
+            HelpMessage = 'A search filter to search systems by the serialNumber.'
         )]
         [String]$serialNumber,
 
         [Parameter(
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'SearchFilter'
+            ParameterSetName = 'SearchFilter',
+            HelpMessage = 'A search filter to search systems by the processor arch.'
         )]
         [String]$arch,
 
         [Parameter(
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'SearchFilter'
-        )]
+            ParameterSetName = 'SearchFilter',
+            HelpMessage = 'A search filter to search systems by the agentVersion.')]
         [String]$agentVersion,
 
         [Parameter(
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'SearchFilter'
+            ParameterSetName = 'SearchFilter',
+            HelpMessage = 'A search filter to search systems by the serialNumber. This field DOES NOT take wildcard input.'
         )]
         [String]$systemTimezone,
 
-        ## Boolean 
+        ## Boolean
 
         [Parameter(
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'SearchFilter'
-        )]
+            ParameterSetName = 'SearchFilter',
+            HelpMessage = 'Filter for systems that are online or offline.')]
         [bool]$active,
 
         [Parameter(
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'SearchFilter'
-        )]
+            ParameterSetName = 'SearchFilter',
+            HelpMessage = 'A search filter to show systems that are enabled ($true) or disabled ($true) for allowMultiFactorAuthentication')]
         [bool]$allowMultiFactorAuthentication,
 
         [Parameter(
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'SearchFilter'
-        )]
+            ParameterSetName = 'SearchFilter',
+            HelpMessage = 'A search filter to show systems that are enabled ($true) or disabled ($true) for allowMultiFactorAuthentication')]
         [bool]$allowPublicKeyAuthentication,
 
         [Parameter(
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'SearchFilter'
-        )]
+            ParameterSetName = 'SearchFilter',
+            HelpMessage = 'A search filter to show systems that are enabled ($true) or disabled ($true) for allowMultiFactorAuthentication')]
         [bool]$allowSshPasswordAuthentication,
-        
+
         [Parameter(
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'SearchFilter'
+            ParameterSetName = 'SearchFilter',
+            HelpMessage = 'A search filter to show systems that are enabled ($true) or disabled ($true) for allowMultiFactorAuthentication'
         )]
         [bool]$allowSshRootLogin,
-                
+
         [Parameter(
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'SearchFilter'
+            ParameterSetName = 'SearchFilter',
+            HelpMessage = 'A search filter to show systems that are enabled ($true) or disabled ($true) for modifySSHDConfig'
         )]
         [bool]$modifySSHDConfig,
 
 
         [Parameter(
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'SearchFilter')]
+            ParameterSetName = 'SearchFilter',
+            HelpMessage = 'A parameter that can filter on the property ''created''. This parameter if used creates two more dynamic parameters ''dateFilter'' and ''date''. See EXAMPLE 5 above for full syntax.')]
         [ValidateSet('created')]
         [String]$filterDateProperty,
 
         [Parameter(
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'SearchFilter')]
-        [ValidateSet('created', 'active', 'agentVersion', 'allowMultiFactorAuthentication', 'allowPublicKeyAuthentication', 'allowSshPasswordAuthentication', 'allowSshRootLogin', 'arch', 'created', 'displayName', 'hostname', 'lastContact', 'modifySSHDConfig', 'organization', 'os', 'remoteIP', 'serialNumber', 'sshdParams', 'systemTimezone', 'templateName', 'version')]
+            ParameterSetName = 'SearchFilter',
+            HelpMessage = 'Allows you to return select properties on JumpCloud system objects. Specifying what properties are returned can drastically increase the speed of the API call with a large data set. Valid properties that can be returned are: ''created'', ''active'', ''agentVersion'', ''allowMultiFactorAuthentication'', ''allowPublicKeyAuthentication'', ''allowSshPasswordAuthentication'', ''allowSshRootLogin'', ''arch'', ''created'', ''displayName'', ''hostname'', ''lastContact'', ''modifySSHDConfig'', ''organization'', ''os'', ''remoteIP'', ''serialNumber'', ''sshdParams'', ''systemTimezone'', ''templateName'', ''version''')]
+        [ValidateSet('created', 'active', 'agentVersion', 'allowMultiFactorAuthentication', 'allowPublicKeyAuthentication', 'allowSshPasswordAuthentication', 'allowSshRootLogin', 'arch', 'created', 'displayName', 'hostname', 'lastContact', 'modifySSHDConfig', 'organization', 'os', 'remoteIP', 'serialNumber', 'sshdParams', 'systemTimezone', 'templateName', 'version', 'fde', 'systemInsights')]
         [String[]]$returnProperties
 
     )
 
     DynamicParam
     {
+        If ((Get-PSCallStack).Command -like '*MarkdownHelp')
+        {
+            $filterDateProperty = 'created'
+        }
         if ($filterDateProperty)
         {
 
-            # Create the dictionary 
+            # Create the dictionary
             $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
 
 
@@ -142,18 +165,19 @@ Function Get-JCSystem ()
             # Create and set the parameters' attributes
             $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
             $ParameterAttribute.Mandatory = $true
-            # Generate and set the ValidateSet 
+            $ParameterAttribute.HelpMessage = 'Condition to filter date on.'
+            # Generate and set the ValidateSet
             $arrSet = @("before", "after")
-            $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($arrSet)    
+            $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($arrSet)
             # Add the ValidateSet to the attributes collection
             $AttributeCollection.Add($ValidateSetAttribute)
             # Add the attributes to the attributes collection
-            $AttributeCollection.Add($ParameterAttribute) 
+            $AttributeCollection.Add($ParameterAttribute)
             # Create and return the dynamic parameter
             $RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter($ParamName_Filter, [string], $AttributeCollection)
             $RuntimeParameterDictionary.Add($ParamName_Filter, $RuntimeParameter)
-    
-            
+
+
             # Set the dynamic parameters' name
             $ParamName_FilterDate = 'date'
             # Create the collection of attributes
@@ -161,13 +185,14 @@ Function Get-JCSystem ()
             # Create and set the parameters' attributes
             $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
             $ParameterAttribute.Mandatory = $true
+            $ParameterAttribute.HelpMessage = 'Date to filter on.'
             # Add the attributes to the attributes collection
-            $AttributeCollection.Add($ParameterAttribute) 
+            $AttributeCollection.Add($ParameterAttribute)
             # Create and return the dynamic parameter
             $RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter($ParamName_FilterDate, [string], $AttributeCollection)
             $RuntimeParameterDictionary.Add($ParamName_FilterDate, $RuntimeParameter)
 
-     
+
 
             # Returns the dictionary
             return $RuntimeParameterDictionary
@@ -180,7 +205,7 @@ Function Get-JCSystem ()
 
     {
         Write-Verbose 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {Connect-JCOnline}
+        if ($JCAPIKEY.length -ne 40) { Connect-JCOnline }
 
         Write-Verbose 'Populating API headers'
         $hdrs = @{
@@ -211,7 +236,7 @@ Function Get-JCSystem ()
         Write-Verbose "Setting limit to $limit"
 
         [int]$skip = '0'
-        Write-Verbose "Setting limit to $limit"
+        Write-Verbose "Setting skip to $skip"
 
         [int]$Counter = 0
 
@@ -225,10 +250,10 @@ Function Get-JCSystem ()
                 while ((($resultsArrayList.results).Count) -ge $Counter)
                 {
 
- 
+
                     if ($returnProperties)
                     {
-    
+
                         $Search = @{
                             filter = @(
                                 @{
@@ -238,12 +263,12 @@ Function Get-JCSystem ()
                             skip   = $skip
                             fields = $returnProperties
                         } #Initialize search
-    
+
                     }
-    
+
                     else
                     {
-                    
+
                         $Search = @{
                             filter = @(
                                 @{
@@ -251,11 +276,11 @@ Function Get-JCSystem ()
                             )
                             limit  = $limit
                             skip   = $skip
-    
+
                         } #Initialize search
-    
+
                     }
-    
+
 
                     foreach ($param in $PSBoundParameters.GetEnumerator())
                     {
@@ -286,14 +311,14 @@ Function Get-JCSystem ()
                             switch ($param.value)
                             {
                                 before { $DateQuery = '$lt' }
-                                after { $DateQuery = '$gt'}
+                                after { $DateQuery = '$gt' }
                             }
 
                             continue
                         }
 
                         if ($param.key -eq 'date')
-                        {   
+                        {
 
                             $ConvertDate = [DateTime]$param.value
                             $Timestamp = Get-Date $ConvertDate -format o
@@ -305,30 +330,30 @@ Function Get-JCSystem ()
 
                         if (($param.Value -match '.+?\*$') -and ($param.Value -match '^\*.+?'))
                         {
-                            # Front and back wildcard 
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "$Value"})
+                            # Front and back wildcard
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "$Value" })
                         }
                         elseif ($param.Value -match '.+?\*$')
                         {
                             # Back wildcard
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "^$Value"})
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "^$Value" })
                         }
                         elseif ($param.Value -match '^\*.+?')
                         {
                             # Front wild card
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "$Value`$"})
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "$Value`$" })
                         }
                         else
                         {
                             (($Search.filter).GetEnumerator()).add($param.Key, $Value)
                         }
-                            
+
 
                     } # End foreach
 
                     if ($filterDateProperty)
                     {
-                        (($Search.filter).GetEnumerator()).add($DateProperty, @{$DateQuery = $Timestamp})
+                        (($Search.filter).GetEnumerator()).add($DateProperty, @{$DateQuery = $Timestamp })
                     }
 
 
@@ -338,7 +363,7 @@ Function Get-JCSystem ()
 
                     $URL = "$JCUrlBasePath/api/search/systems"
 
-                    $Results = Invoke-RestMethod -Method POST -Uri $Url  -Header $hdrs -Body $SearchJSON
+                    $Results = Invoke-RestMethod -Method POST -Uri $Url  -Header $hdrs -Body $SearchJSON -UserAgent:(Get-JCUserAgent)
 
                     $null = $resultsArrayList.Add($Results)
 
@@ -348,18 +373,42 @@ Function Get-JCSystem ()
                 } #End While
 
             } #End search
-      
+
             ByID
             {
 
-                $URL = "$JCUrlBasePath/api/Systems/$SystemID"
-                Write-Verbose $URL
-                $results = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent $JCUserAgent
-                $null = $resultsArrayList.add($Results)
+
+                if ($SystemFDEKey)
+                {
+
+                    $URL = "$JCUrlBasePath/api/v2/systems/$SystemID/fdekey"
+                    Write-Verbose $URL
+
+                    $results = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
+
+                    $FormattedObject = [PSCustomObject]@{
+                        '_id' = $SystemID;
+                        'key' = $results.key;
+                    }
+
+                    $null = $resultsArrayList.add($FormattedObject)
+
+                }
+
+                else
+                {
+                    $URL = "$JCUrlBasePath/api/Systems/$SystemID"
+                    Write-Verbose $URL
+
+                    $results = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
+                    $null = $resultsArrayList.add($Results)
+                }
+
+
             }
 
         } # End switch
-    } # End process 
+    } # End process
 
     end
     {
