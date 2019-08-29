@@ -19,34 +19,39 @@ Function Get-DynamicParamRadiusServer
     Process
     {
         # Define the new parameters
-        $Param_NetworkSourceIp = @{
-            'Name'                            = 'NetworkSourceIp';
+        $Param_newName = @{
+            'Name'                            = 'newName';
             'Type'                            = [System.String];
             'ValueFromPipelineByPropertyName' = $true;
+            'ValidateNotNullOrEmpty'          = $true;
+            'HelpMessage'                     = 'The new name of the Radius Server.';
+            'Position'                        = 3;
+        }
+        $Param_networkSourceIp = @{
+            'Name'                            = 'networkSourceIp';
+            'Type'                            = [System.String];
+            'ValueFromPipelineByPropertyName' = $true;
+            'ValidateNotNullOrEmpty'          = $true;
             'HelpMessage'                     = 'The ip of the new Radius Server.';
+            'Position'                        = 4;
         }
-        $Param_SharedSecret = @{
-            'Name'                            = 'SharedSecret';
+        $Param_sharedSecret = @{
+            'Name'                            = 'sharedSecret';
             'Type'                            = [System.String];
             'ValueFromPipelineByPropertyName' = $true;
+            'ValidateNotNullOrEmpty'          = $true;
+            'ValidateLength'                  = @(1, 31);
             'HelpMessage'                     = 'The shared secret for the new Radius Server.';
+            'Position'                        = 5;
         }
-        If ($Action -eq 'set')
+        If ($Action -in ('add', 'new'))
         {
-            $Param_NetworkSourceIp.Add('Mandatory', $true);
-            $Param_NetworkSourceIp.Add('ValidateNotNullOrEmpty', $true)
-        }
-        If ($Action -eq 'new')
-        {
-            $Param_NetworkSourceIp.Add('Mandatory', $true);
-            $Param_NetworkSourceIp.Add('ValidateNotNullOrEmpty', $true)
-            $Param_SharedSecret.Add('Mandatory', $true);
-            $Param_SharedSecret.Add('ValidateNotNullOrEmpty', $true)
-            $Param_SharedSecret.Add('ValidateLength', @(1, 31))
+            $Param_networkSourceIp.Add('Mandatory', $true);
+            $Param_sharedSecret.Add('Mandatory', $true);
         }
         # Build output
         $ParamVarPrefix = 'Param_'
-        Get-Variable -Scope:('Local') | Where-Object { $_.Name -like '*' + $ParamVarPrefix + '*' } | ForEach-Object {
+        Get-Variable -Scope:('Local') | Where-Object { $_.Name -like '*' + $ParamVarPrefix + '*' } | Sort-Object { [int]$_.Value.Position } | ForEach-Object {
             # Add RuntimeDictionary to each parameter
             $_.Value.Add('RuntimeParameterDictionary', $RuntimeParameterDictionary)
             # Creating each parameter
@@ -54,11 +59,19 @@ Function Get-DynamicParamRadiusServer
             $VarValue = $_.Value
             Try
             {
-                If ($Action -eq 'get' -and $_.Name -notin ('Param_NetworkSourceIp', 'Param_SharedSecret'))
+                If ($Action -in ('add', 'new') -and $_.Name -in ('Param_networkSourceIp', 'Param_sharedSecret'))
                 {
                     New-DynamicParameter @VarValue | Out-Null
                 }
-                ElseIf ($Action -ne 'get')
+                ElseIf ($Action -in ('remove') -and $_.Name -notin ('Param_newName', 'Param_networkSourceIp', 'Param_sharedSecret'))
+                {
+                    New-DynamicParameter @VarValue | Out-Null
+                }
+                ElseIf ($Action -in ('set') -and $_.Name -in ('Param_newName', 'Param_networkSourceIp', 'Param_sharedSecret'))
+                {
+                    New-DynamicParameter @VarValue | Out-Null
+                }
+                ElseIf ($Action -eq 'get' -and $_.Name -notin ('Param_newName', 'Param_networkSourceIp', 'Param_sharedSecret'))
                 {
                     New-DynamicParameter @VarValue | Out-Null
                 }

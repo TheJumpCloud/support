@@ -24,53 +24,71 @@ Function Invoke-JCRadiusServer
         Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDynamicParamProcess) -ArgumentList:($PsBoundParameters, $PSCmdlet, $RuntimeParameterDictionary) -NoNewScope
         Try
         {
-            # $PsBoundParameters
-            # Write-Host ($PSCmdlet.ParameterSetName) -BackgroundColor Cyan
-            $JCObject = Switch ($PSCmdlet.ParameterSetName)
+            $Uri_RadiusServers = '/api/radiusservers'
+            If ($Action -in ('add', 'new'))
             {
-                'Default'
-                {
-                    Get-JCObject -Type:($Type);
-                }
-                'ById'
-                {
-                    Get-JCObject -Type:($Type) -SearchBy:($PSCmdlet.ParameterSetName) -SearchByValue:($Id);
-                }
-                'ByName'
-                {
-                    Get-JCObject -Type:($Type) -SearchBy:($PSCmdlet.ParameterSetName) -SearchByValue:($Name);
-                }
-            }
-            If ($Action -eq 'GET')
-            {
-                $Results = $JCObject
+                $Method = 'POST'
+                # Build body to be sent to RadiusServers endpoint.
+                $JsonBody = '{"name":"' + $Name + '","networkSourceIp":"' + $networkSourceIp + '","sharedSecret":"' + $sharedSecret + '"}'
+                $Results = Invoke-JCApi -Method:($Method) -Url:($Uri_RadiusServers) -Body:($JsonBody)
             }
             Else
             {
-                $Uri_RadiusServers = '/api/radiusservers'
-                $Uri_RadiusServers = $Uri_RadiusServers + '/' + $JCObject.($JCObject.ById)
-                If ($Action -eq 'add')
+                $JCObject = Switch ($PSCmdlet.ParameterSetName)
                 {
-                    # Build body to be sent to RadiusServers endpoint.
-                    $JsonBody = '{"name":"' + $RadiusServerName + '","networkSourceIp":"' + $networkSourceIp + '","SharedSecret":"' + $SharedSecret + '"}'
+                    'Default'
+                    {
+                        Get-JCObject -Type:($Type);
+                    }
+                    'ById'
+                    {
+                        Get-JCObject -Type:($Type) -SearchBy:($PSCmdlet.ParameterSetName) -SearchByValue:($Id);
+                    }
+                    'ByName'
+                    {
+                        Get-JCObject -Type:($Type) -SearchBy:($PSCmdlet.ParameterSetName) -SearchByValue:($Name);
+                    }
                 }
-                ElseIf ($Action -eq 'remove')
+                If (-not ([System.String]::IsNullOrEmpty($JCObject)))
                 {
-                    # Build body to be sent to RadiusServers endpoint.
-                    $JsonBody = '{"isSelectAll":false,"models":[{"_id":"' + $JCObject.($JCObject.ById) + '"}]}'
-                    If (!($force)) { Write-Warning ('Are you sure you wish to delete object: ' + $JCObject.($JCObject.ByName) + ' ?') -WarningAction:('Inquire') }
+                    If ($Action -eq 'GET')
+                    {
+                        $Results = $JCObject
+                    }
+                    ElseIf ($Action -eq 'remove')
+                    {
+                        $Uri_RadiusServers = $Uri_RadiusServers + '/' + $JCObject.($JCObject.ById)
+                        $Method = 'DELETE'
+                        If (!($Force))
+                        {
+                            Do
+                            {
+                                $HostResponse = Read-Host -Prompt:('Are you sure you want to "' + $Action + '" the "' + $Type + '": "' + $JCObject.($JCObject.ByName) + '"?[Y/N]')
+                            }
+                            Until ($HostResponse -in ('y', 'n'))
+                        }
+                        If ($HostResponse -eq 'y' -or $Force)
+                        {
+                            # Send body to RadiusServers endpoint.
+                            $Results = Invoke-JCApi -Method:($Method) -Url:($Uri_RadiusServers)
+                        }
+                    }
+                    ElseIf ($Action -eq 'set')
+                    {
+                        $Uri_RadiusServers = $Uri_RadiusServers + '/' + $JCObject.($JCObject.ById)
+                        $Method = 'PUT'
+                        # Build Json body
+                        If (!($newName)) { $newName = $JCObject.($JCObject.ByName) }
+                        If (!($networkSourceIp)) { $networkSourceIp = $JCObject.networkSourceIp }
+                        If (!($sharedSecret)) { $sharedSecret = $JCObject.sharedSecret }
+                        $JsonBody = '{"name":"' + $newName + '","networkSourceIp":"' + $networkSourceIp + '","sharedSecret":"' + $sharedSecret + '"}'
+                        $Results = Invoke-JCApi -Method:($Method) -Url:($Uri_RadiusServers) -Body:($JsonBody)
+                    }
+                    Else
+                    {
+                        Write-Error ('Unknown $Action specified.')
+                    }
                 }
-                ElseIf ($Action -eq 'set')
-                {
-                    # Build Json body
-                    If (!($Name)) { $Name = $JCObject.($JCObject.ByName) }
-                    If (!($NetworkSourceIp)) { $NetworkSourceIp = $JCObject.networkSourceIp }
-                    If (!($SharedSecret)) { $SharedSecret = $JCObject.SharedSecret }
-                    $JsonBody = '{"name":"' + $Name + '","networkSourceIp":"' + $NetworkSourceIp + '","SharedSecret":"' + $SharedSecret + '"}'
-                }
-                # Send body to RadiusServers endpoint.
-                Write-Host ("Invoke-JCApi -Method:($Method) -Url:($Uri_RadiusServers) -Body:($JsonBody)") -BackgroundColor:('Cyan')
-                # $Results = Invoke-JCApi -Method:($Method) -Url:($Uri_RadiusServers) -Body:($JsonBody)
             }
         }
         Catch

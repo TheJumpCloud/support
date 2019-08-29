@@ -21,7 +21,7 @@ Function Get-JCCommonParameters
             Get-JCType | Where-Object { $_.Category -eq 'JumpCloud' };
         }
         # Define the new parameters
-        $Param_1_Id = @{
+        $Param_Id = @{
             'Name'                            = 'Id';
             'Type'                            = [System.String[]];
             'ValueFromPipelineByPropertyName' = $true;
@@ -29,8 +29,9 @@ Function Get-JCCommonParameters
             'ParameterSets'                   = @('ById');
             'HelpMessage'                     = 'The unique id of the object.';
             'Alias'                           = $JCType.ById | Where-Object { $_ -ne 'Id' } | Select-Object -Unique;
+            'Position'                        = 0;
         }
-        $Param_2_Name = @{
+        $Param_Name = @{
             'Name'                            = 'Name';
             'Type'                            = [System.String[]];
             'ValueFromPipelineByPropertyName' = $true;
@@ -38,8 +39,9 @@ Function Get-JCCommonParameters
             'ParameterSets'                   = @('ByName');
             'HelpMessage'                     = 'The name of the object.';
             'Alias'                           = $JCType.ByName | Where-Object { $_ -ne 'Name' } | Select-Object -Unique;
+            'Position'                        = 0;
         }
-        $Param_3_SearchBy = @{
+        $Param_SearchBy = @{
             'Name'                            = 'SearchBy';
             'Type'                            = [System.String];
             'Mandatory'                       = $true;
@@ -49,8 +51,9 @@ Function Get-JCCommonParameters
             'ValidateSet'                     = @('ById', 'ByName');
             'HelpMessage'                     = 'Specify how you want to search.';
             'DontShow'                        = $true;
+            'Position'                        = 0;
         }
-        $Param_4_SearchByValue = @{
+        $Param_SearchByValue = @{
             'Name'                            = 'SearchByValue';
             'Type'                            = [System.String[]];
             'Mandatory'                       = $true;
@@ -59,16 +62,18 @@ Function Get-JCCommonParameters
             'ParameterSets'                   = @('ByValue');
             'HelpMessage'                     = 'Specify the item which you want to search for. Supports wildcard searches using: *';
             'DontShow'                        = $true;
+            'Position'                        = 1;
         }
-        $Param_5_Fields = @{
+        $Param_Fields = @{
             'Name'                            = 'Fields';
             'Type'                            = [System.Array];
             'ValueFromPipelineByPropertyName' = $true;
             'ValidateNotNullOrEmpty'          = $true;
             'ParameterSets'                   = @('ById', 'ByName', 'ByValue');
             'HelpMessage'                     = 'An array of the fields/properties/columns you want to return from the search.';
+            'Position'                        = 95;
         }
-        $Param_6_Filter = @{
+        $Param_Filter = @{
             'Name'                            = 'Filter';
             'Type'                            = [System.String];
             'ValueFromPipelineByPropertyName' = $true;
@@ -97,8 +102,9 @@ Function Get-JCCommonParameters
                     $true
                 }
             };
+            'Position'                        = 96;
         }
-        $Param_7_Limit = @{
+        $Param_Limit = @{
             'Name'                            = 'Limit';
             'Type'                            = [System.Int32];
             'ValueFromPipelineByPropertyName' = $true;
@@ -106,8 +112,9 @@ Function Get-JCCommonParameters
             'DefaultValue'                    = $JCType.Limit | Select-Object -Unique;
             'HelpMessage'                     = 'The number of items you want to return per API call.';
             'ParameterSets'                   = @('ById', 'ByName', 'ByValue');
+            'Position'                        = 97;
         }
-        $Param_8_Skip = @{
+        $Param_Skip = @{
             'Name'                            = 'Skip';
             'Type'                            = [System.Int32];
             'ValueFromPipelineByPropertyName' = $true;
@@ -115,14 +122,16 @@ Function Get-JCCommonParameters
             'DefaultValue'                    = $JCType.Skip | Select-Object -Unique;
             'HelpMessage'                     = 'The number of items you want to skip over per API call.';
             'ParameterSets'                   = @('ById', 'ByName', 'ByValue');
+            'Position'                        = 98;
         }
-        $Param_9_Paginate = @{
+        $Param_Paginate = @{
             'Name'                            = 'Paginate';
             'Type'                            = [System.Boolean];
             'ValueFromPipelineByPropertyName' = $true;
             'DefaultValue'                    = $JCType.Paginate | Select-Object -Unique;
             'HelpMessage'                     = 'Whether or not you want to paginate through the results.';
             'ParameterSets'                   = @('ById', 'ByName', 'ByValue');
+            'Position'                        = 99;
         }
         # # Add conditional parameter settings
         # If ($Type -and -not $Force)
@@ -175,7 +184,7 @@ Function Get-JCCommonParameters
         }
         # Build output
         $ParamVarPrefix = 'Param_'
-        Get-Variable -Scope:('Local') | Where-Object { $_.Name -like '*' + $ParamVarPrefix + '*' } | Sort-Object Name | ForEach-Object {
+        Get-Variable -Scope:('Local') | Where-Object { $_.Name -like '*' + $ParamVarPrefix + '*' } | Sort-Object { [int]$_.Value.Position } | ForEach-Object {
             # Add RuntimeDictionary to each parameter
             $_.Value.Add('RuntimeParameterDictionary', $RuntimeParameterDictionary)
             # Creating each parameter
@@ -183,11 +192,19 @@ Function Get-JCCommonParameters
             $VarValue = $_.Value
             Try
             {
-                If ($Action -in ('add', 'new', 'remove', 'set') -and $_.Name -notin ('Param_5_Fields', 'Param_6_Filter', 'Param_7_Limit', 'Param_8_Skip', 'Param_9_Paginate'))
+                If ($Action -in ('add', 'new') -and $_.Name -in ('Param_Name')) # Can only add new objects by name
                 {
                     New-DynamicParameter @VarValue | Out-Null
                 }
-                ElseIf ($Action -eq 'get')
+                ElseIf ($Action -in ('remove') -and $_.Name -in ('Param_Id')) # Can only remove objects by id
+                {
+                    New-DynamicParameter @VarValue | Out-Null
+                }
+                ElseIf ($Action -in ('set') -and $_.Name -in ('Param_Id', 'Param_Name', 'Param_SearchBy', 'Param_SearchByValue' )) # Can set or update objects by id or name
+                {
+                    New-DynamicParameter @VarValue | Out-Null
+                }
+                ElseIf ($Action -eq 'get' -and $_.Name -in ('Param_Id', 'Param_Name', 'Param_SearchBy', 'Param_SearchByValue', 'Param_Fields', 'Param_Filter', 'Param_Limit', 'Param_Skip', 'Param_Paginate'))
                 {
                     New-DynamicParameter @VarValue | Out-Null
                 }
