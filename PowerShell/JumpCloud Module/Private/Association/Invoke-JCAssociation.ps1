@@ -209,7 +209,7 @@
                                                 }
                                             }
                                             # Validate that the new association has been created
-                                            If ($Action -eq 'add')
+                                            If ($Action -in ('add', 'new'))
                                             {
                                                 $AddAssociationValidation = Format-JCAssociation -Uri:($Uri_Associations_GET) -Method:('GET') -Source:($SourceItem) -TargetId:($TargetItemId) -IncludeNames:($true) | Where-Object { $_.TargetId -eq $TargetItemId }
                                                 If ($AddAssociationValidation)
