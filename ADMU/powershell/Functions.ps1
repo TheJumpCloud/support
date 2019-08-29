@@ -290,6 +290,30 @@ Function DownloadAndInstallAgent(
     }
 }
 
+Add-Type -MemberDefinition @"
+[DllImport("netapi32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+public static extern uint NetApiBufferFree(IntPtr Buffer);
+[DllImport("netapi32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+public static extern int NetGetJoinInformation(
+  string server,
+  out IntPtr NameBuffer,
+  out int BufferType);
+"@ -Namespace Win32Api -Name NetApi32
+
+function GetNetBiosName {
+  $pNameBuffer = [IntPtr]::Zero
+  $joinStatus = 0
+  $apiResult = [Win32Api.NetApi32]::NetGetJoinInformation(
+    $null, # lpServer
+    [Ref] $pNameBuffer, # lpNameBuffer
+    [Ref] $joinStatus    # BufferType
+  )
+  if ( $apiResult -eq 0 ) {
+    [Runtime.InteropServices.Marshal]::PtrToStringAuto($pNameBuffer)
+    [Void] [Win32Api.NetApi32]::NetApiBufferFree($pNameBuffer)
+  }
+}
+
 #endregion Functions
 
 #region config xml
