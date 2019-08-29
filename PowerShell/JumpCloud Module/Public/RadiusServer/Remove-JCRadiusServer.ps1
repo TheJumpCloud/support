@@ -1,6 +1,6 @@
-Function Get-JCRadiusServer
+Function Remove-JCRadiusServer
 {
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = 'ById')]
     Param(
         [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Bypass user prompts and dynamic ValidateSet.')][ValidateNotNullOrEmpty()][Switch]$Force
     )
