@@ -1,34 +1,43 @@
-Function Set-JCRadiusServer ()
+Function Set-JCRadiusServer
 {
-    # This endpoint allows you to update Radius Servers in your organization.
-    [CmdletBinding(DefaultParameterSetName = 'ByName')]
-    param
-    (
-        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName, ParameterSetName = 'ById', Position = 0)][ValidateNotNullOrEmpty()][Alias('_id', 'id')][string]$RadiusServerId,
-        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName, ParameterSetName = 'ByName', Position = 0)][ValidateNotNullOrEmpty()][Alias('Name')][string]$RadiusServerName,
-        [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName, Position = 1)][ValidateNotNullOrEmpty()][string]$NewRadiusServerName,
-        [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName, Position = 2)][ValidateNotNullOrEmpty()][string]$NewNetworkSourceIp,
-        [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName, Position = 3)][ValidateNotNullOrEmpty()][ValidateLength(1, 31)][string]$NewSharedSecret
+    [CmdletBinding()]
+    Param(
+        [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Bypass user prompts and dynamic ValidateSet.')][ValidateNotNullOrEmpty()][Switch]$Force
     )
+    DynamicParam
+    {
+        $Action = 'set'
+        $Type = 'radius_server'
+        $RuntimeParameterDictionary = If ($Type)
+        {
+            Get-DynamicParamRadiusServer -Action:($Action) -Force:($Force) -Type:($Type)
+        }
+        Else
+        {
+            Get-DynamicParamRadiusServer -Action:($Action) -Force:($Force)
+        }
+        Return $RuntimeParameterDictionary
+    }
     Begin
     {
-        If ($PSCmdlet.ParameterSetName -ne '__AllParameterSets') {Write-Verbose ('[ParameterSet]' + $MyInvocation.MyCommand.Name + ':' + $PSCmdlet.ParameterSetName)}
-        $Method = 'PUT'
-        $Url_Template_RadiusServers = '/api/radiusservers/{0}'
+        Connect-JCOnline -force | Out-Null
+        # Debug message for parameter call
+        Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDebugMessageBegin) -ArgumentList:($MyInvocation, $PsBoundParameters, $PSCmdlet) -NoNewScope
+        $Results = @()
     }
     Process
     {
-        $Results = Switch ($PSCmdlet.ParameterSetName)
-        {
-            'ById'
-            {
-                Invoke-JCRadiusServer -Action:('PUT') -RadiusServerId:($RadiusServerId) -NewRadiusServerId:($NewRadiusServerId) -NewNetworkSourceIp:($NewNetworkSourceIp) -NewSharedSecret:($NewSharedSecret);
-            }
-            'ByName'
-            {
-                Invoke-JCRadiusServer -Action:('PUT') -RadiusServerName:($RadiusServerName) -NewRadiusServerName:($NewRadiusServerName) -NewNetworkSourceIp:($NewNetworkSourceIp) -NewSharedSecret:($NewSharedSecret);
-            }
-        }
+        # For DynamicParam with a default value set that value and then convert the DynamicParam inputs into new variables for the script to use
+        Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDynamicParamProcess) -ArgumentList:($PsBoundParameters, $PSCmdlet, $RuntimeParameterDictionary) -NoNewScope
+        # Create hash table to store variables
+        $FunctionParameters = [ordered]@{ }
+        # Add input parameters from function in to hash table and filter out unnecessary parameters
+        $PSBoundParameters.GetEnumerator() | Where-Object { $_.Value } | ForEach-Object { $FunctionParameters.Add($_.Key, $_.Value) | Out-Null }
+        # Add hardcoded parameters
+        ($FunctionParameters).Add('Action', $Action) | Out-Null
+        ($FunctionParameters).Add('Type', $Type) | Out-Null
+        # Run the command
+        $Results += Invoke-JCRadiusServer @FunctionParameters
     }
     End
     {

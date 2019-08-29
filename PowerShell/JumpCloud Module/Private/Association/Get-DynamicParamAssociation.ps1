@@ -1,7 +1,7 @@
 Function Get-DynamicParamAssociation
 {
     Param(
-        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)][ValidateNotNullOrEmpty()][ValidateSet('add', 'get', 'remove')][System.String]$Action
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'The verb of the command calling it. Different verbs will make different parameters required.')][ValidateSet('add', 'get', 'new', 'remove', 'set')][System.String]$Action
         , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'The type of the object.')][ValidateNotNullOrEmpty()][ValidateSet('command', 'ldap_server', 'policy', 'application', 'radius_server', 'system_group', 'system', 'user_group', 'user', 'g_suite', 'office_365')][Alias('TypeNameSingular')][System.String]$Type
         , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Bypass user prompts and dynamic ValidateSet.')][ValidateNotNullOrEmpty()][Switch]$Force
     )
@@ -9,20 +9,20 @@ Function Get-DynamicParamAssociation
     {
         $RuntimeParameterDictionary = If ($Type)
         {
-            Get-JCCommonParameters -Force:($Force) -Type:($Type);
+            Get-JCCommonParameters -Force:($Force) -Action:($Action) -Type:($Type);
         }
         Else
         {
-            Get-JCCommonParameters -Force:($Force);
+            Get-JCCommonParameters -Force:($Force) -Action:($Action);
         }
         # Get type list
         $JCType = If ($Type)
         {
-            Get-JCType -Type:($Type) | Where-Object { $_.Category -eq 'JumpCloud'};
+            Get-JCType -Type:($Type) | Where-Object { $_.Category -eq 'JumpCloud' };
         }
         Else
         {
-            Get-JCType | Where-Object { $_.Category -eq 'JumpCloud'};
+            Get-JCType | Where-Object { $_.Category -eq 'JumpCloud' };
         }
     }
     Process
@@ -112,7 +112,7 @@ Function Get-DynamicParamAssociation
         }
         # Build output
         $ParamVarPrefix = 'Param_'
-        Get-Variable -Scope:('Local') | Where-Object {$_.Name -like '*' + $ParamVarPrefix + '*'} | ForEach-Object {
+        Get-Variable -Scope:('Local') | Where-Object { $_.Name -like '*' + $ParamVarPrefix + '*' } | ForEach-Object {
             # Add RuntimeDictionary to each parameter
             $_.Value.Add('RuntimeParameterDictionary', $RuntimeParameterDictionary)
             # Creating each parameter

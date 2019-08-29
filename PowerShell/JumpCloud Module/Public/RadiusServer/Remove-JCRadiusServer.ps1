@@ -1,30 +1,43 @@
-Function Remove-JCRadiusServer ()
+Function Get-JCRadiusServer
 {
-    # This endpoint allows you to delete a Radius Server in your organization.
-    [CmdletBinding(DefaultParameterSetName = 'ById')]
-    param
-    (
-        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, ParameterSetName = 'ById', Position = 0)][ValidateNotNullOrEmpty()][Alias('_id', 'id')][string]$RadiusServerId,
-        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, ParameterSetName = 'ByName', Position = 0)][ValidateNotNullOrEmpty()][Alias('Name')][string]$RadiusServerName,
-        [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 1)][ValidateNotNullOrEmpty()][bool]$force = $false
+    [CmdletBinding()]
+    Param(
+        [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Bypass user prompts and dynamic ValidateSet.')][ValidateNotNullOrEmpty()][Switch]$Force
     )
+    DynamicParam
+    {
+        $Action = 'remove'
+        $Type = 'radius_server'
+        $RuntimeParameterDictionary = If ($Type)
+        {
+            Get-DynamicParamRadiusServer -Action:($Action) -Force:($Force) -Type:($Type)
+        }
+        Else
+        {
+            Get-DynamicParamRadiusServer -Action:($Action) -Force:($Force)
+        }
+        Return $RuntimeParameterDictionary
+    }
     Begin
     {
-        If ($PSCmdlet.ParameterSetName -ne '__AllParameterSets') {Write-Verbose ('[ParameterSet]' + $MyInvocation.MyCommand.Name + ':' + $PSCmdlet.ParameterSetName)}
+        Connect-JCOnline -force | Out-Null
+        # Debug message for parameter call
+        Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDebugMessageBegin) -ArgumentList:($MyInvocation, $PsBoundParameters, $PSCmdlet) -NoNewScope
+        $Results = @()
     }
     Process
     {
-        $Results = Switch ($PSCmdlet.ParameterSetName)
-        {
-            'ById'
-            {
-                Invoke-JCRadiusServer -Action:('DELETE') -RadiusServerId:($RadiusServerId) -force:($force)
-            }
-            'ByName'
-            {
-                Invoke-JCRadiusServer -Action:('DELETE') -RadiusServerName:($RadiusServerName) -force:($force)
-            }
-        }
+        # For DynamicParam with a default value set that value and then convert the DynamicParam inputs into new variables for the script to use
+        Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDynamicParamProcess) -ArgumentList:($PsBoundParameters, $PSCmdlet, $RuntimeParameterDictionary) -NoNewScope
+        # Create hash table to store variables
+        $FunctionParameters = [ordered]@{ }
+        # Add input parameters from function in to hash table and filter out unnecessary parameters
+        $PSBoundParameters.GetEnumerator() | Where-Object { $_.Value } | ForEach-Object { $FunctionParameters.Add($_.Key, $_.Value) | Out-Null }
+        # Add hardcoded parameters
+        ($FunctionParameters).Add('Action', $Action) | Out-Null
+        ($FunctionParameters).Add('Type', $Type) | Out-Null
+        # Run the command
+        $Results += Invoke-JCRadiusServer @FunctionParameters
     }
     End
     {

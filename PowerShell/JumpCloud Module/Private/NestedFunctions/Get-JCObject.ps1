@@ -6,14 +6,15 @@ Function Get-JCObject
     )
     DynamicParam
     {
+        $Action = 'get'
         $JCType = Get-JCType | Where-Object { $_.TypeName.TypeNameSingular -eq $Type };
         $RuntimeParameterDictionary = If ($Type)
         {
-            Get-JCCommonParameters -Force:($true) -Type:($Type);
+            Get-JCCommonParameters -Force:($true) -Action:($Action) -Type:($Type);
         }
         Else
         {
-            Get-JCCommonParameters -Force:($true);
+            Get-JCCommonParameters -Force:($true) -Action:($Action);
         }
         If ('SystemInsights' -in $JCType.PSObject.Properties.Name -or (Get-PSCallStack).Command -like '*MarkdownHelp')
         {
@@ -40,7 +41,7 @@ Function Get-JCObject
                 # Set the location base location in the json config and elect the specific system insights table
                 $JCType = If ($PsBoundParameters.Table -and $PSCmdlet.ParameterSetName -ne 'ByName')
                 {
-                    $JCType.SystemInsights | Where-Object {$_.Table -eq $PsBoundParameters.Table}
+                    $JCType.SystemInsights | Where-Object { $_.Table -eq $PsBoundParameters.Table }
                 }
                 Else
                 {
@@ -156,8 +157,8 @@ Function Get-JCObject
                         }
                     }
                     # Build url info
-                    $QueryString = If ($QueryStrings) {'?' + ($QueryStrings -join '&')} Else {$null};
-                    $Body = If ($BodyParts) {'{' + ($BodyParts -join ',') + '}'} Else {$null};
+                    $QueryString = If ($QueryStrings) { '?' + ($QueryStrings -join '&') } Else { $null };
+                    $Body = If ($BodyParts) { '{' + ($BodyParts -join ',') + '}' } Else { $null };
                     $UrlObject += [PSCustomObject]@{
                         'Type'              = $Type;
                         'SearchBy'          = $SearchBy;
@@ -281,10 +282,10 @@ Function Get-JCObject
                         $HiddenProperties = @('ById', 'ByName', 'TypeName', 'TypeNameSingular', 'TypeNamePlural', 'Targets', 'TargetSingular', 'TargetPlural', 'Table')
                         # Append meta info to each result record
                         Get-Variable -Name:($HiddenProperties) |
-                            ForEach-Object {
+                        ForEach-Object {
                             $Variable = $_
                             $Results |
-                                ForEach-Object {
+                            ForEach-Object {
                                 If (-not ([System.String]::IsNullOrEmpty($Variable.Value)))
                                 {
                                     Add-Member -InputObject:($_) -MemberType:('NoteProperty') -Name:($Variable.Name) -Value:($Variable.Value);

@@ -2,7 +2,7 @@ Function Invoke-JCRadiusServer
 {
     [CmdletBinding()]
     Param(
-        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)][ValidateNotNullOrEmpty()][ValidateSet('add', 'get', 'remove')][System.String]$Action
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'The verb of the command calling it. Different verbs will make different parameters required.')][ValidateSet('add', 'get', 'new', 'remove', 'set')][System.String]$Action
         , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'The type of the object.')][ValidateNotNullOrEmpty()][ValidateSet('command', 'ldap_server', 'policy', 'application', 'radius_server', 'system_group', 'system', 'user_group', 'user', 'g_suite', 'office_365')][Alias('TypeNameSingular')][System.String]$Type
         , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Bypass user prompts and dynamic ValidateSet.')][ValidateNotNullOrEmpty()][Switch]$Force
     )
@@ -49,24 +49,24 @@ Function Invoke-JCRadiusServer
             {
                 $Uri_RadiusServers = '/api/radiusservers'
                 $Uri_RadiusServers = $Uri_RadiusServers + '/' + $JCObject.($JCObject.ById)
-                If ($Action -eq 'PUT')
+                If ($Action -eq 'add')
+                {
+                    # Build body to be sent to RadiusServers endpoint.
+                    $JsonBody = '{"name":"' + $RadiusServerName + '","networkSourceIp":"' + $networkSourceIp + '","SharedSecret":"' + $SharedSecret + '"}'
+                }
+                ElseIf ($Action -eq 'remove')
+                {
+                    # Build body to be sent to RadiusServers endpoint.
+                    $JsonBody = '{"isSelectAll":false,"models":[{"_id":"' + $JCObject.($JCObject.ById) + '"}]}'
+                    If (!($force)) { Write-Warning ('Are you sure you wish to delete object: ' + $JCObject.($JCObject.ByName) + ' ?') -WarningAction:('Inquire') }
+                }
+                ElseIf ($Action -eq 'set')
                 {
                     # Build Json body
                     If (!($Name)) { $Name = $JCObject.($JCObject.ByName) }
                     If (!($NetworkSourceIp)) { $NetworkSourceIp = $JCObject.networkSourceIp }
                     If (!($SharedSecret)) { $SharedSecret = $JCObject.SharedSecret }
                     $JsonBody = '{"name":"' + $Name + '","networkSourceIp":"' + $NetworkSourceIp + '","SharedSecret":"' + $SharedSecret + '"}'
-                }
-                ElseIf ($Action -eq 'DELETE')
-                {
-                    # Build body to be sent to RadiusServers endpoint.
-                    $JsonBody = '{"isSelectAll":false,"models":[{"_id":"' + $JCObject.($JCObject.ById) + '"}]}'
-                    If (!($force)) { Write-Warning ('Are you sure you wish to delete object: ' + $JCObject.($JCObject.ByName) + ' ?') -WarningAction:('Inquire') }
-                }
-                ElseIf ($Action -eq 'POST')
-                {
-                    # Build body to be sent to RadiusServers endpoint.
-                    $JsonBody = '{"name":"' + $RadiusServerName + '","networkSourceIp":"' + $networkSourceIp + '","SharedSecret":"' + $SharedSecret + '"}'
                 }
                 # Send body to RadiusServers endpoint.
                 Write-Host ("Invoke-JCApi -Method:($Method) -Url:($Uri_RadiusServers) -Body:($JsonBody)") -BackgroundColor:('Cyan')

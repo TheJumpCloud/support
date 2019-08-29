@@ -1,7 +1,7 @@
 Function Get-DynamicParamRadiusServer
 {
     Param(
-        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)][ValidateNotNullOrEmpty()][ValidateSet('add', 'get', 'remove')][System.String]$Action
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'The verb of the command calling it. Different verbs will make different parameters required.')][ValidateSet('add', 'get', 'new', 'remove', 'set')][System.String]$Action
         , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'The type of the object.')][ValidateNotNullOrEmpty()][ValidateSet('command', 'ldap_server', 'policy', 'application', 'radius_server', 'system_group', 'system', 'user_group', 'user', 'g_suite', 'office_365')][Alias('TypeNameSingular')][System.String]$Type
         , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Bypass user prompts and dynamic ValidateSet.')][ValidateNotNullOrEmpty()][Switch]$Force
     )
@@ -9,11 +9,11 @@ Function Get-DynamicParamRadiusServer
     {
         $RuntimeParameterDictionary = If ($Type)
         {
-            Get-JCCommonParameters -Force:($Force) -Type:($Type);
+            Get-JCCommonParameters -Force:($Force) -Action:($Action) -Type:($Type);
         }
         Else
         {
-            Get-JCCommonParameters -Force:($Force);
+            Get-JCCommonParameters -Force:($Force) -Action:($Action);
         }
     }
     Process
@@ -31,7 +31,12 @@ Function Get-DynamicParamRadiusServer
             'ValueFromPipelineByPropertyName' = $true;
             'HelpMessage'                     = 'The shared secret for the new Radius Server.';
         }
-        If ($Action -eq 'POST')
+        If ($Action -eq 'set')
+        {
+            $Param_NetworkSourceIp.Add('Mandatory', $true);
+            $Param_NetworkSourceIp.Add('ValidateNotNullOrEmpty', $true)
+        }
+        If ($Action -eq 'new')
         {
             $Param_NetworkSourceIp.Add('Mandatory', $true);
             $Param_NetworkSourceIp.Add('ValidateNotNullOrEmpty', $true)
