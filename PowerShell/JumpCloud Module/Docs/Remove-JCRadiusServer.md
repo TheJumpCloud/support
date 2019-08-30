@@ -8,7 +8,7 @@ schema: 2.0.0
 # Remove-JCRadiusServer
 
 ## SYNOPSIS
-{{ Fill in the Synopsis }}
+Removes a JumpCloud radius server.
 
 ## SYNTAX
 
@@ -17,16 +17,23 @@ Remove-JCRadiusServer [-Force] [-Id] <String[]> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-{{ Fill in the Description }}
+Use this function to remove a radius servers from JumpCloud tenet.
 
 ## EXAMPLES
 
 ### Example 1
 ```powershell
-PS C:\> {{ Add example code here }}
+PS C:\> Remove-JCRadiusServer -Id:('5d6802c46eb05c5971151558')
 ```
 
-{{ Add example description here }}
+Remove a radius server by Id from a JumpCloud tenet.
+
+### Example 2
+```powershell
+PS C:\> Get-JCRadiusServer -Id:('5d6802c46eb05c5971151558') | Remove-JCRadiusServer
+```
+
+Remove a radius server by Id from a JumpCloud tenet.
 
 ## PARAMETERS
 

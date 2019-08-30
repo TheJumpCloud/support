@@ -8,7 +8,7 @@ schema: 2.0.0
 # Set-JCRadiusServer
 
 ## SYNOPSIS
-{{ Fill in the Synopsis }}
+Updates a JumpCloud radius server.
 
 ## SYNTAX
 
@@ -31,16 +31,30 @@ Set-JCRadiusServer [-Force] [[-newName] <String>] [[-networkSourceIp] <String>] 
 ```
 
 ## DESCRIPTION
-{{ Fill in the Description }}
+Use this function to update a radius server in a JumpCloud tenet.
 
 ## EXAMPLES
 
 ### Example 1
 ```powershell
-PS C:\> {{ Add example code here }}
+PS C:\> Set-JCRadiusServer -Id:('5d6802c46eb05c5971151558') -newName:('RadiusServer2') -networkSourceIp:('111.111.111.111') -sharedSecret:('dUtU9FDvPc8Wdvoc#jKmZr7aJSXv5pR')
 ```
 
-{{ Add example description here }}
+Update a radius server by Id from a JumpCloud tenet.
+
+### Example 2
+```powershell
+PS C:\> Set-JCRadiusServer -Name:('RadiusServer1') -newName:('RadiusServer2') -networkSourceIp:('111.111.111.111') -sharedSecret:('MzQDUuDhqhSgMoryi#fNpB2wEpvu8U1')
+```
+
+Update a radius server by Name from a JumpCloud tenet.
+
+### Example 3
+```powershell
+PS C:\> Get-JCRadiusServer -Id:('5d6802c46eb05c5971151558') | Set-JCRadiusServer -networkSourceIp:('111.111.111.111')
+```
+
+Update the networkSourceIp of a radius server by Id from a JumpCloud tenet.
 
 ## PARAMETERS
 

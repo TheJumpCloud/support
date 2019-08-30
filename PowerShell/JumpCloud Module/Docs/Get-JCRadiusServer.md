@@ -8,7 +8,7 @@ schema: 2.0.0
 # Get-JCRadiusServer
 
 ## SYNOPSIS
-{{ Fill in the Synopsis }}
+Return JumpCloud radius server information.
 
 ## SYNTAX
 
@@ -37,16 +37,30 @@ Get-JCRadiusServer [-Force] [[-Fields] <Array>] [[-Filter] <String>] [[-Limit] <
 ```
 
 ## DESCRIPTION
-{{ Fill in the Description }}
+Use this function to return radius servers from JumpCloud tenet.
 
 ## EXAMPLES
 
 ### Example 1
 ```powershell
-PS C:\> {{ Add example code here }}
+PS C:\> Get-JCRadiusServer
 ```
 
-{{ Add example description here }}
+Returns all radius servers from a JumpCloud tenet.
+
+### Example 2
+```powershell
+PS C:\> Get-JCRadiusServer -Id:('5d6802c46eb05c5971151558')
+```
+
+Returns a radius server by Id from a JumpCloud tenet.
+
+### Example 3
+```powershell
+PS C:\> Get-JCRadiusServer -Name:('RadiusServer1')
+```
+
+Returns a radius server by Name from a JumpCloud tenet.
 
 ## PARAMETERS
 

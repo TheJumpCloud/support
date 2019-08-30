@@ -8,7 +8,7 @@ schema: 2.0.0
 # New-JCRadiusServer
 
 ## SYNOPSIS
-{{ Fill in the Synopsis }}
+Creates a JumpCloud radius server.
 
 ## SYNTAX
 
@@ -18,16 +18,16 @@ New-JCRadiusServer [-Force] [-Name] <String[]> [-networkSourceIp] <String> [-sha
 ```
 
 ## DESCRIPTION
-{{ Fill in the Description }}
+Use this function to create a radius servers in a JumpCloud tenet.
 
 ## EXAMPLES
 
 ### Example 1
 ```powershell
-PS C:\> {{ Add example code here }}
+PS C:\> New-JCRadiusServer -Name:('RadiusServer1') -networkSourceIp:('111.111.111.111') -sharedSecret:('dUtU9FDvPc8Wdvoc#jKmZr7aJSXv5pR')
 ```
 
-{{ Add example description here }}
+Create a radius server in a JumpCloud tenet.
 
 ## PARAMETERS
 
