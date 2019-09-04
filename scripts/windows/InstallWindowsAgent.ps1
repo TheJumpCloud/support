@@ -1,5 +1,7 @@
-# To run pass parameter JumpCloudConnectKey when calling InstallWindowsAgent.ps1
+# To run unattended pass in the parameter -JumpCloudConnectKey in when calling the InstallWindowsAgent.ps1
 # Example ./InstallWindowsAgent.ps1 -JumpCloudConnectKey "56b403784365r6o2n311cosr218u1762le4y9e9a"
+# Your JumpCloudConnectKey can be found on the systems tab within the JumpCloud admin console.
+
 
 Param (
     [Parameter (Mandatory = $true)]
