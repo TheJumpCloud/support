@@ -6,7 +6,10 @@ Release Date: September 04, 2019
 
 ```
 Systeminsights improvements.
-IF YOU RECEIVE AN ERROR WHILE UPDATING THE MODULE PLEASE RUN: Install-Module JumpCloud -force
+*****************************************
+IF YOU RECEIVE AN ERROR WHILE UPDATING THE MODULE PLEASE RUN:
+Install-Module JumpCloud -force
+*****************************************
 ```
 
 #### FEATURES
