@@ -207,6 +207,24 @@ while [ ! -f "$JCAgentConfPath" ]; do
     sleep 1
 done
 
+conf="$(cat /opt/jc/jcagent.conf)"
+regex='\"systemKey\":\"[a-zA-Z0-9]{24}\"'
+if [[ $conf =~ $regex ]]; then
+    systemKey="${BASH_REMATCH[@]}"
+fi
+
+while [ -z "$systemKey" ]; do
+    echo "$(date "+%Y-%m-%dT%H:%M:%S"): Waiting for systemKey to register" >>"$DEP_N_DEBUG"
+    sleep 1
+    conf="$(cat /opt/jc/jcagent.conf)"
+    if [[ $conf =~ $regex ]]; then
+        systemKey="${BASH_REMATCH[@]}"
+    fi
+
+done
+
+echo "$(date "+%Y-%m-%dT%H:%M:%S"): JumpCloud agent installed!"
+
 Sleep 1
 
 echo "Status: JumpCloud agent installed!" >>"$DEP_N_LOG"

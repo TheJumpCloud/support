@@ -1,5 +1,13 @@
 **Configuring a Zero-Touch macOS onboarding experience for PreStaging user and system enrollment using DEPNotify, munkiPKG, JumpCloud, and your MDM of choice.**
 
+Leveraging this workflow allows admins to install the JumpCloud agent siently and ensures that the JumpCloud Service Account is installed using DEP and an MDM.
+
+The JumpCloud Service Account is required to manage users on FileVault protected macs. 
+
+[Learn more about the JumpCloud Service Account here.](https://support.jumpcloud.com/customer/portal/articles/2944374)
+
+*This example uses SimpleMDM*
+
 ![configuration_steps](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/diagrams/configuration_steps.png?raw=true)
 
 **Table Of Contents**
