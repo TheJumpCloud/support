@@ -12,9 +12,12 @@ Write-Host ('[status]Importing current module: ' + $ModuleName)
 Import-Module ($FilePath_Psd1) -Force
 Write-Host ('[status]Installing module: PlatyPS')
 Install-Module -Name:('PlatyPS') -Force -Scope:('CurrentUser')
+# # Clear out existing docs
+# Remove-Item -Path:($FolderPath_Docs) -Recurse -Force
+# Remove-Item -Path:($FolderPath_enUS) -Recurse -Force
 # Create/update markdown help files using platyPS
 Write-Host ('[status]Creating/Updating help files')
-(Get-ChildItem -Path:($FolderPath_Public) -File -Recurse) | Where-Object {$_.Extension -eq '.ps1' -and $_.BaseName -notin $ExcludeList} | ForEach-Object {
+(Get-ChildItem -Path:($FolderPath_Public) -File -Recurse) | Where-Object { $_.Extension -eq '.ps1' -and $_.BaseName -notin $ExcludeList } | ForEach-Object {
     $FunctionName = $_.BaseName
     $FilePath_Md = $FolderPath_Docs + '/' + $FunctionName + '.md'
     If (Test-Path -Path:($FilePath_Md))
