@@ -1,3 +1,26 @@
+## 1.14.0
+
+Release Date: September 04, 2019
+
+#### RELEASE NOTES
+
+```
+Functions to interact with JumpCloud Radius Servers are now available
+```
+
+#### FEATURES
+
+New functions:
+
+- Get-JCRadiusServer
+- Remove-JCRadiusServer
+- New-JCRadiusServer
+- Set-JCRadiusServer
+
+#### IMPROVEMENTS
+
+#### BUG FIXES
+
 ## 1.13.3
 
 Release Date: September 04, 2019

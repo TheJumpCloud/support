@@ -1,17 +1,17 @@
 #### Latest Version
 
 ```
-1.13.3
+1.14.0
 ```
 
 #### Banner Current
 
 ```
-Additional Systeminsight tables added.
+JumpCloud Radius Servers functions are now available.
 ```
 
 #### Banner Old
 
 ```
-Systeminsight id property has been renamed.
+JumpCloud Radius Servers functions are now available.
 ```
