@@ -28,6 +28,16 @@ Function Get-DynamicParamAssociation
     Process
     {
         # Define the new parameters
+        $Param_Id = @{
+            'Name'                            = 'Id';
+            'Type'                            = [System.String[]];
+            'ValueFromPipelineByPropertyName' = $true;
+            'ValidateNotNullOrEmpty'          = $true;
+            'ParameterSets'                   = @('ById');
+            'HelpMessage'                     = 'The unique id of the object.';
+            'Alias'                           = $JCType.ById | Where-Object { $_ -ne 'Id' } | Select-Object -Unique;
+            'Position'                        = 0;
+        }
         $Param_TargetType = @{
             'Name'                            = 'TargetType';
             'Type'                            = [System.String[]];
@@ -38,6 +48,7 @@ Function Get-DynamicParamAssociation
             'HelpMessage'                     = 'The type of the target object.';
             'ValidateSet'                     = $JCType.Targets.TargetSingular | Select-Object -Unique;
             'DefaultValue'                    = $JCType.Targets.TargetSingular | Select-Object -Unique;
+            'Position'                        = 1;
         }
         $Param_associationType = @{
             'Name'                            = 'associationType';
@@ -47,6 +58,7 @@ Function Get-DynamicParamAssociation
             'DontShow'                        = $true;
             'HelpMessage'                     = 'Used for piping only to determine type of association when coming from Add-JCAssociation or Remove-JCAssociation.';
             'Mandatory'                       = $false;
+            'Position'                        = 2;
         }
         $Param_Raw = @{
             'Name'                            = 'Raw';
@@ -55,6 +67,7 @@ Function Get-DynamicParamAssociation
             'DefaultValue'                    = $false;
             'DontShow'                        = $true;
             'HelpMessage'                     = 'Returns the raw and unedited output from the api endpoint.';
+            'Position'                        = 3;
         }
         $Param_Direct = @{
             'Name'                            = 'Direct';
@@ -62,6 +75,7 @@ Function Get-DynamicParamAssociation
             'ValueFromPipelineByPropertyName' = $true;
             'DefaultValue'                    = $false;
             'HelpMessage'                     = 'Returns only "Direct" associations.';
+            'Position'                        = 4;
         }
         $Param_Indirect = @{
             'Name'                            = 'Indirect';
@@ -69,6 +83,7 @@ Function Get-DynamicParamAssociation
             'ValueFromPipelineByPropertyName' = $true;
             'DefaultValue'                    = $false;
             'HelpMessage'                     = 'Returns only "Indirect" associations.';
+            'Position'                        = 5;
         }
         $Param_IncludeInfo = @{
             'Name'                            = 'IncludeInfo';
@@ -76,6 +91,7 @@ Function Get-DynamicParamAssociation
             'ValueFromPipelineByPropertyName' = $true;
             'DefaultValue'                    = $false;
             'HelpMessage'                     = 'Appends "Info" and "TargetInfo" properties to output.';
+            'Position'                        = 6;
         }
         $Param_IncludeNames = @{
             'Name'                            = 'IncludeNames';
@@ -83,6 +99,7 @@ Function Get-DynamicParamAssociation
             'ValueFromPipelineByPropertyName' = $true;
             'DefaultValue'                    = $false;
             'HelpMessage'                     = 'Appends "Name" and "TargetName" properties to output.';
+            'Position'                        = 7;
         }
         $Param_IncludeVisualPath = @{
             'Name'                            = 'IncludeVisualPath';
@@ -90,18 +107,21 @@ Function Get-DynamicParamAssociation
             'ValueFromPipelineByPropertyName' = $true;
             'DefaultValue'                    = $false;
             'HelpMessage'                     = 'Appends "visualPathById", "visualPathByName", and "visualPathByType" properties to output.';
+            'Position'                        = 8;
         }
         $Param_TargetId = @{
             'Name'                            = 'TargetId';
             'Type'                            = [System.String];
             'ValueFromPipelineByPropertyName' = $true;
             'HelpMessage'                     = 'The unique id of the target object.';
+            'Position'                        = 9;
         }
         $Param_TargetName = @{
             'Name'                            = 'TargetName';
             'Type'                            = [System.String];
             'ValueFromPipelineByPropertyName' = $true;
             'HelpMessage'                     = 'The name of the target object.';
+            'Position'                        = 10;
         }
         $Param_Attributes = @{
             'Name'                            = 'Attributes';
@@ -109,6 +129,7 @@ Function Get-DynamicParamAssociation
             'ValueFromPipelineByPropertyName' = $true;
             'Alias'                           = 'compiledAttributes';
             'HelpMessage'                     = 'Add attributes that define the association such as if they are an admin.';
+            'Position'                        = 11;
         }
         # Build output
         $ParamVarPrefix = 'Param_'
@@ -120,19 +141,19 @@ Function Get-DynamicParamAssociation
             $VarValue = $_.Value
             Try
             {
-                If ($_.Name -eq 'Param_TargetType')
+                If ($Action -in ('add', 'new') -and $_.Name -in ('Param_Id', 'Param_TargetType', 'Param_TargetId', 'Param_TargetName', 'Param_associationType', 'Param_Attributes'))
                 {
                     New-DynamicParameter @VarValue | Out-Null
                 }
-                If ($Action -eq 'get' -and $_.Name -in ('Param_Raw', 'Param_Direct', 'Param_Indirect', 'Param_IncludeInfo', 'Param_IncludeNames', 'Param_IncludeVisualPath'))
+                ElseIf ($Action -in ('remove') -and $_.Name -in ('Param_TargetType', 'Param_TargetId', 'Param_TargetName', 'Param_associationType'))
                 {
                     New-DynamicParameter @VarValue | Out-Null
                 }
-                ElseIf ($Action -in ('add', 'remove') -and $_.Name -in ('Param_TargetId', 'Param_TargetName', 'Param_associationType'))
-                {
-                    New-DynamicParameter @VarValue | Out-Null
-                }
-                ElseIf ($Action -eq 'add' -and $_.Name -in ('Param_Attributes'))
+                # ElseIf ($Action -in ('set') -and $_.Name -in (''))
+                # {
+                #     New-DynamicParameter @VarValue | Out-Null
+                # }
+                ElseIf ($Action -eq 'get' -and $_.Name -in ('Param_TargetType', 'Param_Raw', 'Param_Direct', 'Param_Indirect', 'Param_IncludeInfo', 'Param_IncludeNames', 'Param_IncludeVisualPath'))
                 {
                     New-DynamicParameter @VarValue | Out-Null
                 }

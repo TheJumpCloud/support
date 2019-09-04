@@ -24,6 +24,7 @@ Function Get-JCCommonParameters
         $Param_Id = @{
             'Name'                            = 'Id';
             'Type'                            = [System.String[]];
+            'Mandatory'                       = $true;
             'ValueFromPipelineByPropertyName' = $true;
             'ValidateNotNullOrEmpty'          = $true;
             'ParameterSets'                   = @('ById');
@@ -34,6 +35,7 @@ Function Get-JCCommonParameters
         $Param_Name = @{
             'Name'                            = 'Name';
             'Type'                            = [System.String[]];
+            'Mandatory'                       = $true;
             'ValueFromPipelineByPropertyName' = $true;
             'ValidateNotNullOrEmpty'          = $true;
             'ParameterSets'                   = @('ByName');
@@ -170,8 +172,8 @@ Function Get-JCCommonParameters
         # }
         # Else
         # {
-        $Param_Id.Add('Mandatory', $true);
-        $Param_Name.Add('Mandatory', $true);
+        #     $Param_Id.Add('Mandatory', $true);
+        #     $Param_Name.Add('Mandatory', $true);
         # }
         # Create another parameter set if an id or name is not required
         If ($Action -eq 'get')
