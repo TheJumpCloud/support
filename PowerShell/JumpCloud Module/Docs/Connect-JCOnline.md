@@ -12,16 +12,9 @@ The Connect-JCOnline function sets the global variable $JCAPIKEY
 
 ## SYNTAX
 
-### Interactive (Default)
 ```
-Connect-JCOnline [-JCEnvironment <String>] [-ip <String>] [-JumpCloudApiKey] <String>
- [[-JumpCloudOrgId] <String>] [<CommonParameters>]
-```
-
-### force
-```
-Connect-JCOnline [-JCEnvironment <String>] [-force] [-ip <String>] [-JumpCloudApiKey] <String>
- [[-JumpCloudOrgId] <String>] [<CommonParameters>]
+Connect-JCOnline [-force] [-JCEnvironment <String>] [-JumpCloudApiKey] <String> [[-JumpCloudOrgId] <String>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -108,28 +101,13 @@ The '-Force' parameter should be used when using the JumpCloud module in scripts
 
 ```yaml
 Type: SwitchParameter
-Parameter Sets: force
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -ip
-Enter an IP address
-
-```yaml
-Type: String
 Parameter Sets: (All)
 Aliases:
 
 Required: False
 Position: Named
 Default value: None
-Accept pipeline input: True (ByPropertyName)
+Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
