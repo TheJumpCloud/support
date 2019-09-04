@@ -13,5 +13,5 @@ Additional Systeminsight tables added.
 #### Banner Old
 
 ```
-If you receive an error while updating the module please run: Install-Module JumpCloud -force
+IF YOU RECEIVE AN ERROR WHILE UPDATING THE MODULE PLEASE RUN: Install-Module JumpCloud -force
 ```
