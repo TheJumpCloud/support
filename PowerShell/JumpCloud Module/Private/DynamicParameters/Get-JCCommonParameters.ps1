@@ -69,7 +69,7 @@ Function Get-JCCommonParameters
             'Type'                            = [System.Array];
             'ValueFromPipelineByPropertyName' = $true;
             'ValidateNotNullOrEmpty'          = $true;
-            'ParameterSets'                   = @('ById', 'ByName', 'ByValue');
+            'ParameterSets'                   = @('ById', 'ByName', '__AllParameterSets');
             'HelpMessage'                     = 'An array of the fields/properties/columns you want to return from the search.';
             'Position'                        = 95;
         }
@@ -78,7 +78,7 @@ Function Get-JCCommonParameters
             'Type'                            = [System.String];
             'ValueFromPipelineByPropertyName' = $true;
             'ValidateNotNullOrEmpty'          = $true;
-            'ParameterSets'                   = @('ById', 'ByName', 'ByValue');
+            'ParameterSets'                   = @('ById', 'ByName', '__AllParameterSets');
             'HelpMessage'                     = 'Filters to narrow down search.';
             'ValidateScript'                  = {
                 $FilterPattern = [regex]'.*?:.*?:.*?'
@@ -111,7 +111,7 @@ Function Get-JCCommonParameters
             'ValidateRange'                   = (1, [int]::MaxValue);
             'DefaultValue'                    = $JCType.Limit | Select-Object -Unique;
             'HelpMessage'                     = 'The number of items you want to return per API call.';
-            'ParameterSets'                   = @('ById', 'ByName', 'ByValue');
+            'ParameterSets'                   = @('ById', 'ByName', '__AllParameterSets');
             'Position'                        = 97;
         }
         $Param_Skip = @{
@@ -121,7 +121,7 @@ Function Get-JCCommonParameters
             'ValidateRange'                   = (0, [int]::MaxValue);
             'DefaultValue'                    = $JCType.Skip | Select-Object -Unique;
             'HelpMessage'                     = 'The number of items you want to skip over per API call.';
-            'ParameterSets'                   = @('ById', 'ByName', 'ByValue');
+            'ParameterSets'                   = @('ById', 'ByName', '__AllParameterSets');
             'Position'                        = 98;
         }
         $Param_Paginate = @{
@@ -130,7 +130,7 @@ Function Get-JCCommonParameters
             'ValueFromPipelineByPropertyName' = $true;
             'DefaultValue'                    = $JCType.Paginate | Select-Object -Unique;
             'HelpMessage'                     = 'Whether or not you want to paginate through the results.';
-            'ParameterSets'                   = @('ById', 'ByName', 'ByValue');
+            'ParameterSets'                   = @('ById', 'ByName', '__AllParameterSets');
             'Position'                        = 99;
         }
         # # Add conditional parameter settings
