@@ -13,5 +13,5 @@ Additional Systeminsight tables added.
 #### Banner Old
 
 ```
-Systeminsight id property has been renamed.
+If you receive an error while updating the module please run: Install-Module JumpCloud -force
 ```
