@@ -1,6 +1,10 @@
-# Input your JumpCloud System Connect Key within the quotes of $JumpCloudConnectKey = '' on the below line.
+# To run pass parameter JumpCloudConnectKey when calling InstallWindowsAgent.ps1
+# Example ./InstallWindowsAgent.ps1 -JumpCloudConnectKey "56b403784365r6o2n311cosr218u1762le4y9e9a"
 
-$JumpCloudConnectKey = ''
+Param (
+    [Parameter (Mandatory = $true)]
+    [string] $JumpCloudConnectKey
+)
 
 #--- Modify Below This Line At Your Own Risk ------------------------------
 
