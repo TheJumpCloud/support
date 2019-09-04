@@ -84,11 +84,11 @@ Describe -Tag:('JCSystemInsights') "Get-JCSystemInsights Tests" {
                                     # {
                                     #     'Single'
                                     #     {
-                                    #         It("Where unique object id count should Be 1") {($CommandResults.jc_system_id | Select-Object -Unique | Measure-Object).Count | Should -Be 1}
+                                    #         It("Where unique object id count should Be 1") {($CommandResults.system_id | Select-Object -Unique | Measure-Object).Count | Should -Be 1}
                                     #     }
                                     #     'Multiple'
                                     #     {
-                                    #         It("Where unique object id count should BeGreaterThan 1") {($CommandResults.jc_system_id | Select-Object -Unique | Measure-Object).Count | Should -BeGreaterThan 1}
+                                    #         It("Where unique object id count should BeGreaterThan 1") {($CommandResults.system_id | Select-Object -Unique | Measure-Object).Count | Should -BeGreaterThan 1}
                                     #     }
                                     #     Default {Write-Error 'Unknown $TestType: "' + $TestType + '"'}
                                     # }

@@ -1,12 +1,8 @@
 Function Connect-JCOnline ()
 {
-    [CmdletBinding(DefaultParameterSetName = 'Interactive')]
+    [CmdletBinding()]
     Param
     (
-        [Parameter(ParameterSetName = 'force', ValueFromPipelineByPropertyName, HelpMessage = 'Specific to JumpCloud development team to connect to staging and local dev environments.')]
-        [Parameter(ParameterSetName = 'Interactive', ValueFromPipelineByPropertyName, HelpMessage = 'Specific to JumpCloud development team to connect to staging and local dev environments.')]
-        [ValidateSet('production', 'staging', 'local')]
-        [System.String]$JCEnvironment = 'production',
         [Parameter(ParameterSetName = 'force', HelpMessage = 'Using the "-Force" parameter the module update check is skipped. The ''-Force'' parameter should be used when using the JumpCloud module in scripts or other automation environments.')][Switch]$force
     )
     DynamicParam
@@ -18,7 +14,6 @@ Function Connect-JCOnline ()
             'ValueFromPipelineByPropertyName' = $true;
             'ValidateNotNullOrEmpty'          = $true;
             'ValidateLength'                  = (40, 40);
-            'ParameterSets'                   = ('force', 'Interactive');
             'HelpMessage'                     = 'Please enter your JumpCloud API key. This can be found in the JumpCloud admin console within "API Settings" accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console.';
         }
         $Param_JumpCloudOrgId = @{
@@ -27,8 +22,16 @@ Function Connect-JCOnline ()
             'Position'                        = 1;
             'ValueFromPipelineByPropertyName' = $true;
             'ValidateNotNullOrEmpty'          = $true;
-            'ParameterSets'                   = ('force', 'Interactive');
             'HelpMessage'                     = 'Organization Id can be found in the Settings page within the admin console. Only needed for multi tenant admins.';
+        }
+        $Param_JCEnvironment = @{
+            'Name'                            = 'JCEnvironment';
+            'Type'                            = [System.String];
+            'Position'                        = 2;
+            'ValueFromPipelineByPropertyName' = $true;
+            'ValidateNotNullOrEmpty'          = $true;
+            'HelpMessage'                     = 'Specific to JumpCloud development team to connect to staging dev environment.';
+            'ValidateSet'                     = ('production', 'staging');
         }
         # If the $env:JCApiKey is not set then make the JumpCloudApiKey mandatory else set the default value to be the env variable
         If ([System.String]::IsNullOrEmpty($env:JCApiKey))
@@ -44,18 +47,14 @@ Function Connect-JCOnline ()
         {
             $Param_JumpCloudOrgId.Add('Default', $env:JCOrgId);
         }
-        If ((Get-PSCallStack).Command -like '*MarkdownHelp')
+        # If the $env:JCEnvironment is set then set the default value to be the env variable
+        If (-not [System.String]::IsNullOrEmpty($env:JCEnvironment))
         {
-            $JCEnvironment = 'local'
+            $Param_JCEnvironment.Add('Default', $env:JCEnvironment);
         }
-        If ($JCEnvironment -eq "local")
+        Else
         {
-            $Param_ip = @{
-                'Name'                            = 'ip';
-                'Type'                            = [System.String];
-                'ValueFromPipelineByPropertyName' = $true;
-                'HelpMessage'                     = 'Enter an IP address';
-            }
+            $Param_JCEnvironment.Add('Default', 'production');
         }
         # Build output
         # Build parameter array
@@ -90,28 +89,6 @@ Function Connect-JCOnline ()
     {
         # Debug message for parameter call
         Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDebugMessageBegin) -ArgumentList:($MyInvocation, $PsBoundParameters, $PSCmdlet) -NoNewScope
-        Switch ($JCEnvironment)
-        {
-            'production'
-            {
-                $global:JCUrlBasePath = "https://console.jumpcloud.com"
-            }
-            'staging'
-            {
-                $global:JCUrlBasePath = "https://console.awsstg.jumpcloud.com"
-            }
-            'local'
-            {
-                If ($PSBoundParameters['ip'])
-                {
-                    $global:JCUrlBasePath = $PSBoundParameters['ip']
-                }
-                Else
-                {
-                    $global:JCUrlBasePath = "http://localhost"
-                }
-            }
-        }
     }
     Process
     {
@@ -124,6 +101,28 @@ Function Connect-JCOnline ()
             # Update security protocol
             [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls, [System.Net.SecurityProtocolType]::Tls12
             #Region Set environment variables that can be used by other scripts
+            # If "$JCEnvironment" is populated or if "$env:JCEnvironment" is not set
+            If (-not [System.String]::IsNullOrEmpty($JCEnvironment))
+            {
+                # Set $env:JCEnvironment
+                $env:JCEnvironment = $JCEnvironment
+                $global:JCEnvironment = $env:JCEnvironment
+            }
+            $global:JCUrlBasePath = Switch ($JCEnvironment)
+            {
+                'production'
+                {
+                    "https://console.jumpcloud.com"
+                }
+                'staging'
+                {
+                    "https://console.awsstg.jumpcloud.com"
+                }
+                Default
+                {
+                    Write-Error ('Unknown value for $JCEnvironment.')
+                }
+            }
             # If "$JumpCloudApiKey" is populated or if "$env:JCApiKey" is not set
             If (-not [System.String]::IsNullOrEmpty($JumpCloudApiKey))
             {
@@ -170,27 +169,24 @@ Function Connect-JCOnline ()
                     Break
                 }
                 # Check for updates to the module and only prompt if user has not been prompted during the session already
-                If ($JCEnvironment -ne 'local')
+                If (!($force))
                 {
-                    If (!($force))
+                    If ([System.String]::IsNullOrEmpty($env:JcUpdateModule) -or $env:JcUpdateModule -eq 'True')
                     {
-                        If ([System.String]::IsNullOrEmpty($env:JcUpdateModule) -or $env:JcUpdateModule -eq 'True')
-                        {
-                            $env:JcUpdateModule = $false
-                            Update-JCModule | Out-Null
-                        }
-                        If ($IndShowMessages)
-                        {
-                            Write-Host ('Connection Status:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
-                            Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
-                            Write-Host ('Successfully connected to JumpCloud!') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
-                            Write-Host ('OrgId:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
-                            Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
-                            Write-Host ($Auth.JCOrgId) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
-                            Write-Host ('OrgName:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
-                            Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
-                            Write-Host ($Auth.JCOrgName) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
-                        }
+                        $env:JcUpdateModule = $false
+                        Update-JCModule | Out-Null
+                    }
+                    If ($IndShowMessages)
+                    {
+                        Write-Host ('Connection Status:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
+                        Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
+                        Write-Host ('Successfully connected to JumpCloud!') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
+                        Write-Host ('OrgId:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
+                        Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
+                        Write-Host ($Auth.JCOrgId) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
+                        Write-Host ('OrgName:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
+                        Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
+                        Write-Host ($Auth.JCOrgName) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
                     }
                 }
                 # Return [PSCustomObject]@{

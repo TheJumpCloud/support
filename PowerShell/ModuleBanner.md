@@ -1,17 +1,17 @@
 #### Latest Version
 
 ```
-1.13.2
+1.13.3
 ```
 
 #### Banner Current
 
 ```
-Use Get-JCSystem and the new parameter '-SystemFDEKey' to backup SystemFDEKeys.
+Additional Systeminsight tables added.
 ```
 
 #### Banner Old
 
 ```
-Bug fixes for authentication and formatting updates to Connect-JCOnline.
+Systeminsight id property has been renamed.
 ```
