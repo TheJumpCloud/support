@@ -2,7 +2,7 @@
 {
     [CmdletBinding(DefaultParameterSetName = 'ById')]
     Param(
-        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)][ValidateNotNullOrEmpty()][ValidateSet('add', 'get', 'remove')][System.String]$Action
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'The verb of the command calling it. Different verbs will make different parameters required.')][ValidateSet('add', 'get', 'new', 'remove', 'set')][System.String]$Action
         , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'The type of the object.')][ValidateNotNullOrEmpty()][ValidateSet('command', 'ldap_server', 'policy', 'application', 'radius_server', 'system_group', 'system', 'user_group', 'user', 'g_suite', 'office_365')][Alias('TypeNameSingular')][System.String]$Type
         , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Bypass user prompts and dynamic ValidateSet.')][ValidateNotNullOrEmpty()][Switch]$Force
     )
@@ -58,7 +58,7 @@
                     $SourceItemTypeNameSingular = $SourceItemTypeName.TypeNameSingular
                     $SourceItemTypeNamePlural = $SourceItemTypeName.TypeNamePlural
                     $SourceItemTargets = $SourceItem.Targets |
-                        Where-Object { $_.TargetSingular -in $TargetType -or $_.TargetPlural -in $TargetType }
+                    Where-Object { $_.TargetSingular -in $TargetType -or $_.TargetPlural -in $TargetType }
                     ForEach ($SourceItemTarget In $SourceItemTargets)
                     {
                         $SourceItemTargetSingular = $SourceItemTarget.TargetSingular
@@ -85,19 +85,19 @@
                         {
                             $AssociationOut = @()
                             # If switches are not passed in set them to be false so they can be used with Format-JCAssociation
-                            If (!($IncludeInfo)) {$IncludeInfo = $false; }
-                            If (!($IncludeNames)) {$IncludeNames = $false; }
-                            If (!($IncludeVisualPath)) {$IncludeVisualPath = $false; }
-                            If (!($Raw)) {$Raw = $false; }
+                            If (!($IncludeInfo)) { $IncludeInfo = $false; }
+                            If (!($IncludeNames)) { $IncludeNames = $false; }
+                            If (!($IncludeVisualPath)) { $IncludeVisualPath = $false; }
+                            If (!($Raw)) { $Raw = $false; }
                             # Get associations and format the output
                             $Association = Format-JCAssociation -Uri:($Uri_Associations_GET) -Method:('GET') -Source:($SourceItem) -IncludeInfo:($IncludeInfo) -IncludeNames:($IncludeNames) -IncludeVisualPath:($IncludeVisualPath) -Raw:($Raw)
                             If ($Direct -eq $true)
                             {
-                                $AssociationOut += $Association | Where-Object {$_.associationType -eq 'direct' -or $_.associationType -eq "direct`/indirect"}
+                                $AssociationOut += $Association | Where-Object { $_.associationType -eq 'direct' -or $_.associationType -eq "direct`/indirect" }
                             }
                             If ($Indirect -eq $true)
                             {
-                                $AssociationOut += $Association | Where-Object {$_.associationType -eq 'indirect' -or $_.associationType -eq "direct`/indirect"}
+                                $AssociationOut += $Association | Where-Object { $_.associationType -eq 'indirect' -or $_.associationType -eq "direct`/indirect" }
                             }
                             If (!($Direct) -and !($Indirect))
                             {
@@ -112,9 +112,9 @@
                             {
                                 $Result = $AssociationOut
                                 $Results += $Result | Select-Object * `
-                                    , @{Name = 'action'; Expression = {$Action}} `
-                                    , @{Name = 'IsSuccessStatusCode'; Expression = {$Association.httpMetaData.BaseResponse.IsSuccessStatusCode | Select-Object -Unique}} `
-                                    , @{Name = 'error'; Expression = {$null}}
+                                    , @{Name = 'action'; Expression = { $Action } } `
+                                    , @{Name = 'IsSuccessStatusCode'; Expression = { $Association.httpMetaData.BaseResponse.IsSuccessStatusCode | Select-Object -Unique } } `
+                                    , @{Name = 'error'; Expression = { $null } }
                             }
                         }
                         Else
@@ -157,9 +157,9 @@
                                         }
                                         # Validate that the association exists
                                         $TestAssociation = Format-JCAssociation -Uri:($Uri_Associations_GET) -Method:('GET') -Source:($SourceItem) -TargetId:($TargetItemId) -IncludeNames:($true)
-                                        $IndirectAssociations = $TestAssociation  | Where-Object {$_.associationType -eq 'indirect'}
-                                        $DirectAssociations = $TestAssociation  | Where-Object {$_.associationType -eq 'direct' -or $_.associationType -eq "direct`/indirect"}
-                                        If ($DirectAssociations.associationType -eq "direct`/indirect") {$DirectAssociations.associationType = 'direct'}
+                                        $IndirectAssociations = $TestAssociation | Where-Object { $_.associationType -eq 'indirect' }
+                                        $DirectAssociations = $TestAssociation | Where-Object { $_.associationType -eq 'direct' -or $_.associationType -eq "direct`/indirect" }
+                                        If ($DirectAssociations.associationType -eq "direct`/indirect") { $DirectAssociations.associationType = 'direct' }
                                         # If the target is not only an indirect association
                                         If ($TargetItemId -in $DirectAssociations.targetId -or $Action -eq 'add')
                                         {
@@ -196,8 +196,8 @@
                                                 {
                                                     $JCApi = Invoke-JCApi -Body:($JsonBody) -Method:('POST') -Url:($Uri_Associations_POST)
                                                     $ActionResult = $JCApi | Select-Object * `
-                                                        , @{Name = 'IsSuccessStatusCode'; Expression = {$JCApi.httpMetaData.BaseResponse.IsSuccessStatusCode | Select-Object -Unique}} `
-                                                        , @{Name = 'error'; Expression = {$null}}
+                                                        , @{Name = 'IsSuccessStatusCode'; Expression = { $JCApi.httpMetaData.BaseResponse.IsSuccessStatusCode | Select-Object -Unique } } `
+                                                        , @{Name = 'error'; Expression = { $null } }
                                                 }
                                                 Catch
                                                 {
@@ -209,9 +209,9 @@
                                                 }
                                             }
                                             # Validate that the new association has been created
-                                            If ($Action -eq 'add')
+                                            If ($Action -in ('add', 'new'))
                                             {
-                                                $AddAssociationValidation = Format-JCAssociation -Uri:($Uri_Associations_GET) -Method:('GET') -Source:($SourceItem) -TargetId:($TargetItemId) -IncludeNames:($true) | Where-Object {$_.TargetId -eq $TargetItemId}
+                                                $AddAssociationValidation = Format-JCAssociation -Uri:($Uri_Associations_GET) -Method:('GET') -Source:($SourceItem) -TargetId:($TargetItemId) -IncludeNames:($true) | Where-Object { $_.TargetId -eq $TargetItemId }
                                                 If ($AddAssociationValidation)
                                                 {
                                                     $Result = $AddAssociationValidation
@@ -238,9 +238,9 @@
                                             $Results += If ($Result)
                                             {
                                                 $Result | Select-Object * `
-                                                    , @{Name = 'action'; Expression = {$Action}} `
-                                                    , @{Name = 'IsSuccessStatusCode'; Expression = {$ActionResult.IsSuccessStatusCode | Select-Object -Unique}} `
-                                                    , @{Name = 'error'; Expression = {$ActionResult.error}}
+                                                    , @{Name = 'action'; Expression = { $Action } } `
+                                                    , @{Name = 'IsSuccessStatusCode'; Expression = { $ActionResult.IsSuccessStatusCode | Select-Object -Unique } } `
+                                                    , @{Name = 'error'; Expression = { $ActionResult.error } }
                                             }
                                         }
                                     }
