@@ -130,7 +130,6 @@ Function Update-JCModule
                     If ($UserInput.ToUpper() -eq 'N')
                     {
                         Write-Host ('Exiting the ' + $PowerShellGalleryModule.Name + ' PowerShell module update process.') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action)
-                        Exit;
                     }
                     Else
                     {
@@ -150,22 +149,22 @@ Function Update-JCModule
                                 Write-Host ($_.Version) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
                             } | Uninstall-Module -Force
                         }
-                    }
-                    # Validate install
-                    $InstalledModulePostUpdate = Get-InstalledModule -Name:($PowerShellGalleryModule.Name)
-                    # Check to see if the module version on the PowerShell gallery does not match the local module version
-                    If ($PowerShellGalleryModule.Version -eq $InstalledModulePostUpdate.Version)
-                    {
-                        # Load new module
-                        Import-Module -Name:($PowerShellGalleryModule.Name) -Scope:('Global') -Force
-                        # Confirm to user module update has been successful
-                        Write-Host ('Status:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
-                        Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
-                        Write-Host ('The ' + $PowerShellGalleryModule.Name + ' PowerShell module has successfully been updated!') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
-                    }
-                    Else
-                    {
-                        Write-Error ('Failed to update the ' + $PowerShellGalleryModule.Name + ' PowerShell module to the latest version.')
+                        # Validate install
+                        $InstalledModulePostUpdate = Get-InstalledModule -Name:($PowerShellGalleryModule.Name)
+                        # Check to see if the module version on the PowerShell gallery does not match the local module version
+                        If ($PowerShellGalleryModule.Version -eq $InstalledModulePostUpdate.Version)
+                        {
+                            # Load new module
+                            Import-Module -Name:($PowerShellGalleryModule.Name) -Scope:('Global') -Force
+                            # Confirm to user module update has been successful
+                            Write-Host ('Status:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
+                            Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
+                            Write-Host ('The ' + $PowerShellGalleryModule.Name + ' PowerShell module has successfully been updated!') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
+                        }
+                        Else
+                        {
+                            Write-Error ('Failed to update the ' + $PowerShellGalleryModule.Name + ' PowerShell module to the latest version.')
+                        }
                     }
                 }
                 Else
