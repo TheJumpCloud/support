@@ -75,8 +75,9 @@ if (($endDate -le $startDate))
 
 $FileStartDate = Get-Date $StartDate -Format FileDate
 $FileEndDate = Get-Date $EndDate -Format FileDate
-$EventsArray = @()
 $OutFileName = "jcevents_" + $FileStartDate + "_" + $FileEndDate + ".$FileType"
+$EventsArray = @()
+
 
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 $TimeIncrements = Do
