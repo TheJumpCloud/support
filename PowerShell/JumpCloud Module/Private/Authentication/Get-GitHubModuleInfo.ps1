@@ -17,11 +17,11 @@ Function Get-GitHubModuleInfo
     $OutputObject = New-Object -TypeName:('PSObject ')
     # Get the body of the GitHub page
     $MarkDownBody = ($GitHubModuleInfoContent | Select-String -Pattern:('(?is)(?<=<article class="markdown-body entry-content p-3 p-md-6" itemprop="text">)(.*?)(?=<\/article>)')).Matches.Value
-    ForEach ($Header In $MarkDownBody.Split('<h4>'))
+    ForEach ($Section In $MarkDownBody -split ('<h4>'))
     {
         # Get matching value
-        $MatchedValue_Label = ($Header | Select-String -Pattern:($RegexPattern_Label)).Matches.Value
-        $MatchedValue_Body = ($Header | Select-String -Pattern:($RegexPattern_Body)).Matches.Value
+        $MatchedValue_Label = ($Section | Select-String -Pattern:($RegexPattern_Label)).Matches.Value
+        $MatchedValue_Body = ($Section | Select-String -Pattern:($RegexPattern_Body)).Matches.Value
         $MatchedValue_HtmlTags = ($MatchedValue_Body | Select-String -AllMatches -Pattern:($RegexPattern_HtmlTags)).Matches.Value
         If (-not [System.String]::IsNullOrEmpty($MatchedValue_Body))
         {
