@@ -1,7 +1,7 @@
 Function Get-GitHubModuleInfo
 {
     Param(
-        $GitHubModuleInfoURL = 'https://github.com/TheJumpCloud/support/blob/JumpCloudModule_1.13.4/PowerShell/ModuleBanner.md'
+        $GitHubModuleInfoURL = 'https://github.com/TheJumpCloud/support/blob/master/PowerShell/ModuleBanner.md'
     )
     # Define expected labels to find
     $Labels = @('Latest Version', 'Banner Current', 'Banner Old')
