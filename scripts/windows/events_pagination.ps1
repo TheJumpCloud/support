@@ -2,7 +2,7 @@
 #
 #   -StartDate (Start date to pull events from) | Events within a 45 days range can be requested
 #   -EndDate (End date to stop pulling events) | OPTIONAL if not specified the EndDate will be the current date
-#   -IncrementType (Type increments to pull. Valid values: days, hours, minutes)
+#   -IncrementType (Type of time increments to pull. Valid values: days, hours, minutes)
 #   -IncrementAmount (Number of increments to pull.)
 #   -FileType (Type of output file. Valid values: txt, JSON) | OPTIONAL default value is txt
 #   -JumpCloudAPIKey Your JumpCloudAPIKey can be found in the admin portal.
