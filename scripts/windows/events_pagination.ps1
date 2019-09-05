@@ -32,6 +32,7 @@ param(
     [datetime]$StartDate,
 
     [Parameter(
+        Mandatory = $false,
         ValueFromPipelineByPropertyName,
         Position = 1)]
     [ValidateScript( {
@@ -50,7 +51,7 @@ param(
     [ValidateSet("txt", "json")]
     [string]$FileType = 'txt',
 
-    [Parameter(Mandatory = $True,
+    [Parameter(Mandatory = $true,
         Position = 0,
         HelpMessage = "Please enter your JumpCloud API key. This can be found in the JumpCloud admin console within 'API Settings' accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console.") ]
     [ValidateScript( {
