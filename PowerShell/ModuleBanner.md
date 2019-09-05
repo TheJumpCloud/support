@@ -14,4 +14,6 @@ something
 
 ```
 Systeminsight id property has been renamed.
+
+A new line
 ```
