@@ -1,9 +1,10 @@
 # USAGE: To run pass in the following parameters when calling this script:
 #
-#   -StartDate (Start date to pull events from)
-#   -EndDate (End date to stop pulling events)
+#   -StartDate (Start date to pull events from) | Events within a 45 days range can be requested
+#   -EndDate (End date to stop pulling events) | OPTIONAL if not specified the EndDate will be the current date
 #   -IncrementType (Type increments to pull. Valid values: days, hours, minutes)
 #   -IncrementAmount (Number of increments to pull.)
+#   -FileType (Type of output file. Valid values: txt, JSON) | OPTIONAL default value is txt
 #   -JumpCloudAPIKey Your JumpCloudAPIKey can be found in the admin portal.
 #
 # Example:
@@ -19,7 +20,7 @@ param(
         ValueFromPipelineByPropertyName,
         Position = 0)]
     [ValidateScript( {
-            If (!($_ -ge ((Get-Date).Date).AddDays(-45) -and $_ -lt ((Get-Date).Date)))
+            If (!($_ -ge ((Get-Date).Date).AddDays(-45)))
             {
                 Throw 'Value must be within 45 days of current date.'
             }
@@ -34,7 +35,7 @@ param(
         ValueFromPipelineByPropertyName,
         Position = 1)]
     [ValidateScript( {
-            If (!($_ -ge ((Get-Date).Date).AddDays(-45) -and $_ -lt ((Get-Date).Date)))
+            If (!($_ -ge ((Get-Date).Date).AddDays(-45)))
             {
                 Throw 'Value must be within 45 days of current date.'
             }
@@ -44,6 +45,10 @@ param(
             }
         })]
     [datetime]$EndDate = (Get-Date),
+
+    [Parameter(Mandatory = $false)]
+    [ValidateSet("txt", "json")]
+    [string]$FileType = 'txt',
 
     [Parameter(Mandatory = $True,
         Position = 0,
@@ -61,9 +66,16 @@ param(
 
 )
 
+if (($endDate -le $startDate))
+{
+    Write-Error "End date must be later than start date"
+    Exit
+}
+
 $FileStartDate = Get-Date $StartDate -Format FileDate
 $FileEndDate = Get-Date $EndDate -Format FileDate
-
+$EventsArray = @()
+$OutFileName = "jcevents_" + $FileStartDate + "_" + $FileEndDate + ".$FileType"
 
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 $TimeIncrements = Do
@@ -89,10 +101,11 @@ For ($i = 1; $i -le $TimeIncrements.Length - 1; $i++)
     $events = Invoke-RestMethod -Method GET -Uri $url -Header $hdrs
     if ($events)
     {
-        $OutFileName = "jcevents_" + $FileStartDate + "_" + $FileEndDate + ".txt"
-        $events | ConvertTo-Json | Out-File -append "$OutFileName"
-        Write-Host ("$($events.count) " + 'events from ' + $startTime + ' to ' + $endTime + ' added to ' + $OutFileName )
+        Write-Host ("$($events.count) " + 'events found in range ' + $startTime + ' to ' + $endTime )
+        $EventsArray += $events
     }
 
 
 }
+
+$EventsArray | ConvertTo-Json | Out-File -append "$OutFileName"
