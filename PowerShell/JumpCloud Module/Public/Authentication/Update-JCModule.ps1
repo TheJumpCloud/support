@@ -149,7 +149,7 @@ Function Update-JCModule
                         If (!($SkipUninstallOld))
                         {
                             $InstalledModulePreUpdate | ForEach-Object {
-                                Write-Host ('Uninstalling from system old ' + $_.Name + ' module version: ') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewline
+                                Write-Host ('Uninstalling ' + $_.Name + ' module version: ') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewline
                                 Write-Host ($_.Version) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
                                 $_ | Uninstall-Module -Force
                             }
