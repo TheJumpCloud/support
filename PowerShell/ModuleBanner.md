@@ -14,6 +14,5 @@ something
 
 ```
 Systeminsight id property has been renamed.
-
-A new line
+!!!IF YOU RECEIVE AN ERROR WHILE UPDATING THE MODULE PLEASE RUN: Install-Module JumpCloud -force
 ```
