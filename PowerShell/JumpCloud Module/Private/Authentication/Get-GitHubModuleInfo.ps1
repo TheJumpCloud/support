@@ -6,6 +6,7 @@ Function Get-GitHubModuleInfo
     # Define expected labels to find
     $Labels = @('Latest Version', 'Banner Current', 'Banner Old')
     # Define regex patterns
+    [regex]$RegexPattern_Article = '(?is)(?<=<article class="markdown-body entry-content p-3 p-md-6" itemprop="text">)(.*?)(?=<\/article>)'
     [regex]$RegexPattern_Label = '(?is)(?<=<\/a>)(.*?)(?=<\/h4>)'
     [regex]$RegexPattern_Body = '(?is)(?<=<\/h4>)(.*?)($)'
     [regex]$RegexPattern_HtmlTags = '(<)(.*?)(>)'
@@ -14,9 +15,9 @@ Function Get-GitHubModuleInfo
     # Get latest module information
     $GitHubModuleInfo = Invoke-WebRequest -Uri:($GitHubModuleInfoURL) -UseBasicParsing
     $GitHubModuleInfoContent = $GitHubModuleInfo.Content
-    $OutputObject = New-Object -TypeName:('PSObject ')
+    $OutputObject = New-Object -TypeName:('PSObject')
     # Get the body of the GitHub page
-    $MarkDownBody = ($GitHubModuleInfoContent | Select-String -Pattern:('(?is)(?<=<article class="markdown-body entry-content p-3 p-md-6" itemprop="text">)(.*?)(?=<\/article>)')).Matches.Value
+    $MarkDownBody = ($GitHubModuleInfoContent | Select-String -Pattern:($RegexPattern_Article)).Matches.Value
     ForEach ($Section In $MarkDownBody -split ('<h4>'))
     {
         # Get matching value
