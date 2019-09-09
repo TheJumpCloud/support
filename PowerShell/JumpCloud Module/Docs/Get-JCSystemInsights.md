@@ -17,26 +17,26 @@ systems.
 
 ### Default
 ```
-Get-JCSystemInsights -Table <String> [-Fields <Array>] [-Filter <String>] [-Limit <Int32>]
- [-Paginate <Boolean>] [-Skip <Int32>] [<CommonParameters>]
+Get-JCSystemInsights -Table <String> [-Fields <Array>] [-Filter <String>] [-Limit <Int32>] [-Skip <Int32>]
+ [-Paginate <Boolean>] [<CommonParameters>]
 ```
 
 ### ById
 ```
-Get-JCSystemInsights -Table <String> [-Fields <Array>] [-Filter <String>] -Id <String[]> [-Limit <Int32>]
- [-Paginate <Boolean>] [-Skip <Int32>] [<CommonParameters>]
+Get-JCSystemInsights -Table <String> -Id <String[]> [-Fields <Array>] [-Filter <String>] [-Limit <Int32>]
+ [-Skip <Int32>] [-Paginate <Boolean>] [<CommonParameters>]
 ```
 
 ### ByName
 ```
-Get-JCSystemInsights -Table <String> [-Fields <Array>] [-Filter <String>] [-Limit <Int32>] -Name <String[]>
- [-Paginate <Boolean>] [-Skip <Int32>] [<CommonParameters>]
+Get-JCSystemInsights -Table <String> -Name <String[]> [-Fields <Array>] [-Filter <String>] [-Limit <Int32>]
+ [-Skip <Int32>] [-Paginate <Boolean>] [<CommonParameters>]
 ```
 
 ### ByValue
 ```
-Get-JCSystemInsights -Table <String> [-Fields <Array>] [-Filter <String>] [-Limit <Int32>]
- [-Paginate <Boolean>] [-Skip <Int32>] [<CommonParameters>]
+Get-JCSystemInsights -Table <String> [-Fields <Array>] [-Filter <String>] [-Limit <Int32>] [-Skip <Int32>]
+ [-Paginate <Boolean>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION

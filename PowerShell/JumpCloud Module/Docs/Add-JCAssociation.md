@@ -14,23 +14,14 @@ Create an association between two object within the JumpCloud console.
 
 ### ById (Default)
 ```
-Add-JCAssociation [-Type] <String> [-Force] [-Fields <Array>] [-Filter <String>] -Id <String[]>
- [-Limit <Int32>] [-Paginate <Boolean>] [-Skip <Int32>] [-Attributes <PSObject>] [-TargetId <String>]
- [-TargetName <String>] [-TargetType <String[]>] [<CommonParameters>]
+Add-JCAssociation [-Type] <String> [-Force] [-Id <String[]>] [-TargetType <String[]>] [-TargetId <String>]
+ [-TargetName <String>] [-Attributes <PSObject>] [<CommonParameters>]
 ```
 
 ### ByName
 ```
-Add-JCAssociation [-Type] <String> [-Force] [-Fields <Array>] [-Filter <String>] [-Limit <Int32>]
- -Name <String[]> [-Paginate <Boolean>] [-Skip <Int32>] [-Attributes <PSObject>] [-TargetId <String>]
- [-TargetName <String>] [-TargetType <String[]>] [<CommonParameters>]
-```
-
-### ByValue
-```
-Add-JCAssociation [-Type] <String> [-Force] [-Fields <Array>] [-Filter <String>] [-Limit <Int32>]
- [-Paginate <Boolean>] [-Skip <Int32>] [-Attributes <PSObject>] [-TargetId <String>] [-TargetName <String>]
- [-TargetType <String[]>] [<CommonParameters>]
+Add-JCAssociation [-Type] <String> [-Force] -Name <String[]> [-TargetType <String[]>] [-TargetId <String>]
+ [-TargetName <String>] [-Attributes <PSObject>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -69,36 +60,6 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
-### -Fields
-An array of the fields/properties/columns you want to return from the search.
-
-```yaml
-Type: Array
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -Filter
-Filters to narrow down search.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
 ### -Force
 Bypass user prompts and dynamic ValidateSet.
 
@@ -122,21 +83,6 @@ Type: String[]
 Parameter Sets: ById
 Aliases: _id
 
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -Limit
-The number of items you want to return per API call.
-
-```yaml
-Type: Int32
-Parameter Sets: (All)
-Aliases:
-
 Required: False
 Position: Named
 Default value: None
@@ -153,36 +99,6 @@ Parameter Sets: ByName
 Aliases: displayName, username
 
 Required: True
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -Paginate
-Whether or not you want to paginate through the results.
-
-```yaml
-Type: Boolean
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -Skip
-The number of items you want to skip over per API call.
-
-```yaml
-Type: Int32
-Parameter Sets: (All)
-Aliases:
-
-Required: False
 Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)

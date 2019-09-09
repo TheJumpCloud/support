@@ -14,23 +14,30 @@ The function Get-JCAssociation can be used to query an object's associations and
 
 ### ById (Default)
 ```
-Get-JCAssociation [-Type] <String> [-Force] [-Fields <Array>] [-Filter <String>] -Id <String[]>
- [-Limit <Int32>] [-Paginate <Boolean>] [-Skip <Int32>] [-Direct] [-IncludeInfo] [-IncludeNames]
- [-IncludeVisualPath] [-Indirect] [-TargetType <String[]>] [<CommonParameters>]
-```
-
-### ByName
-```
-Get-JCAssociation [-Type] <String> [-Force] [-Fields <Array>] [-Filter <String>] [-Limit <Int32>]
- -Name <String[]> [-Paginate <Boolean>] [-Skip <Int32>] [-Direct] [-IncludeInfo] [-IncludeNames]
- [-IncludeVisualPath] [-Indirect] [-TargetType <String[]>] [<CommonParameters>]
+Get-JCAssociation [-Type] <String> [-Force] -Id <String[]> [-Fields <Array>] [-Filter <String>]
+ [-Limit <Int32>] [-Skip <Int32>] [-Paginate <Boolean>] [-TargetType <String[]>] [-Direct] [-Indirect]
+ [-IncludeInfo] [-IncludeNames] [-IncludeVisualPath] [<CommonParameters>]
 ```
 
 ### ByValue
 ```
 Get-JCAssociation [-Type] <String> [-Force] [-Fields <Array>] [-Filter <String>] [-Limit <Int32>]
- [-Paginate <Boolean>] [-Skip <Int32>] [-Direct] [-IncludeInfo] [-IncludeNames] [-IncludeVisualPath]
- [-Indirect] [-TargetType <String[]>] [<CommonParameters>]
+ [-Skip <Int32>] [-Paginate <Boolean>] [-TargetType <String[]>] [-Direct] [-Indirect] [-IncludeInfo]
+ [-IncludeNames] [-IncludeVisualPath] [<CommonParameters>]
+```
+
+### ByName
+```
+Get-JCAssociation [-Type] <String> [-Force] -Name <String[]> [-Fields <Array>] [-Filter <String>]
+ [-Limit <Int32>] [-Skip <Int32>] [-Paginate <Boolean>] [-TargetType <String[]>] [-Direct] [-Indirect]
+ [-IncludeInfo] [-IncludeNames] [-IncludeVisualPath] [<CommonParameters>]
+```
+
+### Default
+```
+Get-JCAssociation [-Type] <String> [-Force] [-Fields <Array>] [-Filter <String>] [-Limit <Int32>]
+ [-Skip <Int32>] [-Paginate <Boolean>] [-TargetType <String[]>] [-Direct] [-Indirect] [-IncludeInfo]
+ [-IncludeNames] [-IncludeVisualPath] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
