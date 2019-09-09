@@ -170,7 +170,7 @@ Function New-DynamicParameter ()
         ForEach ($Set In $ParameterSets)
         {
             # Create and set the parameter's attributes
-            $ParameterAttribute = New-Object -TypeName System.Management.Automation.PARAMETERAttribute
+            $ParameterAttribute = New-Object -TypeName System.Management.Automation.ParameterAttribute
             If (-not [System.String]::IsNullOrEmpty($Set))
             {
                 $ParameterAttribute.ParameterSetName = $Set
@@ -202,6 +202,10 @@ Function New-DynamicParameter ()
             If ($DontShow)
             {
                 $ParameterAttribute.DontShow = $true
+            }
+            Else
+            {
+                $ParameterAttribute.DontShow = $false
             }
             $AttributeCollection.Add($ParameterAttribute)
         }
