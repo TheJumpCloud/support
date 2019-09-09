@@ -1,6 +1,8 @@
 ## 1.14.0
 
-Release Date: September 04, 2019
+#### RELEASE DATE
+
+September 12, 2019
 
 #### RELEASE NOTES
 
@@ -23,12 +25,18 @@ New functions:
 
 ## 1.13.3
 
-Release Date: September 04, 2019
+#### RELEASE DATE
+
+September 04, 2019
 
 #### RELEASE NOTES
 
 ```
 Systeminsights improvements.
+*****************************************
+IF YOU RECEIVE AN ERROR WHILE UPDATING THE MODULE PLEASE RUN:
+Install-Module JumpCloud -force
+*****************************************
 ```
 
 #### FEATURES
@@ -42,7 +50,9 @@ Systeminsights improvements.
 
 ## 1.13.2
 
-Release Date: August 19, 2019
+#### RELEASE DATE
+
+August 19, 2019
 
 #### RELEASE NOTES
 
@@ -66,7 +76,9 @@ Formatting update for Connect-JCOnline output.
 
 ## 1.13.1
 
-Release Date: August 8, 2019
+#### RELEASE DATE
+
+August 8, 2019
 
 #### RELEASE NOTES
 
@@ -94,7 +106,9 @@ Enable SystemInsights for systems using new boolean parameter "-systemInsights" 
 
 ## 1.13.0
 
-Release Date: July 16, 2019
+#### RELEASE DATE
+
+July 16, 2019
 
 #### RELEASE NOTES
 
@@ -105,43 +119,47 @@ Updated Function: Get-JCSystem with new parameter "-SystemFDEKey"
 to return the SystemFDEKey.
 ```
 
-#### FEATURES:
+#### FEATURES
 
 - New Function: Use Get-JCSystemInsights to leverage the new EA system insights API endpoints. These endpoints allow admins to query additional system details for systems that are enabled for System Insights. [Find more information about System Insights here](https://jumpcloud-success.s3.amazonaws.com/resources/System+Insights+Early+Access.pdf)
 - Updated Function: Get-JCSystem to allow for revealing the FileVault or BitLocker key. Use the "Switch" parameter "-SystemFDEKey" to display this key from the PowerShell terminal.
 - Updated Function: Get-JCSystem "-returnProperties" parameter set to include "fde" and "systemInsights".
 
-#### IMPROVEMENTS:
+#### IMPROVEMENTS
 
 Remove dynamic validate set functionality for -Id and -Name parameters due to performance issues.
 Updated test files to contain code within the describe blocks.
 Renamed private function files to match the same name of the function within.
 New Get-JCCommonParameters function.
 
-#### BUG FIXES:
+#### BUG FIXES
 
 N/A
 
 ## 1.12.1
 
-Release Date: June 17, 2019
+#### RELEASE DATE
+
+June 17, 2019
 
 ```
 Bug fixes for association functions.
 ```
 
-### FEATURES
+#### FEATURES
 
-### IMPROVEMENTS:
+#### IMPROVEMENTS
 
-### BUG FIXES:
+#### BUG FIXES
 
 Resolved issue where association types would return incorrect order.
 Removed Windows dependency for IE by adding `-UseBasicParsing` to Invoke-Webrequest.
 
 ## 1.12.0
 
-Release Date: June 6, 2019
+#### RELEASE DATE
+
+June 6, 2019
 
 ```
 Use Add-JCAssociation and Remove-JCAssociation to modify associations between objects in JumpCloud.
@@ -149,23 +167,25 @@ Get-JCAssociation can be piped into Add-JCAssociation or Remove-JCAssociation to
 User/systems, systems/commands, user_group/applications...etc
 ```
 
-### FEATURES
+#### FEATURES
 
 - New-Function: Add-JCAssociation leverages the V2 associations endpoint to add direct associations between an input object and any of it's possible JumpCloud objects associations.
 - New-Function: Remove-JCAssociation leverages the V2 associations endpoint to remove direct associations between an input object and any of it's possible JumpCloud objects associations.
 
-### IMPROVEMENTS:
+#### IMPROVEMENTS
 
 Added increased functionality to PowerShell user_agent.
 Added new attributes "external_dn" and "external_source_type" for managing ADB users to the Set-JCUser and Get-JCUser functions.
 
-### BUG FIXES:
+#### BUG FIXES
 
 Fixed bug on Get-JCGroup to return an error if a group is searched for by name and it does not exist.
 
 ## 1.11.0
 
-Release Date: May 8, 2019
+#### RELEASE DATE
+
+May 8, 2019
 
 ```
 Use Get-JCAssociation to query associations between objects in JumpCloud.
@@ -176,14 +196,16 @@ All available now directly from the Pwsh terminal!
 
 - New Function: Get-JCAssociation leverages the V2 associations endpoint to return the associations between an input object and any of it's possible JumpCloud objects associations. See [How To Use The Associations Functions](https://github.com/TheJumpCloud/support/wiki/How-To-Use-The-Associations-Functions) for more information.
 
-## Improvements
+#### IMPROVEMENTS
 
 Added private functions to standardize API calls to policy endpoints.
 Updated test file structure and methodology.
 
 ## 1.10.2
 
-Release Date: April 29, 2019
+#### RELEASE DATE
+
+April 29, 2019
 
 #### RELEASE NOTES
 
@@ -191,13 +213,15 @@ Release Date: April 29, 2019
 Update Set-JCUser to not allow null values for nested properties
 ```
 
-#### BUG FIXES:
+#### BUG FIXES
 
 - Resolves an issue that would set null values when using Set-JCUser to update the nested "addresses" property.
 
 ## 1.10.1
 
-Release Date: February 19, 2019
+#### RELEASE DATE
+
+February 19, 2019
 
 #### RELEASE NOTES
 
@@ -205,13 +229,15 @@ Release Date: February 19, 2019
 Update New-JCUser and Set-JCUser to interact with the property mfa instead of the mfaData property when using the parameter enable_user_portal_multifactor to enable mfa for a user.
 ```
 
-#### IMPROVEMENTS:
+#### IMPROVEMENTS
 
 - This change aligns with recent work done to improve the mfa workflow for JumpCloud end users.
 
 ## 1.10.0
 
-Release Date: January 21, 2019
+#### RELEASE DATE
+
+January 21, 2019
 
 #### RELEASE NOTES
 
@@ -219,7 +245,7 @@ Release Date: January 21, 2019
 Use Get-JCPolicy, Get-JCPolicyResults, Get-JCPolicyTargetSystem and Get-JCPolicyTargetGroup to gather information on JumpCloud policies. New-JCUser and Set-JCUser functions have been updated to support MFA enrollment periods. Bug fix on Radius Reply Attributes functions for LDAP and Unix groups.
 ```
 
-#### FEATURES:
+#### FEATURES
 
 - New Function: Get-JCPolicy will return policies configured within the JumpCloud admin console.
 - New Function: Get-JCPolicyResults will return policy results for a given PolicyName or PolicyID.
@@ -228,12 +254,12 @@ Use Get-JCPolicy, Get-JCPolicyResults, Get-JCPolicyTargetSystem and Get-JCPolicy
 - Updated Function: New-JCUser to set a default enrollment peroid of 7 days for users that are created with '-enable_user_portal_multifactor' set to $true. If this value is set to $true the dynamic parameter -enrollmentDays can also be specified from 1 to 365.
 - Updated Function: Set-JCUser to set a default enrollment peroid of 7 days for users that are updated with '-enable_user_portal_multifactor' set to $true. If this value is set to $true the dynamic parameter -enrollmentDays can also be specified from 1 to 365.
 
-#### IMPROVEMENTS:
+#### IMPROVEMENTS
 
 Increased -limit value when querying users and system users from 100 to 1000
 Increased performance of private Get-Hash_ID_Sudo function.
 
-#### BUG FIXES:
+#### BUG FIXES
 
 Fixed bug on Remove-JCUser command when trying to remove users by -UserID
 Fixed bug on RADIUS functions that prevented the addition or removal of Attributes on JumpCloud user groups configured for LDAP or set up as Linux groups
@@ -241,7 +267,9 @@ Fixed bug in Import-JCUsersFromCSV and Update-JCUsersFromCSV where a null value 
 
 ## 1.9.0
 
-Release Date: November 29, 2018
+#### RELEASE DATE
+
+November 29, 2018
 
 #### RELEASE NOTES
 
@@ -256,7 +284,7 @@ Set-JCRadiusReplyAttribute
 Remove-JCRadiusReplyAttribute
 ```
 
-#### FEATURES:
+#### FEATURES
 
 RADIUS reply attributes can now be configured on JumpCloud user groups using functions in the JumpCloud PowerShell module. When applied, these attributes will be returned in the Access-Accept message of a RADIUS request. Reply attributes are specified on JumpCloud user groups. Attributes can be applied across multiple users and RADIUS servers through the association of JumpCloud users to JumpCloud user groups and then the association of these JumpCloud user groups to RADIUS servers.
 
@@ -273,7 +301,9 @@ RADIUS reply attribute conflicts are resolved based on the creation date of the 
 
 ## 1.8.3
 
-Release Date: November 6, 2018
+#### RELEASE DATE
+
+November 6, 2018
 
 #### RELEASE NOTES
 
@@ -282,19 +312,21 @@ Bug fix for Get-JCGroup to display all group attributes.
 Added functionality for JumpCloud internal developers to connect to staging and test environments using the module.
 ```
 
-#### IMPROVEMENTS:
+#### IMPROVEMENTS
 
 - Updated Function: Connect-JCOnline has new parameter '-JCEnvironment' which JumpCloud developers can use to connect to staging and local test environments.
 - Updated Function: Connect-JCOnline has new parameter '-UserAgent' which JumpCloud developers can use to set their UserAgent when using the module.
 
-#### BUG FIXES:
+#### BUG FIXES
 
 - Resolved bug on Get-JCGroup where all group attributes would not display.
 
 
 ## 1.8.2
 
-Release Date: October 12, 2018
+#### RELEASE DATE
+
+October 12, 2018
 
 #### RELEASE NOTES
 
@@ -304,17 +336,19 @@ Increased stability for multi-tenant admins
 Check our full release notes to see new attribute additions released in 1.8.0
 ```
 
-#### IMPROVEMENTS:
+#### IMPROVEMENTS
 
 - Increased stability for multi-tenant admins
 
-#### BUG FIXES:
+#### BUG FIXES
 
 - Resolved bug on Get-JCCommandResult where the limit of value of 1000 would cause an error. Default limit value updated to 100.
 
 ## 1.8.1
 
-Release Date: September 21, 2018
+#### RELEASE DATE
+
+September 21, 2018
 
 #### RELEASE NOTES
 
@@ -323,13 +357,15 @@ Bug fix for Multi-Tenant orgs
 Check our full release notes to see new attribute additions released in 1.8.0
 ```
 
-#### BUG FIXES:
+#### BUG FIXES
 
 - Resolved bug on Connect-JCOnline where OrgID would not set correctly
 
 ## 1.8.0
 
-Release Date: September 20, 2018
+#### RELEASE DATE
+
+September 20, 2018
 
 #### RELEASE NOTES
 
@@ -343,7 +379,7 @@ Search for users by LDAP information attributes using Get-JCUser.
 Import-JCUsersFromCSV workflow has been updated to handle new attributes.
 ```
 
-#### FEATURES:
+#### FEATURES
 
 New LDAP extended user attributes: middlename, preferredName, jobTitle, employeeIdentifier (must be unique), department, costCenter, company, employeeType, description, location
 New LDAP telephony attributes: mobile_number, home_number, work_number, work_mobile_number, work_fax_number
@@ -359,7 +395,7 @@ New LDAP location attributes: home_streetAddress, home_poBox home_city, home_sta
 - Updated Function: New-JCImportTemplate workflow has been updated to prompt users with options to add the new LDAP extended, telephony, and location attributes to their CSV import templates.
 - Updated Function: Import-JCUsersFromCSV will verify and error check the unique field employeeIdentifier. The output for Import-JCUsersfromCSV has also been cleaned up.
 
-#### IMPROVEMENTS:
+#### IMPROVEMENTS
 
 - Updated parameters on Set-JCSystem to allow for modification of parameters via PowerShell pipeline.
 - Removed 20 character limit on JumpCloud username field.
@@ -371,7 +407,9 @@ New LDAP location attributes: home_streetAddress, home_poBox home_city, home_sta
 
 
 ## 1.7.0
-Release Date: August 14, 2018
+#### RELEASE DATE
+
+August 14, 2018
 
 #### RELEASE NOTES
 
@@ -382,25 +420,27 @@ Deployments are designed for automation scenarios where a 1:1 association betwee
 Use system specific payloads in your JumpCloud commands with variables populated from a CSV file.
 ```
 
-#### FEATURES:
+#### FEATURES
 
 - New Function: New-JCDeploymentTemplate used to create a deployment CSV template file that maps to the corresponding JumpCloud command variables to CSV columns.
 - New Function: Invoke-JCDeployment for calling the command deployment and feeding the command the '-CommandID' of the target JumpCloud deploy command and the populated deployment CSV file.
 - New Function: Set-JCCommand to update JumpCloud commands programmatically. This command is used by the Invoke-JCDeployment command to update the '-launchType' to trigger and trigger the command.
 
-#### IMPROVEMENTS:
+#### IMPROVEMENTS
 
 - Warning action "Inquire" removed from Import-JCUsersFromCSV command. Resolves repetitive "Press Y to continue"  message during user validation.
 - Streamlined JumpCloud banners. Because less is more.
 
-#### BUG FIXES:
+#### BUG FIXES
 
 - Resolved bug on 'Import-JCUserFromCSV' where output for users that were not created due to duplicate username or email would show previously created user information.
 - Resolved bug on 'Import-JCUserFromCSV' where output for users that were not created would show 'User created'.
 
 
 ## 1.6.0
-Release Date: August 3, 2018
+#### RELEASE DATE
+
+August 3, 2018
 
 #### RELEASE NOTES
 
@@ -411,19 +451,21 @@ Multi tenant admins will be asked to select the org they want to connect to duri
 Multi tenant admins can switch the org they are connected to using the Set-JCOrganization command.
 ```
 
-#### FEATURES:
+#### FEATURES
 
 - New Function: Send-JCPasswordReset allows admins to use the 'Resend email' button functionality programmatically to send reset/activation emails to targeted users.
 - New Function: Set-JCOrganization allows multi tenant admins to change the JumpCloud tenant they are conneted to.
 - New Function: Get-JCOrganization allows multi tenant admins to see the JumpCloud tenants they have access to.
 - Updated Function: Connect-JCOnline to prompt multi tenant admins to select their connected tenant. Admins can also skip this prompt by entering a 'JumpCloud OrgID' into the new '-JumpCloudOrgID' parameter to setup connection in automation scenarios.
 
-#### IMPROVEMENTS:
+#### IMPROVEMENTS
 
 - All Public functions have been updated to include the [x-org-id](https://docs.jumpcloud.com/2.0/authentication-and-authorization/multi-tenant-organization-api-header) header when a multi tenant API connection is established.
 
 ## 1.5.0
-Release Date: July 16, 2018
+#### RELEASE DATE
+
+July 16, 2018
 
 #### RELEASE NOTES
 
@@ -431,17 +473,19 @@ Release Date: July 16, 2018
 New Function: Get-JCBackup to backup user, system user, system, group information to CSV.
 Updated Function: Get-JCCommandResult to show SystemID
 ```
-#### FEATURES:
+#### FEATURES
 
 - New Function: Get-JCBackup to backup user, system user, system, user group, and system group information to CSV
 - Updated Function: Get-JCCommandResult to show SystemID when querying command results in bulk and '-ByID'
 
-#### IMPROVEMENTS:
+#### IMPROVEMENTS
 
 - Module structure updated. .PSM1 function monolithic broken out into single function .PS1 files in [Public](https://github.com/TheJumpCloud/support/tree/master/PowerShell/JumpCloud%20Module/Public) and [Private](https://github.com/TheJumpCloud/support/tree/master/PowerShell/JumpCloud%20Module/Private) folders. This allows for easier debugging and updating of the functions within the module.
 
 ## 1.4.2
-Release Date: May 31, 2018
+#### RELEASE DATE
+
+May 31, 2018
 
 #### RELEASE NOTES
 
@@ -450,17 +494,19 @@ Updated Function: Get-JCCommandResult with new parameter '-MaxResult'
 Using the parameter '-Skip' and '-MaxResult' admins can return a specific subset of command results.
 Performance fix for 'Get-JCCommandResult' with increase default limit to 1000
 ```
-#### FEATURES:
+#### FEATURES
 
 - Updated Function: Get-JCCommandResult with new parameters '-MaxResult'. '-MaxResult' can be combinded with '-Skip' to return a specific subset of command results.
 
-#### IMPROVEMENTS:
+#### IMPROVEMENTS
 
 - Updated Function: Get-JCCommandResult speed and performance by removing sort.
 - Updated Function: Get-JCCommandResult increased default limit to 1000 results.
 
 ## 1.4.1
-Release Date: May 25, 2018
+#### RELEASE DATE
+
+May 25, 2018
 
 #### RELEASE NOTES
 
@@ -470,17 +516,19 @@ Updated Function: Get-JCCommandResult with new parameters '-TotalCount' and '-Sk
 '-Skip' returns only the results after a specified number
 Bug fix for 'Get-JCSystem' to allow for pagination of over 1000 results.
 ```
-#### FEATURES:
+#### FEATURES
 
 - Updated Function: Get-JCCommandResult with new parameters '-TotalCount' to return the total number of command results and '-Skip' to return only command results after a specificed number. Using '-TotalCount' to first find the total number of results before running a command you can then use '-Skip' to query the new command results after running the command.
 
-#### BUG FIXES:
+#### BUG FIXES
 
 - Updated Functions: Get-JCSystem to allow for pagination of over 1000 results.
 
 
 ## 1.4.0
-Release Date: May 18, 2018
+#### RELEASE DATE
+
+May 18, 2018
 
 #### RELEASE NOTES
 
@@ -495,7 +543,7 @@ Bug fixes: Connect-JCOnline, Add-JCUserGroupMember, and Get-JCSystemGroupMember
 Improvements: Optimized Helper Hash Functions to speed up hash table creation and overall performance.
 ```
 
-#### FEATURES:
+#### FEATURES
 
 - Updated Function:  Invoke-JCCommand has added parameter '-NumberOfVariables' for passing in variables to JumpCloud commands. This parameter will create additional parameters dynamically based on the number of variables being passed. Learn more about passing objects to JumpCloud commands under the heading 'Sending data with triggers' [here](https://support.jumpcloud.com/customer/en/portal/articles/2443894-how-to-use-command-triggers).
 - Updated Function: Get-JCSystem to use the [/search/systems API endpoint](https://docs.jumpcloud.com/1.0/search/search-systems).
@@ -510,19 +558,21 @@ Improvements: Optimized Helper Hash Functions to speed up hash table creation an
   - Get-JCUser can now return only specific properties using new parameter -returnProperties
 
 
-#### BUG FIXES:
+#### BUG FIXES
 
 - Updated Functions: Get-JCSystemGroupMember to properly paginate results greater than 100 system group members.
 - Updated Function:  Add-JCUserGroupMember to handle user error additions more gracefully.
 - Updated Function: Connect-JCOnline to Write-Error instead of Write-Output if API key validation fails
 
-#### IMPROVEMENTS:
+#### IMPROVEMENTS
 
 - Updated Helper Hash Functions to leverage the -returnProperties which speeds up hash table creation and overall performance.
 
 
 ## 1.3.0
-Release Date: April 27, 2018
+#### RELEASE DATE
+
+April 27, 2018
 
 #### RELEASE NOTES
 
@@ -534,7 +584,7 @@ New Function: Remove-JCCommandTarget to remove JumpCloud system or system group 
 Updated Functions: Add-JCUser and Set-JCUser with boolean parameter '-password_never_expires'
 ```
 
-#### FEATURES:
+#### FEATURES
 
 - New Function: Set-JCUserGroupLDAP to toggle the LDAP presentation on/off for JumpCloud user groups.
 - New Function: Get-JCCommandTarget to query the JumpCloud systems or system groups associated with a JumpCloud command.
@@ -543,14 +593,16 @@ Updated Functions: Add-JCUser and Set-JCUser with boolean parameter '-password_n
 - Updated Functions: Add-JCUser and Set-JCUser with boolean parameter 'password_never_expires'.
 
 
-#### BUG FIXES:
+#### BUG FIXES
 
 - Updated Functions: Add-JCUser and Set-JCUser to allow UNIX_UID and UNIX_GUID to a value in the range 0-4294967295.
 - Updated Function: Get-JCSystemGroupMember to properly display output when using the 'ByID' parameter set.
 
 
 ## 1.2.0
-Release Date: February 28, 2018
+#### RELEASE DATE
+
+February 28, 2018
 
 #### RELEASE NOTES
 
@@ -561,7 +613,7 @@ Updated Function Get-JCUser to search users via username, firstname, lastname, o
 Updated Function Connect-JCOnline to check for and install module updates and added '-force' parameter for use in scripts and automation
 ```
 
-#### FEATURES:
+#### FEATURES
 
 - New Function: New-JCCommand to create JumpCloud commands from the shell
 - New Function: Remove-JCCommand to delete JumpCloud commands
@@ -570,7 +622,7 @@ Updated Function Connect-JCOnline to check for and install module updates and ad
 - Updated Function: Connect-JCOnline added banner to display current JumpCloud module version information. Added parameter sets for 'Interactive' and 'Force' modes. 'Interactive' displays banner and automatic module update options when new version becomes available. 'Force' can be used in automation scenarios to connect to JumpCloud and set $JCAPIKEY variable.
 
 
-#### IMPROVEMENTS:
+#### IMPROVEMENTS
 
 - Updated Function: Add-JCUserGroupMember with 'name' alias for 'GroupName' parameter to allow the command to accept pipeline input from the 'Get-JCGroup' command
 - Updated Function: Add-JCSystemGroupMember with 'name' alias for 'GroupName' parameter to allow the command to accept pipeline input from the 'Get-JCGroup' command
@@ -578,7 +630,9 @@ Updated Function Connect-JCOnline to check for and install module updates and ad
 - Updated Function: Remove-JCSystemGroupMember with 'name' alias for 'GroupName' parameter to allow the command to accept pipeline input from the 'Get-JCGroup' command
 
 ## 1.1.0
-Release Date: January 8, 2018
+#### RELEASE DATE
+
+January 8, 2018
 
 #### RELEASE NOTES
 
@@ -587,14 +641,14 @@ New function Set-JCSystemUser to set user / system permissions to standard or ad
 Updated import functions and Add/Get-JCSystemUser to accommodate for user / system permissions.
 ```
 
-#### FEATURES:
+#### FEATURES
 
 - New Function: [Set-JCSystemUser](https://github.com/TheJumpCloud/support/wiki/Set-JCSystemUser) can modify user/system permissions and change the user from a standard user to an administrator or vice versa
 - New Helper Function: Get-Hash_ID_Sudo hash table of UserID and ($true/$false) for Sudo parameter
 - New Helper Function: Get-Hash_SystemID_HostName hash table of SystemID and system DisplayName
 
 
-#### IMPROVEMENTS:
+#### IMPROVEMENTS
 
 - Updated Function: [Add-JCSystemUser](https://github.com/TheJumpCloud/support/wiki/Add-JCSystemUser) has boolean parameter '-Administrator' for setting system permissions during add
 - Updated Function: [Get-JCSystemUser](https://github.com/TheJumpCloud/support/wiki/Get-JCSystemUser) to show system permissions 'Administrator: $true/$false' and system DisplayName
@@ -606,7 +660,7 @@ Updated import functions and Add/Get-JCSystemUser to accommodate for user / syst
 
 
 
-#### BUG FIXES:
+#### BUG FIXES
 
 - Updated Function: [Get-JCSystemUser](https://github.com/TheJumpCloud/support/wiki/Get-JCSystemUser) to properly clear '$resultsArray' to display accurate results when recursivly listing system users
 - Updated Function: [Connect-JCOnline](https://github.com/TheJumpCloud/support/wiki/Connect-JCOnline) and removed conflicting script variable scoping
@@ -650,11 +704,12 @@ Function        Set-JCUser                                         1.1.0      Ju
 
 ```
 
-###
-[How to update to the latest version of the JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Updating-the-JumpCloud-PowerShell-Module)
+### [How to update to the latest version of the JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Updating-the-JumpCloud-PowerShell-Module)
 
 ## 1.0.0
-Release Date November 29, 2017
+#### RELEASE DATE
+
+November 29, 2017
 ```PowerShell
 
 PS > Get-Command -Module JumpCloud
