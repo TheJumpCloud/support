@@ -6,17 +6,30 @@ Function Update-JCModule
     )
     Begin
     {
-        # Get the version of the module on the PowerShell Gallery
-        $PowerShellGalleryModule = Find-Module -Name:('JumpCloud')
+        $ModuleName = 'JumpCloud'
         # Get the version of the module installed locally
-        $InstalledModulePreUpdate = Get-InstalledModule -Name:($PowerShellGalleryModule.Name) -ErrorAction:('Ignore')
-        # Get module info from GitHub page
-        $GitHubModuleInfo = Get-GitHubModuleInfo
-        # Set release notes url
-        $ReleaseNotesURL = 'https://git.io/jc-pwsh-releasenotes'
-        # Get release notes from GitHub page
-        $ReleaseNotesRaw = Invoke-WebRequest -Uri:($ReleaseNotesURL) -UseBasicParsing
-        $ReleaseNotes = ((((($ReleaseNotesRaw.RawContent -split "</a>$($GitHubModuleInfo.LatestVersion)</h2>")[1]) -split "<pre><code>")[1]) -split "</code>")[0]
+        $InstalledModulePreUpdate = Get-InstalledModule -Name:($ModuleName) -AllVersions -ErrorAction:('Ignore')
+        # Get module info from GitHub
+        $ModuleBanner = Get-ModuleBanner
+        $ModuleChangeLog = Get-ModuleChangeLog
+        # To change update dependency from GitHub to PowerShell gallery flip the commented code below
+        $UpdateTrigger = $ModuleBanner.'Latest Version'
+        ###### $UpdateTrigger = (Find-Module -Name:($ModuleName)).Version
+        # Get the release notes for a specific version
+        $ModuleChangeLogLatestVersion = $ModuleChangeLog | Where-Object { $_.Version -eq $UpdateTrigger }
+        # To change update dependency from GitHub to PowerShell gallery flip the commented code below
+        $LatestVersionReleaseDate = $ModuleChangeLogLatestVersion.'RELEASE DATE'
+        ###### $LatestVersionReleaseDate = (Find-Module -Name:($ModuleName) | ForEach-Object { $_.Version + ' (' + (Get-Date $_.PublishedDate).ToString('MMMM dd, yyyy') + ')' })
+        # Build welcome page
+        $WelcomePage = New-Object -TypeName:('PSCustomObject') | Select-Object `
+        @{Name = 'MESSAGE'; Expression = { $ModuleBanner.'Banner Current' } } `
+            , @{Name = 'INSTALLED VERSION(S)'; Expression = { $InstalledModulePreUpdate | ForEach-Object { $_.Version + ' (' + (Get-Date $_.PublishedDate).ToString('MMMM dd, yyyy') + ')' } } } `
+            , @{Name = 'LATEST VERSION'; Expression = { $UpdateTrigger + ' (' + (Get-Date $LatestVersionReleaseDate).ToString('MMMM dd, yyyy') + ')' } } `
+            , @{Name = 'RELEASE NOTES'; Expression = { $ModuleChangeLogLatestVersion.'RELEASE NOTES' } } `
+            , @{Name = 'FEATURES'; Expression = { $ModuleChangeLogLatestVersion.'FEATURES' } } `
+            , @{Name = 'IMPROVEMENTS'; Expression = { $ModuleChangeLogLatestVersion.'IMPROVEMENTS' } } `
+            , @{Name = 'BUG FIXES'; Expression = { $ModuleChangeLogLatestVersion.'BUG FIXES' } } `
+            , @{Name = 'Learn more about the ' + $ModuleName + ' PowerShell module here'; Expression = { 'https://github.com/TheJumpCloud/support/wiki' } }
     }
     Process
     {
@@ -27,97 +40,58 @@ Function Update-JCModule
             # Check to see if module is already installed
             If ([System.String]::IsNullOrEmpty($InstalledModulePreUpdate))
             {
-                Write-Host ('Status:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
-                Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
-                Write-Host ('Fresh install of ' + $PowerShellGalleryModule.Name + ' PowerShell module.') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
-                Write-Host ('Message:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
-                Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
-                Write-Host ($GitHubModuleInfo.CurrentBanner) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
-                Write-Host ('Release Notes:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
-                $ReleaseNotes.Trim().Split("`n") | ForEach-Object {
-                    Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
-                    Write-Host ($_.Trim())-BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
-                }
-                Write-Host ('Full release notes available at:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
-                Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
-                Write-Host ($ReleaseNotesURL.Trim()) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Url)
-                # Ask user if they want to install the module
-                If (!($Force))
-                {
-                    Do
-                    {
-                        Write-Host ('Enter ''Y'' to install the ' + $PowerShellGalleryModule.Name + ' PowerShell module or enter ''N'' to cancel:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_UserPrompt) -NoNewline
-                        Write-Host (' ') -NoNewLine
-                        $UserInput = Read-Host
-                    }
-                    Until ($UserInput.ToUpper() -in ('Y', 'N'))
-                }
-                Else
-                {
-                    $UserInput = 'Y'
-                }
-                If ($UserInput.ToUpper() -eq 'N')
-                {
-                    Write-Host ('Exiting the ' + $PowerShellGalleryModule.Name + ' PowerShell module update process.') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action)
-                }
-                Else
-                {
-                    # Install the latest version of the module (fresh install)
-                    Write-Host ('Installing the ' + $PowerShellGalleryModule.Name + ' PowerShell module version:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewline
-                    Write-Host ($PowerShellGalleryModule.Version) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
-                    Install-Module -Name:($PowerShellGalleryModule.Name) -RequiredVersion:($PowerShellGalleryModule.Version) -Scope:('CurrentUser') -Force
-                    # Validate install
-                    $InstalledModulePostUpdate = Get-InstalledModule -Name:($PowerShellGalleryModule.Name)
-                    # Check to see if the module version on the PowerShell gallery does not match the local module version
-                    If ($PowerShellGalleryModule.Version -eq $InstalledModulePostUpdate.Version)
-                    {
-                        # Load new module
-                        Import-Module -Name:($PowerShellGalleryModule.Name) -Scope:('Global') -Force
-                        # Confirm to user module update has been successful
-                        Write-Host ('Status:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
-                        Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
-                        Write-Host ('The ' + $PowerShellGalleryModule.Name + ' PowerShell module has successfully been installed!') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
-                    }
-                    Else
-                    {
-                        Write-Error ('Failed to install the ' + $PowerShellGalleryModule.Name + ' PowerShell module.')
-                    }
-                }
+                Write-Error ('The ' + $ModuleName + ' PowerShell module is not currently installed. To install the module please run the following command: Install-Module -Name ' + $ModuleName + ' -force;' )
             }
             Else
             {
-                # Check to see if the module version on the GitHub page does not match the local module version begin the update process (update existing module)
-                If ($GitHubModuleInfo.LatestVersion -ne $InstalledModulePreUpdate.Version)
+                # Populate status message
+                $Status = If ($UpdateTrigger -notin $InstalledModulePreUpdate.Version)
                 {
-                    Write-Host ('Status:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
-                    Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
-                    Write-Host ('An update is available for the ' + $PowerShellGalleryModule.Name + ' PowerShell module.') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
-                    Write-Host ('Update Notification:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
-                    Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
-                    Write-Host ($GitHubModuleInfo.OldBanner) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
-                    Write-Host ('Installed Version:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
-                    Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
-                    Write-Host ($InstalledModulePreUpdate.Version) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
-                    Write-Host ('Latest Version:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
-                    Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
-                    Write-Host ($GitHubModuleInfo.LatestVersion) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
-                    Write-Host ('Message:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
-                    Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
-                    Write-Host ($GitHubModuleInfo.CurrentBanner) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
-                    Write-Host ('Release Notes:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
-                    $ReleaseNotes.Trim().Split("`n") | ForEach-Object {
-                        Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
-                        Write-Host ($_.Trim())-BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
+                    'An update is available for the ' + $ModuleName + ' PowerShell module.'
+                }
+                ElseIf ($UpdateTrigger -in $InstalledModulePreUpdate.Version)
+                {
+                    'The ' + $ModuleName + ' PowerShell module is up to date.'
+                }
+                Else
+                {
+                    Write-Error ('Unable to determine ' + $ModuleName + ' PowerShell module install status.')
+                }
+                $WelcomePage = $WelcomePage | Select-Object @{Name = 'STATUS'; Expression = { $Status } }, *
+                # Display message
+                $WelcomePage.PSObject.Properties.Name | ForEach-Object {
+                    If (-not [System.String]::IsNullOrEmpty($WelcomePage.($_)))
+                    {
+                        Write-Host (($_) + ': ') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
+                        $WelcomePage.($_).Trim() -split ("`n") | ForEach-Object {
+                            If (-not [System.String]::IsNullOrEmpty(($_)))
+                            {
+                                Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
+                                If (($_) -like '*http*' -or ($_) -like '*www.*' -or ($_) -like '*.com*')
+                                {
+                                    Write-Host (($_).Trim())-BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Url)
+                                }
+                                ElseIf (($_) -like '*!!!*')
+                                {
+                                    Write-Host (($_).Replace('!!!', '').Trim())-BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Important)
+                                }
+                                Else
+                                {
+                                    Write-Host (($_).Trim())-BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
+                                }
+                            }
+                        }
                     }
-                    Write-Host ('Full release notes available at:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
-                    Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
-                    Write-Host ($ReleaseNotesURL.Trim()) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Url)
+                }
+                # Check to see if the module version on the GitHub page does not match the local module version begin the update process (update existing module)
+                If ($UpdateTrigger -notin $InstalledModulePreUpdate.Version)
+                {
                     # Ask user if they want to update the module
                     If (!($Force))
                     {
                         Do
                         {
-                            Write-Host ('Enter ''Y'' to update the ' + $PowerShellGalleryModule.Name + ' PowerShell module to the latest version or enter ''N'' to cancel:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_UserPrompt) -NoNewline
+                            Write-Host ('Enter ''Y'' to update the ' + $ModuleName + ' PowerShell module to the latest version or enter ''N'' to cancel:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_UserPrompt) -NoNewline
                             Write-Host (' ') -NoNewLine
                             $UserInput = Read-Host
                         }
@@ -129,65 +103,42 @@ Function Update-JCModule
                     }
                     If ($UserInput.ToUpper() -eq 'N')
                     {
-                        Write-Host ('Exiting the ' + $PowerShellGalleryModule.Name + ' PowerShell module update process.') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action)
-                        Exit;
+                        Write-Host ('Exiting the ' + $ModuleName + ' PowerShell module update process.') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action)
                     }
                     Else
                     {
                         # Update the module to the latest version
-                        Write-Host ('Updating ' + $PowerShellGalleryModule.Name + ' module to version:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewline
-                        Write-Host ($PowerShellGalleryModule.Version) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
-                        $InstalledModulePreUpdate | Update-Module -Force -Scope:('CurrentUser')
+                        Write-Host ('Updating ' + $ModuleName + ' module to version: ') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewline
+                        Write-Host ($UpdateTrigger) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
+                        $InstalledModulePreUpdate | Update-Module -Force
                         # Remove existing module from the session
-                        $LocalModule = Get-Module -Name:($PowerShellGalleryModule.Name) -All
-                        $LocalModule | Remove-Module -Force
-                        Write-Host ('Removing from session old ' + $LocalModule.Name + ' module version:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewline
-                        Write-Host ($LocalModule.Version) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
+                        Get-Module -Name:($ModuleName) -ListAvailable -All | Remove-Module -Force
                         # Uninstall previous versions
                         If (!($SkipUninstallOld))
                         {
                             $InstalledModulePreUpdate | ForEach-Object {
-                                Write-Host ('Uninstalling from system old ' + $_.Name + ' module version:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewline
+                                Write-Host ('Uninstalling ' + $_.Name + ' module version: ') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewline
                                 Write-Host ($_.Version) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
-                            } | Uninstall-Module -Force
+                                $_ | Uninstall-Module -Force
+                            }
+                        }
+                        # Validate install
+                        $InstalledModulePostUpdate = Get-InstalledModule -Name:($ModuleName) -AllVersions
+                        # Check to see if the module version on the PowerShell gallery does not match the local module version
+                        If ($UpdateTrigger -in $InstalledModulePostUpdate.Version)
+                        {
+                            # Load new module
+                            Import-Module -Name:($ModuleName) -Scope:('Global') -Force
+                            # Confirm to user module update has been successful
+                            Write-Host ('STATUS:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
+                            Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
+                            Write-Host ('The ' + $ModuleName + ' PowerShell module has successfully been updated!') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
+                        }
+                        Else
+                        {
+                            Write-Error ('Failed to update the ' + $ModuleName + ' PowerShell module to the latest version.')
                         }
                     }
-                    # Validate install
-                    $InstalledModulePostUpdate = Get-InstalledModule -Name:($PowerShellGalleryModule.Name)
-                    # Check to see if the module version on the PowerShell gallery does not match the local module version
-                    If ($PowerShellGalleryModule.Version -eq $InstalledModulePostUpdate.Version)
-                    {
-                        # Load new module
-                        Import-Module -Name:($PowerShellGalleryModule.Name) -Scope:('Global') -Force
-                        # Confirm to user module update has been successful
-                        Write-Host ('Status:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
-                        Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
-                        Write-Host ('The ' + $PowerShellGalleryModule.Name + ' PowerShell module has successfully been updated!') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
-                    }
-                    Else
-                    {
-                        Write-Error ('Failed to update the ' + $PowerShellGalleryModule.Name + ' PowerShell module to the latest version.')
-                    }
-                }
-                Else
-                {
-                    Write-Host ('Status:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
-                    Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
-                    Write-Host ('The ' + $PowerShellGalleryModule.Name + ' PowerShell module is up to date.') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
-                    Write-Host ('Message:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
-                    Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
-                    Write-Host ($GitHubModuleInfo.CurrentBanner) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
-                    Write-Host ('Installed Version:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
-                    Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
-                    Write-Host ($InstalledModulePreUpdate.Version) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
-                    Write-Host ('Release Notes:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
-                    $ReleaseNotes.Trim().Split("`n") | ForEach-Object {
-                        Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
-                        Write-Host ($_.Trim())-BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
-                    }
-                    Write-Host ('Full release notes available at:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
-                    Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
-                    Write-Host ($ReleaseNotesURL.Trim()) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Url)
                 }
             }
         }
