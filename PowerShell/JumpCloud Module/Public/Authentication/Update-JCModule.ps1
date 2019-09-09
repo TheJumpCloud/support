@@ -12,10 +12,10 @@ Function Update-JCModule
         $InstalledModulePreUpdate = Get-InstalledModule -Name:($PowerShellGalleryModule.Name) -AllVersions -ErrorAction:('Ignore')
         # Get module info from GitHub page
         $GitHubModuleInfo = Get-GitHubModuleInfo | Select-Object `
-        @{Name = 'Installed Version(s)'; Expression = { $InstalledModulePreUpdate.Version } } `
+        @{Name = 'Message'; Expression = { $_.'Banner Old' } } `
+            , @{Name = 'Installed Version(s)'; Expression = { $InstalledModulePreUpdate.Version } } `
             , @{Name = 'Latest Version'; Expression = { $_.'Latest Version' } } `
-            , @{Name = 'Update Notification'; Expression = { $_.'Banner Old' } } `
-            , @{Name = 'Message'; Expression = { $_.'Banner Current' } } `
+            , @{Name = 'Update Summary'; Expression = { $_.'Banner Current' } } `
             , @{Name = 'Date Release'; Expression = { $_.'RELEASE DATE' } } `
             , @{Name = 'Release Notes'; Expression = { $_.'RELEASE NOTES' } } `
             , @{Name = 'Features'; Expression = { $_.'FEATURES' } } `
@@ -24,26 +24,6 @@ Function Update-JCModule
             , @{Name = 'More info can be found at'; Expression = { 'https://github.com/TheJumpCloud/support/wiki' } }
         # , @{Name = 'ModuleBannerUrl'; Expression = { $_.'ModuleBannerUrl' } }
         # , @{Name = 'Full release notes available at'; Expression = { $_.'ReleaseNotesUrl' } }
-
-        # Check to see if module is already installed
-        $Status = If ([System.String]::IsNullOrEmpty($InstalledModulePreUpdate))
-        {
-            'Fresh install of ' + $PowerShellGalleryModule.Name + ' PowerShell module.'
-        }
-        # Check to see if the module version on the GitHub page does not match the local module version begin the update process (update existing module)
-        ElseIf ($GitHubModuleInfo.'Latest Version' -notin $InstalledModulePreUpdate.Version)
-        {
-            'An update is available for the ' + $PowerShellGalleryModule.Name + ' PowerShell module.'
-        }
-        ElseIf ($GitHubModuleInfo.'Latest Version' -eq $InstalledModulePreUpdate.Version)
-        {
-            'The ' + $PowerShellGalleryModule.Name + ' PowerShell module is up to date.'
-        }
-        Else
-        {
-            Write-Error ('Unable to determine ' + $PowerShellGalleryModule.Name + ' PowerShell module install status.')
-        }
-        $GitHubModuleInfo = $GitHubModuleInfo | Select-Object @{Name = 'Status'; Expression = { $Status } }, *
     }
     Process
     {
@@ -58,6 +38,21 @@ Function Update-JCModule
             }
             Else
             {
+                # Populate status message
+                $Status = If ($GitHubModuleInfo.'Latest Version' -notin $InstalledModulePreUpdate.Version)
+                {
+                    'An update is available for the ' + $PowerShellGalleryModule.Name + ' PowerShell module.'
+                }
+                ElseIf ($GitHubModuleInfo.'Latest Version' -eq $InstalledModulePreUpdate.Version)
+                {
+                    'The ' + $PowerShellGalleryModule.Name + ' PowerShell module is up to date.'
+                }
+                Else
+                {
+                    Write-Error ('Unable to determine ' + $PowerShellGalleryModule.Name + ' PowerShell module install status.')
+                }
+                $GitHubModuleInfo = $GitHubModuleInfo | Select-Object @{Name = 'Status'; Expression = { $Status } }, *
+                # Display message
                 $GitHubModuleInfo.PSObject.Properties.Name | ForEach-Object {
                     If (-not [System.String]::IsNullOrEmpty($GitHubModuleInfo.($_)))
                     {
@@ -66,13 +61,13 @@ Function Update-JCModule
                             If (-not [System.String]::IsNullOrEmpty(($_)))
                             {
                                 Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
-                                If (($_) -like '*http*')
+                                If (($_) -like '*http*' -or ($_) -like '*www.*' -or ($_) -like '*.com*')
                                 {
                                     Write-Host (($_).Trim())-BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Url)
                                 }
                                 ElseIf (($_) -like '*!!!*')
                                 {
-                                    Write-Host (($_).Trim())-BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Important)
+                                    Write-Host (($_).Replace('!!!', '').Trim())-BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Important)
                                 }
                                 Else
                                 {

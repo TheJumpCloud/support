@@ -2,8 +2,7 @@ Function Get-GitHubModuleInfo
 {
     Param(
         $GitHubModuleBannerUrl = 'https://github.com/TheJumpCloud/support/blob/master/PowerShell/ModuleBanner.md'
-        # , $GitHubModuleReleaseNotesUrl = 'https://git.io/jc-pwsh-releasenotes'
-        , $GitHubModuleReleaseNotesUrl = 'https://github.com/TheJumpCloud/support/blob/JumpCloudModule_1.13.4/PowerShell/ModuleChangelog.md'
+        , $GitHubModuleReleaseNotesUrl = 'https://git.io/jc-pwsh-releasenotes'
     )
     # Update security protocol
     [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls, [System.Net.SecurityProtocolType]::Tls12
