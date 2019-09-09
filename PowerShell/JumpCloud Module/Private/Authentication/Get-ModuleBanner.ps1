@@ -2,7 +2,6 @@ Function Get-ModuleBanner
 {
     Param(
         $ModuleBannerUrl = 'https://github.com/TheJumpCloud/support/blob/master/PowerShell/ModuleBanner.md'
-        https://github.com/TheJumpCloud/support/blob/JumpCloudModule_1.14.0/PowerShell/ModuleBanner.md
     )
     # Update security protocol
     [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls, [System.Net.SecurityProtocolType]::Tls12
