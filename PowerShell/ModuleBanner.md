@@ -1,17 +1,17 @@
 #### Latest Version
 
 ```
-1.13.3
+1.14.0
 ```
 
 #### Banner Current
 
-The intent of "Banner Current" is to convay a summary of changes.
-Additional Systeminsight tables added.
+```
+JumpCloud Radius Servers functions are now available.
+```
 
 #### Banner Old
 
 ```
-The new intent of "Banner Old" is only if we want to push a custom message out to users. Otherwise we leave it blank.
-!!!IF YOU RECEIVE AN ERROR WHILE UPDATING THE MODULE PLEASE RUN: Install-Module JumpCloud -force
+JumpCloud Radius Servers functions are now available.
 ```
