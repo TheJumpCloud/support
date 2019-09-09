@@ -10,20 +10,25 @@ Function Update-JCModule
         $PowerShellGalleryModule = Find-Module -Name:('JumpCloud')
         # Get the version of the module installed locally
         $InstalledModulePreUpdate = Get-InstalledModule -Name:($PowerShellGalleryModule.Name) -AllVersions -ErrorAction:('Ignore')
-        # Get module info from GitHub page
-        $GitHubModuleInfo = Get-GitHubModuleInfo | Select-Object `
-        @{Name = 'Message'; Expression = { $_.'Banner Old' } } `
-            , @{Name = 'Installed Version(s)'; Expression = { $InstalledModulePreUpdate.Version } } `
-            , @{Name = 'Latest Version'; Expression = { $_.'Latest Version' } } `
-            , @{Name = 'Update Summary'; Expression = { $_.'Banner Current' } } `
-            , @{Name = 'Date Release'; Expression = { $_.'RELEASE DATE' } } `
-            , @{Name = 'Release Notes'; Expression = { $_.'RELEASE NOTES' } } `
-            , @{Name = 'Features'; Expression = { $_.'FEATURES' } } `
-            , @{Name = 'Improvements'; Expression = { $_.'IMPROVEMENTS' } } `
-            , @{Name = 'Bug Fixes'; Expression = { $_.'BUG FIXES' } } `
+        # Get module info from GitHub
+        $ModuleBanner = Get-ModuleBanner
+        $ModuleChangeLog = Get-ModuleChangeLog
+        $ModuleChangeLogLatestVersion = $ModuleChangeLog | Where-Object { $_.Version -eq $PowerShellGalleryModule.Version }
+        $WelcomePage = New-Object -TypeName:('PSCustomObject') | Select-Object `
+        @{Name = 'Message'; Expression = { $ModuleBanner.'Banner Old' } } `
+            , @{Name = 'Installed Version(s)'; Expression = { $InstalledModulePreUpdate | ForEach-Object { $_.Version + ' (' + (Get-Date $_.PublishedDate).ToString('MMMM dd, yyyy') + ')' } } } `
+            , @{Name = 'Latest Version'; Expression = { $PowerShellGalleryModule | ForEach-Object { $_.Version + ' (' + (Get-Date $_.PublishedDate).ToString('MMMM dd, yyyy') + ')' } } } `
+            , @{Name = 'Update Summary'; Expression = { $ModuleBanner.'Banner Current' } } `
+            , @{Name = 'RELEASE NOTES'; Expression = { $ModuleChangeLogLatestVersion.'RELEASE NOTES' } } `
+            , @{Name = 'FEATURES'; Expression = { $ModuleChangeLogLatestVersion.'FEATURES' } } `
+            , @{Name = 'IMPROVEMENTS'; Expression = { $ModuleChangeLogLatestVersion.'IMPROVEMENTS' } } `
+            , @{Name = 'BUG FIXES'; Expression = { $ModuleChangeLogLatestVersion.'BUG FIXES' } } `
             , @{Name = 'More info can be found at'; Expression = { 'https://github.com/TheJumpCloud/support/wiki' } }
-        # , @{Name = 'ModuleBannerUrl'; Expression = { $_.'ModuleBannerUrl' } }
-        # , @{Name = 'Full release notes available at'; Expression = { $_.'ReleaseNotesUrl' } }
+        # , @{Name = 'Latest Version'; Expression = { $ModuleBanner.'Latest Version' + ' (' + $ModuleChangeLogLatestVersion.'RELEASE DATE' + ')' } }`
+        # , @{Name = 'VERSION'; Expression = { $ModuleChangeLogLatestVersion.'VERSION' } }
+        # , @{Name = 'RELEASE DATE'; Expression = { $ModuleChangeLogLatestVersion.'RELEASE DATE' } } `
+        # , @{Name = 'ModuleBannerUrl'; Expression = { $ModuleBanner.'ModuleBannerUrl' } }
+        # , @{Name = 'Full release notes available at'; Expression = { $ModuleChangeLogLatestVersion.'ModuleChangeLogUrl' } }
     }
     Process
     {
@@ -39,11 +44,11 @@ Function Update-JCModule
             Else
             {
                 # Populate status message
-                $Status = If ($GitHubModuleInfo.'Latest Version' -notin $InstalledModulePreUpdate.Version)
+                $Status = If ($ModuleBanner.'Latest Version' -notin $InstalledModulePreUpdate.Version)
                 {
                     'An update is available for the ' + $PowerShellGalleryModule.Name + ' PowerShell module.'
                 }
-                ElseIf ($GitHubModuleInfo.'Latest Version' -eq $InstalledModulePreUpdate.Version)
+                ElseIf ($ModuleBanner.'Latest Version' -in $InstalledModulePreUpdate.Version)
                 {
                     'The ' + $PowerShellGalleryModule.Name + ' PowerShell module is up to date.'
                 }
@@ -51,13 +56,13 @@ Function Update-JCModule
                 {
                     Write-Error ('Unable to determine ' + $PowerShellGalleryModule.Name + ' PowerShell module install status.')
                 }
-                $GitHubModuleInfo = $GitHubModuleInfo | Select-Object @{Name = 'Status'; Expression = { $Status } }, *
+                $WelcomePage = $WelcomePage | Select-Object @{Name = 'Status'; Expression = { $Status } }, *
                 # Display message
-                $GitHubModuleInfo.PSObject.Properties.Name | ForEach-Object {
-                    If (-not [System.String]::IsNullOrEmpty($GitHubModuleInfo.($_)))
+                $WelcomePage.PSObject.Properties.Name | ForEach-Object {
+                    If (-not [System.String]::IsNullOrEmpty($WelcomePage.($_)))
                     {
                         Write-Host (($_) + ': ') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
-                        $GitHubModuleInfo.($_).Trim() -split ("`n") | ForEach-Object {
+                        $WelcomePage.($_).Trim() -split ("`n") | ForEach-Object {
                             If (-not [System.String]::IsNullOrEmpty(($_)))
                             {
                                 Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
@@ -78,7 +83,7 @@ Function Update-JCModule
                     }
                 }
                 # Check to see if the module version on the GitHub page does not match the local module version begin the update process (update existing module)
-                If ($GitHubModuleInfo.'Latest Version' -notin $InstalledModulePreUpdate.Version)
+                If ($ModuleBanner.'Latest Version' -notin $InstalledModulePreUpdate.Version)
                 {
                     # Ask user if they want to update the module
                     If (!($Force))
