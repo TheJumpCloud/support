@@ -2,6 +2,7 @@ Function Get-ModuleChangeLog
 {
     Param(
         $ModuleChangeLogUrl = 'https://git.io/jc-pwsh-releasenotes'
+        https://github.com/TheJumpCloud/support/blob/JumpCloudModule_1.14.0/PowerShell/ModuleChangelog.md
     )
     # Update security protocol
     [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls, [System.Net.SecurityProtocolType]::Tls12
