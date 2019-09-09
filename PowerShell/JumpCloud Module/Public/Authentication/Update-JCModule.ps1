@@ -6,29 +6,30 @@ Function Update-JCModule
     )
     Begin
     {
-        # Get the version of the module on the PowerShell Gallery
-        $PowerShellGalleryModule = Find-Module -Name:('JumpCloud')
+        $ModuleName = 'JumpCloud'
         # Get the version of the module installed locally
-        $InstalledModulePreUpdate = Get-InstalledModule -Name:($PowerShellGalleryModule.Name) -AllVersions -ErrorAction:('Ignore')
+        $InstalledModulePreUpdate = Get-InstalledModule -Name:($ModuleName) -AllVersions -ErrorAction:('Ignore')
         # Get module info from GitHub
         $ModuleBanner = Get-ModuleBanner
         $ModuleChangeLog = Get-ModuleChangeLog
-        $ModuleChangeLogLatestVersion = $ModuleChangeLog | Where-Object { $_.Version -eq $PowerShellGalleryModule.Version }
+        # To change update dependency from GitHub to PowerShell gallery flip the commented code below
+        $UpdateTrigger = $ModuleBanner.'Latest Version'
+        ###### $UpdateTrigger = (Find-Module -Name:($ModuleName)).Version
+        # Get the release notes for a specific version
+        $ModuleChangeLogLatestVersion = $ModuleChangeLog | Where-Object { $_.Version -eq $UpdateTrigger }
+        # To change update dependency from GitHub to PowerShell gallery flip the commented code below
+        $LatestVersionReleaseDate = $ModuleChangeLogLatestVersion.'RELEASE DATE'
+        ###### $LatestVersionReleaseDate = (Find-Module -Name:($ModuleName) | ForEach-Object { $_.Version + ' (' + (Get-Date $_.PublishedDate).ToString('MMMM dd, yyyy') + ')' })
+        # Build welcome page
         $WelcomePage = New-Object -TypeName:('PSCustomObject') | Select-Object `
-        @{Name = 'Message'; Expression = { $ModuleBanner.'Banner Old' } } `
-            , @{Name = 'Installed Version(s)'; Expression = { $InstalledModulePreUpdate | ForEach-Object { $_.Version + ' (' + (Get-Date $_.PublishedDate).ToString('MMMM dd, yyyy') + ')' } } } `
-            , @{Name = 'Latest Version'; Expression = { $PowerShellGalleryModule | ForEach-Object { $_.Version + ' (' + (Get-Date $_.PublishedDate).ToString('MMMM dd, yyyy') + ')' } } } `
-            , @{Name = 'Update Summary'; Expression = { $ModuleBanner.'Banner Current' } } `
+        @{Name = 'MESSAGE'; Expression = { $ModuleBanner.'Banner Current' } } `
+            , @{Name = 'INSTALLED VERSION(S)'; Expression = { $InstalledModulePreUpdate | ForEach-Object { $_.Version + ' (' + (Get-Date $_.PublishedDate).ToString('MMMM dd, yyyy') + ')' } } } `
+            , @{Name = 'LATEST VERSION'; Expression = { $UpdateTrigger + ' (' + (Get-Date $LatestVersionReleaseDate).ToString('MMMM dd, yyyy') + ')' } } `
             , @{Name = 'RELEASE NOTES'; Expression = { $ModuleChangeLogLatestVersion.'RELEASE NOTES' } } `
             , @{Name = 'FEATURES'; Expression = { $ModuleChangeLogLatestVersion.'FEATURES' } } `
             , @{Name = 'IMPROVEMENTS'; Expression = { $ModuleChangeLogLatestVersion.'IMPROVEMENTS' } } `
             , @{Name = 'BUG FIXES'; Expression = { $ModuleChangeLogLatestVersion.'BUG FIXES' } } `
-            , @{Name = 'More info can be found at'; Expression = { 'https://github.com/TheJumpCloud/support/wiki' } }
-        # , @{Name = 'Latest Version'; Expression = { $ModuleBanner.'Latest Version' + ' (' + $ModuleChangeLogLatestVersion.'RELEASE DATE' + ')' } }`
-        # , @{Name = 'VERSION'; Expression = { $ModuleChangeLogLatestVersion.'VERSION' } }
-        # , @{Name = 'RELEASE DATE'; Expression = { $ModuleChangeLogLatestVersion.'RELEASE DATE' } } `
-        # , @{Name = 'ModuleBannerUrl'; Expression = { $ModuleBanner.'ModuleBannerUrl' } }
-        # , @{Name = 'Full release notes available at'; Expression = { $ModuleChangeLogLatestVersion.'ModuleChangeLogUrl' } }
+            , @{Name = 'Learn more about the ' + $ModuleName + ' PowerShell module here'; Expression = { 'https://github.com/TheJumpCloud/support/wiki' } }
     }
     Process
     {
@@ -39,24 +40,24 @@ Function Update-JCModule
             # Check to see if module is already installed
             If ([System.String]::IsNullOrEmpty($InstalledModulePreUpdate))
             {
-                Write-Error ('The ' + $PowerShellGalleryModule.Name + ' PowerShell module is not currently installed. To install the module please run the following command: Install-Module -Name ' + $PowerShellGalleryModule.Name + ' -force;' )
+                Write-Error ('The ' + $ModuleName + ' PowerShell module is not currently installed. To install the module please run the following command: Install-Module -Name ' + $ModuleName + ' -force;' )
             }
             Else
             {
                 # Populate status message
-                $Status = If ($ModuleBanner.'Latest Version' -notin $InstalledModulePreUpdate.Version)
+                $Status = If ($UpdateTrigger -notin $InstalledModulePreUpdate.Version)
                 {
-                    'An update is available for the ' + $PowerShellGalleryModule.Name + ' PowerShell module.'
+                    'An update is available for the ' + $ModuleName + ' PowerShell module.'
                 }
-                ElseIf ($ModuleBanner.'Latest Version' -in $InstalledModulePreUpdate.Version)
+                ElseIf ($UpdateTrigger -in $InstalledModulePreUpdate.Version)
                 {
-                    'The ' + $PowerShellGalleryModule.Name + ' PowerShell module is up to date.'
+                    'The ' + $ModuleName + ' PowerShell module is up to date.'
                 }
                 Else
                 {
-                    Write-Error ('Unable to determine ' + $PowerShellGalleryModule.Name + ' PowerShell module install status.')
+                    Write-Error ('Unable to determine ' + $ModuleName + ' PowerShell module install status.')
                 }
-                $WelcomePage = $WelcomePage | Select-Object @{Name = 'Status'; Expression = { $Status } }, *
+                $WelcomePage = $WelcomePage | Select-Object @{Name = 'STATUS'; Expression = { $Status } }, *
                 # Display message
                 $WelcomePage.PSObject.Properties.Name | ForEach-Object {
                     If (-not [System.String]::IsNullOrEmpty($WelcomePage.($_)))
@@ -83,14 +84,14 @@ Function Update-JCModule
                     }
                 }
                 # Check to see if the module version on the GitHub page does not match the local module version begin the update process (update existing module)
-                If ($ModuleBanner.'Latest Version' -notin $InstalledModulePreUpdate.Version)
+                If ($UpdateTrigger -notin $InstalledModulePreUpdate.Version)
                 {
                     # Ask user if they want to update the module
                     If (!($Force))
                     {
                         Do
                         {
-                            Write-Host ('Enter ''Y'' to update the ' + $PowerShellGalleryModule.Name + ' PowerShell module to the latest version or enter ''N'' to cancel:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_UserPrompt) -NoNewline
+                            Write-Host ('Enter ''Y'' to update the ' + $ModuleName + ' PowerShell module to the latest version or enter ''N'' to cancel:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_UserPrompt) -NoNewline
                             Write-Host (' ') -NoNewLine
                             $UserInput = Read-Host
                         }
@@ -102,16 +103,16 @@ Function Update-JCModule
                     }
                     If ($UserInput.ToUpper() -eq 'N')
                     {
-                        Write-Host ('Exiting the ' + $PowerShellGalleryModule.Name + ' PowerShell module update process.') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action)
+                        Write-Host ('Exiting the ' + $ModuleName + ' PowerShell module update process.') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action)
                     }
                     Else
                     {
                         # Update the module to the latest version
-                        Write-Host ('Updating ' + $PowerShellGalleryModule.Name + ' module to version: ') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewline
-                        Write-Host ($PowerShellGalleryModule.Version) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
+                        Write-Host ('Updating ' + $ModuleName + ' module to version: ') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewline
+                        Write-Host ($UpdateTrigger) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
                         $InstalledModulePreUpdate | Update-Module -Force
                         # Remove existing module from the session
-                        Get-Module -Name:($PowerShellGalleryModule.Name) -ListAvailable -All | Remove-Module -Force
+                        Get-Module -Name:($ModuleName) -ListAvailable -All | Remove-Module -Force
                         # Uninstall previous versions
                         If (!($SkipUninstallOld))
                         {
@@ -122,20 +123,20 @@ Function Update-JCModule
                             }
                         }
                         # Validate install
-                        $InstalledModulePostUpdate = Get-InstalledModule -Name:($PowerShellGalleryModule.Name) -AllVersions
+                        $InstalledModulePostUpdate = Get-InstalledModule -Name:($ModuleName) -AllVersions
                         # Check to see if the module version on the PowerShell gallery does not match the local module version
-                        If ($PowerShellGalleryModule.Version -in $InstalledModulePostUpdate.Version)
+                        If ($UpdateTrigger -in $InstalledModulePostUpdate.Version)
                         {
                             # Load new module
-                            Import-Module -Name:($PowerShellGalleryModule.Name) -Scope:('Global') -Force
+                            Import-Module -Name:($ModuleName) -Scope:('Global') -Force
                             # Confirm to user module update has been successful
-                            Write-Host ('Status:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
+                            Write-Host ('STATUS:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
                             Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
-                            Write-Host ('The ' + $PowerShellGalleryModule.Name + ' PowerShell module has successfully been updated!') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
+                            Write-Host ('The ' + $ModuleName + ' PowerShell module has successfully been updated!') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
                         }
                         Else
                         {
-                            Write-Error ('Failed to update the ' + $PowerShellGalleryModule.Name + ' PowerShell module to the latest version.')
+                            Write-Error ('Failed to update the ' + $ModuleName + ' PowerShell module to the latest version.')
                         }
                     }
                 }
