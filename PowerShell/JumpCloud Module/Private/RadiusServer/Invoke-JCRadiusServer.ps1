@@ -48,6 +48,14 @@ Function Invoke-JCRadiusServer
                     {
                         Get-JCObject -Type:($Type) -SearchBy:($PSCmdlet.ParameterSetName) -SearchByValue:($Name);
                     }
+                    'ByValue'
+                    {
+                        Get-JCObject -Type:($Type) -SearchBy:($SearchBy) -SearchByValue:($SearchByValue);
+                    }
+                    default
+                    {
+                        Write-Error ('Unknown parameter set name.')
+                    }
                 }
                 If (-not ([System.String]::IsNullOrEmpty($JCObject)))
                 {
