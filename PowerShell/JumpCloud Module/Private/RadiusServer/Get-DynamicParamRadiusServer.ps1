@@ -43,11 +43,12 @@ Function Get-DynamicParamRadiusServer
             'ValidateLength'                  = @(1, 31);
             'HelpMessage'                     = 'The shared secret for the new Radius Server.';
             'Position'                        = 5;
+            'ValidatePattern'                 = '^[a-zA-Z0-9!@#$%^&*]*$';
         }
         If ($Action -in ('add', 'new'))
         {
             $Param_networkSourceIp.Add('Mandatory', $true);
-            $Param_sharedSecret.Add('Mandatory', $true);
+            $Param_sharedSecret.Add('Default', ( -join ((0x21, 0x40, 0x5e, 0x2a) + (0x23..0x26) + (0x30..0x39) + ( 0x41..0x5A) + ( 0x61..0x7A) | Get-Random -Count:(31) | ForEach-Object { [char]$_ }) ));
         }
         # Build output
         $ParamVarPrefix = 'Param_'
