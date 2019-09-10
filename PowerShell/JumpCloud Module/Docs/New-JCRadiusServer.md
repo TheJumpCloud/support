@@ -13,7 +13,7 @@ Creates a JumpCloud radius server.
 ## SYNTAX
 
 ```
-New-JCRadiusServer [-Force] [-Name] <String[]> [-networkSourceIp] <String> [-sharedSecret] <String>
+New-JCRadiusServer [-Force] [-Name] <String[]> [-networkSourceIp] <String> [[-sharedSecret] <String>]
  [<CommonParameters>]
 ```
 
@@ -84,7 +84,7 @@ Type: String
 Parameter Sets: (All)
 Aliases:
 
-Required: True
+Required: False
 Position: 5
 Default value: None
 Accept pipeline input: True (ByPropertyName)

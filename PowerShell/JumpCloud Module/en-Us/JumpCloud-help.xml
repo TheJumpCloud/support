@@ -8089,7 +8089,7 @@ SystemID                 CommandID                Status
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="5" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="5" aliases="none">
           <maml:name>sharedSecret</maml:name>
           <maml:Description>
             <maml:para>The shared secret for the new Radius Server.</maml:para>
@@ -8151,7 +8151,7 @@ SystemID                 CommandID                Status
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="5" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="5" aliases="none">
         <maml:name>sharedSecret</maml:name>
         <maml:Description>
           <maml:para>The shared secret for the new Radius Server.</maml:para>
