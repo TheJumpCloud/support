@@ -3,7 +3,7 @@ Function Set-JCOrganization
     [CmdletBinding()]
     Param(
         [Parameter(HelpMessage = 'Please enter your JumpCloud API key. This can be found in the JumpCloud admin console within "API Settings" accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console.')][ValidateNotNullOrEmpty()][System.String]$JumpCloudApiKey = $env:JCApiKey
-        , [Parameter(HelpMessage = 'Organization Id can be found in the Settings page within the admin console. Only needed for multi tenant admins.')][ValidateNotNullOrEmpty()][System.String]$JumpCloudOrgId
+        , [Parameter(HelpMessage = 'Organization Id can be found in the Settings page within the admin console. Only needed for multi tenant admins.')][ValidateNotNullOrEmpty()][System.String]$JumpCloudOrgId = $env:JCOrgId
     )
     Begin
     {
@@ -14,6 +14,13 @@ Function Set-JCOrganization
     {
         # Load color scheme
         $JCColorConfig = Get-JCColorConfig
+        # If "$JumpCloudOrgId" is populated set $env:JCOrgId
+        If (-not [System.String]::IsNullOrEmpty($JumpCloudOrgId))
+        {
+            $env:JCOrgId = $JumpCloudOrgId
+            $global:JCOrgId = $env:JCOrgId
+        }
+        # Set $env:JCApiKey in Connect-JCOnline
         If ([System.String]::IsNullOrEmpty($JumpCloudApiKey) -and [System.String]::IsNullOrEmpty($env:JCApiKey))
         {
             Connect-JCOnline
