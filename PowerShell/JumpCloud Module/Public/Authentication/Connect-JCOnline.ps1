@@ -123,10 +123,9 @@ Function Connect-JCOnline ()
                     Write-Error ('Unknown value for $JCEnvironment.')
                 }
             }
-            # If "$JumpCloudApiKey" is populated or if "$env:JCApiKey" is not set
+            # If "$JumpCloudApiKey" is populated set $env:JCApiKey
             If (-not [System.String]::IsNullOrEmpty($JumpCloudApiKey))
             {
-                # Set $env:JCApiKey
                 $env:JCApiKey = $JumpCloudApiKey
                 $global:JCAPIKEY = $env:JCApiKey
             }
