@@ -13,8 +13,8 @@ Remove an association between two object within the JumpCloud console.
 ## SYNTAX
 
 ```
-Remove-JCAssociation [-Type] <String> [-Force] [-Id] <String[]> [[-TargetType] <String[]>]
- [[-TargetId] <String>] [[-TargetName] <String>] [<CommonParameters>]
+Remove-JCAssociation [-Type] <String> [-Force] -Id <String[]> [-TargetType <String[]>] [-TargetId <String>]
+ [-TargetName <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -62,7 +62,7 @@ Parameter Sets: (All)
 Aliases: _id
 
 Required: True
-Position: 1
+Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -77,7 +77,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 10
+Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -92,7 +92,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 11
+Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -108,7 +108,7 @@ Aliases: TargetSingular
 Accepted values: user_group, system, system_group, user, policy, command, application, g_suite, ldap_server, office_365, radius_server
 
 Required: False
-Position: 2
+Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -136,11 +136,11 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
-
 ### System.Management.Automation.SwitchParameter
-
+### System.Array
 ### System.String[]
-
+### System.Int32
+### System.Boolean
 ## OUTPUTS
 
 ### System.Object

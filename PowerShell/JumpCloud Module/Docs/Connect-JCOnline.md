@@ -54,7 +54,7 @@ Specific to JumpCloud development team to connect to staging dev environment.
 Type: System.String
 Parameter Sets: (All)
 Aliases:
-Accepted values: production, staging
+Accepted values: production, staging, local
 
 Required: False
 Position: 3
@@ -117,7 +117,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
-
 ## OUTPUTS
 
 ### System.Object
