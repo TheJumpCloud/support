@@ -54,10 +54,10 @@ Specific to JumpCloud development team to connect to staging and local dev envir
 Type: String
 Parameter Sets: (All)
 Aliases:
-Accepted values: production, staging, local
+Accepted values: production, staging
 
 Required: False
-Position: Named
+Position: 2
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
