@@ -63,7 +63,7 @@
           </dev:type>
           <dev:defaultValue>False</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="_id">
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="_id">
           <maml:name>Id</maml:name>
           <maml:Description>
             <maml:para>The unique id of the object.</maml:para>
@@ -263,7 +263,7 @@
         </dev:type>
         <dev:defaultValue>False</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="_id">
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="_id">
         <maml:name>Id</maml:name>
         <maml:Description>
           <maml:para>The unique id of the object.</maml:para>
@@ -730,7 +730,13 @@
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
           <maml:name>VLAN</maml:name>
           <maml:Description>
-            <maml:para>By specifying the '-VLAN' parameter three radius attributes are added to the target user group. These attributes and values are are: name                    value ----                    ----- Tunnel-Medium-Type      IEEE-802 Tunnel-Type             VLAN Tunnel-Private-Group-Id VALUE of -VLAN The value specified for the '-VLAN' parameter is populated for the value of Tunnel-Private-Group-Id .</maml:para>
+            <maml:para>By specifying the '-VLAN' parameter three radius attributes are added to the target user group.</maml:para>
+            <maml:para>These attributes and values are are:</maml:para>
+            <maml:para>name                    value</maml:para>
+            <maml:para>----                    -----</maml:para>
+            <maml:para>Tunnel-Medium-Type      IEEE-802</maml:para>
+            <maml:para>Tunnel-Type             VLAN</maml:para>
+            <maml:para>Tunnel-Private-Group-Id VALUE of -VLAN The value specified for the '-VLAN' parameter is populated for the value of Tunnel-Private-Group-Id .</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -863,7 +869,13 @@
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
         <maml:name>VLAN</maml:name>
         <maml:Description>
-          <maml:para>By specifying the '-VLAN' parameter three radius attributes are added to the target user group. These attributes and values are are: name                    value ----                    ----- Tunnel-Medium-Type      IEEE-802 Tunnel-Type             VLAN Tunnel-Private-Group-Id VALUE of -VLAN The value specified for the '-VLAN' parameter is populated for the value of Tunnel-Private-Group-Id .</maml:para>
+          <maml:para>By specifying the '-VLAN' parameter three radius attributes are added to the target user group.</maml:para>
+          <maml:para>These attributes and values are are:</maml:para>
+          <maml:para>name                    value</maml:para>
+          <maml:para>----                    -----</maml:para>
+          <maml:para>Tunnel-Medium-Type      IEEE-802</maml:para>
+          <maml:para>Tunnel-Type             VLAN</maml:para>
+          <maml:para>Tunnel-Private-Group-Id VALUE of -VLAN The value specified for the '-VLAN' parameter is populated for the value of Tunnel-Private-Group-Id .</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -1019,7 +1031,11 @@
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="_id, id">
           <maml:name>SystemID</maml:name>
           <maml:Description>
-            <maml:para>The _id of the System which you want to add to the System Group. To find a JumpCloud SystemID run the command: PS C:\&gt; Get-JCSystem | Select hostname, _id The SystemID will be the 24 character string populated for the _id field. SystemID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCSystem function before calling Add-JCSystemGroupMember. This is shown in EXAMPLES 2, 3, and 4.</maml:para>
+            <maml:para>The _id of the System which you want to add to the System Group.</maml:para>
+            <maml:para>To find a JumpCloud SystemID run the command:</maml:para>
+            <maml:para>PS C:\&gt; Get-JCSystem | Select hostname, _id</maml:para>
+            <maml:para>The SystemID will be the 24 character string populated for the _id field.</maml:para>
+            <maml:para>SystemID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCSystem function before calling Add-JCSystemGroupMember. This is shown in EXAMPLES 2, 3, and 4.</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -1046,7 +1062,11 @@
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="_id, id">
           <maml:name>SystemID</maml:name>
           <maml:Description>
-            <maml:para>The _id of the System which you want to add to the System Group. To find a JumpCloud SystemID run the command: PS C:\&gt; Get-JCSystem | Select hostname, _id The SystemID will be the 24 character string populated for the _id field. SystemID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCSystem function before calling Add-JCSystemGroupMember. This is shown in EXAMPLES 2, 3, and 4.</maml:para>
+            <maml:para>The _id of the System which you want to add to the System Group.</maml:para>
+            <maml:para>To find a JumpCloud SystemID run the command:</maml:para>
+            <maml:para>PS C:\&gt; Get-JCSystem | Select hostname, _id</maml:para>
+            <maml:para>The SystemID will be the 24 character string populated for the _id field.</maml:para>
+            <maml:para>SystemID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCSystem function before calling Add-JCSystemGroupMember. This is shown in EXAMPLES 2, 3, and 4.</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -1097,7 +1117,11 @@
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="_id, id">
         <maml:name>SystemID</maml:name>
         <maml:Description>
-          <maml:para>The _id of the System which you want to add to the System Group. To find a JumpCloud SystemID run the command: PS C:\&gt; Get-JCSystem | Select hostname, _id The SystemID will be the 24 character string populated for the _id field. SystemID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCSystem function before calling Add-JCSystemGroupMember. This is shown in EXAMPLES 2, 3, and 4.</maml:para>
+          <maml:para>The _id of the System which you want to add to the System Group.</maml:para>
+          <maml:para>To find a JumpCloud SystemID run the command:</maml:para>
+          <maml:para>PS C:\&gt; Get-JCSystem | Select hostname, _id</maml:para>
+          <maml:para>The SystemID will be the 24 character string populated for the _id field.</maml:para>
+          <maml:para>SystemID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCSystem function before calling Add-JCSystemGroupMember. This is shown in EXAMPLES 2, 3, and 4.</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -1199,7 +1223,11 @@
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="_id">
           <maml:name>SystemID</maml:name>
           <maml:Description>
-            <maml:para>The _id of the System which you want to bind the JumpCloud user to. To find a JumpCloud SystemID run the command: PS C:\&gt; Get-JCSystem | Select hostname, _id The SystemID will be the 24 character string populated for the _id field. SystemID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically by calling a JumpCloud function that returns the SystemID.</maml:para>
+            <maml:para>The _id of the System which you want to bind the JumpCloud user to.</maml:para>
+            <maml:para>To find a JumpCloud SystemID run the command:</maml:para>
+            <maml:para>PS C:\&gt; Get-JCSystem | Select hostname, _id</maml:para>
+            <maml:para>The SystemID will be the 24 character string populated for the _id field.</maml:para>
+            <maml:para>SystemID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically by calling a JumpCloud function that returns the SystemID.</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -1211,7 +1239,11 @@
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
           <maml:name>UserID</maml:name>
           <maml:Description>
-            <maml:para>The _id of the User which you want to add to the JumpCloud system. To find a JumpCloud UserID run the command: PS C:\&gt; Get-JCUser | Select username, _id The UserID will be the 24 character string populated for the _id field. UserID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using a function that returns the JumpCloud UserID. This is shown in EXAMPLES 2, 3, and 4.</maml:para>
+            <maml:para>The _id of the User which you want to add to the JumpCloud system.</maml:para>
+            <maml:para>To find a JumpCloud UserID run the command:</maml:para>
+            <maml:para>PS C:\&gt; Get-JCUser | Select username, _id</maml:para>
+            <maml:para>The UserID will be the 24 character string populated for the _id field.</maml:para>
+            <maml:para>UserID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using a function that returns the JumpCloud UserID. This is shown in EXAMPLES 2, 3, and 4.</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -1250,7 +1282,11 @@
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="_id">
           <maml:name>SystemID</maml:name>
           <maml:Description>
-            <maml:para>The _id of the System which you want to bind the JumpCloud user to. To find a JumpCloud SystemID run the command: PS C:\&gt; Get-JCSystem | Select hostname, _id The SystemID will be the 24 character string populated for the _id field. SystemID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically by calling a JumpCloud function that returns the SystemID.</maml:para>
+            <maml:para>The _id of the System which you want to bind the JumpCloud user to.</maml:para>
+            <maml:para>To find a JumpCloud SystemID run the command:</maml:para>
+            <maml:para>PS C:\&gt; Get-JCSystem | Select hostname, _id</maml:para>
+            <maml:para>The SystemID will be the 24 character string populated for the _id field.</maml:para>
+            <maml:para>SystemID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically by calling a JumpCloud function that returns the SystemID.</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -1277,7 +1313,11 @@
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="_id">
         <maml:name>SystemID</maml:name>
         <maml:Description>
-          <maml:para>The _id of the System which you want to bind the JumpCloud user to. To find a JumpCloud SystemID run the command: PS C:\&gt; Get-JCSystem | Select hostname, _id The SystemID will be the 24 character string populated for the _id field. SystemID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically by calling a JumpCloud function that returns the SystemID.</maml:para>
+          <maml:para>The _id of the System which you want to bind the JumpCloud user to.</maml:para>
+          <maml:para>To find a JumpCloud SystemID run the command:</maml:para>
+          <maml:para>PS C:\&gt; Get-JCSystem | Select hostname, _id</maml:para>
+          <maml:para>The SystemID will be the 24 character string populated for the _id field.</maml:para>
+          <maml:para>SystemID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically by calling a JumpCloud function that returns the SystemID.</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -1289,7 +1329,11 @@
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
         <maml:name>UserID</maml:name>
         <maml:Description>
-          <maml:para>The _id of the User which you want to add to the JumpCloud system. To find a JumpCloud UserID run the command: PS C:\&gt; Get-JCUser | Select username, _id The UserID will be the 24 character string populated for the _id field. UserID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using a function that returns the JumpCloud UserID. This is shown in EXAMPLES 2, 3, and 4.</maml:para>
+          <maml:para>The _id of the User which you want to add to the JumpCloud system.</maml:para>
+          <maml:para>To find a JumpCloud UserID run the command:</maml:para>
+          <maml:para>PS C:\&gt; Get-JCUser | Select username, _id</maml:para>
+          <maml:para>The UserID will be the 24 character string populated for the _id field.</maml:para>
+          <maml:para>UserID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using a function that returns the JumpCloud UserID. This is shown in EXAMPLES 2, 3, and 4.</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -1415,7 +1459,8 @@
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
           <maml:name>GroupID</maml:name>
           <maml:Description>
-            <maml:para>The GroupID is used in the ParameterSet 'ByID'. The GroupID for a User Group can be found by running the command: PS C:\&gt; Get-JCGroup -type 'User'</maml:para>
+            <maml:para>The GroupID is used in the ParameterSet 'ByID'. The GroupID for a User Group can be found by running the command:</maml:para>
+            <maml:para>PS C:\&gt; Get-JCGroup -type 'User'</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -1427,7 +1472,11 @@
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="_id, id">
           <maml:name>UserID</maml:name>
           <maml:Description>
-            <maml:para>The _id of the User which you want to add to the User Group. To find a JumpCloud UserID run the command: PS C:\&gt; Get-JCUser | Select username, _id The UserID will be the 24 character string populated for the _id field. UserID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCUser function before calling Add-JCUserGroupMember. This is shown in EXAMPLES 2, 3, and 4.</maml:para>
+            <maml:para>The _id of the User which you want to add to the User Group.</maml:para>
+            <maml:para>To find a JumpCloud UserID run the command:</maml:para>
+            <maml:para>PS C:\&gt; Get-JCUser | Select username, _id</maml:para>
+            <maml:para>The UserID will be the 24 character string populated for the _id field.</maml:para>
+            <maml:para>UserID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCUser function before calling Add-JCUserGroupMember. This is shown in EXAMPLES 2, 3, and 4.</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -1481,7 +1530,8 @@
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
         <maml:name>GroupID</maml:name>
         <maml:Description>
-          <maml:para>The GroupID is used in the ParameterSet 'ByID'. The GroupID for a User Group can be found by running the command: PS C:\&gt; Get-JCGroup -type 'User'</maml:para>
+          <maml:para>The GroupID is used in the ParameterSet 'ByID'. The GroupID for a User Group can be found by running the command:</maml:para>
+          <maml:para>PS C:\&gt; Get-JCGroup -type 'User'</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -1505,7 +1555,11 @@
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="_id, id">
         <maml:name>UserID</maml:name>
         <maml:Description>
-          <maml:para>The _id of the User which you want to add to the User Group. To find a JumpCloud UserID run the command: PS C:\&gt; Get-JCUser | Select username, _id The UserID will be the 24 character string populated for the _id field. UserID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCUser function before calling Add-JCUserGroupMember. This is shown in EXAMPLES 2, 3, and 4.</maml:para>
+          <maml:para>The _id of the User which you want to add to the User Group.</maml:para>
+          <maml:para>To find a JumpCloud UserID run the command:</maml:para>
+          <maml:para>PS C:\&gt; Get-JCUser | Select username, _id</maml:para>
+          <maml:para>The UserID will be the 24 character string populated for the _id field.</maml:para>
+          <maml:para>UserID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCUser function before calling Add-JCUserGroupMember. This is shown in EXAMPLES 2, 3, and 4.</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -2739,7 +2793,11 @@
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="_id, id">
           <maml:name>CommandID</maml:name>
           <maml:Description>
-            <maml:para>The _id of the JumpCloud command you wish to query. To find a JumpCloud CommandID run the command: PS C:\&gt; Get-JCCommand | Select name, _id The CommandID will be the 24 character string populated for the _id field. CommandID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using a function that returns the JumpCloud CommandID. This is shown in EXAMPLES  3 and 4.</maml:para>
+            <maml:para>The _id of the JumpCloud command you wish to query.</maml:para>
+            <maml:para>To find a JumpCloud CommandID run the command:</maml:para>
+            <maml:para>PS C:\&gt; Get-JCCommand | Select name, _id</maml:para>
+            <maml:para>The CommandID will be the 24 character string populated for the _id field.</maml:para>
+            <maml:para>CommandID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using a function that returns the JumpCloud CommandID. This is shown in EXAMPLES  3 and 4.</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
           <dev:type>
@@ -2777,7 +2835,11 @@
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="_id, id">
         <maml:name>CommandID</maml:name>
         <maml:Description>
-          <maml:para>The _id of the JumpCloud command you wish to query. To find a JumpCloud CommandID run the command: PS C:\&gt; Get-JCCommand | Select name, _id The CommandID will be the 24 character string populated for the _id field. CommandID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using a function that returns the JumpCloud CommandID. This is shown in EXAMPLES  3 and 4.</maml:para>
+          <maml:para>The _id of the JumpCloud command you wish to query.</maml:para>
+          <maml:para>To find a JumpCloud CommandID run the command:</maml:para>
+          <maml:para>PS C:\&gt; Get-JCCommand | Select name, _id</maml:para>
+          <maml:para>The CommandID will be the 24 character string populated for the _id field.</maml:para>
+          <maml:para>CommandID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using a function that returns the JumpCloud CommandID. This is shown in EXAMPLES  3 and 4.</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
         <dev:type>
@@ -5849,7 +5911,11 @@
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="_id, id">
           <maml:name>SystemID</maml:name>
           <maml:Description>
-            <maml:para>The _id of the System which you want to query. To find a JumpCloud SystemID run the command: PS C:\&gt; Get-JCSystem | Select hostname, _id The SystemID will be the 24 character string populated for the _id field. SystemID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCSystem function before calling Get-JCSystemUser. This is shown in EXAMPLES 2 and 3.</maml:para>
+            <maml:para>The _id of the System which you want to query.</maml:para>
+            <maml:para>To find a JumpCloud SystemID run the command:</maml:para>
+            <maml:para>PS C:\&gt; Get-JCSystem | Select hostname, _id</maml:para>
+            <maml:para>The SystemID will be the 24 character string populated for the _id field.</maml:para>
+            <maml:para>SystemID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCSystem function before calling Get-JCSystemUser. This is shown in EXAMPLES 2 and 3.</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -5864,7 +5930,11 @@
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="_id, id">
         <maml:name>SystemID</maml:name>
         <maml:Description>
-          <maml:para>The _id of the System which you want to query. To find a JumpCloud SystemID run the command: PS C:\&gt; Get-JCSystem | Select hostname, _id The SystemID will be the 24 character string populated for the _id field. SystemID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCSystem function before calling Get-JCSystemUser. This is shown in EXAMPLES 2 and 3.</maml:para>
+          <maml:para>The _id of the System which you want to query.</maml:para>
+          <maml:para>To find a JumpCloud SystemID run the command:</maml:para>
+          <maml:para>PS C:\&gt; Get-JCSystem | Select hostname, _id</maml:para>
+          <maml:para>The SystemID will be the 24 character string populated for the _id field.</maml:para>
+          <maml:para>SystemID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCSystem function before calling Get-JCSystemUser. This is shown in EXAMPLES 2 and 3.</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -7338,7 +7408,8 @@
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
           <maml:name>trigger</maml:name>
           <maml:Description>
-            <maml:para>When creating a JumpCloud command that can be run via the Invoke-JCCommand function the command must be configured for 'Launch Event - Event type: Run on Trigger (webhook)' During command configuration a 'Trigger Name' is required. The value of this trigger name is what must be populated when using the Invoke-JCCommand function. To find all JumpCloud Command triggers run: PS C:\&gt; Get-JCCommand | Where-Object launchType -EQ 'trigger'  | Select-Object name, trigger You can leverage the pipeline and Parameter Binding to populate the -trigger Parameter. This is shown in EXAMPLES 2 and 3.</maml:para>
+            <maml:para>When creating a JumpCloud command that can be run via the Invoke-JCCommand function the command must be configured for 'Launch Event - Event type: Run on Trigger (webhook)' During command configuration a 'Trigger Name' is required. The value of this trigger name is what must be populated when using the Invoke-JCCommand function. To find all JumpCloud Command triggers run: PS C:\&gt; Get-JCCommand | Where-Object launchType -EQ 'trigger'  | Select-Object name, trigger</maml:para>
+            <maml:para>You can leverage the pipeline and Parameter Binding to populate the -trigger Parameter. This is shown in EXAMPLES 2 and 3.</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -7473,7 +7544,8 @@
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
         <maml:name>trigger</maml:name>
         <maml:Description>
-          <maml:para>When creating a JumpCloud command that can be run via the Invoke-JCCommand function the command must be configured for 'Launch Event - Event type: Run on Trigger (webhook)' During command configuration a 'Trigger Name' is required. The value of this trigger name is what must be populated when using the Invoke-JCCommand function. To find all JumpCloud Command triggers run: PS C:\&gt; Get-JCCommand | Where-Object launchType -EQ 'trigger'  | Select-Object name, trigger You can leverage the pipeline and Parameter Binding to populate the -trigger Parameter. This is shown in EXAMPLES 2 and 3.</maml:para>
+          <maml:para>When creating a JumpCloud command that can be run via the Invoke-JCCommand function the command must be configured for 'Launch Event - Event type: Run on Trigger (webhook)' During command configuration a 'Trigger Name' is required. The value of this trigger name is what must be populated when using the Invoke-JCCommand function. To find all JumpCloud Command triggers run: PS C:\&gt; Get-JCCommand | Where-Object launchType -EQ 'trigger'  | Select-Object name, trigger</maml:para>
+          <maml:para>You can leverage the pipeline and Parameter Binding to populate the -trigger Parameter. This is shown in EXAMPLES 2 and 3.</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -7563,7 +7635,8 @@
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="_id, id">
           <maml:name>CommandID</maml:name>
           <maml:Description>
-            <maml:para>The _id of the JumpCloud command you wish to deploy. To find a JumpCloud CommandID run the command: PS C:\&gt; Get-JCCommand | Select name, _id The CommandID will be the 24 character string populated for the _id field.</maml:para>
+            <maml:para>The _id of the JumpCloud command you wish to deploy. To find a JumpCloud CommandID run the command: PS C:\&gt; Get-JCCommand | Select name, _id</maml:para>
+            <maml:para>The CommandID will be the 24 character string populated for the _id field.</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -7602,7 +7675,8 @@
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="_id, id">
         <maml:name>CommandID</maml:name>
         <maml:Description>
-          <maml:para>The _id of the JumpCloud command you wish to deploy. To find a JumpCloud CommandID run the command: PS C:\&gt; Get-JCCommand | Select name, _id The CommandID will be the 24 character string populated for the _id field.</maml:para>
+          <maml:para>The _id of the JumpCloud command you wish to deploy. To find a JumpCloud CommandID run the command: PS C:\&gt; Get-JCCommand | Select name, _id</maml:para>
+          <maml:para>The CommandID will be the 24 character string populated for the _id field.</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -9907,7 +9981,8 @@ SystemID                 CommandID                Status
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="_id, id">
           <maml:name>CommandID</maml:name>
           <maml:Description>
-            <maml:para>The _id of the JumpCloud Command  you wish to query. To find a JumpCloud CommandID run the command: PS C:\&gt; Get-JCCommand | Select name, _id The CommandID will be the 24 character string populated for the _id field. CommandID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using a function that returns the JumpCloud CommandID.</maml:para>
+            <maml:para>The _id of the JumpCloud Command  you wish to query. To find a JumpCloud CommandID run the command: PS C:\&gt; Get-JCCommand | Select name, _id</maml:para>
+            <maml:para>The CommandID will be the 24 character string populated for the _id field. CommandID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using a function that returns the JumpCloud CommandID.</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -9933,7 +10008,8 @@ SystemID                 CommandID                Status
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="_id, id">
         <maml:name>CommandID</maml:name>
         <maml:Description>
-          <maml:para>The _id of the JumpCloud Command  you wish to query. To find a JumpCloud CommandID run the command: PS C:\&gt; Get-JCCommand | Select name, _id The CommandID will be the 24 character string populated for the _id field. CommandID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using a function that returns the JumpCloud CommandID.</maml:para>
+          <maml:para>The _id of the JumpCloud Command  you wish to query. To find a JumpCloud CommandID run the command: PS C:\&gt; Get-JCCommand | Select name, _id</maml:para>
+          <maml:para>The CommandID will be the 24 character string populated for the _id field. CommandID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using a function that returns the JumpCloud CommandID.</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -10021,7 +10097,8 @@ SystemID                 CommandID                Status
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="_id, id">
           <maml:name>CommandResultID</maml:name>
           <maml:Description>
-            <maml:para>The _id of the JumpCloud Command Result you wish to query. To find a JumpCloud Command Result run the command: PS C:\&gt; Get-JCCommandResult | Select name, _id The CommandResultID will be the 24 character string populated for the _id field. CommandResultID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using a function that returns the JumpCloud CommandResultID. This is shown in EXAMPLES 3 and 4.</maml:para>
+            <maml:para>The _id of the JumpCloud Command Result you wish to query. To find a JumpCloud Command Result run the command: PS C:\&gt; Get-JCCommandResult | Select name, _id</maml:para>
+            <maml:para>The CommandResultID will be the 24 character string populated for the _id field. CommandResultID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using a function that returns the JumpCloud CommandResultID. This is shown in EXAMPLES 3 and 4.</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -10047,7 +10124,8 @@ SystemID                 CommandID                Status
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="_id, id">
         <maml:name>CommandResultID</maml:name>
         <maml:Description>
-          <maml:para>The _id of the JumpCloud Command Result you wish to query. To find a JumpCloud Command Result run the command: PS C:\&gt; Get-JCCommandResult | Select name, _id The CommandResultID will be the 24 character string populated for the _id field. CommandResultID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using a function that returns the JumpCloud CommandResultID. This is shown in EXAMPLES 3 and 4.</maml:para>
+          <maml:para>The _id of the JumpCloud Command Result you wish to query. To find a JumpCloud Command Result run the command: PS C:\&gt; Get-JCCommandResult | Select name, _id</maml:para>
+          <maml:para>The CommandResultID will be the 24 character string populated for the _id field. CommandResultID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using a function that returns the JumpCloud CommandResultID. This is shown in EXAMPLES 3 and 4.</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -10633,7 +10711,8 @@ SystemID                 CommandID                Status
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="_id, id">
           <maml:name>SystemID</maml:name>
           <maml:Description>
-            <maml:para>The _id of the System which you want to remove from JumpCloud. To find a JumpCloud SystemID run the command: PS C:\&gt; Get-JCSystem | Select hostname, _id The SystemID will be the 24 character string populated for the _id field. SystemID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically by calling a JumpCloud function that returns the SystemID. This is shown in EXAMPLES 3 and 4.</maml:para>
+            <maml:para>The _id of the System which you want to remove from JumpCloud. To find a JumpCloud SystemID run the command: PS C:\&gt; Get-JCSystem | Select hostname, _id</maml:para>
+            <maml:para>The SystemID will be the 24 character string populated for the _id field. SystemID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically by calling a JumpCloud function that returns the SystemID. This is shown in EXAMPLES 3 and 4.</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -10659,7 +10738,8 @@ SystemID                 CommandID                Status
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="_id, id">
         <maml:name>SystemID</maml:name>
         <maml:Description>
-          <maml:para>The _id of the System which you want to remove from JumpCloud. To find a JumpCloud SystemID run the command: PS C:\&gt; Get-JCSystem | Select hostname, _id The SystemID will be the 24 character string populated for the _id field. SystemID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically by calling a JumpCloud function that returns the SystemID. This is shown in EXAMPLES 3 and 4.</maml:para>
+          <maml:para>The _id of the System which you want to remove from JumpCloud. To find a JumpCloud SystemID run the command: PS C:\&gt; Get-JCSystem | Select hostname, _id</maml:para>
+          <maml:para>The SystemID will be the 24 character string populated for the _id field. SystemID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically by calling a JumpCloud function that returns the SystemID. This is shown in EXAMPLES 3 and 4.</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -10905,7 +10985,7 @@ SystemID                 CommandID                Status
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
           <maml:name>GroupID</maml:name>
           <maml:Description>
-            <maml:para>The GroupID is used in the ParameterSet 'ByID'. The GroupID for a System Group can be found by running the command: PS C:\&gt; Get-JCGroup -type 'System'`</maml:para>
+            <maml:para>The GroupID is used in the ParameterSet 'ByID'. The GroupID for a System Group can be found by running the command: PS C:\&gt; Get-JCGroup -type 'System'</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -10917,7 +10997,8 @@ SystemID                 CommandID                Status
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="id, _id">
           <maml:name>SystemID</maml:name>
           <maml:Description>
-            <maml:para>The _id of the System which you want to remove from the System Group. To find a JumpCloud SystemID run the command: PS C:\&gt; Get-JCSystem | Select hostname, _id The SystemID will be the 24 character string populated for the _id field. SystemID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCSystem function before calling Remove-JCSystemGroupMember. This is shown in EXAMPLES 2 and 3.</maml:para>
+            <maml:para>The _id of the System which you want to remove from the System Group. To find a JumpCloud SystemID run the command: PS C:\&gt; Get-JCSystem | Select hostname, _id</maml:para>
+            <maml:para>The SystemID will be the 24 character string populated for the _id field. SystemID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCSystem function before calling Remove-JCSystemGroupMember. This is shown in EXAMPLES 2 and 3.</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -10944,7 +11025,8 @@ SystemID                 CommandID                Status
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="id, _id">
           <maml:name>SystemID</maml:name>
           <maml:Description>
-            <maml:para>The _id of the System which you want to remove from the System Group. To find a JumpCloud SystemID run the command: PS C:\&gt; Get-JCSystem | Select hostname, _id The SystemID will be the 24 character string populated for the _id field. SystemID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCSystem function before calling Remove-JCSystemGroupMember. This is shown in EXAMPLES 2 and 3.</maml:para>
+            <maml:para>The _id of the System which you want to remove from the System Group. To find a JumpCloud SystemID run the command: PS C:\&gt; Get-JCSystem | Select hostname, _id</maml:para>
+            <maml:para>The SystemID will be the 24 character string populated for the _id field. SystemID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCSystem function before calling Remove-JCSystemGroupMember. This is shown in EXAMPLES 2 and 3.</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -10971,7 +11053,7 @@ SystemID                 CommandID                Status
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
         <maml:name>GroupID</maml:name>
         <maml:Description>
-          <maml:para>The GroupID is used in the ParameterSet 'ByID'. The GroupID for a System Group can be found by running the command: PS C:\&gt; Get-JCGroup -type 'System'`</maml:para>
+          <maml:para>The GroupID is used in the ParameterSet 'ByID'. The GroupID for a System Group can be found by running the command: PS C:\&gt; Get-JCGroup -type 'System'</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -10995,7 +11077,8 @@ SystemID                 CommandID                Status
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="id, _id">
         <maml:name>SystemID</maml:name>
         <maml:Description>
-          <maml:para>The _id of the System which you want to remove from the System Group. To find a JumpCloud SystemID run the command: PS C:\&gt; Get-JCSystem | Select hostname, _id The SystemID will be the 24 character string populated for the _id field. SystemID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCSystem function before calling Remove-JCSystemGroupMember. This is shown in EXAMPLES 2 and 3.</maml:para>
+          <maml:para>The _id of the System which you want to remove from the System Group. To find a JumpCloud SystemID run the command: PS C:\&gt; Get-JCSystem | Select hostname, _id</maml:para>
+          <maml:para>The SystemID will be the 24 character string populated for the _id field. SystemID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCSystem function before calling Remove-JCSystemGroupMember. This is shown in EXAMPLES 2 and 3.</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -11307,7 +11390,11 @@ SystemID                 CommandID                Status
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="_id">
           <maml:name>UserID</maml:name>
           <maml:Description>
-            <maml:para>The _id of the User which you want to delete. To find a JumpCloud UserID run the command: PS C:\&gt; Get-JCUser | Select username, _id The UserID will be the 24 character string populated for the _id field. UserID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically.</maml:para>
+            <maml:para>The _id of the User which you want to delete.</maml:para>
+            <maml:para>To find a JumpCloud UserID run the command:</maml:para>
+            <maml:para>PS C:\&gt; Get-JCUser | Select username, _id</maml:para>
+            <maml:para>The UserID will be the 24 character string populated for the _id field.</maml:para>
+            <maml:para>UserID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically.</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -11371,7 +11458,11 @@ SystemID                 CommandID                Status
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="_id">
         <maml:name>UserID</maml:name>
         <maml:Description>
-          <maml:para>The _id of the User which you want to delete. To find a JumpCloud UserID run the command: PS C:\&gt; Get-JCUser | Select username, _id The UserID will be the 24 character string populated for the _id field. UserID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically.</maml:para>
+          <maml:para>The _id of the User which you want to delete.</maml:para>
+          <maml:para>To find a JumpCloud UserID run the command:</maml:para>
+          <maml:para>PS C:\&gt; Get-JCUser | Select username, _id</maml:para>
+          <maml:para>The UserID will be the 24 character string populated for the _id field.</maml:para>
+          <maml:para>UserID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically.</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -11620,7 +11711,8 @@ SystemID                 CommandID                Status
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="_id, id">
           <maml:name>UserID</maml:name>
           <maml:Description>
-            <maml:para>The _id of the User which you want to remove from the User Group. To find a JumpCloud UserID run the command: PS C:\&gt; Get-JCUser | Select username, _id The UserID will be the 24 character string populated for the _id field. UserID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCUser function before calling Remove-JCUserGroupMember. This is shown in EXAMPLES 2, 3, and 4.</maml:para>
+            <maml:para>The _id of the User which you want to remove from the User Group. To find a JumpCloud UserID run the command: PS C:\&gt; Get-JCUser | Select username, _id</maml:para>
+            <maml:para>The UserID will be the 24 character string populated for the _id field. UserID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCUser function before calling Remove-JCUserGroupMember. This is shown in EXAMPLES 2, 3, and 4.</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -11698,7 +11790,8 @@ SystemID                 CommandID                Status
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="_id, id">
         <maml:name>UserID</maml:name>
         <maml:Description>
-          <maml:para>The _id of the User which you want to remove from the User Group. To find a JumpCloud UserID run the command: PS C:\&gt; Get-JCUser | Select username, _id The UserID will be the 24 character string populated for the _id field. UserID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCUser function before calling Remove-JCUserGroupMember. This is shown in EXAMPLES 2, 3, and 4.</maml:para>
+          <maml:para>The _id of the User which you want to remove from the User Group. To find a JumpCloud UserID run the command: PS C:\&gt; Get-JCUser | Select username, _id</maml:para>
+          <maml:para>The UserID will be the 24 character string populated for the _id field. UserID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCUser function before calling Remove-JCUserGroupMember. This is shown in EXAMPLES 2, 3, and 4.</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -11800,7 +11893,8 @@ SystemID                 CommandID                Status
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="_id, id">
           <maml:name>UserID</maml:name>
           <maml:Description>
-            <maml:para>The _id of the User which you want to send the email. To find a JumpCloud UserID run the command: PS C:\&gt; Get-JCUser | Select username, _id The UserID will be the 24 character string populated for the _id field.</maml:para>
+            <maml:para>The _id of the User which you want to send the email. To find a JumpCloud UserID run the command: PS C:\&gt; Get-JCUser | Select username, _id</maml:para>
+            <maml:para>The UserID will be the 24 character string populated for the _id field.</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -11830,7 +11924,8 @@ SystemID                 CommandID                Status
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="_id, id">
         <maml:name>UserID</maml:name>
         <maml:Description>
-          <maml:para>The _id of the User which you want to send the email. To find a JumpCloud UserID run the command: PS C:\&gt; Get-JCUser | Select username, _id The UserID will be the 24 character string populated for the _id field.</maml:para>
+          <maml:para>The _id of the User which you want to send the email. To find a JumpCloud UserID run the command: PS C:\&gt; Get-JCUser | Select username, _id</maml:para>
+          <maml:para>The UserID will be the 24 character string populated for the _id field.</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -11940,7 +12035,10 @@ SystemID                 CommandID                Status
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
           <maml:name>CommandID</maml:name>
           <maml:Description>
-            <maml:para>The _id of the JumpCloud command you wish to update. To find a JumpCloud CommandID run the command: PS C:\&gt; Get-JCCommand | Select name, _id The CommandID will be the 24 character string populated for the _id field.</maml:para>
+            <maml:para>The _id of the JumpCloud command you wish to update.</maml:para>
+            <maml:para>To find a JumpCloud CommandID run the command:</maml:para>
+            <maml:para>PS C:\&gt; Get-JCCommand | Select name, _id</maml:para>
+            <maml:para>The CommandID will be the 24 character string populated for the _id field.</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -12019,7 +12117,10 @@ SystemID                 CommandID                Status
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
         <maml:name>CommandID</maml:name>
         <maml:Description>
-          <maml:para>The _id of the JumpCloud command you wish to update. To find a JumpCloud CommandID run the command: PS C:\&gt; Get-JCCommand | Select name, _id The CommandID will be the 24 character string populated for the _id field.</maml:para>
+          <maml:para>The _id of the JumpCloud command you wish to update.</maml:para>
+          <maml:para>To find a JumpCloud CommandID run the command:</maml:para>
+          <maml:para>PS C:\&gt; Get-JCCommand | Select name, _id</maml:para>
+          <maml:para>The CommandID will be the 24 character string populated for the _id field.</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -12339,7 +12440,12 @@ Enter a value between 1 and 2:</dev:code>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
           <maml:name>NumberOfAttributes</maml:name>
           <maml:Description>
-            <maml:para>The number of RADIUS reply attributes you wish to add to a user group. If an attributes exists with a name that matches the new attribute then the existing attribute will be updated. Based on the NumberOfAttributes value two Dynamic Parameters will be created for each Attribute: Attribute_name and Attribute_value with an associated number. See an example for working with Custom Attribute in EXAMPLE 3 above. Attributes must be valid RADIUS attributes. Find a list of valid RADIUS attributes within the dictionary files of this repro broken down by vendor: github.com/FreeRADIUS/freeradius-server/tree/v3.0.x/share If an invalid attribute is configured on a user group this will prevent users within this group from being able to authenticate via RADIUS until the invalid attribute is removed.</maml:para>
+            <maml:para>The number of RADIUS reply attributes you wish to add to a user group.</maml:para>
+            <maml:para>If an attributes exists with a name that matches the new attribute then the existing attribute will be updated.</maml:para>
+            <maml:para>Based on the NumberOfAttributes value two Dynamic Parameters will be created for each Attribute: Attribute_name and Attribute_value with an associated number.</maml:para>
+            <maml:para>See an example for working with Custom Attribute in EXAMPLE 3 above.</maml:para>
+            <maml:para>Attributes must be valid RADIUS attributes. Find a list of valid RADIUS attributes within the dictionary files of this repro broken down by vendor: github.com/FreeRADIUS/freeradius-server/tree/v3.0.x/share</maml:para>
+            <maml:para>If an invalid attribute is configured on a user group this will prevent users within this group from being able to authenticate via RADIUS until the invalid attribute is removed.</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
           <dev:type>
@@ -12351,7 +12457,13 @@ Enter a value between 1 and 2:</dev:code>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
           <maml:name>VLAN</maml:name>
           <maml:Description>
-            <maml:para>By specifying the '-VLAN' parameter three radius attributes are added or updated on the target user group. These attributes and values are are: name                    value ----                    ----- Tunnel-Medium-Type      IEEE-802 Tunnel-Type             VLAN Tunnel-Private-Group-Id VALUE of -VLAN The value specified for the '-VLAN' parameter is populated for the value of Tunnel-Private-Group-Id .</maml:para>
+            <maml:para>By specifying the '-VLAN' parameter three radius attributes are added or updated on the target user group.</maml:para>
+            <maml:para>These attributes and values are are:</maml:para>
+            <maml:para>name                    value</maml:para>
+            <maml:para>----                    -----</maml:para>
+            <maml:para>Tunnel-Medium-Type      IEEE-802</maml:para>
+            <maml:para>Tunnel-Type             VLAN</maml:para>
+            <maml:para>Tunnel-Private-Group-Id VALUE of -VLAN The value specified for the '-VLAN' parameter is populated for the value of Tunnel-Private-Group-Id .</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -12472,7 +12584,12 @@ Enter a value between 1 and 2:</dev:code>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
         <maml:name>NumberOfAttributes</maml:name>
         <maml:Description>
-          <maml:para>The number of RADIUS reply attributes you wish to add to a user group. If an attributes exists with a name that matches the new attribute then the existing attribute will be updated. Based on the NumberOfAttributes value two Dynamic Parameters will be created for each Attribute: Attribute_name and Attribute_value with an associated number. See an example for working with Custom Attribute in EXAMPLE 3 above. Attributes must be valid RADIUS attributes. Find a list of valid RADIUS attributes within the dictionary files of this repro broken down by vendor: github.com/FreeRADIUS/freeradius-server/tree/v3.0.x/share If an invalid attribute is configured on a user group this will prevent users within this group from being able to authenticate via RADIUS until the invalid attribute is removed.</maml:para>
+          <maml:para>The number of RADIUS reply attributes you wish to add to a user group.</maml:para>
+          <maml:para>If an attributes exists with a name that matches the new attribute then the existing attribute will be updated.</maml:para>
+          <maml:para>Based on the NumberOfAttributes value two Dynamic Parameters will be created for each Attribute: Attribute_name and Attribute_value with an associated number.</maml:para>
+          <maml:para>See an example for working with Custom Attribute in EXAMPLE 3 above.</maml:para>
+          <maml:para>Attributes must be valid RADIUS attributes. Find a list of valid RADIUS attributes within the dictionary files of this repro broken down by vendor: github.com/FreeRADIUS/freeradius-server/tree/v3.0.x/share</maml:para>
+          <maml:para>If an invalid attribute is configured on a user group this will prevent users within this group from being able to authenticate via RADIUS until the invalid attribute is removed.</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
         <dev:type>
@@ -12484,7 +12601,13 @@ Enter a value between 1 and 2:</dev:code>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
         <maml:name>VLAN</maml:name>
         <maml:Description>
-          <maml:para>By specifying the '-VLAN' parameter three radius attributes are added or updated on the target user group. These attributes and values are are: name                    value ----                    ----- Tunnel-Medium-Type      IEEE-802 Tunnel-Type             VLAN Tunnel-Private-Group-Id VALUE of -VLAN The value specified for the '-VLAN' parameter is populated for the value of Tunnel-Private-Group-Id .</maml:para>
+          <maml:para>By specifying the '-VLAN' parameter three radius attributes are added or updated on the target user group.</maml:para>
+          <maml:para>These attributes and values are are:</maml:para>
+          <maml:para>name                    value</maml:para>
+          <maml:para>----                    -----</maml:para>
+          <maml:para>Tunnel-Medium-Type      IEEE-802</maml:para>
+          <maml:para>Tunnel-Type             VLAN</maml:para>
+          <maml:para>Tunnel-Private-Group-Id VALUE of -VLAN The value specified for the '-VLAN' parameter is populated for the value of Tunnel-Private-Group-Id .</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -13410,7 +13533,11 @@ Enter a value between 1 and 2:</dev:code>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="_id, id">
           <maml:name>UserID</maml:name>
           <maml:Description>
-            <maml:para>The _id of the User which you want to modify. To find a JumpCloud UserID run the command: PS C:\&gt; Get-JCUser | Select username, _id The UserID will be the 24 character string populated for the _id field. UserID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCUser function before calling Add-JCUserGroupMember. This is shown in EXAMPLES 3, 4, and 5.</maml:para>
+            <maml:para>The _id of the User which you want to modify.</maml:para>
+            <maml:para>To find a JumpCloud UserID run the command:</maml:para>
+            <maml:para>PS C:\&gt; Get-JCUser | Select username, _id</maml:para>
+            <maml:para>The UserID will be the 24 character string populated for the _id field.</maml:para>
+            <maml:para>UserID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCUser function before calling Add-JCUserGroupMember. This is shown in EXAMPLES 3, 4, and 5.</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -15291,7 +15418,11 @@ Enter a value between 1 and 2:</dev:code>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="_id, id">
         <maml:name>UserID</maml:name>
         <maml:Description>
-          <maml:para>The _id of the User which you want to modify. To find a JumpCloud UserID run the command: PS C:\&gt; Get-JCUser | Select username, _id The UserID will be the 24 character string populated for the _id field. UserID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCUser function before calling Add-JCUserGroupMember. This is shown in EXAMPLES 3, 4, and 5.</maml:para>
+          <maml:para>The _id of the User which you want to modify.</maml:para>
+          <maml:para>To find a JumpCloud UserID run the command:</maml:para>
+          <maml:para>PS C:\&gt; Get-JCUser | Select username, _id</maml:para>
+          <maml:para>The UserID will be the 24 character string populated for the _id field.</maml:para>
+          <maml:para>UserID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCUser function before calling Add-JCUserGroupMember. This is shown in EXAMPLES 3, 4, and 5.</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>

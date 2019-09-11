@@ -17,26 +17,26 @@ systems.
 
 ### Default
 ```
-Get-JCSystemInsights -Table <String> [[-Fields] <Array>] [[-Filter] <String>] [[-Limit] <Int32>]
- [[-Skip] <Int32>] [[-Paginate] <Boolean>] [<CommonParameters>]
+Get-JCSystemInsights -Table <String> [-Fields <Array>] [-Filter <String>] [-Limit <Int32>] [-Skip <Int32>]
+ [-Paginate <Boolean>] [<CommonParameters>]
 ```
 
 ### ById
 ```
-Get-JCSystemInsights -Table <String> [-Id] <String[]> [[-Fields] <Array>] [[-Filter] <String>]
- [[-Limit] <Int32>] [[-Skip] <Int32>] [[-Paginate] <Boolean>] [<CommonParameters>]
+Get-JCSystemInsights -Table <String> -Id <String[]> [-Fields <Array>] [-Filter <String>] [-Limit <Int32>]
+ [-Skip <Int32>] [-Paginate <Boolean>] [<CommonParameters>]
 ```
 
 ### ByName
 ```
-Get-JCSystemInsights -Table <String> [-Name] <String[]> [[-Fields] <Array>] [[-Filter] <String>]
- [[-Limit] <Int32>] [[-Skip] <Int32>] [[-Paginate] <Boolean>] [<CommonParameters>]
+Get-JCSystemInsights -Table <String> -Name <String[]> [-Fields <Array>] [-Filter <String>] [-Limit <Int32>]
+ [-Skip <Int32>] [-Paginate <Boolean>] [<CommonParameters>]
 ```
 
 ### ByValue
 ```
-Get-JCSystemInsights -Table <String> [[-Fields] <Array>] [[-Filter] <String>] [[-Limit] <Int32>]
- [[-Skip] <Int32>] [[-Paginate] <Boolean>] [<CommonParameters>]
+Get-JCSystemInsights -Table <String> [-Fields <Array>] [-Filter <String>] [-Limit <Int32>] [-Skip <Int32>]
+ [-Paginate <Boolean>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -98,7 +98,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 95
+Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -113,7 +113,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 96
+Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -128,7 +128,7 @@ Parameter Sets: ById
 Aliases: _id
 
 Required: True
-Position: 1
+Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -143,7 +143,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 97
+Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -158,7 +158,7 @@ Parameter Sets: ByName
 Aliases: displayName
 
 Required: True
-Position: 1
+Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -173,7 +173,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 99
+Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -188,7 +188,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 98
+Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -201,7 +201,7 @@ The SystemInsights table to query against.
 Type: String
 Parameter Sets: (All)
 Aliases:
-Accepted values: etc_hosts, logical_drives, disk_info, bitlocker_info, patches, programs, apps, browser_plugins, chrome_extensions, disk_encryption, firefox_addons, groups, interface_addresses, mounts, os_version, safari_extensions, system_info, users
+Accepted values: apps, browser_plugins, chrome_extensions, disk_encryption, firefox_addons, groups, interface_addresses, mounts, os_version, safari_extensions, system_info, users
 
 Required: True
 Position: Named
@@ -216,15 +216,10 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
-
-### System.String[]
-
 ### System.Array
-
+### System.String[]
 ### System.Int32
-
 ### System.Boolean
-
 ## OUTPUTS
 
 ### System.Object
