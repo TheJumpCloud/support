@@ -30,7 +30,7 @@ Function Get-JCCommonParameters
             'ParameterSets'                   = @('ById');
             'HelpMessage'                     = 'The unique id of the object.';
             'Alias'                           = $JCType.ById | Where-Object { $_ -ne 'Id' } | Select-Object -Unique;
-            'Position'                        = 0;
+            'Position'                        = 1;
         }
         $Param_Name = @{
             'Name'                            = 'Name';
@@ -41,7 +41,7 @@ Function Get-JCCommonParameters
             'ParameterSets'                   = @('ByName');
             'HelpMessage'                     = 'The name of the object.';
             'Alias'                           = $JCType.ByName | Where-Object { $_ -ne 'Name' } | Select-Object -Unique;
-            'Position'                        = 0;
+            'Position'                        = 1;
         }
         $Param_SearchBy = @{
             'Name'                            = 'SearchBy';
@@ -53,7 +53,7 @@ Function Get-JCCommonParameters
             'ValidateSet'                     = @('ById', 'ByName');
             'HelpMessage'                     = 'Specify how you want to search.';
             'DontShow'                        = $true;
-            'Position'                        = 0;
+            'Position'                        = 1;
         }
         $Param_SearchByValue = @{
             'Name'                            = 'SearchByValue';
@@ -64,7 +64,7 @@ Function Get-JCCommonParameters
             'ParameterSets'                   = @('ByValue');
             'HelpMessage'                     = 'Specify the item which you want to search for. Supports wildcard searches using: *';
             'DontShow'                        = $true;
-            'Position'                        = 1;
+            'Position'                        = 2;
         }
         $Param_Fields = @{
             'Name'                            = 'Fields';
