@@ -20,6 +20,8 @@ Function Invoke-JCRadiusServer
     }
     Process
     {
+        # Load color scheme
+        $JCColorConfig = Get-JCColorConfig
         # For DynamicParam with a default value set that value and then convert the DynamicParam inputs into new variables for the script to use
         Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDynamicParamProcess) -ArgumentList:($PsBoundParameters, $PSCmdlet, $RuntimeParameterDictionary) -NoNewScope
         Try
@@ -71,7 +73,9 @@ Function Invoke-JCRadiusServer
                         {
                             Do
                             {
-                                $HostResponse = Read-Host -Prompt:('Are you sure you want to "' + $Action + '" the "' + $Type + '": "' + $JCObject.($JCObject.ByName) + '"?[Y/N]')
+                                Write-Host ('Are you sure you want to "' + $Action + '" the "' + $Type + '": "' + $JCObject.($JCObject.ByName) + '"?[Y/N]') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_UserPrompt) -NoNewline
+                                Write-Host (' ') -NoNewLine
+                                $HostResponse = Read-Host
                             }
                             Until ($HostResponse -in ('y', 'n'))
                         }
