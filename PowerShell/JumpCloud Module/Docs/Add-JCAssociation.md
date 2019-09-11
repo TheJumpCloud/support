@@ -14,14 +14,14 @@ Create an association between two object within the JumpCloud console.
 
 ### ById (Default)
 ```
-Add-JCAssociation [-Type] <String> [-Force] [-Id <String[]>] [-TargetType <String[]>] [-TargetId <String>]
- [-TargetName <String>] [-Attributes <PSObject>] [<CommonParameters>]
+Add-JCAssociation [-Type] <String> [-Force] [-Id] <String[]> [[-TargetType] <String[]>] [[-TargetId] <String>]
+ [[-TargetName] <String>] [[-Attributes] <PSObject>] [<CommonParameters>]
 ```
 
 ### ByName
 ```
-Add-JCAssociation [-Type] <String> [-Force] -Name <String[]> [-TargetType <String[]>] [-TargetId <String>]
- [-TargetName <String>] [-Attributes <PSObject>] [<CommonParameters>]
+Add-JCAssociation [-Type] <String> [-Force] [-Name] <String[]> [[-TargetType] <String[]>]
+ [[-TargetId] <String>] [[-TargetName] <String>] [[-Attributes] <PSObject>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -54,7 +54,7 @@ Parameter Sets: (All)
 Aliases: compiledAttributes
 
 Required: False
-Position: Named
+Position: 12
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -83,8 +83,8 @@ Type: String[]
 Parameter Sets: ById
 Aliases: _id
 
-Required: False
-Position: Named
+Required: True
+Position: 1
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -99,7 +99,7 @@ Parameter Sets: ByName
 Aliases: displayName, username
 
 Required: True
-Position: Named
+Position: 1
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -114,7 +114,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 10
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -129,7 +129,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 11
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -145,7 +145,7 @@ Aliases: TargetSingular
 Accepted values: user_group, system, system_group, user, policy, command, application, g_suite, ldap_server, office_365, radius_server
 
 Required: False
-Position: Named
+Position: 2
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -173,12 +173,13 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
+
 ### System.Management.Automation.SwitchParameter
-### System.Array
+
 ### System.String[]
-### System.Int32
-### System.Boolean
+
 ### System.Management.Automation.PSObject
+
 ## OUTPUTS
 
 ### System.Object
