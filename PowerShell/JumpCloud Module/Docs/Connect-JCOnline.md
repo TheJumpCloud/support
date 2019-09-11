@@ -13,7 +13,7 @@ The Connect-JCOnline function sets the global variable $JCAPIKEY
 ## SYNTAX
 
 ```
-Connect-JCOnline [-force] [[-JCEnvironment] <String>] [-JumpCloudApiKey] <String> [[-JumpCloudOrgId] <String>]
+Connect-JCOnline [-force] [-JumpCloudApiKey] <String> [[-JumpCloudOrgId] <String>] [[-JCEnvironment] <String>]
  [<CommonParameters>]
 ```
 
@@ -48,16 +48,16 @@ Using the "-Force" parameter the module update check is skipped. The '-Force' pa
 ## PARAMETERS
 
 ### -JCEnvironment
-Specific to JumpCloud development team to connect to staging and local dev environments.
+Specific to JumpCloud development team to connect to staging dev environment.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: (All)
 Aliases:
 Accepted values: production, staging
 
 Required: False
-Position: 2
+Position: 3
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -68,12 +68,12 @@ Please enter your JumpCloud API key.
 This can be found in the JumpCloud admin console within "API Settings" accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: (All)
 Aliases:
 
 Required: True
-Position: 0
+Position: 1
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -84,12 +84,12 @@ Organization Id can be found in the Settings page within the admin console.
 Only needed for multi tenant admins.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 1
+Position: 2
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -100,7 +100,7 @@ Using the "-Force" parameter the module update check is skipped.
 The '-Force' parameter should be used when using the JumpCloud module in scripts or other automation environments.
 
 ```yaml
-Type: SwitchParameter
+Type: System.Management.Automation.SwitchParameter
 Parameter Sets: (All)
 Aliases:
 

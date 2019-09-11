@@ -62,7 +62,7 @@ Use the -ByID parameter when either the UserID or GroupID is being passed over t
 The -ByID SwitchParameter will set the ParameterSet to 'ByID' which will increase the function speed and performance.
 
 ```yaml
-Type: SwitchParameter
+Type: System.Management.Automation.SwitchParameter
 Parameter Sets: ByID
 Aliases:
 
@@ -80,7 +80,7 @@ The GroupID for a User Group can be found by running the command:
 PS C:\\\> Get-JCGroup -type 'User'
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: ByID
 Aliases:
 
@@ -95,7 +95,7 @@ Accept wildcard characters: False
 The name of the JumpCloud User Group that you want to add the User to.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: ByName
 Aliases: name
 
@@ -107,7 +107,7 @@ Accept wildcard characters: False
 ```
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: ByID
 Aliases: name
 
@@ -132,7 +132,7 @@ This means you can leverage the PowerShell pipeline to populate this field autom
 This is shown in EXAMPLES 2, 3, and 4.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: ByID
 Aliases: _id, id
 
@@ -147,7 +147,7 @@ Accept wildcard characters: False
 The Username of the JumpCloud user you wish to add to the User Group.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: ByName
 Aliases:
 

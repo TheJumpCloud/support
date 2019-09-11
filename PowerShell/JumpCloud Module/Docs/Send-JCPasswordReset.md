@@ -65,7 +65,7 @@ To find a JumpCloud UserID run the command: PS C:\\\> Get-JCUser | Select userna
 The UserID will be the 24 character string populated for the _id field.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: ByID
 Aliases: _id, id
 
@@ -80,7 +80,7 @@ Accept wildcard characters: False
 The Username of the JumpCloud user you wish to send the email.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: ByUsername
 Aliases:
 

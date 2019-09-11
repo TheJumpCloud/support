@@ -77,7 +77,7 @@ Returns all JumpCloud users and only the username and sudo Properties of their J
 A search filter to return users that are in a locked ($true) or unlocked ($false) state.
 
 ```yaml
-Type: Boolean
+Type: System.Boolean
 Parameter Sets: SearchFilter
 Aliases:
 
@@ -92,7 +92,7 @@ Accept wildcard characters: False
 A search filter to return users that are activated ($true) or those that have not set a password ($false).
 
 ```yaml
-Type: Boolean
+Type: System.Boolean
 Parameter Sets: SearchFilter
 Aliases:
 
@@ -107,7 +107,7 @@ Accept wildcard characters: False
 A search filter to show accounts that are enabled ($true) or disabled ($true) to allow_public_key
 
 ```yaml
-Type: Boolean
+Type: System.Boolean
 Parameter Sets: SearchFilter
 Aliases:
 
@@ -122,7 +122,7 @@ Accept wildcard characters: False
 The company of the JumpCloud user you wish to search for.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: SearchFilter
 Aliases:
 
@@ -137,7 +137,7 @@ Accept wildcard characters: False
 The costCenter of the JumpCloud user you wish to search for.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: SearchFilter
 Aliases:
 
@@ -152,7 +152,7 @@ Accept wildcard characters: False
 Date to filter on.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: (All)
 Aliases:
 
@@ -167,7 +167,7 @@ Accept wildcard characters: False
 Condition to filter date on.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: (All)
 Aliases:
 Accepted values: before, after
@@ -183,7 +183,7 @@ Accept wildcard characters: False
 The department of the JumpCloud user you wish to search for.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: SearchFilter
 Aliases:
 
@@ -198,7 +198,7 @@ Accept wildcard characters: False
 The description of the JumpCloud user you wish to search for.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: SearchFilter
 Aliases:
 
@@ -213,7 +213,7 @@ Accept wildcard characters: False
 The preferred name of the JumpCloud user you wish to search for.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: SearchFilter
 Aliases:
 
@@ -228,7 +228,7 @@ Accept wildcard characters: False
 The Email of the JumpCloud user you wish to search for.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: SearchFilter
 Aliases:
 
@@ -243,7 +243,7 @@ Accept wildcard characters: False
 The employeeIdentifier of the JumpCloud user you wish to search for.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: SearchFilter
 Aliases:
 
@@ -258,7 +258,7 @@ Accept wildcard characters: False
 The employeeType of the JumpCloud user you wish to search for.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: SearchFilter
 Aliases:
 
@@ -273,7 +273,7 @@ Accept wildcard characters: False
 A search filter to show accounts that are enabled ($true) or disabled ($false) for enable_managed_uid
 
 ```yaml
-Type: Boolean
+Type: System.Boolean
 Parameter Sets: SearchFilter
 Aliases:
 
@@ -288,7 +288,7 @@ Accept wildcard characters: False
 A search filter to show accounts that are enabled ($true) or disabled ($false) for enable_user_portal_multifactor
 
 ```yaml
-Type: Boolean
+Type: System.Boolean
 Parameter Sets: SearchFilter
 Aliases:
 
@@ -303,7 +303,7 @@ Accept wildcard characters: False
 The distinguished name of the AD domain (ADB Externally managed users only)
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: SearchFilter
 Aliases:
 
@@ -318,7 +318,7 @@ Accept wildcard characters: False
 The externally managed user source type (ADB Externally managed users only)
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: SearchFilter
 Aliases:
 
@@ -333,7 +333,7 @@ Accept wildcard characters: False
 A search filter to show accounts that are enabled ($true) or disabled ($false) for externally_managed
 
 ```yaml
-Type: Boolean
+Type: System.Boolean
 Parameter Sets: SearchFilter
 Aliases:
 
@@ -350,7 +350,7 @@ This parameter if used creates two more dynamic parameters 'dateFilter' and 'dat
 See EXAMPLE 4 above for full syntax.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: SearchFilter
 Aliases:
 Accepted values: created, password_expiration_date
@@ -366,7 +366,7 @@ Accept wildcard characters: False
 The First Name of the JumpCloud user you wish to search for.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: SearchFilter
 Aliases:
 
@@ -381,7 +381,7 @@ Accept wildcard characters: False
 The jobTitle of the JumpCloud user you wish to search for.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: SearchFilter
 Aliases:
 
@@ -396,7 +396,7 @@ Accept wildcard characters: False
 The Last Name of the JumpCloud user you wish to search for.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: SearchFilter
 Aliases:
 
@@ -411,7 +411,7 @@ Accept wildcard characters: False
 A search filter to show accounts that are enabled ($true) or disabled ($false) for ldap_binding_user
 
 ```yaml
-Type: Boolean
+Type: System.Boolean
 Parameter Sets: SearchFilter
 Aliases:
 
@@ -426,7 +426,7 @@ Accept wildcard characters: False
 The location of the JumpCloud user you wish to search for.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: SearchFilter
 Aliases:
 
@@ -441,7 +441,7 @@ Accept wildcard characters: False
 The middlename of the JumpCloud user you wish to search for.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: SearchFilter
 Aliases:
 
@@ -456,7 +456,7 @@ Accept wildcard characters: False
 A search filter to show accounts that have expired passwords ($true) or valid passwords ($false)
 
 ```yaml
-Type: Boolean
+Type: System.Boolean
 Parameter Sets: SearchFilter
 Aliases:
 
@@ -471,7 +471,7 @@ Accept wildcard characters: False
 A search filter to show accounts that are enabled ($true) or disabled ($false) for password_never_expires
 
 ```yaml
-Type: Boolean
+Type: System.Boolean
 Parameter Sets: SearchFilter
 Aliases:
 
@@ -486,7 +486,7 @@ Accept wildcard characters: False
 A search filter to show accounts that are enabled ($true) or disabled ($false) for passwordless_sudo
 
 ```yaml
-Type: Boolean
+Type: System.Boolean
 Parameter Sets: SearchFilter
 Aliases:
 
@@ -503,7 +503,7 @@ Specifying what properties are returned can drastically increase the speed of th
 Valid properties that can be returned are: 'created', 'password_expiration_date', 'account_locked', 'activated', 'addresses', 'allow_public_key', 'attributes', 'email', 'enable_managed_uid', 'enable_user_portal_multifactor', 'externally_managed', 'firstname', 'lastname', 'ldap_binding_user', 'passwordless_sudo', 'password_expired', 'password_never_expires', 'phoneNumbers', 'samba_service_user', 'ssh_keys', 'sudo', 'totp_enabled', 'unix_guid', 'unix_uid', 'username'
 
 ```yaml
-Type: String[]
+Type: System.String[]
 Parameter Sets: SearchFilter
 Aliases:
 Accepted values: created, password_expiration_date, account_locked, activated, addresses, allow_public_key, attributes, email, enable_managed_uid, enable_user_portal_multifactor, externally_managed, firstname, lastname, ldap_binding_user, passwordless_sudo, password_expired, password_never_expires, phoneNumbers, samba_service_user, ssh_keys, sudo, totp_enabled, unix_guid, unix_uid, username, middlename, displayname, jobTitle, employeeIdentifier, department, costCenter, company, employeeType, description, location, external_source_type, external_dn
@@ -519,7 +519,7 @@ Accept wildcard characters: False
 A search filter to show accounts that are enabled ($true) or disabled ($false) for samba_service_user
 
 ```yaml
-Type: Boolean
+Type: System.Boolean
 Parameter Sets: SearchFilter
 Aliases:
 
@@ -534,7 +534,7 @@ Accept wildcard characters: False
 A search filter to show accounts that are enabled ($true) or disabled ($false) for sudo
 
 ```yaml
-Type: Boolean
+Type: System.Boolean
 Parameter Sets: SearchFilter
 Aliases:
 
@@ -549,7 +549,7 @@ Accept wildcard characters: False
 A search filter to show accounts that are enabled ($true) or disabled ($false) for totp_enabled
 
 ```yaml
-Type: Boolean
+Type: System.Boolean
 Parameter Sets: SearchFilter
 Aliases:
 
@@ -565,7 +565,7 @@ A search filter to search for users with a specific unix_gid.
 DOES NOT accept wild card input.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: SearchFilter
 Aliases:
 
@@ -581,7 +581,7 @@ A search filter to search for users with a specific unix_uid.
 DOES NOT accept wild card input.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: SearchFilter
 Aliases:
 
@@ -598,7 +598,7 @@ UserID has an Alias of _id.
 This means you can leverage the PowerShell pipeline to populate this field automatically.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: ByID
 Aliases: _id, id
 
@@ -613,7 +613,7 @@ Accept wildcard characters: False
 The Username of the JumpCloud user you wish to search for.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: SearchFilter
 Aliases:
 
