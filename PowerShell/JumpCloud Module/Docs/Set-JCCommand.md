@@ -40,8 +40,11 @@ Updates the 'name' of command with CommandID '5g6o3lf95r1485193o8cks6' to "Windo
 
 ### -CommandID
 The _id of the JumpCloud command you wish to update.
+
 To find a JumpCloud CommandID run the command:
+
 PS C:\\\> Get-JCCommand | Select name, _id
+
 The CommandID will be the 24 character string populated for the _id field.
 
 ```yaml
@@ -139,6 +142,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
+
 ## OUTPUTS
 
 ### System.Object

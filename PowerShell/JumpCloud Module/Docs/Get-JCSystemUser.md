@@ -53,9 +53,13 @@ This example returns all the JumpCloud users whos have Administrator permissions
 
 ### -SystemID
 The _id of the System which you want to query.
+
 To find a JumpCloud SystemID run the command:
+
 PS C:\\\> Get-JCSystem | Select hostname, _id
+
 The SystemID will be the 24 character string populated for the _id field.
+
 SystemID has an Alias of _id.
 This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCSystem function before calling Get-JCSystemUser.
 This is shown in EXAMPLES 2 and 3.
@@ -78,6 +82,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
+
 ## OUTPUTS
 
 ### System.Object

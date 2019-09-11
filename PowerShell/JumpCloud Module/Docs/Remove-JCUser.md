@@ -61,9 +61,13 @@ Accept wildcard characters: False
 
 ### -UserID
 The _id of the User which you want to delete.
+
 To find a JumpCloud UserID run the command:
+
 PS C:\\\> Get-JCUser | Select username, _id
+
 The UserID will be the 24 character string populated for the _id field.
+
 UserID has an Alias of _id.
 This means you can leverage the PowerShell pipeline to populate this field automatically.
 
@@ -115,6 +119,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
+
 ## OUTPUTS
 
 ### System.Object

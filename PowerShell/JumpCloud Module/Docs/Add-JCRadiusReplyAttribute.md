@@ -192,12 +192,19 @@ Accept wildcard characters: False
 
 ### -VLAN
 By specifying the '-VLAN' parameter three radius attributes are added to the target user group.
+
 These attributes and values are are:
+
 name                    value
+
 ----                    -----
+
 Tunnel-Medium-Type      IEEE-802
+
 Tunnel-Type             VLAN
+
 Tunnel-Private-Group-Id **VALUE of -VLAN**
+
 The value specified for the '-VLAN' parameter is populated for the value of **Tunnel-Private-Group-Id**.
 
 ```yaml
@@ -234,7 +241,9 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
+
 ### System.Int32
+
 ## OUTPUTS
 
 ### System.Object

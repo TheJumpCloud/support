@@ -13,7 +13,7 @@ The Connect-JCOnline function sets the global variable $JCAPIKEY
 ## SYNTAX
 
 ```
-Connect-JCOnline [-force] [-JCEnvironment <String>] [-JumpCloudApiKey] <String> [[-JumpCloudOrgId] <String>]
+Connect-JCOnline [-force] [[-JCEnvironment] <String>] [-JumpCloudApiKey] <String> [[-JumpCloudOrgId] <String>]
  [<CommonParameters>]
 ```
 
@@ -117,6 +117,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
+
 ## OUTPUTS
 
 ### System.Object
