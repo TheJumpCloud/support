@@ -244,7 +244,7 @@ Function Get-JCObject
                     {
                         If ($PsBoundParameters.Table)
                         {
-                            Write-Warning ('SystemInsights data not found in "' + $PsBoundParameters.Table + '" where "' + $SearchBy.Replace('By', '').ToLower() + '" is "' + $SearchByValueItem + '".')
+                            Write-Warning ('No SystemInsights data found in "' + $PsBoundParameters.Table + '" where "' + $SearchBy.Replace('By', '').ToLower() + '" is "' + $SearchByValueItem + '".')
                         }
                         Else
                         {
@@ -253,7 +253,14 @@ Function Get-JCObject
                     }
                     Else
                     {
-                        Write-Warning ('The search value is blank or no "' + $JCType.TypeName.TypeNamePlural + '" have been setup in your org. SearchValue:"' + $SearchByValueItem + '"')
+                        If ($PsBoundParameters.Table)
+                        {
+                            Write-Warning ('No SystemInsights data found in "' + $PsBoundParameters.Table + '".')
+                        }
+                        Else
+                        {
+                            Write-Warning ('The search value is blank or no "' + $JCType.TypeName.TypeNamePlural + '" have been setup in your org. SearchValue:"' + $SearchByValueItem + '"')
+                        }
                     }
                 }
                 # Re-lookup object by id

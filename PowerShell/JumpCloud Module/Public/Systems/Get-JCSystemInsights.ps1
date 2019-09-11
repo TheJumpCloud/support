@@ -22,7 +22,7 @@ Function Get-JCSystemInsights
     {
         # For DynamicParam with a default value set that value and then convert the DynamicParam inputs into new variables for the script to use
         Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDynamicParamProcess) -ArgumentList:($PsBoundParameters, $PSCmdlet, $RuntimeParameterDictionary) -NoNewScope
-        If ($JCSettings.SETTINGS.betaFeatures.systemInsights)
+        Try
         {
             # Create hash table to store variables
             $FunctionParameters = [ordered]@{ }
@@ -32,9 +32,9 @@ Function Get-JCSystemInsights
             # Run the command
             $Results += Get-JCObject @FunctionParameters
         }
-        Else
+        Catch
         {
-            Write-Error ('SystemInsights is not enabled for your org. Please email JumpCloud at "accounts@jumpcloud.com" to enable the SystemInsights feature.')
+            Write-Error ($_)
         }
     }
     End
