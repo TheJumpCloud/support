@@ -14,14 +14,14 @@ Create an association between two object within the JumpCloud console.
 
 ### ById (Default)
 ```
-Add-JCAssociation [-Type] <String> [-Force] -Id <String[]> [-TargetType <String[]>] [-TargetId <String>]
- [-TargetName <String>] [-Attributes <PSObject>] [<CommonParameters>]
+Add-JCAssociation [-Type] <String> [-Force] [-Id] <String[]> [[-TargetType] <String[]>] [[-TargetId] <String>]
+ [[-TargetName] <String>] [[-Attributes] <PSObject>] [<CommonParameters>]
 ```
 
 ### ByName
 ```
-Add-JCAssociation [-Type] <String> [-Force] -Name <String[]> [-TargetType <String[]>] [-TargetId <String>]
- [-TargetName <String>] [-Attributes <PSObject>] [<CommonParameters>]
+Add-JCAssociation [-Type] <String> [-Force] [-Name] <String[]> [[-TargetType] <String[]>]
+ [[-TargetId] <String>] [[-TargetName] <String>] [[-Attributes] <PSObject>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -49,12 +49,12 @@ Create an association between the radius server "RadiusServer1" and the user gro
 Add attributes that define the association such as if they are an admin.
 
 ```yaml
-Type: System.Management.Automation.PSObject
+Type: PSObject
 Parameter Sets: (All)
 Aliases: compiledAttributes
 
 Required: False
-Position: Named
+Position: 12
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -64,7 +64,7 @@ Accept wildcard characters: False
 Bypass user prompts and dynamic ValidateSet.
 
 ```yaml
-Type: System.Management.Automation.SwitchParameter
+Type: SwitchParameter
 Parameter Sets: (All)
 Aliases:
 
@@ -79,12 +79,12 @@ Accept wildcard characters: False
 The unique id of the object.
 
 ```yaml
-Type: System.String[]
+Type: String[]
 Parameter Sets: ById
 Aliases: _id
 
 Required: True
-Position: Named
+Position: 1
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -94,12 +94,12 @@ Accept wildcard characters: False
 The name of the object.
 
 ```yaml
-Type: System.String[]
+Type: String[]
 Parameter Sets: ByName
 Aliases: displayName, username
 
 Required: True
-Position: Named
+Position: 1
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -109,12 +109,12 @@ Accept wildcard characters: False
 The unique id of the target object.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 10
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -124,12 +124,12 @@ Accept wildcard characters: False
 The name of the target object.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 11
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -139,13 +139,13 @@ Accept wildcard characters: False
 The type of the target object.
 
 ```yaml
-Type: System.String[]
+Type: String[]
 Parameter Sets: (All)
 Aliases: TargetSingular
 Accepted values: user_group, system, system_group, user, policy, command, application, g_suite, ldap_server, office_365, radius_server
 
 Required: False
-Position: Named
+Position: 2
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -155,7 +155,7 @@ Accept wildcard characters: False
 The type of the object.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases: TypeNameSingular
 Accepted values: command, ldap_server, policy, application, radius_server, system_group, system, user_group, user, g_suite, office_365
@@ -174,10 +174,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ### System.String
 ### System.Management.Automation.SwitchParameter
-### System.Array
 ### System.String[]
-### System.Int32
-### System.Boolean
 ### System.Management.Automation.PSObject
 ## OUTPUTS
 

@@ -79,7 +79,7 @@ This example creates the user with username cclemons and two Custom Attributes. 
 Enter an attribute name
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -94,7 +94,7 @@ Accept wildcard characters: False
 Enter an attribute value
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -109,7 +109,7 @@ Accept wildcard characters: False
 Enter an attribute name
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -124,7 +124,7 @@ Accept wildcard characters: False
 Enter an attribute value
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -141,7 +141,7 @@ Based on the NumberOfCustomAttributes value two Dynamic Parameters will be creat
 See an example for adding a user with two Custom Attributes in EXAMPLE 3
 
 ```yaml
-Type: System.Int32
+Type: Int32
 Parameter Sets: Attributes
 Aliases:
 
@@ -156,7 +156,7 @@ Accept wildcard characters: False
 A boolean $true/$false value for allowing pubic key authentication
 
 ```yaml
-Type: System.Boolean
+Type: Boolean
 Parameter Sets: (All)
 Aliases:
 
@@ -172,7 +172,7 @@ Specifies the user's company.
 The LDAP displayName of this property is company.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -188,7 +188,7 @@ Specifies the user's costCenter.
 The LDAP displayName of this property is businessCategory.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -204,7 +204,7 @@ Specifies the user's department.
 The LDAP displayName of this property is departmentNumber.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -221,7 +221,7 @@ The LDAP displayName of this property is description.
 This field is limited to 1024 characters.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -237,7 +237,7 @@ Specifies the user's preferredName.
 The LDAP displayName of this property is displayName.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases: preferredName
 
@@ -253,7 +253,7 @@ The email address for the user.
 This must be a unique value.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -270,7 +270,7 @@ The LDAP displayName of this property is employeeNumber.
 Note this field must be unique per user.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -286,7 +286,7 @@ Specifies the user's employeeType.
 The LDAP displayName of this property is employeeType.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -301,7 +301,7 @@ Accept wildcard characters: False
 A boolean $true/$false value for enabling managed uid
 
 ```yaml
-Type: System.Boolean
+Type: Boolean
 Parameter Sets: (All)
 Aliases:
 
@@ -316,7 +316,7 @@ Accept wildcard characters: False
 A boolean $true/$false value for enabling MFA at the user portal
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 Accepted values: True, False, $True, $False
@@ -334,7 +334,7 @@ This will specify the enrollment period for users for enrolling into MFA via the
 The default is 7 days if this value is not specified.
 
 ```yaml
-Type: System.Int32
+Type: Int32
 Parameter Sets: (All)
 Aliases:
 
@@ -349,7 +349,7 @@ Accept wildcard characters: False
 The first name of the user
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -365,7 +365,7 @@ Specifies the user's country on the home address object.
 This property is nested within the LDAP property with the displayName homePostalAddress.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -381,7 +381,7 @@ Specifies the user's city on their home address object.
 This property is nested within the LDAP property with the displayName homePostalAddress.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases: home_city
 
@@ -397,7 +397,7 @@ Specifies the user's home number.
 The LDAP displayName of this property is homePhone.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -413,7 +413,7 @@ Specifies the user's poBox on their home address object.
 This property is nested within the LDAP property with the displayName homePostalAddress.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -429,7 +429,7 @@ Specifies the user's postalCode on their home address object.
 This property is nested within the LDAP property with the displayName homePostalAddress.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -445,7 +445,7 @@ Specifies the user's state on their home address object.
 This property is nested within the LDAP property with the displayName homePostalAddress.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases: home_state
 
@@ -461,7 +461,7 @@ Specifies the user's streetAddress on their home address object.
 This property is nested within the LDAP property with the displayName homePostalAddress.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -477,7 +477,7 @@ Specifies the user's home number.
 The LDAP displayName of this property is title.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -492,7 +492,7 @@ Accept wildcard characters: False
 The last name of the user
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -507,7 +507,7 @@ Accept wildcard characters: False
 A boolean $true/$false value to enable the user as an LDAP binding user
 
 ```yaml
-Type: System.Boolean
+Type: Boolean
 Parameter Sets: (All)
 Aliases:
 
@@ -523,7 +523,7 @@ Specifies the user's home location.
 The LDAP displayName of this property is physicalDeliveryOfficeName.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -539,7 +539,7 @@ Specifies the user's home location.
 The LDAP displayName of this property is initials.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -555,7 +555,7 @@ Specifies the user's mobile number.
 The LDAP displayName of this property is mobile.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -570,7 +570,7 @@ Accept wildcard characters: False
 The password for the user
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -585,7 +585,7 @@ Accept wildcard characters: False
 A boolean $true/$false value for enabling password_never_expires
 
 ```yaml
-Type: System.Boolean
+Type: Boolean
 Parameter Sets: (All)
 Aliases:
 
@@ -600,7 +600,7 @@ Accept wildcard characters: False
 A boolean $true/$false value if you want to enable passwordless_sudo
 
 ```yaml
-Type: System.Boolean
+Type: Boolean
 Parameter Sets: (All)
 Aliases:
 
@@ -615,7 +615,7 @@ Accept wildcard characters: False
 A boolean $true/$false value if you want to enable the user to be an administrator on any and all systems the user is bound to.
 
 ```yaml
-Type: System.Boolean
+Type: Boolean
 Parameter Sets: (All)
 Aliases:
 
@@ -631,7 +631,7 @@ The unix_guid for the new user.
 Note this value must be an number.
 
 ```yaml
-Type: System.Int32
+Type: Int32
 Parameter Sets: (All)
 Aliases:
 
@@ -647,7 +647,7 @@ The unix_uid for the new user.
 Note this value must be an number.
 
 ```yaml
-Type: System.Int32
+Type: Int32
 Parameter Sets: (All)
 Aliases:
 
@@ -664,7 +664,7 @@ This must be a unique value.
 This value is not modifiable after user creation.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -680,7 +680,7 @@ Specifies the user's country on the work address object.
 This property is nested within the LDAP property with the displayName postalAddress.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -696,7 +696,7 @@ Specifies the user's work fax number.
 The LDAP displayName of this property is facsimileTelephoneNumber.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -712,7 +712,7 @@ Specifies the user's city on their work address object.
 The LDAP displayName of this property is l.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases: work_city
 
@@ -728,7 +728,7 @@ Specifies the user's work mobile number.
 The LDAP displayName of this property is pager.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -744,7 +744,7 @@ Specifies the user's work number.
 The LDAP displayName of this property is telephoneNumber.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -760,7 +760,7 @@ Specifies the user's poBox on their work address object.
 The LDAP displayName of this property is postOfficeBox.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -776,7 +776,7 @@ Specifies the user's postalCode on their work address object.
 The LDAP displayName of this property is postalCode.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -792,7 +792,7 @@ Specifies the user's state on their work address object.
 This property is nested within the LDAP property with the displayName postalAddress.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases: work_state
 
@@ -808,7 +808,7 @@ Specifies the user's streetAddress on their work address object.
 This property is nested within the LDAP property with the displayName postalAddress.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 

@@ -95,7 +95,7 @@ Use the -ByID parameter when you want to query the contents of a specific Comman
 The -ByID SwitchParameter will set the ParameterSet to 'ByID' which queries one JumpCloud Command Result at a time.
 
 ```yaml
-Type: System.Management.Automation.SwitchParameter
+Type: SwitchParameter
 Parameter Sets: ByID
 Aliases:
 
@@ -110,7 +110,7 @@ Accept wildcard characters: False
 The _id of the JumpCloud Command Result you wish to query.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: ByID
 Aliases: _id, id
 
@@ -125,7 +125,7 @@ Accept wildcard characters: False
 How many command results to return in each API call.
 
 ```yaml
-Type: System.Int32
+Type: Int32
 Parameter Sets: ReturnAll, MaxResults
 Aliases:
 
@@ -140,7 +140,7 @@ Accept wildcard characters: False
 The maximum number of results to return.
 
 ```yaml
-Type: System.Int32
+Type: Int32
 Parameter Sets: MaxResults
 Aliases:
 
@@ -155,7 +155,7 @@ Accept wildcard characters: False
 The number of command results to skip over before returning results.
 
 ```yaml
-Type: System.Int32
+Type: Int32
 Parameter Sets: ReturnAll, MaxResults
 Aliases:
 
@@ -170,7 +170,7 @@ Accept wildcard characters: False
 A switch parameter to only return the number of command results.
 
 ```yaml
-Type: System.Management.Automation.SwitchParameter
+Type: SwitchParameter
 Parameter Sets: TotalCount
 Aliases:
 

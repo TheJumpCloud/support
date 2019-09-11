@@ -60,7 +60,7 @@ The id value of the JumpCloud command.
 Use the command "Get-JCCommand | Select-Object _id, name" to find the "_id" value for all the JumpCloud commands in your tenant.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases: _id, id
 
@@ -75,7 +75,7 @@ Accept wildcard characters: False
 The id value of a JumpCloud system group
 
 ```yaml
-Type: System.Object
+Type: Object
 Parameter Sets: GroupID
 Aliases:
 
@@ -92,7 +92,7 @@ If the name includes a space enter the name within quotes.
 Example: -GroupName "The Space"
 
 ```yaml
-Type: System.Object
+Type: Object
 Parameter Sets: GroupName
 Aliases: name
 
@@ -108,7 +108,7 @@ The _id of a JumpCloud system.
 To find the _id of all JumpCloud systems within your tenant run "Get-JCSystem | select _id, hostname"
 
 ```yaml
-Type: System.Object
+Type: Object
 Parameter Sets: SystemID
 Aliases:
 

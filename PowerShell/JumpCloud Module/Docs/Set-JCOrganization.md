@@ -51,7 +51,7 @@ Please enter your JumpCloud API key.
 This can be found in the JumpCloud admin console within "API Settings" accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -67,7 +67,7 @@ Organization Id can be found in the Settings page within the admin console.
 Only needed for multi tenant admins.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 

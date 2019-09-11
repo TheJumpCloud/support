@@ -37,7 +37,7 @@ Returns the Radius reply attributes associated with the JumpCloud user group 'Bo
 The JumpCloud user group to query for Radius attributes.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases: name
 

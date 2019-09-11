@@ -179,7 +179,7 @@ More then one parameter can be specified at one time. The above example backs up
 A switch parameter that when called tells the command to back up JumpCloud user, system user, system, user group, and system group information to CSV files.
 
 ```yaml
-Type: System.Management.Automation.SwitchParameter
+Type: SwitchParameter
 Parameter Sets: (All)
 Aliases:
 
@@ -194,7 +194,7 @@ Accept wildcard characters: False
 A switch parameter that when called backs up JumpCloud system group membership to CSV.
 
 ```yaml
-Type: System.Management.Automation.SwitchParameter
+Type: SwitchParameter
 Parameter Sets: (All)
 Aliases:
 
@@ -209,7 +209,7 @@ Accept wildcard characters: False
 A switch parameter that when called backs up JumpCloud system user information to CSV.
 
 ```yaml
-Type: System.Management.Automation.SwitchParameter
+Type: SwitchParameter
 Parameter Sets: (All)
 Aliases:
 
@@ -224,7 +224,7 @@ Accept wildcard characters: False
 A switch parameter that when called backs up JumpCloud system information to CSV.
 
 ```yaml
-Type: System.Management.Automation.SwitchParameter
+Type: SwitchParameter
 Parameter Sets: (All)
 Aliases:
 
@@ -239,7 +239,7 @@ Accept wildcard characters: False
 A switch parameter that when called backs up JumpCloud user group membership to CSV.
 
 ```yaml
-Type: System.Management.Automation.SwitchParameter
+Type: SwitchParameter
 Parameter Sets: (All)
 Aliases:
 
@@ -254,7 +254,7 @@ Accept wildcard characters: False
 A switch parameter that when called backs up JumpCloud user information to CSV.
 
 ```yaml
-Type: System.Management.Automation.SwitchParameter
+Type: SwitchParameter
 Parameter Sets: (All)
 Aliases:
 

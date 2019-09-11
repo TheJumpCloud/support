@@ -61,7 +61,7 @@ Returns the JumpCloud user group 'The Band' and the posixGroups information desc
 Enter the group name
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -77,7 +77,7 @@ The type of JumpCloud group you want to return.
 Note there are only two options - User and System.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: Type
 Aliases:
 Accepted values: User, System

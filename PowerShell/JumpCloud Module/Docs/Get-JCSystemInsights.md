@@ -17,26 +17,26 @@ systems.
 
 ### Default
 ```
-Get-JCSystemInsights -Table <String> [-Fields <Array>] [-Filter <String>] [-Limit <Int32>] [-Skip <Int32>]
- [-Paginate <Boolean>] [<CommonParameters>]
+Get-JCSystemInsights -Table <String> [[-Fields] <Array>] [[-Filter] <String>] [[-Limit] <Int32>]
+ [[-Skip] <Int32>] [[-Paginate] <Boolean>] [<CommonParameters>]
 ```
 
 ### ById
 ```
-Get-JCSystemInsights -Table <String> -Id <String[]> [-Fields <Array>] [-Filter <String>] [-Limit <Int32>]
- [-Skip <Int32>] [-Paginate <Boolean>] [<CommonParameters>]
+Get-JCSystemInsights -Table <String> [-Id] <String[]> [[-Fields] <Array>] [[-Filter] <String>]
+ [[-Limit] <Int32>] [[-Skip] <Int32>] [[-Paginate] <Boolean>] [<CommonParameters>]
 ```
 
 ### ByName
 ```
-Get-JCSystemInsights -Table <String> -Name <String[]> [-Fields <Array>] [-Filter <String>] [-Limit <Int32>]
- [-Skip <Int32>] [-Paginate <Boolean>] [<CommonParameters>]
+Get-JCSystemInsights -Table <String> [-Name] <String[]> [[-Fields] <Array>] [[-Filter] <String>]
+ [[-Limit] <Int32>] [[-Skip] <Int32>] [[-Paginate] <Boolean>] [<CommonParameters>]
 ```
 
 ### ByValue
 ```
-Get-JCSystemInsights -Table <String> [-Fields <Array>] [-Filter <String>] [-Limit <Int32>] [-Skip <Int32>]
- [-Paginate <Boolean>] [<CommonParameters>]
+Get-JCSystemInsights -Table <String> [[-Fields] <Array>] [[-Filter] <String>] [[-Limit] <Int32>]
+ [[-Skip] <Int32>] [[-Paginate] <Boolean>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -93,12 +93,12 @@ Filters the users table for any system with the username jcadmin.
 An array of the fields/properties/columns you want to return from the search.
 
 ```yaml
-Type: System.Array
+Type: Array
 Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 95
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -108,12 +108,12 @@ Accept wildcard characters: False
 Filters to narrow down search.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 96
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -123,12 +123,12 @@ Accept wildcard characters: False
 The unique id of the object.
 
 ```yaml
-Type: System.String[]
+Type: String[]
 Parameter Sets: ById
 Aliases: _id
 
 Required: True
-Position: Named
+Position: 1
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -138,12 +138,12 @@ Accept wildcard characters: False
 The number of items you want to return per API call.
 
 ```yaml
-Type: System.Int32
+Type: Int32
 Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 97
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -153,12 +153,12 @@ Accept wildcard characters: False
 The name of the object.
 
 ```yaml
-Type: System.String[]
+Type: String[]
 Parameter Sets: ByName
 Aliases: displayName
 
 Required: True
-Position: Named
+Position: 1
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -168,12 +168,12 @@ Accept wildcard characters: False
 Whether or not you want to paginate through the results.
 
 ```yaml
-Type: System.Boolean
+Type: Boolean
 Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 99
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -183,12 +183,12 @@ Accept wildcard characters: False
 The number of items you want to skip over per API call.
 
 ```yaml
-Type: System.Int32
+Type: Int32
 Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 98
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -198,10 +198,10 @@ Accept wildcard characters: False
 The SystemInsights table to query against.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
-Accepted values: apps, browser_plugins, chrome_extensions, disk_encryption, firefox_addons, groups, interface_addresses, mounts, os_version, safari_extensions, system_info, users
+Accepted values: etc_hosts, logical_drives, disk_info, bitlocker_info, patches, programs, apps, browser_plugins, chrome_extensions, disk_encryption, firefox_addons, groups, interface_addresses, mounts, os_version, safari_extensions, system_info, users
 
 Required: True
 Position: Named
@@ -216,8 +216,8 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
-### System.Array
 ### System.String[]
+### System.Array
 ### System.Int32
 ### System.Boolean
 ## OUTPUTS

@@ -47,7 +47,7 @@ Removes the JumpCloud System Group with the name 'On Prem Systems' using the -Fo
 The name of the System Group you want to remove.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases: name
 
@@ -62,7 +62,7 @@ Accept wildcard characters: False
 A SwitchParameter which suppresses the warning message when removing a JumpCloud System Group.
 
 ```yaml
-Type: System.Management.Automation.SwitchParameter
+Type: SwitchParameter
 Parameter Sets: force
 Aliases:
 

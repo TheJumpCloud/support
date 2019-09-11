@@ -66,7 +66,7 @@ Use the -ByID parameter when you want to query the contents of a specific comman
 The -ByID SwitchParameter will set the ParameterSet to 'ByID' which queries one JumpCloud command at a time.
 
 ```yaml
-Type: System.Management.Automation.SwitchParameter
+Type: SwitchParameter
 Parameter Sets: ByID
 Aliases:
 
@@ -91,7 +91,7 @@ This means you can leverage the PowerShell pipeline to populate this field autom
 This is shown in EXAMPLES  3 and 4.
 
 ```yaml
-Type: System.String[]
+Type: String[]
 Parameter Sets: ByID
 Aliases: _id, id
 

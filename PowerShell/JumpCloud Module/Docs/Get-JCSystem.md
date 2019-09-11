@@ -80,7 +80,7 @@ Returns all JumpCloud systems and the properties remoteIP and active. The defaul
 A switch parameter to reveal the SystemFDEKey
 
 ```yaml
-Type: System.Management.Automation.SwitchParameter
+Type: SwitchParameter
 Parameter Sets: ByID
 Aliases:
 
@@ -95,7 +95,7 @@ Accept wildcard characters: False
 The _id or id of the System which you want to query.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: ByID
 Aliases: _id, id
 
@@ -110,7 +110,7 @@ Accept wildcard characters: False
 Filter for systems that are online or offline.
 
 ```yaml
-Type: System.Boolean
+Type: Boolean
 Parameter Sets: SearchFilter
 Aliases:
 
@@ -125,7 +125,7 @@ Accept wildcard characters: False
 A search filter to search systems by the agentVersion.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: SearchFilter
 Aliases:
 
@@ -140,7 +140,7 @@ Accept wildcard characters: False
 A search filter to show systems that are enabled ($true) or disabled ($true) for allowMultiFactorAuthentication
 
 ```yaml
-Type: System.Boolean
+Type: Boolean
 Parameter Sets: SearchFilter
 Aliases:
 
@@ -155,7 +155,7 @@ Accept wildcard characters: False
 A search filter to show systems that are enabled ($true) or disabled ($true) for allowMultiFactorAuthentication
 
 ```yaml
-Type: System.Boolean
+Type: Boolean
 Parameter Sets: SearchFilter
 Aliases:
 
@@ -170,7 +170,7 @@ Accept wildcard characters: False
 A search filter to show systems that are enabled ($true) or disabled ($true) for allowMultiFactorAuthentication
 
 ```yaml
-Type: System.Boolean
+Type: Boolean
 Parameter Sets: SearchFilter
 Aliases:
 
@@ -185,7 +185,7 @@ Accept wildcard characters: False
 A search filter to show systems that are enabled ($true) or disabled ($true) for allowMultiFactorAuthentication
 
 ```yaml
-Type: System.Boolean
+Type: Boolean
 Parameter Sets: SearchFilter
 Aliases:
 
@@ -200,7 +200,7 @@ Accept wildcard characters: False
 A search filter to search systems by the processor arch.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: SearchFilter
 Aliases:
 
@@ -215,7 +215,7 @@ Accept wildcard characters: False
 Date to filter on.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -230,7 +230,7 @@ Accept wildcard characters: False
 Condition to filter date on.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 Accepted values: before, after
@@ -246,7 +246,7 @@ Accept wildcard characters: False
 A search filter to search systems by the displayName.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: SearchFilter
 Aliases:
 
@@ -263,7 +263,7 @@ This parameter if used creates two more dynamic parameters 'dateFilter' and 'dat
 See EXAMPLE 5 above for full syntax.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: SearchFilter
 Aliases:
 Accepted values: created
@@ -279,7 +279,7 @@ Accept wildcard characters: False
 A search filter to search systems by the hostname.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: SearchFilter
 Aliases:
 
@@ -294,7 +294,7 @@ Accept wildcard characters: False
 A search filter to show systems that are enabled ($true) or disabled ($true) for modifySSHDConfig
 
 ```yaml
-Type: System.Boolean
+Type: Boolean
 Parameter Sets: SearchFilter
 Aliases:
 
@@ -309,7 +309,7 @@ Accept wildcard characters: False
 A search filter to search systems by the OS.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: SearchFilter
 Aliases:
 
@@ -324,7 +324,7 @@ Accept wildcard characters: False
 A search filter to search systems by the remoteIP.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: SearchFilter
 Aliases:
 
@@ -341,7 +341,7 @@ Specifying what properties are returned can drastically increase the speed of th
 Valid properties that can be returned are: 'created', 'active', 'agentVersion', 'allowMultiFactorAuthentication', 'allowPublicKeyAuthentication', 'allowSshPasswordAuthentication', 'allowSshRootLogin', 'arch', 'created', 'displayName', 'hostname', 'lastContact', 'modifySSHDConfig', 'organization', 'os', 'remoteIP', 'serialNumber', 'sshdParams', 'systemTimezone', 'templateName', 'version'
 
 ```yaml
-Type: System.String[]
+Type: String[]
 Parameter Sets: SearchFilter
 Aliases:
 Accepted values: created, active, agentVersion, allowMultiFactorAuthentication, allowPublicKeyAuthentication, allowSshPasswordAuthentication, allowSshRootLogin, arch, created, displayName, hostname, lastContact, modifySSHDConfig, organization, os, remoteIP, serialNumber, sshdParams, systemTimezone, templateName, version, fde, systemInsights
@@ -357,7 +357,7 @@ Accept wildcard characters: False
 A search filter to search systems by the serialNumber.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: SearchFilter
 Aliases:
 
@@ -373,7 +373,7 @@ A search filter to search systems by the serialNumber.
 This field DOES NOT take wildcard input.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: SearchFilter
 Aliases:
 
@@ -388,7 +388,7 @@ Accept wildcard characters: False
 A search filter to search systems by the templateName.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: SearchFilter
 Aliases:
 
@@ -403,7 +403,7 @@ Accept wildcard characters: False
 A search filter to search systems by the version.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: SearchFilter
 Aliases:
 

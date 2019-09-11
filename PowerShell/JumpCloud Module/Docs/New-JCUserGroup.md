@@ -34,7 +34,7 @@ Creates a new JumpCloud User Group with the name 'New User Group'
 The name of the new JumpCloud User Group.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 

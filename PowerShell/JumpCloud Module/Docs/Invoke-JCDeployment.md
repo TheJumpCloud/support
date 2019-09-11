@@ -49,7 +49,7 @@ The full path to the CSV deployment file.
 You can use tab complete to search for .csv files.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -67,7 +67,7 @@ To find a JumpCloud CommandID run the command: PS C:\\\> Get-JCCommand | Select 
 The CommandID will be the 24 character string populated for the _id field.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases: _id, id
 

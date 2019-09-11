@@ -13,8 +13,8 @@ Remove an association between two object within the JumpCloud console.
 ## SYNTAX
 
 ```
-Remove-JCAssociation [-Type] <String> [-Force] -Id <String[]> [-TargetType <String[]>] [-TargetId <String>]
- [-TargetName <String>] [<CommonParameters>]
+Remove-JCAssociation [-Type] <String> [-Force] [-Id] <String[]> [[-TargetType] <String[]>]
+ [[-TargetId] <String>] [[-TargetName] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -42,7 +42,7 @@ Remove the association between the radius server "RadiusServer1" and the user gr
 Bypass user prompts and dynamic ValidateSet.
 
 ```yaml
-Type: System.Management.Automation.SwitchParameter
+Type: SwitchParameter
 Parameter Sets: (All)
 Aliases:
 
@@ -57,12 +57,12 @@ Accept wildcard characters: False
 The unique id of the object.
 
 ```yaml
-Type: System.String[]
+Type: String[]
 Parameter Sets: (All)
 Aliases: _id
 
 Required: True
-Position: Named
+Position: 1
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -72,12 +72,12 @@ Accept wildcard characters: False
 The unique id of the target object.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 10
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -87,12 +87,12 @@ Accept wildcard characters: False
 The name of the target object.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 11
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -102,13 +102,13 @@ Accept wildcard characters: False
 The type of the target object.
 
 ```yaml
-Type: System.String[]
+Type: String[]
 Parameter Sets: (All)
 Aliases: TargetSingular
 Accepted values: user_group, system, system_group, user, policy, command, application, g_suite, ldap_server, office_365, radius_server
 
 Required: False
-Position: Named
+Position: 2
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -118,7 +118,7 @@ Accept wildcard characters: False
 The type of the object.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases: TypeNameSingular
 Accepted values: command, ldap_server, policy, application, radius_server, system_group, system, user_group, user, g_suite, office_365
@@ -137,10 +137,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ### System.String
 ### System.Management.Automation.SwitchParameter
-### System.Array
 ### System.String[]
-### System.Int32
-### System.Boolean
 ## OUTPUTS
 
 ### System.Object
