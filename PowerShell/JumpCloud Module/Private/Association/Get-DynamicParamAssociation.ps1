@@ -39,6 +39,17 @@ Function Get-DynamicParamAssociation
             'Alias'                           = $JCType.ById | Where-Object { $_ -ne 'Id' } | Select-Object -Unique;
             'Position'                        = 1;
         }
+        $Param_Name = @{
+            'Name'                            = 'Name';
+            'Type'                            = [System.String[]];
+            'Mandatory'                       = $true;
+            'ValueFromPipelineByPropertyName' = $true;
+            'ValidateNotNullOrEmpty'          = $true;
+            'ParameterSets'                   = @('ByName');
+            'HelpMessage'                     = 'The name of the object.';
+            'Alias'                           = $JCType.ByName | Where-Object { $_ -ne 'Name' } | Select-Object -Unique;
+            'Position'                        = 1;
+        }
         $Param_TargetType = @{
             'Name'                            = 'TargetType';
             'Type'                            = [System.String[]];
@@ -146,7 +157,7 @@ Function Get-DynamicParamAssociation
                 {
                     New-DynamicParameter @VarValue | Out-Null
                 }
-                ElseIf ($Action -in ('remove') -and $_.Name -in ('Param_TargetType', 'Param_TargetId', 'Param_TargetName', 'Param_associationType'))
+                ElseIf ($Action -in ('remove') -and $_.Name -in ('Param_Name', 'Param_TargetType', 'Param_TargetId', 'Param_TargetName', 'Param_associationType'))
                 {
                     New-DynamicParameter @VarValue | Out-Null
                 }
