@@ -9787,6 +9787,106 @@ SystemID                 CommandID                Status
           <dev:defaultValue>False</dev:defaultValue>
         </command:parameter>
       </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Remove-JCAssociation</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="TypeNameSingular">
+          <maml:name>Type</maml:name>
+          <maml:Description>
+            <maml:para>The type of the object.</maml:para>
+          </maml:Description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">command</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">ldap_server</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">policy</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">application</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">radius_server</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">system_group</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">system</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">user_group</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">g_suite</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">office_365</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="10" aliases="none">
+          <maml:name>TargetId</maml:name>
+          <maml:Description>
+            <maml:para>The unique id of the target object.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="11" aliases="none">
+          <maml:name>TargetName</maml:name>
+          <maml:Description>
+            <maml:para>The name of the target object.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="2" aliases="TargetSingular">
+          <maml:name>TargetType</maml:name>
+          <maml:Description>
+            <maml:para>The type of the target object.</maml:para>
+          </maml:Description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">user_group</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">system</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">system_group</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">policy</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">command</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">application</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">g_suite</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">ldap_server</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">office_365</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">radius_server</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+          <dev:type>
+            <maml:name>String[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:Description>
+            <maml:para>Bypass user prompts and dynamic ValidateSet.</maml:para>
+          </maml:Description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="displayName, username">
+          <maml:name>Name</maml:name>
+          <maml:Description>
+            <maml:para>The name of the object.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+          <dev:type>
+            <maml:name>String[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
     </command:syntax>
     <command:parameters>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
@@ -9857,6 +9957,18 @@ SystemID                 CommandID                Status
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
           <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="displayName, username">
+        <maml:name>Name</maml:name>
+        <maml:Description>
+          <maml:para>The name of the object.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+        <dev:type>
+          <maml:name>String[]</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
