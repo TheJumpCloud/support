@@ -3,7 +3,7 @@ Install-Module -Name:('Pester') -Force -Scope:('CurrentUser') -SkipPublisherChec
 # Import the module
 Import-Module -Name:($ModuleManifestPath) -Force
 #Load private functions
-Get-ChildItem -Path:("$PSScriptRoot/../Private/*.ps1") -Recurse | ForEach-Object {. $_.FullName}
+Get-ChildItem -Path:("$PSScriptRoot/../Private/*.ps1") -Recurse | ForEach-Object { . $_.FullName }
 # Set test parameters
 $PesterParams = @{
     # Specific to MTP portal
@@ -20,6 +20,7 @@ $PesterParams = @{
     'SystemGroupName'    = 'PesterTest_SystemGroup' # Create a sytem group named PesterTest_SystemGroup within your environment
     'SystemGroupID'      = '5a4fe3df45886d6c62ee188f'  # Paste the corresponding GroupID for the sytem group named PesterTest_SystemGroup
     'CommandID'          = '5a4fe5c149812520079d1e7a'
+    'RadiusServerName'   = 'PesterTest_RadiusServer';
     # Specific to pester environment
     'OneTrigger'         = 'onetrigger'
     'TwoTrigger'         = 'twotrigger'

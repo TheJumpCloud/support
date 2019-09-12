@@ -13,7 +13,7 @@ The Connect-JCOnline function sets the global variable $JCAPIKEY
 ## SYNTAX
 
 ```
-Connect-JCOnline [-force] [-JCEnvironment <String>] [-JumpCloudApiKey] <String> [[-JumpCloudOrgId] <String>]
+Connect-JCOnline [-force] [-JumpCloudApiKey] <String> [[-JumpCloudOrgId] <String>] [[-JCEnvironment] <String>]
  [<CommonParameters>]
 ```
 
@@ -48,16 +48,16 @@ Using the "-Force" parameter the module update check is skipped. The '-Force' pa
 ## PARAMETERS
 
 ### -JCEnvironment
-Specific to JumpCloud development team to connect to staging and local dev environments.
+Specific to JumpCloud development team to connect to staging dev environment.
 
 ```yaml
 Type: String
 Parameter Sets: (All)
 Aliases:
-Accepted values: production, staging, local
+Accepted values: production, staging
 
 Required: False
-Position: Named
+Position: 3
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -73,7 +73,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
-Position: 0
+Position: 1
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -89,7 +89,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 1
+Position: 2
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False

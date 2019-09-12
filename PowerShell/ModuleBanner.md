@@ -1,17 +1,17 @@
 #### Latest Version
 
 ```
-1.13.3
+1.14.0
 ```
 
 #### Banner Current
 
 ```
-Additional Systeminsight tables added.
+JumpCloud Radius Servers functions are now available.
 ```
 
 #### Banner Old
 
 ```
-IF YOU RECEIVE AN ERROR WHILE UPDATING THE MODULE PLEASE RUN: Install-Module JumpCloud -force
+JumpCloud Radius Servers functions are now available.
 ```

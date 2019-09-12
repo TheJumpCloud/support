@@ -10,7 +10,7 @@ Function Connect-JCOnline ()
         $Param_JumpCloudApiKey = @{
             'Name'                            = 'JumpCloudApiKey';
             'Type'                            = [System.String];
-            'Position'                        = 0;
+            'Position'                        = 1;
             'ValueFromPipelineByPropertyName' = $true;
             'ValidateNotNullOrEmpty'          = $true;
             'ValidateLength'                  = (40, 40);
@@ -19,7 +19,7 @@ Function Connect-JCOnline ()
         $Param_JumpCloudOrgId = @{
             'Name'                            = 'JumpCloudOrgId';
             'Type'                            = [System.String];
-            'Position'                        = 1;
+            'Position'                        = 2;
             'ValueFromPipelineByPropertyName' = $true;
             'ValidateNotNullOrEmpty'          = $true;
             'HelpMessage'                     = 'Organization Id can be found in the Settings page within the admin console. Only needed for multi tenant admins.';
@@ -27,7 +27,7 @@ Function Connect-JCOnline ()
         $Param_JCEnvironment = @{
             'Name'                            = 'JCEnvironment';
             'Type'                            = [System.String];
-            'Position'                        = 2;
+            'Position'                        = 3;
             'ValueFromPipelineByPropertyName' = $true;
             'ValidateNotNullOrEmpty'          = $true;
             'HelpMessage'                     = 'Specific to JumpCloud development team to connect to staging dev environment.';
@@ -60,7 +60,7 @@ Function Connect-JCOnline ()
         # Build parameter array
         $RuntimeParameterDictionary = New-Object -TypeName System.Management.Automation.RuntimeDefinedParameterDictionary
         $ParamVarPrefix = 'Param_'
-        Get-Variable -Scope:('Local') | Where-Object { $_.Name -like '*' + $ParamVarPrefix + '*' } | ForEach-Object {
+        Get-Variable -Scope:('Local') | Where-Object { $_.Name -like '*' + $ParamVarPrefix + '*' } | Sort-Object { [int]$_.Value.Position } | ForEach-Object {
             # Add RuntimeDictionary to each parameter
             $_.Value.Add('RuntimeParameterDictionary', $RuntimeParameterDictionary)
             # Creating each parameter
@@ -123,10 +123,9 @@ Function Connect-JCOnline ()
                     Write-Error ('Unknown value for $JCEnvironment.')
                 }
             }
-            # If "$JumpCloudApiKey" is populated or if "$env:JCApiKey" is not set
+            # If "$JumpCloudApiKey" is populated set $env:JCApiKey
             If (-not [System.String]::IsNullOrEmpty($JumpCloudApiKey))
             {
-                # Set $env:JCApiKey
                 $env:JCApiKey = $JumpCloudApiKey
                 $global:JCAPIKEY = $env:JCApiKey
             }

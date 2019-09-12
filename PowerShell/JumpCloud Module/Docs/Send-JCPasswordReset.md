@@ -61,6 +61,7 @@ Sends an activation email to all JumpCloud users who are in an inactive state an
 ### -UserID
 The _id of the User which you want to send the email.
 To find a JumpCloud UserID run the command: PS C:\\\> Get-JCUser | Select username, _id
+
 The UserID will be the 24 character string populated for the _id field.
 
 ```yaml
@@ -96,7 +97,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
-### System.Object
 ## OUTPUTS
 
 ### System.Object

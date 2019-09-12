@@ -60,6 +60,7 @@ Removes all JumpCloud commands that were run within the last hour and that had a
 ### -CommandResultID
 The _id of the JumpCloud Command Result you wish to query.
 To find a JumpCloud Command Result run the command: PS C:\\\> Get-JCCommandResult | Select name, _id
+
 The CommandResultID will be the 24 character string populated for the _id field.
 CommandResultID has an Alias of _id.
 This means you can leverage the PowerShell pipeline to populate this field automatically using a function that returns the JumpCloud CommandResultID.

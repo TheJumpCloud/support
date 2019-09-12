@@ -14,14 +14,14 @@ Describe -Tag:('JCSystemInsights') "Get-JCSystemInsights Tests" {
     # Retrieve objects to test with
     $Type = 'system'
     $JCType = Get-JCType -Type:($Type)
-    $Tables = $JCType.SystemInsights.Table
-    $JCObject = Get-JCObject -Type:($Type) -Fields:($JCType.ById, $JCType.ByName, 'systemInsights') | Where-Object {$_.systemInsights.state -eq 'enabled' -and $_.displayName -ne 'Dwights-MacBook-Pro.local'} #-Limit:(2) -Paginate:($false)
+    $Tables = $JCType.SystemInsights.Table | Where-Object { $_ -notin ('disk_info', 'bitlocker_info') } # Temp workaround because these tables don't take strings as filters
+    $JCObject = Get-JCObject -Type:($Type) -Fields:($JCType.ById, $JCType.ByName, 'systemInsights') | Where-Object { $_.systemInsights.state -eq 'enabled' -and $_.displayName -ne 'Dwights-MacBook-Pro.local' } #-Limit:(2) -Paginate:($false)
     # Define misc. variables
     $Mock = $false
     $MockFilePath = $PSScriptRoot + '/MockCommands_' + $FileBaseName + '.ps1'
     $TestMethods = ('ById', 'ByName')
     # Remove mock file if exists
-    If ($Mock) {If (Test-Path -Path:($MockFilePath)) {Remove-Item -Path:($MockFilePath) -Force}}
+    If ($Mock) { If (Test-Path -Path:($MockFilePath)) { Remove-Item -Path:($MockFilePath) -Force } }
     # Run tests
     If (-not ([System.String]::IsNullOrEmpty($JCObject)))
     {
@@ -38,7 +38,7 @@ Describe -Tag:('JCSystemInsights') "Get-JCSystemInsights Tests" {
                     {
                         $CommandResults = Invoke-Expression -Command:($Command) -ErrorVariable:('CommandResultsError')
                         # It("Where results should be not NullOrEmpty") {$CommandResults | Should -Not -BeNullOrEmpty}
-                        It("Where Error is NullOrEmpty") {$CommandResultsError | Should -BeNullOrEmpty}
+                        It("Where Error is NullOrEmpty") { $CommandResultsError | Should -BeNullOrEmpty }
                     }
                 }
             }
@@ -78,7 +78,7 @@ Describe -Tag:('JCSystemInsights') "Get-JCSystemInsights Tests" {
                                 Else
                                 {
                                     $CommandResults = Invoke-Expression -Command:($Command) -ErrorVariable:('CommandResultsError')
-                                    It("Where Error is NullOrEmpty") {$CommandResultsError | Should -BeNullOrEmpty}
+                                    It("Where Error is NullOrEmpty") { $CommandResultsError | Should -BeNullOrEmpty }
                                     # It("Where results should be not NullOrEmpty") {$CommandResults | Should -Not -BeNullOrEmpty}
                                     # Switch ($TestType)
                                     # {
