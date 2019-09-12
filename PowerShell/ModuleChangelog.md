@@ -27,6 +27,7 @@ New functions:
 
 Updated logic for Connect-JCOnline.
 Improved module welcome page.
+Changes for SystemInsights moving out of EA.
 
 #### BUG FIXES
 
