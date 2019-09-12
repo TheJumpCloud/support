@@ -25,6 +25,9 @@ New functions:
 
 #### IMPROVEMENTS
 
+Updated logic for Connect-JCOnline.
+Improved module welcome page.
+
 #### BUG FIXES
 
 ## 1.13.3
