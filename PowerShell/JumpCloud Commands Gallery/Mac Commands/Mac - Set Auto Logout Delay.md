@@ -8,7 +8,7 @@ mac
 
 #### Command
 
-```sh
+```
 
 # Update the AutoLogOutDelay Variable
 # This variable is defined in seconds by displayed as a minutes in System Preferences
