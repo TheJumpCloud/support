@@ -45,4 +45,5 @@ If the value specified for the `AutoLogOutDelay` is set to 0 this will disable t
 To import this command into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
 
 ```
+Import-JCCommand -URL 'https://git.io/JeY0v'
 ```
