@@ -10,7 +10,7 @@ systemGroupId=""
 # Parse the systemKey from the conf file.
 # The conf file is JSON and can be parsed using JSON.parse() in a supported language.
 conf="`cat /opt/jc/jcagent.conf`"
-regex="systemKey\":\"(\w+)\""
+regex='\"systemKey\":\"([a-zA-Z0-9_]+)\"'
 
 if [[ ${conf} =~ $regex ]] ; then
   systemKey="${BASH_REMATCH[1]}"

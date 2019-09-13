@@ -8,7 +8,7 @@
 # Parse the systemKey from the conf file.
 # The conf file is JSON and can be parsed using JSON.parse() in a supported language.
 conf="`cat /opt/jc/jcagent.conf`"
-regex="systemKey\":\"(\w+)\""
+regex='\"systemKey\":\"([a-zA-Z0-9_]+)\"'
 
 if [[ ${conf} =~ $regex ]] ; then
   systemKey="${BASH_REMATCH[1]}"
@@ -32,7 +32,3 @@ curl -iq \
   -H "Date: ${now}" \
   -H "Authorization: Signature keyId=\"system/${systemKey}\",headers=\"request-line date\",algorithm=\"rsa-sha256\",signature=\"${signature}\"" \
   --url https://console.jumpcloud.com/api/systems/${systemKey}
-
-
-  https://console.jumpcloud.com/api/v2/systemsgroups/5c5da7fb232e1164e94e5f29/members
-  https://console.jumpcloud.com/api/v2/systemgroups/5c5da7fb232e1164e94e5f29/members
