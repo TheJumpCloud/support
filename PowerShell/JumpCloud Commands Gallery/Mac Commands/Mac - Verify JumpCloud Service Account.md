@@ -1,6 +1,6 @@
 #### Name
 
-Mac - Verify JumpCloud Service Account | v1.0 JCCG 
+Mac - Verify JumpCloud Service Account | v1.1 JCCG 
 
 #### commandType
 
