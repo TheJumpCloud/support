@@ -1,3 +1,22 @@
+## 1.14.1
+
+#### RELEASE DATE
+
+September 17, 2019
+
+#### RELEASE NOTES
+
+Addressing bugs impacting associations functions.
+
+#### FEATURES
+
+#### IMPROVEMENTS
+
+#### BUG FIXES
+
+When piping to a *-JCAssociations function there was a variable scoping issue that incorrectly set the `skip` and `limit` values.
+When running a *-JCAssociations function JC types with only one target type were not correctly being populated due to an unnecessary validation step.
+
 ## 1.14.0
 
 #### RELEASE DATE

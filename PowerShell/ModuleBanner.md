@@ -1,17 +1,25 @@
 #### Latest Version
 
 ```
-1.14.0
+1.14.1
 ```
 
 #### Banner Current
 
 ```
-JumpCloud Radius Servers functions are now available.
+Addressing bugs impacting associations functions.
+!!!*****************************************
+!!!IF YOU RECEIVE AN ERROR WHILE UPDATING THE MODULE PLEASE RUN:
+Install-Module JumpCloud -force
+!!!*****************************************
 ```
 
 #### Banner Old
 
 ```
-JumpCloud Radius Servers functions are now available.
+Addressing bugs impacting associations functions.
+!!!*****************************************
+!!!IF YOU RECEIVE AN ERROR WHILE UPDATING THE MODULE PLEASE RUN:
+Install-Module JumpCloud -force
+!!!*****************************************
 ```
