@@ -286,7 +286,12 @@ Function Get-JCObject
                         $TargetPlural = $Targets.TargetPlural
                         $Table = $JCType.Table
                         # List values to add to results
-                        $HiddenProperties = @('ById', 'ByName', 'TypeName', 'TypeNameSingular', 'TypeNamePlural', 'Targets', 'TargetSingular', 'TargetPlural', 'Table')
+                        $HiddenProperties = @('ById', 'ByName', 'TypeName', 'TypeNameSingular', 'TypeNamePlural', 'Targets', 'TargetSingular', 'TargetPlural')
+                        If (-not [System.String]::IsNullOrEmpty($PsBoundParameters.Table))
+                        {
+                            $Table = $JCType.Table
+                            $HiddenProperties += 'Table'
+                        }
                         # Append meta info to each result record
                         Get-Variable -Name:($HiddenProperties) |
                         ForEach-Object {
