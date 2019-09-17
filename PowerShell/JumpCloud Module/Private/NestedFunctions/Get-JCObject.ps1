@@ -293,10 +293,7 @@ Function Get-JCObject
                             $Variable = $_
                             $Results |
                             ForEach-Object {
-                                If (-not ([System.String]::IsNullOrEmpty($Variable.Value)))
-                                {
-                                    Add-Member -InputObject:($_) -MemberType:('NoteProperty') -Name:($Variable.Name) -Value:($Variable.Value);
-                                }
+                                Add-Member -InputObject:($_) -MemberType:('NoteProperty') -Name:($Variable.Name) -Value:($Variable.Value);
                             }
                         }
                         # Set the meta info to be hidden by default
