@@ -185,7 +185,7 @@ Function Add-LocalUser
     )
     ([ADSI]"WinNT://$computer/$group,group").psbase.Invoke("Add", ([ADSI]"WinNT://$computer/$localusername").path)
 }
-#Check if program is installed on system
+#Check if program is on system
 function Check_Program_Installed($programName) {
     $installed = $null
     $installed = (Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | Where {$_.DisplayName -match $programName})
@@ -8174,8 +8174,6 @@ $usmtmigapp = [xml] @"
     </role>
   </component>
 
-  
-
   <!-- Microsoft Office 2010 -->
   <component context="UserAndSystem"  type="Application">
     <displayName _locID="migapp.office14">Microsoft Office 2010</displayName>
@@ -8897,7 +8895,6 @@ $usmtmigapp = [xml] @"
 
         </role>
       </component>
-
     </role>
   </component>
 
@@ -9225,7 +9222,6 @@ $usmtmigapp = [xml] @"
                 <pattern type="Registry">HKCU\Software\Microsoft\Office\15.0\Outlook\* [*]</pattern>
                 <pattern type="Registry">HKCU\Software\Microsoft\Exchange\* [*]</pattern>
                 <pattern type="Registry">HKCU\Software\Microsoft\Office\15.0\Outlook\Profiles\* [*]</pattern>
-
                 <pattern type="File">%CSIDL_APPDATA%\Microsoft\Office [*.officeUI]</pattern>
                 <pattern type="File">%CSIDL_LOCAL_APPDATA%\Microsoft\Office [*.officeUI]</pattern>
                 <pattern type="File">%CSIDL_APPDATA%\Microsoft\Templates\* [*]</pattern>
@@ -9544,7 +9540,6 @@ $usmtmigapp = [xml] @"
         </role>
       </component>
 
-
       <!-- Microsoft Office Word 15 (32-bit) -->
       <component context="UserAndSystem" type="Application">
         <displayName _locID="migapp.office15word32bit">Microsoft Office Word 2013 (32-bit)</displayName>
@@ -9617,7 +9612,6 @@ $usmtmigapp = [xml] @"
           <rules name="Office15to15SettingsMigrate_x64"/>
         </role>
       </component>
-
     </role>
   </component>
 
@@ -9945,7 +9939,6 @@ $usmtmigapp = [xml] @"
                 <pattern type="Registry">HKCU\Software\Microsoft\Office\16.0\Outlook\* [*]</pattern>
                 <pattern type="Registry">HKCU\Software\Microsoft\Exchange\* [*]</pattern>
                 <pattern type="Registry">HKCU\Software\Microsoft\Office\16.0\Outlook\Profiles\* [*]</pattern>
-
                 <pattern type="File">%CSIDL_APPDATA%\Microsoft\Office [*.officeUI]</pattern>
                 <pattern type="File">%CSIDL_LOCAL_APPDATA%\Microsoft\Office [*.officeUI]</pattern>
                 <pattern type="File">%CSIDL_APPDATA%\Microsoft\Templates\* [*]</pattern>
@@ -10263,7 +10256,6 @@ $usmtmigapp = [xml] @"
           <rules name="Office16to16SettingsMigrate_x64" />
         </role>
       </component>
-
 
       <!-- Microsoft Office Word 16 (32-bit) -->
       <component context="UserAndSystem" type="Application">
@@ -10664,7 +10656,6 @@ $usmtmigapp = [xml] @"
                 <pattern type="Registry">HKCU\Software\Microsoft\Office\17.0\Outlook\* [*]</pattern>
                 <pattern type="Registry">HKCU\Software\Microsoft\Exchange\* [*]</pattern>
                 <pattern type="Registry">HKCU\Software\Microsoft\Office\17.0\Outlook\Profiles\* [*]</pattern>
-
                 <pattern type="File">%CSIDL_APPDATA%\Microsoft\Office [*.officeUI]</pattern>
                 <pattern type="File">%CSIDL_LOCAL_APPDATA%\Microsoft\Office [*.officeUI]</pattern>
                 <pattern type="File">%CSIDL_APPDATA%\Microsoft\Templates\* [*]</pattern>
@@ -10982,7 +10973,6 @@ $usmtmigapp = [xml] @"
           <rules name="Office17to17SettingsMigrate_x64" />
         </role>
       </component>
-
 
       <!-- Microsoft Office Word 17 (32-bit) -->
       <component context="UserAndSystem" type="Application">

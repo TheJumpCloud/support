@@ -1,7 +1,8 @@
 # Load functions
 . ((Split-Path -Path:($MyInvocation.MyCommand.Path)) + '\Functions.ps1')
 # Define misc static variables
-$UserStateMigrationToolPath = 'C:\adk\Assessment and Deployment Kit\User State Migration Tool\'
+$InstalledProducts = (Get-WmiObject -Class:('Win32_Product') | select Name) 
+
 $FormResults = [PSCustomObject]@{}
 #==============================================================================================
 # XAML Code - Imported from Visual Studio WPF Application
@@ -11,7 +12,7 @@ $FormResults = [PSCustomObject]@{}
 <Window
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="JumpCloud ADMU 1.0.0" Height="425.101" Width="980.016" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" ForceCursor="True">
+    Title="JumpCloud ADMU 1.2.0" Height="425.101" Width="980.016" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" ForceCursor="True">
     <Grid Margin="0,0,-0.2,6.287">
         <ListView Name="lvProfileList" HorizontalAlignment="Left" Height="141.629" Margin="9.9,110.146,0,0" VerticalAlignment="Top" Width="944.422">
             <ListView.View>
@@ -103,7 +104,8 @@ Else
 }
 $lbDomainName.Content = $DomainName
 $lbComputerName.Content = $WmiComputerSystem.Name
-$lbUSMTStatus.Content = Test-Path -Path:($UserStateMigrationToolPath)
+$lbUSMTStatus.Content =   (($InstalledProducts -match 'User State Migration Tool').Count -eq 1)
+
 Function Validate-Button([object]$tbJumpCloudUserName, [object]$tbJumpCloudConnectKey, [object]$tbTempPassword, [object]$lvProfileList)
 {
     Write-Debug ('---------------------------------------------------------')
