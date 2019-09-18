@@ -73,6 +73,13 @@ WELCOME_TEXT=''
 ### NTP server, set to time.apple.com by default, Ensure time is correct ### 
 NTP_SERVER="time.apple.com"
 
+### Boolean to delete the enrollment user set through MDM ###
+DELETE_ENROLLMENT_USERS=true
+
+### short name of the inital user account, this account will be deleted is the 
+### above boolean is set to true. 
+FIRST_ENROLLMENT_USER="Welcome"
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # END General Settings                                                         ~
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -458,6 +465,18 @@ while [[ -z "${groupTakeOverCheck}" ]]; do
 done
 
 FINISH_TITLE="All Done"
+
+if [[ $DELETE_ENROLLMENT_USERS = true ]]
+then
+    # delete the first logged in user 
+    Sleep 10
+    echo "$(date "+%Y-%m-%dT%H:%M:%S") Deleting the first enrollment user: $FIRST_ENROLLMENT_USER" >>"$DEP_N_DEBUG"
+    dscl . -delete /Users/$FIRST_ENROLLMENT_USER
+    rm -rf /Users/$FIRST_ENROLLMENT_USER
+    echo "$(date "+%Y-%m-%dT%H:%M:%S") Deleting the decrypt user: $DECRYPT_USER" >>"$DEP_N_DEBUG"
+    dscl . -delete /Users/$DECRYPT_USER
+    rm -rf /Users/$DECRYPT_USER
+fi
 
 echo "Command: MainTitle: $FINISH_TITLE" >>"$DEP_N_LOG"
 echo "Status: Enrollment Complete" >>"$DEP_N_LOG"
