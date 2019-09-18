@@ -70,7 +70,7 @@ WELCOME_TITLE=""
 ### DEPNotify Welcome Window Text use //n for line breaks ###
 WELCOME_TEXT=''
 
-### NTP server, set to time.apple.com by default used to ensure system time is correct ### 
+### NTP server, set to time.apple.com by default, Ensure time is correct ### 
 NTP_SERVER="time.apple.com"
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
