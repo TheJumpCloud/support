@@ -70,8 +70,12 @@ WELCOME_TITLE=""
 ### DEPNotify Welcome Window Text use //n for line breaks ###
 WELCOME_TEXT=''
 
-### NTP server, set to time.apple.com by default, Ensure time is correct ### 
-NTP_SERVER="time.apple.com"
+### Boolean to delete the enrollment user set through MDM ###
+DELETE_ENROLLMENT_USERS=true
+
+### short name of the inital user account, this account will be deleted is the 
+### above boolean is set to true. 
+FIRST_ENROLLMENT_USER="Welcome"
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # END General Settings                                                         ~
@@ -237,14 +241,6 @@ Sleep 1
 echo "Status: Pulling configuration settings from JumpCloud" >>"$DEP_N_LOG"
 
 # Add system to DEP_ENROLLMENT_GROUP_ID using System Context API Authentication
-
-# Ensure system time is set correctly Sierra-Mojave compatible
-MacOSMinorVersion=$(sw_vers -productVersion | cut -d '.' -f 2)
-if [[ MacOSMinorVersion -ge 12 ]]
-then
-    sntp -sS $NTP_SERVER
-fi
-
 conf="$(cat /opt/jc/jcagent.conf)"
 regex='\"systemKey\":\"[a-zA-Z0-9]{24}\"'
 
@@ -458,6 +454,19 @@ while [[ -z "${groupTakeOverCheck}" ]]; do
 done
 
 FINISH_TITLE="All Done"
+
+if [[ $DELETE_ENROLLMENT_USERS = true ]]
+then
+    # delete the first logged in user 
+    Sleep 10
+    echo "$(date "+%Y-%m-%dT%H:%M:%S") Deleting the first enrollment user: $FIRST_ENROLLMENT_USER" >>"$DEP_N_DEBUG"
+    dscl . -delete /Users/$FIRST_ENROLLMENT_USER
+    rm -rf /Users/$FIRST_ENROLLMENT_USER
+    echo "$(date "+%Y-%m-%dT%H:%M:%S") Deleting the decrypt user: $DECRYPT_USER" >>"$DEP_N_DEBUG"
+    dscl . -delete /Users/$DECRYPT_USER
+    rm -rf /Users/$DECRYPT_USER
+fi
+
 
 echo "Command: MainTitle: $FINISH_TITLE" >>"$DEP_N_LOG"
 echo "Status: Enrollment Complete" >>"$DEP_N_LOG"
