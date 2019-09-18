@@ -70,6 +70,9 @@ WELCOME_TITLE=""
 ### DEPNotify Welcome Window Text use //n for line breaks ###
 WELCOME_TEXT=''
 
+### NTP server, set to time.apple.com by default used to ensure system time is correct ### 
+NTP_SERVER="time.apple.com"
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # END General Settings                                                         ~
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -234,6 +237,13 @@ Sleep 1
 echo "Status: Pulling configuration settings from JumpCloud" >>"$DEP_N_LOG"
 
 # Add system to DEP_ENROLLMENT_GROUP_ID using System Context API Authentication
+
+# Ensure system time is set correctly Sierra-Mojave compatible
+MacOSMinorVersion=$(sw_vers -productVersion | cut -d '.' -f 2)
+if [[ MacOSMinorVersion -ge 12 ]]
+then
+    sntp -sS $NTP_SERVER
+fi
 
 conf="$(cat /opt/jc/jcagent.conf)"
 regex='\"systemKey\":\"[a-zA-Z0-9]{24}\"'
