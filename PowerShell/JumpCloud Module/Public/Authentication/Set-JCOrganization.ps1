@@ -8,7 +8,7 @@ Function Set-JCOrganization
     Begin
     {
         # Debug message for parameter call
-        Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDebugMessageBegin) -ArgumentList:($MyInvocation, $PsBoundParameters, $PSCmdlet) -NoNewScope
+        $PSBoundParameters | Out-DebugParameter | Write-Debug
     }
     Process
     {
