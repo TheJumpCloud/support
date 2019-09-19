@@ -11,28 +11,28 @@ The JumpCloud Service Account is required to manage users on FileVault protected
 ![configuration_steps](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/diagrams/configuration_steps.png?raw=true)
 
 **Table Of Contents**
-- [Prerequisites](#Prerequisites)
-  - [An Apple Device Enrollment (DEP) Account](#An-Apple-Device-Enrollment-DEP-Account)
-  - [An MDM server integrated with Apple DEP](#An-MDM-server-integrated-with-Apple-DEP)
-  - [An Apple Developer Account](#An-Apple-Developer-Account)
-  - [munkipkg or an alternative macOS PKG building tool or application](#munkipkg-or-an-alternative-macOS-PKG-building-tool-or-application)
-  - [Users who you wish to enroll using this zero-touch workflow added to the JumpCloud directory.](#Users-who-you-wish-to-enroll-using-this-zero-touch-workflow-added-to-the-JumpCloud-directory)
-- [Zero-Touch Enrollment Workflow Diagram](#Zero-Touch-Enrollment-Workflow-Diagram)
-- [Component Definitions](#Component-Definitions)
-- [Configuration Steps](#Configuration-Steps)
-  - [Step 1 - Download the JumpCloud Bootstrap template script](#Step-1---Download-the-JumpCloud-Bootstrap-template-script)
-  - [Step 2 - Configuring the JumpCloud Tenant For DEP Zero-Touch](#Step-2---Configuring-the-JumpCloud-Tenant-For-DEP-Zero-Touch)
-  - [Step 3 - Populating the Bootstrap template script variables](#Step-3---Populating-the-Bootstrap-template-script-variables)
-    - [Variable Definitions](#Variable-Definitions)
-  - [Step 4 - Selecting a User Configuration Module](#Step-4---Selecting-a-User-Configuration-Module)
-    - [Pending User Configuration Modules](#Pending-User-Configuration-Modules)
-    - [Pending or Active User Configuration Modules](#Pending-or-Active-User-Configuration-Modules)
-  - [Step 5 - Populating the Bootstrap template script with a User Configuration Module](#Step-5---Populating-the-Bootstrap-template-script-with-a-User-Configuration-Module)
-  - [Step 6 - Creaking a PKG from the Bootstrap template script using munkiPKG](#Step-6---Creaking-a-PKG-from-the-Bootstrap-template-script-using-munkiPKG)
-  - [Step 7 - Configuring MDM PreStage Settings](#Step-7---Configuring-MDM-PreStage-Settings)
-  - [Step 8 - Configuring the PKG for MDM deployment](#Step-8---Configuring-the-PKG-for-MDM-deployment)
-  - [Step 9 - Creating a Privacy Preference Policy](#Step-9---Creating-a-Privacy-Preference-Policy)
-- [Testing the workflow](#Testing-the-workflow)
+- [Prerequisites](#prerequisites)
+  - [An Apple Device Enrollment (DEP) Account](#an-apple-device-enrollment-dep-account)
+  - [An MDM server integrated with Apple DEP](#an-mdm-server-integrated-with-apple-dep)
+  - [An Apple Developer Account](#an-apple-developer-account)
+  - [munkipkg or an alternative macOS PKG building tool or application](#munkipkg-or-an-alternative-macos-pkg-building-tool-or-application)
+  - [Users who you wish to enroll using this zero-touch workflow added to the JumpCloud directory.](#users-who-you-wish-to-enroll-using-this-zero-touch-workflow-added-to-the-jumpcloud-directory)
+- [Zero-Touch Enrollment Workflow Diagram](#zero-touch-enrollment-workflow-diagram)
+- [Component Definitions](#component-definitions)
+- [Configuration Steps](#configuration-steps)
+  - [Step 1 - Download the JumpCloud Bootstrap template script](#step-1---download-the-jumpcloud-bootstrap-template-script)
+  - [Step 2 - Configuring the JumpCloud Tenant For DEP Zero-Touch](#step-2---configuring-the-jumpcloud-tenant-for-dep-zero-touch)
+  - [Step 3 - Populating the Bootstrap template script variables](#step-3---populating-the-bootstrap-template-script-variables)
+    - [Variable Definitions](#variable-definitions)
+  - [Step 4 - Selecting a User Configuration Module](#step-4---selecting-a-user-configuration-module)
+    - [Pending User Configuration Modules](#pending-user-configuration-modules)
+    - [Pending or Active User Configuration Modules](#pending-or-active-user-configuration-modules)
+  - [Step 5 - Populating the Bootstrap template script with a User Configuration Module](#step-5---populating-the-bootstrap-template-script-with-a-user-configuration-module)
+  - [Step 6 - Creaking a PKG from the Bootstrap template script using munkiPKG](#step-6---creaking-a-pkg-from-the-bootstrap-template-script-using-munkipkg)
+  - [Step 7 - Configuring MDM PreStage Settings](#step-7---configuring-mdm-prestage-settings)
+  - [Step 8 - Configuring the PKG for MDM deployment](#step-8---configuring-the-pkg-for-mdm-deployment)
+  - [Step 9 - Creating a Privacy Preference Policy](#step-9---creating-a-privacy-preference-policy)
+- [Testing the workflow](#testing-the-workflow)
 
 ## Prerequisites
 
@@ -254,6 +254,13 @@ WELCOME_TITLE=""
 ### DEPNotify Welcome Window Text use //n for line breaks ###
 WELCOME_TEXT=''
 
+### Boolean to delete the enrollment user set through MDM ###
+DELETE_ENROLLMENT_USERS=true
+
+### Username of the enrollment user account configured in the MDM.
+### This account will be deleted if the above boolean is set to true.
+ENROLLMENT_USER=""
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # END General Settings                                                         ~
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -362,6 +369,15 @@ Enter welcome text that will load when DEPNotify launches.
 
 Use \\n for line breaks.
 
+- `DELETE_ENROLLMENT_USERS=true`
+
+A Boolean variable that by default is set to true. This variable controls if the `DECRYPT_USER` and `ENROLLMENT_USER` accounts are deleted from the system at the end of the flow. It is recommend to leave this variable set to True to ensure that these users are removed.
+
+
+- `ENROLLMENT_USER=""`
+
+The username of the MDM enrollment user pushed down to the machine.
+
 Example of populated variables:
 
 ```SH
@@ -398,6 +414,14 @@ WELCOME_TITLE="Welcome to Azzipa.\\n Where we make backwards pizzas."
 
 ### DEPNotify Welcome Window Text use \\n for line breaks ###
 WELCOME_TEXT='Sit back and relax as your computer configures itself for you. \\n\\n After configuration settings download you will be asked to activate your account and set a password!'
+
+### Boolean to delete the enrollment user set through MDM ###
+DELETE_ENROLLMENT_USERS=true
+
+### Username of the enrollment user account configured in the MDM.
+### This account will be deleted if the above boolean is set to true.
+ENROLLMENT_USER="Welcome"
+
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # END General Settings                                                         ~

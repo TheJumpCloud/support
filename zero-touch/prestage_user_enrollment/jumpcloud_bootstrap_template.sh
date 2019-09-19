@@ -2,6 +2,8 @@
 
 #*******************************************************************************
 #
+#       Version 1.1 | See the CHANGELOG.md for version information
+#
 #       See the ReadMe file for detailed configuration steps.
 #
 #       The "jumpcloud_bootstrap_template.sh" is a template file. Populate the
@@ -32,7 +34,8 @@
 #       Questions or feedback on the JumpCloud bootstrap workflow? Please
 #       contact support@jumpcloud.com
 #
-#       Author: Scott Reed | scott.reed@jumpcloud.com
+#       Authors: Scott Reed | scott.reed@jumpcloud.com
+#               Joe Workman | joe.workman@jumpcloud.com
 #
 #*******************************************************************************
 
@@ -73,9 +76,9 @@ WELCOME_TEXT=''
 ### Boolean to delete the enrollment user set through MDM ###
 DELETE_ENROLLMENT_USERS=true
 
-### short name of the inital user account, this account will be deleted is the 
-### above boolean is set to true. 
-FIRST_ENROLLMENT_USER="Welcome"
+### Username of the enrollment user account configured in the MDM.
+### This account will be deleted if the above boolean is set to true.
+ENROLLMENT_USER=""
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # END General Settings                                                         ~
@@ -455,18 +458,16 @@ done
 
 FINISH_TITLE="All Done"
 
-if [[ $DELETE_ENROLLMENT_USERS = true ]]
-then
-    # delete the first logged in user 
+if [[ $DELETE_ENROLLMENT_USERS == true ]]; then
+    # delete the first logged in user
     Sleep 10
-    echo "$(date "+%Y-%m-%dT%H:%M:%S") Deleting the first enrollment user: $FIRST_ENROLLMENT_USER" >>"$DEP_N_DEBUG"
-    dscl . -delete /Users/$FIRST_ENROLLMENT_USER
-    rm -rf /Users/$FIRST_ENROLLMENT_USER
+    echo "$(date "+%Y-%m-%dT%H:%M:%S") Deleting the first enrollment user: $ENROLLMENT_USER" >>"$DEP_N_DEBUG"
+    dscl . -delete /Users/$ENROLLMENT_USER
+    rm -rf /Users/$ENROLLMENT_USER
     echo "$(date "+%Y-%m-%dT%H:%M:%S") Deleting the decrypt user: $DECRYPT_USER" >>"$DEP_N_DEBUG"
     dscl . -delete /Users/$DECRYPT_USER
     rm -rf /Users/$DECRYPT_USER
 fi
-
 
 echo "Command: MainTitle: $FINISH_TITLE" >>"$DEP_N_LOG"
 echo "Status: Enrollment Complete" >>"$DEP_N_LOG"
