@@ -8006,42 +8006,6 @@ $usmtmigapp = [xml] @"
     </role>
   </component>
 
-  <!-- Google Chrome -->
-  <component context="UserAndSystem" type="Application">
-    <displayName _locID="migapp.chrome1">Google Chrome</displayName>
-    <environment name="GlobalEnv"/>
-    <environment name="GlobalEnvX64"/>
-    <role role="Settings">
-      <destinationCleanup>
-        <objectSet>
-          <pattern type="File">%CSIDL_LOCAL_APPDATA%\Google\Chrome\User Data\*\Cache\* [*]</pattern>
-        </objectSet>
-      </destinationCleanup>
-      <detection>
-        <conditions>
-	  <condition>MigXmlHelper.DoesObjectExist("Registry","%HklmWowSoftware%\Google\Chrome\")</condition>
-        </conditions>
-      </detection>
-      <rules context="User">
-        <include>
-          <objectSet>
-            <pattern type="File">%CSIDL_LOCAL_APPDATA%\Google\Chrome\User Data\* [*]</pattern>
-          </objectSet>
-        </include>
-        <exclude>
-          <objectSet>
-            <pattern type="File">%CSIDL_LOCAL_APPDATA%\Google\Chrome\User Data\*\Cache\* [*]</pattern>
-          </objectSet>
-        </exclude>
-        <merge script="MigXmlHelper.SourcePriority()">
-          <objectSet>
-            <pattern type="File">%CSIDL_LOCAL_APPDATA%\Google\Chrome\User Data\* [*]</pattern>
-          </objectSet>
-        </merge>
-      </rules>
-    </role>
-  </component>
-
   <!--Ad-aware 6 Professional  -->
   <component context="UserAndSystem" type="Application">
     <displayName _locID="migapp.adaware">Ad-aware 6 Professional</displayName>

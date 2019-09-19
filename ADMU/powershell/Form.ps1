@@ -174,6 +174,10 @@ $tbJumpCloudUserName.add_TextChanged( {
         }
     })
 
+$tbJumpCloudUserName.add_GotFocus( {
+        $tbJumpCloudUserName.Text = ""
+})
+
 $tbJumpCloudConnectKey.add_TextChanged( {
         Validate-Button -tbJumpCloudUserName:($tbJumpCloudUserName) -tbJumpCloudConnectKey:($tbJumpCloudConnectKey) -tbTempPassword:($tbTempPassword) -lvProfileList:($lvProfileList)
         If (((Validate-Is40chars $tbJumpCloudConnectKey.Text) -and (Validate-HasNoSpaces $tbJumpCloudConnectKey.Text)) -eq $false)
@@ -188,6 +192,11 @@ $tbJumpCloudConnectKey.add_TextChanged( {
             $tbJumpCloudConnectKey.FontWeight = "Normal"
         }
     })
+
+$tbJumpCloudConnectKey.add_GotFocus( {
+    $tbJumpCloudConnectKey.Text = ""
+})
+
 $tbTempPassword.add_TextChanged( {
         Validate-Button -tbJumpCloudUserName:($tbJumpCloudUserName) -tbJumpCloudConnectKey:($tbJumpCloudConnectKey) -tbTempPassword:($tbTempPassword) -lvProfileList:($lvProfileList) 
         If ((!(Validate-IsNotEmpty $tbTempPassword.Text) -and (Validate-HasNoSpaces $tbTempPassword.Text)) -eq $false)
@@ -202,6 +211,7 @@ $tbTempPassword.add_TextChanged( {
             $tbTempPassword.FontWeight = "Normal"
         }
     })
+
 # Change button when profile selected
 $lvProfileList.Add_SelectionChanged( {
         $script:SelectedUserName = ($lvProfileList.SelectedItem.username)
