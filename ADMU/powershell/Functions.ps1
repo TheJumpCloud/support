@@ -314,6 +314,23 @@ function GetNetBiosName {
   }
 }
 
+function ConvertSID {
+  param
+  (
+    [Parameter(Mandatory,ValueFromPipeline,ValueFromPipelineByPropertyName)]
+    [Alias('Value')]
+    $Sid 
+  )
+  
+  process
+  {
+    $objSID = New-Object System.Security.Principal.SecurityIdentifier($sid)
+    $objUser = $objSID.Translate( [System.Security.Principal.NTAccount])
+    $objUser.Value
+  }
+} 
+
+
 #endregion Functions
 
 #region config xml

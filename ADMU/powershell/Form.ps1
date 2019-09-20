@@ -235,7 +235,7 @@ $bDeleteProfile.Add_Click( {
         $Form.Close()
     })
 # Get list of profiles from computer into listview
-$Profiles = Get-WmiObject -Class:('Win32_UserProfile') -Property * | Where-Object {$_.Special -eq $false} | Select-Object SID, RoamingConfigured, Loaded, @{Name = "LastLogin"; EXPRESSION = {$_.ConvertToDateTime($_.lastusetime)}}, @{Name = "UserName"; EXPRESSION = {(New-Object System.Security.Principal.SecurityIdentifier($_.SID)).Translate([System.Security.Principal.NTAccount]).Value}; }
+$Profiles = Get-WmiObject -Class:('Win32_UserProfile') -Property * | Where-Object {$_.Special -eq $false} | Select-Object SID, RoamingConfigured, Loaded, @{Name = "LastLogin"; EXPRESSION = {$_.ConvertToDateTime($_.lastusetime)}}, @{Name = "UserName"; EXPRESSION = {ConvertSID($_.SID)}; }
 # Put the list of profiles in the profile box
 $Profiles | ForEach-Object {$lvProfileList.Items.Add($_) | Out-Null}
 #===========================================================================
