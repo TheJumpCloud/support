@@ -1,7 +1,8 @@
 # Load functions
 . ((Split-Path -Path:($MyInvocation.MyCommand.Path)) + '\Functions.ps1')
 # Loading Text
-Write-Host "Loading Jumpcloud ADMU. Please Wait..." 
+Write-Host "Loading Jumpcloud ADMU. Please Wait..."
+Write-Host "Verifying Local Accounts & Group Membership..."
 # Define misc static variables
 $InstalledProducts = (Get-WmiObject -Class:('Win32_Product') | Select-Object Name) 
 
