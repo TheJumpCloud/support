@@ -19,11 +19,11 @@ $FormResults = [PSCustomObject]@{}
         <ListView Name="lvProfileList" HorizontalAlignment="Left" Height="141.629" Margin="9.9,110.146,0,0" VerticalAlignment="Top" Width="944.422">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="System Accounts" DisplayMemberBinding="{Binding 'UserName'}" Width="330"/>
+                    <GridViewColumn Header="System Accounts" DisplayMemberBinding="{Binding 'UserName'}" Width="320"/>
                     <GridViewColumn Header="Last Login" DisplayMemberBinding="{Binding 'LastLogin'}" Width="150"/>
-                    <GridViewColumn Header="Currently Active" DisplayMemberBinding="{Binding 'Loaded'}" Width="150" />
-                    <GridViewColumn Header="Domain Roaming" DisplayMemberBinding="{Binding 'RoamingConfigured'}" Width="150"/>
-                    <GridViewColumn Header="IsLocalAdmin" DisplayMemberBinding="{Binding 'IsLocalAdmin'}" Width="150"/>
+                    <GridViewColumn Header="Currently Active" DisplayMemberBinding="{Binding 'Loaded'}" Width="140" />
+                    <GridViewColumn Header="Domain Roaming" DisplayMemberBinding="{Binding 'RoamingConfigured'}" Width="130"/>
+                    <GridViewColumn Header="Local Admin" DisplayMemberBinding="{Binding 'IsLocalAdmin'}" Width="130"/>
                 </GridView>
             </ListView.View>
         </ListView>
