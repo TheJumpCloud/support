@@ -23,6 +23,7 @@ $FormResults = [PSCustomObject]@{}
                     <GridViewColumn Header="Last Login" DisplayMemberBinding="{Binding 'LastLogin'}" Width="150"/>
                     <GridViewColumn Header="Currently Active" DisplayMemberBinding="{Binding 'Loaded'}" Width="150" />
                     <GridViewColumn Header="Domain Roaming" DisplayMemberBinding="{Binding 'RoamingConfigured'}" Width="150"/>
+                    <GridViewColumn Header="IsLocalAdmin" DisplayMemberBinding="{Binding 'IsLocalAdmin'}" Width="150"/>
                 </GridView>
             </ListView.View>
         </ListView>
@@ -259,7 +260,7 @@ $p[$i].IsLocalAdmin = $false
 $i++
 }} 
 
-$Profiles = $p  | Select-Object SID, RoamingConfigured, Loaded, IsLocalAdmin, @{Name = "LastLogin"; EXPRESSION = {$_.ConvertToDateTime($_.lastusetime)}}, @{Name = "UserName"; EXPRESSION = {ConvertFrom-SID($_.SID)}}
+$Profiles = $p  | Select-Object SID, RoamingConfigured, Loaded, IsLocalAdmin, @{Name = "LastLogin"; EXPRESSION = {$_.ConvertToDateTime($_.lastusetime)}}, @{Name = "UserName"; EXPRESSION = {ConvertSID($_.SID)}}
 
 # Put the list of profiles in the profile box
 $Profiles | ForEach-Object {$lvProfileList.Items.Add($_) | Out-Null}
