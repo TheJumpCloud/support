@@ -235,7 +235,32 @@ $bDeleteProfile.Add_Click( {
         $Form.Close()
     })
 # Get list of profiles from computer into listview
-$Profiles = Get-WmiObject -Class:('Win32_UserProfile') -Property * | Where-Object {$_.Special -eq $false} | Select-Object SID, RoamingConfigured, Loaded, @{Name = "LastLogin"; EXPRESSION = {$_.ConvertToDateTime($_.lastusetime)}}, @{Name = "UserName"; EXPRESSION = {ConvertSID($_.SID)}; }
+
+$p = Get-WmiObject -Class:('Win32_UserProfile') -Property * | Where-Object {$_.Special -eq $false}
+$p | add-member -membertype NoteProperty -name IsLocalAdmin -value $null
+
+$users =  ($p | Select SID).sid | ConvertSID 
+$userstrim = $users -creplace '^[^\\]*\\', ''
+
+$group = "Administrators";
+$groupObj =[ADSI]"WinNT://./$group,group" 
+$membersObj = @($groupObj.psbase.Invoke("Members")) 
+
+$members = ($membersObj | foreach {$_.GetType().InvokeMember("Name", 'GetProperty', $null, $_, $null)})
+$i = 0
+ForEach ($user in $userstrim) {
+If ($members -contains $user) {
+      Write-Host "$user exists in the group $group"
+$p[$i].IsLocalAdmin = $true
+$i++
+ } Else {
+        Write-Host "$user not exists in the group $group"
+$p[$i].IsLocalAdmin = $false
+$i++
+}} 
+
+$Profiles = $p  | Select-Object SID, RoamingConfigured, Loaded, IsLocalAdmin, @{Name = "LastLogin"; EXPRESSION = {$_.ConvertToDateTime($_.lastusetime)}}, @{Name = "UserName"; EXPRESSION = {ConvertFrom-SID($_.SID)}}
+
 # Put the list of profiles in the profile box
 $Profiles | ForEach-Object {$lvProfileList.Items.Add($_) | Out-Null}
 #===========================================================================
