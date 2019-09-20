@@ -188,8 +188,8 @@ Function Add-LocalUser
 #Check if program is on system
 function Check_Program_Installed($programName) {
     $installed = $null
-    $installed = (Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | Where {$_.DisplayName -match $programName})
-    if ($installed -ne $null) {
+    $installed = (Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | Where-Object {$_.DisplayName -match $programName})
+    if ($null -ne $installed) {
       return $true
     }
     else {
@@ -210,7 +210,7 @@ Function Start-NewProcess([string]$pfile, [string]$arguments, [int32]$Timeout = 
     }
 }
 # Validation
-Function Validate-IsNotEmpty ([System.String] $field)
+Function Test-IsNotEmpty ([System.String] $field)
 {
     If (([System.String]::IsNullOrEmpty($field)))
     {
@@ -221,7 +221,7 @@ Function Validate-IsNotEmpty ([System.String] $field)
         Return $false
     }
 }
-Function Validate-Is40chars ([System.String] $field)
+Function Test-Is40chars ([System.String] $field)
 {
     If ($field.Length -eq 40)
     {
@@ -232,7 +232,7 @@ Function Validate-Is40chars ([System.String] $field)
         Return $false
     }
 }
-Function Validate-HasNoSpaces ([System.String] $field)
+Function Test-HasNoSpaces ([System.String] $field)
 {
     If ($field -like "* *")
     {

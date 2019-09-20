@@ -3,7 +3,7 @@
 # Loading Text
 Write-Host "Loading Jumpcloud ADMU. Please Wait..." 
 # Define misc static variables
-$InstalledProducts = (Get-WmiObject -Class:('Win32_Product') | select Name) 
+$InstalledProducts = (Get-WmiObject -Class:('Win32_Product') | Select-Object Name) 
 
 $FormResults = [PSCustomObject]@{}
 #==============================================================================================
@@ -109,7 +109,7 @@ $lbDomainName.Content = $DomainName
 $lbComputerName.Content = $WmiComputerSystem.Name
 $lbUSMTStatus.Content =   (($InstalledProducts -match 'User State Migration Tool').Count -eq 1)
 
-Function Validate-Button([object]$tbJumpCloudUserName, [object]$tbJumpCloudConnectKey, [object]$tbTempPassword, [object]$lvProfileList)
+Function Test-Button([object]$tbJumpCloudUserName, [object]$tbJumpCloudConnectKey, [object]$tbTempPassword, [object]$lvProfileList)
 {
     Write-Debug ('---------------------------------------------------------')
     Write-Debug ('Valid UserName: ' + $tbJumpCloudUserName)
@@ -118,9 +118,9 @@ Function Validate-Button([object]$tbJumpCloudUserName, [object]$tbJumpCloudConne
     Write-Debug ('Has UserName not been selected: ' + [System.String]::IsNullOrEmpty($lvProfileList.SelectedItem.UserName))
     If(![System.String]::IsNullOrEmpty($lvProfileList.SelectedItem.UserName))
     {
-        If(!(Validate-IsNotEmpty $tbJumpCloudUserName.Text) -and (Validate-HasNoSpaces $tbJumpCloudUserName.Text) `
-        -and (Validate-Is40chars $tbJumpCloudConnectKey.Text) -and (Validate-HasNoSpaces $tbJumpCloudConnectKey.Text) `
-        -and !(Validate-IsNotEmpty $tbTempPassword.Text) -and (Validate-HasNoSpaces $tbTempPassword.Text))
+        If(!(Test-IsNotEmpty $tbJumpCloudUserName.Text) -and (Test-HasNoSpaces $tbJumpCloudUserName.Text) `
+        -and (Test-Is40chars $tbJumpCloudConnectKey.Text) -and (Test-HasNoSpaces $tbJumpCloudConnectKey.Text) `
+        -and !(Test-IsNotEmpty $tbTempPassword.Text) -and (Test-HasNoSpaces $tbTempPassword.Text))
         {
             $script:bDeleteProfile.Content = "Migrate Profile"
             $script:bDeleteProfile.IsEnabled = $true
@@ -163,8 +163,8 @@ $cb_forcereboot.Add_Checked({$script:ForceReboot = $true})
 $cb_forcereboot.Add_Unchecked({$script:ForceReboot = $false})
 
 $tbJumpCloudUserName.add_TextChanged( {
-        Validate-Button -tbJumpCloudUserName:($tbJumpCloudUserName) -tbJumpCloudConnectKey:($tbJumpCloudConnectKey) -tbTempPassword:($tbTempPassword) -lvProfileList:($lvProfileList)
-        If ((!(Validate-IsNotEmpty $tbJumpCloudUserName.Text) -and (Validate-HasNoSpaces $tbJumpCloudUserName.Text)) -eq $false)
+        Test-Button -tbJumpCloudUserName:($tbJumpCloudUserName) -tbJumpCloudConnectKey:($tbJumpCloudConnectKey) -tbTempPassword:($tbTempPassword) -lvProfileList:($lvProfileList)
+        If ((!(Test-IsNotEmpty $tbJumpCloudUserName.Text) -and (Test-HasNoSpaces $tbJumpCloudUserName.Text)) -eq $false)
         {
             $tbJumpCloudUserName.Background = "#FFC6CBCF"
             $tbJumpCloudUserName.Tooltip = "JumpCloud User Name Can't Be Empty Or Contain Spaces"
@@ -182,8 +182,8 @@ $tbJumpCloudUserName.add_GotFocus( {
 })
 
 $tbJumpCloudConnectKey.add_TextChanged( {
-        Validate-Button -tbJumpCloudUserName:($tbJumpCloudUserName) -tbJumpCloudConnectKey:($tbJumpCloudConnectKey) -tbTempPassword:($tbTempPassword) -lvProfileList:($lvProfileList)
-        If (((Validate-Is40chars $tbJumpCloudConnectKey.Text) -and (Validate-HasNoSpaces $tbJumpCloudConnectKey.Text)) -eq $false)
+        Test-Button -tbJumpCloudUserName:($tbJumpCloudUserName) -tbJumpCloudConnectKey:($tbJumpCloudConnectKey) -tbTempPassword:($tbTempPassword) -lvProfileList:($lvProfileList)
+        If (((Test-Is40chars $tbJumpCloudConnectKey.Text) -and (Test-HasNoSpaces $tbJumpCloudConnectKey.Text)) -eq $false)
         {
             $tbJumpCloudConnectKey.Background = "#FFC6CBCF"
             $tbJumpCloudConnectKey.Tooltip = "Connect Key Must be 40chars & Not Contain Spaces"
@@ -201,8 +201,8 @@ $tbJumpCloudConnectKey.add_GotFocus( {
 })
 
 $tbTempPassword.add_TextChanged( {
-        Validate-Button -tbJumpCloudUserName:($tbJumpCloudUserName) -tbJumpCloudConnectKey:($tbJumpCloudConnectKey) -tbTempPassword:($tbTempPassword) -lvProfileList:($lvProfileList) 
-        If ((!(Validate-IsNotEmpty $tbTempPassword.Text) -and (Validate-HasNoSpaces $tbTempPassword.Text)) -eq $false)
+        Test-Button -tbJumpCloudUserName:($tbJumpCloudUserName) -tbJumpCloudConnectKey:($tbJumpCloudConnectKey) -tbTempPassword:($tbTempPassword) -lvProfileList:($lvProfileList) 
+        If ((!(Test-IsNotEmpty $tbTempPassword.Text) -and (Test-HasNoSpaces $tbTempPassword.Text)) -eq $false)
         {
             $tbTempPassword.Background = "#FFC6CBCF"
             $tbTempPassword.Tooltip = "Connect Key Must Be 40chars & No spaces"
@@ -218,7 +218,7 @@ $tbTempPassword.add_TextChanged( {
 # Change button when profile selected
 $lvProfileList.Add_SelectionChanged( {
         $script:SelectedUserName = ($lvProfileList.SelectedItem.username)
-        Validate-Button -tbJumpCloudUserName:($tbJumpCloudUserName) -tbJumpCloudConnectKey:($tbJumpCloudConnectKey) -tbTempPassword:($tbTempPassword) -lvProfileList:($lvProfileList)
+        Test-Button -tbJumpCloudUserName:($tbJumpCloudUserName) -tbJumpCloudConnectKey:($tbJumpCloudConnectKey) -tbTempPassword:($tbTempPassword) -lvProfileList:($lvProfileList)
     })
 # AcceptEULA moreinfo link - Mouse button event
 $lbMoreInfo.Add_PreviewMouseDown( {[System.Diagnostics.Process]::start('https://github.com/TheJumpCloud/support/tree/BS-ADMU-version_1.0.0/ADMU#EULA--Legal-Explanation')})
@@ -237,30 +237,28 @@ $bDeleteProfile.Add_Click( {
     })
 # Get list of profiles from computer into listview
 
-$p = Get-WmiObject -Class:('Win32_UserProfile') -Property * | Where-Object {$_.Special -eq $false}
-$p | add-member -membertype NoteProperty -name IsLocalAdmin -value $null
+$win32UserProfiles = Get-WmiObject -Class:('Win32_UserProfile') -Property * | Where-Object {$_.Special -eq $false}
+$win32UserProfiles | add-member -membertype NoteProperty -name IsLocalAdmin -value $null
 
-$users =  ($p | Select SID).sid | ConvertSID 
+$users =  ($win32UserProfiles | Select-Object SID).sid | ConvertSID 
 $userstrim = $users -creplace '^[^\\]*\\', ''
 
 $group = "Administrators";
 $groupObj =[ADSI]"WinNT://./$group,group" 
 $membersObj = @($groupObj.psbase.Invoke("Members")) 
 
-$members = ($membersObj | foreach {$_.GetType().InvokeMember("Name", 'GetProperty', $null, $_, $null)})
+$members = ($membersObj | ForEach-Object {$_.GetType().InvokeMember("Name", 'GetProperty', $null, $_, $null)})
 $i = 0
 ForEach ($user in $userstrim) {
 If ($members -contains $user) {
-      Write-Host "$user exists in the group $group"
-$p[$i].IsLocalAdmin = $true
+$win32UserProfiles[$i].IsLocalAdmin = $true
 $i++
  } Else {
-        Write-Host "$user not exists in the group $group"
-$p[$i].IsLocalAdmin = $false
+$win32UserProfiles[$i].IsLocalAdmin = $false
 $i++
 }} 
 
-$Profiles = $p  | Select-Object SID, RoamingConfigured, Loaded, IsLocalAdmin, @{Name = "LastLogin"; EXPRESSION = {$_.ConvertToDateTime($_.lastusetime)}}, @{Name = "UserName"; EXPRESSION = {ConvertSID($_.SID)}}
+$Profiles = $win32UserProfiles | Select-Object SID, RoamingConfigured, Loaded, IsLocalAdmin, @{Name = "LastLogin"; EXPRESSION = {$_.ConvertToDateTime($_.lastusetime)}}, @{Name = "UserName"; EXPRESSION = {ConvertSID($_.SID)}}
 
 # Put the list of profiles in the profile box
 $Profiles | ForEach-Object {$lvProfileList.Items.Add($_) | Out-Null}
