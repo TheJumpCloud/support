@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>com.jumpcloud.prestage</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>/bin/bash</string>
+		<string>/private/tmp/jumpcloud_bootstrap_template.sh</string>
+	</array>
+	<key>RunAtLoad</key>
+	<true/>
+	<key>StartInterval</key>
+	<integer>10</integer>
+	<key>StandardErrorPath</key>
+	<string>/var/tmp/com.jumpcloud.prestage.err</string>
+	<key>StandardOutPath</key>
+	<string>/var/tmp/com.jumpcloud.prestage.out</string>
+</dict>
+</plist>
