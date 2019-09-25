@@ -198,7 +198,7 @@ if [[ ! -f $DEP_N_GATE_INSTALLJC ]]; then
     # Set ownership of the plist file
     chown "$ACTIVE_USER":staff "$DEP_N_CONFIG_PLIST"
     chmod 600 "$DEP_N_CONFIG_PLIST"
-    sudo -u "$ACTIVE_USER" open -a "$DEP_N_APP" --args -path "$DEP_N_LOG" -fullScreen
+    sudo -u "$ACTIVE_USER" open -a "$DEP_N_APP" --args -path "$DEP_N_LOG" # -fullScreen
 
     # Download and install the JumpCloud agent
     # cat EOF can not be indented 
@@ -261,11 +261,6 @@ if [[ ! -f $DEP_N_GATE_SYSADD ]]; then
     echo "Status: Pulling configuration settings from JumpCloud" >>"$DEP_N_LOG"
 
     # Add system to DEP_ENROLLMENT_GROUP_ID using System Context API Authentication
-    MacOSMinorVersion=$(sw_vers -productVersion | cut -d '.' -f 2)
-    if [[ MacOSMinorVersion -ge 12 ]]; then
-        sntp -sS $NTP_SERVER
-    fi
-
     conf="$(cat /opt/jc/jcagent.conf)"
     regex='\"systemKey\":\"[a-zA-Z0-9]{24}\"'
 
@@ -302,6 +297,60 @@ if [[ ! -f $DEP_N_GATE_SYSADD ]]; then
     )
 
     # Add gate file - system added to JumpCloud
+
+    # let's return to check if the system was added - this could fail and we would go nowhere
+    # create the GET string to sign from the request-list and the date
+    signstr_check="GET /api/v2/systems/${systemID}/memberof HTTP/1.1\ndate: ${now}"
+
+    # create the GET signature
+    signature_check=$(printf "$signstr_check" | openssl dgst -sha256 -sign /opt/jc/client.key | openssl enc -e -a | tr -d '\n')
+
+    DEPenrollmentGroupGet=$(
+        curl \
+            -X 'GET' \
+            -H 'Content-Type: application/json' \
+            -H 'Accept: application/json' \
+            -H "Date: ${now}" \
+            -H "Authorization: Signature keyId=\"system/${systemID}\",headers=\"request-line date\",algorithm=\"rsa-sha256\",signature=\"${signature_check}\"" \
+            --url "https://console.jumpcloud.com/api/v2/systems/${systemID}/memberof"
+    )
+
+    # wait for the system to add itself to the DEP ENROLLMENT GROUP in JumpCloud
+    groupCheck=$(echo $DEPenrollmentGroupGet | grep $DEP_ENROLLMENT_GROUP_ID)
+    echo $groupCheck
+    echo "$(date "+%Y-%m-%dT%H:%M:%S"): groupcheck: $groupCheck" >>"$DEP_N_DEBUG"
+    while [[ -z $groupCheck ]]; do
+        echo "$(date "+%Y-%m-%dT%H:%M:%S"): Waiting for system to be added to the DEP ENROLLMENT GROUP" >>"$DEP_N_DEBUG"
+        sleep 1
+
+        MacOSMinorVersion=$(sw_vers -productVersion | cut -d '.' -f 2)
+        if [[ MacOSMinorVersion -ge 12 ]]; then
+            sntp -sS $NTP_SERVER
+            echo "$(date "+%Y-%m-%dT%H:%M:%S"): Set the correct system time" >>"$DEP_N_DEBUG"
+        fi
+        # update variables for system context API, re-run API call
+        # potential endless loop here should call the time fix if we get to this point
+        
+        # time might be fixed so lets continue with updated time and new signature
+        now=$(date -u "+%a, %d %h %Y %H:%M:%S GMT")
+        signstr_check="GET /api/v2/systems/${systemID}/memberof HTTP/1.1\ndate: ${now}"
+        signature_check=$(printf "$signstr_check" | openssl dgst -sha256 -sign /opt/jc/client.key | openssl enc -e -a | tr -d '\n')
+        DEPenrollmentGroupGet=$(
+            curl \
+                -X 'GET' \
+                -H 'Content-Type: application/json' \
+                -H 'Accept: application/json' \
+                -H "Date: ${now}" \
+                -H "Authorization: Signature keyId=\"system/${systemID}\",headers=\"request-line date\",algorithm=\"rsa-sha256\",signature=\"${signature_check}\"" \
+                --url "https://console.jumpcloud.com/api/v2/systems/${systemID}/memberof"
+        )
+        # reset and check 
+        sleep 1
+        echo DEPenrollmentGroupGet
+        groupCheck=$(echo $DEPenrollmentGroupGet | grep $DEP_ENROLLMENT_GROUP_ID)
+    
+    done
+
     touch $DEP_N_GATE_SYSADD
 fi
 # User interaction steps - check if user has completed these steps.
