@@ -317,6 +317,8 @@ if [[ ! -f $DEP_N_GATE_SYSADD ]]; then
 
     # wait for the system to add itself to the DEP ENROLLMENT GROUP in JumpCloud
     groupCheck=$(echo $DEPenrollmentGroupGet | grep $DEP_ENROLLMENT_GROUP_ID)
+    # only need to set system time once
+    timeSet=false
     echo $groupCheck
     echo "$(date "+%Y-%m-%dT%H:%M:%S"): groupcheck: $groupCheck" >>"$DEP_N_DEBUG"
     while [[ -z $groupCheck ]]; do
@@ -324,14 +326,36 @@ if [[ ! -f $DEP_N_GATE_SYSADD ]]; then
         sleep 1
 
         MacOSMinorVersion=$(sw_vers -productVersion | cut -d '.' -f 2)
-        if [[ MacOSMinorVersion -ge 12 ]]; then
+        if [[ MacOSMinorVersion -ge 12 && $timeSet == false ]]; then
             sntp -sS $NTP_SERVER
-            echo "$(date "+%Y-%m-%dT%H:%M:%S"): Set the correct system time" >>"$DEP_N_DEBUG"
+            echo "$(date "+%Y-%m-%dT%H:%M:%S"): Setting the correct system time" >>"$DEP_N_DEBUG"
+            # only run this once 
+            timeSet=true
         fi
+
+        ### attempt to readd
+        echo "$(date "+%Y-%m-%dT%H:%M:%S"): Attempting to ADD again" >>"$DEP_N_DEBUG"
+        now=$(date -u "+%a, %d %h %Y %H:%M:%S GMT")
+        signstr="POST /api/v2/systemgroups/${DEP_ENROLLMENT_GROUP_ID}/members HTTP/1.1\ndate: ${now}"
+
+        # create the signature
+        signature=$(printf "$signstr" | openssl dgst -sha256 -sign /opt/jc/client.key | openssl enc -e -a | tr -d '\n')
+
+        DEPenrollmentGroupAdd=$(
+            curl -s \
+                -X 'POST' \
+                -H 'Content-Type: application/json' \
+                -H 'Accept: application/json' \
+                -H "Date: ${now}" \
+                -H "Authorization: Signature keyId=\"system/${systemID}\",headers=\"request-line date\",algorithm=\"rsa-sha256\",signature=\"${signature}\"" \
+                -d '{"op": "add","type": "system","id": "'${systemID}'"}' \
+                "https://console.jumpcloud.com/api/v2/systemgroups/${DEP_ENROLLMENT_GROUP_ID}/members"
+        )
         # update variables for system context API, re-run API call
         # potential endless loop here should call the time fix if we get to this point
         
         # time might be fixed so lets continue with updated time and new signature
+        echo "$(date "+%Y-%m-%dT%H:%M:%S"): Checking Status" >>"$DEP_N_DEBUG"
         now=$(date -u "+%a, %d %h %Y %H:%M:%S GMT")
         signstr_check="GET /api/v2/systems/${systemID}/memberof HTTP/1.1\ndate: ${now}"
         signature_check=$(printf "$signstr_check" | openssl dgst -sha256 -sign /opt/jc/client.key | openssl enc -e -a | tr -d '\n')
@@ -345,8 +369,9 @@ if [[ ! -f $DEP_N_GATE_SYSADD ]]; then
                 --url "https://console.jumpcloud.com/api/v2/systems/${systemID}/memberof"
         )
         # reset and check 
-        sleep 1
-        echo DEPenrollmentGroupGet
+        sleep 10
+        # for testing
+        echo $DEPenrollmentGroupGet
         groupCheck=$(echo $DEPenrollmentGroupGet | grep $DEP_ENROLLMENT_GROUP_ID)
     
     done
@@ -355,6 +380,20 @@ if [[ ! -f $DEP_N_GATE_SYSADD ]]; then
 fi
 # User interaction steps - check if user has completed these steps.
 if [[ ! -f $DEP_N_GATE_UI ]]; then
+    process=$(echo | ps aux | grep "[D]EP")
+    echo $process
+    if [[ -z $process ]]; then 
+        FINDER_PROCESS=$(pgrep -l "Finder")
+        until [ "$FINDER_PROCESS" != "" ]; do
+            echo "$(date "+%m-%d-%y_%H-%M-%S"): Finder process not found. User session not active." >>"$DEP_N_DEBUG"
+            sleep 1
+            FINDER_PROCESS=$(pgrep -l "Finder")
+        done
+        sleep 2
+        ACTIVE_USER=$(/usr/bin/python -c 'from SystemConfiguration import SCDynamicStoreCopyConsoleUser; import sys; username = (SCDynamicStoreCopyConsoleUser(None, None, None) or [None])[0]; username = [username,""][username in [u"loginwindow", None, u""]]; sys.stdout.write(username + "\n");')
+        echo "$(date "+%Y-%m-%dT%H:%M:%S"): DEPnotify not running" >>"$DEP_N_DEBUG"
+        sudo -u "$ACTIVE_USER" open -a "$DEP_N_APP" --args -path "$DEP_N_LOG"
+    fi 
     # Waiting for DECRYPT_USER_ID to be bound to system
     echo "Status: Pulling Security Settings from JumpCloud" >>"$DEP_N_LOG"
 
@@ -379,6 +418,13 @@ if [[ ! -f $DEP_N_GATE_UI ]]; then
 
     APIKEY=$(DecryptKey $ENCRYPTED_KEY $DECRYPT_USER_ID $ORG_ID)
 
+
+    ## Recapture these variables - necessary for relaunching the script    
+    # Captures active users UID
+    # uid=$(id -u "$ACTIVE_USER")
+    DEP_N_USER_INPUT_PLIST="/Users/$ACTIVE_USER/Library/Preferences/menu.nomad.DEPNotifyUserInput.plist"
+    DEP_N_CONFIG_PLIST="/Users/$ACTIVE_USER/Library/Preferences/menu.nomad.DEPNotify.plist"
+    ###
     if [[ -z "${APIKEY}" ]]; then
 
         echo "Command: Notification: Oh no we ran into an error. Tell your Admin that your system could not decrypt the key!" >>"$DEP_N_LOG"
