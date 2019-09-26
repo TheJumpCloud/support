@@ -7,7 +7,7 @@
 	<key>ProgramArguments</key>
 	<array>
 		<string>/bin/bash</string>
-		<string>/private/tmp/jumpcloud_bootstrap_template.sh</string>
+		<string>/var/tmp/jumpcloud_bootstrap_template.sh</string>
 	</array>
 	<key>RunAtLoad</key>
 	<true/>
