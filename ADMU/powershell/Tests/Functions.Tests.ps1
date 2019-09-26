@@ -13,10 +13,11 @@ Describe 'Functions' {
 
     Context 'Write-Log Function'{
         It 'Write-Log - Log exists' {
+            remove-item -Path 'C:\windows\Temp\jcAdmu.log' -Force
             Write-Log -Message:('System is NOT joined to a domain.') -Level:('Info')
             Test-Path 'c:\windows\temp\jcAdmu.log' | Should Be $true
             #delete log file
-            remove-item -Path 'C:\windows\Temp\jcAdmu.log' -Force
+
 
         }
 
@@ -25,7 +26,6 @@ Describe 'Functions' {
             Write-Log -Message:('Test Error Log Entry.') -Level:('Error')
             $Log = Get-Content 'c:\windows\temp\jcAdmu.log'
             $Log.Contains('ERROR: Test Error Log Entry.') | Should Be $true
-            remove-item -Path 'C:\windows\Temp\jcAdmu.log' -Force
         }
 
         It 'Write-Log - WARNING: Log entry exists' {
@@ -33,7 +33,6 @@ Describe 'Functions' {
             Write-Log -Message:('Test Warning Log Entry.') -Level:('Warn')
             $Log = Get-Content 'c:\windows\temp\jcAdmu.log'
             $Log.Contains('WARNING: Test Warning Log Entry.') | Should Be $true
-            remove-item -Path 'C:\windows\Temp\jcAdmu.log' -Force
         }
 
         It 'Write-Log - INFO: Log entry exists' {
