@@ -545,11 +545,12 @@ Need help? See:[Creating a new project](https://github.com/munki/munki-pkg#creat
 
 Required Updates to build-info:
 
-"distribution_style": true
-"identifier": "com.github.munki.pkg.jumpcloud_bootstrap_template"
-"install_location": "/var/tmp"
-"preserve_xattr": true,
-"identifier": "com.github.munki.pkg.jumpcloud_bootstrap_template"
+- "distribution_style": true
+- "identifier": "com.github.munki.pkg.jumpcloud_bootstrap_template"
+- "install_location": "/var/tmp"
+- "preserve_xattr": true,
+- "identifier": "com.github.munki.pkg.jumpcloud_bootstrap_template"
+
 Example build-info.json:
 
 ```JSON
@@ -578,6 +579,9 @@ In the postinstall script add in the following payload
 ```sh
 #!/bin/sh
 
+# set the Launch Daemon variable with the name of the launchDaemon
+daemon="com.jumpcloud.prestage.plist"
+
 # Enter the ENROLLMENT_USER within the '' of ENROLLMENT_USER=''
 ENROLLMENT_USER=''
 
@@ -588,14 +592,19 @@ cat <<-EOF >/var/run/JumpCloud-SecureToken-Creds.txt
 $ENROLLMENT_USER;$ENROLLMENT_USER_PASSWORD
 EOF
 
+# Move LaunchDaemon (if using munki)
+if [[ ! -f "/Library/LaunchDaemons/${daemon}" ]]; then
+  mv "/var/tmp/${daemon}" "/Library/LaunchDaemons/"
+fi
+
 # Set Permissions
 chmod 744 /var/tmp/jumpcloud_bootstrap_template.sh
 chown root:wheel /var/tmp/jumpcloud_bootstrap_template.sh
-chmod 644 /Library/LaunchDaemons/com.jumpcloud.prestage.plist
-chown root:wheel /Library/LaunchDaemons/com.jumpcloud.prestage.plist
+chmod 644 "/Library/LaunchDaemons/${daemon}"
+chown root:wheel "/Library/LaunchDaemons/${daemon}"
 
 # load the LaunchDaemon
-launchctl load -w /Library/LaunchDaemons/com.jumpcloud.prestage.plist
+launchctl load -w "/Library/LaunchDaemons/${daemon}"
 
 ```
 
@@ -605,6 +614,9 @@ Example:
 
 ```sh
 #!/bin/sh
+
+# set the Launch Daemon variable with the name of the launchDaemon
+daemon="com.jumpcloud.prestage.plist"
 
 # Enter the ENROLLMENT_USER within the '' of ENROLLMENT_USER=''
 ENROLLMENT_USER='Welcome'
@@ -616,14 +628,19 @@ cat <<-EOF >/var/run/JumpCloud-SecureToken-Creds.txt
 $ENROLLMENT_USER;$ENROLLMENT_USER_PASSWORD
 EOF
 
+# Move LaunchDaemon (if using munki)
+if [[ ! -f "/Library/LaunchDaemons/${daemon}" ]]; then
+  mv "/var/tmp/${daemon}" "/Library/LaunchDaemons/"
+fi
+
 # Set Permissions
 chmod 744 /var/tmp/jumpcloud_bootstrap_template.sh
 chown root:wheel /var/tmp/jumpcloud_bootstrap_template.sh
-chmod 644 /Library/LaunchDaemons/com.jumpcloud.prestage.plist
-chown root:wheel /Library/LaunchDaemons/com.jumpcloud.prestage.plist
+chmod 644 "/Library/LaunchDaemons/${daemon}"
+chown root:wheel "/Library/LaunchDaemons/${daemon}"
 
 # load the LaunchDaemon
-launchctl load -w /Library/LaunchDaemons/com.jumpcloud.prestage.plist
+launchctl load -w "/Library/LaunchDaemons/${daemon}"
 
 ```
 

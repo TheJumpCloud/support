@@ -617,7 +617,7 @@ if [[ -f $DEP_N_GATE_DONE ]]; then
     # echo "$(date "+%Y-%m-%dT%H:%M:%S") User: $ACTIVE_USER is Unloading LaunchDaemon" >>"$DEP_N_DEBUG"
     # launchctl unload /Library/LaunchDaemons/com.jumpcloud.prestage.plist
     echo "$(date "+%Y-%m-%dT%H:%M:%S") User: $ACTIVE_USER Status: Removing LaunchDaemon" >>"$DEP_N_DEBUG"
-    rm -rf /Library/LaunchDaemons/com.jumpcloud.prestage.plist
+    rm -rf "/Library/LaunchDaemons/${daemon}"
     # Make script delete itself
     rm -- "$0"
 fi
