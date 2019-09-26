@@ -218,7 +218,7 @@ EOF
     # EOF
 
     # Installs JumpCloud agent
-    echo "$(date "+%Y-%m-%dT%H:%M:%S"): User $ACTIVE_USER is Installing JC" >>"$DEP_N_DEBUG"
+    echo "$(date "+%Y-%m-%dT%H:%M:%S"): User $ACTIVE_USER is logged in, installing JC" >>"$DEP_N_DEBUG"
     installer -pkg /tmp/jumpcloud-agent.pkg -target /
 
     # Validate JumpCloud agent install
@@ -296,9 +296,6 @@ if [[ ! -f $DEP_N_GATE_SYSADD ]]; then
             "https://console.jumpcloud.com/api/v2/systemgroups/${DEP_ENROLLMENT_GROUP_ID}/members"
     )
 
-    # Add gate file - system added to JumpCloud
-
-    # let's return to check if the system was added - this could fail and we would go nowhere
     # create the GET string to sign from the request-list and the date
     signstr_check="GET /api/v2/systems/${systemID}/memberof HTTP/1.1\ndate: ${now}"
 
@@ -315,16 +312,22 @@ if [[ ! -f $DEP_N_GATE_SYSADD ]]; then
             --url "https://console.jumpcloud.com/api/v2/systems/${systemID}/memberof"
     )
 
-    # wait for the system to add itself to the DEP ENROLLMENT GROUP in JumpCloud
+    # check if the system was added to the DEP ENROLLMENT GROUP in JumpCloud
     groupCheck=$(echo $DEPenrollmentGroupGet | grep $DEP_ENROLLMENT_GROUP_ID)
-    # only need to set system time once
+
+    # given the case that the above POST request fails, system would not be in the enrollment group
+    # while the groupCheck variable is empty, attempt to add the system to the enrollment group
+    # then check if the group was added, if the system is in the enrollment group, exit the loop
+
+    # variable to ensure system time is set correctly, once during this loop
     timeSet=false
-    echo $groupCheck
     echo "$(date "+%Y-%m-%dT%H:%M:%S"): groupcheck: $groupCheck" >>"$DEP_N_DEBUG"
     while [[ -z $groupCheck ]]; do
+        # log note
         echo "$(date "+%Y-%m-%dT%H:%M:%S"): Waiting for system to be added to the DEP ENROLLMENT GROUP" >>"$DEP_N_DEBUG"
-        sleep 1
+        sleep 10
 
+        # if system is 10.12 or newer, this command should work to set the system time
         MacOSMinorVersion=$(sw_vers -productVersion | cut -d '.' -f 2)
         if [[ MacOSMinorVersion -ge 12 && $timeSet == false ]]; then
             sntp -sS $NTP_SERVER
@@ -333,12 +336,11 @@ if [[ ! -f $DEP_N_GATE_SYSADD ]]; then
             timeSet=true
         fi
 
-        ### attempt to readd
-        echo "$(date "+%Y-%m-%dT%H:%M:%S"): Attempting to ADD again" >>"$DEP_N_DEBUG"
+        # attempt to add system to enrollment group
+        echo "$(date "+%Y-%m-%dT%H:%M:%S"): Attempting to add system to enrollment group again" >>"$DEP_N_DEBUG"
         now=$(date -u "+%a, %d %h %Y %H:%M:%S GMT")
         signstr="POST /api/v2/systemgroups/${DEP_ENROLLMENT_GROUP_ID}/members HTTP/1.1\ndate: ${now}"
-
-        # create the signature
+        # create the signature with updated time and string
         signature=$(printf "$signstr" | openssl dgst -sha256 -sign /opt/jc/client.key | openssl enc -e -a | tr -d '\n')
 
         DEPenrollmentGroupAdd=$(
@@ -351,10 +353,8 @@ if [[ ! -f $DEP_N_GATE_SYSADD ]]; then
                 -d '{"op": "add","type": "system","id": "'${systemID}'"}' \
                 "https://console.jumpcloud.com/api/v2/systemgroups/${DEP_ENROLLMENT_GROUP_ID}/members"
         )
-        # update variables for system context API, re-run API call
-        # potential endless loop here should call the time fix if we get to this point
         
-        # time might be fixed so lets continue with updated time and new signature
+        # check if the system is in the enrollment group
         echo "$(date "+%Y-%m-%dT%H:%M:%S"): Checking Status" >>"$DEP_N_DEBUG"
         now=$(date -u "+%a, %d %h %Y %H:%M:%S GMT")
         signstr_check="GET /api/v2/systems/${systemID}/memberof HTTP/1.1\ndate: ${now}"
@@ -368,16 +368,14 @@ if [[ ! -f $DEP_N_GATE_SYSADD ]]; then
                 -H "Authorization: Signature keyId=\"system/${systemID}\",headers=\"request-line date\",algorithm=\"rsa-sha256\",signature=\"${signature_check}\"" \
                 --url "https://console.jumpcloud.com/api/v2/systems/${systemID}/memberof"
         )
-        # reset and check 
-        sleep 10
-        # for testing
-        echo $DEPenrollmentGroupGet
-        groupCheck=$(echo $DEPenrollmentGroupGet | grep $DEP_ENROLLMENT_GROUP_ID)
     
+        groupCheck=$(echo $DEPenrollmentGroupGet | grep $DEP_ENROLLMENT_GROUP_ID)
     done
 
+    # Set the receipt for the system add gate. The system was added to JumpCloud at this stage
     touch $DEP_N_GATE_SYSADD
 fi
+
 # User interaction steps - check if user has completed these steps.
 if [[ ! -f $DEP_N_GATE_UI ]]; then
     process=$(echo | ps aux | grep "[D]EP")
@@ -418,12 +416,12 @@ if [[ ! -f $DEP_N_GATE_UI ]]; then
 
     APIKEY=$(DecryptKey $ENCRYPTED_KEY $DECRYPT_USER_ID $ORG_ID)
 
-
-    ## Recapture these variables - necessary for relaunching the script    
-    # Captures active users UID
-    # uid=$(id -u "$ACTIVE_USER")
+    ### 
+    # Recapture these variables - necessary if the system was restarted  
     DEP_N_USER_INPUT_PLIST="/Users/$ACTIVE_USER/Library/Preferences/menu.nomad.DEPNotifyUserInput.plist"
     DEP_N_CONFIG_PLIST="/Users/$ACTIVE_USER/Library/Preferences/menu.nomad.DEPNotify.plist"
+    ACTIVE_USER=$(/usr/bin/python -c 'from SystemConfiguration import SCDynamicStoreCopyConsoleUser; import sys; username = (SCDynamicStoreCopyConsoleUser(None, None, None) or [None])[0]; username = [username,""][username in [u"loginwindow", None, u""]]; sys.stdout.write(username + "\n");')
+    uid=$(id -u "$ACTIVE_USER")
     ###
     if [[ -z "${APIKEY}" ]]; then
 
@@ -556,7 +554,7 @@ if [[ ! -f $DEP_N_GATE_DONE ]]; then
 
     echo "Status: Applying Finishing Touches" >>"$DEP_N_LOG"
 
-    FINISH_TEXT='This window will automatically close when onboarding is complete.\\n\\nYou will be taken directly to the log in screen. \\n\\n Log in with your new account! \\n\\n'
+    FINISH_TEXT='This window will automatically close when onboarding is complete.\n\nYou will be taken directly to the log in screen. \n\n Log in with your new account! \n\n'
 
     echo "Command: MainText: $FINISH_TEXT" >>"$DEP_N_LOG"
 

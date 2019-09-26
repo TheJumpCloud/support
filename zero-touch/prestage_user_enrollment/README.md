@@ -28,10 +28,11 @@ The JumpCloud Service Account is required to manage users on FileVault protected
     - [Pending User Configuration Modules](#pending-user-configuration-modules)
     - [Pending or Active User Configuration Modules](#pending-or-active-user-configuration-modules)
   - [Step 5 - Populating the Bootstrap template script with a User Configuration Module](#step-5---populating-the-bootstrap-template-script-with-a-user-configuration-module)
-  - [Step 6 - Creaking a PKG from the Bootstrap template script using munkiPKG](#step-6---creaking-a-pkg-from-the-bootstrap-template-script-using-munkipkg)
-  - [Step 7 - Configuring MDM PreStage Settings](#step-7---configuring-mdm-prestage-settings)
-  - [Step 8 - Configuring the PKG for MDM deployment](#step-8---configuring-the-pkg-for-mdm-deployment)
-  - [Step 9 - Creating a Privacy Preference Policy](#step-9---creating-a-privacy-preference-policy)
+  - [Step 6 - Create the LaunchDaemon](#step-6---create-the-launchdaemon)
+  - [Step 7 - Creaking a PKG from the Bootstrap template script using munkiPKG](#step-7---creaking-a-pkg-from-the-bootstrap-template-script-using-munkipkg)
+  - [Step 8 - Configuring MDM PreStage Settings](#step-8---configuring-mdm-prestage-settings)
+  - [Step 9 - Configuring the PKG for MDM deployment](#step-9---configuring-the-pkg-for-mdm-deployment)
+  - [Step 10 - Creating a Privacy Preference Policy](#step-10---creating-a-privacy-preference-policy)
 - [Testing the workflow](#testing-the-workflow)
 
 ## Prerequisites
@@ -77,6 +78,8 @@ The JumpCloud Bootstrap configuration script that is configured in this tutorial
 **MDM Server:** A Mobile Device Management server registered with Apple DEP.
 
 **jumpcloud_bootstrap_template.sh:** The template .sh file that contains the logic for the zero-touch workflow. This file has variables that must be populated with org specific settings and has fields to populate with a user configuration module. This .sh file is converted to a PKG and is the payload which is run which drives the zero-touch workflow.
+
+**LaunchDaemon:** A LaunchDaemon will be created to drive the completion of the jumpcloud_bootstrap_template.sh script. LaunchDaemons are processes which run as root and are invoked at system startup.
 
 **user_configuration_modules:** The folder that contains the user configuration modules. The user configuration modules provide optionality for how PreStaged users locate and activate their JumpCloud accounts during DEP onboarding.
 
@@ -503,7 +506,24 @@ Copy in the entire contents of the  **User Configuration Settings** code block f
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ```
 
-### Step 6 - Creaking a PKG from the Bootstrap template script using munkiPKG
+### Step 6 - Create the LaunchDaemon
+
+- Create a .plist file or copy the provided [com.jumpcloud.prestate.plist](./com.jumpcloud.prestage.plist) file. Ensure the Label Key and string aligns with the variable name set in the jumpcloud_prestage_template.sh file. The .plist file will be loaded as a LaunchDaemon at the end of the postinstall script created in the next step.
+
+Check that the .plist is formatted correctly:
+
+`plutil -convert xml1 ExampleBinary.plist`
+
+Optionally include reporting files for additional debugging:
+
+```xml
+<key>StandardErrorPath</key>
+<string>/var/tmp/com.jumpcloud.prestage.err</string>
+<key>StandardOutPath</key>
+<string>/var/tmp/com.jumpcloud.prestage.out</string>
+```
+
+### Step 7 - Creaking a PKG from the Bootstrap template script using munkiPKG
 
 - Creating a project using munkiPKG
 
@@ -527,7 +547,7 @@ Required Updates to build-info:
 
 "distribution_style": true
 "identifier": "com.github.munki.pkg.jumpcloud_bootstrap_template"
-"install_location": "/private/tmp"
+"install_location": "/var/tmp"
 "preserve_xattr": true,
 "identifier": "com.github.munki.pkg.jumpcloud_bootstrap_template"
 Example build-info.json:
@@ -539,7 +559,7 @@ Example build-info.json:
     "name": "jumpcloud_bootstrap_template.pkg",
     "distribution_style": true,
     "preserve_xattr": true,
-    "install_location": "/private/tmp",
+    "install_location": "/var/tmp",
     "version": "1.0",
     "ownership": "recommended",
     "identifier": "com.github.munki.pkg.jumpcloud_bootstrap_template",
@@ -568,7 +588,14 @@ cat <<-EOF >/var/run/JumpCloud-SecureToken-Creds.txt
 $ENROLLMENT_USER;$ENROLLMENT_USER_PASSWORD
 EOF
 
-sh /private/tmp/jumpcloud_bootstrap_template.sh
+# Set Permissions
+chmod 744 /var/tmp/jumpcloud_bootstrap_template.sh
+chown root:wheel /var/tmp/jumpcloud_bootstrap_template.sh
+chmod 644 /Library/LaunchDaemons/com.jumpcloud.prestage.plist
+chown root:wheel /Library/LaunchDaemons/com.jumpcloud.prestage.plist
+
+# load the LaunchDaemon
+launchctl load -w /Library/LaunchDaemons/com.jumpcloud.prestage.plist
 
 ```
 
@@ -589,7 +616,14 @@ cat <<-EOF >/var/run/JumpCloud-SecureToken-Creds.txt
 $ENROLLMENT_USER;$ENROLLMENT_USER_PASSWORD
 EOF
 
-sh /private/tmp/jumpcloud_bootstrap_template.sh
+# Set Permissions
+chmod 744 /var/tmp/jumpcloud_bootstrap_template.sh
+chown root:wheel /var/tmp/jumpcloud_bootstrap_template.sh
+chmod 644 /Library/LaunchDaemons/com.jumpcloud.prestage.plist
+chown root:wheel /Library/LaunchDaemons/com.jumpcloud.prestage.plist
+
+# load the LaunchDaemon
+launchctl load -w /Library/LaunchDaemons/com.jumpcloud.prestage.plist
 
 ```
 
@@ -601,7 +635,7 @@ Use munkipkg to create the PKG and sign it with your Apple Developer Certificate
 
 Need help? See [Package signing](https://github.com/munki/munki-pkg#package-signing) and [Building a package](https://github.com/munki/munki-pkg#building-a-package)
 
-### Step 7 - Configuring MDM PreStage Settings
+### Step 8 - Configuring MDM PreStage Settings
 
 - User Settings
 
@@ -615,7 +649,7 @@ Example:
 
 ![Simple Settings](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/mdm_enrollment_user.png?raw=true)
 
-### Step 8 - Configuring the PKG for MDM deployment
+### Step 9 - Configuring the PKG for MDM deployment
 
 - Uploading PKG
 
@@ -633,7 +667,7 @@ Ensure the PKG is configured for "Device Level Installation". By setting the PKG
 
 Scope the PKG to auto deploy to the machines you wish to configure for zero-touch configuration.
 
-### Step 9 - Creating a Privacy Preference Policy
+### Step 10 - Creating a Privacy Preference Policy
 
 Create the below "Privacy Preference" profile. This will allow the osascript to run which prompts users to input a secure password.
 
