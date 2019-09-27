@@ -1,4 +1,5 @@
-. 'C:\agent\_work\1\s\ADMU\powershell\Functions.ps1'
+#. 'C:\agent\_work\1\s\ADMU\powershell\Functions.ps1'
+. 'C:\Git\support\ADMU\powershell\Functions.ps1'
 Describe 'Functions' {
 
     Context 'VerifyAccount Function'{
@@ -13,7 +14,9 @@ Describe 'Functions' {
 
     Context 'Write-Log Function'{
         It 'Write-Log - Log exists' {
-            remove-item -Path 'C:\windows\Temp\jcAdmu.log' -Force
+            if (Test-Path 'C:\Windows\Temp\jcAdmu.log' -eq $true){
+                remove-item -Path 'C:\windows\Temp\jcAdmu.log' -Force
+            }
             Write-Log -Message:('System is NOT joined to a domain.') -Level:('Info')
             Test-Path 'c:\windows\temp\jcAdmu.log' | Should Be $true
             #delete log file
@@ -139,6 +142,7 @@ Describe 'Functions' {
     $msvc2013x64Link = 'http://download.microsoft.com/download/0/5/6/056dcda9-d667-4e27-8001-8a0c6971d6b1/vcredist_x64.exe'
     $msvc2013x86Install = "$jcAdmuTempPath$msvc2013x86File /install /quiet /norestart"
     $msvc2013x64Install = "$jcAdmuTempPath$msvc2013x64File /install /quiet /norestart"
+    DownloadAndInstallAgent 
     #uninstall jcagent
     #uninstall c++ 2013 x64
     #uninstall c++ 2013 x86

@@ -1,3 +1,5 @@
+[![Build status](https://dev.azure.com/JumpCloudPowershell/JumpCloud%20ADMU/_apis/build/status/JumpCloud%20ADMU-CI)](https://dev.azure.com/JumpCloudPowershell/JumpCloud%20ADMU/_build/latest?definitionId=13)
+
 # Providing Feedback
 
 The ADMU is currently in an Early Access (EA) period. 
