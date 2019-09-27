@@ -69,7 +69,7 @@ Accept wildcard characters: False
 
 ### -GroupID
 The GroupID is used in the ParameterSet 'ByID'.
-The GroupID for a System Group can be found by running the command: PS C:\\\> Get-JCGroup -type 'System'\`
+The GroupID for a System Group can be found by running the command: PS C:\\\> Get-JCGroup -type 'System'
 
 ```yaml
 Type: String
@@ -113,6 +113,7 @@ Accept wildcard characters: False
 ### -SystemID
 The _id of the System which you want to remove from the System Group.
 To find a JumpCloud SystemID run the command: PS C:\\\> Get-JCSystem | Select hostname, _id
+
 The SystemID will be the 24 character string populated for the _id field.
 SystemID has an Alias of _id.
 This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCSystem function before calling Remove-JCSystemGroupMember.

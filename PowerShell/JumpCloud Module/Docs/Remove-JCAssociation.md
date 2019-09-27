@@ -14,23 +14,14 @@ Remove an association between two object within the JumpCloud console.
 
 ### ById (Default)
 ```
-Remove-JCAssociation [-Type] <String> [-Force] [-Fields <Array>] [-Filter <String>] -Id <String[]>
- [-Limit <Int32>] [-Paginate <Boolean>] [-Skip <Int32>] [-TargetId <String>] [-TargetName <String>]
- [-TargetType <String[]>] [<CommonParameters>]
+Remove-JCAssociation [-Type] <String> [-Force] [-Id] <String[]> [[-TargetType] <String[]>]
+ [[-TargetId] <String>] [[-TargetName] <String>] [<CommonParameters>]
 ```
 
 ### ByName
 ```
-Remove-JCAssociation [-Type] <String> [-Force] [-Fields <Array>] [-Filter <String>] [-Limit <Int32>]
- -Name <String[]> [-Paginate <Boolean>] [-Skip <Int32>] [-TargetId <String>] [-TargetName <String>]
- [-TargetType <String[]>] [<CommonParameters>]
-```
-
-### ByValue
-```
-Remove-JCAssociation [-Type] <String> [-Force] [-Fields <Array>] [-Filter <String>] [-Limit <Int32>]
- [-Paginate <Boolean>] [-Skip <Int32>] [-TargetId <String>] [-TargetName <String>] [-TargetType <String[]>]
- [<CommonParameters>]
+Remove-JCAssociation [-Type] <String> [-Force] -Name <String[]> [[-TargetType] <String[]>]
+ [[-TargetId] <String>] [[-TargetName] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -53,36 +44,6 @@ PS C:\> New-JCAssociation -Type:('radiusservers') -Name:('RadiusServer1') -Targe
 Remove the association between the radius server "RadiusServer1" and the user group "All Users".
 
 ## PARAMETERS
-
-### -Fields
-An array of the fields/properties/columns you want to return from the search.
-
-```yaml
-Type: Array
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -Filter
-Filters to narrow down search.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
 
 ### -Force
 Bypass user prompts and dynamic ValidateSet.
@@ -108,67 +69,7 @@ Parameter Sets: ById
 Aliases: _id
 
 Required: True
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -Limit
-The number of items you want to return per API call.
-
-```yaml
-Type: Int32
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -Name
-The name of the object.
-
-```yaml
-Type: String[]
-Parameter Sets: ByName
-Aliases: displayName, username
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -Paginate
-Whether or not you want to paginate through the results.
-
-```yaml
-Type: Boolean
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -Skip
-The number of items you want to skip over per API call.
-
-```yaml
-Type: Int32
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
+Position: 1
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -183,7 +84,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 10
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -198,7 +99,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 11
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -214,7 +115,7 @@ Aliases: TargetSingular
 Accepted values: user_group, system, system_group, user, policy, command, application, g_suite, ldap_server, office_365, radius_server
 
 Required: False
-Position: Named
+Position: 2
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -236,6 +137,21 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
+### -Name
+The name of the object.
+
+```yaml
+Type: String[]
+Parameter Sets: ByName
+Aliases: displayName, username
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -243,10 +159,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ### System.String
 ### System.Management.Automation.SwitchParameter
-### System.Array
 ### System.String[]
-### System.Int32
-### System.Boolean
 ## OUTPUTS
 
 ### System.Object

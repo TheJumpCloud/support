@@ -1,17 +1,17 @@
 #### Latest Version
 
 ```
-1.13.2
+1.14.0
 ```
 
 #### Banner Current
 
 ```
-Use Get-JCSystem and the new parameter '-SystemFDEKey' to backup SystemFDEKeys.
+JumpCloud Radius Servers functions are now available.
 ```
 
 #### Banner Old
 
 ```
-Bug fixes for authentication and formatting updates to Connect-JCOnline.
+JumpCloud Radius Servers functions are now available.
 ```

@@ -14,23 +14,30 @@ The function Get-JCAssociation can be used to query an object's associations and
 
 ### ById (Default)
 ```
-Get-JCAssociation [-Type] <String> [-Force] [-Fields <Array>] [-Filter <String>] -Id <String[]>
- [-Limit <Int32>] [-Paginate <Boolean>] [-Skip <Int32>] [-Direct] [-IncludeInfo] [-IncludeNames]
- [-IncludeVisualPath] [-Indirect] [-TargetType <String[]>] [<CommonParameters>]
-```
-
-### ByName
-```
-Get-JCAssociation [-Type] <String> [-Force] [-Fields <Array>] [-Filter <String>] [-Limit <Int32>]
- -Name <String[]> [-Paginate <Boolean>] [-Skip <Int32>] [-Direct] [-IncludeInfo] [-IncludeNames]
- [-IncludeVisualPath] [-Indirect] [-TargetType <String[]>] [<CommonParameters>]
+Get-JCAssociation [-Type] <String> [-Force] [-Id] <String[]> [[-Fields] <Array>] [[-Filter] <String>]
+ [[-Limit] <Int32>] [[-Skip] <Int32>] [[-Paginate] <Boolean>] [[-TargetType] <String[]>] [-Direct] [-Indirect]
+ [-IncludeInfo] [-IncludeNames] [-IncludeVisualPath] [<CommonParameters>]
 ```
 
 ### ByValue
 ```
-Get-JCAssociation [-Type] <String> [-Force] [-Fields <Array>] [-Filter <String>] [-Limit <Int32>]
- [-Paginate <Boolean>] [-Skip <Int32>] [-Direct] [-IncludeInfo] [-IncludeNames] [-IncludeVisualPath]
- [-Indirect] [-TargetType <String[]>] [<CommonParameters>]
+Get-JCAssociation [-Type] <String> [-Force] [[-Fields] <Array>] [[-Filter] <String>] [[-Limit] <Int32>]
+ [[-Skip] <Int32>] [[-Paginate] <Boolean>] [[-TargetType] <String[]>] [-Direct] [-Indirect] [-IncludeInfo]
+ [-IncludeNames] [-IncludeVisualPath] [<CommonParameters>]
+```
+
+### ByName
+```
+Get-JCAssociation [-Type] <String> [-Force] [-Name] <String[]> [[-Fields] <Array>] [[-Filter] <String>]
+ [[-Limit] <Int32>] [[-Skip] <Int32>] [[-Paginate] <Boolean>] [[-TargetType] <String[]>] [-Direct] [-Indirect]
+ [-IncludeInfo] [-IncludeNames] [-IncludeVisualPath] [<CommonParameters>]
+```
+
+### Default
+```
+Get-JCAssociation [-Type] <String> [-Force] [[-Fields] <Array>] [[-Filter] <String>] [[-Limit] <Int32>]
+ [[-Skip] <Int32>] [[-Paginate] <Boolean>] [[-TargetType] <String[]>] [-Direct] [-Indirect] [-IncludeInfo]
+ [-IncludeNames] [-IncludeVisualPath] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -84,7 +91,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 5
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -99,7 +106,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 95
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -114,7 +121,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 96
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -144,7 +151,7 @@ Parameter Sets: ById
 Aliases: _id
 
 Required: True
-Position: Named
+Position: 1
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -159,7 +166,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 7
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -174,7 +181,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 8
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -189,7 +196,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 9
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -204,7 +211,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 6
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -219,7 +226,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 97
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -234,7 +241,7 @@ Parameter Sets: ByName
 Aliases: displayName, username
 
 Required: True
-Position: Named
+Position: 1
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -249,7 +256,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 99
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -264,7 +271,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 98
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -280,7 +287,7 @@ Aliases: TargetSingular
 Accepted values: user_group, system, system_group, user, policy, command, application, g_suite, ldap_server, office_365, radius_server
 
 Required: False
-Position: Named
+Position: 2
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -309,8 +316,8 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ### System.String
 ### System.Management.Automation.SwitchParameter
-### System.Array
 ### System.String[]
+### System.Array
 ### System.Int32
 ### System.Boolean
 ## OUTPUTS

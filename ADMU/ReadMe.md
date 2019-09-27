@@ -1,3 +1,5 @@
+[![Build status](https://dev.azure.com/JumpCloudPowershell/JumpCloud%20ADMU/_apis/build/status/JumpCloud%20ADMU-CI)](https://dev.azure.com/JumpCloudPowershell/JumpCloud%20ADMU/_build/latest?definitionId=13)
+
 # Providing Feedback
 
 The ADMU is currently in an Early Access (EA) period. 
@@ -14,7 +16,6 @@ Have feedback to share? Email support@jumpcloud.com to connect with a member of 
   - [EULA & Legal Explanation](#eula--legal-explanation)
   - [Expected Performance](#expected-performance)
 - [Known Issues](#known-issues)
-  - [Protected Content Migration Dialogue Prompt](#protected-content-migration-dialogue-prompt)
   - [Limitations of User Account Conversion](#limitations-of-user-account-conversion)
 - [ADMU Deployment Options](#admu-deployment-options)
   - [Download Links](#download-links)
@@ -100,13 +101,6 @@ If for example the .net4+ version is run on win7 system the user would see the f
 
 
 # Known Issues
-
-## Protected Content Migration Dialogue Prompt
-
- Currently upon the completion of account conversion the ‘protected content migration’ window is shown on first login. It asks for the password from the old computer. However this will not accept any old or new password even if entered correctly. This is a known bug and clicking cancel will have no ill effect and allow the wizard to be dismissed. In a future version of ADMU the ‘DPAPI config’ will be excluded from the migration and not show on first login.
-
-![image13](https://github.com/TheJumpCloud/support/blob/master/ADMU/images/img_13.png)
-
 
 ## Limitations of User Account Conversion
 
@@ -617,4 +611,3 @@ Reference: [https://docs.microsoft.com/en-us/azure/active-directory/devices/](ht
  * Show if account is in local admin group
  * Ability to change & edit username
  * etc.
-

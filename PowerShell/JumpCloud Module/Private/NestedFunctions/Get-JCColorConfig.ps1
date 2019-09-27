@@ -27,6 +27,7 @@ Function Get-JCColorConfig
         'ForegroundColor_Indentation' = 'Gray'
         'ForegroundColor_Url'         = 'Blue'
         'ForegroundColor_Action'      = 'Gray'
+        'ForegroundColor_Important'   = 'Red'
         'IndentChar'                  = '    + '
     }
 }

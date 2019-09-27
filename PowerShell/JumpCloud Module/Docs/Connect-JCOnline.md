@@ -12,16 +12,9 @@ The Connect-JCOnline function sets the global variable $JCAPIKEY
 
 ## SYNTAX
 
-### Interactive (Default)
 ```
-Connect-JCOnline [-JCEnvironment <String>] [-ip <String>] [-JumpCloudApiKey] <String>
- [[-JumpCloudOrgId] <String>] [<CommonParameters>]
-```
-
-### force
-```
-Connect-JCOnline [-JCEnvironment <String>] [-force] [-ip <String>] [-JumpCloudApiKey] <String>
- [[-JumpCloudOrgId] <String>] [<CommonParameters>]
+Connect-JCOnline [-force] [-JumpCloudApiKey] <String> [[-JumpCloudOrgId] <String>] [[-JCEnvironment] <String>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -55,16 +48,16 @@ Using the "-Force" parameter the module update check is skipped. The '-Force' pa
 ## PARAMETERS
 
 ### -JCEnvironment
-Specific to JumpCloud development team to connect to staging and local dev environments.
+Specific to JumpCloud development team to connect to staging dev environment.
 
 ```yaml
 Type: String
 Parameter Sets: (All)
 Aliases:
-Accepted values: production, staging, local
+Accepted values: production, staging
 
 Required: False
-Position: Named
+Position: 3
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -80,7 +73,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
-Position: 0
+Position: 1
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -96,7 +89,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 1
+Position: 2
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -108,28 +101,13 @@ The '-Force' parameter should be used when using the JumpCloud module in scripts
 
 ```yaml
 Type: SwitchParameter
-Parameter Sets: force
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -ip
-Enter an IP address
-
-```yaml
-Type: String
 Parameter Sets: (All)
 Aliases:
 
 Required: False
 Position: Named
 Default value: None
-Accept pipeline input: True (ByPropertyName)
+Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
