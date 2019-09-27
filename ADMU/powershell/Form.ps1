@@ -1,15 +1,8 @@
  # Load functions
  . ((Split-Path -Path:($MyInvocation.MyCommand.Path)) + '\Functions.ps1')
- Write-Progress -Activity 'Loading Jumpcloud ADMU. Please Wait..' -Status 'Doing something' -PercentComplete 0
- # Define misc static variables
- Write-Progress -Activity 'Loading Jumpcloud ADMU. Please Wait..' -Status 'Getting Installed Applications..' -PercentComplete 25
- $InstalledProducts = (Get-WmiObject -Class:('Win32_Product') | Select-Object Name) 
- $Disk = Get-WmiObject -Class Win32_logicaldisk -Filter "DeviceID = 'C:'"
- $freespace = $Disk.FreeSpace
- $freespace = [math]::Round($freespace/1MB,0)
- Write-Progress -Activity 'Loading Jumpcloud ADMU. Please Wait..' -Status 'Verifying Local Accounts & Group Membership..' -PercentComplete 75
- 
- $FormResults = [PSCustomObject]@{}
+
+ Write-Progress -Activity 'Loading Jumpcloud ADMU. Please Wait..' -Status 'Loading ADMU GUI..' -PercentComplete 0
+
  #==============================================================================================
  # XAML Code - Imported from Visual Studio WPF Application
  #==============================================================================================
@@ -92,15 +85,72 @@
  # Store Form Objects In PowerShell
  #===========================================================================
  $xaml.SelectNodes("//*[@Name]") | ForEach-Object {Set-Variable -Name ($_.Name) -Value $Form.FindName($_.Name)}
- ## Set labels and vars on load
+
  # Check PartOfDomain & Disable Controls
  $WmiComputerSystem = Get-WmiObject -Class:('Win32_ComputerSystem')
  If ($WmiComputerSystem.PartOfDomain)
  {
+     # Define misc static variables
      $DomainName = $WmiComputerSystem.Domain
- }
+     $FormResults = [PSCustomObject]@{}
+
+     Write-Progress -Activity 'Loading Jumpcloud ADMU. Please Wait..' -Status 'Getting Installed Applications..' -PercentComplete 25
+
+     $InstalledProducts = (Get-WmiObject -Class:('Win32_Product') | Select-Object Name)
+     $Disk = Get-WmiObject -Class Win32_logicaldisk -Filter "DeviceID = 'C:'"
+     $freespace = $Disk.FreeSpace
+     $freespace = [math]::Round($freespace/1MB,0)
+
+     Write-Progress -Activity 'Loading Jumpcloud ADMU. Please Wait..' -Status 'Verifying Local Accounts & Group Membership..' -PercentComplete 50
+
+    # Get list of profiles from computer into listview
+    $win32UserProfiles = Get-WmiObject -Class:('Win32_UserProfile') -Property * | Where-Object {$_.Special -eq $false}
+    $win32UserProfiles | add-member -membertype NoteProperty -name IsLocalAdmin -value $null
+    $win32UserProfiles | add-member -membertype NoteProperty -name LocalProfileSize -value $null
+
+    $users =  ($win32UserProfiles | Select-Object SID).sid | ConvertSID
+    $userstrim = $users -creplace '^[^\\]*\\', ''
+
+    $members = net localgroup administrators |
+    where {$_ -AND $_ -notmatch "command completed successfully"} |
+    select -Skip 4
+
+    $i = 0
+    ForEach ($user in $userstrim) {
+    If ($members -contains $user) {
+    $win32UserProfiles[$i].IsLocalAdmin = $true
+    $i++
+    } Else {
+    $win32UserProfiles[$i].IsLocalAdmin = $false
+    $i++
+    }}
+
+    Write-Progress -Activity 'Loading Jumpcloud ADMU. Please Wait..' -Status 'Getting C:\ & Local Profile Data..' -PercentComplete 75
+
+    #local profile file size check
+    $LocalUserProfiles = $win32UserProfiles | Select-Object LocalPath
+    $LocalUserProfilesTrim =  ForEach ($LocalPath in $LocalUserProfiles){$LocalPath.LocalPath.substring(9)}
+
+    $i = 0
+    $profiles2 = Get-ChildItem C:\Users | ?{Test-path C:\Users\$_\NTUSER.DAT} | Select -ExpandProperty Name
+    foreach($userprofile in $LocalUserProfilesTrim)
+        {
+        $largeprofile = Get-ChildItem C:\Users\$userprofile -Recurse -Force -ErrorAction SilentlyContinue | Measure-Object -Sum length | Select -ExpandProperty Sum
+        $largeprofile =  [math]::Round($largeprofile/1MB,0)
+        $largeprofile =  $largeprofile
+        $win32UserProfiles[$i].LocalProfileSize = $largeprofile
+        $i++
+        }
+
+    Write-Progress -Activity 'Loading Jumpcloud ADMU. Please Wait..' -Status 'Building Profile Group Box Query..' -PercentComplete 95
+
+        $Profiles = $win32UserProfiles | Select-Object SID, RoamingConfigured, Loaded, IsLocalAdmin, LocalPath, LocalProfileSize, @{Name = "LastLogin"; EXPRESSION = {$_.ConvertToDateTime($_.lastusetime)}}, @{Name = "UserName"; EXPRESSION = {ConvertSID($_.SID)}}
+
+        Write-Progress -Activity 'Loading Jumpcloud ADMU. Please Wait..' -Status 'Done!' -PercentComplete 100
+    }
  Else
  {
+     #Disable UI Elements
      $DomainName = "Not Domain Joined"
      $bDeleteProfile.Content = "No Domain"
      $bDeleteProfile.IsEnabled = $false
@@ -115,11 +165,12 @@
      $lbDomainName.FontWeight = "Bold"
      $lbDomainName.Foreground = "Red"
  }
- $lbDomainName.Content = $DomainName
- $lbComputerName.Content = $WmiComputerSystem.Name
- $lbUSMTStatus.Content = (($InstalledProducts -match 'User State Migration Tool').Count -eq 1)
- $lbcfreespace.Content = $freespace
- 
+
+    #load UI Labels
+    $lbDomainName.Content = $DomainName
+    $lbComputerName.Content = $WmiComputerSystem.Name
+    $lbUSMTStatus.Content = (($InstalledProducts -match 'User State Migration Tool').Count -eq 1)
+    $lbcfreespace.Content = $freespace
  Function Test-Button([object]$tbJumpCloudUserName, [object]$tbJumpCloudConnectKey, [object]$tbTempPassword, [object]$lvProfileList)
  {
      Write-Debug ('---------------------------------------------------------')
@@ -151,28 +202,29 @@
          Return $false
      }
  }
+
  ## Form changes & interactions
- 
+
  # EULA checkbox
  $script:AcceptEULA = $true
  $cb_accepteula.Add_Checked({$script:AcceptEULA = $true})
  $cb_accepteula.Add_Unchecked({$script:AcceptEULA = $false})
- 
+
  # Install JCAgent checkbox
  $script:InstallJCAgent = $true
  $cb_installjcagent.Add_Checked({$script:InstallJCAgent = $true})
  $cb_installjcagent.Add_Unchecked({$script:InstallJCAgent = $false})
- 
+
  # Leave Domain checkbox
  $script:LeaveDomain = $false
  $cb_leavedomain.Add_Checked({$script:LeaveDomain = $true})
  $cb_leavedomain.Add_Unchecked({$script:LeaveDomain = $false})
- 
+
  # Force Reboot checkbox
  $script:ForceReboot = $false
  $cb_forcereboot.Add_Checked({$script:ForceReboot = $true})
  $cb_forcereboot.Add_Unchecked({$script:ForceReboot = $false})
- 
+
  $tbJumpCloudUserName.add_TextChanged( {
          Test-Button -tbJumpCloudUserName:($tbJumpCloudUserName) -tbJumpCloudConnectKey:($tbJumpCloudConnectKey) -tbTempPassword:($tbTempPassword) -lvProfileList:($lvProfileList)
          If ((!(Test-IsNotEmpty $tbJumpCloudUserName.Text) -and (Test-HasNoSpaces $tbJumpCloudUserName.Text)) -eq $false)
@@ -187,11 +239,11 @@
              $tbJumpCloudUserName.FontWeight = "Normal"
          }
      })
- 
+
  $tbJumpCloudUserName.add_GotFocus( {
          $tbJumpCloudUserName.Text = ""
  })
- 
+
  $tbJumpCloudConnectKey.add_TextChanged( {
          Test-Button -tbJumpCloudUserName:($tbJumpCloudUserName) -tbJumpCloudConnectKey:($tbJumpCloudConnectKey) -tbTempPassword:($tbTempPassword) -lvProfileList:($lvProfileList)
          If (((Test-Is40chars $tbJumpCloudConnectKey.Text) -and (Test-HasNoSpaces $tbJumpCloudConnectKey.Text)) -eq $false)
@@ -206,11 +258,11 @@
              $tbJumpCloudConnectKey.FontWeight = "Normal"
          }
      })
- 
+
  $tbJumpCloudConnectKey.add_GotFocus( {
      $tbJumpCloudConnectKey.Text = ""
  })
- 
+
  $tbTempPassword.add_TextChanged( {
          Test-Button -tbJumpCloudUserName:($tbJumpCloudUserName) -tbJumpCloudConnectKey:($tbJumpCloudConnectKey) -tbTempPassword:($tbTempPassword) -lvProfileList:($lvProfileList) 
          If ((!(Test-IsNotEmpty $tbTempPassword.Text) -and (Test-HasNoSpaces $tbTempPassword.Text)) -eq $false)
@@ -225,7 +277,7 @@
              $tbTempPassword.FontWeight = "Normal"
          }
      })
- 
+
  # Change button when profile selected
  $lvProfileList.Add_SelectionChanged( {
          $script:SelectedUserName = ($lvProfileList.SelectedItem.username)
@@ -233,6 +285,7 @@
      })
  # AcceptEULA moreinfo link - Mouse button event
  $lbMoreInfo.Add_PreviewMouseDown( {[System.Diagnostics.Process]::start('https://github.com/TheJumpCloud/support/tree/BS-ADMU-version_1.0.0/ADMU#EULA--Legal-Explanation')})
+
  $bDeleteProfile.Add_Click( {
          # Build FormResults object
          Add-Member -InputObject:($FormResults) -MemberType:('NoteProperty') -Name:('AcceptEula') -Value:($AcceptEula)
@@ -246,52 +299,7 @@
          # Close form
          $Form.Close()
      })
- 
- # Get list of profiles from computer into listview
- $win32UserProfiles = Get-WmiObject -Class:('Win32_UserProfile') -Property * | Where-Object {$_.Special -eq $false}
- $win32UserProfiles | add-member -membertype NoteProperty -name IsLocalAdmin -value $null
- $win32UserProfiles | add-member -membertype NoteProperty -name LocalProfileSize -value $null
- 
- $users =  ($win32UserProfiles | Select-Object SID).sid | ConvertSID 
- $userstrim = $users -creplace '^[^\\]*\\', ''
- 
- $members = net localgroup administrators |
- where {$_ -AND $_ -notmatch "command completed successfully"} |
- select -Skip 4
- 
- $i = 0
- ForEach ($user in $userstrim) {
- If ($members -contains $user) {
- $win32UserProfiles[$i].IsLocalAdmin = $true
- $i++
-  } Else {
- $win32UserProfiles[$i].IsLocalAdmin = $false
- $i++
- }} 
- 
- Write-Progress -Activity 'Loading Jumpcloud ADMU. Please Wait..' -Status 'Getting C:\ Disk Space' -PercentComplete 50
- 
- #local profile file size check
- $LocalUserProfiles = $win32UserProfiles | Select-Object LocalPath
- $LocalUserProfilesTrim =  ForEach ($LocalPath in $LocalUserProfiles){$LocalPath.LocalPath.substring(9)}
- 
- $i = 0
- $profiles2 = Get-ChildItem C:\Users | ?{Test-path C:\Users\$_\NTUSER.DAT} | Select -ExpandProperty Name
-   foreach($userprofile in $LocalUserProfilesTrim)
-     {
-     $largeprofile = Get-ChildItem C:\Users\$userprofile -Recurse -Force -ErrorAction SilentlyContinue | Measure-Object -Sum length | Select -ExpandProperty Sum
-     $largeprofile =  [math]::Round($largeprofile/1MB,0)
-     $largeprofile =  $largeprofile
-     $win32UserProfiles[$i].LocalProfileSize = $largeprofile
-     $i++
-     }
- 
- Write-Progress -Activity 'Loading Jumpcloud ADMU. Please Wait..' -Status 'Building Profile Group Box Query..' -PercentComplete 75
- 
-     $Profiles = $win32UserProfiles | Select-Object SID, RoamingConfigured, Loaded, IsLocalAdmin, LocalPath, LocalProfileSize, @{Name = "LastLogin"; EXPRESSION = {$_.ConvertToDateTime($_.lastusetime)}}, @{Name = "UserName"; EXPRESSION = {ConvertSID($_.SID)}}
-  
- Write-Progress -Activity 'Loading Jumpcloud ADMU. Please Wait..' -Status 'Done!' -PercentComplete 100
- 
+
  # Put the list of profiles in the profile box
  $Profiles | ForEach-Object {$lvProfileList.Items.Add($_) | Out-Null}
  #===========================================================================
@@ -302,5 +310,3 @@
  {
      Return $FormResults
  }
-  
- 
