@@ -1,8 +1,8 @@
 **Configuring a Zero-Touch macOS onboarding experience for PreStaging user and system enrollment using DEPNotify, munkiPKG, JumpCloud, and your MDM of choice.**
 
-Leveraging this workflow allows admins to install the JumpCloud agent siently and ensures that the JumpCloud Service Account is installed using DEP and an MDM.
+Leveraging this workflow allows admins to install the JumpCloud agent silently and ensures that the JumpCloud Service Account is installed using DEP and an MDM.
 
-The JumpCloud Service Account is required to manage users on FileVault protected macs. 
+The JumpCloud Service Account is required to manage users on FileVault protected macs.
 
 [Learn more about the JumpCloud Service Account here.](https://support.jumpcloud.com/customer/portal/articles/2944374)
 
@@ -40,14 +40,14 @@ The JumpCloud Service Account is required to manage users on FileVault protected
 ### An Apple Device Enrollment (DEP) Account
 
 - The Apple DEP portal was initially launched as a stand alone console but now exists as a nested feature within Apple Business Manager
-  -  Need a DEP account? [Click here to sign up.](https://business.apple.com/#enrollment)
+  - Need a DEP account? [Click here to sign up.](https://business.apple.com/#enrollment)
 
 ### An MDM server integrated with Apple DEP
 
 To implement this zero-touch workflow a MDM server must be configured to deploy the MDM profiles and PKG payload to DEP enrolled machines.
 
-  - Jamf KB article: [Integrating with Apple's Device Enrollment (formerly DEP)](https://www.jamf.com/jamf-nation/articles/359/integrating-with-apple-s-device-enrollment-formerly-dep)
-  - Simple MDM KB article: [How to Enroll in MDM with Apple DEP](https://simplemdm.com/mdm-apple-dep-how-to/)
+- Jamf KB article: [Integrating with Apple's Device Enrollment (formerly DEP)](https://www.jamf.com/jamf-nation/articles/359/integrating-with-apple-s-device-enrollment-formerly-dep)
+- Simple MDM KB article: [How to Enroll in MDM with Apple DEP](https://simplemdm.com/mdm-apple-dep-how-to/)
 
 ### An Apple Developer Account
 
@@ -62,10 +62,9 @@ The JumpCloud Bootstrap configuration script that is configured in this tutorial
 - munkiPKG is an easy to use command line utility that is used in this tutorial to convert the bootstrap configuration script to a PKG.
   - Need to download munkipkg? [Click here](https://github.com/munki/munki-pkg#munkipkg)  
 
-
 ### Users who you wish to enroll using this zero-touch workflow added to the JumpCloud directory.
 
-  - JumpCloud KB article: [Getting Started: Users](https://jumpcloud.desk.com/customer/en/portal/articles/2778996-getting-started-users)
+- JumpCloud KB article: [Getting Started: Users](https://jumpcloud.desk.com/customer/en/portal/articles/2778996-getting-started-users)
 
 ## Zero-Touch Enrollment Workflow Diagram
 
@@ -121,7 +120,8 @@ Download the [jumpcloud_bootstrap_template.sh file](./jumpcloud_bootstrap_templa
 
 The JumpCloud Solution Architecture team loves to work with SH files in the code editor Visual Studio Code.
 
-  - Want to try VS Code? [Click here to download](https://code.visualstudio.com/) 
+- Want to try VS Code? [Click here to download](https://code.visualstudio.com/) 
+
 ### Step 2 - Configuring the JumpCloud Tenant For DEP Zero-Touch
 
 **Configure JumpCloud Settings**
@@ -163,7 +163,7 @@ Example:
 - Default Admin (Optional)
 
 This account will be used in this workflow to bind a default admin account to each DEP enrolled system when the system is added to the DEP Post Enrollment System Group. If you already have a default admin account in your JumpCloud tenant you can simply use this account.
- 
+
 For this user ensure that the box "Enable as Admin/Sudo on all system associations" under this users "User Security Settings and Permissions" is checked.
 
 Example:
@@ -176,7 +176,7 @@ Example:
 
 Create a JumpCloud User Group named "DEP Enrollment User Group" under the "Users" settings for this group add two users: the **Enrollment User** and the **Decryption User**.
 
-Example: 
+Example:
 
 ![DEP E User Group](./images/DEP_Enrollment_User_Group.png?raw=true)
 
@@ -221,6 +221,7 @@ Example:
 Within the "General Settings" near the top of the  `jumpcloud_bootstrap_template.sh` file you will find the input section for org specific variables.
 
 Example:
+
 ```SH
 ################################################################################
 # General Settings - POPULATE THE BELOW VARIABLES                              #
@@ -305,17 +306,17 @@ Three parameters are used to create this encrypted string.
 
 1. JumpCloud API key
 
-Need help finding your JumpCloud API key? See KB:[Obtaining Your API Key](https://support.jumpcloud.com/customer/en/portal/articles/2429680-jumpcloud-apis#configuration)
+   - Need help finding your JumpCloud API key? See KB:[Obtaining Your API Key](https://support.jumpcloud.com/customer/en/portal/articles/2429680-jumpcloud-apis#configuration)
 
 2. UID of **Decryption User** created in [Step 2](#step-2---configuring-the-jumpcloud-tenant-for-dep-zero-touch)
 
-To find the UID of the **Decryption User** expand the "User Security Settings and Permissions" and find this value under "Unix UID"
+   - To find the UID of the **Decryption User** expand the "User Security Settings and Permissions" and find this value under "Unix UID"
 
 ![UID Image](./images/Decryption_User_UID_Circled.png?raw=true)
 
 3. JumpCloud Organization ID
 
-The JumpCloud Organization ID can be found under the "Settings"-> "General" pane in the JumpCloud admin console.
+   - The JumpCloud Organization ID can be found under the "Settings"-> "General" pane in the JumpCloud admin console.
 
 ![Organization ID Image](./images/Org_ID_Circled.png?raw=true)
 

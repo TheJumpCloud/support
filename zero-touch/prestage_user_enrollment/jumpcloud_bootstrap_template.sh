@@ -131,7 +131,7 @@ DEP_N_APP='/Applications/Utilities/DEPNotify.app'
 DEP_N_LOG='/var/tmp/depnotify.log'
 DEP_N_REGISTER_DONE="/var/tmp/com.depnotify.registration.done"
 DEP_N_DONE="/var/tmp/com.depnotify.provisioning.done"
-# added by joe
+# Script Receipts Removed at workflow completion
 DEP_N_GATE_INSTALLJC="/var/tmp/com.jumpcloud.gate.installjc"
 DEP_N_GATE_SYSADD="/var/tmp/com.jumpcloud.gate.sysadd"
 DEP_N_GATE_UI="/var/tmp/com.jumpcloud.gate.ui"
@@ -165,7 +165,7 @@ if [[ ! -f $DEP_N_GATE_INSTALLJC ]]; then
     # Wait for active user session
     FINDER_PROCESS=$(pgrep -l "Finder")
     until [ "$FINDER_PROCESS" != "" ]; do
-        echo "$(date "+%m-%d-%y_%H-%M-%S"): Finder process not found. User session not active." >>"$DEP_N_DEBUG"
+        echo "$(date "+%Y-%m-%dT%H:%M:%S"): Finder process not found. User session not active." >>"$DEP_N_DEBUG"
         sleep 1
         FINDER_PROCESS=$(pgrep -l "Finder")
     done
@@ -201,7 +201,7 @@ if [[ ! -f $DEP_N_GATE_INSTALLJC ]]; then
     # Set ownership of the plist file
     chown "$ACTIVE_USER":staff "$DEP_N_CONFIG_PLIST"
     chmod 600 "$DEP_N_CONFIG_PLIST"
-    sudo -u "$ACTIVE_USER" open -a "$DEP_N_APP" --args -path "$DEP_N_LOG" # -fullScreen
+    sudo -u "$ACTIVE_USER" open -a "$DEP_N_APP" --args -path "$DEP_N_LOG" -fullScreen
 
     # Download and install the JumpCloud agent
     # cat EOF can not be indented 
@@ -324,17 +324,18 @@ if [[ ! -f $DEP_N_GATE_SYSADD ]]; then
 
     # variable to ensure system time is set correctly, once during this loop
     timeSet=false
-    echo "$(date "+%Y-%m-%dT%H:%M:%S"): groupcheck: $groupCheck" >>"$DEP_N_DEBUG"
+    echo "$(date "+%Y-%m-%dT%H:%M:%S"): Expected systemID: ${systemID} to be a member of group: ${DEP_ENROLLMENT_GROUP_ID}" >>"$DEP_N_DEBUG"
     while [[ -z $groupCheck ]]; do
         # log note
         echo "$(date "+%Y-%m-%dT%H:%M:%S"): Waiting for system to be added to the DEP ENROLLMENT GROUP" >>"$DEP_N_DEBUG"
-        sleep 10
+        echo "Adding System to JumpCloud Enrollment Group" >>"$DEP_N_LOG"
+        sleep 5
 
         # if system is 10.12 or newer, this command should work to set the system time
         MacOSMinorVersion=$(sw_vers -productVersion | cut -d '.' -f 2)
         if [[ MacOSMinorVersion -ge 12 && $timeSet == false ]]; then
-            sntp -sS $NTP_SERVER
             echo "$(date "+%Y-%m-%dT%H:%M:%S"): Setting the correct system time" >>"$DEP_N_DEBUG"
+            sntp -sS $NTP_SERVER
             # only run this once 
             timeSet=true
         fi
@@ -377,6 +378,7 @@ if [[ ! -f $DEP_N_GATE_SYSADD ]]; then
 
     # Set the receipt for the system add gate. The system was added to JumpCloud at this stage
     touch $DEP_N_GATE_SYSADD
+    echo "System added to JumpCloud Enrollment Group" >>"$DEP_N_LOG"
 fi
 
 # User interaction steps - check if user has completed these steps.
@@ -384,19 +386,20 @@ if [[ ! -f $DEP_N_GATE_UI ]]; then
     # reboot check
         FINDER_PROCESS=$(pgrep -l "Finder")
         until [ "$FINDER_PROCESS" != "" ]; do
-            echo "$(date "+%m-%d-%y_%H-%M-%S"): Finder process not found. User session not active." >>"$DEP_N_DEBUG"
+        echo "$(date "+%Y-%m-%dT%H:%M:%S"): Finder process not found. User session not active." >>"$DEP_N_DEBUG"
             sleep 1
             FINDER_PROCESS=$(pgrep -l "Finder")
         done
-    echo "$(date "+%m-%d-%y_%H-%M-%S"): User session active." >>"$DEP_N_DEBUG"
+    echo "$(date "+%Y-%m-%dT%H:%M:%S"): User session active." >>"$DEP_N_DEBUG"
     # check if the DEPNotify process is running
     process=$(echo | ps aux | grep "\bDEPNotify\.app")
     if [[ -z $process ]]; then 
         ACTIVE_USER=$(/usr/bin/python -c 'from SystemConfiguration import SCDynamicStoreCopyConsoleUser; import sys; username = (SCDynamicStoreCopyConsoleUser(None, None, None) or [None])[0]; username = [username,""][username in [u"loginwindow", None, u""]]; sys.stdout.write(username + "\n");')
-        echo "$(date "+%m-%d-%y_%H-%M-%S"): Expected DEPNotify.app to be in process lis, process not found. Launching DEPNotify as $ACTIVE_USER" >>"$DEP_N_DEBUG"
+        echo "$(date "+%Y-%m-%dT%H:%M:%S"): Expected DEPNotify.app to be in process lis, process not found. Launching DEPNotify as $ACTIVE_USER" >>"$DEP_N_DEBUG"
+        sudo -u "$ACTIVE_USER" open -a "$DEP_N_APP" --args -path "$DEP_N_LOG" -fullScreen
+        process=$(echo | ps aux | grep "\bDEPNotify\.app")
         sleep 2
-        sudo -u "$ACTIVE_USER" open -a "$DEP_N_APP" --args -path "$DEP_N_LOG"
-        echo "$(date "+%Y-%m-%dT%H:%M:%S"): DEPnotify should be running on process: $process" >>"$DEP_N_DEBUG"
+        echo "$(date "+%Y-%m-%dT%H:%M:%S"): DEPNotify should be running on process: $process" >>"$DEP_N_DEBUG"
     fi 
     # Waiting for DECRYPT_USER_ID to be bound to system
     echo "Status: Pulling Security Settings from JumpCloud" >>"$DEP_N_LOG"
@@ -616,14 +619,16 @@ fi
 # the launchdaemon will be running as user null. However on next run, the script 
 # will run as root and should have access to remove the launch daemon and remove 
 # this script. The launchdaemon with status 127 will remain on the system until 
-# reboot, it will be removed after reboot.
+# reboot, it will be not be called again after reboot. 
 if [[ -f $DEP_N_GATE_DONE ]]; then
     sleep 10
-    ACTIVE_USER=$(/usr/bin/python -c 'from SystemConfiguration import SCDynamicStoreCopyConsoleUser; import sys; username = (SCDynamicStoreCopyConsoleUser(None, None, None) or [None])[0]; username = [username,""][username in [u"loginwindow", None, u""]]; sys.stdout.write(username + "\n");')
+    # ACTIVE_USER=$(/usr/bin/python -c 'from SystemConfiguration import SCDynamicStoreCopyConsoleUser; import sys; username = (SCDynamicStoreCopyConsoleUser(None, None, None) or [None])[0]; username = [username,""][username in [u"loginwindow", None, u""]]; sys.stdout.write(username + "\n");')
     # echo "$(date "+%Y-%m-%dT%H:%M:%S") User: $ACTIVE_USER is Unloading LaunchDaemon" >>"$DEP_N_DEBUG"
-    # launchctl unload /Library/LaunchDaemons/com.jumpcloud.prestage.plist
-    echo "$(date "+%Y-%m-%dT%H:%M:%S") User: $ACTIVE_USER Status: Removing LaunchDaemon" >>"$DEP_N_DEBUG"
+    # launchctl unload /Library/LaunchDaemons/com.jumpcloud.prestage.plist # this step is taken care of by deleting the daemon in the next step
+    echo "$(date "+%Y-%m-%dT%H:%M:%S") Status: Removing LaunchDaemon" >>"$DEP_N_DEBUG"
     rm -rf "/Library/LaunchDaemons/${daemon}"
+    # Clean up receipts
+    rm /var/tmp/com.jumpcloud*
     # Make script delete itself
     rm -- "$0"
 fi
