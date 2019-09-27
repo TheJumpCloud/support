@@ -2,22 +2,33 @@ Function Copy-JCAssociation
 {
     [CmdletBinding(DefaultParameterSetName = 'ById')]
     Param(
-        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 1, HelpMessage = 'The type of the object.')][ValidateNotNullOrEmpty()][System.String]$Type
-        , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 2, ParameterSetName = 'ById')][ValidateNotNullOrEmpty()][string]$Id
-        , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 3, ParameterSetName = 'ByName')][ValidateNotNullOrEmpty()][string]$Name
-        , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 4, ParameterSetName = 'ById')][ValidateNotNullOrEmpty()][string]$TargetId
-        , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 5, ParameterSetName = 'ByName')][ValidateNotNullOrEmpty()][string]$TargetName
-        , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 5)][ValidateNotNullOrEmpty()][switch]$KeepExisting
-        , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 6)][ValidateNotNullOrEmpty()][switch]$Force
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'The type of the object.')][ValidateNotNullOrEmpty()][ValidateSet('command', 'ldap_server', 'policy', 'application', 'radius_server', 'system_group', 'system', 'user_group', 'user', 'g_suite', 'office_365')][Alias('TypeNameSingular')][System.String]$Type
+        , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Bypass user prompts and dynamic ValidateSet.')][ValidateNotNullOrEmpty()][Switch]$Force
     )
+    DynamicParam
+    {
+        $Action = 'copy'
+        $RuntimeParameterDictionary = If ($Type)
+        {
+            Get-DynamicParamAssociation -Action:($Action) -Force:($Force) -Type:($Type)
+        }
+        Else
+        {
+            Get-DynamicParamAssociation -Action:($Action) -Force:($Force)
+        }
+        Return $RuntimeParameterDictionary
+    }
     Begin
     {
+        Connect-JCOnline -force | Out-Null
         # Debug message for parameter call
         $PSBoundParameters | Out-DebugParameter | Write-Debug
         $Results = @()
     }
     Process
     {
+        # For DynamicParam with a default value set that value and then convert the DynamicParam inputs into new variables for the script to use
+        Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDynamicParamProcess) -ArgumentList:($PsBoundParameters, $PSCmdlet, $RuntimeParameterDictionary) -NoNewScope
         $SearchBy = $PSCmdlet.ParameterSetName
         # Get the associations from the source and target
         Switch ($SearchBy)
@@ -52,15 +63,15 @@ Function Copy-JCAssociation
         #     }
         #     $_
         # }
-        $AssociationsToSame = $CompareResults | Where-Object {$_.SideIndicator -eq '=='}
-        $AssociationsToAdd = $CompareResults | Where-Object {$_.SideIndicator -eq '<=' -and $_.associationType -eq 'Direct' -and $_.TargetId -notin ($AssociationsToSame.targetId) }
+        $AssociationsToSame = $CompareResults | Where-Object { $_.SideIndicator -eq '==' }
+        $AssociationsToAdd = $CompareResults | Where-Object { $_.SideIndicator -eq '<=' -and $_.associationType -eq 'Direct' -and $_.TargetId -notin ($AssociationsToSame.targetId) }
         $AssociationsToRemove = $CompareResults | Where-Object { $_.SideIndicator -eq '=>' -and $_.associationType -eq 'Direct' -and $_.TargetId -notin ($AssociationsToSame.targetId) }
         # Send the results of the ones that are the same to the output
-        $Results += $TargetAssociations | Where-Object {$_.TargetId -in ($AssociationsToSame.targetId)}
+        $Results += $TargetAssociations | Where-Object { $_.TargetId -in ($AssociationsToSame.targetId) }
         If ($KeepExisting)
         {
             # Send the existing association results to the output
-            $Results += $TargetAssociations | Where-Object {$_.TargetId -in ($AssociationsToRemove.targetId)}
+            $Results += $TargetAssociations | Where-Object { $_.TargetId -in ($AssociationsToRemove.targetId) }
         }
         Else
         {
