@@ -263,6 +263,12 @@ DELETE_ENROLLMENT_USERS=true
 ### This account will be deleted if the above boolean is set to true.
 ENROLLMENT_USER=""
 
+### NTP server, set to time.apple.com by default, Ensure time is correct ### 
+NTP_SERVER="time.apple.com"
+
+### Daemon Variable
+daemon="com.jumpcloud.prestage.plist"
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # END General Settings                                                         ~
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -423,6 +429,11 @@ DELETE_ENROLLMENT_USERS=true
 ### This account will be deleted if the above boolean is set to true.
 ENROLLMENT_USER="Welcome"
 
+### NTP server, set to time.apple.com by default, Ensure time is correct ### 
+NTP_SERVER="time.apple.com"
+
+### Daemon Variable
+daemon="com.jumpcloud.prestage.plist"
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # END General Settings                                                         ~
