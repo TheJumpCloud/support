@@ -146,7 +146,7 @@
 
         $Profiles = $win32UserProfiles | Select-Object SID, RoamingConfigured, Loaded, IsLocalAdmin, LocalPath, LocalProfileSize, @{Name = "LastLogin"; EXPRESSION = {$_.ConvertToDateTime($_.lastusetime)}}, @{Name = "UserName"; EXPRESSION = {ConvertSID($_.SID)}}
 
-        Write-Progress -Activity 'Loading Jumpcloud ADMU. Please Wait..' -Status 'Done!' -PercentComplete 100
+        Write-Progress -Activity 'Loading Jumpcloud ADMU. Please Wait..' -Status 'Done!' -Completed
     }
  Else
  {
