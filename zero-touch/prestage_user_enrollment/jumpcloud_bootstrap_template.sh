@@ -83,6 +83,9 @@ ENROLLMENT_USER=""
 ### NTP server, set to time.apple.com by default, Ensure time is correct ### 
 NTP_SERVER="time.apple.com"
 
+### Daemon Variable
+daemon="com.jumpcloud.prestage.plist"
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # END General Settings                                                         ~
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
