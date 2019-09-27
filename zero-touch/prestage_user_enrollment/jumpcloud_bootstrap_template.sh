@@ -381,19 +381,22 @@ fi
 
 # User interaction steps - check if user has completed these steps.
 if [[ ! -f $DEP_N_GATE_UI ]]; then
-    process=$(echo | ps aux | grep "[D]EP")
-    echo $process
-    if [[ -z $process ]]; then 
+    # reboot check
         FINDER_PROCESS=$(pgrep -l "Finder")
         until [ "$FINDER_PROCESS" != "" ]; do
             echo "$(date "+%m-%d-%y_%H-%M-%S"): Finder process not found. User session not active." >>"$DEP_N_DEBUG"
             sleep 1
             FINDER_PROCESS=$(pgrep -l "Finder")
         done
-        sleep 2
+    echo "$(date "+%m-%d-%y_%H-%M-%S"): User session active." >>"$DEP_N_DEBUG"
+    # check if the DEPNotify process is running
+    process=$(echo | ps aux | grep "\bDEPNotify\.app")
+    if [[ -z $process ]]; then 
         ACTIVE_USER=$(/usr/bin/python -c 'from SystemConfiguration import SCDynamicStoreCopyConsoleUser; import sys; username = (SCDynamicStoreCopyConsoleUser(None, None, None) or [None])[0]; username = [username,""][username in [u"loginwindow", None, u""]]; sys.stdout.write(username + "\n");')
-        echo "$(date "+%Y-%m-%dT%H:%M:%S"): DEPnotify not running" >>"$DEP_N_DEBUG"
+        echo "$(date "+%m-%d-%y_%H-%M-%S"): Expected DEPNotify.app to be in process lis, process not found. Launching DEPNotify as $ACTIVE_USER" >>"$DEP_N_DEBUG"
+        sleep 2
         sudo -u "$ACTIVE_USER" open -a "$DEP_N_APP" --args -path "$DEP_N_LOG"
+        echo "$(date "+%Y-%m-%dT%H:%M:%S"): DEPnotify should be running on process: $process" >>"$DEP_N_DEBUG"
     fi 
     # Waiting for DECRYPT_USER_ID to be bound to system
     echo "Status: Pulling Security Settings from JumpCloud" >>"$DEP_N_LOG"
