@@ -56,7 +56,7 @@ Adds all JumpCloud users in the JumpCloud User Group 'The Band' and binds them t
 A boolean $true/$false value to set Administrator permissions on the target JumpCloud system
 
 ```yaml
-Type: Boolean
+Type: System.Boolean
 Parameter Sets: (All)
 Aliases:
 
@@ -80,7 +80,7 @@ SystemID has an Alias of _id.
 This means you can leverage the PowerShell pipeline to populate this field automatically by calling a JumpCloud function that returns the SystemID.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: (All)
 Aliases: _id
 
@@ -105,7 +105,7 @@ This means you can leverage the PowerShell pipeline to populate this field autom
 This is shown in EXAMPLES 2, 3, and 4.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: ByID
 Aliases:
 
@@ -120,7 +120,7 @@ Accept wildcard characters: False
 The Username of the JumpCloud user you wish to add to the JumpCloud system.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: ByName
 Aliases:
 
@@ -137,7 +137,9 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
+
 ### System.Boolean
+
 ## OUTPUTS
 
 ### System.Object

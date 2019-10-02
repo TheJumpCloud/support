@@ -64,7 +64,7 @@ Returns the latest policy result for a system with the id of 123456789.
 The -ByPolicyID switch parameter will enforce the ByPolicyID parameter set and improve performance of gathering multiple policy results via the pipeline when the input object contains a property with PolicyID.
 
 ```yaml
-Type: SwitchParameter
+Type: System.Management.Automation.SwitchParameter
 Parameter Sets: ByPolicyID
 Aliases:
 
@@ -79,7 +79,7 @@ Accept wildcard characters: False
 The -BySystemID switch parameter will enforce the BySystemID parameter set and search for results by SystemID.
 
 ```yaml
-Type: SwitchParameter
+Type: System.Management.Automation.SwitchParameter
 Parameter Sets: BySystemID
 Aliases:
 
@@ -94,7 +94,7 @@ Accept wildcard characters: False
 The PolicyID of the JumpCloud policy you wish to query.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: ByPolicyID
 Aliases: _id, id
 
@@ -109,7 +109,7 @@ Accept wildcard characters: False
 The PolicyName of the JumpCloud policy you wish to query.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: ByPolicyName
 Aliases: name
 
@@ -124,7 +124,7 @@ Accept wildcard characters: False
 The PolicyResultID of the JumpCloud policy result you wish to query.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: ByPolicyResultID
 Aliases:
 
@@ -139,7 +139,7 @@ Accept wildcard characters: False
 The SystemID of the JumpCloud system you wish to query the latest policy result of.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: BySystemID
 Aliases:
 
@@ -156,7 +156,9 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
+
 ### System.Management.Automation.SwitchParameter
+
 ## OUTPUTS
 
 ### System.Object

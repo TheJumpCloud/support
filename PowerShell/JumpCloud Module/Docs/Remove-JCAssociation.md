@@ -20,7 +20,7 @@ Remove-JCAssociation [-Type] <String> [-Force] [-Id] <String[]> [[-TargetType] <
 
 ### ByName
 ```
-Remove-JCAssociation [-Type] <String> [-Force] -Name <String[]> [[-TargetType] <String[]>]
+Remove-JCAssociation [-Type] <String> [-Force] [-Name] <String[]> [[-TargetType] <String[]>]
  [[-TargetId] <String>] [[-TargetName] <String>] [<CommonParameters>]
 ```
 
@@ -49,7 +49,7 @@ Remove the association between the radius server "RadiusServer1" and the user gr
 Bypass user prompts and dynamic ValidateSet.
 
 ```yaml
-Type: SwitchParameter
+Type: System.Management.Automation.SwitchParameter
 Parameter Sets: (All)
 Aliases:
 
@@ -64,9 +64,24 @@ Accept wildcard characters: False
 The unique id of the object.
 
 ```yaml
-Type: String[]
+Type: System.String[]
 Parameter Sets: ById
 Aliases: _id
+
+Required: True
+Position: 1
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Name
+The name of the object.
+
+```yaml
+Type: System.String[]
+Parameter Sets: ByName
+Aliases: displayName, username
 
 Required: True
 Position: 1
@@ -79,7 +94,7 @@ Accept wildcard characters: False
 The unique id of the target object.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: (All)
 Aliases:
 
@@ -94,7 +109,7 @@ Accept wildcard characters: False
 The name of the target object.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: (All)
 Aliases:
 
@@ -109,7 +124,7 @@ Accept wildcard characters: False
 The type of the target object.
 
 ```yaml
-Type: String[]
+Type: System.String[]
 Parameter Sets: (All)
 Aliases: TargetSingular
 Accepted values: user_group, system, system_group, user, policy, command, application, g_suite, ldap_server, office_365, radius_server
@@ -125,7 +140,7 @@ Accept wildcard characters: False
 The type of the object.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: (All)
 Aliases: TypeNameSingular
 Accepted values: command, ldap_server, policy, application, radius_server, system_group, system, user_group, user, g_suite, office_365
@@ -137,29 +152,17 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
-### -Name
-The name of the object.
-
-```yaml
-Type: String[]
-Parameter Sets: ByName
-Aliases: displayName, username
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
 ### System.String
+
 ### System.Management.Automation.SwitchParameter
+
 ### System.String[]
+
 ## OUTPUTS
 
 ### System.Object

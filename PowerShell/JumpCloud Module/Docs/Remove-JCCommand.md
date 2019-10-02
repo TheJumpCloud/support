@@ -52,7 +52,7 @@ CommandID has an Alias of _id.
 This means you can leverage the PowerShell pipeline to populate this field automatically using a function that returns the JumpCloud CommandID.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: (All)
 Aliases: _id, id
 
@@ -67,7 +67,7 @@ Accept wildcard characters: False
 A SwitchParameter which removes the warning message when removing a JumpCloud Command.
 
 ```yaml
-Type: SwitchParameter
+Type: System.Management.Automation.SwitchParameter
 Parameter Sets: force
 Aliases:
 
@@ -84,6 +84,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
+
 ## OUTPUTS
 
 ### System.Object

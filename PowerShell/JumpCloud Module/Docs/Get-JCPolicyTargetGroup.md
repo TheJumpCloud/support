@@ -55,7 +55,7 @@ Use the -ByName parameter when you want to query a specific policy.
 The -ByName SwitchParameter will set the ParameterSet to 'ByName' which queries one JumpCloud policy at a time.
 
 ```yaml
-Type: SwitchParameter
+Type: System.Management.Automation.SwitchParameter
 Parameter Sets: ByName
 Aliases:
 
@@ -70,7 +70,7 @@ Accept wildcard characters: False
 The PolicyID of the JumpCloud policy you wish to query.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: ById
 Aliases: _id, id
 
@@ -85,7 +85,7 @@ Accept wildcard characters: False
 The Name of the JumpCloud policy you wish to query.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: ByName
 Aliases: Name
 
@@ -102,6 +102,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
+
 ## OUTPUTS
 
 ### System.Object

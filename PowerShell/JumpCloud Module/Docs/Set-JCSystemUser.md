@@ -54,7 +54,7 @@ Gets all users bound to JumpCloud system with SystemID '5n0795a712704la4eve154r'
 A boolean $true/$false value to add or remove Administrator permissions on a target JumpCloud system
 
 ```yaml
-Type: Boolean
+Type: System.Boolean
 Parameter Sets: (All)
 Aliases:
 
@@ -69,7 +69,7 @@ Accept wildcard characters: False
 The _id of the JumpCloud System which you want to modify the permissions on
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: (All)
 Aliases: _id
 
@@ -84,7 +84,7 @@ Accept wildcard characters: False
 The _id of the JumpCloud User whose system permissions will be modified
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: ByID
 Aliases:
 
@@ -99,7 +99,7 @@ Accept wildcard characters: False
 The Username of the JumpCloud User whose system permissions will be modified
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: ByName
 Aliases:
 
@@ -116,7 +116,9 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
+
 ### System.Boolean
+
 ## OUTPUTS
 
 ### System.Object

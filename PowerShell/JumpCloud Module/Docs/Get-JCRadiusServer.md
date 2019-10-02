@@ -24,16 +24,16 @@ Get-JCRadiusServer [-Force] [-Id] <String[]> [[-Fields] <Array>] [[-Filter] <Str
  [[-Skip] <Int32>] [[-Paginate] <Boolean>] [<CommonParameters>]
 ```
 
-### ByValue
-```
-Get-JCRadiusServer [-Force] [[-Fields] <Array>] [[-Filter] <String>] [[-Limit] <Int32>] [[-Skip] <Int32>]
- [[-Paginate] <Boolean>] [<CommonParameters>]
-```
-
 ### ByName
 ```
 Get-JCRadiusServer [-Force] [-Name] <String[]> [[-Fields] <Array>] [[-Filter] <String>] [[-Limit] <Int32>]
  [[-Skip] <Int32>] [[-Paginate] <Boolean>] [<CommonParameters>]
+```
+
+### ByValue
+```
+Get-JCRadiusServer [-Force] [[-Fields] <Array>] [[-Filter] <String>] [[-Limit] <Int32>] [[-Skip] <Int32>]
+ [[-Paginate] <Boolean>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -68,7 +68,7 @@ Returns a radius server by Name from a JumpCloud tenet.
 An array of the fields/properties/columns you want to return from the search.
 
 ```yaml
-Type: Array
+Type: System.Array
 Parameter Sets: (All)
 Aliases:
 
@@ -83,7 +83,7 @@ Accept wildcard characters: False
 Filters to narrow down search.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: (All)
 Aliases:
 
@@ -98,7 +98,7 @@ Accept wildcard characters: False
 Bypass user prompts and dynamic ValidateSet.
 
 ```yaml
-Type: SwitchParameter
+Type: System.Management.Automation.SwitchParameter
 Parameter Sets: (All)
 Aliases:
 
@@ -113,7 +113,7 @@ Accept wildcard characters: False
 The unique id of the object.
 
 ```yaml
-Type: String[]
+Type: System.String[]
 Parameter Sets: ById
 Aliases: _id
 
@@ -128,7 +128,7 @@ Accept wildcard characters: False
 The number of items you want to return per API call.
 
 ```yaml
-Type: Int32
+Type: System.Int32
 Parameter Sets: (All)
 Aliases:
 
@@ -143,7 +143,7 @@ Accept wildcard characters: False
 The name of the object.
 
 ```yaml
-Type: String[]
+Type: System.String[]
 Parameter Sets: ByName
 Aliases:
 
@@ -158,7 +158,7 @@ Accept wildcard characters: False
 Whether or not you want to paginate through the results.
 
 ```yaml
-Type: Boolean
+Type: System.Boolean
 Parameter Sets: (All)
 Aliases:
 
@@ -173,7 +173,7 @@ Accept wildcard characters: False
 The number of items you want to skip over per API call.
 
 ```yaml
-Type: Int32
+Type: System.Int32
 Parameter Sets: (All)
 Aliases:
 
@@ -190,11 +190,17 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.Management.Automation.SwitchParameter
+
 ### System.String[]
+
 ### System.String
+
 ### System.Array
+
 ### System.Int32
+
 ### System.Boolean
+
 ## OUTPUTS
 
 ### System.Object

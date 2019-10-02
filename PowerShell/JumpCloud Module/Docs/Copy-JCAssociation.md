@@ -15,13 +15,13 @@ Copy the associations from one object to another.
 ### ById (Default)
 ```
 Copy-JCAssociation [-Type] <String> [-Force] [-Id] <String[]> [[-TargetId] <String>] [[-TargetName] <String>]
- [<CommonParameters>]
+ [-KeepExisting] [<CommonParameters>]
 ```
 
 ### ByName
 ```
 Copy-JCAssociation [-Type] <String> [-Force] [-Name] <String[]> [[-TargetId] <String>] [[-TargetName] <String>]
- [<CommonParameters>]
+ [-KeepExisting] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -49,7 +49,7 @@ The command will remove all of Jim's associations and will copy all of John's as
 Bypass user prompts and dynamic ValidateSet.
 
 ```yaml
-Type: SwitchParameter
+Type: System.Management.Automation.SwitchParameter
 Parameter Sets: (All)
 Aliases:
 
@@ -64,7 +64,7 @@ Accept wildcard characters: False
 The unique id of the object.
 
 ```yaml
-Type: String[]
+Type: System.String[]
 Parameter Sets: ById
 Aliases: _id
 
@@ -75,11 +75,26 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
+### -KeepExisting
+Retains the existing associations while still adding the new ones.
+
+```yaml
+Type: System.Management.Automation.SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 13
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
 ### -Name
 The name of the object.
 
 ```yaml
-Type: String[]
+Type: System.String[]
 Parameter Sets: ByName
 Aliases: displayName, username
 
@@ -94,7 +109,7 @@ Accept wildcard characters: False
 The unique id of the target object.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: (All)
 Aliases:
 
@@ -109,7 +124,7 @@ Accept wildcard characters: False
 The name of the target object.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: (All)
 Aliases:
 
@@ -124,7 +139,7 @@ Accept wildcard characters: False
 The type of the object.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: (All)
 Aliases: TypeNameSingular
 Accepted values: command, ldap_server, policy, application, radius_server, system_group, system, user_group, user, g_suite, office_365
