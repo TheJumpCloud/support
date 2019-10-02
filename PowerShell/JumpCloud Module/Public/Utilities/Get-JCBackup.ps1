@@ -100,7 +100,7 @@ function Get-JCBackup
                         , @{Name = 'Username'; Expression = { $_.targetInfo.username } } `
                         , @{Name = 'Administrator'; Expression = { If ($_.compiledAttributes.sudo.enabled -eq 'true') { $true } Else { $false } } } `
                         , @{Name = 'DirectBind'; Expression = { If ($_.associationType -like '*direct*') { $true }Else { $false } } } `
-                        , @{Name = 'BindGroups'; Expression = { $_.compiledAttributes.ldapGroups.name | ConvertTo-Json } } `
+                        , @{Name = 'BindGroups'; Expression = { $_.compiledAttributes.ldapGroups.name -join ', ' } } `
                     | Export-Csv -Path "JumpCloudSystemUsers_$($StartTime).CSV" -NoTypeInformation -Force -Append
             }
         Write-Host "JumpCloudSystemUsers_$($StartTime).CSV created.`n" -ForegroundColor Green;
@@ -172,13 +172,13 @@ if ($SystemGroups)
     try
     {
         Get-JCObject -Type:('system_group') -Fields:('id') | `
-                Get-JCAssociation -TargetType:('system') -IncludeInfo | `
+                Get-JCAssociation -TargetType:('system') -IncludeNames | `
                 ForEach-Object {
-                $_ | Select-Object -Property @{Name = 'GroupName'; Expression = { $_.info.name } } `
-                    , @{Name = 'System'; Expression = { $_.targetInfo.hostname } } `
+                $_ | Select-Object -Property @{Name = 'GroupName'; Expression = { $_.name } } `
+                    , @{Name = 'displayName'; Expression = { $_.targetName } } `
                     , @{Name = 'SystemID'; Expression = { $_.targetId } } `
-                | Export-Csv -Path "JumpCloudSystemGroupMembers_$($StartTime).CSV" -NoTypeInformation -Force -Append
-        }
+            | Export-Csv -Path "JumpCloudSystemGroupMembers_$($StartTime).CSV" -NoTypeInformation -Force -Append
+    }
     Write-Host "JumpCloudSystemGroupMembers_$($StartTime).CSV created.`n" -ForegroundColor Green
 }
 catch
