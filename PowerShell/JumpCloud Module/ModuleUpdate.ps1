@@ -16,7 +16,7 @@ $GitHubWikiUrl = 'https://github.com/TheJumpCloud/support/wiki/'
 Write-Host ('[status]Importing current module: ' + $ModuleName)
 Import-Module ($FilePath_Psd1) -Force
 Write-Host ('[status]Installing module: PlatyPS')
-Install-Module -Name:('PlatyPS') -Force -Scope:('CurrentUser')
+Install-Module -Name:('PlatyPS') -Force -SkipPublisherCheck
 # Clear out existing docs
 If (-not [System.String]::IsNullOrEmpty($IncludeList))
 {
@@ -56,7 +56,7 @@ $Files | ForEach-Object {
     Else
     {
         # Write-Host ('Creating: ' + $FunctionName + '.md')
-        New-MarkdownHelp  -Command:($FunctionName) -OutputFolder:($FolderPath_Docs) -Force  -ExcludeDontShow -OnlineVersionUrl:($GitHubWikiUrl + $FunctionName) -UseFullTypeName
+        New-MarkdownHelp  -Command:($FunctionName) -OutputFolder:($FolderPath_Docs) -Force -ExcludeDontShow -OnlineVersionUrl:($GitHubWikiUrl + $FunctionName) -UseFullTypeName
     }
 }
 # Create new ExternalHelp file.
