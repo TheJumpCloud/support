@@ -1,4 +1,4 @@
-## 1.14.1
+## 1.15.0
 
 #### RELEASE DATE
 
@@ -11,6 +11,9 @@ Addressing bugs impacting associations functions.
 #### FEATURES
 
 #### IMPROVEMENTS
+
+New functions: Copy-JCAssociation
+Removing script block used debugging and simplifying with function.
 
 #### BUG FIXES
 
