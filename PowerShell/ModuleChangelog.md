@@ -14,6 +14,8 @@ Addressing bugs impacting associations functions.
 
 New functions: Copy-JCAssociation
 Removing script block used debugging and simplifying with function.
+Allow Get-JCBackup to take pipeline input.
+Update Get-JCBackup to use newer functions.
 
 #### BUG FIXES
 
