@@ -143,6 +143,14 @@ Function Get-DynamicParamAssociation
             'HelpMessage'                     = 'Add attributes that define the association such as if they are an admin.';
             'Position'                        = 12;
         }
+        $Param_KeepExisting = @{
+            'Name'                            = 'KeepExisting';
+            'Type'                            = [Switch];
+            'ValueFromPipelineByPropertyName' = $true;
+            'DefaultValue'                    = $false;
+            'HelpMessage'                     = 'Retains the existing associations while still adding the new ones.';
+            'Position'                        = 13;
+        }
         # Build output
         $ParamVarPrefix = 'Param_'
         Get-Variable -Scope:('Local') | Where-Object { $_.Name -like '*' + $ParamVarPrefix + '*' } | Sort-Object { [int]$_.Value.Position } | ForEach-Object {
@@ -169,7 +177,7 @@ Function Get-DynamicParamAssociation
                 {
                     New-DynamicParameter @VarValue | Out-Null
                 }
-                ElseIf ($Action -eq 'copy' -and $_.Name -in ('Param_TargetId', 'Param_TargetName', 'KeepExisting'))
+                ElseIf ($Action -eq 'copy' -and $_.Name -in ('Param_TargetId', 'Param_TargetName', 'Param_KeepExisting'))
                 {
                     New-DynamicParameter @VarValue | Out-Null
                 }
