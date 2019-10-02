@@ -56,7 +56,7 @@ Use the -ByID parameter when the SystemID is passed over the pipeline to the Rem
 The -ByID SwitchParameter will set the ParameterSet to 'ByID' which will increase the function speed and performance.
 
 ```yaml
-Type: System.Management.Automation.SwitchParameter
+Type: SwitchParameter
 Parameter Sets: ByID
 Aliases:
 
@@ -72,7 +72,7 @@ The GroupID is used in the ParameterSet 'ByID'.
 The GroupID for a System Group can be found by running the command: PS C:\\\> Get-JCGroup -type 'System'
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: ByID
 Aliases:
 
@@ -87,7 +87,7 @@ Accept wildcard characters: False
 The name of the JumpCloud System Group that you want to remove the System from.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: ByName
 Aliases: name
 
@@ -99,7 +99,7 @@ Accept wildcard characters: False
 ```
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: ByID
 Aliases: name
 
@@ -120,7 +120,7 @@ This means you can leverage the PowerShell pipeline to populate this field autom
 This is shown in EXAMPLES 2 and 3.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases: id, _id
 
@@ -137,7 +137,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
-
 ## OUTPUTS
 
 ### System.Object

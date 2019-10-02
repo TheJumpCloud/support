@@ -44,7 +44,7 @@ Removes attributes with the name "Session-Timeout", "Termination-Action" from th
 The '-All' parameter is a switch parameter which will clear all Radius reply attributes from a JumpCloud user group.
 
 ```yaml
-Type: System.Management.Automation.SwitchParameter
+Type: SwitchParameter
 Parameter Sets: (All)
 Aliases:
 
@@ -60,7 +60,7 @@ Attributes to remove from a target user group.
 To remove multiple attributes at one time separate the attribute names with commas.
 
 ```yaml
-Type: System.String[]
+Type: String[]
 Parameter Sets: (All)
 Aliases:
 
@@ -75,7 +75,7 @@ Accept wildcard characters: False
 The JumpCloud user group to remove the specified Radius reply attributes from.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases: name
 
@@ -92,11 +92,8 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
-
 ### System.String[]
-
 ### System.Management.Automation.SwitchParameter
-
 ## OUTPUTS
 
 ### System.Object

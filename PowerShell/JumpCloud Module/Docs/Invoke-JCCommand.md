@@ -66,7 +66,7 @@ This parameter creates two dynamic parameters for each variable added.
 See EXAMPLE 2 above for full syntax.
 
 ```yaml
-Type: System.Int32
+Type: Int32
 Parameter Sets: Variables
 Aliases:
 
@@ -81,7 +81,7 @@ Accept wildcard characters: False
 Enter a variable name
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -96,7 +96,7 @@ Accept wildcard characters: False
 Enter the Variables value
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -111,7 +111,7 @@ Accept wildcard characters: False
 Enter a variable name
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -126,7 +126,7 @@ Accept wildcard characters: False
 Enter the Variables value
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -146,7 +146,7 @@ You can leverage the pipeline and Parameter Binding to populate the -trigger Par
 This is shown in EXAMPLES 2 and 3.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -163,7 +163,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
-
 ## OUTPUTS
 
 ### System.Object
