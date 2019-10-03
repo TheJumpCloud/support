@@ -37,7 +37,7 @@ Function Copy-JCAssociation
             {
                 $SourceAssociations = Get-JCAssociation -Type:($Type) -Id:($Id)
                 $TargetAssociations = Get-JCAssociation -Type:($Type) -Id:($TargetId)
-                $Target = Get-JCObject -Type:($Type) -Id:($TargetId)
+                $Target = Get-JCObject -Type:($Type) -Id:($TargetName)
             }
             'ByName'
             {
@@ -78,11 +78,11 @@ Function Copy-JCAssociation
             # Remove exist associations from target
             $TargetAssociationsRemoved = If ($Force)
             {
-                $AssociationsToRemove | Get-JCAssociation | Remove-JCAssociation -Force
+                $AssociationsToRemove | Remove-JCAssociation -Force
             }
             Else
             {
-                $AssociationsToRemove | Get-JCAssociation | Remove-JCAssociation
+                $AssociationsToRemove | Remove-JCAssociation
             }
             # Send the results of the removal to the output
             $Results += $TargetAssociationsRemoved
