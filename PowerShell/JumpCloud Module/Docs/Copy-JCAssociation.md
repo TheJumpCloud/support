@@ -15,13 +15,13 @@ Copy the associations from one object to another.
 ### ById (Default)
 ```
 Copy-JCAssociation [-Type] <String> [-Force] [-Id] <String[]> [[-TargetId] <String>] [[-TargetName] <String>]
- [-KeepExisting] [<CommonParameters>]
+ [-RemoveExisting] [-Include <String[]>] [-Exclude <String[]>] [<CommonParameters>]
 ```
 
 ### ByName
 ```
 Copy-JCAssociation [-Type] <String> [-Force] [-Name] <String[]> [[-TargetId] <String>] [[-TargetName] <String>]
- [-KeepExisting] [<CommonParameters>]
+ [-RemoveExisting] [-Include <String[]>] [-Exclude <String[]>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -70,21 +70,6 @@ Aliases: _id
 
 Required: True
 Position: 1
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -KeepExisting
-Retains the existing associations while still adding the new ones.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 13
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -146,6 +131,51 @@ Accepted values: command, ldap_server, policy, application, radius_server, syste
 
 Required: True
 Position: 0
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Exclude
+Specify the association types to exclude from the copy.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Include
+Specify the association types to include in the copy.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -RemoveExisting
+Removes the existing associations while still adding the new associations.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
