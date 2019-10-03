@@ -64,7 +64,7 @@ The full path to the CSV file you wish to import.
 You can use tab complete to search for .csv files.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -79,7 +79,7 @@ Accept wildcard characters: False
 A SwitchParameter which suppresses the GUI and data validation when using the Import-JCUsersFromCSV command.
 
 ```yaml
-Type: System.Management.Automation.SwitchParameter
+Type: SwitchParameter
 Parameter Sets: force
 Aliases:
 
@@ -96,7 +96,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### None
-
 ## OUTPUTS
 
 ### System.Object

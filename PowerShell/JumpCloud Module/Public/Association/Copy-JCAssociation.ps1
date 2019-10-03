@@ -37,7 +37,7 @@ Function Copy-JCAssociation
             {
                 $SourceAssociations = Get-JCAssociation -Type:($Type) -Id:($Id)
                 $TargetAssociations = Get-JCAssociation -Type:($Type) -Id:($TargetId)
-                $Target = Get-JCObject -Type:($Type) -Id:($TargetId)
+                $Target = Get-JCObject -Type:($Type) -Id:($TargetName)
             }
             'ByName'
             {

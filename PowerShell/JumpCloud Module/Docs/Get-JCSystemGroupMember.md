@@ -54,7 +54,7 @@ Returns all JumpCloud System Groups that the system with a hostname of 'Server01
 If searching for a System Group using the GroupID populate the GroupID in the -ByID field.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: ByID
 Aliases: _id, id
 
@@ -69,7 +69,7 @@ Accept wildcard characters: False
 The name of the JumpCloud System Group you want to return the members of.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: ByGroup
 Aliases: name
 
@@ -86,7 +86,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
-
 ## OUTPUTS
 
 ### System.Object

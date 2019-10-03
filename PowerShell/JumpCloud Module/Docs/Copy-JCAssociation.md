@@ -49,7 +49,7 @@ The command will remove all of Jim's associations and will copy all of John's as
 Bypass user prompts and dynamic ValidateSet.
 
 ```yaml
-Type: System.Management.Automation.SwitchParameter
+Type: SwitchParameter
 Parameter Sets: (All)
 Aliases:
 
@@ -64,7 +64,7 @@ Accept wildcard characters: False
 The unique id of the object.
 
 ```yaml
-Type: System.String[]
+Type: String[]
 Parameter Sets: ById
 Aliases: _id
 
@@ -79,7 +79,7 @@ Accept wildcard characters: False
 Retains the existing associations while still adding the new ones.
 
 ```yaml
-Type: System.Management.Automation.SwitchParameter
+Type: SwitchParameter
 Parameter Sets: (All)
 Aliases:
 
@@ -94,7 +94,7 @@ Accept wildcard characters: False
 The name of the object.
 
 ```yaml
-Type: System.String[]
+Type: String[]
 Parameter Sets: ByName
 Aliases: displayName, username
 
@@ -109,7 +109,7 @@ Accept wildcard characters: False
 The unique id of the target object.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -124,7 +124,7 @@ Accept wildcard characters: False
 The name of the target object.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -139,7 +139,7 @@ Accept wildcard characters: False
 The type of the object.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases: TypeNameSingular
 Accepted values: command, ldap_server, policy, application, radius_server, system_group, system, user_group, user, g_suite, office_365
@@ -157,11 +157,8 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
-
 ### System.Management.Automation.SwitchParameter
-
 ### System.String[]
-
 ## OUTPUTS
 
 ### System.Object

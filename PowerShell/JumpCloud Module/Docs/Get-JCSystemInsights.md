@@ -93,7 +93,7 @@ Filters the users table for any system with the username jcadmin.
 An array of the fields/properties/columns you want to return from the search.
 
 ```yaml
-Type: System.Array
+Type: Array
 Parameter Sets: (All)
 Aliases:
 
@@ -108,7 +108,7 @@ Accept wildcard characters: False
 Filters to narrow down search.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -123,7 +123,7 @@ Accept wildcard characters: False
 The unique id of the object.
 
 ```yaml
-Type: System.String[]
+Type: String[]
 Parameter Sets: ById
 Aliases: _id
 
@@ -138,7 +138,7 @@ Accept wildcard characters: False
 The number of items you want to return per API call.
 
 ```yaml
-Type: System.Int32
+Type: Int32
 Parameter Sets: (All)
 Aliases:
 
@@ -153,7 +153,7 @@ Accept wildcard characters: False
 The name of the object.
 
 ```yaml
-Type: System.String[]
+Type: String[]
 Parameter Sets: ByName
 Aliases: displayName
 
@@ -168,7 +168,7 @@ Accept wildcard characters: False
 Whether or not you want to paginate through the results.
 
 ```yaml
-Type: System.Boolean
+Type: Boolean
 Parameter Sets: (All)
 Aliases:
 
@@ -183,7 +183,7 @@ Accept wildcard characters: False
 The number of items you want to skip over per API call.
 
 ```yaml
-Type: System.Int32
+Type: Int32
 Parameter Sets: (All)
 Aliases:
 
@@ -198,7 +198,7 @@ Accept wildcard characters: False
 The SystemInsights table to query against.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 Accepted values: etc_hosts, logical_drives, disk_info, bitlocker_info, patches, programs, apps, browser_plugins, chrome_extensions, disk_encryption, firefox_addons, groups, interface_addresses, mounts, os_version, safari_extensions, system_info, users
@@ -216,15 +216,10 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
-
 ### System.String[]
-
 ### System.Array
-
 ### System.Int32
-
 ### System.Boolean
-
 ## OUTPUTS
 
 ### System.Object
