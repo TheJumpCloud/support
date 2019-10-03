@@ -143,13 +143,34 @@ Function Get-DynamicParamAssociation
             'HelpMessage'                     = 'Add attributes that define the association such as if they are an admin.';
             'Position'                        = 12;
         }
-        $Param_KeepExisting = @{
-            'Name'                            = 'KeepExisting';
+        $Param_RemoveExisting = @{
+            'Name'                            = 'RemoveExisting';
             'Type'                            = [Switch];
             'ValueFromPipelineByPropertyName' = $true;
             'DefaultValue'                    = $false;
-            'HelpMessage'                     = 'Retains the existing associations while still adding the new ones.';
+            'HelpMessage'                     = 'Removes the existing associations while still adding the new associations.';
             'Position'                        = 13;
+        }
+        $Param_Include = @{
+            'Name'                            = 'Include';
+            'Type'                            = [System.String[]];
+            'Mandatory'                       = $false;
+            'ValueFromPipelineByPropertyName' = $true;
+            'ValidateNotNullOrEmpty'          = $true;
+            'HelpMessage'                     = 'Specify the association types to include in the copy.';
+            'ValidateSet'                     = $JCType.Targets.TargetSingular | Select-Object -Unique;
+            'DefaultValue'                    = $JCType.Targets.TargetSingular | Select-Object -Unique;
+            'Position'                        = 14;
+        }
+        $Param_Exclude = @{
+            'Name'                            = 'Exclude';
+            'Type'                            = [System.String[]];
+            'Mandatory'                       = $false;
+            'ValueFromPipelineByPropertyName' = $true;
+            'ValidateNotNullOrEmpty'          = $true;
+            'HelpMessage'                     = 'Specify the association types to exclude from the copy.';
+            'ValidateSet'                     = $JCType.Targets.TargetSingular | Select-Object -Unique;
+            'Position'                        = 15;
         }
         # Build output
         $ParamVarPrefix = 'Param_'
@@ -177,7 +198,7 @@ Function Get-DynamicParamAssociation
                 {
                     New-DynamicParameter @VarValue | Out-Null
                 }
-                ElseIf ($Action -eq 'copy' -and $_.Name -in ('Param_TargetId', 'Param_TargetName', 'Param_KeepExisting'))
+                ElseIf ($Action -eq 'copy' -and $_.Name -in ('Param_TargetId', 'Param_TargetName', 'Param_RemoveExisting', 'Param_Include', 'Param_Exclude'))
                 {
                     New-DynamicParameter @VarValue | Out-Null
                 }
