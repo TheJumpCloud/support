@@ -58,7 +58,7 @@
                     $SourceItemTypeNameSingular = $SourceItemTypeName.TypeNameSingular
                     $SourceItemTypeNamePlural = $SourceItemTypeName.TypeNamePlural
                     $SourceItemTargets = $SourceItem.Targets |
-                    Where-Object { $_.TargetSingular -in $TargetType -or $_.TargetPlural -in $TargetType }
+                        Where-Object { $_.TargetSingular -in $TargetType -or $_.TargetPlural -in $TargetType }
                     ForEach ($SourceItemTarget In $SourceItemTargets)
                     {
                         $SourceItemTargetSingular = $SourceItemTarget.TargetSingular
@@ -207,40 +207,40 @@
                                                     }
                                                     Write-Error ($_)
                                                 }
-                                            }
-                                            # Validate that the new association has been created
-                                            If ($Action -in ('add', 'new'))
-                                            {
-                                                $AddAssociationValidation = Format-JCAssociation -Uri:($Uri_Associations_GET) -Method:('GET') -Source:($SourceItem) -TargetId:($TargetItemId) -IncludeNames:($true) | Where-Object { $_.TargetId -eq $TargetItemId }
-                                                If ($AddAssociationValidation)
+                                                # Validate that the new association has been created
+                                                If ($Action -in ('add', 'new'))
                                                 {
-                                                    $Result = $AddAssociationValidation
+                                                    $AddAssociationValidation = Format-JCAssociation -Uri:($Uri_Associations_GET) -Method:('GET') -Source:($SourceItem) -TargetId:($TargetItemId) -IncludeNames:($true) | Where-Object { $_.TargetId -eq $TargetItemId }
+                                                    If ($AddAssociationValidation)
+                                                    {
+                                                        $Result = $AddAssociationValidation
+                                                    }
+                                                    Else
+                                                    {
+                                                        Write-Error ('Association not found. Unable to validate that the association between "' + $SourceItemTypeNameSingular + '" "' + $SourceItemSearchByValue + '" and "' + $TargetItemTypeNameSingular + '" "' + $TargetSearchByValue + '" was created.')
+                                                    }
                                                 }
-                                                Else
+                                                # Validate that the old association has been removed
+                                                If ($Action -eq 'remove')
                                                 {
-                                                    Write-Error ('Association not found. Unable to validate that the association between "' + $SourceItemTypeNameSingular + '" "' + $SourceItemSearchByValue + '" and "' + $TargetItemTypeNameSingular + '" "' + $TargetSearchByValue + '" was created.')
+                                                    $RemoveAssociationValidation = Format-JCAssociation -Uri:($Uri_Associations_GET) -Method:('GET') -Source:($SourceItem) -TargetId:($TargetItemId) -IncludeNames:($true)
+                                                    If (!($RemoveAssociationValidation) -or $RemoveAssociationValidation.associationType -eq 'indirect')
+                                                    {
+                                                        $Result = $DirectAssociations
+                                                    }
+                                                    Else
+                                                    {
+                                                        Write-Error ('Association found. Unable to validate that the association between "' + $SourceItemTypeNameSingular + '" "' + $SourceItemSearchByValue + '" and "' + $TargetItemTypeNameSingular + '" "' + $TargetSearchByValue + '" has been removed.')
+                                                    }
                                                 }
-                                            }
-                                            # Validate that the old association has been removed
-                                            If ($Action -eq 'remove')
-                                            {
-                                                $RemoveAssociationValidation = Format-JCAssociation -Uri:($Uri_Associations_GET) -Method:('GET') -Source:($SourceItem) -TargetId:($TargetItemId) -IncludeNames:($true)
-                                                If (!($RemoveAssociationValidation) -or $RemoveAssociationValidation.associationType -eq 'indirect')
+                                                # Append record status
+                                                $Results += If ($Result)
                                                 {
-                                                    $Result = $DirectAssociations
+                                                    $Result | Select-Object * `
+                                                        , @{Name = 'action'; Expression = { $Action } } `
+                                                        , @{Name = 'IsSuccessStatusCode'; Expression = { $ActionResult.IsSuccessStatusCode | Select-Object -Unique } } `
+                                                        , @{Name = 'error'; Expression = { $ActionResult.error } }
                                                 }
-                                                Else
-                                                {
-                                                    Write-Error ('Association found. Unable to validate that the association between "' + $SourceItemTypeNameSingular + '" "' + $SourceItemSearchByValue + '" and "' + $TargetItemTypeNameSingular + '" "' + $TargetSearchByValue + '" has been removed.')
-                                                }
-                                            }
-                                            # Append record status
-                                            $Results += If ($Result)
-                                            {
-                                                $Result | Select-Object * `
-                                                    , @{Name = 'action'; Expression = { $Action } } `
-                                                    , @{Name = 'IsSuccessStatusCode'; Expression = { $ActionResult.IsSuccessStatusCode | Select-Object -Unique } } `
-                                                    , @{Name = 'error'; Expression = { $ActionResult.error } }
                                             }
                                         }
                                     }
