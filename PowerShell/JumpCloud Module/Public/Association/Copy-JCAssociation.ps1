@@ -66,9 +66,9 @@ Function Copy-JCAssociation
         $AssociationsToSame = $CompareResults | Where-Object { $_.SideIndicator -eq '==' }
         $AssociationsToRemove = $CompareResults | Where-Object { $_.SideIndicator -eq '=>' -and $_.associationType -eq 'Direct' -and $_.TargetId -notin ($AssociationsToSame.targetId) }
         $AssociationsToAdd = $CompareResults | Where-Object { $_.SideIndicator -eq '<=' -and $_.associationType -eq 'Direct' -and $_.TargetId -notin ($AssociationsToSame.targetId) }
-        If (-not [string]::IsNullOrEmpty($Include) -or -not [string]::IsNullOrEmpty($Exclude))
+        If (-not [string]::IsNullOrEmpty($IncludeType) -or -not [string]::IsNullOrEmpty($ExcludeType))
         {
-            $AssociationsToAdd = $AssociationsToAdd | Where-Object { $_.targetType -in ($Include | Where-Object { $_ -notin $Exclude }) }
+            $AssociationsToAdd = $AssociationsToAdd | Where-Object { $_.targetType -in ($IncludeType | Where-Object { $_ -notin $ExcludeType }) }
         }
         # Send the results of the ones that are the same to the output
         $Results += $TargetAssociations | Where-Object { $_.TargetId -in ($AssociationsToSame.targetId) }

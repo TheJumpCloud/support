@@ -151,8 +151,8 @@ Function Get-DynamicParamAssociation
             'HelpMessage'                     = 'Removes the existing associations while still adding the new associations.';
             'Position'                        = 13;
         }
-        $Param_Include = @{
-            'Name'                            = 'Include';
+        $Param_IncludeType = @{
+            'Name'                            = 'IncludeType';
             'Type'                            = [System.String[]];
             'Mandatory'                       = $false;
             'ValueFromPipelineByPropertyName' = $true;
@@ -162,8 +162,8 @@ Function Get-DynamicParamAssociation
             'DefaultValue'                    = $JCType.Targets.TargetSingular | Select-Object -Unique;
             'Position'                        = 14;
         }
-        $Param_Exclude = @{
-            'Name'                            = 'Exclude';
+        $Param_ExcludeType = @{
+            'Name'                            = 'ExcludeType';
             'Type'                            = [System.String[]];
             'Mandatory'                       = $false;
             'ValueFromPipelineByPropertyName' = $true;
@@ -198,7 +198,7 @@ Function Get-DynamicParamAssociation
                 {
                     New-DynamicParameter @VarValue | Out-Null
                 }
-                ElseIf ($Action -eq 'copy' -and $_.Name -in ('Param_TargetId', 'Param_TargetName', 'Param_RemoveExisting', 'Param_Include', 'Param_Exclude'))
+                ElseIf ($Action -eq 'copy' -and $_.Name -in ('Param_TargetId', 'Param_TargetName', 'Param_RemoveExisting', 'Param_IncludeType', 'Param_ExcludeType'))
                 {
                     New-DynamicParameter @VarValue | Out-Null
                 }
