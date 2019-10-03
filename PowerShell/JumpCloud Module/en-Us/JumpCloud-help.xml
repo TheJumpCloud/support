@@ -1869,10 +1869,10 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="13" aliases="none">
-          <maml:name>KeepExisting</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>Force</maml:name>
           <maml:Description>
-            <maml:para>Retains the existing associations while still adding the new ones.</maml:para>
+            <maml:para>Bypass user prompts and dynamic ValidateSet.</maml:para>
           </maml:Description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
@@ -1881,9 +1881,33 @@
           <dev:defaultValue>False</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
-          <maml:name>Force</maml:name>
+          <maml:name>Exclude</maml:name>
           <maml:Description>
-            <maml:para>Bypass user prompts and dynamic ValidateSet.</maml:para>
+            <maml:para>Specify the association types to exclude from the copy.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+          <dev:type>
+            <maml:name>String[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>Include</maml:name>
+          <maml:Description>
+            <maml:para>Specify the association types to include in the copy.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+          <dev:type>
+            <maml:name>String[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>RemoveExisting</maml:name>
+          <maml:Description>
+            <maml:para>Removes the existing associations while still adding the new associations.</maml:para>
           </maml:Description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
@@ -1955,10 +1979,10 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="13" aliases="none">
-          <maml:name>KeepExisting</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>Force</maml:name>
           <maml:Description>
-            <maml:para>Retains the existing associations while still adding the new ones.</maml:para>
+            <maml:para>Bypass user prompts and dynamic ValidateSet.</maml:para>
           </maml:Description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
@@ -1967,9 +1991,33 @@
           <dev:defaultValue>False</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
-          <maml:name>Force</maml:name>
+          <maml:name>Exclude</maml:name>
           <maml:Description>
-            <maml:para>Bypass user prompts and dynamic ValidateSet.</maml:para>
+            <maml:para>Specify the association types to exclude from the copy.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+          <dev:type>
+            <maml:name>String[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>Include</maml:name>
+          <maml:Description>
+            <maml:para>Specify the association types to include in the copy.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+          <dev:type>
+            <maml:name>String[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>RemoveExisting</maml:name>
+          <maml:Description>
+            <maml:para>Removes the existing associations while still adding the new associations.</maml:para>
           </maml:Description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
@@ -2003,18 +2051,6 @@
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="13" aliases="none">
-        <maml:name>KeepExisting</maml:name>
-        <maml:Description>
-          <maml:para>Retains the existing associations while still adding the new ones.</maml:para>
-        </maml:Description>
-        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
-        <dev:type>
-          <maml:name>SwitchParameter</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>False</dev:defaultValue>
       </command:parameter>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="1" aliases="displayName, username">
         <maml:name>Name</maml:name>
@@ -2063,6 +2099,42 @@
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>Exclude</maml:name>
+        <maml:Description>
+          <maml:para>Specify the association types to exclude from the copy.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+        <dev:type>
+          <maml:name>String[]</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>Include</maml:name>
+        <maml:Description>
+          <maml:para>Specify the association types to include in the copy.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+        <dev:type>
+          <maml:name>String[]</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>RemoveExisting</maml:name>
+        <maml:Description>
+          <maml:para>Removes the existing associations while still adding the new associations.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
       </command:parameter>
     </command:parameters>
     <command:inputTypes>
