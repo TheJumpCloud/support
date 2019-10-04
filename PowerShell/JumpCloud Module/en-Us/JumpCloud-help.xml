@@ -1881,7 +1881,18 @@
           <dev:defaultValue>False</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
-          <maml:name>Exclude</maml:name>
+          <maml:name>RemoveExisting</maml:name>
+          <maml:Description>
+            <maml:para>Removes the existing associations while still adding the new associations.</maml:para>
+          </maml:Description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>ExcludeType</maml:name>
           <maml:Description>
             <maml:para>Specify the association types to exclude from the copy.</maml:para>
           </maml:Description>
@@ -1893,7 +1904,7 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
-          <maml:name>Include</maml:name>
+          <maml:name>IncludeType</maml:name>
           <maml:Description>
             <maml:para>Specify the association types to include in the copy.</maml:para>
           </maml:Description>
@@ -1903,17 +1914,6 @@
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
-          <maml:name>RemoveExisting</maml:name>
-          <maml:Description>
-            <maml:para>Removes the existing associations while still adding the new associations.</maml:para>
-          </maml:Description>
-          <dev:type>
-            <maml:name>SwitchParameter</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>False</dev:defaultValue>
         </command:parameter>
       </command:syntaxItem>
       <command:syntaxItem>
@@ -1991,7 +1991,18 @@
           <dev:defaultValue>False</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
-          <maml:name>Exclude</maml:name>
+          <maml:name>RemoveExisting</maml:name>
+          <maml:Description>
+            <maml:para>Removes the existing associations while still adding the new associations.</maml:para>
+          </maml:Description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>ExcludeType</maml:name>
           <maml:Description>
             <maml:para>Specify the association types to exclude from the copy.</maml:para>
           </maml:Description>
@@ -2003,7 +2014,7 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
-          <maml:name>Include</maml:name>
+          <maml:name>IncludeType</maml:name>
           <maml:Description>
             <maml:para>Specify the association types to include in the copy.</maml:para>
           </maml:Description>
@@ -2013,17 +2024,6 @@
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
-          <maml:name>RemoveExisting</maml:name>
-          <maml:Description>
-            <maml:para>Removes the existing associations while still adding the new associations.</maml:para>
-          </maml:Description>
-          <dev:type>
-            <maml:name>SwitchParameter</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>False</dev:defaultValue>
         </command:parameter>
       </command:syntaxItem>
     </command:syntax>
@@ -2101,7 +2101,19 @@
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
-        <maml:name>Exclude</maml:name>
+        <maml:name>RemoveExisting</maml:name>
+        <maml:Description>
+          <maml:para>Removes the existing associations while still adding the new associations.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>ExcludeType</maml:name>
         <maml:Description>
           <maml:para>Specify the association types to exclude from the copy.</maml:para>
         </maml:Description>
@@ -2113,7 +2125,7 @@
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
-        <maml:name>Include</maml:name>
+        <maml:name>IncludeType</maml:name>
         <maml:Description>
           <maml:para>Specify the association types to include in the copy.</maml:para>
         </maml:Description>
@@ -2123,18 +2135,6 @@
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
-        <maml:name>RemoveExisting</maml:name>
-        <maml:Description>
-          <maml:para>Removes the existing associations while still adding the new associations.</maml:para>
-        </maml:Description>
-        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
-        <dev:type>
-          <maml:name>SwitchParameter</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>False</dev:defaultValue>
       </command:parameter>
     </command:parameters>
     <command:inputTypes>
