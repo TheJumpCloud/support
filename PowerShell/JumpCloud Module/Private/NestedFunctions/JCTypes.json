@@ -338,6 +338,66 @@
     ],
     "SystemInsights": [
       {
+        "Table": "kernel_info",
+        "Url": {
+          "List": "/api/v2/systeminsights/kernel_info",
+          "Item": "/api/v2/systeminsights/{system_id}/kernel_info",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "system_id",
+        "ByName": "version",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
+        "Table": "system_controls",
+        "Url": {
+          "List": "/api/v2/systeminsights/system_controls",
+          "Item": "/api/v2/systeminsights/{system_id}/system_controls",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "system_id",
+        "ByName": "name",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
+        "Table": "uptime",
+        "Url": {
+          "List": "/api/v2/systeminsights/uptime",
+          "Item": "/api/v2/systeminsights/{system_id}/uptime",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "system_id",
+        "ByName": "days",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
         "Table": "etc_hosts",
         "Url": {
           "List": "/api/v2/systeminsights/etc_hosts",
