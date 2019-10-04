@@ -19,11 +19,12 @@ Get-JCUser [[-username] <String>] [-firstname <String>] [-lastname <String>] [-e
  [-activated <Boolean>] [-password_expired <Boolean>] [-account_locked <Boolean>]
  [-passwordless_sudo <Boolean>] [-externally_managed <Boolean>] [-ldap_binding_user <Boolean>]
  [-enable_user_portal_multifactor <Boolean>] [-totp_enabled <Boolean>] [-allow_public_key <Boolean>]
- [-samba_service_user <Boolean>] [-password_never_expires <Boolean>] [-filterDateProperty <String>]
- [-returnProperties <String[]>] [-middlename <String>] [-displayname <String>] [-jobTitle <String>]
- [-employeeIdentifier <String>] [-department <String>] [-costCenter <String>] [-company <String>]
- [-employeeType <String>] [-description <String>] [-location <String>] [-external_dn <String>]
- [-external_source_type <String>] -dateFilter <String> -date <String> [<CommonParameters>]
+ [-samba_service_user <Boolean>] [-password_never_expires <Boolean>] [-suspended <Boolean>]
+ [-filterDateProperty <String>] [-returnProperties <String[]>] [-middlename <String>] [-displayname <String>]
+ [-jobTitle <String>] [-employeeIdentifier <String>] [-department <String>] [-costCenter <String>]
+ [-company <String>] [-employeeType <String>] [-description <String>] [-location <String>]
+ [-external_dn <String>] [-external_source_type <String>] -dateFilter <String> -date <String>
+ [<CommonParameters>]
 ```
 
 ### ByID
@@ -619,6 +620,21 @@ Aliases:
 
 Required: False
 Position: 0
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -suspended
+A search filter to show accounts that are enabled ($true) or disabled ($false) for password_never_expires
+
+```yaml
+Type: Boolean
+Parameter Sets: SearchFilter
+Aliases:
+
+Required: False
+Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
