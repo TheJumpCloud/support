@@ -30,9 +30,9 @@ Function Get-JCAssociation
         # For DynamicParam with a default value set that value and then convert the DynamicParam inputs into new variables for the script to use
         Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDynamicParamProcess) -ArgumentList:($PsBoundParameters, $PSCmdlet, $RuntimeParameterDictionary) -NoNewScope
         # Create hash table to store variables
-        $FunctionParameters = [ordered]@{}
+        $FunctionParameters = [ordered]@{ }
         # Add input parameters from function in to hash table and filter out unnecessary parameters
-        $PSBoundParameters.GetEnumerator() | Where-Object {$_.Value} | ForEach-Object {$FunctionParameters.Add($_.Key, $_.Value) | Out-Null}
+        $PSBoundParameters.GetEnumerator() | Where-Object { $_.Value } | ForEach-Object { $FunctionParameters.Add($_.Key, $_.Value) | Out-Null }
         # Add action
         ($FunctionParameters).Add('Action', $Action) | Out-Null
         # Run the command
