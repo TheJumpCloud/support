@@ -228,7 +228,10 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
         [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'The externally managed user source type (ADB Externally managed users only)')]
         [string]
-        $external_source_type
+        $external_source_type,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'A boolean $true/$false value for putting the account into a suspended state')]
+        [bool]$suspended
 
     )
 
