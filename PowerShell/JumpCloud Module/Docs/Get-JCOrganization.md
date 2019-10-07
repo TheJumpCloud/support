@@ -17,7 +17,7 @@ Get-JCOrganization [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-The Get-JCOrganization command displays all JumpCloud organizations associated with the authenticated JumpCloud admins. JumpCloud admins configured for multi tenant administration can see the Organizations they have access to and the displayName and OrgID for these accounts.
+The Get-JCOrganization command displays all JumpCloud organizations associated with the authenticated JumpCloud admins. JumpCloud admins configured for multi tenant administration can see the Organizations they have access to and the displayName and JumpCloudOrgID for these accounts.
 
 ## EXAMPLES
 

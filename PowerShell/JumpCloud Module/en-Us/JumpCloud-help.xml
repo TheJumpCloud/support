@@ -1781,7 +1781,7 @@
         <maml:title>-------------------------- Example 3 --------------------------</maml:title>
         <dev:code>Connect-JCOnline -JumpCloudAPIKey lu8792c9d4y2398is1tb6h0b83ebf0e92s97t382 -JumpCloudOrgID 5b5o13o06tsand0c29a0t3s6 -force</dev:code>
         <dev:remarks>
-          <maml:para>Providing the JumpCloudAPIKey key and the intended JumpCloudOrg ID to connect to multi tenant admins can skip the OrgID connection screen and directly connect to an Org.</maml:para>
+          <maml:para>Providing the JumpCloudAPIKey key and the intended JumpCloudOrg ID to connect to multi tenant admins can skip the JumpCloudOrgID connection screen and directly connect to an Org.</maml:para>
           <maml:para>Using the "-Force" parameter the module update check is skipped. The '-Force' parameter should be used when using the JumpCloud module in scripts or other automation environments.</maml:para>
         </dev:remarks>
       </command:example>
@@ -3831,7 +3831,7 @@
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Get-JCOrganization command displays all JumpCloud organizations associated with the authenticated JumpCloud admins. JumpCloud admins configured for multi tenant administration can see the Organizations they have access to and the displayName and OrgID for these accounts.</maml:para>
+      <maml:para>The Get-JCOrganization command displays all JumpCloud organizations associated with the authenticated JumpCloud admins. JumpCloud admins configured for multi tenant administration can see the Organizations they have access to and the displayName and JumpCloudOrgID for these accounts.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -12723,7 +12723,7 @@ SystemID                 CommandID                Status
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Set-JCOrganization command can only be run by JumpCloud admins with multi tenant (MT) associations. By default the Set-JCOrganization run without any parameters with prompt JumpCloud MT admins with a selection list of their available Organizations. Admins can use the '-OrgID' parameter to skip this prompt and set their Organization programmatically.</maml:para>
+      <maml:para>The Set-JCOrganization command can only be run by JumpCloud admins with multi tenant (MT) associations. By default the Set-JCOrganization run without any parameters with prompt JumpCloud MT admins with a selection list of their available Organizations. Admins can use the '-JumpCloudOrgID' parameter to skip this prompt and set their Organization programmatically.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -12824,9 +12824,9 @@ Enter a value between 1 and 2:</dev:code>
       </command:example>
       <command:example>
         <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>Set-JCOrganization -OrgID 5b5o13o06tsand0c29a0t3s6</dev:code>
+        <dev:code>Set-JCOrganization -JumpCloudOrgID 5b5o13o06tsand0c29a0t3s6</dev:code>
         <dev:remarks>
-          <maml:para>Uses the -OrgID parameter for MT admins to directly connect to a specific JumpCloud org.</maml:para>
+          <maml:para>Uses the -JumpCloudOrgID parameter for MT admins to directly connect to a specific JumpCloud org.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>

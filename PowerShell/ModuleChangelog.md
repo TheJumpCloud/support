@@ -391,7 +391,7 @@ Check our full release notes to see new attribute additions released in 1.8.0
 
 #### BUG FIXES
 
-- Resolved bug on Connect-JCOnline where OrgID would not set correctly
+- Resolved bug on Connect-JCOnline where JumpCloudOrgID would not set correctly
 
 ## 1.8.0
 
@@ -488,7 +488,7 @@ Multi tenant admins can switch the org they are connected to using the Set-JCOrg
 - New Function: Send-JCPasswordReset allows admins to use the 'Resend email' button functionality programmatically to send reset/activation emails to targeted users.
 - New Function: Set-JCOrganization allows multi tenant admins to change the JumpCloud tenant they are conneted to.
 - New Function: Get-JCOrganization allows multi tenant admins to see the JumpCloud tenants they have access to.
-- Updated Function: Connect-JCOnline to prompt multi tenant admins to select their connected tenant. Admins can also skip this prompt by entering a 'JumpCloud OrgID' into the new '-JumpCloudOrgID' parameter to setup connection in automation scenarios.
+- Updated Function: Connect-JCOnline to prompt multi tenant admins to select their connected tenant. Admins can also skip this prompt by entering a 'JumpCloudOrgID' into the new '-JumpCloudOrgID' parameter to setup connection in automation scenarios.
 
 #### IMPROVEMENTS
 
