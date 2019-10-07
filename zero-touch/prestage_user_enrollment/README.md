@@ -115,20 +115,24 @@ The JumpCloud Bootstrap configuration script that is configured in this tutorial
 
 ![configuration_steps](./diagrams/configuration_steps.png?raw=true)
 
-This guide uses [munki-pkg](https://github.com/munki/munki-pkg) to build the custom PKG. The instructions in this guide can be used with an alternative PKG creation tools.
+This guide uses [munki-pkg](https://github.com/munki/munki-pkg) to build the custom PKG. The instructions in this guide can be used with alternative PKG creation tools.
 
 ### Step 1 - Create a New Package Project Directory Using Munkipkg
 
 After installing [munkipkg](https://github.com/munki/munki-pkg/blob/master/README.md#munkipkg) use the `munkipkg --create` command to create a new project. [Need help? Find additional information here.](https://github.com/munki/munki-pkg/blob/master/README.md#creating-a-new-project)
 
-Example `munkipkg --create zero-touch`
+Example:
 
 ```
 bash-3.2$ munkipkg --create zero-touch
 munkipkg: Created new package project at zero-touch
 ```
 
-*To use the munkipkg binary without pointing to the full path move the munkipkg to the `/usr/local/bin` or create a symlink to the location of the munkipkg file in this directory.
+This example creates a munki pkg project named `zero-touch` in the current working directory of the terminal where the command is run.
+
+*To use the munkipkg binary without pointing to the full path of the binary file move the munkipkg binary to the `/usr/local/bin` folder or create a symlink to the location of the munkipkg binary in this directory.
+
+Running this command will create
 
 ### Step 2 - Download the JumpCloud Bootstrap template script
 
@@ -136,7 +140,9 @@ Download the [jumpcloud_bootstrap_template.sh file](./jumpcloud_bootstrap_templa
 
 The JumpCloud Solution Architecture team loves to work with SH files in the code editor Visual Studio Code.
 
-- Want to try VS Code? [Click here to download](https://code.visualstudio.com/) 
+- Want to try VS Code? [Click here to download](https://code.visualstudio.com/)
+
+Save this file inside the 
 
 ### Step 3 - Configuring the JumpCloud Tenant For DEP Zero-Touch
 
