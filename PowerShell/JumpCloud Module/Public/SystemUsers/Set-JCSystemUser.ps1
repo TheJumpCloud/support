@@ -4,56 +4,19 @@ Function Set-JCSystemUser ()
 
     param
     (
-        [Parameter(Mandatory,
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'ByName',
-            Position = 0,
-            HelpMessage = 'The Username of the JumpCloud User whose system permissions will be modified')]
-        [String]$Username,
-
-        [Parameter(Mandatory,
-            ValueFromPipelineByPropertyName = $true,
-            ParameterSetName = 'ByID',
-            HelpMessage = 'The _id of the JumpCloud User whose system permissions will be modified')]
-        [string]
-        $UserID,
-
-        [Parameter(Mandatory,
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'ByName',
-            Position = 1,
-            HelpMessage = 'The _id of the JumpCloud System which you want to modify the permissions on')]
-
-        [Parameter(Mandatory,
-            ValueFromPipelineByPropertyName = $true,
-            ParameterSetName = 'ByID',
-            HelpMessage = 'The _id of the JumpCloud System which you want to modify the permissions on')]
-
-        [string]
-        [alias("_id")]
-        $SystemID,
-
-        [Parameter(Mandatory,
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'ByName',
-            Position = 2,
-            HelpMessage = 'A boolean $true/$false value to add or remove Administrator permissions on a target JumpCloud system')]
-
-        [Parameter(Mandatory,
-            ValueFromPipelineByPropertyName = $true,
-            ParameterSetName = 'ByID',
-            HelpMessage = 'A boolean $true/$false value to add or remove Administrator permissions on a target JumpCloud system')]
-
-        [bool]
-        $Administrator
-
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'ByName', Position = 0, HelpMessage = 'The Username of the JumpCloud User whose system permissions will be modified')][String]$Username,
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName = $true, ParameterSetName = 'ByID', HelpMessage = 'The _id of the JumpCloud User whose system permissions will be modified')][string]$UserID,
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'ByName', Position = 1, HelpMessage = 'The _id of the JumpCloud System which you want to modify the permissions on')]
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName = $true, ParameterSetName = 'ByID', HelpMessage = 'The _id of the JumpCloud System which you want to modify the permissions on')]
+        [alias("_id")][string]$SystemID,
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'ByName', Position = 2, HelpMessage = 'A true or false value to add or remove Administrator permissions on a target JumpCloud system')]
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName = $true, ParameterSetName = 'ByID', HelpMessage = 'A true or false value to add or remove Administrator permissions on a target JumpCloud system')]
+        [ValidateSet('TRUE', 'FALSE')][System.String]$Administrator
     )
-
     begin
-
     {
         Write-Verbose 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {Connect-JConline}
+        if ($JCAPIKEY.length -ne 40) { Connect-JConline }
 
         Write-Verbose 'Populating API headers'
         $hdrs = @{
@@ -90,13 +53,13 @@ Function Set-JCSystemUser ()
     {
         if ($PSCmdlet.ParameterSetName -eq 'ByName')
         {
-            if ($HostNameHash.containsKey($SystemID)) {}
+            if ($HostNameHash.containsKey($SystemID)) { }
 
-            else { Throw "SystemID does not exist. Run 'Get-JCsystem | select Hostname, _id' to see a list of all your JumpCloud systems and the associated _id."}
+            else { Throw "SystemID does not exist. Run 'Get-JCsystem | select Hostname, _id' to see a list of all your JumpCloud systems and the associated _id." }
 
-            if ($UserNameHash.containsKey($Username)) {}
+            if ($UserNameHash.containsKey($Username)) { }
 
-            else { Throw "Username does not exist. Run 'Get-JCUser | select username' to see a list of all your JumpCloud users."}
+            else { Throw "Username does not exist. Run 'Get-JCUser | select username' to see a list of all your JumpCloud users." }
 
             $UserID = $UserNameHash.Get_Item($Username)
             $HostName = $HostNameHash.Get_Item($SystemID)

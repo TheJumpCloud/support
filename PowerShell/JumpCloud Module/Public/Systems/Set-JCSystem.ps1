@@ -4,37 +4,14 @@ Function Set-JCSystem ()
 
     param
     (
-
-        [Parameter(Mandatory, ValueFromPipelineByPropertyName = $true, Position = 0, HelpMessage = 'The _id of the System which you want to remove from JumpCloud. The SystemID will be the 24 character string populated for the _id field. SystemID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically by calling a JumpCloud function that returns the SystemID. This is shown in EXAMPLE 2')]
-        [string]
-        [Alias('_id', 'id')]
-        $SystemID,
-
-        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The system displayName. The displayName is set to the hostname of the system during agent installation. When the system hostname updates the displayName does not update.')]
-        [string]
-        $displayName,
-
-        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A boolean $true/$false value to allow for ssh password authentication.')]
-        [bool]
-        $allowSshPasswordAuthentication,
-
-        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A boolean $true/$false value to allow for ssh root login.')]
-        [bool]
-        $allowSshRootLogin,
-
-        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A boolean $true/$false value to allow for MFA during system login. Note this setting only applies systems running Linux or Mac.')]
-        [bool]
-        $allowMultiFactorAuthentication,
-
-        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A boolean $true/$false value to allow for public key authentication.')]
-        [bool]
-        $allowPublicKeyAuthentication,
-
-        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'Setting this value to $true will enable systemInsights and collect data for this system. Setting this value to $false will disable systemInsights and data collection for the system.')]
-        [bool]
-        $systemInsights
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName = $true, Position = 0, HelpMessage = 'The _id of the System which you want to remove from JumpCloud. The SystemID will be the 24 character string populated for the _id field. SystemID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically by calling a JumpCloud function that returns the SystemID. This is shown in EXAMPLE 2')][Alias('_id', 'id')][string]$SystemID,
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The system displayName. The displayName is set to the hostname of the system during agent installation. When the system hostname updates the displayName does not update.')][string]$displayName,
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A true or false value to allow for ssh password authentication.')][ValidateSet('TRUE', 'FALSE')][System.String]$allowSshPasswordAuthentication,
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A true or false value to allow for ssh root login.')][ValidateSet('TRUE', 'FALSE')][System.String]$allowSshRootLogin,
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A true or false value to allow for MFA during system login. Note this setting only applies systems running Linux or Mac.')][ValidateSet('TRUE', 'FALSE')][System.String]$allowMultiFactorAuthentication,
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A true or false value to allow for public key authentication.')][ValidateSet('TRUE', 'FALSE')][System.String]$allowPublicKeyAuthentication,
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'Setting this value to $true will enable systemInsights and collect data for this system. Setting this value to $false will disable systemInsights and data collection for the system.')][ValidateSet('TRUE', 'FALSE')][System.String]$systemInsights
     )
-
     begin
 
     {

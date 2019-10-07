@@ -5,236 +5,68 @@ Function Set-JCUser ()
     param
     (
 
-        [Parameter(Mandatory,
-            ValueFromPipelineByPropertyName = $true,
-            ParameterSetName = 'Username',
-            Position = 0, HelpMessage = 'The Username of the JumpCloud user you wish to modify')]
-
-        [Parameter(Mandatory,
-            ValueFromPipelineByPropertyName = $true,
-            Position = 0,
-            ParameterSetName = 'RemoveAttribute', HelpMessage = 'The Username of the JumpCloud user you wish to modify')]
-
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName = $true, ParameterSetName = 'Username', Position = 0, HelpMessage = 'The Username of the JumpCloud user you wish to modify')]
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName = $true, Position = 0, ParameterSetName = 'RemoveAttribute', HelpMessage = 'The Username of the JumpCloud user you wish to modify')]
         [string]$Username,
-
-        [Parameter(Mandatory,
-            ValueFromPipelineByPropertyName = $true,
-            ParameterSetName = 'ByID', HelpMessage = 'The _id of the User which you want to modify.
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName = $true, ParameterSetName = 'ByID', HelpMessage = 'The _id of the User which you want to modify.
 To find a JumpCloud UserID run the command:
 PS C:\> Get-JCUser | Select username, _id
 The UserID will be the 24 character string populated for the _id field.
 UserID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCUser function before calling Add-JCUserGroupMember. This is shown in EXAMPLES 3, 4, and 5.
 ')]
-
-        [Alias('_id', 'id')]
-        [string]$UserID,
-
-        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The email address for the user. This must be a unique value.')]
-        [string]
-        $email,
-
-        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The first name of the user')]
-        [string]
-        $firstname,
-
-        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The last name of the user')]
-        [string]
-        $lastname,
-
-        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The password for the user')]
-        [string]
-        $password,
-
-        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A boolean $true/$false value for enabling password_never_expires')]
-        [bool]
-        $password_never_expires,
-
-        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A boolean $true/$false value for allowing pubic key authentication')]
-        [bool]
-        $allow_public_key,
-
-        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A boolean $true/$false value if you want to enable the user to be an administrator on any and all systems the user is bound to.')]
-        [bool]
-        $sudo,
-
-        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A boolean $true/$false value for enabling managed uid')]
-        [bool]
-        $enable_managed_uid,
-
-        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The unix_uid for the user. Note this value must be an number.')]
-        [int]
-        [ValidateRange(0, 4294967295)]
-        $unix_uid,
-
-        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The unix_guid for the user. Note this value must be a number.')]
-        [int]
-        [ValidateRange(0, 4294967295)]
-        $unix_guid,
-
-        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'unlock or lock a users JumpCloud account')]
-        [bool]
-        $account_locked,
-
-        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A boolean $true/$false value if you want to enable passwordless_sudo')]
-        [bool]
-        $passwordless_sudo,
-
-        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A boolean $true/$false value for enabling externally_managed')]
-        [bool]
-        $externally_managed,
-
-        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A boolean $true/$false value to enable the user as an LDAP binding user')]
-        [bool]
-        $ldap_binding_user,
-
-        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A boolean $true/$false value for enabling MFA at the user portal')]
-        [bool]
-        $enable_user_portal_multifactor,
-
-        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'If you intend to update a user with existing Custom Attributes or add new Custom Attributes you must declare how many Custom Attributes you intend to update or add. If an Custom Attribute exists with a name that matches the new attribute then the existing attribute will be updated. Based on the NumberOfCustomAttributes value two Dynamic Parameters will be created for each Custom Attribute: Attribute_name and Attribute_value with an associated number. See an example for working with Custom Attribute in EXAMPLE 4')]
-        [int]
-        $NumberOfCustomAttributes,
-
-        [Parameter(ValueFromPipelineByPropertyName = $true, ParameterSetName = 'RemoveAttribute', HelpMessage = 'The name of the existing Custom Attributes you wish to remove. See an EXAMPLE for working with the -RemoveAttribute Parameter in EXAMPLE 5')]
-        [string[]]
-        $RemoveAttribute,
-
-        [Parameter(ValueFromPipelineByPropertyName = $true, ParameterSetName = 'ByID', HelpMessage = 'Use the -ByID parameter when the UserID is being passed over the pipeline to the Set-JCUser function. The -ByID SwitchParameter will set the ParameterSet to ''ByID'' which will increase the function speed and performance. You cannot use this with the ''RemoveAttribute'' Parameter')]
-        [switch]
-        $ByID,
-
+        [Alias('_id', 'id')][string]$UserID,
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The email address for the user. This must be a unique value.')][string]$email,
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The first name of the user')][string]$firstname,
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The last name of the user')][string]$lastname,
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The password for the user')][string]$password,
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A true or false value for enabling password_never_expires')][ValidateSet('TRUE', 'FALSE')][System.String]$password_never_expires,
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A true or false value for allowing pubic key authentication')][ValidateSet('TRUE', 'FALSE')][System.String]$allow_public_key,
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A true or false value if you want to enable the user to be an administrator on any and all systems the user is bound to.')][ValidateSet('TRUE', 'FALSE')][System.String]$sudo,
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A true or false value for enabling managed uid')][ValidateSet('TRUE', 'FALSE')][System.String]$enable_managed_uid,
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The unix_uid for the user. Note this value must be an number.')][int][ValidateRange(0, 4294967295)]$unix_uid,
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The unix_guid for the user. Note this value must be a number.')][int][ValidateRange(0, 4294967295)]$unix_guid,
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'unlock or lock a users JumpCloud account')][ValidateSet('TRUE', 'FALSE')][System.String]$account_locked,
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A true or false value if you want to enable passwordless_sudo')][ValidateSet('TRUE', 'FALSE')][System.String]$passwordless_sudo,
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A true or false value for enabling externally_managed')][ValidateSet('TRUE', 'FALSE')][System.String]$externally_managed,
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A true or false value to enable the user as an LDAP binding user')][ValidateSet('TRUE', 'FALSE')][System.String]$ldap_binding_user,
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A true or false value for enabling MFA at the user portal')][ValidateSet('TRUE', 'FALSE')][System.String]$enable_user_portal_multifactor,
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'If you intend to update a user with existing Custom Attributes or add new Custom Attributes you must declare how many Custom Attributes you intend to update or add. If an Custom Attribute exists with a name that matches the new attribute then the existing attribute will be updated. Based on the NumberOfCustomAttributes value two Dynamic Parameters will be created for each Custom Attribute: Attribute_name and Attribute_value with an associated number. See an example for working with Custom Attribute in EXAMPLE 4')][int]$NumberOfCustomAttributes,
+        [Parameter(ValueFromPipelineByPropertyName = $true, ParameterSetName = 'RemoveAttribute', HelpMessage = 'The name of the existing Custom Attributes you wish to remove. See an EXAMPLE for working with the -RemoveAttribute Parameter in EXAMPLE 5')][string[]]$RemoveAttribute,
+        [Parameter(ValueFromPipelineByPropertyName = $true, ParameterSetName = 'ByID', HelpMessage = 'Use the -ByID parameter when the UserID is being passed over the pipeline to the Set-JCUser function. The -ByID SwitchParameter will set the ParameterSet to ''ByID'' which will increase the function speed and performance. You cannot use this with the ''RemoveAttribute'' Parameter')][switch]$ByID,
         # New attributes as of 1.8.0 release
-        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s home location. The LDAP displayName of this property is initials.')]
-        [string]
-        $middlename,
-
-        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s preferredName. The LDAP displayName of this property is displayName.')]
-        [string]
-        [Alias('preferredName')]
-        $displayname,
-
-        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s job title. The LDAP displayName of this property is title.')]
-        [string]
-        $jobTitle,
-
-        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s employeeIdentifier. The LDAP displayName of this property is employeeNumber. Note this field must be unique per user.')]
-        [string]
-        $employeeIdentifier,
-
-        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s department. The LDAP displayName of this property is departmentNumber.')]
-        [string]
-        $department,
-
-        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s costCenter. The LDAP displayName of this property is businessCategory.')]
-        [string]
-        $costCenter,
-
-        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s company. The LDAP displayName of this property is company.')]
-        [string]
-        $company,
-
-        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s employeeType. The LDAP displayName of this property is employeeType.')]
-        [string]
-        $employeeType,
-
-        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s description. The LDAP displayName of this property is description. This field is limited to 1024 characters.')]
-        [string]
-        [ValidateLength(0, 1024)]
-        $description,
-
-        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s home location. The LDAP displayName of this property is physicalDeliveryOfficeName.')]
-        [string]
-        $location,
-
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s home location. The LDAP displayName of this property is initials.')][string]$middlename,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s preferredName. The LDAP displayName of this property is displayName.')][string][Alias('preferredName')]$displayname,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s job title. The LDAP displayName of this property is title.')][string]$jobTitle,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s employeeIdentifier. The LDAP displayName of this property is employeeNumber. Note this field must be unique per user.')][string]$employeeIdentifier,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s department. The LDAP displayName of this property is departmentNumber.')][string]$department,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s costCenter. The LDAP displayName of this property is businessCategory.')][string]$costCenter,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s company. The LDAP displayName of this property is company.')][string]$company,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s employeeType. The LDAP displayName of this property is employeeType.')][string]$employeeType,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s description. The LDAP displayName of this property is description. This field is limited to 1024 characters.')][string][ValidateLength(0, 1024)]$description,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s home location. The LDAP displayName of this property is physicalDeliveryOfficeName.')][string]$location,
         #Objects
-
-        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s streetAddress on their work address object. This property is nested within the LDAP property with the displayName postalAddress.')]
-        [string]
-        $work_streetAddress,
-
-        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s poBox on their work address object. The LDAP displayName of this property is postOfficeBox.')]
-        [string]
-        $work_poBox,
-
-        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s city on their work address object. The LDAP displayName of this property is l.')]
-        [string]
-        [Alias('work_city')]
-        $work_locality,
-
-        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s state on their work address object. This property is nested within the LDAP property with the displayName postalAddress.')]
-        [string]
-        [Alias('work_state')]
-        $work_region,
-
-        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s postalCode on their work address object. The LDAP displayName of this property is postalCode.')]
-        [string]
-        $work_postalCode,
-
-        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s country on the work address object. This property is nested within the LDAP property with the displayName postalAddress.')]
-        [string]
-        $work_country,
-
-        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s streetAddress on their home address object. This property is nested within the LDAP property with the displayName homePostalAddress.')]
-        [string]
-        $home_streetAddress,
-
-        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s poBox on their home address object. This property is nested within the LDAP property with the displayName homePostalAddress.')]
-        [string]
-        $home_poBox,
-
-        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s city on their home address object. This property is nested within the LDAP property with the displayName homePostalAddress.')]
-        [string]
-        [Alias('home_city')]
-        $home_locality,
-
-        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s state on their home address object. This property is nested within the LDAP property with the displayName homePostalAddress.')]
-        [string]
-        [Alias('home_state')]
-        $home_region,
-
-        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s postalCode on their home address object. This property is nested within the LDAP property with the displayName homePostalAddress.')]
-        [string]
-        $home_postalCode,
-
-        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s country on the home address object. This property is nested within the LDAP property with the displayName homePostalAddress.')]
-        [string]
-        $home_country,
-
-        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s mobile number. The LDAP displayName of this property is mobile.')]
-        [string]
-        $mobile_number,
-
-        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s home number. The LDAP displayName of this property is homePhone.')]
-        [string]
-        $home_number,
-
-        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s work number. The LDAP displayName of this property is telephoneNumber.')]
-        [string]
-        $work_number,
-
-        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s work mobile number. The LDAP displayName of this property is pager.')]
-        [string]
-        $work_mobile_number,
-
-        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s work fax number. The LDAP displayName of this property is facsimileTelephoneNumber.')]
-        [string]
-        $work_fax_number,
-
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s streetAddress on their work address object. This property is nested within the LDAP property with the displayName postalAddress.')][string]$work_streetAddress,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s poBox on their work address object. The LDAP displayName of this property is postOfficeBox.')][string]$work_poBox,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s city on their work address object. The LDAP displayName of this property is l.')][Alias('work_city')][string]$work_locality,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s state on their work address object. This property is nested within the LDAP property with the displayName postalAddress.')][Alias('work_state')][string]$work_region,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s postalCode on their work address object. The LDAP displayName of this property is postalCode.')][string]$work_postalCode,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s country on the work address object. This property is nested within the LDAP property with the displayName postalAddress.')][string]$work_country,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s streetAddress on their home address object. This property is nested within the LDAP property with the displayName homePostalAddress.')][string]$home_streetAddress,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s poBox on their home address object. This property is nested within the LDAP property with the displayName homePostalAddress.')][string]$home_poBox,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s city on their home address object. This property is nested within the LDAP property with the displayName homePostalAddress.')][Alias('home_city')][string]$home_locality,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s state on their home address object. This property is nested within the LDAP property with the displayName homePostalAddress.')][Alias('home_state')][string]$home_region,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s postalCode on their home address object. This property is nested within the LDAP property with the displayName homePostalAddress.')][string]$home_postalCode,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s country on the home address object. This property is nested within the LDAP property with the displayName homePostalAddress.')][string]$home_country,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s mobile number. The LDAP displayName of this property is mobile.')][string]$mobile_number,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s home number. The LDAP displayName of this property is homePhone.')][string]$home_number,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s work number. The LDAP displayName of this property is telephoneNumber.')][string]$work_number,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s work mobile number. The LDAP displayName of this property is pager.')][string]$work_mobile_number,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s work fax number. The LDAP displayName of this property is facsimileTelephoneNumber.')][string]$work_fax_number,
         # New attributes as of 1.12.0 release
-
-        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'The distinguished name of the AD domain (ADB Externally managed users only)')]
-        [string]
-        $external_dn,
-
-        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'The externally managed user source type (ADB Externally managed users only)')]
-        [string]
-        $external_source_type,
-
-        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'A boolean $true/$false value for putting the account into a suspended state')]
-        [bool]$suspended
-
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'The distinguished name of the AD domain (ADB Externally managed users only)')][string]$external_dn,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'The externally managed user source type (ADB Externally managed users only)')][string]$external_source_type,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'A true or false value for putting the account into a suspended state')][ValidateSet('TRUE', 'FALSE')][System.String]$suspended
     )
-
     DynamicParam
     {
         $dict = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
