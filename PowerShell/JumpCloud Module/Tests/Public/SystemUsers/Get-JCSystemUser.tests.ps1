@@ -5,5 +5,4 @@ Describe -Tag:('JCSystemUser') 'Get-JCSystemUser 1.0' {
         $SystemUsers = Get-JCSystemUser -SystemID  $PesterParams.SystemID
         $SystemUsers.username.Count | Should -BeGreaterThan 1
     }
-
 }
