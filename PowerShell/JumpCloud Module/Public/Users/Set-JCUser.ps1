@@ -19,17 +19,17 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
         [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The first name of the user')][string]$firstname,
         [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The last name of the user')][string]$lastname,
         [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The password for the user')][string]$password,
-        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A true or false value for enabling password_never_expires')][ValidateSet('TRUE', 'FALSE')][System.String]$password_never_expires,
-        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A true or false value for allowing pubic key authentication')][ValidateSet('TRUE', 'FALSE')][System.String]$allow_public_key,
-        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A true or false value if you want to enable the user to be an administrator on any and all systems the user is bound to.')][ValidateSet('TRUE', 'FALSE')][System.String]$sudo,
-        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A true or false value for enabling managed uid')][ValidateSet('TRUE', 'FALSE')][System.String]$enable_managed_uid,
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A true or false value for enabling password_never_expires')][ValidateSet($true, $false)][System.String]$password_never_expires,
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A true or false value for allowing pubic key authentication')][ValidateSet($true, $false)][System.String]$allow_public_key,
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A true or false value if you want to enable the user to be an administrator on any and all systems the user is bound to.')][ValidateSet($true, $false)][System.String]$sudo,
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A true or false value for enabling managed uid')][ValidateSet($true, $false)][System.String]$enable_managed_uid,
         [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The unix_uid for the user. Note this value must be an number.')][int][ValidateRange(0, 4294967295)]$unix_uid,
         [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The unix_guid for the user. Note this value must be a number.')][int][ValidateRange(0, 4294967295)]$unix_guid,
-        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'unlock or lock a users JumpCloud account')][ValidateSet('TRUE', 'FALSE')][System.String]$account_locked,
-        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A true or false value if you want to enable passwordless_sudo')][ValidateSet('TRUE', 'FALSE')][System.String]$passwordless_sudo,
-        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A true or false value for enabling externally_managed')][ValidateSet('TRUE', 'FALSE')][System.String]$externally_managed,
-        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A true or false value to enable the user as an LDAP binding user')][ValidateSet('TRUE', 'FALSE')][System.String]$ldap_binding_user,
-        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A true or false value for enabling MFA at the user portal')][ValidateSet('TRUE', 'FALSE')][System.String]$enable_user_portal_multifactor,
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'unlock or lock a users JumpCloud account')][ValidateSet($true, $false)][System.String]$account_locked,
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A true or false value if you want to enable passwordless_sudo')][ValidateSet($true, $false)][System.String]$passwordless_sudo,
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A true or false value for enabling externally_managed')][ValidateSet($true, $false)][System.String]$externally_managed,
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A true or false value to enable the user as an LDAP binding user')][ValidateSet($true, $false)][System.String]$ldap_binding_user,
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A true or false value for enabling MFA at the user portal')][ValidateSet($true, $false)][System.String]$enable_user_portal_multifactor,
         [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'If you intend to update a user with existing Custom Attributes or add new Custom Attributes you must declare how many Custom Attributes you intend to update or add. If an Custom Attribute exists with a name that matches the new attribute then the existing attribute will be updated. Based on the NumberOfCustomAttributes value two Dynamic Parameters will be created for each Custom Attribute: Attribute_name and Attribute_value with an associated number. See an example for working with Custom Attribute in EXAMPLE 4')][int]$NumberOfCustomAttributes,
         [Parameter(ValueFromPipelineByPropertyName = $true, ParameterSetName = 'RemoveAttribute', HelpMessage = 'The name of the existing Custom Attributes you wish to remove. See an EXAMPLE for working with the -RemoveAttribute Parameter in EXAMPLE 5')][string[]]$RemoveAttribute,
         [Parameter(ValueFromPipelineByPropertyName = $true, ParameterSetName = 'ByID', HelpMessage = 'Use the -ByID parameter when the UserID is being passed over the pipeline to the Set-JCUser function. The -ByID SwitchParameter will set the ParameterSet to ''ByID'' which will increase the function speed and performance. You cannot use this with the ''RemoveAttribute'' Parameter')][switch]$ByID,
@@ -65,7 +65,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
         # New attributes as of 1.12.0 release
         [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'The distinguished name of the AD domain (ADB Externally managed users only)')][string]$external_dn,
         [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'The externally managed user source type (ADB Externally managed users only)')][string]$external_source_type,
-        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'A true or false value for putting the account into a suspended state')][ValidateSet('TRUE', 'FALSE')][System.String]$suspended
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'A true or false value for putting the account into a suspended state')][ValidateSet($true, $false)][System.String]$suspended
     )
     DynamicParam
     {
@@ -75,28 +75,30 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
             $enable_user_portal_multifactor = $true
             $NumberOfCustomAttributes = 2
         }
-        If ($enable_user_portal_multifactor -eq $True)
+        if ($enable_user_portal_multifactor)
         {
-            # Set the dynamic parameters' name
-            $ParamName = 'EnrollmentDays'
-            # Create the collection of attributes
-            $AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
-            # Create and set the parameters' attributes
-            $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
-            $ParameterAttribute.Mandatory = $false
-            $ParameterAttribute.HelpMessage = 'Number of days to allow for MFA enrollment.'
-            # Generate and set the ValidateSet
-            $ValidateRangeAttribute = New-Object System.Management.Automation.ValidateRangeAttribute('1', '365')
-            # Add the ValidateSet to the attributes collection
-            $AttributeCollection.Add($ValidateRangeAttribute)
-            # Add the attributes to the attributes collection
-            $AttributeCollection.Add($ParameterAttribute)
-            # Create and return the dynamic parameter
-            $RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter($ParamName, [Int32], $AttributeCollection)
-            $dict.Add($ParamName, $RuntimeParameter)
+            If ([System.Convert]::ToBoolean($enable_user_portal_multifactor) -eq $True)
+            {
+                # Set the dynamic parameters' name
+                $ParamName = 'EnrollmentDays'
+                # Create the collection of attributes
+                $AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
+                # Create and set the parameters' attributes
+                $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
+                $ParameterAttribute.Mandatory = $false
+                $ParameterAttribute.HelpMessage = 'Number of days to allow for MFA enrollment.'
+                # Generate and set the ValidateSet
+                $ValidateRangeAttribute = New-Object System.Management.Automation.ValidateRangeAttribute('1', '365')
+                # Add the ValidateSet to the attributes collection
+                $AttributeCollection.Add($ValidateRangeAttribute)
+                # Add the attributes to the attributes collection
+                $AttributeCollection.Add($ParameterAttribute)
+                # Create and return the dynamic parameter
+                $RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter($ParamName, [Int32], $AttributeCollection)
+                $dict.Add($ParamName, $RuntimeParameter)
 
+            }
         }
-
         If ($NumberOfCustomAttributes)
         {
 
@@ -396,27 +398,35 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
                     if ($param.Key -like 'home_*') { continue }
 
-                    $body.add($param.Key, $param.Value)
+                    If ($param.Value -in ('true', 'false'))
+                    {
+                        $body.add($param.Key, [System.Convert]::ToBoolean($param.Value))
+                    }
+                    Else
+                    {
+                        $body.add($param.Key, $param.Value)
+                    }
 
                 }
-
-                if ($enable_user_portal_multifactor -eq $True)
+                If ($enable_user_portal_multifactor)
                 {
-                    if ($PSBoundParameters['EnrollmentDays'])
+                    if ([System.Convert]::ToBoolean($enable_user_portal_multifactor) -eq $True)
                     {
-                        $exclusionUntil = (Get-Date).AddDays($PSBoundParameters['EnrollmentDays'])
-                    }
-                    else
-                    {
-                        $exclusionUntil = (Get-Date).AddDays(7)
-                    }
+                        if ($PSBoundParameters['EnrollmentDays'])
+                        {
+                            $exclusionUntil = (Get-Date).AddDays($PSBoundParameters['EnrollmentDays'])
+                        }
+                        else
+                        {
+                            $exclusionUntil = (Get-Date).AddDays(7)
+                        }
 
-                    $mfa = @{ }
-                    $mfa.Add("exclusion", $true)
-                    $mfa.Add("exclusionUntil", [string]$exclusionUntil)
-                    $body.Add('mfa', $mfa)
+                        $mfa = @{ }
+                        $mfa.Add("exclusion", $true)
+                        $mfa.Add("exclusionUntil", [string]$exclusionUntil)
+                        $body.Add('mfa', $mfa)
+                    }
                 }
-
                 $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
 
                 Write-Debug $jsonbody
@@ -494,9 +504,14 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                         continue
                     }
 
-
-                    $body.add($param.Key, $param.Value)
-
+                    If ($param.Value -in ('true', 'false'))
+                    {
+                        $body.add($param.Key, [System.Convert]::ToBoolean($param.Value))
+                    }
+                    Else
+                    {
+                        $body.add($param.Key, $param.Value)
+                    }
                 }
 
 
@@ -542,21 +557,24 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
                 $body.add('attributes', $UpdatedAttributeArrayList)
 
-                if ($enable_user_portal_multifactor -eq $True)
+                if ($enable_user_portal_multifactor)
                 {
-                    if ($PSBoundParameters['EnrollmentDays'])
+                    if ([System.Convert]::ToBoolean($enable_user_portal_multifactor) -eq $True)
                     {
-                        $exclusionUntil = (Get-Date).AddDays($PSBoundParameters['EnrollmentDays'])
-                    }
-                    else
-                    {
-                        $exclusionUntil = (Get-Date).AddDays(7)
-                    }
+                        if ($PSBoundParameters['EnrollmentDays'])
+                        {
+                            $exclusionUntil = (Get-Date).AddDays($PSBoundParameters['EnrollmentDays'])
+                        }
+                        else
+                        {
+                            $exclusionUntil = (Get-Date).AddDays(7)
+                        }
 
-                    $mfa = @{ }
-                    $mfa.Add("exclusion", $true)
-                    $mfa.Add("exclusionUntil", [string]$exclusionUntil)
-                    $body.Add('mfa', $mfa)
+                        $mfa = @{ }
+                        $mfa.Add("exclusion", $true)
+                        $mfa.Add("exclusionUntil", [string]$exclusionUntil)
+                        $body.Add('mfa', $mfa)
+                    }
                 }
 
                 $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
@@ -602,7 +620,14 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
                     if ($param.Key -like 'home_*') { continue }
 
-                    $body.add($param.Key, $param.Value)
+                    If ($param.Value -in ('true', 'false'))
+                    {
+                        $body.add($param.Key, [System.Convert]::ToBoolean($param.Value))
+                    }
+                    Else
+                    {
+                        $body.add($param.Key, $param.Value)
+                    }
 
                 }
 
@@ -636,24 +661,25 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                 }
 
                 $body.add('attributes', $UpdatedAttributeArrayList)
-
-                if ($enable_user_portal_multifactor -eq $True)
+                if ($enable_user_portal_multifactor)
                 {
-                    if ($PSBoundParameters['EnrollmentDays'])
+                    if ([System.Convert]::ToBoolean($enable_user_portal_multifactor) -eq $True)
                     {
-                        $exclusionUntil = (Get-Date).AddDays($PSBoundParameters['EnrollmentDays'])
-                    }
-                    else
-                    {
-                        $exclusionUntil = (Get-Date).AddDays(7)
-                    }
+                        if ($PSBoundParameters['EnrollmentDays'])
+                        {
+                            $exclusionUntil = (Get-Date).AddDays($PSBoundParameters['EnrollmentDays'])
+                        }
+                        else
+                        {
+                            $exclusionUntil = (Get-Date).AddDays(7)
+                        }
 
-                    $mfa = @{ }
-                    $mfa.Add("exclusion", $true)
-                    $mfa.Add("exclusionUntil", [string]$exclusionUntil)
-                    $body.Add('mfa', $mfa)
+                        $mfa = @{ }
+                        $mfa.Add("exclusion", $true)
+                        $mfa.Add("exclusionUntil", [string]$exclusionUntil)
+                        $body.Add('mfa', $mfa)
+                    }
                 }
-
                 $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
 
                 Write-Debug $jsonbody
@@ -695,27 +721,35 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
                 if ($param.key -eq 'ByID') { continue }
 
-                $body.add($param.Key, $param.Value)
+                If ($param.Value -in ('true', 'false'))
+                {
+                    $body.add($param.Key, [System.Convert]::ToBoolean($param.Value))
+                }
+                Else
+                {
+                    $body.add($param.Key, $param.Value)
+                }
 
             }
-
-            if ($enable_user_portal_multifactor -eq $True)
+            if ($enable_user_portal_multifactor)
             {
-                if ($PSBoundParameters['EnrollmentDays'])
+                if ([System.Convert]::ToBoolean($enable_user_portal_multifactor) -eq $True)
                 {
-                    $exclusionUntil = (Get-Date).AddDays($PSBoundParameters['EnrollmentDays'])
-                }
-                else
-                {
-                    $exclusionUntil = (Get-Date).AddDays(7)
-                }
+                    if ($PSBoundParameters['EnrollmentDays'])
+                    {
+                        $exclusionUntil = (Get-Date).AddDays($PSBoundParameters['EnrollmentDays'])
+                    }
+                    else
+                    {
+                        $exclusionUntil = (Get-Date).AddDays(7)
+                    }
 
-                $mfa = @{ }
-                $mfa.Add("exclusion", $true)
-                $mfa.Add("exclusionUntil", [string]$exclusionUntil)
-                $body.Add('mfa', $mfa)
+                    $mfa = @{ }
+                    $mfa.Add("exclusion", $true)
+                    $mfa.Add("exclusionUntil", [string]$exclusionUntil)
+                    $body.Add('mfa', $mfa)
+                }
             }
-
             $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
 
             Write-Debug $jsonbody
@@ -790,7 +824,14 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                 }
 
 
-                $body.add($param.Key, $param.Value)
+                If ($param.Value -in ('true', 'false'))
+                {
+                    $body.add($param.Key, [System.Convert]::ToBoolean($param.Value))
+                }
+                Else
+                {
+                    $body.add($param.Key, $param.Value)
+                }
 
             }
 
@@ -836,24 +877,25 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
             }
 
             $body.add('attributes', $UpdatedAttributeArrayList)
-
-            if ($enable_user_portal_multifactor -eq $True)
+            if ($enable_user_portal_multifactor)
             {
-                if ($PSBoundParameters['EnrollmentDays'])
+                if ([System.Convert]::ToBoolean($enable_user_portal_multifactor) -eq $True)
                 {
-                    $exclusionUntil = (Get-Date).AddDays($PSBoundParameters['EnrollmentDays'])
-                }
-                else
-                {
-                    $exclusionUntil = (Get-Date).AddDays(7)
-                }
+                    if ($PSBoundParameters['EnrollmentDays'])
+                    {
+                        $exclusionUntil = (Get-Date).AddDays($PSBoundParameters['EnrollmentDays'])
+                    }
+                    else
+                    {
+                        $exclusionUntil = (Get-Date).AddDays(7)
+                    }
 
-                $mfa = @{ }
-                $mfa.Add("exclusion", $true)
-                $mfa.Add("exclusionUntil", [string]$exclusionUntil)
-                $body.Add('mfa', $mfa)
+                    $mfa = @{ }
+                    $mfa.Add("exclusion", $true)
+                    $mfa.Add("exclusionUntil", [string]$exclusionUntil)
+                    $body.Add('mfa', $mfa)
+                }
             }
-
             $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
 
             Write-Debug $jsonbody

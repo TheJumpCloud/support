@@ -24,7 +24,7 @@ SystemID has an Alias of _id. This means you can leverage the PowerShell pipelin
         [alias("_id")][string]$SystemID,
         [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'ByName', Position = 2, HelpMessage = 'A true or false value to set Administrator permissions on the target JumpCloud system')]
         [Parameter(ValueFromPipelineByPropertyName = $true, ParameterSetName = 'ByID', HelpMessage = 'A true or false value to set Administrator permissions on the target JumpCloud system')]
-        [ValidateSet('TRUE', 'FALSE')][System.String]$Administrator = $false
+        [ValidateSet($true, $false)][System.String]$Administrator = $false
     )
     begin
     {
@@ -89,7 +89,7 @@ SystemID has an Alias of _id. This means you can leverage the PowerShell pipelin
                 $Administrator = $true
             }
 
-            if ($Administrator -eq $true)
+            if ([System.Convert]::ToBoolean($Administrator) -eq $true)
             {
 
                 $body = @{
@@ -146,7 +146,7 @@ SystemID has an Alias of _id. This means you can leverage the PowerShell pipelin
                 'SystemID'      = $SystemID
                 'Username'      = $Username
                 'Status'        = $Status
-                'Administrator' = $Administrator
+                'Administrator' = [System.Convert]::ToBoolean($Administrator)
             }
 
 
@@ -164,7 +164,7 @@ SystemID has an Alias of _id. This means you can leverage the PowerShell pipelin
                 $Administrator = $true
             }
 
-            if ($Administrator -eq $true)
+            if ([System.Convert]::ToBoolean($Administrator) -eq $true)
             {
 
                 $body = @{
@@ -219,7 +219,7 @@ SystemID has an Alias of _id. This means you can leverage the PowerShell pipelin
                 'SystemID'      = $SystemID
                 'UserID'        = $UserID
                 'Status'        = $Status
-                'Administrator' = $Administrator
+                'Administrator' = [System.Convert]::ToBoolean($Administrator)
             }
 
             $SystemUpdateArray += $FormattedResults

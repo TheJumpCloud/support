@@ -9,15 +9,15 @@ Function New-JCUser ()
         [Parameter(Mandatory, ValueFromPipelineByPropertyName = $True, HelpMessage = 'The username for the user. This must be a unique value. This value is not modifiable after user creation.')][System.String]$username,
         [Parameter(Mandatory, ValueFromPipelineByPropertyName = $True, HelpMessage = 'The email address for the user. This must be a unique value.')][System.String]$email,
         [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'The password for the user')][System.String]$password,
-        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'A true or false value for enabling password_never_expires')][ValidateSet('TRUE', 'FALSE')][System.String]$password_never_expires,
-        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'A true or false value for allowing pubic key authentication')][ValidateSet('TRUE', 'FALSE')][System.String]$allow_public_key,
-        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'A true or false value if you want to enable the user to be an administrator on any and all systems the user is bound to.')][ValidateSet('TRUE', 'FALSE')][System.String]$sudo,
-        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'A true or false value for enabling managed uid')][ValidateSet('TRUE', 'FALSE')][System.String]$enable_managed_uid,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'A true or false value for enabling password_never_expires')][ValidateSet($true, $false)][System.String]$password_never_expires,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'A true or false value for allowing pubic key authentication')][ValidateSet($true, $false)][System.String]$allow_public_key,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'A true or false value if you want to enable the user to be an administrator on any and all systems the user is bound to.')][ValidateSet($true, $false)][System.String]$sudo,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'A true or false value for enabling managed uid')][ValidateSet($true, $false)][System.String]$enable_managed_uid,
         [Parameter(HelpMessage = 'The unix_uid for the new user. Note this value must be an number.')][ValidateRange(0, 4294967295)][int]$unix_uid,
         [Parameter(HelpMessage = 'The unix_guid for the new user. Note this value must be an number.')][ValidateRange(0, 4294967295)][int]$unix_guid,
-        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'A true or false value if you want to enable passwordless_sudo')][ValidateSet('TRUE', 'FALSE')][System.String]$passwordless_sudo,
-        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'A true or false value to enable the user as an LDAP binding user')][ValidateSet('TRUE', 'FALSE')][System.String]$ldap_binding_user,
-        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'A true or false value for enabling MFA at the user portal')][ValidateSet('TRUE', 'FALSE')][System.String]$enable_user_portal_multifactor,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'A true or false value if you want to enable passwordless_sudo')][ValidateSet($true, $false)][System.String]$passwordless_sudo,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'A true or false value to enable the user as an LDAP binding user')][ValidateSet($true, $false)][System.String]$ldap_binding_user,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'A true or false value for enabling MFA at the user portal')][ValidateSet($true, $false)][System.String]$enable_user_portal_multifactor,
         [Parameter(ParameterSetName = 'Attributes', HelpMessage = 'If you intend to create users with Custom Attributes you must declare how many Custom Attributes you intend to add. Based on the NumberOfCustomAttributes value two Dynamic Parameters will be created for each Custom Attribute: Attribute_name and Attribute_value with an associated number. See an example for adding a user with two Custom Attributes in EXAMPLE 3')][int]$NumberOfCustomAttributes,
         # New attributes as of 1.8.0 release
         [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s home location. The LDAP displayName of this property is initials.')][System.String]$middlename,
@@ -48,7 +48,7 @@ Function New-JCUser ()
         [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s work number. The LDAP displayName of this property is telephoneNumber.')][System.String]$work_number,
         [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s work mobile number. The LDAP displayName of this property is pager.')][System.String]$work_mobile_number,
         [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s work fax number. The LDAP displayName of this property is facsimileTelephoneNumber.')][System.String]$work_fax_number,
-        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'A true or false value for putting the account into a suspended state')][ValidateSet('TRUE', 'FALSE')][System.String]$suspended
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'A true or false value for putting the account into a suspended state')][ValidateSet($true, $false)][System.String]$suspended
     )
     DynamicParam
     {
@@ -151,7 +151,6 @@ Function New-JCUser ()
                 }
                 continue
             }
-
             if ($param.Key -like '*_number')
             {
                 $Number = @{ }
@@ -172,15 +171,14 @@ Function New-JCUser ()
                 $HomeAddressParams.Add(($($param.Key -split "_", 2)[1]), $param.Value)
                 continue
             }
-
-            if ($param.Key -eq 'enable_user_portal_multifactor')
+            If ($param.Value -in ('true', 'false'))
             {
-                $body.add($param.Key, $enable_user_portal_multifactor)
-                continue
+                $body.add($param.Key, [System.Convert]::ToBoolean($param.Value))
             }
-
-            $body.add($param.Key, $param.Value)
-
+            Else
+            {
+                $body.add($param.Key, $param.Value)
+            }
         }
 
         if ($WorkAddressParams.Count -gt 1)
@@ -202,24 +200,25 @@ Function New-JCUser ()
         {
             $body.Add('phoneNumbers', $phoneNumbers)
         }
-
-        if ($enable_user_portal_multifactor -eq $True)
+        if ($enable_user_portal_multifactor)
         {
-            if ($PSBoundParameters['EnrollmentDays'])
+            if ([System.Convert]::ToBoolean($enable_user_portal_multifactor) -eq $True)
             {
-                $exclusionUntil = (Get-Date).AddDays($PSBoundParameters['EnrollmentDays'])
-            }
-            else
-            {
-                $exclusionUntil = (Get-Date).AddDays(7)
-            }
+                if ($PSBoundParameters['EnrollmentDays'])
+                {
+                    $exclusionUntil = (Get-Date).AddDays($PSBoundParameters['EnrollmentDays'])
+                }
+                else
+                {
+                    $exclusionUntil = (Get-Date).AddDays(7)
+                }
 
-            $mfa = @{ }
-            $mfa.Add("exclusion", $true)
-            $mfa.Add("exclusionUntil", [string]$exclusionUntil)
-            $body.Add('mfa', $mfa)
+                $mfa = @{ }
+                $mfa.Add("exclusion", $true)
+                $mfa.Add("exclusionUntil", [string]$exclusionUntil)
+                $body.Add('mfa', $mfa)
+            }
         }
-
         If ($NewAttributes) { $body.add('attributes', $NewAttributes) }
 
         $jsonbody = $body | ConvertTo-Json

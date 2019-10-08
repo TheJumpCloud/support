@@ -11,7 +11,7 @@ Function Set-JCSystemUser ()
         [alias("_id")][string]$SystemID,
         [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'ByName', Position = 2, HelpMessage = 'A true or false value to add or remove Administrator permissions on a target JumpCloud system')]
         [Parameter(Mandatory, ValueFromPipelineByPropertyName = $true, ParameterSetName = 'ByID', HelpMessage = 'A true or false value to add or remove Administrator permissions on a target JumpCloud system')]
-        [ValidateSet('TRUE', 'FALSE')][System.String]$Administrator
+        [ValidateSet($true, $false)][System.String]$Administrator
     )
     begin
     {
@@ -64,7 +64,7 @@ Function Set-JCSystemUser ()
             $UserID = $UserNameHash.Get_Item($Username)
             $HostName = $HostNameHash.Get_Item($SystemID)
 
-            if ($Administrator -eq $true)
+            if ([System.Convert]::ToBoolean($Administrator) -eq $true)
             {
 
                 $body = @{
@@ -84,7 +84,7 @@ Function Set-JCSystemUser ()
 
             }
 
-            elseif ($Administrator -eq $false)
+            elseif ([System.Convert]::ToBoolean($Administrator) -eq $false)
             {
 
                 $body = @{
@@ -130,7 +130,7 @@ Function Set-JCSystemUser ()
                 'SystemID'      = $SystemID
                 'Username'      = $Username
                 'Status'        = $Status
-                'Administrator' = $Administrator
+                'Administrator' = [System.Convert]::ToBoolean($Administrator)
             }
 
 
@@ -140,7 +140,7 @@ Function Set-JCSystemUser ()
 
         elseif ($PSCmdlet.ParameterSetName -eq 'ByID')
         {
-            if ($Administrator -eq $true)
+            if ([System.Convert]::ToBoolean($Administrator) -eq $true)
             {
 
                 $body = @{
@@ -160,7 +160,7 @@ Function Set-JCSystemUser ()
 
             }
 
-            elseif ($Administrator -eq $false)
+            elseif ([System.Convert]::ToBoolean($Administrator) -eq $false)
             {
 
                 $body = @{
@@ -203,7 +203,7 @@ Function Set-JCSystemUser ()
                 'SystemID'      = $SystemID
                 'UserID'        = $UserID
                 'Status'        = $Status
-                'Administrator' = $Administrator
+                'Administrator' = [System.Convert]::ToBoolean($Administrator)
             }
 
             $SystemUpdateArray += $FormattedResults
