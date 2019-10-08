@@ -2,7 +2,7 @@
 
 #### RELEASE DATE
 
-September 17, 2019
+October 08, 2019
 
 #### RELEASE NOTES
 
