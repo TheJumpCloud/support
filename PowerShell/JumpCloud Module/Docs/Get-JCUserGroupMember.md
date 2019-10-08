@@ -54,7 +54,7 @@ Returns all the JumpCloud User Groups that the JumpCloud user with a username of
 If searching for a User Group using the GroupID populate the GroupID in the -ByID field.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: ByID
 Aliases:
 
@@ -69,7 +69,7 @@ Accept wildcard characters: False
 The name of the JumpCloud User Group you want to return the members of.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: ByGroup
 Aliases: name
 
@@ -86,7 +86,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
-
 ## OUTPUTS
 
 ### System.Object

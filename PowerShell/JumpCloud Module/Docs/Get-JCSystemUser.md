@@ -65,7 +65,7 @@ This means you can leverage the PowerShell pipeline to populate this field autom
 This is shown in EXAMPLES 2 and 3.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases: _id, id
 
@@ -82,7 +82,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
-
 ## OUTPUTS
 
 ### System.Object

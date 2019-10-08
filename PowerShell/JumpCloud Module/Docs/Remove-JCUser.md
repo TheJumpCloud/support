@@ -48,7 +48,7 @@ Use the -ByID parameter when the UserID is passed over the pipeline to the Remov
 The -ByID SwitchParameter will set the ParameterSet to 'ByID' which will increase the function speed and performance.
 
 ```yaml
-Type: System.Management.Automation.SwitchParameter
+Type: SwitchParameter
 Parameter Sets: UserID
 Aliases:
 
@@ -72,7 +72,7 @@ UserID has an Alias of _id.
 This means you can leverage the PowerShell pipeline to populate this field automatically.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: UserID
 Aliases: _id
 
@@ -87,7 +87,7 @@ Accept wildcard characters: False
 The Username of the JumpCloud user you wish to remove.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: Username
 Aliases:
 
@@ -102,7 +102,7 @@ Accept wildcard characters: False
 A SwitchParameter which suppresses the warning message when removing a JumpCloud User.
 
 ```yaml
-Type: System.Management.Automation.SwitchParameter
+Type: SwitchParameter
 Parameter Sets: (All)
 Aliases:
 
@@ -119,7 +119,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
-
 ## OUTPUTS
 
 ### System.Object

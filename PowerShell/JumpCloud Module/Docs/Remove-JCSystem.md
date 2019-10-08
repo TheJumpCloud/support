@@ -75,7 +75,7 @@ This means you can leverage the PowerShell pipeline to populate this field autom
 This is shown in EXAMPLES 3 and 4.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases: _id, id
 
@@ -90,7 +90,7 @@ Accept wildcard characters: False
 A SwitchParameter which suppresses the warning message when removing a JumpCloud System.
 
 ```yaml
-Type: System.Management.Automation.SwitchParameter
+Type: SwitchParameter
 Parameter Sets: force
 Aliases:
 
@@ -107,7 +107,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
-
 ## OUTPUTS
 
 ### System.Object
