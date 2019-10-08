@@ -99,7 +99,7 @@ By specifying the '-VLAN' parameter three radius attributes are added to the Jum
 Enter an attribute name
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -114,7 +114,7 @@ Accept wildcard characters: False
 Enter an attribute value
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -129,7 +129,7 @@ Accept wildcard characters: False
 Enter an attribute name
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -144,7 +144,7 @@ Accept wildcard characters: False
 Enter an attribute value
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -159,7 +159,7 @@ Accept wildcard characters: False
 The JumpCloud user group to add the specified Radius reply attributes to.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases: name
 
@@ -179,7 +179,7 @@ Attributes must be valid RADIUS attributes.
 Find a list of valid RADIUS attributes within the dictionary files of this repro broken down by vendor: github.com/FreeRADIUS/freeradius-server/tree/v3.0.x/share If an invalid attribute is configured on a user group this will prevent users within this group from being able to authenticate via RADIUS until the invalid attribute is removed.
 
 ```yaml
-Type: System.Int32
+Type: Int32
 Parameter Sets: (All)
 Aliases:
 
@@ -208,7 +208,7 @@ Tunnel-Private-Group-Id **VALUE of -VLAN**
 The value specified for the '-VLAN' parameter is populated for the value of **Tunnel-Private-Group-Id**.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -223,7 +223,7 @@ Accept wildcard characters: False
 Specifies the VLAN id which is applied to all attribute names.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 Accepted values: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31
@@ -241,9 +241,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
-
 ### System.Int32
-
 ## OUTPUTS
 
 ### System.Object
