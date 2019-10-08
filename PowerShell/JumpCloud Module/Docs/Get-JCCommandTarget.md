@@ -48,7 +48,7 @@ The id value of the JumpCloud command.
 Use the command 'Get-JCCommand | Select-Object _id, name' to find the "_id" value for all the JumpCloud commands in your tenant.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: (All)
 Aliases: _id, id
 
@@ -63,7 +63,7 @@ Accept wildcard characters: False
 A switch parameter to display any System Groups associated with a command.
 
 ```yaml
-Type: SwitchParameter
+Type: System.Management.Automation.SwitchParameter
 Parameter Sets: Groups
 Aliases:
 
@@ -80,6 +80,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
+
 ## OUTPUTS
 
 ### System.Object

@@ -51,7 +51,7 @@ Using the "-Force" parameter the module update check is skipped. The '-Force' pa
 Specific to JumpCloud development team to connect to staging dev environment.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: (All)
 Aliases:
 Accepted values: production, staging
@@ -68,7 +68,7 @@ Please enter your JumpCloud API key.
 This can be found in the JumpCloud admin console within "API Settings" accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: (All)
 Aliases:
 
@@ -84,7 +84,7 @@ Organization Id can be found in the Settings page within the admin console.
 Only needed for multi tenant admins.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: (All)
 Aliases:
 
@@ -100,7 +100,7 @@ Using the "-Force" parameter the module update check is skipped.
 The '-Force' parameter should be used when using the JumpCloud module in scripts or other automation environments.
 
 ```yaml
-Type: SwitchParameter
+Type: System.Management.Automation.SwitchParameter
 Parameter Sets: (All)
 Aliases:
 
@@ -117,6 +117,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
+
 ## OUTPUTS
 
 ### System.Object

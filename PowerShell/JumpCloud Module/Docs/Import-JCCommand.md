@@ -36,7 +36,7 @@ Imports the JumpCloud command located at the URL 'Import-JCCommand -URL 'https:/
 The URL of the JumpCloud command to import into a JumpCloud tenant.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: (All)
 Aliases:
 
@@ -53,6 +53,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
+
 ## OUTPUTS
 
 ### System.Object

@@ -60,7 +60,7 @@ Use the -ByID parameter when you want to query a specific policy.
 The -ByID SwitchParameter will set the ParameterSet to 'ByID' which queries one JumpCloud policy at a time.
 
 ```yaml
-Type: SwitchParameter
+Type: System.Management.Automation.SwitchParameter
 Parameter Sets: ByID
 Aliases:
 
@@ -75,7 +75,7 @@ Accept wildcard characters: False
 The Name of the JumpCloud policy you wish to query.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: Name
 Aliases:
 
@@ -90,7 +90,7 @@ Accept wildcard characters: False
 The PolicyID of the JumpCloud policy you wish to query.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: ByID
 Aliases: _id, id
 
@@ -107,6 +107,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
+
 ## OUTPUTS
 
 ### System.Object

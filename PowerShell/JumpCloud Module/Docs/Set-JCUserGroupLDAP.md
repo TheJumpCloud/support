@@ -55,7 +55,7 @@ This command users the 'Get-JCGroup -Type User' command to pass all JumpCloud us
 The ID of the JumpCloud user group to modify
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: GroupID
 Aliases: id, _id
 
@@ -70,7 +70,7 @@ Accept wildcard characters: False
 The name of the JumpCloud user group to modify
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: GroupName
 Aliases: name
 
@@ -85,7 +85,7 @@ Accept wildcard characters: False
 A boolean $true/$false value to enable or disable LDAP for a group
 
 ```yaml
-Type: Boolean
+Type: System.Boolean
 Parameter Sets: (All)
 Aliases:
 
@@ -102,7 +102,9 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
+
 ### System.Boolean
+
 ## OUTPUTS
 
 ### System.Object
