@@ -26,7 +26,7 @@ Set-JCUser [-Username] <String> [-email <String>] [-firstname <String>] [-lastna
  [-home_poBox <String>] [-home_locality <String>] [-home_region <String>] [-home_postalCode <String>]
  [-home_country <String>] [-mobile_number <String>] [-home_number <String>] [-work_number <String>]
  [-work_mobile_number <String>] [-work_fax_number <String>] [-external_dn <String>]
- [-external_source_type <String>] [-EnrollmentDays <Int32>] -Attribute1_name <String>
+ [-external_source_type <String>] [-suspended <Boolean>] [-EnrollmentDays <Int32>] -Attribute1_name <String>
  -Attribute1_value <String> -Attribute2_name <String> -Attribute2_value <String> [<CommonParameters>]
 ```
 
@@ -44,7 +44,7 @@ Set-JCUser [-Username] <String> [-email <String>] [-firstname <String>] [-lastna
  [-home_streetAddress <String>] [-home_poBox <String>] [-home_locality <String>] [-home_region <String>]
  [-home_postalCode <String>] [-home_country <String>] [-mobile_number <String>] [-home_number <String>]
  [-work_number <String>] [-work_mobile_number <String>] [-work_fax_number <String>] [-external_dn <String>]
- [-external_source_type <String>] [-EnrollmentDays <Int32>] -Attribute1_name <String>
+ [-external_source_type <String>] [-suspended <Boolean>] [-EnrollmentDays <Int32>] -Attribute1_name <String>
  -Attribute1_value <String> -Attribute2_name <String> -Attribute2_value <String> [<CommonParameters>]
 ```
 
@@ -62,7 +62,7 @@ Set-JCUser -UserID <String> [-email <String>] [-firstname <String>] [-lastname <
  [-home_poBox <String>] [-home_locality <String>] [-home_region <String>] [-home_postalCode <String>]
  [-home_country <String>] [-mobile_number <String>] [-home_number <String>] [-work_number <String>]
  [-work_mobile_number <String>] [-work_fax_number <String>] [-external_dn <String>]
- [-external_source_type <String>] [-EnrollmentDays <Int32>] -Attribute1_name <String>
+ [-external_source_type <String>] [-suspended <Boolean>] [-EnrollmentDays <Int32>] -Attribute1_name <String>
  -Attribute1_value <String> -Attribute2_name <String> -Attribute2_value <String> [<CommonParameters>]
 ```
 
@@ -188,7 +188,7 @@ Aliases:
 Required: False
 Position: Named
 Default value: None
-Accept pipeline input: False
+Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
@@ -221,7 +221,7 @@ Aliases:
 Required: False
 Position: Named
 Default value: None
-Accept pipeline input: False
+Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
@@ -237,7 +237,7 @@ Aliases:
 Required: False
 Position: Named
 Default value: None
-Accept pipeline input: False
+Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
@@ -292,7 +292,7 @@ Aliases:
 Required: False
 Position: Named
 Default value: None
-Accept pipeline input: False
+Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
@@ -307,7 +307,7 @@ Aliases:
 Required: False
 Position: Named
 Default value: None
-Accept pipeline input: False
+Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
@@ -404,7 +404,7 @@ Aliases:
 Required: False
 Position: Named
 Default value: None
-Accept pipeline input: False
+Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
@@ -452,7 +452,7 @@ Aliases:
 Required: False
 Position: Named
 Default value: None
-Accept pipeline input: False
+Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
@@ -467,7 +467,7 @@ Aliases:
 Required: False
 Position: Named
 Default value: None
-Accept pipeline input: False
+Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
@@ -512,7 +512,7 @@ Aliases:
 Required: False
 Position: Named
 Default value: None
-Accept pipeline input: False
+Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
@@ -527,7 +527,7 @@ Aliases:
 Required: False
 Position: Named
 Default value: None
-Accept pipeline input: False
+Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
@@ -670,7 +670,7 @@ Aliases:
 Required: False
 Position: Named
 Default value: None
-Accept pipeline input: False
+Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
@@ -685,7 +685,7 @@ Aliases:
 Required: False
 Position: Named
 Default value: None
-Accept pipeline input: False
+Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
@@ -748,7 +748,7 @@ Aliases:
 Required: False
 Position: Named
 Default value: None
-Accept pipeline input: False
+Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
@@ -763,7 +763,7 @@ Aliases:
 Required: False
 Position: Named
 Default value: None
-Accept pipeline input: False
+Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
@@ -778,7 +778,7 @@ Aliases:
 Required: False
 Position: Named
 Default value: None
-Accept pipeline input: False
+Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
@@ -793,7 +793,7 @@ Aliases:
 Required: False
 Position: Named
 Default value: None
-Accept pipeline input: False
+Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
@@ -809,7 +809,7 @@ Aliases:
 Required: False
 Position: Named
 Default value: None
-Accept pipeline input: False
+Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
@@ -825,7 +825,7 @@ Aliases:
 Required: False
 Position: Named
 Default value: None
-Accept pipeline input: False
+Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
@@ -973,12 +973,31 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
+### -suspended
+A boolean $true/$false value for putting the account into a suspended state
+
+```yaml
+Type: Boolean
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
 ### System.String
+### System.Boolean
+### System.Int32
+### System.String[]
+### System.Management.Automation.SwitchParameter
 ## OUTPUTS
 
 ### System.Object

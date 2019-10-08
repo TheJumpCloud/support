@@ -1,3 +1,27 @@
+## 1.15.0
+
+#### RELEASE DATE
+
+October 08, 2019
+
+#### RELEASE NOTES
+
+Addressing bugs impacting associations functions.
+
+#### FEATURES
+
+#### IMPROVEMENTS
+
+New functions: Copy-JCAssociation
+Removing script block used debugging and simplifying with function.
+Allow Get-JCBackup to take pipeline input.
+Update Get-JCBackup to use newer functions.
+
+#### BUG FIXES
+
+When piping to a *-JCAssociations function there was a variable scoping issue that incorrectly set the `skip` and `limit` values.
+When running a *-JCAssociations function JC types with only one target type were not correctly being populated due to an unnecessary validation step.
+
 ## 1.14.0
 
 #### RELEASE DATE
@@ -367,7 +391,7 @@ Check our full release notes to see new attribute additions released in 1.8.0
 
 #### BUG FIXES
 
-- Resolved bug on Connect-JCOnline where OrgID would not set correctly
+- Resolved bug on Connect-JCOnline where JumpCloudOrgID would not set correctly
 
 ## 1.8.0
 
@@ -464,7 +488,7 @@ Multi tenant admins can switch the org they are connected to using the Set-JCOrg
 - New Function: Send-JCPasswordReset allows admins to use the 'Resend email' button functionality programmatically to send reset/activation emails to targeted users.
 - New Function: Set-JCOrganization allows multi tenant admins to change the JumpCloud tenant they are conneted to.
 - New Function: Get-JCOrganization allows multi tenant admins to see the JumpCloud tenants they have access to.
-- Updated Function: Connect-JCOnline to prompt multi tenant admins to select their connected tenant. Admins can also skip this prompt by entering a 'JumpCloud OrgID' into the new '-JumpCloudOrgID' parameter to setup connection in automation scenarios.
+- Updated Function: Connect-JCOnline to prompt multi tenant admins to select their connected tenant. Admins can also skip this prompt by entering a 'JumpCloudOrgID' into the new '-JumpCloudOrgID' parameter to setup connection in automation scenarios.
 
 #### IMPROVEMENTS
 

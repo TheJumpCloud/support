@@ -41,7 +41,7 @@ Using the "-Force" parameter the module update check is skipped. The '-Force' pa
 Connect-JCOnline -JumpCloudAPIKey lu8792c9d4y2398is1tb6h0b83ebf0e92s97t382 -JumpCloudOrgID 5b5o13o06tsand0c29a0t3s6 -force
 ```
 
-Providing the JumpCloudAPIKey key and the intended JumpCloudOrg ID to connect to multi tenant admins can skip the OrgID connection screen and directly connect to an Org.
+Providing the JumpCloudAPIKey key and the intended JumpCloudOrg ID to connect to multi tenant admins can skip the JumpCloudOrgID connection screen and directly connect to an Org.
 
 Using the "-Force" parameter the module update check is skipped. The '-Force' parameter should be used when using the JumpCloud module in scripts or other automation environments.
 

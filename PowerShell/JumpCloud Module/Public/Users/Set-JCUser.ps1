@@ -29,77 +29,77 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
         [Alias('_id', 'id')]
         [string]$UserID,
 
-        [Parameter(HelpMessage = 'The email address for the user. This must be a unique value.')]
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The email address for the user. This must be a unique value.')]
         [string]
         $email,
 
-        [Parameter(HelpMessage = 'The first name of the user')]
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The first name of the user')]
         [string]
         $firstname,
 
-        [Parameter(HelpMessage = 'The last name of the user')]
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The last name of the user')]
         [string]
         $lastname,
 
-        [Parameter(HelpMessage = 'The password for the user')]
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The password for the user')]
         [string]
         $password,
 
-        [Parameter(HelpMessage = 'A boolean $true/$false value for enabling password_never_expires')]
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A boolean $true/$false value for enabling password_never_expires')]
         [bool]
         $password_never_expires,
 
-        [Parameter(HelpMessage = 'A boolean $true/$false value for allowing pubic key authentication')]
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A boolean $true/$false value for allowing pubic key authentication')]
         [bool]
         $allow_public_key,
 
-        [Parameter(HelpMessage = 'A boolean $true/$false value if you want to enable the user to be an administrator on any and all systems the user is bound to.')]
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A boolean $true/$false value if you want to enable the user to be an administrator on any and all systems the user is bound to.')]
         [bool]
         $sudo,
 
-        [Parameter(HelpMessage = 'A boolean $true/$false value for enabling managed uid')]
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A boolean $true/$false value for enabling managed uid')]
         [bool]
         $enable_managed_uid,
 
-        [Parameter(HelpMessage = 'The unix_uid for the user. Note this value must be an number.')]
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The unix_uid for the user. Note this value must be an number.')]
         [int]
         [ValidateRange(0, 4294967295)]
         $unix_uid,
 
-        [Parameter(HelpMessage = 'The unix_guid for the user. Note this value must be a number.')]
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The unix_guid for the user. Note this value must be a number.')]
         [int]
         [ValidateRange(0, 4294967295)]
         $unix_guid,
 
-        [Parameter(HelpMessage = 'unlock or lock a users JumpCloud account')]
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'unlock or lock a users JumpCloud account')]
         [bool]
         $account_locked,
 
-        [Parameter(HelpMessage = 'A boolean $true/$false value if you want to enable passwordless_sudo')]
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A boolean $true/$false value if you want to enable passwordless_sudo')]
         [bool]
         $passwordless_sudo,
 
-        [Parameter(HelpMessage = 'A boolean $true/$false value for enabling externally_managed')]
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A boolean $true/$false value for enabling externally_managed')]
         [bool]
         $externally_managed,
 
-        [Parameter(HelpMessage = 'A boolean $true/$false value to enable the user as an LDAP binding user')]
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A boolean $true/$false value to enable the user as an LDAP binding user')]
         [bool]
         $ldap_binding_user,
 
-        [Parameter(HelpMessage = 'A boolean $true/$false value for enabling MFA at the user portal')]
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A boolean $true/$false value for enabling MFA at the user portal')]
         [bool]
         $enable_user_portal_multifactor,
 
-        [Parameter(HelpMessage = 'If you intend to update a user with existing Custom Attributes or add new Custom Attributes you must declare how many Custom Attributes you intend to update or add. If an Custom Attribute exists with a name that matches the new attribute then the existing attribute will be updated. Based on the NumberOfCustomAttributes value two Dynamic Parameters will be created for each Custom Attribute: Attribute_name and Attribute_value with an associated number. See an example for working with Custom Attribute in EXAMPLE 4')]
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'If you intend to update a user with existing Custom Attributes or add new Custom Attributes you must declare how many Custom Attributes you intend to update or add. If an Custom Attribute exists with a name that matches the new attribute then the existing attribute will be updated. Based on the NumberOfCustomAttributes value two Dynamic Parameters will be created for each Custom Attribute: Attribute_name and Attribute_value with an associated number. See an example for working with Custom Attribute in EXAMPLE 4')]
         [int]
         $NumberOfCustomAttributes,
 
-        [Parameter(ParameterSetName = 'RemoveAttribute', HelpMessage = 'The name of the existing Custom Attributes you wish to remove. See an EXAMPLE for working with the -RemoveAttribute Parameter in EXAMPLE 5')]
+        [Parameter(ValueFromPipelineByPropertyName = $true, ParameterSetName = 'RemoveAttribute', HelpMessage = 'The name of the existing Custom Attributes you wish to remove. See an EXAMPLE for working with the -RemoveAttribute Parameter in EXAMPLE 5')]
         [string[]]
         $RemoveAttribute,
 
-        [Parameter(ParameterSetName = 'ByID', HelpMessage = 'Use the -ByID parameter when the UserID is being passed over the pipeline to the Set-JCUser function. The -ByID SwitchParameter will set the ParameterSet to ''ByID'' which will increase the function speed and performance. You cannot use this with the ''RemoveAttribute'' Parameter')]
+        [Parameter(ValueFromPipelineByPropertyName = $true, ParameterSetName = 'ByID', HelpMessage = 'Use the -ByID parameter when the UserID is being passed over the pipeline to the Set-JCUser function. The -ByID SwitchParameter will set the ParameterSet to ''ByID'' which will increase the function speed and performance. You cannot use this with the ''RemoveAttribute'' Parameter')]
         [switch]
         $ByID,
 
@@ -228,7 +228,10 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
         [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'The externally managed user source type (ADB Externally managed users only)')]
         [string]
-        $external_source_type
+        $external_source_type,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'A boolean $true/$false value for putting the account into a suspended state')]
+        [bool]$suspended
 
     )
 

@@ -20,7 +20,7 @@ Remove-JCAssociation [-Type] <String> [-Force] [-Id] <String[]> [[-TargetType] <
 
 ### ByName
 ```
-Remove-JCAssociation [-Type] <String> [-Force] -Name <String[]> [[-TargetType] <String[]>]
+Remove-JCAssociation [-Type] <String> [-Force] [-Name] <String[]> [[-TargetType] <String[]>]
  [[-TargetId] <String>] [[-TargetName] <String>] [<CommonParameters>]
 ```
 
@@ -67,6 +67,21 @@ The unique id of the object.
 Type: String[]
 Parameter Sets: ById
 Aliases: _id
+
+Required: True
+Position: 1
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Name
+The name of the object.
+
+```yaml
+Type: String[]
+Parameter Sets: ByName
+Aliases: displayName, username
 
 Required: True
 Position: 1
@@ -132,21 +147,6 @@ Accepted values: command, ldap_server, policy, application, radius_server, syste
 
 Required: True
 Position: 0
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -Name
-The name of the object.
-
-```yaml
-Type: String[]
-Parameter Sets: ByName
-Aliases: displayName, username
-
-Required: True
-Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False

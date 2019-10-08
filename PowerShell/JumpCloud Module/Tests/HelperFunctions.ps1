@@ -47,7 +47,7 @@ Function New-RandomUser  ()
             Password  = 'Temp123!'
         }
 
-        $NewRandomUser = New-Object psobject -Property $RandomUser
+        $NewRandomUser = New-Object PSObject -Property $RandomUser
     }
 
     if (($PSCmdlet.ParameterSetName -eq 'Attributes'))
@@ -69,7 +69,7 @@ Function New-RandomUser  ()
             Attribute3_name          = 'Lang'
             Attribute3_value         = 'French'
         }
-        $NewRandomUser = New-Object psobject -Property $RandomUser
+        $NewRandomUser = New-Object PSObject -Property $RandomUser
     }
 
 
@@ -92,7 +92,7 @@ Function New-RandomUserCustom  ()
 
     if (($PSCmdlet.ParameterSetName -eq 'NoAttributes'))
     {
-        $username = -join ((65..90) + (97..122) | Get-Random -Count 8 | % { [char]$_ })
+        $username = -join ((65..90) + (97..122) | Get-Random -Count 8 | ForEach-Object { [char]$_ })
         $email = $username + "@$Domain.com"
 
         $RandomUser = [ordered]@{
@@ -103,12 +103,12 @@ Function New-RandomUserCustom  ()
             Password  = 'Temp123!'
         }
 
-        $NewRandomUser = New-Object psobject -Property $RandomUser
+        $NewRandomUser = New-Object PSObject -Property $RandomUser
     }
 
     if (($PSCmdlet.ParameterSetName -eq 'Attributes'))
     {
-        $username = -join ((65..90) + (97..122) | Get-Random -Count 8 | % { [char]$_ })
+        $username = -join ((65..90) + (97..122) | Get-Random -Count 8 | ForEach-Object { [char]$_ })
         $email = $username + "@$Domain.com"
 
         $RandomUser = [ordered]@{
@@ -125,7 +125,7 @@ Function New-RandomUserCustom  ()
             Attribute3_name          = 'Lang'
             Attribute3_value         = 'French'
         }
-        $NewRandomUser = New-Object psobject -Property $RandomUser
+        $NewRandomUser = New-Object PSObject -Property $RandomUser
     }
 
 
@@ -142,18 +142,18 @@ Function New-RandomStringLower ()
         $NumberOfChars = 8
 
     )
-    begin {}
+    begin { }
     process
     {
-        $Random = -join ((65..90) + (97..122) | Get-Random -Count $NumberOfChars | % {[char]$_})
+        $Random = -join ((65..90) + (97..122) | Get-Random -Count $NumberOfChars | ForEach-Object { [char]$_ })
     }
-    end {Return $Random.tolower()}
+    end { Return $Random.ToLower() }
 }
 Function Connect-JCOnlineTest ()
 {
-    $Connect = Connect-JCOnline -JumpCloudAPIKey $TestOrgAPIKey -force
+    Connect-JCOnline -JumpCloudAPIKey $TestOrgAPIKey -force
 }
 Function Connect-JCOnlineMultiTenant ($JumpCloudOrgID)
 {
-    $Connect = Connect-JCOnline -JumpCloudAPIKey $MultiTenantAPIKey -force -JumpCloudOrgID $JumpCloudOrgID
+    Connect-JCOnline -JumpCloudAPIKey $MultiTenantAPIKey -force -JumpCloudOrgID $JumpCloudOrgID
 }

@@ -14,7 +14,7 @@ Function Invoke-JCApi
     Begin
     {
         # Debug message for parameter call
-        Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDebugMessageBegin) -ArgumentList:($MyInvocation, $PsBoundParameters, $PSCmdlet) -NoNewScope
+        $PSBoundParameters | Out-DebugParameter | Write-Debug
         # Populate $env:JCApiKey if its not set
         If ([System.String]::IsNullOrEmpty($env:JCApiKey))
         {

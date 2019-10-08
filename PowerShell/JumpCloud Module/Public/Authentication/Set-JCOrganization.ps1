@@ -8,7 +8,7 @@ Function Set-JCOrganization
     Begin
     {
         # Debug message for parameter call
-        Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDebugMessageBegin) -ArgumentList:($MyInvocation, $PsBoundParameters, $PSCmdlet) -NoNewScope
+        $PSBoundParameters | Out-DebugParameter | Write-Debug
     }
     Process
     {
@@ -46,72 +46,79 @@ Function Set-JCOrganization
             Write-Verbose ("Parameter Set: $($PSCmdlet.ParameterSetName)")
             Write-Verbose ('Populating JCOrganizations')
             $Organizations = Get-JCObject -Type:('organization') -Fields:('_id', 'displayName')
-            If ($Organizations.Count -gt 1)
+            If (-not [System.String]::IsNullOrEmpty($Organizations))
             {
-                # If not JumpCloudOrgId was specified or if the specified JumpCloudOrgId does not exist within the list of available organizations prompt for selection
-                If ([System.String]::IsNullOrEmpty($JumpCloudOrgId) -or $JumpCloudOrgId -notin $Organizations._id)
+                If ($Organizations.Count -gt 1)
                 {
+                    # If not JumpCloudOrgId was specified or if the specified JumpCloudOrgId does not exist within the list of available organizations prompt for selection
+                    If ([System.String]::IsNullOrEmpty($JumpCloudOrgId) -or $JumpCloudOrgId -notin $Organizations._id)
+                    {
 
-                    $OrgIdHash = [ordered]@{ }
-                    $OrgNameHash = [ordered]@{ }
-                    # Build user menu
-                    $LengthDisplayName = ($Organizations.displayName | Measure-Object -Maximum -Property Length).Maximum
-                    $LengthOrgId = ($Organizations._id | Measure-Object -Maximum -Property Length).Maximum
-                    $MenuItemTemplate = "{0} {1,-$LengthDisplayName} | {2,-$LengthOrgId}"
-                    [Int32]$menuNumber = 1
-                    Write-Host ('======= JumpCloud Multi Tenant Selector =======') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
-                    Write-Host ($MenuItemTemplate -f '   ', 'JCOrgName', 'JCOrgId') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action)
-                    ForEach ($Org In $Organizations)
-                    {
-                        $FormattedMenuNumber = If (([System.String]$menuNumber).Length -eq 1)
+                        $OrgIdHash = [ordered]@{ }
+                        $OrgNameHash = [ordered]@{ }
+                        # Build user menu
+                        $LengthDisplayName = ($Organizations.displayName | Measure-Object -Maximum -Property Length).Maximum
+                        $LengthOrgId = ($Organizations._id | Measure-Object -Maximum -Property Length).Maximum
+                        $MenuItemTemplate = "{0} {1,-$LengthDisplayName} | {2,-$LengthOrgId}"
+                        [Int32]$menuNumber = 1
+                        Write-Host ('======= JumpCloud Multi Tenant Selector =======') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
+                        Write-Host ($MenuItemTemplate -f '   ', 'JCOrgName', 'JCOrgId') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action)
+                        ForEach ($Org In $Organizations)
                         {
-                            ' ' + [System.String]$menuNumber
+                            $FormattedMenuNumber = If (([System.String]$menuNumber).Length -eq 1)
+                            {
+                                ' ' + [System.String]$menuNumber
+                            }
+                            Else
+                            {
+                                [System.String]$menuNumber
+                            }
+                            Write-Host ($MenuItemTemplate -f ($FormattedMenuNumber + '.' ), $Org.displayName, $Org._id) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
+                            $OrgIdHash.add($menuNumber, $Org._id)
+                            $OrgNameHash.add($menuNumber, $Org.displayName)
+                            $menuNumber++
                         }
-                        Else
+                        # Prompt user for org selection
+                        Do
                         {
-                            [System.String]$menuNumber
+                            Write-Host ('Select JumpCloud tenant you wish to connect to. Enter a value between 1 and ' + [System.String]$OrgIdHash.Count + ':') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_UserPrompt) -NoNewline
+                            Write-Host (' ') -NoNewLine
+                            [Int32]$UserSelection = Read-Host
                         }
-                        Write-Host ($MenuItemTemplate -f ($FormattedMenuNumber + '.' ), $Org.displayName, $Org._id) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
-                        $OrgIdHash.add($menuNumber, $Org._id)
-                        $OrgNameHash.add($menuNumber, $Org.displayName)
-                        $menuNumber++
+                        Until ($UserSelection -le $OrgIdHash.Count)
+                        $OrgId = $($OrgIdHash.$UserSelection)
+                        $OrgName = $($OrgNameHash.$UserSelection)
                     }
-                    # Prompt user for org selection
-                    Do
+                    Else
                     {
-                        Write-Host ('Select JumpCloud tenant you wish to connect to. Enter a value between 1 and ' + [System.String]$OrgIdHash.Count + ':') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_UserPrompt) -NoNewline
-                        Write-Host (' ') -NoNewLine
-                        [Int32]$UserSelection = Read-Host
+                        $OrgId = ($Organizations | Where-Object { $_._id -eq $JumpCloudOrgId })._id
+                        $OrgName = ($Organizations | Where-Object { $_._id -eq $JumpCloudOrgId }).displayName
                     }
-                    Until ($UserSelection -le $OrgIdHash.Count)
-                    $OrgId = $($OrgIdHash.$UserSelection)
-                    $OrgName = $($OrgNameHash.$UserSelection)
                 }
                 Else
                 {
-                    $OrgId = ($Organizations | Where-Object { $_._id -eq $JumpCloudOrgId })._id
-                    $OrgName = ($Organizations | Where-Object { $_._id -eq $JumpCloudOrgId }).displayName
+                    $OrgId = $($Organizations._id)
+                    $OrgName = $($Organizations.displayName)
+                }
+                If (-not ([System.String]::IsNullOrEmpty($OrgId)))
+                {
+                    $env:JCOrgId = $OrgId
+                    $global:JCOrgId = $env:JCOrgId
+                    $env:JCOrgName = $OrgName
+                    Return [PSCustomObject]@{
+                        # 'JCApiKey'  = $env:JCApiKey;
+                        'JCOrgId'   = $env:JCOrgId;
+                        'JCOrgName' = $env:JCOrgName;
+                    }
+                }
+                Else
+                {
+                    Write-Error ('OrgId has not been set.')
                 }
             }
             Else
             {
-                $OrgId = $($Organizations._id)
-                $OrgName = $($Organizations.displayName)
-            }
-            If (-not ([System.String]::IsNullOrEmpty($OrgId)))
-            {
-                $env:JCOrgId = $OrgId
-                $global:JCOrgId = $env:JCOrgId
-                $env:JCOrgName = $OrgName
-                Return [PSCustomObject]@{
-                    # 'JCApiKey'  = $env:JCApiKey;
-                    'JCOrgId'   = $env:JCOrgId;
-                    'JCOrgName' = $env:JCOrgName;
-                }
-            }
-            Else
-            {
-                Write-Error ('OrgId has not been set.')
+                Write-Error ('Unable to get organization info.')
             }
         }
     }

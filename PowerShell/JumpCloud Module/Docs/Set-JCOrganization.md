@@ -39,10 +39,10 @@ Displays a prompt for MT admins to select which organization to connect to.
 
 ### Example 2
 ```powershell
-Set-JCOrganization -JumpCloudOrgId 5b5o13o06tsand0c29a0t3s6
+Set-JCOrganization -JumpCloudOrgID 5b5o13o06tsand0c29a0t3s6
 ```
 
-Uses the -JumpCloudOrgId parameter for MT admins to directly connect to a specific JumpCloud org.
+Uses the -JumpCloudOrgID parameter for MT admins to directly connect to a specific JumpCloud org.
 
 ## PARAMETERS
 

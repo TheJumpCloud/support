@@ -140,7 +140,10 @@ Function New-JCUser ()
         [string]$work_mobile_number,
 
         [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s work fax number. The LDAP displayName of this property is facsimileTelephoneNumber.')]
-        [string]$work_fax_number
+        [string]$work_fax_number,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'A boolean $true/$false value for putting the account into a suspended state')]
+        [bool]$suspended
 
     )
     DynamicParam

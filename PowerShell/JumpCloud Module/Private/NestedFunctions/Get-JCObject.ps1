@@ -27,7 +27,7 @@ Function Get-JCObject
     Begin
     {
         # Debug message for parameter call
-        Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDebugMessageBegin) -ArgumentList:($MyInvocation, $PsBoundParameters, $PSCmdlet) -NoNewScope
+        $PSBoundParameters | Out-DebugParameter | Write-Debug
         $Results = @()
     }
     Process
@@ -185,7 +185,7 @@ Function Get-JCObject
                     }
                     Else
                     {
-                        $FieldsReturned = $Fields
+                        $FieldsReturned = $PsBoundParameters.Fields
                     }
                     ## Escape Url????
                     # $UrlFull= ([uri]::EscapeDataString($UrlFull)
@@ -194,8 +194,8 @@ Function Get-JCObject
                     If (-not ([System.String]::IsNullOrEmpty($UrlFull))) { $FunctionParameters.Add('Url', $UrlFull) }
                     If (-not ([System.String]::IsNullOrEmpty($JCType.Method))) { $FunctionParameters.Add('Method', $JCType.Method) }
                     If (-not ([System.String]::IsNullOrEmpty($Body))) { $FunctionParameters.Add('Body', $Body) }
-                    If (-not ([System.String]::IsNullOrEmpty($Limit))) { $FunctionParameters.Add('Limit', $Limit) }
-                    If (-not ([System.String]::IsNullOrEmpty($Skip))) { $FunctionParameters.Add('Skip', $Skip) }
+                    If (-not ([System.String]::IsNullOrEmpty($PsBoundParameters.Limit))) { $FunctionParameters.Add('Limit', $PsBoundParameters.Limit) }
+                    If (-not ([System.String]::IsNullOrEmpty($PsBoundParameters.Skip))) { $FunctionParameters.Add('Skip', $PsBoundParameters.Skip) }
                     If ($ReturnHashTable)
                     {
                         $Values = $FieldsReturned
@@ -206,7 +206,7 @@ Function Get-JCObject
                     Else
                     {
                         If (-not ([System.String]::IsNullOrEmpty($FieldsReturned))) { $FunctionParameters.Add('Fields', $FieldsReturned) }
-                        If (-not ([System.String]::IsNullOrEmpty($Paginate))) { $FunctionParameters.Add('Paginate', $Paginate) }
+                        If (-not ([System.String]::IsNullOrEmpty($PsBoundParameters.Paginate))) { $FunctionParameters.Add('Paginate', $PsBoundParameters.Paginate) }
                         If ($ReturnCount -eq $true) { $FunctionParameters.Add('ReturnCount', $ReturnCount) }
                     }
                     # Run command
@@ -286,17 +286,19 @@ Function Get-JCObject
                         $TargetPlural = $Targets.TargetPlural
                         $Table = $JCType.Table
                         # List values to add to results
-                        $HiddenProperties = @('ById', 'ByName', 'TypeName', 'TypeNameSingular', 'TypeNamePlural', 'Targets', 'TargetSingular', 'TargetPlural', 'Table')
+                        $HiddenProperties = @('ById', 'ByName', 'TypeName', 'TypeNameSingular', 'TypeNamePlural', 'Targets', 'TargetSingular', 'TargetPlural')
+                        If (-not [System.String]::IsNullOrEmpty($PsBoundParameters.Table))
+                        {
+                            $Table = $JCType.Table
+                            $HiddenProperties += 'Table'
+                        }
                         # Append meta info to each result record
                         Get-Variable -Name:($HiddenProperties) |
                         ForEach-Object {
                             $Variable = $_
                             $Results |
                             ForEach-Object {
-                                If (-not ([System.String]::IsNullOrEmpty($Variable.Value)))
-                                {
-                                    Add-Member -InputObject:($_) -MemberType:('NoteProperty') -Name:($Variable.Name) -Value:($Variable.Value);
-                                }
+                                Add-Member -InputObject:($_) -MemberType:('NoteProperty') -Name:($Variable.Name) -Value:($Variable.Value);
                             }
                         }
                         # Set the meta info to be hidden by default
