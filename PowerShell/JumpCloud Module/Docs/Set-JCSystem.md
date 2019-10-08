@@ -13,9 +13,9 @@ Updates an existing JumpCloud System
 ## SYNTAX
 
 ```
-Set-JCSystem [-SystemID] <String> [-displayName <String>] [-allowSshPasswordAuthentication <Boolean>]
- [-allowSshRootLogin <Boolean>] [-allowMultiFactorAuthentication <Boolean>]
- [-allowPublicKeyAuthentication <Boolean>] [-systemInsights <Boolean>] [<CommonParameters>]
+Set-JCSystem [-SystemID] <String> [-displayName <String>] [-allowSshPasswordAuthentication <String>]
+ [-allowSshRootLogin <String>] [-allowMultiFactorAuthentication <String>]
+ [-allowPublicKeyAuthentication <String>] [-systemInsights <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -63,7 +63,7 @@ A boolean $true/$false value to allow for MFA during system login.
 Note this setting only applies systems running Linux or Mac.
 
 ```yaml
-Type: Boolean
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -78,7 +78,7 @@ Accept wildcard characters: False
 A boolean $true/$false value to allow for public key authentication.
 
 ```yaml
-Type: Boolean
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -93,7 +93,7 @@ Accept wildcard characters: False
 A boolean $true/$false value to allow for ssh password authentication.
 
 ```yaml
-Type: Boolean
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -108,7 +108,7 @@ Accept wildcard characters: False
 A boolean $true/$false value to allow for ssh root login.
 
 ```yaml
-Type: Boolean
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -141,7 +141,7 @@ Setting this value to $true will enable systemInsights and collect data for this
 Setting this value to $false will disable systemInsights and data collection for the system.
 
 ```yaml
-Type: Boolean
+Type: String
 Parameter Sets: (All)
 Aliases:
 

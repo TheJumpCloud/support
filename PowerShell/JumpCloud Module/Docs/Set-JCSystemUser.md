@@ -14,12 +14,12 @@ Updates the permissions of a JumpCloud user on a JumpCloud system
 
 ### ByName (Default)
 ```
-Set-JCSystemUser [-Username] <String> -SystemID <String> -Administrator <Boolean> [<CommonParameters>]
+Set-JCSystemUser [-Username] <String> -SystemID <String> -Administrator <String> [<CommonParameters>]
 ```
 
 ### ByID
 ```
-Set-JCSystemUser -UserID <String> -SystemID <String> -Administrator <Boolean> [<CommonParameters>]
+Set-JCSystemUser -UserID <String> -SystemID <String> -Administrator <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -54,7 +54,7 @@ Gets all users bound to JumpCloud system with SystemID '5n0795a712704la4eve154r'
 A boolean $true/$false value to add or remove Administrator permissions on a target JumpCloud system
 
 ```yaml
-Type: Boolean
+Type: String
 Parameter Sets: (All)
 Aliases:
 

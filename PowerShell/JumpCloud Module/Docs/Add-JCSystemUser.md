@@ -14,12 +14,12 @@ Associates a JumpCloud User account with a local account on a JumpCloud managed 
 
 ### ByName (Default)
 ```
-Add-JCSystemUser [-Username] <String> -SystemID <String> [-Administrator <Boolean>] [<CommonParameters>]
+Add-JCSystemUser [-Username] <String> -SystemID <String> [-Administrator <String>] [<CommonParameters>]
 ```
 
 ### ByID
 ```
-Add-JCSystemUser -UserID <String> -SystemID <String> [-Administrator <Boolean>] [<CommonParameters>]
+Add-JCSystemUser -UserID <String> -SystemID <String> [-Administrator <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -56,7 +56,7 @@ Adds all JumpCloud users in the JumpCloud User Group 'The Band' and binds them t
 A boolean $true/$false value to set Administrator permissions on the target JumpCloud system
 
 ```yaml
-Type: Boolean
+Type: String
 Parameter Sets: (All)
 Aliases:
 

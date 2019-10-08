@@ -15,16 +15,16 @@ Creates a JumpCloud User
 ### NoAttributes (Default)
 ```
 New-JCUser -firstname <String> -lastname <String> -username <String> -email <String> [-password <String>]
- [-password_never_expires <Boolean>] [-allow_public_key <Boolean>] [-sudo <Boolean>]
- [-enable_managed_uid <Boolean>] [-unix_uid <Int32>] [-unix_guid <Int32>] [-passwordless_sudo <Boolean>]
- [-ldap_binding_user <Boolean>] [-enable_user_portal_multifactor <String>] [-middlename <String>]
+ [-password_never_expires <String>] [-allow_public_key <String>] [-sudo <String>]
+ [-enable_managed_uid <String>] [-unix_uid <Int32>] [-unix_guid <Int32>] [-passwordless_sudo <String>]
+ [-ldap_binding_user <String>] [-enable_user_portal_multifactor <String>] [-middlename <String>]
  [-displayname <String>] [-jobTitle <String>] [-employeeIdentifier <String>] [-department <String>]
  [-costCenter <String>] [-company <String>] [-employeeType <String>] [-description <String>]
  [-location <String>] [-work_streetAddress <String>] [-work_poBox <String>] [-work_locality <String>]
  [-work_region <String>] [-work_postalCode <String>] [-work_country <String>] [-home_streetAddress <String>]
  [-home_poBox <String>] [-home_locality <String>] [-home_region <String>] [-home_postalCode <String>]
  [-home_country <String>] [-mobile_number <String>] [-home_number <String>] [-work_number <String>]
- [-work_mobile_number <String>] [-work_fax_number <String>] [-suspended <Boolean>] [-enrollmentDays <Int32>]
+ [-work_mobile_number <String>] [-work_fax_number <String>] [-suspended <String>] [-enrollmentDays <Int32>]
  -Attribute1_name <String> -Attribute1_value <String> -Attribute2_name <String> -Attribute2_value <String>
  [<CommonParameters>]
 ```
@@ -32,16 +32,16 @@ New-JCUser -firstname <String> -lastname <String> -username <String> -email <Str
 ### Attributes
 ```
 New-JCUser -firstname <String> -lastname <String> -username <String> -email <String> [-password <String>]
- [-password_never_expires <Boolean>] [-allow_public_key <Boolean>] [-sudo <Boolean>]
- [-enable_managed_uid <Boolean>] [-unix_uid <Int32>] [-unix_guid <Int32>] [-passwordless_sudo <Boolean>]
- [-ldap_binding_user <Boolean>] [-enable_user_portal_multifactor <String>] [-NumberOfCustomAttributes <Int32>]
+ [-password_never_expires <String>] [-allow_public_key <String>] [-sudo <String>]
+ [-enable_managed_uid <String>] [-unix_uid <Int32>] [-unix_guid <Int32>] [-passwordless_sudo <String>]
+ [-ldap_binding_user <String>] [-enable_user_portal_multifactor <String>] [-NumberOfCustomAttributes <Int32>]
  [-middlename <String>] [-displayname <String>] [-jobTitle <String>] [-employeeIdentifier <String>]
  [-department <String>] [-costCenter <String>] [-company <String>] [-employeeType <String>]
  [-description <String>] [-location <String>] [-work_streetAddress <String>] [-work_poBox <String>]
  [-work_locality <String>] [-work_region <String>] [-work_postalCode <String>] [-work_country <String>]
  [-home_streetAddress <String>] [-home_poBox <String>] [-home_locality <String>] [-home_region <String>]
  [-home_postalCode <String>] [-home_country <String>] [-mobile_number <String>] [-home_number <String>]
- [-work_number <String>] [-work_mobile_number <String>] [-work_fax_number <String>] [-suspended <Boolean>]
+ [-work_number <String>] [-work_mobile_number <String>] [-work_fax_number <String>] [-suspended <String>]
  [-enrollmentDays <Int32>] -Attribute1_name <String> -Attribute1_value <String> -Attribute2_name <String>
  -Attribute2_value <String> [<CommonParameters>]
 ```
@@ -157,7 +157,7 @@ Accept wildcard characters: False
 A boolean $true/$false value for allowing pubic key authentication
 
 ```yaml
-Type: Boolean
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -302,7 +302,7 @@ Accept wildcard characters: False
 A boolean $true/$false value for enabling managed uid
 
 ```yaml
-Type: Boolean
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -508,7 +508,7 @@ Accept wildcard characters: False
 A boolean $true/$false value to enable the user as an LDAP binding user
 
 ```yaml
-Type: Boolean
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -586,7 +586,7 @@ Accept wildcard characters: False
 A boolean $true/$false value for enabling password_never_expires
 
 ```yaml
-Type: Boolean
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -601,7 +601,7 @@ Accept wildcard characters: False
 A boolean $true/$false value if you want to enable passwordless_sudo
 
 ```yaml
-Type: Boolean
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -616,7 +616,7 @@ Accept wildcard characters: False
 A boolean $true/$false value if you want to enable the user to be an administrator on any and all systems the user is bound to.
 
 ```yaml
-Type: Boolean
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -824,7 +824,7 @@ Accept wildcard characters: False
 A boolean $true/$false value for putting the account into a suspended state
 
 ```yaml
-Type: Boolean
+Type: String
 Parameter Sets: (All)
 Aliases:
 
