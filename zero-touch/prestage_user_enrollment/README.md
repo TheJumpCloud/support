@@ -2,7 +2,7 @@
 
 Leveraging this workflow allows admins to install the JumpCloud agent silently and ensures that the JumpCloud Service Account is installed using DEP and an MDM.
 
-The JumpCloud Service Account is required to manage users on FileVault protected macs.
+The JumpCloud Service Account is required to manage users on FileVault enabled macs.
 
 [Learn more about the JumpCloud Service Account here.](https://support.jumpcloud.com/customer/portal/articles/2944374)
 
@@ -52,15 +52,15 @@ To implement this zero-touch workflow a MDM server must be configured to deploy 
 
 ### An Apple Developer Account
 
-An Apple Developer Account is required to sign the macOS package created in this tutorial.
+An Apple Developer Account is required to sign the macOS package created in this workflow.
 
 - Need a Apple Developer Account? [Click here to sign up.](https://developer.apple.com/programs/)
 
 ### munkipkg or an alternative macOS PKG building tool or application
 
-The JumpCloud Bootstrap configuration script that is configured in this tutorial must be packaged and converted to a signed PKG.
+The JumpCloud Bootstrap configuration script that is configured in this guide must be packaged and converted to a signed PKG.
 
-- munkiPKG is an easy to use command line utility that is used in this tutorial to convert the bootstrap configuration script to a PKG.
+- munkiPKG is an easy to use command line utility that is used in this workflow to convert the bootstrap configuration script to a PKG.
   - Need to download munkipkg? [Click here](https://github.com/munki/munki-pkg#munkipkg)  
 
 ### Users who you wish to enroll using this zero-touch workflow added to the JumpCloud directory.
@@ -89,7 +89,7 @@ The JumpCloud Bootstrap configuration script that is configured in this tutorial
 
 **JumpCloud Decryption User:** The UID of this account is used to encrypt the JumpCloud API key in tandem with the JumpCloud Org ID using the "EncryptKey()" function. This account gets pushed down to the account during zero-touch enrollment and the UID is used to decrypt the "$ENCRYPTED_KEY" variable.
 
-**JumpCloud System Context API:** A method for authenticating to the JumpCloud API without an API key. A system can modify only it's direct associations using this authentication method.
+**JumpCloud System Context API:** A method for authenticating to the JumpCloud API without an API key. A system can modify only it's direct associations using this authentication method. [Learn more here.](https://docs.jumpcloud.com/2.0/authentication-and-authorization/system-context)
 
 **JumpCloud DEP Enrollment User Group:** A JumpCloud user group which contains two members, the **Enrollment User** account and the **JumpCloud Decryption User** account. This user group is bound to the **JumpCloud DEP Enrollment System Group**.
 
@@ -130,19 +130,27 @@ munkipkg: Created new package project at zero-touch
 
 This example creates a munki pkg project named `zero-touch` in the current working directory of the terminal where the command is run.
 
-*To use the munkipkg binary without pointing to the full path of the binary file move the munkipkg binary to the `/usr/local/bin` folder or create a symlink to the location of the munkipkg binary in this directory.
+*To use the munkipkg binary without pointing to the full path of the binary file move the munkipkg binary to the `/usr/local/bin` folder or create a symlink to the location of the munkipkg binary in the `/usr/local/bin` directory.
 
-Running this command will create
+Running this command will create the the `zero-touch` munki pkg project folders and scaffolding.
+
+![zero touch folders](./images/zero-touch-folders.png?raw=true)
 
 ### Step 2 - Download the JumpCloud Bootstrap template script
 
-Download the [jumpcloud_bootstrap_template.sh file](./jumpcloud_bootstrap_template.sh) and open this file in your code editor of choice.
+Download the [jumpcloud_bootstrap_template.sh file](./jumpcloud_bootstrap_template.sh).
+
+Save this file inside the **payload** folder of your munki pkg project.
+
+![zero touch folders](./images/zero-touch-template.png?raw=true)
+
+Open this file in your code editor of choice.
 
 The JumpCloud Solution Architecture team loves to work with SH files in the code editor Visual Studio Code.
 
 - Want to try VS Code? [Click here to download](https://code.visualstudio.com/)
 
-Save this file inside the 
+
 
 ### Step 3 - Configuring the JumpCloud Tenant For DEP Zero-Touch
 
@@ -485,7 +493,7 @@ There is no defined field for "personal email" in JumpCloud so the "description"
 
 #### Pending or Active User Configuration Modules
 
-The below workflows can be used to activate **Pending** or **Active** JumpCloud users. Pending users are users who have not set a password. Active users are users who have already set a pass code. A "secret" is required for these workflows. This is a value that is populated for the JumpCloud "employeeIdentifier" field and provided to employees prior to zero-touch DEP enrollment. The secret secures the enrollment and provides an additional factor of verification to activate or update the JumpCloud account.
+The below workflows can be used to activate **Pending** or **Active** JumpCloud users. Pending users are users who have not set a password. Active users are users who have already set a password. A "secret" is required for these workflows. This "secret" is a value that is populated for the JumpCloud "employeeIdentifier" field of the user by the admin and provided to employees prior to zero-touch DEP enrollment. The secret secures the enrollment and provides an additional factor of verification to activate or update the JumpCloud account.
 
 ![pending_or_active_user_company_email_and_secret](./images/company_secret.png?raw=true)
 
@@ -543,6 +551,8 @@ Copy in the entire contents of the  **User Configuration Settings** code block f
 In order to ensure the JumpCloud user account is configured during this process. A LaunchDaemon will control the execution of the jumpcloud_bootstrap_template.sh script. For additional information, [Apple's documentation archive](https://developer.apple.com/library/archive/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/Introduction.html) is a expansive resource for building and designing daemons. This workflow requires a daemon to run the jumpcloud_bootstrap_template.sh script on startup.
 
 1. Create a .plist file or copy the provided [com.jumpcloud.prestage.plist](./com.jumpcloud.prestage.plist) daemon file.  Put this file in the **payload** folder of your Package Project Directory.
+
+![plist-payload](./images/plist-payload.png?raw=true)
 
 2. Ensure the Label Key and string aligns with the variable name set in the jumpcloud_prestage_template.sh file. The .plist file will be loaded as a LaunchDaemon at the end of the postinstall script created in the next step.
      - The provided [com.jumpcloud.prestage.plist](./com.jumpcloud.prestage.plist) daemon is set to run at system load, start the `jumpcloud_bootstrap_template.sh` script and will restart every 10 seconds if the script exits early.
