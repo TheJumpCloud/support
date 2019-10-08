@@ -2,6 +2,8 @@
 
 #*******************************************************************************
 #
+#       Version 1.1 | See the CHANGELOG.md for version information
+#
 #       See the ReadMe file for detailed configuration steps.
 #
 #       The "jumpcloud_bootstrap_template.sh" is a template file. Populate the
@@ -32,7 +34,8 @@
 #       Questions or feedback on the JumpCloud bootstrap workflow? Please
 #       contact support@jumpcloud.com
 #
-#       Author: Scott Reed | scott.reed@jumpcloud.com
+#       Authors: Scott Reed | scott.reed@jumpcloud.com
+#               Joe Workman | joe.workman@jumpcloud.com
 #
 #*******************************************************************************
 
@@ -69,6 +72,13 @@ WELCOME_TITLE=""
 
 ### DEPNotify Welcome Window Text use //n for line breaks ###
 WELCOME_TEXT=''
+
+### Boolean to delete the enrollment user set through MDM ###
+DELETE_ENROLLMENT_USERS=true
+
+### Username of the enrollment user account configured in the MDM.
+### This account will be deleted if the above boolean is set to true.
+ENROLLMENT_USER=""
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # END General Settings                                                         ~
@@ -234,7 +244,6 @@ Sleep 1
 echo "Status: Pulling configuration settings from JumpCloud" >>"$DEP_N_LOG"
 
 # Add system to DEP_ENROLLMENT_GROUP_ID using System Context API Authentication
-
 conf="$(cat /opt/jc/jcagent.conf)"
 regex='\"systemKey\":\"[a-zA-Z0-9]{24}\"'
 
@@ -448,6 +457,17 @@ while [[ -z "${groupTakeOverCheck}" ]]; do
 done
 
 FINISH_TITLE="All Done"
+
+if [[ $DELETE_ENROLLMENT_USERS == true ]]; then
+    # delete the first logged in user
+    Sleep 10
+    echo "$(date "+%Y-%m-%dT%H:%M:%S") Deleting the first enrollment user: $ENROLLMENT_USER" >>"$DEP_N_DEBUG"
+    dscl . -delete /Users/$ENROLLMENT_USER
+    rm -rf /Users/$ENROLLMENT_USER
+    echo "$(date "+%Y-%m-%dT%H:%M:%S") Deleting the decrypt user: $DECRYPT_USER" >>"$DEP_N_DEBUG"
+    dscl . -delete /Users/$DECRYPT_USER
+    rm -rf /Users/$DECRYPT_USER
+fi
 
 echo "Command: MainTitle: $FINISH_TITLE" >>"$DEP_N_LOG"
 echo "Status: Enrollment Complete" >>"$DEP_N_LOG"
