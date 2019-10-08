@@ -1189,9 +1189,9 @@
           <maml:Description>
             <maml:para>A boolean $true/$false value to set Administrator permissions on the target JumpCloud system</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>Boolean</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -1248,9 +1248,9 @@
           <maml:Description>
             <maml:para>A boolean $true/$false value to set Administrator permissions on the target JumpCloud system</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>Boolean</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -1279,9 +1279,9 @@
         <maml:Description>
           <maml:para>A boolean $true/$false value to set Administrator permissions on the target JumpCloud system</maml:para>
         </maml:Description>
-        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
-          <maml:name>Boolean</maml:name>
+          <maml:name>String</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -8878,9 +8878,9 @@ SystemID                 CommandID                Status
           <maml:Description>
             <maml:para>A boolean $true/$false value for allowing pubic key authentication</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>Boolean</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -8986,9 +8986,9 @@ SystemID                 CommandID                Status
           <maml:Description>
             <maml:para>A boolean $true/$false value for enabling managed uid</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>Boolean</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -9148,9 +9148,9 @@ SystemID                 CommandID                Status
           <maml:Description>
             <maml:para>A boolean $true/$false value to enable the user as an LDAP binding user</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>Boolean</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -9208,9 +9208,9 @@ SystemID                 CommandID                Status
           <maml:Description>
             <maml:para>A boolean $true/$false value for enabling password_never_expires</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>Boolean</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -9220,9 +9220,9 @@ SystemID                 CommandID                Status
           <maml:Description>
             <maml:para>A boolean $true/$false value if you want to enable passwordless_sudo</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>Boolean</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -9232,9 +9232,9 @@ SystemID                 CommandID                Status
           <maml:Description>
             <maml:para>A boolean $true/$false value if you want to enable the user to be an administrator on any and all systems the user is bound to.</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>Boolean</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -9388,9 +9388,9 @@ SystemID                 CommandID                Status
           <maml:Description>
             <maml:para>A boolean $true/$false value for putting the account into a suspended state</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>Boolean</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -9463,9 +9463,9 @@ SystemID                 CommandID                Status
         <maml:Description>
           <maml:para>A boolean $true/$false value for allowing pubic key authentication</maml:para>
         </maml:Description>
-        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
-          <maml:name>Boolean</maml:name>
+          <maml:name>String</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -9571,9 +9571,9 @@ SystemID                 CommandID                Status
         <maml:Description>
           <maml:para>A boolean $true/$false value for enabling managed uid</maml:para>
         </maml:Description>
-        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
-          <maml:name>Boolean</maml:name>
+          <maml:name>String</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -9727,9 +9727,9 @@ SystemID                 CommandID                Status
         <maml:Description>
           <maml:para>A boolean $true/$false value to enable the user as an LDAP binding user</maml:para>
         </maml:Description>
-        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
-          <maml:name>Boolean</maml:name>
+          <maml:name>String</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -9787,9 +9787,9 @@ SystemID                 CommandID                Status
         <maml:Description>
           <maml:para>A boolean $true/$false value for enabling password_never_expires</maml:para>
         </maml:Description>
-        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
-          <maml:name>Boolean</maml:name>
+          <maml:name>String</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -9799,9 +9799,9 @@ SystemID                 CommandID                Status
         <maml:Description>
           <maml:para>A boolean $true/$false value if you want to enable passwordless_sudo</maml:para>
         </maml:Description>
-        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
-          <maml:name>Boolean</maml:name>
+          <maml:name>String</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -9811,9 +9811,9 @@ SystemID                 CommandID                Status
         <maml:Description>
           <maml:para>A boolean $true/$false value if you want to enable the user to be an administrator on any and all systems the user is bound to.</maml:para>
         </maml:Description>
-        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
-          <maml:name>Boolean</maml:name>
+          <maml:name>String</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -9967,9 +9967,9 @@ SystemID                 CommandID                Status
         <maml:Description>
           <maml:para>A boolean $true/$false value for putting the account into a suspended state</maml:para>
         </maml:Description>
-        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
-          <maml:name>Boolean</maml:name>
+          <maml:name>String</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -13539,9 +13539,9 @@ Enter a value between 1 and 2:</dev:code>
           <maml:Description>
             <maml:para>A boolean $true/$false value to allow for MFA during system login. Note this setting only applies systems running Linux or Mac.</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>Boolean</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -13551,9 +13551,9 @@ Enter a value between 1 and 2:</dev:code>
           <maml:Description>
             <maml:para>A boolean $true/$false value to allow for public key authentication.</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>Boolean</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -13563,9 +13563,9 @@ Enter a value between 1 and 2:</dev:code>
           <maml:Description>
             <maml:para>A boolean $true/$false value to allow for ssh password authentication.</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>Boolean</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -13575,9 +13575,9 @@ Enter a value between 1 and 2:</dev:code>
           <maml:Description>
             <maml:para>A boolean $true/$false value to allow for ssh root login.</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>Boolean</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -13599,9 +13599,9 @@ Enter a value between 1 and 2:</dev:code>
           <maml:Description>
             <maml:para>Setting this value to $true will enable systemInsights and collect data for this system. Setting this value to $false will disable systemInsights and data collection for the system.</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>Boolean</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -13626,9 +13626,9 @@ Enter a value between 1 and 2:</dev:code>
         <maml:Description>
           <maml:para>A boolean $true/$false value to allow for MFA during system login. Note this setting only applies systems running Linux or Mac.</maml:para>
         </maml:Description>
-        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
-          <maml:name>Boolean</maml:name>
+          <maml:name>String</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -13638,9 +13638,9 @@ Enter a value between 1 and 2:</dev:code>
         <maml:Description>
           <maml:para>A boolean $true/$false value to allow for public key authentication.</maml:para>
         </maml:Description>
-        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
-          <maml:name>Boolean</maml:name>
+          <maml:name>String</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -13650,9 +13650,9 @@ Enter a value between 1 and 2:</dev:code>
         <maml:Description>
           <maml:para>A boolean $true/$false value to allow for ssh password authentication.</maml:para>
         </maml:Description>
-        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
-          <maml:name>Boolean</maml:name>
+          <maml:name>String</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -13662,9 +13662,9 @@ Enter a value between 1 and 2:</dev:code>
         <maml:Description>
           <maml:para>A boolean $true/$false value to allow for ssh root login.</maml:para>
         </maml:Description>
-        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
-          <maml:name>Boolean</maml:name>
+          <maml:name>String</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -13686,9 +13686,9 @@ Enter a value between 1 and 2:</dev:code>
         <maml:Description>
           <maml:para>Setting this value to $true will enable systemInsights and collect data for this system. Setting this value to $false will disable systemInsights and data collection for the system.</maml:para>
         </maml:Description>
-        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
-          <maml:name>Boolean</maml:name>
+          <maml:name>String</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -13770,9 +13770,9 @@ Enter a value between 1 and 2:</dev:code>
           <maml:Description>
             <maml:para>A boolean $true/$false value to add or remove Administrator permissions on a target JumpCloud system</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>Boolean</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -13821,9 +13821,9 @@ Enter a value between 1 and 2:</dev:code>
           <maml:Description>
             <maml:para>A boolean $true/$false value to add or remove Administrator permissions on a target JumpCloud system</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>Boolean</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -13848,9 +13848,9 @@ Enter a value between 1 and 2:</dev:code>
         <maml:Description>
           <maml:para>A boolean $true/$false value to add or remove Administrator permissions on a target JumpCloud system</maml:para>
         </maml:Description>
-        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
-          <maml:name>Boolean</maml:name>
+          <maml:name>String</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -14074,9 +14074,9 @@ Enter a value between 1 and 2:</dev:code>
           <maml:Description>
             <maml:para>unlock or lock a users JumpCloud account</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>Boolean</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -14086,9 +14086,9 @@ Enter a value between 1 and 2:</dev:code>
           <maml:Description>
             <maml:para>A boolean $true/$false value for allowing pubic key authentication</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>Boolean</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -14194,9 +14194,9 @@ Enter a value between 1 and 2:</dev:code>
           <maml:Description>
             <maml:para>A boolean $true/$false value for enabling managed uid</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>Boolean</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -14206,9 +14206,9 @@ Enter a value between 1 and 2:</dev:code>
           <maml:Description>
             <maml:para>A boolean $true/$false value for enabling MFA at the user portal</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>Boolean</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -14242,9 +14242,9 @@ Enter a value between 1 and 2:</dev:code>
           <maml:Description>
             <maml:para>A boolean $true/$false value for enabling externally_managed</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>Boolean</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -14374,9 +14374,9 @@ Enter a value between 1 and 2:</dev:code>
           <maml:Description>
             <maml:para>A boolean $true/$false value to enable the user as an LDAP binding user</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>Boolean</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -14434,9 +14434,9 @@ Enter a value between 1 and 2:</dev:code>
           <maml:Description>
             <maml:para>A boolean $true/$false value for enabling password_never_expires</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>Boolean</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -14446,9 +14446,9 @@ Enter a value between 1 and 2:</dev:code>
           <maml:Description>
             <maml:para>A boolean $true/$false value if you want to enable passwordless_sudo</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>Boolean</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -14458,9 +14458,9 @@ Enter a value between 1 and 2:</dev:code>
           <maml:Description>
             <maml:para>A boolean $true/$false value if you want to enable the user to be an administrator on any and all systems the user is bound to.</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>Boolean</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -14602,9 +14602,9 @@ Enter a value between 1 and 2:</dev:code>
           <maml:Description>
             <maml:para>A boolean $true/$false value for putting the account into a suspended state</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>Boolean</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -14713,9 +14713,9 @@ Enter a value between 1 and 2:</dev:code>
           <maml:Description>
             <maml:para>unlock or lock a users JumpCloud account</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>Boolean</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -14725,9 +14725,9 @@ Enter a value between 1 and 2:</dev:code>
           <maml:Description>
             <maml:para>A boolean $true/$false value for allowing pubic key authentication</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>Boolean</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -14833,9 +14833,9 @@ Enter a value between 1 and 2:</dev:code>
           <maml:Description>
             <maml:para>A boolean $true/$false value for enabling managed uid</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>Boolean</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -14845,9 +14845,9 @@ Enter a value between 1 and 2:</dev:code>
           <maml:Description>
             <maml:para>A boolean $true/$false value for enabling MFA at the user portal</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>Boolean</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -14881,9 +14881,9 @@ Enter a value between 1 and 2:</dev:code>
           <maml:Description>
             <maml:para>A boolean $true/$false value for enabling externally_managed</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>Boolean</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -15013,9 +15013,9 @@ Enter a value between 1 and 2:</dev:code>
           <maml:Description>
             <maml:para>A boolean $true/$false value to enable the user as an LDAP binding user</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>Boolean</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -15073,9 +15073,9 @@ Enter a value between 1 and 2:</dev:code>
           <maml:Description>
             <maml:para>A boolean $true/$false value for enabling password_never_expires</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>Boolean</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -15085,9 +15085,9 @@ Enter a value between 1 and 2:</dev:code>
           <maml:Description>
             <maml:para>A boolean $true/$false value if you want to enable passwordless_sudo</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>Boolean</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -15097,9 +15097,9 @@ Enter a value between 1 and 2:</dev:code>
           <maml:Description>
             <maml:para>A boolean $true/$false value if you want to enable the user to be an administrator on any and all systems the user is bound to.</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>Boolean</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -15241,9 +15241,9 @@ Enter a value between 1 and 2:</dev:code>
           <maml:Description>
             <maml:para>A boolean $true/$false value for putting the account into a suspended state</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>Boolean</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -15340,9 +15340,9 @@ Enter a value between 1 and 2:</dev:code>
           <maml:Description>
             <maml:para>unlock or lock a users JumpCloud account</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>Boolean</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -15352,9 +15352,9 @@ Enter a value between 1 and 2:</dev:code>
           <maml:Description>
             <maml:para>A boolean $true/$false value for allowing pubic key authentication</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>Boolean</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -15460,9 +15460,9 @@ Enter a value between 1 and 2:</dev:code>
           <maml:Description>
             <maml:para>A boolean $true/$false value for enabling managed uid</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>Boolean</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -15472,9 +15472,9 @@ Enter a value between 1 and 2:</dev:code>
           <maml:Description>
             <maml:para>A boolean $true/$false value for enabling MFA at the user portal</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>Boolean</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -15508,9 +15508,9 @@ Enter a value between 1 and 2:</dev:code>
           <maml:Description>
             <maml:para>A boolean $true/$false value for enabling externally_managed</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>Boolean</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -15640,9 +15640,9 @@ Enter a value between 1 and 2:</dev:code>
           <maml:Description>
             <maml:para>A boolean $true/$false value to enable the user as an LDAP binding user</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>Boolean</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -15700,9 +15700,9 @@ Enter a value between 1 and 2:</dev:code>
           <maml:Description>
             <maml:para>A boolean $true/$false value for enabling password_never_expires</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>Boolean</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -15712,9 +15712,9 @@ Enter a value between 1 and 2:</dev:code>
           <maml:Description>
             <maml:para>A boolean $true/$false value if you want to enable passwordless_sudo</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>Boolean</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -15724,9 +15724,9 @@ Enter a value between 1 and 2:</dev:code>
           <maml:Description>
             <maml:para>A boolean $true/$false value if you want to enable the user to be an administrator on any and all systems the user is bound to.</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>Boolean</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -15868,9 +15868,9 @@ Enter a value between 1 and 2:</dev:code>
           <maml:Description>
             <maml:para>A boolean $true/$false value for putting the account into a suspended state</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>Boolean</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -16007,9 +16007,9 @@ Enter a value between 1 and 2:</dev:code>
         <maml:Description>
           <maml:para>unlock or lock a users JumpCloud account</maml:para>
         </maml:Description>
-        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
-          <maml:name>Boolean</maml:name>
+          <maml:name>String</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -16019,9 +16019,9 @@ Enter a value between 1 and 2:</dev:code>
         <maml:Description>
           <maml:para>A boolean $true/$false value for allowing pubic key authentication</maml:para>
         </maml:Description>
-        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
-          <maml:name>Boolean</maml:name>
+          <maml:name>String</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -16127,9 +16127,9 @@ Enter a value between 1 and 2:</dev:code>
         <maml:Description>
           <maml:para>A boolean $true/$false value for enabling managed uid</maml:para>
         </maml:Description>
-        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
-          <maml:name>Boolean</maml:name>
+          <maml:name>String</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -16139,9 +16139,9 @@ Enter a value between 1 and 2:</dev:code>
         <maml:Description>
           <maml:para>A boolean $true/$false value for enabling MFA at the user portal</maml:para>
         </maml:Description>
-        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
-          <maml:name>Boolean</maml:name>
+          <maml:name>String</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -16175,9 +16175,9 @@ Enter a value between 1 and 2:</dev:code>
         <maml:Description>
           <maml:para>A boolean $true/$false value for enabling externally_managed</maml:para>
         </maml:Description>
-        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
-          <maml:name>Boolean</maml:name>
+          <maml:name>String</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -16307,9 +16307,9 @@ Enter a value between 1 and 2:</dev:code>
         <maml:Description>
           <maml:para>A boolean $true/$false value to enable the user as an LDAP binding user</maml:para>
         </maml:Description>
-        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
-          <maml:name>Boolean</maml:name>
+          <maml:name>String</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -16367,9 +16367,9 @@ Enter a value between 1 and 2:</dev:code>
         <maml:Description>
           <maml:para>A boolean $true/$false value for enabling password_never_expires</maml:para>
         </maml:Description>
-        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
-          <maml:name>Boolean</maml:name>
+          <maml:name>String</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -16379,9 +16379,9 @@ Enter a value between 1 and 2:</dev:code>
         <maml:Description>
           <maml:para>A boolean $true/$false value if you want to enable passwordless_sudo</maml:para>
         </maml:Description>
-        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
-          <maml:name>Boolean</maml:name>
+          <maml:name>String</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -16391,9 +16391,9 @@ Enter a value between 1 and 2:</dev:code>
         <maml:Description>
           <maml:para>A boolean $true/$false value if you want to enable the user to be an administrator on any and all systems the user is bound to.</maml:para>
         </maml:Description>
-        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
-          <maml:name>Boolean</maml:name>
+          <maml:name>String</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -16535,9 +16535,9 @@ Enter a value between 1 and 2:</dev:code>
         <maml:Description>
           <maml:para>A boolean $true/$false value for putting the account into a suspended state</maml:para>
         </maml:Description>
-        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
-          <maml:name>Boolean</maml:name>
+          <maml:name>String</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
