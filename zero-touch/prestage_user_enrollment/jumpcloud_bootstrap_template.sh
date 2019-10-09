@@ -80,7 +80,7 @@ DELETE_ENROLLMENT_USERS=true
 ### This account will be deleted if the above boolean is set to true.
 ENROLLMENT_USER=""
 
-### NTP server, set to time.apple.com by default, Ensure time is correct ### 
+### NTP server, set to time.apple.com by default, Ensure time is correct ###
 NTP_SERVER="time.apple.com"
 
 ### Daemon Variable
@@ -148,8 +148,8 @@ DEP_N_GATE_DONE="/var/tmp/com.jumpcloud.gate.done"
 if [[ ! -f $DEP_N_GATE_INSTALLJC ]]; then
 
     # Install DEPNotify
-    curl --silent --output /tmp/DEPNotify-1.1.4.pkg "https://s3.amazonaws.com/nomadbetas/DEPNotify-1.1.4.pkg" >/dev/null
-    installer -pkg /tmp/DEPNotify-1.1.4.pkg -target /
+    curl --silent --output /tmp/DEPNotify-1.1.5.pkg "https://s3.amazonaws.com/nomadbetas/DEPNotify-1.1.5.pkg" >/dev/null
+    installer -pkg /tmp/DEPNotify-1.1.5.pkg -target /
 
     # Create DEPNotify log files
     touch "$DEP_N_DEBUG"
@@ -204,10 +204,10 @@ if [[ ! -f $DEP_N_GATE_INSTALLJC ]]; then
     sudo -u "$ACTIVE_USER" open -a "$DEP_N_APP" --args -path "$DEP_N_LOG" -fullScreen
 
     # Download and install the JumpCloud agent
-    # cat EOF can not be indented 
+    # cat EOF can not be indented
     curl --silent --output /tmp/jumpcloud-agent.pkg "https://s3.amazonaws.com/jumpcloud-windows-agent/production/jumpcloud-agent.pkg" >/dev/null
     mkdir -p /opt/jc
-cat <<-EOF >/opt/jc/agentBootstrap.json
+    cat <<-EOF >/opt/jc/agentBootstrap.json
 {
 "publicKickstartUrl": "https://kickstart.jumpcloud.com:443",
 "privateKickstartUrl": "https://private-kickstart.jumpcloud.com:443",
@@ -253,7 +253,7 @@ EOF
     Sleep 1
 
     echo "Status: JumpCloud agent installed!" >>"$DEP_N_LOG"
-    
+
     # JumpCloud installed - add gate file
     touch $DEP_N_GATE_INSTALLJC
 fi
@@ -336,7 +336,7 @@ if [[ ! -f $DEP_N_GATE_SYSADD ]]; then
         if [[ MacOSMinorVersion -ge 12 && $timeSet == false ]]; then
             echo "$(date "+%Y-%m-%dT%H:%M:%S"): Setting the correct system time" >>"$DEP_N_DEBUG"
             sntp -sS $NTP_SERVER
-            # only run this once 
+            # only run this once
             timeSet=true
         fi
 
@@ -357,7 +357,7 @@ if [[ ! -f $DEP_N_GATE_SYSADD ]]; then
                 -d '{"op": "add","type": "system","id": "'${systemID}'"}' \
                 "https://console.jumpcloud.com/api/v2/systemgroups/${DEP_ENROLLMENT_GROUP_ID}/members"
         )
-        
+
         # check if the system is in the enrollment group
         echo "$(date "+%Y-%m-%dT%H:%M:%S"): Checking Status" >>"$DEP_N_DEBUG"
         now=$(date -u "+%a, %d %h %Y %H:%M:%S GMT")
@@ -372,7 +372,7 @@ if [[ ! -f $DEP_N_GATE_SYSADD ]]; then
                 -H "Authorization: Signature keyId=\"system/${systemID}\",headers=\"request-line date\",algorithm=\"rsa-sha256\",signature=\"${signature_check}\"" \
                 --url "https://console.jumpcloud.com/api/v2/systems/${systemID}/memberof"
         )
-    
+
         groupCheck=$(echo $DEPenrollmentGroupGet | grep $DEP_ENROLLMENT_GROUP_ID)
     done
 
@@ -384,23 +384,23 @@ fi
 # User interaction steps - check if user has completed these steps.
 if [[ ! -f $DEP_N_GATE_UI ]]; then
     # reboot check
-        FINDER_PROCESS=$(pgrep -l "Finder")
-        until [ "$FINDER_PROCESS" != "" ]; do
+    FINDER_PROCESS=$(pgrep -l "Finder")
+    until [ "$FINDER_PROCESS" != "" ]; do
         echo "$(date "+%Y-%m-%dT%H:%M:%S"): Finder process not found. User session not active." >>"$DEP_N_DEBUG"
-            sleep 1
-            FINDER_PROCESS=$(pgrep -l "Finder")
-        done
+        sleep 1
+        FINDER_PROCESS=$(pgrep -l "Finder")
+    done
     echo "$(date "+%Y-%m-%dT%H:%M:%S"): User session active." >>"$DEP_N_DEBUG"
     # check if the DEPNotify process is running
     process=$(echo | ps aux | grep "\bDEPNotify\.app")
-    if [[ -z $process ]]; then 
+    if [[ -z $process ]]; then
         ACTIVE_USER=$(/usr/bin/python -c 'from SystemConfiguration import SCDynamicStoreCopyConsoleUser; import sys; username = (SCDynamicStoreCopyConsoleUser(None, None, None) or [None])[0]; username = [username,""][username in [u"loginwindow", None, u""]]; sys.stdout.write(username + "\n");')
         echo "$(date "+%Y-%m-%dT%H:%M:%S"): Expected DEPNotify.app to be in process lis, process not found. Launching DEPNotify as $ACTIVE_USER" >>"$DEP_N_DEBUG"
         sudo -u "$ACTIVE_USER" open -a "$DEP_N_APP" --args -path "$DEP_N_LOG" -fullScreen
         process=$(echo | ps aux | grep "\bDEPNotify\.app")
         sleep 2
         echo "$(date "+%Y-%m-%dT%H:%M:%S"): DEPNotify should be running on process: $process" >>"$DEP_N_DEBUG"
-    fi 
+    fi
     # Waiting for DECRYPT_USER_ID to be bound to system
     echo "Status: Pulling Security Settings from JumpCloud" >>"$DEP_N_LOG"
 
@@ -425,8 +425,8 @@ if [[ ! -f $DEP_N_GATE_UI ]]; then
 
     APIKEY=$(DecryptKey $ENCRYPTED_KEY $DECRYPT_USER_ID $ORG_ID)
 
-    ### 
-    # Recapture these variables - necessary if the system was restarted  
+    ###
+    # Recapture these variables - necessary if the system was restarted
     DEP_N_USER_INPUT_PLIST="/Users/$ACTIVE_USER/Library/Preferences/menu.nomad.DEPNotifyUserInput.plist"
     DEP_N_CONFIG_PLIST="/Users/$ACTIVE_USER/Library/Preferences/menu.nomad.DEPNotify.plist"
     ACTIVE_USER=$(/usr/bin/python -c 'from SystemConfiguration import SCDynamicStoreCopyConsoleUser; import sys; username = (SCDynamicStoreCopyConsoleUser(None, None, None) or [None])[0]; username = [username,""][username in [u"loginwindow", None, u""]]; sys.stdout.write(username + "\n");')
@@ -446,11 +446,11 @@ if [[ ! -f $DEP_N_GATE_UI ]]; then
     # User Configuration Settings - INSERT-CONFIGURATION                           #
     ################################################################################
     #<--INSERT-CONFIGURATION for "User Configuration Settings" below this line-------
- 
+
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # END User Configuration Settings                                              ~
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    
+
     # user interaction complete - add gate file
     touch $DEP_N_GATE_UI
 fi
@@ -614,12 +614,12 @@ if [[ ! -f $DEP_N_GATE_DONE ]]; then
     # END Post login active session workflow                                       ~
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 fi
-# final steps to check 
+# final steps to check
 # this will initially fail at the end of the script, if we remove the welcome user
-# the launchdaemon will be running as user null. However on next run, the script 
-# will run as root and should have access to remove the launch daemon and remove 
-# this script. The launchdaemon with status 127 will remain on the system until 
-# reboot, it will be not be called again after reboot. 
+# the launchdaemon will be running as user null. However on next run, the script
+# will run as root and should have access to remove the launch daemon and remove
+# this script. The launchdaemon with status 127 will remain on the system until
+# reboot, it will be not be called again after reboot.
 if [[ -f $DEP_N_GATE_DONE ]]; then
     sleep 10
     # ACTIVE_USER=$(/usr/bin/python -c 'from SystemConfiguration import SCDynamicStoreCopyConsoleUser; import sys; username = (SCDynamicStoreCopyConsoleUser(None, None, None) or [None])[0]; username = [username,""][username in [u"loginwindow", None, u""]]; sys.stdout.write(username + "\n");')
