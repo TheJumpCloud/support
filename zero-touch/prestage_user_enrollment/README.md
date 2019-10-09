@@ -1,14 +1,14 @@
 **Configuring a Zero-Touch macOS onboarding experience for PreStaging user and system enrollment using DEPNotify, munkiPKG, JumpCloud, and your MDM of choice.**
 
-Leveraging this workflow allows admins to install the JumpCloud agent siently and ensures that the JumpCloud Service Account is installed using DEP and an MDM.
+Leveraging this workflow allows admins to install the JumpCloud agent silently and ensures that the JumpCloud Service Account is installed using DEP and an MDM.
 
-The JumpCloud Service Account is required to manage users on FileVault protected macs. 
+The JumpCloud Service Account is required to manage users on FileVault enabled macs.
 
 [Learn more about the JumpCloud Service Account here.](https://support.jumpcloud.com/customer/portal/articles/2944374)
 
 *This example uses SimpleMDM*
 
-![configuration_steps](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/diagrams/configuration_steps.png?raw=true)
+![configuration_steps](./diagrams/configuration_steps.png?raw=true)
 
 **Table Of Contents**
 - [Prerequisites](#prerequisites)
@@ -20,18 +20,20 @@ The JumpCloud Service Account is required to manage users on FileVault protected
 - [Zero-Touch Enrollment Workflow Diagram](#zero-touch-enrollment-workflow-diagram)
 - [Component Definitions](#component-definitions)
 - [Configuration Steps](#configuration-steps)
-  - [Step 1 - Download the JumpCloud Bootstrap template script](#step-1---download-the-jumpcloud-bootstrap-template-script)
-  - [Step 2 - Configuring the JumpCloud Tenant For DEP Zero-Touch](#step-2---configuring-the-jumpcloud-tenant-for-dep-zero-touch)
-  - [Step 3 - Populating the Bootstrap template script variables](#step-3---populating-the-bootstrap-template-script-variables)
+  - [Step 1 - Create a New Package Project Directory Using Munkipkg](#step-1---create-a-new-package-project-directory-using-munkipkg)
+  - [Step 2 - Download the JumpCloud Bootstrap template script](#step-2---download-the-jumpcloud-bootstrap-template-script)
+  - [Step 3 - Configuring the JumpCloud Tenant For DEP Zero-Touch](#step-3---configuring-the-jumpcloud-tenant-for-dep-zero-touch)
+  - [Step 4 - Populating the Bootstrap template script variables](#step-4---populating-the-bootstrap-template-script-variables)
     - [Variable Definitions](#variable-definitions)
-  - [Step 4 - Selecting a User Configuration Module](#step-4---selecting-a-user-configuration-module)
+  - [Step 5 - Selecting a User Configuration Module](#step-5---selecting-a-user-configuration-module)
     - [Pending User Configuration Modules](#pending-user-configuration-modules)
     - [Pending or Active User Configuration Modules](#pending-or-active-user-configuration-modules)
-  - [Step 5 - Populating the Bootstrap template script with a User Configuration Module](#step-5---populating-the-bootstrap-template-script-with-a-user-configuration-module)
-  - [Step 6 - Creaking a PKG from the Bootstrap template script using munkiPKG](#step-6---creaking-a-pkg-from-the-bootstrap-template-script-using-munkipkg)
-  - [Step 7 - Configuring MDM PreStage Settings](#step-7---configuring-mdm-prestage-settings)
-  - [Step 8 - Configuring the PKG for MDM deployment](#step-8---configuring-the-pkg-for-mdm-deployment)
-  - [Step 9 - Creating a Privacy Preference Policy](#step-9---creating-a-privacy-preference-policy)
+  - [Step 6 - Populating the Bootstrap template script with a User Configuration Module](#step-6---populating-the-bootstrap-template-script-with-a-user-configuration-module)
+  - [Step 7 - Create the LaunchDaemon](#step-7---create-the-launchdaemon)
+  - [Step 8 - Creaking a PKG from the Bootstrap template script using munkiPKG](#step-8---creaking-a-pkg-from-the-bootstrap-template-script-using-munkipkg)
+  - [Step 9 - Configuring MDM PreStage Settings](#step-9---configuring-mdm-prestage-settings)
+  - [Step 10 - Configuring the PKG for MDM deployment](#step-10---configuring-the-pkg-for-mdm-deployment)
+  - [Step 11 - Creating a Privacy Preference Policy](#step-11---creating-a-privacy-preference-policy)
 - [Testing the workflow](#testing-the-workflow)
 
 ## Prerequisites
@@ -39,36 +41,35 @@ The JumpCloud Service Account is required to manage users on FileVault protected
 ### An Apple Device Enrollment (DEP) Account
 
 - The Apple DEP portal was initially launched as a stand alone console but now exists as a nested feature within Apple Business Manager
-  -  Need a DEP account? [Click here to sign up.](https://business.apple.com/#enrollment)
+  - Need a DEP account? [Click here to sign up.](https://business.apple.com/#enrollment)
 
 ### An MDM server integrated with Apple DEP
 
 To implement this zero-touch workflow a MDM server must be configured to deploy the MDM profiles and PKG payload to DEP enrolled machines.
 
-  - Jamf KB article: [Integrating with Apple's Device Enrollment (formerly DEP)](https://www.jamf.com/jamf-nation/articles/359/integrating-with-apple-s-device-enrollment-formerly-dep)
-  - Simple MDM KB article: [How to Enroll in MDM with Apple DEP](https://simplemdm.com/mdm-apple-dep-how-to/)
+- Jamf KB article: [Integrating with Apple's Device Enrollment (formerly DEP)](https://www.jamf.com/jamf-nation/articles/359/integrating-with-apple-s-device-enrollment-formerly-dep)
+- Simple MDM KB article: [How to Enroll in MDM with Apple DEP](https://simplemdm.com/mdm-apple-dep-how-to/)
 
 ### An Apple Developer Account
 
-An Apple Developer Account is required to sign the macOS package created in this tutorial.
+An Apple Developer Account is required to sign the macOS package created in this workflow.
 
 - Need a Apple Developer Account? [Click here to sign up.](https://developer.apple.com/programs/)
 
 ### munkipkg or an alternative macOS PKG building tool or application
 
-The JumpCloud Bootstrap configuration script that is configured in this tutorial must be packaged and converted to a signed PKG.
+The JumpCloud Bootstrap configuration script that is configured in this guide must be packaged and converted to a signed PKG.
 
-- munkiPKG is an easy to use command line utility that is used in this tutorial to convert the bootstrap configuration script to a PKG.
+- munkiPKG is an easy to use command line utility that is used in this workflow to convert the bootstrap configuration script to a PKG.
   - Need to download munkipkg? [Click here](https://github.com/munki/munki-pkg#munkipkg)  
-
 
 ### Users who you wish to enroll using this zero-touch workflow added to the JumpCloud directory.
 
-  - JumpCloud KB article: [Getting Started: Users](https://jumpcloud.desk.com/customer/en/portal/articles/2778996-getting-started-users)
+- JumpCloud KB article: [Getting Started: Users](https://jumpcloud.desk.com/customer/en/portal/articles/2778996-getting-started-users)
 
 ## Zero-Touch Enrollment Workflow Diagram
 
-![zero_touch_enrollment_workflow](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/diagrams/zero_touch_enrollment_workflow.png?raw=true)
+![zero_touch_enrollment_workflow](./diagrams/zero_touch_enrollment_workflow.png?raw=true)
 
 ## Component Definitions
 
@@ -78,6 +79,8 @@ The JumpCloud Bootstrap configuration script that is configured in this tutorial
 
 **jumpcloud_bootstrap_template.sh:** The template .sh file that contains the logic for the zero-touch workflow. This file has variables that must be populated with org specific settings and has fields to populate with a user configuration module. This .sh file is converted to a PKG and is the payload which is run which drives the zero-touch workflow.
 
+**LaunchDaemon:** A LaunchDaemon will be created to drive the completion of the jumpcloud_bootstrap_template.sh script. LaunchDaemons are processes which run as root and are invoked at system startup.
+
 **user_configuration_modules:** The folder that contains the user configuration modules. The user configuration modules provide optionality for how PreStaged users locate and activate their JumpCloud accounts during DEP onboarding.
 
 **Enrollment User:** The admin account pushed down via the MDM. Logging into this account is the first step in kicking off the zero-touch workflow. This account gets taken over and then inactivated on the system in the zero-touch workflow. Logging in with an Enrollment User is required to install the JumpCloud service account which manages SecureTokens and FileVault enabled users.
@@ -86,7 +89,7 @@ The JumpCloud Bootstrap configuration script that is configured in this tutorial
 
 **JumpCloud Decryption User:** The UID of this account is used to encrypt the JumpCloud API key in tandem with the JumpCloud Org ID using the "EncryptKey()" function. This account gets pushed down to the account during zero-touch enrollment and the UID is used to decrypt the "$ENCRYPTED_KEY" variable.
 
-**JumpCloud System Context API:** A method for authenticating to the JumpCloud API without an API key. A system can modify only it's direct associations using this authentication method.
+**JumpCloud System Context API:** A method for authenticating to the JumpCloud API without an API key. A system can modify only it's direct associations using this authentication method. [Learn more here.](https://docs.jumpcloud.com/2.0/authentication-and-authorization/system-context)
 
 **JumpCloud DEP Enrollment User Group:** A JumpCloud user group which contains two members, the **Enrollment User** account and the **JumpCloud Decryption User** account. This user group is bound to the **JumpCloud DEP Enrollment System Group**.
 
@@ -110,20 +113,50 @@ The JumpCloud Bootstrap configuration script that is configured in this tutorial
 
 ## Configuration Steps
 
-![configuration_steps](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/diagrams/configuration_steps.png?raw=true)
+![configuration_steps](./diagrams/configuration_steps.png?raw=true)
 
-### Step 1 - Download the JumpCloud Bootstrap template script
+This guide uses [munki-pkg](https://github.com/munki/munki-pkg) to build the custom PKG. The instructions in this guide can be used with alternative PKG creation tools.
 
-Download the [jumpcloud_bootstrap_template.sh file](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/jumpcloud_bootstrap_template.sh) and open this file in your code editor of choice.
+### Step 1 - Create a New Package Project Directory Using Munkipkg
+
+After installing [munkipkg](https://github.com/munki/munki-pkg/blob/master/README.md#munkipkg) use the `munkipkg --create` command to create a new project. [Need help? Find additional information here.](https://github.com/munki/munki-pkg/blob/master/README.md#creating-a-new-project)
+
+Example:
+
+```
+bash-3.2$ munkipkg --create zero-touch
+munkipkg: Created new package project at zero-touch
+```
+
+This example creates a munki pkg project named `zero-touch` in the current working directory of the terminal where the command is run.
+
+*To use the munkipkg binary without pointing to the full path of the binary file move the munkipkg binary to the `/usr/local/bin` folder or create a symlink to the location of the munkipkg binary in the `/usr/local/bin` directory.
+
+Running this command will create the the `zero-touch` munki pkg project folders and scaffolding.
+
+![zero touch folders](./images/zero-touch-folders.png?raw=true)
+
+### Step 2 - Download the JumpCloud Bootstrap template script
+
+Download the [jumpcloud_bootstrap_template.sh file](./jumpcloud_bootstrap_template.sh).
+
+Save this file inside the **payload** folder of your munki pkg project.
+
+![zero touch folders](./images/zero-touch-template.png?raw=true)
+
+Open this file in your code editor of choice.
 
 The JumpCloud Solution Architecture team loves to work with SH files in the code editor Visual Studio Code.
 
-  - Want to try VS Code? [Click here to download](https://code.visualstudio.com/) 
-### Step 2 - Configuring the JumpCloud Tenant For DEP Zero-Touch
+- Want to try VS Code? [Click here to download](https://code.visualstudio.com/)
+
+
+
+### Step 3 - Configuring the JumpCloud Tenant For DEP Zero-Touch
 
 **Configure JumpCloud Settings**
 
-![Org Settings](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/UID_GID_Mgmt.png?raw=true)
+![Org Settings](./images/UID_GID_Mgmt.png?raw=true)
 
 To configure a JumpCloud tenant for zero-touch DEP integration you will first need to enable the setting for `Enable UID/GID management for users` in the JumpCloud "Settings"->"General" pane.
 
@@ -141,7 +174,7 @@ Create an enrollment user account and set the password for this account to be ex
 
 Example:
 
-![Welcome User](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/Welcome_User.png?raw=true)
+![Welcome User](./images/Welcome_User.png?raw=true)
 
 This account is taken over during DEP enrollment and then disabled on the machine after DEP enrollment completes.
 
@@ -155,17 +188,17 @@ Take note of the value populated for the "Unix UID" as this will be used in [Ste
 
 Example:
 
-![Decryption User](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/IT_Service_UID.png?raw=true)
+![Decryption User](./images/IT_Service_UID.png?raw=true)
 
 - Default Admin (Optional)
 
 This account will be used in this workflow to bind a default admin account to each DEP enrolled system when the system is added to the DEP Post Enrollment System Group. If you already have a default admin account in your JumpCloud tenant you can simply use this account.
- 
+
 For this user ensure that the box "Enable as Admin/Sudo on all system associations" under this users "User Security Settings and Permissions" is checked.
 
 Example:
 
-![Default Admin](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/Default_Admin.png?raw=true)
+![Default Admin](./images/Default_Admin.png?raw=true)
 
 **Configure JumpCloud Groups**
 
@@ -173,9 +206,9 @@ Example:
 
 Create a JumpCloud User Group named "DEP Enrollment User Group" under the "Users" settings for this group add two users: the **Enrollment User** and the **Decryption User**.
 
-Example: 
+Example:
 
-![DEP E User Group](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/DEP_Enrollment_User_Group.png?raw=true)
+![DEP E User Group](./images/DEP_Enrollment_User_Group.png?raw=true)
 
 - DEP Enrollment System Group
 
@@ -183,7 +216,7 @@ Create a JumpCloud System Group named "DEP Enrollment System Group" under the "U
 
 Example:
 
-![Dep E System Group](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/DEP_Enrollment_System_Group_ID.png?raw=true)
+![Dep E System Group](./images/DEP_Enrollment_System_Group_ID.png?raw=true)
 
 After creating the group take note of the "DEP  Enrollment System Group" JumpCloud ID value.
 
@@ -191,20 +224,19 @@ To find the JumpCloud ID value for a JumpCloud system group navigate to the "GRO
 
 Example:
 
-![Dep E System Group ID](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/DEP_Enrollment_System_Group_ID.png?raw=true)
-
+![Dep E System Group ID](./images/DEP_Enrollment_System_Group_ID.png?raw=true)
 
 - DEP Post Enrollment User Group
 
 Create a JumpCloud User Group named "DEP Post Enrollment User Group" under the "Users" settings for this group add one user: **Default Admin**.
 
-![DEP Post Enrollment User Group](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/DEP_Post_Enroll_User_Group.png?raw=true)
+![DEP Post Enrollment User Group](./images/DEP_Post_Enroll_User_Group.png?raw=true)
 
 - DEP Post Enrollment System Group
 
 Create a JumpCloud System Group named "DEP Post Enrollment System Group" under the "User Groups" settings for this group add the group "DEP Post Enrollment User Group"
 
-![DEP Post Enrollment System Group](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/DEP_Post_Enroll_System_Group.png?raw=true)
+![DEP Post Enrollment System Group](./images/DEP_Post_Enroll_System_Group.png?raw=true)
 
 After creating the group take note of the "DEP Post Enrollment System Group" JumpCloud ID value.
 
@@ -212,13 +244,14 @@ To find the JumpCloud ID value for a JumpCloud system group navigate to the "GRO
 
 Example:
 
-![DEP Post Enrollment System Group ID](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/DEP_Post_Enroll_System_Group_ID.png?raw=true)
+![DEP Post Enrollment System Group ID](./images/DEP_Post_Enroll_System_Group_ID.png?raw=true)
 
-### Step 3 - Populating the Bootstrap template script variables
+### Step 4 - Populating the Bootstrap template script variables
 
 Within the "General Settings" near the top of the  `jumpcloud_bootstrap_template.sh` file you will find the input section for org specific variables.
 
 Example:
+
 ```SH
 ################################################################################
 # General Settings - POPULATE THE BELOW VARIABLES                              #
@@ -261,6 +294,12 @@ DELETE_ENROLLMENT_USERS=true
 ### This account will be deleted if the above boolean is set to true.
 ENROLLMENT_USER=""
 
+### NTP server, set to time.apple.com by default, Ensure time is correct ### 
+NTP_SERVER="time.apple.com"
+
+### Daemon Variable
+daemon="com.jumpcloud.prestage.plist"
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # END General Settings                                                         ~
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -297,19 +336,19 @@ Three parameters are used to create this encrypted string.
 
 1. JumpCloud API key
 
-Need help finding your JumpCloud API key? See KB:[Obtaining Your API Key](https://support.jumpcloud.com/customer/en/portal/articles/2429680-jumpcloud-apis#configuration)
+   - Need help finding your JumpCloud API key? See KB:[Obtaining Your API Key](https://support.jumpcloud.com/customer/en/portal/articles/2429680-jumpcloud-apis#configuration)
 
 2. UID of **Decryption User** created in [Step 2](#step-2---configuring-the-jumpcloud-tenant-for-dep-zero-touch)
 
-To find the UID of the **Decryption User** expand the "User Security Settings and Permissions" and find this value under "Unix UID"
+   - To find the UID of the **Decryption User** expand the "User Security Settings and Permissions" and find this value under "Unix UID"
 
-![UID Image](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/Decryption_User_UID_Circled.png?raw=true)
+![UID Image](./images/Decryption_User_UID_Circled.png?raw=true)
 
 3. JumpCloud Organization ID
 
-The JumpCloud Organization ID can be found under the "Settings"-> "General" pane in the JumpCloud admin console.
+   - The JumpCloud Organization ID can be found under the "Settings"-> "General" pane in the JumpCloud admin console.
 
-![Organization ID Image](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/Org_ID_Circled.png?raw=true)
+![Organization ID Image](./images/Org_ID_Circled.png?raw=true)
 
 Use the `EncryptKey()` function to generate the **ENCRYPTED_KEY** variable using these three parameters.
 
@@ -367,12 +406,11 @@ Enter a welcome title that will launch when DEPNotify launches.
 
 Enter welcome text that will load when DEPNotify launches.
 
-Use \\n for line breaks.
+Use \n for line breaks.
 
 - `DELETE_ENROLLMENT_USERS=true`
 
 A Boolean variable that by default is set to true. This variable controls if the `DECRYPT_USER` and `ENROLLMENT_USER` accounts are deleted from the system at the end of the flow. It is recommend to leave this variable set to True to ensure that these users are removed.
-
 
 - `ENROLLMENT_USER=""`
 
@@ -422,13 +460,18 @@ DELETE_ENROLLMENT_USERS=true
 ### This account will be deleted if the above boolean is set to true.
 ENROLLMENT_USER="Welcome"
 
+### NTP server, set to time.apple.com by default, Ensure time is correct ### 
+NTP_SERVER="time.apple.com"
+
+### Daemon Variable
+daemon="com.jumpcloud.prestage.plist"
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # END General Settings                                                         ~
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ```
 
-### Step 4 - Selecting a User Configuration Module
+### Step 5 - Selecting a User Configuration Module
 
 Within the  `prestage_user_enrollment` folder in the zero-touch support GitHub repo there is a folder named `user_configuration_modules` in this folder live the user configuration modules that give optionality for how users will activate their JumpCloud accounts through the DEPNotify registration window.
 
@@ -436,42 +479,42 @@ Within the  `prestage_user_enrollment` folder in the zero-touch support GitHub r
 
 The below workflows can be used to activate **Pending** JumpCloud users. Pending users are users who have not set a password.
 
-![pending_user_company_email](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/pending_company_email.png?raw=true)
+![pending_user_company_email](./images/pending_company_email.png?raw=true)
 
-- [pending_user_company_email](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/user_configuration_modules/pending_user_company_email.sh)
+- [pending_user_company_email](./user_configuration_modules/pending_user_company_email.sh)
 
 The JumpCloud user "email" field is used to lookup and locate a user by company email.
 
-![pending_user_personal_email](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/personal_email.png?raw=true)
+![pending_user_personal_email](./images/personal_email.png?raw=true)
 
-- [pending_user_personal_email](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/user_configuration_modules/pending_user_personal_email.sh)
+- [pending_user_personal_email](./user_configuration_modules/pending_user_personal_email.sh)
 
 There is no defined field for "personal email" in JumpCloud so the "description" field is used to lookup and locate a user by personal email. The "Description" field for users must be populated with a value for this workflow to succeed.
 
 #### Pending or Active User Configuration Modules
 
-The below workflows can be used to activate **Pending** or **Active** JumpCloud users. Pending users are users who have not set a password. Active users are users who have already set a pass code. A "secret" is required for these workflows. This is a value that is populated for the JumpCloud "employeeIdentifier" field and provided to employees prior to zero-touch DEP enrollment. The secret secures the enrollment and provides an additional factor of verification to activate or update the JumpCloud account.
+The below workflows can be used to activate **Pending** or **Active** JumpCloud users. Pending users are users who have not set a password. Active users are users who have already set a password. A "secret" is required for these workflows. This "secret" is a value that is populated for the JumpCloud "employeeIdentifier" field of the user by the admin and provided to employees prior to zero-touch DEP enrollment. The secret secures the enrollment and provides an additional factor of verification to activate or update the JumpCloud account.
 
-![pending_or_active_user_company_email_and_secret](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/company_secret.png?raw=true)
+![pending_or_active_user_company_email_and_secret](./images/company_secret.png?raw=true)
 
-- [pending_or_active_user_company_email_and_secret](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/user_configuration_modules/pending_or_active_user_company_email_and_secret.sh)
+- [pending_or_active_user_company_email_and_secret](./user_configuration_modules/pending_or_active_user_company_email_and_secret.sh)
 
 The input fields "Company Email" is used to query the "EMAIL" attribute for existing JumpCloud users. The input field "Secret" is used to query the "employeeIdentifier" attribute. The "employeeIdentifier" field for users must be populated with a value for this workflow to succeed. The "employeeIdentifier" attribute is required to be unique per user.
 
-![pending_or_active_user_personal_email_and_secret](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/personal_email_secret.png?raw=true)
+![pending_or_active_user_personal_email_and_secret](./images/personal_email_secret.png?raw=true)
 
-- [pending_or_active_user_personal_email_and_secret](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/user_configuration_modules/pending_or_active_user_personal_email_and_secret.sh)
+- [pending_or_active_user_personal_email_and_secret](./user_configuration_modules/pending_or_active_user_personal_email_and_secret.sh)
 
 The input fields "Personal Email" is used to query the "Description" attribute for existing JumpCloud users. The input field "Secret" is used to query the "employeeIdentifier" attribute. The "employeeIdentifier" field for users must be populated with a value for this workflow to succeed. The "employeeIdentifier" attribute is required to be unique per user.
 
-![pending_or_active_user_last_name_and_secret](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/lastname_secret.png?raw=true)
+![pending_or_active_user_last_name_and_secret](./images/lastname_secret.png?raw=true)
 
-- [pending_or_active_user_last_name_and_secret](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/user_configuration_modules/pending_or_active_user_last_name_and_secret.sh)
+- [pending_or_active_user_last_name_and_secret](./user_configuration_modules/pending_or_active_user_last_name_and_secret.sh)
 
 
 The input fields "Last Name" is used to query the "lastname" attribute for existing JumpCloud users. The input field "Secret" is used to query the "employeeIdentifier" attribute. The "employeeIdentifier" field for users must be populated with a value for this workflow to succeed. The "employeeIdentifier" attribute is required to be unique per user.
 
-### Step 5 - Populating the Bootstrap template script with a User Configuration Module
+### Step 6 - Populating the Bootstrap template script with a User Configuration Module
 
 After selecting a User Configuration Module you will need to insert two code blocks from the module into the  `jumpcloud_bootstrap_template.sh` file.
 
@@ -503,9 +546,44 @@ Copy in the entire contents of the  **User Configuration Settings** code block f
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ```
 
-### Step 6 - Creaking a PKG from the Bootstrap template script using munkiPKG
+### Step 7 - Create the LaunchDaemon
 
-- Creating a project using munkiPKG
+In order to ensure the JumpCloud user account is configured during this process. A LaunchDaemon will control the execution of the jumpcloud_bootstrap_template.sh script. For additional information, [Apple's documentation archive](https://developer.apple.com/library/archive/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/Introduction.html) is a expansive resource for building and designing daemons. This workflow requires a daemon to run the jumpcloud_bootstrap_template.sh script on startup.
+
+1. Create a .plist file or copy the provided [com.jumpcloud.prestage.plist](./com.jumpcloud.prestage.plist) daemon file.  Put this file in the **payload** folder of your Package Project Directory.
+
+![plist-payload](./images/plist-payload.png?raw=true)
+
+2. Ensure the Label Key and string aligns with the variable name set in the jumpcloud_prestage_template.sh file. The .plist file will be loaded as a LaunchDaemon at the end of the postinstall script created in the next step.
+     - The provided [com.jumpcloud.prestage.plist](./com.jumpcloud.prestage.plist) daemon is set to run at system load, start the `jumpcloud_bootstrap_template.sh` script and will restart every 10 seconds if the script exits early.
+
+3. Check that the .plist is formatted correctly using the below command:
+
+`plutil -convert xml1 ExampleBinary.plist`
+
+*Running this command and receiving no return code validates that the plist file is formatted correctly.*
+
+Example:
+
+```bash
+bash-3.2$ ls
+com.jumpcloud.prestage.plist	jumpcloud_bootstrap_template.sh
+bash-3.2$ plutil -convert xml1 com.jumpcloud.prestage.plist 
+bash-3.2$ 
+```
+
+Optionally include reporting keys for additional debugging:
+
+```xml
+<key>StandardErrorPath</key>
+<string>/var/tmp/com.jumpcloud.prestage.err</string>
+<key>StandardOutPath</key>
+<string>/var/tmp/com.jumpcloud.prestage.out</string>
+```
+
+### Step 8 - Creaking a PKG from the Bootstrap template script using munkiPKG
+
+- Create a project using munkiPKG
 
 Use munkipkg to create a new project folder.
 
@@ -515,21 +593,22 @@ Example:
 munkipkg --create jumpcloud_bootstrap
 ```
 
-Need help? See:[Creating a new project](https://github.com/munki/munki-pkg#creating-a-new-project)
+Need help? See: [Creating a new project](https://github.com/munki/munki-pkg#creating-a-new-project)
 
-- Move the `jumpcloud_bootstrap_template.sh` to the project folder
+- Move the `jumpcloud_bootstrap_template.sh` script and the `com.jumpcloud.prestage.plist` daemon to the payload project directory.
 
-![payload move](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/payload_folder.png?raw=true)
+![payload move](./images/payload_folder.png?raw=true)
 
 - Update the build-info file and add signing information
 
 Required Updates to build-info:
 
-"distribution_style": true
-"identifier": "com.github.munki.pkg.jumpcloud_bootstrap_template"
-"install_location": "/private/tmp"
-"preserve_xattr": true,
-"identifier": "com.github.munki.pkg.jumpcloud_bootstrap_template"
+- "distribution_style": true
+- "identifier": "com.github.munki.pkg.jumpcloud_bootstrap_template"
+- "install_location": "/var/tmp"
+- "preserve_xattr": true,
+- "identifier": "com.github.munki.pkg.jumpcloud_bootstrap_template"
+
 Example build-info.json:
 
 ```JSON
@@ -539,7 +618,7 @@ Example build-info.json:
     "name": "jumpcloud_bootstrap_template.pkg",
     "distribution_style": true,
     "preserve_xattr": true,
-    "install_location": "/private/tmp",
+    "install_location": "/var/tmp",
     "version": "1.0",
     "ownership": "recommended",
     "identifier": "com.github.munki.pkg.jumpcloud_bootstrap_template",
@@ -551,12 +630,15 @@ Example build-info.json:
 
 - Create a postinstall script file in the `scripts` folder
 
-![postinstall script](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/postinstall_script.png?raw=true)
+![postinstall script](./images/postinstall_script.png?raw=true)
 
-In the postinstall script add in the following payload
+In the postinstall script add in the following payload. The LaunchDaemon must be moved to a system's /Library/LaunchDaemons/ directory in the postinstall script.
 
 ```sh
 #!/bin/sh
+
+# set the LaunchDaemon variable with the name of the LaunchDaemon
+daemon="com.jumpcloud.prestage.plist"
 
 # Enter the ENROLLMENT_USER within the '' of ENROLLMENT_USER=''
 ENROLLMENT_USER=''
@@ -568,7 +650,19 @@ cat <<-EOF >/var/run/JumpCloud-SecureToken-Creds.txt
 $ENROLLMENT_USER;$ENROLLMENT_USER_PASSWORD
 EOF
 
-sh /private/tmp/jumpcloud_bootstrap_template.sh
+# Move LaunchDaemon to /Library/LaunchDaemons/
+if [[ ! -f "/Library/LaunchDaemons/${daemon}" ]]; then
+  mv "/var/tmp/${daemon}" "/Library/LaunchDaemons/"
+fi
+
+# Set Permissions
+chmod 744 /var/tmp/jumpcloud_bootstrap_template.sh
+chown root:wheel /var/tmp/jumpcloud_bootstrap_template.sh
+chmod 644 "/Library/LaunchDaemons/${daemon}"
+chown root:wheel "/Library/LaunchDaemons/${daemon}"
+
+# load the LaunchDaemon
+launchctl load -w "/Library/LaunchDaemons/${daemon}"
 
 ```
 
@@ -578,6 +672,9 @@ Example:
 
 ```sh
 #!/bin/sh
+
+# set the LaunchDaemon variable with the name of the LaunchDaemon
+daemon="com.jumpcloud.prestage.plist"
 
 # Enter the ENROLLMENT_USER within the '' of ENROLLMENT_USER=''
 ENROLLMENT_USER='Welcome'
@@ -589,7 +686,19 @@ cat <<-EOF >/var/run/JumpCloud-SecureToken-Creds.txt
 $ENROLLMENT_USER;$ENROLLMENT_USER_PASSWORD
 EOF
 
-sh /private/tmp/jumpcloud_bootstrap_template.sh
+# Move LaunchDaemon (if using munki)
+if [[ ! -f "/Library/LaunchDaemons/${daemon}" ]]; then
+  mv "/var/tmp/${daemon}" "/Library/LaunchDaemons/"
+fi
+
+# Set Permissions
+chmod 744 /var/tmp/jumpcloud_bootstrap_template.sh
+chown root:wheel /var/tmp/jumpcloud_bootstrap_template.sh
+chmod 644 "/Library/LaunchDaemons/${daemon}"
+chown root:wheel "/Library/LaunchDaemons/${daemon}"
+
+# load the LaunchDaemon
+launchctl load -w "/Library/LaunchDaemons/${daemon}"
 
 ```
 
@@ -601,7 +710,7 @@ Use munkipkg to create the PKG and sign it with your Apple Developer Certificate
 
 Need help? See [Package signing](https://github.com/munki/munki-pkg#package-signing) and [Building a package](https://github.com/munki/munki-pkg#building-a-package)
 
-### Step 7 - Configuring MDM PreStage Settings
+### Step 9 - Configuring MDM PreStage Settings
 
 - User Settings
 
@@ -611,37 +720,37 @@ In the MDM DEP Apple PreStage settings configure the MDM to not prompt the user 
 
 In the MDM DEP Apple PreStage settings enable the MDM to "Automatically create an administrator account" and specify the `Short name` of the username and the `Full name` of the first and last name of the **Enrollment User** configured in [Step 2](#step-2---configuring-the-jumpcloud-tenant-for-dep-zero-touch). Ensure that the password set for this account is also the same password specified for the **Enrollment User** account configured in [Step 2](#step-2---configuring-the-jumpcloud-tenant-for-dep-zero-touch)
 
-Example: 
+Example:
 
-![Simple Settings](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/mdm_enrollment_user.png?raw=true)
+![Simple Settings](./images/mdm_enrollment_user.png?raw=true)
 
-### Step 8 - Configuring the PKG for MDM deployment
+### Step 10 - Configuring the PKG for MDM deployment
 
 - Uploading PKG
 
 Upload the PKG to the MDM
 
-![PKG Upload](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/simple_mdm_pkg1.png?raw=true)
+![PKG Upload](./images/simple_mdm_pkg1.png?raw=true)
 
 - PKG Settings
 
 Ensure the PKG is configured for "Device Level Installation". By setting the PKG to "Device Level Installation" the PKG will install as soon as a device enrolls into MDM.
 
-![Device Level](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/simple_device_level_install.png?raw=true)
+![Device Level](./images/simple_device_level_install.png?raw=true)
 
 - PKG Scoping
 
 Scope the PKG to auto deploy to the machines you wish to configure for zero-touch configuration.
 
-### Step 9 - Creating a Privacy Preference Policy
+### Step 11 - Creating a Privacy Preference Policy
 
-Create the below "Privacy Preference" profile. This will allow the osascript to run which prompts users to input a secure password.
+Create the below "Privacy Preference" profile. This will allow the osascript to run which prompts users to input a secure password. Or download the [JAMF profile](./tcc-bash.mobileconfig) if deploying over JAMF Pro.
 
 **Identifier type:** path
 
-**Identifier:**/System/Library/PrivateFrameworks/CommerceKit.framework/Versions/A/Resources/storedownloadd
+**Identifier:**/bin/bash
 
-**Code requirement:** identifier "com.apple.storedownloadd" and anchor apple
+**Code requirement:** identifier "com.apple.bash" and anchor apple
 
 **Static code validation:** No
 
@@ -655,7 +764,7 @@ Apple Event Targets
 
 **Access:** Allow
 
-![Privacy P](https://github.com/TheJumpCloud/support/blob/master/zero-touch/prestage_user_enrollment/images/privacy_preference.png?raw=true)
+![Privacy P](./images/privacy_preference.png?raw=true)
 
 ## Testing the workflow
 
