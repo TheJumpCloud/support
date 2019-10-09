@@ -1,3 +1,4 @@
+#!/bin/bash
 #
 # Populate the below variables before running the command
 #
