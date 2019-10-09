@@ -2,7 +2,7 @@
 
 #*******************************************************************************
 #
-#       Version 1.2 | See the CHANGELOG.md for version information
+#       Version 2.0 | See the CHANGELOG.md for version information
 #
 #       See the ReadMe file for detailed configuration steps.
 #

@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.2
+## 2.0
 
 ### RELEASE DATE
 
