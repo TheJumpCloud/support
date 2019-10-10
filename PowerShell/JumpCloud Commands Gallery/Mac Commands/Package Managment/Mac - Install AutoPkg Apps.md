@@ -18,9 +18,10 @@ autopkg="/usr/local/bin/autopkg"
 # Add repo definition
 autopkg repo-add https://github.com/autopkg/recipes
 
-
 # autopkg install List
-$autopkg install firefox.install
+$autopkg install firefox.install --verbose
+$autopkg install GoogleChrome.install --verbose
+$autopkg install VLC.install --verbose
 
 ```
 
