@@ -14,11 +14,12 @@ mac
 # Good Conversation here
 # https://www.jamf.com/jamf-nation/discussions/20938/installing-brew-and-then-hopefully-gcc-using-brew
 # Brew deploy
-# Tested on Homebrew 1.0.8
+# Tested on Homebrew 2.1.13
 
 #v1.0 Daniel Shane 28/10/2016 - First Version
 #v1.1 16/11/2016 - Typeo and fixed missing group folders
 #v1.2 12/01/2017 - Opt out of brew analytics, thanks Geo for finding this
+#v1.3 10/10/2019 - For use in JumpCloud Commands Gallery
 
 # Set the Default Admin account used to manage Homebrew
 useris="defaultadmin"
@@ -94,7 +95,7 @@ exit 0
 
 #### Description
 
-Installs Homebrew to a mac system without user input. Note: change the defaultadmin user account to match a default admin account in your environment.
+Installs Homebrew to a mac system without user input. Note: change the defaultadmin user account to match a default admin account in your environment. This script cannot music be run as root. It's worth changing the deployment time of this script to 300 seconds or longer depending on your network connection.
 
 #### Import This Command
 
