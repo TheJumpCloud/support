@@ -1,9 +1,20 @@
+#### Name
+
+Mac - Install Homebrew Package Manager | v1.0 JCCG
+
+#### commandType
+
+mac
+
+#### Command
+
+```
 #!/bin/bash
 
 # Good Conversation here
-#https://www.jamf.com/jamf-nation/discussions/20938/installing-brew-and-then-hopefully-gcc-using-brew
-#Brew deploy
-#Tested on Homebrew 1.0.8
+# https://www.jamf.com/jamf-nation/discussions/20938/installing-brew-and-then-hopefully-gcc-using-brew
+# Brew deploy
+# Tested on Homebrew 1.0.8
 
 #v1.0 Daniel Shane 28/10/2016 - First Version
 #v1.1 16/11/2016 - Typeo and fixed missing group folders
@@ -79,3 +90,16 @@ sudo -u "$useris" $HOMEBREW_PREFIX/bin/brew update --force
 sudo -u "$useris" $HOMEBREW_PREFIX/bin/brew analytics off
 
 exit 0
+```
+
+#### Description
+
+Installs Homebrew to a mac system without user input. Note: change the defaultadmin user account to match a default admin account in your environment.
+
+#### Import This Command
+
+To import this command into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
+
+```
+Import-JCCommand -URL 'https://git.io/JelTB'
+```

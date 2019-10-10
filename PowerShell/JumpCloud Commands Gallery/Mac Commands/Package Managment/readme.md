@@ -8,7 +8,8 @@ Prerequisites: Install Xcode command line tools (recommended for git). Install v
 
 Requirements: Admin user across all systems.
 
-Deploy the [Install AutoPkg command](./Mac\ -\ Install\ AutoPkg\ Package\ Manager) across your mac fleet.  
+Deploy the [Install AutoPkg command](./Mac&#32;-&#32;Install&#32;AutoPkg&#32;Package&#32;Manager.md) across your mac fleet.
+
 
 
 ## Homebrew

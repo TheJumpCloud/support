@@ -9,7 +9,11 @@ mac
 #### Command
 
 ```
+#!/bin/bash
+
+# curl AutoPkg 1.2 into /tmp/
 curl -L -o /tmp/autopkg-1.2.pkg "https://github.com/autopkg/autopkg/releases/download/v1.2/autopkg-1.2.pkg" >/dev/null
+# run installer command to install AutoPkg
 installer -pkg /tmp/autopkg-1.2.pkg -target /
 
 exit 0
@@ -23,6 +27,6 @@ Installs AutoPkg to a mac system without user input.
 
 To import this command into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
 
-\```
-Import-JCCommand -URL 'https://git.io/jccg-Mac-RestartSystem'
-\```
+```
+Import-JCCommand -URL 'https://git.io/JelTB'
+```
