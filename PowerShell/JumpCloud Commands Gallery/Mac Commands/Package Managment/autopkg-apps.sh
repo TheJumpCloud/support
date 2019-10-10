@@ -4,6 +4,7 @@
 
 # Add default repos
 /usr/local/bin/autopkg repo-add https://github.com/autopkg/recipes # add https://github.com/autopkg/recipes
+/usr/local/bin/autopkg repo-add https://github.com/autopkg/homebysix-recipes 
 
 # Download and install application set
 /usr/local/bin/autopkg install Firefox.install --verbose
