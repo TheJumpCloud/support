@@ -32,19 +32,7 @@ HOMEBREW_CACHE="/Users/$useris/Library/Caches/Homebrew"
 BREW_REPO="https://github.com/Homebrew/brew"
 CORE_TAP_REPO="https://github.com/Homebrew/homebrew-core"
 
-#Download and install xcode cli tools if needed
-if [ ! -d /Library/Developer ] ; then
-    echo "Xcode CLI tools needed, Downloading from SUS"
-    touch /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
-    PROD=$(softwareupdate -l |
-      grep "\*.*Command Line" |
-      grep "$macosv" |
-      head -n 1 | awk -F"*" '{print $2}' |
-      sed -e 's/^ *//' |
-      tr -d '\n')
-    softwareupdate -i "$PROD"
-    rm -rf /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
-fi
+# Exit if Xcode CLI is not installed
 if [ ! -d /Library/Developer ] ; then
     echo "Command Line Tools not installed"
     exit 1
