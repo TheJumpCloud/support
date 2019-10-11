@@ -13,8 +13,6 @@ mac
 
 # Assuming homebrew is installed, Install standard set of applications
 brew="/usr/local/bin/brew"
-# Brew Cask List
-# $brew cask install firefox
 
 # Brew List
 $brew install tree
@@ -27,7 +25,7 @@ $brew install micro
 
 #### Description
 
-Installs list of Homebrew Apps - customize this script to fit your needs. If this command fails with error 124, it may have reached it's max runtime to report back to JumpCloud, the script itself may not have failed. 
+Installs list of Homebrew Apps - customize this script to fit your needs. If this command fails with error 124, it may have reached it's max runtime to report back to JumpCloud, the script itself may not have failed.
 
 #### Import This Command
 

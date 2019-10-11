@@ -95,7 +95,7 @@ exit 0
 
 #### Description
 
-Installs Homebrew to a mac system without user input. Note: change the defaultadmin user account to match a default admin account in your environment. This script cannot music be run as root. It's worth changing the deployment time of this script to 300 seconds or longer depending on your network connection.
+Installs Homebrew to a mac system without user input. Note: change the defaultadmin user account to match a default admin account in your environment. This should be run as root - the subsequent app deployement should be run as the defaultadmin user account. It's worth changing the deployment time of this script to 300 seconds or longer depending on your network connection.
 
 #### Import This Command
 
