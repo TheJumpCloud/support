@@ -13,7 +13,7 @@ Function VerifyAccount
     }
     Try
     {
-        $idrefUser = ([System.Security.Principal.NTAccount]($strUsername)).Translate([System.Security.Principal.SecurityIdentifier])
+        $idrefUser = ([System.Security.Principal.NTAccount]($strUsername)).Translate([System.Security.Principal.SecurityIdentifier]) 
     }
     Catch [System.Security.Principal.IdentityNotMappedException]
     {
@@ -39,17 +39,6 @@ Function VerifyAccount
   .NOTES
      Created by: Jason Wasser @wasserja
      Modified: 11/24/2015 09:30:19 AM
-
-     Changelog:
-      * Code simplification and clarification - thanks to @juneb_get_help
-      * Added documentation.
-      * Renamed LogPath parameter to Path to keep it standard - thanks to @JeffHicks
-      * Revised the Force switch to work as it should - thanks to @JeffHicks
-
-     To Do:
-      * Add error handling if trying to create a log file in a inaccessible location.
-      * Add ability to write $Message to $Verbose or $Error pipelines to eliminate
-        duplicates.
   .PARAMETER Message
      Message is the content that you wish to add to the log file.
   .PARAMETER Path
@@ -57,8 +46,6 @@ Function VerifyAccount
      create the path and file if it does not exist.
   .PARAMETER Level
      Specify the criticality of the log information being written to the log (i.e. Error, Warning, Informational)
-  .PARAMETER NoClobber
-     Use NoClobber if you do not wish to overwrite an existing file.
   .EXAMPLE
      Write-Log -Message 'Log message'
      Writes the message to c:\Logs\PowerShellLog.log.
@@ -79,7 +66,6 @@ Function Write-Log
         [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)][ValidateNotNullOrEmpty()][Alias("LogContent")][string]$Message
         , [Parameter(Mandatory = $false)][Alias('LogPath')][string]$Path = 'C:\Windows\Temp\jcAdmu.log'
         , [Parameter(Mandatory = $false)][ValidateSet("Error", "Warn", "Info")][string]$Level = "Info"
-        , [Parameter(Mandatory = $false)][switch]$NoClobber
     )
     Begin
     {
@@ -88,14 +74,8 @@ Function Write-Log
     }
     Process
     {
-        # If the file already exists and NoClobber was specified, do not write to the log.
-        If ((Test-Path $Path) -AND $NoClobber)
-        {
-            Write-Error "Log file $Path already exists, and you specified NoClobber. Either delete the file or specify a different name."
-            Return
-        }
         # If attempting to write to a log file in a folder/path that doesn't exist create the file including the path.
-        ElseIf (!(Test-Path $Path))
+        If (!(Test-Path $Path))
         {
             Write-Verbose "Creating $Path."
             $NewLogFile = New-Item $Path -Force -ItemType File
@@ -127,7 +107,6 @@ Function Write-Log
         }
         # Write log entry to $Path
         "$FormattedDate $LevelText $Message" | Out-File -FilePath $Path -Append
-
     }
     End
     {
@@ -189,13 +168,37 @@ Function Add-LocalUser
 function Check_Program_Installed($programName) {
     $installed = $null
     $installed = (Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | Where-Object {$_.DisplayName -match $programName})
-    if ($null -ne $installed) {
+    $installed32 = (Get-ItemProperty HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Where-Object {$_.DisplayName -match $programName})
+    if (($null -ne $installed) -or ($null -ne $installed32)) {
       return $true
     }
     else {
       return $false
     }
   }
+#Check reg for program uninstallstring and silently uninstall
+
+function Uninstall_Program($programName) {
+  $Ver = Get-ChildItem -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall, HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall  |
+      Get-ItemProperty |
+          Where-Object {$_.DisplayName -match $programName } |
+              Select-Object -Property DisplayName, UninstallString
+  
+     ForEach ($ver in $Ver) {
+        If ($ver.UninstallString -and $ver.DisplayName -match 'Jumpcloud') {
+            $uninst = $ver.UninstallString
+            & cmd /C $uninst /Silent
+        } If ($ver.UninstallString -and $ver.DisplayName -match 'FileZilla Client 3.45.1') {
+            $uninst = $ver.UninstallString
+            & cmd /c $uninst /S
+        } else{
+            $uninst = $ver.UninstallString
+            & cmd /c $uninst /q /norestart
+        }
+    }
+  }
+
+
 #Start process and wait then close after 5mins
 Function Start-NewProcess([string]$pfile, [string]$arguments, [int32]$Timeout = 300000)
 {
@@ -272,11 +275,11 @@ Function DownloadAndInstallAgent(
     {
         Start-Sleep -s 20
         Write-Log -Message:('Downloading JCAgent Installer')
-        # Download Installer
+        #Download Installer
         DownloadAgentInstaller
         Write-Log -Message:('JumpCloud Agent Download Complete')
         Write-Log -Message:('Running JCAgent Installer')
-        # Run Installer
+        #Run Installer
         InstallAgent
         Write-Log -Message:('JumpCloud Agent Installer Completed')
     }
@@ -319,19 +322,68 @@ function ConvertSID {
   (
     [Parameter(Mandatory,ValueFromPipeline,ValueFromPipelineByPropertyName)]
     [Alias('Value')]
-    $Sid 
+    $Sid
   )
-  
+
   process
   {
     $objSID = New-Object System.Security.Principal.SecurityIdentifier($sid)
     $objUser = $objSID.Translate( [System.Security.Principal.NTAccount])
     $objUser.Value
   }
-} 
-
+}
 
 #endregion Functions
+
+#region Agent Install Helper Functions
+Function AgentIsOnFileSystem()
+{
+    Test-Path -Path:(${AGENT_PATH} + '/' + ${AGENT_BINARY_NAME})
+}
+Function InstallAgent()
+{
+    $params = ("${AGENT_INSTALLER_PATH}", "-k ${JumpCloudConnectKey}", "/VERYSILENT", "/NORESTART", "/SUPRESSMSGBOXES", "/NOCLOSEAPPLICATIONS", "/NORESTARTAPPLICATIONS", "/LOG=$env:TEMP\jcUpdate.log")
+    Invoke-Expression "$params"
+}
+Function DownloadAgentInstaller()
+{
+    (New-Object System.Net.WebClient).DownloadFile("${AGENT_INSTALLER_URL}", "${AGENT_INSTALLER_PATH}")
+}
+Function ForceRebootComputerWithDelay
+{
+    Param(
+        [int]$TimeOut = 10
+    )
+    $continue = $true
+
+    while ($continue)
+    {
+        If ([console]::KeyAvailable)
+        {
+            Write-Host "Restart Canceled by key press"
+            Exit;
+        }
+        Else
+        {
+            Write-Host "Press any key to cancel... restarting in $TimeOut" -NoNewLine
+            Start-Sleep -Seconds 1
+            $TimeOut = $TimeOut - 1
+            Clear-Host
+            If ($TimeOut -eq 0)
+            {
+                $continue = $false
+                $Restart = $true
+            }
+        }
+    }
+    If ($Restart -eq $True)
+    {
+        Write-Host "Restarting Computer..."
+        Restart-Computer -ComputerName $env:COMPUTERNAME -Force
+    }
+}
+#endregion Agent Install Helper Functions
+
 
 #region config xml
 $usmtconfig = [xml] @"
@@ -4890,8 +4942,8 @@ $usmtmiguser = [xml] @"
 <migration urlid="http://www.microsoft.com/migration/1.0/migxmlext/miguser">
 
     <_locDefinition>
-     <_locDefault _loc="locNone"/>
-     <_locTag _loc="locData">displayName</_locTag>
+    <_locDefault _loc="locNone"/>
+    <_locTag _loc="locData">displayName</_locTag>
     </_locDefinition>
 
 	<!-- This component migrates My Downloads files  -->
@@ -4901,7 +4953,7 @@ $usmtmiguser = [xml] @"
             <path type="File">%FOLDERID_DOWNLOADS%</path>
         </paths>
         <role role="Data">
-            <detects>          
+            <detects>
                 <detect>
                     <condition>MigXmlHelper.DoesObjectExist("File","%FOLDERID_DOWNLOADS%")</condition>
                 </detect>
@@ -4948,32 +5000,6 @@ $usmtmiguser = [xml] @"
         </role>
     </component>
 
-    <!-- This component migrates Shared Video files -->
-    <component type="Documents" context="System">
-        <displayName _locID="miguser.sharedvideo">Shared Video</displayName>
-        <paths>
-            <path type="File">%CSIDL_COMMON_VIDEO%</path>
-        </paths>
-        <role role="Data">
-            <detects>
-                 <detect>
-                     <condition>MigXmlHelper.DoesObjectExist("File","%CSIDL_COMMON_VIDEO%")</condition>
-                 </detect>
-            </detects>
-            <rules>
-                <include filter='MigXmlHelper.IgnoreIrrelevantLinks()'>
-                    <objectSet>
-                        <pattern type="File">%CSIDL_COMMON_VIDEO%\* [*]</pattern>
-                    </objectSet>
-                </include>
-                <merge script="MigXmlHelper.DestinationPriority()">
-                    <objectSet>
-                        <pattern type="File">%CSIDL_COMMON_VIDEO% [desktop.ini]</pattern>
-                    </objectSet>
-                </merge>
-            </rules>
-        </role>
-    </component>
 
     <!-- This component migrates My Music files -->
     <component type="Documents" context="User">
@@ -4996,33 +5022,6 @@ $usmtmiguser = [xml] @"
                 <merge script="MigXmlHelper.DestinationPriority()">
                     <objectSet>
                         <pattern type="File">%CSIDL_MYMUSIC%\ [desktop.ini]</pattern>
-                    </objectSet>
-                </merge>
-            </rules>
-        </role>
-    </component>
-
-    <!-- This component migrates Shared Music files -->
-    <component type="Documents" context="System">
-        <displayName _locID="miguser.sharedmusic">Shared Music</displayName>
-        <paths>
-            <path type="File">%CSIDL_COMMON_MUSIC%</path>
-        </paths>
-        <role role="Data">
-            <detects>
-                <detect>
-                    <condition>MigXmlHelper.DoesObjectExist("File","%CSIDL_COMMON_MUSIC%")</condition>
-                </detect>
-            </detects>
-            <rules>
-                <include filter='MigXmlHelper.IgnoreIrrelevantLinks()'>
-                    <objectSet>
-                        <pattern type="File">%CSIDL_COMMON_MUSIC%\* [*]</pattern>
-                    </objectSet>
-                </include>
-                <merge script="MigXmlHelper.DestinationPriority()">
-                    <objectSet>
-                        <pattern type="File">%CSIDL_COMMON_MUSIC%\ [desktop.ini]</pattern>
                     </objectSet>
                 </merge>
             </rules>
@@ -5057,34 +5056,6 @@ $usmtmiguser = [xml] @"
         </role>
     </component>
 
-    <!-- This component migrates Shared Desktop files -->
-    <component type="Documents" context="System">
-        <displayName _locID="miguser.shareddesktop">Shared Desktop</displayName>
-        <paths>
-            <path type="File">%CSIDL_COMMON_DESKTOPDIRECTORY%</path>
-        </paths>
-        <role role="Settings">
-            <detects>
-                 <detect>
-                     <condition>MigXmlHelper.DoesObjectExist("File","%CSIDL_COMMON_DESKTOPDIRECTORY%")</condition>
-                 </detect>
-            </detects>
-            <rules>
-                <include filter='MigXmlHelper.IgnoreIrrelevantLinks()'>
-                    <objectSet>
-                        <pattern type="File">%CSIDL_COMMON_DESKTOPDIRECTORY%\* [*]</pattern>
-                    </objectSet>
-                </include>
-                <merge script="MigXmlHelper.DestinationPriority()">
-                    <objectSet>
-                        <pattern type="File">%CSIDL_COMMON_DESKTOPDIRECTORY% [desktop.ini]</pattern>
-                        <pattern type="File">%CSIDL_COMMON_DESKTOPDIRECTORY%\* [*]</pattern>
-                    </objectSet>
-                </merge>
-            </rules>
-        </role>
-    </component>
-
     <!-- This component migrates Start Menu files -->
     <component type="System" context="User">
         <displayName _locID="miguser.startmenu">Start Menu</displayName>
@@ -5107,34 +5078,6 @@ $usmtmiguser = [xml] @"
                     <objectSet>
                         <pattern type="File">%CSIDL_STARTMENU% [desktop.ini]</pattern>
                         <pattern type="File">%CSIDL_STARTMENU%\* [*]</pattern>
-                    </objectSet>
-                </merge>
-            </rules>
-        </role>
-    </component>
-
-    <!-- This component migrates Shared Start Menu files -->
-    <component type ="System" context="System">
-        <displayName _locID="miguser.sharedstartmenu">Shared Start Menu</displayName>
-        <paths>
-            <path type="File">%CSIDL_COMMON_STARTMENU%</path>
-        </paths>
-        <role role="Settings">
-            <detects>
-                <detect>
-                    <condition>MigXmlHelper.DoesObjectExist("File","%CSIDL_COMMON_STARTMENU%")</condition>
-                </detect>
-            </detects>
-            <rules>
-                <include filter='MigXmlHelper.IgnoreIrrelevantLinks()'>
-                    <objectSet>
-                        <pattern type="File">%CSIDL_COMMON_STARTMENU%\* [*]</pattern>
-                    </objectSet>
-                </include>
-                <merge script="MigXmlHelper.DestinationPriority()">
-                    <objectSet>
-                        <pattern type="File">%CSIDL_COMMON_STARTMENU% [desktop.ini]</pattern>
-                        <pattern type="File">%CSIDL_COMMON_STARTMENU%\* [*]</pattern>
                     </objectSet>
                 </merge>
             </rules>
@@ -5175,43 +5118,6 @@ $usmtmiguser = [xml] @"
         </role>
     </component>
 
-    <!-- This component migrates Shared My Documents files -->
-    <component type="Documents" context="System">
-        <displayName _locID="miguser.shareddocs">Shared Documents</displayName>
-        <paths>
-            <path type="File">%CSIDL_COMMON_DOCUMENTS%</path>
-        </paths>
-        <role role="Data">
-            <detects>
-                <detect>
-                    <condition>MigXmlHelper.DoesObjectExist("File","%CSIDL_COMMON_DOCUMENTS%")</condition>
-                </detect>
-                <detect>
-                    <condition negation="Yes">MigXmlHelper.IsSameObject("File","%CSIDL_PERSONAL%", "%CSIDL_COMMON_DOCUMENTS%")</condition>
-                </detect>
-            </detects>
-            <rules>
-                <exclude>
-                    <objectSet>
-                        <pattern type="File">%CSIDL_COMMON_PICTURES%\* [*]</pattern>
-                        <pattern type="File">%CSIDL_COMMON_MUSIC%\* [*]</pattern>
-                        <pattern type="File">%CSIDL_COMMON_VIDEO%\* [*]</pattern>
-                    </objectSet>
-                </exclude>
-                <include filter='MigXmlHelper.IgnoreIrrelevantLinks()'>
-                    <objectSet>
-                        <pattern type="File">%CSIDL_COMMON_DOCUMENTS%\* [*]</pattern>
-                    </objectSet>
-                </include>
-                <merge script="MigXmlHelper.DestinationPriority()">
-                    <objectSet>
-                        <pattern type="File">%CSIDL_COMMON_DOCUMENTS% [desktop.ini]</pattern>
-                    </objectSet>
-                </merge>
-            </rules>
-        </role>
-    </component>
-
     <!-- This component migrates My Pictures files -->
     <component type="Documents" context="User">
         <displayName _locID="miguser.mypics">My Pictures</displayName>
@@ -5233,33 +5139,6 @@ $usmtmiguser = [xml] @"
                 <merge script="MigXmlHelper.DestinationPriority()">
                     <objectSet>
                         <pattern type="File">%CSIDL_MYPICTURES% [desktop.ini]</pattern>
-                    </objectSet>
-                </merge>
-            </rules>
-        </role>
-    </component>
-
-    <!-- This component migrates Shared Pictures files -->
-    <component type="Documents" context="System">
-        <displayName _locID="miguser.sharedpics">Shared Pictures</displayName>
-        <paths>
-            <path type="File">%CSIDL_COMMON_PICTURES%</path>
-        </paths>
-        <role role="Data">
-            <detects>
-                <detect>
-                    <condition>MigXmlHelper.DoesObjectExist("File","%CSIDL_COMMON_PICTURES%")</condition>
-                </detect>
-            </detects>
-            <rules>
-                <include filter='MigXmlHelper.IgnoreIrrelevantLinks()'>
-                    <objectSet>
-                        <pattern type="File">%CSIDL_COMMON_PICTURES%\* [*]</pattern>
-                    </objectSet>
-                </include>
-                <merge script="MigXmlHelper.DestinationPriority()">
-                    <objectSet>
-                        <pattern type="File">%CSIDL_COMMON_PICTURES% [desktop.ini]</pattern>
                     </objectSet>
                 </merge>
             </rules>
@@ -5294,34 +5173,6 @@ $usmtmiguser = [xml] @"
         </role>
     </component>
 
-    <!-- This component migrates Shared Favorites -->
-    <component type="System" context="System">
-        <displayName _locID="miguser.sharedfavs">Shared Favorites</displayName>
-        <paths>
-            <path type="File">%CSIDL_COMMON_FAVORITES%</path>
-        </paths>
-        <role role="Settings">
-            <detects>
-                <detect>
-                    <condition>MigXmlHelper.DoesObjectExist("File","%CSIDL_COMMON_FAVORITES%")</condition>
-                </detect>
-            </detects>
-            <rules>
-                <include filter='MigXmlHelper.IgnoreIrrelevantLinks()'>
-                    <objectSet>
-                        <pattern type="File">%CSIDL_COMMON_FAVORITES%\* [*]</pattern>
-                    </objectSet>
-                </include>
-                <merge script="MigXmlHelper.DestinationPriority()">
-                    <objectSet>
-                        <pattern type="File">%CSIDL_COMMON_FAVORITES% [desktop.ini]</pattern>
-                        <pattern type="File">%CSIDL_COMMON_FAVORITES%\* [*]</pattern>
-                    </objectSet>
-                </merge>
-            </rules>
-        </role>
-    </component>
-
     <!-- This component migrates Quick Launch files -->
     <component type="System" context="User">
         <displayName _locID="miguser.quicklaunch">Quick Launch</displayName>
@@ -5329,6 +5180,7 @@ $usmtmiguser = [xml] @"
             <path type="File">%CSIDL_APPDATA%\Microsoft\Internet Explorer\Quick Launch</path>
         </paths>
         <role role="Settings">
+
             <detects>
                 <detect>
                     <condition>MigXmlHelper.DoesObjectExist("File","%CSIDL_APPDATA%\Microsoft\Internet Explorer\Quick Launch")</condition>
@@ -5346,171 +5198,6 @@ $usmtmiguser = [xml] @"
                         <pattern type="File">%CSIDL_APPDATA%\Microsoft\Internet Explorer\Quick Launch\* [*]</pattern>
                     </objectSet>
                 </merge>
-            </rules>
-        </role>
-    </component>
-
-    <!-- This component migrates user files with known extension-->
-    <component type="Documents" context="System">
-        <displayName _locID="miguser.userdata">User Data</displayName>
-        <role role="Data">
-            <rules>
-                <include>
-                    <objectSet>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.enl*]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.frm*]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.MYD*]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.MYI*]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.opt*]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.ppt*]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.qdf]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.qsd]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.qel]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.qph]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.doc*]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.dot*]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.rtf]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.mcw]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.wps]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.scd]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.wri]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.wpd]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.xl*]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.csv]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.iqy]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.dqy]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.oqy]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.rqy]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.wk*]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.wq1]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.slk]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.dif]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.pdf*]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.pps*]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.pot*]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.sh3]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.ch3]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.pre]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.ppa]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.txt]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.pst]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.one*]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.vl*]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.vsd]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.mpp]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.or6]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.accdb]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.mdb]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.pub]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.sql]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.msg]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.js]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.gif]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.jpg]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.jpeg]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.png]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.bmp]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.tif]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.tiff]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.zip]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.rar]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.wmv]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.mp4]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.mp3]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.mov]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.odt]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.tsv]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.xml]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.eml]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.htm*]", "Fixed")</script>
-                    </objectSet>
-                </include>
-<!-- Uncomment the following if you want all the files collected from the above rules to move to <systemDrive>:\data -->
-<!--            
-                <locationModify script="MigXmlHelper.Move('%SYSTEMDRIVE%\Data')">
-                    <objectSet>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.enl*]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.frm*]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.MYD*]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.MYI*]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.opt*]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.ppt*]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.qdf]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.qsd]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.qel]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.qph]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.doc*]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.dot*]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.rtf]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.mcw]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.wps]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.scd]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.wri]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.wpd]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.xl*]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.csv]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.iqy]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.dqy]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.oqy]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.rqy]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.wk*]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.wq1]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.slk]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.dif]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.pdf*]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.pps*]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.pot*]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.sh3]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.ch3]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.pre]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.ppa]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.txt]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.pst]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.one*]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.vl*]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.vsd]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.mpp]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.or6]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.accdb]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.mdb]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("* [*.pub]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.sql]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.msg]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.js]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.gif]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.jpg]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.jpeg]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.png]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.bmp]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.tif]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.tiff]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.zip]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.rar]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.wmv]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.mp4]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.mp3]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.mov]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.odt]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.tsv]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.xml]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.eml]", "Fixed")</script>
-						<script>MigXmlHelper.GenerateDrivePatterns ("* [*.htm*]", "Fixed")</script>
-                    </objectSet>
-                </locationModify>
--->
-                <exclude>
-                    <objectSet>
-                        <pattern type="File">%PROFILESFOLDER%\* [*]</pattern>
-                        <pattern type="File">%CSIDL_WINDOWS%\* [*]</pattern>
-                        <pattern type="File">%CSIDL_PROGRAM_FILES%\* [*]</pattern>
-                        <!--We are trying to remove system files from other windows installation on the same machine-->
-                        <!--This is the best guess we can come up with, in case of these folder name localized, we might not be
-                         to do whatever we have intended here-->
-                        <script>MigXmlHelper.GenerateDrivePatterns ("\Program Files\* [*]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("\Winnt\* [*]", "Fixed")</script>
-                        <script>MigXmlHelper.GenerateDrivePatterns ("\Windows\* [*]", "Fixed")</script>
-                    </objectSet>
-                </exclude>
             </rules>
         </role>
     </component>

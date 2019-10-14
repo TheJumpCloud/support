@@ -1,3 +1,15 @@
+## 1.2.1
+
+#### RELEASE DATE
+
+October 14, 2019
+
+#### RELEASE NOTES
+
+- Improve further and reduce migapp.xml & miguser.xml entrys. This will reduce overall file count and scanning times.
+
+- Aditional Pester tests and azure pipeline CI for improved automated testing.
+
 ## 1.2.0
 
 #### RELEASE DATE
