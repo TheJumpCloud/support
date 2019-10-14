@@ -79,4 +79,10 @@ Subsequent application installs can be called as such:
 
 Using JumpCloud commands, the brew binary is invoked as a default admin user without changing. Scripts deployed to install apps are required to be run as the default admin user account which was used in the [Mac - Install Homebrew Package Manager](./Mac&#32;-&#32;Install&#32;Homebrew&#32;Package&#32;Manager.md) command. An example [Mac - Install Homebrew Apps](./Mac&#32;-&#32;Install&#32;Homebrew&#32;Apps.md) command is included to show the context in which an admin could administer the installation of Chrome, Firefox and VLC.
 
-### Deployment 
+### Updating Homebrew Managed Applications
+
+Homebrew keeps track of installed packages on a given system. Running `brew list -l` and `brew cask list -l` will list any installed formulas and cask applications respectively. Running the following command will update Homebrew, all installed formulas and all installed cask applications. 
+
+```bash
+brew update && brew upgrade && brew cask upgrade
+```
