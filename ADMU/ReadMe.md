@@ -135,12 +135,12 @@ The ADMU leverages the USMT and the default settings to migrates user data from 
 
 ## Download Links
 GUI - gui_jcadmu.exe
-* [GUI - Windows 7 / .net 3 ](https://github.com/TheJumpCloud/support/releases/download/ADMU/gui_jcadmu_win7.exe) 
-* [GUI - Windows 8.1-10 / .net 4 ](https://github.com/TheJumpCloud/support/releases/download/ADMU/gui_jcadmu_win10.exe) 
+* [GUI - Windows 7 / .net 3 ](https://github.com/TheJumpCloud/support/raw/master/ADMU/exe/Windows%207/gui_jcadmu_win7.exe) 
+* [GUI - Windows 8.1-10 / .net 4 ](https://github.com/TheJumpCloud/support/raw/master/ADMU/exe/Windows%208-10/gui_jcadmu_win10.exe) 
 
 EXE - jcadmu.exe
-* [JCADMU.exe - Windows 7 / .net 3 ](https://github.com/TheJumpCloud/support/releases/download/ADMU/jcadmu_win7.exe)
-* [JCADMU.exe - Windows 8.1-10 / .net 4 ](https://github.com/TheJumpCloud/support/releases/download/ADMU/jcadmu_win10.exe)
+* [JCADMU.exe - Windows 7 / .net 3 ](https://github.com/TheJumpCloud/support/raw/master/ADMU/exe/Windows%207/jcadmu_win7.exe)
+* [JCADMU.exe - Windows 8.1-10 / .net 4 ](https://github.com/TheJumpCloud/support/raw/master/ADMU/exe/Windows%208-10/jcadmu_win10.exe)
 
 Powershell - Migration.ps1 & Functions.ps1
 * [Powershell](https://github.com/TheJumpCloud/support/tree/master/ADMU/powershell)
