@@ -14,15 +14,17 @@ mac
 # autopkg should be installed in /usr/local/bin
 autopkg="/usr/local/bin/autopkg"
 
-# Assuming autopkg is installed, Install standard set of applications
+# Install standard set of applications
 # Add repo definition
 $autopkg repo-add https://github.com/autopkg/recipes
 
 # autopkg install List
+# verbose flag added for increased logging back to JumpCloud
 $autopkg install firefox.install --verbose
 $autopkg install GoogleChrome.install --verbose
 $autopkg install VLC.install --verbose
 
+exit 0
 ```
 
 #### Description

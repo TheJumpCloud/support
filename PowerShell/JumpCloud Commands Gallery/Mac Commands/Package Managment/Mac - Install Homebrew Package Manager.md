@@ -21,8 +21,12 @@ mac
 #v1.2 12/01/2017 - Opt out of brew analytics, thanks Geo for finding this
 #v1.3 10/10/2019 - For use in JumpCloud Commands Gallery
 
-# Set the Default Admin account used to manage Homebrew
+# Set the Default Admin account used to manage Homebrew 
 useris="defaultadmin"
+
+## Do Not Modify Below ##
+
+## Checks to see if we can move forward with the install
 
 # Default Admin user needs to exist for this script to function
 if [[ ! -d /Users/$useris ]]; then
@@ -36,6 +40,12 @@ then
    exit 1
 fi
 
+# Exit if Xcode CLI is not installed
+if [ ! -d /Library/Developer ] ; then
+    echo "Command Line Tools not installed"
+    exit 1
+fi
+
 #Get macOS version
 macosv=`sw_vers -productVersion | cut -d . -f 1,2`
 
@@ -46,17 +56,11 @@ HOMEBREW_CACHE="/Users/$useris/Library/Caches/Homebrew"
 BREW_REPO="https://github.com/Homebrew/brew"
 CORE_TAP_REPO="https://github.com/Homebrew/homebrew-core"
 
-# Exit if Xcode CLI is not installed
-if [ ! -d /Library/Developer ] ; then
-    echo "Command Line Tools not installed"
-    exit 1
-fi
-
 #Make Brew Folders
-/bin/mkdir -p /usr/local/Cellar /usr/local/Homebrew /usr/local/Frameworks /usr/local/bin /usr/local/etc /usr/local/include /usr/local/lib /usr/local/opt /usr/local/sbin /usr/local/share /usr/local/share/man /usr/local/share/zsh /usr/local/share/zsh/site-functions /usr/local/var
+/bin/mkdir -p /usr/local/Cellar /usr/local/Homebrew /usr/local/Frameworks /usr/local/bin /usr/local/etc /usr/local/include /usr/local/lib /usr/local/opt /usr/local/sbin /usr/local/share /usr/local/share/man /usr/local/share/zsh /usr/local/share/zsh/site-functions /usr/local/var /usr/local/Caskroom
 
 #Set Permissions
-/bin/chmod g+rwx /usr/local/Cellar /usr/local/Homebrew /usr/local/Frameworks /usr/local/bin /usr/local/etc /usr/local/include /usr/local/lib /usr/local/opt /usr/local/sbin /usr/local/share /usr/local/share/man /usr/local/share/zsh /usr/local/share/zsh/site-functions /usr/local/var
+/bin/chmod g+rwx /usr/local/Cellar /usr/local/Homebrew /usr/local/Frameworks /usr/local/bin /usr/local/etc /usr/local/include /usr/local/lib /usr/local/opt /usr/local/sbin /usr/local/share /usr/local/share/man /usr/local/share/zsh /usr/local/share/zsh/site-functions /usr/local/var /usr/local/Caskroom
 /bin/chmod 755 /usr/local/share/zsh /usr/local/share/zsh/site-functions
 
 #Set owner on folders
@@ -67,8 +71,8 @@ fi
 /usr/sbin/chown $useris /Users/$useris/Library/Caches/Homebrew
 
 #Group Folder Permissions
-/usr/sbin/chown $useris /usr/local/bin /usr/local/etc /usr/local/Frameworks /usr/local/include /usr/local/lib /usr/local/sbin /usr/local/share /usr/local/var /usr/local/etc/bash_completion.d /usr/local/lib/pkgconfig /usr/local/var/log /usr/local/share/aclocal /usr/local/share/doc /usr/local/share/info /usr/local/share/locale /usr/local/share/man /usr/local/share/man/man1 /usr/local/share/man/man2 /usr/local/share/man/man3 /usr/local/share/man/man4 /usr/local/share/man/man5 /usr/local/share/man/man6 /usr/local/share/man/man7 /usr/local/share/man/man8 &> /dev/null
-/usr/bin/chgrp admin /usr/local/bin /usr/local/etc /usr/local/Frameworks /usr/local/include /usr/local/lib /usr/local/sbin /usr/local/share /usr/local/var /usr/local/etc/bash_completion.d /usr/local/lib/pkgconfig /usr/local/var/log /usr/local/share/aclocal /usr/local/share/doc /usr/local/share/info /usr/local/share/locale /usr/local/share/man /usr/local/share/man/man1 /usr/local/share/man/man2 /usr/local/share/man/man3 /usr/local/share/man/man4 /usr/local/share/man/man5 /usr/local/share/man/man6 /usr/local/share/man/man7 /usr/local/share/man/man8 &> /dev/null
+/usr/sbin/chown $useris /usr/local/bin /usr/local/etc /usr/local/Frameworks /usr/local/include /usr/local/lib /usr/local/sbin /usr/local/share /usr/local/var /usr/local/Caskroom /usr/local/etc/bash_completion.d /usr/local/lib/pkgconfig /usr/local/var/log /usr/local/share/aclocal /usr/local/share/doc /usr/local/share/info /usr/local/share/locale /usr/local/share/man /usr/local/share/man/man1 /usr/local/share/man/man2 /usr/local/share/man/man3 /usr/local/share/man/man4 /usr/local/share/man/man5 /usr/local/share/man/man6 /usr/local/share/man/man7 /usr/local/share/man/man8 &> /dev/null
+/usr/bin/chgrp admin /usr/local/bin /usr/local/etc /usr/local/Frameworks /usr/local/include /usr/local/lib /usr/local/sbin /usr/local/share /usr/local/var /usr/local/Caskroom /usr/local/etc/bash_completion.d /usr/local/lib/pkgconfig /usr/local/var/log /usr/local/share/aclocal /usr/local/share/doc /usr/local/share/info /usr/local/share/locale /usr/local/share/man /usr/local/share/man/man1 /usr/local/share/man/man2 /usr/local/share/man/man3 /usr/local/share/man/man4 /usr/local/share/man/man5 /usr/local/share/man/man6 /usr/local/share/man/man7 /usr/local/share/man/man8 &> /dev/null
 
 #Download and install Homebrew
 # we do it in four steps to avoid merge errors when reinstalling

@@ -11,21 +11,25 @@ mac
 ```
 #!/bin/bash
 
-# Assuming homebrew is installed, Install standard set of applications
+# Homebrew installation location
 brew="/usr/local/bin/brew"
 
-# Brew List
+# Install Install CLI Tools
 $brew install tree
 $brew install wget
 $brew install htop
 
-# in console text editor
-$brew install micro
+# Brew Install macOS Applications
+$brew cask install google-chrome
+$brew cask install firefox
+$brew cask install vlc
+
+exit 0
 ```
 
 #### Description
 
-Installs list of Homebrew Apps - customize this script to fit your needs. If this command fails with error 124, it may have reached it's max runtime to report back to JumpCloud, the script itself may not have failed.
+Installs list of Homebrew Apps - customize this script to fit your needs. If this command fails with error 124, it may have reached it's max runtime to report back to JumpCloud, the script itself may not have failed. Do not run this command as root - homebrew will error out. Run this command as the same user noted in the [Install Homebrew Package Manager](./Mac&#32;-&#32;Install&#32;Homebrew&#32;Package&#32;Manager.md) command.
 
 #### Import This Command
 
