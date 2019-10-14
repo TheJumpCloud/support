@@ -3,7 +3,9 @@
 # Providing Feedback
 
 The ADMU is currently in an Early Access (EA) period. 
-Have feedback to share? Email support@jumpcloud.com to connect with a member of the JumpCloud success team. 
+Have feedback to share? Email support@jumpcloud.com to connect with a member of the JumpCloud success team.
+
+The current ADMU Change Log can be found [Here](https://github.com/TheJumpCloud/support/blob/master/ADMU/CHANGELOG.md).
 
 ![ADMU Workflow Diagram](https://github.com/TheJumpCloud/support/blob/master/ADMU/images/ADMU_workflow.png)
 
@@ -61,16 +63,14 @@ To account for this we currently have 2 versions of `jcadmu.exe` & `gui_jcadmu.e
 
 [ADMU EXE Directory Link](https://github.com/TheJumpCloud/support/tree/master/ADMU/exe)
 
-
-
 If for example the .net4+ version is run on win7 system the user would see the following.
 
 ![image46](https://github.com/TheJumpCloud/support/blob/master/ADMU/images/img_46.png)
 
 ## Requirements
- The ADMU tool v1.0.0 requires the following to work
+ The ADMU tool requires the following to work:
 
- * GUI form requires system to be currently Domain bound (The system does NOT have to be actively connected to the Domain Controller).
+ * gui_jcadmu requires the system to be currently Domain bound (The system does NOT have to be actively connected to the Domain Controller).
  * A domain based profile must exist on the system to be converted to a local profile (conversion of local profile or azure profile to local profile will not currently work).
 
 ## EULA & Legal Explanation
@@ -86,13 +86,13 @@ If for example the .net4+ version is run on win7 system the user would see the f
 
  **Approximate timings:**
 
+ Timings are relative to the both the size and number of files present in the windows profile and the speed of the system and hardware.
+
+ Some aproximations from VM i5-7260 2.2GHz, 512GB RAM
+
  :5 start → scanstate (USMT on win10)
- :40 start → scanstate (NO USMT on win10)
+ :40 start → scanstate (NO USMT on system)
 
- :5 start → scanstate (USMT on win7)
- :50 start → scanstate (NO USMT on win7)
-
- 1:30 Start → loadstate (win7 & win7 with 1gb file)
  2:40 start → loadstate (USMT installed on win10)
 
  1:00 loadstate → install agent (win10 & 7 missing prereq c++)
@@ -146,7 +146,7 @@ Powershell - Migration.ps1 & Functions.ps1
 * [Powershell](https://github.com/TheJumpCloud/support/tree/master/ADMU/powershell)
 
 ## ADMU GUI
- This is a Powershell launched GUI that utilizes WPF to collect input parameters to pass to the ADMU powershell code.
+ This is a Powershell based GUI executable that utilizes WPF to collect input parameters to pass to the ADMU powershell code.
 
  If the GUI is ran and the system is not domain joined the utility will not let the user continue with the process. The only option is to quit the application. 
 
@@ -243,6 +243,7 @@ c:\ADMU\powershell\Migration.ps1 -DomainUserName 'tom.hanks' -JumpCloudUserName 
 ```
 
  Possible future deployment scenarios:
+ * ADMU file deployment script & commands
  * Logon script via GPO
  * Meraki deployment
  * PDQ deployment
