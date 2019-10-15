@@ -1,8 +1,8 @@
 # Update/ Patching using JumpCloud
 
-There are a few methods for patching mac systems. [AutoPkg](https://github.com/autopkg/autopkg) is a well supported, community backed project which uses "recipe" based code to process package installs and deployment. [Homebrew](https://brew.sh/) is another popular package manager for macOS. Either tool can be used in conjunction with JumpCloud to push and update packages on macOS systems. The scripts provided in this repository and within each package manager should be vetted by each admin before use in a production environment.
+Numerous methods for patching mac systems exist. [AutoPkg](https://github.com/autopkg/autopkg) is a well supported, community backed project which uses "recipe" based code to process package installs and deployment. [Homebrew](https://brew.sh/) is another popular package manager for macOS. Either tool can be used in conjunction with JumpCloud to push and update applications on macOS systems. The scripts provided in this repository and within each package manager should be vetted by each admin before use in a production environment.
 
-Prerequisites: Install Xcode command line tools (recommended for git). Install via a JumpCloud Command. [Rich Trouton's silent Xcode install script](https://github.com/rtrouton/rtrouton_scripts/tree/master/rtrouton_scripts/install_xcode_command_line_tools) is a valid way to do this. Add as a new command with a 5-10min timeout depending on network speed.
+Prerequisites: Install Xcode command line tools (recommended for git). Xcode can be installed via a JumpCloud Command. [Rich Trouton's silent Xcode install script](https://github.com/rtrouton/rtrouton_scripts/tree/master/rtrouton_scripts/install_xcode_command_line_tools) is a valid way to do this. Add as a new command with a 5-10min timeout depending on network speed.
 
 ## AutoPKG
 
@@ -10,7 +10,7 @@ Although AutoPkg is commonly used to source packages for deployment en masse, it
 
 AutoPkg can be installed locally on systems and directed to install ".download" recipes. Included within AutoPkg are several core processors which admins can leverage to take various action on package sources. The ".install" recipe extension takes the output of a .download recipe and installs it on a local system. The AutoPkg recipe system is very modular. An admin can build their own "exampleApplication.install" recipe based on "macAdminCommunityMember's-exampleApplication.download" recipe. Thus, an admin can install any community built recipe on local machines. Similarly, the .jss and .munki extensions build upon .download recipes to take additional action like uploading packages to Jamf Distribution points, creating smart groups and automating the package deployment process.
 
-The recipe system of AutoPkg allows admins to have granular control of their packaging workflow. Without much configuration, AutoPkg can be used to install packages. Advanced workflows could be developed to check sources for viruses and distribute packages to testing endpoints before general distribution. In this example, we'll leverage AutoPkg's ability to source and install packages on a local system.
+The recipe system of AutoPkg allows admins to have granular control of their packaging workflow. Without much configuration, AutoPkg can be used to install applications on local machines. Advanced workflows could be developed to check package sources for viruses and push packages to testing endpoints before general distribution. ~~In this example, we'll leverage AutoPkg's ability to simply source and install packages on a local system.~~
 
 Requirements:
 
@@ -22,11 +22,11 @@ Deploy the [Mac - Install AutoPkg Package Manager](./Mac&#32;-&#32;Install&#32;A
 
 ### Deployment of Chrome, Firefox and VLC with AutoPKG Example
 
-The [Mac - Install AutoPkg Apps](Mac&#32;-&#32;Install&#32;Homebrew&#32;Apps.md) command is included to provide admins with a one click example script to deploy Chrome, Firefox and VLC player.
+The [Mac - Install AutoPkg Apps](Mac&#32;-&#32;Install&#32;Homebrew&#32;Apps.md) command is included to provide admins with a one click example script to deploy Chrome, Firefox and VLC player. After the AutoPkg binary has been installed on a set of systems, deploy the [Mac - Install AutoPkg Apps](Mac&#32;-&#32;Install&#32;Homebrew&#32;Apps.md) command to the same set of systems running the command as a local admin. AutoPkg will download and install Chrome, Firefox and VLC.
 
 ### Updating AutoPkg Managed Applications
 
-Well-Maintained AutoPkg recipes point to the latest version of an application unless otherwise specified. Running `autopkg install firefox.install` on a system with Firefox installed will compare versions the installed application and the downloaded application and evaluate whether or not an update is necessary. If the AutoPkg source application is greater than the installed version on a given system, AutoPkg will attempt to install over the existing version of an application.
+Well-maintained AutoPkg recipes point to the latest version of an application unless otherwise specified. Running `autopkg install firefox.install` on a system with Firefox installed will compare versions the installed application and the downloaded application and evaluate whether or not an update is necessary. If the AutoPkg source application is greater than the installed version on a given system, AutoPkg will attempt to install over the existing version of an application.
 
 If a specific version of an Application is required, chances are that AutoPkg can download an install that package. Rich Trouton's Der Flounder blog posted a short  article on [AutoPkg's ability to package versioned apps](https://derflounder.wordpress.com/2013/11/10/using-autopkg-to-download-and-create-installers-for-firefox/).
 
