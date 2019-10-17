@@ -124,12 +124,12 @@ Function Invoke-JCApi
                 # PowerShell 5 won't let you send a GET with a body.
                 If ($Method -eq 'GET')
                 {
-                    Write-Debug("[CallFunction]Invoke-WebRequest -Method:('$Method') -Headers:('" + ($Headers | ConvertTo-Json -Compress) + "') -Uri:('$Uri') -UserAgent:('$UserAgent') -UseBasicParsing")
+                    Write-Debug("[CallFunction]Invoke-WebRequest -Method:('$Method') -Headers:(@" + ($Headers | ConvertTo-Json -Compress).Replace(':', '=').Replace(',', ';') + ") -Uri:('$Uri') -UseBasicParsing -UserAgent:('$UserAgent')")
                     $RequestResult = Invoke-WebRequest -Method:($Method) -Headers:($Headers) -Uri:($Uri) -UserAgent:($UserAgent) -UseBasicParsing
                 }
                 Else
                 {
-                    Write-Debug("[CallFunction]Invoke-WebRequest -Method:('$Method') -Headers:('" + ($Headers | ConvertTo-Json -Compress) + "') -Uri:('$Uri') -UserAgent:('$UserAgent') -Body:('$Body') -UseBasicParsing")
+                    Write-Debug("[CallFunction]Invoke-WebRequest -Method:('$Method') -Headers:(@" + ($Headers | ConvertTo-Json -Compress).Replace(':', '=').Replace(',', ';') + ") -Uri:('$Uri') -UseBasicParsing -UserAgent:('$UserAgent') -Body:('$Body')")
                     $RequestResult = Invoke-WebRequest -Method:($Method) -Headers:($Headers) -Uri:($Uri) -UserAgent:($UserAgent) -Body:($Body) -UseBasicParsing
                 }
                 If ($RequestResult)
@@ -211,13 +211,13 @@ Function Invoke-JCApi
         {
             # Append meta info to each result record
             Get-Variable -Name:($HiddenProperties) |
-            ForEach-Object {
-                $Variable = $_
-                $Results |
                 ForEach-Object {
-                    Add-Member -InputObject:($_) -MemberType:('NoteProperty') -Name:($Variable.Name) -Value:($Variable.Value)
+                    $Variable = $_
+                    $Results |
+                        ForEach-Object {
+                            Add-Member -InputObject:($_) -MemberType:('NoteProperty') -Name:($Variable.Name) -Value:($Variable.Value)
+                        }
                 }
-            }
             # Validate results properties returned
             $Fields | ForEach-Object {
                 If ($_ -notin ($Results | ForEach-Object { $_.PSObject.Properties.Name } | Select-Object -Unique))
