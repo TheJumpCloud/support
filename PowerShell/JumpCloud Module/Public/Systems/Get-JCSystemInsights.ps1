@@ -27,7 +27,7 @@ Function Get-JCSystemInsights
             # Create hash table to store variables
             $FunctionParameters = [ordered]@{ }
             # Add input parameters from function in to hash table and filter out unnecessary parameters
-            $PSBoundParameters.GetEnumerator() | Where-Object { $_.Value } | ForEach-Object { $FunctionParameters.Add($_.Key, $_.Value) | Out-Null }
+            $PSBoundParameters.GetEnumerator() | Where-Object { -not [System.String]::IsNullOrEmpty($_.Value) } | ForEach-Object { $FunctionParameters.Add($_.Key, $_.Value) | Out-Null }
             $FunctionParameters.Add('Type', $JCTypes.TypeName.TypeNameSingular) | Out-Null
             # Run the command
             $Results += Get-JCObject @FunctionParameters
