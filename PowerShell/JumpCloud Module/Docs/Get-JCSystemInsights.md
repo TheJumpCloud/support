@@ -201,7 +201,7 @@ The SystemInsights table to query against.
 Type: String
 Parameter Sets: (All)
 Aliases:
-Accepted values: etc_hosts, logical_drives, disk_info, bitlocker_info, patches, programs, apps, browser_plugins, chrome_extensions, disk_encryption, firefox_addons, groups, interface_addresses, mounts, os_version, safari_extensions, system_info, users
+Accepted values: kernel_info, system_controls, uptime, etc_hosts, logical_drives, disk_info, bitlocker_info, patches, programs, apps, browser_plugins, chrome_extensions, disk_encryption, firefox_addons, groups, interface_addresses, mounts, os_version, safari_extensions, system_info, users
 
 Required: True
 Position: Named

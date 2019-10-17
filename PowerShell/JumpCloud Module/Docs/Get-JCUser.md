@@ -507,7 +507,7 @@ Valid properties that can be returned are: 'created', 'password_expiration_date'
 Type: String[]
 Parameter Sets: SearchFilter
 Aliases:
-Accepted values: created, password_expiration_date, account_locked, activated, addresses, allow_public_key, attributes, email, enable_managed_uid, enable_user_portal_multifactor, externally_managed, firstname, lastname, ldap_binding_user, passwordless_sudo, password_expired, password_never_expires, phoneNumbers, samba_service_user, ssh_keys, sudo, totp_enabled, unix_guid, unix_uid, username, middlename, displayname, jobTitle, employeeIdentifier, department, costCenter, company, employeeType, description, location, external_source_type, external_dn
+Accepted values: created, password_expiration_date, account_locked, activated, addresses, allow_public_key, attributes, email, enable_managed_uid, enable_user_portal_multifactor, externally_managed, firstname, lastname, ldap_binding_user, passwordless_sudo, password_expired, password_never_expires, phoneNumbers, samba_service_user, ssh_keys, sudo, totp_enabled, unix_guid, unix_uid, username, middlename, displayname, jobTitle, employeeIdentifier, department, costCenter, company, employeeType, description, location, external_source_type, external_dn, suspended
 
 Required: False
 Position: Named
@@ -533,6 +533,21 @@ Accept wildcard characters: False
 
 ### -sudo
 A search filter to show accounts that are enabled ($true) or disabled ($false) for sudo
+
+```yaml
+Type: Boolean
+Parameter Sets: SearchFilter
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -suspended
+A search filter to show accounts that are enabled ($true) or disabled ($false) for password_never_expires
 
 ```yaml
 Type: Boolean
@@ -620,21 +635,6 @@ Aliases:
 
 Required: False
 Position: 0
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -suspended
-A search filter to show accounts that are enabled ($true) or disabled ($false) for password_never_expires
-
-```yaml
-Type: Boolean
-Parameter Sets: SearchFilter
-Aliases:
-
-Required: False
-Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
