@@ -1,3 +1,21 @@
+## 1.15.1
+
+#### RELEASE DATE
+
+October 17, 2019
+
+#### RELEASE NOTES
+
+Bug fixes to underlying functions preventing default values for skip, limit, and paginate to be populated.
+
+#### FEATURES
+
+#### IMPROVEMENTS
+
+#### BUG FIXES
+
+The function which sets the default values for dynamic parameters was incorrectly filtering parameter sets for dynamic parameters that were passed in causing some parameters default values not to be established.
+
 ## 1.15.0
 
 #### RELEASE DATE
