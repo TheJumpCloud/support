@@ -627,6 +627,21 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
+### -suspended
+A boolean $true/$false value for putting the account into a suspended state
+
+```yaml
+Type: Boolean
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
 ### -unix_guid
 The unix_guid for the new user.
 Note this value must be an number.
@@ -810,21 +825,6 @@ This property is nested within the LDAP property with the displayName postalAddr
 
 ```yaml
 Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -suspended
-A boolean $true/$false value for putting the account into a suspended state
-
-```yaml
-Type: Boolean
 Parameter Sets: (All)
 Aliases:
 
