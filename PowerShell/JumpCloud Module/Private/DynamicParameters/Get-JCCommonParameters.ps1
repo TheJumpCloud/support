@@ -131,6 +131,7 @@ Function Get-JCCommonParameters
             'Type'                            = [System.Boolean];
             'ValueFromPipelineByPropertyName' = $true;
             'DefaultValue'                    = $JCType.Paginate | Select-Object -Unique;
+            'ValidateSet'                     = @($true, $false);
             'HelpMessage'                     = 'Whether or not you want to paginate through the results.';
             'ParameterSets'                   = @('ById', 'ByName', '__AllParameterSets');
             'Position'                        = 99;
