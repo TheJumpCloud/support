@@ -62,130 +62,76 @@ function Get-JCBackup
 
         if ($Users)
         {
-
             Write-Host -NoNewline "Backing up JumpCloud user information..."
-
             try
             {
-                Get-JCUser | Select-Object * , `
-                @{Name = 'attributes'; Expression = { $_.attributes | ConvertTo-Json } }, `
-                @{Name = 'addresses'; Expression = { $_.addresses | ConvertTo-Json } }, `
-                @{Name = 'phonenumbers'; Expression = { $_.phonenumbers | ConvertTo-Json } }, `
-                @{Name = 'ssh_keys'; Expression = { $_.ssh_keys | ConvertTo-Json } } `
-                    -ExcludeProperty attributes, addresses, phonenumbers, ssh_keys | Export-Csv -Path "JumpCloudUsers_$($StartTime).CSV" -NoTypeInformation -Force
+                Get-JCUser | Select-Object * , @{Name = 'attributes'; Expression = { $_.attributes | ConvertTo-Json } }, @{Name = 'addresses'; Expression = { $_.addresses | ConvertTo-Json } }, @{Name = 'phonenumbers'; Expression = { $_.phonenumbers | ConvertTo-Json } }, @{Name = 'ssh_keys'; Expression = { $_.ssh_keys | ConvertTo-Json } } -ExcludeProperty attributes, addresses, phonenumbers, ssh_keys | Export-Csv -Path "JumpCloudUsers_$($StartTime).CSV" -NoTypeInformation -Force
+                Write-Host "JumpCloudUsers_$($StartTime).CSV created.`n" -ForegroundColor Green
+            }
+            catch
+            {
+                Write-Host $_
+            }
+        }
 
-            Write-Host "JumpCloudUsers_$($StartTime).CSV created.`n" -ForegroundColor Green
+        if ($SystemUsers)
+        {
+            Write-Host -NoNewline "Backing up JumpCloud system user information..."
+            try
+            {
+                Get-JCSystem | Get-JCSystemUser | Select-Object -Property * , @{Name = 'BindGroups'; Expression = { $_.BindGroups | ConvertTo-Json } } -ExcludeProperty BindGroups | Export-Csv -Path "JumpCloudSystemUsers_$($StartTime).CSV" -NoTypeInformation -Force -Append
+                Write-Host "JumpCloudSystemUsers_$($StartTime).CSV created.`n" -ForegroundColor 'Green'
+            }
+            catch
+            {
+                Write-Host $_
+            }
+        }
 
+        if ($Systems)
+        {
+            Write-Host -NoNewline "Backing up JumpCloud system information..."
+            try
+            {
+                Get-JCSystem | Select-Object *, `
+                @{Name = 'networkInterfaces'; Expression = { $_.networkInterfaces | ConvertTo-Json } }, `
+                @{Name = 'sshdParams'; Expression = { $_.sshdParams | ConvertTo-Json } } `
+                    -ExcludeProperty networkInterfaces, sshdParams, connectionHistory | Export-Csv -Path "JumpCloudSystems_$($StartTime).CSV" -NoTypeInformation -Force
+            Write-Host "JumpCloudSystems_$($StartTime).CSV created.`n" -ForegroundColor Green
         }
         catch
         {
             Write-Host $_
         }
-
     }
 
-    if ($SystemUsers)
+    if ($UserGroups)
     {
-
-        Write-Host -NoNewline "Backing up JumpCloud system user information..."
-
+        Write-Host -NoNewline "Backing up JumpCloud user group membership..."
         try
         {
-            Get-JCObject -Type:('system') -Fields:('_id') | `
-                    Get-JCAssociation -TargetType:('user') -IncludeInfo | `
-                    ForEach-Object {
-                    $_ | Select-Object -Property @{Name = 'DisplayName'; Expression = { $_.info.displayName } } `
-                        , @{Name = 'HostName'; Expression = { $_.info.hostname } } `
-                        , @{Name = 'SystemID'; Expression = { $_.info._id } } `
-                        , @{Name = 'Username'; Expression = { $_.targetInfo.username } } `
-                        , @{Name = 'Administrator'; Expression = { If ($_.compiledAttributes.sudo.enabled -eq 'true') { $true } Else { $false } } } `
-                        , @{Name = 'DirectBind'; Expression = { If ($_.associationType -like '*direct*') { $true }Else { $false } } } `
-                        , @{Name = 'BindGroups'; Expression = { $_.compiledAttributes.ldapGroups.name -join ', ' } } `
-                    | Export-Csv -Path "JumpCloudSystemUsers_$($StartTime).CSV" -NoTypeInformation -Force -Append
-            }
-        Write-Host "JumpCloudSystemUsers_$($StartTime).CSV created.`n" -ForegroundColor Green;
-    }
-    catch
-    {
-        Write-Host $_
-
-    }
-
-}
-
-if ($Systems)
-{
-
-    Write-Host -NoNewline "Backing up JumpCloud system information..."
-
-    try
-    {
-        Get-JCSystem | Select-Object *, `
-        @{Name = 'networkInterfaces'; Expression = { $_.networkInterfaces | ConvertTo-Json } }, `
-        @{Name = 'sshdParams'; Expression = { $_.sshdParams | ConvertTo-Json } } `
-            -ExcludeProperty networkInterfaces, sshdParams, connectionHistory | Export-Csv -Path "JumpCloudSystems_$($StartTime).CSV" -NoTypeInformation -Force
-
-    Write-Host "JumpCloudSystems_$($StartTime).CSV created.`n" -ForegroundColor Green
-
-}
-catch
-{
-    Write-Host $_
-
-}
-
-
-
-}
-
-if ($UserGroups)
-{
-
-    Write-Host -NoNewline "Backing up JumpCloud user group membership..."
-
-    try
-    {
-        Get-JCObject -Type:('user_group') -Fields:('id') | `
-                Get-JCAssociation -TargetType:('user') -IncludeNames | `
-                ForEach-Object {
-                $_ | Select-Object -Property @{Name = 'GroupName'; Expression = { $_.name } } `
-                    , @{Name = 'Username'; Expression = { $_.targetName } } `
-                    , @{Name = 'UserID'; Expression = { $_.targetId } } `
-                | Export-Csv -Path "JumpCloudUserGroupMembers_$($StartTime).CSV" -NoTypeInformation -Force -Append
+            Get-JCGroup -Type User | Get-JCUserGroupMember | Export-Csv -Path "JumpCloudUserGroupMembers_$($StartTime).CSV" -NoTypeInformation -Force -Append
+            Write-Host "JumpCloudUserGroupMembers_$($StartTime).CSV created.`n" -ForegroundColor Green
         }
-    Write-Host "JumpCloudUserGroupMembers_$($StartTime).CSV created.`n" -ForegroundColor Green
-
-}
-catch
-{
-    Write-Host $_
-
-}
-
-}
-
-if ($SystemGroups)
-{
-
-    Write-Host -NoNewline "Backing up JumpCloud system group membership..."
-
-    try
-    {
-        Get-JCObject -Type:('system_group') -Fields:('id') | `
-                Get-JCAssociation -TargetType:('system') -IncludeNames | `
-                ForEach-Object {
-                $_ | Select-Object -Property @{Name = 'GroupName'; Expression = { $_.name } } `
-                    , @{Name = 'displayName'; Expression = { $_.targetName } } `
-                    , @{Name = 'SystemID'; Expression = { $_.targetId } } `
-            | Export-Csv -Path "JumpCloudSystemGroupMembers_$($StartTime).CSV" -NoTypeInformation -Force -Append
+        catch
+        {
+            Write-Host $_
+        }
     }
-    Write-Host "JumpCloudSystemGroupMembers_$($StartTime).CSV created.`n" -ForegroundColor Green
-}
-catch
-{
-    Write-Host $_
-}
-}
+
+    if ($SystemGroups)
+    {
+        Write-Host -NoNewline "Backing up JumpCloud system group membership..."
+        try
+        {
+            Get-JCGroup -Type System | Get-JCSystemGroupMember | Export-Csv -Path "JumpCloudSystemGroupMembers_$($StartTime).CSV" -NoTypeInformation -Force -Append
+            Write-Host "JumpCloudSystemGroupMembers_$($StartTime).CSV created.`n" -ForegroundColor Green
+        }
+        catch
+        {
+            Write-Host $_
+        }
+    }
 }
 end
 {
