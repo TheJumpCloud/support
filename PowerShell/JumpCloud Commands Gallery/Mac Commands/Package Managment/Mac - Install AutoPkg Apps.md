@@ -29,7 +29,7 @@ exit 0
 
 #### Description
 
-Installs list of AutoPkg Apps - customize this script to fit your needs. If this command fails with error 124, it may have reached it's max runtime to report back to JumpCloud, the script itself may not have failed. It might be wise to increase the timeout for this command to account for application download and installation times. Run this script as a local admin, not root.
+Installs list of AutoPkg Apps - customize this script to fit your needs. If this command fails with error 124, it may have reached it's max runtime to report back to JumpCloud, the script itself may not have failed. It may be necessary to increase the timeout for this command to account for application download and installation times. Run this script as a local admin, not root.
 
 #### Import This Command
 

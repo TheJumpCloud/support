@@ -1,28 +1,30 @@
 # Update/ Patching using JumpCloud
 
-Numerous methods for patching mac systems exist. [AutoPkg](https://github.com/autopkg/autopkg) is a well supported, community backed project which uses "recipe" based code to process package installs and deployment. [Homebrew](https://brew.sh/) is another popular package manager for macOS. Either tool can be used in conjunction with JumpCloud to push and update applications on macOS systems. The scripts provided in this repository and within each package manager should be vetted by each admin before use in a production environment.
+Numerous methods for patching mac systems exist. [AutoPkg](https://github.com/autopkg/autopkg) is a well supported, community backed project which uses "recipe" based code to process package installs and deployment. AutoPkg can be used in conjunction with JumpCloud to push and update applications on macOS systems. Scripts provided in this repository should be vetted by each admin before use in a production environment.
 
-Prerequisites: Install Xcode command line tools (recommended for git). Xcode can be installed via a JumpCloud Command. [Rich Trouton's silent Xcode install script](https://github.com/rtrouton/rtrouton_scripts/tree/master/rtrouton_scripts/install_xcode_command_line_tools) is a valid way to do this. Add as a new command with a 5-10min timeout depending on network speed.
+**Prerequisites**: Install Xcode command line tools (recommended for git). Xcode can be installed via a JumpCloud Command. [Rich Trouton's silent Xcode install script](https://github.com/rtrouton/rtrouton_scripts/tree/master/rtrouton_scripts/install_xcode_command_line_tools) is a valid way to do this. Add as a new command with a 5-10min timeout depending on network speed.
 
 ## AutoPKG
 
-Although AutoPkg is commonly used to source packages for deployment en masse, it has the ability to install packages locally. Many members in the Mac Admin community have built their own [AutoPkg repositories](https://github.com/autopkg) of software packages and published those on github. AutoPkg is typically used with various processors to upload compiled packages directly to Munki, Jamf Pro, Filewave or other distribution points.
+Although AutoPkg is commonly used to source packages for deployment en masse, it has the ability to install packages locally. Members in the Mac Admin community have built their own [AutoPkg repositories](https://github.com/autopkg) of software packages and published those on github. AutoPkg is typically used with various processors to upload compiled packages directly to Munki, Jamf Pro, Filewave or other distribution points.
 
-AutoPkg can be installed locally on systems and directed to install ".download" recipes. Included within AutoPkg are several core processors which admins can leverage to take various action on package sources. The ".install" recipe extension takes the output of a .download recipe and installs it on a local system. The AutoPkg recipe system is very modular. An admin can build their own "exampleApplication.install" recipe based on "macAdminCommunityMember's-exampleApplication.download" recipe. Thus, an admin can install any community built recipe on local machines. Similarly, the .jss and .munki extensions build upon .download recipes to take additional action like uploading packages to Jamf Distribution points, creating smart groups and automating the package deployment process.
+AutoPkg can be installed locally on systems and directed to install ".download" recipes. Included within AutoPkg are several core processors which admins can leverage to take various action on package sources. The ".install" recipe extension takes the output of a .download recipe and installs it on a local system. The AutoPkg recipe system is very modular. An admin can build their own "exampleApplication.install" recipe based on "macAdminCommunityMember's-exampleApplication.download" recipe. Thus, an admin can install any community built recipe on local machines. Similarly, the .jss and .munki extensions build upon .download or .pkg recipes to take additional action like uploading packages to Jamf Distribution points, creating computer groups and automating the package deployment process.
 
-The recipe system of AutoPkg allows admins to have granular control of their packaging workflow. Without much configuration, AutoPkg can be used to install applications on local machines. Advanced workflows could be developed to check package sources for viruses and push packages to testing endpoints before general distribution. ~~In this example, we'll leverage AutoPkg's ability to simply source and install packages on a local system.~~
+The recipe model of AutoPkg allows admins to have granular control of their packaging workflow. Without much configuration, AutoPkg can be used to install applications on local machines. Advanced workflows could be developed to check package sources for viruses and push packages to testing endpoints before general distribution.
 
 Requirements:
 
 * Admin user across all systems
 * Xcode Command Line Tools installed for the management of .git sources
 * At least one repository to search, download and install applications
+  
+### Install AutoPkg on JumpCloud systems
 
-Deploy the [Mac - Install AutoPkg Package Manager](./Mac&#32;-&#32;Install&#32;AutoPkg&#32;Package&#32;Manager.md) command to your desires system endpoints.
+Deploy the [Mac - Install AutoPkg Package Manager](./Mac&#32;-&#32;Install&#32;AutoPkg&#32;Package&#32;Manager.md) command to your desires system endpoints. Note, this command should run as root. The Xcode command line tools application must be installed before AutoPkg
 
 ### Deployment of Chrome, Firefox and VLC with AutoPKG Example
 
-The [Mac - Install AutoPkg Apps](Mac&#32;-&#32;Install&#32;Homebrew&#32;Apps.md) command is included to provide admins with a one click example script to deploy Chrome, Firefox and VLC player. After the AutoPkg binary has been installed on a set of systems, deploy the [Mac - Install AutoPkg Apps](Mac&#32;-&#32;Install&#32;Homebrew&#32;Apps.md) command to the same set of systems running the command as a local admin. AutoPkg will download and install Chrome, Firefox and VLC.
+The [Mac - Install AutoPkg Apps](Mac&#32;-&#32;Install&#32;Homebrew&#32;Apps.md) command is included to provide admins with a one click example script to deploy Chrome, Firefox and VLC player. After the AutoPkg binary has been installed on a set of systems, deploy the [Mac - Install AutoPkg Apps](Mac&#32;-&#32;Install&#32;Homebrew&#32;Apps.md) command to the same set of systems running the command as a local admin. AutoPkg will download and install Chrome, Firefox and VLC. Note, this command should be run as a local admin, subsequent autopkg commands should be run on the same administrator account.
 
 ### Updating AutoPkg Managed Applications
 
@@ -54,35 +56,3 @@ autopkg run Spotify.install
 ```
 
 Spotify should be installed on the current system. JumpCloud commands can automate this process across multiple systems.
-
-## Homebrew
-
-Like AutoPkg, Homebrew enables users to build their own "Formulas" and package their own apps. Homebrew enables users to install unix applications on their macOS systems. It was extended later to install native macOS apps. Although Homebrew can be installed in multiple locations for multiple users, the script to install Homebrew using JumpCloud commands leverages a single administrator account.
-
-Requirements:
-
-* Admin user across all systems
-* Xcode Command Line Tools installed for the management of .git sources
-
-Deploy the [Mac - Install Homebrew Package Manager](./Mac&#32;-&#32;Install&#32;Homebrew&#32;Package&#32;Manager.md) command to your desired system endpoints.
-
-### Deployment of Chrome, Firefox and VLC with Homebrew Example
-
-The included [Mac - Install Homebrew Package Manager](./Mac&#32;-&#32;Install&#32;Homebrew&#32;Package&#32;Manager.md) command installs homebrew and sets permissions for a default admin to administer the installation of packages. The script assumes the eventual installation of [cask application installations](https://github.com/Homebrew/homebrew-cask) and preemptively creates the required directories required to do so.
-
-Subsequent application installs can be called as such:
-
-```bash
-/usr/local/bin/brew install wget
-/usr/local/bin/brew cask install firefox
-```
-
-Using JumpCloud commands, the brew binary is invoked as a default admin user without changing. Scripts deployed to install apps are required to be run as the default admin user account which was used in the [Mac - Install Homebrew Package Manager](./Mac&#32;-&#32;Install&#32;Homebrew&#32;Package&#32;Manager.md) command. An example [Mac - Install Homebrew Apps](./Mac&#32;-&#32;Install&#32;Homebrew&#32;Apps.md) command is included to show the context in which an admin could administer the installation of Chrome, Firefox and VLC.
-
-### Updating Homebrew Managed Applications
-
-Homebrew keeps track of installed packages on a given system. Running `brew list -l` and `brew cask list -l` will list any installed formulas and cask applications respectively. Running the following command will update Homebrew, all installed formulas and all installed cask applications. 
-
-```bash
-brew update && brew upgrade && brew cask upgrade
-```
