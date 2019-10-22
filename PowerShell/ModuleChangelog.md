@@ -12,6 +12,8 @@ Bug fixes to underlying functions preventing default values for skip, limit, and
 
 #### IMPROVEMENTS
 
+Improved performance of Get-JCBackup command.
+
 #### BUG FIXES
 
 The function which sets the default values for dynamic parameters was incorrectly filtering parameter sets for dynamic parameters that were passed in causing some parameters default values not to be established.

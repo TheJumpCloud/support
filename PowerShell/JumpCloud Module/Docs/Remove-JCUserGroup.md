@@ -47,7 +47,7 @@ Removes the JumpCloud User Group with the name 'The Band' using the -Force Param
 The name of the User Group you want to remove.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: (All)
 Aliases: name
 
@@ -62,7 +62,7 @@ Accept wildcard characters: False
 A SwitchParameter which suppresses the warning message when removing a JumpCloud User Group.
 
 ```yaml
-Type: SwitchParameter
+Type: System.Management.Automation.SwitchParameter
 Parameter Sets: force
 Aliases:
 
