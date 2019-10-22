@@ -79,7 +79,7 @@ function Get-JCBackup
             Write-Host -NoNewline "Backing up JumpCloud system user information..."
             try
             {
-                Get-JCSystem | Get-JCSystemUser | Select-Object -Property * , @{Name = 'BindGroups'; Expression = { $_.BindGroups | ConvertTo-Json } } -ExcludeProperty BindGroups | Export-Csv -Path "JumpCloudSystemUsers_$($StartTime).CSV" -NoTypeInformation -Force -Append
+                Get-JCSystem | ForEach-Object { Get-JCSystemUser -SystemID $_._id | Select-Object -Property * , @{Name = 'BindGroups'; Expression = { $_.BindGroups | ConvertTo-Json } } -ExcludeProperty BindGroups | Export-Csv -Path "JumpCloudSystemUsers_$($StartTime).CSV" -NoTypeInformation -Force -Append }
                 Write-Host "JumpCloudSystemUsers_$($StartTime).CSV created.`n" -ForegroundColor 'Green'
             }
             catch
@@ -93,47 +93,44 @@ function Get-JCBackup
             Write-Host -NoNewline "Backing up JumpCloud system information..."
             try
             {
-                Get-JCSystem | Select-Object *, `
-                @{Name = 'networkInterfaces'; Expression = { $_.networkInterfaces | ConvertTo-Json } }, `
-                @{Name = 'sshdParams'; Expression = { $_.sshdParams | ConvertTo-Json } } `
-                    -ExcludeProperty networkInterfaces, sshdParams, connectionHistory | Export-Csv -Path "JumpCloudSystems_$($StartTime).CSV" -NoTypeInformation -Force
-            Write-Host "JumpCloudSystems_$($StartTime).CSV created.`n" -ForegroundColor Green
+                Get-JCSystem | Select-Object *, @{Name = 'networkInterfaces'; Expression = { $_.networkInterfaces | ConvertTo-Json } }, @{Name = 'sshdParams'; Expression = { $_.sshdParams | ConvertTo-Json } } -ExcludeProperty networkInterfaces, sshdParams, connectionHistory | Export-Csv -Path "JumpCloudSystems_$($StartTime).CSV" -NoTypeInformation -Force
+                Write-Host "JumpCloudSystems_$($StartTime).CSV created.`n" -ForegroundColor Green
+            }
+            catch
+            {
+                Write-Host $_
+            }
         }
-        catch
-        {
-            Write-Host $_
-        }
-    }
 
-    if ($UserGroups)
-    {
-        Write-Host -NoNewline "Backing up JumpCloud user group membership..."
-        try
+        if ($UserGroups)
         {
-            Get-JCGroup -Type User | Get-JCUserGroupMember | Export-Csv -Path "JumpCloudUserGroupMembers_$($StartTime).CSV" -NoTypeInformation -Force -Append
-            Write-Host "JumpCloudUserGroupMembers_$($StartTime).CSV created.`n" -ForegroundColor Green
+            Write-Host -NoNewline "Backing up JumpCloud user group membership..."
+            try
+            {
+                Get-JCGroup -Type User | ForEach-Object { Get-JCUserGroupMember -GroupName $_.Name | Export-Csv -Path "JumpCloudUserGroupMembers_$($StartTime).CSV" -NoTypeInformation -Force -Append }
+                Write-Host "JumpCloudUserGroupMembers_$($StartTime).CSV created.`n" -ForegroundColor Green
+            }
+            catch
+            {
+                Write-Host $_
+            }
         }
-        catch
-        {
-            Write-Host $_
-        }
-    }
 
-    if ($SystemGroups)
-    {
-        Write-Host -NoNewline "Backing up JumpCloud system group membership..."
-        try
+        if ($SystemGroups)
         {
-            Get-JCGroup -Type System | Get-JCSystemGroupMember | Export-Csv -Path "JumpCloudSystemGroupMembers_$($StartTime).CSV" -NoTypeInformation -Force -Append
-            Write-Host "JumpCloudSystemGroupMembers_$($StartTime).CSV created.`n" -ForegroundColor Green
-        }
-        catch
-        {
-            Write-Host $_
+            Write-Host -NoNewline "Backing up JumpCloud system group membership..."
+            try
+            {
+                Get-JCGroup -Type System | ForEach-Object { Get-JCSystemGroupMember -GroupName $_.Name | Export-Csv -Path "JumpCloudSystemGroupMembers_$($StartTime).CSV" -NoTypeInformation -Force -Append }
+                Write-Host "JumpCloudSystemGroupMembers_$($StartTime).CSV created.`n" -ForegroundColor Green
+            }
+            catch
+            {
+                Write-Host $_
+            }
         }
     }
-}
-end
-{
-}
+    end
+    {
+    }
 }
