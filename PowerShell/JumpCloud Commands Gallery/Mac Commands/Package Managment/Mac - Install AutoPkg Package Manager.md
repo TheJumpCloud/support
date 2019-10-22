@@ -21,7 +21,7 @@ exit 0
 
 #### Description
 
-Installs AutoPkg to a mac system without user input.
+This command downloads the 1.2 version of AutoPkg from github and installs it on the local system.
 
 #### Import This Command
 

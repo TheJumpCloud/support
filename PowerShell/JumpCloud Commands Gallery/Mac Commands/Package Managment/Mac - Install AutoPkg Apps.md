@@ -14,22 +14,24 @@ mac
 # autopkg should be installed in /usr/local/bin
 autopkg="/usr/local/bin/autopkg"
 
-# Install standard set of applications
 # Add repo definition
 $autopkg repo-add https://github.com/autopkg/recipes
 
+# Update repo definitions uncomment to update the repo below:
+# $autopkg repo-update https://github.com/autopkg/recipes
+
 # autopkg install List
-# verbose flag added for increased logging back to JumpCloud
-$autopkg install firefox.install --verbose
-$autopkg install GoogleChrome.install --verbose
-$autopkg install VLC.install --verbose
+# verbose option added for better logs to JumpCloud
+# $autopkg install firefox.install --verbose
+# $autopkg install GoogleChrome.install --verbose
+# $autopkg install VLC.install --verbose
 
 exit 0
 ```
 
 #### Description
 
-Installs list of AutoPkg Apps - customize this script to fit your needs. If this command fails with error 124, it may have reached it's max runtime to report back to JumpCloud, the script itself may not have failed. It may be necessary to increase the timeout for this command to account for application download and installation times. Run this script as a local admin, not root.
+This command installs a Firefox, Chrome and VLC using AutoPkg - customize this script to fit your needs. If this command fails with error 124, it may have reached it's max runtime to report back to JumpCloud, the script itself may not have failed. It may be necessary to increase the timeout for this command to account for application download and installation times. Run this script as a local admin, not root.
 
 #### Import This Command
 
