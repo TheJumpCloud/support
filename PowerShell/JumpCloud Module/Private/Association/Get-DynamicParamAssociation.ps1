@@ -18,11 +18,11 @@ Function Get-DynamicParamAssociation
         # Get type list
         $JCType = If ($Type)
         {
-            Get-JCType -Type:($Type) | Where-Object { $_.Category -eq 'JumpCloud' };
+            Get-JCType -Type:($Type);
         }
         Else
         {
-            Get-JCType | Where-Object { $_.Category -eq 'JumpCloud' };
+            Get-JCType;
         }
     }
     Process

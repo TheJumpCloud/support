@@ -47,7 +47,7 @@ This means you can leverage the PowerShell pipeline to populate this field autom
 This is shown in EXAMPLE 2
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: (All)
 Aliases: _id, id
 
@@ -63,7 +63,7 @@ A boolean $true/$false value to allow for MFA during system login.
 Note this setting only applies systems running Linux or Mac.
 
 ```yaml
-Type: Boolean
+Type: System.Boolean
 Parameter Sets: (All)
 Aliases:
 
@@ -78,7 +78,7 @@ Accept wildcard characters: False
 A boolean $true/$false value to allow for public key authentication.
 
 ```yaml
-Type: Boolean
+Type: System.Boolean
 Parameter Sets: (All)
 Aliases:
 
@@ -93,7 +93,7 @@ Accept wildcard characters: False
 A boolean $true/$false value to allow for ssh password authentication.
 
 ```yaml
-Type: Boolean
+Type: System.Boolean
 Parameter Sets: (All)
 Aliases:
 
@@ -108,7 +108,7 @@ Accept wildcard characters: False
 A boolean $true/$false value to allow for ssh root login.
 
 ```yaml
-Type: Boolean
+Type: System.Boolean
 Parameter Sets: (All)
 Aliases:
 
@@ -125,7 +125,7 @@ The displayName is set to the hostname of the system during agent installation.
 When the system hostname updates the displayName does not update.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: (All)
 Aliases:
 
@@ -141,7 +141,7 @@ Setting this value to $true will enable systemInsights and collect data for this
 Setting this value to $false will disable systemInsights and data collection for the system.
 
 ```yaml
-Type: Boolean
+Type: System.Boolean
 Parameter Sets: (All)
 Aliases:
 

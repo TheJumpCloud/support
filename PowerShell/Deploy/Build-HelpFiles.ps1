@@ -11,12 +11,12 @@ $Functions_Public | ForEach-Object {
     If (Test-Path -Path:($FilePath_Md))
     {
         # Write-Host ('Updating: ' + $FunctionName + '.md')
-        Update-MarkdownHelp -Path:($FilePath_Md) -Force -ExcludeDontShow -UpdateInputOutput
+        Update-MarkdownHelp -Path:($FilePath_Md) -Force -ExcludeDontShow -UpdateInputOutput -UseFullTypeName
     }
     Else
     {
         # Write-Host ('Creating: ' + $FunctionName + '.md')
-        New-MarkdownHelp  -Command:($FunctionName) -OutputFolder:($FolderPath_Docs) -Force  -ExcludeDontShow -OnlineVersionUrl:($GitHubWikiUrl + $FunctionName)
+        New-MarkdownHelp  -Command:($FunctionName) -OutputFolder:($FolderPath_Docs) -Force -ExcludeDontShow -OnlineVersionUrl:($GitHubWikiUrl + $FunctionName) -UseFullTypeName
     }
 }
 # Create new ExternalHelp file.

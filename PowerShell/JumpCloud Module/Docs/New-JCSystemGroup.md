@@ -34,7 +34,7 @@ Creates a new JumpCloud System Group with the name 'New System Group'
 The name of the new JumpCloud System Group.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: (All)
 Aliases:
 
