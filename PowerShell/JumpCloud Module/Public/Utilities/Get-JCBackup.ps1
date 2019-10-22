@@ -79,7 +79,7 @@ function Get-JCBackup
             Write-Host -NoNewline "Backing up JumpCloud system user information..."
             try
             {
-                Get-JCSystem | ForEach-Object { Get-JCSystemUser -SystemID $_._id | Select-Object -Property * , @{Name = 'BindGroups'; Expression = { $_.BindGroups | ConvertTo-Json } } -ExcludeProperty BindGroups | Export-Csv -Path "JumpCloudSystemUsers_$($StartTime).CSV" -NoTypeInformation -Force -Append }
+                Get-JCSystem | Get-JCSystemUser | Select-Object -Property * , @{Name = 'BindGroups'; Expression = { $_.BindGroups | ConvertTo-Json } } -ExcludeProperty BindGroups | ForEach-Object { $_ | Export-Csv -Path "JumpCloudSystemUsers_$($StartTime).CSV" -NoTypeInformation -Force -Append }
                 Write-Host "JumpCloudSystemUsers_$($StartTime).CSV created.`n" -ForegroundColor 'Green'
             }
             catch
@@ -107,7 +107,7 @@ function Get-JCBackup
             Write-Host -NoNewline "Backing up JumpCloud user group membership..."
             try
             {
-                Get-JCGroup -Type User | ForEach-Object { Get-JCUserGroupMember -GroupName $_.Name | Export-Csv -Path "JumpCloudUserGroupMembers_$($StartTime).CSV" -NoTypeInformation -Force -Append }
+                Get-JCGroup -Type User | Get-JCUserGroupMember | ForEach-Object { $_ | Export-Csv -Path "JumpCloudUserGroupMembers_$($StartTime).CSV" -NoTypeInformation -Force -Append }
                 Write-Host "JumpCloudUserGroupMembers_$($StartTime).CSV created.`n" -ForegroundColor Green
             }
             catch
@@ -121,7 +121,7 @@ function Get-JCBackup
             Write-Host -NoNewline "Backing up JumpCloud system group membership..."
             try
             {
-                Get-JCGroup -Type System | ForEach-Object { Get-JCSystemGroupMember -GroupName $_.Name | Export-Csv -Path "JumpCloudSystemGroupMembers_$($StartTime).CSV" -NoTypeInformation -Force -Append }
+                Get-JCGroup -Type System | Get-JCSystemGroupMember | ForEach-Object { $_ | Export-Csv -Path "JumpCloudSystemGroupMembers_$($StartTime).CSV" -NoTypeInformation -Force -Append }
                 Write-Host "JumpCloudSystemGroupMembers_$($StartTime).CSV created.`n" -ForegroundColor Green
             }
             catch
