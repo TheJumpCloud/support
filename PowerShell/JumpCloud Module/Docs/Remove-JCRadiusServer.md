@@ -41,7 +41,7 @@ Remove a radius server by Id from a JumpCloud tenet.
 Bypass user prompts and dynamic ValidateSet.
 
 ```yaml
-Type: SwitchParameter
+Type: System.Management.Automation.SwitchParameter
 Parameter Sets: (All)
 Aliases:
 
@@ -56,7 +56,7 @@ Accept wildcard characters: False
 The unique id of the object.
 
 ```yaml
-Type: String[]
+Type: System.String[]
 Parameter Sets: (All)
 Aliases: _id
 
