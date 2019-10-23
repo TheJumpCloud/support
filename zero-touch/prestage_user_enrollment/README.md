@@ -601,13 +601,42 @@ Need help? See: [Creating a new project](https://github.com/munki/munki-pkg#crea
 
 - Update the build-info file and add signing information
 
-Required Updates to build-info:
+**Required Updates to build-info**:
 
 - "distribution_style": true
 - "identifier": "com.github.munki.pkg.jumpcloud_bootstrap_template"
 - "install_location": "/var/tmp"
 - "preserve_xattr": true,
 - "identifier": "com.github.munki.pkg.jumpcloud_bootstrap_template"
+
+Example build-info.plist:
+
+```XML
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+        <key>distribution_style</key>
+        <true/>
+        <key>identifier</key>
+        <string>com.github.munki.pkg.jumpcloud_bootstrap_template</string>
+        <key>install_location</key>
+        <string>/var/tmp</string>
+        <key>name</key>
+        <string>jumpcloud_bootstrap_template-${version}.pkg</string>
+        <key>ownership</key>
+        <string>recommended</string>
+        <key>postinstall_action</key>
+        <string>none</string>
+        <key>preserve_xattr</key>
+        <true/>
+        <key>suppress_bundle_relocation</key>
+        <true/>
+        <key>version</key>
+        <string>1.0</string>
+</dict>
+</plist>
+```
 
 Example build-info.json:
 
