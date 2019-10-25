@@ -15,13 +15,13 @@ Copy the associations from one object to another.
 ### ById (Default)
 ```
 Copy-JCAssociation [-Type] <String> [-Force] [-Id] <String[]> [[-TargetId] <String>] [[-TargetName] <String>]
- [-RemoveExisting] [-IncludeType <String[]>] [-ExcludeType <String[]>] [<CommonParameters>]
+ [-RemoveExisting] [[-IncludeType] <String[]>] [[-ExcludeType] <String[]>] [<CommonParameters>]
 ```
 
 ### ByName
 ```
 Copy-JCAssociation [-Type] <String> [-Force] [-Name] <String[]> [[-TargetId] <String>] [[-TargetName] <String>]
- [-RemoveExisting] [-IncludeType <String[]>] [-ExcludeType <String[]>] [<CommonParameters>]
+ [-RemoveExisting] [[-IncludeType] <String[]>] [[-ExcludeType] <String[]>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -45,11 +45,27 @@ The command will remove all of Jim's associations and will copy all of John's as
 
 ## PARAMETERS
 
+### -ExcludeType
+Specify the association types to exclude from the copy.
+
+```yaml
+Type: System.String[]
+Parameter Sets: (All)
+Aliases:
+Accepted values: user_group, system, system_group, user, policy, command, application, g_suite, ldap_server, office_365, radius_server
+
+Required: False
+Position: 15
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
 ### -Force
 Bypass user prompts and dynamic ValidateSet.
 
 ```yaml
-Type: SwitchParameter
+Type: System.Management.Automation.SwitchParameter
 Parameter Sets: (All)
 Aliases:
 
@@ -64,7 +80,7 @@ Accept wildcard characters: False
 The unique id of the object.
 
 ```yaml
-Type: String[]
+Type: System.String[]
 Parameter Sets: ById
 Aliases: _id
 
@@ -75,16 +91,47 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
+### -IncludeType
+Specify the association types to include in the copy.
+
+```yaml
+Type: System.String[]
+Parameter Sets: (All)
+Aliases:
+Accepted values: user_group, system, system_group, user, policy, command, application, g_suite, ldap_server, office_365, radius_server
+
+Required: False
+Position: 14
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
 ### -Name
 The name of the object.
 
 ```yaml
-Type: String[]
+Type: System.String[]
 Parameter Sets: ByName
-Aliases: displayName, username
+Aliases: domain, displayName, username
 
 Required: True
 Position: 1
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -RemoveExisting
+Removes the existing associations while still adding the new associations.
+
+```yaml
+Type: System.Management.Automation.SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 13
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -94,7 +141,7 @@ Accept wildcard characters: False
 The unique id of the target object.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: (All)
 Aliases:
 
@@ -109,7 +156,7 @@ Accept wildcard characters: False
 The name of the target object.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: (All)
 Aliases:
 
@@ -124,58 +171,13 @@ Accept wildcard characters: False
 The type of the object.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: (All)
 Aliases: TypeNameSingular
 Accepted values: command, ldap_server, policy, application, radius_server, system_group, system, user_group, user, g_suite, office_365
 
 Required: True
 Position: 0
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -RemoveExisting
-Removes the existing associations while still adding the new associations.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -ExcludeType
-Specify the association types to exclude from the copy.
-
-```yaml
-Type: String[]
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -IncludeType
-Specify the association types to include in the copy.
-
-```yaml
-Type: String[]
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False

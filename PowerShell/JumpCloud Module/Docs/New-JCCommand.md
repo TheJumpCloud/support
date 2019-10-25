@@ -35,7 +35,7 @@ Creates a JumpCloud windows command named 'PowerShell version' which will return
 The script or command to run using the command.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: (All)
 Aliases:
 
@@ -51,7 +51,7 @@ The type of JumpCloud command.
 Options are windows, mac, or linux.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: (All)
 Aliases:
 Accepted values: windows, mac, linux
@@ -68,7 +68,7 @@ The launch type for the new command.
 The default is manual.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: (All)
 Aliases:
 Accepted values: trigger, manual
@@ -84,7 +84,7 @@ Accept wildcard characters: False
 The name of the new JumpCloud command.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: (All)
 Aliases:
 
@@ -99,7 +99,7 @@ Accept wildcard characters: False
 Enter shell type
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: (All)
 Aliases:
 Accepted values: powershell, cmd
@@ -116,7 +116,7 @@ The time the command will run before it times out.
 The default is 120 seconds.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: (All)
 Aliases:
 
@@ -132,7 +132,7 @@ Enter a trigger name.
 Triggers must be unique
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: (All)
 Aliases:
 
@@ -149,7 +149,7 @@ If not entered Mac and Linux commands will default to the root users.
 If entering a user a UserID must be entered.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: (All)
 Aliases:
 
