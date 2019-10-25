@@ -11,8 +11,8 @@ windows
 ```
 # Populate commandID and JumpCloudAPIKey variables before running the command
 
-commandID=''
-JumpCloudAPIKey=''
+$commandID=''
+$JumpCloudAPIKey=''
 
 #--------------------Enter command below this line--------------------
 
@@ -37,7 +37,7 @@ $Request = @{
 try
 {
     Invoke-RestMethod @Request
-    write-output "JumpCloud system: ${systemKey} removed from command target list"
+    Write-Output "JumpCloud system: ${systemKey} removed from command target list"
 }
 catch
 {
