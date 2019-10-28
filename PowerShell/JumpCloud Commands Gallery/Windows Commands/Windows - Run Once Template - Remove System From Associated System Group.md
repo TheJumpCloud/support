@@ -60,8 +60,6 @@ To find the systemGroupID for a JumpCloud system group navigate to the "GROUPS" 
 
 Enter the payload of the command under the line '#--------------------Enter command below this line--------------------'
 
-After the command is run the system is removed from the system group specified via the JumpCloud system context API. [Learn more about the JumpCloud system context API here](https://docs.jumpcloud.com/2.0/authentication-and-authorization/system-context). 
-
 #### *Import This Command*
 
 To import this command template into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
