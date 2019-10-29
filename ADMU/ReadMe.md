@@ -104,7 +104,7 @@ If for example the .net4+ version is run on win7 system the user would see the f
 
 ## Limitations of User Account Conversion
 
- There are limitations to consider when using the USMT utility for user account conversion. Because of this it is recommended to follow a one, some, many approach for migration to understand what and how the tool can and can not do in your environment. This is where further investigation needs to be done on streamlining and improving/documenting common scenarios and workarounds.
+ There are limitations to consider when using the USMT utility for user account conversion. Because of this it is recommended to follow a one, some, many approach for migration to understand what and how the tool can and can not do in your specific environment. This is where further investigation needs to be done on streamlining and improving/documenting common scenarios and workarounds.
  
  [Follow this link to see what gets migrated using the default settings of the USMT.](https://docs.microsoft.com/en-us/windows/deployment/usmt/usmt-what-does-usmt-migrate#bkmk-3)
 
@@ -117,7 +117,7 @@ If for example the .net4+ version is run on win7 system the user would see the f
 
 ![image42](https://github.com/TheJumpCloud/support/blob/master/ADMU/images/img_42.png)
 
- Applications that are installed and ran from the appdata directory may not migrate fully. E.g. Onedrive & Microsoft Teams. This may result in the need to resync or reinstall for the new profile.
+ Applications that are installed and ran from the appdata directory may not migrate fully. E.g. Onedrive & Microsoft Teams. This may result in the need to resync, reinstall or update shortcuts for the new profile.
 
  After converting the account, outlooks .ost offline cache file must be recreated and the account re-logged into. However the office activation and association should still be present but require a reauth.
 
@@ -129,8 +129,8 @@ If for example the .net4+ version is run on win7 system the user would see the f
 
 # ADMU Deployment Options
 
-Regardless of how you deploy the ADMU the utility will leave the selected domain account that is being migrated **untouched and fully in tact**.
-The ADMU leverages the USMT and the default settings to migrates user data from a domain account to a net new local account.
+Regardless of how you deploy the ADMU the utility will leave the selected domain account that is being migrated **untouched and fully intact**.
+The ADMU leverages the USMT and settings to migrate user data from a domain account to a net new local account.
 [Follow this link to see what gets migrated using the default settings of the USMT.](https://docs.microsoft.com/en-us/windows/deployment/usmt/usmt-what-does-usmt-migrate#bkmk-3)
 
 ## Download Links
@@ -148,13 +148,13 @@ Powershell - Migration.ps1 & Functions.ps1
 ## ADMU GUI
  This is a Powershell based GUI executable that utilizes WPF to collect input parameters to pass to the ADMU powershell code.
 
- If the GUI is ran and the system is not domain joined the utility will not let the user continue with the process. The only option is to quit the application. 
+ If the GUI is ran and the system is not domain joined the utility will not let the user continue with the process. The only option is to quit the application.
 
 ![image7](https://github.com/TheJumpCloud/support/blob/master/ADMU/images/img_7.png)
 
 ### Using the ADMU GUI
 
-To use the GUI run the relevant .exe file for your system as administrator from the Download Links above. It may also be required to unblock the Security setting stating `This file came from another computer and might be blocked to help protect this computer`. This will be addressed by code signing in a future release and not be required.
+To use the GUI run the relevant .exe file for your system as administrator from the Download Links above. It is also required to unblock the Security setting stating `This file came from another computer and might be blocked to help protect this computer`. It may also be flagged by antivirus software and need to be excluded. This will be addressed by code signing the file in a future release and this step no longer be required.
 
 ![image48](https://github.com/TheJumpCloud/support/blob/master/ADMU/images/img_48.png)
 
@@ -190,7 +190,6 @@ On the security tab check the box for "Unblock" click "Ok" and you will be able 
  The Powershell script has validation on the main parameters and requires them to not to be empty as well as the -jumpcloudconnectkey must be 40chars or it will not move forward.
 
 ![image10](https://github.com/TheJumpCloud/support/blob/master/ADMU/images/img_10.png)
-
 
 
  Currently if you pass in a domain username that doesn’t exist it will continue and error at the 'user group addition' step in the script. Earlier Validation of this user accounts existence both locally and on the domain will be added into a future version of the tool to better gate and only allow conversions of possible accounts. This is controlled by the GUI implementation and its use of the selection list.
