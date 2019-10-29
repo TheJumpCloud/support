@@ -108,7 +108,7 @@
     $win32UserProfiles | add-member -membertype NoteProperty -name IsLocalAdmin -value $null
     $win32UserProfiles | add-member -membertype NoteProperty -name LocalProfileSize -value $null
 
-    $users =  $win32UserProfiles | Select-Object -ExpandedProperty "SID" | ConvertSID
+    $users =  $win32UserProfiles | Select-Object -ExpandProperty "SID" | ConvertSID
     $userstrim = $users -creplace '^[^\\]*\\', ''
 
     $members = net localgroup administrators |
