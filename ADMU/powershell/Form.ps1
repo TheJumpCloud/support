@@ -11,7 +11,7 @@
  <Window
      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-     Title="JumpCloud ADMU 1.2.1" Height="460.945" Width="980.016" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" ForceCursor="True">
+     Title="JumpCloud ADMU 1.2.2" Height="460.945" Width="980.016" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" ForceCursor="True">
      <Grid Margin="0,0,-0.2,0.168">
          <ListView Name="lvProfileList" HorizontalAlignment="Left" Height="141.629" Margin="9.9,149.476,0,0" VerticalAlignment="Top" Width="944.422">
              <ListView.View>
@@ -108,7 +108,7 @@
     $win32UserProfiles | add-member -membertype NoteProperty -name IsLocalAdmin -value $null
     $win32UserProfiles | add-member -membertype NoteProperty -name LocalProfileSize -value $null
 
-    $users =  ($win32UserProfiles | Select-Object SID).sid | ConvertSID
+    $users =  $win32UserProfiles | Select-Object -ExpandProperty "SID" | ConvertSID
     $userstrim = $users -creplace '^[^\\]*\\', ''
 
     $members = net localgroup administrators |

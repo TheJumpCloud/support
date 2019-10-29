@@ -320,7 +320,7 @@ function GetNetBiosName {
 function ConvertSID {
   param
   (
-    [Parameter(Mandatory,ValueFromPipeline,ValueFromPipelineByPropertyName)]
+    [Parameter(Mandatory = $true, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
     [Alias('Value')]
     $Sid
   )

@@ -1,3 +1,13 @@
+## 1.2.2
+
+#### RELEASE DATE
+
+October 29, 2019
+
+#### RELEASE NOTES
+
+- Fix Win7/Powershell 2.0 SID conversion query used in local admin check in GUI
+
 ## 1.2.1
 
 #### RELEASE DATE
