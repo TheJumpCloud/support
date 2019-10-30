@@ -2,15 +2,15 @@
 
 #*******************************************************************************
 #       Module Type: user_configuration
-#       Module Name: pending_or_active_user_company_email_and_secret
+#       Module Name: active_user_no_password_update_company_email_and_secret
 #       Module Version: 1.0
 #
-#       Details: This module can be used to takeover existing pending or active
-#       users during the DEP enrollment process. The input fields "Company Email"
+#       Details: This module can be used to add existing active users during
+#       the DEP enrollment process. The input fields "Company Email"
 #       is used to query the "EMAIL" attribute for existing JumpCloud users.
-#       The input field "Secret" is used to query the "employeeIdentifier".
-#       The "employeeIdentifier" field for users must be populated with a value
-#       for this workflow to succeed.The "employeeIdentifier" attribute is
+#       The input field "Secret" is used to query the "Employee ID".
+#       The "Employee ID" field for users must be populated with a value
+#       for this workflow to succeed. The "Employee ID" attribute is
 #       required to be unique per user.
 #
 #
