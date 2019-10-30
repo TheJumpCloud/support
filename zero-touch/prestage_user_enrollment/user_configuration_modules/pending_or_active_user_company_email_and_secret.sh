@@ -132,7 +132,7 @@ DEPNotifyReset
 
 WINDOW_TITLE='Set a password'
 PASSWORD_TITLE="Please set a password"
-PASSWORD_TEXT='Your password must be 8 characters long and contain at least one number, upper case character, lower case character, and special character. \\n The longer the better!'
+PASSWORD_TEXT='Your password must be 8 characters long and contain at least one number, upper case character, lower case character, and special character. \n The longer the better!'
 
 echo "Command: QuitKey: x" >>"$DEP_N_LOG"
 echo "Command: WindowTitle: $WINDOW_TITLE" >>"$DEP_N_LOG"
@@ -230,7 +230,7 @@ touch "$DEP_N_LOG"
 
 WINDOW_TITLE='User Configuration'
 FINAL_TITLE="Almost to the finish line!"
-FINAL_TEXT='\\n \\n \\n Working on account configuration'
+FINAL_TEXT='\n \n \n Working on account configuration'
 
 echo "Command: QuitKey: x" >>"$DEP_N_LOG"
 echo "Command: WindowTitle: $WINDOW_TITLE" >>"$DEP_N_LOG"
