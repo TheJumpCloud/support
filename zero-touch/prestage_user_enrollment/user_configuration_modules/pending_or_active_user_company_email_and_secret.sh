@@ -8,9 +8,9 @@
 #       Details: This module can be used to takeover existing pending or active
 #       users during the DEP enrollment process. The input fields "Company Email"
 #       is used to query the "EMAIL" attribute for existing JumpCloud users.
-#       The input field "Secret" is used to query the "employeeIdentifier".
-#       The "employeeIdentifier" field for users must be populated with a value
-#       for this workflow to succeed.The "employeeIdentifier" attribute is
+#       The input field "Secret" is used to query the "Employee ID".
+#       The "Employee ID" field for users must be populated with a value
+#       for this workflow to succeed.The "Employee ID" attribute is
 #       required to be unique per user.
 #
 #

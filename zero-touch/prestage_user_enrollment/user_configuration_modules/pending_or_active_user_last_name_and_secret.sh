@@ -8,10 +8,10 @@
 #       Details: This module can be used to takeover existing pending or active
 #       users during the DEP enrollment process. The input fields "Last Name"
 #       is used to query the "lastname" attribute for existing JumpCloud users.
-#       The input field "Secret" is used to query the "employeeIdentifier" attribute.
-#       The "employeeIdentifier" field and the "lastname" field for users must
+#       The input field "Secret" is used to query the "Employee ID" attribute.
+#       The "Employee ID" field and the "lastname" field for users must
 #       be populated with a value for this workflow to succeed.
-#       The "employeeIdentifier" attribute is required to be unique per user.
+#       The "Employee ID" attribute is required to be unique per user.
 #
 #
 #      Questions or feedback on the jumpcloud_bootstrap workflow? Please
