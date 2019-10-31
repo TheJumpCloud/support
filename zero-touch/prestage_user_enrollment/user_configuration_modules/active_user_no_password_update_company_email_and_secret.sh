@@ -17,7 +17,7 @@
 #      Questions or feedback on the jumpcloud_bootstrap workflow? Please
 #      contact support@jumpcloud.com
 #
-#      Author: Scott Reed | scott.reed@jumpcloud.com
+#      Author: Joe Workman | joe.workman@jumpcloud.com
 #
 #*******************************************************************************
 
