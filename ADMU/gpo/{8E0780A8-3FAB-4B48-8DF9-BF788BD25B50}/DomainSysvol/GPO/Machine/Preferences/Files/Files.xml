@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Files clsid="{215B2E53-57CE-475c-80FE-9EEC14635851}"><File clsid="{50BE44C8-567A-4ed1-B1D0-9234FE1F38AF}" name="JumpCloud ADMU Files" status="powershell" image="1" changed="2019-11-01 18:49:50" uid="{74041631-0540-40BE-B5D2-930BF4A28F0C}" bypassErrors="1"><Properties action="R" fromPath="\\%ComputerName%\jumpcloudADMU\powershell\*.*" targetPath="c:\ADMU\powershell" readOnly="0" archive="1" hidden="0" suppress="0"/></File>
+</Files>
