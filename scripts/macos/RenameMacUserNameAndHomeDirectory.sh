@@ -13,54 +13,44 @@
  NOTE: SCRIPT MUST BE RUN AS ROOT
  NOTE: SYSTEM WILL RESTART AFTER SUCCESSFUL NAME UPDATE
 '
-# TODO: error if old or new use does not exist
-# Logging
-d=$(date +%Y-%m-%d--%I:%M:%S)
-er="${d} JC_RENAME:"
-
-touch JC_RENAME.log
-chmod 777 JC_RENAME.log
-
-echo "${er} ## Rename Script Begin ##" 2>&1 | tee -a JC_RENAME.log
-
 # Ensures that script is run as ROOT
 if [[ "${UID}" != 0 ]]; then
-	echo "${er} Error: $0 script must be run as root" 2>&1 | tee -a JC_RENAME.log
+	(echo >&2 "Error: $0 script must be run as root")
 	exit 1
 fi
 
 # Ensures that the system is not domain bound
 readonly domainBoundCheck=$(dsconfigad -show)
 if [[ "${domainBoundCheck}" ]]; then
-	echo "${er} Error: Cannot run on domain bound system. Unbind system and try again." 2>&1 | tee -a JC_RENAME.log
+	(echo >&2 "Cannot run on domain bound system. Unbind system and try again.")
+	exit 1
+fi
+
+# Ensures that parameters are entered
+if [[ ${#} -ne 2 ]]; then
+	echo "Usage: $0 oldUserName newUserName"
 	exit 1
 fi
 
 oldUser=$1
 newUser=$2
 
-# Ensures that parameters are entered
-if [[ ${#} -ne 2 ]]; then
-	echo "${er} Error: $0 requires two parameters $oldUserName $newUserName" 2>&1 | tee -a JC_RENAME.log
-	exit 1
-fi
-
 # Test to ensure logged in user is not being renamed
 readonly loggedInUser=$(ls -la /dev/console | cut -d " " -f 4)
 if [[ "${loggedInUser}" == "${oldUser}" ]]; then
-	echo "${er} Error: Cannot rename active GUI logged in user. Log in with another admin account and try again." 2>&1 | tee -a JC_RENAME.log
+	echo "Cannot rename active GUI logged in user. Log in with another admin account and try again."
 	exit 1
 fi
 
-# Verify valid usernames
+# Verify valid username
 if [[ -z "${newUser}" ]]; then
-	echo "${er} Error: New user name must not be empty!" 2>&1 | tee -a JC_RENAME.log
+	echo "New user name must not be empty!"
 	exit 1
 fi
 
 # Test to ensure account update is needed
 if [[ "${oldUser}" == "${newUser}" ]]; then
-	echo "${er} Error: Account ${oldUser}" is the same name "${newUser}" 2>&1 | tee -a JC_RENAME.log
+	echo "No updates needed"
 	exit 0
 fi
 
@@ -69,13 +59,13 @@ readonly existingUsers=($(dscl . -list /Users | grep -Ev "^_|com.*|root|nobody|d
 
 # Ensure old user account is correct and account exists on system
 if [[ ! " ${existingUsers[@]} " =~ " ${oldUser} " ]]; then
-	echo "${er} Error: ${oldUser} account not present on system to update" 2>&1 | tee -a JC_RENAME.log
+	echo "${oldUser} account not present on system to update"
 	exit 1
 fi
 
 # Ensure new user account is not already in use
 if [[ " ${existingUsers[@]} " =~ " ${newUser} " ]]; then
-	echo "${er} Error: ${newUser} account already present on system. Cannot add duplicate" 2>&1 | tee -a JC_RENAME.log
+	echo "${newUser} account already present on system. Cannot add duplicate"
 	exit 1
 fi
 
@@ -84,7 +74,7 @@ readonly existingHomeFolders=($(ls /Users))
 
 # Ensure existing home folder is not in use
 if [[ " ${existingHomeFolders[@]} " =~ " ${newUser} " ]]; then
-	echo "${er} Error: ${newUser} home folder already in user on system. Cannot add duplicate" 2>&1 | tee -a JC_RENAME.log
+	echo "${newUser} home folder already in use on system. Cannot add duplicate"
 	exit 1
 fi
 
@@ -94,13 +84,13 @@ loginCheck=$(ps -Ajc | grep ${oldUser} | grep loginwindow | awk '{print $2}')
 # Logs out user if they are logged in
 timeoutCounter='0'
 while [[ "${loginCheck}" ]]; do
-	echo "${er} Notice: ${oldUser} account logged in. Logging user off to complete username update" 2>&1 | tee -a JC_RENAME.log
+	echo "${oldUser} account logged in. Logging user off to complete username update."
 	sudo launchctl bootout gui/$(id -u ${oldUser})
 	Sleep 5
 	loginCheck=$(ps -Ajc | grep ${oldUser} | grep loginwindow | awk '{print $2}')
 	timeoutCounter=$((${timeoutCounter} + 1))
 	if [[ ${timeoutCounter} -eq 4 ]]; then
-		echo "${er} Error: Timeout unable to logout ${oldUser} account" 2>&1 | tee -a JC_RENAME.log
+		echo "Timeout unable to log out ${oldUser} account."
 		exit 1
 	fi
 done
@@ -109,7 +99,7 @@ done
 readonly origHomeDir=$(dscl . -read "/Users/${oldUser}" NFSHomeDirectory | awk '{print $2}' -)
 
 if [[ -z "${origHomeDir}" ]]; then
-	echo "${er} Error: Cannot obtain the original home directory name, is the ${oldUser} name correct?" 2>&1 | tee -a JC_RENAME.log
+	echo "Cannot obtain the original home directory name, is the oldUserName correct?"
 	exit 1
 fi
 
@@ -117,8 +107,8 @@ fi
 sudo dscl . -change "/Users/${oldUser}" NFSHomeDirectory "${origHomeDir}" "/Users/${newUser}"
 
 if [[ $? -ne 0 ]]; then
-	echo "${er} Error: Could not rename the user's home directory pointer, aborting further changes! - err=$?" 2>&1 | tee -a JC_RENAME.log
-	echo "${er} Notice: Reverting Home Directory changes" 2>&1 | tee -a JC_RENAME.log
+	echo "Could not rename the user's home directory pointer, aborting further changes! - err=$?"
+	echo "Reverting Home Directory changes"
 	sudo dscl . -change "/Users/${oldUser}" NFSHomeDirectory "/Users/${newUser}" "${origHomeDir}"
 	exit 1
 fi
@@ -127,8 +117,8 @@ fi
 mv "${origHomeDir}" "/Users/${newUser}"
 
 if [[ $? -ne 0 ]]; then
-	echo "${er} Error: Could not rename the user's home directory in /Users" 2>&1 | tee -a JC_RENAME.log
-	echo "${er} Notice: Reverting Home Directory changes" 2>&1 | tee -a JC_RENAME.log
+	echo "Could not rename the user's home directory in /Users"
+	echo "Reverting Home Directory changes"
 	mv "/Users/${newUser}" "${origHomeDir}"
 	sudo dscl . -change "/Users/${oldUser}" NFSHomeDirectory "/Users/${newUser}" "${origHomeDir}"
 	exit 1
@@ -138,10 +128,10 @@ fi
 sudo dscl . -change "/Users/${oldUser}" RecordName "${oldUser}" "${newUser}"
 
 if [[ $? -ne 0 ]]; then
-	echo "${er} Error: Could not rename the user's RecordName in dscl - the user should still be able to login, but with user name ${oldUser}" 2>&1 | tee -a JC_RENAME.log
-	echo "${er} Notice: Reverting username change" 2>&1 | tee -a JC_RENAME.log
+	echo "Could not rename the user's RecordName in dscl - the user should still be able to login, but with user name ${oldUser}"
+	echo "Reverting username change"
 	sudo dscl . -change "/Users/${oldUser}" RecordName "${newUser}" "${oldUser}"
-	echo "${er} Notice: Reverting Home Directory changes" 2>&1 | tee -a JC_RENAME.log
+	echo "Reverting Home Directory changes"
 	mv "/Users/${newUser}" "${origHomeDir}"
 	sudo dscl . -change "/Users/${oldUser}" NFSHomeDirectory "/Users/${newUser}" "${origHomeDir}"
 	exit 1
@@ -160,7 +150,7 @@ NFSHomeDirectory: "/Users/${newUser}"
 SYSTEM RESTARTING in 5 seconds to complete username update.
 EOM
 
-echo "${er} ${successOutput}" 2>&1 | tee -a JC_RENAME.log
+echo "${successOutput}"
 
 # System restart
 Sleep 5
