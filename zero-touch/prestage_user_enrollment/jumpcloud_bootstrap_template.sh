@@ -70,7 +70,7 @@ DEP_POST_ENROLLMENT_GROUP_ID=''
 ### DEPNotify Welcome Window Title ###
 WELCOME_TITLE=""
 
-### DEPNotify Welcome Window Text use //n for line breaks ###
+### DEPNotify Welcome Window Text use \n for line breaks ###
 WELCOME_TEXT=''
 
 ### Boolean to delete the enrollment user set through MDM ###
