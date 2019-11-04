@@ -1,19 +1,24 @@
 #!/bin/bash
-: '
- Script to rename the username of a user account on MacOS
+###############################################################################
+# Version 1.1
+#
+# RenameMacUserNameAndHomeDirectory.sh - Script to rename the username of a
+#       user account on MacOS. The script updates the users record name (username)
+#		, and home directory.  If the user receiving the name change is signed in
+#		they will be signed out.
+#
+# Example usage: sudo sh RenameMacUserNameAndHomeDirectory.sh cat dog
+#
+# Above example would rename account cat to dog
+#
+# NOTE: SCRIPT MUST BE RUN AS ROOT
+# NOTE: SYSTEM WILL RESTART AFTER SCRIPT IS RUN
+#
+# Questions or issues with the operation of the script, please contact
+# support@jumpcloud.com
+###############################################################################
 
- The script updates the users record name (username), and home directory
-
- If the user receiving the name change is signed in they will be signed out.
-
- Example usage: sudo sh RenameMacUserNameAndHomeDirectory.sh cat dog
-
- Above example would rename account cat to dog
-
- NOTE: SCRIPT MUST BE RUN AS ROOT
- NOTE: SYSTEM WILL RESTART AFTER SUCCESSFUL NAME UPDATE
-'
-=# Logging file created in same directory as this script
+# Logging file created in same directory as this script
 d=$(date +%Y-%m-%d--%I:%M:%S)
 log="${d} JC_RENAME:"
 
