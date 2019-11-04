@@ -13,13 +13,16 @@
  NOTE: SCRIPT MUST BE RUN AS ROOT
  NOTE: SYSTEM WILL RESTART AFTER SUCCESSFUL NAME UPDATE
 '
-=# Logging file created in same directory as this scrip
+=# Logging file created in same directory as this script
 d=$(date +%Y-%m-%d--%I:%M:%S)
 log="${d} JC_RENAME:"
 
+# Create the log file
 touch JC_RENAME.log
+# Open permissions to account for all error catching
 chmod 777 JC_RENAME.log
 
+# Begin Logging
 echo "${log} ## Rename Script Begin ##" 2>&1 | tee -a JC_RENAME.log
 
 # Ensures that script is run as ROOT
