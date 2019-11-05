@@ -85,34 +85,72 @@ Function New-JCObject
                 }
                 Else
                 {
+                    $AutoPopulateKeyWord = 'Test'
                     If (-not $AutoPopulate)
                     {
                         $NewObject.($Property.Name) = $null
                     }
                     Else
                     {
+                        # Write-Host ('Model: ' + $ModelName + '; Name: ' + $Property.Name) -BackgroundColor Cyan
                         If ($Property.Name -eq 'email')
                         {
-                            $NewObject.($Property.Name) = 'Test_' + $Property.Name + '@test.com'
+                            $NewObject.($Property.Name) = $AutoPopulateKeyWord + '_' + $Property.Name + '@test.com'
                         }
+                        ElseIf ($Property.Name -eq 'NetworkSourceIP')
+                        {
+                            $NewObject.($Property.Name) = [IPAddress]::Parse([System.String](Get-Random)).IPAddressToString
+                        }
+                        ElseIf ($ModelName -like '*Radiusserverpost' -and $Property.Name -eq 'UserLockoutAction')
+                        {
+                            $NewObject.($Property.Name) = 'REMOVE'
+                        }
+                        ElseIf ($ModelName -like '*Radiusserverpost' -and $Property.Name -eq 'UserPasswordExpirationAction')
+                        {
+                            $NewObject.($Property.Name) = 'REMOVE'
+                        }
+                        ElseIf ($ModelName -like '*Radiusserverpost' -and $Property.Name -eq 'Mfa')
+                        {
+                            $NewObject.($Property.Name) = 'DISABLED'
+                        }
+                        # ElseIf ($ModelName -like '*Command' -and $Property.Name -eq 'CommandType')
+                        # {
+                        #     $NewObject.($Property.Name) = 'windows'
+                        # }
+                        # ElseIf ($ModelName -like '*Command' -and $Property.Name -eq 'LaunchType')
+                        # {
+                        #     $NewObject.($Property.Name) = 'manual'
+                        # }
+                        # ElseIf ($ModelName -like '*Command' -and $Property.Name -eq 'Organization')
+                        # {
+                        #     $NewObject.($Property.Name) = $env:JCOrgId
+                        # }
+                        # ElseIf ($ModelName -like '*Command' -and $Property.Name -eq 'Schedule')
+                        # {
+                        #     $NewObject.($Property.Name) = 'immediate'
+                        # }
+                        # ElseIf ($ModelName -like '*Command' -and $Property.Name -eq 'ScheduleRepeatType')
+                        # {
+                        #     $NewObject.($Property.Name) = 'day'
+                        # }
                         ElseIf ($Property.TypeNameOfValue -eq 'System.String')
                         {
-                            $NewObject.($Property.Name) = 'Test_' + $Property.Name
+                            $NewObject.($Property.Name) = $AutoPopulateKeyWord + '_' + $Property.Name
                         }
                         ElseIf ($Property.TypeNameOfValue -eq 'System.String[]')
                         {
                             $ArrayLength = 3
                             $ArrayLengthCounter = 0
-                            $Array = While ($ArrayLengthCounter -le $ArrayLength)
+                            $Array = Do
                             {
                                 $ArrayLengthCounter ++
-                                'Test_' + $Property.Name + '_' + [System.String]$ArrayLengthCount
-                            }
+                                $AutoPopulateKeyWord + '_' + $Property.Name + '_' + [System.String]$ArrayLengthCounter
+                            } While ($ArrayLengthCounter -lt $ArrayLength)
                             $NewObject.($Property.Name) = $Array
                         }
                         ElseIf ($Property.TypeNameOfValue -like '*System.Boolean*')
                         {
-                            $NewObject.($Property.Name) = $true
+                            $NewObject.($Property.Name) = $false
                         }
                         ElseIf ($Property.TypeNameOfValue -like '*System.DateTime*')
                         {
