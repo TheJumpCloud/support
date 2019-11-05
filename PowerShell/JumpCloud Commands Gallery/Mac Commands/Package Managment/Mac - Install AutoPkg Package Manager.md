@@ -28,5 +28,5 @@ This command downloads the 1.2 version of AutoPkg from github and installs it on
 To import this command into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
 
 ```
-Import-JCCommand -URL 'https://git.io/JelTB'
+Import-JCCommand -URL 'https://git.io/Je2xd'
 ```
