@@ -98,5 +98,5 @@ This command will install the Xcode Command Line tools on macOS 10.7.X or higher
 To import this command into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
 
 ```
-Import-JCCommand -URL '<link'
+Import-JCCommand -URL 'https://git.io/Je2xF'
 ```
