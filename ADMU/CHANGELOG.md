@@ -1,3 +1,14 @@
+## 1.2.3
+
+#### RELEASE DATE
+
+November 19, 2019
+
+#### RELEASE NOTES
+
+- Force reboot without delay or keypress to work with CLI deployments
+- Update Boolean options for EULA, Agent, LeaveDomain & ForceReboot
+
 ## 1.2.2
 
 #### RELEASE DATE
