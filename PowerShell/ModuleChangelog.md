@@ -1,3 +1,40 @@
+## 1.15.2
+
+#### RELEASE DATE
+
+October 22, 2019
+
+#### RELEASE NOTES
+
+Support for UTF-8 encoding and new SystemInsights tables available.
+
+#### FEATURES
+
+New SystemInsights tables available:
+
+* alf
+* battery
+* crashes
+* ie_extensions
+* launchd
+* logged_in_users
+* managed_policies
+* shadow
+* shared_folders
+* shared_resources
+* sharing_preferences
+* sip_config
+* usb_devices
+* user_groups
+* user_ssh_keys
+
+
+#### IMPROVEMENTS
+
+Support for UTF-8 encoding.
+
+#### BUG FIXES
+
 ## 1.15.1
 
 #### RELEASE DATE
