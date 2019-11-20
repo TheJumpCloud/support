@@ -338,6 +338,306 @@
     ],
     "SystemInsights": [
       {
+        "Table": "battery",
+        "Url": {
+          "List": "/api/v2/systeminsights/battery",
+          "Item": "/api/v2/systeminsights/{system_id}/battery",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "system_id",
+        "ByName": "health",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
+        "Table": "managed_policies",
+        "Url": {
+          "List": "/api/v2/systeminsights/managed_policies",
+          "Item": "/api/v2/systeminsights/{system_id}/managed_policies",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "system_id",
+        "ByName": "domain",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
+        "Table": "sip_config",
+        "Url": {
+          "List": "/api/v2/systeminsights/sip_config",
+          "Item": "/api/v2/systeminsights/{system_id}/sip_config",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "system_id",
+        "ByName": "enabled",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
+        "Table": "alf",
+        "Url": {
+          "List": "/api/v2/systeminsights/alf",
+          "Item": "/api/v2/systeminsights/{system_id}/alf",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "system_id",
+        "ByName": "global_state",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
+        "Table": "crashes",
+        "Url": {
+          "List": "/api/v2/systeminsights/crashes",
+          "Item": "/api/v2/systeminsights/{system_id}/crashes",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "system_id",
+        "ByName": "identifier",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
+        "Table": "usb_devices",
+        "Url": {
+          "List": "/api/v2/systeminsights/usb_devices",
+          "Item": "/api/v2/systeminsights/{system_id}/usb_devices",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "system_id",
+        "ByName": "identifier",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
+        "Table": "ie_extensions",
+        "Url": {
+          "List": "/api/v2/systeminsights/ie_extensions",
+          "Item": "/api/v2/systeminsights/{system_id}/ie_extensions",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "system_id",
+        "ByName": "name",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
+        "Table": "launchd",
+        "Url": {
+          "List": "/api/v2/systeminsights/launchd",
+          "Item": "/api/v2/systeminsights/{system_id}/launchd",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "system_id",
+        "ByName": "name",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
+        "Table": "shared_folders",
+        "Url": {
+          "List": "/api/v2/systeminsights/shared_folders",
+          "Item": "/api/v2/systeminsights/{system_id}/shared_folders",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "system_id",
+        "ByName": "name",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
+        "Table": "shared_resources",
+        "Url": {
+          "List": "/api/v2/systeminsights/shared_resources",
+          "Item": "/api/v2/systeminsights/{system_id}/shared_resources",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "system_id",
+        "ByName": "type",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
+        "Table": "user_ssh_keys",
+        "Url": {
+          "List": "/api/v2/systeminsights/user_ssh_keys",
+          "Item": "/api/v2/systeminsights/{system_id}/user_ssh_keys",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "system_id",
+        "ByName": "uid",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
+        "Table": "logged_in_users",
+        "Url": {
+          "List": "/api/v2/systeminsights/logged_in_users",
+          "Item": "/api/v2/systeminsights/{system_id}/logged_in_users",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "system_id",
+        "ByName": "user",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
+        "Table": "shadow",
+        "Url": {
+          "List": "/api/v2/systeminsights/shadow",
+          "Item": "/api/v2/systeminsights/{system_id}/shadow",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "system_id",
+        "ByName": "username",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
+        "Table": "sharing_preferences",
+        "Url": {
+          "List": "/api/v2/systeminsights/sharing_preferences",
+          "Item": "/api/v2/systeminsights/{system_id}/sharing_preferences",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "system_id",
+        "ByName": "name",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
+        "Table": "user_groups",
+        "Url": {
+          "List": "/api/v2/systeminsights/user_groups",
+          "Item": "/api/v2/systeminsights/{system_id}/user_groups",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "system_id",
+        "ByName": "name",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
         "Table": "kernel_info",
         "Url": {
           "List": "/api/v2/systeminsights/kernel_info",
