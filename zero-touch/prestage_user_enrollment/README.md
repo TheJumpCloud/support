@@ -30,10 +30,11 @@ The JumpCloud Service Account is required to manage users on FileVault enabled m
     - [Pending or Active User Configuration Modules](#pending-or-active-user-configuration-modules)
   - [Step 6 - Populating the Bootstrap template script with a User Configuration Module](#step-6---populating-the-bootstrap-template-script-with-a-user-configuration-module)
   - [Step 7 - Create the LaunchDaemon](#step-7---create-the-launchdaemon)
-  - [Step 8 - Creaking a PKG from the Bootstrap template script using munkiPKG](#step-8---creaking-a-pkg-from-the-bootstrap-template-script-using-munkipkg)
-  - [Step 9 - Configuring MDM PreStage Settings](#step-9---configuring-mdm-prestage-settings)
-  - [Step 10 - Configuring the PKG for MDM deployment](#step-10---configuring-the-pkg-for-mdm-deployment)
-  - [Step 11 - Creating a Privacy Preference Policy](#step-11---creating-a-privacy-preference-policy)
+  - [Step 8 - Create the postinstall script](#step-8---create-the-postinstall-script)
+  - [Step 9 - Creaking a PKG from the Bootstrap template script using WhiteBox Packages](#step-9---creaking-a-pkg-from-the-bootstrap-template-script-using-whitebox-packages)
+  - [Step 10 - Configuring MDM PreStage Settings](#step-10---configuring-mdm-prestage-settings)
+  - [Step 11 - Configuring the PKG for MDM deployment](#step-11---configuring-the-pkg-for-mdm-deployment)
+  - [Step 12 - Creating a Privacy Preference Policy](#step-12---creating-a-privacy-preference-policy)
 - [Testing the workflow](#testing-the-workflow)
 
 ## Prerequisites
@@ -448,10 +449,10 @@ DEP_ENROLLMENT_GROUP_ID='5d0a48cc1f247527b2f92266'
 DEP_POST_ENROLLMENT_GROUP_ID='5d0a48fz45886d39c9dba975'
 
 ### DEPNotify Welcome Window Title ###
-WELCOME_TITLE="Welcome to Azzipa.\\n Where we make backwards pizzas."
+WELCOME_TITLE="Welcome to Azzipa.\n Where we make backwards pizzas."
 
-### DEPNotify Welcome Window Text use \\n for line breaks ###
-WELCOME_TEXT='Sit back and relax as your computer configures itself for you. \\n\\n After configuration settings download you will be asked to activate your account and set a password!'
+### DEPNotify Welcome Window Text use \n for line breaks ###
+WELCOME_TEXT='Sit back and relax as your computer configures itself for you. \n\n After configuration settings download you will be asked to activate your account and set a password!'
 
 ### Boolean to delete the enrollment user set through MDM ###
 DELETE_ENROLLMENT_USERS=true
@@ -550,9 +551,7 @@ Copy in the entire contents of the  **User Configuration Settings** code block f
 
 In order to ensure the JumpCloud user account is configured during this process. A LaunchDaemon will control the execution of the jumpcloud_bootstrap_template.sh script. For additional information, [Apple's documentation archive](https://developer.apple.com/library/archive/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/Introduction.html) is a expansive resource for building and designing daemons. This workflow requires a daemon to run the jumpcloud_bootstrap_template.sh script on startup.
 
-1. Create a .plist file or copy the provided [com.jumpcloud.prestage.plist](./com.jumpcloud.prestage.plist) daemon file.  Put this file in the **payload** folder of your Package Project Directory.
-
-![plist-payload](./images/plist-payload.png?raw=true)
+1. Create a .plist file or copy the provided [com.jumpcloud.prestage.plist](./com.jumpcloud.prestage.plist) daemon file.
 
 2. Ensure the Label Key and string aligns with the variable name set in the jumpcloud_prestage_template.sh file. The .plist file will be loaded as a LaunchDaemon at the end of the postinstall script created in the next step.
      - The provided [com.jumpcloud.prestage.plist](./com.jumpcloud.prestage.plist) daemon is set to run at system load, start the `jumpcloud_bootstrap_template.sh` script and will restart every 10 seconds if the script exits early.
@@ -581,85 +580,7 @@ Optionally include reporting keys for additional debugging:
 <string>/var/tmp/com.jumpcloud.prestage.out</string>
 ```
 
-### Step 8 - Creaking a PKG from the Bootstrap template script using munkiPKG
-
-- Create a project using munkiPKG
-
-Use munkipkg to create a new project folder.
-
-Example:
-
-```SH
-munkipkg --create jumpcloud_bootstrap
-```
-
-Need help? See: [Creating a new project](https://github.com/munki/munki-pkg#creating-a-new-project)
-
-- Move the `jumpcloud_bootstrap_template.sh` script and the `com.jumpcloud.prestage.plist` daemon to the payload project directory.
-
-![payload move](./images/payload_folder.png?raw=true)
-
-- Update the build-info file and add signing information
-
-**Required Updates to build-info**:
-
-- "distribution_style": true
-- "identifier": "com.github.munki.pkg.jumpcloud_bootstrap_template"
-- "install_location": "/var/tmp"
-- "preserve_xattr": true,
-- "identifier": "com.github.munki.pkg.jumpcloud_bootstrap_template"
-
-Example build-info.plist:
-
-```XML
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-        <key>distribution_style</key>
-        <true/>
-        <key>identifier</key>
-        <string>com.github.munki.pkg.jumpcloud_bootstrap_template</string>
-        <key>install_location</key>
-        <string>/var/tmp</string>
-        <key>name</key>
-        <string>jumpcloud_bootstrap_template-${version}.pkg</string>
-        <key>ownership</key>
-        <string>recommended</string>
-        <key>postinstall_action</key>
-        <string>none</string>
-        <key>preserve_xattr</key>
-        <true/>
-        <key>suppress_bundle_relocation</key>
-        <true/>
-        <key>version</key>
-        <string>1.0</string>
-</dict>
-</plist>
-```
-
-Example build-info.json:
-
-```JSON
-{
-    "postinstall_action": "none",
-    "suppress_bundle_relocation": true,
-    "name": "jumpcloud_bootstrap_template.pkg",
-    "distribution_style": true,
-    "preserve_xattr": true,
-    "install_location": "/var/tmp",
-    "version": "1.0",
-    "ownership": "recommended",
-    "identifier": "com.github.munki.pkg.jumpcloud_bootstrap_template",
-    "signing_info": {
-        "identity": "Developer ID Installer: {{ REDACTED Insert Developer ID}}"
-    }
-}
-```
-
-- Create a postinstall script file in the `scripts` folder
-
-![postinstall script](./images/postinstall_script.png?raw=true)
+### Step 8 - Create the postinstall script
 
 In the postinstall script add in the following payload. The LaunchDaemon must be moved to a system's /Library/LaunchDaemons/ directory in the postinstall script.
 
@@ -733,13 +654,49 @@ launchctl load -w "/Library/LaunchDaemons/${daemon}"
 
 The presences of the `JumpCloud-SecureToken-Creds.txt` file is require to install the JumpCloud agent with the JumpCloud Service Account. The JumpCloud Service Account is mandatory to manage Secure Tokens and Filevault enabled users. The `JumpCloud-SecureToken-Creds.txt` is deleted by the agent install process and removed from the system.
 
-- Creating the PKG
+### Step 9 - Creaking a PKG from the Bootstrap template script using [WhiteBox Packages](http://s.sudre.free.fr/Software/Packages/about.html)
 
-Use munkipkg to create the PKG and sign it with your Apple Developer Certificate.
+The following steps are used to create the deployment .pkg file. The files referenced above will be added to the package project.
 
-Need help? See [Package signing](https://github.com/munki/munki-pkg#package-signing) and [Building a package](https://github.com/munki/munki-pkg#building-a-package)
+- Create a project using WhiteBox Packages
 
-### Step 9 - Configuring MDM PreStage Settings
+Use WhiteBox Packages to create a new project folder. Create a distribution style project.
+
+![project style](./images/whitebox_project.png?raw=true)
+
+Name and create the project
+
+![project name](./images/whitebox_name.png)
+
+Click the package name in the left column and optionally name and version the package.
+
+![project package settings](./images/whitebos_package_settings.png)
+
+Under the Payload tab: Copy the com.jumpcloud.prestage.plist daemon into the LaunchDaemons directory. Copy the jumpcloud_bootstrap_template.sh file into /var/tmp/. To create the /var/ and /tmp/ directories, click the root "/" directory and select "new folder"
+
+![project payload](./images/whitebox_payload.png)
+
+Under the scripts tab: drag the postinstall.sh file into the Post-installation script field box.
+
+![project scripts](./images/whitebox_scripts.png)
+
+Open Preferences and select the building tab.
+
+![project preferences](./images/whitebox_prefs.png)
+
+Click the project title in the left column and select the menu option Project > Set Certificate
+
+![project sign](./images/whitebox_sign.png)
+
+Build the project under the Build menu > Build.
+
+![project build](./images/whitebox_build.png)
+
+Need packaging help? See: [WhiteBox Packages documentation](http://s.sudre.free.fr/Software/documentation/Packages/en_2017/index.html)
+
+Need signing help? See [Package signing](https://github.com/munki/munki-pkg#package-signing)
+
+### Step 10 - Configuring MDM PreStage Settings
 
 - User Settings
 
@@ -753,7 +710,7 @@ Example:
 
 ![Simple Settings](./images/mdm_enrollment_user.png?raw=true)
 
-### Step 10 - Configuring the PKG for MDM deployment
+### Step 11 - Configuring the PKG for MDM deployment
 
 - Uploading PKG
 
@@ -771,7 +728,7 @@ Ensure the PKG is configured for "Device Level Installation". By setting the PKG
 
 Scope the PKG to auto deploy to the machines you wish to configure for zero-touch configuration.
 
-### Step 11 - Creating a Privacy Preference Policy
+### Step 12 - Creating a Privacy Preference Policy
 
 Create the below "Privacy Preference" profile. This will allow the osascript to run which prompts users to input a secure password. Or download the [JAMF profile](./tcc-bash.mobileconfig) if deploying over JAMF Pro.
 
