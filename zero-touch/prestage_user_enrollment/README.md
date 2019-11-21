@@ -1,6 +1,6 @@
-**Configuring a Zero-Touch macOS onboarding experience for PreStaging user and system enrollment using DEPNotify, munkiPKG, JumpCloud, and your MDM of choice.**
+**Configuring a Zero-Touch macOS onboarding experience for PreStaging user and system enrollment using DEPNotify, WhiteBox Packages, JumpCloud, and your MDM of choice.**
 
-Leveraging this workflow allows admins to install the JumpCloud agent silently and ensures that the JumpCloud Service Account is installed using DEP and an MDM.
+Leveraging this workflow enables admins to install the JumpCloud agent silently and ensures that the JumpCloud Service Account is installed using DEP and an MDM.
 
 The JumpCloud Service Account is required to manage users on FileVault enabled macs.
 
@@ -15,13 +15,13 @@ The JumpCloud Service Account is required to manage users on FileVault enabled m
   - [An Apple Device Enrollment (DEP) Account](#an-apple-device-enrollment-dep-account)
   - [An MDM server integrated with Apple DEP](#an-mdm-server-integrated-with-apple-dep)
   - [An Apple Developer Account](#an-apple-developer-account)
-  - [munkipkg or an alternative macOS PKG building tool or application](#munkipkg-or-an-alternative-macos-pkg-building-tool-or-application)
+  - [WhiteBox Packages or an alternative macOS PKG building tool or application](#whitebox-packages-or-an-alternative-macos-pkg-building-tool-or-application)
   - [Users who you wish to enroll using this zero-touch workflow added to the JumpCloud directory.](#users-who-you-wish-to-enroll-using-this-zero-touch-workflow-added-to-the-jumpcloud-directory)
 - [Zero-Touch Enrollment Workflow Diagram](#zero-touch-enrollment-workflow-diagram)
 - [Component Definitions](#component-definitions)
 - [Configuration Steps](#configuration-steps)
-  - [Step 1 - Create a New Package Project Directory Using Munkipkg](#step-1---create-a-new-package-project-directory-using-munkipkg)
-  - [Step 2 - Download the JumpCloud Bootstrap template script](#step-2---download-the-jumpcloud-bootstrap-template-script)
+  - [Step 1 - Clone or download the prestage_user_enrollment directory](#step-1---clone-or-download-the-prestageuserenrollment-directory)
+  - [Step 2 - Open the JumpCloud Bootstrap template script](#step-2---open-the-jumpcloud-bootstrap-template-script)
   - [Step 3 - Configuring the JumpCloud Tenant For DEP Zero-Touch](#step-3---configuring-the-jumpcloud-tenant-for-dep-zero-touch)
   - [Step 4 - Populating the Bootstrap template script variables](#step-4---populating-the-bootstrap-template-script-variables)
     - [Variable Definitions](#variable-definitions)
@@ -31,7 +31,7 @@ The JumpCloud Service Account is required to manage users on FileVault enabled m
   - [Step 6 - Populating the Bootstrap template script with a User Configuration Module](#step-6---populating-the-bootstrap-template-script-with-a-user-configuration-module)
   - [Step 7 - Create the LaunchDaemon](#step-7---create-the-launchdaemon)
   - [Step 8 - Create the postinstall script](#step-8---create-the-postinstall-script)
-  - [Step 9 - Creaking a PKG from the Bootstrap template script using WhiteBox Packages](#step-9---creaking-a-pkg-from-the-bootstrap-template-script-using-whitebox-packages)
+  - [Step 9 - Creaking a PKG using WhiteBox Packages](#step-9---creaking-a-pkg-using-whitebox-packages)
   - [Step 10 - Configuring MDM PreStage Settings](#step-10---configuring-mdm-prestage-settings)
   - [Step 11 - Configuring the PKG for MDM deployment](#step-11---configuring-the-pkg-for-mdm-deployment)
   - [Step 12 - Creating a Privacy Preference Policy](#step-12---creating-a-privacy-preference-policy)
@@ -56,13 +56,14 @@ To implement this zero-touch workflow a MDM server must be configured to deploy 
 An Apple Developer Account is required to sign the macOS package created in this workflow.
 
 - Need a Apple Developer Account? [Click here to sign up.](https://developer.apple.com/programs/)
+- A "Developer ID Installer" Certificate is required to sign packages. The Developer ID installer must be imported into Keychain Access to sign packages.
 
-### munkipkg or an alternative macOS PKG building tool or application
+### [WhiteBox Packages](http://s.sudre.free.fr/Software/Packages/about.html) or an alternative macOS PKG building tool or application
 
-The JumpCloud Bootstrap configuration script that is configured in this guide must be packaged and converted to a signed PKG.
+The JumpCloud Bootstrap configuration script configured in this guide must be packaged **and** signed using an Apple Developer ID.
 
-- munkiPKG is an easy to use command line utility that is used in this workflow to convert the bootstrap configuration script to a PKG.
-  - Need to download munkipkg? [Click here](https://github.com/munki/munki-pkg#munkipkg)  
+- [WhiteBox Packages](http://s.sudre.free.fr/Software/Packages/about.html) is an easy to use packaging application that is used in this workflow to built a deployable .pkg.
+  - [Download WhiteBox Packages](http://s.sudre.free.fr/Software/Packages/about.html)  
 
 ### Users who you wish to enroll using this zero-touch workflow added to the JumpCloud directory.
 
@@ -100,7 +101,7 @@ The JumpCloud Bootstrap configuration script that is configured in this guide mu
 
 **JumpCloud DEP POST Enrollment System Group:** The JumpCloud  system group that a system adds itself to add the end of DEP enrollment. When a system adds itself to the DEP POST Enrollment System Group the **Default Admin** account is bound to the system.
 
-**JumpCloud Bootstrap PKG:** The product archive package created from a configured jumpcloud_bootstrap_template.sh file using munkipkg or an alternative macOS PKG building tool.
+**JumpCloud Bootstrap PKG:** The product archive package created from a configured jumpcloud_bootstrap_template.sh file using WhiteBox Packages or an alternative macOS PKG building tool.
 
 **DEPNotify:** The application that drives the UI of the zero-touch workflow.
 
@@ -116,42 +117,19 @@ The JumpCloud Bootstrap configuration script that is configured in this guide mu
 
 ![configuration_steps](./diagrams/configuration_steps.png?raw=true)
 
-This guide uses [munki-pkg](https://github.com/munki/munki-pkg) to build the custom PKG. The instructions in this guide can be used with alternative PKG creation tools.
+This guide uses [WhiteBox Packages](http://s.sudre.free.fr/Software/Packages/about.html) to build the custom PKG. The instructions in this guide can be used with alternative PKG creation tools.
 
-### Step 1 - Create a New Package Project Directory Using Munkipkg
+### Step 1 - Clone or download the prestage_user_enrollment directory
 
-After installing [munkipkg](https://github.com/munki/munki-pkg/blob/master/README.md#munkipkg) use the `munkipkg --create` command to create a new project. [Need help? Find additional information here.](https://github.com/munki/munki-pkg/blob/master/README.md#creating-a-new-project)
+After installing [WhiteBox Packages](http://s.sudre.free.fr/Software/Packages/about.html) download the contents of [this project directory](https://github.com/TheJumpCloud/support/tree/master/zero-touch/prestage_user_enrollment). If using [GitHub Desktop](https://desktop.github.com/), simply clone the entire [support repository](https://github.com/TheJumpCloud/support/tree/master/) to GitHub Desktop and navigate to the prestage_user_enrollment directory to view the contents.
 
-Example:
+### Step 2 - Open the JumpCloud Bootstrap template script
 
-```
-bash-3.2$ munkipkg --create zero-touch
-munkipkg: Created new package project at zero-touch
-```
-
-This example creates a munki pkg project named `zero-touch` in the current working directory of the terminal where the command is run.
-
-*To use the munkipkg binary without pointing to the full path of the binary file move the munkipkg binary to the `/usr/local/bin` folder or create a symlink to the location of the munkipkg binary in the `/usr/local/bin` directory.
-
-Running this command will create the the `zero-touch` munki pkg project folders and scaffolding.
-
-![zero touch folders](./images/zero-touch-folders.png?raw=true)
-
-### Step 2 - Download the JumpCloud Bootstrap template script
-
-Download the [jumpcloud_bootstrap_template.sh file](./jumpcloud_bootstrap_template.sh).
-
-Save this file inside the **payload** folder of your munki pkg project.
-
-![zero touch folders](./images/zero-touch-template.png?raw=true)
-
-Open this file in your code editor of choice.
+Open the [jumpcloud_bootstrap_template.sh file](./jumpcloud_bootstrap_template.sh) in your code editor of choice.
 
 The JumpCloud Solution Architecture team loves to work with SH files in the code editor Visual Studio Code.
 
 - Want to try VS Code? [Click here to download](https://code.visualstudio.com/)
-
-
 
 ### Step 3 - Configuring the JumpCloud Tenant For DEP Zero-Touch
 
@@ -285,7 +263,7 @@ DEP_POST_ENROLLMENT_GROUP_ID=''
 ### DEPNotify Welcome Window Title ###
 WELCOME_TITLE=""
 
-### DEPNotify Welcome Window Text use //n for line breaks ###
+### DEPNotify Welcome Window Text use \n for line breaks ###
 WELCOME_TEXT=''
 
 ### Boolean to delete the enrollment user set through MDM ###
@@ -295,7 +273,7 @@ DELETE_ENROLLMENT_USERS=true
 ### This account will be deleted if the above boolean is set to true.
 ENROLLMENT_USER=""
 
-### NTP server, set to time.apple.com by default, Ensure time is correct ### 
+### NTP server, set to time.apple.com by default, Ensure time is correct ###
 NTP_SERVER="time.apple.com"
 
 ### Daemon Variable
@@ -461,7 +439,7 @@ DELETE_ENROLLMENT_USERS=true
 ### This account will be deleted if the above boolean is set to true.
 ENROLLMENT_USER="Welcome"
 
-### NTP server, set to time.apple.com by default, Ensure time is correct ### 
+### NTP server, set to time.apple.com by default, Ensure time is correct ###
 NTP_SERVER="time.apple.com"
 
 ### Daemon Variable
@@ -636,7 +614,7 @@ cat <<-EOF >/var/run/JumpCloud-SecureToken-Creds.txt
 $ENROLLMENT_USER;$ENROLLMENT_USER_PASSWORD
 EOF
 
-# Move LaunchDaemon (if using munki)
+# Move LaunchDaemon
 if [[ ! -f "/Library/LaunchDaemons/${daemon}" ]]; then
   mv "/var/tmp/${daemon}" "/Library/LaunchDaemons/"
 fi
@@ -654,29 +632,27 @@ launchctl load -w "/Library/LaunchDaemons/${daemon}"
 
 The presences of the `JumpCloud-SecureToken-Creds.txt` file is require to install the JumpCloud agent with the JumpCloud Service Account. The JumpCloud Service Account is mandatory to manage Secure Tokens and Filevault enabled users. The `JumpCloud-SecureToken-Creds.txt` is deleted by the agent install process and removed from the system.
 
-### Step 9 - Creaking a PKG from the Bootstrap template script using [WhiteBox Packages](http://s.sudre.free.fr/Software/Packages/about.html)
+### Step 9 - Creaking a PKG using [WhiteBox Packages](http://s.sudre.free.fr/Software/Packages/about.html)
 
-The following steps are used to create the deployment .pkg file. The files referenced above will be added to the package project.
+The following steps are used to create and sign the deployment .pkg file. The files referenced above will be added to the package project.
 
-- Create a project using WhiteBox Packages
-
-Use WhiteBox Packages to create a new project folder. Create a distribution style project.
+Open WhiteBox Packages to create a new project folder. Create a distribution style project.
 
 ![project style](./images/whitebox_project.png?raw=true)
 
-Name and create the project
+Name, optionally change the directory and create the project
 
 ![project name](./images/whitebox_name.png)
 
-Click the package name in the left column and optionally name and version the package.
+Click the package name in the left column and optionally change the default identifier and version number.
 
-![project package settings](./images/whitebos_package_settings.png)
+![project package settings](./images/whitebox_package_settings.png)
 
-Under the Payload tab: Copy the com.jumpcloud.prestage.plist daemon into the LaunchDaemons directory. Copy the jumpcloud_bootstrap_template.sh file into /var/tmp/. To create the /var/ and /tmp/ directories, click the root "/" directory and select "new folder"
+Within the Payload tab, copy the modified com.jumpcloud.prestage.plist daemon into the LaunchDaemons directory. Copy the jumpcloud_bootstrap_template.sh file into /var/tmp/. To create the /var/ and /tmp/ directories, click the root "/" directory and select "new folder". The payload should look similar to the example below:
 
 ![project payload](./images/whitebox_payload.png)
 
-Under the scripts tab: drag the postinstall.sh file into the Post-installation script field box.
+Within the scripts tab, drag the modified postinstall.sh file into the Post-installation script field box.
 
 ![project scripts](./images/whitebox_scripts.png)
 
@@ -694,7 +670,7 @@ Build the project under the Build menu > Build.
 
 Need packaging help? See: [WhiteBox Packages documentation](http://s.sudre.free.fr/Software/documentation/Packages/en_2017/index.html)
 
-Need signing help? See [Package signing](https://github.com/munki/munki-pkg#package-signing)
+Need signing help? See [Package signing](https://developer.apple.com/developer-id/)
 
 ### Step 10 - Configuring MDM PreStage Settings
 
