@@ -169,7 +169,7 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $Groups = Get-JCAssociation -Type:('user') -Id:($User.id) -TargetType:('user_group')
 
-        $Groups.GroupName.count | Should Be 1
+        $Groups.count | Should Be 1
 
     }
 
@@ -181,7 +181,7 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $Groups = Get-JCAssociation -Type:('user') -Id:($User.id) -TargetType:('user_group')
 
-        $Groups.GroupName.count | Should Be 1
+        $Groups.count | Should Be 1
 
     }
 
