@@ -2,7 +2,7 @@
 
 # Providing Feedback
 
-The ADMU is currently in an Early Access (EA) period. 
+The ADMU is currently in an Early Access (EA) period.
 Have feedback to share? Email support@jumpcloud.com to connect with a member of the JumpCloud success team.
 
 The current ADMU Change Log can be found [Here](https://github.com/TheJumpCloud/support/blob/master/ADMU/CHANGELOG.md).
@@ -573,11 +573,14 @@ Reference: [https://docs.microsoft.com/en-us/azure/active-directory/devices/](ht
 
  This type of account is not supported by JumpCloud takeover when binding users to a system and would create a new ‘local profile’ in this example if JumpCloud username was ‘BradStevens’ it would create ‘10PRO1809-1\BradStevens’ and not sync/link with the ‘AzureAD\BradStevens’ profile.
 
- The ADMU v1.0.0 tool can not currently convert this account to a ‘local profile’. However this functionality will be added in the future to allow administrators a way to convert ‘Azure Ad Joined’ systems and accounts to migrate to JumpCloud.
+ The ADMU Migration script can convert this account to a ‘local profile’.
 
-```diff
-- Azure AD Join is not currently supported with JumpCloud takeover.
+ This can be achieved using the `$AzureADProfile=$true` parameter.
+
+ ```powershell
+.\Migration.ps1 -DomainUserName 'tcruise' -JumpCloudUserName 'tom.cruise' -TempPassword 'Temp123!' -JumpCloudConnectKey '4e7699c4c1c1e3126fb627240723cb3g292ebc75' -AcceptEULA $true -InstallJCAgent $true -AzureADProfile $true
 ```
+
 
 ![image0](https://github.com/TheJumpCloud/support/blob/master/ADMU/images/img_0.png)
 
