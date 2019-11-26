@@ -1,3 +1,13 @@
+## 1.2.4
+
+#### RELEASE DATE
+
+November 26, 2019
+
+#### RELEASE NOTES
+
+- Add $AzureADProfile Parameter to allow conversion via migration.ps1 script
+
 ## 1.2.3
 
 #### RELEASE DATE
