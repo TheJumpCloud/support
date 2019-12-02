@@ -1,5 +1,5 @@
 # Gather JumpCloud Events with an AWS Serverless Application
-_Note: This tutorial assumes the use of Python 3+_
+_Note: This document assumes the use of Python 3+_
 ## Table of Contents
 - [Gather JumpCloud Events with an AWS Serverless Application](#gather-jumpcloud-events-with-an-aws-serverless-application)
   - [Table of Contents](#table-of-contents)
