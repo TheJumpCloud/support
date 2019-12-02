@@ -41,9 +41,9 @@ fi
 sqlite3 /Library/Application\ Support/com.apple.TCC/TCC.db 'SELECT * from access'
 # accessStatus=(${access} | grep "unable")
 if [[ $? -ne 0 ]]; then
-    echo "${log} Error: Terminal does not appear to have the correct access!" 2>&1 | tee -a JC_RENAME.log
-    echo "${log} Has Terminal been granted Full Disk Access?" 2>&1 | tee -a JC_RENAME.log
-    exit 1
+	echo "${log} Error: Terminal does not appear to have the correct access!" 2>&1 | tee -a JC_RENAME.log
+	echo "${log} Grant terminal Full Disk Access and try again." 2>&1 | tee -a JC_RENAME.log
+	exit 1
 fi
 # Ensures that the system is not domain bound
 readonly domainBoundCheck=$(dsconfigad -show)
@@ -107,9 +107,9 @@ fi
 # Check if username differs from home directory name
 actual=$(eval echo "~${oldUser}")
 if [[ "/Users/${oldUser}" != "$actual" ]]; then
-    echo "${log} Error: Username differs from home directory name!" 2>&1 | tee -a JC_RENAME.log
-    echo "${log} Error: home directory: ${actual} should be: /Users/${oldUser}, aborting." 2>&1 | tee -a JC_RENAME.log
-    exit 1
+	echo "${log} Error: Username differs from home directory name!" 2>&1 | tee -a JC_RENAME.log
+	echo "${log} Error: home directory: ${actual} should be: /Users/${oldUser}, aborting." 2>&1 | tee -a JC_RENAME.log
+	exit 1
 fi
 
 # Checks if user is logged in
