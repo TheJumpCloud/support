@@ -95,6 +95,14 @@ if [[ " ${existingHomeFolders[@]} " =~ " ${newUser} " ]]; then
 	exit 1
 fi
 
+# Check if username differs from home directory name
+actual=$(eval echo "~${oldUser}")
+if [[ "/Users/${oldUser}" != "$actual" ]]; then
+    echo "${log} Error: Username differs from home directory name!" 2>&1 | tee -a JC_RENAME.log
+    echo "${log} Error: home directory: ${actual} should be: /Users/${oldUser}, aborting." 2>&1 | tee -a JC_RENAME.log
+    exit 1
+fi
+
 # Checks if user is logged in
 loginCheck=$(ps -Ajc | grep ${oldUser} | grep loginwindow | awk '{print $2}')
 
@@ -163,7 +171,6 @@ Success ${oldUser} username has been updated to ${newUser}
 Folder "${origHomeDir}" has been renamed to "/Users/${newUser}"
 RecordName: ${newUser}
 NFSHomeDirectory: "/Users/${newUser}"
-
 SYSTEM RESTARTING in 5 seconds to complete username update.
 EOM
 
