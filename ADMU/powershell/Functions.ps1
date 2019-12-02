@@ -318,18 +318,15 @@ function GetNetBiosName {
 }
 
 function ConvertSID {
+  [CmdletBinding()]
   param
   (
     [Parameter(Mandatory = $true, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
-    [Alias('Value')]
     $Sid
   )
-
   process
   {
-    $objSID = New-Object System.Security.Principal.SecurityIdentifier($sid)
-    $objUser = $objSID.Translate( [System.Security.Principal.NTAccount])
-    $objUser.Value
+    (New-Object System.Security.Principal.SecurityIdentifier($Sid)).Translate( [System.Security.Principal.NTAccount]).Value
   }
 }
 

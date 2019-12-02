@@ -1,3 +1,13 @@
+## 1.2.5
+
+#### RELEASE DATE
+
+December 2, 2019
+
+#### RELEASE NOTES
+
+- ConvertSID Function updated to work on windows 7 and powershell 2.0
+
 ## 1.2.4
 
 #### RELEASE DATE
