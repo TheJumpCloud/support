@@ -1,17 +1,18 @@
 #!/bin/bash
 ###############################################################################
-# Version 1.1
+# Version 1.2
 #
 # RenameMacUserNameAndHomeDirectory.sh - Script to rename the username of a
-#       user account on MacOS. The script updates the users record name (username)
-#		, and home directory.  If the user receiving the name change is signed in
-#		they will be signed out.
+# user account on MacOS. The script updates the users record name (username),
+# and home directory.  If the user receiving the name change is signed in
+# they will be signed out.
 #
 # Example usage: sudo sh RenameMacUserNameAndHomeDirectory.sh cat dog
 #
 # Above example would rename account cat to dog
 #
 # NOTE: SCRIPT MUST BE RUN AS ROOT
+# NOTE: TERMINAL MUST BE GRANTED FULL DISK ACCESS TO RUN SUCCESSFULLY
 # NOTE: SYSTEM WILL RESTART AFTER SCRIPT IS RUN
 #
 # Questions or issues with the operation of the script, please contact
@@ -36,6 +37,14 @@ if [[ "${UID}" != 0 ]]; then
 	exit 1
 fi
 
+# Ensure Terminal has been granted Full Disk Access
+sqlite3 /Library/Application\ Support/com.apple.TCC/TCC.db 'SELECT * from access'
+# accessStatus=(${access} | grep "unable")
+if [[ $? -ne 0 ]]; then
+    echo "${log} Error: Terminal does not appear to have the correct access!" 2>&1 | tee -a JC_RENAME.log
+    echo "${log} Has Terminal been granted Full Disk Access?" 2>&1 | tee -a JC_RENAME.log
+    exit 1
+fi
 # Ensures that the system is not domain bound
 readonly domainBoundCheck=$(dsconfigad -show)
 if [[ "${domainBoundCheck}" ]]; then
