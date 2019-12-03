@@ -395,7 +395,7 @@ if [[ ! -f $DEP_N_GATE_UI ]]; then
     process=$(echo | ps aux | grep "\bDEPNotify\.app")
     if [[ -z $process ]]; then
         ACTIVE_USER=$(/usr/bin/python -c 'from SystemConfiguration import SCDynamicStoreCopyConsoleUser; import sys; username = (SCDynamicStoreCopyConsoleUser(None, None, None) or [None])[0]; username = [username,""][username in [u"loginwindow", None, u""]]; sys.stdout.write(username + "\n");')
-        echo "$(date "+%Y-%m-%dT%H:%M:%S"): Expected DEPNotify.app to be in process lis, process not found. Launching DEPNotify as $ACTIVE_USER" >>"$DEP_N_DEBUG"
+        echo "$(date "+%Y-%m-%dT%H:%M:%S"): Expected DEPNotify.app to be in process list, process not found. Launching DEPNotify as $ACTIVE_USER" >>"$DEP_N_DEBUG"
         sudo -u "$ACTIVE_USER" open -a "$DEP_N_APP" --args -path "$DEP_N_LOG" -fullScreen
         process=$(echo | ps aux | grep "\bDEPNotify\.app")
         sleep 2
@@ -604,19 +604,22 @@ if [[ ! -f $DEP_N_GATE_DONE ]]; then
         sleep 1
         FINDER_PROCESS=$(pgrep -l "Finder")
     done
-    # add gate file here before we remove the user potentially running the script
+
+    # add gate file here, user interaction complete
     touch $DEP_N_GATE_DONE
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # END Post login active session workflow                                       ~
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 fi
+
 # final steps to check
 # this will initially fail at the end of the script, if we remove the welcome user
-# the launchdaemon will be running as user null. However on next run, the script
+# the LaunchDaemon will be running as user null. However on next run, the script
 # will run as root and should have access to remove the launch daemon and remove
-# this script. The launchdaemon with status 127 will remain on the system until
-# reboot, it will be not be called again after reboot.
+# this script. The LaunchDaemon process with status 127 will remain on the system 
+# until reboot, it will be not be called again after reboot.
 if [[ -f $DEP_N_GATE_DONE ]]; then
+    # Delete enrollment users
     if [[ $DELETE_ENROLLMENT_USERS == true ]]; then
         # wait until welcome user is logged out
         echo "$(date "+%Y-%m-%dT%H:%M:%S"): Testing if ${ENROLLMENT_USER} user is logged out" >>"$DEP_N_DEBUG"
@@ -643,10 +646,9 @@ if [[ -f $DEP_N_GATE_DONE ]]; then
         fi
         
     fi
-    # ACTIVE_USER=$(/usr/bin/python -c 'from SystemConfiguration import SCDynamicStoreCopyConsoleUser; import sys; username = (SCDynamicStoreCopyConsoleUser(None, None, None) or [None])[0]; username = [username,""][username in [u"loginwindow", None, u""]]; sys.stdout.write(username + "\n");')
-    # echo "$(date "+%Y-%m-%dT%H:%M:%S"): User: $ACTIVE_USER is Unloading LaunchDaemon" >>"$DEP_N_DEBUG"
-    # launchctl unload /Library/LaunchDaemons/com.jumpcloud.prestage.plist # this step is taken care of by deleting the daemon in the next step
+    # Clean up steps
     echo "$(date "+%Y-%m-%dT%H:%M:%S"): Status: Removing LaunchDaemon" >>"$DEP_N_DEBUG"
+    # Remove the LaunchDaemon file
     rm -rf "/Library/LaunchDaemons/${daemon}"
     # Clean up receipts
     rm /var/tmp/com.jumpcloud*
