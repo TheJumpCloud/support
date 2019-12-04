@@ -8,9 +8,9 @@ December 3, 2019
 
 #### RELEASE NOTES
 
-Slight change to the logic at the end of the script for deleting the enrollment and decrypt users. Switch to using sysadminctl instead of dscl to delete enrollment and decrypt users. The sysadminctl command was introduced in 10.13 macOS High Sierra. Thus, High Sierra is the minimum required version of macOS required to run this workflow.
+Slight change to the logic at the end of the script for deleting the enrollment and decrypt users. Switch to using `sysadminctl` instead of `dscl` commands to delete enrollment and decrypt users. The sysadminctl command was introduced in 10.13 macOS High Sierra. Thus, High Sierra is the minimum required version of macOS required to run this workflow.
 
-The user deletion step now occurs in the last stage. Deletion should only occur when either a different user other than the enrollment user is logged in or at the login window. This solves the potential issue where remnant files of the enrollment user and decrypt user account remain after deletion. Running the sysadminctl command to delete users absolves the need to run rm -rf /User/EnrollmentUser to clean up the user files.
+The user deletion step now occurs in the last stage. Deletion should only occur when either a different user other than the enrollment user is logged in or at the login window. This solves the potential issue where remnant files of the enrollment user and decrypt user account remain after deletion. Running the `sysadminctl` command to delete users absolves the need to run `rm -rf /User/EnrollmentUser` to clean up the user files.
 
 ## 2.0
 
