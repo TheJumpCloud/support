@@ -146,6 +146,9 @@ DEP_N_GATE_DONE="/var/tmp/com.jumpcloud.gate.done"
 #*******************************************************************************
 # First condition - is JC installed
 if [[ ! -f $DEP_N_GATE_INSTALLJC ]]; then
+    # Caffeinate this script
+    caffeinate -d -i -m -u &
+    caffeinatePID=$!
 
     # Install DEPNotify
     curl --silent --output /tmp/DEPNotify-1.1.5.pkg "https://s3.amazonaws.com/nomadbetas/DEPNotify-1.1.5.pkg" >/dev/null
@@ -255,11 +258,16 @@ EOF
     echo "Status: JumpCloud agent installed!" >>"$DEP_N_LOG"
 
     # JumpCloud installed - add gate file
+    kill $caffeinatePID
     touch $DEP_N_GATE_INSTALLJC
 fi
 # Check if the system has yet to be added to JumpCloud
 if [[ ! -f $DEP_N_GATE_SYSADD ]]; then
-    Sleep 1
+    # Caffeinate this script
+    caffeinate -d -i -m -u &
+    caffeinatePID=$!
+
+    sleep 1
 
     echo "Status: Pulling configuration settings from JumpCloud" >>"$DEP_N_LOG"
 
@@ -377,12 +385,16 @@ if [[ ! -f $DEP_N_GATE_SYSADD ]]; then
     done
 
     # Set the receipt for the system add gate. The system was added to JumpCloud at this stage
+    kill $caffeinatePID
     touch $DEP_N_GATE_SYSADD
     echo "System added to JumpCloud Enrollment Group" >>"$DEP_N_LOG"
 fi
 
 # User interaction steps - check if user has completed these steps.
 if [[ ! -f $DEP_N_GATE_UI ]]; then
+    # Caffeinate this script
+    caffeinate -d -i -m -u &
+    caffeinatePID=$!
     # reboot check
     FINDER_PROCESS=$(pgrep -l "Finder")
     until [ "$FINDER_PROCESS" != "" ]; do
@@ -452,10 +464,14 @@ if [[ ! -f $DEP_N_GATE_UI ]]; then
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     # user interaction complete - add gate file
+    kill $caffeinatePID
     touch $DEP_N_GATE_UI
 fi
 # Final steps to complete the install
 if [[ ! -f $DEP_N_GATE_DONE ]]; then
+    # Caffeinate this script
+    caffeinate -d -i -m -u &
+    caffeinatePID=$!
     ## Get the JumpCloud SystemID
     conf="$(cat /opt/jc/jcagent.conf)"
     regex='\"systemKey\":\"[a-zA-Z0-9]{24}\"'
@@ -606,6 +622,7 @@ if [[ ! -f $DEP_N_GATE_DONE ]]; then
     done
 
     # add gate file here, user interaction complete
+    kill $caffeinatePID
     touch $DEP_N_GATE_DONE
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # END Post login active session workflow                                       ~
