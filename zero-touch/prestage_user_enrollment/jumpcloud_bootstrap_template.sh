@@ -2,7 +2,7 @@
 
 #*******************************************************************************
 #
-#       Version 2.0 | See the CHANGELOG.md for version information
+#       Version 2.1 | See the CHANGELOG.md for version information
 #
 #       See the ReadMe file for detailed configuration steps.
 #
@@ -146,6 +146,9 @@ DEP_N_GATE_DONE="/var/tmp/com.jumpcloud.gate.done"
 #*******************************************************************************
 # First condition - is JC installed
 if [[ ! -f $DEP_N_GATE_INSTALLJC ]]; then
+    # Caffeinate this script
+    caffeinate -d -i -m -u &
+    caffeinatePID=$!
 
     # Install DEPNotify
     curl --silent --output /tmp/DEPNotify-1.1.5.pkg "https://s3.amazonaws.com/nomadbetas/DEPNotify-1.1.5.pkg" >/dev/null
@@ -255,11 +258,16 @@ EOF
     echo "Status: JumpCloud agent installed!" >>"$DEP_N_LOG"
 
     # JumpCloud installed - add gate file
+    kill $caffeinatePID
     touch $DEP_N_GATE_INSTALLJC
 fi
 # Check if the system has yet to be added to JumpCloud
 if [[ ! -f $DEP_N_GATE_SYSADD ]]; then
-    Sleep 1
+    # Caffeinate this script
+    caffeinate -d -i -m -u &
+    caffeinatePID=$!
+
+    sleep 1
 
     echo "Status: Pulling configuration settings from JumpCloud" >>"$DEP_N_LOG"
 
@@ -377,12 +385,16 @@ if [[ ! -f $DEP_N_GATE_SYSADD ]]; then
     done
 
     # Set the receipt for the system add gate. The system was added to JumpCloud at this stage
+    kill $caffeinatePID
     touch $DEP_N_GATE_SYSADD
     echo "System added to JumpCloud Enrollment Group" >>"$DEP_N_LOG"
 fi
 
 # User interaction steps - check if user has completed these steps.
 if [[ ! -f $DEP_N_GATE_UI ]]; then
+    # Caffeinate this script
+    caffeinate -d -i -m -u &
+    caffeinatePID=$!
     # reboot check
     FINDER_PROCESS=$(pgrep -l "Finder")
     until [ "$FINDER_PROCESS" != "" ]; do
@@ -395,7 +407,7 @@ if [[ ! -f $DEP_N_GATE_UI ]]; then
     process=$(echo | ps aux | grep "\bDEPNotify\.app")
     if [[ -z $process ]]; then
         ACTIVE_USER=$(/usr/bin/python -c 'from SystemConfiguration import SCDynamicStoreCopyConsoleUser; import sys; username = (SCDynamicStoreCopyConsoleUser(None, None, None) or [None])[0]; username = [username,""][username in [u"loginwindow", None, u""]]; sys.stdout.write(username + "\n");')
-        echo "$(date "+%Y-%m-%dT%H:%M:%S"): Expected DEPNotify.app to be in process lis, process not found. Launching DEPNotify as $ACTIVE_USER" >>"$DEP_N_DEBUG"
+        echo "$(date "+%Y-%m-%dT%H:%M:%S"): Expected DEPNotify.app to be in process list, process not found. Launching DEPNotify as $ACTIVE_USER" >>"$DEP_N_DEBUG"
         sudo -u "$ACTIVE_USER" open -a "$DEP_N_APP" --args -path "$DEP_N_LOG" -fullScreen
         process=$(echo | ps aux | grep "\bDEPNotify\.app")
         sleep 2
@@ -452,10 +464,14 @@ if [[ ! -f $DEP_N_GATE_UI ]]; then
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     # user interaction complete - add gate file
+    kill $caffeinatePID
     touch $DEP_N_GATE_UI
 fi
 # Final steps to complete the install
 if [[ ! -f $DEP_N_GATE_DONE ]]; then
+    # Caffeinate this script
+    caffeinate -d -i -m -u &
+    caffeinatePID=$!
     ## Get the JumpCloud SystemID
     conf="$(cat /opt/jc/jcagent.conf)"
     regex='\"systemKey\":\"[a-zA-Z0-9]{24}\"'
@@ -467,9 +483,9 @@ if [[ ! -f $DEP_N_GATE_DONE ]]; then
     regex='[a-zA-Z0-9]{24}'
     if [[ $systemKey =~ $regex ]]; then
         systemID="${BASH_REMATCH[@]}"
-        echo "$(date "+%Y-%m-%dT%H:%M:%S") JumpCloud systemID found SystemID: "$systemID >>"$DEP_N_DEBUG"
+        echo "$(date "+%Y-%m-%dT%H:%M:%S"): JumpCloud systemID found SystemID: "$systemID >>"$DEP_N_DEBUG"
     else
-        echo "$(date "+%Y-%m-%dT%H:%M:%S") No systemID found" >>"$DEP_N_DEBUG"
+        echo "$(date "+%Y-%m-%dT%H:%M:%S"): No systemID found" >>"$DEP_N_DEBUG"
         exit 1
     fi
 
@@ -505,9 +521,9 @@ if [[ ! -f $DEP_N_GATE_DONE ]]; then
 
     if [[ $userBindCheck =~ $regex ]]; then
         userID="${BASH_REMATCH[@]}"
-        echo "$(date "+%Y-%m-%dT%H:%M:%S") JumpCloud user "$loggedInUser "bound to systemID: "$systemID >>"$DEP_N_DEBUG"
+        echo "$(date "+%Y-%m-%dT%H:%M:%S"): JumpCloud user "$loggedInUser "bound to systemID: "$systemID >>"$DEP_N_DEBUG"
     else
-        echo "$(date "+%Y-%m-%dT%H:%M:%S") error JumpCloud user not bound to system" >>"$DEP_N_DEBUG"
+        echo "$(date "+%Y-%m-%dT%H:%M:%S"): error JumpCloud user not bound to system" >>"$DEP_N_DEBUG"
         exit 1
     fi
 
@@ -529,15 +545,15 @@ if [[ ! -f $DEP_N_GATE_DONE ]]; then
         accountTakeOverCheck=$(echo ${updateLog} | grep "User updates complete")
         logoutTimeoutCounter=$((${logoutTimeoutCounter} + 1))
         if [[ ${logoutTimeoutCounter} -eq 10 ]]; then
-            echo "$(date "+%Y-%m-%dT%H:%M:%S") Error during JumpCloud agent local account takeover" >>"$DEP_N_DEBUG"
-            echo "$(date "+%Y-%m-%dT%H:%M:%S") JCAgent.log: ${updateLog}" >>"$DEP_N_DEBUG"
+            echo "$(date "+%Y-%m-%dT%H:%M:%S"): Error during JumpCloud agent local account takeover" >>"$DEP_N_DEBUG"
+            echo "$(date "+%Y-%m-%dT%H:%M:%S"): JCAgent.log: ${updateLog}" >>"$DEP_N_DEBUG"
             exit 1
         fi
     done
 
     echo "Status: System Account Configured" >>"$DEP_N_LOG"
 
-    echo "$(date "+%Y-%m-%dT%H:%M:%S") JumpCloud agent local account takeover complete" >>"$DEP_N_DEBUG"
+    echo "$(date "+%Y-%m-%dT%H:%M:%S"): JumpCloud agent local account takeover complete" >>"$DEP_N_DEBUG"
 
     # Remove from DEP_ENROLLMENT_GROUP and add to DEP_POST_ENROLLMENT_GROUP
 
@@ -549,7 +565,7 @@ if [[ ! -f $DEP_N_GATE_DONE ]]; then
         -d '{"op": "remove","type": "system","id": "'${systemID}'"}' \
         "https://console.jumpcloud.com/api/v2/systemgroups/${DEP_ENROLLMENT_GROUP_ID}/members"
 
-    echo "$(date "+%Y-%m-%dT%H:%M:%S") Removed from DEP_ENROLLMENT_GROUP_ID: $DEP_ENROLLMENT_GROUP_ID" >>"$DEP_N_DEBUG"
+    echo "$(date "+%Y-%m-%dT%H:%M:%S"): Removed from DEP_ENROLLMENT_GROUP_ID: $DEP_ENROLLMENT_GROUP_ID" >>"$DEP_N_DEBUG"
 
     curl \
         -X 'POST' \
@@ -559,7 +575,7 @@ if [[ ! -f $DEP_N_GATE_DONE ]]; then
         -d '{"op": "add","type": "system","id": "'${systemID}'"}' \
         "https://console.jumpcloud.com/api/v2/systemgroups/${DEP_POST_ENROLLMENT_GROUP_ID}/members"
 
-    echo "$(date "+%Y-%m-%dT%H:%M:%S") Added to from DEP_POST_ENROLLMENT_GROUP_ID: $DEP_POST_ENROLLMENT_GROUP_ID" >>"$DEP_N_DEBUG"
+    echo "$(date "+%Y-%m-%dT%H:%M:%S"): Added to from DEP_POST_ENROLLMENT_GROUP_ID: $DEP_POST_ENROLLMENT_GROUP_ID" >>"$DEP_N_DEBUG"
 
     echo "Status: Applying Finishing Touches" >>"$DEP_N_LOG"
 
@@ -583,49 +599,73 @@ if [[ ! -f $DEP_N_GATE_DONE ]]; then
         groupTakeOverCheck=$(echo ${groupSwitchCheck} | grep "Processing user updates")
         groupTimeoutCounter=$((${groupTimeoutCounter} + 1))
         if [[ ${groupTimeoutCounter} -eq 90 ]]; then
-            echo "$(date "+%Y-%m-%dT%H:%M:%S") Error during JumpCloud agent local account takeover" >>"$DEP_N_DEBUG"
-            echo "$(date "+%Y-%m-%dT%H:%M:%S") JCAgent.log: ${groupSwitchCheck}" >>"$DEP_N_DEBUG"
+            echo "$(date "+%Y-%m-%dT%H:%M:%S"): Error during JumpCloud agent local account takeover" >>"$DEP_N_DEBUG"
+            echo "$(date "+%Y-%m-%dT%H:%M:%S"): JCAgent.log: ${groupSwitchCheck}" >>"$DEP_N_DEBUG"
             exit 1
         fi
-        echo "$(date "+%Y-%m-%dT%H:%M:%S") Waiting for group switch :${groupTimeoutCounter} of 90" >>"$DEP_N_DEBUG"
+        echo "$(date "+%Y-%m-%dT%H:%M:%S"): Waiting for group switch :${groupTimeoutCounter} of 90" >>"$DEP_N_DEBUG"
     done
 
     FINISH_TITLE="All Done"
 
-    # add gate file here before we remove the user potentially running the script
-    touch $DEP_N_GATE_DONE
-
-    if [[ $DELETE_ENROLLMENT_USERS == true ]]; then
-        # delete the first logged in user
-        Sleep 10
-        echo "$(date "+%Y-%m-%dT%H:%M:%S") Deleting the first enrollment user: $ENROLLMENT_USER" >>"$DEP_N_DEBUG"
-        dscl . -delete /Users/$ENROLLMENT_USER
-        rm -rf /Users/$ENROLLMENT_USER
-        echo "$(date "+%Y-%m-%dT%H:%M:%S") Deleting the decrypt user: $DECRYPT_USER" >>"$DEP_N_DEBUG"
-        dscl . -delete /Users/$DECRYPT_USER
-        rm -rf /Users/$DECRYPT_USER
-    fi
-
     echo "Command: MainTitle: $FINISH_TITLE" >>"$DEP_N_LOG"
     echo "Status: Enrollment Complete" >>"$DEP_N_LOG"
-    echo "$(date "+%Y-%m-%dT%H:%M:%S") Status: Enrollment Complete" >>"$DEP_N_DEBUG"
+    echo "$(date "+%Y-%m-%dT%H:%M:%S"): Status: Enrollment Complete" >>"$DEP_N_DEBUG"
 
+    ACTIVE_USER=$(/usr/bin/python -c 'from SystemConfiguration import SCDynamicStoreCopyConsoleUser; import sys; username = (SCDynamicStoreCopyConsoleUser(None, None, None) or [None])[0]; username = [username,""][username in [u"loginwindow", None, u""]]; sys.stdout.write(username + "\n");')
+    echo "$(date "+%Y-%m-%dT%H:%M:%S"): Waiting for ${ACTIVE_USER} user to logout... " >>"$DEP_N_DEBUG"
+    FINDER_PROCESS=$(pgrep -l "Finder")
+    while [ "$FINDER_PROCESS" != "" ]; do
+        echo "$(date "+%Y-%m-%dT%H:%M:%S"): Finder process found. Waiting until session end" >>"$DEP_N_DEBUG"
+        sleep 1
+        FINDER_PROCESS=$(pgrep -l "Finder")
+    done
+
+    # add gate file here, user interaction complete
+    kill $caffeinatePID
+    touch $DEP_N_GATE_DONE
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # END Post login active session workflow                                       ~
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 fi
+
 # final steps to check
 # this will initially fail at the end of the script, if we remove the welcome user
-# the launchdaemon will be running as user null. However on next run, the script
+# the LaunchDaemon will be running as user null. However on next run, the script
 # will run as root and should have access to remove the launch daemon and remove
-# this script. The launchdaemon with status 127 will remain on the system until
-# reboot, it will be not be called again after reboot.
+# this script. The LaunchDaemon process with status 127 will remain on the system 
+# until reboot, it will be not be called again after reboot.
 if [[ -f $DEP_N_GATE_DONE ]]; then
-    sleep 10
-    # ACTIVE_USER=$(/usr/bin/python -c 'from SystemConfiguration import SCDynamicStoreCopyConsoleUser; import sys; username = (SCDynamicStoreCopyConsoleUser(None, None, None) or [None])[0]; username = [username,""][username in [u"loginwindow", None, u""]]; sys.stdout.write(username + "\n");')
-    # echo "$(date "+%Y-%m-%dT%H:%M:%S") User: $ACTIVE_USER is Unloading LaunchDaemon" >>"$DEP_N_DEBUG"
-    # launchctl unload /Library/LaunchDaemons/com.jumpcloud.prestage.plist # this step is taken care of by deleting the daemon in the next step
-    echo "$(date "+%Y-%m-%dT%H:%M:%S") Status: Removing LaunchDaemon" >>"$DEP_N_DEBUG"
+    # Delete enrollment users
+    if [[ $DELETE_ENROLLMENT_USERS == true ]]; then
+        # wait until welcome user is logged out
+        echo "$(date "+%Y-%m-%dT%H:%M:%S"): Testing if ${ENROLLMENT_USER} user is logged out" >>"$DEP_N_DEBUG"
+        ACTIVE_USER=$(/usr/bin/python -c 'from SystemConfiguration import SCDynamicStoreCopyConsoleUser; import sys; username = (SCDynamicStoreCopyConsoleUser(None, None, None) or [None])[0]; username = [username,""][username in [u"loginwindow", None, u""]]; sys.stdout.write(username + "\n");')
+        if [[ "${ACTIVE_USER}" == "${ENROLLMENT_USER}" ]]; then
+            echo "$(date "+%Y-%m-%dT%H:%M:%S"): Logged in user is: ${ACTIVE_USER}, waiting until logout to continue" >> "$DEP_N_DEBUG"
+            FINDER_PROCESS=$(pgrep -l "Finder")
+            echo "$(date "+%Y-%m-%dT%H:%M:%S"): $FINDER_PROCESS" >>"$DEP_N_DEBUG"
+            while [ "$FINDER_PROCESS" != "" ]; do
+                echo "$(date "+%Y-%m-%dT%H:%M:%S"): Finder process found. Waiting until session end" >>"$DEP_N_DEBUG"
+                sleep 1
+                FINDER_PROCESS=$(pgrep -l "Finder")
+            done
+        fi
+        # given the case that the enrollment user was logged in previously, recheck the active user        
+        ACTIVE_USER=$(/usr/bin/python -c 'from SystemConfiguration import SCDynamicStoreCopyConsoleUser; import sys; username = (SCDynamicStoreCopyConsoleUser(None, None, None) or [None])[0]; username = [username,""][username in [u"loginwindow", None, u""]]; sys.stdout.write(username + "\n");')
+        echo "$(date "+%Y-%m-%dT%H:%M:%S"): Logged in user is: ${ACTIVE_USER}" >> "$DEP_N_DEBUG"
+        if [[ "${ACTIVE_USER}" == "" || "${ACTIVE_USER}" != "${ENROLLMENT_USER}" ]]; then
+            # delete the enrollment and decrypt user
+            echo "$(date "+%Y-%m-%dT%H:%M:%S"): Deleting the first enrollment user: $ENROLLMENT_USER" >>"$DEP_N_DEBUG"
+            sysadminctl -deleteUser $ENROLLMENT_USER >>"$DEP_N_DEBUG" 2>&1
+            echo "$(date "+%Y-%m-%dT%H:%M:%S"): Deleting the decrypt user: $DECRYPT_USER" >>"$DEP_N_DEBUG"
+            sysadminctl -deleteUser $DECRYPT_USER >>"$DEP_N_DEBUG" 2>&1
+        fi
+        
+    fi
+    # Clean up steps
+    echo "$(date "+%Y-%m-%dT%H:%M:%S"): Status: Removing LaunchDaemon" >>"$DEP_N_DEBUG"
+    # Remove the LaunchDaemon file
     rm -rf "/Library/LaunchDaemons/${daemon}"
     # Clean up receipts
     rm /var/tmp/com.jumpcloud*

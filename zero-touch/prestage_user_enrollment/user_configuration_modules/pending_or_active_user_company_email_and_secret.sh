@@ -150,8 +150,12 @@ while [ "$VALID_PASSWORD" == "False" ]; do
 
     VALID_PASSWORD='True'
 
-    password=$(launchctl asuser "$uid" /usr/bin/osascript -e 'Tell application "System Events" to display dialog "PASSWORD COMPLEXITY REQUIREMENTS:\n--------------------------------------------------------------\n * At least 8 characters long \n * Have at least 1 lowercase character \n * Have at least 1 uppercase character \n * Have at least 1 number \n * Have at least 1 special character'"$COMPLEXITY"'" with title "CREATE A SECURE PASSWORD"  buttons {"Continue"} default button "Continue" with hidden answer default answer ""' -e 'text returned of result' 2>/dev/null)
-
+    password=$(launchctl asuser "$uid" /usr/bin/osascript -e '
+        Tell application "System Events" 
+            with timeout of 1800 seconds 
+                display dialog "PASSWORD COMPLEXITY REQUIREMENTS:\n--------------------------------------------------------------\n * At least 8 characters long \n * Have at least 1 lowercase character \n * Have at least 1 uppercase character \n * Have at least 1 number \n * Have at least 1 special character'"$COMPLEXITY"'" with title "CREATE A SECURE PASSWORD"  buttons {"Continue"} default button "Continue" with hidden answer default answer ""' -e 'text returned of result 
+            end timeout
+        end tell' 2>/dev/null)
     # Length check
     lengthCheck='.{'$minlength',100}'
     if [[ $password =~ $lengthCheck ]]; then
