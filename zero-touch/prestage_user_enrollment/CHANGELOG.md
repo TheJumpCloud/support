@@ -12,6 +12,10 @@ Slight change to the logic at the end of the script for deleting the enrollment 
 
 The user deletion step now occurs in the last stage. Deletion should only occur when either a different user other than the enrollment user is logged in or at the login window. This solves the potential issue where remnant files of the enrollment user and decrypt user account remain after deletion. Running the `sysadminctl` command to delete users absolves the need to run `rm -rf /User/EnrollmentUser` to clean up the user files.
 
+The bootstrap script is now caffeinated to prevent systems from falling asleep during the enrollment process. `caffeinate` code blocks the first three gates prevent the system from sleeping. That caffeinate process is killed at the end of each code block. the caffeinate process is not called during the last code block where the launch daemon is deleted.
+
+The user module password prompt should now timeout after thirty minutes rather than the default two minutes. In previous versions of the bootstrap script, the dialogue box would open a new password prompt every two mins if the enrollment user did not enter their password. This is generally avoidable since the enrollment user must click continue before proceeding to the password prompt. If an enrollment user walked away at this stage, the script should wait thirty minutes before timing out and checking for a password.
+
 ## 2.0
 
 ### RELEASE DATE
