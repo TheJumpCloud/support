@@ -6,14 +6,14 @@
 #      IP address with the current IP address defined in a JumpCloud radius
 #      server. It is recommended to define radiusId manually, but if not, it
 #      will query the first returned record from the API and check if it needs
-#      to update it. If there's only 1 record, this is fine. 
+#      to update it. If there's only 1 record, this is fine.
 #
-#      *** If there are multiple RADIUS Ids, this is potentially destructive.  
+#      *** If there are multiple RADIUS Ids, this is potentially destructive.
 #      Know which record is being updated.***
 #
-#      REQUIRED: wget, curl, jq, JumpCloud API Key
+#      REQUIRED: curl, jq, JumpCloud API Key
 #      USAGE: This can be set to run as a cron, e.g., every hour at minute 0:
-#      
+#
 #      $ crontab -e
 #      0 * * * * /opt/dhcpRadiusUpdate.sh > /var/log/radupdate.log 2>&1
 #
@@ -23,7 +23,7 @@
 
 apiKey=
 radiusId=
-newIp=$(wget http://ipecho.net/plain -O - -q)
+newIp=$(curl -q http://ipecho.net/plain)
 
 # If newIp can't be defined, bail
 
