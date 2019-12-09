@@ -139,7 +139,6 @@ Function DeleteAgent()
     }
     catch
     {
-        Write-Output "Could not remove remaining jumpcloud-agent.exe binary"
     }
 }
 
@@ -275,7 +274,7 @@ Function RemoveEventLoggerKey()
     }
     catch
     {
-        Write-Output "Could not remove event logger key from registry"
+        Write-Output "JumpCloud Agent Event Logger Key Not Present"
     }
 }
 
@@ -344,16 +343,7 @@ Function CleanUpAgentLeftovers()
         # where the service is "marked for deletion" (requires reboot before further
         # modifications can be done on this service).
         RemoveAgentService
-        RemoveEventLoggerKey
 
-        if (AgentIsInServiceManager)
-        {
-            Write-Output "Unable to remove agent service, this system needs to be rebooted."
-            Write-Output "Then you can re-run this script to re-install the agent."
-            exit 1
-        }
-
-        Write-Output "Removed agent service entry."
     }
 
     #
@@ -364,7 +354,6 @@ Function CleanUpAgentLeftovers()
         # Yes, the installer was unsuccessful in removing it.
         DeleteAgent
         
-        Write-Output "Removed remaining agent binary file."
     }
 }
 
