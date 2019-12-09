@@ -89,15 +89,15 @@ daemon="com.jumpcloud.prestage.plist"
 ### Script Logic (#TODO: change this text)
 ### Choose one of the variables below ###  
 ### Company Email (default)
-self_ID="CE" 
+# self_ID="CE" 
 ### lastname,
-# self_ID="LN" 
+self_ID="LN" 
 ### personal email
 # self_ID="PE"
 
 ### Include secret id (employee ID) ###
 ### Default true
-self_secret=true
+self_secret=false
 
 ### Password Settings ###
 ### Should active users be forced to update their passwords? ###
@@ -217,8 +217,17 @@ if [[ ! -f $DEP_N_GATE_INSTALLJC ]]; then
     defaults write "$DEP_N_CONFIG_PLIST" registrationMainTitle "Activate Your Account"
     defaults write "$DEP_N_CONFIG_PLIST" registrationButtonLabel "Activate Your Account"
 
+    if [[ $self_ID == "CE" ]]; then
     defaults write "$DEP_N_CONFIG_PLIST" textField1Label "Enter Your Company Email Address"
     defaults write "$DEP_N_CONFIG_PLIST" textField1Placeholder "enter email in all lowercase characters"
+    elif [[ $self_ID == "PE" ]]; then
+        defaults write "$DEP_N_CONFIG_PLIST" textField1Label "Enter Your Personal Email Address"
+        defaults write "$DEP_N_CONFIG_PLIST" textField1Placeholder "enter email in all lowercase characters"
+    elif [[ $self_ID == "LN" ]]; then
+        defaults write "$DEP_N_CONFIG_PLIST" textField1Label "Enter Your Last Name"
+        defaults write "$DEP_N_CONFIG_PLIST" textField1Placeholder "enter last name in all lowercase characters"
+    fi
+    
 
     if [[ $self_secret == true ]]; then
         defaults write "$DEP_N_CONFIG_PLIST" textField2Label "Enter Your Secret Word"
@@ -489,18 +498,19 @@ if [[ ! -f $DEP_N_GATE_UI ]]; then
     ################################################################################
     #<--INSERT-CONFIGURATION for "User Configuration Settings" below this line-------
     #TODO: make this nice and modular
-    #TODO: assign the ${companyemail}
+
+    #FIXME: try again note when the first search failed. 
 
     #TODO: logic block for email, description or last name
     ### variable assignments for completing the user module
     # userSearch token
     # ust=""
     if [[ $self_ID == "CE" ]]; then
-        ust="email"
+        id_type='"email"'
     elif [[ $self_ID == "PE" ]]; then
-        ust="description"
+        id_type='"description"'
     elif [[ $self_ID == "LN" ]]; then
-        ust="lastname"
+        id_type='"lastname"'
     fi
 
     echo "Command: ContinueButtonRegister: ACTIVATE YOUR ACCOUNT" >>"$DEP_N_LOG"
@@ -511,22 +521,35 @@ if [[ ! -f $DEP_N_GATE_UI ]]; then
         echo "$(date "+%Y-%m-%dT%H:%M:%S"): Waiting for user to fill in information." >>"$DEP_N_DEBUG"
         sleep 1
     done
-
+    echo "$(date "+%Y-%m-%dT%H:%M:%S"): User Selection is: $self_ID" >>"$DEP_N_DEBUG"
+    if [[ $self_ID == "CE" ]]; then
     CompanyEmail=$(defaults read $DEP_N_USER_INPUT_PLIST "Enter Your Company Email Address")
-    Secret=$(defaults read $DEP_N_USER_INPUT_PLIST "Enter Your Secret Word")
-
-    #TODO: secret vs not
-    # "activated":false ---- for no secret
-    # "employeeIdentifier":"'${Secret}'" ---- for secret
+    elif [[ $self_ID == "PE" ]]; then
+        CompanyEmail=$(defaults read $DEP_N_USER_INPUT_PLIST "Enter Your Personal Email Address")
+    elif [[ $self_ID == "LN" ]]; then
+        CompanyEmail=$(defaults read $DEP_N_USER_INPUT_PLIST "Enter Your Last Name")
+    fi
     if [[ $self_secret == true ]]; then
-        sec="'employeeIdentifier':""${Secret}"""
-    else
-        sec="'"activated:false"'"
+    Secret=$(defaults read $DEP_N_USER_INPUT_PLIST "Enter Your Secret Word")
     fi
 
+    ## secret sauce
+    if [[ $self_secret == true ]]; then
+        injection='"employeeIdentifier":"'${Secret}'",'
+    else
+        injection=""        
+    fi
+
+    # pending user search default to false
+    sec='"activated":false'
+    search_active=false
+    search_step=0
+    
+    # default value for account located
     LOCATED_ACCOUNT='False'
 
     while [ "$LOCATED_ACCOUNT" == "False" ]; do
+        echo "$(date "+%Y-%m-%dT%H:%M:%S"): User: $CompanyEmail entered information." >>"$DEP_N_DEBUG"
 
         userSearch=$(
             curl -s \
@@ -534,40 +557,62 @@ if [[ ! -f $DEP_N_GATE_UI ]]; then
                 -H 'Content-Type: application/json' \
                 -H 'Accept: application/json' \
                 -H "x-api-key: ${APIKEY}" \
-                -d '{"filter":[{'$sec',"'${ust}'":"'${CompanyEmail}'"}],"fields":["username"]}' \
+                -d '{"filter":[{'$sec','$injection''${id_type}':"'${CompanyEmail}'"}],"fields":["username"]}' \
                 "https://console.jumpcloud.com/api/search/systemusers"
         )
-
+        #debug
+        echo "$(date "+%Y-%m-%dT%H:%M:%S") DEBUG USER SEARCH $userSearch" >>"$DEP_N_DEBUG"
         regex='totalCount"*.*,"results"'
         if [[ $userSearch =~ $regex ]]; then
             userSearchRaw="${BASH_REMATCH[@]}"
         fi
-
+        #debug
+        echo "$(date "+%Y-%m-%dT%H:%M:%S") DEBUG USER SEARCH $userSearchRaw" >>"$DEP_N_DEBUG"
         totalCount=$(echo $userSearchRaw | cut -d ":" -f2 | cut -d "," -f1)
 
         sleep 1
 
         if [ "$totalCount" == "1" ]; then
+            search_step=$((search_step + 1))
             echo "Status: Click SET PASSWORD" >>"$DEP_N_LOG"
             echo "Command: ContinueButton: SET PASSWORD" >>"$DEP_N_LOG"
             LOCATED_ACCOUNT='True'
+            if [[ search_step -gt 1 && $search_active == true ]]; then
+                pass_path=not_required
+            else 
+                pass_path=update_required
+            fi
         else
-
+            if [[ $search_active == false ]]; then
+                search_step=$((search_step + 1))
+                echo "$(date "+%Y-%m-%dT%H:%M:%S") no pending users found. Searching for active users. Search step: $search_step" >>"$DEP_N_DEBUG"
+                sec='"activated":true'
+                search_active=true
+            fi
+        fi
+        if [[ $search_active == true && $search_step -ge 1 ]]; then 
             echo "Status: Account Not Found" >>"$DEP_N_LOG"
-
+            search_step=$((search_step + 1))
             rm $DEP_N_REGISTER_DONE >/dev/null 2>&1
-
+            echo "$(date "+%Y-%m-%dT%H:%M:%S") Try again search step: $search_step" >>"$DEP_N_DEBUG"
             echo "Command: ContinueButtonRegister: Try Again" >>"$DEP_N_LOG"
 
             sleep 1
-
             while [ ! -f "$DEP_N_REGISTER_DONE" ]; do
                 echo "$(date "+%Y-%m-%dT%H:%M:%S"): Waiting for user to fill in information." >>"$DEP_N_DEBUG"
                 sleep 1
             done
-
+            echo "$(date "+%Y-%m-%dT%H:%M:%S"): User Selection is: $self_ID" >>"$DEP_N_DEBUG"
+            if [[ $self_ID == "CE" ]]; then
             CompanyEmail=$(defaults read $DEP_N_USER_INPUT_PLIST "Enter Your Company Email Address")
+            elif [[ $self_ID == "PE" ]]; then
+                CompanyEmail=$(defaults read $DEP_N_USER_INPUT_PLIST "Enter Your Personal Email Address")
+            elif [[ $self_ID == "LN" ]]; then
+                CompanyEmail=$(defaults read $DEP_N_USER_INPUT_PLIST "Enter Your Last Name")
+            fi
+            if [[ $self_secret ]]; then
             Secret=$(defaults read $DEP_N_USER_INPUT_PLIST "Enter Your Secret Word")
+        fi
         fi
 
     done
@@ -575,6 +620,10 @@ if [[ ! -f $DEP_N_GATE_UI ]]; then
     # Capture userID
     regex='[a-zA-Z0-9]{24}'
     if [[ $userSearch =~ $regex ]]; then
+        # determine cases
+        if [[ $self_passwd == true ]]; then
+            pass_path="update_required"
+        fi
         userID="${BASH_REMATCH[@]}"
         echo "$(date "+%Y-%m-%dT%H:%M:%S") JumpCloud userID found userID: "$userID >>"$DEP_N_DEBUG"
     else
@@ -592,6 +641,10 @@ if [[ ! -f $DEP_N_GATE_UI ]]; then
         sleep 1
     done
 
+    #### PASSWORD BLOCK ####
+    case $pass_path in
+        update_required)
+            echo "doing password stuff"
     # DEPNotify reset
     DEPNotifyReset
 
@@ -608,6 +661,7 @@ if [[ ! -f $DEP_N_GATE_UI ]]; then
     sudo -u "$ACTIVE_USER" open -a "$DEP_N_APP" --args -path "$DEP_N_LOG"
 
     Sleep 2
+
 
     VALID_PASSWORD='False'
 
@@ -691,8 +745,16 @@ if [[ ! -f $DEP_N_GATE_UI ]]; then
         echo "$(date "+%Y-%m-%dT%H:%M:%S"): Waiting for user to click CONTINUE" >>"$DEP_N_DEBUG"
         sleep 1
     done
+        ;;
+        not_required)
+            echo "not required"
+        ;;
+    esac
+    
+    #### PASSWORD BLOCK #### 
 
     # DEPnotify rest
+
     DEPNotifyReset
 
     touch "$DEP_N_LOG"
