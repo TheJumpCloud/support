@@ -262,7 +262,7 @@ Function RemoveAgentService()
         }
         catch
         {
-            Write-Output "Could not remove jumpcloud-agent service entry"
+            Write-Output "JumpCloud Agent Service Not Running"
         }
     }
 }
@@ -326,7 +326,7 @@ Function CheckForAndUninstallExistingAgent()
         # Yep, try a normal uninstall
         UninstallAgent
 
-        Write-Output "Completed agent uninstall."
+        Write-Output "Uninstalling agent"
     }
 }
 
@@ -344,14 +344,15 @@ Function CleanUpAgentLeftovers()
         # where the service is "marked for deletion" (requires reboot before further
         # modifications can be done on this service).
         RemoveAgentService
-        
+        RemoveEventLoggerKey
+
         if (AgentIsInServiceManager)
         {
             Write-Output "Unable to remove agent service, this system needs to be rebooted."
             Write-Output "Then you can re-run this script to re-install the agent."
             exit 1
         }
-        
+
         Write-Output "Removed agent service entry."
     }
 
