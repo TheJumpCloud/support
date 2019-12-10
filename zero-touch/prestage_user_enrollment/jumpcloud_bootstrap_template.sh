@@ -424,6 +424,7 @@ if [[ ! -f $DEP_N_GATE_SYSADD ]]; then
     done
 
     # Set the receipt for the system add gate. The system was added to JumpCloud at this stage
+    echo "$(date "+%Y-%m-%dT%H:%M:%S"): System added, killing caffeinate process at PID: ${caffeinatePID}" >>"$DEP_N_DEBUG"
     kill $caffeinatePID
     touch $DEP_N_GATE_SYSADD
     echo "System added to JumpCloud Enrollment Group" >>"$DEP_N_LOG"
@@ -431,9 +432,11 @@ fi
 
 # User interaction steps - check if user has completed these steps.
 if [[ ! -f $DEP_N_GATE_UI ]]; then
+    echo "$(date "+%Y-%m-%dT%H:%M:%S"): Begin User Interaction steps" >>"$DEP_N_DEBUG"
     # Caffeinate this script
     caffeinate -d -i -m -u &
     caffeinatePID=$!
+    echo "$(date "+%Y-%m-%dT%H:%M:%S"): User Interaction steps, starting caffeinate process at PID: ${caffeinatePID}" >>"$DEP_N_DEBUG"
     # reboot check
     FINDER_PROCESS=$(pgrep -l "Finder")
     until [ "$FINDER_PROCESS" != "" ]; do
@@ -499,7 +502,7 @@ if [[ ! -f $DEP_N_GATE_UI ]]; then
     #<--INSERT-CONFIGURATION for "User Configuration Settings" below this line-------
     #TODO: make this nice and modular
 
-    #FIXME: try again note when the first search failed. 
+    #FIXME: "try again" frame after the user is found, second search works. 
 
     #TODO: logic block for email, description or last name
     ### variable assignments for completing the user module
@@ -572,28 +575,35 @@ if [[ ! -f $DEP_N_GATE_UI ]]; then
 
         sleep 1
 
+        # switch to checking active users and increment search step int
+        #FIXME: loop back to search_active false. so we check both active and non active users.
+        if [[ $search_active == false && $search_step -eq 0 ]]; then
+            search_step=$((search_step + 1))
+            echo "$(date "+%Y-%m-%dT%H:%M:%S") no pending users found. Searching for active users. Search step: $search_step" >>"$DEP_N_DEBUG"
+            sec='"activated":true'
+            search_active=true
+        fi
+
+        # sucess criteria
         if [ "$totalCount" == "1" ]; then
             search_step=$((search_step + 1))
-            echo "Status: Click SET PASSWORD" >>"$DEP_N_LOG"
-            echo "Command: ContinueButton: SET PASSWORD" >>"$DEP_N_LOG"
             LOCATED_ACCOUNT='True'
             if [[ search_step -gt 1 && $search_active == true ]]; then
                 pass_path=not_required
+                echo "Status: Click CONTINUE" >>"$DEP_N_LOG"
+                echo "Command: ContinueButton: CONTINUE" >>"$DEP_N_LOG"
             else 
                 pass_path=update_required
-            fi
-        else
-            if [[ $search_active == false ]]; then
-                search_step=$((search_step + 1))
-                echo "$(date "+%Y-%m-%dT%H:%M:%S") no pending users found. Searching for active users. Search step: $search_step" >>"$DEP_N_DEBUG"
-                sec='"activated":true'
-                search_active=true
+                echo "Status: Click SET PASSWORD" >>"$DEP_N_LOG"
+                echo "Command: ContinueButton: SET PASSWORD" >>"$DEP_N_LOG"
             fi
         fi
-        if [[ $search_active == true && $search_step -ge 1 ]]; then 
+        if [[ $search_active == true && $search_step -ge 1 && "$totalCount" != "1" ]]; then 
             echo "Status: Account Not Found" >>"$DEP_N_LOG"
             search_step=$((search_step + 1))
             rm $DEP_N_REGISTER_DONE >/dev/null 2>&1
+            #FIXME: this needs to not show up if the user is found
+            #FIXME: remove the search for search step in this block??
             echo "$(date "+%Y-%m-%dT%H:%M:%S") Try again search step: $search_step" >>"$DEP_N_DEBUG"
             echo "Command: ContinueButtonRegister: Try Again" >>"$DEP_N_LOG"
 
@@ -633,13 +643,25 @@ if [[ ! -f $DEP_N_GATE_UI ]]; then
 
     echo "Status: JumpCloud User Account Located" >>"$DEP_N_LOG"
 
+    case $pass_path in
+        update_required)
     echo "Status: Click SET PASSWORD" >>"$DEP_N_LOG"
     echo "Command: ContinueButton: SET PASSWORD" >>"$DEP_N_LOG"
-
     while [ ! -f "$DEP_N_DONE" ]; do
         echo "$(date "+%Y-%m-%dT%H:%M:%S"): Waiting for user to click Set Password." >>"$DEP_N_DEBUG"
         sleep 1
     done
+        ;;
+        not_required)
+            echo "Status: Click CONTINUE" >>"$DEP_N_LOG"
+            echo "Command: ContinueButton: CONTINUE" >>"$DEP_N_LOG"
+            while [ ! -f "$DEP_N_DONE" ]; do
+                echo "$(date "+%Y-%m-%dT%H:%M:%S"): Waiting for user to click Continue." >>"$DEP_N_DEBUG"
+                sleep 1
+            done
+        ;;
+    esac
+
 
     #### PASSWORD BLOCK ####
     case $pass_path in
@@ -869,6 +891,7 @@ if [[ ! -f $DEP_N_GATE_DONE ]]; then
         accountTakeOverCheck=$(echo ${updateLog} | grep "User updates complete")
         logoutTimeoutCounter=$((${logoutTimeoutCounter} + 1))
         if [[ ${logoutTimeoutCounter} -eq 10 ]]; then
+            #FIXME: osquery error which occasionally occurs when this step takes too long? 
             echo "$(date "+%Y-%m-%dT%H:%M:%S"): Error during JumpCloud agent local account takeover" >>"$DEP_N_DEBUG"
             echo "$(date "+%Y-%m-%dT%H:%M:%S"): JCAgent.log: ${updateLog}" >>"$DEP_N_DEBUG"
             exit 1
