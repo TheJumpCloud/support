@@ -576,12 +576,29 @@ if [[ ! -f $DEP_N_GATE_UI ]]; then
         sleep 1
 
         # switch to checking active users and increment search step int
-        #FIXME: loop back to search_active false. so we check both active and non active users.
-        if [[ $search_active == false && $search_step -eq 0 ]]; then
+        if [[ $search_active == false && $search_step -eq 0 && "$totalCount" != "1" ]]; then
             search_step=$((search_step + 1))
             echo "$(date "+%Y-%m-%dT%H:%M:%S") no pending users found. Searching for active users. Search step: $search_step" >>"$DEP_N_DEBUG"
             sec='"activated":true'
             search_active=true
+
+            # rerun the search:
+            userSearch=$(
+                curl -s \
+                    -X 'POST' \
+                    -H 'Content-Type: application/json' \
+                    -H 'Accept: application/json' \
+                    -H "x-api-key: ${APIKEY}" \
+                    -d '{"filter":[{'$sec','$injection''${id_type}':"'${CompanyEmail}'"}],"fields":["username"]}' \
+                    "https://console.jumpcloud.com/api/search/systemusers"
+            )
+            regex='totalCount"*.*,"results"'
+            if [[ $userSearch =~ $regex ]]; then
+                userSearchRaw="${BASH_REMATCH[@]}"
+            fi
+            #debug
+            echo "$(date "+%Y-%m-%dT%H:%M:%S") DEBUG USER SEARCH $userSearchRaw" >>"$DEP_N_DEBUG"
+            totalCount=$(echo $userSearchRaw | cut -d ":" -f2 | cut -d "," -f1)
         fi
 
         # sucess criteria
@@ -598,12 +615,10 @@ if [[ ! -f $DEP_N_GATE_UI ]]; then
                 echo "Command: ContinueButton: SET PASSWORD" >>"$DEP_N_LOG"
             fi
         fi
-        if [[ $search_active == true && $search_step -ge 1 && "$totalCount" != "1" ]]; then 
+        if [[ $search_step -ge 1 && "$totalCount" != "1" ]]; then 
             echo "Status: Account Not Found" >>"$DEP_N_LOG"
-            search_step=$((search_step + 1))
+            # search_step=$((search_step + 1))
             rm $DEP_N_REGISTER_DONE >/dev/null 2>&1
-            #FIXME: this needs to not show up if the user is found
-            #FIXME: remove the search for search step in this block??
             echo "$(date "+%Y-%m-%dT%H:%M:%S") Try again search step: $search_step" >>"$DEP_N_DEBUG"
             echo "Command: ContinueButtonRegister: Try Again" >>"$DEP_N_LOG"
 
@@ -623,6 +638,11 @@ if [[ ! -f $DEP_N_GATE_UI ]]; then
             if [[ $self_secret ]]; then
             Secret=$(defaults read $DEP_N_USER_INPUT_PLIST "Enter Your Secret Word")
         fi
+            # Reset serach variables
+            search_step=$((0))
+            search_active=false
+            sec='"activated":false'
+            echo "$(date "+%Y-%m-%dT%H:%M:%S") no users found entering loop again search step: $search_step" >>"$DEP_N_DEBUG"
         fi
 
     done
@@ -815,6 +835,7 @@ if [[ ! -f $DEP_N_GATE_UI ]]; then
 fi
 # Final steps to complete the install
 if [[ ! -f $DEP_N_GATE_DONE ]]; then
+    #FIXME: potential need to recapture $userid var
     # Caffeinate this script
     caffeinate -d -i -m -u &
     caffeinatePID=$!
@@ -829,7 +850,7 @@ if [[ ! -f $DEP_N_GATE_DONE ]]; then
     regex='[a-zA-Z0-9]{24}'
     if [[ $systemKey =~ $regex ]]; then
         systemID="${BASH_REMATCH[@]}"
-        echo "$(date "+%Y-%m-%dT%H:%M:%S"): JumpCloud systemID found SystemID: "$systemID >>"$DEP_N_DEBUG"
+        echo "$(date "+%Y-%m-%dT%H:%M:%S"): JumpCloud systemID found: "$systemID >>"$DEP_N_DEBUG"
     else
         echo "$(date "+%Y-%m-%dT%H:%M:%S"): No systemID found" >>"$DEP_N_DEBUG"
         exit 1
@@ -867,9 +888,9 @@ if [[ ! -f $DEP_N_GATE_DONE ]]; then
 
     if [[ $userBindCheck =~ $regex ]]; then
         userID="${BASH_REMATCH[@]}"
-        echo "$(date "+%Y-%m-%dT%H:%M:%S"): JumpCloud user "$loggedInUser "bound to systemID: "$systemID >>"$DEP_N_DEBUG"
+        echo "$(date "+%Y-%m-%dT%H:%M:%S"): JumpCloud user "$userID "bound to systemID: "$systemID >>"$DEP_N_DEBUG"
     else
-        echo "$(date "+%Y-%m-%dT%H:%M:%S"): error JumpCloud user not bound to system" >>"$DEP_N_DEBUG"
+        echo "$(date "+%Y-%m-%dT%H:%M:%S"): $userID : $userBindCheck : $regex error JumpCloud user not bound to system" >>"$DEP_N_DEBUG"
         exit 1
     fi
 
@@ -892,6 +913,9 @@ if [[ ! -f $DEP_N_GATE_DONE ]]; then
         logoutTimeoutCounter=$((${logoutTimeoutCounter} + 1))
         if [[ ${logoutTimeoutCounter} -eq 10 ]]; then
             #FIXME: osquery error which occasionally occurs when this step takes too long? 
+            #FIXME: {"message":"Unauthorized: user not authenticated"} :  error JumpCloud user not bound to system 
+            #FIXME: 2019/12/10 09:52:45 [932] [ERROR] failed to poll server: Get https://agent.jumpcloud.com:443/poll/5defcc8c0582237f4253da6e: EOF
+            # if the welcome user is an admin, you'll never see this issue
             echo "$(date "+%Y-%m-%dT%H:%M:%S"): Error during JumpCloud agent local account takeover" >>"$DEP_N_DEBUG"
             echo "$(date "+%Y-%m-%dT%H:%M:%S"): JCAgent.log: ${updateLog}" >>"$DEP_N_DEBUG"
             exit 1
