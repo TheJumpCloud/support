@@ -2,7 +2,7 @@
 
 #*******************************************************************************
 #
-#       Version 2.1 | See the CHANGELOG.md for version information
+#       Version 3.0 | See the CHANGELOG.md for version information
 #
 #       See the ReadMe file for detailed configuration steps.
 #
@@ -639,6 +639,7 @@ if [[ ! -f $DEP_N_GATE_UI ]]; then
             Secret=$(defaults read $DEP_N_USER_INPUT_PLIST "Enter Your Secret Word")
         fi
             # Reset serach variables
+            #FIXME: not working after a bogus last name and bogus secret
             search_step=$((0))
             search_active=false
             sec='"activated":false'
@@ -914,6 +915,7 @@ if [[ ! -f $DEP_N_GATE_DONE ]]; then
         if [[ ${logoutTimeoutCounter} -eq 10 ]]; then
             #FIXME: osquery error which occasionally occurs when this step takes too long? 
             #FIXME: {"message":"Unauthorized: user not authenticated"} :  error JumpCloud user not bound to system 
+                #TODO: investigate the issue here - even running welcome as an admin you'll still see this error
             #FIXME: 2019/12/10 09:52:45 [932] [ERROR] failed to poll server: Get https://agent.jumpcloud.com:443/poll/5defcc8c0582237f4253da6e: EOF
             # if the welcome user is an admin, you'll never see this issue
             echo "$(date "+%Y-%m-%dT%H:%M:%S"): Error during JumpCloud agent local account takeover" >>"$DEP_N_DEBUG"
