@@ -97,7 +97,7 @@ self_ID="LN"
 
 ### Include secret id (employee ID) ###
 ### Default true
-self_secret=false
+self_secret=true
 
 ### Password Settings ###
 ### Should active users be forced to update their passwords? ###
@@ -243,7 +243,7 @@ if [[ ! -f $DEP_N_GATE_INSTALLJC ]]; then
     # Set ownership of the plist file
     chown "$ACTIVE_USER":staff "$DEP_N_CONFIG_PLIST"
     chmod 600 "$DEP_N_CONFIG_PLIST"
-    sudo -u "$ACTIVE_USER" open -a "$DEP_N_APP" --args -path "$DEP_N_LOG" -fullScreen
+    sudo -u "$ACTIVE_USER" open -a "$DEP_N_APP" --args -path "$DEP_N_LOG" 
 
     # Download and install the JumpCloud agent
     # cat EOF can not be indented
@@ -372,6 +372,8 @@ if [[ ! -f $DEP_N_GATE_SYSADD ]]; then
     # variable to ensure system time is set correctly, once during this loop
     timeSet=false
     echo "$(date "+%Y-%m-%dT%H:%M:%S"): Expected systemID: ${systemID} to be a member of group: ${DEP_ENROLLMENT_GROUP_ID}" >>"$DEP_N_DEBUG"
+    #TODO: delete this line below
+    echo "$(date "+%Y-%m-%dT%H:%M:%S"): Group Check is: ${groupCheck}" >>"$DEP_N_DEBUG"
     while [[ -z $groupCheck ]]; do
         # log note
         echo "$(date "+%Y-%m-%dT%H:%M:%S"): Waiting for system to be added to the DEP ENROLLMENT GROUP" >>"$DEP_N_DEBUG"
@@ -450,7 +452,7 @@ if [[ ! -f $DEP_N_GATE_UI ]]; then
     if [[ -z $process ]]; then
         ACTIVE_USER=$(/usr/bin/python -c 'from SystemConfiguration import SCDynamicStoreCopyConsoleUser; import sys; username = (SCDynamicStoreCopyConsoleUser(None, None, None) or [None])[0]; username = [username,""][username in [u"loginwindow", None, u""]]; sys.stdout.write(username + "\n");')
         echo "$(date "+%Y-%m-%dT%H:%M:%S"): Expected DEPNotify.app to be in process list, process not found. Launching DEPNotify as $ACTIVE_USER" >>"$DEP_N_DEBUG"
-        sudo -u "$ACTIVE_USER" open -a "$DEP_N_APP" --args -path "$DEP_N_LOG" -fullScreen
+        sudo -u "$ACTIVE_USER" open -a "$DEP_N_APP" --args -path "$DEP_N_LOG" 
         process=$(echo | ps aux | grep "\bDEPNotify\.app")
         sleep 2
         echo "$(date "+%Y-%m-%dT%H:%M:%S"): DEPNotify should be running on process: $process" >>"$DEP_N_DEBUG"
@@ -553,6 +555,13 @@ if [[ ! -f $DEP_N_GATE_UI ]]; then
 
     while [ "$LOCATED_ACCOUNT" == "False" ]; do
         echo "$(date "+%Y-%m-%dT%H:%M:%S"): User: $CompanyEmail entered information." >>"$DEP_N_DEBUG"
+        echo "$(date "+%Y-%m-%dT%H:%M:%S"): Performing Search with the following parameters: ">>"$DEP_N_DEBUG"
+        echo "$(date "+%Y-%m-%dT%H:%M:%S"): =================================================" >>"$DEP_N_DEBUG"
+        echo "$(date "+%Y-%m-%dT%H:%M:%S"): Activate status: $sec" >>"$DEP_N_DEBUG"
+        echo "$(date "+%Y-%m-%dT%H:%M:%S"): Using Secret: $injection" >>"$DEP_N_DEBUG"
+        echo "$(date "+%Y-%m-%dT%H:%M:%S"): ID Type: $id_type" >>"$DEP_N_DEBUG"
+        echo "$(date "+%Y-%m-%dT%H:%M:%S"): ID Value: $CompanyEmail" >>"$DEP_N_DEBUG"
+        echo "$(date "+%Y-%m-%dT%H:%M:%S"): =================================================" >>"$DEP_N_DEBUG"
 
         userSearch=$(
             curl -s \
@@ -576,11 +585,20 @@ if [[ ! -f $DEP_N_GATE_UI ]]; then
         sleep 1
 
         # switch to checking active users and increment search step int
+        echo "$(date "+%Y-%m-%dT%H:%M:%S") active? $search_active, step $search_step, totalCount $totalCount" >>"$DEP_N_DEBUG"
         if [[ $search_active == false && $search_step -eq 0 && "$totalCount" != "1" ]]; then
             search_step=$((search_step + 1))
             echo "$(date "+%Y-%m-%dT%H:%M:%S") no pending users found. Searching for active users. Search step: $search_step" >>"$DEP_N_DEBUG"
             sec='"activated":true'
             search_active=true
+            echo "$(date "+%Y-%m-%dT%H:%M:%S"): User: $CompanyEmail entered information." >>"$DEP_N_DEBUG"
+            echo "$(date "+%Y-%m-%dT%H:%M:%S"): Performing Search with the following parameters: ">>"$DEP_N_DEBUG"
+            echo "$(date "+%Y-%m-%dT%H:%M:%S"): =================================================" >>"$DEP_N_DEBUG"
+            echo "$(date "+%Y-%m-%dT%H:%M:%S"): Activate status (should differ from): $sec" >>"$DEP_N_DEBUG"
+            echo "$(date "+%Y-%m-%dT%H:%M:%S"): Using Secret: $injection" >>"$DEP_N_DEBUG"
+            echo "$(date "+%Y-%m-%dT%H:%M:%S"): ID Type: $id_type" >>"$DEP_N_DEBUG"
+            echo "$(date "+%Y-%m-%dT%H:%M:%S"): ID Value: $CompanyEmail" >>"$DEP_N_DEBUG"
+            echo "$(date "+%Y-%m-%dT%H:%M:%S"): =================================================" >>"$DEP_N_DEBUG"
 
             # rerun the search:
             userSearch=$(
@@ -635,8 +653,10 @@ if [[ ! -f $DEP_N_GATE_UI ]]; then
             elif [[ $self_ID == "LN" ]]; then
                 CompanyEmail=$(defaults read $DEP_N_USER_INPUT_PLIST "Enter Your Last Name")
             fi
-            if [[ $self_secret ]]; then
+            if [[ $self_secret == true ]]; then
             Secret=$(defaults read $DEP_N_USER_INPUT_PLIST "Enter Your Secret Word")
+                # update injection variable
+                injection='"employeeIdentifier":"'${Secret}'",'
         fi
             # Reset serach variables
             #FIXME: not working after a bogus last name and bogus secret
@@ -812,7 +832,7 @@ if [[ ! -f $DEP_N_GATE_UI ]]; then
     echo "Command: MainText: $FINAL_TEXT" >>"$DEP_N_LOG"
     echo "Status: Activating Account" >>"$DEP_N_LOG"
 
-    sudo -u "$ACTIVE_USER" open -a "$DEP_N_APP" --args -path "$DEP_N_LOG" -fullScreen
+    sudo -u "$ACTIVE_USER" open -a "$DEP_N_APP" --args -path "$DEP_N_LOG" 
 
     ## User creation
 
