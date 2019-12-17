@@ -228,7 +228,6 @@ if [[ ! -f $DEP_N_GATE_INSTALLJC ]]; then
         defaults write "$DEP_N_CONFIG_PLIST" textField1Placeholder "enter last name in all lowercase characters"
     fi
     
-
     if [[ $self_secret == true ]]; then
         defaults write "$DEP_N_CONFIG_PLIST" textField2Label "Enter Your Secret Word"
         defaults write "$DEP_N_CONFIG_PLIST" textField2Placeholder "enter secret in all lowercase characters"
@@ -372,8 +371,6 @@ if [[ ! -f $DEP_N_GATE_SYSADD ]]; then
     # variable to ensure system time is set correctly, once during this loop
     timeSet=false
     echo "$(date "+%Y-%m-%dT%H:%M:%S"): Expected systemID: ${systemID} to be a member of group: ${DEP_ENROLLMENT_GROUP_ID}" >>"$DEP_N_DEBUG"
-    #TODO: delete this line below
-    echo "$(date "+%Y-%m-%dT%H:%M:%S"): Group Check is: ${groupCheck}" >>"$DEP_N_DEBUG"
     while [[ -z $groupCheck ]]; do
         # log note
         echo "$(date "+%Y-%m-%dT%H:%M:%S"): Waiting for system to be added to the DEP ENROLLMENT GROUP" >>"$DEP_N_DEBUG"
@@ -502,14 +499,8 @@ if [[ ! -f $DEP_N_GATE_UI ]]; then
     # User Configuration Settings - INSERT-CONFIGURATION                           #
     ################################################################################
     #<--INSERT-CONFIGURATION for "User Configuration Settings" below this line-------
-    #TODO: make this nice and modular
 
-    #FIXME: "try again" frame after the user is found, second search works. 
-
-    #TODO: logic block for email, description or last name
     ### variable assignments for completing the user module
-    # userSearch token
-    # ust=""
     if [[ $self_ID == "CE" ]]; then
         id_type='"email"'
     elif [[ $self_ID == "PE" ]]; then
@@ -932,11 +923,6 @@ if [[ ! -f $DEP_N_GATE_DONE ]]; then
         accountTakeOverCheck=$(echo ${updateLog} | grep "User updates complete")
         logoutTimeoutCounter=$((${logoutTimeoutCounter} + 1))
         if [[ ${logoutTimeoutCounter} -eq 10 ]]; then
-            #FIXME: osquery error which occasionally occurs when this step takes too long? 
-            #FIXME: {"message":"Unauthorized: user not authenticated"} :  error JumpCloud user not bound to system 
-                #TODO: investigate the issue here - even running welcome as an admin you'll still see this error
-            #FIXME: 2019/12/10 09:52:45 [932] [ERROR] failed to poll server: Get https://agent.jumpcloud.com:443/poll/5defcc8c0582237f4253da6e: EOF
-            # if the welcome user is an admin, you'll never see this issue
             echo "$(date "+%Y-%m-%dT%H:%M:%S"): Error during JumpCloud agent local account takeover" >>"$DEP_N_DEBUG"
             echo "$(date "+%Y-%m-%dT%H:%M:%S"): JCAgent.log: ${updateLog}" >>"$DEP_N_DEBUG"
             exit 1
