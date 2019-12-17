@@ -86,17 +86,17 @@ NTP_SERVER="time.apple.com"
 ### Daemon Variable
 daemon="com.jumpcloud.prestage.plist"
 
-### Script Logic (#TODO: change this text)
-### Choose one of the variables below ###  
+### Comment or uncomment one of the options below ###
+### The uncommented variable will be used for user authentication ###
 ### Company Email (default)
-# self_ID="CE" 
-### lastname,
-self_ID="LN" 
+self_ID="CE"
+### lastname
+# self_ID="LN"
 ### personal email
 # self_ID="PE"
 
 ### Include secret id (employee ID) ###
-### Default true
+### Default setting is true
 self_secret=true
 
 ### Password Settings ###
@@ -243,7 +243,7 @@ if [[ ! -f $DEP_N_GATE_INSTALLJC ]]; then
     # Set ownership of the plist file
     chown "$ACTIVE_USER":staff "$DEP_N_CONFIG_PLIST"
     chmod 600 "$DEP_N_CONFIG_PLIST"
-    sudo -u "$ACTIVE_USER" open -a "$DEP_N_APP" --args -path "$DEP_N_LOG" 
+    sudo -u "$ACTIVE_USER" open -a "$DEP_N_APP" --args -path "$DEP_N_LOG" -fullScreen
 
     # Download and install the JumpCloud agent
     # cat EOF can not be indented
@@ -452,7 +452,7 @@ if [[ ! -f $DEP_N_GATE_UI ]]; then
     if [[ -z $process ]]; then
         ACTIVE_USER=$(/usr/bin/python -c 'from SystemConfiguration import SCDynamicStoreCopyConsoleUser; import sys; username = (SCDynamicStoreCopyConsoleUser(None, None, None) or [None])[0]; username = [username,""][username in [u"loginwindow", None, u""]]; sys.stdout.write(username + "\n");')
         echo "$(date "+%Y-%m-%dT%H:%M:%S"): Expected DEPNotify.app to be in process list, process not found. Launching DEPNotify as $ACTIVE_USER" >>"$DEP_N_DEBUG"
-        sudo -u "$ACTIVE_USER" open -a "$DEP_N_APP" --args -path "$DEP_N_LOG" 
+        sudo -u "$ACTIVE_USER" open -a "$DEP_N_APP" --args -path "$DEP_N_LOG" -fullScreen
         process=$(echo | ps aux | grep "\bDEPNotify\.app")
         sleep 2
         echo "$(date "+%Y-%m-%dT%H:%M:%S"): DEPNotify should be running on process: $process" >>"$DEP_N_DEBUG"
@@ -619,7 +619,7 @@ if [[ ! -f $DEP_N_GATE_UI ]]; then
             totalCount=$(echo $userSearchRaw | cut -d ":" -f2 | cut -d "," -f1)
         fi
 
-        # sucess criteria
+        # success criteria
         if [ "$totalCount" == "1" ]; then
             search_step=$((search_step + 1))
             LOCATED_ACCOUNT='True'
@@ -658,8 +658,7 @@ if [[ ! -f $DEP_N_GATE_UI ]]; then
                 # update injection variable
                 injection='"employeeIdentifier":"'${Secret}'",'
         fi
-            # Reset serach variables
-            #FIXME: not working after a bogus last name and bogus secret
+            # Reset search variables
             search_step=$((0))
             search_active=false
             sec='"activated":false'
@@ -832,7 +831,7 @@ if [[ ! -f $DEP_N_GATE_UI ]]; then
     echo "Command: MainText: $FINAL_TEXT" >>"$DEP_N_LOG"
     echo "Status: Activating Account" >>"$DEP_N_LOG"
 
-    sudo -u "$ACTIVE_USER" open -a "$DEP_N_APP" --args -path "$DEP_N_LOG" 
+    sudo -u "$ACTIVE_USER" open -a "$DEP_N_APP" --args -path "$DEP_N_LOG" -fullScreen
 
     ## User creation
 
@@ -856,7 +855,7 @@ if [[ ! -f $DEP_N_GATE_UI ]]; then
 fi
 # Final steps to complete the install
 if [[ ! -f $DEP_N_GATE_DONE ]]; then
-    #FIXME: potential need to recapture $userid var
+
     # Caffeinate this script
     caffeinate -d -i -m -u &
     caffeinatePID=$!
