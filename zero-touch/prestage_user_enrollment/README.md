@@ -146,7 +146,7 @@ The UID if this user is used to create the the **ENCRYPTED_KEY** variable.
 
 The enrollment user account will have the same displayName and username as the first account pushed down to your system via your MDM.
 
-Create an enrollment user account and set the password for this account to be exactly the same as the settings configured in [Step 7](#Step-7---Configuring-MDM-PreStage-Settings)
+Create an enrollment user account and set the password for this account to be exactly the same as the settings configured in [Step 9](#Step-9---Configuring-MDM-PreStage-Settings)
 
 Example:
 
@@ -156,11 +156,11 @@ This account is taken over during DEP enrollment and then disabled on the machin
 
 - Decryption User
 
-The UID of the decryption user account will be used to populate the "ENCRYPTED_KEY=''" variable in [Step 3](#Step-3---Populating-the-Bootstrap-template-script-variables). Create a JumpCloud account and set a secure password for this account.
+The UID of the decryption user account will be used to populate the "ENCRYPTED_KEY=''" variable in [Step 4](#Step-4---Populating-the-Bootstrap-template-script-variables). Create a JumpCloud account and set a secure password for this account.
 
 Under this users "User Security Settings and Permissions" check the box for "Enable as Admin/Sudo on all system associations" and "Enforce UID/GID consistency for all systems" and enter in a numerical "Unix UID" and "Unix GID" value over 7 characters.
 
-Take note of the value populated for the "Unix UID" as this will be used in [Step 3](#Step-3---Populating-the-Bootstrap-template-script-variables) to create the "ENCRYPTED_KEY=''" variable.
+Take note of the value populated for the "Unix UID" as this will be used in [Step 4](#Step-4---Populating-the-Bootstrap-template-script-variables) to create the "ENCRYPTED_KEY=''" variable.
 
 Example:
 
@@ -276,6 +276,25 @@ NTP_SERVER="time.apple.com"
 ### Daemon Variable
 daemon="com.jumpcloud.prestage.plist"
 
+### Comment or uncomment one of the options below ###
+### The uncommented variable will be used for user authentication ###
+### Company Email (default)
+self_ID="CE"
+### lastname
+# self_ID="LN"
+### personal email
+# self_ID="PE"
+
+### Include secret id (employee ID) ###
+### Default setting is true
+self_secret=true
+
+### Password Settings ###
+### Should active users be forced to update their passwords? ###
+### Pending users are required to choose a password during enrollment ###
+### Default setting is false ###
+self_passwd=false
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # END General Settings                                                         ~
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -314,7 +333,7 @@ Three parameters are used to create this encrypted string.
 
    - Need help finding your JumpCloud API key? See KB:[Obtaining Your API Key](https://support.jumpcloud.com/customer/en/portal/articles/2429680-jumpcloud-apis#configuration)
 
-2. UID of **Decryption User** created in [Step 2](#step-2---configuring-the-jumpcloud-tenant-for-dep-zero-touch)
+2. UID of **Decryption User** created in [Step 3](#step-3---configuring-the-jumpcloud-tenant-for-dep-zero-touch)
 
    - To find the UID of the **Decryption User** expand the "User Security Settings and Permissions" and find this value under "Unix UID"
 
@@ -364,7 +383,7 @@ c57c341a4a38f132019770f1689bbe7530bdfef3
 
 - `DECRYPT_USER=''`
 
-Enter the username (case sensitive) of the **Decryption User** created in [Step 2](#step-2---configuring-the-jumpcloud-tenant-for-dep-zero-touch)
+Enter the username (case sensitive) of the **Decryption User** created in [Step 3](#step-3---configuring-the-jumpcloud-tenant-for-dep-zero-touch)
 
 - `DEP_ENROLLMENT_GROUP_ID=''`
 
@@ -591,7 +610,7 @@ launchctl load -w "/Library/LaunchDaemons/${daemon}"
 
 ```
 
-Populate the `ENROLLMENT_USER=''` and the `ENROLLMENT_USER_PASSWORD=''` with the values specified for this account in [Step 2](#step-2---configuring-the-jumpcloud-tenant-for-dep-zero-touch)
+Populate the `ENROLLMENT_USER=''` and the `ENROLLMENT_USER_PASSWORD=''` with the values specified for this account in [Step 3](#step-3---configuring-the-jumpcloud-tenant-for-dep-zero-touch)
 
 Example:
 
@@ -677,7 +696,7 @@ In the MDM DEP Apple PreStage settings configure the MDM to not prompt the user 
 
 - Enrollment User
 
-In the MDM DEP Apple PreStage settings enable the MDM to "Automatically create an administrator account" and specify the `Short name` of the username and the `Full name` of the first and last name of the **Enrollment User** configured in [Step 2](#step-2---configuring-the-jumpcloud-tenant-for-dep-zero-touch). Ensure that the password set for this account is also the same password specified for the **Enrollment User** account configured in [Step 2](#step-2---configuring-the-jumpcloud-tenant-for-dep-zero-touch)
+In the MDM DEP Apple PreStage settings enable the MDM to "Automatically create an administrator account" and specify the `Short name` of the username and the `Full name` of the first and last name of the **Enrollment User** configured in [Step 3](#step-3---configuring-the-jumpcloud-tenant-for-dep-zero-touch). Ensure that the password set for this account is also the same password specified for the **Enrollment User** account configured in [Step 3](#step-3---configuring-the-jumpcloud-tenant-for-dep-zero-touch)
 
 Example:
 
