@@ -14,7 +14,7 @@ Describe -Tag:('JCSystemInsights') "Get-JCSystemInsights Tests" {
     # Retrieve objects to test with
     $Type = 'system'
     $JCType = Get-JCType -Type:($Type)
-    $Tables = $JCType.SystemInsights.Table | Where-Object { $_ -notin ('disk_info', 'bitlocker_info', 'uptime', 'sip_config', 'alf', 'shared_resources') } # HACK Temp workaround because these tables don't take strings as filters
+    $Tables = $JCType.SystemInsights.Table | Where-Object { $_ -notin ('disk_info', 'bitlocker_info', 'uptime', 'sip_config', 'alf', 'shared_resources', 'user_ssh_keys', 'user_groups', 'sharing_preferences') } # HACK Temp workaround because these tables don't take strings as filters
     $JCObject = Get-JCObject -Type:($Type) -Fields:($JCType.ById, $JCType.ByName, 'systemInsights') | Where-Object { $_.systemInsights.state -eq 'enabled' -and $_.displayName -ne 'Dwights-MacBook-Pro.local' } #-Limit:(2) -Paginate:($false)
     # Define misc. variables
     $Mock = $false
