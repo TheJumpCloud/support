@@ -132,8 +132,8 @@ Function Get-JCSystem ()
         [Parameter(
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'SearchFilter',
-            HelpMessage = 'A parameter that can filter on the property ''created''. This parameter if used creates two more dynamic parameters ''dateFilter'' and ''date''. See EXAMPLE 5 above for full syntax.')]
-        [ValidateSet('created')]
+            HelpMessage = 'A parameter that can filter on the property ''created'' or ''lastContact''. This parameter if used creates two more dynamic parameters ''dateFilter'' and ''date''. See EXAMPLE 5 above for full syntax.')]
+        [ValidateSet('created', 'lastContact')]
         [String]$filterDateProperty,
 
         [Parameter(
