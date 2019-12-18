@@ -9,7 +9,9 @@ mac
 #### Command
 
 ```
-# *** USAGE *** Version: 1.0
+# *** USAGE *** Version: 1.1
+
+# *NOTE* this template is only designed to work with DMG files and does not support .pkg, .zip files or DMGs that contain .pkg installers.
 
 # Update the DownloadUrl="" variable with the URL of the target .DMG download file. This URL must resolve to a .DMG file directly or point to a URL which has the .DMG file in the curl header Location field.
 

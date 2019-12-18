@@ -18,7 +18,7 @@ A few lines debugging lines were added to help identify where and when the user 
 
 ### RELEASE DATE
 
-December 3, 2019
+December 5, 2019
 
 #### RELEASE NOTES
 
