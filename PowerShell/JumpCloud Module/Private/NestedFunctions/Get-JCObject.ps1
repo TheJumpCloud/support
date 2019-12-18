@@ -92,7 +92,14 @@ Function Get-JCObject
                     # Populate query string filter
                     If ($Filter)
                     {
-                        $QueryString = '?filter=' + $Filter
+                        $QueryString = If ($UrlOut -like '*filter=*')
+                        {
+                            ',' + $Filter
+                        }
+                        Else
+                        {
+                            '?filter=' + $Filter
+                        }
                     }
                     # Build final body and url
                     $UrlObject += [PSCustomObject]@{
