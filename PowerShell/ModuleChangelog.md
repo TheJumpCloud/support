@@ -6,9 +6,11 @@ October 22, 2019
 
 #### RELEASE NOTES
 
-Support for UTF-8 encoding and new SystemInsights tables available.
+Support for UTF-8 encoding and new SystemInsights tables available and ability to filter systems on lastContact date.
 
 #### FEATURES
+
+Get-JCSystem -filterDateProperty parameter now accepts lastContact in addition to created.
 
 New SystemInsights tables available:
 
