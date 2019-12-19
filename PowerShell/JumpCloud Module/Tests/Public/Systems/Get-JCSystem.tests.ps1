@@ -300,15 +300,13 @@ Describe -Tag:('JCSystem') "Get-JCSystem 1.4" {
 
 Describe -Tag:('JCSystem') "Get-JCSystem 1.15.2" {
     It "Searches for a JumpCloud system using filterDateProperty lastContact and after" {
-        [DateTime]$NewestSystemlastContact = Get-JCSystem -active $false -returnProperties lastContact | Where-Object lastContact -ne $null | Select-Object -Last 1 -ExpandProperty lastContact
-        $NewestSystem = Get-JCSystem -filterDateProperty lastContact -dateFilter after -date $NewestSystemlastContact.addSeconds(-1)
-        $NewestSystemlastContactVerify = $NewestSystem | Select-Object -Last 1 -ExpandProperty lastContact
+        $NewestSystemlastContact = ([DateTime](Get-JCSystem -active $false -returnProperties lastContact | Where-Object lastContact -ne $null | Select-Object -Last 1 -ExpandProperty lastContact)).ToUniversalTime()
+        $NewestSystemlastContactVerify = ([DateTime](Get-JCSystem -filterDateProperty lastContact -dateFilter after -date $NewestSystemlastContact.addSeconds(-1) | Select-Object -Last 1 -ExpandProperty lastContact)).ToUniversalTime()
         $NewestSystemlastContact | Should -Be $NewestSystemlastContactVerify
     }
-    It "Searches for a JumpCloud system using  filterDateProperty lastContact and before" {
-        [DateTime]$OldestSystemlastContact = Get-JCSystem -active $false -returnProperties lastContact | Where-Object lastContact -ne $null | Select-Object -First 1 -ExpandProperty lastContact
-        $OldestSystem = Get-JCSystem -filterDateProperty lastContact -dateFilter before -date $OldestSystemlastContact.addSeconds(1)
-        $OldestSystemlastContactVerify = $OldestSystem | Select-Object -First 1 -ExpandProperty lastContact
+    It "Searches for a JumpCloud system using filterDateProperty lastContact and before" {
+        $OldestSystemlastContact = ([DateTime](Get-JCSystem -active $false -returnProperties lastContact | Where-Object lastContact -ne $null | Select-Object -First 1 -ExpandProperty lastContact)).ToUniversalTime()
+        $OldestSystemlastContactVerify = ([DateTime](Get-JCSystem -filterDateProperty lastContact -dateFilter before -date $OldestSystemlastContact.addSeconds(-1) | Select-Object -First 1 -ExpandProperty lastContact)).ToUniversalTime()
         $OldestSystemlastContact | Should -Be $OldestSystemlastContactVerify
     }
 }
