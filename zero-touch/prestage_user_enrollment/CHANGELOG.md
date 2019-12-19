@@ -1,5 +1,19 @@
 # Changelog
 
+## 3.0
+
+### RELEASE DATE
+
+December 19, 2019
+
+#### RELEASE NOTES
+
+Say goodbye to "user configuration modules". The work required to copy and paste user configuration modules has been depreciated in favor of just setting variables at the top of the jumpcloud_bootstrap_template.sh script. A few assumed settings have been applied, namely, all pending users will be required to set a password as part of the enrollment process. Active users are not required to pick a password unless the "self_passwd" variable is set to true. The default setting is to have users self identify with their company email.
+
+Given the changes to the overall flow of the script, the user configuration modules have been removed from the repository. Future development should rely on changes to the jumpcloud_bootstrap_tempate.sh script.
+
+A few lines debugging lines were added to help identify where and when the user was located during the enrollment process.
+
 ## 2.1
 
 ### RELEASE DATE
@@ -14,7 +28,7 @@ The user deletion step now occurs in the last stage. Deletion should only occur 
 
 The bootstrap script is now caffeinated to prevent systems from falling asleep during the enrollment process. `caffeinate` code blocks the first three gates prevent the system from sleeping. That caffeinate process is killed at the end of each code block. the caffeinate process is not called during the last code block where the launch daemon is deleted.
 
-The user module password prompt should now timeout after thirty minutes rather than the default two minutes. In previous versions of the bootstrap script, the dialogue box would open a new password prompt every two mins if the enrollment user did not enter their password. This is generally avoidable since the enrollment user must click continue before proceeding to the password prompt. If an enrollment user walked away at this stage, the script should wait thirty minutes before timing out and checking for a password.
+The user module password prompt should now timeout after thirty minutes rather than the default two minutes. In previous versions of the bootstrap script, the dialogue box would open a new password prompt every two minutes if the enrollment user did not enter their password. This is generally avoidable since the enrollment user must click continue before proceeding to the password prompt. If an enrollment user walked away at this stage, the script should wait thirty minutes before timing out and checking for a password.
 
 ## 2.0
 

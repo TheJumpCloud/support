@@ -2,34 +2,15 @@
 
 #*******************************************************************************
 #
-#       Version 2.1 | See the CHANGELOG.md for version information
+#       Version 3.0 | See the CHANGELOG.md for version information
 #
 #       See the ReadMe file for detailed configuration steps.
 #
 #       The "jumpcloud_bootstrap_template.sh" is a template file. Populate the
-#       variables in this template file and select and populate the input fields
-#       with a user_configuration_modules. The modules provide optionality for the
-#       zero-touch user account activation workflow.
+#       variables in this template file with your org specific settings and zero
+#       touch requirements.
 #
-#       Find a detailed description of each module within the ReadMe file.
-#
-#       Pick and choose from the available modules to create a zero-touch
-#       bootstrap workflow that fits your orgs specific zero-touch requirements.
-#
-#       USAGE:
-#
-#       Search this template file for the text INSERT-CONFIGURATION
-#       to find the input locations for configuration input sections.
-#       Find the script blocks to insert here within your desired module in
-#       the "user_configuration_modules" folder. Each module has all the required
-#       configuration script blocks that must be inserted into the master
-#       "jumpcloud_bootstrap_template.sh" file. Copy and paste the script
-#       blocks from your chosen module into this master file.
-#
-#       After populating "jumpcloud_bootstrap_template.sh" with script blocks
-#       from a module use munkipkg to create a signed PKG file. Deploy this PKG
-#       file using a MDM and the "install_applications" command to implement your
-#       zero-touch bootstrap workflow.
+#       Find a detailed description of each variable within the General Settings.
 #
 #       Questions or feedback on the JumpCloud bootstrap workflow? Please
 #       contact support@jumpcloud.com
@@ -49,6 +30,7 @@
 admin='false'
 
 ### Minimum password length ###
+# Align this setting with the length settings configured in your JumpCloud admin console
 minlength=8
 
 ### JumpCloud Connect Key ###
@@ -74,6 +56,8 @@ WELCOME_TITLE=""
 WELCOME_TEXT=''
 
 ### Boolean to delete the enrollment user set through MDM ###
+# Set to false to keep the enrollment users profile on the system
+# Ex: DELETE_ENROLLMENT_USERS=false
 DELETE_ENROLLMENT_USERS=true
 
 ### Username of the enrollment user account configured in the MDM.
@@ -85,6 +69,30 @@ NTP_SERVER="time.apple.com"
 
 ### Daemon Variable
 daemon="com.jumpcloud.prestage.plist"
+
+### User self identification parameter
+# Update the self_ID variable with one of the below options to change the default option (Company Email)
+# Company Email (default): self_ID="CE"
+# lastname: self_ID="LN"
+# personal email: self_ID="PE"
+# NOTE for "personal email" the JumpCloud user field "description" is used
+self_ID="CE"
+
+### Include secret id (employee ID) ###
+# Default setting is false
+# Set to true to add "secret word" to user self identification screen
+# This is recommended if "active" JumpCloud users will be enrolled
+# NOTE for "secret word" the JumpCloud user field "employeeID" is used
+# Ex: DELETE_ENROLLMENT_USERS=true
+self_secret=false
+
+### Password Update Settings ###
+# This setting defines if active users will be forced to update their passwords
+# Pending users will always be required to set a password during enrollment
+# Default setting is false
+# Update the self_ID self_passwd to modify this setting
+# Ex: self_passwd=true
+self_passwd=false
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # END General Settings                                                         ~
@@ -194,6 +202,25 @@ if [[ ! -f $DEP_N_GATE_INSTALLJC ]]; then
     # DEPNotify PLIST Settings - INSERT-CONFIGURATION                              #
     ################################################################################
     #<--INSERT-CONFIGURATION for "DEPNotify PLIST Settings" below this line---------
+
+    defaults write "$DEP_N_CONFIG_PLIST" registrationMainTitle "Activate Your Account"
+    defaults write "$DEP_N_CONFIG_PLIST" registrationButtonLabel "Activate Your Account"
+
+    if [[ $self_ID == "CE" ]]; then
+        defaults write "$DEP_N_CONFIG_PLIST" textField1Label "Enter Your Company Email Address"
+        defaults write "$DEP_N_CONFIG_PLIST" textField1Placeholder "enter email in all lowercase characters"
+    elif [[ $self_ID == "PE" ]]; then
+        defaults write "$DEP_N_CONFIG_PLIST" textField1Label "Enter Your Personal Email Address"
+        defaults write "$DEP_N_CONFIG_PLIST" textField1Placeholder "enter email in all lowercase characters"
+    elif [[ $self_ID == "LN" ]]; then
+        defaults write "$DEP_N_CONFIG_PLIST" textField1Label "Enter Your Last Name"
+        defaults write "$DEP_N_CONFIG_PLIST" textField1Placeholder "enter last name in all lowercase characters"
+    fi
+
+    if [[ $self_secret == true ]]; then
+        defaults write "$DEP_N_CONFIG_PLIST" textField2Label "Enter Your Secret Word"
+        defaults write "$DEP_N_CONFIG_PLIST" textField2Placeholder "enter secret in all lowercase characters"
+    fi
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # END DEPNotify PLIST Settings                                                 ~
@@ -385,6 +412,7 @@ if [[ ! -f $DEP_N_GATE_SYSADD ]]; then
     done
 
     # Set the receipt for the system add gate. The system was added to JumpCloud at this stage
+    echo "$(date "+%Y-%m-%dT%H:%M:%S"): System added, killing caffeinate process at PID: ${caffeinatePID}" >>"$DEP_N_DEBUG"
     kill $caffeinatePID
     touch $DEP_N_GATE_SYSADD
     echo "System added to JumpCloud Enrollment Group" >>"$DEP_N_LOG"
@@ -392,9 +420,11 @@ fi
 
 # User interaction steps - check if user has completed these steps.
 if [[ ! -f $DEP_N_GATE_UI ]]; then
+    echo "$(date "+%Y-%m-%dT%H:%M:%S"): Begin User Interaction steps" >>"$DEP_N_DEBUG"
     # Caffeinate this script
     caffeinate -d -i -m -u &
     caffeinatePID=$!
+    echo "$(date "+%Y-%m-%dT%H:%M:%S"): User Interaction steps, starting caffeinate process at PID: ${caffeinatePID}" >>"$DEP_N_DEBUG"
     # reboot check
     FINDER_PROCESS=$(pgrep -l "Finder")
     until [ "$FINDER_PROCESS" != "" ]; do
@@ -459,6 +489,340 @@ if [[ ! -f $DEP_N_GATE_UI ]]; then
     ################################################################################
     #<--INSERT-CONFIGURATION for "User Configuration Settings" below this line-------
 
+    ### variable assignments for completing the user module
+    if [[ $self_ID == "CE" ]]; then
+        id_type='"email"'
+    elif [[ $self_ID == "PE" ]]; then
+        id_type='"description"'
+    elif [[ $self_ID == "LN" ]]; then
+        id_type='"lastname"'
+    fi
+
+    echo "Command: ContinueButtonRegister: ACTIVATE YOUR ACCOUNT" >>"$DEP_N_LOG"
+
+    sleep 1
+
+    while [ ! -f "$DEP_N_REGISTER_DONE" ]; do
+        echo "$(date "+%Y-%m-%dT%H:%M:%S"): Waiting for user to fill in information." >>"$DEP_N_DEBUG"
+        sleep 1
+    done
+    echo "$(date "+%Y-%m-%dT%H:%M:%S"): User Selection is: $self_ID" >>"$DEP_N_DEBUG"
+    if [[ $self_ID == "CE" ]]; then
+        CompanyEmail=$(defaults read $DEP_N_USER_INPUT_PLIST "Enter Your Company Email Address")
+    elif [[ $self_ID == "PE" ]]; then
+        CompanyEmail=$(defaults read $DEP_N_USER_INPUT_PLIST "Enter Your Personal Email Address")
+    elif [[ $self_ID == "LN" ]]; then
+        CompanyEmail=$(defaults read $DEP_N_USER_INPUT_PLIST "Enter Your Last Name")
+    fi
+    if [[ $self_secret == true ]]; then
+        Secret=$(defaults read $DEP_N_USER_INPUT_PLIST "Enter Your Secret Word")
+    fi
+
+    ## secret sauce
+    if [[ $self_secret == true ]]; then
+        injection='"employeeIdentifier":"'${Secret}'",'
+    else
+        injection=""
+    fi
+
+    # pending user search default to false
+    sec='"activated":false'
+    search_active=false
+    search_step=0
+
+    # default value for account located
+    LOCATED_ACCOUNT='False'
+
+    while [ "$LOCATED_ACCOUNT" == "False" ]; do
+        echo "$(date "+%Y-%m-%dT%H:%M:%S"): User: $CompanyEmail entered information." >>"$DEP_N_DEBUG"
+        echo "$(date "+%Y-%m-%dT%H:%M:%S"): Performing Search with the following parameters: " >>"$DEP_N_DEBUG"
+        echo "$(date "+%Y-%m-%dT%H:%M:%S"): =================================================" >>"$DEP_N_DEBUG"
+        echo "$(date "+%Y-%m-%dT%H:%M:%S"): Activate status: $sec" >>"$DEP_N_DEBUG"
+        echo "$(date "+%Y-%m-%dT%H:%M:%S"): Using Secret: $injection" >>"$DEP_N_DEBUG"
+        echo "$(date "+%Y-%m-%dT%H:%M:%S"): ID Type: $id_type" >>"$DEP_N_DEBUG"
+        echo "$(date "+%Y-%m-%dT%H:%M:%S"): ID Value: $CompanyEmail" >>"$DEP_N_DEBUG"
+        echo "$(date "+%Y-%m-%dT%H:%M:%S"): =================================================" >>"$DEP_N_DEBUG"
+
+        userSearch=$(
+            curl -s \
+                -X 'POST' \
+                -H 'Content-Type: application/json' \
+                -H 'Accept: application/json' \
+                -H "x-api-key: ${APIKEY}" \
+                -d '{"filter":[{'$sec','$injection''${id_type}':"'${CompanyEmail}'"}],"fields":["username"]}' \
+                "https://console.jumpcloud.com/api/search/systemusers"
+        )
+        #debug
+        echo "$(date "+%Y-%m-%dT%H:%M:%S") DEBUG USER SEARCH $userSearch" >>"$DEP_N_DEBUG"
+        regex='totalCount"*.*,"results"'
+        if [[ $userSearch =~ $regex ]]; then
+            userSearchRaw="${BASH_REMATCH[@]}"
+        fi
+        #debug
+        echo "$(date "+%Y-%m-%dT%H:%M:%S") DEBUG USER SEARCH $userSearchRaw" >>"$DEP_N_DEBUG"
+        totalCount=$(echo $userSearchRaw | cut -d ":" -f2 | cut -d "," -f1)
+
+        sleep 1
+
+        # switch to checking active users and increment search step int
+        echo "$(date "+%Y-%m-%dT%H:%M:%S") active? $search_active, step $search_step, totalCount $totalCount" >>"$DEP_N_DEBUG"
+        if [[ $search_active == false && $search_step -eq 0 && "$totalCount" != "1" ]]; then
+            search_step=$((search_step + 1))
+            echo "$(date "+%Y-%m-%dT%H:%M:%S") no pending users found. Searching for active users. Search step: $search_step" >>"$DEP_N_DEBUG"
+            sec='"activated":true'
+            search_active=true
+            echo "$(date "+%Y-%m-%dT%H:%M:%S"): User: $CompanyEmail entered information." >>"$DEP_N_DEBUG"
+            echo "$(date "+%Y-%m-%dT%H:%M:%S"): Performing Search with the following parameters: " >>"$DEP_N_DEBUG"
+            echo "$(date "+%Y-%m-%dT%H:%M:%S"): =================================================" >>"$DEP_N_DEBUG"
+            echo "$(date "+%Y-%m-%dT%H:%M:%S"): Activate status (should differ from): $sec" >>"$DEP_N_DEBUG"
+            echo "$(date "+%Y-%m-%dT%H:%M:%S"): Using Secret: $injection" >>"$DEP_N_DEBUG"
+            echo "$(date "+%Y-%m-%dT%H:%M:%S"): ID Type: $id_type" >>"$DEP_N_DEBUG"
+            echo "$(date "+%Y-%m-%dT%H:%M:%S"): ID Value: $CompanyEmail" >>"$DEP_N_DEBUG"
+            echo "$(date "+%Y-%m-%dT%H:%M:%S"): =================================================" >>"$DEP_N_DEBUG"
+
+            # rerun the search:
+            userSearch=$(
+                curl -s \
+                    -X 'POST' \
+                    -H 'Content-Type: application/json' \
+                    -H 'Accept: application/json' \
+                    -H "x-api-key: ${APIKEY}" \
+                    -d '{"filter":[{'$sec','$injection''${id_type}':"'${CompanyEmail}'"}],"fields":["username"]}' \
+                    "https://console.jumpcloud.com/api/search/systemusers"
+            )
+            regex='totalCount"*.*,"results"'
+            if [[ $userSearch =~ $regex ]]; then
+                userSearchRaw="${BASH_REMATCH[@]}"
+            fi
+            #debug
+            echo "$(date "+%Y-%m-%dT%H:%M:%S") DEBUG USER SEARCH $userSearchRaw" >>"$DEP_N_DEBUG"
+            totalCount=$(echo $userSearchRaw | cut -d ":" -f2 | cut -d "," -f1)
+        fi
+
+        # success criteria
+        if [ "$totalCount" == "1" ]; then
+            search_step=$((search_step + 1))
+            LOCATED_ACCOUNT='True'
+            if [[ search_step -gt 1 && $search_active == true ]]; then
+                pass_path=not_required
+                echo "Status: Click CONTINUE" >>"$DEP_N_LOG"
+                echo "Command: ContinueButton: CONTINUE" >>"$DEP_N_LOG"
+            else
+                pass_path=update_required
+                echo "Status: Click SET PASSWORD" >>"$DEP_N_LOG"
+                echo "Command: ContinueButton: SET PASSWORD" >>"$DEP_N_LOG"
+            fi
+        fi
+        if [[ $search_step -ge 1 && "$totalCount" != "1" ]]; then
+            echo "Status: Account Not Found" >>"$DEP_N_LOG"
+            # search_step=$((search_step + 1))
+            rm $DEP_N_REGISTER_DONE >/dev/null 2>&1
+            echo "$(date "+%Y-%m-%dT%H:%M:%S") Try again search step: $search_step" >>"$DEP_N_DEBUG"
+            echo "Command: ContinueButtonRegister: Try Again" >>"$DEP_N_LOG"
+
+            sleep 1
+            while [ ! -f "$DEP_N_REGISTER_DONE" ]; do
+                echo "$(date "+%Y-%m-%dT%H:%M:%S"): Waiting for user to fill in information." >>"$DEP_N_DEBUG"
+                sleep 1
+            done
+            echo "$(date "+%Y-%m-%dT%H:%M:%S"): User Selection is: $self_ID" >>"$DEP_N_DEBUG"
+            if [[ $self_ID == "CE" ]]; then
+                CompanyEmail=$(defaults read $DEP_N_USER_INPUT_PLIST "Enter Your Company Email Address")
+            elif [[ $self_ID == "PE" ]]; then
+                CompanyEmail=$(defaults read $DEP_N_USER_INPUT_PLIST "Enter Your Personal Email Address")
+            elif [[ $self_ID == "LN" ]]; then
+                CompanyEmail=$(defaults read $DEP_N_USER_INPUT_PLIST "Enter Your Last Name")
+            fi
+            if [[ $self_secret == true ]]; then
+                Secret=$(defaults read $DEP_N_USER_INPUT_PLIST "Enter Your Secret Word")
+                # update injection variable
+                injection='"employeeIdentifier":"'${Secret}'",'
+            fi
+            # Reset search variables
+            search_step=$((0))
+            search_active=false
+            sec='"activated":false'
+            echo "$(date "+%Y-%m-%dT%H:%M:%S") no users found entering loop again search step: $search_step" >>"$DEP_N_DEBUG"
+        fi
+
+    done
+
+    # Capture userID
+    regex='[a-zA-Z0-9]{24}'
+    if [[ $userSearch =~ $regex ]]; then
+        # determine cases
+        if [[ $self_passwd == true ]]; then
+            pass_path="update_required"
+        fi
+        userID="${BASH_REMATCH[@]}"
+        echo "$(date "+%Y-%m-%dT%H:%M:%S") JumpCloud userID found userID: "$userID >>"$DEP_N_DEBUG"
+    else
+        echo "$(date "+%Y-%m-%dT%H:%M:%S") No JumpCloud userID found." >>"$DEP_N_DEBUG"
+        exit 1
+    fi
+
+    echo "Status: JumpCloud User Account Located" >>"$DEP_N_LOG"
+
+    case $pass_path in
+    update_required)
+        echo "Status: Click SET PASSWORD" >>"$DEP_N_LOG"
+        echo "Command: ContinueButton: SET PASSWORD" >>"$DEP_N_LOG"
+        while [ ! -f "$DEP_N_DONE" ]; do
+            echo "$(date "+%Y-%m-%dT%H:%M:%S"): Waiting for user to click Set Password." >>"$DEP_N_DEBUG"
+            sleep 1
+        done
+        ;;
+    not_required)
+        echo "Status: Click CONTINUE" >>"$DEP_N_LOG"
+        echo "Command: ContinueButton: CONTINUE" >>"$DEP_N_LOG"
+        while [ ! -f "$DEP_N_DONE" ]; do
+            echo "$(date "+%Y-%m-%dT%H:%M:%S"): Waiting for user to click Continue." >>"$DEP_N_DEBUG"
+            sleep 1
+        done
+        ;;
+    esac
+
+    #### PASSWORD BLOCK ####
+    case $pass_path in
+    update_required)
+        echo "doing password stuff"
+        # DEPNotify reset
+        DEPNotifyReset
+
+        WINDOW_TITLE='Set a password'
+        PASSWORD_TITLE="Please set a password"
+        PASSWORD_TEXT='Your password must be 8 characters long and contain at least one number, upper case character, lower case character, and special character. \n The longer the better!'
+
+        echo "Command: QuitKey: x" >>"$DEP_N_LOG"
+        echo "Command: WindowTitle: $WINDOW_TITLE" >>"$DEP_N_LOG"
+        echo "Command: MainTitle: $PASSWORD_TITLE" >>"$DEP_N_LOG"
+        echo "Command: MainText: $PASSWORD_TEXT" >>"$DEP_N_LOG"
+        echo "Status: Set a password" >>"$DEP_N_LOG"
+
+        sudo -u "$ACTIVE_USER" open -a "$DEP_N_APP" --args -path "$DEP_N_LOG"
+
+        Sleep 2
+
+        VALID_PASSWORD='False'
+
+        while [ "$VALID_PASSWORD" == "False" ]; do
+
+            VALID_PASSWORD='True'
+
+            password=$(launchctl asuser "$uid" /usr/bin/osascript -e '
+            Tell application "System Events" 
+                with timeout of 1800 seconds 
+                    display dialog "PASSWORD COMPLEXITY REQUIREMENTS:\n--------------------------------------------------------------\n * At least 8 characters long \n * Have at least 1 lowercase character \n * Have at least 1 uppercase character \n * Have at least 1 number \n * Have at least 1 special character'"$COMPLEXITY"'" with title "CREATE A SECURE PASSWORD"  buttons {"Continue"} default button "Continue" with hidden answer default answer ""' -e 'text returned of result 
+                end timeout
+            end tell' 2>/dev/null)
+            # Length check
+            lengthCheck='.{'$minlength',100}'
+            if [[ $password =~ $lengthCheck ]]; then
+                LENGTH=''
+                echo "$(date "+%Y-%m-%dT%H:%M:%S") Password meets length requirements"
+            else
+                echo "$(date "+%Y-%m-%dT%H:%M:%S") Password does not meet length requirements" >>"$DEP_N_DEBUG"
+                LENGTH='\n* LENGTH'
+                VALID_PASSWORD='False'
+            fi
+
+            # Upper case check
+            upperCheck='[[:upper:]]+'
+            if [[ $password =~ $upperCheck ]]; then
+                UPPER=''
+                echo "$(date "+%Y-%m-%dT%H:%M:%S") Password contains a upper case letter"
+            else
+                echo "$(date "+%Y-%m-%dT%H:%M:%S") Password does not contain a upper case letter" >>"$DEP_N_DEBUG"
+                UPPER='\n* UPPER CASE'
+                VALID_PASSWORD='False'
+
+            fi
+
+            # Lower chase check
+            lowerCheck='[[:lower:]]+'
+            if [[ $password =~ $lowerCheck ]]; then
+                LOWER=''
+                echo "$(date "+%Y-%m-%dT%H:%M:%S") Password contains a lower case letter"
+            else
+                echo "$(date "+%Y-%m-%dT%H:%M:%S") Password does not contain a lower case letter" >>"$DEP_N_DEBUG"
+                LOWER='\n* LOWER CASE'
+                VALID_PASSWORD='False'
+
+            fi
+
+            # Special character check
+            specialCharCheck='[!@#$%^&*(),.?":{}|<>]'
+            if [[ $password =~ $specialCharCheck ]]; then
+                SPECIAL=''
+                echo "$(date "+%Y-%m-%dT%H:%M:%S") Password contains a special character"
+            else
+                echo "$(date "+%Y-%m-%dT%H:%M:%S") Password does not contains a special character" >>"$DEP_N_DEBUG"
+                SPECIAL='\n* SPECIAL CHARACTER'
+                VALID_PASSWORD='False'
+
+            fi
+
+            # Number  check
+            numberCheck='[0-9]'
+            if [[ $password =~ $numberCheck ]]; then
+                NUMBER=''
+                echo "$(date "+%Y-%m-%dT%H:%M:%S") Password contains a number"
+            else
+                echo "$(date "+%Y-%m-%dT%H:%M:%S") Password does not contain a number" >>"$DEP_N_DEBUG"
+                NUMBER='\n* NUMBER'
+                VALID_PASSWORD='False'
+
+            fi
+
+            COMPLEXITY='\n\nCOMPLEXITY NOT SATISFIED:\n --------------------------------------------------------------'$LENGTH''$UPPER''$LOWER''$SPECIAL''$NUMBER' \n\n TRY AGAIN'
+
+        done
+
+        echo "Status: Click CONTINUE" >>"$DEP_N_LOG"
+        echo "Command: ContinueButton: CONTINUE" >>"$DEP_N_LOG"
+
+        while [ ! -f "$DEP_N_DONE" ]; do
+            echo "$(date "+%Y-%m-%dT%H:%M:%S"): Waiting for user to click CONTINUE" >>"$DEP_N_DEBUG"
+            sleep 1
+        done
+        ;;
+    not_required)
+        echo "not required"
+        ;;
+    esac
+
+    #### PASSWORD BLOCK ####
+
+    # DEPnotify rest
+
+    DEPNotifyReset
+
+    touch "$DEP_N_LOG"
+
+    WINDOW_TITLE='User Configuration'
+    FINAL_TITLE="Almost to the finish line!"
+    FINAL_TEXT='\n \n \n Working on account configuration'
+
+    echo "Command: QuitKey: x" >>"$DEP_N_LOG"
+    echo "Command: WindowTitle: $WINDOW_TITLE" >>"$DEP_N_LOG"
+    echo "Command: MainTitle: $FINAL_TITLE" >>"$DEP_N_LOG"
+    echo "Command: MainText: $FINAL_TEXT" >>"$DEP_N_LOG"
+    echo "Status: Activating Account" >>"$DEP_N_LOG"
+
+    sudo -u "$ACTIVE_USER" open -a "$DEP_N_APP" --args -path "$DEP_N_LOG" -fullScreen
+
+    ## User creation
+
+    userUpdate=$(
+        curl -s \
+            -X 'PUT' \
+            -H 'Content-Type: application/json' \
+            -H 'Accept: application/json' \
+            -H "x-api-key: ${APIKEY}" \
+            -d '{"password" : "'${password}'"}' \
+            "https://console.jumpcloud.com/api/systemusers/${userID}"
+    )
+
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # END User Configuration Settings                                              ~
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -469,6 +833,7 @@ if [[ ! -f $DEP_N_GATE_UI ]]; then
 fi
 # Final steps to complete the install
 if [[ ! -f $DEP_N_GATE_DONE ]]; then
+
     # Caffeinate this script
     caffeinate -d -i -m -u &
     caffeinatePID=$!
@@ -483,7 +848,7 @@ if [[ ! -f $DEP_N_GATE_DONE ]]; then
     regex='[a-zA-Z0-9]{24}'
     if [[ $systemKey =~ $regex ]]; then
         systemID="${BASH_REMATCH[@]}"
-        echo "$(date "+%Y-%m-%dT%H:%M:%S"): JumpCloud systemID found SystemID: "$systemID >>"$DEP_N_DEBUG"
+        echo "$(date "+%Y-%m-%dT%H:%M:%S"): JumpCloud systemID found: "$systemID >>"$DEP_N_DEBUG"
     else
         echo "$(date "+%Y-%m-%dT%H:%M:%S"): No systemID found" >>"$DEP_N_DEBUG"
         exit 1
@@ -521,9 +886,9 @@ if [[ ! -f $DEP_N_GATE_DONE ]]; then
 
     if [[ $userBindCheck =~ $regex ]]; then
         userID="${BASH_REMATCH[@]}"
-        echo "$(date "+%Y-%m-%dT%H:%M:%S"): JumpCloud user "$loggedInUser "bound to systemID: "$systemID >>"$DEP_N_DEBUG"
+        echo "$(date "+%Y-%m-%dT%H:%M:%S"): JumpCloud user "$userID "bound to systemID: "$systemID >>"$DEP_N_DEBUG"
     else
-        echo "$(date "+%Y-%m-%dT%H:%M:%S"): error JumpCloud user not bound to system" >>"$DEP_N_DEBUG"
+        echo "$(date "+%Y-%m-%dT%H:%M:%S"): $userID : $userBindCheck : $regex error JumpCloud user not bound to system" >>"$DEP_N_DEBUG"
         exit 1
     fi
 
@@ -633,7 +998,7 @@ fi
 # this will initially fail at the end of the script, if we remove the welcome user
 # the LaunchDaemon will be running as user null. However on next run, the script
 # will run as root and should have access to remove the launch daemon and remove
-# this script. The LaunchDaemon process with status 127 will remain on the system 
+# this script. The LaunchDaemon process with status 127 will remain on the system
 # until reboot, it will be not be called again after reboot.
 if [[ -f $DEP_N_GATE_DONE ]]; then
     # Delete enrollment users
@@ -642,7 +1007,7 @@ if [[ -f $DEP_N_GATE_DONE ]]; then
         echo "$(date "+%Y-%m-%dT%H:%M:%S"): Testing if ${ENROLLMENT_USER} user is logged out" >>"$DEP_N_DEBUG"
         ACTIVE_USER=$(/usr/bin/python -c 'from SystemConfiguration import SCDynamicStoreCopyConsoleUser; import sys; username = (SCDynamicStoreCopyConsoleUser(None, None, None) or [None])[0]; username = [username,""][username in [u"loginwindow", None, u""]]; sys.stdout.write(username + "\n");')
         if [[ "${ACTIVE_USER}" == "${ENROLLMENT_USER}" ]]; then
-            echo "$(date "+%Y-%m-%dT%H:%M:%S"): Logged in user is: ${ACTIVE_USER}, waiting until logout to continue" >> "$DEP_N_DEBUG"
+            echo "$(date "+%Y-%m-%dT%H:%M:%S"): Logged in user is: ${ACTIVE_USER}, waiting until logout to continue" >>"$DEP_N_DEBUG"
             FINDER_PROCESS=$(pgrep -l "Finder")
             echo "$(date "+%Y-%m-%dT%H:%M:%S"): $FINDER_PROCESS" >>"$DEP_N_DEBUG"
             while [ "$FINDER_PROCESS" != "" ]; do
@@ -651,9 +1016,9 @@ if [[ -f $DEP_N_GATE_DONE ]]; then
                 FINDER_PROCESS=$(pgrep -l "Finder")
             done
         fi
-        # given the case that the enrollment user was logged in previously, recheck the active user        
+        # given the case that the enrollment user was logged in previously, recheck the active user
         ACTIVE_USER=$(/usr/bin/python -c 'from SystemConfiguration import SCDynamicStoreCopyConsoleUser; import sys; username = (SCDynamicStoreCopyConsoleUser(None, None, None) or [None])[0]; username = [username,""][username in [u"loginwindow", None, u""]]; sys.stdout.write(username + "\n");')
-        echo "$(date "+%Y-%m-%dT%H:%M:%S"): Logged in user is: ${ACTIVE_USER}" >> "$DEP_N_DEBUG"
+        echo "$(date "+%Y-%m-%dT%H:%M:%S"): Logged in user is: ${ACTIVE_USER}" >>"$DEP_N_DEBUG"
         if [[ "${ACTIVE_USER}" == "" || "${ACTIVE_USER}" != "${ENROLLMENT_USER}" ]]; then
             # delete the enrollment and decrypt user
             echo "$(date "+%Y-%m-%dT%H:%M:%S"): Deleting the first enrollment user: $ENROLLMENT_USER" >>"$DEP_N_DEBUG"
@@ -661,7 +1026,7 @@ if [[ -f $DEP_N_GATE_DONE ]]; then
             echo "$(date "+%Y-%m-%dT%H:%M:%S"): Deleting the decrypt user: $DECRYPT_USER" >>"$DEP_N_DEBUG"
             sysadminctl -deleteUser $DECRYPT_USER >>"$DEP_N_DEBUG" 2>&1
         fi
-        
+
     fi
     # Clean up steps
     echo "$(date "+%Y-%m-%dT%H:%M:%S"): Status: Removing LaunchDaemon" >>"$DEP_N_DEBUG"
