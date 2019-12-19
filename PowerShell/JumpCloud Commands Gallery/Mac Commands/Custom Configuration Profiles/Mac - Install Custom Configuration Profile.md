@@ -29,5 +29,5 @@ This command will install a .mobileconfig file to a given system. A valid .mobil
 To import this command into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
 
 ```
-Import-JCCommand -URL 'https://git.io/Je5DS''
+Import-JCCommand -URL 'https://git.io/Je5DS'
 ```
