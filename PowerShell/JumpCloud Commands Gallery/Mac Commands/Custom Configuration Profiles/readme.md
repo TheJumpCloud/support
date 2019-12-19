@@ -14,7 +14,6 @@ Consider setting an organization name and identifier. Policies signed with an Ap
 
 ![verified policy example](images/verified.png)
 
-
 ## Command Examples
 
 The following section will walk through several example custom configuration profiles. At the time of this writing development of ProfileCreator manifests were still in development although the application ProfileCreator is no longer in development. The following examples should be used as a reference and tested in an environment prior to deployment
@@ -60,7 +59,13 @@ Using the PowerShell module, import the Custom Configuration Profile command to 
 Import-JCCommand "Bit.ly-REPLACE_ME"
 ```
 
+Open the newly imported JumpCloud command. Under "Files" select the "Upload Files" button and upload the .mobileconfig profile created with ProfileCreator. Select target systems and run the command to deploy the profile to systems.
 
+![name and upload configuration](images/notification_upload_name.png)
+
+#### Password protected profiles
+
+Profiles can be password protected with profile specific password. If a profile is password protected, it would require admin credentials and knowledge of the profile's password in order to remove the profile from a system. Profile Removal passwords are stored in clear text. Profiles should be encrypted before distribution. Apple's [documentation on the matter is informative](https://developer.apple.com/documentation/devicemanagement/using_configuration_profiles), [Rich Trouton's post on encrypted profiles](https://derflounder.wordpress.com/2019/09/16/creating-macos-configuration-profiles-with-encrypted-payloads/) provides instructions for profile encryption.
 
 ### Signing Profiles
 
@@ -72,4 +77,17 @@ Some profiles must be distributed though User Approved MDM, since JumpCloud does
 
 Privacy Preference Policy Control Profiles
 
+Encryption of password protected profiles is a manual process. [Rich Trouton's instructions for doing so](https://derflounder.wordpress.com/2019/09/16/creating-macos-configuration-profiles-with-encrypted-payloads/) are worth reading if non-removable removable profiles are required.
+
 ### Removal of profiles
+
+Profiles generated with ProfileCreator (and other methods) are identified with a unique UUID. The `profiles` binary on macOS is leveraged to remove profiles by UUID.
+
+Right-clicking an unencrypted .mobileconfig file should yield an xml file with a number of key value pairs. The image below displays a sample UUID for a custom profile. Copy the profile UUID to the clipboard.
+
+![uuid example](images/payload_uuid.png)
+
+```xml
+<key>PayloadIdentifier</key>
+<string>com.jumpcloud.KBL9OML3L-JD93-3K2L-39ID-KKEP34JK34KL4</string>
+```
