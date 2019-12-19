@@ -258,7 +258,8 @@ Accept wildcard characters: False
 ```
 
 ### -filterDateProperty
-A parameter that can filter on the property 'created'.
+A parameter that can filter on the property 'created' or 'lastContact'.
+Only inactive systems will be returned when using the lastContact filter.
 This parameter if used creates two more dynamic parameters 'dateFilter' and 'date'.
 See EXAMPLE 5 above for full syntax.
 
@@ -266,7 +267,7 @@ See EXAMPLE 5 above for full syntax.
 Type: System.String
 Parameter Sets: SearchFilter
 Aliases:
-Accepted values: created
+Accepted values: created, lastContact
 
 Required: False
 Position: Named
@@ -420,9 +421,13 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
+
 ### System.Management.Automation.SwitchParameter
+
 ### System.Boolean
+
 ### System.String[]
+
 ## OUTPUTS
 
 ### System.Object

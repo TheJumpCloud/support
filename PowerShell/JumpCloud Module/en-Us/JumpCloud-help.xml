@@ -6,11 +6,11 @@
       <command:verb>Add</command:verb>
       <command:noun>JCAssociation</command:noun>
       <maml:description>
-        <maml:para>Create an association between two object within the JumpCloud console.</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Add-JCAssociation function allows you to create associations of a specific object to a target object.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -94,10 +94,10 @@
             <maml:para>The type of the target object.</maml:para>
           </maml:Description>
           <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">user_group</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">system</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">system_group</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">policy</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">command</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">application</command:parameterValue>
@@ -206,10 +206,10 @@
             <maml:para>The type of the target object.</maml:para>
           </maml:Description>
           <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">user_group</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">system</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">system_group</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">policy</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">command</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">application</command:parameterValue>
@@ -388,16 +388,9 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Add-JCAssociation -Type:('radiusservers') -Id:('5c5c371704c4b477964ab4fa') -TargetType:('user_group') -TargetId:('59f20255c9118021fa01b80f')</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Create an association between the radius server "5c5c371704c4b477964ab4fa" and the user group "59f20255c9118021fa01b80f".</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Add-JCAssociation -Type:('radiusservers') -Name:('RadiusServer1') -TargetType:('user_group') -TargetName:('All Users')</dev:code>
-        <dev:remarks>
-          <maml:para>Create an association between the radius server "RadiusServer1" and the user group "All Users".</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -414,11 +407,11 @@
       <command:verb>Add</command:verb>
       <command:noun>JCCommandTarget</command:noun>
       <maml:description>
-        <maml:para>Associates a JumpCloud system or a JumpCloud system group with a JumpCloud command</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Add-JCCommandTarget function allows you to add JumpCloud systems or JumpCloud system groups to the target list of a specific JumpCloud command. Group associations can be made by system group name or system group ID system associations can only be made using the SystemID. When JumpCloud commands are run they target all the systems on their target list.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -589,23 +582,9 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>Add-JCCommandTarget -CommandID 5b99777710a3690ssisr3a1w -SystemID 5l0o2fu426041i79st3c35</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Adds the JumpCloud system with System ID '5l0o2fu426041i79st3c35' to the target list for the JumpCloud command with command ID '5b99777710a3690ssisr3a1w'</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>Add-JCCommandTarget -CommandID 5b99777710a3690ssisr3a1w -GroupName WindowsMachines</dev:code>
-        <dev:remarks>
-          <maml:para>Adds the JumpCloud system group 'WindowsMachines' and the systems within this group to the target list for the JumpCloud command with command ID '5b99777710a3690ssisr3a1w'</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
-        <dev:code>Add-JCCommandTarget -CommandID 5b99777710a3690ssisr3a1w -GroupID 5j03458a232z115210z66913</dev:code>
-        <dev:remarks>
-          <maml:para>Adds the JumpCloud system group with the GroupID '5j03458a232z115210z66913' and the systems within this group to the target list for the JumpCloud command with command ID '5b99777710a3690ssisr3a1w'</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -622,11 +601,11 @@
       <command:verb>Add</command:verb>
       <command:noun>JCRadiusReplyAttribute</command:noun>
       <maml:description>
-        <maml:para>Adds Radius reply attributes to a JumpCloud user group.</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>Adds Radius reply attributes to a JumpCloud user group. Any RADIUS reply attributes configured on a JumpCloud user group which associates a user to a RADIUS server will be returned in the Access-Accept message sent to the endpoint configured to authenticate with JumpCloud Radius. If a user is a member of more then one JumpCloud user group associated with a given RADIUS server all Reply attributes for the groups that associate the user to the RADIUS server will be returned in the Access-Accept message. If a user is a member of more then one JumpCloud user group associated with a given RADIUS server and these groups are configured with conflicting RADIUS reply attributes then the values of the attributes for the group that was created most recently will be returned in the Access-Accept message. RADIUS reply attribute conflicts are resolved based on the creation date of the user group where groups that are created more recently take precedent over older groups. Conflicts occur when groups are configured with the same RADIUS reply attributes and have conflicting attribute values. RADIUS reply attributes with the same attribute names but different tag values do not create conflicts.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -909,41 +888,9 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>Add-JCRadiusReplyAttribute -GroupName "BoulderOffice" -VLAN 24</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>By specifying the '-VLAN' parameter three radius attributes are added to the JumpCloud user group 'BoulderOffice'.</maml:para>
-          <maml:para>These attributes are:</maml:para>
-          <maml:para>name                    value ----                    ----- Tunnel-Medium-Type      IEEE-802 Tunnel-Type             VLAN Tunnel-Private-Group-Id 24</maml:para>
-          <maml:para>The value specified for the '-VLAN' parameter is populated for the value of Tunnel-Private-Group-Id .</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>Add-JCRadiusReplyAttribute -GroupName "BoulderOffice" -VLAN 24 -VLANTag 3</dev:code>
-        <dev:remarks>
-          <maml:para>By specifying the '-VLAN' parameter three radius attributes are added to the JumpCloud user group 'BoulderOffice'. The use of '-VLANTag' appends each VLAN attribute name with a colon and the tag number specified.</maml:para>
-          <maml:para>These attributes are:</maml:para>
-          <maml:para>name                    value ----                    ----- Tunnel-Medium-Type:3      IEEE-802 Tunnel-Type:3             VLAN Tunnel-Private-Group-Id:3 24</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
-        <dev:code>Add-JCRadiusReplyAttribute -GroupName "BoulderOffice" -NumberOfAttributes 2 -Attribute1_name "Session-Timeout" -Attribute1_value 100 -Attribute2_name "Termination-Action" -Attribute2_value 1</dev:code>
-        <dev:remarks>
-          <maml:para>Adds two Radius attributes to the JumpCloud user group 'BoulderOffice'.</maml:para>
-          <maml:para>These attribute are:</maml:para>
-          <maml:para>name               value ----               ----- Session-Timeout    100 Termination-Action 1</maml:para>
-          <maml:para>The parameter '-NumberOfAttributes' is a dynamic parameter that generates two required parameters for each custom attribute specified. In this example these parameters are -Attribute1_name,-Attribute1_value, -Attribute2_name and -Attribute2_value.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 4 --------------------------</maml:title>
-        <dev:code>Add-JCRadiusReplyAttribute -GroupName "BoulderOffice" -VLAN 24 -NumberOfAttributes 2 -Attribute1_name "Session-Timeout" -Attribute1_value 100 -Attribute2_name "Termination-Action" -Attribute2_value 1</dev:code>
-        <dev:remarks>
-          <maml:para>Adds five Radius reply attributes to the JumpCloud User group 'BoulderUsers'</maml:para>
-          <maml:para>These attributes are:</maml:para>
-          <maml:para>name                    value ----                    ----- Tunnel-Medium-Type      IEEE-802 Termination-Action      1 Tunnel-Type             VLAN Session-Timeout         100 Tunnel-Private-Group-Id 24</maml:para>
-          <maml:para>By specifying the '-VLAN' parameter three radius attributes are added to the JumpCloud user group 'BoulderOffice'. The value specified for the '-VLAN' parameter is populated for the value of Tunnel-Private-Group-Id .The parameter '-NumberOfAttributes' is a dynamic parameter that generates two required parameters for each custom attribute specified. In this example these parameters are -Attribute1_name,-Attribute1_value, -Attribute2_name and -Attribute2_value.</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -960,11 +907,11 @@
       <command:verb>Add</command:verb>
       <command:noun>JCSystemGroupMember</command:noun>
       <maml:description>
-        <maml:para>Adds a JumpCloud System to a JumpCloud System Group</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Add-JCSystemGroupMember function is used to add a JumpCloud System to a JumpCloud System Group. The new System Group member must be added by the SystemID parameter.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -1135,30 +1082,9 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Add-JCSystemGroupMember -GroupName 'Windows Systems' -SystemID '59dad305383roc7k369sf7s2'</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Adds a System with SystemID '59dad305383roc7k369sf7s2' to the System Group 'Windows Systems'</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCSystem | Where-Object os -Like *Mac* | Add-JCSystemGroupMember -GroupName 'Mac Systems'</dev:code>
-        <dev:remarks>
-          <maml:para>Adds all Systems with an operating system like 'Mac' to the System Group 'Mac Systems'</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
-        <dev:code>Get-JCSystem | Where-Object active -EQ $true | Add-JCSystemGroupMember -GroupName 'Active Systems'</dev:code>
-        <dev:remarks>
-          <maml:para>Adds all active systems to the System Group 'Active Systems'</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 4 --------------------------</maml:title>
-        <dev:code>Get-JCSystem |  Where-Object {$_.active -EQ $true -and $_.os -like '*Mac*'} | Add-JCSystemGroupMember 'Active Mac Systems'</dev:code>
-        <dev:remarks>
-          <maml:para>Adds all active systems with an operating system like 'Mac' to the System Group 'Active Mac Systems'</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -1175,11 +1101,11 @@
       <command:verb>Add</command:verb>
       <command:noun>JCSystemUser</command:noun>
       <maml:description>
-        <maml:para>Associates a JumpCloud User account with a local account on a JumpCloud managed System.</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Add-JCSystemUser function allows you to bind a JumpCloud user to a JumpCloud system and set the user pemissions. When binding a user to a system the JumpCloud agent can complete one of two actions on the target system. 1. If there is an existing local user account on the target system with a Username that matches identically with the Username of the newly bound user then the JumpCloud agent will take over and manage the password of the existing local account. 1. If there is not an existing local user account on the target system with a Username that matches identically with the Username of the newly bound user then the JumpCloud agent will create a new account on the system with the Username of the newly bound user.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -1367,23 +1293,9 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Add-JCSystemUser -Username cclemons -SystemID 5a0795nnie7127f4ev2erb154a -Administrator $True</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Adds the JumpCloud user with the Username 'cclemons' to the System with a SystemID of '5a0795nnie7127f4ev2erb154a' and grants administrator permission</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCSystemUser -SystemID 5a0795nnie7127f4ev2erb154a | Add-JCSystemUser -SystemID 59f2c305383cba7e369df7c2</dev:code>
-        <dev:remarks>
-          <maml:para>Adds all JumpCloud users associated with the JumpCloud system with a SystemID of '5a0795aa7127f4aa2ddb154a' and adds them to the JumpCloud system with a SystemID of '59f2c305383cba7e369df7c2' using Parameter Binding and the pipeline. Because '-Administrator' was not specified the users will be added as standard users</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCUserGroupMember -GroupName 'The Band' | Add-JCSystemUser -SystemID 5a0795nnie7127f4ev2erb154a -Administrator $True</dev:code>
-        <dev:remarks>
-          <maml:para>Adds all JumpCloud users in the JumpCloud User Group 'The Band' and binds them to the JumpCloud system with a SystemID of '5a0795nnie7127f4ev2erb154a' as Administrators using Parameter Binding and the pipeline.</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -1400,11 +1312,11 @@
       <command:verb>Add</command:verb>
       <command:noun>JCUserGroupMember</command:noun>
       <maml:description>
-        <maml:para>Adds a JumpCloud user to a JumpCloud User Group.</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Add-JCUserGroupMember function is used to add a JumpCloud user to a JumpCloud User Group. The new user can be added by Username or by UserID.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -1585,30 +1497,9 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Add-JCUserGroupMember -Username cclemons -GroupName 'The Band'</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Adds the JumpCloud user with Username 'cclemons' to the User Group 'The Band'</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCUser | Where-Object sudo -EQ $true | Add-JCUserGroupMember -GroupName 'Administrators'</dev:code>
-        <dev:remarks>
-          <maml:para>Adds all JumpCloud users where the 'sudo' attribute is equal to $true to the User Group 'Administrators'</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCUser | Where-Object created -gt (Get-Date).AddDays(-7) | Add-JCUserGroupMember -GroupName 'New Hires'</dev:code>
-        <dev:remarks>
-          <maml:para>Adds all JumpCloud users created within the last 7 days to the User Group 'New Hires'</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 4 --------------------------</maml:title>
-        <dev:code>Get-JCUser | Select-Object username, @{name='Attribute Value'; expression={$_.attributes.value}} | Where-Object 'Attribute Value' -Like *Sales* | Add-JCUserGroupMember -GroupName Sales</dev:code>
-        <dev:remarks>
-          <maml:para>Adds all JumpCloud users with a custom attribute value which contains 'Sales' to the JumpCloud User Group 'Sales'. Note that to access the value of a nested property you must use Select-Object to access the nested property. In this example a calculated property is also used.</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -1625,11 +1516,11 @@
       <command:verb>Connect</command:verb>
       <command:noun>JCOnline</command:noun>
       <maml:description>
-        <maml:para>The Connect-JCOnline function sets the global variable $JCAPIKEY</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>By calling the Connect-JCOnline function you are setting the variable $JCAPIKEY within the global scope. By setting this variable in the global scope the variable $JCAPIKEY can be reused by other functions in the JumpCloud module. If you wish to change the API key to connect to another JumpCloud org simply call the Connect-JCOnline function and enter the alternative API key. Introduced in JumpCloud module version 1.2 the Connect-JCOnline function will also check to ensure you are running the latest version of the JumpCloud PowerShell module and offer to update the module if there is an update available. To prevent the module update check the '-force' parameter can be used.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -1765,24 +1656,9 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>Connect-JCOnline lu8792c9d4y2398is1tb6h0b83ebf0e92s97t382</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para></maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>Connect-JCOnline lu8792c9d4y2398is1tb6h0b83ebf0e92s97t382 -force</dev:code>
-        <dev:remarks>
-          <maml:para>Using the "-Force" parameter the module update check is skipped. The '-Force' parameter should be used when using the JumpCloud module in scripts or other automation environments.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
-        <dev:code>Connect-JCOnline -JumpCloudAPIKey lu8792c9d4y2398is1tb6h0b83ebf0e92s97t382 -JumpCloudOrgID 5b5o13o06tsand0c29a0t3s6 -force</dev:code>
-        <dev:remarks>
-          <maml:para>Providing the JumpCloudAPIKey key and the intended JumpCloudOrg ID to connect to multi tenant admins can skip the JumpCloudOrgID connection screen and directly connect to an Org.</maml:para>
-          <maml:para>Using the "-Force" parameter the module update check is skipped. The '-Force' parameter should be used when using the JumpCloud module in scripts or other automation environments.</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -1799,11 +1675,11 @@
       <command:verb>Copy</command:verb>
       <command:noun>JCAssociation</command:noun>
       <maml:description>
-        <maml:para>Copy the associations from one object to another.</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>This cmdlet will get the associations of an existing object and will copy those same associations over to a new object.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -1886,10 +1762,10 @@
             <maml:para>Specify the association types to include in the copy.</maml:para>
           </maml:Description>
           <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">user_group</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">system</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">system_group</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">policy</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">command</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">application</command:parameterValue>
@@ -1911,10 +1787,10 @@
             <maml:para>Specify the association types to exclude from the copy.</maml:para>
           </maml:Description>
           <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">user_group</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">system</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">system_group</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">policy</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">command</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">application</command:parameterValue>
@@ -2022,10 +1898,10 @@
             <maml:para>Specify the association types to include in the copy.</maml:para>
           </maml:Description>
           <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">user_group</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">system</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">system_group</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">policy</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">command</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">application</command:parameterValue>
@@ -2047,10 +1923,10 @@
             <maml:para>Specify the association types to exclude from the copy.</maml:para>
           </maml:Description>
           <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">user_group</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">system</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">system_group</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">policy</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">command</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">application</command:parameterValue>
@@ -2233,16 +2109,9 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Copy-JCAssociation -Type:('user') -Id:('5cdaef60452f26365ca1fbd0') -TargetId:('5cdaef62de6bf35ce44ad777')</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>The command will remove all of 5cdaef62de6bf35ce44ad777 associations and will copy all of 5cdaef60452f26365ca1fbd0 associations to 5cdaef62de6bf35ce44ad777.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Copy-JCAssociation -Type:('user') -Name:('John') -TargetName:('Jim')</dev:code>
-        <dev:remarks>
-          <maml:para>The command will remove all of Jim's associations and will copy all of John's associations to Jim.</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -2259,11 +2128,11 @@
       <command:verb>Get</command:verb>
       <command:noun>JCAssociation</command:noun>
       <maml:description>
-        <maml:para>The function Get-JCAssociation can be used to query an object's associations and then provide information about how objects are associated with one another.</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Get-JCAssociation function allows you to view the associations of a specific object to a target object.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -2311,10 +2180,10 @@
             <maml:para>The type of the target object.</maml:para>
           </maml:Description>
           <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">user_group</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">system</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">system_group</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">policy</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">command</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">application</command:parameterValue>
@@ -2438,6 +2307,10 @@
           <maml:Description>
             <maml:para>Whether or not you want to paginate through the results.</maml:para>
           </maml:Description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">True</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">False</command:parameterValue>
+          </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">System.Boolean</command:parameterValue>
           <dev:type>
             <maml:name>System.Boolean</maml:name>
@@ -2502,10 +2375,10 @@
             <maml:para>The type of the target object.</maml:para>
           </maml:Description>
           <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">user_group</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">system</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">system_group</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">policy</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">command</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">application</command:parameterValue>
@@ -2629,6 +2502,10 @@
           <maml:Description>
             <maml:para>Whether or not you want to paginate through the results.</maml:para>
           </maml:Description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">True</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">False</command:parameterValue>
+          </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">System.Boolean</command:parameterValue>
           <dev:type>
             <maml:name>System.Boolean</maml:name>
@@ -2899,37 +2776,9 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCAssociation -Type:user_group -Name:employee -TargetType:users</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>List all "users" that are associated with the user_group "employee".</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCAssociation -Type:system -Id:5c9a95f84tdo1376318g5148</dev:code>
-        <dev:remarks>
-          <maml:para>List all associations with the system "5c9a95f84tdo1376318g5148".</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCAssociation -Type:system  -Id:5c9a95f84tdo1376318g5148 -TargetType:users -Direct</dev:code>
-        <dev:remarks>
-          <maml:para>List all "users" that have a direct association with the system "5c9a95f84tdo1376318g5148".</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 4 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCAssociation -Type:system  -Id:5c9a95f84tdo1376318g5148 -TargetType:users -Indirect</dev:code>
-        <dev:remarks>
-          <maml:para>List all "users" that have a indirect association with the system "5c9a95f84tdo1376318g5148".</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 5 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCAssociation -Type:system  -Id:5c9a95f84tdo1376318g5148 -TargetType:users -IncludeInfo -IncludeNames -IncludeVisualPath</dev:code>
-        <dev:remarks>
-          <maml:para>List all "users" that are associated with the system "5c9a95f84tdo1376318g5148" and also get additional metadata about each object.</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -2946,41 +2795,11 @@
       <command:verb>Get</command:verb>
       <command:noun>JCBackup</command:noun>
       <maml:description>
-        <maml:para>Backs up JumpCloud directory information to CSV</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Get-JCBackup command saves JumpCloud directory information to CSV files. This command can be used to backup user, system user, system, user group, and system group information to CSV files. Specific items can be selected for CSV backup using the command or the '-All' switch parameter can be specified which will backup all items. How JCBackup works JumpCloud user information can be queried using the JumpCloud PowerShell module command Get-JCUser (https://github.com/TheJumpCloud/support/wiki/Get-JCUser)This command will by default return all JumpCloud user properties.</maml:para>
-      <maml:para>To export only the JumpCloud user information presented within the JumpCloud admin console ("First Name", "Last Name", "Username" and "Email") use the '-returnProperties' parameter of the Get-JCUser command as shown below. Note JumpCloud unique IDs (_id) are always returned when using the Get-JCUser command.</maml:para>
-      <maml:para></maml:para>
-      <maml:para>    Get-JCUser -returnProperties firstname, lastname, username, email | Export-CSV -Path "JumpCloudUsers_$(Get-Date -Format MMddyyyy).CSV" -NoTypeInformation</maml:para>
-      <maml:para></maml:para>
-      <maml:para>This command will export all JumpCloud users first name, last name, username, id, and email to a CSV file named JumpCloudUsers_CurrentDate.CSV created within the directory where the command is run.</maml:para>
-      <maml:para>If enforcing UID/GID consistency and you wish to export this information run the following command:</maml:para>
-      <maml:para>    Get-JCUser -returnProperties firstname, lastname, username, email, unix_uid, unix_guid | Export-CSV -Path "JumpCloudUsers_$(Get-Date -Format MMddyyyy).CSV" -NoTypeInformation</maml:para>
-      <maml:para>This command will export all JumpCloud users first name, last name, username, id, email, unix_guid, and unix_uid to a CSV file named JumpCloudUsers_CurrentDate.CSV created within the directory where the command is run.</maml:para>
-      <maml:para>To export all information describing JumpCloud users to CSV some additional object expansion must be done.</maml:para>
-      <maml:para>The properties "attributes", "addresses", "phonenumbers" and "ssh_keys" of JumpCloud users are returned as nested objects via the JumpCloud PowerShell module.</maml:para>
-      <maml:para>This means that if the objects are not expanded before exporting to CSV they will simply display as a 'System.Object[]' in the output CSV file.</maml:para>
-      <maml:para>To account for this find the below example which expands each nested object using PowerShell calculated properties and converts the objects to the JSON format. Note the backtick '`' escape character is used to break this command into multiple lines for readability.</maml:para>
-      <maml:para>    Get-JCUser | Select-Object * , `     @{Name = 'attributes'; Expression = {$_.attributes | ConvertTo-Json}}, `     @{Name = 'addresses'; Expression = {$_.addresses | ConvertTo-Json}}, `     @{Name = 'phonenumbers'; Expression = {$_.phonenumbers | ConvertTo-Json}}, `     @{Name = 'ssh_keys'; Expression = {$_.ssh_keys | ConvertTo-Json}} `     -ExcludeProperty attributes, addresses, phonenumbers, ssh_keys | Export-CSV -Path "JumpCloudUsers_$(Get-Date -Format MMddyyyy).CSV" -NoTypeInformation</maml:para>
-      <maml:para>This command will gather and format all JumpCloud user information and export it to a CSV file named JumpCloudUsers_CurrentDate.CSV created within the directory where the command is run. If you wish to exclude certain user properties you can append the '-ExcludeProperty' list with the properties you wish to exclude. Backing up JumpCloud System User Information JumpCloud system user associations can be queried using the JumpCloud PowerShell module command Get-JCSystemUser (https://github.com/TheJumpCloud/support/wiki/Get-JCUser)The Get-JCSystemUser command will show all JumpCloud users associated with a specific JumpCloud System using the JumpCloud System ID.</maml:para>
-      <maml:para>To export all JumpCloud system user information to CSV use the following example.</maml:para>
-      <maml:para>The property "BindGroups" is returned as a nested object via the JumpCloud PowerShell module.</maml:para>
-      <maml:para>This means that if the object is expanded before exporting to CSV it will simply display as a 'System.Object[]' in the output CSV file.</maml:para>
-      <maml:para>To account for this the "BindGroups" property is expanded using a PowerShell calculated property.</maml:para>
-      <maml:para>    Get-JCSystem | Get-JCSystemUser | Select-Object -Property * , @{Name = 'BindGroups'; Expression = {$ .BindGroups | ConvertTo-Json}} -ExcludeProperty BindGroups | Export-CSV -Path "JumpCloudSystemUsers $(Get-Date -Format MMddyyyy).CSV" -NoTypeInformation</maml:para>
-      <maml:para>This command will gather and format all JumpCloud system user associations and export them to a CSV file named JumpCloudSystemUsers_CurrentDate.CSV created within the directory where the command is run. Backing up JumpCloud System Information JumpCloud system information can be queried using the JumpCloud PowerShell module command Get-JCSystem (https://github.com/TheJumpCloud/support/wiki/Get-JCSystemUser)This command will by default return all JumpCloud system properties. Note The properties JumpCloud System ID (_id) and lastContact are always returned when using the Get-JCSystem command.</maml:para>
-      <maml:para>To only return and export specific system properties to CSV use the '-returnProperties' parameter of the Get-JCSystem command.</maml:para>
-      <maml:para>    Get-JCSystem -returnProperties hostname, os, version, serialNumber, remoteIP, systemTimezone | Export-CSV -Path "JumpCloudSystems_$(Get-Date -Format MMddyyyy).CSV" -NoTypeInformation</maml:para>
-      <maml:para>This command will export all JumpCloud Systems hostname, os, version, serial number, remoteIP, system time zone, system id, and last conntect time to a CSV file named JumpCloudSystems_CurrentDate.CSV created within the directory where the command is run.</maml:para>
-      <maml:para>The properties "networkInterfaces" and "sshdParams" of JumpCloud systems are returned as nested objects via the JumpCloud PowerShell module.</maml:para>
-      <maml:para>This means that if the objects are not expanded before exporting to CSV they will simply display as a 'System.Object[]' in the output CSV file.</maml:para>
-      <maml:para>To account for this find the below example which expands each nested object using PowerShell calculated properties and converts the objects to the JSON format. Note the back tick '`' escape character is used to break this command into multiple lines for readability.</maml:para>
-      <maml:para>    Get-JCSystem | Select-Object *, `     @{Name = 'networkInterfaces'; Expression = {$_.networkInterfaces | ConvertTo-Json}}, `     @{Name = 'sshdParams'; Expression = {$_.sshdParams | ConvertTo-Json}} `     -ExcludeProperty networkInterfaces, sshdParams, connectionHistory | Export-CSV -Path "JumpCloudSystems_$(Get-Date -Format MMddyyyy).CSV" -NoTypeInformation</maml:para>
-      <maml:para>This command will gather and format all JumpCloud system information and export it to a CSV file named JumpCloudSystems_CurrentDate.CSV created within the directory where the command is run. If you wish to exclude certain system properties you can append the '-ExcludeProperty' list with the properties you wish to exclude. Backing up JumpCloud User Groups JumpCloud user group membership can be queried using the JumpCloud PowerShell module command Get-JCUserGroupMember (https://github.com/TheJumpCloud/support/wiki/Get-JCUserGroupMember)Get-JCGroup -Type User | Get-JCUserGroupMember | Export-CSV -Path "JumpCloudUserGroupMembers_$(Get-Date -Format MMddyyyy).CSV" -NoTypeInformation</maml:para>
-      <maml:para>This command will save all JumpCloud user groups and the group members to a CSV file named JumpCloudUserGroupMember_CurrentDate.CSV created within the directory where the command is run. Backing up JumpCloud System Groups JumpCloud system group membership can be queried using the JumpCloud PowerShell module command Get-JCSystemGroupMember (https://github.com/TheJumpCloud/support/wiki/Get-JCSystemGroupMember)Get-JCGroup -Type System | Get-JCSystemGroupMember | Export-CSV -Path "JumpCloudSystemGroupMembers_$(Get-Date -Format MMddyyyy).CSV" -NoTypeInformation</maml:para>
-      <maml:para>This command will save all JumpCloud system groups and the group members to a CSV file named JumpCloudSystemGroupMember_CurrentDate.CSV created within the directory where the command is run.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -3155,51 +2974,9 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>Get-JCBackup -All</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Backs up JumpCloud user, system user, system, user group, and system group information to CSV files. A CSV backup file will be created for each backup item within the current working directory when this command is run.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>Get-JCBackup -Users</dev:code>
-        <dev:remarks>
-          <maml:para>Backs up JumpCloud user information to CSV. A CSV backup file containing all user information will be created within the current working directory when this command is run.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
-        <dev:code>Get-JCBackup -SystemUsers</dev:code>
-        <dev:remarks>
-          <maml:para>Backs up JumpCloud system user information to CSV. A CSV backup file containing all system user information will be created within the current working directory when this command is run.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 4 --------------------------</maml:title>
-        <dev:code>Get-JCBackup -Systems</dev:code>
-        <dev:remarks>
-          <maml:para>Backs up JumpCloud system information to CSV. A CSV backup file containing all system information will be created within the current working directory when this command is run.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 5 --------------------------</maml:title>
-        <dev:code>Get-JCBackup -UserGroups</dev:code>
-        <dev:remarks>
-          <maml:para>Backs up JumpCloud user group membership to CSV. A CSV backup file containing all user group information will be created within the current working directory when this command is run.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 6 --------------------------</maml:title>
-        <dev:code>Get-JCBackup -SystemGroups</dev:code>
-        <dev:remarks>
-          <maml:para>Backs up JumpCloud system group membership to CSV. A CSV backup file containing all system group information will be created within the current working directory when this command is run.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 7 --------------------------</maml:title>
-        <dev:code>Get-JCBackup -Users -UserGroups</dev:code>
-        <dev:remarks>
-          <maml:para>More then one parameter can be specified at one time. The above example backs up JumpCloud user and user group information to CSV.</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -3216,11 +2993,11 @@
       <command:verb>Get</command:verb>
       <command:noun>JCCommand</command:noun>
       <maml:description>
-        <maml:para>Returns all JumpCloud Commands within a JumpCloud tenant or a single JumpCloud Command using the -ByID Parameter.</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Get-JCCommand function returns all information describing a JumpCloud command. To find the contents and payload of a specific command the -ByID Parameter must be used as this information is only accessible when using this Parameter.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -3312,32 +3089,9 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCCommand</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Returns all JumpCloud Commands populated within the Commands section of the JumpCloud admin console.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCCommand -CommandID 5j09o6f23dan6f4n035601d5</dev:code>
-        <dev:remarks>
-          <maml:para>Returns a single JumpCloud command with CommandID '5j09o6f23dan6f4n035601d5'. Note that the contents of the command will be present in the output from this command.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCCommand | Get-JCCommand -ByID</dev:code>
-        <dev:remarks>
-          <maml:para>Returns all information describing all JumpCloud commands by passing the -CommandID Parameter to the -ByID Parameter using the pipeline and Parameter Binding.</maml:para>
-          <maml:para>Note that when running this command the time for the output to display will be directly proportionate to how many JumpCloud commands you have. The command 'Get-JCCommand -ByID' runs once for every JumpCloud command within your tenant.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 4 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCCommand | Where-Object launchType -EQ 'trigger' | Get-JCCommand -ByID</dev:code>
-        <dev:remarks>
-          <maml:para>Returns all information describing all JumpCloud commands with a launchType of 'trigger' by passing the -CommandID Parameter to the -ByID Parameter using the pipeline and Parameter Binding.</maml:para>
-          <maml:para>Note that when running this command the time for the output to display will be directly proportionate to how many JumpCloud commands you have with a launchType of 'trigger'. The command 'Get-JCCommand -ByID' runs once for every JumpCloud command within your tenant with a launchType of 'trigger'.</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -3354,11 +3108,11 @@
       <command:verb>Get</command:verb>
       <command:noun>JCCommandResult</command:noun>
       <maml:description>
-        <maml:para>Returns all JumpCloud Command Results within a JumpCloud tenant or a single JumpCloud Command Result using the -ByID Parameter.</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Get-JCCommandResult function returns all command results within a JumpCloud tenant. To return the command results output the -ByID Parameter must be used as this information is only accessible when using this Parameter.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -3570,52 +3324,9 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCCommandResult</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Returns all JumpCloud Commands Results</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCCommandResult -CommandResultID 5m0o65m6i4sb973059omb762</dev:code>
-        <dev:remarks>
-          <maml:para>Returns a single JumpCloud Command Result with CommandResultID '5j09o6f23dan6f4n035601d5'. Note that the command results output will be present in the output from this command.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCCommandResult | Where-Object {$_.requestTime -GT (Get-Date).AddDays(-7) -and $_.exitCode -ne 0}</dev:code>
-        <dev:remarks>
-          <maml:para>Returns all JumpCloud Command Result that were run within the last seven days and that did not return an exitCode of '0'. Note an exitCode of zero generally represents a successful run of a command. This command returns all failed commands results for the past seven days.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 4 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCCommandResult | Where-Object requestTime -GT (Get-Date).AddHours(-1) |  Get-JCCommandResult -ByID  | Select-Object -ExpandProperty output</dev:code>
-        <dev:remarks>
-          <maml:para>Returns the output for all JumpCloud Command results that were run within the last hour using the -ByID Parameter and Parameter Binding.</maml:para>
-          <maml:para>Note that when running this command the time for the output to display will be directly proportionate to how many JumpCloud commands that match the criteria. The command 'Get-JCCommandResult -ByID' runs once for every JumpCloud command result that matches the criteria Where-Object criteria.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 5 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCCommandResult -TotalCount</dev:code>
-        <dev:remarks>
-          <maml:para>Returns the total number of JumpCloud command results</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 6 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCCommandResult -Skip 100</dev:code>
-        <dev:remarks>
-          <maml:para>Skips returning the first 100 command results and only returns the results after 100. Command results are sorted by execution time.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 6 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCCommandResult -Skip 100 -MaxResults 10</dev:code>
-        <dev:remarks>
-          <maml:para>Skips returning the first 100 command results and only returns the 10 results after  the first 100 results. Command results are sorted by execution time.</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -3632,11 +3343,11 @@
       <command:verb>Get</command:verb>
       <command:noun>JCCommandTarget</command:noun>
       <maml:description>
-        <maml:para>Returns the JumpCloud systems or system groups associated with a JumpCloud command.</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>Using the CommandID parameter the Get-JCCommandTarget command will return all the systems associated with a JumpCloud command. If the '-Groups' parameter is used the Get-JCCommandTarget command will return all the system groups associated with a JumpCloud command.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -3720,16 +3431,9 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>Get-JCCommandTarget -CommandID '5a99777710p3690onylo3e1g'</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Retrieves the JumpCloud system targets that are associated the JumpCloud command with the Command ID '5a99777710p3690onylo3e1g'</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>Get-JCCommandTarget -CommandID '5a99777710p3690onylo3e1g' -Groups</dev:code>
-        <dev:remarks>
-          <maml:para>Retrieves the JumpCloud system group targets that are associated the JumpCloud command with the Command ID '5a99777710p3690onylo3e1g'</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -3746,11 +3450,11 @@
       <command:verb>Get</command:verb>
       <command:noun>JCGroup</command:noun>
       <maml:description>
-        <maml:para>Returns all JumpCloud System and User Groups.</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Get-JCGroup function by default will return all JumpCloud System and User groups. By using the -Type Parameter you can choose to return either System or User groups.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -3839,30 +3543,9 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCGroup</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Returns all JumpCloud User and System groups</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCGroup -Type User</dev:code>
-        <dev:remarks>
-          <maml:para>Returns all JumpCloud User groups</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCGroup -Type System</dev:code>
-        <dev:remarks>
-          <maml:para>Returns all JumpCloud System groups</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 4 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCGroup -Type User -Name 'The Band'</dev:code>
-        <dev:remarks>
-          <maml:para>Returns the JumpCloud user group 'The Band' and the posixGroups information descripting this group</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -3879,11 +3562,11 @@
       <command:verb>Get</command:verb>
       <command:noun>JCOrganization</command:noun>
       <maml:description>
-        <maml:para>Returns all JumpCloud organizations associated with the authenticated JumpCloud admins account.</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Get-JCOrganization command displays all JumpCloud organizations associated with the authenticated JumpCloud admins. JumpCloud admins configured for multi tenant administration can see the Organizations they have access to and the displayName and JumpCloudOrgID for these accounts.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -3919,9 +3602,9 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>Get-JCOrganization</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Displays the JumpCloud organizations associated with the authenticated JumpCloud admin.</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -3938,11 +3621,11 @@
       <command:verb>Get</command:verb>
       <command:noun>JCPolicy</command:noun>
       <maml:description>
-        <maml:para>Returns all JumpCloud Policies within a JumpCloud tenant.</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Get-JCPolicy function returns all information describing JumpCloud policies within a JumpCloud tenant.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -4053,23 +3736,9 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCPolicy</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Returns all JumpCloud Policies populated within the Policies section of the JumpCloud admin console.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCPolicy -PolicyID 123456789</dev:code>
-        <dev:remarks>
-          <maml:para>Returns the policy associated to the id of 123456789.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCPolicy -Name 'HelloWorld'</dev:code>
-        <dev:remarks>
-          <maml:para>Returns the HelloWorld policy.</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -4086,11 +3755,11 @@
       <command:verb>Get</command:verb>
       <command:noun>JCPolicyResult</command:noun>
       <maml:description>
-        <maml:para>Returns all JumpCloud results for a given policy within a JumpCloud tenant.</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Get-JCPolicyResult function returns the latest policy result information from a JumpCloud policy. You can search by a specific policy name to return results from the policy being applied. You can also search by a specific systemId to find the latest policy result for a specific system.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -4286,23 +3955,9 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCPolicyResult 'HelloWorld'</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Returns the latest policy result for the HelloWorld policy.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCPolicyResult -PolicyId 123456789</dev:code>
-        <dev:remarks>
-          <maml:para>Returns the latest policy result for the policy with the id of 123456789.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCPolicyResult -SystemID 123456789</dev:code>
-        <dev:remarks>
-          <maml:para>Returns the latest policy result for a system with the id of 123456789.</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -4319,11 +3974,11 @@
       <command:verb>Get</command:verb>
       <command:noun>JCPolicyTargetGroup</command:noun>
       <maml:description>
-        <maml:para>Returns all bound groups associated with a JumpCloud Policy within a JumpCloud tenant.</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Get-JCPolicyTargetGroup returns information about all bound groups associated with a JumpCloud Policy within a JumpCloud tenant.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -4434,23 +4089,9 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCPolicyTargetGroup -PolicyId 123456789</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Returns the bound groups associated for a policy with the id of 123456789.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCPolicyTargetGroup -PolicyName 'HelloWorld'</dev:code>
-        <dev:remarks>
-          <maml:para>Returns the bound groups associated for a policy with the name of HelloWorld.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCPolicy | Get-JCPolicyTargetGroup</dev:code>
-        <dev:remarks>
-          <maml:para>Returns all policies within a JumpCloud tenant and the bound groups associated to those policies.</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -4467,11 +4108,11 @@
       <command:verb>Get</command:verb>
       <command:noun>JCPolicyTargetSystem</command:noun>
       <maml:description>
-        <maml:para>Returns all bound systems associated with a JumpCloud Policy within a JumpCloud tenant.</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Get-JCPolicyTargetSystem returns information about all bound systems associated with a JumpCloud Policy within a JumpCloud tenant.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -4582,23 +4223,9 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCPolicyTargetSystem -PolicyId 123456789</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Returns the bound Systems associated for a policy with the id of 123456789.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCPolicyTargetSystem -PolicyName 'HelloWorld'</dev:code>
-        <dev:remarks>
-          <maml:para>Returns the bound Systems associated for a policy with the name of HelloWorld.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCPolicy | Get-JCPolicyTargetSystem</dev:code>
-        <dev:remarks>
-          <maml:para>Returns all policies within a JumpCloud tenant and the bound systems associated to those policies.</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -4615,11 +4242,11 @@
       <command:verb>Get</command:verb>
       <command:noun>JCRadiusReplyAttribute</command:noun>
       <maml:description>
-        <maml:para>Returns the Radius reply attributes associated with a JumpCloud user group.</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>Returns the Radius reply attributes associated with a JumpCloud user group. User authentication Radius requests will return with the Radius reply attributes configured on the JumpCloud user groups which associates the user to JumpCloud Radius. Any RADIUS reply attributes configured on a JumpCloud user group which associates a user to a RADIUS server will be returned in the Access-Accept message sent to the endpoint configured to authenticate with JumpCloud Radius. If a user is a member of more then one JumpCloud user group associated with a given RADIUS server all Reply attributes for the groups that associate the user to the RADIUS server will be returned in the Access-Accept message. If a user is a member of more then one JumpCloud user group associated with a given RADIUS server and these groups are configured with conflicting RADIUS reply attributes then the values of the attributes for the group that was created most recently will be returned in the Access-Accept message. RADIUS reply attribute conflicts are resolved based on the creation date of the user group where groups that are created more recently take precedent over older groups. Conflicts occur when groups are configured with the same RADIUS reply attributes and have conflicting attribute values. RADIUS reply attributes with the same attribute names but different tag values do not create conflicts.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -4680,9 +4307,9 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>Get-JCRadiusReplyAttribute -GroupName BoulderOffice</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Returns the Radius reply attributes associated with the JumpCloud user group 'BoulderOffice'.</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -4699,11 +4326,11 @@
       <command:verb>Get</command:verb>
       <command:noun>JCRadiusServer</command:noun>
       <maml:description>
-        <maml:para>Return JumpCloud radius server information.</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>Use this function to return radius servers from JumpCloud tenet.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -4773,6 +4400,10 @@
           <maml:Description>
             <maml:para>Whether or not you want to paginate through the results.</maml:para>
           </maml:Description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">True</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">False</command:parameterValue>
+          </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">System.Boolean</command:parameterValue>
           <dev:type>
             <maml:name>System.Boolean</maml:name>
@@ -4859,6 +4490,10 @@
           <maml:Description>
             <maml:para>Whether or not you want to paginate through the results.</maml:para>
           </maml:Description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">True</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">False</command:parameterValue>
+          </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">System.Boolean</command:parameterValue>
           <dev:type>
             <maml:name>System.Boolean</maml:name>
@@ -5045,23 +4680,9 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCRadiusServer</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Returns all radius servers from a JumpCloud tenet.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCRadiusServer -Id:('5d6802c46eb05c5971151558')</dev:code>
-        <dev:remarks>
-          <maml:para>Returns a radius server by Id from a JumpCloud tenet.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCRadiusServer -Name:('RadiusServer1')</dev:code>
-        <dev:remarks>
-          <maml:para>Returns a radius server by Name from a JumpCloud tenet.</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -5078,11 +4699,11 @@
       <command:verb>Get</command:verb>
       <command:noun>JCSystem</command:noun>
       <maml:description>
-        <maml:para>Returns all JumpCloud Systems within a JumpCloud tenant or a single JumpCloud System using the -ByID Parameter.</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Get-JCSystem function returns all information describing a JumpCloud system. By default this will return all Systems.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -5280,10 +4901,11 @@
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
           <maml:name>filterDateProperty</maml:name>
           <maml:Description>
-            <maml:para>A parameter that can filter on the property 'created'. This parameter if used creates two more dynamic parameters 'dateFilter' and 'date'. See EXAMPLE 5 above for full syntax.</maml:para>
+            <maml:para>A parameter that can filter on the property 'created' or 'lastContact'. Only inactive systems will be returned when using the lastContact filter. This parameter if used creates two more dynamic parameters 'dateFilter' and 'date'. See EXAMPLE 5 above for full syntax.</maml:para>
           </maml:Description>
           <command:parameterValueGroup>
             <command:parameterValue required="false" command:variableLength="false">created</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">lastContact</command:parameterValue>
           </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
           <dev:type>
@@ -5563,7 +5185,7 @@
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
         <maml:name>filterDateProperty</maml:name>
         <maml:Description>
-          <maml:para>A parameter that can filter on the property 'created'. This parameter if used creates two more dynamic parameters 'dateFilter' and 'date'. See EXAMPLE 5 above for full syntax.</maml:para>
+          <maml:para>A parameter that can filter on the property 'created' or 'lastContact'. Only inactive systems will be returned when using the lastContact filter. This parameter if used creates two more dynamic parameters 'dateFilter' and 'date'. See EXAMPLE 5 above for full syntax.</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
         <dev:type>
@@ -5733,44 +5355,9 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>Get-JCSystem</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Returns all JumpCloud managed systems and the information describing these systems.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>Get-JCSystemUser -SystemID 5n0795a712704la4eve154r</dev:code>
-        <dev:remarks>
-          <maml:para>Returns a single JumpCloud System with SystemID '5n0795a712704la4eve154r'.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
-        <dev:code>Get-JCSystem -active $true</dev:code>
-        <dev:remarks>
-          <maml:para>Returns all active JumpCloud Systems and the information describing these systems.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 4 --------------------------</maml:title>
-        <dev:code>Get-JCSystem -agentVersion '0.9.6*' -os '*Mac*'</dev:code>
-        <dev:remarks>
-          <maml:para>Returns all JumpCloud systems where the agentVersion is '0.9.6. ' and the operating system is like ' Mac*'</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 5 --------------------------</maml:title>
-        <dev:code>Get-JCSystem -filterDateProperty created -dateFilter after -date 01/01/2018</dev:code>
-        <dev:remarks>
-          <maml:para>Returns all JumpCloud systems that were created after 01/01/2018 using the parameter -filterDateProperty and the dynamic parameters -dateFilter and -date</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 6 --------------------------</maml:title>
-        <dev:code>Get-JCSystem -returnProperties remoteIP, active</dev:code>
-        <dev:remarks>
-          <maml:para>Returns all JumpCloud systems and the properties remoteIP and active. The default properties that return are lastContact and _id.</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -5787,11 +5374,11 @@
       <command:verb>Get</command:verb>
       <command:noun>JCSystemGroupMember</command:noun>
       <maml:description>
-        <maml:para>Returns the System Group members of a JumpCloud System Group.</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Get-JCSystemGroupMember function returns all the System Group members of a JumpCloud System Group.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -5879,23 +5466,9 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCSystemGroupMember -GroupName 'OSX Group'</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Returns the JumpCloud Systems that are a member of the group 'OSX Group'</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCGroup -Type System | Get-JCSystemGroupMember</dev:code>
-        <dev:remarks>
-          <maml:para>Returns all JumpCloud System Groups and their System members.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCGroup -Type System | Get-JCSystemGroupMember | Where-Object System -EQ 'Server01'</dev:code>
-        <dev:remarks>
-          <maml:para>Returns all JumpCloud System Groups that the system with a hostname of 'Server01' is a member of.</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -5912,11 +5485,11 @@
       <command:verb>Get</command:verb>
       <command:noun>JCSystemInsights</command:noun>
       <maml:description>
-        <maml:para>JumpCloud's System Insights feature provides admins with the ability to easily interrogate their fleet of systems to find important pieces of information. Using this function you can easily gather heightened levels of information from your fleet of JumpCloud managed systems.</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>Using Get-JCSystemInsights will allow you to easily query JumpCloud's RESTful API to return information from your fleet of JumpCloud managed systems.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -5986,6 +5559,10 @@
           <maml:Description>
             <maml:para>Whether or not you want to paginate through the results.</maml:para>
           </maml:Description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">True</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">False</command:parameterValue>
+          </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">System.Boolean</command:parameterValue>
           <dev:type>
             <maml:name>System.Boolean</maml:name>
@@ -5999,6 +5576,21 @@
             <maml:para>The SystemInsights table to query against.</maml:para>
           </maml:Description>
           <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">battery</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">managed_policies</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">sip_config</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">alf</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">crashes</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">usb_devices</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">ie_extensions</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">launchd</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">shared_folders</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">shared_resources</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">user_ssh_keys</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">logged_in_users</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">shadow</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">sharing_preferences</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">user_groups</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">kernel_info</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">system_controls</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">uptime</command:parameterValue>
@@ -6096,6 +5688,10 @@
           <maml:Description>
             <maml:para>Whether or not you want to paginate through the results.</maml:para>
           </maml:Description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">True</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">False</command:parameterValue>
+          </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">System.Boolean</command:parameterValue>
           <dev:type>
             <maml:name>System.Boolean</maml:name>
@@ -6109,6 +5705,21 @@
             <maml:para>The SystemInsights table to query against.</maml:para>
           </maml:Description>
           <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">battery</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">managed_policies</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">sip_config</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">alf</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">crashes</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">usb_devices</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">ie_extensions</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">launchd</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">shared_folders</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">shared_resources</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">user_ssh_keys</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">logged_in_users</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">shadow</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">sharing_preferences</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">user_groups</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">kernel_info</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">system_controls</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">uptime</command:parameterValue>
@@ -6298,44 +5909,9 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCSystemInsights -Table:('os_version');</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Return os_version data for all systems that have system insights enabled.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCSystemInsights -Table:('os_version') -Id:('5d0917420905f70e36e3c0d3');</dev:code>
-        <dev:remarks>
-          <maml:para>Return os_version data for a system with a specified id.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCSystemInsights -Table:('os_version') -Id:('5d0917420905f70e36e3c0d3', '5d0bc68b8e41442ccd10254a');</dev:code>
-        <dev:remarks>
-          <maml:para>Return os_version data for systems with specific ids.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 4 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCSystemInsights -Table:('os_version') -Name:('MacBook-Pro.local_TEST');</dev:code>
-        <dev:remarks>
-          <maml:para>Return os_version data for a system with a specified name.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 5 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCSystemInsights -Table:('os_version') -Name:('MacBook-Pro.local_TEST', 'Holly-Flax-Mac.local_TEST');</dev:code>
-        <dev:remarks>
-          <maml:para>Return os_version data for systems with specific names.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 6 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCSystemInsights -Table users -Filter username:eq:jcadmin</dev:code>
-        <dev:remarks>
-          <maml:para>Filters the users table for any system with the username jcadmin.</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -6352,11 +5928,11 @@
       <command:verb>Get</command:verb>
       <command:noun>JCSystemUser</command:noun>
       <maml:description>
-        <maml:para>Returns all JumpCloud Users associated with a JumpCloud System.</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Get-JCSystemUser function returns all the JumpCloud Users associated with the system. Users can be associated with a JumpCloud system through a direct bind, a User Group, or both. The output of the Get-JCSystemUser identifies the associations between JumpCloud Users and the system.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -6425,30 +6001,9 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCSystemUser -SystemID 59f2s305383coo7t369ef7r2</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>This example returns all users associated with the JumpCloud System with a SystemID of '59f2s305383coo7t369ef7r2'</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCSystem | Get-JCSystemUser</dev:code>
-        <dev:remarks>
-          <maml:para>This example returns all the JumpCloud users associated with all JumpCloud systems within a JumpCloud tenant.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCSystem | Where-Object os -like *Mac* | Get-JCSystemUser</dev:code>
-        <dev:remarks>
-          <maml:para>This example returns all the JumpCloud users associated with all JumpCloud systems within an operating system like 'Mac'.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 4 --------------------------</maml:title>
-        <dev:code>PS C:\&gt;  Get-JCSystem | Get-JCSystemUser | Where-Object Administrator -EQ True</dev:code>
-        <dev:remarks>
-          <maml:para>This example returns all the JumpCloud users whos have Administrator permissions on JumpCloud systems.</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -6465,11 +6020,11 @@
       <command:verb>Get</command:verb>
       <command:noun>JCUser</command:noun>
       <maml:description>
-        <maml:para>Returns all JumpCloud Users within a JumpCloud tenant or searches for a JumpCloud User by 'username', 'firstname', 'lastname', or 'email'.</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Get-JCUser function returns all information describing a JumpCloud user. By default it will return all Users.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -7489,37 +7044,9 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCUser</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Returns all JumpCloud Users and the information describing these users.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>Get-JCUser -Username cclemons</dev:code>
-        <dev:remarks>
-          <maml:para>Returns the information describing the JumpCloud User with Username cclemons</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
-        <dev:code>Get-JCUser -Username *clemons</dev:code>
-        <dev:remarks>
-          <maml:para>Returns all JumpCloud users that usernames end with clemons using the wildcard character '*'</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 4 --------------------------</maml:title>
-        <dev:code>Get-JCUser -filterDateProperty created -dateFilter after -date 01/01/2018</dev:code>
-        <dev:remarks>
-          <maml:para>Returns all JumpCloud users that were created after '01/01/2018'. The parameter '-filterDateProperty' takes both 'created' and 'password_expiration_date' as input and creates two dynamic parameters '-dateFilter' which takes "before" or "after" as input and "-date" which takes a date value as input.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 5 --------------------------</maml:title>
-        <dev:code>Get-JCUser -returnProperties username, sudo</dev:code>
-        <dev:remarks>
-          <maml:para>Returns all JumpCloud users and only the username and sudo Properties of their JumpCloud user object.</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -7536,11 +7063,11 @@
       <command:verb>Get</command:verb>
       <command:noun>JCUserGroupMember</command:noun>
       <maml:description>
-        <maml:para>Returns the User Group members of a JumpCloud User Group.</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Get-JCUserGroupMember function returns all the User Group members of a JumpCloud User Group.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -7628,23 +7155,9 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCUserGroupMember -GroupName 'The Band'</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Returns the JumpCloud users that are a member of the group 'The Band'</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCGroup -Type User | Get-JCUserGroupMember</dev:code>
-        <dev:remarks>
-          <maml:para>Returns all the JumpCloud User Groups and their members.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCGroup -Type User | Get-JCUserGroupMember | Where-Object Username -EQ 'cclemons'</dev:code>
-        <dev:remarks>
-          <maml:para>Returns all the JumpCloud User Groups that the JumpCloud user with a username of 'cclemons' is a member of.</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -7661,12 +7174,11 @@
       <command:verb>Import</command:verb>
       <command:noun>JCCommand</command:noun>
       <maml:description>
-        <maml:para>Imports a Mac, Linux or Windows JumpCloud Command into the JumpCloud admin portal from a URL</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Import-JCCommand command can be used to import curated JumpCloud Mac, Linux, and Windows commands into a JumpCloud tenant</maml:para>
-      <maml:para>See all available commands in the JumpCloud Commands Gallery (https://github.com/TheJumpCloud/support/tree/master/PowerShell/JumpCloud%20Commands%20Gallery)</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -7727,9 +7239,9 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>Import-JCCommand -URL 'https://git.io/jccg-Windows-ListAllUsers'</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Imports the JumpCloud command located at the URL 'Import-JCCommand -URL 'https://git.io/jccg-Windows-ListAllUsers' into a JumpCloud tenant. This command lists all user accounts on a Windows system and shows if the account is enabled or disabled</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -7746,11 +7258,11 @@
       <command:verb>Import</command:verb>
       <command:noun>JCUsersFromCSV</command:noun>
       <maml:description>
-        <maml:para>Imports a set of JumpCloud users from a CSV file created using the New-JCImportTemplate function.</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Import-JCUsersFromCSV function does data validation when importing JumpCloud users from a CSV file to warn the administrator of any potential issues during the import process. Examples of warnings include warning messages for users that already exist, systems that do not exist, and groups that do not exist. The Import-JCUserFromCSV function allows administrator to create JumpCloud users, add them to JumpCloud User Groups, and associate them with a JumpCloud system. The Import-JCUserFromCSV command takes ~ 1 minute for every 100 users. This time varies based on if users are added to groups or associated with systems during import. During import a JumpCloud administrator can ensure the import is working by watching their JumpCloud user count increase in the admin console.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -7833,31 +7345,10 @@
     </maml:alertSet>
     <command:examples>
       <command:example>
-        <maml:title>----------------------- Video Tutorials -----------------------</maml:title>
-        <dev:code></dev:code>
-        <dev:remarks>
-          <maml:para></maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Import-JCUsersFromCSV -CSVFilePath \users\cclemons\JCUserImport_11-16-2017.csv</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Imports the .csv file 'JCUserImport_11-16-2017.csv' from the path \users\cclemons\</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\Users\busters&gt; Import-JCUsersFromCSV -CSVFilePath .\Import10.csv</dev:code>
-        <dev:remarks>
-          <maml:para>Imports the .csv file 'Import10.csv' from the current directory using '. sourcing'</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Import-JCUsersFromCSV -CSVFilePath \users\cclemons\JCUserImport_11-16-2017.csv -Force</dev:code>
-        <dev:remarks>
-          <maml:para>Uses the 'Force' parameter to skip the GUI and data validation and imports users from the file '\users\cclemons\JCUserImport_11-16-2017.csv'</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -7874,11 +7365,11 @@
       <command:verb>Invoke</command:verb>
       <command:noun>JCCommand</command:noun>
       <maml:description>
-        <maml:para>Triggers a JumpCloud Command to run by calling the trigger associated with the Command.</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>In order to use the Invoke-JCCommand the target JumpCloud command must have the Launch Event set to Event type: 'Run on Trigger (webhook)' within the JumpCloud admin console. When a JumpCloud command is set with this value the 'launchType' which is queryable using the command Get-JCCommand will be set to 'trigger'.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -8061,30 +7552,9 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>Invoke-JCCommand -trigger 'GetJCAgentLog'</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Runs the command with a trigger of 'GetJCAgentLog' on all associated systems associated with this JumpCloud command.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>Invoke-JCCommand -trigger 'InstallApp' -NumberOfVariables 1 -Variable1_name 'URL' -Variable1_value 'www.pathtoinstallfile.com'</dev:code>
-        <dev:remarks>
-          <maml:para>Runs the command with a trigger of 'GetJCAgentLog' and passes the variable 'URL' with value 'www.pathtoinstallfile.com' to the JumpCloud command.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
-        <dev:code>Get-JCCommand | Where-Object launchType -EQ 'trigger' | Invoke-JCCommand</dev:code>
-        <dev:remarks>
-          <maml:para>Runs all JumpCloud commands that can be run by the Invoke-JCCommand by passing the -Trigger Parameter over the pipeline using Parameter Binding.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 4 --------------------------</maml:title>
-        <dev:code>Get-JCCommand | Where-Object trigger -Like '*NewMacInstall*' | Invoke-JCCommand</dev:code>
-        <dev:remarks>
-          <maml:para>Runs all JumpCloud commands with a trigger that matches the expression -like ' NewMacInstall '. Use this Example to run multiple commands that have a common trigger naming convention.</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -8101,11 +7571,11 @@
       <command:verb>Invoke</command:verb>
       <command:noun>JCDeployment</command:noun>
       <maml:description>
-        <maml:para>Triggers a JumpCloud Command Deployment using the CommandID and a filled out deployment CSV file.</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>JumpCloud command deployments are commands that are configured with system specific unique variables. These variables are deployed within the payload of the JumpCloud command from the values populated in the command deployment CSV file and create a 1:1 association between the payload of a JumpCloud command and the target system it is being run on. Using JumpCloud command deployments administrators can craft a single command that deploys with a system specific payload. Deployment commands must have zero system associations at time of deployment. If any associations exist the command will alert the admin and prompt to remove any associations to continue. This is because under the hood the Invoke-JCDeployment command makes three API calls for each target system in the CSV file. The first add the system to the target command. The second triggers the command with the system specific variables using the command 'Invoke-JCCommand' and the '-NumberOfVariables' parameter. The third removes the system from the target command. This process occurs for each system within the deployment CSV input file. A progress bar shows a status of the deployment. Note systems must be online and reporting as Active to receive the deployment command.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -8192,16 +7662,9 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>Invoke-JCDeployment -CommandID 5f6r55es2189782h48091999 -CSVFilePath ./JCDeployment_UsernameUpdate.csv
-
-SystemID                 CommandID                Status
---------                 ---------                ------
-5t5o055171de492597ath123 5f6r55es2189782h48091999 Deployed
-6t7o055171de492597ath456 5f6r55es2189782h48091999 Deployed
-8t9o055171de492597ath789 5f6r55es2189782h48091999 Deployed
-1t0o015171de492597ath101 5f6r55es2189782h48091999 Deployed</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Invokes the JumpCloud command with command ID '5f6r55es2189782h48091999' using the deployment csv file 'JCDeployment_UsernameUpdate.csv'. The output shows that the deployment CSV file contained four systems.</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -8218,11 +7681,11 @@ SystemID                 CommandID                Status
       <command:verb>New</command:verb>
       <command:noun>JCCommand</command:noun>
       <maml:description>
-        <maml:para>Creates a new JumpCloud Mac, Linux, or Windows command</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>Creates a new JumpCloud Mac, Linux, or Windows command</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -8464,9 +7927,9 @@ SystemID                 CommandID                Status
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; New-JCCommand -commandType windows -name 'PowerShell version' -command '$PSVersionTable'</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Creates a JumpCloud windows command named 'PowerShell version' which will return the PowerShell version installed on Windows endpoints when run.</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -8483,11 +7946,11 @@ SystemID                 CommandID                Status
       <command:verb>New</command:verb>
       <command:noun>JCDeploymentTemplate</command:noun>
       <maml:description>
-        <maml:para>A guided walk through that creates a command deployment CSV file on your local machine.</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The New-JCDeploymentTemplate command is a menu driven interactive function that guides admins through the process of creating a command deployment CSV file and assists in gathering the required information needed to populate the command deployment CSV file.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -8523,9 +7986,9 @@ SystemID                 CommandID                Status
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; New-JCDeploymentTemplate</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Launches the New-JCDeploymentTemplate menu</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -8542,11 +8005,11 @@ SystemID                 CommandID                Status
       <command:verb>New</command:verb>
       <command:noun>JCImportTemplate</command:noun>
       <maml:description>
-        <maml:para>A guided walk through that creates a JumpCloud User Import CSV file on your local machine.</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The New-JCImportTemplate command is a menu driven function that guides end users and creates a custom JumpCloud User Import .CSV file on their machine for populating with their users information for Importing into JumpCloud. If users wish to bind users to existing JumpCloud systems the function will also output a .csv file with containing all existing JumpCloud machines to the users $Home directory. The user will need this file to associate SystemIDs with new users.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -8581,17 +8044,10 @@ SystemID                 CommandID                Status
     </maml:alertSet>
     <command:examples>
       <command:example>
-        <maml:title>----------------------- Video Tutorials -----------------------</maml:title>
-        <dev:code></dev:code>
-        <dev:remarks>
-          <maml:para></maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; New-JCImportTemplate</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Launches the New-JCImportTemplate menu</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -8608,11 +8064,11 @@ SystemID                 CommandID                Status
       <command:verb>New</command:verb>
       <command:noun>JCRadiusServer</command:noun>
       <maml:description>
-        <maml:para>Creates a JumpCloud radius server.</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>Use this function to create a radius servers in a JumpCloud tenet.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -8760,9 +8216,9 @@ SystemID                 CommandID                Status
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; New-JCRadiusServer -Name:('RadiusServer1') -networkSourceIp:('111.111.111.111') -sharedSecret:('dUtU9FDvPc8Wdvoc#jKmZr7aJSXv5pR')</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Create a radius server in a JumpCloud tenet.</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -8779,11 +8235,11 @@ SystemID                 CommandID                Status
       <command:verb>New</command:verb>
       <command:noun>JCSystemGroup</command:noun>
       <maml:description>
-        <maml:para>Creates a JumpCloud System Group</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>Creates a JumpCloud System Group. Note that a JumpCloud System Group must have a unique name.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -8844,9 +8300,9 @@ SystemID                 CommandID                Status
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; New-JCSystemGroup -GroupName 'New System Group'</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Creates a new JumpCloud System Group with the name 'New System Group'</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -8863,11 +8319,11 @@ SystemID                 CommandID                Status
       <command:verb>New</command:verb>
       <command:noun>JCUser</command:noun>
       <maml:description>
-        <maml:para>Creates a JumpCloud User</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The New-JCUser function creates a new JumpCloud user. Note a JumpCloud user must have a unique email address and username. If a JumpCloud user is created without a password specified then the user will be created in an 'inactive state' and an activation email will be sent to the email address tied to the new account with instructions to complete activation. If a password is set during user creation then no activation email is send and the user is created in an active status. User activation can be seen in the boolean: 'activated' property of a JumpCloud user.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -10078,23 +9534,9 @@ SystemID                 CommandID                Status
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; New-JCUser -firstname Clarence -lastname Clemons -username cclemons -email cclemons@theband.com</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>This example creates the user with username cclemons. Because a password is not specified the user will be created in an inactive state and an activation email will be sent to 'cclemons@theband.com'.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; New-JCUser -firstname Clarence -lastname Clemons -username cclemons -email cclemons@theband.com -password Password1!</dev:code>
-        <dev:remarks>
-          <maml:para>This example creates the user with username cclemons. Because a password is specified the user will be created in an active state and no activation email will be sent.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; New-JCUser -firstname Clarence -lastname Clemons -username cclemons -email cclemons@theband.com -password Password1! -NumberOfCustomAttributes 2 -Attribute1_name 'Band' -Attribute1_value 'E Street' -Attribute2_name 'Instrument' -Attribute2_value 'Sax'</dev:code>
-        <dev:remarks>
-          <maml:para>This example creates the user with username cclemons and two Custom Attributes. Because a password is specified the user will be created in an active state and no activation email will be sent. When adding Custom Attributes the number of Custom Attributes being added must be declared by the -NumberOfCustomAttributes Parameter.</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -10111,11 +9553,11 @@ SystemID                 CommandID                Status
       <command:verb>New</command:verb>
       <command:noun>JCUserGroup</command:noun>
       <maml:description>
-        <maml:para>Creates a JumpCloud User Group</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>Creates a JumpCloud User Group. Note that a JumpCloud User Group must have a unique name.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -10176,9 +9618,9 @@ SystemID                 CommandID                Status
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; New-JCUserGroup -GroupName 'New User Group'</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Creates a new JumpCloud User Group with the name 'New User Group'</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -10195,11 +9637,11 @@ SystemID                 CommandID                Status
       <command:verb>Remove</command:verb>
       <command:noun>JCAssociation</command:noun>
       <maml:description>
-        <maml:para>Remove an association between two object within the JumpCloud console.</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Remove-JCAssociation function allows you to create associations of a specific object to a target object.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -10271,10 +9713,10 @@ SystemID                 CommandID                Status
             <maml:para>The type of the target object.</maml:para>
           </maml:Description>
           <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">user_group</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">system</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">system_group</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">policy</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">command</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">application</command:parameterValue>
@@ -10371,10 +9813,10 @@ SystemID                 CommandID                Status
             <maml:para>The type of the target object.</maml:para>
           </maml:Description>
           <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">user_group</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">system</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">system_group</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">policy</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">command</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">application</command:parameterValue>
@@ -10533,16 +9975,9 @@ SystemID                 CommandID                Status
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Remove-JCAssociation -Type:('radiusservers') -Id:('5c5c371704c4b477964ab4fa') -TargetType:('user_group') -TargetId:('59f20255c9118021fa01b80f')</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Remove the association between the radius server "5c5c371704c4b477964ab4fa" and the user group "59f20255c9118021fa01b80f".</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; New-JCAssociation -Type:('radiusservers') -Name:('RadiusServer1') -TargetType:('user_group') -TargetName:('All Users')</dev:code>
-        <dev:remarks>
-          <maml:para>Remove the association between the radius server "RadiusServer1" and the user group "All Users".</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -10559,11 +9994,11 @@ SystemID                 CommandID                Status
       <command:verb>Remove</command:verb>
       <command:noun>JCCommand</command:noun>
       <maml:description>
-        <maml:para>Removes a JumpCloud command</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Remove-JCCommand can remove a single JumpCloud command or multiple commands that are passed to the command over the pipeline. The default behavior is to prompt with a warning message when deleting a command result but this can be suppressed with the -force Parameter.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -10649,16 +10084,9 @@ SystemID                 CommandID                Status
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Remove-JCCommand -CommandID 5j09o6f23dan6f4n035601d5</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Removes the JumpCloud Command with a CommandID of '5j09o6f23dan6f4n035601d5'. A warning message will be presented to confirm this operation.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Remove-JCCommand -CommandID 5j09o6f23dan6f4n035601d5 -Force</dev:code>
-        <dev:remarks>
-          <maml:para>Removes the JumpCloud Command with a CommandID of '5j09o6f23dan6f4n035601d5'. A warning message will not be presented to confirm this operation because the '-Force' parameter is used.</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -10675,11 +10103,11 @@ SystemID                 CommandID                Status
       <command:verb>Remove</command:verb>
       <command:noun>JCCommandResult</command:noun>
       <maml:description>
-        <maml:para>Removes a JumpCloud Command Result</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Remove-JCCommandResult can remove a single JumpCloud command result or multiple command results that are passed to the command over the pipeline. The default behavior is to prompt with a warning message when deleting a command result but this can be suppressed with the -force Parameter.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -10765,30 +10193,9 @@ SystemID                 CommandID                Status
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Remove-JCCommandResult -CommandResultID 5j09o6f23dan6f4n035601d5</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Removes the JumpCloud Command Result with a CommandResultID of '5j09o6f23dan6f4n035601d5'. A warning message will be presented to confirm this operation.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Remove-JCCommandResult -CommandResultID 5j09o6f23dan6f4n035601d5 -Force</dev:code>
-        <dev:remarks>
-          <maml:para>Removes the JumpCloud Command Result with a CommandResultID of '5j09o6f23dan6f4n035601d5' using the -Force Parameter. A warning message will not be presented to confirm this operation.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCCommandResult  | Where-Object system -EQ 'Server01' | Remove-JCCommandResult</dev:code>
-        <dev:remarks>
-          <maml:para>Removes all JumpCloud Command Results that were run on target system with a hostname of 'Server01' A warning message will be present to confirm each operation. This warning could be suppressed using the -Force Parameter.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 4 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCCommandResult | Where-Object {$_.requestTime -GT (Get-Date).AddHours(-1) -and $_.exitCode -eq 0} | Remove-JCCommandResult -force</dev:code>
-        <dev:remarks>
-          <maml:para>Removes all JumpCloud commands that were run within the last hour and that had an exitCode of '0' using the -Force Parameter. Note an exitCode of zero generally represents a successful run of a command. This command removes all success Commands Results run in the past hour.</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -10805,11 +10212,11 @@ SystemID                 CommandID                Status
       <command:verb>Remove</command:verb>
       <command:noun>JCCommandTarget</command:noun>
       <maml:description>
-        <maml:para>Removes the association between a JumpCloud system or a JumpCloud system group from a JumpCloud command</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Remove-JCCommandTarget function allows you to remove JumpCloud systems or JumpCloud system groups from the target list of a specific JumpCloud command. Group associations can be removed by system group name or system group ID system associations can only be removed using the SystemID. When JumpCloud commands are run they target all the systems on their target list.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -10980,23 +10387,9 @@ SystemID                 CommandID                Status
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>Remove-JCCommandTarget -CommandID 5b99777710a3690ssisr3a1w -SystemID 5l0o2fu426041i79st3c35</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Removes the JumpCloud system with System ID '5l0o2fu426041i79st3c35' from the target list for the JumpCloud command with command ID '5b99777710a3690ssisr3a1w'</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>Remove-JCCommandTarget -CommandID 5b99777710a3690ssisr3a1w -GroupName WindowsMachines</dev:code>
-        <dev:remarks>
-          <maml:para>Removes the JumpCloud system group 'WindowsMachines' and the systems within this group from the target list for the JumpCloud command with command ID '5b99777710a3690ssisr3a1w'</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
-        <dev:code>Remove-JCCommandTarget -CommandID 5b99777710a3690ssisr3a1w -GroupID 5j03458a232z115210z66913</dev:code>
-        <dev:remarks>
-          <maml:para>Removes the JumpCloud system group with the GroupID '5j03458a232z115210z66913' and the systems within this group from the target list for the JumpCloud command with command ID '5b99777710a3690ssisr3a1w'</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -11013,11 +10406,11 @@ SystemID                 CommandID                Status
       <command:verb>Remove</command:verb>
       <command:noun>JCRadiusReplyAttribute</command:noun>
       <maml:description>
-        <maml:para>Removes Radius reply attributes from a JumpCloud user group.</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>Removes Radius reply attributes from a JumpCloud user group. User authentication Radius requests will return with the Radius reply attributes configured on the JumpCloud user groups which associates the user to JumpCloud Radius. Any RADIUS reply attributes configured on a JumpCloud user group which associates a user to a RADIUS server will be returned in the Access-Accept message sent to the endpoint configured to authenticate with JumpCloud Radius. If a user is a member of more then one JumpCloud user group associated with a given RADIUS server all Reply attributes for the groups that associate the user to the RADIUS server will be returned in the Access-Accept message. If a user is a member of more then one JumpCloud user group associated with a given RADIUS server and these groups are configured with conflicting RADIUS reply attributes then the values of the attributes for the group that was created most recently will be returned in the Access-Accept message. RADIUS reply attribute conflicts are resolved based on the creation date of the user group where groups that are created more recently take precedent over older groups. Conflicts occur when groups are configured with the same RADIUS reply attributes and have conflicting attribute values. RADIUS reply attributes with the same attribute names but different tag values do not create conflicts.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -11141,16 +10534,9 @@ SystemID                 CommandID                Status
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>Remove-JCRadiusReplyAttribute -GroupName BoulderOffice -All</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Removes all Radius reply attributes from the JumpCloud user group 'BoulderOffice' using the '-All' parameter.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>Remove-JCRadiusReplyAttribute -GroupName BoulderOffice -AttributeName "Session-Timeout", "Termination-Action"</dev:code>
-        <dev:remarks>
-          <maml:para>Removes attributes with the name "Session-Timeout", "Termination-Action" from the target user group 'BoulderOffice'. To remove multiple attributes at one time separate the attribute names with commas.</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -11167,11 +10553,11 @@ SystemID                 CommandID                Status
       <command:verb>Remove</command:verb>
       <command:noun>JCRadiusServer</command:noun>
       <maml:description>
-        <maml:para>Removes a JumpCloud radius server.</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>Use this function to remove a radius servers from JumpCloud tenet.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -11263,16 +10649,9 @@ SystemID                 CommandID                Status
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Remove-JCRadiusServer -Id:('5d6802c46eb05c5971151558')</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Remove a radius server by Id from a JumpCloud tenet.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCRadiusServer -Id:('5d6802c46eb05c5971151558') | Remove-JCRadiusServer</dev:code>
-        <dev:remarks>
-          <maml:para>Remove a radius server by Id from a JumpCloud tenet.</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -11289,11 +10668,11 @@ SystemID                 CommandID                Status
       <command:verb>Remove</command:verb>
       <command:noun>JCSystem</command:noun>
       <maml:description>
-        <maml:para>Removes a JumpCloud system.</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Remove-JCSystem removes a JumpCloud system. If the target system is online this command will uninstall the JumpCloud agent from the system. If the target machine is offline then at this next check in the JumpCloud agent will be removed. The only action completed on the target system is the removal of the JumpCloud agent. No modifications are made to local user accounts during the agent removal.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -11379,37 +10758,9 @@ SystemID                 CommandID                Status
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Remove-JCSystem -SystemID 5n0795a712704la4eve154r</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Removes the JumpCloud System with SystemID '5n0795a712704la4eve154r'. A warning message will be presented to confirm this operation.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Remove-JCSystem -SystemID 5n0795a712704la4eve154r -Force</dev:code>
-        <dev:remarks>
-          <maml:para>Removes the JumpCloud System with SystemID '5n0795a712704la4eve154r' using the -Force Parameter. A warning message will not be presented to confirm this operation.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
-        <dev:code>Get-JCSystem | Where-Object lastContact -lT (Get-Date).AddDays(-30).ToString('yyy-MM-ddTHH:MM:ss') | Remove-JCSystem</dev:code>
-        <dev:remarks>
-          <maml:para>Removes all JumpCloud Systems that have a lastContact date greater then 30 days. A warning message will be presented to confirm each operation.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 4 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCSystem | Where-Object displayName -Like *Server10* | Remove-JCSystem -force</dev:code>
-        <dev:remarks>
-          <maml:para>Removes all JumpCloud Systems that have a displayName like 'Server10'. A warning message will not be presented to confirm each operation.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 5 --------------------------</maml:title>
-        <dev:code>Get-JCSystem -displayName System101 -returnProperties lastContact | Sort-Object lastContact -Descending | Select * -Skip 1 | Remove-JCSystem -force</dev:code>
-        <dev:remarks>
-          <maml:para>Removes all but the last system to contact JumpCloud with the display name 'System101'. This can be used to clean up duplicate systems that may have the same name by replacing 'System101' with the name of the system that contains duplicates.</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -11426,11 +10777,11 @@ SystemID                 CommandID                Status
       <command:verb>Remove</command:verb>
       <command:noun>JCSystemGroup</command:noun>
       <maml:description>
-        <maml:para>Removes a JumpCloud System Group</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>Removes a JumpCloud System Group. By default a warning message will be presented to confirm the operation.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -11514,16 +10865,9 @@ SystemID                 CommandID                Status
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Remove-JCSystemGroup -GroupName 'On Prem Systems'</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Removes the JumpCloud System Group with the name 'On Prem Systems'. A warning message will be presented to confirm the operation.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Remove-JCSystemGroup -GroupName 'On Prem Systems' -Force</dev:code>
-        <dev:remarks>
-          <maml:para>Removes the JumpCloud System Group with the name 'On Prem Systems' using the -Force Parameter. A warning message will not be presented to confirm the operation.</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -11540,11 +10884,11 @@ SystemID                 CommandID                Status
       <command:verb>Remove</command:verb>
       <command:noun>JCSystemGroupMember</command:noun>
       <maml:description>
-        <maml:para>Removes a JumpCloud System from a JumpCloud System Group</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Remove-JCSystemGroupMember function is used to remove a JumpCloud System from a JumpCloud System Group. The  System Group member must be removed using the SystemID parameter.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -11706,23 +11050,9 @@ SystemID                 CommandID                Status
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Remove-JCSystemGroupMember -GroupName 'Windows Systems' -SystemID '59dad305383roc7k369sf7s2'</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Removes a System with SystemID '59dad305383roc7k369sf7s2' from the System Group 'Windows Systems'</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCSystem | Where-Object os -Like *Windows* | Remove-JCSystemGroupMember -GroupName 'Mac Systems'</dev:code>
-        <dev:remarks>
-          <maml:para>Removes all Systems with an operating system like 'Windows' from the System Group 'Mac Systems'</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
-        <dev:code>Get-JCSystem | Where-Object active -EQ $false | Remove-JCSystemGroupMember -GroupName 'Active Systems'</dev:code>
-        <dev:remarks>
-          <maml:para>Removes all inactive systems from the System Group 'Active Systems'</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -11739,11 +11069,11 @@ SystemID                 CommandID                Status
       <command:verb>Remove</command:verb>
       <command:noun>JCSystemUser</command:noun>
       <maml:description>
-        <maml:para>Disables a JumpCloud User account on a JumpCloud System.</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Remove-JCSystemUser function allows you disable a JumpCloud managed local user account on a JumpCloud System. The Remove-JCSystemUser function tells the JumpCloud agent to set the managed local account into a disabled state. Note* The Remove-JCSystemUser does not delete the account or any data from the target machine.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -11911,36 +11241,15 @@ SystemID                 CommandID                Status
     </command:returnValues>
     <maml:alertSet>
       <maml:alert>
-        <maml:para>If a JumpCloud user is removed in error from a system using the Remove-JCSystemUser the error can be quickly remedied by running the Add-JCSystemUser command to re-enable the user.</maml:para>
+        <maml:para></maml:para>
       </maml:alert>
     </maml:alertSet>
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Remove-JCSystemUser -Username cclemons -SystemID 5a0795nnie7127f4ev2erb154a</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Removes the JumpCloud user with the Username 'cclemons' from the System with a SystemID of '5a0795nnie7127f4ev2erb154a'. A warning message will be presented to confirm this operation.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Remove-JCSystemUser -Username cclemons -SystemID 5a0795nnie7127f4ev2erb154a -force</dev:code>
-        <dev:remarks>
-          <maml:para>Removes the JumpCloud user with the Username 'cclemons' from the System with a SystemID of '5a0795nnie7127f4ev2erb154a' using the -force Parameter. A warning message will not be presented to confirm this operation.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCSystemUser -SystemID 5a0795nnie7127f4ev2erb154a | Remove-JCSystemUser</dev:code>
-        <dev:remarks>
-          <maml:para>Removes all JumpCloud users bound directly to the System with a System ID of '5a0795nnie7127f4ev2erb154a' using Parameter binding and the pipeline. A warning message will be displayed to confirm each remove operation.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 4 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCSystemUser -SystemID 5a0795nnie7127f4ev2erb154a | Remove-JCSystemUser -Force</dev:code>
-        <dev:remarks>
-          <maml:para>Removes all JumpCloud users bound directly to the System with a System ID of '5a0795nnie7127f4ev2erb154a' using Parameter binding and the pipeline. A warning message will not be displayed to confirm each remove operation because of the presence of the -Force Parameter.</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -11957,11 +11266,11 @@ SystemID                 CommandID                Status
       <command:verb>Remove</command:verb>
       <command:noun>JCUser</command:noun>
       <maml:description>
-        <maml:para>Removes a JumpCloud User</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Remove-JCUser function will remove a JumpCloud user from the JumpCloud organization. This will remove the deleted users access to any JumpCloud bound resources.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -12114,16 +11423,9 @@ SystemID                 CommandID                Status
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Remove-JCUser cclemons</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Removes the JumpCloud User with Username 'cclemons'. A warning message will be presented to confirm this operation.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Remove-JCUser cclemons -Force</dev:code>
-        <dev:remarks>
-          <maml:para>Removes the JumpCloud User with Username 'cclemons' using the -Force Parameter. A warning message will not be presented to confirm this operation.</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -12140,11 +11442,11 @@ SystemID                 CommandID                Status
       <command:verb>Remove</command:verb>
       <command:noun>JCUserGroup</command:noun>
       <maml:description>
-        <maml:para>Removes a JumpCloud User Group</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>Removes a JumpCloud User Group. By default a warning message will be presented to confirm the operation.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -12228,16 +11530,9 @@ SystemID                 CommandID                Status
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Remove-JCUserGroup -GroupName 'The Band'</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Removes the JumpCloud User Group with the name 'The Band'. A warning message will be presented to confirm the operation.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Remove-JCUserGroup -GroupName 'The Band' -Force</dev:code>
-        <dev:remarks>
-          <maml:para>Removes the JumpCloud User Group with the name 'The Band' using the -Force Parameter. A warning message will not be presented to confirm the operation.</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -12254,11 +11549,11 @@ SystemID                 CommandID                Status
       <command:verb>Remove</command:verb>
       <command:noun>JCUserGroupMember</command:noun>
       <maml:description>
-        <maml:para>Removes a JumpCloud User from a JumpCloud User Group</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Remove-JCUserGroupMember function is used to remove a JumpCloud User from a JumpCloud User Group. The user can be removed by Username or by UserID.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -12431,30 +11726,9 @@ SystemID                 CommandID                Status
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Remove-JCUserGroupMember -Username cclemons -GroupName 'The Band'</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Removes the JumpCloud user with Username 'cclemons' from the User Group 'The Band'</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCUser | Where-Object sudo -EQ $false | Remove-JCUserGroupMember -GroupName 'Administrators'</dev:code>
-        <dev:remarks>
-          <maml:para>Removes all JumpCloud users where the 'sudo' attribute is equal to $false from the User Group 'Administrators'</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCUser | Where-Object created -lt (Get-Date).AddDays(-7) | Remove-JCUserGroupMember -GroupName 'New Hires'</dev:code>
-        <dev:remarks>
-          <maml:para>Removes all JumpCloud users not created within the last 7 days from the User Group 'New Hires'</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 4 --------------------------</maml:title>
-        <dev:code>Get-JCUser | Select-Object username, @{name='Attribute Value'; expression={$_.attributes.value}} | Where-Object 'Attribute Value' -Like *Marketing* | Remove-JCUserGroupMember -GroupName Sales</dev:code>
-        <dev:remarks>
-          <maml:para>Removes all JumpCloud users with a custom attribute value which contains 'Marketing' from the JumpCloud User Group 'Sales'. Note that to access the value of a nested property you must use Select-Object to access the nested property. In this example a calculated property is also used.</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -12471,11 +11745,11 @@ SystemID                 CommandID                Status
       <command:verb>Send</command:verb>
       <command:noun>JCPasswordReset</command:noun>
       <maml:description>
-        <maml:para>Sends a JumpCloud activation/password reset email.</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Send-JCPasswordReset command sends a JumpCloud activation/password reset email to targeted users. This function mimics the functionality of the 'resend email' button in the JumpCloud admin console. Pending users will recieve an activation email. Active users will receive a password reset request.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -12565,30 +11839,9 @@ SystemID                 CommandID                Status
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>Send-JCPasswordReset -username jcuser.one</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Sends an activation or reset email to JumpCloud user with username 'jcuser.one'</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>Get-JCUserGroupMember -GroupName NewUsers | Send-JCPasswordReset</dev:code>
-        <dev:remarks>
-          <maml:para>Sends an activation or reset email to all members of the JumpCloud user group 'NewUsers'.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
-        <dev:code>Get-JCUser -activated $false | Send-JCPasswordReset</dev:code>
-        <dev:remarks>
-          <maml:para>Sends an activation email to all JumpCloud users who are in an inactive state. Users that are inactive have not yet set their JumpCloud user passwords.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 4 --------------------------</maml:title>
-        <dev:code>Get-JCUser -activated $false -filterDateProperty created -dateFilter after -date (Get-Date).AddDays(-7) -returnProperties username | Send-JCPasswordReset</dev:code>
-        <dev:remarks>
-          <maml:para>Sends an activation email to all JumpCloud users who are in an inactive state and were created in the last seven days. Users that are inactive have not yet set their JumpCloud user passwords.</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -12605,11 +11858,11 @@ SystemID                 CommandID                Status
       <command:verb>Set</command:verb>
       <command:noun>JCCommand</command:noun>
       <maml:description>
-        <maml:para>Updates an existing JumpCloud command</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>Updates an existing JumpCloud command using the CommandID</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -12800,16 +12053,9 @@ SystemID                 CommandID                Status
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>Set-JCCommand -CommandID 5g6o3lf95r1485193o8cks6 -launchType trigger -trigger getWinLog</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Updates the 'launchType' of command with CommandID '5g6o3lf95r1485193o8cks6' to trigger and sets the 'trigger' to getWinLog.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>Set-JCCommand -CommandID 5g6o3lf95r1485193o8cks6 -name "Windows - Get Windows Event Log"</dev:code>
-        <dev:remarks>
-          <maml:para>Updates the 'name' of command with CommandID '5g6o3lf95r1485193o8cks6' to "Windows - Get Windows Event Log".</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -12826,11 +12072,11 @@ SystemID                 CommandID                Status
       <command:verb>Set</command:verb>
       <command:noun>JCOrganization</command:noun>
       <maml:description>
-        <maml:para>Allows a multi tenant admin to update their connection to a specific JumpCloud organization.</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Set-JCOrganization command can only be run by JumpCloud admins with multi tenant (MT) associations. By default the Set-JCOrganization run without any parameters with prompt JumpCloud MT admins with a selection list of their available Organizations. Admins can use the '-JumpCloudOrgID' parameter to skip this prompt and set their Organization programmatically.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -12915,25 +12161,9 @@ SystemID                 CommandID                Status
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>Set-JCOrganization
-
-======== JumpCloud Multi Tenant Selector =======
-
-1. displayName: MSP One | OrgID:  5b5o13o06tsand0c29a0t3s6
-2. displayName: MSP Two | OrgID:  5b5o13o06tsand0d29o0g3s6
-
-Select the number of the JumpCloud tenant you wish to connect to
-
-Enter a value between 1 and 2:</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Displays a prompt for MT admins to select which organization to connect to.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>Set-JCOrganization -JumpCloudOrgID 5b5o13o06tsand0c29a0t3s6</dev:code>
-        <dev:remarks>
-          <maml:para>Uses the -JumpCloudOrgID parameter for MT admins to directly connect to a specific JumpCloud org.</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -12950,11 +12180,11 @@ Enter a value between 1 and 2:</dev:code>
       <command:verb>Set</command:verb>
       <command:noun>JCRadiusReplyAttribute</command:noun>
       <maml:description>
-        <maml:para>Updates or adds Radius reply attributes to a JumpCloud user group.</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>Updates or adds Radius reply attributes to a JumpCloud user group. User authentication Radius requests will return with the Radius reply attributes configured on the JumpCloud user groups which associates the user to JumpCloud Radius. Any RADIUS reply attributes configured on a JumpCloud user group which associates a user to a RADIUS server will be returned in the Access-Accept message sent to the endpoint configured to authenticate with JumpCloud Radius. If a user is a member of more then one JumpCloud user group associated with a given RADIUS server all Reply attributes for the groups that associate the user to the RADIUS server will be returned in the Access-Accept message. If a user is a member of more then one JumpCloud user group associated with a given RADIUS server and these groups are configured with conflicting RADIUS reply attributes then the values of the attributes for the group that was created most recently will be returned in the Access-Accept message. RADIUS reply attribute conflicts are resolved based on the creation date of the user group where groups that are created more recently take precedent over older groups. Conflicts occur when groups are configured with the same RADIUS reply attributes and have conflicting attribute values. RADIUS reply attributes with the same attribute names but different tag values do not create conflicts.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -13247,32 +12477,9 @@ Enter a value between 1 and 2:</dev:code>
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>Set-JCRadiusReplyAttribute -GroupName "BoulderOffice" -VLAN 24</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>By specifying the '-VLAN' parameter three radius attributes are updated on the JumpCloud user group 'BoulderOffice'.</maml:para>
-          <maml:para>These attributes are:</maml:para>
-          <maml:para>name                    value ----                    ----- Tunnel-Medium-Type      IEEE-802 Tunnel-Type             VLAN Tunnel-Private-Group-Id 24</maml:para>
-          <maml:para>The value specified for the '-VLAN' parameter is populated for the value of Tunnel-Private-Group-Id .</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>Set-JCRadiusReplyAttribute -GroupName "BoulderOffice" -VLAN 24 -VLANTag 4</dev:code>
-        <dev:remarks>
-          <maml:para>By specifying the '-VLAN' parameter three radius attributes are update on the JumpCloud user group 'BoulderOffice'. The use of '-VLANTag' appends each VLAN attribute name with a colon and the tag number specified.</maml:para>
-          <maml:para>These attributes are:</maml:para>
-          <maml:para>name                    value ----                    ----- Tunnel-Medium-Type:4      IEEE-802 Tunnel-Type:4             VLAN Tunnel-Private-Group-Id:4 24</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
-        <dev:code>Set-JCRadiusReplyAttribute -GroupName "BoulderOffice" -NumberOfAttributes 2 -Attribute1_name "Session-Timeout" -Attribute1_value 200 -Attribute2_name "Termination-Action" -Attribute2_value 2</dev:code>
-        <dev:remarks>
-          <maml:para>Updates two Radius attributes to the JumpCloud user group 'BoulderOffice'.</maml:para>
-          <maml:para>These attribute are:</maml:para>
-          <maml:para>name               value ----               ----- Session-Timeout    200 Termination-Action 2</maml:para>
-          <maml:para>The parameter '-NumberOfAttributes' is a dynamic parameter that generates two required parameters for each custom attribute specified. In this example these parameters are -Attribute1_name,-Attribute1_value, -Attribute2_name and -Attribute2_value.</maml:para>
-          <maml:para>If the Radius reply attribute being updated already exists on the target user group the value for this attribute is updated. If the Radius reply attribute does not exist the attribute is added.</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -13289,11 +12496,11 @@ Enter a value between 1 and 2:</dev:code>
       <command:verb>Set</command:verb>
       <command:noun>JCRadiusServer</command:noun>
       <maml:description>
-        <maml:para>Updates a JumpCloud radius server.</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>Use this function to update a radius server in a JumpCloud tenet.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -13539,23 +12746,9 @@ Enter a value between 1 and 2:</dev:code>
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Set-JCRadiusServer -Id:('5d6802c46eb05c5971151558') -newName:('RadiusServer2') -networkSourceIp:('111.111.111.111') -sharedSecret:('dUtU9FDvPc8Wdvoc#jKmZr7aJSXv5pR')</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Update a radius server by Id from a JumpCloud tenet.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Set-JCRadiusServer -Name:('RadiusServer1') -newName:('RadiusServer2') -networkSourceIp:('111.111.111.111') -sharedSecret:('MzQDUuDhqhSgMoryi#fNpB2wEpvu8U1')</dev:code>
-        <dev:remarks>
-          <maml:para>Update a radius server by Name from a JumpCloud tenet.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCRadiusServer -Id:('5d6802c46eb05c5971151558') | Set-JCRadiusServer -networkSourceIp:('111.111.111.111')</dev:code>
-        <dev:remarks>
-          <maml:para>Update the networkSourceIp of a radius server by Id from a JumpCloud tenet.</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -13572,11 +12765,11 @@ Enter a value between 1 and 2:</dev:code>
       <command:verb>Set</command:verb>
       <command:noun>JCSystem</command:noun>
       <maml:description>
-        <maml:para>Updates an existing JumpCloud System</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Set-JCSystem function updates an existing JumpCloud System. Common use cases are updated SSH parameters and the system displayName. Actions can be completed in bulk for multiple systems by using the pipeline and Parameter Binding to query system properties with the Get-JCSystem function and then applying updates with Set-JCSystem function.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -13789,16 +12982,9 @@ Enter a value between 1 and 2:</dev:code>
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Set-JCSystem -SystemID 5n0795a712704la4eve154r -displayName 'WorkStation001'</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>This example updates the displayName of the System with SystemID '5n0795a712704la4eve154r' to 'WorkStation001'. Note the JumpCloud displayName is simply a text field and does not have any system impact.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCSystem | Where-Object os -Like *Mac* | Set-JCSystem -allowMultiFactorAuthentication $true</dev:code>
-        <dev:remarks>
-          <maml:para>This example updates all Systems with an operating system like 'Mac' and allows for MFA login.</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -13815,11 +13001,11 @@ Enter a value between 1 and 2:</dev:code>
       <command:verb>Set</command:verb>
       <command:noun>JCSystemUser</command:noun>
       <maml:description>
-        <maml:para>Updates the permissions of a JumpCloud user on a JumpCloud system</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Set-JCSystemUser function updates the permissions between a JumpCloud user and a JumpCloud system. The command can be used to add or remove Administrator permissions for a JumpCloud user on a JumpCloud managed system.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -13987,23 +13173,9 @@ Enter a value between 1 and 2:</dev:code>
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Set-JCSystemUser -SystemID 5n0795a712704la4eve154r -Username cclemons -Administrator $True</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Sets user with username 'cclemons' as an Administrator on the JumpCloud system with SystemID '5n0795a712704la4eve154r'</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Set-JCSystemUser -SystemID 5n0795a712704la4eve154r -Username cclemons -Administrator $False</dev:code>
-        <dev:remarks>
-          <maml:para>Sets user with username 'cclemons' as a standard user on the JumpCloud system with SystemID '5n0795a712704la4eve154r'</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCSystemUser 5n0795a712704la4eve154r  | Set-JCSystemUser -Administrator $False</dev:code>
-        <dev:remarks>
-          <maml:para>Gets all users bound to JumpCloud system with SystemID '5n0795a712704la4eve154r' and sets them as standard users. Note any users who have Global Administrator permissions would keep their Administrator permissions. To find users with Global Administrator permissions run the command: 'Get-JCUser | Where-Object sudo -EQ $true'</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -14020,11 +13192,11 @@ Enter a value between 1 and 2:</dev:code>
       <command:verb>Set</command:verb>
       <command:noun>JCUser</command:noun>
       <maml:description>
-        <maml:para>Updates an existing JumpCloud User</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Set-JCUser function updates an existing JumpCloud user account. Common use cases are account locks and unlocks, email address updates, or custom attribute modifications. Actions can be completed in bulk for multiple users by using the pipeline and Parameter Binding to query users with the Get-JCUser function and then applying updates with Set-JCUser function.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -16662,44 +15834,9 @@ Enter a value between 1 and 2:</dev:code>
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Set-JCUser -Username cclemons -account_locked $false</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>This example unlocks the account for the user with username cclemons by setting the value of the property -account_locked to $false.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Set-JCUser -Username cclemons -account_locked $true -email 'clarence@clemons.com'</dev:code>
-        <dev:remarks>
-          <maml:para>This example locks the account for user with username cclemons by setting the value of the property -account_locked to $true and also updates the email address for this user to 'clarence@clemons.com'.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCUser | Select-Object _id, @{ Name = 'email'; Expression = { ($_.email).replace('olddomain.com','newdomain.com') }} | foreach {Set-JCUser -ByID -UserID $_._id -email $_.email}</dev:code>
-        <dev:remarks>
-          <maml:para>This example updates the domain on the email addresses associated with every user in the JumpCloud tenant using Parameter Binding, the pipeline, and a calculated property. The 'olddomain.com' would represent the current domain and the 'newdomain.com' would be the new domain.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 4 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCUserGroupMember -GroupName 'Sales' | Set-JCUser -NumberOfCustomAttributes 1 -Attribute1_name 'Department' -Attribute1_value 'Sales'</dev:code>
-        <dev:remarks>
-          <maml:para>This example either updates or adds the Custom Attribute 'name = Department, value  = Sales' to all JumpCloud Users in the JumpCloud User Group 'Sales'</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 5 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCUserGroupMember -GroupName 'Sales' | Set-JCUser -RemoveAttribute Department</dev:code>
-        <dev:remarks>
-          <maml:para>This example removes the Custom Attribute with the name 'Department' from all JumpCloud Users in the JumpCloud User Group 'Sales'</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 6 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Set-JCUser -Username cclemons -enable_user_portal_multifactor $True -enrollmentdays 14</dev:code>
-        <dev:remarks>
-          <maml:para>This example enables the account for the user with username cclemons for MFA login to the user portal and sets an enrollment period of 14 days.</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -16716,11 +15853,11 @@ Enter a value between 1 and 2:</dev:code>
       <command:verb>Set</command:verb>
       <command:noun>JCUserGroupLDAP</command:noun>
       <maml:description>
-        <maml:para>The Set-JCUserGroupLDAP command adds or removes a JumpCloud user group and the members to/from the JumpCloud LDAP directory.</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>By default a JumpCloud user group and it's members are not added to the JumpCloud LDAP directory. To add a JumpCloud user group and its members to JumpCloud LDAP from within the admin console this can be toggled via the checkmark under the 'directories tab' for each user group. Alternatively this can be done using the 'Set-JCUserGroupLDAP' command and by leveraging this command with the 'Get-JCGroup -type User' command modifying JumpCloud User Group LDAP membership can be done in bulk.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -16852,23 +15989,9 @@ Enter a value between 1 and 2:</dev:code>
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>Set-JCUserGroupLDAP -GroupName Developers -LDAPEnabled $true</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Adds the JumpCloud group 'Developers' ( Group names are case sensitive ) and the members of this group to JumpCloud LDAP directory.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>Set-JCUserGroupLDAP -GroupName Developers -LDAPEnabled $False</dev:code>
-        <dev:remarks>
-          <maml:para>Removes the JumpCloud group 'Developers' ( Group names are case sensitive ) and the members of this group from the JumpCloud LDAP directory.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
-        <dev:code>Get-JCGroup -Type User | Set-JCUserGroupLDAP -LDAPEnabled $true</dev:code>
-        <dev:remarks>
-          <maml:para>This command users the 'Get-JCGroup -Type User' command to pass all JumpCloud user groups to the 'Set-JCUserGroupLDAP' command and enables JumpCloud LDAP for all user groups within a JumpCloud tenant.</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -16885,11 +16008,11 @@ Enter a value between 1 and 2:</dev:code>
       <command:verb>Update</command:verb>
       <command:noun>JCModule</command:noun>
       <maml:description>
-        <maml:para>Running this function will trigger the update of the JumpCloud PowerShell module.</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Update-JCModule function will check if there is an available update on the PowerShell gallery and if there is it will ask the user if they want to install it.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -16972,9 +16095,9 @@ Enter a value between 1 and 2:</dev:code>
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>Update-JCModule</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Running the function will trigger the update process.</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -16991,11 +16114,11 @@ Enter a value between 1 and 2:</dev:code>
       <command:verb>Update</command:verb>
       <command:noun>JCUsersFromCSV</command:noun>
       <maml:description>
-        <maml:para>Updates a set of JumpCloud users from a CSV file created using the New-JCImportTemplate function.</maml:para>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Update-JCUsersFromCSV function does data validation when updating JumpCloud users in bulk from a CSV file to warn the administrator of any potential issues during the import process. Examples of warnings include warning messages for employeeIdentifiers that already exist, systems that do not exist, and groups that do not exist. The Update-JCUserFromCSV command can be used to update user attributes, add users to groups, and bind users to systems in bulk. The Update-JCUserFromCSV command also has a '-force' parameter which admins can use to skip the data validate or to use the function in an automation script.</maml:para>
+      <maml:para>{{ Fill in the Description }}</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -17079,16 +16202,9 @@ Enter a value between 1 and 2:</dev:code>
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Update-JCUsersFromCSV ./JCUserUpdateImport_09-20-2018.csv</dev:code>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para>Updates users from the .csv file 'JCUserUpdateImport_09-20-2018.csv'</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Update-JCUsersFromCSV ./JCUserUpdateImport_09-20-2018.csv -Force</dev:code>
-        <dev:remarks>
-          <maml:para>Uses the 'Force' parameter to skip the GUI and data validation and update users from the file 'JCUserUpdateImport_09-20-2018.csv</maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>

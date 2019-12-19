@@ -19,18 +19,18 @@ Get-JCAssociation [-Type] <String> [-Force] [-Id] <String[]> [[-Fields] <Array>]
  [-IncludeInfo] [-IncludeNames] [-IncludeVisualPath] [<CommonParameters>]
 ```
 
-### ByValue
-```
-Get-JCAssociation [-Type] <String> [-Force] [[-Fields] <Array>] [[-Filter] <String>] [[-Limit] <Int32>]
- [[-Skip] <Int32>] [[-Paginate] <Boolean>] [[-TargetType] <String[]>] [-Direct] [-Indirect] [-IncludeInfo]
- [-IncludeNames] [-IncludeVisualPath] [<CommonParameters>]
-```
-
 ### ByName
 ```
 Get-JCAssociation [-Type] <String> [-Force] [-Name] <String[]> [[-Fields] <Array>] [[-Filter] <String>]
  [[-Limit] <Int32>] [[-Skip] <Int32>] [[-Paginate] <Boolean>] [[-TargetType] <String[]>] [-Direct] [-Indirect]
  [-IncludeInfo] [-IncludeNames] [-IncludeVisualPath] [<CommonParameters>]
+```
+
+### ByValue
+```
+Get-JCAssociation [-Type] <String> [-Force] [[-Fields] <Array>] [[-Filter] <String>] [[-Limit] <Int32>]
+ [[-Skip] <Int32>] [[-Paginate] <Boolean>] [[-TargetType] <String[]>] [-Direct] [-Indirect] [-IncludeInfo]
+ [-IncludeNames] [-IncludeVisualPath] [<CommonParameters>]
 ```
 
 ### Default
@@ -254,6 +254,7 @@ Whether or not you want to paginate through the results.
 Type: System.Boolean
 Parameter Sets: (All)
 Aliases:
+Accepted values: True, False
 
 Required: False
 Position: 99
@@ -284,7 +285,7 @@ The type of the target object.
 Type: System.String[]
 Parameter Sets: (All)
 Aliases: TargetSingular
-Accepted values: user_group, system, system_group, user, policy, command, application, g_suite, ldap_server, office_365, radius_server
+Accepted values: user, user_group, system, system_group, policy, command, application, g_suite, ldap_server, office_365, radius_server
 
 Required: False
 Position: 2
@@ -315,11 +316,17 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
+
 ### System.Management.Automation.SwitchParameter
+
 ### System.String[]
+
 ### System.Array
+
 ### System.Int32
+
 ### System.Boolean
+
 ## OUTPUTS
 
 ### System.Object

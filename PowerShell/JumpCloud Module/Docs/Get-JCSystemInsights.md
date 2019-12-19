@@ -171,6 +171,7 @@ Whether or not you want to paginate through the results.
 Type: System.Boolean
 Parameter Sets: (All)
 Aliases:
+Accepted values: True, False
 
 Required: False
 Position: 99
@@ -201,7 +202,7 @@ The SystemInsights table to query against.
 Type: System.String
 Parameter Sets: (All)
 Aliases:
-Accepted values: kernel_info, system_controls, uptime, etc_hosts, logical_drives, disk_info, bitlocker_info, patches, programs, apps, browser_plugins, chrome_extensions, disk_encryption, firefox_addons, groups, interface_addresses, mounts, os_version, safari_extensions, system_info, users
+Accepted values: battery, managed_policies, sip_config, alf, crashes, usb_devices, ie_extensions, launchd, shared_folders, shared_resources, user_ssh_keys, logged_in_users, shadow, sharing_preferences, user_groups, kernel_info, system_controls, uptime, etc_hosts, logical_drives, disk_info, bitlocker_info, patches, programs, apps, browser_plugins, chrome_extensions, disk_encryption, firefox_addons, groups, interface_addresses, mounts, os_version, safari_extensions, system_info, users
 
 Required: True
 Position: Named
@@ -216,10 +217,15 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
+
 ### System.String[]
+
 ### System.Array
+
 ### System.Int32
+
 ### System.Boolean
+
 ## OUTPUTS
 
 ### System.Object
