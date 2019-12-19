@@ -4,7 +4,7 @@
 
 ### RELEASE DATE
 
-December 17, 2019
+December 19, 2019
 
 #### RELEASE NOTES
 
