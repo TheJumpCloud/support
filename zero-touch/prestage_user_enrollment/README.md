@@ -497,7 +497,7 @@ self_passwd=false
 
 ### Step 5 - Selecting a User Experience
 
-As of release 3.0 the existing user_configuration_modules are built into the jumpcloud_bootstrap_template.sh script. Instead of copying and pasting values, an admin can configure the user experience by setting the three variables at the end of the "General Settings" code block.
+Configure the user experience that users will use to self identify their accounts during enrollment by setting the three variables at the end of the "General Settings" code block.
 
 The three variables below are used to drive the user experience to their configured values.
 
@@ -511,7 +511,7 @@ The `self_ID` variable may be set to:
 
 `self_ID="CE"` to prompt users to enter their company email (default setting)
 
-`self_ID="PE"` to prompt users to enter their personal email
+`self_ID="PE"` to prompt users to enter their personal email. JumpCloud does not have a "personal email" attribute so in this case the JumpCloud user "description" field is used for this lookup. Populate the description field of all JumpCloud users enrolling into zero-touch with their personal email address to use this option.
 
 `self_ID="LN"` to prompt users to enter their last name
 
