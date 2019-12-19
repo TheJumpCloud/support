@@ -18,8 +18,6 @@ profile=""
 /usr/bin/profiles -I -F "/tmp/${profile}"
 
 # get UUID
-
-
 ```
 
 #### Description
