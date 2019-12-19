@@ -70,8 +70,8 @@ NTP_SERVER="time.apple.com"
 ### Daemon Variable
 daemon="com.jumpcloud.prestage.plist"
 
-### User self identificaion parameter
-# Update the self_ID varialbe with one of the below options to change the default option (Company Email)
+### User self identification parameter
+# Update the self_ID variable with one of the below options to change the default option (Company Email)
 # Company Email (default): self_ID="CE"
 # lastname: self_ID="LN"
 # personal email: self_ID="PE"
@@ -80,8 +80,8 @@ self_ID="CE"
 
 ### Include secret id (employee ID) ###
 # Default setting is false
-# Set to true to add "secret word" to user self identificaion screen
-# This is reccomended if "active" JumpCloud users will be enrolled
+# Set to true to add "secret word" to user self identification screen
+# This is recommended if "active" JumpCloud users will be enrolled
 # NOTE for "secret word" the JumpCloud user field "employeeID" is used
 # Ex: DELETE_ENROLLMENT_USERS=true
 self_secret=false

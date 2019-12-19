@@ -8,7 +8,7 @@ December 17, 2019
 
 #### RELEASE NOTES
 
-Overhaul of the user configuration modules aspect of this workflow. The work required to copy and paste user configuration modules has been depreciated in favor of just setting variables at the top of the jumpcloud_bootstrap_template.sh script. A few assumed settings have been applied, namely, all pending users will be required to set a password as part of the enrollment process. Active users are not required to pick a password unless the "self_passwd" variable is set to true. The default setting is to have users self identify with their company email and Employee ID (referred to the employeeIdentifier in the API).
+Overhaul of the user configuration modules aspect of this workflow. The work required to copy and paste user configuration modules has been depreciated in favor of just setting variables at the top of the jumpcloud_bootstrap_template.sh script. A few assumed settings have been applied, namely, all pending users will be required to set a password as part of the enrollment process. Active users are not required to pick a password unless the "self_passwd" variable is set to true. The default setting is to have users self identify with their company email.
 
 Given the changes to the overall flow of the script, the user configuration modules have been removed from the repository. Future development should rely on changes to the jumpcloud_bootstrap_tempate.sh script.
 

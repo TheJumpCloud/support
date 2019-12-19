@@ -26,8 +26,8 @@ The JumpCloud Service Account is required to manage users on FileVault enabled m
   - [Step 4 - Populating the Bootstrap template script variables](#step-4---populating-the-bootstrap-template-script-variables)
     - [Variable Definitions](#variable-definitions)
   - [Step 5 - Selecting a User Experience](#step-5---selecting-a-user-experience)
-    - [Example user experience with secret](#example-user-experience-with-secret)
     - [Example user experience without secret](#example-user-experience-without-secret)
+    - [Example user experience with secret](#example-user-experience-with-secret)
   - [Step 6 - Create the LaunchDaemon](#step-6---create-the-launchdaemon)
   - [Step 7 - Create the postinstall script](#step-7---create-the-postinstall-script)
   - [Step 8 - Creaking a PKG using WhiteBox Packages](#step-8---creaking-a-pkg-using-whitebox-packages)
@@ -276,23 +276,28 @@ NTP_SERVER="time.apple.com"
 ### Daemon Variable
 daemon="com.jumpcloud.prestage.plist"
 
-### Comment or uncomment one of the options below ###
-### The uncommented variable will be used for user authentication ###
-### Company Email (default)
+### User self identification parameter
+# Update the self_ID variable with one of the below options to change the default option (Company Email)
+# Company Email (default): self_ID="CE"
+# lastname: self_ID="LN"
+# personal email: self_ID="PE"
+# NOTE for "personal email" the JumpCloud user field "description" is used
 self_ID="CE"
-### lastname
-# self_ID="LN"
-### personal email
-# self_ID="PE"
 
 ### Include secret id (employee ID) ###
-### Default setting is true
-self_secret=true
+# Default setting is false
+# Set to true to add "secret word" to user self identification screen
+# This is recommended if "active" JumpCloud users will be enrolled
+# NOTE for "secret word" the JumpCloud user field "employeeID" is used
+# Ex: DELETE_ENROLLMENT_USERS=true
+self_secret=false
 
-### Password Settings ###
-### Should active users be forced to update their passwords? ###
-### Pending users are required to choose a password during enrollment ###
-### Default setting is false ###
+### Password Update Settings ###
+# This setting defines if active users will be forced to update their passwords
+# Pending users will always be required to set a password during enrollment
+# Default setting is false
+# Update the self_ID self_passwd to modify this setting
+# Ex: self_passwd=true
 self_passwd=false
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -461,23 +466,28 @@ NTP_SERVER="time.apple.com"
 ### Daemon Variable
 daemon="com.jumpcloud.prestage.plist"
 
-### Comment or uncomment one of the options below ###
-### The uncommented variable will be used for user authentication ###
-### Company Email (default)
+### User self identification parameter
+# Update the self_ID variable with one of the below options to change the default option (Company Email)
+# Company Email (default): self_ID="CE"
+# lastname: self_ID="LN"
+# personal email: self_ID="PE"
+# NOTE for "personal email" the JumpCloud user field "description" is used
 self_ID="CE"
-### lastname
-# self_ID="LN"
-### personal email
-# self_ID="PE"
 
 ### Include secret id (employee ID) ###
-### Default setting is true
-self_secret=true
+# Default setting is false
+# Set to true to add "secret word" to user self identification screen
+# This is recommended if "active" JumpCloud users will be enrolled
+# NOTE for "secret word" the JumpCloud user field "employeeID" is used
+# Ex: DELETE_ENROLLMENT_USERS=true
+self_secret=false
 
-### Password Settings ###
-### Should active users be forced to update their passwords? ###
-### Pending users are required to choose a password during enrollment ###
-### Default setting is false ###
+### Password Update Settings ###
+# This setting defines if active users will be forced to update their passwords
+# Pending users will always be required to set a password during enrollment
+# Default setting is false
+# Update the self_ID self_passwd to modify this setting
+# Ex: self_passwd=true
 self_passwd=false
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -493,7 +503,7 @@ The three variables below are used to drive the user experience to their configu
 
 ```bash
 self_ID="CE"
-self_secret=true
+self_secret=false
 self_passwd=false
 ```
 
@@ -509,11 +519,25 @@ The `self_secret` variable may be set to either `true` or `false`. If this varia
 
 The `self_secret` variable dictates the user experience for active JumpCloud users. if set to `true`, existing users with JumpCloud passwords will be prompted to create a new password during the enrollment workflow. The default setting will not prompt existing JumpCloud users to enter a new password. Pending users without passwords in JumpCloud are always prompted to enter a password during the enrollment process.
 
-By default the values are set to accept a user's company email address, secret id and to not set a password for existing active users. Pending users will always be prompted to enter a password for their new account. Configuring the variables above give optionality for how users will activate their JumpCloud accounts through the DEPNotify registration window.
+By default the values are set to accept a user's company email address. Pending users will always be prompted to enter a password for their new account. Configuring the variables above give optionality for how users will activate their JumpCloud accounts through the DEPNotify registration window.
+
+#### Example user experience without secret
+
+The image below displays the default user experience, a user is prompted to enter their company email. The field referenced on the JumpCloud console is a user's email field. If a user enters an email of an existing or pending JumpCloud user the DEPNotify window will allow that user to authenticate as that user.
+
+A self_ID variable set to "CE" and self_secret variable set to false should present the user with the following window during enrollment.
+
+![pending_user_company_email](./images/pending_company_email.png?raw=true)
+
+A self_ID variable set to "PE" and self_secret variable set to false should present the user with the following window during enrollment.
+
+![pending_user_personal_email](./images/personal_email.png?raw=true)
+
+There is no defined field for "personal email" in JumpCloud so the "description" field is used to lookup and locate a user by personal email. The "Description" field for users must be populated with a value for this workflow to succeed.
 
 #### Example user experience with secret
 
-The default user experience window is displayed below. In the image below a user is prompted for their company email and a secret word. The input fields "Company Email" is used to query the "EMAIL" attribute for existing JumpCloud users. The input field "Secret" is used to query the "employeeIdentifier" attribute. The "employeeIdentifier" field for users must be populated with a value for this workflow to succeed. The "employeeIdentifier" attribute is required to be unique per user. This user experience can be used to activate **Pending** or **Active** JumpCloud users.
+The image below displays another user experience, a user is prompted for their company email and a secret word. The input fields "Company Email" is used to query the "EMAIL" attribute for existing JumpCloud users. The input field "Secret" is used to query the "employeeIdentifier" attribute. The "employeeIdentifier" field for users must be populated with a value for this workflow to succeed. The "employeeIdentifier" attribute is required to be unique per user. This user experience can be used to activate **Pending** or **Active** JumpCloud users.
 
 Pending users are users who have not set a password. Active users are users who have already set a password. A "secret" is required for these workflows. This "secret" is a value that is populated for the JumpCloud "employeeIdentifier" field of the user by the admin and provided to employees prior to zero-touch DEP enrollment. The secret secures the enrollment and provides an additional factor of verification to activate or update the JumpCloud account.
 
@@ -528,18 +552,6 @@ The user experience can be modified to accept a personal email address. The inpu
 Alternatively the input fields "Last Name" can used to query the "lastname" attribute for existing JumpCloud users. The input field "Secret" is used to query the "employeeIdentifier" attribute. The "employeeIdentifier" field for users must be populated with a value for this workflow to succeed. The "employeeIdentifier" attribute is required to be unique per user.
 
 ![pending_or_active_user_last_name_and_secret](./images/lastname_secret.png?raw=true)
-
-#### Example user experience without secret
-
-A self_ID variable set to "CE" and self_secret variable set to false should present the user with the following window during enrollment.
-
-![pending_user_company_email](./images/pending_company_email.png?raw=true)
-
-A self_ID variable set to "PE" and self_secret variable set to false should present the user with the following window during enrollment.
-
-![pending_user_personal_email](./images/personal_email.png?raw=true)
-
-There is no defined field for "personal email" in JumpCloud so the "description" field is used to lookup and locate a user by personal email. The "Description" field for users must be populated with a value for this workflow to succeed.
 
 ### Step 6 - Create the LaunchDaemon
 
