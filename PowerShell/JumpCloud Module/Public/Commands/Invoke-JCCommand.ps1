@@ -62,7 +62,7 @@ You can leverage the pipeline and Parameter Binding to populate the -trigger Par
 
     {
         Write-Verbose 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {Connect-JConline}
+        if ($JCAPIKEY.length -ne 40) { Connect-JCOnline }
 
         Write-Verbose 'Populating API headers'
         $hdrs = @{
@@ -91,7 +91,7 @@ You can leverage the pipeline and Parameter Binding to populate the -trigger Par
         if ($PSCmdlet.ParameterSetName -eq 'Variables')
         {
 
-            $Variables = @{}
+            $Variables = @{ }
 
             $VariableArrayList = New-Object System.Collections.ArrayList
 
@@ -110,7 +110,7 @@ You can leverage the pipeline and Parameter Binding to populate the -trigger Par
 
                     $VariableArrayList.Add($RawObject) | Out-Null
 
-                    $UniqueVariables = $VariableArrayList | select ObjectNumber -Unique
+                    $UniqueVariables = $VariableArrayList | Select-Object ObjectNumber -Unique
 
                 }
 
@@ -119,10 +119,10 @@ You can leverage the pipeline and Parameter Binding to populate the -trigger Par
 
             foreach ($O in  $UniqueVariables)
             {
-                $Props = $VariableArrayList | ? ObjectNumber -EQ $O.ObjectNumber
+                $Props = $VariableArrayList | Where-Object ObjectNumber -EQ $O.ObjectNumber
 
-                $VariableName = $Props | ? Type -EQ 'Name'
-                $VariableValue = $Props | ? Type -EQ 'Value'
+                $VariableName = $Props | Where-Object Type -EQ 'Name'
+                $VariableValue = $Props | Where-Object Type -EQ 'Value'
 
                 $Variables.add($VariableName.value, $VariableValue.value)
 
@@ -135,7 +135,7 @@ You can leverage the pipeline and Parameter Binding to populate the -trigger Par
         Write-Verbose $URL
 
 
-        $CommandResults = Invoke-RestMethod -Method POST -Uri $URL -Headers $hdrs -Body $Variables -UserAgent:(Get-JCUserAgent)
+        $CommandResults = Invoke-RestMethod -Method POST -Uri $URL -Headers $hdrs -Body:($Variables | ConvertTo-Json) -UserAgent:(Get-JCUserAgent)
 
         $resultsArray += $CommandResults
 

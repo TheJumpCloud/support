@@ -254,6 +254,7 @@ Whether or not you want to paginate through the results.
 Type: System.Boolean
 Parameter Sets: (All)
 Aliases:
+Accepted values: True, False
 
 Required: False
 Position: 99
@@ -284,7 +285,7 @@ The type of the target object.
 Type: System.String[]
 Parameter Sets: (All)
 Aliases: TargetSingular
-Accepted values: user_group, system, system_group, user, policy, command, application, g_suite, ldap_server, office_365, radius_server
+Accepted values: user, user_group, system, system_group, policy, command, application, g_suite, ldap_server, office_365, radius_server
 
 Required: False
 Position: 2

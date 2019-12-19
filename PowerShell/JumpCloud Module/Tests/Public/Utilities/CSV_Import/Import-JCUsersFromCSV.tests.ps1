@@ -5,7 +5,6 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
         $UserImport = Import-JCUsersFromCSV -CSVFilePath $Import_JCUsersFromCSV_1_1_Tests -force
     }
 
-
     It "Verifies a.user user" {
 
         $User = Get-JCUser -Username 'a.user' | Where-Object Username -EQ 'a.user'
@@ -168,9 +167,9 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $User.activated | Should be $true
 
-        $Groups = Get-JCGroup -Type User | Get-JCUserGroupMember | Where-Object Username -EQ 'a.1group'
+        $Groups = Get-JCAssociation -Type:('user') -Id:($User.id) -TargetType:('user_group')
 
-        $Groups.GroupName.count | Should Be 1
+        $Groups.count | Should Be 1
 
     }
 
@@ -180,9 +179,9 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $User.activated | Should be $false
 
-        $Groups = Get-JCGroup -Type User | Get-JCUserGroupMember | Where-Object Username -EQ 'ia.1group'
+        $Groups = Get-JCAssociation -Type:('user') -Id:($User.id) -TargetType:('user_group')
 
-        $Groups.GroupName.count | Should Be 1
+        $Groups.count | Should Be 1
 
     }
 
@@ -192,7 +191,7 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $User.activated | Should be $true
 
-        $Groups = Get-JCGroup -Type User | Get-JCUserGroupMember | Where-Object Username -EQ 'a.2group'
+        $Groups = Get-JCAssociation -Type:('user') -Id:($User.id) -TargetType:('user_group')
 
         $Groups.count | Should Be 2
 
@@ -204,31 +203,7 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $User.activated | Should be $false
 
-        $Groups = Get-JCGroup -Type User | Get-JCUserGroupMember | Where-Object Username -EQ 'ia.2group'
-
-        $Groups.count | Should Be 2
-
-    }
-
-    It "Verifies a.2group user" {
-
-        $User = Get-JCUser -Username 'a.2group' | Where-Object username -EQ 'a.2group'
-
-        $User.activated | Should be $true
-
-        $Groups = Get-JCGroup -Type User | Get-JCUserGroupMember | Where-Object Username -EQ 'a.2group'
-
-        $Groups.count | Should Be 2
-
-    }
-
-    It "Verifies ia.2group user" {
-
-        $User = Get-JCUser -Username 'ia.2group' | Where-Object username -EQ 'ia.2group'
-
-        $User.activated | Should be $false
-
-        $Groups = Get-JCGroup -Type User | Get-JCUserGroupMember | Where-Object Username -EQ 'ia.2group'
+        $Groups = Get-JCAssociation -Type:('user') -Id:($User.id) -TargetType:('user_group')
 
         $Groups.count | Should Be 2
 
@@ -240,7 +215,7 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $User.activated | Should be $true
 
-        $Groups = Get-JCGroup -Type User | Get-JCUserGroupMember | Where-Object Username -EQ 'a.5group'
+        $Groups = Get-JCAssociation -Type:('user') -Id:($User.id) -TargetType:('user_group')
 
         $Groups.count | Should Be 5
 
@@ -252,7 +227,7 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $User.activated | Should be $false
 
-        $Groups = Get-JCGroup -Type User | Get-JCUserGroupMember | Where-Object Username -EQ 'ia.5group'
+        $Groups = Get-JCAssociation -Type:('user') -Id:($User.id) -TargetType:('user_group')
 
         $Groups.count | Should Be 5
 
@@ -328,7 +303,7 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $User.attributes.count | Should Be 5
 
-        $Groups = Get-JCGroup -Type User | Get-JCUserGroupMember | Where-Object Username -EQ 'a.all'
+        $Groups = Get-JCAssociation -Type:('user') -Id:($User.id) -TargetType:('user_group')
 
         $Groups.count | Should Be 5
 
@@ -348,7 +323,7 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $User.attributes.count | Should Be 5
 
-        $Groups = Get-JCGroup -Type User | Get-JCUserGroupMember | Where-Object Username -EQ 'ia.all'
+        $Groups = Get-JCAssociation -Type:('user') -Id:($User.id) -TargetType:('user_group')
 
         $Groups.count | Should Be 5
 
