@@ -30,7 +30,6 @@ New SystemInsights tables available:
 * user_groups
 * user_ssh_keys
 
-
 #### IMPROVEMENTS
 
 Support for UTF-8 encoding.
