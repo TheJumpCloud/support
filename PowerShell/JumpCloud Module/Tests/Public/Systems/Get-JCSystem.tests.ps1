@@ -299,22 +299,16 @@ Describe -Tag:('JCSystem') "Get-JCSystem 1.4" {
 }
 
 Describe -Tag:('JCSystem') "Get-JCSystem 1.15.2" {
-
     It "Searches for a JumpCloud system using filterDateProperty lastContact and after" {
-
-        $NewestSystemlastContact = Get-JCSystem -returnProperties lastContact | Where-Object lastContact -NE $null | Sort-Object lastContact | Select-Object -Last 1 | Select-Object -ExpandProperty lastContact
+        [DateTime]$NewestSystemlastContact = Get-JCSystem -returnProperties lastContact | Where-Object lastContact -ne $null | Select-Object -Last 1 -ExpandProperty lastContact
         $NewestSystem = Get-JCSystem -filterDateProperty lastContact -dateFilter after -date $NewestSystemlastContact.addSeconds(-1)
-        $NewestSystemlastContactVerify = $NewestSystem | Select-Object -Last 1 | Select-Object -ExpandProperty lastContact
+        $NewestSystemlastContactVerify = $NewestSystem | Select-Object -Last 1 -ExpandProperty lastContact
         $NewestSystemlastContact | Should -Be $NewestSystemlastContactVerify
-
     }
-
     It "Searches for a JumpCloud system using  filterDateProperty lastContact and before" {
-        $OldestSystemlastContact = Get-JCSystem -returnProperties lastContact | Where-Object lastContact -NE $null | Sort-Object lastContact | Select-Object -First 1 | Select-Object -ExpandProperty lastContact
+        [DateTime]$OldestSystemlastContact = Get-JCSystem -returnProperties lastContact | Where-Object lastContact -ne $null | Select-Object -Last 1 -ExpandProperty lastContact
         $OldestSystem = Get-JCSystem -filterDateProperty lastContact -dateFilter before -date $OldestSystemlastContact.addSeconds(1)
-        $OldestSystemlastContactVerify = $OldestSystem | Select-Object -First 1 | Select-Object -ExpandProperty lastContact
+        $OldestSystemlastContactVerify = $OldestSystem | Select-Object -First 1 -ExpandProperty lastContact
         $OldestSystemlastContact | Should -Be $OldestSystemlastContactVerify
-
     }
-
 }
