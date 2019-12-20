@@ -2,8 +2,10 @@
 
 # Providing Feedback
 
-The ADMU is currently in an Early Access (EA) period. 
-Have feedback to share? Email support@jumpcloud.com to connect with a member of the JumpCloud success team. 
+The ADMU is currently in an Early Access (EA) period.
+Have feedback to share? Email support@jumpcloud.com to connect with a member of the JumpCloud success team.
+
+The current ADMU Change Log can be found [Here](https://github.com/TheJumpCloud/support/blob/master/ADMU/CHANGELOG.md).
 
 ![ADMU Workflow Diagram](https://github.com/TheJumpCloud/support/blob/master/ADMU/images/ADMU_workflow.png)
 
@@ -61,16 +63,14 @@ To account for this we currently have 2 versions of `jcadmu.exe` & `gui_jcadmu.e
 
 [ADMU EXE Directory Link](https://github.com/TheJumpCloud/support/tree/master/ADMU/exe)
 
-
-
 If for example the .net4+ version is run on win7 system the user would see the following.
 
 ![image46](https://github.com/TheJumpCloud/support/blob/master/ADMU/images/img_46.png)
 
 ## Requirements
- The ADMU tool v1.0.0 requires the following to work
+ The ADMU tool requires the following to work:
 
- * GUI form requires system to be currently Domain bound (The system does NOT have to be actively connected to the Domain Controller).
+ * gui_jcadmu requires the system to be currently Domain bound (The system does NOT have to be actively connected to the Domain Controller).
  * A domain based profile must exist on the system to be converted to a local profile (conversion of local profile or azure profile to local profile will not currently work).
 
 ## EULA & Legal Explanation
@@ -86,13 +86,13 @@ If for example the .net4+ version is run on win7 system the user would see the f
 
  **Approximate timings:**
 
+ Timings are relative to the both the size and number of files present in the windows profile and the speed of the system and hardware.
+
+ Some aproximations from VM i5-7260 2.2GHz, 512GB RAM
+
  :5 start → scanstate (USMT on win10)
- :40 start → scanstate (NO USMT on win10)
+ :40 start → scanstate (NO USMT on system)
 
- :5 start → scanstate (USMT on win7)
- :50 start → scanstate (NO USMT on win7)
-
- 1:30 Start → loadstate (win7 & win7 with 1gb file)
  2:40 start → loadstate (USMT installed on win10)
 
  1:00 loadstate → install agent (win10 & 7 missing prereq c++)
@@ -104,7 +104,7 @@ If for example the .net4+ version is run on win7 system the user would see the f
 
 ## Limitations of User Account Conversion
 
- There are limitations to consider when using the USMT utility for user account conversion. Because of this it is recommended to follow a one, some, many approach for migration to understand what and how the tool can and can not do in your environment. This is where further investigation needs to be done on streamlining and improving/documenting common scenarios and workarounds.
+ There are limitations to consider when using the USMT utility for user account conversion. Because of this it is recommended to follow a one, some, many approach for migration to understand what and how the tool can and can not do in your specific environment. This is where further investigation needs to be done on streamlining and improving/documenting common scenarios and workarounds.
  
  [Follow this link to see what gets migrated using the default settings of the USMT.](https://docs.microsoft.com/en-us/windows/deployment/usmt/usmt-what-does-usmt-migrate#bkmk-3)
 
@@ -117,7 +117,7 @@ If for example the .net4+ version is run on win7 system the user would see the f
 
 ![image42](https://github.com/TheJumpCloud/support/blob/master/ADMU/images/img_42.png)
 
- Applications that are installed and ran from the appdata directory may not migrate fully. E.g. Onedrive & Microsoft Teams. This may result in the need to resync or reinstall for the new profile.
+ Applications that are installed and ran from the appdata directory may not migrate fully. E.g. Onedrive & Microsoft Teams. This may result in the need to resync, reinstall or update shortcuts for the new profile.
 
  After converting the account, outlooks .ost offline cache file must be recreated and the account re-logged into. However the office activation and association should still be present but require a reauth.
 
@@ -129,32 +129,32 @@ If for example the .net4+ version is run on win7 system the user would see the f
 
 # ADMU Deployment Options
 
-Regardless of how you deploy the ADMU the utility will leave the selected domain account that is being migrated **untouched and fully in tact**.
-The ADMU leverages the USMT and the default settings to migrates user data from a domain account to a net new local account.
+Regardless of how you deploy the ADMU the utility will leave the selected domain account that is being migrated **untouched and fully intact**.
+The ADMU leverages the USMT and settings to migrate user data from a domain account to a net new local account.
 [Follow this link to see what gets migrated using the default settings of the USMT.](https://docs.microsoft.com/en-us/windows/deployment/usmt/usmt-what-does-usmt-migrate#bkmk-3)
 
 ## Download Links
 GUI - gui_jcadmu.exe
-* [GUI - Windows 7 / .net 3 ](https://github.com/TheJumpCloud/support/releases/download/ADMU/gui_jcadmu_win7.exe) 
-* [GUI - Windows 8.1-10 / .net 4 ](https://github.com/TheJumpCloud/support/releases/download/ADMU/gui_jcadmu_win10.exe) 
+* [GUI - Windows 7 / .net 3 ](https://github.com/TheJumpCloud/support/raw/master/ADMU/exe/Windows%207/gui_jcadmu_win7.exe) 
+* [GUI - Windows 8.1-10 / .net 4 ](https://github.com/TheJumpCloud/support/raw/master/ADMU/exe/Windows%208-10/gui_jcadmu_win10.exe) 
 
 EXE - jcadmu.exe
-* [JCADMU.exe - Windows 7 / .net 3 ](https://github.com/TheJumpCloud/support/releases/download/ADMU/jcadmu_win7.exe)
-* [JCADMU.exe - Windows 8.1-10 / .net 4 ](https://github.com/TheJumpCloud/support/releases/download/ADMU/jcadmu_win10.exe)
+* [JCADMU.exe - Windows 7 / .net 3 ](https://github.com/TheJumpCloud/support/raw/master/ADMU/exe/Windows%207/jcadmu_win7.exe)
+* [JCADMU.exe - Windows 8.1-10 / .net 4 ](https://github.com/TheJumpCloud/support/raw/master/ADMU/exe/Windows%208-10/jcadmu_win10.exe)
 
 Powershell - Migration.ps1 & Functions.ps1
 * [Powershell](https://github.com/TheJumpCloud/support/tree/master/ADMU/powershell)
 
 ## ADMU GUI
- This is a Powershell launched GUI that utilizes WPF to collect input parameters to pass to the ADMU powershell code.
+ This is a Powershell based GUI executable that utilizes WPF to collect input parameters to pass to the ADMU powershell code.
 
- If the GUI is ran and the system is not domain joined the utility will not let the user continue with the process. The only option is to quit the application. 
+ If the GUI is ran and the system is not domain joined the utility will not let the user continue with the process. The only option is to quit the application.
 
 ![image7](https://github.com/TheJumpCloud/support/blob/master/ADMU/images/img_7.png)
 
 ### Using the ADMU GUI
 
-To use the GUI run the relevant .exe file for your system as administrator from the Download Links above. It may also be required to unblock the Security setting stating `This file came from another computer and might be blocked to help protect this computer`. This will be addressed by code signing in a future release and not be required.
+To use the GUI run the relevant .exe file for your system as administrator from the Download Links above. It is also required to unblock the Security setting stating `This file came from another computer and might be blocked to help protect this computer`. It may also be flagged by antivirus software and need to be excluded. This will be addressed by code signing the file in a future release and this step no longer be required.
 
 ![image48](https://github.com/TheJumpCloud/support/blob/master/ADMU/images/img_48.png)
 
@@ -190,7 +190,6 @@ On the security tab check the box for "Unblock" click "Ok" and you will be able 
  The Powershell script has validation on the main parameters and requires them to not to be empty as well as the -jumpcloudconnectkey must be 40chars or it will not move forward.
 
 ![image10](https://github.com/TheJumpCloud/support/blob/master/ADMU/images/img_10.png)
-
 
 
  Currently if you pass in a domain username that doesn’t exist it will continue and error at the 'user group addition' step in the script. Earlier Validation of this user accounts existence both locally and on the domain will be added into a future version of the tool to better gate and only allow conversions of possible accounts. This is controlled by the GUI implementation and its use of the selection list.
@@ -243,6 +242,7 @@ c:\ADMU\powershell\Migration.ps1 -DomainUserName 'tom.hanks' -JumpCloudUserName 
 ```
 
  Possible future deployment scenarios:
+ * ADMU file deployment script & commands
  * Logon script via GPO
  * Meraki deployment
  * PDQ deployment
@@ -573,11 +573,14 @@ Reference: [https://docs.microsoft.com/en-us/azure/active-directory/devices/](ht
 
  This type of account is not supported by JumpCloud takeover when binding users to a system and would create a new ‘local profile’ in this example if JumpCloud username was ‘BradStevens’ it would create ‘10PRO1809-1\BradStevens’ and not sync/link with the ‘AzureAD\BradStevens’ profile.
 
- The ADMU v1.0.0 tool can not currently convert this account to a ‘local profile’. However this functionality will be added in the future to allow administrators a way to convert ‘Azure Ad Joined’ systems and accounts to migrate to JumpCloud.
+ The ADMU Migration script can convert this account to a ‘local profile’.
 
-```diff
-- Azure AD Join is not currently supported with JumpCloud takeover.
+ This can be achieved using the `$AzureADProfile=$true` parameter.
+
+ ```powershell
+.\Migration.ps1 -DomainUserName 'tcruise' -JumpCloudUserName 'tom.cruise' -TempPassword 'Temp123!' -JumpCloudConnectKey '4e7699c4c1c1e3126fb627240723cb3g292ebc75' -AcceptEULA $true -InstallJCAgent $true -AzureADProfile $true
 ```
+
 
 ![image0](https://github.com/TheJumpCloud/support/blob/master/ADMU/images/img_0.png)
 

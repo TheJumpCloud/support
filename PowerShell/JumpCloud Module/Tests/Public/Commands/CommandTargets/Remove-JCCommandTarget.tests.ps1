@@ -1,6 +1,6 @@
 Describe -Tag:('JCCommandTarget') 'Add-JCCommandTarget 1.3' {
     Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
-    It "Removes a single system to a JupmCloud command" {
+    It "Removes a single system to a JumpCloud command" {
 
 
         $TargetAdd = Add-JCCommandTarget -CommandID $PesterParams.CommandID -SystemID $PesterParams.SystemID
@@ -14,7 +14,7 @@ Describe -Tag:('JCCommandTarget') 'Add-JCCommandTarget 1.3' {
 
     }
 
-    It "Removes a single system group to a JupmCloud command by GroupName" {
+    It "Removes a single system group to a JumpCloud command by GroupName" {
 
         $TargetAdd = Add-JCCommandTarget -CommandID $PesterParams.CommandID -GroupName $PesterParams.SystemGroupName
 
@@ -24,7 +24,7 @@ Describe -Tag:('JCCommandTarget') 'Add-JCCommandTarget 1.3' {
 
     }
 
-    It "Removes a single system group to a JupmCloud command by GroupID" {
+    It "Removes a single system group to a JumpCloud command by GroupID" {
 
         $TargetAdd = Add-JCCommandTarget -CommandID $PesterParams.CommandID -GroupID $PesterParams.SystemGroupID
 

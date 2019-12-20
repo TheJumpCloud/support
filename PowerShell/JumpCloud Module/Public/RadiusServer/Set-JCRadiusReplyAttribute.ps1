@@ -43,6 +43,10 @@ If an invalid attribute is configured on a user group this will prevent users wi
             $NumberOfAttributes = 2
             $VLAN = 11
         }
+        ElseIf ([System.String]::IsNullOrEmpty($NumberOfAttributes))
+        {
+            $NumberOfAttributes = 0
+        }
         $dict = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
 
         [int]$NewParams = 0
@@ -97,7 +101,7 @@ If an invalid attribute is configured on a user group this will prevent users wi
     {
 
         Write-Verbose 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {Connect-JConline}
+        if ($JCAPIKEY.length -ne 40) { Connect-JCOnline }
 
         $hdrs = @{
 
@@ -137,11 +141,11 @@ If an invalid attribute is configured on a user group this will prevent users wi
 
             $ExistingAttributes = $GroupInfo | Select-Object -ExpandProperty attributes
         }
-        else { Throw "Group does not exist. Run 'Get-JCGroup -type User' to see a list of all your JumpCloud user groups."}
+        else { Throw "Group does not exist. Run 'Get-JCGroup -type User' to see a list of all your JumpCloud user groups." }
 
         $replyAttributes = New-Object System.Collections.ArrayList
 
-        $CurrentAttributes = Get-JCGroup -Type User -Name $GroupName | Select-Object @{Name = "RadiusAttributes"; Expression = {$_.attributes.radius.reply}} | Select-Object -ExpandProperty RadiusAttributes
+        $CurrentAttributes = Get-JCGroup -Type User -Name $GroupName | Select-Object @{Name = "RadiusAttributes"; Expression = { $_.attributes.radius.reply } } | Select-Object -ExpandProperty RadiusAttributes
 
         $RadiusCustomAttributesArrayList = New-Object System.Collections.ArrayList
 
@@ -185,7 +189,7 @@ If an invalid attribute is configured on a user group this will prevent users wi
 
         }
 
-        $NewAttributesHash = @{}
+        $NewAttributesHash = @{ }
 
         foreach ($NewA in $NewAttributes)
         {
@@ -245,7 +249,7 @@ If an invalid attribute is configured on a user group this will prevent users wi
 
         }
 
-        $CurrentAttributesHash = @{}
+        $CurrentAttributesHash = @{ }
 
         $VLANAttrHash = @{
             "Tunnel-Type"             = "Tunnel-Type"
@@ -259,7 +263,7 @@ If an invalid attribute is configured on a user group this will prevent users wi
             {
                 $TagSplit = ($CurrentA.name -split ":")[0]
 
-                if (($VLANAttrHash).ContainsKey($TagSplit)) {Continue}
+                if (($VLANAttrHash).ContainsKey($TagSplit)) { Continue }
 
                 else
                 {

@@ -1,3 +1,56 @@
+## 1.2.5
+
+#### RELEASE DATE
+
+December 2, 2019
+
+#### RELEASE NOTES
+
+- ConvertSID Function updated to work on windows 7 and powershell 2.0
+
+## 1.2.4
+
+#### RELEASE DATE
+
+November 26, 2019
+
+#### RELEASE NOTES
+
+- Add $AzureADProfile Parameter to allow conversion via migration.ps1 script
+
+## 1.2.3
+
+#### RELEASE DATE
+
+November 19, 2019
+
+#### RELEASE NOTES
+
+- Force reboot without delay or keypress to work with CLI deployments
+- Update Boolean options for EULA, Agent, LeaveDomain & ForceReboot
+
+## 1.2.2
+
+#### RELEASE DATE
+
+October 29, 2019
+
+#### RELEASE NOTES
+
+- Fix Win7/Powershell 2.0 SID conversion query used in local admin check in GUI
+
+## 1.2.1
+
+#### RELEASE DATE
+
+October 14, 2019
+
+#### RELEASE NOTES
+
+- Improve further and reduce migapp.xml & miguser.xml entrys. This will reduce overall file count and scanning times.
+
+- Aditional Pester tests and azure pipeline CI for improved automated testing.
+
 ## 1.2.0
 
 #### RELEASE DATE

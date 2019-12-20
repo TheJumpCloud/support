@@ -161,6 +161,7 @@ Whether or not you want to paginate through the results.
 Type: System.Boolean
 Parameter Sets: (All)
 Aliases:
+Accepted values: True, False
 
 Required: False
 Position: 99

@@ -94,10 +94,10 @@
             <maml:para>The type of the target object.</maml:para>
           </maml:Description>
           <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">user_group</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">system</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">system_group</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">policy</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">command</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">application</command:parameterValue>
@@ -206,10 +206,10 @@
             <maml:para>The type of the target object.</maml:para>
           </maml:Description>
           <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">user_group</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">system</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">system_group</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">policy</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">command</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">application</command:parameterValue>
@@ -1886,10 +1886,10 @@
             <maml:para>Specify the association types to include in the copy.</maml:para>
           </maml:Description>
           <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">user_group</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">system</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">system_group</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">policy</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">command</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">application</command:parameterValue>
@@ -1911,10 +1911,10 @@
             <maml:para>Specify the association types to exclude from the copy.</maml:para>
           </maml:Description>
           <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">user_group</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">system</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">system_group</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">policy</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">command</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">application</command:parameterValue>
@@ -2022,10 +2022,10 @@
             <maml:para>Specify the association types to include in the copy.</maml:para>
           </maml:Description>
           <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">user_group</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">system</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">system_group</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">policy</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">command</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">application</command:parameterValue>
@@ -2047,10 +2047,10 @@
             <maml:para>Specify the association types to exclude from the copy.</maml:para>
           </maml:Description>
           <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">user_group</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">system</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">system_group</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">policy</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">command</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">application</command:parameterValue>
@@ -2311,10 +2311,10 @@
             <maml:para>The type of the target object.</maml:para>
           </maml:Description>
           <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">user_group</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">system</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">system_group</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">policy</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">command</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">application</command:parameterValue>
@@ -2438,6 +2438,10 @@
           <maml:Description>
             <maml:para>Whether or not you want to paginate through the results.</maml:para>
           </maml:Description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">True</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">False</command:parameterValue>
+          </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">System.Boolean</command:parameterValue>
           <dev:type>
             <maml:name>System.Boolean</maml:name>
@@ -2502,10 +2506,10 @@
             <maml:para>The type of the target object.</maml:para>
           </maml:Description>
           <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">user_group</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">system</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">system_group</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">policy</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">command</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">application</command:parameterValue>
@@ -2629,6 +2633,10 @@
           <maml:Description>
             <maml:para>Whether or not you want to paginate through the results.</maml:para>
           </maml:Description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">True</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">False</command:parameterValue>
+          </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">System.Boolean</command:parameterValue>
           <dev:type>
             <maml:name>System.Boolean</maml:name>
@@ -4773,6 +4781,10 @@
           <maml:Description>
             <maml:para>Whether or not you want to paginate through the results.</maml:para>
           </maml:Description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">True</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">False</command:parameterValue>
+          </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">System.Boolean</command:parameterValue>
           <dev:type>
             <maml:name>System.Boolean</maml:name>
@@ -4859,6 +4871,10 @@
           <maml:Description>
             <maml:para>Whether or not you want to paginate through the results.</maml:para>
           </maml:Description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">True</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">False</command:parameterValue>
+          </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">System.Boolean</command:parameterValue>
           <dev:type>
             <maml:name>System.Boolean</maml:name>
@@ -5280,10 +5296,11 @@
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
           <maml:name>filterDateProperty</maml:name>
           <maml:Description>
-            <maml:para>A parameter that can filter on the property 'created'. This parameter if used creates two more dynamic parameters 'dateFilter' and 'date'. See EXAMPLE 5 above for full syntax.</maml:para>
+            <maml:para>A parameter that can filter on the property 'created' or 'lastContact'. Only inactive systems will be returned when using the lastContact filter. This parameter if used creates two more dynamic parameters 'dateFilter' and 'date'. See EXAMPLE 5 above for full syntax.</maml:para>
           </maml:Description>
           <command:parameterValueGroup>
             <command:parameterValue required="false" command:variableLength="false">created</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">lastContact</command:parameterValue>
           </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
           <dev:type>
@@ -5563,7 +5580,7 @@
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
         <maml:name>filterDateProperty</maml:name>
         <maml:Description>
-          <maml:para>A parameter that can filter on the property 'created'. This parameter if used creates two more dynamic parameters 'dateFilter' and 'date'. See EXAMPLE 5 above for full syntax.</maml:para>
+          <maml:para>A parameter that can filter on the property 'created' or 'lastContact'. Only inactive systems will be returned when using the lastContact filter. This parameter if used creates two more dynamic parameters 'dateFilter' and 'date'. See EXAMPLE 5 above for full syntax.</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
         <dev:type>
@@ -5986,6 +6003,10 @@
           <maml:Description>
             <maml:para>Whether or not you want to paginate through the results.</maml:para>
           </maml:Description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">True</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">False</command:parameterValue>
+          </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">System.Boolean</command:parameterValue>
           <dev:type>
             <maml:name>System.Boolean</maml:name>
@@ -5999,6 +6020,21 @@
             <maml:para>The SystemInsights table to query against.</maml:para>
           </maml:Description>
           <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">battery</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">managed_policies</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">sip_config</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">alf</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">crashes</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">usb_devices</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">ie_extensions</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">launchd</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">shared_folders</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">shared_resources</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">user_ssh_keys</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">logged_in_users</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">shadow</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">sharing_preferences</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">user_groups</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">kernel_info</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">system_controls</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">uptime</command:parameterValue>
@@ -6096,6 +6132,10 @@
           <maml:Description>
             <maml:para>Whether or not you want to paginate through the results.</maml:para>
           </maml:Description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">True</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">False</command:parameterValue>
+          </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">System.Boolean</command:parameterValue>
           <dev:type>
             <maml:name>System.Boolean</maml:name>
@@ -6109,6 +6149,21 @@
             <maml:para>The SystemInsights table to query against.</maml:para>
           </maml:Description>
           <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">battery</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">managed_policies</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">sip_config</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">alf</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">crashes</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">usb_devices</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">ie_extensions</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">launchd</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">shared_folders</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">shared_resources</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">user_ssh_keys</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">logged_in_users</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">shadow</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">sharing_preferences</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">user_groups</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">kernel_info</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">system_controls</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">uptime</command:parameterValue>
@@ -10271,10 +10326,10 @@ SystemID                 CommandID                Status
             <maml:para>The type of the target object.</maml:para>
           </maml:Description>
           <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">user_group</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">system</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">system_group</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">policy</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">command</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">application</command:parameterValue>
@@ -10371,10 +10426,10 @@ SystemID                 CommandID                Status
             <maml:para>The type of the target object.</maml:para>
           </maml:Description>
           <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">user_group</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">system</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">system_group</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">policy</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">command</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">application</command:parameterValue>
