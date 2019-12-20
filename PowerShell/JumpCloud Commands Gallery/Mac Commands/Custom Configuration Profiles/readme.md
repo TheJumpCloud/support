@@ -1,6 +1,6 @@
 # Custom Configuration Profiles in JumpCloud
 
-JumpCloud supports the management of custom configuration [profiles](https://developer.apple.com/documentation/devicemanagement/using_configuration_profiles?language=objc) through [JumpCloud commands](https://support.jumpcloud.com/support/s/article/getting-started-commands-2019-08-21-10-36-47). Tools like [ProfileCreator](https://github.com/ProfileCreator/ProfileCreator) or [Apple Configurator 2](https://apps.apple.com/us/app/apple-configurator-2/id1037126344?mt=12) can be used to generate .mobileconfig files which contain preferences for systems and macOS applications. Profiles generated with ProfileCreator or other methods can be distributed to JumpCloud systems using the macOS binary `profiles` application and JumpCloud commands. Since the .mobileconfig files are almost undoubtably under the 1MB payload limit of a JumpCloud command, those files can up uploaded and distributed using JumpCloud commands.
+JumpCloud supports the management of custom configuration [profiles](https://developer.apple.com/documentation/devicemanagement/using_configuration_profiles?language=objc) through [JumpCloud commands](https://support.jumpcloud.com/support/s/article/getting-started-commands-2019-08-21-10-36-47). Tools like [ProfileCreator](https://github.com/ProfileCreator/ProfileCreator) or [Apple Configurator 2](https://apps.apple.com/us/app/apple-configurator-2/id1037126344?mt=12) can be used to generate .mobileconfig files which contain preferences for systems and macOS applications. Profiles generated with ProfileCreator or other methods can be distributed to JumpCloud systems using the macOS binary `profiles` application and JumpCloud commands. Since the .mobileconfig files are almost undoubtably under the [1MB payload limit](https://support.jumpcloud.com/support/s/article/getting-started-commands-2019-08-21-10-36-47#Files) of a JumpCloud command, those files can up uploaded and distributed using JumpCloud commands.
 
 ## Table of Contents
 
@@ -69,8 +69,7 @@ The result of that command run against the JumpCloud application is: `com.jumpcl
 
 ![notification complete](images/notification_post.png)
 
-Save and export the profile using the ProfileCreator file menu. File > Export...
-
+Save and [Export](#export-a-profile) the profile for deployment. Distribute to JumpCloud systems by [importing the custom configuration profile](#import-the-%22jumpcloud-install-custom-configuration-profile%22-command) command
 ### Firefox Custom Profile
 
 Firefox or other browsers can be configured to accept settings from a profile. To create an application manifest payload. Select the application icon and add the Firefox profile. Ensure the EnterprisePoliciesEnabled checkbox is ticked like the example below:
@@ -91,6 +90,8 @@ This example sets the dock pixel size to 24px and positions the dock on the left
 
 ![dock example](images/dock_example.png)
 
+Save and [Export](#export-a-profile) the profile for deployment. Distribute to JumpCloud systems by [importing the custom configuration profile](#import-the-%22jumpcloud-install-custom-configuration-profile%22-command) command
+
 ### Custom Font Distribution
 
 Individual Fonts or Font Families can be distributed through custom profiles. The Payload example below contains four Font Payloads. Clicking the [+] icon next to payload allows a user to add additional payloads to the profile. In the example below, [Google's Roboto Mono for Powerline](https://github.com/powerline/fonts/tree/master/RobotoMono) font is being distributed along with the Bold, Medium and Light font variants in the other payloads.
@@ -98,6 +99,8 @@ Individual Fonts or Font Families can be distributed through custom profiles. Th
 ![fonts](images/fonts.png)
 
 (note: Font payloads must be under 1MB to comply with the JumpCloud command file size limit)
+
+Save and [Export](#export-a-profile) the profile for deployment. Distribute to JumpCloud systems by [importing the custom configuration profile](#import-the-%22jumpcloud-install-custom-configuration-profile%22-command) command
 
 ## Export a profile
 
@@ -145,7 +148,7 @@ Some profiles must be distributed though at least User Approved MDM. Without Use
 - Privacy Preference Policy Control Profiles
 - Google Account Profiles
 
-Distributing custom profiles involves some risk but no more than using JumpCloud with a custom MDM. Profiles in JumpCloud may alter the same preferences as custom profiles. Setting a custom password policy profile will conflict with settings in JumpCloud for example. It's of utmost importance to test policy deployments before organization wide distribution.
+Distributing custom profiles requires some knowledge of the existing profiles within an organization. Profiles in JumpCloud may alter the same preferences as custom profiles. Setting a custom password policy profile will conflict with settings in JumpCloud for example. It's of utmost importance to test policy deployments before organization wide distribution.
 
 ### Removal of profiles
 
