@@ -1,15 +1,6 @@
 # Custom Configuration Profiles in JumpCloud
 
-JumpCloud supports the management of custom configuration [profiles](https://developer.apple.com/documentation/devicemanagement/using_configuration_profiles?language=objc) through [JumpCloud commands](https://support.jumpcloud.com/support/s/article/getting-started-commands-2019-08-21-10-36-47). Tools like [ProfileCreator](https://github.com/ProfileCreator/ProfileCreator) or [Apple Configurator 2](https://apps.apple.com/us/app/apple-configurator-2/id1037126344?mt=12) can be used to generate .mobileconfig files which contain preferences for systems and macOS applications. Documentation for this process uses profiles and application manifests within ProfileCreator. Profiles generated with ProfileCreator or other methods can be distributed to JumpCloud systems using the macOS binary `profiles` application and JumpCloud commands. Since the .mobileconfig files are almost undoubtably under the 1MB payload limit of a JumpCloud command, those files can up uploaded and distributed using JumpCloud commands.
-
-The process to create profiles differs little between each type of profile. In general the process to deploy a custom profile is as follows:
-
-1. Create an profile
-2. Export a profile
-3. Import the "JumpCloud Install Custom Configuration Profile" Command
-4. Upload the profile to the new JumpCloud Command
-5. Distribute to systems
-6. (optional) remove the profile
+JumpCloud supports the management of custom configuration [profiles](https://developer.apple.com/documentation/devicemanagement/using_configuration_profiles?language=objc) through [JumpCloud commands](https://support.jumpcloud.com/support/s/article/getting-started-commands-2019-08-21-10-36-47). Tools like [ProfileCreator](https://github.com/ProfileCreator/ProfileCreator) or [Apple Configurator 2](https://apps.apple.com/us/app/apple-configurator-2/id1037126344?mt=12) can be used to generate .mobileconfig files which contain preferences for systems and macOS applications. Profiles generated with ProfileCreator or other methods can be distributed to JumpCloud systems using the macOS binary `profiles` application and JumpCloud commands. Since the .mobileconfig files are almost undoubtably under the 1MB payload limit of a JumpCloud command, those files can up uploaded and distributed using JumpCloud commands.
 
 ## Table of Contents
 
@@ -37,20 +28,20 @@ When opening ProfileCreator for the first time, it's advised to set organization
 
 ![example preferences](images/preferences.png)
 
-Consider setting an organization name and identifier. Optionally, [sing each profile](#signing-profiles).
+Consider setting an organization name and identifier. Optionally, [sign each profile](#signing-profiles).
 
 ## Command Examples
 
 The following section will walk through several example custom configuration profiles. At the time of this writing development of ProfileCreator manifests were still in development although the application ProfileCreator is no longer in development. The following examples should be used as a reference and tested in an environment prior to deployment
 
-* Catalina Notifications
-* Firefox Profile
-* Password Prevention
-* Custom Software on Dock
+- Catalina Notifications
+- Firefox Settings
+- Custom Dock Configuration
+- Custom Font Distribution
 
 ### Catalina Notifications Profile
 
-This example demonstrates the work required to build a custom policy to allow notifications on several applications. As of the release of Catalina 10.15 users are prompted to allow or deny specific applications from prompting notification banners.
+This example demonstrates the work required to build a custom policy to allow notifications on several applications. As of the release of macOS Catalina 10.15 users are prompted to allow or deny specific applications from prompting notification banners.
 
 This profile will allow the JumpCloud tray application to send the user notifications.
 
@@ -76,9 +67,10 @@ osascript -e 'id of app "Microsoft Excel"'
 
 The result of that command run against the JumpCloud application is: `com.jumpcloud.jcagent-tray`. Copy that value into the "App Bundle Identifier" for the Notification payload preference. In the example image below the `com.apple.iCal` notification settings are also applied. Note the difference between "Alert Types" between the two preferences. Refer to Apple's documentation on [alert types](https://developer.apple.com/design/human-interface-guidelines/macos/system-capabilities/notifications/) for more information.
 
+![notification complete](images/notification_post.png)
+
 Save and export the profile using the ProfileCreator file menu. File > Export...
 
-An exit code of 0 results in a successful deployment of the profile to a system endpoint.
 
 ### Firefox Custom Profile
 
@@ -102,19 +94,17 @@ This example sets the dock pixel size to 24px and positions the dock on the left
 
 ### Custom Font Distribution
 
-Individual Fonts or Font Families can be distributed through custom profiles. The Payload example below contains four Font Payloads. Clicking the [+] icon next to payload allows a user to add additional payloads to the profile. In the example below, Google's Roboto Mono for Powerline font is being distributed along with the Bold, Medium and Light font variants in the other payloads.
+Individual Fonts or Font Families can be distributed through custom profiles. The Payload example below contains four Font Payloads. Clicking the [+] icon next to payload allows a user to add additional payloads to the profile. In the example below, [Google's Roboto Mono for Powerline](https://github.com/powerline/fonts/tree/master/RobotoMono) font is being distributed along with the Bold, Medium and Light font variants in the other payloads.
 
 ![fonts](images/fonts.png)
 
 (note: Font payloads must be under 1MB to comply with the JumpCloud command file size limit)
 
-
-
 ## Export a profile
 
 Assuming a profile is ready for deployment. Save and Export the profile using the ProfileCreator file menu. File > Export...
 
-On the export menu, choose a location to save the profile. The profile will be uploaded to a JumpCloud command. Optionally sign the profile.
+On the export menu, choose a location to save the profile. The profile will be uploaded to a JumpCloud command. Optionally [sign the profile](#signing-profiles).
 
 ![export profile menu](images/export_profile.png)
 
