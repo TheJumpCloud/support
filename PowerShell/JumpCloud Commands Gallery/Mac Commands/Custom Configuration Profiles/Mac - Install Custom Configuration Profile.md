@@ -17,7 +17,6 @@ profile=""
 # Installs a profile to the selected system
 /usr/bin/profiles -I -F "/tmp/${profile}"
 
-# get UUID
 ```
 
 #### Description

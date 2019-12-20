@@ -71,14 +71,13 @@ The result of that command run against the JumpCloud application is: `com.jumpcl
 
 Save and export the profile using the ProfileCreator file menu. File > Export...
 
-
 ### Firefox Custom Profile
 
 Firefox or other browsers can be configured to accept settings from a profile. To create an application manifest payload. Select the application icon and add the Firefox profile. Ensure the EnterprisePoliciesEnabled checkbox is ticked like the example below:
 
 ![Firefox checkbox](images/firefox_checkbox.png)
 
-Add a setting like default homepage like the example below. Save and [export the policy](#export-a-profile). 
+Add a setting like default homepage like the example below. Save and [export the policy](#export-a-profile).
 
 ![Firefox example](images/firefox_profile.png)
 
@@ -104,23 +103,23 @@ Individual Fonts or Font Families can be distributed through custom profiles. Th
 
 Assuming a profile is ready for deployment. Save and Export the profile using the ProfileCreator file menu. File > Export...
 
-On the export menu, choose a location to save the profile. The profile will be uploaded to a JumpCloud command. Optionally [sign the profile](#signing-profiles).
+On the export menu, choose a location to save the profile. The profile will be uploaded to a JumpCloud command. Optionally, [sign the profile](#signing-profiles) with an Apple Developer certificate.
 
 ![export profile menu](images/export_profile.png)
 
 ## Import the "JumpCloud Install Custom Configuration Profile" Command
 
-Using the PowerShell module, import the Custom Configuration Profile command to a JumpCloud tenant.
+Using the PowerShell module, import the [Install Custom Configuration Profile](Mac&#32;-&#32;Install&#32;Custom&#32;Configuration&#32;Profile.md) command to a JumpCloud tenant.
 
 ```pwsh
 Import-JCCommand "Bit.ly-REPLACE_ME"
 ```
 
-Open the newly imported JumpCloud command. Under "Files" select the "Upload Files" button and upload the .mobileconfig profile created with ProfileCreator. Select target systems and run the command to deploy the profile to systems.
+Open the newly imported JumpCloud command within the JumpCloud Console. Under "Files" select the "Upload Files" button and upload the .mobileconfig profile created with ProfileCreator. Copy the .mobileconfig name to the "profile" variable within the command text block like the example below:
 
 ![name and upload configuration](images/notification_upload_name.png)
 
-Optionally rename the command to help identify which profile is installed. If desired, the install script could be modified to install multiple profiles. Each profile would need to be uploaded to the command and each profile would need to be installed explicitly and separately like the example commands below:
+Optionally, rename the command to help identify which profile is installed. If desired, the install script could be modified to install multiple profiles. Each profile would need to be uploaded to the command and each profile would need to be installed explicitly and separately like the example commands below:
 
 ```bash
 /usr/bin/profiles -I -F "/tmp/Catalina Notification Profile.mobileconfig"
@@ -143,8 +142,8 @@ Signed policies appear as "Verified" on system endpoints, signing a profile requ
 
 Some profiles must be distributed though at least User Approved MDM. Without User Approved MDM, JumpCloud does not currently support distribution of the following profiles:
 
-* Privacy Preference Policy Control Profiles
-* Google Account Profiles
+- Privacy Preference Policy Control Profiles
+- Google Account Profiles
 
 Distributing custom profiles involves some risk but no more than using JumpCloud with a custom MDM. Profiles in JumpCloud may alter the same preferences as custom profiles. Setting a custom password policy profile will conflict with settings in JumpCloud for example. It's of utmost importance to test policy deployments before organization wide distribution.
 
