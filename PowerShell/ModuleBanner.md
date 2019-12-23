@@ -9,7 +9,7 @@
 ```
 Support for UTF-8 encoding and new SystemInsights tables available.
 !!!*****************************************
-!!!PowerShell Core Versions 6.0 & 6.1 are no longer supported. Please update PowerShell https://aka.ms/pscore6
+!!!PowerShell Core Versions 6.0 and 6.1 are no longer supported. Please update PowerShell https://aka.ms/pscore6
 !!!*****************************************
 ```
 
@@ -18,6 +18,6 @@ Support for UTF-8 encoding and new SystemInsights tables available.
 ```
 Support for UTF-8 encoding and new SystemInsights tables available.
 !!!*****************************************
-!!!PowerShell Core Versions 6.0 & 6.1 are no longer supported. Please update PowerShell https://aka.ms/pscore6
+!!!PowerShell Core Versions 6.0 and 6.1 are no longer supported. Please update PowerShell https://aka.ms/pscore6
 !!!*****************************************
 ```
