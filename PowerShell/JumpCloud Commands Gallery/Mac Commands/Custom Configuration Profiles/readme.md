@@ -115,7 +115,7 @@ On the export menu, choose a location to save the profile. The profile will be u
 Using the PowerShell module, import the [Install Custom Configuration Profile](Mac&#32;-&#32;Install&#32;Custom&#32;Configuration&#32;Profile.md) command to a JumpCloud tenant.
 
 ```pwsh
-Import-JCCommand "Bit.ly-REPLACE_ME"
+Import-JCCommand -URL 'https://git.io/JedCp'
 ```
 
 Open the newly imported JumpCloud command within the JumpCloud Console. Under "Files" select the "Upload Files" button and upload the .mobileconfig profile created with ProfileCreator. Copy the .mobileconfig name to the "profile" variable within the command text block like the example below:
