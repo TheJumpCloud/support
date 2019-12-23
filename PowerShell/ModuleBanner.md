@@ -9,8 +9,7 @@
 ```
 Support for UTF-8 encoding and new SystemInsights tables available.
 !!!*****************************************
-!!!IF YOU RECEIVE AN ERROR WHILE UPDATING THE MODULE PLEASE RUN:
-Install-Module JumpCloud -force
+!!!PowerShell Core Versions 6.0 & 6.1 are no longer supported. Please update PowerShell https://aka.ms/pscore6
 !!!*****************************************
 ```
 
@@ -19,7 +18,6 @@ Install-Module JumpCloud -force
 ```
 Support for UTF-8 encoding and new SystemInsights tables available.
 !!!*****************************************
-!!!IF YOU RECEIVE AN ERROR WHILE UPDATING THE MODULE PLEASE RUN:
-Install-Module JumpCloud -force
+!!!PowerShell Core Versions 6.0 & 6.1 are no longer supported. Please update PowerShell https://aka.ms/pscore6
 !!!*****************************************
 ```
