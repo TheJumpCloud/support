@@ -6,19 +6,11 @@ $PesterResults = Invoke-Pester -Script:(@{ Path = $PSScriptRoot + '/Tests/'; }) 
 $FailedTests = $PesterResults.TestResult | Where-Object {$_.Passed -eq $false}
 If ($FailedTests)
 {
-    Write-Host ('')
-    Write-Host ('##############################################################################################################')
-    Write-Host ('##############################Error Description###############################################################')
-    Write-Host ('##############################################################################################################')
-    Write-Host ('')
+    Write-Output ('')
+    Write-Output ('##############################################################################################################')
+    Write-Output ('##############################Error Description###############################################################')
+    Write-Output ('##############################################################################################################')
+    Write-Output ('')
     $FailedTests | ForEach-Object {$_.Name + '; ' + $_.FailureMessage + '; '}
     Write-Error -Message:('Tests Failed: ' + [string]($FailedTests | Measure-Object).Count)
 }
-
-# Write-Output $error.Count
-# if ($error.count -gt 0){
-#     Write-Output $error
-#     exit 1
-# } else {
-#     exit 0
-# }

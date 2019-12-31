@@ -13,7 +13,7 @@ Function VerifyAccount
     }
     Try
     {
-        $idrefUser = ([System.Security.Principal.NTAccount]($strUsername)).Translate([System.Security.Principal.SecurityIdentifier]) 
+        $idrefUser = ([System.Security.Principal.NTAccount]($strUsername)).Translate([System.Security.Principal.SecurityIdentifier])
     }
     Catch [System.Security.Principal.IdentityNotMappedException]
     {
@@ -183,17 +183,17 @@ function Uninstall_Program($programName) {
       Get-ItemProperty |
           Where-Object {$_.DisplayName -match $programName } |
               Select-Object -Property DisplayName, UninstallString
-  
+
      ForEach ($ver in $Ver) {
         If ($ver.UninstallString -and $ver.DisplayName -match 'Jumpcloud') {
             $uninst = $ver.UninstallString
-            & cmd /C $uninst /Silent
-        } If ($ver.UninstallString -and $ver.DisplayName -match 'FileZilla Client 3.45.1') {
+            & cmd /C $uninst /Silent | Out-Null
+        } If ($ver.UninstallString -and $ver.DisplayName -match 'FileZilla Client 3.46.3') {
             $uninst = $ver.UninstallString
-            & cmd /c $uninst /S
+            & cmd /c $uninst /S| Out-Null
         } else{
             $uninst = $ver.UninstallString
-            & cmd /c $uninst /q /norestart
+            & cmd /c $uninst /q /norestart | Out-Null
         }
     }
   }
@@ -260,14 +260,14 @@ Function DownloadAndInstallAgent(
     If (!(Check_Program_Installed("Microsoft Visual C\+\+ 2013 x64")))
     {
         Write-Log -Message:('Downloading & Installing JCAgent prereq Visual C++ 2013 x64')
-        DownloadLink -Link:($msvc2013x64Link) -Path:($msvc2013Path + $msvc2013x64File)
+        (New-Object System.Net.WebClient).DownloadFile("${msvc2013x64Link}", ($jcAdmuTempPath + $msvc2013x64File))
         Invoke-Expression -Command:($msvc2013x64Install)
         Write-Log -Message:('JCAgent prereq installed')
     }
     If (!(Check_Program_Installed("Microsoft Visual C\+\+ 2013 x86")))
     {
         Write-Log -Message:('Downloading & Installing JCAgent prereq Visual C++ 2013 x86')
-        DownloadLink -Link:($msvc2013x86Link) -Path:($msvc2013Path + $msvc2013x86File)
+        (New-Object System.Net.WebClient).DownloadFile("${msvc2013x86Link}", ($jcAdmuTempPath + $msvc2013x86File))
         Invoke-Expression -Command:($msvc2013x86Install)
         Write-Log -Message:('JCAgent prereq installed')
     }
@@ -357,12 +357,12 @@ Function ForceRebootComputerWithDelay
     {
         If ([console]::KeyAvailable)
         {
-            Write-Host "Restart Canceled by key press"
+            Write-Output "Restart Canceled by key press"
             Exit;
         }
         Else
         {
-            Write-Host "Press any key to cancel... restarting in $TimeOut" -NoNewLine
+            Write-Output "Press any key to cancel... restarting in $TimeOut" -NoNewLine
             Start-Sleep -Seconds 1
             $TimeOut = $TimeOut - 1
             Clear-Host
@@ -375,7 +375,7 @@ Function ForceRebootComputerWithDelay
     }
     If ($Restart -eq $True)
     {
-        Write-Host "Restarting Computer..."
+        Write-Output "Restarting Computer..."
         Restart-Computer -ComputerName $env:COMPUTERNAME -Force
     }
 }
@@ -622,18 +622,18 @@ $usmtconfig = [xml] @"
               </changeGroup>
             </mappings>
           </localGroups>
-          
+
       -->
     <!--   Example (domain and user mapping):
 
           <domains>
             <domain from="Domain1" to="Domain2"/>
           </domains>
-          
+
           <users>
             <user from="Domain1\User1" to="Domain2\User2"/>
           </users>
-          
+
       -->
   </ProfileControl>
 </Configuration>
@@ -4968,8 +4968,8 @@ $usmtmiguser = [xml] @"
                 </merge>
             </rules>
         </role>
-    </component> 
-	
+    </component>
+
     <!-- This component migrates My Video files -->
     <component type="Documents" context="User">
         <displayName _locID="miguser.myvideo">My Video</displayName>

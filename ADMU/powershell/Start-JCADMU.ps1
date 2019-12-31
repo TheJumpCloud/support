@@ -9,5 +9,5 @@ If (-not [System.String]::IsNullOrEmpty($formResults))
 }
 Else
 {
-    Write-Host ('Exiting ADMU process')
+    Write-Console ('Exiting ADMU process')
 }

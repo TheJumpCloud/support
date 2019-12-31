@@ -11,7 +11,7 @@
  <Window
      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-     Title="JumpCloud ADMU 1.2.5" Height="460.945" Width="980.016" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" ForceCursor="True">
+     Title="JumpCloud ADMU 1.2.6" Height="460.945" Width="980.016" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" ForceCursor="True">
      <Grid Margin="0,0,-0.2,0.168">
          <ListView Name="lvProfileList" HorizontalAlignment="Left" Height="141.629" Margin="9.9,149.476,0,0" VerticalAlignment="Top" Width="944.422">
              <ListView.View>
@@ -112,8 +112,8 @@
     $userstrim = $users -creplace '^[^\\]*\\', ''
 
     $members = net localgroup administrators |
-    where {$_ -AND $_ -notmatch "command completed successfully"} |
-    select -Skip 4
+    Where-Object {$_ -AND $_ -notmatch "command completed successfully"} |
+    Select-Object -Skip 4
 
     $i = 0
     ForEach ($user in $userstrim) {
@@ -132,10 +132,10 @@
     $LocalUserProfilesTrim =  ForEach ($LocalPath in $LocalUserProfiles){$LocalPath.LocalPath.substring(9)}
 
     $i = 0
-    $profiles2 = Get-ChildItem C:\Users | ?{Test-path C:\Users\$_\NTUSER.DAT} | Select -ExpandProperty Name
+    $profiles2 = Get-ChildItem C:\Users | Where-Object{Test-path C:\Users\$_\NTUSER.DAT} | Select-Object -ExpandProperty Name
     foreach($userprofile in $LocalUserProfilesTrim)
         {
-        $largeprofile = Get-ChildItem C:\Users\$userprofile -Recurse -Force -ErrorAction SilentlyContinue | Measure-Object -Sum length | Select -ExpandProperty Sum
+        $largeprofile = Get-ChildItem C:\Users\$userprofile -Recurse -Force -ErrorAction SilentlyContinue | Measure-Object -Sum length | Select-Object -ExpandProperty Sum
         $largeprofile =  [math]::Round($largeprofile/1MB,0)
         $largeprofile =  $largeprofile
         $win32UserProfiles[$i].LocalProfileSize = $largeprofile
@@ -193,7 +193,7 @@
              $script:bDeleteProfile.Content = "Correct Errors"
              $script:bDeleteProfile.IsEnabled = $false
              Return $false
-         }        
+         }
      }
      Else
      {
@@ -264,7 +264,7 @@
  })
 
  $tbTempPassword.add_TextChanged( {
-         Test-Button -tbJumpCloudUserName:($tbJumpCloudUserName) -tbJumpCloudConnectKey:($tbJumpCloudConnectKey) -tbTempPassword:($tbTempPassword) -lvProfileList:($lvProfileList) 
+         Test-Button -tbJumpCloudUserName:($tbJumpCloudUserName) -tbJumpCloudConnectKey:($tbJumpCloudConnectKey) -tbTempPassword:($tbTempPassword) -lvProfileList:($lvProfileList)
          If ((!(Test-IsNotEmpty $tbTempPassword.Text) -and (Test-HasNoSpaces $tbTempPassword.Text)) -eq $false)
          {
              $tbTempPassword.Background = "#FFC6CBCF"

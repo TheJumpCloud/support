@@ -17,7 +17,7 @@ Describe 'Functions' {
     }
 
     Context 'Write-Log Function'{
-	
+
         It 'Write-Log - ' {
 		    if ((Test-Path 'C:\Windows\Temp\jcAdmu.log') -eq $true){
                     remove-item -Path 'C:\windows\Temp\jcAdmu.log' -Force
@@ -41,7 +41,7 @@ Describe 'Functions' {
 		    if ((Test-Path 'C:\Windows\Temp\jcAdmu.log') -eq $true){
                    remove-item -Path 'C:\windows\Temp\jcAdmu.log' -Force
             }
-              # Write-Log -Message:('Test Error Log Entry.') -Level:('Error') -ErrorAction 
+              # Write-Log -Message:('Test Error Log Entry.') -Level:('Error') -ErrorAction
                #$Log = Get-Content 'c:\windows\temp\jcAdmu.log'
                #$Log.Contains('ERROR: Test Error Log Entry.') | Should Be $true
                #    if ($error.Count -eq 1) {
@@ -110,7 +110,7 @@ Describe 'Functions' {
             $WmiComputerSystem = Get-WmiObject -Class:('Win32_ComputerSystem')
             $localComputerName = $WmiComputerSystem.Name
             Add-LocalUser -computer:($localComputerName) -group:('Users') -localusername:('testuser')
-            (Get-LocalGroupMember -Group 'Users' -Member 'testuser') -ne $null | Should Be $true
+            ((net localgroup Users) | Where-Object {$_ -match 'testuser'}) -ne $null | Should Be $true
         }
 
     }
@@ -118,11 +118,11 @@ Describe 'Functions' {
     Context 'Uninstall_Program'{
 
          It 'Install & Uninstall - x32 filezilla' {
-             $app = 'C:\Windows\Temp\FileZilla_3.45.1_win32.exe'
+             $app = 'C:\FileZilla_3.46.3_win32.exe'
              $arg = '/S'
              Start-Process $app $arg
              start-sleep -Seconds 5
-             Uninstall_Program -programName 'FileZilla Client 3.45.1'
+             Uninstall_Program -programName 'FileZilla Client 3.46.3'
              start-sleep -Seconds 5
              Check_Program_Installed -programName 'FileZilla' | Should Be $false
          }
@@ -150,7 +150,7 @@ Describe 'Functions' {
         It 'Start-NewProcess - Notepad' {
             Start-NewProcess -pfile:('c:\windows\system32\notepad.exe') -Timeout 1000
             (Get-Process -Name 'notepad') -ne $null | Should Be $true
-            Stop-Process -Name "notepad"  
+            Stop-Process -Name "notepad"
         }
 
         It 'Start-NewProcess & end after 2s timeout - Notepad ' {
