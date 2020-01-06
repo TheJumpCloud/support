@@ -21,7 +21,8 @@ import unittest
 import pue_verify
 import postinstall_verify
 
-# set the files for testing
+# location of the jumpcloud_bootstrap_template.sh and postinstall.sh files
+# change if these files do not exist in the parent directory
 pue_verify.text_PUE.script = "../jumpcloud_bootstrap_template.sh"
 postinstall_verify.text_POST.script = "../postinstall.sh"
 

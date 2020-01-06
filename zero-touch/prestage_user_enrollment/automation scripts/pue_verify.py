@@ -30,7 +30,6 @@ class text_PUE(unittest.TestCase):
     def var_str(self, string, regexGrp):
         '''test that string var exists'''
         regex = "^(%s)(\'(.*?)\')$" % string
-        # lineNum = 0
         with open(text_PUE.script, "r") as file:
             match_list = []
             i = 0
@@ -75,7 +74,6 @@ class text_PUE(unittest.TestCase):
 
     def test_d3(self):
         '''String Validation'''
-        # i = 0
         for i in self.criteria_strs:
             # print("TESTING : " + i)
             self.var_str(i, 3)

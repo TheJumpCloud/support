@@ -14,7 +14,6 @@ class text_POST(unittest.TestCase):
     def var_str(self, string, regexGrp):
         '''test that string var exists'''
         regex = "^(%s)(\'(.*?)\')$" % string
-        # lineNum = 0
         with open(text_POST.script, "r") as file:
             match_list = []
             i = 0
@@ -26,7 +25,7 @@ class text_POST(unittest.TestCase):
         result = re.match(regex, match_list[0])
         strResult = result[regexGrp]
         self.assertRegex(match_list[0], regex)
-        self.assertIsNot(len(strResult), 0, "{} variable should not be empty".format(i))
+        self.assertIsNot(len(strResult), 0, "{} variable should not be empty".format(string))
         self.assertTrue(type(strResult) is str)
 
     def test_a1_existence(self):
