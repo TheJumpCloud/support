@@ -1,6 +1,6 @@
 
 '''
-This test suite checks the existance of required variables
+This test suite checks the existence of required variables
 to run the prestage user enrollment script.
 
 Python3.x is required to run this test suite. Change the variables
