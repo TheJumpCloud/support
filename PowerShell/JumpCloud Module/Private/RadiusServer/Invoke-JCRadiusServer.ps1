@@ -94,7 +94,9 @@ Function Invoke-JCRadiusServer
                         If (!($networkSourceIp)) { $networkSourceIp = $JCObject.networkSourceIp }
                         If (!($sharedSecret)) { $sharedSecret = $JCObject.sharedSecret }
                         If (!($mfa)) { $mfa = $JCObject.mfa }
-                        $JsonBody = '{"name":"' + $newName + '","networkSourceIp":"' + $networkSourceIp + '","sharedSecret":"' + $sharedSecret + '","mfa":"' + $mfa + '"}'
+                        If (!($userLockoutAction)) { $userLockoutAction = $JCObject.userLockoutAction }
+                        If (!($userPasswordExpirationAction)) { $userPasswordExpirationAction = $JCObject.userPasswordExpirationAction }
+                        $JsonBody = '{"name":"' + $newName + '","networkSourceIp":"' + $networkSourceIp + '","sharedSecret":"' + $sharedSecret + '","mfa":"' + $mfa + '","userLockoutAction":"' + $userLockoutAction + '","userPasswordExpirationAction":"' + $userPasswordExpirationAction + '"}'
                         $Results = Invoke-JCApi -Method:($Method) -Url:($Uri_RadiusServers) -Body:($JsonBody)
                     }
                     Else
