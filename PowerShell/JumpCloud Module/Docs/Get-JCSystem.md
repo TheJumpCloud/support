@@ -18,8 +18,9 @@ Get-JCSystem [[-hostname] <String>] [-displayName <String>] [-version <String>] 
  [-os <String>] [-remoteIP <String>] [-serialNumber <String>] [-arch <String>] [-agentVersion <String>]
  [-systemTimezone <String>] [-active <Boolean>] [-allowMultiFactorAuthentication <Boolean>]
  [-allowPublicKeyAuthentication <Boolean>] [-allowSshPasswordAuthentication <Boolean>]
- [-allowSshRootLogin <Boolean>] [-modifySSHDConfig <Boolean>] [-filterDateProperty <String>]
- [-returnProperties <String[]>] -dateFilter <String> -date <String> [<CommonParameters>]
+ [-allowSshRootLogin <Boolean>] [-modifySSHDConfig <Boolean>] [-hasServiceAccount <Boolean>]
+ [-filterDateProperty <String>] [-returnProperties <String[]>] -dateFilter <String> -date <String>
+ [<CommonParameters>]
 ```
 
 ### ByID
@@ -405,6 +406,21 @@ A search filter to search systems by the version.
 
 ```yaml
 Type: System.String
+Parameter Sets: SearchFilter
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -hasServiceAccount
+A search filter to show macOS systems that have the JumpCloud service account
+
+```yaml
+Type: System.Boolean
 Parameter Sets: SearchFilter
 Aliases:
 

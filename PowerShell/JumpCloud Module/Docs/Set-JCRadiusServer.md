@@ -15,19 +15,21 @@ Updates a JumpCloud radius server.
 ### ById (Default)
 ```
 Set-JCRadiusServer [-Force] [-Id] <String[]> [[-newName] <String>] [[-networkSourceIp] <String>]
- [[-sharedSecret] <String>] [<CommonParameters>]
+ [[-sharedSecret] <String>] [-mfa <String>] [-userLockoutAction <String>]
+ [-userPasswordExpirationAction <String>] [<CommonParameters>]
 ```
 
 ### ByValue
 ```
 Set-JCRadiusServer [-Force] [[-newName] <String>] [[-networkSourceIp] <String>] [[-sharedSecret] <String>]
- [<CommonParameters>]
+ [-mfa <String>] [-userLockoutAction <String>] [-userPasswordExpirationAction <String>] [<CommonParameters>]
 ```
 
 ### ByName
 ```
 Set-JCRadiusServer [-Force] [-Name] <String[]> [[-newName] <String>] [[-networkSourceIp] <String>]
- [[-sharedSecret] <String>] [<CommonParameters>]
+ [[-sharedSecret] <String>] [-mfa <String>] [-userLockoutAction <String>]
+ [-userPasswordExpirationAction <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -143,6 +145,51 @@ Aliases:
 
 Required: False
 Position: 5
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -mfa
+If MFA should be requried to authenticate to the RADIUS Server
+
+```yaml
+Type: System.String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -userLockoutAction
+The behavior when user accounts get locked out
+
+```yaml
+Type: System.String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -userPasswordExpirationAction
+The behavior when user accounts expire
+
+```yaml
+Type: System.String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
