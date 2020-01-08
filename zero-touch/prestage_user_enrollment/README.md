@@ -35,6 +35,7 @@ The JumpCloud Service Account is required to manage users on FileVault enabled m
   - [Step 10 - Configuring the PKG for MDM deployment](#step-10---configuring-the-pkg-for-mdm-deployment)
   - [Step 11 - Creating a Privacy Preference Policy](#step-11---creating-a-privacy-preference-policy)
 - [Testing the workflow](#testing-the-workflow)
+  - [Included python tests](#included-python-tests)
 
 ## Prerequisites
 
@@ -761,3 +762,24 @@ Apple Event Targets
 This article from SimpleMDM gives a great tutorial for how to setup a DEP sandbox environment to test out the macOS zero-touch deployment workflow using virtual machines VMWare Fusion, Parallels, or VirtualBox.
 
 [Test Apple DEP with VMware, Parallels, and VirtualBox](https://simplemdm.com/2018/04/03/apple-dep-vmware-parallels-virtualbox/)
+
+### Included python tests
+
+To verify that the required variables are set as expected. A test suite is included in this repository to verify the contents of the `jumpcloud_bootstrap_template.sh` and `postinstall.sh` scripts. If the the prestage user enrollment workflow is failing to start on a new system, running the tests can help identify points of failure.
+
+If manually downloading the files from this repository, download the `postinstall_verify.py`, `pue_verify.py` and `test_runner.py` files into a directory. Within the test_runner.py script, change the location of the script variables to point to the `jumpcloud_bootstrap_template.sh` and `postinstall.sh` file locations respectively.
+
+```py
+pue_verify.text_PUE.script = "../jumpcloud_bootstrap_template.sh"
+postinstall_verify.text_POST.script = "../postinstall.sh"
+```
+
+If this repository is cloned with github, simply open a terminal window, cd into the `"support/zero-touch/prestage_user_enrollment/automation scripts"` directory and run:
+
+```bash
+python3 test_runner.py
+```
+
+A run of the test suite with test failures is displayed below, In this example the `ENROLLMENT_USER` variable is missing from the postinstall script.
+
+![test results displaying a failure](./images/test_failures.png?raw=true)
