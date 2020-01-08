@@ -1004,13 +1004,6 @@ if [[ -f $DEP_N_GATE_DONE ]]; then
     # Delete enrollment users
     if [[ $DELETE_ENROLLMENT_USERS == true ]]; then
         # wait until welcome user is logged out
-        FINDER_PROCESS=$(pgrep -l "Finder")
-        until [ "$FINDER_PROCESS" != "" ]; do
-            echo "$(date "+%Y-%m-%dT%H:%M:%S"): Finder process not found. User session not active." >>"$DEP_N_DEBUG"
-            sleep 1
-            FINDER_PROCESS=$(pgrep -l "Finder")
-        done
-
         echo "$(date "+%Y-%m-%dT%H:%M:%S"): Testing if ${ENROLLMENT_USER} user is logged out" >>"$DEP_N_DEBUG"
         ACTIVE_USER=$(/usr/bin/python -c 'from SystemConfiguration import SCDynamicStoreCopyConsoleUser; import sys; username = (SCDynamicStoreCopyConsoleUser(None, None, None) or [None])[0]; username = [username,""][username in [u"loginwindow", None, u""]]; sys.stdout.write(username + "\n");')
         if [[ "${ACTIVE_USER}" == "${ENROLLMENT_USER}" ]]; then
@@ -1026,31 +1019,21 @@ if [[ -f $DEP_N_GATE_DONE ]]; then
         # given the case that the enrollment user was logged in previously, recheck the active user
         ACTIVE_USER=$(/usr/bin/python -c 'from SystemConfiguration import SCDynamicStoreCopyConsoleUser; import sys; username = (SCDynamicStoreCopyConsoleUser(None, None, None) or [None])[0]; username = [username,""][username in [u"loginwindow", None, u""]]; sys.stdout.write(username + "\n");')
         echo "$(date "+%Y-%m-%dT%H:%M:%S"): Logged in user is: ${ACTIVE_USER}" >>"$DEP_N_DEBUG"
-        if [[ "${ACTIVE_USER}" != "${ENROLLMENT_USER}" ]]; then
+        if [[ "${ACTIVE_USER}" == "" || "${ACTIVE_USER}" != "${ENROLLMENT_USER}" ]]; then
             # delete the enrollment and decrypt user
             echo "$(date "+%Y-%m-%dT%H:%M:%S"): Deleting the first enrollment user: $ENROLLMENT_USER" >>"$DEP_N_DEBUG"
             sysadminctl -deleteUser $ENROLLMENT_USER >>"$DEP_N_DEBUG" 2>&1
             echo "$(date "+%Y-%m-%dT%H:%M:%S"): Deleting the decrypt user: $DECRYPT_USER" >>"$DEP_N_DEBUG"
             sysadminctl -deleteUser $DECRYPT_USER >>"$DEP_N_DEBUG" 2>&1
-            # Clean up steps
-            echo "$(date "+%Y-%m-%dT%H:%M:%S"): Status: Removing LaunchDaemon" >>"$DEP_N_DEBUG"
-            # Remove the LaunchDaemon file
-            rm -rf "/Library/LaunchDaemons/${DAEMON}"
-            # Clean up receipts
-            rm /var/tmp/com.jumpcloud*
-            # Make script delete itself
-            rm -- "$0"
         fi
 
     fi
-    if [[ $DELETE_ENROLLMENT_USERS == false ]]; then
-        # Clean up steps
-        echo "$(date "+%Y-%m-%dT%H:%M:%S"): Status: Removing LaunchDaemon" >>"$DEP_N_DEBUG"
-        # Remove the LaunchDaemon file
-        rm -rf "/Library/LaunchDaemons/${DAEMON}"
-        # Clean up receipts
-        rm /var/tmp/com.jumpcloud*
-        # Make script delete itself
-        rm -- "$0"
-    fi
+    # Clean up steps
+    echo "$(date "+%Y-%m-%dT%H:%M:%S"): Status: Removing LaunchDaemon" >>"$DEP_N_DEBUG"
+    # Remove the LaunchDaemon file
+    rm -rf "/Library/LaunchDaemons/${DAEMON}"
+    # Clean up receipts
+    rm /var/tmp/com.jumpcloud*
+    # Make script delete itself
+    rm -- "$0"
 fi
