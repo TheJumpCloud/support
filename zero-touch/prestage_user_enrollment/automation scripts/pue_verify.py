@@ -12,18 +12,19 @@ class text_PUE(unittest.TestCase):
         "DECRYPT_USER=",
         "DEP_ENROLLMENT_GROUP_ID=",
         "DEP_POST_ENROLLMENT_GROUP_ID=",
-        "admin="
+        "admin=",
+        "ENROLLMENT_USER="
 
     ]
     criteria_bools = [
         "DELETE_ENROLLMENT_USERS=",
-        "self_secret=",
-        "self_passwd="
+        "SELF_SECRET=",
+        "SELF_PASSWD="
     ]
     criteria_selfid = [
-        'self_ID="PE"',
-        'self_ID="CE"',
-        'self_ID="LN"'
+        'SELF_ID="PE"',
+        'SELF_ID="CE"',
+        'SELF_ID="LN"'
     ]
 
     # test functions

@@ -157,11 +157,11 @@ This account is taken over during DEP enrollment and then disabled on the machin
 
 - Decryption User
 
-The UID of the decryption user account will be used to populate the "ENCRYPTED_KEY=''" variable in [Step 4](#Step-4---Populating-the-Bootstrap-template-script-variables). Create a JumpCloud account and set a secure password for this account.
+The UID of the decryption user account will be used to populate the 'ENCRYPTED_KEY=""' variable in [Step 4](#Step-4---Populating-the-Bootstrap-template-script-variables). Create a JumpCloud account and set a secure password for this account.
 
 Under this users "User Security Settings and Permissions" check the box for "Enable as Admin/Sudo on all system associations" and "Enforce UID/GID consistency for all systems" and enter in a numerical "Unix UID" and "Unix GID" value over 7 characters.
 
-Take note of the value populated for the "Unix UID" as this will be used in [Step 4](#Step-4---Populating-the-Bootstrap-template-script-variables) to create the "ENCRYPTED_KEY=''" variable.
+Take note of the value populated for the "Unix UID" as this will be used in [Step 4](#Step-4---Populating-the-Bootstrap-template-script-variables) to create the 'ENCRYPTED_KEY=""' variable.
 
 Example:
 
@@ -235,34 +235,34 @@ Example:
 ################################################################################
 
 ### Bind user as admin or standard user ###
-# Admin user: admin='true'
-# Standard user: admin='false'
-admin='false'
+# Admin user: admin="true"
+# Standard user: admin="false"
+admin="false"
 
 ### Minimum password length ###
 minlength=8
 
 ### JumpCloud Connect Key ###
-YOUR_CONNECT_KEY=''
+YOUR_CONNECT_KEY=""
 
 ### Encrypted API Key ###
 ## Use below SCRIPT FUNCTION: EncryptKey to encrypt key
-ENCRYPTED_KEY=''
+ENCRYPTED_KEY=""
 
 ### Username of the JumpCloud user whose UID is used for decryption ###
-DECRYPT_USER=''
+DECRYPT_USER=""
 
 ### JumpCloud System Group ID For DEP Enrollment ###
-DEP_ENROLLMENT_GROUP_ID=''
+DEP_ENROLLMENT_GROUP_ID=""
 
 ### JumpCloud System Group ID For DEP POST Enrollment ###
-DEP_POST_ENROLLMENT_GROUP_ID=''
+DEP_POST_ENROLLMENT_GROUP_ID=""
 
 ### DEPNotify Welcome Window Title ###
 WELCOME_TITLE=""
 
 ### DEPNotify Welcome Window Text use \n for line breaks ###
-WELCOME_TEXT=''
+WELCOME_TEXT=""
 
 ### Boolean to delete the enrollment user set through MDM ###
 DELETE_ENROLLMENT_USERS=true
@@ -275,15 +275,15 @@ ENROLLMENT_USER=""
 NTP_SERVER="time.apple.com"
 
 ### Daemon Variable
-daemon="com.jumpcloud.prestage.plist"
+DAEMON="com.jumpcloud.prestage.plist"
 
 ### User self identification parameter
-# Update the self_ID variable with one of the below options to change the default option (Company Email)
-# Company Email (default): self_ID="CE"
-# lastname: self_ID="LN"
-# personal email: self_ID="PE"
+# Update the SELF_ID variable with one of the below options to change the default option (Company Email)
+# Company Email (default): SELF_ID="CE"
+# lastname: SELF_ID="LN"
+# personal email: SELF_ID="PE"
 # NOTE for "personal email" the JumpCloud user field "description" is used
-self_ID="CE"
+SELF_ID="CE"
 
 ### Include secret id (employee ID) ###
 # Default setting is false
@@ -291,15 +291,15 @@ self_ID="CE"
 # This is recommended if "active" JumpCloud users will be enrolled
 # NOTE for "secret word" the JumpCloud user field "employeeID" is used
 # Ex: DELETE_ENROLLMENT_USERS=true
-self_secret=false
+SELF_SECRET=false
 
 ### Password Update Settings ###
 # This setting defines if active users will be forced to update their passwords
 # Pending users will always be required to set a password during enrollment
 # Default setting is false
-# Update the self_ID self_passwd to modify this setting
-# Ex: self_passwd=true
-self_passwd=false
+# Update the SELF_ID SELF_PASSWD to modify this setting
+# Ex: SELF_PASSWD=true
+SELF_PASSWD=false
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # END General Settings                                                         ~
@@ -308,19 +308,19 @@ self_passwd=false
 
 #### Variable Definitions
 
-- `admin='false'`
+- `admin="false"`
 
-This variable defines how users will be created through the zero-touch workflow. There are two possible values `admin='false'` (default) creates the user as a standard user. `admin='true'` creates users as admin users.
+This variable defines how users will be created through the zero-touch workflow. There are two possible values `admin="false"` (default) creates the user as a standard user. `admin="true"` creates users as admin users.
 
 - `minlength=8`
 
 This variable defines the minimum password length that a user can set during enrollment. Set this to match your JumpCloud password complexity settings.
 
-- `YOUR_CONNECT_KEY=''`
+- `YOUR_CONNECT_KEY=""`
 
 Enter the connect key from your JumpCloud tenant. This can be found within the "Systems" tab by clicking the green plus and selecting Windows or Mac.
 
-- `ENCRYPTED_KEY=''`
+- `ENCRYPTED_KEY=""`
 
 The `EncryptKey()` function must be used to create the **ENCRYPTED_KEY** variable.
 
@@ -387,15 +387,15 @@ DecryptKey 43H/pQGRJ5Uut5R3wagbPSS/I2cATai4dUCnqsimkFQ6OvqnFerp9l8= 8675309 5966
 c57c341a4a38f132019770f1689bbe7530bdfef3
 ```
 
-- `DECRYPT_USER=''`
+- `DECRYPT_USER=""`
 
 Enter the username (case sensitive) of the **Decryption User** created in [Step 3](#step-3---configuring-the-jumpcloud-tenant-for-dep-zero-touch)
 
-- `DEP_ENROLLMENT_GROUP_ID=''`
+- `DEP_ENROLLMENT_GROUP_ID=""`
 
 Enter the JumpCloud ID value of the **DEP Enrollment System Group**
 
-- `DEP_POST_ENROLLMENT_GROUP_ID=''`
+- `DEP_POST_ENROLLMENT_GROUP_ID=""`
 
 Enter the JumpCloud ID value of the **DEP Post Enrollment System Group**
 
@@ -403,7 +403,7 @@ Enter the JumpCloud ID value of the **DEP Post Enrollment System Group**
 
 Enter a welcome title that will launch when DEPNotify launches.
 
-- `WELCOME_TEXT=''`
+- `WELCOME_TEXT=""`
 
 Enter welcome text that will load when DEPNotify launches.
 
@@ -425,34 +425,34 @@ Example of populated variables:
 ################################################################################
 
 ### Bind user as admin or standard user ###
-# Admin user: admin='true'
-# Standard user: admin='false'
-admin='false'
+# Admin user: admin="true"
+# Standard user: admin="false"
+admin="false"
 
 ### Minimum password length ###
 minlength=8
 
 ### JumpCloud Connect Key ###
-YOUR_CONNECT_KEY='b5a0d92cfe32096feb67e30528a5facd72fb4529'
+YOUR_CONNECT_KEY="b5a0d92cfe32096feb67e30528a5facd72fb4529"
 
 ### Encrypted API Key ###
 ## Use below SCRIPT FUNCTION: EncryptKey to encrypt key 503 UID used
-ENCRYPTED_KEY='43H/pQGRJ5Uut5R3wagbPSS/I2cATai4dUCnqsimkFQ6OvqnFerp9l8='
+ENCRYPTED_KEY="43H/pQGRJ5Uut5R3wagbPSS/I2cATai4dUCnqsimkFQ6OvqnFerp9l8="
 
 ### Username of the JumpCloud user whose UID is used for decryption ###
-DECRYPT_USER='it.service'
+DECRYPT_USER="it.service"
 
 ### JumpCloud System Group ID For DEP Enrollment ###
-DEP_ENROLLMENT_GROUP_ID='5d0a48cc1f247527b2f92266'
+DEP_ENROLLMENT_GROUP_ID="5d0a48cc1f247527b2f92266"
 
 ### JumpCloud System Group ID For DEP POST Enrollment ###
-DEP_POST_ENROLLMENT_GROUP_ID='5d0a48fz45886d39c9dba975'
+DEP_POST_ENROLLMENT_GROUP_ID="5d0a48fz45886d39c9dba975"
 
 ### DEPNotify Welcome Window Title ###
 WELCOME_TITLE="Welcome to Azzipa.\n Where we make backwards pizzas."
 
 ### DEPNotify Welcome Window Text use \n for line breaks ###
-WELCOME_TEXT='Sit back and relax as your computer configures itself for you. \n\n After configuration settings download you will be asked to activate your account and set a password!'
+WELCOME_TEXT="Sit back and relax as your computer configures itself for you. \n\n After configuration settings download you will be asked to activate your account and set a password!"
 
 ### Boolean to delete the enrollment user set through MDM ###
 DELETE_ENROLLMENT_USERS=true
@@ -465,15 +465,15 @@ ENROLLMENT_USER="Welcome"
 NTP_SERVER="time.apple.com"
 
 ### Daemon Variable
-daemon="com.jumpcloud.prestage.plist"
+DAEMON="com.jumpcloud.prestage.plist"
 
 ### User self identification parameter
-# Update the self_ID variable with one of the below options to change the default option (Company Email)
-# Company Email (default): self_ID="CE"
-# lastname: self_ID="LN"
-# personal email: self_ID="PE"
+# Update the SELF_ID variable with one of the below options to change the default option (Company Email)
+# Company Email (default): SELF_ID="CE"
+# lastname: SELF_ID="LN"
+# personal email: SELF_ID="PE"
 # NOTE for "personal email" the JumpCloud user field "description" is used
-self_ID="CE"
+SELF_ID="CE"
 
 ### Include secret id (employee ID) ###
 # Default setting is false
@@ -481,15 +481,15 @@ self_ID="CE"
 # This is recommended if "active" JumpCloud users will be enrolled
 # NOTE for "secret word" the JumpCloud user field "employeeID" is used
 # Ex: DELETE_ENROLLMENT_USERS=true
-self_secret=false
+SELF_SECRET=false
 
 ### Password Update Settings ###
 # This setting defines if active users will be forced to update their passwords
 # Pending users will always be required to set a password during enrollment
 # Default setting is false
-# Update the self_ID self_passwd to modify this setting
-# Ex: self_passwd=true
-self_passwd=false
+# Update the SELF_ID SELF_PASSWD to modify this setting
+# Ex: SELF_PASSWD=true
+SELF_PASSWD=false
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # END General Settings                                                         ~
@@ -503,22 +503,22 @@ Configure the user experience that users will use to self identify their account
 The three variables below are used to drive the user experience to their configured values.
 
 ```bash
-self_ID="CE"
-self_secret=false
-self_passwd=false
+SELF_ID="CE"
+SELF_SECRET=false
+SELF_PASSWD=false
 ```
 
-The `self_ID` variable may be set to:
+The `SELF_ID` variable may be set to:
 
-`self_ID="CE"` to prompt users to enter their company email (default setting)
+`SELF_ID="CE"` to prompt users to enter their company email (default setting)
 
-`self_ID="PE"` to prompt users to enter their personal email. JumpCloud does not have a "personal email" attribute so in this case the JumpCloud user "description" field is used for this lookup. Populate the description field of all JumpCloud users enrolling into zero-touch with their personal email address to use this option.
+`SELF_ID="PE"` to prompt users to enter their personal email. JumpCloud does not have a "personal email" attribute so in this case the JumpCloud user "description" field is used for this lookup. Populate the description field of all JumpCloud users enrolling into zero-touch with their personal email address to use this option.
 
-`self_ID="LN"` to prompt users to enter their last name
+`SELF_ID="LN"` to prompt users to enter their last name
 
-The `self_secret` variable may be set to either `true` or `false`. If this variable is set to true, users will be prompted to enter a secret id during the enrollment workflow. If set to false, users will **not** be prompted to enter a secret id.
+The `SELF_SECRET` variable may be set to either `true` or `false`. If this variable is set to true, users will be prompted to enter a secret id during the enrollment workflow. If set to false, users will **not** be prompted to enter a secret id.
 
-The `self_secret` variable dictates the user experience for active JumpCloud users. if set to `true`, existing users with JumpCloud passwords will be prompted to create a new password during the enrollment workflow. The default setting will not prompt existing JumpCloud users to enter a new password. Pending users without passwords in JumpCloud are always prompted to enter a password during the enrollment process.
+The `SELF_SECRET` variable dictates the user experience for active JumpCloud users. if set to `true`, existing users with JumpCloud passwords will be prompted to create a new password during the enrollment workflow. The default setting will not prompt existing JumpCloud users to enter a new password. Pending users without passwords in JumpCloud are always prompted to enter a password during the enrollment process.
 
 By default the values are set to accept a user's company email address. Pending users will always be prompted to enter a password for their new account. Configuring the variables above give optionality for how users will activate their JumpCloud accounts through the DEPNotify registration window.
 
@@ -526,11 +526,11 @@ By default the values are set to accept a user's company email address. Pending 
 
 The image below displays the default user experience, a user is prompted to enter their company email. The field referenced on the JumpCloud console is a user's email field. If a user enters an email of an existing or pending JumpCloud user the DEPNotify window will allow that user to authenticate as that user.
 
-A self_ID variable set to "CE" and self_secret variable set to false should present the user with the following window during enrollment.
+A SELF_ID variable set to "CE" and SELF_SECRET variable set to false should present the user with the following window during enrollment.
 
 ![pending_user_company_email](./images/pending_company_email.png?raw=true)
 
-A self_ID variable set to "PE" and self_secret variable set to false should present the user with the following window during enrollment.
+A SELF_ID variable set to "PE" and SELF_SECRET variable set to false should present the user with the following window during enrollment.
 
 ![pending_user_personal_email](./images/personal_email.png?raw=true)
 
@@ -595,13 +595,13 @@ In the postinstall script add in the following payload. The LaunchDaemon must be
 #!/bin/sh
 
 # set the LaunchDaemon variable with the name of the LaunchDaemon
-daemon="com.jumpcloud.prestage.plist"
+DAEMON="com.jumpcloud.prestage.plist"
 
-# Enter the ENROLLMENT_USER within the '' of ENROLLMENT_USER=''
-ENROLLMENT_USER=''
+# Enter the ENROLLMENT_USER within the "" of ENROLLMENT_USER=""
+ENROLLMENT_USER=""
 
-# Enter the ENROLLMENT_USER_PASSWORD within the '' of ENROLLMENT_USER_PASSWORD='' with the credentials of the admin with a secure token
-ENROLLMENT_USER_PASSWORD=''
+# Enter the ENROLLMENT_USER_PASSWORD within the "" of ENROLLMENT_USER_PASSWORD="" with the credentials of the admin with a secure token
+ENROLLMENT_USER_PASSWORD=""
 
 cat <<-EOF >/var/run/JumpCloud-SecureToken-Creds.txt
 $ENROLLMENT_USER;$ENROLLMENT_USER_PASSWORD
@@ -623,7 +623,7 @@ launchctl load -w "/Library/LaunchDaemons/${daemon}"
 
 ```
 
-Populate the `ENROLLMENT_USER=''` and the `ENROLLMENT_USER_PASSWORD=''` with the values specified for this account in [Step 3](#step-3---configuring-the-jumpcloud-tenant-for-dep-zero-touch)
+Populate the `ENROLLMENT_USER=""` and the `ENROLLMENT_USER_PASSWORD=""` with the values specified for this account in [Step 3](#step-3---configuring-the-jumpcloud-tenant-for-dep-zero-touch)
 
 Example:
 
@@ -631,13 +631,13 @@ Example:
 #!/bin/sh
 
 # set the LaunchDaemon variable with the name of the LaunchDaemon
-daemon="com.jumpcloud.prestage.plist"
+DAEMON="com.jumpcloud.prestage.plist"
 
-# Enter the ENROLLMENT_USER within the '' of ENROLLMENT_USER=''
-ENROLLMENT_USER='Welcome'
+# Enter the ENROLLMENT_USER within the "" of ENROLLMENT_USER=""
+ENROLLMENT_USER="Welcome"
 
-# Enter the ENROLLMENT_USER_PASSWORD within the '' of ENROLLMENT_USER_PASSWORD='' with the credentials of the admin with a secure token
-ENROLLMENT_USER_PASSWORD='Welcome1!'
+# Enter the ENROLLMENT_USER_PASSWORD within the "" of ENROLLMENT_USER_PASSWORD="" with the credentials of the admin with a secure token
+ENROLLMENT_USER_PASSWORD="Welcome1!"
 
 cat <<-EOF >/var/run/JumpCloud-SecureToken-Creds.txt
 $ENROLLMENT_USER;$ENROLLMENT_USER_PASSWORD
