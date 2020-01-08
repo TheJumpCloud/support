@@ -767,7 +767,7 @@ This article from SimpleMDM gives a great tutorial for how to setup a DEP sandbo
 
 To verify that the required variables are set as expected. A test suite is included in this repository to verify the contents of the `jumpcloud_bootstrap_template.sh` and `postinstall.sh` scripts. If the the prestage user enrollment workflow is failing to start on a new system, running the tests can help identify points of failure.
 
-If manually downloading the files from this repository, simply download the `postinstall_verify.py`, `pue_verify.py` and `test_runner.py` files into a directory. Within the test_runner.py script, change the location of the script variables to point to the `jumpcloud_bootstrap_template.sh` and `postinstall.sh` file locations respectively.
+If manually downloading the files from this repository, download the `postinstall_verify.py`, `pue_verify.py` and `test_runner.py` files into a directory. Within the test_runner.py script, change the location of the script variables to point to the `jumpcloud_bootstrap_template.sh` and `postinstall.sh` file locations respectively.
 
 ```py
 pue_verify.text_PUE.script = "../jumpcloud_bootstrap_template.sh"
