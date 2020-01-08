@@ -128,6 +128,13 @@ Function Get-JCSystem ()
         )]
         [bool]$modifySSHDConfig,
 
+        [Parameter(
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter',
+            HelpMessage = 'A search filter to show macOS systems that have the JumpCloud service account'
+        )]
+        [bool]$hasServiceAccount,
+
 
         [Parameter(
             ValueFromPipelineByPropertyName,
@@ -140,7 +147,7 @@ Function Get-JCSystem ()
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'SearchFilter',
             HelpMessage = 'Allows you to return select properties on JumpCloud system objects. Specifying what properties are returned can drastically increase the speed of the API call with a large data set. Valid properties that can be returned are: ''created'', ''active'', ''agentVersion'', ''allowMultiFactorAuthentication'', ''allowPublicKeyAuthentication'', ''allowSshPasswordAuthentication'', ''allowSshRootLogin'', ''arch'', ''created'', ''displayName'', ''hostname'', ''lastContact'', ''modifySSHDConfig'', ''organization'', ''os'', ''remoteIP'', ''serialNumber'', ''sshdParams'', ''systemTimezone'', ''templateName'', ''version''')]
-        [ValidateSet('created', 'active', 'agentVersion', 'allowMultiFactorAuthentication', 'allowPublicKeyAuthentication', 'allowSshPasswordAuthentication', 'allowSshRootLogin', 'arch', 'created', 'displayName', 'hostname', 'lastContact', 'modifySSHDConfig', 'organization', 'os', 'remoteIP', 'serialNumber', 'sshdParams', 'systemTimezone', 'templateName', 'version', 'fde', 'systemInsights')]
+        [ValidateSet('created', 'active', 'agentVersion', 'allowMultiFactorAuthentication', 'allowPublicKeyAuthentication', 'allowSshPasswordAuthentication', 'allowSshRootLogin', 'arch', 'created', 'displayName', 'hostname', 'lastContact', 'modifySSHDConfig', 'organization', 'os', 'remoteIP', 'serialNumber', 'sshdParams', 'systemTimezone', 'templateName', 'version', 'fde', 'systemInsights', 'hasServiceAccount', 'fileSystem')]
         [String[]]$returnProperties
 
     )
