@@ -29,7 +29,7 @@ class text_PUE(unittest.TestCase):
     # test functions
     def var_str(self, string, regexGrp):
         '''test that string var exists'''
-        regex = "^(%s)(\'(.*?)\')$" % string
+        regex = "^(%s)(\"(.*?)\")$" % string
         with open(text_PUE.script, "r") as file:
             match_list = []
             i = 0

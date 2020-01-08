@@ -13,7 +13,7 @@ class text_POST(unittest.TestCase):
 
     def var_str(self, string, regexGrp):
         '''test that string var exists'''
-        regex = "^(%s)(\'(.*?)\')$" % string
+        regex = "^(%s)(\"(.*?)\")$" % string
         with open(text_POST.script, "r") as file:
             match_list = []
             i = 0
