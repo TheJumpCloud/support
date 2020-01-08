@@ -27,33 +27,33 @@
 ### Bind user as admin or standard user ###
 # Admin user: admin='true'
 # Standard user: admin='false'
-admin='false'
+admin="false"
 
 ### Minimum password length ###
 # Align this setting with the length settings configured in your JumpCloud admin console
 minlength=8
 
 ### JumpCloud Connect Key ###
-YOUR_CONNECT_KEY=''
+YOUR_CONNECT_KEY=""
 
 ### Encrypted API Key ###
 ## Use below SCRIPT FUNCTION: EncryptKey to encrypt key
-ENCRYPTED_KEY=''
+ENCRYPTED_KEY=""
 
 ### Username of the JumpCloud user whose UID is used for decryption ###
-DECRYPT_USER=''
+DECRYPT_USER=""
 
 ### JumpCloud System Group ID For DEP Enrollment ###
-DEP_ENROLLMENT_GROUP_ID=''
+DEP_ENROLLMENT_GROUP_ID=""
 
 ### JumpCloud System Group ID For DEP POST Enrollment ###
-DEP_POST_ENROLLMENT_GROUP_ID=''
+DEP_POST_ENROLLMENT_GROUP_ID=""
 
 ### DEPNotify Welcome Window Title ###
 WELCOME_TITLE=""
 
 ### DEPNotify Welcome Window Text use \n for line breaks ###
-WELCOME_TEXT=''
+WELCOME_TEXT=""
 
 ### Boolean to delete the enrollment user set through MDM ###
 # Set to false to keep the enrollment users profile on the system
@@ -72,9 +72,9 @@ daemon="com.jumpcloud.prestage.plist"
 
 ### User self identification parameter
 # Update the self_ID variable with one of the below options to change the default option (Company Email)
-# Company Email (default): self_ID="CE"
+# Company Email (default): self_ID='CE'
 # lastname: self_ID="LN"
-# personal email: self_ID="PE"
+# personal email: self_ID='PE'
 # NOTE for "personal email" the JumpCloud user field "description" is used
 self_ID="CE"
 
@@ -133,11 +133,11 @@ function DEPNotifyReset() {
 # Script Variables                                                             -
 #-------------------------------------------------------------------------------
 
-WINDOW_TITLE='Welcome'
-DEP_N_DEBUG='/var/tmp/debug_depnotify.log'
-DEP_N_APP='/Applications/Utilities/DEPNotify.app'
-DEP_N_LOG='/var/tmp/depnotify.log'
-DEP_N_REGISTER_DONE="/var/tmp/com.depnotify.registration.done"
+WINDOW_TITLE="Welcome"
+DEP_N_DEBUG="/var/tmp/debug_depnotify.log"
+DEP_N_APP="/Applications/Utilities/DEPNotify.app"
+DEP_N_LOG="/var/tmp/depnotify.log"
+DEP_N_REGISTER_DONE"/var/tmp/com.depnotify.registration.done"
 DEP_N_DONE="/var/tmp/com.depnotify.provisioning.done"
 # Script Receipts Removed at workflow completion
 DEP_N_GATE_INSTALLJC="/var/tmp/com.jumpcloud.gate.installjc"

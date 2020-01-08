@@ -1,10 +1,10 @@
 #!/bin/sh
 
 # Enter the ENROLLMENT_USER within the '' of ENROLLMENT_USER=''
-ENROLLMENT_USER=''
+ENROLLMENT_USER=""
 
 # Enter the ENROLLMENT_USER_PASSWORD within the '' of ENROLLMENT_USER_PASSWORD='' with the credentials of the admin with a secure token
-ENROLLMENT_USER_PASSWORD=''
+ENROLLMENT_USER_PASSWORD=""
 
 cat <<-EOF >/var/run/JumpCloud-SecureToken-Creds.txt
 $ENROLLMENT_USER;$ENROLLMENT_USER_PASSWORD
