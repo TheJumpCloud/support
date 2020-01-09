@@ -597,11 +597,11 @@ In the postinstall script add in the following payload. The LaunchDaemon must be
 # set the LaunchDaemon variable with the name of the LaunchDaemon
 DAEMON="com.jumpcloud.prestage.plist"
 
-# Enter the ENROLLMENT_USER within the "" of ENROLLMENT_USER=""
-ENROLLMENT_USER=""
+# Enter the ENROLLMENT_USER within the '' of ENROLLMENT_USER=''
+ENROLLMENT_USER=''
 
-# Enter the ENROLLMENT_USER_PASSWORD within the "" of ENROLLMENT_USER_PASSWORD="" with the credentials of the admin with a secure token
-ENROLLMENT_USER_PASSWORD=""
+# Enter the ENROLLMENT_USER_PASSWORD within the '' of ENROLLMENT_USER_PASSWORD='' with the credentials of the admin with a secure token
+ENROLLMENT_USER_PASSWORD=''
 
 cat <<-EOF >/var/run/JumpCloud-SecureToken-Creds.txt
 $ENROLLMENT_USER;$ENROLLMENT_USER_PASSWORD
@@ -623,7 +623,7 @@ launchctl load -w "/Library/LaunchDaemons/${daemon}"
 
 ```
 
-Populate the `ENROLLMENT_USER=""` and the `ENROLLMENT_USER_PASSWORD=""` with the values specified for this account in [Step 3](#step-3---configuring-the-jumpcloud-tenant-for-dep-zero-touch)
+Populate the `ENROLLMENT_USER=''` and the `ENROLLMENT_USER_PASSWORD=''` with the values specified for this account in [Step 3](#step-3---configuring-the-jumpcloud-tenant-for-dep-zero-touch)
 
 Example:
 
@@ -633,11 +633,11 @@ Example:
 # set the LaunchDaemon variable with the name of the LaunchDaemon
 DAEMON="com.jumpcloud.prestage.plist"
 
-# Enter the ENROLLMENT_USER within the "" of ENROLLMENT_USER=""
-ENROLLMENT_USER="Welcome"
+# Enter the ENROLLMENT_USER within the '' of ENROLLMENT_USER=''
+ENROLLMENT_USER='Welcome'
 
-# Enter the ENROLLMENT_USER_PASSWORD within the "" of ENROLLMENT_USER_PASSWORD="" with the credentials of the admin with a secure token
-ENROLLMENT_USER_PASSWORD="Welcome1!"
+# Enter the ENROLLMENT_USER_PASSWORD within the '' of ENROLLMENT_USER_PASSWORD='' with the credentials of the admin with a secure token
+ENROLLMENT_USER_PASSWORD='Welcome1!'
 
 cat <<-EOF >/var/run/JumpCloud-SecureToken-Creds.txt
 $ENROLLMENT_USER;$ENROLLMENT_USER_PASSWORD
