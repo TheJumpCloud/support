@@ -25,8 +25,8 @@
 ################################################################################
 
 ### Bind user as admin or standard user ###
-# Admin user: admin='true'
-# Standard user: admin='false'
+# Admin user: admin="true"
+# Standard user: admin="false"
 admin="false"
 
 ### Minimum password length ###
@@ -68,15 +68,15 @@ ENROLLMENT_USER=""
 NTP_SERVER="time.apple.com"
 
 ### Daemon Variable
-daemon="com.jumpcloud.prestage.plist"
+DAEMON="com.jumpcloud.prestage.plist"
 
 ### User self identification parameter
-# Update the self_ID variable with one of the below options to change the default option (Company Email)
-# Company Email (default): self_ID='CE'
-# lastname: self_ID="LN"
-# personal email: self_ID='PE'
+# Update the SELF_ID variable with one of the below options to change the default option (Company Email)
+# Company Email (default): SELF_ID="CE"
+# lastname: SELF_ID="LN"
+# personal email: SELF_ID="PE"
 # NOTE for "personal email" the JumpCloud user field "description" is used
-self_ID="CE"
+SELF_ID="CE"
 
 ### Include secret id (employee ID) ###
 # Default setting is false
@@ -84,15 +84,15 @@ self_ID="CE"
 # This is recommended if "active" JumpCloud users will be enrolled
 # NOTE for "secret word" the JumpCloud user field "employeeID" is used
 # Ex: DELETE_ENROLLMENT_USERS=true
-self_secret=false
+SELF_SECRET=false
 
 ### Password Update Settings ###
 # This setting defines if active users will be forced to update their passwords
 # Pending users will always be required to set a password during enrollment
 # Default setting is false
-# Update the self_ID self_passwd to modify this setting
-# Ex: self_passwd=true
-self_passwd=false
+# Update the SELF_ID SELF_PASSWD to modify this setting
+# Ex: SELF_PASSWD=true
+SELF_PASSWD=false
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # END General Settings                                                         ~
@@ -137,7 +137,7 @@ WINDOW_TITLE="Welcome"
 DEP_N_DEBUG="/var/tmp/debug_depnotify.log"
 DEP_N_APP="/Applications/Utilities/DEPNotify.app"
 DEP_N_LOG="/var/tmp/depnotify.log"
-DEP_N_REGISTER_DONE"/var/tmp/com.depnotify.registration.done"
+DEP_N_REGISTER_DONE="/var/tmp/com.depnotify.registration.done"
 DEP_N_DONE="/var/tmp/com.depnotify.provisioning.done"
 # Script Receipts Removed at workflow completion
 DEP_N_GATE_INSTALLJC="/var/tmp/com.jumpcloud.gate.installjc"
@@ -206,18 +206,18 @@ if [[ ! -f $DEP_N_GATE_INSTALLJC ]]; then
     defaults write "$DEP_N_CONFIG_PLIST" registrationMainTitle "Activate Your Account"
     defaults write "$DEP_N_CONFIG_PLIST" registrationButtonLabel "Activate Your Account"
 
-    if [[ $self_ID == "CE" ]]; then
+    if [[ $SELF_ID == "CE" ]]; then
         defaults write "$DEP_N_CONFIG_PLIST" textField1Label "Enter Your Company Email Address"
         defaults write "$DEP_N_CONFIG_PLIST" textField1Placeholder "enter email in all lowercase characters"
-    elif [[ $self_ID == "PE" ]]; then
+    elif [[ $SELF_ID == "PE" ]]; then
         defaults write "$DEP_N_CONFIG_PLIST" textField1Label "Enter Your Personal Email Address"
         defaults write "$DEP_N_CONFIG_PLIST" textField1Placeholder "enter email in all lowercase characters"
-    elif [[ $self_ID == "LN" ]]; then
+    elif [[ $SELF_ID == "LN" ]]; then
         defaults write "$DEP_N_CONFIG_PLIST" textField1Label "Enter Your Last Name"
         defaults write "$DEP_N_CONFIG_PLIST" textField1Placeholder "enter last name in all lowercase characters"
     fi
 
-    if [[ $self_secret == true ]]; then
+    if [[ $SELF_SECRET == true ]]; then
         defaults write "$DEP_N_CONFIG_PLIST" textField2Label "Enter Your Secret Word"
         defaults write "$DEP_N_CONFIG_PLIST" textField2Placeholder "enter secret in all lowercase characters"
     fi
@@ -490,11 +490,11 @@ if [[ ! -f $DEP_N_GATE_UI ]]; then
     #<--INSERT-CONFIGURATION for "User Configuration Settings" below this line-------
 
     ### variable assignments for completing the user module
-    if [[ $self_ID == "CE" ]]; then
+    if [[ $SELF_ID == "CE" ]]; then
         id_type='"email"'
-    elif [[ $self_ID == "PE" ]]; then
+    elif [[ $SELF_ID == "PE" ]]; then
         id_type='"description"'
-    elif [[ $self_ID == "LN" ]]; then
+    elif [[ $SELF_ID == "LN" ]]; then
         id_type='"lastname"'
     fi
 
@@ -506,20 +506,20 @@ if [[ ! -f $DEP_N_GATE_UI ]]; then
         echo "$(date "+%Y-%m-%dT%H:%M:%S"): Waiting for user to fill in information." >>"$DEP_N_DEBUG"
         sleep 1
     done
-    echo "$(date "+%Y-%m-%dT%H:%M:%S"): User Selection is: $self_ID" >>"$DEP_N_DEBUG"
-    if [[ $self_ID == "CE" ]]; then
+    echo "$(date "+%Y-%m-%dT%H:%M:%S"): User Selection is: $SELF_ID" >>"$DEP_N_DEBUG"
+    if [[ $SELF_ID == "CE" ]]; then
         CompanyEmail=$(defaults read $DEP_N_USER_INPUT_PLIST "Enter Your Company Email Address")
-    elif [[ $self_ID == "PE" ]]; then
+    elif [[ $SELF_ID == "PE" ]]; then
         CompanyEmail=$(defaults read $DEP_N_USER_INPUT_PLIST "Enter Your Personal Email Address")
-    elif [[ $self_ID == "LN" ]]; then
+    elif [[ $SELF_ID == "LN" ]]; then
         CompanyEmail=$(defaults read $DEP_N_USER_INPUT_PLIST "Enter Your Last Name")
     fi
-    if [[ $self_secret == true ]]; then
+    if [[ $SELF_SECRET == true ]]; then
         Secret=$(defaults read $DEP_N_USER_INPUT_PLIST "Enter Your Secret Word")
     fi
 
     ## secret sauce
-    if [[ $self_secret == true ]]; then
+    if [[ $SELF_SECRET == true ]]; then
         injection='"employeeIdentifier":"'${Secret}'",'
     else
         injection=""
@@ -625,15 +625,15 @@ if [[ ! -f $DEP_N_GATE_UI ]]; then
                 echo "$(date "+%Y-%m-%dT%H:%M:%S"): Waiting for user to fill in information." >>"$DEP_N_DEBUG"
                 sleep 1
             done
-            echo "$(date "+%Y-%m-%dT%H:%M:%S"): User Selection is: $self_ID" >>"$DEP_N_DEBUG"
-            if [[ $self_ID == "CE" ]]; then
+            echo "$(date "+%Y-%m-%dT%H:%M:%S"): User Selection is: $SELF_ID" >>"$DEP_N_DEBUG"
+            if [[ $SELF_ID == "CE" ]]; then
                 CompanyEmail=$(defaults read $DEP_N_USER_INPUT_PLIST "Enter Your Company Email Address")
-            elif [[ $self_ID == "PE" ]]; then
+            elif [[ $SELF_ID == "PE" ]]; then
                 CompanyEmail=$(defaults read $DEP_N_USER_INPUT_PLIST "Enter Your Personal Email Address")
-            elif [[ $self_ID == "LN" ]]; then
+            elif [[ $SELF_ID == "LN" ]]; then
                 CompanyEmail=$(defaults read $DEP_N_USER_INPUT_PLIST "Enter Your Last Name")
             fi
-            if [[ $self_secret == true ]]; then
+            if [[ $SELF_SECRET == true ]]; then
                 Secret=$(defaults read $DEP_N_USER_INPUT_PLIST "Enter Your Secret Word")
                 # update injection variable
                 injection='"employeeIdentifier":"'${Secret}'",'
@@ -651,7 +651,7 @@ if [[ ! -f $DEP_N_GATE_UI ]]; then
     regex='[a-zA-Z0-9]{24}'
     if [[ $userSearch =~ $regex ]]; then
         # determine cases
-        if [[ $self_passwd == true ]]; then
+        if [[ $SELF_PASSWD == true ]]; then
             pass_path="update_required"
         fi
         userID="${BASH_REMATCH[@]}"
@@ -1031,7 +1031,7 @@ if [[ -f $DEP_N_GATE_DONE ]]; then
     # Clean up steps
     echo "$(date "+%Y-%m-%dT%H:%M:%S"): Status: Removing LaunchDaemon" >>"$DEP_N_DEBUG"
     # Remove the LaunchDaemon file
-    rm -rf "/Library/LaunchDaemons/${daemon}"
+    rm -rf "/Library/LaunchDaemons/${DAEMON}"
     # Clean up receipts
     rm /var/tmp/com.jumpcloud*
     # Make script delete itself
