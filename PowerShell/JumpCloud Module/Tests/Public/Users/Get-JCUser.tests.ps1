@@ -188,7 +188,7 @@ Describe -Tag:('JCUser') "Get-JCUser 1.4" {
     }
 
     It "Searches for a JumpCloud user by username and password_never_expires" {
-        $PesterUser = Get-JCUser -username $PesterParams.Username -password_never_expires $false
+        $PesterUser = Get-JCUser -username $PesterParams.Username -password_never_expires $true
         $PesterUser.username | Should -be $PesterParams.Username
     }
 
