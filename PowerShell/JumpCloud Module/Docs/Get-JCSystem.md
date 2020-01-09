@@ -277,6 +277,21 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
+### -hasServiceAccount
+A search filter to show macOS systems that have the JumpCloud service account
+
+```yaml
+Type: System.Boolean
+Parameter Sets: SearchFilter
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
 ### -hostname
 A search filter to search systems by the hostname.
 
@@ -346,7 +361,7 @@ Valid properties that can be returned are: 'created', 'active', 'agentVersion', 
 Type: System.String[]
 Parameter Sets: SearchFilter
 Aliases:
-Accepted values: created, active, agentVersion, allowMultiFactorAuthentication, allowPublicKeyAuthentication, allowSshPasswordAuthentication, allowSshRootLogin, arch, created, displayName, hostname, lastContact, modifySSHDConfig, organization, os, remoteIP, serialNumber, sshdParams, systemTimezone, templateName, version, fde, systemInsights
+Accepted values: created, active, agentVersion, allowMultiFactorAuthentication, allowPublicKeyAuthentication, allowSshPasswordAuthentication, allowSshRootLogin, arch, created, displayName, hostname, lastContact, modifySSHDConfig, organization, os, remoteIP, serialNumber, sshdParams, systemTimezone, templateName, version, fde, systemInsights, hasServiceAccount, fileSystem
 
 Required: False
 Position: Named
@@ -406,21 +421,6 @@ A search filter to search systems by the version.
 
 ```yaml
 Type: System.String
-Parameter Sets: SearchFilter
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -hasServiceAccount
-A search filter to show macOS systems that have the JumpCloud service account
-
-```yaml
-Type: System.Boolean
 Parameter Sets: SearchFilter
 Aliases:
 

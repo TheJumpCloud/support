@@ -15,21 +15,22 @@ Updates a JumpCloud radius server.
 ### ById (Default)
 ```
 Set-JCRadiusServer [-Force] [-Id] <String[]> [[-newName] <String>] [[-networkSourceIp] <String>]
- [[-sharedSecret] <String>] [-mfa <String>] [-userLockoutAction <String>]
- [-userPasswordExpirationAction <String>] [<CommonParameters>]
-```
-
-### ByValue
-```
-Set-JCRadiusServer [-Force] [[-newName] <String>] [[-networkSourceIp] <String>] [[-sharedSecret] <String>]
- [-mfa <String>] [-userLockoutAction <String>] [-userPasswordExpirationAction <String>] [<CommonParameters>]
+ [[-sharedSecret] <String>] [[-mfa] <String>] [[-userLockoutAction] <String>]
+ [[-userPasswordExpirationAction] <String>] [<CommonParameters>]
 ```
 
 ### ByName
 ```
 Set-JCRadiusServer [-Force] [-Name] <String[]> [[-newName] <String>] [[-networkSourceIp] <String>]
- [[-sharedSecret] <String>] [-mfa <String>] [-userLockoutAction <String>]
- [-userPasswordExpirationAction <String>] [<CommonParameters>]
+ [[-sharedSecret] <String>] [[-mfa] <String>] [[-userLockoutAction] <String>]
+ [[-userPasswordExpirationAction] <String>] [<CommonParameters>]
+```
+
+### ByValue
+```
+Set-JCRadiusServer [-Force] [[-newName] <String>] [[-networkSourceIp] <String>] [[-sharedSecret] <String>]
+ [[-mfa] <String>] [[-userLockoutAction] <String>] [[-userPasswordExpirationAction] <String>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -105,6 +106,22 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
+### -mfa
+If MFA should be requried to authenticate to the RADIUS Server
+
+```yaml
+Type: System.String
+Parameter Sets: (All)
+Aliases:
+Accepted values: DISABLED, ENABLED
+
+Required: False
+Position: 6
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
 ### -networkSourceIp
 The ip of the new Radius Server.
 
@@ -150,21 +167,6 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
-### -mfa
-If MFA should be requried to authenticate to the RADIUS Server
-
-```yaml
-Type: System.String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
 ### -userLockoutAction
 The behavior when user accounts get locked out
 
@@ -172,9 +174,10 @@ The behavior when user accounts get locked out
 Type: System.String
 Parameter Sets: (All)
 Aliases:
+Accepted values: MAINTAIN, REMOVE
 
 Required: False
-Position: Named
+Position: 7
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -187,9 +190,10 @@ The behavior when user accounts expire
 Type: System.String
 Parameter Sets: (All)
 Aliases:
+Accepted values: MAINTAIN, REMOVE
 
 Required: False
-Position: Named
+Position: 8
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
