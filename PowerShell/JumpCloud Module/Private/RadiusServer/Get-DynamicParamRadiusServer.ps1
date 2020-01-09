@@ -45,6 +45,33 @@ Function Get-DynamicParamRadiusServer
             'Position'                        = 5;
             'ValidatePattern'                 = '^[a-zA-Z0-9!@#$%^&*]*$';
         }
+        $Param_mfa = @{
+            'Name'                            = 'mfa';
+            'Type'                            = [System.String];
+            'ValueFromPipelineByPropertyName' = $true;
+            'ValidateNotNullOrEmpty'          = $true;
+            'ValidateSet'                     = @("DISABLED", "ENABLED");
+            'HelpMessage'                     = 'If MFA should be requried to authenticate to the RADIUS Server';
+            'Position'                        = 6;
+        }
+        $Param_userLockoutAction = @{
+            'Name'                            = 'userLockoutAction';
+            'Type'                            = [System.String];
+            'ValueFromPipelineByPropertyName' = $true;
+            'ValidateNotNullOrEmpty'          = $true;
+            'ValidateSet'                     = @("MAINTAIN", "REMOVE");
+            'HelpMessage'                     = 'The behavior when user accounts get locked out';
+            'Position'                        = 7;
+        }
+        $Param_userPasswordExpirationAction = @{
+            'Name'                            = 'userPasswordExpirationAction';
+            'Type'                            = [System.String];
+            'ValueFromPipelineByPropertyName' = $true;
+            'ValidateNotNullOrEmpty'          = $true;
+            'ValidateSet'                     = @("MAINTAIN", "REMOVE");
+            'HelpMessage'                     = 'The behavior when user accounts expire';
+            'Position'                        = 8;
+        }
         If ($Action -in ('add', 'new'))
         {
             $Param_networkSourceIp.Add('Mandatory', $true);
@@ -64,15 +91,15 @@ Function Get-DynamicParamRadiusServer
                 {
                     New-DynamicParameter @VarValue | Out-Null
                 }
-                ElseIf ($Action -in ('remove') -and $_.Name -notin ('Param_newName', 'Param_networkSourceIp', 'Param_sharedSecret'))
+                ElseIf ($Action -in ('remove') -and $_.Name -notin ('Param_newName', 'Param_networkSourceIp', 'Param_sharedSecret', 'Param_mfa', 'Param_userLockoutAction', 'Param_userPasswordExpirationAction'))
                 {
                     New-DynamicParameter @VarValue | Out-Null
                 }
-                ElseIf ($Action -in ('set') -and $_.Name -in ('Param_newName', 'Param_networkSourceIp', 'Param_sharedSecret'))
+                ElseIf ($Action -in ('set') -and $_.Name -in ('Param_newName', 'Param_networkSourceIp', 'Param_sharedSecret', 'Param_mfa', 'Param_userLockoutAction', 'Param_userPasswordExpirationAction'))
                 {
                     New-DynamicParameter @VarValue | Out-Null
                 }
-                ElseIf ($Action -eq 'get' -and $_.Name -notin ('Param_newName', 'Param_networkSourceIp', 'Param_sharedSecret'))
+                ElseIf ($Action -eq 'get' -and $_.Name -notin ('Param_newName', 'Param_networkSourceIp', 'Param_sharedSecret', 'Param_mfa', 'Param_userLockoutAction', 'Param_userPasswordExpirationAction'))
                 {
                     New-DynamicParameter @VarValue | Out-Null
                 }

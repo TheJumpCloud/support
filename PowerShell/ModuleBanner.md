@@ -1,13 +1,13 @@
 #### Latest Version
 
 ```
-1.15.2
+1.15.3
 ```
 
 #### Banner Current
 
 ```
-Support for UTF-8 encoding and new SystemInsights tables available.
+You can now modify all attributes of a RADIUS server using Set-JCRadiusServer
 !!!*****************************************
 !!!PowerShell Core Versions 6.0 and 6.1 are no longer supported. Please update PowerShell https://aka.ms/pscore6
 !!!*****************************************
@@ -16,7 +16,7 @@ Support for UTF-8 encoding and new SystemInsights tables available.
 #### Banner Old
 
 ```
-Support for UTF-8 encoding and new SystemInsights tables available.
+You can now modify all attributes of a RADIUS server using Set-JCRadiusServer
 !!!*****************************************
 !!!PowerShell Core Versions 6.0 and 6.1 are no longer supported. Please update PowerShell https://aka.ms/pscore6
 !!!*****************************************

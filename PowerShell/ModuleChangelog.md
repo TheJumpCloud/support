@@ -1,3 +1,25 @@
+## 1.15.3
+
+#### RELEASE DATE
+
+January 9, 2020
+
+#### RELEASE NOTES
+
+You can now update all attributes of a RADIUS server using Set-JCRadiusServer.
+New parameters added to Get-JCSystem and Get-JCUser.
+
+#### FEATURES
+
+Set-JCRadiusServer can now update userPasswordExpirationAction, userLockoutAction, and mfa
+Get-JCUser now can return the mfa property using -returnProperties
+Get-JCSystem can now search for macOS machines with the JumpCloud Service Account using the -hasServiceAccount parameter
+Get-JCSystem can now return the hasServiceAccount, fileSystem properties using -returnProperties
+
+
+#### IMPROVEMENTS
+
+
 ## 1.15.2
 
 #### RELEASE DATE
