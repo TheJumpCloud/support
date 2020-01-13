@@ -94,6 +94,13 @@ SELF_SECRET=false
 # Ex: SELF_PASSWD=true
 SELF_PASSWD=false
 
+### SSO Enrollment settings (beta) ###
+SSO=true
+JAMF_API_USER=""
+JAMF_ENCRYPTED_KEY=""
+JAMF_URL="https://yourJamf.jamfcloud.com/JSSResource"
+
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # END General Settings                                                         ~
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -142,6 +149,7 @@ DEP_N_DONE="/var/tmp/com.depnotify.provisioning.done"
 # Script Receipts Removed at workflow completion
 DEP_N_GATE_INSTALLJC="/var/tmp/com.jumpcloud.gate.installjc"
 DEP_N_GATE_SYSADD="/var/tmp/com.jumpcloud.gate.sysadd"
+DEP_N_GATE_SSO="var/tmp/com.jumpcloud.gate.sso"
 DEP_N_GATE_UI="/var/tmp/com.jumpcloud.gate.ui"
 DEP_N_GATE_DONE="/var/tmp/com.jumpcloud.gate.done"
 
@@ -416,6 +424,98 @@ if [[ ! -f $DEP_N_GATE_SYSADD ]]; then
     kill $caffeinatePID
     touch $DEP_N_GATE_SYSADD
     echo "System added to JumpCloud Enrollment Group" >>"$DEP_N_LOG"
+fi
+
+# check if sso user was used during enrollment with apple automated enrollment
+if [[ ! -f $DEP_N_GATE_SSO ]]; then
+    echo "$(date "+%Y-%m-%dT%H:%M:%S"): Checking for sso enrollment user" >>"$DEP_N_DEBUG"
+    function GetSN() {
+	system_profiler SPHardwareDataType | awk '/Serial/{print $4}'
+    }
+
+    # Check JAMF Pro ID using SN
+    function GetJamfID(){
+        curl -sku $JAMF_API_USER:$JAMF_ENCRYPTED_KEY -H "Accept: text/xml" $JAMF_URL/computers/serialnumber/$(GetSN) | xmllint --xpath '/computer/general/id/text()' -
+    }
+
+    # print serial num
+    echo $(GetSN)
+    # print jamf id
+    echo $(GetJamfID)
+
+    result=$(curl -sku $JAMF_API_USER:$JAMF_ENCRYPTED_KEY $JAMF_URL/computers/id/$(GetJamfID) -X GET)
+    # echo $result
+
+    # re="(<email_address>)(.*?)(<\/email_address>)"
+    # title=$(grep -oPm1 "(?<=<email_address>)[^<]+" <<< "$result")
+    # echo "$title"
+
+    echo "Status: Pulling Security Settings from JumpCloud" >>"$DEP_N_LOG"
+
+    DECRYPT_USER_ID=$(dscl . -read /Users/$DECRYPT_USER | grep UniqueID | cut -d " " -f 2)
+
+    while [ -z "$DECRYPT_USER_ID" ]; do
+        echo "$(date "+%Y-%m-%dT%H:%M:%S"): Waiting for DECRYPT_USER_ID for user $DECRYPT_USER" >>"$DEP_N_DEBUG"
+        sleep 1
+        DECRYPT_USER_ID=$(dscl . -read /Users/$DECRYPT_USER | grep UniqueID | cut -d " " -f 2)
+    done
+
+    echo "Status: Security Settings Configured" >>"$DEP_N_LOG"
+
+    # Gather OrgID
+    conf="$(cat /opt/jc/jcagent.conf)"
+    regex='\"ldap_domain\":\"[a-zA-Z0-9]*'
+    if [[ $conf =~ $regex ]]; then
+        ORG_ID_RAW="${BASH_REMATCH[@]}"
+    fi
+
+    ORG_ID=$(echo $ORG_ID_RAW | cut -d '"' -f 4)
+
+    APIKEY=$(DecryptKey $ENCRYPTED_KEY $DECRYPT_USER_ID $ORG_ID)
+
+    email=$(echo $result | /usr/bin/awk -F'<email_address>|</email_address>' '{print $2}')
+    echo $email
+    sec='"activated":false'
+    id_type='"email"'
+
+    userSearch=$(
+                curl -s \
+                    -X 'POST' \
+                    -H 'Content-Type: application/json' \
+                    -H 'Accept: application/json' \
+                    -H "x-api-key: ${APIKEY}" \
+                    -d '{"filter":[{'${id_type}':"'${email}'"}],"fields":["username"]}' \
+                    "https://console.jumpcloud.com/api/search/systemusers"
+            )
+
+    echo "$(date "+%Y-%m-%dT%H:%M:%S") DEBUG USER SEARCH $userSearch" 
+    regex='totalCount"*.*,"results"'
+    if [[ $userSearch =~ $regex ]]; then
+        userSearchRaw="${BASH_REMATCH[@]}"
+    fi
+    #debug
+    echo "$(date "+%Y-%m-%dT%H:%M:%S") DEBUG USER SEARCH $userSearchRaw" 
+    totalCount=$(echo $userSearchRaw | cut -d ":" -f2 | cut -d "," -f1)
+
+    if [[ $totalCount == 1 ]]; then
+        # take some action
+        echo "taking some action"
+        # Capture userID
+        regex='[a-zA-Z0-9]{24}'
+        if [[ $userSearch =~ $regex ]]; then
+            # determine cases
+            if [[ $SELF_PASSWD == true ]]; then
+                pass_path="update_required"
+            fi
+            userID="${BASH_REMATCH[@]}"
+            echo "$(date "+%Y-%m-%dT%H:%M:%S") JumpCloud userID found userID: "$userID >>"$DEP_N_DEBUG"
+            # skip user interaction
+            touch $DEP_N_GATE_UI
+        else
+            echo "$(date "+%Y-%m-%dT%H:%M:%S") No JumpCloud userID found." >>"$DEP_N_DEBUG"
+            exit 1
+        fi
+    fi
 fi
 
 # User interaction steps - check if user has completed these steps.
