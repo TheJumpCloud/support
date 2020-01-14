@@ -105,7 +105,7 @@ The JumpCloud Bootstrap configuration script configured in this guide must be pa
 
 **JumpCloud Agent:** The JumpCloud Agent gets installed after the Enrollment User signs in. This agent is what manages local accounts on macOS machines and creates the JumpCloud Service Account.
 
-**JumpCloud API:** The JumpCloud API is used in the **jumpcloud_bootstrap_template.sh** to drive the zero-touch workflow.
+**JumpCloud API:** The JumpCloud API is used in the **jumpcloud_bootstrap_template.sh** to drive the zero-touch workflow. MTP administrator accounts have admin access to all organizations within a given MTP portal. Administrators of a [JumpCloud Multi-Tenant Portal MTP](https://support.jumpcloud.com/support/s/article/using-the-jumpcloud-multi-tenant-portal) must configure a [single tenant administrator account](https://support.jumpcloud.com/support/s/article/managing-jumpcloud-administrator-accounts1-2019-08-21-10-36-47) for each organization they intend to implement this workflow with. An unique, single tenant organization administrator's, API key must be used when configuring this workflow to make it specific to an org. MTP admins **should not** use their MTP admin API key to configure this workflow. MTP admins should follow the API key instructions under [Variable Definitions](#variable-definitions).
 
 **Password Configuration Window:** A osascript that presents users with an input box to set a secure password with regex validation. A Privacy Preferences MDM Profile must be created to suppress the security pop-up.
 
@@ -337,7 +337,14 @@ Three parameters are used to create this encrypted string.
 
 1. JumpCloud API key
 
-   - Need help finding your JumpCloud API key? See KB:[Obtaining Your API Key](https://support.jumpcloud.com/customer/en/portal/articles/2429680-jumpcloud-apis#configuration)
+   - An administrator's API key is obtained in the JumpCloud Console. [Instructions to obtain an administrators API Key](https://docs.jumpcloud.com/2.0/authentication-and-authorization/authentication-and-authorization-overview)
+   - MTP administrator accounts have admin access to all organizations within a given MTP portal. Administrators of a [JumpCloud Multi-Tenant Portal MTP](https://support.jumpcloud.com/support/s/article/using-the-jumpcloud-multi-tenant-portal) should configure a [new single tenant administrator account](https://support.jumpcloud.com/support/s/article/managing-jumpcloud-administrator-accounts1-2019-08-21-10-36-47) for each organization they intend to configure for this workflow. An unique single tenant organization administrator's, API key must be used when configuring this workflow. MTP admins **should not** use their MTP admin API key to configure this workflow.
+   - To create and find the API key of a single tenant administrator account on the MTP portal:
+     - Launch a tenant where the Prestage User Enrollment workflow should be configured.
+     - Follow [instructions to create a new administrator](https://support.jumpcloud.com/support/s/article/managing-jumpcloud-administrator-accounts1-2019-08-21-10-36-47).
+     - Login to the JumpCloud console as that new Administrator user.
+     - Select the username drop down located in the top-right of the Console.
+     - Retrieve your API key from API setting.
 
 2. UID of **Decryption User** created in [Step 3](#step-3---configuring-the-jumpcloud-tenant-for-dep-zero-touch)
 
