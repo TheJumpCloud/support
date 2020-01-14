@@ -437,7 +437,7 @@ if [[ $SSO == true ]]; then
 
         # Check JAMF Pro ID using SN
         function GetJamfID(){
-            curl -sku $JAMF_API_USER:$JAMF_ENCRYPTED_KEY -H "Accept: text/xml" $JAMF_URL/computers/serialnumber/$(GetSN) | xmllint --xpath '/computer/general/id/text()' -
+            curl -sku $JAMF_API_USER:$JAMF_API_KEY -H "Accept: text/xml" $JAMF_URL/computers/serialnumber/$(GetSN) | xmllint --xpath '/computer/general/id/text()' -
         }
 
         # print serial num
@@ -445,7 +445,7 @@ if [[ $SSO == true ]]; then
         # print jamf id
         echo $(GetJamfID)
 
-        result=$(curl -sku $JAMF_API_USER:$JAMF_ENCRYPTED_KEY $JAMF_URL/computers/id/$(GetJamfID) -X GET)
+        result=$(curl -sku $JAMF_API_USER:$JAMF_API_KEY $JAMF_URL/computers/id/$(GetJamfID) -X GET)
         # echo $result
 
         # re="(<email_address>)(.*?)(<\/email_address>)"
