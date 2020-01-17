@@ -117,6 +117,10 @@ Function DownloadAndInstallAgent(
     }
 }
 
+#Flush DNS Cache Before Install
+
+ipconfig /FlushDNS
+
 # JumpCloud Agent Installation Logic
 
 DownloadAndInstallAgent -msvc2013x64link:($msvc2013x64Link) -TempPath:($TempPath) -msvc2013x64file:($msvc2013x64File) -msvc2013x64install:($msvc2013x64Install) -msvc2013x86link:($msvc2013x86Link) -msvc2013x86file:($msvc2013x86File) -msvc2013x86install:($msvc2013x86Install)
