@@ -21,5 +21,5 @@ Installs available updates on a Mac system, this command will restart a system i
 To import this command into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
 
 ```
-Import-JCCommand -URL ''
+Import-JCCommand -URL 'https://git.io/JvLiE'
 ```
