@@ -6,23 +6,28 @@
 # Enter your connect key within the '' of YOUR_CONNECT_KEY='' with your orgs key found on the new system aside in the admin console
 YOUR_CONNECT_KEY=''
 
-# You can also specify YOUR_CONNECT_KEY using the -k parameter
-while getopts k:h option; do
-  case "${option}" in
-    k) YOUR_CONNECT_KEY=${OPTARG};;
-    h)
-      printf "\nOptions:
-      -k        Your JumpCloud Connect Key\n\n"
-      exit 0
-      ;;
-  esac
-done
-
 # Enter the SECURETOKEN_ADMIN_USERNAME within the '' of SECURETOKEN_ADMIN_USERNAME=''
 SECURETOKEN_ADMIN_USERNAME=''
 
 # Enter the SECURETOKEN_ADMIN_PASSWORD within the '' of SECURETOKEN_ADMIN_PASSWORD='' with the credentials of the admin with a secure token
 SECURETOKEN_ADMIN_PASSWORD=''
+
+# You can also specify one or more values with parameters
+# -k YOUR_CONNECT_KEY -u SECURETOKEN_ADMIN_USERNAME -p SECURETOKEN_ADMIN_PASSWORD
+while getopts k:u:p:h option; do
+  case "${option}" in
+    k) YOUR_CONNECT_KEY=${OPTARG};;
+    u) SECURETOKEN_ADMIN_USERNAME=${OPTARG};;
+    p) SECURETOKEN_ADMIN_PASSWORD=${OPTARG};;
+    h)
+      printf "Options:
+      -k        Your JumpCloud Connect Key
+      -u        System Admin Username
+      -p        System Admin Passowrd\n\n"
+      exit 0
+      ;;
+  esac
+done
 
 #--------------------Do not modify below this line--------------------
 
