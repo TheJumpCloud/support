@@ -2,7 +2,7 @@
 
 Without the JumpCloud Service Account the JumpCloud agent cannot manage FileVault users and encrypted macOS machines.
 
-See the [PreStage User Enrollment](https://github.com/TheJumpCloud/support/tree/master/zero-touch/prestage_user_enrollment) zero touch workflow for a zero-touch workflow that creates the JumpCloud Service Account and allows for zero-touch management of encrypted macOS machines.
+See the [PreStage User Enrollment](https://github.com/TheJumpCloud/MDM-Prestage-User-Enrollment) zero touch workflow for a zero-touch workflow that creates the JumpCloud Service Account and allows for zero-touch management of encrypted macOS machines.
 
 **Configuring a Zero-Touch macOS Onboarding Experience Using the Apple Device Enrollment Program (DEP), Workspace ONE UEM, and JumpCloud**
 
