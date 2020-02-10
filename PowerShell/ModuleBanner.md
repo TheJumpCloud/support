@@ -7,7 +7,8 @@
 #### Banner Current
 
 ```
-The JumpCloud Dashboard PowerShell Module has been released! Learn more information here: https://github.com/TheJumpCloud/jumpcloud-dashboard/wiki
+The JumpCloud Dashboard PowerShell Module has been released! Learn more information here:
+https://github.com/TheJumpCloud/jumpcloud-dashboard/wiki
 ```
 
 #### Banner Old
