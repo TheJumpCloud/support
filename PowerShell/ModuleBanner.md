@@ -7,7 +7,7 @@
 #### Banner Current
 
 ```
-Visualize directory data with the JumpCloud Dashboard PowerShell module!
+Visualize directory data using the new JumpCloud Dashboard PowerShell module!
 Follow this link to learn more: https://github.com/TheJumpCloud/jumpcloud-dashboard/wiki
 ```
 
