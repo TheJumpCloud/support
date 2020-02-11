@@ -117,8 +117,15 @@ readInPasswordForUser(){
   done
 }
 
+# require connect key
 if [ -z "$YOUR_CONNECT_KEY" ]; then
   echo 'Connect key is required. Please provide one in the script or via the -k parameter'
+  exit 1
+fi
+
+# check connect key length
+if [ ${#YOUR_CONNECT_KEY} != 40 ]; then
+  echo 'Connect key is not 40 characters. Please provide a valid connect key in the script or via the -k parameter'
   exit 1
 fi
 
