@@ -91,10 +91,31 @@ else
     return 1
   }
 
+  verifyPasswordForUser() {
+    VERIFYPASSWORD=$(dscl /Local/Default -authonly $SECURETOKEN_ADMIN_USERNAME $SECURETOKEN_ADMIN_PASSWORD)
+
+    if [ -z "$VERIFYPASSWORD" ]; then
+      return 0
+    else
+      return 1
+    fi
+  }
+
   readInPasswordForUser() {
     local reenter_password
 
     while true; do
+
+      if [ -n "$SECURETOKEN_ADMIN_PASSWORD" ]; then
+        verifyPasswordForUser
+
+        if [ $? -ne 0 ]; then
+          printf "\n\nERROR: Incorrect Password for user $SECURETOKEN_ADMIN_USERNAME!\n\n"
+        else
+          printf "\nPassword validated for user $SECURETOKEN_ADMIN_USERNAME\n"
+          break
+        fi
+      fi
 
       read -sp "Please enter the password for $SECURETOKEN_ADMIN_USERNAME:" SECURETOKEN_ADMIN_PASSWORD
       echo ''
@@ -104,20 +125,8 @@ else
         printf '\n\nERROR: Passwords cannot be blank!\n\n'
       else
         if [ "$SECURETOKEN_ADMIN_PASSWORD" == "$reenter_password" ]; then
-
-          VERIFYPASSWORD=$(dscl /Local/Default -authonly $SECURETOKEN_ADMIN_USERNAME $SECURETOKEN_ADMIN_PASSWORD)
-
-          if [ -z "$VERIFYPASSWORD" ]; then
-
-            echo ''
-            break
-
-          else
-            printf '\n\nERROR: Incorrect Password!\n\n'
-          fi
-
+          printf '\nPasswords match, verifying\n'
         else
-
           printf '\n\nERROR: Passwords did not match!\n\n'
         fi
       fi
@@ -137,6 +146,7 @@ else
   fi
 
   if [ "$SILENT_INSTALL" -eq "0" ]; then
+
     if [ -z "$SECURETOKEN_ADMIN_USERNAME" ]; then
       # if empty, set SECURETOKEN_ADMIN_USERNAME to the user running the script
       SECURETOKEN_ADMIN_USERNAME=$(stat -f '%Su' $HOME)
@@ -144,11 +154,7 @@ else
 
     # check to make sure the user is a secure token enabled admin
     checkAndReadInUsername
-    name_check=$?
-
-    if [ "$name_check" -ne "0" ] || [ -z "$SECURETOKEN_ADMIN_PASSWORD" ]; then
-      readInPasswordForUser
-    fi
+    readInPasswordForUser
 
   fi
 
