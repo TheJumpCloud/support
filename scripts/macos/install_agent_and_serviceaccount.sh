@@ -92,6 +92,8 @@ else
   }
 
   verifyPasswordForUser() {
+    printf '\nVerifying Password\n'
+
     VERIFYPASSWORD=$(dscl /Local/Default -authonly $SECURETOKEN_ADMIN_USERNAME $SECURETOKEN_ADMIN_PASSWORD)
 
     if [ -z "$VERIFYPASSWORD" ]; then
@@ -110,26 +112,18 @@ else
         verifyPasswordForUser
 
         if [ $? -ne 0 ]; then
-          printf "\n\nERROR: Incorrect Password for user $SECURETOKEN_ADMIN_USERNAME!\n\n"
+          printf "\nERROR: Incorrect Password for user $SECURETOKEN_ADMIN_USERNAME!\n"
         else
-          printf "\nPassword validated for user $SECURETOKEN_ADMIN_USERNAME\n"
+          printf "\nPassword verified for user $SECURETOKEN_ADMIN_USERNAME\n"
           break
         fi
+      else
+        echo 'Password cannot be blank'
       fi
 
       read -sp "Please enter the password for $SECURETOKEN_ADMIN_USERNAME:" SECURETOKEN_ADMIN_PASSWORD
       echo ''
-      read -sp "Please re-enter the password for $SECURETOKEN_ADMIN_USERNAME:" reenter_password
 
-      if [ -z "$SECURETOKEN_ADMIN_PASSWORD" ] || [ -z "$reenter_password" ]; then
-        printf '\n\nERROR: Passwords cannot be blank!\n\n'
-      else
-        if [ "$SECURETOKEN_ADMIN_PASSWORD" == "$reenter_password" ]; then
-          printf '\nPasswords match, verifying\n'
-        else
-          printf '\n\nERROR: Passwords did not match!\n\n'
-        fi
-      fi
     done
   }
 
