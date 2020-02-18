@@ -1,3 +1,21 @@
+## 1.15.4
+
+#### RELEASE DATE
+
+February 19, 2020
+
+#### RELEASE NOTES
+
+Need to update users email addresses in bulk? You can now do that using New-JCImportTemplate and Update-JCUsersFromCSV
+
+#### FEATURES
+
+Ability to add email column to output of New-JCImportTemplate when updating users
+
+#### BUG FIXES
+
+Resolved issue that could cause issues with regional DateTime formats
+
 ## 1.15.3
 
 #### RELEASE DATE
