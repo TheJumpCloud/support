@@ -14,6 +14,8 @@ Ability to add email column to output of New-JCImportTemplate when updating user
 
 #### BUG FIXES
 
+Resolved issue that could cause issues with regional DateTime formats
+
 ## 1.15.3
 
 #### RELEASE DATE
