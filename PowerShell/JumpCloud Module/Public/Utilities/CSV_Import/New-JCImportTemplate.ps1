@@ -23,7 +23,7 @@ Function New-JCImportTemplate()
 
         $Heading2 = 'The CSV file will be created within the directory:'
 
-        If (!(Get-PSCallStack | Where-Object {$_.Command -match 'Pester'})) {Clear-Host}
+        If (!(Get-PSCallStack | Where-Object { $_.Command -match 'Pester' })) { Clear-Host }
 
         Write-Host $Banner -ForegroundColor Green
         Write-Host "`n$Heading2`n"
@@ -115,6 +115,21 @@ Function New-JCImportTemplate()
             }
 
             elseif ($ConfirmUserPop -eq 'N') { }
+
+
+            Write-Host "`nWould you like to update users email addresses?"
+
+            while ($ConfirmEmailAddress -ne 'Y' -and $ConfirmEmailAddress -ne 'N')
+            {
+                $ConfirmEmailAddress = Read-Host  "Enter Y for Yes or N for No"
+            }
+
+            if ($ConfirmEmailAddress -eq 'Y')
+            {
+                $CSV.add('email', $null)
+            }
+
+            elseif ($ConfirmEmailAddress -eq 'N') { }
         }
 
 
