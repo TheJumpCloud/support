@@ -13,8 +13,8 @@ Param (
 # JumpCloud Agent Installation Variables
 $msvc2013x64File = 'vc_redist.x64.exe'
 $msvc2013x86File = 'vc_redist.x86.exe'
-$msvc2013x86Link = 'http://download.microsoft.com/download/0/5/6/056dcda9-d667-4e27-8001-8a0c6971d6b1/vcredist_x86.exe'
-$msvc2013x64Link = 'http://download.microsoft.com/download/0/5/6/056dcda9-d667-4e27-8001-8a0c6971d6b1/vcredist_x64.exe'
+$msvc2013x86Link = 'https://download.microsoft.com/download/0/5/6/056dcda9-d667-4e27-8001-8a0c6971d6b1/vcredist_x86.exe'
+$msvc2013x64Link = 'https://download.microsoft.com/download/0/5/6/056dcda9-d667-4e27-8001-8a0c6971d6b1/vcredist_x64.exe'
 $TempPath = 'C:\Windows\Temp\'
 $msvc2013x86Install = "$TempPath$msvc2013x86File /install /quiet /norestart"
 $msvc2013x64Install = "$TempPath$msvc2013x64File /install /quiet /norestart"
@@ -53,7 +53,7 @@ Function CheckProgramInstalled($programName)
 
 Function DownloadLink($Link, $Path)
 {
-
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     $WebClient = New-Object -TypeName:('System.Net.WebClient')
     $Global:IsDownloaded = $false
     $SplatArgs = @{ InputObject = $WebClient
