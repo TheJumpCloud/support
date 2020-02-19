@@ -279,7 +279,7 @@ Function Get-JCUser ()
                         if ($param.key -eq 'date')
                         {
 
-                            $ConvertDate = [DateTime]$param.value
+                            $ConvertDate = [DateTime]::Parse($param.value)
                             $Timestamp = Get-Date $ConvertDate -format o
 
                             continue
