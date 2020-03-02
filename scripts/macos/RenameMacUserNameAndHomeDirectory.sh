@@ -113,7 +113,7 @@ if [[ "/Users/${oldUser}" != "$actual" ]]; then
 fi
 
 # Checks if user is logged in
-loginCheck=$(ps -Ajc | grep ${oldUser} | grep loginwindow | awk '{print $2}')
+loginCheck=$(ps -Ajc | grep -w ${oldUser} | grep loginwindow | awk '{print $2}')
 
 # Logs out user if they are logged in
 timeoutCounter='0'
@@ -121,7 +121,7 @@ while [[ "${loginCheck}" ]]; do
 	echo "${log} Notice: ${oldUser} account logged in. Logging user off to complete username update" 2>&1 | tee -a JC_RENAME.log
 	sudo launchctl bootout gui/$(id -u ${oldUser})
 	Sleep 5
-	loginCheck=$(ps -Ajc | grep ${oldUser} | grep loginwindow | awk '{print $2}')
+	loginCheck=$(ps -Ajc | grep -w ${oldUser} | grep loginwindow | awk '{print $2}')
 	timeoutCounter=$((${timeoutCounter} + 1))
 	if [[ ${timeoutCounter} -eq 4 ]]; then
 		echo "${log} Error: Timeout unable to log out ${oldUser} account" 2>&1 | tee -a JC_RENAME.log
