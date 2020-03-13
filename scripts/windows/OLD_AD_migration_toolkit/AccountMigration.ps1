@@ -7,7 +7,7 @@ $Username = Read-Host "Enter desired local account username. Users temp password
 $TempPassword = "Temp123!"
 net user /add $Username $TempPassword
 
-# Step 2 download and launch Profwiz 
+# Step 2 download and launch Profwiz
 Function DownloadProfwiz($Link, $Path)
 {
     (New-Object System.Net.WebClient).DownloadFile("$Link", "$Path")

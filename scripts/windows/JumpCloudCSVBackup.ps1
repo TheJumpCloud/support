@@ -1,6 +1,6 @@
 ## Note version 1.5.0 or later of the JumpCloud Pwsh module must be installed to leverage this script.
 
-## After running the script five CSV files will be created within the backup location directory specified.  
+## After running the script five CSV files will be created within the backup location directory specified.
 
 ## Populate the below variables before running the script
 

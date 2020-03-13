@@ -36,7 +36,7 @@ $Results = @()
 # Iterate through each Office 365 user
 ForEach ($Office365User in $Office365Users)
 {
-    # If the Office 365 user is also a JumpCloud user    
+    # If the Office 365 user is also a JumpCloud user
     if ($JCUsersHash.ContainsKey(($Office365User).UserprincipalName))
     {
         # Check to see if the Office 365 immutableID is equal to the JumpCloud _id
@@ -46,7 +46,7 @@ ForEach ($Office365User in $Office365Users)
             {
                 # If these values are not equal update the Office 365 users immutableID to the JumpCloud _id
                 Set-MsolUser -UserPrincipalName $Office365User.UserprincipalName -ImmutableId $JCUsersHash.$($Office365User.UserprincipalName)
-                
+
                 # Format the results
                 $FormattedResults = [PSCustomObject]@{
 
@@ -63,7 +63,7 @@ ForEach ($Office365User in $Office365Users)
             }
             catch
             {
-                # Error handling 
+                # Error handling
                 $FormattedResults = [PSCustomObject]@{
 
                     UserprincipalName     = $Office365User.UserprincipalName
@@ -75,12 +75,10 @@ ForEach ($Office365User in $Office365Users)
 
                 $Results += $FormattedResults
 
-            } 
-            
+            }
+
         }
-        
     }
-    
 }
 
 # Return results to the screen
@@ -88,4 +86,3 @@ $Results
 
 # And export results to CSV file in current working directory
 $Results | Export-Csv -Path "Office365_ImmutableID_Updates.csv" -NoTypeInformation
-
