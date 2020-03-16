@@ -145,7 +145,7 @@ Function DeleteAgent()
 
 Function InstallAgent()
 {
-    $params = ("${AGENT_INSTALLER_PATH}", "-k ${JumpCloudConnectKey}", "/VERYSILENT", "/NORESTART", "/SUPRESSMSGBOXES", "/NOCLOSEAPPLICATIONS", "/NORESTARTAPPLICATIONS", "/LOG=$env:TEMP\jcUpdate.log")
+    $params = ("${AGENT_INSTALLER_PATH}", "-k ${JumpCloudConnectKey}", "/VERYSILENT", "/NORESTART", "/NOCLOSEAPPLICATIONS", "/NORESTARTAPPLICATIONS", "/LOG=$env:TEMP\jcUpdate.log")
     Invoke-Expression "$params"
 }
 Function DownloadAgentInstaller()
@@ -238,7 +238,7 @@ Function DownloadAndInstallAgent(
 #
 #########################################################################################
 Function AgentIsInServiceManager()
-{    
+{
     try
     {
         $services = Get-Service -Name "${AGENT_SERVICE_NAME}" -ErrorAction Stop
@@ -302,7 +302,7 @@ Function CheckForAndUninstallExistingAgent()
     {
         # Yep, kill it
         KillInstaller
-        
+
         Write-Output "Killed running agent installer."
     }
 
@@ -353,7 +353,7 @@ Function CleanUpAgentLeftovers()
     {
         # Yes, the installer was unsuccessful in removing it.
         DeleteAgent
-        
+
     }
 }
 
