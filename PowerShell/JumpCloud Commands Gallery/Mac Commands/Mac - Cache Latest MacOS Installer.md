@@ -10,6 +10,42 @@ mac
 
 ```
 softwareupdate --fetch-full-installer
+
+# Change the systemGroupID to the system group
+systemGroupID="5e74f14e45886d2939ff2562"
+
+# Parse the systemKey from the conf file.
+conf="$(cat /opt/jc/jcagent.conf)"
+regex='\"systemKey\":\"[a-zA-Z0-9]{24}\"'
+
+if [[ $conf =~ $regex ]]; then
+	systemKey="${BASH_REMATCH[@]}"
+fi
+
+regex='[a-zA-Z0-9]{24}'
+if [[ $systemKey =~ $regex ]]; then
+	systemID="${BASH_REMATCH[@]}"
+fi
+
+# Get the current time.
+now=$(date -u "+%a, %d %h %Y %H:%M:%S GMT")
+
+# create the string to sign from the request-line and the date
+signstr="POST /api/v2/systemgroups/${systemGroupID}/members HTTP/1.1\ndate: ${now}"
+
+# create the signature
+signature=$(printf "$signstr" | openssl dgst -sha256 -sign /opt/jc/client.key | openssl enc -e -a | tr -d '\n')
+
+curl -s \
+	-X 'POST' \
+	-H 'Content-Type: application/json' \
+	-H 'Accept: application/json' \
+	-H "Date: ${now}" \
+	-H "Authorization: Signature keyId=\"system/${systemID}\",headers=\"request-line date\",algorithm=\"rsa-sha256\",signature=\"${signature}\"" \
+	-d '{"op": "add","type": "system","id": "'${systemID}'"}' \
+	"https://console.jumpcloud.com/api/v2/systemgroups/${systemGroupID}/members"
+
+echo "JumpCloud system: ${systemID} removed from system group: ${systemGroupID}"
 ```
 
 #### Description
