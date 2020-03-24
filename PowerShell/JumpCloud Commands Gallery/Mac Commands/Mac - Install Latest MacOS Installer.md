@@ -58,7 +58,7 @@ fi
 
 #### Description
 
-Installs the macOS Installer specified in the first variable declaration. Replace "Install macOS Catalina.app" with the name of the latest cached installer on the target system. The startosinstall program within the latest OS installer is called with the --aggreetolicense and --forcequitapps flags to prevent user interaction. Test that this install method works for for remote users before deploying.
+This command installs the macOS Installer specified in the macosinstaller variable. Replace "Install macOS Catalina.app" with the name of the latest cached installer on the target system. The macosinstaller variable text should include the .app extension. Change the systemGroupID to the same group ID used in the Cache Latest MacOS Installer command. The startosinstall program within the latest OS installer is called with the --agreetolicense and --forcequitapps flags to prevent user interaction. Test that this install method works for for remote users before deploying and consider changing the startosinstall flags if user interaction is required.
 
 #### *Import This Command*
 
