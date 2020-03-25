@@ -11,7 +11,7 @@ Function Get-ModuleBanner
     $ModuleBanner_Headers = @('Latest Version', 'Banner Current', 'Banner Old')
     # Define regex patterns
     [regex]$Regex_HtmlTags = '(<)(.*?)(>)'
-    [regex]$Regex_Article = '(?is)(?<=<article class="markdown-body entry-content p-3 p-md-6" itemprop="text">)(.*?)(?=<\/article>)'
+    [regex]$Regex_Article = '(?is)(?<=<article class="markdown-body entry-content" itemprop="text">)(.*?)(?=<\/article>)'
     [regex]$Regex_H4_Start = '<h4>'
     [regex]$Regex_H4_Content = '(?is)(?<=<\/a>)(.*?)(?=<\/h4>)'
     [regex]$Regex_H4_Body = '(?is)(?<=<\/h4>)(.*?)($)'
