@@ -1,6 +1,6 @@
 #### Name
 
-Windows - Quick Assist | v1.0 JCCG
+Windows - Run As Active Session Template | v1.0 JCCG
 
 #### commandType
 
