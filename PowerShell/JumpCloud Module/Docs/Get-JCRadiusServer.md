@@ -24,16 +24,16 @@ Get-JCRadiusServer [-Force] [-Id] <String[]> [[-Fields] <Array>] [[-Filter] <Str
  [[-Skip] <Int32>] [[-Paginate] <Boolean>] [<CommonParameters>]
 ```
 
-### ByValue
-```
-Get-JCRadiusServer [-Force] [[-Fields] <Array>] [[-Filter] <String>] [[-Limit] <Int32>] [[-Skip] <Int32>]
- [[-Paginate] <Boolean>] [<CommonParameters>]
-```
-
 ### ByName
 ```
 Get-JCRadiusServer [-Force] [-Name] <String[]> [[-Fields] <Array>] [[-Filter] <String>] [[-Limit] <Int32>]
  [[-Skip] <Int32>] [[-Paginate] <Boolean>] [<CommonParameters>]
+```
+
+### ByValue
+```
+Get-JCRadiusServer [-Force] [[-Fields] <Array>] [[-Filter] <String>] [[-Limit] <Int32>] [[-Skip] <Int32>]
+ [[-Paginate] <Boolean>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -191,11 +191,17 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.Management.Automation.SwitchParameter
+
 ### System.String[]
+
 ### System.String
+
 ### System.Array
+
 ### System.Int32
+
 ### System.Boolean
+
 ## OUTPUTS
 
 ### System.Object

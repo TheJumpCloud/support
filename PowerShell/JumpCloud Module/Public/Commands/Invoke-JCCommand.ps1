@@ -134,8 +134,18 @@ You can leverage the pipeline and Parameter Binding to populate the -trigger Par
         $URL = "$JCUrlBasePath/api/command/trigger/$trigger"
         Write-Verbose $URL
 
+        if ($Variables)
+        {
+            $CommandResults = Invoke-RestMethod -Method POST -Uri $URL -Headers $hdrs -Body:($Variables | ConvertTo-Json) -UserAgent:(Get-JCUserAgent)
 
-        $CommandResults = Invoke-RestMethod -Method POST -Uri $URL -Headers $hdrs -Body:($Variables | ConvertTo-Json) -UserAgent:(Get-JCUserAgent)
+        }
+
+        else
+        {
+            $CommandResults = Invoke-RestMethod -Method POST -Uri $URL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
+
+        }
+
 
         $resultsArray += $CommandResults
 
