@@ -1,6 +1,6 @@
 #### Name
 
-Windows - Quick Assist | v1.0 JCCG
+Windows - Start Quick Assist Session | v1.0 JCCG
 
 #### commandType
 
