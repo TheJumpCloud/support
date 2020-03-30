@@ -1,6 +1,6 @@
 #### Name
 
-Windows - Run As Active Session Template | v1.0 JCCG
+Windows - Run As Signed In User Template | v1.0 JCCG
 
 #### commandType
 
@@ -295,11 +295,11 @@ $Arguments = '-NoLogo -NonInteractive -ExecutionPolicy ByPass -WindowStyle Hidde
 
 #### Description
 
-This template can be modified to target a command to run as the logged in user context of a system. The Jumpcloud agent cmd runner executes as NTAuthority\System and therefore can not interact with the active user session on a computer. This template and accumpanying C# code from https://github.com/murrayju/CreateProcessAsUser allows the Command block to be run as the current user session.
+This template can be modified to target a command to run as the signed in user context of a system. The Jumpcloud agent cmd runner executes as NTAuthority\System and therefore can not interact with the signed in user session on a computer. This template and accumpanying C# code from https://github.com/murrayju/CreateProcessAsUser allows the Command block to be run as the signed in user session.
 
 Before running this command the variable **$Command** must be populated.
 
-An example of this command is if  ```C:\windows\system32\notepad.exe``` is placed in the command block and executed against a system that has a logged in user session. Notepad will launch and show up for the logged in user. This will also work if the session is locked but still logged in. It however can only work when there is one logged in session like on most workstation SKU's of Windows.
+An example of this command is if  ```C:\windows\system32\notepad.exe``` is placed in the command block and executed against a system that has a signed in user session. Notepad will launch and show up for the signed in user. This will also work if the session is locked but still signed in. It however can only work when there is one signed in session like on most workstation SKU's of Windows.
 
 #### *Import This Command*
 
