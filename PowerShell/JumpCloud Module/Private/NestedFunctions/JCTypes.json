@@ -1056,6 +1056,166 @@
         "FilterOperators": [
           "eq"
         ]
+      },
+      {
+        "Table": "certificates",
+        "Url": {
+          "List": "/api/v2/systeminsights/certificates",
+          "Item": "/api/v2/systeminsights/certificates?filter=system_id:eq:{system_id}",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "system_id",
+        "ByName": "common_name",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
+        "Table": "cups_destinations",
+        "Url": {
+          "List": "/api/v2/systeminsights/cups_destinations",
+          "Item": "/api/v2/systeminsights/cups_destinations?filter=system_id:eq:{system_id}",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "system_id",
+        "ByName": "name",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
+        "Table": "interface_details",
+        "Url": {
+          "List": "/api/v2/systeminsights/interface_details",
+          "Item": "/api/v2/systeminsights/interface_details?filter=system_id:eq:{system_id}",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "system_id",
+        "ByName": "interface",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
+        "Table": "python_packages",
+        "Url": {
+          "List": "/api/v2/systeminsights/python_packages",
+          "Item": "/api/v2/systeminsights/python_packages?filter=system_id:eq:{system_id}",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "system_id",
+        "ByName": "name",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
+        "Table": "registry",
+        "Url": {
+          "List": "/api/v2/systeminsights/registry",
+          "Item": "/api/v2/systeminsights/registry?filter=system_id:eq:{system_id}",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "system_id",
+        "ByName": "key",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
+        "Table": "scheduled_tasks",
+        "Url": {
+          "List": "/api/v2/systeminsights/scheduled_tasks",
+          "Item": "/api/v2/systeminsights/scheduled_tasks?filter=system_id:eq:{system_id}",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "system_id",
+        "ByName": "enabled",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
+        "Table": "services",
+        "Url": {
+          "List": "/api/v2/systeminsights/services",
+          "Item": "/api/v2/systeminsights/services?filter=system_id:eq:{system_id}",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "system_id",
+        "ByName": "name",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
+        "Table": "startup_items",
+        "Url": {
+          "List": "/api/v2/systeminsights/startup_items",
+          "Item": "/api/v2/systeminsights/startup_items?filter=system_id:eq:{system_id}",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "system_id",
+        "ByName": "name",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
       }
     ]
   },

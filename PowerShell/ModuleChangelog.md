@@ -1,3 +1,21 @@
+## 1.16.0
+
+#### RELEASE DATE
+
+March 27, 2020
+
+#### RELEASE NOTES
+
+Use Get-JCSystemInsight to query additional System Insights tables including interface_details
+
+#### FEATURES
+
+Query new SystemInsights tables: certificates, cups_destinations, interface_details, python_packages, registry, scheduled_tasks, services and startup_items
+
+#### BUG FIXES
+
+Resolved issue with Invoke-JCCommand when calling commands without variables
+
 ## 1.15.5
 
 #### RELEASE DATE
