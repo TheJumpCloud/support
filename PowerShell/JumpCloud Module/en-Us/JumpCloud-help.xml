@@ -6082,6 +6082,14 @@
             <command:parameterValue required="false" command:variableLength="false">safari_extensions</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">system_info</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">users</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">certificates</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">cups_destinations</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">interface_details</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">python_packages</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">registry</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">scheduled_tasks</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">services</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">startup_items</command:parameterValue>
           </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
           <dev:type>
@@ -6211,6 +6219,14 @@
             <command:parameterValue required="false" command:variableLength="false">safari_extensions</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">system_info</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">users</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">certificates</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">cups_destinations</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">interface_details</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">python_packages</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">registry</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">scheduled_tasks</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">services</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">startup_items</command:parameterValue>
           </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
           <dev:type>
