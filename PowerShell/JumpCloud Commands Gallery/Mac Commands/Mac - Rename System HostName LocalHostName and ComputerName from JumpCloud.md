@@ -56,10 +56,10 @@ scutil --set HostName "$match"
 scutil --set LocalHostName "$match"
 scutil --set ComputerName "$match"
 
-# print out the names 
- echo "HostName:" && scutil --get HostName
- echo "LocalHostName:" && scutil --get LocalHostName
- echo "ComputerName:" && scutil --get ComputerName
+# print out the names
+echo "HostName:" && scutil --get HostName
+echo "LocalHostName:" && scutil --get LocalHostName
+echo "ComputerName:" && scutil --get ComputerName
 ```
 
 #### Description
