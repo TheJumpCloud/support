@@ -26,7 +26,7 @@ $Tags = ForEach ($PesterTest In $PesterTests)
         If ($DescribeLine.Line -match 'Tag')
         {
             $TagParameterValue = ($DescribeLine.Line | Select-String -Pattern:([RegEx]'(?<=-Tag)(.*?)(?=\s)')).Matches.Value
-            @(":", "(", ")", "'") | ForEach-Object { If ($TagParameterValue -like ('*' + $_ + '*')) { $TagParameterValue = $TagParameterValue.Replace($_, '') }}
+            @(":", "(", ")", "'") | ForEach-Object { If ($TagParameterValue -like ('*' + $_ + '*')) { $TagParameterValue = $TagParameterValue.Replace($_, '') } }
             $TagParameterValue
         }
         Else
@@ -47,9 +47,9 @@ Else
 # Run Pester tests
 $PesterResultsFileXml = $PSScriptRoot + '/Pester.Tests.Results.xml'
 $PesterResultsFileCsv = $PSScriptRoot + '/Pester.Tests.Results.csv'
-$PesterResults = Invoke-Pester -Script:(@{ Path = $PSScriptRoot; Parameters = $PesterParams; }) -PassThru -Tag:($IncludeTags) -ExcludeTag:($ExcludeTagList) # -OutputFormat:('NUnitXml') -OutputFile:($PesterResultsFileXml) ## ToDo: Have pester tests export to file
+$PesterResults = Invoke-Pester -Script:(@{ Path = $PSScriptRoot; Parameters = $PesterParams; }) -PassThru -Tag:($IncludeTags) -ExcludeTag:($ExcludeTagList) -OutputFormat:('NUnitXml') -OutputFile:($PesterResultsFileXml) ## ToDo: Have pester tests export to file
 # $PesterResults.TestResult | Where-Object {$_.Passed -eq $false} | Export-Csv $PesterResultsFileCsv
-$FailedTests = $PesterResults.TestResult | Where-Object {$_.Passed -eq $false}
+$FailedTests = $PesterResults.TestResult | Where-Object { $_.Passed -eq $false }
 If ($FailedTests)
 {
     Write-Host ('')
@@ -57,7 +57,7 @@ If ($FailedTests)
     Write-Host ('##############################Error Description###############################################################')
     Write-Host ('##############################################################################################################')
     Write-Host ('')
-    $FailedTests | ForEach-Object {$_.Name + '; ' + $_.FailureMessage + '; '}
+    $FailedTests | ForEach-Object { $_.Name + '; ' + $_.FailureMessage + '; ' }
     Write-Error -Message:('Tests Failed: ' + [string]($FailedTests | Measure-Object).Count)
 }
 
