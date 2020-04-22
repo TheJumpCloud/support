@@ -1,18 +1,17 @@
 #### Latest Version
 
 ```
-1.16.0
+1.16.1
 ```
 
 #### Banner Current
 
 ```
-Visualize directory data using the new JumpCloud Dashboard PowerShell module!
-Follow this link to learn more: https://github.com/TheJumpCloud/jumpcloud-dashboard/wiki
+New function Get-JCEvent allows for the search and retrieval of JumpCloud log information.
 ```
 
 #### Banner Old
 
 ```
-You can now modify all attributes of a RADIUS server using Set-JCRadiusServer
+New function Get-JCEvent allows for the search and retrieval of JumpCloud log information.
 ```
