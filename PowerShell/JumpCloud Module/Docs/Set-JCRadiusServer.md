@@ -19,18 +19,18 @@ Set-JCRadiusServer [-Force] [-Id] <String[]> [[-newName] <String>] [[-networkSou
  [[-userPasswordExpirationAction] <String>] [<CommonParameters>]
 ```
 
-### ByName
-```
-Set-JCRadiusServer [-Force] [-Name] <String[]> [[-newName] <String>] [[-networkSourceIp] <String>]
- [[-sharedSecret] <String>] [[-mfa] <String>] [[-userLockoutAction] <String>]
- [[-userPasswordExpirationAction] <String>] [<CommonParameters>]
-```
-
 ### ByValue
 ```
 Set-JCRadiusServer [-Force] [[-newName] <String>] [[-networkSourceIp] <String>] [[-sharedSecret] <String>]
  [[-mfa] <String>] [[-userLockoutAction] <String>] [[-userPasswordExpirationAction] <String>]
  [<CommonParameters>]
+```
+
+### ByName
+```
+Set-JCRadiusServer [-Force] [-Name] <String[]> [[-newName] <String>] [[-networkSourceIp] <String>]
+ [[-sharedSecret] <String>] [[-mfa] <String>] [[-userLockoutAction] <String>]
+ [[-userPasswordExpirationAction] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -205,11 +205,8 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.Management.Automation.SwitchParameter
-
 ### System.String[]
-
 ### System.String
-
 ## OUTPUTS
 
 ### System.Object
