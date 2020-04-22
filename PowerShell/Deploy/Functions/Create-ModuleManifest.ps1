@@ -120,5 +120,3 @@ Function New-JCModuleManifest
         }
     }
 }
-
-New-JCModuleManifest -Path:('C:\Users\epanipinto\Documents\GitHub\support\PowerShell\JumpCloud Module\JumpCloud.psd1')
