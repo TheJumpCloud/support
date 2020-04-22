@@ -88,6 +88,13 @@ Function New-JCModuleManifest
                     $FunctionParameters.Add($_.Key, $_.Value) | Out-Null
                 }
             }
+            If ($FunctionParameters.RequiredModules)
+            {
+                $FunctionParameters.RequiredModules | ForEach-Object {
+                    Install-Module -Name:($_) -Force
+                    Import-Module -Name:($_) -Force
+                }
+            }
         }
         Else
         {
@@ -113,3 +120,5 @@ Function New-JCModuleManifest
         }
     }
 }
+
+New-JCModuleManifest -Path:('C:\Users\epanipinto\Documents\GitHub\support\PowerShell\JumpCloud Module\JumpCloud.psd1')
