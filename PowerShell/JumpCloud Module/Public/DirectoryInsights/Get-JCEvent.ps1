@@ -32,6 +32,7 @@ Function Get-JCEvent
     )
     Begin
     {
+        Connect-JCOnline -force | Out-Null
         $Results = @()
         $PSBoundParameters.Add('HttpPipelineAppend', {
                 param($req, $callback, $next)
