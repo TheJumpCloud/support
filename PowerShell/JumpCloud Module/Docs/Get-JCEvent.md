@@ -54,9 +54,6 @@ Sort descending results against timestamp value
 
 ### -EventQueryBody
 EventQuery is the users' command to search our auth logs
-Limit - row count (validated/repaired)
-SearchTerm - see above
-Projection - list of field names to return from document (not validated)
 To construct, see NOTES section for EVENTQUERYBODY properties and create a hash table.
 
 ```yaml
@@ -72,7 +69,7 @@ Accept wildcard characters: False
 ```
 
 ### -EndTime
-.
+optional query end time, UTC in RFC3339 format
 
 ```yaml
 Type: System.String
@@ -87,7 +84,7 @@ Accept wildcard characters: False
 ```
 
 ### -Fields
-.
+optional list of fields to return from query
 
 ```yaml
 Type: System.String[]
@@ -102,7 +99,7 @@ Accept wildcard characters: False
 ```
 
 ### -Limit
-.
+Max number of rows to return
 
 ```yaml
 Type: System.Int64
@@ -117,7 +114,7 @@ Accept wildcard characters: False
 ```
 
 ### -SearchAfter
-.
+Specific query to search after, see x-* response headers for next values
 
 ```yaml
 Type: System.String[]
@@ -162,7 +159,8 @@ Accept wildcard characters: False
 ```
 
 ### -Service
-.
+service name to query.
+Known services: "active_directory","application","command","g_suite","ldap_server","office_365","policy","radius_server","system","system_group","user","user_group"
 
 ```yaml
 Type: System.String[]
@@ -177,7 +175,7 @@ Accept wildcard characters: False
 ```
 
 ### -Sort
-.
+ASC or DESC order for timestamp
 
 ```yaml
 Type: System.String
@@ -192,7 +190,7 @@ Accept wildcard characters: False
 ```
 
 ### -StartTime
-.
+query start time, UTC in RFC3339 format
 
 ```yaml
 Type: System.String
@@ -236,17 +234,18 @@ COMPLEX PARAMETER PROPERTIES
 To create the parameters described below, construct a hash table containing the appropriate properties.
 For information on hash tables, run Get-Help about_Hash_Tables.
 
-EVENTQUERYBODY \<IEventQuery\>: EventQuery is the users' command to search our auth logs         Limit - row count (validated/repaired)         SearchTerm - see above         Projection - list of field names to return from document (not validated)
-  \[EndTime \<String\>\]: 
-  \[Fields \<String\[\]\>\]: 
-  \[Limit \<Int64?\>\]: 
-  \[SearchAfter \<String\[\]\>\]: 
+EVENTQUERYBODY \<IEventQuery\>: EventQuery is the users' command to search our auth logs
+  \[EndTime \<String\>\]: optional query end time, UTC in RFC3339 format
+  \[Fields \<String\[\]\>\]: optional list of fields to return from query
+  \[Limit \<Int64?\>\]: Max number of rows to return
+  \[SearchAfter \<String\[\]\>\]: Specific query to search after, see x-* response headers for next values
   \[SearchTermAnd \<ISearchTermAnd\>\]: 
     \[(Any) \<Object\>\]: This indicates any property can be added to this object.
   \[SearchTermOr \<ISearchTermOr\>\]: 
     \[(Any) \<Object\>\]: This indicates any property can be added to this object.
-  \[Service \<String\[\]\>\]: 
-  \[Sort \<String\>\]: 
-  \[StartTime \<String\>\]:
+  \[Service \<String\[\]\>\]: service name to query.
+Known services: "active_directory","application","command","g_suite","ldap_server","office_365","policy","radius_server","system","system_group","user","user_group"
+  \[Sort \<String\>\]: ASC or DESC order for timestamp
+  \[StartTime \<String\>\]: query start time, UTC in RFC3339 format
 
 ## RELATED LINKS
