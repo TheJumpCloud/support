@@ -994,15 +994,10 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
-
 ### System.Boolean
-
 ### System.Int32
-
 ### System.String[]
-
 ### System.Management.Automation.SwitchParameter
-
 ## OUTPUTS
 
 ### System.Object
