@@ -1,33 +1,82 @@
-$loadEnvPath = Join-Path $PSScriptRoot 'loadEnv.ps1'
-if (-Not (Test-Path -Path $loadEnvPath))
-{
-    $loadEnvPath = Join-Path $PSScriptRoot '..\loadEnv.ps1'
-}
-. ($loadEnvPath)
-$TestRecordingFile = Join-Path $PSScriptRoot 'Get-JCEvent.Recording.json'
-$currentPath = $PSScriptRoot
-while (-not $mockingPath)
-{
-    $mockingPath = Get-ChildItem -Path $currentPath -Recurse -Include 'HttpPipelineMocking.ps1' -File
-    $currentPath = Split-Path -Path $currentPath -Parent
-}
-. ($mockingPath | Select-Object -First 1).FullName
-
 Describe 'Get-JCEvent' -Tag:('JCEvent') {
-    It 'GetExpanded' -skip {
-        { throw [System.NotImplementedException] } | Should -Not -Throw
+    #Requires -Modules JumpCloud
+    <# ToDo
+        Service - Not sure how to validate yet (Test that results service value matches parameter value)
+    #>
+    # Define parameters for functions
+    $ParamHash = @{
+        "StartTime"     = Get-Date -Date:(((Get-Date).AddMinutes(-10).ToUniversalTime())) -Format:('o');
+        "EndTime"       = Get-Date -Date:(((Get-Date).ToUniversalTime())) -Format:('o');
+        "Service"       = "all";
+        "Sort"          = "DESC"
+        "Limit"         = 2;
+        "SearchTermAnd" = @{
+            "event_type" = "group_create"
+        }
     }
-
-    It 'Get' -skip {
-        { throw [System.NotImplementedException] } | Should -Not -Throw
+    $StartTime = Get-Date -Date:(([DateTime]$ParamHash.StartTime).ToUniversalTime())
+    $EndTime = Get-Date -Date:(([DateTime]$ParamHash.EndTime).ToUniversalTime())
+    $ContainsPaginate = (Get-Command Get-JCEvent).Parameters.ContainsKey('Paginate')
+    If ($ContainsPaginate)
+    {
+        $ParamHash.Limit = ($ParamHash.Limit * 2)
     }
-
-    # It 'Check Output Result exists' {
-    #     ((Get-JCEvent -Service:('all') -StartTime:('2020-04-15T00:00:00Z') -EndTime:('2020-04-16T23:00:00Z')) | Select-Object -First 1).count | Should -EQ 1
-    # }
-
-    # It 'Check Output Client IP ' {
-    #     ((Get-JCEvent -Service:('all') -StartTime:('2020-04-15T00:00:00Z') -EndTime:('2020-04-16T23:00:00Z')) | Select-Object -First 1).client_ip | Should -Eq 76.25.29.226
-    # }
+    Else
+    {
+        $ParamHash.Limit
+    }
+    # Create event records for tests
+    Connect-JCOnline -force | Out-Null
+    For ($i = 1; $i -le $ParamHash.Limit; $i++)
+    {
+        $GroupName = 'JCSystemGroupTest-{0}' -f $i
+        Write-Host ("Creating add/delete records for: $GroupName")
+        New-JCSystemGroup -GroupName:($GroupName) | Remove-JCSystemGroup -Force
+    }
+    It 'GetExpanded' {
+        $eventTest = Get-JCEvent -Service:($ParamHash.Service) -StartTime:($ParamHash.StartTime) -EndTime:($ParamHash.EndTime) -Limit:($ParamHash.Limit) -Sort:($ParamHash.Sort) -SearchTermAnd:($ParamHash.SearchTermAnd)
+        If ([System.String]::IsNullOrEmpty($eventTest))
+        {
+            $eventTest | Should -Not -BeNullOrEmpty
+        }
+        Else
+        {
+            $eventTest = ($eventTest)
+            $MostRecentRecord = ($eventTest | Select-Object -First 1).timestamp
+            $OldestRecord = ($eventTest | Select-Object -Last 1).timestamp
+            # Limit - Test that results count matches parameter value
+            $eventTest.Count | Should -Be $ParamHash.Limit
+            # Sort - Test that results come back in decending DateTime
+            $MostRecentRecord.Ticks | Should -BeGreaterThan $OldestRecord.Ticks
+            # EndTime - Test that results are not newer than EndTime parameter value
+            $MostRecentRecord.Ticks | Should -BeLessOrEqual $EndTime.Ticks
+            # StartTime - Test that results are not older than StartTime parameter value
+            $OldestRecord.Ticks | Should -BeGreaterOrEqual $StartTime.Ticks
+            # SearchTermAnd - Test that results matches parameter value
+            ($eventTest.event_type | Select-Object -Unique) | Should -Be $ParamHash.SearchTermAnd.event_type
+        }
+    }
+    It 'Get' {
+        $eventTest = Get-JCEvent -EventQueryBody:($ParamHash)
+        If ([System.String]::IsNullOrEmpty($eventTest))
+        {
+            $eventTest | Should -Not -BeNullOrEmpty
+        }
+        Else
+        {
+            $eventTest = ($eventTest)
+            $MostRecentRecord = ($eventTest | Select-Object -First 1).timestamp
+            $OldestRecord = ($eventTest | Select-Object -Last 1).timestamp
+            # Limit - Test that results count matches parameter value
+            $eventTest.Count | Should -Be $ParamHash.Limit
+            # Sort - Test that results come back in decending DateTime
+            $MostRecentRecord.Ticks | Should -BeGreaterThan $OldestRecord.Ticks
+            # EndTime - Test that results are not newer than EndTime parameter value
+            $MostRecentRecord.Ticks | Should -BeLessOrEqual $EndTime.Ticks
+            # StartTime - Test that results are not older than StartTime parameter value
+            $OldestRecord.Ticks | Should -BeGreaterOrEqual $StartTime.Ticks
+            # SearchTermAnd - Test that results matches parameter value
+            ($eventTest.event_type | Select-Object -Unique) | Should -Be $ParamHash.SearchTermAnd.event_type
+        }
+    }
 }
-
