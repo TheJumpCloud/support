@@ -163,7 +163,14 @@ Function Get-JCEvent
                     $XResultSearchAfter = ($JCHttpResponse.Result.Headers.GetValues('X-Search_after') | ConvertFrom-Json);
                     If ([System.String]::IsNullOrEmpty($PSBoundParameters.SearchAfter))
                     {
-                        $PSBoundParameters.Add('SearchAfter', $XResultSearchAfter)
+                        If ([System.String]::IsNullOrEmpty($PSBoundParameters.EventQueryBody))
+                        {
+                            $PSBoundParameters.Add('SearchAfter', $XResultSearchAfter)
+                        }
+                        Else
+                        {
+                            $PSBoundParameters.EventQueryBody.SearchAfter = $XResultSearchAfter
+                        }
                     }
                     Else
                     {
