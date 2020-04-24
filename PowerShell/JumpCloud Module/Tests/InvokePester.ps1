@@ -6,6 +6,22 @@ Param(
 )
 $ModuleManifestName = 'JumpCloud.psd1'
 $ModuleManifestPath = "$PSScriptRoot/../$ModuleManifestName"
+$RequiredModules = Get-Metadata -Path:($moduleManifestPath) -PropertyName:('RequiredModules')
+If ($RequiredModules)
+{
+    $RequiredModules | ForEach-Object {
+        If ([System.String]::IsNullOrEmpty((Get-InstalledModule).Where( { $_.Name -eq $_ })))
+        {
+            Write-Host ('Installing: ' + $_)
+            Install-Module -Name:($_) -Force
+        }
+        If (!(Get-Module -Name:($_)))
+        {
+            Write-Host ('Importing: ' + $_)
+            Import-Module -Name:($_) -Force
+        }
+    }
+}
 # Install NuGet
 If (!(Get-PackageProvider -Name:('NuGet') -ErrorAction:('SilentlyContinue')))
 {
