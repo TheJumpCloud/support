@@ -6,7 +6,7 @@ Param(
 )
 $ModuleManifestName = 'JumpCloud.psd1'
 $ModuleManifestPath = "$PSScriptRoot/../$ModuleManifestName"
-$RequiredModules = Get-Metadata -Path:($moduleManifestPath) -PropertyName:('RequiredModules')
+$RequiredModules = (Import-LocalizedData -BaseDirectory:("$PSScriptRoot/..") -FileName:($ModuleManifestName)).RequiredModules
 If ($RequiredModules)
 {
     $RequiredModules | ForEach-Object {
