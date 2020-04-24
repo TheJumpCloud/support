@@ -91,8 +91,16 @@ Function New-JCModuleManifest
             If ($FunctionParameters.RequiredModules)
             {
                 $FunctionParameters.RequiredModules | ForEach-Object {
-                    If (!(Get-InstalledModule -Name:($_) -ErrorAction SilentlyContinue) -and !(Get-Module -Name:($_))) { Install-Module -Name:($_) -Force }
-                    If (!(Get-Module -Name:($_))) { Import-Module -Name:($_) -Force }
+                    If ([System.String]::IsNullOrEmpty((Get-InstalledModule).Where( { $_.Name -eq $_ })))
+                    {
+                        Write-Host ('Installing: ' + $_)
+                        Install-Module -Name:($_) -Force
+                    }
+                    If (!(Get-Module -Name:($_)))
+                    {
+                        Write-Host ('Importing: ' + $_)
+                        Import-Module -Name:($_) -Force
+                    }
                 }
             }
         }
