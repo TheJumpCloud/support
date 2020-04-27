@@ -61,7 +61,7 @@ EVENTQUERYBODY <IEventQuery>: EventQuery is the users' command to search our aut
 #>
 Function Get-JCEvent
 {
-    #Requires -modules JumpCloud.SDK.DirectoryInsights
+    #Requires -PSEdition Core -Modules JumpCloud.SDK.DirectoryInsights
     [OutputType([JumpCloud.SDK.DirectoryInsights.Models.IGet200ApplicationJsonItemsItem], [System.String])]
     [CmdletBinding(DefaultParameterSetName='GetExpanded', PositionalBinding=$false)]
     Param(
