@@ -60,6 +60,12 @@ Else
 {
     $Tags | Where-Object { $_ -notin $ExcludeTags } | Select-Object -Unique
 }
+# Do not run JCEvent on PowerShell Desktop
+If ($PSVersionTable.PSEdition -eq 'Desktop' -and $IncludeTags.Where( { $_ -eq 'JCEvent' }))
+{
+    $IncludeTags = $IncludeTags.Where( { $_ -ne 'JCEvent' })
+
+}
 # Run Pester tests
 $PesterResultsFileXml = $PSScriptRoot + '/Pester.Tests.Results.xml'
 $PesterResultsFileCsv = $PSScriptRoot + '/Pester.Tests.Results.csv'
