@@ -14,10 +14,13 @@ Function Get-FunctionReport
         # Parse the file and look for function syntax to identify functions
         [regex]$Function_Regex = '(?<=^Function)(.*?)(?=$|\{|\()'
         $FunctionContent = Get-Content -Path:($FileFullName)
-        $FunctionRegexMatch =  $FunctionContent | Select-String -Pattern:($Function_Regex) #| Where {-not [System.String]::IsNullOrEmpty($_)}
+        $FunctionRegexMatch = $FunctionContent | Select-String -Pattern:($Function_Regex) #| Where {-not [System.String]::IsNullOrEmpty($_)}
         $FunctionRegexMatchObject = $FunctionRegexMatch | Select-Object LineNumber, Line, @{Name = 'MatchValue'; Expression = { ($_.Matches.Value).Trim() } }
         # Load the function into the current runspace
-        . ($FileFullName)
+        If (-not ($PSVersionTable.PSEdition -eq 'Desktop' -and $FileBaseName -eq 'Get-JCEvent' ))
+        {
+            . ($FileFullName)
+        }
         # Regather a list of all functions in the current runspace and filter out the functions that existed before loading the function script
         $ScriptFunctions = Get-ChildItem -Path:('function:') | Where-Object { $CurrentFunctions -notcontains $_ }
         # $ScriptFunctions | Select *
