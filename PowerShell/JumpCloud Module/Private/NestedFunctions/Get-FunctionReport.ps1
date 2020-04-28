@@ -17,10 +17,7 @@ Function Get-FunctionReport
         $FunctionRegexMatch = $FunctionContent | Select-String -Pattern:($Function_Regex) #| Where {-not [System.String]::IsNullOrEmpty($_)}
         $FunctionRegexMatchObject = $FunctionRegexMatch | Select-Object LineNumber, Line, @{Name = 'MatchValue'; Expression = { ($_.Matches.Value).Trim() } }
         # Load the function into the current runspace
-        If (-not ($PSVersionTable.PSEdition -eq 'Desktop' -and $FileBaseName -eq 'Get-JCEvent' ))
-        {
-            . ($FileFullName)
-        }
+        . ($FileFullName)
         # Regather a list of all functions in the current runspace and filter out the functions that existed before loading the function script
         $ScriptFunctions = Get-ChildItem -Path:('function:') | Where-Object { $CurrentFunctions -notcontains $_ }
         # $ScriptFunctions | Select *

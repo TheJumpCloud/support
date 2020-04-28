@@ -5,10 +5,7 @@ Foreach ($Import in @($Public + $Private))
 {
     Try
     {
-        If (-not ($PSVersionTable.PSEdition -eq 'Desktop' -and $Import.BaseName -eq 'Get-JCEvent'))
-        {
-            . $Import.FullName
-        }
+        . $Import.FullName
     }
     Catch
     {
