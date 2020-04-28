@@ -5,10 +5,14 @@ Describe -Tag:('JCCommandResult') 'Get-JCCommandResults 1.0' {
     If ([System.String]::IsNullOrEmpty($CommandResults))
     {
         $testCmd = Get-JCCommand | Select-Object -First 1
-        $TriggeredCommand = Invoke-JCCommand -trigger:($testCmd.name)
-        While ([System.String]::IsNullOrEmpty((Get-JCCommandResult | Where-Object { $_.Name -eq $TriggeredCommand.triggered })))
+        $CommandResultCount = 10
+        $TriggeredCommand = For ($i = 1; $i -le $CommandResultCount; $i++)
         {
-            Start-Sleep -Milliseconds:(100)
+            Invoke-JCCommand -trigger:($testCmd.name)
+        }
+        While ([System.String]::IsNullOrEmpty((Get-JCCommandResult | Where-Object { $_.Name -eq $testCmd.name })) -and (Get-JCCommandResult | Where-Object { $_.Name -eq $testCmd.name }).Count -lt $CommandResultCount)
+        {
+            Start-Sleep -Seconds:(1)
         }
     }
     It "Gets all JumpCloud command results" {
