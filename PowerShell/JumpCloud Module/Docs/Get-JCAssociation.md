@@ -19,18 +19,18 @@ Get-JCAssociation [-Type] <String> [-Force] [-Id] <String[]> [[-Fields] <Array>]
  [-IncludeInfo] [-IncludeNames] [-IncludeVisualPath] [<CommonParameters>]
 ```
 
-### ByValue
-```
-Get-JCAssociation [-Type] <String> [-Force] [[-Fields] <Array>] [[-Filter] <String>] [[-Limit] <Int32>]
- [[-Skip] <Int32>] [[-Paginate] <Boolean>] [[-TargetType] <String[]>] [-Direct] [-Indirect] [-IncludeInfo]
- [-IncludeNames] [-IncludeVisualPath] [<CommonParameters>]
-```
-
 ### ByName
 ```
 Get-JCAssociation [-Type] <String> [-Force] [-Name] <String[]> [[-Fields] <Array>] [[-Filter] <String>]
  [[-Limit] <Int32>] [[-Skip] <Int32>] [[-Paginate] <Boolean>] [[-TargetType] <String[]>] [-Direct] [-Indirect]
  [-IncludeInfo] [-IncludeNames] [-IncludeVisualPath] [<CommonParameters>]
+```
+
+### ByValue
+```
+Get-JCAssociation [-Type] <String> [-Force] [[-Fields] <Array>] [[-Filter] <String>] [[-Limit] <Int32>]
+ [[-Skip] <Int32>] [[-Paginate] <Boolean>] [[-TargetType] <String[]>] [-Direct] [-Indirect] [-IncludeInfo]
+ [-IncludeNames] [-IncludeVisualPath] [<CommonParameters>]
 ```
 
 ### Default
