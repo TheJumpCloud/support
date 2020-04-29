@@ -139,6 +139,14 @@ Function Get-JCEvent
     {
         Connect-JCOnline -force | Out-Null
         $Results = @()
+        # Convert datetime values to RFC3339
+        $PSBoundParameters.GetEnumerator() | ForEach-Object {
+            # If ($_.Value.GetType().Name -eq 'DateTime')
+            If ([System.String]$_.Value -as [DateTime])
+            {
+                $PSBoundParameters.($_.Key) = Get-Date -Date:($PSBoundParameters.($_.Key)) -Format:('o')
+            }
+        }
         $PSBoundParameters.Add('HttpPipelineAppend', {
                 param($req, $callback, $next)
                 # call the next step in the Pipeline
