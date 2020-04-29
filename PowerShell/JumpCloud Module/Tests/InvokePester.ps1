@@ -6,6 +6,22 @@ Param(
 )
 $ModuleManifestName = 'JumpCloud.psd1'
 $ModuleManifestPath = "$PSScriptRoot/../$ModuleManifestName"
+$RequiredModules = (Import-LocalizedData -BaseDirectory:("$PSScriptRoot/..") -FileName:($ModuleManifestName)).RequiredModules
+If ($RequiredModules)
+{
+    $RequiredModules | ForEach-Object {
+        If ([System.String]::IsNullOrEmpty((Get-InstalledModule).Where( { $_.Name -eq $_ })))
+        {
+            Write-Host ('Installing: ' + $_)
+            Install-Module -Name:($_) -Force
+        }
+        If (!(Get-Module -Name:($_)))
+        {
+            Write-Host ('Importing: ' + $_)
+            Import-Module -Name:($_) -Force
+        }
+    }
+}
 # Install NuGet
 If (!(Get-PackageProvider -Name:('NuGet') -ErrorAction:('SilentlyContinue')))
 {
@@ -26,7 +42,7 @@ $Tags = ForEach ($PesterTest In $PesterTests)
         If ($DescribeLine.Line -match 'Tag')
         {
             $TagParameterValue = ($DescribeLine.Line | Select-String -Pattern:([RegEx]'(?<=-Tag)(.*?)(?=\s)')).Matches.Value
-            @(":", "(", ")", "'") | ForEach-Object { If ($TagParameterValue -like ('*' + $_ + '*')) { $TagParameterValue = $TagParameterValue.Replace($_, '') }}
+            @(":", "(", ")", "'") | ForEach-Object { If ($TagParameterValue -like ('*' + $_ + '*')) { $TagParameterValue = $TagParameterValue.Replace($_, '') } }
             $TagParameterValue
         }
         Else
@@ -47,9 +63,9 @@ Else
 # Run Pester tests
 $PesterResultsFileXml = $PSScriptRoot + '/Pester.Tests.Results.xml'
 $PesterResultsFileCsv = $PSScriptRoot + '/Pester.Tests.Results.csv'
-$PesterResults = Invoke-Pester -Script:(@{ Path = $PSScriptRoot; Parameters = $PesterParams; }) -PassThru -Tag:($IncludeTags) -ExcludeTag:($ExcludeTagList) # -OutputFormat:('NUnitXml') -OutputFile:($PesterResultsFileXml) ## ToDo: Have pester tests export to file
+$PesterResults = Invoke-Pester -Script:(@{ Path = $PSScriptRoot; Parameters = $PesterParams; }) -PassThru -Tag:($IncludeTags) -ExcludeTag:($ExcludeTagList) -OutputFormat:('NUnitXml') -OutputFile:($PesterResultsFileXml) ## ToDo: Have pester tests export to file
 # $PesterResults.TestResult | Where-Object {$_.Passed -eq $false} | Export-Csv $PesterResultsFileCsv
-$FailedTests = $PesterResults.TestResult | Where-Object {$_.Passed -eq $false}
+$FailedTests = $PesterResults.TestResult | Where-Object { $_.Passed -eq $false }
 If ($FailedTests)
 {
     Write-Host ('')
@@ -57,7 +73,7 @@ If ($FailedTests)
     Write-Host ('##############################Error Description###############################################################')
     Write-Host ('##############################################################################################################')
     Write-Host ('')
-    $FailedTests | ForEach-Object {$_.Name + '; ' + $_.FailureMessage + '; '}
+    $FailedTests | ForEach-Object { $_.Name + '; ' + $_.FailureMessage + '; ' }
     Write-Error -Message:('Tests Failed: ' + [string]($FailedTests | Measure-Object).Count)
 }
 
