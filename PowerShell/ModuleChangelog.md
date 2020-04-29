@@ -1,3 +1,21 @@
+## 1.17.0
+
+#### RELEASE DATE
+
+April 28, 2020
+
+#### RELEASE NOTES
+
+Minor changes to make the auto-update functionality more robust.
+
+#### FEATURES
+
+#### BUG FIXES
+
+#### IMPROVEMENTS
+
+Auto-update now utilizes metadata from the PowerShell Gallery to determine when an update is available
+
 ## 1.16.0
 
 #### RELEASE DATE
