@@ -6,12 +6,14 @@ April 22, 2020
 
 #### RELEASE NOTES
 
+Minor changes to make the auto-update functionality more robust.
 Use Get-JCEvent to query JumpCloud event logs.
 
 #### FEATURES
 
 #### IMPROVEMENTS
 
+Auto-update now utilizes metadata from the PowerShell Gallery to determine when an update is available
 New functions: Get-JCEvent
 
 #### BUG FIXES
