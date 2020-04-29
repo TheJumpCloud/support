@@ -4,7 +4,7 @@ Function Get-Hash_ID_SystemGroupName ()
     $SystemGroups = Get-JCGroup -Type System
     foreach ($SystemGroup in $SystemGroups)
     {
-        If (-not $SystemGroupHash.ContainsKey($SystemGroup.name))
+        If (-not $SystemGroupHash.ContainsKey($SystemGroup.id))
         {
             $SystemGroupHash.Add($SystemGroup.id, $SystemGroup.name)
         }
