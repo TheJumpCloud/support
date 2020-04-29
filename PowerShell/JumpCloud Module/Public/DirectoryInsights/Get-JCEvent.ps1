@@ -140,11 +140,11 @@ Function Get-JCEvent
         Connect-JCOnline -force | Out-Null
         $Results = @()
 
-        $PSBoundParameters.StartTime = $(Get-Date $($PSBoundParameters.StartTime).ToUniversalTime() -Format o)
+        $PSBoundParameters.StartTime = $(Get-Date $($PSBoundParameters.StartTime) -Format o)
 
         if ($EndTime)
         {
-            $PSBoundParameters.EndTime = $(Get-Date $($PSBoundParameters.EndTime).ToUniversalTime() -Format o)
+            $PSBoundParameters.EndTime = $(Get-Date $($PSBoundParameters.StartTime) -Format o)
 
         }
 
