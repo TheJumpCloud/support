@@ -9,17 +9,17 @@ Function Update-JCModule
         $ModuleName = 'JumpCloud'
         # Get the version of the module installed locally
         $InstalledModulePreUpdate = Get-InstalledModule -Name:($ModuleName) -AllVersions -ErrorAction:('Ignore')
-        # Get module info from GitHub
+        # Get module info from GitHub - This should not impact the auto update ability, only the banner message
         $ModuleBanner = Get-ModuleBanner
         $ModuleChangeLog = Get-ModuleChangeLog
-        # To change update dependency from GitHub to PowerShell gallery flip the commented code below
-        $UpdateTrigger = $ModuleBanner.'Latest Version'
-        ###### $UpdateTrigger = (Find-Module -Name:($ModuleName)).Version
+        # To change update dependency from PowerShell Gallery to Github flip the commented code below
+        ###### $UpdateTrigger = $ModuleBanner.'Latest Version'
+        $UpdateTrigger = (Find-Module -Name:($ModuleName)).Version
         # Get the release notes for a specific version
         $ModuleChangeLogLatestVersion = $ModuleChangeLog | Where-Object { $_.Version -eq $UpdateTrigger }
-        # To change update dependency from GitHub to PowerShell gallery flip the commented code below
-        $LatestVersionReleaseDate = $ModuleChangeLogLatestVersion.'RELEASE DATE'
-        ###### $LatestVersionReleaseDate = (Find-Module -Name:($ModuleName) | ForEach-Object { $_.Version + ' (' + (Get-Date $_.PublishedDate).ToString('MMMM dd, yyyy') + ')' })
+        # To change update dependency from PowerShell Gallery to Github flip the commented code below
+        ###### $LatestVersionReleaseDate = $ModuleChangeLogLatestVersion.'RELEASE DATE'
+        $LatestVersionReleaseDate = (Find-Module -Name:($ModuleName) | ForEach-Object { $_.Version + ' (' + (Get-Date $_.PublishedDate).ToString('MMMM dd, yyyy') + ')' })
         # Build welcome page
         $WelcomePage = New-Object -TypeName:('PSCustomObject') | Select-Object `
         @{Name = 'MESSAGE'; Expression = { $ModuleBanner.'Banner Current' } } `
@@ -83,7 +83,7 @@ Function Update-JCModule
                         }
                     }
                 }
-                # Check to see if the module version on the GitHub page does not match the local module version begin the update process (update existing module)
+                # Check to see if the module version on the PowerShell Gallery does not match the local module version begin the update process (update existing module)
                 If ($UpdateTrigger -notin $InstalledModulePreUpdate.Version)
                 {
                     # Ask user if they want to update the module
