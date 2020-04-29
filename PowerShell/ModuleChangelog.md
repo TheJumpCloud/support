@@ -13,8 +13,8 @@ Use Get-JCEvent to query JumpCloud event logs.
 
 #### IMPROVEMENTS
 
-Auto-update now utilizes metadata from the PowerShell Gallery to determine when an update is available
 New functions: Get-JCEvent
+Auto-update now utilizes metadata from the PowerShell Gallery to determine when an update is available
 
 #### BUG FIXES
 
