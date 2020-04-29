@@ -16,12 +16,12 @@ Query the API for Directory Insights events
 ```
 Get-JCEvent [-EndTime <String>] [-Fields <String[]>] [-Limit <Int64>] [-SearchAfter <String[]>]
  [-SearchTermAnd <Hashtable>] [-SearchTermOr <Hashtable>] [-Service <String[]>] [-Sort <String>]
- [-StartTime <String>] [-Paginate <Boolean>] [<CommonParameters>]
+ [-StartTime <String>] [-Paginate <Boolean>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ### Get
 ```
-Get-JCEvent -EventQueryBody <IEventQuery> [-Paginate <Boolean>] [<CommonParameters>]
+Get-JCEvent -EventQueryBody <IEventQuery> [-Paginate <Boolean>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -256,6 +256,37 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -WhatIf
+Shows what would happen if the cmdlet runs.
+The cmdlet is not run.
+
+```yaml
+Type: System.Management.Automation.SwitchParameter
+Parameter Sets: (All)
+Aliases: wi
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Confirm
+Prompts you for confirmation before running the cmdlet.
+
+```yaml
+Type: System.Management.Automation.SwitchParameter
+Parameter Sets: (All)
+Aliases: cf
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -264,7 +295,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ### JumpCloud.SDK.DirectoryInsights.Models.IEventQuery
 ## OUTPUTS
 
-### JumpCloud.SDK.DirectoryInsights.Models.IGet200ApplicationJsonItemsItem
+### JumpCloud.SDK.DirectoryInsights.Models.IPost200ApplicationJsonItemsItem
 ### System.String
 ## NOTES
 COMPLEX PARAMETER PROPERTIES
