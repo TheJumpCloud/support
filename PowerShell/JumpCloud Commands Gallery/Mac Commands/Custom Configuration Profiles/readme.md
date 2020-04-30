@@ -105,7 +105,7 @@ Save and [Export](#export-a-profile) the profile for deployment. Distribute to J
 
 ### Disable Airdrop
 
-A profile to disable AirDrop can be distributes as a custom profile. The Payload example below contains a single Payload to disable AirDrop. Click the Apple Icon and add the AirDrop (macOS) Payload to a profile. Click the Disable AirDrop icon to ensure AirDrop is disabled on systems with this profile. Systems must be restarted for the profile to apply.
+A profile to disable AirDrop can be distributed as a custom profile. The Payload example below contains a single Payload to disable AirDrop. Click the Apple Icon and add the AirDrop (macOS) Payload to a profile. Click the Disable AirDrop checkbox to ensure AirDrop is disabled on systems with this profile. Systems must be restarted for the profile to apply.
 
 ![airdrop_profile](images/airdrop_profile.png)
 
