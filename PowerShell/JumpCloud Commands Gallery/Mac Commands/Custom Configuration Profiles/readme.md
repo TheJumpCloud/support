@@ -12,8 +12,9 @@ JumpCloud supports the management of custom configuration [profiles](https://dev
     - [Firefox Custom Profile](#firefox-custom-profile)
     - [Custom Dock Profile](#custom-dock-profile)
     - [Custom Font Distribution](#custom-font-distribution)
+    - [Disable Airdrop](#disable-airdrop)
   - [Export a profile](#export-a-profile)
-  - [Import the &quot;JumpCloud Install Custom Configuration Profile&quot; Command](#import-the-quotjumpcloud-install-custom-configuration-profilequot-command)
+  - [Import the "JumpCloud Install Custom Configuration Profile" Command](#import-the-%22jumpcloud-install-custom-configuration-profile%22-command)
   - [Other Considerations](#other-considerations)
     - [Password protected profiles](#password-protected-profiles)
     - [Signing Profiles](#signing-profiles)
@@ -101,6 +102,15 @@ Individual Fonts or Font Families can be distributed through custom profiles. Th
 (note: Font payloads must be under 1MB to comply with the JumpCloud command file size limit)
 
 Save and [Export](#export-a-profile) the profile for deployment. Distribute to JumpCloud systems by [importing the custom configuration profile](#import-the-%22jumpcloud-install-custom-configuration-profile%22-command) command
+
+### Disable Airdrop
+
+A profile to disable AirDrop can be distributes as a custom profile. The Payload example below contains a single Payload to disable AirDrop. Click the Apple Icon and add the AirDrop (macOS) Payload to a profile. Click the Disable AirDrop icon to ensure AirDrop is disabled on systems with this profile. Systems must be restarted for the profile to apply.
+
+![airdrop_profile](images/airdrop_profile.png)
+
+Save and [Export](#export-a-profile) the profile for deployment. Distribute to JumpCloud systems by [importing the custom configuration profile](#import-the-%22jumpcloud-install-custom-configuration-profile%22-command) command
+
 
 ## Export a profile
 
