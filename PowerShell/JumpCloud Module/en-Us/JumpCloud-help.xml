@@ -3817,9 +3817,9 @@
           <maml:Description>
             <maml:para>optional query end time, UTC in RFC3339 format</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">System.DateTime</command:parameterValue>
           <dev:type>
-            <maml:name>System.String</maml:name>
+            <maml:name>System.DateTime</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -3913,9 +3913,9 @@
           <maml:Description>
             <maml:para>query start time, UTC in RFC3339 format</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">System.DateTime</command:parameterValue>
           <dev:type>
-            <maml:name>System.String</maml:name>
+            <maml:name>System.DateTime</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -3974,9 +3974,9 @@
         <maml:Description>
           <maml:para>optional query end time, UTC in RFC3339 format</maml:para>
         </maml:Description>
-        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">System.DateTime</command:parameterValue>
         <dev:type>
-          <maml:name>System.String</maml:name>
+          <maml:name>System.DateTime</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -4070,9 +4070,9 @@
         <maml:Description>
           <maml:para>query start time, UTC in RFC3339 format</maml:para>
         </maml:Description>
-        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">System.DateTime</command:parameterValue>
         <dev:type>
-          <maml:name>System.String</maml:name>
+          <maml:name>System.DateTime</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -4145,7 +4145,7 @@
     <maml:alertSet>
       <maml:alert>
         <maml:para>COMPLEX PARAMETER PROPERTIES To create the parameters described below, construct a hash table containing the appropriate properties. For information on hash tables, run Get-Help about_Hash_Tables.</maml:para>
-        <maml:para>EVENTQUERYBODY &lt;IEventQuery&gt;: EventQuery is the users' command to search our auth logs   [EndTime &lt;String&gt;]: optional query end time, UTC in RFC3339 format   [Fields &lt;String[]&gt;]: optional list of fields to return from query   [Limit &lt;Int64?&gt;]: Max number of rows to return   [SearchAfter &lt;String[]&gt;]: Specific query to search after, see x-* response headers for next values   [SearchTermAnd &lt;ISearchTermAnd&gt;]: list of event terms. If all terms match the event will be returned by the service.     [(Any) &lt;Object&gt;]: This indicates any property can be added to this object.   [SearchTermOr &lt;ISearchTermOr&gt;]: list of event terms. If any term matches, the event will be returned by the service.     [(Any) &lt;Object&gt;]: This indicates any property can be added to this object.   [Service &lt;String[]&gt;]: service name to query. Known services: systems,radius,sso,directory,ldap,all   [Sort &lt;String&gt;]: ASC or DESC order for timestamp   [StartTime &lt;String&gt;]: query start time, UTC in RFC3339 format</maml:para>
+        <maml:para>EVENTQUERYBODY &lt;IEventQuery&gt;: EventQuery is the users' command to search our auth logs   [EndTime &lt;DateTime?&gt;]: optional query end time, UTC in RFC3339 format   [Fields &lt;String[]&gt;]: optional list of fields to return from query   [Limit &lt;Int64?&gt;]: Max number of rows to return   [SearchAfter &lt;String[]&gt;]: Specific query to search after, see x-* response headers for next values   [SearchTermAnd &lt;ISearchTermAnd&gt;]: list of event terms. If all terms match the event will be returned by the service.     [(Any) &lt;Object&gt;]: This indicates any property can be added to this object.   [SearchTermOr &lt;ISearchTermOr&gt;]: list of event terms. If any term matches, the event will be returned by the service.     [(Any) &lt;Object&gt;]: This indicates any property can be added to this object.   [Service &lt;String[]&gt;]: service name to query. Known services: systems,radius,sso,directory,ldap,all   [Sort &lt;String&gt;]: ASC or DESC order for timestamp   [StartTime &lt;DateTime?&gt;]: query start time, UTC in RFC3339 format</maml:para>
       </maml:alert>
     </maml:alertSet>
     <command:examples>
