@@ -36,7 +36,7 @@ Describe 'Get-JCEvent' -Tag:('JCEvent') {
         Remove-JCUser -Username:($UserName) -Force
     }
     # Allow server time to process
-    Start-Sleep -Seconds:(10)
+    Start-Sleep -Seconds:(30)
     # Set EndTime
     $ParamHash.EndTime = (Get-Date).ToUniversalTime();
     # Convert times to UTC
@@ -89,4 +89,3 @@ Describe 'Get-JCEvent' -Tag:('JCEvent') {
         }
     }
 }
-
