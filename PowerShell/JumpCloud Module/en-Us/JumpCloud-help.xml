@@ -4151,37 +4151,37 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
-        <dev:code>(Get-JCEvent -Service:('all') -StartTime:('2020-04-15T00:00:00Z') -EndTime:('2020-04-16T23:00:00Z'))</dev:code>
+        <dev:code>(Get-JCEvent -Service:('all') -StartTime:((Get-date).AddDays(-30)))</dev:code>
         <dev:remarks>
-          <maml:para>Pull all event records between Tue, 14 Apr 2020 18:00:00 -0600 to Thu, 16 Apr 2020 17:00:00 -0600</maml:para>
+          <maml:para>Pull all event records from the last thirty days</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
         <maml:title>-------------------------- EXAMPLE 2 --------------------------</maml:title>
-        <dev:code>(Get-JCEvent -Service:('directory') -StartTime:('2020-04-15T00:00:00Z') -Limit:('10') -EndTime:('2020-04-16T23:00:00Z'))</dev:code>
+        <dev:code>(Get-JCEvent -Service:('directory') -StartTime:((Get-date).AddHours(-1)) -Limit:('10'))</dev:code>
         <dev:remarks>
-          <maml:para>Limit directory results to last 10 in the time range</maml:para>
+          <maml:para>Get directory results from the last hour limit to the last 10 results in the time range</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
         <maml:title>-------------------------- EXAMPLE 3 --------------------------</maml:title>
-        <dev:code>(Get-JCEvent -Service:('directory') -StartTime:('2020-04-15T00:00:00Z') -Sort:("DESC") -EndTime:('2020-04-16T23:00:00Z'))</dev:code>
+        <dev:code>(Get-JCEvent -Service:('directory') -StartTime:((Get-date).AddDays(-30)) -Sort:("DESC") -EndTime:((Get-date).AddDays(-5)))</dev:code>
         <dev:remarks>
-          <maml:para>Sort directory descending results against timestamp value</maml:para>
+          <maml:para>Get directory results between 30 and 5 days ago, sort timestamp by descending value</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
         <maml:title>-------------------------- EXAMPLE 4 --------------------------</maml:title>
-        <dev:code>(Get-JCEvent -Service:('directory') -StartTime:('2020-04-15T00:00:00Z') -Limit:('10') -EndTime:('2020-04-16T23:00:00Z') -searchTermAnd:@{"event_type" = "group_create"})</dev:code>
+        <dev:code>(Get-JCEvent -Service:('directory') -StartTime:((Get-date).AddDays(-30)) -Limit:('10') -searchTermAnd:@{"event_type" = "group_create"})</dev:code>
         <dev:remarks>
-          <maml:para>Get only group_create events during a time range</maml:para>
+          <maml:para>Get only group_create from the last thirty days</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
         <maml:title>-------------------------- EXAMPLE 5 --------------------------</maml:title>
         <dev:code>(Get-JCEvent -Service:('all') -StartTime:('2020-04-14T00:00:00Z') -EndTime:('2020-04-20T23:00:00Z') -SearchTermOr @{"initiated_by.username" = @("user.1", "user.2")})</dev:code>
         <dev:remarks>
-          <maml:para>Get login events initiated by either "user.1" or "user.2"</maml:para>
+          <maml:para>Get login events initiated by either "user.1" or "user.2" between a universal time zone range</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
@@ -4195,7 +4195,7 @@
         <maml:title>-------------------------- EXAMPLE 7 --------------------------</maml:title>
         <dev:code>(Get-JCEvent -Service:('sso') -StartTime:('2020-04-14T00:00:00Z')  -EndTime:('2020-04-20T23:00:00Z') -SearchTermAnd @{"initiated_by.username" = "user.1"})</dev:code>
         <dev:remarks>
-          <maml:para>Get sso events with the search term initated_by: username with value "user.1"</maml:para>
+          <maml:para>Get sso events with the search term initiated_by: username with value "user.1"</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
