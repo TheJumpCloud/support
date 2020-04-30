@@ -31,38 +31,38 @@ Query the API for Directory Insights events
 
 ### EXAMPLE 1
 ```
-(Get-JCEvent -Service:('all') -StartTime:('2020-04-15T00:00:00Z') -EndTime:('2020-04-16T23:00:00Z'))
+(Get-JCEvent -Service:('all') -StartTime:((Get-date).AddDays(-30)))
 ```
 
-Pull all event records between Tue, 14 Apr 2020 18:00:00 -0600 to Thu, 16 Apr 2020 17:00:00 -0600
+Pull all event records from the last thirty days
 
 ### EXAMPLE 2
 ```
-(Get-JCEvent -Service:('directory') -StartTime:('2020-04-15T00:00:00Z') -Limit:('10') -EndTime:('2020-04-16T23:00:00Z'))
+(Get-JCEvent -Service:('directory') -StartTime:((Get-date).AddHours(-1)) -Limit:('10'))
 ```
 
-Limit directory results to last 10 in the time range
+Get directory results from the last hour limit to the last 10 results in the time range
 
 ### EXAMPLE 3
 ```
-(Get-JCEvent -Service:('directory') -StartTime:('2020-04-15T00:00:00Z') -Sort:("DESC") -EndTime:('2020-04-16T23:00:00Z'))
+(Get-JCEvent -Service:('directory') -StartTime:((Get-date).AddDays(-30)) -Sort:("DESC") -EndTime:((Get-date).AddDays(-5)))
 ```
 
-Sort directory descending results against timestamp value
+Get directory results between 30 and 5 days ago, sort timestamp by descending value
 
 ### EXAMPLE 4
 ```
-(Get-JCEvent -Service:('directory') -StartTime:('2020-04-15T00:00:00Z') -Limit:('10') -EndTime:('2020-04-16T23:00:00Z') -searchTermAnd:@{"event_type" = "group_create"})
+(Get-JCEvent -Service:('directory') -StartTime:((Get-date).AddDays(-30)) -Limit:('10') -searchTermAnd:@{"event_type" = "group_create"})
 ```
 
-Get only group_create events during a time range
+Get only group_create from the last thirty days
 
 ### EXAMPLE 5
 ```
 (Get-JCEvent -Service:('all') -StartTime:('2020-04-14T00:00:00Z') -EndTime:('2020-04-20T23:00:00Z') -SearchTermOr @{"initiated_by.username" = @("user.1", "user.2")})
 ```
 
-Get login events initiated by either "user.1" or "user.2"
+Get login events initiated by either "user.1" or "user.2" between a universal time zone range
 
 ### EXAMPLE 6
 ```
@@ -76,7 +76,7 @@ Get all events between a date range and match event_type = admin_login_attempt a
 (Get-JCEvent -Service:('sso') -StartTime:('2020-04-14T00:00:00Z')  -EndTime:('2020-04-20T23:00:00Z') -SearchTermAnd @{"initiated_by.username" = "user.1"})
 ```
 
-Get sso events with the search term initated_by: username with value "user.1"
+Get sso events with the search term initiated_by: username with value "user.1"
 
 ### EXAMPLE 8
 ```
