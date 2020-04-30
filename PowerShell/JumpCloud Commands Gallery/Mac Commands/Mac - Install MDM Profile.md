@@ -14,10 +14,14 @@ mac
 # report if the system is already in the mdm
 approveCheck=$(profiles status -type enrollment | grep "MDM enrollment:" | awk 'NF>1{print $NF}')
 if [[ $approveCheck = "Yes" ]]; then
-    echo "MDM Already installed, not User Approved"
+    echo "An MDM Already installed, not User Approved"
+    echo "The following profiles identifiers are installed on this system:"
+    profiles -Lv | grep "name: $4" -4 | awk -F": " '/attribute: profileIdentifier/{print $NF}'
     exit 1
 elif [[ $approveCheck = "Approved)" ]]; then
     echo "MDM Already installed and is User Approved"
+    echo "The following profiles identifiers are installed on this system:"
+    profiles -Lv | grep "name: $4" -4 | awk -F": " '/attribute: profileIdentifier/{print $NF}'
     exit 1
 else
     MDMResult=false
