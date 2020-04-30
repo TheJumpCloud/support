@@ -1,7 +1,8 @@
 Describe -Tag:('JCCommandResult') 'Get-JCCommandResults 1.0' {
     Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
+    $CommandResultsExist = Get-JCCommandResult
     # If no command results currently exist
-    If ([System.String]::IsNullOrEmpty(Get-JCCommandResult)
+    If ([System.String]::IsNullOrEmpty($CommandResultsExist))
     {
         $testCmd = Get-JCCommand | Select-Object -First 1
         $CommandResultCount = 10
