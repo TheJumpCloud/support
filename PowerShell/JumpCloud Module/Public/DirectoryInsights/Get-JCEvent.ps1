@@ -47,7 +47,7 @@ COMPLEX PARAMETER PROPERTIES
 To create the parameters described below, construct a hash table containing the appropriate properties. For information on hash tables, run Get-Help about_Hash_Tables.
 
 EVENTQUERYBODY <IEventQuery>: EventQuery is the users' command to search our auth logs
-  [EndTime <String>]: optional query end time, UTC in RFC3339 format
+  [EndTime <DateTime?>]: optional query end time, UTC in RFC3339 format
   [Fields <String[]>]: optional list of fields to return from query
   [Limit <Int64?>]: Max number of rows to return
   [SearchAfter <String[]>]: Specific query to search after, see x-* response headers for next values
@@ -57,7 +57,7 @@ EVENTQUERYBODY <IEventQuery>: EventQuery is the users' command to search our aut
     [(Any) <Object>]: This indicates any property can be added to this object.
   [Service <String[]>]: service name to query. Known services: systems,radius,sso,directory,ldap,all
   [Sort <String>]: ASC or DESC order for timestamp
-  [StartTime <String>]: query start time, UTC in RFC3339 format
+  [StartTime <DateTime?>]: query start time, UTC in RFC3339 format
 #>
 Function Get-JCEvent
 {
@@ -74,7 +74,7 @@ Function Get-JCEvent
 
     [Parameter(ParameterSetName='GetExpanded')]
     [JumpCloud.SDK.DirectoryInsights.Category('Body')]
-    [System.String]
+    [System.DateTime]
     # optional query end time, UTC in RFC3339 format
     ${EndTime},
 
@@ -127,7 +127,7 @@ Function Get-JCEvent
 
     [Parameter(ParameterSetName='GetExpanded')]
     [JumpCloud.SDK.DirectoryInsights.Category('Body')]
-    [System.String]
+    [System.DateTime]
     # query start time, UTC in RFC3339 format
     ${StartTime},
 

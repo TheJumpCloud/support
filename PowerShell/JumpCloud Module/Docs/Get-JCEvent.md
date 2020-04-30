@@ -14,9 +14,9 @@ Query the API for Directory Insights events
 
 ### GetExpanded (Default)
 ```
-Get-JCEvent [-EndTime <String>] [-Fields <String[]>] [-Limit <Int64>] [-SearchAfter <String[]>]
+Get-JCEvent [-EndTime <DateTime>] [-Fields <String[]>] [-Limit <Int64>] [-SearchAfter <String[]>]
  [-SearchTermAnd <Hashtable>] [-SearchTermOr <Hashtable>] [-Service <String[]>] [-Sort <String>]
- [-StartTime <String>] [-Paginate <Boolean>] [-WhatIf] [-Confirm] [<CommonParameters>]
+ [-StartTime <DateTime>] [-Paginate <Boolean>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ### Get
@@ -107,7 +107,7 @@ Accept wildcard characters: False
 optional query end time, UTC in RFC3339 format
 
 ```yaml
-Type: System.String
+Type: System.DateTime
 Parameter Sets: GetExpanded
 Aliases:
 
@@ -230,7 +230,7 @@ Accept wildcard characters: False
 query start time, UTC in RFC3339 format
 
 ```yaml
-Type: System.String
+Type: System.DateTime
 Parameter Sets: GetExpanded
 Aliases:
 
@@ -303,7 +303,7 @@ To create the parameters described below, construct a hash table containing the 
 For information on hash tables, run Get-Help about_Hash_Tables.
 
 EVENTQUERYBODY \<IEventQuery\>: EventQuery is the users' command to search our auth logs
-  \[EndTime \<String\>\]: optional query end time, UTC in RFC3339 format
+  \[EndTime \<DateTime?\>\]: optional query end time, UTC in RFC3339 format
   \[Fields \<String\[\]\>\]: optional list of fields to return from query
   \[Limit \<Int64?\>\]: Max number of rows to return
   \[SearchAfter \<String\[\]\>\]: Specific query to search after, see x-* response headers for next values
@@ -316,6 +316,6 @@ If any term matches, the event will be returned by the service.
   \[Service \<String\[\]\>\]: service name to query.
 Known services: systems,radius,sso,directory,ldap,all
   \[Sort \<String\>\]: ASC or DESC order for timestamp
-  \[StartTime \<String\>\]: query start time, UTC in RFC3339 format
+  \[StartTime \<DateTime?\>\]: query start time, UTC in RFC3339 format
 
 ## RELATED LINKS

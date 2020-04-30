@@ -5,7 +5,7 @@ Describe 'Get-JCEvent' -Tag:('JCEvent') {
     #>
     # Define parameters for functions
     $ParamHash = @{
-        "StartTime"     = Get-Date -Date:(((Get-Date).ToUniversalTime())) -Format:('o');
+        "StartTime"     = (Get-Date).ToUniversalTime();
         "EndTime"       = 'PlaceHolderDateTime';
         "Service"       = "all";
         "Sort"          = "DESC"
@@ -37,10 +37,10 @@ Describe 'Get-JCEvent' -Tag:('JCEvent') {
     # Allow server time to process
     Start-Sleep -Seconds:(10)
     # Set EndTime
-    $ParamHash.EndTime = Get-Date -Date:(((Get-Date).ToUniversalTime())) -Format:('o');
+    $ParamHash.EndTime = (Get-Date).ToUniversalTime();
     # Convert times to UTC
-    $StartTime = Get-Date -Date:(([DateTime]$ParamHash.StartTime).ToUniversalTime())
-    $EndTime = Get-Date -Date:(([DateTime]$ParamHash.EndTime).ToUniversalTime())
+    $StartTime = [DateTime]$ParamHash.StartTime
+    $EndTime = [DateTime]$ParamHash.EndTime
     It 'GetExpanded' {
         $eventTest = Get-JCEvent -Service:($ParamHash.Service) -StartTime:($ParamHash.StartTime) -EndTime:($ParamHash.EndTime) -Limit:($ParamHash.Limit) -Sort:($ParamHash.Sort) -SearchTermAnd:($ParamHash.SearchTermAnd)
         If ([System.String]::IsNullOrEmpty($eventTest))
