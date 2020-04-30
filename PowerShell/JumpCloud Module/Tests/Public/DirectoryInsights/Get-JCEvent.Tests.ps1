@@ -36,7 +36,7 @@ Describe 'Get-JCEvent' -Tag:('JCEvent') {
         Remove-JCUser -Username:($UserName) -Force
     }
     # Allow server time to process
-    Start-Sleep -Seconds:(30)
+    Start-Sleep -Seconds:(10)
     # Set EndTime
     $ParamHash.EndTime = (Get-Date).ToUniversalTime();
     # Convert times to UTC
@@ -51,8 +51,8 @@ Describe 'Get-JCEvent' -Tag:('JCEvent') {
         Else
         {
             $eventTest = ($eventTest)
-            $MostRecentRecord = ($eventTest | Select-Object -First 1).timestamp
-            $OldestRecord = ($eventTest | Select-Object -Last 1).timestamp
+            $MostRecentRecord = ([System.DateTime]($eventTest | Select-Object -First 1).timestamp).ToUniversalTime()
+            $OldestRecord = ([System.DateTime]($eventTest | Select-Object -Last 1).timestamp).ToUniversalTime()
             # Limit - Test that results count matches parameter value
             $eventTest.Count | Should -Be $ParamHash.Limit
             # Sort - Test that results come back in decending DateTime
@@ -74,8 +74,8 @@ Describe 'Get-JCEvent' -Tag:('JCEvent') {
         Else
         {
             $eventTest = ($eventTest)
-            $MostRecentRecord = ($eventTest | Select-Object -First 1).timestamp
-            $OldestRecord = ($eventTest | Select-Object -Last 1).timestamp
+            $MostRecentRecord = ([System.DateTime]($eventTest | Select-Object -First 1).timestamp).ToUniversalTime()
+            $OldestRecord = ([System.DateTime]($eventTest | Select-Object -Last 1).timestamp).ToUniversalTime()
             # Limit - Test that results count matches parameter value
             $eventTest.Count | Should -Be $ParamHash.Limit
             # Sort - Test that results come back in decending DateTime
