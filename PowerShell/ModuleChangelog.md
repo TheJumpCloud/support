@@ -1,3 +1,25 @@
+## 1.17.0
+
+#### RELEASE DATE
+
+April 30, 2020
+
+#### RELEASE NOTES
+
+Minor changes to make the auto-update functionality more robust.
+
+Use Get-JCEvent to query JumpCloud event logs.
+
+#### FEATURES
+
+#### IMPROVEMENTS
+
+New functions: Get-JCEvent
+
+Auto-update now utilizes metadata from the PowerShell Gallery to determine when an update is available
+
+#### BUG FIXES
+
 ## 1.16.0
 
 #### RELEASE DATE
@@ -12,6 +34,8 @@ Use Get-JCSystemInsight to query additional System Insights tables including int
 
 Query new SystemInsights tables: certificates, cups_destinations, interface_details, python_packages, registry, scheduled_tasks, services and startup_items
 
+#### IMPROVEMENTS
+
 #### BUG FIXES
 
 Resolved issue with Invoke-JCCommand when calling commands without variables
@@ -25,6 +49,10 @@ March 25, 2020
 #### RELEASE NOTES
 
 Need to update users email addresses in bulk? You can now do that using New-JCImportTemplate and Update-JCUsersFromCSV
+
+#### Features
+
+#### IMPROVEMENTS
 
 #### BUG FIXES
 
@@ -44,6 +72,8 @@ Need to update users email addresses in bulk? You can now do that using New-JCIm
 #### FEATURES
 
 Ability to add email column to output of New-JCImportTemplate when updating users
+
+#### IMPROVEMENTS
 
 #### BUG FIXES
 
@@ -67,9 +97,9 @@ Get-JCUser now can return the mfa property using -returnProperties
 Get-JCSystem can now search for macOS machines with the JumpCloud Service Account using the -hasServiceAccount parameter
 Get-JCSystem can now return the hasServiceAccount, fileSystem properties using -returnProperties
 
-
 #### IMPROVEMENTS
 
+#### BUG FIXES
 
 ## 1.15.2
 

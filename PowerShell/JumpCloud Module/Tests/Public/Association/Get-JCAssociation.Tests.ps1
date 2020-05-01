@@ -59,7 +59,7 @@ Describe -Tag:('JCAssociation') "Association Tests" {
             # Build Get commands to test all switches
             $SwitchColumnHash.GetEnumerator() | ForEach-Object {
                 $ParameterName = $_.Key
-                $ParameterSwitchesString = If ($ParameterName) {'-' + ($ParameterName -join ' -')} Else {$ParameterName}
+                $ParameterSwitchesString = If ($ParameterName) { '-' + ($ParameterName -join ' -') } Else { $ParameterName }
                 If ($ExecutionType -eq 'Full')
                 {
                     $GetCommands += ($Template_SourceParameters_TargetType -f $SourceType, $TestMethodIdentifier, $SourceSearchByValue, $ParameterSwitchesString, $TargetType)
@@ -85,23 +85,23 @@ Describe -Tag:('JCAssociation') "Association Tests" {
         {
             $Associations_Test_Commands = Switch ($Verb)
             {
-                'Add' {@(($Template_AllSourceParameters -f $SourceType, $TestMethodIdentifier, $SourceSearchByValue, $ParameterSwitchesString, $TargetType, $TargetSearchByValue))}
-                'Get' {$GetCommands}
-                'Remove' {@(($Template_AllSourceParameters -f $SourceType, $TestMethodIdentifier, $SourceSearchByValue, $ParameterSwitchesString, $TargetType, $TargetSearchByValue))}
-                Default {Write-Error ('Unknown $Verb:' + $Verb)}
+                'Add' { @(($Template_AllSourceParameters -f $SourceType, $TestMethodIdentifier, $SourceSearchByValue, $ParameterSwitchesString, $TargetType, $TargetSearchByValue)) }
+                'Get' { $GetCommands }
+                'Remove' { @(($Template_AllSourceParameters -f $SourceType, $TestMethodIdentifier, $SourceSearchByValue, $ParameterSwitchesString, $TargetType, $TargetSearchByValue)) }
+                Default { Write-Error ('Unknown $Verb:' + $Verb) }
             }
-            $Associations_Test_Commands = $Associations_Test_Commands | ForEach-Object {$FunctionName + $_}
+            $Associations_Test_Commands = $Associations_Test_Commands | ForEach-Object { $FunctionName + $_ }
         }
         ElseIf ($ExecutionType -eq 'Pipe')
         {
             $Associations_Test_Commands = Switch ($Verb)
             {
-                'Add' {@(($Template_AllTargetParameters -f $TargetType, $ParameterSwitchesString, $TestMethodIdentifier, $TargetSearchByValue))}
-                'Get' {$GetCommands}
-                'Remove' {@(($Template_AllTargetParameters -f $TargetType, $ParameterSwitchesString, $TestMethodIdentifier, $TargetSearchByValue))}
-                Default {Write-Error ('Unknown $Verb:' + $Verb)}
+                'Add' { @(($Template_AllTargetParameters -f $TargetType, $ParameterSwitchesString, $TestMethodIdentifier, $TargetSearchByValue)) }
+                'Get' { $GetCommands }
+                'Remove' { @(($Template_AllTargetParameters -f $TargetType, $ParameterSwitchesString, $TestMethodIdentifier, $TargetSearchByValue)) }
+                Default { Write-Error ('Unknown $Verb:' + $Verb) }
             }
-            $Associations_Test_Commands = $Associations_Test_Commands | ForEach-Object {'$Source | ' + $FunctionName + $_}
+            $Associations_Test_Commands = $Associations_Test_Commands | ForEach-Object { '$Source | ' + $FunctionName + $_ }
         }
         Else
         {
@@ -128,7 +128,7 @@ Describe -Tag:('JCAssociation') "Association Tests" {
                     # Test results of action
                     If ($Verb -eq 'Get')
                     {
-                        $AssociationsProperties = ($Associations_Test | ForEach-Object {$_.PSObject.Properties.name} | Where-Object {$_ -ne 'compiledAttributes'} | Select-Object -Unique | Sort-Object)
+                        $AssociationsProperties = ($Associations_Test | ForEach-Object { $_.PSObject.Properties.name } | Where-Object { $_ -ne 'compiledAttributes' } | Select-Object -Unique | Sort-Object)
                         $SwitchColumnHash.GetEnumerator() | ForEach-Object {
                             $ParameterName = $_.Key
                             $ExpectedColumns = $_.Value | Sort-Object
@@ -162,35 +162,35 @@ Describe -Tag:('JCAssociation') "Association Tests" {
                             }
                         }
                     }
-                    It("Where results should be not NullOrEmpty") {$Associations_Test | Should -Not -BeNullOrEmpty}
-                    It("Where results count should BeGreaterThan 0") {($Associations_Test | Measure-Object).Count | Should -BeGreaterThan 0}
+                    It("Where results should be not NullOrEmpty") { $Associations_Test | Should -Not -BeNullOrEmpty }
+                    It("Where results count should BeGreaterThan 0") { ($Associations_Test | Measure-Object).Count | Should -BeGreaterThan 0 }
                     If ($Associations_Test_Command -match '-Raw')
                     {
-                        It("Where results TargetId '$($TargetId)' should be in '$($Associations_Test.Id -join ', ')'") {$TargetId | Should -BeIn $Associations_Test.Id}
-                        It("Where results TargetType '$($TargetType)' should be in '$($Associations_Test.Type -join ', ')'") {$TargetType | Should -BeIn $Associations_Test.Type}
+                        It("Where results TargetId '$($TargetId)' should be in '$($Associations_Test.Id -join ', ')'") { $TargetId | Should -BeIn $Associations_Test.Id }
+                        It("Where results TargetType '$($TargetType)' should be in '$($Associations_Test.Type -join ', ')'") { $TargetType | Should -BeIn $Associations_Test.Type }
                     }
                     Else
                     {
-                        It("Where results action property '$($Verb)' should be '$($Associations_Test.Action | Select-Object -Unique)'") {$Verb | Should -Be ($Associations_Test.Action | Select-Object -Unique)}
-                        It("Where results SourceId '$($SourceId)' should be in '$($Associations_Test.Id -join ', ')'") {$SourceId | Should -BeIn $Associations_Test.Id}
-                        It("Where results SourceType '$($SourceType)' should be in '$($Associations_Test.Type -join ', ')'") {$SourceType | Should -BeIn $Associations_Test.Type}
-                        It("Where results TargetId '$($TargetId)' should be in '$($Associations_Test.TargetId -join ', ')'") {$TargetId | Should -BeIn $Associations_Test.TargetId}
-                        It("Where results TargetType '$($TargetType)' should be in '$($Associations_Test.TargetType -join ', ')'") {$TargetType | Should -BeIn $Associations_Test.TargetType}
-                        It("Where results SourceId '$($SourceId)' should not the same as the TargetId '$($TargetId)'") {$SourceId | Should -Not -Be $TargetId}
-                        It("Where results SourceType '$($SourceType)' should not the same as the TargetType '$($TargetType)'") {$SourceType | Should -Not -Be $TargetType}
-                        It("Where results SourceId '$($SourceId)' should not be in TargetId '$($Associations_Test.TargetId -join ', ')'") {$SourceId | Should -Not -BeIn $Associations_Test.TargetId}
-                        It("Where results SourceType '$($SourceType)' should not be in TargetType '$($Associations_Test.TargetType -join ', ')'") {$SourceType | Should -Not -BeIn $Associations_Test.TargetType}
+                        It("Where results action property '$($Verb)' should be '$($Associations_Test.Action | Select-Object -Unique)'") { $Verb | Should -Be ($Associations_Test.Action | Select-Object -Unique) }
+                        It("Where results SourceId '$($SourceId)' should be in '$($Associations_Test.Id -join ', ')'") { $SourceId | Should -BeIn $Associations_Test.Id }
+                        It("Where results SourceType '$($SourceType)' should be in '$($Associations_Test.Type -join ', ')'") { $SourceType | Should -BeIn $Associations_Test.Type }
+                        It("Where results TargetId '$($TargetId)' should be in '$($Associations_Test.TargetId -join ', ')'") { $TargetId | Should -BeIn $Associations_Test.TargetId }
+                        It("Where results TargetType '$($TargetType)' should be in '$($Associations_Test.TargetType -join ', ')'") { $TargetType | Should -BeIn $Associations_Test.TargetType }
+                        It("Where results SourceId '$($SourceId)' should not the same as the TargetId '$($TargetId)'") { $SourceId | Should -Not -Be $TargetId }
+                        It("Where results SourceType '$($SourceType)' should not the same as the TargetType '$($TargetType)'") { $SourceType | Should -Not -Be $TargetType }
+                        It("Where results SourceId '$($SourceId)' should not be in TargetId '$($Associations_Test.TargetId -join ', ')'") { $SourceId | Should -Not -BeIn $Associations_Test.TargetId }
+                        It("Where results SourceType '$($SourceType)' should not be in TargetType '$($Associations_Test.TargetType -join ', ')'") { $SourceType | Should -Not -BeIn $Associations_Test.TargetType }
                     }
                 }
             }
         }
     }
     # Remove mock file if exists
-    If ($Mock) {If (Test-Path -Path:($MockFilePath)) {Remove-Item -Path:($MockFilePath) -Force}}
+    If ($Mock) { If (Test-Path -Path:($MockFilePath)) { Remove-Item -Path:($MockFilePath) -Force } }
     # Generate $AssociationDataSet object records by looping through each association type and its target types
     Context ("Get each type of JC object association possible and build list of source and targets to test with.") {
         $AssociationDataSet = @()
-        $JCAssociationTypes = Get-JCType | Where-Object { $_.Category -eq 'JumpCloud'}
+        $JCAssociationTypes = Get-JCType | Where-Object { $_.Category -eq 'JumpCloud' } | Get-Random -Count 1
         $EmptySources = @()
         ForEach ($JCAssociationType In $JCAssociationTypes)
         {
@@ -260,15 +260,15 @@ Describe -Tag:('JCAssociation') "Association Tests" {
         # $AssociationDataSet = $AssociationDataSetContent | ConvertFrom-Json
         ####################################################################################################
         # Get valid association items
-        $ValidAssociationItems = $AssociationDataSet | Where-Object {$_.ValidRecord -and $_.SourceId -and $_.TargetId}
+        $ValidAssociationItems = $AssociationDataSet | Where-Object { $_.ValidRecord -and $_.SourceId -and $_.TargetId }
         ################################################################################
         ################################## HACKS/TODO ########################################
-        $ValidAssociationItems = $ValidAssociationItems | Where-Object {$_.SourceType -ne 'active_directory' -and $_.TargetType -ne 'active_directory'}
+        $ValidAssociationItems = $ValidAssociationItems | Where-Object { $_.SourceType -ne 'active_directory' -and $_.TargetType -ne 'active_directory' }
         ################################################################################
         ################################################################################
         # Get invalid association items
-        $InvalidAssociationItems = $AssociationDataSet | Where-Object {-not $_.ValidRecord -and -not $_.SourceId -and -not $_.TargetId} |
-            Select-Object @{Name = 'Status'; Expression = {'No "' + $_.SourceType + '" found within org. Please create a "' + $_.SourceType + '"'}} -Unique
+        $InvalidAssociationItems = $AssociationDataSet | Where-Object { -not $_.ValidRecord -and -not $_.SourceId -and -not $_.TargetId } |
+        Select-Object @{Name = 'Status'; Expression = { 'No "' + $_.SourceType + '" found within org. Please create a "' + $_.SourceType + '"' } } -Unique
         # Validate that org has been fully populated
         It("Validate that all object types exist within the specified test environment.") {
             $InvalidAssociationItems | Should -BeNullOrEmpty

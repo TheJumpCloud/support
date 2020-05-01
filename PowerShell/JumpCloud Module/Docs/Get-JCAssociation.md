@@ -316,17 +316,11 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
-
 ### System.Management.Automation.SwitchParameter
-
 ### System.String[]
-
 ### System.Array
-
 ### System.Int32
-
 ### System.Boolean
-
 ## OUTPUTS
 
 ### System.Object
