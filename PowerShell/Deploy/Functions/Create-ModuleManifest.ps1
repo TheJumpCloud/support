@@ -88,6 +88,21 @@ Function New-JCModuleManifest
                     $FunctionParameters.Add($_.Key, $_.Value) | Out-Null
                 }
             }
+            If ($FunctionParameters.RequiredModules)
+            {
+                $FunctionParameters.RequiredModules | ForEach-Object {
+                    If ([System.String]::IsNullOrEmpty((Get-InstalledModule).Where( { $_.Name -eq $_ })))
+                    {
+                        Write-Host ('Installing: ' + $_)
+                        Install-Module -Name:($_) -Force
+                    }
+                    If (!(Get-Module -Name:($_)))
+                    {
+                        Write-Host ('Importing: ' + $_)
+                        Import-Module -Name:($_) -Force
+                    }
+                }
+            }
         }
         Else
         {
