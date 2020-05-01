@@ -1,6 +1,6 @@
 #### Name
 
-Mac - Install MDM Profile | v1.0 JCCG
+Mac - Install MDM Profile | v1.1 JCCG
 
 #### commandType
 
