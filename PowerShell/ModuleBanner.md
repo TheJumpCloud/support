@@ -7,11 +7,11 @@
 #### Banner Current
 
 ```
-New function Get-JCEvent allows for the search and retrieval of JumpCloud log information.
+New function Get-JCEvent allows for the search and retrieval of JumpCloud Directory Insights data.
 ```
 
 #### Banner Old
 
 ```
-New function Get-JCEvent allows for the search and retrieval of JumpCloud log information.
+New function Get-JCEvent allows for the search and retrieval of JumpCloud Directory Insights data.
 ```
