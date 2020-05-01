@@ -11,35 +11,49 @@ mac
 ```
 #!/bin/bash
 
-# report if the system is already in the mdm
+# Verify JumpCloud MDM
+verify_jc_mdm () {
+    # Check the system for the following profileIdentifier
+    mdmID="com.jumpcloud.mdm"
+    check=$(profiles -Lv | grep "name: $4" -4 | awk -F": " '/attribute: profileIdentifier/{print $NF}')
+    if [[ $check == *$mdmID* ]] ; then
+        echo "ProfileIdentifier: ${mdmID} found on system. MDM Verified"
+        exit 0
+    else
+        echo "JumpCloud MDM profile not found on system."
+        exit 1
+    fi
+}
+
+# List profiles
+list_profiles () {
+    echo "The following profiles identifiers are installed on this system:"
+    profiles -Lv | grep "name: $4" -4 | awk -F": " '/attribute: profileIdentifier/{print $NF}'
+}
+
+# Report if the system is already in the mdm
 approveCheck=$(profiles status -type enrollment | grep "MDM enrollment:" | awk 'NF>1{print $NF}')
 if [[ $approveCheck = "Yes" ]]; then
     echo "An MDM Already installed, not User Approved"
-    echo "The following profiles identifiers are installed on this system:"
-    profiles -Lv | grep "name: $4" -4 | awk -F": " '/attribute: profileIdentifier/{print $NF}'
-    exit 1
+    list_profiles
+    verify_jc_mdm
 elif [[ $approveCheck = "Approved)" ]]; then
-    echo "MDM Already installed and is User Approved"
-    echo "The following profiles identifiers are installed on this system:"
-    profiles -Lv | grep "name: $4" -4 | awk -F": " '/attribute: profileIdentifier/{print $NF}'
-    exit 1
+    echo "An MDM Already installed and is User Approved"
+    list_profiles
+    verify_jc_mdm
 else
     MDMResult=false
 fi
 
+
+# install the MDM Profile
 if [[ $MDMResult = false ]]; then
-    # install the MDM Profile
-    echo "installing.."
+    echo "Installing JumpCloud MDM Profile"
     /usr/bin/profiles -I -F /tmp/profile_jc.mobileconfig
 fi
 
 # Verify the installation
-check=$(profiles -Lv | grep "name: $4" -4 | awk -F": " '/attribute: profileIdentifier/{print $NF}')
-mdmID="com.jumpcloud.mdm"
-if [[ $check == *$mdmID* ]] ; then
-    echo "profileIdentifier: ${mdmID} found on system. MDM Verified"
-fi
-exit 0
+verify_jc_mdm
 ```
 
 #### Description
