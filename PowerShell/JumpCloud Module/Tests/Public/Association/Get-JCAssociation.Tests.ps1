@@ -190,7 +190,7 @@ Describe -Tag:('JCAssociation') "Association Tests" {
     # Generate $AssociationDataSet object records by looping through each association type and its target types
     Context ("Get each type of JC object association possible and build list of source and targets to test with.") {
         $AssociationDataSet = @()
-        $JCAssociationTypes = Get-JCType | Where-Object { $_.Category -eq 'JumpCloud' } | Get-Random -Count 2
+        $JCAssociationTypes = Get-JCType | Where-Object { $_.Category -eq 'JumpCloud' } | Get-Random -Count 1
         $EmptySources = @()
         ForEach ($JCAssociationType In $JCAssociationTypes)
         {
