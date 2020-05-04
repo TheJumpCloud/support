@@ -58,6 +58,8 @@ EVENTQUERYBODY <IEventQuery>: EventQuery is the users' command to search our aut
   [Service <String[]>]: service name to query. Known services: systems,radius,sso,directory,ldap,all
   [Sort <String>]: ASC or DESC order for timestamp
   [StartTime <DateTime?>]: query start time, UTC in RFC3339 format
+.Link
+https://github.com/TheJumpCloud/support/wiki/Get-JCEvent
 #>
 Function Get-JCEvent
 {
