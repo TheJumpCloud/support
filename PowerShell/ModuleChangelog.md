@@ -1,3 +1,21 @@
+## 1.17.1
+
+Release Date: May 04, 2020
+
+#### RELEASE NOTES
+
+```
+Bug fix for when user calls: Get-Help -online Get-JCEvent
+```
+
+#### FEATURES
+
+#### IMPROVEMENTS
+
+#### BUG FIXES
+
+Help link fix for Get-JCEvent
+
 ## 1.17.0
 
 #### RELEASE DATE
