@@ -319,3 +319,6 @@ Known services: systems,radius,sso,directory,ldap,all
   \[StartTime \<DateTime?\>\]: query start time, UTC in RFC3339 format
 
 ## RELATED LINKS
+
+[https://github.com/TheJumpCloud/support/wiki/Get-JCEvent](https://github.com/TheJumpCloud/support/wiki/Get-JCEvent)
+

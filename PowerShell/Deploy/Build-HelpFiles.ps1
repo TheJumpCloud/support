@@ -2,8 +2,10 @@
 ###########################################################################
 Write-Host ('[status]Importing current module: ' + $ModuleName)
 Import-Module ($FilePath_psd1) -Force
-Write-Host ('[status]Installing module: PlatyPS')
-Install-Module -Name:('PlatyPS') -Force -Scope:('CurrentUser')
+# Install module onto system
+If (-not (Get-InstalledModule -Name:('PlatyPS') -ErrorAction SilentlyContinue)) { Install-Module -Force -Name:('PlatyPS') }
+# Import module into session
+If (-not (Get-Module -Name:('PlatyPS'))) { Import-Module -Force -Name:('PlatyPS') }
 Write-Host ('[status]Creating/Updating help files')
 $Functions_Public | ForEach-Object {
     $FunctionName = $_.BaseName
