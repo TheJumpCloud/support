@@ -118,7 +118,7 @@ Function Update-JCModule
                         {
                             $InstalledModulePreUpdate | ForEach-Object {
                                 Write-Host ('Uninstalling ' + $_.Name + ' module version: ') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewline
-                                Write-Host ($_.Version) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
+                                Write-Host (($_.Version).ToString()) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
                                 $_ | Uninstall-Module -Force
                             }
                         }
