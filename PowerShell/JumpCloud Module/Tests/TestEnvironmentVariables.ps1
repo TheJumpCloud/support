@@ -43,7 +43,7 @@ $PesterParams = @{
     'UserGroupID'        = '5ec30f201f247540bf7e2159'  # Paste the corresponding GroupID for the user group named PesterTest_UserGroup
     'SystemGroupName'    = 'PesterTest_SystemGroup' # Create a sytem group named PesterTest_SystemGroup within your environment
     'SystemGroupID'      = '5ec30f77232e1156647f2ff3'  # Paste the corresponding GroupID for the sytem group named PesterTest_SystemGroup
-    'CommandID'          = ''
+    'CommandID'          = '5ec32f829a0d2b5d5984cf05'
     'RadiusServerName'   = 'PesterTest_RadiusServer';
     # Specific to pester environment
     'OneTrigger'         = 'onetrigger'
