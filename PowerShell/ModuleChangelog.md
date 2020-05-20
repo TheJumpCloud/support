@@ -1,3 +1,21 @@
+## 1.17.2
+
+Release Date: May 18, 2020
+
+#### RELEASE NOTES
+
+```
+Bug fix PowerShell 5.1 users launching Connect-JCOnline
+```
+
+#### FEATURES
+
+#### IMPROVEMENTS
+
+#### BUG FIXES
+
+String Concatenation syntax fix for Update-JCModule
+
 ## 1.17.1
 
 Release Date: May 04, 2020
