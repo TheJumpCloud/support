@@ -17,6 +17,8 @@ If ($RequiredModules)
     }
 }
 
+Import-Module -Name:($ModuleManifestPath) -Force
+
 Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
 #Setup COMMANDS
 
