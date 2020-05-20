@@ -1,4 +1,4 @@
-#COMMANDS
+#Setup COMMANDS
 
 $CommandResultCount = 10
 $CommandResultsExist = Get-JCCommandResult
@@ -15,3 +15,15 @@ If ([System.String]::IsNullOrEmpty($CommandResultsExist) -or $CommandResultsExis
         Start-Sleep -Seconds:(1)
     }
 }
+
+#New-JCCommand -name 'Invoke - Pester One Variable' -commandType linux -command 'echo $One' -launchType trigger -timeout 0 -trigger 'onetrigger'
+#New-JCCommand -name 'Invoke - Pester Two Variable' -commandType linux -command 'echo $Two' -launchType trigger -timeout 0 -trigger 'twotrigger'
+#New-JCCommand -name 'Invoke - Pester Three Variable' -commandType linux -command 'echo $Three' -launchType trigger -timeout 0 -trigger 'threetrigger'
+#New-JCCommand -name 'GetJCAgentLog' -commandType linux -command 'cat /opt/jc/*.log' -launchType trigger -timeout 120 -trigger 'GetJCAgentLog'
+
+#create cmd with trigger same as name
+#associate
+
+#create PesterTest_SystemGroup
+#associate group to cmd
+#associate system to cmd
