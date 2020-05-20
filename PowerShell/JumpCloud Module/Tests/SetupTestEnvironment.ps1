@@ -1,3 +1,22 @@
+$ModuleManifestName = 'JumpCloud.psd1'
+$ModuleManifestPath = "$PSScriptRoot/../$ModuleManifestName"
+$RequiredModules = (Import-LocalizedData -BaseDirectory:("$PSScriptRoot/..") -FileName:($ModuleManifestName)).RequiredModules
+If ($RequiredModules)
+{
+    $RequiredModules | ForEach-Object {
+        If ([System.String]::IsNullOrEmpty((Get-InstalledModule).Where( { $_.Name -eq $_ })))
+        {
+            Write-Host ('Installing: ' + $_)
+            Install-Module -Name:($_) -Force
+        }
+        If (!(Get-Module -Name:($_)))
+        {
+            Write-Host ('Importing: ' + $_)
+            Import-Module -Name:($_) -Force
+        }
+    }
+}
+
 Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
 #Setup COMMANDS
 
