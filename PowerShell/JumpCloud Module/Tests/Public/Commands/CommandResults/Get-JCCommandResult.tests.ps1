@@ -10,7 +10,7 @@ Describe -Tag:('JCCommandResult') 'Get-JCCommandResults 1.0' {
         {
             Invoke-JCCommand -trigger:($testCmd.name)
         }
-        While ([System.String]::IsNullOrEmpty((Get-JCCommandResult | Where-Object { $_.Name -eq $testCmd.name })) -and (Get-JCCommandResult | Where-Object { $_.Name -eq $testCmd.name }).Count -ge $CommandResultCount)
+        While ((Get-JCCommandResult | Where-Object { $_.Name -eq $testCmd.name }).Count -ge $CommandResultCount)
         {
             Start-Sleep -Seconds:(1)
         }
