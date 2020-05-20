@@ -1,20 +1,5 @@
 Describe -Tag:('JCCommandResult') 'Get-JCCommandResults 1.0' {
     Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
-    $CommandResultCount = 10
-    $CommandResultsExist = Get-JCCommandResult
-    # If no command results currently exist
-    If ([System.String]::IsNullOrEmpty($CommandResultsExist) -or $CommandResultsExist.Count -lt $CommandResultCount)
-    {
-        $testCmd = Get-JCCommand | Select-Object -First 1
-        $TriggeredCommand = For ($i = 1; $i -le $CommandResultCount; $i++)
-        {
-            Invoke-JCCommand -trigger:($testCmd.name)
-        }
-        While ((Get-JCCommandResult | Where-Object { $_.Name -eq $testCmd.name }).Count -ge $CommandResultCount)
-        {
-            Start-Sleep -Seconds:(1)
-        }
-    }
     It "Gets all JumpCloud command results" {
         $CommandResults = Get-JCCommandResult
         $CommandResults.count | Should -BeGreaterThan 1
