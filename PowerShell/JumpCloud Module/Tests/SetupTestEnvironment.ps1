@@ -1,3 +1,4 @@
+Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
 #Setup COMMANDS
 
 $CommandResultCount = 10
