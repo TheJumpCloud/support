@@ -67,7 +67,7 @@ Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
 # Policy Info
 $MultiplePolicyList = @('1 Linux', 'Disable USB Storage - Linux') #Populate with multiple policy names.
 $SinglePolicyList = @('Disable USB Storage - Linux') #Populate with single policy name.
-$SystemIDWithPolicyResult = Get-JCSystem -SystemID '5a4c05ccaad9ac5f68b31022'
+$SystemIDWithPolicyResult = Get-JCSystem -SystemID '5ec40d537b7ff91360386bc4'
 $Policies = Get-JCPolicy
 $SinglePolicy = $Policies | Where-Object { $_.Name -eq $SinglePolicyList }
 $MultiplePolicy = $Policies | Where-Object { $_.Name -in $MultiplePolicyList }
