@@ -50,7 +50,7 @@ $PesterParams = @{
     'TwoTrigger'         = 'twotrigger'
     'ThreeTrigger'       = 'threetrigger'
     # Command Deployments
-    'SetCommandID'       = "5ec32eafe5d32c2970a483fc"
+    'SetCommandID'       = "5ec699ad1bccb46c80d891a2"
     'DeployCommandID'    = "5ec32efb5a797e17deda0551"
 }
 
