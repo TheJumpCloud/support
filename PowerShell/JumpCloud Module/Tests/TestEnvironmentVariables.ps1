@@ -29,6 +29,8 @@ if($env:AGENT_OS -eq 'Windows_NT'){
         # Command Deployments
         'SetCommandID'       = "5b7194548781bb466496fe2f"
         'DeployCommandID'    = "5b719043bc43db696b4dbd90"
+        # Policies
+        'SystemWithPolicyResultID' = "5c2e2d012a28b62befe395a3"
     }
 } elseif ($env:AGENT_OS -eq 'Darwin'){
     $PesterParams = @{
@@ -54,6 +56,8 @@ if($env:AGENT_OS -eq 'Windows_NT'){
         # Command Deployments
         'SetCommandID'       = "5ec699ad1bccb46c80d891a2"
         'DeployCommandID'    = "5ec32efb5a797e17deda0551"
+        # Policies
+        'SystemWithPolicyResultID' = "5ec40d537b7ff91360386bc4"
     }
 } elseif ($env:AGENT_OS -eq 'Linux') {
     $PesterParams = @{
@@ -79,6 +83,8 @@ if($env:AGENT_OS -eq 'Windows_NT'){
         # Command Deployments
         'SetCommandID'       = "5ec699ad1bccb46c80d891a2"
         'DeployCommandID'    = "5ec32efb5a797e17deda0551"
+        # Policies
+        'SystemWithPolicyResultID' = "5ec40d537b7ff91360386bc4"
     }
 }
 
@@ -95,7 +101,7 @@ Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
 # Policy Info
 $MultiplePolicyList = @('1 Linux', 'Disable USB Storage - Linux') #Populate with multiple policy names.
 $SinglePolicyList = @('Disable USB Storage - Linux') #Populate with single policy name.
-$SystemIDWithPolicyResult = Get-JCSystem -SystemID '5ec40d537b7ff91360386bc4'
+$SystemIDWithPolicyResult = Get-JCSystem -SystemID $PesterParams.SystemWithPolicyResultID
 $Policies = Get-JCPolicy
 $SinglePolicy = $Policies | Where-Object { $_.Name -eq $SinglePolicyList }
 $MultiplePolicy = $Policies | Where-Object { $_.Name -in $MultiplePolicyList }
