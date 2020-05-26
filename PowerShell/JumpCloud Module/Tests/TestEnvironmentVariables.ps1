@@ -5,7 +5,7 @@ Import-Module -Name:($ModuleManifestPath) -Force
 #Load private functions
 Get-ChildItem -Path:("$PSScriptRoot/../Private/*.ps1") -Recurse | ForEach-Object { . $_.FullName }
 # Set test parameters bases on os
-if($env:AGENT.OS -eq 'Windows_NT'){
+if($env:AGENT_OS -eq 'Windows_NT'){
     $PesterParams = @{
         # Specific to MTP portal
         'SingleTernateOrgId' = '5a4bff7ab17d0c9f63bcd277'
@@ -30,7 +30,7 @@ if($env:AGENT.OS -eq 'Windows_NT'){
         'SetCommandID'       = "5b7194548781bb466496fe2f"
         'DeployCommandID'    = "5b719043bc43db696b4dbd90"
     }
-} elseif ($env:AGENT.OS -eq 'Darwin'){
+} elseif ($env:AGENT_OS -eq 'Darwin'){
     $PesterParams = @{
         # Specific to MTP portal
         'SingleTernateOrgId' = '5eb2ebea87b5ba160c16857a'
@@ -55,7 +55,7 @@ if($env:AGENT.OS -eq 'Windows_NT'){
         'SetCommandID'       = "5ec699ad1bccb46c80d891a2"
         'DeployCommandID'    = "5ec32efb5a797e17deda0551"
     }
-} elseif ($env:AGENT.OS -eq 'Linux') {
+} elseif ($env:AGENT_OS -eq 'Linux') {
     $PesterParams = @{
         # Specific to MTP portal
         'SingleTernateOrgId' = '5eb2ebea87b5ba160c16857a'
