@@ -54,3 +54,16 @@ If ([System.String]::IsNullOrEmpty($CommandResultsExist) -or $CommandResultsExis
 #create PesterTest_SystemGroup
 #associate group to cmd
 #associate system to cmd
+
+#LINUX pester3 STEPS
+#added win system
+#added mac system
+#added linux system
+#New-JCUser -firstname 'pester' -lastname 'tester' -username 'pester.tester' -email 'pester.tester@pester3.jumpcloud.com'
+#New-JCSystemGroup -GroupName 'PesterTest_SystemGroup'
+#New-JCCommand -name 'GetJCAgentLog' -commandType linux -command 'cat /opt/jc/*.log' -launchType trigger -timeout 120 -trigger 'GetJCAgentLog'
+#added radius server named 'PesterTest_RadiusServer'
+#New-JCCommand -name 'Invoke JCDeployment Test' -commandType linux -command 'echo $One echo $Two' -launchType manual -timeout 0
+#New-JCCommand -name 'Pester - Set-JCCommand' -commandType linux -command 'Not updated command' -launchType trigger -timeout 0 -trigger 'pesterTrigger'
+#assign policy to system
+#

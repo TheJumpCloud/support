@@ -27,8 +27,8 @@ if($env:AGENT_OS -eq 'Windows_NT'){
         'TwoTrigger'         = 'twotrigger'
         'ThreeTrigger'       = 'threetrigger'
         # Command Deployments
-        'SetCommandID'       = "5b7194548781bb466496fe2f"
-        'DeployCommandID'    = "5b719043bc43db696b4dbd90"
+        'SetCommandID'       = "5b7194548781bb466496fe2f" #Pester - Set-JCCommand
+        'DeployCommandID'    = "5b719043bc43db696b4dbd90" #Invoke JCDeployment Test
         # Policies
         'SystemWithPolicyResultID' = "5c2e2d012a28b62befe395a3"
     }
@@ -54,37 +54,37 @@ if($env:AGENT_OS -eq 'Windows_NT'){
         'TwoTrigger'         = 'twotrigger'
         'ThreeTrigger'       = 'threetrigger'
         # Command Deployments
-        'SetCommandID'       = "5ec699ad1bccb46c80d891a2"
-        'DeployCommandID'    = "5ec32efb5a797e17deda0551"
+        'SetCommandID'       = "5ec699ad1bccb46c80d891a2" #Pester - Set-JCCommand
+        'DeployCommandID'    = "5ec32efb5a797e17deda0551" #Invoke JCDeployment Test
         # Policies
         'SystemWithPolicyResultID' = "5ec40d537b7ff91360386bc4"
     }
 } elseif ($env:AGENT_OS -eq 'Linux') {
     $PesterParams = @{
         # Specific to MTP portal
-        'SingleTernateOrgId' = '5eb2ebea87b5ba160c16857a'
+        'SingleTernateOrgId' = '5ebeb8c7de6f1e713e19cfba'
         'MultiTernateOrgId1' = "5b5a13f06fefdb0a29b0d306" #CURRENTLY NOT UNIQUE
         'MultiTernateOrgId2' = "5b5a14d13f852310b1d689b1" #CURRENTLY NOT UNIQUE
-        'SystemID'           = '5ec40d537b7ff91360386bc4' # Enter the System ID for a linux system
-        'SystemId_Windows'   = '5ec300ed58c6c807bbde5712'
-        'SystemId_Mac'       = '5ec3f0ad518f1814e2b1aee5'
+        'SystemID'           = '5ecd8b0e40f99e14ac2c66d3' # Enter the System ID for a linux system
+        'SystemId_Windows'   = '5ecd8b313778a13c9bd90eb8'
+        'SystemId_Mac'       = '5ecd8a4cdfef2d0a9ec39883'
         'Username'           = 'pester.tester' # Create a user with username 'pester.tester'
-        'UserID'             = '5ec30ef936119c0892d550e1' # Paste the UserID for the user with username pester.tester
+        'UserID'             = '5ecd8bb3454ad57c2151ecff' # Paste the UserID for the user with username pester.tester
         'UserGroupName'      = 'PesterTest_UserGroup'  #Create a user group named PesterTest_UserGroup within your environment
-        'UserGroupID'        = '5ec30f201f247540bf7e2159'  # Paste the corresponding GroupID for the user group named PesterTest_UserGroup
+        'UserGroupID'        = '5ecd8c66232e1133edc880df'  # Paste the corresponding GroupID for the user group named PesterTest_UserGroup
         'SystemGroupName'    = 'PesterTest_SystemGroup' # Create a sytem group named PesterTest_SystemGroup within your environment
-        'SystemGroupID'      = '5ec30f77232e1156647f2ff3'  # Paste the corresponding GroupID for the sytem group named PesterTest_SystemGroup
-        'CommandID'          = '5ec44422bb57ae79a5d0ef1a'
+        'SystemGroupID'      = '5ecd8c471f24751b14c33daf'  # Paste the corresponding GroupID for the sytem group named PesterTest_SystemGroup
+        'CommandID'          = '5ecd8d279a9c6a2495c4833f'
         'RadiusServerName'   = 'PesterTest_RadiusServer';
         # Specific to pester environment
         'OneTrigger'         = 'onetrigger'
         'TwoTrigger'         = 'twotrigger'
         'ThreeTrigger'       = 'threetrigger'
         # Command Deployments
-        'SetCommandID'       = "5ec699ad1bccb46c80d891a2"
-        'DeployCommandID'    = "5ec32efb5a797e17deda0551"
+        'SetCommandID'       = "5ecd8ee2454ad57c2152593a" #Pester - Set-JCCommand
+        'DeployCommandID'    = "5ecd8e3352b7211df60f9646" #Invoke JCDeployment Test
         # Policies
-        'SystemWithPolicyResultID' = "5ec40d537b7ff91360386bc4"
+        'SystemWithPolicyResultID' = "5ecd8b0e40f99e14ac2c66d3"
     }
 }
 
