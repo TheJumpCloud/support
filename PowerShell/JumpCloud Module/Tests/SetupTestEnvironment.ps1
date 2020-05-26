@@ -66,4 +66,5 @@ If ([System.String]::IsNullOrEmpty($CommandResultsExist) -or $CommandResultsExis
 #New-JCCommand -name 'Invoke JCDeployment Test' -commandType linux -command 'echo $One echo $Two' -launchType manual -timeout 0
 #New-JCCommand -name 'Pester - Set-JCCommand' -commandType linux -command 'Not updated command' -launchType trigger -timeout 0 -trigger 'pesterTrigger'
 #assign policy to system
-#
+#bind user 'pester.tester' to jcusergroup 'PesterTest_UserGroup'
+#add 2nd policy named '1 Linux'
