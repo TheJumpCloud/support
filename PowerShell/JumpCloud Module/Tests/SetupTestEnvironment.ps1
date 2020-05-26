@@ -32,7 +32,7 @@ $CommandResultsExist = Get-JCCommandResult
 # If no command results currently exist
 If ([System.String]::IsNullOrEmpty($CommandResultsExist) -or $CommandResultsExist.Count -lt $CommandResultCount)
 {
-    $testCmd = Get-JCCommand | Select-Object -First 1
+    $testCmd = Get-JCCommand | Where-Object { $_.trigger -eq 'GetJCAgentLog' }
     $TriggeredCommand = For ($i = 1; $i -le $CommandResultCount; $i++)
     {
         Invoke-JCCommand -trigger:($testCmd.name)
