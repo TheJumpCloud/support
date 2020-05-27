@@ -1,5 +1,5 @@
 # Install Pester
-Install-Module -Name:('Pester') -RequiredVersion:('3.4.6') -Force -Scope:('CurrentUser') -SkipPublisherCheck
+Install-Module -Name:('Pester') -RequiredVersion:('4.8.0') -Force -Scope:('CurrentUser') -SkipPublisherCheck
 # Import the module
 Import-Module -Name:($ModuleManifestPath) -Force
 #Load private functions
