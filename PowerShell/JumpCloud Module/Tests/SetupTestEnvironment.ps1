@@ -71,3 +71,7 @@ If ([System.String]::IsNullOrEmpty($CommandResultsExist) -or $CommandResultsExis
 #assign policy to system
 #bind user 'pester.tester' to jcusergroup 'PesterTest_UserGroup'
 #add 2nd policy named '1 Linux'
+#pester.tester's first and last name are case sensitive
+#password_never_expires must equal $true for pester.tester
+#allow_public_key must equal $false for pester.tester
+#pester.tester must have some sort of an address
