@@ -2,8 +2,6 @@ Param(
     [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0)][ValidateNotNullOrEmpty()][System.String]$TestOrgAPIKey,
     [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 1)][ValidateNotNullOrEmpty()][System.String]$MultiTenantAPIKey
 )
-# Install Pester
-Install-Module -Name:('Pester') -Force -Scope:('CurrentUser') -SkipPublisherCheck
 $ModuleManifestName = 'JumpCloud.psd1'
 $ModuleManifestPath = "$PSScriptRoot/../$ModuleManifestName"
 $RequiredModules = (Import-LocalizedData -BaseDirectory:("$PSScriptRoot/..") -FileName:($ModuleManifestName)).RequiredModules
@@ -22,6 +20,10 @@ If ($RequiredModules)
         }
     }
 }
+
+# Install Pester
+Install-Module -Name:('Pester') -Force -SkipPublisherCheck
+import-module -Name:('Pester')
 
 Import-Module -Name:($ModuleManifestPath) -Force
 
