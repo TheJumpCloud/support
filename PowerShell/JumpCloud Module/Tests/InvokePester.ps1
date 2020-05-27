@@ -3,6 +3,7 @@ Param(
     [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 1)][ValidateNotNullOrEmpty()][System.String]$MultiTenantAPIKey,
     [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 2)][System.String[]]$ExcludeTagList,
     [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 3)][System.String[]]$IncludeTagList
+
 )
 $ModuleManifestName = 'JumpCloud.psd1'
 $ModuleManifestPath = "$PSScriptRoot/../$ModuleManifestName"
@@ -64,7 +65,7 @@ Else
 $PesterResultsFileXml = $PSScriptRoot + '/Pester.Tests.Results.xml'
 $PesterResultsFileCsv = $PSScriptRoot + '/Pester.Tests.Results.csv'
 #$PesterResults = Invoke-Pester -Script:(@{ Path = $PSScriptRoot; Parameters = $PesterParams; }) -PassThru -Tag:($IncludeTags) -ExcludeTag:($ExcludeTagList) -OutputFormat:('NUnitXml') -OutputFile:($PesterResultsFileXml) ## ToDo: Have pester tests export to file
-$PesterResults = Invoke-pester -script $PSScriptRoot
+$PesterResults = Invoke-pester -script 'c:\test.ps1'
 # $PesterResults.TestResult | Where-Object {$_.Passed -eq $false} | Export-Csv $PesterResultsFileCsv
 $FailedTests = $PesterResults.TestResult | Where-Object { $_.Passed -eq $false }
 If ($FailedTests)
