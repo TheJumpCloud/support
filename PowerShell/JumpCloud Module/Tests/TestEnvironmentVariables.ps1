@@ -65,7 +65,7 @@ if($env:AGENT_OS -eq 'Windows_NT'){
         'SingleTernateOrgId' = '5ebeb8c7de6f1e713e19cfba'
         'MultiTernateOrgId1' = "5b5a13f06fefdb0a29b0d306" #CURRENTLY NOT UNIQUE
         'MultiTernateOrgId2' = "5b5a14d13f852310b1d689b1" #CURRENTLY NOT UNIQUE
-        'SystemID'           = '5ece896d3063492783d0f540' # Enter the System ID for a linux system
+        'SystemID'           = '5ecd8b0e40f99e14ac2c66d3' # Enter the System ID for a linux system
         'SystemId_Windows'   = '5ecd8b313778a13c9bd90eb8'
         'SystemId_Mac'       = '5ecd8a4cdfef2d0a9ec39883'
         'Username'           = 'pester.tester' # Create a user with username 'pester.tester'
