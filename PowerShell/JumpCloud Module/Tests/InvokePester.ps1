@@ -27,9 +27,7 @@ If (!(Get-PackageProvider -Name:('NuGet') -ErrorAction:('SilentlyContinue')))
 {
     Install-PackageProvider NuGet -ForceBootstrap -Force | Out-Null
 }
-# Load config and helper files
-. ($PSScriptRoot + '/HelperFunctions.ps1')
-. ($PSScriptRoot + '/TestEnvironmentVariables.ps1')
+
 # Get list of tags and validate that tags have been applied
 $PesterTests = Get-ChildItem -Path:($PSScriptRoot + '/*.Tests.ps1') -Recurse
 $Tags = ForEach ($PesterTest In $PesterTests)
