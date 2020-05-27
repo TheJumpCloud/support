@@ -21,6 +21,8 @@ If ($RequiredModules)
     }
 }
 Import-Module -Name:($ModuleManifestPath) -Force
+#Load Test Environemt Variables
+. ($PSScriptRoot + '/TestEnvironmentVariables.ps1')
 
 Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
 #Setup COMMANDS
