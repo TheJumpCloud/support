@@ -194,7 +194,7 @@ Describe -Tag:('JCUser') "Get-JCUser 1.4" {
 
     It "Searches for a JumpCloud user using username, filterDateProperty created and before" {
 
-        $PesterUser = Get-JCUser -username $PesterParams.Username -filterDateProperty created -dateFilter before -date '1/3/2018'
+        $PesterUser = Get-JCUser -username $PesterParams.Username -filterDateProperty created -dateFilter before -date '6/3/2020'
         $PesterUser.username | Should -be $PesterParams.Username
 
     }
