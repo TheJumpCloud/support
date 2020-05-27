@@ -1,17 +1,17 @@
 #### Latest Version
 
 ```
-1.17.1
+1.17.3
 ```
 
 #### Banner Current
 
 ```
-New function Get-JCEvent allows for the search and retrieval of JumpCloud Directory Insights data.
+{{Fill in the Banner Current}}
 ```
 
 #### Banner Old
 
 ```
-New function Get-JCEvent allows for the search and retrieval of JumpCloud Directory Insights data.
+{{Fill in the Banner Old}}
 ```
