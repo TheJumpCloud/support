@@ -2,7 +2,6 @@ Param(
     [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0)][ValidateNotNullOrEmpty()][System.String]$TestOrgAPIKey,
     [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 1)][ValidateNotNullOrEmpty()][System.String]$MultiTenantAPIKey
 )
-
 $ModuleManifestName = 'JumpCloud.psd1'
 $ModuleManifestPath = "$PSScriptRoot/../$ModuleManifestName"
 $RequiredModules = (Import-LocalizedData -BaseDirectory:("$PSScriptRoot/..") -FileName:($ModuleManifestName)).RequiredModules
@@ -21,7 +20,6 @@ If ($RequiredModules)
         }
     }
 }
-
 Import-Module -Name:($ModuleManifestPath) -Force
 
 Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
@@ -33,6 +31,7 @@ $CommandResultsExist = Get-JCCommandResult
 If ([System.String]::IsNullOrEmpty($CommandResultsExist) -or $CommandResultsExist.Count -lt $CommandResultCount)
 {
     $testCmd = Get-JCCommand | Where-Object { $_.trigger -eq 'GetJCAgentLog' }
+    Add-JCCommandTarget -CommandID $testCmd.id -SystemID $PesterParams.SystemID
     $TriggeredCommand = For ($i = 1; $i -le $CommandResultCount; $i++)
     {
         Invoke-JCCommand -trigger:($testCmd.name)
@@ -41,6 +40,7 @@ If ([System.String]::IsNullOrEmpty($CommandResultsExist) -or $CommandResultsExis
     {
         Start-Sleep -Seconds:(1)
     }
+    Remove-JCCommandTarget -CommandID $testCmd.id -SystemID $PesterParams.SystemID
 }
 
 #New-JCCommand -name 'Invoke - Pester One Variable' -commandType linux -command 'echo $One' -launchType trigger -timeout 0 -trigger 'onetrigger'
