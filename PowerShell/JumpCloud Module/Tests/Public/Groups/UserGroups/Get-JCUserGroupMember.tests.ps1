@@ -3,7 +3,7 @@ Describe -Tag:('JCUserGroupMember') 'Get-JCUserGroupMember 1.0' {
     Add-JCUserGroupMember -GroupName $PesterParams.UserGroupName -Username $PesterParams.Username
     It 'Gets a User Groups membership by Groupname' {
         $UserGroupMembers = Get-JCUserGroupMember -GroupName $PesterParams.UserGroupName
-        $UserGroupMembers.id.Count | Should -BeGreaterThan 0
+        $UserGroupMembers.UserID.Count | Should -BeGreaterThan 0
     }
 
     It 'Gets a User Groups membership -ByID' {
