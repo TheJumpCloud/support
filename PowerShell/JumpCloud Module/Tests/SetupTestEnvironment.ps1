@@ -23,7 +23,8 @@ If ($RequiredModules)
 Import-Module -Name:($ModuleManifestPath) -Force
 
 # Install Pester
-Install-Module -Name:('Pester') -Force -SkipPublisherCheck
+Install-Module -Name Pester -RequiredVersion 4.2.0 -force -SkipPublisherCheck
+#Install-Module -Name:('Pester') -Force -SkipPublisherCheck
 import-module -Name:('Pester')
 get-installedmodule
 
