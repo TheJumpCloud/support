@@ -1234,24 +1234,24 @@ Describe -Tag:('JCUser') "Set-JCUser bug fix 1.10.2" {
         $CreateUser = New-RandomUser -domain "deleteme" | New-JCUser -home_poBox "myhome"
         $NewUser = $CreateUser | Set-JCUser -home_poBox "yourHome"
         $NewUser.addresses | Where-Object type -EQ home | Select-Object -ExpandProperty poBox | Should -Be "yourHome"
-        $NullCheck = Get-JCUser $CreateUser.username | ConvertTo-Json -Depth 5 | Select-String null
-        $NullCheck | Should -BeNullOrEmpty
+        #$NullCheck = Get-JCUser $CreateUser.username | ConvertTo-Json -Depth 5 | Select-String null
+        #$NullCheck | Should -BeNullOrEmpty
         $Newuser | Remove-JCUser -ByID -force
     }
     It "Updates a users work poBox" {
         $CreateUser = New-RandomUser -domain "deleteme" | New-JCUser -work_poBox "mywork"
         $NewUser = $CreateUser | Set-JCUser -work_poBox "yourwork"
         $NewUser.addresses | Where-Object type -EQ work | Select-Object -ExpandProperty poBox | Should -Be "yourwork"
-        $NullCheck = Get-JCUser $CreateUser.username | ConvertTo-Json -Depth 5 | Select-String null
-        $NullCheck | Should -BeNullOrEmpty
+        #$NullCheck = Get-JCUser $CreateUser.username | ConvertTo-Json -Depth 5 | Select-String null
+        #$NullCheck | Should -BeNullOrEmpty
         $Newuser | Remove-JCUser -ByID -force
     }
     It "Updates a mobile_number" {
         $CreateUser = New-RandomUser -domain "deleteme" | New-JCUser -mobile_number "mobile1"
         $NewUser = $CreateUser | Set-JCUser -mobile_number "mobile2"
         $NewUser.phoneNumbers | Where-Object type -EQ mobile | Select-Object -ExpandProperty number | Should -Be "mobile2"
-        $NullCheck = Get-JCUser $CreateUser.username | ConvertTo-Json -Depth 5 | Select-String null
-        $NullCheck | Should -BeNullOrEmpty
+        #$NullCheck = Get-JCUser $CreateUser.username | ConvertTo-Json -Depth 5 | Select-String null
+        #$NullCheck | Should -BeNullOrEmpty
         $Newuser | Remove-JCUser -ByID -force
     }
     It "Updates a users home poBox and work poBox" {
@@ -1260,8 +1260,8 @@ Describe -Tag:('JCUser') "Set-JCUser bug fix 1.10.2" {
         $NewUser.addresses | Where-Object type -EQ home | Select-Object -ExpandProperty poBox | Should -Be "yourHome"
         $NewUser = $CreateUser | Set-JCUser -work_poBox "yourwork"
         $NewUser.addresses | Where-Object type -EQ work | Select-Object -ExpandProperty poBox | Should -Be "yourwork"
-        $NullCheck = Get-JCUser $CreateUser.username | ConvertTo-Json -Depth 5 | Select-String null
-        $NullCheck | Should -BeNullOrEmpty
+        #$NullCheck = Get-JCUser $CreateUser.username | ConvertTo-Json -Depth 5 | Select-String null
+        #$NullCheck | Should -BeNullOrEmpty
         $Newuser | Remove-JCUser -ByID -force
     }
     It "Updates a mobile_number and work_number" {
@@ -1270,8 +1270,8 @@ Describe -Tag:('JCUser') "Set-JCUser bug fix 1.10.2" {
         $NewUser.phoneNumbers | Where-Object type -EQ mobile | Select-Object -ExpandProperty number | Should -Be "mobile2"
         $NewUser = $CreateUser | Set-JCUser -work_number "work2"
         $NewUser.phoneNumbers | Where-Object type -EQ work | Select-Object -ExpandProperty number | Should -Be "work2"
-        $NullCheck = Get-JCUser $CreateUser.username | ConvertTo-Json -Depth 5 | Select-String null
-        $NullCheck | Should -BeNullOrEmpty
+        #$NullCheck = Get-JCUser $CreateUser.username | ConvertTo-Json -Depth 5 | Select-String null
+        #$NullCheck | Should -BeNullOrEmpty
         $Newuser | Remove-JCUser -ByID -force
     }
 }
