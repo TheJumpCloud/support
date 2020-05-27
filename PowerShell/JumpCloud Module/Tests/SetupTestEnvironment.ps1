@@ -24,6 +24,7 @@ If ($RequiredModules)
 # Install Pester
 Install-Module -Name:('Pester') -Force -SkipPublisherCheck
 import-module -Name:('Pester')
+get-installedmodule
 
 Import-Module -Name:($ModuleManifestPath) -Force
 
