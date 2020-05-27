@@ -6,7 +6,7 @@ Param(
 )
 $ModuleManifestName = 'JumpCloud.psd1'
 $ModuleManifestPath = "$PSScriptRoot/../$ModuleManifestName"
-get-installedmodule #debug
+Install-Module -Name Pester
 $RequiredModules = (Import-LocalizedData -BaseDirectory:("$PSScriptRoot/..") -FileName:($ModuleManifestName)).RequiredModules
 If ($RequiredModules)
 {
