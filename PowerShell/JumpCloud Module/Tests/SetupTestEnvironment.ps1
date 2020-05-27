@@ -23,9 +23,12 @@ If ($RequiredModules)
 Import-Module -Name:($ModuleManifestPath) -Force
 
 # Install Pester
-Install-Module -Name Pester -RequiredVersion 3.4.6 -force -SkipPublisherCheck
-import-module -Name:('Pester')
-get-installedmodule
+Install-Module -Name:('Pester') -Force -SkipPublisherCheck
+Import-Module -Name:('Pester')
+Write-Host "Getting Installed Modules:"
+Get-InstalledModule
+Write-Host "Getting Imported Modules"
+Get-Module
 
 Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
 #Setup COMMANDS
