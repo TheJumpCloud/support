@@ -9,8 +9,8 @@ if($env:AGENT_OS -eq 'Windows_NT'){
     $PesterParams = @{
         # Specific to MTP portal
         'SingleTernateOrgId' = '5a4bff7ab17d0c9f63bcd277'
-        'MultiTernateOrgId1' = "5b5a13f06fefdb0a29b0d306"
-        'MultiTernateOrgId2' = "5b5a14d13f852310b1d689b1"
+        'MultiTernateOrgId1' = "5d2f6ff0e7aad925fc317577"
+        'MultiTernateOrgId2' = "5d2f6ffd8910770b8545756a"
         'SystemID'           = '5e4c67d7933afe1cd17a6583' # Enter the System ID for a linux system
         'SystemId_Windows'   = '5d24be43c9448f245effa736'
         'SystemId_Mac'       = '5d24af30e72dab44aee39426'
@@ -36,8 +36,8 @@ if($env:AGENT_OS -eq 'Windows_NT'){
     $PesterParams = @{
         # Specific to MTP portal
         'SingleTernateOrgId' = '5eb2ebea87b5ba160c16857a'
-        'MultiTernateOrgId1' = "5b5a13f06fefdb0a29b0d306" #CURRENTLY NOT UNIQUE
-        'MultiTernateOrgId2' = "5b5a14d13f852310b1d689b1" #CURRENTLY NOT UNIQUE
+        'MultiTernateOrgId1' = "5d2f7011f3b0a039b65f4e8b" 
+        'MultiTernateOrgId2' = "5d2f701be7aad925fc317667" 
         'SystemID'           = '5ece896d3063492783d0f540' # Enter the System ID for a linux system
         'SystemId_Windows'   = '5ec300ed58c6c807bbde5712'
         'SystemId_Mac'       = '5ec3f0ad518f1814e2b1aee5'
@@ -63,8 +63,8 @@ if($env:AGENT_OS -eq 'Windows_NT'){
     $PesterParams = @{
         # Specific to MTP portal
         'SingleTernateOrgId' = '5ebeb8c7de6f1e713e19cfba'
-        'MultiTernateOrgId1' = "5b5a13f06fefdb0a29b0d306" #CURRENTLY NOT UNIQUE
-        'MultiTernateOrgId2' = "5b5a14d13f852310b1d689b1" #CURRENTLY NOT UNIQUE
+        'MultiTernateOrgId1' = "5d2f7024f0e1526be4df38e7" 
+        'MultiTernateOrgId2' = "5d35e14eb90ad46e65ba0739" 
         'SystemID'           = '5ece89f65723050e98242113' # Enter the System ID for a linux system
         'SystemId_Windows'   = '5ecd8b313778a13c9bd90eb8'
         'SystemId_Mac'       = '5ecd8a4cdfef2d0a9ec39883'
