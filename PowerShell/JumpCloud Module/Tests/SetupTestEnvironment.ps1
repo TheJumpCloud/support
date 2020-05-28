@@ -28,6 +28,20 @@ Import-Module -Name:($ModuleManifestPath) -Force
 Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
 #Setup COMMANDS
 
+#Clear previous pester objects
+Get-JCUser | Set-JCUser -externally_managed $false
+Get-JCUser -lastname Test | Remove-JCUser -force
+
+$removeGroups = Get-JCGroup | Where-Object { @("one", "two", "three", "four", "five", "six", "PesterTest_UserGroup", "PesterTest_SystemGroup") -notcontains $_.name }
+
+ foreach ($group in $removeGroups) {
+     if ($group.type -eq "system_group") {
+         Remove-JCSystemGroup -GroupName $group.name -force
+    } elseif ($group.type -eq "user_group") {
+         Remove-JCUserGroup -GroupName $group.name -force
+    }
+}
+
 $CommandResultCount = 10
 $CommandResultsExist = Get-JCCommandResult
 # If no command results currently exist
@@ -45,33 +59,3 @@ If ([System.String]::IsNullOrEmpty($CommandResultsExist) -or $CommandResultsExis
     }
     Remove-JCCommandTarget -CommandID $testCmd.id -SystemID $PesterParams.SystemID
 }
-
-#New-JCCommand -name 'Invoke - Pester One Variable' -commandType linux -command 'echo $One' -launchType trigger -timeout 0 -trigger 'onetrigger'
-#New-JCCommand -name 'Invoke - Pester Two Variable' -commandType linux -command 'echo $Two' -launchType trigger -timeout 0 -trigger 'twotrigger'
-#New-JCCommand -name 'Invoke - Pester Three Variable' -commandType linux -command 'echo $Three' -launchType trigger -timeout 0 -trigger 'threetrigger'
-#New-JCCommand -name 'GetJCAgentLog' -commandType linux -command 'cat /opt/jc/*.log' -launchType trigger -timeout 120 -trigger 'GetJCAgentLog'
-
-#create cmd with trigger same as name
-#associate
-
-#create PesterTest_SystemGroup
-#associate group to cmd
-#associate system to cmd
-
-#LINUX pester3 STEPS
-#added win system
-#added mac system
-#added linux system
-#New-JCUser -firstname 'pester' -lastname 'tester' -username 'pester.tester' -email 'pester.tester@pester3.jumpcloud.com'
-#New-JCSystemGroup -GroupName 'PesterTest_SystemGroup'
-#New-JCCommand -name 'GetJCAgentLog' -commandType linux -command 'cat /opt/jc/*.log' -launchType trigger -timeout 120 -trigger 'GetJCAgentLog'
-#added radius server named 'PesterTest_RadiusServer'
-#New-JCCommand -name 'Invoke JCDeployment Test' -commandType linux -command 'echo $One echo $Two' -launchType manual -timeout 0
-#New-JCCommand -name 'Pester - Set-JCCommand' -commandType linux -command 'Not updated command' -launchType trigger -timeout 0 -trigger 'pesterTrigger'
-#assign policy to system
-#bind user 'pester.tester' to jcusergroup 'PesterTest_UserGroup'
-#add 2nd policy named '1 Linux'
-#pester.tester's first and last name are case sensitive
-#password_never_expires must equal $true for pester.tester
-#allow_public_key must equal $false for pester.tester
-#pester.tester must have some sort of an address
