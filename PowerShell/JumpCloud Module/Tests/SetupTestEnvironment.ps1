@@ -32,9 +32,6 @@ Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
 Get-JCUser | Set-JCUser -externally_managed $false
 Get-JCUser -lastname Test | Remove-JCUser -force
 
-#Add pester.tester to group
-Add-JCUserGroupMember -GroupName 'PesterTest_UserGroup' -Username 'pester.tester'
-
 $removeGroups = Get-JCGroup | Where-Object { @("one", "two", "three", "four", "five", "six", "PesterTest_UserGroup", "PesterTest_SystemGroup") -notcontains $_.name }
 
  foreach ($group in $removeGroups) {
