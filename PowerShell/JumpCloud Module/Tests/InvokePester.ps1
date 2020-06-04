@@ -63,7 +63,8 @@ Else
 # Run Pester tests
 $PesterResultsFileXml = $PSScriptRoot + '/Pester.Tests.Results.xml'
 $PesterResultsFileCsv = $PSScriptRoot + '/Pester.Tests.Results.csv'
-$PesterResults = Invoke-Pester -Script:(@{ Path = $PSScriptRoot; Parameters = $PesterParams; }) -PassThru -Tag:($IncludeTags) -ExcludeTag:($ExcludeTagList) -OutputFormat:('NUnitXml') -OutputFile:($PesterResultsFileXml) ## ToDo: Have pester tests export to file
+#$PesterResults = Invoke-Pester -Script:(@{ Path = $PSScriptRoot; Parameters = $PesterParams; }) -PassThru -Tag:($IncludeTags) -ExcludeTag:($ExcludeTagList) -OutputFormat:('NUnitXml') -OutputFile:($PesterResultsFileXml) ## ToDo: Have pester tests export to file
+$PesterResults = Invoke-Pester -Script ($PSScriptRoot)  -PassThru -Tag:($IncludeTags) -ExcludeTag:($ExcludeTagList) -OutputFormat:('NUnitXml') -OutputFile:($PesterResultsFileXml) ## ToDo: Have pester tests export to file
 # $PesterResults.TestResult | Where-Object {$_.Passed -eq $false} | Export-Csv $PesterResultsFileCsv
 $FailedTests = $PesterResults.TestResult | Where-Object { $_.Passed -eq $false }
 If ($FailedTests)
