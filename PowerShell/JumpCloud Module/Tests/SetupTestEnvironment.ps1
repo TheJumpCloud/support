@@ -24,12 +24,12 @@ Import-Module -Name:($ModuleManifestPath) -Force
 # Load config and helper files
 . ($PSScriptRoot + '/HelperFunctions.ps1')
 . ($PSScriptRoot + '/TestEnvironmentVariables.ps1')
-
+$TestOrgAPIKey = '623e0cd5f73c26ad5f28a330bbb40350ee527a69'
 Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
 #Setup COMMANDS
 
 #Clear previous pester objects
-Get-JCUser | Set-JCUser -externally_managed $false
+Get-JCUser -lastname Test | Set-JCUser -externally_managed $false
 Get-JCUser -lastname Test | Remove-JCUser -force
 
 $removeGroups = Get-JCGroup | Where-Object { @("one", "two", "three", "four", "five", "six", "PesterTest_UserGroup", "PesterTest_SystemGroup") -notcontains $_.name }
