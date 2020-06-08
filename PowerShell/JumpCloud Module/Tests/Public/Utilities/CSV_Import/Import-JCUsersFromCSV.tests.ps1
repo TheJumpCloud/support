@@ -9,7 +9,7 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $User = Get-JCUser -Username 'a.user' | Where-Object Username -EQ 'a.user'
 
-        $User.activated | Should be $true
+        $User.activated | Should -Be true
 
     }
 
@@ -18,20 +18,20 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
         $User = Get-JCUser -Username 'ia.user' | Where-Object Username -EQ 'ia.user'
 
 
-        $User.activated | Should be $false
+        $User.activated | Should -Be false
     }
 
     It "Verifies a.bound.std user" {
 
         $User = Get-JCUser -Username 'a.bound.std' | Where-Object Username -EQ 'a.bound.std'
 
-        $User.activated | Should be $true
+        $User.activated | Should -Be true
 
         $Bound = Get-JCSystemUser -SystemID $PesterParams_SystemID | Where-Object username -EQ 'a.bound.std'
 
-        $Bound.DirectBind | Should Be $true
+        $Bound.DirectBind | Should -Be true
 
-        $Bound.Administrator | Should Be $false
+        $Bound.Administrator | Should -Be false
 
     }
 
@@ -39,13 +39,13 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $User = Get-JCUser -Username 'a.bound.true1' | Where-Object username -EQ 'a.bound.true1'
 
-        $User.activated | Should be $true
+        $User.activated | Should -Be true
 
         $Bound = Get-JCSystemUser -SystemID $PesterParams_SystemID | Where-Object username -EQ 'a.bound.true1'
 
-        $Bound.DirectBind | Should Be $true
+        $Bound.DirectBind | Should -Be true
 
-        $Bound.Administrator | Should Be $true
+        $Bound.Administrator | Should -Be true
 
     }
 
@@ -53,13 +53,13 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $User = Get-JCUser -Username 'a.bound.false1' | Where-Object username -EQ 'a.bound.false1'
 
-        $User.activated | Should be $true
+        $User.activated | Should -Be true
 
         $Bound = Get-JCSystemUser -SystemID $PesterParams_SystemID | Where-Object username -EQ 'a.bound.false1'
 
-        $Bound.DirectBind | Should Be $true
+        $Bound.DirectBind | Should -Be true
 
-        $Bound.Administrator | Should Be $false
+        $Bound.Administrator | Should -Be false
 
     }
 
@@ -67,13 +67,13 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $User = Get-JCUser -Username 'a.bound.true2' | Where-Object username -EQ 'a.bound.true2'
 
-        $User.activated | Should be $true
+        $User.activated | Should -Be true
 
         $Bound = Get-JCSystemUser -SystemID $PesterParams_SystemID | Where-Object username -EQ 'a.bound.true2'
 
-        $Bound.DirectBind | Should Be $true
+        $Bound.DirectBind | Should -Be true
 
-        $Bound.Administrator | Should Be $true
+        $Bound.Administrator | Should -Be true
 
     }
 
@@ -81,13 +81,13 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $User = Get-JCUser -Username 'a.bound.false2' | Where-Object username -EQ 'a.bound.false2'
 
-        $User.activated | Should be $true
+        $User.activated | Should -Be true
 
         $Bound = Get-JCSystemUser -SystemID $PesterParams_SystemID | Where-Object username -EQ 'a.bound.false2'
 
-        $Bound.DirectBind | Should Be $true
+        $Bound.DirectBind | Should -Be true
 
-        $Bound.Administrator | Should Be $false
+        $Bound.Administrator | Should -Be false
 
     }
 
@@ -95,13 +95,13 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $User = Get-JCUser -Username 'ia.bound.std' | Where-Object username -EQ 'ia.bound.std'
 
-        $User.activated | Should be $false
+        $User.activated | Should -Be false
 
         $Bound = Get-JCSystemUser -SystemID $PesterParams_SystemID | Where-Object username -EQ 'ia.bound.std'
 
-        $Bound.DirectBind | Should Be $true
+        $Bound.DirectBind | Should -Be true
 
-        $Bound.Administrator | Should Be $false
+        $Bound.Administrator | Should -Be false
 
     }
 
@@ -109,13 +109,13 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $User = Get-JCUser -Username 'ia.bound.true1' | Where-Object username -EQ 'ia.bound.true1'
 
-        $User.activated | Should be $false
+        $User.activated | Should -Be false
 
         $Bound = Get-JCSystemUser -SystemID $PesterParams_SystemID | Where-Object username -EQ 'ia.bound.true1'
 
-        $Bound.DirectBind | Should Be $true
+        $Bound.DirectBind | Should -Be true
 
-        $Bound.Administrator | Should Be $true
+        $Bound.Administrator | Should -Be true
 
     }
 
@@ -123,13 +123,13 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $User = Get-JCUser -Username 'ia.bound.false1' | Where-Object username -EQ 'ia.bound.false1'
 
-        $User.activated | Should be $false
+        $User.activated | Should -Be false
 
         $Bound = Get-JCSystemUser -SystemID $PesterParams_SystemID | Where-Object username -EQ 'ia.bound.false1'
 
-        $Bound.DirectBind | Should Be $true
+        $Bound.DirectBind | Should -Be true
 
-        $Bound.Administrator | Should Be $false
+        $Bound.Administrator | Should -Be false
 
     }
 
@@ -137,13 +137,13 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $User = Get-JCUser -Username 'ia.bound.true2'
 
-        $User.activated | Should be $false
+        $User.activated | Should -Be false
 
         $Bound = Get-JCSystemUser -SystemID $PesterParams_SystemID | Where-Object username -EQ 'ia.bound.true2'
 
-        $Bound.DirectBind | Should Be $true
+        $Bound.DirectBind | Should -Be true
 
-        $Bound.Administrator | Should Be $true
+        $Bound.Administrator | Should -Be true
 
     }
 
@@ -151,13 +151,13 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $User = Get-JCUser -Username 'ia.bound.false2' | Where-Object username -EQ 'ia.bound.false2'
 
-        $User.activated | Should be $false
+        $User.activated | Should -Be false
 
         $Bound = Get-JCSystemUser -SystemID $PesterParams_SystemID | Where-Object username -EQ 'ia.bound.false2'
 
-        $Bound.DirectBind | Should Be $true
+        $Bound.DirectBind | Should -Be true
 
-        $Bound.Administrator | Should Be $false
+        $Bound.Administrator | Should -Be false
 
     }
 
@@ -165,11 +165,11 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $User = Get-JCUser -Username 'a.1group' | Where-Object username -EQ 'a.1group'
 
-        $User.activated | Should be $true
+        $User.activated | Should -Be true
 
         $Groups = Get-JCAssociation -Type:('user') -Id:($User.id) -TargetType:('user_group')
 
-        $Groups.count | Should Be 1
+        $Groups.count | Should -Be 
 
     }
 
@@ -177,11 +177,11 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $User = Get-JCUser -Username 'ia.1group' | Where-Object username -EQ 'ia.1group'
 
-        $User.activated | Should be $false
+        $User.activated | Should -Be false
 
         $Groups = Get-JCAssociation -Type:('user') -Id:($User.id) -TargetType:('user_group')
 
-        $Groups.count | Should Be 1
+        $Groups.count | Should -Be 
 
     }
 
@@ -189,11 +189,11 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $User = Get-JCUser -Username 'a.2group' | Where-Object Username -EQ 'a.2group'
 
-        $User.activated | Should be $true
+        $User.activated | Should -Be true
 
         $Groups = Get-JCAssociation -Type:('user') -Id:($User.id) -TargetType:('user_group')
 
-        $Groups.count | Should Be 2
+        $Groups.count | Should -Be 
 
     }
 
@@ -201,11 +201,11 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $User = Get-JCUser -Username 'ia.2group' | Where-Object username -EQ 'ia.2group'
 
-        $User.activated | Should be $false
+        $User.activated | Should -Be false
 
         $Groups = Get-JCAssociation -Type:('user') -Id:($User.id) -TargetType:('user_group')
 
-        $Groups.count | Should Be 2
+        $Groups.count | Should -Be 
 
     }
 
@@ -213,11 +213,11 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $User = Get-JCUser -Username 'a.5group' | Where-Object username -EQ 'a.5group'
 
-        $User.activated | Should be $true
+        $User.activated | Should -Be true
 
         $Groups = Get-JCAssociation -Type:('user') -Id:($User.id) -TargetType:('user_group')
 
-        $Groups.count | Should Be 5
+        $Groups.count | Should -Be 
 
     }
 
@@ -225,11 +225,11 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $User = Get-JCUser -Username 'ia.5group' | Where-Object Username -EQ 'ia.5group'
 
-        $User.activated | Should be $false
+        $User.activated | Should -Be false
 
         $Groups = Get-JCAssociation -Type:('user') -Id:($User.id) -TargetType:('user_group')
 
-        $Groups.count | Should Be 5
+        $Groups.count | Should -Be 
 
     }
 
@@ -237,9 +237,9 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $User = Get-JCUser -Username 'a.1attr'
 
-        $User.activated | Should be $true
+        $User.activated | Should -Be true
 
-        $User.attributes.count | Should Be 1
+        $User.attributes.count | Should -Be 
 
     }
 
@@ -247,9 +247,9 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $User = Get-JCUser -Username 'ia.1attr'
 
-        $User.activated | Should be $false
+        $User.activated | Should -Be false
 
-        $User.attributes.count | Should Be 1
+        $User.attributes.count | Should -Be 
 
     }
 
@@ -257,9 +257,9 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $User = Get-JCUser -Username 'a.2attr' | Where-Object username -EQ 'a.2attr'
 
-        $User.activated | Should be $true
+        $User.activated | Should -Be true
 
-        $User.attributes.count | Should Be 2
+        $User.attributes.count | Should -Be 
 
     }
 
@@ -267,10 +267,10 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $User = Get-JCUser -Username 'ia.2attr' | Where-Object username -EQ 'ia.2attr'
 
-        $User.activated | Should be $false
+        $User.activated | Should -Be false
 
 
-        $User.attributes.count | Should Be 2
+        $User.attributes.count | Should -Be 
 
     }
 
@@ -278,9 +278,9 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $User = Get-JCUser -Username 'a.5attr' | Where-Object username -EQ 'a.5attr'
 
-        $User.activated | Should be $true
+        $User.activated | Should -Be true
 
-        $User.attributes.count | Should Be 5
+        $User.attributes.count | Should -Be 
 
     }
 
@@ -288,10 +288,10 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $User = Get-JCUser -Username 'ia.5attr' | Where-Object username -EQ 'ia.5attr'
 
-        $User.activated | Should be $false
+        $User.activated | Should -Be false
 
 
-        $User.attributes.count | Should Be 5
+        $User.attributes.count | Should -Be 
 
     }
 
@@ -299,19 +299,19 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $User = Get-JCUser -Username 'a.all' | Where-Object username -EQ 'a.all'
 
-        $User.activated | Should be $true
+        $User.activated | Should -Be true
 
-        $User.attributes.count | Should Be 5
+        $User.attributes.count | Should -Be 
 
         $Groups = Get-JCAssociation -Type:('user') -Id:($User.id) -TargetType:('user_group')
 
-        $Groups.count | Should Be 5
+        $Groups.count | Should -Be 
 
         $Bound = Get-JCSystemUser -SystemID $PesterParams_SystemID | Where-Object username -EQ 'a.all'
 
-        $Bound.DirectBind | Should Be $true
+        $Bound.DirectBind | Should -Be true
 
-        $Bound.Administrator | Should Be $true
+        $Bound.Administrator | Should -Be true
 
     }
 
@@ -319,19 +319,19 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $User = Get-JCUser -Username 'ia.all' | Where-Object username -EQ 'ia.all'
 
-        $User.activated | Should be $false
+        $User.activated | Should -Be false
 
-        $User.attributes.count | Should Be 5
+        $User.attributes.count | Should -Be 
 
         $Groups = Get-JCAssociation -Type:('user') -Id:($User.id) -TargetType:('user_group')
 
-        $Groups.count | Should Be 5
+        $Groups.count | Should -Be 
 
         $Bound = Get-JCSystemUser -SystemID $PesterParams_SystemID | Where-Object username -EQ 'ia.all'
 
-        $Bound.DirectBind | Should Be $true
+        $Bound.DirectBind | Should -Be true
 
-        $Bound.Administrator | Should Be $true
+        $Bound.Administrator | Should -Be true
 
 
     }
@@ -349,11 +349,11 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
             $NewUserInfo = Get-JCUser -username $User.username
             $ImportCheck = $UserImportInfo | Where-Object Username -EQ "$($User.username)"
 
-            $ImportCheck.mobile_number | Should -be $($NewUserInfo.phoneNumbers | Where-Object type -eq mobile | Select-Object -ExpandProperty number)
-            $ImportCheck.home_number | Should -be $($NewUserInfo.phoneNumbers | Where-Object type -eq home | Select-Object -ExpandProperty number)
-            $ImportCheck.work_number | Should -be $($NewUserInfo.phoneNumbers | Where-Object type -eq work | Select-Object -ExpandProperty number)
-            $ImportCheck.work_mobile_number | Should -be $($NewUserInfo.phoneNumbers | Where-Object type -eq work_mobile | Select-Object -ExpandProperty number)
-            $ImportCheck.work_fax_number | Should -be $($NewUserInfo.phoneNumbers | Where-Object type -eq work_fax | Select-Object -ExpandProperty number)
+            $ImportCheck.mobile_number | Should -Be $($NewUserInfo.phoneNumbers | Where-Object type -eq mobile | Select-Object -ExpandProperty number)
+            $ImportCheck.home_number | Should -Be $($NewUserInfo.phoneNumbers | Where-Object type -eq home | Select-Object -ExpandProperty number)
+            $ImportCheck.work_number | Should -Be $($NewUserInfo.phoneNumbers | Where-Object type -eq work | Select-Object -ExpandProperty number)
+            $ImportCheck.work_mobile_number | Should -Be $($NewUserInfo.phoneNumbers | Where-Object type -eq work_mobile | Select-Object -ExpandProperty number)
+            $ImportCheck.work_fax_number | Should -Be $($NewUserInfo.phoneNumbers | Where-Object type -eq work_fax | Select-Object -ExpandProperty number)
         }
 
         Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
@@ -371,16 +371,16 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
             $NewUserInfo = Get-JCUser -username $User.username
             $ImportCheck = $UserImportInfo | Where-Object Username -EQ "$($User.username)"
 
-            $ImportCheck.MiddleName | Should -be $NewUserInfo.middleName
-            $ImportCheck.preferredName | Should -be $NewUserInfo.displayname
-            $ImportCheck.jobTitle | Should -be $NewUserInfo.jobTitle
-            $ImportCheck.employeeIdentifier | Should -be $NewUserInfo.employeeIdentifier
-            $ImportCheck.department | Should -be $NewUserInfo.department
-            $ImportCheck.costCenter | Should -be $NewUserInfo.costCenter
-            $ImportCheck.company | Should -be $NewUserInfo.company
-            $ImportCheck.employeeType | Should -be $NewUserInfo.employeeType
-            $ImportCheck.decription | Should -be $NewUserInfo.decription
-            $ImportCheck.location | Should -be $NewUserInfo.location
+            $ImportCheck.MiddleName | Should -Be $NewUserInfo.middleName
+            $ImportCheck.preferredName | Should -Be $NewUserInfo.displayname
+            $ImportCheck.jobTitle | Should -Be $NewUserInfo.jobTitle
+            $ImportCheck.employeeIdentifier | Should -Be $NewUserInfo.employeeIdentifier
+            $ImportCheck.department | Should -Be $NewUserInfo.department
+            $ImportCheck.costCenter | Should -Be $NewUserInfo.costCenter
+            $ImportCheck.company | Should -Be $NewUserInfo.company
+            $ImportCheck.employeeType | Should -Be $NewUserInfo.employeeType
+            $ImportCheck.decription | Should -Be $NewUserInfo.decription
+            $ImportCheck.location | Should -Be $NewUserInfo.location
 
         }
 
@@ -398,19 +398,19 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
             $NewUserInfo = Get-JCUser -username $User.username
             $ImportCheck = $UserImportInfo | Where-Object Username -EQ "$($User.username)"
 
-            $ImportCheck.home_streetAddress | Should -be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty streetAddress)
-            $ImportCheck.home_poBox | Should -be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty poBox)
-            $ImportCheck.home_city | Should -be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty locality)
-            $ImportCheck.home_state | Should -be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty region)
-            $ImportCheck.home_postalCode | Should -be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty postalCode)
-            $ImportCheck.home_country | Should -be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty country)
+            $ImportCheck.home_streetAddress | Should -Be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty streetAddress)
+            $ImportCheck.home_poBox | Should -Be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty poBox)
+            $ImportCheck.home_city | Should -Be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty locality)
+            $ImportCheck.home_state | Should -Be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty region)
+            $ImportCheck.home_postalCode | Should -Be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty postalCode)
+            $ImportCheck.home_country | Should -Be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty country)
 
-            $ImportCheck.work_streetAddress | Should -be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty streetAddress)
-            $ImportCheck.work_poBox | Should -be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty poBox)
-            $ImportCheck.work_city | Should -be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty locality)
-            $ImportCheck.work_state | Should -be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty region)
-            $ImportCheck.work_postalCode | Should -be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty postalCode)
-            $ImportCheck.work_country | Should -be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty country)
+            $ImportCheck.work_streetAddress | Should -Be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty streetAddress)
+            $ImportCheck.work_poBox | Should -Be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty poBox)
+            $ImportCheck.work_city | Should -Be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty locality)
+            $ImportCheck.work_state | Should -Be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty region)
+            $ImportCheck.work_postalCode | Should -Be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty postalCode)
+            $ImportCheck.work_country | Should -Be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty country)
 
         }
         Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
@@ -426,36 +426,36 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
             $NewUserInfo = Get-JCUser -username $User.username
             $ImportCheck = $UserImportInfo | Where-Object Username -EQ "$($User.username)"
 
-            $ImportCheck.MiddleName | Should -be $NewUserInfo.middleName
-            $ImportCheck.preferredName | Should -be $NewUserInfo.displayname
-            $ImportCheck.jobTitle | Should -be $NewUserInfo.jobTitle
-            $ImportCheck.employeeIdentifier | Should -be $NewUserInfo.employeeIdentifier
-            $ImportCheck.department | Should -be $NewUserInfo.department
-            $ImportCheck.costCenter | Should -be $NewUserInfo.costCenter
-            $ImportCheck.company | Should -be $NewUserInfo.company
-            $ImportCheck.employeeType | Should -be $NewUserInfo.employeeType
-            $ImportCheck.decription | Should -be $NewUserInfo.decription
-            $ImportCheck.location | Should -be $NewUserInfo.location
+            $ImportCheck.MiddleName | Should -Be $NewUserInfo.middleName
+            $ImportCheck.preferredName | Should -Be $NewUserInfo.displayname
+            $ImportCheck.jobTitle | Should -Be $NewUserInfo.jobTitle
+            $ImportCheck.employeeIdentifier | Should -Be $NewUserInfo.employeeIdentifier
+            $ImportCheck.department | Should -Be $NewUserInfo.department
+            $ImportCheck.costCenter | Should -Be $NewUserInfo.costCenter
+            $ImportCheck.company | Should -Be $NewUserInfo.company
+            $ImportCheck.employeeType | Should -Be $NewUserInfo.employeeType
+            $ImportCheck.decription | Should -Be $NewUserInfo.decription
+            $ImportCheck.location | Should -Be $NewUserInfo.location
 
-            $ImportCheck.mobile_number | Should -be $($NewUserInfo.phoneNumbers | Where-Object type -eq mobile | Select-Object -ExpandProperty number)
-            $ImportCheck.home_number | Should -be $($NewUserInfo.phoneNumbers | Where-Object type -eq home | Select-Object -ExpandProperty number)
-            $ImportCheck.work_number | Should -be $($NewUserInfo.phoneNumbers | Where-Object type -eq work | Select-Object -ExpandProperty number)
-            $ImportCheck.work_mobile_number | Should -be $($NewUserInfo.phoneNumbers | Where-Object type -eq work_mobile | Select-Object -ExpandProperty number)
-            $ImportCheck.work_fax_number | Should -be $($NewUserInfo.phoneNumbers | Where-Object type -eq work_fax | Select-Object -ExpandProperty number)
+            $ImportCheck.mobile_number | Should -Be $($NewUserInfo.phoneNumbers | Where-Object type -eq mobile | Select-Object -ExpandProperty number)
+            $ImportCheck.home_number | Should -Be $($NewUserInfo.phoneNumbers | Where-Object type -eq home | Select-Object -ExpandProperty number)
+            $ImportCheck.work_number | Should -Be $($NewUserInfo.phoneNumbers | Where-Object type -eq work | Select-Object -ExpandProperty number)
+            $ImportCheck.work_mobile_number | Should -Be $($NewUserInfo.phoneNumbers | Where-Object type -eq work_mobile | Select-Object -ExpandProperty number)
+            $ImportCheck.work_fax_number | Should -Be $($NewUserInfo.phoneNumbers | Where-Object type -eq work_fax | Select-Object -ExpandProperty number)
 
-            $ImportCheck.home_streetAddress | Should -be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty streetAddress)
-            $ImportCheck.home_poBox | Should -be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty poBox)
-            $ImportCheck.home_city | Should -be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty locality)
-            $ImportCheck.home_state | Should -be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty region)
-            $ImportCheck.home_postalCode | Should -be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty postalCode)
-            $ImportCheck.home_country | Should -be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty country)
+            $ImportCheck.home_streetAddress | Should -Be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty streetAddress)
+            $ImportCheck.home_poBox | Should -Be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty poBox)
+            $ImportCheck.home_city | Should -Be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty locality)
+            $ImportCheck.home_state | Should -Be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty region)
+            $ImportCheck.home_postalCode | Should -Be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty postalCode)
+            $ImportCheck.home_country | Should -Be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty country)
 
-            $ImportCheck.work_streetAddress | Should -be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty streetAddress)
-            $ImportCheck.work_poBox | Should -be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty poBox)
-            $ImportCheck.work_city | Should -be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty locality)
-            $ImportCheck.work_state | Should -be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty region)
-            $ImportCheck.work_postalCode | Should -be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty postalCode)
-            $ImportCheck.work_country | Should -be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty country)
+            $ImportCheck.work_streetAddress | Should -Be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty streetAddress)
+            $ImportCheck.work_poBox | Should -Be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty poBox)
+            $ImportCheck.work_city | Should -Be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty locality)
+            $ImportCheck.work_state | Should -Be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty region)
+            $ImportCheck.work_postalCode | Should -Be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty postalCode)
+            $ImportCheck.work_country | Should -Be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty country)
 
         }
 
@@ -472,41 +472,41 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
             $NewUserInfo = Get-JCUser -username $User.username
             $ImportCheck = $UserImportInfo | Where-Object Username -EQ "$($User.username)"
 
-            $ImportCheck.MiddleName | Should -be $NewUserInfo.middleName
-            $ImportCheck.preferredName | Should -be $NewUserInfo.displayname
-            $ImportCheck.jobTitle | Should -be $NewUserInfo.jobTitle
-            $ImportCheck.employeeIdentifier | Should -be $NewUserInfo.employeeIdentifier
-            $ImportCheck.department | Should -be $NewUserInfo.department
-            $ImportCheck.costCenter | Should -be $NewUserInfo.costCenter
-            $ImportCheck.company | Should -be $NewUserInfo.company
-            $ImportCheck.employeeType | Should -be $NewUserInfo.employeeType
-            $ImportCheck.decription | Should -be $NewUserInfo.decription
-            $ImportCheck.location | Should -be $NewUserInfo.location
+            $ImportCheck.MiddleName | Should -Be $NewUserInfo.middleName
+            $ImportCheck.preferredName | Should -Be $NewUserInfo.displayname
+            $ImportCheck.jobTitle | Should -Be $NewUserInfo.jobTitle
+            $ImportCheck.employeeIdentifier | Should -Be $NewUserInfo.employeeIdentifier
+            $ImportCheck.department | Should -Be $NewUserInfo.department
+            $ImportCheck.costCenter | Should -Be $NewUserInfo.costCenter
+            $ImportCheck.company | Should -Be $NewUserInfo.company
+            $ImportCheck.employeeType | Should -Be $NewUserInfo.employeeType
+            $ImportCheck.decription | Should -Be $NewUserInfo.decription
+            $ImportCheck.location | Should -Be $NewUserInfo.location
 
-            $ImportCheck.mobile_number | Should -be $($NewUserInfo.phoneNumbers | Where-Object type -eq mobile | Select-Object -ExpandProperty number)
-            $ImportCheck.home_number | Should -be $($NewUserInfo.phoneNumbers | Where-Object type -eq home | Select-Object -ExpandProperty number)
-            $ImportCheck.work_number | Should -be $($NewUserInfo.phoneNumbers | Where-Object type -eq work | Select-Object -ExpandProperty number)
-            $ImportCheck.work_mobile_number | Should -be $($NewUserInfo.phoneNumbers | Where-Object type -eq work_mobile | Select-Object -ExpandProperty number)
-            $ImportCheck.work_fax_number | Should -be $($NewUserInfo.phoneNumbers | Where-Object type -eq work_fax | Select-Object -ExpandProperty number)
+            $ImportCheck.mobile_number | Should -Be $($NewUserInfo.phoneNumbers | Where-Object type -eq mobile | Select-Object -ExpandProperty number)
+            $ImportCheck.home_number | Should -Be $($NewUserInfo.phoneNumbers | Where-Object type -eq home | Select-Object -ExpandProperty number)
+            $ImportCheck.work_number | Should -Be $($NewUserInfo.phoneNumbers | Where-Object type -eq work | Select-Object -ExpandProperty number)
+            $ImportCheck.work_mobile_number | Should -Be $($NewUserInfo.phoneNumbers | Where-Object type -eq work_mobile | Select-Object -ExpandProperty number)
+            $ImportCheck.work_fax_number | Should -Be $($NewUserInfo.phoneNumbers | Where-Object type -eq work_fax | Select-Object -ExpandProperty number)
 
-            $ImportCheck.home_streetAddress | Should -be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty streetAddress)
-            $ImportCheck.home_poBox | Should -be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty poBox)
-            $ImportCheck.home_city | Should -be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty locality)
-            $ImportCheck.home_state | Should -be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty region)
-            $ImportCheck.home_postalCode | Should -be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty postalCode)
-            $ImportCheck.home_country | Should -be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty country)
+            $ImportCheck.home_streetAddress | Should -Be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty streetAddress)
+            $ImportCheck.home_poBox | Should -Be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty poBox)
+            $ImportCheck.home_city | Should -Be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty locality)
+            $ImportCheck.home_state | Should -Be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty region)
+            $ImportCheck.home_postalCode | Should -Be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty postalCode)
+            $ImportCheck.home_country | Should -Be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty country)
 
-            $ImportCheck.work_streetAddress | Should -be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty streetAddress)
-            $ImportCheck.work_poBox | Should -be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty poBox)
-            $ImportCheck.work_city | Should -be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty locality)
-            $ImportCheck.work_state | Should -be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty region)
-            $ImportCheck.work_postalCode | Should -be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty postalCode)
-            $ImportCheck.work_country | Should -be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty country)
+            $ImportCheck.work_streetAddress | Should -Be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty streetAddress)
+            $ImportCheck.work_poBox | Should -Be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty poBox)
+            $ImportCheck.work_city | Should -Be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty locality)
+            $ImportCheck.work_state | Should -Be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty region)
+            $ImportCheck.work_postalCode | Should -Be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty postalCode)
+            $ImportCheck.work_country | Should -Be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty country)
 
-            $UserCSVImport | Where-Object Username -eq "$($User.username)" | Select-Object -ExpandProperty systemAdd | Should -be "Added"
+            $UserCSVImport | Where-Object Username -eq "$($User.username)" | Select-Object -ExpandProperty systemAdd | Should -Be "Added"
 
 
-            $UserCSVImport | Where-Object Username -eq "$($User.username)" | Select-Object -ExpandProperty GroupsAdd | Select-Object Status -Unique | Select-Object -ExpandProperty Status | Should -be "Added"
+            $UserCSVImport | Where-Object Username -eq "$($User.username)" | Select-Object -ExpandProperty GroupsAdd | Select-Object Status -Unique | Select-Object -ExpandProperty Status | Should -Be "Added"
         }
 
         Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force

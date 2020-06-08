@@ -111,8 +111,8 @@ Describe -Tag:('JCUser') 'Add-JCUser 1.3.0' {
 
         $NewUser = New-RandomUser -domain pleasedelete | New-JCUser -unix_uid 1000000 -unix_guid 1000000
 
-        $NewUser.unix_uid | Should -be '1000000'
-        $NewUser.unix_guid | Should -be '1000000'
+        $NewUser.unix_uid | Should -Be '1000000'
+        $NewUser.unix_guid | Should -Be '1000000'
 
         Remove-JCUser -UserID $NewUser._id -ByID -Force
 
@@ -122,7 +122,7 @@ Describe -Tag:('JCUser') 'Add-JCUser 1.3.0' {
 
         $ExpFalse = New-RandomUser -domain pleasedelete | New-JCUser -password_never_expires $false
 
-        $ExpFalse.password_never_expires | Should Be $false
+        $ExpFalse.password_never_expires | Should -Be $false
 
         Remove-JCUser -userID $ExpFalse._id -force
 
@@ -132,7 +132,7 @@ Describe -Tag:('JCUser') 'Add-JCUser 1.3.0' {
 
         $ExpTrue = New-RandomUser -domain pleasedelete | New-JCUser -password_never_expires $true
 
-        $ExpTrue.password_never_expires | Should Be $true
+        $ExpTrue.password_never_expires | Should -Be $true
 
         Remove-JCUser -userID $ExpTrue._id -force
 
@@ -170,10 +170,10 @@ Describe -Tag:('JCUser') "New-JCUser 1.8.0" {
         $NewUser.employeeIdentifier | Should -Match "employeeIdentifier"
         $NewUser.department | Should -Be "department"
         $NewUser.costCenter | Should -Be "costCenter"
-        $NewUser.company | Should -be "Company"
-        $NewUser.employeeType | Should -be "employeeType"
-        $NewUser.description | Should -be "description"
-        $NewUser.location | Should -be "location"
+        $NewUser.company | Should -Be "Company"
+        $NewUser.employeeType | Should -Be "employeeType"
+        $NewUser.description | Should -Be "description"
+        $NewUser.location | Should -Be "location"
 
     }
 
@@ -364,10 +364,10 @@ Describe -Tag:('JCUser') "New-JCUser 1.8.0" {
         $NewUser.employeeIdentifier | Should -Match "employeeIdentifier"
         $NewUser.department | Should -Be "department"
         $NewUser.costCenter | Should -Be "costCenter"
-        $NewUser.company | Should -be "Company"
-        $NewUser.employeeType | Should -be "employeeType"
-        $NewUser.description | Should -be "description"
-        $NewUser.location | Should -be "location"
+        $NewUser.company | Should -Be "Company"
+        $NewUser.employeeType | Should -Be "employeeType"
+        $NewUser.description | Should -Be "description"
+        $NewUser.location | Should -Be "location"
 
         $NewUser.addresses | Where-Object type -eq work | Select-Object -ExpandProperty streetAddress | Should -Be "work_streetAddress"
         $NewUser.addresses | Where-Object type -eq work | Select-Object -ExpandProperty poBox | Should -Be "work_poBox"
@@ -397,7 +397,7 @@ Describe -Tag:('JCUser') "New-JCUser 1.8.0" {
 
         $NewUser = New-JCUser @UserWithNumber
 
-        $NewUser.phoneNumbers | Where-Object type -EQ mobile | Select-Object -ExpandProperty number | Should -be "1234"
+        $NewUser.phoneNumbers | Where-Object type -EQ mobile | Select-Object -ExpandProperty number | Should -Be "1234"
 
     }
 
@@ -412,7 +412,7 @@ Describe -Tag:('JCUser') "New-JCUser 1.8.0" {
 
         $NewUser = New-JCUser @UserWithNumber
 
-        $NewUser.phoneNumbers | Where-Object type -EQ home | Select-Object -ExpandProperty number | Should -be "1234"
+        $NewUser.phoneNumbers | Where-Object type -EQ home | Select-Object -ExpandProperty number | Should -Be "1234"
     }
 
     It "Creates a user with work number" {
@@ -426,7 +426,7 @@ Describe -Tag:('JCUser') "New-JCUser 1.8.0" {
 
         $NewUser = New-JCUser @UserWithNumber
 
-        $NewUser.phoneNumbers | Where-Object type -EQ work | Select-Object -ExpandProperty number | Should -be "1234"
+        $NewUser.phoneNumbers | Where-Object type -EQ work | Select-Object -ExpandProperty number | Should -Be "1234"
     }
 
     It "Creates a user with work mobile number" {
@@ -440,7 +440,7 @@ Describe -Tag:('JCUser') "New-JCUser 1.8.0" {
 
         $NewUser = New-JCUser @UserWithNumber
 
-        $NewUser.phoneNumbers | Where-Object type -EQ work_mobile | Select-Object -ExpandProperty number | Should -be "1234"
+        $NewUser.phoneNumbers | Where-Object type -EQ work_mobile | Select-Object -ExpandProperty number | Should -Be "1234"
     }
 
 
@@ -455,7 +455,7 @@ Describe -Tag:('JCUser') "New-JCUser 1.8.0" {
 
         $NewUser = New-JCUser @UserWithNumber
 
-        $NewUser.phoneNumbers | Where-Object type -EQ work_fax | Select-Object -ExpandProperty number | Should -be "1234"
+        $NewUser.phoneNumbers | Where-Object type -EQ work_fax | Select-Object -ExpandProperty number | Should -Be "1234"
     }
 
     It "Creates a user with all numbers" {
@@ -473,11 +473,11 @@ Describe -Tag:('JCUser') "New-JCUser 1.8.0" {
 
         $NewUser = New-JCUser @UserWithNumbers
 
-        $NewUser.phoneNumbers | Where-Object type -EQ mobile | Select-Object -ExpandProperty number | Should -be "mobile_number"
-        $NewUser.phoneNumbers | Where-Object type -EQ home | Select-Object -ExpandProperty number | Should -be "home_number"
-        $NewUser.phoneNumbers | Where-Object type -EQ work | Select-Object -ExpandProperty number | Should -be "work_number"
-        $NewUser.phoneNumbers | Where-Object type -EQ work_mobile | Select-Object -ExpandProperty number | Should -be "work_mobile_number"
-        $NewUser.phoneNumbers | Where-Object type -EQ work_fax | Select-Object -ExpandProperty number | Should -be "work_fax_number"
+        $NewUser.phoneNumbers | Where-Object type -EQ mobile | Select-Object -ExpandProperty number | Should -Be "mobile_number"
+        $NewUser.phoneNumbers | Where-Object type -EQ home | Select-Object -ExpandProperty number | Should -Be "home_number"
+        $NewUser.phoneNumbers | Where-Object type -EQ work | Select-Object -ExpandProperty number | Should -Be "work_number"
+        $NewUser.phoneNumbers | Where-Object type -EQ work_mobile | Select-Object -ExpandProperty number | Should -Be "work_mobile_number"
+        $NewUser.phoneNumbers | Where-Object type -EQ work_fax | Select-Object -ExpandProperty number | Should -Be "work_fax_number"
     }
 
     Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force

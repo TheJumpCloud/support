@@ -26,7 +26,7 @@ Describe -Tag:('JCUser') 'Get-JCUser 1.1' {
         $Username = New-RandomString -NumberOfChars 8
         $NewUser = New-RandomUser -Domain DeleteMe | New-JCUser -username $Username
         $NewUser = Get-JCUser -Username $Username
-        $NewUser.username | Should -be $Username
+        $NewUser.username | Should -Be $Username
         Remove-JCUser -UserID $NewUser._id -force
     }
 
@@ -35,7 +35,7 @@ Describe -Tag:('JCUser') 'Get-JCUser 1.1' {
         $lastname = New-RandomString -NumberOfChars 8
         $NewUser = New-RandomUser -Domain DeleteMe | New-JCUser -lastname $lastname
         $NewUser = Get-JCUser -lastname $lastname
-        $NewUser.lastname | Should -be $lastname
+        $NewUser.lastname | Should -Be $lastname
         Remove-JCUser -UserID $NewUser._id -force
     }
 
@@ -44,7 +44,7 @@ Describe -Tag:('JCUser') 'Get-JCUser 1.1' {
         $firstname = New-RandomString -NumberOfChars 8
         $NewUser = New-RandomUser -Domain DeleteMe | New-JCUser -firstname $firstname
         $NewUser = Get-JCUser -firstname $firstname
-        $NewUser.firstname | Should -be $firstname
+        $NewUser.firstname | Should -Be $firstname
         Remove-JCUser -UserID $NewUser._id -force
 
     }
@@ -54,7 +54,7 @@ Describe -Tag:('JCUser') 'Get-JCUser 1.1' {
         $email = "deleteme@$(New-RandomString -NumberOfChars 8).com"
         $NewUser = New-RandomUser -Domain DeleteMe | New-JCUser -email $email
         $NewUser = Get-JCUser -email $email
-        $NewUser.email | Should -be $email
+        $NewUser.email | Should -Be $email
         Remove-JCUser -UserID $NewUser._id -force
 
     }
@@ -65,7 +65,7 @@ Describe -Tag:('JCUser') "Get-JCUser 1.4" {
 
     It "Returns a JumpCloud user by UserID" {
         $PesterUser = Get-JCUser -userid $PesterParams_UserID
-        $PesterUser._id | Should -be $PesterParams_UserID
+        $PesterUser._id | Should -Be $PesterParams_UserID
     }
 
     It "Returns all JumpCloud users" {
@@ -133,82 +133,82 @@ Describe -Tag:('JCUser') "Get-JCUser 1.4" {
 
     It "Searches for a JumpCloud user by username and sudo" {
         $PesterUser = Get-JCUser -username $PesterParams_Username -sudo $false
-        $PesterUser.username | Should -be $PesterParams_Username
+        $PesterUser.username | Should -Be $PesterParams_Username
     }
 
     It "Searches for a JumpCloud user by username and enable_managed_uid" {
         $PesterUser = Get-JCUser -username $PesterParams_Username -enable_managed_uid $false
-        $PesterUser.username | Should -be $PesterParams_Username
+        $PesterUser.username | Should -Be $PesterParams_Username
     }
 
     It "Searches for a JumpCloud user by username and activated" {
         $PesterUser = Get-JCUser -username $PesterParams_Username -activated $true
-        $PesterUser.username | Should -be $PesterParams_Username
+        $PesterUser.username | Should -Be $PesterParams_Username
     }
 
     It "Searches for a JumpCloud user by username and password_expired" {
         $PesterUser = Get-JCUser -username $PesterParams_Username -password_expired $false
-        $PesterUser.username | Should -be $PesterParams_Username
+        $PesterUser.username | Should -Be $PesterParams_Username
     }
 
     It "Searches for a JumpCloud user by username and passwordless_sudo" {
         $PesterUser = Get-JCUser -username $PesterParams_Username -passwordless_sudo $false
-        $PesterUser.username | Should -be $PesterParams_Username
+        $PesterUser.username | Should -Be $PesterParams_Username
     }
 
     It "Searches for a JumpCloud user by username and externally_managed" {
         $PesterUser = Get-JCUser -username $PesterParams_Username -externally_managed $false
-        $PesterUser.username | Should -be $PesterParams_Username
+        $PesterUser.username | Should -Be $PesterParams_Username
     }
 
     It "Searches for a JumpCloud user by username and ldap_binding_user" {
         $PesterUser = Get-JCUser -username $PesterParams_Username -ldap_binding_user $false
-        $PesterUser.username | Should -be $PesterParams_Username
+        $PesterUser.username | Should -Be $PesterParams_Username
     }
 
     It "Searches for a JumpCloud user by username and enable_user_portal_multifactor" {
         $PesterUser = Get-JCUser -username $PesterParams_Username -enable_user_portal_multifactor $false
-        $PesterUser.username | Should -be $PesterParams_Username
+        $PesterUser.username | Should -Be $PesterParams_Username
     }
 
     It "Searches for a JumpCloud user by username and totp_enabled" {
         $PesterUser = Get-JCUser -username $PesterParams_Username -totp_enabled $false
-        $PesterUser.username | Should -be $PesterParams_Username
+        $PesterUser.username | Should -Be $PesterParams_Username
     }
 
     It "Searches for a JumpCloud user by username and allow_public_key" {
         $PesterUser = Get-JCUser -username $PesterParams_Username -allow_public_key $false
-        $PesterUser.username | Should -be $PesterParams_Username
+        $PesterUser.username | Should -Be $PesterParams_Username
     }
 
 
     It "Searches for a JumpCloud user by username and samba_service_user" {
         $PesterUser = Get-JCUser -username $PesterParams_Username -samba_service_user $false
-        $PesterUser.username | Should -be $PesterParams_Username
+        $PesterUser.username | Should -Be $PesterParams_Username
     }
 
     It "Searches for a JumpCloud user by username and password_never_expires" {
         $PesterUser = Get-JCUser -username $PesterParams_Username -password_never_expires $true
-        $PesterUser.username | Should -be $PesterParams_Username
+        $PesterUser.username | Should -Be $PesterParams_Username
     }
 
     It "Searches for a JumpCloud user using username, filterDateProperty created and before" {
 
         $PesterUser = Get-JCUser -username $PesterParams_Username -filterDateProperty created -dateFilter before -date '6/3/2020'
-        $PesterUser.username | Should -be $PesterParams_Username
+        $PesterUser.username | Should -Be $PesterParams_Username
 
     }
 
     It "Searches for a JumpCloud user using username, filterDateProperty created and after" {
 
         $PesterUser = Get-JCUser -username $PesterParams_Username -filterDateProperty created -dateFilter after -date '1/1/2018'
-        $PesterUser.username | Should -be $PesterParams_Username
+        $PesterUser.username | Should -Be $PesterParams_Username
 
     }
 
     It "Searches for a JumpCloud user using username and returns on the username property" {
         $PesterUser = Get-JCUser -username $PesterParams_Username -returnProperties username
-        $PesterUser.username | Should -be $PesterParams_Username
+        $PesterUser.username | Should -Be $PesterParams_Username
     }
 
     It "Searches for a JumpCloud user using username and returns all properties " {
@@ -268,44 +268,44 @@ Describe -Tag:('JCUser') "Get-JCUser with new attributes 1.8.0" {
     It "Searches for a user by middlename" {
 
         $Search = Get-JCUser -middlename "middlename_$RandomString" -returnProperties middlename
-        $Search.middlename | Should -be "middlename_$RandomString"
+        $Search.middlename | Should -Be "middlename_$RandomString"
 
     }
     It "Searches for a user by displayname" {
         $Search = Get-JCUser -displayname "displayname_$RandomString" -returnProperties displayname
-        $Search.displayname | Should -be "displayname_$RandomString"
+        $Search.displayname | Should -Be "displayname_$RandomString"
     }
     It "Searches for a user by jobTitle" {
         $Search = Get-JCUser -jobTitle "jobTitle_$RandomString" -returnProperties jobTitle
-        $Search.jobTitle | Should -be "jobTitle_$RandomString"
+        $Search.jobTitle | Should -Be "jobTitle_$RandomString"
     }
     It "Searches for a user by employeeIdentifier" {
         $Search = Get-JCUser -employeeIdentifier "employeeIdentifier_$RandomString" -returnProperties employeeIdentifier
-        $Search.employeeIdentifier | Should -be "employeeIdentifier_$RandomString"
+        $Search.employeeIdentifier | Should -Be "employeeIdentifier_$RandomString"
     }
     It "Searches for a user by department" {
         $Search = Get-JCUser -department "department_$RandomString" -returnProperties department
-        $Search.department | Should -be "department_$RandomString"
+        $Search.department | Should -Be "department_$RandomString"
     }
     It "Searches for a user by costCenter" {
         $Search = Get-JCUser -costCenter "costCenter_$RandomString" -returnProperties costCenter
-        $Search.costCenter | Should -be "costCenter_$RandomString"
+        $Search.costCenter | Should -Be "costCenter_$RandomString"
     }
     It "Searches for a user by company" {
         $Search = Get-JCUser -company "company_$RandomString" -returnProperties company
-        $Search.company | Should -be "company_$RandomString"
+        $Search.company | Should -Be "company_$RandomString"
     }
     It "Searches for a user by employeeType" {
         $Search = Get-JCUser -employeeType "employeeType_$RandomString" -returnProperties employeeType
-        $Search.employeeType | Should -be "employeeType_$RandomString"
+        $Search.employeeType | Should -Be "employeeType_$RandomString"
     }
     It "Searches for a user by description" {
         $Search = Get-JCUser -description "description_$RandomString" -returnProperties description
-        $Search.description | Should -be "description_$RandomString"
+        $Search.description | Should -Be "description_$RandomString"
     }
     It "Searches for a user by location" {
         $Search = Get-JCUser -location "location_$RandomString" -returnProperties location
-        $Search.location | Should -be "location_$RandomString"
+        $Search.location | Should -Be "location_$RandomString"
     }
 }
 
@@ -321,7 +321,7 @@ Describe -Tag:('JCUser') "Get-JCUser 1.12" {
         $SetUser = Set-JCUser -Username $Newuser.username -external_source_type "$Random1" -external_dn "$Random2"
         $SearchUser = Get-JCUser -external_source_type $Random1
         $RemoveUser = Remove-JCUser -UserID  $Newuser._id -force
-        $SearchUser._id | Should -be $Newuser._id
+        $SearchUser._id | Should -Be $Newuser._id
 
     }
 
@@ -334,7 +334,7 @@ Describe -Tag:('JCUser') "Get-JCUser 1.12" {
         $SetUser = Set-JCUser -Username $Newuser.username -external_source_type "$Random1" -external_dn "$Random2"
         $SearchUser = Get-JCUser -external_source_type $Random1
         $RemoveUser = Remove-JCUser -UserID  $Newuser._id -force
-        $SearchUser._id | Should -be $Newuser._id
+        $SearchUser._id | Should -Be $Newuser._id
 
     }
 
@@ -346,7 +346,7 @@ Describe -Tag:('JCUser') "Get-JCUser 1.12" {
         $SetUser = Set-JCUser -Username $Newuser.username -external_source_type "$Random1" -external_dn "$Random2"
         $SearchUser = Get-JCUser -external_source_type "$Random1" -external_dn "$Random2"
         $RemoveUser = Remove-JCUser -UserID  $Newuser._id -force
-        $SearchUser._id | Should -be $Newuser._id
+        $SearchUser._id | Should -Be $Newuser._id
 
     }
 

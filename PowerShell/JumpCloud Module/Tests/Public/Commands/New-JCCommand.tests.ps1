@@ -4,7 +4,7 @@ Describe -Tag:('JCCommand') 'New-JCCommand 1.2' {
 
         $NewCommand = New-JCCommand -commandType windows -name windows_test -command 'dir'
 
-        $NewCommand.commandType | Should -be 'windows'
+        $NewCommand.commandType | Should -Be 'windows'
 
         Remove-JCCommand -CommandID $NewCommand._id -force
 
@@ -14,7 +14,7 @@ Describe -Tag:('JCCommand') 'New-JCCommand 1.2' {
 
         $NewCommand = New-JCCommand -commandType mac -name mac_test -command 'ls'
 
-        $NewCommand.commandType | Should -be 'mac'
+        $NewCommand.commandType | Should -Be 'mac'
 
         Remove-JCCommand -CommandID $NewCommand._id -force
 
@@ -24,7 +24,7 @@ Describe -Tag:('JCCommand') 'New-JCCommand 1.2' {
 
         $NewCommand = New-JCCommand -commandType linux -name linux_test -command 'ls'
 
-        $NewCommand.commandType | Should -be 'linux'
+        $NewCommand.commandType | Should -Be 'linux'
 
         Remove-JCCommand -CommandID $NewCommand._id -force
     }

@@ -7,7 +7,7 @@ Describe -Tag:('JCSystem') 'Get-JCSystem 1.0' {
 
     It "Gets a single JumpCloud system" {
         $SingleSystem = Get-JCSystem -SystemID $PesterParams_SystemID
-        $SingleSystem.id.Count | Should -be 1
+        $SingleSystem.id.Count | Should -Be 1
     }
 
 }
@@ -19,7 +19,7 @@ Describe -Tag:('JCSystem') "Get-JCSystem 1.4" {
 
         $SystemInfo = Get-JCSystem -SystemID $PesterParams_SystemID
         $PesterSystem = Get-JCSystem -SystemID $SystemInfo._id
-        $PesterSystem._id | Should Be $PesterParams_SystemID
+        $PesterSystem._id | Should -Be $PesterParams_SystemID
     }
 
     It "Returns all JumpCloud systems" {

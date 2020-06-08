@@ -6,7 +6,7 @@ Describe -Tag:('JCUserGroupMember') 'Remove-JCUserGroupMember 1.0' {
 
         $SingleUserGroupRemove = Remove-JCUserGroupMember -GroupName $PesterParams_UserGroupName -username $PesterParams_Username
 
-        $SingleUserGroupRemove.Status | Should Be 'Removed'
+        $SingleUserGroupRemove.Status | Should -Be 'Removed'
 
     }
 
@@ -16,7 +16,7 @@ Describe -Tag:('JCUserGroupMember') 'Remove-JCUserGroupMember 1.0' {
 
         $SingleUserGroupRemove = Remove-JCUserGroupMember -GroupID $PesterParams_UserGroupID -UserID $PesterParams_UserID
 
-        $SingleUserGroupRemove.Status | Should Be 'Removed'
+        $SingleUserGroupRemove.Status | Should -Be 'Removed'
     }
 
 }

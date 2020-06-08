@@ -6,7 +6,7 @@ Describe -Tag:('JCUserGroupMember') 'Add-JCUserGroupMember 1.0' {
 
         $SingleUserGroupAdd = Add-JCUserGroupMember -GroupName $PesterParams_UserGroupName   -username $PesterParams_Username
 
-        $SingleUserGroupAdd.Status | Should Be 'Added'
+        $SingleUserGroupAdd.Status | Should -Be 'Added'
     }
 
 
@@ -17,7 +17,7 @@ Describe -Tag:('JCUserGroupMember') 'Add-JCUserGroupMember 1.0' {
 
         $SingleUserGroupAdd = Add-JCUserGroupMember -GroupID $PesterParams_UserGroupID -UserID $PesterParams_UserID
 
-        $SingleUserGroupAdd.Status | Should Be 'Added'
+        $SingleUserGroupAdd.Status | Should -Be 'Added'
     }
 
 
@@ -27,7 +27,7 @@ Describe -Tag:('JCUserGroupMember') 'Add-JCUserGroupMember 1.0' {
 
         $MultiUserGroupAdd = Get-JCUser | Select-Object -Last 2 | Add-JCUserGroupMember -GroupName $PesterParams_UserGroupName
 
-        $MultiUserGroupAdd.Status | Select-Object -Unique | Should Be 'Added'
+        $MultiUserGroupAdd.Status | Select-Object -Unique | Should -Be 'Added'
     }
 
 
@@ -38,7 +38,7 @@ Describe -Tag:('JCUserGroupMember') 'Add-JCUserGroupMember 1.0' {
 
         $MultiUserGroupAdd = Get-JCUser | Select-Object -Last 2 | Add-JCUserGroupMember -GroupName $PesterParams_UserGroupName   -ByID
 
-        $MultiUserGroupAdd.Status | Select-Object -Unique | Should Be 'Added'
+        $MultiUserGroupAdd.Status | Select-Object -Unique | Should -Be 'Added'
     }
 
 }

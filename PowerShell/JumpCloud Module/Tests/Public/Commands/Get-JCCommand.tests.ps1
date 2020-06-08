@@ -8,25 +8,25 @@ Describe -Tag:('JCCommand') 'Get-JCCommand 1.0' {
     It "Gets a single JumpCloud command  declaring -CommandID" {
         $SingleCommand = Get-JCCommand | Select-Object -Last 1
         $SingleResult = Get-JCCommand -CommandID $SingleCommand._id
-        $SingleResult._id.Count | Should Be 1
+        $SingleResult._id.Count | Should -Be 1
 
     }
 
     It "Gets a single JumpCloud command  without declaring -CommandID" {
         $SingleCommand = Get-JCCommand | Select-Object -Last 1
         $SingleResult = Get-JCCommand $SingleCommand._id
-        $SingleResult._id.Count | Should Be 1
+        $SingleResult._id.Count | Should -Be 1
 
     }
 
     It "Gets a single JumpCloud command using -ByID passed through the pipeline" {
         $SingleResult = Get-JCCommand | Select-Object -Last 1 | Get-JCCommand -ByID
-        $SingleResult._id.Count | Should Be 1
+        $SingleResult._id.Count | Should -Be 1
     }
 
     It "Gets a single JumpCloud command passed through the pipeline without declaring -ByID" {
         $SingleResult = Get-JCCommand | Select-Object -Last 1 | Get-JCCommand
-        $SingleResult._id.Count | Should Be 1
+        $SingleResult._id.Count | Should -Be 1
     }
 
 

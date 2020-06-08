@@ -45,7 +45,7 @@ Describe -Tag:('JCCommandResult') "Get-JCCommandResult 1.4.1" {
         $TotalCount = Get-JCCommandResult -TotalCount
         $Limit = '4'
         $LimitTotal = Get-JCCommandResult -limit $Limit
-        $LimitTotal.count | Should -be $TotalCount
+        $LimitTotal.count | Should -Be $TotalCount
 
     }
 }

@@ -5,7 +5,7 @@ Describe -Tag:('JCSystemGroupMember') 'Remove-JCSystemGroupMember 1.0' {
         $SingleSystemGroupAdd = Add-JCSystemGroupMember -SystemID $PesterParams_SystemID -GroupName $PesterParams_SystemGroupName
 
         $SingleSystemGroupRemove = Remove-JCSystemGroupMember -SystemID $PesterParams_SystemID -GroupName $PesterParams_SystemGroupName
-        $SingleSystemGroupRemove.Status | Should Be 'Removed'
+        $SingleSystemGroupRemove.Status | Should -Be 'Removed'
 
     }
 
@@ -15,7 +15,7 @@ Describe -Tag:('JCSystemGroupMember') 'Remove-JCSystemGroupMember 1.0' {
         $SingleSystemGroupAdd = Add-JCSystemGroupMember -SystemID $PesterParams_SystemID -GroupID $PesterParams_SystemGroupID
 
         $SingleSystemGroupRemove = Remove-JCSystemGroupMember -SystemID $PesterParams_SystemID -GroupID $PesterParams_SystemGroupID
-        $SingleSystemGroupRemove.Status | Should Be 'Removed'
+        $SingleSystemGroupRemove.Status | Should -Be 'Removed'
 
     }
 
@@ -25,7 +25,7 @@ Describe -Tag:('JCSystemGroupMember') 'Remove-JCSystemGroupMember 1.0' {
         $MultiSystemGroupAdd = Get-JCSystem | Select-Object -Last 2 | Add-JCSystemGroupMember -GroupName $PesterParams_SystemGroupName
 
         $MultiSystemGroupRemove = Get-JCSystem | Select-Object -Last 2 | Remove-JCSystemGroupMember -GroupName $PesterParams_SystemGroupName
-        $MultiSystemGroupRemove.Status | Select-Object -Unique | Should Be 'Removed'
+        $MultiSystemGroupRemove.Status | Select-Object -Unique | Should -Be 'Removed'
 
     }
 
@@ -36,7 +36,7 @@ Describe -Tag:('JCSystemGroupMember') 'Remove-JCSystemGroupMember 1.0' {
         $MultiSystemGroupAdd = Get-JCSystem | Select-Object -Last 2 | Add-JCSystemGroupMember -GroupName $PesterParams_SystemGroupName -ByID
 
         $MultiSystemGroupRemove = Get-JCSystem | Select-Object -Last 2 | Remove-JCSystemGroupMember -GroupName $PesterParams_SystemGroupName -ByID
-        $MultiSystemGroupRemove.Status | Select-Object -Unique | Should Be 'Removed'
+        $MultiSystemGroupRemove.Status | Select-Object -Unique | Should -Be 'Removed'
 
     }
 

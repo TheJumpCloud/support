@@ -6,7 +6,7 @@ Describe -Tag:('JCCommand') 'Remove-JCCommand 1.2' {
 
         $CommandRemove = Remove-JCCommand -CommandID $NewCommand._id -force
 
-        $CommandRemove.results | Should -be 'Deleted'
+        $CommandRemove.results | Should -Be 'Deleted'
     }
 
 

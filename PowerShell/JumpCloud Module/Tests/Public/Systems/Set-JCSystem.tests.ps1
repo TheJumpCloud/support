@@ -3,7 +3,7 @@ Describe -Tag:('JCSystem') 'Set-JCSystem 1.0' {
     It "Updates the DisplayName and then set it back" {
         $CurrentDisplayName = Get-JCSystem -SystemID $PesterParams_SystemID | Select-Object DisplayName
         $UpdatedSystem = Set-JCSystem -SystemID $PesterParams_SystemID -displayName 'NewName'
-        $UpdatedSystem.displayName | Should -be 'NewName'
+        $UpdatedSystem.displayName | Should -Be 'NewName'
         Set-JCSystem -SystemID $PesterParams_SystemID -displayName $CurrentDisplayName.displayName | Out-Null
     }
 

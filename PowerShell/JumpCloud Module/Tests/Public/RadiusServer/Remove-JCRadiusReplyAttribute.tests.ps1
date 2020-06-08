@@ -77,7 +77,7 @@ Describe -Tag:('JCRadiusReplyAttribute') "Remove-JCRadiusReplyAttributes 1.9.0" 
 
         $GetAttributes = Get-JCRadiusReplyAttribute -GroupName $NewGroup.name
 
-        $GetAttributes | Should -be $null
+        $GetAttributes | Should -Be $null
 
         Remove-JCUserGroup -GroupName $NewGroup.Name -force
 
