@@ -1,11 +1,16 @@
 Param(
-    [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0)][ValidateNotNullOrEmpty()][System.String]$TestOrgAPIKey,
-    [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 1)][ValidateNotNullOrEmpty()][System.String]$MultiTenantAPIKey,
-    [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 2)][System.String[]]$ExcludeTagList,
-    [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 3)][System.String[]]$IncludeTagList
+    [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0)][ValidateNotNullOrEmpty()][System.String]$TestOrgAPIKey
+    , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 1)][ValidateNotNullOrEmpty()][System.String]$MultiTenantAPIKey
+    , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 2)][System.String[]]$ExcludeTagList
+    , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 3)][System.String[]]$IncludeTagList
 )
 $ModuleManifestName = 'JumpCloud.psd1'
 $ModuleManifestPath = "$PSScriptRoot/../$ModuleManifestName"
+# Install Pester
+Install-Module -Name:('Pester') -Force
+# Import the module
+Import-Module -Name:($ModuleManifestPath) -Force
+# Load required modules
 $RequiredModules = (Import-LocalizedData -BaseDirectory:("$PSScriptRoot/..") -FileName:($ModuleManifestName)).RequiredModules
 If ($RequiredModules)
 {
@@ -22,14 +27,17 @@ If ($RequiredModules)
         }
     }
 }
+# Load private functions
+Get-ChildItem -Path:("$PSScriptRoot/../Private/*.ps1") -Recurse | ForEach-Object { . $_.FullName }
+# Load TestEnvironmentVariables
+. ("$PSScriptRoot/TestEnvironmentVariables.ps1") -TestOrgAPIKey:($TestOrgAPIKey)
+# Load HelperFunctions
+. ("$PSScriptRoot/HelperFunctions.ps1")
 # Install NuGet
 If (!(Get-PackageProvider -Name:('NuGet') -ErrorAction:('SilentlyContinue')))
 {
     Install-PackageProvider NuGet -ForceBootstrap -Force | Out-Null
 }
-# Load config and helper files
-. ($PSScriptRoot + '/HelperFunctions.ps1')
-. ($PSScriptRoot + '/TestEnvironmentVariables.ps1')
 # Get list of tags and validate that tags have been applied
 $PesterTests = Get-ChildItem -Path:($PSScriptRoot + '/*.Tests.ps1') -Recurse
 $Tags = ForEach ($PesterTest In $PesterTests)
@@ -61,7 +69,6 @@ Else
     $Tags | Where-Object { $_ -notin $ExcludeTags } | Select-Object -Unique
 }
 # Run Pester tests
-$PesterResultsFileXml = "$($PSScriptRoot)/$($ModuleName)-$($env:Agent.OS)-TestResults.xml"
 $PesterResults = Invoke-Pester -Script ($PSScriptRoot) -PassThru -Tag:($IncludeTags) -ExcludeTag:($ExcludeTagList)
 $PesterResults | ConvertTo-NUnitReport -AsString | Out-File -FilePath:($PesterResultsFileXml)
 [xml]$PesterResults = Get-Content -Path:($PesterResultsFileXml)
@@ -76,15 +83,3 @@ If ($FailedTests)
     $FailedTests | ForEach-Object { $_.Name + '; ' + $_.FailureMessage + '; ' }
     Write-Error -Message:('Tests Failed: ' + [string]($FailedTests | Measure-Object).Count)
 }
-
-### Notes for future reporting dashboard for pester
-# Install-PackageProvider -Name:('NuGet')
-# Install-Package -Name:('extent')
-# Install-Package extent
-# $Package = Get-Package -Name:('ReportUnit')
-# $ReportUnitExePath = ($Package.Source).Replace($Package.PackageFilename, 'toolsReportUnit.exe')
-# # $ReportUnitExePath = '{PathTo}\extent.exe'
-# # Invoke-Pester -Path:('PesterTests.ps1') -OutputFormat:('NUnitXml') -OutputFile:($PesterResultsFileXml) -Show None -PassThru -Strict
-# $ReportUnitCommand = '"' + $ReportUnitExePath + '" "' + $PesterResultsFileXml + '"'
-# Invoke-Expression -Command:($ReportUnitCommand)
-# Start-Process chrome $htmlFile
