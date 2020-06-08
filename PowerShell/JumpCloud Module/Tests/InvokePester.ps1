@@ -61,12 +61,10 @@ Else
     $Tags | Where-Object { $_ -notin $ExcludeTags } | Select-Object -Unique
 }
 # Run Pester tests
-$PesterResultsFileXml = $PSScriptRoot + '/Pester.Tests.Results.xml'
-$PesterResultsFileCsv = $PSScriptRoot + '/Pester.Tests.Results.csv'
+$PesterResultsFileXml = "$($PSScriptRoot)/$($ModuleName)-$($env:Agent.OS)-TestResults.xml"
 $PesterResults = Invoke-Pester -Script ($PSScriptRoot) -PassThru -Tag:($IncludeTags) -ExcludeTag:($ExcludeTagList)
-$PesterResults | ConvertTo-NUnitReport -AsString | Out-File -FilePath "$modulename + '-TestResults.xml'" | Set-Content -Path:($testModulePath)
-
-# $PesterResults.TestResult | Where-Object {$_.Passed -eq $false} | Export-Csv $PesterResultsFileCsv
+$PesterResults | ConvertTo-NUnitReport -AsString | Out-File -FilePath:($PesterResultsFileXml)
+[xml]$PesterResults = Get-Content -Path:($PesterResultsFileXml)
 $FailedTests = $PesterResults.TestResult | Where-Object { $_.Passed -eq $false }
 If ($FailedTests)
 {
