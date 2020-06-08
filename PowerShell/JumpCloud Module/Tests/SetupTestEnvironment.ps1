@@ -1,61 +1,31 @@
-Param(
-    [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0)][ValidateNotNullOrEmpty()][System.String]$TestOrgAPIKey,
-    [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 1)][ValidateNotNullOrEmpty()][System.String]$MultiTenantAPIKey
-)
-$ModuleManifestName = 'JumpCloud.psd1'
-$ModuleManifestPath = "$PSScriptRoot/../$ModuleManifestName"
-$RequiredModules = (Import-LocalizedData -BaseDirectory:("$PSScriptRoot/..") -FileName:($ModuleManifestName)).RequiredModules
-If ($RequiredModules)
-{
-    $RequiredModules | ForEach-Object {
-        If ([System.String]::IsNullOrEmpty((Get-InstalledModule).Where( { $_.Name -eq $_ })))
-        {
-            Write-Host ('Installing: ' + $_)
-            Install-Module -Name:($_) -Force
-        }
-        If (!(Get-Module -Name:($_)))
-        {
-            Write-Host ('Importing: ' + $_)
-            Import-Module -Name:($_) -Force
-        }
-    }
-}
-Import-Module -Name:($ModuleManifestPath) -Force
-# Load config and helper files
-. ($PSScriptRoot + '/HelperFunctions.ps1')
-. ($PSScriptRoot + '/TestEnvironmentVariables.ps1')
-#Setup COMMANDS
-
-#Clear previous pester objects
-Get-JCUser -lastname Test | Set-JCUser -externally_managed $false
-Get-JCUser -lastname Test | Remove-JCUser -force
-
-$removeGroups = Get-JCGroup | Where-Object { @("one", "two", "three", "four", "five", "six", "PesterTest_UserGroup", "PesterTest_SystemGroup") -notcontains $_.name }
-
-foreach ($group in $removeGroups)
-{
-    if ($group.type -eq "system_group")
-    {
-        Remove-JCSystemGroup -GroupName $group.name -force
-    }
-    elseif ($group.type -eq "user_group")
-    {
-        Remove-JCUserGroup -GroupName $group.name -force
-    }
-}
-
-$CommandResultCount = 10
-$CommandResultsExist = Get-JCCommandResult
+# Param(
+#     [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0)][ValidateNotNullOrEmpty()][System.String]$TestOrgAPIKey
+# )
+# Setup COMMANDS
+Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
+# Clear previous pester objects
+Get-JCUser -lastname:($PesterParams_UserLastName) | Set-JCUser -externally_managed $false
+Get-JCUser -lastname:($PesterParams_UserLastName) | Remove-JCUser -force
+# Remove all groups
+Get-JCSystemGroup | Remove-JCSystemGroup -force
+Get-JCUserGroup | Remove-JCUserGroup -force
+# Add back groups
+# $PesterParams_Groups | ForEach-Object {
+#     New-JCSystemGroup -GroupName:($_)
+#     New-JCUserGroup -GroupName:($_)
+# }
+New-JCSystemGroup -GroupName:($PesterParams_SystemGroupName)
+New-JCUserGroup -GroupName:($PesterParams_UserGroupName)
 # If no command results currently exist
-If ([System.String]::IsNullOrEmpty($CommandResultsExist) -or $CommandResultsExist.Count -lt $CommandResultCount)
+If ([System.String]::IsNullOrEmpty($PesterParams_CommandResultsExist) -or $PesterParams_CommandResultsExist.Count -lt $PesterParams_CommandResultCount)
 {
-    $testCmd = Get-JCCommand | Where-Object { $_.trigger -eq 'GetJCAgentLog' }
+    $testCmd = Get-JCCommand | Where-Object { $_.trigger -eq $PesterParams_CommandTrigger }
     Add-JCCommandTarget -CommandID $testCmd.id -SystemID $PesterParams_SystemID
-    $TriggeredCommand = For ($i = 1; $i -le $CommandResultCount; $i++)
+    $TriggeredCommand = For ($i = 1; $i -le $PesterParams_CommandResultCount; $i++)
     {
         Invoke-JCCommand -trigger:($testCmd.name)
     }
-    While ((Get-JCCommandResult | Where-Object { $_.Name -eq $testCmd.name }).Count -ge $CommandResultCount)
+    While ((Get-JCCommandResult | Where-Object { $_.Name -eq $testCmd.name }).Count -ge $PesterParams_CommandResultCount)
     {
         Start-Sleep -Seconds:(1)
     }
