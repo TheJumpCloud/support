@@ -1,4 +1,7 @@
-$FileBaseName = (Get-Item -Path:($MyInvocation.MyCommand.Path)).BaseName
+BeforeAll {
+    $FileBaseName = (Get-Item -Path:($MyInvocation.MyCommand.Path)).BaseName
+}
+
 Describe -Tag:('JCSystemInsights') "Get-JCSystemInsights Tests" {
     Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
     BeforeAll {
