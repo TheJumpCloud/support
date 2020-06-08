@@ -6,6 +6,8 @@ Param(
 )
 $ModuleManifestName = 'JumpCloud.psd1'
 $ModuleManifestPath = "$PSScriptRoot/../$ModuleManifestName"
+# Update PowerShellGet
+Update-Module -Name PowerShellGet -Force
 # Install Pester
 Install-Module -Name Pester -Force
 # Import the module
