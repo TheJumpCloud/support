@@ -4,7 +4,8 @@ Param(
     [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 2)][System.String[]]$ExcludeTagList,
     [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 3)][System.String[]]$IncludeTagList
 )
-# [System.Net.ServicePointManager]::Expect100Continue = $false; # https://docs.microsoft.com/en-us/dotnet/api/system.net.servicepointmanager.expect100continue?view=netcore-3.1#System_Net_ServicePointManager_Expect100Continue
+
+[System.Net.ServicePointManager]::Expect100Continue = $true; # https://docs.microsoft.com/en-us/dotnet/api/system.net.servicepointmanager.expect100continue?view=netcore-3.1#System_Net_ServicePointManager_Expect100Continue
 # [System.Net.ServicePointManager]::MaxServicePointIdleTime = 300000; # 5 min # https://docs.microsoft.com/en-us/dotnet/api/system.net.servicepointmanager.maxservicepointidletime?view=netcore-3.1#System_Net_ServicePointManager_MaxServicePointIdleTime
 # [System.Net.ServicePointManager]::SecurityProtocol = `
 #     [System.Net.SecurityProtocolType]::Ssl3, `
