@@ -6,12 +6,8 @@ Param(
 )
 $ModuleManifestName = 'JumpCloud.psd1'
 $ModuleManifestPath = "$PSScriptRoot/../$ModuleManifestName"
-# Update PowerShellGet
-Update-Module -Name PowerShellGet -Force
 # Install Pester
-Install-Module -Name Pester -Force
-# Import the module
-Import-Module -Name:($ModuleManifestPath) -Force
+Install-Module -Name:('Pester') -Force
 # Load required modules
 $RequiredModules = (Import-LocalizedData -BaseDirectory:("$PSScriptRoot/..") -FileName:($ModuleManifestName)).RequiredModules
 If ($RequiredModules)
@@ -29,6 +25,8 @@ If ($RequiredModules)
         }
     }
 }
+# Import the module
+Import-Module -Name:($ModuleManifestPath) -Force
 # Load private functions
 Get-ChildItem -Path:("$PSScriptRoot/../Private/*.ps1") -Recurse | ForEach-Object { . $_.FullName }
 # Load TestEnvironmentVariables
