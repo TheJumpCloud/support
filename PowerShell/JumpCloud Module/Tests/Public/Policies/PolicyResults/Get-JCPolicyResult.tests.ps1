@@ -11,7 +11,7 @@ Describe -Tag:('JCPolicyResult') "Get-JCPolicyResult 1.10" {
     }
 
     It "Returns a policy result with the SystemID" {
-        $SingleSystem = Get-JCSystem | Select-Object -Last 1
+        $SystemIDWithPolicyResult = Get-JCSystem -SystemID:($SystemWithPolicyResultID)
         $PolicyResult = Get-JCPolicyResult -SystemID:($SystemIDWithPolicyResult._id)
         $PolicyResult.id.count | Should -BeGreaterThan 0
     }
