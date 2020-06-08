@@ -2,6 +2,7 @@ Param(
     [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0)][ValidateNotNullOrEmpty()][System.String]$TestOrgAPIKey
 )
 $VariableNamePrefix = 'PesterParams_'
+$VariableNamePrefixHash = 'PesterParamsHash_'
 # Authenticate to JumpCloud
 Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
 # Determine OS type
@@ -24,7 +25,7 @@ Else
     }
 }
 # Set test parameters bases on os
-$PesterParams_OS = If ($OS -eq 'Windows_NT')
+$PesterParamsHash_OS = If ($OS -eq 'Windows_NT')
 {
     @{
         # Specific to MTP portal
@@ -92,15 +93,17 @@ Else
     Write-Error ("Unknown OS: $($OS)")
 }
 # Parameters that are on Org specific
-$PesterParams_Common = @{
+$PesterParamsHash__Common = @{
     PesterResultsFileXml            = "$($PSScriptRoot)/JumpCloud-$($OS)-TestResults.xml"
     SystemGroupName                 = 'PesterTest_SystemGroup'
     RadiusServerName                = 'PesterTest_RadiusServer';
     OneTrigger                      = 'onetrigger'
     TwoTrigger                      = 'twotrigger'
     ThreeTrigger                    = 'threetrigger'
-    UserGroupName                   = 'PesterTest_UserGroup'  #Create a user group named PesterTest_UserGroup within your environment
+    UserGroupName                   = 'PesterTest_UserGroup'  # Create a user group named PesterTest_UserGroup within your environment
     Username                        = 'pester.tester' # Create a user with username 'pester.tester'
+    UserLastName                    = 'Test'
+    Groups                          = @('One', 'Two', 'Three', 'Four', 'Five', 'Six')
     # Generate random string
     RandomString                    = ( -join (( 0x41..0x5A) + ( 0x61..0x7A) | Get-Random -Count 8 | ForEach-Object { [char]$_ }))
     # CSV Files
@@ -112,16 +115,19 @@ $PesterParams_Common = @{
     # Policy Info
     MultiplePolicyList              = @('1 Linux', 'Disable USB Storage - Linux')
     SinglePolicyList                = @('Disable USB Storage - Linux')
+    CommandTrigger                  = 'GetJCAgentLog'
+    CommandResultCount              = 10
 }
 # Params that need to run commands to get their values with inputs from other hash tables
-$PesterParams_Commands = @{
-    RandomEmail    = '{0}@{1}.com' -f $PesterParams_Common.RandomString, $PesterParams_Common.RandomString
-    SinglePolicy   = Get-JCPolicy -Name:($PesterParams_Common.SinglePolicyList)
-    MultiplePolicy = Get-JCPolicy -Name:($PesterParams_Common.MultiplePolicyList)
+$PesterParamsHash_Commands = @{
+    RandomEmail         = '{0}@{1}.com' -f $PesterParamsHash_Common.RandomString, $PesterParamsHash_Common.RandomString
+    SinglePolicy        = Get-JCPolicy -Name:($PesterParamsHash_Common.SinglePolicyList)
+    MultiplePolicy      = Get-JCPolicy -Name:($PesterParamsHash_Common.MultiplePolicyList)
+    CommandResultsExist = Get-JCCommandResult
 }
 
 # Combine all hash tables into one list and foreach of their values create a new global parameter
-(Get-Variable -Name:("$VariableNamePrefix*")).Value | ForEach-Object {
+(Get-Variable -Name:("$VariableNamePrefixHash*")).Value | ForEach-Object {
     $_.GetEnumerator() | ForEach-Object {
         Set-Variable -Name:("$($VariableNamePrefix)$($_.Name)") -Value:($_.Value) -Scope:('Global')
     }
