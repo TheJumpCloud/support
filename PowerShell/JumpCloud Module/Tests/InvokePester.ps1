@@ -69,9 +69,9 @@ Else
     $Tags | Where-Object { $_ -notin $ExcludeTags } | Select-Object -Unique
 }
 # Run Pester tests
-$PesterResults = Invoke-Pester -Script ($PSScriptRoot) -PassThru -Tag:($IncludeTags) -ExcludeTag:($ExcludeTagList)
-$PesterResults | ConvertTo-NUnitReport -AsString | Out-File -FilePath:($PesterResultsFileXml)
-[xml]$PesterResults = Get-Content -Path:($PesterResultsFileXml)
+$PesterResults = Invoke-Pester -Path:($PSScriptRoot) -PassThru -Tag:($IncludeTags) -ExcludeTag:($ExcludeTagList)
+$PesterResults | ConvertTo-NUnitReport -AsString | Out-File -FilePath:($PesterParams_PesterResultsFileXml)
+[xml]$PesterResults = Get-Content -Path:($PesterParams_PesterResultsFileXml)
 $FailedTests = $PesterResults.TestResult | Where-Object { $_.Passed -eq $false }
 If ($FailedTests)
 {
