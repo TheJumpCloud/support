@@ -1,5 +1,5 @@
 Describe -Tag:('JCUserGroupLDAP') 'Set-JCUserGroupLDAP' {
-    Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
+    BeforeAll { Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null }
     It "Enables LDAP for a JumpCloud User Group using GroupName" {
 
         $NewUserGroup = New-JCUserGroup -GroupName $(New-RandomString 8) | Select-Object -ExpandProperty Name

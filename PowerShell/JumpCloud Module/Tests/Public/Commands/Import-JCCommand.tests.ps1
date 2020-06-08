@@ -1,5 +1,5 @@
 Describe -Tag:('JCCommand') 'Import-JCCommand 1.1' {
-    Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
+    BeforeAll { Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null }
     It "Imports a JumpCloud command from a long URL" {
 
         $Command = Import-JCCommand -URL 'https://github.com/TheJumpCloud/support/blob/master/PowerShell/JumpCloud%20Commands%20Gallery/Mac%20Commands/Mac%20-%20Get%20Logged%20In%20Users.md'

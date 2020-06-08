@@ -1,5 +1,5 @@
 Describe -Tag:('JCUser') 'New-JCUser 1.0' {
-    Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
+    BeforeAll { Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null }
     It "Creates a new user" {
         $NewUser = New-RandomUser -domain pleasedelete"PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser
         $NewUser._id.count | Should -Be 1
@@ -562,7 +562,7 @@ Describe -Tag:('JCUser') "New-JCUser MFA with enrollment periods 1.10" {
 
         $newUserObj = New-Object -TypeName psobject -Property $objectProperty
 
-        $NewUser = $newUserObj | % { New-JCUser -enable_user_portal_multifactor $_.enable_user_portal_multifactor -EnrollmentDays $_.EnrollmentDays -firstName $_.firstName -lastName $_.Lastname -username $_.username -email $_.email }
+        $NewUser = $newUserObj | ForEach-Object { New-JCUser -enable_user_portal_multifactor $_.enable_user_portal_multifactor -EnrollmentDays $_.EnrollmentDays -firstName $_.firstName -lastName $_.Lastname -username $_.username -email $_.email }
 
         $Newuser.mfa.exclusion | Should -Be $true
 
@@ -581,4 +581,3 @@ Describe -Tag:('JCUser') "New-JCUser with suspend param 1.15" {
     }
 
 }
-

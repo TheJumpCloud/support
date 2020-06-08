@@ -1,6 +1,6 @@
 Describe -Tag:('JCSystemUser') 'Add-JCSystemUser 1.0' {
-    Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
-    It "Adds a single user to a single system by Username and SystemID" -Tag:('JCSystemUser') {
+    BeforeAll { Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null }
+    It "Adds a single user to a single system by Username and SystemID" {
         $UserRemove = Remove-JCSystemUser -Username $PesterParams_Username -SystemID $PesterParams_SystemID -force
         $UserAdd = Add-JCSystemUser -Username $PesterParams_Username -SystemID $PesterParams_SystemID
         $UserAdd.Status | Should Be 'Added'

@@ -1,5 +1,5 @@
 Describe -Tag:('JCUserGroupMember') 'Add-JCUserGroupMember 1.0' {
-    Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
+    BeforeAll { Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null }
     It "Adds a JumpCloud user to a JumpCloud user group by User GroupName and Username" {
 
         $SingleUserGroupRemove = Remove-JCUserGroupMember -GroupName $PesterParams_UserGroupName -username $PesterParams_Username

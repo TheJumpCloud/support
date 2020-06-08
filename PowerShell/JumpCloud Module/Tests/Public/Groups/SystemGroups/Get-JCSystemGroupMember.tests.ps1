@@ -1,5 +1,5 @@
 Describe -Tag:('JCSystemGroupMember') 'Get-JCSystemGroupMember 1.0' {
-    Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
+    BeforeAll { Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null }
     It 'Gets a System Groups membership by Groupname' {
 
         $MultiSystemGroupAdd = Get-JCSystem | Select-Object -Last 2 | Add-JCSystemGroupMember -GroupName $PesterParams_SystemGroupName

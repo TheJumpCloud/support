@@ -1,5 +1,5 @@
 Describe -Tag:('JCUser') 'Set-JCUser 1.0' {
-    Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
+    BeforeAll { Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null }
     It "Updates the FirstName using -ByID and -UserID" {
         $NewUser = New-RandomUser "PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser
         $NewFirstName = Set-JCUser -ByID -UserID $NewUser._id -firstname 'NewFirstName'

@@ -1,5 +1,5 @@
 Describe -Tag:('JCBackup') "Get-JCBackup 1.5.0" {
-    # Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
+    BeforeAll { Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null }
     It "Backs up JumpCloud users" {
         Add-JCUserGroupMember -GroupName $PesterParams_UserGroupName -username $PesterParams_Username
         Get-JCBackup -All

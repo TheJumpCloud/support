@@ -1,5 +1,5 @@
 Describe -Tag:('JCCommandResult') 'Get-JCCommandResults 1.0' {
-    Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
+    BeforeAll { Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null }
     It "Gets all JumpCloud command results" {
         $CommandResults = Get-JCCommandResult
         $CommandResults.count | Should -BeGreaterThan 1

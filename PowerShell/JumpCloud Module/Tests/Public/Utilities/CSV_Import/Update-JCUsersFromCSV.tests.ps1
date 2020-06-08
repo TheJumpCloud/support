@@ -1,5 +1,5 @@
 Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
-    Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
+    BeforeAll { Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null }
     It "Updates users from a CSV populated with telephony attributes" {
 
         $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath $ImportPath/ImportExample_telephonyAttributes.csv -force
@@ -10,11 +10,11 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
             $NewUserInfo = Get-JCUser -username $User.username
             $ImportCheck = $UserImportInfo | Where-Object Username -EQ "$($User.username)"
 
-            $ImportCheck.mobile_number | Should -be $($NewUserInfo.phoneNumbers | ? type -eq mobile | Select-Object -ExpandProperty number)
-            $ImportCheck.home_number | Should -be $($NewUserInfo.phoneNumbers | ? type -eq home | Select-Object -ExpandProperty number)
-            $ImportCheck.work_number | Should -be $($NewUserInfo.phoneNumbers | ? type -eq work | Select-Object -ExpandProperty number)
-            $ImportCheck.work_mobile_number | Should -be $($NewUserInfo.phoneNumbers | ? type -eq work_mobile | Select-Object -ExpandProperty number)
-            $ImportCheck.work_fax_number | Should -be $($NewUserInfo.phoneNumbers | ? type -eq work_fax | Select-Object -ExpandProperty number)
+            $ImportCheck.mobile_number | Should -be $($NewUserInfo.phoneNumbers | Where-Object type -eq mobile | Select-Object -ExpandProperty number)
+            $ImportCheck.home_number | Should -be $($NewUserInfo.phoneNumbers | Where-Object type -eq home | Select-Object -ExpandProperty number)
+            $ImportCheck.work_number | Should -be $($NewUserInfo.phoneNumbers | Where-Object type -eq work | Select-Object -ExpandProperty number)
+            $ImportCheck.work_mobile_number | Should -be $($NewUserInfo.phoneNumbers | Where-Object type -eq work_mobile | Select-Object -ExpandProperty number)
+            $ImportCheck.work_fax_number | Should -be $($NewUserInfo.phoneNumbers | Where-Object type -eq work_fax | Select-Object -ExpandProperty number)
         }
 
         $UserUpdateCSVImport = Update-JCUsersFromCSV -CSVFilePath $UpdatePath/UpdateExample_telephonyAttributes.csv -force
@@ -25,11 +25,11 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
             $UpdateUserInfo = Get-JCUser -username $UpdateUser.username
             $UpdateCheck = $UserUpdateInfo | Where-Object Username -EQ "$($UpdateUser.username)"
 
-            $UpdateCheck.mobile_number | Should -be $($UpdateUserInfo.phoneNumbers | ? type -eq mobile | Select-Object -ExpandProperty number)
-            $UpdateCheck.home_number | Should -be $($UpdateUserInfo.phoneNumbers | ? type -eq home | Select-Object -ExpandProperty number)
-            $UpdateCheck.work_number | Should -be $($UpdateUserInfo.phoneNumbers | ? type -eq work | Select-Object -ExpandProperty number)
-            $UpdateCheck.work_mobile_number | Should -be $($UpdateUserInfo.phoneNumbers | ? type -eq work_mobile | Select-Object -ExpandProperty number)
-            $UpdateCheck.work_fax_number | Should -be $($UpdateUserInfo.phoneNumbers | ? type -eq work_fax | Select-Object -ExpandProperty number)
+            $UpdateCheck.mobile_number | Should -be $($UpdateUserInfo.phoneNumbers | Where-Object type -eq mobile | Select-Object -ExpandProperty number)
+            $UpdateCheck.home_number | Should -be $($UpdateUserInfo.phoneNumbers | Where-Object type -eq home | Select-Object -ExpandProperty number)
+            $UpdateCheck.work_number | Should -be $($UpdateUserInfo.phoneNumbers | Where-Object type -eq work | Select-Object -ExpandProperty number)
+            $UpdateCheck.work_mobile_number | Should -be $($UpdateUserInfo.phoneNumbers | Where-Object type -eq work_mobile | Select-Object -ExpandProperty number)
+            $UpdateCheck.work_fax_number | Should -be $($UpdateUserInfo.phoneNumbers | Where-Object type -eq work_fax | Select-Object -ExpandProperty number)
         }
     }
 
@@ -89,19 +89,19 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
             $NewUserInfo = Get-JCUser -username $User.username
             $ImportCheck = $UserImportInfo | Where-Object Username -EQ "$($User.username)"
 
-            $ImportCheck.home_streetAddress | Should -be $($NewUserInfo.addresses | ? type -eq home | Select-Object -ExpandProperty streetAddress)
-            $ImportCheck.home_poBox | Should -be $($NewUserInfo.addresses | ? type -eq home | Select-Object -ExpandProperty poBox)
-            $ImportCheck.home_city | Should -be $($NewUserInfo.addresses | ? type -eq home | Select-Object -ExpandProperty locality)
-            $ImportCheck.home_state | Should -be $($NewUserInfo.addresses | ? type -eq home | Select-Object -ExpandProperty region)
-            $ImportCheck.home_postalCode | Should -be $($NewUserInfo.addresses | ? type -eq home | Select-Object -ExpandProperty postalCode)
-            $ImportCheck.home_country | Should -be $($NewUserInfo.addresses | ? type -eq home | Select-Object -ExpandProperty country)
+            $ImportCheck.home_streetAddress | Should -be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty streetAddress)
+            $ImportCheck.home_poBox | Should -be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty poBox)
+            $ImportCheck.home_city | Should -be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty locality)
+            $ImportCheck.home_state | Should -be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty region)
+            $ImportCheck.home_postalCode | Should -be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty postalCode)
+            $ImportCheck.home_country | Should -be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty country)
 
-            $ImportCheck.work_streetAddress | Should -be $($NewUserInfo.addresses | ? type -eq work | Select-Object -ExpandProperty streetAddress)
-            $ImportCheck.work_poBox | Should -be $($NewUserInfo.addresses | ? type -eq work | Select-Object -ExpandProperty poBox)
-            $ImportCheck.work_city | Should -be $($NewUserInfo.addresses | ? type -eq work | Select-Object -ExpandProperty locality)
-            $ImportCheck.work_state | Should -be $($NewUserInfo.addresses | ? type -eq work | Select-Object -ExpandProperty region)
-            $ImportCheck.work_postalCode | Should -be $($NewUserInfo.addresses | ? type -eq work | Select-Object -ExpandProperty postalCode)
-            $ImportCheck.work_country | Should -be $($NewUserInfo.addresses | ? type -eq work | Select-Object -ExpandProperty country)
+            $ImportCheck.work_streetAddress | Should -be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty streetAddress)
+            $ImportCheck.work_poBox | Should -be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty poBox)
+            $ImportCheck.work_city | Should -be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty locality)
+            $ImportCheck.work_state | Should -be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty region)
+            $ImportCheck.work_postalCode | Should -be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty postalCode)
+            $ImportCheck.work_country | Should -be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty country)
 
         }
 
@@ -113,19 +113,19 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
             $UpdateUserInfo = Get-JCUser -username $UpdateUser.username
             $UpdateCheck = $UserUpdateInfo | Where-Object Username -EQ "$($UpdateUser.username)"
 
-            $UpdateCheck.home_streetAddress | Should -be $($UpdateUserInfo.addresses | ? type -eq home | Select-Object -ExpandProperty streetAddress)
-            $UpdateCheck.home_poBox | Should -be $($UpdateUserInfo.addresses | ? type -eq home | Select-Object -ExpandProperty poBox)
-            $UpdateCheck.home_city | Should -be $($UpdateUserInfo.addresses | ? type -eq home | Select-Object -ExpandProperty locality)
-            $UpdateCheck.home_state | Should -be $($UpdateUserInfo.addresses | ? type -eq home | Select-Object -ExpandProperty region)
-            $UpdateCheck.home_postalCode | Should -be $($UpdateUserInfo.addresses | ? type -eq home | Select-Object -ExpandProperty postalCode)
-            $UpdateCheck.home_country | Should -be $($UpdateUserInfo.addresses | ? type -eq home | Select-Object -ExpandProperty country)
+            $UpdateCheck.home_streetAddress | Should -be $($UpdateUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty streetAddress)
+            $UpdateCheck.home_poBox | Should -be $($UpdateUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty poBox)
+            $UpdateCheck.home_city | Should -be $($UpdateUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty locality)
+            $UpdateCheck.home_state | Should -be $($UpdateUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty region)
+            $UpdateCheck.home_postalCode | Should -be $($UpdateUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty postalCode)
+            $UpdateCheck.home_country | Should -be $($UpdateUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty country)
 
-            $UpdateCheck.work_streetAddress | Should -be $($UpdateUserInfo.addresses | ? type -eq work | Select-Object -ExpandProperty streetAddress)
-            $UpdateCheck.work_poBox | Should -be $($UpdateUserInfo.addresses | ? type -eq work | Select-Object -ExpandProperty poBox)
-            $UpdateCheck.work_city | Should -be $($UpdateUserInfo.addresses | ? type -eq work | Select-Object -ExpandProperty locality)
-            $UpdateCheck.work_state | Should -be $($UpdateUserInfo.addresses | ? type -eq work | Select-Object -ExpandProperty region)
-            $UpdateCheck.work_postalCode | Should -be $($UpdateUserInfo.addresses | ? type -eq work | Select-Object -ExpandProperty postalCode)
-            $UpdateCheck.work_country | Should -be $($UpdateUserInfo.addresses | ? type -eq work | Select-Object -ExpandProperty country)
+            $UpdateCheck.work_streetAddress | Should -be $($UpdateUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty streetAddress)
+            $UpdateCheck.work_poBox | Should -be $($UpdateUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty poBox)
+            $UpdateCheck.work_city | Should -be $($UpdateUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty locality)
+            $UpdateCheck.work_state | Should -be $($UpdateUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty region)
+            $UpdateCheck.work_postalCode | Should -be $($UpdateUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty postalCode)
+            $UpdateCheck.work_country | Should -be $($UpdateUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty country)
 
         }
 
@@ -152,25 +152,25 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
             $ImportCheck.decription | Should -be $NewUserInfo.decription
             $ImportCheck.location | Should -be $NewUserInfo.location
 
-            $ImportCheck.mobile_number | Should -be $($NewUserInfo.phoneNumbers | ? type -eq mobile | Select-Object -ExpandProperty number)
-            $ImportCheck.home_number | Should -be $($NewUserInfo.phoneNumbers | ? type -eq home | Select-Object -ExpandProperty number)
-            $ImportCheck.work_number | Should -be $($NewUserInfo.phoneNumbers | ? type -eq work | Select-Object -ExpandProperty number)
-            $ImportCheck.work_mobile_number | Should -be $($NewUserInfo.phoneNumbers | ? type -eq work_mobile | Select-Object -ExpandProperty number)
-            $ImportCheck.work_fax_number | Should -be $($NewUserInfo.phoneNumbers | ? type -eq work_fax | Select-Object -ExpandProperty number)
+            $ImportCheck.mobile_number | Should -be $($NewUserInfo.phoneNumbers | Where-Object type -eq mobile | Select-Object -ExpandProperty number)
+            $ImportCheck.home_number | Should -be $($NewUserInfo.phoneNumbers | Where-Object type -eq home | Select-Object -ExpandProperty number)
+            $ImportCheck.work_number | Should -be $($NewUserInfo.phoneNumbers | Where-Object type -eq work | Select-Object -ExpandProperty number)
+            $ImportCheck.work_mobile_number | Should -be $($NewUserInfo.phoneNumbers | Where-Object type -eq work_mobile | Select-Object -ExpandProperty number)
+            $ImportCheck.work_fax_number | Should -be $($NewUserInfo.phoneNumbers | Where-Object type -eq work_fax | Select-Object -ExpandProperty number)
 
-            $ImportCheck.home_streetAddress | Should -be $($NewUserInfo.addresses | ? type -eq home | Select-Object -ExpandProperty streetAddress)
-            $ImportCheck.home_poBox | Should -be $($NewUserInfo.addresses | ? type -eq home | Select-Object -ExpandProperty poBox)
-            $ImportCheck.home_city | Should -be $($NewUserInfo.addresses | ? type -eq home | Select-Object -ExpandProperty locality)
-            $ImportCheck.home_state | Should -be $($NewUserInfo.addresses | ? type -eq home | Select-Object -ExpandProperty region)
-            $ImportCheck.home_postalCode | Should -be $($NewUserInfo.addresses | ? type -eq home | Select-Object -ExpandProperty postalCode)
-            $ImportCheck.home_country | Should -be $($NewUserInfo.addresses | ? type -eq home | Select-Object -ExpandProperty country)
+            $ImportCheck.home_streetAddress | Should -be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty streetAddress)
+            $ImportCheck.home_poBox | Should -be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty poBox)
+            $ImportCheck.home_city | Should -be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty locality)
+            $ImportCheck.home_state | Should -be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty region)
+            $ImportCheck.home_postalCode | Should -be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty postalCode)
+            $ImportCheck.home_country | Should -be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty country)
 
-            $ImportCheck.work_streetAddress | Should -be $($NewUserInfo.addresses | ? type -eq work | Select-Object -ExpandProperty streetAddress)
-            $ImportCheck.work_poBox | Should -be $($NewUserInfo.addresses | ? type -eq work | Select-Object -ExpandProperty poBox)
-            $ImportCheck.work_city | Should -be $($NewUserInfo.addresses | ? type -eq work | Select-Object -ExpandProperty locality)
-            $ImportCheck.work_state | Should -be $($NewUserInfo.addresses | ? type -eq work | Select-Object -ExpandProperty region)
-            $ImportCheck.work_postalCode | Should -be $($NewUserInfo.addresses | ? type -eq work | Select-Object -ExpandProperty postalCode)
-            $ImportCheck.work_country | Should -be $($NewUserInfo.addresses | ? type -eq work | Select-Object -ExpandProperty country)
+            $ImportCheck.work_streetAddress | Should -be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty streetAddress)
+            $ImportCheck.work_poBox | Should -be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty poBox)
+            $ImportCheck.work_city | Should -be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty locality)
+            $ImportCheck.work_state | Should -be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty region)
+            $ImportCheck.work_postalCode | Should -be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty postalCode)
+            $ImportCheck.work_country | Should -be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty country)
 
         }
 
@@ -183,19 +183,19 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
             $UpdateUserInfo = Get-JCUser -username $UpdateUser.username
             $UpdateCheck = $UserUpdateInfo | Where-Object Username -EQ "$($UpdateUser.username)"
 
-            $UpdateCheck.home_streetAddress | Should -be $($UpdateUserInfo.addresses | ? type -eq home | Select-Object -ExpandProperty streetAddress)
-            $UpdateCheck.home_poBox | Should -be $($UpdateUserInfo.addresses | ? type -eq home | Select-Object -ExpandProperty poBox)
-            $UpdateCheck.home_city | Should -be $($UpdateUserInfo.addresses | ? type -eq home | Select-Object -ExpandProperty locality)
-            $UpdateCheck.home_state | Should -be $($UpdateUserInfo.addresses | ? type -eq home | Select-Object -ExpandProperty region)
-            $UpdateCheck.home_postalCode | Should -be $($UpdateUserInfo.addresses | ? type -eq home | Select-Object -ExpandProperty postalCode)
-            $UpdateCheck.home_country | Should -be $($UpdateUserInfo.addresses | ? type -eq home | Select-Object -ExpandProperty country)
+            $UpdateCheck.home_streetAddress | Should -be $($UpdateUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty streetAddress)
+            $UpdateCheck.home_poBox | Should -be $($UpdateUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty poBox)
+            $UpdateCheck.home_city | Should -be $($UpdateUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty locality)
+            $UpdateCheck.home_state | Should -be $($UpdateUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty region)
+            $UpdateCheck.home_postalCode | Should -be $($UpdateUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty postalCode)
+            $UpdateCheck.home_country | Should -be $($UpdateUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty country)
 
-            $UpdateCheck.work_streetAddress | Should -be $($UpdateUserInfo.addresses | ? type -eq work | Select-Object -ExpandProperty streetAddress)
-            $UpdateCheck.work_poBox | Should -be $($UpdateUserInfo.addresses | ? type -eq work | Select-Object -ExpandProperty poBox)
-            $UpdateCheck.work_city | Should -be $($UpdateUserInfo.addresses | ? type -eq work | Select-Object -ExpandProperty locality)
-            $UpdateCheck.work_state | Should -be $($UpdateUserInfo.addresses | ? type -eq work | Select-Object -ExpandProperty region)
-            $UpdateCheck.work_postalCode | Should -be $($UpdateUserInfo.addresses | ? type -eq work | Select-Object -ExpandProperty postalCode)
-            $UpdateCheck.work_country | Should -be $($UpdateUserInfo.addresses | ? type -eq work | Select-Object -ExpandProperty country)
+            $UpdateCheck.work_streetAddress | Should -be $($UpdateUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty streetAddress)
+            $UpdateCheck.work_poBox | Should -be $($UpdateUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty poBox)
+            $UpdateCheck.work_city | Should -be $($UpdateUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty locality)
+            $UpdateCheck.work_state | Should -be $($UpdateUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty region)
+            $UpdateCheck.work_postalCode | Should -be $($UpdateUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty postalCode)
+            $UpdateCheck.work_country | Should -be $($UpdateUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty country)
 
             $UpdateCheck.MiddleName | Should -be $UpdateUserInfo.middleName
             $UpdateCheck.preferredName | Should -be $UpdateUserInfo.displayname
@@ -208,11 +208,11 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
             $UpdateCheck.decription | Should -be $UpdateUserInfo.decription
             $UpdateCheck.location | Should -be $UpdateUserInfo.location
 
-            $UpdateCheck.mobile_number | Should -be $($UpdateUserInfo.phoneNumbers | ? type -eq mobile | Select-Object -ExpandProperty number)
-            $UpdateCheck.home_number | Should -be $($UpdateUserInfo.phoneNumbers | ? type -eq home | Select-Object -ExpandProperty number)
-            $UpdateCheck.work_number | Should -be $($UpdateUserInfo.phoneNumbers | ? type -eq work | Select-Object -ExpandProperty number)
-            $UpdateCheck.work_mobile_number | Should -be $($UpdateUserInfo.phoneNumbers | ? type -eq work_mobile | Select-Object -ExpandProperty number)
-            $UpdateCheck.work_fax_number | Should -be $($UpdateUserInfo.phoneNumbers | ? type -eq work_fax | Select-Object -ExpandProperty number)
+            $UpdateCheck.mobile_number | Should -be $($UpdateUserInfo.phoneNumbers | Where-Object type -eq mobile | Select-Object -ExpandProperty number)
+            $UpdateCheck.home_number | Should -be $($UpdateUserInfo.phoneNumbers | Where-Object type -eq home | Select-Object -ExpandProperty number)
+            $UpdateCheck.work_number | Should -be $($UpdateUserInfo.phoneNumbers | Where-Object type -eq work | Select-Object -ExpandProperty number)
+            $UpdateCheck.work_mobile_number | Should -be $($UpdateUserInfo.phoneNumbers | Where-Object type -eq work_mobile | Select-Object -ExpandProperty number)
+            $UpdateCheck.work_fax_number | Should -be $($UpdateUserInfo.phoneNumbers | Where-Object type -eq work_fax | Select-Object -ExpandProperty number)
 
         }
 
@@ -240,25 +240,25 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
             $ImportCheck.decription | Should -be $NewUserInfo.decription
             $ImportCheck.location | Should -be $NewUserInfo.location
 
-            $ImportCheck.mobile_number | Should -be $($NewUserInfo.phoneNumbers | ? type -eq mobile | Select-Object -ExpandProperty number)
-            $ImportCheck.home_number | Should -be $($NewUserInfo.phoneNumbers | ? type -eq home | Select-Object -ExpandProperty number)
-            $ImportCheck.work_number | Should -be $($NewUserInfo.phoneNumbers | ? type -eq work | Select-Object -ExpandProperty number)
-            $ImportCheck.work_mobile_number | Should -be $($NewUserInfo.phoneNumbers | ? type -eq work_mobile | Select-Object -ExpandProperty number)
-            $ImportCheck.work_fax_number | Should -be $($NewUserInfo.phoneNumbers | ? type -eq work_fax | Select-Object -ExpandProperty number)
+            $ImportCheck.mobile_number | Should -be $($NewUserInfo.phoneNumbers | Where-Object type -eq mobile | Select-Object -ExpandProperty number)
+            $ImportCheck.home_number | Should -be $($NewUserInfo.phoneNumbers | Where-Object type -eq home | Select-Object -ExpandProperty number)
+            $ImportCheck.work_number | Should -be $($NewUserInfo.phoneNumbers | Where-Object type -eq work | Select-Object -ExpandProperty number)
+            $ImportCheck.work_mobile_number | Should -be $($NewUserInfo.phoneNumbers | Where-Object type -eq work_mobile | Select-Object -ExpandProperty number)
+            $ImportCheck.work_fax_number | Should -be $($NewUserInfo.phoneNumbers | Where-Object type -eq work_fax | Select-Object -ExpandProperty number)
 
-            $ImportCheck.home_streetAddress | Should -be $($NewUserInfo.addresses | ? type -eq home | Select-Object -ExpandProperty streetAddress)
-            $ImportCheck.home_poBox | Should -be $($NewUserInfo.addresses | ? type -eq home | Select-Object -ExpandProperty poBox)
-            $ImportCheck.home_city | Should -be $($NewUserInfo.addresses | ? type -eq home | Select-Object -ExpandProperty locality)
-            $ImportCheck.home_state | Should -be $($NewUserInfo.addresses | ? type -eq home | Select-Object -ExpandProperty region)
-            $ImportCheck.home_postalCode | Should -be $($NewUserInfo.addresses | ? type -eq home | Select-Object -ExpandProperty postalCode)
-            $ImportCheck.home_country | Should -be $($NewUserInfo.addresses | ? type -eq home | Select-Object -ExpandProperty country)
+            $ImportCheck.home_streetAddress | Should -be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty streetAddress)
+            $ImportCheck.home_poBox | Should -be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty poBox)
+            $ImportCheck.home_city | Should -be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty locality)
+            $ImportCheck.home_state | Should -be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty region)
+            $ImportCheck.home_postalCode | Should -be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty postalCode)
+            $ImportCheck.home_country | Should -be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty country)
 
-            $ImportCheck.work_streetAddress | Should -be $($NewUserInfo.addresses | ? type -eq work | Select-Object -ExpandProperty streetAddress)
-            $ImportCheck.work_poBox | Should -be $($NewUserInfo.addresses | ? type -eq work | Select-Object -ExpandProperty poBox)
-            $ImportCheck.work_city | Should -be $($NewUserInfo.addresses | ? type -eq work | Select-Object -ExpandProperty locality)
-            $ImportCheck.work_state | Should -be $($NewUserInfo.addresses | ? type -eq work | Select-Object -ExpandProperty region)
-            $ImportCheck.work_postalCode | Should -be $($NewUserInfo.addresses | ? type -eq work | Select-Object -ExpandProperty postalCode)
-            $ImportCheck.work_country | Should -be $($NewUserInfo.addresses | ? type -eq work | Select-Object -ExpandProperty country)
+            $ImportCheck.work_streetAddress | Should -be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty streetAddress)
+            $ImportCheck.work_poBox | Should -be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty poBox)
+            $ImportCheck.work_city | Should -be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty locality)
+            $ImportCheck.work_state | Should -be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty region)
+            $ImportCheck.work_postalCode | Should -be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty postalCode)
+            $ImportCheck.work_country | Should -be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty country)
 
         }
 
@@ -272,19 +272,19 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
             $UpdateCheck = $UserUpdateInfo | Where-Object Username -EQ "$($UpdateUser.username)"
             $GroupSysCheck = $UserUpdateCSVImport | Where-Object Username -EQ "$($UpdateUser.username)"
 
-            $UpdateCheck.home_streetAddress | Should -be $($UpdateUserInfo.addresses | ? type -eq home | Select-Object -ExpandProperty streetAddress)
-            $UpdateCheck.home_poBox | Should -be $($UpdateUserInfo.addresses | ? type -eq home | Select-Object -ExpandProperty poBox)
-            $UpdateCheck.home_city | Should -be $($UpdateUserInfo.addresses | ? type -eq home | Select-Object -ExpandProperty locality)
-            $UpdateCheck.home_state | Should -be $($UpdateUserInfo.addresses | ? type -eq home | Select-Object -ExpandProperty region)
-            $UpdateCheck.home_postalCode | Should -be $($UpdateUserInfo.addresses | ? type -eq home | Select-Object -ExpandProperty postalCode)
-            $UpdateCheck.home_country | Should -be $($UpdateUserInfo.addresses | ? type -eq home | Select-Object -ExpandProperty country)
+            $UpdateCheck.home_streetAddress | Should -be $($UpdateUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty streetAddress)
+            $UpdateCheck.home_poBox | Should -be $($UpdateUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty poBox)
+            $UpdateCheck.home_city | Should -be $($UpdateUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty locality)
+            $UpdateCheck.home_state | Should -be $($UpdateUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty region)
+            $UpdateCheck.home_postalCode | Should -be $($UpdateUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty postalCode)
+            $UpdateCheck.home_country | Should -be $($UpdateUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty country)
 
-            $UpdateCheck.work_streetAddress | Should -be $($UpdateUserInfo.addresses | ? type -eq work | Select-Object -ExpandProperty streetAddress)
-            $UpdateCheck.work_poBox | Should -be $($UpdateUserInfo.addresses | ? type -eq work | Select-Object -ExpandProperty poBox)
-            $UpdateCheck.work_city | Should -be $($UpdateUserInfo.addresses | ? type -eq work | Select-Object -ExpandProperty locality)
-            $UpdateCheck.work_state | Should -be $($UpdateUserInfo.addresses | ? type -eq work | Select-Object -ExpandProperty region)
-            $UpdateCheck.work_postalCode | Should -be $($UpdateUserInfo.addresses | ? type -eq work | Select-Object -ExpandProperty postalCode)
-            $UpdateCheck.work_country | Should -be $($UpdateUserInfo.addresses | ? type -eq work | Select-Object -ExpandProperty country)
+            $UpdateCheck.work_streetAddress | Should -be $($UpdateUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty streetAddress)
+            $UpdateCheck.work_poBox | Should -be $($UpdateUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty poBox)
+            $UpdateCheck.work_city | Should -be $($UpdateUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty locality)
+            $UpdateCheck.work_state | Should -be $($UpdateUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty region)
+            $UpdateCheck.work_postalCode | Should -be $($UpdateUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty postalCode)
+            $UpdateCheck.work_country | Should -be $($UpdateUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty country)
 
             $UpdateCheck.MiddleName | Should -be $UpdateUserInfo.middleName
             $UpdateCheck.preferredName | Should -be $UpdateUserInfo.displayname
@@ -297,23 +297,23 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
             $UpdateCheck.decription | Should -be $UpdateUserInfo.decription
             $UpdateCheck.location | Should -be $UpdateUserInfo.location
 
-            $UpdateCheck.mobile_number | Should -be $($UpdateUserInfo.phoneNumbers | ? type -eq mobile | Select-Object -ExpandProperty number)
-            $UpdateCheck.home_number | Should -be $($UpdateUserInfo.phoneNumbers | ? type -eq home | Select-Object -ExpandProperty number)
-            $UpdateCheck.work_number | Should -be $($UpdateUserInfo.phoneNumbers | ? type -eq work | Select-Object -ExpandProperty number)
-            $UpdateCheck.work_mobile_number | Should -be $($UpdateUserInfo.phoneNumbers | ? type -eq work_mobile | Select-Object -ExpandProperty number)
-            $UpdateCheck.work_fax_number | Should -be $($UpdateUserInfo.phoneNumbers | ? type -eq work_fax | Select-Object -ExpandProperty number)
+            $UpdateCheck.mobile_number | Should -be $($UpdateUserInfo.phoneNumbers | Where-Object type -eq mobile | Select-Object -ExpandProperty number)
+            $UpdateCheck.home_number | Should -be $($UpdateUserInfo.phoneNumbers | Where-Object type -eq home | Select-Object -ExpandProperty number)
+            $UpdateCheck.work_number | Should -be $($UpdateUserInfo.phoneNumbers | Where-Object type -eq work | Select-Object -ExpandProperty number)
+            $UpdateCheck.work_mobile_number | Should -be $($UpdateUserInfo.phoneNumbers | Where-Object type -eq work_mobile | Select-Object -ExpandProperty number)
+            $UpdateCheck.work_fax_number | Should -be $($UpdateUserInfo.phoneNumbers | Where-Object type -eq work_fax | Select-Object -ExpandProperty number)
 
             $GroupSysCheck | Where-Object Username -eq "$($UpdateUser.username)" | Select-Object -ExpandProperty systemAdd | Should -be '{"message":"Already Exists"}'
 
 
-            $GroupSysCheck | Where-Object Username -eq "$($UpdateUser.username)" | Select-Object -ExpandProperty GroupsAdd | Select-object Status -Unique | Select-Object -ExpandProperty Status | Should -be "Added"
+            $GroupSysCheck | Where-Object Username -eq "$($UpdateUser.username)" | Select-Object -ExpandProperty GroupsAdd | Select-Object Status -Unique | Select-Object -ExpandProperty Status | Should -be "Added"
 
         }
 
 
     }
 
-    Get-JCUser | ? Email -like *pleasedelete* | Remove-JCUser -force
+    Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
 
 
     It "Updates users from a CSV populated with no information" {
@@ -337,25 +337,25 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
             $ImportCheck.decription | Should -be $NewUserInfo.decription
             $ImportCheck.location | Should -be $NewUserInfo.location
 
-            $ImportCheck.mobile_number | Should -be $($NewUserInfo.phoneNumbers | ? type -eq mobile | Select-Object -ExpandProperty number)
-            $ImportCheck.home_number | Should -be $($NewUserInfo.phoneNumbers | ? type -eq home | Select-Object -ExpandProperty number)
-            $ImportCheck.work_number | Should -be $($NewUserInfo.phoneNumbers | ? type -eq work | Select-Object -ExpandProperty number)
-            $ImportCheck.work_mobile_number | Should -be $($NewUserInfo.phoneNumbers | ? type -eq work_mobile | Select-Object -ExpandProperty number)
-            $ImportCheck.work_fax_number | Should -be $($NewUserInfo.phoneNumbers | ? type -eq work_fax | Select-Object -ExpandProperty number)
+            $ImportCheck.mobile_number | Should -be $($NewUserInfo.phoneNumbers | Where-Object type -eq mobile | Select-Object -ExpandProperty number)
+            $ImportCheck.home_number | Should -be $($NewUserInfo.phoneNumbers | Where-Object type -eq home | Select-Object -ExpandProperty number)
+            $ImportCheck.work_number | Should -be $($NewUserInfo.phoneNumbers | Where-Object type -eq work | Select-Object -ExpandProperty number)
+            $ImportCheck.work_mobile_number | Should -be $($NewUserInfo.phoneNumbers | Where-Object type -eq work_mobile | Select-Object -ExpandProperty number)
+            $ImportCheck.work_fax_number | Should -be $($NewUserInfo.phoneNumbers | Where-Object type -eq work_fax | Select-Object -ExpandProperty number)
 
-            $ImportCheck.home_streetAddress | Should -be $($NewUserInfo.addresses | ? type -eq home | Select-Object -ExpandProperty streetAddress)
-            $ImportCheck.home_poBox | Should -be $($NewUserInfo.addresses | ? type -eq home | Select-Object -ExpandProperty poBox)
-            $ImportCheck.home_city | Should -be $($NewUserInfo.addresses | ? type -eq home | Select-Object -ExpandProperty locality)
-            $ImportCheck.home_state | Should -be $($NewUserInfo.addresses | ? type -eq home | Select-Object -ExpandProperty region)
-            $ImportCheck.home_postalCode | Should -be $($NewUserInfo.addresses | ? type -eq home | Select-Object -ExpandProperty postalCode)
-            $ImportCheck.home_country | Should -be $($NewUserInfo.addresses | ? type -eq home | Select-Object -ExpandProperty country)
+            $ImportCheck.home_streetAddress | Should -be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty streetAddress)
+            $ImportCheck.home_poBox | Should -be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty poBox)
+            $ImportCheck.home_city | Should -be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty locality)
+            $ImportCheck.home_state | Should -be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty region)
+            $ImportCheck.home_postalCode | Should -be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty postalCode)
+            $ImportCheck.home_country | Should -be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty country)
 
-            $ImportCheck.work_streetAddress | Should -be $($NewUserInfo.addresses | ? type -eq work | Select-Object -ExpandProperty streetAddress)
-            $ImportCheck.work_poBox | Should -be $($NewUserInfo.addresses | ? type -eq work | Select-Object -ExpandProperty poBox)
-            $ImportCheck.work_city | Should -be $($NewUserInfo.addresses | ? type -eq work | Select-Object -ExpandProperty locality)
-            $ImportCheck.work_state | Should -be $($NewUserInfo.addresses | ? type -eq work | Select-Object -ExpandProperty region)
-            $ImportCheck.work_postalCode | Should -be $($NewUserInfo.addresses | ? type -eq work | Select-Object -ExpandProperty postalCode)
-            $ImportCheck.work_country | Should -be $($NewUserInfo.addresses | ? type -eq work | Select-Object -ExpandProperty country)
+            $ImportCheck.work_streetAddress | Should -be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty streetAddress)
+            $ImportCheck.work_poBox | Should -be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty poBox)
+            $ImportCheck.work_city | Should -be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty locality)
+            $ImportCheck.work_state | Should -be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty region)
+            $ImportCheck.work_postalCode | Should -be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty postalCode)
+            $ImportCheck.work_country | Should -be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty country)
 
         }
 
@@ -377,30 +377,30 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
             $ImportCheck.decription | Should -be $NewUserInfo.decription
             $ImportCheck.location | Should -be $NewUserInfo.location
 
-            $ImportCheck.mobile_number | Should -be $($NewUserInfo.phoneNumbers | ? type -eq mobile | Select-Object -ExpandProperty number)
-            $ImportCheck.home_number | Should -be $($NewUserInfo.phoneNumbers | ? type -eq home | Select-Object -ExpandProperty number)
-            $ImportCheck.work_number | Should -be $($NewUserInfo.phoneNumbers | ? type -eq work | Select-Object -ExpandProperty number)
-            $ImportCheck.work_mobile_number | Should -be $($NewUserInfo.phoneNumbers | ? type -eq work_mobile | Select-Object -ExpandProperty number)
-            $ImportCheck.work_fax_number | Should -be $($NewUserInfo.phoneNumbers | ? type -eq work_fax | Select-Object -ExpandProperty number)
+            $ImportCheck.mobile_number | Should -be $($NewUserInfo.phoneNumbers | Where-Object type -eq mobile | Select-Object -ExpandProperty number)
+            $ImportCheck.home_number | Should -be $($NewUserInfo.phoneNumbers | Where-Object type -eq home | Select-Object -ExpandProperty number)
+            $ImportCheck.work_number | Should -be $($NewUserInfo.phoneNumbers | Where-Object type -eq work | Select-Object -ExpandProperty number)
+            $ImportCheck.work_mobile_number | Should -be $($NewUserInfo.phoneNumbers | Where-Object type -eq work_mobile | Select-Object -ExpandProperty number)
+            $ImportCheck.work_fax_number | Should -be $($NewUserInfo.phoneNumbers | Where-Object type -eq work_fax | Select-Object -ExpandProperty number)
 
-            $ImportCheck.home_streetAddress | Should -be $($NewUserInfo.addresses | ? type -eq home | Select-Object -ExpandProperty streetAddress)
-            $ImportCheck.home_poBox | Should -be $($NewUserInfo.addresses | ? type -eq home | Select-Object -ExpandProperty poBox)
-            $ImportCheck.home_city | Should -be $($NewUserInfo.addresses | ? type -eq home | Select-Object -ExpandProperty locality)
-            $ImportCheck.home_state | Should -be $($NewUserInfo.addresses | ? type -eq home | Select-Object -ExpandProperty region)
-            $ImportCheck.home_postalCode | Should -be $($NewUserInfo.addresses | ? type -eq home | Select-Object -ExpandProperty postalCode)
-            $ImportCheck.home_country | Should -be $($NewUserInfo.addresses | ? type -eq home | Select-Object -ExpandProperty country)
+            $ImportCheck.home_streetAddress | Should -be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty streetAddress)
+            $ImportCheck.home_poBox | Should -be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty poBox)
+            $ImportCheck.home_city | Should -be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty locality)
+            $ImportCheck.home_state | Should -be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty region)
+            $ImportCheck.home_postalCode | Should -be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty postalCode)
+            $ImportCheck.home_country | Should -be $($NewUserInfo.addresses | Where-Object type -eq home | Select-Object -ExpandProperty country)
 
-            $ImportCheck.work_streetAddress | Should -be $($NewUserInfo.addresses | ? type -eq work | Select-Object -ExpandProperty streetAddress)
-            $ImportCheck.work_poBox | Should -be $($NewUserInfo.addresses | ? type -eq work | Select-Object -ExpandProperty poBox)
-            $ImportCheck.work_city | Should -be $($NewUserInfo.addresses | ? type -eq work | Select-Object -ExpandProperty locality)
-            $ImportCheck.work_state | Should -be $($NewUserInfo.addresses | ? type -eq work | Select-Object -ExpandProperty region)
-            $ImportCheck.work_postalCode | Should -be $($NewUserInfo.addresses | ? type -eq work | Select-Object -ExpandProperty postalCode)
-            $ImportCheck.work_country | Should -be $($NewUserInfo.addresses | ? type -eq work | Select-Object -ExpandProperty country)
+            $ImportCheck.work_streetAddress | Should -be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty streetAddress)
+            $ImportCheck.work_poBox | Should -be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty poBox)
+            $ImportCheck.work_city | Should -be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty locality)
+            $ImportCheck.work_state | Should -be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty region)
+            $ImportCheck.work_postalCode | Should -be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty postalCode)
+            $ImportCheck.work_country | Should -be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty country)
 
         }
 
     }
 
-    Get-JCUser | ? Email -like *pleasedelete* | Remove-JCUser -force
+    Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
 
 }

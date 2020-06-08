@@ -1,5 +1,5 @@
 Describe -Tag:('JCPolicyResult') "Get-JCPolicyResult 1.10" {
-    Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
+    BeforeAll { Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null }
     It "Returns a policy result with the PolicyName" {
         $PolicyResult = Get-JCPolicyResult $SinglePolicy.Name
         $PolicyResult.count | Should -BeGreaterThan 0

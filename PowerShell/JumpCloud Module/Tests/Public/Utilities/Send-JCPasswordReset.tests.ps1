@@ -1,5 +1,5 @@
 Describe -Tag:('JCPasswordReset') "Sent-JCPasswordReset 1.6.0" {
-    Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
+    BeforeAll { Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null }
     It "Sends a single password reset email by username" {
 
         $SingleResetEmail = Send-JCPasswordReset -username $PesterParams_Username
