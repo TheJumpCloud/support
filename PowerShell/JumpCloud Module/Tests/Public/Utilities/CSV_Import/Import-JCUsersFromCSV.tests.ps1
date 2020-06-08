@@ -27,7 +27,7 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $User.activated | Should be $true
 
-        $Bound = Get-JCSystemUser -SystemID $PesterParams.SystemID | Where-Object username -EQ 'a.bound.std'
+        $Bound = Get-JCSystemUser -SystemID $PesterParams_SystemID | Where-Object username -EQ 'a.bound.std'
 
         $Bound.DirectBind | Should Be $true
 
@@ -41,7 +41,7 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $User.activated | Should be $true
 
-        $Bound = Get-JCSystemUser -SystemID $PesterParams.SystemID | Where-Object username -EQ 'a.bound.true1'
+        $Bound = Get-JCSystemUser -SystemID $PesterParams_SystemID | Where-Object username -EQ 'a.bound.true1'
 
         $Bound.DirectBind | Should Be $true
 
@@ -55,7 +55,7 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $User.activated | Should be $true
 
-        $Bound = Get-JCSystemUser -SystemID $PesterParams.SystemID | Where-Object username -EQ 'a.bound.false1'
+        $Bound = Get-JCSystemUser -SystemID $PesterParams_SystemID | Where-Object username -EQ 'a.bound.false1'
 
         $Bound.DirectBind | Should Be $true
 
@@ -69,7 +69,7 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $User.activated | Should be $true
 
-        $Bound = Get-JCSystemUser -SystemID $PesterParams.SystemID | Where-Object username -EQ 'a.bound.true2'
+        $Bound = Get-JCSystemUser -SystemID $PesterParams_SystemID | Where-Object username -EQ 'a.bound.true2'
 
         $Bound.DirectBind | Should Be $true
 
@@ -83,7 +83,7 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $User.activated | Should be $true
 
-        $Bound = Get-JCSystemUser -SystemID $PesterParams.SystemID | Where-Object username -EQ 'a.bound.false2'
+        $Bound = Get-JCSystemUser -SystemID $PesterParams_SystemID | Where-Object username -EQ 'a.bound.false2'
 
         $Bound.DirectBind | Should Be $true
 
@@ -97,7 +97,7 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $User.activated | Should be $false
 
-        $Bound = Get-JCSystemUser -SystemID $PesterParams.SystemID | Where-Object username -EQ 'ia.bound.std'
+        $Bound = Get-JCSystemUser -SystemID $PesterParams_SystemID | Where-Object username -EQ 'ia.bound.std'
 
         $Bound.DirectBind | Should Be $true
 
@@ -111,7 +111,7 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $User.activated | Should be $false
 
-        $Bound = Get-JCSystemUser -SystemID $PesterParams.SystemID | Where-Object username -EQ 'ia.bound.true1'
+        $Bound = Get-JCSystemUser -SystemID $PesterParams_SystemID | Where-Object username -EQ 'ia.bound.true1'
 
         $Bound.DirectBind | Should Be $true
 
@@ -125,7 +125,7 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $User.activated | Should be $false
 
-        $Bound = Get-JCSystemUser -SystemID $PesterParams.SystemID | Where-Object username -EQ 'ia.bound.false1'
+        $Bound = Get-JCSystemUser -SystemID $PesterParams_SystemID | Where-Object username -EQ 'ia.bound.false1'
 
         $Bound.DirectBind | Should Be $true
 
@@ -139,7 +139,7 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $User.activated | Should be $false
 
-        $Bound = Get-JCSystemUser -SystemID $PesterParams.SystemID | Where-Object username -EQ 'ia.bound.true2'
+        $Bound = Get-JCSystemUser -SystemID $PesterParams_SystemID | Where-Object username -EQ 'ia.bound.true2'
 
         $Bound.DirectBind | Should Be $true
 
@@ -153,7 +153,7 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $User.activated | Should be $false
 
-        $Bound = Get-JCSystemUser -SystemID $PesterParams.SystemID | Where-Object username -EQ 'ia.bound.false2'
+        $Bound = Get-JCSystemUser -SystemID $PesterParams_SystemID | Where-Object username -EQ 'ia.bound.false2'
 
         $Bound.DirectBind | Should Be $true
 
@@ -307,7 +307,7 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $Groups.count | Should Be 5
 
-        $Bound = Get-JCSystemUser -SystemID $PesterParams.SystemID | Where-Object username -EQ 'a.all'
+        $Bound = Get-JCSystemUser -SystemID $PesterParams_SystemID | Where-Object username -EQ 'a.all'
 
         $Bound.DirectBind | Should Be $true
 
@@ -327,7 +327,7 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $Groups.count | Should Be 5
 
-        $Bound = Get-JCSystemUser -SystemID $PesterParams.SystemID | Where-Object username -EQ 'ia.all'
+        $Bound = Get-JCSystemUser -SystemID $PesterParams_SystemID | Where-Object username -EQ 'ia.all'
 
         $Bound.DirectBind | Should Be $true
 

@@ -6,7 +6,7 @@ Describe -Tag:('JCSystem') 'Get-JCSystem 1.0' {
     }
 
     It "Gets a single JumpCloud system" {
-        $SingleSystem = Get-JCSystem -SystemID $PesterParams.SystemID
+        $SingleSystem = Get-JCSystem -SystemID $PesterParams_SystemID
         $SingleSystem.id.Count | Should -be 1
     }
 
@@ -17,9 +17,9 @@ Describe -Tag:('JCSystem') "Get-JCSystem 1.4" {
 
     It "Gets a JumpCloud system by system ID" {
 
-        $SystemInfo = Get-JCSystem -SystemID $PesterParams.SystemID
+        $SystemInfo = Get-JCSystem -SystemID $PesterParams_SystemID
         $PesterSystem = Get-JCSystem -SystemID $SystemInfo._id
-        $PesterSystem._id | Should Be $PesterParams.SystemID
+        $PesterSystem._id | Should Be $PesterParams_SystemID
     }
 
     It "Returns all JumpCloud systems" {
@@ -31,21 +31,21 @@ Describe -Tag:('JCSystem') "Get-JCSystem 1.4" {
 
     It "Searches for JumpCloud system by hostname wildcard end" {
 
-        $SystemInfo = Get-JCSystem -SystemID $PesterParams.SystemID
+        $SystemInfo = Get-JCSystem -SystemID $PesterParams_SystemID
         $PesterSystem = Get-JCSystem -hostname "$($SystemInfo.hostname.Substring(0,$SystemInfo.hostname.Length-1))*"
         $PesterSystem.hostname.count | Should -BeGreaterThan 0
     }
 
     It "Searches for JumpCloud system by hostname wildcard beginning" {
 
-        $SystemInfo = Get-JCSystem -SystemID $PesterParams.SystemID
+        $SystemInfo = Get-JCSystem -SystemID $PesterParams_SystemID
         $PesterSystem = Get-JCSystem -hostname "*$($SystemInfo.hostname.Substring(1))"
         $PesterSystem.hostname.count | Should -BeGreaterThan 0
     }
 
     It "Searches for JumpCloud system by hostname wildcard beginning and end" {
 
-        $SystemInfo = Get-JCSystem -SystemID $PesterParams.SystemID
+        $SystemInfo = Get-JCSystem -SystemID $PesterParams_SystemID
         $PesterSystem = Get-JCSystem -hostname "*$($($SystemInfo.hostname.Substring(0,$SystemInfo.hostname.Length-1)).Substring(1))*"
         $PesterSystem.hostname.count | Should -BeGreaterThan 0
     }
@@ -53,21 +53,21 @@ Describe -Tag:('JCSystem') "Get-JCSystem 1.4" {
 
     It "Searches for JumpCloud system by displayname wildcard end" {
 
-        $SystemInfo = Get-JCSystem -SystemID $PesterParams.SystemID
+        $SystemInfo = Get-JCSystem -SystemID $PesterParams_SystemID
         $PesterSystem = Get-JCSystem -displayname "$($SystemInfo.displayname.Substring(0,$SystemInfo.displayname.Length-1))*"
         $PesterSystem.displayname.count | Should -BeGreaterThan 0
     }
 
     It "Searches for JumpCloud system by displayname wildcard beginning" {
 
-        $SystemInfo = Get-JCSystem -SystemID $PesterParams.SystemID
+        $SystemInfo = Get-JCSystem -SystemID $PesterParams_SystemID
         $PesterSystem = Get-JCSystem -displayname "*$($SystemInfo.displayname.Substring(1))"
         $PesterSystem.displayname.count | Should -BeGreaterThan 0
     }
 
     It "Searches for JumpCloud system by displayname wildcard beginning and end" {
 
-        $SystemInfo = Get-JCSystem -SystemID $PesterParams.SystemID
+        $SystemInfo = Get-JCSystem -SystemID $PesterParams_SystemID
         $PesterSystem = Get-JCSystem -displayname "*$($($SystemInfo.displayname.Substring(0,$SystemInfo.displayname.Length-1)).Substring(1))*"
         $PesterSystem.displayname.count | Should -BeGreaterThan 0
     }
@@ -76,28 +76,28 @@ Describe -Tag:('JCSystem') "Get-JCSystem 1.4" {
     It "Searches for JumpCloud system by version" {
 
 
-        $SystemInfo = Get-JCSystem -SystemID $PesterParams.SystemID
+        $SystemInfo = Get-JCSystem -SystemID $PesterParams_SystemID
         $PesterSystem = Get-JCSystem -version $SystemInfo.version
         $PesterSystem.version | Select-Object -Unique | Should -Be $($SystemInfo.version)
     }
 
     It "Searches for JumpCloud system by templateName wildcard end" {
 
-        $SystemInfo = Get-JCSystem -SystemID $PesterParams.SystemID
+        $SystemInfo = Get-JCSystem -SystemID $PesterParams_SystemID
         $PesterSystem = Get-JCSystem -templateName "$($SystemInfo.templateName.Substring(0,$SystemInfo.templateName.Length-1))*"
         $PesterSystem.templateName.count | Should -BeGreaterThan 0
     }
 
     It "Searches for JumpCloud system by templateName wildcard beginning" {
 
-        $SystemInfo = Get-JCSystem -SystemID $PesterParams.SystemID
+        $SystemInfo = Get-JCSystem -SystemID $PesterParams_SystemID
         $PesterSystem = Get-JCSystem -templateName "*$($SystemInfo.templateName.Substring(1))"
         $PesterSystem.templateName.count | Should -BeGreaterThan 0
     }
 
     It "Searches for JumpCloud system by templateName wildcard beginning and end" {
 
-        $SystemInfo = Get-JCSystem -SystemID $PesterParams.SystemID
+        $SystemInfo = Get-JCSystem -SystemID $PesterParams_SystemID
         $PesterSystem = Get-JCSystem -templateName "*$($($SystemInfo.templateName.Substring(0,$SystemInfo.templateName.Length-1)).Substring(1))*"
         $PesterSystem.templateName.count | Should -BeGreaterThan 0
     }
@@ -105,21 +105,21 @@ Describe -Tag:('JCSystem') "Get-JCSystem 1.4" {
 
     It "Searches for JumpCloud system by os wildcard end" {
 
-        $SystemInfo = Get-JCSystem -SystemID $PesterParams.SystemID
+        $SystemInfo = Get-JCSystem -SystemID $PesterParams_SystemID
         $PesterSystem = Get-JCSystem -os "$($SystemInfo.os.Substring(0,$SystemInfo.os.Length-1))*"
         $PesterSystem.os.count | Should -BeGreaterThan 0
     }
 
     It "Searches for JumpCloud system by os wildcard beginning" {
 
-        $SystemInfo = Get-JCSystem -SystemID $PesterParams.SystemID
+        $SystemInfo = Get-JCSystem -SystemID $PesterParams_SystemID
         $PesterSystem = Get-JCSystem -os "*$($SystemInfo.os.Substring(1))"
         $PesterSystem.os.count | Should -BeGreaterThan 0
     }
 
     It "Searches for JumpCloud system by os wildcard beginning and end" {
 
-        $SystemInfo = Get-JCSystem -SystemID $PesterParams.SystemID
+        $SystemInfo = Get-JCSystem -SystemID $PesterParams_SystemID
         $PesterSystem = Get-JCSystem -os "*$($($SystemInfo.os.Substring(0,$SystemInfo.os.Length-1)).Substring(1))*"
         $PesterSystem.os.count | Should -BeGreaterThan 0
     }
@@ -127,63 +127,63 @@ Describe -Tag:('JCSystem') "Get-JCSystem 1.4" {
 
     It "Searches for JumpCloud system by remoteIP wildcard end" {
 
-        $SystemInfo = Get-JCSystem -SystemID $PesterParams.SystemID
+        $SystemInfo = Get-JCSystem -SystemID $PesterParams_SystemID
         $PesterSystem = Get-JCSystem -remoteIP "$($SystemInfo.remoteIP.Substring(0,$SystemInfo.remoteIP.Length-1))*"
         $PesterSystem.remoteIP.count | Should -BeGreaterThan 0
     }
 
     It "Searches for JumpCloud system by remoteIP wildcard beginning" {
 
-        $SystemInfo = Get-JCSystem -SystemID $PesterParams.SystemID
+        $SystemInfo = Get-JCSystem -SystemID $PesterParams_SystemID
         $PesterSystem = Get-JCSystem -remoteIP "*$($SystemInfo.remoteIP.Substring(1))"
         $PesterSystem.remoteIP.count | Should -BeGreaterThan 0
     }
 
     It "Searches for JumpCloud system by remoteIP wildcard beginning and end" {
 
-        $SystemInfo = Get-JCSystem -SystemID $PesterParams.SystemID
+        $SystemInfo = Get-JCSystem -SystemID $PesterParams_SystemID
         $PesterSystem = Get-JCSystem -remoteIP "*$($($SystemInfo.remoteIP.Substring(0,$SystemInfo.remoteIP.Length-1)).Substring(1))*"
         $PesterSystem.remoteIP.count | Should -BeGreaterThan 0
     }
 
     It "Searches for JumpCloud system by serialNumber wildcard end" {
 
-        $SystemInfo = Get-JCSystem -SystemID $PesterParams.SystemID
+        $SystemInfo = Get-JCSystem -SystemID $PesterParams_SystemID
         $PesterSystem = Get-JCSystem -serialNumber "$($SystemInfo.serialNumber.Substring(0,$SystemInfo.serialNumber.Length-1))*"
         $PesterSystem.serialNumber.count | Should -BeGreaterThan 0
     }
 
     It "Searches for JumpCloud system by serialNumber wildcard beginning" {
 
-        $SystemInfo = Get-JCSystem -SystemID $PesterParams.SystemID
+        $SystemInfo = Get-JCSystem -SystemID $PesterParams_SystemID
         $PesterSystem = Get-JCSystem -serialNumber "*$($SystemInfo.serialNumber.Substring(1))"
         $PesterSystem.serialNumber.count | Should -BeGreaterThan 0
     }
 
     It "Searches for JumpCloud system by serialNumber wildcard beginning and end" {
 
-        $SystemInfo = Get-JCSystem -SystemID $PesterParams.SystemID
+        $SystemInfo = Get-JCSystem -SystemID $PesterParams_SystemID
         $PesterSystem = Get-JCSystem -serialNumber "*$($($SystemInfo.serialNumber.Substring(0,$SystemInfo.serialNumber.Length-1)).Substring(1))*"
         $PesterSystem.serialNumber.count | Should -BeGreaterThan 0
     }
 
     It "Searches for JumpCloud system by agentVersion wildcard end" {
 
-        $SystemInfo = Get-JCSystem -SystemID $PesterParams.SystemID
+        $SystemInfo = Get-JCSystem -SystemID $PesterParams_SystemID
         $PesterSystem = Get-JCSystem -agentVersion "$($SystemInfo.agentVersion.Substring(0,$SystemInfo.agentVersion.Length-1))*"
         $PesterSystem.agentVersion.count | Should -BeGreaterThan 0
     }
 
     It "Searches for JumpCloud system by agentVersion wildcard beginning" {
 
-        $SystemInfo = Get-JCSystem -SystemID $PesterParams.SystemID
+        $SystemInfo = Get-JCSystem -SystemID $PesterParams_SystemID
         $PesterSystem = Get-JCSystem -agentVersion "*$($SystemInfo.agentVersion.Substring(1))"
         $PesterSystem.agentVersion.count | Should -BeGreaterThan 0
     }
 
     It "Searches for JumpCloud system by agentVersion wildcard beginning and end" {
 
-        $SystemInfo = Get-JCSystem -SystemID $PesterParams.SystemID
+        $SystemInfo = Get-JCSystem -SystemID $PesterParams_SystemID
         $PesterSystem = Get-JCSystem -agentVersion "*$($($SystemInfo.agentVersion.Substring(0,$SystemInfo.agentVersion.Length-1)).Substring(1))*"
         $PesterSystem.agentVersion.count | Should -BeGreaterThan 0
     }
@@ -194,7 +194,7 @@ Describe -Tag:('JCSystem') "Get-JCSystem 1.4" {
 
     It "Searches for JumpCloud system by systemTimezone" {
 
-        $SystemInfo = Get-JCSystem -SystemID $PesterParams.SystemID
+        $SystemInfo = Get-JCSystem -SystemID $PesterParams_SystemID
         $PesterSystem = Get-JCSystem -systemTimezone $SystemInfo.systemTimezone
         $PesterSystem.systemTimezone | Select-Object -Unique | Should -Be $SystemInfo.systemTimezone
     }
@@ -271,7 +271,7 @@ Describe -Tag:('JCSystem') "Get-JCSystem 1.4" {
     }
 
     It "Searches for a JumpCloud system using hostname and returns all properties " {
-        $Sys = Get-JCSystem -systemID $PesterParams.SystemID
+        $Sys = Get-JCSystem -systemID $PesterParams_SystemID
 
         $PesterSystem = Get-JCSystem -hostname $Sys.hostname -returnProperties 'created', 'active', 'agentVersion', 'allowMultiFactorAuthentication', 'allowPublicKeyAuthentication', 'allowSshPasswordAuthentication', 'allowSshRootLogin', 'arch', 'created', 'displayName', 'hostname', 'lastContact', 'modifySSHDConfig', 'organization', 'os', 'remoteIP', 'serialNumber', 'systemTimezone', 'templateName', 'version'
         $PesterSystem.created | Should -Not -Be $null

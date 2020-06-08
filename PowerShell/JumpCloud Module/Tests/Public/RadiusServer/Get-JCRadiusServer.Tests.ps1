@@ -4,7 +4,7 @@ Describe -Tag:('JCRadiusServer') 'Get-JCRadiusServer Tests' {
     #     'sharedSecret'    = 'f3TkHSK2GT4JR!W9tugRPp2zQnAVObv'
     #     'name'            = 'PesterTest_RadiusServer'
     # }
-    $RadiusServerTemplate = Get-JCRadiusServer -Name:($PesterParams.RadiusServerName); # -Fields:('') -Filter:('') -Limit:(1) -Skip:(1) -Paginate:($true) -Force;
+    $RadiusServerTemplate = Get-JCRadiusServer -Name:($PesterParams_RadiusServerName); # -Fields:('') -Filter:('') -Limit:(1) -Skip:(1) -Paginate:($true) -Force;
     Context 'Set-JCRadiusServer' {
         It ('Should update a radius server ByName.') {
             $RadiusServer = Set-JCRadiusServer -Name:($RadiusServerTemplate.name) -newName:('Something') -networkSourceIp:('246.246.246.246') -sharedSecret:('kldFaSDfAdgfAgxcxWEQTRDS') -Force;
@@ -21,7 +21,7 @@ Describe -Tag:('JCRadiusServer') 'Get-JCRadiusServer Tests' {
             $RadiusServer.sharedSecret | Should -Be 'aseRDGsDFGSDfgBsdRFTygSW'
         }
         It ('Should revert radius server changes.') {
-            $RadiusServer = $RadiusServerTemplate | Set-JCRadiusServer -Name:('SomethingElse') -newName:($PesterParams.RadiusServerName) -Force;
+            $RadiusServer = $RadiusServerTemplate | Set-JCRadiusServer -Name:('SomethingElse') -newName:($PesterParams_RadiusServerName) -Force;
             $RadiusServer | Should -Not -BeNullOrEmpty
         }
         # It ('Should return a specific radius server ByValue (ById).') {
@@ -50,7 +50,7 @@ Describe -Tag:('JCRadiusServer') 'Get-JCRadiusServer Tests' {
         }
     }
 
-    $RadiusServerTemplate = Get-JCRadiusServer -Name:($PesterParams.RadiusServerName); # -Fields:('') -Filter:('') -Limit:(1) -Skip:(1) -Paginate:($true) -Force;
+    $RadiusServerTemplate = Get-JCRadiusServer -Name:($PesterParams_RadiusServerName); # -Fields:('') -Filter:('') -Limit:(1) -Skip:(1) -Paginate:($true) -Force;
     Context 'Get-JCRadiusServer' {
         It ('Should return all radius servers.') {
             $RadiusServer = Get-JCRadiusServer; # -Fields:('') -Filter:('') -Limit:(1) -Skip:(1) -Paginate:($true) -Force;

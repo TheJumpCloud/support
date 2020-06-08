@@ -4,17 +4,17 @@ Describe -Tag:('JCUser') 'Get-JCUser 1.0' {
         $Users._id.count | Should -BeGreaterThan 1 }
 
     It 'Get a single JumpCloud user by Username' {
-        $User = Get-JCUser -Username $PesterParams.Username
+        $User = Get-JCUser -Username $PesterParams_Username
         $User._id.count | Should -Be 1
     }
 
     It 'Get a single JumpCloud user by UserID' {
-        $User = Get-JCUser -UserID $PesterParams.UserID
+        $User = Get-JCUser -UserID $PesterParams_UserID
         $User._id.count | Should -Be 1
     }
 
     It 'Get multiple JumpCloud users via the pipeline using User ID' {
-        $Users = Get-JCUser | Select-Object -Last 2 | % { Get-JCUser -UserID $_._id }
+        $Users = Get-JCUser | Select-Object -Last 2 | ForEach-Object { Get-JCUser -UserID $_._id }
         $Users._id.count | Should -Be 2
     }
 }
@@ -64,8 +64,8 @@ Describe -Tag:('JCUser') 'Get-JCUser 1.1' {
 Describe -Tag:('JCUser') "Get-JCUser 1.4" {
 
     It "Returns a JumpCloud user by UserID" {
-        $PesterUser = Get-JCUser -userid $PesterParams.UserID
-        $PesterUser._id | Should -be $PesterParams.UserID
+        $PesterUser = Get-JCUser -userid $PesterParams_UserID
+        $PesterUser._id | Should -be $PesterParams_UserID
     }
 
     It "Returns all JumpCloud users" {
@@ -92,127 +92,127 @@ Describe -Tag:('JCUser') "Get-JCUser 1.4" {
     }
 
     It "Searches for a JumpCloud user by firstname and wildcard end" {
-        $PesterUser = Get-JCUser -firstname "Peste*" -username $PesterParams.Username
+        $PesterUser = Get-JCUser -firstname "Peste*" -username $PesterParams_Username
         $PesterUser.username | Should -BeGreaterThan 0
     }
 
     It "Searches for a JumpCloud user by firstname and wildcard beginning" {
-        $PesterUser = Get-JCUser -firstname "*ester" -username $PesterParams.Username
+        $PesterUser = Get-JCUser -firstname "*ester" -username $PesterParams_Username
         $PesterUser.username | Should -BeGreaterThan 0
     }
 
     It "Searches for a JumpCloud user by firstname and wildcard beginning and wildcard end" {
-        $PesterUser = Get-JCUser -firstname "*este*" -username $PesterParams.Username
+        $PesterUser = Get-JCUser -firstname "*este*" -username $PesterParams_Username
         $PesterUser.username | Should -BeGreaterThan 0
     }
 
     It "Searches for a JumpCloud user by lastname and wildcard end" {
-        $PesterUser = Get-JCUser -lastname "Test*" -username $PesterParams.Username
+        $PesterUser = Get-JCUser -lastname "Test*" -username $PesterParams_Username
         $PesterUser.username | Should -BeGreaterThan 0
     }
 
     It "Searches for a JumpCloud user by lastname and wildcard beginning" {
-        $PesterUser = Get-JCUser -lastname "*ester" -username $PesterParams.Username
+        $PesterUser = Get-JCUser -lastname "*ester" -username $PesterParams_Username
         $PesterUser.username | Should -BeGreaterThan 0
     }
 
     It "Searches for a JumpCloud user by lastname and wildcard beginning and wildcard end" {
-        $PesterUser = Get-JCUser -lastname "*este*" -username $PesterParams.Username
+        $PesterUser = Get-JCUser -lastname "*este*" -username $PesterParams_Username
         $PesterUser.username | Should -BeGreaterThan 0
     }
 
     It "Searches for a JumpCloud user by email and wildcard beginning" {
-        $PesterUser = Get-JCUser -email "*.com" -username $PesterParams.Username
+        $PesterUser = Get-JCUser -email "*.com" -username $PesterParams_Username
         $PesterUser.username | Should -BeGreaterThan 0
     }
 
     It "Searches for a JumpCloud user by email and wildcard beginning and wildcard end" {
-        $PesterUser = Get-JCUser -email "*.co*" -username $PesterParams.Username
+        $PesterUser = Get-JCUser -email "*.co*" -username $PesterParams_Username
         $PesterUser.username | Should -BeGreaterThan 0
     }
 
     It "Searches for a JumpCloud user by username and sudo" {
-        $PesterUser = Get-JCUser -username $PesterParams.Username -sudo $false
-        $PesterUser.username | Should -be $PesterParams.Username
+        $PesterUser = Get-JCUser -username $PesterParams_Username -sudo $false
+        $PesterUser.username | Should -be $PesterParams_Username
     }
 
     It "Searches for a JumpCloud user by username and enable_managed_uid" {
-        $PesterUser = Get-JCUser -username $PesterParams.Username -enable_managed_uid $false
-        $PesterUser.username | Should -be $PesterParams.Username
+        $PesterUser = Get-JCUser -username $PesterParams_Username -enable_managed_uid $false
+        $PesterUser.username | Should -be $PesterParams_Username
     }
 
     It "Searches for a JumpCloud user by username and activated" {
-        $PesterUser = Get-JCUser -username $PesterParams.Username -activated $true
-        $PesterUser.username | Should -be $PesterParams.Username
+        $PesterUser = Get-JCUser -username $PesterParams_Username -activated $true
+        $PesterUser.username | Should -be $PesterParams_Username
     }
 
     It "Searches for a JumpCloud user by username and password_expired" {
-        $PesterUser = Get-JCUser -username $PesterParams.Username -password_expired $false
-        $PesterUser.username | Should -be $PesterParams.Username
+        $PesterUser = Get-JCUser -username $PesterParams_Username -password_expired $false
+        $PesterUser.username | Should -be $PesterParams_Username
     }
 
     It "Searches for a JumpCloud user by username and passwordless_sudo" {
-        $PesterUser = Get-JCUser -username $PesterParams.Username -passwordless_sudo $false
-        $PesterUser.username | Should -be $PesterParams.Username
+        $PesterUser = Get-JCUser -username $PesterParams_Username -passwordless_sudo $false
+        $PesterUser.username | Should -be $PesterParams_Username
     }
 
     It "Searches for a JumpCloud user by username and externally_managed" {
-        $PesterUser = Get-JCUser -username $PesterParams.Username -externally_managed $false
-        $PesterUser.username | Should -be $PesterParams.Username
+        $PesterUser = Get-JCUser -username $PesterParams_Username -externally_managed $false
+        $PesterUser.username | Should -be $PesterParams_Username
     }
 
     It "Searches for a JumpCloud user by username and ldap_binding_user" {
-        $PesterUser = Get-JCUser -username $PesterParams.Username -ldap_binding_user $false
-        $PesterUser.username | Should -be $PesterParams.Username
+        $PesterUser = Get-JCUser -username $PesterParams_Username -ldap_binding_user $false
+        $PesterUser.username | Should -be $PesterParams_Username
     }
 
     It "Searches for a JumpCloud user by username and enable_user_portal_multifactor" {
-        $PesterUser = Get-JCUser -username $PesterParams.Username -enable_user_portal_multifactor $false
-        $PesterUser.username | Should -be $PesterParams.Username
+        $PesterUser = Get-JCUser -username $PesterParams_Username -enable_user_portal_multifactor $false
+        $PesterUser.username | Should -be $PesterParams_Username
     }
 
     It "Searches for a JumpCloud user by username and totp_enabled" {
-        $PesterUser = Get-JCUser -username $PesterParams.Username -totp_enabled $false
-        $PesterUser.username | Should -be $PesterParams.Username
+        $PesterUser = Get-JCUser -username $PesterParams_Username -totp_enabled $false
+        $PesterUser.username | Should -be $PesterParams_Username
     }
 
     It "Searches for a JumpCloud user by username and allow_public_key" {
-        $PesterUser = Get-JCUser -username $PesterParams.Username -allow_public_key $false
-        $PesterUser.username | Should -be $PesterParams.Username
+        $PesterUser = Get-JCUser -username $PesterParams_Username -allow_public_key $false
+        $PesterUser.username | Should -be $PesterParams_Username
     }
 
 
     It "Searches for a JumpCloud user by username and samba_service_user" {
-        $PesterUser = Get-JCUser -username $PesterParams.Username -samba_service_user $false
-        $PesterUser.username | Should -be $PesterParams.Username
+        $PesterUser = Get-JCUser -username $PesterParams_Username -samba_service_user $false
+        $PesterUser.username | Should -be $PesterParams_Username
     }
 
     It "Searches for a JumpCloud user by username and password_never_expires" {
-        $PesterUser = Get-JCUser -username $PesterParams.Username -password_never_expires $true
-        $PesterUser.username | Should -be $PesterParams.Username
+        $PesterUser = Get-JCUser -username $PesterParams_Username -password_never_expires $true
+        $PesterUser.username | Should -be $PesterParams_Username
     }
 
     It "Searches for a JumpCloud user using username, filterDateProperty created and before" {
 
-        $PesterUser = Get-JCUser -username $PesterParams.Username -filterDateProperty created -dateFilter before -date '6/3/2020'
-        $PesterUser.username | Should -be $PesterParams.Username
+        $PesterUser = Get-JCUser -username $PesterParams_Username -filterDateProperty created -dateFilter before -date '6/3/2020'
+        $PesterUser.username | Should -be $PesterParams_Username
 
     }
 
     It "Searches for a JumpCloud user using username, filterDateProperty created and after" {
 
-        $PesterUser = Get-JCUser -username $PesterParams.Username -filterDateProperty created -dateFilter after -date '1/1/2018'
-        $PesterUser.username | Should -be $PesterParams.Username
+        $PesterUser = Get-JCUser -username $PesterParams_Username -filterDateProperty created -dateFilter after -date '1/1/2018'
+        $PesterUser.username | Should -be $PesterParams_Username
 
     }
 
     It "Searches for a JumpCloud user using username and returns on the username property" {
-        $PesterUser = Get-JCUser -username $PesterParams.Username -returnProperties username
-        $PesterUser.username | Should -be $PesterParams.Username
+        $PesterUser = Get-JCUser -username $PesterParams_Username -returnProperties username
+        $PesterUser.username | Should -be $PesterParams_Username
     }
 
     It "Searches for a JumpCloud user using username and returns all properties " {
-        $PesterUser = Get-JCUser -username $PesterParams.Username  -returnProperties 'created', 'account_locked', 'activated', 'addresses', 'allow_public_key', 'attributes', 'email', 'enable_managed_uid', 'enable_user_portal_multifactor', 'externally_managed', 'firstname', 'lastname', 'ldap_binding_user', 'passwordless_sudo', 'password_expired', 'password_never_expires', 'phoneNumbers', 'samba_service_user', 'ssh_keys', 'sudo', 'totp_enabled', 'unix_guid', 'unix_uid', 'username'
+        $PesterUser = Get-JCUser -username $PesterParams_Username  -returnProperties 'created', 'account_locked', 'activated', 'addresses', 'allow_public_key', 'attributes', 'email', 'enable_managed_uid', 'enable_user_portal_multifactor', 'externally_managed', 'firstname', 'lastname', 'ldap_binding_user', 'passwordless_sudo', 'password_expired', 'password_never_expires', 'phoneNumbers', 'samba_service_user', 'ssh_keys', 'sudo', 'totp_enabled', 'unix_guid', 'unix_uid', 'username'
         $PesterUser.created | Should -Not -Be $null
         $PesterUser.account_locked | Should -Not -Be $null
         $PesterUser.activated | Should -Not -Be $null

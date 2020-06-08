@@ -2,14 +2,14 @@ Describe -Tag:('JCSystemGroupMember') 'Get-JCSystemGroupMember 1.0' {
     Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
     It 'Gets a System Groups membership by Groupname' {
 
-        $MultiSystemGroupAdd = Get-JCSystem | Select-Object -Last 2 | Add-JCSystemGroupMember -GroupName $PesterParams.SystemGroupName
+        $MultiSystemGroupAdd = Get-JCSystem | Select-Object -Last 2 | Add-JCSystemGroupMember -GroupName $PesterParams_SystemGroupName
 
-        $SystemGroupMembers = Get-JCSystemGroupMember -GroupName $PesterParams.SystemGroupName
+        $SystemGroupMembers = Get-JCSystemGroupMember -GroupName $PesterParams_SystemGroupName
         $SystemGroupMembers.SystemID.Count | Should -BeGreaterThan 0
     }
 
     It 'Gets a System Groups membership -ByID' {
-        $SystemGroupMembers = Get-JCSystemGroupMember -ByID $PesterParams.SystemGroupID
+        $SystemGroupMembers = Get-JCSystemGroupMember -ByID $PesterParams_SystemGroupID
         $SystemGroupMembers.SystemID.Count | Should -BeGreaterThan 0
     }
 

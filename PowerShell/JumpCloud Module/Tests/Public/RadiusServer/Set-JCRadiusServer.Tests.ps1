@@ -5,7 +5,7 @@ Describe -Tag:('JCRadiusServer') 'Set-JCRadiusServer 1.15.3' {
     #     'sharedSecret'    = 'f3TkHSK2GT4JR!W9tugRPp2zQnAVObv'
     #     'name'            = 'PesterTest_RadiusServer'
     # }
-    $RadiusServerTemplate = Get-JCRadiusServer -Name:($PesterParams.RadiusServerName); # -Fields:('') -Filter:('') -Limit:(1) -Skip:(1) -Paginate:($true) -Force;
+    $RadiusServerTemplate = Get-JCRadiusServer -Name:($PesterParams_RadiusServerName); # -Fields:('') -Filter:('') -Limit:(1) -Skip:(1) -Paginate:($true) -Force;
     Context 'Set-JCRadiusServer params' {
         It ('Should ENABLE mfa on a radius server by ByName.') {
             $RadiusServer = Set-JCRadiusServer -Name:($RadiusServerTemplate.name) -mfa:('ENABLED') -Force;

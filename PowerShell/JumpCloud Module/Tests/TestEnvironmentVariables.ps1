@@ -1,6 +1,7 @@
 Param(
     [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0)][ValidateNotNullOrEmpty()][System.String]$TestOrgAPIKey
 )
+$VariableNamePrefix = 'PesterParams_'
 # Authenticate to JumpCloud
 Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
 # Determine OS type
@@ -118,9 +119,10 @@ $PesterParams_Commands = @{
     SinglePolicy   = Get-JCPolicy -Name:($PesterParams_Common.SinglePolicyList)
     MultiplePolicy = Get-JCPolicy -Name:($PesterParams_Common.MultiplePolicyList)
 }
+
 # Combine all hash tables into one list and foreach of their values create a new global parameter
-(Get-Variable -Name:('PesterParams_*')).Value | ForEach-Object {
+(Get-Variable -Name:("$VariableNamePrefix*")).Value | ForEach-Object {
     $_.GetEnumerator() | ForEach-Object {
-        Set-Variable -Name:($_.Name) -Value:($_.Value) -Scope:('Global')
+        Set-Variable -Name:("$($VariableNamePrefix)$($_.Name)") -Value:($_.Value) -Scope:('Global')
     }
 }

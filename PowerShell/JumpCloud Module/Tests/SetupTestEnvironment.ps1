@@ -32,11 +32,15 @@ Get-JCUser -lastname Test | Remove-JCUser -force
 
 $removeGroups = Get-JCGroup | Where-Object { @("one", "two", "three", "four", "five", "six", "PesterTest_UserGroup", "PesterTest_SystemGroup") -notcontains $_.name }
 
- foreach ($group in $removeGroups) {
-     if ($group.type -eq "system_group") {
-         Remove-JCSystemGroup -GroupName $group.name -force
-    } elseif ($group.type -eq "user_group") {
-         Remove-JCUserGroup -GroupName $group.name -force
+foreach ($group in $removeGroups)
+{
+    if ($group.type -eq "system_group")
+    {
+        Remove-JCSystemGroup -GroupName $group.name -force
+    }
+    elseif ($group.type -eq "user_group")
+    {
+        Remove-JCUserGroup -GroupName $group.name -force
     }
 }
 
@@ -46,7 +50,7 @@ $CommandResultsExist = Get-JCCommandResult
 If ([System.String]::IsNullOrEmpty($CommandResultsExist) -or $CommandResultsExist.Count -lt $CommandResultCount)
 {
     $testCmd = Get-JCCommand | Where-Object { $_.trigger -eq 'GetJCAgentLog' }
-    Add-JCCommandTarget -CommandID $testCmd.id -SystemID $PesterParams.SystemID
+    Add-JCCommandTarget -CommandID $testCmd.id -SystemID $PesterParams_SystemID
     $TriggeredCommand = For ($i = 1; $i -le $CommandResultCount; $i++)
     {
         Invoke-JCCommand -trigger:($testCmd.name)
@@ -55,5 +59,5 @@ If ([System.String]::IsNullOrEmpty($CommandResultsExist) -or $CommandResultsExis
     {
         Start-Sleep -Seconds:(1)
     }
-    Remove-JCCommandTarget -CommandID $testCmd.id -SystemID $PesterParams.SystemID
+    Remove-JCCommandTarget -CommandID $testCmd.id -SystemID $PesterParams_SystemID
 }
