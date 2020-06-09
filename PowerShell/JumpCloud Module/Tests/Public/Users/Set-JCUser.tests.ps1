@@ -26,14 +26,14 @@ Describe -Tag:('JCUser') 'Set-JCUser 1.0' {
     }
     It "Updates the email using -ByID and -UserID" {
         $NewUser = New-RandomUser "PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser
-        $Newemail = Set-JCUser -ByID -UserID $NewUser._id -email $RandomEmail
-        $Newemail.email | Should -Be $RandomEmail
+        $Newemail = Set-JCUser -ByID -UserID $NewUser._id -email $PesterParams_RandomEmail
+        $Newemail.email | Should -Be $PesterParams_RandomEmail
         Remove-JCUser -UserID $NewUser._id -force
     }
     It "Updates the email using -Username" {
         $NewUser = New-RandomUser "PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser
-        $Newemail = Set-JCUser -Username $NewUser.Username -email $RandomEmail
-        $Newemail.email | Should -Be $RandomEmail
+        $Newemail = Set-JCUser -Username $NewUser.Username -email $PesterParams_RandomEmail
+        $Newemail.email | Should -Be $PesterParams_RandomEmail
         Remove-JCUser -UserID $NewUser._id -force
     }
     It "Updates the password using -ByID and -UserID" {

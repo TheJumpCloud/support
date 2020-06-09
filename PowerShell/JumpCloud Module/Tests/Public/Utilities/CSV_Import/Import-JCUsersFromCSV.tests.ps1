@@ -1,8 +1,10 @@
 Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
     BeforeAll { Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null }
-    It "Imports users from the ImportExample_Pester_Test using -Force" {
+    It "Removes users Where-Object Email -like *pleasedelete* " {
         Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
-        $UserImport = Import-JCUsersFromCSV -CSVFilePath $Import_JCUsersFromCSV_1_1_Tests -force
+    }
+    It "Imports users from the ImportExample_Pester_Test using -Force" {
+        $UserImport = Import-JCUsersFromCSV -CSVFilePath $PesterParams_Import_JCUsersFromCSV_1_1_Tests -force
     }
 
     It "Verifies a.user user" {
@@ -21,7 +23,7 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
         $User.activated | Should -Be false
     }
 
-    It "Verifies a.bound.std user" {
+    It "Verifies " {
 
         $User = Get-JCUser -Username 'a.bound.std' | Where-Object Username -EQ 'a.bound.std'
 
@@ -335,14 +337,16 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
 
     }
-    Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
+    It "Removes users Where-Object Email -like *pleasedelete* " {
+        Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
+    }
 }
 Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
 
     It "Imports users from a CSV populated with telephony attributes" {
 
-        $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath $ImportPath/ImportExample_telephonyAttributes.csv -force
-        $UserImportInfo = Import-Csv $ImportPath/ImportExample_telephonyAttributes.csv
+        $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/ImportExample_telephonyAttributes.csv" -force
+        $UserImportInfo = Import-Csv "$PesterParams_ImportPath/ImportExample_telephonyAttributes.csv"
 
         foreach ($User in $UserCSVImport)
         {
@@ -363,8 +367,8 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
 
     It "Imports users from a CSV populated with information attributes" {
 
-        $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath $ImportPath/ImportExample_userInformationAttributes.csv -force
-        $UserImportInfo = Import-Csv $ImportPath/ImportExample_userInformationAttributes.csv
+        $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/ImportExample_userInformationAttributes.csv" -force
+        $UserImportInfo = Import-Csv "$PesterParams_ImportPath/ImportExample_userInformationAttributes.csv"
 
         foreach ($User in $UserCSVImport)
         {
@@ -390,8 +394,8 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
     }
 
     It "Imports users from a CSV populated with user location attributes" {
-        $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath $ImportPath/ImportExample_userLocationAttributes.csv -force
-        $UserImportInfo = Import-Csv $ImportPath/ImportExample_userLocationAttributes.csv
+        $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/ImportExample_userLocationAttributes.csv" -force
+        $UserImportInfo = Import-Csv "$PesterParams_ImportPath/ImportExample_userLocationAttributes.csv"
 
         foreach ($User in $UserCSVImport)
         {
@@ -418,8 +422,8 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
 
     It "Imports users from a CSV populated with telephony, location, and user information attributes" {
 
-        $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath $ImportPath/ImportExample_allNewAttributes.csv -force
-        $UserImportInfo = Import-Csv $ImportPath/ImportExample_allNewAttributes.csv
+        $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/ImportExample_allNewAttributes.csv" -force
+        $UserImportInfo = Import-Csv "$PesterParams_ImportPath/ImportExample_allNewAttributes.csv"
 
         foreach ($User in $UserCSVImport)
         {
@@ -464,8 +468,8 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
 
     It "Imports users from a CSV populated with telephony, location, user information attributes, group additions, system binding, and custom attributes" {
 
-        $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath $ImportPath/ImportExample_allNewAttributesAndAllCustom.csv -force
-        $UserImportInfo = Import-Csv $ImportPath/ImportExample_allNewAttributesAndAllCustom.csv
+        $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/ImportExample_allNewAttributesAndAllCustom.csv" -force
+        $UserImportInfo = Import-Csv "$PesterParams_ImportPath/ImportExample_allNewAttributesAndAllCustom.csv"
 
         foreach ($User in $UserCSVImport)
         {

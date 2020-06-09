@@ -2,8 +2,8 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
     BeforeAll { Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null }
     It "Updates users from a CSV populated with telephony attributes" {
 
-        $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath $ImportPath/ImportExample_telephonyAttributes.csv -force
-        $UserImportInfo = Import-Csv $ImportPath/ImportExample_telephonyAttributes.csv
+        $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/ImportExample_telephonyAttributes.csv" -force
+        $UserImportInfo = Import-Csv "$PesterParams_ImportPath/ImportExample_telephonyAttributes.csv"
 
         foreach ($User in $UserCSVImport)
         {
@@ -17,8 +17,8 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
             $ImportCheck.work_fax_number | Should -Be $($NewUserInfo.phoneNumbers | Where-Object type -eq work_fax | Select-Object -ExpandProperty number)
         }
 
-        $UserUpdateCSVImport = Update-JCUsersFromCSV -CSVFilePath $UpdatePath/UpdateExample_telephonyAttributes.csv -force
-        $UserUpdateInfo = Import-Csv $UpdatePath/UpdateExample_telephonyAttributes.csv
+        $UserUpdateCSVImport = Update-JCUsersFromCSV -CSVFilePath "$PesterParams_UpdatePath/UpdateExample_telephonyAttributes.csv" -force
+        $UserUpdateInfo = Import-Csv "$PesterParams_UpdatePath/UpdateExample_telephonyAttributes.csv"
 
         foreach ($UpdateUser in $UserUpdateCSVImport)
         {
@@ -36,8 +36,8 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
 
     It "Updates users from a CSV populated with information attributes" {
 
-        $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath $ImportPath/ImportExample_userInformationAttributes.csv -force
-        $UserImportInfo = Import-Csv $ImportPath/ImportExample_userInformationAttributes.csv
+        $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/ImportExample_userInformationAttributes.csv" -force
+        $UserImportInfo = Import-Csv "$PesterParams_ImportPath/ImportExample_userInformationAttributes.csv"
 
         foreach ($User in $UserCSVImport)
         {
@@ -57,8 +57,8 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
 
         }
 
-        $UserUpdateCSVImport = Update-JCUsersFromCSV -CSVFilePath $UpdatePath/UpdateExample_userInformationAttributes.csv -force
-        $UserUpdateInfo = Import-Csv $UpdatePath/UpdateExample_userInformationAttributes.csv
+        $UserUpdateCSVImport = Update-JCUsersFromCSV -CSVFilePath "$PesterParams_UpdatePath/UpdateExample_userInformationAttributes.csv" -force
+        $UserUpdateInfo = Import-Csv "$PesterParams_UpdatePath/UpdateExample_userInformationAttributes.csv"
 
         foreach ($UpdateUser in $UserUpdateCSVImport)
         {
@@ -81,8 +81,8 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
 
 
     It "Updates users from a CSV populated with user location attributes" {
-        $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath $ImportPath/ImportExample_userLocationAttributes.csv -force
-        $UserImportInfo = Import-Csv $ImportPath/ImportExample_userLocationAttributes.csv
+        $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/ImportExample_userLocationAttributes.csv" -force
+        $UserImportInfo = Import-Csv "$PesterParams_ImportPath/ImportExample_userLocationAttributes.csv"
 
         foreach ($User in $UserCSVImport)
         {
@@ -105,8 +105,8 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
 
         }
 
-        $UserUpdateCSVImport = Update-JCUsersFromCSV -CSVFilePath $UpdatePath/UpdateExample_userLocationAttributes.csv -force
-        $UserUpdateInfo = Import-Csv $UpdatePath/UpdateExample_userLocationAttributes.csv
+        $UserUpdateCSVImport = Update-JCUsersFromCSV -CSVFilePath "$PesterParams_UpdatePath/UpdateExample_userLocationAttributes.csv" -force
+        $UserUpdateInfo = Import-Csv "$PesterParams_UpdatePath/UpdateExample_userLocationAttributes.csv"
 
         foreach ($UpdateUser in $UserCSVUpdate)
         {
@@ -133,8 +133,8 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
 
     It "Updates users from a CSV populated with user telephony, information, and location attributes" {
 
-        $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath $ImportPath/ImportExample_allNewAttributes.csv -force
-        $UserImportInfo = Import-Csv $ImportPath/ImportExample_allNewAttributes.csv
+        $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/ImportExample_allNewAttributes.csv" -force
+        $UserImportInfo = Import-Csv "$PesterParams_ImportPath/ImportExample_allNewAttributes.csv"
 
         foreach ($User in $UserCSVImport)
         {
@@ -174,8 +174,8 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
 
         }
 
-        $UserUpdateCSVImport = Update-JCUsersFromCSV -CSVFilePath $UpdatePath/UpdateExample_AllNewAttributes.csv -force
-        $UserUpdateInfo = Import-Csv $UpdatePath/UpdateExample_AllNewAttributes.csv
+        $UserUpdateCSVImport = Update-JCUsersFromCSV -CSVFilePath "$PesterParams_UpdatePath/UpdateExample_AllNewAttributes.csv" -force
+        $UserUpdateInfo = Import-Csv "$PesterParams_UpdatePath/UpdateExample_AllNewAttributes.csv"
 
         foreach ($UpdateUser in $UserUpdateCSVImport)
         {
@@ -221,8 +221,8 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
 
     It "Updates users from a CSV populated with user telephony, information, and location attributes and custom attributes" {
 
-        $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath $ImportPath/ImportExample_allNewAttributesAndAllCustom.csv -force
-        $UserImportInfo = Import-Csv $ImportPath/ImportExample_allNewAttributesAndAllCustom.csv
+        $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/ImportExample_allNewAttributesAndAllCustom.csv" -force
+        $UserImportInfo = Import-Csv "$PesterParams_ImportPath/ImportExample_allNewAttributesAndAllCustom.csv"
 
         foreach ($User in $UserCSVImport)
         {
@@ -262,8 +262,8 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
 
         }
 
-        $UserUpdateCSVImport = Update-JCUsersFromCSV -CSVFilePath $UpdatePath/UpdateExample_AllNewAttributesAndAllCustom.csv -force
-        $UserUpdateInfo = Import-Csv $UpdatePath/UpdateExample_AllNewAttributesAndAllCustom.csv
+        $UserUpdateCSVImport = Update-JCUsersFromCSV -CSVFilePath "$PesterParams_UpdatePath/UpdateExample_AllNewAttributesAndAllCustom.csv" -force
+        $UserUpdateInfo = Import-Csv "$PesterParams_UpdatePath/UpdateExample_AllNewAttributesAndAllCustom.csv"
 
         foreach ($UpdateUser in $UserUpdateCSVImport)
         {
@@ -318,8 +318,8 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
 
     It "Updates users from a CSV populated with no information" {
 
-        $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath $ImportPath/ImportExample_allNewAttributesAndAllCustom.csv -force
-        $UserImportInfo = Import-Csv $ImportPath/ImportExample_allNewAttributesAndAllCustom.csv
+        $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/ImportExample_allNewAttributesAndAllCustom.csv" -force
+        $UserImportInfo = Import-Csv "$PesterParams_ImportPath/ImportExample_allNewAttributesAndAllCustom.csv"
 
         foreach ($User in $UserCSVImport)
         {
@@ -359,7 +359,7 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
 
         }
 
-        $UserUpdateCSVImport = Update-JCUsersFromCSV -CSVFilePath $UpdatePath/UpdateExample_NoChanges.csv -force
+        $UserUpdateCSVImport = Update-JCUsersFromCSV -CSVFilePath "$PesterParams_UpdatePath/UpdateExample_NoChanges.csv" -force
 
         foreach ($User in $UserCSVImport)
         {
@@ -400,7 +400,7 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
         }
 
     }
-
-    Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
-
+    It "Removes users Where-Object Email -like *pleasedelete* " {
+        Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
+    }
 }

@@ -1,10 +1,5 @@
 Describe -Tag:('JCRadiusServer') 'Get-JCRadiusServer Tests' {
-    # $RadiusServerTemplate = @{
-    #     'networkSourceIp' = '254.254.254.254'
-    #     'sharedSecret'    = 'f3TkHSK2GT4JR!W9tugRPp2zQnAVObv'
-    #     'name'            = 'PesterTest_RadiusServer'
-    # }
-    BeforeEach {
+    BeforeAll {
         $RadiusServerTemplate = Get-JCRadiusServer -Name:($PesterParams_RadiusServerName); # -Fields:('') -Filter:('') -Limit:(1) -Skip:(1) -Paginate:($true) -Force;
     }
     Context 'Set-JCRadiusServer' {
@@ -51,6 +46,7 @@ Describe -Tag:('JCRadiusServer') 'Get-JCRadiusServer Tests' {
             $RadiusServer.name | Should -Be $RadiusServerTemplate.name
         }
     }
+    $RadiusServerTemplate = Get-JCRadiusServer -Name:($PesterParams_RadiusServerName); # -Fields:('') -Filter:('') -Limit:(1) -Skip:(1) -Paginate:($true) -Force;
     Context 'Get-JCRadiusServer' {
         It ('Should return all radius servers.') {
             $RadiusServer = Get-JCRadiusServer; # -Fields:('') -Filter:('') -Limit:(1) -Skip:(1) -Paginate:($true) -Force;
