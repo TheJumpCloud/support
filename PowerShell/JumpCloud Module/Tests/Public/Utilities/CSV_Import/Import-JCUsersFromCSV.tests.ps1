@@ -1,5 +1,5 @@
 Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
-    BeforeAll { Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null }
+    BeforeAll { Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null }
     It "Imports users from the ImportExample_Pester_Test using -Force" {
         Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
         $UserImport = Import-JCUsersFromCSV -CSVFilePath $Import_JCUsersFromCSV_1_1_Tests -force
@@ -169,7 +169,7 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $Groups = Get-JCAssociation -Type:('user') -Id:($User.id) -TargetType:('user_group')
 
-        $Groups.count | Should -Be 
+        $Groups.count | Should -Be
 
     }
 
@@ -181,7 +181,7 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $Groups = Get-JCAssociation -Type:('user') -Id:($User.id) -TargetType:('user_group')
 
-        $Groups.count | Should -Be 
+        $Groups.count | Should -Be
 
     }
 
@@ -193,7 +193,7 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $Groups = Get-JCAssociation -Type:('user') -Id:($User.id) -TargetType:('user_group')
 
-        $Groups.count | Should -Be 
+        $Groups.count | Should -Be
 
     }
 
@@ -205,7 +205,7 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $Groups = Get-JCAssociation -Type:('user') -Id:($User.id) -TargetType:('user_group')
 
-        $Groups.count | Should -Be 
+        $Groups.count | Should -Be
 
     }
 
@@ -217,7 +217,7 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $Groups = Get-JCAssociation -Type:('user') -Id:($User.id) -TargetType:('user_group')
 
-        $Groups.count | Should -Be 
+        $Groups.count | Should -Be
 
     }
 
@@ -229,7 +229,7 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $Groups = Get-JCAssociation -Type:('user') -Id:($User.id) -TargetType:('user_group')
 
-        $Groups.count | Should -Be 
+        $Groups.count | Should -Be
 
     }
 
@@ -239,7 +239,7 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $User.activated | Should -Be true
 
-        $User.attributes.count | Should -Be 
+        $User.attributes.count | Should -Be
 
     }
 
@@ -249,7 +249,7 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $User.activated | Should -Be false
 
-        $User.attributes.count | Should -Be 
+        $User.attributes.count | Should -Be
 
     }
 
@@ -259,7 +259,7 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $User.activated | Should -Be true
 
-        $User.attributes.count | Should -Be 
+        $User.attributes.count | Should -Be
 
     }
 
@@ -270,7 +270,7 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
         $User.activated | Should -Be false
 
 
-        $User.attributes.count | Should -Be 
+        $User.attributes.count | Should -Be
 
     }
 
@@ -280,7 +280,7 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $User.activated | Should -Be true
 
-        $User.attributes.count | Should -Be 
+        $User.attributes.count | Should -Be
 
     }
 
@@ -291,7 +291,7 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
         $User.activated | Should -Be false
 
 
-        $User.attributes.count | Should -Be 
+        $User.attributes.count | Should -Be
 
     }
 
@@ -301,11 +301,11 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $User.activated | Should -Be true
 
-        $User.attributes.count | Should -Be 
+        $User.attributes.count | Should -Be
 
         $Groups = Get-JCAssociation -Type:('user') -Id:($User.id) -TargetType:('user_group')
 
-        $Groups.count | Should -Be 
+        $Groups.count | Should -Be
 
         $Bound = Get-JCSystemUser -SystemID $PesterParams_SystemID | Where-Object username -EQ 'a.all'
 
@@ -321,11 +321,11 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' {
 
         $User.activated | Should -Be false
 
-        $User.attributes.count | Should -Be 
+        $User.attributes.count | Should -Be
 
         $Groups = Get-JCAssociation -Type:('user') -Id:($User.id) -TargetType:('user_group')
 
-        $Groups.count | Should -Be 
+        $Groups.count | Should -Be
 
         $Bound = Get-JCSystemUser -SystemID $PesterParams_SystemID | Where-Object username -EQ 'ia.all'
 

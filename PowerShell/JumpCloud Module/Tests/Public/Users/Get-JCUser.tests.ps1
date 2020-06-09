@@ -1,5 +1,5 @@
 Describe -Tag:('JCUser') 'Get-JCUser 1.0' {
-    BeforeAll { Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null }
+    BeforeAll { Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null }
     It "Gets all JumpCloud users using Get-JCuser" { $Users = Get-JCUser
         $Users._id.count | Should -BeGreaterThan 1 }
 

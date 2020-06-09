@@ -1,6 +1,6 @@
 Describe -Tag:('JCUserGroupMember') 'Get-JCUserGroupMember 1.0' {
     BeforeAll {
-        Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
+        Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
         Add-JCUserGroupMember -GroupName $PesterParams_UserGroupName -Username $PesterParams_Username
     }
     It 'Gets a User Groups membership by Groupname' {
@@ -12,5 +12,7 @@ Describe -Tag:('JCUserGroupMember') 'Get-JCUserGroupMember 1.0' {
         $UserGroupMembers = Get-JCUserGroupMember -ByID $PesterParams_UserGroupID
         $UserGroupMembers.to.id.Count | Should -BeGreaterThan 0
     }
-    Remove-JCUserGroupMember -GroupName $PesterParams_UserGroupName -Username $PesterParams_Username
+    AfterAll {
+        Remove-JCUserGroupMember -GroupName $PesterParams_UserGroupName -Username $PesterParams_Username
+    }
 }

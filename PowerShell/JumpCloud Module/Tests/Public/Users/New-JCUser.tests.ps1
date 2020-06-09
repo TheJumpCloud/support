@@ -1,5 +1,5 @@
 Describe -Tag:('JCUser') 'New-JCUser 1.0' {
-    BeforeAll { Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null }
+    BeforeAll { Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null }
     It "Creates a new user" {
         $NewUser = New-RandomUser -domain pleasedelete"PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser
         $NewUser._id.count | Should -Be 1

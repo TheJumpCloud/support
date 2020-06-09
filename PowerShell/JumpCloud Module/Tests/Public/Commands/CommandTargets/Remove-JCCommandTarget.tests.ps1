@@ -1,5 +1,5 @@
 Describe -Tag:('JCCommandTarget') 'Add-JCCommandTarget 1.3' {
-    BeforeAll { Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null }
+    BeforeAll { Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null }
     It "Removes a single system to a JumpCloud command" {
 
 

@@ -3,7 +3,7 @@
 # }
 
 # Describe -Tag:('JCSystemInsights') "Get-JCSystemInsights Tests" {
-#     BeforeAll { Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null }
+#     BeforeAll { Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null }
 #     BeforeAll {
 #         # $DebugPreference = 'Continue' # SilentlyContinue (Default), Continue, Inquire, Stop
 #         # $VerbosePreference = 'Continue' # SilentlyContinue (Default), Continue, Inquire, Stop

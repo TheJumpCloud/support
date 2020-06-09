@@ -1,5 +1,5 @@
 Describe -Tag:('JCCommand') 'Get-JCCommand 1.0' {
-    BeforeAll { Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null }
+    BeforeAll { Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null }
     It "Gets all JumpCloud commands" {
         $AllCommands = Get-JCCommand
         $AllCommands._id.Count | Should -BeGreaterThan 1
