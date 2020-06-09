@@ -30,7 +30,7 @@ Import-Module -Name:($ModuleManifestPath) -Force
 # Load private functions
 Get-ChildItem -Path:("$PSScriptRoot/../Private/*.ps1") -Recurse | ForEach-Object { . $_.FullName }
 # Load TestEnvironmentVariables
-. ("$PSScriptRoot/TestEnvironmentVariables.ps1") -TestOrgAPIKey:($TestOrgAPIKey)
+. ("$PSScriptRoot/TestEnvironmentVariables.ps1") -TestOrgAPIKey:($TestOrgAPIKey) -MultiTenantAPIKey:($MultiTenantAPIKey)
 # Load HelperFunctions
 . ("$PSScriptRoot/HelperFunctions.ps1")
 # Install NuGet
@@ -68,18 +68,23 @@ Else
 {
     $Tags | Where-Object { $_ -notin $ExcludeTags } | Select-Object -Unique
 }
+# "'" + ($IncludeTags -join "','") + "'"
 # Run Pester tests
-$PesterResults = Invoke-Pester -Path:($PSScriptRoot) -PassThru -Tag:($IncludeTags) -ExcludeTag:($ExcludeTagList)
+If (Test-Path -Path:($PesterParams_PesterResultsFileXml)) { Remove-Item -Path:($PesterParams_PesterResultsFileXml) -Force }
+$PesterResults = Invoke-Pester -Path:($PSScriptRoot) -PassThru -TagFilter:($IncludeTags) -ExcludeTagFilter:($ExcludeTagList)
 $PesterResults | ConvertTo-NUnitReport -AsString | Out-File -FilePath:($PesterParams_PesterResultsFileXml)
-[xml]$PesterResults = Get-Content -Path:($PesterParams_PesterResultsFileXml)
-$FailedTests = $PesterResults.TestResult | Where-Object { $_.Passed -eq $false }
-If ($FailedTests)
+If (Test-Path -Path:($PesterParams_PesterResultsFileXml))
 {
-    Write-Host ('')
-    Write-Host ('##############################################################################################################')
-    Write-Host ('##############################Error Description###############################################################')
-    Write-Host ('##############################################################################################################')
-    Write-Host ('')
-    $FailedTests | ForEach-Object { $_.Name + '; ' + $_.FailureMessage + '; ' }
-    Write-Error -Message:('Tests Failed: ' + [string]($FailedTests | Measure-Object).Count)
+    [xml]$PesterResults = Get-Content -Path:($PesterParams_PesterResultsFileXml)
+    $FailedTests = $PesterResults.TestResult | Where-Object { $_.Passed -eq $false }
+    If ($FailedTests)
+    {
+        Write-Host ('')
+        Write-Host ('##############################################################################################################')
+        Write-Host ('##############################Error Description###############################################################')
+        Write-Host ('##############################################################################################################')
+        Write-Host ('')
+        $FailedTests | ForEach-Object { $_.Name + '; ' + $_.FailureMessage + '; ' }
+        Write-Error -Message:('Tests Failed: ' + [string]($FailedTests | Measure-Object).Count)
+    }
 }

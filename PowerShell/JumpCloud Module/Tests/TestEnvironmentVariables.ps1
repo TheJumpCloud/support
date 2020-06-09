@@ -1,5 +1,6 @@
 Param(
     [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0)][ValidateNotNullOrEmpty()][System.String]$TestOrgAPIKey
+    , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 1)][ValidateNotNullOrEmpty()][System.String]$MultiTenantAPIKey
 )
 $VariableNamePrefix = 'PesterParams_'
 $VariableNamePrefixHash = 'PesterParamsHash_'
@@ -28,81 +29,151 @@ Else
 $PesterParamsHash_OS = If ($OS -eq 'Windows_NT')
 {
     @{
-        # Specific to MTP portal
-        'SingleTernateOrgId'       = '5a4bff7ab17d0c9f63bcd277'
-        'MultiTernateOrgId1'       = "5d2f6ff0e7aad925fc317577"
-        'MultiTernateOrgId2'       = "5d2f6ffd8910770b8545756a"
+        'ApiKey'                   = $TestOrgAPIKey
+        'ApiKeyMsp'                = $MultiTenantAPIKey
+        'OrgIdMsp1'                = "5d2f6ff0e7aad925fc317577"
+        'OrgIdMsp2'                = "5d2f6ffd8910770b8545756a"
         'SystemID'                 = '5e4c67d7933afe1cd17a6583' # Enter the System ID for a linux system
         'SystemId_Windows'         = '5d24be43c9448f245effa736'
         'SystemId_Mac'             = '5d24af30e72dab44aee39426'
-        'UserID'                   = '5a4c0216fbd238d531f253a6' # Paste the UserID for the user with username pester.tester
-        'UserGroupID'              = '5a4f72bcc911807e553dfa1b'  # Paste the corresponding GroupID for the user group named PesterTest_UserGroup
-        'SystemGroupID'            = '5a4fe3df45886d6c62ee188f'  # Paste the corresponding GroupID for the sytem group named PesterTest_SystemGroup
         'CommandID'                = '5a4fe5c149812520079d1e7a'
         # Command Deployments
         'SetCommandID'             = "5b7194548781bb466496fe2f" #Pester - Set-JCCommand
         'DeployCommandID'          = "5b719043bc43db696b4dbd90" #Invoke JCDeployment Test
         # Policies
         'SystemWithPolicyResultID' = "5c2e2d012a28b62befe395a3"
+        NewRadiusServerIp          = '250.250.250.250'
     }
 }
 ElseIf ($OS -eq 'Darwin')
 {
     @{
-        # Specific to MTP portal
-        'SingleTernateOrgId'       = '5eb2ebea87b5ba160c16857a'
-        'MultiTernateOrgId1'       = "5d2f7011f3b0a039b65f4e8b"
-        'MultiTernateOrgId2'       = "5d2f701be7aad925fc317667"
+        'OrgIdMsp1'                = "5d2f7011f3b0a039b65f4e8b"
+        'OrgIdMsp2'                = "5d2f701be7aad925fc317667"
         'SystemID'                 = '5ece896d3063492783d0f540' # Enter the System ID for a linux system
         'SystemId_Windows'         = '5ec300ed58c6c807bbde5712'
         'SystemId_Mac'             = '5ec3f0ad518f1814e2b1aee5'
-        'UserID'                   = '5ec30ef936119c0892d550e1' # Paste the UserID for the user with username pester.tester
-        'UserGroupID'              = '5ec30f201f247540bf7e2159'  # Paste the corresponding GroupID for the user group named PesterTest_UserGroup
-        'SystemGroupID'            = '5ec30f77232e1156647f2ff3'  # Paste the corresponding GroupID for the sytem group named PesterTest_SystemGroup
         'CommandID'                = '5ec44422bb57ae79a5d0ef1a'
         # Command Deployments
         'SetCommandID'             = "5ec699ad1bccb46c80d891a2" #Pester - Set-JCCommand
         'DeployCommandID'          = "5ec32efb5a797e17deda0551" #Invoke JCDeployment Test
         # Policies
         'SystemWithPolicyResultID' = "5ec40d537b7ff91360386bc4"
+        NewRadiusServerIp          = '250.251.250.251'
     }
 }
 ElseIf ($OS -eq 'Linux')
 {
     @{
-        # Specific to MTP portal
-        'SingleTernateOrgId'       = '5ebeb8c7de6f1e713e19cfba'
-        'MultiTernateOrgId1'       = "5d2f7024f0e1526be4df38e7"
-        'MultiTernateOrgId2'       = "5d35e14eb90ad46e65ba0739"
+        'OrgIdMsp1'                = "5d2f7024f0e1526be4df38e7"
+        'OrgIdMsp2'                = "5d35e14eb90ad46e65ba0739"
         'SystemID'                 = '5ece89f65723050e98242113' # Enter the System ID for a linux system
         'SystemId_Windows'         = '5ecd8b313778a13c9bd90eb8'
         'SystemId_Mac'             = '5ecd8a4cdfef2d0a9ec39883'
-        'UserID'                   = '5ecd8bb3454ad57c2151ecff' # Paste the UserID for the user with username pester.tester
-        'UserGroupID'              = '5ecd8c66232e1133edc880df'  # Paste the corresponding GroupID for the user group named PesterTest_UserGroup
-        'SystemGroupID'            = '5ecd8c471f24751b14c33daf'  # Paste the corresponding GroupID for the sytem group named PesterTest_SystemGroup
         'CommandID'                = '5ecd8d279a9c6a2495c4833f'
         # Command Deployments
         'SetCommandID'             = "5ecd8ee2454ad57c2152593a" #Pester - Set-JCCommand
         'DeployCommandID'          = "5ecd8e3352b7211df60f9646" #Invoke JCDeployment Test
         # Policies
         'SystemWithPolicyResultID' = "5ecd8b0e40f99e14ac2c66d3"
+        NewRadiusServerIp          = '250.252.250.252'
     }
 }
 Else
 {
     Write-Error ("Unknown OS: $($OS)")
 }
+Function Remove-Org()
+{
+    # Clear out org
+    $null = Get-JCUser | Remove-JCUser -force
+    $null = Get-JCGroup | ForEach-Object { If ($_.Type -eq 'system_group') { Remove-JCSystemGroup -GroupName:($_.Name) -force }ElseIf ($_.Type -eq 'user_group') { Remove-JCUserGroup -GroupName:($_.Name) -force }Else { Write-Error('Unknown') } }
+    $null = Get-JCRadiusServer | Remove-JCRadiusServer -Force
+}
+# Remove-Org
+
+# Define items
+$RandomString = ( -join (( 0x41..0x5A) + ( 0x61..0x7A) | Get-Random -Count 8 | ForEach-Object { [char]$_ }))
+$NewUser1 = @{
+    allow_public_key         = $false
+    Attribute1_name          = 'One'
+    Attribute1_value         = 'Attr'
+    company                  = 'company'
+    costCenter               = 'costCenter'
+    department               = 'department'
+    description              = 'description'
+    displayName              = 'displayName'
+    email                    = "$RandomString@DeleteMe.com"
+    employeeIdentifier       = "employeeIdentifier"
+    employeeType             = 'employeeType'
+    firstname                = 'Pester'
+    home_city                = 'home_city'
+    home_country             = 'home_country'
+    home_number              = 'home_number'
+    home_poBox               = 'home_poBox'
+    home_postalCode          = 'home_postalCode'
+    home_state               = 'home_state'
+    home_streetAddress       = 'home_streetAddress'
+    jobTitle                 = 'jobTitle'
+    lastname                 = 'Tester'
+    location                 = 'location'
+    MiddleName               = 'middlename'
+    mobile_number            = 'mobile_number'
+    NumberOfCustomAttributes = 1
+    password_never_expires   = $true
+    username                 = 'pester.tester1'
+    work_city                = 'work_city'
+    work_country             = 'work_country'
+    work_fax_number          = 'work_fax_number'
+    work_mobile_number       = 'work_mobile_number'
+    work_number              = 'work_number'
+    work_poBox               = 'work_poBox'
+    work_postalCode          = 'work_postalCode'
+    work_state               = 'work_state'
+    work_streetAddress       = 'work_streetAddress'
+}
+$NewUser2 = @{
+    username                 = 'pester.tester2'
+    firstname                = 'Pester'
+    lastname                 = 'Tester'
+    email                    = '123asdf2@DeleteMe.com'
+    work_mobile_number       = '3152441231'
+    home_streetAddress       = 'IHaveanaddress'
+    NumberOfCustomAttributes = 1
+    Attribute1_name          = 'One'
+    Attribute1_value         = 'Attr'
+}
+$NewSystemGroup = @{
+    GroupName = 'PesterTest_SystemGroup'
+}
+$NewUserGroup = @{
+    GroupName = 'PesterTest_UserGroup'
+}
+$NewRadiusServer = @{
+    networkSourceIp = $PesterParamsHash_OS.NewRadiusServerIp
+    sharedSecret    = 'f3TkHSK2GT4JR!W9tugRPp2zQnAVObv'
+    name            = 'PesterTest_RadiusServer'
+}
+# Setup org
+$User1 = New-JCUser @NewUser1
+$User2 = New-JCUser @NewUser2
+$UserGroup = New-JCUserGroup @NewUserGroup
+$SystemGroup = New-JCSystemGroup @NewSystemGroup
+$RadiusServer = New-JCRadiusServer @NewRadiusServer
 # Parameters that are on Org specific
-$PesterParamsHash__Common = @{
+$PesterParamsHash_Common = @{
     PesterResultsFileXml            = "$($PSScriptRoot)/JumpCloud-$($OS)-TestResults.xml"
-    SystemGroupName                 = 'PesterTest_SystemGroup'
-    RadiusServerName                = 'PesterTest_RadiusServer';
+    RadiusServerName                = $RadiusServer.Name
+    SystemGroupName                 = $SystemGroup.Name
+    UserGroupName                   = $UserGroup.Name
+    Username                        = $User1.username
+    UserID                          = $User1.Id
+    User1                           = $User1
+    NewUser1                        = $NewUser1
+    UserLastName                    = 'Test'
     OneTrigger                      = 'onetrigger'
     TwoTrigger                      = 'twotrigger'
     ThreeTrigger                    = 'threetrigger'
-    UserGroupName                   = 'PesterTest_UserGroup'  # Create a user group named PesterTest_UserGroup within your environment
-    Username                        = 'pester.tester' # Create a user with username 'pester.tester'
-    UserLastName                    = 'Test'
     Groups                          = @('One', 'Two', 'Three', 'Four', 'Five', 'Six')
     # Generate random string
     RandomString                    = ( -join (( 0x41..0x5A) + ( 0x61..0x7A) | Get-Random -Count 8 | ForEach-Object { [char]$_ }))
@@ -121,9 +192,13 @@ $PesterParamsHash__Common = @{
 # Params that need to run commands to get their values with inputs from other hash tables
 $PesterParamsHash_Commands = @{
     RandomEmail         = '{0}@{1}.com' -f $PesterParamsHash_Common.RandomString, $PesterParamsHash_Common.RandomString
+    OrgId               = (Get-JCOrganization).OrgID
     SinglePolicy        = Get-JCPolicy -Name:($PesterParamsHash_Common.SinglePolicyList)
     MultiplePolicy      = Get-JCPolicy -Name:($PesterParamsHash_Common.MultiplePolicyList)
     CommandResultsExist = Get-JCCommandResult
+    UserGroupID         = (Get-JCGroup -Type:('User') -Name:($PesterParamsHash_Common.UserGroupName)).id
+    SystemGroupID       = (Get-JCGroup -Type:('System') -Name:($PesterParamsHash_Common.SystemGroupName)).id
+    UserGroupMembership = Add-JCUserGroupMember -GroupName $PesterParamsHash_Common.UserGroupName -Username $PesterParamsHash_Common.Username
 }
 
 # Combine all hash tables into one list and foreach of their values create a new global parameter

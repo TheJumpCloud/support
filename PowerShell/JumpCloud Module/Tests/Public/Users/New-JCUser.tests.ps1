@@ -145,343 +145,140 @@ Describe -Tag:('JCUser') "New-JCUser 1.8.0" {
 
     It "Creates a user with the extended attributes" {
 
-        $UserWithAttributes = @{
-            Username           = "$(New-RandomString -NumberOfChars 8)"
-            FirstName          = "Delete"
-            LastName           = "Me"
-            Email              = "$(New-RandomString -NumberOfChars 8)@pleasedelete.me"
-            MiddleName         = 'middlename'
-            displayName        = 'displayName'
-            jobTitle           = 'jobTitle'
-            employeeIdentifier = "employeeIdentifier_$(New-RandomString -NumberOfChars 8)"
-            department         = 'department'
-            costCenter         = 'costCenter'
-            company            = 'company'
-            employeeType       = 'employeeType'
-            description        = 'description'
-            location           = 'location'
-        }
-
-        $NewUser = New-JCUser @UserWithAttributes
-
-        $NewUser.middlename | Should -Be "middleName"
-        $NewUser.displayname | Should -Be "displayName"
-        $NewUser.jobTitle | Should -Be "jobTitle"
-        $NewUser.employeeIdentifier | Should -Match "employeeIdentifier"
-        $NewUser.department | Should -Be "department"
-        $NewUser.costCenter | Should -Be "costCenter"
-        $NewUser.company | Should -Be "Company"
-        $NewUser.employeeType | Should -Be "employeeType"
-        $NewUser.description | Should -Be "description"
-        $NewUser.location | Should -Be "location"
+        $PesterParams_NewUser1.middlename | Should -Be $PesterParams_User1.middlename
+        $PesterParams_NewUser1.displayname | Should -Be $PesterParams_User1.displayName
+        $PesterParams_NewUser1.jobTitle | Should -Be $PesterParams_User1.jobTitle
+        $PesterParams_NewUser1.employeeIdentifier | Should -Match $PesterParams_User1.employeeIdentifier
+        $PesterParams_NewUser1.department | Should -Be $PesterParams_User1.department
+        $PesterParams_NewUser1.costCenter | Should -Be $PesterParams_User1.costCenter
+        $PesterParams_NewUser1.company | Should -Be $PesterParams_User1.Company
+        $PesterParams_NewUser1.employeeType | Should -Be $PesterParams_User1.employeeType
+        $PesterParams_NewUser1.description | Should -Be $PesterParams_User1.description
+        $PesterParams_NewUser1.location | Should -Be $PesterParams_User1.location
 
     }
 
     It "Creates a user with a work address using work city and state" {
 
-        $UserWithWorkAddress = @{
-            Username           = "$(New-RandomString -NumberOfChars 8)"
-            FirstName          = "Delete"
-            LastName           = "Me"
-            Email              = "$(New-RandomString -NumberOfChars 8)@pleasedelete.me"
-            work_streetAddress = "work_streetAddress"
-            work_poBox         = "work_poBox"
-            work_city          = "work_city"
-            work_state         = "work_state"
-            work_postalCode    = "work_postalCode"
-            work_country       = "work_country"
-
-
-        }
-
-        $NewUser = New-JCUser @UserWithWorkAddress
-
-        $NewUser.addresses.streetAddress | Should -Be "work_streetAddress"
-        $NewUser.addresses.poBox | Should -Be "work_poBox"
-        $NewUser.addresses.locality | Should -Be "work_city"
-        $NewUser.addresses.region | Should -Be "work_state"
-        $NewUser.addresses.postalCode | Should -Be "work_postalCode"
-        $NewUser.addresses.country | Should -Be "work_country"
+        $PesterParams_NewUser1.addresses.streetAddress | Should -Be $PesterParams_User1.work_streetAddress
+        $PesterParams_NewUser1.addresses.poBox | Should -Be $PesterParams_User1.work_poBox
+        $PesterParams_NewUser1.addresses.locality | Should -Be $PesterParams_User1.work_city
+        $PesterParams_NewUser1.addresses.region | Should -Be $PesterParams_User1.work_state
+        $PesterParams_NewUser1.addresses.postalCode | Should -Be $PesterParams_User1.work_postalCode
+        $PesterParams_NewUser1.addresses.country | Should -Be $PesterParams_User1.work_country
 
     }
 
     It "Creates a user with a work address using work locality and region" {
 
-        $UserWithWorkAddress = @{
-            Username           = "$(New-RandomString -NumberOfChars 8)"
-            FirstName          = "Delete"
-            LastName           = "Me"
-            Email              = "$(New-RandomString -NumberOfChars 8)@pleasedelete.me"
-            work_streetAddress = "work_streetAddress"
-            work_poBox         = "work_poBox"
-            work_locality      = "work_city"
-            work_region        = "work_state"
-            work_postalCode    = "work_postalCode"
-            work_country       = "work_country"
-
-
-        }
-
-        $NewUser = New-JCUser @UserWithWorkAddress
-
-        $NewUser.addresses.streetAddress | Should -Be "work_streetAddress"
-        $NewUser.addresses.poBox | Should -Be "work_poBox"
-        $NewUser.addresses.locality | Should -Be "work_city"
-        $NewUser.addresses.region | Should -Be "work_state"
-        $NewUser.addresses.postalCode | Should -Be "work_postalCode"
-        $NewUser.addresses.country | Should -Be "work_country"
+        $PesterParams_NewUser1.addresses.streetAddress | Should -Be $PesterParams_User1.work_streetAddress
+        $PesterParams_NewUser1.addresses.poBox | Should -Be $PesterParams_User1.work_poBox
+        $PesterParams_NewUser1.addresses.locality | Should -Be $PesterParams_User1.work_city
+        $PesterParams_NewUser1.addresses.region | Should -Be $PesterParams_User1.work_state
+        $PesterParams_NewUser1.addresses.postalCode | Should -Be $PesterParams_User1.work_postalCode
+        $PesterParams_NewUser1.addresses.country | Should -Be $PesterParams_User1.work_country
 
     }
 
     It "Creates a user with a home address using home locality and region" {
 
-        $UserWithWorkAddress = @{
-            Username           = "$(New-RandomString -NumberOfChars 8)"
-            FirstName          = "Delete"
-            LastName           = "Me"
-            Email              = "$(New-RandomString -NumberOfChars 8)@pleasedelete.me"
-            home_streetAddress = "home_streetAddress"
-            home_poBox         = "home_poBox"
-            home_locality      = "home_city"
-            home_region        = "home_state"
-            home_postalCode    = "home_postalCode"
-            home_country       = "home_country"
-
-
-        }
-
-        $NewUser = New-JCUser @UserWithWorkAddress
-
-        $NewUser.addresses.streetAddress | Should -Be "home_streetAddress"
-        $NewUser.addresses.poBox | Should -Be "home_poBox"
-        $NewUser.addresses.locality | Should -Be "home_city"
-        $NewUser.addresses.region | Should -Be "home_state"
-        $NewUser.addresses.postalCode | Should -Be "home_postalCode"
-        $NewUser.addresses.country | Should -Be "home_country"
+        $PesterParams_NewUser1.addresses.streetAddress | Should -Be $PesterParams_User1.home_streetAddress
+        $PesterParams_NewUser1.addresses.poBox | Should -Be $PesterParams_User1.home_poBox
+        $PesterParams_NewUser1.addresses.locality | Should -Be $PesterParams_User1.home_city
+        $PesterParams_NewUser1.addresses.region | Should -Be $PesterParams_User1.home_state
+        $PesterParams_NewUser1.addresses.postalCode | Should -Be $PesterParams_User1.home_postalCode
+        $PesterParams_NewUser1.addresses.country | Should -Be $PesterParams_User1.home_country
 
     }
 
     It "Creates a user with a home address using home city and state" {
-
-        $UserWithWorkAddress = @{
-            Username           = "$(New-RandomString -NumberOfChars 8)"
-            FirstName          = "Delete"
-            LastName           = "Me"
-            Email              = "$(New-RandomString -NumberOfChars 8)@pleasedelete.me"
-            home_streetAddress = "home_streetAddress"
-            home_poBox         = "home_poBox"
-            home_city          = "home_city"
-            home_state         = "home_state"
-            home_postalCode    = "home_postalCode"
-            home_country       = "home_country"
-        }
-
-        $NewUser = New-JCUser @UserWithWorkAddress
-
-        $NewUser.addresses.streetAddress | Should -Be "home_streetAddress"
-        $NewUser.addresses.poBox | Should -Be "home_poBox"
-        $NewUser.addresses.locality | Should -Be "home_city"
-        $NewUser.addresses.region | Should -Be "home_state"
-        $NewUser.addresses.postalCode | Should -Be "home_postalCode"
-        $NewUser.addresses.country | Should -Be "home_country"
+        $PesterParams_NewUser1.addresses.streetAddress | Should -Be $PesterParams_User1.home_streetAddress
+        $PesterParams_NewUser1.addresses.poBox | Should -Be $PesterParams_User1.home_poBox
+        $PesterParams_NewUser1.addresses.locality | Should -Be $PesterParams_User1.home_city
+        $PesterParams_NewUser1.addresses.region | Should -Be $PesterParams_User1.home_state
+        $PesterParams_NewUser1.addresses.postalCode | Should -Be $PesterParams_User1.home_postalCode
+        $PesterParams_NewUser1.addresses.country | Should -Be $PesterParams_User1.home_country
     }
 
     It "Creates a user with a home address and work address" {
 
-        $UserWithHomeAndWorkAddress = @{
-            Username           = "$(New-RandomString -NumberOfChars 8)"
-            FirstName          = "Delete"
-            LastName           = "Me"
-            Email              = "$(New-RandomString -NumberOfChars 8)@pleasedelete.me"
-            home_streetAddress = "home_streetAddress"
-            home_poBox         = "home_poBox"
-            home_city          = "home_city"
-            home_state         = "home_state"
-            home_postalCode    = "home_postalCode"
-            home_country       = "home_country"
-            work_streetAddress = "work_streetAddress"
-            work_poBox         = "work_poBox"
-            work_locality      = "work_city"
-            work_region        = "work_state"
-            work_postalCode    = "work_postalCode"
-            work_country       = "work_country"
-        }
+        $PesterParams_NewUser1.addresses | Where-Object type -eq work | Select-Object -ExpandProperty streetAddress | Should -Be $PesterParams_User1.work_streetAddress
+        $PesterParams_NewUser1.addresses | Where-Object type -eq work | Select-Object -ExpandProperty poBox | Should -Be $PesterParams_User1.work_poBox
+        $PesterParams_NewUser1.addresses | Where-Object type -eq work | Select-Object -ExpandProperty locality | Should -Be $PesterParams_User1.work_city
+        $PesterParams_NewUser1.addresses | Where-Object type -eq work | Select-Object -ExpandProperty region | Should -Be $PesterParams_User1.work_state
+        $PesterParams_NewUser1.addresses | Where-Object type -eq work | Select-Object -ExpandProperty postalCode | Should -Be $PesterParams_User1.work_postalCode
+        $PesterParams_NewUser1.addresses | Where-Object type -eq work | Select-Object -ExpandProperty country | Should -Be $PesterParams_User1.work_country
 
-        $NewUser = New-JCUser @UserWithHomeAndWorkAddress
-
-        $NewUser.addresses | Where-Object type -eq work | Select-Object -ExpandProperty streetAddress | Should -Be "work_streetAddress"
-        $NewUser.addresses | Where-Object type -eq work | Select-Object -ExpandProperty poBox | Should -Be "work_poBox"
-        $NewUser.addresses | Where-Object type -eq work | Select-Object -ExpandProperty locality | Should -Be "work_city"
-        $NewUser.addresses | Where-Object type -eq work | Select-Object -ExpandProperty region | Should -Be "work_state"
-        $NewUser.addresses | Where-Object type -eq work | Select-Object -ExpandProperty postalCode | Should -Be "work_postalCode"
-        $NewUser.addresses | Where-Object type -eq work | Select-Object -ExpandProperty country | Should -Be "work_country"
-
-        $NewUser.addresses | Where-Object type -eq home | Select-Object -ExpandProperty streetAddress | Should -Be "home_streetAddress"
-        $NewUser.addresses | Where-Object type -eq home | Select-Object -ExpandProperty poBox | Should -Be "home_poBox"
-        $NewUser.addresses | Where-Object type -eq home | Select-Object -ExpandProperty locality | Should -Be "home_city"
-        $NewUser.addresses | Where-Object type -eq home | Select-Object -ExpandProperty region | Should -Be "home_state"
-        $NewUser.addresses | Where-Object type -eq home | Select-Object -ExpandProperty postalCode | Should -Be "home_postalCode"
-        $NewUser.addresses | Where-Object type -eq home | Select-Object -ExpandProperty country | Should -Be "home_country"
+        $PesterParams_NewUser1.addresses | Where-Object type -eq home | Select-Object -ExpandProperty streetAddress | Should -Be $PesterParams_User1.home_streetAddress
+        $PesterParams_NewUser1.addresses | Where-Object type -eq home | Select-Object -ExpandProperty poBox | Should -Be $PesterParams_User1.home_poBox
+        $PesterParams_NewUser1.addresses | Where-Object type -eq home | Select-Object -ExpandProperty locality | Should -Be $PesterParams_User1.home_city
+        $PesterParams_NewUser1.addresses | Where-Object type -eq home | Select-Object -ExpandProperty region | Should -Be $PesterParams_User1.home_state
+        $PesterParams_NewUser1.addresses | Where-Object type -eq home | Select-Object -ExpandProperty postalCode | Should -Be $PesterParams_User1.home_postalCode
+        $PesterParams_NewUser1.addresses | Where-Object type -eq home | Select-Object -ExpandProperty country | Should -Be $PesterParams_User1.home_country
 
     }
 
     It "Creates a user with a home address and work address and new user attributes" {
+        $PesterParams_NewUser1.middlename | Should -Be $PesterParams_User1.middleName
+        $PesterParams_NewUser1.displayname | Should -Be $PesterParams_User1.displayName
+        $PesterParams_NewUser1.jobTitle | Should -Be $PesterParams_User1.jobTitle
+        $PesterParams_NewUser1.employeeIdentifier | Should -Be $PesterParams_User1.employeeIdentifier
+        $PesterParams_NewUser1.department | Should -Be $PesterParams_User1.department
+        $PesterParams_NewUser1.costCenter | Should -Be $PesterParams_User1.costCenter
+        $PesterParams_NewUser1.company | Should -Be $PesterParams_User1.Company
+        $PesterParams_NewUser1.employeeType | Should -Be $PesterParams_User1.employeeType
+        $PesterParams_NewUser1.description | Should -Be $PesterParams_User1.description
+        $PesterParams_NewUser1.location | Should -Be $PesterParams_User1.location
 
-        $UserWithHomeAndWorkAddressAndAttributes = @{
-            Username           = "$(New-RandomString -NumberOfChars 8)"
-            FirstName          = "Delete"
-            LastName           = "Me"
-            Email              = "$(New-RandomString -NumberOfChars 8)@pleasedelete.me"
-            MiddleName         = 'middlename'
-            displayName        = 'displayName'
-            jobTitle           = 'jobTitle'
-            employeeIdentifier = "employeeIdentifier_$(New-RandomString -NumberOfChars 8)"
-            department         = 'department'
-            costCenter         = 'costCenter'
-            company            = 'company'
-            employeeType       = 'employeeType'
-            description        = 'description'
-            location           = 'location'
-            home_streetAddress = "home_streetAddress"
-            home_poBox         = "home_poBox"
-            home_city          = "home_city"
-            home_state         = "home_state"
-            home_postalCode    = "home_postalCode"
-            home_country       = "home_country"
-            work_streetAddress = "work_streetAddress"
-            work_poBox         = "work_poBox"
-            work_locality      = "work_city"
-            work_region        = "work_state"
-            work_postalCode    = "work_postalCode"
-            work_country       = "work_country"
-        }
+        $PesterParams_NewUser1.addresses | Where-Object type -eq work | Select-Object -ExpandProperty streetAddress | Should -Be $PesterParams_User1.work_streetAddress
+        $PesterParams_NewUser1.addresses | Where-Object type -eq work | Select-Object -ExpandProperty poBox | Should -Be $PesterParams_User1.work_poBox
+        $PesterParams_NewUser1.addresses | Where-Object type -eq work | Select-Object -ExpandProperty locality | Should -Be $PesterParams_User1.work_city
+        $PesterParams_NewUser1.addresses | Where-Object type -eq work | Select-Object -ExpandProperty region | Should -Be $PesterParams_User1.work_state
+        $PesterParams_NewUser1.addresses | Where-Object type -eq work | Select-Object -ExpandProperty postalCode | Should -Be $PesterParams_User1.work_postalCode
+        $PesterParams_NewUser1.addresses | Where-Object type -eq work | Select-Object -ExpandProperty country | Should -Be $PesterParams_User1.work_country
 
-        $NewUser = New-JCUser @UserWithHomeAndWorkAddressAndAttributes
-
-        $NewUser.middlename | Should -Be "middleName"
-        $NewUser.displayname | Should -Be "displayName"
-        $NewUser.jobTitle | Should -Be "jobTitle"
-        $NewUser.employeeIdentifier | Should -Match "employeeIdentifier"
-        $NewUser.department | Should -Be "department"
-        $NewUser.costCenter | Should -Be "costCenter"
-        $NewUser.company | Should -Be "Company"
-        $NewUser.employeeType | Should -Be "employeeType"
-        $NewUser.description | Should -Be "description"
-        $NewUser.location | Should -Be "location"
-
-        $NewUser.addresses | Where-Object type -eq work | Select-Object -ExpandProperty streetAddress | Should -Be "work_streetAddress"
-        $NewUser.addresses | Where-Object type -eq work | Select-Object -ExpandProperty poBox | Should -Be "work_poBox"
-        $NewUser.addresses | Where-Object type -eq work | Select-Object -ExpandProperty locality | Should -Be "work_city"
-        $NewUser.addresses | Where-Object type -eq work | Select-Object -ExpandProperty region | Should -Be "work_state"
-        $NewUser.addresses | Where-Object type -eq work | Select-Object -ExpandProperty postalCode | Should -Be "work_postalCode"
-        $NewUser.addresses | Where-Object type -eq work | Select-Object -ExpandProperty country | Should -Be "work_country"
-
-        $NewUser.addresses | Where-Object type -eq home | Select-Object -ExpandProperty streetAddress | Should -Be "home_streetAddress"
-        $NewUser.addresses | Where-Object type -eq home | Select-Object -ExpandProperty poBox | Should -Be "home_poBox"
-        $NewUser.addresses | Where-Object type -eq home | Select-Object -ExpandProperty locality | Should -Be "home_city"
-        $NewUser.addresses | Where-Object type -eq home | Select-Object -ExpandProperty region | Should -Be "home_state"
-        $NewUser.addresses | Where-Object type -eq home | Select-Object -ExpandProperty postalCode | Should -Be "home_postalCode"
-        $NewUser.addresses | Where-Object type -eq home | Select-Object -ExpandProperty country | Should -Be "home_country"
+        $PesterParams_NewUser1.addresses | Where-Object type -eq home | Select-Object -ExpandProperty streetAddress | Should -Be $PesterParams_User1.home_streetAddress
+        $PesterParams_NewUser1.addresses | Where-Object type -eq home | Select-Object -ExpandProperty poBox | Should -Be $PesterParams_User1.home_poBox
+        $PesterParams_NewUser1.addresses | Where-Object type -eq home | Select-Object -ExpandProperty locality | Should -Be $PesterParams_User1.home_city
+        $PesterParams_NewUser1.addresses | Where-Object type -eq home | Select-Object -ExpandProperty region | Should -Be $PesterParams_User1.home_state
+        $PesterParams_NewUser1.addresses | Where-Object type -eq home | Select-Object -ExpandProperty postalCode | Should -Be $PesterParams_User1.home_postalCode
+        $PesterParams_NewUser1.addresses | Where-Object type -eq home | Select-Object -ExpandProperty country | Should -Be $PesterParams_User1.home_country
 
     }
 
     It "Creates a user with mobile number" {
-
-        $UserWithNumber = @{
-            Username      = "$(New-RandomString -NumberOfChars 8)"
-            FirstName     = "Delete"
-            LastName      = "Me"
-            Email         = "$(New-RandomString -NumberOfChars 8)@pleasedelete.me"
-            mobile_number = "1234"
-        }
-
-        $NewUser = New-JCUser @UserWithNumber
-
-        $NewUser.phoneNumbers | Where-Object type -EQ mobile | Select-Object -ExpandProperty number | Should -Be "1234"
+        $PesterParams_NewUser1.phoneNumbers | Where-Object type -EQ mobile | Select-Object -ExpandProperty number | Should -Be $PesterParams_User1.mobile_number
 
     }
 
     It "Creates a user with home number" {
-        $UserWithNumber = @{
-            Username    = "$(New-RandomString -NumberOfChars 8)"
-            FirstName   = "Delete"
-            LastName    = "Me"
-            Email       = "$(New-RandomString -NumberOfChars 8)@pleasedelete.me"
-            home_number = "1234"
-        }
-
-        $NewUser = New-JCUser @UserWithNumber
-
-        $NewUser.phoneNumbers | Where-Object type -EQ home | Select-Object -ExpandProperty number | Should -Be "1234"
+        $PesterParams_NewUser1.phoneNumbers | Where-Object type -EQ home | Select-Object -ExpandProperty number | Should -Be $PesterParams_User1.home_number
     }
 
     It "Creates a user with work number" {
-        $UserWithNumber = @{
-            Username    = "$(New-RandomString -NumberOfChars 8)"
-            FirstName   = "Delete"
-            LastName    = "Me"
-            Email       = "$(New-RandomString -NumberOfChars 8)@pleasedelete.me"
-            work_number = "1234"
-        }
-
-        $NewUser = New-JCUser @UserWithNumber
-
-        $NewUser.phoneNumbers | Where-Object type -EQ work | Select-Object -ExpandProperty number | Should -Be "1234"
+        $PesterParams_NewUser1.phoneNumbers | Where-Object type -EQ work | Select-Object -ExpandProperty number | Should -Be $PesterParams_User1.work_number
     }
 
     It "Creates a user with work mobile number" {
-        $UserWithNumber = @{
-            Username           = "$(New-RandomString -NumberOfChars 8)"
-            FirstName          = "Delete"
-            LastName           = "Me"
-            Email              = "$(New-RandomString -NumberOfChars 8)@pleasedelete.me"
-            work_mobile_number = "1234"
-        }
-
-        $NewUser = New-JCUser @UserWithNumber
-
-        $NewUser.phoneNumbers | Where-Object type -EQ work_mobile | Select-Object -ExpandProperty number | Should -Be "1234"
+        $PesterParams_NewUser1.phoneNumbers | Where-Object type -EQ work_mobile | Select-Object -ExpandProperty number | Should -Be $PesterParams_User1.work_mobile
     }
 
 
     It "Creates a user with work fax number" {
-        $UserWithNumber = @{
-            Username        = "$(New-RandomString -NumberOfChars 8)"
-            FirstName       = "Delete"
-            LastName        = "Me"
-            Email           = "$(New-RandomString -NumberOfChars 8)@pleasedelete.me"
-            work_fax_number = "1234"
-        }
-
-        $NewUser = New-JCUser @UserWithNumber
-
-        $NewUser.phoneNumbers | Where-Object type -EQ work_fax | Select-Object -ExpandProperty number | Should -Be "1234"
+        $PesterParams_NewUser1.phoneNumbers | Where-Object type -EQ work_fax | Select-Object -ExpandProperty number | Should -Be $PesterParams_User1.work_fax
     }
 
     It "Creates a user with all numbers" {
-        $UserWithNumbers = @{
-            Username           = "$(New-RandomString -NumberOfChars 8)"
-            FirstName          = "Delete"
-            LastName           = "Me"
-            Email              = "$(New-RandomString -NumberOfChars 8)@pleasedelete.me"
-            mobile_number      = "mobile_number"
-            home_number        = "home_number"
-            work_number        = "work_number"
-            work_mobile_number = "work_mobile_number"
-            work_fax_number    = "work_fax_number"
-        }
-
-        $NewUser = New-JCUser @UserWithNumbers
-
-        $NewUser.phoneNumbers | Where-Object type -EQ mobile | Select-Object -ExpandProperty number | Should -Be "mobile_number"
-        $NewUser.phoneNumbers | Where-Object type -EQ home | Select-Object -ExpandProperty number | Should -Be "home_number"
-        $NewUser.phoneNumbers | Where-Object type -EQ work | Select-Object -ExpandProperty number | Should -Be "work_number"
-        $NewUser.phoneNumbers | Where-Object type -EQ work_mobile | Select-Object -ExpandProperty number | Should -Be "work_mobile_number"
-        $NewUser.phoneNumbers | Where-Object type -EQ work_fax | Select-Object -ExpandProperty number | Should -Be "work_fax_number"
+        $PesterParams_NewUser1.phoneNumbers | Where-Object type -EQ mobile | Select-Object -ExpandProperty number | Should -Be $PesterParams_User1.mobile_number
+        $PesterParams_NewUser1.phoneNumbers | Where-Object type -EQ home | Select-Object -ExpandProperty number | Should -Be $PesterParams_User1.home_number
+        $PesterParams_NewUser1.phoneNumbers | Where-Object type -EQ work | Select-Object -ExpandProperty number | Should -Be $PesterParams_User1.work_number
+        $PesterParams_NewUser1.phoneNumbers | Where-Object type -EQ work_mobile | Select-Object -ExpandProperty number | Should -Be $PesterParams_User1.work_mobile_number
+        $PesterParams_NewUser1.phoneNumbers | Where-Object type -EQ work_fax | Select-Object -ExpandProperty number | Should -Be $PesterParams_User1.work_fax_number
     }
 
-    Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
-
+    It "Removes users Where-Object Email -like *pleasedelete* " {
+        Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
+    }
 }
 
 
