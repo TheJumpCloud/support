@@ -122,6 +122,8 @@ Function Remove-Org
         # $null = Get-JCUser | Set-JCUser -externally_managed $false
         # $null = Get-JCUser | Remove-JCUser -force
         $UserToRemove = Get-JCUser | Where-Object { $_.Email -like '*delete*' }
+        $null = $UserToRemove | Remove-JCUser -force
+        $UserToRemove = Get-JCUser | Where-Object { $_.Email -like '*delete*' }
         $null = $UserToRemove | Set-JCUser -externally_managed $false
         $null = $UserToRemove | Remove-JCUser -force
     }
