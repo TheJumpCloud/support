@@ -44,7 +44,7 @@ Function Get-JCPolicy ()
         {
             $hdrs.Add('x-org-id', "$($JCOrgID)")
         }
-        $Result = @()
+        $Results = @()
     }
 
     process
@@ -70,11 +70,16 @@ Function Get-JCPolicy ()
         }
         ForEach ($URL In $URLs)
         {
-            $Result += Invoke-JCApi -Method:('GET') -Paginate:($true) -Url:($URL)
+
+            $Result = Invoke-JCApi -Method:('GET') -Paginate:($true) -Url:($URL)
+            $Results += $Result
         }
-        If ($Result)
+    }
+    End
+    {
+        If ($Results)
         {
-            Return $Result
+            Return $Results
         }
     }
 }
