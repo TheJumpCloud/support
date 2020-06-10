@@ -245,19 +245,27 @@ $UserGroup = New-JCUserGroup @NewUserGroup
 $SystemGroup = New-JCSystemGroup @NewSystemGroup
 $RadiusServer = New-JCRadiusServer @NewRadiusServer
 # If no command results currently exist
+$CommandResultsExist = Get-JCCommandResult
 If ([System.String]::IsNullOrEmpty($CommandResultsExist) -or $CommandResultsExist.Count -lt $PesterParamsHash_Common.CommandResultCount)
 {
     $testCmd = Get-JCCommand | Where-Object { $_.trigger -eq $PesterParamsHash_Common.CommandTrigger }
-    $null = Add-JCCommandTarget -CommandID $testCmd.id -SystemID $PesterParamsHash_OS.SystemID
-    $TriggeredCommand = For ($i = 1; $i -le $PesterParamsHash_Common.CommandResultCount; $i++)
+    If ($testCmd)
     {
-        Invoke-JCCommand -trigger:($testCmd.name)
+        Add-JCCommandTarget -CommandID $testCmd.id -SystemID $PesterParamsHash_OS.SystemID
+        $TriggeredCommand = For ($i = 1; $i -le $PesterParamsHash_Common.CommandResultCount; $i++)
+        {
+            Invoke-JCCommand -trigger:($testCmd.name)
+        }
+        While ((Get-JCCommandResult | Where-Object { $_.Name -eq $testCmd.name }).Count -ge $PesterParamsHash_Common.CommandResultCount)
+        {
+            Start-Sleep -Seconds:(1)
+        }
+        Remove-JCCommandTarget -CommandID $testCmd.id -SystemID $PesterParamsHash_OS.SystemID
     }
-    While ((Get-JCCommandResult | Where-Object { $_.Name -eq $testCmd.name }).Count -ge $PesterParamsHash_Common.CommandResultCount)
+    Else
     {
-        Start-Sleep -Seconds:(1)
+        Write-Error ("No command called $($PesterParamsHash_Common.CommandTrigger) has been setup.")
     }
-    $null = Remove-JCCommandTarget -CommandID $testCmd.id -SystemID $PesterParamsHash_OS.SystemID
 }
 # Params that need to run commands to get their values with inputs from other hash tables
 $PesterParamsHash_Commands = @{
@@ -271,7 +279,6 @@ $PesterParamsHash_Commands = @{
     OrgId               = (Get-JCOrganization).OrgID
     SinglePolicy        = Get-JCPolicy -Name:($PesterParamsHash_Common.SinglePolicyList)
     MultiplePolicy      = Get-JCPolicy -Name:($PesterParamsHash_Common.MultiplePolicyList)
-    CommandResultsExist = Get-JCCommandResult
     UserGroupID         = (Get-JCGroup -Type:('User') -Name:($UserGroup.Name)).id
     SystemGroupID       = (Get-JCGroup -Type:('System') -Name:($SystemGroup.Name)).id
     UserGroupMembership = Add-JCUserGroupMember -GroupName:($UserGroup.Name) -Username:($User1.username)
