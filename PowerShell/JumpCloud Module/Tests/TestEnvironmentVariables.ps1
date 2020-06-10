@@ -83,15 +83,46 @@ Else
 {
     Write-Error ("Unknown OS: $($OS)")
 }
-Function Remove-Org()
+Function Remove-Org
 {
-    # Clear out org
-    $null = Get-JCUser | Set-JCUser -externally_managed $false
-    $null = Get-JCUser | Remove-JCUser -force
-    $null = Get-JCGroup | ForEach-Object { If ($_.Type -eq 'system_group') { Remove-JCSystemGroup -GroupName:($_.Name) -force }ElseIf ($_.Type -eq 'user_group') { Remove-JCUserGroup -GroupName:($_.Name) -force }Else { Write-Error('Unknown') } }
-    $null = Get-JCRadiusServer | Remove-JCRadiusServer -Force
+    Param(
+        [System.Boolean]$Users
+        , [System.Boolean]$Systems
+        # , [System.Boolean]$Policies
+        , [System.Boolean]$Groups
+        # , [System.Boolean]$Applications
+        # , [System.Boolean]$Directories
+        , [System.Boolean]$Commands
+        , [System.Boolean]$RadiusServers
+    )
+    # Remove all users from an org
+    If ($Users)
+    {
+        $null = Get-JCUser | Set-JCUser -externally_managed $false
+        $null = Get-JCUser | Remove-JCUser -force
+    }
+    # Remove all systems from an org
+    If ($Systems)
+    {
+        $null = Get-JCSystem | Remove-JCSystem -force
+    }
+    # Remove all groups from an org
+    If ($Groups)
+    {
+        $null = Get-JCGroup | ForEach-Object { If ($_.Type -eq 'system_group') { Remove-JCSystemGroup -GroupName:($_.Name) -force }ElseIf ($_.Type -eq 'user_group') { Remove-JCUserGroup -GroupName:($_.Name) -force }Else { Write-Error('Unknown') } }
+    }
+    # Remove all Commands from an org
+    If ($Commands)
+    {
+        $null = Get-JCCommand | Remove-JCCommand -force
+    }
+    # Remove all RadiusServers from an org
+    If ($RadiusServers)
+    {
+        $null = Get-JCRadiusServer | Remove-JCRadiusServer -Force
+    }
 }
-# Remove-Org
+Remove-Org -RadiusServers
 
 # Define items
 $RandomString1 = ( -join (( 0x41..0x5A) + ( 0x61..0x7A) | Get-Random -Count 8 | ForEach-Object { [char]$_ }))
