@@ -98,8 +98,11 @@ Function Remove-Org
     # Remove all users from an org
     If ($Users)
     {
-        $null = Get-JCUser | Set-JCUser -externally_managed $false
-        $null = Get-JCUser | Remove-JCUser -force
+        # $null = Get-JCUser | Set-JCUser -externally_managed $false
+        # $null = Get-JCUser | Remove-JCUser -force
+        $UserToRemove = Get-JCUser | Where-Object { $_.Email -like '*delete*' }
+        $null = $UserToRemove | Set-JCUser -externally_managed $false
+        $null = $UserToRemove | Remove-JCUser -force
     }
     # Remove all systems from an org
     If ($Systems)
@@ -122,7 +125,7 @@ Function Remove-Org
         $null = Get-JCRadiusServer | Remove-JCRadiusServer -Force
     }
 }
-Remove-Org -RadiusServers
+Remove-Org -Users -RadiusServers
 
 # Define items
 $RandomString1 = ( -join (( 0x41..0x5A) + ( 0x61..0x7A) | Get-Random -Count 8 | ForEach-Object { [char]$_ }))
