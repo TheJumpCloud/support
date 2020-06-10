@@ -86,14 +86,14 @@ Else
 Function Remove-Org
 {
     Param(
-        [System.Boolean]$Users
-        , [System.Boolean]$Systems
-        # , [System.Boolean]$Policies
-        , [System.Boolean]$Groups
-        # , [System.Boolean]$Applications
-        # , [System.Boolean]$Directories
-        , [System.Boolean]$Commands
-        , [System.Boolean]$RadiusServers
+        [switch]$Users
+        , [switch]$Systems
+        # , [switch]$Policies
+        , [switch]$Groups
+        # , [switch]$Applications
+        # , [switch]$Directories
+        , [switch]$Commands
+        , [switch]$RadiusServers
     )
     # Remove all users from an org
     If ($Users)
