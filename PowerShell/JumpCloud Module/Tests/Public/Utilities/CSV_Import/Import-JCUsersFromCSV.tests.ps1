@@ -360,9 +360,10 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
             $ImportCheck.work_fax_number | Should -Be $($NewUserInfo.phoneNumbers | Where-Object type -eq work_fax | Select-Object -ExpandProperty number)
         }
 
+    }
+    It "Removes users Where-Object Email -like *pleasedelete* " {
         Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
     }
-
 
 
     It "Imports users from a CSV populated with information attributes" {

@@ -748,7 +748,9 @@ Describe -Tag:('JCUser') "Set-JCUser 1.8.0" {
         $SetUser = Set-JCUser -UserID $NewUser._id -location "new_location"
         $SetUser.location | Should -Be "new_location"
     }
-    Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
+    It "Removes users Where-Object Email -like *pleasedelete* " {
+        Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
+    }
 }
 Describe -Tag:('JCUser') "Set-JCUser addresses 1.8.0" {
     It "Updates a users work address" {
@@ -837,7 +839,9 @@ Describe -Tag:('JCUser') "Set-JCUser addresses 1.8.0" {
         $SetUser = Set-JCUser -Username $NewUser.username -home_country "new_home_country"
         $SetUser.addresses | Where-Object type -EQ home | Select-Object -ExpandProperty country | Should -Be "new_home_country"
     }
-    Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
+    It "Removes users Where-Object Email -like *pleasedelete* " {
+        Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
+    }
 }
 Describe -Tag:('JCUser') "Set-JCUser phoneNumbers 1.8.0" {
     It "Updates a users mobile number" {
@@ -1015,7 +1019,9 @@ Describe -Tag:('JCUser') "Set-JCUser phoneNumbers 1.8.0" {
         $UpdatedUser.phoneNumbers | Where-Object type -EQ work_mobile | Select-Object -ExpandProperty number | Should -Be "new_work_mobile_number"
         $UpdatedUser.phoneNumbers | Where-Object type -EQ work_fax | Select-Object -ExpandProperty number | Should -Be "new_work_fax_number"
     }
-    Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
+    It "Removes users Where-Object Email -like *pleasedelete* " {
+        Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
+    }
 }
 Describe -Tag:('JCUser') "Set-JCuser users phoneNumbers and attributes 1.8.0" {
     It "Updates a number and adds an attribute" {
@@ -1153,7 +1159,9 @@ Describe -Tag:('JCUser') "Set-JCuser users phoneNumbers and attributes 1.8.0" {
         $UpdatedUser.phoneNumbers | Where-Object type -EQ work_fax | Select-Object -ExpandProperty number | Should -Be "new_work_fax_number"
         $UpdatedUser.attributes | Where-Object name -EQ "attr1" | Select-Object -ExpandProperty value | Should -Be $Null
     }
-    Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
+    It "Removes users Where-Object Email -like *pleasedelete* " {
+        Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
+    }
 }
 Describe -Tag:('JCUser') "Set-JCUser MFA Enrollment periods 1.10" {
     It "Updates an existing user with enable_user_portal_multifactor -eq False to enable_user_portal_multifactor -eq True " {

@@ -313,8 +313,9 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
 
     }
 
-    Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
-
+    It "Removes users Where-Object Email -like *pleasedelete* " {
+        Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
+    }
 
     It "Updates users from a CSV populated with no information" {
 
