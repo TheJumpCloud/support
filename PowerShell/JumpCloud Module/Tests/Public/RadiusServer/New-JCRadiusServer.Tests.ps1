@@ -4,6 +4,7 @@ Describe -Tag:('JCRadiusServer') 'New-JCRadiusServer Tests' {
     }
     Context 'New-JCRadiusServer' {
         It ('Should create a new radius server.') {
+            $RadiusServerTemplate | Remove-JCRadiusServer -Force
             $RadiusServer = $RadiusServerTemplate | New-JCRadiusServer # -Name:('') -networkSourceIp:('') -sharedSecret:('') -Force ;
             $RadiusServer | Should -Not -BeNullOrEmpty
             $RadiusServer.name | Should -Be $RadiusServerTemplate.name
