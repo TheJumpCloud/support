@@ -1,10 +1,39 @@
-# See Get-JCRadiusServer.Tests.ps1
+Describe -Tag:('JCRadiusServer') 'Set-JCRadiusServer Tests' {
+    BeforeAll {
+        $RadiusServerTemplate = Get-JCRadiusServer -Name:($PesterParams_RadiusServerName); # -Fields:('') -Filter:('') -Limit:(1) -Skip:(1) -Paginate:($true) -Force;
+        If (-not $RadiusServerTemplate)
+        {
+            $RadiusServerTemplate = New-JCRadiusServer @PesterParams_NewRadiusServer
+        }
+    }
+    Context 'Set-JCRadiusServer' {
+        It ('Should update a radius server ByName.') {
+            $RadiusServer = Set-JCRadiusServer -Name:($RadiusServerTemplate.name) -newName:('Something') -networkSourceIp:('246.246.246.246') -sharedSecret:('kldFaSDfAdgfAgxcxWEQTRDS') -Force;
+            $RadiusServer | Should -Not -BeNullOrEmpty
+            $RadiusServer.name | Should -Be 'Something'
+            $RadiusServer.networkSourceIp | Should -Be '246.246.246.246'
+            $RadiusServer.sharedSecret | Should -Be 'kldFaSDfAdgfAgxcxWEQTRDS'
+        }
+        It ('Should update a radius server ById.') {
+            $RadiusServer = Set-JCRadiusServer -Id:($RadiusServerTemplate.id) -newName:('SomethingElse') -networkSourceIp:('246.246.246.247') -sharedSecret:('aseRDGsDFGSDfgBsdRFTygSW') -Force;
+            $RadiusServer | Should -Not -BeNullOrEmpty
+            $RadiusServer.name | Should -Be 'SomethingElse'
+            $RadiusServer.networkSourceIp | Should -Be '246.246.246.247'
+            $RadiusServer.sharedSecret | Should -Be 'aseRDGsDFGSDfgBsdRFTygSW'
+        }
+        # It ('Should return a specific radius server ByValue (ById).') {
+        #     $RadiusServer = Set-JCRadiusServer -SearchBy:('ById') -SearchByValue:('') -newName:('') -networkSourceIp:('') -sharedSecret:('') -Force;
+        #     $RadiusServer | Should -Not -BeNullOrEmpty
+        #     $RadiusServer.id | Should -Be $RadiusServerTemplate.id
+        # }
+        # It ('Should return a specific radius server ByValue (ByName).') {
+        #     $RadiusServer = Set-JCRadiusServer -SearchBy:('ByName') -SearchByValue:('') -newName:('') -networkSourceIp:('') -sharedSecret:('') -Force;
+        #     $RadiusServer | Should -Not -BeNullOrEmpty
+        #     $RadiusServer.name | Should -Be $RadiusServerTemplate.name
+        # }
+    }
+}
 Describe -Tag:('JCRadiusServer') 'Set-JCRadiusServer 1.15.3' {
-    # $RadiusServerTemplate = @{
-    #     'networkSourceIp' = '254.254.254.254'
-    #     'sharedSecret'    = 'f3TkHSK2GT4JR!W9tugRPp2zQnAVObv'
-    #     'name'            = 'PesterTest_RadiusServer'
-    # }
     BeforeAll {
         $RadiusServerTemplate = Get-JCRadiusServer -Name:($PesterParams_RadiusServerName); # -Fields:('') -Filter:('') -Limit:(1) -Skip:(1) -Paginate:($true) -Force;
     }
