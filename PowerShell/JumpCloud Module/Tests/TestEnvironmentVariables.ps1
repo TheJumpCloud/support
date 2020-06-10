@@ -272,9 +272,9 @@ $PesterParamsHash_Commands = @{
     SinglePolicy        = Get-JCPolicy -Name:($PesterParamsHash_Common.SinglePolicyList)
     MultiplePolicy      = Get-JCPolicy -Name:($PesterParamsHash_Common.MultiplePolicyList)
     CommandResultsExist = Get-JCCommandResult
-    UserGroupID         = (Get-JCGroup -Type:('User') -Name:($UserGroup.UserGroupName)).id
-    SystemGroupID       = (Get-JCGroup -Type:('System') -Name:($SystemGroup.SystemGroupName)).id
-    UserGroupMembership = Add-JCUserGroupMember -GroupName:($UserGroupName) -Username:($Username)
+    UserGroupID         = (Get-JCGroup -Type:('User') -Name:($UserGroup.Name)).id
+    SystemGroupID       = (Get-JCGroup -Type:('System') -Name:($SystemGroup.Name)).id
+    UserGroupMembership = Add-JCUserGroupMember -GroupName:($UserGroup.Name) -Username:($User1.username)
 }
 
 # Combine all hash tables into one list and foreach of their values create a new global parameter
