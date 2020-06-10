@@ -1,6 +1,10 @@
 Describe -Tag:('JCRadiusServer') 'Set-JCRadiusServer Tests' {
     BeforeAll {
         $RadiusServerTemplate = Get-JCRadiusServer -Name:($PesterParams_RadiusServerName); # -Fields:('') -Filter:('') -Limit:(1) -Skip:(1) -Paginate:($true) -Force;
+        If (-not $RadiusServerTemplate)
+        {
+            $RadiusServerTemplate = New-JCRadiusServer @PesterParams_NewRadiusServer
+        }
     }
     Context 'Set-JCRadiusServer' {
         It ('Should update a radius server ByName.') {
@@ -16,10 +20,6 @@ Describe -Tag:('JCRadiusServer') 'Set-JCRadiusServer Tests' {
             $RadiusServer.name | Should -Be 'SomethingElse'
             $RadiusServer.networkSourceIp | Should -Be '246.246.246.247'
             $RadiusServer.sharedSecret | Should -Be 'aseRDGsDFGSDfgBsdRFTygSW'
-        }
-        It ('Should revert radius server changes.') {
-            $RadiusServer = $RadiusServerTemplate | Set-JCRadiusServer -Name:('SomethingElse') -newName:($PesterParams_RadiusServerName) -Force;
-            $RadiusServer | Should -Not -BeNullOrEmpty
         }
         # It ('Should return a specific radius server ByValue (ById).') {
         #     $RadiusServer = Set-JCRadiusServer -SearchBy:('ById') -SearchByValue:('') -newName:('') -networkSourceIp:('') -sharedSecret:('') -Force;
