@@ -92,8 +92,6 @@ $PesterParamsHash_Common = @{
     TwoTrigger                      = 'twotrigger'
     ThreeTrigger                    = 'threetrigger'
     Groups                          = @('One', 'Two', 'Three', 'Four', 'Five', 'Six')
-    # Generate random string
-    RandomString                    = ( -join (( 0x41..0x5A) + ( 0x61..0x7A) | Get-Random -Count 8 | ForEach-Object { [char]$_ }))
     # CSV Files
     Import_JCUsersFromCSV_1_1_Tests = "$PSScriptRoot/Csv_Files/import/ImportExample_Pester_Tests_1.1.0.csv" # This CSV file is specific to pester environment (SystemID's and Group Names)
     JCDeployment_2_CSV              = "$PSScriptRoot/Csv_Files/commandDeployment/JCDeployment_2.csv"
@@ -270,7 +268,6 @@ $PesterParamsHash_Commands = @{
     UserID              = $User1.Id
     User1               = $User1
     NewUser1            = $NewUser1
-    RandomEmail         = '{0}@{1}.com' -f $PesterParamsHash_Common.RandomString, $PesterParamsHash_Common.RandomString
     OrgId               = (Get-JCOrganization).OrgID
     SinglePolicy        = Get-JCPolicy -Name:($PesterParamsHash_Common.SinglePolicyList)
     MultiplePolicy      = Get-JCPolicy -Name:($PesterParamsHash_Common.MultiplePolicyList)

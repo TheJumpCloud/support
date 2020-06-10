@@ -1,5 +1,9 @@
 Describe -Tag:('JCUser') 'Set-JCUser 1.0' {
-    BeforeAll { Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null }
+    BeforeAll {
+        Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
+        $RandomString = ( -join (( 0x41..0x5A) + ( 0x61..0x7A) | Get-Random -Count 8 | ForEach-Object { [char]$_ }))
+        $RandomEmail = '{0}@{1}.com' -f $RandomString, $RandomString
+    }
     It "Updates the FirstName using -ByID and -UserID" {
         $NewUser = New-RandomUser "PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser
         $NewFirstName = Set-JCUser -ByID -UserID $NewUser._id -firstname 'NewFirstName'
@@ -26,14 +30,14 @@ Describe -Tag:('JCUser') 'Set-JCUser 1.0' {
     }
     It "Updates the email using -ByID and -UserID" {
         $NewUser = New-RandomUser "PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser
-        $Newemail = Set-JCUser -ByID -UserID $NewUser._id -email $PesterParams_RandomEmail
-        $Newemail.email | Should -Be $PesterParams_RandomEmail
+        $Newemail = Set-JCUser -ByID -UserID $NewUser._id -email $RandomEmail
+        $Newemail.email | Should -Be $RandomEmail
         Remove-JCUser -UserID $NewUser._id -force
     }
     It "Updates the email using -Username" {
         $NewUser = New-RandomUser "PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser
-        $Newemail = Set-JCUser -Username $NewUser.Username -email $PesterParams_RandomEmail
-        $Newemail.email | Should -Be $PesterParams_RandomEmail
+        $Newemail = Set-JCUser -Username $NewUser.Username -email $RandomEmail
+        $Newemail.email | Should -Be $RandomEmail
         Remove-JCUser -UserID $NewUser._id -force
     }
     It "Updates the password using -ByID and -UserID" {
