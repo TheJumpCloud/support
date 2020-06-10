@@ -83,6 +83,29 @@ Else
 {
     Write-Error ("Unknown OS: $($OS)")
 }
+
+# Parameters that are not Org specific
+$PesterParamsHash_Common = @{
+    PesterResultsFileXml            = "$($PSScriptRoot)/JumpCloud-$($OS)-TestResults.xml"
+    UserLastName                    = 'Test'
+    OneTrigger                      = 'onetrigger'
+    TwoTrigger                      = 'twotrigger'
+    ThreeTrigger                    = 'threetrigger'
+    Groups                          = @('One', 'Two', 'Three', 'Four', 'Five', 'Six')
+    # Generate random string
+    RandomString                    = ( -join (( 0x41..0x5A) + ( 0x61..0x7A) | Get-Random -Count 8 | ForEach-Object { [char]$_ }))
+    # CSV Files
+    Import_JCUsersFromCSV_1_1_Tests = "$PSScriptRoot/Csv_Files/import/ImportExample_Pester_Tests_1.1.0.csv" # This CSV file is specific to pester environment (SystemID's and Group Names)
+    JCDeployment_2_CSV              = "$PSScriptRoot/Csv_Files/commandDeployment/JCDeployment_2.csv"
+    JCDeployment_10_CSV             = "$PSScriptRoot/Csv_Files/commandDeployment/JCDeployment_10.csv"
+    ImportPath                      = "$PSScriptRoot/Csv_Files/import"
+    UpdatePath                      = "$PSScriptRoot/Csv_Files/update"
+    # Policy Info
+    MultiplePolicyList              = @('1 Linux', 'Disable USB Storage - Linux')
+    SinglePolicyList                = @('Disable USB Storage - Linux')
+    CommandTrigger                  = 'GetJCAgentLog'
+    CommandResultCount              = 10
+}
 Function Remove-Org
 {
     Param(
@@ -223,45 +246,38 @@ $User2 = New-JCUser @NewUser2
 $UserGroup = New-JCUserGroup @NewUserGroup
 $SystemGroup = New-JCSystemGroup @NewSystemGroup
 $RadiusServer = New-JCRadiusServer @NewRadiusServer
-# Parameters that are on Org specific
-$PesterParamsHash_Common = @{
-    PesterResultsFileXml            = "$($PSScriptRoot)/JumpCloud-$($OS)-TestResults.xml"
-    RadiusServerName                = $RadiusServer.Name
-    SystemGroupName                 = $SystemGroup.Name
-    UserGroupName                   = $UserGroup.Name
-    Username                        = $User1.username
-    UserID                          = $User1.Id
-    User1                           = $User1
-    NewUser1                        = $NewUser1
-    UserLastName                    = 'Test'
-    OneTrigger                      = 'onetrigger'
-    TwoTrigger                      = 'twotrigger'
-    ThreeTrigger                    = 'threetrigger'
-    Groups                          = @('One', 'Two', 'Three', 'Four', 'Five', 'Six')
-    # Generate random string
-    RandomString                    = ( -join (( 0x41..0x5A) + ( 0x61..0x7A) | Get-Random -Count 8 | ForEach-Object { [char]$_ }))
-    # CSV Files
-    Import_JCUsersFromCSV_1_1_Tests = "$PSScriptRoot/Csv_Files/import/ImportExample_Pester_Tests_1.1.0.csv" # This CSV file is specific to pester environment (SystemID's and Group Names)
-    JCDeployment_2_CSV              = "$PSScriptRoot/Csv_Files/commandDeployment/JCDeployment_2.csv"
-    JCDeployment_10_CSV             = "$PSScriptRoot/Csv_Files/commandDeployment/JCDeployment_10.csv"
-    ImportPath                      = "$PSScriptRoot/Csv_Files/import"
-    UpdatePath                      = "$PSScriptRoot/Csv_Files/update"
-    # Policy Info
-    MultiplePolicyList              = @('1 Linux', 'Disable USB Storage - Linux')
-    SinglePolicyList                = @('Disable USB Storage - Linux')
-    CommandTrigger                  = 'GetJCAgentLog'
-    CommandResultCount              = 10
+# If no command results currently exist
+If ([System.String]::IsNullOrEmpty($CommandResultsExist) -or $CommandResultsExist.Count -lt $PesterParamsHash_Common.CommandResultCount)
+{
+    $testCmd = Get-JCCommand | Where-Object { $_.trigger -eq $PesterParamsHash_Common.CommandTrigger }
+    Add-JCCommandTarget -CommandID $testCmd.id -SystemID $PesterParams_SystemID
+    $TriggeredCommand = For ($i = 1; $i -le $PesterParamsHash_Common.CommandResultCount; $i++)
+    {
+        Invoke-JCCommand -trigger:($testCmd.name)
+    }
+    While ((Get-JCCommandResult | Where-Object { $_.Name -eq $testCmd.name }).Count -ge $PesterParamsHash_Common.CommandResultCount)
+    {
+        Start-Sleep -Seconds:(1)
+    }
+    Remove-JCCommandTarget -CommandID $testCmd.id -SystemID $PesterParams_SystemID
 }
 # Params that need to run commands to get their values with inputs from other hash tables
 $PesterParamsHash_Commands = @{
+    RadiusServerName    = $RadiusServer.Name
+    SystemGroupName     = $SystemGroup.Name
+    UserGroupName       = $UserGroup.Name
+    Username            = $User1.username
+    UserID              = $User1.Id
+    User1               = $User1
+    NewUser1            = $NewUser1
     RandomEmail         = '{0}@{1}.com' -f $PesterParamsHash_Common.RandomString, $PesterParamsHash_Common.RandomString
     OrgId               = (Get-JCOrganization).OrgID
     SinglePolicy        = Get-JCPolicy -Name:($PesterParamsHash_Common.SinglePolicyList)
     MultiplePolicy      = Get-JCPolicy -Name:($PesterParamsHash_Common.MultiplePolicyList)
     CommandResultsExist = Get-JCCommandResult
-    UserGroupID         = (Get-JCGroup -Type:('User') -Name:($PesterParamsHash_Common.UserGroupName)).id
-    SystemGroupID       = (Get-JCGroup -Type:('System') -Name:($PesterParamsHash_Common.SystemGroupName)).id
-    UserGroupMembership = Add-JCUserGroupMember -GroupName $PesterParamsHash_Common.UserGroupName -Username $PesterParamsHash_Common.Username
+    UserGroupID         = (Get-JCGroup -Type:('User') -Name:($UserGroup.UserGroupName)).id
+    SystemGroupID       = (Get-JCGroup -Type:('System') -Name:($SystemGroup.SystemGroupName)).id
+    UserGroupMembership = Add-JCUserGroupMember -GroupName:($UserGroupName) -Username:($Username)
 }
 
 # Combine all hash tables into one list and foreach of their values create a new global parameter
