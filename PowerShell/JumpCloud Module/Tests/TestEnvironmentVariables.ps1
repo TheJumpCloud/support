@@ -248,7 +248,7 @@ $RadiusServer = New-JCRadiusServer @NewRadiusServer
 If ([System.String]::IsNullOrEmpty($CommandResultsExist) -or $CommandResultsExist.Count -lt $PesterParamsHash_Common.CommandResultCount)
 {
     $testCmd = Get-JCCommand | Where-Object { $_.trigger -eq $PesterParamsHash_Common.CommandTrigger }
-    Add-JCCommandTarget -CommandID $testCmd.id -SystemID $PesterParams_SystemID
+    $null = Add-JCCommandTarget -CommandID $testCmd.id -SystemID $PesterParams_SystemID
     $TriggeredCommand = For ($i = 1; $i -le $PesterParamsHash_Common.CommandResultCount; $i++)
     {
         Invoke-JCCommand -trigger:($testCmd.name)
@@ -257,7 +257,7 @@ If ([System.String]::IsNullOrEmpty($CommandResultsExist) -or $CommandResultsExis
     {
         Start-Sleep -Seconds:(1)
     }
-    Remove-JCCommandTarget -CommandID $testCmd.id -SystemID $PesterParams_SystemID
+    $null = Remove-JCCommandTarget -CommandID $testCmd.id -SystemID $PesterParams_SystemID
 }
 # Params that need to run commands to get their values with inputs from other hash tables
 $PesterParamsHash_Commands = @{
