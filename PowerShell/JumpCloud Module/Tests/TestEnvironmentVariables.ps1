@@ -86,6 +86,7 @@ Else
 Function Remove-Org()
 {
     # Clear out org
+    $null = Get-JCUser | Set-JCUser -externally_managed $false
     $null = Get-JCUser | Remove-JCUser -force
     $null = Get-JCGroup | ForEach-Object { If ($_.Type -eq 'system_group') { Remove-JCSystemGroup -GroupName:($_.Name) -force }ElseIf ($_.Type -eq 'user_group') { Remove-JCUserGroup -GroupName:($_.Name) -force }Else { Write-Error('Unknown') } }
     $null = Get-JCRadiusServer | Remove-JCRadiusServer -Force
@@ -94,7 +95,6 @@ Function Remove-Org()
 
 # Define items
 $RandomString1 = ( -join (( 0x41..0x5A) + ( 0x61..0x7A) | Get-Random -Count 8 | ForEach-Object { [char]$_ }))
-$RandomString2 = ( -join (( 0x41..0x5A) + ( 0x61..0x7A) | Get-Random -Count 8 | ForEach-Object { [char]$_ }))
 $NewUser1 = @{
     allow_public_key         = $false
     Attribute1_name          = 'One'
@@ -133,6 +133,7 @@ $NewUser1 = @{
     work_state               = 'work_state'
     work_streetAddress       = 'work_streetAddress'
 }
+$RandomString2 = ( -join (( 0x41..0x5A) + ( 0x61..0x7A) | Get-Random -Count 8 | ForEach-Object { [char]$_ }))
 $NewUser2 = @{
     allow_public_key         = $false
     Attribute1_name          = 'One'
