@@ -278,6 +278,7 @@ $PesterParamsHash_Commands = @{
     UserID              = $User1.Id
     User1               = $User1
     NewUser1            = $NewUser1
+    NewRadiusServer     = $NewRadiusServer
     OrgId               = (Get-JCOrganization).OrgID
     SinglePolicy        = Get-JCPolicy -Name:($PesterParamsHash_Common.SinglePolicyList)
     MultiplePolicy      = Get-JCPolicy -Name:($PesterParamsHash_Common.MultiplePolicyList)
