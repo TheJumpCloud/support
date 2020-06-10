@@ -210,7 +210,7 @@ $NewUserGroup = @{
     GroupName = 'PesterTest_UserGroup'
 }
 $NewRadiusServer = @{
-    networkSourceIp = $PesterParamsHash_OS.NewRadiusServerIp
+    networkSourceIp = If ($env:USERNAME -eq 'VssAdministrator') { $PesterParamsHash_OS.NewRadiusServerIp } Else { [IPAddress]::Parse([String](Get-Random)).IPAddressToString }
     sharedSecret    = 'f3TkHSK2GT4JR!W9tugRPp2zQnAVObv'
     name            = 'PesterTest_RadiusServer'
 }
