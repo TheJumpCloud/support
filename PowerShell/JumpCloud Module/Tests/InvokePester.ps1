@@ -4,12 +4,18 @@ Param(
     , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 2)][System.String[]]$ExcludeTagList
     , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 3)][System.String[]]$IncludeTagList
 )
+$ScriptRoot = $PSScriptRoot
 $ModuleManifestName = 'JumpCloud.psd1'
-$ModuleManifestPath = "$PSScriptRoot/../$ModuleManifestName"
-# Install Pester
+$ModuleManifestPath = "$ScriptRoot/../$ModuleManifestName"
+# # Install Pester
 Install-Module -Name:('Pester') -Force
+# Install NuGet
+If (!(Get-PackageProvider -Name:('NuGet') -ErrorAction:('SilentlyContinue')))
+{
+    Install-PackageProvider NuGet -ForceBootstrap -Force | Out-Null
+}
 # Load required modules
-$RequiredModules = (Import-LocalizedData -BaseDirectory:("$PSScriptRoot/..") -FileName:($ModuleManifestName)).RequiredModules
+$RequiredModules = (Import-LocalizedData -BaseDirectory:("$ScriptRoot/..") -FileName:($ModuleManifestName)).RequiredModules
 If ($RequiredModules)
 {
     $RequiredModules | ForEach-Object {
@@ -28,18 +34,13 @@ If ($RequiredModules)
 # Import the module
 Import-Module -Name:($ModuleManifestPath) -Force
 # Load private functions
-Get-ChildItem -Path:("$PSScriptRoot/../Private/*.ps1") -Recurse | ForEach-Object { . $_.FullName }
+Get-ChildItem -Path:("$ScriptRoot/../Private/*.ps1") -Recurse | ForEach-Object { . $_.FullName }
 # Load TestEnvironmentVariables
-. ("$PSScriptRoot/TestEnvironmentVariables.ps1") -TestOrgAPIKey:($TestOrgAPIKey) -MultiTenantAPIKey:($MultiTenantAPIKey)
+. ("$ScriptRoot/TestEnvironmentVariables.ps1") -TestOrgAPIKey:($TestOrgAPIKey) -MultiTenantAPIKey:($MultiTenantAPIKey)
 # Load HelperFunctions
-. ("$PSScriptRoot/HelperFunctions.ps1")
-# Install NuGet
-If (!(Get-PackageProvider -Name:('NuGet') -ErrorAction:('SilentlyContinue')))
-{
-    Install-PackageProvider NuGet -ForceBootstrap -Force | Out-Null
-}
+. ("$ScriptRoot/HelperFunctions.ps1")
 # Get list of tags and validate that tags have been applied
-$PesterTests = Get-ChildItem -Path:($PSScriptRoot + '/*.Tests.ps1') -Recurse
+$PesterTests = Get-ChildItem -Path:($ScriptRoot + '/*.Tests.ps1') -Recurse
 $Tags = ForEach ($PesterTest In $PesterTests)
 {
     $PesterTestFullName = $PesterTest.FullName
@@ -70,13 +71,14 @@ Else
 }
 # "'" + ($IncludeTags -join "','") + "'"
 # Run Pester tests
+Write-Host ("[RUN COMMAND] Invoke-Pester -Path:($ScriptRoot) -TagFilter:($IncludeTags) -ExcludeTagFilter:($ExcludeTagList) -PassThru") -BackgroundColor:('Black') -ForegroundColor:('Magenta')
 If (Test-Path -Path:($PesterParams_PesterResultsFileXml)) { Remove-Item -Path:($PesterParams_PesterResultsFileXml) -Force }
-$PesterResults = Invoke-Pester -Path:($PSScriptRoot) -PassThru -TagFilter:($IncludeTags) -ExcludeTagFilter:($ExcludeTagList)
-$PesterResults | ConvertTo-NUnitReport -AsString | Out-File -FilePath:($PesterParams_PesterResultsFileXml)
+$PesterResults = Invoke-Pester -PassThru -Path:($ScriptRoot) -TagFilter:($IncludeTags) -ExcludeTagFilter:($ExcludeTagList)
+$PesterResults | Export-NUnitReport -Path:($PesterParams_PesterResultsFileXml)
 If (Test-Path -Path:($PesterParams_PesterResultsFileXml))
 {
     [xml]$PesterResults = Get-Content -Path:($PesterParams_PesterResultsFileXml)
-    $FailedTests = $PesterResults.TestResult | Where-Object { $_.Passed -eq $false }
+    $FailedTests = $PesterResults.'test-results'.'test-suite'.'results'.'test-suite' | Where-Object { $_.success -eq 'False' }
     If ($FailedTests)
     {
         Write-Host ('')
@@ -84,7 +86,7 @@ If (Test-Path -Path:($PesterParams_PesterResultsFileXml))
         Write-Host ('##############################Error Description###############################################################')
         Write-Host ('##############################################################################################################')
         Write-Host ('')
-        $FailedTests | ForEach-Object { $_.Name + '; ' + $_.FailureMessage + '; ' }
+        $FailedTests | ForEach-Object { $_.InnerText + ';' }
         Write-Error -Message:('Tests Failed: ' + [string]($FailedTests | Measure-Object).Count)
     }
 }
