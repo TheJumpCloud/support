@@ -271,20 +271,21 @@ If ([System.String]::IsNullOrEmpty($CommandResultsExist) -or $CommandResultsExis
 }
 # Params that need to run commands to get their values with inputs from other hash tables
 $PesterParamsHash_Commands = @{
-    RadiusServerName    = $RadiusServer.Name
-    SystemGroupName     = $SystemGroup.Name
-    UserGroupName       = $UserGroup.Name
-    Username            = $User1.username
-    UserID              = $User1.Id
-    User1               = $User1
-    NewUser1            = $NewUser1
-    NewRadiusServer     = $NewRadiusServer
-    OrgId               = (Get-JCOrganization).OrgID
-    SinglePolicy        = Get-JCPolicy -Name:($PesterParamsHash_Common.SinglePolicyList)
-    MultiplePolicy      = Get-JCPolicy -Name:($PesterParamsHash_Common.MultiplePolicyList)
-    UserGroupID         = (Get-JCGroup -Type:('User') -Name:($UserGroup.Name)).id
-    SystemGroupID       = (Get-JCGroup -Type:('System') -Name:($SystemGroup.Name)).id
-    UserGroupMembership = Add-JCUserGroupMember -GroupName:($UserGroup.Name) -Username:($User1.username)
+    RadiusServerName     = $RadiusServer.Name
+    SystemGroupName      = $SystemGroup.Name
+    UserGroupName        = $UserGroup.Name
+    Username             = $User1.username
+    UserID               = $User1.Id
+    User1                = $User1
+    NewUser1             = $NewUser1
+    NewRadiusServer      = $NewRadiusServer
+    OrgId                = (Get-JCOrganization).OrgID
+    SinglePolicy         = Get-JCPolicy -Name:($PesterParamsHash_Common.SinglePolicyList)
+    MultiplePolicy       = Get-JCPolicy -Name:($PesterParamsHash_Common.MultiplePolicyList)
+    UserGroupID          = (Get-JCGroup -Type:('User') -Name:($UserGroup.Name)).id
+    SystemGroupID        = (Get-JCGroup -Type:('System') -Name:($SystemGroup.Name)).id
+    UserGroupMembership  = Add-JCUserGroupMember -GroupName:($UserGroup.Name) -Username:($User1.username)
+    SystemUserMembership = If (Get-JCSystem -Id:($PesterParamsHash_OS.SystemID)) { Add-JCSystemUser -Username:($User1.Username) -SystemID:($PesterParamsHash_OS.SystemID) }
 }
 
 # Combine all hash tables into one list and foreach of their values create a new global parameter
