@@ -25,9 +25,7 @@ Describe -Tag:('JCSystemUser') 'Add-JCSystemUser 1.1.0' {
 
     It "Adds a JumpCloud User to a JumpCloud System with admin `$False using username" {
 
-        $User = New-RandomUserCustom -Domain 'pleasedelete' | New-JCUser
-
-        $FalseUser = Add-JCSystemUser -Username $User.username -SystemID $PesterParams_SystemID -Administrator $False
+        $FalseUser = Add-JCSystemUser -Username $PesterParams_User1.username -SystemID $PesterParams_SystemID -Administrator $False
 
         $FalseUser.Administrator | Should -Be $False
 
@@ -39,9 +37,7 @@ Describe -Tag:('JCSystemUser') 'Add-JCSystemUser 1.1.0' {
 
     It "Adds a JumpCloud User to a JumpCloud System with admin $False using username" {
 
-        $User = New-RandomUserCustom -Domain 'pleasedelete' | New-JCUser
-
-        $FalseUser = Add-JCSystemUser -Username $User.username -SystemID $PesterParams_SystemID -Administrator $False
+        $FalseUser = Add-JCSystemUser -Username $PesterParams_User1.username -SystemID $PesterParams_SystemID -Administrator $False
 
         $FalseUser.Administrator | Should -Be $False
 
@@ -53,13 +49,11 @@ Describe -Tag:('JCSystemUser') 'Add-JCSystemUser 1.1.0' {
 
     It "Adds a JumpCloud User to a JumpCloud System with admin `$False using UserID" {
 
-        $User = New-RandomUserCustom -Domain 'pleasedelete' | New-JCUser
-
-        $FalseUser = Add-JCSystemUser -UserID $User._id -SystemID $PesterParams_SystemID -Administrator $False
+        $FalseUser = Add-JCSystemUser -UserID $PesterParams_User1._id -SystemID $PesterParams_SystemID -Administrator $False
 
         $FalseUser.Administrator | Should -Be $False
 
-        $GetUser = Get-JCSystemUser -SystemID $PesterParams_SystemID | Where-Object Username -EQ $User.Username | Select-Object Administrator
+        $GetUser = Get-JCSystemUser -SystemID $PesterParams_SystemID | Where-Object Username -EQ $PesterParams_User1.Username | Select-Object Administrator
 
         $GetUser.Administrator | Should -Be $False
 
@@ -67,23 +61,20 @@ Describe -Tag:('JCSystemUser') 'Add-JCSystemUser 1.1.0' {
 
     It "Adds a JumpCloud User to a JumpCloud System with admin `$True using UserID" {
 
-        $User = New-RandomUserCustom -Domain 'pleasedelete' | New-JCUser
-
-        $TrueUser = Add-JCSystemUser -UserID $User._id -SystemID $PesterParams_SystemID -Administrator $True
+        $UserRemove = Remove-JCSystemUser -Username $PesterParams_Username -SystemID $PesterParams_SystemID -force
+        $TrueUser = Add-JCSystemUser -UserID $PesterParams_User1._id -SystemID $PesterParams_SystemID -Administrator $True
 
         $TrueUser.Administrator | Should -Be $True
 
-        $GetUser = Get-JCSystemUser -SystemID $PesterParams_SystemID | Where-Object Username -EQ $User.Username | Select-Object Administrator
+        $GetUser = Get-JCSystemUser -SystemID $PesterParams_SystemID | Where-Object Username -EQ $PesterParams_User1.Username | Select-Object Administrator
 
         $GetUser.Administrator | Should -Be $True
 
     }
 
     It "Adds a JumpCloud User to a JumpCloud System with admin $True using username" {
-
-        $User = New-RandomUserCustom -Domain 'pleasedelete' | New-JCUser
-
-        $TrueUser = Add-JCSystemUser -Username $User.username -SystemID $PesterParams_SystemID -Administrator $True
+        $UserRemove = Remove-JCSystemUser -Username $PesterParams_Username -SystemID $PesterParams_SystemID -force
+        $TrueUser = Add-JCSystemUser -Username $PesterParams_User1.username -SystemID $PesterParams_SystemID -Administrator $True
 
         $TrueUser.Administrator | Should -Be $True
 
