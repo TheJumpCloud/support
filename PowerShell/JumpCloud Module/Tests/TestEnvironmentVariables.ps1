@@ -103,6 +103,9 @@ $PesterParamsHash_Common = @{
     SinglePolicyList                = @('Disable USB Storage - Linux')
     CommandTrigger                  = 'GetJCAgentLog'
     CommandResultCount              = 10
+    SystemNameLinux                 = 'PesterTest-Linux'
+    SystemNameMac                   = 'PesterTest-Mac'
+    SystemNameWindows               = 'PesterTest-Windows'
 }
 Function Remove-Org
 {

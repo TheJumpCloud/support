@@ -1,5 +1,13 @@
 Describe -Tag:('JCPolicyTargetSystem') 'Get-JCPolicyTargetSystem 1.10' {
-    BeforeAll { Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null }
+    BeforeAll {
+        Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
+        $PesterParams_MultiplePolicy | ForEach-Object {
+            If (-not (Get-JCAssociation -Type:('policy') -Id:($_.Id) -TargetType:('system') -IncludeNames | Where-Object { $_.TargetName -eq $PesterParams_SystemNameWindows }))
+            {
+                Add-JCAssociation -Type:('policy') -Id:($_.Id) -TargetType:('system') -TargetName:($PesterParams_SystemNameWindows) -Force
+            }
+        }
+    }
     It "Returns all JumpCloud policy system targets using PolicyId" {
         $SystemTarget = Get-JCPolicyTargetSystem -PolicyId:($PesterParams_SinglePolicy.id)
         $SystemTarget.SystemID.count | Should -BeGreaterThan 0
