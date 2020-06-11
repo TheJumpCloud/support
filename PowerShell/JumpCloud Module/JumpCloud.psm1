@@ -13,7 +13,7 @@ Foreach ($Import in @($Public + $Private))
     }
 }
 # Update security protocol
-[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12 # [System.Net.SecurityProtocolType]::Tls, [System.Net.SecurityProtocolType]::Tls11
+[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12, [System.Net.SecurityProtocolType]::Tls, [System.Net.SecurityProtocolType]::Tls11
 # Allow the use of self-signed SSL certificates.
 [System.Net.ServicePointManager]::ServerCertificateValidationCallback = { $true } ;
 # Set default values for function parameters
@@ -22,10 +22,10 @@ $PSDefaultParameterValues['Invoke-WebRequest:ContentType'] = 'application/json; 
 If ($PSVersionTable.PSEdition -eq 'Core')
 {
     $PSDefaultParameterValues['Invoke-RestMethod:SkipCertificateCheck'] = $true
-    $PSDefaultParameterValues['Invoke-WebRequest:SkipCertificateCheck'] = $true
     $PSDefaultParameterValues['Invoke-RestMethod:SkipHttpErrorCheck'] = $true
-    $PSDefaultParameterValues['Invoke-WebRequest:SkipHttpErrorCheck'] = $true
     $PSDefaultParameterValues['Invoke-RestMethod:SkipHeaderValidation'] = $true
+    $PSDefaultParameterValues['Invoke-WebRequest:SkipCertificateCheck'] = $true
+    $PSDefaultParameterValues['Invoke-WebRequest:SkipHttpErrorCheck'] = $true
     $PSDefaultParameterValues['Invoke-WebRequest:SkipHeaderValidation'] = $true
 }
 Else
