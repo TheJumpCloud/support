@@ -99,7 +99,7 @@ Function Connect-JCOnline ()
         Try
         {
             # Update security protocol
-            [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12, [System.Net.SecurityProtocolType]::Tls, [System.Net.SecurityProtocolType]::Tls11
+            [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12, [System.Net.SecurityProtocolType]::Tls
             #Region Set environment variables that can be used by other scripts
             # If "$JCEnvironment" is populated or if "$env:JCEnvironment" is not set
             If (-not [System.String]::IsNullOrEmpty($JCEnvironment))

@@ -13,7 +13,7 @@ Foreach ($Import in @($Public + $Private))
     }
 }
 # Update security protocol
-[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12, [System.Net.SecurityProtocolType]::Tls, [System.Net.SecurityProtocolType]::Tls11
+[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12, [System.Net.SecurityProtocolType]::Tls
 # Allow the use of self-signed SSL certificates.
 [System.Net.ServicePointManager]::ServerCertificateValidationCallback = { $true } ;
 # Set default values for function parameters
