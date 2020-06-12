@@ -53,20 +53,20 @@ Else
 
 }
 # https://docs.microsoft.com/en-us/dotnet/api/system.net.servicepointmanager?view=netcore-3.1
-[System.Net.ServicePointManager]::CheckCertificateRevocationList = $true;
+# [System.Net.ServicePointManager]::CheckCertificateRevocationList = $true;
 # [System.Net.ServicePointManager]::DefaultConnectionLimit = 999999;
 # [System.Net.ServicePointManager]::DefaultNonPersistentConnectionLimit
 # [System.Net.ServicePointManager]::DefaultPersistentConnectionLimit
 # [System.Net.ServicePointManager]::DnsRefreshTimeout
 # [System.Net.ServicePointManager]::EnableDnsRoundRobin
 # [System.Net.ServicePointManager]::EncryptionPolicy
-[System.Net.ServicePointManager]::Expect100Continue = $true;
+# [System.Net.ServicePointManager]::Expect100Continue = $true;
 # [System.Net.ServicePointManager]::MaxServicePointIdleTime
 # [System.Net.ServicePointManager]::MaxServicePoints
 # [System.Net.ServicePointManager]::ReusePort
-[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12, [System.Net.SecurityProtocolType]::Tls, [System.Net.SecurityProtocolType]::Tls
-[System.Net.ServicePointManager]::ServerCertificateValidationCallback = { $true } ; # Allow the use of self-signed SSL certificates.
-[System.Net.ServicePointManager]::UseNagleAlgorithm = $true;
+[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls, [System.Net.SecurityProtocolType]::Tls12
+# [System.Net.ServicePointManager]::ServerCertificateValidationCallback = { $true } ; # Allow the use of self-signed SSL certificates.
+# [System.Net.ServicePointManager]::UseNagleAlgorithm = $true;
 # [System.Net.ServicePointManager]::Equals()
 # [System.Net.ServicePointManager]::FindServicePoint()
 # [System.Net.ServicePointManager]::ReferenceEquals()
