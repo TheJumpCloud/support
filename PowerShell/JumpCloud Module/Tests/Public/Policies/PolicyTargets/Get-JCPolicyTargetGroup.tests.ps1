@@ -1,5 +1,12 @@
 Describe -Tag:('JCPolicyTargetGroup') 'Get-JCPolicyTargetGroup 1.10' {
-    BeforeAll { Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null }
+    BeforeAll {
+        Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
+        $SystemGroup = Get-JCGroup -Type:('System') | Where-Object { $_.name -eq $PesterParamsHash_BuildOrg.SystemGroup.Name }
+        If (-not (Get-JCAssociation -Type:('policy') -Id:($PesterParamsHash_BuildOrg.SinglePolicy.id) -TargetType:('system_group') | Where-Object { $_.targetId -eq $SystemGroup.id }))
+        {
+            New-JCAssociation -Type:('policy') -Id:($PesterParamsHash_BuildOrg.SinglePolicy.id) -TargetType:('system_group') -TargetId:($SystemGroup.id) -force
+        }
+    }
     It "Returns all JumpCloud policy group targets by GroupName using PolicyId" {
         $SystemGroupTarget = Get-JCPolicyTargetGroup -PolicyId:($PesterParams_SinglePolicy.id)
         $SystemGroupTarget.GroupName.count | Should -BeGreaterThan 0

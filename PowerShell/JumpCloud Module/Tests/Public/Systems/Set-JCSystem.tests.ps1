@@ -47,13 +47,13 @@ Describe -Tag:('JCSystem') 'Set-JCSystem 1.0' {
 
     It "Enables systemInsights for a system" {
 
-        Set-JCSystem -SystemID $PesterParams_SystemLinux._id_Windows -systemInsights $false
-        $Update = Set-JCSystem -SystemID $PesterParams_SystemLinux._id_Windows -systemInsights $true
+        Set-JCSystem -SystemID $PesterParams_SystemLinux._id -systemInsights $false
+        $Update = Set-JCSystem -SystemID $PesterParams_SystemLinux._id -systemInsights $true
         $Update.systemInsights.state | Should -Be "enabled"
     }
 
     It "Disables systemInsights on a system" {
-        $Update = Set-JCSystem -SystemID $PesterParams_SystemLinux._id_Windows -systemInsights $false
+        $Update = Set-JCSystem -SystemID $PesterParams_SystemLinux._id -systemInsights $false
         $Update.systemInsights.state | Should -Be "deferred"
     }
 }
