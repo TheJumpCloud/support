@@ -28,11 +28,9 @@ $PSDefaultParameterValues['Invoke-WebRequest:ContentType'] = 'application/json; 
 If ($PSVersionTable.PSEdition -eq 'Core')
 {
     $PSDefaultParameterValues['Invoke-RestMethod:SkipCertificateCheck'] = $true
-    $PSDefaultParameterValues['Invoke-RestMethod:SkipHttpErrorCheck'] = $true
     $PSDefaultParameterValues['Invoke-RestMethod:SkipHeaderValidation'] = $true
 
     $PSDefaultParameterValues['Invoke-WebRequest:SkipCertificateCheck'] = $true
-    $PSDefaultParameterValues['Invoke-WebRequest:SkipHttpErrorCheck'] = $true
     $PSDefaultParameterValues['Invoke-WebRequest:SkipHeaderValidation'] = $true
 }
 Else
@@ -53,19 +51,19 @@ Else
 
 }
 # https://docs.microsoft.com/en-us/dotnet/api/system.net.servicepointmanager?view=netcore-3.1
-# [System.Net.ServicePointManager]::CheckCertificateRevocationList = $true;
-# [System.Net.ServicePointManager]::DefaultConnectionLimit = 999999;
-# [System.Net.ServicePointManager]::DefaultNonPersistentConnectionLimit
-# [System.Net.ServicePointManager]::DefaultPersistentConnectionLimit
+# [System.Net.ServicePointManager]::CheckCertificateRevocationList
+[System.Net.ServicePointManager]::DefaultConnectionLimit = 999999;
+[System.Net.ServicePointManager]::DefaultNonPersistentConnectionLimit = 999999;
+[System.Net.ServicePointManager]::DefaultPersistentConnectionLimit = 999999;
 # [System.Net.ServicePointManager]::DnsRefreshTimeout
 # [System.Net.ServicePointManager]::EnableDnsRoundRobin
 # [System.Net.ServicePointManager]::EncryptionPolicy
 # [System.Net.ServicePointManager]::Expect100Continue = $true;
-# [System.Net.ServicePointManager]::MaxServicePointIdleTime
-# [System.Net.ServicePointManager]::MaxServicePoints
+[System.Net.ServicePointManager]::MaxServicePointIdleTime = 600000;
+[System.Net.ServicePointManager]::MaxServicePoints = 999999;
 # [System.Net.ServicePointManager]::ReusePort
 [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls, [System.Net.SecurityProtocolType]::Tls11, [System.Net.SecurityProtocolType]::Tls12
-# [System.Net.ServicePointManager]::ServerCertificateValidationCallback = { $true } ; # Allow the use of self-signed SSL certificates.
+[System.Net.ServicePointManager]::ServerCertificateValidationCallback = { $true } ; # Allow the use of self-signed SSL certificates.
 # [System.Net.ServicePointManager]::UseNagleAlgorithm = $true;
 # [System.Net.ServicePointManager]::Equals()
 # [System.Net.ServicePointManager]::FindServicePoint()
