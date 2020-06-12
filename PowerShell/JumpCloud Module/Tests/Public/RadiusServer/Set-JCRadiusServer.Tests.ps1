@@ -1,6 +1,6 @@
 Describe -Tag:('JCRadiusServer') 'Set-JCRadiusServer Tests' {
     BeforeAll {
-        $RadiusServerTemplate = Get-JCRadiusServer -Name:($PesterParams_RadiusServerName); # -Fields:('') -Filter:('') -Limit:(1) -Skip:(1) -Paginate:($true) -Force;
+        $RadiusServerTemplate = Get-JCRadiusServer -Name:($PesterParams_RadiusServer.name); # -Fields:('') -Filter:('') -Limit:(1) -Skip:(1) -Paginate:($true) -Force;
         If (-not $RadiusServerTemplate)
         {
             $RadiusServerTemplate = New-JCRadiusServer @PesterParams_NewRadiusServer
@@ -35,7 +35,7 @@ Describe -Tag:('JCRadiusServer') 'Set-JCRadiusServer Tests' {
 }
 Describe -Tag:('JCRadiusServer') 'Set-JCRadiusServer 1.15.3' {
     BeforeAll {
-        $RadiusServerTemplate = Get-JCRadiusServer -Name:($PesterParams_RadiusServerName); # -Fields:('') -Filter:('') -Limit:(1) -Skip:(1) -Paginate:($true) -Force;
+        $RadiusServerTemplate = Get-JCRadiusServer -Name:($PesterParams_RadiusServer.name); # -Fields:('') -Filter:('') -Limit:(1) -Skip:(1) -Paginate:($true) -Force;
     }
     Context 'Set-JCRadiusServer params' {
         It ('Should ENABLE mfa on a radius server by ByName.') {

@@ -11,8 +11,7 @@ Describe -Tag:('JCPolicyResult') "Get-JCPolicyResult 1.10" {
     }
 
     It "Returns a policy result with the SystemID" {
-        $SystemIDWithPolicyResult = Get-JCSystem -SystemID:($PesterParams_SystemWithPolicyResultID)
-        $PolicyResult = Get-JCPolicyResult -SystemID:($SystemIDWithPolicyResult._id)
+        $PolicyResult = Get-JCPolicyResult -SystemID:($PesterParams_SystemLinux._id)
         $PolicyResult.id.count | Should -BeGreaterThan 0
     }
 

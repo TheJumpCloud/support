@@ -1,6 +1,6 @@
 Describe -Tag:('JCRadiusServer') 'Remove-JCRadiusServer Tests' {
     BeforeAll {
-        $RadiusServerTemplate = Get-JCRadiusServer -Name:($PesterParams_RadiusServerName); # -Fields:('') -Filter:('') -Limit:(1) -Skip:(1) -Paginate:($true) -Force;
+        $RadiusServerTemplate = Get-JCRadiusServer -Name:($PesterParams_RadiusServer.name); # -Fields:('') -Filter:('') -Limit:(1) -Skip:(1) -Paginate:($true) -Force;
         If (-not $RadiusServerTemplate)
         {
             $RadiusServerTemplate = New-JCRadiusServer @PesterParams_NewRadiusServer

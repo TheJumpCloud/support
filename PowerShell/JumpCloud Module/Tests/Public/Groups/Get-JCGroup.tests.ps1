@@ -29,7 +29,7 @@ Describe -Tag:('JCGroup') 'Get-JCGroup 1.1.0' {
 
     It "Gets a JumpCloud UserGroup by Name and Displays Attributes" {
 
-        $Posix = Get-JCGroup -Type User -Name $PesterParams_UserGroupName
+        $Posix = Get-JCGroup -Type User -Name $PesterParams_UserGroup.Name
 
         $Posix.Attributes | Should -Not -BeNullOrEmpty
     }

@@ -29,54 +29,25 @@ Else
 $PesterParamsHash_OS = If ($OS -eq 'Windows_NT')
 {
     @{
-        'ApiKey'                   = $TestOrgAPIKey
-        'ApiKeyMsp'                = $MultiTenantAPIKey
-        'OrgIdMsp1'                = "5d2f6ff0e7aad925fc317577"
-        'OrgIdMsp2'                = "5d2f6ffd8910770b8545756a"
-        'SystemID'                 = '5e4c67d7933afe1cd17a6583' # Enter the System ID for a linux system
-        'SystemId_Windows'         = '5d24be43c9448f245effa736'
-        'SystemId_Mac'             = '5d24af30e72dab44aee39426'
-        'CommandID'                = '5a4fe5c149812520079d1e7a'
-        # Command Deployments
-        'SetCommandID'             = "5b7194548781bb466496fe2f" #Pester - Set-JCCommand
-        'DeployCommandID'          = "5b719043bc43db696b4dbd90" #Invoke JCDeployment Test
-        # Policies
-        'SystemWithPolicyResultID' = "5c2e2d012a28b62befe395a3"
-        NewRadiusServerIp          = '250.250.250.250'
+        OrgIdMsp1         = "5d2f6ff0e7aad925fc317577"
+        OrgIdMsp2         = "5d2f6ffd8910770b8545756a"
+        NewRadiusServerIp = '250.250.250.250'
     }
 }
 ElseIf ($OS -eq 'Darwin')
 {
     @{
-        'OrgIdMsp1'                = "5d2f7011f3b0a039b65f4e8b"
-        'OrgIdMsp2'                = "5d2f701be7aad925fc317667"
-        'SystemID'                 = '5ece896d3063492783d0f540' # Enter the System ID for a linux system
-        'SystemId_Windows'         = '5ec300ed58c6c807bbde5712'
-        'SystemId_Mac'             = '5ec3f0ad518f1814e2b1aee5'
-        'CommandID'                = '5ec44422bb57ae79a5d0ef1a'
-        # Command Deployments
-        'SetCommandID'             = "5ec699ad1bccb46c80d891a2" #Pester - Set-JCCommand
-        'DeployCommandID'          = "5ec32efb5a797e17deda0551" #Invoke JCDeployment Test
-        # Policies
-        'SystemWithPolicyResultID' = "5ec40d537b7ff91360386bc4"
-        NewRadiusServerIp          = '250.251.250.251'
+        OrgIdMsp1         = "5d2f7011f3b0a039b65f4e8b"
+        OrgIdMsp2         = "5d2f701be7aad925fc317667"
+        NewRadiusServerIp = '250.251.250.251'
     }
 }
 ElseIf ($OS -eq 'Linux')
 {
     @{
-        'OrgIdMsp1'                = "5d2f7024f0e1526be4df38e7"
-        'OrgIdMsp2'                = "5d35e14eb90ad46e65ba0739"
-        'SystemID'                 = '5ece89f65723050e98242113' # Enter the System ID for a linux system
-        'SystemId_Windows'         = '5ecd8b313778a13c9bd90eb8'
-        'SystemId_Mac'             = '5ecd8a4cdfef2d0a9ec39883'
-        'CommandID'                = '5ecd8d279a9c6a2495c4833f'
-        # Command Deployments
-        'SetCommandID'             = "5ecd8ee2454ad57c2152593a" #Pester - Set-JCCommand
-        'DeployCommandID'          = "5ecd8e3352b7211df60f9646" #Invoke JCDeployment Test
-        # Policies
-        'SystemWithPolicyResultID' = "5ecd8b0e40f99e14ac2c66d3"
-        NewRadiusServerIp          = '250.252.250.252'
+        OrgIdMsp1         = "5d2f7024f0e1526be4df38e7"
+        OrgIdMsp2         = "5d35e14eb90ad46e65ba0739"
+        NewRadiusServerIp = '250.252.250.252'
     }
 }
 Else
@@ -86,6 +57,8 @@ Else
 
 # Parameters that are not Org specific
 $PesterParamsHash_Common = @{
+    ApiKey                          = $TestOrgAPIKey
+    ApiKeyMsp                       = $MultiTenantAPIKey
     PesterResultsFileXml            = "$($PSScriptRoot)/JumpCloud-$($OS)-TestResults.xml"
     UserLastName                    = 'Test'
     OneTrigger                      = 'onetrigger'
@@ -151,8 +124,7 @@ Function Remove-Org
         $null = Get-JCRadiusServer | Remove-JCRadiusServer -Force
     }
 }
-Remove-Org -Users -RadiusServers
-
+Remove-Org -Users -Groups -Commands -RadiusServers
 # Define items
 $RandomString1 = ( -join (( 0x41..0x5A) + ( 0x61..0x7A) | Get-Random -Count 8 | ForEach-Object { [char]$_ }))
 $NewUser1 = @{
@@ -244,53 +216,55 @@ $NewRadiusServer = @{
     name            = 'PesterTest_RadiusServer'
 }
 # Setup org
-$User1 = New-JCUser @NewUser1
-$User2 = New-JCUser @NewUser2
-$UserGroup = New-JCUserGroup @NewUserGroup
-$SystemGroup = New-JCSystemGroup @NewSystemGroup
-$RadiusServer = New-JCRadiusServer @NewRadiusServer
-# If no command results currently exist
-$CommandResultsExist = Get-JCCommandResult
-If ([System.String]::IsNullOrEmpty($CommandResultsExist) -or $CommandResultsExist.Count -lt $PesterParamsHash_Common.CommandResultCount)
+$PesterParamsHash_BuildOrg = @{
+    # Newly created objects
+    User1           = New-JCUser @NewUser1
+    User2           = New-JCUser @NewUser2
+    UserGroup       = New-JCUserGroup @NewUserGroup
+    SystemGroup     = New-JCSystemGroup @NewSystemGroup
+    RadiusServer    = New-JCRadiusServer @NewRadiusServer
+    Command         = New-JCCommand -name:($PesterParamsHash_Common.CommandTrigger) -trigger:($PesterParamsHash_Common.CommandTrigger) -commandType:('linux') -command:('cat /opt/jc/*.log') -launchType:('trigger') -timeout:(120)
+    # Get info for things that have already been setup within the org. TODO dynamically create these
+    # Add systems: Windows, Mac, and Linux
+    # Create 2 new policies and assign policy to system
+    Org             = Get-JCOrganization
+    SinglePolicy    = Get-JCPolicy -Name:($PesterParamsHash_Common.SinglePolicyList)
+    MultiplePolicy  = Get-JCPolicy -Name:($PesterParamsHash_Common.MultiplePolicyList)
+    SystemLinux     = Get-JCSystem -displayName:($PesterParamsHash_Common.SystemNameLinux)
+    SystemMac       = Get-JCSystem -displayName:($PesterParamsHash_Common.SystemNameMac)
+    SystemWindows   = Get-JCSystem -displayName:($PesterParamsHash_Common.SystemNameWindows)
+    # Template objects
+    NewUser1        = $NewUser1
+    NewRadiusServer = $NewRadiusServer
+}
+$PesterParamsHash_Associations = @{
+    UserGroupMembership    = Add-JCUserGroupMember -GroupName:($PesterParamsHash_BuildOrg.UserGroup.Name) -Username:($PesterParamsHash_BuildOrg.User1.username)
+    SystemUserMembership   = If (-not (Get-JCAssociation -Type:('system') -Id:($PesterParamsHash_BuildOrg.SystemLinux._id) -TargetType:('user') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.User1.id })) { New-JCAssociation -Type:('system') -Id:($PesterParamsHash_BuildOrg.SystemLinux._id) -TargetType:('user') -TargetId:($PesterParamsHash_BuildOrg.User1.id) -force }
+    SystemPolicyMembership = If (-not (Get-JCAssociation -Type:('system') -Id:($PesterParamsHash_BuildOrg.SystemLinux._id) -TargetType:('policy') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.SinglePolicy.id })) { New-JCAssociation -Type:('system') -Id:($PesterParamsHash_BuildOrg.SystemLinux._id) -TargetType:('policy') -TargetId:($PesterParamsHash_BuildOrg.SinglePolicy.id) -force }
+}
+# Generate command results of they dont exist
+$CommandResults = Get-JCCommandResult
+If ([System.String]::IsNullOrEmpty($CommandResults) -or $CommandResults.Count -lt $PesterParamsHash_Common.CommandResultCount)
 {
-    $testCmd = Get-JCCommand | Where-Object { $_.trigger -eq $PesterParamsHash_Common.CommandTrigger }
-    If ($testCmd)
+    $Command = Get-JCCommand | Where-Object { $_.trigger -eq $PesterParamsHash_Common.CommandTrigger }
+    If ($Command)
     {
-        Add-JCCommandTarget -CommandID $testCmd.id -SystemID $PesterParamsHash_OS.SystemID
-        $TriggeredCommand = For ($i = 1; $i -le $PesterParamsHash_Common.CommandResultCount; $i++)
+        Add-JCCommandTarget -CommandID $Command.id -SystemID $PesterParamsHash_BuildOrg.SystemLinux._id
+        For ($i = 1; $i -le $PesterParamsHash_Common.CommandResultCount; $i++)
         {
-            Invoke-JCCommand -trigger:($testCmd.name)
+            $null = Invoke-JCCommand -trigger:($Command.name)
         }
-        While ((Get-JCCommandResult | Where-Object { $_.Name -eq $testCmd.name }).Count -ge $PesterParamsHash_Common.CommandResultCount)
+        While ((Get-JCCommandResult | Where-Object { $_.Name -eq $Command.name }).Count -ge $PesterParamsHash_Common.CommandResultCount)
         {
             Start-Sleep -Seconds:(1)
         }
-        Remove-JCCommandTarget -CommandID $testCmd.id -SystemID $PesterParamsHash_OS.SystemID
+        Remove-JCCommandTarget -CommandID $Command.id -SystemID $PesterParamsHash_BuildOrg.SystemLinux._id
     }
     Else
     {
         Write-Error ("No command called $($PesterParamsHash_Common.CommandTrigger) has been setup.")
     }
 }
-# Params that need to run commands to get their values with inputs from other hash tables
-$PesterParamsHash_Commands = @{
-    RadiusServerName     = $RadiusServer.Name
-    SystemGroupName      = $SystemGroup.Name
-    UserGroupName        = $UserGroup.Name
-    Username             = $User1.username
-    UserID               = $User1.Id
-    User1                = $User1
-    NewUser1             = $NewUser1
-    NewRadiusServer      = $NewRadiusServer
-    OrgId                = (Get-JCOrganization).OrgID
-    SinglePolicy         = Get-JCPolicy -Name:($PesterParamsHash_Common.SinglePolicyList)
-    MultiplePolicy       = Get-JCPolicy -Name:($PesterParamsHash_Common.MultiplePolicyList)
-    UserGroupID          = (Get-JCGroup -Type:('User') -Name:($UserGroup.Name)).id
-    SystemGroupID        = (Get-JCGroup -Type:('System') -Name:($SystemGroup.Name)).id
-    UserGroupMembership  = Add-JCUserGroupMember -GroupName:($UserGroup.Name) -Username:($User1.username)
-    SystemUserMembership = If (Get-JCSystem -Id:($PesterParamsHash_OS.SystemID)) { Add-JCSystemUser -Username:($User1.Username) -SystemID:($PesterParamsHash_OS.SystemID) }
-}
-
 # Combine all hash tables into one list and foreach of their values create a new global parameter
 (Get-Variable -Name:("$VariableNamePrefixHash*")).Value | ForEach-Object {
     $_.GetEnumerator() | ForEach-Object {

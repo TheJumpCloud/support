@@ -1,6 +1,6 @@
 Describe -Tag:('JCRadiusServer') 'New-JCRadiusServer Tests' {
     BeforeAll {
-        $RadiusServerTemplate = Get-JCRadiusServer -Name:($PesterParams_RadiusServerName); # -Fields:('') -Filter:('') -Limit:(1) -Skip:(1) -Paginate:($true) -Force;
+        $RadiusServerTemplate = Get-JCRadiusServer -Name:($PesterParams_RadiusServer.name); # -Fields:('') -Filter:('') -Limit:(1) -Skip:(1) -Paginate:($true) -Force;
     }
     Context 'New-JCRadiusServer' {
         It ('Should create a new radius server.') {

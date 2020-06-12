@@ -1,7 +1,7 @@
 Describe -Tag:('JCBackup') "Get-JCBackup 1.5.0" {
     BeforeAll { Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null }
     It "Backs up JumpCloud users" {
-        Add-JCUserGroupMember -GroupName $PesterParams_UserGroupName -username $PesterParams_Username
+        Add-JCUserGroupMember -GroupName $PesterParams_UserGroup.Name -username $PesterParams_User1.Username
         Get-JCBackup -All
         $Files = Get-ChildItem -Path:('JumpCloud*_*.csv')
         ($Files | Where-Object { $_.Name -match 'JumpCloudUsers_' }) | Should -BeTrue
