@@ -64,7 +64,7 @@ Else
 # [System.Net.ServicePointManager]::MaxServicePointIdleTime
 # [System.Net.ServicePointManager]::MaxServicePoints
 # [System.Net.ServicePointManager]::ReusePort
-[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls, [System.Net.SecurityProtocolType]::Tls12
+[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls, [System.Net.SecurityProtocolType]::Tls11, [System.Net.SecurityProtocolType]::Tls12
 # [System.Net.ServicePointManager]::ServerCertificateValidationCallback = { $true } ; # Allow the use of self-signed SSL certificates.
 # [System.Net.ServicePointManager]::UseNagleAlgorithm = $true;
 # [System.Net.ServicePointManager]::Equals()
