@@ -22,7 +22,6 @@ $PSDefaultParameterValues['Invoke-WebRequest:ContentType'] = 'application/json; 
 [System.Net.ServicePointManager]::DefaultConnectionLimit = 999999;
 [System.Net.ServicePointManager]::MaxServicePointIdleTime = 600000;
 [System.Net.ServicePointManager]::MaxServicePoints = 999999;
-[System.Net.ServicePointManager]::ServerCertificateValidationCallback = { $true } ; # Allow the use of self-signed SSL certificates.
 If ($PSVersionTable.PSEdition -eq 'Core')
 {
     $PSDefaultParameterValues['Invoke-RestMethod:SkipCertificateCheck'] = $true
