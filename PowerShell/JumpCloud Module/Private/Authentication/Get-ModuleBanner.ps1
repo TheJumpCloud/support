@@ -3,8 +3,6 @@ Function Get-ModuleBanner
     Param(
         $ModuleBannerUrl = 'https://github.com/TheJumpCloud/support/blob/master/PowerShell/ModuleBanner.md'
     )
-    # Update security protocol
-    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12, [System.Net.SecurityProtocolType]::Tls
     # Build output object
     $OutputObject = New-Object -TypeName:('PSCustomObject')
     # Define expected Headers to find

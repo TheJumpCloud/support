@@ -3,8 +3,6 @@ Function Get-ModuleChangeLog
     Param(
         $ModuleChangeLogUrl = 'https://git.io/jc-pwsh-releasenotes'
     )
-    # Update security protocol
-    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12, [System.Net.SecurityProtocolType]::Tls
     # Build output object
     $OutputObject = @()
     # Define expected Headers to find
