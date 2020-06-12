@@ -29,32 +29,40 @@ Else
 $PesterParamsHash_OS = If ($OS -eq 'Windows_NT')
 {
     @{
-        OrgIdMsp1         = "5d2f6ff0e7aad925fc317577"
-        OrgIdMsp2         = "5d2f6ffd8910770b8545756a"
-        NewRadiusServerIp = '250.250.250.250'
+        OrgIdMsp1              = "5d2f6ff0e7aad925fc317577"
+        OrgIdMsp2              = "5d2f6ffd8910770b8545756a"
+        networkSourceIpInitial = '250.250.250.250'
+        networkSourceIpUpdate  = '250.250.250.251'
     }
 }
 ElseIf ($OS -eq 'Darwin')
 {
     @{
-        OrgIdMsp1         = "5d2f7011f3b0a039b65f4e8b"
-        OrgIdMsp2         = "5d2f701be7aad925fc317667"
-        NewRadiusServerIp = '250.251.250.251'
+        OrgIdMsp1              = "5d2f7011f3b0a039b65f4e8b"
+        OrgIdMsp2              = "5d2f701be7aad925fc317667"
+        networkSourceIpInitial = '250.251.250.251'
+        networkSourceIpUpdate  = '250.251.250.252'
     }
 }
 ElseIf ($OS -eq 'Linux')
 {
     @{
-        OrgIdMsp1         = "5d2f7024f0e1526be4df38e7"
-        OrgIdMsp2         = "5d35e14eb90ad46e65ba0739"
-        NewRadiusServerIp = '250.252.250.252'
+        OrgIdMsp1              = "5d2f7024f0e1526be4df38e7"
+        OrgIdMsp2              = "5d35e14eb90ad46e65ba0739"
+        networkSourceIpInitial = '250.252.250.252'
+        networkSourceIpUpdate  = '250.252.250.253'
     }
 }
 Else
 {
     Write-Error ("Unknown OS: $($OS)")
 }
-
+# Configure for local testing
+If ($env:USERNAME -ne 'VssAdministrator')
+{
+    $PesterParamsHash_OS.networkSourceIpInitial = [IPAddress]::Parse([String](Get-Random)).IPAddressToString
+    $PesterParamsHash_OS.networkSourceIpUpdate = [IPAddress]::Parse([String](Get-Random)).IPAddressToString
+}
 # Parameters that are not Org specific
 $PesterParamsHash_Common = @{
     ApiKey                          = $TestOrgAPIKey
@@ -211,7 +219,7 @@ $NewUserGroup = @{
     GroupName = 'PesterTest_UserGroup'
 }
 $NewRadiusServer = @{
-    networkSourceIp = If ($env:USERNAME -eq 'VssAdministrator') { $PesterParamsHash_OS.NewRadiusServerIp } Else { [IPAddress]::Parse([String](Get-Random)).IPAddressToString }
+    networkSourceIp = $PesterParamsHash_OS.networkSourceIpInitial
     sharedSecret    = 'f3TkHSK2GT4JR!W9tugRPp2zQnAVObv'
     name            = 'PesterTest_RadiusServer'
 }
