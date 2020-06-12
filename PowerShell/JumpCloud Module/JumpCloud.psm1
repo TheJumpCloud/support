@@ -12,19 +12,17 @@ Foreach ($Import in @($Public + $Private))
         Write-Error -Message "Failed to import function $($Import.FullName): $_"
     }
 }
-
-
-
-
-
-
-
-
-
-
 # Set default values for function parameters
 $PSDefaultParameterValues['Invoke-RestMethod:ContentType'] = 'application/json; charset=utf-8'
 $PSDefaultParameterValues['Invoke-WebRequest:ContentType'] = 'application/json; charset=utf-8'
+# https://docs.microsoft.com/en-us/dotnet/api/system.net.servicepointmanager?view=netcore-3.1
+# Required
+[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls, [System.Net.SecurityProtocolType]::Tls11, [System.Net.SecurityProtocolType]::Tls12
+# Might help resolve misc. 500 status code issues
+[System.Net.ServicePointManager]::DefaultConnectionLimit = 999999;
+[System.Net.ServicePointManager]::MaxServicePointIdleTime = 600000;
+[System.Net.ServicePointManager]::MaxServicePoints = 999999;
+[System.Net.ServicePointManager]::ServerCertificateValidationCallback = { $true } ; # Allow the use of self-signed SSL certificates.
 If ($PSVersionTable.PSEdition -eq 'Core')
 {
     $PSDefaultParameterValues['Invoke-RestMethod:SkipCertificateCheck'] = $true
@@ -48,28 +46,7 @@ Else
     }
 "@
     [System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertsPolicy
-
 }
-# https://docs.microsoft.com/en-us/dotnet/api/system.net.servicepointmanager?view=netcore-3.1
-# [System.Net.ServicePointManager]::CheckCertificateRevocationList
-[System.Net.ServicePointManager]::DefaultConnectionLimit = 999999;
-[System.Net.ServicePointManager]::DefaultNonPersistentConnectionLimit = 999999;
-[System.Net.ServicePointManager]::DefaultPersistentConnectionLimit = 999999;
-# [System.Net.ServicePointManager]::DnsRefreshTimeout
-# [System.Net.ServicePointManager]::EnableDnsRoundRobin
-# [System.Net.ServicePointManager]::EncryptionPolicy
-# [System.Net.ServicePointManager]::Expect100Continue = $true;
-[System.Net.ServicePointManager]::MaxServicePointIdleTime = 600000;
-[System.Net.ServicePointManager]::MaxServicePoints = 999999;
-# [System.Net.ServicePointManager]::ReusePort
-[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls, [System.Net.SecurityProtocolType]::Tls11, [System.Net.SecurityProtocolType]::Tls12
-[System.Net.ServicePointManager]::ServerCertificateValidationCallback = { $true } ; # Allow the use of self-signed SSL certificates.
-# [System.Net.ServicePointManager]::UseNagleAlgorithm = $true;
-# [System.Net.ServicePointManager]::Equals()
-# [System.Net.ServicePointManager]::FindServicePoint()
-# [System.Net.ServicePointManager]::ReferenceEquals()
-# [System.Net.ServicePointManager]::SetTcpKeepAlive()
-
 # Set function aliases
 Set-Alias -Name:('New-JCAssociation') -Value:('Add-JCAssociation')
 # Export module member
