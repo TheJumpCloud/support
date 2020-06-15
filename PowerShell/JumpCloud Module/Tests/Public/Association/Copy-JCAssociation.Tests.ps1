@@ -27,7 +27,7 @@ Describe -Tag:('JCAssociation') "Copy-JCAssociation Tests" {
             # define first testing users
             $SourceUser = $Users[0]
             $TargetUser = $Users[1]
-            
+
             # write-host($UserGroup.id)
             If (-not (Get-JCAssociation -Type:('user') -Id:($SourceUser._id) -TargetType:('user_group') | Where-Object { $_.TargetId -eq $UserGroup.id })){
                 Add-JCAssociation -Type:('user') -Id:($SourceUser._id) -TargetType:('user_group') -TargetId:($UserGroup.id) -Force
