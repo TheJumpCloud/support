@@ -1,5 +1,30 @@
 Describe -Tag:('JCCommandResult') 'Get-JCCommandResults 1.0' {
-    BeforeAll { Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null }
+    BeforeAll {
+        Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
+        # Generate command results of they dont exist
+        $CommandResults = Get-JCCommandResult
+        If ([System.String]::IsNullOrEmpty($CommandResults) -or $CommandResults.Count -lt $PesterParams_CommandResultCount)
+        {
+            $Command = Get-JCCommand | Where-Object { $_.trigger -eq $PesterParams_CommandTrigger }
+            If ($Command)
+            {
+                Add-JCCommandTarget -CommandID $Command.id -SystemID $PesterParamsHash_BuildOrg.SystemLinux._id
+                For ($i = 1; $i -le $PesterParams_CommandResultCount; $i++)
+                {
+                    $null = Invoke-JCCommand -trigger:($Command.name)
+                }
+                While ((Get-JCCommandResult | Where-Object { $_.Name -eq $Command.name }).Count -ge $PesterParams_CommandResultCount)
+                {
+                    Start-Sleep -Seconds:(1)
+                }
+                Remove-JCCommandTarget -CommandID $Command.id -SystemID $PesterParamsHash_BuildOrg.SystemLinux._id
+            }
+            Else
+            {
+                Write-Error ("No command called $($PesterParams_CommandTrigger) has been setup.")
+            }
+        }
+    }
     It "Gets all JumpCloud command results" {
         $CommandResults = Get-JCCommandResult
         $CommandResults.count | Should -BeGreaterThan 1
