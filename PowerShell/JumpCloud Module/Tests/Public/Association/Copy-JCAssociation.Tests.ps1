@@ -1,16 +1,16 @@
 BeforeAll {
 }
 Describe -Tag:('JCAssociation') "Copy-JCAssociation Tests" {
-    Context ('some cool tests Im thinking about writing') {
+    Context ('User and Id Association Tests') {
         It '<testDescription>' -TestCases @(
-            @{  testDescription = 'user case'
+            @{  testDescription = 'Copy User Associtations'
                 Users           = Get-JCObject -Type:('user') -Fields:('_id', 'username') -limit:(2)
                 UserGroup       = (Get-JCObject -Type:('user_group') -limit:(1))[0]
                 QType            = "username"
                 SourceTarget    = "Name"
                 DestTarget      = "TargetName"
             }
-            @{  testDescription = 'id case'
+            @{  testDescription = 'Copy UserID Associtations'
                 Users           = Get-JCObject -Type:('user') -Fields:('_id', 'username') -limit:(2)
                 UserGroup       = (Get-JCObject -Type:('user_group') -limit:(1))[0]
                 QType            = "_id"
