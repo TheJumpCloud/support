@@ -1,7 +1,8 @@
 Describe -Tag:('JCCommandResult') 'Get-JCCommandResults 1.0' {
     BeforeAll {
         Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
-        If (-not (Get-JCCommand -CommandID:($PesterParams_Command1.Id)))
+        $PesterParams_Command1 = Get-JCCommand -CommandID:($PesterParams_Command1.Id)
+        If (-not $PesterParams_Command1)
         {
             $PesterParams_Command1 = New-JCCommand @PesterParams_NewCommand1
         }

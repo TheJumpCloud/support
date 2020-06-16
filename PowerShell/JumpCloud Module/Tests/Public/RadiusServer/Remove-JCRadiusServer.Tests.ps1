@@ -1,6 +1,7 @@
 Describe -Tag:('JCRadiusServer') 'Remove-JCRadiusServer Tests' {
     BeforeAll {
-        If (-not (Get-JCRadiusServer -Name:($PesterParams_RadiusServer.name)))
+        $PesterParams_RadiusServer = Get-JCRadiusServer -Name:($PesterParams_RadiusServer.name)
+        If (-not $PesterParams_RadiusServer)
         {
             $PesterParams_RadiusServer = New-JCRadiusServer @PesterParams_NewRadiusServer
         }
