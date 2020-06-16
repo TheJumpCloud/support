@@ -1,21 +1,20 @@
 Describe -Tag:('JCRadiusServer') 'Set-JCRadiusServer Tests' {
     BeforeAll {
-        $RadiusServerTemplate = Get-JCRadiusServer -Name:($PesterParams_RadiusServer.name); # -Fields:('') -Filter:('') -Limit:(1) -Skip:(1) -Paginate:($true) -Force;
-        If (-not $RadiusServerTemplate)
+        If (-not (Get-JCRadiusServer -Name:($PesterParams_RadiusServer.name)))
         {
-            $RadiusServerTemplate = New-JCRadiusServer @PesterParams_NewRadiusServer
+            $PesterParams_RadiusServer = New-JCRadiusServer @PesterParams_NewRadiusServer
         }
     }
     Context 'Set-JCRadiusServer' {
         It ('Should update a radius server ByName.') {
-            $RadiusServer = Set-JCRadiusServer -Name:($RadiusServerTemplate.name) -newName:('Something') -networkSourceIp:($PesterParams_networkSourceIpUpdate) -sharedSecret:('kldFaSDfAdgfAgxcxWEQTRDS') -Force;
+            $RadiusServer = Set-JCRadiusServer -Name:($PesterParams_RadiusServer.name) -newName:('Something') -networkSourceIp:($PesterParams_networkSourceIpUpdate) -sharedSecret:('kldFaSDfAdgfAgxcxWEQTRDS') -Force;
             $RadiusServer | Should -Not -BeNullOrEmpty
             $RadiusServer.name | Should -Be 'Something'
             $RadiusServer.networkSourceIp | Should -Be $PesterParams_networkSourceIpUpdate
             $RadiusServer.sharedSecret | Should -Be 'kldFaSDfAdgfAgxcxWEQTRDS'
         }
         It ('Should update a radius server ById.') {
-            $RadiusServer = Set-JCRadiusServer -Id:($RadiusServerTemplate.id) -newName:('SomethingElse') -networkSourceIp:($PesterParams_networkSourceIpInitial) -sharedSecret:('aseRDGsDFGSDfgBsdRFTygSW') -Force;
+            $RadiusServer = Set-JCRadiusServer -Id:($PesterParams_RadiusServer.id) -newName:('SomethingElse') -networkSourceIp:($PesterParams_networkSourceIpInitial) -sharedSecret:('aseRDGsDFGSDfgBsdRFTygSW') -Force;
             $RadiusServer | Should -Not -BeNullOrEmpty
             $RadiusServer.name | Should -Be 'SomethingElse'
             $RadiusServer.networkSourceIp | Should -Be $PesterParams_networkSourceIpInitial
@@ -24,79 +23,79 @@ Describe -Tag:('JCRadiusServer') 'Set-JCRadiusServer Tests' {
         # It ('Should return a specific radius server ByValue (ById).') {
         #     $RadiusServer = Set-JCRadiusServer -SearchBy:('ById') -SearchByValue:('') -newName:('') -networkSourceIp:('') -sharedSecret:('') -Force;
         #     $RadiusServer | Should -Not -BeNullOrEmpty
-        #     $RadiusServer.id | Should -Be $RadiusServerTemplate.id
+        #     $RadiusServer.id | Should -Be $PesterParams_RadiusServer.id
         # }
         # It ('Should return a specific radius server ByValue (ByName).') {
         #     $RadiusServer = Set-JCRadiusServer -SearchBy:('ByName') -SearchByValue:('') -newName:('') -networkSourceIp:('') -sharedSecret:('') -Force;
         #     $RadiusServer | Should -Not -BeNullOrEmpty
-        #     $RadiusServer.name | Should -Be $RadiusServerTemplate.name
+        #     $RadiusServer.name | Should -Be $PesterParams_RadiusServer.name
         # }
     }
 }
 Describe -Tag:('JCRadiusServer') 'Set-JCRadiusServer 1.15.3' {
     BeforeAll {
-        $RadiusServerTemplate = Get-JCRadiusServer -Name:($PesterParams_RadiusServer.name); # -Fields:('') -Filter:('') -Limit:(1) -Skip:(1) -Paginate:($true) -Force;
+        $PesterParams_RadiusServer = Get-JCRadiusServer -Name:($PesterParams_RadiusServer.name); # -Fields:('') -Filter:('') -Limit:(1) -Skip:(1) -Paginate:($true) -Force;
     }
     Context 'Set-JCRadiusServer params' {
         It ('Should ENABLE mfa on a radius server by ByName.') {
-            $RadiusServer = Set-JCRadiusServer -Name:($RadiusServerTemplate.name) -mfa:('ENABLED') -Force;
+            $RadiusServer = Set-JCRadiusServer -Name:($PesterParams_RadiusServer.name) -mfa:('ENABLED') -Force;
             $RadiusServer | Should -Not -BeNullOrEmpty
             $RadiusServer.mfa | Should -Be 'ENABLED'
         }
         It ('Should DISABLE mfa on a radius server by ByName.') {
-            $RadiusServer = Set-JCRadiusServer -Name:($RadiusServerTemplate.name) -mfa:('DISABLED') -Force;
+            $RadiusServer = Set-JCRadiusServer -Name:($PesterParams_RadiusServer.name) -mfa:('DISABLED') -Force;
             $RadiusServer | Should -Not -BeNullOrEmpty
             $RadiusServer.mfa | Should -Be 'DISABLED'
         }
         It ('Should ENABLE mfa on a radius server by ID.') {
-            $RadiusServer = Set-JCRadiusServer -id:($RadiusServerTemplate.id) -mfa:('ENABLED') -Force;
+            $RadiusServer = Set-JCRadiusServer -id:($PesterParams_RadiusServer.id) -mfa:('ENABLED') -Force;
             $RadiusServer | Should -Not -BeNullOrEmpty
             $RadiusServer.mfa | Should -Be 'ENABLED'
         }
         It ('Should DISABLE mfa on a radius server by ID.') {
-            $RadiusServer = Set-JCRadiusServer -id:($RadiusServerTemplate.id) -mfa:('DISABLED') -Force;
+            $RadiusServer = Set-JCRadiusServer -id:($PesterParams_RadiusServer.id) -mfa:('DISABLED') -Force;
             $RadiusServer | Should -Not -BeNullOrEmpty
             $RadiusServer.mfa | Should -Be 'DISABLED'
         }
 
         It ('Should set userLockoutAction to REMOVE on a radius server by ByName.') {
-            $RadiusServer = Set-JCRadiusServer -Name:($RadiusServerTemplate.name) -userLockoutAction:('REMOVE') -Force;
+            $RadiusServer = Set-JCRadiusServer -Name:($PesterParams_RadiusServer.name) -userLockoutAction:('REMOVE') -Force;
             $RadiusServer | Should -Not -BeNullOrEmpty
             $RadiusServer.userLockoutAction | Should -Be 'REMOVE'
         }
         It ('Should set userLockoutAction to MAINTAIN on a radius server by ByName.') {
-            $RadiusServer = Set-JCRadiusServer -Name:($RadiusServerTemplate.name) -userLockoutAction:('MAINTAIN') -Force;
+            $RadiusServer = Set-JCRadiusServer -Name:($PesterParams_RadiusServer.name) -userLockoutAction:('MAINTAIN') -Force;
             $RadiusServer | Should -Not -BeNullOrEmpty
             $RadiusServer.userLockoutAction | Should -Be 'MAINTAIN'
         }
         It ('Should set userLockoutAction to REMOVE on a radius server by id.') {
-            $RadiusServer = Set-JCRadiusServer -id:($RadiusServerTemplate.id) -userLockoutAction:('REMOVE') -Force;
+            $RadiusServer = Set-JCRadiusServer -id:($PesterParams_RadiusServer.id) -userLockoutAction:('REMOVE') -Force;
             $RadiusServer | Should -Not -BeNullOrEmpty
             $RadiusServer.userLockoutAction | Should -Be 'REMOVE'
         }
         It ('Should set userLockoutAction to MAINTAIN on a radius server by id.') {
-            $RadiusServer = Set-JCRadiusServer -id:($RadiusServerTemplate.id) -userLockoutAction:('MAINTAIN') -Force;
+            $RadiusServer = Set-JCRadiusServer -id:($PesterParams_RadiusServer.id) -userLockoutAction:('MAINTAIN') -Force;
             $RadiusServer | Should -Not -BeNullOrEmpty
             $RadiusServer.userLockoutAction | Should -Be 'MAINTAIN'
         }
 
         It ('Should set userPasswordExpirationAction to REMOVE on a radius server by ByName.') {
-            $RadiusServer = Set-JCRadiusServer -Name:($RadiusServerTemplate.name) -userPasswordExpirationAction:('REMOVE') -Force;
+            $RadiusServer = Set-JCRadiusServer -Name:($PesterParams_RadiusServer.name) -userPasswordExpirationAction:('REMOVE') -Force;
             $RadiusServer | Should -Not -BeNullOrEmpty
             $RadiusServer.userPasswordExpirationAction | Should -Be 'REMOVE'
         }
         It ('Should set userPasswordExpirationAction to MAINTAIN on a radius server by ByName.') {
-            $RadiusServer = Set-JCRadiusServer -Name:($RadiusServerTemplate.name) -userPasswordExpirationAction:('MAINTAIN') -Force;
+            $RadiusServer = Set-JCRadiusServer -Name:($PesterParams_RadiusServer.name) -userPasswordExpirationAction:('MAINTAIN') -Force;
             $RadiusServer | Should -Not -BeNullOrEmpty
             $RadiusServer.userPasswordExpirationAction | Should -Be 'MAINTAIN'
         }
         It ('Should set userPasswordExpirationAction to REMOVE on a radius server by id.') {
-            $RadiusServer = Set-JCRadiusServer -id:($RadiusServerTemplate.id) -userPasswordExpirationAction:('REMOVE') -Force;
+            $RadiusServer = Set-JCRadiusServer -id:($PesterParams_RadiusServer.id) -userPasswordExpirationAction:('REMOVE') -Force;
             $RadiusServer | Should -Not -BeNullOrEmpty
             $RadiusServer.userPasswordExpirationAction | Should -Be 'REMOVE'
         }
         It ('Should set userPasswordExpirationAction to MAINTAIN on a radius server by id.') {
-            $RadiusServer = Set-JCRadiusServer -id:($RadiusServerTemplate.id) -userPasswordExpirationAction:('MAINTAIN') -Force;
+            $RadiusServer = Set-JCRadiusServer -id:($PesterParams_RadiusServer.id) -userPasswordExpirationAction:('MAINTAIN') -Force;
             $RadiusServer | Should -Not -BeNullOrEmpty
             $RadiusServer.userPasswordExpirationAction | Should -Be 'MAINTAIN'
         }

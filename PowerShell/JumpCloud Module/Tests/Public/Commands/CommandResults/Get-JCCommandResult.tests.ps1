@@ -3,7 +3,7 @@ Describe -Tag:('JCCommandResult') 'Get-JCCommandResults 1.0' {
         Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
         If (-not (Get-JCCommand -CommandID:($PesterParams_Command1.Id)))
         {
-            New-JCCommand @PesterParams_NewCommand1
+            $PesterParams_Command1 = New-JCCommand @PesterParams_NewCommand1
         }
         # Generate command results of they dont exist
         $CommandResults = Get-JCCommandResult

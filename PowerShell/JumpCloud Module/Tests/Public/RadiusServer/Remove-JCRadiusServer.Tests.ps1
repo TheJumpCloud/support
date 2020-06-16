@@ -1,16 +1,15 @@
 Describe -Tag:('JCRadiusServer') 'Remove-JCRadiusServer Tests' {
     BeforeAll {
-        $RadiusServerTemplate = Get-JCRadiusServer -Name:($PesterParams_RadiusServer.name); # -Fields:('') -Filter:('') -Limit:(1) -Skip:(1) -Paginate:($true) -Force;
-        If (-not $RadiusServerTemplate)
+        If (-not (Get-JCRadiusServer -Name:($PesterParams_RadiusServer.name)))
         {
-            $RadiusServerTemplate = New-JCRadiusServer @PesterParams_NewRadiusServer
+            $PesterParams_RadiusServer = New-JCRadiusServer @PesterParams_NewRadiusServer
         }
     }
     Context 'Remove-JCRadiusServer' {
         It ('Should remove a specific radius server.') {
-            $RadiusServer = Remove-JCRadiusServer -Id:($RadiusServerTemplate.id) -Force;
+            $RadiusServer = Remove-JCRadiusServer -Id:($PesterParams_RadiusServer.id) -Force;
             $RadiusServer | Should -Not -BeNullOrEmpty
-            $RadiusServer.name | Should -Be $RadiusServerTemplate.name
+            $RadiusServer.name | Should -Be $PesterParams_RadiusServer.name
         }
     }
 }
