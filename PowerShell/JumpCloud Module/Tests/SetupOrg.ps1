@@ -25,13 +25,11 @@ Function Remove-Org
     # Remove all users from an org
     If ($Users)
     {
-        # $null = Get-JCUser | Set-JCUser -externally_managed $false
-        # $null = Get-JCUser | Remove-JCUser -force
-        $UserToRemove = Get-JCUser | Where-Object { $_.Email -like '*delete*' }
-        $null = $UserToRemove | Remove-JCUser -force
-        $UserToRemove = Get-JCUser | Where-Object { $_.Email -like '*delete*' }
-        $null = $UserToRemove | Set-JCUser -externally_managed $false
-        $null = $UserToRemove | Remove-JCUser -force
+        $NonExternallyManagedUsersToRemove = Get-JCUser | Where-Object { ($_.Email -like '*delete*' -or $_.Email -like '*pester*') -and -not $_.externally_managed }
+        $RemoveNonExternallyManagedUsers = $NonExternallyManagedUsersToRemove | Remove-JCUser -force
+        $ExternallyManagedUsersToRemove = Get-JCUser | Where-Object { ($_.Email -like '*delete*' -or $_.Email -like '*pester*') -and $_.externally_managed }
+        $UpdateExternallyManagedUsersToRemove = $ExternallyManagedUsersToRemove | Set-JCUser -externally_managed $false
+        $RemoveExternallyManagedUsers = $ExternallyManagedUsersToRemove | Remove-JCUser -force
     }
     # Remove all systems from an org
     If ($Systems)
