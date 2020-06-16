@@ -2,9 +2,9 @@ Describe -Tag:('JCPolicyTargetSystem') 'Get-JCPolicyTargetSystem 1.10' {
     BeforeAll {
         Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
         $PesterParams_MultiplePolicy | ForEach-Object {
-            If (-not (Get-JCAssociation -Type:('policy') -Id:($_.Id) -TargetType:('system') -IncludeNames | Where-Object { $_.TargetName -eq $PesterParams_SystemNameWindows }))
+            If (-not (Get-JCAssociation -Type:('policy') -Id:($_.Id) -TargetType:('system') -IncludeNames | Where-Object { $_.TargetName -eq $PesterParams_SystemLinux.displayName }))
             {
-                Add-JCAssociation -Type:('policy') -Id:($_.Id) -TargetType:('system') -TargetName:($PesterParams_SystemNameWindows) -Force
+                Add-JCAssociation -Type:('policy') -Id:($_.Id) -TargetType:('system') -TargetName:($PesterParams_SystemLinux.displayName) -Force
             }
         }
     }
