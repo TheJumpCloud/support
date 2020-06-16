@@ -24,20 +24,20 @@ Describe -Tag:('JCCommand') "Invoke-JCCommand 1.4.0" {
 
     It "Triggers a command with one variable" {
 
-        $Trigger = Invoke-JCCommand -trigger $PesterParams_OneTrigger -NumberOfVariables 1 -Variable1_name 'One' -Variable1_value 'One variable'
-        $Trigger.triggered | Should -Be 'Invoke - Pester One Variable'
+        $Trigger = Invoke-JCCommand -trigger $PesterParams_NewCommand4.trigger -NumberOfVariables 1 -Variable1_name 'One' -Variable1_value 'One variable'
+        $Trigger.triggered | Should -Be $PesterParams_NewCommand4.name
 
     }
 
     It "Triggers a command with two variables" {
 
-        $Trigger = Invoke-JCCommand -trigger $PesterParams_TwoTrigger -NumberOfVariables 2 -Variable1_name 'One' -Variable1_value 'One variable' -Variable2_name 'Two' -Variable2_value 'Two Variable'
-        $Trigger.triggered | Should -Be  'Invoke - Pester Two Variable'
+        $Trigger = Invoke-JCCommand -trigger $PesterParams_NewCommand5.trigger -NumberOfVariables 2 -Variable1_name 'One' -Variable1_value 'One variable' -Variable2_name 'Two' -Variable2_value 'Two Variable'
+        $Trigger.triggered | Should -Be $PesterParams_NewCommand5.name
     }
 
     It "Triggers a command with three variables" {
-        $Trigger = Invoke-JCCommand -trigger $PesterParams_ThreeTrigger -NumberOfVariables 3 -Variable1_name 'One' -Variable1_value 'One variable' -Variable2_name 'Two' -Variable2_value 'Two Variable' -Variable3_name 'Three' -Variable3_value 'Three variable'
-        $Trigger.triggered | Should -Be  'Invoke - Pester Three Variable'
+        $Trigger = Invoke-JCCommand -trigger $PesterParams_NewCommand6.trigger -NumberOfVariables 3 -Variable1_name 'One' -Variable1_value 'One variable' -Variable2_name 'Two' -Variable2_value 'Two Variable' -Variable3_name 'Three' -Variable3_value 'Three variable'
+        $Trigger.triggered | Should -Be $PesterParams_NewCommand6.name
 
     }
 

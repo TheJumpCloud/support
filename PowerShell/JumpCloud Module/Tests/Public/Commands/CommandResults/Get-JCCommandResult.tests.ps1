@@ -9,30 +9,21 @@ Describe -Tag:('JCCommandResult') 'Get-JCCommandResults 1.0' {
         $CommandResults = Get-JCCommandResult
         If ([System.String]::IsNullOrEmpty($CommandResults) -or $CommandResults.Count -lt $PesterParams_CommandResultCount)
         {
-            $Command = Get-JCCommand | Where-Object { $_.trigger -eq $PesterParams_Command1.CommandTrigger }
-            If ($Command)
+            Add-JCCommandTarget -CommandID $PesterParams_Command1.id -SystemID $PesterParams_SystemLinux._id
+            For ($i = 1; $i -le $PesterParams_CommandResultCount; $i++)
             {
-                Add-JCCommandTarget -CommandID $Command.id -SystemID $PesterParams_SystemLinux._id
-                For ($i = 1; $i -le $PesterParams_CommandResultCount; $i++)
-                {
-                    $null = Invoke-JCCommand -trigger:($Command.name)
-                }
-                While ((Get-JCCommandResult | Where-Object { $_.Name -eq $Command.name }).Count -ge $PesterParams_CommandResultCount)
-                {
-                    Start-Sleep -Seconds:(1)
-                }
-                Remove-JCCommandTarget -CommandID $Command.id -SystemID $PesterParams_SystemLinux._id
+                Invoke-JCCommand -trigger:($PesterParams_Command1.trigger)
             }
-            Else
+            While ((Get-JCCommandResult | Where-Object { $_.Name -eq $PesterParams_Command1.name }).Count -ge $PesterParams_CommandResultCount)
             {
-                Write-Error ("No command called $($PesterParams_Command1.Name) has been setup.")
+                Start-Sleep -Seconds:(1)
             }
+            Remove-JCCommandTarget -CommandID $PesterParams_Command1.id -SystemID $PesterParams_SystemLinux._id
         }
     }
     It "Gets all JumpCloud command results" {
         $CommandResults = Get-JCCommandResult
         $CommandResults.count | Should -BeGreaterThan 1
-        return $CommandResults.count
     }
     It "Gets a single JumpCloud command result using -ByID" {
         $SingleCommand = Get-JCCommandResult | Select-Object -Last 1
