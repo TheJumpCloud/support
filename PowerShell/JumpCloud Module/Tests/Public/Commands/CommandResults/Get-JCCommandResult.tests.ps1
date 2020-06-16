@@ -1,14 +1,18 @@
 Describe -Tag:('JCCommandResult') 'Get-JCCommandResults 1.0' {
     BeforeAll {
         Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
+        If (-not (Get-JCCommand -CommandID:($PesterParams_Command1.Id)))
+        {
+            New-JCCommand @PesterParams_NewCommand1
+        }
         # Generate command results of they dont exist
         $CommandResults = Get-JCCommandResult
         If ([System.String]::IsNullOrEmpty($CommandResults) -or $CommandResults.Count -lt $PesterParams_CommandResultCount)
         {
-            $Command = Get-JCCommand | Where-Object { $_.trigger -eq $PesterParams_CommandTrigger }
+            $Command = Get-JCCommand | Where-Object { $_.trigger -eq $PesterParams_Command1.CommandTrigger }
             If ($Command)
             {
-                Add-JCCommandTarget -CommandID $Command.id -SystemID $PesterParamsHash_BuildOrg.SystemLinux._id
+                Add-JCCommandTarget -CommandID $Command.id -SystemID $PesterParams_SystemLinux._id
                 For ($i = 1; $i -le $PesterParams_CommandResultCount; $i++)
                 {
                     $null = Invoke-JCCommand -trigger:($Command.name)
@@ -17,11 +21,11 @@ Describe -Tag:('JCCommandResult') 'Get-JCCommandResults 1.0' {
                 {
                     Start-Sleep -Seconds:(1)
                 }
-                Remove-JCCommandTarget -CommandID $Command.id -SystemID $PesterParamsHash_BuildOrg.SystemLinux._id
+                Remove-JCCommandTarget -CommandID $Command.id -SystemID $PesterParams_SystemLinux._id
             }
             Else
             {
-                Write-Error ("No command called $($PesterParams_CommandTrigger) has been setup.")
+                Write-Error ("No command called $($PesterParams_Command1.Name) has been setup.")
             }
         }
     }

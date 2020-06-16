@@ -1,13 +1,13 @@
 Param(
-    [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0)][ValidateNotNullOrEmpty()][System.String]$TestOrgAPIKey
-    , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 1)][ValidateNotNullOrEmpty()][System.String]$MultiTenantAPIKey
+    [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 0)][ValidateNotNullOrEmpty()][System.String]$JumpCloudApiKey
+    , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 1)][ValidateNotNullOrEmpty()][System.String]$JumpCloudApiKeyMsp
     , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 2)][System.String[]]$ExcludeTagList
     , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 3)][System.String[]]$IncludeTagList
 )
 $ScriptRoot = $PSScriptRoot
 $ModuleManifestName = 'JumpCloud.psd1'
 $ModuleManifestPath = "$ScriptRoot/../$ModuleManifestName"
-# # Install Pester
+# Install Pester
 Install-Module -Name:('Pester') -Force
 # Install NuGet
 If (!(Get-PackageProvider -Name:('NuGet') -ErrorAction:('SilentlyContinue')))
@@ -35,8 +35,10 @@ If ($RequiredModules)
 Import-Module -Name:($ModuleManifestPath) -Force
 # Load private functions
 Get-ChildItem -Path:("$ScriptRoot/../Private/*.ps1") -Recurse | ForEach-Object { . $_.FullName }
-# Load TestEnvironmentVariables
-. ("$ScriptRoot/TestEnvironmentVariables.ps1") -TestOrgAPIKey:($TestOrgAPIKey) -MultiTenantAPIKey:($MultiTenantAPIKey)
+# Load DefineEnvironment
+. ("$ScriptRoot/DefineEnvironment.ps1") -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp)
+# Load SetupOrg
+. ("$ScriptRoot/SetupOrg.ps1") -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp)
 # Load HelperFunctions
 . ("$ScriptRoot/HelperFunctions.ps1")
 # Get list of tags and validate that tags have been applied
