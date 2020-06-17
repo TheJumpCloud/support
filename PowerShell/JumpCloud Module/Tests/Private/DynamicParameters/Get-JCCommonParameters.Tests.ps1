@@ -114,16 +114,21 @@ Describe -Tag:('JCCommonParameters') 'Test-JCCommonParameters tests' {
                     }
                     Default { Write-Error ('Unknown $Action type: ' + $Action) }
                 }
-                $ParameterResults += @{
-                    testDescription = 'JCCommonParameters with action of "' + $Action + '" and type of "' + $JCType.TypeName.TypeNameSingular + '" should return a parameter called "' + $_.Key + '" with a value of "' + $_.Value + '".';
-                    ParamValidation = $ParamValidation;
-                    Parameters      = $Parameters;
+                $ParamValidation.GetEnumerator() | ForEach-Object {
+                    It ('JCCommonParameters with action of "' + $Action + '" and type of "' + $JCType.TypeName.TypeNameSingular + '" should return a parameter called "' + $_.Key + '" with a value of "' + $_.Value + '".') {
+                        $Parameters.($_.Key) | Should -Be $ParamValidation.($_.Key)
+                    }
+                    $ParameterResults += @{
+                        testDescription    = 'JCCommonParameters with action of "' + $Action + '" and type of "' + $JCType.TypeName.TypeNameSingular + '" should return a parameter called "' + $_.Key + '" with a value of "' + $_.Value + '".';
+                        ParametersKey      = $Parameters.($_.Key);
+                        ParamValidationKey = $ParamValidation.($_.Key);
+                    }
                 }
             }
         }
         Return $ParameterResults
     }
     It('<testDescription>') -TestCases:(Get-JCCommonParametersTestCases) {
-        $Parameters.($_.Key) | Should -Be $ParamValidation.($_.Key)
+        $ParametersKey | Should -Be $ParamValidationKey
     }
 }
