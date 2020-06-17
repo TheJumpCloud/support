@@ -27,7 +27,13 @@ Describe -Tag:('JCAssociation') "Copy-JCAssociation Tests" {
             # build query
             Invoke-Expression -command:("Copy-JCAssociation -Type:('user') -$($SourceTarget):('$($PesterParams_User1.$QType)') -$($DestTarget):('$($PesterParams_User2.$QType)') -Force")
             # compare results
-            ($PesterParams_User1 | Get-JCAssociation -Type:('user') | Select-Object -Property:('associationType', 'type', 'targetId', 'targetType', 'compiledAttributes') | ConvertTo-Json ) | Should -Be ($PesterParams_User2 | Get-JCAssociation -Type:('user') | Select-Object -Property:('associationType', 'type', 'targetId', 'targetType', 'compiledAttributes') | ConvertTo-Json )
+            $User1Associations = $PesterParams_User1 | Get-JCAssociation -Type:('user')
+            $User2Associations = $PesterParams_User2 | Get-JCAssociation -Type:('user')
+            $User1Associations.associationType | Should -Be $User2Associations.associationType
+            $User1Associations.type | Should -Be $User2Associations.type
+            $User1Associations.targetId | Should -Be $User2Associations.targetId
+            $User1Associations.targetType | Should -Be $User2Associations.targetType
+            $User1Associations.compiledAttributes | Should -Be $User2Associations.compiledAttributes
         }
     }
 }
