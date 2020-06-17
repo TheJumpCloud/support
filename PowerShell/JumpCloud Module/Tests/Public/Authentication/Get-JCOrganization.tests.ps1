@@ -1,3 +1,6 @@
+AfterAll {
+    Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
+}
 Describe -Tag:('JCOrganization') 'Get-JCOrganization 1.6' {
     It 'Returns JumpCloud Organizations ' {
         Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKeyMsp) -JumpCloudOrgId:($PesterParams_OrgIDMsp1) -force
