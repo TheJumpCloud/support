@@ -33,7 +33,7 @@ Describe -Tag:('JCAssociation') "Copy-JCAssociation Tests" {
             $User1Associations.type | Should -Be $User2Associations.type
             $User1Associations.targetId | Should -Be $User2Associations.targetId
             $User1Associations.targetType | Should -Be $User2Associations.targetType
-            $User1Associations.compiledAttributes | Should -Be $User2Associations.compiledAttributes
+            # $User1Associations.compiledAttributes | Should -Be $User2Associations.compiledAttributes
         }
     }
 }
