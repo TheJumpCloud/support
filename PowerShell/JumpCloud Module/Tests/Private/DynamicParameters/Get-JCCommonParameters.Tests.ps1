@@ -35,88 +35,95 @@ Describe -Tag:('JCCommonParameters') 'Test-JCCommonParameters tests' {
             Return $Results
         }
     }
-    # Tests
-    # 'add', 'new' = 'Param_Name'
-    # 'remove' = 'Param_Id'
-    # 'set' = 'Param_Id', 'Param_Name', 'Param_SearchBy', 'Param_SearchByValue'
-    # 'get' = 'Param_Id', 'Param_Name', 'Param_SearchBy', 'Param_SearchByValue', 'Param_Fields', 'Param_Filter', 'Param_Limit', 'Param_Skip', 'Param_Paginate'
-    # 'copy' = 'Param_Id', 'Param_Name'
-    $Actions = ('get', 'add', 'new', 'remove', 'copy', 'set') # ToDo: Not sure how to add other actions to test yet.
-    $JCTypes = Get-JCType | Where-Object { $_.Category -eq 'JumpCloud' }
-    ForEach ($Action In $Actions)
+    Function Get-JCCommonParametersTestCases
     {
-        ForEach ($JCType In $JCTypes)
+        # Tests
+        # 'add', 'new' = 'Param_Name'
+        # 'remove' = 'Param_Id'
+        # 'set' = 'Param_Id', 'Param_Name', 'Param_SearchBy', 'Param_SearchByValue'
+        # 'get' = 'Param_Id', 'Param_Name', 'Param_SearchBy', 'Param_SearchByValue', 'Param_Fields', 'Param_Filter', 'Param_Limit', 'Param_Skip', 'Param_Paginate'
+        # 'copy' = 'Param_Id', 'Param_Name'
+        $ParameterResults = @()
+        $Actions = ('get', 'add', 'new', 'remove', 'copy', 'set') # ToDo: Not sure how to add other actions to test yet.
+        $JCTypes = Get-JCType | Where-Object { $_.Category -eq 'JumpCloud' }
+        ForEach ($Action In $Actions)
         {
-            switch ($Action)
+            ForEach ($JCType In $JCTypes)
             {
-                'get'
+                switch ($Action)
                 {
-                    $ParamValidation = [ordered]@{
-                        Action   = $Action
-                        Type     = $JCType.TypeName.TypeNameSingular
-                        Limit    = $JCType.Limit
-                        Skip     = $JCType.Skip
-                        Paginate = $JCType.Paginate
+                    'get'
+                    {
+                        $ParamValidation = [ordered]@{
+                            Action   = $Action
+                            Type     = $JCType.TypeName.TypeNameSingular
+                            Limit    = $JCType.Limit
+                            Skip     = $JCType.Skip
+                            Paginate = $JCType.Paginate
+                        }
+                        $Parameters = Test-JCCommonParameters -Action:($Action) -Type:($JCType.TypeName.TypeNameSingular)
                     }
-                    $Parameters = Test-JCCommonParameters -Action:($Action) -Type:($JCType.TypeName.TypeNameSingular)
-                }
-                'add'
-                {
-                    $ParamValidation = [ordered]@{
-                        Action = $Action
-                        Type   = $JCType.TypeName.TypeNameSingular
-                        Name   = 'TestName'
+                    'add'
+                    {
+                        $ParamValidation = [ordered]@{
+                            Action = $Action
+                            Type   = $JCType.TypeName.TypeNameSingular
+                            Name   = 'TestName'
+                        }
+                        $Parameters = Test-JCCommonParameters -Action:($Action) -Type:($JCType.TypeName.TypeNameSingular) -Name:($ParamValidation.Name)
                     }
-                    $Parameters = Test-JCCommonParameters -Action:($Action) -Type:($JCType.TypeName.TypeNameSingular) -Name:($ParamValidation.Name)
-                }
-                'new'
-                {
-                    $ParamValidation = [ordered]@{
-                        Action = $Action
-                        Type   = $JCType.TypeName.TypeNameSingular
-                        Name   = 'TestName'
+                    'new'
+                    {
+                        $ParamValidation = [ordered]@{
+                            Action = $Action
+                            Type   = $JCType.TypeName.TypeNameSingular
+                            Name   = 'TestName'
+                        }
+                        $Parameters = Test-JCCommonParameters -Action:($Action) -Type:($JCType.TypeName.TypeNameSingular) -Name:($ParamValidation.Name)
                     }
-                    $Parameters = Test-JCCommonParameters -Action:($Action) -Type:($JCType.TypeName.TypeNameSingular) -Name:($ParamValidation.Name)
-                }
-                'remove'
-                {
-                    $ParamValidation = [ordered]@{
-                        Action = $Action
-                        Type   = $JCType.TypeName.TypeNameSingular
-                        Id     = '1234'
+                    'remove'
+                    {
+                        $ParamValidation = [ordered]@{
+                            Action = $Action
+                            Type   = $JCType.TypeName.TypeNameSingular
+                            Id     = '1234'
+                        }
+                        $Parameters = Test-JCCommonParameters -Action:($Action) -Type:($JCType.TypeName.TypeNameSingular) -Id:($ParamValidation.Id)
                     }
-                    $Parameters = Test-JCCommonParameters -Action:($Action) -Type:($JCType.TypeName.TypeNameSingular) -Id:($ParamValidation.Id)
-                }
-                'copy'
-                {
-                    $ParamValidation = [ordered]@{
-                        Action = $Action
-                        Type   = $JCType.TypeName.TypeNameSingular
-                        Id     = '1234'
-                        # Name   = 'TestName'
+                    'copy'
+                    {
+                        $ParamValidation = [ordered]@{
+                            Action = $Action
+                            Type   = $JCType.TypeName.TypeNameSingular
+                            Id     = '1234'
+                            # Name   = 'TestName'
+                        }
+                        $Parameters = Test-JCCommonParameters -Action:($Action) -Type:($JCType.TypeName.TypeNameSingular) -Id:($ParamValidation.Id)
+                        # $Parameters = Test-JCCommonParameters -Action:($Action) -Type:($JCType.TypeName.TypeNameSingular) -Name:($ParamValidation.Name)
                     }
-                    $Parameters = Test-JCCommonParameters -Action:($Action) -Type:($JCType.TypeName.TypeNameSingular) -Id:($ParamValidation.Id)
-                    # $Parameters = Test-JCCommonParameters -Action:($Action) -Type:($JCType.TypeName.TypeNameSingular) -Name:($ParamValidation.Name)
-                }
-                'set'
-                {
-                    $ParamValidation = [ordered]@{
-                        Action = $Action
-                        Type   = $JCType.TypeName.TypeNameSingular
-                        Id     = '1234'
-                        # Name   = 'TestName'
+                    'set'
+                    {
+                        $ParamValidation = [ordered]@{
+                            Action = $Action
+                            Type   = $JCType.TypeName.TypeNameSingular
+                            Id     = '1234'
+                            # Name   = 'TestName'
+                        }
+                        $Parameters = Test-JCCommonParameters -Action:($Action) -Type:($JCType.TypeName.TypeNameSingular) -Id:($ParamValidation.Id)
+                        # $Parameters = Test-JCCommonParameters -Action:($Action) -Type:($JCType.TypeName.TypeNameSingular) -Name:($ParamValidation.Name)
                     }
-                    $Parameters = Test-JCCommonParameters -Action:($Action) -Type:($JCType.TypeName.TypeNameSingular) -Id:($ParamValidation.Id)
-                    # $Parameters = Test-JCCommonParameters -Action:($Action) -Type:($JCType.TypeName.TypeNameSingular) -Name:($ParamValidation.Name)
+                    Default { Write-Error ('Unknown $Action type: ' + $Action) }
                 }
-                Default { Write-Error ('Unknown $Action type: ' + $Action) }
-            }
-            $ParamValidation.GetEnumerator() | ForEach-Object {
-                It ('JCCommonParameters with action of "' + $Action + '" and type of "' + $JCType.TypeName.TypeNameSingular + '" should return a parameter called "' + $_.Key + '" with a value of "' + $_.Value + '".') {
-                    $Parameters.($_.Key) | Should -Be $ParamValidation.($_.Key)
+                $ParameterResults += @{
+                    testDescription = 'JCCommonParameters with action of "' + $Action + '" and type of "' + $JCType.TypeName.TypeNameSingular + '" should return a parameter called "' + $_.Key + '" with a value of "' + $_.Value + '".';
+                    ParamValidation = $ParamValidation;
+                    Parameters      = $Parameters;
                 }
             }
         }
-        $Parameters
+        Return $ParameterResults
+    }
+    It('<testDescription>') -TestCases:(Get-JCCommonParametersTestCases) {
+        $Parameters.($_.Key) | Should -Be $ParamValidation.($_.Key)
     }
 }
