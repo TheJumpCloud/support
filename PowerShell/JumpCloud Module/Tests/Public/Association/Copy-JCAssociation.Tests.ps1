@@ -1,22 +1,22 @@
 BeforeAll {
+    Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
+    If (-not (Get-JCAssociation -Type:('user') -Id:($PesterParams_User1._id) -TargetType:('user_group') | Where-Object { $_.TargetId -eq $PesterParams_UserGroup.id }))
+    {
+        Add-JCAssociation -Type:('user') -Id:($PesterParams_User1._id) -TargetType:('user_group') -TargetId:($PesterParams_UserGroup.id) -Force
+    }
 }
 Describe -Tag:('JCAssociation') "Copy-JCAssociation Tests" {
     Context ('User and Id Association Tests') {
         It '<testDescription>' -TestCases @(
-            @{  testDescription = 'Copy User Associtations'
-                Users           = Get-JCObject -Type:('user') -Fields:('_id', 'username') -limit:(2)
-                UserGroup       = (Get-JCObject -Type:('user_group') -limit:(1))[0]
-                QType            = "username"
+            @{  testDescription = 'Copy Associtations by username'
+                QType           = "username"
                 SourceTarget    = "Name"
                 DestTarget      = "TargetName"
             }
-            @{  testDescription = 'Copy UserID Associtations'
-                Users           = Get-JCObject -Type:('user') -Fields:('_id', 'username') -limit:(2)
-                UserGroup       = (Get-JCObject -Type:('user_group') -limit:(1))[0]
-                QType            = "_id"
+            @{  testDescription = 'Copy Associtations by UserID'
+                QType           = "_id"
                 SourceTarget    = "Id"
                 DestTarget      = "TargetId"
-
             }
         ) {
             param (
@@ -24,21 +24,10 @@ Describe -Tag:('JCAssociation') "Copy-JCAssociation Tests" {
                 [string] $DestTarget,
                 [string] $QType
             )
-            # define first testing users
-            $SourceUser = $Users[0]
-            $TargetUser = $Users[1]
-
-            # write-host($UserGroup.id)
-            If (-not (Get-JCAssociation -Type:('user') -Id:($SourceUser._id) -TargetType:('user_group') | Where-Object { $_.TargetId -eq $UserGroup.id })){
-                Add-JCAssociation -Type:('user') -Id:($SourceUser._id) -TargetType:('user_group') -TargetId:($UserGroup.id) -Force
-            }
             # build query
-            $Command = "Copy-JCAssociation -Type:('user') -$($SourceTarget):('$($SourceUser.$QType)') -$($DestTarget):('$($TargetUser.$QType)') -Force"
-            invoke-expression -command $Command
+            Invoke-Expression -command:("Copy-JCAssociation -Type:('user') -$($SourceTarget):('$($PesterParams_User1.$QType)') -$($DestTarget):('$($PesterParams_User2.$QType)') -Force")
             # compare results
-            ($SourceUser | Get-JCAssociation | Select-Object -Property:('associationType', 'type', 'targetId', 'targetType', 'compiledAttributes') | ConvertTo-Json ) | Should -Be ($TargetUser | Get-JCAssociation | Select-Object -Property:('associationType', 'type', 'targetId', 'targetType', 'compiledAttributes') | ConvertTo-Json )
-            $SourceUser | Get-JCAssociation | Remove-JCAssociation -force
-            $TargetUser | Get-JCAssociation | Remove-JCAssociation -force
+            ($PesterParams_User1 | Get-JCAssociation -Type:('user') | Select-Object -Property:('associationType', 'type', 'targetId', 'targetType', 'compiledAttributes') | ConvertTo-Json ) | Should -Be ($PesterParams_User2 | Get-JCAssociation -Type:('user') | Select-Object -Property:('associationType', 'type', 'targetId', 'targetType', 'compiledAttributes') | ConvertTo-Json )
         }
     }
 }
