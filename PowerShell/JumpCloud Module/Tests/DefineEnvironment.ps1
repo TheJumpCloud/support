@@ -86,6 +86,7 @@ $PesterParamsHash_Common = @{
     SystemNameLinux                 = 'PesterTest-Linux'
     SystemNameMac                   = 'PesterTest-Mac'
     SystemNameWindows               = 'PesterTest-Windows'
+    SystemInsightsTables            = (Get-JCType -Type:('system')).SystemInsights.Table
 }
 # Define items
 $RandomString1 = ( -join (( 0x41..0x5A) + ( 0x61..0x7A) | Get-Random -Count 8 | ForEach-Object { [char]$_ }))

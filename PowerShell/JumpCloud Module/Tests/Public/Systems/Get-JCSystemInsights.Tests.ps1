@@ -7,7 +7,7 @@ Describe -Tag:('JCSystemInsights') "Get-JCSystemInsights Tests" {
     Function Get-JCSystemInsightsTestCases($System)
     {
         # Retrieve objects to test with
-        $TableNames = (Get-JCType -Type:('system')).SystemInsights.Table | Where-Object { $_ -notin ('disk_info', 'bitlocker_info', 'uptime', 'sip_config', 'alf', 'shared_resources', 'user_ssh_keys', 'user_groups', 'sharing_preferences', 'scheduled_tasks') } # HACK Temp workaround because these tables don't take strings as filters
+        $TableNames = $PesterParams_SystemInsightsTables | Where-Object { $_ -notin ('disk_info', 'bitlocker_info', 'uptime', 'sip_config', 'alf', 'shared_resources', 'user_ssh_keys', 'user_groups', 'sharing_preferences', 'scheduled_tasks') } # HACK Temp workaround because these tables don't take strings as filters
         $SystemInsightsTestCases = @()
         $TableNames | ForEach-Object {
             $TableName = $_
