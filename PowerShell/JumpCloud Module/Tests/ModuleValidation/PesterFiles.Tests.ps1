@@ -10,10 +10,10 @@ Describe -Tag:('ModuleValidation') 'Pester Files Tests' {
         }
     }
     Context 'Pester Test Files Validation' {
-        It ('Validating Pester test file exists for "' + $PesterTestFilePath + '"') -TestCases:($PesterTestFilePath) {
+        It ('Validating Pester test file exists for "<FilePath>"') -TestCases:($PesterTestFilePath) {
             Test-Path -Path:($FilePath) | Should -Be $true
         }
-        It ('Validating Pester test file has been populated for "' + $PesterTestFilePath + '"') -TestCases:($PesterTestFilePath) {
+        It ('Validating Pester test file has been populated for "<FilePath>"') -TestCases:($PesterTestFilePath) {
             $FilePath | Should -FileContentMatch '.*?'
         }
     }
