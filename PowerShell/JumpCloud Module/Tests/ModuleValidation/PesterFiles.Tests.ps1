@@ -1,5 +1,6 @@
 Describe -Tag:('ModuleValidation') 'Pester Files Tests' {
-    BeforeEach {
+    Function Get-PesterFilesTestCases
+    {
         $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent.FullName
         $FolderTests = "$ModuleRoot/Tests"
         $FolderPublic = "$ModuleRoot/Public"
@@ -8,12 +9,13 @@ Describe -Tag:('ModuleValidation') 'Pester Files Tests' {
                 FilePath = ($_.FullName).Replace($ModuleRoot, $FolderTests).Replace($_.Extension, ".Tests$($_.Extension)")
             }
         }
+        Return $PesterTestFilePath
     }
     Context 'Pester Test Files Validation' {
-        It ('Validating Pester test file exists for "<FilePath>"') -TestCases:($PesterTestFilePath) {
+        It ('Validating Pester test file exists for "<FilePath>"') -TestCases:(Get-PesterFilesTestCases) {
             Test-Path -Path:($FilePath) | Should -Be $true
         }
-        It ('Validating Pester test file has been populated for "<FilePath>"') -TestCases:($PesterTestFilePath) {
+        It ('Validating Pester test file has been populated for "<FilePath>"') -TestCases:(Get-PesterFilesTestCases) {
             $FilePath | Should -FileContentMatch '.*?'
         }
     }
