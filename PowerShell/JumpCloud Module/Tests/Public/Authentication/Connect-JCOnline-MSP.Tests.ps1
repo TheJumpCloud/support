@@ -3,9 +3,6 @@ Describe -Tag:('JCOnline-MSP') 'Connect-JCOnline Tests' {
         $StartingApiKey = If (-not [System.String]::IsNullOrEmpty($env:JCApiKey)) { $env:JCApiKey }
         $StartingOrgId = If (-not [System.String]::IsNullOrEmpty($env:JCOrgId)) { $env:JCOrgId }
     }
-    AfterAll {
-        Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
-    }
     Context 'MSP OrgId 1 Tests' {
         It ('Should connect using the JumpCloudApiKey and JumpCloudOrgId parameters.') {
             $Connect = Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKeyMsp) -JumpCloudOrgId:($PesterParams_OrgIDMsp1) -force
@@ -63,5 +60,8 @@ Describe -Tag:('JCOnline-MSP') 'Connect-JCOnline Tests' {
             $PesterParams_OrgIDMsp2 | Should -Be $env:JCOrgId
             #  $Connect.JCOrgId | Should -Be $env:JCOrgId
         }
+    }
+    AfterAll {
+        Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
     }
 }

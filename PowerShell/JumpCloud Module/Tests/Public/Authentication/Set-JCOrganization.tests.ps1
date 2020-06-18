@@ -5,9 +5,6 @@ Describe -Tag:('JCOrganization') 'Set-JCOrganization Tests' {
         $StartingApiKey = If (-not [System.String]::IsNullOrEmpty($env:JCApiKey)) { $env:JCApiKey }
         $StartingOrgId = If (-not [System.String]::IsNullOrEmpty($env:JCOrgId)) { $env:JCOrgId }
     }
-    AfterAll {
-        Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
-    }
     Context 'Single Org Tests' {
         It ('Should connect using the JumpCloudApiKey and JumpCloudOrgId parameters.') {
             $Connect = Set-JCOrganization -JumpCloudApiKey:($PesterParams_ApiKey) -JumpCloudOrgId:($PesterParams_Org.OrgID)
@@ -61,5 +58,8 @@ Describe -Tag:('JCOrganization') 'Set-JCOrganization Tests' {
             $Connect.JCOrgId | Should -Be $env:JCOrgId
             $Connect.JCOrgId | Should -Be $PesterParams_OrgIDMsp2
         }
+    }
+    AfterAll {
+        Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
     }
 }
