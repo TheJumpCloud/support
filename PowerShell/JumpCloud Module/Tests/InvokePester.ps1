@@ -44,7 +44,7 @@ Else
 # Load DefineEnvironment
 . ("$PSScriptRoot/DefineEnvironment.ps1") -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp)
 # Load required modules
-$RequiredModules = (Import-LocalizedData -BaseDirectory:($PesterParams_ModuleManifestPath) -FileName:($PesteParams_ModuleManifestName)).RequiredModules
+$RequiredModules = (Import-LocalizedData -BaseDirectory:($PesterParams_ModuleManifestPath) -FileName:($PesterParams_ModuleManifestName)).RequiredModules
 If ($RequiredModules)
 {
     $RequiredModules | ForEach-Object {
