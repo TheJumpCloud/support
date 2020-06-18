@@ -4,9 +4,6 @@ Param(
     , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 2)][System.String[]]$ExcludeTagList
     , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 3)][System.String[]]$IncludeTagList
 )
-$ScriptRoot = $PSScriptRoot
-$ModuleManifestName = 'JumpCloud.psd1'
-$ModuleManifestPath = "$ScriptRoot/../$ModuleManifestName"
 # Install Pester
 Install-Module -Name:('Pester') -Force
 # Install NuGet
@@ -14,35 +11,8 @@ If (!(Get-PackageProvider -Name:('NuGet') -ErrorAction:('SilentlyContinue')))
 {
     Install-PackageProvider NuGet -ForceBootstrap -Force | Out-Null
 }
-# Load required modules
-$RequiredModules = (Import-LocalizedData -BaseDirectory:("$ScriptRoot/..") -FileName:($ModuleManifestName)).RequiredModules
-If ($RequiredModules)
-{
-    $RequiredModules | ForEach-Object {
-        If ([System.String]::IsNullOrEmpty((Get-InstalledModule).Where( { $_.Name -eq $_ })))
-        {
-            Write-Host ('Installing: ' + $_)
-            Install-Module -Name:($_) -Force
-        }
-        If (!(Get-Module -Name:($_)))
-        {
-            Write-Host ('Importing: ' + $_)
-            Import-Module -Name:($_) -Force
-        }
-    }
-}
-# Import the module
-Import-Module -Name:($ModuleManifestPath) -Force
-# Load private functions
-Get-ChildItem -Path:("$ScriptRoot/../Private/*.ps1") -Recurse | ForEach-Object { . $_.FullName }
-# Load DefineEnvironment
-. ("$ScriptRoot/DefineEnvironment.ps1") -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp)
-# Load SetupOrg
-. ("$ScriptRoot/SetupOrg.ps1") -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp)
-# Load HelperFunctions
-. ("$ScriptRoot/HelperFunctions.ps1")
 # Get list of tags and validate that tags have been applied
-$PesterTests = Get-ChildItem -Path:($ScriptRoot + '/*.Tests.ps1') -Recurse
+$PesterTests = Get-ChildItem -Path:($PSScriptRoot + '/*.Tests.ps1') -Recurse
 $Tags = ForEach ($PesterTest In $PesterTests)
 {
     $PesterTestFullName = $PesterTest.FullName
@@ -71,11 +41,37 @@ Else
 {
     $Tags | Where-Object { $_ -notin $ExcludeTags } | Select-Object -Unique
 }
-# "'" + ($IncludeTags -join "','") + "'"
+# Load required modules
+$RequiredModules = (Import-LocalizedData -BaseDirectory:("$PSScriptRoot/..") -FileName:($PesteParams_ModuleManifestName)).RequiredModules
+If ($RequiredModules)
+{
+    $RequiredModules | ForEach-Object {
+        If ([System.String]::IsNullOrEmpty((Get-InstalledModule).Where( { $_.Name -eq $_ })))
+        {
+            Write-Host ('Installing: ' + $_)
+            Install-Module -Name:($_) -Force
+        }
+        If (!(Get-Module -Name:($_)))
+        {
+            Write-Host ('Importing: ' + $_)
+            Import-Module -Name:($_) -Force
+        }
+    }
+}
+# Load DefineEnvironment
+. ("$PSScriptRoot/DefineEnvironment.ps1") -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp)
+# Import the module
+Import-Module -Name:($PesteParams_ModuleManifestPath) -Force
+# Load private functions
+Get-ChildItem -Path:("$PSScriptRoot/../Private/*.ps1") -Recurse | ForEach-Object { . $_.FullName }
+# Load SetupOrg
+. ("$PSScriptRoot/SetupOrg.ps1") -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp)
+# Load HelperFunctions
+. ("$PSScriptRoot/HelperFunctions.ps1")
 # Run Pester tests
-Write-Host ("[RUN COMMAND] Invoke-Pester -Path:($ScriptRoot) -TagFilter:($IncludeTags) -ExcludeTagFilter:($ExcludeTagList) -PassThru") -BackgroundColor:('Black') -ForegroundColor:('Magenta')
+Write-Host ("[RUN COMMAND] Invoke-Pester -Path:($PSScriptRoot) -TagFilter:($IncludeTags) -ExcludeTagFilter:($ExcludeTagList) -PassThru") -BackgroundColor:('Black') -ForegroundColor:('Magenta')
 If (Test-Path -Path:($PesterParams_PesterResultsFileXml)) { Remove-Item -Path:($PesterParams_PesterResultsFileXml) -Force }
-$PesterResults = Invoke-Pester -PassThru -Path:($ScriptRoot) -TagFilter:($IncludeTags) -ExcludeTagFilter:($ExcludeTagList)
+$PesterResults = Invoke-Pester -PassThru -Path:($PSScriptRoot) -TagFilter:($IncludeTags) -ExcludeTagFilter:($ExcludeTagList)
 $PesterResults | Export-NUnitReport -Path:($PesterParams_PesterResultsFileXml)
 If (Test-Path -Path:($PesterParams_PesterResultsFileXml))
 {

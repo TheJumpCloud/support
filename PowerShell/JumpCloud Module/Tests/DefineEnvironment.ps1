@@ -2,8 +2,6 @@ Param(
     [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0)][ValidateNotNullOrEmpty()][System.String]$JumpCloudApiKey
     , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 1)][ValidateNotNullOrEmpty()][System.String]$JumpCloudApiKeyMsp
 )
-# Authenticate to JumpCloud
-Connect-JCOnline -JumpCloudApiKey:($JumpCloudApiKey) -force | Out-Null
 # Define variable names
 $PesterParamsHash_VariableName = @{
     VariableNamePrefix     = 'PesterParams_';
@@ -68,6 +66,8 @@ If ($env:USERNAME -ne 'VssAdministrator')
 }
 # Parameters that are not Org specific
 $PesterParamsHash_Common = @{
+    ModuleManifestName              = 'JumpCloud.psd1'
+    ModuleManifestPath              = "$PSScriptRoot/../JumpCloud.psd1"
     ApiKey                          = $JumpCloudApiKey
     ApiKeyMsp                       = $JumpCloudApiKeyMsp
     PesterResultsFileXml            = "$($PSScriptRoot)/JumpCloud-$($OS)-TestResults.xml"
@@ -86,7 +86,6 @@ $PesterParamsHash_Common = @{
     SystemNameLinux                 = 'PesterTest-Linux'
     SystemNameMac                   = 'PesterTest-Mac'
     SystemNameWindows               = 'PesterTest-Windows'
-    SystemInsightsTables            = (Get-JCType -Type:('system')).SystemInsights.Table
 }
 # Define items
 $RandomString1 = ( -join (( 0x41..0x5A) + ( 0x61..0x7A) | Get-Random -Count 8 | ForEach-Object { [char]$_ }))

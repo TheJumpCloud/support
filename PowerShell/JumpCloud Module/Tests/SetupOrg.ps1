@@ -79,6 +79,9 @@ $PesterParamsHash_BuildOrg = @{
     SystemWindows  = Get-JCSystem -displayName:($PesterParams_SystemNameWindows)
     CommandResults = Get-JCCommandResult
 }
+$PesterParamsHash_CommonDynamic = @{
+    SystemInsightsTables = (Get-JCType -Type:('system')).SystemInsights.Table
+}
 $PesterParamsHash_Associations = @{
     UserGroupMembership           = Add-JCUserGroupMember -GroupName:($PesterParamsHash_BuildOrg.UserGroup.Name) -Username:($PesterParamsHash_BuildOrg.User1.username);
     PolicySystemGroupMembership   = $PesterParamsHash_BuildOrg.MultiplePolicy | ForEach-Object { New-JCAssociation -Type:('policy') -Id:($_.id) -TargetType:('system_group') -TargetId:($PesterParamsHash_BuildOrg.SystemGroup.id) -force };
