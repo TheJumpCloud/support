@@ -41,8 +41,10 @@ Else
 {
     $Tags | Where-Object { $_ -notin $ExcludeTags } | Select-Object -Unique
 }
+# Load DefineEnvironment
+. ("$PSScriptRoot/DefineEnvironment.ps1") -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp)
 # Load required modules
-$RequiredModules = (Import-LocalizedData -BaseDirectory:("$PSScriptRoot/..") -FileName:($PesteParams_ModuleManifestName)).RequiredModules
+$RequiredModules = (Import-LocalizedData -BaseDirectory:($PesterParams_ModuleManifestPath) -FileName:($PesteParams_ModuleManifestName)).RequiredModules
 If ($RequiredModules)
 {
     $RequiredModules | ForEach-Object {
@@ -58,8 +60,6 @@ If ($RequiredModules)
         }
     }
 }
-# Load DefineEnvironment
-. ("$PSScriptRoot/DefineEnvironment.ps1") -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp)
 # Import the module
 Import-Module -Name:($PesteParams_ModuleManifestPath) -Force
 # Load private functions

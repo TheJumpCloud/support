@@ -67,7 +67,7 @@ If ($env:USERNAME -ne 'VssAdministrator')
 # Parameters that are not Org specific
 $PesterParamsHash_Common = @{
     ModuleManifestName              = 'JumpCloud.psd1'
-    ModuleManifestPath              = "$PSScriptRoot/../JumpCloud.psd1"
+    ModuleManifestPath              = "$PSScriptRoot/../"
     ApiKey                          = $JumpCloudApiKey
     ApiKeyMsp                       = $JumpCloudApiKeyMsp
     PesterResultsFileXml            = "$($PSScriptRoot)/JumpCloud-$($OS)-TestResults.xml"
