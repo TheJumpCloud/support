@@ -61,7 +61,7 @@ If ($RequiredModules)
     }
 }
 # Import the module
-Import-Module -Name:($PesteParams_ModuleManifestPath) -Force
+Import-Module -Name:("$PesterParams_ModuleManifestPath/$PesterParams_ModuleManifestName") -Force
 # Load private functions
 Get-ChildItem -Path:("$PSScriptRoot/../Private/*.ps1") -Recurse | ForEach-Object { . $_.FullName }
 # Load SetupOrg
