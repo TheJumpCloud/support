@@ -1,7 +1,7 @@
 Describe -Tag:('JCAssociation') "Association Tests" {
     function Get-JCAssociations {
         # Generate possible variables
-        $JCAssociationTypes = Get-JCType | Where-Object { $_.Category -eq 'JumpCloud' } | Select-Object -First 1 # remove when not testing
+        $JCAssociationTypes = Get-JCType | Where-Object { $_.Category -eq 'JumpCloud' } | Get-Random -Count 1 # remove when not testing
         $EmptySources = @()
         ForEach ($JCAssociationType In $JCAssociationTypes) {
             $Source = Get-JCObject -Type:($JCAssociationType.TypeName.TypeNameSingular) | Select-Object -First 1 # | Get-Random
@@ -85,14 +85,11 @@ Describe -Tag:('JCAssociation') "Association Tests" {
                         'Target'      = $_.Target;
                         'ValidRecord' = $true;
                     }
-                Write-Host("Building " + $byNameOrID[$i].ByType + " Tests")
                 if ($byNameOrID[$i].ByType -eq "Name"){
-                    Write-host($byNameOrID[$i].ByType)
                     $SourceByType = $sourceParams.SourceName
                     $TargetByType = $sourceParams.TargetName
                 }
                 if ($byNameOrID[$i].ByType -eq "Id"){
-                    Write-host($byNameOrID[$i].ByType)
                     $SourceByType = $sourceParams.SourceId
                     $TargetByType = $sourceParams.TargetId
                 }
@@ -141,13 +138,12 @@ Describe -Tag:('JCAssociation') "Association Tests" {
 
     Context ('ID and Name Case Tests of Application Tests'){
         It '<testDescription>' -TestCases:(Get-JCAssociationTestCases) {
-            Write-Host("Test Name: " + $testDescription)
-            # Write-Host("Testing By: " + $TestParam.ByType)
+            # Write-Host("Test Name: " + $testDescription)
             foreach ($value in $Commands.values) {
-                Write-Host("Command: " + $value)
+                # Write-Host("Command: " + $value)
                 $Associations_Test = Invoke-Expression -Command:($value)
                 if ($testType -eq "Add"){
-                    Write-Host("TESTOBJECT" + $Associations_Test)
+                    # Write-Host("Test Object" + $Associations_Test)
                     $Associations_Test | Should -Not -BeNullOrEmpty
                     ($Associations_Test | Measure-Object).Count | Should -BeGreaterThan 0
                     If ($value -match '-Raw') {
