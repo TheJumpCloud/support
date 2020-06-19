@@ -65,7 +65,7 @@ Describe -Tag:('JCAssociation') "Association Tests" {
             # $DataSet = $_
             Write-Host($_.Source)
             $JCAssociationTestCases += @{
-                testDescription = 'Get and Remove Associations Origional Associations'
+                testDescription = 'Get Origional Associations By Name'
                 TestParam = @{
                     'SourceType'  = $_.Source.TypeName.TypeNameSingular;
                     'SourceId'    = $_.Source.($_.Source.ById);
@@ -77,21 +77,71 @@ Describe -Tag:('JCAssociation') "Association Tests" {
                     'Target'      = $_.Target;
                     'ValidRecord' = $true;
                 }
-                Commands = @{
-                    0        = "Get-JCAssociation -Type:('$($_.SourceType)') -Name:('$($_.SourceName)') -Direct";
-                    1   = "Get-JCAssociation -Type:('$($_.SourceType)') -Name:('$($_.SourceName)') -Direct | Remove-JCAssociation -Force";
-                }
-                Tests = @{
-                    "Where results SourceId '$($_.SourceId)' Should be in '$($_.Source)'" = { $_SourceId | Should -BeIn $Source }
-                    # "Where results SourceType '$($_.SourceType)' should be in '$($Associations_Test.Type -join ', ')'" = { $SourceType | Should -BeIn $Associations_Test.Type }
-                    # "Where results TargetId '$($_.TargetId)' should be in '$($Associations_Test.TargetId -join ', ')'" = { $TargetId | Should -BeIn $Associations_Test.TargetId }
-                    # "Where results TargetType '$($_.TargetType)' should be in '$($Associations_Test.TargetType -join ', ')'" = { $TargetType | Should -BeIn $Associations_Test.TargetType }
-                    # "Where results SourceId '$($_.SourceId)' should not the same as the TargetId '$($TargetId)'" = { $SourceId | Should -Not -Be $TargetId }
-                    # "Where results SourceType '$($_.SourceType)' should not the same as the TargetType '$($TargetType)'" = { $SourceType | Should -Not -Be $TargetType }
-                    # "Where results SourceId '$($_.SourceId)' should not be in TargetId '$($Associations_Test.TargetId -join ', ')'" = { $SourceId | Should -Not -BeIn $Associations_Test.TargetId }
-                    # "Where results SourceType '$($_.SourceType)' should not be in TargetType '$($Associations_Test.TargetType -join ', ')'" = { $SourceType | Should -Not -BeIn $Associations_Test.TargetType }
+                Commands = [ordered]@{
+                    '0'    = "Get-JCAssociation -Type:('$($_.SourceType)') -Name:('$($_.SourceName)') -Direct";
                 }
             }
+            $JCAssociationTestCases += @{
+                testDescription = 'Add Some Associations By Name'
+                TestParam       = @{
+                    'SourceType'  = $_.Source.TypeName.TypeNameSingular;
+                    'SourceId'    = $_.Source.($_.Source.ById);
+                    'SourceName'  = $_.Source.($_.Source.ByName);
+                    'Source'      = $_.Source;
+                    'TargetType'  = $_.Target.TypeName.TypeNameSingular;
+                    'TargetId'    = $_.Target.($_.Target.ById);
+                    'TargetName'  = $_.Target.($_.Target.ByName);
+                    'Target'      = $_.Target;
+                    'ValidRecord' = $true;
+                }
+                Commands        = [ordered]@{
+                    '0' = "Add-JCAssociation -Type:('$($_.SourceType)') -Name:('$($_.SourceName)') -Force -TargetType:('$($_.TargetType)') -TargetName:('$($_.TargetName)')";
+                }
+            }
+            $JCAssociationTestCases += @{
+                testDescription = 'Remove Some Associations By Name'
+                TestParam       = @{
+                    'SourceType'  = $_.Source.TypeName.TypeNameSingular;
+                    'SourceId'    = $_.Source.($_.Source.ById);
+                    'SourceName'  = $_.Source.($_.Source.ByName);
+                    'Source'      = $_.Source;
+                    'TargetType'  = $_.Target.TypeName.TypeNameSingular;
+                    'TargetId'    = $_.Target.($_.Target.ById);
+                    'TargetName'  = $_.Target.($_.Target.ByName);
+                    'Target'      = $_.Target;
+                    'ValidRecord' = $true;
+                }
+                Commands        = [ordered]@{
+                    '0' = "Remove-JCAssociation -Type:('$($_.SourceType)') -Name:('$($_.SourceName)') -Force -TargetType:('$($_.TargetType)') -TargetName:('$($_.TargetName)')";
+                }
+            }
+            # $JCAssociationTestCases += @{
+            #     testDescription = 'Remove Origional Associations'
+            #     TestParam       = @{
+            #         'SourceType'  = $_.Source.TypeName.TypeNameSingular;
+            #         'SourceId'    = $_.Source.($_.Source.ById);
+            #         'SourceName'  = $_.Source.($_.Source.ByName);
+            #         'Source'      = $_.Source;
+            #         'TargetType'  = $_.Target.TypeName.TypeNameSingular;
+            #         'TargetId'    = $_.Target.($_.Target.ById);
+            #         'TargetName'  = $_.Target.($_.Target.ByName);
+            #         'Target'      = $_.Target;
+            #         'ValidRecord' = $true;
+            #     }
+            #     Commands        = @{
+            #         'command' = "Get-JCAssociation -Type:('$($_.SourceType)') -Name:('$($_.SourceName)') -Direct | Remove-JCAssociation -Force";
+            #     }
+            #     Tests           = @{
+            #         "Where results SourceId '$($_.SourceId)' Should be in '$($_.Source)'" = { $_SourceId | Should -NotBeIn $Source }
+            #         # "Where results SourceType '$($_.SourceType)' should be in '$($Associations_Test.Type -join ', ')'" = { $SourceType | Should -BeIn $Associations_Test.Type }
+            #         # "Where results TargetId '$($_.TargetId)' should be in '$($Associations_Test.TargetId -join ', ')'" = { $TargetId | Should -BeIn $Associations_Test.TargetId }
+            #         # "Where results TargetType '$($_.TargetType)' should be in '$($Associations_Test.TargetType -join ', ')'" = { $TargetType | Should -BeIn $Associations_Test.TargetType }
+            #         # "Where results SourceId '$($_.SourceId)' should not the same as the TargetId '$($TargetId)'" = { $SourceId | Should -Not -Be $TargetId }
+            #         # "Where results SourceType '$($_.SourceType)' should not the same as the TargetType '$($TargetType)'" = { $SourceType | Should -Not -Be $TargetType }
+            #         # "Where results SourceId '$($_.SourceId)' should not be in TargetId '$($Associations_Test.TargetId -join ', ')'" = { $SourceId | Should -Not -BeIn $Associations_Test.TargetId }
+            #         # "Where results SourceType '$($_.SourceType)' should not be in TargetType '$($Associations_Test.TargetType -join ', ')'" = { $SourceType | Should -Not -BeIn $Associations_Test.TargetType }
+            #     }
+            # }
             # $JCAssociationTestCases += @{
             #     testDescription = 'Test a specific table across specified systems ById where error is NullOrEmpty.'
             #     Command         = "Add-JCAssociation -Type:('$($_.SourceType)') -Id:('$($_.SourceId)') -Force -TargetType:('$($_.TargetType)') -TargetId:('$($_.TargetId)')"
@@ -114,43 +164,32 @@ Describe -Tag:('JCAssociation') "Association Tests" {
 
     Context ('ID and Name Case Tests of Application Tests'){
         It '<testDescription>' -TestCases:(Get-JCAssociationTestCases) {
-            # Print out AssociationDataSet of Current Test:
-            # foreach ($item in $TestParam) {
-            #     Write-Host($item.Values)
-            # }
-            # for ($i=0; $i -lt $Commands.Count; $i++){
-            #     Write-Host($Commands[$i].values)
-            #     Write-Host($Commands[$i].Keys)
-            # }
-            foreach ($key in $Commands) {
-                Write-Host($key.Value)
-                # $item.Key = Invoke-Expression -Command:($item.Value) -ErrorVariable:('$($item.Key)ResultsError')
-            }
+            Write-Host("Test Name: " + $testDescription)
             foreach ($value in $Commands.values) {
-                Write-Host($value)
-                Invoke-Expression -Command:($value) -ErrorVariable:('SecondCommandResultsError')
+                Write-Host("Running Association Command: " + $value)
+                $Associations_Test = Invoke-Expression -Command:($value)
+                # Write-Host($TestParam.TargetID)
+                # $TestParam.TargetID | Should -BeIn $TheTest.TargetID
+
+                # $Associations_Test | Should -Not -BeNullOrEmpty
+                # ($Associations_Test | Measure-Object).Count | Should -BeGreaterThan 0
+                # $TestParam.TargetId | Should -BeIn $Associations_Test.Id
+                # $TestParam.TargetType | Should -BeIn $Associations_Test.Type
+                # $Verb | Should -Be ($Associations_Test.Action | Select-Object -Unique)
+                # $TestParam.SourceId | Should -BeIn $Associations_Test.Id
+                # $TestParam.SourceType | Should -BeIn $Associations_Test.Type
+                # $TestParam.TargetId | Should -BeIn $Associations_Test.TargetId
+                # $TestParam.TargetType | Should -BeIn $Associations_Test.TargetType
+                # $TestParam.SourceId | Should -Not -Be $TargetId
+                # $TestParam.SourceType | Should -Not -Be $TargetType
+                # $TestParam.SourceId | Should -Not -BeIn $Associations_Test.TargetId
+                # TestParam.$SourceType | Should -Not -BeIn $Associations_Test.TargetType
             }
-            foreach ($item in $Tests.Keys) {
-                Write-Host($item)
-            }
-            # Write-Host($Command)
-            # if ($SecondCommand){
-            #     Write-Host($SecondCommand)
-            # }
-            # $CommandResults = Invoke-Expression -Command:($Command) -ErrorVariable:('CommandResultsError')
-            # $CommandResultsError | Should -BeNullOrEmpty
-            # if ($SecondCommand){
-            #     $SecondCommandResults = Invoke-Expression -Command:($Command) -ErrorVariable:('SecondCommandResultsError')
-            #     $SecondCommandResultsError | Should -BeNullOrEmpty
-            # }
-            # ($CommandResults | Measure-Object).Count | Should -BeGreaterThan 0
-            # $TargetId | Should -BeIn $TestCase.Id
-            # $TargetType | Should -BeIn $TestCase.Type
-            # Write-Host($SourceId)
-            # $TargetId = $TestSourceType.TargetId
-            # $TargetType = $TestSourceType.TargetType
-            foreach ($Test in $Tests) {
-                $Test
+            foreach ($Test in $Tests.values) {
+                Write-Host("Running Test: " + $Test)
+                # Write-Error($TheTest)
+                # Invoke-Expression -Command:($Test)
+                # $Test
             }
             # # Begin Dynamic Test
             # $Associations_Test = Add-JCAssociation -Type:($TestSourceType.SourceType) -Id:($TestSourceType.SourceId) -Force -TargetType:($TestSourceType.TargetType) -TargetId:($TestSourceType.TargetId); # [Mock-Tests]
