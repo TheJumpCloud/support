@@ -17,24 +17,24 @@ Describe -Tag:('JCSystemInsights') "Get-JCSystemInsights Tests" {
             }
             $SystemInsightsTestCases += @{
                 testDescription = 'Test a specific table across specified systems ById where error is NullOrEmpty.'
-                Command         = "Get-JCSystemInsights -Table:('$TableName') -Id:('$($System._id)');"
+                Command         = "Get-JCSystemInsights -Table:('$TableName') -Id:('$(($System._id) -join "','")');"
             }
             $SystemInsightsTestCases += @{
                 testDescription = 'Test a specific table across specified systems ByValue Id where error is NullOrEmpty.'
-                Command         = "Get-JCSystemInsights -Table:('$TableName') -SearchBy:('ById') -SearchByValue:('$($System._id)');"
+                Command         = "Get-JCSystemInsights -Table:('$TableName') -SearchBy:('ById') -SearchByValue:('$(($System._id) -join "','")');"
             }
             $SystemInsightsTestCases += @{
                 testDescription = 'Test a specific table across specified systems ByName where error is NullOrEmpty.'
-                Command         = "Get-JCSystemInsights -Table:('$TableName') -Name:('$($System.displayName)');"
+                Command         = "Get-JCSystemInsights -Table:('$TableName') -Name:('$(($System.displayName) -join "','")');"
             }
             $SystemInsightsTestCases += @{
                 testDescription = 'Test a specific table across specified systems ByValue Name where error is NullOrEmpty.'
-                Command         = "Get-JCSystemInsights -Table:('$TableName') -SearchBy:('ByName') -SearchByValue:('$($System.displayName)');"
+                Command         = "Get-JCSystemInsights -Table:('$TableName') -SearchBy:('ByName') -SearchByValue:('$(($System.displayName) -join "','")');"
             }
         }
         Return $SystemInsightsTestCases
     }
-    It '<testDescription>' -TestCases:(Get-JCSystemInsightsTestCases -System:($PesterParams_SystemLinux)) {
+    It '<testDescription>' -TestCases:(Get-JCSystemInsightsTestCases -System:($PesterParams_SystemLinux, $PesterParams_SystemMac, $PesterParams_SystemWindows)) {
         # Write-Host ("Command: $Command")
         $CommandResults = Invoke-Expression -Command:($Command) -ErrorVariable:('CommandResultsError')
         $CommandResultsError | Should -BeNullOrEmpty
