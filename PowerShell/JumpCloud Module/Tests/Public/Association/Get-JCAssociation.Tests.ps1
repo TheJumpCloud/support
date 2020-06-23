@@ -95,7 +95,7 @@ Describe -Tag:('JCAssociation') "Association Tests" {
                 }
                 $JCAssociationTestCases += @{
                     TestDescription = 'Get/ Remove Origional Associations By ' + ($ByType.ByType )
-                    TestType        = "remove"
+                    TestType        = "origional"
                     TestParam       = $_
                     Commands        = [ordered]@{
                         '0' = "Get-JCAssociation -Type:('$($_.SourceType)') -$($ByType.SourceTarget):('$($SourceByType)') -Direct";
@@ -141,12 +141,12 @@ Describe -Tag:('JCAssociation') "Association Tests" {
             foreach ($value in $Commands.values) {
                 Write-Host("Command: " + $value)
                 $Associations_Test = Invoke-Expression -Command:($value)
-                if ($TestType -eq "remove"){
+                if ($TestType -eq "origional") {
                     # Write-Host("Origional command: " + $value)
                     if ($Associations_Test){
-                        $Associations_Test | Remove-JCAssociation -Force
-                        Write-Host("Test action verb " + $TestType + " should be : " + $Associations_Test.Action)
-                        $TestType | Should -Be ($Associations_Test.Action | Select-Object -Unique)
+                        $Associations_Test = $Associations_Test | Remove-JCAssociation -Force
+                        # Write-Host("Test action verb " + $TestType + " should be : " + $Associations_Test.Action)
+                        "remove" | Should -Be ($Associations_Test.Action | Select-Object -Unique)
                     }
                     else {
                         # Write-Host("No Association Found")
