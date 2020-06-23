@@ -1,14 +1,14 @@
 Describe -Tag:('JCAssociation') "Association Tests" {
     function Get-JCAssociations {
         # Generate possible associations
-        $JCAssociationTypes = Get-JCType | Where-Object { $_.Category -eq 'JumpCloud' } | Select-Object -First 2 # | Get-Random -Count 1 # remove when not testing
+        $JCAssociationTypes = Get-JCType | Where-Object { $_.Category -eq 'JumpCloud' } # | Get-Random -Count 1 # remove when not testing
         $EmptySources = @()
         ForEach ($JCAssociationType In $JCAssociationTypes) {
             $Source = Get-JCObject -Type:($JCAssociationType.TypeName.TypeNameSingular) | Select-Object -First 1 # | Get-Random
             $AssociationDataSet = If ($Source) {
                 ForEach ($TargetSingular In $Source.Targets.TargetSingular) {
                     If ( $TargetSingular -notin $EmptySources) {
-                        $Target = Get-JCObject -Type:($TargetSingular) | Select-Object -First 1 # | Select-Object -First 1 # | Get-Random
+                        $Target = Get-JCObject -Type:($TargetSingular) | Get-Random -Count 1 # | Select-Object -First 1 # | Get-Random
                         If ($Target) {
                             @{
                                 'SourceType'  = $Source.TypeName.TypeNameSingular;
@@ -56,14 +56,14 @@ Describe -Tag:('JCAssociation') "Association Tests" {
                 }
             }
         }
-        return $AssociationDataSet
+        $ValidAssociationItems = $AssociationDataSet | Where-Object { $_.ValidRecord -and $_.SourceId -and $_.TargetId -and $_.TargetName}
+        $ValidAssociationItems = $ValidAssociationItems | Where-Object { $_.SourceType -ne 'active_directory' -and $_.TargetType -ne 'active_directory' }
+        return $ValidAssociationItems
     }
     function Get-JCAssociationTestCases {
         # Generate Test Cases
         $DataSet = Get-JCAssociations
         # Check that target id is set, only test with valid param set
-        $ValidAssociationItems = $DataSet | Where-Object { $_.ValidRecord -and $_.SourceId -and $_.TargetId }
-        $ValidAssociationItems = $ValidAssociationItems | Where-Object { $_.SourceType -ne 'active_directory' -and $_.TargetType -ne 'active_directory' }
         $JCAssociationTestCases = @()
         # Tests by Name
         $byName = @{
@@ -83,7 +83,7 @@ Describe -Tag:('JCAssociation') "Association Tests" {
             # Scope $ByType loop variable
             $ByType = $_
             # Loop through generated associaion objects from Get-JCAssocitaions
-            $ValidAssociationItems | ForEach-Object {
+            $DataSet | ForEach-Object {
                 # Either assign source and target vars by Name or Id
                 if ($ByType.ByType -eq "Name"){
                     $SourceByType = $_.SourceName
@@ -131,30 +131,30 @@ Describe -Tag:('JCAssociation') "Association Tests" {
                     }
                 }
             }
-            Write-Host("###################################")
         }
         return $JCAssociationTestCases
     }
 
     Context ('ID and Name Case Tests of Application Tests'){
         It '<TestDescription>' -TestCases:(Get-JCAssociationTestCases) {
-            Write-Host("#### Test Name: " + $TestDescription + " ####")
+            # Write-Host("#### Test Name: " + $TestDescription + " ####")
             foreach ($value in $Commands.values) {
-                Write-Host("Command: " + $value)
+                # Write-Host("Command: " + $value)
                 $Associations_Test = Invoke-Expression -Command:($value)
                 if ($TestType -eq "remove"){
-                    Write-Host("ORIGIONAL COMMAND: " + $value)
+                    # Write-Host("Origional command: " + $value)
                     if ($Associations_Test){
                         $Associations_Test | Remove-JCAssociation -Force
+                        # Write-Host("Test action verb " + $Associations_Test.Action)
                         $TestType | Should -Be ($Associations_Test.Action | Select-Object -Unique)
                     }
                     else {
-                        Write-Host("No Association Found")
+                        # Write-Host("No Association Found")
                         $Associations_Test | Should -Be $null
                     }
                 }
                 else {
-                    Write-Host("Test Object" + $Associations_Test)
+                    # Write-Host("Test Object" + $Associations_Test)
                     $Associations_Test | Should -Not -BeNullOrEmpty
                     ($Associations_Test | Measure-Object).Count | Should -BeGreaterThan 0
                     If ($value -match '-Raw') {
