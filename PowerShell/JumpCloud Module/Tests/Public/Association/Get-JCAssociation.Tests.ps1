@@ -8,7 +8,7 @@ Describe -Tag:('JCAssociation') "Association Tests" {
             $AssociationDataSet = If ($Source) {
                 ForEach ($TargetSingular In $Source.Targets.TargetSingular) {
                     If ( $TargetSingular -notin $EmptySources) {
-                        $Target = Get-JCObject -Type:($TargetSingular) | Get-Random -Count 1 # | Select-Object -First 1 # | Get-Random
+                        $Target = Get-JCObject -Type:($TargetSingular) | Select-Object -First 1 # | Select-Object -First 1 # | Get-Random
                         If ($Target) {
                             @{
                                 'SourceType'  = $Source.TypeName.TypeNameSingular;
@@ -61,6 +61,9 @@ Describe -Tag:('JCAssociation') "Association Tests" {
     function Get-JCAssociationTestCases {
         # Generate Test Cases
         $DataSet = Get-JCAssociations
+        # Check that target id is set, only test with valid param set
+        $ValidAssociationItems = $DataSet | Where-Object { $_.ValidRecord -and $_.SourceId -and $_.TargetId }
+        $ValidAssociationItems = $ValidAssociationItems | Where-Object { $_.SourceType -ne 'active_directory' -and $_.TargetType -ne 'active_directory' }
         $JCAssociationTestCases = @()
         # Tests by Name
         $byName = @{
@@ -78,31 +81,31 @@ Describe -Tag:('JCAssociation') "Association Tests" {
         $byNameOrID = @($byName, $byId)
         for ($i = 0; $i -lt $byNameOrID.Count; $i++) {
             # Loop through generated associaion objects from Get-JCAssocitaions
-            $DataSet | ForEach-Object {
-                $sourceParams = @{
-                        'SourceType'  = $_.Source.TypeName.TypeNameSingular;
-                        'SourceId'    = $_.Source.($_.Source.ById);
-                        'SourceName'  = $_.Source.($_.Source.ByName);
-                        'Source'      = $_.Source;
-                        'TargetType'  = $_.Target.TypeName.TypeNameSingular;
-                        'TargetId'    = $_.Target.($_.Target.ById);
-                        'TargetName'  = $_.Target.($_.Target.ByName);
-                        'Target'      = $_.Target;
-                        'ValidRecord' = $true;
-                    }
+            $ValidAssociationItems | ForEach-Object {
+                # $sourceParams = @{
+                #         'SourceType'  = $_.Source.TypeName.TypeNameSingular;
+                #         'SourceId'    = $_.Source.($_.Source.ById);
+                #         'SourceName'  = $_.Source.($_.Source.ByName);
+                #         'Source'      = $_.Source;
+                #         'TargetType'  = $_.Target.TypeName.TypeNameSingular;
+                #         'TargetId'    = $_.Target.($_.Target.ById);
+                #         'TargetName'  = $_.Target.($_.Target.ByName);
+                #         'Target'      = $_.Target;
+                #         'ValidRecord' = $true;
+                #     }
                 # Either assign source and target vars by Name or Id
                 if ($byNameOrID[$i].ByType -eq "Name"){
-                    $SourceByType = $sourceParams.SourceName
-                    $TargetByType = $sourceParams.TargetName
+                    $SourceByType = $_.SourceName
+                    $TargetByType = $_.TargetName
                 }
                 if ($byNameOrID[$i].ByType -eq "Id"){
-                    $SourceByType = $sourceParams.SourceId
-                    $TargetByType = $sourceParams.TargetId
+                    $SourceByType = $_.SourceId
+                    $TargetByType = $_.TargetId
                 }
                 $JCAssociationTestCases += @{
                     testDescription = 'Get Origional Associations By ' + ($byNameOrID[$i].ByType)
                     testType = "remove"
-                    TestParam = $sourceParams
+                    TestParam = $_
                     Commands = [ordered]@{
                         '0'    = "Get-JCAssociation -Type:('$($_.SourceType)') -$($byNameOrID[$i].SourceTarget):('$($SourceByType)') -Direct";
                     }
@@ -110,7 +113,7 @@ Describe -Tag:('JCAssociation') "Association Tests" {
                 $JCAssociationTestCases += @{
                     testDescription = 'Add Associations By ' + ($byNameOrID[$i].ByType)
                     testType        = "Add"
-                    TestParam       = $sourceParams
+                    TestParam       = $_
                     Commands        = [ordered]@{
                         '0' = "Add-JCAssociation -Type:('$($_.SourceType)') -$($byNameOrID[$i].SourceTarget):('$($SourceByType)') -Force -TargetType:('$($_.TargetType)') -$($byNameOrID[$i].DestTarget):('$($TargetByType)')";
                     }
@@ -118,7 +121,7 @@ Describe -Tag:('JCAssociation') "Association Tests" {
                 $JCAssociationTestCases += @{
                     testDescription = 'Get Associations By ' + ($byNameOrID[$i].ByType)
                     testType        = "Get"
-                    TestParam       = $sourceParams
+                    TestParam       = $_
                     Commands        = [ordered]@{
                         '0' = "Get-JCAssociation -Type:('$($_.SourceType)') -$($byNameOrID[$i].SourceTarget):('$($SourceByType)') -TargetType:('$($_.TargetType)')";
                         '1' = "Get-JCAssociation -Type:('$($_.SourceType)') -$($byNameOrID[$i].SourceTarget):('$($SourceByType)') -Raw -TargetType:('$($_.TargetType)')";
@@ -131,7 +134,7 @@ Describe -Tag:('JCAssociation') "Association Tests" {
                 $JCAssociationTestCases += @{
                     testDescription = 'Remove Associations By ' + ($byNameOrID[$i].ByType)
                     testType = "Remove"
-                    TestParam       = $sourceParams
+                    TestParam       = $_
                     Commands        = [ordered]@{
                         '0' = "Remove-JCAssociation -Type:('$($_.SourceType)') -$($byNameOrID[$i].SourceTarget):('$($SourceByType)') -Force -TargetType:('$($_.TargetType)') -$($byNameOrID[$i].DestTarget):('$($TargetByType)')";
                     }
@@ -151,7 +154,7 @@ Describe -Tag:('JCAssociation') "Association Tests" {
                 if ($testType -eq "remove"){
                     Write-Host("ORIGIONAL COMMAND: " + $value)
                     if ($Associations_Test){
-                        $Associations_Test = $Associations_Test | Remove-JCAssociation -Force
+                        $Associations_Test | Remove-JCAssociation -Force
                         $testType | Should -Be ($Associations_Test.Action | Select-Object -Unique)
                     }
                     else {
