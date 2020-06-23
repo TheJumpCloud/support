@@ -77,66 +77,57 @@ Describe -Tag:('JCAssociation') "Association Tests" {
             'SourceTarget' = "Id"
             'DestTarget'   = "TargetId"
         }
-        # Loop through both Id and Name hash tables
-        $byNameOrID = @($byName, $byId)
-        for ($i = 0; $i -lt $byNameOrID.Count; $i++) {
+        # Loop through both Id and Name hash tables to generate byName and byID tests
+        $ByNameOrID = @($byName, $byId)
+        $ByNameOrID | ForEach-Object {
+            # Scope $ByType loop variable
+            $ByType = $_
             # Loop through generated associaion objects from Get-JCAssocitaions
             $ValidAssociationItems | ForEach-Object {
-                # $sourceParams = @{
-                #         'SourceType'  = $_.Source.TypeName.TypeNameSingular;
-                #         'SourceId'    = $_.Source.($_.Source.ById);
-                #         'SourceName'  = $_.Source.($_.Source.ByName);
-                #         'Source'      = $_.Source;
-                #         'TargetType'  = $_.Target.TypeName.TypeNameSingular;
-                #         'TargetId'    = $_.Target.($_.Target.ById);
-                #         'TargetName'  = $_.Target.($_.Target.ByName);
-                #         'Target'      = $_.Target;
-                #         'ValidRecord' = $true;
-                #     }
                 # Either assign source and target vars by Name or Id
-                if ($byNameOrID[$i].ByType -eq "Name"){
+                if ($ByType.ByType -eq "Name"){
                     $SourceByType = $_.SourceName
                     $TargetByType = $_.TargetName
                 }
-                if ($byNameOrID[$i].ByType -eq "Id"){
+                if ($ByType.ByType -eq "Id"){
                     $SourceByType = $_.SourceId
                     $TargetByType = $_.TargetId
                 }
                 $JCAssociationTestCases += @{
-                    testDescription = 'Get Origional Associations By ' + ($byNameOrID[$i].ByType)
-                    testType = "remove"
+                    TestDescription = 'Get/ Remove Origional Associations By ' + ($ByType.ByType )
+                    TestType = "remove"
                     TestParam = $_
                     Commands = [ordered]@{
-                        '0'    = "Get-JCAssociation -Type:('$($_.SourceType)') -$($byNameOrID[$i].SourceTarget):('$($SourceByType)') -Direct";
+                        '0'    = "Get-JCAssociation -Type:('$($_.SourceType)') -$($ByType.SourceTarget):('$($SourceByType)') -Direct";
                     }
                 }
                 $JCAssociationTestCases += @{
-                    testDescription = 'Add Associations By ' + ($byNameOrID[$i].ByType)
-                    testType        = "Add"
+                    TestDescription = 'Add Associations By ' + ($ByType.ByType)
+                    TestType        = "add"
                     TestParam       = $_
                     Commands        = [ordered]@{
-                        '0' = "Add-JCAssociation -Type:('$($_.SourceType)') -$($byNameOrID[$i].SourceTarget):('$($SourceByType)') -Force -TargetType:('$($_.TargetType)') -$($byNameOrID[$i].DestTarget):('$($TargetByType)')";
+                        '0' = "Add-JCAssociation -Type:('$($_.SourceType)') -$($ByType.SourceTarget):('$($SourceByType)') -Force -TargetType:('$($_.TargetType)') -$($ByType.DestTarget):('$($TargetByType)')";
                     }
                 }
                 $JCAssociationTestCases += @{
-                    testDescription = 'Get Associations By ' + ($byNameOrID[$i].ByType)
-                    testType        = "Get"
+                    TestDescription = 'Get Associations By ' + ($ByType.ByType)
+                    TestType        = "get"
                     TestParam       = $_
                     Commands        = [ordered]@{
-                        '0' = "Get-JCAssociation -Type:('$($_.SourceType)') -$($byNameOrID[$i].SourceTarget):('$($SourceByType)') -TargetType:('$($_.TargetType)')";
-                        '1' = "Get-JCAssociation -Type:('$($_.SourceType)') -$($byNameOrID[$i].SourceTarget):('$($SourceByType)') -Raw -TargetType:('$($_.TargetType)')";
-                        '2' = "Get-JCAssociation -Type:('$($_.SourceType)') -$($byNameOrID[$i].SourceTarget):('$($SourceByType)') -Direct -TargetType:('$($_.TargetType)')";
-                        '3' = "Get-JCAssociation -Type:('$($_.SourceType)') -$($byNameOrID[$i].SourceTarget):('$($SourceByType)') -IncludeInfo -TargetType:('$($_.TargetType)')";
-                        '4' = "Get-JCAssociation -Type:('$($_.SourceType)') -$($byNameOrID[$i].SourceTarget):('$($SourceByType)') -IncludeNames -TargetType:('$($_.TargetType)')";
-                        '5' = "Get-JCAssociation -Type:('$($_.SourceType)') -$($byNameOrID[$i].SourceTarget):('$($SourceByType)') -IncludeVisualPath -TargetType:('$($_.TargetType)')";
+                        '0' = "Get-JCAssociation -Type:('$($_.SourceType)') -$($ByType.SourceTarget):('$($SourceByType)') -TargetType:('$($_.TargetType)')";
+                        '1' = "Get-JCAssociation -Type:('$($_.SourceType)') -$($ByType.SourceTarget):('$($SourceByType)') -Raw -TargetType:('$($_.TargetType)')";
+                        '2' = "Get-JCAssociation -Type:('$($_.SourceType)') -$($ByType.SourceTarget):('$($SourceByType)') -Direct -TargetType:('$($_.TargetType)')";
+                        '3' = "Get-JCAssociation -Type:('$($_.SourceType)') -$($ByType.SourceTarget):('$($SourceByType)') -IncludeInfo -TargetType:('$($_.TargetType)')";
+                        '4' = "Get-JCAssociation -Type:('$($_.SourceType)') -$($ByType.SourceTarget):('$($SourceByType)') -IncludeNames -TargetType:('$($_.TargetType)')";
+                        '5' = "Get-JCAssociation -Type:('$($_.SourceType)') -$($ByType.SourceTarget):('$($SourceByType)') -IncludeVisualPath -TargetType:('$($_.TargetType)')";
                     }
                 }
                 $JCAssociationTestCases += @{
-                    testDescription = 'Remove Associations By ' + ($byNameOrID[$i].ByType)
-                    testType = "Remove"
+                    TestDescription = 'Remove Associations By ' + ($ByType.ByType)
+                    TestType = "remove"
                     TestParam       = $_
                     Commands        = [ordered]@{
-                        '0' = "Remove-JCAssociation -Type:('$($_.SourceType)') -$($byNameOrID[$i].SourceTarget):('$($SourceByType)') -Force -TargetType:('$($_.TargetType)') -$($byNameOrID[$i].DestTarget):('$($TargetByType)')";
+                        '0' = "Remove-JCAssociation -Type:('$($_.SourceType)') -$($ByType.SourceTarget):('$($SourceByType)') -Force -TargetType:('$($_.TargetType)') -$($ByType.DestTarget):('$($TargetByType)')";
                     }
                 }
             }
@@ -146,16 +137,16 @@ Describe -Tag:('JCAssociation') "Association Tests" {
     }
 
     Context ('ID and Name Case Tests of Application Tests'){
-        It '<testDescription>' -TestCases:(Get-JCAssociationTestCases) {
-            Write-Host("#### Test Name: " + $testDescription + " ####")
+        It '<TestDescription>' -TestCases:(Get-JCAssociationTestCases) {
+            Write-Host("#### Test Name: " + $TestDescription + " ####")
             foreach ($value in $Commands.values) {
                 Write-Host("Command: " + $value)
                 $Associations_Test = Invoke-Expression -Command:($value)
-                if ($testType -eq "remove"){
+                if ($TestType -eq "remove"){
                     Write-Host("ORIGIONAL COMMAND: " + $value)
                     if ($Associations_Test){
                         $Associations_Test | Remove-JCAssociation -Force
-                        $testType | Should -Be ($Associations_Test.Action | Select-Object -Unique)
+                        $TestType | Should -Be ($Associations_Test.Action | Select-Object -Unique)
                     }
                     else {
                         Write-Host("No Association Found")
@@ -179,7 +170,7 @@ Describe -Tag:('JCAssociation') "Association Tests" {
                         $TestParam.SourceType | Should -Not -Be $TargetType
                         $TestParam.SourceId | Should -Not -BeIn $Associations_Test.TargetId
                         $TestParam.SourceType | Should -Not -BeIn $Associations_Test.TargetType
-                        $testType | Should -Be ($Associations_Test.Action | Select-Object -Unique)
+                        $TestType | Should -Be ($Associations_Test.Action | Select-Object -Unique)
                     }
                 }
             }
