@@ -95,10 +95,10 @@ Describe -Tag:('JCAssociation') "Association Tests" {
                 }
                 $JCAssociationTestCases += @{
                     TestDescription = 'Get/ Remove Origional Associations By ' + ($ByType.ByType )
-                    TestType = "remove"
-                    TestParam = $_
-                    Commands = [ordered]@{
-                        '0'    = "Get-JCAssociation -Type:('$($_.SourceType)') -$($ByType.SourceTarget):('$($SourceByType)') -Direct";
+                    TestType        = "remove"
+                    TestParam       = $_
+                    Commands        = [ordered]@{
+                        '0' = "Get-JCAssociation -Type:('$($_.SourceType)') -$($ByType.SourceTarget):('$($SourceByType)') -Direct";
                     }
                 }
                 $JCAssociationTestCases += @{
@@ -124,7 +124,7 @@ Describe -Tag:('JCAssociation') "Association Tests" {
                 }
                 $JCAssociationTestCases += @{
                     TestDescription = 'Remove Associations By ' + ($ByType.ByType)
-                    TestType = "remove"
+                    TestType        = "remove"
                     TestParam       = $_
                     Commands        = [ordered]@{
                         '0' = "Remove-JCAssociation -Type:('$($_.SourceType)') -$($ByType.SourceTarget):('$($SourceByType)') -Force -TargetType:('$($_.TargetType)') -$($ByType.DestTarget):('$($TargetByType)')";
@@ -137,15 +137,15 @@ Describe -Tag:('JCAssociation') "Association Tests" {
 
     Context ('ID and Name Case Tests of Application Tests'){
         It '<TestDescription>' -TestCases:(Get-JCAssociationTestCases) {
-            # Write-Host("#### Test Name: " + $TestDescription + " ####")
+            Write-Host("#### Test Name: " + $TestDescription + " ####")
             foreach ($value in $Commands.values) {
-                # Write-Host("Command: " + $value)
+                Write-Host("Command: " + $value)
                 $Associations_Test = Invoke-Expression -Command:($value)
                 if ($TestType -eq "remove"){
                     # Write-Host("Origional command: " + $value)
                     if ($Associations_Test){
                         $Associations_Test | Remove-JCAssociation -Force
-                        # Write-Host("Test action verb " + $Associations_Test.Action)
+                        Write-Host("Test action verb " + $TestType + " should be : " + $Associations_Test.Action)
                         $TestType | Should -Be ($Associations_Test.Action | Select-Object -Unique)
                     }
                     else {
