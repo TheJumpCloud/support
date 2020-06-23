@@ -117,7 +117,7 @@ Describe -Tag:('JCAssociation') "Association Tests" {
                 }
                 $JCAssociationTestCases += @{
                     testDescription = 'Get Associations By ' + ($byNameOrID[$i].ByType)
-                    testType        = "Add"
+                    testType        = "Get"
                     TestParam       = $sourceParams
                     Commands        = [ordered]@{
                         '0' = "Get-JCAssociation -Type:('$($_.SourceType)') -$($byNameOrID[$i].SourceTarget):('$($SourceByType)') -TargetType:('$($_.TargetType)')";
@@ -157,7 +157,7 @@ Describe -Tag:('JCAssociation') "Association Tests" {
                     # ($Associations_Test | Measure-Object).Count | Should -Not -BeGreaterThan 0
                     Write-Host("This should be null:" + $Associations_Test)
                 }
-                if ($testType -eq "Add"){
+                if ($testType -eq "Add" -or $testType -eq "Get"){
                     Write-Host("Test Object" + $Associations_Test)
                     $Associations_Test | Should -Not -BeNullOrEmpty
                     ($Associations_Test | Measure-Object).Count | Should -BeGreaterThan 0
