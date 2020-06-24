@@ -4,9 +4,7 @@ Release Date: June 23, 2020
 
 #### RELEASE NOTES
 
-```
 Use Get-JCSystemInsight to query additional System Insights tables.
-```
 
 #### FEATURES
 
@@ -14,7 +12,8 @@ Query new SystemInsights tables: alf_exceptions, alf_explicit_auths, appcompat_s
 
 #### IMPROVEMENTS
 
-Allow for $PolicyID and $Name to take multiple strings
+Allow for Get-JCPolicy parameters $PolicyID and $Name to take multiple strings
+
 Clean up of tls settings
 
 #### BUG FIXES
