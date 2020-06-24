@@ -72,8 +72,6 @@ $PesterParamsHash_Common = @{
     ApiKey                          = $JumpCloudApiKey
     ApiKeyMsp                       = $JumpCloudApiKeyMsp
     PesterResultsFileXml            = "$($PSScriptRoot)/JumpCloud-$($OS)-TestResults.xml"
-    UserLastName                    = 'Test'
-    Groups                          = @('One', 'Two', 'Three', 'Four', 'Five', 'Six')
     # CSV Files
     Import_JCUsersFromCSV_1_1_Tests = "$PSScriptRoot/Csv_Files/import/ImportExample_Pester_Tests_1.1.0.csv" # This CSV file is specific to pester environment (SystemID's and Group Names)
     JCDeployment_2_CSV              = "$PSScriptRoot/Csv_Files/commandDeployment/JCDeployment_2.csv"
