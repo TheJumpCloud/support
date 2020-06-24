@@ -1,5 +1,5 @@
 Describe -Tag:('JCGroup') 'Get-JCGroup 1.0' {
-    Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
+    BeforeAll { Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null }
     It 'Gets all groups: System and User' {
 
         $Groups = Get-JCGroup
@@ -29,7 +29,7 @@ Describe -Tag:('JCGroup') 'Get-JCGroup 1.1.0' {
 
     It "Gets a JumpCloud UserGroup by Name and Displays Attributes" {
 
-        $Posix = Get-JCGroup -Type User -Name $PesterParams.UserGroupName
+        $Posix = Get-JCGroup -Type User -Name $PesterParams_UserGroup.Name
 
         $Posix.Attributes | Should -Not -BeNullOrEmpty
     }

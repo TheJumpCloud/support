@@ -149,11 +149,3 @@ Function New-RandomStringLower ()
     }
     end { Return $Random.ToLower() }
 }
-Function Connect-JCOnlineTest ()
-{
-    Connect-JCOnline -JumpCloudAPIKey $TestOrgAPIKey -force
-}
-Function Connect-JCOnlineMultiTenant ($JumpCloudOrgID)
-{
-    Connect-JCOnline -JumpCloudAPIKey $MultiTenantAPIKey -force -JumpCloudOrgID $JumpCloudOrgID
-}

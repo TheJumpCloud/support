@@ -1,5 +1,5 @@
 Describe -Tag:('JCRadiusReplyAttribute') "Remove-JCRadiusReplyAttributes 1.9.0" {
-    Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
+    BeforeAll { Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null }
     It "Removes a single custom radius attribute from a group" {
 
         $NewGroup = New-JCUserGroup -GroupName $(New-RandomStringLower)
@@ -77,7 +77,7 @@ Describe -Tag:('JCRadiusReplyAttribute') "Remove-JCRadiusReplyAttributes 1.9.0" 
 
         $GetAttributes = Get-JCRadiusReplyAttribute -GroupName $NewGroup.name
 
-        $GetAttributes | Should -be $null
+        $GetAttributes | Should -Be $null
 
         Remove-JCUserGroup -GroupName $NewGroup.Name -force
 
