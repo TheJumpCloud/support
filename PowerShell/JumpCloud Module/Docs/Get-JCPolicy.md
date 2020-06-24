@@ -19,12 +19,12 @@ Get-JCPolicy [<CommonParameters>]
 
 ### ByID
 ```
-Get-JCPolicy [-PolicyID] <String> [-ByID] [<CommonParameters>]
+Get-JCPolicy [-PolicyID] <String[]> [-ByID] [<CommonParameters>]
 ```
 
 ### Name
 ```
-Get-JCPolicy [-Name <String>] [<CommonParameters>]
+Get-JCPolicy [-Name <String[]>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -75,7 +75,7 @@ Accept wildcard characters: False
 The Name of the JumpCloud policy you wish to query.
 
 ```yaml
-Type: System.String
+Type: System.String[]
 Parameter Sets: Name
 Aliases:
 
@@ -90,7 +90,7 @@ Accept wildcard characters: False
 The PolicyID of the JumpCloud policy you wish to query.
 
 ```yaml
-Type: System.String
+Type: System.String[]
 Parameter Sets: ByID
 Aliases: _id, id
 
