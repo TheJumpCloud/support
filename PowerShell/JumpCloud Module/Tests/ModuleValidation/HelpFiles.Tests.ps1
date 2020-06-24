@@ -19,7 +19,10 @@ Describe -Tag:('ModuleValidation') 'Help File Tests' {
     }
     Context ('Validating help file fields have been populated') {
         It ('The file "<Path>" needs to be populated on line number "<LineNumber>" where "<Line>" exists.') -TestCases:(Get-HelpFilesTestCases) {
-            $Path | Should -Not -FileContentMatch ($Regex_FillInThePester)
+            If ($Path)
+            {
+                $Path | Should -Not -FileContentMatch ($Regex_FillInThePester)
+            }
         }
     }
 }
