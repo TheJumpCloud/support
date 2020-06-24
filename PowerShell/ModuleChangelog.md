@@ -4,9 +4,7 @@ Release Date: June 23, 2020
 
 #### RELEASE NOTES
 
-```
 Use Get-JCSystemInsight to query additional System Insights tables.
-```
 
 #### FEATURES
 
