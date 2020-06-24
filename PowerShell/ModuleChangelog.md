@@ -1,24 +1,43 @@
 ## 1.17.3
 
-Release Date: June 04, 2020
+Release Date: June 23, 2020
 
 #### RELEASE NOTES
 
 ```
-{{Fill in the Release Notes}}
+Use Get-JCSystemInsight to query additional System Insights tables.
 ```
 
-#### FEATURES:
+#### FEATURES
 
-{{Fill in the Features}}
+Query new SystemInsights tables: alf_exceptions, alf_explicit_auths, appcompat_shims, authorized_keys, connectivity, dns_resolvers, wifi_networks, wifi_status, and windows_security_products
 
-#### IMPROVEMENTS:
+#### IMPROVEMENTS
 
-{{Fill in the Improvements}}
+Allow for $PolicyID and $Name to take multiple strings
+Clean up of tls settings
 
-#### BUG FIXES:
+#### BUG FIXES
 
-{{Fill in the Bug Fixes}}
+Add retry values to resolving 500 errors
+
+## 1.17.2
+
+Release Date: May 18, 2020
+
+#### RELEASE NOTES
+
+```
+Bug fix PowerShell 5.1 users launching Connect-JCOnline
+```
+
+#### FEATURES
+
+#### IMPROVEMENTS
+
+#### BUG FIXES
+
+String Concatenation syntax fix for Update-JCModule
 
 ## 1.17.1
 
