@@ -1,5 +1,5 @@
 Describe -Tag:('JCUserGroupLDAP') 'Set-JCUserGroupLDAP' {
-    Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
+    BeforeAll { Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null }
     It "Enables LDAP for a JumpCloud User Group using GroupName" {
 
         $NewUserGroup = New-JCUserGroup -GroupName $(New-RandomString 8) | Select-Object -ExpandProperty Name
@@ -8,7 +8,7 @@ Describe -Tag:('JCUserGroupLDAP') 'Set-JCUserGroupLDAP' {
 
         $EnableLDAP = Set-JCUserGroupLDAP -GroupName $NewUserGroup -LDAPEnabled $true
 
-        $EnableLDAP.LDAPEnabled | Should be $true
+        $EnableLDAP.LDAPEnabled | Should -Be $true
 
         $UserGroupRemove = Remove-JCUserGroup -GroupName $NewUserGroup -force
 
@@ -22,7 +22,7 @@ Describe -Tag:('JCUserGroupLDAP') 'Set-JCUserGroupLDAP' {
 
         $DisableLDAP = Set-JCUserGroupLDAP -GroupName $NewUserGroup -LDAPEnabled $false
 
-        $DisableLDAP.LDAPEnabled | Should be $false
+        $DisableLDAP.LDAPEnabled | Should -Be $false
 
         $UserGroupRemove = Remove-JCUserGroup -GroupName $NewUserGroup -force
 
@@ -34,7 +34,7 @@ Describe -Tag:('JCUserGroupLDAP') 'Set-JCUserGroupLDAP' {
 
         $EnableLDAP = Set-JCUserGroupLDAP -GroupID $UserGroup.id -LDAPEnabled $true
 
-        $EnableLDAP.LDAPEnabled | Should be $true
+        $EnableLDAP.LDAPEnabled | Should -Be $true
 
         $UserGroupRemove = Remove-JCUserGroup -GroupName $UserGroup.name -force
 
@@ -48,7 +48,7 @@ Describe -Tag:('JCUserGroupLDAP') 'Set-JCUserGroupLDAP' {
 
         $DisableLDAP = Set-JCUserGroupLDAP -GroupID $UserGroup.id -LDAPEnabled $false
 
-        $DisableLDAP.LDAPEnabled | Should be $false
+        $DisableLDAP.LDAPEnabled | Should -Be $false
 
         $UserGroupRemove = Remove-JCUserGroup -GroupName $UserGroup.name -force
 

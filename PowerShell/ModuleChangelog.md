@@ -1,3 +1,25 @@
+## 1.17.3
+
+Release Date: June 25, 2020
+
+#### RELEASE NOTES
+
+Use Get-JCSystemInsight to query additional System Insights tables.
+
+#### FEATURES
+
+Query new SystemInsights tables: alf_exceptions, alf_explicit_auths, appcompat_shims, authorized_keys, connectivity, dns_resolvers, wifi_networks, wifi_status, and windows_security_products
+
+#### IMPROVEMENTS
+
+Allow for Get-JCPolicy parameters $PolicyID and $Name to take multiple strings
+
+Clean up of tls settings
+
+#### BUG FIXES
+
+Add retry values to resolving 500 errors
+
 ## 1.17.2
 
 Release Date: May 18, 2020

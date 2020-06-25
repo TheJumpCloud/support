@@ -10,12 +10,12 @@ Function Get-JCPolicy ()
             Position = 0,
             HelpMessage = 'The PolicyID of the JumpCloud policy you wish to query.')]
         [Alias('_id', 'id')]
-        [String]$PolicyID,
+        [String[]]$PolicyID,
 
         [Parameter(
             ParameterSetName = 'Name',
             HelpMessage = 'The Name of the JumpCloud policy you wish to query.')]
-        [String]$Name,
+        [String[]]$Name,
 
         [Parameter(
             ParameterSetName = 'ByID',
@@ -44,22 +44,42 @@ Function Get-JCPolicy ()
         {
             $hdrs.Add('x-org-id', "$($JCOrgID)")
         }
+        $Results = @()
     }
 
     process
 
     {
-
-        switch ($PSCmdlet.ParameterSetName)
+        $URLs = switch ($PSCmdlet.ParameterSetName)
         {
-            "ReturnAll" { $URL = "$JCUrlBasePath/api/v2/policies" }
-            "ByID" { $URL = "$JCUrlBasePath/api/v2/policies/$PolicyID" }
-            "Name" { $URL = "$JCUrlBasePath/api/v2/policies?sort=name&filter=name%3Aeq%3A$Name" }
+            "ReturnAll" { "$JCUrlBasePath/api/v2/policies" }
+            "ByID"
+            {
+                ForEach ($Item In $PolicyID)
+                {
+                    "$JCUrlBasePath/api/v2/policies/$Item"
+                }
+            }
+            "Name"
+            {
+                ForEach ($Item In $Name)
+                {
+                    "$JCUrlBasePath/api/v2/policies?sort=name&filter=name%3Aeq%3A$Item"
+                }
+            }
         }
-        $Result = Invoke-JCApi -Method:('GET') -Paginate:($true) -Url:($URL)
-        If ($Result)
+        ForEach ($URL In $URLs)
         {
-            Return $Result
+
+            $Result = Invoke-JCApi -Method:('GET') -Paginate:($true) -Url:($URL)
+            $Results += $Result
+        }
+    }
+    End
+    {
+        If ($Results)
+        {
+            Return $Results
         }
     }
 }
