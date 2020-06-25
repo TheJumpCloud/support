@@ -1,24 +1,30 @@
 Describe -Tag:('JCCommandResult') 'Get-JCCommandResults 1.0' {
-    Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
-    $CommandResultCount = 10
-    $CommandResultsExist = Get-JCCommandResult
-    # If no command results currently exist
-    If ([System.String]::IsNullOrEmpty($CommandResultsExist) -or $CommandResultsExist.Count -lt $CommandResultCount)
-    {
-        $testCmd = Get-JCCommand | Select-Object -First 1
-        $TriggeredCommand = For ($i = 1; $i -le $CommandResultCount; $i++)
+    BeforeAll {
+        Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
+        $PesterParams_Command1 = Get-JCCommand -CommandID:($PesterParams_Command1.Id)
+        If (-not $PesterParams_Command1)
         {
-            Invoke-JCCommand -trigger:($testCmd.name)
+            $PesterParams_Command1 = New-JCCommand @PesterParams_NewCommand1
         }
-        While ([System.String]::IsNullOrEmpty((Get-JCCommandResult | Where-Object { $_.Name -eq $testCmd.name })) -and (Get-JCCommandResult | Where-Object { $_.Name -eq $testCmd.name }).Count -lt $CommandResultCount)
+        # Generate command results of they dont exist
+        $CommandResults = Get-JCCommandResult
+        If ([System.String]::IsNullOrEmpty($CommandResults) -or $CommandResults.Count -lt $PesterParams_CommandResultCount)
         {
-            Start-Sleep -Seconds:(1)
+            Add-JCCommandTarget -CommandID $PesterParams_Command1.id -SystemID $PesterParams_SystemLinux._id
+            For ($i = 1; $i -le $PesterParams_CommandResultCount; $i++)
+            {
+                Invoke-JCCommand -trigger:($PesterParams_Command1.trigger)
+            }
+            While ((Get-JCCommandResult | Where-Object { $_.Name -eq $PesterParams_Command1.name }).Count -ge $PesterParams_CommandResultCount)
+            {
+                Start-Sleep -Seconds:(1)
+            }
+            Remove-JCCommandTarget -CommandID $PesterParams_Command1.id -SystemID $PesterParams_SystemLinux._id
         }
     }
     It "Gets all JumpCloud command results" {
         $CommandResults = Get-JCCommandResult
         $CommandResults.count | Should -BeGreaterThan 1
-        return $CommandResults.count
     }
     It "Gets a single JumpCloud command result using -ByID" {
         $SingleCommand = Get-JCCommandResult | Select-Object -Last 1
@@ -60,7 +66,7 @@ Describe -Tag:('JCCommandResult') "Get-JCCommandResult 1.4.1" {
         $TotalCount = Get-JCCommandResult -TotalCount
         $Limit = '4'
         $LimitTotal = Get-JCCommandResult -limit $Limit
-        $LimitTotal.count | Should -be $TotalCount
+        $LimitTotal.count | Should -Be $TotalCount
 
     }
 }

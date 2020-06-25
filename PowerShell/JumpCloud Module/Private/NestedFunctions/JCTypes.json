@@ -1216,6 +1216,186 @@
         "FilterOperators": [
           "eq"
         ]
+      },
+      {
+        "Table": "authorized_keys",
+        "Url": {
+          "List": "/api/v2/systeminsights/authorized_keys",
+          "Item": "/api/v2/systeminsights/authorized_keys?filter=system_id:eq:{system_id}",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "system_id",
+        "ByName": "uid",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
+        "Table": "appcompat_shims",
+        "Url": {
+          "List": "/api/v2/systeminsights/appcompat_shims",
+          "Item": "/api/v2/systeminsights/appcompat_shims?filter=system_id:eq:{system_id}",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "system_id",
+        "ByName": "path",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
+        "Table": "dns_resolvers",
+        "Url": {
+          "List": "/api/v2/systeminsights/dns_resolvers",
+          "Item": "/api/v2/systeminsights/dns_resolvers?filter=system_id:eq:{system_id}",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "system_id",
+        "ByName": "type",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
+        "Table": "wifi_networks",
+        "Url": {
+          "List": "/api/v2/systeminsights/wifi_networks",
+          "Item": "/api/v2/systeminsights/wifi_networks?filter=system_id:eq:{system_id}",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "system_id",
+        "ByName": "security_type",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
+        "Table": "wifi_status",
+        "Url": {
+          "List": "/api/v2/systeminsights/wifi_status",
+          "Item": "/api/v2/systeminsights/wifi_status?filter=system_id:eq:{system_id}",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "system_id",
+        "ByName": "security_type",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
+        "Table": "connectivity",
+        "Url": {
+          "List": "/api/v2/systeminsights/connectivity",
+          "Item": "/api/v2/systeminsights/connectivity?filter=system_id:eq:{system_id}",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "system_id",
+        "ByName": "",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
+        "Table": "windows_security_products",
+        "Url": {
+          "List": "/api/v2/systeminsights/windows_security_products",
+          "Item": "/api/v2/systeminsights/windows_security_products?filter=system_id:eq:{system_id}",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "system_id",
+        "ByName": "state",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
+        "Table": "alf_exceptions",
+        "Url": {
+          "List": "/api/v2/systeminsights/alf_exceptions",
+          "Item": "/api/v2/systeminsights/alf_exceptions?filter=system_id:eq:{system_id}",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "system_id",
+        "ByName": "state",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
+      },
+      {
+        "Table": "alf_explicit_auths",
+        "Url": {
+          "List": "/api/v2/systeminsights/alf_explicit_auths",
+          "Item": "/api/v2/systeminsights/alf_explicit_auths?filter=system_id:eq:{system_id}",
+          "Variables": [
+            "{system_id}"
+          ]
+        },
+        "Method": "GET",
+        "ById": "system_id",
+        "ByName": "process",
+        "Paginate": true,
+        "SupportRegexFilter": false,
+        "Limit": 100,
+        "Skip": 0,
+        "FilterOperators": [
+          "eq"
+        ]
       }
     ]
   },

@@ -119,7 +119,6 @@ Function Invoke-JCApi
                 }
                 # Run request
                 $UserAgent = Get-JCUserAgent
-                [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
                 Write-Verbose ('Connecting to: ' + $Uri)
                 # PowerShell 5 won't let you send a GET with a body.
                 If ($Method -eq 'GET')
@@ -211,13 +210,13 @@ Function Invoke-JCApi
         {
             # Append meta info to each result record
             Get-Variable -Name:($HiddenProperties) |
+            ForEach-Object {
+                $Variable = $_
+                $Results |
                 ForEach-Object {
-                    $Variable = $_
-                    $Results |
-                        ForEach-Object {
-                            Add-Member -InputObject:($_) -MemberType:('NoteProperty') -Name:($Variable.Name) -Value:($Variable.Value)
-                        }
+                    Add-Member -InputObject:($_) -MemberType:('NoteProperty') -Name:($Variable.Name) -Value:($Variable.Value)
                 }
+            }
             # Validate results properties returned
             $Fields | ForEach-Object {
                 If ($_ -notin ($Results | ForEach-Object { $_.PSObject.Properties.Name } | Select-Object -Unique))

@@ -1,10 +1,10 @@
 Describe -Tag:('JCUser') "Remove-JCUser 1.10" {
-    Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
+    BeforeAll { Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null }
 
     It "Remove-JCUser 1.0" {
         $NewUser = New-RandomUser "PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser
         $DeleteUser = Remove-JCUser -UserID $NewUser._id -ByID -Force
-        $DeleteUser.results | Should -be 'Deleted'
+        $DeleteUser.results | Should -Be 'Deleted'
     }
 
     It "Removes JumpCloud User by Username and -force" {
@@ -13,7 +13,7 @@ Describe -Tag:('JCUser') "Remove-JCUser 1.10" {
 
         $RemoveUser = Remove-JCUser  -Username $NewUser.username -force
 
-        $RemoveUser.Results | Should -be 'Deleted'
+        $RemoveUser.Results | Should -Be 'Deleted'
 
     }
 
@@ -23,7 +23,7 @@ Describe -Tag:('JCUser') "Remove-JCUser 1.10" {
 
         $RemoveUser = Remove-JCUser  -UserID $NewUser._id -force
 
-        $RemoveUser.Results | Should -be 'Deleted'
+        $RemoveUser.Results | Should -Be 'Deleted'
 
     }
 

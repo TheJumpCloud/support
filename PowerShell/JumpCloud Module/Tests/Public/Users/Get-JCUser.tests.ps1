@@ -1,20 +1,22 @@
 Describe -Tag:('JCUser') 'Get-JCUser 1.0' {
-    Connect-JCOnline -JumpCloudApiKey:($TestOrgAPIKey) -force | Out-Null
-    It "Gets all JumpCloud users using Get-JCuser" { $Users = Get-JCUser
-        $Users._id.count | Should -BeGreaterThan 1 }
+    BeforeAll { Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null }
+    It "Gets all JumpCloud users using Get-JCuser" {
+        $Users = Get-JCUser
+        $Users._id.count | Should -BeGreaterThan 1
+    }
 
     It 'Get a single JumpCloud user by Username' {
-        $User = Get-JCUser -Username $PesterParams.Username
+        $User = Get-JCUser -Username $PesterParams_User1.Username
         $User._id.count | Should -Be 1
     }
 
     It 'Get a single JumpCloud user by UserID' {
-        $User = Get-JCUser -UserID $PesterParams.UserID
+        $User = Get-JCUser -UserID $PesterParams_User1.id
         $User._id.count | Should -Be 1
     }
 
     It 'Get multiple JumpCloud users via the pipeline using User ID' {
-        $Users = Get-JCUser | Select-Object -Last 2 | % { Get-JCUser -UserID $_._id }
+        $Users = Get-JCUser | Select-Object -Last 2 | ForEach-Object { Get-JCUser -UserID $_._id }
         $Users._id.count | Should -Be 2
     }
 }
@@ -26,7 +28,7 @@ Describe -Tag:('JCUser') 'Get-JCUser 1.1' {
         $Username = New-RandomString -NumberOfChars 8
         $NewUser = New-RandomUser -Domain DeleteMe | New-JCUser -username $Username
         $NewUser = Get-JCUser -Username $Username
-        $NewUser.username | Should -be $Username
+        $NewUser.username | Should -Be $Username
         Remove-JCUser -UserID $NewUser._id -force
     }
 
@@ -35,7 +37,7 @@ Describe -Tag:('JCUser') 'Get-JCUser 1.1' {
         $lastname = New-RandomString -NumberOfChars 8
         $NewUser = New-RandomUser -Domain DeleteMe | New-JCUser -lastname $lastname
         $NewUser = Get-JCUser -lastname $lastname
-        $NewUser.lastname | Should -be $lastname
+        $NewUser.lastname | Should -Be $lastname
         Remove-JCUser -UserID $NewUser._id -force
     }
 
@@ -44,7 +46,7 @@ Describe -Tag:('JCUser') 'Get-JCUser 1.1' {
         $firstname = New-RandomString -NumberOfChars 8
         $NewUser = New-RandomUser -Domain DeleteMe | New-JCUser -firstname $firstname
         $NewUser = Get-JCUser -firstname $firstname
-        $NewUser.firstname | Should -be $firstname
+        $NewUser.firstname | Should -Be $firstname
         Remove-JCUser -UserID $NewUser._id -force
 
     }
@@ -54,7 +56,7 @@ Describe -Tag:('JCUser') 'Get-JCUser 1.1' {
         $email = "deleteme@$(New-RandomString -NumberOfChars 8).com"
         $NewUser = New-RandomUser -Domain DeleteMe | New-JCUser -email $email
         $NewUser = Get-JCUser -email $email
-        $NewUser.email | Should -be $email
+        $NewUser.email | Should -Be $email
         Remove-JCUser -UserID $NewUser._id -force
 
     }
@@ -64,8 +66,8 @@ Describe -Tag:('JCUser') 'Get-JCUser 1.1' {
 Describe -Tag:('JCUser') "Get-JCUser 1.4" {
 
     It "Returns a JumpCloud user by UserID" {
-        $PesterUser = Get-JCUser -userid $PesterParams.UserID
-        $PesterUser._id | Should -be $PesterParams.UserID
+        $PesterUser = Get-JCUser -userid $PesterParams_User1.id
+        $PesterUser._id | Should -Be $PesterParams_User1.id
     }
 
     It "Returns all JumpCloud users" {
@@ -75,144 +77,145 @@ Describe -Tag:('JCUser') "Get-JCUser 1.4" {
 
     It "Searches for a JumpCloud user by username and wildcard end" {
 
-        $PesterUser = Get-JCUser -username "pester.*"
+        $PesterUser = Get-JCUser -username "$($PesterParams_User1.Username.Substring(0, $PesterParams_User1.Username.Length - ($PesterParams_User1.Username.Length/2)))*"
         $PesterUser.username | Should -BeGreaterThan 0
 
     }
 
     It "Searches for a JumpCloud user by username and wildcard beginning" {
-        $PesterUser = Get-JCUser -username "*ester.tester"
+        $PesterUser = Get-JCUser -username "*$($PesterParams_User1.Username.Substring(1))"
         $PesterUser.username | Should -BeGreaterThan 0
+
 
     }
 
     It "Searches for a JumpCloud user by username and wildcard beginning and wildcard end" {
-        $PesterUser = Get-JCUser -username "*ester.teste*"
+        $PesterUser = Get-JCUser -username "*$($PesterParams_User1.Username.Substring(1, $PesterParams_User1.Username.Length - ($PesterParams_User1.Username.Length/2)))*"
         $PesterUser.username | Should -BeGreaterThan 0
     }
 
     It "Searches for a JumpCloud user by firstname and wildcard end" {
-        $PesterUser = Get-JCUser -firstname "Peste*" -username $PesterParams.Username
+        $PesterUser = Get-JCUser -firstname "$($PesterParams_User1.FirstName.Substring(0, $PesterParams_User1.FirstName.Length - ($PesterParams_User1.FirstName.Length/2)))*" -username $PesterParams_User1.Username
         $PesterUser.username | Should -BeGreaterThan 0
     }
 
     It "Searches for a JumpCloud user by firstname and wildcard beginning" {
-        $PesterUser = Get-JCUser -firstname "*ester" -username $PesterParams.Username
+        $PesterUser = Get-JCUser -firstname "*$($PesterParams_User1.FirstName.Substring(1))" -username $PesterParams_User1.Username
         $PesterUser.username | Should -BeGreaterThan 0
     }
 
     It "Searches for a JumpCloud user by firstname and wildcard beginning and wildcard end" {
-        $PesterUser = Get-JCUser -firstname "*este*" -username $PesterParams.Username
+        $PesterUser = Get-JCUser -firstname "*$($PesterParams_User1.FirstName.Substring(1, $PesterParams_User1.FirstName.Length - ($PesterParams_User1.FirstName.Length/2)))*" -username $PesterParams_User1.Username
         $PesterUser.username | Should -BeGreaterThan 0
     }
 
     It "Searches for a JumpCloud user by lastname and wildcard end" {
-        $PesterUser = Get-JCUser -lastname "Test*" -username $PesterParams.Username
+        $PesterUser = Get-JCUser -lastname "$($PesterParams_User1.lastname.Substring(0, $PesterParams_User1.lastname.Length - ($PesterParams_User1.lastname.Length/2)))*" -username $PesterParams_User1.Username
         $PesterUser.username | Should -BeGreaterThan 0
     }
 
     It "Searches for a JumpCloud user by lastname and wildcard beginning" {
-        $PesterUser = Get-JCUser -lastname "*ester" -username $PesterParams.Username
+        $PesterUser = Get-JCUser -lastname "*$($PesterParams_User1.lastname.Substring(1))" -username $PesterParams_User1.Username
         $PesterUser.username | Should -BeGreaterThan 0
     }
 
     It "Searches for a JumpCloud user by lastname and wildcard beginning and wildcard end" {
-        $PesterUser = Get-JCUser -lastname "*este*" -username $PesterParams.Username
+        $PesterUser = Get-JCUser -lastname "*$($PesterParams_User1.lastname.Substring(1, $PesterParams_User1.lastname.Length - ($PesterParams_User1.lastname.Length/2)))*" -username $PesterParams_User1.Username
         $PesterUser.username | Should -BeGreaterThan 0
     }
 
     It "Searches for a JumpCloud user by email and wildcard beginning" {
-        $PesterUser = Get-JCUser -email "*.com" -username $PesterParams.Username
+        $PesterUser = Get-JCUser -email "*$($PesterParams_User1.email.Substring(1))" -username $PesterParams_User1.Username
         $PesterUser.username | Should -BeGreaterThan 0
     }
 
     It "Searches for a JumpCloud user by email and wildcard beginning and wildcard end" {
-        $PesterUser = Get-JCUser -email "*.co*" -username $PesterParams.Username
+        $PesterUser = Get-JCUser -email "*$($PesterParams_User1.email.Substring(1, $PesterParams_User1.email.Length - ($PesterParams_User1.email.Length/2)))*" -username $PesterParams_User1.Username
         $PesterUser.username | Should -BeGreaterThan 0
     }
 
     It "Searches for a JumpCloud user by username and sudo" {
-        $PesterUser = Get-JCUser -username $PesterParams.Username -sudo $false
-        $PesterUser.username | Should -be $PesterParams.Username
+        $PesterUser = Get-JCUser -username $PesterParams_User1.Username -sudo $false
+        $PesterUser.username | Should -Be $PesterParams_User1.Username
     }
 
     It "Searches for a JumpCloud user by username and enable_managed_uid" {
-        $PesterUser = Get-JCUser -username $PesterParams.Username -enable_managed_uid $false
-        $PesterUser.username | Should -be $PesterParams.Username
+        $PesterUser = Get-JCUser -username $PesterParams_User1.Username -enable_managed_uid $false
+        $PesterUser.username | Should -Be $PesterParams_User1.Username
     }
 
-    It "Searches for a JumpCloud user by username and activated" {
-        $PesterUser = Get-JCUser -username $PesterParams.Username -activated $true
-        $PesterUser.username | Should -be $PesterParams.Username
+    It "Searches for a JumpCloud user by username and activated" -Skip {
+        $PesterUser = Get-JCUser -username $PesterParams_User1.Username -activated $true
+        $PesterUser.username | Should -Be $PesterParams_User1.Username
     }
 
     It "Searches for a JumpCloud user by username and password_expired" {
-        $PesterUser = Get-JCUser -username $PesterParams.Username -password_expired $false
-        $PesterUser.username | Should -be $PesterParams.Username
+        $PesterUser = Get-JCUser -username $PesterParams_User1.Username -password_expired $false
+        $PesterUser.username | Should -Be $PesterParams_User1.Username
     }
 
     It "Searches for a JumpCloud user by username and passwordless_sudo" {
-        $PesterUser = Get-JCUser -username $PesterParams.Username -passwordless_sudo $false
-        $PesterUser.username | Should -be $PesterParams.Username
+        $PesterUser = Get-JCUser -username $PesterParams_User1.Username -passwordless_sudo $false
+        $PesterUser.username | Should -Be $PesterParams_User1.Username
     }
 
     It "Searches for a JumpCloud user by username and externally_managed" {
-        $PesterUser = Get-JCUser -username $PesterParams.Username -externally_managed $false
-        $PesterUser.username | Should -be $PesterParams.Username
+        $PesterUser = Get-JCUser -username $PesterParams_User1.Username -externally_managed $false
+        $PesterUser.username | Should -Be $PesterParams_User1.Username
     }
 
     It "Searches for a JumpCloud user by username and ldap_binding_user" {
-        $PesterUser = Get-JCUser -username $PesterParams.Username -ldap_binding_user $false
-        $PesterUser.username | Should -be $PesterParams.Username
+        $PesterUser = Get-JCUser -username $PesterParams_User1.Username -ldap_binding_user $false
+        $PesterUser.username | Should -Be $PesterParams_User1.Username
     }
 
     It "Searches for a JumpCloud user by username and enable_user_portal_multifactor" {
-        $PesterUser = Get-JCUser -username $PesterParams.Username -enable_user_portal_multifactor $false
-        $PesterUser.username | Should -be $PesterParams.Username
+        $PesterUser = Get-JCUser -username $PesterParams_User1.Username -enable_user_portal_multifactor $false
+        $PesterUser.username | Should -Be $PesterParams_User1.Username
     }
 
     It "Searches for a JumpCloud user by username and totp_enabled" {
-        $PesterUser = Get-JCUser -username $PesterParams.Username -totp_enabled $false
-        $PesterUser.username | Should -be $PesterParams.Username
+        $PesterUser = Get-JCUser -username $PesterParams_User1.Username -totp_enabled $false
+        $PesterUser.username | Should -Be $PesterParams_User1.Username
     }
 
     It "Searches for a JumpCloud user by username and allow_public_key" {
-        $PesterUser = Get-JCUser -username $PesterParams.Username -allow_public_key $false
-        $PesterUser.username | Should -be $PesterParams.Username
+        $PesterUser = Get-JCUser -username $PesterParams_User1.Username -allow_public_key $false
+        $PesterUser.username | Should -Be $PesterParams_User1.Username
     }
 
 
     It "Searches for a JumpCloud user by username and samba_service_user" {
-        $PesterUser = Get-JCUser -username $PesterParams.Username -samba_service_user $false
-        $PesterUser.username | Should -be $PesterParams.Username
+        $PesterUser = Get-JCUser -username $PesterParams_User1.Username -samba_service_user $false
+        $PesterUser.username | Should -Be $PesterParams_User1.Username
     }
 
     It "Searches for a JumpCloud user by username and password_never_expires" {
-        $PesterUser = Get-JCUser -username $PesterParams.Username -password_never_expires $true
-        $PesterUser.username | Should -be $PesterParams.Username
+        $PesterUser = Get-JCUser -username $PesterParams_User1.Username -password_never_expires $true
+        $PesterUser.username | Should -Be $PesterParams_User1.Username
     }
 
     It "Searches for a JumpCloud user using username, filterDateProperty created and before" {
 
-        $PesterUser = Get-JCUser -username $PesterParams.Username -filterDateProperty created -dateFilter before -date '1/3/2018'
-        $PesterUser.username | Should -be $PesterParams.Username
+        $PesterUser = Get-JCUser -username $PesterParams_User1.Username -filterDateProperty created -dateFilter before -date (Get-Date).AddDays(1).ToString('MM/dd/yyyy')
+        $PesterUser.username | Should -Be $PesterParams_User1.Username
 
     }
 
     It "Searches for a JumpCloud user using username, filterDateProperty created and after" {
 
-        $PesterUser = Get-JCUser -username $PesterParams.Username -filterDateProperty created -dateFilter after -date '1/1/2018'
-        $PesterUser.username | Should -be $PesterParams.Username
+        $PesterUser = Get-JCUser -username $PesterParams_User1.Username -filterDateProperty created -dateFilter after -date (Get-Date).AddDays(-30).ToString('MM/dd/yyyy')
+        $PesterUser.username | Should -Be $PesterParams_User1.Username
 
     }
 
     It "Searches for a JumpCloud user using username and returns on the username property" {
-        $PesterUser = Get-JCUser -username $PesterParams.Username -returnProperties username
-        $PesterUser.username | Should -be $PesterParams.Username
+        $PesterUser = Get-JCUser -username $PesterParams_User1.Username -returnProperties username
+        $PesterUser.username | Should -Be $PesterParams_User1.Username
     }
 
     It "Searches for a JumpCloud user using username and returns all properties " {
-        $PesterUser = Get-JCUser -username $PesterParams.Username  -returnProperties 'created', 'account_locked', 'activated', 'addresses', 'allow_public_key', 'attributes', 'email', 'enable_managed_uid', 'enable_user_portal_multifactor', 'externally_managed', 'firstname', 'lastname', 'ldap_binding_user', 'passwordless_sudo', 'password_expired', 'password_never_expires', 'phoneNumbers', 'samba_service_user', 'ssh_keys', 'sudo', 'totp_enabled', 'unix_guid', 'unix_uid', 'username'
+        $PesterUser = Get-JCUser -username $PesterParams_User1.Username  -returnProperties 'created', 'account_locked', 'activated', 'addresses', 'allow_public_key', 'attributes', 'email', 'enable_managed_uid', 'enable_user_portal_multifactor', 'externally_managed', 'firstname', 'lastname', 'ldap_binding_user', 'passwordless_sudo', 'password_expired', 'password_never_expires', 'phoneNumbers', 'samba_service_user', 'ssh_keys', 'sudo', 'totp_enabled', 'unix_guid', 'unix_uid', 'username'
         $PesterUser.created | Should -Not -Be $null
         $PesterUser.account_locked | Should -Not -Be $null
         $PesterUser.activated | Should -Not -Be $null
@@ -243,69 +246,45 @@ Describe -Tag:('JCUser') "Get-JCUser 1.4" {
 }
 
 Describe -Tag:('JCUser') "Get-JCUser with new attributes 1.8.0" {
-
-    $RandomString = (New-RandomString -NumberOfChars 8 ).ToLower()
-
-    $UserWithAttributes = @{
-        Username           = "$(New-RandomString -NumberOfChars 8)"
-        FirstName          = "Delete"
-        LastName           = "Me"
-        Email              = "$(New-RandomString -NumberOfChars 8)@pleasedelete.me"
-        MiddleName         = "middlename_$RandomString"
-        displayName        = "displayname_$RandomString"
-        jobTitle           = "jobTitle_$RandomString"
-        employeeIdentifier = "employeeIdentifier_$RandomString"
-        department         = "department_$RandomString"
-        costCenter         = "costCenter_$RandomString"
-        company            = "company_$RandomString"
-        employeeType       = "employeeType_$RandomString"
-        description        = "description_$RandomString"
-        location           = "location_$RandomString"
-    }
-
-    New-JCUser @UserWithAttributes
-
     It "Searches for a user by middlename" {
-
-        $Search = Get-JCUser -middlename "middlename_$RandomString" -returnProperties middlename
-        $Search.middlename | Should -be "middlename_$RandomString"
-
+        $Search = Get-JCUser -middlename $PesterParams_User1.middlename -returnProperties middlename
+        $Search.middlename | Should -Be $PesterParams_User1.middlename
     }
     It "Searches for a user by displayname" {
-        $Search = Get-JCUser -displayname "displayname_$RandomString" -returnProperties displayname
-        $Search.displayname | Should -be "displayname_$RandomString"
+        $Search = Get-JCUser -displayname $PesterParams_User1.displayname -returnProperties displayname
+        $Search.displayname | Should -Be $PesterParams_User1.displayname
     }
     It "Searches for a user by jobTitle" {
-        $Search = Get-JCUser -jobTitle "jobTitle_$RandomString" -returnProperties jobTitle
-        $Search.jobTitle | Should -be "jobTitle_$RandomString"
+        $Search = Get-JCUser -jobTitle $PesterParams_User1.jobTitle -returnProperties jobTitle
+        $Search.jobTitle | Should -Be $PesterParams_User1.jobTitle
     }
     It "Searches for a user by employeeIdentifier" {
-        $Search = Get-JCUser -employeeIdentifier "employeeIdentifier_$RandomString" -returnProperties employeeIdentifier
-        $Search.employeeIdentifier | Should -be "employeeIdentifier_$RandomString"
+        $Search = Get-JCUser -employeeIdentifier $PesterParams_User1.employeeIdentifier -returnProperties employeeIdentifier
+        $Search.employeeIdentifier | Should -Be $PesterParams_User1.employeeIdentifier
     }
     It "Searches for a user by department" {
-        $Search = Get-JCUser -department "department_$RandomString" -returnProperties department
-        $Search.department | Should -be "department_$RandomString"
+        $Search = Get-JCUser -department $PesterParams_User1.department -returnProperties department
+        $Search.department | Should -Be $PesterParams_User1.department
     }
     It "Searches for a user by costCenter" {
-        $Search = Get-JCUser -costCenter "costCenter_$RandomString" -returnProperties costCenter
-        $Search.costCenter | Should -be "costCenter_$RandomString"
+        $Search = Get-JCUser -costCenter $PesterParams_User1.costCenter -returnProperties costCenter
+        $Search.costCenter | Should -Be $PesterParams_User1.costCenter
     }
     It "Searches for a user by company" {
-        $Search = Get-JCUser -company "company_$RandomString" -returnProperties company
-        $Search.company | Should -be "company_$RandomString"
+        $Search = Get-JCUser -company $PesterParams_User1.company -returnProperties company
+        $Search.company | Should -Be $PesterParams_User1.company
     }
     It "Searches for a user by employeeType" {
-        $Search = Get-JCUser -employeeType "employeeType_$RandomString" -returnProperties employeeType
-        $Search.employeeType | Should -be "employeeType_$RandomString"
+        $Search = Get-JCUser -employeeType $PesterParams_User1.employeeType -returnProperties employeeType
+        $Search.employeeType | Should -Be $PesterParams_User1.employeeType
     }
     It "Searches for a user by description" {
-        $Search = Get-JCUser -description "description_$RandomString" -returnProperties description
-        $Search.description | Should -be "description_$RandomString"
+        $Search = Get-JCUser -description $PesterParams_User1.description -returnProperties description
+        $Search.description | Should -Be $PesterParams_User1.description
     }
     It "Searches for a user by location" {
-        $Search = Get-JCUser -location "location_$RandomString" -returnProperties location
-        $Search.location | Should -be "location_$RandomString"
+        $Search = Get-JCUser -location $PesterParams_User1.location -returnProperties location
+        $Search.location | Should -Be $PesterParams_User1.location
     }
 }
 
@@ -321,7 +300,7 @@ Describe -Tag:('JCUser') "Get-JCUser 1.12" {
         $SetUser = Set-JCUser -Username $Newuser.username -external_source_type "$Random1" -external_dn "$Random2"
         $SearchUser = Get-JCUser -external_source_type $Random1
         $RemoveUser = Remove-JCUser -UserID  $Newuser._id -force
-        $SearchUser._id | Should -be $Newuser._id
+        $SearchUser._id | Should -Be $Newuser._id
 
     }
 
@@ -334,7 +313,7 @@ Describe -Tag:('JCUser') "Get-JCUser 1.12" {
         $SetUser = Set-JCUser -Username $Newuser.username -external_source_type "$Random1" -external_dn "$Random2"
         $SearchUser = Get-JCUser -external_source_type $Random1
         $RemoveUser = Remove-JCUser -UserID  $Newuser._id -force
-        $SearchUser._id | Should -be $Newuser._id
+        $SearchUser._id | Should -Be $Newuser._id
 
     }
 
@@ -346,7 +325,7 @@ Describe -Tag:('JCUser') "Get-JCUser 1.12" {
         $SetUser = Set-JCUser -Username $Newuser.username -external_source_type "$Random1" -external_dn "$Random2"
         $SearchUser = Get-JCUser -external_source_type "$Random1" -external_dn "$Random2"
         $RemoveUser = Remove-JCUser -UserID  $Newuser._id -force
-        $SearchUser._id | Should -be $Newuser._id
+        $SearchUser._id | Should -Be $Newuser._id
 
     }
 
