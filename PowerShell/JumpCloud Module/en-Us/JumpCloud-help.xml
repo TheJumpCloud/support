@@ -4501,7 +4501,7 @@
     <command:inputTypes>
       <command:inputType>
         <dev:type>
-          <maml:name>System.String</maml:name>
+          <maml:name>System.String[]</maml:name>
         </dev:type>
         <maml:description>
           <maml:para></maml:para>
@@ -6555,6 +6555,15 @@
             <command:parameterValue required="false" command:variableLength="false">scheduled_tasks</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">services</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">startup_items</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">authorized_keys</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">appcompat_shims</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">dns_resolvers</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">wifi_networks</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">wifi_status</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">connectivity</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">windows_security_products</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">alf_exceptions</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">alf_explicit_auths</command:parameterValue>
           </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
           <dev:type>
@@ -6692,6 +6701,15 @@
             <command:parameterValue required="false" command:variableLength="false">scheduled_tasks</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">services</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">startup_items</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">authorized_keys</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">appcompat_shims</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">dns_resolvers</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">wifi_networks</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">wifi_status</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">connectivity</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">windows_security_products</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">alf_exceptions</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">alf_explicit_auths</command:parameterValue>
           </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
           <dev:type>
