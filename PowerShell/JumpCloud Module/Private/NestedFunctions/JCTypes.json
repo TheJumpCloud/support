@@ -1328,7 +1328,7 @@
         },
         "Method": "GET",
         "ById": "system_id",
-        "ByName": "",
+        "ByName": "Name",
         "Paginate": true,
         "SupportRegexFilter": false,
         "Limit": 100,
