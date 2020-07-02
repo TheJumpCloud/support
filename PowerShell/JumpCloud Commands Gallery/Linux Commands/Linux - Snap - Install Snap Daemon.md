@@ -14,7 +14,7 @@ apt install snapd
 
 #### Description
 
-Installs the Snap daemon required to manage applications with Snap. To learn more about Snap, visit [SnapCraft's website](https://snapcraft.io/)
+Installs the Snap daemon required to manage applications with Snap. To complete the installation, either logout and login or restart the system. To learn more about Snap, visit [SnapCraft's website](https://snapcraft.io/)
 
 #### *Import This Command*
 
