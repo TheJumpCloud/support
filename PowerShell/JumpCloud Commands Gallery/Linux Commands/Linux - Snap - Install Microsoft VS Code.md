@@ -1,6 +1,6 @@
 #### Name
 
-Linux - Install Snap Daemon | v1.0 JCCG
+Linux - Snap - Install Microsoft VS Code | v1.0 JCCG
 
 #### commandType
 

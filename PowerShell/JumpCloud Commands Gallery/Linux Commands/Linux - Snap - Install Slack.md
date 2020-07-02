@@ -1,6 +1,6 @@
 #### Name
 
-Linux - Install Snap Daemon | v1.0 JCCG
+Linux - Snap - Install Slack | v1.0 JCCG
 
 #### commandType
 
