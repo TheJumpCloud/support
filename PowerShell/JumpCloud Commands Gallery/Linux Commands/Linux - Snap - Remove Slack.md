@@ -9,7 +9,7 @@ linux
 #### Command
 
 ```
-snap remove slack --classic
+snap remove slack
 ```
 
 #### Description
