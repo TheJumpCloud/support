@@ -9,7 +9,7 @@ linux
 #### Command
 
 ```
-sudo snap install slack --classic
+snap install slack --classic
 ```
 
 #### Description
