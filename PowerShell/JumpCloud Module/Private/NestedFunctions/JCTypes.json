@@ -1138,26 +1138,6 @@
         ]
       },
       {
-        "Table": "registry",
-        "Url": {
-          "List": "/api/v2/systeminsights/registry",
-          "Item": "/api/v2/systeminsights/registry?filter=system_id:eq:{system_id}",
-          "Variables": [
-            "{system_id}"
-          ]
-        },
-        "Method": "GET",
-        "ById": "system_id",
-        "ByName": "key",
-        "Paginate": true,
-        "SupportRegexFilter": false,
-        "Limit": 100,
-        "Skip": 0,
-        "FilterOperators": [
-          "eq"
-        ]
-      },
-      {
         "Table": "scheduled_tasks",
         "Url": {
           "List": "/api/v2/systeminsights/scheduled_tasks",
