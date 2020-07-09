@@ -9,16 +9,17 @@ Describe -Tag:('JCModule') 'Test for Update-JCModule' {
         Update-JCModule -SkipUninstallOld -Force
         $InitialModule | Remove-Module
         $LocalModulePost = Get-Module -Name:('JumpCloud') -All | Where-Object { $_.Version -eq $PowerShellGalleryModule.Version }
-        If ($LocalModulePost)
-        {
+        If ($LocalModulePost) {
             Write-Host ('Local Version After: ' + $LocalModulePost.Version)
             $LocalModulePost | Remove-Module
         }
-        Else
-        {
+        Else {
             Write-Error ('Unable to find latest version of the JumpCloud PowerShell module installed on local machine.')
         }
         $LocalModulePost.Version | Should -Be $PowerShellGalleryModule.Version
         $LocalModulePost | Should -Not -BeNullOrEmpty
+    }
+    AfterAll{
+        Import-Module -Name:("$PesterParams_ModuleManifestPath/$PesterParams_ModuleManifestName") -Force
     }
 }

@@ -1,3 +1,21 @@
+## 1.17.4
+
+Release Date: July 9, 2020
+
+#### RELEASE NOTES
+
+Use Get-JCSystemInsight to query additional System Insights tables.
+
+#### FEATURES
+
+#### IMPROVEMENTS
+
+#### BUG FIXES
+
+Fix for Update-JCModule Pester tests
+
+Remove Depreciated SystemInsights Registry Table
+
 ## 1.17.3
 
 Release Date: June 25, 2020
