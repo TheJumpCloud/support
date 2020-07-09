@@ -1,6 +1,6 @@
 ## 1.17.4
 
-Release Date: July 8, 2020
+Release Date: July 9, 2020
 
 #### RELEASE NOTES
 
