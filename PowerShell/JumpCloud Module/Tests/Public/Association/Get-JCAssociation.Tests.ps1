@@ -137,9 +137,9 @@ Describe -Tag:('JCAssociation') "Association Tests" {
 
     Context ('ID and Name Case Tests of Application Tests'){
         It '<TestDescription>' -TestCases:(Get-JCAssociationTestCases) {
-            Write-Host("#### Test Name: " + $TestDescription + " ####")
+            # Write-Host("#### Test Name: " + $TestDescription + " ####")
             foreach ($value in $Commands.values) {
-                Write-Host("Command: " + $value)
+                # Write-Host("Command: " + $value)
                 $Associations_Test = Invoke-Expression -Command:($value)
                 if ($TestType -eq "origional") {
                     # Write-Host("Origional command: " + $value)
