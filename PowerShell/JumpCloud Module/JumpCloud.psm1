@@ -1,14 +1,11 @@
 # Load all functions from public and private folders
 $Public = @( Get-ChildItem -Path "$PSScriptRoot/Public/*.ps1" -Recurse )
 $Private = @( Get-ChildItem -Path "$PSScriptRoot/Private/*.ps1" -Recurse)
-Foreach ($Import in @($Public + $Private))
-{
-    Try
-    {
+Foreach ($Import in @($Public + $Private)) {
+    Try {
         . $Import.FullName
     }
-    Catch
-    {
+    Catch {
         Write-Error -Message "Failed to import function $($Import.FullName): $_"
     }
 }
@@ -34,9 +31,10 @@ If ($PSVersionTable.PSEdition -eq 'Core')
     $PSDefaultParameterValues['Invoke-WebRequest:MaximumRetryCount'] = 5
     $PSDefaultParameterValues['Invoke-WebRequest:RetryIntervalSec'] = 5
 }
-Else
-{
-    #Ignore SSL errors
+Else {
+    #Ignore SSL errors / do not add policy if it exists
+    if (-Not [System.Net.ServicePointManager]::CertificatePolicy)
+    {
     Add-Type @"
     using System.Net;
     using System.Security.Cryptography.X509Certificates;
@@ -48,7 +46,8 @@ Else
         }
     }
 "@
-    [System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertsPolicy
+        [System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertsPolicy
+    }
 }
 # Set function aliases
 Set-Alias -Name:('New-JCAssociation') -Value:('Add-JCAssociation')
