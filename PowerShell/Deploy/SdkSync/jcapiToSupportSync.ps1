@@ -1,77 +1,39 @@
-#Requires -PSEdition Core
-$GitHubRoot = 'C:/Users/epanipinto/Documents/GitHub' #ex: C:/Users/epanipinto/Documents/GitHub
-# $xapikeyPester = ''
-# $xapikeyMTP = ''
-$env:moduleRootFolder = "$GitHubRoot/support/PowerShell"
-$env:deployFolder = "$env:moduleRootFolder/Deploy"
-$env:MODULENAME = 'JumpCloud'
-$env:MODULEFOLDERNAME = 'JumpCloud Module'
-$env:RELEASETYPE = 'Minor'
-# # $env:XAPIKEY_PESTER = $xapikeyPester
-# # $env:XAPIKEY_MTP = $xapikeyMTP
-# ####################################################################################
-# ####################################################################################
-# $AutoRest_Example = "$GitHubRoot/jcapi-powershell/SDKs/PowerShell/JumpCloud.SDK.DirectoryInsights/examples/Get-JcSdkEvent.md"
-# $AutoRest_Function = "$GitHubRoot/jcapi-powershell/SDKs/PowerShell/JumpCloud.SDK.DirectoryInsights/exports/Get-JcSdkEvent.ps1"
-# $AutoRest_HelpFile = "$GitHubRoot/jcapi-powershell/SDKs/PowerShell/JumpCloud.SDK.DirectoryInsights/docs/exports/Get-JcSdkEvent.md"
-# $AutoRest_Tests = "$GitHubRoot/jcapi-powershell/SDKs/PowerShell/JumpCloud.SDK.DirectoryInsights/test/Get-JcSdkEvent.Tests.ps1"
-# $Transformed_Function = "$GitHubRoot/jcapi-powershell/JumpCloud/JumpCloudV2/Get/Get-JCEvent.ps1"
-# $JCModule_Function = "$GitHubRoot/support/PowerShell/JumpCloud Module/Public/DirectoryInsights/Get-JCEvent.ps1"
-# $JCModule_HelpFile = "$GitHubRoot/support/PowerShell/JumpCloud Module/Docs/Get-JCEvent.md"
-# $JCModule_Tests = "$GitHubRoot/support/PowerShell/JumpCloud Module/Tests/Public/DirectoryInsights/Get-JCEvent.Tests.ps1"
-# # Invoke-Item -Path:($JCModule_Function)
-# ####################################################################################
-# ####################################################################################
-# .("$GitHubRoot/jcapi-powershell/SetupDependencies.ps1")
-# .("$GitHubRoot/jcapi-powershell/BuildAutoRest.ps1")
-# ####################################################################################
-# # Restart your PowerShell session
-# ####################################################################################
-# .("$GitHubRoot/jcapi-powershell/JumpCloud/Install-Module.ps1")
-# .("$GitHubRoot/jcapi-powershell/JumpCloud/Build-Module.ps1")
-# Copy-Item -Path:($Transformed_Function) -Destination:($JCModule_Function) -Force
-# Copy-Item -Path:($AutoRest_Tests) -Destination:($JCModule_Tests) -Force
-# (Get-Content -Path:($JCModule_Tests) -Raw).Replace('JcSdk', 'JC').Replace('.ToJsonString() | ConvertFrom-Json', '').Replace("Describe 'Get-JCEvent'", "Describe 'Get-JCEvent' -Tag:('JCEvent')").Replace('$loadEnvPath = Join-Path $PSScriptRoot ''loadEnv.ps1''
-# if (-Not (Test-Path -Path $loadEnvPath))
-# {
-#     $loadEnvPath = Join-Path $PSScriptRoot ''..\loadEnv.ps1''
-# }
-# . ($loadEnvPath)
-# $TestRecordingFile = Join-Path $PSScriptRoot ''Get-JCEvent.Recording.json''
-# $currentPath = $PSScriptRoot
-# while (-not $mockingPath)
-# {
-#     $mockingPath = Get-ChildItem -Path $currentPath -Recurse -Include ''HttpPipelineMocking.ps1'' -File
-#     $currentPath = Split-Path -Path $currentPath -Parent
-# }
-# . ($mockingPath | Select-Object -First 1).FullName
-
-# ', '') | Set-Content -Path:($JCModule_Tests)
-# Remove-Item -Path:($JCModule_HelpFile)
-# ####################################################################################
-# # Restart your PowerShell session
-# ####################################################################################
-# # Pipeline Steps
-# # .("$env:deployFolder/Build-Module.ps1")
-# # .("$env:deployFolder/Build-HelpFiles.ps1")
-# # .("$env:deployFolder/Build-PesterTestFiles.ps1")
-# # .("$env:moduleRootFolder/JumpCloud Module/Tests/InvokePester.ps1") -TestOrgAPIKey:($env:XAPIKEY_PESTER) -MultiTenantAPIKey:($env:XAPIKEY_MTP) -IncludeTagList:('ModuleValidation')
-# # .("$env:moduleRootFolder/JumpCloud Module/Tests/InvokePester.ps1") -TestOrgAPIKey:($env:XAPIKEY_PESTER) -MultiTenantAPIKey:($env:XAPIKEY_MTP) -ExcludeTagList:('ModuleValidation', 'JCAssociation', 'JCUsersFromCSV') # -IncludeTagList:('')
-# ####################################################################################
-# ####################################################################################
-
-. 'C:\Users\epanipinto\Documents\GitHub\support\PowerShell\Deploy\Setup-Dependencies.ps1'
 $ApprovedFunctions = [Ordered]@{
-    'JumpCloud.SDK.DirectoryInsights' = @('Get-JcSdkEvent')
+    'JumpCloud.SDK.DirectoryInsights' = @(
+        [PSCustomObject]@{
+            Destination = '/Public/DirectoryInsights'
+            Name        = 'Get-JcSdkEvent'
+        },
+        [PSCustomObject]@{
+            Destination = '/Public/DirectoryInsights'
+            Name        = 'Get-JcSdkEventCount'
+        }
+    )
 }
-$Modules = Get-Module -Name:($Psd1.RequiredModules)
+$SdkPrefix = 'JcSdk'
+$JumpCloudModulePrefix = 'JC'
+$IndentChar = '    '
+$MSCopyrightHeader = "`n# ----------------------------------------------------------------------------------`n#`n# Copyright Microsoft Corporation`n# Licensed under the Apache License, Version 2.0 (the ""License"");`n# you may not use this file except in compliance with the License.`n# You may obtain a copy of the License at`n# http://www.apache.org/licenses/LICENSE-2.0`n# Unless required by applicable law or agreed to in writing, software`n# distributed under the License is distributed on an ""AS IS"" BASIS,`n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.`n# See the License for the specific language governing permissions and`n# limitations under the License.`n# ----------------------------------------------------------------------------------`n"
+$Divider = '|#|#|#|#|#|#|#|#|#|#|#|#|#|#|#|'
+$FunctionTemplate = "{0}`nFunction {1}`n{{`n$($IndentChar){2}`n$($IndentChar)Param(`n{3}`n$($IndentChar))`n$($IndentChar)Begin`n$($IndentChar){{`n{4}`n$($IndentChar)}}`n$($IndentChar)Process`n$($IndentChar){{`n{5}`n$($IndentChar)}}`n$($IndentChar)End`n$($IndentChar){{`n{6}`n$($IndentChar)}}`n}}"
+$ScriptAnalyzerResults = @()
+$JumpCloudModulePath = (Get-Item -Path:($PSScriptRoot)).Parent.Parent.FullName + '/JumpCloud Module'
+#####################################################################
+. ((Get-Item -Path:($PSScriptRoot)).Parent.FullName + '/Setup-Dependencies.ps1')
+#####################################################################
+$Modules = Get-Module -Name:($Psd1.RequiredModules | Where-Object { $_ -in $ApprovedFunctions.Keys })
 ForEach ($Module In $Modules)
 {
     $ModuleName = $Module.Name
-    $ModulePath = $Module.ModuleBase
-    ForEach ($FunctionName In $ApprovedFunctions.$ModuleName)
+    ForEach ($Function In $ApprovedFunctions.$ModuleName)
     {
+        $FunctionName = $Function.Name
+        $FunctionDestination = $Function.Destination
+        $OutputPath = "$JumpCloudModulePath/$FunctionDestination"
         $Command = Get-Command -Name:($FunctionName)
+        $CommandName = $Command.Name
+        $NewCommandName = $CommandName.Replace($SdkPrefix, $JumpCloudModulePrefix)
+        Write-Host ("[STATUS] Building: $NewCommandName") -BackgroundColor:('Black') -ForegroundColor:('Magenta')
         # Get content from sdk function
         $CommandFilePath = $Command.ScriptBlock.File
         $CommandFilePathContent = Get-Content -Path:($CommandFilePath) -Raw
@@ -88,28 +50,42 @@ ForEach ($Module In $Modules)
             remain in their individual files. #>
             $CommandFilePathContent
         }
+        $PSScriptInfo = ($FunctionContent | Select-String -Pattern:('(?s)(<#)(.*?)(#>)')).Matches.Value
         $Params = $FunctionContent | Select-String -Pattern:('(?s)(    \[Parameter)(.*?)(\})') -AllMatches
-
+        $ParameterContent = ($Params.Matches.Value | Where-Object { $_ -notlike '*DontShow*' -and $_ -notlike '*Limit*' -and $_ -notlike '*Skip*' })
+        $OutputType = ($FunctionContent | Select-String -Pattern:('(\[OutputType)(.*?)(\]\r)')).Matches.Value
+        $CmdletBinding = ($FunctionContent | Select-String -Pattern:('(\[CmdletBinding)(.*?)(\]\r)')).Matches.Value
+        $PSScriptInfo = $PSScriptInfo.Replace($SdkPrefix, $JumpCloudModulePrefix)
+        # Build CmdletBinding
+        If (-not [System.String]::IsNullOrEmpty($OutputType)) { $CmdletBinding = "$($OutputType)`n$($IndentChar)$($CmdletBinding)" }
+        # Build $BeginContent, $ProcessContent, and $EndContent
+        $BeginContent = @()
+        $ProcessContent = @()
+        $EndContent = @()
+        # Build "Begin" block
+        $BeginContent += "$($IndentChar)$($IndentChar)Connect-JCOnline -force | Out-Null"
+        $BeginContent += "$($IndentChar)$($IndentChar)`$Results = @()"
+        # Build "Process" block
+        $ProcessContent += "$($IndentChar)$($IndentChar)`$Results = $($ModuleName)\$($CommandName) @PSBoundParameters"
+        # Build "End" block
+        $EndContent += "$($IndentChar)$($IndentChar)Return `$Results"
+        If (-not [System.String]::IsNullOrEmpty($BeginContent) -and -not [System.String]::IsNullOrEmpty($ProcessContent) -and -not [System.String]::IsNullOrEmpty($EndContent))
+        {
+            # Build "Function"
+            $NewScript = $FunctionTemplate -f $PSScriptInfo, $NewCommandName, $CmdletBinding, ($ParameterContent -join ",`n`n"), ($BeginContent -join "`n"), ($ProcessContent -join "`n"), ($EndContent -join "`n")
+            # Fix line endings
+            $NewScript = $NewScript.Replace("`r`n", "`n").Trim()
+            # Export the function
+            $OutputFilePath = "$OutputPath/$NewCommandName.ps1"
+            $NewScript | Out-File -FilePath:($OutputFilePath) -Force
+            # Validate script syntax
+            $ScriptAnalyzerResult = Invoke-ScriptAnalyzer -Path:($OutputFilePath) -Recurse -ExcludeRule PSShouldProcess, PSAvoidTrailingWhitespace, PSAvoidUsingWMICmdlet, PSAvoidUsingPlainTextForPassword, PSAvoidUsingUsernameAndPasswordParams, PSAvoidUsingInvokeExpression, PSUseDeclaredVarsMoreThanAssignments, PSUseSingularNouns, PSAvoidGlobalVars, PSUseShouldProcessForStateChangingFunctions, PSAvoidUsingWriteHost, PSAvoidUsingPositionalParameters
+            If ($ScriptAnalyzerResult)
+            {
+                $ScriptAnalyzerResults += $ScriptAnalyzerResult
+            }
+        }
+        # Copy tests?
+        # Copy-Item -Path:($AutoRest_Tests) -Destination:($JCModule_Tests) -Force
     }
-    # $ModulePath
-    # Copy-Item -Path:($Transformed_Function) -Destination:($JCModule_Function) -Force
-    # Copy-Item -Path:($AutoRest_Tests) -Destination:($JCModule_Tests) -Force
-    # (Get-Content -Path:($JCModule_Tests) -Raw).Replace('JcSdk', 'JC').Replace('.ToJsonString() | ConvertFrom-Json', '').Replace("Describe 'Get-JCEvent'", "Describe 'Get-JCEvent' -Tag:('JCEvent')").Replace('$loadEnvPath = Join-Path $PSScriptRoot ''loadEnv.ps1''
-    # if (-Not (Test-Path -Path $loadEnvPath))
-    # {
-    #     $loadEnvPath = Join-Path $PSScriptRoot ''..\loadEnv.ps1''
-    # }
-    # . ($loadEnvPath)
-    # $TestRecordingFile = Join-Path $PSScriptRoot ''Get-JCEvent.Recording.json''
-    # $currentPath = $PSScriptRoot
-    # while (-not $mockingPath)
-    # {
-    #     $mockingPath = Get-ChildItem -Path $currentPath -Recurse -Include ''HttpPipelineMocking.ps1'' -File
-    #     $currentPath = Split-Path -Path $currentPath -Parent
-    # }
-    # . ($mockingPath | Select-Object -First 1).FullName
-
-    # ', '') | Set-Content -Path:($JCModule_Tests)
-    # Remove-Item -Path:($JCModule_HelpFile)
-
 }
