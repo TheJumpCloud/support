@@ -1,4 +1,4 @@
-Install-Module -Name:('PSScriptAnalyzer')
+Install-Module -Name:('PSScriptAnalyzer') -Force
 $ApprovedFunctions = [Ordered]@{
     'JumpCloud.SDK.DirectoryInsights' = @(
         [PSCustomObject]@{
