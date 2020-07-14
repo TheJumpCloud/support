@@ -96,6 +96,9 @@ If (-not [System.String]::IsNullOrEmpty($Modules))
             }
             # Copy tests?
             # Copy-Item -Path:($AutoRest_Tests) -Destination:($JCModule_Tests) -Force
+            # Update .Psd1 file
+            $Psd1.FunctionsToExport += $FunctionName
+            Update-ModuleManifest -Path:($FilePath_psd1) -FunctionsToExport:($Psd1.FunctionsToExport)
         }
     }
 }
