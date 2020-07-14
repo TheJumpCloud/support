@@ -84,7 +84,6 @@ If (-not [System.String]::IsNullOrEmpty($Modules))
                 $NewScript = $NewScript.Replace("`r`n", "`n").Trim()
                 # Export the function
                 $OutputFilePath = "$OutputPath/$NewCommandName.ps1"
-                Write-Host ('Path is: ' + (Test-Path -Path:($OutputPath)))
                 New-FolderRecursive -Path:($OutputFilePath) -Force
                 $NewScript | Out-File -FilePath:($OutputFilePath) -Force
                 # Validate script syntax
