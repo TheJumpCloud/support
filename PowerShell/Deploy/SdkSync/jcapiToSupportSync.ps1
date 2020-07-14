@@ -1,4 +1,4 @@
-. ($PSScriptRoot + '/' + 'Get-Config.ps1')
+. ((Get-Item -Path:($PSScriptRoot)).Parent.FullName + '/' + 'Get-Config.ps1')
 ###########################################################################
 Install-Module -Name:('PSScriptAnalyzer') -Force
 $ApprovedFunctions = [Ordered]@{
