@@ -85,6 +85,7 @@ If (-not [System.String]::IsNullOrEmpty($Modules))
                 # Export the function
                 $OutputFilePath = "$OutputPath/$NewCommandName.ps1"
                 Write-Host ('Path is: ' + (Test-Path -Path:($OutputPath)))
+                New-FolderRecursive -Path:($OutputFilePath) -Force
                 $NewScript | Out-File -FilePath:($OutputFilePath) -Force
                 # Validate script syntax
                 $ScriptAnalyzerResult = Invoke-ScriptAnalyzer -Path:($OutputFilePath) -Recurse -ExcludeRule PSShouldProcess, PSAvoidTrailingWhitespace, PSAvoidUsingWMICmdlet, PSAvoidUsingPlainTextForPassword, PSAvoidUsingUsernameAndPasswordParams, PSAvoidUsingInvokeExpression, PSUseDeclaredVarsMoreThanAssignments, PSUseSingularNouns, PSAvoidGlobalVars, PSUseShouldProcessForStateChangingFunctions, PSAvoidUsingWriteHost, PSAvoidUsingPositionalParameters
