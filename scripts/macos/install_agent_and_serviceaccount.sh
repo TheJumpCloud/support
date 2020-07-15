@@ -29,6 +29,9 @@ while getopts k:u:p:sh option; do
     exit 0
     ;;
   s) SILENT_INSTALL=1 ;;
+  *) echo "Invalid parameter"
+     exit 1
+     ;;
   esac
 done
 
@@ -73,28 +76,28 @@ else
 
   checkAndReadInUsername() {
     printf "\nSecure Token enabled admin required\n"
-    printf "Checking $SECURETOKEN_ADMIN_USERNAME for Secure Token admin access\n"
+    printf "Checking %s for Secure Token admin access\n" "${SECURETOKEN_ADMIN_USERNAME}"
     sleep 1
-    if (secureTokenEnabledForUser $SECURETOKEN_ADMIN_USERNAME) && (isAdminUser $SECURETOKEN_ADMIN_USERNAME); then
+    if (secureTokenEnabledForUser "${SECURETOKEN_ADMIN_USERNAME}") && (isAdminUser "${SECURETOKEN_ADMIN_USERNAME}"); then
       echo "** ($SECURETOKEN_ADMIN_USERNAME) is verified as a Secure Token admin **"
       return 0
     fi
     echo "--------"
 
-    while !(secureTokenEnabledForUser $SECURETOKEN_ADMIN_USERNAME) || !(isAdminUser $SECURETOKEN_ADMIN_USERNAME); do
-      printf "\nThe username ($SECURETOKEN_ADMIN_USERNAME) is not a Secure Token enabled admin.\nTo enable the JumpCloud Agent to manage FileVault users, \nplease provide the username of a Secure Token enabled \nadmin user on this system.\n"
+    while ! (secureTokenEnabledForUser "${SECURETOKEN_ADMIN_USERNAME}") || ! (isAdminUser "${SECURETOKEN_ADMIN_USERNAME}"); do
+      printf "\nThe username: %s is not a Secure Token enabled admin.\nTo enable the JumpCloud Agent to manage FileVault users, \nplease provide the username of a Secure Token enabled \nadmin user on this system.\n" "${SECURETOKEN_ADMIN_USERNAME}"
       echo "--------"
       read -p 'Secure Token Admin Username: ' SECURETOKEN_ADMIN_USERNAME
     done
 
-    echo "** ($SECURETOKEN_ADMIN_USERNAME) is verified as a Secure Token admin **"
+    echo "** (${SECURETOKEN_ADMIN_USERNAME}) is verified as a Secure Token admin **"
     return 1
   }
 
   verifyPasswordForUser() {
     printf '\nVerifying Password\n'
 
-    VERIFYPASSWORD=$(dscl /Local/Default -authonly $SECURETOKEN_ADMIN_USERNAME $SECURETOKEN_ADMIN_PASSWORD)
+    VERIFYPASSWORD=$(dscl /Local/Default -authonly "${SECURETOKEN_ADMIN_USERNAME}" "${SECURETOKEN_ADMIN_PASSWORD}")
 
     if [ -z "$VERIFYPASSWORD" ]; then
       return 0
@@ -112,16 +115,16 @@ else
         verifyPasswordForUser
 
         if [ $? -ne 0 ]; then
-          printf "\nERROR: Incorrect Password for user $SECURETOKEN_ADMIN_USERNAME!\n"
+          printf "\nERROR: Incorrect Password for user %s !\n" "${SECURETOKEN_ADMIN_USERNAME}"
         else
-          printf "\nPassword verified for user $SECURETOKEN_ADMIN_USERNAME\n"
+          printf "\nPassword verified for user %s \n" "${SECURETOKEN_ADMIN_USERNAME}"
           break
         fi
       else
         echo 'Password cannot be blank'
       fi
 
-      read -sp "Please enter the password for $SECURETOKEN_ADMIN_USERNAME:" SECURETOKEN_ADMIN_PASSWORD
+      read -sp "Please enter the password for ${SECURETOKEN_ADMIN_USERNAME}:" SECURETOKEN_ADMIN_PASSWORD
       echo ''
 
     done
@@ -141,9 +144,9 @@ else
 
   if [ "$SILENT_INSTALL" -eq "0" ]; then
 
-    if [ -z "$SECURETOKEN_ADMIN_USERNAME" ]; then
+    if [ -z "${SECURETOKEN_ADMIN_USERNAME}" ]; then
       # if empty, set SECURETOKEN_ADMIN_USERNAME to the user running the script
-      SECURETOKEN_ADMIN_USERNAME=$(stat -f '%Su' $HOME)
+      SECURETOKEN_ADMIN_USERNAME=$(stat -f '%Su' "${HOME}")
     fi
 
     # check to make sure the user is a secure token enabled admin
