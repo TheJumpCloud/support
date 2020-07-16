@@ -40,6 +40,9 @@ $RequiredFiles | ForEach-Object {
 # Get module function names
 $Functions_Public = If (Test-Path -Path:($FolderPath_Public)) { Get-ChildItem -Path:($FolderPath_Public + '/' + '*.ps1') -Recurse }
 $Functions_Private = If (Test-Path -Path:($FolderPath_Private)) { Get-ChildItem -Path:($FolderPath_Private + '/' + '*.ps1') -Recurse }
+# Get psd1 contents
+$Psd1 = Import-PowerShellDataFile -Path:($FilePath_psd1)
+$RequiredModules = $Psd1.RequiredModules
 # Load deploy functions
 $DeployFunctions = @(Get-ChildItem -Path:($PSScriptRoot + '/Functions/*.ps1') -Recurse)
 Foreach ($DeployFunction In $DeployFunctions)
