@@ -1,3 +1,19 @@
+## 1.17.5
+
+Release Date: July 13, 2020
+
+#### RELEASE NOTES
+
+Use Get-JCSystemInsight to query additional System Insights tables.
+
+#### FEATURES
+
+#### IMPROVEMENTS
+
+#### BUG FIXES
+
+Fix for windows PowerShell Update-JCModule function
+
 ## 1.17.4
 
 Release Date: July 9, 2020
