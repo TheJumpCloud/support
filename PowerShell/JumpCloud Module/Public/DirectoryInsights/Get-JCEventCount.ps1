@@ -44,7 +44,7 @@ BODY <IEventQuery>: EventQuery is the users' command to search our auth logs
     [(Any) <Object>]: This indicates any property can be added to this object.
   [Sort <String>]: ASC or DESC order for timestamp
 .Link
-https://github.com/TheJumpCloud/jcapi-powershell/tree/master/SDKs/PowerShell/jumpcloud.sdk.directoryinsights/get-jcsdkeventcount
+https://github.com/TheJumpCloud/jcapi-powershell/tree/master/SDKs/PowerShell/JumpCloud.SDK.DirectoryInsights/docs/exports/Get-JcSdkEventCount.md
 #>
 Function Get-JCEventCount
 {

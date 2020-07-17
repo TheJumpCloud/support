@@ -62,6 +62,7 @@ If (-not [System.String]::IsNullOrEmpty($Modules))
             If (-not [System.String]::IsNullOrEmpty($PSScriptInfo))
             {
                 $PSScriptInfo = $PSScriptInfo.Replace($SdkPrefix, $JumpCloudModulePrefix)
+                $PSScriptInfo = $PSScriptInfo.Replace("$NewCommandName.md", "$FunctionName.md")
             }
             # Build CmdletBinding
             If (-not [System.String]::IsNullOrEmpty($OutputType)) { $CmdletBinding = "$($OutputType)`n$($IndentChar)$($CmdletBinding)" }
