@@ -1,6 +1,6 @@
-## 1.17.4
+## 1.17.5
 
-Release Date: July 9, 2020
+Release Date: July 20, 2020
 
 #### RELEASE NOTES
 
@@ -8,13 +8,16 @@ Use Get-JCSystemInsight to query additional System Insights tables.
 
 #### FEATURES
 
+Updated Get-JCEvent.
+New function Get-JCEventCount.
+Remove Depreciated SystemInsights Registry Table.
+
 #### IMPROVEMENTS
 
 #### BUG FIXES
 
-Fix for Update-JCModule Pester tests
-
-Remove Depreciated SystemInsights Registry Table
+Fix for windows PowerShell Update-JCModule function.
+Fix for pipeline to specify manual version of module
 
 ## 1.17.3
 
