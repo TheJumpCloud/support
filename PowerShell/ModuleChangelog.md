@@ -1,3 +1,25 @@
+## 1.17.4
+
+Release Date: July 20, 2020
+
+#### RELEASE NOTES
+
+```
+{{Fill in the Release Notes}}
+```
+
+#### FEATURES:
+
+{{Fill in the Features}}
+
+#### IMPROVEMENTS:
+
+{{Fill in the Improvements}}
+
+#### BUG FIXES:
+
+{{Fill in the Bug Fixes}}
+
 ## 1.17.5
 
 Release Date: July 20, 2020
