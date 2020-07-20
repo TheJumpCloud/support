@@ -16,7 +16,13 @@ Describe -Tag:('ModuleValidation') 'Pester Files Tests' {
             Test-Path -Path:($FilePath) | Should -Be $true
         }
         It ('Validating Pester test file has been populated for "<FilePath>"') -TestCases:(Get-PesterFilesTestCases) {
-            $FilePath | Should -FileContentMatch '.*?'
+            # $FilePath | Should -FileContentMatch '.*?'
+            $FileContent = Get-Content -Path:($FilePath) -Raw
+            If ([System.String]::IsNullOrEmpty($FileContent))
+            {
+                Write-Host("##vso[task.logissue type=warning;]" + 'The test file "' + $FilePath + '" has not been populated.')
+                Write-Warning ('The test file "' + $FilePath + '" has not been populated.')
+            }
         }
     }
 }
