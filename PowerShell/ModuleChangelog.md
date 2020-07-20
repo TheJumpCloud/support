@@ -17,6 +17,7 @@ Remove Depreciated SystemInsights Registry Table.
 #### BUG FIXES
 
 Fix for windows PowerShell Update-JCModule function.
+Fix for pipeline to specify manual version of module
 
 ## 1.17.3
 
