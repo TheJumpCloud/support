@@ -1,45 +1,29 @@
 <#
 .Synopsis
-Query the API for Directory Insights events
+Query the API for a count of matching events
 .Description
-Query the API for Directory Insights events
+Query the API for a count of matching events
 .Example
-PS C:\> Get-JCEvent -Service:('all') -StartTime:((Get-date).AddDays(-30))
+PS C:\> Get-JCEventCount -Service:('all') -StartTime:((Get-date).AddDays(-30))
 
-Pull all event records from the last thirty days
+Pull all event records from a specified time and count the results
 .Example
-PS C:\> Get-JCEvent -Service:('directory') -StartTime:((Get-date).AddHours(-1)) -Limit:('10')
+PS C:\> Get-JCEventCount -Service:('sso') -StartTime:('2020-04-14T00:00:00Z')
 
-Get directory results from the last hour limit to the last 10 results in the time range
+Pull all SSO event records from a specified time and count the results
 .Example
-PS C:\> Get-JCEvent -Service:('directory') -StartTime:((Get-date).AddDays(-30)) -Sort:("DESC") -EndTime:((Get-date).AddDays(-5))
+PS C:\> Get-JCEventCount -Service:('all') -StartTime:('2020-04-14T00:00:00Z') -EndTime:('2020-04-20T23:00:00Z') -SearchTermAnd @{"event_type" = "admin_login_attempt"; "resource.email" = "admin.user@adminbizorg.com"}
 
-Get directory results between 30 and 5 days ago, sort timestamp by descending value
+Get all events counts between a date range and match event_type = admin_login_attempt and resource.email = admin.user@adminbizorg.com
 .Example
-PS C:\> Get-JCEvent -Service:('directory') -StartTime:((Get-date).AddDays(-30)) -Limit:('10') -searchTermAnd:@{"event_type" = "group_create"}
+PS C:\> Get-JCEventCount -Service:('directory') -StartTime:((Get-date).AddDays(-30)) -searchTermAnd:@{"event_type" = "group_create"}
 
-Get only group_create from the last thirty days
-.Example
-PS C:\> Get-JCEvent -Service:('all') -StartTime:('2020-04-14T00:00:00Z') -EndTime:('2020-04-20T23:00:00Z') -SearchTermOr @{"initiated_by.username" = @("user.1", "user.2")}
-
-Get login events initiated by either "user.1" or "user.2" between a universal time zone range
-.Example
-PS C:\> Get-JCEvent -Service:('all') -StartTime:('2020-04-14T00:00:00Z') -EndTime:('2020-04-20T23:00:00Z') -SearchTermAnd @{"event_type" = "admin_login_attempt"; "resource.email" = "admin.user@adminbizorg.com"}
-
-Get all events between a date range and match event_type = admin_login_attempt and resource.email = admin.user@adminbizorg.com
-.Example
-PS C:\> Get-JCEvent -Service:('sso') -StartTime:('2020-04-14T00:00:00Z')  -EndTime:('2020-04-20T23:00:00Z') -SearchTermAnd @{"initiated_by.username" = "user.1"}
-
-Get sso events with the search term initiated_by: username with value "user.1"
-.Example
-PS C:\> Get-JCEvent -Service:('all') -StartTime:('2020-04-14T00:00:00Z') -EndTime:('2020-04-20T23:00:00Z') -SearchTermAnd @{"event_type" = "organization_update"}
-
-Get all events filtered by organization_update term between a date range
+Get only group_create event counts the last thirty days
 
 .Inputs
 JumpCloud.SDK.DirectoryInsights.Models.IEventQuery
 .Outputs
-JumpCloud.SDK.DirectoryInsights.Models.IPost200ApplicationJsonItemsItem
+System.Int64
 .Outputs
 System.String
 .Notes
@@ -60,11 +44,11 @@ BODY <IEventQuery>: EventQuery is the users' command to search our auth logs
     [(Any) <Object>]: This indicates any property can be added to this object.
   [Sort <String>]: ASC or DESC order for timestamp
 .Link
-https://github.com/TheJumpCloud/jcapi-powershell/tree/master/SDKs/PowerShell/JumpCloud.SDK.DirectoryInsights/docs/exports/Get-JcSdkEvent.md
+https://github.com/TheJumpCloud/jcapi-powershell/tree/master/SDKs/PowerShell/JumpCloud.SDK.DirectoryInsights/docs/exports/Get-JcSdkEventCount.md
 #>
-Function Get-JCEvent
+Function Get-JCEventCount
 {
-    [OutputType([JumpCloud.SDK.DirectoryInsights.Models.IPost200ApplicationJsonItemsItem], [System.String])]
+    [OutputType([System.Int64], [System.String])]
     [CmdletBinding(DefaultParameterSetName='GetExpanded', PositionalBinding=$false, SupportsShouldProcess, ConfirmImpact='Medium')]
     Param(
     [Parameter(ParameterSetName='GetExpanded', Mandatory)]
@@ -134,7 +118,7 @@ Function Get-JCEvent
     }
     Process
     {
-        $Results = JumpCloud.SDK.DirectoryInsights\Get-JcSdkEvent @PSBoundParameters
+        $Results = JumpCloud.SDK.DirectoryInsights\Get-JcSdkEventCount @PSBoundParameters
     }
     End
     {
