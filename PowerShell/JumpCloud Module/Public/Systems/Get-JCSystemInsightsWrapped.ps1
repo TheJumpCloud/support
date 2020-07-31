@@ -2,8 +2,6 @@ function Get-JCSystemInsightsWrapped{
     [CmdletBinding(DefaultParameterSetName = 'List', PositionalBinding = $false)]
     param(
         [string[]]
-        ${name2},
-        [string[]]
         ${Filter},
         [string[]]
         ${Sort},
@@ -12,7 +10,7 @@ function Get-JCSystemInsightsWrapped{
     DynamicParam{
         $dict = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
         $attr = New-Object System.Management.Automation.ParameterAttribute
-        $attr.HelpMessage = "Dashboard Components to include"
+        $attr.HelpMessage = "System Insights Table"
         $attr.ValueFromPipelineByPropertyName = $true
         $attrColl = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
         $attrColl.Add($attr)
