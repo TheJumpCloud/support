@@ -33,15 +33,14 @@ function Get-JCSystemInsightsWrapped{
             }
             $InsightsCommandFull = "Get-JcSdkSystemInsight" + "$Table"
             $wrappedCmd = $ExecutionContext.InvokeCommand.GetCommand($InsightsCommandFull, [System.Management.Automation.CommandTypes]::Function)
-            # Write-Host ($wrappedCmd)
-            $pass = @()
-            foreach ($param in $PSBoundParameters){
-                if ($param.key -eq $wrappedCmd.Parameters.Keys){
-                    $pass += $param
+            Write-Host ($wrappedCmd)
+            foreach ($item in $PSBoundParameters){
+                if ($item.Keys -notin $wrappedCmd.Parameters.Keys){
+                    $PSBoundParameters.Remove($item.Keys) | Out-Null
                 }
             }
-            $scriptCmd = { & $wrappedCmd @pass }
-            $steppablePipeline = $scriptCmd.GetSteppablePipeline()
+            $scriptCmd = { & $wrappedCmd @PSBoundParameters }
+            $steppablePipeline = $scriptCmd.GetSteppablePipeline($MyInvocation.CommandOrigin)
             $steppablePipeline.Begin($PSCmdlet)
         }
         catch {
