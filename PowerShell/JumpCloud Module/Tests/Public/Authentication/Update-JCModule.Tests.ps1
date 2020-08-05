@@ -8,7 +8,7 @@ Describe -Tag:('JCModule') 'Test for Update-JCModule' {
         Write-Host ('Local Version Before: ' + $LocalModulePre.Version)
         Update-JCModule -SkipUninstallOld -Force
         $InitialModule | Remove-Module
-        $LocalModulePost = Get-Module -Name:('JumpCloud') -All | Where-Object { $_.Version -eq $PowerShellGalleryModule.Version }
+        $LocalModulePost = Get-Module -Name:('JumpCloud') -All | Where-Object { $_.Version -eq $PowerShellGalleryModule.Version } | get-unique
         If ($LocalModulePost) {
             Write-Host ('Local Version After: ' + $LocalModulePost.Version)
             $LocalModulePost | Remove-Module
