@@ -57,8 +57,7 @@ function Get-JCSystemInsightsWrapped{
     }
     end {
         try {
-            $results = $steppablePipeline.End()
-            Write-Host("boogers" + $results)
+            $steppablePipeline.End()
         }
         catch {
             throw
