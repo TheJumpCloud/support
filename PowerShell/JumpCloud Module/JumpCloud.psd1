@@ -12,7 +12,7 @@
 RootModule = 'JumpCloud.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.17.5'
+ModuleVersion = '1.17.6'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
