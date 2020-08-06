@@ -12,13 +12,13 @@ $ApprovedFunctions = [Ordered]@{
             Name        = 'Get-JcSdkEventCount'
         }
     )
-    # 'JumpCloud.SDK.V2' = @(
-    #     # Commented Out To Prevent Build
-    #     [PSCustomObject]@{
-    #         Destination = 'Public/Systems'
-    #         Name        = 'Get-JcSdkSystemInsight*'
-    #     }
-    # )
+    'JumpCloud.SDK.V2'                = @(
+        # Commented Out To Prevent Build
+        [PSCustomObject]@{
+            Destination = 'Public/Systems'
+            Name        = 'Get-JcSdkSystemInsights'
+        }
+    )
 }
 $SdkPrefix = 'JcSdk'
 $JumpCloudModulePrefix = 'JC'
@@ -42,7 +42,8 @@ If (-not [System.String]::IsNullOrEmpty($Modules))
             $FunctionDestination = $Function.Destination
             $OutputPath = "$JumpCloudModulePath/$FunctionDestination"
             $Command = Get-Command -Name:($FunctionName)
-            foreach ($individualCommand in $Command){
+            foreach ($individualCommand in $Command)
+            {
                 $CommandName = $individualCommand.Name
                 $NewCommandName = $CommandName.Replace($SdkPrefix, $JumpCloudModulePrefix)
                 Write-Host ("[STATUS] Building: $NewCommandName") -BackgroundColor:('Black') -ForegroundColor:('Magenta')
