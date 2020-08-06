@@ -1,41 +1,69 @@
+# Populate values for function parameters. "Dynamic ValidateSet"
+$SystemInsightsPrefix = 'Get-JcSdkSystemInsight';
+$SystemInsightsTables = [Ordered]@{};
+$Commands = Get-Command -Module:('JumpCloud.SDK.V2') -Name:("$($SystemInsightsPrefix)*");
+$Commands | ForEach-Object {
+    $Help = Get-Help -Name:($_.Name);
+    $SystemInsightsTables.Add($_.Name.Replace($SystemInsightsPrefix, ''), $Help.Description.Text + ' ' + $Help.parameters.parameter.Where( { $_.Name -eq 'filter' }).Description.Text + ' EX: {field}:{operator}:{searchValue}' );
+};
+Register-ArgumentCompleter -CommandName Get-JCSystemInsights -ParameterName Table -ScriptBlock {
+    param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameter)
+    $FilterFilter = $fakeBoundParameter.Filter;
+    $SystemInsightsTables.Keys | Where-Object { $_ -like "${wordToComplete}*" } | Where-Object { $SystemInsightsTables.$_ -like "${FilterFilter}*" } | ForEach-Object {
+        New-Object System.Management.Automation.CompletionResult (
+            $_,
+            $_,
+            'ParameterValue',
+            $_
+        )
+    }
+}
+Register-ArgumentCompleter -CommandName Get-JCSystemInsights -ParameterName Filter -ScriptBlock {
+    param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameter)
+    $TypeFilter = $fakeBoundParameter.Table;
+    $SystemInsightsTables.Keys | Where-Object { $_ -like "${TypeFilter}*" } | ForEach-Object { $SystemInsightsTables.$_ | Where-Object { $_ -like "${wordToComplete}*" } } | Sort-Object -Unique | ForEach-Object {
+        New-Object System.Management.Automation.CompletionResult (
+            $_,
+            $_,
+            'ParameterValue',
+            $_
+        )
+    }
+}
 Function Get-JCSystemInsights
 {
-    [CmdletBinding()]
-    Param()
-    DynamicParam
-    {
-        $Type = 'system'
-        $Action = 'get'
-        $JCTypes = Get-JCType | Where-Object { $_.TypeName.TypeNameSingular -eq $Type };
-        $RuntimeParameterDictionary = New-DynamicParameter -Name:('Table') -Type:([System.String]) -Mandatory -ValueFromPipelineByPropertyName -ValidateNotNullOrEmpty -ParameterSets:('Default', 'ById', 'ByName', 'ByValue') -HelpMessage:('The SystemInsights table to query against.') -ValidateSet:($JCTypes.SystemInsights.Table);
-        Get-JCCommonParameters  -Action:($Action) -Type:($Type) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null;
-        Return $RuntimeParameterDictionary
-    }
+    [CmdletBinding(DefaultParameterSetName = 'List', PositionalBinding = $false)]
+    Param(
+        [Parameter(Mandatory)]
+        [System.String[]]
+        # Name of the SystemInsights table to query. See docs.jumpcloud.com for list of avalible table endpoints.
+        $Table,
+
+        [Parameter()]
+        [System.String[]]
+        # Supported values and operators are specified for each table. See docs.jumpcloud.com and search for specific talbe for a list of avalible filter options.
+        ${Filter},
+
+        [Parameter()]
+        [System.String[]]
+        # The comma separated fields used to sort the collection.
+        # Default sort is ascending, prefix with `-` to sort descending.
+        ${Sort},
+
+        [Parameter(DontShow)]
+        [System.Boolean]
+        # Set to $true to return all results. This will overwrite any skip and limit parameter.
+        $Paginate = $true
+    )
     Begin
     {
-        Connect-JCOnline -force | Out-Null
-        # Debug message for parameter call
-        $PSBoundParameters | Out-DebugParameter | Write-Debug
         $Results = @()
     }
     Process
     {
-        # For DynamicParam with a default value set that value and then convert the DynamicParam inputs into new variables for the script to use
-        Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDynamicParamProcess) -ArgumentList:($PsBoundParameters, $PSCmdlet, $RuntimeParameterDictionary) -NoNewScope
-        Try
-        {
-            # Create hash table to store variables
-            $FunctionParameters = [ordered]@{ }
-            # Add input parameters from function in to hash table and filter out unnecessary parameters
-            $PSBoundParameters.GetEnumerator() | Where-Object { -not [System.String]::IsNullOrEmpty($_.Value) } | ForEach-Object { $FunctionParameters.Add($_.Key, $_.Value) | Out-Null }
-            $FunctionParameters.Add('Type', $JCTypes.TypeName.TypeNameSingular) | Out-Null
-            # Run the command
-            $Results += Get-JCObject @FunctionParameters
-        }
-        Catch
-        {
-            Write-Error ($_)
-        }
+        $PSBoundParameters.Remove('Table') | Out-Null
+        $Command = "JumpCloud.SDK.V2\Get-JcSdkSystemInsight$($Table) @PSBoundParameters"
+        $Results = Invoke-Expression -Command:($Command)
     }
     End
     {

@@ -12,13 +12,6 @@ $ApprovedFunctions = [Ordered]@{
             Name        = 'Get-JcSdkEventCount'
         }
     )
-    'JumpCloud.SDK.V2'                = @(
-        # Commented Out To Prevent Build
-        [PSCustomObject]@{
-            Destination = 'Public/Systems'
-            Name        = 'Get-JcSdkSystemInsights'
-        }
-    )
 }
 $SdkPrefix = 'JcSdk'
 $JumpCloudModulePrefix = 'JC'
