@@ -35,14 +35,19 @@ Function Get-JCSystemInsights
     [CmdletBinding(DefaultParameterSetName = 'List', PositionalBinding = $false)]
     Param(
         [Parameter(Mandatory)]
-        [System.String[]]
+        [System.String]
         # Name of the SystemInsights table to query. See docs.jumpcloud.com for list of avalible table endpoints.
         $Table,
 
         [Parameter()]
-        [System.String[]]
+        [Alias('_id', 'id', 'system_id')]
+        # Id of system to filter on.
+        [System.String]$SystemId,
+
+        [Parameter()]
+        [System.String]
         # Supported values and operators are specified for each table. See docs.jumpcloud.com and search for specific talbe for a list of avalible filter options.
-        ${Filter},
+        $Filter,
 
         [Parameter()]
         [System.String[]]
@@ -58,10 +63,20 @@ Function Get-JCSystemInsights
     Begin
     {
         $Results = @()
+        If (-not [System.String]::IsNullOrEmpty($PSBoundParameters.systemId))
+        {
+            $SystemIdFilter = "system_id:eq:$($PSBoundParameters.systemId)"
+            If (-not [System.String]::IsNullOrEmpty($PSBoundParameters.Filter))
+            {
+                $SystemIdFilter = "$($SystemIdFilter),$($PSBoundParameters.Filter)"
+            }
+            $PSBoundParameters.Filter = $SystemIdFilter
+        }
     }
     Process
     {
         $PSBoundParameters.Remove('Table') | Out-Null
+        $PSBoundParameters.Remove('SystemId') | Out-Null
         $Command = "JumpCloud.SDK.V2\Get-JcSdkSystemInsight$($Table) @PSBoundParameters"
         $Results = Invoke-Expression -Command:($Command)
     }
