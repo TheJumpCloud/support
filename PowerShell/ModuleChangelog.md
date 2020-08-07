@@ -5,28 +5,6 @@ Release Date: August 07, 2020
 #### RELEASE NOTES
 
 ```
-{{Fill in the Release Notes}}
-```
-
-#### FEATURES:
-
-{{Fill in the Features}}
-
-#### IMPROVEMENTS:
-
-{{Fill in the Improvements}}
-
-#### BUG FIXES:
-
-{{Fill in the Bug Fixes}}
-
-## 1.17.6
-
-Release Date: August 07, 2020
-
-#### RELEASE NOTES
-
-```
 `Get-JCSystemInsights` has been updated to use the `JumpCloud.SDK.V2` powershell module.
 Feature Enhancements
     New SystemInsights tables will be automatically added they become available.

@@ -7,11 +7,11 @@
 #### Banner Current
 
 ```
-{{Fill in the Banner Current}}
+`Get-JCSystemInsights` has been updated to use the `JumpCloud.SDK.V2` powershell module.
 ```
 
 #### Banner Old
 
 ```
-{{Fill in the Banner Old}}
+`Get-JCSystemInsights` has been updated to use the `JumpCloud.SDK.V2` powershell module.
 ```
