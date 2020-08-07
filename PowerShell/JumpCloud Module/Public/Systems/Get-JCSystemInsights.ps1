@@ -40,12 +40,13 @@ Function Get-JCSystemInsights
         $Table,
 
         [Parameter()]
+        [System.String[]]
         [Alias('_id', 'id', 'system_id')]
         # Id of system to filter on.
-        [System.String]$SystemId,
+        $SystemId,
 
         [Parameter()]
-        [System.String]
+        [System.String[]]
         # Supported values and operators are specified for each table. See docs.jumpcloud.com and search for specific talbe for a list of avalible filter options.
         $Filter,
 
@@ -62,23 +63,39 @@ Function Get-JCSystemInsights
     )
     Begin
     {
+        $CommandTemplate = "JumpCloud.SDK.V2\Get-JcSdkSystemInsight{0} @PSBoundParameters"
         $Results = @()
-        If (-not [System.String]::IsNullOrEmpty($PSBoundParameters.systemId))
+        $PSBoundParameters.Filter = $PSBoundParameters.Filter -replace (', ', ',') -join ','
+        If (-not [System.String]::IsNullOrEmpty($PSBoundParameters.SystemId))
         {
-            $SystemIdFilter = "system_id:eq:$($PSBoundParameters.systemId)"
-            If (-not [System.String]::IsNullOrEmpty($PSBoundParameters.Filter))
-            {
-                $SystemIdFilter = "$($SystemIdFilter),$($PSBoundParameters.Filter)"
+            $SystemIdFilter = $PSBoundParameters.SystemId | ForEach-Object {
+                $SystemIdFilterString = "system_id:eq:$($_)"
+                If (-not [System.String]::IsNullOrEmpty($PSBoundParameters.Filter))
+                {
+                    "$($SystemIdFilterString),$($PSBoundParameters.Filter)"
+                }
+                Else
+                {
+                    $SystemIdFilterString
+                }
             }
-            $PSBoundParameters.Filter = $SystemIdFilter
         }
+        $PSBoundParameters.Remove('Table') | Out-Null
+        $PSBoundParameters.Remove('SystemId') | Out-Null
     }
     Process
     {
-        $PSBoundParameters.Remove('Table') | Out-Null
-        $PSBoundParameters.Remove('SystemId') | Out-Null
-        $Command = "JumpCloud.SDK.V2\Get-JcSdkSystemInsight$($Table) @PSBoundParameters"
-        $Results = Invoke-Expression -Command:($Command)
+        $Results = If (-not [System.String]::IsNullOrEmpty($SystemIdFilter))
+        {
+            $SystemIdFilter | ForEach-Object {
+                $PSBoundParameters.Filter = $_
+                Invoke-Expression -Command:($CommandTemplate -f $Table)
+            }
+        }
+        Else
+        {
+            Invoke-Expression -Command:($CommandTemplate -f $Table)
+        }
     }
     End
     {
