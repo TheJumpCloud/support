@@ -14,6 +14,14 @@ Describe -Tag:('JCSystemInsights') "Get-JCSystemInsights Tests" {
         }
         $TableNames = $SystemInsightsTables | Where-Object { $_ -notin ('DiskInfo', 'WindowCrash', 'BitlockerInfo', 'Uptime', 'SipConfig', 'Alf', 'SharedResource', 'UserSshKey', 'UserGroup', 'SharingPreference', 'ScheduledTask', 'AlfException') } # HACK Temp workaround because these tables don't take strings as filters
         $SystemInsightsTestCases = @()
+        foreach ($sys in $System) {
+            if ($sys -eq $System[-1]) {
+                $filterString += "system_id:eq:$($sys._id)"
+            }
+            else{
+                $filterString += "system_id:eq:$($sys._id),"
+            }
+        }
         $TableNames | ForEach-Object {
             $TableName = $_
             $SystemInsightsTestCases += @{
@@ -21,13 +29,13 @@ Describe -Tag:('JCSystemInsights') "Get-JCSystemInsights Tests" {
                 Command         = "Get-JCSystemInsights -Table:('$TableName');"
             }
             $SystemInsightsTestCases += @{
-                testDescription = "Test table '$TableName' across specified systems ById where error is NullOrEmpty."
-                Command         = "Get-JCSystemInsights -Table:('$TableName') -Id:('$(($System[0]._id))');"
+                testDescription = "Test table '$TableName' across specified systems through Id param where error is NullOrEmpty."
+                Command         = "Get-JCSystemInsights -Table:('$TableName') -Id:('$(($System._id) -join "','")');"
             }
-            # $SystemInsightsTestCases += @{
-            #     testDescription = "Test table '$TableName' across specified systems ByValue Id where error is NullOrEmpty."
-            #     Command         = "Get-JCSystemInsights -Table:('$TableName') -SearchBy:('ById') -SearchByValue:('$(($System._id) -join "','")');"
-            # }
+            $SystemInsightsTestCases += @{
+                testDescription = "Test table '$TableName' across specified systems through filter param where error is NullOrEmpty."
+                Command         = "Get-JCSystemInsights -Table:('$TableName') -Filter:('$filterString');"
+            }
             # $SystemInsightsTestCases += @{
             #     testDescription = "Test table '$TableName' across specified systems ByName where error is NullOrEmpty."
             #     Command         = "Get-JCSystemInsights -Table:('$TableName') -Name:('$(($System.displayName) -join "','")');"
@@ -40,7 +48,7 @@ Describe -Tag:('JCSystemInsights') "Get-JCSystemInsights Tests" {
         Return $SystemInsightsTestCases
     }
     It '<testDescription>' -TestCases:(Get-JCSystemInsightsTestCases -System:($PesterParams_SystemLinux, $PesterParams_SystemMac, $PesterParams_SystemWindows)) {
-        # Write-Host ("Command: $Command")
+        Write-Host ("Command: $Command")
         $CommandResults = Invoke-Expression -Command:($Command) -ErrorVariable:('CommandResultsError')
         $CommandResultsError | Should -BeNullOrEmpty
     }
