@@ -1,13 +1,18 @@
 BeforeAll {
     Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
     $ErrorActionPreference = 'Stop' # Continue (Default), Ignore, Inquire, SilentlyContinue, Stop, Suspend
-
 }
 Describe -Tag:('JCSystemInsights') "Get-JCSystemInsights Tests" {
     Function Get-JCSystemInsightsTestCases($System)
     {
         # Retrieve objects to test with
-        $TableNames = $PesterParams_SystemInsightsTables | Where-Object { $_ -notin ('disk_info', 'bitlocker_info', 'uptime', 'sip_config', 'alf', 'shared_resources', 'user_ssh_keys', 'user_groups', 'sharing_preferences', 'scheduled_tasks', 'alf_exceptions') } # HACK Temp workaround because these tables don't take strings as filters
+        $SystemInsightsPrefix = 'Get-JcSdkSystemInsight';
+        $SystemInsightsTables = @();
+        $Commands = Get-Command -Module:('JumpCloud.SDK.V2') -Name:("$($SystemInsightsPrefix)*") | select-object name;
+        $Commands | ForEach-Object {
+            $SystemInsightsTables += ($_.Name.Replace($SystemInsightsPrefix, ''))
+        }
+        $TableNames = $SystemInsightsTables | Where-Object { $_ -notin ('DiskInfo', 'WindowCrash', 'BitlockerInfo', 'Uptime', 'SipConfig', 'Alf', 'SharedResource', 'UserSshKey', 'UserGroup', 'SharingPreference', 'ScheduledTask', 'AlfException') } # HACK Temp workaround because these tables don't take strings as filters
         $SystemInsightsTestCases = @()
         $TableNames | ForEach-Object {
             $TableName = $_
@@ -17,16 +22,16 @@ Describe -Tag:('JCSystemInsights') "Get-JCSystemInsights Tests" {
             }
             $SystemInsightsTestCases += @{
                 testDescription = "Test table '$TableName' across specified systems ById where error is NullOrEmpty."
-                Command         = "Get-JCSystemInsights -Table:('$TableName') -Id:('$(($System._id) -join "','")');"
+                Command         = "Get-JCSystemInsights -Table:('$TableName') -Id:('$(($System[0]._id))');"
             }
             # $SystemInsightsTestCases += @{
             #     testDescription = "Test table '$TableName' across specified systems ByValue Id where error is NullOrEmpty."
             #     Command         = "Get-JCSystemInsights -Table:('$TableName') -SearchBy:('ById') -SearchByValue:('$(($System._id) -join "','")');"
             # }
-            $SystemInsightsTestCases += @{
-                testDescription = "Test table '$TableName' across specified systems ByName where error is NullOrEmpty."
-                Command         = "Get-JCSystemInsights -Table:('$TableName') -Name:('$(($System.displayName) -join "','")');"
-            }
+            # $SystemInsightsTestCases += @{
+            #     testDescription = "Test table '$TableName' across specified systems ByName where error is NullOrEmpty."
+            #     Command         = "Get-JCSystemInsights -Table:('$TableName') -Name:('$(($System.displayName) -join "','")');"
+            # }
             # $SystemInsightsTestCases += @{
             #     testDescription = "Test table '$TableName' across specified systems ByValue Name where error is NullOrEmpty."
             #     Command         = "Get-JCSystemInsights -Table:('$TableName') -SearchBy:('ByName') -SearchByValue:('$(($System.displayName) -join "','")');"
