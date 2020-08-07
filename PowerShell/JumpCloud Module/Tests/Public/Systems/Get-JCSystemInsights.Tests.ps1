@@ -14,14 +14,6 @@ Describe -Tag:('JCSystemInsights') "Get-JCSystemInsights Tests" {
         }
         $TableNames = $SystemInsightsTables | Where-Object { $_ -notin ('DiskInfo', 'WindowCrash', 'BitlockerInfo', 'Uptime', 'SipConfig', 'Alf', 'SharedResource', 'UserSshKey', 'UserGroup', 'SharingPreference', 'ScheduledTask', 'AlfException') } # HACK Temp workaround because these tables don't take strings as filters
         $SystemInsightsTestCases = @()
-        # foreach ($sys in $System) {
-        #     if ($sys -eq $System[-1]) {
-        #         $filterString += "system_id:eq:$($sys._id)"
-        #     }
-        #     else{
-        #         $filterString += "system_id:eq:$($sys._id),"
-        #     }
-        # }
         $TableNames | ForEach-Object {
             $TableName = $_
             $SystemInsightsTestCases += @{
