@@ -65,7 +65,10 @@ Function Get-JCSystemInsights
     {
         $CommandTemplate = "JumpCloud.SDK.V2\Get-JcSdkSystemInsight{0} @PSBoundParameters"
         $Results = @()
-        $PSBoundParameters.Filter = $PSBoundParameters.Filter -replace (', ', ',') -join ','
+        If (-not [System.String]::IsNullOrEmpty($PSBoundParameters.Filter))
+        {
+            $PSBoundParameters.Filter = $PSBoundParameters.Filter -replace (', ', ',') -join ','
+        }
         If (-not [System.String]::IsNullOrEmpty($PSBoundParameters.SystemId))
         {
             $SystemIdFilter = $PSBoundParameters.SystemId | ForEach-Object {
