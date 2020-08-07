@@ -33,16 +33,34 @@ https://github.com/TheJumpCloud/support/wiki/Get-JCSystemInsights
 #>
 # Populate values for function parameters. "Dynamic ValidateSet"
 $SystemInsightsPrefix = 'Get-JcSdkSystemInsight';
-$SystemInsightsTables = [Ordered]@{};
-$Commands = Get-Command -Module:('JumpCloud.SDK.V2') -Name:("$($SystemInsightsPrefix)*");
-$Commands | ForEach-Object {
+$SystemInsightsDataSet = Get-Command -Module:('JumpCloud.SDK.V2') -Name:("$($SystemInsightsPrefix)*") | ForEach-Object {
     $Help = Get-Help -Name:($_.Name);
-    $SystemInsightsTables.Add($_.Name.Replace($SystemInsightsPrefix, ''), $Help.Description.Text + ' ' + $Help.parameters.parameter.Where( { $_.Name -eq 'filter' }).Description.Text + ' EX: {field}:{operator}:{searchValue}' );
+    $Table = $_.Name.Replace($SystemInsightsPrefix, '')
+    $HelpDescription = $Help.Description.Text
+    $FilterDescription = $Help.parameters.parameter.Where( { $_.Name -eq 'filter' }).Description.Text
+    $FilterNames = ($HelpDescription | Select-String -Pattern:([Regex]'(?<=\ `)(.*?)(?=\`)') -AllMatches).Matches.Value
+    $Operators = ($FilterDescription -Replace ('Supported operators are: ', '')).Trim()
+    If ([System.String]::IsNullOrEmpty($HelpDescription) -or [System.String]::IsNullOrEmpty($FilterNames) -or [System.String]::IsNullOrEmpty($Operators))
+    {
+        Write-Error ('Get-JCSystemInsights parameter help info is missing.')
+    }
+    Else
+    {
+        $FilterNames | ForEach-Object {
+            $FilterName = $_
+            $Operators | ForEach-Object {
+                $Operator = $_
+                @{
+                    $Table = ("'{0}:{1}:{2}'" -f $FilterName, $Operator, '[SearchValue <String>]')
+                }
+            }
+        }
+    }
 };
 Register-ArgumentCompleter -CommandName Get-JCSystemInsights -ParameterName Table -ScriptBlock {
     param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameter)
     $FilterFilter = $fakeBoundParameter.Filter;
-    $SystemInsightsTables.Keys | Where-Object { $_ -like "${wordToComplete}*" } | Where-Object { $SystemInsightsTables.$_ -like "${FilterFilter}*" } | ForEach-Object {
+    $SystemInsightsDataSet.Keys | Where-Object { $_ -like "${wordToComplete}*" } | Where-Object { $SystemInsightsDataSet.$_ -like "${FilterFilter}*" } | ForEach-Object {
         New-Object System.Management.Automation.CompletionResult (
             $_,
             $_,
@@ -54,7 +72,7 @@ Register-ArgumentCompleter -CommandName Get-JCSystemInsights -ParameterName Tabl
 Register-ArgumentCompleter -CommandName Get-JCSystemInsights -ParameterName Filter -ScriptBlock {
     param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameter)
     $TypeFilter = $fakeBoundParameter.Table;
-    $SystemInsightsTables.Keys | Where-Object { $_ -like "${TypeFilter}*" } | ForEach-Object { $SystemInsightsTables.$_ | Where-Object { $_ -like "${wordToComplete}*" } } | Sort-Object -Unique | ForEach-Object {
+    $SystemInsightsDataSet.Keys | Where-Object { $_ -like "${TypeFilter}*" } | ForEach-Object { $SystemInsightsDataSet.$_ | Where-Object { $_ -like "${wordToComplete}*" } } | Sort-Object -Unique | ForEach-Object {
         New-Object System.Management.Automation.CompletionResult (
             $_,
             $_,
@@ -69,7 +87,8 @@ Function Get-JCSystemInsights
     Param(
         [Parameter(Mandatory)]
         [System.String]
-        # Name of the SystemInsights table to query. See docs.jumpcloud.com for list of avalible table endpoints.
+        # Name of the SystemInsights table to query.
+        # See docs.jumpcloud.com for list of avalible table endpoints.
         $Table,
 
         [Parameter()]
@@ -80,7 +99,9 @@ Function Get-JCSystemInsights
 
         [Parameter()]
         [System.String[]]
-        # Supported values and operators are specified for each table. See docs.jumpcloud.com and search for specific talbe for a list of avalible filter options.
+        # Supported values and operators are specified for each table.
+        # See docs.jumpcloud.com and search for specific table for a list of avalible filter options.
+        # Use tab complete to see avalible filters.
         $Filter,
 
         [Parameter()]
