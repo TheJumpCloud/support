@@ -16,7 +16,7 @@ systems.
 ## SYNTAX
 
 ```
-Get-JCSystemInsights -Table <String> [-SystemId <String>] [[-Filter] <String>] [-Sort <String[]>]
+Get-JCSystemInsights -Table <String> [-SystemId <String[]>] [[-Filter] <String[]>] [-Sort <String[]>]
  [<CommonParameters>]
 ```
 
@@ -74,7 +74,7 @@ Filters the users table for any system with the username jcadmin.
 Filters to narrow down search.
 
 ```yaml
-Type: System.String
+Type: System.String[]
 Parameter Sets: (All)
 Aliases:
 
@@ -120,7 +120,7 @@ Accept wildcard characters: False
 {{ Fill SystemId Description }}
 
 ```yaml
-Type: System.String
+Type: System.String[]
 Parameter Sets: (All)
 Aliases: _id, id, system_id
 
