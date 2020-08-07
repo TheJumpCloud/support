@@ -5,29 +5,15 @@ Release Date: August 07, 2020
 #### RELEASE NOTES
 
 ```
-{{Fill in the Release Notes}}
-```
-
-#### FEATURES:
-
-{{Fill in the Features}}
-
-#### IMPROVEMENTS:
-
-{{Fill in the Improvements}}
-
-#### BUG FIXES:
-
-{{Fill in the Bug Fixes}}
-
-## 1.18.0
-
-Release Date: August 05, 2020
-
-#### RELEASE NOTES
-
-```
-{{Fill in the Release Notes}}
+`Get-JCSystemInsights` has been updated to use the `JumpCloud.SDK.V2` powershell module.
+Feature Enhancements
+    New SystemInsights tables will be automatically added they become available.
+    By using tab complete on the `-Filter` parameter and example of how to build the filter will be populated.
+Breaking Changes
+    Table names will no longer contain special characters.
+    The object returned from the function its properties will not contain special characters.
+    Table names are singular instead of plural.
+    Dropping the `-Name` parameter to increase performance.
 ```
 
 #### FEATURES:
