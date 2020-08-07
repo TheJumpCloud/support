@@ -14,14 +14,6 @@ Describe -Tag:('JCSystemInsights') "Get-JCSystemInsights Tests" {
         }
         $TableNames = $SystemInsightsTables | Where-Object { $_ -notin ('DiskInfo', 'WindowCrash', 'BitlockerInfo', 'Uptime', 'SipConfig', 'Alf', 'SharedResource', 'UserSshKey', 'UserGroup', 'SharingPreference', 'ScheduledTask', 'AlfException') } # HACK Temp workaround because these tables don't take strings as filters
         $SystemInsightsTestCases = @()
-        foreach ($sys in $System) {
-            if ($sys -eq $System[-1]) {
-                $filterString += "system_id:eq:$($sys._id)"
-            }
-            else{
-                $filterString += "system_id:eq:$($sys._id),"
-            }
-        }
         $TableNames | ForEach-Object {
             $TableName = $_
             $SystemInsightsTestCases += @{
@@ -34,7 +26,7 @@ Describe -Tag:('JCSystemInsights') "Get-JCSystemInsights Tests" {
             }
             $SystemInsightsTestCases += @{
                 testDescription = "Test table '$TableName' across specified systems through filter param where error is NullOrEmpty."
-                Command         = "Get-JCSystemInsights -Table:('$TableName') -Filter:('$filterString');"
+                Command         = "Get-JCSystemInsights -Table:('$TableName') -Filter:('system_id:eq:$($System[0]._id)');"
             }
             # $SystemInsightsTestCases += @{
             #     testDescription = "Test table '$TableName' across specified systems ByName where error is NullOrEmpty."
@@ -48,7 +40,7 @@ Describe -Tag:('JCSystemInsights') "Get-JCSystemInsights Tests" {
         Return $SystemInsightsTestCases
     }
     It '<testDescription>' -TestCases:(Get-JCSystemInsightsTestCases -System:($PesterParams_SystemLinux, $PesterParams_SystemMac, $PesterParams_SystemWindows)) {
-        Write-Host ("Command: $Command")
+        # Write-Host ("Command: $Command")
         $CommandResults = Invoke-Expression -Command:($Command) -ErrorVariable:('CommandResultsError')
         $CommandResultsError | Should -BeNullOrEmpty
     }
