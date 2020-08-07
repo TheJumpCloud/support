@@ -33,7 +33,8 @@ https://github.com/TheJumpCloud/support/wiki/Get-JCSystemInsights
 #>
 # Populate values for function parameters. "Dynamic ValidateSet"
 $SystemInsightsPrefix = 'Get-JcSdkSystemInsight';
-$SystemInsightsDataSet = Get-Command -Module:('JumpCloud.SDK.V2') -Name:("$($SystemInsightsPrefix)*") | ForEach-Object {
+$SystemInsightsDataSet = [Ordered]@{}
+Get-Command -Module:('JumpCloud.SDK.V2') -Name:("$($SystemInsightsPrefix)*") | ForEach-Object {
     $Help = Get-Help -Name:($_.Name);
     $Table = $_.Name.Replace($SystemInsightsPrefix, '')
     $HelpDescription = $Help.Description.Text
@@ -46,15 +47,14 @@ $SystemInsightsDataSet = Get-Command -Module:('JumpCloud.SDK.V2') -Name:("$($Sys
     }
     Else
     {
-        $FilterNames | ForEach-Object {
+        $Filters = $FilterNames | ForEach-Object {
             $FilterName = $_
             $Operators | ForEach-Object {
                 $Operator = $_
-                @{
-                    $Table = ("'{0}:{1}:{2}'" -f $FilterName, $Operator, '[SearchValue <String>]')
-                }
+                ("'{0}:{1}:{2}'" -f $FilterName, $Operator, '[SearchValue <String>]');
             }
         }
+        $SystemInsightsDataSet.Add($Table, $Filters )
     }
 };
 Register-ArgumentCompleter -CommandName Get-JCSystemInsights -ParameterName Table -ScriptBlock {

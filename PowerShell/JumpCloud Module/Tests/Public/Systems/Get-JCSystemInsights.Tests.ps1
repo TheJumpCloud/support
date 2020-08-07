@@ -7,15 +7,33 @@ Describe -Tag:('JCSystemInsights') "Get-JCSystemInsights Tests" {
     {
         # Retrieve objects to test with
         $SystemInsightsPrefix = 'Get-JcSdkSystemInsight';
-        $SystemInsightsTables = @();
-        $Commands = Get-Command -Module:('JumpCloud.SDK.V2') -Name:("$($SystemInsightsPrefix)*") | select-object name;
-        $Commands | ForEach-Object {
-            $SystemInsightsTables += ($_.Name.Replace($SystemInsightsPrefix, ''))
-        }
-        $TableNames = $SystemInsightsTables | Where-Object { $_ -notin ('DiskInfo', 'WindowCrash', 'BitlockerInfo', 'Uptime', 'SipConfig', 'Alf', 'SharedResource', 'UserSshKey', 'UserGroup', 'SharingPreference', 'ScheduledTask', 'AlfException') } # HACK Temp workaround because these tables don't take strings as filters
+        $SystemInsightsDataSet = [Ordered]@{}
+        Get-Command -Module:('JumpCloud.SDK.V2') -Name:("$($SystemInsightsPrefix)*") | ForEach-Object {
+            $Help = Get-Help -Name:($_.Name);
+            $Table = $_.Name.Replace($SystemInsightsPrefix, '')
+            $HelpDescription = $Help.Description.Text
+            $FilterDescription = $Help.parameters.parameter.Where( { $_.Name -eq 'filter' }).Description.Text
+            $FilterNames = ($HelpDescription | Select-String -Pattern:([Regex]'(?<=\ `)(.*?)(?=\`)') -AllMatches).Matches.Value
+            $Operators = ($FilterDescription -Replace ('Supported operators are: ', '')).Trim()
+            If ([System.String]::IsNullOrEmpty($HelpDescription) -or [System.String]::IsNullOrEmpty($FilterNames) -or [System.String]::IsNullOrEmpty($Operators))
+            {
+                Write-Error ('Get-JCSystemInsights parameter help info is missing.')
+            }
+            Else
+            {
+                $Filters = $FilterNames | ForEach-Object {
+                    $FilterName = $_
+                    $Operators | ForEach-Object {
+                        $Operator = $_
+                        ("'{0}:{1}:{2}'" -f $FilterName, $Operator, '[SearchValue <String>]');
+                    }
+                }
+                $SystemInsightsDataSet.Add($Table, $Filters )
+            }
+        };
         $SystemInsightsTestCases = @()
-        $TableNames | ForEach-Object {
-            $TableName = $_
+        $SystemInsightsDataSet.GetEnumerator() | ForEach-Object {
+            $TableName = $_.Key
             $SystemInsightsTestCases += @{
                 testDescription = "Test table '$TableName' across all systems where error is NullOrEmpty."
                 Command         = "Get-JCSystemInsights -Table:('$TableName');"
@@ -24,17 +42,12 @@ Describe -Tag:('JCSystemInsights') "Get-JCSystemInsights Tests" {
                 testDescription = "Test table '$TableName' across specified systems through Id param where error is NullOrEmpty."
                 Command         = "Get-JCSystemInsights -Table:('$TableName') -Id:('$(($System._id) -join "','")');"
             }
-            $SystemInsightsTestCases += @{
-                testDescription = "Test table '$TableName' across specified systems through filter param where error is NullOrEmpty."
-                Command         = "Get-JCSystemInsights -Table:('$TableName') -Filter:('system_id:eq:$($System[0]._id)');"
-            }
+            # Use this if we decide to test the `-Filter` parameter eventually.
+            # $Filter = $_.Value | Where-Object { $_ -like '%*system_id*%' } # Only test system_id filter since we dont know the values to search for in the other filters.
+            # $Filter = $Filter.replace('[SearchValue <String>]', $System[0]._id)
             # $SystemInsightsTestCases += @{
-            #     testDescription = "Test table '$TableName' across specified systems ByName where error is NullOrEmpty."
-            #     Command         = "Get-JCSystemInsights -Table:('$TableName') -Name:('$(($System.displayName) -join "','")');"
-            # }
-            # $SystemInsightsTestCases += @{
-            #     testDescription = "Test table '$TableName' across specified systems ByValue Name where error is NullOrEmpty."
-            #     Command         = "Get-JCSystemInsights -Table:('$TableName') -SearchBy:('ByName') -SearchByValue:('$(($System.displayName) -join "','")');"
+            #     testDescription = "Test table '$TableName' across specified systems through filter param where error is NullOrEmpty."
+            #     Command         = "Get-JCSystemInsights -Table:('$TableName') -Filter:('$($Filter)');"
             # }
         }
         Return $SystemInsightsTestCases
