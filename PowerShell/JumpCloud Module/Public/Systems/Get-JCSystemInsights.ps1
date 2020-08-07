@@ -1,3 +1,36 @@
+<#
+.Synopsis
+JumpCloud's System Insights feature provides admins with the ability to easily interrogate their
+fleet of systems to find important pieces of information. Using this function you
+can easily gather heightened levels of information from your fleet of JumpCloud managed
+systems.
+.Description
+Using Get-JCSystemInsights will allow you to easily query JumpCloud's RESTful API to return information from your fleet of JumpCloud managed
+systems.
+
+.Example
+PS C:\> Get-JCSystemInsights -Table:('App');
+
+Get all Apps from systems with system insights enabled.
+
+.Example
+PS C:\> Get-JCSystemInsights -Table:('App') -SystemId:('5d66e0ac51db1e789bb17c77', '5e0e19831bc893319ae068b6');
+
+Get all Apps from the specific systems.
+
+.Example
+PS C:\> Get-JCSystemInsights -Table:('App') -Filter:('system_id:eq:5d66e0ac51db1e789bb17c77', 'bundle_name:eq:storeuid');
+
+Get systems that have a specific App on a specific system where the filter is multiple strings.
+
+.Example
+PS C:\> Get-JCSystemInsights -Table:('App') -Filter:('system_id:eq:5d66e0ac51db1e789bb17c77, bundle_name:eq:storeuid');
+
+Get systems that have a specific App on a specific system where the filter is a string.
+
+.Link
+https://github.com/TheJumpCloud/support/wiki/Get-JCSystemInsights
+#>
 # Populate values for function parameters. "Dynamic ValidateSet"
 $SystemInsightsPrefix = 'Get-JcSdkSystemInsight';
 $SystemInsightsTables = [Ordered]@{};
