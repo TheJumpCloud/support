@@ -1,26 +1,23 @@
 # Custom Configuration Profiles in JumpCloud
 
-JumpCloud supports the management of custom configuration [profiles](https://developer.apple.com/documentation/devicemanagement/using_configuration_profiles?language=objc) through [JumpCloud commands](https://support.jumpcloud.com/support/s/article/getting-started-commands-2019-08-21-10-36-47). Tools like [ProfileCreator](https://github.com/ProfileCreator/ProfileCreator) or [Apple Configurator 2](https://apps.apple.com/us/app/apple-configurator-2/id1037126344?mt=12) can be used to generate .mobileconfig files which contain preferences for systems and macOS applications. Profiles generated with ProfileCreator or other methods can be distributed to JumpCloud systems using the macOS binary `profiles` application and JumpCloud commands. Since the .mobileconfig files are almost undoubtably under the [1MB payload limit](https://support.jumpcloud.com/support/s/article/getting-started-commands-2019-08-21-10-36-47#Files) of a JumpCloud command, those files can up uploaded and distributed using JumpCloud commands.
+JumpCloud supports the management of Custom MDM Configuration [profiles](https://developer.apple.com/documentation/devicemanagement/using_configuration_profiles?language=objc) through [Custom MDM Profiles](https://jumpcloud.com/blog/custom-configuration-profiles). Tools like [ProfileCreator](https://github.com/ProfileCreator/ProfileCreator), [imazing Profile Editor](https://imazing.com/profile-editor/download) or [Apple Configurator 2](https://apps.apple.com/us/app/apple-configurator-2/id1037126344?mt=12) can be used to generate .mobileconfig files which contain preferences for systems and macOS applications.
 
 ## Table of Contents
 
 - [Custom Configuration Profiles in JumpCloud](#custom-configuration-profiles-in-jumpcloud)
   - [Table of Contents](#table-of-contents)
   - [General settings for ProfileCreator](#general-settings-for-profilecreator)
-  - [Command Examples](#command-examples)
+  - [Configuration Profile Examples](#configuration-profile-examples)
     - [Catalina Notifications Profile](#catalina-notifications-profile)
     - [Firefox Custom Profile](#firefox-custom-profile)
+    - [Chrome Custom Profile](#chrome-custom-profile)
     - [Custom Dock Profile](#custom-dock-profile)
     - [Custom Font Distribution](#custom-font-distribution)
     - [Disable Airdrop](#disable-airdrop)
   - [Export a profile](#export-a-profile)
-  - [Import the "JumpCloud Install Custom Configuration Profile" Command](#import-the-%22jumpcloud-install-custom-configuration-profile%22-command)
   - [Other Considerations](#other-considerations)
-    - [Password protected profiles](#password-protected-profiles)
-    - [Signing Profiles](#signing-profiles)
-    - [Caveats, MDM restrictions](#caveats-mdm-restrictions)
     - [Removal of profiles](#removal-of-profiles)
-  
+
 ## General settings for ProfileCreator
 
 The ProfileCreator application has a well-documented [wiki](https://github.com/ProfileCreator/ProfileCreator/wiki). Consult the wiki for ProfileCreator specific issues or join the conversion over in the #profilecreator channel in the [MacAdmins Slack](https://www.macadmins.org/) for additional help.
@@ -29,11 +26,13 @@ When opening ProfileCreator for the first time, it's advised to set organization
 
 ![example preferences](images/preferences.png)
 
-Consider setting an organization name and identifier. Optionally, [sign each profile](#signing-profiles).
+Consider setting an organization name and identifier.
 
-## Command Examples
+#TODO: profiles distributed to systems via the JumpCloud Custom MDM profile or commands will display the an organizational identifier.
 
-The following section will walk through several example custom configuration profiles. At the time of this writing development of ProfileCreator manifests were still in development although the application ProfileCreator is no longer in development. The following examples should be used as a reference and tested in an environment prior to deployment
+## Configuration Profile Examples
+
+The following section demonstrates the process to create several example custom configuration profiles. The following examples should be used as a reference and tested prior to deployment.
 
 - Catalina Notifications
 - Firefox Settings
@@ -42,9 +41,9 @@ The following section will walk through several example custom configuration pro
 
 ### Catalina Notifications Profile
 
-This example demonstrates the work required to build a custom policy to allow notifications on several applications. As of the release of macOS Catalina 10.15 users are prompted to allow or deny specific applications from prompting notification banners.
+As of the release of macOS Catalina 10.15 users are prompted to allow or deny specific applications from prompting notification banners. This custom policy can be used to set the allow or deny preference on a per application basis.
 
-This profile will allow the JumpCloud tray application to send the user notifications.
+This specific profile will allow the JumpCloud tray application to send the user notifications.
 
 To create a new profile, open ProfileCreator and click the [ + ] icon.
 
@@ -70,7 +69,8 @@ The result of that command run against the JumpCloud application is: `com.jumpcl
 
 ![notification complete](images/notification_post.png)
 
-Save and [Export](#export-a-profile) the profile for deployment. Distribute to JumpCloud systems by [importing the custom configuration profile](#import-the-%22jumpcloud-install-custom-configuration-profile%22-command) command
+Save and [Export](#export-a-profile) the profile for deployment. Distribute to JumpCloud systems through [Custom MDM profiles](https://jumpcloud.com/blog/custom-configuration-profiles).
+
 ### Firefox Custom Profile
 
 Firefox or other browsers can be configured to accept settings from a profile. To create an application manifest payload. Select the application icon and add the Firefox profile. Ensure the EnterprisePoliciesEnabled checkbox is ticked like the example below:
@@ -81,7 +81,21 @@ Add a setting like default homepage like the example below. Save and [export the
 
 ![Firefox example](images/firefox_profile.png)
 
-Save and [Export](#export-a-profile) the profile for deployment. Distribute to JumpCloud systems by [importing the custom configuration profile](#import-the-%22jumpcloud-install-custom-configuration-profile%22-command) command
+Save and [Export](#export-a-profile) the profile for deployment. Distribute to JumpCloud systems through [Custom MDM profiles](https://jumpcloud.com/blog/custom-configuration-profiles)
+
+### Chrome Custom Profile
+
+Chrome settings and other browser settings can be managed through a custom configuration profile. The Chrome profile in this example will silently install extensions. To create an application manifest payload. Select the application icon in ProfileCreator and add the Chrome profile. Under the 'Extensions' settings, scroll to the "Extension/App IDs and update URLs to be silently installed:
+
+Each Chrome Extension has a unique ID, when entered in this payload, Chrome will silently reference that ID and install that Extension on a systems Chrome Browser.
+
+To find a Chrome Extension's unique ID, visit the [Chrome Extension Web Store](https://chrome.google.com/webstore/category/extensions?hl=en) search for a desired extension and take note of the unique ID in the extensions URL - this ID value can be entered in the Chrome extension profile to silently install Extensions on systems. The highlighted value in the photo below is the unique ID for the ublock origin extension.
+
+![Chrome Extension Example](images/chrome_extension_url.png)
+
+Unique ID's from several extensions can be populated in the same payload like the example below:
+
+![Chrome Extension Payload](images/chrome_extension_payload.png)
 
 ### Custom Dock Profile
 
@@ -91,7 +105,7 @@ This example sets the dock pixel size to 24px and positions the dock on the left
 
 ![dock example](images/dock_example.png)
 
-Save and [Export](#export-a-profile) the profile for deployment. Distribute to JumpCloud systems by [importing the custom configuration profile](#import-the-%22jumpcloud-install-custom-configuration-profile%22-command) command
+Save and [Export](#export-a-profile) the profile for deployment. Distribute to JumpCloud systems through [Custom MDM profiles](https://jumpcloud.com/blog/custom-configuration-profiles)
 
 ### Custom Font Distribution
 
@@ -101,7 +115,7 @@ Individual Fonts or Font Families can be distributed through custom profiles. Th
 
 (note: Font payloads must be under 1MB to comply with the JumpCloud command file size limit)
 
-Save and [Export](#export-a-profile) the profile for deployment. Distribute to JumpCloud systems by [importing the custom configuration profile](#import-the-%22jumpcloud-install-custom-configuration-profile%22-command) command
+Save and [Export](#export-a-profile) the profile for deployment. Distribute to JumpCloud systems through [Custom MDM profiles](https://jumpcloud.com/blog/custom-configuration-profiles).
 
 ### Disable Airdrop
 
@@ -109,76 +123,22 @@ A profile to disable AirDrop can be distributed as a custom profile. The Payload
 
 ![airdrop_profile](images/airdrop_profile.png)
 
-Save and [Export](#export-a-profile) the profile for deployment. Distribute to JumpCloud systems by [importing the custom configuration profile](#import-the-%22jumpcloud-install-custom-configuration-profile%22-command) command
-
+Save and [Export](#export-a-profile) the profile for deployment. Distribute to JumpCloud systems through [Custom MDM profiles](https://jumpcloud.com/blog/custom-configuration-profiles).
 
 ## Export a profile
 
 Assuming a profile is ready for deployment. Save and Export the profile using the ProfileCreator file menu. File > Export...
 
-On the export menu, choose a location to save the profile. The profile will be uploaded to a JumpCloud command. Optionally, [sign the profile](#signing-profiles) with an Apple Developer certificate.
+On the export menu, choose a location to save the profile. The profile will be uploaded and sent to systems with JumpCloud's Custom MDM Configuration Profile.
 
 ![export profile menu](images/export_profile.png)
 
-## Import the "JumpCloud Install Custom Configuration Profile" Command
-
-Using the PowerShell module, import the [Install Custom Configuration Profile](Mac&#32;-&#32;Install&#32;Custom&#32;Configuration&#32;Profile.md) command to a JumpCloud tenant.
-
-```pwsh
-Import-JCCommand -URL 'https://git.io/JedCp'
-```
-
-Open the newly imported JumpCloud command within the JumpCloud Console. Under "Files" select the "Upload Files" button and upload the .mobileconfig profile created with ProfileCreator. Copy the .mobileconfig name to the "profile" variable within the command text block like the example below:
-
-![name and upload configuration](images/notification_upload_name.png)
-
-Optionally, rename the command to help identify which profile is installed. If desired, the install script could be modified to install multiple profiles. Each profile would need to be uploaded to the command and each profile would need to be installed explicitly and separately like the example commands below:
-
-```bash
-/usr/bin/profiles -I -F "/tmp/Catalina Notification Profile.mobileconfig"
-/usr/bin/profiles -I -F "/tmp/JumpCloud Firefox Profile.mobileconfig"
-```
-
 ## Other Considerations
-
-### Password protected profiles
-
-Profiles can be password protected with profile specific password. If a profile is password protected, it would require admin credentials and knowledge of the profile's password in order to remove the profile from a system. Profile Removal passwords are stored in clear text. Profiles should be encrypted before distribution. Apple's [documentation on the matter is informative](https://developer.apple.com/documentation/devicemanagement/using_configuration_profiles), [Rich Trouton's post on encrypted profiles](https://derflounder.wordpress.com/2019/09/16/creating-macos-configuration-profiles-with-encrypted-payloads/) provides instructions for profile encryption.
-
-### Signing Profiles
-
-Signed policies appear as "Verified" on system endpoints, signing a profile requires access to an [Apple Developer Account](https://developer.apple.com/). Policies signed with an Apple Developer account are verified on system endpoints. Signing ensures the profiles is not modified in transit.
-
-![verified policy example](images/verified.png)
-
-### Caveats, MDM restrictions
-
-Some profiles must be distributed though at least User Approved MDM. Without User Approved MDM, JumpCloud does not currently support distribution of the following profiles:
-
-- Privacy Preference Policy Control Profiles
-- Google Account Profiles
-
-Distributing custom profiles requires some knowledge of the existing profiles within an organization. Profiles in JumpCloud may alter the same preferences as custom profiles. Setting a custom password policy profile will conflict with settings in JumpCloud for example. It's of utmost importance to test policy deployments before organization wide distribution.
 
 ### Removal of profiles
 
-Profiles generated with ProfileCreator (and other methods) are identified with a unique profileIdentifier. The `profiles` binary on macOS is leveraged to remove profiles by profileIdentifier.
+To remove a profile distributed with [Custom MDM profile](https://jumpcloud.com/blog/custom-configuration-profiles), remove the system from the scope of the policy. The profile will immediately be removed from the target system.
 
-Right-clicking an unencrypted .mobileconfig file should yield an xml file with a number of key value pairs. The image below displays a sample profileIdentifier for a custom profile. Copy the profile profileIdentifier to the clipboard.
-
-![uuid example](images/payload_uuid.png)
-
-The xml key value pair should look something like this:
-
-```xml
-<key>PayloadIdentifier</key>
-<string>com.jumpcloud.KBL9OML3L-JD93-3K2L-39ID-KKEP34JK34KL4</string>
-```
-
-To identify a profile already installed on a macOS system, run the `sudo profiles -P` command to view all profiles currently installed on a system. the profileIdentifier attribute for each profile should be available.
+To identify a profile already installed on a macOS system, run the `sudo profiles -P` command to view all profiles currently installed on a system.
 
 ![profiles -p example](images/profiles_p.png)
-
-To remove a profile from a system, import the [uninstall command](Mac&#32;-&#32;Uninstall&#32;Custom&#32;Configuration&#32;Profile.md) with PowerShell and copy the profileIdentifier of the profile which is scheduled to be removed from a system. Assign that value to the UUID variable of the uninstall command and run against a set of systems.
-
-![uninstall example](images/uninstall_example.png)
