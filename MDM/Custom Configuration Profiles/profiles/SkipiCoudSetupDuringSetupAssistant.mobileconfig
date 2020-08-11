@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>PayloadContent</key>
+	<array>
+		<dict>
+			<key>PayloadDescription</key>
+			<string>Configures Setup Assistant settings</string>
+			<key>PayloadDisplayName</key>
+			<string>Setup Assistant</string>
+			<key>PayloadIdentifier</key>
+			<string>com.jumpcloud.39FA1BE4-B873-44E7-8880-3682B10274AE.com.apple.SetupAssistant.managed.A3AD52EB-7953-4DAF-9C6C-CC586325AA3E</string>
+			<key>PayloadOrganization</key>
+			<string></string>
+			<key>PayloadType</key>
+			<string>com.apple.SetupAssistant.managed</string>
+			<key>PayloadUUID</key>
+			<string>A3AD52EB-7953-4DAF-9C6C-CC586325AA3E</string>
+			<key>PayloadVersion</key>
+			<integer>1</integer>
+			<key>SkipCloudSetup</key>
+			<true/>
+		</dict>
+	</array>
+	<key>PayloadDescription</key>
+	<string>Skip iCloud Setup for new Accounts</string>
+	<key>PayloadDisplayName</key>
+	<string>Skip iCoud Setup during Setup Assistant</string>
+	<key>PayloadIdentifier</key>
+	<string>com.jumpcloud.39FA1BE4-B873-44E7-8880-3682B10274AE</string>
+	<key>PayloadOrganization</key>
+	<string>JumpCloud</string>
+	<key>PayloadScope</key>
+	<string>System</string>
+	<key>PayloadType</key>
+	<string>Configuration</string>
+	<key>PayloadUUID</key>
+	<string>39FA1BE4-B873-44E7-8880-3682B10274AE</string>
+	<key>PayloadVersion</key>
+	<integer>1</integer>
+</dict>
+</plist>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>PayloadContent</key>
+	<array>
+		<dict>
+			<key>DisableAirDrop</key>
+			<true/>
+			<key>PayloadDescription</key>
+			<string>macOS AirDrop Preferences</string>
+			<key>PayloadDisplayName</key>
+			<string>AirDrop</string>
+			<key>PayloadIdentifier</key>
+			<string>com.jumpcloud.DC7B0441-0965-4437-8CD0-C60E150F0395.com.apple.NetworkBrowser.E127EDD3-6D72-43F7-A5F7-DA343025C0E1</string>
+			<key>PayloadOrganization</key>
+			<string></string>
+			<key>PayloadType</key>
+			<string>com.apple.NetworkBrowser</string>
+			<key>PayloadUUID</key>
+			<string>E127EDD3-6D72-43F7-A5F7-DA343025C0E1</string>
+			<key>PayloadVersion</key>
+			<integer>1</integer>
+		</dict>
+	</array>
+	<key>PayloadDescription</key>
+	<string>Disables Air Drop </string>
+	<key>PayloadDisplayName</key>
+	<string>Disable Air Drop</string>
+	<key>PayloadIdentifier</key>
+	<string>com.jumpcloud.DC7B0441-0965-4437-8CD0-C60E150F0395</string>
+	<key>PayloadOrganization</key>
+	<string>JumpCloud</string>
+	<key>PayloadScope</key>
+	<string>System</string>
+	<key>PayloadType</key>
+	<string>Configuration</string>
+	<key>PayloadUUID</key>
+	<string>DC7B0441-0965-4437-8CD0-C60E150F0395</string>
+	<key>PayloadVersion</key>
+	<integer>1</integer>
+</dict>
+</plist>

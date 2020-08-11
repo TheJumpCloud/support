@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>PayloadContent</key>
+	<array>
+		<dict>
+			<key>NotificationSettings</key>
+			<array>
+				<dict>
+					<key>AlertType</key>
+					<integer>1</integer>
+					<key>BadgesEnabled</key>
+					<true/>
+					<key>BundleIdentifier</key>
+					<string>com.jumpcloud.jcagent-tray</string>
+					<key>CriticalAlertEnabled</key>
+					<false/>
+					<key>NotificationsEnabled</key>
+					<true/>
+					<key>ShowInLockScreen</key>
+					<true/>
+					<key>ShowInNotificationCenter</key>
+					<true/>
+					<key>SoundsEnabled</key>
+					<true/>
+				</dict>
+			</array>
+			<key>PayloadDescription</key>
+			<string>Configures Notification settings for macOS apps</string>
+			<key>PayloadDisplayName</key>
+			<string>Notifications</string>
+			<key>PayloadIdentifier</key>
+			<string>com.jumpcloud.DAB2676F-3AB2-4618-A58E-271A25C36219.com.apple.notificationsettings.3A943234-6684-49ED-A8C1-6FE638C8F5F8</string>
+			<key>PayloadOrganization</key>
+			<string></string>
+			<key>PayloadType</key>
+			<string>com.apple.notificationsettings</string>
+			<key>PayloadUUID</key>
+			<string>3A943234-6684-49ED-A8C1-6FE638C8F5F8</string>
+			<key>PayloadVersion</key>
+			<integer>1</integer>
+		</dict>
+	</array>
+	<key>PayloadDescription</key>
+	<string>Allow Notifactions from JumpCloud App</string>
+	<key>PayloadDisplayName</key>
+	<string>JumpCloud App Notifications</string>
+	<key>PayloadIdentifier</key>
+	<string>com.jumpcloud.DAB2676F-3AB2-4618-A58E-271A25C36219</string>
+	<key>PayloadOrganization</key>
+	<string>JumpCloud</string>
+	<key>PayloadScope</key>
+	<string>System</string>
+	<key>PayloadType</key>
+	<string>Configuration</string>
+	<key>PayloadUUID</key>
+	<string>DAB2676F-3AB2-4618-A58E-271A25C36219</string>
+	<key>PayloadVersion</key>
+	<integer>1</integer>
+</dict>
+</plist>
