@@ -35,7 +35,7 @@ Consider setting an organization name and identifier, profiles distributed to sy
 
 ## Configuration Profile Examples
 
-Profiles examples below should be tested before distribution to production systems. The following example profiles should serve as inspiration for developing your own profiles.
+Profiles examples below should be tested before distribution to production systems. The following example profiles should serve as inspiration for developing your own profiles. Polices with the same configuration payload can conflict and cause unwanted behavior. Ex. A Policy with a Login Window Payload can conflict with a second policy that also contains a Login Window Payload - Please test all policies.
 
 ### Catalina Notifications Profile
 
