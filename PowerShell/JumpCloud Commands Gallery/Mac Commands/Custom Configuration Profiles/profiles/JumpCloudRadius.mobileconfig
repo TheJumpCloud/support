@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>PayloadContent</key>
+	<array>
+		<dict>
+			<key>AutoJoin</key>
+			<false/>
+			<key>CaptiveBypass</key>
+			<false/>
+			<key>EAPClientConfiguration</key>
+			<dict>
+				<key>AcceptEAPTypes</key>
+				<array>
+					<integer>21</integer>
+				</array>
+				<key>OneTimeUserPassword</key>
+				<true/>
+				<key>PayloadCertificateAnchorUUID</key>
+				<array>
+					<string>40B4D65F-6E98-4674-AE9F-1C43908AFFA3</string>
+				</array>
+				<key>TLSMaximumVersion</key>
+				<string>1.0</string>
+				<key>TLSMinimumVersion</key>
+				<string>1.0</string>
+				<key>TTLSInnerAuthentication</key>
+				<string>PAP</string>
+			</dict>
+			<key>EncryptionType</key>
+			<string>WPA</string>
+			<key>HIDDEN_NETWORK</key>
+			<false/>
+			<key>IsHotspot</key>
+			<false/>
+			<key>PayloadDescription</key>
+			<string>Configures Wi-Fi settings</string>
+			<key>PayloadDisplayName</key>
+			<string>Wi-Fi</string>
+			<key>PayloadIdentifier</key>
+			<string>com.apple.wifi.managed.1C26C62A-D1B1-441F-9F48-E11BAFAE2B94</string>
+			<key>PayloadType</key>
+			<string>com.apple.wifi.managed</string>
+			<key>PayloadUUID</key>
+			<string>1C26C62A-D1B1-441F-9F48-E11BAFAE2B94</string>
+			<key>PayloadVersion</key>
+			<integer>1</integer>
+			<key>ProxyType</key>
+			<string>None</string>
+			<key>SSID_STR</key>
+			<string>YOUR SSID</string>
+		</dict>
+	</array>
+	<key>PayloadDescription</key>
+	<string>JumpCloud Generated Radius Profile</string>
+	<key>PayloadDisplayName</key>
+	<string>JumpCloud Radius</string>
+	<key>PayloadIdentifier</key>
+	<string>65062E5E-6D68-454A-BDE8-F2FE3606BD84</string>
+	<key>PayloadOrganization</key>
+	<string>JumpCloud</string>
+	<key>PayloadRemovalDisallowed</key>
+	<false/>
+	<key>PayloadType</key>
+	<string>Configuration</string>
+	<key>PayloadUUID</key>
+	<string>51254BD7-90B0-4633-B7E5-D20C645182A7</string>
+	<key>PayloadVersion</key>
+	<integer>1</integer>
+</dict>
+</plist>

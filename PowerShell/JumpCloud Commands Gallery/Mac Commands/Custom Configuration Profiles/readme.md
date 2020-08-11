@@ -14,9 +14,12 @@ JumpCloud supports the management of Custom MDM Configuration [profiles](https:/
     - [Custom Dock Profile](#custom-dock-profile)
     - [Custom Font Distribution](#custom-font-distribution)
     - [Disable Airdrop](#disable-airdrop)
+    - [Radius EAP-TTLS/PAP Network Profile](#radius-eap-ttlspap-network-profile)
+    - [Create a Privacy Preference Policy Control Profile](#create-a-privacy-preference-policy-control-profile)
   - [Export a profile](#export-a-profile)
   - [Other Considerations](#other-considerations)
     - [Removal of profiles](#removal-of-profiles)
+  - [.mobileconfig Profile Examples](#mobileconfig-profile-examples)
 
 ## General settings for ProfileCreator
 
@@ -26,9 +29,7 @@ When opening ProfileCreator for the first time, it's advised to set organization
 
 ![example preferences](images/preferences.png)
 
-Consider setting an organization name and identifier.
-
-#TODO: profiles distributed to systems via the JumpCloud Custom MDM profile or commands will display the an organizational identifier.
+Consider setting an organization name and identifier, profiles distributed to systems via the JumpCloud Custom MDM profile or commands will display the an organizational identifier on each distributed profile.
 
 ## Configuration Profile Examples
 
@@ -125,6 +126,49 @@ A profile to disable AirDrop can be distributed as a custom profile. The Payload
 
 Save and [Export](#export-a-profile) the profile for deployment. Distribute to JumpCloud systems through [Custom MDM profiles](https://jumpcloud.com/blog/custom-configuration-profiles).
 
+### Radius EAP-TTLS/PAP Network Profile
+
+A profile containing the JumpCloud Radius Certificate and network settings can be configured and distributed to systems with a [Custom MDM profile](https://jumpcloud.com/blog/custom-configuration-profiles).
+
+*Prerequisites*:
+
+- [Configuring RADIUS Servers in JumpCloud](https://support.jumpcloud.com/support/s/article/configuring-radius-servers-in-jumpcloud1)
+- [Configuring a Wireless Access Point (WAP), VPN or Router for JumpCloud’s RADIUS](https://support.jumpcloud.com/support/s/article/configuring-a-wireless-access-point-wap-vpn-or-router-for-jumpclouds-radius1-2019-08-21-10-36-47)
+
+JumpCloud has previously posted instructions to configure this profile [using Apple Configurator 2](https://support.jumpcloud.com/support/s/article/eap-ttlspap-configuration-on-mac--ios-devices-for-jumpcloud-radius-clients1-2019-08-21-10-36-47). Create the profile from scratch by following the [instructions on JumpCloud's support site](https://support.jumpcloud.com/support/s/article/eap-ttlspap-configuration-on-mac--ios-devices-for-jumpcloud-radius-clients1-2019-08-21-10-36-47), it is not necessary to sign the profile since the profile will be signed with the MDM Push Notification Certificate when uploaded to JumpCloud as a [Custom MDM profile](https://jumpcloud.com/blog/custom-configuration-profiles).
+
+Alternatively, download the [JumpCloud Radius .mobileconfig template](profiles/JumpCloudRadius.mobileconfig) and open the file with Apple Configurator 2.
+
+Change the SSID to match your RADIUS Server SSID
+
+![Radius SSID](images/radius_ssid.png)
+
+Add the JumpCloud Radius Server Certificate to the profile
+
+![Radius Certificate](images/radius_cert.png)
+
+Add the Radius Cert to the Wifi payload within the profile
+
+![Radius Certificate Wifi Payload](images/radius_wifi.png)
+
+Distribute this profile to JumpCloud systems through [Custom MDM profiles](https://jumpcloud.com/blog/custom-configuration-profiles).
+
+### Create a Privacy Preference Policy Control Profile
+
+Privacy Preference Policy Control Profiles (PPPC Profiles) are preferences which control app's access to certain files and services on a macOS system. PPPC Profiles can been created with tools like [ProfileCreator](https://github.com/ProfileCreator/ProfileCreator), [imazing Profile Editor](https://imazing.com/profile-editor/download) or [Apple Configurator 2](https://apps.apple.com/us/app/apple-configurator-2/id1037126344?mt=12). Other tools such as [PPPC Utility](https://github.com/jamf/PPPC-Utility) were built to make the process of PPPC profile creation as simple as possible. PPPC Utility also allows .mobileconfig files to be exported and distributed through [Custom MDM profiles](https://jumpcloud.com/blog/custom-configuration-profiles).
+
+The example PPPC profile below contains a payload for the Zoom Application, where the "Accessibility" and "Downloads Folder" settings have been set to "Allow".
+
+![Zoom PPPC](images/zoom_pppc.png)
+
+This payload prevents users from being notified with with the following message when first launching the Zoom app:
+
+![Zoom Before](images/zoom_before.png)
+
+Instead, system users are brought right into the Zoom Application.
+
+![Zoom After](images/zoom_after.png)
+
 ## Export a profile
 
 Assuming a profile is ready for deployment. Save and Export the profile using the ProfileCreator file menu. File > Export...
@@ -142,3 +186,11 @@ To remove a profile distributed with [Custom MDM profile](https://jumpcloud.com/
 To identify a profile already installed on a macOS system, run the `sudo profiles -P` command to view all profiles currently installed on a system.
 
 ![profiles -p example](images/profiles_p.png)
+
+## .mobileconfig Profile Examples
+
+Members of the mac administrator community have published useful profile .mobileconfig files on GitHub. If you are interested in a community written management profile, read and test the profile before distribution to production systems.
+
+This repository contains several custom .mobileconfig profiles within the [profiles](./profiles/) directory.
+
+For additional .mobileconfig profiles, consider browsing [Rich Trouton's Profiles](https://github.com/rtrouton/profiles) repository on GitHub. Rich's profiles repository contains many .mobileconfig settings profiles admins may wish to deploy to manage their systems.
