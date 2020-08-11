@@ -35,12 +35,7 @@ Consider setting an organization name and identifier, profiles distributed to sy
 
 ## Configuration Profile Examples
 
-The following section demonstrates the process to create several example custom configuration profiles. The following examples should be used as a reference and tested prior to deployment.
-
-- Catalina Notifications
-- Firefox Settings
-- Custom Dock Configuration
-- Custom Font Distribution
+Profiles examples below should be tested before distribution to production systems. The following example profiles should serve as inspiration for developing your own profiles.
 
 ### Catalina Notifications Profile
 
