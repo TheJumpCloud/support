@@ -15,6 +15,8 @@ JumpCloud supports the management of Custom MDM Configuration [profiles](https:/
     - [Custom Font Distribution](#custom-font-distribution)
     - [Disable Airdrop](#disable-airdrop)
     - [Radius EAP-TTLS/PAP Network Profile](#radius-eap-ttlspap-network-profile)
+      - [Manually Configure the Radius Profile](#manually-configure-the-radius-profile)
+      - [Use the Radius Profile Template](#use-the-radius-profile-template)
     - [Create a Privacy Preference Policy Control Profile](#create-a-privacy-preference-policy-control-profile)
   - [Export a profile](#export-a-profile)
   - [Other Considerations](#other-considerations)
@@ -135,9 +137,13 @@ A profile containing the JumpCloud Radius Certificate and network settings can b
 - [Configuring RADIUS Servers in JumpCloud](https://support.jumpcloud.com/support/s/article/configuring-radius-servers-in-jumpcloud1)
 - [Configuring a Wireless Access Point (WAP), VPN or Router for JumpCloud’s RADIUS](https://support.jumpcloud.com/support/s/article/configuring-a-wireless-access-point-wap-vpn-or-router-for-jumpclouds-radius1-2019-08-21-10-36-47)
 
+#### Manually Configure the Radius Profile
+
 JumpCloud has previously posted instructions to configure this profile [using Apple Configurator 2](https://support.jumpcloud.com/support/s/article/eap-ttlspap-configuration-on-mac--ios-devices-for-jumpcloud-radius-clients1-2019-08-21-10-36-47). Create the profile from scratch by following the [instructions on JumpCloud's support site](https://support.jumpcloud.com/support/s/article/eap-ttlspap-configuration-on-mac--ios-devices-for-jumpcloud-radius-clients1-2019-08-21-10-36-47), it is not necessary to sign the profile since the profile will be signed with the MDM Push Notification Certificate when uploaded to JumpCloud as a [Custom MDM profile](https://jumpcloud.com/blog/custom-configuration-profiles).
 
-Alternatively, download the [JumpCloud Radius .mobileconfig template](profiles/JumpCloudRadius.mobileconfig) and open the file with Apple Configurator 2.
+#### Use the Radius Profile Template
+
+Download the [JumpCloud Radius .mobileconfig template](profiles/JumpCloudRadius.mobileconfig) and open the file with Apple Configurator 2.
 
 Change the SSID to match your RADIUS Server SSID
 
