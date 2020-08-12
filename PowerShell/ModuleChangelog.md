@@ -1,3 +1,33 @@
+## 1.18.0
+
+Release Date: August 12, 2020
+
+#### RELEASE NOTES
+
+```
+`Get-JCSystemInsights` has been updated to use the `JumpCloud.SDK.V2` powershell module.
+Feature Enhancements
+    New SystemInsights tables will be automatically added they become available.
+    By using tab complete on the `-Filter` parameter and example of how to build the filter will be populated.
+Breaking Changes
+    Table names will no longer contain special characters.
+    The object returned from the function its properties will not contain special characters.
+    Table names are singular instead of plural.
+    Dropping the `-Name` parameter to increase performance.
+```
+
+#### FEATURES:
+
+Get-JCSystemInsights Tables are independent of the JumpCloud Module, pulled automatically from JumpCloud.SDK.V2 Module
+Get-JCEvent and Get-JCEvent MTP API Key functionality
+Remove Depreciated SystemInsights Windows Crashes Table.
+
+#### IMPROVEMENTS:
+
+#### BUG FIXES:
+
+Get-JCEvents and Get-JCEvent functions should now work with MTP API Keys
+
 ## 1.17.5
 
 Release Date: July 20, 2020
