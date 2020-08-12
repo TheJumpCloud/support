@@ -93,13 +93,13 @@ Function New-JCModuleManifest
                 $FunctionParameters.RequiredModules | ForEach-Object {
                     If ([System.String]::IsNullOrEmpty((Get-InstalledModule).Where( { $_.Name -eq $_ })))
                     {
-                        Write-Host ('Installing: ' + $_)
-                        Install-Module -Name:($_) -Force
+                        Write-Host ('Installing: ' + $_.ModuleName)
+                        Install-Module -Name:($_.ModuleName) -RequiredVersion:($_.ModuleVersion) -Force
                     }
                     If (!(Get-Module -Name:($_)))
                     {
-                        Write-Host ('Importing: ' + $_)
-                        Import-Module -Name:($_) -Force
+                        Write-Host ('Importing: ' + $_.ModuleName)
+                        Import-Module -Name:($_.ModuleName) -RequiredVersion:($_.ModuleVersion) -Force
                     }
                 }
             }
