@@ -1,6 +1,6 @@
 ## 1.18.0
 
-Release Date: August 07, 2020
+Release Date: August 12, 2020
 
 #### RELEASE NOTES
 
@@ -18,15 +18,15 @@ Breaking Changes
 
 #### FEATURES:
 
-{{Fill in the Features}}
+Get-JCSystemInsights Tables are independent of the JumpCloud Module, pulled automatically from JumpCloud.SDK.V2 Module
+Get-JCEvent and Get-JCEvent MTP API Key functionality
+Remove Depreciated SystemInsights Windows Crashes Table.
 
 #### IMPROVEMENTS:
 
-{{Fill in the Improvements}}
-
 #### BUG FIXES:
 
-{{Fill in the Bug Fixes}}
+Get-JCEvents and Get-JCEvent functions should now work with MTP API Keys
 
 ## 1.17.5
 
