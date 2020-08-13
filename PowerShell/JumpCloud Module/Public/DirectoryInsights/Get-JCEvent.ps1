@@ -54,10 +54,9 @@ BODY <IEventQuery>: EventQuery is the users' command to search our auth logs
   [Fields <String[]>]: optional list of fields to return from query
   [Limit <Int64?>]: Max number of rows to return
   [SearchAfter <String[]>]: Specific query to search after, see x-* response headers for next values
-  [SearchTermAnd <ISearchTermAnd>]: list of event terms. If all terms match the event will be returned by the service.
+  [SearchTermAnd <ITermConjunction>]: TermConjunction
     [(Any) <Object>]: This indicates any property can be added to this object.
-  [SearchTermOr <ISearchTermOr>]: list of event terms. If any term matches, the event will be returned by the service.
-    [(Any) <Object>]: This indicates any property can be added to this object.
+  [SearchTermOr <ITermConjunction>]: TermConjunction
   [Sort <String>]: ASC or DESC order for timestamp
 .Link
 https://github.com/TheJumpCloud/jcapi-powershell/tree/master/SDKs/PowerShell/JumpCloud.SDK.DirectoryInsights/docs/exports/Get-JcSdkEvent.md
@@ -100,18 +99,16 @@ Function Get-JCEvent
 
     [Parameter(ParameterSetName='GetExpanded')]
     [JumpCloud.SDK.DirectoryInsights.Category('Body')]
-    [JumpCloud.SDK.DirectoryInsights.Runtime.Info(PossibleTypes=([JumpCloud.SDK.DirectoryInsights.Models.ISearchTermAnd]))]
+    [JumpCloud.SDK.DirectoryInsights.Runtime.Info(PossibleTypes=([JumpCloud.SDK.DirectoryInsights.Models.ITermConjunction]))]
     [System.Collections.Hashtable]
-    # list of event terms.
-    # If all terms match the event will be returned by the service.
+    # TermConjunction
     ${SearchTermAnd},
 
     [Parameter(ParameterSetName='GetExpanded')]
     [JumpCloud.SDK.DirectoryInsights.Category('Body')]
-    [JumpCloud.SDK.DirectoryInsights.Runtime.Info(PossibleTypes=([JumpCloud.SDK.DirectoryInsights.Models.ISearchTermOr]))]
+    [JumpCloud.SDK.DirectoryInsights.Runtime.Info(PossibleTypes=([JumpCloud.SDK.DirectoryInsights.Models.ITermConjunction]))]
     [System.Collections.Hashtable]
-    # list of event terms.
-    # If any term matches, the event will be returned by the service.
+    # TermConjunction
     ${SearchTermOr},
 
     [Parameter(ParameterSetName='GetExpanded')]
