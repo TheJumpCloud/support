@@ -16,10 +16,6 @@ Function Get-JCObject
         {
             Get-JCCommonParameters -Force:($true) -Action:($Action);
         }
-        If ('SystemInsights' -in $JCType.PSObject.Properties.Name -or (Get-PSCallStack).Command -like '*MarkdownHelp')
-        {
-            New-DynamicParameter -Name:('Table') -Type:([System.String]) -ValueFromPipelineByPropertyName -ValidateNotNullOrEmpty -ValidateSet:($JCType.SystemInsights.Table) -HelpMessage:('The SystemInsights table to query against.') -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
-        }
         New-DynamicParameter -Name:('ReturnHashTable') -Type:([switch]) -ValueFromPipelineByPropertyName -RuntimeParameterDictionary:($RuntimeParameterDictionary) -DefaultValue:($false) | Out-Null
         New-DynamicParameter -Name:('ReturnCount') -Type:([switch]) -ValueFromPipelineByPropertyName -DefaultValue:($false) -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
         Return $RuntimeParameterDictionary
@@ -38,15 +34,6 @@ Function Get-JCObject
         {
             If ($JCType)
             {
-                # Set the location base location in the json config and elect the specific system insights table
-                $JCType = If ($PsBoundParameters.Table -and $PSCmdlet.ParameterSetName -ne 'ByName')
-                {
-                    $JCType.SystemInsights | Where-Object { $_.Table -eq $PsBoundParameters.Table }
-                }
-                Else
-                {
-                    $JCType
-                }
                 $UrlObject = @()
                 # If searching ByValue add filters to query string and body.
                 If ($PSCmdlet.ParameterSetName -eq 'ById')
@@ -88,18 +75,6 @@ Function Get-JCObject
                     Else
                     {
                         $JCType.Url.List
-                    }
-                    # Populate query string filter
-                    If ($Filter)
-                    {
-                        $QueryString = If ($UrlOut -like '*filter=*')
-                        {
-                            ',' + $Filter
-                        }
-                        Else
-                        {
-                            '?filter=' + $Filter
-                        }
                     }
                     # Build final body and url
                     $UrlObject += [PSCustomObject]@{
@@ -241,7 +216,7 @@ Function Get-JCObject
                     # Validate results
                     If ($Result -and $Result.PSObject.Properties.name -notcontains 'NoContent')
                     {
-                        If ($SearchBy -and ($Result | Measure-Object).Count -gt 1 -and $UrlFull -notlike '*SystemInsights*')
+                        If ($SearchBy -and ($Result | Measure-Object).Count -gt 1)
                         {
                             Write-Warning -Message:('Found "' + [string]($Result | Measure-Object).Count + '" "' + $JCType.TypeName.TypeNamePlural + '" with the "' + $SearchBy.Replace('By', '').ToLower() + '" of "' + $SearchByValueItem + '"')
                         }
@@ -249,25 +224,11 @@ Function Get-JCObject
                     }
                     ElseIf ($SearchByValueItem)
                     {
-                        If ($PsBoundParameters.Table)
-                        {
-                            Write-Warning ('No SystemInsights data found in "' + $PsBoundParameters.Table + '" where "' + $SearchBy.Replace('By', '').ToLower() + '" is "' + $SearchByValueItem + '".')
-                        }
-                        Else
-                        {
-                            Write-Warning ('A "' + $JCType.TypeName.TypeNameSingular + '" called "' + $SearchByValueItem + '" does not exist. Note the search is case sensitive.')
-                        }
+                        Write-Warning ('A "' + $JCType.TypeName.TypeNameSingular + '" called "' + $SearchByValueItem + '" does not exist. Note the search is case sensitive.')
                     }
                     Else
                     {
-                        If ($PsBoundParameters.Table)
-                        {
-                            Write-Warning ('No SystemInsights data found in "' + $PsBoundParameters.Table + '".')
-                        }
-                        Else
-                        {
-                            Write-Warning ('The search value is blank or no "' + $JCType.TypeName.TypeNamePlural + '" have been setup in your org. SearchValue:"' + $SearchByValueItem + '"')
-                        }
+                        Write-Warning ('The search value is blank or no "' + $JCType.TypeName.TypeNamePlural + '" have been setup in your org. SearchValue:"' + $SearchByValueItem + '"')
                     }
                 }
                 # Re-lookup object by id

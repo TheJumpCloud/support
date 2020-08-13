@@ -75,37 +75,6 @@ Function Get-JCCommonParameters
             'HelpMessage'                     = 'An array of the fields/properties/columns you want to return from the search.';
             'Position'                        = 95;
         }
-        $Param_Filter = @{
-            'Name'                            = 'Filter';
-            'Type'                            = [System.String];
-            'ValueFromPipelineByPropertyName' = $true;
-            'ValidateNotNullOrEmpty'          = $true;
-            'ParameterSets'                   = @('ById', 'ByName', 'ByValue', '__AllParameterSets');
-            'HelpMessage'                     = 'Filters to narrow down search.';
-            'ValidateScript'                  = {
-                $FilterPattern = [regex]'.*?:.*?:.*?'
-                If ($_ -notmatch $FilterPattern)
-                {
-                    Throw ('Invalid filter "' + $_ + '". Filter must match pattern: {PropertyName}:{Operator}:{Value} (' + $FilterPattern + ')')
-                }
-                Else
-                {
-                    $FilterParts = $_ -split ':'
-                    $FilterProperties = ((($JCType.ByName, $JCType.ById) + $JCType.SystemInsights.ByName + $JCType.SystemInsights.ById) | Select-Object -Unique)
-                    $FilterOperators = $JCType.FilterOperators + $JCType.SystemInsights.FilterOperators | Select-Object -Unique
-                    If ($FilterParts[0] -notin $FilterProperties)
-                    {
-                        Throw ('Invalid filter property provided "' + $FilterParts[0] + '". Accepted filter properties: "' + ($FilterProperties -join ', ') + '"')
-                    }
-                    If ($FilterParts[1] -notin $FilterOperators)
-                    {
-                        Throw ('Invalid filter operator provided "' + $FilterParts[1] + '". Accepted filter operators: "' + ($FilterOperators -join ', ') + '"')
-                    }
-                    $true
-                }
-            };
-            'Position'                        = 96;
-        }
         $Param_Limit = @{
             'Name'                            = 'Limit';
             'Type'                            = [System.Int32];
@@ -180,7 +149,6 @@ Function Get-JCCommonParameters
         If ($Action -eq 'get')
         {
             $Param_Fields.ParameterSets += 'Default'
-            $Param_Filter.ParameterSets += 'Default'
             $Param_Limit.ParameterSets += 'Default'
             $Param_Skip.ParameterSets += 'Default'
             $Param_Paginate.ParameterSets += 'Default'
