@@ -104,12 +104,6 @@ Function Get-JCSystemInsights
         # Use tab complete to see avalible filters.
         $Filter,
 
-        [Parameter()]
-        [System.String[]]
-        # The comma separated fields used to sort the collection.
-        # Default sort is ascending, prefix with `-` to sort descending.
-        ${Sort},
-
         [Parameter(DontShow)]
         [System.Boolean]
         # Set to $true to return all results. This will overwrite any skip and limit parameter.
@@ -117,6 +111,7 @@ Function Get-JCSystemInsights
     )
     Begin
     {
+        Connect-JCOnline -force | Out-Null
         $CommandTemplate = "JumpCloud.SDK.V2\Get-JcSdkSystemInsight{0} @PSBoundParameters"
         $Results = @()
         If (-not [System.String]::IsNullOrEmpty($PSBoundParameters.Filter))
