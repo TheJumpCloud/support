@@ -1,25 +1,9 @@
 . ($PSScriptRoot + '/' + 'Get-Config.ps1')
-
-# Set Variables for New-NuspecFile
-$ManifestPath = "$($FilePath_psd1)"
-$OutputPath = "$($FolderPath_Module)"
-$Psd1 = Import-PowerShellDataFile -Path:($ManifestPath)
-$Id = $(Get-Item ($ManifestPath)).BaseName
-$Version = $Psd1.ModuleVersion
-$Description = $Psd1.Description
-$Authors = $Psd1.Author
-$Owners = $Psd1.CompanyName
-$ReleaseNotes = $Psd1.PrivateData.PSData.ReleaseNotes
-$Copyright = $Psd1.Copyright
-$Tags = $Psd1.PrivateData.PSData.Tags
-$LicenseUrl = $Psd1.PrivateData.PSData.LicenseUri
-$ProjectUrl = $Psd1.PrivateData.PSData.ProjectUri
-$IconUrl = $Psd1.PrivateData.PSData.IconUri
-$Dependencies = $Psd1.RequiredModules
-
+$nuspecFiles = @{ src = 'en-Us/**;Private/**;Public/**;JumpCloud.psd1;JumpCloud.psm1;LICENSE'; }
 # Addapted from PowerShell Get
 # https://github.com/PowerShell/PowerShellGetv2/blob/7de99ee0c38611556e5c583ffaca98bb1922a0d4/src/PowerShellGet/private/functions/New-NuspecFile.ps1
-function New-NuspecFile {
+function New-NuspecFile
+{
     [CmdletBinding()]
     Param(
         [Parameter(Mandatory = $true)]
@@ -84,7 +68,8 @@ function New-NuspecFile {
 
     # warn we're over 4000 characters for standard nuget servers
     $tagsString = $Tags -Join " "
-    if ($tagsString.Length -gt 4000) {
+    if ($tagsString.Length -gt 4000)
+    {
         Write-Warning -Message "Tag list exceeded 4000 characters and may not be accepted by some Nuget feeds."
     }
 
@@ -104,7 +89,8 @@ function New-NuspecFile {
     if ($ProjectUrl) { $metaDataElementsHash.Add("projectUrl", $ProjectUrl) }
     if ($IconUrl) { $metaDataElementsHash.Add("iconUrl", $IconUrl) }
 
-    foreach ($key in $metaDataElementsHash.Keys) {
+    foreach ($key in $metaDataElementsHash.Keys)
+    {
         $element = $xml.CreateElement($key, $nameSpaceUri)
         $elementInnerText = $metaDataElementsHash.item($key)
         $element.InnerText = $elementInnerText
@@ -113,10 +99,12 @@ function New-NuspecFile {
     }
 
 
-    if ($Dependencies) {
+    if ($Dependencies)
+    {
         $dependenciesElement = $xml.CreateElement("dependencies", $nameSpaceUri)
 
-        foreach ($dependency in $Dependencies) {
+        foreach ($dependency in $Dependencies)
+        {
             $element = $xml.CreateElement("dependency", $nameSpaceUri)
             # $element.
             $element.SetAttribute("id", $dependency)
@@ -127,10 +115,12 @@ function New-NuspecFile {
         $metaDataElement.AppendChild($dependenciesElement) | Out-Null
     }
 
-    if ($Files) {
+    if ($Files)
+    {
         $filesElement = $xml.CreateElement("files", $nameSpaceUri)
 
-        foreach ($file in $Files) {
+        foreach ($file in $Files)
+        {
             $element = $xml.CreateElement("file", $nameSpaceUri)
             $element.SetAttribute("src", $file.src)
             if ($file.target) { $element.SetAttribute("target", $file.target) }
@@ -150,6 +140,23 @@ function New-NuspecFile {
 
     Write-Output $nuspecFullName
 }
-
-
-New-NuspecFile -OutputPath $OutputPath -Id $Id -Version $Version -Description $Description -Authors $Authors -Owners $Owners -ReleaseNotes $ReleaseNotes -Copyright $Copyright -Tags $Tags -LicenseUrl $LicenseUrl -ProjectUrl $ProjectUrl -IconUrl $IconUrl -Dependencies $Dependencies
+# Set Variables for New-NuspecFile
+$Psd1 = Import-PowerShellDataFile -Path:($FilePath_psd1)
+$params = @{
+    OutputPath   = $FolderPath_Module
+    Id           = $(Get-Item ($FilePath_psd1)).BaseName
+    Version      = $Psd1.ModuleVersion
+    Authors      = $Psd1.Author
+    Owners       = $Psd1.CompanyName
+    Description  = $Psd1.Description
+    ReleaseNotes = $Psd1.PrivateData.PSData.ReleaseNotes
+    # RequireLicenseAcceptance = ($requireLicenseAcceptance -eq $true)
+    Copyright    = $Psd1.Copyright
+    Tags         = $Psd1.PrivateData.PSData.Tags
+    LicenseUrl   = $Psd1.PrivateData.PSData.LicenseUri
+    ProjectUrl   = $Psd1.PrivateData.PSData.ProjectUri
+    IconUrl      = $Psd1.PrivateData.PSData.IconUri
+    Dependencies = $Psd1.RequiredModules
+    Files        = $nuspecFiles
+}
+New-NuspecFile @params
