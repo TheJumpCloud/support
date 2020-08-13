@@ -36,4 +36,4 @@ ForEach ($Doc In $Docs)
     Set-Content -Path:($SupportWikiDocFullName) -Value:($NewDocContent) -Force
 }
 # Check in changes to support wiki
-# Invoke-GitCommit -BranchName:($GitSourceRepoWiki)
+Invoke-GitCommit -BranchName:($GitSourceRepoWiki)
