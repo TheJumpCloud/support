@@ -14,26 +14,26 @@ Return JumpCloud radius server information.
 
 ### Default (Default)
 ```
-Get-JCRadiusServer [-Force] [[-Fields] <Array>] [[-Filter] <String>] [[-Limit] <Int32>] [[-Skip] <Int32>]
- [[-Paginate] <Boolean>] [<CommonParameters>]
+Get-JCRadiusServer [-Force] [[-Fields] <Array>] [[-Limit] <Int32>] [[-Skip] <Int32>] [[-Paginate] <Boolean>]
+ [<CommonParameters>]
 ```
 
 ### ById
 ```
-Get-JCRadiusServer [-Force] [-Id] <String[]> [[-Fields] <Array>] [[-Filter] <String>] [[-Limit] <Int32>]
- [[-Skip] <Int32>] [[-Paginate] <Boolean>] [<CommonParameters>]
+Get-JCRadiusServer [-Force] [-Id] <String[]> [[-Fields] <Array>] [[-Limit] <Int32>] [[-Skip] <Int32>]
+ [[-Paginate] <Boolean>] [<CommonParameters>]
 ```
 
 ### ByName
 ```
-Get-JCRadiusServer [-Force] [-Name] <String[]> [[-Fields] <Array>] [[-Filter] <String>] [[-Limit] <Int32>]
- [[-Skip] <Int32>] [[-Paginate] <Boolean>] [<CommonParameters>]
+Get-JCRadiusServer [-Force] [-Name] <String[]> [[-Fields] <Array>] [[-Limit] <Int32>] [[-Skip] <Int32>]
+ [[-Paginate] <Boolean>] [<CommonParameters>]
 ```
 
 ### ByValue
 ```
-Get-JCRadiusServer [-Force] [[-Fields] <Array>] [[-Filter] <String>] [[-Limit] <Int32>] [[-Skip] <Int32>]
- [[-Paginate] <Boolean>] [<CommonParameters>]
+Get-JCRadiusServer [-Force] [[-Fields] <Array>] [[-Limit] <Int32>] [[-Skip] <Int32>] [[-Paginate] <Boolean>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -74,21 +74,6 @@ Aliases:
 
 Required: False
 Position: 95
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -Filter
-Filters to narrow down search.
-
-```yaml
-Type: System.String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 96
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
