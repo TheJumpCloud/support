@@ -19,7 +19,6 @@ ForEach ($Doc In $Docs)
         If ($Diffs)
         {
             Write-Warning -Message:('Diffs found in: ' + $DocName)
-            # are you sure you want to continue?
         }
     }
     Else
