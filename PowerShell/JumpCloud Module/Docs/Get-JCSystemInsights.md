@@ -14,8 +14,7 @@ Using this function you can easily gather heightened levels of information from 
 ## SYNTAX
 
 ```
-Get-JCSystemInsights -Table <String> [-SystemId <String[]>] [[-Filter] <String[]>] [-Sort <String[]>]
- [<CommonParameters>]
+Get-JCSystemInsights -Table <String> [-SystemId <String[]>] [[-Filter] <String[]>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION

@@ -6830,22 +6830,10 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-          <maml:name>Sort</maml:name>
-          <maml:Description>
-            <maml:para>{{ Fill Sort Description }}</maml:para>
-          </maml:Description>
-          <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
-          <dev:type>
-            <maml:name>System.String[]</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="_id, id, system_id">
           <maml:name>SystemId</maml:name>
           <maml:Description>
-            <maml:para>{{ Fill SystemId Description }}</maml:para>
+            <maml:para>A comma separated list of System IDs to query against.</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
           <dev:type>
@@ -6881,22 +6869,10 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-        <maml:name>Sort</maml:name>
-        <maml:Description>
-          <maml:para>{{ Fill Sort Description }}</maml:para>
-        </maml:Description>
-        <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
-        <dev:type>
-          <maml:name>System.String[]</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="_id, id, system_id">
         <maml:name>SystemId</maml:name>
         <maml:Description>
-          <maml:para>{{ Fill SystemId Description }}</maml:para>
+          <maml:para>A comma separated list of System IDs to query against.</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
         <dev:type>
@@ -6987,20 +6963,6 @@
       </command:example>
       <command:example>
         <maml:title>-------------------------- Example 4 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCSystemInsights -Table:('os_version') -Name:('MacBook-Pro.local_TEST');</dev:code>
-        <dev:remarks>
-          <maml:para>Return os_version data for a system with a specified name.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 5 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCSystemInsights -Table:('os_version') -Name:('MacBook-Pro.local_TEST', 'Holly-Flax-Mac.local_TEST');</dev:code>
-        <dev:remarks>
-          <maml:para>Return os_version data for systems with specific names.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 6 --------------------------</maml:title>
         <dev:code>PS C:\&gt; Get-JCSystemInsights -Table users -Filter username:eq:jcadmin</dev:code>
         <dev:remarks>
           <maml:para>Filters the users table for any system with the username jcadmin.</maml:para>

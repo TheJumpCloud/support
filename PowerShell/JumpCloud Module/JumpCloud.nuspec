@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>JumpCloud</id>
+    <version>1.18.0</version>
+    <description>PowerShell functions to manage a JumpCloud Directory-as-a-Service</description>
+    <authors>JumpCloud Solutions Architect Team</authors>
+    <owners>JumpCloud</owners>
+    <releaseNotes>https://git.io/jc-pwsh-releasenotes</releaseNotes>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <copyright>(c) JumpCloud. All rights reserved.</copyright>
+    <tags>JumpCloud DaaS Jump Cloud Directory</tags>
+    <licenseUrl>https://github.com/TheJumpCloud/support/blob/master/PowerShell/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/TheJumpCloud/support/wiki</projectUrl>
+    <iconUrl>https://avatars1.githubusercontent.com/u/4927461?s=200&amp;v=4</iconUrl>
+    <dependencies>
+      <dependency id="JumpCloud.SDK.DirectoryInsights" />
+      <dependency id="JumpCloud.SDK.V1" />
+      <dependency id="JumpCloud.SDK.V2" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="en-Us/**;Private/**;Public/**;JumpCloud.psd1;JumpCloud.psm1;LICENSE" />
+  </files>
+</package>
