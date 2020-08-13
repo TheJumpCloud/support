@@ -12,19 +12,6 @@ ForEach ($Doc In $Docs)
     $DocFullName = $Doc.FullName
     $SupportWikiDocFullName = $SupportWiki + '/' + $DocName
     $DocContent = Get-Content -Path:($DocFullName)
-    If (Test-Path -Path:($SupportWikiDocFullName))
-    {
-        $SupportWikiDocContent = Get-Content -Path:($SupportWikiDocFullName)
-        $Diffs = Compare-Object -ReferenceObject:($DocContent) -DifferenceObject:($SupportWikiDocContent)
-        If ($Diffs)
-        {
-            Write-Warning -Message:('Diffs found in: ' + $DocName)
-        }
-    }
-    Else
-    {
-        Write-Warning -Message:('Creating new file: ' + $DocName)
-    }
     $NewDocContent = If (($DocContent | Select-Object -First 1) -eq '---')
     {
         $DocContent | Select-Object -Skip:(7)
@@ -32,6 +19,19 @@ ForEach ($Doc In $Docs)
     Else
     {
         $DocContent
+    }
+    If (Test-Path -Path:($SupportWikiDocFullName))
+    {
+        $SupportWikiDocContent = Get-Content -Path:($SupportWikiDocFullName)
+        $Diffs = Compare-Object -ReferenceObject:($NewDocContent) -DifferenceObject:($SupportWikiDocContent)
+        If (-not [string]::IsNullOrEmpty($Diffs))
+        {
+            Write-Warning -Message:('Diffs found in: ' + $DocName)
+        }
+    }
+    Else
+    {
+        Write-Warning -Message:('Creating new file: ' + $DocName)
     }
     Set-Content -Path:($SupportWikiDocFullName) -Value:($NewDocContent) -Force
 }
