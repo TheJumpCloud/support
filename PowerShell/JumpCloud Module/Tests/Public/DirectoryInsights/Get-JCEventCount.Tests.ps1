@@ -1,4 +1,4 @@
-Describe 'Get-JCEvent' -Tag:('JCEvent') {
+Describe 'Get-JCEventCount' -Tag:('JCEvent') {
     BeforeAll {
         #Requires -Modules JumpCloud
         <# ToDo
@@ -36,11 +36,11 @@ Describe 'Get-JCEvent' -Tag:('JCEvent') {
     It 'GetExpanded' {
         $eventTest = Get-JCEventCount -Service:($ParamHash.Service) -StartTime:($ParamHash.StartTime) -EndTime:($ParamHash.EndTime) -Sort:($ParamHash.Sort) -SearchTermAnd:($ParamHash.SearchTermAnd)
         $eventTest | Should -Not -BeNullOrEmpty
-        $eventTest | Shoule -BeOfType System.Int64
+        $eventTest | Should -BeOfType System.Int64
     }
     It 'Get' {
         $eventTest = Get-JCEventCount -Body:($ParamHash)
         $eventTest | Should -Not -BeNullOrEmpty
-        $eventTest | Shoule -BeOfType System.Int64
+        $eventTest | Should -BeOfType System.Int64
     }
 }
