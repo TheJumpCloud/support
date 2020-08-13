@@ -46,20 +46,6 @@ Return os_version data for systems with specific ids.
 
 ### Example 4
 ```
-PS C:\> Get-JCSystemInsights -Table:('os_version') -Name:('MacBook-Pro.local_TEST');
-```
-
-Return os_version data for a system with a specified name.
-
-### Example 5
-```
-PS C:\> Get-JCSystemInsights -Table:('os_version') -Name:('MacBook-Pro.local_TEST', 'Holly-Flax-Mac.local_TEST');
-```
-
-Return os_version data for systems with specific names.
-
-### Example 6
-```
 PS C:\> Get-JCSystemInsights -Table users -Filter username:eq:jcadmin
 ```
 
@@ -146,4 +132,3 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## RELATED LINKS
 
 [Online Version:](https://github.com/TheJumpCloud/support/wiki/Get-JCSystemInsights)
-
