@@ -2397,18 +2397,6 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="96" aliases="none">
-          <maml:name>Filter</maml:name>
-          <maml:Description>
-            <maml:para>Filters to narrow down search.</maml:para>
-          </maml:Description>
-          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
-          <dev:type>
-            <maml:name>System.String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="97" aliases="none">
           <maml:name>Limit</maml:name>
           <maml:Description>
@@ -2592,18 +2580,6 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="96" aliases="none">
-          <maml:name>Filter</maml:name>
-          <maml:Description>
-            <maml:para>Filters to narrow down search.</maml:para>
-          </maml:Description>
-          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
-          <dev:type>
-            <maml:name>System.String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="97" aliases="none">
           <maml:name>Limit</maml:name>
           <maml:Description>
@@ -2678,18 +2654,6 @@
         <command:parameterValue required="true" variableLength="false">System.Array</command:parameterValue>
         <dev:type>
           <maml:name>System.Array</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="96" aliases="none">
-        <maml:name>Filter</maml:name>
-        <maml:Description>
-          <maml:para>Filters to narrow down search.</maml:para>
-        </maml:Description>
-        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
-        <dev:type>
-          <maml:name>System.String</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -5527,18 +5491,6 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="96" aliases="none">
-          <maml:name>Filter</maml:name>
-          <maml:Description>
-            <maml:para>Filters to narrow down search.</maml:para>
-          </maml:Description>
-          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
-          <dev:type>
-            <maml:name>System.String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="97" aliases="none">
           <maml:name>Limit</maml:name>
           <maml:Description>
@@ -5617,18 +5569,6 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="96" aliases="none">
-          <maml:name>Filter</maml:name>
-          <maml:Description>
-            <maml:para>Filters to narrow down search.</maml:para>
-          </maml:Description>
-          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
-          <dev:type>
-            <maml:name>System.String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="97" aliases="none">
           <maml:name>Limit</maml:name>
           <maml:Description>
@@ -5691,18 +5631,6 @@
         <command:parameterValue required="true" variableLength="false">System.Array</command:parameterValue>
         <dev:type>
           <maml:name>System.Array</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="96" aliases="none">
-        <maml:name>Filter</maml:name>
-        <maml:Description>
-          <maml:para>Filters to narrow down search.</maml:para>
-        </maml:Description>
-        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
-        <dev:type>
-          <maml:name>System.String</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -6751,10 +6679,10 @@
     <command:syntax>
       <command:syntaxItem>
         <maml:name>Get-JCSystemInsights</maml:name>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="1" aliases="_id">
-          <maml:name>Id</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="96" aliases="none">
+          <maml:name>Filter</maml:name>
           <maml:Description>
-            <maml:para>The unique id of the object.</maml:para>
+            <maml:para>Filters to narrow down search.</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
           <dev:type>
@@ -6763,71 +6691,7 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="95" aliases="none">
-          <maml:name>Fields</maml:name>
-          <maml:Description>
-            <maml:para>An array of the fields/properties/columns you want to return from the search.</maml:para>
-          </maml:Description>
-          <command:parameterValue required="true" variableLength="false">System.Array</command:parameterValue>
-          <dev:type>
-            <maml:name>System.Array</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="96" aliases="none">
-          <maml:name>Filter</maml:name>
-          <maml:Description>
-            <maml:para>Filters to narrow down search.</maml:para>
-          </maml:Description>
-          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
-          <dev:type>
-            <maml:name>System.String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="97" aliases="none">
-          <maml:name>Limit</maml:name>
-          <maml:Description>
-            <maml:para>The number of items you want to return per API call.</maml:para>
-          </maml:Description>
-          <command:parameterValue required="true" variableLength="false">System.Int32</command:parameterValue>
-          <dev:type>
-            <maml:name>System.Int32</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="98" aliases="none">
-          <maml:name>Skip</maml:name>
-          <maml:Description>
-            <maml:para>The number of items you want to skip over per API call.</maml:para>
-          </maml:Description>
-          <command:parameterValue required="true" variableLength="false">System.Int32</command:parameterValue>
-          <dev:type>
-            <maml:name>System.Int32</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="99" aliases="none">
-          <maml:name>Paginate</maml:name>
-          <maml:Description>
-            <maml:para>Whether or not you want to paginate through the results.</maml:para>
-          </maml:Description>
-          <command:parameterValueGroup>
-            <command:parameterValue required="false" command:variableLength="false">True</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">False</command:parameterValue>
-          </command:parameterValueGroup>
-          <command:parameterValue required="true" variableLength="false">System.Boolean</command:parameterValue>
-          <dev:type>
-            <maml:name>System.Boolean</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Table</maml:name>
           <maml:Description>
             <maml:para>The SystemInsights table to query against.</maml:para>
@@ -6894,148 +6758,14 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-      </command:syntaxItem>
-      <command:syntaxItem>
-        <maml:name>Get-JCSystemInsights</maml:name>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="1" aliases="displayName">
-          <maml:name>Name</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="_id, id, system_id">
+          <maml:name>SystemId</maml:name>
           <maml:Description>
-            <maml:para>The name of the object.</maml:para>
+            <maml:para>A comma separated list of System IDs to query against.</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
           <dev:type>
             <maml:name>System.String[]</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="95" aliases="none">
-          <maml:name>Fields</maml:name>
-          <maml:Description>
-            <maml:para>An array of the fields/properties/columns you want to return from the search.</maml:para>
-          </maml:Description>
-          <command:parameterValue required="true" variableLength="false">System.Array</command:parameterValue>
-          <dev:type>
-            <maml:name>System.Array</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="96" aliases="none">
-          <maml:name>Filter</maml:name>
-          <maml:Description>
-            <maml:para>Filters to narrow down search.</maml:para>
-          </maml:Description>
-          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
-          <dev:type>
-            <maml:name>System.String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="97" aliases="none">
-          <maml:name>Limit</maml:name>
-          <maml:Description>
-            <maml:para>The number of items you want to return per API call.</maml:para>
-          </maml:Description>
-          <command:parameterValue required="true" variableLength="false">System.Int32</command:parameterValue>
-          <dev:type>
-            <maml:name>System.Int32</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="98" aliases="none">
-          <maml:name>Skip</maml:name>
-          <maml:Description>
-            <maml:para>The number of items you want to skip over per API call.</maml:para>
-          </maml:Description>
-          <command:parameterValue required="true" variableLength="false">System.Int32</command:parameterValue>
-          <dev:type>
-            <maml:name>System.Int32</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="99" aliases="none">
-          <maml:name>Paginate</maml:name>
-          <maml:Description>
-            <maml:para>Whether or not you want to paginate through the results.</maml:para>
-          </maml:Description>
-          <command:parameterValueGroup>
-            <command:parameterValue required="false" command:variableLength="false">True</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">False</command:parameterValue>
-          </command:parameterValueGroup>
-          <command:parameterValue required="true" variableLength="false">System.Boolean</command:parameterValue>
-          <dev:type>
-            <maml:name>System.Boolean</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
-          <maml:name>Table</maml:name>
-          <maml:Description>
-            <maml:para>The SystemInsights table to query against.</maml:para>
-          </maml:Description>
-          <command:parameterValueGroup>
-            <command:parameterValue required="false" command:variableLength="false">battery</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">managed_policies</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">sip_config</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">alf</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">crashes</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">usb_devices</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">ie_extensions</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">launchd</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">shared_folders</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">shared_resources</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">user_ssh_keys</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">logged_in_users</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">shadow</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">sharing_preferences</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">user_groups</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">kernel_info</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">system_controls</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">uptime</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">etc_hosts</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">logical_drives</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">disk_info</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">bitlocker_info</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">patches</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">programs</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">apps</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">browser_plugins</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">chrome_extensions</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">disk_encryption</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">firefox_addons</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">groups</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">interface_addresses</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">mounts</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">os_version</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">safari_extensions</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">system_info</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">users</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">certificates</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">cups_destinations</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">interface_details</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">python_packages</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">registry</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">scheduled_tasks</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">services</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">startup_items</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">authorized_keys</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">appcompat_shims</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">dns_resolvers</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">wifi_networks</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">wifi_status</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">connectivity</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">windows_security_products</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">alf_exceptions</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">alf_explicit_auths</command:parameterValue>
-          </command:parameterValueGroup>
-          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
-          <dev:type>
-            <maml:name>System.String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -7043,35 +6773,11 @@
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="95" aliases="none">
-        <maml:name>Fields</maml:name>
-        <maml:Description>
-          <maml:para>An array of the fields/properties/columns you want to return from the search.</maml:para>
-        </maml:Description>
-        <command:parameterValue required="true" variableLength="false">System.Array</command:parameterValue>
-        <dev:type>
-          <maml:name>System.Array</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="96" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="96" aliases="none">
         <maml:name>Filter</maml:name>
         <maml:Description>
           <maml:para>Filters to narrow down search.</maml:para>
         </maml:Description>
-        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
-        <dev:type>
-          <maml:name>System.String</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="1" aliases="_id">
-        <maml:name>Id</maml:name>
-        <maml:Description>
-          <maml:para>The unique id of the object.</maml:para>
-        </maml:Description>
         <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
         <dev:type>
           <maml:name>System.String[]</maml:name>
@@ -7079,55 +6785,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="97" aliases="none">
-        <maml:name>Limit</maml:name>
-        <maml:Description>
-          <maml:para>The number of items you want to return per API call.</maml:para>
-        </maml:Description>
-        <command:parameterValue required="true" variableLength="false">System.Int32</command:parameterValue>
-        <dev:type>
-          <maml:name>System.Int32</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="1" aliases="displayName">
-        <maml:name>Name</maml:name>
-        <maml:Description>
-          <maml:para>The name of the object.</maml:para>
-        </maml:Description>
-        <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
-        <dev:type>
-          <maml:name>System.String[]</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="99" aliases="none">
-        <maml:name>Paginate</maml:name>
-        <maml:Description>
-          <maml:para>Whether or not you want to paginate through the results.</maml:para>
-        </maml:Description>
-        <command:parameterValue required="true" variableLength="false">System.Boolean</command:parameterValue>
-        <dev:type>
-          <maml:name>System.Boolean</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="98" aliases="none">
-        <maml:name>Skip</maml:name>
-        <maml:Description>
-          <maml:para>The number of items you want to skip over per API call.</maml:para>
-        </maml:Description>
-        <command:parameterValue required="true" variableLength="false">System.Int32</command:parameterValue>
-        <dev:type>
-          <maml:name>System.Int32</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Table</maml:name>
         <maml:Description>
           <maml:para>The SystemInsights table to query against.</maml:para>
@@ -7135,6 +6793,18 @@
         <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
         <dev:type>
           <maml:name>System.String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="_id, id, system_id">
+        <maml:name>SystemId</maml:name>
+        <maml:Description>
+          <maml:para>A comma separated list of System IDs to query against.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String[]</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -7221,20 +6891,6 @@
       </command:example>
       <command:example>
         <maml:title>-------------------------- Example 4 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCSystemInsights -Table:('os_version') -Name:('MacBook-Pro.local_TEST');</dev:code>
-        <dev:remarks>
-          <maml:para>Return os_version data for a system with a specified name.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 5 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCSystemInsights -Table:('os_version') -Name:('MacBook-Pro.local_TEST', 'Holly-Flax-Mac.local_TEST');</dev:code>
-        <dev:remarks>
-          <maml:para>Return os_version data for systems with specific names.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 6 --------------------------</maml:title>
         <dev:code>PS C:\&gt; Get-JCSystemInsights -Table users -Filter username:eq:jcadmin</dev:code>
         <dev:remarks>
           <maml:para>Filters the users table for any system with the username jcadmin.</maml:para>

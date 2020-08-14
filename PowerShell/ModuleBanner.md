@@ -1,19 +1,19 @@
 #### Latest Version
 
 ```
-1.17.5
+1.18.0
 ```
 
 #### Banner Current
 
 ```
-Use Get-JCSystemInsight to query additional System Insights tables.
-!!IF YOU RECEIVE AN ERROR WHILE UPDATING THE MODULE PLEASE RUN: Install-Module JumpCloud -force
+`Get-JCSystemInsights` has been updated to use the `JumpCloud.SDK.V2` powershell module.
+Get-JCEvent and Get-JCEventCount functions now work with MTP API Keys.
 ```
 
 #### Banner Old
 
 ```
-Use Get-JCSystemInsight to query additional System Insights tables.
-!!IF YOU RECEIVE AN ERROR WHILE UPDATING THE MODULE PLEASE RUN: Install-Module JumpCloud -force
+`Get-JCSystemInsights` has been updated to use the `JumpCloud.SDK.V2` powershell module.
+Get-JCEvent and Get-JCEventCount functions now work with MTP API Keys.
 ```

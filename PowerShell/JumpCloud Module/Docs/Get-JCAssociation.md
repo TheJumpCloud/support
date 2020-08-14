@@ -14,30 +14,30 @@ The function Get-JCAssociation can be used to query an object's associations and
 
 ### ById (Default)
 ```
-Get-JCAssociation [-Type] <String> [-Force] [-Id] <String[]> [[-Fields] <Array>] [[-Filter] <String>]
- [[-Limit] <Int32>] [[-Skip] <Int32>] [[-Paginate] <Boolean>] [[-TargetType] <String[]>] [-Direct] [-Indirect]
- [-IncludeInfo] [-IncludeNames] [-IncludeVisualPath] [<CommonParameters>]
+Get-JCAssociation [-Type] <String> [-Force] [-Id] <String[]> [[-Fields] <Array>] [[-Limit] <Int32>]
+ [[-Skip] <Int32>] [[-Paginate] <Boolean>] [[-TargetType] <String[]>] [-Direct] [-Indirect] [-IncludeInfo]
+ [-IncludeNames] [-IncludeVisualPath] [<CommonParameters>]
 ```
 
 ### ByName
 ```
-Get-JCAssociation [-Type] <String> [-Force] [-Name] <String[]> [[-Fields] <Array>] [[-Filter] <String>]
- [[-Limit] <Int32>] [[-Skip] <Int32>] [[-Paginate] <Boolean>] [[-TargetType] <String[]>] [-Direct] [-Indirect]
- [-IncludeInfo] [-IncludeNames] [-IncludeVisualPath] [<CommonParameters>]
+Get-JCAssociation [-Type] <String> [-Force] [-Name] <String[]> [[-Fields] <Array>] [[-Limit] <Int32>]
+ [[-Skip] <Int32>] [[-Paginate] <Boolean>] [[-TargetType] <String[]>] [-Direct] [-Indirect] [-IncludeInfo]
+ [-IncludeNames] [-IncludeVisualPath] [<CommonParameters>]
 ```
 
 ### ByValue
 ```
-Get-JCAssociation [-Type] <String> [-Force] [[-Fields] <Array>] [[-Filter] <String>] [[-Limit] <Int32>]
- [[-Skip] <Int32>] [[-Paginate] <Boolean>] [[-TargetType] <String[]>] [-Direct] [-Indirect] [-IncludeInfo]
- [-IncludeNames] [-IncludeVisualPath] [<CommonParameters>]
+Get-JCAssociation [-Type] <String> [-Force] [[-Fields] <Array>] [[-Limit] <Int32>] [[-Skip] <Int32>]
+ [[-Paginate] <Boolean>] [[-TargetType] <String[]>] [-Direct] [-Indirect] [-IncludeInfo] [-IncludeNames]
+ [-IncludeVisualPath] [<CommonParameters>]
 ```
 
 ### Default
 ```
-Get-JCAssociation [-Type] <String> [-Force] [[-Fields] <Array>] [[-Filter] <String>] [[-Limit] <Int32>]
- [[-Skip] <Int32>] [[-Paginate] <Boolean>] [[-TargetType] <String[]>] [-Direct] [-Indirect] [-IncludeInfo]
- [-IncludeNames] [-IncludeVisualPath] [<CommonParameters>]
+Get-JCAssociation [-Type] <String> [-Force] [[-Fields] <Array>] [[-Limit] <Int32>] [[-Skip] <Int32>]
+ [[-Paginate] <Boolean>] [[-TargetType] <String[]>] [-Direct] [-Indirect] [-IncludeInfo] [-IncludeNames]
+ [-IncludeVisualPath] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -107,21 +107,6 @@ Aliases:
 
 Required: False
 Position: 95
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -Filter
-Filters to narrow down search.
-
-```yaml
-Type: System.String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 96
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
