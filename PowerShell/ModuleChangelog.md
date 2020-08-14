@@ -1,3 +1,25 @@
+## 1.18.1
+
+Release Date: August 14, 2020
+
+#### RELEASE NOTES
+
+```
+{{Fill in the Release Notes}}
+```
+
+#### FEATURES:
+
+{{Fill in the Features}}
+
+#### IMPROVEMENTS:
+
+{{Fill in the Improvements}}
+
+#### BUG FIXES:
+
+{{Fill in the Bug Fixes}}
+
 ## 1.18.0
 
 Release Date: August 13, 2020
