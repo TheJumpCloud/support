@@ -5846,9 +5846,9 @@
           <maml:Description>
             <maml:para>Date to filter on.</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">System.DateTime</command:parameterValue>
           <dev:type>
-            <maml:name>System.String</maml:name>
+            <maml:name>System.DateTime</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -5973,9 +5973,9 @@
           <maml:Description>
             <maml:para>Date to filter on.</maml:para>
           </maml:Description>
-          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">System.DateTime</command:parameterValue>
           <dev:type>
-            <maml:name>System.String</maml:name>
+            <maml:name>System.DateTime</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -6275,9 +6275,9 @@
         <maml:Description>
           <maml:para>Date to filter on.</maml:para>
         </maml:Description>
-        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">System.DateTime</command:parameterValue>
         <dev:type>
-          <maml:name>System.String</maml:name>
+          <maml:name>System.DateTime</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
