@@ -196,7 +196,7 @@ Function Get-JCSystem ()
             # Add the attributes to the attributes collection
             $AttributeCollection.Add($ParameterAttribute)
             # Create and return the dynamic parameter
-            $RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter($ParamName_FilterDate, [string], $AttributeCollection)
+            $RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter($ParamName_FilterDate, [datetime], $AttributeCollection)
             $RuntimeParameterDictionary.Add($ParamName_FilterDate, $RuntimeParameter)
 
 
@@ -327,8 +327,8 @@ Function Get-JCSystem ()
                         if ($param.key -eq 'date')
                         {
 
-                            $ConvertDate = [DateTime]::Parse($param.value)
-                            $Timestamp = Get-Date $ConvertDate -format o
+                            # $ConvertDate = [DateTime]::Parse($param.value)
+                            $Timestamp = Get-Date $param.Value -format o
 
                             continue
                         }
