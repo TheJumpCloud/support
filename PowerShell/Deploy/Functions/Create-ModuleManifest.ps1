@@ -94,7 +94,7 @@ Function New-JCModuleManifest
                     If ([System.String]::IsNullOrEmpty((Get-InstalledModule).Where( { $_.Name -eq $_ })))
                     {
                         Write-Host ('Installing: ' + $_)
-                        Install-Module -Name:($_) -Force
+                        Install-Module -Repository:('JumpCloudPowershell-Dev') -AllowPrerelease -Force -Name:($_)
                     }
                     If (!(Get-Module -Name:($_)))
                     {

@@ -7,7 +7,7 @@ ForEach ($RequiredModule In $RequiredModules)
     If ([System.String]::IsNullOrEmpty((Get-InstalledModule).Where( { $_.Name -eq $RequiredModule })))
     {
         Write-Host("Installing '$RequiredModule'")
-        Install-Module -Name:($RequiredModule) -Force
+        Install-Module -Repository:('JumpCloudPowershell-Dev') -AllowPrerelease -Force -Name:($RequiredModule)
     }
     # Get-Module -Refresh -ListAvailable
     If ([System.String]::IsNullOrEmpty((Get-Module).Where( { $_.Name -eq $RequiredModule })))
