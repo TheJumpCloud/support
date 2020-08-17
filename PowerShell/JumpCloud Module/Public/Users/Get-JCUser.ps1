@@ -278,8 +278,6 @@ Function Get-JCUser ()
 
                         if ($param.key -eq 'date')
                         {
-                            # Write-Host($param.value)
-                            # $ConvertDate = [DateTime]::Parse($param.value)
                             $Timestamp = Get-Date $param.Value -format o
 
                             continue

@@ -326,8 +326,6 @@ Function Get-JCSystem ()
 
                         if ($param.key -eq 'date')
                         {
-
-                            # $ConvertDate = [DateTime]::Parse($param.value)
                             $Timestamp = Get-Date $param.Value -format o
 
                             continue
