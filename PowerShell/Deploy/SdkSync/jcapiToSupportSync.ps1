@@ -4,12 +4,62 @@ Install-Module -Name:('PSScriptAnalyzer') -Force
 $ApprovedFunctions = [Ordered]@{
     'JumpCloud.SDK.DirectoryInsights' = @(
         [PSCustomObject]@{
-            Destination = '/Public/DirectoryInsights'
-            Name        = 'Get-JcSdkEvent'
+            Name        = 'Get-JcSdkEvent';
+            Destination = '/Public/DirectoryInsights';
         },
         [PSCustomObject]@{
-            Destination = '/Public/DirectoryInsights'
-            Name        = 'Get-JcSdkEventCount'
+            Name        = 'Get-JcSdkEventCount';
+            Destination = '/Public/DirectoryInsights';
+        }
+    );
+    'JumpCloud.SDK.V2'                = @(
+        [PSCustomObject]@{
+            Name        = 'Get-JcSdkAppleMdm';
+            Destination = '/Public/AppleMdm';
+        },
+        [PSCustomObject]@{
+            Name        = 'Remove-JcSdkAppleMdm';
+            Destination = '/Public/AppleMdm';
+        },
+        [PSCustomObject]@{
+            Name        = 'Set-JcSdkAppleMdm';
+            Destination = '/Public/AppleMdm';
+        },
+        [PSCustomObject]@{
+            Name        = 'Get-JcSdkAppleMdmCsr';
+            Destination = '/Public/AppleMdm';
+        },
+        [PSCustomObject]@{
+            Name        = 'Get-JcSdkAppleMdmDepKey';
+            Destination = '/Public/AppleMdm';
+        },
+        [PSCustomObject]@{
+            Name        = 'Clear-JcSdkAppleMdmDevice';
+            Destination = '/Public/AppleMdm';
+        },
+        [PSCustomObject]@{
+            Name        = 'Get-JcSdkAppleMdmDevice';
+            Destination = '/Public/AppleMdm';
+        },
+        [PSCustomObject]@{
+            Name        = 'Lock-JcSdkAppleMdmDevice';
+            Destination = '/Public/AppleMdm';
+        },
+        [PSCustomObject]@{
+            Name        = 'Restart-JcSdkAppleMdmDevice';
+            Destination = '/Public/AppleMdm';
+        },
+        [PSCustomObject]@{
+            Name        = 'Stop-JcSdkAppleMdmDevice';
+            Destination = '/Public/AppleMdm';
+        },
+        [PSCustomObject]@{
+            Name        = 'Sync-JcSdkAppleMdmDevice';
+            Destination = '/Public/AppleMdm';
+        },
+        [PSCustomObject]@{
+            Name        = 'Get-JcSdkAppleMdmEnrollmentProfile';
+            Destination = '/Public/AppleMdm';
         }
     )
 }
