@@ -1,7 +1,6 @@
 # Configure Azure DevOps Artifacts
-$UserName = "$env:AzureDevOpsUserName" # Azure DevOps email address
-$AzureDevOpsPAT = "$env:AzureDevOpsPAT" # Create PAT and grant it "Packaging (Read & write)" https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=preview-page
-$AzureDevOpsAuthenicationCreds = New-Object System.Management.Automation.PSCredential($UserName, ($AzureDevOpsPAT | ConvertTo-SecureString -AsPlainText -Force))
+$patToken = $env:SYSTEM_ACCESSTOKEN | ConvertTo-SecureString -AsPlainText -Force
+$AzureDevOpsAuthenicationCreds = New-Object System.Management.Automation.PSCredential($env:SYSTEM_ACCESSTOKEN, $patToken)
 $PSDefaultParameterValues = @{
     # Set default value for PowerShellGet Credential
     "*-Module:Credential"         = $AzureDevOpsAuthenicationCreds;
@@ -15,26 +14,4 @@ $PSDefaultParameterValues = @{
     "*-Script:Repository"         = 'PSGallery';
 }
 # Register PSRepository
-$OrgName = 'JumpCloudPowershell'
-$FeedNames = @('Dev') # Dev, Prod
-$LocalPSRepositories = Get-PSRepository
-ForEach ($FeedName In $FeedNames)
-{
-    $PSRepositoryParams = @{
-        Name               = "$OrgName-$FeedName";
-        SourceLocation     = "https://pkgs.dev.azure.com/$OrgName/_packaging/$FeedName/nuget/v2";
-        PublishLocation    = "https://pkgs.dev.azure.com/$OrgName/_packaging/$FeedName/nuget/v2";
-        InstallationPolicy = 'Trusted';
-    }
-    If (-not [System.String]::IsNullOrEmpty($OldRepos)) { Unregister-PSRepository -Name:($OldRepos.Name) }
-    # Register new feeds if they do not exist
-    If (-not ($LocalPSRepositories | Where-Object { `
-                    $_.Name -eq $PSRepositoryParams.Name `
-                    -and $_.SourceLocation -eq $PSRepositoryParams.SourceLocation `
-                    -and $_.PublishLocation -eq $PSRepositoryParams.PublishLocation `
-                    -and $_.InstallationPolicy -eq $PSRepositoryParams.InstallationPolicy })
-    )
-    {
-        Register-PSRepository @PSRepositoryParams
-    }
-}
+Register-PackageSource -ProviderName 'PowerShellGet' -Name:('JumpCloudPowershell-Dev') -Location:('https://pkgs.dev.azure.com/JumpCloudPowershell/_packaging/Dev/nuget/v2') -Credential:($AzureDevOpsAuthenicationCreds)
