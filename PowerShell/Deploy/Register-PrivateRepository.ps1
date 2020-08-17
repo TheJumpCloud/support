@@ -1,6 +1,6 @@
 # Configure Azure DevOps Artifacts
-$UserName = $env:AzureDevOpsUserName # Azure DevOps email address
-$AzureDevOpsPAT = $env:AzureDevOpsPAT # Create PAT and grant it "Packaging (Read & write)" https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=preview-page
+$UserName = "$env:AzureDevOpsUserName" # Azure DevOps email address
+$AzureDevOpsPAT = "$env:AzureDevOpsPAT" # Create PAT and grant it "Packaging (Read & write)" https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=preview-page
 $AzureDevOpsAuthenicationCreds = New-Object System.Management.Automation.PSCredential($UserName, ($AzureDevOpsPAT | ConvertTo-SecureString -AsPlainText -Force))
 $PSDefaultParameterValues = @{
     # Set default value for PowerShellGet Credential
