@@ -4,21 +4,16 @@ Release Date: August 14, 2020
 
 #### RELEASE NOTES
 
-```
-{{Fill in the Release Notes}}
-```
+* `Get-JCUser` and `Get-JCSystem` updated to accept dates as a `datetime` type.
+  * Prevents "String not recognized as valid datetime" error in other non en-US regions
 
 #### FEATURES:
 
-{{Fill in the Features}}
-
 #### IMPROVEMENTS:
-
-{{Fill in the Improvements}}
 
 #### BUG FIXES:
 
-{{Fill in the Bug Fixes}}
+Dates in Get-JCuser and Get-JCSystem are now passed in as datetime types which prevents localization conversion errors
 
 ## 1.18.0
 
