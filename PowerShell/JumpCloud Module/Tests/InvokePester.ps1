@@ -65,7 +65,7 @@ If ($RequiredModules)
                     Register-PackageSource -Trusted -ProviderName:("PowerShellGet") -Name:('JumpCloudPowershell-Dev') -Location:("https://pkgs.dev.azure.com/JumpCloudPowershell/_packaging/Dev/nuget/v2/") -Credential:($Credentials)
                 }
                 Write-Host ('[status]Installing: ' + $_)
-                Install-Module -Repository:($RequiredModulesRepo) -Name:($_) -Force -Credential:($Credentials)
+                Install-Module -Repository:($RequiredModulesRepo) -Name:($_) -Force -Credential:($Credentials) -AllowPrerelease
             }
         }
         If (!(Get-Module -Name:($_)))
