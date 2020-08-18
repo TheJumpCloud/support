@@ -23,12 +23,12 @@ ForEach ($DependentModule In $DependentModules)
     }
 }
 # Register PSRepository
+$Password = $SYSTEM_ACCESSTOKEN | ConvertTo-SecureString -AsPlainText -Force
+$Credentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $SYSTEM_ACCESSTOKEN, $Password
 If (-not (Get-PackageSource -Name:('JumpCloudPowershell-Dev') -ErrorAction SilentlyContinue))
 {
     Write-Host("[status]Register-PackageSource 'JumpCloudPowershell-Dev'")
-    $Password = $SYSTEM_ACCESSTOKEN | ConvertTo-SecureString -AsPlainText -Force
-    $Credentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $SYSTEM_ACCESSTOKEN, $Password
-    Register-PackageSource -Trusted -ProviderName "PowerShellGet" -Name:('JumpCloudPowershell-Dev') -Location "https://pkgs.dev.azure.com/JumpCloudPowershell/_packaging/Dev/nuget/v2/" -Credential:($Credentials)
+    Register-PackageSource -Trusted -ProviderName:("PowerShellGet") -Name:('JumpCloudPowershell-Dev') -Location:("https://pkgs.dev.azure.com/JumpCloudPowershell/_packaging/Dev/nuget/v2/") -Credential:($Credentials)
 }
 # Install required modules
 ForEach ($RequiredModule In $Psd1.RequiredModules)
