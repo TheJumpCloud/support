@@ -12,7 +12,7 @@ ForEach ($DependentModule In $DependentModules)
     # Check to see if the module is installed
     If ([System.String]::IsNullOrEmpty((Get-InstalledModule).Where( { $_.Name -eq $DependentModule })))
     {
-        Write-Host("[status]Installing '$DependentModule'")
+        Write-Host("[status]Installing '$DependentModule' from 'PSGallery'")
         Install-Module -Repository:('PSGallery') -Force -Name:($DependentModule)
     }
     # Get-Module -Refresh -ListAvailable
@@ -37,7 +37,7 @@ ForEach ($RequiredModule In $Psd1.RequiredModules)
     # Check to see if the module is installed
     If ([System.String]::IsNullOrEmpty((Get-InstalledModule).Where( { $_.Name -eq $RequiredModule })))
     {
-        Write-Host("[status]Installing '$RequiredModule'")
+        Write-Host("[status]Installing '$RequiredModule' from 'JumpCloudPowershell-Dev'")
         Install-Module -Repository:('JumpCloudPowershell-Dev') -AllowPrerelease -Force -Name:($RequiredModule) -Credential:($Credentials)
     }
     # Get-Module -Refresh -ListAvailable
