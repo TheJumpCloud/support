@@ -13,7 +13,7 @@ ForEach ($DependentModule In $DependentModules)
     If ([System.String]::IsNullOrEmpty((Get-InstalledModule).Where( { $_.Name -eq $DependentModule })))
     {
         Write-Host("[status]Installing '$DependentModule' from 'PSGallery'")
-        Install-Module -Repository:('PSGallery') -Force -Name:($DependentModule)
+        Install-Module -Repository:('PSGallery') -Force -Name:($DependentModule) -Scope:('CurrentUser')
     }
     # Get-Module -Refresh -ListAvailable
     If ([System.String]::IsNullOrEmpty((Get-Module).Where( { $_.Name -eq $DependentModule })))
@@ -38,7 +38,7 @@ ForEach ($RequiredModule In $Psd1.RequiredModules)
     If ([System.String]::IsNullOrEmpty((Get-InstalledModule).Where( { $_.Name -eq $RequiredModule })))
     {
         Write-Host("[status]Installing '$RequiredModule' from 'JumpCloudPowershell-Dev'")
-        Install-Module -Repository:('JumpCloudPowershell-Dev') -AllowPrerelease -Force -Name:($RequiredModule) -Credential:($Credentials)
+        Install-Module -Repository:('JumpCloudPowershell-Dev') -AllowPrerelease -Force -Name:($RequiredModule) -Credential:($Credentials) -Scope:('CurrentUser')
     }
     # Get-Module -Refresh -ListAvailable
     If ([System.String]::IsNullOrEmpty((Get-Module).Where( { $_.Name -eq $RequiredModule })))
