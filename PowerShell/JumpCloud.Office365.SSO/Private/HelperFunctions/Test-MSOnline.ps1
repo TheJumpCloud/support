@@ -2,22 +2,22 @@ function Test-MSOnline ()
 {
     if (Get-Command Connect-MsolService -eq '$true'-ErrorAction SilentlyContinue)
     {
-        Write-Debug -Message "MSOnline module loaded"         
+        Write-Debug -Message "MSOnline module loaded"
     }
 
     else
     {
-        Write-Debug -Message "MSOnline module is not loaded" 
-        
+        Write-Debug -Message "MSOnline module is not loaded"
+
         try
         {
-            Install-Module MSOnline -Scope CurrentUser -Force
+            Install-Module MSOnline -Repository:('PSGallery') -Scope CurrentUser -Force
         }
         catch
         {
             Return 1
         }
-       
+
     }
-   
+
 }

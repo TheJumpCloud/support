@@ -5,12 +5,7 @@ Param(
     , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 3)][System.String[]]$IncludeTagList
 )
 # Install Pester
-Install-Module -Name:('Pester') -Force
-# Install NuGet
-If (!(Get-PackageProvider -Name:('NuGet') -ErrorAction:('SilentlyContinue')))
-{
-    Install-PackageProvider NuGet -ForceBootstrap -Force | Out-Null
-}
+Install-Module -Repository:('PSGallery') -Name:('Pester') -Force
 # Get list of tags and validate that tags have been applied
 $PesterTests = Get-ChildItem -Path:($PSScriptRoot + '/*.Tests.ps1') -Recurse
 $Tags = ForEach ($PesterTest In $PesterTests)
@@ -51,7 +46,7 @@ If ($RequiredModules)
         If ([System.String]::IsNullOrEmpty((Get-InstalledModule).Where( { $_.Name -eq $_ })))
         {
             Write-Host ('Installing: ' + $_)
-            Install-Module -Name:($_) -Force
+            Install-Module -Repository:('PSGallery') -Name:($_) -Force
         }
         If (!(Get-Module -Name:($_)))
         {
