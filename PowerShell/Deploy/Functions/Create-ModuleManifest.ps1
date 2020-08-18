@@ -88,21 +88,6 @@ Function New-JCModuleManifest
                     $FunctionParameters.Add($_.Key, $_.Value) | Out-Null
                 }
             }
-            If ($FunctionParameters.RequiredModules)
-            {
-                $FunctionParameters.RequiredModules | ForEach-Object {
-                    If ([System.String]::IsNullOrEmpty((Get-InstalledModule).Where( { $_.Name -eq $_ })))
-                    {
-                        Write-Host ('Installing: ' + $_)
-                        Install-Module -Repository:('JumpCloudPowershell-Dev') -AllowPrerelease -Force -Name:($_) -Credential:(New-Object System.Management.Automation.PSCredential($env:SYSTEM_ACCESSTOKEN, ($env:SYSTEM_ACCESSTOKEN | ConvertTo-SecureString -AsPlainText -Force)))
-                    }
-                    If (!(Get-Module -Name:($_)))
-                    {
-                        Write-Host ('Importing: ' + $_)
-                        Import-Module -Name:($_) -Force
-                    }
-                }
-            }
         }
         Else
         {
