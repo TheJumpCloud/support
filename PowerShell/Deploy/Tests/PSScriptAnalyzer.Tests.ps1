@@ -13,8 +13,6 @@
 # #     }
 # #     Context 'PSScriptAnalyzer Tests' {
 # #         It 'Passes Invoke-PSScriptAnalyzer' {
-Write-Host ('[status]Installing module: PSScriptAnalyzer')
-Install-Module -Name:('PSScriptAnalyzer') -Force -Scope:('CurrentUser')
 Write-Host ('[status]Running PSScriptAnalyzer on: ' + $FolderPath_Module)
 $ScriptAnalyzerResults = Invoke-ScriptAnalyzer -Path:($FolderPath_Module) -Recurse
 # #     $ScriptAnalyzerResults | Should BeNullOrEmpty
