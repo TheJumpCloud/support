@@ -5,7 +5,7 @@ Function Get-PSGalleryModuleVersion
         [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 1)][ValidateNotNullOrEmpty()][ValidateSet('Major', 'Minor', 'Patch', 'Manual')][string]$RELEASETYPE
     )
     # Check to see if module already exists to set version number
-    $PowerShellGalleryModule = Find-Module -Name:($Name) -ErrorAction:('Ignore')
+    $PowerShellGalleryModule = Find-Module -Repository:('PSGallery') -Name:($Name) -ErrorAction:('Ignore')
     If ([string]::IsNullOrEmpty($PowerShellGalleryModule))
     {
         $ModuleVersion = [PSCustomObject]@{
@@ -48,10 +48,12 @@ Function Get-PSGalleryModuleVersion
         }
 
     }
-    if ($RELEASETYPE -eq 'Manual'){
+    if ($RELEASETYPE -eq 'Manual')
+    {
         $NextVersion = ($Psd1).ModuleVersion
     }
-    else {
+    Else
+    {
         $NextVersion = ($ModuleVersion.Major, $ModuleVersion.Minor, $ModuleVersion.Patch) -join '.'
     }
     Add-Member -InputObject:($ModuleVersion) -MemberType:('NoteProperty') -Name:('NextVersion') -Value:($NextVersion)

@@ -1,17 +1,66 @@
 . ((Get-Item -Path:($PSScriptRoot)).Parent.FullName + '/' + 'Get-Config.ps1')
 ###########################################################################
-Install-Module -Name:('PSScriptAnalyzer') -Force
 $ApprovedFunctions = [Ordered]@{
     'JumpCloud.SDK.DirectoryInsights' = @(
         [PSCustomObject]@{
-            Destination = '/Public/DirectoryInsights'
-            Name        = 'Get-JcSdkEvent'
+            Name        = 'Get-JcSdkEvent';
+            Destination = '/Public/DirectoryInsights';
         },
         [PSCustomObject]@{
-            Destination = '/Public/DirectoryInsights'
-            Name        = 'Get-JcSdkEventCount'
+            Name        = 'Get-JcSdkEventCount';
+            Destination = '/Public/DirectoryInsights';
         }
-    )
+    );
+    # 'JumpCloud.SDK.V2'                = @(
+    #     [PSCustomObject]@{
+    #         Name        = 'Get-JcSdkAppleMdm';
+    #         Destination = '/Public/AppleMdm';
+    #     },
+    #     [PSCustomObject]@{
+    #         Name        = 'Remove-JcSdkAppleMdm';
+    #         Destination = '/Public/AppleMdm';
+    #     },
+    #     [PSCustomObject]@{
+    #         Name        = 'Set-JcSdkAppleMdm';
+    #         Destination = '/Public/AppleMdm';
+    #     },
+    #     [PSCustomObject]@{
+    #         Name        = 'Get-JcSdkAppleMdmCsr';
+    #         Destination = '/Public/AppleMdm';
+    #     },
+    #     [PSCustomObject]@{
+    #         Name        = 'Get-JcSdkAppleMdmDepKey';
+    #         Destination = '/Public/AppleMdm';
+    #     },
+    #     [PSCustomObject]@{
+    #         Name        = 'Clear-JcSdkAppleMdmDevice';
+    #         Destination = '/Public/AppleMdm';
+    #     },
+    #     [PSCustomObject]@{
+    #         Name        = 'Get-JcSdkAppleMdmDevice';
+    #         Destination = '/Public/AppleMdm';
+    #     },
+    #     [PSCustomObject]@{
+    #         Name        = 'Lock-JcSdkAppleMdmDevice';
+    #         Destination = '/Public/AppleMdm';
+    #     },
+    #     [PSCustomObject]@{
+    #         Name        = 'Restart-JcSdkAppleMdmDevice';
+    #         Destination = '/Public/AppleMdm';
+    #     },
+    #     [PSCustomObject]@{
+    #         Name        = 'Stop-JcSdkAppleMdmDevice';
+    #         Destination = '/Public/AppleMdm';
+    #     },
+    #     [PSCustomObject]@{
+    #         Name        = 'Sync-JcSdkAppleMdmDevice';
+    #         Destination = '/Public/AppleMdm';
+    #     },
+    #     [PSCustomObject]@{
+    #         Name        = 'Get-JcSdkAppleMdmEnrollmentProfile';
+    #         Destination = '/Public/AppleMdm';
+    #     }
+    # )
 }
 $SdkPrefix = 'JcSdk'
 $JumpCloudModulePrefix = 'JC'
@@ -21,9 +70,8 @@ $Divider = '|#|#|#|#|#|#|#|#|#|#|#|#|#|#|#|'
 $FunctionTemplate = "{0}`nFunction {1}`n{{`n$($IndentChar){2}`n$($IndentChar)Param(`n{3}`n$($IndentChar))`n$($IndentChar)Begin`n$($IndentChar){{`n{4}`n$($IndentChar)}}`n$($IndentChar)Process`n$($IndentChar){{`n{5}`n$($IndentChar)}}`n$($IndentChar)End`n$($IndentChar){{`n{6}`n$($IndentChar)}}`n}}"
 $ScriptAnalyzerResults = @()
 $JumpCloudModulePath = (Get-Item -Path:($PSScriptRoot)).Parent.Parent.FullName + '/JumpCloud Module'
-Import-Module -Name:($RequiredModules)
 Get-Module -Refresh -ListAvailable -All | Out-Null
-$Modules = Get-Module -Name:($RequiredModules | Where-Object { $_ -in $ApprovedFunctions.Keys })
+$Modules = Get-Module -Name:($Psd1.RequiredModules | Where-Object { $_ -in $ApprovedFunctions.Keys })
 If (-not [System.String]::IsNullOrEmpty($Modules))
 {
     ForEach ($Module In $Modules)
