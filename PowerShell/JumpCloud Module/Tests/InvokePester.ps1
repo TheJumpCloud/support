@@ -39,31 +39,46 @@ Else
 }
 # Load DefineEnvironment
 . ("$PSScriptRoot/DefineEnvironment.ps1") -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp)
-# Register PSRepository
-If ($RequiredModulesRepo -ne 'PSGallery')
-{
-    $Password = $env:SYSTEM_ACCESSTOKEN | ConvertTo-SecureString -AsPlainText -Force
-    $Credentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $env:SYSTEM_ACCESSTOKEN, $Password
-    If (-not (Get-PackageSource -Name:('JumpCloudPowershell-Dev') -ErrorAction SilentlyContinue))
-    {
-        Write-Host("[status]Register-PackageSource 'JumpCloudPowershell-Dev'")
-        Register-PackageSource -Trusted -ProviderName:("PowerShellGet") -Name:('JumpCloudPowershell-Dev') -Location:("https://pkgs.dev.azure.com/JumpCloudPowershell/_packaging/Dev/nuget/v2/") -Credential:($Credentials)
-    }
-}
 # Load required modules
 $RequiredModules = (Import-LocalizedData -BaseDirectory:($PesterParams_ModuleManifestPath) -FileName:($PesterParams_ModuleManifestName)).RequiredModules
 If ($RequiredModules)
 {
-    $RequiredModules | ForEach-Object {
-        If ([System.String]::IsNullOrEmpty((Get-InstalledModule).Where( { $_.Name -eq $_ })))
-        {
-            Write-Host ('Installing: ' + $_)
-            Install-Module -Repository:($RequiredModulesRepo) -Name:($_) -Force
+    If ($RequiredModulesRepo -eq 'PSGallery')
+    {
+        $RequiredModules | ForEach-Object {
+            If ([System.String]::IsNullOrEmpty((Get-InstalledModule).Where( { $_.Name -eq $_ })))
+            {
+                Write-Host ('Installing: ' + $_)
+                Install-Module -Repository:($RequiredModulesRepo) -Name:($_) -Force
+            }
+            If (!(Get-Module -Name:($_)))
+            {
+                Write-Host ('Importing: ' + $_)
+                Import-Module -Name:($_) -Force
+            }
         }
-        If (!(Get-Module -Name:($_)))
+    }
+    Else
+    {
+        # Register PSRepository
+        $Password = $env:SYSTEM_ACCESSTOKEN | ConvertTo-SecureString -AsPlainText -Force
+        $Credentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $env:SYSTEM_ACCESSTOKEN, $Password
+        If (-not (Get-PackageSource -Name:('JumpCloudPowershell-Dev') -ErrorAction SilentlyContinue))
         {
-            Write-Host ('Importing: ' + $_)
-            Import-Module -Name:($_) -Force
+            Write-Host("[status]Register-PackageSource 'JumpCloudPowershell-Dev'")
+            Register-PackageSource -Trusted -ProviderName:("PowerShellGet") -Name:('JumpCloudPowershell-Dev') -Location:("https://pkgs.dev.azure.com/JumpCloudPowershell/_packaging/Dev/nuget/v2/") -Credential:($Credentials)
+        }
+        $RequiredModules | ForEach-Object {
+            If ([System.String]::IsNullOrEmpty((Get-InstalledModule).Where( { $_.Name -eq $_ })))
+            {
+                Write-Host ('Installing: ' + $_)
+                Install-Module -Repository:($RequiredModulesRepo) -Name:($_) -Force -Credential:($Credentials)
+            }
+            If (!(Get-Module -Name:($_)))
+            {
+                Write-Host ('Importing: ' + $_)
+                Import-Module -Name:($_) -Force
+            }
         }
     }
 }
