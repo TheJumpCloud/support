@@ -42,8 +42,8 @@ Else
 # Register PSRepository
 If ($RequiredModulesRepo -ne 'PSGallery')
 {
-    $Password = $SYSTEM_ACCESSTOKEN | ConvertTo-SecureString -AsPlainText -Force
-    $Credentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $SYSTEM_ACCESSTOKEN, $Password
+    $Password = $env:SYSTEM_ACCESSTOKEN | ConvertTo-SecureString -AsPlainText -Force
+    $Credentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $env:SYSTEM_ACCESSTOKEN, $Password
     If (-not (Get-PackageSource -Name:('JumpCloudPowershell-Dev') -ErrorAction SilentlyContinue))
     {
         Write-Host("[status]Register-PackageSource 'JumpCloudPowershell-Dev'")
