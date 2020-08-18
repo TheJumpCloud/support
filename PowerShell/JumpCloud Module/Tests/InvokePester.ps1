@@ -39,6 +39,17 @@ Else
 }
 # Load DefineEnvironment
 . ("$PSScriptRoot/DefineEnvironment.ps1") -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp)
+# Register PSRepository
+If ($RequiredModulesRepo -ne 'PSGallery')
+{
+    $Password = $SYSTEM_ACCESSTOKEN | ConvertTo-SecureString -AsPlainText -Force
+    $Credentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $SYSTEM_ACCESSTOKEN, $Password
+    If (-not (Get-PackageSource -Name:('JumpCloudPowershell-Dev') -ErrorAction SilentlyContinue))
+    {
+        Write-Host("[status]Register-PackageSource 'JumpCloudPowershell-Dev'")
+        Register-PackageSource -Trusted -ProviderName:("PowerShellGet") -Name:('JumpCloudPowershell-Dev') -Location:("https://pkgs.dev.azure.com/JumpCloudPowershell/_packaging/Dev/nuget/v2/") -Credential:($Credentials)
+    }
+}
 # Load required modules
 $RequiredModules = (Import-LocalizedData -BaseDirectory:($PesterParams_ModuleManifestPath) -FileName:($PesterParams_ModuleManifestName)).RequiredModules
 If ($RequiredModules)
