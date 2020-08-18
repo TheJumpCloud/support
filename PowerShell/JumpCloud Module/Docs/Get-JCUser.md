@@ -23,13 +23,13 @@ Get-JCUser [[-username] <String>] [-firstname <String>] [-lastname <String>] [-e
  [-filterDateProperty <String>] [-returnProperties <String[]>] [-middlename <String>] [-displayname <String>]
  [-jobTitle <String>] [-employeeIdentifier <String>] [-department <String>] [-costCenter <String>]
  [-company <String>] [-employeeType <String>] [-description <String>] [-location <String>]
- [-external_dn <String>] [-external_source_type <String>] -dateFilter <String> -date <String>
+ [-external_dn <String>] [-external_source_type <String>] -dateFilter <String> -date <DateTime>
  [<CommonParameters>]
 ```
 
 ### ByID
 ```
-Get-JCUser -userid <String> -dateFilter <String> -date <String> [<CommonParameters>]
+Get-JCUser -userid <String> -dateFilter <String> -date <DateTime> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -153,7 +153,7 @@ Accept wildcard characters: False
 Date to filter on.
 
 ```yaml
-Type: System.String
+Type: System.DateTime
 Parameter Sets: (All)
 Aliases:
 
