@@ -11,6 +11,8 @@ Release Date: August 14, 2020
 
 #### IMPROVEMENTS:
 
+Testing the JumpCloud PowerShell module and dependent JumpCloud.SDK.* modules with private repositories is supported.
+
 #### BUG FIXES:
 
 Dates in Get-JCuser and Get-JCSystem are now passed in as datetime types which prevents localization conversion errors
