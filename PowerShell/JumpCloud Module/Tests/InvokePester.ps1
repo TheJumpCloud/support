@@ -59,6 +59,18 @@ If ($RequiredModules)
                 # Register PSRepository
                 $Password = $env:SYSTEM_ACCESSTOKEN | ConvertTo-SecureString -AsPlainText -Force
                 $Credentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $env:SYSTEM_ACCESSTOKEN, $Password
+                $PSDefaultParameterValues = @{
+                    # Set default value for PowerShellGet Credential
+                    "*-Module:Credential"         = $Credentials;
+                    "*-PSRepository:Credential"   = $Credentials;
+                    "*-Script:Credential"         = $Credentials;
+                    # Set default value for PowerShellGet Repository
+                    "*-Command:Repository"        = $RequiredModulesRepo;
+                    "*-DscResource:Repository"    = $RequiredModulesRepo;
+                    "*-Module:Repository"         = $RequiredModulesRepo;
+                    "*-RoleCapability:Repository" = $RequiredModulesRepo;
+                    "*-Script:Repository"         = $RequiredModulesRepo;
+                }
                 If (-not (Get-PackageSource -Name:('JumpCloudPowershell-Dev') -ErrorAction SilentlyContinue))
                 {
                     Write-Host("[status]Register-PackageSource 'JumpCloudPowershell-Dev'")
