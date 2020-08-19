@@ -1,7 +1,7 @@
 Describe -Tag:('JCModule') 'Test for Update-JCModule' {
     It ("Where the local version number has been updated to match the $RequiredModulesRepo version number") {
-        $EarliestVersion = Find-Module -Repository:($RequiredModulesRepo) -Credential:($RepositoryCredentials) -Name:('JumpCloud') -AllVersions -AllowPrerelease | Sort-Object PublishedDate | Select-Object -First 1
-        Install-Module -Repository:('PSGallery') -Name:('JumpCloud') -RequiredVersion:($EarliestVersion.Version) -Scope:('CurrentUser') -Force
+        $EarliestVersion = Find-Module -Name:('JumpCloud') -Repository:($RequiredModulesRepo) -Credential:($RepositoryCredentials) -AllVersions -AllowPrerelease | Sort-Object PublishedDate | Select-Object -First 1
+        Install-Module -Name:('JumpCloud') -Repository:($RequiredModulesRepo) -Credential:($RepositoryCredentials) -RequiredVersion:($EarliestVersion.Version) -Scope:('CurrentUser') -Force -AllowPrerelease
         $InitialModule = Get-Module -Name:('JumpCloud') -All | Where-Object { $_.Version -eq $EarliestVersion.Version }
         $PowerShellGalleryModule = If (-not [System.String]::IsNullOrEmpty($RepositoryCredentials))
         {
