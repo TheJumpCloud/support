@@ -142,8 +142,18 @@ Function Update-JCModule
                         }
                         # Validate install
                         $InstalledModulePostUpdate = Get-InstalledModule -Name:($ModuleName) -AllVersions
+                        # Remove prerelease tag from build number
+                        $UpdateTriggerVersion = $UpdateTrigger
+                        # $UpdateTriggerVersion = If ($Repository -ne 'PSGallery')
+                        # {
+                        #     $UpdateTrigger.Split('-')[0]
+                        # }
+                        # Else
+                        # {
+                        #     $UpdateTrigger
+                        # }
                         # Check to see if the module version on the PowerShell gallery does not match the local module version
-                        If ($UpdateTrigger -in $InstalledModulePostUpdate.Version)
+                        If ($UpdateTriggerVersion -in $InstalledModulePostUpdate.Version)
                         {
                             # Load new module
                             Import-Module -Name:($ModuleName) -Scope:('Global') -Force
@@ -154,7 +164,7 @@ Function Update-JCModule
                         }
                         Else
                         {
-                            Write-Error ('Failed to update the ' + $ModuleName + ' PowerShell module to the latest version.')
+                            Write-Error ("Failed to update the $($ModuleName) PowerShell module to the latest version. $($UpdateTriggerVersion) is not in $($InstalledModulePostUpdate.Version -join ', ')")
                         }
                     }
                 }

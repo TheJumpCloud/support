@@ -19,9 +19,19 @@ Describe -Tag:('JCModule') 'Test for Update-JCModule' {
         }
         Else
         {
+            Update-JCModule -SkipUninstallOld -Force -Repository:($RequiredModulesRepo) -RepositoryCredentials:($RepositoryCredentials)
         }
         $InitialModule | Remove-Module
-        $LocalModulePost = Get-Module -Name:('JumpCloud') -All | Where-Object { $_.Version -eq $PowerShellGalleryModule.Version } | Get-Unique
+        # Remove prerelease tag from build number
+        $PowerShellGalleryModuleVersion = If ($PowerShellGalleryModule.AdditionalMetadata.IsPrerelease)
+        {
+            $PowerShellGalleryModule.Version.Split('-')[0]
+        }
+        Else
+        {
+            $PowerShellGalleryModule.Version
+        }
+        $LocalModulePost = Get-Module -Name:('JumpCloud') -All | Where-Object { $_.Version -eq $PowerShellGalleryModuleVersion } | Get-Unique
         If ($LocalModulePost)
         {
             Write-Host ('Local Version After: ' + $LocalModulePost.Version)
@@ -31,7 +41,7 @@ Describe -Tag:('JCModule') 'Test for Update-JCModule' {
         {
             Write-Error ('Unable to find latest version of the JumpCloud PowerShell module installed on local machine.')
         }
-        $LocalModulePost.Version | Should -Be $PowerShellGalleryModule.Version
+        $LocalModulePost.Version | Should -Be $PowerShellGalleryModuleVersion
         $LocalModulePost | Should -Not -BeNullOrEmpty
     }
     AfterAll {

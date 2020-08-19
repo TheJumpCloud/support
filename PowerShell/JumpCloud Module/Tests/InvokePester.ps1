@@ -67,7 +67,7 @@ If ($RequiredModules)
                     Register-PackageSource -Trusted -ProviderName:("PowerShellGet") -Name:($RequiredModulesRepo) -Location:("https://pkgs.dev.azure.com/$(($RequiredModulesRepo.Split('-'))[0])/_packaging/$($(($RequiredModulesRepo.Split('-'))[1]))/nuget/v2/") -Credential:($RepositoryCredentials)
                 }
                 Write-Host("[status]Installing '$_' from '$RequiredModulesRepo'")
-                Install-Module -Repository:($RequiredModulesRepo) -Name:($_) -Force -Credential:($RepositoryCredentials) -AllowPrerelease
+                Install-Module -Repository:($RequiredModulesRepo) -Name:($_) -Credential:($RepositoryCredentials) -AllowPrerelease
             }
         }
         If (!(Get-Module -Name:($_)))
