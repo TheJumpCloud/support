@@ -1,12 +1,25 @@
 Describe -Tag:('JCModule') 'Test for Update-JCModule' {
-    It ('Where the local version number has been updated to match the PowerShell gallery version number') {
+    It ("Where the local version number has been updated to match the $RequiredModulesRepo version number") {
         Install-Module -Repository:('PSGallery') -Name:('JumpCloud') -RequiredVersion:('1.0.0') -Scope:('CurrentUser') -Force
         $InitialModule = Get-Module -Name:('JumpCloud') -All | Where-Object { $_.Version -eq '1.0.0' }
-        $PowerShellGalleryModule = Find-Module -Name:('JumpCloud') -ErrorAction:('Ignore')
+        $PowerShellGalleryModule = If (-not [System.String]::IsNullOrEmpty($RepositoryCredentials))
+        {
+            Find-Module -Name:('JumpCloud') -Repository:($RequiredModulesRepo) -Credential:($RepositoryCredentials) -AllowPrerelease
+        }
+        Else
+        {
+            Find-Module -Name:('JumpCloud') -Repository:($RequiredModulesRepo)
+        }
         $LocalModulePre = Get-Module -Name:('JumpCloud')
-        Write-Host ('PowerShellGallery Version: ' + $PowerShellGalleryModule.Version)
-        Write-Host ('Local Version Before: ' + $LocalModulePre.Version)
-        Update-JCModule -SkipUninstallOld -Force
+        Write-Host ("$RequiredModulesRepo Version: $($PowerShellGalleryModule.Version)")
+        Write-Host ("Local Version Before: $($LocalModulePre.Version)")
+        If ($RequiredModulesRepo -eq 'PSGallery')
+        {
+            Update-JCModule -SkipUninstallOld -Force -Repository:($RequiredModulesRepo)
+        }
+        Else
+        {
+        }
         $InitialModule | Remove-Module
         $LocalModulePost = Get-Module -Name:('JumpCloud') -All | Where-Object { $_.Version -eq $PowerShellGalleryModule.Version } | Get-Unique
         If ($LocalModulePost)

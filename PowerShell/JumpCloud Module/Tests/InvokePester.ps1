@@ -5,6 +5,7 @@ Param(
     , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 3)][System.String[]]$IncludeTagList
     , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 4)][System.String[]]$RequiredModulesRepo = 'PSGallery'
 )
+$global:RequiredModulesRepo = $RequiredModulesRepo;
 # Install Pester
 Install-Module -Repository:('PSGallery') -Name:('Pester') -Force
 # Get list of tags and validate that tags have been applied
@@ -58,26 +59,15 @@ If ($RequiredModules)
             {
                 # Register PSRepository
                 $Password = $env:SYSTEM_ACCESSTOKEN | ConvertTo-SecureString -AsPlainText -Force
-                $Credentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $env:SYSTEM_ACCESSTOKEN, $Password
-                $PSDefaultParameterValues = @{
-                    # Set default value for PowerShellGet Credential
-                    "*-Module:Credential"         = $Credentials;
-                    "*-PSRepository:Credential"   = $Credentials;
-                    "*-Script:Credential"         = $Credentials;
-                    # Set default value for PowerShellGet Repository
-                    "*-Command:Repository"        = $RequiredModulesRepo;
-                    "*-DscResource:Repository"    = $RequiredModulesRepo;
-                    "*-Module:Repository"         = $RequiredModulesRepo;
-                    "*-RoleCapability:Repository" = $RequiredModulesRepo;
-                    "*-Script:Repository"         = $RequiredModulesRepo;
-                }
-                If (-not (Get-PackageSource -Name:('JumpCloudPowershell-Dev') -ErrorAction SilentlyContinue))
+                $RepositoryCredentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $env:SYSTEM_ACCESSTOKEN, $Password
+                $global:RepositoryCredentials = $RepositoryCredentials
+                If (-not (Get-PackageSource -Name:($RequiredModulesRepo) -ErrorAction SilentlyContinue))
                 {
-                    Write-Host("[status]Register-PackageSource 'JumpCloudPowershell-Dev'")
-                    Register-PackageSource -Trusted -ProviderName:("PowerShellGet") -Name:('JumpCloudPowershell-Dev') -Location:("https://pkgs.dev.azure.com/JumpCloudPowershell/_packaging/Dev/nuget/v2/") -Credential:($Credentials)
+                    Write-Host("[status]Register-PackageSource '$RequiredModulesRepo'")
+                    Register-PackageSource -Trusted -ProviderName:("PowerShellGet") -Name:($RequiredModulesRepo) -Location:("https://pkgs.dev.azure.com/$(($RequiredModulesRepo.Split('-'))[0])/_packaging/$($(($RequiredModulesRepo.Split('-'))[1]))/nuget/v2/") -Credential:($RepositoryCredentials)
                 }
-                Write-Host ('[status]Installing: ' + $_)
-                Install-Module -Repository:($RequiredModulesRepo) -Name:($_) -Force -Credential:($Credentials) -AllowPrerelease
+                Write-Host("[status]Installing '$_' from '$RequiredModulesRepo'")
+                Install-Module -Repository:($RequiredModulesRepo) -Name:($_) -Force -Credential:($RepositoryCredentials) -AllowPrerelease
             }
         }
         If (!(Get-Module -Name:($_)))
@@ -85,7 +75,6 @@ If ($RequiredModules)
             Write-Host ('[status]Importing: ' + $_)
             Import-Module -Name:($_) -Force
         }
-
     }
 }
 # Import the module
