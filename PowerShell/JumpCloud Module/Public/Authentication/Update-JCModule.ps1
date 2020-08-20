@@ -3,10 +3,21 @@ Function Update-JCModule
     Param(
         [Parameter(HelpMessage = 'Skips the "Uninstall-Module" step that will uninstall old version of the module.')][Switch]$SkipUninstallOld
         , [Parameter(HelpMessage = 'ByPasses user prompts.')][Switch]$Force
+        , [Parameter(DontShow, HelpMessage = 'Specify which repository to pull from.')][System.String]$Repository = 'PSGallery'
+        , [Parameter(DontShow, HelpMessage = 'Specify the credentials for repository to pull from.')][System.Management.Automation.PSCredential]$RepositoryCredentials
     )
     Begin
     {
         $ModuleName = 'JumpCloud'
+        # Find the module on the specified repository
+        $FoundModule = If (-not [System.String]::IsNullOrEmpty($RepositoryCredentials))
+        {
+            Find-Module -Name:($ModuleName) -Repository:($Repository) -Credential:($RepositoryCredentials) -AllowPrerelease
+        }
+        Else
+        {
+            Find-Module -Name:($ModuleName) -Repository:($Repository)
+        }
         # Get the version of the module installed locally
         $InstalledModulePreUpdate = Get-InstalledModule -Name:($ModuleName) -AllVersions -ErrorAction:('Ignore')
         # Get module info from GitHub - This should not impact the auto update ability, only the banner message
@@ -14,12 +25,12 @@ Function Update-JCModule
         $ModuleChangeLog = Get-ModuleChangeLog
         # To change update dependency from PowerShell Gallery to Github flip the commented code below
         ###### $UpdateTrigger = $ModuleBanner.'Latest Version'
-        $UpdateTrigger = (Find-Module -Name:($ModuleName)).Version
+        $UpdateTrigger = $FoundModule.Version
         # Get the release notes for a specific version
         $ModuleChangeLogLatestVersion = $ModuleChangeLog | Where-Object { $_.Version -eq $UpdateTrigger }
         # To change update dependency from PowerShell Gallery to Github flip the commented code below
         ###### $LatestVersionReleaseDate = $ModuleChangeLogLatestVersion.'RELEASE DATE'
-        $LatestVersionReleaseDate = (Find-Module -Name:($ModuleName) | ForEach-Object { ($_.Version).ToString() + ' (' + (Get-Date $_.PublishedDate).ToString('MMMM dd, yyyy') + ')' })
+        $LatestVersionReleaseDate = ($FoundModule | ForEach-Object { ($_.Version).ToString() + ' (' + (Get-Date $_.PublishedDate).ToString('MMMM dd, yyyy') + ')' })
         # Build welcome page
         $WelcomePage = New-Object -TypeName:('PSCustomObject') | Select-Object `
         @{Name = 'MESSAGE'; Expression = { $ModuleBanner.'Banner Current' } } `
@@ -92,7 +103,7 @@ Function Update-JCModule
                         Do
                         {
                             Write-Host ('Enter ''Y'' to update the ' + $ModuleName + ' PowerShell module to the latest version or enter ''N'' to cancel:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_UserPrompt) -NoNewline
-                            Write-Host (' ') -NoNewLine
+                            Write-Host (' ') -NoNewline
                             $UserInput = Read-Host
                         }
                         Until ($UserInput.ToUpper() -in ('Y', 'N'))
@@ -110,7 +121,14 @@ Function Update-JCModule
                         # Update the module to the latest version
                         Write-Host ('Updating ' + $ModuleName + ' module to version: ') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewline
                         Write-Host ($UpdateTrigger) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
-                        $InstalledModulePreUpdate | Update-Module -Force
+                        If (-not [System.String]::IsNullOrEmpty($RepositoryCredentials))
+                        {
+                            $InstalledModulePreUpdate | Update-Module -Force -Credential:($RepositoryCredentials) -AllowPrerelease
+                        }
+                        Else
+                        {
+                            $InstalledModulePreUpdate | Update-Module -Force
+                        }
                         # Remove existing module from the session
                         Get-Module -Name:($ModuleName) -ListAvailable -All | Remove-Module -Force
                         # Uninstall previous versions
@@ -136,7 +154,7 @@ Function Update-JCModule
                         }
                         Else
                         {
-                            Write-Error ('Failed to update the ' + $ModuleName + ' PowerShell module to the latest version.')
+                            Write-Error ("Failed to update the $($ModuleName) PowerShell module to the latest version. $($UpdateTrigger) is not in $($InstalledModulePostUpdate.Version -join ', ')")
                         }
                     }
                 }

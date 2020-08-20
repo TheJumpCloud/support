@@ -19,13 +19,13 @@ Get-JCSystem [[-hostname] <String>] [-displayName <String>] [-version <String>] 
  [-systemTimezone <String>] [-active <Boolean>] [-allowMultiFactorAuthentication <Boolean>]
  [-allowPublicKeyAuthentication <Boolean>] [-allowSshPasswordAuthentication <Boolean>]
  [-allowSshRootLogin <Boolean>] [-modifySSHDConfig <Boolean>] [-hasServiceAccount <Boolean>]
- [-filterDateProperty <String>] [-returnProperties <String[]>] -dateFilter <String> -date <String>
+ [-filterDateProperty <String>] [-returnProperties <String[]>] -dateFilter <String> -date <DateTime>
  [<CommonParameters>]
 ```
 
 ### ByID
 ```
-Get-JCSystem -SystemID <String> [-SystemFDEKey] -dateFilter <String> -date <String> [<CommonParameters>]
+Get-JCSystem -SystemID <String> [-SystemFDEKey] -dateFilter <String> -date <DateTime> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -216,7 +216,7 @@ Accept wildcard characters: False
 Date to filter on.
 
 ```yaml
-Type: System.String
+Type: System.DateTime
 Parameter Sets: (All)
 Aliases:
 

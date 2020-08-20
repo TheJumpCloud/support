@@ -3,14 +3,11 @@ Param(
     , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 1)][ValidateNotNullOrEmpty()][System.String]$JumpCloudApiKeyMsp
     , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 2)][System.String[]]$ExcludeTagList
     , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 3)][System.String[]]$IncludeTagList
+    , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 4)][System.String]$RequiredModulesRepo = 'PSGallery'
 )
+$global:RequiredModulesRepo = $RequiredModulesRepo;
 # Install Pester
-Install-Module -Name:('Pester') -Force
-# Install NuGet
-If (!(Get-PackageProvider -Name:('NuGet') -ErrorAction:('SilentlyContinue')))
-{
-    Install-PackageProvider NuGet -ForceBootstrap -Force | Out-Null
-}
+Install-Module -Repository:('PSGallery') -Name:('Pester') -Force
 # Get list of tags and validate that tags have been applied
 $PesterTests = Get-ChildItem -Path:($PSScriptRoot + '/*.Tests.ps1') -Recurse
 $Tags = ForEach ($PesterTest In $PesterTests)
@@ -48,14 +45,34 @@ $RequiredModules = (Import-LocalizedData -BaseDirectory:($PesterParams_ModuleMan
 If ($RequiredModules)
 {
     $RequiredModules | ForEach-Object {
-        If ([System.String]::IsNullOrEmpty((Get-InstalledModule).Where( { $_.Name -eq $_ })))
+        If ($RequiredModulesRepo -eq 'PSGallery')
         {
-            Write-Host ('Installing: ' + $_)
-            Install-Module -Name:($_) -Force
+            If ([System.String]::IsNullOrEmpty((Get-InstalledModule).Where( { $_.Name -eq $_ })))
+            {
+                Write-Host ('[status]Installing: ' + $_)
+                Install-Module -Repository:($RequiredModulesRepo) -Name:($_) -Force
+            }
+        }
+        Else
+        {
+            If ([System.String]::IsNullOrEmpty((Get-InstalledModule).Where( { $_.Name -eq $_ })))
+            {
+                # Register PSRepository
+                $Password = $env:SYSTEM_ACCESSTOKEN | ConvertTo-SecureString -AsPlainText -Force
+                $RepositoryCredentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $env:SYSTEM_ACCESSTOKEN, $Password
+                $global:RepositoryCredentials = $RepositoryCredentials
+                If (-not (Get-PackageSource -Name:($RequiredModulesRepo) -ErrorAction SilentlyContinue))
+                {
+                    Write-Host("[status]Register-PackageSource '$RequiredModulesRepo'")
+                    Register-PackageSource -Trusted -ProviderName:("PowerShellGet") -Name:($RequiredModulesRepo) -Location:("https://pkgs.dev.azure.com/$(($RequiredModulesRepo.Split('-'))[0])/_packaging/$($(($RequiredModulesRepo.Split('-'))[1]))/nuget/v2/") -Credential:($RepositoryCredentials)
+                }
+                Write-Host("[status]Installing '$_' from '$RequiredModulesRepo'")
+                Install-Module -Repository:($RequiredModulesRepo) -Name:($_) -Credential:($RepositoryCredentials) -AllowPrerelease
+            }
         }
         If (!(Get-Module -Name:($_)))
         {
-            Write-Host ('Importing: ' + $_)
+            Write-Host ('[status]Importing: ' + $_)
             Import-Module -Name:($_) -Force
         }
     }

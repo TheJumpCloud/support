@@ -44,16 +44,15 @@ Describe -Tag:('JCSystem') 'Set-JCSystem 1.0' {
 
     # 1.13.1 Tests ## $PesterParams_SystemLinux._id MUST BE A WINDOWS OR MAC SYSTEM
     # As of 7/29/19 systemInsights is only available for Windows / Mac
+    It "Disables systemInsights on a system" {
+        Set-JCSystem -SystemID $PesterParams_SystemLinux._id -systemInsights $true
+        $Update = Set-JCSystem -SystemID $PesterParams_SystemLinux._id -systemInsights $false
+        $Update.systemInsights.state | Should -Be "deferred"
+    }
 
     It "Enables systemInsights for a system" {
-
         Set-JCSystem -SystemID $PesterParams_SystemLinux._id -systemInsights $false
         $Update = Set-JCSystem -SystemID $PesterParams_SystemLinux._id -systemInsights $true
         $Update.systemInsights.state | Should -Be "enabled"
-    }
-
-    It "Disables systemInsights on a system" {
-        $Update = Set-JCSystem -SystemID $PesterParams_SystemLinux._id -systemInsights $false
-        $Update.systemInsights.state | Should -Be "deferred"
     }
 }
