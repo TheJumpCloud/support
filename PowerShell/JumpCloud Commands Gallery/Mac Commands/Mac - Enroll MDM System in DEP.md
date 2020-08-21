@@ -46,19 +46,19 @@ fi
 
 **Note** Before using this command, a [JumpCloud tenant must first be configured with Apple Business Manager](https://jumpcloud.com/blog/integrate-apple-business-manager) or Apple School Manager. Devices must then be added to your MDM server by serial number or Apple Order ID through Apple Business Manager or Apple School Manager. Devices with matching Serial numbers will be displayed in a JumpCloud Tenant under "DEP Devices"
 
-![Dep Devices](https://github.com/TheJumpCloud/support/blob/master/PowerShell/JumpCloud%20Commands%20Gallery/Files/depDevices.png?raw=true)
+![Dep Devices](../Files/depDevices.png)
 
 This command will enroll a system with the JumpCloud MDM, in DEP. If the system is not enrolled in DEP, the active user of the system will be prompted to approve the MDM profile.
 
-![Dep Prompt](https://github.com/TheJumpCloud/support/blob/master/PowerShell/JumpCloud%20Commands%20Gallery/Files/depPrompt.png?raw=true)
+![Dep Prompt](../Files/depPrompt.png)
 
 If the user clicks the notification window, they'll be brought to the Profiles System Preference panel and prompted to Allow Device Enrollment.
 
-![User Approval](https://github.com/TheJumpCloud/support/blob/master/PowerShell/JumpCloud%20Commands%20Gallery/Files/userApprovalProfile.png?raw=true)
+![User Approval](../Files/userApprovalProfile.png)
 
 If the user clicks allow the device will be DEP enrolled and the MDM profile will become non-removable.
 
-![Enrollment Type](https://github.com/TheJumpCloud/support/blob/master/PowerShell/JumpCloud%20Commands%20Gallery/Files/enrollmentType.png?raw=true)
+![Enrollment Type](../Files/enrollmentType.png)
 
 #### *Import This Command*
 
