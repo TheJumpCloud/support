@@ -17,7 +17,7 @@ $jcinstallpath = $configfiledefault.Substring(0,$index)
 #Remove loglevel.cache if exists
 Remove-Item $jcinstallpath'Loglevel.cache' -ea ig
 #add debug or trace to file
-New-Item -Path $path -Name Loglevel.cache -ItemType "file" -Value $loglevel
+New-Item -Path $jcinstallpath -Name Loglevel.cache -ItemType "file" -Value $loglevel
 
 #Schedules JumpCloud Agent Restart
 if ( -not (Test-Path -path "C:\Windows\Temp\JC_ScheduledTasks"))
@@ -32,7 +32,7 @@ $TaskName = "JC_ScheduledWAgentRestart$FileDate"
 $FilePath = "C:\Windows\Temp\JC_ScheduledTasks\"
 $FileContents = @"
     Stop-Service jumpcloud-agent -force
-    Rename-Item -Path "C:\Windows\Temp\jcagent.log" -NewName "jcagent_$FileDate.log"
+    Copy-Item -Path "C:\Windows\Temp\jcagent.log" -Destination "C:\Windows\Temp\jcagent_$FileDate.log"
     Start-Sleep -Seconds 1
     Start-Service jumpcloud-agent
     SCHTASKS /Delete /tn "$TaskName" /F
