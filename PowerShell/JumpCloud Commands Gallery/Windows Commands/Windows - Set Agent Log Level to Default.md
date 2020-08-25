@@ -44,7 +44,7 @@ SCHTASKS /create /tn "$TaskName" /tr "powershell.exe -noprofile -executionpolicy
 
 #### Description
 
-This command will set the JumpCloud Agent Log Level to Debug level. The Agent Log Level can also be set to Trace by changing the $loglevel variable from "DEBUG" to "TRACE". After the command is run, a shcheduled task triggers a second script that sets the Log Level, restarts the JumpCloud Agent and removes the itself.
+This command will set the JumpCloud Agent Log Level to Default. After the command is run, a scheduled task triggers a second script that sets restarts the JumpCloud Agent and removes the itself.
 
 #### *Import This Command*
 
