@@ -26,7 +26,7 @@ cat <<EOF > $launchDaemon
 	<key>ProgramArguments</key>
 	<array>
 		<string>/bin/bash</string>
-		<string>/var/tmp/jc_setAgnet.sh</string>
+		<string>/var/tmp/jc_setAgent.sh</string>
 	</array>
     <key>RunAtLoad</key>
 	<true/>
@@ -70,8 +70,7 @@ logLevel $setLevel
 launchctl stop com.jumpcloud.darwin-agent
 
 # Clean up after restarting agent
-# Stop Remove Daemon
-# launchctl unload $launchDaemon
+# Remove launchDaemon
 rm $launchDaemon
 # Remove this script
 rm -- "$0"
@@ -85,7 +84,7 @@ exit 0
 
 #### Description
 
-This command will set the JumpCloud Agent Log Level to Debug level. The Agent Log Level can also be set to Trace by changing the setLevel variable from "DEBUG" to "TRACE". After the command is run, a launchDaemon is triggers a second script that sets the Log Level, restarts the JumpCloud Agent and removes the launchDaemon, script pair.
+This command will set the JumpCloud Agent Log Level to Debug. The log level can be set to trace by setting the `setLevel="DEBUG"` variable to `setLevel="TRACE"` After the command is run, a launchDaemon is triggered which loads a second script to set the log Level. That second script restarts the JumpCloud Agent and removes the launchDaemon and deletes itself. The launchDameon: com.jumpcloud.agentlogdefault.plist will be unloaded on system restart.
 
 #### *Import This Command*
 

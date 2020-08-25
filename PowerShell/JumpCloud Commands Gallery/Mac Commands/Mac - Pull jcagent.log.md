@@ -1,6 +1,6 @@
 #### Name
 
-Mac - Pull jcagent.log | v1.0 JCCG
+Mac - Pull jcagent.log | v1.1 JCCG
 
 #### commandType
 
@@ -9,12 +9,19 @@ mac
 #### Command
 
 ```
-cat /var/log/jcagent.log
+#!/bin/bash
+agentLogFile="/var/log/jcagent.log"
+echo "============================= Begin Log ==============================="
+# Pull log data and echo to standard out
+while IFS="" read -r line; do
+    echo "$line"
+done < $agentLogFile
+echo "============================== End Log ================================"
 ```
 
 #### Description
 
-Pulls the JC agent log from a Mac system. If the jcagent.log is larger than 1 MB the most recend 1 MB of data from the log will be returned. 
+Pulls the JC agent log from a Mac system and prints each line to the JumpCloud command result log. This log can be saved as a .log file.
 
 #### *Import This Command*
 
