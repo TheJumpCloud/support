@@ -12,7 +12,7 @@ Windows
 #Find jcagent install path
 $configfiledefault = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\SOFTWARE\JumpCloud\JumpCloud Agent\ConfigFile\').'(default)'
 $index = ($configfiledefault).IndexOf("Plugins")
-$jcinstallpath = $default.Substring(0,$index)
+$jcinstallpath = $configfiledefault.Substring(0,$index)
 #Remove loglevel.cache if exists
 Remove-Item $jcinstallpath'Loglevel.cache' -ea ig
 
