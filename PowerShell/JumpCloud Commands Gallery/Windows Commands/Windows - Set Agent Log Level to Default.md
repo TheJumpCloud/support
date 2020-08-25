@@ -29,7 +29,7 @@ $TaskName = "JC_ScheduledWAgentRestart$FileDate"
 $FilePath = "C:\Windows\Temp\JC_ScheduledTasks\"
 $FileContents = @"
     Stop-Service jumpcloud-agent -force
-    Rename-Item -Path "C:\Windows\Temp\jcagent.log" -NewName "jcagent_$FileDate.log"
+    Copy-Item -Path "C:\Windows\Temp\jcagent.log" -Destination "C:\Windows\Temp\jcagent_$FileDate.log"
     Start-Sleep -Seconds 1
     Start-Service jumpcloud-agent
     SCHTASKS /Delete /tn "$TaskName" /F
