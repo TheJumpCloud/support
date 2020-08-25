@@ -40,8 +40,8 @@ $FileContents = @"
 "@
 New-Item -Path $FilePath -Name $FileName  -ItemType "file" -Value $FileContents
 
-## Schedules task to run in 30s
-$RunTime = (Get-Date).AddSeconds(30) | Get-Date -UFormat %R
+#Schedules task to run in 10s
+$RunTime = (Get-Date).AddSeconds(10) | Get-Date -UFormat %R
 SCHTASKS /create /tn "$TaskName" /tr "powershell.exe -noprofile -executionpolicy Unrestricted -file $FilePath$FileName" /sc ONCE /st $RunTime /RU "NT AUTHORITY\SYSTEM"
 ```
 
