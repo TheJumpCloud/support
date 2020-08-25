@@ -31,7 +31,7 @@ When opening ProfileCreator for the first time, it's advised to set organization
 
 ![example preferences](images/preferences.png)
 
-Consider setting an organization name and identifier, profiles distributed to systems via the JumpCloud Custom MDM profile or commands will display the an organizational identifier on each distributed profile.
+Consider setting an organization name and identifier, profiles distributed to systems via the JumpCloud Custom MDM profile or commands will display an organizational identifier on each distributed profile.
 
 ## Configuration Profile Examples
 
