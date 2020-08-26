@@ -3,7 +3,7 @@
     [CmdletBinding(DefaultParameterSetName = 'ById')]
     Param(
         [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'The verb of the command calling it. Different verbs will make different parameters required.')][ValidateSet('add', 'get', 'new', 'remove', 'set')][System.String]$Action
-        , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'The type of the object.')][ValidateNotNullOrEmpty()][ValidateSet('command', 'ldap_server', 'policy', 'application', 'radius_server', 'system_group', 'system', 'user_group', 'user', 'g_suite', 'office_365')][Alias('TypeNameSingular')][System.String]$Type
+        , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'The type of the object.')][ValidateNotNullOrEmpty()][ValidateSet('command', 'ldap_server', 'policy', 'application', 'radius_server', 'system_group', 'system', 'user_group', 'user', 'g_suite', 'office_365', 'active_directory')][Alias('TypeNameSingular')][System.String]$Type
         , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Bypass user prompts and dynamic ValidateSet.')][ValidateNotNullOrEmpty()][Switch]$Force
     )
     DynamicParam
@@ -60,23 +60,21 @@
                     $SourceItemName = $SourceItem.($SourceItem.ByName)
                     $SourceItemTypeName = $SourceItem.TypeName
                     $SourceItemTypeNameSingular = $SourceItemTypeName.TypeNameSingular
-                    $SourceItemTypeNamePlural = $SourceItemTypeName.TypeNamePlural
                     $SourceItemTargets = $SourceItem.Targets |
                     Where-Object { $_.TargetSingular -in $TargetType -or $_.TargetPlural -in $TargetType }
                     ForEach ($SourceItemTarget In $SourceItemTargets)
                     {
                         $SourceItemTargetSingular = $SourceItemTarget.TargetSingular
-                        $SourceItemTargetPlural = $SourceItemTarget.TargetPlural
                         # Build Url based upon source and target combinations
-                        If (($SourceItemTypeNamePlural -eq 'systems' -and $SourceItemTargetPlural -eq 'systemgroups') -or ($SourceItemTypeNamePlural -eq 'users' -and $SourceItemTargetPlural -eq 'usergroups'))
+                        If (($SourceItemTypeNameSingular -eq 'system' -and $SourceItemTargetSingular -eq 'system_group') -or ($SourceItemTypeNameSingular -eq 'user' -and $SourceItemTargetSingular -eq 'user_group'))
                         {
                             $Uri_Associations_GET = $URL_Template_Associations_MemberOf -f $SourceItemTypeNameSingular.Replace('_', ''), $SourceItemId
                         }
-                        ElseIf (($SourceItemTypeNamePlural -eq 'systemgroups' -and $SourceItemTargetPlural -eq 'systems') -or ($SourceItemTypeNamePlural -eq 'usergroups' -and $SourceItemTargetPlural -eq 'users'))
+                        ElseIf (($SourceItemTypeNameSingular -eq 'system_group' -and $SourceItemTargetSingular -eq 'system') -or ($SourceItemTypeNameSingular -eq 'user_group' -and $SourceItemTargetSingular -eq 'user'))
                         {
                             $Uri_Associations_GET = $URL_Template_Associations_Membership -f $SourceItemTypeNameSingular.Replace('_', ''), $SourceItemId
                         }
-                        ElseIf (($SourceItemTypeNamePlural -eq 'activedirectories' -and $SourceItemTargetPlural -eq 'users') -or ($SourceItemTypeNamePlural -eq 'users' -and $SourceItemTargetPlural -eq 'activedirectories'))
+                        ElseIf (($SourceItemTypeNameSingular -eq 'activedirectory' -and $SourceItemTargetSingular -eq 'user') -or ($SourceItemTypeNameSingular -eq 'user' -and $SourceItemTargetSingular -eq 'activedirectory'))
                         {
                             $Uri_Associations_GET = $URL_Template_Associations_Targets_Get -f $SourceItemTypeNameSingular.Replace('_', ''), $SourceItemId, $SourceItemTargetSingular.Replace('_', '')
                         }
@@ -84,6 +82,7 @@
                         {
                             $Uri_Associations_GET = $URL_Template_Associations_TargetType -f $SourceItemTypeNameSingular.Replace('_', ''), $SourceItemId, $SourceItemTargetSingular.Replace('_', '')
                         }
+                        $Uri_Associations_GET = $Uri_Associations_GET.Replace('usergroupId', 'GroupId').Replace('systemgroupId', 'GroupId')
                         # Call endpoint
                         If ($Action -eq 'get')
                         {
@@ -149,7 +148,6 @@
                                         $TargetItemId = $TargetItem.($TargetItem.ById)
                                         $TargetItemName = $TargetItem.($TargetItem.ByName)
                                         $TargetItemTypeNameSingular = $TargetItem.TypeName.TypeNameSingular
-                                        $TargetItemTypeNamePlural = $TargetItem.TypeName.TypeNamePlural
                                         # Build the attributes for the json body string
                                         $AttributesValue = If ($Action -eq 'add' -and $Attributes)
                                         {
@@ -167,19 +165,19 @@
                                         # If the target is not only an indirect association
                                         If ($TargetItemId -in $DirectAssociations.targetId -or $Action -eq 'add')
                                         {
-                                            # Build uri and body
-                                            If (($SourceItemTypeNamePlural -eq 'systems' -and $SourceItemTargetPlural -eq 'systemgroups') -or ($SourceItemTypeNamePlural -eq 'users' -and $SourceItemTargetPlural -eq 'usergroups'))
+                                            If (($SourceItemTypeNameSingular -eq 'system' -and $SourceItemTargetSingular -eq 'system_group') -or ($SourceItemTypeNameSingular -eq 'user' -and $SourceItemTargetSingular -eq 'user_group'))
                                             {
-                                                $Uri_Associations_POST = $URL_Template_Associations_Members -f $TargetItemId, $SourceItemId, $Action
+                                                $Uri_Associations_POST = $URL_Template_Associations_Members -f $TargetItemTypeNameSingular.Replace('_', ''), $TargetItemId, $SourceItemId, $Action
                                             }
-                                            ElseIf (($SourceItemTypeNamePlural -eq 'systemgroups' -and $SourceItemTargetPlural -eq 'systems') -or ($SourceItemTypeNamePlural -eq 'usergroups' -and $SourceItemTargetPlural -eq 'users'))
+                                            ElseIf (($SourceItemTypeNameSingular -eq 'system_group' -and $SourceItemTargetSingular -eq 'system') -or ($SourceItemTypeNameSingular -eq 'user_group' -and $SourceItemTargetSingular -eq 'user'))
                                             {
-                                                $Uri_Associations_POST = $URL_Template_Associations_Members -f $SourceItemId, $TargetItemId, $Action
+                                                $Uri_Associations_POST = $URL_Template_Associations_Members -f $SourceItemTypeNameSingular.Replace('_', ''), $SourceItemId, $TargetItemId, $Action
                                             }
                                             Else
                                             {
                                                 $Uri_Associations_POST = $URL_Template_Associations_Targets_Post -f $SourceItemTypeNameSingular.Replace('_', ''), $SourceItemId, $TargetItemId, $Action, $TargetItemTypeNameSingular, $AttributesValue
                                             }
+                                            $Uri_Associations_POST = $Uri_Associations_POST.Replace('usergroupId', 'GroupId').Replace('systemgroupId', 'GroupId').Replace(' -Attributes:("null")', '')
                                             # Send body to endpoint.
                                             Write-Verbose ('"' + $Action + '" the association between the "' + $SourceItemTypeNameSingular + '" "' + $SourceItemName + '" and the "' + $TargetItemTypeNameSingular + '" "' + $TargetItemName + '"')
                                             Write-Debug ('[UrlTemplate]:' + $Uri_Associations_POST + ';')

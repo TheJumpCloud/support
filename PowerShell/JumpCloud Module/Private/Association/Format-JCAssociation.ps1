@@ -119,8 +119,11 @@ Function Format-JCAssociation
                         [AssociationMap]$AssociationVisualPathRecord = [AssociationMap]::new($Source.($Source.ById), $Source.($Source.ByName), $Source.TypeName.TypeNameSingular)
                         $AssociationVisualPath += $AssociationVisualPathRecord
                         $_.to | ForEach-Object {
-                            $AssociationPathToItemInfo = Get-JCObject -Type:($_.type) -Id:($_.id)
-                            $AssociationVisualPath += [AssociationMap]::new($_.id, $AssociationPathToItemInfo.($AssociationPathToItemInfo.ByName), $_.type)
+                            If (-not [System.String]::IsNullOrEmpty($_))
+                            {
+                                $AssociationPathToItemInfo = Get-JCObject -Type:($_.type) -Id:($_.id)
+                                $AssociationVisualPath += [AssociationMap]::new($_.id, $AssociationPathToItemInfo.($AssociationPathToItemInfo.ByName), $_.type)
+                            }
                         }
                         ($AssociationVisualPath | ForEach-Object { $_.PSObject.Properties.name } |
                             Select-Object -Unique) |
