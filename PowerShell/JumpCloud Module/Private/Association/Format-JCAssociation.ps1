@@ -12,10 +12,10 @@ Function Format-JCAssociation
     )
     Write-Debug ('[UrlTemplate]:' + $Uri)
     $AssociationsOut = @()
-    $Associations = Invoke-JCApi -Method:($Method) -Paginate:($true) -Url:($Uri)
+    $Associations = Invoke-Expression -Command:($Uri)
     If ($TargetId)
     {
-        $Associations = $Associations | Where-Object {$_.id -eq $TargetId}
+        $Associations = $Associations | Where-Object { $_.id -eq $TargetId }
     }
     If ($Associations -and $Associations.PSObject.Properties.name -notcontains 'NoContent')
     {
@@ -44,7 +44,7 @@ Function Format-JCAssociation
             {
                 # Raw switch allows for the user to return an unformatted version of what the api endpoint returns
                 Add-Member -InputObject:($_) -NotePropertyName:('associationType') -NotePropertyValue:($associationType);
-                $_.paths | ForEach-Object {$_.PSObject.Properties.Remove('associationType')}
+                $_.paths | ForEach-Object { $_.PSObject.Properties.Remove('associationType') }
                 $AssociationsOut += $_
             }
             Else
@@ -65,11 +65,11 @@ Function Format-JCAssociation
                 };
                 # Dynamically get the rest of the properties and add them to the hash
                 $AssociationProperties = $_ |
-                    ForEach-Object {$_.PSObject.Properties.name} |
-                    Select-Object -Unique
+                ForEach-Object { $_.PSObject.Properties.name } |
+                Select-Object -Unique
                 If ($AssociationProperties)
                 {
-                    ForEach ($AssociationProperty In $AssociationProperties | Where-Object {$_ -notin ('id', 'type')})
+                    ForEach ($AssociationProperty In $AssociationProperties | Where-Object { $_ -notin ('id', 'type') })
                     {
                         $AssociationHash.Add($AssociationProperty, $_.($AssociationProperty)) | Out-Null
                     }
@@ -112,7 +112,7 @@ Function Format-JCAssociation
                     class AssociationMap
                     {
                         [string]$Id; [string]$Name; [string]$Type;
-                        AssociationMap([string]$i, [string]$n, [string]$t) {$this.Id = $i; $this.Name = $n; $this.Type = $t; }
+                        AssociationMap([string]$i, [string]$n, [string]$t) { $this.Id = $i; $this.Name = $n; $this.Type = $t; }
                     }
                     $_.paths | ForEach-Object {
                         $AssociationVisualPath = @()
@@ -122,9 +122,9 @@ Function Format-JCAssociation
                             $AssociationPathToItemInfo = Get-JCObject -Type:($_.type) -Id:($_.id)
                             $AssociationVisualPath += [AssociationMap]::new($_.id, $AssociationPathToItemInfo.($AssociationPathToItemInfo.ByName), $_.type)
                         }
-                        ($AssociationVisualPath | ForEach-Object {$_.PSObject.Properties.name} |
-                                Select-Object -Unique) |
-                            ForEach-Object {
+                        ($AssociationVisualPath | ForEach-Object { $_.PSObject.Properties.name } |
+                            Select-Object -Unique) |
+                        ForEach-Object {
                             $KeyName_visualPath = 'visualPathBy' + $_
                             $AssociationHash.($KeyName_visualPath) = ('"' + ($AssociationVisualPath.($_) -join '" -> "') + '"')
                         }
@@ -133,7 +133,7 @@ Function Format-JCAssociation
                 # Convert the hashtable to an object where the Value has been populated
                 $AssociationsUpdated = [PSCustomObject]@{}
                 $AssociationHash.GetEnumerator() |
-                    ForEach-Object {If ($_.Value -or $_.key -in ($AssociationProperties) -or $_.key -in ('targetId', 'targetType')) {Add-Member -InputObject:($AssociationsUpdated) -NotePropertyName:($_.Key) -NotePropertyValue:($_.Value)}}
+                ForEach-Object { If ($_.Value -or $_.key -in ($AssociationProperties) -or $_.key -in ('targetId', 'targetType')) { Add-Member -InputObject:($AssociationsUpdated) -NotePropertyName:($_.Key) -NotePropertyValue:($_.Value) } }
                 $AssociationsOut += $AssociationsUpdated
             }
         }

@@ -25,12 +25,16 @@
         Try
         {
             # All the bindings, recursive , both direct and indirect
-            $URL_Template_Associations_MemberOf = '/api/v2/{0}/{1}/memberof' # $SourcePlural, $SourceId
-            $URL_Template_Associations_Membership = '/api/v2/{0}/{1}/membership' # $SourcePlural (systemgroups,usergroups), $SourceId
-            $URL_Template_Associations_TargetType = '/api/v2/{0}/{1}/{2}' # $SourcePlural, $SourceId, $TargetPlural
+            $URL_Template_Associations_MemberOf = 'JumpCloud.SDK.V2\Get-JcSdk{0}Member -{0}Id:("{1}")'
+            $URL_Template_Associations_Membership = 'JumpCloud.SDK.V2\Get-JcSdk{0}Membership -GroupId:("{1}")'
+            $URL_Template_Associations_TargetType = 'JumpCloud.SDK.V2\Get-JcSdk{0}Traverse{2} -{0}Id:("{1}")'
             # Only direct bindings and don’t traverse through groups
-            $URL_Template_Associations_Targets = '/api/v2/{0}/{1}/associations?targets={2}' # $SourcePlural, $SourceId, $TargetSingular
-            $URL_Template_Associations_Members = '/api/v2/{0}/{1}/members' # $SourcePlural, $SourceId
+            $URL_Template_Associations_Targets_Get = 'JumpCloud.SDK.V2\Get-JcSdk{0}Association -{0}Id:("{1}") -Targets:("{2}")'
+            $URL_Template_Associations_Targets_Post = 'JumpCloud.SDK.V2\Set-JcSdk{0}Association -{0}Id:("{1}") -Id:("{2}") -Op:("{3}") -Type:("{4}") -Attributes:("{5}")'
+            $URL_Template_Associations_Members = 'JumpCloud.SDK.V2\Set-JcSdk{0}Member -GroupId:("{1}") -Id:("{2}") -Op:("{3}")'
+
+
+
             # Determine to search by id or name but always prefer id
             If ($Id)
             {
@@ -58,7 +62,7 @@
                     $SourceItemTypeNameSingular = $SourceItemTypeName.TypeNameSingular
                     $SourceItemTypeNamePlural = $SourceItemTypeName.TypeNamePlural
                     $SourceItemTargets = $SourceItem.Targets |
-                        Where-Object { $_.TargetSingular -in $TargetType -or $_.TargetPlural -in $TargetType }
+                    Where-Object { $_.TargetSingular -in $TargetType -or $_.TargetPlural -in $TargetType }
                     ForEach ($SourceItemTarget In $SourceItemTargets)
                     {
                         $SourceItemTargetSingular = $SourceItemTarget.TargetSingular
@@ -66,19 +70,19 @@
                         # Build Url based upon source and target combinations
                         If (($SourceItemTypeNamePlural -eq 'systems' -and $SourceItemTargetPlural -eq 'systemgroups') -or ($SourceItemTypeNamePlural -eq 'users' -and $SourceItemTargetPlural -eq 'usergroups'))
                         {
-                            $Uri_Associations_GET = $URL_Template_Associations_MemberOf -f $SourceItemTypeNamePlural, $SourceItemId
+                            $Uri_Associations_GET = $URL_Template_Associations_MemberOf -f $SourceItemTypeNameSingular.Replace('_', ''), $SourceItemId
                         }
                         ElseIf (($SourceItemTypeNamePlural -eq 'systemgroups' -and $SourceItemTargetPlural -eq 'systems') -or ($SourceItemTypeNamePlural -eq 'usergroups' -and $SourceItemTargetPlural -eq 'users'))
                         {
-                            $Uri_Associations_GET = $URL_Template_Associations_Membership -f $SourceItemTypeNamePlural, $SourceItemId
+                            $Uri_Associations_GET = $URL_Template_Associations_Membership -f $SourceItemTypeNameSingular.Replace('_', ''), $SourceItemId
                         }
                         ElseIf (($SourceItemTypeNamePlural -eq 'activedirectories' -and $SourceItemTargetPlural -eq 'users') -or ($SourceItemTypeNamePlural -eq 'users' -and $SourceItemTargetPlural -eq 'activedirectories'))
                         {
-                            $Uri_Associations_GET = $URL_Template_Associations_Targets -f $SourceItemTypeNamePlural, $SourceItemId, $SourceItemTargetSingular
+                            $Uri_Associations_GET = $URL_Template_Associations_Targets_Get -f $SourceItemTypeNameSingular.Replace('_', ''), $SourceItemId, $SourceItemTargetSingular.Replace('_', '')
                         }
                         Else
                         {
-                            $Uri_Associations_GET = $URL_Template_Associations_TargetType -f $SourceItemTypeNamePlural, $SourceItemId, $SourceItemTargetPlural
+                            $Uri_Associations_GET = $URL_Template_Associations_TargetType -f $SourceItemTypeNameSingular.Replace('_', ''), $SourceItemId, $SourceItemTargetSingular.Replace('_', '')
                         }
                         # Call endpoint
                         If ($Action -eq 'get')
@@ -166,22 +170,19 @@
                                             # Build uri and body
                                             If (($SourceItemTypeNamePlural -eq 'systems' -and $SourceItemTargetPlural -eq 'systemgroups') -or ($SourceItemTypeNamePlural -eq 'users' -and $SourceItemTargetPlural -eq 'usergroups'))
                                             {
-                                                $Uri_Associations_POST = $URL_Template_Associations_Members -f $TargetItemTypeNamePlural, $TargetItemId
-                                                $JsonBody = '{"op":"' + $Action + '","type":"' + $SourceItemTypeNameSingular + '","id":"' + $SourceItemId + '","attributes":' + $AttributesValue + '}'
+                                                $Uri_Associations_POST = $URL_Template_Associations_Members -f $TargetItemId, $SourceItemId, $Action
                                             }
                                             ElseIf (($SourceItemTypeNamePlural -eq 'systemgroups' -and $SourceItemTargetPlural -eq 'systems') -or ($SourceItemTypeNamePlural -eq 'usergroups' -and $SourceItemTargetPlural -eq 'users'))
                                             {
-                                                $Uri_Associations_POST = $URL_Template_Associations_Members -f $SourceItemTypeNamePlural, $SourceItemId
-                                                $JsonBody = '{"op":"' + $Action + '","type":"' + $TargetItemTypeNameSingular + '","id":"' + $TargetItemId + '","attributes":' + $AttributesValue + '}'
+                                                $Uri_Associations_POST = $URL_Template_Associations_Members -f $SourceItemId, $TargetItemId, $Action
                                             }
                                             Else
                                             {
-                                                $Uri_Associations_POST = $URL_Template_Associations_Targets -f $SourceItemTypeNamePlural, $SourceItemId, $SourceItemTargetSingular
-                                                $JsonBody = '{"op":"' + $Action + '","type":"' + $TargetItemTypeNameSingular + '","id":"' + $TargetItemId + '","attributes":' + $AttributesValue + '}'
+                                                $Uri_Associations_POST = $URL_Template_Associations_Targets_Post -f $SourceItemTypeNameSingular.Replace('_', ''), $SourceItemId, $TargetItemId, $Action, $TargetItemTypeNameSingular, $AttributesValue
                                             }
                                             # Send body to endpoint.
                                             Write-Verbose ('"' + $Action + '" the association between the "' + $SourceItemTypeNameSingular + '" "' + $SourceItemName + '" and the "' + $TargetItemTypeNameSingular + '" "' + $TargetItemName + '"')
-                                            Write-Debug ('[UrlTemplate]:' + $Uri_Associations_POST + '; Body:' + $JsonBody + ';')
+                                            Write-Debug ('[UrlTemplate]:' + $Uri_Associations_POST + ';')
                                             If (!($Force))
                                             {
                                                 Do
@@ -194,7 +195,7 @@
                                             {
                                                 Try
                                                 {
-                                                    $JCApi = Invoke-JCApi -Body:($JsonBody) -Method:('POST') -Url:($Uri_Associations_POST)
+                                                    $JCApi = Invoke-Expression -Command:($Uri_Associations_POST)
                                                     $ActionResult = $JCApi | Select-Object * `
                                                         , @{Name = 'IsSuccessStatusCode'; Expression = { $JCApi.httpMetaData.BaseResponse.IsSuccessStatusCode | Select-Object -Unique } } `
                                                         , @{Name = 'error'; Expression = { $null } }
