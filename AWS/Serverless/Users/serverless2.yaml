@@ -26,7 +26,7 @@ Parameters:
     Description: OPTIONAL - This parameter can be used to allow MTP Admins to select which Organization they would like to collect JumpCloud User data for.
   UserFields:
     Type: CommaDelimitedList
-    Default: "email,firstname,lastname"
+    Default: email, firstname, lastname
     AllowedValues:
       - email
       - firstname
