@@ -65,5 +65,5 @@ If the user clicks allow the device will be DEP enrolled and the MDM profile wil
 To import this command into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
 
 ```
-Import-JCCommand -URL 'REPLACEME'
+Import-JCCommand -URL 'https://git.io/JUIqN'
 ```
