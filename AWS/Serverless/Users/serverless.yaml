@@ -25,24 +25,33 @@ Parameters:
   IncrementAmount:
     Type: Number
     Default: 1
+  UserFields:
+    Type: CommaDelimitedList
+    Default: "email,firstname,lastname"
+    AllowedValues:
+      - email
+      - firstname
+      - lastname
+      - suspended
+    Description: Allowed values - "email", "firstname", "lastname", "suspended". IDs of JumpCloud users are always returned.
 
 Metadata:
   AWS::ServerlessRepo::Application:
-    Name: JumpCloud-Events-Python
-    Description: This Serverless Application can be used to collect your JumpCloud Events data at a regular interval.
+    Name: JumpCloud-Users-Python
+    Description: This Serverless Application can be used to collect your JumpCloud Users data at a regular interval.
     Author: Kyle Moorehead
     SemanticVersion: 0.0.6
     HomePageUrl: https://git.io/JeKSN
     SourceCodeUrl: https://git.io/JeK7O
 
 Resources:
-  EventsBucket:
+  UsersBucket:
     Type: AWS::S3::Bucket
-  EventsFunction:
+  UsersFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: get-jcevents.zip
-      Handler: get-jcevents.jc_events
+      CodeUri: get-jcusers.zip
+      Handler: get-jcusers.jc_users
       MemorySize: 192
       Timeout: 180
       Runtime: python3.7
@@ -54,6 +63,7 @@ Resources:
           incrementType: !Sub ${IncrementType}
           incrementAmount: !Sub ${IncrementAmount}
           BucketName: !Ref EventsBucket
+          UserFields: !Ref ${UserFields}
       Events:
         GrabEvents:
           Type: Schedule

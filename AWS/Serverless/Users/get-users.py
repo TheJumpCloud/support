@@ -5,6 +5,7 @@ def jc_users(event, context):
     incrementType = os.environ['incrementType']
     incrementAmount = int(os.environ['incrementAmount'])
     bucketName = os.environ['BucketName']
+    UserFields = os.environ['UserFields']
 
 
     now = datetime.datetime.utcnow()
