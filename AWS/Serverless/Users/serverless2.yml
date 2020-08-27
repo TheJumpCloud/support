@@ -23,7 +23,7 @@ Parameters:
   OrganizationID:
     Type: String
     Default: ''
-    Description: OPTIONAL - This parameter can be used to allow MTP Admins to select which Organization they would like to collect Directory Insights data for.
+    Description: OPTIONAL - This parameter can be used to allow MTP Admins to select which Organization they would like to collect JumpCloud User data for.
   UserFields:
     Type: CommaDelimitedList
     Default: "email,firstname,lastname"
@@ -47,10 +47,10 @@ Metadata:
     SourceCodeUrl: https://git.io/JJiMo
 
 Resources:
-  DirectoryInsightsRole:
+  JCUserRole:
     Type: AWS::IAM::Role
     Properties: 
-      Description: A role for use in the JumpCloud Directory Insights Serverless App
+      Description: A role for use in the JumpCloud Users CSV Serverless App
       AssumeRolePolicyDocument:
         Version: 2012-10-17
         Statement:
@@ -71,12 +71,12 @@ Resources:
                 Action:
                   - 'cloudwatch:PutMetricData'
                 Resource: '*'
-  DirectoryInsightsBucket:
+  JCUserBucket:
     Type: AWS::S3::Bucket
-  DirectoryInsightsCmk:
+  JCUserCmk:
     Type: AWS::KMS::Key
     Properties:
-      Description: An Symmetric CMK for use in the JumpCloud Directory Insights Serverless App
+      Description: An Symmetric CMK for use in the JumpCloud User CSV Serverless App
       KeyPolicy:
         Version: '2012-10-17'
         Id: key-default-1
@@ -90,7 +90,7 @@ Resources:
         - Sid: Allow use of the key
           Effect: Allow
           Principal:
-            AWS: !GetAtt DirectoryInsightsRole.Arn
+            AWS: !GetAtt JCUserRole.Arn
           Action:
           - kms:DescribeKey
           - kms:Encrypt
@@ -113,28 +113,28 @@ Resources:
         Statement:
         - Effect: Allow
           Principal: 
-            AWS: !GetAtt DirectoryInsightsRole.Arn
+            AWS: !GetAtt JCUserRole.Arn
           Action: secretsmanager:GetSecretValue
           Resource: "*"
-  DirectoryInsightsFunction:
+  JCUserFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: get-jcdirectoryinsights.zip
-      Handler: get-jcdirectoryinsights.jc_directoryinsights
+      CodeUri: get-jcusers.zip
+      Handler: get-jcusers.jc_users
       MemorySize: 192
       Timeout: 180
       Runtime: python3.7
-      Role: !GetAtt DirectoryInsightsRole.Arn
-      KmsKeyArn: !GetAtt DirectoryInsightsCmk.Arn
+      Role: !GetAtt JCUserRole.Arn
+      KmsKeyArn: !GetAtt JCUserCmk.Arn
       Environment:
         Variables:
           JcApiKeyArn: !Ref JcApiKey
           incrementType: !Sub ${IncrementType}
           incrementAmount: !Sub ${IncrementAmount}
-          BucketName: !Ref DirectoryInsightsBucket
+          BucketName: !Ref JCUserBucket
           OrgId: !Sub ${OrganizationID}
       Events:
-        GrabDirectoryInsights:
+        GrabJCUser:
           Type: Schedule
           Properties:
             Schedule: !Join ["", [!Sub "rate(${IncrementAmount} ", !If [isSingular, !Select [0, !Split ["s", !Ref "IncrementType"]], !Join ["", [!Select [0, !Split ["s", !Ref "IncrementType"]], "s"]]], ")"]]
