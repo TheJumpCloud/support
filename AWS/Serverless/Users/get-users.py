@@ -1,29 +1,26 @@
 import requests, datetime, json, boto3, os, gzip, csv
 
 def jc_users(event, context):
-    jcapikey =  os.environ['JCAPIKEY']
-    incrementType = os.environ['incrementType']
-    incrementAmount = int(os.environ['incrementAmount'])
-    bucketName = os.environ['BucketName']
-    UserFields = os.environ['UserFields']
+    try:
+        jcapikey =  os.environ['JCAPIKEY']
+        incrementType = os.environ['incrementType']
+        incrementAmount = int(os.environ['incrementAmount'])
+        bucketName = os.environ['BucketName']
+        UserFields = os.environ['UserFields']
+    except KeyError as e:
+        raise Exception(e)
 
 
     now = datetime.datetime.utcnow()
 
-    if incrementType == "minutes":
+    if incrementType == "minutes" or incrementType == "minute":
         start_dt = now - datetime.timedelta(minutes=incrementAmount)
-    elif incrementType == "minute":
-        start_dt = now - datetime.timedelta(minutes=incrementAmount)
-    elif incrementType == "hours":
+    elif incrementType == "hours" or incrementType == "hour":
         start_dt = now - datetime.timedelta(hours=incrementAmount)
-    elif incrementType == "hour":
-        start_dt = now - datetime.timedelta(minutes=incrementAmount)
-    elif incrementType == "days":
-        start_dt = now - datetime.timedelta(days=incrementAmount)
-    elif incrementType == "day":
+    elif incrementType == "days" or incrementType == "day":
         start_dt = now - datetime.timedelta(days=incrementAmount)
     else:
-        print("Unknown increment value.")
+        raise Exception("Unknown increment value.")
 
     start_date = start_dt.isoformat("T") + "Z"
     end_date = now.isoformat("T") + "Z"
@@ -38,6 +35,7 @@ def jc_users(event, context):
     headers = {
         'x-api-key': jcapikey,
         'content-type': "application/json",
+        'user-agent': "JumpCloud_AWSServerless.UserCSV/0.0.1"
         }
     skip = 0
     body = {
