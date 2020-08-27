@@ -1,4 +1,5 @@
 import requests, datetime, json, boto3, os, gzip, csv
+from botocore.exceptions import ClientError
 
 def jc_users(event, context):
     try:
@@ -39,7 +40,7 @@ def jc_users(event, context):
         }
     skip = 0
     body = {
-        'fields': ("email", "firstname", "lastname", "suspended"),
+        'fields': UserFields,
         'skip': skip
     }
 
