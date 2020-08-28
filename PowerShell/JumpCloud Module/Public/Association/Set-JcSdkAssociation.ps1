@@ -55,27 +55,54 @@ $Paths.PSObject.Properties.Name | ForEach-Object {
                 ElseIf ($MethodName -eq 'post')
                 {
                     $EndpointParameters = Get-SwaggerItem -FilePath:($SwaggerFilePath) -JsonPath:($AssociationEndpoints.parameters.schema.'$ref')
+                    $EndpointParametersProperties = $EndpointParameters.properties
+                    # $EndpointParametersProperties.PSObject.Properties.Name | ForEach-Object {
+                    #     $PropertyName = $_
+                    #     # Extract all parameters with enum
+                    #     If ($EndpointParametersProperties.$PropertyName.PSObject.Properties.Name | Where-Object { $_ -eq 'enum' })
+                    #     {
+                    #         # If ($EndpointParametersProperties.$PropertyName.PSObject.Properties.Name | Where-Object { $_ -in ('type', 'op') })
+                    #         # {
+                    #         $RecordObject = [PSCustomObject]@{
+                    #             Path          = $PathName
+                    #             Method        = $MethodName
+                    #             operationId   = $operationId
+                    #             ParameterName = $EndpointParametersProperties.PSObject.Properties.Name | Where-Object { $_ -eq $PropertyName }
+                    #         }
+                    #         $EnumValue = If ($EndpointParametersProperties.$PropertyName.PSObject.Properties.Name | Where-Object { $_ -eq '$ref' })
+                    #         {
+                    #             (Get-SwaggerItem -FilePath:($SwaggerFilePath) -JsonPath:($EndpointParametersProperties.$PropertyName.'$ref')).enum;
+                    #         }
+                    #         Else
+                    #         {
+                    #             $EndpointParametersProperties.$PropertyName.enum;
+                    #         };
+                    #         $RecordObject | Add-Member -MemberType:('NoteProperty') -Name:('enum') -Value:($EnumValue)
+                    #         $OutputObject += $RecordObject
+                    #         # }
+                    #     }
+                    # }
                     # Extract "op" parameter
                     $OutputObject += [PSCustomObject]@{
                         Path          = $PathName
                         Method        = $MethodName
                         operationId   = $operationId
-                        ParameterName = $EndpointParameters.properties.PSObject.Properties.Name | Where-Object { $_ -eq 'op' }
-                        enum          = $EndpointParameters.properties.op.enum
+                        ParameterName = $EndpointParametersProperties.PSObject.Properties.Name | Where-Object { $_ -eq 'op' }
+                        enum          = $EndpointParametersProperties.op.enum
                     }
                     # Extract "type" parameter
                     $OutputObject += [PSCustomObject]@{
                         Path          = $PathName
                         Method        = $MethodName
                         operationId   = $operationId
-                        ParameterName = $EndpointParameters.properties.PSObject.Properties.Name | Where-Object { $_ -eq 'type' }
-                        enum          = If ($EndpointParameters.properties.type.PSObject.Properties.Name | Where-Object { $_ -eq '$ref' })
+                        ParameterName = $EndpointParametersProperties.PSObject.Properties.Name | Where-Object { $_ -eq 'type' }
+                        enum          = If ($EndpointParametersProperties.type.PSObject.Properties.Name | Where-Object { $_ -eq '$ref' })
                         {
-                            (Get-SwaggerItem -FilePath:($SwaggerFilePath) -JsonPath:($EndpointParameters.properties.type.'$ref')).enum;
+                            (Get-SwaggerItem -FilePath:($SwaggerFilePath) -JsonPath:($EndpointParametersProperties.type.'$ref')).enum;
                         }
                         Else
                         {
-                            $EndpointParameters.properties.type.enum;
+                            $EndpointParametersProperties.type.enum;
                         };
                     }
                 }
