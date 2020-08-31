@@ -67,10 +67,6 @@
       {
         "TargetSingular": "user_group",
         "TargetPlural": "usergroups"
-      },
-      {
-        "TargetSingular": "user_group",
-        "TargetPlural": "usergroups"
       }
     ]
   },
@@ -142,62 +138,6 @@
       {
         "TargetSingular": "user_group",
         "TargetPlural": "usergroups"
-      },
-      {
-        "TargetSingular": "active_directory",
-        "TargetPlural": "activedirectories"
-      },
-      {
-        "TargetSingular": "application",
-        "TargetPlural": "applications"
-      },
-      {
-        "TargetSingular": "command",
-        "TargetPlural": "commands"
-      },
-      {
-        "TargetSingular": "g_suite",
-        "TargetPlural": "gsuites"
-      },
-      {
-        "TargetSingular": "ldap_server",
-        "TargetPlural": "ldapservers"
-      },
-      {
-        "TargetSingular": "office_365",
-        "TargetPlural": "office365s"
-      },
-      {
-        "TargetSingular": "policy",
-        "TargetPlural": "policies"
-      },
-      {
-        "TargetSingular": "radius_server",
-        "TargetPlural": "radiusservers"
-      },
-      {
-        "TargetSingular": "system",
-        "TargetPlural": "systems"
-      },
-      {
-        "TargetSingular": "system_group",
-        "TargetPlural": "systemgroups"
-      },
-      {
-        "TargetSingular": "user",
-        "TargetPlural": "users"
-      },
-      {
-        "TargetSingular": "user_group",
-        "TargetPlural": "usergroups"
-      },
-      {
-        "TargetSingular": "user_group",
-        "TargetPlural": "usergroups"
-      },
-      {
-        "TargetSingular": "user",
-        "TargetPlural": "users"
       }
     ]
   },
@@ -269,62 +209,6 @@
       {
         "TargetSingular": "user_group",
         "TargetPlural": "usergroups"
-      },
-      {
-        "TargetSingular": "active_directory",
-        "TargetPlural": "activedirectories"
-      },
-      {
-        "TargetSingular": "application",
-        "TargetPlural": "applications"
-      },
-      {
-        "TargetSingular": "command",
-        "TargetPlural": "commands"
-      },
-      {
-        "TargetSingular": "g_suite",
-        "TargetPlural": "gsuites"
-      },
-      {
-        "TargetSingular": "ldap_server",
-        "TargetPlural": "ldapservers"
-      },
-      {
-        "TargetSingular": "office_365",
-        "TargetPlural": "office365s"
-      },
-      {
-        "TargetSingular": "policy",
-        "TargetPlural": "policies"
-      },
-      {
-        "TargetSingular": "radius_server",
-        "TargetPlural": "radiusservers"
-      },
-      {
-        "TargetSingular": "system",
-        "TargetPlural": "systems"
-      },
-      {
-        "TargetSingular": "system_group",
-        "TargetPlural": "systemgroups"
-      },
-      {
-        "TargetSingular": "user",
-        "TargetPlural": "users"
-      },
-      {
-        "TargetSingular": "user_group",
-        "TargetPlural": "usergroups"
-      },
-      {
-        "TargetSingular": "system_group",
-        "TargetPlural": "systemgroups"
-      },
-      {
-        "TargetSingular": "system",
-        "TargetPlural": "systems"
       }
     ]
   },
@@ -394,62 +278,6 @@
       {
         "TargetSingular": "user_group",
         "TargetPlural": "usergroups"
-      },
-      {
-        "TargetSingular": "active_directory",
-        "TargetPlural": "activedirectories"
-      },
-      {
-        "TargetSingular": "application",
-        "TargetPlural": "applications"
-      },
-      {
-        "TargetSingular": "command",
-        "TargetPlural": "commands"
-      },
-      {
-        "TargetSingular": "g_suite",
-        "TargetPlural": "gsuites"
-      },
-      {
-        "TargetSingular": "ldap_server",
-        "TargetPlural": "ldapservers"
-      },
-      {
-        "TargetSingular": "office_365",
-        "TargetPlural": "office365s"
-      },
-      {
-        "TargetSingular": "policy",
-        "TargetPlural": "policies"
-      },
-      {
-        "TargetSingular": "radius_server",
-        "TargetPlural": "radiusservers"
-      },
-      {
-        "TargetSingular": "system",
-        "TargetPlural": "systems"
-      },
-      {
-        "TargetSingular": "system_group",
-        "TargetPlural": "systemgroups"
-      },
-      {
-        "TargetSingular": "user",
-        "TargetPlural": "users"
-      },
-      {
-        "TargetSingular": "user_group",
-        "TargetPlural": "usergroups"
-      },
-      {
-        "TargetSingular": "user_group",
-        "TargetPlural": "usergroups"
-      },
-      {
-        "TargetSingular": "user",
-        "TargetPlural": "users"
       }
     ]
   },
@@ -521,62 +349,6 @@
       {
         "TargetSingular": "user_group",
         "TargetPlural": "usergroups"
-      },
-      {
-        "TargetSingular": "active_directory",
-        "TargetPlural": "activedirectories"
-      },
-      {
-        "TargetSingular": "application",
-        "TargetPlural": "applications"
-      },
-      {
-        "TargetSingular": "command",
-        "TargetPlural": "commands"
-      },
-      {
-        "TargetSingular": "g_suite",
-        "TargetPlural": "gsuites"
-      },
-      {
-        "TargetSingular": "ldap_server",
-        "TargetPlural": "ldapservers"
-      },
-      {
-        "TargetSingular": "office_365",
-        "TargetPlural": "office365s"
-      },
-      {
-        "TargetSingular": "policy",
-        "TargetPlural": "policies"
-      },
-      {
-        "TargetSingular": "radius_server",
-        "TargetPlural": "radiusservers"
-      },
-      {
-        "TargetSingular": "system",
-        "TargetPlural": "systems"
-      },
-      {
-        "TargetSingular": "system_group",
-        "TargetPlural": "systemgroups"
-      },
-      {
-        "TargetSingular": "user",
-        "TargetPlural": "users"
-      },
-      {
-        "TargetSingular": "user_group",
-        "TargetPlural": "usergroups"
-      },
-      {
-        "TargetSingular": "user_group",
-        "TargetPlural": "usergroups"
-      },
-      {
-        "TargetSingular": "user",
-        "TargetPlural": "users"
       }
     ]
   },
@@ -646,62 +418,6 @@
       {
         "TargetSingular": "user_group",
         "TargetPlural": "usergroups"
-      },
-      {
-        "TargetSingular": "active_directory",
-        "TargetPlural": "activedirectories"
-      },
-      {
-        "TargetSingular": "application",
-        "TargetPlural": "applications"
-      },
-      {
-        "TargetSingular": "command",
-        "TargetPlural": "commands"
-      },
-      {
-        "TargetSingular": "g_suite",
-        "TargetPlural": "gsuites"
-      },
-      {
-        "TargetSingular": "ldap_server",
-        "TargetPlural": "ldapservers"
-      },
-      {
-        "TargetSingular": "office_365",
-        "TargetPlural": "office365s"
-      },
-      {
-        "TargetSingular": "policy",
-        "TargetPlural": "policies"
-      },
-      {
-        "TargetSingular": "radius_server",
-        "TargetPlural": "radiusservers"
-      },
-      {
-        "TargetSingular": "system",
-        "TargetPlural": "systems"
-      },
-      {
-        "TargetSingular": "system_group",
-        "TargetPlural": "systemgroups"
-      },
-      {
-        "TargetSingular": "user",
-        "TargetPlural": "users"
-      },
-      {
-        "TargetSingular": "user_group",
-        "TargetPlural": "usergroups"
-      },
-      {
-        "TargetSingular": "user_group",
-        "TargetPlural": "usergroups"
-      },
-      {
-        "TargetSingular": "user",
-        "TargetPlural": "users"
       }
     ]
   },
@@ -773,62 +489,6 @@
       {
         "TargetSingular": "user_group",
         "TargetPlural": "usergroups"
-      },
-      {
-        "TargetSingular": "active_directory",
-        "TargetPlural": "activedirectories"
-      },
-      {
-        "TargetSingular": "application",
-        "TargetPlural": "applications"
-      },
-      {
-        "TargetSingular": "command",
-        "TargetPlural": "commands"
-      },
-      {
-        "TargetSingular": "g_suite",
-        "TargetPlural": "gsuites"
-      },
-      {
-        "TargetSingular": "ldap_server",
-        "TargetPlural": "ldapservers"
-      },
-      {
-        "TargetSingular": "office_365",
-        "TargetPlural": "office365s"
-      },
-      {
-        "TargetSingular": "policy",
-        "TargetPlural": "policies"
-      },
-      {
-        "TargetSingular": "radius_server",
-        "TargetPlural": "radiusservers"
-      },
-      {
-        "TargetSingular": "system",
-        "TargetPlural": "systems"
-      },
-      {
-        "TargetSingular": "system_group",
-        "TargetPlural": "systemgroups"
-      },
-      {
-        "TargetSingular": "user",
-        "TargetPlural": "users"
-      },
-      {
-        "TargetSingular": "user_group",
-        "TargetPlural": "usergroups"
-      },
-      {
-        "TargetSingular": "system_group",
-        "TargetPlural": "systemgroups"
-      },
-      {
-        "TargetSingular": "system",
-        "TargetPlural": "systems"
       }
     ]
   },
@@ -900,62 +560,6 @@
       {
         "TargetSingular": "user_group",
         "TargetPlural": "usergroups"
-      },
-      {
-        "TargetSingular": "active_directory",
-        "TargetPlural": "activedirectories"
-      },
-      {
-        "TargetSingular": "application",
-        "TargetPlural": "applications"
-      },
-      {
-        "TargetSingular": "command",
-        "TargetPlural": "commands"
-      },
-      {
-        "TargetSingular": "g_suite",
-        "TargetPlural": "gsuites"
-      },
-      {
-        "TargetSingular": "ldap_server",
-        "TargetPlural": "ldapservers"
-      },
-      {
-        "TargetSingular": "office_365",
-        "TargetPlural": "office365s"
-      },
-      {
-        "TargetSingular": "policy",
-        "TargetPlural": "policies"
-      },
-      {
-        "TargetSingular": "radius_server",
-        "TargetPlural": "radiusservers"
-      },
-      {
-        "TargetSingular": "system",
-        "TargetPlural": "systems"
-      },
-      {
-        "TargetSingular": "system_group",
-        "TargetPlural": "systemgroups"
-      },
-      {
-        "TargetSingular": "user",
-        "TargetPlural": "users"
-      },
-      {
-        "TargetSingular": "user_group",
-        "TargetPlural": "usergroups"
-      },
-      {
-        "TargetSingular": "user_group",
-        "TargetPlural": "usergroups"
-      },
-      {
-        "TargetSingular": "user",
-        "TargetPlural": "users"
       }
     ]
   },
@@ -1013,80 +617,16 @@
         "TargetPlural": "radiusservers"
       },
       {
-        "TargetSingular": "user",
-        "TargetPlural": "users"
-      },
-      {
-        "TargetSingular": "user_group",
-        "TargetPlural": "usergroups"
-      },
-      {
-        "TargetSingular": "active_directory",
-        "TargetPlural": "activedirectories"
-      },
-      {
-        "TargetSingular": "application",
-        "TargetPlural": "applications"
-      },
-      {
-        "TargetSingular": "command",
-        "TargetPlural": "commands"
-      },
-      {
-        "TargetSingular": "g_suite",
-        "TargetPlural": "gsuites"
-      },
-      {
-        "TargetSingular": "ldap_server",
-        "TargetPlural": "ldapservers"
-      },
-      {
-        "TargetSingular": "office_365",
-        "TargetPlural": "office365s"
-      },
-      {
-        "TargetSingular": "policy",
-        "TargetPlural": "policies"
-      },
-      {
-        "TargetSingular": "radius_server",
-        "TargetPlural": "radiusservers"
-      },
-      {
-        "TargetSingular": "user",
-        "TargetPlural": "users"
-      },
-      {
-        "TargetSingular": "user_group",
-        "TargetPlural": "usergroups"
-      },
-      {
-        "TargetSingular": "command",
-        "TargetPlural": "commands"
-      },
-      {
-        "TargetSingular": null,
-        "TargetPlural": null
-      },
-      {
         "TargetSingular": "system",
         "TargetPlural": "systems"
       },
       {
-        "TargetSingular": null,
-        "TargetPlural": null
-      },
-      {
-        "TargetSingular": "policy",
-        "TargetPlural": "policies"
+        "TargetSingular": "user",
+        "TargetPlural": "users"
       },
       {
         "TargetSingular": "user_group",
         "TargetPlural": "usergroups"
-      },
-      {
-        "TargetSingular": "user",
-        "TargetPlural": "users"
       }
     ]
   },
@@ -1150,66 +690,6 @@
       {
         "TargetSingular": "user_group",
         "TargetPlural": "usergroups"
-      },
-      {
-        "TargetSingular": "active_directory",
-        "TargetPlural": "activedirectories"
-      },
-      {
-        "TargetSingular": "application",
-        "TargetPlural": "applications"
-      },
-      {
-        "TargetSingular": "command",
-        "TargetPlural": "commands"
-      },
-      {
-        "TargetSingular": "g_suite",
-        "TargetPlural": "gsuites"
-      },
-      {
-        "TargetSingular": "ldap_server",
-        "TargetPlural": "ldapservers"
-      },
-      {
-        "TargetSingular": "office_365",
-        "TargetPlural": "office365s"
-      },
-      {
-        "TargetSingular": "policy",
-        "TargetPlural": "policies"
-      },
-      {
-        "TargetSingular": "radius_server",
-        "TargetPlural": "radiusservers"
-      },
-      {
-        "TargetSingular": "user",
-        "TargetPlural": "users"
-      },
-      {
-        "TargetSingular": "user_group",
-        "TargetPlural": "usergroups"
-      },
-      {
-        "TargetSingular": "command",
-        "TargetPlural": "commands"
-      },
-      {
-        "TargetSingular": null,
-        "TargetPlural": null
-      },
-      {
-        "TargetSingular": "policy",
-        "TargetPlural": "policies"
-      },
-      {
-        "TargetSingular": "user_group",
-        "TargetPlural": "usergroups"
-      },
-      {
-        "TargetSingular": "user",
-        "TargetPlural": "users"
       }
     ]
   },
@@ -1235,10 +715,6 @@
     "Skip": 0,
     "Targets": [
       {
-        "TargetSingular": "application",
-        "TargetPlural": "applications"
-      },
-      {
         "TargetSingular": "active_directory",
         "TargetPlural": "activedirectories"
       },
@@ -1249,74 +725,6 @@
       {
         "TargetSingular": "command",
         "TargetPlural": "commands"
-      },
-      {
-        "TargetSingular": "g_suite",
-        "TargetPlural": "gsuites"
-      },
-      {
-        "TargetSingular": "ldap_server",
-        "TargetPlural": "ldapservers"
-      },
-      {
-        "TargetSingular": "office_365",
-        "TargetPlural": "office365s"
-      },
-      {
-        "TargetSingular": "policy",
-        "TargetPlural": "policies"
-      },
-      {
-        "TargetSingular": "radius_server",
-        "TargetPlural": "radiusservers"
-      },
-      {
-        "TargetSingular": "system",
-        "TargetPlural": "systems"
-      },
-      {
-        "TargetSingular": "system_group",
-        "TargetPlural": "systemgroups"
-      },
-      {
-        "TargetSingular": "active_directory",
-        "TargetPlural": "activedirectories"
-      },
-      {
-        "TargetSingular": "application",
-        "TargetPlural": "applications"
-      },
-      {
-        "TargetSingular": "command",
-        "TargetPlural": "commands"
-      },
-      {
-        "TargetSingular": "g_suite",
-        "TargetPlural": "gsuites"
-      },
-      {
-        "TargetSingular": "ldap_server",
-        "TargetPlural": "ldapservers"
-      },
-      {
-        "TargetSingular": "office_365",
-        "TargetPlural": "office365s"
-      },
-      {
-        "TargetSingular": "policy",
-        "TargetPlural": "policies"
-      },
-      {
-        "TargetSingular": "radius_server",
-        "TargetPlural": "radiusservers"
-      },
-      {
-        "TargetSingular": "system",
-        "TargetPlural": "systems"
-      },
-      {
-        "TargetSingular": "system_group",
-        "TargetPlural": "systemgroups"
       },
       {
         "TargetSingular": "directory",
@@ -1331,32 +739,28 @@
         "TargetPlural": "ldapservers"
       },
       {
-        "TargetSingular": null,
-        "TargetPlural": null
-      },
-      {
-        "TargetSingular": "user",
-        "TargetPlural": "users"
-      },
-      {
-        "TargetSingular": null,
-        "TargetPlural": null
-      },
-      {
         "TargetSingular": "office_365",
         "TargetPlural": "office365s"
+      },
+      {
+        "TargetSingular": "policy",
+        "TargetPlural": "policies"
       },
       {
         "TargetSingular": "radius_server",
         "TargetPlural": "radiusservers"
       },
       {
+        "TargetSingular": "system",
+        "TargetPlural": "systems"
+      },
+      {
         "TargetSingular": "system_group",
         "TargetPlural": "systemgroups"
       },
       {
-        "TargetSingular": "system",
-        "TargetPlural": "systems"
+        "TargetSingular": "user",
+        "TargetPlural": "users"
       }
     ]
   },
@@ -1382,10 +786,6 @@
     "Skip": 0,
     "Targets": [
       {
-        "TargetSingular": "application",
-        "TargetPlural": "applications"
-      },
-      {
         "TargetSingular": "active_directory",
         "TargetPlural": "activedirectories"
       },
@@ -1396,74 +796,6 @@
       {
         "TargetSingular": "command",
         "TargetPlural": "commands"
-      },
-      {
-        "TargetSingular": "g_suite",
-        "TargetPlural": "gsuites"
-      },
-      {
-        "TargetSingular": "ldap_server",
-        "TargetPlural": "ldapservers"
-      },
-      {
-        "TargetSingular": "office_365",
-        "TargetPlural": "office365s"
-      },
-      {
-        "TargetSingular": "policy",
-        "TargetPlural": "policies"
-      },
-      {
-        "TargetSingular": "radius_server",
-        "TargetPlural": "radiusservers"
-      },
-      {
-        "TargetSingular": "system",
-        "TargetPlural": "systems"
-      },
-      {
-        "TargetSingular": "system_group",
-        "TargetPlural": "systemgroups"
-      },
-      {
-        "TargetSingular": "active_directory",
-        "TargetPlural": "activedirectories"
-      },
-      {
-        "TargetSingular": "application",
-        "TargetPlural": "applications"
-      },
-      {
-        "TargetSingular": "command",
-        "TargetPlural": "commands"
-      },
-      {
-        "TargetSingular": "g_suite",
-        "TargetPlural": "gsuites"
-      },
-      {
-        "TargetSingular": "ldap_server",
-        "TargetPlural": "ldapservers"
-      },
-      {
-        "TargetSingular": "office_365",
-        "TargetPlural": "office365s"
-      },
-      {
-        "TargetSingular": "policy",
-        "TargetPlural": "policies"
-      },
-      {
-        "TargetSingular": "radius_server",
-        "TargetPlural": "radiusservers"
-      },
-      {
-        "TargetSingular": "system",
-        "TargetPlural": "systems"
-      },
-      {
-        "TargetSingular": "system_group",
-        "TargetPlural": "systemgroups"
       },
       {
         "TargetSingular": "directory",
@@ -1478,24 +810,24 @@
         "TargetPlural": "ldapservers"
       },
       {
-        "TargetSingular": null,
-        "TargetPlural": null
-      },
-      {
         "TargetSingular": "office_365",
         "TargetPlural": "office365s"
+      },
+      {
+        "TargetSingular": "policy",
+        "TargetPlural": "policies"
       },
       {
         "TargetSingular": "radius_server",
         "TargetPlural": "radiusservers"
       },
       {
-        "TargetSingular": "system_group",
-        "TargetPlural": "systemgroups"
-      },
-      {
         "TargetSingular": "system",
         "TargetPlural": "systems"
+      },
+      {
+        "TargetSingular": "system_group",
+        "TargetPlural": "systemgroups"
       }
     ]
   },
