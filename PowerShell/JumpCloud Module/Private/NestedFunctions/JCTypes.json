@@ -5,16 +5,6 @@
       "TypeNameSingular": "active_directory",
       "TypeNamePlural": "activedirectories"
     },
-    "Targets": [
-      {
-        "TargetSingular": "user",
-        "TargetPlural": "users"
-      },
-      {
-        "TargetSingular": "user_group",
-        "TargetPlural": "usergroups"
-      }
-    ],
     "Url": {
       "List": "/api/v2/activedirectories",
       "Item": "/api/v2/activedirectories/{id}",
@@ -28,7 +18,17 @@
     "Paginate": true,
     "SupportRegexFilter": true,
     "Limit": 100,
-    "Skip": 0
+    "Skip": 0,
+    "Targets": [
+      {
+        "TargetSingular": "user",
+        "TargetPlural": "users"
+      },
+      {
+        "TargetSingular": "user_group",
+        "TargetPlural": "usergroups"
+      }
+    ]
   },
   {
     "Category": "JumpCloud",
@@ -36,12 +36,6 @@
       "TypeNameSingular": "application",
       "TypeNamePlural": "applications"
     },
-    "Targets": [
-      {
-        "TargetSingular": "user_group",
-        "TargetPlural": "usergroups"
-      }
-    ],
     "Url": {
       "List": "/api/applications",
       "Item": "/api/applications/{id}",
@@ -56,10 +50,10 @@
     "SupportRegexFilter": false,
     "Limit": 100,
     "Skip": 0,
-    "TargetsExcluded": [
+    "Targets": [
       {
-        "TargetExcludedSingular": "user",
-        "TargetExcludedPlural": "users"
+        "TargetSingular": "user_group",
+        "TargetPlural": "usergroups"
       }
     ]
   },
@@ -69,16 +63,6 @@
       "TypeNameSingular": "command",
       "TypeNamePlural": "commands"
     },
-    "Targets": [
-      {
-        "TargetSingular": "system",
-        "TargetPlural": "systems"
-      },
-      {
-        "TargetSingular": "system_group",
-        "TargetPlural": "systemgroups"
-      }
-    ],
     "Url": {
       "List": "/api/commands",
       "Item": "/api/commands/{id}",
@@ -92,7 +76,17 @@
     "Paginate": true,
     "SupportRegexFilter": false,
     "Limit": 100,
-    "Skip": 0
+    "Skip": 0,
+    "Targets": [
+      {
+        "TargetSingular": "system",
+        "TargetPlural": "systems"
+      },
+      {
+        "TargetSingular": "system_group",
+        "TargetPlural": "systemgroups"
+      }
+    ]
   },
   {
     "Category": "JumpCloud",
@@ -100,16 +94,6 @@
       "TypeNameSingular": "g_suite",
       "TypeNamePlural": "gsuites"
     },
-    "Targets": [
-      {
-        "TargetSingular": "user",
-        "TargetPlural": "users"
-      },
-      {
-        "TargetSingular": "user_group",
-        "TargetPlural": "usergroups"
-      }
-    ],
     "Url": {
       "List": "/api/v2/directories",
       "Item": "/api/v2/directories",
@@ -121,14 +105,7 @@
     "Paginate": true,
     "SupportRegexFilter": false,
     "Limit": 100,
-    "Skip": 0
-  },
-  {
-    "Category": "JumpCloud",
-    "TypeName": {
-      "TypeNameSingular": "ldap_server",
-      "TypeNamePlural": "ldapservers"
-    },
+    "Skip": 0,
     "Targets": [
       {
         "TargetSingular": "user",
@@ -138,7 +115,14 @@
         "TargetSingular": "user_group",
         "TargetPlural": "usergroups"
       }
-    ],
+    ]
+  },
+  {
+    "Category": "JumpCloud",
+    "TypeName": {
+      "TypeNameSingular": "ldap_server",
+      "TypeNamePlural": "ldapservers"
+    },
     "Url": {
       "List": "/api/v2/ldapservers",
       "Item": "/api/v2/ldapservers/{id}",
@@ -152,14 +136,7 @@
     "Paginate": true,
     "SupportRegexFilter": true,
     "Limit": 100,
-    "Skip": 0
-  },
-  {
-    "Category": "JumpCloud",
-    "TypeName": {
-      "TypeNameSingular": "office_365",
-      "TypeNamePlural": "office365s"
-    },
+    "Skip": 0,
     "Targets": [
       {
         "TargetSingular": "user",
@@ -169,7 +146,14 @@
         "TargetSingular": "user_group",
         "TargetPlural": "usergroups"
       }
-    ],
+    ]
+  },
+  {
+    "Category": "JumpCloud",
+    "TypeName": {
+      "TypeNameSingular": "office_365",
+      "TypeNamePlural": "office365s"
+    },
     "Url": {
       "List": "/api/v2/directories",
       "Item": "/api/v2/directories",
@@ -181,7 +165,17 @@
     "Paginate": true,
     "SupportRegexFilter": false,
     "Limit": 100,
-    "Skip": 0
+    "Skip": 0,
+    "Targets": [
+      {
+        "TargetSingular": "user",
+        "TargetPlural": "users"
+      },
+      {
+        "TargetSingular": "user_group",
+        "TargetPlural": "usergroups"
+      }
+    ]
   },
   {
     "Category": "JumpCloud",
@@ -189,16 +183,6 @@
       "TypeNameSingular": "policy",
       "TypeNamePlural": "policies"
     },
-    "Targets": [
-      {
-        "TargetSingular": "system",
-        "TargetPlural": "systems"
-      },
-      {
-        "TargetSingular": "system_group",
-        "TargetPlural": "systemgroups"
-      }
-    ],
     "Url": {
       "List": "/api/v2/policies",
       "Item": "/api/v2/policies/{id}",
@@ -212,7 +196,17 @@
     "Paginate": true,
     "SupportRegexFilter": false,
     "Limit": 100,
-    "Skip": 0
+    "Skip": 0,
+    "Targets": [
+      {
+        "TargetSingular": "system",
+        "TargetPlural": "systems"
+      },
+      {
+        "TargetSingular": "system_group",
+        "TargetPlural": "systemgroups"
+      }
+    ]
   },
   {
     "Category": "JumpCloud",
@@ -220,12 +214,6 @@
       "TypeNameSingular": "radius_server",
       "TypeNamePlural": "radiusservers"
     },
-    "Targets": [
-      {
-        "TargetSingular": "user_group",
-        "TargetPlural": "usergroups"
-      }
-    ],
     "Url": {
       "List": "/api/radiusservers",
       "Item": "/api/radiusservers/{id}",
@@ -240,10 +228,10 @@
     "SupportRegexFilter": false,
     "Limit": 100,
     "Skip": 0,
-    "TargetsExcluded": [
+    "Targets": [
       {
-        "TargetExcludedSingular": "user",
-        "TargetExcludedPlural": "users"
+        "TargetSingular": "user_group",
+        "TargetPlural": "usergroups"
       }
     ]
   },
@@ -253,6 +241,20 @@
       "TypeNameSingular": "system_group",
       "TypeNamePlural": "systemgroups"
     },
+    "Url": {
+      "List": "/api/v2/systemgroups",
+      "Item": "/api/v2/systemgroups/{id}",
+      "Variables": [
+        "{id}"
+      ]
+    },
+    "Method": "GET",
+    "ById": "id",
+    "ByName": "name",
+    "Paginate": true,
+    "SupportRegexFilter": true,
+    "Limit": 100,
+    "Skip": 0,
     "Targets": [
       {
         "TargetSingular": "policy",
@@ -270,26 +272,6 @@
         "TargetSingular": "system",
         "TargetPlural": "systems"
       }
-    ],
-    "Url": {
-      "List": "/api/v2/systemgroups",
-      "Item": "/api/v2/systemgroups/{id}",
-      "Variables": [
-        "{id}"
-      ]
-    },
-    "Method": "GET",
-    "ById": "id",
-    "ByName": "name",
-    "Paginate": true,
-    "SupportRegexFilter": true,
-    "Limit": 100,
-    "Skip": 0,
-    "TargetsExcluded": [
-      {
-        "TargetExcludedSingular": "user",
-        "TargetExcludedPlural": "users"
-      }
     ]
   },
   {
@@ -298,6 +280,20 @@
       "TypeNameSingular": "system",
       "TypeNamePlural": "systems"
     },
+    "Url": {
+      "List": "/api/systems",
+      "Item": "/api/systems/{id}",
+      "Variables": [
+        "{id}"
+      ]
+    },
+    "Method": "GET",
+    "ById": "_id",
+    "ByName": "displayName",
+    "Paginate": true,
+    "SupportRegexFilter": true,
+    "Limit": 100,
+    "Skip": 0,
     "Targets": [
       {
         "TargetSingular": "policy",
@@ -315,26 +311,6 @@
         "TargetSingular": "system_group",
         "TargetPlural": "systemgroups"
       }
-    ],
-    "Url": {
-      "List": "/api/systems",
-      "Item": "/api/systems/{id}",
-      "Variables": [
-        "{id}"
-      ]
-    },
-    "Method": "GET",
-    "ById": "_id",
-    "ByName": "displayName",
-    "Paginate": true,
-    "SupportRegexFilter": true,
-    "Limit": 100,
-    "Skip": 0,
-    "TargetsExcluded": [
-      {
-        "TargetExcludedSingular": "user_group",
-        "TargetExcludedPlural": "usergroups"
-      }
     ]
   },
   {
@@ -343,6 +319,20 @@
       "TypeNameSingular": "user_group",
       "TypeNamePlural": "usergroups"
     },
+    "Url": {
+      "List": "/api/v2/usergroups",
+      "Item": "/api/v2/usergroups/{id}",
+      "Variables": [
+        "{id}"
+      ]
+    },
+    "Method": "GET",
+    "ById": "id",
+    "ByName": "name",
+    "Paginate": true,
+    "SupportRegexFilter": true,
+    "Limit": 100,
+    "Skip": 0,
     "Targets": [
       {
         "TargetSingular": "application",
@@ -372,30 +362,6 @@
         "TargetSingular": "user",
         "TargetPlural": "users"
       }
-    ],
-    "Url": {
-      "List": "/api/v2/usergroups",
-      "Item": "/api/v2/usergroups/{id}",
-      "Variables": [
-        "{id}"
-      ]
-    },
-    "Method": "GET",
-    "ById": "id",
-    "ByName": "name",
-    "Paginate": true,
-    "SupportRegexFilter": true,
-    "Limit": 100,
-    "Skip": 0,
-    "TargetsExcluded": [
-      {
-        "TargetExcludedSingular": "system",
-        "TargetExcludedPlural": "systems"
-      },
-      {
-        "TargetExcludedSingular": "active_directory",
-        "TargetExcludedPlural": "activedirectories"
-      }
     ]
   },
   {
@@ -404,6 +370,20 @@
       "TypeNameSingular": "user",
       "TypeNamePlural": "users"
     },
+    "Url": {
+      "List": "/api/systemusers",
+      "Item": "/api/systemusers/{id}",
+      "Variables": [
+        "{id}"
+      ]
+    },
+    "Method": "GET",
+    "ById": "_id",
+    "ByName": "username",
+    "Paginate": true,
+    "SupportRegexFilter": true,
+    "Limit": 100,
+    "Skip": 0,
     "Targets": [
       {
         "TargetSingular": "g_suite",
@@ -425,38 +405,6 @@
         "TargetSingular": "user_group",
         "TargetPlural": "usergroups"
       }
-    ],
-    "Url": {
-      "List": "/api/systemusers",
-      "Item": "/api/systemusers/{id}",
-      "Variables": [
-        "{id}"
-      ]
-    },
-    "Method": "GET",
-    "ById": "_id",
-    "ByName": "username",
-    "Paginate": true,
-    "SupportRegexFilter": true,
-    "Limit": 100,
-    "Skip": 0,
-    "TargetsExcluded": [
-      {
-        "TargetExcludedSingular": "active_directory",
-        "TargetExcludedPlural": "activedirectories"
-      },
-      {
-        "TargetExcludedSingular": "application",
-        "TargetExcludedPlural": "applications"
-      },
-      {
-        "TargetExcludedSingular": "radius_server",
-        "TargetExcludedPlural": "radiusservers"
-      },
-      {
-        "TargetExcludedSingular": "system_group",
-        "TargetExcludedPlural": "systemgroups"
-      }
     ]
   },
   {
@@ -465,7 +413,6 @@
       "TypeNameSingular": "directory",
       "TypeNamePlural": "directories"
     },
-    "Targets": null,
     "Url": {
       "List": "/api/v2/directories",
       "Item": "/api/v2/directories",
@@ -477,7 +424,8 @@
     "Paginate": true,
     "SupportRegexFilter": false,
     "Limit": 100,
-    "Skip": 0
+    "Skip": 0,
+    "Targets": []
   },
   {
     "Category": "Custom",
@@ -485,7 +433,6 @@
       "TypeNameSingular": "group",
       "TypeNamePlural": "groups"
     },
-    "Targets": null,
     "Url": {
       "List": "/api/v2/groups",
       "Item": "/api/v2/groups/{id}",
@@ -499,7 +446,8 @@
     "Paginate": true,
     "SupportRegexFilter": false,
     "Limit": 100,
-    "Skip": 0
+    "Skip": 0,
+    "Targets": []
   },
   {
     "Category": "Custom",
@@ -507,7 +455,6 @@
       "TypeNameSingular": "organization",
       "TypeNamePlural": "organizations"
     },
-    "Targets": null,
     "Url": {
       "List": "/api/organizations",
       "Item": "/api/organizations/{id}",
@@ -524,7 +471,8 @@
     "Skip": 0,
     "FilterOperators": [
       "eq"
-    ]
+    ],
+    "Targets": []
   },
   {
     "Category": "Custom",
@@ -532,28 +480,6 @@
       "TypeNameSingular": "search_user",
       "TypeNamePlural": "search_users"
     },
-    "Targets": [
-      {
-        "TargetSingular": "g_suite",
-        "TargetPlural": "gsuites"
-      },
-      {
-        "TargetSingular": "ldap_server",
-        "TargetPlural": "ldapservers"
-      },
-      {
-        "TargetSingular": "office_365",
-        "TargetPlural": "office365s"
-      },
-      {
-        "TargetSingular": "system",
-        "TargetPlural": "systems"
-      },
-      {
-        "TargetSingular": "user_group",
-        "TargetPlural": "usergroups"
-      }
-    ],
     "Url": {
       "List": "/api/search/systemusers",
       "Item": null,
@@ -568,12 +494,7 @@
     "SupportRegexFilter": true,
     "Limit": 100,
     "Skip": 0,
-    "TargetsExcluded": [
-      {
-        "TargetExcludedSingular": "active_directory",
-        "TargetExcludedPlural": "activedirectories"
-      }
-    ]
+    "Targets": []
   },
   {
     "Category": "Custom",
@@ -581,24 +502,6 @@
       "TypeNameSingular": "search_system",
       "TypeNamePlural": "search_systems"
     },
-    "Targets": [
-      {
-        "TargetSingular": "policy",
-        "TargetPlural": "policies"
-      },
-      {
-        "TargetSingular": "user",
-        "TargetPlural": "users"
-      },
-      {
-        "TargetSingular": "command",
-        "TargetPlural": "commands"
-      },
-      {
-        "TargetSingular": "system_group",
-        "TargetPlural": "systemgroups"
-      }
-    ],
     "Url": {
       "List": "/api/search/systems",
       "Item": null,
@@ -612,6 +515,7 @@
     "Paginate": true,
     "SupportRegexFilter": true,
     "Limit": 100,
-    "Skip": 0
+    "Skip": 0,
+    "Targets": []
   }
 ]
