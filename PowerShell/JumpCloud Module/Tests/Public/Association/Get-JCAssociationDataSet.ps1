@@ -262,9 +262,6 @@ Describe -Tag:('JCAssociation') "Association Tests" {
         # Get valid association items
         $ValidAssociationItems = $AssociationDataSet | Where-Object { $_.ValidRecord -and $_.SourceId -and $_.TargetId }
         ################################################################################
-        ################################## HACKS/TODO ########################################
-        $ValidAssociationItems = $ValidAssociationItems | Where-Object { $_.SourceType -ne 'active_directory' -and $_.TargetType -ne 'active_directory' }
-        ################################################################################
         ################################################################################
         # Get invalid association items
         $InvalidAssociationItems = $AssociationDataSet | Where-Object { -not $_.ValidRecord -and -not $_.SourceId -and -not $_.TargetId } |
