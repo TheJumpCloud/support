@@ -56,8 +56,7 @@ Describe -Tag:('JCAssociation') "Association Tests" {
                 }
             }
         }
-        $ValidAssociationItems = $AssociationDataSet | Where-Object { $_.ValidRecord -and $_.SourceId -and $_.TargetId -and $_.TargetName}
-        $ValidAssociationItems = $ValidAssociationItems | Where-Object { $_.SourceType -ne 'active_directory' -and $_.TargetType -ne 'active_directory' }
+        $ValidAssociationItems = $AssociationDataSet | Where-Object { $_.ValidRecord -and $_.SourceId -and $_.TargetId -and $_.TargetName }
         return $ValidAssociationItems
     }
     function Get-JCAssociationTestCases {
