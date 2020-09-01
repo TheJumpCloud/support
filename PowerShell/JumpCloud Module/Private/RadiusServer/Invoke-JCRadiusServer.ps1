@@ -74,7 +74,7 @@ Function Invoke-JCRadiusServer
                             Do
                             {
                                 Write-Host ('Are you sure you want to "' + $Action + '" the "' + $Type + '": "' + $JCObject.($JCObject.ByName) + '"?[Y/N]') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_UserPrompt) -NoNewline
-                                Write-Host (' ') -NoNewLine
+                                Write-Host (' ') -NoNewline
                                 $HostResponse = Read-Host
                             }
                             Until ($HostResponse -in ('y', 'n'))
