@@ -172,7 +172,7 @@
                                             {
                                                 $Command_Associations_POST = $Command_Template_Associations_Targets_Post -f $SourceItemTypeNameSingular.Replace('_', ''), $SourceItemId, $TargetItemId, $Action, $TargetItemTypeNameSingular, $AttributesValue
                                             }
-                                            $Command_Associations_POST = $Command_Associations_POST.Replace('usergroupId', 'GroupId').Replace('systemgroupId', 'GroupId').Replace(' -Attributes:("null")', '')
+                                            $Command_Associations_POST = $Command_Associations_POST.Replace('usergroupId', 'GroupId').Replace('systemgroupId', 'GroupId').Replace(' -Attributes:("null")', '').Replace(' -Attributes:("{}")', '')
                                             # Send body to endpoint.
                                             Write-Verbose ('"' + $Action + '" the association between the "' + $SourceItemTypeNameSingular + '" "' + $SourceItemName + '" and the "' + $TargetItemTypeNameSingular + '" "' + $TargetItemName + '"')
                                             Write-Debug ('[CommandTemplate]:' + $Command_Associations_POST + ';')
