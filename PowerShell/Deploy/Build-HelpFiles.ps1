@@ -1,9 +1,6 @@
 . ($PSScriptRoot + '/' + 'Get-Config.ps1')
 ###########################################################################
 Write-Host ('[status]Creating/Updating help files')
-# Ensure the latest version of the module is loaded
-Remove-Module JumpCloud
-Import-Module $FilePath_psd1
 $Functions_Public | ForEach-Object {
     $FunctionName = $_.BaseName
     $FilePath_Md = $FolderPath_Docs + '/' + $FunctionName + '.md'
