@@ -1,3 +1,23 @@
+## 1.18.2
+
+Release Date: September 02, 2020
+
+#### RELEASE NOTES
+
+```
+Get-JCAssocation command have been updated to search additional endpoints
+Get-JCSystemInsights updated documentation
+```
+
+#### FEATURES:
+
+
+#### IMPROVEMENTS:
+
+
+#### BUG FIXES:
+
+
 ## 1.18.1
 
 Release Date: August 14, 2020
