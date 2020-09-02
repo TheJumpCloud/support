@@ -67,6 +67,22 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -Table
+Name of the SystemInsights Table to query. See docs.jumpcloud.com for list of available Table endpoints.
+
+```yaml
+Type: System.String
+Parameter Sets: (All)
+Aliases:
+Accepted values: battery, managed_policies, sip_config, alf, crashes, usb_devices, ie_extensions, launchd, shared_folders, shared_resources, user_ssh_keys, logged_in_users, shadow, sharing_preferences, user_groups, kernel_info, system_controls, uptime, etc_hosts, logical_drives, disk_info, bitlocker_info, patches, programs, apps, browser_plugins, chrome_extensions, disk_encryption, firefox_addons, groups, interface_addresses, mounts, os_version, safari_extensions, system_info, users, certificates, cups_destinations, interface_details, python_packages, registry, scheduled_tasks, services, startup_items, authorized_keys, appcompat_shims, dns_resolvers, wifi_networks, wifi_status, connectivity, windows_security_products, alf_exceptions, alf_explicit_auths
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -SystemId
 A comma separated list of System IDs to query against.
 
@@ -76,21 +92,6 @@ Parameter Sets: (All)
 Aliases: _id, id, system_id
 
 Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Table
-Name of the SystemInsights Table to query. See docs.jumpcloud.com for list of available Table endpoints.
-
-```yaml
-Type: System.String
-Parameter Sets: (All)
-Aliases:
-
-Required: True
 Position: Named
 Default value: None
 Accept pipeline input: False
