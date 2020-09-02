@@ -6696,61 +6696,6 @@
           <maml:Description>
             <maml:para>Name of the SystemInsights Table to query. See docs.jumpcloud.com for list of available Table endpoints.</maml:para>
           </maml:Description>
-          <command:parameterValueGroup>
-            <command:parameterValue required="false" command:variableLength="false">battery</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">managed_policies</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">sip_config</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">alf</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">crashes</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">usb_devices</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">ie_extensions</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">launchd</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">shared_folders</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">shared_resources</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">user_ssh_keys</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">logged_in_users</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">shadow</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">sharing_preferences</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">user_groups</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">kernel_info</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">system_controls</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">uptime</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">etc_hosts</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">logical_drives</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">disk_info</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">bitlocker_info</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">patches</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">programs</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">apps</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">browser_plugins</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">chrome_extensions</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">disk_encryption</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">firefox_addons</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">groups</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">interface_addresses</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">mounts</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">os_version</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">safari_extensions</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">system_info</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">users</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">certificates</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">cups_destinations</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">interface_details</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">python_packages</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">registry</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">scheduled_tasks</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">services</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">startup_items</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">authorized_keys</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">appcompat_shims</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">dns_resolvers</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">wifi_networks</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">wifi_status</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">connectivity</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">windows_security_products</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">alf_exceptions</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">alf_explicit_auths</command:parameterValue>
-          </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
           <dev:type>
             <maml:name>System.String</maml:name>
