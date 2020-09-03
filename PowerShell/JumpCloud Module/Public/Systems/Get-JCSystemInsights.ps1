@@ -88,7 +88,7 @@ Function Get-JCSystemInsights
         [Parameter(Mandatory)]
         [System.String]
         # Name of the SystemInsights table to query.
-        # See docs.jumpcloud.com for list of avalible table endpoints.
+        # See docs.jumpcloud.com for list of available table endpoints.
         $Table,
 
         [Parameter()]
@@ -100,8 +100,8 @@ Function Get-JCSystemInsights
         [Parameter()]
         [System.String[]]
         # Supported values and operators are specified for each table.
-        # See docs.jumpcloud.com and search for specific table for a list of avalible filter options.
-        # Use tab complete to see avalible filters.
+        # See docs.jumpcloud.com and search for specific table for a list of available filter options.
+        # Use tab complete to see available filters.
         $Filter,
 
         [Parameter(DontShow)]

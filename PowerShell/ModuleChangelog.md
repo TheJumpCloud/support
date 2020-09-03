@@ -1,6 +1,6 @@
 ## 1.18.2
 
-Release Date: August 14, 2020
+Release Date: September 3, 2020
 
 #### RELEASE NOTES
 
