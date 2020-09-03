@@ -1,22 +1,18 @@
 ## 1.18.2
 
-Release Date: September 02, 2020
+Release Date: September 3, 2020
 
 #### RELEASE NOTES
 
-```
-Get-JCAssocation command have been updated to search additional endpoints
-Get-JCSystemInsights updated documentation
-```
+The  `*-Association` functions now call functions from the  `JumpCloud.SDK.V2` instead of custom `Invoke-WebRequest` calls.
 
 #### FEATURES:
 
-
 #### IMPROVEMENTS:
 
+The  `*-Association` functions now call functions from the  `JumpCloud.SDK.V2` instead of custom `Invoke-WebRequest` calls. The functions no longer return objects with `IsSuccessStatusCode` and `Error` properties.
 
 #### BUG FIXES:
-
 
 ## 1.18.1
 
