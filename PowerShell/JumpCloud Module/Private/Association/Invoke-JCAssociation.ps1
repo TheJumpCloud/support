@@ -192,10 +192,17 @@
                                                     $JCApi = Invoke-Expression -Command:($Command_Associations_POST)
                                                     If ([System.String]::IsNullOrEmpty($Error))
                                                     {
+                                                        $RetryCounter = 0
                                                         # Validate that the new association has been created
                                                         If ($Action -in ('add', 'new'))
                                                         {
-                                                            $AddAssociationValidation = Format-JCAssociation -Command:($Command_Associations_GET) -Source:($SourceItem) -TargetId:($TargetItemId) -IncludeNames:($true) | Where-Object { $_.TargetId -eq $TargetItemId }
+                                                            Do
+                                                            {
+                                                                $AddAssociationValidation = Format-JCAssociation -Command:($Command_Associations_GET) -Source:($SourceItem) -TargetId:($TargetItemId) -IncludeNames:($true) | Where-Object { $_.TargetId -eq $TargetItemId }
+                                                                $RetryCounter += 1
+                                                                Write-Debug ("[Validation]Retrying $Action association validation: $RetryCounter")
+                                                            }
+                                                            While ([System.String]::IsNullOrEmpty($AddAssociationValidation) -or $RetryCounter -le 5)
                                                             If ($AddAssociationValidation)
                                                             {
                                                                 $Result = $AddAssociationValidation
@@ -208,7 +215,13 @@
                                                         # Validate that the old association has been removed
                                                         If ($Action -eq 'remove')
                                                         {
-                                                            $RemoveAssociationValidation = Format-JCAssociation -Command:($Command_Associations_GET) -Source:($SourceItem) -TargetId:($TargetItemId) -IncludeNames:($true)
+                                                            Do
+                                                            {
+                                                                $RemoveAssociationValidation = Format-JCAssociation -Command:($Command_Associations_GET) -Source:($SourceItem) -TargetId:($TargetItemId) -IncludeNames:($true)
+                                                                $RetryCounter += 1
+                                                                Write-Debug ("[Validation]Retrying $Action association validation: $RetryCounter")
+                                                            }
+                                                            While (-not [System.String]::IsNullOrEmpty($RemoveAssociationValidation) -or $RetryCounter -le 5)
                                                             If (!($RemoveAssociationValidation) -or $RemoveAssociationValidation.associationType -eq 'indirect')
                                                             {
                                                                 $Result = $DirectAssociations
