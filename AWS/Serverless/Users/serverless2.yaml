@@ -1,0 +1,136 @@
+AWSTemplateFormatVersion: 2010-09-09
+Transform: AWS::Serverless-2016-10-31
+
+Parameters:
+  JumpCloudApiKey:
+    Type: String
+    NoEcho: true
+    AllowedPattern: \b[a-z0-9]{40}\b
+  IncrementType:
+    Type: String
+    Default: day
+    AllowedValues:
+      - minute
+      - minutes
+      - hour
+      - hours
+      - day
+      - days
+    Description: Allowed values - minute, minutes, hour, hours, day, days.
+  IncrementAmount:
+    Type: Number
+    Default: 1
+  OrganizationID:
+    Type: String
+    Default: ''
+    Description: OPTIONAL - This parameter can be used to allow MTP Admins to select which Organization they would like to collect JumpCloud User data for.
+  UserFields:
+    Type: CommaDelimitedList
+    Default: email,firstname,lastname
+    Description: Allowed values - "email", "firstname", "lastname", "suspended". IDs of JumpCloud users are always returned.
+
+Conditions:
+  isSingular: !Equals [!Ref "IncrementAmount", 1]
+
+Metadata:
+  AWS::ServerlessRepo::Application:
+    Name: JumpCloud-UserCsv
+    Description: This Serverless Application can be used to collect your JumpCloud User data at a regular interval in a CSV.
+    Author: JumpCloud Solutions Architecture
+    SemanticVersion: 0.0.1
+    HomePageUrl: https://git.io/JJlrZ
+    SourceCodeUrl: https://git.io/JJiMo
+
+Resources:
+  JCUserRole:
+    Type: AWS::IAM::Role
+    Properties: 
+      Description: A role for use in the JumpCloud Users CSV Serverless App
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+              - lambda.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AWSLambdaExecute
+      Policies:
+        - PolicyName: CloudWatchMetrics
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'cloudwatch:PutMetricData'
+                Resource: '*'
+  JCUserBucket:
+    Type: AWS::S3::Bucket
+  JCUserCmk:
+    Type: AWS::KMS::Key
+    Properties:
+      Description: An Symmetric CMK for use in the JumpCloud User CSV Serverless App
+      KeyPolicy:
+        Version: '2012-10-17'
+        Id: key-default-1
+        Statement:
+        - Sid: Enable IAM User Permissions
+          Effect: Allow
+          Principal:
+            AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
+          Action: kms:*
+          Resource: '*'
+        - Sid: Allow use of the key
+          Effect: Allow
+          Principal:
+            AWS: !GetAtt JCUserRole.Arn
+          Action:
+          - kms:DescribeKey
+          - kms:Encrypt
+          - kms:Decrypt
+          - kms:ReEncrypt*
+          - kms:GenerateDataKey
+          - kms:GenerateDataKeyWithoutPlaintext
+          Resource: '*'
+  JcApiKey:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Description: JumpCloud API Key
+      SecretString: !Ref JumpCloudApiKey
+  JcApiResourcePolicy:
+    Type: AWS::SecretsManager::ResourcePolicy
+    Properties:
+      SecretId: !Ref JcApiKey
+      ResourcePolicy:
+        Version: 2012-10-17
+        Statement:
+        - Effect: Allow
+          Principal: 
+            AWS: !GetAtt JCUserRole.Arn
+          Action: secretsmanager:GetSecretValue
+          Resource: "*"
+  JCUserFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: get-jcusers.zip
+      Handler: get-jcusers.get_jcusers
+      MemorySize: 192
+      Timeout: 180
+      Runtime: python3.7
+      Role: !GetAtt JCUserRole.Arn
+      KmsKeyArn: !GetAtt JCUserCmk.Arn
+      Environment:
+        Variables:
+          JcApiKeyArn: !Ref JcApiKey
+          incrementType: !Sub ${IncrementType}
+          incrementAmount: !Sub ${IncrementAmount}
+          BucketName: !Ref JCUserBucket
+          OrgId: !Sub ${OrganizationID}
+          UserFields: !Join [";", !Ref UserFields]
+      Events:
+        GrabJCUser:
+          Type: Schedule
+          Properties:
+            Schedule: !Join ["", [!Sub "rate(${IncrementAmount} ", !If [isSingular, !Select [0, !Split ["s", !Ref "IncrementType"]], !Join ["", [!Select [0, !Split ["s", !Ref "IncrementType"]], "s"]]], ")"]]

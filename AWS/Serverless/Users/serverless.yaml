@@ -1,0 +1,71 @@
+AWSTemplateFormatVersion: 2010-09-09
+Transform: AWS::Serverless-2016-10-31
+
+Parameters:
+  JumpCloudApiKey:
+    Type: String
+    AllowedPattern: \b[a-z0-9]{40}\b
+  KmsKeyArn:
+    Type: String
+    AllowedPattern: arn:aws:kms:(us(-gov)?|ap|ca|cn|eu|sa)-(central|(north|south)?(east|west)?)-\d:\d{12}:key\/\b[a-z0-9]{8}-\b[a-z0-9]{4}-\b[a-z0-9]{4}-\b[a-z0-9]{4}-\b[a-z0-9]{12}
+  RoleArn:
+    Type: String
+    AllowedPattern: arn:aws:iam::\d{12}:role\/?[a-zA-Z_0-9+=,.@\\\-_\/]+
+  IncrementType:
+    Type: String
+    Default: day
+    AllowedValues:
+      - minute
+      - minutes
+      - hour
+      - hours
+      - day
+      - days
+    Description: Allowed values - minute, minutes, hour, hours, day, days. If the Increment Amount is 1, use the singular.
+  IncrementAmount:
+    Type: Number
+    Default: 1
+  UserFields:
+    Type: CommaDelimitedList
+    Default: "email,firstname,lastname"
+    AllowedValues:
+      - email
+      - firstname
+      - lastname
+      - suspended
+    Description: Allowed values - "email", "firstname", "lastname", "suspended". IDs of JumpCloud users are always returned.
+
+Metadata:
+  AWS::ServerlessRepo::Application:
+    Name: JumpCloud-Users-Python
+    Description: This Serverless Application can be used to collect your JumpCloud Users data at a regular interval.
+    Author: Kyle Moorehead
+    SemanticVersion: 0.0.6
+    HomePageUrl: https://git.io/JeKSN
+    SourceCodeUrl: https://git.io/JeK7O
+
+Resources:
+  UsersBucket:
+    Type: AWS::S3::Bucket
+  UsersFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: get-jcusers.zip
+      Handler: get-jcusers.jc_users
+      MemorySize: 192
+      Timeout: 180
+      Runtime: python3.7
+      Role: !Sub ${RoleArn}
+      KmsKeyArn: !Sub ${KmsKeyArn}
+      Environment:
+        Variables:
+          JCAPIKEY: !Sub ${JumpCloudApiKey}
+          incrementType: !Sub ${IncrementType}
+          incrementAmount: !Sub ${IncrementAmount}
+          BucketName: !Ref EventsBucket
+          UserFields: !Ref ${UserFields}
+      Events:
+        GrabEvents:
+          Type: Schedule
+          Properties:
+            Schedule: !Sub "rate(${IncrementAmount} ${IncrementType})"
