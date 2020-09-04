@@ -1,4 +1,4 @@
-import requests, datetime, json, boto3, os, gzip
+import requests, datetime, json, boto3, os, gzip, csv
 from botocore.exceptions import ClientError
 
 def get_secret(secret_name):
@@ -11,7 +11,7 @@ def get_secret(secret_name):
     secret = get_secret_value_response['SecretString']
     return secret
 
-def jc_directoryinsights(event, context):
+def get_jcusers(event, context):
     try:
         jcapikeyarn = os.environ['JcApiKeyArn']
         incrementType = os.environ['incrementType']
@@ -37,13 +37,18 @@ def jc_directoryinsights(event, context):
     start_date = start_dt.isoformat("T") + "Z"
     end_date = now.isoformat("T") + "Z"
 
-    outfileName = "jc_directoryinsights_" + start_date + "_" + end_date + ".csv"
+    outfileName = "jc_users_" + start_date + "_" + end_date + ".csv"
 
     url = "https://console.jumpcloud.com/api/systemusers"
 
+    userFields = [x.strip() for x in userFields.split(';')]
+    skip = 0
+    limit = 100
+
     body = {
-        'fields': UserFields
-        'skip': skip
+        'fields': userFields,
+        'skip': skip,
+        'limit': limit
     }
     headers = {
         'x-api-key': jcapikey,
@@ -54,55 +59,32 @@ def jc_directoryinsights(event, context):
     if orgId != '':
         headers['x-org-id'] = orgId
 
-    response = requests.post(url, json=body, headers=headers)
+    response = requests.get(url, json=body, headers=headers)
     try:
         response.raise_for_status()
     except requests.exceptions.HTTPError as e:
         raise Exception(e)
     responseBody = json.loads(response.text)
 
-    if response.text.strip() == "[]":
-        cloudwatch = boto3.client('cloudwatch')
-        metric = cloudwatch.put_metric_data(
-            MetricData=[
-                {
-                    'MetricName': 'NoResults',
-                    'Dimensions': [
-                        {
-                            'Name': 'JumpCloud',
-                            'Value': 'DirectoryInsightsServerlessApp'
-                        },
-                        {
-                            'Name': 'Version',
-                            'Value': '0.0.1'
-                        }
-                    ],
-                    'Unit': 'None',
-                    'Value': 1
-                },
-            ],
-            Namespace = 'JumpCloudDirectoryInsights'
-        )
-        return
+    data = responseBody['results']
 
-    data = responseBody
-
-    while len(response['results']) != 0:
+    while responseBody['totalCount'] == 100:
         body["skip"] += 100
-        response = requests.post(url, json=body, headers=headers)
+        response = requests.get(url, json=body, headers=headers)
         try:
             response.raise_for_status()
         except requests.exceptions.HTTPError as e:
             raise Exception(e)
         responseBody = json.loads(response.text)
-        data = data + responseBody
+        data = data + responseBody['results']
     try:    
-        with open(outfileName, 'w') as f:
+        header = data[0].keys()
+        with open("/tmp/" + outfileName, 'w') as f:
             writer = csv.writer(f, delimiter=',')
             writer.writerow(header)
             i = 0
-            while i < len(users):
-                user = users[i].values()
+            while i < len(data):
+                user = data[i].values()
                 writer.writerow(user)
                 i += 1
     except Exception as e:

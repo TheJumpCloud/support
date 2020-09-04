@@ -27,11 +27,6 @@ Parameters:
   UserFields:
     Type: CommaDelimitedList
     Default: email,firstname,lastname
-    AllowedValues:
-      - email
-      - firstname
-      - lastname
-      - suspended
     Description: Allowed values - "email", "firstname", "lastname", "suspended". IDs of JumpCloud users are always returned.
 
 Conditions:
@@ -120,7 +115,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: get-jcusers.zip
-      Handler: get-jcusers.jc_users
+      Handler: get-jcusers.get_jcusers
       MemorySize: 192
       Timeout: 180
       Runtime: python3.7
@@ -133,6 +128,7 @@ Resources:
           incrementAmount: !Sub ${IncrementAmount}
           BucketName: !Ref JCUserBucket
           OrgId: !Sub ${OrganizationID}
+          UserFields: !Join [";", !Ref UserFields]
       Events:
         GrabJCUser:
           Type: Schedule
