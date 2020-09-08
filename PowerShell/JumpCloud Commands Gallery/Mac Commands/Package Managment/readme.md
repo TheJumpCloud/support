@@ -47,17 +47,17 @@ The result .recipe files in the example above are recipe results pulled from the
 For example:
 
 ```bash
-autopkg repo-add https://github.com/autopkg/recipes
-autopkg repo-add https://github.com/autopkg/homebysix-recipes
+/usr/local/bin/autopkg repo-add https://github.com/autopkg/recipes
+/usr/local/bin/autopkg repo-add https://github.com/autopkg/homebysix-recipes
 ```
 
 Both recipe repositories should be available for the user context. Running `autopkg repo-list` should display the currently installed recipe repositories. After adding both repositories the spotify.install.recipe file is available for the autopkg binary to reference. Run `autopkg info Spotify.install` to verify information about the recipe before executing the run command:
 
 ```bash
-autopkg run Spotify.install
+/usr/local/bin/autopkg run Spotify.install
 ```
 
-Spotify will be installed on the current system. JumpCloud commands can automate this process across multiple systems.
+Spotify will be installed on the current system. JumpCloud commands can automate this process across multiple systems. When invoking autopkg on a system, the JumpCloud commands should be run from an administrator account on a system using the "Rus As" option when creating a command and selecting a JumpCloud account with administrator rights on your systems.
 
 #### Other Considerations
 
