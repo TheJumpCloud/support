@@ -18,8 +18,12 @@ JumpCloud supports the management of Custom MDM Configuration [profiles](https:/
       - [Manually Configure the Radius Profile](#manually-configure-the-radius-profile)
       - [Use the Radius Profile Template](#use-the-radius-profile-template)
     - [Create a Privacy Preference Policy Control Profile](#create-a-privacy-preference-policy-control-profile)
+      - [About PPPC Profiles](#about-pppc-profiles)
+      - [Example PPPC Profile](#example-pppc-profile)
+      - [Example PPPC Profile for the JumpCloud Agent](#example-pppc-profile-for-the-jumpcloud-agent)
   - [Export a profile](#export-a-profile)
   - [Other Considerations](#other-considerations)
+    - [UUID of generated profiles](#uuid-of-generated-profiles)
     - [Removal of profiles](#removal-of-profiles)
   - [.mobileconfig Profile Examples](#mobileconfig-profile-examples)
 
@@ -156,7 +160,15 @@ Distribute this profile to JumpCloud systems through [Custom MDM profiles](https
 
 ### Create a Privacy Preference Policy Control Profile
 
-Privacy Preference Policy Control Profiles (PPPC Profiles) are preferences which control app's access to certain files and services on a macOS system. PPPC Profiles can been created with tools like [ProfileCreator](https://github.com/ProfileCreator/ProfileCreator), [imazing Profile Editor](https://imazing.com/profile-editor/download) or [Apple Configurator 2](https://apps.apple.com/us/app/apple-configurator-2/id1037126344?mt=12). Other tools such as [PPPC Utility](https://github.com/jamf/PPPC-Utility) were built to make the process of PPPC profile creation as simple as possible. PPPC Utility also allows .mobileconfig files to be exported and distributed through [Custom MDM profiles](https://jumpcloud.com/blog/custom-configuration-profiles).
+#### About PPPC Profiles
+
+In macOS Mojave, Apple introduced several security controls to enable apps to empower users to control whether an app should be allowed to access files or application data. The apple prompts stating that “”Some Application” would like to access files in your Downloads folder” for example stems from this security measure. Apple is placing the user in control of their data.
+
+System administrators can choose to whitelist these applications using Privacy Preference Policy Controls (PPPC) profiles. As long as an application is [codesigned](https://developer.apple.com/library/archive/documentation/Security/Conceptual/CodeSigningGuide/Procedures/Procedures.html), that application can be whitelisted though a PPPC profile, the only other requirement being that the MDM whitelisting that profile be either user approved or enrolled in DEP on that particular system.
+
+PPPC Profiles can been created with tools like [ProfileCreator](https://github.com/ProfileCreator/ProfileCreator), [imazing Profile Editor](https://imazing.com/profile-editor/download) or [Apple Configurator 2](https://apps.apple.com/us/app/apple-configurator-2/id1037126344?mt=12). Other tools such as [PPPC Utility](https://github.com/jamf/PPPC-Utility) were built to make the process of PPPC profile creation as simple as possible. PPPC Utility also allows .mobileconfig files to be exported and distributed through [Custom MDM profiles](https://jumpcloud.com/blog/custom-configuration-profiles).
+
+#### Example PPPC Profile
 
 The example PPPC profile below contains a payload for the Zoom Application, where the "Accessibility" and "Downloads Folder" settings have been set to "Allow".
 
@@ -170,6 +182,34 @@ Instead, system users are brought right into the Zoom Application.
 
 ![Zoom After](images/zoom_after.png)
 
+#### Example PPPC Profile for the JumpCloud Agent
+
+The JumpCloud Agent does more than provision and manage users on systems. It’s the binary application on your system that invokes commands issued from the JumpCloud console. To ensure commands from the JumpCloud console can take advantage of PPPC policy settings, both the JumpCloud-Agent and the bash binary (which is called by the JumpCloud Agent) need to be added to a PPPC profile. The JumpCloud-Agent binary is generally hidden from the user in the /opt/jc/ directory, you wouldn't be able to simply browse to its location without changing permissions. The [jumpcloud-agent.mobileconfig](./profiles/JumpCloud-Agent%20&%20Bash.mobileconfig) profile template contains the paths to both binary files and a payload to "Allow" access to "SystemPolicyAllFiles". That profile template can be imported in PPPC Utility to modify preference permissions.
+
+The code signatures in the example should match the values below:
+
+To get the codesign signature of the JumpCloud Agent:
+
+`sudo codesign -dr - /opt/jc/bin/jumpcloud-agent`
+
+Should return:
+
+`Executable=/opt/jc/bin/jumpcloud-agent`
+
+`designated => identifier "jumpcloud-agent" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = N985MXSH85`
+
+The identifer of the agent is listed after `designated =>` this identifier data can be used to populate PPPC profiles to automate actions on macOS systems
+
+To get the codesign signature of the Bash binary:
+
+`sudo codesign -dr - /bin/bash`
+
+Should return:
+
+`Executable=/bin/bash`
+
+`designated => identifier "com.apple.bash" and anchor apple`
+
 ## Export a profile
 
 Assuming a profile is ready for deployment. Save and Export the profile using the ProfileCreator file menu. File > Export...
@@ -179,6 +219,12 @@ On the export menu, choose a location to save the profile. The profile will be u
 ![export profile menu](images/export_profile.png)
 
 ## Other Considerations
+
+### UUID of generated profiles
+
+If downloading an example repo from this or other repositories, it may be worth the time to generate a new UUID when saving a .mobileconfig profile to easily identify a profile during system audit and later inspection.
+
+To generate a Unique Identifier for a profile open terminal and run: `uuidgen`
 
 ### Removal of profiles
 
