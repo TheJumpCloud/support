@@ -189,11 +189,16 @@
                                                 Try
                                                 {
                                                     $Error.Clear()
-                                                    if ( -not $TestAssociation ){
-                                                        $JCApi = Invoke-Expression -Command:($Command_Associations_POST)
+                                                    if ($Action -in ('add', 'new')){
+                                                        if ( -not $TestAssociation ){
+                                                            $JCApi = Invoke-Expression -Command:($Command_Associations_POST)
+                                                        }
+                                                        else {
+                                                            Write-Verbose ('" The association between the "' + $SourceItemTypeNameSingular + '" "' + $SourceItemName + '" and the "' + $TargetItemTypeNameSingular + '" "' + $TargetItemName + '"' + '" Already exists "')
+                                                        }
                                                     }
-                                                    else {
-                                                        Write-Verbose ('" The association between the "' + $SourceItemTypeNameSingular + '" "' + $SourceItemName + '" and the "' + $TargetItemTypeNameSingular + '" "' + $TargetItemName + '"' + '" Already exists "')
+                                                    else{
+                                                        $JCApi = Invoke-Expression -Command:($Command_Associations_POST)
                                                     }
                                                     If ([System.String]::IsNullOrEmpty($Error))
                                                     {
