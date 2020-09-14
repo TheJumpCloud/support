@@ -189,7 +189,12 @@
                                                 Try
                                                 {
                                                     $Error.Clear()
-                                                    $JCApi = Invoke-Expression -Command:($Command_Associations_POST)
+                                                    if ( -not $TestAssociation ){
+                                                        $JCApi = Invoke-Expression -Command:($Command_Associations_POST)
+                                                    }
+                                                    else {
+                                                        Write-Verbose ('" The association between the "' + $SourceItemTypeNameSingular + '" "' + $SourceItemName + '" and the "' + $TargetItemTypeNameSingular + '" "' + $TargetItemName + '"' + '" Already exists "')
+                                                    }
                                                     If ([System.String]::IsNullOrEmpty($Error))
                                                     {
                                                         $RetryCounter = 0
