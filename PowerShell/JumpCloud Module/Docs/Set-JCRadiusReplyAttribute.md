@@ -39,7 +39,11 @@ By specifying the '-VLAN' parameter three radius attributes are updated on the J
 
 These attributes are:
 
-name                    value ----                    ----- Tunnel-Medium-Type      IEEE-802 Tunnel-Type             VLAN Tunnel-Private-Group-Id 24
+name                    value
+----                    -----
+Tunnel-Medium-Type      IEEE-802
+Tunnel-Type             VLAN
+Tunnel-Private-Group-Id 24
 
 The value specified for the '-VLAN' parameter is populated for the value of Tunnel-Private-Group-Id .
 
@@ -53,7 +57,11 @@ The use of '-VLANTag' appends each VLAN attribute name with a colon and the tag 
 
 These attributes are:
 
-name                    value ----                    ----- Tunnel-Medium-Type:4      IEEE-802 Tunnel-Type:4             VLAN Tunnel-Private-Group-Id:4 24
+name                      value
+----                      -----
+Tunnel-Medium-Type:4      IEEE-802
+Tunnel-Type:4             VLAN
+Tunnel-Private-Group-Id:4 24
 
 ### Example 3
 ```
@@ -64,7 +72,10 @@ Updates two Radius attributes to the JumpCloud user group 'BoulderOffice'.
 
 These attribute are:
 
-name               value ----               ----- Session-Timeout    200 Termination-Action 2
+name               value
+----               -----
+Session-Timeout    200
+Termination-Action 2
 
 The parameter '-NumberOfAttributes' is a dynamic parameter that generates two required parameters for each custom attribute specified.
 In this example these parameters are -Attribute1_name,-Attribute1_value, -Attribute2_name and -Attribute2_value.
