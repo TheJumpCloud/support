@@ -189,16 +189,32 @@
                                                 Try
                                                 {
                                                     $Error.Clear()
-                                                    if ($Action -in ('add', 'new')){
-                                                        if ( -not $TestAssociation ){
-                                                            $JCApi = Invoke-Expression -Command:($Command_Associations_POST)
+                                                    $JCApi = if ($Action -in ('add', 'new'))
+                                                    {
+                                                        if ( -not $TestAssociation )
+                                                        {
+                                                            Invoke-Expression -Command:($Command_Associations_POST)
                                                         }
-                                                        else {
+                                                        else 
+                                                        {
                                                             Write-Verbose ('" The association between the "' + $SourceItemTypeNameSingular + '" "' + $SourceItemName + '" and the "' + $TargetItemTypeNameSingular + '" "' + $TargetItemName + '"' + '" Already exists "')
+                                                            $TestAssociation
+                                                        }
+                                                    }
+                                                    elseif ($Action -in ('remove'))
+                                                    {
+                                                        if ( $TestAssociation )
+                                                        {
+                                                            Invoke-Expression -Command:($Command_Associations_POST)
+                                                        }
+                                                        else 
+                                                        {
+                                                            Write-Verbose ('" The association between the "' + $SourceItemTypeNameSingular + '" "' + $SourceItemName + '" and the "' + $TargetItemTypeNameSingular + '" "' + $TargetItemName + '"' + '" Does not exist "')
+                                                            $TestAssociation
                                                         }
                                                     }
                                                     else{
-                                                        $JCApi = Invoke-Expression -Command:($Command_Associations_POST)
+                                                        Write-Error(" Unknown Action; $action ")
                                                     }
                                                     If ([System.String]::IsNullOrEmpty($Error))
                                                     {
