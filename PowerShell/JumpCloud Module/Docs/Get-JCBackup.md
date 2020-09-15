@@ -44,14 +44,12 @@ This means that if the objects are not expanded before exporting to CSV they wil
 To account for this find the below example which expands each nested object using PowerShell calculated properties and converts the objects to the JSON format.
 Note the backtick '\`' escape character is used to break this command into multiple lines for readability.
 
-```
-Get-JCUser | Select-Object * , \`
-  @{Name = 'attributes'; Expression = {$_.attributes | ConvertTo-Json}}, \`
-  @{Name = 'addresses'; Expression = {$_.addresses | ConvertTo-Json}}, \`
-  @{Name = 'phonenumbers'; Expression = {$_.phonenumbers | ConvertTo-Json}}, \`
-  @{Name = 'ssh_keys'; Expression = {$_.ssh_keys | ConvertTo-Json}} \`
+Get-JCUser | Select-Object * , \`  
+  @{Name = 'attributes'; Expression = {$_.attributes | ConvertTo-Json}}, \`  
+  @{Name = 'addresses'; Expression = {$_.addresses | ConvertTo-Json}}, \`  
+  @{Name = 'phonenumbers'; Expression = {$_.phonenumbers | ConvertTo-Json}}, \`  
+  @{Name = 'ssh_keys'; Expression = {$_.ssh_keys | ConvertTo-Json}} \`  
   -ExcludeProperty attributes, addresses, phonenumbers, ssh_keys | Export-CSV -Path "JumpCloudUsers_$(Get-Date -Format MMddyyyy).CSV" -NoTypeInformation
-```
 
 This command will gather and format all JumpCloud user information and export it to a CSV file named JumpCloudUsers_CurrentDate.CSV created within the directory where the command is run.
 If you wish to exclude certain user properties you can append the '-ExcludeProperty' list with the properties you wish to exclude.
@@ -65,9 +63,7 @@ This means that if the object is expanded before exporting to CSV it will simply
 
 To account for this the "BindGroups" property is expanded using a PowerShell calculated property.
 
-```
 Get-JCSystem | Get-JCSystemUser | Select-Object -Property * , @{Name = 'BindGroups'; Expression = {$ .BindGroups | ConvertTo-Json}} -ExcludeProperty BindGroups | Export-CSV -Path "JumpCloudSystemUsers $(Get-Date -Format MMddyyyy).CSV" -NoTypeInformation
-```
 
 This command will gather and format all JumpCloud system user associations and export them to a CSV file named JumpCloudSystemUsers_CurrentDate.CSV created within the directory where the command is run.
 Backing up JumpCloud System Information JumpCloud system information can be queried using the JumpCloud PowerShell module command Get-JCSystem (https://github.com/TheJumpCloud/support/wiki/Get-JCSystemUser)This command will by default return all JumpCloud system properties.
@@ -75,9 +71,7 @@ Note The properties JumpCloud System ID (_id) and lastContact are always returne
 
 To only return and export specific system properties to CSV use the '-returnProperties' parameter of the Get-JCSystem command.
 
-```
 Get-JCSystem -returnProperties hostname, os, version, serialNumber, remoteIP, systemTimezone | Export-CSV -Path "JumpCloudSystems_$(Get-Date -Format MMddyyyy).CSV" -NoTypeInformation
-```
 
 This command will export all JumpCloud Systems hostname, os, version, serial number, remoteIP, system time zone, system id, and last conntect time to a CSV file named JumpCloudSystems_CurrentDate.CSV created within the directory where the command is run.
 
@@ -88,12 +82,10 @@ This means that if the objects are not expanded before exporting to CSV they wil
 To account for this find the below example which expands each nested object using PowerShell calculated properties and converts the objects to the JSON format.
 Note the back tick '\`' escape character is used to break this command into multiple lines for readability.
 
-```
-Get-JCSystem | Select-Object *, \`
-  @{Name = 'networkInterfaces'; Expression = {$_.networkInterfaces | ConvertTo-Json}}, \`
-  @{Name = 'sshdParams'; Expression = {$_.sshdParams | ConvertTo-Json}} \`
+Get-JCSystem | Select-Object *, \`  
+  @{Name = 'networkInterfaces'; Expression = {$_.networkInterfaces | ConvertTo-Json}}, \`  
+  @{Name = 'sshdParams'; Expression = {$_.sshdParams | ConvertTo-Json}} \`  
   -ExcludeProperty networkInterfaces, sshdParams, connectionHistory | Export-CSV -Path "JumpCloudSystems_$(Get-Date -Format MMddyyyy).CSV" -NoTypeInformation
-```
 
 This command will gather and format all JumpCloud system information and export it to a CSV file named JumpCloudSystems_CurrentDate.CSV created within the directory where the command is run.
 If you wish to exclude certain system properties you can append the '-ExcludeProperty' list with the properties you wish to exclude.
@@ -101,9 +93,9 @@ Backing up JumpCloud User Groups JumpCloud user group membership can be queried 
 
 This command will save all JumpCloud user groups and the group members to a CSV file named JumpCloudUserGroupMember_CurrentDate.CSV created within the directory where the command is run.
 Backing up JumpCloud System Groups JumpCloud system group membership can be queried using the JumpCloud PowerShell module command Get-JCSystemGroupMember (https://github.com/TheJumpCloud/support/wiki/Get-JCSystemGroupMember)
-```
+
 Get-JCGroup -Type System | Get-JCSystemGroupMember | Export-CSV -Path "JumpCloudSystemGroupMembers_$(Get-Date -Format MMddyyyy).CSV" -NoTypeInformation
-```
+
 This command will save all JumpCloud system groups and the group members to a CSV file named JumpCloudSystemGroupMember_CurrentDate.CSV created within the directory where the command is run.
 
 ## EXAMPLES
