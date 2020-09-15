@@ -1,7 +1,7 @@
 ---
 external help file: JumpCloud-help.xml
 Module Name: JumpCloud
-online version: https://github.com/TheJumpCloud/jcapi-powershell/tree/master/SDKs/PowerShell/JumpCloud.SDK.DirectoryInsights/docs/exports/Get-JcSdkEventCount.md
+online version: https://github.com/TheJumpCloud/support/wiki/Get-JCEventCount
 schema: 2.0.0
 ---
 
@@ -258,5 +258,5 @@ Known services: systems,radius,sso,directory,ldap,all
 
 ## RELATED LINKS
 
-[https://github.com/TheJumpCloud/jcapi-powershell/tree/master/SDKs/PowerShell/JumpCloud.SDK.DirectoryInsights/docs/exports/Get-JcSdkEventCount.md](https://github.com/TheJumpCloud/jcapi-powershell/tree/master/SDKs/PowerShell/JumpCloud.SDK.DirectoryInsights/docs/exports/Get-JcSdkEventCount.md)
+[https://github.com/TheJumpCloud/support/wiki/Get-JCEventCount](https://github.com/TheJumpCloud/support/wiki/Get-JCEventCount)
 
