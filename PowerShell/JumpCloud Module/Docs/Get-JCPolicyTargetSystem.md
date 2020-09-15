@@ -28,21 +28,21 @@ The Get-JCPolicyTargetSystem returns information about all bound systems associa
 ## EXAMPLES
 
 ### Example 1
-```powershell
+```
 PS C:\> Get-JCPolicyTargetSystem -PolicyId 123456789
 ```
 
 Returns the bound Systems associated for a policy with the id of 123456789.
 
 ### Example 2
-```powershell
+```
 PS C:\> Get-JCPolicyTargetSystem -PolicyName 'HelloWorld'
 ```
 
 Returns the bound Systems associated for a policy with the name of HelloWorld.
 
 ### Example 3
-```powershell
+```
 PS C:\> Get-JCPolicy | Get-JCPolicyTargetSystem
 ```
 

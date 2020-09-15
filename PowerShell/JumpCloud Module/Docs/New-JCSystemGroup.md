@@ -22,7 +22,7 @@ Creates a JumpCloud System Group. Note that a JumpCloud System Group must have a
 ## EXAMPLES
 
 ### Example 1
-```powershell
+```
 PS C:\> New-JCSystemGroup -GroupName 'New System Group'
 ```
 

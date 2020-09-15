@@ -25,7 +25,7 @@ RADIUS reply attribute conflicts are resolved based on the creation date of the 
 ## EXAMPLES
 
 ### Example 1
-```powershell
+```
 Get-JCRadiusReplyAttribute -GroupName BoulderOffice
 ```
 

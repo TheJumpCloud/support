@@ -54,21 +54,21 @@ If a JumpCloud user is created without a password specified then the user will b
 ## EXAMPLES
 
 ### Example 1
-```powershell
+```
 PS C:\> New-JCUser -firstname Clarence -lastname Clemons -username cclemons -email cclemons@theband.com
 ```
 
 This example creates the user with username cclemons. Because a password is not specified the user will be created in an inactive state and an activation email will be sent to 'cclemons@theband.com'.
 
 ### Example 2
-```powershell
+```
 PS C:\> New-JCUser -firstname Clarence -lastname Clemons -username cclemons -email cclemons@theband.com -password Password1!
 ```
 
 This example creates the user with username cclemons. Because a password is specified the user will be created in an active state and no activation email will be sent.
 
 ### Example 3
-```powershell
+```
 PS C:\> New-JCUser -firstname Clarence -lastname Clemons -username cclemons -email cclemons@theband.com -password Password1! -NumberOfCustomAttributes 2 -Attribute1_name 'Band' -Attribute1_value 'E Street' -Attribute2_name 'Instrument' -Attribute2_value 'Sax'
 ```
 

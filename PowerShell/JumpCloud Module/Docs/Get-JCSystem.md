@@ -34,42 +34,42 @@ The Get-JCSystem function returns all information describing a JumpCloud system.
 ## EXAMPLES
 
 ### Example 1
-```powershell
+```
 Get-JCSystem
 ```
 
 Returns all JumpCloud managed systems and the information describing these systems.
 
 ### Example 2
-```powershell
+```
 Get-JCSystemUser -SystemID 5n0795a712704la4eve154r
 ```
 
 Returns a single JumpCloud System with SystemID '5n0795a712704la4eve154r'.
 
 ### Example 3
-```powershell
+```
 Get-JCSystem -active $true
 ```
 
 Returns all active JumpCloud Systems and the information describing these systems.
 
 ### Example 4
-```powershell
+```
 Get-JCSystem -agentVersion '0.9.6*' -os '*Mac*'
 ```
 
 Returns all JumpCloud systems where the agentVersion is '0.9.6.*' and the operating system is like '*Mac*'
 
 ### Example 5
-```powershell
+```
 Get-JCSystem -filterDateProperty created -dateFilter after -date 01/01/2018
 ```
 
 Returns all JumpCloud systems that were created after 01/01/2018 using the parameter -filterDateProperty and the dynamic parameters -dateFilter and -date
 
 ### Example 6
-```powershell
+```
 Get-JCSystem -returnProperties remoteIP, active
 ```
 

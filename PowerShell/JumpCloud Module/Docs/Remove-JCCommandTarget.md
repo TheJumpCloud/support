@@ -33,21 +33,21 @@ The Remove-JCCommandTarget function allows you to remove JumpCloud systems or Ju
 ## EXAMPLES
 
 ### Example 1
-```powershell
+```
 Remove-JCCommandTarget -CommandID 5b99777710a3690ssisr3a1w -SystemID 5l0o2fu426041i79st3c35
 ```
 
 Removes the JumpCloud system with System ID '5l0o2fu426041i79st3c35' from the target list for the JumpCloud command with command ID '5b99777710a3690ssisr3a1w'
 
 ### Example 2
-```powershell
+```
 Remove-JCCommandTarget -CommandID 5b99777710a3690ssisr3a1w -GroupName WindowsMachines
 ```
 
 Removes the JumpCloud system group 'WindowsMachines' and the systems within this group from the target list for the JumpCloud command with command ID '5b99777710a3690ssisr3a1w'
 
 ### Example 3
-```powershell
+```
 Remove-JCCommandTarget -CommandID 5b99777710a3690ssisr3a1w -GroupID 5j03458a232z115210z66913
 ```
 

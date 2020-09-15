@@ -22,7 +22,7 @@ Creates a JumpCloud User Group. Note that a JumpCloud User Group must have a uni
 ## EXAMPLES
 
 ### Example 1
-```powershell
+```
 PS C:\> New-JCUserGroup -GroupName 'New User Group'
 ```
 

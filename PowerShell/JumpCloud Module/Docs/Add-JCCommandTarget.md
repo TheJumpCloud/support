@@ -33,21 +33,21 @@ The Add-JCCommandTarget function allows you to add JumpCloud systems or JumpClou
 ## EXAMPLES
 
 ### Example 1
-```powershell
+```
 Add-JCCommandTarget -CommandID 5b99777710a3690ssisr3a1w -SystemID 5l0o2fu426041i79st3c35
 ```
 
 Adds the JumpCloud system with System ID '5l0o2fu426041i79st3c35' to the target list for the JumpCloud command with command ID '5b99777710a3690ssisr3a1w'
 
 ### Example 2
-```powershell
+```
 Add-JCCommandTarget -CommandID 5b99777710a3690ssisr3a1w -GroupName WindowsMachines
 ```
 
 Adds the JumpCloud system group 'WindowsMachines' and the systems within this group to the target list for the JumpCloud command with command ID '5b99777710a3690ssisr3a1w'
 
 ### Example 3
-```powershell
+```
 Add-JCCommandTarget -CommandID 5b99777710a3690ssisr3a1w -GroupID 5j03458a232z115210z66913
 ```
 

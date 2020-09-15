@@ -38,21 +38,21 @@ The Get-JCPolicyResult function returns the latest policy result information fro
 ## EXAMPLES
 
 ### Example 1
-```powershell
+```
 PS C:\> Get-JCPolicyResult 'HelloWorld'
 ```
 
 Returns the latest policy result for the HelloWorld policy.
 
 ### Example 2
-```powershell
+```
 PS C:\> Get-JCPolicyResult -PolicyId 123456789
 ```
 
 Returns the latest policy result for the policy with the id of 123456789.
 
 ### Example 3
-```powershell
+```
 PS C:\> Get-JCPolicyResult -SystemID 123456789
 ```
 

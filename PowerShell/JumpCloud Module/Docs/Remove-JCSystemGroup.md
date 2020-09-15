@@ -28,14 +28,14 @@ Removes a JumpCloud System Group. By default a warning message will be presented
 ## EXAMPLES
 
 ### Example 1
-```powershell
+```
 PS C:\> Remove-JCSystemGroup -GroupName 'On Prem Systems'
 ```
 
 Removes the JumpCloud System Group with the name 'On Prem Systems'. A warning message will be presented to confirm the operation.
 
 ### Example 2
-```powershell
+```
 PS C:\> Remove-JCSystemGroup -GroupName 'On Prem Systems' -Force
 ```
 

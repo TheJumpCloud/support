@@ -27,7 +27,7 @@ RADIUS reply attribute conflicts are resolved based on the creation date of the 
 ## EXAMPLES
 
 ### Example 1
-```powershell
+```
 Add-JCRadiusReplyAttribute -GroupName "BoulderOffice" -VLAN 24
 ```
 
@@ -44,7 +44,7 @@ Tunnel-Private-Group-Id 24
 The value specified for the '-VLAN' parameter is populated for the value of **Tunnel-Private-Group-Id**.
 
 ### Example 2
-```powershell
+```
 Add-JCRadiusReplyAttribute -GroupName "BoulderOffice" -VLAN 24 -VLANTag 3
 ```
 
@@ -59,7 +59,7 @@ Tunnel-Type:3             VLAN
 Tunnel-Private-Group-Id:3 24
 
 ### Example 3
-```powershell
+```
 Add-JCRadiusReplyAttribute -GroupName "BoulderOffice" -NumberOfAttributes 2 -Attribute1_name "Session-Timeout" -Attribute1_value 100 -Attribute2_name "Termination-Action" -Attribute2_value 1
 ```
 
@@ -75,7 +75,7 @@ Termination-Action 1
 The parameter '-NumberOfAttributes' is a dynamic parameter that generates two required parameters for each custom attribute specified. In this example these parameters are -Attribute1_name,-Attribute1_value, -Attribute2_name and -Attribute2_value.
 
 ### Example 4
-```powershell
+```
 Add-JCRadiusReplyAttribute -GroupName "BoulderOffice" -VLAN 24 -NumberOfAttributes 2 -Attribute1_name "Session-Timeout" -Attribute1_value 100 -Attribute2_name "Termination-Action" -Attribute2_value 1
 ```
 

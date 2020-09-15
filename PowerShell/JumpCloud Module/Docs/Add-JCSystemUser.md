@@ -30,21 +30,21 @@ The Add-JCSystemUser function allows you to bind a JumpCloud user to a JumpCloud
 ## EXAMPLES
 
 ### Example 1
-```powershell
+```
 PS C:\> Add-JCSystemUser -Username cclemons -SystemID 5a0795nnie7127f4ev2erb154a -Administrator $True
 ```
 
 Adds the JumpCloud user with the Username 'cclemons' to the System with a SystemID of '5a0795nnie7127f4ev2erb154a' and grants administrator permission
 
 ### Example 2
-```powershell
+```
 PS C:\> Get-JCSystemUser -SystemID 5a0795nnie7127f4ev2erb154a | Add-JCSystemUser -SystemID 59f2c305383cba7e369df7c2
 ```
 
 Adds all JumpCloud users associated with the JumpCloud system with a SystemID of '5a0795aa7127f4aa2ddb154a' and adds them to the JumpCloud system with a SystemID of '59f2c305383cba7e369df7c2' using Parameter Binding and the pipeline. Because '-Administrator' was not specified the users will be added as standard users
 
 ### Example 3
-```powershell
+```
 PS C:\> Get-JCUserGroupMember -GroupName 'The Band' | Add-JCSystemUser -SystemID 5a0795nnie7127f4ev2erb154a -Administrator $True
 ```
 

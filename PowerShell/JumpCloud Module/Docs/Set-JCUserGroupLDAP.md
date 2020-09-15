@@ -29,21 +29,21 @@ Alternatively this can be done using the 'Set-JCUserGroupLDAP' command and by le
 ## EXAMPLES
 
 ### Example 1
-```powershell
+```
 Set-JCUserGroupLDAP -GroupName Developers -LDAPEnabled $true
 ```
 
 Adds the JumpCloud group 'Developers' (**Group names are case sensitive**) and the members of this group to JumpCloud LDAP directory.
 
 ### Example 2
-```powershell
+```
 Set-JCUserGroupLDAP -GroupName Developers -LDAPEnabled $False
 ```
 
 Removes the JumpCloud group 'Developers' (**Group names are case sensitive**) and the members of this group from the JumpCloud LDAP directory.
 
 ### Example 3
-```powershell
+```
 Get-JCGroup -Type User | Set-JCUserGroupLDAP -LDAPEnabled $true
 ```
 

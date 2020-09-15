@@ -28,14 +28,14 @@ The Remove-JCCommand can remove a single JumpCloud command or multiple commands 
 ## EXAMPLES
 
 ### Example 1
-```powershell
+```
 PS C:\> Remove-JCCommand -CommandID 5j09o6f23dan6f4n035601d5
 ```
 
 Removes the JumpCloud Command with a CommandID of '5j09o6f23dan6f4n035601d5'. A warning message will be presented to confirm this operation.
 
 ### Example 2
-```powershell
+```
 PS C:\> Remove-JCCommand -CommandID 5j09o6f23dan6f4n035601d5 -Force
 ```
 

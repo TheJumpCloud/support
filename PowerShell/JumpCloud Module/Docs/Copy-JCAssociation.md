@@ -30,14 +30,14 @@ This cmdlet will get the associations of an existing object and will copy those 
 ## EXAMPLES
 
 ### Example 1
-```powershell
+```
 PS C:\> Copy-JCAssociation -Type:('user') -Id:('5cdaef60452f26365ca1fbd0') -TargetId:('5cdaef62de6bf35ce44ad777')
 ```
 
 The command will remove all of 5cdaef62de6bf35ce44ad777 associations and will copy all of 5cdaef60452f26365ca1fbd0 associations to 5cdaef62de6bf35ce44ad777.
 
 ### Example 2
-```powershell
+```
 PS C:\> Copy-JCAssociation -Type:('user') -Name:('John') -TargetName:('Jim')
 ```
 

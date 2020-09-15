@@ -23,7 +23,7 @@ Use this function to create a radius servers in a JumpCloud tenet.
 ## EXAMPLES
 
 ### Example 1
-```powershell
+```
 PS C:\> New-JCRadiusServer -Name:('RadiusServer1') -networkSourceIp:('111.111.111.111') -sharedSecret:('dUtU9FDvPc8Wdvoc#jKmZr7aJSXv5pR')
 ```
 

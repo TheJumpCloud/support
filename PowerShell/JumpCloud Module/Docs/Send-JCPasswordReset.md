@@ -29,28 +29,28 @@ Pending users will recieve an activation email. Active users will receive a pass
 ## EXAMPLES
 
 ### Example 1
-```powershell
+```
 Send-JCPasswordReset -username jcuser.one
 ```
 
 Sends an activation or reset email to JumpCloud user with username 'jcuser.one'
 
 ### Example 2
-```powershell
+```
 Get-JCUserGroupMember -GroupName NewUsers | Send-JCPasswordReset
 ```
 
 Sends an activation or reset email to all members of the JumpCloud user group 'NewUsers'.
 
 ### Example 3
-```powershell
+```
 Get-JCUser -activated $false | Send-JCPasswordReset
 ```
 
 Sends an activation email to all JumpCloud users who are in an inactive state. Users that are inactive have not yet set their JumpCloud user passwords.
 
 ### Example 4
-```powershell
+```
 Get-JCUser -activated $false -filterDateProperty created -dateFilter after -date (Get-Date).AddDays(-7) -returnProperties username | Send-JCPasswordReset
 ```
 

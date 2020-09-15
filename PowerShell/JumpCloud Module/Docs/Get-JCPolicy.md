@@ -33,21 +33,21 @@ The Get-JCPolicy function returns all information describing JumpCloud policies 
 ## EXAMPLES
 
 ### Example 1
-```powershell
+```
 PS C:\> Get-JCPolicy
 ```
 
 Returns all JumpCloud Policies populated within the Policies section of the JumpCloud admin console.
 
 ### Example 2
-```powershell
+```
 PS C:\> Get-JCPolicy -PolicyID 123456789
 ```
 
 Returns the policy associated to the id of 123456789.
 
 ### Example 3
-```powershell
+```
 PS C:\> Get-JCPolicy -Name 'HelloWorld'
 ```
 

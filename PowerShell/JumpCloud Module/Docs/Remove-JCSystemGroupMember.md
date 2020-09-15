@@ -29,21 +29,21 @@ The Remove-JCSystemGroupMember function is used to remove a JumpCloud System fro
 ## EXAMPLES
 
 ### Example 1
-```powershell
+```
 PS C:\> Remove-JCSystemGroupMember -GroupName 'Windows Systems' -SystemID '59dad305383roc7k369sf7s2'
 ```
 
 Removes a System with SystemID '59dad305383roc7k369sf7s2' from the System Group 'Windows Systems'
 
 ### Example 2
-```powershell
+```
 PS C:\> Get-JCSystem | Where-Object os -Like *Windows* | Remove-JCSystemGroupMember -GroupName 'Mac Systems'
 ```
 
 Removes all Systems with an operating system like 'Windows' from the System Group 'Mac Systems'
 
 ### Example 3
-```powershell
+```
 Get-JCSystem | Where-Object active -EQ $false | Remove-JCSystemGroupMember -GroupName 'Active Systems'
 ```
 

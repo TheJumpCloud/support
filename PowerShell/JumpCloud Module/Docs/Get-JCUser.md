@@ -38,35 +38,35 @@ The Get-JCUser function returns all information describing a JumpCloud user. By 
 ## EXAMPLES
 
 ### Example 1
-```powershell
+```
 PS C:\> Get-JCUser
 ```
 
 Returns all JumpCloud Users and the information describing these users.
 
 ### Example 2
-```powershell
+```
 Get-JCUser -Username cclemons
 ```
 
 Returns the information describing the JumpCloud User with Username cclemons
 
 ### Example 3
-```powershell
+```
 Get-JCUser -Username *clemons
 ```
 
 Returns all JumpCloud users that usernames end with clemons using the wildcard character '*'
 
 ### Example 4
-```powershell
+```
 Get-JCUser -filterDateProperty created -dateFilter after -date 01/01/2018
 ```
 
 Returns all JumpCloud users that were created after '01/01/2018'. The parameter '-filterDateProperty' takes both 'created' and 'password_expiration_date' as input and creates two dynamic parameters '-dateFilter' which takes "before" or "after" as input and "-date" which takes a date value as input.
 
 ### Example 5
-```powershell
+```
 Get-JCUser -returnProperties username, sudo
 ```
 

@@ -28,28 +28,28 @@ The Remove-JCSystem removes a JumpCloud system. If the target system is online t
 ## EXAMPLES
 
 ### Example 1
-```powershell
+```
 PS C:\> Remove-JCSystem -SystemID 5n0795a712704la4eve154r
 ```
 
 Removes the JumpCloud System with SystemID '5n0795a712704la4eve154r'. A warning message will be presented to confirm this operation.
 
 ### Example 2
-```powershell
+```
 PS C:\> Remove-JCSystem -SystemID 5n0795a712704la4eve154r -Force
 ```
 
 Removes the JumpCloud System with SystemID '5n0795a712704la4eve154r' using the -Force Parameter. A warning message will not be presented to confirm this operation.
 
 ### Example 3
-```powershell
+```
 Get-JCSystem | Where-Object lastContact -lT (Get-Date).AddDays(-30).ToString('yyy-MM-ddTHH:MM:ss') | Remove-JCSystem
 ```
 
 Removes all JumpCloud Systems that have a lastContact date greater then 30 days. A warning message will be presented to confirm each operation.
 
 ### Example 4
-```powershell
+```
 PS C:\> Get-JCSystem | Where-Object displayName -Like *Server10* | Remove-JCSystem -force
 ```
 
@@ -57,7 +57,7 @@ Removes all JumpCloud Systems that have a displayName like 'Server10'. A warning
 
 ### Example 5
 
-```PowerShell
+```
 Get-JCSystem -displayName System101 -returnProperties lastContact | Sort-Object lastContact -Descending | Select * -Skip 1 | Remove-JCSystem -force
 ```
 

@@ -29,7 +29,7 @@ A progress bar shows a status of the deployment. *Note* systems must be online a
 ## EXAMPLES
 
 ### Example 1
-```powershell
+```
 Invoke-JCDeployment -CommandID 5f6r55es2189782h48091999 -CSVFilePath ./JCDeployment_UsernameUpdate.csv
 
 SystemID                 CommandID                Status

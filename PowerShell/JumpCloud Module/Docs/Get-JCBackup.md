@@ -125,49 +125,49 @@ This command will save all JumpCloud system groups and the group members to a CS
 ## EXAMPLES
 
 ### Example 1
-```powershell
+```
 Get-JCBackup -All
 ```
 
 Backs up JumpCloud user, system user, system, user group, and system group information to CSV files. A CSV backup file will be created for each backup item within the current working directory when this command is run.
 
 ### Example 2
-```powershell
+```
 Get-JCBackup -Users
 ```
 
 Backs up JumpCloud user information to CSV. A CSV backup file containing all user information will be created within the current working directory when this command is run.
 
 ### Example 3
-```powershell
+```
 Get-JCBackup -SystemUsers
 ```
 
 Backs up JumpCloud system user information to CSV. A CSV backup file containing all system user information will be created within the current working directory when this command is run.
 
 ### Example 4
-```powershell
+```
 Get-JCBackup -Systems
 ```
 
 Backs up JumpCloud system information to CSV. A CSV backup file containing all system information will be created within the current working directory when this command is run.
 
 ### Example 5
-```powershell
+```
 Get-JCBackup -UserGroups
 ```
 
 Backs up JumpCloud user group membership to CSV. A CSV backup file containing all user group information will be created within the current working directory when this command is run.
 
 ### Example 6
-```powershell
+```
 Get-JCBackup -SystemGroups
 ```
 
 Backs up JumpCloud system group membership to CSV. A CSV backup file containing all system group information will be created within the current working directory when this command is run.
 
 ### Example 7
-```powershell
+```
 Get-JCBackup -Users -UserGroups
 ```
 

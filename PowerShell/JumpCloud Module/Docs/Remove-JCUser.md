@@ -28,14 +28,14 @@ The Remove-JCUser function will remove a JumpCloud user from the JumpCloud organ
 ## EXAMPLES
 
 ### Example 1
-```powershell
+```
 PS C:\> Remove-JCUser cclemons
 ```
 
 Removes the JumpCloud User with Username 'cclemons'. A warning message will be presented to confirm this operation.
 
 ### Example 2
-```powershell
+```
 PS C:\> Remove-JCUser cclemons -Force
 ```
 

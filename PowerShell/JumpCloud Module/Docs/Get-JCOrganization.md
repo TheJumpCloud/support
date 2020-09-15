@@ -22,7 +22,7 @@ The Get-JCOrganization command displays all JumpCloud organizations associated w
 ## EXAMPLES
 
 ### Example 1
-```powershell
+```
 Get-JCOrganization
 ```
 

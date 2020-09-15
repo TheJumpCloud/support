@@ -30,14 +30,14 @@ The Remove-JCAssociation function allows you to create associations of a specifi
 ## EXAMPLES
 
 ### Example 1
-```powershell
+```
 PS C:\> Remove-JCAssociation -Type:('radiusservers') -Id:('5c5c371704c4b477964ab4fa') -TargetType:('user_group') -TargetId:('59f20255c9118021fa01b80f')
 ```
 
 Remove the association between the radius server "5c5c371704c4b477964ab4fa" and the user group "59f20255c9118021fa01b80f".
 
 ### Example 2
-```powershell
+```
 PS C:\> New-JCAssociation -Type:('radiusservers') -Name:('RadiusServer1') -TargetType:('user_group') -TargetName:('All Users')
 ```
 

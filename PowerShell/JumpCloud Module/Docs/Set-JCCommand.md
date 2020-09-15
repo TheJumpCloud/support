@@ -23,14 +23,14 @@ Updates an existing JumpCloud command using the CommandID
 ## EXAMPLES
 
 ### Example 1
-```powershell
+```
 Set-JCCommand -CommandID 5g6o3lf95r1485193o8cks6 -launchType trigger -trigger getWinLog
 ```
 
 Updates the 'launchType' of command with CommandID '5g6o3lf95r1485193o8cks6' to trigger and sets the 'trigger' to getWinLog.
 
 ### Example 2
-```powershell
+```
 Set-JCCommand -CommandID 5g6o3lf95r1485193o8cks6 -name "Windows - Get Windows Event Log"
 ```
 

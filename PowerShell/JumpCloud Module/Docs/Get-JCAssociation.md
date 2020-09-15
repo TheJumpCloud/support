@@ -46,35 +46,35 @@ The Get-JCAssociation function allows you to view the associations of a specific
 ## EXAMPLES
 
 ### Example 1
-```powershell
+```
 PS C:\> Get-JCAssociation -Type:user_group -Name:employee -TargetType:users
 ```
 
 List all "users" that are associated with the user_group "employee".
 
 ### Example 2
-```powershell
+```
 PS C:\> Get-JCAssociation -Type:system -Id:5c9a95f84tdo1376318g5148
 ```
 
 List all associations with the system "5c9a95f84tdo1376318g5148".
 
 ### Example 3
-```powershell
+```
 PS C:\> Get-JCAssociation -Type:system  -Id:5c9a95f84tdo1376318g5148 -TargetType:users -Direct
 ```
 
 List all "users" that have a direct association with the system "5c9a95f84tdo1376318g5148".
 
 ### Example 4
-```powershell
+```
 PS C:\> Get-JCAssociation -Type:system  -Id:5c9a95f84tdo1376318g5148 -TargetType:users -Indirect
 ```
 
 List all "users" that have a indirect association with the system "5c9a95f84tdo1376318g5148".
 
 ### Example 5
-```powershell
+```
 PS C:\> Get-JCAssociation -Type:system  -Id:5c9a95f84tdo1376318g5148 -TargetType:users -IncludeInfo -IncludeNames -IncludeVisualPath
 ```
 

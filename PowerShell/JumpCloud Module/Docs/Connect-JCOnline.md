@@ -25,19 +25,19 @@ To prevent the module update check the '-force' parameter can be used.
 ## EXAMPLES
 
 ### Example 1
-```powershell
+```
 Connect-JCOnline lu8792c9d4y2398is1tb6h0b83ebf0e92s97t382
 ```
 
 ### Example 2
-```powershell
+```
 Connect-JCOnline lu8792c9d4y2398is1tb6h0b83ebf0e92s97t382 -force
 ```
 
 Using the "-Force" parameter the module update check is skipped. The '-Force' parameter should be used when using the JumpCloud module in scripts or other automation environments.
 
 ### Example 3
-```powershell
+```
 Connect-JCOnline -JumpCloudAPIKey lu8792c9d4y2398is1tb6h0b83ebf0e92s97t382 -JumpCloudOrgID 5b5o13o06tsand0c29a0t3s6 -force
 ```
 

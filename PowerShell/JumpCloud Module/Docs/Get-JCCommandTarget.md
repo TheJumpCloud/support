@@ -28,14 +28,14 @@ Using the CommandID parameter the Get-JCCommandTarget command will return all th
 ## EXAMPLES
 
 ### Example 1
-```powershell
+```
 Get-JCCommandTarget -CommandID '5a99777710p3690onylo3e1g'
 ```
 
 Retrieves the JumpCloud system targets that are associated the JumpCloud command with the Command ID '5a99777710p3690onylo3e1g'
 
 ### Example 2
-```powershell
+```
 Get-JCCommandTarget -CommandID '5a99777710p3690onylo3e1g' -Groups
 ```
 

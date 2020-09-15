@@ -30,14 +30,14 @@ The Add-JCAssociation function allows you to create associations of a specific o
 ## EXAMPLES
 
 ### Example 1
-```powershell
+```
 PS C:\> Add-JCAssociation -Type:('radiusservers') -Id:('5c5c371704c4b477964ab4fa') -TargetType:('user_group') -TargetId:('59f20255c9118021fa01b80f')
 ```
 
 Create an association between the radius server "5c5c371704c4b477964ab4fa" and the user group "59f20255c9118021fa01b80f".
 
 ### Example 2
-```powershell
+```
 PS C:\> Add-JCAssociation -Type:('radiusservers') -Name:('RadiusServer1') -TargetType:('user_group') -TargetName:('All Users')
 ```
 

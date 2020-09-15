@@ -22,7 +22,7 @@ The New-JCDeploymentTemplate command is a menu driven interactive function that 
 ## EXAMPLES
 
 ### Example 1
-```powershell
+```
 PS C:\> New-JCDeploymentTemplate
 ```
 

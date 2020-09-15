@@ -42,21 +42,21 @@ Use this function to return radius servers from JumpCloud tenet.
 ## EXAMPLES
 
 ### Example 1
-```powershell
+```
 PS C:\> Get-JCRadiusServer
 ```
 
 Returns all radius servers from a JumpCloud tenet.
 
 ### Example 2
-```powershell
+```
 PS C:\> Get-JCRadiusServer -Id:('5d6802c46eb05c5971151558')
 ```
 
 Returns a radius server by Id from a JumpCloud tenet.
 
 ### Example 3
-```powershell
+```
 PS C:\> Get-JCRadiusServer -Name:('RadiusServer1')
 ```
 

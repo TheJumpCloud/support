@@ -22,7 +22,7 @@ The Update-JCModule function will check if there is an available update on the P
 ## EXAMPLES
 
 ### Example 1
-```powershell
+```
 Update-JCModule
 ```
 

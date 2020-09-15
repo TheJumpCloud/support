@@ -24,7 +24,7 @@ See all available commands in the [JumpCloud Commands Gallery](https://github.co
 ## EXAMPLES
 
 ### Example 1
-```powershell
+```
 Import-JCCommand -URL 'https://git.io/jccg-Windows-ListAllUsers'
 ```
 

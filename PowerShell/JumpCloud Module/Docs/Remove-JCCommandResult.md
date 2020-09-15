@@ -28,28 +28,28 @@ The Remove-JCCommandResult can remove a single JumpCloud command result or multi
 ## EXAMPLES
 
 ### Example 1
-```powershell
+```
 PS C:\> Remove-JCCommandResult -CommandResultID 5j09o6f23dan6f4n035601d5
 ```
 
 Removes the JumpCloud Command Result with a CommandResultID of '5j09o6f23dan6f4n035601d5'. A warning message will be presented to confirm this operation.
 
 ### Example 2
-```powershell
+```
 PS C:\> Remove-JCCommandResult -CommandResultID 5j09o6f23dan6f4n035601d5 -Force
 ```
 
 Removes the JumpCloud Command Result with a CommandResultID of '5j09o6f23dan6f4n035601d5' using the -Force Parameter. A warning message will not be presented to confirm this operation.
 
 ### Example 3
-```powershell
+```
 PS C:\> Get-JCCommandResult  | Where-Object system -EQ 'Server01' | Remove-JCCommandResult
 ```
 
 Removes all JumpCloud Command Results that were run on target system with a hostname of 'Server01' A warning message will be present to confirm each operation. This warning could be suppressed using the -Force Parameter.
 
 ### Example 4
-```powershell
+```
 PS C:\> Get-JCCommandResult | Where-Object {$_.requestTime -GT (Get-Date).AddHours(-1) -and $_.exitCode -eq 0} | Remove-JCCommandResult -force
 ```
 

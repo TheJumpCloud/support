@@ -29,28 +29,28 @@ The Add-JCSystemGroupMember function is used to add a JumpCloud System to a Jump
 ## EXAMPLES
 
 ### Example 1
-```powershell
+```
 PS C:\> Add-JCSystemGroupMember -GroupName 'Windows Systems' -SystemID '59dad305383roc7k369sf7s2'
 ```
 
 Adds a System with SystemID '59dad305383roc7k369sf7s2' to the System Group 'Windows Systems'
 
 ### Example 2
-```powershell
+```
 PS C:\> Get-JCSystem | Where-Object os -Like *Mac* | Add-JCSystemGroupMember -GroupName 'Mac Systems'
 ```
 
 Adds all Systems with an operating system like 'Mac' to the System Group 'Mac Systems'
 
 ### Example 3
-```powershell
+```
 Get-JCSystem | Where-Object active -EQ $true | Add-JCSystemGroupMember -GroupName 'Active Systems'
 ```
 
 Adds all active systems to the System Group 'Active Systems'
 
 ### Example 4
-```powershell
+```
 Get-JCSystem |  Where-Object {$_.active -EQ $true -and $_.os -like '*Mac*'} | Add-JCSystemGroupMember 'Active Mac Systems'
 ```
 

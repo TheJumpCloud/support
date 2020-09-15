@@ -30,14 +30,14 @@ The Update-JCUserFromCSV command also has a '-force' parameter which admins can 
 ## EXAMPLES
 
 ### Example 1
-```powershell
+```
 PS C:\> Update-JCUsersFromCSV ./JCUserUpdateImport_09-20-2018.csv
 ```
 
 Updates users from the .csv file 'JCUserUpdateImport_09-20-2018.csv'
 
 ### Example 2
-```powershell
+```
 PS C:\> Update-JCUsersFromCSV ./JCUserUpdateImport_09-20-2018.csv -Force
 ```
 

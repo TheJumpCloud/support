@@ -22,28 +22,28 @@ The Get-JCSystemUser function returns all the JumpCloud Users associated with th
 ## EXAMPLES
 
 ### Example 1
-```powershell
+```
 PS C:\> Get-JCSystemUser -SystemID 59f2s305383coo7t369ef7r2
 ```
 
 This example returns all users associated with the JumpCloud System with a SystemID of '59f2s305383coo7t369ef7r2'
 
 ### Example 2
-```powershell
+```
 PS C:\> Get-JCSystem | Get-JCSystemUser
 ```
 
 This example returns all the JumpCloud users associated with all JumpCloud systems within a JumpCloud tenant.
 
 ### Example 3
-```powershell
+```
 PS C:\> Get-JCSystem | Where-Object os -like *Mac* | Get-JCSystemUser
 ```
 
 This example returns all the JumpCloud users associated with all JumpCloud systems within an operating system like 'Mac'.
 
 ### Example 4
-```powershell
+```
 PS C:\>  Get-JCSystem | Get-JCSystemUser | Where-Object Administrator -EQ True
 ```
 

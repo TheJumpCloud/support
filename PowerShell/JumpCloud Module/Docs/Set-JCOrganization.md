@@ -22,7 +22,7 @@ The Set-JCOrganization command can only be run by JumpCloud admins with multi te
 ## EXAMPLES
 
 ### Example 1
-```powershell
+```
 Set-JCOrganization
 
 ======== JumpCloud Multi Tenant Selector =======
@@ -38,7 +38,7 @@ Enter a value between 1 and 2:
 Displays a prompt for MT admins to select which organization to connect to.
 
 ### Example 2
-```powershell
+```
 Set-JCOrganization -JumpCloudOrgID 5b5o13o06tsand0c29a0t3s6
 ```
 

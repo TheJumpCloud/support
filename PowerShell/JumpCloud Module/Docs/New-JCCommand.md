@@ -23,7 +23,7 @@ Creates a new JumpCloud Mac, Linux, or Windows command
 ## EXAMPLES
 
 ### Example 1
-```powershell
+```
 PS C:\> New-JCCommand -commandType windows -name 'PowerShell version' -command '$PSVersionTable'
 ```
 

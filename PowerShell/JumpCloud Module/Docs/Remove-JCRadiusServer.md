@@ -22,14 +22,14 @@ Use this function to remove a radius servers from JumpCloud tenet.
 ## EXAMPLES
 
 ### Example 1
-```powershell
+```
 PS C:\> Remove-JCRadiusServer -Id:('5d6802c46eb05c5971151558')
 ```
 
 Remove a radius server by Id from a JumpCloud tenet.
 
 ### Example 2
-```powershell
+```
 PS C:\> Get-JCRadiusServer -Id:('5d6802c46eb05c5971151558') | Remove-JCRadiusServer
 ```
 
