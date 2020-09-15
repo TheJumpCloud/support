@@ -18,15 +18,15 @@ New-JCImportTemplate [<CommonParameters>]
 
 ## DESCRIPTION
 The New-JCImportTemplate command is a menu driven function that guides end users and creates a custom JumpCloud User Import .CSV file on their machine for populating with their users information for Importing into JumpCloud.
-If users wish to bind users to existing JumpCloud systems the function will also output a .csv file with containing all existing JumpCloud machines to the users $Home directory. The user will need this file to associate SystemIDs with new users.
+If users wish to bind users to existing JumpCloud systems the function will also output a .csv file with containing all existing JumpCloud machines to the users $Home directory.
+The user will need this file to associate SystemIDs with new users.
 
 ## EXAMPLES
 
 ### Video Tutorials
+```
 
-[Basic User Import](https://youtu.be/WSE5_uGYcIc)
-
-[Advanced User Import](https://youtu.be/L2hP-XtUJH8)
+```
 
 ### Example 1
 ```

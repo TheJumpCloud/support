@@ -19,10 +19,14 @@ Set-JCRadiusReplyAttribute [-GroupName] <String> [-VLAN <String>] [-NumberOfAttr
 ```
 
 ## DESCRIPTION
-Updates or adds Radius reply attributes to a JumpCloud user group. User authentication Radius requests will return with the Radius reply attributes configured on the JumpCloud user groups which associates the user to JumpCloud Radius.
-Any RADIUS reply attributes configured on a JumpCloud user group which associates a user to a RADIUS server will be returned in the Access-Accept message sent to the endpoint configured to authenticate with JumpCloud Radius. If a user is a member of more then one JumpCloud user group associated with a given RADIUS server all Reply attributes for the groups that associate the user to the RADIUS server will be returned in the Access-Accept message.
+Updates or adds Radius reply attributes to a JumpCloud user group.
+User authentication Radius requests will return with the Radius reply attributes configured on the JumpCloud user groups which associates the user to JumpCloud Radius.
+Any RADIUS reply attributes configured on a JumpCloud user group which associates a user to a RADIUS server will be returned in the Access-Accept message sent to the endpoint configured to authenticate with JumpCloud Radius.
+If a user is a member of more then one JumpCloud user group associated with a given RADIUS server all Reply attributes for the groups that associate the user to the RADIUS server will be returned in the Access-Accept message.
 If a user is a member of more then one JumpCloud user group associated with a given RADIUS server and these groups are configured with conflicting RADIUS reply attributes then the values of the attributes for the group that was created most recently will be returned in the Access-Accept message.
-RADIUS reply attribute conflicts are resolved based on the creation date of the user group where groups that are created more recently take precedent over older groups. Conflicts occur when groups are configured with the same RADIUS reply attributes and have conflicting attribute values. RADIUS reply attributes with the same attribute names but different tag values do not create conflicts.
+RADIUS reply attribute conflicts are resolved based on the creation date of the user group where groups that are created more recently take precedent over older groups.
+Conflicts occur when groups are configured with the same RADIUS reply attributes and have conflicting attribute values.
+RADIUS reply attributes with the same attribute names but different tag values do not create conflicts.
 
 ## EXAMPLES
 
@@ -35,28 +39,21 @@ By specifying the '-VLAN' parameter three radius attributes are updated on the J
 
 These attributes are:
 
-name                    value
-----                    -----
-Tunnel-Medium-Type      IEEE-802
-Tunnel-Type             VLAN
-Tunnel-Private-Group-Id 24
+name                    value ----                    ----- Tunnel-Medium-Type      IEEE-802 Tunnel-Type             VLAN Tunnel-Private-Group-Id 24
 
-The value specified for the '-VLAN' parameter is populated for the value of **Tunnel-Private-Group-Id**.
+The value specified for the '-VLAN' parameter is populated for the value of Tunnel-Private-Group-Id .
 
 ### Example 2
 ```
 Set-JCRadiusReplyAttribute -GroupName "BoulderOffice" -VLAN 24 -VLANTag 4
 ```
 
-By specifying the '-VLAN' parameter three radius attributes are update on the JumpCloud user group 'BoulderOffice'. The use of '-VLANTag' appends each VLAN attribute name with a colon and the tag number specified.
+By specifying the '-VLAN' parameter three radius attributes are update on the JumpCloud user group 'BoulderOffice'.
+The use of '-VLANTag' appends each VLAN attribute name with a colon and the tag number specified.
 
 These attributes are:
 
-name                    value
-----                    -----
-Tunnel-Medium-Type:4      IEEE-802
-Tunnel-Type:4             VLAN
-Tunnel-Private-Group-Id:4 24
+name                    value ----                    ----- Tunnel-Medium-Type:4      IEEE-802 Tunnel-Type:4             VLAN Tunnel-Private-Group-Id:4 24
 
 ### Example 3
 ```
@@ -67,14 +64,13 @@ Updates two Radius attributes to the JumpCloud user group 'BoulderOffice'.
 
 These attribute are:
 
-name               value
-----               -----
-Session-Timeout    200
-Termination-Action 2
+name               value ----               ----- Session-Timeout    200 Termination-Action 2
 
-The parameter '-NumberOfAttributes' is a dynamic parameter that generates two required parameters for each custom attribute specified. In this example these parameters are -Attribute1_name,-Attribute1_value, -Attribute2_name and -Attribute2_value.
+The parameter '-NumberOfAttributes' is a dynamic parameter that generates two required parameters for each custom attribute specified.
+In this example these parameters are -Attribute1_name,-Attribute1_value, -Attribute2_name and -Attribute2_value.
 
-If the Radius reply attribute being updated already exists on the target user group the value for this attribute is updated. If the Radius reply attribute does not exist the attribute is added.
+If the Radius reply attribute being updated already exists on the target user group the value for this attribute is updated.
+If the Radius reply attribute does not exist the attribute is added.
 
 ## PARAMETERS
 
@@ -192,9 +188,7 @@ Tunnel-Medium-Type      IEEE-802
 
 Tunnel-Type             VLAN
 
-Tunnel-Private-Group-Id **VALUE of -VLAN**
-
-The value specified for the '-VLAN' parameter is populated for the value of **Tunnel-Private-Group-Id**.
+Tunnel-Private-Group-Id VALUE of -VLAN The value specified for the '-VLAN' parameter is populated for the value of Tunnel-Private-Group-Id .
 
 ```yaml
 Type: System.String

@@ -49,7 +49,9 @@ New-JCUser -firstname <String> -lastname <String> -username <String> -email <Str
 ## DESCRIPTION
 The New-JCUser function creates a new JumpCloud user.
 Note a JumpCloud user must have a unique email address and username.
-If a JumpCloud user is created without a password specified then the user will be created in an 'inactive state' and an activation email will be sent to the email address tied to the new account with instructions to complete activation. If a password is set during user creation then no activation email is send and the user is created in an active status. User activation can be seen in the boolean: 'activated' property of a JumpCloud user.
+If a JumpCloud user is created without a password specified then the user will be created in an 'inactive state' and an activation email will be sent to the email address tied to the new account with instructions to complete activation.
+If a password is set during user creation then no activation email is send and the user is created in an active status.
+User activation can be seen in the boolean: 'activated' property of a JumpCloud user.
 
 ## EXAMPLES
 
@@ -58,23 +60,42 @@ If a JumpCloud user is created without a password specified then the user will b
 PS C:\> New-JCUser -firstname Clarence -lastname Clemons -username cclemons -email cclemons@theband.com
 ```
 
-This example creates the user with username cclemons. Because a password is not specified the user will be created in an inactive state and an activation email will be sent to 'cclemons@theband.com'.
+This example creates the user with username cclemons.
+Because a password is not specified the user will be created in an inactive state and an activation email will be sent to 'cclemons@theband.com'.
 
 ### Example 2
 ```
 PS C:\> New-JCUser -firstname Clarence -lastname Clemons -username cclemons -email cclemons@theband.com -password Password1!
 ```
 
-This example creates the user with username cclemons. Because a password is specified the user will be created in an active state and no activation email will be sent.
+This example creates the user with username cclemons.
+Because a password is specified the user will be created in an active state and no activation email will be sent.
 
 ### Example 3
 ```
 PS C:\> New-JCUser -firstname Clarence -lastname Clemons -username cclemons -email cclemons@theband.com -password Password1! -NumberOfCustomAttributes 2 -Attribute1_name 'Band' -Attribute1_value 'E Street' -Attribute2_name 'Instrument' -Attribute2_value 'Sax'
 ```
 
-This example creates the user with username cclemons and two Custom Attributes. Because a password is specified the user will be created in an active state and no activation email will be sent. When adding Custom Attributes the number of Custom Attributes being added must be declared by the -NumberOfCustomAttributes Parameter.
+This example creates the user with username cclemons and two Custom Attributes.
+Because a password is specified the user will be created in an active state and no activation email will be sent.
+When adding Custom Attributes the number of Custom Attributes being added must be declared by the -NumberOfCustomAttributes Parameter.
 
 ## PARAMETERS
+
+### -allow_public_key
+A boolean $true/$false value for allowing pubic key authentication
+
+```yaml
+Type: System.Boolean
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
 
 ### -Attribute1_name
 Enter an attribute name
@@ -130,38 +151,6 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -NumberOfCustomAttributes
-If you intend to create users with Custom Attributes you must declare how many Custom Attributes you intend to add.
-Based on the NumberOfCustomAttributes value two Dynamic Parameters will be created for each Custom Attribute: Attribute_name and Attribute_value with an associated number.
-See an example for adding a user with two Custom Attributes in EXAMPLE 3
-
-```yaml
-Type: System.Int32
-Parameter Sets: Attributes
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -allow_public_key
-A boolean $true/$false value for allowing pubic key authentication
-
-```yaml
-Type: System.Boolean
-Parameter Sets: (All)
-Aliases:
-
-Required: False
 Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
@@ -564,6 +553,23 @@ Required: False
 Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -NumberOfCustomAttributes
+If you intend to create users with Custom Attributes you must declare how many Custom Attributes you intend to add.
+Based on the NumberOfCustomAttributes value two Dynamic Parameters will be created for each Custom Attribute: Attribute_name and Attribute_value with an associated number.
+See an example for adding a user with two Custom Attributes in EXAMPLE 3
+
+```yaml
+Type: System.Int32
+Parameter Sets: Attributes
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
 Accept wildcard characters: False
 ```
 

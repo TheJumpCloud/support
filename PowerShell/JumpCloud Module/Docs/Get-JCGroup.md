@@ -23,7 +23,8 @@ Get-JCGroup [[-Type] <String>] [-Name <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-The Get-JCGroup function by default will return all JumpCloud System and User groups. By using the -Type Parameter you can choose to return either System or User groups.
+The Get-JCGroup function by default will return all JumpCloud System and User groups.
+By using the -Type Parameter you can choose to return either System or User groups.
 
 ## EXAMPLES
 

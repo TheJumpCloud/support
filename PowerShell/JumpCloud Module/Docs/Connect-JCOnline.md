@@ -18,7 +18,9 @@ Connect-JCOnline [-force] [-JumpCloudApiKey] <String> [[-JumpCloudOrgId] <String
 ```
 
 ## DESCRIPTION
-By calling the Connect-JCOnline function you are setting the variable $JCAPIKEY within the global scope. By setting this variable in the global scope the variable $JCAPIKEY can be reused by other functions in the JumpCloud module. If you wish to change the API key to connect to another JumpCloud org simply call the Connect-JCOnline function and enter the alternative API key.
+By calling the Connect-JCOnline function you are setting the variable $JCAPIKEY within the global scope.
+By setting this variable in the global scope the variable $JCAPIKEY can be reused by other functions in the JumpCloud module.
+If you wish to change the API key to connect to another JumpCloud org simply call the Connect-JCOnline function and enter the alternative API key.
 Introduced in JumpCloud module version 1.2 the Connect-JCOnline function will also check to ensure you are running the latest version of the JumpCloud PowerShell module and offer to update the module if there is an update available.
 To prevent the module update check the '-force' parameter can be used.
 
@@ -34,7 +36,8 @@ Connect-JCOnline lu8792c9d4y2398is1tb6h0b83ebf0e92s97t382
 Connect-JCOnline lu8792c9d4y2398is1tb6h0b83ebf0e92s97t382 -force
 ```
 
-Using the "-Force" parameter the module update check is skipped. The '-Force' parameter should be used when using the JumpCloud module in scripts or other automation environments.
+Using the "-Force" parameter the module update check is skipped.
+The '-Force' parameter should be used when using the JumpCloud module in scripts or other automation environments.
 
 ### Example 3
 ```
@@ -43,9 +46,26 @@ Connect-JCOnline -JumpCloudAPIKey lu8792c9d4y2398is1tb6h0b83ebf0e92s97t382 -Jump
 
 Providing the JumpCloudAPIKey key and the intended JumpCloudOrg ID to connect to multi tenant admins can skip the JumpCloudOrgID connection screen and directly connect to an Org.
 
-Using the "-Force" parameter the module update check is skipped. The '-Force' parameter should be used when using the JumpCloud module in scripts or other automation environments.
+Using the "-Force" parameter the module update check is skipped.
+The '-Force' parameter should be used when using the JumpCloud module in scripts or other automation environments.
 
 ## PARAMETERS
+
+### -force
+Using the "-Force" parameter the module update check is skipped.
+The '-Force' parameter should be used when using the JumpCloud module in scripts or other automation environments.
+
+```yaml
+Type: System.Management.Automation.SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
 
 ### -JCEnvironment
 Specific to JumpCloud development team to connect to staging dev environment.
@@ -92,22 +112,6 @@ Required: False
 Position: 2
 Default value: None
 Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -force
-Using the "-Force" parameter the module update check is skipped.
-The '-Force' parameter should be used when using the JumpCloud module in scripts or other automation environments.
-
-```yaml
-Type: System.Management.Automation.SwitchParameter
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
 Accept wildcard characters: False
 ```
 

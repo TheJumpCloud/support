@@ -25,7 +25,8 @@ Invoke-JCCommand [-trigger] <String> [-NumberOfVariables <Int32>] -Variable1_nam
 ```
 
 ## DESCRIPTION
-In order to use the Invoke-JCCommand the target JumpCloud command must have the Launch Event set to Event type: 'Run on Trigger (webhook)' within the JumpCloud admin console. When a JumpCloud command is set with this value the 'launchType' which is queryable using the command Get-JCCommand will be set to 'trigger'.
+In order to use the Invoke-JCCommand the target JumpCloud command must have the Launch Event set to Event type: 'Run on Trigger (webhook)' within the JumpCloud admin console.
+When a JumpCloud command is set with this value the 'launchType' which is queryable using the command Get-JCCommand will be set to 'trigger'.
 
 ## EXAMPLES
 
@@ -55,7 +56,8 @@ Runs all JumpCloud commands that can be run by the Invoke-JCCommand by passing t
 Get-JCCommand | Where-Object trigger -Like '*NewMacInstall*' | Invoke-JCCommand
 ```
 
-Runs all JumpCloud commands with a trigger that matches the expression -like '*NewMacInstall*'. Use this Example to run multiple commands that have a common trigger naming convention.
+Runs all JumpCloud commands with a trigger that matches the expression -like ' NewMacInstall '.
+Use this Example to run multiple commands that have a common trigger naming convention.
 
 ## PARAMETERS
 
@@ -74,6 +76,26 @@ Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -trigger
+When creating a JumpCloud command that can be run via the Invoke-JCCommand function the command must be configured for 'Launch Event - Event type: Run on Trigger (webhook)' During command configuration a 'Trigger Name' is required.
+The value of this trigger name is what must be populated when using the Invoke-JCCommand function.
+To find all JumpCloud Command triggers run: PS C:\\\> Get-JCCommand | Where-Object launchType -EQ 'trigger'  | Select-Object name, trigger
+
+You can leverage the pipeline and Parameter Binding to populate the -trigger Parameter.
+This is shown in EXAMPLES 2 and 3.
+
+```yaml
+Type: System.String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: 0
+Default value: None
+Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
@@ -132,26 +154,6 @@ Aliases:
 
 Required: True
 Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -trigger
-When creating a JumpCloud command that can be run via the Invoke-JCCommand function the command must be configured for 'Launch Event - Event type: Run on Trigger (webhook)' During command configuration a 'Trigger Name' is required.
-The value of this trigger name is what must be populated when using the Invoke-JCCommand function.
-To find all JumpCloud Command triggers run: PS C:\\\> Get-JCCommand | Where-Object launchType -EQ 'trigger'  | Select-Object name, trigger
-
-You can leverage the pipeline and Parameter Binding to populate the -trigger Parameter.
-This is shown in EXAMPLES 2 and 3.
-
-```yaml
-Type: System.String
-Parameter Sets: (All)
-Aliases:
-
-Required: True
-Position: 0
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False

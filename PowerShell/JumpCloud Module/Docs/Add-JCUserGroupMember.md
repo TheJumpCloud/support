@@ -23,7 +23,8 @@ Add-JCUserGroupMember [[-GroupName] <String>] [-ByID] [-GroupID <String>] -UserI
 ```
 
 ## DESCRIPTION
-The Add-JCUserGroupMember function is used to add a JumpCloud user to a JumpCloud User Group. The new user can be added by Username or by UserID.
+The Add-JCUserGroupMember function is used to add a JumpCloud user to a JumpCloud User Group.
+The new user can be added by Username or by UserID.
 
 ## EXAMPLES
 
@@ -53,7 +54,9 @@ Adds all JumpCloud users created within the last 7 days to the User Group 'New H
 Get-JCUser | Select-Object username, @{name='Attribute Value'; expression={$_.attributes.value}} | Where-Object 'Attribute Value' -Like *Sales* | Add-JCUserGroupMember -GroupName Sales
 ```
 
-Adds all JumpCloud users with a custom attribute value which contains 'Sales' to the JumpCloud User Group 'Sales'. Note that to access the value of a nested property you must use Select-Object to access the nested property. In this example a calculated property is also used.
+Adds all JumpCloud users with a custom attribute value which contains 'Sales' to the JumpCloud User Group 'Sales'.
+Note that to access the value of a nested property you must use Select-Object to access the nested property.
+In this example a calculated property is also used.
 
 ## PARAMETERS
 
@@ -68,7 +71,7 @@ Aliases:
 
 Required: False
 Position: Named
-Default value: None
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

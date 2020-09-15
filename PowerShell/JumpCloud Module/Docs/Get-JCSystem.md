@@ -29,7 +29,8 @@ Get-JCSystem -SystemID <String> [-SystemFDEKey] -dateFilter <String> -date <Date
 ```
 
 ## DESCRIPTION
-The Get-JCSystem function returns all information describing a JumpCloud system. By default this will return all Systems.
+The Get-JCSystem function returns all information describing a JumpCloud system.
+By default this will return all Systems.
 
 ## EXAMPLES
 
@@ -59,7 +60,8 @@ Returns all active JumpCloud Systems and the information describing these system
 Get-JCSystem -agentVersion '0.9.6*' -os '*Mac*'
 ```
 
-Returns all JumpCloud systems where the agentVersion is '0.9.6.*' and the operating system is like '*Mac*'
+Returns all JumpCloud systems where the agentVersion is '0.9.6.
+' and the operating system is like ' Mac*'
 
 ### Example 5
 ```
@@ -73,39 +75,10 @@ Returns all JumpCloud systems that were created after 01/01/2018 using the param
 Get-JCSystem -returnProperties remoteIP, active
 ```
 
-Returns all JumpCloud systems and the properties remoteIP and active. The default properties that return are lastContact and _id.
+Returns all JumpCloud systems and the properties remoteIP and active.
+The default properties that return are lastContact and _id.
 
 ## PARAMETERS
-
-### -SystemFDEKey
-A switch parameter to reveal the SystemFDEKey
-
-```yaml
-Type: System.Management.Automation.SwitchParameter
-Parameter Sets: ByID
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -SystemID
-The _id or id of the System which you want to query.
-
-```yaml
-Type: System.String
-Parameter Sets: ByID
-Aliases: _id, id
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
 
 ### -active
 Filter for systems that are online or offline.
@@ -379,6 +352,36 @@ Parameter Sets: SearchFilter
 Aliases:
 
 Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -SystemFDEKey
+A switch parameter to reveal the SystemFDEKey
+
+```yaml
+Type: System.Management.Automation.SwitchParameter
+Parameter Sets: ByID
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -SystemID
+The _id or id of the System which you want to query.
+
+```yaml
+Type: System.String
+Parameter Sets: ByID
+Aliases: _id, id
+
+Required: True
 Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)

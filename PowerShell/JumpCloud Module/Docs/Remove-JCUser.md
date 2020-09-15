@@ -23,7 +23,8 @@ Remove-JCUser -UserID <String> [-ByID] [-force] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-The Remove-JCUser function will remove a JumpCloud user from the JumpCloud organization. This will remove the deleted users access to any JumpCloud bound resources.
+The Remove-JCUser function will remove a JumpCloud user from the JumpCloud organization.
+This will remove the deleted users access to any JumpCloud bound resources.
 
 ## EXAMPLES
 
@@ -32,14 +33,16 @@ The Remove-JCUser function will remove a JumpCloud user from the JumpCloud organ
 PS C:\> Remove-JCUser cclemons
 ```
 
-Removes the JumpCloud User with Username 'cclemons'. A warning message will be presented to confirm this operation.
+Removes the JumpCloud User with Username 'cclemons'.
+A warning message will be presented to confirm this operation.
 
 ### Example 2
 ```
 PS C:\> Remove-JCUser cclemons -Force
 ```
 
-Removes the JumpCloud User with Username 'cclemons' using the -Force Parameter. A warning message will not be presented to confirm this operation.
+Removes the JumpCloud User with Username 'cclemons' using the -Force Parameter.
+A warning message will not be presented to confirm this operation.
 
 ## PARAMETERS
 
@@ -54,7 +57,22 @@ Aliases:
 
 Required: False
 Position: Named
-Default value: None
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -force
+A SwitchParameter which suppresses the warning message when removing a JumpCloud User.
+
+```yaml
+Type: System.Management.Automation.SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -95,21 +113,6 @@ Required: True
 Position: 0
 Default value: None
 Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -force
-A SwitchParameter which suppresses the warning message when removing a JumpCloud User.
-
-```yaml
-Type: System.Management.Automation.SwitchParameter
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
 Accept wildcard characters: False
 ```
 

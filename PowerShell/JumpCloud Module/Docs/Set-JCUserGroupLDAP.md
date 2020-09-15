@@ -23,7 +23,8 @@ Set-JCUserGroupLDAP [-GroupID] <String> -LDAPEnabled <Boolean> [<CommonParameter
 ```
 
 ## DESCRIPTION
-By default a JumpCloud user group and it's members are not added to the JumpCloud LDAP directory. To add a JumpCloud user group and its members to JumpCloud LDAP from within the admin console this can be toggled via the checkmark under the 'directories tab' for each user group.
+By default a JumpCloud user group and it's members are not added to the JumpCloud LDAP directory.
+To add a JumpCloud user group and its members to JumpCloud LDAP from within the admin console this can be toggled via the checkmark under the 'directories tab' for each user group.
 Alternatively this can be done using the 'Set-JCUserGroupLDAP' command and by leveraging this command with the 'Get-JCGroup -type User' command modifying JumpCloud User Group LDAP membership can be done in bulk.
 
 ## EXAMPLES
@@ -33,14 +34,14 @@ Alternatively this can be done using the 'Set-JCUserGroupLDAP' command and by le
 Set-JCUserGroupLDAP -GroupName Developers -LDAPEnabled $true
 ```
 
-Adds the JumpCloud group 'Developers' (**Group names are case sensitive**) and the members of this group to JumpCloud LDAP directory.
+Adds the JumpCloud group 'Developers' ( Group names are case sensitive ) and the members of this group to JumpCloud LDAP directory.
 
 ### Example 2
 ```
 Set-JCUserGroupLDAP -GroupName Developers -LDAPEnabled $False
 ```
 
-Removes the JumpCloud group 'Developers' (**Group names are case sensitive**) and the members of this group from the JumpCloud LDAP directory.
+Removes the JumpCloud group 'Developers' ( Group names are case sensitive ) and the members of this group from the JumpCloud LDAP directory.
 
 ### Example 3
 ```

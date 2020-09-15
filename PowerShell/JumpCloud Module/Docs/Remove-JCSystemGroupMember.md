@@ -24,7 +24,8 @@ Remove-JCSystemGroupMember [[-GroupName] <String>] -SystemID <String> [-ByID] [-
 ```
 
 ## DESCRIPTION
-The Remove-JCSystemGroupMember function is used to remove a JumpCloud System from a JumpCloud System Group. The  System Group member must be removed using the SystemID parameter.
+The Remove-JCSystemGroupMember function is used to remove a JumpCloud System from a JumpCloud System Group.
+The  System Group member must be removed using the SystemID parameter.
 
 ## EXAMPLES
 
@@ -62,7 +63,7 @@ Aliases:
 
 Required: False
 Position: Named
-Default value: None
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

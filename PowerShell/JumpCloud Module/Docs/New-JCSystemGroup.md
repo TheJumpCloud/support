@@ -17,7 +17,8 @@ New-JCSystemGroup [-GroupName] <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Creates a JumpCloud System Group. Note that a JumpCloud System Group must have a unique name.
+Creates a JumpCloud System Group.
+Note that a JumpCloud System Group must have a unique name.
 
 ## EXAMPLES
 

@@ -17,7 +17,9 @@ Set-JCOrganization [[-JumpCloudApiKey] <String>] [[-JumpCloudOrgId] <String>] [<
 ```
 
 ## DESCRIPTION
-The Set-JCOrganization command can only be run by JumpCloud admins with multi tenant (MT) associations. By default the Set-JCOrganization run without any parameters with prompt JumpCloud MT admins with a selection list of their available Organizations. Admins can use the '-JumpCloudOrgID' parameter to skip this prompt and set their Organization programmatically.
+The Set-JCOrganization command can only be run by JumpCloud admins with multi tenant (MT) associations.
+By default the Set-JCOrganization run without any parameters with prompt JumpCloud MT admins with a selection list of their available Organizations.
+Admins can use the '-JumpCloudOrgID' parameter to skip this prompt and set their Organization programmatically.
 
 ## EXAMPLES
 

@@ -1,7 +1,7 @@
 ---
 external help file: JumpCloud-help.xml
 Module Name: JumpCloud
-online version: https://github.com/TheJumpCloud/support/wiki/Get-JCEventCount
+online version: https://github.com/TheJumpCloud/jcapi-powershell/tree/master/SDKs/PowerShell/JumpCloud.SDK.DirectoryInsights/docs/exports/Get-JcSdkEventCount.md
 schema: 2.0.0
 ---
 
@@ -59,34 +59,19 @@ Get only group_create event counts the last thirty days
 
 ## PARAMETERS
 
-### -Service
-service name to query.
-Known services: systems,radius,sso,directory,ldap,all
+### -Body
+EventQuery is the users' command to search our auth logs
+To construct, see NOTES section for BODY properties and create a hash table.
 
 ```yaml
-Type: System.String[]
-Parameter Sets: GetExpanded
+Type: JumpCloud.SDK.DirectoryInsights.Models.IEventQuery
+Parameter Sets: Get
 Aliases:
 
 Required: True
 Position: Named
 Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -StartTime
-query start time, UTC in RFC3339 format
-
-```yaml
-Type: System.DateTime
-Parameter Sets: GetExpanded
-Aliases:
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
+Accept pipeline input: True (ByValue)
 Accept wildcard characters: False
 ```
 
@@ -136,8 +121,7 @@ Accept wildcard characters: False
 ```
 
 ### -SearchTermAnd
-list of event terms.
-If all terms match the event will be returned by the service.
+TermConjunction
 
 ```yaml
 Type: System.Collections.Hashtable
@@ -152,8 +136,7 @@ Accept wildcard characters: False
 ```
 
 ### -SearchTermOr
-list of event terms.
-If any term matches, the event will be returned by the service.
+TermConjunction
 
 ```yaml
 Type: System.Collections.Hashtable
@@ -161,6 +144,22 @@ Parameter Sets: GetExpanded
 Aliases:
 
 Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Service
+service name to query.
+Known services: systems,radius,sso,directory,ldap,all
+
+```yaml
+Type: System.String[]
+Parameter Sets: GetExpanded
+Aliases:
+
+Required: True
 Position: Named
 Default value: None
 Accept pipeline input: False
@@ -182,32 +181,15 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Body
-EventQuery is the users' command to search our auth logs
-To construct, see NOTES section for BODY properties and create a hash table.
+### -StartTime
+query start time, UTC in RFC3339 format
 
 ```yaml
-Type: JumpCloud.SDK.DirectoryInsights.Models.IEventQuery
-Parameter Sets: Get
+Type: System.DateTime
+Parameter Sets: GetExpanded
 Aliases:
 
 Required: True
-Position: Named
-Default value: None
-Accept pipeline input: True (ByValue)
-Accept wildcard characters: False
-```
-
-### -WhatIf
-Shows what would happen if the cmdlet runs.
-The cmdlet is not run.
-
-```yaml
-Type: System.Management.Automation.SwitchParameter
-Parameter Sets: (All)
-Aliases: wi
-
-Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False
@@ -221,6 +203,22 @@ Prompts you for confirmation before running the cmdlet.
 Type: System.Management.Automation.SwitchParameter
 Parameter Sets: (All)
 Aliases: cf
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -WhatIf
+Shows what would happen if the cmdlet runs.
+The cmdlet is not run.
+
+```yaml
+Type: System.Management.Automation.SwitchParameter
+Parameter Sets: (All)
+Aliases: wi
 
 Required: False
 Position: Named
@@ -253,15 +251,12 @@ Known services: systems,radius,sso,directory,ldap,all
   \[Fields \<String\[\]\>\]: optional list of fields to return from query
   \[Limit \<Int64?\>\]: Max number of rows to return
   \[SearchAfter \<String\[\]\>\]: Specific query to search after, see x-* response headers for next values
-  \[SearchTermAnd \<ISearchTermAnd\>\]: list of event terms.
-If all terms match the event will be returned by the service.
+  \[SearchTermAnd \<ITermConjunction\>\]: TermConjunction
     \[(Any) \<Object\>\]: This indicates any property can be added to this object.
-  \[SearchTermOr \<ISearchTermOr\>\]: list of event terms.
-If any term matches, the event will be returned by the service.
-    \[(Any) \<Object\>\]: This indicates any property can be added to this object.
+  \[SearchTermOr \<ITermConjunction\>\]: TermConjunction
   \[Sort \<String\>\]: ASC or DESC order for timestamp
 
 ## RELATED LINKS
 
-[https://github.com/TheJumpCloud/jcapi-powershell/tree/master/SDKs/PowerShell/jumpcloud.sdk.directoryinsights/get-jcsdkeventcount](https://github.com/TheJumpCloud/jcapi-powershell/tree/master/SDKs/PowerShell/jumpcloud.sdk.directoryinsights/get-jcsdkeventcount)
+[https://github.com/TheJumpCloud/jcapi-powershell/tree/master/SDKs/PowerShell/JumpCloud.SDK.DirectoryInsights/docs/exports/Get-JcSdkEventCount.md](https://github.com/TheJumpCloud/jcapi-powershell/tree/master/SDKs/PowerShell/JumpCloud.SDK.DirectoryInsights/docs/exports/Get-JcSdkEventCount.md)
 

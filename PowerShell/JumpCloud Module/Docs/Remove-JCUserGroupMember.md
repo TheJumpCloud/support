@@ -24,7 +24,8 @@ Remove-JCUserGroupMember [[-GroupName] <String>] [-ByID] [-GroupID <String>] -Us
 ```
 
 ## DESCRIPTION
-The Remove-JCUserGroupMember function is used to remove a JumpCloud User from a JumpCloud User Group. The user can be removed by Username or by UserID.
+The Remove-JCUserGroupMember function is used to remove a JumpCloud User from a JumpCloud User Group.
+The user can be removed by Username or by UserID.
 
 ## EXAMPLES
 
@@ -54,7 +55,9 @@ Removes all JumpCloud users not created within the last 7 days from the User Gro
 Get-JCUser | Select-Object username, @{name='Attribute Value'; expression={$_.attributes.value}} | Where-Object 'Attribute Value' -Like *Marketing* | Remove-JCUserGroupMember -GroupName Sales
 ```
 
-Removes all JumpCloud users with a custom attribute value which contains 'Marketing' from the JumpCloud User Group 'Sales'. Note that to access the value of a nested property you must use Select-Object to access the nested property. In this example a calculated property is also used.
+Removes all JumpCloud users with a custom attribute value which contains 'Marketing' from the JumpCloud User Group 'Sales'.
+Note that to access the value of a nested property you must use Select-Object to access the nested property.
+In this example a calculated property is also used.
 
 ## PARAMETERS
 
@@ -69,7 +72,7 @@ Aliases:
 
 Required: False
 Position: Named
-Default value: None
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

@@ -23,9 +23,12 @@ Add-JCSystemUser -UserID <String> -SystemID <String> [-Administrator <Boolean>] 
 ```
 
 ## DESCRIPTION
-The Add-JCSystemUser function allows you to bind a JumpCloud user to a JumpCloud system and set the user pemissions. When binding a user to a system the JumpCloud agent can complete one of two actions on the target system.
-1. If there is an existing local user account on the target system with a Username that matches identically with the Username of the newly bound user then the JumpCloud agent will take over and manage the password of the existing local account.
-1. If there is not an existing local user account on the target system with a Username that matches identically with the Username of the newly bound user then the JumpCloud agent will create a new account on the system with the Username of the newly bound user.
+The Add-JCSystemUser function allows you to bind a JumpCloud user to a JumpCloud system and set the user pemissions.
+When binding a user to a system the JumpCloud agent can complete one of two actions on the target system.
+1.
+If there is an existing local user account on the target system with a Username that matches identically with the Username of the newly bound user then the JumpCloud agent will take over and manage the password of the existing local account.
+1.
+If there is not an existing local user account on the target system with a Username that matches identically with the Username of the newly bound user then the JumpCloud agent will create a new account on the system with the Username of the newly bound user.
 
 ## EXAMPLES
 
@@ -41,7 +44,8 @@ Adds the JumpCloud user with the Username 'cclemons' to the System with a System
 PS C:\> Get-JCSystemUser -SystemID 5a0795nnie7127f4ev2erb154a | Add-JCSystemUser -SystemID 59f2c305383cba7e369df7c2
 ```
 
-Adds all JumpCloud users associated with the JumpCloud system with a SystemID of '5a0795aa7127f4aa2ddb154a' and adds them to the JumpCloud system with a SystemID of '59f2c305383cba7e369df7c2' using Parameter Binding and the pipeline. Because '-Administrator' was not specified the users will be added as standard users
+Adds all JumpCloud users associated with the JumpCloud system with a SystemID of '5a0795aa7127f4aa2ddb154a' and adds them to the JumpCloud system with a SystemID of '59f2c305383cba7e369df7c2' using Parameter Binding and the pipeline.
+Because '-Administrator' was not specified the users will be added as standard users
 
 ### Example 3
 ```

@@ -33,7 +33,8 @@ Get-JCUser -userid <String> -dateFilter <String> -date <DateTime> [<CommonParame
 ```
 
 ## DESCRIPTION
-The Get-JCUser function returns all information describing a JumpCloud user. By default it will return all Users.
+The Get-JCUser function returns all information describing a JumpCloud user.
+By default it will return all Users.
 
 ## EXAMPLES
 
@@ -63,7 +64,8 @@ Returns all JumpCloud users that usernames end with clemons using the wildcard c
 Get-JCUser -filterDateProperty created -dateFilter after -date 01/01/2018
 ```
 
-Returns all JumpCloud users that were created after '01/01/2018'. The parameter '-filterDateProperty' takes both 'created' and 'password_expiration_date' as input and creates two dynamic parameters '-dateFilter' which takes "before" or "after" as input and "-date" which takes a date value as input.
+Returns all JumpCloud users that were created after '01/01/2018'.
+The parameter '-filterDateProperty' takes both 'created' and 'password_expiration_date' as input and creates two dynamic parameters '-dateFilter' which takes "before" or "after" as input and "-date" which takes a date value as input.
 
 ### Example 5
 ```

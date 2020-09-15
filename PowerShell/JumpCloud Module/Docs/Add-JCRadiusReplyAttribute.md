@@ -20,9 +20,12 @@ Add-JCRadiusReplyAttribute [-GroupName] <String> [-VLAN <String>] [-NumberOfAttr
 
 ## DESCRIPTION
 Adds Radius reply attributes to a JumpCloud user group.
-Any RADIUS reply attributes configured on a JumpCloud user group which associates a user to a RADIUS server will be returned in the Access-Accept message sent to the endpoint configured to authenticate with JumpCloud Radius. If a user is a member of more then one JumpCloud user group associated with a given RADIUS server all Reply attributes for the groups that associate the user to the RADIUS server will be returned in the Access-Accept message.
+Any RADIUS reply attributes configured on a JumpCloud user group which associates a user to a RADIUS server will be returned in the Access-Accept message sent to the endpoint configured to authenticate with JumpCloud Radius.
+If a user is a member of more then one JumpCloud user group associated with a given RADIUS server all Reply attributes for the groups that associate the user to the RADIUS server will be returned in the Access-Accept message.
 If a user is a member of more then one JumpCloud user group associated with a given RADIUS server and these groups are configured with conflicting RADIUS reply attributes then the values of the attributes for the group that was created most recently will be returned in the Access-Accept message.
-RADIUS reply attribute conflicts are resolved based on the creation date of the user group where groups that are created more recently take precedent over older groups. Conflicts occur when groups are configured with the same RADIUS reply attributes and have conflicting attribute values. RADIUS reply attributes with the same attribute names but different tag values do not create conflicts.
+RADIUS reply attribute conflicts are resolved based on the creation date of the user group where groups that are created more recently take precedent over older groups.
+Conflicts occur when groups are configured with the same RADIUS reply attributes and have conflicting attribute values.
+RADIUS reply attributes with the same attribute names but different tag values do not create conflicts.
 
 ## EXAMPLES
 
@@ -35,28 +38,21 @@ By specifying the '-VLAN' parameter three radius attributes are added to the Jum
 
 These attributes are:
 
-name                    value
-----                    -----
-Tunnel-Medium-Type      IEEE-802
-Tunnel-Type             VLAN
-Tunnel-Private-Group-Id 24
+name                    value ----                    ----- Tunnel-Medium-Type      IEEE-802 Tunnel-Type             VLAN Tunnel-Private-Group-Id 24
 
-The value specified for the '-VLAN' parameter is populated for the value of **Tunnel-Private-Group-Id**.
+The value specified for the '-VLAN' parameter is populated for the value of Tunnel-Private-Group-Id .
 
 ### Example 2
 ```
 Add-JCRadiusReplyAttribute -GroupName "BoulderOffice" -VLAN 24 -VLANTag 3
 ```
 
-By specifying the '-VLAN' parameter three radius attributes are added to the JumpCloud user group 'BoulderOffice'. The use of '-VLANTag' appends each VLAN attribute name with a colon and the tag number specified.
+By specifying the '-VLAN' parameter three radius attributes are added to the JumpCloud user group 'BoulderOffice'.
+The use of '-VLANTag' appends each VLAN attribute name with a colon and the tag number specified.
 
 These attributes are:
 
-name                    value
-----                    -----
-Tunnel-Medium-Type:3      IEEE-802
-Tunnel-Type:3             VLAN
-Tunnel-Private-Group-Id:3 24
+name                    value ----                    ----- Tunnel-Medium-Type:3      IEEE-802 Tunnel-Type:3             VLAN Tunnel-Private-Group-Id:3 24
 
 ### Example 3
 ```
@@ -67,12 +63,10 @@ Adds two Radius attributes to the JumpCloud user group 'BoulderOffice'.
 
 These attribute are:
 
-name               value
-----               -----
-Session-Timeout    100
-Termination-Action 1
+name               value ----               ----- Session-Timeout    100 Termination-Action 1
 
-The parameter '-NumberOfAttributes' is a dynamic parameter that generates two required parameters for each custom attribute specified. In this example these parameters are -Attribute1_name,-Attribute1_value, -Attribute2_name and -Attribute2_value.
+The parameter '-NumberOfAttributes' is a dynamic parameter that generates two required parameters for each custom attribute specified.
+In this example these parameters are -Attribute1_name,-Attribute1_value, -Attribute2_name and -Attribute2_value.
 
 ### Example 4
 ```
@@ -83,15 +77,11 @@ Adds five Radius reply attributes to the JumpCloud User group 'BoulderUsers'
 
 These attributes are:
 
-name                    value
-----                    -----
-Tunnel-Medium-Type      IEEE-802
-Termination-Action      1
-Tunnel-Type             VLAN
-Session-Timeout         100
-Tunnel-Private-Group-Id 24
+name                    value ----                    ----- Tunnel-Medium-Type      IEEE-802 Termination-Action      1 Tunnel-Type             VLAN Session-Timeout         100 Tunnel-Private-Group-Id 24
 
-By specifying the '-VLAN' parameter three radius attributes are added to the JumpCloud user group 'BoulderOffice'. The value specified for the '-VLAN' parameter is populated for the value of **Tunnel-Private-Group-Id**.The parameter '-NumberOfAttributes' is a dynamic parameter that generates two required parameters for each custom attribute specified. In this example these parameters are -Attribute1_name,-Attribute1_value, -Attribute2_name and -Attribute2_value.
+By specifying the '-VLAN' parameter three radius attributes are added to the JumpCloud user group 'BoulderOffice'.
+The value specified for the '-VLAN' parameter is populated for the value of Tunnel-Private-Group-Id .The parameter '-NumberOfAttributes' is a dynamic parameter that generates two required parameters for each custom attribute specified.
+In this example these parameters are -Attribute1_name,-Attribute1_value, -Attribute2_name and -Attribute2_value.
 
 ## PARAMETERS
 
@@ -203,9 +193,7 @@ Tunnel-Medium-Type      IEEE-802
 
 Tunnel-Type             VLAN
 
-Tunnel-Private-Group-Id **VALUE of -VLAN**
-
-The value specified for the '-VLAN' parameter is populated for the value of **Tunnel-Private-Group-Id**.
+Tunnel-Private-Group-Id VALUE of -VLAN The value specified for the '-VLAN' parameter is populated for the value of Tunnel-Private-Group-Id .
 
 ```yaml
 Type: System.String

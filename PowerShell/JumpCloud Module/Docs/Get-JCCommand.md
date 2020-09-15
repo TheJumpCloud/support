@@ -23,7 +23,8 @@ Get-JCCommand [-CommandID] <String[]> [-ByID] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-The Get-JCCommand function returns all information describing a JumpCloud command. To find the contents and payload of a specific command the -ByID Parameter must be used as this information is only accessible when using this Parameter.
+The Get-JCCommand function returns all information describing a JumpCloud command.
+To find the contents and payload of a specific command the -ByID Parameter must be used as this information is only accessible when using this Parameter.
 
 ## EXAMPLES
 
@@ -39,7 +40,8 @@ Returns all JumpCloud Commands populated within the Commands section of the Jump
 PS C:\> Get-JCCommand -CommandID 5j09o6f23dan6f4n035601d5
 ```
 
-Returns a single JumpCloud command with CommandID '5j09o6f23dan6f4n035601d5'. Note that the contents of the command will be present in the output from this command.
+Returns a single JumpCloud command with CommandID '5j09o6f23dan6f4n035601d5'.
+Note that the contents of the command will be present in the output from this command.
 
 ### Example 3
 ```
@@ -48,7 +50,8 @@ PS C:\> Get-JCCommand | Get-JCCommand -ByID
 
 Returns all information describing all JumpCloud commands by passing the -CommandID Parameter to the -ByID Parameter using the pipeline and Parameter Binding.
 
-Note that when running this command the time for the output to display will be directly proportionate to how many JumpCloud commands you have. The command 'Get-JCCommand -ByID' runs once for every JumpCloud command within your tenant.
+Note that when running this command the time for the output to display will be directly proportionate to how many JumpCloud commands you have.
+The command 'Get-JCCommand -ByID' runs once for every JumpCloud command within your tenant.
 
 ### Example 4
 ```
@@ -57,7 +60,8 @@ PS C:\> Get-JCCommand | Where-Object launchType -EQ 'trigger' | Get-JCCommand -B
 
 Returns all information describing all JumpCloud commands with a launchType of 'trigger' by passing the -CommandID Parameter to the -ByID Parameter using the pipeline and Parameter Binding.
 
-Note that when running this command the time for the output to display will be directly proportionate to how many JumpCloud commands you have with a launchType of 'trigger'. The command 'Get-JCCommand -ByID' runs once for every JumpCloud command within your tenant with a launchType of 'trigger'.
+Note that when running this command the time for the output to display will be directly proportionate to how many JumpCloud commands you have with a launchType of 'trigger'.
+The command 'Get-JCCommand -ByID' runs once for every JumpCloud command within your tenant with a launchType of 'trigger'.
 
 ## PARAMETERS
 
@@ -72,7 +76,7 @@ Aliases:
 
 Required: False
 Position: Named
-Default value: None
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

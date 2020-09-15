@@ -23,8 +23,10 @@ Send-JCPasswordReset [[-username] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-The Send-JCPasswordReset command sends a JumpCloud activation/password reset email to targeted users. This function mimics the functionality of the 'resend email' button in the JumpCloud admin console.
-Pending users will recieve an activation email. Active users will receive a password reset request.
+The Send-JCPasswordReset command sends a JumpCloud activation/password reset email to targeted users.
+This function mimics the functionality of the 'resend email' button in the JumpCloud admin console.
+Pending users will recieve an activation email.
+Active users will receive a password reset request.
 
 ## EXAMPLES
 
@@ -47,14 +49,16 @@ Sends an activation or reset email to all members of the JumpCloud user group 'N
 Get-JCUser -activated $false | Send-JCPasswordReset
 ```
 
-Sends an activation email to all JumpCloud users who are in an inactive state. Users that are inactive have not yet set their JumpCloud user passwords.
+Sends an activation email to all JumpCloud users who are in an inactive state.
+Users that are inactive have not yet set their JumpCloud user passwords.
 
 ### Example 4
 ```
 Get-JCUser -activated $false -filterDateProperty created -dateFilter after -date (Get-Date).AddDays(-7) -returnProperties username | Send-JCPasswordReset
 ```
 
-Sends an activation email to all JumpCloud users who are in an inactive state and were created in the last seven days. Users that are inactive have not yet set their JumpCloud user passwords.
+Sends an activation email to all JumpCloud users who are in an inactive state and were created in the last seven days.
+Users that are inactive have not yet set their JumpCloud user passwords.
 
 ## PARAMETERS
 

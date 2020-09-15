@@ -28,7 +28,8 @@ Remove-JCSystemUser -SystemID <String> -UserID <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-The Remove-JCSystemUser function allows you disable a JumpCloud managed local user account on a JumpCloud System. The Remove-JCSystemUser function tells the JumpCloud agent to set the managed local account into a disabled state.
+The Remove-JCSystemUser function allows you disable a JumpCloud managed local user account on a JumpCloud System.
+The Remove-JCSystemUser function tells the JumpCloud agent to set the managed local account into a disabled state.
 Note* The Remove-JCSystemUser does not delete the account or any data from the target machine.
 
 ## EXAMPLES
@@ -38,31 +39,49 @@ Note* The Remove-JCSystemUser does not delete the account or any data from the t
 PS C:\> Remove-JCSystemUser -Username cclemons -SystemID 5a0795nnie7127f4ev2erb154a
 ```
 
-Removes the JumpCloud user with the Username 'cclemons' from the System with a SystemID of '5a0795nnie7127f4ev2erb154a'. A warning message will be presented to confirm this operation.
+Removes the JumpCloud user with the Username 'cclemons' from the System with a SystemID of '5a0795nnie7127f4ev2erb154a'.
+A warning message will be presented to confirm this operation.
 
 ### Example 2
 ```
 PS C:\> Remove-JCSystemUser -Username cclemons -SystemID 5a0795nnie7127f4ev2erb154a -force
 ```
 
-Removes the JumpCloud user with the Username 'cclemons' from the System with a SystemID of '5a0795nnie7127f4ev2erb154a' using the -force Parameter. A warning message will not be presented to confirm this operation.
+Removes the JumpCloud user with the Username 'cclemons' from the System with a SystemID of '5a0795nnie7127f4ev2erb154a' using the -force Parameter.
+A warning message will not be presented to confirm this operation.
 
 ### Example 3
-
 ```
 PS C:\> Get-JCSystemUser -SystemID 5a0795nnie7127f4ev2erb154a | Remove-JCSystemUser
 ```
 
-Removes all JumpCloud users bound directly to the System with a System ID of '5a0795nnie7127f4ev2erb154a' using Parameter binding and the pipeline. A warning message will be displayed to confirm each remove operation.
+Removes all JumpCloud users bound directly to the System with a System ID of '5a0795nnie7127f4ev2erb154a' using Parameter binding and the pipeline.
+A warning message will be displayed to confirm each remove operation.
 
 ### Example 4
 ```
 PS C:\> Get-JCSystemUser -SystemID 5a0795nnie7127f4ev2erb154a | Remove-JCSystemUser -Force
 ```
 
-Removes all JumpCloud users bound directly to the System with a System ID of '5a0795nnie7127f4ev2erb154a' using Parameter binding and the pipeline. A warning message will not be displayed to confirm each remove operation because of the presence of the -Force Parameter.
+Removes all JumpCloud users bound directly to the System with a System ID of '5a0795nnie7127f4ev2erb154a' using Parameter binding and the pipeline.
+A warning message will not be displayed to confirm each remove operation because of the presence of the -Force Parameter.
 
 ## PARAMETERS
+
+### -force
+A SwitchParameter which suppresses the warning message when removing a JumpCloud user from a JumpCloud system.
+
+```yaml
+Type: System.Management.Automation.SwitchParameter
+Parameter Sets: Force
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
 
 ### -SystemID
 The _id of the System which you want to bind the JumpCloud user to.
@@ -114,21 +133,6 @@ Required: True
 Position: 0
 Default value: None
 Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -force
-A SwitchParameter which suppresses the warning message when removing a JumpCloud user from a JumpCloud system.
-
-```yaml
-Type: System.Management.Automation.SwitchParameter
-Parameter Sets: Force
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
 Accept wildcard characters: False
 ```
 

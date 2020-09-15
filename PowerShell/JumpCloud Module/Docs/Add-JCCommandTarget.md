@@ -28,7 +28,9 @@ Add-JCCommandTarget [-CommandID] <String> [-GroupName] <Object> [<CommonParamete
 ```
 
 ## DESCRIPTION
-The Add-JCCommandTarget function allows you to add JumpCloud systems or JumpCloud system groups to the target list of a specific JumpCloud command. Group associations can be made by system group name or system group ID system associations can only be made using the SystemID. When JumpCloud commands are run they target all the systems on their target list.
+The Add-JCCommandTarget function allows you to add JumpCloud systems or JumpCloud system groups to the target list of a specific JumpCloud command.
+Group associations can be made by system group name or system group ID system associations can only be made using the SystemID.
+When JumpCloud commands are run they target all the systems on their target list.
 
 ## EXAMPLES
 

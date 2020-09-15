@@ -92,7 +92,7 @@ Aliases:
 
 Required: False
 Position: 5
-Default value: None
+Default value: False
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
@@ -122,7 +122,7 @@ Aliases:
 
 Required: False
 Position: Named
-Default value: None
+Default value: False
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
@@ -152,7 +152,7 @@ Aliases:
 
 Required: False
 Position: 7
-Default value: None
+Default value: False
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
@@ -167,7 +167,7 @@ Aliases:
 
 Required: False
 Position: 8
-Default value: None
+Default value: False
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
@@ -182,7 +182,7 @@ Aliases:
 
 Required: False
 Position: 9
-Default value: None
+Default value: False
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
@@ -197,7 +197,7 @@ Aliases:
 
 Required: False
 Position: 6
-Default value: None
+Default value: False
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
@@ -248,21 +248,6 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
-### -Skip
-The number of items you want to skip over per API call.
-
-```yaml
-Type: System.Int32
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 98
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
 ### -TargetType
 The type of the target object.
 
@@ -290,6 +275,21 @@ Accepted values: command, ldap_server, policy, application, radius_server, syste
 
 Required: True
 Position: 0
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Skip
+The number of items you want to skip over per API call.
+
+```yaml
+Type: System.Int32
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 98
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False

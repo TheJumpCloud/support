@@ -17,7 +17,9 @@ Get-JCSystemUser [-SystemID] <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-The Get-JCSystemUser function returns all the JumpCloud Users associated with the system. Users can be associated with a JumpCloud system through a direct bind, a User Group, or both. The output of the Get-JCSystemUser identifies the associations between JumpCloud Users and the system.
+The Get-JCSystemUser function returns all the JumpCloud Users associated with the system.
+Users can be associated with a JumpCloud system through a direct bind, a User Group, or both.
+The output of the Get-JCSystemUser identifies the associations between JumpCloud Users and the system.
 
 ## EXAMPLES
 

@@ -67,7 +67,9 @@ Set-JCUser -UserID <String> [-email <String>] [-firstname <String>] [-lastname <
 ```
 
 ## DESCRIPTION
-The Set-JCUser function updates an existing JumpCloud user account. Common use cases are account locks and unlocks, email address updates, or custom attribute modifications. Actions can be completed in bulk for multiple users by using the pipeline and Parameter Binding to query users with the Get-JCUser function and then applying updates with Set-JCUser function.
+The Set-JCUser function updates an existing JumpCloud user account.
+Common use cases are account locks and unlocks, email address updates, or custom attribute modifications.
+Actions can be completed in bulk for multiple users by using the pipeline and Parameter Binding to query users with the Get-JCUser function and then applying updates with Set-JCUser function.
 
 ## EXAMPLES
 
@@ -90,7 +92,8 @@ This example locks the account for user with username cclemons by setting the va
 PS C:\> Get-JCUser | Select-Object _id, @{ Name = 'email'; Expression = { ($_.email).replace('olddomain.com','newdomain.com') }} | foreach {Set-JCUser -ByID -UserID $_._id -email $_.email}
 ```
 
-This example updates the domain on the email addresses associated with every user in the JumpCloud tenant using Parameter Binding, the pipeline, and a calculated property. The 'olddomain.com' would represent the current domain and the 'newdomain.com' would be the new domain.
+This example updates the domain on the email addresses associated with every user in the JumpCloud tenant using Parameter Binding, the pipeline, and a calculated property.
+The 'olddomain.com' would represent the current domain and the 'newdomain.com' would be the new domain.
 
 ### Example 4
 ```
@@ -114,6 +117,36 @@ PS C:\> Set-JCUser -Username cclemons -enable_user_portal_multifactor $True -enr
 This example enables the account for the user with username cclemons for MFA login to the user portal and sets an enrollment period of 14 days.
 
 ## PARAMETERS
+
+### -account_locked
+unlock or lock a users JumpCloud account
+
+```yaml
+Type: System.Boolean
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -allow_public_key
+A boolean $true/$false value for allowing pubic key authentication
+
+```yaml
+Type: System.Boolean
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
 
 ### -Attribute1_name
 Enter an attribute name
@@ -187,126 +220,7 @@ Aliases:
 
 Required: False
 Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -EnrollmentDays
-Number of days to allow for MFA enrollment.
-
-```yaml
-Type: System.Int32
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -NumberOfCustomAttributes
-If you intend to update a user with existing Custom Attributes or add new Custom Attributes you must declare how many Custom Attributes you intend to update or add.
-If an Custom Attribute exists with a name that matches the new attribute then the existing attribute will be updated.
-Based on the NumberOfCustomAttributes value two Dynamic Parameters will be created for each Custom Attribute: Attribute_name and Attribute_value with an associated number.
-See an example for working with Custom Attribute in EXAMPLE 4
-
-```yaml
-Type: System.Int32
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -RemoveAttribute
-The name of the existing Custom Attributes you wish to remove.
-See an EXAMPLE for working with the -RemoveAttribute Parameter in EXAMPLE 5
-
-```yaml
-Type: System.String[]
-Parameter Sets: RemoveAttribute
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -UserID
-The _id of the User which you want to modify.
-
-To find a JumpCloud UserID run the command:
-
-PS C:\\\> Get-JCUser | Select username, _id
-
-The UserID will be the 24 character string populated for the _id field.
-
-UserID has an Alias of _id.
-This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCUser function before calling Add-JCUserGroupMember.
-This is shown in EXAMPLES 3, 4, and 5.
-
-```yaml
-Type: System.String
-Parameter Sets: ByID
-Aliases: _id, id
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -Username
-The Username of the JumpCloud user you wish to modify
-
-```yaml
-Type: System.String
-Parameter Sets: Username, RemoveAttribute
-Aliases:
-
-Required: True
-Position: 0
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -account_locked
-unlock or lock a users JumpCloud account
-
-```yaml
-Type: System.Boolean
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -allow_public_key
-A boolean $true/$false value for allowing pubic key authentication
-
-```yaml
-Type: System.Boolean
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
+Default value: False
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
@@ -468,6 +382,21 @@ Required: False
 Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -EnrollmentDays
+Number of days to allow for MFA enrollment.
+
+```yaml
+Type: System.Int32
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
@@ -737,6 +666,24 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
+### -NumberOfCustomAttributes
+If you intend to update a user with existing Custom Attributes or add new Custom Attributes you must declare how many Custom Attributes you intend to update or add.
+If an Custom Attribute exists with a name that matches the new attribute then the existing attribute will be updated.
+Based on the NumberOfCustomAttributes value two Dynamic Parameters will be created for each Custom Attribute: Attribute_name and Attribute_value with an associated number.
+See an example for working with Custom Attribute in EXAMPLE 4
+
+```yaml
+Type: System.Int32
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
 ### -password
 The password for the user
 
@@ -773,6 +720,22 @@ A boolean $true/$false value if you want to enable passwordless_sudo
 ```yaml
 Type: System.Boolean
 Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -RemoveAttribute
+The name of the existing Custom Attributes you wish to remove.
+See an EXAMPLE for working with the -RemoveAttribute Parameter in EXAMPLE 5
+
+```yaml
+Type: System.String[]
+Parameter Sets: RemoveAttribute
 Aliases:
 
 Required: False
@@ -839,6 +802,46 @@ Aliases:
 
 Required: False
 Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -UserID
+The _id of the User which you want to modify.
+
+To find a JumpCloud UserID run the command:
+
+PS C:\\\> Get-JCUser | Select username, _id
+
+The UserID will be the 24 character string populated for the _id field.
+
+UserID has an Alias of _id.
+This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCUser function before calling Add-JCUserGroupMember.
+This is shown in EXAMPLES 3, 4, and 5.
+
+```yaml
+Type: System.String
+Parameter Sets: ByID
+Aliases: _id, id
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Username
+The Username of the JumpCloud user you wish to modify
+
+```yaml
+Type: System.String
+Parameter Sets: Username, RemoveAttribute
+Aliases:
+
+Required: True
+Position: 0
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False

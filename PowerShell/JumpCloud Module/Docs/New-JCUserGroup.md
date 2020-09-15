@@ -17,7 +17,8 @@ New-JCUserGroup [-GroupName] <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Creates a JumpCloud User Group. Note that a JumpCloud User Group must have a unique name.
+Creates a JumpCloud User Group.
+Note that a JumpCloud User Group must have a unique name.
 
 ## EXAMPLES
 

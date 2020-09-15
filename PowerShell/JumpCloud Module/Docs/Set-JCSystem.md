@@ -19,7 +19,9 @@ Set-JCSystem [-SystemID] <String> [-displayName <String>] [-allowSshPasswordAuth
 ```
 
 ## DESCRIPTION
-The Set-JCSystem function updates an existing JumpCloud System. Common use cases are updated SSH parameters and the system displayName. Actions can be completed in bulk for multiple systems by using the pipeline and Parameter Binding to query system properties with the Get-JCSystem function and then applying updates with Set-JCSystem function.
+The Set-JCSystem function updates an existing JumpCloud System.
+Common use cases are updated SSH parameters and the system displayName.
+Actions can be completed in bulk for multiple systems by using the pipeline and Parameter Binding to query system properties with the Get-JCSystem function and then applying updates with Set-JCSystem function.
 
 ## EXAMPLES
 
@@ -28,7 +30,8 @@ The Set-JCSystem function updates an existing JumpCloud System. Common use cases
 PS C:\> Set-JCSystem -SystemID 5n0795a712704la4eve154r -displayName 'WorkStation001'
 ```
 
-This example updates the displayName of the System with SystemID '5n0795a712704la4eve154r' to 'WorkStation001'. Note the JumpCloud displayName is simply a text field and does not have any system impact.
+This example updates the displayName of the System with SystemID '5n0795a712704la4eve154r' to 'WorkStation001'.
+Note the JumpCloud displayName is simply a text field and does not have any system impact.
 
 ### Example 2
 ```
@@ -38,25 +41,6 @@ PS C:\> Get-JCSystem | Where-Object os -Like *Mac* | Set-JCSystem -allowMultiFac
 This example updates all Systems with an operating system like 'Mac' and allows for MFA login.
 
 ## PARAMETERS
-
-### -SystemID
-The _id of the System which you want to remove from JumpCloud.
-The SystemID will be the 24 character string populated for the _id field.
-SystemID has an Alias of _id.
-This means you can leverage the PowerShell pipeline to populate this field automatically by calling a JumpCloud function that returns the SystemID.
-This is shown in EXAMPLE 2
-
-```yaml
-Type: System.String
-Parameter Sets: (All)
-Aliases: _id, id
-
-Required: True
-Position: 0
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
 
 ### -allowMultiFactorAuthentication
 A boolean $true/$false value to allow for MFA during system login.
@@ -131,6 +115,25 @@ Aliases:
 
 Required: False
 Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -SystemID
+The _id of the System which you want to remove from JumpCloud.
+The SystemID will be the 24 character string populated for the _id field.
+SystemID has an Alias of _id.
+This means you can leverage the PowerShell pipeline to populate this field automatically by calling a JumpCloud function that returns the SystemID.
+This is shown in EXAMPLE 2
+
+```yaml
+Type: System.String
+Parameter Sets: (All)
+Aliases: _id, id
+
+Required: True
+Position: 0
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False

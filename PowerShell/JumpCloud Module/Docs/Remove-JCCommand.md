@@ -23,7 +23,8 @@ Remove-JCCommand [-CommandID] <String> [-force] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-The Remove-JCCommand can remove a single JumpCloud command or multiple commands that are passed to the command over the pipeline. The default behavior is to prompt with a warning message when deleting a command result but this can be suppressed with the -force Parameter.
+The Remove-JCCommand can remove a single JumpCloud command or multiple commands that are passed to the command over the pipeline.
+The default behavior is to prompt with a warning message when deleting a command result but this can be suppressed with the -force Parameter.
 
 ## EXAMPLES
 
@@ -32,14 +33,16 @@ The Remove-JCCommand can remove a single JumpCloud command or multiple commands 
 PS C:\> Remove-JCCommand -CommandID 5j09o6f23dan6f4n035601d5
 ```
 
-Removes the JumpCloud Command with a CommandID of '5j09o6f23dan6f4n035601d5'. A warning message will be presented to confirm this operation.
+Removes the JumpCloud Command with a CommandID of '5j09o6f23dan6f4n035601d5'.
+A warning message will be presented to confirm this operation.
 
 ### Example 2
 ```
 PS C:\> Remove-JCCommand -CommandID 5j09o6f23dan6f4n035601d5 -Force
 ```
 
-Removes the JumpCloud Command with a CommandID of '5j09o6f23dan6f4n035601d5'. A warning message will not be presented to confirm this operation because the '-Force' parameter is used.
+Removes the JumpCloud Command with a CommandID of '5j09o6f23dan6f4n035601d5'.
+A warning message will not be presented to confirm this operation because the '-Force' parameter is used.
 
 ## PARAMETERS
 
@@ -73,7 +76,7 @@ Aliases:
 
 Required: False
 Position: Named
-Default value: None
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

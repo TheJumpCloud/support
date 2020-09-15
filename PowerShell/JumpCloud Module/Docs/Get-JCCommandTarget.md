@@ -23,7 +23,8 @@ Get-JCCommandTarget [-CommandID] <String> [-Groups] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Using the CommandID parameter the Get-JCCommandTarget command will return all the systems associated with a JumpCloud command. If the '-Groups' parameter is used the Get-JCCommandTarget command will return all the system groups associated with a JumpCloud command.
+Using the CommandID parameter the Get-JCCommandTarget command will return all the systems associated with a JumpCloud command.
+If the '-Groups' parameter is used the Get-JCCommandTarget command will return all the system groups associated with a JumpCloud command.
 
 ## EXAMPLES
 
@@ -69,7 +70,7 @@ Aliases:
 
 Required: False
 Position: Named
-Default value: None
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

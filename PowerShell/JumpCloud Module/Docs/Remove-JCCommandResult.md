@@ -23,7 +23,8 @@ Remove-JCCommandResult [-CommandResultID] <String> [-force] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-The Remove-JCCommandResult can remove a single JumpCloud command result or multiple command results that are passed to the command over the pipeline. The default behavior is to prompt with a warning message when deleting a command result but this can be suppressed with the -force Parameter.
+The Remove-JCCommandResult can remove a single JumpCloud command result or multiple command results that are passed to the command over the pipeline.
+The default behavior is to prompt with a warning message when deleting a command result but this can be suppressed with the -force Parameter.
 
 ## EXAMPLES
 
@@ -32,28 +33,33 @@ The Remove-JCCommandResult can remove a single JumpCloud command result or multi
 PS C:\> Remove-JCCommandResult -CommandResultID 5j09o6f23dan6f4n035601d5
 ```
 
-Removes the JumpCloud Command Result with a CommandResultID of '5j09o6f23dan6f4n035601d5'. A warning message will be presented to confirm this operation.
+Removes the JumpCloud Command Result with a CommandResultID of '5j09o6f23dan6f4n035601d5'.
+A warning message will be presented to confirm this operation.
 
 ### Example 2
 ```
 PS C:\> Remove-JCCommandResult -CommandResultID 5j09o6f23dan6f4n035601d5 -Force
 ```
 
-Removes the JumpCloud Command Result with a CommandResultID of '5j09o6f23dan6f4n035601d5' using the -Force Parameter. A warning message will not be presented to confirm this operation.
+Removes the JumpCloud Command Result with a CommandResultID of '5j09o6f23dan6f4n035601d5' using the -Force Parameter.
+A warning message will not be presented to confirm this operation.
 
 ### Example 3
 ```
 PS C:\> Get-JCCommandResult  | Where-Object system -EQ 'Server01' | Remove-JCCommandResult
 ```
 
-Removes all JumpCloud Command Results that were run on target system with a hostname of 'Server01' A warning message will be present to confirm each operation. This warning could be suppressed using the -Force Parameter.
+Removes all JumpCloud Command Results that were run on target system with a hostname of 'Server01' A warning message will be present to confirm each operation.
+This warning could be suppressed using the -Force Parameter.
 
 ### Example 4
 ```
 PS C:\> Get-JCCommandResult | Where-Object {$_.requestTime -GT (Get-Date).AddHours(-1) -and $_.exitCode -eq 0} | Remove-JCCommandResult -force
 ```
 
-Removes all JumpCloud commands that were run within the last hour and that had an exitCode of '0' using the -Force Parameter. Note an exitCode of zero generally represents a successful run of a command. This command removes all success Commands Results run in the past hour.
+Removes all JumpCloud commands that were run within the last hour and that had an exitCode of '0' using the -Force Parameter.
+Note an exitCode of zero generally represents a successful run of a command.
+This command removes all success Commands Results run in the past hour.
 
 ## PARAMETERS
 
@@ -88,7 +94,7 @@ Aliases:
 
 Required: False
 Position: Named
-Default value: None
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

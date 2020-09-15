@@ -33,7 +33,8 @@ Get-JCCommandResult [-Skip <Int32>] [-Limit <Int32>] [-MaxResults <Int32>] [<Com
 ```
 
 ## DESCRIPTION
-The Get-JCCommandResult function returns all command results within a JumpCloud tenant. To return the command results output the -ByID Parameter must be used as this information is only accessible when using this Parameter.
+The Get-JCCommandResult function returns all command results within a JumpCloud tenant.
+To return the command results output the -ByID Parameter must be used as this information is only accessible when using this Parameter.
 
 ## EXAMPLES
 
@@ -49,14 +50,17 @@ Returns all JumpCloud Commands Results
 PS C:\> Get-JCCommandResult -CommandResultID 5m0o65m6i4sb973059omb762
 ```
 
-Returns a single JumpCloud Command Result with CommandResultID '5j09o6f23dan6f4n035601d5'. Note that the command results output will be present in the output from this command.
+Returns a single JumpCloud Command Result with CommandResultID '5j09o6f23dan6f4n035601d5'.
+Note that the command results output will be present in the output from this command.
 
 ### Example 3
 ```
 PS C:\> Get-JCCommandResult | Where-Object {$_.requestTime -GT (Get-Date).AddDays(-7) -and $_.exitCode -ne 0}
 ```
 
-Returns all JumpCloud Command Result that were run within the last seven days and that did not return an exitCode of '0'. Note an exitCode of zero generally represents a successful run of a command. This command returns all failed commands results for the past seven days.
+Returns all JumpCloud Command Result that were run within the last seven days and that did not return an exitCode of '0'.
+Note an exitCode of zero generally represents a successful run of a command.
+This command returns all failed commands results for the past seven days.
 
 ### Example 4
 ```
@@ -65,7 +69,8 @@ PS C:\> Get-JCCommandResult | Where-Object requestTime -GT (Get-Date).AddHours(-
 
 Returns the output for all JumpCloud Command results that were run within the last hour using the -ByID Parameter and Parameter Binding.
 
-Note that when running this command the time for the output to display will be directly proportionate to how many JumpCloud commands that match the criteria. The command 'Get-JCCommandResult -ByID' runs once for every JumpCloud command result that matches the criteria Where-Object criteria.
+Note that when running this command the time for the output to display will be directly proportionate to how many JumpCloud commands that match the criteria.
+The command 'Get-JCCommandResult -ByID' runs once for every JumpCloud command result that matches the criteria Where-Object criteria.
 
 ### Example 5
 ```
@@ -79,14 +84,16 @@ Returns the total number of JumpCloud command results
 PS C:\> Get-JCCommandResult -Skip 100
 ```
 
-Skips returning the first 100 command results and only returns the results after 100. Command results are sorted by execution time.
+Skips returning the first 100 command results and only returns the results after 100.
+Command results are sorted by execution time.
 
 ### Example 6
 ```
 PS C:\> Get-JCCommandResult -Skip 100 -MaxResults 10
 ```
 
-Skips returning the first 100 command results and only returns the 10 results after  the first 100 results. Command results are sorted by execution time.
+Skips returning the first 100 command results and only returns the 10 results after  the first 100 results.
+Command results are sorted by execution time.
 
 ## PARAMETERS
 
@@ -101,7 +108,7 @@ Aliases:
 
 Required: False
 Position: Named
-Default value: None
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -151,27 +158,27 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Skip
-The number of command results to skip over before returning results.
-
-```yaml
-Type: System.Int32
-Parameter Sets: ReturnAll, MaxResults
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -TotalCount
 A switch parameter to only return the number of command results.
 
 ```yaml
 Type: System.Management.Automation.SwitchParameter
 Parameter Sets: TotalCount
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Skip
+The number of command results to skip over before returning results.
+
+```yaml
+Type: System.Int32
+Parameter Sets: ReturnAll, MaxResults
 Aliases:
 
 Required: False

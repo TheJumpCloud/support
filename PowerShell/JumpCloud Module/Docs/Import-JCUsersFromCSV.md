@@ -23,18 +23,19 @@ Import-JCUsersFromCSV [-CSVFilePath] <String> [-force] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-The Import-JCUsersFromCSV function does data validation when importing JumpCloud users from a CSV file to warn the administrator of any potential issues during the import process. Examples of warnings include warning messages for users that already exist, systems that do not exist, and groups that do not exist.
+The Import-JCUsersFromCSV function does data validation when importing JumpCloud users from a CSV file to warn the administrator of any potential issues during the import process.
+Examples of warnings include warning messages for users that already exist, systems that do not exist, and groups that do not exist.
 The Import-JCUserFromCSV function allows administrator to create JumpCloud users, add them to JumpCloud User Groups, and associate them with a JumpCloud system.
-The Import-JCUserFromCSV command takes ~ 1 minute for every 100 users. This time varies based on if users are added to groups or associated with systems during import.
+The Import-JCUserFromCSV command takes ~ 1 minute for every 100 users.
+This time varies based on if users are added to groups or associated with systems during import.
 During import a JumpCloud administrator can ensure the import is working by watching their JumpCloud user count increase in the admin console.
 
 ## EXAMPLES
 
 ### Video Tutorials
+```
 
-[Basic User Import](https://youtu.be/WSE5_uGYcIc)
-
-[Advanced User Import](https://youtu.be/L2hP-XtUJH8)
+```
 
 ### Example 1
 ```
@@ -48,7 +49,8 @@ Imports the .csv file 'JCUserImport_11-16-2017.csv' from the path \users\cclemon
 PS C:\Users\busters> Import-JCUsersFromCSV -CSVFilePath .\Import10.csv
 ```
 
-Imports the .csv file 'Import10.csv' from the current directory using '. sourcing'
+Imports the .csv file 'Import10.csv' from the current directory using '.
+sourcing'
 
 ### Example 3
 ```
@@ -85,7 +87,7 @@ Aliases:
 
 Required: False
 Position: Named
-Default value: None
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

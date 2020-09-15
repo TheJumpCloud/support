@@ -24,7 +24,8 @@ Add-JCSystemGroupMember [[-GroupName] <String>] -SystemID <String> [-ByID] [-Gro
 ```
 
 ## DESCRIPTION
-The Add-JCSystemGroupMember function is used to add a JumpCloud System to a JumpCloud System Group. The new System Group member must be added by the SystemID parameter.
+The Add-JCSystemGroupMember function is used to add a JumpCloud System to a JumpCloud System Group.
+The new System Group member must be added by the SystemID parameter.
 
 ## EXAMPLES
 
@@ -69,7 +70,7 @@ Aliases:
 
 Required: False
 Position: Named
-Default value: None
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

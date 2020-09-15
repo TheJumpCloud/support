@@ -33,7 +33,9 @@ Get-JCPolicyResult [-PolicyResultID <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-The Get-JCPolicyResult function returns the latest policy result information from a JumpCloud policy. You can search by a specific policy name to return results from the policy being applied. You can also search by a specific systemId to find the latest policy result for a specific system.
+The Get-JCPolicyResult function returns the latest policy result information from a JumpCloud policy.
+You can search by a specific policy name to return results from the policy being applied.
+You can also search by a specific systemId to find the latest policy result for a specific system.
 
 ## EXAMPLES
 
@@ -70,7 +72,7 @@ Aliases:
 
 Required: False
 Position: Named
-Default value: None
+Default value: False
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
@@ -85,7 +87,7 @@ Aliases:
 
 Required: False
 Position: Named
-Default value: None
+Default value: False
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```

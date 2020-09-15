@@ -23,7 +23,8 @@ Remove-JCSystemGroup [-GroupName] <String> [-force] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Removes a JumpCloud System Group. By default a warning message will be presented to confirm the operation.
+Removes a JumpCloud System Group.
+By default a warning message will be presented to confirm the operation.
 
 ## EXAMPLES
 
@@ -32,16 +33,33 @@ Removes a JumpCloud System Group. By default a warning message will be presented
 PS C:\> Remove-JCSystemGroup -GroupName 'On Prem Systems'
 ```
 
-Removes the JumpCloud System Group with the name 'On Prem Systems'. A warning message will be presented to confirm the operation.
+Removes the JumpCloud System Group with the name 'On Prem Systems'.
+A warning message will be presented to confirm the operation.
 
 ### Example 2
 ```
 PS C:\> Remove-JCSystemGroup -GroupName 'On Prem Systems' -Force
 ```
 
-Removes the JumpCloud System Group with the name 'On Prem Systems' using the -Force Parameter. A warning message will not be presented to confirm the operation.
+Removes the JumpCloud System Group with the name 'On Prem Systems' using the -Force Parameter.
+A warning message will not be presented to confirm the operation.
 
 ## PARAMETERS
+
+### -force
+A SwitchParameter which suppresses the warning message when removing a JumpCloud System Group.
+
+```yaml
+Type: System.Management.Automation.SwitchParameter
+Parameter Sets: force
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
 
 ### -GroupName
 The name of the System Group you want to remove.
@@ -55,21 +73,6 @@ Required: True
 Position: 0
 Default value: None
 Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -force
-A SwitchParameter which suppresses the warning message when removing a JumpCloud System Group.
-
-```yaml
-Type: System.Management.Automation.SwitchParameter
-Parameter Sets: force
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
 Accept wildcard characters: False
 ```
 

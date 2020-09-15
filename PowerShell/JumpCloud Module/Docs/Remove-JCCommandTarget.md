@@ -28,7 +28,9 @@ Remove-JCCommandTarget [-CommandID] <String> [-GroupName] <Object> [<CommonParam
 ```
 
 ## DESCRIPTION
-The Remove-JCCommandTarget function allows you to remove JumpCloud systems or JumpCloud system groups from the target list of a specific JumpCloud command. Group associations can be removed by system group name or system group ID system associations can only be removed using the SystemID. When JumpCloud commands are run they target all the systems on their target list.
+The Remove-JCCommandTarget function allows you to remove JumpCloud systems or JumpCloud system groups from the target list of a specific JumpCloud command.
+Group associations can be removed by system group name or system group ID system associations can only be removed using the SystemID.
+When JumpCloud commands are run they target all the systems on their target list.
 
 ## EXAMPLES
 
