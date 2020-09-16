@@ -14,7 +14,7 @@ Using this function you can easily gather heightened levels of information from 
 ## SYNTAX
 
 ```
-Get-JCSystemInsights -Table <String> [-SystemId <String[]>] [[-Filter] <String[]>] [<CommonParameters>]
+Get-JCSystemInsights -Table <String> [-SystemId <String[]>] [-Filter <String[]>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -52,21 +52,6 @@ Get systems that have a specific App on a specific system where the filter is a 
 
 ## PARAMETERS
 
-### -Filter
-Filters to narrow down search.
-
-```yaml
-Type: System.String[]
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 96
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -Table
 Name of the SystemInsights Table to query. See docs.jumpcloud.com for list of available Table endpoints.
 
@@ -97,19 +82,28 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -Filter
+Filters to narrow down search.
+
+```yaml
+Type: System.String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
-### System.String
-### System.String[]
-### System.Array
-### System.Int32
-### System.Boolean
 ## OUTPUTS
 
-### System.Object
 ## NOTES
 
 ## RELATED LINKS
