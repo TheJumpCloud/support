@@ -31,56 +31,6 @@ Get systems that have a specific App on a specific system where the filter is a 
 .Link
 https://github.com/TheJumpCloud/support/wiki/Get-JCSystemInsights
 #>
-# Populate values for function parameters. "Dynamic ValidateSet"
-$SystemInsightsPrefix = 'Get-JcSdkSystemInsight';
-$SystemInsightsDataSet = [Ordered]@{}
-Get-Command -Module:('JumpCloud.SDK.V2') -Name:("$($SystemInsightsPrefix)*") | ForEach-Object {
-    $Help = Get-Help -Name:($_.Name);
-    $Table = $_.Name.Replace($SystemInsightsPrefix, '')
-    $HelpDescription = $Help.Description.Text
-    $FilterDescription = $Help.parameters.parameter.Where( { $_.Name -eq 'filter' }).Description.Text
-    $FilterNames = ($HelpDescription | Select-String -Pattern:([Regex]'(?<=\ `)(.*?)(?=\`)') -AllMatches).Matches.Value
-    $Operators = ($FilterDescription -Replace ('Supported operators are: ', '')).Trim()
-    If ([System.String]::IsNullOrEmpty($HelpDescription) -or [System.String]::IsNullOrEmpty($FilterNames) -or [System.String]::IsNullOrEmpty($Operators))
-    {
-        Write-Error ('Get-JCSystemInsights parameter help info is missing.')
-    }
-    Else
-    {
-        $Filters = $FilterNames | ForEach-Object {
-            $FilterName = $_
-            $Operators | ForEach-Object {
-                $Operator = $_
-                ("'{0}:{1}:{2}'" -f $FilterName, $Operator, '[SearchValue <String>]');
-            }
-        }
-        $SystemInsightsDataSet.Add($Table, $Filters )
-    }
-};
-Register-ArgumentCompleter -CommandName Get-JCSystemInsights -ParameterName Table -ScriptBlock {
-    param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameter)
-    $FilterFilter = $fakeBoundParameter.Filter;
-    $SystemInsightsDataSet.Keys | Where-Object { $_ -like "${wordToComplete}*" } | Where-Object { $SystemInsightsDataSet.$_ -like "${FilterFilter}*" } | ForEach-Object {
-        New-Object System.Management.Automation.CompletionResult (
-            $_,
-            $_,
-            'ParameterValue',
-            $_
-        )
-    }
-}
-Register-ArgumentCompleter -CommandName Get-JCSystemInsights -ParameterName Filter -ScriptBlock {
-    param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameter)
-    $TypeFilter = $fakeBoundParameter.Table;
-    $SystemInsightsDataSet.Keys | Where-Object { $_ -like "${TypeFilter}*" } | ForEach-Object { $SystemInsightsDataSet.$_ | Where-Object { $_ -like "${wordToComplete}*" } } | Sort-Object -Unique | ForEach-Object {
-        New-Object System.Management.Automation.CompletionResult (
-            $_,
-            $_,
-            'ParameterValue',
-            $_
-        )
-    }
-}
 Function Get-JCSystemInsights
 {
     [CmdletBinding(DefaultParameterSetName = 'List', PositionalBinding = $false)]
