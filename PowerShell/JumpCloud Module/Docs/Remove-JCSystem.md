@@ -65,6 +65,21 @@ Removes all but the last system to contact JumpCloud with the display name 'Syst
 
 ## PARAMETERS
 
+### -force
+A SwitchParameter which suppresses the warning message when removing a JumpCloud System.
+
+```yaml
+Type: System.Management.Automation.SwitchParameter
+Parameter Sets: force
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -SystemID
 The _id of the System which you want to remove from JumpCloud.
 To find a JumpCloud SystemID run the command: PS C:\\\> Get-JCSystem | Select hostname, _id
@@ -86,27 +101,13 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
-### -force
-A SwitchParameter which suppresses the warning message when removing a JumpCloud System.
-
-```yaml
-Type: System.Management.Automation.SwitchParameter
-Parameter Sets: force
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
 ### System.String
+
 ## OUTPUTS
 
 ### System.Object

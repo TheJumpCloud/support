@@ -77,36 +77,6 @@ Returns all JumpCloud systems and the properties remoteIP and active. The defaul
 
 ## PARAMETERS
 
-### -SystemFDEKey
-A switch parameter to reveal the SystemFDEKey
-
-```yaml
-Type: System.Management.Automation.SwitchParameter
-Parameter Sets: ByID
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -SystemID
-The _id or id of the System which you want to query.
-
-```yaml
-Type: System.String
-Parameter Sets: ByID
-Aliases: _id, id
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
 ### -active
 Filter for systems that are online or offline.
 
@@ -385,6 +355,36 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
+### -SystemFDEKey
+A switch parameter to reveal the SystemFDEKey
+
+```yaml
+Type: System.Management.Automation.SwitchParameter
+Parameter Sets: ByID
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -SystemID
+The _id or id of the System which you want to query.
+
+```yaml
+Type: System.String
+Parameter Sets: ByID
+Aliases: _id, id
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
 ### -systemTimezone
 A search filter to search systems by the serialNumber.
 This field DOES NOT take wildcard input.
@@ -437,9 +437,13 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
+
 ### System.Management.Automation.SwitchParameter
+
 ### System.Boolean
+
 ### System.String[]
+
 ## OUTPUTS
 
 ### System.Object

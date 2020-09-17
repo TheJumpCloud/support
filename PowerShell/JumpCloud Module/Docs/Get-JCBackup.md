@@ -205,8 +205,8 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -SystemUsers
-A switch parameter that when called backs up JumpCloud system user information to CSV.
+### -Systems
+A switch parameter that when called backs up JumpCloud system information to CSV.
 
 ```yaml
 Type: System.Management.Automation.SwitchParameter
@@ -220,8 +220,8 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Systems
-A switch parameter that when called backs up JumpCloud system information to CSV.
+### -SystemUsers
+A switch parameter that when called backs up JumpCloud system user information to CSV.
 
 ```yaml
 Type: System.Management.Automation.SwitchParameter
@@ -271,6 +271,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### None
+
 ## OUTPUTS
 
 ### System.Object

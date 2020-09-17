@@ -176,11 +176,17 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.Management.Automation.SwitchParameter
+
 ### System.String[]
+
 ### System.String
+
 ### System.Array
+
 ### System.Int32
+
 ### System.Boolean
+
 ## OUTPUTS
 
 ### System.Object
