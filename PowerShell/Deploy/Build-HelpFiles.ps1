@@ -140,9 +140,16 @@ Try
         # Session               = '<PSSession>'
     }
     Update-MarkdownHelpModule @parameters
-    # PlatyPS doesnt pull the description properly so pull the description from the psd1 file and update it
+    # Manually updating specific feilds within JumpCloud.md
     $ModulePageContent = Get-Content -Path:($FilePath_ModulePagePath) -Raw
-    $ModulePageContent.Replace("`r", '').Replace("## Description`n{{ Fill in the Description }}", "## Description`n$($Psd1.Description)") | Set-Content -Path:($FilePath_ModulePagePath) -Force
+    $ModulePageContent = $ModulePageContent.Replace("`r", '')
+    $ModulePageContent = $ModulePageContent.Replace("## Description`n{{ Fill in the Description }}", "## Description`n$($Psd1.Description)")
+    $ModulePageContent = $ModulePageContent.Replace(($ModulePageContent | Select-String -Pattern:([regex]"(Module Name: )(.*?)(\n)")).Matches.Value.Trim(), "Module Name: $($ModuleName)")
+    $ModulePageContent = $ModulePageContent.Replace(($ModulePageContent | Select-String -Pattern:([regex]"(Module Guid: )(.*?)(\n)")).Matches.Value.Trim(), "Module Guid: $($Psd1.Guid)")
+    $ModulePageContent = $ModulePageContent.Replace(($ModulePageContent | Select-String -Pattern:([regex]"(Download Help Link: )(.*?)(\n)")).Matches.Value.Trim(), "Download Help Link: $($Psd1.PrivateData.PSData.ProjectUri)")
+    $ModulePageContent = $ModulePageContent.Replace(($ModulePageContent | Select-String -Pattern:([regex]"(Help Version: )(.*?)(\n)")).Matches.Value.Trim(), "Help Version: $($Psd1.ModuleVersion)")
+    $ModulePageContent = $ModulePageContent.Replace(($ModulePageContent | Select-String -Pattern:([regex]"(Locale: )(.*?)(\n)")).Matches.Value.Trim(), "Locale: $($Locale)")
+    $ModulePageContent | Set-Content -Path:($FilePath_ModulePagePath) -Force
     # Creating: .\en-Us\$ModuleName-help.xml and .\en-Us\about_$ModuleName.help.txt
     Write-Host ("[status]Creating: .\en-Us\$ModuleName-help.xml and .\en-Us\about_$ModuleName.help.txt")
     New-ExternalHelp -Path:($FolderPath_Docs) -OutputPath:($FolderPath_enUS) -Force # -ApplicableTag <String> -Encoding <Encoding> -MaxAboutWidth <Int32> -ErrorLogFile <String> -ShowProgress
