@@ -54,9 +54,9 @@ BODY <IEventQuery>: EventQuery is the users' command to search our auth logs
   [Fields <String[]>]: optional list of fields to return from query
   [Limit <Int64?>]: Max number of rows to return
   [SearchAfter <String[]>]: Specific query to search after, see x-* response headers for next values
-  [SearchTermAnd <ITermConjunction>]: TermConjunction
+  [SearchTermAnd <ITermConjunction>]: TermConjunction represents a conjunction (and/or)         NOTE: the validator limits what the operator can be, not the object         for future-proof-ness         and a list of sub-values
     [(Any) <Object>]: This indicates any property can be added to this object.
-  [SearchTermOr <ITermConjunction>]: TermConjunction
+  [SearchTermOr <ITermConjunction>]: TermConjunction represents a conjunction (and/or)         NOTE: the validator limits what the operator can be, not the object         for future-proof-ness         and a list of sub-values
   [Sort <String>]: ASC or DESC order for timestamp
 .Link
 https://github.com/TheJumpCloud/jcapi-powershell/tree/master/SDKs/PowerShell/JumpCloud.SDK.DirectoryInsights/docs/exports/Get-JcSdkEvent.md
@@ -96,20 +96,6 @@ Function Get-JCEvent
     [System.String[]]
     # Specific query to search after, see x-* response headers for next values
     ${SearchAfter},
-
-    [Parameter(ParameterSetName='GetExpanded')]
-    [JumpCloud.SDK.DirectoryInsights.Category('Body')]
-    [JumpCloud.SDK.DirectoryInsights.Runtime.Info(PossibleTypes=([JumpCloud.SDK.DirectoryInsights.Models.ITermConjunction]))]
-    [System.Collections.Hashtable]
-    # TermConjunction
-    ${SearchTermAnd},
-
-    [Parameter(ParameterSetName='GetExpanded')]
-    [JumpCloud.SDK.DirectoryInsights.Category('Body')]
-    [JumpCloud.SDK.DirectoryInsights.Runtime.Info(PossibleTypes=([JumpCloud.SDK.DirectoryInsights.Models.ITermConjunction]))]
-    [System.Collections.Hashtable]
-    # TermConjunction
-    ${SearchTermOr},
 
     [Parameter(ParameterSetName='GetExpanded')]
     [JumpCloud.SDK.DirectoryInsights.Category('Body')]
