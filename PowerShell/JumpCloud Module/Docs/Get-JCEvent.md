@@ -87,34 +87,19 @@ Get all events filtered by organization_update term between a date range
 
 ## PARAMETERS
 
-### -Service
-service name to query.
-Known services: systems,radius,sso,directory,ldap,all
+### -Body
+EventQuery is the users' command to search our auth logs
+To construct, see NOTES section for BODY properties and create a hash table.
 
 ```yaml
-Type: System.String[]
-Parameter Sets: GetExpanded
+Type: JumpCloud.SDK.DirectoryInsights.Models.IEventQuery
+Parameter Sets: Get
 Aliases:
 
 Required: True
 Position: Named
 Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -StartTime
-query start time, UTC in RFC3339 format
-
-```yaml
-Type: System.DateTime
-Parameter Sets: GetExpanded
-Aliases:
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
+Accept pipeline input: True (ByValue)
 Accept wildcard characters: False
 ```
 
@@ -195,6 +180,22 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -Service
+service name to query.
+Known services: systems,radius,sso,directory,ldap,all
+
+```yaml
+Type: System.String[]
+Parameter Sets: GetExpanded
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -Sort
 ASC or DESC order for timestamp
 
@@ -210,32 +211,15 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Body
-EventQuery is the users' command to search our auth logs
-To construct, see NOTES section for BODY properties and create a hash table.
+### -StartTime
+query start time, UTC in RFC3339 format
 
 ```yaml
-Type: JumpCloud.SDK.DirectoryInsights.Models.IEventQuery
-Parameter Sets: Get
+Type: System.DateTime
+Parameter Sets: GetExpanded
 Aliases:
 
 Required: True
-Position: Named
-Default value: None
-Accept pipeline input: True (ByValue)
-Accept wildcard characters: False
-```
-
-### -WhatIf
-Shows what would happen if the cmdlet runs.
-The cmdlet is not run.
-
-```yaml
-Type: System.Management.Automation.SwitchParameter
-Parameter Sets: (All)
-Aliases: wi
-
-Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False
@@ -249,6 +233,22 @@ Prompts you for confirmation before running the cmdlet.
 Type: System.Management.Automation.SwitchParameter
 Parameter Sets: (All)
 Aliases: cf
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -WhatIf
+Shows what would happen if the cmdlet runs.
+The cmdlet is not run.
+
+```yaml
+Type: System.Management.Automation.SwitchParameter
+Parameter Sets: (All)
+Aliases: wi
 
 Required: False
 Position: Named

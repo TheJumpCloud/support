@@ -1,0 +1,1023 @@
+
+[Update-MarkdownHelpModule] 09/17/2020 09:16:03 Determined module name for 'C:\Users\epanipinto\Documents\GitHub\support\PowerShell\JumpCloud Module/Docs' as 'JumpCloud'.
+[Update-MarkdownHelpModule] 09/17/2020 09:16:03 [Update-MarkdownHelpModule]9/17/2020 09:16:03
+[Update-MarkdownHelpModule] 09/17/2020 09:16:03 Updating documents for module 'JumpCloud' in C:\Users\epanipinto\Documents\GitHub\support\PowerShell\JumpCloud Module/Docs
+---- UPDATING Cmdlet : Add-JCAssociation ----
+
+	Parameter Updated: Attributes
+		Position updated from 12 to 
+
+	Parameter Updated: Id
+		Position updated from 1 to 
+
+	Parameter Updated: Name
+		Position updated from 1 to 
+
+	Parameter Updated: TargetId
+		Position updated from 10 to 
+
+	Parameter Updated: TargetName
+		Position updated from 11 to 
+
+	Parameter Updated: TargetType
+		Position updated from 2 to 
+
+	Parameter Updated: Type
+		Position updated from 0 to 1
+
+---- COMPLETED UPDATING Cmdlet : Add-JCAssociation ----
+
+
+---- UPDATING Cmdlet : Add-JCCommandTarget ----
+
+	Parameter Updated: CommandID
+		Position updated from 0 to 1
+
+	Parameter Updated: GroupID
+		Position updated from 1 to 2
+
+	Parameter Updated: GroupName
+		Position updated from 1 to 2
+
+	Parameter Updated: SystemID
+		Position updated from 1 to 2
+
+---- COMPLETED UPDATING Cmdlet : Add-JCCommandTarget ----
+
+
+---- UPDATING Cmdlet : Add-JCRadiusReplyAttribute ----
+
+	Parameter Set Added: ByGroup
+
+	Parameter Set Deleted: 
+
+	Parameter Set Name Updated: ByGroup
+		Old Set: 
+		New Set: ByGroup
+
+	Parameter Updated: Attribute1_name
+		Position updated from Named to 
+
+	Parameter Updated: Attribute1_value
+		Position updated from Named to 
+
+	Parameter Updated: Attribute2_name
+		Position updated from Named to 
+
+	Parameter Updated: Attribute2_value
+		Position updated from Named to 
+
+	Parameter Updated: GroupName
+		Position updated from 0 to 1
+
+	Parameter Updated: VLANTag
+		Position updated from Named to 
+
+---- COMPLETED UPDATING Cmdlet : Add-JCRadiusReplyAttribute ----
+
+
+---- UPDATING Cmdlet : Add-JCSystemGroupMember ----
+
+	Parameter Updated: GroupName
+		Position updated from 0 to 1
+
+---- COMPLETED UPDATING Cmdlet : Add-JCSystemGroupMember ----
+
+
+---- UPDATING Cmdlet : Add-JCSystemUser ----
+
+	Parameter Updated: Administrator
+		Position updated from Named to 3
+
+	Parameter Updated: SystemID
+		Position updated from Named to 2
+
+	Parameter Updated: Username
+		Position updated from 0 to 1
+
+---- COMPLETED UPDATING Cmdlet : Add-JCSystemUser ----
+
+
+---- UPDATING Cmdlet : Add-JCUserGroupMember ----
+
+	Parameter Updated: GroupName
+		Position updated from 0 to 1
+
+	Parameter Updated: Username
+		Position updated from 1 to 2
+
+---- COMPLETED UPDATING Cmdlet : Add-JCUserGroupMember ----
+
+
+---- UPDATING Cmdlet : Connect-JCOnline ----
+
+	Parameter Set Added: force
+
+	Parameter Set Deleted: 
+
+	Parameter Set Name Updated: force
+		Old Set: 
+		New Set: force
+
+	Parameter Updated: JCEnvironment
+		Position updated from 3 to 
+
+	Parameter Updated: JumpCloudApiKey
+		Position updated from 1 to 
+
+	Parameter Updated: JumpCloudOrgId
+		Position updated from 2 to 
+
+---- COMPLETED UPDATING Cmdlet : Connect-JCOnline ----
+
+
+---- UPDATING Cmdlet : Copy-JCAssociation ----
+
+	Parameter Updated: ExcludeType
+		Position updated from 15 to 
+
+	Parameter Updated: Id
+		Position updated from 1 to 
+
+	Parameter Updated: IncludeType
+		Position updated from 14 to 
+
+	Parameter Updated: Name
+		Position updated from 1 to 
+
+	Parameter Updated: RemoveExisting
+		Position updated from 13 to 
+
+	Parameter Updated: TargetId
+		Position updated from 10 to 
+
+	Parameter Updated: TargetName
+		Position updated from 11 to 
+
+	Parameter Updated: Type
+		Position updated from 0 to 1
+
+---- COMPLETED UPDATING Cmdlet : Copy-JCAssociation ----
+
+
+---- UPDATING Cmdlet : Get-JCAssociation ----
+
+	Parameter Set Added: ByValue
+
+	Parameter Set Added: Default
+
+	Parameter Updated: Direct
+		Position updated from 5 to 
+
+	Parameter Updated: Fields
+		Position updated from 95 to 
+
+	Parameter Updated: Id
+		Position updated from 1 to 
+
+	Parameter Updated: IncludeInfo
+		Position updated from 7 to 
+
+	Parameter Updated: IncludeNames
+		Position updated from 8 to 
+
+	Parameter Updated: IncludeVisualPath
+		Position updated from 9 to 
+
+	Parameter Updated: Indirect
+		Position updated from 6 to 
+
+	Parameter Updated: Limit
+		Position updated from 97 to 
+
+	Parameter Updated: Name
+		Position updated from 1 to 
+
+	Parameter Updated: Paginate
+		Position updated from 99 to 
+
+	Parameter Updated: Skip
+		Position updated from 98 to 
+
+	Parameter Updated: TargetType
+		Position updated from 2 to 
+
+	Parameter Updated: Type
+		Position updated from 0 to 1
+
+---- COMPLETED UPDATING Cmdlet : Get-JCAssociation ----
+
+
+---- UPDATING Cmdlet : Get-JCBackup ----
+
+	Parameter Set Added: None
+
+	Parameter Set Deleted: 
+
+	Parameter Set Name Updated: None
+		Old Set: 
+		New Set: None
+
+---- COMPLETED UPDATING Cmdlet : Get-JCBackup ----
+
+
+---- UPDATING Cmdlet : Get-JCCommand ----
+
+	Parameter Set Added: ReturnAll
+
+	Parameter Updated: CommandID
+		Position updated from 0 to 1
+
+---- COMPLETED UPDATING Cmdlet : Get-JCCommand ----
+
+
+---- UPDATING Cmdlet : Get-JCCommandResult ----
+
+	Parameter Updated: CommandResultID
+		Position updated from 0 to 1
+
+---- COMPLETED UPDATING Cmdlet : Get-JCCommandResult ----
+
+
+---- UPDATING Cmdlet : Get-JCCommandTarget ----
+
+	Parameter Set Added: Systems
+
+	Parameter Updated: CommandID
+		Position updated from 0 to 1
+
+---- COMPLETED UPDATING Cmdlet : Get-JCCommandTarget ----
+
+
+---- UPDATING Cmdlet : Get-JCEvent ----
+
+	No updates done
+
+---- COMPLETED UPDATING Cmdlet : Get-JCEvent ----
+
+
+---- UPDATING Cmdlet : Get-JCEventCount ----
+
+	No updates done
+
+---- COMPLETED UPDATING Cmdlet : Get-JCEventCount ----
+
+
+---- UPDATING Cmdlet : Get-JCGroup ----
+
+	Parameter Set Added: ReturnAll
+
+	Parameter Updated: Name
+		Position updated from Named to 
+
+	Parameter Updated: Type
+		Position updated from 0 to 1
+
+---- COMPLETED UPDATING Cmdlet : Get-JCGroup ----
+
+
+---- UPDATING Cmdlet : Get-JCOrganization ----
+
+	Parameter Set Added: __AllParameterSets
+
+	Parameter Set Deleted: 
+
+	Parameter Set Name Updated: __AllParameterSets
+		Old Set: 
+		New Set: __AllParameterSets
+
+---- COMPLETED UPDATING Cmdlet : Get-JCOrganization ----
+
+
+---- UPDATING Cmdlet : Get-JCPolicy ----
+
+	Parameter Set Added: ReturnAll
+
+	Parameter Updated: PolicyID
+		Position updated from 0 to 1
+
+---- COMPLETED UPDATING Cmdlet : Get-JCPolicy ----
+
+
+---- UPDATING Cmdlet : Get-JCPolicyResult ----
+
+	Parameter Updated: PolicyID
+		Position updated from 0 to 1
+
+	Parameter Updated: PolicyName
+		Position updated from 0 to 1
+
+---- COMPLETED UPDATING Cmdlet : Get-JCPolicyResult ----
+
+
+---- UPDATING Cmdlet : Get-JCPolicyTargetGroup ----
+
+	Parameter Updated: PolicyID
+		Position updated from 0 to 1
+
+	Parameter Updated: PolicyName
+		Position updated from 0 to 1
+
+---- COMPLETED UPDATING Cmdlet : Get-JCPolicyTargetGroup ----
+
+
+---- UPDATING Cmdlet : Get-JCPolicyTargetSystem ----
+
+	Parameter Updated: PolicyID
+		Position updated from 0 to 1
+
+	Parameter Updated: PolicyName
+		Position updated from 0 to 1
+
+---- COMPLETED UPDATING Cmdlet : Get-JCPolicyTargetSystem ----
+
+
+---- UPDATING Cmdlet : Get-JCRadiusReplyAttribute ----
+
+	Parameter Set Added: ByGroup
+
+	Parameter Set Deleted: 
+
+	Parameter Set Name Updated: ByGroup
+		Old Set: 
+		New Set: ByGroup
+
+	Parameter Updated: GroupName
+		Position updated from 0 to 1
+
+---- COMPLETED UPDATING Cmdlet : Get-JCRadiusReplyAttribute ----
+
+
+---- UPDATING Cmdlet : Get-JCRadiusServer ----
+
+	Parameter Set Added: ByValue
+
+	Parameter Set Added: Default
+
+	Parameter Updated: Fields
+		Position updated from 95 to 
+
+	Parameter Updated: Id
+		Position updated from 1 to 
+
+	Parameter Updated: Limit
+		Position updated from 97 to 
+
+	Parameter Updated: Name
+		Position updated from 1 to 
+
+	Parameter Updated: Paginate
+		Position updated from 99 to 
+
+	Parameter Updated: Skip
+		Position updated from 98 to 
+
+---- COMPLETED UPDATING Cmdlet : Get-JCRadiusServer ----
+
+
+---- UPDATING Cmdlet : Get-JCSystem ----
+
+	Parameter Updated: date
+		Position updated from Named to 
+
+	Parameter Updated: dateFilter
+		Position updated from Named to 
+
+	Parameter Updated: hostname
+		Position updated from 0 to 1
+
+---- COMPLETED UPDATING Cmdlet : Get-JCSystem ----
+
+
+---- UPDATING Cmdlet : Get-JCSystemGroupMember ----
+
+	Parameter Updated: GroupName
+		Position updated from 0 to 1
+
+---- COMPLETED UPDATING Cmdlet : Get-JCSystemGroupMember ----
+
+
+---- UPDATING Cmdlet : Get-JCSystemInsights ----
+
+	Parameter Set Added: List
+
+	Parameter Set Deleted: 
+
+	Parameter Set Name Updated: List
+		Old Set: 
+		New Set: List
+
+---- COMPLETED UPDATING Cmdlet : Get-JCSystemInsights ----
+
+
+---- UPDATING Cmdlet : Get-JCSystemUser ----
+
+	Parameter Set Added: __AllParameterSets
+
+	Parameter Set Deleted: 
+
+	Parameter Set Name Updated: __AllParameterSets
+		Old Set: 
+		New Set: __AllParameterSets
+
+	Parameter Updated: SystemID
+		Position updated from 0 to 1
+
+---- COMPLETED UPDATING Cmdlet : Get-JCSystemUser ----
+
+
+---- UPDATING Cmdlet : Get-JCUser ----
+
+	Parameter Updated: date
+		Position updated from Named to 
+
+	Parameter Updated: dateFilter
+		Position updated from Named to 
+
+	Parameter Updated: username
+		Position updated from 0 to 1
+
+---- COMPLETED UPDATING Cmdlet : Get-JCUser ----
+
+
+---- UPDATING Cmdlet : Get-JCUserGroupMember ----
+
+	Parameter Updated: GroupName
+		Position updated from 0 to 1
+
+---- COMPLETED UPDATING Cmdlet : Get-JCUserGroupMember ----
+
+
+---- UPDATING Cmdlet : Import-JCCommand ----
+
+	Parameter Set Added: URL
+
+	Parameter Set Deleted: 
+
+	Parameter Set Name Updated: URL
+		Old Set: 
+		New Set: URL
+
+	Parameter Updated: URL
+		Position updated from 0 to 1
+
+---- COMPLETED UPDATING Cmdlet : Import-JCCommand ----
+
+
+---- UPDATING Cmdlet : Import-JCUsersFromCSV ----
+
+	Parameter Set Added: GUI
+
+	Parameter Updated: CSVFilePath
+		Position updated from 0 to 1
+
+---- COMPLETED UPDATING Cmdlet : Import-JCUsersFromCSV ----
+
+
+---- UPDATING Cmdlet : Invoke-JCCommand ----
+
+	Parameter Set Added: NoVariables
+
+	Parameter Updated: trigger
+		Position updated from 0 to 1
+
+	Parameter Updated: Variable1_name
+		Position updated from Named to 
+
+	Parameter Updated: Variable1_value
+		Position updated from Named to 
+
+	Parameter Updated: Variable2_name
+		Position updated from Named to 
+
+	Parameter Updated: Variable2_value
+		Position updated from Named to 
+
+---- COMPLETED UPDATING Cmdlet : Invoke-JCCommand ----
+
+
+---- UPDATING Cmdlet : Invoke-JCDeployment ----
+
+	Parameter Set Added: __AllParameterSets
+
+	Parameter Set Deleted: 
+
+	Parameter Set Name Updated: __AllParameterSets
+		Old Set: 
+		New Set: __AllParameterSets
+
+	Parameter Updated: CommandID
+		Position updated from 0 to 1
+
+---- COMPLETED UPDATING Cmdlet : Invoke-JCDeployment ----
+
+
+---- UPDATING Cmdlet : New-JCCommand ----
+
+	Parameter Set Added: __AllParameterSets
+
+	Parameter Set Deleted: 
+
+	Parameter Set Name Updated: __AllParameterSets
+		Old Set: 
+		New Set: __AllParameterSets
+
+	Parameter Updated: command
+		Position updated from 2 to 3
+
+	Parameter Updated: commandType
+		Position updated from 1 to 2
+
+	Parameter Updated: launchType
+		Position updated from 3 to 4
+
+	Parameter Updated: name
+		Position updated from 0 to 1
+
+	Parameter Updated: shell
+		Position updated from Named to 
+
+	Parameter Updated: timeout
+		Position updated from 4 to 5
+
+	Parameter Updated: trigger
+		Position updated from Named to 
+
+	Parameter Updated: user
+		Position updated from Named to 
+
+---- COMPLETED UPDATING Cmdlet : New-JCCommand ----
+
+
+---- UPDATING Cmdlet : New-JCDeploymentTemplate ----
+
+	Parameter Set Added: __AllParameterSets
+
+	Parameter Set Deleted: 
+
+	Parameter Set Name Updated: __AllParameterSets
+		Old Set: 
+		New Set: __AllParameterSets
+
+---- COMPLETED UPDATING Cmdlet : New-JCDeploymentTemplate ----
+
+
+---- UPDATING Cmdlet : New-JCImportTemplate ----
+
+	Parameter Set Added: __AllParameterSets
+
+	Parameter Set Deleted: 
+
+	Parameter Set Name Updated: __AllParameterSets
+		Old Set: 
+		New Set: __AllParameterSets
+
+---- COMPLETED UPDATING Cmdlet : New-JCImportTemplate ----
+
+
+---- UPDATING Cmdlet : New-JCRadiusServer ----
+
+	Parameter Set Added: ByName
+
+	Parameter Set Deleted: 
+
+	Parameter Set Name Updated: ByName
+		Old Set: 
+		New Set: ByName
+
+	Parameter Updated: Name
+		Position updated from 1 to 
+
+	Parameter Updated: networkSourceIp
+		Position updated from 4 to 
+
+	Parameter Updated: sharedSecret
+		Position updated from 5 to 
+
+---- COMPLETED UPDATING Cmdlet : New-JCRadiusServer ----
+
+
+---- UPDATING Cmdlet : New-JCSystemGroup ----
+
+	Parameter Set Added: __AllParameterSets
+
+	Parameter Set Deleted: 
+
+	Parameter Set Name Updated: __AllParameterSets
+		Old Set: 
+		New Set: __AllParameterSets
+
+	Parameter Updated: GroupName
+		Position updated from 0 to 1
+
+---- COMPLETED UPDATING Cmdlet : New-JCSystemGroup ----
+
+
+---- UPDATING Cmdlet : New-JCUser ----
+
+	Parameter Set Added: NoAttributes
+
+	Parameter Updated: Attribute1_name
+		Position updated from Named to 
+
+	Parameter Updated: Attribute1_value
+		Position updated from Named to 
+
+	Parameter Updated: Attribute2_name
+		Position updated from Named to 
+
+	Parameter Updated: Attribute2_value
+		Position updated from Named to 
+
+	Parameter Updated: enrollmentDays
+		Position updated from Named to 
+
+---- COMPLETED UPDATING Cmdlet : New-JCUser ----
+
+
+---- UPDATING Cmdlet : New-JCUserGroup ----
+
+	Parameter Set Added: __AllParameterSets
+
+	Parameter Set Deleted: 
+
+	Parameter Set Name Updated: __AllParameterSets
+		Old Set: 
+		New Set: __AllParameterSets
+
+	Parameter Updated: GroupName
+		Position updated from 0 to 1
+
+---- COMPLETED UPDATING Cmdlet : New-JCUserGroup ----
+
+
+---- UPDATING Cmdlet : Remove-JCAssociation ----
+
+	Parameter Updated: Id
+		Position updated from 1 to 
+
+	Parameter Updated: Name
+		Position updated from 1 to 
+
+	Parameter Updated: TargetId
+		Position updated from 10 to 
+
+	Parameter Updated: TargetName
+		Position updated from 11 to 
+
+	Parameter Updated: TargetType
+		Position updated from 2 to 
+
+	Parameter Updated: Type
+		Position updated from 0 to 1
+
+---- COMPLETED UPDATING Cmdlet : Remove-JCAssociation ----
+
+
+---- UPDATING Cmdlet : Remove-JCCommand ----
+
+	Parameter Set Added: warn
+
+	Parameter Updated: CommandID
+		Position updated from 0 to 1
+
+---- COMPLETED UPDATING Cmdlet : Remove-JCCommand ----
+
+
+---- UPDATING Cmdlet : Remove-JCCommandResult ----
+
+	Parameter Set Added: warn
+
+	Parameter Updated: CommandResultID
+		Position updated from 0 to 1
+
+---- COMPLETED UPDATING Cmdlet : Remove-JCCommandResult ----
+
+
+---- UPDATING Cmdlet : Remove-JCCommandTarget ----
+
+	Parameter Updated: CommandID
+		Position updated from 0 to 1
+
+	Parameter Updated: GroupID
+		Position updated from 1 to 2
+
+	Parameter Updated: GroupName
+		Position updated from 1 to 2
+
+	Parameter Updated: SystemID
+		Position updated from 1 to 2
+
+---- COMPLETED UPDATING Cmdlet : Remove-JCCommandTarget ----
+
+
+---- UPDATING Cmdlet : Remove-JCRadiusReplyAttribute ----
+
+	Parameter Set Added: ByGroup
+
+	Parameter Set Deleted: 
+
+	Parameter Set Name Updated: ByGroup
+		Old Set: 
+		New Set: ByGroup
+
+	Parameter Updated: GroupName
+		Position updated from 0 to 1
+
+---- COMPLETED UPDATING Cmdlet : Remove-JCRadiusReplyAttribute ----
+
+
+---- UPDATING Cmdlet : Remove-JCRadiusServer ----
+
+	Parameter Set Added: ById
+
+	Parameter Set Deleted: 
+
+	Parameter Set Name Updated: ById
+		Old Set: 
+		New Set: ById
+
+	Parameter Updated: Id
+		Position updated from 1 to 
+
+---- COMPLETED UPDATING Cmdlet : Remove-JCRadiusServer ----
+
+
+---- UPDATING Cmdlet : Remove-JCSystem ----
+
+	Parameter Set Added: warn
+
+	Parameter Updated: SystemID
+		Position updated from 0 to 1
+
+---- COMPLETED UPDATING Cmdlet : Remove-JCSystem ----
+
+
+---- UPDATING Cmdlet : Remove-JCSystemGroup ----
+
+	Parameter Set Added: warn
+
+	Parameter Updated: GroupName
+		Position updated from 0 to 1
+
+---- COMPLETED UPDATING Cmdlet : Remove-JCSystemGroup ----
+
+
+---- UPDATING Cmdlet : Remove-JCSystemGroupMember ----
+
+	Parameter Updated: GroupName
+		Position updated from 0 to 1
+
+---- COMPLETED UPDATING Cmdlet : Remove-JCSystemGroupMember ----
+
+
+---- UPDATING Cmdlet : Remove-JCSystemUser ----
+
+	Parameter Updated: SystemID
+		Position updated from Named to 2
+
+	Parameter Updated: Username
+		Position updated from 0 to 1
+
+---- COMPLETED UPDATING Cmdlet : Remove-JCSystemUser ----
+
+
+---- UPDATING Cmdlet : Remove-JCUser ----
+
+	Parameter Updated: Username
+		Position updated from 0 to 1
+
+---- COMPLETED UPDATING Cmdlet : Remove-JCUser ----
+
+
+---- UPDATING Cmdlet : Remove-JCUserGroup ----
+
+	Parameter Set Added: warn
+
+	Parameter Updated: GroupName
+		Position updated from 0 to 1
+
+---- COMPLETED UPDATING Cmdlet : Remove-JCUserGroup ----
+
+
+---- UPDATING Cmdlet : Remove-JCUserGroupMember ----
+
+	Parameter Updated: GroupName
+		Position updated from 0 to 1
+
+	Parameter Updated: Username
+		Position updated from 1 to 2
+
+---- COMPLETED UPDATING Cmdlet : Remove-JCUserGroupMember ----
+
+
+---- UPDATING Cmdlet : Send-JCPasswordReset ----
+
+	Parameter Updated: UserID
+		Position updated from 0 to 1
+
+	Parameter Updated: username
+		Position updated from 0 to 1
+
+---- COMPLETED UPDATING Cmdlet : Send-JCPasswordReset ----
+
+
+---- UPDATING Cmdlet : Set-JCCommand ----
+
+	Parameter Set Added: __AllParameterSets
+
+	Parameter Set Deleted: 
+
+	Parameter Set Name Updated: __AllParameterSets
+		Old Set: 
+		New Set: __AllParameterSets
+
+	Parameter Updated: command
+		Position updated from 2 to 3
+
+	Parameter Updated: CommandID
+		Position updated from 0 to 1
+
+	Parameter Updated: launchType
+		Position updated from 3 to 4
+
+	Parameter Updated: name
+		Position updated from 1 to 2
+
+	Parameter Updated: timeout
+		Position updated from 4 to 5
+
+	Parameter Updated: trigger
+		Position updated from Named to 
+
+---- COMPLETED UPDATING Cmdlet : Set-JCCommand ----
+
+
+---- UPDATING Cmdlet : Set-JCOrganization ----
+
+	Parameter Set Added: __AllParameterSets
+
+	Parameter Set Deleted: 
+
+	Parameter Set Name Updated: __AllParameterSets
+		Old Set: 
+		New Set: __AllParameterSets
+
+	Parameter Updated: JumpCloudApiKey
+		Position updated from 0 to 1
+
+	Parameter Updated: JumpCloudOrgId
+		Position updated from 1 to 2
+
+---- COMPLETED UPDATING Cmdlet : Set-JCOrganization ----
+
+
+---- UPDATING Cmdlet : Set-JCRadiusReplyAttribute ----
+
+	Parameter Set Added: ByGroup
+
+	Parameter Set Deleted: 
+
+	Parameter Set Name Updated: ByGroup
+		Old Set: 
+		New Set: ByGroup
+
+	Parameter Updated: Attribute1_name
+		Position updated from Named to 
+
+	Parameter Updated: Attribute1_value
+		Position updated from Named to 
+
+	Parameter Updated: Attribute2_name
+		Position updated from Named to 
+
+	Parameter Updated: Attribute2_value
+		Position updated from Named to 
+
+	Parameter Updated: GroupName
+		Position updated from 0 to 1
+
+	Parameter Updated: VLANTag
+		Position updated from Named to 
+
+---- COMPLETED UPDATING Cmdlet : Set-JCRadiusReplyAttribute ----
+
+
+---- UPDATING Cmdlet : Set-JCRadiusServer ----
+
+	Parameter Set Added: ByValue
+
+	Parameter Updated: Id
+		Position updated from 1 to 
+
+	Parameter Updated: mfa
+		Position updated from 6 to 
+
+	Parameter Updated: Name
+		Position updated from 1 to 
+
+	Parameter Updated: networkSourceIp
+		Position updated from 4 to 
+
+	Parameter Updated: newName
+		Position updated from 3 to 
+
+	Parameter Updated: sharedSecret
+		Position updated from 5 to 
+
+	Parameter Updated: userLockoutAction
+		Position updated from 7 to 
+
+	Parameter Updated: userPasswordExpirationAction
+		Position updated from 8 to 
+
+---- COMPLETED UPDATING Cmdlet : Set-JCRadiusServer ----
+
+
+---- UPDATING Cmdlet : Set-JCSystem ----
+
+	Parameter Set Added: __AllParameterSets
+
+	Parameter Set Deleted: 
+
+	Parameter Set Name Updated: __AllParameterSets
+		Old Set: 
+		New Set: __AllParameterSets
+
+	Parameter Updated: SystemID
+		Position updated from 0 to 1
+
+---- COMPLETED UPDATING Cmdlet : Set-JCSystem ----
+
+
+---- UPDATING Cmdlet : Set-JCSystemUser ----
+
+	Parameter Updated: Administrator
+		Position updated from Named to 3
+
+	Parameter Updated: SystemID
+		Position updated from Named to 2
+
+	Parameter Updated: Username
+		Position updated from 0 to 1
+
+---- COMPLETED UPDATING Cmdlet : Set-JCSystemUser ----
+
+
+---- UPDATING Cmdlet : Set-JCUser ----
+
+	Parameter Updated: Attribute1_name
+		Position updated from Named to 
+
+	Parameter Updated: Attribute1_value
+		Position updated from Named to 
+
+	Parameter Updated: Attribute2_name
+		Position updated from Named to 
+
+	Parameter Updated: Attribute2_value
+		Position updated from Named to 
+
+	Parameter Updated: EnrollmentDays
+		Position updated from Named to 
+
+	Parameter Updated: Username
+		Position updated from 0 to 1
+
+---- COMPLETED UPDATING Cmdlet : Set-JCUser ----
+
+
+---- UPDATING Cmdlet : Set-JCUserGroupLDAP ----
+
+	Parameter Updated: GroupID
+		Position updated from 0 to 1
+
+	Parameter Updated: GroupName
+		Position updated from 0 to 1
+
+---- COMPLETED UPDATING Cmdlet : Set-JCUserGroupLDAP ----
+
+
+---- UPDATING Cmdlet : Update-JCModule ----
+
+	Parameter Set Added: __AllParameterSets
+
+	Parameter Set Deleted: 
+
+	Parameter Set Name Updated: __AllParameterSets
+		Old Set: 
+		New Set: __AllParameterSets
+
+---- COMPLETED UPDATING Cmdlet : Update-JCModule ----
+
+
+---- UPDATING Cmdlet : Update-JCUsersFromCSV ----
+
+	Parameter Set Added: GUI
+
+	Parameter Updated: CSVFilePath
+		Position updated from 0 to 1
+
+---- COMPLETED UPDATING Cmdlet : Update-JCUsersFromCSV ----
+
+

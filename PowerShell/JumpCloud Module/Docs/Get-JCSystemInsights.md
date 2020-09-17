@@ -52,15 +52,15 @@ Get systems that have a specific App on a specific system where the filter is a 
 
 ## PARAMETERS
 
-### -Table
-Name of the SystemInsights Table to query. See docs.jumpcloud.com for list of available Table endpoints.
+### -Filter
+Filters to narrow down search.
 
 ```yaml
-Type: System.String
+Type: System.String[]
 Parameter Sets: (All)
 Aliases:
 
-Required: True
+Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False
@@ -82,15 +82,15 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Filter
-Filters to narrow down search.
+### -Table
+Name of the SystemInsights Table to query. See docs.jumpcloud.com for list of available Table endpoints.
 
 ```yaml
-Type: System.String[]
+Type: System.String
 Parameter Sets: (All)
 Aliases:
 
-Required: False
+Required: True
 Position: Named
 Default value: None
 Accept pipeline input: False

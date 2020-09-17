@@ -91,21 +91,6 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
-### -Name
-The name of the object.
-
-```yaml
-Type: System.String[]
-Parameter Sets: ByName
-Aliases:
-
-Required: True
-Position: 1
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
 ### -mfa
 If MFA should be requried to authenticate to the RADIUS Server
 
@@ -117,6 +102,21 @@ Accepted values: DISABLED, ENABLED
 
 Required: False
 Position: 6
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Name
+The name of the object.
+
+```yaml
+Type: System.String[]
+Parameter Sets: ByName
+Aliases:
+
+Required: True
+Position: 1
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -205,8 +205,11 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.Management.Automation.SwitchParameter
+
 ### System.String[]
+
 ### System.String
+
 ## OUTPUTS
 
 ### System.Object
