@@ -15,8 +15,7 @@ Query the API for a count of matching events
 ### GetExpanded (Default)
 ```
 Get-JCEventCount -Service <String[]> -StartTime <DateTime> [-EndTime <DateTime>] [-Fields <String[]>]
- [-SearchAfter <String[]>] [-SearchTermAnd <Hashtable>] [-SearchTermOr <Hashtable>] [-Sort <String>] [-WhatIf]
- [-Confirm] [<CommonParameters>]
+ [-SearchAfter <String[]>] [-Sort <String>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ### Get
@@ -110,38 +109,6 @@ Specific query to search after, see x-* response headers for next values
 
 ```yaml
 Type: System.String[]
-Parameter Sets: GetExpanded
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -SearchTermAnd
-list of event terms.
-If all terms match the event will be returned by the service.
-
-```yaml
-Type: System.Collections.Hashtable
-Parameter Sets: GetExpanded
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -SearchTermOr
-list of event terms.
-If any term matches, the event will be returned by the service.
-
-```yaml
-Type: System.Collections.Hashtable
 Parameter Sets: GetExpanded
 Aliases:
 
