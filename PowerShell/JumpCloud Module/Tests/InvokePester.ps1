@@ -50,7 +50,7 @@ If ($RequiredModules)
             If ([System.String]::IsNullOrEmpty((Get-InstalledModule).Where( { $_.Name -eq $_ })))
             {
                 Write-Host ('[status]Installing: ' + $_)
-                Install-Module -Repository:($RequiredModulesRepo) -Name:($_) -Force
+                Install-Module -Repository:($RequiredModulesRepo) -Name:($_) -Force -Verbose
             }
         }
         Else
@@ -67,7 +67,7 @@ If ($RequiredModules)
                     Register-PackageSource -Trusted -ProviderName:("PowerShellGet") -Name:($RequiredModulesRepo) -Location:("https://pkgs.dev.azure.com/$(($RequiredModulesRepo.Split('-'))[0])/_packaging/$($(($RequiredModulesRepo.Split('-'))[1]))/nuget/v2/") -Credential:($RepositoryCredentials)
                 }
                 Write-Host("[status]Installing '$_' from '$RequiredModulesRepo'")
-                Install-Module -Repository:($RequiredModulesRepo) -Name:($_) -Credential:($RepositoryCredentials) -AllowPrerelease
+                Install-Module -Repository:($RequiredModulesRepo) -Name:($_) -Credential:($RepositoryCredentials) -AllowPrerelease -Verbose
             }
         }
         If (!(Get-Module -Name:($_)))
