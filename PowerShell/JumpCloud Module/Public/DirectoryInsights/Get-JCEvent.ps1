@@ -99,6 +99,20 @@ Function Get-JCEvent
 
     [Parameter(ParameterSetName='GetExpanded')]
     [JumpCloud.SDK.DirectoryInsights.Category('Body')]
+    [JumpCloud.SDK.DirectoryInsights.Runtime.Info(PossibleTypes=([JumpCloud.SDK.DirectoryInsights.Models.ITermConjunction]))]
+    [System.Collections.Hashtable]
+    # TermConjunction represents a conjunction (and/or)NOTE: the validator limits what the operator can be, not the objectfor future-proof-nessand a list of sub-values
+    ${SearchTermAnd},
+
+    [Parameter(ParameterSetName='GetExpanded')]
+    [JumpCloud.SDK.DirectoryInsights.Category('Body')]
+    [JumpCloud.SDK.DirectoryInsights.Runtime.Info(PossibleTypes=([JumpCloud.SDK.DirectoryInsights.Models.ITermConjunction]))]
+    [System.Collections.Hashtable]
+    # TermConjunction represents a conjunction (and/or)NOTE: the validator limits what the operator can be, not the objectfor future-proof-nessand a list of sub-values
+    ${SearchTermOr},
+
+    [Parameter(ParameterSetName='GetExpanded')]
+    [JumpCloud.SDK.DirectoryInsights.Category('Body')]
     [System.String]
     # ASC or DESC order for timestamp
     ${Sort},
