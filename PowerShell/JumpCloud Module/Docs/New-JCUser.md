@@ -76,6 +76,21 @@ This example creates the user with username cclemons and two Custom Attributes. 
 
 ## PARAMETERS
 
+### -allow_public_key
+A boolean $true/$false value for allowing pubic key authentication
+
+```yaml
+Type: System.Boolean
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
 ### -Attribute1_name
 Enter an attribute name
 
@@ -130,38 +145,6 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -NumberOfCustomAttributes
-If you intend to create users with Custom Attributes you must declare how many Custom Attributes you intend to add.
-Based on the NumberOfCustomAttributes value two Dynamic Parameters will be created for each Custom Attribute: Attribute_name and Attribute_value with an associated number.
-See an example for adding a user with two Custom Attributes in EXAMPLE 3
-
-```yaml
-Type: System.Int32
-Parameter Sets: Attributes
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -allow_public_key
-A boolean $true/$false value for allowing pubic key authentication
-
-```yaml
-Type: System.Boolean
-Parameter Sets: (All)
-Aliases:
-
-Required: False
 Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
@@ -567,6 +550,23 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
+### -NumberOfCustomAttributes
+If you intend to create users with Custom Attributes you must declare how many Custom Attributes you intend to add.
+Based on the NumberOfCustomAttributes value two Dynamic Parameters will be created for each Custom Attribute: Attribute_name and Attribute_value with an associated number.
+See an example for adding a user with two Custom Attributes in EXAMPLE 3
+
+```yaml
+Type: System.Int32
+Parameter Sets: Attributes
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -password
 The password for the user
 
@@ -841,8 +841,11 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
+
 ### System.Boolean
+
 ### System.Int32
+
 ## OUTPUTS
 
 ### System.Object

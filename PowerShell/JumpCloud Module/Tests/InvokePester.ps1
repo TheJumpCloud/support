@@ -50,7 +50,7 @@ If ($RequiredModules)
             If ([System.String]::IsNullOrEmpty((Get-InstalledModule).Where( { $_.Name -eq $_ })))
             {
                 Write-Host ('[status]Installing: ' + $_)
-                Install-Module -Repository:($RequiredModulesRepo) -Name:($_) -Force
+                Install-Module -Repository:($RequiredModulesRepo) -Name:($_) -Force -Verbose
             }
         }
         Else
@@ -67,7 +67,7 @@ If ($RequiredModules)
                     Register-PackageSource -Trusted -ProviderName:("PowerShellGet") -Name:($RequiredModulesRepo) -Location:("https://pkgs.dev.azure.com/$(($RequiredModulesRepo.Split('-'))[0])/_packaging/$($(($RequiredModulesRepo.Split('-'))[1]))/nuget/v2/") -Credential:($RepositoryCredentials)
                 }
                 Write-Host("[status]Installing '$_' from '$RequiredModulesRepo'")
-                Install-Module -Repository:($RequiredModulesRepo) -Name:($_) -Credential:($RepositoryCredentials) -AllowPrerelease
+                Install-Module -Repository:($RequiredModulesRepo) -Name:($_) -Credential:($RepositoryCredentials) -AllowPrerelease -Verbose
             }
         }
         If (!(Get-Module -Name:($_)))
@@ -78,12 +78,16 @@ If ($RequiredModules)
     }
 }
 # Import the module
+Write-Host ('[status]Importing module: ' + "$PesterParams_ModuleManifestPath/$PesterParams_ModuleManifestName")
 Import-Module -Name:("$PesterParams_ModuleManifestPath/$PesterParams_ModuleManifestName") -Force
 # Load private functions
+Write-Host ('[status]Load private functions: ' + "$PSScriptRoot/../Private/*.ps1")
 Get-ChildItem -Path:("$PSScriptRoot/../Private/*.ps1") -Recurse | ForEach-Object { . $_.FullName }
 # Load SetupOrg
+Write-Host ('[status]Setting up org: ' + "$PSScriptRoot/SetupOrg.ps1")
 . ("$PSScriptRoot/SetupOrg.ps1") -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp)
 # Load HelperFunctions
+Write-Host ('[status]Load HelperFunctions: ' + "$PSScriptRoot/HelperFunctions.ps1")
 . ("$PSScriptRoot/HelperFunctions.ps1")
 # Run Pester tests
 Write-Host ("[RUN COMMAND] Invoke-Pester -Path:($PSScriptRoot) -TagFilter:($IncludeTags) -ExcludeTagFilter:($ExcludeTagList) -PassThru") -BackgroundColor:('Black') -ForegroundColor:('Magenta')

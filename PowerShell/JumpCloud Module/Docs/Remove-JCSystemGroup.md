@@ -43,21 +43,6 @@ Removes the JumpCloud System Group with the name 'On Prem Systems' using the -Fo
 
 ## PARAMETERS
 
-### -GroupName
-The name of the System Group you want to remove.
-
-```yaml
-Type: System.String
-Parameter Sets: (All)
-Aliases: name
-
-Required: True
-Position: 0
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
 ### -force
 A SwitchParameter which suppresses the warning message when removing a JumpCloud System Group.
 
@@ -73,12 +58,28 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -GroupName
+The name of the System Group you want to remove.
+
+```yaml
+Type: System.String
+Parameter Sets: (All)
+Aliases: name
+
+Required: True
+Position: 0
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
 ### System.String
+
 ## OUTPUTS
 
 ### System.Object

@@ -39,25 +39,6 @@ This example updates all Systems with an operating system like 'Mac' and allows 
 
 ## PARAMETERS
 
-### -SystemID
-The _id of the System which you want to remove from JumpCloud.
-The SystemID will be the 24 character string populated for the _id field.
-SystemID has an Alias of _id.
-This means you can leverage the PowerShell pipeline to populate this field automatically by calling a JumpCloud function that returns the SystemID.
-This is shown in EXAMPLE 2
-
-```yaml
-Type: System.String
-Parameter Sets: (All)
-Aliases: _id, id
-
-Required: True
-Position: 0
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
 ### -allowMultiFactorAuthentication
 A boolean $true/$false value to allow for MFA during system login.
 Note this setting only applies systems running Linux or Mac.
@@ -136,6 +117,25 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
+### -SystemID
+The _id of the System which you want to remove from JumpCloud.
+The SystemID will be the 24 character string populated for the _id field.
+SystemID has an Alias of _id.
+This means you can leverage the PowerShell pipeline to populate this field automatically by calling a JumpCloud function that returns the SystemID.
+This is shown in EXAMPLE 2
+
+```yaml
+Type: System.String
+Parameter Sets: (All)
+Aliases: _id, id
+
+Required: True
+Position: 0
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
 ### -systemInsights
 Setting this value to $true will enable systemInsights and collect data for this system.
 Setting this value to $false will disable systemInsights and data collection for the system.
@@ -158,7 +158,9 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
+
 ### System.Boolean
+
 ## OUTPUTS
 
 ### System.Object

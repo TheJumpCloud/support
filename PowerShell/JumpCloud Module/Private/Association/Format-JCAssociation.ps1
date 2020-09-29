@@ -1,8 +1,7 @@
 Function Format-JCAssociation
 {
     Param (
-        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0)][ValidateNotNullOrEmpty()][string]$Uri
-        , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 1)][ValidateNotNullOrEmpty()][string]$Method
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0)][ValidateNotNullOrEmpty()][string]$Command
         , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 2)][ValidateNotNullOrEmpty()][object]$Source
         , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 3)][ValidateNotNullOrEmpty()][string]$TargetId
         , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 4)][ValidateNotNullOrEmpty()][bool]$IncludeInfo = $false
@@ -10,19 +9,19 @@ Function Format-JCAssociation
         , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 6)][ValidateNotNullOrEmpty()][bool]$IncludeVisualPath = $false
         , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 7)][ValidateNotNullOrEmpty()][bool]$Raw = $false
     )
-    Write-Debug ('[UrlTemplate]:' + $Uri)
+    Write-Debug ('[CommandTemplate]:' + $Command)
     $AssociationsOut = @()
-    $Associations = Invoke-JCApi -Method:($Method) -Paginate:($true) -Url:($Uri)
+    $Associations = Invoke-Expression -Command:($Command)
     If ($TargetId)
     {
-        $Associations = $Associations | Where-Object {$_.id -eq $TargetId}
+        $Associations = $Associations | Where-Object { $_.id -eq $TargetId }
     }
-    If ($Associations -and $Associations.PSObject.Properties.name -notcontains 'NoContent')
+    If (-not [System.String]::IsNullOrEmpty($Associations))
     {
         $Associations | ForEach-Object {
             #Region Determine if association is 'direct', 'indirect', or "direct`/indirect" and apply label
             $_.paths | ForEach-Object {
-                $PathCount = ($_.to | Measure-Object).Count
+                $PathCount = ($_.ToId | Measure-Object).Count
                 $associationType = If ($PathCount -eq 0 -or $PathCount -eq 1)
                 {
                     'direct'
@@ -44,7 +43,7 @@ Function Format-JCAssociation
             {
                 # Raw switch allows for the user to return an unformatted version of what the api endpoint returns
                 Add-Member -InputObject:($_) -NotePropertyName:('associationType') -NotePropertyValue:($associationType);
-                $_.paths | ForEach-Object {$_.PSObject.Properties.Remove('associationType')}
+                $_.paths | ForEach-Object { $_.PSObject.Properties.Remove('associationType') }
                 $AssociationsOut += $_
             }
             Else
@@ -65,11 +64,11 @@ Function Format-JCAssociation
                 };
                 # Dynamically get the rest of the properties and add them to the hash
                 $AssociationProperties = $_ |
-                    ForEach-Object {$_.PSObject.Properties.name} |
-                    Select-Object -Unique
+                ForEach-Object { $_.PSObject.Properties.name } |
+                Select-Object -Unique
                 If ($AssociationProperties)
                 {
-                    ForEach ($AssociationProperty In $AssociationProperties | Where-Object {$_ -notin ('id', 'type')})
+                    ForEach ($AssociationProperty In $AssociationProperties | Where-Object { $_ -notin ('id', 'type') })
                     {
                         $AssociationHash.Add($AssociationProperty, $_.($AssociationProperty)) | Out-Null
                     }
@@ -112,28 +111,30 @@ Function Format-JCAssociation
                     class AssociationMap
                     {
                         [string]$Id; [string]$Name; [string]$Type;
-                        AssociationMap([string]$i, [string]$n, [string]$t) {$this.Id = $i; $this.Name = $n; $this.Type = $t; }
+                        AssociationMap([string]$i, [string]$n, [string]$t) { $this.Id = $i; $this.Name = $n; $this.Type = $t; }
                     }
+                    $AssociationVisualPath = @()
+                    [AssociationMap]$AssociationVisualPathRecord = [AssociationMap]::new($Source.($Source.ById), $Source.($Source.ByName), $Source.TypeName.TypeNameSingular)
+                    $AssociationVisualPath += $AssociationVisualPathRecord
                     $_.paths | ForEach-Object {
-                        $AssociationVisualPath = @()
-                        [AssociationMap]$AssociationVisualPathRecord = [AssociationMap]::new($Source.($Source.ById), $Source.($Source.ByName), $Source.TypeName.TypeNameSingular)
-                        $AssociationVisualPath += $AssociationVisualPathRecord
-                        $_.to | ForEach-Object {
-                            $AssociationPathToItemInfo = Get-JCObject -Type:($_.type) -Id:($_.id)
-                            $AssociationVisualPath += [AssociationMap]::new($_.id, $AssociationPathToItemInfo.($AssociationPathToItemInfo.ByName), $_.type)
+                        $_ | ForEach-Object {
+                            If (-not [System.String]::IsNullOrEmpty($_))
+                            {
+                                $AssociationPathToItemInfo = Get-JCObject -Type:($_.ToType) -Id:($_.ToId)
+                                $AssociationVisualPath += [AssociationMap]::new($_.ToId, $AssociationPathToItemInfo.($AssociationPathToItemInfo.ByName), $_.ToType)
+                            }
                         }
-                        ($AssociationVisualPath | ForEach-Object {$_.PSObject.Properties.name} |
-                                Select-Object -Unique) |
-                            ForEach-Object {
-                            $KeyName_visualPath = 'visualPathBy' + $_
-                            $AssociationHash.($KeyName_visualPath) = ('"' + ($AssociationVisualPath.($_) -join '" -> "') + '"')
-                        }
+                    }
+                    ($AssociationVisualPath | ForEach-Object { $_.PSObject.Properties.name } | Select-Object -Unique) |
+                    ForEach-Object {
+                        $KeyName_visualPath = 'visualPathBy' + $_
+                        $AssociationHash.($KeyName_visualPath) = ('"' + ($AssociationVisualPath.($_) -join '" -> "') + '"')
                     }
                 }
                 # Convert the hashtable to an object where the Value has been populated
                 $AssociationsUpdated = [PSCustomObject]@{}
                 $AssociationHash.GetEnumerator() |
-                    ForEach-Object {If ($_.Value -or $_.key -in ($AssociationProperties) -or $_.key -in ('targetId', 'targetType')) {Add-Member -InputObject:($AssociationsUpdated) -NotePropertyName:($_.Key) -NotePropertyValue:($_.Value)}}
+                ForEach-Object { If ($_.Value -or $_.key -in ($AssociationProperties) -or $_.key -in ('targetId', 'targetType')) { Add-Member -InputObject:($AssociationsUpdated) -NotePropertyName:($_.Key) -NotePropertyValue:($_.Value) } }
                 $AssociationsOut += $AssociationsUpdated
             }
         }
