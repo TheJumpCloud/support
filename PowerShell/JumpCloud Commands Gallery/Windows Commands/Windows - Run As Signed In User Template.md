@@ -9,13 +9,18 @@ windows
 #### Command
 
 ```
-install-module RunAsUser -force
-$Command = {
-
-#Powershell Command Goes Here.
-
+# If PSModule RunAsUser is not installed, install it
+if ( -not (get-installedModule "RunAsUser" -ErrorAction SilentlyContinue)) {
+    install-module RunAsUser -force
 }
-invoke-ascurrentuser -scriptblock $Command
+else{
+    $Command = {
+
+    #Powershell Command Goes Here.
+
+    }
+    invoke-ascurrentuser -scriptblock $Command
+}
 ```
 
 #### Description
