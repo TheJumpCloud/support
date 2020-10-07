@@ -97,62 +97,63 @@
     'Update-JCModule', 'Update-JCUsersFromCSV', 'Get-JCEvent',
     'Get-JCEventCount', 'Get-JCEvent', 'Get-JCEventCount', 'Get-JCEvent',
     'Get-JCEventCount', 'Get-JCEvent', 'Get-JCEventCount', 'Get-JCEvent',
-    'Get-JCEventCount', 'Get-JCEvent', 'Get-JCEventCount', 'Get-JCEvent', 
+    'Get-JCEventCount', 'Get-JCEvent', 'Get-JCEventCount', 'Get-JCEvent',
     'Get-JCEventCount'
-    
+
     # Cmdlets to ex       port from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
     CmdletsToExport        = @()
-    
+
     # Variables to ex     port from this module
     VariablesToExport      = '*'
-    
+
     # Aliases to ex       port from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
     AliasesToExport        = 'New-JCAssociation'
-    
+
     # DSC resources to export from this module
     # DscResourcesToExport = @()
-    
+
     # List of all modules packaged with this module
     # ModuleList = @()
-    
+
     # List of all files packaged with this module
     # FileList = @()
-    
+
     # Private d           ata to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
     PrivateData            = @{
-    
+
         PSData = @{
-    
+
             # Ta        gs applied to t his mod ule. Th ese help  with module discovery in online galleries.
             Tags         = 'JumpCloud', 'DaaS', 'Jump', 'Cloud', 'Directory'
-    
+
             # A URL to   the license for this module.
             LicenseUri   = 'https://github.com/TheJumpCloud/support/blob/master/PowerShell/LICENSE'
-    
+
             # A URL to   the main website for this project.
             ProjectUri   = 'https://github.com/TheJumpCloud/support/wiki'
-    
+
             # A URL      to an icon representing this module.
             IconUri      = 'https://avatars1.githubusercontent.com/u/4927461?s=200&v=4'
-    
+
             # ReleaseNotes of this module
             ReleaseNotes = 'https://git.io/jc-pwsh-releasenotes'
-    
+
             # Prerelease string of this module
             # Prerelease = ''
-    
+
             # Flag to indicate whether the module requires explicit user acceptance for install/update/save
             # RequireLicenseAcceptance = $false
-    
+
             # External dependent modules of this module
             # ExternalModuleDependencies = @()
-    
+
         } # End of PSData hashtable
-   
+
     } # End of PrivateData hashtable
-    
+
     # HelpInfo            URI of this module
     HelpInfoURI            = 'https://github.com/TheJumpCloud/support/wiki'
-    
+
     # Default prefix for commands exported from this module. Override the default prefix using Import-Module -Prefix.
     # DefaultCommandPrefix = ''
+}
