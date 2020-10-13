@@ -37,10 +37,11 @@ done
 
 #--------------------Do not modify below this line--------------------
 
+MacOSMajorVersion=$(sw_vers -productVersion | cut -d '.' -f 1)
 MacOSMinorVersion=$(sw_vers -productVersion | cut -d '.' -f 2)
 MacOSPatchVersion=$(sw_vers -productVersion | cut -d '.' -f 3)
 
-if [[ $MacOSMinorVersion -lt 13 ]]; then
+if [[ $MacOSMajorVersion -eq 10 && $MacOSMinorVersion -lt 13 ]]; then
   echo "Error:  Target system is not on macOS 10.13"
   exit 2
 else
@@ -48,12 +49,12 @@ else
   # This function checks whether the given user is secure token enabled:
   secureTokenEnabledForUser() {
     # secure token is not supported on versions < 10.13
-    if [[ "$MacOSMinorVersion" -lt 13 ]]; then
+    if [[ "$MacOSMajorVersion" -eq 10 && "$MacOSMinorVersion" -lt 13 ]]; then
       return 1
     fi
 
     # on earlier versions of High Sierra, we should use dscl:
-    if [[ "$MacOSMinorVersion" -eq 13 && "$MacOSPatchVersion" -lt 4 ]]; then
+    if [[ "$MacOSMajorVersion" -eq 10 && "$MacOSMinorVersion" -eq 13 && "$MacOSPatchVersion" -lt 4 ]]; then
       if [[ $(dscl . read /Users/$1 AuthenticationAuthority | grep ";SecureToken;" -c) -gt 0 ]]; then
         return 0 # success
       fi
