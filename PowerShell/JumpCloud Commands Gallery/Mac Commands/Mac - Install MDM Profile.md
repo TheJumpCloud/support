@@ -1,6 +1,6 @@
 #### Name
 
-Mac - Install MDM Profile | v1.1 JCCG
+Mac - Install MDM Profile | v1.2 JCCG
 
 #### commandType
 
@@ -11,6 +11,9 @@ mac
 ```
 #!/bin/bash
 
+# Force Reinstall MDM Profile (Set to: true)
+reinstall=false
+
 # Verify JumpCloud MDM
 verify_jc_mdm () {
     # Check the system for the following profileIdentifier
@@ -18,7 +21,9 @@ verify_jc_mdm () {
     check=$(profiles -Lv | grep "name: $4" -4 | awk -F": " '/attribute: profileIdentifier/{print $NF}')
     if [[ $check == *$mdmID* ]] ; then
         echo "ProfileIdentifier: ${mdmID} found on system. MDM Verified"
-        exit 0
+        if [[ $reinstall = false ]]; then
+            exit 0
+        fi
     else
         echo "JumpCloud MDM profile not found on system."
         exit 1
@@ -47,7 +52,7 @@ fi
 
 
 # install the MDM Profile
-if [[ $MDMResult = false ]]; then
+if [[ $MDMResult = false ]] || [[ $reinstall = true ]]; then
     echo "Installing JumpCloud MDM Profile"
     /usr/bin/profiles -I -F /tmp/profile_jc.mobileconfig
 fi
