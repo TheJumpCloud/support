@@ -1,6 +1,6 @@
 #### Name
 
-Mac - Install MDM Profile | v1.1 JCCG
+Mac - Install MDM Profile | v1.2 JCCG
 
 #### commandType
 
@@ -11,7 +11,7 @@ mac
 ```
 #!/bin/bash
 
-# Force Reinstall MDM Profile (Set to true)
+# Force Reinstall MDM Profile (Set to: true)
 reinstall=false
 
 # Verify JumpCloud MDM
