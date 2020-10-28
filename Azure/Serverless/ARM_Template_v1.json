@@ -111,7 +111,7 @@
               },
               {
                 "name": "WEBSITE_CONTENTSHARE",
-                "value": "[toLower(variables('functionAppName'))]"
+                "value": "[toLower(variables('hostingPlanName'))]"
               },
               {
                 "name": "FUNCTIONS_EXTENSION_VERSION",
