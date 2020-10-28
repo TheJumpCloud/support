@@ -136,6 +136,17 @@
           }
         }
       },
+{
+            "type": "Microsoft.Web/sites/functions",
+            "apiVersion": "2018-11-01",
+            "name": "[concat(variables('functionAppName'), '/HttpTrigger1')]",
+            "location": "West US 2",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', variables('functionAppName'))]"
+            ],
+            "properties": {
+            }
+        },
       {
         "apiVersion": "2018-05-01-preview",
         "name": "[variables('applicationInsightsName')]",
