@@ -37,6 +37,8 @@
       },
         "JumpCloudAPIKey": {
         "type": "string",
+        "minLength": 40,
+        "maxLength": 40,
         "metadata": {
           "description": "Jumpcloud API Key."
         }
@@ -46,7 +48,13 @@
         "metadata": {
           "description": "Jumpcloud Org Id."
         }
-      }
+      },
+        "packageURL": {
+          "type": "string",
+          "metadata": {
+          "description": "Package URL for function"
+          }
+        }
   },
     "variables": {
       "functionAppName": "[parameters('functionappName')]",
@@ -54,6 +62,7 @@
       "jumpCloudAPIKey": "[parameters('JumpCloudAPIKey')]",
       "jumpCloudOrgId": "[parameters('JumpCloudOrgId')]",
       "applicationInsightsName": "[parameters('appName')]",
+      "packageURL": "[parameters('packageURL')]",
       "storageAccountName": "[concat(uniquestring(resourceGroup().id), 'azfunctions')]",
       "insightsLocation": {
         "AzureCloud": "eastus",
@@ -141,23 +150,18 @@
           }
         }
       },
-{
-            "type": "Microsoft.Web/sites/functions",
-            "apiVersion": "2018-11-01",
-            "name": "[concat(variables('functionAppName'), '/HttpTrigger1')]",
-            "location": "West US 2",
+                {
+            "name": "MSDeploy",
+            "type": "extensions",
+            "location": "[resourceGroup().location]",
+            "apiVersion": "2015-08-01",
             "dependsOn": [
-                "[resourceId('Microsoft.Web/sites', variables('functionAppName'))]"
+              "[concat('Microsoft.Web/sites/', variables('functionAppName'))]"
             ],
             "properties": {
-                "script_root_path_href": "https://jcpowershellfunctionapp.azurewebsites.net/admin/vfs/site/wwwroot/HttpTrigger4/",
-                "script_href": "https://jcpowershellfunctionapp.azurewebsites.net/admin/vfs/site/wwwroot/HttpTrigger4/run.ps1",
-                "config_href": "https://jcpowershellfunctionapp.azurewebsites.net/admin/vfs/site/wwwroot/HttpTrigger4/function.json",
-                "href": "https://jcpowershellfunctionapp.azurewebsites.net/admin/functions/HttpTrigger4",
-                "config": {},
-                "test_data": "{\"method\":\"post\",\"queryStringParams\":[],\"headers\":[],\"body\":{\"name\":\"Azure\"}}"
+              "packageUri": "[variables('packageURL')]"
             }
-        },
+          },
       {
         "apiVersion": "2018-05-01-preview",
         "name": "[variables('applicationInsightsName')]",
