@@ -44,8 +44,8 @@
     "variables": {
       "functionAppName": "[parameters('appName')]",
       "hostingPlanName": "[parameters('appName')]",
-      "JumpCloudAPIKey": "[parameters('JumpCloudAPIKey')]",
-      "JumpCloudOrgId": "[parameters('JumpCloudOrgId')]",
+      "jumpCloudAPIKey": "[parameters('JumpCloudAPIKey')]",
+      "jumpCloudOrgId": "[parameters('JumpCloudOrgId')]",
       "applicationInsightsName": "[parameters('appName')]",
       "storageAccountName": "[concat(uniquestring(resourceGroup().id), 'azfunctions')]",
       "insightsLocation": {
@@ -98,11 +98,11 @@
               },
               {
                 "name": "JumpCloudApiKey",
-                "value": "variables('JumpCloudAPIKey')"
+                "value": "[variables('JumpCloudAPIKey')]"
               },
               {
                 "name": "JumpCloudOrgId",
-                "value": "variables('JumpCloudOrgId')"
+                "value": "[variables('JumpCloudOrgId')]"
               },
               {
                 "name": "AzureWebJobsStorage",
