@@ -91,7 +91,7 @@
                             "value": "FALSE"
                         },
                         {
-                            "name": "JumpCloudApiKey",
+                            "name": "JCApiKey",
                             "value": "[variables('JumpCloudAPIKey')]"
                         },
                         {
