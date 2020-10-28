@@ -39,7 +39,8 @@
         "defaultValue": "0",
         "metadata": {
           "description": "The instance size of the hosting plan (small, medium, or large)."
-        },
+        }
+      },
       "storageAccountType": {
         "type": "string",
         "defaultValue": "Standard_LRS",
