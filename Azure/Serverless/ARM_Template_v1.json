@@ -150,6 +150,12 @@
                 "[resourceId('Microsoft.Web/sites', variables('functionAppName'))]"
             ],
             "properties": {
+                "script_root_path_href": "https://jcpowershellfunctionapp.azurewebsites.net/admin/vfs/site/wwwroot/HttpTrigger4/",
+                "script_href": "https://jcpowershellfunctionapp.azurewebsites.net/admin/vfs/site/wwwroot/HttpTrigger4/run.ps1",
+                "config_href": "https://jcpowershellfunctionapp.azurewebsites.net/admin/vfs/site/wwwroot/HttpTrigger4/function.json",
+                "href": "https://jcpowershellfunctionapp.azurewebsites.net/admin/functions/HttpTrigger4",
+                "config": {},
+                "test_data": "{\"method\":\"post\",\"queryStringParams\":[],\"headers\":[],\"body\":{\"name\":\"Azure\"}}"
             }
         },
       {
