@@ -9,6 +9,13 @@
           "description": "The name of the function app that you wish to create."
         }
       },
+            "functionappName": {
+        "type": "string",
+        "defaultValue": "[concat('fn', uniqueString(resourceGroup().id))]",
+        "metadata": {
+          "description": "The name of the function app that you wish to create."
+        }
+      },
       "storageAccountType": {
         "type": "string",
         "defaultValue": "Standard_LRS",
@@ -42,6 +49,7 @@
       }
   },
     "variables": {
+      "functionAppName": "[parameters('functionappName')]",
       "hostingPlanName": "[parameters('appName')]",
       "jumpCloudAPIKey": "[parameters('JumpCloudAPIKey')]",
       "jumpCloudOrgId": "[parameters('JumpCloudOrgId')]",
@@ -80,7 +88,7 @@
       {
         "apiVersion": "2019-08-01",
         "type": "Microsoft.Web/sites",
-        "name": "[variables('hostingPlanName')]",
+        "name": "[variables('functionAppName')]",
         "location": "[parameters('location')]",
         "kind": "functionapp",
         "dependsOn": [
@@ -111,7 +119,7 @@
               },
               {
                 "name": "WEBSITE_CONTENTSHARE",
-                "value": "[toLower(variables('hostingPlanName'))]"
+                "value": "[toLower(variables('functionAppName'))]"
               },
               {
                 "name": "FUNCTIONS_EXTENSION_VERSION",
@@ -136,10 +144,10 @@
 {
             "type": "Microsoft.Web/sites/functions",
             "apiVersion": "2018-11-01",
-            "name": "[concat(variables('hostingPlanName'), '/HttpTrigger1')]",
+            "name": "[concat(variables('functionAppName'), '/HttpTrigger1')]",
             "location": "West US 2",
             "dependsOn": [
-                "[resourceId('Microsoft.Web/sites', variables('hostingPlanName'))]"
+                "[resourceId('Microsoft.Web/sites', variables('functionAppName'))]"
             ],
             "properties": {
             }
