@@ -14,8 +14,6 @@ windows
 $StartTime = '11/05/2020 08:00:00'
 $EndTime = '11/05/2020 08:20:00'
 $EventIdFilter = ('4624', '4625')
-# https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/event-4624
-# https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/event-4625
 
 #------ Do not modify below this line ---------------
 
@@ -52,6 +50,10 @@ ElevatedToken : Yes
 AccountName   : My-Windows-PC$
 ProcessName   : C:\Windows\System32\services.exe
 ```
+
+For more details about these event records see:
+* https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/event-4624
+* https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/event-4625
 
 #### *Import This Command*
 
