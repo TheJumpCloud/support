@@ -20,12 +20,13 @@ $EventIdFilter = ('4624', '4625')
 $Events = Get-WinEvent -FilterHashtable @{ LogName = 'Security'; Id = $EventIdFilter; StartTime = $StartTime; EndTime = $EndTime; } | Where-Object { $_.Message | Select-String -Pattern:('(Logon Type:)(.*?)(5)') } | Sort-Object CreatedTimestamp
 $Events | ForEach-Object {
     [PSCustomObject]@{
-        Type            = Switch ($_.Id) { '4624' { 'Login Success' } '4625' { 'Login Failure' } }
+        Type          = Switch ($_.Id) { '4624' { 'Login Success' } '4625' { 'Login Failure' } }
         MachineName   = $_.MachineName
         TimeCreated   = $_.TimeCreated
         ElevatedToken = ($_.Message | Select-String -Pattern:('(Elevated Token:)(.*?)(\n)')).Matches.Value.Replace('Elevated Token:', '').Trim()
-        AccountName   = ($_.Message | Select-String -Pattern:('(Account Name:)(.*?)(\n)')).Matches.Value.Replace('Account Name:','').Trim()
-        ProcessName   = ($_.Message | Select-String -Pattern:('(Process Name:)(.*?)(\n)')).Matches.Value.Replace('Process Name:','').Trim()
+        AccountName   = ($_.Message | Select-String -AllMatches -Pattern:('(Account Name:)(.*?)(\n)')).Matches.Value[1].Replace('Account Name:', '').Trim()
+        AccountDomain   = ($_.Message | Select-String -AllMatches -Pattern:('(Account Domain:)(.*?)(\n)')).Matches.Value[1].Replace('Account Domain:', '').Trim()
+        ProcessName   = ($_.Message | Select-String -Pattern:('(Process Name:)(.*?)(\n)')).Matches.Value.Replace('Process Name:', '').Trim()
     }
 }
 ```
@@ -40,14 +41,16 @@ Type          : Login Success
 MachineName   : My-Windows-PC
 TimeCreated   : 11/5/2020 08:01:55
 ElevatedToken : Yes
-AccountName   : My-Windows-PC$
+AccountName   : SYSTEM
+AccountDomain : NT AUTHORITY
 ProcessName   : C:\Windows\System32\services.exe
 
 Type          : Login Success
 MachineName   : My-Windows-PC
 TimeCreated   : 11/5/2020 08:14:59
 ElevatedToken : Yes
-AccountName   : My-Windows-PC$
+AccountName   : SYSTEM
+AccountDomain : NT AUTHORITY
 ProcessName   : C:\Windows\System32\services.exe
 ```
 
