@@ -40,6 +40,13 @@ The command returns:
 ```
 Type          : Login Success
 MachineName   : My-Windows-PC
+TimeCreated   : 11/5/2020 08:01:55
+ElevatedToken : Yes
+AccountName   : My-Windows-PC$
+ProcessName   : C:\Windows\System32\services.exe
+
+Type          : Login Success
+MachineName   : My-Windows-PC
 TimeCreated   : 11/5/2020 08:14:59
 ElevatedToken : Yes
 AccountName   : My-Windows-PC$
