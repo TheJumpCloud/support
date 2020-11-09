@@ -34,7 +34,7 @@ $Events | ForEach-Object {
 
 #### Description
 
-Running this command will return events generated for a *SERVICE USER* when a logon session is created or if an account logon attempt failed when the account was already locked out.
+Running this command will return events generated for a **SERVICE USER** when a logon session is created or if an account logon attempt failed when the account was already locked out.
 
 The command returns:
 ```
@@ -51,5 +51,5 @@ ProcessName   : C:\Windows\System32\services.exe
 To import this command into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
 
 ```
-Import-JCCommand -URL 'https://git.io/jccg-windows-getserviceaccountlogonattempts.md'
+Import-JCCommand -URL 'https://git.io/JkUu3'
 ```
