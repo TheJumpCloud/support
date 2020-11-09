@@ -62,3 +62,5 @@ To import this command into your JumpCloud tenant run the below command using th
 ```
 Import-JCCommand -URL 'https://git.io/JkUu3'
 ```
+
+![Windows - Get Service Account Logon Attempts](https://github.com/TheJumpCloud/support/blob/master/PowerShell/JumpCloud%20Commands%20Gallery/Files/Windows%20-%20Get%20Service%20Account%20Logon%20Attempts.png?raw=true)
