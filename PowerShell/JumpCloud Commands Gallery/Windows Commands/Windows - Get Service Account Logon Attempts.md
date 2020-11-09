@@ -34,7 +34,7 @@ $Events | ForEach-Object {
 
 #### Description
 
-Running this command will return events generated for a **SERVICE USER** when a logon session is created or if an account logon attempt failed when the account was already locked out.
+Running this command will return events generated for when the Logon Title is **SERVICE** when a logon session is created or if an account logon attempt failed when the account was already locked out.
 
 The command returns:
 ```
