@@ -1,17 +1,17 @@
 #### Latest Version
 
 ```
-1.18.2
+1.18.3
 ```
 
 #### Banner Current
 
 ```
-`*-JCAssociation` functions have been updated to use the `JumpCloud.SDK.V2` powershell module.
+`JumpCloud.SDK.DirectoryInsights`, `JumpCloud.SDK.V1`, and `JumpCloud.SDK.V2` have been updated to include ParameterSet validation.
 ```
 
 #### Banner Old
 
 ```
-`*-JCAssociation` functions have been updated to use the `JumpCloud.SDK.V2` powershell module.
+`JumpCloud.SDK.DirectoryInsights`, `JumpCloud.SDK.V1`, and `JumpCloud.SDK.V2` have been updated to include ParameterSet validation.
 ```
