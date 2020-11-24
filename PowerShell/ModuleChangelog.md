@@ -4,13 +4,14 @@ Release Date: November 10, 2020
 
 #### RELEASE NOTES
 
-`JumpCloud.SDK.DirectoryInsights`, `JumpCloud.SDK.V1`, and `JumpCloud.SDK.V2` have been updated to include ParameterSet validation.
+Internal improvements.
 
 #### FEATURES
 
 #### IMPROVEMENTS
 
-`JumpCloud.SDK.DirectoryInsights`, `JumpCloud.SDK.V1`, and `JumpCloud.SDK.V2` have been updated to include ParameterSet validation.
+* `JumpCloud.SDK.DirectoryInsights`, `JumpCloud.SDK.V1`, and `JumpCloud.SDK.V2` have been updated to include ParameterSet validation.
+* User agent has been updated to accommodate for JcSlackBot tracking.
 
 #### BUG FIXES
 
