@@ -48,39 +48,42 @@ If ($RequiredModulesRepo -ne 'PSGallery')
         $PSDefaultParameterValues["$($_.Name):AllowPrerelease"] = $true
     }
 }
-# Install required modules
-ForEach ($RequiredModule In $Psd1.RequiredModules)
+If (-not [System.String]::IsNullOrEmpty($Psd1))
 {
-    Write-Host("[status]Setting up dependency '$RequiredModule'")
-    # Check to see if the module is installed
-    If ([System.String]::IsNullOrEmpty((Get-InstalledModule).Where( { $_.Name -eq $RequiredModule })))
+    # Install required modules
+    ForEach ($RequiredModule In $Psd1.RequiredModules)
     {
-        Write-Host("[status]Installing '$RequiredModule' from '$RequiredModulesRepo'")
-        Install-Module -Force -Name:($RequiredModule) -Scope:('CurrentUser')
+        Write-Host("[status]Setting up dependency '$RequiredModule'")
+        # Check to see if the module is installed
+        If ([System.String]::IsNullOrEmpty((Get-InstalledModule).Where( { $_.Name -eq $RequiredModule })))
+        {
+            Write-Host("[status]Installing '$RequiredModule' from '$RequiredModulesRepo'")
+            Install-Module -Force -Name:($RequiredModule) -Scope:('CurrentUser')
+        }
+        # Get-Module -Refresh -ListAvailable
+        If ([System.String]::IsNullOrEmpty((Get-Module).Where( { $_.Name -eq $RequiredModule })))
+        {
+            Write-Host("[status]Importing '$RequiredModule'")
+            Import-Module -Name:($RequiredModule) -Force
+        }
     }
-    # Get-Module -Refresh -ListAvailable
-    If ([System.String]::IsNullOrEmpty((Get-Module).Where( { $_.Name -eq $RequiredModule })))
+    # Load current module
+    If ([System.String]::IsNullOrEmpty((Get-Module).Where( { $_.Name -eq $ModuleName })))
     {
-        Write-Host("[status]Importing '$RequiredModule'")
-        Import-Module -Name:($RequiredModule) -Force
+        Write-Host("[status]Importing '$ModuleName'")
+        Import-Module ($FilePath_psd1) -Force
     }
-}
-# Load current module
-If ([System.String]::IsNullOrEmpty((Get-Module).Where( { $_.Name -eq $ModuleName })))
-{
-    Write-Host("[status]Importing '$ModuleName'")
-    Import-Module ($FilePath_psd1) -Force
-}
-# Load "Deploy" functions
-$DeployFunctions = @(Get-ChildItem -Path:($PSScriptRoot + '/Functions/*.ps1') -Recurse)
-Foreach ($DeployFunction In $DeployFunctions)
-{
-    Try
+    # Load "Deploy" functions
+    $DeployFunctions = @(Get-ChildItem -Path:($PSScriptRoot + '/Functions/*.ps1') -Recurse)
+    Foreach ($DeployFunction In $DeployFunctions)
     {
-        . $DeployFunction.FullName
-    }
-    Catch
-    {
-        Write-Error -Message:('Failed to import function: ' + $DeployFunction.FullName)
+        Try
+        {
+            . $DeployFunction.FullName
+        }
+        Catch
+        {
+            Write-Error -Message:('Failed to import function: ' + $DeployFunction.FullName)
+        }
     }
 }
