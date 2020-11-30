@@ -6,6 +6,7 @@ Param(
     , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 4)][System.String]$RequiredModulesRepo = 'PSGallery'
 )
 $global:RequiredModulesRepo = $RequiredModulesRepo;
+Import-Module -Name:('PowerShellGet', 'PackageManagement') -Force
 Get-Command -Module:('PowerShellGet', 'PackageManagement') -ParameterName 'Repository' | ForEach-Object {
     $PSDefaultParameterValues["$($_.Name):Repository"] = $RequiredModulesRepo
 }
