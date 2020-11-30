@@ -5,7 +5,7 @@ If (!(Get-PackageProvider -Name:('NuGet') -ListAvailable -ErrorAction:('Silently
     Install-PackageProvider -Name:('NuGet') -Scope:('CurrentUser') -Force
 }
 # Install dependent modules
-$DependentModules = @('PSScriptAnalyzer', 'PlatyPS')
+$DependentModules = @('PowerShellGet', 'PackageManagement', 'PSScriptAnalyzer', 'PlatyPS')
 ForEach ($DependentModule In $DependentModules)
 {
     Write-Host("[status]Setting up dependency '$DependentModule'")
