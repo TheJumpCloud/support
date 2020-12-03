@@ -203,6 +203,13 @@ EOF
 $SECURETOKEN_ADMIN_USERNAME;$SECURETOKEN_ADMIN_PASSWORD
 EOF
   # The file JumpCloud-SecureToken-Creds.txt IS DELETED during the agent install process
-  installer -pkg /tmp/jumpcloud-agent.pkg -target / &
+  installer -pkg /tmp/jumpcloud-agent.pkg -target /
+  result=$(echo "$?")
+  if [[ $result -eq "0" ]];then
+    echo "JumpCloud Agent Installed Successfully"
+  else
+    echo "JumpCloud Agent Install Failed"
+    exit 1
+  fi
 fi
 exit 0
