@@ -88,6 +88,20 @@
 
 $Path = 'C:\Temp\jcorgbackup'
 $Types = ('SystemUser', 'UserGroup', 'LdapServer')#, 'LdapServer', 'RadiusServer', 'Application', 'System', 'SystemGroup', 'Policy', 'Command', 'SoftwareApp', 'Directory')
+# Map to define how jcassoc & jcsdk types relate
+$map = @{
+    Application  = 'application';
+    Command      = 'command';
+    aaa          = 'g_suite';
+    LdapServer   = 'ldap_server';
+    bbb          = 'office_365';
+    Policy       = 'policy';
+    RadiusServer = 'radius_server';
+    System       = 'system';
+    SystemGroup  = 'system_group';
+    SystemUser   = 'user';
+    UserGroup    = 'user_group';
+}
 
 $Jobs = $Types | ForEach-Object {
     $JumpCloudType = $_
@@ -110,6 +124,30 @@ $Jobs = $Types | ForEach-Object {
 $JobStatus = Wait-Job -Id:($Jobs.Id)
 $JobStatus | Receive-Job
 
+
+
+# Get the backup files we created earlier
+$files = Get-ChildItem $Path | Where-Object { $_.BaseName -in $Types }
+$JobsAssoc = $files | ForEach-Object {
+# Foreach ($file in $files) {
+    $file = $_
+    Start-Job -ScriptBlock:( {
+        param ($Path, $Types, $map, $file);
+        $assoc = @()
+        # Get content from the file
+        $jsonContent = Get-Content $file | ConvertFrom-Json
+        foreach ($item in $jsonContent){
+            $result = Get-JCAssociation -type $map["$($item.JcSdkType)"] -id $($item.id)
+            if ($result) {
+                $assoc += $result
+            }
+        }
+        # Write out the results
+        $assoc | ConvertTo-Json -Depth: 100 | Out-File -FilePath:("$file-associations.json") -Force
+    }) -ArgumentList:($Path, $Types, $map, $file)
+}
+$JobStatus = Wait-Job -Id:($JobsAssoc.Id)
+$JobStatus | Receive-Job
 
 # # Associations
 # # Read files
