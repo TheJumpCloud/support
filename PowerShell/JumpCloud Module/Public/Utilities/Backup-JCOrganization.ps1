@@ -92,9 +92,9 @@ $Types = ('SystemUser', 'UserGroup', 'LdapServer')#, 'LdapServer', 'RadiusServer
 $map = @{
     Application  = 'application';
     Command      = 'command';
-    aaa          = 'g_suite';
+    # aaa          = 'g_suite';
     LdapServer   = 'ldap_server';
-    bbb          = 'office_365';
+    # bbb          = 'office_365';
     Policy       = 'policy';
     RadiusServer = 'radius_server';
     System       = 'system';
@@ -129,7 +129,6 @@ $JobStatus | Receive-Job
 # Get the backup files we created earlier
 $files = Get-ChildItem $Path | Where-Object { $_.BaseName -in $Types }
 $JobsAssoc = $files | ForEach-Object {
-# Foreach ($file in $files) {
     $file = $_
     Start-Job -ScriptBlock:( {
         param ($Path, $Types, $map, $file);
@@ -143,7 +142,9 @@ $JobsAssoc = $files | ForEach-Object {
             }
         }
         # Write out the results
-        $assoc | ConvertTo-Json -Depth: 100 | Out-File -FilePath:("$file-associations.json") -Force
+        if (-not [System.String]::IsNullOrEmpty($assoc)){
+            $assoc | ConvertTo-Json -Depth: 100 | Out-File -FilePath:("$file-associations.json") -Force
+        }
     }) -ArgumentList:($Path, $Types, $map, $file)
 }
 $JobStatus = Wait-Job -Id:($JobsAssoc.Id)
