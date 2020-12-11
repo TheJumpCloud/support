@@ -27,7 +27,7 @@ Function Backup-JcSdkOrganization
         ${Path},
 
         [Parameter()]
-        [ValidateSet("All", "Applications", "Commands", "Directories", "LdapServers", "Policies", "RadiusServers", "SoftwareApps", "System", "SystemGroup", "SystemUser", "UserGroup", "Settings")]
+        [ValidateSet("All", "Applications", "Commands", "Directories", "LdapServers", "Policies", "RadiusServer", "SoftwareApp", "System", "SystemGroup", "SystemUser", "UserGroup", "Settings")]
         [System.String[]]
         ${Type},
         # Add validate path
