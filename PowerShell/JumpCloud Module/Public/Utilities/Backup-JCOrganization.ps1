@@ -1,4 +1,3 @@
-# Backup-JcSdkOrganization
 # <#
 # .Synopsis
 # The function exports objects from your JumpCloud organization to local json files
@@ -86,8 +85,10 @@
 #     }
 #     Process
 #     {
+
 $Path = 'C:\Temp\jcorgbackup'
-$Types = ('SystemUser', 'UserGroup')#, 'LdapServer', 'RadiusServer', 'Application', 'System', 'SystemGroup', 'Policy', 'Command', 'SoftwareApp', 'Directory')
+$Types = ('SystemUser', 'UserGroup', 'LdapServer')#, 'LdapServer', 'RadiusServer', 'Application', 'System', 'SystemGroup', 'Policy', 'Command', 'SoftwareApp', 'Directory')
+
 $Jobs = $Types | ForEach-Object {
     $JumpCloudType = $_
     Start-Job -ScriptBlock:( {
@@ -108,6 +109,16 @@ $Jobs = $Types | ForEach-Object {
 }
 $JobStatus = Wait-Job -Id:($Jobs.Id)
 $JobStatus | Receive-Job
+
+
+# # Associations
+# # Read files
+# If (-not [System.String]::IsNullOrEmpty($Associations))
+# {
+#     Get-JCAssociation -Type: -Id -TargetType
+# }
+
+
 #     }
 #     End
 #     {
