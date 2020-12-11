@@ -26,6 +26,10 @@ Function Backup-JcSdkOrganization
         # Specify output file path for backup files
         ${Path},
 
+        [Parameter()]
+        [ValidateSet("All", "Applications", "Commands", "Directories", "LdapServers", "Policies", "RadiusServers", "SoftwareApps", "System", "SystemGroup", "SystemUser", "UserGroup", "Settings")]
+        [System.String[]]
+        ${Type},
         # Add validate path
         # [-All] [-Applications] [-Commands] [-Directories] [-LdapServers] [-Policies] [-RadiusServers] [-SoftwareApps] [-System] [-SystemGroup] [-SystemUser] [-UserGroup] [-Settings]
 
@@ -89,7 +93,13 @@ Function Backup-JcSdkOrganization
         if (-not (Test-Path $Path)){
             New-Item -Path "$Path" -Name "$($Path.BaseName)" -ItemType "directory"
         }
-        $Types = ('SystemUser', 'UserGroup', 'LdapServer')#, 'LdapServer', 'RadiusServer', 'Application', 'System', 'SystemGroup', 'Policy', 'Command', 'SoftwareApp', 'Directory')
+        if ($Type -eq "All"){
+            $Types = ('SystemUser', 'UserGroup', 'LdapServer', 'LdapServer', 'RadiusServer', 'Application', 'System', 'SystemGroup', 'Policy', 'Command', 'SoftwareApp', 'Directory')
+        }
+        else {
+            $Types = $Type
+        }
+        # $Types = ('SystemUser', 'UserGroup', 'LdapServer')#, 'LdapServer', 'RadiusServer', 'Application', 'System', 'SystemGroup', 'Policy', 'Command', 'SoftwareApp', 'Directory')
         # Map to define how jcassoc & jcsdk types relate
         $map = @{
             Application  = 'application';
