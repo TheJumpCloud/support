@@ -27,7 +27,7 @@ Function Backup-JcSdkOrganization
         ${Path},
 
         [Parameter()]
-        [ValidateSet("All", "Applications", "Commands", "Directories", "LdapServers", "Policies", "RadiusServer", "SoftwareApp", "System", "SystemGroup", "SystemUser", "UserGroup", "Settings")]
+        [ValidateSet("All", "Applications", "Command", "Directory", "LdapServer", "Policy", "RadiusServer", "SoftwareApp", "System", "SystemGroup", "SystemUser", "UserGroup", "Settings")]
         [System.String[]]
         ${Type},
         # Add validate path
@@ -94,7 +94,7 @@ Function Backup-JcSdkOrganization
             New-Item -Path "$Path" -Name "$($Path.BaseName)" -ItemType "directory"
         }
         if ($Type -eq "All"){
-            $Types = ('SystemUser', 'UserGroup', 'LdapServer', 'LdapServer', 'RadiusServer', 'Application', 'System', 'SystemGroup', 'Policy', 'Command', 'SoftwareApp', 'Directory')
+            $Types = ('SystemUser', 'UserGroup', 'LdapServer', 'RadiusServer', 'Application', 'System', 'SystemGroup', 'Policy', 'Command', 'SoftwareApp', 'Directory')
         }
         else {
             $Types = $Type
@@ -161,6 +161,13 @@ Function Backup-JcSdkOrganization
         }
         $JobStatus = Wait-Job -Id:($JobsAssoc.Id)
         $JobStatus | Receive-Job
+        $time = get-date -UFormat %m-%d-%Y-%T
+        $compress = @{
+            path = $Path
+            CompressionLevel = "Fastest"
+            Destination = "$Path_$time.zip"
+        }
+        Compress-Archive @compress
 
     }
     End
