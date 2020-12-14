@@ -1,4 +1,11 @@
 <#
+TODO
+    1. Make "All" a switch parameter
+    2. Through parameter sets if "All" is used then you cant use "Type" and vice versa
+    3. Should association back up all associations for item or just the associations possible within the type parameter?
+#>
+
+<#
 .Synopsis
 The function exports objects from your JumpCloud organization to local json files
 .Description
@@ -15,9 +22,9 @@ PS C:\> {{ Add code here }}
 .Notes
 
 .Link
-https://github.com/TheJumpCloud/jcapi-powershell/tree/master/SDKs/PowerShell/JumpCloud.SDK.V1/docs/exports/Backup-JcSdkOrganization.md
+https://github.com/TheJumpCloud/support/tree/master/PowerShell/JumpCloud%20Module/Docs/Backup-JCOrganization.md
 #>
-Function Backup-JcSdkOrganization
+Function Backup-JCOrganization
 {
     [CmdletBinding(DefaultParameterSetName = 'Backup', PositionalBinding = $false)]
     Param(
@@ -27,156 +34,114 @@ Function Backup-JcSdkOrganization
         ${Path},
 
         [Parameter()]
-        [ValidateSet("All", "Applications", "Command", "Directory", "LdapServer", "Policy", "RadiusServer", "SoftwareApp", "System", "SystemGroup", "SystemUser", "UserGroup", "Settings")]
+        [ValidateSet('All', 'SystemGroup', 'UserGroup', 'System', 'SystemUser')]
         [System.String[]]
+        # Specify the type of JumpCloud objects you want to backup.
         ${Type},
-        # Add validate path
-        # [-All] [-Applications] [-Commands] [-Directories] [-LdapServers] [-Policies] [-RadiusServers] [-SoftwareApps] [-System] [-SystemGroup] [-SystemUser] [-UserGroup] [-Settings]
 
-        [Parameter(DontShow)]
-        [JumpCloud.SDK.V1.Category('Runtime')]
-        [System.Management.Automation.SwitchParameter]
-        # Wait for .NET debugger to attach
-        ${Break},
-
-        [Parameter(DontShow)]
-        [ValidateNotNull()]
-        [JumpCloud.SDK.V1.Category('Runtime')]
-        [JumpCloud.SDK.V1.Runtime.SendAsyncStep[]]
-        # SendAsync Pipeline Steps to be appended to the front of the pipeline
-        ${HttpPipelineAppend},
-
-        [Parameter(DontShow)]
-        [ValidateNotNull()]
-        [JumpCloud.SDK.V1.Category('Runtime')]
-        [JumpCloud.SDK.V1.Runtime.SendAsyncStep[]]
-        # SendAsync Pipeline Steps to be prepended to the front of the pipeline
-        ${HttpPipelinePrepend},
-
-        [Parameter(DontShow)]
-        [JumpCloud.SDK.V1.Category('Runtime')]
-        [System.Uri]
-        # The URI for the proxy server to use
-        ${Proxy},
-
-        [Parameter(DontShow)]
-        [ValidateNotNull()]
-        [JumpCloud.SDK.V1.Category('Runtime')]
-        [System.Management.Automation.PSCredential]
-        # Credentials for a proxy server to use for the remote call
-        ${ProxyCredential},
-
-        [Parameter(DontShow)]
-        [JumpCloud.SDK.V1.Category('Runtime')]
-        [System.Management.Automation.SwitchParameter]
-        # Use the default credentials for the proxy
-        ${ProxyUseDefaultCredentials}
+        [Parameter()]
+        [switch]
+        # Include to backup object type associations
+        ${Associations}
     )
     Begin
     {
-        $Results = @()
-        $PSBoundParameters.Add('HttpPipelineAppend', {
-                param($req, $callback, $next)
-                # call the next step in the Pipeline
-                $ResponseTask = $next.SendAsync($req, $callback)
-                $global:JCHttpRequest = $req
-                $global:JCHttpRequestContent = If (-not [System.String]::IsNullOrEmpty($req.Content)) { $req.Content.ReadAsStringAsync() }
-                $global:JCHttpResponse = $ResponseTask
-                # $global:JCHttpResponseContent = If (-not [System.String]::IsNullOrEmpty($ResponseTask.Result.Content)) { $ResponseTask.Result.Content.ReadAsStringAsync() }
-                Return $ResponseTask
-            }
-        )
+        $PSBoundParameters.Path = "$($PSBoundParameters.Path)/JumpCloud"
+        # If the path does not exist, create it
+        If (-not (Test-Path $PSBoundParameters.Path))
+        {
+            New-Item -Path:($PSBoundParameters.Path) -Name:$($PSBoundParameters.Path.BaseName) -ItemType:('directory')
+        }
+        # When Type = All use the rest of the existing options
+        $Types = If ($PSBoundParameters.Type -eq 'All')
+        {
+
+            $Command = Get-Command $MyInvocation.MyCommand
+            $Command.Parameters.Type.Attributes.ValidValues | Where-Object { $_ -ne 'All' }
+        }
+        Else
+        {
+            $PSBoundParameters.Type
+        }
     }
     Process
     {
-        # if the path does not exist, create it
-        if (-not (Test-Path $Path)){
-            New-Item -Path "$Path" -Name "$($Path.BaseName)" -ItemType "directory"
-        }
-        if ($Type -eq "All"){
-            $Types = ('SystemUser', 'UserGroup', 'LdapServer', 'RadiusServer', 'Application', 'System', 'SystemGroup', 'Policy', 'Command', 'SoftwareApp', 'Directory')
-        }
-        else {
-            $Types = $Type
-        }
-        # $Types = ('SystemUser', 'UserGroup', 'LdapServer')#, 'LdapServer', 'RadiusServer', 'Application', 'System', 'SystemGroup', 'Policy', 'Command', 'SoftwareApp', 'Directory')
-        # Map to define how jcassoc & jcsdk types relate
-        $map = @{
-            Application  = 'application';
-            Command      = 'command';
-            # aaa          = 'g_suite';
-            LdapServer   = 'ldap_server';
-            # bbb          = 'office_365';
-            Policy       = 'policy';
-            RadiusServer = 'radius_server';
-            System       = 'system';
-            SystemGroup  = 'system_group';
-            SystemUser   = 'user';
-            UserGroup    = 'user_group';
-        }
-
+        # Foreach type start a new job and retreive object records
         $Jobs = $Types | ForEach-Object {
             $JumpCloudType = $_
             Start-Job -ScriptBlock:( {
-                    param ($Path, $JumpCloudType);
+                    Param ($Path, $JumpCloudType);
                     $CommandTemplate = "Get-JcSdk{0}"
                     $Result = Invoke-Expression -Command:($CommandTemplate -f $JumpCloudType)
                     Write-Debug ('HttpRequest: ' + $JCHttpRequest);
                     Write-Debug ('HttpRequestContent: ' + $JCHttpRequestContent.Result);
                     Write-Debug ('HttpResponse: ' + $JCHttpResponse.Result);
-                    # Write-Debug ('HttpResponseContent: ' + $JCHttpResponseContent.Result);
-
                     # Write output to file
                     $Result `
                     | Select-Object @{Name = 'JcSdkType'; Expression = { $JumpCloudType } }, * `
                     | ConvertTo-Json -Depth:(100) `
                     | Out-File -FilePath:("$($Path)/$($JumpCloudType).json") -Force
-                }) -ArgumentList:($Path, $JumpCloudType)
+                }) -ArgumentList:($PSBoundParameters.Path, $JumpCloudType)
         }
         $JobStatus = Wait-Job -Id:($Jobs.Id)
         $JobStatus | Receive-Job
-
-
-
-        # Get the backup files we created earlier
-        $files = Get-ChildItem $Path | Where-Object { $_.BaseName -in $Types }
-        $JobsAssoc = $files | ForEach-Object {
-            $file = $_
-            Start-Job -ScriptBlock:( {
-                param ($Path, $Types, $map, $file);
-                $assoc = @()
-                # Get content from the file
-                $jsonContent = Get-Content $file | ConvertFrom-Json
-                foreach ($item in $jsonContent){
-                    $result = Get-JCAssociation -type $map["$($item.JcSdkType)"] -id $($item.id)
-                    if ($result) {
-                        $assoc += $result
-                    }
-                }
-                # Write out the results
-                if (-not [System.String]::IsNullOrEmpty($assoc)){
-                    $assoc | ConvertTo-Json -Depth: 100 | Out-File -FilePath:("$file-associations.json") -Force
-                }
-            }) -ArgumentList:($Path, $Types, $map, $file)
+        # Foreach type start a new job and retreive object association records
+        If ($PSBoundParameters.Associations)
+        {
+            # Map to define how jcassoc & jcsdk types relate
+            $JcTypesMap = @{
+                Application  = 'application';
+                Command      = 'command';
+                GSuite       = 'g_suite';
+                LdapServer   = 'ldap_server';
+                Office365    = 'office_365';
+                Policy       = 'policy';
+                RadiusServer = 'radius_server';
+                System       = 'system';
+                SystemGroup  = 'system_group';
+                SystemUser   = 'user';
+                UserGroup    = 'user_group';
+            }
+            # Get the backup files we created earlier
+            $BackupFiles = Get-ChildItem $PSBoundParameters.Path | Where-Object { $_.BaseName -in $Types }
+            $JobsAssociations = $BackupFiles | ForEach-Object {
+                $BackupFile = $_
+                Start-Job -ScriptBlock:( {
+                        Param ($Path, $Types, $JcTypesMap, $BackupFile);
+                        $AssociationResults = @()
+                        # Get content from the file
+                        $jsonContent = Get-Content $BackupFile | ConvertFrom-Json -Depth:(100)
+                        ForEach ($item In $jsonContent)
+                        {
+                            Write-Host ("Get-JCAssociation -Type:($($JcTypesMap["$($item.JcSdkType)"])) -id:($($item.id))") -BackgroundColor cyan
+                            $Result = Get-JCAssociation -Type:($JcTypesMap["$($item.JcSdkType)"]) -id:($item.id)
+                            If ($Result)
+                            {
+                                $AssociationResults += $Result
+                            }
+                        }
+                        # Write out the results
+                        If (-not [System.String]::IsNullOrEmpty($AssociationResults))
+                        {
+                            # To multiple files
+                            # $AssociationResults | ConvertTo-Json -Depth:(100) | Out-File -FilePath:("$BackupFile-associations.json") -Force
+                            # To single file
+                            $AssociationResults | ConvertTo-Json -Depth:(100) | Out-File -FilePath:("Associations.json") -Force -Append
+                        }
+                    }) -ArgumentList:($PSBoundParameters.Path, $Types, $JcTypesMap, $BackupFile)
+            }
+            $JobsAssociationsStatus = Wait-Job -Id:($JobsAssociations.Id)
+            $JobsAssociationsStatus | Receive-Job
         }
-        $JobStatus = Wait-Job -Id:($JobsAssoc.Id)
-        $JobStatus | Receive-Job
-        $time = get-date -UFormat %m-%d-%Y-%T
-        $compress = @{
-            path = $Path
-            CompressionLevel = "Fastest"
-            Destination = "$Path_$time.zip"
-        }
-        Compress-Archive @compress
-
+        # Zip results
+        $OutputPath = "$($PSBoundParameters.Path)_$(Get-Date -Format:("yyyyMMddTHHmmssffff")).zip"
+        Compress-Archive -Path:($PSBoundParameters.Path) -CompressionLevel:('Fastest') -Destination:($OutputPath)
     }
     End
     {
-        # Clean up global variables
-        $GlobalVars = @('JCHttpRequest', 'JCHttpRequestContent', 'JCHttpResponse', 'JCHttpResponseContent')
-        $GlobalVars | ForEach-Object {
-            If ((Get-Variable -Scope:('Global')).Where( { $_.Name -eq $_ })) { Remove-Variable -Name:($_) -Scope:('Global') }
+        If (Test-Path -Path:($OutputPath))
+        {
+            Write-Host ("Backup Success: $($OutputPath)") -ForegroundColor:('Green')
         }
-        Return $Results
     }
 }
