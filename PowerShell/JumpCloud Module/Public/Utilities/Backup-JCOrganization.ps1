@@ -3,6 +3,7 @@ TODO
     1. Make "All" a switch parameter
     2. Through parameter sets if "All" is used then you cant use "Type" and vice versa
     3. Should association back up all associations for item or just the associations possible within the type parameter?
+    4. Make this a class in psm1 file: [ValidateSet('SystemGroup', 'UserGroup', 'System', 'SystemUser')]
 #>
 
 <#
