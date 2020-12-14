@@ -4,6 +4,7 @@ TODO
     2. Through parameter sets if "All" is used then you cant use "Type" and vice versa
     3. Should association back up all associations for item or just the associations possible within the type parameter?
     4. Make this a class in psm1 file: [ValidateSet('SystemGroup', 'UserGroup', 'System', 'SystemUser')]
+    5. Remove unzip folder
 #>
 
 <#
@@ -74,9 +75,6 @@ Function Backup-JCOrganization
                     Param ($Path, $JumpCloudType);
                     $CommandTemplate = "Get-JcSdk{0}"
                     $Result = Invoke-Expression -Command:($CommandTemplate -f $JumpCloudType)
-                    Write-Debug ('HttpRequest: ' + $JCHttpRequest);
-                    Write-Debug ('HttpRequestContent: ' + $JCHttpRequestContent.Result);
-                    Write-Debug ('HttpResponse: ' + $JCHttpResponse.Result);
                     # Write output to file
                     $Result `
                     | Select-Object @{Name = 'JcSdkType'; Expression = { $JumpCloudType } }, * `
