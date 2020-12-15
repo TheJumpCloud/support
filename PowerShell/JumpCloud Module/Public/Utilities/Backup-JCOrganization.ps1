@@ -125,7 +125,7 @@ Function Backup-JCOrganization
                             # To multiple files
                             # $AssociationResults | ConvertTo-Json -Depth:(100) | Out-File -FilePath:("$BackupFile-associations.json") -Force
                             # To single file
-                            $AssociationResults | ConvertTo-Json -Depth:(100) | Out-File -FilePath:("Associations.json") -Force -Append
+                            $AssociationResults | ConvertTo-Json -Depth:(100) | Out-File -FilePath:("$($Path)/$($item.JcSdkType)-Associations.json") -Force
                         }
                     }) -ArgumentList:($PSBoundParameters.Path, $Types, $JcTypesMap, $BackupFile)
             }
