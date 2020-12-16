@@ -123,12 +123,24 @@ Function Restore-JcSdkOrganization
                 $attributeObjects = @{}
                 $item.PSObject.Properties | foreach-object {
                     # TODO: Figure out how to pass nested objects like Phone, Address, Attributes to attributeObjects hashtable
-
                     # validate values in restore object are valid for the object type
                     # ex. we won't pass an ID into New-JcSdkSystem User
                     if ((-not [System.String]::isnullorempty($($_.value))) -And ($_.Name -in $params)) {
-                        # Add attributes to attributeObjects hash table
-                        $attributeObjects.Add($_.Name, $_.value)
+                        # #TODO: Make this better but we probably don't want to import ExternallyManaged Users
+                        if ($_.Name -eq "ExternallyManaged") {
+                            $attributeObjects.Add($_.Name, $false)
+                        }
+                        elseif ($_.Name -eq "email") {
+                            # Temp fix to test importing users from a backup file, generate unique id for email
+                            write-host "Email: $_.value"
+                            $tempEmail = "$(New-Guid)$($_.value)"
+                            write-host "Setting temp Email for testing: $tempEmail"
+                            $attributeObjects.Add($_.Name, $tempEmail)
+                        }
+                        else {
+                            # Add attributes to attributeObjects hash table
+                            $attributeObjects.Add($_.Name, $_.value)
+                        }
                     }
                 }
 
@@ -136,7 +148,7 @@ Function Restore-JcSdkOrganization
                 $functionName = "New-JcSdk$($file.BaseName)"
                 try {
                     # Restore the item with the splatted @attributeObjects hashtable of valid params
-                    $newItem = & $functionName @attributeObjects -ErrorAction SilentlyContinue
+                    $newItem = & $functionName @attributeObjects -ErrorAction Continue
                 }
                 catch {
                     # TODO: Better errors here
@@ -146,33 +158,45 @@ Function Restore-JcSdkOrganization
                 if ($newItem){
                     write-host "Old ID: $($item.id)"
                     write-host "New ID: $($newItem.Id)"
-                    $trackList.Add($($item.id), $($newItem.Id))
+                    $trackList.Add("$($item.id)", "$($newItem.Id)")
                 }
             }
         }
 
-        # Write out the added items and their mapped IDs to: RestoreMap.json
-        $trackList | ConvertTo-Json | Out-File -FilePath:("$($workingDir)/RestoreMap.json") -Force
-
-        # Now that we've restored items, look at the restoreMap & Associations.
-        # $restore = Get-Content "$($workingDir)/RestoreMap.json"
-        # foreach ($item in $restore){
-
-        #     write-host $item
-        # }
+        # Save the added items and their mapped IDs to: RestoreMap.json
+        # $trackList | ConvertTo-Json | Out-File -FilePath:("$($workingDir)/RestoreMap.json") -Force
+        # for reference how the ids map back to eachother
+        foreach ($item in $trackList.keys){
+            "###"
+            write-host "OldID: $item maps to NewID: $($tracklist[$item])"
+        }
 
         # For each assoicaiton list:
         $associationFiles = Get-ChildItem $workingDir -filter *-Associations.json
         foreach ($file in $associationFiles) {
             $associations = Convertfrom-Json -InputObject (Get-Content $file -raw)
-            # $associations = Get-Content ./Associations.json | ConvertFrom-Json
+            # for each association
             foreach ($item in $associations) {
-                write-host $item.id
+                # If the NewID maps back to a valid OldID, for both the source and target, create the Association
+                if ($($tracklist[$($item.id)]) -And $($tracklist[$($item.targetId)])) {
+                    New-JCAssociation -Type $($item.type) -Id $($tracklist[$($item.id)]) -TargetId $($tracklist[$($item.targetId)]) -TargetType $($item.Paths.ToType) -Force
+                }
             }
         }
         # TODO: Remove for this function:
-        remove-jcusergroup PesterTest_UserGroup -Force
-        remove-jcsystemgroup PesterTest_SystemGroup -Force
+        # remove-jcusergroup PesterTest_UserGroup -Force
+        # remove-jcusergroup ybelgqoz -Force
+        # remove-jcsystemgroup PesterTest_SystemGroup -Force
+        # $users = Get-JCUser | Where-Object { $_.email -Match "@pestertest" }
+        # $users | Remove-JCUser -force
+
+        # $users = Get-JCUser | Where-Object { $_.email -Match "@deleteme" }
+        # $users | Remove-JCUser -force
+
+        # $users = Get-JCUser | Where-Object { $_.email -Match "@fhpomlyu" }
+        # $users | Remove-JCUser -force
+        # Remove-JCUser -username PtVEnyFD -force
+        # Remove-JCUser -username ybelgqoz -force
 
     }
     End
