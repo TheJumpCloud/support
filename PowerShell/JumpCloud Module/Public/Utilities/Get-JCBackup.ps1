@@ -48,7 +48,6 @@ function Get-JCBackup
 
     }
 
-
     process
     {
 
@@ -57,6 +56,8 @@ function Get-JCBackup
         $StartTime = Get-Date -Format:('yyyyMMddTHHmmss')
 
         Write-Host $Banner -ForegroundColor Green
+
+        Write-Warning 'WARNING: Get-JCBackup is no longer supported and will soon be deprecated; Please use Backup-JCOrganization and Restore-JCOrganization instead. https://bit.ly/3aef5db'
 
         Write-Host "`n============= Backup Status ============`n"
 
