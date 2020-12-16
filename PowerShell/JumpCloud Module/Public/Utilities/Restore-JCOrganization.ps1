@@ -137,6 +137,36 @@ Function Restore-JcSdkOrganization
                             write-host "Setting temp Email for testing: $tempEmail"
                             $attributeObjects.Add($_.Name, $tempEmail)
                         }
+                        elseif ($_.Name -eq "Addresses") {
+                            $formattedList = @()
+                            if ($_.value) {
+                                foreach ($addressItem in $_.value) {
+                                    # write-host $addressItem
+                                    $hash = @{}
+                                    foreach ($subitem in $addressItem.PSObject.Properties) {
+                                        $hash.Add($subitem.Name, "$($subitem.Value)")
+                                    }
+                                    $formattedList += $hash
+                                }
+                            }
+                            # $formattedList
+                            $attributeObjects.Add($_.Name, $formattedList)
+                        }
+                        elseif ($_.Name -eq "PhoneNumbers") {
+                            $formattedList = @()
+                            if ($_.value) {
+                                foreach ($addressItem in $_.value) {
+                                    # write-host $addressItem
+                                    $hash = @{}
+                                    foreach ($subitem in $addressItem.PSObject.Properties) {
+                                        $hash.Add($subitem.Name, "$($subitem.Value)")
+                                    }
+                                    $formattedList += $hash
+                                }
+                            }
+                            # $formattedList
+                            $attributeObjects.Add($_.Name, $formattedList)
+                        }
                         else {
                             # Add attributes to attributeObjects hash table
                             $attributeObjects.Add($_.Name, $_.value)
@@ -146,14 +176,18 @@ Function Restore-JcSdkOrganization
 
                 # Invoke command to create new resource
                 $functionName = "New-JcSdk$($file.BaseName)"
-                try {
-                    # Restore the item with the splatted @attributeObjects hashtable of valid params
-                    $newItem = & $functionName @attributeObjects -ErrorAction Continue
-                }
-                catch {
-                    # TODO: Better errors here
-                    write-host "Error Restoring: $($item.id)"
-                }
+                # "########################################"
+                # write-host @attributeObjects
+                # "########################################"
+                $newItem = & $functionName @attributeObjects
+                # try {
+                #     # Restore the item with the splatted @attributeObjects hashtable of valid params
+                #     $newItem = & $functionName @attributeObjects -ErrorAction Continue
+                # }
+                # catch {
+                #     # TODO: Better errors here
+                #     write-host "Error Restoring: $($item.id)"
+                # }
                 # For debugging write out the ids and add items to trackList for associations later on
                 if ($newItem){
                     write-host "Old ID: $($item.id)"
@@ -167,7 +201,6 @@ Function Restore-JcSdkOrganization
         # $trackList | ConvertTo-Json | Out-File -FilePath:("$($workingDir)/RestoreMap.json") -Force
         # for reference how the ids map back to eachother
         foreach ($item in $trackList.keys){
-            "###"
             write-host "OldID: $item maps to NewID: $($tracklist[$item])"
         }
 
@@ -183,20 +216,9 @@ Function Restore-JcSdkOrganization
                 }
             }
         }
-        # TODO: Remove for this function:
-        # remove-jcusergroup PesterTest_UserGroup -Force
-        # remove-jcusergroup ybelgqoz -Force
-        # remove-jcsystemgroup PesterTest_SystemGroup -Force
-        # $users = Get-JCUser | Where-Object { $_.email -Match "@pestertest" }
-        # $users | Remove-JCUser -force
+        # TODO: for testing:
+        # remove-jcusergroup PesterTest_UserGroup -Force; remove-jcusergroup ybelgqoz -Force; remove-jcsystemgroup PesterTest_SystemGroup -Force; $users = Get-JCUser | Where-Object { $_.email -Match "@pestertest" }; $users | Remove-JCUser -force; $users = Get-JCUser | Where-Object { $_.email -Match "@deleteme" }; $users | Remove-JCUser -force; $users = Get-JCUser | Where-Object { $_.email -Match "@fhpomlyu" }; $users | Remove-JCUser -force;
 
-        # $users = Get-JCUser | Where-Object { $_.email -Match "@deleteme" }
-        # $users | Remove-JCUser -force
-
-        # $users = Get-JCUser | Where-Object { $_.email -Match "@fhpomlyu" }
-        # $users | Remove-JCUser -force
-        # Remove-JCUser -username PtVEnyFD -force
-        # Remove-JCUser -username ybelgqoz -force
 
     }
     End
