@@ -8,10 +8,11 @@
 
 ```
 WARNING: `Get-JCBackup` is no longer supported and will soon be deprecated; Please use `Backup-JCOrganization` and `Restore-JCOrganization` instead. https://bit.ly/3aef5db
+`JumpCloud.SDK.DirectoryInsights`, `JumpCloud.SDK.V1`, and `JumpCloud.SDK.V2` have been updated to include ParameterSet validation.
 ```
 
 #### Banner Old
 
 ```
-`*-JCAssociation` functions have been updated to use the `JumpCloud.SDK.V2` powershell module.
+`JumpCloud.SDK.DirectoryInsights`, `JumpCloud.SDK.V1`, and `JumpCloud.SDK.V2` have been updated to include ParameterSet validation.
 ```

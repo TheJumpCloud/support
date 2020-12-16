@@ -1,16 +1,20 @@
 ## 1.18.3
 
-Release Date: December 23, 2020
+Release Date: November 10, 2020
 
 #### RELEASE NOTES
 
-WARNING: `Get-JCBackup` is no longer supported and will soon be deprecated; Please use `Backup-JCOrganization` and `Restore-JCOrganization` instead. https://bit.ly/3aef5db
+* WARNING: `Get-JCBackup` is no longer supported and will soon be deprecated; Please use `Backup-JCOrganization` and `Restore-JCOrganization` instead. https://bit.ly/3aef5db
+* Internal improvements.
 
-#### FEATURES:
+#### FEATURES
 
-#### IMPROVEMENTS:
+#### IMPROVEMENTS
 
-#### BUG FIXES:
+* `JumpCloud.SDK.DirectoryInsights`, `JumpCloud.SDK.V1`, and `JumpCloud.SDK.V2` have been updated to include ParameterSet validation.
+* User agent has been updated to accommodate for JcSlackBot tracking.
+
+#### BUG FIXES
 
 ## 1.18.2
 

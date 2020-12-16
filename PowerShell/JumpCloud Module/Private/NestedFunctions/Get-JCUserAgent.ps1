@@ -25,12 +25,15 @@ Function Get-JCUserAgent
         }
     }
     #Build the UserAgent string
-    $UserAgent_ModuleName = 'JumpCloud_' + $UserAgent_ModuleName + '.PowerShellModule'
+    $UserAgent_ModuleName = "JumpCloud_$($UserAgent_ModuleName).PowerShellModule"
 
     $Template_UserAgent = "{0}/{1}"
     $CustomUserAgent = $Template_UserAgent -f $UserAgent_ModuleName, $UserAgent_ModuleVersion
-    
-    if ($PSBoundParameters.ShowUserAgent)
+    If (-not [system.string]::IsNullOrEmpty($env:JcSlackbot))
+    {
+        $CustomUserAgent = "$($CustomUserAgent) (Slackbot_$($env:JcSlackbot))"
+    }
+    If ($PSBoundParameters.ShowUserAgent)
     {
         $CurrentVerbosePreference = $VerbosePreference
         $VerbosePreference = 'Continue'
