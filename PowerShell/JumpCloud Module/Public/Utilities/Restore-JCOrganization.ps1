@@ -119,11 +119,9 @@ Function Restore-JcSdkOrganization
             write-host "Restoring: $file"
             $params = (Get-Command New-JCSdk$($file.BaseName)).Parameters.Keys
             $data = Get-content $file | ConvertFrom-Json
-            $itemProperties = $data | Get-Member -MemberType Properties
             foreach ($item in $data) {
-                $properties = $itemProperties | Where-Object { ( $params -contains $_.Name ) -and ( -not [string]::IsNullOrEmpty($item.($_.Name)) ) }
                 $attributeObjects = @{}
-                $properties | foreach-object {
+                $item.PSObject.Properties | foreach-object {
                     # TODO: Figure out how to pass nested objects like Phone, Address, Attributes to attributeObjects hashtable
                     # validate values in restore object are valid for the object type
                     # ex. we won't pass an ID into New-JcSdkSystem User
