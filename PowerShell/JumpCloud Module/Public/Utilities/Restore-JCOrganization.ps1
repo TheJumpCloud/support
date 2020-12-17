@@ -24,14 +24,13 @@ Function Restore-JcSdkOrganization
         [Parameter(ParameterSetName = 'Restore', Mandatory)]
         [System.String]
         # Specify input .zip
-        ${Path}
+        ${Path},
 
-        # [Parameter()]
-        # [ValidateSet("All", "Applications", "Command", "Directory", "LdapServer", "Policy", "RadiusServer", "SoftwareApp", "System", "SystemGroup", "SystemUser", "UserGroup", "Settings")]
-        # [System.String[]]
-        # ${Type},
-        # Add validate path
-        # [-All] [-Applications] [-Commands] [-Directories] [-LdapServers] [-Policies] [-RadiusServers] [-SoftwareApps] [-System] [-SystemGroup] [-SystemUser] [-UserGroup] [-Settings]
+        [Parameter()]
+        [ValidateSet('All', 'SystemGroup', 'UserGroup', 'SystemUser')]
+        [System.String[]]
+        # Specify the type of JumpCloud objects you want to backup.
+        ${Type}
 
         # [Parameter(DontShow)]
         # [JumpCloud.SDK.V1.Category('Runtime')]
@@ -89,31 +88,38 @@ Function Restore-JcSdkOrganization
     }
     Process
     {
-        # expand the archive and take note of the timestamp
-        # TODO: fix temp path for all OS
         $zipArchive = Get-Item $Path
-        Expand-Archive -LiteralPath "$Path" -DestinationPath $env:TMPDIR -Force
+        Expand-Archive -LiteralPath "$Path" -DestinationPath $zipArchive.PSParentPath -Force
         $zipArchiveName = $zipArchive.Name.split('_')[0]
         $zipArchiveTimestamp = $zipArchive.Name.split('_')[1].Replace('.zip', '')
-        $workingDir = "$env:TMPDIR$($zipArchiveName)"
-        # TODO: For Now, we need to skip over systems
-        $workingFiles = Get-ChildItem $workingDir -Exclude RestoreMap.json, System.json, *-Associations.json
+        $workingDir = "$($zipArchive.PSParentPath)/$zipArchiveName"
+        $Types = If ($PSBoundParameters.Type -eq 'All') {
+
+            $Command = Get-Command $MyInvocation.MyCommand
+            $Command.Parameters.Type.Attributes.ValidValues | Where-Object { $_ -ne 'All' }
+        }
+        Else {
+            $PSBoundParameters.Type
+        }
+        # for all the 
+        $restoreFiles = @()
+        $restoreAssociations = @()
+        foreach ($item in $Types) {
+            $itemPath = "$workingDir/$item"
+            If (Test-Path -Path: "$itemPath.json") {
+                $restoreFiles += Get-Item "$itemPath.json"
+            }
+            If (Test-Path -Path: "$itemPath-Associations.json") {
+                $restoreAssociations += Get-Item "$itemPath-Associations.json"
+            }
+        }
         Write-Host "restoring backup from $zipArchiveTimestamp"
-        Write-Host "there are $($workingFiles.Count) files in the backup direcotry"
+        Write-Host "there are $($restoreFiles.Count) files in the backup direcotry"
         Write-Host "Working Dir: $workingDir"
-        # if the path does not exist, create it
-
-        # TODO: Define the restore files we can create (All but system):
-        # WorkingFiles, where name not like "-Associations"
-        # $Types = ('SystemUser', 'UserGroup', 'LdapServer', 'RadiusServer', 'Application', 'System', 'SystemGroup', 'Policy', 'Command', 'SoftwareApp', 'Directory')
-
-        # TODO: Finalize things we won't restore:
-        # Systems
-        # Users who are externally managed?
 
         # New Hashtable to track Newly added objects for the orig associations when we restore associations
         $trackList = @{}
-        foreach ($file in $workingFiles){
+        foreach ($file in $restoreFiles){
             write-host "$($file.Name)"
             # For associations we need to track the ID added and map it back to the orig ID.
             write-host "Restoring: $file"
@@ -191,8 +197,8 @@ Function Restore-JcSdkOrganization
         }
 
         # For each assoicaiton list:
-        $associationFiles = Get-ChildItem $workingDir -filter *-Associations.json
-        foreach ($file in $associationFiles) {
+        # $associationFiles = Get-ChildItem $workingDir -filter *-Associations.json
+        foreach ($file in $restoreAssociations) {
             $associations = Convertfrom-Json -InputObject (Get-Content $file -raw)
             # for each association
             foreach ($item in $associations) {
