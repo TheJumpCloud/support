@@ -134,12 +134,12 @@ Function Restore-JcSdkOrganization
             $itemProperties = $data | Get-Member -MemberType Properties
             foreach ($item in $data) 
             {
-                $properties = $itemProperties | Where-Object { ( $params -contains $_.Name ) -and ( -not [string]::IsNullOrEmpty($Object.($_.Name)) ) }
+                $properties = $itemProperties | Where-Object { ( $params -contains $_.Name ) -and ( -not [string]::IsNullOrEmpty($item.($_.Name)) ) }
                 # Do not import user already exists or user is externally managed
                 if ( ($item.id -notin $existingIds) -and (-not $item.ExternallyManaged) ) 
                 {
                     $attributeObjects = @{}
-                    foreach ( $property in $properties.Name)
+                    foreach ( $property in $properties.Name )
                     {
                         # TODO: Figure out how to pass nested objects like Phone, Address, Attributes to attributeObjects hashtable
                         # validate values in restore object are valid for the object type
