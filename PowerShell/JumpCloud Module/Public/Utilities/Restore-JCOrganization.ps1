@@ -101,7 +101,7 @@ Function Restore-JcSdkOrganization
         Else {
             $PSBoundParameters.Type
         }
-        # for all the 
+        # Identify objects to restore
         $restoreFiles = @()
         $restoreAssociations = @()
         foreach ($item in $Types) {
@@ -120,16 +120,15 @@ Function Restore-JcSdkOrganization
         # New Hashtable to track Newly added objects for the orig associations when we restore associations
         $trackList = @{}
         foreach ($file in $restoreFiles){
-            write-host "$($file.Name)"
             # For associations we need to track the ID added and map it back to the orig ID.
             write-host "Restoring: $file"
             $params = (Get-Command New-JCSdk$($file.BaseName)).Parameters.Keys
-            $functionName = "Get-JcSdk$($file.Name)"
+            $functionName = "Get-JcSdk$($file.BaseName)"
             $existingIds = (& $functionName -Fields id).id
             $data = Get-content $file | ConvertFrom-Json
             $itemProperties = $data | Get-Member -MemberType Properties
             foreach ($item in $data) {
-                if ( -not $item.id -in $existingIds ) 
+                if ( $item.id -notin $existingIds ) 
                 {
                     # Do not import user if Externally Managed user
                     if ( -not $item.ExternallyManaged )
