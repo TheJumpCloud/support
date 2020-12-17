@@ -119,6 +119,7 @@ Function Restore-JcSdkOrganization
             write-host "Restoring: $file"
             $params = (Get-Command New-JCSdk$($file.BaseName)).Parameters.Keys
             $data = Get-content $file | ConvertFrom-Json
+            $itemProperties = $data | Get-Member -MemberType Properties
             foreach ($item in $data) {
                 $attributeObjects = @{}
                 $item.PSObject.Properties | foreach-object {
