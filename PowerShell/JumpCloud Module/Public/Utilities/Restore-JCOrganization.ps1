@@ -134,53 +134,50 @@ Function Restore-JcSdkOrganization
             $itemProperties = $data | Get-Member -MemberType Properties
             foreach ($item in $data) 
             {
+                $properties = $itemProperties | Where-Object { ( $params -contains $_.Name ) -and ( -not [string]::IsNullOrEmpty($Object.($_.Name)) ) }
                 # Do not import user already exists or user is externally managed
                 if ( ($item.id -notin $existingIds) -or (-not $items.ExternallyManaged) ) 
                 {
                     $attributeObjects = @{}
-                    $itemProperties | foreach-object 
+                    foreach ( $property in $properties.Name)
                     {
                         # TODO: Figure out how to pass nested objects like Phone, Address, Attributes to attributeObjects hashtable
                         # validate values in restore object are valid for the object type
                         # ex. we won't pass an ID into New-JcSdkSystem User
-                        if ((-not [System.String]::isnullorempty($($_.value))) -And ($_.Name -in $params)) 
+                        if ($property -eq "email") 
                         {
-                            if ($_.Name -eq "email") 
-                            {
-                                # Temp fix to test importing users from a backup file, generate unique id for email
-                                write-host "Email: $_.value"
-                                $tempEmail = "$(New-Guid)$($_.value)"
-                                write-host "Setting temp Email for testing: $tempEmail"
-                                $attributeObjects.Add($_.Name, $tempEmail)
-                            }
-                            elseif ( ($_.Name -eq "Addresses") -or ($_.Name -eq "PhoneNumbers") -or ($_.Name -eq "Attributes") ) 
-                            {
-                                $formattedList = @()
-                                if ($_.value) 
-                                {
-                                    foreach ($addressItem in $_.value) 
-                                    {
-                                        # write-host $addressItem
-                                        $hash = @{}
-                                        foreach ($subitem in $addressItem.PSObject.Properties) 
-                                        {
-                                            $hash.Add($subitem.Name, "$($subitem.Value)")
-                                        }
-                                        $formattedList += $hash
-                                    }
-                                }
-                                # $formattedList
-                                $attributeObjects.Add($_.Name, $formattedList)
-                            }
-                            else 
-                            {
-                                # Add attributes to attributeObjects hash table
-                                $attributeObjects.Add($_.Name, $_.value)
-                            }
+                            # Temp fix to test importing users from a backup file, generate unique id for email
+                            write-host "Email: $($item.($property))"
+                            $tempEmail = "$(New-Guid)$($item.($property))"
+                            write-host "Setting temp Email for testing: $tempEmail"
+                            $attributeObjects.Add($property, $tempEmail)
                         }
+                        elseif ( ($property -eq "Addresses") -or ($property -eq "PhoneNumbers") -or ($property -eq "Attributes") ) 
+                        {
+                            $formattedList = @()
+                            if ($item.($property)) 
+                            {
+                                foreach ($nestedItem in $item.($property)) 
+                                {
+                                    # write-host $nestedItem
+                                    $hash = @{}
+                                    foreach ($subitem in $nestedItem.PSObject.Properties) 
+                                    {
+                                        $hash.Add($subitem.Name, "$($subitem.Value)")
+                                    }
+                                    $formattedList += $hash
+                                }
+                            }
+                            # $formattedList
+                            $attributeObjects.Add($property, $formattedList)
+                        }
+                        else 
+                        {
+                            # Add attributes to attributeObjects hash table
+                            $attributeObjects.Add($property, $item.($property))
+                        }
+                        
                     }
-                    
-
                     # Invoke command to create new resource
                     $functionName = "New-JcSdk$($file.BaseName)"
                     # "########################################"
@@ -243,6 +240,5 @@ Function Restore-JcSdkOrganization
             If ((Get-Variable -Scope:('Global')).Where( { $_.Name -eq $_ })) { Remove-Variable -Name:($_) -Scope:('Global') }
         }
         Return $Results
-
     }
 }
