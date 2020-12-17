@@ -124,67 +124,72 @@ Function Restore-JcSdkOrganization
             # For associations we need to track the ID added and map it back to the orig ID.
             write-host "Restoring: $file"
             $params = (Get-Command New-JCSdk$($file.BaseName)).Parameters.Keys
+            $functionName = "Get-JcSdk$($file.Name)"
+            $existingIds = & ($functionName -Fields id).id
             $data = Get-content $file | ConvertFrom-Json
             $itemProperties = $data | Get-Member -MemberType Properties
             foreach ($item in $data) {
-                # Do not import user if Externally Managed user
-                if ( -not $item.ExternallyManaged )
+                if ( -not $item.id -in $existingIds ) 
                 {
-                    $attributeObjects = @{}
-                    $item.PSObject.Properties | foreach-object {
-                        # TODO: Figure out how to pass nested objects like Phone, Address, Attributes to attributeObjects hashtable
-                        # validate values in restore object are valid for the object type
-                        # ex. we won't pass an ID into New-JcSdkSystem User
-                        if ((-not [System.String]::isnullorempty($($_.value))) -And ($_.Name -in $params)) {
-                            if ($_.Name -eq "email") {
-                                # Temp fix to test importing users from a backup file, generate unique id for email
-                                write-host "Email: $_.value"
-                                $tempEmail = "$(New-Guid)$($_.value)"
-                                write-host "Setting temp Email for testing: $tempEmail"
-                                $attributeObjects.Add($_.Name, $tempEmail)
-                            }
-                            elseif ( ($_.Name -eq "Addresses") -or ($_.Name -eq "PhoneNumbers") -or ($_.Name -eq "Attributes") ) {
-                                $formattedList = @()
-                                if ($_.value) {
-                                    foreach ($addressItem in $_.value) {
-                                        # write-host $addressItem
-                                        $hash = @{}
-                                        foreach ($subitem in $addressItem.PSObject.Properties) {
-                                            $hash.Add($subitem.Name, "$($subitem.Value)")
-                                        }
-                                        $formattedList += $hash
-                                    }
+                    # Do not import user if Externally Managed user
+                    if ( -not $item.ExternallyManaged )
+                    {
+                        $attributeObjects = @{}
+                        $item.PSObject.Properties | foreach-object {
+                            # TODO: Figure out how to pass nested objects like Phone, Address, Attributes to attributeObjects hashtable
+                            # validate values in restore object are valid for the object type
+                            # ex. we won't pass an ID into New-JcSdkSystem User
+                            if ((-not [System.String]::isnullorempty($($_.value))) -And ($_.Name -in $params)) {
+                                if ($_.Name -eq "email") {
+                                    # Temp fix to test importing users from a backup file, generate unique id for email
+                                    write-host "Email: $_.value"
+                                    $tempEmail = "$(New-Guid)$($_.value)"
+                                    write-host "Setting temp Email for testing: $tempEmail"
+                                    $attributeObjects.Add($_.Name, $tempEmail)
                                 }
-                                # $formattedList
-                                $attributeObjects.Add($_.Name, $formattedList)
-                            }
-                            else {
-                                # Add attributes to attributeObjects hash table
-                                $attributeObjects.Add($_.Name, $_.value)
+                                elseif ( ($_.Name -eq "Addresses") -or ($_.Name -eq "PhoneNumbers") -or ($_.Name -eq "Attributes") ) {
+                                    $formattedList = @()
+                                    if ($_.value) {
+                                        foreach ($addressItem in $_.value) {
+                                            # write-host $addressItem
+                                            $hash = @{}
+                                            foreach ($subitem in $addressItem.PSObject.Properties) {
+                                                $hash.Add($subitem.Name, "$($subitem.Value)")
+                                            }
+                                            $formattedList += $hash
+                                        }
+                                    }
+                                    # $formattedList
+                                    $attributeObjects.Add($_.Name, $formattedList)
+                                }
+                                else {
+                                    # Add attributes to attributeObjects hash table
+                                    $attributeObjects.Add($_.Name, $_.value)
+                                }
                             }
                         }
                     }
-                }
 
-                # Invoke command to create new resource
-                $functionName = "New-JcSdk$($file.BaseName)"
-                # "########################################"
-                # write-host @attributeObjects
-                # "########################################"
-                $newItem = & $functionName @attributeObjects
-                # try {
-                #     # Restore the item with the splatted @attributeObjects hashtable of valid params
-                #     $newItem = & $functionName @attributeObjects -ErrorAction Continue
-                # }
-                # catch {
-                #     # TODO: Better errors here
-                #     write-host "Error Restoring: $($item.id)"
-                # }
-                # For debugging write out the ids and add items to trackList for associations later on
-                if ($newItem){
-                    write-host "Old ID: $($item.id)"
-                    write-host "New ID: $($newItem.Id)"
-                    $trackList.Add("$($item.id)", "$($newItem.Id)")
+                    # Invoke command to create new resource
+                    $functionName = "New-JcSdk$($file.BaseName)"
+                    # "########################################"
+                    # write-host @attributeObjects
+                    # "########################################"
+                    $newItem = & $functionName @attributeObjects
+                    # try {
+                    #     # Restore the item with the splatted @attributeObjects hashtable of valid params
+                    #     $newItem = & $functionName @attributeObjects -ErrorAction Continue
+                    # }
+                    # catch {
+                    #     # TODO: Better errors here
+                    #     write-host "Error Restoring: $($item.id)"
+                    # }
+                    # For debugging write out the ids and add items to trackList for associations later on
+                    if ($newItem){
+                        write-host "Old ID: $($item.id)"
+                        write-host "New ID: $($newItem.Id)"
+                        $trackList.Add("$($item.id)", "$($newItem.Id)")
+                    }
                 }
             }
         }
