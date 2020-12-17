@@ -92,7 +92,7 @@ Function Restore-JcSdkOrganization
         Expand-Archive -LiteralPath "$Path" -DestinationPath $zipArchive.PSParentPath -Force
         $zipArchiveName = $zipArchive.Name.split('_')[0]
         $zipArchiveTimestamp = $zipArchive.Name.split('_')[1].Replace('.zip', '')
-        $workingDir = "$($zipArchive.PSParentPath)/$zipArchiveName"
+        $workingDir = Join-Path -Path $zipArchive.PSParentPath -ChildPath $zipArchiveName
         $Types = If ($PSBoundParameters.Type -eq 'All') {
 
             $Command = Get-Command $MyInvocation.MyCommand
@@ -105,7 +105,7 @@ Function Restore-JcSdkOrganization
         $restoreFiles = @()
         $restoreAssociations = @()
         foreach ($item in $Types) {
-            $itemPath = "$workingDir/$item"
+            $itemPath = Join-Path -Path $workingDir -ChildPath $item
             If (Test-Path -Path: "$itemPath.json") {
                 $restoreFiles += Get-Item "$itemPath.json"
             }
@@ -134,7 +134,7 @@ Function Restore-JcSdkOrganization
                     if ( -not $item.ExternallyManaged )
                     {
                         $attributeObjects = @{}
-                        $item.PSObject.Properties | foreach-object {
+                        $itemProperties | foreach-object {
                             # TODO: Figure out how to pass nested objects like Phone, Address, Attributes to attributeObjects hashtable
                             # validate values in restore object are valid for the object type
                             # ex. we won't pass an ID into New-JcSdkSystem User
