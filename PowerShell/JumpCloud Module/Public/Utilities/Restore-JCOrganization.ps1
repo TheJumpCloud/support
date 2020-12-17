@@ -121,56 +121,41 @@ Function Restore-JcSdkOrganization
             $data = Get-content $file | ConvertFrom-Json
             $itemProperties = $data | Get-Member -MemberType Properties
             foreach ($item in $data) {
-                $attributeObjects = @{}
-                $item.PSObject.Properties | foreach-object {
-                    # TODO: Figure out how to pass nested objects like Phone, Address, Attributes to attributeObjects hashtable
-                    # validate values in restore object are valid for the object type
-                    # ex. we won't pass an ID into New-JcSdkSystem User
-                    if ((-not [System.String]::isnullorempty($($_.value))) -And ($_.Name -in $params)) {
-                        # #TODO: Make this better but we probably don't want to import ExternallyManaged Users
-                        if ($_.Name -eq "ExternallyManaged") {
-                            $attributeObjects.Add($_.Name, $false)
-                        }
-                        elseif ($_.Name -eq "email") {
-                            # Temp fix to test importing users from a backup file, generate unique id for email
-                            write-host "Email: $_.value"
-                            $tempEmail = "$(New-Guid)$($_.value)"
-                            write-host "Setting temp Email for testing: $tempEmail"
-                            $attributeObjects.Add($_.Name, $tempEmail)
-                        }
-                        elseif ($_.Name -eq "Addresses") {
-                            $formattedList = @()
-                            if ($_.value) {
-                                foreach ($addressItem in $_.value) {
-                                    # write-host $addressItem
-                                    $hash = @{}
-                                    foreach ($subitem in $addressItem.PSObject.Properties) {
-                                        $hash.Add($subitem.Name, "$($subitem.Value)")
-                                    }
-                                    $formattedList += $hash
-                                }
+                # Do not import user if Externally Managed user
+                if ( -not $item.ExternallyManaged )
+                {
+                    $attributeObjects = @{}
+                    $item.PSObject.Properties | foreach-object {
+                        # TODO: Figure out how to pass nested objects like Phone, Address, Attributes to attributeObjects hashtable
+                        # validate values in restore object are valid for the object type
+                        # ex. we won't pass an ID into New-JcSdkSystem User
+                        if ((-not [System.String]::isnullorempty($($_.value))) -And ($_.Name -in $params)) {
+                            if ($_.Name -eq "email") {
+                                # Temp fix to test importing users from a backup file, generate unique id for email
+                                write-host "Email: $_.value"
+                                $tempEmail = "$(New-Guid)$($_.value)"
+                                write-host "Setting temp Email for testing: $tempEmail"
+                                $attributeObjects.Add($_.Name, $tempEmail)
                             }
-                            # $formattedList
-                            $attributeObjects.Add($_.Name, $formattedList)
-                        }
-                        elseif ($_.Name -eq "PhoneNumbers") {
-                            $formattedList = @()
-                            if ($_.value) {
-                                foreach ($addressItem in $_.value) {
-                                    # write-host $addressItem
-                                    $hash = @{}
-                                    foreach ($subitem in $addressItem.PSObject.Properties) {
-                                        $hash.Add($subitem.Name, "$($subitem.Value)")
+                            elseif ( ($_.Name -eq "Addresses") -or ($_.Name -eq "PhoneNumbers") -or ($_.Name -eq "Attributes") ) {
+                                $formattedList = @()
+                                if ($_.value) {
+                                    foreach ($addressItem in $_.value) {
+                                        # write-host $addressItem
+                                        $hash = @{}
+                                        foreach ($subitem in $addressItem.PSObject.Properties) {
+                                            $hash.Add($subitem.Name, "$($subitem.Value)")
+                                        }
+                                        $formattedList += $hash
                                     }
-                                    $formattedList += $hash
                                 }
+                                # $formattedList
+                                $attributeObjects.Add($_.Name, $formattedList)
                             }
-                            # $formattedList
-                            $attributeObjects.Add($_.Name, $formattedList)
-                        }
-                        else {
-                            # Add attributes to attributeObjects hash table
-                            $attributeObjects.Add($_.Name, $_.value)
+                            else {
+                                # Add attributes to attributeObjects hash table
+                                $attributeObjects.Add($_.Name, $_.value)
+                            }
                         }
                     }
                 }
