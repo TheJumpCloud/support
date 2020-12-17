@@ -136,7 +136,7 @@ Function Restore-JcSdkOrganization
             {
                 $properties = $itemProperties | Where-Object { ( $params -contains $_.Name ) -and ( -not [string]::IsNullOrEmpty($Object.($_.Name)) ) }
                 # Do not import user already exists or user is externally managed
-                if ( ($item.id -notin $existingIds) -or (-not $items.ExternallyManaged) ) 
+                if ( ($item.id -notin $existingIds) -and (-not $item.ExternallyManaged) ) 
                 {
                     $attributeObjects = @{}
                     foreach ( $property in $properties.Name)
@@ -181,7 +181,7 @@ Function Restore-JcSdkOrganization
                     # Invoke command to create new resource
                     $functionName = "New-JcSdk$($file.BaseName)"
                     # "########################################"
-                    # write-host @attributeObjects
+                    write-host @attributeObjects
                     # "########################################"
                     $newItem = & $functionName @attributeObjects
                     # try {
