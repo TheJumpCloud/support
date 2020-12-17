@@ -125,7 +125,7 @@ Function Restore-JcSdkOrganization
             write-host "Restoring: $file"
             $params = (Get-Command New-JCSdk$($file.BaseName)).Parameters.Keys
             $functionName = "Get-JcSdk$($file.Name)"
-            $existingIds = & ($functionName -Fields id).id
+            $existingIds = (& $functionName -Fields id).id
             $data = Get-content $file | ConvertFrom-Json
             $itemProperties = $data | Get-Member -MemberType Properties
             foreach ($item in $data) {
