@@ -48,7 +48,7 @@ Function Backup-JCOrganization
     )
     Begin
     {
-        $PSBoundParameters.Path = "$($PSBoundParameters.Path)/JumpCloud"
+        $PSBoundParameters.Path = Join-Path -Path "$($PSBoundParameters.Path)" -ChildPath "JumpCloud"
         # If the path does not exist, create it
         If (-not (Test-Path $PSBoundParameters.Path))
         {
@@ -104,12 +104,12 @@ Function Backup-JCOrganization
             # Get the backup files we created earlier
             $BackupFiles = Get-ChildItem $PSBoundParameters.Path | Where-Object { $_.BaseName -in $Types }
             $JobsAssociations = $BackupFiles | ForEach-Object {
-                $BackupFile = $_
+                $BackupFile = $_.PSPath
                 Start-Job -ScriptBlock:( {
                         Param ($Path, $Types, $JcTypesMap, $BackupFile);
                         $AssociationResults = @()
                         # Get content from the file
-                        $jsonContent = Get-Content $BackupFile | ConvertFrom-Json -Depth:(100)
+                        $jsonContent = Get-Content $BackupFile | ConvertFrom-Json
                         ForEach ($item In $jsonContent)
                         {
                             Write-Host ("Get-JCAssociation -Type:($($JcTypesMap["$($item.JcSdkType)"])) -id:($($item.id))") -BackgroundColor cyan
