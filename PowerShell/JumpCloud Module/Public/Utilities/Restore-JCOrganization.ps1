@@ -93,7 +93,7 @@ Function Restore-JcSdkOrganization
         $zipArchiveName = $zipArchive.Name.split('_')[0]
         $zipArchiveTimestamp = $zipArchive.Name.split('_')[1].Replace('.zip', '')
         $workingDir = Join-Path -Path $zipArchive.Directory -ChildPath $zipArchiveName
-        $Types = If ($PSBoundParameters.Type -eq 'All') 
+        $Types = If ($PSBoundParameters.Type -eq 'All')
         {
             $Command = Get-Command $MyInvocation.MyCommand
             $Command.Parameters.Type.Attributes.ValidValues | Where-Object { $_ -ne 'All' }
@@ -105,127 +105,127 @@ Function Restore-JcSdkOrganization
         # Identify objects to restore
         $restoreFiles = @()
         $restoreAssociations = @()
-        foreach ($item in $Types) 
+        foreach ($item in $Types)
         {
             $itemPath = Join-Path -Path $workingDir -ChildPath $item
-            If (Test-Path -Path: "$itemPath.json") 
+            If (Test-Path -Path: "$itemPath.json")
             {
                 $restoreFiles += Get-Item "$itemPath.json"
             }
-            If (Test-Path -Path: "$itemPath-Associations.json") 
+            If (Test-Path -Path: "$itemPath-Associations.json")
             {
                 $restoreAssociations += Get-Item "$itemPath-Associations.json"
             }
         }
-        Write-Host "restoring backup from $zipArchiveTimestamp"
-        Write-Host "there are $($restoreFiles.Count) files in the backup direcotry"
-        Write-Host "Working Dir: $workingDir"
+        # Write-Host "restoring backup from $zipArchiveTimestamp"
+        # Write-Host "there are $($restoreFiles.Count) files in the backup direcotry"
+        # Write-Host "Working Dir: $workingDir"
 
-        # New Hashtable to track Newly added objects for the orig associations when we restore associations
-        $trackList = @{}
-        foreach ($file in $restoreFiles)
+        $jobs = foreach ($file in $restoreFiles)
         {
-            # For associations we need to track the ID added and map it back to the orig ID.
-            write-host "Restoring: $file"
-            $params = (Get-Command New-JCSdk$($file.BaseName)).Parameters.Keys
-            $functionName = "Get-JcSdk$($file.BaseName)"
-            $existingIds = (& $functionName -Fields id).id
-            $data = Get-content $file | ConvertFrom-Json
-            $itemProperties = $data | Get-Member -MemberType Properties
-            foreach ($item in $data) 
-            {
-                $properties = $itemProperties | Where-Object { ( $params -contains $_.Name ) -and ( -not [string]::IsNullOrEmpty($item.($_.Name)) ) }
-                # Do not import user already exists or user is externally managed
-                if ( ($item.id -notin $existingIds) -and (-not $item.ExternallyManaged) ) 
+            Start-Job -ScriptBlock:( {
+                Param ($file)
+                # Track new objects for the orig associations when restore associations
+                $trackList = @{}
+                # Get the file from the system again.
+                $file = get-item $file
+                # write-host "Restoring: $file with basename $($file.BaseName)"
+                $params = (Get-Command New-JCSdk$($file.BaseName)).Parameters.Keys
+                $functionName = "Get-JcSdk$($file.BaseName)"
+                $existingIds = (& $functionName -Fields id).id
+                $data = Get-content $file | ConvertFrom-Json
+                $itemProperties = $data | Get-Member -MemberType Properties
+                foreach ($item in $data)
                 {
-                    $attributeObjects = @{}
-                    foreach ( $property in $properties.Name )
+                    $properties = $itemProperties | Where-Object { ( $params -contains $_.Name ) -and ( -not [string]::IsNullOrEmpty($item.($_.Name)) ) }
+                    # Do not import user already exists or user is externally managed
+                    if ( ($item.id -notin $existingIds) -and (-not $item.ExternallyManaged) )
                     {
-                        # TODO: Figure out how to pass nested objects like Phone, Address, Attributes to attributeObjects hashtable
-                        # validate values in restore object are valid for the object type
-                        # ex. we won't pass an ID into New-JcSdkSystem User
-                        if ($property -eq "email") 
+                        $attributeObjects = @{}
+                        foreach ( $property in $properties.Name )
                         {
-                            # Temp fix to test importing users from a backup file, generate unique id for email
-                            write-host "Email: $($item.($property))"
-                            $tempEmail = "$(New-Guid)$($item.($property))"
-                            write-host "Setting temp Email for testing: $tempEmail"
-                            $attributeObjects.Add($property, $tempEmail)
-                        }
-                        elseif ( ($property -eq "Addresses") -or ($property -eq "PhoneNumbers") -or ($property -eq "Attributes") ) 
-                        {
-                            $formattedList = @()
-                            if ($item.($property)) 
+                            if ($property -eq "email")
                             {
-                                foreach ($nestedItem in $item.($property)) 
-                                {
-                                    # write-host $nestedItem
-                                    $hash = @{}
-                                    foreach ($subitem in $nestedItem.PSObject.Properties) 
-                                    {
-                                        $hash.Add($subitem.Name, "$($subitem.Value)")
-                                    }
-                                    $formattedList += $hash
-                                }
+                                # Temp fix to test importing users from a backup file, generate unique id for email
+                                # write-host "Email: $($item.($property))"
+                                $tempEmail = "$(New-Guid)$($item.($property))"
+                                # write-host "Setting temp Email for testing: $tempEmail"
+                                $attributeObjects.Add($property, $tempEmail)
                             }
-                            # $formattedList
-                            $attributeObjects.Add($property, $formattedList)
+                            elseif ( ($property -eq "Addresses") -or ($property -eq "PhoneNumbers") -or ($property -eq "Attributes") )
+                            {
+                                $formattedList = @()
+                                if ($item.($property))
+                                {
+                                    foreach ($nestedItem in $item.($property))
+                                    {
+                                        # write-host $nestedItem
+                                        $hash = @{}
+                                        foreach ($subitem in $nestedItem.PSObject.Properties)
+                                        {
+                                            $hash.Add($subitem.Name, "$($subitem.Value)")
+                                        }
+                                        $formattedList += $hash
+                                    }
+                                }
+                                # $formattedList
+                                $attributeObjects.Add($property, $formattedList)
+                            }
+                            else
+                            {
+                                # Add attributes to attributeObjects hash table
+                                $attributeObjects.Add($property, $item.($property))
+                            }
                         }
-                        else 
+                        # Invoke command to create new resource
+                        $functionName = "New-JcSdk$($file.BaseName)"
+                        # write-host @attributeObjects
+                        $newItem = & $functionName @attributeObjects
+                        # For debugging write out the ids and add items to trackList for associations later on
+                        if ($newItem)
                         {
-                            # Add attributes to attributeObjects hash table
-                            $attributeObjects.Add($property, $item.($property))
+                            # write-host "Old ID: $($item.id)"
+                            # write-host "New ID: $($newItem.Id)"
+                            $trackList.Add("$($item.id)", "$($newItem.Id)")
                         }
-                        
-                    }
-                    # Invoke command to create new resource
-                    $functionName = "New-JcSdk$($file.BaseName)"
-                    # "########################################"
-                    write-host @attributeObjects
-                    # "########################################"
-                    $newItem = & $functionName @attributeObjects
-                    # try {
-                    #     # Restore the item with the splatted @attributeObjects hashtable of valid params
-                    #     $newItem = & $functionName @attributeObjects -ErrorAction Continue
-                    # }
-                    # catch {
-                    #     # TODO: Better errors here
-                    #     write-host "Error Restoring: $($item.id)"
-                    # }
-                    # For debugging write out the ids and add items to trackList for associations later on
-                    if ($newItem)
-                    {
-                        write-host "Old ID: $($item.id)"
-                        write-host "New ID: $($newItem.Id)"
-                        $trackList.Add("$($item.id)", "$($newItem.Id)")
                     }
                 }
+            return $trackList
+            }) -ArgumentList:($file)
+        }
+        $JobStatus = Wait-Job -Id:($Jobs.Id)
+        $results += $JobStatus | Receive-Job
+
+        # flatten results to single table
+        $flattenedMap = @{}
+        foreach ($hash in $results) {
+            foreach ($key in $hash.Keys) {
+                # write-host "OldID: $key maps to NewID: $($hash[$key])"
+                $flattenedMap.Add($key, $($hash[$key]))
             }
         }
 
-        # Save the added items and their mapped IDs to: RestoreMap.json
-        # $trackList | ConvertTo-Json | Out-File -FilePath:("$($workingDir)/RestoreMap.json") -Force
-        # for reference how the ids map back to eachother
-        foreach ($item in $trackList.keys)
+        $jobs = foreach ($file in $restoreAssociations)
         {
-            write-host "OldID: $item maps to NewID: $($tracklist[$item])"
-        }
-
-        # For each assoicaiton list:
-        # $associationFiles = Get-ChildItem $workingDir -filter *-Associations.json
-        foreach ($file in $restoreAssociations) 
-        {
-            $associations = Convertfrom-Json -InputObject (Get-Content $file -raw)
-            # for each association
-            foreach ($item in $associations) 
-            {
-                # If the NewID maps back to a valid OldID, for both the source and target, create the Association
-                if ($($tracklist[$($item.id)]) -And $($tracklist[$($item.targetId)])) 
+            Start-Job -ScriptBlock:( {
+                    Param ($file, $flattenedMap)
+                $file = get-item $file
+                $associations = Convertfrom-Json -InputObject (Get-Content $file -raw)
+                # for each association
+                foreach ($item in $associations)
                 {
-                    New-JCAssociation -Type $($item.type) -Id $($tracklist[$($item.id)]) -TargetId $($tracklist[$($item.targetId)]) -TargetType $($item.Paths.ToType) -Force
+                    # If the NewID maps back to a valid OldID, for both the source and target, create the Association
+                    if ($($flattenedMap[$($item.id)]) -And $($flattenedMap[$($item.targetId)]))
+                    {
+                        New-JCAssociation -Type $($item.type) -Id $($flattenedMap[$($item.id)]) -TargetId $($flattenedMap[$($item.targetId)]) -TargetType $($item.Paths.ToType) -Force
+                    }
                 }
-            }
+            }) -ArgumentList:($file, $flattenedMap)
         }
+        $JobStatus = Wait-Job -Id:($Jobs.Id)
+        $JobStatus | Receive-Job
+
+
         # TODO: for testing:
         # remove-jcusergroup PesterTest_UserGroup -Force; remove-jcusergroup ybelgqoz -Force; remove-jcsystemgroup PesterTest_SystemGroup -Force; $users = Get-JCUser | Where-Object { $_.email -Match "@pestertest" }; $users | Remove-JCUser -force; $users = Get-JCUser | Where-Object { $_.email -Match "@deleteme" }; $users | Remove-JCUser -force; $users = Get-JCUser | Where-Object { $_.email -Match "@fhpomlyu" }; $users | Remove-JCUser -force;
 
@@ -234,11 +234,12 @@ Function Restore-JcSdkOrganization
     End
     {
         # Clean up global variables
-        $GlobalVars = @('JCHttpRequest', 'JCHttpRequestContent', 'JCHttpResponse', 'JCHttpResponseContent')
-        $GlobalVars | ForEach-Object 
-        {
-            If ((Get-Variable -Scope:('Global')).Where( { $_.Name -eq $_ })) { Remove-Variable -Name:($_) -Scope:('Global') }
-        }
-        Return $Results
+        # $GlobalVars = @('JCHttpRequest', 'JCHttpRequestContent', 'JCHttpResponse', 'JCHttpResponseContent')
+        # $GlobalVars | ForEach-Object
+        # {
+        #     If ((Get-Variable -Scope:('Global')).Where( { $_.Name -eq $_ })) { Remove-Variable -Name:($_) -Scope:('Global') }
+        # }
+        # Return $Results
     }
 }
+# Restore-JcSdkOrganization -Path /Users/jworkman/Dec15Backup/JumpCloud_20201216T1019123092.zip -Type All
