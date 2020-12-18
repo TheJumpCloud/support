@@ -144,15 +144,15 @@ Function Restore-JcSdkOrganization
                         $attributeObjects = @{}
                         foreach ( $property in $properties.Name )
                         {
-                            if ($property -eq "email")
-                            {
-                                # Temp fix to test importing users from a backup file, generate unique id for email
-                                # write-host "Email: $($item.($property))"
-                                $tempEmail = "$(New-Guid)$($item.($property))"
-                                # write-host "Setting temp Email for testing: $tempEmail"
-                                $attributeObjects.Add($property, $tempEmail)
-                            }
-                            elseif ( ($property -eq "Addresses") -or ($property -eq "PhoneNumbers") -or ($property -eq "Attributes") )
+                            # if ($property -eq "email")
+                            # {
+                            #     # Temp fix to test importing users from a backup file, generate unique id for email
+                            #     # write-host "Email: $($item.($property))"
+                            #     $tempEmail = "$(New-Guid)$($item.($property))"
+                            #     # write-host "Setting temp Email for testing: $tempEmail"
+                            #     $attributeObjects.Add($property, $tempEmail)
+                            # }
+                            if ( ($property -eq "Addresses") -or ($property -eq "PhoneNumbers") -or ($property -eq "Attributes") )
                             {
                                 $formattedList = @()
                                 if ($item.($property))
@@ -204,27 +204,76 @@ Function Restore-JcSdkOrganization
                 $flattenedMap.Add($key, $($hash[$key]))
             }
         }
+        write-host "$($flattenedMap.count) Items were restored"
 
         $jobs = foreach ($file in $restoreAssociations)
         {
             Start-Job -ScriptBlock:( {
-                    Param ($file, $flattenedMap)
+                Param ($file, $flattenedMap)
                 $file = get-item $file
+                write-host "checking $file"
+                $functionName = "Get-JcSdk$($file.BaseName)".replace("-Associations", "")
+                $existingIds = (& $functionName -Fields id).id
                 $associations = Convertfrom-Json -InputObject (Get-Content $file -raw)
                 # for each association
+                # TODO: quickly loop through and find possible target types, get existingTargetIds
+                $targetTypes = $associations.Paths.ToType | Get-Unique
+                    $JcTypesMap = @{
+                        application = 'Application'
+                        command = 'Command'
+                        g_suite = 'GSuite'
+                        ldap_server = 'LdapServer'
+                        office_365 = 'Office365'
+                        policy = 'Policy'
+                        radius_server = 'RadiusServer'
+                        system = 'System'
+                        system_group = 'SystemGroup'
+                        user = 'SystemUser'
+                        user_group = 'UserGroup'
+                    }
+                $existingTargetIds = @()
+                foreach ($item in $targetTypes)
+                {
+                    $functionName = "Get-JcSdk$($JcTypesMap[$item])"
+                    $existingTargetIds += (& $functionName -Fields id).id
+                }
                 foreach ($item in $associations)
                 {
-                    # If the NewID maps back to a valid OldID, for both the source and target, create the Association
-                    if ($($flattenedMap[$($item.id)]) -And $($flattenedMap[$($item.targetId)]))
+                    if ($($flattenedMap[$($item.id)]) -And $($flattenedMap[$($item.targetId)]) -And ($($item.associationType) -eq "direct"))
                     {
+                        # If the NewID maps back to a valid OldID, for both the source and target, create the Association
+                        # Write-Host "Association Restore Type: New Source & Target"
                         New-JCAssociation -Type $($item.type) -Id $($flattenedMap[$($item.id)]) -TargetId $($flattenedMap[$($item.targetId)]) -TargetType $($item.Paths.ToType) -Force
+                    }
+                    if (($($flattenedMap[$($item.id)])) -And ($item.targetId -in $existingTargetIds) -And ($($item.associationType) -eq "direct"))
+                    {
+                        # NewID Maps to Old ID for source, associated w/ existingTargetID
+                        # Write-Host "Association Restore Type: New Source, Existing Target"
+                        New-JCAssociation -Type $($item.type) -Id $($flattenedMap[$($item.id)]) -TargetId $item.targetId -TargetType $($item.Paths.ToType) -Force
+                    }
+                    if (($item.id -in $existingIds) -And $($flattenedMap[$($item.targetId)]) -And ($($item.associationType) -eq "direct"))
+                    {
+                        # Source Old ID exists and Target NewID maps to Old ID
+                        # Write-Host "Association Restore Type: Existing Source, New Target"
+                        New-JCAssociation -Type $($item.type) -Id $item.id -TargetId $($flattenedMap[$($item.targetId)]) -TargetType $($item.Paths.ToType) -Force
+                    }
+                    if (($item.id -in $existingIds) -And ($item.targetId -in $existingTargetIds) -And ($($item.associationType) -eq "direct"))
+                    {
+                        # Source & Target exist, update association
+                        # Write-Host "Association Restore Type: Existing Source and Target
+                        # New-JCAssociation -Type $($item.type) -Id $item.id -TargetId $item.targetId -TargetType $($item.Paths.ToType) -Force
                     }
                 }
             }) -ArgumentList:($file, $flattenedMap)
         }
         $JobStatus = Wait-Job -Id:($Jobs.Id)
         $JobStatus | Receive-Job
-
+        # $finalCount = 0
+        # foreach ($item in $associationsResults) {
+        #     write-host "value $item"
+        #     $finalCount += $item
+        # }
+        # write-host "$($finalCount) Associations were restored"
 
         # TODO: for testing:
         # remove-jcusergroup PesterTest_UserGroup -Force; remove-jcusergroup ybelgqoz -Force; remove-jcsystemgroup PesterTest_SystemGroup -Force; $users = Get-JCUser | Where-Object { $_.email -Match "@pestertest" }; $users | Remove-JCUser -force; $users = Get-JCUser | Where-Object { $_.email -Match "@deleteme" }; $users | Remove-JCUser -force; $users = Get-JCUser | Where-Object { $_.email -Match "@fhpomlyu" }; $users | Remove-JCUser -force;
@@ -242,4 +291,3 @@ Function Restore-JcSdkOrganization
         # Return $Results
     }
 }
-# Restore-JcSdkOrganization -Path /Users/jworkman/Dec15Backup/JumpCloud_20201216T1019123092.zip -Type All
