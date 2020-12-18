@@ -260,8 +260,12 @@ Function Restore-JcSdkOrganization
                     if (($item.id -in $existingIds) -And ($item.targetId -in $existingTargetIds) -And ($($item.associationType) -eq "direct"))
                     {
                         # Source & Target exist, update association
-                        # Write-Host "Association Restore Type: Existing Source and Target
-                        # New-JCAssociation -Type $($item.type) -Id $item.id -TargetId $item.targetId -TargetType $($item.Paths.ToType) -Force
+                        if ($item.targetId -notin (Get-JCAssociation -Id $item.id -Type $item.type -TargetType $($item.Paths.ToType)).targetId)
+                        {
+                            write-Host "Assocation Restored!"
+                            New-JCAssociation -Type $($item.type) -Id $item.id -TargetId $item.targetId -TargetType $($item.Paths.ToType) -Force
+                        }
+
                     }
                 }
             }) -ArgumentList:($file, $flattenedMap)
