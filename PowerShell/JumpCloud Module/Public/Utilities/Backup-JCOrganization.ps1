@@ -19,7 +19,11 @@ Back up UserGroups and SystemUsers with their assoications
 PS C:\> Backup-JCOrganization -Path:('C:\Temp') -Type:('UserGroup','SystemUsers') -Associations
 
 .Example
-Backup all avalible JumpCloud objects
+Back up UserGroups and SystemUsers without their assoications
+PS C:\> Backup-JCOrganization -Path:('C:\Temp') -Type:('UserGroup','SystemUsers')
+
+.Example
+Backup all avalible JumpCloud objects and their associations
 PS C:\> Backup-JCOrganization -Path:('C:\Temp') -All
 
 .Link
@@ -46,7 +50,7 @@ Function Backup-JCOrganization
         # Specify the type of JumpCloud objects you want to backup
         ${Type},
 
-        [Parameter()]
+        [Parameter(ParameterSetName = 'Type')]
         [switch]
         # Include to backup object type associations
         ${Associations}
@@ -55,23 +59,37 @@ Function Backup-JCOrganization
     {
         $Date = Get-Date -Format:("yyyyMMddTHHmmssffff")
         $ChildPath = "JumpCloud_$($Date)"
-        $PSBoundParameters.Path = Join-Path -Path:($PSBoundParameters.Path) -ChildPath:($ChildPath)
-        $OutputPath = Join-Path -Path:($PSBoundParameters.Path) -ChildPath:("$($ChildPath).zip")
+        $TempPath = Join-Path -Path:($PSBoundParameters.Path) -ChildPath:($ChildPath)
+        $ZipPath = Join-Path -Path:($PSBoundParameters.Path) -ChildPath:("$($ChildPath).zip")
         # If the path does not exist, create it
-        If (-not (Test-Path $PSBoundParameters.Path))
+        If (-not (Test-Path $TempPath))
         {
-            New-Item -Path:($PSBoundParameters.Path) -Name:$($PSBoundParameters.Path.BaseName) -ItemType:('directory')
+            New-Item -Path:($TempPath) -Name:$($TempPath.BaseName) -ItemType:('directory')
         }
-        # When Type = All use the rest of the existing options
+        # When -All is provided use all type options and associations
         $Types = If ($PSCmdlet.ParameterSetName -eq 'All')
         {
-
+            $Associations = $true
             (Get-Command $MyInvocation.MyCommand).Parameters.Type.Attributes.ValidValues
         }
         Else
         {
             $PSBoundParameters.Type
         }
+        #     # Map to define how jcassoc & jcsdk types relate
+        #     $JcTypesMap = @{
+        #         Application  = 'application';
+        #         Command      = 'command';
+        #         GSuite       = 'g_suite';
+        #         LdapServer   = 'ldap_server';
+        #         Office365    = 'office_365';
+        #         Policy       = 'policy';
+        #         RadiusServer = 'radius_server';
+        #         System       = 'system';
+        #         SystemGroup  = 'system_group';
+        #         SystemUser   = 'user';
+        #         UserGroup    = 'user_group';
+        #     }
     }
     Process
     {
@@ -87,29 +105,15 @@ Function Backup-JCOrganization
                     | Select-Object @{Name = 'JcSdkType'; Expression = { $JumpCloudType } }, * `
                     | ConvertTo-Json -Depth:(100) `
                     | Out-File -FilePath:("$($Path)/$($JumpCloudType).json") -Force
-                }) -ArgumentList:($PSBoundParameters.Path, $JumpCloudType)
+                }) -ArgumentList:($TempPath, $JumpCloudType)
         }
         $JobStatus = Wait-Job -Id:($Jobs.Id)
         $JobStatus | Receive-Job
         # # Foreach type start a new job and retreive object association records
         # If ($PSBoundParameters.Associations)
         # {
-        #     # Map to define how jcassoc & jcsdk types relate
-        #     $JcTypesMap = @{
-        #         Application  = 'application';
-        #         Command      = 'command';
-        #         GSuite       = 'g_suite';
-        #         LdapServer   = 'ldap_server';
-        #         Office365    = 'office_365';
-        #         Policy       = 'policy';
-        #         RadiusServer = 'radius_server';
-        #         System       = 'system';
-        #         SystemGroup  = 'system_group';
-        #         SystemUser   = 'user';
-        #         UserGroup    = 'user_group';
-        #     }
         #     # Get the backup files we created earlier
-        #     $BackupFiles = Get-ChildItem $PSBoundParameters.Path | Where-Object { $_.BaseName -in $Types }
+        #     $BackupFiles = Get-ChildItem $TempPath | Where-Object { $_.BaseName -in $Types }
         #     $BackupFilesBaseName = $BackupFiles.BaseName
         #     $JobsAssociations = $BackupFiles | ForEach-Object {
         #         $BackupFileFullName = $_.FullName
@@ -151,22 +155,21 @@ Function Backup-JCOrganization
         #                     # To multiple files
         #                     $AssociationResults | ConvertTo-Json -Depth:(100) | Out-File -FilePath:("$($Path)/$($Record.JcSdkType)-Associations.json") -Force
         #                 }
-        #             }) -ArgumentList:($PSBoundParameters.Path, $Types, $JcTypesMap, $BackupFileFullName, $BackupFileBaseName, $BackupFilesBaseName)
+        #             }) -ArgumentList:($TempPath, $Types, $JcTypesMap, $BackupFileFullName, $BackupFileBaseName, $BackupFilesBaseName)
         #     }
         #     $JobsAssociationsStatus = Wait-Job -Id:($JobsAssociations.Id)
         #     $JobsAssociationsStatus | Receive-Job
         # }
-        # Zip results
-        If (Compress-Archive -Path:($PSBoundParameters.Path) -CompressionLevel:('Fastest') -Destination:($OutputPath))
-        {
-            Remove-Item -Path:($PSBoundParameters.Path)
-        }
     }
     End
     {
-        If (Test-Path -Path:($OutputPath))
+        # Zip results
+        Compress-Archive -Path:($TempPath) -CompressionLevel:('Fastest') -Destination:($ZipPath)
+        # Clean up temp directory
+        If (Test-Path -Path:($ZipPath))
         {
-            Write-Host ("Backup Success: $($OutputPath)") -ForegroundColor:('Green')
+            Remove-Item -Path:($TempPath) -Force -Recurse
+            Write-Host ("Backup Success: $($ZipPath)") -ForegroundColor:('Green')
         }
     }
 }
