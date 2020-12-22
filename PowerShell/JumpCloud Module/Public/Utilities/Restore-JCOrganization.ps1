@@ -94,30 +94,29 @@ Function Restore-JCOrganization
                     Write-Host ("Restoring: $($RestoreFileBaseName)")
                     # Collect old ids and new ids for mapping
                     $IdMapping = @{}
-                    $GetCommandTemplate = "Get-JcSdk{0} -Fields id"
-                    $NewCommandTemplate = "New-JcSdk{0}"
-                    $SetCommandTemplate = "Set-JcSdk{0}"
-                    $ExistingIds = (Invoke-Expression -Command:($GetCommandTemplate -f $RestoreFileBaseName)).id
+                    $ExistingIds = (Invoke-Expression -Command:("Get-JcSdk{0} -Fields id" -f $RestoreFileBaseName)).id
                     $RestoreFileContent = Get-Content -Path:($RestoreFileFullName) | ConvertFrom-Json
                     $RestoreFileContent | ForEach-Object {
                         $RestoreFileRecord = $_
                         $CommandType = Invoke-Expression -Command:("[$($RestoreFileRecord.JcSdkType)]")
                         $RestoreFileRecord = $CommandType::DeserializeFromPSObject($RestoreFileRecord)
-                        $CommandResults = If ( ($_.id -notin $ExistingIds) )
+                        $CommandResults = If ( $RestoreFileRecord.id -notin $ExistingIds )
                         {
                             If (-not $RestoreFileRecord.ExternallyManaged)
                             {
-                                Invoke-Expression -Command:("`$RestoreFileRecord | $($NewCommandTemplate -f $RestoreFileBaseName)")
-                                # Invoke-Expression -Command:("$($NewCommandTemplate -f $RestoreFileBaseName) -Body:(`$RestoreFileRecord)")
+                                Write-Host('test') -BackgroundColor cyan
+                                # Invoke command to create new resource
+                                Invoke-Expression -Command:("`$RestoreFileRecord | $("New-JcSdk{0}" -f $RestoreFileBaseName)")
+                                # Invoke-Expression -Command:("$("New-JcSdk{0}" -f $RestoreFileBaseName) -Body:(`$RestoreFileRecord)")
                             }
                         }
-                        Else
-                        {
-                            Write-Host ($RestoreFileRecord | ConvertTo-Json -Compress)
-                            # Invoke command to update existing resource
-                            Invoke-Expression -Command:("`$RestoreFileRecord | $($SetCommandTemplate -f $RestoreFileBaseName)")
-                            # Invoke-Expression -Command:("$($SetCommandTemplate -f $RestoreFileBaseName) -Body:(`$RestoreFileRecord)")
-                        }
+                        # Else
+                        # {
+                        #     # Invoke command to update existing resource
+                        #     Invoke-Expression -Command:("`$RestoreFileRecord | $("Set-JcSdk{0}" -f $RestoreFileBaseName)")
+                        #     # Invoke-Expression -Command:("$("Set-JcSdk{0}" -f $RestoreFileBaseName) -Body:(`$RestoreFileRecord)")
+                        # }
+                        # Add id from file and results into mapping table
                         If (-not [System.String]::IsNullOrEmpty($CommandResults))
                         {
                             $IdMapping.Add($RestoreFileRecord.id, $CommandResults.Id)
