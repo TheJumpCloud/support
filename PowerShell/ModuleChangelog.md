@@ -5,6 +5,8 @@ Release Date: November 10, 2020
 #### RELEASE NOTES
 
 Internal improvements.
+"WARNING: Get-JCBackup is no longer supported and will soon be deprecated; Please use Backup-JCOrganization and Restore-JCOrganization instead. `nBackup-JCOrganization: https://github.com/TheJumpCloud/support/tree/master/PowerShell/JumpCloud%20Module/Docs/Backup-JCOrganization.md`nRestore-JCOrganization: https://github.com/TheJumpCloud/support/tree/master/PowerShell/JumpCloud%20Module/Docs/Restore-JCOrganization.md"
+
 
 #### FEATURES
 
