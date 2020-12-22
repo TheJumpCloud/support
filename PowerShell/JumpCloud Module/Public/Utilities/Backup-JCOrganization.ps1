@@ -14,11 +14,11 @@ The function exports objects from your JumpCloud organization to local json file
 The function exports objects from your JumpCloud organization to local json files
 
 .Example
-Back up UserGroups and SystemUsers with their assoications
+Back up UserGroups and SystemUsers with their associations
 PS C:\> Backup-JCOrganization -Path:('C:\Temp') -Type:('UserGroup','SystemUsers') -Association
 
 .Example
-Back up UserGroups and SystemUsers without their assoications
+Back up UserGroups and SystemUsers without their associations
 PS C:\> Backup-JCOrganization -Path:('C:\Temp') -Type:('UserGroup','SystemUsers')
 
 .Example
