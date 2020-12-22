@@ -1,46 +1,49 @@
 <#
 TODO
-    1. Make "All" a switch parameter
-    2. Through parameter sets if "All" is used then you cant use "Type" and vice versa
-    3. Should association back up all associations for item or just the associations possible within the type parameter?
-    4. Make this a class in psm1 file: [ValidateSet('SystemGroup', 'UserGroup', 'System', 'SystemUser')]
-    5. Remove unzip folder
-    6. Add manifest file
-    7. Only "Direct" associations
+    . Should association back up all associations for item or just the associations possible within the type parameter?
+    . Only "Direct" associations
+    . Make this a class in psm1 file: [ValidateSet('SystemGroup', 'UserGroup', 'System', 'SystemUser')]
+    . Add manifest file
+    . Roll back x-ms-enum
 #>
 
 <#
 .Synopsis
 The function exports objects from your JumpCloud organization to local json files
+
 .Description
 The function exports objects from your JumpCloud organization to local json files
+
 .Example
-PS C:\> {{ Add code here }}
+Back up UserGroups and SystemUsers with their assoications
+PS C:\> Backup-JCOrganization -Path:('C:\Temp') -Type:('UserGroup','SystemUsers') -Associations
 
-{{ Add output here }}
 .Example
-PS C:\> {{ Add code here }}
-
-{{ Add output here }}
-
-.Notes
+Backup all avalible JumpCloud objects
+PS C:\> Backup-JCOrganization -Path:('C:\Temp') -All
 
 .Link
 https://github.com/TheJumpCloud/support/tree/master/PowerShell/JumpCloud%20Module/Docs/Backup-JCOrganization.md
 #>
+
 Function Backup-JCOrganization
 {
-    [CmdletBinding(DefaultParameterSetName = 'Backup', PositionalBinding = $false)]
+    [CmdletBinding(DefaultParameterSetName = 'All', PositionalBinding = $false)]
     Param(
-        [Parameter(ParameterSetName = 'Backup', Mandatory)]
+        [Parameter(Mandatory)]
         [System.String]
         # Specify output file path for backup files
         ${Path},
 
-        [Parameter()]
-        [ValidateSet('All', 'SystemGroup', 'UserGroup', 'System', 'SystemUser')]
+        [Parameter(ParameterSetName = 'All')]
+        [switch]
+        # The Username of the JumpCloud user you wish to search for
+        ${All},
+
+        [Parameter(ParameterSetName = 'Type')]
+        [ValidateSet('SystemGroup', 'UserGroup', 'System', 'SystemUser')]
         [System.String[]]
-        # Specify the type of JumpCloud objects you want to backup.
+        # Specify the type of JumpCloud objects you want to backup
         ${Type},
 
         [Parameter()]
@@ -60,11 +63,10 @@ Function Backup-JCOrganization
             New-Item -Path:($PSBoundParameters.Path) -Name:$($PSBoundParameters.Path.BaseName) -ItemType:('directory')
         }
         # When Type = All use the rest of the existing options
-        $Types = If ($PSBoundParameters.Type -eq 'All')
+        $Types = If ($PSCmdlet.ParameterSetName -eq 'All')
         {
 
-            $Command = Get-Command $MyInvocation.MyCommand
-            $Command.Parameters.Type.Attributes.ValidValues | Where-Object { $_ -ne 'All' }
+            (Get-Command $MyInvocation.MyCommand).Parameters.Type.Attributes.ValidValues
         }
         Else
         {
@@ -73,7 +75,7 @@ Function Backup-JCOrganization
     }
     Process
     {
-        # Foreach type start a new job and retreive object records
+        # Foreach type start a new job and retrieve object records
         $Jobs = $Types | ForEach-Object {
             $JumpCloudType = $_
             Start-Job -ScriptBlock:( {
