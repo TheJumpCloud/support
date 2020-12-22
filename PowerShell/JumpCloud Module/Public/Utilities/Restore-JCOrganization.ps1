@@ -206,72 +206,72 @@ Function Restore-JcSdkOrganization
         }
         write-host "$($flattenedMap.count) Items were restored"
 
-        $jobs = foreach ($file in $restoreAssociations)
-        {
-            Start-Job -ScriptBlock:( {
-                Param ($file, $flattenedMap)
-                $file = get-item $file
-                write-host "checking $file"
-                $functionName = "Get-JcSdk$($file.BaseName)".replace("-Associations", "")
-                $existingIds = (& $functionName -Fields id).id
-                $associations = Convertfrom-Json -InputObject (Get-Content $file -raw)
-                # for each association
-                # TODO: quickly loop through and find possible target types, get existingTargetIds
-                $targetTypes = $associations.Paths.ToType | Get-Unique
-                    $JcTypesMap = @{
-                        application = 'Application'
-                        command = 'Command'
-                        g_suite = 'GSuite'
-                        ldap_server = 'LdapServer'
-                        office_365 = 'Office365'
-                        policy = 'Policy'
-                        radius_server = 'RadiusServer'
-                        system = 'System'
-                        system_group = 'SystemGroup'
-                        user = 'SystemUser'
-                        user_group = 'UserGroup'
-                    }
-                $existingTargetIds = @()
-                foreach ($item in $targetTypes)
-                {
-                    $functionName = "Get-JcSdk$($JcTypesMap[$item])"
-                    $existingTargetIds += (& $functionName -Fields id).id
-                }
-                foreach ($item in $associations)
-                {
-                    if ($($flattenedMap[$($item.id)]) -And $($flattenedMap[$($item.targetId)]) -And ($($item.associationType) -eq "direct"))
-                    {
-                        # If the NewID maps back to a valid OldID, for both the source and target, create the Association
-                        # Write-Host "Association Restore Type: New Source & Target"
-                        New-JCAssociation -Type $($item.type) -Id $($flattenedMap[$($item.id)]) -TargetId $($flattenedMap[$($item.targetId)]) -TargetType $($item.Paths.ToType) -Force
-                    }
-                    if (($($flattenedMap[$($item.id)])) -And ($item.targetId -in $existingTargetIds) -And ($($item.associationType) -eq "direct"))
-                    {
-                        # NewID Maps to Old ID for source, associated w/ existingTargetID
-                        # Write-Host "Association Restore Type: New Source, Existing Target"
-                        New-JCAssociation -Type $($item.type) -Id $($flattenedMap[$($item.id)]) -TargetId $item.targetId -TargetType $($item.Paths.ToType) -Force
-                    }
-                    if (($item.id -in $existingIds) -And $($flattenedMap[$($item.targetId)]) -And ($($item.associationType) -eq "direct"))
-                    {
-                        # Source Old ID exists and Target NewID maps to Old ID
-                        # Write-Host "Association Restore Type: Existing Source, New Target"
-                        New-JCAssociation -Type $($item.type) -Id $item.id -TargetId $($flattenedMap[$($item.targetId)]) -TargetType $($item.Paths.ToType) -Force
-                    }
-                    if (($item.id -in $existingIds) -And ($item.targetId -in $existingTargetIds) -And ($($item.associationType) -eq "direct"))
-                    {
-                        # Source & Target exist, update association
-                        if ($item.targetId -notin (Get-JCAssociation -Id $item.id -Type $item.type -TargetType $($item.Paths.ToType)).targetId)
-                        {
-                            write-Host "Assocation Restored!"
-                            New-JCAssociation -Type $($item.type) -Id $item.id -TargetId $item.targetId -TargetType $($item.Paths.ToType) -Force
-                        }
+        # $jobs = foreach ($file in $restoreAssociations)
+        # {
+        #     Start-Job -ScriptBlock:( {
+        #         Param ($file, $flattenedMap)
+        #         $file = get-item $file
+        #         write-host "checking $file"
+        #         $functionName = "Get-JcSdk$($file.BaseName)".replace("-Associations", "")
+        #         $existingIds = (& $functionName -Fields id).id
+        #         $associations = Convertfrom-Json -InputObject (Get-Content $file -raw)
+        #         # for each association
+        #         # TODO: quickly loop through and find possible target types, get existingTargetIds
+        #         $targetTypes = $associations.Paths.ToType | Get-Unique
+        #             $JcTypesMap = @{
+        #                 application = 'Application'
+        #                 command = 'Command'
+        #                 g_suite = 'GSuite'
+        #                 ldap_server = 'LdapServer'
+        #                 office_365 = 'Office365'
+        #                 policy = 'Policy'
+        #                 radius_server = 'RadiusServer'
+        #                 system = 'System'
+        #                 system_group = 'SystemGroup'
+        #                 user = 'SystemUser'
+        #                 user_group = 'UserGroup'
+        #             }
+        #         $existingTargetIds = @()
+        #         foreach ($item in $targetTypes)
+        #         {
+        #             $functionName = "Get-JcSdk$($JcTypesMap[$item])"
+        #             $existingTargetIds += (& $functionName -Fields id).id
+        #         }
+        #         foreach ($item in $associations)
+        #         {
+        #             if ($($flattenedMap[$($item.id)]) -And $($flattenedMap[$($item.targetId)]) -And ($($item.associationType) -eq "direct"))
+        #             {
+        #                 # If the NewID maps back to a valid OldID, for both the source and target, create the Association
+        #                 # Write-Host "Association Restore Type: New Source & Target"
+        #                 New-JCAssociation -Type $($item.type) -Id $($flattenedMap[$($item.id)]) -TargetId $($flattenedMap[$($item.targetId)]) -TargetType $($item.Paths.ToType) -Force
+        #             }
+        #             if (($($flattenedMap[$($item.id)])) -And ($item.targetId -in $existingTargetIds) -And ($($item.associationType) -eq "direct"))
+        #             {
+        #                 # NewID Maps to Old ID for source, associated w/ existingTargetID
+        #                 # Write-Host "Association Restore Type: New Source, Existing Target"
+        #                 New-JCAssociation -Type $($item.type) -Id $($flattenedMap[$($item.id)]) -TargetId $item.targetId -TargetType $($item.Paths.ToType) -Force
+        #             }
+        #             if (($item.id -in $existingIds) -And $($flattenedMap[$($item.targetId)]) -And ($($item.associationType) -eq "direct"))
+        #             {
+        #                 # Source Old ID exists and Target NewID maps to Old ID
+        #                 # Write-Host "Association Restore Type: Existing Source, New Target"
+        #                 New-JCAssociation -Type $($item.type) -Id $item.id -TargetId $($flattenedMap[$($item.targetId)]) -TargetType $($item.Paths.ToType) -Force
+        #             }
+        #             if (($item.id -in $existingIds) -And ($item.targetId -in $existingTargetIds) -And ($($item.associationType) -eq "direct"))
+        #             {
+        #                 # Source & Target exist, update association
+        #                 if ($item.targetId -notin (Get-JCAssociation -Id $item.id -Type $item.type -TargetType $($item.Paths.ToType)).targetId)
+        #                 {
+        #                     write-Host "Assocation Restored!"
+        #                     New-JCAssociation -Type $($item.type) -Id $item.id -TargetId $item.targetId -TargetType $($item.Paths.ToType) -Force
+        #                 }
 
-                    }
-                }
-            }) -ArgumentList:($file, $flattenedMap)
-        }
-        $JobStatus = Wait-Job -Id:($Jobs.Id)
-        $JobStatus | Receive-Job
+        #             }
+        #         }
+        #     }) -ArgumentList:($file, $flattenedMap)
+        # }
+        # $JobStatus = Wait-Job -Id:($Jobs.Id)
+        # $JobStatus | Receive-Job
         # $finalCount = 0
         # foreach ($item in $associationsResults) {
         #     write-host "value $item"
