@@ -89,10 +89,10 @@ Function Restore-JcSdkOrganization
     Process
     {
         $zipArchive = Get-Item $Path
-        Expand-Archive -LiteralPath "$Path" -DestinationPath $zipArchive.Directory -Force
+        Expand-Archive -Path "$Path" -DestinationPath $zipArchive.Directory -Force
         $zipArchiveName = $zipArchive.Name.split('_')[0]
         $zipArchiveTimestamp = $zipArchive.Name.split('_')[1].Replace('.zip', '')
-        $workingDir = Join-Path -Path $zipArchive.Directory -ChildPath $zipArchiveName
+        $workingDir = Get-Item $zipArchive.BaseName #-ChildPath $zipArchiveName
         $Types = If ($PSBoundParameters.Type -eq 'All')
         {
             $Command = Get-Command $MyInvocation.MyCommand
