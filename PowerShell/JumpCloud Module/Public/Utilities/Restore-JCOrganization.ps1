@@ -10,13 +10,16 @@ The function exports objects from your JumpCloud organization to local json file
 .Description
 The function exports objects from your JumpCloud organization to local json files
 .Example
-PS C:\> {{ Add code here }}
+Restore UserGroups and SystemUsers with their associations
+PS C:\> Restore-JCOrganization -Path:('C:\Temp\JumpCloud_20201222T1324549196.zip') -Type:('UserGroup','SystemUsers') -Association
 
-{{ Add output here }}
 .Example
-PS C:\> {{ Add code here }}
+Restore UserGroups and SystemUsers without their associations
+PS C:\> Restore-JCOrganization -Path:('C:\Temp\JumpCloud_20201222T1324549196.zip') -Type:('UserGroup','SystemUsers')
 
-{{ Add output here }}
+.Example
+Restore all avalible JumpCloud objects and their Association
+PS C:\> Restore-JCOrganization -Path:('C:\Temp\JumpCloud_20201222T1324549196.zip') -All
 
 .Notes
 
