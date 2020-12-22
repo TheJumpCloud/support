@@ -1,12 +1,11 @@
 <#
 TODO
-    . Should association back up all associations for item or just the associations possible within the type parameter?
-    . Only "Direct" associations
+    . Should association back up all Association for item or just the Association possible within the type parameter?
+    . Only "Direct" Association
     . Make this a class in psm1 file: [ValidateSet('SystemGroup', 'UserGroup', 'System', 'SystemUser')]
     . Add manifest file
     . Roll back x-ms-enum
 #>
-
 <#
 .Synopsis
 The function exports objects from your JumpCloud organization to local json files
@@ -16,14 +15,14 @@ The function exports objects from your JumpCloud organization to local json file
 
 .Example
 Back up UserGroups and SystemUsers with their assoications
-PS C:\> Backup-JCOrganization -Path:('C:\Temp') -Type:('UserGroup','SystemUsers') -Associations
+PS C:\> Backup-JCOrganization -Path:('C:\Temp') -Type:('UserGroup','SystemUsers') -Association
 
 .Example
 Back up UserGroups and SystemUsers without their assoications
 PS C:\> Backup-JCOrganization -Path:('C:\Temp') -Type:('UserGroup','SystemUsers')
 
 .Example
-Backup all avalible JumpCloud objects and their associations
+Backup all avalible JumpCloud objects and their Association
 PS C:\> Backup-JCOrganization -Path:('C:\Temp') -All
 
 .Link
@@ -52,31 +51,31 @@ Function Backup-JCOrganization
 
         [Parameter(ParameterSetName = 'Type')]
         [switch]
-        # Include to backup object type associations
-        ${Associations}
+        # Include to backup object type Association
+        ${Association}
     )
     Begin
     {
         $Date = Get-Date -Format:("yyyyMMddTHHmmssffff")
         $ChildPath = "JumpCloud_$($Date)"
         $TempPath = Join-Path -Path:($PSBoundParameters.Path) -ChildPath:($ChildPath)
-        $ZipPath = Join-Path -Path:($PSBoundParameters.Path) -ChildPath:("$($ChildPath).zip")
+        $ArchivePath = Join-Path -Path:($PSBoundParameters.Path) -ChildPath:("$($ChildPath).zip")
         # If the path does not exist, create it
         If (-not (Test-Path $TempPath))
         {
             New-Item -Path:($TempPath) -Name:$($TempPath.BaseName) -ItemType:('directory')
         }
-        # When -All is provided use all type options and associations
+        # When -All is provided use all type options and Association
         $Types = If ($PSCmdlet.ParameterSetName -eq 'All')
         {
-            $Associations = $true
+            $PSBoundParameters.Add('Association', $true)
             (Get-Command $MyInvocation.MyCommand).Parameters.Type.Attributes.ValidValues
         }
         Else
         {
             $PSBoundParameters.Type
         }
-        #     # Map to define how jcassoc & jcsdk types relate
+        #     # Map to define how JCAssociation & JcSdk types relate
         #     $JcTypesMap = @{
         #         Application  = 'application';
         #         Command      = 'command';
@@ -110,12 +109,12 @@ Function Backup-JCOrganization
         $JobStatus = Wait-Job -Id:($Jobs.Id)
         $JobStatus | Receive-Job
         # # Foreach type start a new job and retreive object association records
-        # If ($PSBoundParameters.Associations)
+        # If ($PSBoundParameters.Association)
         # {
         #     # Get the backup files we created earlier
         #     $BackupFiles = Get-ChildItem $TempPath | Where-Object { $_.BaseName -in $Types }
         #     $BackupFilesBaseName = $BackupFiles.BaseName
-        #     $JobsAssociations = $BackupFiles | ForEach-Object {
+        #     $JobsAssociation = $BackupFiles | ForEach-Object {
         #         $BackupFileFullName = $_.FullName
         #         $BackupFileBaseName = $_.BaseName
         #         Start-Job -ScriptBlock:( {
@@ -135,7 +134,7 @@ Function Backup-JCOrganization
         #                             $AssociationType
         #                         }
         #                     }
-        #                     # If a valid target is found get the associations
+        #                     # If a valid target is found get the Association
         #                     If (-not [System.String]::IsNullOrEmpty($TargetTypes))
         #                     {
         #                         $Command = "Get-JCAssociation -Type:('$($JcTypesMap["$($Record.JcSdkType)"])') -id:('$($Record.id)') -TargetType:('$($TargetTypes -join "','")')"
@@ -151,25 +150,25 @@ Function Backup-JCOrganization
         #                 If (-not [System.String]::IsNullOrEmpty($AssociationResults))
         #                 {
         #                     # To single file
-        #                     # $AssociationResults | ConvertTo-Json -Depth:(100) | Out-File -FilePath:("$($BackupFileFullName)-associations.json") -Force
+        #                     # $AssociationResults | ConvertTo-Json -Depth:(100) | Out-File -FilePath:("$($BackupFileFullName)-Association.json") -Force
         #                     # To multiple files
-        #                     $AssociationResults | ConvertTo-Json -Depth:(100) | Out-File -FilePath:("$($Path)/$($Record.JcSdkType)-Associations.json") -Force
+        #                     $AssociationResults | ConvertTo-Json -Depth:(100) | Out-File -FilePath:("$($Path)/$($Record.JcSdkType)-Association.json") -Force
         #                 }
         #             }) -ArgumentList:($TempPath, $Types, $JcTypesMap, $BackupFileFullName, $BackupFileBaseName, $BackupFilesBaseName)
         #     }
-        #     $JobsAssociationsStatus = Wait-Job -Id:($JobsAssociations.Id)
-        #     $JobsAssociationsStatus | Receive-Job
+        #     $JobsAssociationStatus = Wait-Job -Id:($JobsAssociation.Id)
+        #     $JobsAssociationStatus | Receive-Job
         # }
     }
     End
     {
         # Zip results
-        Compress-Archive -Path:($TempPath) -CompressionLevel:('Fastest') -Destination:($ZipPath)
+        Compress-Archive -Path:($TempPath) -CompressionLevel:('Fastest') -Destination:($ArchivePath)
         # Clean up temp directory
-        If (Test-Path -Path:($ZipPath))
+        If (Test-Path -Path:($ArchivePath))
         {
             Remove-Item -Path:($TempPath) -Force -Recurse
-            Write-Host ("Backup Success: $($ZipPath)") -ForegroundColor:('Green')
+            Write-Host ("Backup Success: $($ArchivePath)") -ForegroundColor:('Green')
         }
     }
 }
