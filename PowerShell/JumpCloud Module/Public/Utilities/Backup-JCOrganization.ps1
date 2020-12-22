@@ -101,7 +101,7 @@ Function Backup-JCOrganization
                     $Result = Invoke-Expression -Command:($CommandTemplate -f $JumpCloudType)
                     # Write output to file
                     $Result `
-                    | Select-Object @{Name = 'JcSdkType'; Expression = { $JumpCloudType } }, * `
+                    | ForEach-Object { $_ | Select-Object *, @{Name = 'JcSdkType'; Expression = { $_.GetType().FullName } } } `
                     | ConvertTo-Json -Depth:(100) `
                     | Out-File -FilePath:("$($Path)/$($JumpCloudType).json") -Force
                 }) -ArgumentList:($TempPath, $JumpCloudType)
