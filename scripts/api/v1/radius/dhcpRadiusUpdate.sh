@@ -60,7 +60,7 @@ curl \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -H "x-api-key: ${apiKey}" \
-  -d '{"networkSourceIp":"'"${newIp}"'"}' \
+  -d '{"networkSourceIp":"'"${newIp}"'", "name": "<YOUR RADIUS NAME>", "sharedSecret": "<YOUR SHARED SECRET"}' \
   "https://console.jumpcloud.com/api/radiusservers/${radiusId}"
 
 }
