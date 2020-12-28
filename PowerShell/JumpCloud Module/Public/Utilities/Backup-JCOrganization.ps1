@@ -1,9 +1,9 @@
 <#
 TODO
     . Should association back up all Association for item or just the Association possible within the type parameter?
-    . Only "Direct" Association
+    . Only "Direct" Association **
     . Make this a class in psm1 file: [ValidateSet('SystemGroup', 'UserGroup', 'System', 'SystemUser')]
-    . Add manifest file
+    . Add manifest file **
     . Roll back x-ms-enum
 #>
 <#
@@ -60,6 +60,13 @@ Function Backup-JCOrganization
         $ChildPath = "JumpCloud_$($Date)"
         $TempPath = Join-Path -Path:($PSBoundParameters.Path) -ChildPath:($ChildPath)
         $ArchivePath = Join-Path -Path:($PSBoundParameters.Path) -ChildPath:("$($ChildPath).zip")
+        $Manifest = @{
+            name = "JumpCloudBackup";
+            date = "$Date";
+            organizationID = "$env:JCOrgId"
+            backupFiles = @()
+            associationFiles = @()
+        }
         # If the path does not exist, create it
         If (-not (Test-Path $TempPath))
         {
@@ -75,20 +82,20 @@ Function Backup-JCOrganization
         {
             $PSBoundParameters.Type
         }
-        #     # Map to define how JCAssociation & JcSdk types relate
-        #     $JcTypesMap = @{
-        #         Application  = 'application';
-        #         Command      = 'command';
-        #         GSuite       = 'g_suite';
-        #         LdapServer   = 'ldap_server';
-        #         Office365    = 'office_365';
-        #         Policy       = 'policy';
-        #         RadiusServer = 'radius_server';
-        #         System       = 'system';
-        #         SystemGroup  = 'system_group';
-        #         SystemUser   = 'user';
-        #         UserGroup    = 'user_group';
-        #     }
+            # Map to define how JCAssociation & JcSdk types relate
+            $JcTypesMap = @{
+                Application  = 'application';
+                Command      = 'command';
+                GSuite       = 'g_suite';
+                LdapServer   = 'ldap_server';
+                Office365    = 'office_365';
+                Policy       = 'policy';
+                RadiusServer = 'radius_server';
+                System       = 'system';
+                SystemGroup  = 'system_group';
+                SystemUser   = 'user';
+                UserGroup    = 'user_group';
+            }
     }
     Process
     {
@@ -101,67 +108,94 @@ Function Backup-JCOrganization
                     $Result = Invoke-Expression -Command:($CommandTemplate -f $JumpCloudType)
                     # Write output to file
                     $Result `
-                    | ForEach-Object { $_ | Select-Object *, @{Name = 'JcSdkType'; Expression = { $_.GetType().FullName } } } `
+                    | Select-Object @{Name = 'JcSdkType'; Expression = { $JumpCloudType } }, * `
                     | ConvertTo-Json -Depth:(100) `
                     | Out-File -FilePath:("$($Path)/$($JumpCloudType).json") -Force
+                    $backupFiles = @{
+                        backupType = "$JumpCloudType"
+                        backupLocation = "./$($JumpCloudType).json"
+                    }
+                    return $backupFiles
                 }) -ArgumentList:($TempPath, $JumpCloudType)
         }
         $JobStatus = Wait-Job -Id:($Jobs.Id)
-        $JobStatus | Receive-Job
-        # # Foreach type start a new job and retreive object association records
-        # If ($PSBoundParameters.Association)
-        # {
-        #     # Get the backup files we created earlier
-        #     $BackupFiles = Get-ChildItem $TempPath | Where-Object { $_.BaseName -in $Types }
-        #     $BackupFilesBaseName = $BackupFiles.BaseName
-        #     $JobsAssociation = $BackupFiles | ForEach-Object {
-        #         $BackupFileFullName = $_.FullName
-        #         $BackupFileBaseName = $_.BaseName
-        #         Start-Job -ScriptBlock:( {
-        #                 Param ($Path, $Types, $JcTypesMap, $BackupFileFullName, $BackupFileBaseName, $BackupFilesBaseName);
-        #                 $AssociationType = $JcTypesMap["$($_.Key)"]
-        #                 $ValidTargetTypes = (Get-Command Get-JCAssociation -ArgumentList:($AssociationType)).Parameters.TargetType.Attributes.ValidValues
-        #                 $AssociationResults = @()
-        #                 # Get content from the file
-        #                 $jsonContent = Get-Content -Path:($BackupFileFullName) | ConvertFrom-Json
-        #                 ForEach ($Record In $jsonContent)
-        #                 {
-        #                     Write-Host $Record
-        #                     # Lookup file names in $JcTypesMap
-        #                     $TargetTypes = $JcTypesMap.GetEnumerator() | ForEach-Object {
-        #                         If ($_.Key -ne $BackupFileBaseName -and $_.Key -in $BackupFilesBaseName -and $_.Values -in $ValidTargetTypes)
-        #                         {
-        #                             $AssociationType
-        #                         }
-        #                     }
-        #                     # If a valid target is found get the Association
-        #                     If (-not [System.String]::IsNullOrEmpty($TargetTypes))
-        #                     {
-        #                         $Command = "Get-JCAssociation -Type:('$($JcTypesMap["$($Record.JcSdkType)"])') -id:('$($Record.id)') -TargetType:('$($TargetTypes -join "','")')"
-        #                         # Write-Host ($Command) -BackgroundColor cyan
-        #                         $Result = Invoke-Expression -Command:($Command)
-        #                         If ($Result)
-        #                         {
-        #                             $AssociationResults += $Result
-        #                         }
-        #                     }
-        #                 }
-        #                 # Write out the results
-        #                 If (-not [System.String]::IsNullOrEmpty($AssociationResults))
-        #                 {
-        #                     # To single file
-        #                     # $AssociationResults | ConvertTo-Json -Depth:(100) | Out-File -FilePath:("$($BackupFileFullName)-Association.json") -Force
-        #                     # To multiple files
-        #                     $AssociationResults | ConvertTo-Json -Depth:(100) | Out-File -FilePath:("$($Path)/$($Record.JcSdkType)-Association.json") -Force
-        #                 }
-        #             }) -ArgumentList:($TempPath, $Types, $JcTypesMap, $BackupFileFullName, $BackupFileBaseName, $BackupFilesBaseName)
-        #     }
-        #     $JobsAssociationStatus = Wait-Job -Id:($JobsAssociation.Id)
-        #     $JobsAssociationStatus | Receive-Job
-        # }
+        $manifest.backupFiles += $JobStatus | Receive-Job
+
+        # Foreach type start a new job and retreive object association records
+        If ($PSBoundParameters.Association)
+        {
+            # Get the backup files we created earlier
+            $BackupFiles = Get-ChildItem $TempPath | Where-Object { $_.BaseName -in $Types }
+            $BackupFilesBaseName = $BackupFiles.BaseName
+            $JobsAssociation = $BackupFiles | ForEach-Object {
+                $BackupFileFullName = $_.FullName
+                $BackupFileBaseName = $_.BaseName
+                Start-Job -ScriptBlock:( {
+                        Param ($Path, $Types, $JcTypesMap, $BackupFileFullName, $BackupFileBaseName, $BackupFilesBaseName);
+                        # Write-Host "VALID TARGETS: $ValidTargetTypes"
+                        $AssociationType = $JcTypesMap["$BackupFileBaseName"]
+                        $ValidTargetTypes = (Get-Command Get-JCAssociation -ArgumentList:($AssociationType)).Parameters.TargetType.Attributes.ValidValues
+                        # write-host "verify that $AssociationType is in $ValidTargetTypes"
+                        $AssociationResults = @()
+                        # Get content from the file
+                        $jsonContent = Get-Content -Path:($BackupFileFullName) | ConvertFrom-Json
+                        ForEach ($Record In $jsonContent)
+                        {
+                            # Write-Host $Record
+                            # Lookup file names in $JcTypesMap
+                            $TargetTypes = $JcTypesMap.GetEnumerator() | ForEach-Object {
+                                If ($_.Key -ne $BackupFileBaseName -and $_.Key -in $BackupFilesBaseName -and $($_.value) -in $ValidTargetTypes)
+                                {
+                                    $AssociationType = $JcTypesMap["$($_.Key)"]
+                                    $AssociationType
+                                }
+                            }
+
+                            # Write-Host "#######"
+                            # Write-Host "$TargetTypes"
+                            # Write-Host "#######"
+                            # If a valid target is found get the Association
+                            If (-not [System.String]::IsNullOrEmpty($TargetTypes))
+                            {
+                                $Command = "Get-JCAssociation -Type:('$($JcTypesMap["$($Record.JcSdkType)"])') -id:('$($Record.id)') -TargetType:('$($TargetTypes -join "','")')"
+                                Write-Host ($Command) -BackgroundColor cyan
+                                $Result = Invoke-Expression -Command:($Command)
+                                If ($Result)
+                                {
+                                    foreach ($association in $Result)
+                                    {
+                                        if ($association.AssociationType -eq 'Direct')
+                                        {
+                                            $AssociationResults += $association
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        # Write out the results
+                        If (-not [System.String]::IsNullOrEmpty($AssociationResults))
+                        {
+                            # To single file
+                            # $AssociationResults | ConvertTo-Json -Depth:(100) | Out-File -FilePath:("$($BackupFileFullName)-Association.json") -Force
+                            # To multiple files
+                            $AssociationResults | ConvertTo-Json -Depth:(100) | Out-File -FilePath:("$($Path)/$($Record.JcSdkType)-Association.json") -Force
+                            $backupFiles = @{
+                                backupType     = "$($Record.JcSdkType)"
+                                backupLocation = "./$($Record.JcSdkType)-Association.json"
+                            }
+                            return $backupFiles
+                        }
+                    }) -ArgumentList:($TempPath, $Types, $JcTypesMap, $BackupFileFullName, $BackupFileBaseName, $BackupFilesBaseName)
+            }
+            $JobsAssociationStatus = Wait-Job -Id:($JobsAssociation.Id)
+            $manifest.associationFiles += $JobsAssociationStatus | Receive-Job
+        }
     }
     End
     {
+        # Write Out Manifest
+        $Manifest | ConvertTo-Json -Depth:(100) `
+        | Out-File -FilePath:("$($TempPath)/BackupManifest.json") -Force
         # Zip results
         Compress-Archive -Path:($TempPath) -CompressionLevel:('Fastest') -Destination:($ArchivePath)
         # Clean up temp directory
