@@ -1,7 +1,7 @@
 <#
 ToDo
 Validate Path contains *.zip file
-
+If object exists compare the existing object against backup object for diffs
 #>
 
 <#
@@ -26,7 +26,8 @@ PS C:\> Restore-JCOrganization -Path:('C:\Temp\JumpCloud_20201222T1324549196.zip
 .Link
 https://github.com/TheJumpCloud/support/tree/master/PowerShell/JumpCloud%20Module/Docs/Restore-JCOrganization.md
 #>
-Function Restore-JCOrganization {
+Function Restore-JCOrganization
+{
     [CmdletBinding(DefaultParameterSetName = 'Restore', PositionalBinding = $false)]
     Param(
         [Parameter(Mandatory)]
@@ -50,26 +51,31 @@ Function Restore-JCOrganization {
         # Include to backup object type Association
         ${Association}
     )
-    Begin {
+    Begin
+    {
         # Unzip folder
         $ZipArchive = Get-Item -Path:($Path)
         Expand-Archive -LiteralPath:($Path) -DestinationPath:($ZipArchive.Directory.FullName) -Force
         $ExpandedArchivePath = Get-Item -Path:(Join-Path -Path:($ZipArchive.Directory) -ChildPath:(($ZipArchive.Name).Replace($ZipArchive.Extension, '')))
         # When -All is provided use all type options and Association
-        $Types = If ($PSCmdlet.ParameterSetName -eq 'All') {
+        $Types = If ($PSCmdlet.ParameterSetName -eq 'All')
+        {
             $PSBoundParameters.Add('Association', $true)
             (Get-Command $MyInvocation.MyCommand).Parameters.Type.Attributes.ValidValues
         }
-        Else {
+        Else
+        {
             $PSBoundParameters.Type
         }
 
         # Get the manifest file from backup
         $ManifestFile = $ExpandedArchivePath | Get-ChildItem | Where-Object { $_.Name -eq "BackupManifest.json" }
-        if (-Not (Test-Path -Path $ManifestFile -ErrorAction SilentlyContinue)) {
+        If (-Not (Test-Path -Path $ManifestFile -ErrorAction SilentlyContinue))
+        {
             Write-Host "could not find manifest file"
         }
-        else {
+        Else
+        {
             $Manifest = Get-Content -Path:($ManifestFile) | ConvertFrom-Json
             Write-Host "###############################################################"
             Write-Host "Backup Org: $($Manifest.organizationID)"
@@ -93,19 +99,22 @@ Function Restore-JCOrganization {
             user_group    = 'UserGroup'
         }
     }
-    Process {
+    Process
+    {
         Write-Host ("Backup Location: $($ZipArchive.FullName)")
         Write-Host ("Backup Time: $($ZipArchive.LastWriteTime)")
         # Get list of files from backup location and split into object and association groups
-        # $RestoreFiles = $Types | ForEach-Object { Get-ChildItem -Path:($ExpandedArchivePath.FullName) -Exclude:('*Association*') | Where-Object { $_.BaseName -like "*$($Types)*" } }
-        $RestoreFiles = @()
-        foreach ($backupFile in $Manifest.BackupFiles) {
-            # test path and validate types
-            if ((test-path -path $ExpandedArchivePath/$($backupFile.backupLocation)) -And ($($backupFile.backupType) -in $Types)) {
-                $fullPath = get-item $ExpandedArchivePath/$($backupFile.backupLocation)
-                $RestoreFiles += get-item $fullPath
-            }
-        }
+        $RestoreFiles = $Types | ForEach-Object { Get-ChildItem -Path:($ExpandedArchivePath.FullName) -Exclude:('*Association*') | Where-Object { $_.BaseName -like "*$($Types)*" } }
+        # $RestoreFiles = @()
+        # foreach ($backupFile in $Manifest.BackupFiles)
+        # {
+        #     # test path and validate types
+        #     if ((Test-Path -Path $ExpandedArchivePath/$($backupFile.backupLocation)) -And ($($backupFile.backupType) -in $Types))
+        #     {
+        #         $fullPath = Get-Item $ExpandedArchivePath/$($backupFile.backupLocation)
+        #         $RestoreFiles += Get-Item $fullPath
+        #     }
+        # }
         # For each backup file restore object
         $Jobs = $RestoreFiles | ForEach-Object {
             $RestoreFileFullName = $_.FullName
@@ -118,34 +127,33 @@ Function Restore-JCOrganization {
                     $ExistingIds = (Invoke-Expression -Command:("Get-JcSdk{0} -Fields id" -f $RestoreFileBaseName)).id
                     $RestoreFileContent = Get-Content -Path:($RestoreFileFullName) | ConvertFrom-Json
                     $RestoreFileContent | ForEach-Object {
-                        $RestoreFileRecord = $_
-                        # write-host "test $RestoreFileRecord"
-                        # TODO: remove this tempfix after deploying new sdks
-                        if ($RestoreFileBaseName -eq "SystemUser") {
-                            $CommandType = Invoke-Expression -Command:("[JumpCloud.SDK.V1.Models.$($RestoreFileRecord.JcSdkType)put]")
-                        }
-                        else {
-                            $CommandType = Invoke-Expression -Command:("[JumpCloud.SDK.V2.Models.$($RestoreFileRecord.JcSdkType)]")
-                        }
-                        $DeserializedRestoreFileRecord = $CommandType::DeserializeFromPSObject($RestoreFileRecord)
-                        If (-not $RestoreFileRecord.ExternallyManaged) {
-                            Write-Host("$($RestoreFileRecord.id)")
-                            $CommandResults = If ( $RestoreFileRecord.id -notin $ExistingIds ) {
-                                Write-Host("Restoring $($RestoreFileRecord.id) - $($DeserializedRestoreFileRecord.username)") -BackgroundColor cyan
+                        $CommandType = Invoke-Expression -Command:("[$($_.JcSdkModel)]")
+                        $RestoreFileRecord = $CommandType::DeserializeFromPSObject($_)
+                        # If SystemUser is managed by third-party dont create or update
+                        If (-not $RestoreFileRecord.ExternallyManaged)
+                        {
+                            $CommandResults = If ( $RestoreFileRecord.id -notin $ExistingIds )
+                            {
                                 # Invoke command to create new resource
-                                Invoke-Expression -Command:("`$DeserializedRestoreFileRecord | $("New-JcSdk{0}" -f $RestoreFileBaseName)")
-                                # Invoke-Expression -Command:("$("New-JcSdk{0}" -f $RestoreFileBaseName) -Body:(`$RestoreFileRecord)")
+                                $Command = "`$RestoreFileRecord | $("New-JcSdk{0}" -f $RestoreFileBaseName)"
+                                # $Command = "$("New-JcSdk{0}" -f $RestoreFileBaseName) -Body:(`$RestoreFileRecord)"
+                                Write-Debug ("Running: $Command")
+                                Invoke-Expression -Command:($Command)
                             }
-                            else {
-                                Write-Host("Updating $($RestoreFileRecord.id) - $($RestoreFileRecord.username)") -BackgroundColor cyan
-                                # Invoke command to update resource
-                                # Write-Host("$("Set-JcSdk{0}" -f $RestoreFileBaseName) -Id:($($RestoreFileRecord.id)) -Body:($RestoreFileRecord)")
-                                Invoke-Expression -Command:("$("Set-JcSdk{0}" -f $RestoreFileBaseName) -Id:($($RestoreFileRecord.id)) -Body:($RestoreFileRecord)")
+                            Else
+                            {
+                                # Invoke command to update existing resource
+                                $Command = "$("Set-JcSdk{0}" -f $RestoreFileBaseName) -Id:(`$RestoreFileRecord.id) -Body:(`$RestoreFileRecord)"
+                                # $Command = "`$RestoreFileRecord | $("Set-JcSdk{0}" -f $RestoreFileBaseName)"
+                                # # $Command = "$("Set-JcSdk{0}" -f $RestoreFileBaseName) -Body:(`$RestoreFileRecord)"
+                                Write-Host ("Running: $Command")
+                                Invoke-Expression -Command:($Command)
                             }
-                        }
-                        # Add id from file and results into mapping table
-                        If (-not [System.String]::IsNullOrEmpty($CommandResults)) {
-                            $IdMapping.Add($RestoreFileRecord.id, $CommandResults.Id)
+                            # Add id from file and results into mapping table
+                            If (-not [System.String]::IsNullOrEmpty($CommandResults))
+                            {
+                                $IdMapping.Add($RestoreFileRecord.id, $CommandResults.Id)
+                            }
                         }
                     }
                     Return $IdMapping
@@ -153,11 +161,6 @@ Function Restore-JCOrganization {
         }
         $JobStatus = Wait-Job -Id:($Jobs.Id)
         $IdMap += $JobStatus | Receive-Job
-
-        # Foreach type start a new job and restore object association records
-        If ($PSBoundParameters.Association)
-        {
-
         # flatten $IdMap to single table
         $flattenedMap = @{}
         ForEach ($hash In $IdMap)
@@ -169,85 +172,92 @@ Function Restore-JCOrganization {
             }
         }
         Write-Host "$($flattenedMap.count) Items were restored"
-        $RestoreAssociationFiles = @()
-        foreach ($associationBackup in $Manifest.associationFiles) {
-            # test path and validate types
-            if ((test-path -path $ExpandedArchivePath/$($associationBackup.backupLocation)) -And ($($associationBackup.backupType) -in $Types)) {
-                $fullPath = get-item $ExpandedArchivePath/$($associationBackup.backupLocation)
-                $RestoreAssociationFiles += get-item $fullPath
-            }
-        }
-        # $RestoreAssociationFiles = Get-ChildItem -Path:($ExpandedArchivePath.FullName) -Filter:('*Association*')
-        $Jobs = ForEach ($file In $RestoreAssociationFiles)
+        # Foreach type start a new job and restore object association records
+        If ($PSBoundParameters.Association)
         {
-            Start-Job -ScriptBlock:( {
-                    Param ($file, $flattenedMap, $JcTypesMap)
-                    $file = Get-Item $file
-                    Write-Host "checking $file"
-                    $functionName = "Get-JcSdk$($file.BaseName)".replace("-Association", "")
-                    $ExistingIds = (& $functionName -Fields id).id
-                    $Association = ConvertFrom-Json -InputObject (Get-Content $file -Raw)
-                    # for each association
-                    # TODO: quickly loop through and find possible target types, get existingTargetIds
-                    $targetTypes = $Association.Paths.ToType | Get-Unique
-                    $existingTargetIds = @()
-                    ForEach ($item In $targetTypes)
-                    {
-                        $functionName = "Get-JcSdk$($JcTypesMap[$item])"
-                        $existingTargetIds += (& $functionName -Fields id).id
-                    }
-                    $restoreCount = @{}
-                    ForEach ($item In $Association)
-                    {
-                        if ($($flattenedMap[$($item.id)]) -And $($flattenedMap[$($item.targetId)]) -And ($($item.associationType) -eq "direct"))
-                        {
-                            # If the NewID maps back to a valid OldID, for both the source and target, create the Association
-                            # Write-Host "Association Restore Type: New Source & Target"
-                            $result = New-JCAssociation -Type $($item.type) -Id $($flattenedMap[$($item.id)]) -TargetId $($flattenedMap[$($item.targetId)]) -TargetType $($item.Paths.ToType) -Force
-                            restoreCount.Add($result.id, $tesult.targetId)
-                        }
-                        if (($($flattenedMap[$($item.id)])) -And ($item.targetId -in $existingTargetIds) -And ($($item.associationType) -eq "direct"))
-                        {
-                            # NewID Maps to Old ID for source, associated w/ existingTargetID
-                            # Write-Host "Association Restore Type: New Source, Existing Target"
-                            $result = New-JCAssociation -Type $($item.type) -Id $($flattenedMap[$($item.id)]) -TargetId $item.targetId -TargetType $($item.Paths.ToType) -Force
-                            restoreCount.Add($result.id, $tesult.targetId)
-                        }
-                        if (($item.id -in $ExistingIds) -And $($flattenedMap[$($item.targetId)]) -And ($($item.associationType) -eq "direct"))
-                        {
-                            # Source Old ID exists and Target NewID maps to Old ID
-                            # Write-Host "Association Restore Type: Existing Source, New Target"
-                            $result = New-JCAssociation -Type $($item.type) -Id $item.id -TargetId $($flattenedMap[$($item.targetId)]) -TargetType $($item.Paths.ToType) -Force
-                            restoreCount.Add($result.id, $tesult.targetId)
-                        }
-                        if (($item.id -in $ExistingIds) -And ($item.targetId -in $existingTargetIds) -And ($($item.associationType) -eq "direct"))
-                        {
-                            # Source & Target exist, update association
-                            if ($item.targetId -notin (Get-JCAssociation -Id $item.id -Type $item.type -TargetType $($item.Paths.ToType)).targetId)
-                            {
-                                # Write-Host "Assocation Restored!"
-                                $result = New-JCAssociation -Type $($item.type) -Id $item.id -TargetId $item.targetId -TargetType $($item.Paths.ToType) -Force
-                                $restoreCount.Add($result.id, $tesult.targetId)
-                            }
-
-                        }
-                    }
-                    return $restoreCount
-                }) -ArgumentList:($file, $flattenedMap, $JcTypesMap)
-        }
-        $JobStatus = Wait-Job -Id:($Jobs.Id)
-        $AssociationResults += $JobStatus | Receive-Job
-        $finalCount = @{}
-        ForEach ($item In $AssociationResults) {
-            ForEach ($key In $item.Keys)
+            $RestoreAssociationFiles = Get-ChildItem -Path:($ExpandedArchivePath.FullName) -Filter:('*Association*')
+            # $RestoreAssociationFiles = @()
+            # foreach ($associationBackup in $Manifest.associationFiles)
+            # {
+            #     # test path and validate types
+            #     if ((Test-Path -Path $ExpandedArchivePath/$($associationBackup.backupLocation)) -And ($($associationBackup.backupType) -in $Types))
+            #     {
+            #         $fullPath = Get-Item $ExpandedArchivePath/$($associationBackup.backupLocation)
+            #         $RestoreAssociationFiles += Get-Item $fullPath
+            #     }
+            # }
+            $Jobs = ForEach ($file In $RestoreAssociationFiles)
             {
-                    $finalCount.Add($key, $($item[$key]))
+                # Start-Job -ScriptBlock:( {
+                #         Param ($file, $flattenedMap, $JcTypesMap)
+                $file = Get-Item $file
+                Write-Host "checking $file"
+                $functionName = "Get-JcSdk$($file.BaseName)".replace("-Association", "")
+                $ExistingIds = (& $functionName -Fields id).id
+                $AssociationContent = Get-Content -Path:($file.FullName) -Raw | ConvertFrom-Json
+                # for each association
+                # TODO: quickly loop through and find possible target types, get existingTargetIds
+                $targetTypes = $AssociationContent.Paths.ToType | Get-Unique
+                $existingTargetIds = @()
+                ForEach ($item In $targetTypes)
+                {
+                    $functionName = "Get-JcSdk$($JcTypesMap[$item])"
+                    $existingTargetIds += (& $functionName -Fields id).id
+                }
+                $restoreCount = @{}
+                ForEach ($item In $AssociationContent)
+                {
+                    Write-Host ("-Id $($flattenedMap[$($item.id)])") -BackgroundColor Green -ForegroundColor Black
+                    Write-Host ("-Id $($item.id)") -BackgroundColor Red -ForegroundColor Black
+                    if ($($flattenedMap[$($item.id)]) -And $($flattenedMap[$($item.targetId)]))
+                    {
+                        # If the NewID maps back to a valid OldID, for both the source and target, create the Association
+                        # Write-Host "Association Restore Type: New Source & Target"
+                        $result = New-JCAssociation -Type $($item.type) -Id $($flattenedMap[$($item.id)]) -TargetId $($flattenedMap[$($item.targetId)]) -TargetType $($item.Paths.ToType) -Force
+                        $restoreCount.Add($result.id, $tesult.targetId)
+                    }
+                    if (($($flattenedMap[$($item.id)])) -And ($item.targetId -in $existingTargetIds))
+                    {
+                        # NewID Maps to Old ID for source, associated w/ existingTargetID
+                        # Write-Host "Association Restore Type: New Source, Existing Target"
+                        $result = New-JCAssociation -Type $($item.type) -Id $($flattenedMap[$($item.id)]) -TargetId $($flattenedMap[$($item.targetId)]) -TargetType $($item.Paths.ToType) -Force
+                        $restoreCount.Add($result.id, $tesult.targetId)
+                    }
+                    if (($item.id -in $ExistingIds) -And $($flattenedMap[$($item.targetId)]))
+                    {
+                        # Source Old ID exists and Target NewID maps to Old ID
+                        # Write-Host "Association Restore Type: Existing Source, New Target"
+                        $result = New-JCAssociation -Type $($item.type) -Id $item.id -TargetId $($flattenedMap[$($item.targetId)]) -TargetType $($item.Paths.ToType) -Force
+                        $restoreCount.Add($result.id, $tesult.targetId)
+                    }
+                    if (($item.id -in $ExistingIds) -And ($item.targetId -in $existingTargetIds))
+                    {
+                        # Source & Target exist, update association
+                        if ($item.targetId -notin (Get-JCAssociation -Id $item.id -Type $item.type -TargetType $($item.Paths.ToType)).targetId)
+                        {
+                            # Write-Host "Assocation Restored!"
+                            $result = New-JCAssociation -Type $($item.type) -Id $item.id -TargetId $($flattenedMap[$($item.targetId)]) -TargetType $($item.Paths.ToType) -Force
+                            $restoreCount.Add($result.id, $tesult.targetId)
+                        }
+                    }
+                }
+                return $restoreCount
+                # }) -ArgumentList:($file, $flattenedMap, $JcTypesMap)
             }
-        }
-        write-host "$($finalCount.count) Associations were restored"
+            $JobStatus = Wait-Job -Id:($Jobs.Id)
+            $AssociationResults += $JobStatus | Receive-Job
+            $finalCount = @{}
+            ForEach ($item In $AssociationResults)
+            {
+                ForEach ($key In $item.Keys)
+                {
+                    $finalCount.Add($key, $($item[$key]))
+                }
+            }
+            Write-Host "$($finalCount.count) Associations were restored"
         }
     }
-    End {
-
+    End
+    {
     }
 }
