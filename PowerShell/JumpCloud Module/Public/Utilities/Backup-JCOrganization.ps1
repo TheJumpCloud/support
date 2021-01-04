@@ -106,7 +106,7 @@ Function Backup-JCOrganization
                     $Result = Invoke-Expression -Command:($CommandTemplate -f $JumpCloudType)
                     # Write output to file
                     $Result `
-                    | ForEach-Object { $_ | Select-Object *, @{Name = 'JcSdkModel'; Expression = { $_.GetType().FullName } } , @{Name = 'JcSdkType'; Expression = { $JumpCloudType } } } `
+                    | ForEach-Object { $_ | Select-Object *, @{Name = 'JcSdkModel'; Expression = { $_.GetType().FullName } } } `
                     | ConvertTo-Json -Depth:(100) `
                     | Out-File -FilePath:("$($Path)/$($JumpCloudType).json") -Force
                     # Manifest: Populate backupFiles value
@@ -149,7 +149,7 @@ Function Backup-JCOrganization
                             # If a valid target is found get the Association
                             If (-not [System.String]::IsNullOrEmpty($TargetTypes))
                             {
-                                $Command = "Get-JCAssociation -Direct -id:('$($Record.id)') -Type:('$($JcTypesMap["$($Record.JcSdkType)"])') -TargetType:('$($TargetTypes -join "','")')"
+                                $Command = "Get-JCAssociation -Direct -id:('$($Record.id)') -Type:('$($JcTypesMap["$($BackupFileBaseName)"])') -TargetType:('$($TargetTypes -join "','")')"
                                 Write-Debug ("Running: $Command")
                                 $Result = Invoke-Expression -Command:($Command)
                                 If ($Result)
@@ -162,11 +162,11 @@ Function Backup-JCOrganization
                         If (-not [System.String]::IsNullOrEmpty($AssociationResults))
                         {
                             # To multiple files
-                            $AssociationResults | ConvertTo-Json -Depth:(100) | Out-File -FilePath:("$($Path)/$($Record.JcSdkType)-Association.json") -Force
+                            $AssociationResults | ConvertTo-Json -Depth:(100) | Out-File -FilePath:("$($Path)/$($BackupFileBaseName)-Association.json") -Force
                             # Manifest: Populate backupFiles value
                             $backupFiles = @{
-                                backupType     = "$($Record.JcSdkType)"
-                                backupLocation = "./$($Record.JcSdkType)-Association.json"
+                                backupType     = "$($BackupFileBaseName)"
+                                backupLocation = "./$($BackupFileBaseName)-Association.json"
                             }
                             Return $backupFiles
                         }
