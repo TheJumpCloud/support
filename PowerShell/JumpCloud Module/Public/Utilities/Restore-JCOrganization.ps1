@@ -127,21 +127,22 @@ Function Restore-JCOrganization {
                         else {
                             $CommandType = Invoke-Expression -Command:("[JumpCloud.SDK.V2.Models.$($RestoreFileRecord.JcSdkType)]")
                         }
-                        $RestoreFileRecord = $CommandType::DeserializeFromPSObject($RestoreFileRecord)
-                        $CommandResults = If ( $RestoreFileRecord.id -notin $ExistingIds ) {
-                            If (-not $RestoreFileRecord.ExternallyManaged) {
-                                Write-Host('test') -BackgroundColor cyan
+                        $DeserializedRestoreFileRecord = $CommandType::DeserializeFromPSObject($RestoreFileRecord)
+                        If (-not $RestoreFileRecord.ExternallyManaged) {
+                            Write-Host("$($RestoreFileRecord.id)")
+                            $CommandResults = If ( $RestoreFileRecord.id -notin $ExistingIds ) {
+                                Write-Host("Restoring $($RestoreFileRecord.id) - $($DeserializedRestoreFileRecord.username)") -BackgroundColor cyan
                                 # Invoke command to create new resource
-                                Invoke-Expression -Command:("`$RestoreFileRecord | $("New-JcSdk{0}" -f $RestoreFileBaseName)")
+                                Invoke-Expression -Command:("`$DeserializedRestoreFileRecord | $("New-JcSdk{0}" -f $RestoreFileBaseName)")
                                 # Invoke-Expression -Command:("$("New-JcSdk{0}" -f $RestoreFileBaseName) -Body:(`$RestoreFileRecord)")
                             }
+                            else {
+                                Write-Host("Updating $($RestoreFileRecord.id) - $($RestoreFileRecord.username)") -BackgroundColor cyan
+                                # Invoke command to update resource
+                                # Write-Host("$("Set-JcSdk{0}" -f $RestoreFileBaseName) -Id:($($RestoreFileRecord.id)) -Body:($RestoreFileRecord)")
+                                Invoke-Expression -Command:("$("Set-JcSdk{0}" -f $RestoreFileBaseName) -Id:($($RestoreFileRecord.id)) -Body:($RestoreFileRecord)")
+                            }
                         }
-                        # Else
-                        # {
-                        #     # Invoke command to update existing resource
-                        #     Invoke-Expression -Command:("`$RestoreFileRecord | $("Set-JcSdk{0}" -f $RestoreFileBaseName)")
-                        #     # Invoke-Expression -Command:("$("Set-JcSdk{0}" -f $RestoreFileBaseName) -Body:(`$RestoreFileRecord)")
-                        # }
                         # Add id from file and results into mapping table
                         If (-not [System.String]::IsNullOrEmpty($CommandResults)) {
                             $IdMapping.Add($RestoreFileRecord.id, $CommandResults.Id)
