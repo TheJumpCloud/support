@@ -100,8 +100,7 @@ Function Backup-JCOrganization
         # Foreach type start a new job and retrieve object records
         $Jobs = $Types | ForEach-Object {
             $JumpCloudType = $_
-            Start-Job -ScriptBlock:( {
-                    Param ($Path, $JumpCloudType);
+            Start-Job -ScriptBlock:( { Param ($Path, $JumpCloudType);
                     $CommandTemplate = "Get-JcSdk{0}"
                     $Result = Invoke-Expression -Command:($CommandTemplate -f $JumpCloudType)
                     # Write output to file
@@ -129,8 +128,7 @@ Function Backup-JCOrganization
             $JobsAssociation = $BackupFiles | ForEach-Object {
                 $BackupFileFullName = $_.FullName
                 $BackupFileBaseName = $_.BaseName
-                Start-Job -ScriptBlock:( {
-                        Param ($Path, $Types, $JcTypesMap, $BackupFileFullName, $BackupFileBaseName, $BackupFilesBaseName);
+                Start-Job -ScriptBlock:( { Param ($Path, $Types, $JcTypesMap, $BackupFileFullName, $BackupFileBaseName, $BackupFilesBaseName);
                         $AssociationType = $JcTypesMap["$BackupFileBaseName"]
                         $ValidTargetTypes = (Get-Command Get-JCAssociation -ArgumentList:($AssociationType)).Parameters.TargetType.Attributes.ValidValues
                         $AssociationResults = @()

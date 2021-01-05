@@ -67,7 +67,20 @@ Function Restore-JCOrganization
         {
             $PSBoundParameters.Type
         }
-
+        # Map to define how JCAssociation & JcSdk types relate
+        $JcTypesMap = @{
+            Application  = 'application';
+            Command      = 'command';
+            GSuite       = 'g_suite';
+            LdapServer   = 'ldap_server';
+            Office365    = 'office_365';
+            Policy       = 'policy';
+            RadiusServer = 'radius_server';
+            System       = 'system';
+            SystemGroup  = 'system_group';
+            SystemUser   = 'user';
+            UserGroup    = 'user_group';
+        }
         # Get the manifest file from backup
         $ManifestFile = $ExpandedArchivePath | Get-ChildItem | Where-Object { $_.Name -eq "BackupManifest.json" }
         If (-not (Test-Path -Path:($ManifestFile) -ErrorAction:('SilentlyContinue')))
@@ -80,7 +93,7 @@ Function Restore-JCOrganization
             Write-Host ("###############################################################")
             Write-Host ("Backup Org: $($Manifest.organizationID)")
             Write-Host ("Backup Date: $($Manifest.date)")
-            Write-Host "Contains Object Files:" (-not [system.string]::IsNullOrEmpty(($($Manifest.backupFiles))))
+            Write-Host "Contains Object Files:" (-not [system.string]::IsNullOrEmpty(($($Manifest.backupFiles)))) # TODO should we keep this message or change the logic
             Write-Host "Contains Associations:" (-not [system.string]::IsNullOrEmpty(($($Manifest.associationFiles))))
             Write-Host ("###############################################################")
         }
@@ -95,8 +108,7 @@ Function Restore-JCOrganization
         $JcObjectsJobs = $RestoreFiles | ForEach-Object {
             $RestoreFileFullName = $_.FullName
             $RestoreFileBaseName = $_.BaseName
-            Start-Job -ScriptBlock:( {
-                    Param ($RestoreFileFullName, $RestoreFileBaseName)
+            Start-Job -ScriptBlock:( { Param ($RestoreFileFullName, $RestoreFileBaseName)
                     $JcObjectResults = [PSCustomObject]@{
                         Updated = @();
                         New     = @();
@@ -115,7 +127,6 @@ Function Restore-JCOrganization
                             {
                                 # Invoke command to create new resource
                                 $Command = "`$RestoreFileRecord | $("New-JcSdk{0}" -f $RestoreFileBaseName)"
-                                # $Command = "$("New-JcSdk{0}" -f $RestoreFileBaseName) -Body:(`$RestoreFileRecord)"
                                 Write-Debug ("Running: $Command")
                                 $NewJcSdkResult = Invoke-Expression -Command:($Command)
                                 If (-not [System.String]::IsNullOrEmpty($NewJcSdkResult))
@@ -127,10 +138,7 @@ Function Restore-JCOrganization
                             Else
                             {
                                 # Invoke command to update existing resource
-                                # TODO: Why does the other command not work
                                 $Command = "$("Set-JcSdk{0}" -f $RestoreFileBaseName) -Id:(`$RestoreFileRecord.id) -Body:(`$RestoreFileRecord)"
-                                # $Command = "`$RestoreFileRecord | $("Set-JcSdk{0}" -f $RestoreFileBaseName)"
-                                # # $Command = "$("Set-JcSdk{0}" -f $RestoreFileBaseName) -Body:(`$RestoreFileRecord)"
                                 Write-Debug ("Running: $Command")
                                 $SetJcSdkResult = Invoke-Expression -Command:($Command)
                                 If (-not [System.String]::IsNullOrEmpty($SetJcSdkResult))
@@ -139,10 +147,10 @@ Function Restore-JCOrganization
                                     $SetJcSdkResult
                                 }
                             }
-                            $JcObjectResults.IdMap += [PSCustomObject]@{
-                                OldId = $RestoreFileRecord.id
-                                NewId = $CommandResult.Id
-                            }
+                        }
+                        $JcObjectResults.IdMap += [PSCustomObject]@{
+                            OldId = $RestoreFileRecord.id
+                            NewId = $CommandResult.Id
                         }
                     }
                     Return $JcObjectResults
@@ -154,22 +162,53 @@ Function Restore-JCOrganization
         If ($PSBoundParameters.Association)
         {
             $IdMap = $JcObjectJobResults.IdMap
-            $RestoreAssociationFiles = Get-ChildItem -Path:($ExpandedArchivePath.FullName) -Filter:('*Association*')
+            $RestoreAssociationFiles = Get-ChildItem -Path:($ExpandedArchivePath.FullName) -Filter:('*Association*') | ForEach-Object { $_ | Where-Object { $_.BaseName.Replace('-Association', '') -in $Types } }
             $AssociationsJobs = ForEach ($RestoreAssociationFile In $RestoreAssociationFiles)
             {
-                Start-Job -ScriptBlock:( {
-                        Param ($RestoreAssociationFile, $IdMap)
+                Start-Job -ScriptBlock:( { Param ($RestoreAssociationFile, $IdMap, $JcTypesMap)
                         $AssociationResults = [PSCustomObject]@{
                             Existing = @();
                             New      = @();
+                            Failed   = @();
                         }
                         $AssociationContent = Get-Content -Path:($RestoreAssociationFile.FullName) -Raw | ConvertFrom-Json
                         ForEach ($AssociationItem In $AssociationContent)
                         {
-                            $Id = ($IdMap | Where-Object { $_.OldId -eq $AssociationItem.Id }).NewId
-                            $TargetId = ($IdMap | Where-Object { $_.OldId -eq $AssociationItem.TargetId }).NewId
+                            $Id = If ([System.String]::IsNullOrEmpty(($IdMap | Where-Object { $_.OldId -eq $AssociationItem.Id }).NewId))
+                            {
+                                # Check to see if the Id from the file exists in the console
+                                $JcTypeLookup = $JcTypesMap.GetEnumerator() | Where-Object { $_.Value -eq $AssociationItem.type }
+                                $GetExistingCommand = "Get-JcSdk$($JcTypeLookup.Key) | Where-Object { `$_.id -eq '$($AssociationItem.id)' }"
+                                (Invoke-Expression -Command:($GetExistingCommand)).id
+                            }
+                            Else
+                            {
+                                ($IdMap | Where-Object { $_.OldId -eq $AssociationItem.Id }).NewId
+                            }
+                            # If the targetId does not exist in the IdMap then use the targetId from the file
+                            $TargetId = If ([System.String]::IsNullOrEmpty(($IdMap | Where-Object { $_.OldId -eq $AssociationItem.TargetId }).NewId))
+                            {
+                                # Check to see if the targetId from the file exists in the console
+                                $JcTypeLookup = $JcTypesMap.GetEnumerator() | Where-Object { $_.Value -eq $AssociationItem.TargetType }
+                                $GetExistingCommand = "Get-JcSdk$($JcTypeLookup.Key) | Where-Object { `$_.id -eq '$($AssociationItem.TargetId)' }"
+                                (Invoke-Expression -Command:($GetExistingCommand)).id
+                            }
+                            Else
+                            {
+                                ($IdMap | Where-Object { $_.OldId -eq $AssociationItem.TargetId }).NewId
+                            }
                             # Only create associations for the ids that were created or updated in the previous step
-                            If (-not [System.String]::IsNullOrEmpty($Id) -and -not [System.String]::IsNullOrEmpty($TargetId))
+                            If ([System.String]::IsNullOrEmpty($Id))
+                            {
+                                $AssociationResults.Failed += $AssociationItem
+                                Write-Error ("Unable to create association. Id does not exist in org: $($AssociationItem.Type) $($AssociationItem.Id)")
+                            }
+                            ElseIf ([System.String]::IsNullOrEmpty($TargetId))
+                            {
+                                $AssociationResults.Failed += $AssociationItem
+                                Write-Error ("Unable to create association. TargetId does not exist in org: $($AssociationItem.TargetType) $($AssociationItem.TargetId)")
+                            }
+                            Else
                             {
                                 # Check for existing association
                                 $ExistingAssociation = Get-JCAssociation -Type:($AssociationItem.Type) -Id:($Id) -TargetType:($AssociationItem.TargetType) | Where-Object { $_.TargetId -eq $TargetId }
@@ -186,10 +225,10 @@ Function Restore-JCOrganization
                             }
                         }
                         Return $AssociationResults
-                    }) -ArgumentList:($RestoreAssociationFile, $IdMap)
+                    }) -ArgumentList:($RestoreAssociationFile, $IdMap, $JcTypesMap)
             }
-            $JobStatus = Wait-Job -Id:($AssociationsJobs.Id)
-            $AssociationResults = $JobStatus | Receive-Job
+            $AssociationsJobStatus = Wait-Job -Id:($AssociationsJobs.Id)
+            $AssociationResults = $AssociationsJobStatus | Receive-Job
         }
     }
     End
@@ -205,6 +244,7 @@ Function Restore-JCOrganization
         {
             Write-Host "$($AssociationResults.New.Count) Associations restored"
             Write-Host "$($AssociationResults.Existing.Count) Associations existed and have been skipped"
+            Write-Host "$($AssociationResults.Failed.Count) Associations failed to restore"
         }
     }
 }
