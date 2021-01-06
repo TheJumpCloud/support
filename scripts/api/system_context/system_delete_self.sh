@@ -25,7 +25,7 @@ signature=`printf "$signstr" | openssl dgst -sha256 -sign /opt/jc/client.key | o
 
 # make the api call passing the signature in the authorization header
 curl -iq \
-  -X "DELETE"
+  -X "DELETE" \
   -H "Accept: application/json" \
   -H "Date: ${now}" \
   -H "Authorization: Signature keyId=\"system/${systemKey}\",headers=\"request-line date\",algorithm=\"rsa-sha256\",signature=\"${signature}\"" \
