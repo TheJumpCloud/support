@@ -6,10 +6,10 @@ TODO
 #>
 <#
 .Synopsis
-The function exports objects from your JumpCloud organization to local json files
+The function exports objects and associations from your JumpCloud organization to local json files
 
 .Description
-The function exports objects from your JumpCloud organization to local json files
+The function exports objects and associations from your JumpCloud organization to local json files
 
 .Example
 Backup UserGroups and SystemUsers with their associations
@@ -20,7 +20,7 @@ Backup UserGroups and SystemUsers without their associations
 PS C:\> Backup-JCOrganization -Path:('C:\Temp') -Type:('UserGroup','SystemUsers')
 
 .Example
-Backup all avalible JumpCloud objects and their Association
+Backup all available JumpCloud objects and their associations
 PS C:\> Backup-JCOrganization -Path:('C:\Temp') -All
 
 .Link
@@ -120,7 +120,7 @@ Function Backup-JCOrganization
         $JobStatus = Wait-Job -Id:($Jobs.Id)
         # Manifest: Populate backupFiles value
         $manifest.backupFiles += $JobStatus | Receive-Job
-        # Foreach type start a new job and retreive object association records
+        # Foreach type start a new job and retrieve object association records
         If ($PSBoundParameters.Association)
         {
             # Get the backup files we created earlier
