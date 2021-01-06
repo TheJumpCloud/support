@@ -168,7 +168,7 @@ Function Backup-JCOrganization
                                     Write-Debug ("Running: $Command")
                                     $AssociationResults += Invoke-Expression -Command:($Command) | ConvertTo-Json -Depth:(100)
                                 }
-                                $AssociationResults | Out-File -FilePath:("$($TempPath)/$($SourceTypeMap.Key)-$($TargetTypeMap.Key)-Association.json") -Force
+                                $AssociationResults | Out-File -FilePath:("{0}/Association-{1}-{2}.json" -f $TempPath, $SourceTypeMap.Key, $TargetTypeMap.Key) -Force
                             }) -ArgumentList:($SourceTypeMap, $TargetTypeMap, $TempPath, $BackupFile)
                     }
                 }
