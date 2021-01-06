@@ -12,60 +12,22 @@ Describe -Tag:('JCBackup') "Backup-JCOrganization" {
         $zipArchive = Get-Item "$($backupLocation.FullName).zip"
         Expand-Archive -Path "$zipArchive" -DestinationPath ./
         $backupChildItem = Get-ChildItem $backupLocation.FullName
-        ($backupChildItem | Where-Object { $_.Name -match 'System.json' }) | Should -BeTrue
-        ($backupChildItem | Where-Object { $_.Name -match 'SystemGroup.json' }) | Should -BeTrue
-        ($backupChildItem | Where-Object { $_.Name -match 'SystemUser.json' }) | Should -BeTrue
-        ($backupChildItem | Where-Object { $_.Name -match 'UserGroup.json' }) | Should -BeTrue
-        ($backupLocation.Parent.EnumerateFiles() | Where-Object { $_.Name -match "$($backupLocation.BaseName).zip" }) | Should -BeTrue
-        $zipArchive | Remove-Item -Force
-        $backupLocation | Remove-Item -Recurse -Force
-
-    }
-    It "Backs up JumpCloud Org SystemUser" {
-        $backupLocation = Backup-JCOrganization -Path ./ -Type SystemUser
-        $zipArchive = Get-Item "$($backupLocation.FullName).zip"
-        Expand-Archive -Path "$zipArchive" -DestinationPath ./
-        $backupChildItem = Get-ChildItem $backupLocation.FullName
-        ($backupChildItem | Where-Object { $_.Name -match 'SystemUser.json' }) | Should -BeTrue
-        ($backupLocation.Parent.EnumerateFiles() | Where-Object { $_.Name -match "$($backupLocation.BaseName).zip" }) | Should -BeTrue
-        $zipArchive | Remove-Item -Force
-        $backupLocation | Remove-Item -Recurse -Force
-    }
-    It "Backs up JumpCloud Org System" {
-        $backupLocation = Backup-JCOrganization -Path ./ -Type SystemUser
-        $zipArchive = Get-Item "$($backupLocation.FullName).zip"
-        Expand-Archive -Path "$zipArchive" -DestinationPath ./
-        $backupChildItem = Get-ChildItem $backupLocation.FullName
-        ($backupChildItem | Where-Object { $_.Name -match 'SystemUser.json' }) | Should -BeTrue
+        $ValidTargetTypes = (Get-Command Backup-JCOrganization -ArgumentList:($Type.value)).Parameters.Type.Attributes.ValidValues
+        # verify that the object backup files exist
+        foreach ($item in $ValidTargetTypes) {
+            $item -in $backupChildItem.BaseName | Should -BeTrue
+        }
+        # verify that the association files exist
+        foreach ($item in $ValidTargetTypes | Where-Object { $_ -ne 'System' })
+        {
+            "$($item)-Association" -in ($backupChildItem.BaseName | Where-Object { $_ -match 'Association' }) | Should -BeTrue
+        }
+        # verify that each file is not null or empty
+        foreach ($item in $backupChildItem) {
+            Get-Content $item -Raw | Should -Not -BeNullOrEmpty
+        }
         ($backupLocation.Parent.EnumerateFiles() | Where-Object { $_.Name -match "$($backupLocation.BaseName).zip" }) | Should -BeTrue
         $zipArchive | Remove-Item -Force
         $backupLocation | Remove-Item -Recurse -Force
     }
-    It "Backs up JumpCloud Org SystemGroup" {
-        $backupLocation = Backup-JCOrganization -Path ./ -Type SystemGroup
-        $zipArchive = Get-Item "$($backupLocation.FullName).zip"
-        Expand-Archive -Path "$zipArchive" -DestinationPath ./
-        $backupChildItem = Get-ChildItem $backupLocation.FullName
-        ($backupChildItem | Where-Object { $_.Name -match 'SystemGroup.json' }) | Should -BeTrue
-        ($backupLocation.Parent.EnumerateFiles() | Where-Object { $_.Name -match "$($backupLocation.BaseName).zip" }) | Should -BeTrue
-        $zipArchive | Remove-Item -Force
-        $backupLocation | Remove-Item -Recurse -Force
-    }
-    It "Backs up JumpCloud Org UserGroup" {
-        $backupLocation = Backup-JCOrganization -Path ./ -Type UserGroup
-        $zipArchive = Get-Item "$($backupLocation.FullName).zip"
-        Expand-Archive -Path "$zipArchive" -DestinationPath ./
-        $backupChildItem = Get-ChildItem $backupLocation.FullName
-        ($backupChildItem | Where-Object { $_.Name -match 'UserGroup.json' }) | Should -BeTrue
-        ($backupLocation.Parent.EnumerateFiles() | Where-Object { $_.Name -match "$($backupLocation.BaseName).zip" }) | Should -BeTrue
-        $zipArchive | Remove-Item -Force
-        $backupLocation | Remove-Item -Recurse -Force
-    }
-    # It "Backs up JumpCloud Org with Associations" {
-    #     $backupLocation = Backup-JCOrganization -Path ./ -All -Associations
-    #     $Files = Get-ChildItem -Path:('JumpCloud*_*.csv')
-    #     ($Files | Where-Object { $_.Name -match 'JumpCloudUsers_' }) | Should -BeTrue
-    #     ($Files | Where-Object { $_.Name -match 'JumpCloudUserGroupMembers_' }) | Should -BeTrue
-    #     $Files | Remove-Item
-    # }
 }
