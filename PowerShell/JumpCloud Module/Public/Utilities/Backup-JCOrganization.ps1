@@ -3,6 +3,7 @@ TODO
     . Should association back up all Association for item or just the Association possible within the type parameter?
     . Make this a class in psm1 file: [ValidateSet('SystemGroup', 'UserGroup', 'System', 'SystemUser')]
     . Roll back x-ms-enum
+    . Change `-direct` switch to where filter
 #>
 <#
 .Synopsis
@@ -97,17 +98,18 @@ Function Backup-JCOrganization
     }
     Process
     {
+        $sw = [Diagnostics.Stopwatch]::StartNew()
         # Foreach type start a new job and retrieve object records
-        $Jobs = $Types | ForEach-Object {
+        $ObjectJobs = $Types | ForEach-Object {
             $JumpCloudType = $_
-            Start-Job -ScriptBlock:( { Param ($Path, $JumpCloudType);
+            Start-Job -ScriptBlock:( { Param ($TempPath, $JumpCloudType);
                     $CommandTemplate = "Get-JcSdk{0}"
                     $Result = Invoke-Expression -Command:($CommandTemplate -f $JumpCloudType)
                     # Write output to file
                     $Result `
                     | ForEach-Object { $_ | Select-Object *, @{Name = 'JcSdkModel'; Expression = { $_.GetType().FullName } } } `
                     | ConvertTo-Json -Depth:(100) `
-                    | Out-File -FilePath:("$($Path)/$($JumpCloudType).json") -Force
+                    | Out-File -FilePath:("$($TempPath)/$($JumpCloudType).json") -Force
                     # Manifest: Populate backupFiles value
                     $backupFiles = @{
                         backupType     = $JumpCloudType
@@ -116,70 +118,72 @@ Function Backup-JCOrganization
                     return $backupFiles
                 }) -ArgumentList:($TempPath, $JumpCloudType)
         }
-        $JobStatus = Wait-Job -Id:($Jobs.Id)
+        $ObjectJobStatus = Wait-Job -Id:($ObjectJobs.Id)
         # Manifest: Populate backupFiles value
-        $manifest.backupFiles += $JobStatus | Receive-Job
+        $manifest.backupFiles += $ObjectJobStatus | Receive-Job
         # Foreach type start a new job and retreive object association records
         If ($PSBoundParameters.Association)
         {
+            $sw.Stop()
+            Write-Host ("Object Run Time: $($sw.Elapsed)") -BackgroundColor Cyan
+            $sw = [Diagnostics.Stopwatch]::StartNew()
             # Get the backup files we created earlier
-            $BackupFiles = Get-ChildItem $TempPath | Where-Object { $_.BaseName -in $Types }
+            $BackupFiles = Get-ChildItem -Path:($TempPath) | Where-Object { $_.BaseName -in $Types }
             $BackupFilesBaseName = $BackupFiles.BaseName
-            $JobsAssociation = $BackupFiles | ForEach-Object {
-                $BackupFileFullName = $_.FullName
-                $BackupFileBaseName = $_.BaseName
-                Start-Job -ScriptBlock:( { Param ($Path, $Types, $JcTypesMap, $BackupFileFullName, $BackupFileBaseName, $BackupFilesBaseName);
-                        $AssociationType = $JcTypesMap["$BackupFileBaseName"]
-                        $ValidTargetTypes = (Get-Command Get-JCAssociation -ArgumentList:($AssociationType)).Parameters.TargetType.Attributes.ValidValues
-                        $AssociationResults = @()
-                        # Get content from the file
-                        $jsonContent = Get-Content -Path:($BackupFileFullName) | ConvertFrom-Json
-                        ForEach ($Record In $jsonContent)
-                        {
-                            # Lookup file names in $JcTypesMap
-                            $TargetTypes = $ValidTargetTypes | ForEach-Object {
-                                $ValidTargetTypes = $_
-                                If (($JcTypesMap.GetEnumerator() | Where-Object { $_.Value -eq $ValidTargetTypes }).Key -in $BackupFilesBaseName)
+            $AssociationJobs = $BackupFiles | ForEach-Object {
+                $BackupFile = $_
+                # Type mapping lookup
+                $SourceTypeMap = $JcTypesMap.GetEnumerator() | Where-Object { $_.Key -eq $BackupFile.BaseName }
+                # Get list of valid target types from Get-JCAssociation
+                $ValidTargetTypes = (Get-Command Get-JCAssociation -ArgumentList:($SourceTypeMap.Value)).Parameters.TargetType.Attributes.ValidValues
+                # Lookup file names in $JcTypesMap
+                ForEach ($ValidTargetType In $ValidTargetTypes)
+                {
+                    $TargetTypeMap = $JcTypesMap.GetEnumerator() | Where-Object { $_.Value -eq $ValidTargetType }
+                    # If the valid target type matches a file name look up the associations for the SourceType and TargetType
+                    If ($TargetTypeMap.Key -in $BackupFilesBaseName)
+                    {
+                        Start-Job -ScriptBlock:( { Param ($SourceTypeMap, $TargetTypeMap, $TempPath, $BackupFile);
+                                $AssociationResults = @()
+                                # Get content from the file
+                                $BackupRecords = Get-Content -Path:($BackupFile.FullName) | ConvertFrom-Json
+                                ForEach ($BackupRecord In $BackupRecords)
                                 {
-                                    $ValidTargetTypes
+                                    $Command = "Get-JCAssociation -Direct -id:('$($BackupRecord.id)') -Type:('$($SourceTypeMap.Value)') -TargetType:('$($TargetTypeMap.Value)')"
+                                    Write-Debug ("Running: $Command")
+                                    $Result = Invoke-Expression -Command:($Command)
+                                    If ($Result)
+                                    {
+                                        $AssociationResults += $Result
+                                    }
                                 }
-                            }
-                            # If a valid target is found get the Association
-                            If (-not [System.String]::IsNullOrEmpty($TargetTypes))
-                            {
-                                $Command = "Get-JCAssociation -Direct -id:('$($Record.id)') -Type:('$($JcTypesMap["$($BackupFileBaseName)"])') -TargetType:('$($TargetTypes -join "','")')"
-                                Write-Debug ("Running: $Command")
-                                $Result = Invoke-Expression -Command:($Command)
-                                If ($Result)
+                                # Write out the results
+                                If (-not [System.String]::IsNullOrEmpty($AssociationResults))
                                 {
-                                    $AssociationResults += $Result
+                                    # To multiple files
+                                    $AssociationResults | ConvertTo-Json -Depth:(100) | Out-File -FilePath:("$($TempPath)/$($BackupFile.BaseName)-Association.json") -Force
+                                    # Manifest: Populate backupFiles value
+                                    $backupFiles = @{
+                                        backupType     = "$($BackupFile.BaseName)"
+                                        backupLocation = "./$($BackupFile.BaseName)-Association.json"
+                                    }
+                                    Return $backupFiles
                                 }
-                            }
-                        }
-                        # Write out the results
-                        If (-not [System.String]::IsNullOrEmpty($AssociationResults))
-                        {
-                            # To multiple files
-                            $AssociationResults | ConvertTo-Json -Depth:(100) | Out-File -FilePath:("$($Path)/$($BackupFileBaseName)-Association.json") -Force
-                            # Manifest: Populate backupFiles value
-                            $backupFiles = @{
-                                backupType     = "$($BackupFileBaseName)"
-                                backupLocation = "./$($BackupFileBaseName)-Association.json"
-                            }
-                            Return $backupFiles
-                        }
-                    }) -ArgumentList:($TempPath, $Types, $JcTypesMap, $BackupFileFullName, $BackupFileBaseName, $BackupFilesBaseName)
+                            }) -ArgumentList:($SourceTypeMap, $TargetTypeMap, $TempPath, $BackupFile)
+                    }
+                }
             }
-            $JobsAssociationStatus = Wait-Job -Id:($JobsAssociation.Id)
+            $AssociationJobsStatus = Wait-Job -Id:($AssociationJobs.Id)
             # Manifest: Populate backupFiles value
-            $manifest.associationFiles += $JobsAssociationStatus | Receive-Job
+            $manifest.associationFiles += $AssociationJobsStatus | Receive-Job
+            $sw.Stop()
+            Write-Host ("Association Run Time: $($sw.Elapsed)") -BackgroundColor Cyan
         }
     }
     End
     {
         # Write Out Manifest
-        $Manifest | ConvertTo-Json -Depth:(100) `
-        | Out-File -FilePath:("$($TempPath)/BackupManifest.json") -Force
+        $Manifest | ConvertTo-Json -Depth:(100) | Out-File -FilePath:("$($TempPath)/BackupManifest.json") -Force
         # Zip results
         Compress-Archive -Path:($TempPath) -CompressionLevel:('Fastest') -Destination:($ArchivePath)
         # Clean up temp directory
