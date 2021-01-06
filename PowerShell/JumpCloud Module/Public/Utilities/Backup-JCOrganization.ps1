@@ -83,17 +83,17 @@ Function Backup-JCOrganization
         }
         # Map to define how JCAssociation & JcSdk types relate
         $JcTypesMap = @{
-            Application  = 'application';
-            Command      = 'command';
-            GSuite       = 'g_suite';
-            LdapServer   = 'ldap_server';
-            Office365    = 'office_365';
-            Policy       = 'policy';
-            RadiusServer = 'radius_server';
-            System       = 'system';
-            SystemGroup  = 'system_group';
-            SystemUser   = 'user';
-            UserGroup    = 'user_group';
+            Application  = [PSCustomObject]@{Name = 'application'; Associations = @('user_group'); };
+            Command      = [PSCustomObject]@{Name = 'command'; Associations = @('system', 'system_group'); };
+            GSuite       = [PSCustomObject]@{Name = 'g_suite'; Associations = @('user', 'user_group'); };
+            LdapServer   = [PSCustomObject]@{Name = 'ldap_server'; Associations = @('user', 'user_group'); };
+            Office365    = [PSCustomObject]@{Name = 'office_365'; Associations = @('user', 'user_group'); };
+            Policy       = [PSCustomObject]@{Name = 'policy'; Associations = @('system', 'system_group'); };
+            RadiusServer = [PSCustomObject]@{Name = 'radius_server'; Associations = @('user_group'); };
+            System       = [PSCustomObject]@{Name = 'system'; Associations = @('command', 'policy', 'system_group', 'user'); };
+            SystemGroup  = [PSCustomObject]@{Name = 'system_group'; Associations = @('command', 'policy', 'system', 'user_group'); };
+            SystemUser   = [PSCustomObject]@{Name = 'user'; Associations = @('g_suite', 'ldap_server', 'office_365', 'system', 'user_group'); };
+            UserGroup    = [PSCustomObject]@{Name = 'user_group'; Associations = @('application', 'g_suite', 'ldap_server', 'office_365', 'radius_server', 'system_group', 'user'); };
         }
     }
     Process
@@ -135,12 +135,14 @@ Function Backup-JCOrganization
             {
                 # Type mapping lookup
                 $SourceTypeMap = $JcTypesMap.GetEnumerator() | Where-Object { $_.Key -eq $BackupFile.BaseName }
+                # TODO: Figure out how to make this work with x-ms-enum.
+                # $ValidTargetTypes = (Get-Command Get-JcSdk$($SourceTypeMap.Key)Association).Parameters.Targets.Attributes.ValidValues
                 # Get list of valid target types from Get-JCAssociation
-                $ValidTargetTypes = (Get-Command Get-JCAssociation -ArgumentList:($SourceTypeMap.Value)).Parameters.TargetType.Attributes.ValidValues
+                $ValidTargetTypes = $SourceTypeMap.Value.Associations
                 # Lookup file names in $JcTypesMap
                 ForEach ($ValidTargetType In $ValidTargetTypes)
                 {
-                    $TargetTypeMap = $JcTypesMap.GetEnumerator() | Where-Object { $_.Value -eq $ValidTargetType }
+                    $TargetTypeMap = $JcTypesMap.GetEnumerator() | Where-Object { $_.Value.Name -eq $ValidTargetType }
                     # If the valid target type matches a file name look up the associations for the SourceType and TargetType
                     If ($TargetTypeMap.Key -in $BackupFiles.BaseName)
                     {
@@ -151,17 +153,17 @@ Function Backup-JCOrganization
                                 ForEach ($BackupRecord In $BackupRecords)
                                 {
                                     # Build Command based upon source and target combinations
-                                    $Command = If (($SourceTypeMap.Value -eq 'system' -and $TargetTypeMap.Value -eq 'system_group') -or ($SourceTypeMap.Value -eq 'user' -and $TargetTypeMap.Value -eq 'user_group'))
+                                    $Command = If (($SourceTypeMap.Value.Name -eq 'system' -and $TargetTypeMap.Value.Name -eq 'system_group') -or ($SourceTypeMap.Value.Name -eq 'user' -and $TargetTypeMap.Value.Name -eq 'user_group'))
                                     {
                                         'Get-JcSdk{0}Member -{0}Id:("{1}")' -f $SourceTypeMap.Key, $BackupRecord.id
                                     }
-                                    ElseIf (($SourceTypeMap.Value -eq 'system_group' -and $TargetTypeMap.Value -eq 'system') -or ($SourceTypeMap.Value -eq 'user_group' -and $TargetTypeMap.Value -eq 'user'))
+                                    ElseIf (($SourceTypeMap.Value.Name -eq 'system_group' -and $TargetTypeMap.Value.Name -eq 'system') -or ($SourceTypeMap.Value.Name -eq 'user_group' -and $TargetTypeMap.Value.Name -eq 'user'))
                                     {
                                         'Get-JcSdk{0}Membership -{0}Id:("{1}")' -f $SourceTypeMap.Key, $BackupRecord.id
                                     }
                                     Else
                                     {
-                                        'Get-JcSdk{0}Association -{0}Id:("{1}") -Targets:("{2}")' -f $SourceTypeMap.Key, $BackupRecord.id, $TargetTypeMap.Value
+                                        'Get-JcSdk{0}Association -{0}Id:("{1}") -Targets:("{2}")' -f $SourceTypeMap.Key, $BackupRecord.id, $TargetTypeMap.Value.Name
                                     }
                                     # *Group commands take "GroupId" as a parameter vs "{Type}Id"
                                     $Command = $Command.Replace('UserGroupId', 'GroupId').Replace('SystemGroupId', 'GroupId').Replace('SystemUser', 'User')
