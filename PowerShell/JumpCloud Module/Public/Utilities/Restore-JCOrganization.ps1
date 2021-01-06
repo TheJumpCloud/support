@@ -2,6 +2,8 @@
 ToDo
 Validate Path contains *.zip file
 If object exists compare the existing object against backup object for diffs
+. Why is 'pester.tester2_AoCaBLbI' being associated to two groups?
+. Running restore twice after objects have been deleted from the org fails
 #>
 
 <#
@@ -83,6 +85,7 @@ Function Restore-JCOrganization
         }
         # Get the manifest file from backup
         $ManifestFile = $ExpandedArchivePath | Get-ChildItem | Where-Object { $_.Name -eq "BackupManifest.json" }
+        Write-Host ("###############################################################")
         If (-not (Test-Path -Path:($ManifestFile) -ErrorAction:('SilentlyContinue')))
         {
             Write-Error ("Unable to find manifest file: $($ManifestFile)")
@@ -90,18 +93,17 @@ Function Restore-JCOrganization
         Else
         {
             $Manifest = Get-Content -Path:($ManifestFile) | ConvertFrom-Json
-            Write-Host ("###############################################################")
             Write-Host ("Backup Org: $($Manifest.organizationID)")
             Write-Host ("Backup Date: $($Manifest.date)")
             Write-Host "Contains Object Files:" (-not [system.string]::IsNullOrEmpty(($($Manifest.backupFiles)))) # TODO should we keep this message or change the logic
             Write-Host "Contains Associations:" (-not [system.string]::IsNullOrEmpty(($($Manifest.associationFiles))))
-            Write-Host ("###############################################################")
         }
+        Write-Host ("Backup Location: $($ZipArchive.FullName)")
+        Write-Host ("Backup Time: $($ZipArchive.LastWriteTime)")
+        Write-Host ("###############################################################")
     }
     Process
     {
-        Write-Host ("Backup Location: $($ZipArchive.FullName)")
-        Write-Host ("Backup Time: $($ZipArchive.LastWriteTime)")
         # Get list of files from backup location and split into object and association groups
         $RestoreFiles = Get-ChildItem -Path:($ExpandedArchivePath.FullName) -Exclude:('*Association*') | ForEach-Object { $_ | Where-Object { $_.BaseName -in $Types } }
         # For each backup file restore object
@@ -215,7 +217,7 @@ Function Restore-JCOrganization
                                 If ([System.String]::IsNullOrEmpty($ExistingAssociation))
                                 {
                                     $NewAssociationCommand = "New-JCAssociation -Type:('$($AssociationItem.Type)') -Id:('$($Id)') -TargetType:('$($AssociationItem.TargetType)') -TargetId:('$($TargetId)') -Force"
-                                    Write-Host ("Running: $NewAssociationCommand")
+                                    Write-Debug ("Running: $NewAssociationCommand")
                                     $AssociationResults.New += Invoke-Expression -Command:($NewAssociationCommand)
                                 }
                                 Else
@@ -233,16 +235,20 @@ Function Restore-JCOrganization
     }
     End
     {
+        # Clean up temp directory
+        If (Test-Path -Path:($ExpandedArchivePath.FullName))
+        {
+            Remove-Item -Path:($ExpandedArchivePath.FullName) -Force -Recurse
+        }
         # Output
-        # TODO: Add if statement to each write-host
         If (-not [System.String]::IsNullOrEmpty($JcObjectJobResults))
         {
-            Write-Host "$($JcObjectJobResults.New.Count) Objects restored"
+            Write-Host "$($JcObjectJobResults.New.Count) Objects have been restored"
             Write-Host "$($JcObjectJobResults.Updated.Count) Objects existed and have been updated"
         }
         If (-not [System.String]::IsNullOrEmpty($AssociationResults))
         {
-            Write-Host "$($AssociationResults.New.Count) Associations restored"
+            Write-Host "$($AssociationResults.New.Count) Associations have been restored"
             Write-Host "$($AssociationResults.Existing.Count) Associations existed and have been skipped"
             Write-Host "$($AssociationResults.Failed.Count) Associations failed to restore"
         }
