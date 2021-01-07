@@ -54,11 +54,11 @@ Function Backup-JCOrganization
         $TempPath = Join-Path -Path:($PSBoundParameters.Path) -ChildPath:($ChildPath)
         $ArchivePath = Join-Path -Path:($PSBoundParameters.Path) -ChildPath:("$($ChildPath).zip")
         $Manifest = @{
-            date             = "$Date";
-            organizationID   = "$env:JCOrgId"
-            backupFiles      = @()
-            associationFiles = @()
-            moduleVersion    = @(Get-Module JumpCloud* | Select-Object Name, Version)
+            date             = $Date;
+            organizationID   = $env:JCOrgId;
+            backupFiles      = @();
+            associationFiles = @();
+            moduleVersion    = @(Get-Module JumpCloud* | Select-Object Name, Version);
         }
         # If the backup directory does not exist, create it
         If (-not (Test-Path $TempPath))
@@ -138,9 +138,9 @@ Function Backup-JCOrganization
                         #| ForEach-Object { $_ | Select-Object *, @{Name = 'JcSdkModel'; Expression = { $_.GetType().FullName } } } `
                         # Build object to return data
                         $OutputObject = @{
-                            Results        = $Result
-                            Type           = $SourceTypeMap.Key
-                            Path = "./$($SourceTypeMap.Key).json"
+                            Results = $Result
+                            Type    = $SourceTypeMap.Key
+                            Path    = "./$($SourceTypeMap.Key).json"
                         }
                         Return $OutputObject
                     }
@@ -149,8 +149,7 @@ Function Backup-JCOrganization
         $ObjectJobStatus = Wait-Job -Id:($ObjectJobs.Id)
         $ObjectJobResults = $ObjectJobStatus | Receive-Job
         $manifest.backupFiles += $ObjectJobResults | Select-Object -ExcludeProperty:('Results')
-        $swObject.Stop()
-
+        $TimerObject.Stop()
         # Foreach type start a new job and retrieve object association records
         If ($PSBoundParameters.Association)
         {
@@ -203,9 +202,9 @@ Function Backup-JCOrganization
                                     $AssociationResults | Out-File -FilePath:("{0}/{1}.json" -f $TempPath, $AssociationFileName) -Force
                                     # Build object to return data
                                     $OutputObject = @{
-                                        Results        = $AssociationResults
-                                        Type           = $AssociationFileName
-                                        Path = "./$($AssociationFileName).json"
+                                        Results = $AssociationResults
+                                        Type    = $AssociationFileName
+                                        Path    = "./$($AssociationFileName).json"
                                     }
                                     Return $OutputObject
                                 }
