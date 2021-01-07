@@ -95,7 +95,7 @@ Function Backup-JCOrganization
     }
     Process
     {
-        $sw = [Diagnostics.Stopwatch]::StartNew()
+        $swObject = [Diagnostics.Stopwatch]::StartNew()
         # Foreach type start a new job and retrieve object records
         $ObjectJobs = @()
         ForEach ($JumpCloudType In $Types)
@@ -141,14 +141,13 @@ Function Backup-JCOrganization
         # Manifest: Populate backupFiles value
         $ObjectJobResults = $ObjectJobStatus | Receive-Job
         $manifest.backupFiles += $ObjectJobResults | Select-Object -ExcludeProperty:('Results')
-        $sw.Stop()
-        Write-Host ("Object Run Time: $($sw.Elapsed)") -BackgroundColor Cyan -ForegroundColor Black
+        $swObject.Stop()
 
         # Foreach type start a new job and retreive object association records
         If ($PSBoundParameters.Association)
         {
             $AssociationJobs = @()
-            $sw = [Diagnostics.Stopwatch]::StartNew()
+            $swAssociations = [Diagnostics.Stopwatch]::StartNew()
             # Get the backup files we created earlier
             $BackupFiles = Get-ChildItem -Path:($TempPath) | Where-Object { $_.BaseName -in $Types }
             ForEach ($BackupFile In $BackupFiles)
@@ -193,7 +192,7 @@ Function Backup-JCOrganization
                                 }
                                 If (-not [System.String]::IsNullOrEmpty($AssociationResults))
                                 {
-                                    $AssociationFileName = "Association-{0}-{1}" -f $SourceTypeMap.Key, $TargetTypeMap.Key
+                                    $AssociationFileName = "Association-{0}To{1}" -f $SourceTypeMap.Key, $TargetTypeMap.Key
                                     $AssociationResults | Out-File -FilePath:("{0}/{1}.json" -f $TempPath, $AssociationFileName) -Force
                                     $OutputObject = @{
                                         Results        = $AssociationResults
@@ -205,34 +204,16 @@ Function Backup-JCOrganization
                             }) -ArgumentList:($SourceTypeMap, $TargetTypeMap, $TempPath, $BackupFile)
                     }
                 }
-                # # Write out the results
-                # If (-not [System.String]::IsNullOrEmpty($AssociationResults))
-                # {
-                #     # Manifest: Populate backupFiles value
-                #     $backupFiles = @{
-                #         Type     = "$($BackupFile.BaseName)"
-                #         backupLocation = "./$($BackupFile.BaseName)-Association.json"
-                #     }
-                #     Return $backupFiles
-                # }
             }
             $AssociationJobsStatus = Wait-Job -Id:($AssociationJobs.Id)
             $AssociationResults = $AssociationJobsStatus | Receive-Job
             # Manifest: Populate backupFiles value
             $manifest.associationFiles += $AssociationResults | Select-Object -ExcludeProperty:('Results')
-            $sw.Stop()
-            Write-Host ("Association Run Time: $($sw.Elapsed)") -BackgroundColor Cyan -ForegroundColor Black
+            $swAssociations.Stop()
         }
     }
     End
     {
-        Write-Host("Backup-JCOrganization Results:")
-        $ObjectJobResults | ForEach-Object {
-            Write-Host ("$($_.Type): $($_.Results.Count)")
-        }
-        $AssociationResults | ForEach-Object {
-            Write-Host ("$($_.Type): $($_.Results.Count)")
-        }
         # Write Out Manifest
         $Manifest | ConvertTo-Json -Depth:(100) | Out-File -FilePath:("$($TempPath)/BackupManifest.json") -Force
         # Zip results
@@ -242,8 +223,17 @@ Function Backup-JCOrganization
         {
             Remove-Item -Path:($TempPath) -Force -Recurse
             Write-Host ("Backup Success: $($ArchivePath)") -ForegroundColor:('Green')
+            Write-Host("Backup-JCOrganization Results:") -ForegroundColor:('Green')
+            $ObjectJobResults | ForEach-Object {
+                Write-Host ("$($_.Type): $($_.Results.Count)") -ForegroundColor:('Magenta')
+            }
+            $AssociationResults | ForEach-Object {
+                Write-Host ("$($_.Type): $($_.Results.Count)") -ForegroundColor:('Magenta')
+            }
         }
         $swTotal.Stop()
-        Write-Host ("Total Run Time: $($swTotal.Elapsed)") -BackgroundColor Cyan -ForegroundColor Black
+        If ($swObject) { Write-Host ("Object Run Time: $($swObject.Elapsed)") -BackgroundColor Cyan -ForegroundColor Black }
+        If ($swAssociations) { Write-Host ("Association Run Time: $($swAssociations.Elapsed)") -BackgroundColor Cyan -ForegroundColor Black }
+        If ($swTotal) { Write-Host ("Total Run Time: $($swTotal.Elapsed)") -BackgroundColor Cyan -ForegroundColor Black }
     }
 }
