@@ -1,11 +1,4 @@
 <#
-TODO
-    . Should association back up all Association for item or just the Association possible within the type parameter?
-    . Make this a class in psm1 file: [ValidateSet('SystemGroup', 'UserGroup', 'System', 'SystemUser')]
-    . Roll back x-ms-enum
-    . Change `-direct` switch to where filter
-#>
-<#
 .Synopsis
 The function exports objects and associations from your JumpCloud organization to local json files
 
