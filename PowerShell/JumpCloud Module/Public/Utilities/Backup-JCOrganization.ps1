@@ -233,20 +233,22 @@ Function Backup-JCOrganization
                                     }
                                     Else
                                     {
-                                        $Command = 'Get-JcSdk{0}Association -{0}Id:("{1}") -Targets:("{2}")' -f $SourceTypeMap.Key.Replace('SystemUser', 'User'), $BackupRecord.id, $TargetTypeMap.Value.Name
+                                        $Command = 'Get-JcSdk{0}Association -{1}Id:("{2}") -Targets:("{3}")' -f $SourceTypeMap.Key.Replace('SystemUser', 'User'), $SourceTypeMap.Key.Replace('UserGroup', 'Group').Replace('SystemGroup', 'Group').Replace('SystemUser', 'User'), $BackupRecord.id, $TargetTypeMap.Value.Name
                                         Write-Debug ("Running: $Command")
                                         $AssociationResult = Invoke-Expression -Command:($Command)
                                         If (-not [System.String]::IsNullOrEmpty($AssociationResult))
                                         {
-                                            # The direct association/"Get-JcSdk*Association" endpoints return null for FromId. So manually populate them here.
-                                            If ([System.String]::IsNullOrEmpty($AssociationResult.FromId))
-                                            {
-                                                $AssociationResult.FromId = $BackupRecord.id
-                                            }
-                                            # The direct association/"Get-JcSdk*Association" endpoints return null for FromType. So manually populate them here.
-                                            If ([System.String]::IsNullOrEmpty($AssociationResult.FromType))
-                                            {
-                                                $AssociationResult.FromType = $SourceTypeMap.Value.Name
+                                            $AssociationResult | ForEach-Object {
+                                                # The direct association/"Get-JcSdk*Association" endpoints return null for FromId. So manually populate them here.
+                                                If ([System.String]::IsNullOrEmpty($_.FromId))
+                                                {
+                                                    $_.FromId = $BackupRecord.id
+                                                }
+                                                # The direct association/"Get-JcSdk*Association" endpoints return null for FromType. So manually populate them here.
+                                                If ([System.String]::IsNullOrEmpty($_.FromType))
+                                                {
+                                                    $_.FromType = $SourceTypeMap.Value.Name
+                                                }
                                             }
                                             $AssociationResults += $AssociationResult
                                         }
