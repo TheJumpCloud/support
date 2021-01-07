@@ -119,23 +119,28 @@ Function Backup-JCOrganization
                     }
                     Write-Debug ("Running: $Command")
                     $Result = Invoke-Expression -Command:($Command)
-                    # Write output to file
-                    $Result `
-                    | ConvertTo-Json -Depth:(100) `
-                    | Out-File -FilePath:("{0}/{1}.json" -f $TempPath, $SourceTypeMap.Key) -Force
-                    # TODO: Potential use for restore function
-                    #| ForEach-Object { $_ | Select-Object *, @{Name = 'JcSdkModel'; Expression = { $_.GetType().FullName } } } `
-                    # Manifest: Populate backupFiles value
-                    $backupFiles = @{
-                        backupType     = $SourceTypeMap.Key
-                        backupLocation = "./$($SourceTypeMap.Key).json"
+                    If (-not [System.String]::IsNullOrEmpty($Result))
+                    {
+                        # Write output to file
+                        $Result `
+                        | ConvertTo-Json -Depth:(100) `
+                        | Out-File -FilePath:("{0}/{1}.json" -f $TempPath, $SourceTypeMap.Key) -Force
+                        # TODO: Potential use for restore function
+                        #| ForEach-Object { $_ | Select-Object *, @{Name = 'JcSdkModel'; Expression = { $_.GetType().FullName } } } `
+                        # Manifest: Populate backupFiles value
+                        $OutputObject = @{
+                            Results        = $Result
+                            Type           = $SourceTypeMap.Key
+                            backupLocation = "./$($SourceTypeMap.Key).json"
+                        }
+                        Return $OutputObject
                     }
-                    Return $backupFiles
                 }) -ArgumentList:($TempPath, $SourceTypeMap)
         }
         $ObjectJobStatus = Wait-Job -Id:($ObjectJobs.Id)
         # Manifest: Populate backupFiles value
-        $manifest.backupFiles += $ObjectJobStatus | Receive-Job
+        $ObjectJobResults = $ObjectJobStatus | Receive-Job
+        $manifest.backupFiles += $ObjectJobResults | Select-Object -ExcludeProperty:('Results')
         $sw.Stop()
         Write-Host ("Object Run Time: $($sw.Elapsed)") -BackgroundColor Cyan -ForegroundColor Black
 
@@ -186,7 +191,17 @@ Function Backup-JCOrganization
                                     Write-Debug ("Running: $Command")
                                     $AssociationResults += Invoke-Expression -Command:($Command) | ConvertTo-Json -Depth:(100)
                                 }
-                                $AssociationResults | Out-File -FilePath:("{0}/Association-{1}-{2}.json" -f $TempPath, $SourceTypeMap.Key, $TargetTypeMap.Key) -Force
+                                If (-not [System.String]::IsNullOrEmpty($AssociationResults))
+                                {
+                                    $AssociationFileName = "Association-{1}-{2}" -f $TempPath, $SourceTypeMap.Key, $TargetTypeMap.Key
+                                    $AssociationResults | Out-File -FilePath:("{0}/{1}.json" -f $AssociationFileName) -Force
+                                    $OutputObject = @{
+                                        Results        = $AssociationResults
+                                        Type           = $AssociationFileName
+                                        backupLocation = "./$($AssociationFileName).json"
+                                    }
+                                    Return $OutputObject
+                                }
                             }) -ArgumentList:($SourceTypeMap, $TargetTypeMap, $TempPath, $BackupFile)
                     }
                 }
@@ -195,7 +210,7 @@ Function Backup-JCOrganization
                 # {
                 #     # Manifest: Populate backupFiles value
                 #     $backupFiles = @{
-                #         backupType     = "$($BackupFile.BaseName)"
+                #         Type     = "$($BackupFile.BaseName)"
                 #         backupLocation = "./$($BackupFile.BaseName)-Association.json"
                 #     }
                 #     Return $backupFiles
@@ -204,13 +219,20 @@ Function Backup-JCOrganization
             $AssociationJobsStatus = Wait-Job -Id:($AssociationJobs.Id)
             $AssociationResults = $AssociationJobsStatus | Receive-Job
             # Manifest: Populate backupFiles value
-            $manifest.associationFiles += $AssociationResults
+            $manifest.associationFiles += $AssociationResults | Select-Object -ExcludeProperty:('Results')
             $sw.Stop()
             Write-Host ("Association Run Time: $($sw.Elapsed)") -BackgroundColor Cyan -ForegroundColor Black
         }
     }
     End
     {
+        Write-Host("Backup-JCOrganization Results:")
+        $ObjectJobResults | ForEach-Object {
+            Write-Host ("$($_.Type): $($_.Results.Count)")
+        }
+        $AssociationResults | ForEach-Object {
+            Write-Host ("$($_.Type): $($_.Results.Count)")
+        }
         # Write Out Manifest
         $Manifest | ConvertTo-Json -Depth:(100) | Out-File -FilePath:("$($TempPath)/BackupManifest.json") -Force
         # Zip results
