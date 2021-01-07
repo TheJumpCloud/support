@@ -128,9 +128,10 @@ Function Backup-JCOrganization
                     $Result = Invoke-Expression -Command:($Command)
                     # Write output to file
                     $Result `
-                    | ForEach-Object { $_ | Select-Object *, @{Name = 'JcSdkModel'; Expression = { $_.GetType().FullName } } } `
                     | ConvertTo-Json -Depth:(100) `
                     | Out-File -FilePath:("{0}/{1}.json" -f $TempPath, $SourceTypeMap.Key) -Force
+                    # TODO: Potential use for restore function
+                    #| ForEach-Object { $_ | Select-Object *, @{Name = 'JcSdkModel'; Expression = { $_.GetType().FullName } } } `
                     # Manifest: Populate backupFiles value
                     $backupFiles = @{
                         backupType     = $SourceTypeMap.Key
