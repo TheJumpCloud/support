@@ -36,7 +36,7 @@ Function Backup-JCOrganization
         ${All},
 
         [Parameter(ParameterSetName = 'Type')]
-        [ValidateSet('ActiveDirectory', 'Application', 'Command', 'GSuite', 'LdapServer', 'Office365', 'Organization', 'Policy', 'RadiusServer', 'SoftwareApp', 'System', 'SystemGroup', 'SystemUser', 'UserGroup')]
+        [ValidateSet('ActiveDirectory', 'Application', 'Command', 'Directory', 'GSuite', 'LdapServer', 'Office365', 'Organization', 'Policy', 'RadiusServer', 'SoftwareApp', 'System', 'SystemGroup', 'SystemUser', 'UserGroup')]
         [System.String[]]
         # Specify the type of JumpCloud objects you want to backup
         ${Type},
@@ -80,6 +80,7 @@ Function Backup-JCOrganization
             ActiveDirectory = [PSCustomObject]@{Name = 'active_directory'; AssociationTargets = @('user', 'user_group'); };
             Application     = [PSCustomObject]@{Name = 'application'; AssociationTargets = @('user', 'user_group'); };
             Command         = [PSCustomObject]@{Name = 'command'; AssociationTargets = @('system', 'system_group'); };
+            Directory       = [PSCustomObject]@{Name = 'directory'; AssociationTargets = @(); };
             GSuite          = [PSCustomObject]@{Name = 'g_suite'; AssociationTargets = @( 'user', 'user_group'); };
             LdapServer      = [PSCustomObject]@{Name = 'ldap_server'; AssociationTargets = @('user', 'user_group'); };
             Office365       = [PSCustomObject]@{Name = 'office_365'; AssociationTargets = @('user', 'user_group'); };
