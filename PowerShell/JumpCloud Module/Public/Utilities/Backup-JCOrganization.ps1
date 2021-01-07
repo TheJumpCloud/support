@@ -1,9 +1,13 @@
 <#
 .Synopsis
-The function exports objects and associations from your JumpCloud organization to local json files
+Backup your JumpCloud organization to local json files
 
 .Description
-The function exports objects and associations from your JumpCloud organization to local json files
+This function exports objects and associations from your JumpCloud organization to local json files
+
+.Example
+Backup all available JumpCloud objects and their associations
+PS C:\> Backup-JCOrganization -Path:('C:\Temp') -All
 
 .Example
 Backup UserGroups and SystemUsers with their associations
@@ -12,10 +16,6 @@ PS C:\> Backup-JCOrganization -Path:('C:\Temp') -Type:('UserGroup','SystemUsers'
 .Example
 Backup UserGroups and SystemUsers without their associations
 PS C:\> Backup-JCOrganization -Path:('C:\Temp') -Type:('UserGroup','SystemUsers')
-
-.Example
-Backup all available JumpCloud objects and their associations
-PS C:\> Backup-JCOrganization -Path:('C:\Temp') -All
 
 .Link
 https://github.com/TheJumpCloud/support/tree/master/PowerShell/JumpCloud%20Module/Docs/Backup-JCOrganization.md
@@ -32,24 +32,23 @@ Function Backup-JCOrganization
 
         [Parameter(ParameterSetName = 'All')]
         [switch]
-        # The Username of the JumpCloud user you wish to search for
+        # Specify to backup all available types and associations
         ${All},
 
         [Parameter(ParameterSetName = 'Type')]
-        # [ValidateSet('SystemGroup', 'UserGroup', 'System', 'SystemUser')]
-        [ValidateSet('ActiveDirectory', 'Application', 'Command', 'GSuite', 'LdapServer', 'Office365', 'Policy', 'RadiusServer', 'SoftwareApp', 'System', 'SystemGroup', 'SystemUser', 'UserGroup')]
+        [ValidateSet('ActiveDirectory', 'Application', 'Command', 'GSuite', 'LdapServer', 'Office365', 'Organization', 'Policy', 'RadiusServer', 'SoftwareApp', 'System', 'SystemGroup', 'SystemUser', 'UserGroup')]
         [System.String[]]
         # Specify the type of JumpCloud objects you want to backup
         ${Type},
 
         [Parameter(ParameterSetName = 'Type')]
         [switch]
-        # Include to backup object type Association
+        # Specify to backup association data
         ${Association}
     )
     Begin
     {
-        $swTotal = [Diagnostics.Stopwatch]::StartNew()
+        $TimerTotal = [Diagnostics.Stopwatch]::StartNew()
         $Date = Get-Date -Format:("yyyyMMddTHHmmssffff")
         $ChildPath = "JumpCloud_$($Date)"
         $TempPath = Join-Path -Path:($PSBoundParameters.Path) -ChildPath:($ChildPath)
@@ -61,7 +60,7 @@ Function Backup-JCOrganization
             associationFiles = @()
             moduleVersion    = @(Get-Module JumpCloud* | Select-Object Name, Version)
         }
-        # If the path does not exist, create it
+        # If the backup directory does not exist, create it
         If (-not (Test-Path $TempPath))
         {
             New-Item -Path:($TempPath) -Name:$($TempPath.BaseName) -ItemType:('directory')
@@ -78,24 +77,25 @@ Function Backup-JCOrganization
         }
         # Map to define how JCAssociation & JcSdk types relate
         $JcTypesMap = @{
-            ActiveDirectory = [PSCustomObject]@{Name = 'active_directory'; ApprovedAssociations = @(); FullAssociations = @('user', 'user_group'); }; # Swagger says this works but it doesnt: 'active_directory', 'application', 'command', 'g_suite', 'ldap_server', 'office_365','policy', 'radius_server','system', 'system_group',
-            Application     = [PSCustomObject]@{Name = 'application'; ApprovedAssociations = @('user_group'); FullAssociations = @('user', 'user_group'); }; # Swagger says this works but it doesnt:  'active_directory', 'application', 'command', 'g_suite', 'ldap_server','office_365', 'policy', 'radius_server', 'system', 'system_group',
-            Command         = [PSCustomObject]@{Name = 'command'; ApprovedAssociations = @('system', 'system_group'); FullAssociations = @('system', 'system_group'); }; # Swagger says this works but it doesnt: 'active_directory', 'application','command','g_suite', 'ldap_server','office_365','policy','radius_server', 'user', 'user_group'
-            GSuite          = [PSCustomObject]@{Name = 'g_suite'; ApprovedAssociations = @('user', 'user_group'); FullAssociations = @( 'user', 'user_group'); }; # Swagger says this works but it doesnt: 'active_directory', 'application', 'command', 'g_suite', 'ldap_server', 'office_365', 'policy', 'radius_server', 'software_app', 'system', 'system_group',
-            LdapServer      = [PSCustomObject]@{Name = 'ldap_server'; ApprovedAssociations = @('user', 'user_group'); FullAssociations = @('user', 'user_group'); }; # Swagger says this works but it doesnt:'active_directory', 'application', 'command', 'g_suite', 'ldap_server', 'office_365', 'policy', 'radius_server', 'system', 'system_group',
-            Office365       = [PSCustomObject]@{Name = 'office_365'; ApprovedAssociations = @('user', 'user_group'); FullAssociations = @('user', 'user_group'); }; # Swagger says this works but it doesnt: 'active_directory', 'application', 'command', 'g_suite', 'ldap_server', 'office_365', 'policy', 'radius_server', 'software_app', 'system', 'system_group',
-            Policy          = [PSCustomObject]@{Name = 'policy'; ApprovedAssociations = @('system', 'system_group'); FullAssociations = @( 'system', 'system_group'); }; # Swagger says this works but it doesnt:'active_directory', 'application', 'command','g_suite', 'ldap_server','office_365','policy', 'radius_server', 'user', 'user_group'
-            RadiusServer    = [PSCustomObject]@{Name = 'radius_server'; ApprovedAssociations = @('user_group'); FullAssociations = @('user', 'user_group'); }; # Swagger says this works but it doesnt:'active_directory', 'application', 'command','g_suite', 'ldap_server','office_365','policy', 'radius_server', 'system', 'system_group',
-            SoftwareApp     = [PSCustomObject]@{Name = 'software_app'; ApprovedAssociations = @('system_group', 'system'); FullAssociations = @( 'system', 'system_group'); }; # Swagger says this works but it doesnt:'active_directory','application', 'command','g_suite', 'ldap_server','office_365','policy', 'radius_server', 'user', 'user_group'
-            System          = [PSCustomObject]@{Name = 'system'; ApprovedAssociations = @('command', 'policy', 'system_group', 'user'); FullAssociations = @( 'command', 'policy', 'user', 'user_group'); }; # Swagger says this works but it doesnt: 'active_directory','application','g_suite', 'ldap_server','office_365','radius_server'
-            SystemGroup     = [PSCustomObject]@{Name = 'system_group'; ApprovedAssociations = @('command', 'policy', 'system', 'user_group'); FullAssociations = @( 'command', 'policy', 'user', 'user_group'); }; # Swagger says this works but it doesnt:'active_directory','application','g_suite', 'ldap_server','office_365','radius_server',
-            SystemUser      = [PSCustomObject]@{Name = 'user'; ApprovedAssociations = @('g_suite', 'ldap_server', 'office_365', 'system', 'user_group'); FullAssociations = @('active_directory', 'application', 'g_suite', 'ldap_server', 'office_365', 'radius_server', 'system', 'system_group'); }; # Swagger says this works but it doesnt: 'command','policy',
-            UserGroup       = [PSCustomObject]@{Name = 'user_group'; ApprovedAssociations = @('application', 'g_suite', 'ldap_server', 'office_365', 'radius_server', 'system_group', 'user'); FullAssociations = @('active_directory', 'application', 'g_suite', 'ldap_server', 'office_365', 'radius_server', 'system', 'system_group'); }; # Swagger says this works but it doesnt: 'command','policy',
+            ActiveDirectory = [PSCustomObject]@{Name = 'active_directory'; AssociationTargets = @('user', 'user_group'); };
+            Application     = [PSCustomObject]@{Name = 'application'; AssociationTargets = @('user', 'user_group'); };
+            Command         = [PSCustomObject]@{Name = 'command'; AssociationTargets = @('system', 'system_group'); };
+            GSuite          = [PSCustomObject]@{Name = 'g_suite'; AssociationTargets = @( 'user', 'user_group'); };
+            LdapServer      = [PSCustomObject]@{Name = 'ldap_server'; AssociationTargets = @('user', 'user_group'); };
+            Office365       = [PSCustomObject]@{Name = 'office_365'; AssociationTargets = @('user', 'user_group'); };
+            Organization    = [PSCustomObject]@{Name = 'organization'; AssociationTargets = @(); };
+            Policy          = [PSCustomObject]@{Name = 'policy'; AssociationTargets = @( 'system', 'system_group'); };
+            RadiusServer    = [PSCustomObject]@{Name = 'radius_server'; AssociationTargets = @('user', 'user_group'); };
+            SoftwareApp     = [PSCustomObject]@{Name = 'software_app'; AssociationTargets = @( 'system', 'system_group'); };
+            System          = [PSCustomObject]@{Name = 'system'; AssociationTargets = @( 'command', 'policy', 'user', 'user_group'); };
+            SystemGroup     = [PSCustomObject]@{Name = 'system_group'; AssociationTargets = @( 'command', 'policy', 'user', 'user_group'); };
+            SystemUser      = [PSCustomObject]@{Name = 'user'; AssociationTargets = @('active_directory', 'application', 'g_suite', 'ldap_server', 'office_365', 'radius_server', 'system', 'system_group'); };
+            UserGroup       = [PSCustomObject]@{Name = 'user_group'; AssociationTargets = @('active_directory', 'application', 'g_suite', 'ldap_server', 'office_365', 'radius_server', 'system', 'system_group'); };
         }
     }
     Process
     {
-        $swObject = [Diagnostics.Stopwatch]::StartNew()
+        $TimerObject = [Diagnostics.Stopwatch]::StartNew()
         # Foreach type start a new job and retrieve object records
         $ObjectJobs = @()
         ForEach ($JumpCloudType In $Types)
@@ -105,13 +105,21 @@ Function Backup-JCOrganization
                     # Logic to handle directories
                     $Command = If ($SourceTypeMap.Key -eq 'GSuite')
                     {
-                        $DirectoryId = (Get-JcSdkDirectory | Where-Object { $_.Type -eq $SourceTypeMap.Value.Name }).Id
-                        "Get-JcSdk{0} -Id:('{1}')" -f $SourceTypeMap.Key, $DirectoryId
+                        $DirectoryCommand = "Get-JcSdkDirectory | Where-Object { `$_.Type -eq '$($SourceTypeMap.Value.Name)' }"
+                        Write-Debug ("Running: $DirectoryCommand")
+                        $Directory = Invoke-Expression -Command:($DirectoryCommand)
+                        "Get-JcSdk{0} -Id:('{1}')" -f $SourceTypeMap.Key, $Directory.Id
                     }
                     ElseIf ($SourceTypeMap.Key -eq 'Office365')
                     {
-                        $DirectoryId = (Get-JcSdkDirectory | Where-Object { $_.Type -eq $SourceTypeMap.Value.Name }).Id
-                        "Get-JcSdk{0} -{0}Id:('{1}')" -f $SourceTypeMap.Key, $DirectoryId
+                        $DirectoryCommand = "Get-JcSdkDirectory | Where-Object { `$_.Type -eq '$($SourceTypeMap.Value.Name)' }"
+                        Write-Debug ("Running: $DirectoryCommand")
+                        $Directory = Invoke-Expression -Command:($DirectoryCommand)
+                        "Get-JcSdk{0} -{0}Id:('{1}')" -f $SourceTypeMap.Key, $Directory.Id
+                    }
+                    ElseIf ($SourceTypeMap.Key -eq 'Organization')
+                    {
+                        "Get-JcSdk{0} -Id:('{1}')" -f $SourceTypeMap.Key, $env:JCOrgId
                     }
                     Else
                     {
@@ -127,7 +135,7 @@ Function Backup-JCOrganization
                         | Out-File -FilePath:("{0}/{1}.json" -f $TempPath, $SourceTypeMap.Key) -Force
                         # TODO: Potential use for restore function
                         #| ForEach-Object { $_ | Select-Object *, @{Name = 'JcSdkModel'; Expression = { $_.GetType().FullName } } } `
-                        # Manifest: Populate backupFiles value
+                        # Build object to return data
                         $OutputObject = @{
                             Results        = $Result
                             Type           = $SourceTypeMap.Key
@@ -138,7 +146,6 @@ Function Backup-JCOrganization
                 }) -ArgumentList:($TempPath, $SourceTypeMap)
         }
         $ObjectJobStatus = Wait-Job -Id:($ObjectJobs.Id)
-        # Manifest: Populate backupFiles value
         $ObjectJobResults = $ObjectJobStatus | Receive-Job
         $manifest.backupFiles += $ObjectJobResults | Select-Object -ExcludeProperty:('Results')
         $swObject.Stop()
@@ -147,7 +154,7 @@ Function Backup-JCOrganization
         If ($PSBoundParameters.Association)
         {
             $AssociationJobs = @()
-            $swAssociations = [Diagnostics.Stopwatch]::StartNew()
+            $TimerAssociations = [Diagnostics.Stopwatch]::StartNew()
             # Get the backup files we created earlier
             $BackupFiles = Get-ChildItem -Path:($TempPath) | Where-Object { $_.BaseName -in $Types }
             ForEach ($BackupFile In $BackupFiles)
@@ -157,8 +164,7 @@ Function Backup-JCOrganization
                 # TODO: Figure out how to make this work with x-ms-enum.
                 # $ValidTargetTypes = (Get-Command Get-JcSdk$($SourceTypeMap.Key)Association).Parameters.Targets.Attributes.ValidValues
                 # Get list of valid target types from Get-JCAssociation
-                # $ValidTargetTypes = $SourceTypeMap.Value.ApprovedAssociations
-                $ValidTargetTypes = $SourceTypeMap.Value.FullAssociations
+                $ValidTargetTypes = $SourceTypeMap.Value.AssociationTargets
                 # Lookup file names in $JcTypesMap
                 ForEach ($ValidTargetType In $ValidTargetTypes)
                 {
@@ -194,6 +200,7 @@ Function Backup-JCOrganization
                                 {
                                     $AssociationFileName = "Association-{0}To{1}" -f $SourceTypeMap.Key, $TargetTypeMap.Key
                                     $AssociationResults | Out-File -FilePath:("{0}/{1}.json" -f $TempPath, $AssociationFileName) -Force
+                                    # Build object to return data
                                     $OutputObject = @{
                                         Results        = $AssociationResults
                                         Type           = $AssociationFileName
@@ -207,9 +214,8 @@ Function Backup-JCOrganization
             }
             $AssociationJobsStatus = Wait-Job -Id:($AssociationJobs.Id)
             $AssociationResults = $AssociationJobsStatus | Receive-Job
-            # Manifest: Populate backupFiles value
             $manifest.associationFiles += $AssociationResults | Select-Object -ExcludeProperty:('Results')
-            $swAssociations.Stop()
+            $TimerAssociations.Stop()
         }
     }
     End
@@ -231,9 +237,9 @@ Function Backup-JCOrganization
                 Write-Host ("$($_.Type): $($_.Results.Count)") -ForegroundColor:('Magenta')
             }
         }
-        $swTotal.Stop()
-        If ($swObject) { Write-Host ("Object Run Time: $($swObject.Elapsed)") -BackgroundColor Cyan -ForegroundColor Black }
-        If ($swAssociations) { Write-Host ("Association Run Time: $($swAssociations.Elapsed)") -BackgroundColor Cyan -ForegroundColor Black }
-        If ($swTotal) { Write-Host ("Total Run Time: $($swTotal.Elapsed)") -BackgroundColor Cyan -ForegroundColor Black }
+        $TimerTotal.Stop()
+        If ($TimerObject) { Write-Debug ("Object Run Time: $($TimerObject.Elapsed)") }
+        If ($TimerAssociations) { Write-Debug ("Association Run Time: $($TimerAssociations.Elapsed)") }
+        If ($TimerTotal) { Write-Debug ("Total Run Time: $($TimerTotal.Elapsed)") }
     }
 }
