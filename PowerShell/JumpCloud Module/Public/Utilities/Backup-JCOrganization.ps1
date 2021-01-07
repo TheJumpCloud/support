@@ -193,8 +193,8 @@ Function Backup-JCOrganization
                                 }
                                 If (-not [System.String]::IsNullOrEmpty($AssociationResults))
                                 {
-                                    $AssociationFileName = "Association-{1}-{2}" -f $TempPath, $SourceTypeMap.Key, $TargetTypeMap.Key
-                                    $AssociationResults | Out-File -FilePath:("{0}/{1}.json" -f $AssociationFileName) -Force
+                                    $AssociationFileName = "Association-{0}-{1}" -f $SourceTypeMap.Key, $TargetTypeMap.Key
+                                    $AssociationResults | Out-File -FilePath:("{0}/{1}.json" -f $TempPath, $AssociationFileName) -Force
                                     $OutputObject = @{
                                         Results        = $AssociationResults
                                         Type           = $AssociationFileName
