@@ -44,7 +44,7 @@ Function Backup-JCOrganization
 
         [Parameter(ParameterSetName = 'Type')]
         # [ValidateSet('SystemGroup', 'UserGroup', 'System', 'SystemUser')]
-        [ValidateSet('ActiveDirectory', 'Application', 'Command', 'LdapServer', 'Policy', 'RadiusServer', 'SoftwareApp', 'System', 'SystemGroup', 'SystemUser', 'UserGroup')] # 'GSuite','Office365',
+        [ValidateSet('ActiveDirectory', 'Application', 'Command', 'GSuite', 'LdapServer', 'Office365', 'Policy', 'RadiusServer', 'SoftwareApp', 'System', 'SystemGroup', 'SystemUser', 'UserGroup')]
         [System.String[]]
         # Specify the type of JumpCloud objects you want to backup
         ${Type},
@@ -85,23 +85,20 @@ Function Backup-JCOrganization
         }
         # Map to define how JCAssociation & JcSdk types relate
         $JcTypesMap = @{
-            ActiveDirectory = [PSCustomObject]@{Name = 'active_directory'; ApprovedAssociations = @(); FullAssociations = @('g_suite', 'office_365', 'user', 'user_group'); }; # Swagger says this works but it doesnt: 'active_directory', 'application', 'command', 'ldap_server', 'policy', 'radius_server', 'system', 'system_group',
-            Application     = [PSCustomObject]@{Name = 'application'; ApprovedAssociations = @('user_group'); FullAssociations = @('g_suite', 'office_365', 'user', 'user_group'); }; # Swagger says this works but it doesnt:  'active_directory', 'application', 'command', 'ldap_server','policy', 'radius_server', 'system', 'system_group',
-            Command         = [PSCustomObject]@{Name = 'command'; ApprovedAssociations = @('system', 'system_group'); FullAssociations = @(  'g_suite', 'office_365', 'system', 'system_group'); }; # Swagger says this works but it doesnt: 'active_directory', 'application','command','ldap_server','policy','radius_server', 'user', 'user_group'
-            # Get-JcSdkGSuite - Requires Id value
-            # GSuite          = [PSCustomObject]@{Name = 'g_suite'; ApprovedAssociations = @('user', 'user_group'); FullAssociations = @('active_directory', 'application', 'command', 'g_suite', 'ldap_server', 'office_365', 'policy', 'radius_server', 'system', 'system_group', 'user', 'user_group'); };
-            LdapServer      = [PSCustomObject]@{Name = 'ldap_server'; ApprovedAssociations = @('user', 'user_group'); FullAssociations = @('g_suite', 'office_365', 'user', 'user_group'); }; # Swagger says this works but it doesnt:'active_directory', 'application', 'command', 'ldap_server', 'policy', 'radius_server', 'system', 'system_group',
-            # Get-JcSdkOffice365 - Requires Id value
-            # Office365       = [PSCustomObject]@{Name = 'office_365'; ApprovedAssociations = @('user', 'user_group'); FullAssociations = @('active_directory', 'application', 'command', 'g_suite', 'ldap_server', 'office_365', 'policy', 'radius_server', 'system', 'system_group', 'user', 'user_group'); };
-            Policy          = [PSCustomObject]@{Name = 'policy'; ApprovedAssociations = @('system', 'system_group'); FullAssociations = @( 'g_suite', 'office_365', 'system', 'system_group'); }; # Swagger says this works but it doesnt:'active_directory', 'application', 'command','ldap_server','policy', 'radius_server', 'user', 'user_group'
-            RadiusServer    = [PSCustomObject]@{Name = 'radius_server'; ApprovedAssociations = @('user_group'); FullAssociations = @( 'g_suite', 'office_365', 'user', 'user_group'); }; # Swagger says this works but it doesnt:'active_directory', 'application', 'command','ldap_server','policy', 'radius_server', 'system', 'system_group',
-            SoftwareApp     = [PSCustomObject]@{Name = 'software_app'; ApprovedAssociations = @('system_group', 'system'); FullAssociations = @( 'g_suite', 'office_365', 'system', 'system_group'); }; # Swagger says this works but it doesnt:'active_directory','application', 'command','ldap_server','policy', 'radius_server', 'user', 'user_group'
-            System          = [PSCustomObject]@{Name = 'system'; ApprovedAssociations = @('command', 'policy', 'system_group', 'user'); FullAssociations = @( 'command', 'g_suite', 'office_365', 'policy', 'user', 'user_group'); }; # Swagger says this works but it doesnt: 'active_directory','application','ldap_server','radius_server'
-            SystemGroup     = [PSCustomObject]@{Name = 'system_group'; ApprovedAssociations = @('command', 'policy', 'system', 'user_group'); FullAssociations = @( 'command', 'g_suite', 'office_365', 'policy', 'user', 'user_group'); }; # Swagger says this works but it doesnt:'active_directory','application','ldap_server','radius_server',
+            ActiveDirectory = [PSCustomObject]@{Name = 'active_directory'; ApprovedAssociations = @(); FullAssociations = @('user', 'user_group'); }; # Swagger says this works but it doesnt: 'active_directory', 'application', 'command', 'g_suite', 'ldap_server', 'office_365','policy', 'radius_server','system', 'system_group',
+            Application     = [PSCustomObject]@{Name = 'application'; ApprovedAssociations = @('user_group'); FullAssociations = @('user', 'user_group'); }; # Swagger says this works but it doesnt:  'active_directory', 'application', 'command', 'g_suite', 'ldap_server','office_365', 'policy', 'radius_server', 'system', 'system_group',
+            Command         = [PSCustomObject]@{Name = 'command'; ApprovedAssociations = @('system', 'system_group'); FullAssociations = @('system', 'system_group'); }; # Swagger says this works but it doesnt: 'active_directory', 'application','command','g_suite', 'ldap_server','office_365','policy','radius_server', 'user', 'user_group'
+            GSuite          = [PSCustomObject]@{Name = 'g_suite'; ApprovedAssociations = @('user', 'user_group'); FullAssociations = @( 'user', 'user_group'); }; # Swagger says this works but it doesnt: 'active_directory', 'application', 'command', 'g_suite', 'ldap_server', 'office_365', 'policy', 'radius_server', 'software_app', 'system', 'system_group',
+            LdapServer      = [PSCustomObject]@{Name = 'ldap_server'; ApprovedAssociations = @('user', 'user_group'); FullAssociations = @('user', 'user_group'); }; # Swagger says this works but it doesnt:'active_directory', 'application', 'command', 'g_suite', 'ldap_server', 'office_365', 'policy', 'radius_server', 'system', 'system_group',
+            Office365       = [PSCustomObject]@{Name = 'office_365'; ApprovedAssociations = @('user', 'user_group'); FullAssociations = @('user', 'user_group'); }; # Swagger says this works but it doesnt: 'active_directory', 'application', 'command', 'g_suite', 'ldap_server', 'office_365', 'policy', 'radius_server', 'software_app', 'system', 'system_group',
+            Policy          = [PSCustomObject]@{Name = 'policy'; ApprovedAssociations = @('system', 'system_group'); FullAssociations = @( 'system', 'system_group'); }; # Swagger says this works but it doesnt:'active_directory', 'application', 'command','g_suite', 'ldap_server','office_365','policy', 'radius_server', 'user', 'user_group'
+            RadiusServer    = [PSCustomObject]@{Name = 'radius_server'; ApprovedAssociations = @('user_group'); FullAssociations = @('user', 'user_group'); }; # Swagger says this works but it doesnt:'active_directory', 'application', 'command','g_suite', 'ldap_server','office_365','policy', 'radius_server', 'system', 'system_group',
+            SoftwareApp     = [PSCustomObject]@{Name = 'software_app'; ApprovedAssociations = @('system_group', 'system'); FullAssociations = @( 'system', 'system_group'); }; # Swagger says this works but it doesnt:'active_directory','application', 'command','g_suite', 'ldap_server','office_365','policy', 'radius_server', 'user', 'user_group'
+            System          = [PSCustomObject]@{Name = 'system'; ApprovedAssociations = @('command', 'policy', 'system_group', 'user'); FullAssociations = @( 'command', 'policy', 'user', 'user_group'); }; # Swagger says this works but it doesnt: 'active_directory','application','g_suite', 'ldap_server','office_365','radius_server'
+            SystemGroup     = [PSCustomObject]@{Name = 'system_group'; ApprovedAssociations = @('command', 'policy', 'system', 'user_group'); FullAssociations = @( 'command', 'policy', 'user', 'user_group'); }; # Swagger says this works but it doesnt:'active_directory','application','g_suite', 'ldap_server','office_365','radius_server',
             SystemUser      = [PSCustomObject]@{Name = 'user'; ApprovedAssociations = @('g_suite', 'ldap_server', 'office_365', 'system', 'user_group'); FullAssociations = @('active_directory', 'application', 'g_suite', 'ldap_server', 'office_365', 'radius_server', 'system', 'system_group'); }; # Swagger says this works but it doesnt: 'command','policy',
             UserGroup       = [PSCustomObject]@{Name = 'user_group'; ApprovedAssociations = @('application', 'g_suite', 'ldap_server', 'office_365', 'radius_server', 'system_group', 'user'); FullAssociations = @('active_directory', 'application', 'g_suite', 'ldap_server', 'office_365', 'radius_server', 'system', 'system_group'); }; # Swagger says this works but it doesnt: 'command','policy',
         }
-        # 'active_directory', 'application', 'command', 'g_suite', 'ldap_server', 'office_365', 'policy', 'radius_server', 'software_app', 'system', 'system_group', 'user', 'user_group'
     }
     Process
     {
@@ -110,22 +107,37 @@ Function Backup-JCOrganization
         $ObjectJobs = @()
         ForEach ($JumpCloudType In $Types)
         {
-            $ObjectJobs += Start-Job -ScriptBlock:( { Param ($TempPath, $JumpCloudType);
-                    $Command = "Get-JcSdk{0}" -f $JumpCloudType
+            $SourceTypeMap = $JcTypesMap.GetEnumerator() | Where-Object { $_.Key -eq $JumpCloudType }
+            $ObjectJobs += Start-Job -ScriptBlock:( { Param ($TempPath, $SourceTypeMap);
+                    # Logic to handle directories
+                    $Command = If ($SourceTypeMap.Key -eq 'GSuite')
+                    {
+                        $DirectoryId = (Get-JcSdkDirectory | Where-Object { $_.Type -eq $SourceTypeMap.Value.Name }).Id
+                        "Get-JcSdk{0} -Id:('{1}')" -f $SourceTypeMap.Key, $DirectoryId
+                    }
+                    ElseIf ($SourceTypeMap.Key -eq 'Office365')
+                    {
+                        $DirectoryId = (Get-JcSdkDirectory | Where-Object { $_.Type -eq $SourceTypeMap.Value.Name }).Id
+                        "Get-JcSdk{0} -{0}Id:('{1}')" -f $SourceTypeMap.Key, $DirectoryId
+                    }
+                    Else
+                    {
+                        "Get-JcSdk{0}" -f $SourceTypeMap.Key
+                    }
                     Write-Debug ("Running: $Command")
                     $Result = Invoke-Expression -Command:($Command)
                     # Write output to file
                     $Result `
                     | ForEach-Object { $_ | Select-Object *, @{Name = 'JcSdkModel'; Expression = { $_.GetType().FullName } } } `
                     | ConvertTo-Json -Depth:(100) `
-                    | Out-File -FilePath:("{0}/{1}.json" -f $TempPath, $JumpCloudType) -Force
+                    | Out-File -FilePath:("{0}/{1}.json" -f $TempPath, $SourceTypeMap.Key) -Force
                     # Manifest: Populate backupFiles value
                     $backupFiles = @{
-                        backupType     = $JumpCloudType
-                        backupLocation = "./$($JumpCloudType).json"
+                        backupType     = $SourceTypeMap.Key
+                        backupLocation = "./$($SourceTypeMap.Key).json"
                     }
                     Return $backupFiles
-                }) -ArgumentList:($TempPath, $JumpCloudType)
+                }) -ArgumentList:($TempPath, $SourceTypeMap)
         }
         $ObjectJobStatus = Wait-Job -Id:($ObjectJobs.Id)
         # Manifest: Populate backupFiles value
