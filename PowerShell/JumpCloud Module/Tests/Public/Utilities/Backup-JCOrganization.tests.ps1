@@ -1,26 +1,40 @@
 Describe -Tag:('JCBackup') "Backup-JCOrganization" {
     BeforeAll {
         Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
-        If (-not (Get-JCAssociation -Type:('user') -Name:($PesterParams_User1.username) -TargetType:('system') -IncludeNames | Where-Object { $_.TargetName -eq $PesterParams_SystemLinux.displayName })) {
-            Add-JCAssociation -Type:('user') -Name:($PesterParams_User1.username) -TargetType:('system') -TargetName:($PesterParams_SystemLinux.displayName) -Force
-        }
-        Add-JCUserGroupMember -GroupName $PesterParams_UserGroup.Name -username $PesterParams_User1.Username
-        Add-JCSystemGroupMember -GroupName $PesterParams_SystemGroup.Name -SystemID $PesterParams_SystemLinux._id
     }
     It "Backs up JumpCloud Org" {
         $backupLocation = Backup-JCOrganization -Path ./ -All
         $zipArchive = Get-Item "$($backupLocation.FullName).zip"
         Expand-Archive -Path "$zipArchive" -DestinationPath ./
-        $backupChildItem = Get-ChildItem $backupLocation.FullName
+        $backupChildItem = Get-ChildItem $backupLocation.FullName | Where-Object { $_ -notmatch 'BackupManifest' }
         $ValidTargetTypes = (Get-Command Backup-JCOrganization -ArgumentList:($Type.value)).Parameters.Type.Attributes.ValidValues
         # verify that the object backup files exist
-        foreach ($item in $ValidTargetTypes) {
-            $item -in $backupChildItem.BaseName | Should -BeTrue
-        }
-        # verify that the association files exist
-        foreach ($item in $ValidTargetTypes | Where-Object { $_ -ne 'System' })
+        foreach ($file in $backupChildItem | Where-Object { $_ -notmatch 'Association' }) 
         {
-            "$($item)-Association" -in ($backupChildItem.BaseName | Where-Object { $_ -match 'Association' }) | Should -BeTrue
+            $file.BaseName -in $ValidTargetTypes | Should -BeTrue
+        }
+        # verify that the association files have matching ids and target ids
+        foreach ($file in $backupChildItem | Where-Object { $_ -match 'Association' })
+        {
+            # "testing $file"
+            # take a look at association files (if they exist)
+            $fileContent = Get-Content $file | ConvertFrom-Json
+            # test that the id and target id is not null or empty
+            foreach ($item in $fileContent) {
+                if (![System.String]::IsNullOrEmpty($item.Paths))
+                {
+                    # "Testing: $($item.Id)"
+                    $item.Id | Should -Not -BeNullOrEmpty
+                    # "Testing: $($item.Paths.ToId)"
+                    $item.Paths.ToId | Should -Not -BeNullOrEmpty
+                }
+                else {
+                    # "Testing: $($item.FromId)"
+                    $item.FromId | Should -Not -BeNullOrEmpty
+                    # "Testing: $($item.ToId)"
+                    $item.ToId | Should -Not -BeNullOrEmpty
+                }
+            }
         }
         # verify that each file is not null or empty
         foreach ($item in $backupChildItem) {
