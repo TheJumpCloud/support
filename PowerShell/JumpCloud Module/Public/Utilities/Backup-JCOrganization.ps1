@@ -83,17 +83,19 @@ Function Backup-JCOrganization
         }
         # Map to define how JCAssociation & JcSdk types relate
         $JcTypesMap = @{
-            Application  = [PSCustomObject]@{Name = 'application'; Associations = @('user_group'); };
-            Command      = [PSCustomObject]@{Name = 'command'; Associations = @('system', 'system_group'); };
-            GSuite       = [PSCustomObject]@{Name = 'g_suite'; Associations = @('user', 'user_group'); };
-            LdapServer   = [PSCustomObject]@{Name = 'ldap_server'; Associations = @('user', 'user_group'); };
-            Office365    = [PSCustomObject]@{Name = 'office_365'; Associations = @('user', 'user_group'); };
-            Policy       = [PSCustomObject]@{Name = 'policy'; Associations = @('system', 'system_group'); };
-            RadiusServer = [PSCustomObject]@{Name = 'radius_server'; Associations = @('user_group'); };
-            System       = [PSCustomObject]@{Name = 'system'; Associations = @('command', 'policy', 'system_group', 'user'); };
-            SystemGroup  = [PSCustomObject]@{Name = 'system_group'; Associations = @('command', 'policy', 'system', 'user_group'); };
-            SystemUser   = [PSCustomObject]@{Name = 'user'; Associations = @('g_suite', 'ldap_server', 'office_365', 'system', 'user_group'); };
-            UserGroup    = [PSCustomObject]@{Name = 'user_group'; Associations = @('application', 'g_suite', 'ldap_server', 'office_365', 'radius_server', 'system_group', 'user'); };
+            # ActiveDirectory = [PSCustomObject]@{Name = 'active_directory'; Associations = @('active_directory','application','command','g_suite','ldap_server','office_365','policy','radius_server','system','system_group','user','user_group'); }; #'active_directory','application','command','g_suite','ldap_server','office_365','policy','radius_server','system','system_group','user','user_group'
+            Application  = [PSCustomObject]@{Name = 'application'; Associations = @('user_group'); }; #'active_directory','application','command','g_suite','ldap_server','office_365','policy','radius_server','system','system_group','user','user_group'
+            Command      = [PSCustomObject]@{Name = 'command'; Associations = @('system', 'system_group'); }; #'active_directory','application','command','g_suite','ldap_server','office_365','policy','radius_server','system','system_group','user','user_group'
+            GSuite       = [PSCustomObject]@{Name = 'g_suite'; Associations = @('user', 'user_group'); }; #'active_directory','application','command','g_suite','ldap_server','office_365','policy','radius_server','system','system_group','user','user_group'
+            LdapServer   = [PSCustomObject]@{Name = 'ldap_server'; Associations = @('user', 'user_group'); }; #'active_directory','application','command','g_suite','ldap_server','office_365','policy','radius_server','system','system_group','user','user_group'
+            Office365    = [PSCustomObject]@{Name = 'office_365'; Associations = @('user', 'user_group'); }; #'active_directory','application','command','g_suite','ldap_server','office_365','policy','radius_server','system','system_group','user','user_group'
+            Policy       = [PSCustomObject]@{Name = 'policy'; Associations = @('system', 'system_group'); }; #'active_directory','application','command','g_suite','ldap_server','office_365','policy','radius_server','system','system_group','user','user_group'
+            RadiusServer = [PSCustomObject]@{Name = 'radius_server'; Associations = @('user_group'); }; #'active_directory','application','command','g_suite','ldap_server','office_365','policy','radius_server','system','system_group','user','user_group'
+            # SoftwareApp = [PSCustomObject]@{Name = '???'; Associations = @('active_directory','application','command','g_suite','ldap_server','office_365','policy','radius_server','system','system_group','user','user_group'); }; #'active_directory','application','command','g_suite','ldap_server','office_365','policy','radius_server','system','system_group','user','user_group'
+            System       = [PSCustomObject]@{Name = 'system'; Associations = @('command', 'policy', 'system_group', 'user'); }; #'active_directory','application','command','g_suite','ldap_server','office_365','policy','radius_server','user','user_group'
+            SystemGroup  = [PSCustomObject]@{Name = 'system_group'; Associations = @('command', 'policy', 'system', 'user_group'); }; #'active_directory','application','command','g_suite','ldap_server','office_365','policy','radius_server','user','user_group'
+            SystemUser   = [PSCustomObject]@{Name = 'user'; Associations = @('g_suite', 'ldap_server', 'office_365', 'system', 'user_group'); }; #'active_directory','application','command','g_suite','ldap_server','office_365','policy','radius_server','system','system_group'
+            UserGroup    = [PSCustomObject]@{Name = 'user_group'; Associations = @('application', 'g_suite', 'ldap_server', 'office_365', 'radius_server', 'system_group', 'user'); }; #'active_directory','application','command','g_suite','ldap_server','office_365','policy','radius_server','system','system_group'
         }
     }
     Process
