@@ -186,7 +186,7 @@ Function Backup-JCOrganization
                                     If (($SourceTypeMap.Value.Name -eq 'system' -and $TargetTypeMap.Value.Name -eq 'system_group') -or ($SourceTypeMap.Value.Name -eq 'user' -and $TargetTypeMap.Value.Name -eq 'user_group'))
                                     {
                                         $Command = 'Get-JcSdk{0}Member -{1}Id:("{2}")' -f $SourceTypeMap.Key.Replace('SystemUser', 'User'), $SourceTypeMap.Key.Replace('UserGroup', 'Group').Replace('SystemGroup', 'Group').Replace('SystemUser', 'User'), $BackupRecord.id
-                                        Write-Host ("Running: $Command")
+                                        Write-Debug ("Running: $Command")
                                         $AssociationResult = Invoke-Expression -Command:($Command)
                                         If (-not [System.String]::IsNullOrEmpty($AssociationResult))
                                         {
@@ -234,7 +234,7 @@ Function Backup-JCOrganization
                                     Else
                                     {
                                         $Command = 'Get-JcSdk{0}Association -{0}Id:("{1}") -Targets:("{2}")' -f $SourceTypeMap.Key.Replace('SystemUser', 'User'), $BackupRecord.id, $TargetTypeMap.Value.Name
-                                        Write-Host ("Running: $Command")
+                                        Write-Debug ("Running: $Command")
                                         $AssociationResult = Invoke-Expression -Command:($Command)
                                         If (-not [System.String]::IsNullOrEmpty($AssociationResult))
                                         {
