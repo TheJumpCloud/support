@@ -156,7 +156,6 @@ Function Backup-JCOrganization
                     # If the valid target type matches a file name look up the associations for the SourceType and TargetType
                     If ($TargetTypeMap.Key -in $BackupFiles.BaseName)
                     {
-                        Write-Host ("$($SourceTypeMap.Key) | $($TargetTypeMap.Key)")
                         $AssociationJobs += Start-Job -ScriptBlock:( { Param ($SourceTypeMap, $TargetTypeMap, $TempPath, $BackupFile);
                                 $AssociationResults = @()
                                 # Get content from the file
@@ -178,7 +177,7 @@ Function Backup-JCOrganization
                                     }
                                     # *Group commands take "GroupId" as a parameter vs "{Type}Id"
                                     $Command = $Command.Replace('UserGroupId', 'GroupId').Replace('SystemGroupId', 'GroupId').Replace('SystemUser', 'User')
-                                    Write-Host ("Running: $Command")
+                                    Write-Debug ("Running: $Command")
                                     $AssociationResults += Invoke-Expression -Command:($Command) | ConvertTo-Json -Depth:(100)
                                 }
                                 $AssociationResults | Out-File -FilePath:("{0}/Association-{1}-{2}.json" -f $TempPath, $SourceTypeMap.Key, $TargetTypeMap.Key) -Force
