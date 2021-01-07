@@ -55,11 +55,11 @@ Function Backup-JCOrganization
         $TempPath = Join-Path -Path:($PSBoundParameters.Path) -ChildPath:($ChildPath)
         $ArchivePath = Join-Path -Path:($PSBoundParameters.Path) -ChildPath:("$($ChildPath).zip")
         $Manifest = @{
-            name             = "JumpCloudBackup";
             date             = "$Date";
             organizationID   = "$env:JCOrgId"
             backupFiles      = @()
             associationFiles = @()
+            moduleVersion    = @(Get-Module JumpCloud* | Select-Object Name, Version)
         }
         # If the path does not exist, create it
         If (-not (Test-Path $TempPath))
@@ -131,7 +131,7 @@ Function Backup-JCOrganization
                         $OutputObject = @{
                             Results        = $Result
                             Type           = $SourceTypeMap.Key
-                            backupLocation = "./$($SourceTypeMap.Key).json"
+                            Path = "./$($SourceTypeMap.Key).json"
                         }
                         Return $OutputObject
                     }
@@ -143,7 +143,7 @@ Function Backup-JCOrganization
         $manifest.backupFiles += $ObjectJobResults | Select-Object -ExcludeProperty:('Results')
         $swObject.Stop()
 
-        # Foreach type start a new job and retreive object association records
+        # Foreach type start a new job and retrieve object association records
         If ($PSBoundParameters.Association)
         {
             $AssociationJobs = @()
@@ -197,7 +197,7 @@ Function Backup-JCOrganization
                                     $OutputObject = @{
                                         Results        = $AssociationResults
                                         Type           = $AssociationFileName
-                                        backupLocation = "./$($AssociationFileName).json"
+                                        Path = "./$($AssociationFileName).json"
                                     }
                                     Return $OutputObject
                                 }
