@@ -7,10 +7,10 @@ TODO
 #>
 <#
 .Synopsis
-The function exports objects from your JumpCloud organization to local json files
+The function exports objects and associations from your JumpCloud organization to local json files
 
 .Description
-The function exports objects from your JumpCloud organization to local json files
+The function exports objects and associations from your JumpCloud organization to local json files
 
 .Example
 Backup UserGroups and SystemUsers with their associations
@@ -21,7 +21,7 @@ Backup UserGroups and SystemUsers without their associations
 PS C:\> Backup-JCOrganization -Path:('C:\Temp') -Type:('UserGroup','SystemUsers')
 
 .Example
-Backup all avalible JumpCloud objects and their Association
+Backup all available JumpCloud objects and their associations
 PS C:\> Backup-JCOrganization -Path:('C:\Temp') -All
 
 .Link
