@@ -101,7 +101,7 @@ bool bWait);
             'ComputerName'    = $ComputerName;
             'SessionId'       = $SessionId;
             'ResponseId'      = $Response;
-            'ResponseMessage' = $ResponseMessage
+            'ResponseMessage' = $ResponseMessage;
         }
         Return $Responses
     }
