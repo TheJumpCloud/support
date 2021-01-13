@@ -133,7 +133,8 @@ Function Invoke-PasswordResetNotification
         # Get list of users on machine
         $ActiveUsers = (quser) -Replace ('^>', '') -Replace ('\s{2,}', ',') | ConvertFrom-Csv
         # ForEach user
-        If ($ActiveUsers) {
+        If ($ActiveUsers) 
+        {
             ForEach ($ActiveUser In $ActiveUsers)
             {
                 $UserName = $ActiveUser.UserName
@@ -212,7 +213,7 @@ Function Invoke-PasswordResetNotification
         }
         Else 
         {
-            Write-Output ("No active users")
+            Write-Output ("No active users found on system")
         }
     }
     Catch
@@ -229,6 +230,7 @@ Function Invoke-PasswordResetNotification
 }
 
 Invoke-PasswordResetNotification -JCAPIKEY:($JCAPIKEY) -MessageBoxStyle:($MessageBoxStyle) -MessageTitle:($MessageTitle) -MessageBody:($MessageBody) -TimeOutSec:($TimeOutSec)
+
 ```
 
 #### Description
