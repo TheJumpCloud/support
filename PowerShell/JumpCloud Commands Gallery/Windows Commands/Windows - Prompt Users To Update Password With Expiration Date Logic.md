@@ -16,7 +16,6 @@ $MessageBoxStyle = 4 # Look inside the Invoke-BroadcastMessage function for opti
 $MessageTitle = 'Update Your JumpCloud Password Immediately' # Text to display in the message box title.
 $MessageBody = 'Please update your JumpCloud password immediately. Click "Yes" to send a JumpCloud password reset link to your email.' # Text to display in the message box body.
 $TimeOutSec = 60 # How long you want the message box to display to the user.
-# $AdvancedLogging = true
 
 #------- Do not modify below this line ------
 Function Invoke-BroadcastMessage
@@ -185,22 +184,24 @@ Function Invoke-PasswordResetNotification
                             }
                             else
                             {
+                                Write-Output ("No Active JumpCloud users with expiring passwords found. See details of found users below:")
                                 Return [PSCustomObject]@{
                                     'UserName'                 = $UserName
                                     'password_expiration_date' = $password_expiration_date
                                     'DaysUntilPasswordExpires' = $DaysUntilPasswordExpire
                                     'PasswordUpdate'           = 'Complete'
+                                    'Notification Triggered'   = 'False'
                                 }
                             }
                         }
                         else
                         {
-                            Write-Error ('Unable to find expiration date for user:' + $UserName)
+                            Write-Warning ('Unable to find expiration date for user:' + $UserName)
                         }
                     }
                     Else
                     {
-                        Write-Error ('Unable to find user: "' + $UserName + '". Active user is not a JumpCloud user')
+                        Write-Warning ('Unable to find user: "' + $UserName + '". Active user "' + $UserName +  '" is not a JumpCloud user')
                     }
                 }
                 else 
@@ -211,7 +212,7 @@ Function Invoke-PasswordResetNotification
         }
         Else 
         {
-            Write-Error ("No active users")
+            Write-Output ("No active users")
         }
     }
     Catch
@@ -233,6 +234,7 @@ Invoke-PasswordResetNotification -JCAPIKEY:($JCAPIKEY) -MessageBoxStyle:($Messag
 #### Description
 
 1. Runs "quser" command to get a list of all active sessions on the machine.
+   Note: This script expects an English return of "Active" for the above command in order to complete successfully. If OS isn't default English, the script may return an error.
 2. Query the organizations JumpCloud password expiration policy.
 3. For each user with an active session query the users password expiration date.
 4. If the signed in user has not reset their password on the day the command is run then a notification is sent to the user. **This logic allows the command to be set to run as a repeating on a set of target systems and will only re-prompt users who do not take action and update their passwords.**
