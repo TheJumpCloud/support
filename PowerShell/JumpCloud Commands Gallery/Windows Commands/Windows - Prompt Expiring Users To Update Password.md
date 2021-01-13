@@ -101,7 +101,7 @@ bool bWait);
             'ComputerName'    = $ComputerName;
             'SessionId'       = $SessionId;
             'ResponseId'      = $Response;
-            'ResponseMessage' = $ResponseMessage;
+            'ResponseMessage' = $ResponseMessage
         }
         Return $Responses
     }
@@ -142,6 +142,7 @@ Function Invoke-PasswordResetNotification
         # Get list of users on machine
         $ActiveUsers = (quser) -Replace ('^>', '') -Replace ('\s{2,}', ',') | ConvertFrom-Csv
         # ForEach user
+        If ($ActiveUsers) {
         ForEach ($ActiveUser In $ActiveUsers)
         {
             $UserName = $ActiveUser.UserName
@@ -177,14 +178,33 @@ Function Invoke-PasswordResetNotification
                         $Response = Invoke-BroadcastMessage -SessionId:($SessionId) -MessageBoxStyle:($MessageBoxStyle) -MessageTitle:($MessageTitle) -MessageBody:($MessageBody -f $DaysUntilPasswordExpire) -ConfirmationAction:($ConfirmationAction) -TimeOutSec:($TimeOutSec)
                         Return $Response | Where-Object {$_.ComputerName} | Select-Object ComputerName, SessionId, ResponseId, ResponseMessage, @{Name = 'UserName'; Expression = {$UserName}}, @{Name = 'password_expiration_date'; Expression = {$password_expiration_date}}
                     }
+                    else 
+                    {
+                        Write-Output ("No Active JumpCloud users with expiring passwords found. See details of found users below:")
+                        Return [PSCustomObject]@{
+                            'UserName'                 = $UserName
+                            'password_expiration_date' = $password_expiration_date
+                            'DaysUntilPasswordExpires' = $DaysUntilPasswordExpire
+                            'Notification Triggered'   = 'False'
+                        }
+                    }
                 }
                 Else
                 {
-                    Write-Error ('Unable to find user:' + $UserName)
+                    Write-Warning ('Unable to find user: "' + $UserName + '". Active user "' + $UserName +  '" is not a JumpCloud user')
                 }
+            }
+            else
+            {
+                Write-Error ('Cannot read the state of the active user: "' + $UserState + '" Is not a valid state')
             }
         }
     }
+    Else
+    {
+        Write-Output ("No active users found on system")
+    }
+}
     Catch
     {
         $Exception = $_.Exception
