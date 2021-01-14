@@ -157,10 +157,11 @@ Function Invoke-PasswordResetNotification
                         $UserName = $SystemUser.UserName
                         $email = $SystemUser.email
                         $password_expiration_date = $SystemUser.password_expiration_date
-                        $passwordExpirationInDays = $Organizations.settings.passwordPolicy.passwordExpirationInDays
-                        $password_set_date = (Get-Date($password_expiration_date)).AddDays(-$passwordExpirationInDays)
+                        
                         If ($password_expiration_date)
                         {
+                            $passwordExpirationInDays = $Organizations.settings.passwordPolicy.passwordExpirationInDays
+                            $password_set_date = (Get-Date($password_expiration_date)).AddDays(-$passwordExpirationInDays)
                             #Convert dates to ToUniversalTime
                             $TodaysDate = (Get-Date).ToUniversalTime()
                             $password_expiration_date_Universal = Get-Date -Date:($password_expiration_date)
@@ -197,7 +198,7 @@ Function Invoke-PasswordResetNotification
                         }
                         else
                         {
-                            Write-Warning ('Unable to find expiration date for user:' + $UserName)
+                            Write-Warning ('Unable to find expiration date for user: "' + $UserName + '" or user password does not expire.')
                         }
                     }
                     Else
@@ -230,7 +231,6 @@ Function Invoke-PasswordResetNotification
 }
 
 Invoke-PasswordResetNotification -JCAPIKEY:($JCAPIKEY) -MessageBoxStyle:($MessageBoxStyle) -MessageTitle:($MessageTitle) -MessageBody:($MessageBody) -TimeOutSec:($TimeOutSec)
-
 ```
 
 #### Description
