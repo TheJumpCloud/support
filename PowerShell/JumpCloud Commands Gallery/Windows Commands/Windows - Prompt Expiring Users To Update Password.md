@@ -142,47 +142,75 @@ Function Invoke-PasswordResetNotification
         # Get list of users on machine
         $ActiveUsers = (quser) -Replace ('^>', '') -Replace ('\s{2,}', ',') | ConvertFrom-Csv
         # ForEach user
-        ForEach ($ActiveUser In $ActiveUsers)
+        If ($ActiveUsers)
         {
-            $UserName = $ActiveUser.UserName
-            $SessionId = $ActiveUser.ID
-            $UserState = $ActiveUser.State
-            If ($UserState -eq 'Active')
+            ForEach ($ActiveUser In $ActiveUsers)
             {
-                # Get user info
-                $SystemUser_URL = 'https://console.jumpcloud.com/api/systemusers?fields=username email password_expiration_date&search[fields]=username&search[searchTerm]=' + $UserName
-                $SystemUser = Invoke-RestMethod -Method:('GET') -Headers:($hdrs) -Uri:($SystemUser_URL)
-                $SystemUser = $SystemUser.results | Where-Object {$_.username -eq $UserName}
-                If ($SystemUser)
+                $UserName = $ActiveUser.UserName
+                $SessionId = $ActiveUser.ID
+                $UserState = $ActiveUser.State
+                If ($UserState -eq 'Active')
                 {
-                    $Id = $SystemUser._id
-                    $UserName = $SystemUser.UserName
-                    $email = $SystemUser.email
-                    $password_expiration_date = $SystemUser.password_expiration_date
-                    #Convert dates to ToUniversalTime
-                    $TodaysDate = (Get-Date).ToUniversalTime()
-                    $password_expiration_date_Universal = Get-Date -Date:($password_expiration_date)
-                    # Get days till users password expires
-                    $TimeSpan = New-TimeSpan -Start:($TodaysDate) -End:($password_expiration_date_Universal)
-                    $DaysUntilPasswordExpire = [math]::ceiling($TimeSpan.TotalDays)
-                    # If days until password expires is less than the alert threshold
-                    If ($DaysUntilPasswordExpire -le $AlertDaysThreshold)
+                    # Get user info
+                    $SystemUser_URL = 'https://console.jumpcloud.com/api/systemusers?fields=username email password_expiration_date&search[fields]=username&search[searchTerm]=' + $UserName
+                    $SystemUser = Invoke-RestMethod -Method:('GET') -Headers:($hdrs) -Uri:($SystemUser_URL)
+                    $SystemUser = $SystemUser.results | Where-Object {$_.username -eq $UserName}
+                    If ($SystemUser)
                     {
-                        # Build confirmation action body
-                        $ConfirmationAction = {
-                            $JsonBody = '{"isSelectAll":false,"models":[{"_id":"' + $Id + '"}]}'
-                            $PasswordReset_URL = 'https://console.jumpcloud.com/api/systemusers/reactivate'
-                            $PasswordReset = Invoke-RestMethod -Method:('POST') -Headers:($hdrs) -Uri:($PasswordReset_URL) -Body:($JsonBody)
+                        $Id = $SystemUser._id
+                        $UserName = $SystemUser.UserName
+                        $email = $SystemUser.email
+                        $password_expiration_date = $SystemUser.password_expiration_date
+                        #Convert dates to ToUniversalTime
+                        $TodaysDate = (Get-Date).ToUniversalTime()
+                        if ([string]::IsNullOrEmpty($password_expiration_date)) 
+                        {
+                            Write-output ('user: "' + $UserName + '" is set to never expire.')
                         }
-                        $Response = Invoke-BroadcastMessage -SessionId:($SessionId) -MessageBoxStyle:($MessageBoxStyle) -MessageTitle:($MessageTitle) -MessageBody:($MessageBody -f $DaysUntilPasswordExpire) -ConfirmationAction:($ConfirmationAction) -TimeOutSec:($TimeOutSec)
-                        Return $Response | Where-Object {$_.ComputerName} | Select-Object ComputerName, SessionId, ResponseId, ResponseMessage, @{Name = 'UserName'; Expression = {$UserName}}, @{Name = 'password_expiration_date'; Expression = {$password_expiration_date}}
+                        else
+                        {
+                            $password_expiration_date_Universal = Get-Date -Date:($password_expiration_date)
+                            # Get days till users password expires
+                            $TimeSpan = New-TimeSpan -Start:($TodaysDate) -End:($password_expiration_date_Universal)
+                            $DaysUntilPasswordExpire = [math]::ceiling($TimeSpan.TotalDays)
+                            # If days until password expires is less than the alert threshold
+                            If ($DaysUntilPasswordExpire -le $AlertDaysThreshold)
+                            {
+                                # Build confirmation action body
+                                $ConfirmationAction = {
+                                    $JsonBody = '{"isSelectAll":false,"models":[{"_id":"' + $Id + '"}]}'
+                                    $PasswordReset_URL = 'https://console.jumpcloud.com/api/systemusers/reactivate'
+                                    $PasswordReset = Invoke-RestMethod -Method:('POST') -Headers:($hdrs) -Uri:($PasswordReset_URL) -Body:($JsonBody)
+                                }
+                                $Response = Invoke-BroadcastMessage -SessionId:($SessionId) -MessageBoxStyle:($MessageBoxStyle) -MessageTitle:($MessageTitle) -MessageBody:($MessageBody -f $DaysUntilPasswordExpire) -ConfirmationAction:($ConfirmationAction) -TimeOutSec:($TimeOutSec)
+                                Return $Response | Where-Object {$_.ComputerName} | Select-Object ComputerName, SessionId, ResponseId, ResponseMessage, @{Name = 'UserName'; Expression = {$UserName}}, @{Name = 'password_expiration_date'; Expression = {$password_expiration_date}}
+                            }
+                            else
+                            {
+                                Write-Output ("No Active JumpCloud users with expiring passwords found. See details of found users below:")
+                                Return [PSCustomObject]@{
+                                    'UserName'                 = $UserName
+                                    'password_expiration_date' = $password_expiration_date
+                                    'DaysUntilPasswordExpires' = $DaysUntilPasswordExpire
+                                    'Notification Triggered'   = 'False'
+                                }
+                            }
+                        }
+                    }
+                    Else
+                    {
+                        Write-Warning ('Unable to find user: "' + $UserName + '". Active user "' + $UserName +  '" is not a JumpCloud user')
                     }
                 }
-                Else
+                else
                 {
-                    Write-Error ('Unable to find user:' + $UserName)
+                    Write-Error ('Cannot read the state of the active user: "' + $UserState + '" Is not a valid state')
                 }
             }
+        }
+        Else
+        {
+            Write-Output ("No active users found on system")
         }
     }
     Catch
