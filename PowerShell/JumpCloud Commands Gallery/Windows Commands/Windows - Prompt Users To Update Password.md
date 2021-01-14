@@ -208,6 +208,13 @@ Function Invoke-PasswordResetNotification
 Invoke-PasswordResetNotification -JCAPIKEY:($JCAPIKEY) -MessageBoxStyle:($MessageBoxStyle) -MessageTitle:($MessageTitle) -MessageBody:($MessageBody) -TimeOutSec:($TimeOutSec)
 ```
 
+### Deprecation Note
+
+This script is deprecated for:
+ https://github.com/TheJumpCloud/support/blob/master/PowerShell/JumpCloud%20Commands%20Gallery/Windows%20Commands/Windows%20-%20Prompt%20Expiring%20Users%20To%20Update%20Password.md 
+
+This referenced script can be edited to prompt all users by adjusting the $AlertDaysThreshold variable.
+
 #### Description
 
 1. Runs "quser" command to get a list of all active sessions on the machine.
