@@ -133,7 +133,7 @@ Function Invoke-PasswordResetNotification
         # Get list of users on machine
         $ActiveUsers = (quser) -Replace ('^>', '') -Replace ('\s{2,}', ',') | ConvertFrom-Csv
         # ForEach user
-        If ($ActiveUsers) 
+        If ($ActiveUsers)
         {
             ForEach ($ActiveUser In $ActiveUsers)
             {
@@ -206,13 +206,13 @@ Function Invoke-PasswordResetNotification
                         Write-Warning ('Unable to find user: "' + $UserName + '". Active user "' + $UserName +  '" is not a JumpCloud user')
                     }
                 }
-                else 
+                else
                 {
                     Write-Error ('Cannot read the state of the active user: "' + $UserState + '" Is not a valid state')
                 }
             } 
         }
-        Else 
+        Else
         {
             Write-Output ("No active users found on system")
         }

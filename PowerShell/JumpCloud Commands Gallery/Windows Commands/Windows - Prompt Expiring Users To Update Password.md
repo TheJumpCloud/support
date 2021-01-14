@@ -142,7 +142,7 @@ Function Invoke-PasswordResetNotification
         # Get list of users on machine
         $ActiveUsers = (quser) -Replace ('^>', '') -Replace ('\s{2,}', ',') | ConvertFrom-Csv
         # ForEach user
-        If ($ActiveUsers) 
+        If ($ActiveUsers)
         {
             ForEach ($ActiveUser In $ActiveUsers)
             {
@@ -167,7 +167,7 @@ Function Invoke-PasswordResetNotification
                         {
                             Write-output ('user: "' + $UserName + '" is set to never expire.')
                         }
-                        else 
+                        else
                         {
                             $password_expiration_date_Universal = Get-Date -Date:($password_expiration_date)
                             # Get days till users password expires
@@ -185,7 +185,7 @@ Function Invoke-PasswordResetNotification
                                 $Response = Invoke-BroadcastMessage -SessionId:($SessionId) -MessageBoxStyle:($MessageBoxStyle) -MessageTitle:($MessageTitle) -MessageBody:($MessageBody -f $DaysUntilPasswordExpire) -ConfirmationAction:($ConfirmationAction) -TimeOutSec:($TimeOutSec)
                                 Return $Response | Where-Object {$_.ComputerName} | Select-Object ComputerName, SessionId, ResponseId, ResponseMessage, @{Name = 'UserName'; Expression = {$UserName}}, @{Name = 'password_expiration_date'; Expression = {$password_expiration_date}}
                             }
-                            else 
+                            else
                             {
                                 Write-Output ("No Active JumpCloud users with expiring passwords found. See details of found users below:")
                                 Return [PSCustomObject]@{

@@ -133,7 +133,7 @@ Function Invoke-PasswordResetNotification
         # Get list of users on machine
         $ActiveUsers = (quser) -Replace ('^>', '') -Replace ('\s{2,}', ',') | ConvertFrom-Csv
         # ForEach user
-        If ($ActiveUsers) 
+        If ($ActiveUsers)
         {
             ForEach ($ActiveUser In $ActiveUsers)
             {
@@ -187,7 +187,7 @@ Function Invoke-PasswordResetNotification
                 }
             }
         }
-        Else 
+        Else
         {
             Write-Output ("No active users found on system")
         }
