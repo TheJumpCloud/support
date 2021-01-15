@@ -13,33 +13,33 @@ Get-Command -Module:('PowerShellGet', 'PackageManagement') -ParameterName 'Repos
         $PSDefaultParameterValues["$($_.Name):Repository"] = $RequiredModulesRepo
     }
 }
-If ($RequiredModulesRepo -ne 'PSGallery')
-{
-    If (-not [System.String]::IsNullOrEmpty($env:SYSTEM_ACCESSTOKEN))
-    {
-        # Register PSRepository
-        If (-not (Get-PackageSource -Name:($RequiredModulesRepo) -ErrorAction SilentlyContinue))
-        {
-            $Password = $env:SYSTEM_ACCESSTOKEN | ConvertTo-SecureString -AsPlainText -Force
-            $RepositoryCredentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $env:SYSTEM_ACCESSTOKEN, $Password
-            $global:RepositoryCredentials = $RepositoryCredentials
-            Get-Command -Module:('PowerShellGet', 'PackageManagement') -ParameterName 'Credential' | ForEach-Object {
-                If ( -not $PSDefaultParameterValues.GetEnumerator() | Where-Object { $_.Key -eq "$($_.Name):Credential" -and $_.Value -eq $RepositoryCredentials })
-                {
-                    $PSDefaultParameterValues["$($_.Name):Credential"] = $RepositoryCredentials
-                }
-            }
-            Write-Host("[status]Register-PackageSource Pester '$RequiredModulesRepo'")
-            Register-PackageSource -Trusted -ProviderName:("PowerShellGet") -Name:($RequiredModulesRepo) -Location:("https://pkgs.dev.azure.com/$(($RequiredModulesRepo.Split('-'))[0])/_packaging/$($(($RequiredModulesRepo.Split('-'))[1]))/nuget/v2/")
-        }
-    }
-    Get-Command -Module:('PowerShellGet', 'PackageManagement') -ParameterName 'AllowPrerelease' | ForEach-Object {
-        If ( -not $PSDefaultParameterValues.GetEnumerator() | Where-Object { $_.Key -eq "$($_.Name):AllowPrerelease" -and $_.Value -eq $true })
-        {
-            $PSDefaultParameterValues["$($_.Name):AllowPrerelease"] = $true
-        }
-    }
-}
+# If ($RequiredModulesRepo -ne 'PSGallery')
+# {
+#     If (-not [System.String]::IsNullOrEmpty($env:SYSTEM_ACCESSTOKEN))
+#     {
+#         # Register PSRepository
+#         If (-not (Get-PackageSource -Name:($RequiredModulesRepo) -ErrorAction SilentlyContinue))
+#         {
+#             $Password = $env:SYSTEM_ACCESSTOKEN | ConvertTo-SecureString -AsPlainText -Force
+#             $RepositoryCredentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $env:SYSTEM_ACCESSTOKEN, $Password
+#             $global:RepositoryCredentials = $RepositoryCredentials
+#             Get-Command -Module:('PowerShellGet', 'PackageManagement') -ParameterName 'Credential' | ForEach-Object {
+#                 If ( -not $PSDefaultParameterValues.GetEnumerator() | Where-Object { $_.Key -eq "$($_.Name):Credential" -and $_.Value -eq $RepositoryCredentials })
+#                 {
+#                     $PSDefaultParameterValues["$($_.Name):Credential"] = $RepositoryCredentials
+#                 }
+#             }
+#             Write-Host("[status]Register-PackageSource Pester '$RequiredModulesRepo'")
+#             Register-PackageSource -Trusted -ProviderName:("PowerShellGet") -Name:($RequiredModulesRepo) -Location:("https://pkgs.dev.azure.com/$(($RequiredModulesRepo.Split('-'))[0])/_packaging/$($(($RequiredModulesRepo.Split('-'))[1]))/nuget/v2/")
+#         }
+#     }
+#     Get-Command -Module:('PowerShellGet', 'PackageManagement') -ParameterName 'AllowPrerelease' | ForEach-Object {
+#         If ( -not $PSDefaultParameterValues.GetEnumerator() | Where-Object { $_.Key -eq "$($_.Name):AllowPrerelease" -and $_.Value -eq $true })
+#         {
+#             $PSDefaultParameterValues["$($_.Name):AllowPrerelease"] = $true
+#         }
+#     }
+# }
 # Install Pester
 Install-Module -Repository:('PSGallery') -Name:('Pester') -Force
 # Get list of tags and validate that tags have been applied
