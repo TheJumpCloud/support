@@ -82,7 +82,7 @@ If ($RequiredModules)
         If ([System.String]::IsNullOrEmpty((Get-InstalledModule).Where( { $_.Name -eq $_ })))
         {
             Write-Host("[status]Installing '$_' from '$RequiredModulesRepo'")
-            Install-Module -Name:($_) -Force -Verbose
+            Install-Module -Name:($_) -Force
         }
         If (!(Get-Module -Name:($_)))
         {
