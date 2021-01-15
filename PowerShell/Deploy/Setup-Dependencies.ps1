@@ -26,7 +26,10 @@ ForEach ($DependentModule In $DependentModules)
     }
 }
 Get-Command -Module:('PowerShellGet', 'PackageManagement') -ParameterName 'Repository' | ForEach-Object {
-    $PSDefaultParameterValues["$($_.Name):Repository"] = $RequiredModulesRepo
+    If ( -not $PSDefaultParameterValues.GetEnumerator() | Where-Object { $_.Key -eq "$($_.Name):Repository" -and $_.Value -eq $RequiredModulesRepo })
+    {
+        $PSDefaultParameterValues["$($_.Name):Repository"] = $RequiredModulesRepo
+    }
 }
 If ($RequiredModulesRepo -ne 'PSGallery')
 {
@@ -35,7 +38,10 @@ If ($RequiredModulesRepo -ne 'PSGallery')
         $Password = $env:SYSTEM_ACCESSTOKEN | ConvertTo-SecureString -AsPlainText -Force
         $RepositoryCredentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $env:SYSTEM_ACCESSTOKEN, $Password
         Get-Command -Module:('PowerShellGet', 'PackageManagement') -ParameterName 'Credential' | ForEach-Object {
-            $PSDefaultParameterValues["$($_.Name):Credential"] = $RepositoryCredentials
+            If ( -not $PSDefaultParameterValues.GetEnumerator() | Where-Object { $_.Key -eq "$($_.Name):Credential" -and $_.Value -eq $RepositoryCredentials })
+            {
+                $PSDefaultParameterValues["$($_.Name):Credential"] = $RepositoryCredentials
+            }
         }
         # Register PSRepository
         If (-not (Get-PackageSource -Name:($RequiredModulesRepo) -ErrorAction SilentlyContinue))
@@ -45,7 +51,10 @@ If ($RequiredModulesRepo -ne 'PSGallery')
         }
     }
     Get-Command -Module:('PowerShellGet', 'PackageManagement') -ParameterName 'AllowPrerelease' | ForEach-Object {
-        $PSDefaultParameterValues["$($_.Name):AllowPrerelease"] = $true
+        If ( -not $PSDefaultParameterValues.GetEnumerator() | Where-Object { $_.Key -eq "$($_.Name):AllowPrerelease" -and $_.Value -eq $true })
+        {
+            $PSDefaultParameterValues["$($_.Name):AllowPrerelease"] = $true
+        }
     }
 }
 If (-not [System.String]::IsNullOrEmpty($Psd1))
