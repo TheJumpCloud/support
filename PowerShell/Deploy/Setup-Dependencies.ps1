@@ -1,3 +1,7 @@
+Param(
+    [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 0)][System.String[]]$DependentModules = ('PowerShellGet', 'PackageManagement', 'PSScriptAnalyzer', 'PlatyPS')
+    , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 1)][System.String]$RequiredModulesRepo = 'PSGallery'
+)
 # Install NuGet
 If (!(Get-PackageProvider -Name:('NuGet') -ListAvailable -ErrorAction:('SilentlyContinue')))
 {
@@ -5,7 +9,6 @@ If (!(Get-PackageProvider -Name:('NuGet') -ListAvailable -ErrorAction:('Silently
     Install-PackageProvider -Name:('NuGet') -Scope:('CurrentUser') -Force
 }
 # Install dependent modules
-$DependentModules = @('PSScriptAnalyzer', 'PlatyPS')
 ForEach ($DependentModule In $DependentModules)
 {
     Write-Host("[status]Setting up dependency '$DependentModule'")
@@ -22,47 +25,65 @@ ForEach ($DependentModule In $DependentModules)
         Import-Module -Name:($DependentModule) -Force
     }
 }
-# Register PSRepository
-$Password = $SYSTEM_ACCESSTOKEN | ConvertTo-SecureString -AsPlainText -Force
-$Credentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $SYSTEM_ACCESSTOKEN, $Password
-If (-not (Get-PackageSource -Name:('JumpCloudPowershell-Dev') -ErrorAction SilentlyContinue))
-{
-    Write-Host("[status]Register-PackageSource 'JumpCloudPowershell-Dev'")
-    Register-PackageSource -Trusted -ProviderName:("PowerShellGet") -Name:('JumpCloudPowershell-Dev') -Location:("https://pkgs.dev.azure.com/JumpCloudPowershell/_packaging/Dev/nuget/v2/") -Credential:($Credentials)
+Get-Command -Module:('PowerShellGet', 'PackageManagement') -ParameterName 'Repository' | ForEach-Object {
+    $PSDefaultParameterValues["$($_.Name):Repository"] = $RequiredModulesRepo
 }
-# Install required modules
-ForEach ($RequiredModule In $Psd1.RequiredModules)
+If ($RequiredModulesRepo -ne 'PSGallery')
 {
-    Write-Host("[status]Setting up dependency '$RequiredModule'")
-    # Check to see if the module is installed
-    If ([System.String]::IsNullOrEmpty((Get-InstalledModule).Where( { $_.Name -eq $RequiredModule })))
+    If (-not [System.String]::IsNullOrEmpty($env:SYSTEM_ACCESSTOKEN))
     {
-        Write-Host("[status]Installing '$RequiredModule' from 'JumpCloudPowershell-Dev'")
-        Install-Module -Repository:('JumpCloudPowershell-Dev') -AllowPrerelease -Force -Name:($RequiredModule) -Credential:($Credentials) -Scope:('CurrentUser')
+        $Password = $env:SYSTEM_ACCESSTOKEN | ConvertTo-SecureString -AsPlainText -Force
+        $RepositoryCredentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $env:SYSTEM_ACCESSTOKEN, $Password
+        Get-Command -Module:('PowerShellGet', 'PackageManagement') -ParameterName 'Credential' | ForEach-Object {
+            $PSDefaultParameterValues["$($_.Name):Credential"] = $RepositoryCredentials
+        }
+        # Register PSRepository
+        If (-not (Get-PackageSource -Name:($RequiredModulesRepo) -ErrorAction SilentlyContinue))
+        {
+            Write-Host("[status]Register-PackageSource '$RequiredModulesRepo'")
+            Register-PackageSource -Trusted -ProviderName:("PowerShellGet") -Name:($RequiredModulesRepo) -Location:("https://pkgs.dev.azure.com/$(($RequiredModulesRepo.Split('-'))[0])/_packaging/$($(($RequiredModulesRepo.Split('-'))[1]))/nuget/v2/")
+        }
     }
-    # Get-Module -Refresh -ListAvailable
-    If ([System.String]::IsNullOrEmpty((Get-Module).Where( { $_.Name -eq $RequiredModule })))
-    {
-        Write-Host("[status]Importing '$RequiredModule'")
-        Import-Module -Name:($RequiredModule) -Force
+    Get-Command -Module:('PowerShellGet', 'PackageManagement') -ParameterName 'AllowPrerelease' | ForEach-Object {
+        $PSDefaultParameterValues["$($_.Name):AllowPrerelease"] = $true
     }
 }
-# Load current module
-If ([System.String]::IsNullOrEmpty((Get-Module).Where( { $_.Name -eq $ModuleName })))
+If (-not [System.String]::IsNullOrEmpty($Psd1))
 {
-    Write-Host("[status]Importing '$ModuleName'")
-    Import-Module ($FilePath_psd1) -Force
-}
-# Load "Deploy" functions
-$DeployFunctions = @(Get-ChildItem -Path:($PSScriptRoot + '/Functions/*.ps1') -Recurse)
-Foreach ($DeployFunction In $DeployFunctions)
-{
-    Try
+    # Install required modules
+    ForEach ($RequiredModule In $Psd1.RequiredModules)
     {
-        . $DeployFunction.FullName
+        Write-Host("[status]Setting up dependency '$RequiredModule'")
+        # Check to see if the module is installed
+        If ([System.String]::IsNullOrEmpty((Get-InstalledModule).Where( { $_.Name -eq $RequiredModule })))
+        {
+            Write-Host("[status]Installing '$RequiredModule' from '$RequiredModulesRepo'")
+            Install-Module -Force -Name:($RequiredModule) -Scope:('CurrentUser')
+        }
+        # Get-Module -Refresh -ListAvailable
+        If ([System.String]::IsNullOrEmpty((Get-Module).Where( { $_.Name -eq $RequiredModule })))
+        {
+            Write-Host("[status]Importing '$RequiredModule'")
+            Import-Module -Name:($RequiredModule) -Force
+        }
     }
-    Catch
+    # Load current module
+    If ([System.String]::IsNullOrEmpty((Get-Module).Where( { $_.Name -eq $ModuleName })))
     {
-        Write-Error -Message:('Failed to import function: ' + $DeployFunction.FullName)
+        Write-Host("[status]Importing '$ModuleName'")
+        Import-Module ($FilePath_psd1) -Force
+    }
+    # Load "Deploy" functions
+    $DeployFunctions = @(Get-ChildItem -Path:($PSScriptRoot + '/Functions/*.ps1') -Recurse)
+    Foreach ($DeployFunction In $DeployFunctions)
+    {
+        Try
+        {
+            . $DeployFunction.FullName
+        }
+        Catch
+        {
+            Write-Error -Message:('Failed to import function: ' + $DeployFunction.FullName)
+        }
     }
 }
