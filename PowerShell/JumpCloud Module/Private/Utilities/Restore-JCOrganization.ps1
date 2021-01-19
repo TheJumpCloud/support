@@ -12,12 +12,12 @@ The function exports objects from your JumpCloud organization to local json file
 .Description
 The function exports objects from your JumpCloud organization to local json files
 .Example
-Restore UserGroups and SystemUsers with their associations
-PS C:\> Restore-JCOrganization -Path:('C:\Temp\JumpCloud_20201222T1324549196.zip') -Type:('UserGroup','SystemUsers') -Association
+Restore UserGroups and Users with their associations
+PS C:\> Restore-JCOrganization -Path:('C:\Temp\JumpCloud_20201222T1324549196.zip') -Type:('UserGroup','User') -Association
 
 .Example
-Restore UserGroups and SystemUsers without their associations
-PS C:\> Restore-JCOrganization -Path:('C:\Temp\JumpCloud_20201222T1324549196.zip') -Type:('UserGroup','SystemUsers')
+Restore UserGroups and Users without their associations
+PS C:\> Restore-JCOrganization -Path:('C:\Temp\JumpCloud_20201222T1324549196.zip') -Type:('UserGroup','User')
 
 .Example
 Restore all avalible JumpCloud objects and their Association
@@ -43,7 +43,7 @@ Function Restore-JCOrganization
         ${All},
 
         [Parameter(ParameterSetName = 'Type')]
-        [ValidateSet('SystemGroup', 'UserGroup', 'SystemUser')]
+        [ValidateSet('SystemGroup', 'UserGroup', 'User')]
         [System.String[]]
         # Specify the type of JumpCloud objects you want to backup
         ${Type},
@@ -80,7 +80,7 @@ Function Restore-JCOrganization
             RadiusServer = 'radius_server';
             System       = 'system';
             SystemGroup  = 'system_group';
-            SystemUser   = 'user';
+            User         = 'user';
             UserGroup    = 'user_group';
         }
         # Get the manifest file from backup
@@ -122,7 +122,7 @@ Function Restore-JCOrganization
                     $RestoreFileContent | ForEach-Object {
                         $CommandType = Invoke-Expression -Command:("[$($_.JcSdkModel)]")
                         $RestoreFileRecord = $CommandType::DeserializeFromPSObject($_)
-                        # If SystemUser is managed by third-party dont create or update
+                        # If User is managed by third-party dont create or update
                         If (-not $RestoreFileRecord.ExternallyManaged)
                         {
                             $CommandResult = If ( $RestoreFileRecord.id -notin $ExistingIds )

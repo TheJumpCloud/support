@@ -10,12 +10,12 @@ Backup all available JumpCloud objects and their associations
 PS C:\> Backup-JCOrganization -Path:('C:\Temp') -All
 
 .Example
-Backup UserGroups and SystemUsers with their associations
-PS C:\> Backup-JCOrganization -Path:('C:\Temp') -Type:('UserGroup','SystemUsers') -Association
+Backup UserGroups and Users with their associations
+PS C:\> Backup-JCOrganization -Path:('C:\Temp') -Type:('UserGroup','User') -Association
 
 .Example
-Backup UserGroups and SystemUsers without their associations
-PS C:\> Backup-JCOrganization -Path:('C:\Temp') -Type:('UserGroup','SystemUsers')
+Backup UserGroups and Users without their associations
+PS C:\> Backup-JCOrganization -Path:('C:\Temp') -Type:('UserGroup','User')
 
 .Link
 https://github.com/TheJumpCloud/support/tree/master/PowerShell/JumpCloud%20Module/Docs/Backup-JCOrganization.md
@@ -36,7 +36,7 @@ Function Backup-JCOrganization
         ${All},
 
         [Parameter(ParameterSetName = 'Type')]
-        [ValidateSet('ActiveDirectory', 'AppleMdm', 'Application', 'AuthenticationPolicy', 'Command', 'Directory', 'Group', 'GSuite', 'IPList', 'LdapServer', 'Office365', 'Organization', 'Policy', 'RadiusServer', 'SoftwareApp', 'System', 'SystemGroup', 'SystemUser', 'UserGroup')]
+        [ValidateSet('ActiveDirectory', 'AppleMdm', 'Application', 'AuthenticationPolicy', 'Command', 'Directory', 'Group', 'GSuite', 'IPList', 'LdapServer', 'Office365', 'Organization', 'Policy', 'RadiusServer', 'SoftwareApp', 'System', 'SystemGroup', 'User', 'UserGroup')]
         [System.String[]]
         # Specify the type of JumpCloud objects you want to backup
         ${Type},
@@ -94,7 +94,7 @@ Function Backup-JCOrganization
             SoftwareApp          = [PSCustomObject]@{Name = 'software_app'; AssociationTargets = @( 'system', 'system_group'); };
             System               = [PSCustomObject]@{Name = 'system'; AssociationTargets = @( 'command', 'policy', 'system_group', 'user', 'user_group'); };
             SystemGroup          = [PSCustomObject]@{Name = 'system_group'; AssociationTargets = @( 'command', 'policy', 'system', 'user', 'user_group'); };
-            SystemUser           = [PSCustomObject]@{Name = 'user'; AssociationTargets = @('active_directory', 'application', 'g_suite', 'ldap_server', 'office_365', 'radius_server', 'system', 'system_group', 'user_group'); };
+            User                 = [PSCustomObject]@{Name = 'user'; AssociationTargets = @('active_directory', 'application', 'g_suite', 'ldap_server', 'office_365', 'radius_server', 'system', 'system_group', 'user_group'); };
             UserGroup            = [PSCustomObject]@{Name = 'user_group'; AssociationTargets = @('active_directory', 'application', 'g_suite', 'ldap_server', 'office_365', 'radius_server', 'system', 'system_group', 'user'); };
         }
     }
@@ -182,10 +182,10 @@ Function Backup-JCOrganization
                                 {
                                     # Build Command based upon source and target combinations
                                     # *Group commands take "GroupId" as a parameter vs "{Type}Id"
-                                    # SystemUsers associations is called Get-JcSdkUserAssociation and Get-JcSdkUserMember
+                                    # User associations is called Get-JcSdkUserAssociation and Get-JcSdkUserMember
                                     If (($SourceTypeMap.Value.Name -eq 'system' -and $TargetTypeMap.Value.Name -eq 'system_group') -or ($SourceTypeMap.Value.Name -eq 'user' -and $TargetTypeMap.Value.Name -eq 'user_group'))
                                     {
-                                        $Command = 'Get-JcSdk{0}Member -{1}Id:("{2}")' -f $SourceTypeMap.Key.Replace('SystemUser', 'User'), $SourceTypeMap.Key.Replace('UserGroup', 'Group').Replace('SystemGroup', 'Group').Replace('SystemUser', 'User'), $BackupRecord.id
+                                        $Command = 'Get-JcSdk{0}Member -{1}Id:("{2}")' -f $SourceTypeMap.Key, $SourceTypeMap.Key.Replace('UserGroup', 'Group').Replace('SystemGroup', 'Group'), $BackupRecord.id
                                         Write-Debug ("Running: $Command")
                                         $AssociationResult = Invoke-Expression -Command:($Command)
                                         If (-not [System.String]::IsNullOrEmpty($AssociationResult))
@@ -233,7 +233,7 @@ Function Backup-JCOrganization
                                     }
                                     Else
                                     {
-                                        $Command = 'Get-JcSdk{0}Association -{1}Id:("{2}") -Targets:("{3}")' -f $SourceTypeMap.Key.Replace('SystemUser', 'User'), $SourceTypeMap.Key.Replace('UserGroup', 'Group').Replace('SystemGroup', 'Group').Replace('SystemUser', 'User'), $BackupRecord.id, $TargetTypeMap.Value.Name
+                                        $Command = 'Get-JcSdk{0}Association -{1}Id:("{2}") -Targets:("{3}")' -f $SourceTypeMap.Key, $SourceTypeMap.Key.Replace('UserGroup', 'Group').Replace('SystemGroup', 'Group'), $BackupRecord.id, $TargetTypeMap.Value.Name
                                         Write-Debug ("Running: $Command")
                                         $AssociationResult = Invoke-Expression -Command:($Command)
                                         If (-not [System.String]::IsNullOrEmpty($AssociationResult))
