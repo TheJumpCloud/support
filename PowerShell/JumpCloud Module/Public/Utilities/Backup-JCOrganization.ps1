@@ -289,10 +289,16 @@ Function Backup-JCOrganization
             Write-Host ("Backup Success: $($ArchivePath)") -ForegroundColor:('Green')
             Write-Host("Backup-JCOrganization Results:") -ForegroundColor:('Green')
             $ObjectJobResults | ForEach-Object {
-                Write-Host ("$($_.Type): $($_.Results.Count)") -ForegroundColor:('Magenta')
+                If ($_.Type)
+                {
+                    Write-Host ("$($_.Type): $($_.Results.Count)") -ForegroundColor:('Magenta')
+                }
             }
             $AssociationResults | ForEach-Object {
-                Write-Host ("$($_.Type): $($_.Results.Count)") -ForegroundColor:('Magenta')
+                If ($_.Type)
+                {
+                    Write-Host ("$($_.Type): $($_.Results.Count)") -ForegroundColor:('Magenta')
+                }
             }
         }
         $TimerTotal.Stop()
