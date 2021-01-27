@@ -44,7 +44,12 @@ Function Backup-JCOrganization
         [Parameter(ParameterSetName = 'Type')]
         [switch]
         # Specify to backup association data
-        ${Association}
+        ${Association},
+
+        [ValidateSet('json', 'csv')]
+        [System.String]
+        # The format of the output files
+        ${Format} = 'json'
     )
     Begin
     {
@@ -106,7 +111,7 @@ Function Backup-JCOrganization
         ForEach ($JumpCloudType In $Types)
         {
             $SourceTypeMap = $JcTypesMap.GetEnumerator() | Where-Object { $_.Key -eq $JumpCloudType }
-            $ObjectJobs += Start-Job -ScriptBlock:( { Param ($TempPath, $SourceTypeMap);
+            $ObjectJobs += Start-Job -ScriptBlock:( { Param ($TempPath, $SourceTypeMap, $Format);
                     # Logic to handle directories
                     $Command = If ($SourceTypeMap.Key -eq 'GSuite')
                     {
@@ -134,8 +139,31 @@ Function Backup-JCOrganization
                     $Result = Invoke-Expression -Command:($Command)
                     If (-not [System.String]::IsNullOrEmpty($Result))
                     {
+                        $ObjectFileName = "{0}.{1}" -f $SourceTypeMap.Key, $Format
+                        $ObjectFullName = "{0}/{1}" -f $TempPath, $ObjectFileName
                         # Write output to file
-                        $Result | ConvertTo-Json -Depth:(100) | Out-File -FilePath:("{0}/{1}.json" -f $TempPath, $SourceTypeMap.Key) -Force
+                        If ($Format -eq 'json')
+                        {
+                            $Result | ConvertTo-Json -Depth:(100) | Out-File -FilePath:($ObjectFullName) -Force
+                        }
+                        ElseIf ($Format -eq 'csv')
+                        {
+                            # Convert object properties of objects to compressed json strings
+                            $Result | ForEach-Object {
+                                $NewRecord = [PSCustomObject]@{}
+                                $_.PSObject.Properties | ForEach-Object {
+                                    If ($_.TypeNameOfValue -like '*.Models.*' -or $_.TypeNameOfValue -like '*Object*' -or $_.TypeNameOfValue -like '*Array*')
+                                    {
+                                        Add-Member -InputObject:($NewRecord) -MemberType:('NoteProperty') -Name:($_.Name) -Value:($_.Value | ConvertTo-Json -Depth:(100) -Compress)
+                                    }
+                                    Else
+                                    {
+                                        Add-Member -InputObject:($NewRecord) -MemberType:('NoteProperty') -Name:($_.Name) -Value:($_.Value)
+                                    }
+                                }
+                                Return $NewRecord
+                            } | Export-Csv -NoTypeInformation -Path:($ObjectFullName) -Force
+                        }
                         # TODO: Potential use for restore function
                         #| ForEach-Object { $_ | Select-Object *, @{Name = 'JcSdkModel'; Expression = { $_.GetType().FullName } } } `
                         # Build object to return data
@@ -146,7 +174,7 @@ Function Backup-JCOrganization
                         }
                         Return $OutputObject
                     }
-                }) -ArgumentList:($TempPath, $SourceTypeMap)
+                }) -ArgumentList:($TempPath, $SourceTypeMap, $Format)
         }
         $ObjectJobStatus = Wait-Job -Id:($ObjectJobs.Id)
         $ObjectJobResults = $ObjectJobStatus | Receive-Job
@@ -174,7 +202,7 @@ Function Backup-JCOrganization
                     # If the valid target type matches a file name look up the associations for the SourceType and TargetType
                     If ($TargetTypeMap.Key -in $BackupFiles.BaseName)
                     {
-                        $AssociationJobs += Start-Job -ScriptBlock:( { Param ($SourceTypeMap, $TargetTypeMap, $TempPath, $BackupFile);
+                        $AssociationJobs += Start-Job -ScriptBlock:( { Param ($SourceTypeMap, $TargetTypeMap, $TempPath, $BackupFile, $Format);
                                 $AssociationResults = @()
                                 # Get content from the file
                                 $BackupRecords = Get-Content -Path:($BackupFile.FullName) | ConvertFrom-Json
@@ -256,17 +284,39 @@ Function Backup-JCOrganization
                                 }
                                 If (-not [System.String]::IsNullOrEmpty($AssociationResults))
                                 {
-                                    $AssociationFileName = "Association-{0}To{1}" -f $SourceTypeMap.Key, $TargetTypeMap.Key
-                                    $AssociationResults | ConvertTo-Json -Depth:(100) | Out-File -FilePath:("{0}/{1}.json" -f $TempPath, $AssociationFileName) -Force
+                                    $AssociationFileName = "Association-{0}To{1}.{2}" -f $SourceTypeMap.Key, $TargetTypeMap.Key, $Format
+                                    $AssociationFullName = "{0}/{1}" -f $TempPath, $AssociationFileName
+                                    If ($Format -eq 'json')
+                                    {
+                                        $AssociationResults | ConvertTo-Json -Depth:(100) | Out-File -FilePath:($AssociationFullName) -Force
+                                    }
+                                    ElseIf ($Format -eq 'csv')
+                                    {
+                                        # Convert object properties of objects to compressed json strings
+                                        $AssociationResults | ForEach-Object {
+                                            $NewRecord = [PSCustomObject]@{}
+                                            $_.PSObject.Properties | ForEach-Object {
+                                                If ($_.TypeNameOfValue -like '*.Models.*' -or $_.TypeNameOfValue -like '*Object*' -or $_.TypeNameOfValue -like '*Array*')
+                                                {
+                                                    Add-Member -InputObject:($NewRecord) -MemberType:('NoteProperty') -Name:($_.Name) -Value:($_.Value | ConvertTo-Json -Depth:(100) -Compress)
+                                                }
+                                                Else
+                                                {
+                                                    Add-Member -InputObject:($NewRecord) -MemberType:('NoteProperty') -Name:($_.Name) -Value:($_.Value)
+                                                }
+                                            }
+                                            Return $NewRecord
+                                        } | Export-Csv -NoTypeInformation -Path:($AssociationFullName) -Force
+                                    }
                                     # Build object to return data
                                     $OutputObject = @{
                                         Results = $AssociationResults
                                         Type    = $AssociationFileName
-                                        Path    = "./$($AssociationFileName).json"
+                                        Path    = "./$($AssociationFileName)"
                                     }
                                     Return $OutputObject
                                 }
-                            }) -ArgumentList:($SourceTypeMap, $TargetTypeMap, $TempPath, $BackupFile)
+                            }) -ArgumentList:($SourceTypeMap, $TargetTypeMap, $TempPath, $BackupFile, $Format)
                     }
                 }
             }
