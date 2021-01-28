@@ -164,13 +164,17 @@ Function Backup-JCOrganization
                                 Return $NewRecord
                             } | Export-Csv -NoTypeInformation -Path:($ObjectFullName) -Force
                         }
+                        Else
+                        {
+                            Write-Error ("Unknown format: $Format")
+                        }
                         # TODO: Potential use for restore function
                         #| ForEach-Object { $_ | Select-Object *, @{Name = 'JcSdkModel'; Expression = { $_.GetType().FullName } } } `
                         # Build object to return data
                         $OutputObject = @{
                             Results = $Result
-                            Type    = $SourceTypeMap.Key
-                            Path    = "./$($SourceTypeMap.Key).json"
+                            Type    = $ObjectFileName
+                            Path    = "./$($ObjectFullName)"
                         }
                         Return $OutputObject
                     }
@@ -205,7 +209,18 @@ Function Backup-JCOrganization
                         $AssociationJobs += Start-Job -ScriptBlock:( { Param ($SourceTypeMap, $TargetTypeMap, $TempPath, $BackupFile, $Format);
                                 $AssociationResults = @()
                                 # Get content from the file
-                                $BackupRecords = Get-Content -Path:($BackupFile.FullName) | ConvertFrom-Json
+                                $BackupRecords = If ($Format -eq 'json')
+                                {
+                                    Get-Content -Path:($BackupFile.FullName) | ConvertFrom-Json
+                                }
+                                ElseIf ($Format -eq 'csv')
+                                {
+                                    Import-Csv -Path:($BackupFile.FullName)
+                                }
+                                Else
+                                {
+                                    Write-Error ("Unknown format: $Format")
+                                }
                                 ForEach ($BackupRecord In $BackupRecords)
                                 {
                                     # Build Command based upon source and target combinations
@@ -308,6 +323,10 @@ Function Backup-JCOrganization
                                             Return $NewRecord
                                         } | Export-Csv -NoTypeInformation -Path:($AssociationFullName) -Force
                                     }
+                                    Else
+                                    {
+                                        Write-Error ("Unknown format: $Format")
+                                    }
                                     # Build object to return data
                                     $OutputObject = @{
                                         Results = $AssociationResults
@@ -320,8 +339,8 @@ Function Backup-JCOrganization
                     }
                 }
             }
-            $AssociationJobsStatus = Wait-Job -Id:($AssociationJobs.Id)
-            $AssociationResults = $AssociationJobsStatus | Receive-Job
+            $AssociationJobStatus = Wait-Job -Id:($AssociationJobs.Id)
+            $AssociationResults = $AssociationJobStatus | Receive-Job
             $manifest.associationFiles += $AssociationResults | Select-Object -ExcludeProperty:('Results')
             $TimerAssociations.Stop()
         }
