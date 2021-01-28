@@ -31,7 +31,7 @@ Function Backup-JCOrganization
         ${Path},
 
         [Parameter(ParameterSetName = 'All')]
-        [switch]
+        [System.Management.Automation.SwitchParameter]
         # Specify to backup all available types and associations
         ${All},
 
@@ -42,14 +42,20 @@ Function Backup-JCOrganization
         ${Type},
 
         [Parameter(ParameterSetName = 'Type')]
-        [switch]
+        [System.Management.Automation.SwitchParameter]
         # Specify to backup association data
         ${Association},
 
+        [Parameter()]
         [ValidateSet('json', 'csv')]
         [System.String]
         # The format of the output files
-        ${Format} = 'json'
+        ${Format} = 'json',
+
+        [Parameter()]
+        [System.Management.Automation.SwitchParameter]
+        # Returns object records when true
+        ${PassThru}
     )
     Begin
     {
@@ -139,8 +145,8 @@ Function Backup-JCOrganization
                     $Result = Invoke-Expression -Command:($Command)
                     If (-not [System.String]::IsNullOrEmpty($Result))
                     {
-                        $ObjectFileName = "{0}.{1}" -f $SourceTypeMap.Key, $Format
-                        $ObjectFullName = "{0}/{1}" -f $TempPath, $ObjectFileName
+                        $ObjectFileName = "{0}" -f $SourceTypeMap.Key
+                        $ObjectFullName = "{0}/{1}.{2}" -f $TempPath, $ObjectFileName, $Format
                         # Write output to file
                         If ($Format -eq 'json')
                         {
@@ -171,14 +177,14 @@ Function Backup-JCOrganization
                         # TODO: Potential use for restore function
                         #| ForEach-Object { $_ | Select-Object *, @{Name = 'JcSdkModel'; Expression = { $_.GetType().FullName } } } `
                         # Build object to return data
-                        $OutputObject = @{
+                        $OutputObject = [PSCustomObject]@{
                             Results = $Result
                             Type    = $ObjectFileName
                             Path    = "./$($ObjectFullName)"
                         }
                         Return $OutputObject
                     }
-                }) -ArgumentList:($TempPath, $SourceTypeMap, $Format)
+                }) -ArgumentList:($TempPath, $SourceTypeMap, $PSBoundParameters.Format)
         }
         $ObjectJobStatus = Wait-Job -Id:($ObjectJobs.Id)
         $ObjectJobResults = $ObjectJobStatus | Receive-Job
@@ -299,8 +305,8 @@ Function Backup-JCOrganization
                                 }
                                 If (-not [System.String]::IsNullOrEmpty($AssociationResults))
                                 {
-                                    $AssociationFileName = "Association-{0}To{1}.{2}" -f $SourceTypeMap.Key, $TargetTypeMap.Key, $Format
-                                    $AssociationFullName = "{0}/{1}" -f $TempPath, $AssociationFileName
+                                    $AssociationFileName = "Association-{0}To{1}" -f $SourceTypeMap.Key, $TargetTypeMap.Key
+                                    $AssociationFullName = "{0}/{1}.{2}" -f $TempPath, $AssociationFileName, $Format
                                     If ($Format -eq 'json')
                                     {
                                         $AssociationResults | ConvertTo-Json -Depth:(100) | Out-File -FilePath:($AssociationFullName) -Force
@@ -328,20 +334,25 @@ Function Backup-JCOrganization
                                         Write-Error ("Unknown format: $Format")
                                     }
                                     # Build object to return data
-                                    $OutputObject = @{
+                                    $OutputObject = [PSCustomObject]@{
                                         Results = $AssociationResults
                                         Type    = $AssociationFileName
                                         Path    = "./$($AssociationFileName)"
                                     }
                                     Return $OutputObject
                                 }
-                            }) -ArgumentList:($SourceTypeMap, $TargetTypeMap, $TempPath, $BackupFile, $Format)
+                            }) -ArgumentList:($SourceTypeMap, $TargetTypeMap, $TempPath, $BackupFile, $PSBoundParameters.Format)
                     }
                 }
             }
-            $AssociationJobStatus = Wait-Job -Id:($AssociationJobs.Id)
-            $AssociationResults = $AssociationJobStatus | Receive-Job
-            $manifest.associationFiles += $AssociationResults | Select-Object -ExcludeProperty:('Results')
+            If ($AssociationJobs)
+            {
+                $AssociationJobStatus = Wait-Job -Id:($AssociationJobs.Id)
+                $AssociationResults = $AssociationJobStatus | Receive-Job
+                # Add the results of associations to object results
+                $AssociationResults | ForEach-Object { $ObjectJobResults += $_ }
+                $manifest.associationFiles += $AssociationResults | Select-Object -ExcludeProperty:('Results')
+            }
             $TimerAssociations.Stop()
         }
     }
@@ -363,16 +374,14 @@ Function Backup-JCOrganization
                     Write-Host ("$($_.Type): $($_.Results.Count)") -ForegroundColor:('Magenta')
                 }
             }
-            $AssociationResults | ForEach-Object {
-                If ($_.Type)
-                {
-                    Write-Host ("$($_.Type): $($_.Results.Count)") -ForegroundColor:('Magenta')
-                }
-            }
         }
         $TimerTotal.Stop()
         If ($TimerObject) { Write-Debug ("Object Run Time: $($TimerObject.Elapsed)") }
         If ($TimerAssociations) { Write-Debug ("Association Run Time: $($TimerAssociations.Elapsed)") }
         If ($TimerTotal) { Write-Debug ("Total Run Time: $($TimerTotal.Elapsed)") }
+        If ($PSBoundParameters.PassThru)
+        {
+            Return $ObjectJobResults | Select-Object -ExcludeProperty:('RunspaceId')
+        }
     }
 }
