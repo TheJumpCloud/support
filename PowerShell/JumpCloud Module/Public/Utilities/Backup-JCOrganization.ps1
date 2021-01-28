@@ -64,6 +64,7 @@ Function Backup-JCOrganization
         $ChildPath = "JumpCloud_$($Date)"
         $TempPath = Join-Path -Path:($PSBoundParameters.Path) -ChildPath:($ChildPath)
         $ArchivePath = Join-Path -Path:($PSBoundParameters.Path) -ChildPath:("$($ChildPath).zip")
+        $OutputHash = @{}
         $Manifest = @{
             date             = $Date;
             organizationID   = $env:JCOrgId;
@@ -74,7 +75,7 @@ Function Backup-JCOrganization
         # If the backup directory does not exist, create it
         If (-not (Test-Path $TempPath))
         {
-            New-Item -Path:($TempPath) -Name:$($TempPath.BaseName) -ItemType:('directory')
+            New-Item -Path:($TempPath) -Name:$($TempPath.BaseName) -ItemType:('directory') | Out-Null
         }
         # When -All is provided use all type options and Association
         $Types = If ($PSCmdlet.ParameterSetName -eq 'All')
@@ -176,18 +177,23 @@ Function Backup-JCOrganization
                         }
                         # TODO: Potential use for restore function
                         #| ForEach-Object { $_ | Select-Object *, @{Name = 'JcSdkModel'; Expression = { $_.GetType().FullName } } } `
-                        # Build object to return data
-                        $OutputObject = [PSCustomObject]@{
-                            Results = $Result
-                            Type    = $ObjectFileName
-                            Path    = "./$($ObjectFullName)"
-                        }
+                        # Build hash to return data
+                        $OutputObject = @{$ObjectFileName = $Result }
                         Return $OutputObject
                     }
                 }) -ArgumentList:($TempPath, $SourceTypeMap, $PSBoundParameters.Format)
         }
         $ObjectJobStatus = Wait-Job -Id:($ObjectJobs.Id)
         $ObjectJobResults = $ObjectJobStatus | Receive-Job
+        If ($PSBoundParameters.PassThru)
+        {
+            # Add the results of objects to outputhash results
+            $ObjectJobResults | ForEach-Object {
+                $_.GetEnumerator() | ForEach-Object {
+                    $OutputHash.Add($_.Key, $_.Value)
+                }
+            }
+        }
         $manifest.backupFiles += $ObjectJobResults | Select-Object -ExcludeProperty:('Results')
         $TimerObject.Stop()
         # Foreach type start a new job and retrieve object association records
@@ -333,12 +339,8 @@ Function Backup-JCOrganization
                                     {
                                         Write-Error ("Unknown format: $Format")
                                     }
-                                    # Build object to return data
-                                    $OutputObject = [PSCustomObject]@{
-                                        Results = $AssociationResults
-                                        Type    = $AssociationFileName
-                                        Path    = "./$($AssociationFileName)"
-                                    }
+                                    # Build hash to return data
+                                    $OutputObject = @{$AssociationFileName = $AssociationResults }
                                     Return $OutputObject
                                 }
                             }) -ArgumentList:($SourceTypeMap, $TargetTypeMap, $TempPath, $BackupFile, $PSBoundParameters.Format)
@@ -349,8 +351,15 @@ Function Backup-JCOrganization
             {
                 $AssociationJobStatus = Wait-Job -Id:($AssociationJobs.Id)
                 $AssociationResults = $AssociationJobStatus | Receive-Job
-                # Add the results of associations to object results
-                $AssociationResults | ForEach-Object { $ObjectJobResults += $_ }
+                If ($PSBoundParameters.PassThru)
+                {
+                    # Add the results of associations to outputhash results
+                    $AssociationResults | ForEach-Object {
+                        $_.GetEnumerator() | ForEach-Object {
+                            $OutputHash.Add($_.Key, $_.Value)
+                        }
+                    }
+                }
                 $manifest.associationFiles += $AssociationResults | Select-Object -ExcludeProperty:('Results')
             }
             $TimerAssociations.Stop()
@@ -381,7 +390,7 @@ Function Backup-JCOrganization
         If ($TimerTotal) { Write-Debug ("Total Run Time: $($TimerTotal.Elapsed)") }
         If ($PSBoundParameters.PassThru)
         {
-            Return $ObjectJobResults | Select-Object -ExcludeProperty:('RunspaceId')
+            Return $OutputHash
         }
     }
 }
