@@ -152,7 +152,7 @@ Function Backup-JCOrganization
                             $Result | ForEach-Object {
                                 $NewRecord = [PSCustomObject]@{}
                                 $_.PSObject.Properties | ForEach-Object {
-                                    If ($_.TypeNameOfValue -like '*.Models.*' -or $_.TypeNameOfValue -like '*Object*' -or $_.TypeNameOfValue -like '*Array*')
+                                    If ($_.TypeNameOfValue -like '*.Models.*' -or $_.TypeNameOfValue -like '*Object*' -or $_.TypeNameOfValue -like '*String`[`]*')
                                     {
                                         Add-Member -InputObject:($NewRecord) -MemberType:('NoteProperty') -Name:($_.Name) -Value:($_.Value | ConvertTo-Json -Depth:(100) -Compress)
                                     }
@@ -311,7 +311,7 @@ Function Backup-JCOrganization
                                         $AssociationResults | ForEach-Object {
                                             $NewRecord = [PSCustomObject]@{}
                                             $_.PSObject.Properties | ForEach-Object {
-                                                If ($_.TypeNameOfValue -like '*.Models.*' -or $_.TypeNameOfValue -like '*Object*' -or $_.TypeNameOfValue -like '*Array*')
+                                                If ($_.TypeNameOfValue -like '*.Models.*' -or $_.TypeNameOfValue -like '*Object*' -or $_.TypeNameOfValue -like '*String`[`]*')
                                                 {
                                                     Add-Member -InputObject:($NewRecord) -MemberType:('NoteProperty') -Name:($_.Name) -Value:($_.Value | ConvertTo-Json -Depth:(100) -Compress)
                                                 }
