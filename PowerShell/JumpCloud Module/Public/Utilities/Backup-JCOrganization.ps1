@@ -65,12 +65,6 @@ Function Backup-JCOrganization
         $TempPath = Join-Path -Path:($PSBoundParameters.Path) -ChildPath:($ChildPath)
         $ArchivePath = Join-Path -Path:($PSBoundParameters.Path) -ChildPath:("$($ChildPath).zip")
         $OutputHash = @{}
-        $Manifest = @{
-            date           = $Date;
-            organizationId = $env:JCOrgId;
-            backupFiles    = @();
-            moduleVersion  = @(Get-Module JumpCloud* -ListAvailable | Select-Object Name, Version);
-        }
         # If the backup directory does not exist, create it
         If (-not (Test-Path $TempPath))
         {
@@ -120,7 +114,7 @@ Function Backup-JCOrganization
             $ObjectBaseName = "{0}" -f $SourceTypeMap.Key
             $ObjectFileName = "{0}.{1}" -f $ObjectBaseName, $PSBoundParameters.Format
             $ObjectFullName = "{0}/{1}" -f $TempPath, $ObjectFileName
-            $ObjectJobs += Start-Job -ScriptBlock:( { Param ($SourceTypeMap, $ObjectFileName, $ObjectFullName, $Format, $Debug);
+            $ObjectJobs += Start-Job -ScriptBlock:( { Param ($SourceTypeMap, $ObjectBaseName, $ObjectFileName, $ObjectFullName, $Format, $Debug);
                     # Logic to handle directories
                     $Command = If ($SourceTypeMap.Key -eq 'GSuite')
                     {
@@ -172,22 +166,18 @@ Function Backup-JCOrganization
                         # TODO: Potential use for restore function
                         #| ForEach-Object { $_ | Select-Object *, @{Name = 'JcSdkModel'; Expression = { $_.GetType().FullName } } } `
                         # Build hash to return data
-                        Return @{$ObjectFileName = $Result }
+                        Return @{$ObjectBaseName = $Result }
                     }
-                }) -ArgumentList:($SourceTypeMap, $ObjectFileName, $ObjectFullName, $PSBoundParameters.Format, $PSBoundParameters.Debug)
+                }) -ArgumentList:($SourceTypeMap, $ObjectBaseName, $ObjectFileName, $ObjectFullName, $PSBoundParameters.Format, $PSBoundParameters.Debug)
         }
         $ObjectJobStatus = Wait-Job -Id:($ObjectJobs.Id)
         $ObjectJobResults = $ObjectJobStatus | Receive-Job
-        If ($PSBoundParameters.PassThru)
-        {
-            # Add the results of objects to outputhash results
-            $ObjectJobResults | ForEach-Object {
-                $_.GetEnumerator() | ForEach-Object {
-                    $OutputHash.Add($_.Key, $_.Value)
-                }
+        # Add the results of objects to outputhash results
+        $ObjectJobResults | ForEach-Object {
+            $_.GetEnumerator() | ForEach-Object {
+                $OutputHash.Add($_.Key, $_.Value)
             }
         }
-        $manifest.backupFiles += ("./$($ObjectFileName)")
         $TimerObject.Stop()
         # Foreach type start a new job and retrieve object association records
         If ($PSBoundParameters.Association)
@@ -215,7 +205,7 @@ Function Backup-JCOrganization
                         $AssociationBaseName = "Association-{0}To{1}" -f $SourceTypeMap.Key, $TargetTypeMap.Key
                         $AssociationFileName = "{0}.{1}" -f $AssociationBaseName, $PSBoundParameters.Format
                         $AssociationFullName = "{0}/{1}" -f $TempPath, $AssociationFileName
-                        $AssociationJobs += Start-Job -ScriptBlock:( { Param ($SourceTypeMap, $TargetTypeMap, $BackupFile, $AssociationFileName, $AssociationFullName, $Format, $Debug);
+                        $AssociationJobs += Start-Job -ScriptBlock:( { Param ($SourceTypeMap, $TargetTypeMap, $BackupFile, $AssociationBaseName, $AssociationFileName, $AssociationFullName, $Format, $Debug);
                                 $AssociationResults = @()
                                 # Get content from the file
                                 $BackupRecords = If ($Format -eq 'json')
@@ -335,10 +325,9 @@ Function Backup-JCOrganization
                                         Write-Error ("Unknown format: $Format")
                                     }
                                     # Build hash to return data
-                                    Return @{$AssociationFileName = $AssociationResults }
+                                    Return @{$AssociationBaseName = $AssociationResults }
                                 }
-                            }) -ArgumentList:($SourceTypeMap, $TargetTypeMap, $BackupFile, $AssociationFileName, $AssociationFullName, $PSBoundParameters.Format, $PSBoundParameters.Debug)
-                        $manifest.backupFiles += ("./$($AssociationFileName)")
+                            }) -ArgumentList:($SourceTypeMap, $TargetTypeMap, $BackupFile, $AssociationBaseName, $AssociationFileName, $AssociationFullName, $PSBoundParameters.Format, $PSBoundParameters.Debug)
                     }
                 }
             }
@@ -346,13 +335,10 @@ Function Backup-JCOrganization
             {
                 $AssociationJobStatus = Wait-Job -Id:($AssociationJobs.Id)
                 $AssociationResults = $AssociationJobStatus | Receive-Job
-                If ($PSBoundParameters.PassThru)
-                {
-                    # Add the results of associations to outputhash results
-                    $AssociationResults | ForEach-Object {
-                        $_.GetEnumerator() | ForEach-Object {
-                            $OutputHash.Add($_.Key, $_.Value)
-                        }
+                # Add the results of associations to outputhash results
+                $AssociationResults | ForEach-Object {
+                    $_.GetEnumerator() | ForEach-Object {
+                        $OutputHash.Add($_.Key, $_.Value)
                     }
                 }
             }
@@ -362,7 +348,17 @@ Function Backup-JCOrganization
     End
     {
         # Write Out Manifest
-        $Manifest | ConvertTo-Json -Depth:(100) | Out-File -FilePath:("$($TempPath)/BackupManifest.json") -Force
+        @{
+            date           = $Date;
+            organizationId = $env:JCOrgId;
+            moduleVersion  = @(Get-Module -Name:('JumpCloud*') -ListAvailable | Select-Object Name, Version);
+            result         = Get-ChildItem -Path:($TempPath) | ForEach-Object {
+                [PSCustomObject]@{
+                    Type  = $_.BaseName
+                    Count = $OutputHash.Item($_.BaseName).Count
+                }
+            }
+        } | ConvertTo-Json -Depth:(100) | Out-File -FilePath:("$($TempPath)/BackupManifest.json") -Force
         # Zip results
         Compress-Archive -Path:($TempPath) -CompressionLevel:('Fastest') -Destination:($ArchivePath)
         # Clean up temp directory
