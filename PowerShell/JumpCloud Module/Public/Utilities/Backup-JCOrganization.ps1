@@ -118,21 +118,15 @@ Function Backup-JCOrganization
         ForEach ($JumpCloudType In $Types)
         {
             $SourceTypeMap = $JcTypesMap.GetEnumerator() | Where-Object { $_.Key -eq $JumpCloudType }
-            $ObjectJobs += Start-Job -ScriptBlock:( { Param ($TempPath, $SourceTypeMap, $Format);
+            $ObjectJobs += Start-Job -ScriptBlock:( { Param ($TempPath, $SourceTypeMap, $Format, $Debug);
                     # Logic to handle directories
                     $Command = If ($SourceTypeMap.Key -eq 'GSuite')
                     {
-                        $DirectoryCommand = "Get-JcSdkDirectory | Where-Object { `$_.Type -eq '$($SourceTypeMap.Value.Name)' }"
-                        Write-Debug ("Running: $DirectoryCommand")
-                        $Directory = Invoke-Expression -Command:($DirectoryCommand)
-                        "Get-JcSdk{0} -Id:('{1}')" -f $SourceTypeMap.Key, $Directory.Id
+                        "(Get-JcSdkDirectory).Where( { `$_.Type -eq '$($SourceTypeMap.Value.Name)' }) | ForEach-Object { Get-JcSdk$($SourceTypeMap.Key) -Id:(`$_.Id)}"
                     }
                     ElseIf ($SourceTypeMap.Key -eq 'Office365')
                     {
-                        $DirectoryCommand = "Get-JcSdkDirectory | Where-Object { `$_.Type -eq '$($SourceTypeMap.Value.Name)' }"
-                        Write-Debug ("Running: $DirectoryCommand")
-                        $Directory = Invoke-Expression -Command:($DirectoryCommand)
-                        "Get-JcSdk{0} -{0}Id:('{1}')" -f $SourceTypeMap.Key, $Directory.Id
+                        "(Get-JcSdkDirectory).Where( { `$_.Type -eq '$($SourceTypeMap.Value.Name)' }) | ForEach-Object { Get-JcSdk$($SourceTypeMap.Key) -$($SourceTypeMap.Key)Id:(`$_.Id)}"
                     }
                     ElseIf ($SourceTypeMap.Key -eq 'Organization')
                     {
@@ -142,7 +136,7 @@ Function Backup-JCOrganization
                     {
                         "Get-JcSdk{0}" -f $SourceTypeMap.Key
                     }
-                    Write-Debug ("Running: $Command")
+                    If ($Debug) { Write-Host ("DEBUG: Running: $Command") -ForegroundColor:('Yellow') }
                     $Result = Invoke-Expression -Command:($Command)
                     If (-not [System.String]::IsNullOrEmpty($Result))
                     {
@@ -178,10 +172,9 @@ Function Backup-JCOrganization
                         # TODO: Potential use for restore function
                         #| ForEach-Object { $_ | Select-Object *, @{Name = 'JcSdkModel'; Expression = { $_.GetType().FullName } } } `
                         # Build hash to return data
-                        $OutputObject = @{$ObjectFileName = $Result }
-                        Return $OutputObject
+                        Return @{$ObjectFileName = $Result }
                     }
-                }) -ArgumentList:($TempPath, $SourceTypeMap, $PSBoundParameters.Format)
+                }) -ArgumentList:($TempPath, $SourceTypeMap, $PSBoundParameters.Format, $PSBoundParameters.Debug)
         }
         $ObjectJobStatus = Wait-Job -Id:($ObjectJobs.Id)
         $ObjectJobResults = $ObjectJobStatus | Receive-Job
@@ -209,6 +202,7 @@ Function Backup-JCOrganization
                 $SourceTypeMap = $JcTypesMap.GetEnumerator() | Where-Object { $_.Key -eq $BackupFile.BaseName }
                 # TODO: Figure out how to make this work with x-ms-enum.
                 # $ValidTargetTypes = (Get-Command Get-JcSdk$($SourceTypeMap.Key)Association).Parameters.Targets.Attributes.ValidValues
+                # $ValidTargetTypes = (Get-Command Get-JcSdk$($SourceTypeMap.Key)Association).Parameters.Targets.ParameterType.DeclaredFields.Where( { $_.IsPublic }).Name
                 # Get list of valid target types from Get-JCAssociation
                 $ValidTargetTypes = $SourceTypeMap.Value.AssociationTargets
                 # Lookup file names in $JcTypesMap
@@ -218,7 +212,7 @@ Function Backup-JCOrganization
                     # If the valid target type matches a file name look up the associations for the SourceType and TargetType
                     If ($TargetTypeMap.Key -in $BackupFiles.BaseName)
                     {
-                        $AssociationJobs += Start-Job -ScriptBlock:( { Param ($SourceTypeMap, $TargetTypeMap, $TempPath, $BackupFile, $Format);
+                        $AssociationJobs += Start-Job -ScriptBlock:( { Param ($SourceTypeMap, $TargetTypeMap, $TempPath, $BackupFile, $Format, $Debug);
                                 $AssociationResults = @()
                                 # Get content from the file
                                 $BackupRecords = If ($Format -eq 'json')
@@ -241,7 +235,7 @@ Function Backup-JCOrganization
                                     If (($SourceTypeMap.Value.Name -eq 'system' -and $TargetTypeMap.Value.Name -eq 'system_group') -or ($SourceTypeMap.Value.Name -eq 'user' -and $TargetTypeMap.Value.Name -eq 'user_group'))
                                     {
                                         $Command = 'Get-JcSdk{0}Member -{1}Id:("{2}")' -f $SourceTypeMap.Key, $SourceTypeMap.Key.Replace('UserGroup', 'Group').Replace('SystemGroup', 'Group'), $BackupRecord.id
-                                        Write-Debug ("Running: $Command")
+                                        If ($Debug) { Write-Host ("DEBUG: Running: $Command") -ForegroundColor:('Yellow') }
                                         $AssociationResult = Invoke-Expression -Command:($Command)
                                         If (-not [System.String]::IsNullOrEmpty($AssociationResult))
                                         {
@@ -265,7 +259,7 @@ Function Backup-JCOrganization
                                     ElseIf (($SourceTypeMap.Value.Name -eq 'system_group' -and $TargetTypeMap.Value.Name -eq 'system') -or ($SourceTypeMap.Value.Name -eq 'user_group' -and $TargetTypeMap.Value.Name -eq 'user'))
                                     {
                                         $Command = 'Get-JcSdk{0}Membership -{1}Id:("{2}")' -f $SourceTypeMap.Key, $SourceTypeMap.Key.Replace('UserGroup', 'Group').Replace('SystemGroup', 'Group'), $BackupRecord.id
-                                        Write-Debug ("Running: $Command")
+                                        If ($Debug) { Write-Host ("DEBUG: Running: $Command") -ForegroundColor:('Yellow') }
                                         $AssociationResult = Invoke-Expression -Command:($Command)
                                         If (-not [System.String]::IsNullOrEmpty($AssociationResult))
                                         {
@@ -289,7 +283,7 @@ Function Backup-JCOrganization
                                     Else
                                     {
                                         $Command = 'Get-JcSdk{0}Association -{1}Id:("{2}") -Targets:("{3}")' -f $SourceTypeMap.Key, $SourceTypeMap.Key.Replace('UserGroup', 'Group').Replace('SystemGroup', 'Group'), $BackupRecord.id, $TargetTypeMap.Value.Name
-                                        Write-Debug ("Running: $Command")
+                                        If ($Debug) { Write-Host ("DEBUG: Running: $Command") -ForegroundColor:('Yellow') }
                                         $AssociationResult = Invoke-Expression -Command:($Command)
                                         If (-not [System.String]::IsNullOrEmpty($AssociationResult))
                                         {
@@ -340,10 +334,9 @@ Function Backup-JCOrganization
                                         Write-Error ("Unknown format: $Format")
                                     }
                                     # Build hash to return data
-                                    $OutputObject = @{$AssociationFileName = $AssociationResults }
-                                    Return $OutputObject
+                                    Return @{$AssociationFileName = $AssociationResults }
                                 }
-                            }) -ArgumentList:($SourceTypeMap, $TargetTypeMap, $TempPath, $BackupFile, $PSBoundParameters.Format)
+                            }) -ArgumentList:($SourceTypeMap, $TargetTypeMap, $TempPath, $BackupFile, $PSBoundParameters.Format, $PSBoundParameters.Debug)
                     }
                 }
             }
