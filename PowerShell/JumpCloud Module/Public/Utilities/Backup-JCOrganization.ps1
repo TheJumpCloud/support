@@ -352,7 +352,7 @@ Function Backup-JCOrganization
             date           = $Date;
             organizationId = $env:JCOrgId;
             moduleVersion  = @(Get-Module -Name:('JumpCloud*') -ListAvailable | Select-Object Name, Version);
-            result         = Get-ChildItem -Path:($TempPath) | ForEach-Object {
+            result         = Get-ChildItem -Path:($TempPath) | Sort-Object -Property BaseName | ForEach-Object {
                 [PSCustomObject]@{
                     Type  = $_.BaseName
                     Count = $OutputHash.Item($_.BaseName).Count
@@ -367,7 +367,7 @@ Function Backup-JCOrganization
             Remove-Item -Path:($TempPath) -Force -Recurse
             Write-Host ("Backup Success: $($ArchivePath)") -ForegroundColor:('Green')
             Write-Host("Backup-JCOrganization Results:") -ForegroundColor:('Green')
-            $OutputHash.GetEnumerator() | ForEach-Object {
+            $OutputHash.GetEnumerator() | Sort-Object -Property Name | ForEach-Object {
                 If ($_.Key)
                 {
                     Write-Host ("$($_.Key): $($_.Value.Count)") -ForegroundColor:('Magenta')
