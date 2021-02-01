@@ -27,7 +27,7 @@ Function Backup-JCOrganization
     Param(
         [Parameter(Mandatory)]
         [System.String]
-        # Specify output file path for backup files
+        # Specify output file path for backup
         ${Path},
 
         [Parameter(ParameterSetName = 'All')]
