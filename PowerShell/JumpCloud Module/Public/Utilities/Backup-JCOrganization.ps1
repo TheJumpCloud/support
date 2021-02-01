@@ -62,8 +62,8 @@ Function Backup-JCOrganization
         $TimerTotal = [Diagnostics.Stopwatch]::StartNew()
         $Date = Get-Date -Format:("yyyyMMddTHHmmssffff")
         $ChildPath = "JumpCloud_$($Date)"
-        $TempPath = Join-Path -Path:($PSBoundParameters.Path) -ChildPath:($ChildPath)
-        $ArchivePath = Join-Path -Path:($PSBoundParameters.Path) -ChildPath:("$($ChildPath).zip")
+        $TempPath = Join-Path -Path:($Path) -ChildPath:($ChildPath)
+        $ArchivePath = Join-Path -Path:($Path) -ChildPath:("$($ChildPath).zip")
         $OutputHash = @{}
         # If the backup directory does not exist, create it
         If (-not (Test-Path $TempPath))
@@ -73,12 +73,12 @@ Function Backup-JCOrganization
         # When -All is provided use all type options and Association
         $Types = If ($PSCmdlet.ParameterSetName -eq 'All')
         {
-            $PSBoundParameters.Add('Association', $true)
+            $Association = $true
             (Get-Command $MyInvocation.MyCommand).Parameters.Type.Attributes.ValidValues
         }
         Else
         {
-            $PSBoundParameters.Type
+            $Type
         }
         # Map to define how JCAssociation & JcSdk types relate
         $JcTypesMap = @{
@@ -112,7 +112,7 @@ Function Backup-JCOrganization
         {
             $SourceTypeMap = $JcTypesMap.GetEnumerator() | Where-Object { $_.Key -eq $JumpCloudType }
             $ObjectBaseName = "{0}" -f $SourceTypeMap.Key
-            $ObjectFileName = "{0}.{1}" -f $ObjectBaseName, $PSBoundParameters.Format
+            $ObjectFileName = "{0}.{1}" -f $ObjectBaseName, $Format
             $ObjectFullName = "{0}/{1}" -f $TempPath, $ObjectFileName
             $ObjectJobs += Start-Job -ScriptBlock:( { Param ($SourceTypeMap, $ObjectBaseName, $ObjectFileName, $ObjectFullName, $Format, $Debug);
                     # Logic to handle directories
@@ -132,7 +132,7 @@ Function Backup-JCOrganization
                     {
                         "Get-JcSdk{0}" -f $SourceTypeMap.Key
                     }
-                    If ($Debug) { Write-Host ("DEBUG: Running: $Command") -ForegroundColor:('Yellow') }
+                    If ($PSBoundParameters.Debug) { Write-Host ("DEBUG: Running: $Command") -ForegroundColor:('Yellow') }
                     $Result = Invoke-Expression -Command:($Command)
                     If (-not [System.String]::IsNullOrEmpty($Result))
                     {
@@ -168,7 +168,7 @@ Function Backup-JCOrganization
                         # Build hash to return data
                         Return @{$ObjectBaseName = $Result }
                     }
-                }) -ArgumentList:($SourceTypeMap, $ObjectBaseName, $ObjectFileName, $ObjectFullName, $PSBoundParameters.Format, $PSBoundParameters.Debug)
+                }) -ArgumentList:($SourceTypeMap, $ObjectBaseName, $ObjectFileName, $ObjectFullName, $Format, $PSBoundParameters.Debug)
         }
         $ObjectJobStatus = Wait-Job -Id:($ObjectJobs.Id)
         $ObjectJobResults = $ObjectJobStatus | Receive-Job
@@ -180,7 +180,7 @@ Function Backup-JCOrganization
         }
         $TimerObject.Stop()
         # Foreach type start a new job and retrieve object association records
-        If ($PSBoundParameters.Association)
+        If ($Association)
         {
             $AssociationJobs = @()
             $TimerAssociations = [Diagnostics.Stopwatch]::StartNew()
@@ -203,7 +203,7 @@ Function Backup-JCOrganization
                     If ($TargetTypeMap.Key -in $BackupFiles.BaseName)
                     {
                         $AssociationBaseName = "Association-{0}To{1}" -f $SourceTypeMap.Key, $TargetTypeMap.Key
-                        $AssociationFileName = "{0}.{1}" -f $AssociationBaseName, $PSBoundParameters.Format
+                        $AssociationFileName = "{0}.{1}" -f $AssociationBaseName, $Format
                         $AssociationFullName = "{0}/{1}" -f $TempPath, $AssociationFileName
                         $AssociationJobs += Start-Job -ScriptBlock:( { Param ($SourceTypeMap, $TargetTypeMap, $BackupFile, $AssociationBaseName, $AssociationFileName, $AssociationFullName, $Format, $Debug);
                                 $AssociationResults = @()
@@ -228,7 +228,7 @@ Function Backup-JCOrganization
                                     If (($SourceTypeMap.Value.Name -eq 'system' -and $TargetTypeMap.Value.Name -eq 'system_group') -or ($SourceTypeMap.Value.Name -eq 'user' -and $TargetTypeMap.Value.Name -eq 'user_group'))
                                     {
                                         $Command = 'Get-JcSdk{0}Member -{1}Id:("{2}")' -f $SourceTypeMap.Key, $SourceTypeMap.Key.Replace('UserGroup', 'Group').Replace('SystemGroup', 'Group'), $BackupRecord.id
-                                        If ($Debug) { Write-Host ("DEBUG: Running: $Command") -ForegroundColor:('Yellow') }
+                                        If ($PSBoundParameters.Debug) { Write-Host ("DEBUG: Running: $Command") -ForegroundColor:('Yellow') }
                                         $AssociationResult = Invoke-Expression -Command:($Command)
                                         If (-not [System.String]::IsNullOrEmpty($AssociationResult))
                                         {
@@ -252,7 +252,7 @@ Function Backup-JCOrganization
                                     ElseIf (($SourceTypeMap.Value.Name -eq 'system_group' -and $TargetTypeMap.Value.Name -eq 'system') -or ($SourceTypeMap.Value.Name -eq 'user_group' -and $TargetTypeMap.Value.Name -eq 'user'))
                                     {
                                         $Command = 'Get-JcSdk{0}Membership -{1}Id:("{2}")' -f $SourceTypeMap.Key, $SourceTypeMap.Key.Replace('UserGroup', 'Group').Replace('SystemGroup', 'Group'), $BackupRecord.id
-                                        If ($Debug) { Write-Host ("DEBUG: Running: $Command") -ForegroundColor:('Yellow') }
+                                        If ($PSBoundParameters.Debug) { Write-Host ("DEBUG: Running: $Command") -ForegroundColor:('Yellow') }
                                         $AssociationResult = Invoke-Expression -Command:($Command)
                                         If (-not [System.String]::IsNullOrEmpty($AssociationResult))
                                         {
@@ -276,7 +276,7 @@ Function Backup-JCOrganization
                                     Else
                                     {
                                         $Command = 'Get-JcSdk{0}Association -{1}Id:("{2}") -Targets:("{3}")' -f $SourceTypeMap.Key, $SourceTypeMap.Key.Replace('UserGroup', 'Group').Replace('SystemGroup', 'Group'), $BackupRecord.id, $TargetTypeMap.Value.Name
-                                        If ($Debug) { Write-Host ("DEBUG: Running: $Command") -ForegroundColor:('Yellow') }
+                                        If ($PSBoundParameters.Debug) { Write-Host ("DEBUG: Running: $Command") -ForegroundColor:('Yellow') }
                                         $AssociationResult = Invoke-Expression -Command:($Command)
                                         If (-not [System.String]::IsNullOrEmpty($AssociationResult))
                                         {
@@ -327,7 +327,7 @@ Function Backup-JCOrganization
                                     # Build hash to return data
                                     Return @{$AssociationBaseName = $AssociationResults }
                                 }
-                            }) -ArgumentList:($SourceTypeMap, $TargetTypeMap, $BackupFile, $AssociationBaseName, $AssociationFileName, $AssociationFullName, $PSBoundParameters.Format, $PSBoundParameters.Debug)
+                            }) -ArgumentList:($SourceTypeMap, $TargetTypeMap, $BackupFile, $AssociationBaseName, $AssociationFileName, $AssociationFullName, $Format, $PSBoundParameters.Debug)
                     }
                 }
             }
@@ -378,7 +378,7 @@ Function Backup-JCOrganization
         If ($TimerObject) { Write-Debug ("Object Run Time: $($TimerObject.Elapsed)") }
         If ($TimerAssociations) { Write-Debug ("Association Run Time: $($TimerAssociations.Elapsed)") }
         If ($TimerTotal) { Write-Debug ("Total Run Time: $($TimerTotal.Elapsed)") }
-        If ($PSBoundParameters.PassThru)
+        If ($PassThru)
         {
             Return $OutputHash
         }
