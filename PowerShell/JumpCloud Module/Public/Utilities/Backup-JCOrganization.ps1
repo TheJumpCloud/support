@@ -367,10 +367,10 @@ Function Backup-JCOrganization
             Remove-Item -Path:($TempPath) -Force -Recurse
             Write-Host ("Backup Success: $($ArchivePath)") -ForegroundColor:('Green')
             Write-Host("Backup-JCOrganization Results:") -ForegroundColor:('Green')
-            $ObjectJobResults | ForEach-Object {
-                If ($_.Type)
+            $OutputHash.GetEnumerator() | ForEach-Object {
+                If ($_.Key)
                 {
-                    Write-Host ("$($_.Type): $($_.Results.Count)") -ForegroundColor:('Magenta')
+                    Write-Host ("$($_.Key): $($_.Value.Count)") -ForegroundColor:('Magenta')
                 }
             }
         }
