@@ -66,11 +66,10 @@ Function Backup-JCOrganization
         $ArchivePath = Join-Path -Path:($PSBoundParameters.Path) -ChildPath:("$($ChildPath).zip")
         $OutputHash = @{}
         $Manifest = @{
-            date             = $Date;
-            organizationID   = $env:JCOrgId;
-            backupFiles      = @();
-            associationFiles = @();
-            moduleVersion    = @(Get-Module JumpCloud* | Select-Object Name, Version);
+            date           = $Date;
+            organizationId = $env:JCOrgId;
+            backupFiles    = @();
+            moduleVersion  = @(Get-Module JumpCloud* | Select-Object Name, Version);
         }
         # If the backup directory does not exist, create it
         If (-not (Test-Path $TempPath))
@@ -118,7 +117,10 @@ Function Backup-JCOrganization
         ForEach ($JumpCloudType In $Types)
         {
             $SourceTypeMap = $JcTypesMap.GetEnumerator() | Where-Object { $_.Key -eq $JumpCloudType }
-            $ObjectJobs += Start-Job -ScriptBlock:( { Param ($TempPath, $SourceTypeMap, $Format, $Debug);
+            $ObjectBaseName = "{0}" -f $SourceTypeMap.Key
+            $ObjectFileName = "{0}.{1}" -f $ObjectBaseName, $PSBoundParameters.Format
+            $ObjectFullName = "{0}/{1}" -f $TempPath, $ObjectFileName
+            $ObjectJobs += Start-Job -ScriptBlock:( { Param ($SourceTypeMap, $ObjectFileName, $ObjectFullName, $Format, $Debug);
                     # Logic to handle directories
                     $Command = If ($SourceTypeMap.Key -eq 'GSuite')
                     {
@@ -140,8 +142,6 @@ Function Backup-JCOrganization
                     $Result = Invoke-Expression -Command:($Command)
                     If (-not [System.String]::IsNullOrEmpty($Result))
                     {
-                        $ObjectFileName = "{0}" -f $SourceTypeMap.Key
-                        $ObjectFullName = "{0}/{1}.{2}" -f $TempPath, $ObjectFileName, $Format
                         # Write output to file
                         If ($Format -eq 'json')
                         {
@@ -174,7 +174,7 @@ Function Backup-JCOrganization
                         # Build hash to return data
                         Return @{$ObjectFileName = $Result }
                     }
-                }) -ArgumentList:($TempPath, $SourceTypeMap, $PSBoundParameters.Format, $PSBoundParameters.Debug)
+                }) -ArgumentList:($SourceTypeMap, $ObjectFileName, $ObjectFullName, $PSBoundParameters.Format, $PSBoundParameters.Debug)
         }
         $ObjectJobStatus = Wait-Job -Id:($ObjectJobs.Id)
         $ObjectJobResults = $ObjectJobStatus | Receive-Job
@@ -187,7 +187,7 @@ Function Backup-JCOrganization
                 }
             }
         }
-        $manifest.backupFiles += $ObjectJobResults | Select-Object -ExcludeProperty:('Results')
+        $manifest.backupFiles += ("./$($ObjectFileName)")
         $TimerObject.Stop()
         # Foreach type start a new job and retrieve object association records
         If ($PSBoundParameters.Association)
@@ -212,7 +212,10 @@ Function Backup-JCOrganization
                     # If the valid target type matches a file name look up the associations for the SourceType and TargetType
                     If ($TargetTypeMap.Key -in $BackupFiles.BaseName)
                     {
-                        $AssociationJobs += Start-Job -ScriptBlock:( { Param ($SourceTypeMap, $TargetTypeMap, $TempPath, $BackupFile, $Format, $Debug);
+                        $AssociationBaseName = "Association-{0}To{1}" -f $SourceTypeMap.Key, $TargetTypeMap.Key
+                        $AssociationFileName = "{0}.{1}" -f $AssociationBaseName, $PSBoundParameters.Format
+                        $AssociationFullName = "{0}/{1}" -f $TempPath, $AssociationFileName
+                        $AssociationJobs += Start-Job -ScriptBlock:( { Param ($SourceTypeMap, $TargetTypeMap, $BackupFile, $AssociationFileName, $AssociationFullName, $Format, $Debug);
                                 $AssociationResults = @()
                                 # Get content from the file
                                 $BackupRecords = If ($Format -eq 'json')
@@ -305,8 +308,6 @@ Function Backup-JCOrganization
                                 }
                                 If (-not [System.String]::IsNullOrEmpty($AssociationResults))
                                 {
-                                    $AssociationFileName = "Association-{0}To{1}" -f $SourceTypeMap.Key, $TargetTypeMap.Key
-                                    $AssociationFullName = "{0}/{1}.{2}" -f $TempPath, $AssociationFileName, $Format
                                     If ($Format -eq 'json')
                                     {
                                         $AssociationResults | ConvertTo-Json -Depth:(100) | Out-File -FilePath:($AssociationFullName) -Force
@@ -336,7 +337,8 @@ Function Backup-JCOrganization
                                     # Build hash to return data
                                     Return @{$AssociationFileName = $AssociationResults }
                                 }
-                            }) -ArgumentList:($SourceTypeMap, $TargetTypeMap, $TempPath, $BackupFile, $PSBoundParameters.Format, $PSBoundParameters.Debug)
+                            }) -ArgumentList:($SourceTypeMap, $TargetTypeMap, $BackupFile, $AssociationFileName, $AssociationFullName, $PSBoundParameters.Format, $PSBoundParameters.Debug)
+                        $manifest.backupFiles += ("./$($AssociationFileName)")
                     }
                 }
             }
@@ -353,7 +355,6 @@ Function Backup-JCOrganization
                         }
                     }
                 }
-                $manifest.associationFiles += $AssociationResults | Select-Object -ExcludeProperty:('Results')
             }
             $TimerAssociations.Stop()
         }
