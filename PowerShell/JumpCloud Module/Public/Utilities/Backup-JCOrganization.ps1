@@ -69,7 +69,7 @@ Function Backup-JCOrganization
             date           = $Date;
             organizationId = $env:JCOrgId;
             backupFiles    = @();
-            moduleVersion  = @(Get-Module JumpCloud* | Select-Object Name, Version);
+            moduleVersion  = @(Get-Module JumpCloud* -ListAvailable | Select-Object Name, Version);
         }
         # If the backup directory does not exist, create it
         If (-not (Test-Path $TempPath))
