@@ -3,19 +3,35 @@
 Backup your JumpCloud organization to local json files
 
 .Description
-This function exports objects and associations from your JumpCloud organization to local json files
+This function exports objects and associations from your JumpCloud organization to local json files.
+Association takes a significant amount of time to gather.
+The -Format:('csv') is slower than standard json output.
 
 .Example
 Backup all available JumpCloud objects and their associations
-PS C:\> Backup-JCOrganization -Path:('C:\Temp') -All
+PS C:\> Backup-JCOrganization -Path:('C:\Temp')
 
 .Example
-Backup UserGroups and Users with their associations
+Backup all available JumpCloud objects and their associations to CSV (default json)
+PS C:\> Backup-JCOrganization -Path:('C:\Temp') -Format:('csv')
+
+.Example
+Backup selected types UserGroups and Users with no associations
+PS C:\> Backup-JCOrganization -Path:('C:\Temp') -Type:('UserGroup','User')
+
+.Example
+Backup selected types UserGroups and Users with their associations
 PS C:\> Backup-JCOrganization -Path:('C:\Temp') -Type:('UserGroup','User') -Association
 
 .Example
 Backup UserGroups and Users without their associations
 PS C:\> Backup-JCOrganization -Path:('C:\Temp') -Type:('UserGroup','User')
+
+.Example
+Backup all available JumpCloud objects and their associations and return metadata
+PS C:\> $BackupJcOrganizationResults = Backup-JCOrganization -Path:('C:\Temp') -PassThru
+PS C:\> $BackupJcOrganizationResults.Keys
+PS C:\> $BackupJcOrganizationResults.User
 
 .Link
 https://github.com/TheJumpCloud/support/tree/master/PowerShell/JumpCloud%20Module/Docs/Backup-JCOrganization.md
@@ -27,23 +43,23 @@ Function Backup-JCOrganization
     Param(
         [Parameter(Mandatory)]
         [System.String]
-        # Specify output file path for backup
+        # File path for backup output
         ${Path},
 
         [Parameter(ParameterSetName = 'All')]
         [System.Management.Automation.SwitchParameter]
-        # Specify to backup all available types and associations
+        # Backup all available types and associations
         ${All},
 
         [Parameter(ParameterSetName = 'Type')]
         [ValidateSet('ActiveDirectory', 'AppleMdm', 'Application', 'AuthenticationPolicy', 'Command', 'Directory', 'Group', 'GSuite', 'IPList', 'LdapServer', 'Office365', 'Organization', 'Policy', 'RadiusServer', 'SoftwareApp', 'System', 'SystemGroup', 'User', 'UserGroup')]
         [System.String[]]
-        # Specify the type of JumpCloud objects you want to backup
+        # JumpCloud objects that you want to backup
         ${Type},
 
         [Parameter(ParameterSetName = 'Type')]
         [System.Management.Automation.SwitchParameter]
-        # Specify to backup association data
+        # Use to backup association data
         ${Association},
 
         [Parameter()]
@@ -54,7 +70,7 @@ Function Backup-JCOrganization
 
         [Parameter()]
         [System.Management.Automation.SwitchParameter]
-        # Returns object records when true
+        # Return object metadata to pipeline
         ${PassThru}
     )
     Begin
