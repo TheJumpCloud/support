@@ -27,11 +27,11 @@ Function Backup-JCOrganization
     Param(
         [Parameter(Mandatory)]
         [System.String]
-        # Specify output file path for backup files
+        # Specify output file path for backup
         ${Path},
 
         [Parameter(ParameterSetName = 'All')]
-        [switch]
+        [System.Management.Automation.SwitchParameter]
         # Specify to backup all available types and associations
         ${All},
 
@@ -42,38 +42,43 @@ Function Backup-JCOrganization
         ${Type},
 
         [Parameter(ParameterSetName = 'Type')]
-        [switch]
+        [System.Management.Automation.SwitchParameter]
         # Specify to backup association data
-        ${Association}
+        ${Association},
+
+        [Parameter()]
+        [ValidateSet('json', 'csv')]
+        [System.String]
+        # The format of the output files
+        ${Format} = 'json',
+
+        [Parameter()]
+        [System.Management.Automation.SwitchParameter]
+        # Returns object records when true
+        ${PassThru}
     )
     Begin
     {
         $TimerTotal = [Diagnostics.Stopwatch]::StartNew()
         $Date = Get-Date -Format:("yyyyMMddTHHmmssffff")
         $ChildPath = "JumpCloud_$($Date)"
-        $TempPath = Join-Path -Path:($PSBoundParameters.Path) -ChildPath:($ChildPath)
-        $ArchivePath = Join-Path -Path:($PSBoundParameters.Path) -ChildPath:("$($ChildPath).zip")
-        $Manifest = @{
-            date             = $Date;
-            organizationID   = $env:JCOrgId;
-            backupFiles      = @();
-            associationFiles = @();
-            moduleVersion    = @(Get-Module JumpCloud* | Select-Object Name, Version);
-        }
+        $TempPath = Join-Path -Path:($Path) -ChildPath:($ChildPath)
+        $ArchivePath = Join-Path -Path:($Path) -ChildPath:("$($ChildPath).zip")
+        $OutputHash = @{}
         # If the backup directory does not exist, create it
         If (-not (Test-Path $TempPath))
         {
-            New-Item -Path:($TempPath) -Name:$($TempPath.BaseName) -ItemType:('directory')
+            New-Item -Path:($TempPath) -Name:$($TempPath.BaseName) -ItemType:('directory') | Out-Null
         }
         # When -All is provided use all type options and Association
         $Types = If ($PSCmdlet.ParameterSetName -eq 'All')
         {
-            $PSBoundParameters.Add('Association', $true)
+            $Association = $true
             (Get-Command $MyInvocation.MyCommand).Parameters.Type.Attributes.ValidValues
         }
         Else
         {
-            $PSBoundParameters.Type
+            $Type
         }
         # Map to define how JCAssociation & JcSdk types relate
         $JcTypesMap = @{
@@ -106,21 +111,18 @@ Function Backup-JCOrganization
         ForEach ($JumpCloudType In $Types)
         {
             $SourceTypeMap = $JcTypesMap.GetEnumerator() | Where-Object { $_.Key -eq $JumpCloudType }
-            $ObjectJobs += Start-Job -ScriptBlock:( { Param ($TempPath, $SourceTypeMap);
+            $ObjectBaseName = "{0}" -f $SourceTypeMap.Key
+            $ObjectFileName = "{0}.{1}" -f $ObjectBaseName, $Format
+            $ObjectFullName = "{0}/{1}" -f $TempPath, $ObjectFileName
+            $ObjectJobs += Start-Job -ScriptBlock:( { Param ($SourceTypeMap, $ObjectBaseName, $ObjectFileName, $ObjectFullName, $Format, $Debug);
                     # Logic to handle directories
                     $Command = If ($SourceTypeMap.Key -eq 'GSuite')
                     {
-                        $DirectoryCommand = "Get-JcSdkDirectory | Where-Object { `$_.Type -eq '$($SourceTypeMap.Value.Name)' }"
-                        Write-Debug ("Running: $DirectoryCommand")
-                        $Directory = Invoke-Expression -Command:($DirectoryCommand)
-                        "Get-JcSdk{0} -Id:('{1}')" -f $SourceTypeMap.Key, $Directory.Id
+                        "(Get-JcSdkDirectory).Where( { `$_.Type -eq '$($SourceTypeMap.Value.Name)' }) | ForEach-Object { Get-JcSdk$($SourceTypeMap.Key) -Id:(`$_.Id)}"
                     }
                     ElseIf ($SourceTypeMap.Key -eq 'Office365')
                     {
-                        $DirectoryCommand = "Get-JcSdkDirectory | Where-Object { `$_.Type -eq '$($SourceTypeMap.Value.Name)' }"
-                        Write-Debug ("Running: $DirectoryCommand")
-                        $Directory = Invoke-Expression -Command:($DirectoryCommand)
-                        "Get-JcSdk{0} -{0}Id:('{1}')" -f $SourceTypeMap.Key, $Directory.Id
+                        "(Get-JcSdkDirectory).Where( { `$_.Type -eq '$($SourceTypeMap.Value.Name)' }) | ForEach-Object { Get-JcSdk$($SourceTypeMap.Key) -$($SourceTypeMap.Key)Id:(`$_.Id)}"
                     }
                     ElseIf ($SourceTypeMap.Key -eq 'Organization')
                     {
@@ -130,30 +132,55 @@ Function Backup-JCOrganization
                     {
                         "Get-JcSdk{0}" -f $SourceTypeMap.Key
                     }
-                    Write-Debug ("Running: $Command")
+                    If ($PSBoundParameters.Debug) { Write-Host ("DEBUG: Running: $Command") -ForegroundColor:('Yellow') }
                     $Result = Invoke-Expression -Command:($Command)
                     If (-not [System.String]::IsNullOrEmpty($Result))
                     {
                         # Write output to file
-                        $Result | ConvertTo-Json -Depth:(100) | Out-File -FilePath:("{0}/{1}.json" -f $TempPath, $SourceTypeMap.Key) -Force
+                        If ($Format -eq 'json')
+                        {
+                            $Result | ConvertTo-Json -Depth:(100) | Out-File -FilePath:($ObjectFullName) -Force
+                        }
+                        ElseIf ($Format -eq 'csv')
+                        {
+                            # Convert object properties of objects to compressed json strings
+                            $Result | ForEach-Object {
+                                $NewRecord = [PSCustomObject]@{}
+                                $_.PSObject.Properties | ForEach-Object {
+                                    If ($_.TypeNameOfValue -like '*.Models.*' -or $_.TypeNameOfValue -like '*Object*' -or $_.TypeNameOfValue -like '*String`[`]*')
+                                    {
+                                        Add-Member -InputObject:($NewRecord) -MemberType:('NoteProperty') -Name:($_.Name) -Value:($_.Value | ConvertTo-Json -Depth:(100) -Compress)
+                                    }
+                                    Else
+                                    {
+                                        Add-Member -InputObject:($NewRecord) -MemberType:('NoteProperty') -Name:($_.Name) -Value:($_.Value)
+                                    }
+                                }
+                                Return $NewRecord
+                            } | Export-Csv -NoTypeInformation -Path:($ObjectFullName) -Force
+                        }
+                        Else
+                        {
+                            Write-Error ("Unknown format: $Format")
+                        }
                         # TODO: Potential use for restore function
                         #| ForEach-Object { $_ | Select-Object *, @{Name = 'JcSdkModel'; Expression = { $_.GetType().FullName } } } `
-                        # Build object to return data
-                        $OutputObject = @{
-                            Results = $Result
-                            Type    = $SourceTypeMap.Key
-                            Path    = "./$($SourceTypeMap.Key).json"
-                        }
-                        Return $OutputObject
+                        # Build hash to return data
+                        Return @{$ObjectBaseName = $Result }
                     }
-                }) -ArgumentList:($TempPath, $SourceTypeMap)
+                }) -ArgumentList:($SourceTypeMap, $ObjectBaseName, $ObjectFileName, $ObjectFullName, $Format, $PSBoundParameters.Debug)
         }
         $ObjectJobStatus = Wait-Job -Id:($ObjectJobs.Id)
         $ObjectJobResults = $ObjectJobStatus | Receive-Job
-        $manifest.backupFiles += $ObjectJobResults | Select-Object -ExcludeProperty:('Results')
+        # Add the results of objects to outputhash results
+        $ObjectJobResults | ForEach-Object {
+            $_.GetEnumerator() | ForEach-Object {
+                $OutputHash.Add($_.Key, $_.Value)
+            }
+        }
         $TimerObject.Stop()
         # Foreach type start a new job and retrieve object association records
-        If ($PSBoundParameters.Association)
+        If ($Association)
         {
             $AssociationJobs = @()
             $TimerAssociations = [Diagnostics.Stopwatch]::StartNew()
@@ -165,6 +192,7 @@ Function Backup-JCOrganization
                 $SourceTypeMap = $JcTypesMap.GetEnumerator() | Where-Object { $_.Key -eq $BackupFile.BaseName }
                 # TODO: Figure out how to make this work with x-ms-enum.
                 # $ValidTargetTypes = (Get-Command Get-JcSdk$($SourceTypeMap.Key)Association).Parameters.Targets.Attributes.ValidValues
+                # $ValidTargetTypes = (Get-Command Get-JcSdk$($SourceTypeMap.Key)Association).Parameters.Targets.ParameterType.DeclaredFields.Where( { $_.IsPublic }).Name
                 # Get list of valid target types from Get-JCAssociation
                 $ValidTargetTypes = $SourceTypeMap.Value.AssociationTargets
                 # Lookup file names in $JcTypesMap
@@ -174,10 +202,24 @@ Function Backup-JCOrganization
                     # If the valid target type matches a file name look up the associations for the SourceType and TargetType
                     If ($TargetTypeMap.Key -in $BackupFiles.BaseName)
                     {
-                        $AssociationJobs += Start-Job -ScriptBlock:( { Param ($SourceTypeMap, $TargetTypeMap, $TempPath, $BackupFile);
+                        $AssociationBaseName = "Association-{0}To{1}" -f $SourceTypeMap.Key, $TargetTypeMap.Key
+                        $AssociationFileName = "{0}.{1}" -f $AssociationBaseName, $Format
+                        $AssociationFullName = "{0}/{1}" -f $TempPath, $AssociationFileName
+                        $AssociationJobs += Start-Job -ScriptBlock:( { Param ($SourceTypeMap, $TargetTypeMap, $BackupFile, $AssociationBaseName, $AssociationFileName, $AssociationFullName, $Format, $Debug);
                                 $AssociationResults = @()
                                 # Get content from the file
-                                $BackupRecords = Get-Content -Path:($BackupFile.FullName) | ConvertFrom-Json
+                                $BackupRecords = If ($Format -eq 'json')
+                                {
+                                    Get-Content -Path:($BackupFile.FullName) | ConvertFrom-Json
+                                }
+                                ElseIf ($Format -eq 'csv')
+                                {
+                                    Import-Csv -Path:($BackupFile.FullName)
+                                }
+                                Else
+                                {
+                                    Write-Error ("Unknown format: $Format")
+                                }
                                 ForEach ($BackupRecord In $BackupRecords)
                                 {
                                     # Build Command based upon source and target combinations
@@ -186,7 +228,7 @@ Function Backup-JCOrganization
                                     If (($SourceTypeMap.Value.Name -eq 'system' -and $TargetTypeMap.Value.Name -eq 'system_group') -or ($SourceTypeMap.Value.Name -eq 'user' -and $TargetTypeMap.Value.Name -eq 'user_group'))
                                     {
                                         $Command = 'Get-JcSdk{0}Member -{1}Id:("{2}")' -f $SourceTypeMap.Key, $SourceTypeMap.Key.Replace('UserGroup', 'Group').Replace('SystemGroup', 'Group'), $BackupRecord.id
-                                        Write-Debug ("Running: $Command")
+                                        If ($PSBoundParameters.Debug) { Write-Host ("DEBUG: Running: $Command") -ForegroundColor:('Yellow') }
                                         $AssociationResult = Invoke-Expression -Command:($Command)
                                         If (-not [System.String]::IsNullOrEmpty($AssociationResult))
                                         {
@@ -210,7 +252,7 @@ Function Backup-JCOrganization
                                     ElseIf (($SourceTypeMap.Value.Name -eq 'system_group' -and $TargetTypeMap.Value.Name -eq 'system') -or ($SourceTypeMap.Value.Name -eq 'user_group' -and $TargetTypeMap.Value.Name -eq 'user'))
                                     {
                                         $Command = 'Get-JcSdk{0}Membership -{1}Id:("{2}")' -f $SourceTypeMap.Key, $SourceTypeMap.Key.Replace('UserGroup', 'Group').Replace('SystemGroup', 'Group'), $BackupRecord.id
-                                        Write-Debug ("Running: $Command")
+                                        If ($PSBoundParameters.Debug) { Write-Host ("DEBUG: Running: $Command") -ForegroundColor:('Yellow') }
                                         $AssociationResult = Invoke-Expression -Command:($Command)
                                         If (-not [System.String]::IsNullOrEmpty($AssociationResult))
                                         {
@@ -234,7 +276,7 @@ Function Backup-JCOrganization
                                     Else
                                     {
                                         $Command = 'Get-JcSdk{0}Association -{1}Id:("{2}") -Targets:("{3}")' -f $SourceTypeMap.Key, $SourceTypeMap.Key.Replace('UserGroup', 'Group').Replace('SystemGroup', 'Group'), $BackupRecord.id, $TargetTypeMap.Value.Name
-                                        Write-Debug ("Running: $Command")
+                                        If ($PSBoundParameters.Debug) { Write-Host ("DEBUG: Running: $Command") -ForegroundColor:('Yellow') }
                                         $AssociationResult = Invoke-Expression -Command:($Command)
                                         If (-not [System.String]::IsNullOrEmpty($AssociationResult))
                                         {
@@ -256,30 +298,67 @@ Function Backup-JCOrganization
                                 }
                                 If (-not [System.String]::IsNullOrEmpty($AssociationResults))
                                 {
-                                    $AssociationFileName = "Association-{0}To{1}" -f $SourceTypeMap.Key, $TargetTypeMap.Key
-                                    $AssociationResults | ConvertTo-Json -Depth:(100) | Out-File -FilePath:("{0}/{1}.json" -f $TempPath, $AssociationFileName) -Force
-                                    # Build object to return data
-                                    $OutputObject = @{
-                                        Results = $AssociationResults
-                                        Type    = $AssociationFileName
-                                        Path    = "./$($AssociationFileName).json"
+                                    If ($Format -eq 'json')
+                                    {
+                                        $AssociationResults | ConvertTo-Json -Depth:(100) | Out-File -FilePath:($AssociationFullName) -Force
                                     }
-                                    Return $OutputObject
+                                    ElseIf ($Format -eq 'csv')
+                                    {
+                                        # Convert object properties of objects to compressed json strings
+                                        $AssociationResults | ForEach-Object {
+                                            $NewRecord = [PSCustomObject]@{}
+                                            $_.PSObject.Properties | ForEach-Object {
+                                                If ($_.TypeNameOfValue -like '*.Models.*' -or $_.TypeNameOfValue -like '*Object*' -or $_.TypeNameOfValue -like '*String`[`]*')
+                                                {
+                                                    Add-Member -InputObject:($NewRecord) -MemberType:('NoteProperty') -Name:($_.Name) -Value:($_.Value | ConvertTo-Json -Depth:(100) -Compress)
+                                                }
+                                                Else
+                                                {
+                                                    Add-Member -InputObject:($NewRecord) -MemberType:('NoteProperty') -Name:($_.Name) -Value:($_.Value)
+                                                }
+                                            }
+                                            Return $NewRecord
+                                        } | Export-Csv -NoTypeInformation -Path:($AssociationFullName) -Force
+                                    }
+                                    Else
+                                    {
+                                        Write-Error ("Unknown format: $Format")
+                                    }
+                                    # Build hash to return data
+                                    Return @{$AssociationBaseName = $AssociationResults }
                                 }
-                            }) -ArgumentList:($SourceTypeMap, $TargetTypeMap, $TempPath, $BackupFile)
+                            }) -ArgumentList:($SourceTypeMap, $TargetTypeMap, $BackupFile, $AssociationBaseName, $AssociationFileName, $AssociationFullName, $Format, $PSBoundParameters.Debug)
                     }
                 }
             }
-            $AssociationJobsStatus = Wait-Job -Id:($AssociationJobs.Id)
-            $AssociationResults = $AssociationJobsStatus | Receive-Job
-            $manifest.associationFiles += $AssociationResults | Select-Object -ExcludeProperty:('Results')
+            If ($AssociationJobs)
+            {
+                $AssociationJobStatus = Wait-Job -Id:($AssociationJobs.Id)
+                $AssociationResults = $AssociationJobStatus | Receive-Job
+                # Add the results of associations to outputhash results
+                $AssociationResults | ForEach-Object {
+                    $_.GetEnumerator() | ForEach-Object {
+                        $OutputHash.Add($_.Key, $_.Value)
+                    }
+                }
+            }
             $TimerAssociations.Stop()
         }
     }
     End
     {
         # Write Out Manifest
-        $Manifest | ConvertTo-Json -Depth:(100) | Out-File -FilePath:("$($TempPath)/BackupManifest.json") -Force
+        @{
+            date           = $Date;
+            organizationId = $env:JCOrgId;
+            moduleVersion  = @(Get-Module -Name:('JumpCloud*') -ListAvailable | Select-Object Name, Version);
+            result         = Get-ChildItem -Path:($TempPath) | Sort-Object -Property BaseName | ForEach-Object {
+                [PSCustomObject]@{
+                    Type  = $_.BaseName
+                    Count = $OutputHash.Item($_.BaseName).Count
+                }
+            }
+        } | ConvertTo-Json -Depth:(100) | Out-File -FilePath:("$($TempPath)/BackupManifest.json") -Force
         # Zip results
         Compress-Archive -Path:($TempPath) -CompressionLevel:('Fastest') -Destination:($ArchivePath)
         # Clean up temp directory
@@ -288,16 +367,20 @@ Function Backup-JCOrganization
             Remove-Item -Path:($TempPath) -Force -Recurse
             Write-Host ("Backup Success: $($ArchivePath)") -ForegroundColor:('Green')
             Write-Host("Backup-JCOrganization Results:") -ForegroundColor:('Green')
-            $ObjectJobResults | ForEach-Object {
-                Write-Host ("$($_.Type): $($_.Results.Count)") -ForegroundColor:('Magenta')
-            }
-            $AssociationResults | ForEach-Object {
-                Write-Host ("$($_.Type): $($_.Results.Count)") -ForegroundColor:('Magenta')
+            $OutputHash.GetEnumerator() | Sort-Object -Property Name | ForEach-Object {
+                If ($_.Key)
+                {
+                    Write-Host ("$($_.Key): $($_.Value.Count)") -ForegroundColor:('Magenta')
+                }
             }
         }
         $TimerTotal.Stop()
         If ($TimerObject) { Write-Debug ("Object Run Time: $($TimerObject.Elapsed)") }
         If ($TimerAssociations) { Write-Debug ("Association Run Time: $($TimerAssociations.Elapsed)") }
         If ($TimerTotal) { Write-Debug ("Total Run Time: $($TimerTotal.Elapsed)") }
+        If ($PassThru)
+        {
+            Return $OutputHash
+        }
     }
 }
