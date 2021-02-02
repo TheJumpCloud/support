@@ -64,11 +64,12 @@ Function Backup-JCOrganization
         $ChildPath = "JumpCloud_$($Date)"
         $TempPath = Join-Path -Path:($Path) -ChildPath:($ChildPath)
         $ArchivePath = Join-Path -Path:($Path) -ChildPath:("$($ChildPath).zip")
-        $OutputHash = @{}
+        $OutputHash = [ordered]@{}
         # If the backup directory does not exist, create it
         If (-not (Test-Path $TempPath))
         {
-            New-Item -Path:($TempPath) -Name:$($TempPath.BaseName) -ItemType:('directory') | Out-Null
+            $BackupLocation = New-Item -Path:($TempPath) -Name:$($TempPath.BaseName) -ItemType:('directory')
+            $OutputHash.Add('BackupLocation', $BackupLocation)
         }
         # When -All is provided use all type options and Association
         $Types = If ($PSCmdlet.ParameterSetName -eq 'All')
@@ -367,7 +368,7 @@ Function Backup-JCOrganization
             Remove-Item -Path:($TempPath) -Force -Recurse
             Write-Host ("Backup Success: $($ArchivePath)") -ForegroundColor:('Green')
             Write-Host("Backup-JCOrganization Results:") -ForegroundColor:('Green')
-            $OutputHash.GetEnumerator() | Sort-Object -Property Name | ForEach-Object {
+            $OutputHash.GetEnumerator() | Sort-Object -Property Name | Select-Object -Skip 1 | ForEach-Object {
                 If ($_.Key)
                 {
                     Write-Host ("$($_.Key): $($_.Value.Count)") -ForegroundColor:('Magenta')
@@ -381,6 +382,10 @@ Function Backup-JCOrganization
         If ($PassThru)
         {
             Return $OutputHash
+        }
+        Else
+        {
+            Return $OutputHash.BackupLocation
         }
     }
 }
