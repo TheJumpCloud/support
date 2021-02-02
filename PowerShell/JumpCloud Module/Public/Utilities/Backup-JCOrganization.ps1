@@ -348,7 +348,7 @@ Function Backup-JCOrganization
     End
     {
         # Write Out Manifest
-        @{
+        [ordered]@{
             date           = $Date;
             organizationId = $env:JCOrgId;
             moduleVersion  = @(Get-Module -Name:('JumpCloud*') -ListAvailable | Select-Object Name, Version);
@@ -358,7 +358,7 @@ Function Backup-JCOrganization
                     Count = $OutputHash.Item($_.BaseName).Count
                 }
             }
-        } | ConvertTo-Json -Depth:(100) | Out-File -FilePath:("$($TempPath)/BackupManifest.json") -Force
+        } | ConvertTo-Json -Depth:(100) | Out-File -FilePath:("$($TempPath)/Manifest.json") -Force
         # Zip results
         Compress-Archive -Path:($TempPath) -CompressionLevel:('Fastest') -Destination:($ArchivePath)
         # Clean up temp directory
