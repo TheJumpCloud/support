@@ -1,6 +1,9 @@
 ##
-## This API call fetches the system record.
+## This API call adds the system to a System Group.
+## Specify the System Group ID below.
 ##
+
+$systemGroupId=""
 
 $config = get-content 'C:\Program Files\JumpCloud\Plugins\Contrib\jcagent.conf'
 $regex = 'systemKey\":\"(\w+)\"'
@@ -286,14 +289,14 @@ Add-Type -typedef @"
 # Format and create the signature request
 $now = (Get-Date -Date ((Get-Date).ToUniversalTime()) -UFormat "+%a, %d %h %Y %H:%M:%S GMT")
 # create the string to sign from the request-line and the date
-$signstr = "GET /api/systems/$systemKey HTTP/1.1`ndate: $now"
+$signstr = "GET /api/v2/systemgroups/$systemGroupId/members HTTP/1.1`ndate: $now"
 $enc = [system.Text.Encoding]::UTF8
 $data = $enc.GetBytes($signstr)
 # Create a New SHA256 Crypto Provider
 $sha = New-Object System.Security.Cryptography.SHA256CryptoServiceProvider
 # Now hash and display results
 $result = $sha.ComputeHash($data)
-# Private Key Pat
+# Private Key Path
 $PrivateKeyFilePath = 'C:\Program Files\JumpCloud\Plugins\Contrib\client.key'
 $hashAlgo = [System.Security.Cryptography.HashAlgorithmName]::SHA256
 [System.Security.Cryptography.RSA]$rsa = [RSAEncryption.RSAEncryptionProvider]::GetRSAProviderFromPemFile($PrivateKeyFilePath)
@@ -307,4 +310,9 @@ $headers = @{
     Date          = "$now"
     Authorization = "Signature keyId=`"system/$($systemKey)`",headers=`"request-line date`",algorithm=`"rsa-sha256`",signature=`"$($signature)`""
 }
-Invoke-WebRequest -Method GET -Uri "https://console.jumpcloud.com/api/systems/$($systemKey)" -ContentType 'application/json' -Headers $headers
+$Form = @{
+    'op'   = 'add';
+    'type' = 'system';
+    'id'   = "$systemKey"
+} | ConvertTo-Json
+Invoke-WebRequest -Method POST -Uri "https://console.jumpcloud.com/api/v2/systemgroups/$systemGroupId/members" -ContentType 'application/json' -Headers $headers -Body $Form -ContentType 'application/json'

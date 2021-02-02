@@ -1,5 +1,6 @@
 ##
-## This API call fetches the system record.
+## This API call adds the system to a System Group.
+## Specify the System Group ID below.
 ##
 
 $config = get-content 'C:\Program Files\JumpCloud\Plugins\Contrib\jcagent.conf'
@@ -293,7 +294,7 @@ $data = $enc.GetBytes($signstr)
 $sha = New-Object System.Security.Cryptography.SHA256CryptoServiceProvider
 # Now hash and display results
 $result = $sha.ComputeHash($data)
-# Private Key Pat
+# Private Key Path
 $PrivateKeyFilePath = 'C:\Program Files\JumpCloud\Plugins\Contrib\client.key'
 $hashAlgo = [System.Security.Cryptography.HashAlgorithmName]::SHA256
 [System.Security.Cryptography.RSA]$rsa = [RSAEncryption.RSAEncryptionProvider]::GetRSAProviderFromPemFile($PrivateKeyFilePath)
@@ -307,4 +308,7 @@ $headers = @{
     Date          = "$now"
     Authorization = "Signature keyId=`"system/$($systemKey)`",headers=`"request-line date`",algorithm=`"rsa-sha256`",signature=`"$($signature)`""
 }
-Invoke-WebRequest -Method GET -Uri "https://console.jumpcloud.com/api/systems/$($systemKey)" -ContentType 'application/json' -Headers $headers
+$Form = @{
+    'displayName'   = 'updated-system-name';
+} | ConvertTo-Json
+Invoke-WebRequest -Method PUT -Uri "https://console.jumpcloud.com/api/systems/$systemKey/" -ContentType 'application/json' -Headers $headers -Body $Form

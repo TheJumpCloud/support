@@ -1,5 +1,5 @@
 ##
-## This API call fetches the system record.
+## This API call deletes the system record.
 ##
 
 $config = get-content 'C:\Program Files\JumpCloud\Plugins\Contrib\jcagent.conf'
@@ -307,4 +307,4 @@ $headers = @{
     Date          = "$now"
     Authorization = "Signature keyId=`"system/$($systemKey)`",headers=`"request-line date`",algorithm=`"rsa-sha256`",signature=`"$($signature)`""
 }
-Invoke-WebRequest -Method GET -Uri "https://console.jumpcloud.com/api/systems/$($systemKey)" -ContentType 'application/json' -Headers $headers
+Invoke-WebRequest -Method DELETE -Uri "https://console.jumpcloud.com/api/systems/$($systemKey)" -ContentType 'application/json' -Headers $headers

@@ -286,7 +286,7 @@ Add-Type -typedef @"
 # Format and create the signature request
 $now = (Get-Date -Date ((Get-Date).ToUniversalTime()) -UFormat "+%a, %d %h %Y %H:%M:%S GMT")
 # create the string to sign from the request-line and the date
-$signstr = "GET /api/systems/$systemKey HTTP/1.1`ndate: $now"
+$signstr = "GET /api/v2/systems/$systemKey/memberof HTTP/1.1`ndate: $now"
 $enc = [system.Text.Encoding]::UTF8
 $data = $enc.GetBytes($signstr)
 # Create a New SHA256 Crypto Provider
@@ -307,4 +307,4 @@ $headers = @{
     Date          = "$now"
     Authorization = "Signature keyId=`"system/$($systemKey)`",headers=`"request-line date`",algorithm=`"rsa-sha256`",signature=`"$($signature)`""
 }
-Invoke-WebRequest -Method GET -Uri "https://console.jumpcloud.com/api/systems/$($systemKey)" -ContentType 'application/json' -Headers $headers
+Invoke-WebRequest -Method GET -Uri "https://console.jumpcloud.com/api/v2/systems/$($systemKey)/memberof" -ContentType 'application/json' -Headers $headers
