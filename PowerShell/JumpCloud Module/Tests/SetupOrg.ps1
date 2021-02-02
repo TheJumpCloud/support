@@ -79,7 +79,7 @@ Try
         SystemLinux    = Get-JCSystem -displayName:($PesterParams_SystemNameLinux)
         SystemMac      = Get-JCSystem -displayName:($PesterParams_SystemNameMac)
         SystemWindows  = Get-JCSystem -displayName:($PesterParams_SystemNameWindows)
-        # CommandResults = Get-JCCommandResult
+        CommandResults = Get-JCCommandResult
     }
     $PesterParamsHash_Associations = @{
         PolicySystemGroupMembership   = $PesterParamsHash_BuildOrg.MultiplePolicy | ForEach-Object {
@@ -93,25 +93,25 @@ Try
         Command3SystemGroupMembership = If (-not (Get-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command3._id) -TargetType:('system_group') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.SystemGroup.id })) { New-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command3._id) -TargetType:('system_group') -TargetId:($PesterParamsHash_BuildOrg.SystemGroup.id) -force; };
     }
     # Generate command results of they dont exist
-    # If ([System.String]::IsNullOrEmpty($PesterParamsHash_BuildOrg.CommandResults) -or $PesterParamsHash_BuildOrg.CommandResults.Count -lt $PesterParams_CommandResultCount)
-    # {
-    If (-not (Get-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command1._id) -TargetType:('system') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.SystemLinux._id }))
+    If ([System.String]::IsNullOrEmpty($PesterParamsHash_BuildOrg.CommandResults) -or $PesterParamsHash_BuildOrg.CommandResults.Count -lt $PesterParams_CommandResultCount)
     {
-        New-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command1._id) -TargetType:('system') -TargetId:($PesterParamsHash_BuildOrg.SystemLinux._id) -force
-    };
-    For ($i = 1; $i -le $PesterParams_CommandResultCount; $i++)
-    {
-        Invoke-JCCommand -trigger:($PesterParamsHash_BuildOrg.Command1.trigger)
+        If (-not (Get-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command1._id) -TargetType:('system') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.SystemLinux._id }))
+        {
+            New-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command1._id) -TargetType:('system') -TargetId:($PesterParamsHash_BuildOrg.SystemLinux._id) -force
+        };
+        For ($i = 1; $i -le $PesterParams_CommandResultCount; $i++)
+        {
+            Invoke-JCCommand -trigger:($PesterParamsHash_BuildOrg.Command1.trigger)
+        }
+        While ((Get-JCCommandResult | Where-Object { $_.Name -eq $PesterParamsHash_BuildOrg.Command1.name }).Count -ge $PesterParams_CommandResultCount)
+        {
+            Start-Sleep -Seconds:(1)
+        }
+        If ((Get-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command1._id) -TargetType:('system') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.SystemLinux._id }))
+        {
+            Remove-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command1._id) -TargetType:('system') -TargetId:($PesterParamsHash_BuildOrg.SystemLinux._id) -force
+        };
     }
-    While ((Get-JCCommandResult | Where-Object { $_.Name -eq $PesterParamsHash_BuildOrg.Command1.name }).Count -ge $PesterParams_CommandResultCount)
-    {
-        Start-Sleep -Seconds:(1)
-    }
-    If ((Get-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command1._id) -TargetType:('system') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.SystemLinux._id }))
-    {
-        Remove-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command1._id) -TargetType:('system') -TargetId:($PesterParamsHash_BuildOrg.SystemLinux._id) -force
-    };
-    # }
     # Combine all hash tables into one list and foreach of their values create a new global parameter
     (Get-Variable -Scope:('Script') -Name:("$($PesterParamsHash_VariableName.VariableNamePrefixHash)*")).Value | ForEach-Object {
         $_.GetEnumerator() | ForEach-Object {
