@@ -75,7 +75,7 @@ Function Backup-JCOrganization
     )
     Begin
     {
-        Connect-JCOnline
+        If ([System.String]::IsNullOrEmpty($env:JCApiKey) -or [System.String]::IsNullOrEmpty($env:JCOrgId)) { Connect-JCOnline }
         $TimerTotal = [Diagnostics.Stopwatch]::StartNew()
         $Date = Get-Date -Format:("yyyyMMddTHHmmssffff")
         $ChildPath = "JumpCloud_$($Date)"
