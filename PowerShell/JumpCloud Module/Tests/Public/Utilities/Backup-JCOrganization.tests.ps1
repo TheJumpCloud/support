@@ -1,7 +1,7 @@
 Describe -Tag:('JCBackup') "Backup-JCOrganization" {
-    BeforeAll {
-        Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
-    }
+    # BeforeAll {
+    #     Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
+    # }
     It "Backs up JumpCloud Org" {
         # Create a backup
         $backupLocation = Backup-JCOrganization -Path ./ -All
@@ -19,32 +19,10 @@ Describe -Tag:('JCBackup') "Backup-JCOrganization" {
             # Only valid target types should exist in the backup directory
             $file.BaseName -in $ValidTargetTypes | Should -BeTrue
         }
-        # verify that the association files have matching ids and target ids
-        foreach ($file in $backupChildItem | Where-Object { $_ -match 'Association' })
-        {
-            # take a look at association files (if they exist)
-            # Verify that each ID has a matching Target ID
-            $fileContent = Get-Content $file | ConvertFrom-Json
-            # test that the id and target id is not null or empty
-            foreach ($item in $fileContent) {
-                if (![System.String]::IsNullOrEmpty($item.Paths))
-                {
-                    # "Testing: $($item.Id)"
-                    $item.Id | Should -Not -BeNullOrEmpty
-                    # "Testing: $($item.Paths.ToId)"
-                    $item.Paths.ToId | Should -Not -BeNullOrEmpty
-                }
-                else {
-                    # "Testing: $($item.FromId)"
-                    $item.FromId | Should -Not -BeNullOrEmpty
-                    # "Testing: $($item.ToId)"
-                    $item.ToId | Should -Not -BeNullOrEmpty
-                }
-            }
-        }
         # verify that each file is not null or empty
-        foreach ($item in $backupChildItem) {
-            Get-Content $item -Raw | Should -Not -BeNullOrEmpty
+        foreach ($item in $backupChildItem)
+        {
+            Get-Content $item.FullName -Raw | Should -Not -BeNullOrEmpty
         }
         # Check the Manifest file:
         $manifest = Get-ChildItem $backupLocation.FullName | Where-Object { $_ -match 'Manifest' } 
@@ -80,37 +58,12 @@ Describe -Tag:('JCBackup') "Backup-JCOrganization" {
             # Only valid target types should exist in the backup directory
             $file.BaseName -in $ValidTargetTypes | Should -BeTrue
         }
-        # verify that the association files have matching ids and target ids
-        foreach ($file in $backupChildItem | Where-Object { $_ -match 'Association' })
-        {
-            # take a look at association files (if they exist)
-            # Verify that each ID has a matching Target ID
-            $fileContent = Get-Content $file | ConvertFrom-CSV
-            # test that the id and target id is not null or empty
-            foreach ($item in $fileContent)
-            {
-                if (![System.String]::IsNullOrEmpty($item.Paths))
-                {
-                    # "Testing: $($item.Id)"
-                    $item.Id | Should -Not -BeNullOrEmpty
-                    # "Testing: $($item.Paths.ToId)"
-                    ($fileContent[0].paths | ConvertFrom-Json).toId | Should -Not -BeNullOrEmpty
-                }
-                else
-                {
-                    # "Testing: $($item.FromId)"
-                    $item.FromId | Should -Not -BeNullOrEmpty
-                    # "Testing: $($item.ToId)"
-                    $item.ToId | Should -Not -BeNullOrEmpty
-                }
-            }
-        }
         # verify that each file is not null or empty
         foreach ($item in $backupChildItem)
         {
             # Files should be of type csv
             $item.extension | Should -Be ".csv"
-            Get-Content $item -Raw | Should -Not -BeNullOrEmpty
+            Get-Content $item.FullName -Raw | Should -Not -BeNullOrEmpty
         }
         # Check the Manifest file:
         $manifest = Get-ChildItem $backupLocation.BackupLocation.FullName | Where-Object { $_ -match 'Manifest' } 
