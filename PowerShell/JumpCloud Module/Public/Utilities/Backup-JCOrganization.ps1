@@ -75,6 +75,9 @@ Function Backup-JCOrganization
     )
     Begin
     {
+        Write-Verbose 'Verifying JCAPI Key'
+        if ($JCAPIKEY.length -ne 40) { Connect-JCOnline }
+
         $TimerTotal = [Diagnostics.Stopwatch]::StartNew()
         $Date = Get-Date -Format:("yyyyMMddTHHmmssffff")
         $ChildPath = "JumpCloud_$($Date)"
