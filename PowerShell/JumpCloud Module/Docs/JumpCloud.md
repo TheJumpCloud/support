@@ -29,6 +29,9 @@ Associates a JumpCloud User account with a local account on a JumpCloud managed 
 ### [Add-JCUserGroupMember](Add-JCUserGroupMember.md)
 Adds a JumpCloud user to a JumpCloud User Group.
 
+### [Backup-JCOrganization](Backup-JCOrganization.md)
+Backup your JumpCloud organization to local json files
+
 ### [Connect-JCOnline](Connect-JCOnline.md)
 The Connect-JCOnline function sets the global variable $JCAPIKEY
 
