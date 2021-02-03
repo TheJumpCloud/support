@@ -50,4 +50,57 @@ Describe -Tag:('JCBackup') "Backup-JCOrganization" {
         $zipArchive | Remove-Item -Force
         $backupLocation | Remove-Item -Recurse -Force
     }
+    It "Backs up JumpCloud Org with specific params" {
+        # Create a backup
+        $backupLocation = Backup-JCOrganization -Path ./ -Type:('User', 'UserGroup') -PassThru -Format:('csv') -Association
+        # From the output of the command, set the expected .zip output
+        $zipArchive = Get-Item "$($backupLocation.BackupLocation.FullName).zip"
+        # Expand the Archive
+        Expand-Archive -Path "$zipArchive" -DestinationPath ./
+        # Get child items from the backup directory
+        $backupChildItem = Get-ChildItem $backupLocation.BackupLocation.FullName | Where-Object { $_ -notmatch 'Manifest' }
+        # Get valid target types for the backup
+        $ValidTargetTypes = @('User', 'UserGroup')
+        # verify that the object backup files exist
+        foreach ($file in $backupChildItem | Where-Object { $_ -notmatch 'Association' })
+        {
+            # Only valid target types should exist in the backup directory
+            $file.BaseName -in $ValidTargetTypes | Should -BeTrue
+        }
+        # verify that the association files have matching ids and target ids
+        foreach ($file in $backupChildItem | Where-Object { $_ -match 'Association' })
+        {
+            # take a look at association files (if they exist)
+            # Verify that each ID has a matching Target ID
+            $fileContent = Get-Content $file | ConvertFrom-CSV
+            # test that the id and target id is not null or empty
+            foreach ($item in $fileContent)
+            {
+                if (![System.String]::IsNullOrEmpty($item.Paths))
+                {
+                    # "Testing: $($item.Id)"
+                    $item.Id | Should -Not -BeNullOrEmpty
+                    # "Testing: $($item.Paths.ToId)"
+                    ($fileContent[0].paths | ConvertFrom-Json).toId | Should -Not -BeNullOrEmpty
+                }
+                else
+                {
+                    # "Testing: $($item.FromId)"
+                    $item.FromId | Should -Not -BeNullOrEmpty
+                    # "Testing: $($item.ToId)"
+                    $item.ToId | Should -Not -BeNullOrEmpty
+                }
+            }
+        }
+        # verify that each file is not null or empty
+        foreach ($item in $backupChildItem)
+        {
+            # Files should be of type csv
+            $item.extension | Should -Be ".csv"
+            Get-Content $item -Raw | Should -Not -BeNullOrEmpty
+        }
+        ($backupLocation.BackupLocation.Parent.EnumerateFiles() | Where-Object { $_.Name -match "$($backupLocation.BackupLocation.BaseName).zip" }) | Should -BeTrue
+        $zipArchive | Remove-Item -Force
+        $backupLocation | Remove-Item -Recurse -Force
+    }
 }
