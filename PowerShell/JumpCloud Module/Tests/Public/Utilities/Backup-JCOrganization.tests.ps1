@@ -1,7 +1,7 @@
 Describe -Tag:('JCBackup') "Backup-JCOrganization" {
-    BeforeAll {
-        Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
-    }
+    # BeforeAll {
+    #     Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
+    # }
     It "Backs up JumpCloud Org" {
         # Create a backup
         $backupLocation = Backup-JCOrganization -Path ./ -All
@@ -45,6 +45,19 @@ Describe -Tag:('JCBackup') "Backup-JCOrganization" {
         # verify that each file is not null or empty
         foreach ($item in $backupChildItem) {
             Get-Content $item -Raw | Should -Not -BeNullOrEmpty
+        }
+        # Check the Manifest file:
+        $manifest = Get-ChildItem $backupLocation.FullName | Where-Object { $_ -match 'Manifest' } 
+        $manifestContent = Get-Content $manifest | ConvertFrom-Json
+        $manifestFiles = $manifestContent.result | Where-Object { $_ -notmatch 'Association' }
+        # $manifestAssociationFiles = $manifestContent.result | Where-Object { $_ -match 'Association' }
+
+        foreach ($file in $manifestFiles)
+        {
+            # Manifest Results should contain valid types
+            $file.type -in $ValidTargetTypes | Should -BeTrue
+            # Backup Files should contain file sin results manifest
+            $backupChildItem.Name -match "$($file.type)" | Should -BeTrue
         }
         ($backupLocation.Parent.EnumerateFiles() | Where-Object { $_.Name -match "$($backupLocation.BaseName).zip" }) | Should -BeTrue
         $zipArchive | Remove-Item -Force
@@ -99,8 +112,21 @@ Describe -Tag:('JCBackup') "Backup-JCOrganization" {
             $item.extension | Should -Be ".csv"
             Get-Content $item -Raw | Should -Not -BeNullOrEmpty
         }
+        # Check the Manifest file:
+        $manifest = Get-ChildItem $backupLocation.BackupLocation.FullName | Where-Object { $_ -match 'Manifest' } 
+        $manifestContent = Get-Content $manifest | ConvertFrom-Json
+        $manifestFiles = $manifestContent.result | Where-Object { $_ -notmatch 'Association' }
+        # $manifestAssociationFiles = $manifestContent.result | Where-Object { $_ -match 'Association' }
+
+        foreach ($file in $manifestFiles)
+        {
+            # Manifest Results should contain valid types
+            $file.type -in $ValidTargetTypes | Should -BeTrue
+            # Backup Files should contain file sin results manifest
+            $backupChildItem.Name -match "$($file.type)" | Should -BeTrue
+        }
         ($backupLocation.BackupLocation.Parent.EnumerateFiles() | Where-Object { $_.Name -match "$($backupLocation.BackupLocation.BaseName).zip" }) | Should -BeTrue
         $zipArchive | Remove-Item -Force
-        $backupLocation | Remove-Item -Recurse -Force
+        $backupLocation.BackupLocation | Remove-Item -Recurse -Force
     }
 }
