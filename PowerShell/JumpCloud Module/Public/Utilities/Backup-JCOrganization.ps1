@@ -131,7 +131,7 @@ Function Backup-JCOrganization
             $SourceTypeMap = $JcTypesMap.GetEnumerator() | Where-Object { $_.Key -eq $JumpCloudType }
             $ObjectBaseName = "{0}" -f $SourceTypeMap.Key
             $ObjectFileName = "{0}.{1}" -f $ObjectBaseName, $Format
-            $ObjectFullName = "{0}/{1}" -f $TempPath, $ObjectFileName
+            $ObjectFullName = "{0}/{1}" -f (Resolve-Path $TempPath), $ObjectFileName
             $ObjectJobs += Start-Job -ScriptBlock:( { Param ($SourceTypeMap, $ObjectBaseName, $ObjectFileName, $ObjectFullName, $Format, $Debug);
                     # Logic to handle directories
                     $Command = If ($SourceTypeMap.Key -eq 'GSuite')
@@ -222,7 +222,7 @@ Function Backup-JCOrganization
                     {
                         $AssociationBaseName = "Association-{0}To{1}" -f $SourceTypeMap.Key, $TargetTypeMap.Key
                         $AssociationFileName = "{0}.{1}" -f $AssociationBaseName, $Format
-                        $AssociationFullName = "{0}/{1}" -f $TempPath, $AssociationFileName
+                        $AssociationFullName = "{0}/{1}" -f (Resolve-Path $TempPath), $AssociationFileName
                         $AssociationJobs += Start-Job -ScriptBlock:( { Param ($SourceTypeMap, $TargetTypeMap, $BackupFile, $AssociationBaseName, $AssociationFileName, $AssociationFullName, $Format, $Debug);
                                 $AssociationResults = @()
                                 # Get content from the file
