@@ -315,4 +315,4 @@ $Form = @{
     'type' = 'system';
     'id'   = "$systemKey"
 } | ConvertTo-Json
-Invoke-WebRequest -Method POST -Uri "https://console.jumpcloud.com/api/v2/systemgroups/$systemGroupId/members" -ContentType 'application/json' -Headers $headers -Body $Form -UseBasicParsing
+Invoke-RestMethod -Method POST -Uri "https://console.jumpcloud.com/api/v2/systemgroups/$systemGroupId/members" -ContentType 'application/json' -Headers $headers -Body $Form

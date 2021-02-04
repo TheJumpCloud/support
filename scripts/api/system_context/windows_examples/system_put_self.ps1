@@ -311,4 +311,4 @@ $headers = @{
 $Form = @{
     'displayName'   = 'updated-system-name';
 } | ConvertTo-Json
-Invoke-WebRequest -Method PUT -Uri "https://console.jumpcloud.com/api/systems/$systemKey" -ContentType 'application/json' -Headers $headers -Body $Form -UseBasicParsing
+Invoke-RestMethod -Method PUT -Uri "https://console.jumpcloud.com/api/systems/$systemKey" -ContentType 'application/json' -Headers $headers -Body $Form
