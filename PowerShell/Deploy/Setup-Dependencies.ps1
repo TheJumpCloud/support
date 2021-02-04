@@ -75,7 +75,7 @@ If (-not [System.String]::IsNullOrEmpty($Psd1))
         If ([System.String]::IsNullOrEmpty((Get-InstalledModule).Where( { $_.Name -eq $RequiredModule })))
         {
             Write-Host("[status]Installing '$RequiredModule' from '$RequiredModulesRepo'")
-            Install-Module -Force -Name:($RequiredModule) -Scope:('CurrentUser')
+            Install-Module -Force -Name:($RequiredModule) -Scope:('CurrentUser') -Repository:($RequiredModulesRepo) -Credential:($RepositoryCredentials) -AllowPrerelease
         }
         # Get-Module -Refresh -ListAvailable
         If ([System.String]::IsNullOrEmpty((Get-Module).Where( { $_.Name -eq $RequiredModule })))
