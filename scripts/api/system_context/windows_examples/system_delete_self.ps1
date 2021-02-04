@@ -293,7 +293,7 @@ $data = $enc.GetBytes($signstr)
 $sha = New-Object System.Security.Cryptography.SHA256CryptoServiceProvider
 # Now hash and display results
 $result = $sha.ComputeHash($data)
-# Private Key Pat
+# Private Key Path
 $PrivateKeyFilePath = 'C:\Program Files\JumpCloud\Plugins\Contrib\client.key'
 $hashAlgo = [System.Security.Cryptography.HashAlgorithmName]::SHA256
 [System.Security.Cryptography.RSA]$rsa = [RSAEncryption.RSAEncryptionProvider]::GetRSAProviderFromPemFile($PrivateKeyFilePath)
