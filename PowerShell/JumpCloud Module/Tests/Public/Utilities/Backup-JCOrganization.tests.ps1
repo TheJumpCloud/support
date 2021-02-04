@@ -26,7 +26,7 @@ Describe -Tag:('JCBackup') "Backup-JCOrganization" {
         }
         # Check the Manifest file:
         $manifest = Get-ChildItem $backupLocation.FullName | Where-Object { $_ -match 'Manifest' } 
-        $manifestContent = Get-Content $manifest | ConvertFrom-Json
+        $manifestContent = Get-Content $manifest.Fullname | ConvertFrom-Json
         $manifestFiles = $manifestContent.result | Where-Object { $_ -notmatch 'Association' }
         # $manifestAssociationFiles = $manifestContent.result | Where-Object { $_ -match 'Association' }
 
@@ -67,7 +67,7 @@ Describe -Tag:('JCBackup') "Backup-JCOrganization" {
         }
         # Check the Manifest file:
         $manifest = Get-ChildItem $backupLocation.BackupLocation.FullName | Where-Object { $_ -match 'Manifest' } 
-        $manifestContent = Get-Content $manifest | ConvertFrom-Json
+        $manifestContent = Get-Content $manifest.Fullname | ConvertFrom-Json
         $manifestFiles = $manifestContent.result | Where-Object { $_ -notmatch 'Association' }
         # $manifestAssociationFiles = $manifestContent.result | Where-Object { $_ -match 'Association' }
 
