@@ -3,7 +3,7 @@
 ## Specify the System Group ID below.
 ##
 
-$systemGroupId=""
+$systemGroupId="5f0dbb8a232e112ed957e40e"
 
 $config = get-content 'C:\Program Files\JumpCloud\Plugins\Contrib\jcagent.conf'
 $regex = 'systemKey\":\"(\w+)\"'
@@ -289,7 +289,7 @@ Add-Type -typedef @"
 # Format and create the signature request
 $now = (Get-Date -Date ((Get-Date).ToUniversalTime()) -UFormat "+%a, %d %h %Y %H:%M:%S GMT")
 # create the string to sign from the request-line and the date
-$signstr = "GET /api/v2/systemgroups/$systemGroupId/members HTTP/1.1`ndate: $now"
+$signstr = "POST /api/v2/systemgroups/$systemGroupId/members HTTP/1.1`ndate: $now"
 $enc = [system.Text.Encoding]::UTF8
 $data = $enc.GetBytes($signstr)
 # Create a New SHA256 Crypto Provider
@@ -315,4 +315,4 @@ $Form = @{
     'type' = 'system';
     'id'   = "$systemKey"
 } | ConvertTo-Json
-Invoke-WebRequest -Method POST -Uri "https://console.jumpcloud.com/api/v2/systemgroups/$systemGroupId/members" -ContentType 'application/json' -Headers $headers -Body $Form -ContentType 'application/json'
+Invoke-WebRequest -Method POST -Uri "https://console.jumpcloud.com/api/v2/systemgroups/$systemGroupId/members" -ContentType 'application/json' -Headers $headers -Body $Form -UseBasicParsing

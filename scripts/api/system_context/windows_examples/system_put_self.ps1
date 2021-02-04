@@ -287,7 +287,7 @@ Add-Type -typedef @"
 # Format and create the signature request
 $now = (Get-Date -Date ((Get-Date).ToUniversalTime()) -UFormat "+%a, %d %h %Y %H:%M:%S GMT")
 # create the string to sign from the request-line and the date
-$signstr = "GET /api/systems/$systemKey HTTP/1.1`ndate: $now"
+$signstr = "PUT /api/systems/$systemKey HTTP/1.1`ndate: $now"
 $enc = [system.Text.Encoding]::UTF8
 $data = $enc.GetBytes($signstr)
 # Create a New SHA256 Crypto Provider
@@ -311,4 +311,4 @@ $headers = @{
 $Form = @{
     'displayName'   = 'updated-system-name';
 } | ConvertTo-Json
-Invoke-WebRequest -Method PUT -Uri "https://console.jumpcloud.com/api/systems/$systemKey/" -ContentType 'application/json' -Headers $headers -Body $Form
+Invoke-WebRequest -Method PUT -Uri "https://console.jumpcloud.com/api/systems/$systemKey" -ContentType 'application/json' -Headers $headers -Body $Form -UseBasicParsing
