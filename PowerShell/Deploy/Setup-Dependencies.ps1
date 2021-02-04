@@ -1,5 +1,5 @@
 Param(
-    [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 0)][System.String[]]$DependentModules = ('PowerShellGet', 'PackageManagement', 'PSScriptAnalyzer', 'PlatyPS')
+    [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 0)][System.String[]]$DependentModules = ('PowerShellGet', 'PackageManagement', 'PSScriptAnalyzer', 'PlatyPS', 'Pester')
     , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 1)][System.String]$RequiredModulesRepo = 'PSGallery'
 )
 # Install NuGet
@@ -25,14 +25,15 @@ ForEach ($DependentModule In $DependentModules)
         Import-Module -Name:($DependentModule) -Force
     }
 }
-Get-Command -Module:('PowerShellGet', 'PackageManagement') -ParameterName 'Repository' | ForEach-Object {
-    If ( -not $PSDefaultParameterValues.GetEnumerator() | Where-Object { $_.Key -eq "$($_.Name):Repository" -and $_.Value -eq $RequiredModulesRepo })
-    {
-        $PSDefaultParameterValues["$($_.Name):Repository"] = $RequiredModulesRepo
-    }
-}
 If ($RequiredModulesRepo -ne 'PSGallery')
 {
+    # Set default -Repository parameter value to be $RequiredModulesRepo
+    Get-Command -Module:('PowerShellGet', 'PackageManagement') -ParameterName 'Repository' | ForEach-Object {
+        If ( -not $PSDefaultParameterValues.GetEnumerator() | Where-Object { $_.Key -eq "$($_.Name):Repository" -and $_.Value -eq $RequiredModulesRepo })
+        {
+            $PSDefaultParameterValues["$($_.Name):Repository"] = $RequiredModulesRepo
+        }
+    }
     If (-not [System.String]::IsNullOrEmpty($env:SYSTEM_ACCESSTOKEN))
     {
         # Register PSRepository
@@ -40,6 +41,7 @@ If ($RequiredModulesRepo -ne 'PSGallery')
         {
             $Password = $env:SYSTEM_ACCESSTOKEN | ConvertTo-SecureString -AsPlainText -Force
             $RepositoryCredentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $env:SYSTEM_ACCESSTOKEN, $Password
+            # Set default -Credential parameter value to be $RepositoryCredentials
             Get-Command -Module:('PowerShellGet', 'PackageManagement') -ParameterName 'Credential' | ForEach-Object {
                 If ( -not $PSDefaultParameterValues.GetEnumerator() | Where-Object { $_.Key -eq "$($_.Name):Credential" -and $_.Value -eq $RepositoryCredentials })
                 {
@@ -50,6 +52,7 @@ If ($RequiredModulesRepo -ne 'PSGallery')
             Register-PackageSource -Trusted -ProviderName:("PowerShellGet") -Name:($RequiredModulesRepo) -Location:("https://pkgs.dev.azure.com/$(($RequiredModulesRepo.Split('-'))[0])/_packaging/$($(($RequiredModulesRepo.Split('-'))[1]))/nuget/v2/")
         }
     }
+    # Set default -AllowPrerelease parameter value to be $True
     Get-Command -Module:('PowerShellGet', 'PackageManagement') -ParameterName 'AllowPrerelease' | ForEach-Object {
         If ( -not $PSDefaultParameterValues.GetEnumerator() | Where-Object { $_.Key -eq "$($_.Name):AllowPrerelease" -and $_.Value -eq $true })
         {
