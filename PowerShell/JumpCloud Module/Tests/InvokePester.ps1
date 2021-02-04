@@ -7,7 +7,7 @@ Param(
 )
 $global:RequiredModulesRepo = $RequiredModulesRepo;
 # Load Setup-Dependencies.ps1
-. (Join-Path -Path:((Get-Item -Path:($PSScriptRoot)).Parent.Parent) -ChildPath:('Deploy/Setup-Dependencies.ps1') -Resolve) -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp)
+. (Join-Path -Path:((Get-Item -Path:($PSScriptRoot)).Parent.Parent) -ChildPath:('Deploy/Setup-Dependencies.ps1') -Resolve) -RequiredModulesRepo:($RequiredModulesRepo)
 # Get list of tags and validate that tags have been applied
 $PesterTests = Get-ChildItem -Path:($PSScriptRoot + '/*.Tests.ps1') -Recurse
 $Tags = ForEach ($PesterTest In $PesterTests)
