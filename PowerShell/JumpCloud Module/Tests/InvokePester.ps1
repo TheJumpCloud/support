@@ -40,23 +40,6 @@ Else
 }
 # Load DefineEnvironment
 . ("$PSScriptRoot/DefineEnvironment.ps1") -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp)
-# Load required modules
-$RequiredModules = (Import-LocalizedData -BaseDirectory:($PesterParams_ModuleManifestPath) -FileName:($PesterParams_ModuleManifestName)).RequiredModules
-If ($RequiredModules)
-{
-    $RequiredModules | ForEach-Object {
-        If ([System.String]::IsNullOrEmpty((Get-InstalledModule).Where( { $_.Name -eq $_ })))
-        {
-            Write-Host("[status]Installing '$_' from '$RequiredModulesRepo'")
-            Install-Module -Name:($_) -Force
-        }
-        If (!(Get-Module -Name:($_)))
-        {
-            Write-Host ('[status]Importing: ' + $_)
-            Import-Module -Name:($_) -Force
-        }
-    }
-}
 # Import the module
 Write-Host ('[status]Importing module: ' + "$PesterParams_ModuleManifestPath/$PesterParams_ModuleManifestName")
 Import-Module -Name:("$PesterParams_ModuleManifestPath/$PesterParams_ModuleManifestName") -Force
