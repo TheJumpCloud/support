@@ -293,7 +293,7 @@ $data = $enc.GetBytes($signstr)
 $sha = New-Object System.Security.Cryptography.SHA256CryptoServiceProvider
 # Now hash and display results
 $result = $sha.ComputeHash($data)
-# Private Key Path
+# Private Key Pat
 $PrivateKeyFilePath = 'C:\Program Files\JumpCloud\Plugins\Contrib\client.key'
 $hashAlgo = [System.Security.Cryptography.HashAlgorithmName]::SHA256
 [System.Security.Cryptography.RSA]$rsa = [RSAEncryption.RSAEncryptionProvider]::GetRSAProviderFromPemFile($PrivateKeyFilePath)
@@ -307,4 +307,4 @@ $headers = @{
     Date          = "$now"
     Authorization = "Signature keyId=`"system/$($systemKey)`",headers=`"request-line date`",algorithm=`"rsa-sha256`",signature=`"$($signature)`""
 }
-Invoke-WebRequest -Method GET -Uri "https://console.jumpcloud.com/api/v2/systems/$($systemKey)/memberof" -ContentType 'application/json' -Headers $headers
+Invoke-RestMethod -Method GET -Uri "https://console.jumpcloud.com/api/v2/systems/$($systemKey)/memberof" -ContentType 'application/json' -Headers $headers
