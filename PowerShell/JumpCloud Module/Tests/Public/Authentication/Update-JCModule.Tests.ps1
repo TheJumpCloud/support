@@ -1,9 +1,16 @@
 Describe -Tag:('JCModule') 'Test for Update-JCModule' {
     It ("Where the local version number has been updated to match the $RequiredModulesRepo version number") {
-        $EarliestVersion = Find-Module -Name:('JumpCloud') -AllVersions | Sort-Object PublishedDate | Select-Object -First 1
-        Install-Module -Name:('JumpCloud') -RequiredVersion:($EarliestVersion.Version) -Scope:('CurrentUser') -Force
+        $EarliestVersion = Find-Module -Name:('JumpCloud') -Repository:($RequiredModulesRepo) -Credential:($RepositoryCredentials) -AllVersions -AllowPrerelease | Sort-Object PublishedDate | Select-Object -First 1
+        Install-Module -Name:('JumpCloud') -Repository:($RequiredModulesRepo) -Credential:($RepositoryCredentials) -RequiredVersion:($EarliestVersion.Version) -Scope:('CurrentUser') -Force -AllowPrerelease
         $InitialModule = Get-Module -Name:('JumpCloud') -All | Where-Object { $_.Version -eq $EarliestVersion.Version }
-        $PowerShellGalleryModule = Find-Module -Name:('JumpCloud')
+        $PowerShellGalleryModule = If (-not [System.String]::IsNullOrEmpty($RepositoryCredentials))
+        {
+            Find-Module -Name:('JumpCloud') -Repository:($RequiredModulesRepo) -Credential:($RepositoryCredentials) -AllowPrerelease
+        }
+        Else
+        {
+            Find-Module -Name:('JumpCloud') -Repository:($RequiredModulesRepo)
+        }
         $LocalModulePre = Get-Module -Name:('JumpCloud')
         Write-Host ("$RequiredModulesRepo Version: $($PowerShellGalleryModule.Version)")
         Write-Host ("Local Version Before: $($LocalModulePre.Version)")

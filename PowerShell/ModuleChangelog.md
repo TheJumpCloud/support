@@ -1,14 +1,15 @@
 ## 1.18.3
 
-Release Date: November 10, 2020
+Release Date: January 04, 2021
 
 #### RELEASE NOTES
 
 Internal improvements.
 "WARNING: Get-JCBackup is no longer supported and will soon be deprecated; Please use Backup-JCOrganization and Restore-JCOrganization instead. `nBackup-JCOrganization: https://github.com/TheJumpCloud/support/tree/master/PowerShell/JumpCloud%20Module/Docs/Backup-JCOrganization.md`nRestore-JCOrganization: https://github.com/TheJumpCloud/support/tree/master/PowerShell/JumpCloud%20Module/Docs/Restore-JCOrganization.md"
 
-
 #### FEATURES
+
+New Function, Backup-JCOrganization added to backup objects in a JumpCloud Organization.
 
 #### IMPROVEMENTS
 
