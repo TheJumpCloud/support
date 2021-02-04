@@ -34,30 +34,34 @@ If ($RequiredModulesRepo -ne 'PSGallery')
             $PSDefaultParameterValues["$($_.Name):Repository"] = $RequiredModulesRepo
         }
     }
-    If (-not [System.String]::IsNullOrEmpty($env:SYSTEM_ACCESSTOKEN))
-    {
-        # Register PSRepository
-        If (-not (Get-PackageSource -Name:($RequiredModulesRepo) -ErrorAction SilentlyContinue))
-        {
-            $Password = $env:SYSTEM_ACCESSTOKEN | ConvertTo-SecureString -AsPlainText -Force
-            $RepositoryCredentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $env:SYSTEM_ACCESSTOKEN, $Password
-            # Set default -Credential parameter value to be $RepositoryCredentials
-            Get-Command -Module:('PowerShellGet', 'PackageManagement') -ParameterName 'Credential' | ForEach-Object {
-                If ( -not $PSDefaultParameterValues.GetEnumerator() | Where-Object { $_.Key -eq "$($_.Name):Credential" -and $_.Value -eq $RepositoryCredentials })
-                {
-                    $PSDefaultParameterValues["$($_.Name):Credential"] = $RepositoryCredentials
-                }
-            }
-            Write-Host("[status]Register-PackageSource Setup '$RequiredModulesRepo'")
-            Register-PackageSource -Trusted -ProviderName:("PowerShellGet") -Name:($RequiredModulesRepo) -Location:("https://pkgs.dev.azure.com/$(($RequiredModulesRepo.Split('-'))[0])/_packaging/$($(($RequiredModulesRepo.Split('-'))[1]))/nuget/v2/")
-        }
-    }
     # Set default -AllowPrerelease parameter value to be $True
     Get-Command -Module:('PowerShellGet', 'PackageManagement') -ParameterName 'AllowPrerelease' | ForEach-Object {
         If ( -not $PSDefaultParameterValues.GetEnumerator() | Where-Object { $_.Key -eq "$($_.Name):AllowPrerelease" -and $_.Value -eq $true })
         {
             $PSDefaultParameterValues["$($_.Name):AllowPrerelease"] = $true
         }
+    }
+    If (-not [System.String]::IsNullOrEmpty($env:SYSTEM_ACCESSTOKEN))
+    {
+        $Password = $env:SYSTEM_ACCESSTOKEN | ConvertTo-SecureString -AsPlainText -Force
+        $RepositoryCredentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $env:SYSTEM_ACCESSTOKEN, $Password
+        # Set default -Credential parameter value to be $RepositoryCredentials
+        Get-Command -Module:('PowerShellGet', 'PackageManagement') -ParameterName 'Credential' | ForEach-Object {
+            If ( -not $PSDefaultParameterValues.GetEnumerator() | Where-Object { $_.Key -eq "$($_.Name):Credential" -and $_.Value -eq $RepositoryCredentials })
+            {
+                $PSDefaultParameterValues["$($_.Name):Credential"] = $RepositoryCredentials
+            }
+        }
+    }
+    Else
+    {
+        Write-Warning ('No SYSTEM_ACCESSTOKEN has been provided')
+    }
+    # Register PSRepository
+    If (-not (Get-PackageSource -Name:($RequiredModulesRepo) -ErrorAction SilentlyContinue))
+    {
+        Write-Host("[status]Register-PackageSource Setup '$RequiredModulesRepo'")
+        Register-PackageSource -Trusted -ProviderName:("PowerShellGet") -Name:($RequiredModulesRepo) -Location:("https://pkgs.dev.azure.com/$(($RequiredModulesRepo.Split('-'))[0])/_packaging/$($(($RequiredModulesRepo.Split('-'))[1]))/nuget/v2/")
     }
 }
 If (-not [System.String]::IsNullOrEmpty($Psd1))
