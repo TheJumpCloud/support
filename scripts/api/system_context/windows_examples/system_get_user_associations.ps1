@@ -307,4 +307,4 @@ $headers = @{
     Date          = "$now"
     Authorization = "Signature keyId=`"system/$($systemKey)`",headers=`"request-line date`",algorithm=`"rsa-sha256`",signature=`"$($signature)`""
 }
-Invoke-WebRequest -Method GET -Uri "https://console.jumpcloud.com/api/v2/systems/$($systemKey)/users" -ContentType 'application/json' -Headers $headers
+Invoke-RestMethod -Method GET -Uri "https://console.jumpcloud.com/api/v2/systems/$($systemKey)/users" -ContentType 'application/json' -Headers $headers
