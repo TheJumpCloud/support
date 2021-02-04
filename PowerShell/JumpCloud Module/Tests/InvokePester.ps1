@@ -42,7 +42,7 @@ Else
 . ("$PSScriptRoot/DefineEnvironment.ps1") -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp)
 # Import the module
 Write-Host ('[status]Importing module: ' + "$PesterParams_ModuleManifestPath/$PesterParams_ModuleManifestName")
-Import-Module -Name:("$PesterParams_ModuleManifestPath/$PesterParams_ModuleManifestName") -Force
+Import-Module -Name:("$PesterParams_ModuleManifestPath/$PesterParams_ModuleManifestName") -Force -Global
 # Load private functions
 Write-Host ('[status]Load private functions: ' + "$PSScriptRoot/../Private/*.ps1")
 Get-ChildItem -Path:("$PSScriptRoot/../Private/*.ps1") -Recurse | ForEach-Object { . $_.FullName }

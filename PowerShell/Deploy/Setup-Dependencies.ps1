@@ -22,7 +22,7 @@ ForEach ($DependentModule In $DependentModules)
     If ([System.String]::IsNullOrEmpty((Get-Module).Where( { $_.Name -eq $DependentModule })))
     {
         Write-Host("[status]Importing '$DependentModule'")
-        Import-Module -Name:($DependentModule) -Force
+        Import-Module -Name:($DependentModule) -Force -Global
     }
 }
 If ($RequiredModulesRepo -ne 'PSGallery')
@@ -81,14 +81,14 @@ If (-not [System.String]::IsNullOrEmpty($Psd1))
         If ([System.String]::IsNullOrEmpty((Get-Module).Where( { $_.Name -eq $RequiredModule })))
         {
             Write-Host("[status]Importing '$RequiredModule'")
-            Import-Module -Name:($RequiredModule) -Force
+            Import-Module -Name:($RequiredModule) -Force -Global
         }
     }
     # Load current module
     If ([System.String]::IsNullOrEmpty((Get-Module).Where( { $_.Name -eq $ModuleName })))
     {
         Write-Host("[status]Importing '$ModuleName'")
-        Import-Module ($FilePath_psd1) -Force
+        Import-Module ($FilePath_psd1) -Force -Global
     }
     # Load "Deploy" functions
     $DeployFunctions = @(Get-ChildItem -Path:($PSScriptRoot + '/Functions/*.ps1') -Recurse)
