@@ -5,7 +5,7 @@
 ## Specify the System Group ID below.
 ##
 
-systemGroupId="5f0dbb8a232e112ed957e40e"
+systemGroupId=""
 
 # Parse the systemKey from the conf file.
 # The conf file is JSON and can be parsed using JSON.parse() in a supported language.
