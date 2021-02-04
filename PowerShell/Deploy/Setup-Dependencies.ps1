@@ -56,12 +56,13 @@ If ($RequiredModulesRepo -ne 'PSGallery')
     Else
     {
         Write-Warning ('No SYSTEM_ACCESSTOKEN has been provided')
+        Write-Host ('No SYSTEM_ACCESSTOKEN has been provided')
     }
     # Register PSRepository
     If (-not (Get-PackageSource -Name:($RequiredModulesRepo) -ErrorAction SilentlyContinue))
     {
         Write-Host("[status]Register-PackageSource Setup '$RequiredModulesRepo'")
-        Register-PackageSource -Trusted -ProviderName:("PowerShellGet") -Name:($RequiredModulesRepo) -Location:("https://pkgs.dev.azure.com/$(($RequiredModulesRepo.Split('-'))[0])/_packaging/$($(($RequiredModulesRepo.Split('-'))[1]))/nuget/v2/")
+        Register-PackageSource -Trusted -ProviderName:("PowerShellGet") -Name:($RequiredModulesRepo) -Credential:($RepositoryCredentials) -Location:("https://pkgs.dev.azure.com/$(($RequiredModulesRepo.Split('-'))[0])/_packaging/$($(($RequiredModulesRepo.Split('-'))[1]))/nuget/v2/")
     }
 }
 If (-not [System.String]::IsNullOrEmpty($Psd1))
