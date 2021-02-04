@@ -29,16 +29,16 @@ If ($RequiredModulesRepo -ne 'PSGallery')
 {
     # Set default -Repository parameter value to be $RequiredModulesRepo
     Get-Command -Module:('PowerShellGet', 'PackageManagement') -ParameterName 'Repository' | ForEach-Object {
-        If ( -not $PSDefaultParameterValues.GetEnumerator() | Where-Object { $_.Key -eq "$($_.Name):Repository" -and $_.Value -eq $RequiredModulesRepo })
+        If ( -not $global:PSDefaultParameterValues.GetEnumerator() | Where-Object { $_.Key -eq "$($_.Name):Repository" -and $_.Value -eq $RequiredModulesRepo })
         {
-            $PSDefaultParameterValues["$($_.Name):Repository"] = $RequiredModulesRepo
+            $global:PSDefaultParameterValues["$($_.Name):Repository"] = $RequiredModulesRepo
         }
     }
     # Set default -AllowPrerelease parameter value to be $True
     Get-Command -Module:('PowerShellGet', 'PackageManagement') -ParameterName 'AllowPrerelease' | ForEach-Object {
-        If ( -not $PSDefaultParameterValues.GetEnumerator() | Where-Object { $_.Key -eq "$($_.Name):AllowPrerelease" -and $_.Value -eq $true })
+        If ( -not $global:PSDefaultParameterValues.GetEnumerator() | Where-Object { $_.Key -eq "$($_.Name):AllowPrerelease" -and $_.Value -eq $true })
         {
-            $PSDefaultParameterValues["$($_.Name):AllowPrerelease"] = $true
+            $global:PSDefaultParameterValues["$($_.Name):AllowPrerelease"] = $true
         }
     }
     If (-not [System.String]::IsNullOrEmpty($env:SYSTEM_ACCESSTOKEN))
@@ -47,9 +47,9 @@ If ($RequiredModulesRepo -ne 'PSGallery')
         $RepositoryCredentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $env:SYSTEM_ACCESSTOKEN, $Password
         # Set default -Credential parameter value to be $RepositoryCredentials
         Get-Command -Module:('PowerShellGet', 'PackageManagement') -ParameterName 'Credential' | ForEach-Object {
-            If ( -not $PSDefaultParameterValues.GetEnumerator() | Where-Object { $_.Key -eq "$($_.Name):Credential" -and $_.Value -eq $RepositoryCredentials })
+            If ( -not $global:PSDefaultParameterValues.GetEnumerator() | Where-Object { $_.Key -eq "$($_.Name):Credential" -and $_.Value -eq $RepositoryCredentials })
             {
-                $PSDefaultParameterValues["$($_.Name):Credential"] = $RepositoryCredentials
+                $global:PSDefaultParameterValues["$($_.Name):Credential"] = $RepositoryCredentials
             }
         }
     }
