@@ -56,7 +56,6 @@ If ($RequiredModulesRepo -ne 'PSGallery')
     Else
     {
         Write-Warning ('No SYSTEM_ACCESSTOKEN has been provided')
-        Write-Host ('No SYSTEM_ACCESSTOKEN has been provided')
     }
     # Register PSRepository
     If (-not (Get-PackageSource -Name:($RequiredModulesRepo) -ErrorAction SilentlyContinue))
