@@ -1,7 +1,7 @@
 Describe -Tag:('JCBackup') "Backup-JCOrganization" {
-    # BeforeAll {
-    #     Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
-    # }
+    BeforeAll {
+        Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
+    }
     It "Backs up JumpCloud Org" {
         # Create a backup
         $backupLocation = Backup-JCOrganization -Path ./ -All
