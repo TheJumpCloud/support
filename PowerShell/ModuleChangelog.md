@@ -1,24 +1,3 @@
-## 1.18.3
-
-Release Date: January 04, 2021
-
-#### RELEASE NOTES
-
-* New Function, Backup-JCOrganization
-  * https://github.com/TheJumpCloud/support/tree/master/PowerShell/JumpCloud%20Module/Docs/Backup-JCOrganization.md
-* Get-JCBackup will no longer be supported and will soon be deprecated; Please use Backup-JCOrganization.
-
-#### FEATURES
-
-* Backup-JCOrganization can be used to backup your JumpCloud organization to local json files
-
-#### IMPROVEMENTS
-
-* Misc internal improvements.
-* User agent has been updated to accommodate for JcSlackBot tracking.
-
-#### BUG FIXES
-
 ## 1.18.2
 
 Release Date: September 3, 2020

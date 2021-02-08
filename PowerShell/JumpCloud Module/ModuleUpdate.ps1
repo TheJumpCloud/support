@@ -14,7 +14,7 @@ $FolderPath_enUS = $ModulePath + '/en-Us'
 $GitHubWikiUrl = 'https://github.com/TheJumpCloud/support/wiki/'
 # Import required modules
 Write-Host ('[status]Importing current module: ' + $ModuleName)
-Import-Module ($FilePath_Psd1) -Force -Global
+Import-Module ($FilePath_Psd1) -Force
 Write-Host ('[status]Installing module: PlatyPS')
 Install-Module -Repository:('PSGallery') -Name:('PlatyPS') -Force
 # Clear out existing docs
@@ -109,7 +109,7 @@ New-ExternalHelp -Path:($FolderPath_Docs) -OutputPath:($FolderPath_enUS) -Force
 
 ### Use this if we change over to updating the module as a whole instead of file by file
 # $InstalledModule = Get-InstalledModule -Name:('JumpCloud')
-# Import-Module -Name:('JumpCloud') -Global
+# Import-Module -Name:('JumpCloud')
 # $FolderPath_Docs = $InstalledModule.InstalledLocation + '/Docs'
 
 # New-MarkdownHelp -Module:('JumpCloud') -OutputFolder:($FolderPath_Docs)

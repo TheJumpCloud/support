@@ -39,6 +39,6 @@ Describe -Tag:('JCModule') 'Test for Update-JCModule' {
         $LocalModulePost | Should -Not -BeNullOrEmpty
     }
     AfterAll {
-        Import-Module -Name:("$PesterParams_ModuleManifestPath/$PesterParams_ModuleManifestName") -Force -Global
+        Import-Module -Name:("$PesterParams_ModuleManifestPath/$PesterParams_ModuleManifestName") -Force
     }
 }

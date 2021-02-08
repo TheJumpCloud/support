@@ -17,7 +17,7 @@ Try
     Install-Module -Repository:('PSGallery') -Name:('PlatyPS') -Force
     # Import module
     Write-Host ("[status]Importing module: $FilePath_Psd1")
-    Import-Module ($FilePath_Psd1) -Force -Global
+    Import-Module ($FilePath_Psd1) -Force
     # Remove existing: .\en-Us\$ModuleName-help.xml and .\en-Us\about_$ModuleName.help.txt
     Remove-Item -Path:("$FolderPath_enUS/*") -Recurse -Force -Verbose
     # Get contents of psd1 file
@@ -60,7 +60,7 @@ Try
             }
         }
         # Import module the second time to reload the updated function files
-        Import-Module ($FilePath_Psd1) -Force -Global
+        Import-Module ($FilePath_Psd1) -Force
         # Remove doc files
         Remove-Item -Path:("$FolderPath_Docs/*") -Recurse -Force -Exclude:("about_$ModuleName.md", "$ModuleName.md")
     }
