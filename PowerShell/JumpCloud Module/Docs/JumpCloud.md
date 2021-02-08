@@ -2,7 +2,7 @@
 Module Name: JumpCloud
 Module Guid: 31c023d1-a901-48c4-90a3-082f91b31646
 Download Help Link: https://github.com/TheJumpCloud/support/wiki
-Help Version: 1.18.2
+Help Version: 1.18.3
 Locale: en-US
 ---
 
@@ -28,6 +28,9 @@ Associates a JumpCloud User account with a local account on a JumpCloud managed 
 
 ### [Add-JCUserGroupMember](Add-JCUserGroupMember.md)
 Adds a JumpCloud user to a JumpCloud User Group.
+
+### [Backup-JCOrganization](Backup-JCOrganization.md)
+Backup your JumpCloud organization to local json files
 
 ### [Connect-JCOnline](Connect-JCOnline.md)
 The Connect-JCOnline function sets the global variable $JCAPIKEY

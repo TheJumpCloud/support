@@ -11,6 +11,7 @@ $XAPIKEY_PESTER = $env:XAPIKEY_PESTER
 $XAPIKEY_MTP = $env:XAPIKEY_MTP
 $NUGETAPIKEY = $env:NUGETAPIKEY
 $SYSTEM_ACCESSTOKEN = $env:SYSTEM_ACCESSTOKEN
+$RequiredModulesRepo = $env:REQUIREDMODULESREPO
 # Log statuses
 Write-Host ('[status]Platform: ' + [environment]::OSVersion.Platform)
 Write-Host ('[status]PowerShell Version: ' + ($PSVersionTable.PSVersion -join '.'))
@@ -51,4 +52,4 @@ $Functions_Private = If (Test-Path -Path:($FolderPath_Private))
     Get-ChildItem -Path:($FolderPath_Private + '/' + '*.ps1') -Recurse
 }
 # Setup-Dependencies.ps1
-.("$ScriptRoot/Setup-Dependencies.ps1")
+.("$ScriptRoot/Setup-Dependencies.ps1") -RequiredModulesRepo:($env:REQUIREDMODULESREPO)

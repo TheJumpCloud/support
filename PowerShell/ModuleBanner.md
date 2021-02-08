@@ -1,17 +1,21 @@
 #### Latest Version
 
 ```
-1.18.2
+1.18.3
 ```
 
 #### Banner Current
 
 ```
-`*-JCAssociation` functions have been updated to use the `JumpCloud.SDK.V2` powershell module.
+* New Function, Backup-JCOrganization
+  * https://github.com/TheJumpCloud/support/tree/master/PowerShell/JumpCloud%20Module/Docs/Backup-JCOrganization.md
+* Get-JCBackup will no longer be supported and will soon be deprecated; Please use Backup-JCOrganization.
 ```
 
 #### Banner Old
 
 ```
-`*-JCAssociation` functions have been updated to use the `JumpCloud.SDK.V2` powershell module.
+* New Function, Backup-JCOrganization
+  * https://github.com/TheJumpCloud/support/tree/master/PowerShell/JumpCloud%20Module/Docs/Backup-JCOrganization.md
+* Get-JCBackup will no longer be supported and will soon be deprecated; Please use Backup-JCOrganization.
 ```
