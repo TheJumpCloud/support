@@ -4,16 +4,17 @@ Release Date: January 04, 2021
 
 #### RELEASE NOTES
 
-Internal improvements.
-"WARNING: Get-JCBackup is no longer supported and will soon be deprecated; Please use Backup-JCOrganization and Restore-JCOrganization instead. `nBackup-JCOrganization: https://github.com/TheJumpCloud/support/tree/master/PowerShell/JumpCloud%20Module/Docs/Backup-JCOrganization.md`nRestore-JCOrganization: https://github.com/TheJumpCloud/support/tree/master/PowerShell/JumpCloud%20Module/Docs/Restore-JCOrganization.md"
+* New Function, Backup-JCOrganization
+  * https://github.com/TheJumpCloud/support/tree/master/PowerShell/JumpCloud%20Module/Docs/Backup-JCOrganization.md
+* Get-JCBackup will no longer be supported and will soon be deprecated; Please use Backup-JCOrganization.
 
 #### FEATURES
 
-New Function, Backup-JCOrganization added to backup objects in a JumpCloud Organization.
+* Backup-JCOrganization can be used to backup your JumpCloud organization to local json files
 
 #### IMPROVEMENTS
 
-* `JumpCloud.SDK.DirectoryInsights`, `JumpCloud.SDK.V1`, and `JumpCloud.SDK.V2` have been updated to include ParameterSet validation.
+* Misc internal improvements.
 * User agent has been updated to accommodate for JcSlackBot tracking.
 
 #### BUG FIXES

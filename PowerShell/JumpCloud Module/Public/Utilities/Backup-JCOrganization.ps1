@@ -16,11 +16,7 @@ Backup all available JumpCloud objects and their associations to CSV (default js
 PS C:\> Backup-JCOrganization -Path:('C:\Temp') -Format:('csv')
 
 .Example
-Backup selected types UserGroups and Users with no associations
-PS C:\> Backup-JCOrganization -Path:('C:\Temp') -Type:('UserGroup','User')
-
-.Example
-Backup selected types UserGroups and Users with their associations
+Backup UserGroups and Users with their associations
 PS C:\> Backup-JCOrganization -Path:('C:\Temp') -Type:('UserGroup','User') -Association
 
 .Example
@@ -28,7 +24,7 @@ Backup UserGroups and Users without their associations
 PS C:\> Backup-JCOrganization -Path:('C:\Temp') -Type:('UserGroup','User')
 
 .Example
-Backup all available JumpCloud objects and their associations and return metadata
+Backup all available JumpCloud objects with their associations and return metadata
 PS C:\> $BackupJcOrganizationResults = Backup-JCOrganization -Path:('C:\Temp') -PassThru
 PS C:\> $BackupJcOrganizationResults.Keys
 PS C:\> $BackupJcOrganizationResults.User
@@ -43,7 +39,7 @@ Function Backup-JCOrganization
     Param(
         [Parameter(Mandatory)]
         [System.String]
-        # File path for backup output
+        # File directory for backup output
         ${Path},
 
         [Parameter(ParameterSetName = 'All')]
@@ -59,7 +55,7 @@ Function Backup-JCOrganization
 
         [Parameter(ParameterSetName = 'Type')]
         [System.Management.Automation.SwitchParameter]
-        # Use to backup association data
+        # Use to backup relationship data between diffrent types
         ${Association},
 
         [Parameter()]

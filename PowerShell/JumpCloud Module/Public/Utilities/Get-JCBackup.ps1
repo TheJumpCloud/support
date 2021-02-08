@@ -58,7 +58,7 @@ function Get-JCBackup
 
         Write-Host $Banner -ForegroundColor Green
 
-        Write-Warning "Get-JCBackup is no longer supported and will soon be deprecated; Please use Backup-JCOrganization and Restore-JCOrganization instead. `nBackup-JCOrganization: https://github.com/TheJumpCloud/support/tree/master/PowerShell/JumpCloud%20Module/Docs/Backup-JCOrganization.md`nRestore-JCOrganization: https://github.com/TheJumpCloud/support/tree/master/PowerShell/JumpCloud%20Module/Docs/Restore-JCOrganization.md"
+        Write-Warning "Get-JCBackup is no longer supported and will soon be deprecated; Please use Backup-JCOrganization as an alternative. `nBackup-JCOrganization: https://github.com/TheJumpCloud/support/tree/master/PowerShell/JumpCloud%20Module/Docs/Backup-JCOrganization.md"
 
         Write-Host "`n============= Backup Status ============`n"
 
