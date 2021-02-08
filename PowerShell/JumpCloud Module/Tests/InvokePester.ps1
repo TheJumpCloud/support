@@ -6,7 +6,7 @@ Param(
     , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 4)][System.String]$RequiredModulesRepo = 'PSGallery'
 )
 $global:RequiredModulesRepo = $RequiredModulesRepo;
-# Load Setup-Dependencies.ps1
+# Load Get-Config.ps1
 . (Join-Path -Path:((Get-Item -Path:($PSScriptRoot)).Parent.Parent) -ChildPath:('Deploy/Get-Config.ps1') -Resolve)
 # Get list of tags and validate that tags have been applied
 $PesterTests = Get-ChildItem -Path:($PSScriptRoot + '/*.Tests.ps1') -Recurse
