@@ -55,7 +55,7 @@ else
 
     # on earlier versions of High Sierra, we should use dscl:
     if [[ "$MacOSMajorVersion" -eq 10 && "$MacOSMinorVersion" -eq 13 && "$MacOSPatchVersion" -lt 4 ]]; then
-      if [[ $(dscl . read /Users/$1 AuthenticationAuthority | grep ";SecureToken;" -c) -gt 0 ]]; then
+      if [[ $(dscl . read /Users/"$1" AuthenticationAuthority | grep ";SecureToken;" -c) -gt 0 ]]; then
         return 0 # success
       fi
     else # on 10.13.4 or higher we can just use sysadminctl to get the secureToken status without admin credentials:
@@ -68,7 +68,7 @@ else
   }
 
   isAdminUser() {
-    if [ $(id -Gn $1 | grep -c -w admin) -gt 0 ]; then
+    if [ "$(id -Gn "$1" | grep -c -w admin)" -gt 0 ]; then
       return 0 # user is an admin
     fi
 
@@ -88,7 +88,7 @@ else
     while ! (secureTokenEnabledForUser "${SECURETOKEN_ADMIN_USERNAME}") || ! (isAdminUser "${SECURETOKEN_ADMIN_USERNAME}"); do
       printf "\nThe username: %s is not a Secure Token enabled admin.\nTo enable the JumpCloud Agent to manage FileVault users, \nplease provide the username of a Secure Token enabled \nadmin user on this system.\n" "${SECURETOKEN_ADMIN_USERNAME}"
       echo "--------"
-      read -p 'Secure Token Admin Username: ' SECURETOKEN_ADMIN_USERNAME
+      read -rp 'Secure Token Admin Username: ' SECURETOKEN_ADMIN_USERNAME
     done
 
     echo "** (${SECURETOKEN_ADMIN_USERNAME}) is verified as a Secure Token admin **"
@@ -108,14 +108,9 @@ else
   }
 
   readInPasswordForUser() {
-    local reenter_password
-
     while true; do
-
       if [ -n "$SECURETOKEN_ADMIN_PASSWORD" ]; then
-        verifyPasswordForUser
-
-        if [ $? -ne 0 ]; then
+        if ! verifyPasswordForUser; then
           printf "\nERROR: Incorrect Password for user %s !\n" "${SECURETOKEN_ADMIN_USERNAME}"
         else
           printf "\nPassword verified for user %s \n" "${SECURETOKEN_ADMIN_USERNAME}"
@@ -125,11 +120,46 @@ else
         echo 'Password cannot be blank'
       fi
 
-      read -sp "Please enter the password for ${SECURETOKEN_ADMIN_USERNAME}:" SECURETOKEN_ADMIN_PASSWORD
+      read -rsp "Please enter the password for ${SECURETOKEN_ADMIN_USERNAME}:" SECURETOKEN_ADMIN_PASSWORD
       echo ''
 
     done
   }
+
+ # Install Rosetta2 on M1 (Apple Silicon) Macs if not already installed
+ installRosettaForM1() {
+   BIG_SUR_MAJOR=11
+   # Save current IFS (Input Field Separator) state
+   OLDIFS=${IFS}
+   # retrieve OS version info
+   IFS='.' read -r osvers_major osvers_minor osvers_dot_version <<<"$(/usr/bin/sw_vers -productVersion)"
+   # restore IFS to previous state
+   IFS=${OLDIFS}
+
+   if [[ ${osvers_major} -ge ${BIG_SUR_MAJOR} ]]; then
+     # Check processor to see if we even need Rosetta2
+     processor=$(/usr/sbin/sysctl -n machdep.cpu.brand_string | grep -o "Intel")
+     if [[ -n "${processor}" ]]; then
+       echo "Intel processor installed; no need to install Rosetta2"
+     else
+       # Check for an installer receipt for Rosetta. If no receipt is found,
+       # perform a non-interactive install of Rosetta.
+       rosetta_check=$(/usr/sbin/pkgutil --pkgs | grep "com.apple.pkg.RosettaUpdateAuto")
+       if [[ -z "${rosetta_check}" ]]; then
+         if ! /usr/sbin/softwareupdate --install-rosetta --agree-to-license; then
+           echo "Rosetta installation failed!"
+         else
+           echo "Rosetta has been successfully installed."
+         fi
+       else
+         echo "Rosetta is already installed. Nothing to do."
+       fi
+     fi
+   else
+     echo "System is running macOS ${osvers_major}.${osvers_minor}.${osvers_dot_version}."
+     echo "No need to install Rosetta on this version of macOS."
+   fi
+ } 
 
   # require connect key
   if [ -z "$YOUR_CONNECT_KEY" ]; then
@@ -156,6 +186,9 @@ else
 
   fi
 
+  # Install Rosetta2 for M1 (Apple Silicon) Macs
+  installRosettaForM1
+
   curl --silent --output /tmp/jumpcloud-agent.pkg "https://s3.amazonaws.com/jumpcloud-windows-agent/production/jumpcloud-agent.pkg" >/dev/null
   mkdir -p /opt/jc
   cat <<-EOF >/opt/jc/agentBootstrap.json
@@ -170,6 +203,13 @@ EOF
 $SECURETOKEN_ADMIN_USERNAME;$SECURETOKEN_ADMIN_PASSWORD
 EOF
   # The file JumpCloud-SecureToken-Creds.txt IS DELETED during the agent install process
-  installer -pkg /tmp/jumpcloud-agent.pkg -target / &
+  installer -pkg /tmp/jumpcloud-agent.pkg -target /
+  result=$(echo "$?")
+  if [[ $result -eq "0" ]];then
+    echo "JumpCloud Agent Installed Successfully"
+  else
+    echo "JumpCloud Agent Install Failed"
+    exit 1
+  fi
 fi
 exit 0
