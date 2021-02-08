@@ -13,7 +13,7 @@ $FolderPath_Docs = $ModulePath + '/Docs'
 $FolderPath_enUS = $ModulePath + '/en-Us'
 $GitHubWikiUrl = 'https://github.com/TheJumpCloud/support/wiki/'
 # Import required modules
-Write-Host ('[status]Importing current module: ' + $ModuleName)
+Write-Host ('[status]Importing current module(s): ' + $ModuleName)
 Import-Module ($FilePath_Psd1) -Force -Global
 Write-Host ('[status]Installing module: PlatyPS')
 Install-Module -Repository:('PSGallery') -Name:('PlatyPS') -Force
