@@ -13,13 +13,13 @@ ForEach ($DependentModule In $DependentModules)
 {
     Write-Host("[status]Setting up dependency '$DependentModule'")
     # Check to see if the module is installed
-    If ([System.String]::IsNullOrEmpty((Get-InstalledModule).Where( { $_.Name -eq $DependentModule })))
+    If ([System.String]::IsNullOrEmpty((Get-InstalledModule | Where-Object { $_.Name -eq $DependentModule })))
     {
         Write-Host("[status]Installing '$DependentModule' from 'PSGallery'")
         Install-Module -Repository:('PSGallery') -Force -Name:($DependentModule) -Scope:('CurrentUser')
     }
     # Get-Module -Refresh -ListAvailable
-    If ([System.String]::IsNullOrEmpty((Get-Module).Where( { $_.Name -eq $DependentModule })))
+    If ([System.String]::IsNullOrEmpty((Get-Module | Where-Object { $_.Name -eq $DependentModule })))
     {
         Write-Host("[status]Importing '$DependentModule'")
         Import-Module -Name:($DependentModule) -Force -Global
@@ -69,22 +69,21 @@ If (-not [System.String]::IsNullOrEmpty($Psd1))
     # Install required modules
     ForEach ($RequiredModule In $Psd1.RequiredModules)
     {
-        Write-Host("[status]Setting up dependency '$RequiredModule'")
         # Check to see if the module is installed
-        If ([System.String]::IsNullOrEmpty((Get-InstalledModule).Where( { $_.Name -eq $RequiredModule })))
+        If ([System.String]::IsNullOrEmpty((Get-InstalledModule | Where-Object { $_.Name -eq $RequiredModule })))
         {
             Write-Host("[status]Installing '$RequiredModule' from '$RequiredModulesRepo'")
             Install-Module -Force -Name:($RequiredModule) -Scope:('CurrentUser') -Repository:($RequiredModulesRepo) -Credential:($RepositoryCredentials) -AllowPrerelease
         }
         # Get-Module -Refresh -ListAvailable
-        If ([System.String]::IsNullOrEmpty((Get-Module).Where( { $_.Name -eq $RequiredModule })))
+        If ([System.String]::IsNullOrEmpty((Get-Module | Where-Object { $_.Name -eq $RequiredModule })))
         {
             Write-Host("[status]Importing '$RequiredModule'")
             Import-Module -Name:($RequiredModule) -Force -Global
         }
     }
     # Load current module
-    If ([System.String]::IsNullOrEmpty((Get-Module).Where( { $_.Name -eq $ModuleName })))
+    If ([System.String]::IsNullOrEmpty((Get-Module | Where-Object { $_.Name -eq $ModuleName })))
     {
         Write-Host("[status]Importing '$ModuleName'")
         Import-Module ($FilePath_psd1) -Force -Global
