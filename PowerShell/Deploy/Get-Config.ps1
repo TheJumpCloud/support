@@ -32,13 +32,13 @@ $RequiredFolders | ForEach-Object {
     $FolderName = $_
     $FolderPath = $FolderPath_Module + '/' + $FolderName
     New-Variable -Name:('FolderName_' + $_.Replace('-', '')) -Value:($FolderName) -Force;
-    New-Variable -Name:('FolderPath_' + $_.Replace('-', '')) -Value:((Resolve-Path -Path:($FolderPath)).Path) -Force
+    New-Variable -Name:('FolderPath_' + $_.Replace('-', '')) -Value:($FolderPath) -Force
 }
 $RequiredFiles | ForEach-Object {
     $FileName = If ($_ -in ('psm1', 'psd1')) { $ModuleName + '.' + $_ } Else { $_ }
     $FilePath = $FolderPath_Module + '/' + $FileName
     New-Variable -Name:('FileName_' + $_) -Value:($FileName) -Force;
-    New-Variable -Name:('FilePath_' + $_) -Value:((Resolve-Path -Path:($FilePath)).Path) -Force;
+    New-Variable -Name:('FilePath_' + $_) -Value:($FilePath) -Force;
 }
 # Get .psd1 contents
 $Psd1 = Import-PowerShellDataFile -Path:($FilePath_psd1)
