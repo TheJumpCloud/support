@@ -5,7 +5,6 @@ Param(
     , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 3)][System.String[]]$IncludeTagList
     , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 4)][System.String]$RequiredModulesRepo = 'PSGallery'
 )
-$global:RequiredModulesRepo = $RequiredModulesRepo;
 # Load Get-Config.ps1
 . (Join-Path -Path:((Get-Item -Path:($PSScriptRoot)).Parent.Parent) -ChildPath:('Deploy/Get-Config.ps1') -Resolve)
 # Get list of tags and validate that tags have been applied
