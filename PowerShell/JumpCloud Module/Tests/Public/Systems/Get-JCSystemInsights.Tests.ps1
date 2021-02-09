@@ -12,7 +12,7 @@ Describe -Tag:('JCSystemInsights') "Get-JCSystemInsights Tests" {
             $Help = Get-Help -Name:($_.Name);
             $Table = $_.Name.Replace($SystemInsightsPrefix, '')
             $HelpDescription = $Help.Description.Text
-            $FilterDescription = $Help.parameters.parameter.Where( { $_.Name -eq 'filter' }).Description.Text
+            $FilterDescription = ($Help.parameters.parameter | Where-Object { $_.Name -eq 'filter' }).Description.Text
             $FilterNames = ($HelpDescription | Select-String -Pattern:([Regex]'(?<=\ `)(.*?)(?=\`)') -AllMatches).Matches.Value
             $Operators = ($FilterDescription -Replace ('Supported operators are: ', '')).Trim()
             If ([System.String]::IsNullOrEmpty($HelpDescription) -or [System.String]::IsNullOrEmpty($FilterNames) -or [System.String]::IsNullOrEmpty($Operators))

@@ -1,19 +1,19 @@
 Describe -Tag:('JCModule') 'Test for Update-JCModule' {
-    It ("Where the local version number has been updated to match the $RequiredModulesRepo version number") {
+    It ("Where the local version number has been updated to match the $env:RequiredModulesRepo version number") {
         $EarliestVersion = Find-Module -Name:('JumpCloud') -AllVersions | Sort-Object PublishedDate | Select-Object -First 1
         Install-Module -Name:('JumpCloud') -RequiredVersion:($EarliestVersion.Version) -Scope:('CurrentUser') -Force
         $InitialModule = Get-Module -Name:('JumpCloud') -All | Where-Object { $_.Version -eq $EarliestVersion.Version }
         $PowerShellGalleryModule = Find-Module -Name:('JumpCloud')
         $LocalModulePre = Get-Module -Name:('JumpCloud')
-        Write-Host ("$RequiredModulesRepo Version: $($PowerShellGalleryModule.Version)")
+        Write-Host ("$env:RequiredModulesRepo Version: $($PowerShellGalleryModule.Version)")
         Write-Host ("Local Version Before: $($LocalModulePre.Version)")
-        If ($RequiredModulesRepo -eq 'PSGallery')
+        If ($env:RequiredModulesRepo -eq 'PSGallery')
         {
-            Update-JCModule -SkipUninstallOld -Force -Repository:($RequiredModulesRepo)
+            Update-JCModule -SkipUninstallOld -Force -Repository:('PSGallery')
         }
         Else
         {
-            Update-JCModule -SkipUninstallOld -Force -Repository:($RequiredModulesRepo) -RepositoryCredentials:($RepositoryCredentials)
+            Update-JCModule -SkipUninstallOld -Force -Repository:($PesterParams_RequiredModulesRepo) -RepositoryCredentials:(New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $PesterParams_SYSTEM_ACCESSTOKEN, ($PesterParams_SYSTEM_ACCESSTOKEN | ConvertTo-SecureString -AsPlainText -Force))
         }
         $InitialModule | Remove-Module
         # Remove prerelease tag from build number

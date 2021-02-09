@@ -11,17 +11,16 @@ If (!(Get-PackageProvider -Name:('NuGet') -ListAvailable -ErrorAction:('Silently
 # Install dependent modules
 ForEach ($DependentModule In $DependentModules)
 {
-    Write-Host("[status]Setting up dependency '$DependentModule'")
     # Check to see if the module is installed
-    If ([System.String]::IsNullOrEmpty((Get-InstalledModule).Where( { $_.Name -eq $DependentModule })))
+    If ([System.String]::IsNullOrEmpty((Get-InstalledModule | Where-Object { $_.Name -eq $DependentModule })))
     {
-        Write-Host("[status]Installing '$DependentModule' from 'PSGallery'")
+        Write-Host("[status]Installing module: '$DependentModule' from 'PSGallery'")
         Install-Module -Repository:('PSGallery') -Force -Name:($DependentModule) -Scope:('CurrentUser')
     }
     # Get-Module -Refresh -ListAvailable
-    If ([System.String]::IsNullOrEmpty((Get-Module).Where( { $_.Name -eq $DependentModule })))
+    If ([System.String]::IsNullOrEmpty((Get-Module | Where-Object { $_.Name -eq $DependentModule })))
     {
-        Write-Host("[status]Importing '$DependentModule'")
+        Write-Host("[status]Importing module: '$DependentModule'")
         Import-Module -Name:($DependentModule) -Force -Global
     }
 }
@@ -43,8 +42,7 @@ If ($RequiredModulesRepo -ne 'PSGallery')
     }
     If (-not [System.String]::IsNullOrEmpty($env:SYSTEM_ACCESSTOKEN))
     {
-        $Password = $env:SYSTEM_ACCESSTOKEN | ConvertTo-SecureString -AsPlainText -Force
-        $RepositoryCredentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $env:SYSTEM_ACCESSTOKEN, $Password
+        $global:RepositoryCredentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $env:SYSTEM_ACCESSTOKEN, ($env:SYSTEM_ACCESSTOKEN | ConvertTo-SecureString -AsPlainText -Force)
         # Set default -Credential parameter value to be $RepositoryCredentials
         Get-Command -Module:('PowerShellGet', 'PackageManagement') -ParameterName 'Credential' | ForEach-Object {
             If ( -not $global:PSDefaultParameterValues.GetEnumerator() | Where-Object { $_.Key -eq "$($_.Name):Credential" -and $_.Value -eq $RepositoryCredentials })
@@ -69,27 +67,27 @@ If (-not [System.String]::IsNullOrEmpty($Psd1))
     # Install required modules
     ForEach ($RequiredModule In $Psd1.RequiredModules)
     {
-        Write-Host("[status]Setting up dependency '$RequiredModule'")
         # Check to see if the module is installed
-        If ([System.String]::IsNullOrEmpty((Get-InstalledModule).Where( { $_.Name -eq $RequiredModule })))
+        If ([System.String]::IsNullOrEmpty((Get-InstalledModule | Where-Object { $_.Name -eq $RequiredModule })))
         {
-            Write-Host("[status]Installing '$RequiredModule' from '$RequiredModulesRepo'")
+            Write-Host("[status]Installing module: '$RequiredModule' from '$RequiredModulesRepo'")
             Install-Module -Force -Name:($RequiredModule) -Scope:('CurrentUser') -Repository:($RequiredModulesRepo) -Credential:($RepositoryCredentials) -AllowPrerelease
         }
         # Get-Module -Refresh -ListAvailable
-        If ([System.String]::IsNullOrEmpty((Get-Module).Where( { $_.Name -eq $RequiredModule })))
+        If ([System.String]::IsNullOrEmpty((Get-Module | Where-Object { $_.Name -eq $RequiredModule })))
         {
-            Write-Host("[status]Importing '$RequiredModule'")
+            Write-Host("[status]Importing module: '$RequiredModule'")
             Import-Module -Name:($RequiredModule) -Force -Global
         }
     }
     # Load current module
-    If ([System.String]::IsNullOrEmpty((Get-Module).Where( { $_.Name -eq $ModuleName })))
+    If ([System.String]::IsNullOrEmpty((Get-Module | Where-Object { $_.Name -eq $ModuleName })))
     {
-        Write-Host("[status]Importing '$ModuleName'")
+        Write-Host("[status]Importing module: '$FilePath_psd1'")
         Import-Module ($FilePath_psd1) -Force -Global
     }
     # Load "Deploy" functions
+    Write-Host("[status]Importing deploy functions: '$PSScriptRoot/Functions/*.ps1'")
     $DeployFunctions = @(Get-ChildItem -Path:($PSScriptRoot + '/Functions/*.ps1') -Recurse)
     Foreach ($DeployFunction In $DeployFunctions)
     {

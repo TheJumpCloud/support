@@ -133,11 +133,11 @@ Function Backup-JCOrganization
                     # Logic to handle directories
                     $Command = If ($SourceTypeMap.Key -eq 'GSuite')
                     {
-                        "(Get-JcSdkDirectory).Where( { `$_.Type -eq '$($SourceTypeMap.Value.Name)' }) | ForEach-Object { Get-JcSdk$($SourceTypeMap.Key) -Id:(`$_.Id)}"
+                        "(Get-JcSdkDirectory | Where-Object { `$_.Type -eq '$($SourceTypeMap.Value.Name)' }) | ForEach-Object { Get-JcSdk$($SourceTypeMap.Key) -Id:(`$_.Id)}"
                     }
                     ElseIf ($SourceTypeMap.Key -eq 'Office365')
                     {
-                        "(Get-JcSdkDirectory).Where( { `$_.Type -eq '$($SourceTypeMap.Value.Name)' }) | ForEach-Object { Get-JcSdk$($SourceTypeMap.Key) -$($SourceTypeMap.Key)Id:(`$_.Id)}"
+                        "(Get-JcSdkDirectory | Where-Object { `$_.Type -eq '$($SourceTypeMap.Value.Name)' }) | ForEach-Object { Get-JcSdk$($SourceTypeMap.Key) -$($SourceTypeMap.Key)Id:(`$_.Id)}"
                     }
                     ElseIf ($SourceTypeMap.Key -eq 'Organization')
                     {
@@ -207,7 +207,7 @@ Function Backup-JCOrganization
                 $SourceTypeMap = $JcTypesMap.GetEnumerator() | Where-Object { $_.Key -eq $BackupFile.BaseName }
                 # TODO: Figure out how to make this work with x-ms-enum.
                 # $ValidTargetTypes = (Get-Command Get-JcSdk$($SourceTypeMap.Key)Association).Parameters.Targets.Attributes.ValidValues
-                # $ValidTargetTypes = (Get-Command Get-JcSdk$($SourceTypeMap.Key)Association).Parameters.Targets.ParameterType.DeclaredFields.Where( { $_.IsPublic }).Name
+                # $ValidTargetTypes = ((Get-Command Get-JcSdk$($SourceTypeMap.Key)Association).Parameters.Targets.ParameterType.DeclaredFields | Where-Object { $_.IsPublic }).Name
                 # Get list of valid target types from Get-JCAssociation
                 $ValidTargetTypes = $SourceTypeMap.Value.AssociationTargets
                 # Lookup file names in $JcTypesMap

@@ -5,9 +5,8 @@ Param(
     , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 3)][System.String[]]$IncludeTagList
     , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 4)][System.String]$RequiredModulesRepo = 'PSGallery'
 )
-$global:RequiredModulesRepo = $RequiredModulesRepo;
 # Load Get-Config.ps1
-. (Join-Path -Path:((Get-Item -Path:($PSScriptRoot)).Parent.Parent) -ChildPath:('Deploy/Get-Config.ps1') -Resolve)
+. (Join-Path -Path:((Get-Item -Path:($PSScriptRoot)).Parent.Parent.FullName) -ChildPath:('Deploy/Get-Config.ps1') -Resolve)
 # Get list of tags and validate that tags have been applied
 $PesterTests = Get-ChildItem -Path:($PSScriptRoot + '/*.Tests.ps1') -Recurse
 $Tags = ForEach ($PesterTest In $PesterTests)
@@ -40,9 +39,6 @@ Else
 }
 # Load DefineEnvironment
 . ("$PSScriptRoot/DefineEnvironment.ps1") -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp)
-# Import the module
-Write-Host ('[status]Importing module: ' + "$PesterParams_ModuleManifestPath/$PesterParams_ModuleManifestName")
-Import-Module -Name:("$PesterParams_ModuleManifestPath/$PesterParams_ModuleManifestName") -Force -Global
 # Load private functions
 Write-Host ('[status]Load private functions: ' + "$PSScriptRoot/../Private/*.ps1")
 Get-ChildItem -Path:("$PSScriptRoot/../Private/*.ps1") -Recurse | ForEach-Object { . $_.FullName }
@@ -52,9 +48,10 @@ Write-Host ('[status]Setting up org: ' + "$PSScriptRoot/SetupOrg.ps1")
 # Load HelperFunctions
 Write-Host ('[status]Load HelperFunctions: ' + "$PSScriptRoot/HelperFunctions.ps1")
 . ("$PSScriptRoot/HelperFunctions.ps1")
-# Run Pester tests
-Write-Host ("[RUN COMMAND] Invoke-Pester -Path:($PSScriptRoot) -TagFilter:($IncludeTags) -ExcludeTagFilter:($ExcludeTagList) -PassThru") -BackgroundColor:('Black') -ForegroundColor:('Magenta')
+# Remove old test results file if exists
 If (Test-Path -Path:($PesterParams_PesterResultsFileXml)) { Remove-Item -Path:($PesterParams_PesterResultsFileXml) -Force }
+# Run Pester tests
+Write-Host ("[RUN COMMAND] Invoke-Pester -Path:('$PSScriptRoot') -TagFilter:('$($IncludeTags -join "','")') -ExcludeTagFilter:('$($ExcludeTagList -join "','")') -PassThru") -BackgroundColor:('Black') -ForegroundColor:('Magenta')
 $PesterResults = Invoke-Pester -PassThru -Path:($PSScriptRoot) -TagFilter:($IncludeTags) -ExcludeTagFilter:($ExcludeTagList)
 $PesterResults | Export-NUnitReport -Path:($PesterParams_PesterResultsFileXml)
 If (Test-Path -Path:($PesterParams_PesterResultsFileXml))

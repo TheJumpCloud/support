@@ -96,7 +96,7 @@ If (-not [System.String]::IsNullOrEmpty($Modules))
                     <# When the autorest generated module has been installed and imported from the PSGallery all the
                 cmdlets will exist in a single ProxyCmdletDefinitions.ps1 file. We need to parse
                 out the specific function in order to gather the parts we need to copy over. #>
-                    $CommandFilePathContent.Replace($MSCopyrightHeader, $Divider).Split($Divider).Where( { $_ -like ('*' + "function $CommandName {" + '*') })
+                    $CommandFilePathContent.Replace($MSCopyrightHeader, $Divider).Split($Divider) | Where-Object { $_ -like ('*' + "function $CommandName {" + '*') }
                 }
                 Else
                 {
