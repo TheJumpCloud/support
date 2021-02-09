@@ -26,13 +26,13 @@ If ($PSVersionTable.PSEdition -eq 'Core')
 {
     $PSDefaultParameterValues['Invoke-RestMethod:SkipCertificateCheck'] = $true
     $PSDefaultParameterValues['Invoke-RestMethod:SkipHeaderValidation'] = $true
-    $PSDefaultParameterValues['Invoke-RestMethod:MaximumRetryCount'] = 5
-    $PSDefaultParameterValues['Invoke-RestMethod:RetryIntervalSec'] = 5
+    $PSDefaultParameterValues['Invoke-RestMethod:MaximumRetryCount'] = 3
+    $PSDefaultParameterValues['Invoke-RestMethod:RetryIntervalSec'] = 1
 
     $PSDefaultParameterValues['Invoke-WebRequest:SkipCertificateCheck'] = $true
     $PSDefaultParameterValues['Invoke-WebRequest:SkipHeaderValidation'] = $true
-    $PSDefaultParameterValues['Invoke-WebRequest:MaximumRetryCount'] = 5
-    $PSDefaultParameterValues['Invoke-WebRequest:RetryIntervalSec'] = 5
+    $PSDefaultParameterValues['Invoke-WebRequest:MaximumRetryCount'] = 3
+    $PSDefaultParameterValues['Invoke-WebRequest:RetryIntervalSec'] = 1
 }
 Else
 {
