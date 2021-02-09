@@ -13,7 +13,7 @@ Describe -Tag:('JCModule') 'Test for Update-JCModule' {
         }
         Else
         {
-            Update-JCModule -SkipUninstallOld -Force -Repository:($env:RequiredModulesRepo) -RepositoryCredentials:($RepositoryCredentials)
+            Update-JCModule -SkipUninstallOld -Force -Repository:($env:RequiredModulesRepo) -RepositoryCredentials:(New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $env:SYSTEM_ACCESSTOKEN, ($env:SYSTEM_ACCESSTOKEN | ConvertTo-SecureString -AsPlainText -Force))
         }
         $InitialModule | Remove-Module
         # Remove prerelease tag from build number
