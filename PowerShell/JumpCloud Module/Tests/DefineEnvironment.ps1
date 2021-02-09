@@ -66,6 +66,8 @@ If ($env:USERNAME -ne 'VssAdministrator')
 }
 # Parameters that are not Org specific
 $PesterParamsHash_Common = @{
+    SYSTEM_ACCESSTOKEN              = $env:SYSTEM_ACCESSTOKEN
+    RequiredModulesRepo             = $env:RequiredModulesRepo
     ModuleName                      = 'JumpCloud'
     ModuleManifestName              = 'JumpCloud.psd1'
     ModuleManifestPath              = "$PSScriptRoot/../"
