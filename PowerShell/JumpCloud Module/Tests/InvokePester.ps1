@@ -51,9 +51,10 @@ Write-Host ('[status]Setting up org: ' + "$PSScriptRoot/SetupOrg.ps1")
 # Load HelperFunctions
 Write-Host ('[status]Load HelperFunctions: ' + "$PSScriptRoot/HelperFunctions.ps1")
 . ("$PSScriptRoot/HelperFunctions.ps1")
-# Run Pester tests
-Write-Host ("[RUN COMMAND] Invoke-Pester -Path:($PSScriptRoot) -TagFilter:($IncludeTags) -ExcludeTagFilter:($ExcludeTagList) -PassThru") -BackgroundColor:('Black') -ForegroundColor:('Magenta')
+# Remove old test results file if exists
 If (Test-Path -Path:($PesterParams_PesterResultsFileXml)) { Remove-Item -Path:($PesterParams_PesterResultsFileXml) -Force }
+# Run Pester tests
+Write-Host ("[RUN COMMAND] Invoke-Pester -Path:('$PSScriptRoot') -TagFilter:('$($IncludeTags -join "','")') -ExcludeTagFilter:('$($ExcludeTagList -join "','")') -PassThru") -BackgroundColor:('Black') -ForegroundColor:('Magenta')
 $PesterResults = Invoke-Pester -PassThru -Path:($PSScriptRoot) -TagFilter:($IncludeTags) -ExcludeTagFilter:($ExcludeTagList)
 $PesterResults | Export-NUnitReport -Path:($PesterParams_PesterResultsFileXml)
 If (Test-Path -Path:($PesterParams_PesterResultsFileXml))
