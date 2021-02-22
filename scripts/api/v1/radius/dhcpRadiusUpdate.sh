@@ -11,6 +11,9 @@
 #      *** If there are multiple RADIUS Ids, this is potentially destructive.
 #      Know which record is being updated.***
 #
+#      ***Due to the apiKey and sharedSecret being stored as variables in
+#      cleartext, this script should be secured***
+#
 #      REQUIRED: curl, jq, JumpCloud API Key
 #      USAGE: This can be set to run as a cron, e.g., every hour at minute 0:
 #
