@@ -24,6 +24,8 @@
 apiKey=
 radiusId=
 newIp=$(curl -q http://ipecho.net/plain)
+name=
+sharedSecret=
 
 # If newIp can't be defined, bail
 
@@ -60,13 +62,21 @@ curl \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -H "x-api-key: ${apiKey}" \
-  -d '{"networkSourceIp":"'"${newIp}"'"}' \
+  -d '{"name":"'"${name} "'", "networkSourceIp":"'"${newIp}"'", "sharedSecret":"'"${sharedSecret}"'"}' \
   "https://console.jumpcloud.com/api/radiusservers/${radiusId}"
 
 }
 
 if [ -z ${apiKey} ]; then
   echo "apiKey must be defined, exiting..." && exit 1
+fi
+
+if [ -z ${name} ]; then
+  echo "name of RADIUS server must be defined, exiting..." && exit 1
+fi
+
+if [ -z ${sharedSecret} ]; then
+  echo "shareSecret must be defined, exiting..." && exit 1
 fi
 
 if [ -z ${radiusId} ]; then # Use the radiusId and currentIp of the first record returned
