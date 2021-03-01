@@ -83,11 +83,11 @@ if [ -z ${sharedSecret} ]; then
 fi
 
 if [ -z ${radiusId} ]; then # Use the radiusId and currentIp of the first record returned
-  current=($(getRadiusId | jq '.results[0]._id, .results[0].networkSourceIp' | sed s/\"//g))
+  current=$(getRadiusId | jq '.results[0]._id, .results[0].networkSourceIp' | sed s/\"//g)
   radiusId=$(echo ${current[0]})
   currentIp=$(echo ${current[1]})
 else # call the predefined radiusId and define currentIP
-  currentIp=($(getCurrentIp | jq '.networkSourceIp' | sed s/\"//g))
+  currentIp=$(getCurrentIp | jq '.networkSourceIp' | sed s/\"//g)
 fi
 
 # Compare currentIp to newIp, bail if nothing's chainged
