@@ -9,6 +9,8 @@ mac
 #### Command
 
 ```
+#!/bin/bash
+
 MacOSMinorVersion=$(sw_vers -productVersion | cut -d '.' -f 2)
 MacOSPatchVersion=$(sw_vers -productVersion | cut -d '.' -f 3)
 
@@ -16,6 +18,19 @@ if [[ $MacOSMinorVersion -lt 13 ]]; then
     echo "Error:  System must be running 10.13+ to install Service Account."
     exit 2
 fi
+
+# Gather the local accounts on the system
+localAccounts=$(dscl . list /Users UniqueID | awk '$2>500{print $1}' | grep -v super.admin | grep -v _jumpcloudserviceaccount)
+# For each local account, test secure token status
+for usr in ${localAccounts};
+do
+    testST=$(sysadminctl -secureTokenStatus "$usr" 2>&1)
+    # echo $testST
+    if [[ $testST == *ENABLED* ]]
+    then
+        echo "$usr has secure token"
+    fi
+done
 
 JCSA_Username="_jumpcloudserviceaccount"
 JCSA_FullName="JumpCloud Service Account"
