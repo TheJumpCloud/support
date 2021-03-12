@@ -11,13 +11,15 @@ Param (
 #--- Modify Below This Line At Your Own Risk ------------------------------
 
 # JumpCloud Agent Installation Variables
-$msvc2013x64File = 'vc_redist.x64.exe'
-$msvc2013x86File = 'vc_redist.x86.exe'
+$msvcx64File = 'vc_redist.x64.exe'
+$msvcx86File = 'vc_redist.x86.exe'
 $msvc2013x86Link = 'https://download.microsoft.com/download/0/5/6/056dcda9-d667-4e27-8001-8a0c6971d6b1/vcredist_x86.exe'
 $msvc2013x64Link = 'https://download.microsoft.com/download/0/5/6/056dcda9-d667-4e27-8001-8a0c6971d6b1/vcredist_x64.exe'
+$msvc2015x86Link = 'https://aka.ms/vs/16/release/vc_redist.x86.exe'
+$msvc2015x64Link = 'https://aka.ms/vs/16/release/vc_redist.x64.exe'
 $TempPath = 'C:\Windows\Temp\'
-$msvc2013x86Install = "$TempPath$msvc2013x86File /install /quiet /norestart"
-$msvc2013x64Install = "$TempPath$msvc2013x64File /install /quiet /norestart"
+$msvcx86Install = "$TempPath$msvcx86File /install /quiet /norestart"
+$msvcx64Install = "$TempPath$msvcx64File /install /quiet /norestart"
 $AGENT_PATH = "${env:ProgramFiles}\JumpCloud"
 $AGENT_BINARY_NAME = "JumpCloud-agent.exe"
 $AGENT_INSTALLER_URL = "https://s3.amazonaws.com/jumpcloud-windows-agent/production/JumpCloudInstaller.exe"
@@ -75,26 +77,42 @@ Function DownloadLink($Link, $Path)
 Function DownloadAndInstallAgent(
     [System.String]$msvc2013x64Link
     , [System.String]$TempPath
-    , [System.String]$msvc2013x64File
-    , [System.String]$msvc2013x64Install
+    , [System.String]$msvcx64File
+    , [System.String]$msvcx64Install
     , [System.String]$msvc2013x86Link
-    , [System.String]$msvc2013x86File
-    , [System.String]$msvc2013x86Install
+    , [System.String]$msvcx86File
+    , [System.String]$msvcx86Install
+    , [System.String]$msvc2015x86Link
+    , [System.String]$msvc2015x64Link
 )
 {
     If (!(CheckProgramInstalled("Microsoft Visual C\+\+ 2013 x64")))
     {
         Write-Output "Downloading & Installing JCAgent prereq Visual C++ 2013 x64"
-        DownloadLink -Link:($msvc2013x64Link) -Path:($TempPath + $msvc2013x64File)
-        Invoke-Expression -Command:($msvc2013x64Install)
+        DownloadLink -Link:($msvc2013x64Link) -Path:($TempPath + $msvcx64File)
+        Invoke-Expression -Command:($msvcx64Install)
         Write-Output "JCAgent Visual C++ 2013 x64 prereq installed"
     }
     If (!(CheckProgramInstalled("Microsoft Visual C\+\+ 2013 x86")))
     {
         Write-Output 'Downloading & Installing JCAgent prereq Visual C++ 2013 x86'
-        DownloadLink -Link:($msvc2013x86Link) -Path:($TempPath + $msvc2013x86File)
-        Invoke-Expression -Command:($msvc2013x86Install)
-        Write-Output 'JCAgent prereq installed'
+        DownloadLink -Link:($msvc2013x86Link) -Path:($TempPath + $msvcx86File)
+        Invoke-Expression -Command:($msvcx86Install)
+        Write-Output "JCAgent Visual C++ 2013 x86 prereq installed"
+    }
+    If (!(CheckProgramInstalled("Microsoft Visual C\+\+ 2015 x64")))
+    {
+        Write-Output "Downloading & Installing JCAgent prereq Visual C++ 2015 x64"
+        DownloadLink -Link:($msvc2015x64Link) -Path:($TempPath + $msvcx64File)
+        Invoke-Expression -Command:($msvcx64Install)
+        Write-Output "JCAgent Visual C++ 2015 x64 prereq installed"
+    }
+    If (!(CheckProgramInstalled("Microsoft Visual C\+\+ 2015 x86")))
+    {
+        Write-Output 'Downloading & Installing JCAgent prereq Visual C++ 2015 x86'
+        DownloadLink -Link:($msvc2015x86Link) -Path:($TempPath + $msvcx86File)
+        Invoke-Expression -Command:($msvcx86Install)
+        Write-Output "JCAgent Visual C++ 2015 x86 prereq installed"
     }
     If (!(AgentIsOnFileSystem))
     {
@@ -107,7 +125,7 @@ Function DownloadAndInstallAgent(
         InstallAgent
 
     }
-    If (CheckProgramInstalled("Microsoft Visual C\+\+ 2013 x64") -and CheckProgramInstalled("Microsoft Visual C\+\+ 2013 x86") -and AgentIsOnFileSystem)
+    If (CheckProgramInstalled("Microsoft Visual C\+\+ 2013 x64") -and CheckProgramInstalled("Microsoft Visual C\+\+ 2013 x86") -and CheckProgramInstalled("Microsoft Visual C\+\+ 2015 x64") -and CheckProgramInstalled("Microsoft Visual C\+\+ 2015 x86") -and AgentIsOnFileSystem)
     {
         Write-Output 'JumpCloud Agent Installer Completed'
     }
@@ -123,4 +141,4 @@ ipconfig /FlushDNS
 
 # JumpCloud Agent Installation Logic
 
-DownloadAndInstallAgent -msvc2013x64link:($msvc2013x64Link) -TempPath:($TempPath) -msvc2013x64file:($msvc2013x64File) -msvc2013x64install:($msvc2013x64Install) -msvc2013x86link:($msvc2013x86Link) -msvc2013x86file:($msvc2013x86File) -msvc2013x86install:($msvc2013x86Install)
+DownloadAndInstallAgent -msvc2013x64link:($msvc2013x64Link) -TempPath:($TempPath) -msvcx64file:($msvcx64File) -msvcx64install:($msvcx64Install) -msvc2013x86link:($msvc2013x86Link) -msvcx86file:($msvcx86File) -msvcx86install:($msvcx86Install) -msvc2015x86link:($msvc2015x86Link) -msvc2015x64link:($msvc2015x64Link)
