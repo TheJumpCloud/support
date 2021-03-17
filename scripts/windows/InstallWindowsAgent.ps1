@@ -26,7 +26,7 @@ $AGENT_INSTALLER_PATH = "C:\windows\Temp\JumpCloudInstaller.exe"
 # JumpCloud Agent Installation Functions
 Function AgentIsOnFileSystem()
 {
-    Test-Path -Path:(${AGENT_PATH} + '/' + ${AGENT_BINARY_NAME})
+    Test-Path -Path:(${AGENT_PATH} + '\' + ${AGENT_BINARY_NAME})
 }
 Function InstallAgent()
 {
