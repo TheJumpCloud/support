@@ -13,8 +13,8 @@ Param (
 # JumpCloud Agent Installation Variables
 $msvc2013x64File = 'vc_redist.x64.exe'
 $msvc2013x86File = 'vc_redist.x86.exe'
-$msvc2013x86Link = 'https://download.microsoft.com/download/0/5/6/056dcda9-d667-4e27-8001-8a0c6971d6b1/vcredist_x86.exe'
-$msvc2013x64Link = 'https://download.microsoft.com/download/0/5/6/056dcda9-d667-4e27-8001-8a0c6971d6b1/vcredist_x64.exe'
+$msvc2013x86Link = 'https://aka.ms/highdpimfc2013x86enu'
+$msvc2013x64Link = 'https://aka.ms/highdpimfc2013x64enu'
 $TempPath = 'C:\Windows\Temp\'
 $msvc2013x86Install = "$TempPath$msvc2013x86File /install /quiet /norestart"
 $msvc2013x64Install = "$TempPath$msvc2013x64File /install /quiet /norestart"
