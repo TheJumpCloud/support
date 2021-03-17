@@ -47,7 +47,15 @@ Function CheckProgramInstalled($programName)
     }
     else
     {
-        return $false
+        $installed = (Get-ItemProperty HKLM:SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Where-Object { $_.DisplayName -match $programName })
+        if (-not [System.String]::IsNullOrEmpty($installed))
+        {
+            return $true
+        }
+        else
+        {
+            return $false
+        }
     }
 }
 
