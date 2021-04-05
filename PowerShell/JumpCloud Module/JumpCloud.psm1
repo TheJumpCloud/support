@@ -12,6 +12,28 @@ Foreach ($Import in @($Public + $Private))
         Write-Error -Message "Failed to import function $($Import.FullName): $_"
     }
 }
+# Map to define how JCAssociation & JcSdk types relate
+$Global:JcTypesMap = @{
+    ActiveDirectory      = [PSCustomObject]@{Name = 'active_directory'; Identifier_Id = 'id'; Identifier_Name = 'domain'; };
+    AppleMdm             = [PSCustomObject]@{Name = 'apple_mdm'; Identifier_Id = 'id'; Identifier_Name = 'name'; };
+    Application          = [PSCustomObject]@{Name = 'application'; Identifier_Id = '_id'; Identifier_Name = 'displayName'; };
+    AuthenticationPolicy = [PSCustomObject]@{Name = 'authentication_policy'; Identifier_Id = 'id'; Identifier_Name = 'name'; };
+    Command              = [PSCustomObject]@{Name = 'command'; Identifier_Id = '_id'; Identifier_Name = 'name'; };
+    Directory            = [PSCustomObject]@{Name = 'directory'; Identifier_Id = 'id'; Identifier_Name = 'name'; };
+    Group                = [PSCustomObject]@{Name = 'group'; Identifier_Id = 'id'; Identifier_Name = 'name'; };
+    GSuite               = [PSCustomObject]@{Name = 'g_suite'; Identifier_Id = 'id'; Identifier_Name = 'name'; };
+    IPList               = [PSCustomObject]@{Name = 'ip_list'; Identifier_Id = 'id'; Identifier_Name = 'name'; };
+    LdapServer           = [PSCustomObject]@{Name = 'ldap_server'; Identifier_Id = 'id'; Identifier_Name = 'name'; };
+    Office365            = [PSCustomObject]@{Name = 'office_365'; Identifier_Id = 'id'; Identifier_Name = 'name'; };
+    Organization         = [PSCustomObject]@{Name = 'organization'; Identifier_Id = '_id'; Identifier_Name = 'displayName'; };
+    Policy               = [PSCustomObject]@{Name = 'policy'; Identifier_Id = 'id'; Identifier_Name = 'name'; };
+    RadiusServer         = [PSCustomObject]@{Name = 'radius_server'; Identifier_Id = '_id'; Identifier_Name = 'name'; };
+    SoftwareApp          = [PSCustomObject]@{Name = 'software_app'; Identifier_Id = 'id'; Identifier_Name = 'displayName'; };
+    System               = [PSCustomObject]@{Name = 'system'; Identifier_Id = '_id'; Identifier_Name = 'displayName'; };
+    SystemGroup          = [PSCustomObject]@{Name = 'system_group'; Identifier_Id = 'id'; Identifier_Name = 'name'; };
+    User                 = [PSCustomObject]@{Name = 'user'; Identifier_Id = '_id'; Identifier_Name = 'username'; };
+    UserGroup            = [PSCustomObject]@{Name = 'user_group'; Identifier_Id = 'id'; Identifier_Name = 'name'; };
+}
 # Set default values for function parameters
 $PSDefaultParameterValues['Invoke-RestMethod:ContentType'] = 'application/json; charset=utf-8'
 $PSDefaultParameterValues['Invoke-WebRequest:ContentType'] = 'application/json; charset=utf-8'

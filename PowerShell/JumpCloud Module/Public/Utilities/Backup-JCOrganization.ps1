@@ -95,28 +95,6 @@ Function Backup-JCOrganization
         {
             $Type
         }
-        # Map to define how JCAssociation & JcSdk types relate
-        $JcTypesMap = @{
-            ActiveDirectory      = [PSCustomObject]@{Name = 'active_directory'; AssociationTargets = @('user', 'user_group'); };
-            AppleMdm             = [PSCustomObject]@{Name = 'apple_mdm'; AssociationTargets = @(); };
-            Application          = [PSCustomObject]@{Name = 'application'; AssociationTargets = @('user', 'user_group'); };
-            AuthenticationPolicy = [PSCustomObject]@{Name = 'authentication_policy'; AssociationTargets = @(); };
-            Command              = [PSCustomObject]@{Name = 'command'; AssociationTargets = @('system', 'system_group'); };
-            Directory            = [PSCustomObject]@{Name = 'directory'; AssociationTargets = @(); };
-            Group                = [PSCustomObject]@{Name = 'group'; AssociationTargets = @(); };
-            GSuite               = [PSCustomObject]@{Name = 'g_suite'; AssociationTargets = @( 'user', 'user_group'); };
-            IPList               = [PSCustomObject]@{Name = 'ip_list'; AssociationTargets = @(); };
-            LdapServer           = [PSCustomObject]@{Name = 'ldap_server'; AssociationTargets = @('user', 'user_group'); };
-            Office365            = [PSCustomObject]@{Name = 'office_365'; AssociationTargets = @('user', 'user_group'); };
-            Organization         = [PSCustomObject]@{Name = 'organization'; AssociationTargets = @(); };
-            Policy               = [PSCustomObject]@{Name = 'policy'; AssociationTargets = @( 'system', 'system_group'); };
-            RadiusServer         = [PSCustomObject]@{Name = 'radius_server'; AssociationTargets = @('user', 'user_group'); };
-            SoftwareApp          = [PSCustomObject]@{Name = 'software_app'; AssociationTargets = @( 'system', 'system_group'); };
-            System               = [PSCustomObject]@{Name = 'system'; AssociationTargets = @( 'command', 'policy', 'system_group', 'user', 'user_group'); };
-            SystemGroup          = [PSCustomObject]@{Name = 'system_group'; AssociationTargets = @( 'command', 'policy', 'system', 'user', 'user_group'); };
-            User                 = [PSCustomObject]@{Name = 'user'; AssociationTargets = @('active_directory', 'application', 'g_suite', 'ldap_server', 'office_365', 'radius_server', 'system', 'system_group', 'user_group'); };
-            UserGroup            = [PSCustomObject]@{Name = 'user_group'; AssociationTargets = @('active_directory', 'application', 'g_suite', 'ldap_server', 'office_365', 'radius_server', 'system', 'system_group', 'user'); };
-        }
     }
     Process
     {
@@ -205,11 +183,8 @@ Function Backup-JCOrganization
             {
                 # Type mapping lookup
                 $SourceTypeMap = $JcTypesMap.GetEnumerator() | Where-Object { $_.Key -eq $BackupFile.BaseName }
-                # TODO: Figure out how to make this work with x-ms-enum.
-                # $ValidTargetTypes = (Get-Command Get-JcSdk$($SourceTypeMap.Key)Association).Parameters.Targets.Attributes.ValidValues
-                # $ValidTargetTypes = ((Get-Command Get-JcSdk$($SourceTypeMap.Key)Association).Parameters.Targets.ParameterType.DeclaredFields | Where-Object { $_.IsPublic }).Name
                 # Get list of valid target types from Get-JCAssociation
-                $ValidTargetTypes = $SourceTypeMap.Value.AssociationTargets
+                $ValidTargetTypes = (Get-Command "Get-JcSdk$($SourceTypeMap.Key)Association").Parameters.Targets.ParameterType.DeclaredFields.Where( { $_.IsPublic } ).Name
                 # Lookup file names in $JcTypesMap
                 ForEach ($ValidTargetType In $ValidTargetTypes)
                 {
