@@ -113,14 +113,16 @@ Function Restore-JCOrganization
             $RestoreFileFullName = $_.FullName
             $RestoreFileBaseName = $_.BaseName
             $SourceTypeMap = $global:JcTypesMap.GetEnumerator() | Where-Object { $_.Key -eq $RestoreFileBaseName }
-            Start-Job -ScriptBlock:( { Param ($RestoreFileFullName, $SourceTypeMap)
-                    $ModelName = ($Manifest.result | Where-Object { $_.Type -eq $SourceTypeMap.Key }).ModelName
-                    $CommandType = Invoke-Expression -Command:("[$($ModelName)]")
+            $ModelName = ($Manifest.result | Where-Object { $_.Type -eq $SourceTypeMap.Key }).ModelName
+            $RequiredModules = $Manifest.moduleVersion.name
+            Start-Job -ScriptBlock:( { Param ($RestoreFileFullName, $SourceTypeMap, $ModelName, $RequiredModules)
                     $JcObjectResults = [PSCustomObject]@{
                         Updated = @();
                         New     = @();
                         IdMap   = @();
                     }
+                    Import-Module -Name:($RequiredModules) -Force
+                    $CommandType = Invoke-Expression -Command:("[$($ModelName)]")
                     # Collect old ids and new ids for mapping
                     $Command = "Get-JcSdk{0} -Fields:('{1}')" -f $SourceTypeMap.Key, (@($SourceTypeMap.Value.Identifier_Id, $SourceTypeMap.Value.Identifier_Name) -join (','))
                     If ($PSBoundParameters.Debug) { Write-Host ("DEBUG: Running: $Command") -ForegroundColor:('Yellow') }
@@ -177,7 +179,7 @@ Function Restore-JCOrganization
                         }
                     }
                     Return $JcObjectResults
-                }) -ArgumentList:($RestoreFileFullName, $SourceTypeMap)
+                }) -ArgumentList:($RestoreFileFullName, $SourceTypeMap, $ModelName, $RequiredModules)
         }
         $JcObjectsJobStatus = Wait-Job -Id:($JcObjectsJobs.Id)
         $JcObjectJobResults = $JcObjectsJobStatus | Receive-Job
