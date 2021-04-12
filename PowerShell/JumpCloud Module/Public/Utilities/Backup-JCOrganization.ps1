@@ -103,7 +103,7 @@ Function Backup-JCOrganization
         $ObjectJobs = @()
         ForEach ($JumpCloudType In $Types)
         {
-            $SourceTypeMap = $JcTypesMap.GetEnumerator() | Where-Object { $_.Key -eq $JumpCloudType }
+            $SourceTypeMap = $global:JcTypesMap.GetEnumerator() | Where-Object { $_.Key -eq $JumpCloudType }
             $ObjectBaseName = "{0}" -f $SourceTypeMap.Key
             $ObjectFileName = "{0}.{1}" -f $ObjectBaseName, $Format
             $ObjectFullName = "{0}/{1}" -f $TempPath, $ObjectFileName
@@ -156,8 +156,8 @@ Function Backup-JCOrganization
                         {
                             Write-Error ("Unknown format: $Format")
                         }
-                        # TODO: Potential use for restore function
-                        #| ForEach-Object { $_ | Select-Object *, @{Name = 'JcSdkModel'; Expression = { $_.GetType().FullName } } } `
+                        # Append model name to be used in Restore-JCOrganization
+                        $Result = $Result | ForEach-Object { $_ | Select-Object *, @{Name = 'JcSdkModel'; Expression = { $_.GetType().FullName } } }
                         # Build hash to return data
                         Return @{$ObjectBaseName = $Result }
                     }
@@ -182,13 +182,13 @@ Function Backup-JCOrganization
             ForEach ($BackupFile In $BackupFiles)
             {
                 # Type mapping lookup
-                $SourceTypeMap = $JcTypesMap.GetEnumerator() | Where-Object { $_.Key -eq $BackupFile.BaseName }
+                $SourceTypeMap = $global:JcTypesMap.GetEnumerator() | Where-Object { $_.Key -eq $BackupFile.BaseName }
                 # Get list of valid target types from Get-JCAssociation
                 $ValidTargetTypes = (Get-Command "Get-JcSdk$($SourceTypeMap.Key)Association").Parameters.Targets.ParameterType.DeclaredFields.Where( { $_.IsPublic } ).Name
-                # Lookup file names in $JcTypesMap
+                # Lookup file names in $global:JcTypesMap
                 ForEach ($ValidTargetType In $ValidTargetTypes)
                 {
-                    $TargetTypeMap = $JcTypesMap.GetEnumerator() | Where-Object { $_.Value.Name -eq $ValidTargetType }
+                    $TargetTypeMap = $global:JcTypesMap.GetEnumerator() | Where-Object { $_.Value.Name -eq $ValidTargetType }
                     # If the valid target type matches a file name look up the associations for the SourceType and TargetType
                     If ($TargetTypeMap.Key -in $BackupFiles.BaseName)
                     {
@@ -344,8 +344,9 @@ Function Backup-JCOrganization
             moduleVersion  = @(Get-Module -Name:('JumpCloud*') -ListAvailable | Select-Object Name, Version);
             result         = Get-ChildItem -Path:($TempPath) | Sort-Object -Property BaseName | ForEach-Object {
                 [PSCustomObject]@{
-                    Type  = $_.BaseName
-                    Count = $OutputHash.Item($_.BaseName).Count
+                    Type      = $_.BaseName
+                    Count     = $OutputHash.Item($_.BaseName).Count
+                    ModelName = $OutputHash.Item($_.BaseName).JcSdkModel | Select-Object -Unique
                 }
             }
         } | ConvertTo-Json -Depth:(100) | Out-File -FilePath:("$($TempPath)/Manifest.json") -Force

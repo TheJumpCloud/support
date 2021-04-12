@@ -13,7 +13,7 @@ Foreach ($Import in @($Public + $Private))
     }
 }
 # Map to define how JCAssociation & JcSdk types relate
-$Global:JcTypesMap = @{
+$global:JcTypesMap = @{
     ActiveDirectory      = [PSCustomObject]@{Name = 'active_directory'; Identifier_Id = 'id'; Identifier_Name = 'domain'; };
     AppleMdm             = [PSCustomObject]@{Name = 'apple_mdm'; Identifier_Id = 'id'; Identifier_Name = 'name'; };
     Application          = [PSCustomObject]@{Name = 'application'; Identifier_Id = '_id'; Identifier_Name = 'displayName'; };

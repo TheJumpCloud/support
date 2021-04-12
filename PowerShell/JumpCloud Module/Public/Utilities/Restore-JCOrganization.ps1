@@ -69,20 +69,6 @@ Function Restore-JCOrganization
         {
             $PSBoundParameters.Type
         }
-        # Map to define how JCAssociation & JcSdk types relate
-        $JcTypesMap = @{
-            Application  = 'application';
-            Command      = 'command';
-            GSuite       = 'g_suite';
-            LdapServer   = 'ldap_server';
-            Office365    = 'office_365';
-            Policy       = 'policy';
-            RadiusServer = 'radius_server';
-            System       = 'system';
-            SystemGroup  = 'system_group';
-            User         = 'user';
-            UserGroup    = 'user_group';
-        }
         # Get the manifest file from backup
         $ManifestFile = $ExpandedArchivePath | Get-ChildItem | Where-Object { $_.Name -eq "BackupManifest.json" }
         Write-Host ("###############################################################")
@@ -110,14 +96,17 @@ Function Restore-JCOrganization
         $JcObjectsJobs = $RestoreFiles | ForEach-Object {
             $RestoreFileFullName = $_.FullName
             $RestoreFileBaseName = $_.BaseName
-            Start-Job -ScriptBlock:( { Param ($RestoreFileFullName, $RestoreFileBaseName)
+            Start-Job -ScriptBlock:( { Param ($RestoreFileFullName, $RestoreFileBaseName, $JcTypesMap)
+                    $SourceTypeMap = $JcTypesMap.GetEnumerator() | Where-Object { $_.Key -eq $RestoreFileBaseName }
                     $JcObjectResults = [PSCustomObject]@{
                         Updated = @();
                         New     = @();
                         IdMap   = @();
                     }
                     # Collect old ids and new ids for mapping
-                    $ExistingIds = (Invoke-Expression -Command:("Get-JcSdk{0} -Fields id" -f $RestoreFileBaseName)).id
+                    $Command = "Get-JcSdk{0} -Fields:('{1}')" -f $RestoreFileBaseName, @($SourceTypeMap.Identifier_Id, $SourceTypeMap.Identifier_Name).join(',')
+                    If ($PSBoundParameters.Debug) { Write-Host ("DEBUG: Running: $Command") -ForegroundColor:('Yellow') }
+                    $ExistingIds = (Invoke-Expression -Command:($Command)).id
                     $RestoreFileContent = Get-Content -Path:($RestoreFileFullName) | ConvertFrom-Json
                     $RestoreFileContent | ForEach-Object {
                         $CommandType = Invoke-Expression -Command:("[$($_.JcSdkModel)]")
@@ -129,7 +118,7 @@ Function Restore-JCOrganization
                             {
                                 # Invoke command to create new resource
                                 $Command = "`$RestoreFileRecord | $("New-JcSdk{0}" -f $RestoreFileBaseName)"
-                                Write-Debug ("Running: $Command")
+                                If ($PSBoundParameters.Debug) { Write-Host ("DEBUG: Running: $Command") -ForegroundColor:('Yellow') }
                                 $NewJcSdkResult = Invoke-Expression -Command:($Command)
                                 If (-not [System.String]::IsNullOrEmpty($NewJcSdkResult))
                                 {
@@ -156,7 +145,7 @@ Function Restore-JCOrganization
                         }
                     }
                     Return $JcObjectResults
-                }) -ArgumentList:($RestoreFileFullName, $RestoreFileBaseName)
+                }) -ArgumentList:($RestoreFileFullName, $RestoreFileBaseName, $global:JcTypesMap)
         }
         $JcObjectsJobStatus = Wait-Job -Id:($JcObjectsJobs.Id)
         $JcObjectJobResults = $JcObjectsJobStatus | Receive-Job
@@ -227,7 +216,7 @@ Function Restore-JCOrganization
                             }
                         }
                         Return $AssociationResults
-                    }) -ArgumentList:($RestoreAssociationFile, $IdMap, $JcTypesMap)
+                    }) -ArgumentList:($RestoreAssociationFile, $IdMap, $global:JcTypesMap)
             }
             $AssociationsJobStatus = Wait-Job -Id:($AssociationsJobs.Id)
             $AssociationResults = $AssociationsJobStatus | Receive-Job
