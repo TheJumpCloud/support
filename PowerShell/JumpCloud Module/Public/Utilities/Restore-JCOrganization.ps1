@@ -71,6 +71,7 @@ Function Restore-JCOrganization
         }
         # Get the manifest file from backup
         $ManifestFile = $ExpandedArchivePath | Get-ChildItem | Where-Object { $_.Name -eq "BackupManifest.json" }
+        # ToDo: Should we install the versions of the modules listed in the Manifest file if they are not installed on the machine already?
         Write-Host ("###############################################################")
         If (-not (Test-Path -Path:($ManifestFile) -ErrorAction:('SilentlyContinue')))
         {
@@ -98,6 +99,8 @@ Function Restore-JCOrganization
             $RestoreFileBaseName = $_.BaseName
             Start-Job -ScriptBlock:( { Param ($RestoreFileFullName, $RestoreFileBaseName, $JcTypesMap)
                     $SourceTypeMap = $JcTypesMap.GetEnumerator() | Where-Object { $_.Key -eq $RestoreFileBaseName }
+                    $ModelName = ($Manifest.result | Where-Object ($_.Type -eq $RestoreFileBaseName )).ModelName
+                    $CommandType = Invoke-Expression -Command:("[$($ModelName)]")
                     $JcObjectResults = [PSCustomObject]@{
                         Updated = @();
                         New     = @();
@@ -106,15 +109,15 @@ Function Restore-JCOrganization
                     # Collect old ids and new ids for mapping
                     $Command = "Get-JcSdk{0} -Fields:('{1}')" -f $RestoreFileBaseName, @($SourceTypeMap.Identifier_Id, $SourceTypeMap.Identifier_Name).join(',')
                     If ($PSBoundParameters.Debug) { Write-Host ("DEBUG: Running: $Command") -ForegroundColor:('Yellow') }
-                    $ExistingIds = (Invoke-Expression -Command:($Command)).id
+                    $ExistingObjects = Invoke-Expression -Command:($Command)
                     $RestoreFileContent = Get-Content -Path:($RestoreFileFullName) | ConvertFrom-Json
                     $RestoreFileContent | ForEach-Object {
-                        $CommandType = Invoke-Expression -Command:("[$($_.JcSdkModel)]")
                         $RestoreFileRecord = $CommandType::DeserializeFromPSObject($_)
                         # If User is managed by third-party dont create or update
                         If (-not $RestoreFileRecord.ExternallyManaged)
                         {
-                            $CommandResult = If ( $RestoreFileRecord.id -notin $ExistingIds )
+                            # Lookup by "Identifier_Id" and "Identifier_Name" to see if item already exists
+                            $CommandResult = If ( $RestoreFileRecord.($SourceTypeMap.Identifier_Id) -notin $ExistingObjects.($SourceTypeMap.Identifier_Id) -and $RestoreFileRecord.($SourceTypeMap.Identifier_Name) -notin $ExistingObjects.($SourceTypeMap.Identifier_Name) )
                             {
                                 # Invoke command to create new resource
                                 $Command = "`$RestoreFileRecord | $("New-JcSdk{0}" -f $RestoreFileBaseName)"
