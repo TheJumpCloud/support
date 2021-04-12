@@ -38,7 +38,14 @@ Function Backup-JCOrganization
     [CmdletBinding(DefaultParameterSetName = 'All', PositionalBinding = $false)]
     Param(
         [Parameter(Mandatory)]
-        [System.String]
+        [System.IO.FileInfo]
+        [ValidateScript( {
+                If (-Not ($_ | Test-Path) )
+                {
+                    Throw "File or folder does not exist: $_"
+                }
+                Return $true
+            })]
         # File directory for backup output
         ${Path},
 
@@ -75,7 +82,6 @@ Function Backup-JCOrganization
         $TimerTotal = [Diagnostics.Stopwatch]::StartNew()
         $Date = Get-Date -Format:("yyyyMMddTHHmmssffff")
         $ChildPath = "JumpCloud_$($Date)"
-        $Path = Resolve-Path -Path:($Path)
         $TempPath = Join-Path -Path:($Path) -ChildPath:($ChildPath)
         $ArchivePath = Join-Path -Path:($Path) -ChildPath:("$($ChildPath).zip")
         $OutputHash = [ordered]@{}
