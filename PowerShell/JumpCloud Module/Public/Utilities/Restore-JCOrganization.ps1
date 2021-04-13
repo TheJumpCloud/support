@@ -87,7 +87,7 @@ Function Restore-JCOrganization
         # Get the manifest file from backup
         $ManifestFile = $ExpandedArchivePath | Get-ChildItem | Where-Object { $_.Name -eq "Manifest.json" }
         # ToDo: Should we install the versions of the modules listed in the Manifest file if they are not installed on the machine already?
-        Write-Host ("###############################################################")
+        Write-Host ("###############################################################") -ForegroundColor:('Green')
         If (-not (Test-Path -Path:($ManifestFile) -ErrorAction:('SilentlyContinue')))
         {
             Write-Error ("Unable to find manifest file: $($ManifestFile)")
@@ -95,14 +95,12 @@ Function Restore-JCOrganization
         Else
         {
             $Manifest = Get-Content -Path:($ManifestFile) | ConvertFrom-Json
-            Write-Host ("Backup Org: $($Manifest.organizationID)")
-            Write-Host ("Backup Date: $($Manifest.date)")
-            Write-Host "Contains Object Files:" (-not [system.string]::IsNullOrEmpty(($($Manifest.backupFiles)))) # TODO should we keep this message or change the logic
-            Write-Host "Contains Associations:" (-not [system.string]::IsNullOrEmpty(($($Manifest.associationFiles))))
+            Write-Host ("Backup Org: $($Manifest.organizationID)") -ForegroundColor:('Green')
+            Write-Host ("Backup Date: $($Manifest.date)") -ForegroundColor:('Green')
         }
-        Write-Host ("Backup Location: $($ZipArchive.FullName)")
-        Write-Host ("Backup Time: $($ZipArchive.LastWriteTime)")
-        Write-Host ("###############################################################")
+        Write-Host ("Backup Location: $($ZipArchive.FullName)") -ForegroundColor:('Green')
+        Write-Host ("Backup Time: $($ZipArchive.LastWriteTime)") -ForegroundColor:('Green')
+        Write-Host ("###############################################################") -ForegroundColor:('Green')
     }
     Process
     {
@@ -269,14 +267,14 @@ Function Restore-JCOrganization
         # Output
         If (-not [System.String]::IsNullOrEmpty($JcObjectJobResults))
         {
-            Write-Host "$($JcObjectJobResults.New.Count) Objects have been restored"
-            Write-Host "$($JcObjectJobResults.Updated.Count) Objects existed and have been updated"
+            Write-Host "$($JcObjectJobResults.New.Count) Objects have been restored" -ForegroundColor:('Magenta')
+            Write-Host "$($JcObjectJobResults.Updated.Count) Objects existed and have been updated" -ForegroundColor:('Magenta')
         }
         If (-not [System.String]::IsNullOrEmpty($AssociationResults))
         {
-            Write-Host "$($AssociationResults.New.Count) Associations have been restored"
-            Write-Host "$($AssociationResults.Existing.Count) Associations existed and have been skipped"
-            Write-Host "$($AssociationResults.Failed.Count) Associations failed to restore"
+            Write-Host "$($AssociationResults.New.Count) Associations have been restored" -ForegroundColor:('Magenta')
+            Write-Host "$($AssociationResults.Existing.Count) Associations existed and have been skipped" -ForegroundColor:('Magenta')
+            Write-Host "$($AssociationResults.Failed.Count) Associations failed to restore" -ForegroundColor:('Magenta')
         }
     }
 }
