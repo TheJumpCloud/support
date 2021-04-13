@@ -84,6 +84,16 @@ Function Restore-JCOrganization
         {
             $PSBoundParameters.Type
         }
+        # Test and convert CSVs back to JSON
+        $csvFiles = $ExpandedArchivePath | Get-ChildItem | Where-Object { $_.Name -match ".csv" }
+        if ($csvFiles){
+            foreach ($csvFile in $csvFiles) {
+                # Convert the CSV file to JSON
+                Get-Content -path $csvFile.FullName | ConvertFrom-Csv -Delimiter ',' | ConvertTo-Json -Depth 100 | Out-File "$($csvFile.DirectoryName)\$($csvFile.BaseName).json"
+                # Remove the CSV File
+                Remove-Item $csvFile.FullName
+            }
+        }
         # Get the manifest file from backup
         $ManifestFile = $ExpandedArchivePath | Get-ChildItem | Where-Object { $_.Name -eq "Manifest.json" }
         # ToDo: Should we install the versions of the modules listed in the Manifest file if they are not installed on the machine already?
