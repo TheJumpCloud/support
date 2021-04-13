@@ -88,7 +88,7 @@ Function Backup-JCOrganization
         # If the backup directory does not exist, create it
         If (-not (Test-Path $TempPath))
         {
-            $BackupLocation = New-Item -Path:($TempPath) -Name:$($TempPath.BaseName) -ItemType:('directory')
+            $BackupLocation = New-Item -Path:($TempPath) -ItemType:('directory')
             $OutputHash.Add('BackupLocation', $BackupLocation)
         }
         # When -All is provided use all type options and Association
