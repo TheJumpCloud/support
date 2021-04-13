@@ -58,7 +58,7 @@ Function Restore-JCOrganization
         ${All},
 
         [Parameter(ParameterSetName = 'Type')]
-        [ValidateSet('ActiveDirectory', 'AppleMdm', 'Application', 'AuthenticationPolicy', 'Command', 'Directory', 'Group', 'GSuite', 'IPList', 'LdapServer', 'Office365', 'Organization', 'Policy', 'RadiusServer', 'SoftwareApp', 'SystemGroup', 'User', 'UserGroup')]
+        [ValidateSet('Application', 'Command', 'DuoApplication', 'IPList', 'LdapServerSambaDomain', 'Policy', 'RadiusServer', 'SoftwareApp', 'SystemGroup', 'User', 'UserGroup')]
         [System.String[]]
         # Specify the type of JumpCloud objects you want to backup. Restore of "System" is unavailable.
         ${Type},
