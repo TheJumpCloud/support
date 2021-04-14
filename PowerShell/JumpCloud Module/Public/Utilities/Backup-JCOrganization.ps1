@@ -38,7 +38,14 @@ Function Backup-JCOrganization
     [CmdletBinding(DefaultParameterSetName = 'All', PositionalBinding = $false)]
     Param(
         [Parameter(Mandatory)]
-        [System.String]
+        [System.IO.FileInfo]
+        [ValidateScript( {
+                If (-Not ($_ | Test-Path) )
+                {
+                    Throw "File or folder does not exist: $_"
+                }
+                Return $true
+            })]
         # File directory for backup output
         ${Path},
 
@@ -75,14 +82,13 @@ Function Backup-JCOrganization
         $TimerTotal = [Diagnostics.Stopwatch]::StartNew()
         $Date = Get-Date -Format:("yyyyMMddTHHmmssffff")
         $ChildPath = "JumpCloud_$($Date)"
-        $Path = Resolve-Path -Path:($Path)
         $TempPath = Join-Path -Path:($Path) -ChildPath:($ChildPath)
         $ArchivePath = Join-Path -Path:($Path) -ChildPath:("$($ChildPath).zip")
         $OutputHash = [ordered]@{}
         # If the backup directory does not exist, create it
         If (-not (Test-Path $TempPath))
         {
-            $BackupLocation = New-Item -Path:($TempPath) -Name:$($TempPath.BaseName) -ItemType:('directory')
+            $BackupLocation = New-Item -Path:($TempPath) -ItemType:('directory')
             $OutputHash.Add('BackupLocation', $BackupLocation)
         }
         # When -All is provided use all type options and Association
@@ -95,28 +101,6 @@ Function Backup-JCOrganization
         {
             $Type
         }
-        # Map to define how JCAssociation & JcSdk types relate
-        $JcTypesMap = @{
-            ActiveDirectory      = [PSCustomObject]@{Name = 'active_directory'; AssociationTargets = @('user', 'user_group'); };
-            AppleMdm             = [PSCustomObject]@{Name = 'apple_mdm'; AssociationTargets = @(); };
-            Application          = [PSCustomObject]@{Name = 'application'; AssociationTargets = @('user', 'user_group'); };
-            AuthenticationPolicy = [PSCustomObject]@{Name = 'authentication_policy'; AssociationTargets = @(); };
-            Command              = [PSCustomObject]@{Name = 'command'; AssociationTargets = @('system', 'system_group'); };
-            Directory            = [PSCustomObject]@{Name = 'directory'; AssociationTargets = @(); };
-            Group                = [PSCustomObject]@{Name = 'group'; AssociationTargets = @(); };
-            GSuite               = [PSCustomObject]@{Name = 'g_suite'; AssociationTargets = @( 'user', 'user_group'); };
-            IPList               = [PSCustomObject]@{Name = 'ip_list'; AssociationTargets = @(); };
-            LdapServer           = [PSCustomObject]@{Name = 'ldap_server'; AssociationTargets = @('user', 'user_group'); };
-            Office365            = [PSCustomObject]@{Name = 'office_365'; AssociationTargets = @('user', 'user_group'); };
-            Organization         = [PSCustomObject]@{Name = 'organization'; AssociationTargets = @(); };
-            Policy               = [PSCustomObject]@{Name = 'policy'; AssociationTargets = @( 'system', 'system_group'); };
-            RadiusServer         = [PSCustomObject]@{Name = 'radius_server'; AssociationTargets = @('user', 'user_group'); };
-            SoftwareApp          = [PSCustomObject]@{Name = 'software_app'; AssociationTargets = @( 'system', 'system_group'); };
-            System               = [PSCustomObject]@{Name = 'system'; AssociationTargets = @( 'command', 'policy', 'system_group', 'user', 'user_group'); };
-            SystemGroup          = [PSCustomObject]@{Name = 'system_group'; AssociationTargets = @( 'command', 'policy', 'system', 'user', 'user_group'); };
-            User                 = [PSCustomObject]@{Name = 'user'; AssociationTargets = @('active_directory', 'application', 'g_suite', 'ldap_server', 'office_365', 'radius_server', 'system', 'system_group', 'user_group'); };
-            UserGroup            = [PSCustomObject]@{Name = 'user_group'; AssociationTargets = @('active_directory', 'application', 'g_suite', 'ldap_server', 'office_365', 'radius_server', 'system', 'system_group', 'user'); };
-        }
     }
     Process
     {
@@ -125,7 +109,7 @@ Function Backup-JCOrganization
         $ObjectJobs = @()
         ForEach ($JumpCloudType In $Types)
         {
-            $SourceTypeMap = $JcTypesMap.GetEnumerator() | Where-Object { $_.Key -eq $JumpCloudType }
+            $SourceTypeMap = $global:JcTypesMap.GetEnumerator() | Where-Object { $_.Key -eq $JumpCloudType }
             $ObjectBaseName = "{0}" -f $SourceTypeMap.Key
             $ObjectFileName = "{0}.{1}" -f $ObjectBaseName, $Format
             $ObjectFullName = "{0}/{1}" -f $TempPath, $ObjectFileName
@@ -178,8 +162,8 @@ Function Backup-JCOrganization
                         {
                             Write-Error ("Unknown format: $Format")
                         }
-                        # TODO: Potential use for restore function
-                        #| ForEach-Object { $_ | Select-Object *, @{Name = 'JcSdkModel'; Expression = { $_.GetType().FullName } } } `
+                        # Append model name to be used in Restore-JCOrganization
+                        $Result = $Result | ForEach-Object { $_ | Select-Object *, @{Name = 'JcSdkModel'; Expression = { $_.GetType().FullName } } }
                         # Build hash to return data
                         Return @{$ObjectBaseName = $Result }
                     }
@@ -204,145 +188,146 @@ Function Backup-JCOrganization
             ForEach ($BackupFile In $BackupFiles)
             {
                 # Type mapping lookup
-                $SourceTypeMap = $JcTypesMap.GetEnumerator() | Where-Object { $_.Key -eq $BackupFile.BaseName }
-                # TODO: Figure out how to make this work with x-ms-enum.
-                # $ValidTargetTypes = (Get-Command Get-JcSdk$($SourceTypeMap.Key)Association).Parameters.Targets.Attributes.ValidValues
-                # $ValidTargetTypes = ((Get-Command Get-JcSdk$($SourceTypeMap.Key)Association).Parameters.Targets.ParameterType.DeclaredFields | Where-Object { $_.IsPublic }).Name
+                $SourceTypeMap = $global:JcTypesMap.GetEnumerator() | Where-Object { $_.Key -eq $BackupFile.BaseName }
                 # Get list of valid target types from Get-JCAssociation
-                $ValidTargetTypes = $SourceTypeMap.Value.AssociationTargets
-                # Lookup file names in $JcTypesMap
-                ForEach ($ValidTargetType In $ValidTargetTypes)
+                $AssociationCommand = Get-Command "Get-JcSdk$($SourceTypeMap.Key)Association" -ErrorAction:('Ignore')
+                If ($AssociationCommand)
                 {
-                    $TargetTypeMap = $JcTypesMap.GetEnumerator() | Where-Object { $_.Value.Name -eq $ValidTargetType }
-                    # If the valid target type matches a file name look up the associations for the SourceType and TargetType
-                    If ($TargetTypeMap.Key -in $BackupFiles.BaseName)
+                    $ValidTargetTypes = $AssociationCommand.Parameters.Targets.ParameterType.DeclaredFields.Where( { $_.IsPublic } ).Name
+                    # Lookup file names in $global:JcTypesMap
+                    ForEach ($ValidTargetType In $ValidTargetTypes)
                     {
-                        $AssociationBaseName = "Association-{0}To{1}" -f $SourceTypeMap.Key, $TargetTypeMap.Key
-                        $AssociationFileName = "{0}.{1}" -f $AssociationBaseName, $Format
-                        $AssociationFullName = "{0}/{1}" -f $TempPath, $AssociationFileName
-                        $AssociationJobs += Start-Job -ScriptBlock:( { Param ($SourceTypeMap, $TargetTypeMap, $BackupFile, $AssociationBaseName, $AssociationFileName, $AssociationFullName, $Format, $Debug);
-                                $AssociationResults = @()
-                                # Get content from the file
-                                $BackupRecords = If ($Format -eq 'json')
-                                {
-                                    Get-Content -Path:($BackupFile.FullName) | ConvertFrom-Json
-                                }
-                                ElseIf ($Format -eq 'csv')
-                                {
-                                    Import-Csv -Path:($BackupFile.FullName)
-                                }
-                                Else
-                                {
-                                    Write-Error ("Unknown format: $Format")
-                                }
-                                ForEach ($BackupRecord In $BackupRecords)
-                                {
-                                    # Build Command based upon source and target combinations
-                                    # *Group commands take "GroupId" as a parameter vs "{Type}Id"
-                                    # User associations is called Get-JcSdkUserAssociation and Get-JcSdkUserMember
-                                    If (($SourceTypeMap.Value.Name -eq 'system' -and $TargetTypeMap.Value.Name -eq 'system_group') -or ($SourceTypeMap.Value.Name -eq 'user' -and $TargetTypeMap.Value.Name -eq 'user_group'))
+                        $TargetTypeMap = $global:JcTypesMap.GetEnumerator() | Where-Object { $_.Value.Name -eq $ValidTargetType }
+                        # If the valid target type matches a file name look up the associations for the SourceType and TargetType
+                        If ($TargetTypeMap.Key -in $BackupFiles.BaseName)
+                        {
+                            $AssociationBaseName = "Association-{0}To{1}" -f $SourceTypeMap.Key, $TargetTypeMap.Key
+                            $AssociationFileName = "{0}.{1}" -f $AssociationBaseName, $Format
+                            $AssociationFullName = "{0}/{1}" -f $TempPath, $AssociationFileName
+                            $AssociationJobs += Start-Job -ScriptBlock:( { Param ($SourceTypeMap, $TargetTypeMap, $BackupFile, $AssociationBaseName, $AssociationFileName, $AssociationFullName, $Format, $Debug);
+                                    $AssociationResults = @()
+                                    # Get content from the file
+                                    $BackupRecords = If ($Format -eq 'json')
                                     {
-                                        $Command = 'Get-JcSdk{0}Member -{1}Id:("{2}")' -f $SourceTypeMap.Key, $SourceTypeMap.Key.Replace('UserGroup', 'Group').Replace('SystemGroup', 'Group'), $BackupRecord.id
-                                        If ($PSBoundParameters.Debug) { Write-Host ("DEBUG: Running: $Command") -ForegroundColor:('Yellow') }
-                                        $AssociationResult = Invoke-Expression -Command:($Command)
-                                        If (-not [System.String]::IsNullOrEmpty($AssociationResult))
-                                        {
-                                            # The direct association/"Get-JcSdk*Member" endpoints return null for FromId. So manually populate them here.
-                                            $AssociationResult.Paths | ForEach-Object {
-                                                $_ | ForEach-Object {
-                                                    If ([System.String]::IsNullOrEmpty($_.FromId))
-                                                    {
-                                                        $_.FromId = $BackupRecord.id
-                                                    }
-                                                    # The direct association/"Get-JcSdk*Member" endpoints return null for FromType. So manually populate them here.
-                                                    If ([System.String]::IsNullOrEmpty($_.FromType))
-                                                    {
-                                                        $_.FromType = $SourceTypeMap.Value.Name
-                                                    }
-                                                }
-                                            }
-                                            $AssociationResults += $AssociationResult
-                                        }
-                                    }
-                                    ElseIf (($SourceTypeMap.Value.Name -eq 'system_group' -and $TargetTypeMap.Value.Name -eq 'system') -or ($SourceTypeMap.Value.Name -eq 'user_group' -and $TargetTypeMap.Value.Name -eq 'user'))
-                                    {
-                                        $Command = 'Get-JcSdk{0}Membership -{1}Id:("{2}")' -f $SourceTypeMap.Key, $SourceTypeMap.Key.Replace('UserGroup', 'Group').Replace('SystemGroup', 'Group'), $BackupRecord.id
-                                        If ($PSBoundParameters.Debug) { Write-Host ("DEBUG: Running: $Command") -ForegroundColor:('Yellow') }
-                                        $AssociationResult = Invoke-Expression -Command:($Command)
-                                        If (-not [System.String]::IsNullOrEmpty($AssociationResult))
-                                        {
-                                            # The direct association/"Get-JcSdk*Membership" endpoints return null for FromId. So manually populate them here.
-                                            $AssociationResult.Paths | ForEach-Object {
-                                                $_ | ForEach-Object {
-                                                    If ([System.String]::IsNullOrEmpty($_.FromId))
-                                                    {
-                                                        $_.FromId = $BackupRecord.id
-                                                    }
-                                                    # The direct association/"Get-JcSdk*Membership" endpoints return null for FromType. So manually populate them here.
-                                                    If ([System.String]::IsNullOrEmpty($_.FromType))
-                                                    {
-                                                        $_.FromType = $SourceTypeMap.Value.Name
-                                                    }
-                                                }
-                                            }
-                                            $AssociationResults += $AssociationResult
-                                        }
-                                    }
-                                    Else
-                                    {
-                                        $Command = 'Get-JcSdk{0}Association -{1}Id:("{2}") -Targets:("{3}")' -f $SourceTypeMap.Key, $SourceTypeMap.Key.Replace('UserGroup', 'Group').Replace('SystemGroup', 'Group'), $BackupRecord.id, $TargetTypeMap.Value.Name
-                                        If ($PSBoundParameters.Debug) { Write-Host ("DEBUG: Running: $Command") -ForegroundColor:('Yellow') }
-                                        $AssociationResult = Invoke-Expression -Command:($Command)
-                                        If (-not [System.String]::IsNullOrEmpty($AssociationResult))
-                                        {
-                                            $AssociationResult | ForEach-Object {
-                                                # The direct association/"Get-JcSdk*Association" endpoints return null for FromId. So manually populate them here.
-                                                If ([System.String]::IsNullOrEmpty($_.FromId))
-                                                {
-                                                    $_.FromId = $BackupRecord.id
-                                                }
-                                                # The direct association/"Get-JcSdk*Association" endpoints return null for FromType. So manually populate them here.
-                                                If ([System.String]::IsNullOrEmpty($_.FromType))
-                                                {
-                                                    $_.FromType = $SourceTypeMap.Value.Name
-                                                }
-                                            }
-                                            $AssociationResults += $AssociationResult
-                                        }
-                                    }
-                                }
-                                If (-not [System.String]::IsNullOrEmpty($AssociationResults))
-                                {
-                                    If ($Format -eq 'json')
-                                    {
-                                        $AssociationResults | ConvertTo-Json -Depth:(100) | Out-File -FilePath:($AssociationFullName) -Force
+                                        Get-Content -Path:($BackupFile.FullName) | ConvertFrom-Json
                                     }
                                     ElseIf ($Format -eq 'csv')
                                     {
-                                        # Convert object properties of objects to compressed json strings
-                                        $AssociationResults | ForEach-Object {
-                                            $NewRecord = [PSCustomObject]@{}
-                                            $_.PSObject.Properties | ForEach-Object {
-                                                If ($_.TypeNameOfValue -like '*.Models.*' -or $_.TypeNameOfValue -like '*Object*' -or $_.TypeNameOfValue -like '*String`[`]*')
-                                                {
-                                                    Add-Member -InputObject:($NewRecord) -MemberType:('NoteProperty') -Name:($_.Name) -Value:($_.Value | ConvertTo-Json -Depth:(100) -Compress)
-                                                }
-                                                Else
-                                                {
-                                                    Add-Member -InputObject:($NewRecord) -MemberType:('NoteProperty') -Name:($_.Name) -Value:($_.Value)
-                                                }
-                                            }
-                                            Return $NewRecord
-                                        } | Export-Csv -NoTypeInformation -Path:($AssociationFullName) -Force
+                                        Import-Csv -Path:($BackupFile.FullName)
                                     }
                                     Else
                                     {
                                         Write-Error ("Unknown format: $Format")
                                     }
-                                    # Build hash to return data
-                                    Return @{$AssociationBaseName = $AssociationResults }
-                                }
-                            }) -ArgumentList:($SourceTypeMap, $TargetTypeMap, $BackupFile, $AssociationBaseName, $AssociationFileName, $AssociationFullName, $Format, $PSBoundParameters.Debug)
+                                    ForEach ($BackupRecord In $BackupRecords)
+                                    {
+                                        # Build Command based upon source and target combinations
+                                        # *Group commands take "GroupId" as a parameter vs "{Type}Id"
+                                        # User associations is called Get-JcSdkUserAssociation and Get-JcSdkUserMember
+                                        If (($SourceTypeMap.Value.Name -eq 'system' -and $TargetTypeMap.Value.Name -eq 'system_group') -or ($SourceTypeMap.Value.Name -eq 'user' -and $TargetTypeMap.Value.Name -eq 'user_group'))
+                                        {
+                                            $Command = 'Get-JcSdk{0}Member -{1}Id:("{2}")' -f $SourceTypeMap.Key, $SourceTypeMap.Key.Replace('UserGroup', 'Group').Replace('SystemGroup', 'Group'), $BackupRecord.id
+                                            If ($PSBoundParameters.Debug) { Write-Host ("DEBUG: Running: $Command") -ForegroundColor:('Yellow') }
+                                            $AssociationResult = Invoke-Expression -Command:($Command)
+                                            If (-not [System.String]::IsNullOrEmpty($AssociationResult))
+                                            {
+                                                # The direct association/"Get-JcSdk*Member" endpoints return null for FromId. So manually populate them here.
+                                                $AssociationResult.Paths | ForEach-Object {
+                                                    $_ | ForEach-Object {
+                                                        If ([System.String]::IsNullOrEmpty($_.FromId))
+                                                        {
+                                                            $_.FromId = $BackupRecord.id
+                                                        }
+                                                        # The direct association/"Get-JcSdk*Member" endpoints return null for FromType. So manually populate them here.
+                                                        If ([System.String]::IsNullOrEmpty($_.FromType))
+                                                        {
+                                                            $_.FromType = $SourceTypeMap.Value.Name
+                                                        }
+                                                    }
+                                                }
+                                                $AssociationResults += $AssociationResult
+                                            }
+                                        }
+                                        ElseIf (($SourceTypeMap.Value.Name -eq 'system_group' -and $TargetTypeMap.Value.Name -eq 'system') -or ($SourceTypeMap.Value.Name -eq 'user_group' -and $TargetTypeMap.Value.Name -eq 'user'))
+                                        {
+                                            $Command = 'Get-JcSdk{0}Membership -{1}Id:("{2}")' -f $SourceTypeMap.Key, $SourceTypeMap.Key.Replace('UserGroup', 'Group').Replace('SystemGroup', 'Group'), $BackupRecord.id
+                                            If ($PSBoundParameters.Debug) { Write-Host ("DEBUG: Running: $Command") -ForegroundColor:('Yellow') }
+                                            $AssociationResult = Invoke-Expression -Command:($Command)
+                                            If (-not [System.String]::IsNullOrEmpty($AssociationResult))
+                                            {
+                                                # The direct association/"Get-JcSdk*Membership" endpoints return null for FromId. So manually populate them here.
+                                                $AssociationResult.Paths | ForEach-Object {
+                                                    $_ | ForEach-Object {
+                                                        If ([System.String]::IsNullOrEmpty($_.FromId))
+                                                        {
+                                                            $_.FromId = $BackupRecord.id
+                                                        }
+                                                        # The direct association/"Get-JcSdk*Membership" endpoints return null for FromType. So manually populate them here.
+                                                        If ([System.String]::IsNullOrEmpty($_.FromType))
+                                                        {
+                                                            $_.FromType = $SourceTypeMap.Value.Name
+                                                        }
+                                                    }
+                                                }
+                                                $AssociationResults += $AssociationResult
+                                            }
+                                        }
+                                        Else
+                                        {
+                                            $Command = 'Get-JcSdk{0}Association -{1}Id:("{2}") -Targets:("{3}")' -f $SourceTypeMap.Key, $SourceTypeMap.Key.Replace('UserGroup', 'Group').Replace('SystemGroup', 'Group'), $BackupRecord.id, $TargetTypeMap.Value.Name
+                                            If ($PSBoundParameters.Debug) { Write-Host ("DEBUG: Running: $Command") -ForegroundColor:('Yellow') }
+                                            $AssociationResult = Invoke-Expression -Command:($Command)
+                                            If (-not [System.String]::IsNullOrEmpty($AssociationResult))
+                                            {
+                                                $AssociationResult | ForEach-Object {
+                                                    # The direct association/"Get-JcSdk*Association" endpoints return null for FromId. So manually populate them here.
+                                                    If ([System.String]::IsNullOrEmpty($_.FromId))
+                                                    {
+                                                        $_.FromId = $BackupRecord.id
+                                                    }
+                                                    # The direct association/"Get-JcSdk*Association" endpoints return null for FromType. So manually populate them here.
+                                                    If ([System.String]::IsNullOrEmpty($_.FromType))
+                                                    {
+                                                        $_.FromType = $SourceTypeMap.Value.Name
+                                                    }
+                                                }
+                                                $AssociationResults += $AssociationResult
+                                            }
+                                        }
+                                    }
+                                    If (-not [System.String]::IsNullOrEmpty($AssociationResults))
+                                    {
+                                        If ($Format -eq 'json')
+                                        {
+                                            $AssociationResults | ConvertTo-Json -Depth:(100) | Out-File -FilePath:($AssociationFullName) -Force
+                                        }
+                                        ElseIf ($Format -eq 'csv')
+                                        {
+                                            # Convert object properties of objects to compressed json strings
+                                            $AssociationResults | ForEach-Object {
+                                                $NewRecord = [PSCustomObject]@{}
+                                                $_.PSObject.Properties | ForEach-Object {
+                                                    If ($_.TypeNameOfValue -like '*.Models.*' -or $_.TypeNameOfValue -like '*Object*' -or $_.TypeNameOfValue -like '*String`[`]*')
+                                                    {
+                                                        Add-Member -InputObject:($NewRecord) -MemberType:('NoteProperty') -Name:($_.Name) -Value:($_.Value | ConvertTo-Json -Depth:(100) -Compress)
+                                                    }
+                                                    Else
+                                                    {
+                                                        Add-Member -InputObject:($NewRecord) -MemberType:('NoteProperty') -Name:($_.Name) -Value:($_.Value)
+                                                    }
+                                                }
+                                                Return $NewRecord
+                                            } | Export-Csv -NoTypeInformation -Path:($AssociationFullName) -Force
+                                        }
+                                        Else
+                                        {
+                                            Write-Error ("Unknown format: $Format")
+                                        }
+                                        # Build hash to return data
+                                        Return @{$AssociationBaseName = $AssociationResults }
+                                    }
+                                }) -ArgumentList:($SourceTypeMap, $TargetTypeMap, $BackupFile, $AssociationBaseName, $AssociationFileName, $AssociationFullName, $Format, $PSBoundParameters.Debug)
+                        }
                     }
                 }
             }
@@ -369,8 +354,9 @@ Function Backup-JCOrganization
             moduleVersion  = @(Get-Module -Name:('JumpCloud*') -ListAvailable | Select-Object Name, Version);
             result         = Get-ChildItem -Path:($TempPath) | Sort-Object -Property BaseName | ForEach-Object {
                 [PSCustomObject]@{
-                    Type  = $_.BaseName
-                    Count = $OutputHash.Item($_.BaseName).Count
+                    Type      = $_.BaseName
+                    Count     = $OutputHash.Item($_.BaseName).Count
+                    ModelName = $OutputHash.Item($_.BaseName).JcSdkModel | Select-Object -Unique
                 }
             }
         } | ConvertTo-Json -Depth:(100) | Out-File -FilePath:("$($TempPath)/Manifest.json") -Force
