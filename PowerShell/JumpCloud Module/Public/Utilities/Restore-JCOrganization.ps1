@@ -141,7 +141,8 @@ Function Restore-JCOrganization
                     $ExistingObjects = Invoke-Expression -Command:($Command)
                     $RestoreFileContent = Get-Content -Path:($RestoreFileFullName) | ConvertFrom-Json
                     $RestoreFileContent | ForEach-Object {
-                        $RestoreFileRecord = $CommandType::DeserializeFromPSObject($_)
+                        $RestoreFileRecordOrg = $_
+                        $RestoreFileRecord = $CommandType::DeserializeFromPSObject($RestoreFileRecordOrg)
                         # If User is managed by third-party dont create or update
                         If (-not $RestoreFileRecord.ExternallyManaged)
                         {
@@ -151,7 +152,7 @@ Function Restore-JCOrganization
                                 # Invoke command to update existing resource
                                 $CommandTemplate = "Set-JcSdk{0} -Id:('{1}') -Body:({2})"
                                 $Command = $CommandTemplate -f $SourceTypeMap.Key, $RestoreFileRecord.id, '$RestoreFileRecord'
-                                If ($PSBoundParameters.Debug) { Write-Host ("DEBUG: Running: $($ModelName)$($CommandTemplate -f $SourceTypeMap.Key, $RestoreFileRecord.id, ($RestoreFileRecord | ConvertTo-Json -Depth:(100) -Compress))") -ForegroundColor:('Yellow') }
+                                If ($PSBoundParameters.Debug) { Write-Host ("DEBUG: Running: $($ModelName)::DeserializeFromPSObject($($CommandTemplate -f $SourceTypeMap.Key, $RestoreFileRecordOrg.id,"$($RestoreFileRecordOrg | ConvertTo-Json -Depth:(100) -Compress) | ConvertFrom-Json -Depth 100"))") -ForegroundColor:('Yellow') }
                                 $SetJcSdkResult = Invoke-Expression -Command:($Command)
                                 If (-not [System.String]::IsNullOrEmpty($SetJcSdkResult))
                                 {
@@ -166,7 +167,7 @@ Function Restore-JCOrganization
                                 # Invoke command to update existing resource
                                 $CommandTemplate = "Set-JcSdk{0} -Id:('{1}') -Body:({2})"
                                 $Command = $CommandTemplate -f $SourceTypeMap.Key, $ResourceId.id, '$RestoreFileRecord'
-                                If ($PSBoundParameters.Debug) { Write-Host ("DEBUG: Running: $($ModelName)$($CommandTemplate -f $SourceTypeMap.Key, $RestoreFileRecord.id, ($RestoreFileRecord | ConvertTo-Json -Depth:(100) -Compress))") -ForegroundColor:('Yellow') }
+                                If ($PSBoundParameters.Debug) { Write-Host ("DEBUG: Running: $($ModelName)::DeserializeFromPSObject($($CommandTemplate -f $SourceTypeMap.Key, $RestoreFileRecordOrg.id, "$($RestoreFileRecordOrg | ConvertTo-Json -Depth:(100) -Compress) | ConvertFrom-Json -Depth 100"))") -ForegroundColor:('Yellow') }
                                 $SetJcSdkResult = Invoke-Expression -Command:($Command)
                                 If (-not [System.String]::IsNullOrEmpty($SetJcSdkResult))
                                 {
@@ -179,7 +180,7 @@ Function Restore-JCOrganization
                                 # Invoke command to create new resource
                                 $CommandTemplate = "{0} | New-JcSdk{1}"
                                 $Command = $CommandTemplate -f '$RestoreFileRecord', $SourceTypeMap.Key
-                                If ($PSBoundParameters.Debug) { Write-Host ("DEBUG: Running: $($ModelName)$($CommandTemplate -f  ($RestoreFileRecord | ConvertTo-Json -Depth:(100) -Compress), $SourceTypeMap.Key)") -ForegroundColor:('Yellow') }
+                                If ($PSBoundParameters.Debug) { Write-Host ("DEBUG: Running: $($ModelName)::DeserializeFromPSObject($($CommandTemplate -f  "$($RestoreFileRecordOrg | ConvertTo-Json -Depth:(100) -Compress) | ConvertFrom-Json -Depth 100", $SourceTypeMap.Key))") -ForegroundColor:('Yellow') }
                                 $NewJcSdkResult = Invoke-Expression -Command:($Command)
                                 If (-not [System.String]::IsNullOrEmpty($NewJcSdkResult))
                                 {
