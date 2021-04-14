@@ -70,6 +70,7 @@ Function Restore-JCOrganization
     )
     Begin
     {
+        $TimerTotal = [Diagnostics.Stopwatch]::StartNew()
         # Unzip folder
         $ZipArchive = Get-Item -Path:($Path)
         Expand-Archive -LiteralPath:($Path) -DestinationPath:($ZipArchive.Directory.FullName) -Force
@@ -114,6 +115,7 @@ Function Restore-JCOrganization
     }
     Process
     {
+        $TimerObject = [Diagnostics.Stopwatch]::StartNew()
         # Get list of files from backup location and split into object and association groups
         $RestoreFiles = Get-ChildItem -Path:($ExpandedArchivePath.FullName) -Exclude:('*Association*') | ForEach-Object { $_ | Where-Object { $_.BaseName -in $Types } }
         # For each backup file restore object
@@ -123,7 +125,7 @@ Function Restore-JCOrganization
             $SourceTypeMap = $global:JcTypesMap.GetEnumerator() | Where-Object { $_.Key -eq $RestoreFileBaseName }
             $ModelName = ($Manifest.result | Where-Object { $_.Type -eq $SourceTypeMap.Key }).ModelName
             $RequiredModules = $Manifest.moduleVersion.name
-            Start-Job -ScriptBlock:( { Param ($RestoreFileFullName, $SourceTypeMap, $ModelName, $RequiredModules)
+            Start-Job -ScriptBlock:( { Param ($RestoreFileFullName, $SourceTypeMap, $ModelName, $RequiredModules, $Debug)
                     $JcObjectResults = [PSCustomObject]@{
                         Updated = @();
                         New     = @();
@@ -145,8 +147,9 @@ Function Restore-JCOrganization
                             $CommandResult = If ( $RestoreFileRecord.($SourceTypeMap.Value.Identifier_Id) -in $ExistingObjects.($SourceTypeMap.Value.Identifier_Id) )
                             {
                                 # Invoke command to update existing resource
-                                $Command = "Set-JcSdk{0} -Id:({1}) -Body:(`$RestoreFileRecord)" -f $SourceTypeMap.Key, $RestoreFileRecord.id
-                                If ($PSBoundParameters.Debug) { Write-Host ("DEBUG: Running: $Command") -ForegroundColor:('Yellow') }
+                                $CommandTemplate = "Set-JcSdk{0} -Id:({1}) -Body:({2})"
+                                $Command = $CommandTemplate -f $SourceTypeMap.Key, $RestoreFileRecord.id, '$RestoreFileRecord'
+                                If ($PSBoundParameters.Debug) { Write-Host ("DEBUG: Running: $($CommandTemplate -f $SourceTypeMap.Key, $RestoreFileRecord.id, ($RestoreFileRecord | ConvertTo-Json -Depth:(100) -Compress))") -ForegroundColor:('Yellow') }
                                 $SetJcSdkResult = Invoke-Expression -Command:($Command)
                                 If (-not [System.String]::IsNullOrEmpty($SetJcSdkResult))
                                 {
@@ -159,8 +162,9 @@ Function Restore-JCOrganization
                             {
                                 $ResourceId = $ExistingObjects | Where-Object { $RestoreFileRecord.($SourceTypeMap.Value.Identifier_Name) -in $_.($SourceTypeMap.Value.Identifier_Name) }
                                 # Invoke command to update existing resource
-                                $Command = "Set-JcSdk{0} -Id:({1}) -Body:(`$RestoreFileRecord)" -f $SourceTypeMap.Key, $ResourceId.id
-                                If ($PSBoundParameters.Debug) { Write-Host ("DEBUG: Running: $Command") -ForegroundColor:('Yellow') }
+                                $CommandTemplate = "Set-JcSdk{0} -Id:({1}) -Body:({2})"
+                                $Command = $CommandTemplate -f $SourceTypeMap.Key, $ResourceId.id, '$RestoreFileRecord'
+                                If ($PSBoundParameters.Debug) { Write-Host ("DEBUG: Running: $($CommandTemplate -f $SourceTypeMap.Key, $RestoreFileRecord.id, ($RestoreFileRecord | ConvertTo-Json -Depth:(100) -Compress))") -ForegroundColor:('Yellow') }
                                 $SetJcSdkResult = Invoke-Expression -Command:($Command)
                                 If (-not [System.String]::IsNullOrEmpty($SetJcSdkResult))
                                 {
@@ -171,8 +175,9 @@ Function Restore-JCOrganization
                             Else
                             {
                                 # Invoke command to create new resource
-                                $Command = "`$RestoreFileRecord | $("New-JcSdk{0}" -f $SourceTypeMap.Key)"
-                                If ($PSBoundParameters.Debug) { Write-Host ("DEBUG: Running: $Command") -ForegroundColor:('Yellow') }
+                                $CommandTemplate = "{0} | New-JcSdk{1}"
+                                $Command = $CommandTemplate -f '$RestoreFileRecord', $SourceTypeMap.Key
+                                If ($PSBoundParameters.Debug) { Write-Host ("DEBUG: Running: $($CommandTemplate -f  ($RestoreFileRecord | ConvertTo-Json -Depth:(100) -Compress), $SourceTypeMap.Key)") -ForegroundColor:('Yellow') }
                                 $NewJcSdkResult = Invoke-Expression -Command:($Command)
                                 If (-not [System.String]::IsNullOrEmpty($NewJcSdkResult))
                                 {
@@ -187,20 +192,22 @@ Function Restore-JCOrganization
                         }
                     }
                     Return $JcObjectResults
-                }) -ArgumentList:($RestoreFileFullName, $SourceTypeMap, $ModelName, $RequiredModules)
+                }) -ArgumentList:($RestoreFileFullName, $SourceTypeMap, $ModelName, $RequiredModules, $PSBoundParameters.Debug)
         }
         $JcObjectsJobStatus = Wait-Job -Id:($JcObjectsJobs.Id)
         $JcObjectJobResults = $JcObjectsJobStatus | Receive-Job
+        $TimerObject.Stop()
         # Foreach type start a new job and restore object association records
-        If ($PSBoundParameters.Association)
+        If ($Association)
         {
+            $TimerAssociations = [Diagnostics.Stopwatch]::StartNew()
             $IdMap = $JcObjectJobResults.IdMap
             $RestoreAssociationFiles = Get-ChildItem -Path:($ExpandedArchivePath.FullName) -Filter:('*Association*') | ForEach-Object { $_ | Where-Object { $_.BaseName.Replace('-Association', '') -in $Types } }
             If ($RestoreAssociationFiles)
             {
                 $AssociationsJobs = ForEach ($RestoreAssociationFile In $RestoreAssociationFiles)
                 {
-                    Start-Job -ScriptBlock:( { Param ($RestoreAssociationFile, $IdMap, $JcTypesMap)
+                    Start-Job -ScriptBlock:( { Param ($RestoreAssociationFile, $IdMap, $JcTypesMap, $Debug)
                             $AssociationResults = [PSCustomObject]@{
                                 Existing = @();
                                 New      = @();
@@ -260,11 +267,12 @@ Function Restore-JCOrganization
                                 }
                             }
                             Return $AssociationResults
-                        }) -ArgumentList:($RestoreAssociationFile, $IdMap, $global:JcTypesMap)
+                        }) -ArgumentList:($RestoreAssociationFile, $IdMap, $global:JcTypesMap, $PSBoundParameters.Debug)
                 }
                 $AssociationsJobStatus = Wait-Job -Id:($AssociationsJobs.Id)
                 $AssociationResults = $AssociationsJobStatus | Receive-Job
             }
+            $TimerAssociations.Stop()
         }
     }
     End
@@ -286,5 +294,9 @@ Function Restore-JCOrganization
             Write-Host "$($AssociationResults.Existing.Count) Associations existed and have been skipped" -ForegroundColor:('Magenta')
             Write-Host "$($AssociationResults.Failed.Count) Associations failed to restore" -ForegroundColor:('Magenta')
         }
+        $TimerTotal.Stop()
+        If ($TimerObject) { Write-Debug ("Object Run Time: $($TimerObject.Elapsed)") }
+        If ($TimerAssociations) { Write-Debug ("Association Run Time: $($TimerAssociations.Elapsed)") }
+        If ($TimerTotal) { Write-Debug ("Total Run Time: $($TimerTotal.Elapsed)") }
     }
 }
