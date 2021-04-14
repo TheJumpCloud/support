@@ -87,10 +87,12 @@ Function Restore-JCOrganization
         }
         # Test and convert CSVs back to JSON
         $csvFiles = $ExpandedArchivePath | Get-ChildItem | Where-Object { $_.Name -match ".csv" }
-        if ($csvFiles){
-            foreach ($csvFile in $csvFiles) {
+        if ($csvFiles)
+        {
+            foreach ($csvFile in $csvFiles)
+            {
                 # Convert the CSV file to JSON
-                Get-Content -path $csvFile.FullName | ConvertFrom-Csv -Delimiter ',' | ConvertTo-Json -Depth 100 | Out-File "$($csvFile.DirectoryName)\$($csvFile.BaseName).json"
+                Get-Content -Path $csvFile.FullName | ConvertFrom-Csv -Delimiter ',' | ConvertTo-Json -Depth 100 | Out-File "$($csvFile.DirectoryName)\$($csvFile.BaseName).json"
                 # Remove the CSV File
                 Remove-Item $csvFile.FullName
             }
@@ -123,7 +125,7 @@ Function Restore-JCOrganization
             $RestoreFileFullName = $_.FullName
             $RestoreFileBaseName = $_.BaseName
             $SourceTypeMap = $global:JcTypesMap.GetEnumerator() | Where-Object { $_.Key -eq $RestoreFileBaseName }
-            $ModelName = ($Manifest.result | Where-Object { $_.Type -eq $SourceTypeMap.Key }).ModelName
+            $ModelName = "[$(($Manifest.result | Where-Object { $_.Type -eq $SourceTypeMap.Key }).ModelName)]"
             $RequiredModules = $Manifest.moduleVersion.name
             Start-Job -ScriptBlock:( { Param ($RestoreFileFullName, $SourceTypeMap, $ModelName, $RequiredModules, $Debug)
                     $JcObjectResults = [PSCustomObject]@{
@@ -132,7 +134,7 @@ Function Restore-JCOrganization
                         IdMap   = @();
                     }
                     Import-Module -Name:($RequiredModules) -Force
-                    $CommandType = Invoke-Expression -Command:("[$($ModelName)]")
+                    $CommandType = Invoke-Expression -Command:("$ModelName")
                     # Collect old ids and new ids for mapping
                     $Command = "Get-JcSdk{0} -Fields:('{1}')" -f $SourceTypeMap.Key, (@($SourceTypeMap.Value.Identifier_Id, $SourceTypeMap.Value.Identifier_Name) -join (','))
                     If ($PSBoundParameters.Debug) { Write-Host ("DEBUG: Running: $Command") -ForegroundColor:('Yellow') }
@@ -147,9 +149,9 @@ Function Restore-JCOrganization
                             $CommandResult = If ( $RestoreFileRecord.($SourceTypeMap.Value.Identifier_Id) -in $ExistingObjects.($SourceTypeMap.Value.Identifier_Id) )
                             {
                                 # Invoke command to update existing resource
-                                $CommandTemplate = "Set-JcSdk{0} -Id:({1}) -Body:({2})"
+                                $CommandTemplate = "Set-JcSdk{0} -Id:('{1}') -Body:({2})"
                                 $Command = $CommandTemplate -f $SourceTypeMap.Key, $RestoreFileRecord.id, '$RestoreFileRecord'
-                                If ($PSBoundParameters.Debug) { Write-Host ("DEBUG: Running: $($CommandTemplate -f $SourceTypeMap.Key, $RestoreFileRecord.id, ($RestoreFileRecord | ConvertTo-Json -Depth:(100) -Compress))") -ForegroundColor:('Yellow') }
+                                If ($PSBoundParameters.Debug) { Write-Host ("DEBUG: Running: $($ModelName)$($CommandTemplate -f $SourceTypeMap.Key, $RestoreFileRecord.id, ($RestoreFileRecord | ConvertTo-Json -Depth:(100) -Compress))") -ForegroundColor:('Yellow') }
                                 $SetJcSdkResult = Invoke-Expression -Command:($Command)
                                 If (-not [System.String]::IsNullOrEmpty($SetJcSdkResult))
                                 {
@@ -162,9 +164,9 @@ Function Restore-JCOrganization
                             {
                                 $ResourceId = $ExistingObjects | Where-Object { $RestoreFileRecord.($SourceTypeMap.Value.Identifier_Name) -in $_.($SourceTypeMap.Value.Identifier_Name) }
                                 # Invoke command to update existing resource
-                                $CommandTemplate = "Set-JcSdk{0} -Id:({1}) -Body:({2})"
+                                $CommandTemplate = "Set-JcSdk{0} -Id:('{1}') -Body:({2})"
                                 $Command = $CommandTemplate -f $SourceTypeMap.Key, $ResourceId.id, '$RestoreFileRecord'
-                                If ($PSBoundParameters.Debug) { Write-Host ("DEBUG: Running: $($CommandTemplate -f $SourceTypeMap.Key, $RestoreFileRecord.id, ($RestoreFileRecord | ConvertTo-Json -Depth:(100) -Compress))") -ForegroundColor:('Yellow') }
+                                If ($PSBoundParameters.Debug) { Write-Host ("DEBUG: Running: $($ModelName)$($CommandTemplate -f $SourceTypeMap.Key, $RestoreFileRecord.id, ($RestoreFileRecord | ConvertTo-Json -Depth:(100) -Compress))") -ForegroundColor:('Yellow') }
                                 $SetJcSdkResult = Invoke-Expression -Command:($Command)
                                 If (-not [System.String]::IsNullOrEmpty($SetJcSdkResult))
                                 {
@@ -177,7 +179,7 @@ Function Restore-JCOrganization
                                 # Invoke command to create new resource
                                 $CommandTemplate = "{0} | New-JcSdk{1}"
                                 $Command = $CommandTemplate -f '$RestoreFileRecord', $SourceTypeMap.Key
-                                If ($PSBoundParameters.Debug) { Write-Host ("DEBUG: Running: $($CommandTemplate -f  ($RestoreFileRecord | ConvertTo-Json -Depth:(100) -Compress), $SourceTypeMap.Key)") -ForegroundColor:('Yellow') }
+                                If ($PSBoundParameters.Debug) { Write-Host ("DEBUG: Running: $($ModelName)$($CommandTemplate -f  ($RestoreFileRecord | ConvertTo-Json -Depth:(100) -Compress), $SourceTypeMap.Key)") -ForegroundColor:('Yellow') }
                                 $NewJcSdkResult = Invoke-Expression -Command:($Command)
                                 If (-not [System.String]::IsNullOrEmpty($NewJcSdkResult))
                                 {
