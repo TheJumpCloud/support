@@ -110,8 +110,6 @@ Write-Output('Scheduled tasks that run in a user account context:')
 Get-ScheduledTask | Where { Test-TaskForUserAccount($_.Principal) } | Write-TaskInfos
 
 & cmdkey.exe /list
-
-}
 ```
 
 #### Description
