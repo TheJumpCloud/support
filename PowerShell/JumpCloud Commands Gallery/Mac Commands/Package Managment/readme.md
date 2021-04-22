@@ -24,13 +24,13 @@ Deploy the [Mac - Install AutoPkg Package Manager](./Mac&#32;-&#32;Install&#32;A
 
 ### Deployment of Chrome, Firefox and VLC with AutoPKG Example
 
-The [Mac - Install AutoPkg Apps](Mac&#32;-&#32;Install&#32;Homebrew&#32;Apps.md) command is included to provide admins with a one click example script to deploy Chrome, Firefox and VLC player. After the AutoPkg binary has been installed on a set of systems, deploy the [Mac - Install AutoPkg Apps](Mac&#32;-&#32;Install&#32;Homebrew&#32;Apps.md) command to the same set of systems, running the command as a local admin. AutoPkg will download and install Chrome, Firefox and VLC. Note, this command is run as a local admin, subsequent AutoPkg commands should be run on the same administrator account.
+The [Mac - Install AutoPkg Apps](./Mac&#32;-&#32;Install&#32;Homebrew&#32;Apps.md) command is included to provide admins with a one click example script to deploy Chrome, Firefox and VLC player. After the AutoPkg binary has been installed on a set of systems, deploy the [Mac - Install AutoPkg Apps](./Mac&#32;-&#32;Install&#32;Homebrew&#32;Apps.md) command to the same set of systems, running the command as a local admin. AutoPkg will download and install Chrome, Firefox and VLC. Note, this command is run as a local admin, subsequent AutoPkg commands should be run on the same administrator account.
 
 ### Updating AutoPkg Managed Applications
 
 Well-maintained AutoPkg recipes point to the latest version of an application unless otherwise specified. Running `autopkg install firefox.install` on a system with Firefox installed will compare versions the installed application and the downloaded application and evaluate whether or not an update is necessary. If the AutoPkg source application is greater than the installed version on a given system, AutoPkg will attempt to install over the existing version of an application.
 
-Changes to recipe repositories require administrators to pull those changes from github. If a change has been committed to a repository, that repository must be updated for AutoPkg to recognize those changes. An admin can update repositories using the `autopkg repo-update example-repository-url` syntax. An example of this update process is provided in the [Mac - Install AutoPkg Apps](Mac&#32;-&#32;Install&#32;Homebrew&#32;Apps.md) command.
+Changes to recipe repositories require administrators to pull those changes from github. If a change has been committed to a repository, that repository must be updated for AutoPkg to recognize those changes. An admin can update repositories using the `autopkg repo-update example-repository-url` syntax. An example of this update process is provided in the [Mac - Install AutoPkg Apps](./Mac&#32;-&#32;Install&#32;Homebrew&#32;Apps.md) command.
 
 If a specific version of an application is required, chances are that AutoPkg can download an install that package. Rich Trouton's Der Flounder blog posted a short  article on [AutoPkg's ability to package versioned apps](https://derflounder.wordpress.com/2013/11/10/using-autopkg-to-download-and-create-installers-for-firefox/).
 
