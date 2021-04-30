@@ -121,5 +121,9 @@ Try
 }
 Catch
 {
-    Write-Error ($_)
+    Write-Error ($_.Exception)
+    Write-Error ($_.FullyQualifiedErrorId)
+    Write-Error ($_.ScriptStackTrace)
+    Write-Error ($_.TargetObject)
+    Write-Error ($_.PSMessageDetails)
 }
