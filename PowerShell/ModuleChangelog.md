@@ -1,10 +1,10 @@
 ## 1.18.4
 
-Release Date: January 04, 2021
+Release Date: April 30, 2021
 
 #### RELEASE NOTES
 
-* Invoke-JCDeployment updated to use SDK versions of the Powershell Module
+* Invoke-JCDeployment updated to use SDK versions of the PowerShell Module
 
 #### FEATURES
 
