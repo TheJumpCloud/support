@@ -57,6 +57,8 @@ Try
     Remove-Org -Users -Groups -Commands -RadiusServers
 
     # Setup org
+    . ("$PSScriptRoot/DefineEnvironment.ps1") -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp)
+
     $PesterParamsHash_BuildOrg = @{
         # Newly created objects
         User1          = New-JCUser @PesterParams_NewUser1
