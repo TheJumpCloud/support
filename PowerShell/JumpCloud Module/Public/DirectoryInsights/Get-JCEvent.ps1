@@ -40,8 +40,6 @@ Get all events filtered by organization_update term between a date range
 JumpCloud.SDK.DirectoryInsights.Models.IEventQuery
 .Outputs
 JumpCloud.SDK.DirectoryInsights.Models.IPost200ApplicationJsonItemsItem
-.Outputs
-System.String
 .Notes
 COMPLEX PARAMETER PROPERTIES
 
@@ -53,7 +51,7 @@ BODY <IEventQuery>: EventQuery is the users' command to search our auth logs
   [EndTime <DateTime?>]: optional query end time, UTC in RFC3339 format
   [Fields <String[]>]: optional list of fields to return from query
   [Limit <Int64?>]: Max number of rows to return
-  [SearchAfter <String[]>]: Specific query to search after, see x-* response headers for next values
+  [SearchAfter <IEventQuerySearchAfterItem[]>]: Specific query to search after, see x-* response headers for next values
   [SearchTermAnd <ITermConjunction>]: TermConjunction represents a conjunction (and/or)         NOTE: the validator limits what the operator can be, not the object         for future-proof-ness         and a list of sub-values
     [(Any) <Object>]: This indicates any property can be added to this object.
   [SearchTermOr <ITermConjunction>]: TermConjunction represents a conjunction (and/or)         NOTE: the validator limits what the operator can be, not the object         for future-proof-ness         and a list of sub-values
@@ -63,7 +61,7 @@ https://github.com/TheJumpCloud/jcapi-powershell/tree/master/SDKs/PowerShell/Jum
 #>
 Function Get-JCEvent
 {
-    [OutputType([JumpCloud.SDK.DirectoryInsights.Models.IPost200ApplicationJsonItemsItem], [System.String])]
+    [OutputType([JumpCloud.SDK.DirectoryInsights.Models.IPost200ApplicationJsonItemsItem])]
     [CmdletBinding(DefaultParameterSetName='GetExpanded', PositionalBinding=$false, SupportsShouldProcess, ConfirmImpact='Medium')]
     Param(
     [Parameter(ParameterSetName='GetExpanded', Mandatory)]
@@ -93,7 +91,7 @@ Function Get-JCEvent
 
     [Parameter(ParameterSetName='GetExpanded')]
     [JumpCloud.SDK.DirectoryInsights.Category('Body')]
-    [System.String[]]
+    [JumpCloud.SDK.DirectoryInsights.Models.IEventQuerySearchAfterItem[]]
     # Specific query to search after, see x-* response headers for next values
     ${SearchAfter},
 

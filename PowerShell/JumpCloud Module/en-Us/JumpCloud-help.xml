@@ -4050,9 +4050,9 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
           <maml:description>
             <maml:para>Specific query to search after, see x-* response headers for next values</maml:para>
           </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">JumpCloud.SDK.DirectoryInsights.Models.IEventQuerySearchAfterItem[]</command:parameterValue>
           <dev:type>
-            <maml:name>System.String[]</maml:name>
+            <maml:name>JumpCloud.SDK.DirectoryInsights.Models.IEventQuerySearchAfterItem[]</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -4183,9 +4183,9 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
         <maml:description>
           <maml:para>Specific query to search after, see x-* response headers for next values</maml:para>
         </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">JumpCloud.SDK.DirectoryInsights.Models.IEventQuerySearchAfterItem[]</command:parameterValue>
         <dev:type>
-          <maml:name>System.String[]</maml:name>
+          <maml:name>JumpCloud.SDK.DirectoryInsights.Models.IEventQuerySearchAfterItem[]</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -4289,14 +4289,6 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
       <command:returnValue>
         <dev:type>
           <maml:name>JumpCloud.SDK.DirectoryInsights.Models.IPost200ApplicationJsonItemsItem</maml:name>
-        </dev:type>
-        <maml:description>
-          <maml:para></maml:para>
-        </maml:description>
-      </command:returnValue>
-      <command:returnValue>
-        <dev:type>
-          <maml:name>System.String</maml:name>
         </dev:type>
         <maml:description>
           <maml:para></maml:para>
@@ -4455,9 +4447,9 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
           <maml:description>
             <maml:para>Specific query to search after, see x-* response headers for next values</maml:para>
           </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">JumpCloud.SDK.DirectoryInsights.Models.IEventQuerySearchAfterItem[]</command:parameterValue>
           <dev:type>
-            <maml:name>System.String[]</maml:name>
+            <maml:name>JumpCloud.SDK.DirectoryInsights.Models.IEventQuerySearchAfterItem[]</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -4588,9 +4580,9 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
         <maml:description>
           <maml:para>Specific query to search after, see x-* response headers for next values</maml:para>
         </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">JumpCloud.SDK.DirectoryInsights.Models.IEventQuerySearchAfterItem[]</command:parameterValue>
         <dev:type>
-          <maml:name>System.String[]</maml:name>
+          <maml:name>JumpCloud.SDK.DirectoryInsights.Models.IEventQuerySearchAfterItem[]</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -4694,14 +4686,6 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
       <command:returnValue>
         <dev:type>
           <maml:name>System.Int64</maml:name>
-        </dev:type>
-        <maml:description>
-          <maml:para></maml:para>
-        </maml:description>
-      </command:returnValue>
-      <command:returnValue>
-        <dev:type>
-          <maml:name>System.String</maml:name>
         </dev:type>
         <maml:description>
           <maml:para></maml:para>
