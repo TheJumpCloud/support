@@ -62,7 +62,7 @@ Try
     #test if null?
     if ($PesterParams_NewUser1){
         Write-Host "valid user found details below:"
-        Write-Host $PesterParams_NewUser1
+        Write-Host $PesterParams_NewUser1.email
     }
     $PesterParamsHash_BuildOrg = @{
         # Newly created objects
@@ -88,6 +88,8 @@ Try
         SystemWindows  = Get-JCSystem -displayName:($PesterParams_SystemNameWindows)
         CommandResults = Get-JCCommandResult
     }
+
+    Write-host "updated users, groups, commands got various items"
     $PesterParamsHash_Associations = @{
         PolicySystemGroupMembership   = $PesterParamsHash_BuildOrg.MultiplePolicy | ForEach-Object {
             If (-not (Get-JCAssociation -Type:('policy') -Id:($_.id) -TargetType:('system_group') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.SystemGroup.id })) { New-JCAssociation -Type:('policy') -Id:($_.id) -TargetType:('system_group') -TargetId:($PesterParamsHash_BuildOrg.SystemGroup.id) -force; };
