@@ -145,16 +145,18 @@ The CommandID will be the 24 character string populated for the _id field.')]
     {
         $trigger = Get-Date -Format MMddyyTHHmmss
 
-        $Command = Set-JCCommand -CommandID $CommandID -launchType trigger -trigger $trigger
+        # Get existing data, type, Shell from command
+        $ExistingCommand = Get-JCSDKCommand -Id $CommandID
+
+        # set command w/ origional type and new trigger
+        $Command = Set-JCSDKCommand -ID $CommandID -launchType trigger -trigger $trigger -Command $ExistingCommand.Command1 -CommandType $ExistingCommand.CommandType -Shell $ExistingCommand.Shell
 
         $DeploymentInfo = Import-Csv $CSVFilePath
 
         $Variables = $DeploymentInfo[0].psobject.Properties.Name | Where-Object {$_ -ne "SystemID"}
 
         [int]$NumberOfVariables = $Variables.Count
-
         [int]$ProgressCounter = 0
-
         [int]$SystemCount = $DeploymentInfo.SystemID.Count
 
         foreach ($Target in $DeploymentInfo)
@@ -172,10 +174,9 @@ The CommandID will be the 24 character string populated for the _id field.')]
 
             [int]$Counter = 1
 
-
             foreach ($Var in $Variables)
             {
-                Write-Verbose "Adding PARAMETER: $Var to DEPLOY COMMAND"
+                Write-Verbose "Adding PARAMETER: $Var with value $($Target | Select-Object -ExpandProperty $var) to DEPLOY COMMAND"
 
                 $DeploymentParams.Add("Variable" + $($Counter) + "_name", "$Var")
                 $DeploymentParams.Add("Variable" + $($Counter) + "_value", "$($Target | Select-Object -ExpandProperty $var)")
@@ -206,12 +207,8 @@ The CommandID will be the 24 character string populated for the _id field.')]
 
             $resultsArray += $SingleResult
 
-
         }
-
-        $null = Set-JCCommand -CommandID $CommandID -launchType manual
-
-
+        $null = Set-JCSDKCommand -ID $CommandID -launchType manual -Command $ExistingCommand.Command1 -CommandType $ExistingCommand.CommandType -Shell $ExistingCommand.Shell
     }
 
     end

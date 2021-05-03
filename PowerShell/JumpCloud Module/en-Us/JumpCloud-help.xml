@@ -4050,9 +4050,9 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
           <maml:description>
             <maml:para>Specific query to search after, see x-* response headers for next values</maml:para>
           </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">JumpCloud.SDK.DirectoryInsights.Models.IEventQuerySearchAfterItem[]</command:parameterValue>
           <dev:type>
-            <maml:name>System.String[]</maml:name>
+            <maml:name>JumpCloud.SDK.DirectoryInsights.Models.IEventQuerySearchAfterItem[]</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -4183,9 +4183,9 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
         <maml:description>
           <maml:para>Specific query to search after, see x-* response headers for next values</maml:para>
         </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">JumpCloud.SDK.DirectoryInsights.Models.IEventQuerySearchAfterItem[]</command:parameterValue>
         <dev:type>
-          <maml:name>System.String[]</maml:name>
+          <maml:name>JumpCloud.SDK.DirectoryInsights.Models.IEventQuerySearchAfterItem[]</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -4289,14 +4289,6 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
       <command:returnValue>
         <dev:type>
           <maml:name>JumpCloud.SDK.DirectoryInsights.Models.IPost200ApplicationJsonItemsItem</maml:name>
-        </dev:type>
-        <maml:description>
-          <maml:para></maml:para>
-        </maml:description>
-      </command:returnValue>
-      <command:returnValue>
-        <dev:type>
-          <maml:name>System.String</maml:name>
         </dev:type>
         <maml:description>
           <maml:para></maml:para>
@@ -4455,9 +4447,9 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
           <maml:description>
             <maml:para>Specific query to search after, see x-* response headers for next values</maml:para>
           </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">JumpCloud.SDK.DirectoryInsights.Models.IEventQuerySearchAfterItem[]</command:parameterValue>
           <dev:type>
-            <maml:name>System.String[]</maml:name>
+            <maml:name>JumpCloud.SDK.DirectoryInsights.Models.IEventQuerySearchAfterItem[]</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -4588,9 +4580,9 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
         <maml:description>
           <maml:para>Specific query to search after, see x-* response headers for next values</maml:para>
         </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">JumpCloud.SDK.DirectoryInsights.Models.IEventQuerySearchAfterItem[]</command:parameterValue>
         <dev:type>
-          <maml:name>System.String[]</maml:name>
+          <maml:name>JumpCloud.SDK.DirectoryInsights.Models.IEventQuerySearchAfterItem[]</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -4694,14 +4686,6 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
       <command:returnValue>
         <dev:type>
           <maml:name>System.Int64</maml:name>
-        </dev:type>
-        <maml:description>
-          <maml:para></maml:para>
-        </maml:description>
-      </command:returnValue>
-      <command:returnValue>
-        <dev:type>
-          <maml:name>System.String</maml:name>
         </dev:type>
         <maml:description>
           <maml:para></maml:para>
@@ -9199,6 +9183,12 @@ SystemID                 CommandID                Status
     </command:details>
     <maml:description>
       <maml:para>The New-JCDeploymentTemplate command is a menu driven interactive function that guides admins through the process of creating a command deployment CSV file and assists in gathering the required information needed to populate the command deployment CSV file.</maml:para>
+      <maml:para>Note: Windows commands and Mac/Linux commands interpret variables differently. Windows commands with variables you wish to replace during Invoke-JCDeployment should be written as `${ENV:$variableToReplace}` within the command body. The header variables of Windows Command Deployment CSVs should be prefixed with `$`</maml:para>
+      <maml:para>Example valid Windows PowerShell command: `Invoke-WebRequest -Uri $url -OutFile ${ENV:$UserPath}\${ENV:$FileName}`</maml:para>
+      <maml:para>Example Valid Mac/Linux CSV: | "SystemID"               	| "$UserPath"              	| "$FileName"             | |--------------------------	|-------------------------	|----------------------- | | 602c4806e87bc117c434fb71 	| "C:\Users\Joe\Desktop"   	| "PDF_JoeToSign.pdf"    | | 60623c9d0bab5a18614d4d6d 	| "C:\Users\Bob\Desktop"   	| "PDF_BobToSign.pdf"    | | 6025b5aa115b9917f6903436 	| "C:\Users\Steve\Desktop" 	| "PDF_SteveToSign.pdf"  |</maml:para>
+      <maml:para>Mac and Linux commands work similarly in the sense that command body variables such as `$variableToReplace` will be replaced when running Invoke-JCDeployment. The header variables of a Mac/Linux Command Deployment CSV do not need to be prefixed with `$`</maml:para>
+      <maml:para>Example valid Mac/Linux command: `curl -L -o $UserPath/$FileName $url &gt;/dev/null`</maml:para>
+      <maml:para>Example Valid Mac/Linux CSV: | "SystemID"               	| "UserPath"              	| "FileName"             | |--------------------------	|-------------------------	|----------------------- | | 602c4806e87bc117c434fb71 	| "/Users/Joe/Desktop"   	| "PDF_JoeToSign.pdf"    | | 60623c9d0bab5a18614d4d6d 	| "/Users/Bob/Desktop"   	| "PDF_BobToSign.pdf"    | | 6025b5aa115b9917f6903436 	| "/Users/Steve/Desktop" 	| "PDF_SteveToSign.pdf"  |</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>

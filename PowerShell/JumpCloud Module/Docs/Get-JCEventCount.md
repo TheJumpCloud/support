@@ -15,8 +15,8 @@ Query the API for a count of matching events
 ### GetExpanded (Default)
 ```
 Get-JCEventCount -Service <String[]> -StartTime <DateTime> [-EndTime <DateTime>] [-Fields <String[]>]
- [-SearchAfter <String[]>] [-SearchTermAnd <Hashtable>] [-SearchTermOr <Hashtable>] [-Sort <String>] [-WhatIf]
- [-Confirm] [<CommonParameters>]
+ [-SearchAfter <IEventQuerySearchAfterItem[]>] [-SearchTermAnd <Hashtable>] [-SearchTermOr <Hashtable>]
+ [-Sort <String>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ### Get
@@ -109,7 +109,7 @@ Accept wildcard characters: False
 Specific query to search after, see x-* response headers for next values
 
 ```yaml
-Type: System.String[]
+Type: JumpCloud.SDK.DirectoryInsights.Models.IEventQuerySearchAfterItem[]
 Parameter Sets: GetExpanded
 Aliases:
 
@@ -236,7 +236,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## OUTPUTS
 
 ### System.Int64
-### System.String
 ## NOTES
 COMPLEX PARAMETER PROPERTIES
 

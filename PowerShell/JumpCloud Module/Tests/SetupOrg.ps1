@@ -81,6 +81,7 @@ Try
         SystemWindows  = Get-JCSystem -displayName:($PesterParams_SystemNameWindows)
         CommandResults = Get-JCCommandResult
     }
+
     $PesterParamsHash_Associations = @{
         PolicySystemGroupMembership   = $PesterParamsHash_BuildOrg.MultiplePolicy | ForEach-Object {
             If (-not (Get-JCAssociation -Type:('policy') -Id:($_.id) -TargetType:('system_group') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.SystemGroup.id })) { New-JCAssociation -Type:('policy') -Id:($_.id) -TargetType:('system_group') -TargetId:($PesterParamsHash_BuildOrg.SystemGroup.id) -force; };
@@ -92,7 +93,7 @@ Try
         Command2SystemGroupMembership = If (-not (Get-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command2._id) -TargetType:('system_group') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.SystemGroup.id })) { New-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command2._id) -TargetType:('system_group') -TargetId:($PesterParamsHash_BuildOrg.SystemGroup.id) -force; };
         Command3SystemGroupMembership = If (-not (Get-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command3._id) -TargetType:('system_group') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.SystemGroup.id })) { New-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command3._id) -TargetType:('system_group') -TargetId:($PesterParamsHash_BuildOrg.SystemGroup.id) -force; };
     }
-    # Generate command results of they dont exist
+    # Generate command results if they dont exist
     If ([System.String]::IsNullOrEmpty($PesterParamsHash_BuildOrg.CommandResults) -or $PesterParamsHash_BuildOrg.CommandResults.Count -lt $PesterParams_CommandResultCount)
     {
         If (-not (Get-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command1._id) -TargetType:('system') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.SystemLinux._id }))
@@ -121,5 +122,9 @@ Try
 }
 Catch
 {
-    Write-Error ($_)
+    Write-Error ($_.Exception)
+    Write-Error ($_.FullyQualifiedErrorId)
+    Write-Error ($_.ScriptStackTrace)
+    Write-Error ($_.TargetObject)
+    Write-Error ($_.PSMessageDetails)
 }
