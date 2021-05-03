@@ -143,7 +143,6 @@ The CommandID will be the 24 character string populated for the _id field.')]
     process
 
     {
-        Write-Host "local version"
         $trigger = Get-Date -Format MMddyyTHHmmss
 
         # Get existing data, type, Shell from command

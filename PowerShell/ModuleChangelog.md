@@ -1,6 +1,6 @@
 ## 1.18.4
 
-Release Date: April 30, 2021
+Release Date: May 03, 2021
 
 #### RELEASE NOTES
 
@@ -12,7 +12,7 @@ Release Date: April 30, 2021
 
 #### BUG FIXES
 
-* Invoke-JCDeployment shouldn't reset a command type to linux if run
+* Invoke-JCDeployment will no longer reset a command type to linux when run
 
 ## 1.18.3
 
