@@ -1,6 +1,6 @@
 #### Name
 
-Mac - Verify JumpCloud Service Account | v1.1 JCCG 
+Mac - Verify JumpCloud Service Account | v1.1 JCCG
 
 #### commandType
 
@@ -11,10 +11,11 @@ mac
 ```
 #!/bin/bash
 
+MacOSMajorVersion=$(sw_vers -productVersion | cut -d '.' -f 1)
 MacOSMinorVersion=$(sw_vers -productVersion | cut -d '.' -f 2)
 MacOSPatchVersion=$(sw_vers -productVersion | cut -d '.' -f 3)
 
-if [[ $MacOSMinorVersion -lt 13 ]]; then
+if [[ $MacOSMajorVersion -eq 10 && $MacOSMinorVersion -lt 13 ]]; then
     echo "Error:  System must be running 10.13+ to install Service Account."
     exit 2
 fi
@@ -66,7 +67,7 @@ exit 0
 
 #### Description
 
-The above command will verify the presence of the JumpCloud service account needed to manage users on MacOS systems on 10.13 where APFS drives are used and FileVault is enabled. 
+The above command will verify the presence of the JumpCloud service account needed to manage users on MacOS systems on 10.13 where APFS drives are used and FileVault is enabled.
 
 #### *Import This Command*
 
