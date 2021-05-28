@@ -16,6 +16,9 @@ workflows:
   ci:
     jobs:
       - Setup
+      - Build Modules
+          requires:
+            - Setup
 jobs:
   Setup:
     executor: win/default
