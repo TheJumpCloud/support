@@ -53,14 +53,14 @@ commands:
                   ./PowerShell/Deploy/Get-SessionVariables.ps1
   build-module:
     steps:
-      when:
-        condition:
-          equal: [ true, << pipeline.parameters.BuildModule >> ]
-        steps:
-          - attach_workspace:
-              at: .
-          - run:
-              name: Build Module
-              shell: pwsh.exe
-              command: |
-                ./PowerShell/Deploy/Build-Module.ps1  
+      - when:
+          condition:
+            equal: [ true, << pipeline.parameters.BuildModule >> ]
+          steps:
+            - attach_workspace:
+                at: .
+            - run:
+                name: Build Module
+                shell: pwsh.exe
+                command: |
+                  ./PowerShell/Deploy/Build-Module.ps1  
