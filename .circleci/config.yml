@@ -24,12 +24,8 @@ jobs:
       - debugging
   Build Modules:
     executor: win/default
-    steps:
-      when:
-        condition:
-          equal: [ true, << pipeline.parameters.BuildModule >> ]
-        steps:
-          - build-module
+      steps:
+        - build-module
 commands:
   setup:
     steps:
@@ -57,10 +53,14 @@ commands:
                   ./PowerShell/Deploy/Get-SessionVariables.ps1
   build-module:
     steps:
-      - attach_workspace:
-          at: .
-      - run:
-          name: Build Module
-          shell: pwsh.exe
-          command: |
-            ./PowerShell/Deploy/Build-Module.ps1
+      when:
+        condition:
+          equal: [ true, << pipeline.parameters.BuildModule >> ]
+        steps:
+          - attach_workspace:
+              at: .
+          - run:
+              name: Build Module
+              shell: pwsh.exe
+              command: |
+                ./PowerShell/Deploy/Build-Module.ps1  
