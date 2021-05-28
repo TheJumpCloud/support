@@ -16,7 +16,7 @@ workflows:
   ci:
     jobs:
       - Setup
-      - Build Modules
+      - Build Modules:
           requires:
             - Setup
 jobs:
