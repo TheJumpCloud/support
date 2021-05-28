@@ -3,6 +3,10 @@ parameters:
   EnableDebugging:
     description: 'When `true`, debugging commands will run and output to terminal.'
     type: boolean
+    default: false
+  BuildModule:
+    description: 'When `true`, all build commands will run.'
+    type: boolean
     default: true
 
 orbs:
@@ -11,13 +15,21 @@ workflows:
   version: 2
   ci:
     jobs:
-      - Get Session Variables
+      - Setup
 jobs:
-  Get Session Variables:
+  Setup:
     executor: win/default
     steps:
       - setup
       - debugging
+  Build Modules:
+    executor: win/default
+    steps:
+      when:
+        condition:
+          equal: [ true, << pipeline.parameters.BuildModule >> ]
+        steps:
+          - build-module
 commands:
   setup:
     steps:
@@ -43,3 +55,12 @@ commands:
                 shell: pwsh.exe
                 command: |
                   ./PowerShell/Deploy/Get-SessionVariables.ps1
+  build-module:
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build Module
+          shell: pwsh.exe
+          command: |
+            ./PowerShell/Deploy/Build-Module.ps1
