@@ -24,8 +24,8 @@ jobs:
       - debugging
   Build Modules:
     executor: win/default
-      steps:
-        - build-module
+    steps:
+      - build-module
 commands:
   setup:
     steps:
