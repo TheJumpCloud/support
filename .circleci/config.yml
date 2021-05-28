@@ -1,4 +1,10 @@
 version: 2.1
+parameters:
+  EnableDebugging:
+    description: 'When `true`, debugging commands will run and output to terminal.'
+    type: boolean
+    default: true
+
 orbs:
   win: circleci/windows@2.2.0
 workflows:
@@ -11,10 +17,23 @@ jobs:
     executor: win/default
     steps:
       - setup
+      - debugging
 commands:
   setup:
     steps:
       - checkout
+      - run: echo << pipeline.git.branch >>
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+  debugging:
+    when:
+      condition:
+        - equal: [ true, << pipeline.parameters.EnableDebugging >> ]
+    steps:
+      - attach_workspace:
+          at: .
       - run:
           name: Install PowerShell Core
           command: dotnet tool install --global PowerShell
