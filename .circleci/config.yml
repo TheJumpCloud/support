@@ -1,0 +1,40 @@
+version: 2.1
+orbs:
+  win: circleci/windows@2.2.0
+workflows:
+  version: 2
+  ci:
+    jobs:
+      - Get Session Variables
+jobs:
+  Get Session Variables:
+    executor: win/default
+    steps:
+      - setup
+commands:
+  setup:
+    steps:
+      - checkout
+      - run:
+          name: Install PowerShell Core
+          command: dotnet tool install --global PowerShell
+      - run:
+          name: Display Session Variables (For Debugging)
+          shell: pwsh.exe
+          command: |
+            Write-Host ("---------------------------------------------------------------------------------------")
+            Write-Host ('Host Information') -BackgroundColor:('Green') -ForegroundColor:('Black')
+            Write-Host ("---------------------------------------------------------------------------------------")
+            Get-Host | Select-Object *
+            Write-Host ("---------------------------------------------------------------------------------------")
+            Write-Host ('Imported Environment Variables') -BackgroundColor:('Green') -ForegroundColor:('Black')
+            Write-Host ("---------------------------------------------------------------------------------------")
+            Get-ChildItem Env: | Format-Table
+            Write-Host ("---------------------------------------------------------------------------------------")
+            Write-Host ('PsBoundParameters') -BackgroundColor:('Green') -ForegroundColor:('Black')
+            Write-Host ("---------------------------------------------------------------------------------------")
+            $PsBoundParameters.GetEnumerator()
+            Write-Host ("---------------------------------------------------------------------------------------")
+            Write-Host ('Imported Variables') -BackgroundColor:('Green') -ForegroundColor:('Black')
+            Write-Host ("---------------------------------------------------------------------------------------")
+            Get-Variable | Format-Table
