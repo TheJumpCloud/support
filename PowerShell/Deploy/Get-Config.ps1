@@ -43,7 +43,7 @@ $FilePath_ModuleChangelog = $FolderPath_ModuleRootPath + '/ModuleChangelog.md'
 $RequiredFiles = ('LICENSE', 'psm1', 'psd1')
 $RequiredFolders = ('Docs', 'Private', 'Public', 'Tests', 'en-US')
 # Define folder path variables
-$FolderPath_Module = $FolderPath_ModuleRootPath + '/' + $ModuleFolderName
+$FolderPath_Module = $FolderPath_ModuleRootPath #+ '/' + $ModuleFolderName
 $RequiredFolders | ForEach-Object {
     $FolderName = $_
     $FolderPath = $FolderPath_Module + '/' + $FolderName
@@ -57,7 +57,7 @@ $RequiredFiles | ForEach-Object {
     New-Variable -Name:('FilePath_' + $_) -Value:($FilePath) -Force;
 }
 # Get .psd1 contents
-Write-Host "Test 1"
+Write-Host $FilePath_psd1
 $Psd1 = Import-PowerShellDataFile -Path:($FilePath_psd1)
 Write-Host "Test 2"
 # Get module function names
