@@ -71,4 +71,5 @@ commands:
                 name: Build Module
                 command: |
                   $ErrorActionPreference = 'Stop'
-                  ./PowerShell/Deploy/Build-Module.ps1 -GitSourceBranch << pipeline.git.branch >> -GitSourceRepo << pipeline.project.git_url >> -ReleaseType << pipeline.parameters.ReleaseType >>
+                  ./PowerShell/Deploy/Get-Config.ps1 -GitSourceBranch << pipeline.git.branch >> -GitSourceRepo << pipeline.project.git_url >> -ReleaseType << pipeline.parameters.ReleaseType >>
+                  ./PowerShell/Deploy/Build-Module.ps1
