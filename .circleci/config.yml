@@ -7,6 +7,10 @@ parameters:
   BuildModule:
     description: 'When `true`, all build commands will run.'
     type: boolean
+    default: false
+  BuildHelpFiles:
+    description: 'When `true`, Help files will be built.'
+    type: boolean
     default: true
   ReleaseType:
     description: 'Release Type. Accepted values [ Major, Minor, Patch ]'
@@ -73,3 +77,16 @@ commands:
                   $ErrorActionPreference = 'Stop'
                   ./PowerShell/Deploy/Get-Config.ps1 -GitSourceBranch << pipeline.git.branch >> -GitSourceRepo << pipeline.project.git_url >> -ReleaseType << pipeline.parameters.ReleaseType >>
                   ./PowerShell/Deploy/Build-Module.ps1
+  build-helpfiles
+    steps:
+      - when:
+          condition:
+            equal: [ true, << pipeline.parameters.BuildHelpFiles >> ]
+          steps:
+            - attach_workspace:
+               at: .
+            - run:
+               name: Build Help Files
+               command: |
+                 $ErrorActionPreference = 'Stop'
+                 ./PowerShell/Deploy/Build-HelpFiles.ps1
