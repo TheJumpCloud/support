@@ -1,12 +1,12 @@
 # Define variables that come from Azure DevOps Pipeline
-$ModuleName = $env:MODULENAME
-$ModuleFolderName = $env:MODULEFOLDERNAME
-$DEPLOYFOLDER = $env:DEPLOYFOLDER
-$GitSourceBranch = $env:BUILD_SOURCEBRANCHNAME
-$GitSourceRepo = $env:BUILD_REPOSITORY_URI
+$ModuleName = "JumpCloud"
+$ModuleFolderName = "./PowerShell"
+$DEPLOYFOLDER = "$(ModuleFolderName)/Deploy"
+$GitSourceBranch = << pipeline.git.branch >>
+$GitSourceRepo = << pipeline.project.git_url >>
 $StagingDirectory = $env:BUILD_ARTIFACTSTAGINGDIRECTORY
 $GitSourceRepoWiki = "$($GitSourceRepo).wiki"
-$RELEASETYPE = $env:RELEASETYPE
+$RELEASETYPE = "patch"
 $XAPIKEY_PESTER = $env:XAPIKEY_PESTER
 $XAPIKEY_MTP = $env:XAPIKEY_MTP
 $NUGETAPIKEY = $env:NUGETAPIKEY
@@ -27,16 +27,16 @@ $FilePath_ModuleChangelog = $FolderPath_ModuleRootPath + '/ModuleChangelog.md'
 $RequiredFiles = ('LICENSE', 'psm1', 'psd1')
 $RequiredFolders = ('Docs', 'Private', 'Public', 'Tests', 'en-US')
 # Define folder path variables
-$FolderPath_Module = $FolderPath_ModuleRootPath + '\' + $ModuleFolderName
+$FolderPath_Module = $FolderPath_ModuleRootPath + '/' + $ModuleFolderName
 $RequiredFolders | ForEach-Object {
     $FolderName = $_
-    $FolderPath = $FolderPath_Module + '\' + $FolderName
+    $FolderPath = $FolderPath_Module + '/' + $FolderName
     New-Variable -Name:('FolderName_' + $_.Replace('-', '')) -Value:($FolderName) -Force;
     New-Variable -Name:('FolderPath_' + $_.Replace('-', '')) -Value:($FolderPath) -Force
 }
 $RequiredFiles | ForEach-Object {
     $FileName = If ($_ -in ('psm1', 'psd1')) { $ModuleName + '.' + $_ } Else { $_ }
-    $FilePath = $FolderPath_Module + '\' + $FileName
+    $FilePath = $FolderPath_Module + '/' + $FileName
     New-Variable -Name:('FileName_' + $_) -Value:($FileName) -Force;
     New-Variable -Name:('FilePath_' + $_) -Value:($FilePath) -Force;
 }
