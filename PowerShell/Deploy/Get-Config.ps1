@@ -1,18 +1,18 @@
 # Define variables that come from Azure DevOps Pipeline
 param (
-    [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Name of module')][ValidateNotNullOrEmpty()][System.String]$ModuleName = 'JumpCloud',
-    [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Module Folder Name')][ValidateNotNullOrEmpty()][System.String]$ModuleFolderName = './PowerShell',
-    [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Deploy Folder Name')][ValidateNotNullOrEmpty()][System.String]$DeployFolder = "$(ModuleFolderName)/Deploy",
-    [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Git Source Branch')][ValidateNotNullOrEmpty()][System.String]$GitSourceBranch,
-    [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Git Source Repository')][ValidateNotNullOrEmpty()][System.String]$GitSourceRepo,
-    [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Git Source Repository')][ValidateNotNullOrEmpty()][System.String]$GitSourceRepoWiki = "$($GitSourceRepo).wiki",
+    [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Name of module')][ValidateNotNullOrEmpty()][System.String]$ModuleName = 'JumpCloud',
+    [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Module Folder Name')][ValidateNotNullOrEmpty()][System.String]$ModuleFolderName = './PowerShell',
+    [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Deploy Folder Name')][ValidateNotNullOrEmpty()][System.String]$DeployFolder = "$(ModuleFolderName)/Deploy",
+    [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Git Source Branch')][ValidateNotNullOrEmpty()][System.String]$GitSourceBranch,
+    [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Git Source Repository')][ValidateNotNullOrEmpty()][System.String]$GitSourceRepo,
+    [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Git Source Repository')][ValidateNotNullOrEmpty()][System.String]$GitSourceRepoWiki = "$($GitSourceRepo).wiki",
     [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Name of module')][System.String]$StagingDirectory = $env:BUILD_ARTIFACTSTAGINGDIRECTORY,
-    [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Release Type')][ValidateNotNullOrEmpty()][System.String]$ReleaseType,
-    [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Windows Pester JumpCloud API Key')][ValidateNotNullOrEmpty()][System.String]$XAPIKEY_PESTER = $env:XAPIKEY_PESTER,
-    [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'MTP Pester JumpCloud API Key')][ValidateNotNullOrEmpty()][System.String]$XAPIKEY_MTP = $env:XAPIKEY_PESTER_MTP,
-    [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Nuget API Key')][ValidateNotNullOrEmpty()][System.String]$NUGETAPIKEY = $env:NUGETAPIKEY,
+    [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Release Type')][ValidateNotNullOrEmpty()][System.String]$ReleaseType,
+    [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Windows Pester JumpCloud API Key')][ValidateNotNullOrEmpty()][System.String]$XAPIKEY_PESTER = $env:XAPIKEY_PESTER,
+    [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'MTP Pester JumpCloud API Key')][ValidateNotNullOrEmpty()][System.String]$XAPIKEY_MTP = $env:XAPIKEY_PESTER_MTP,
+    [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Nuget API Key')][ValidateNotNullOrEmpty()][System.String]$NUGETAPIKEY = $env:NUGETAPIKEY,
     [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'System Access Token')][System.String]$SYSTEM_ACCESSTOKEN = $env:SYSTEM_ACCESSTOKEN,
-    [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Required Modules Repository')][ValidateNotNullOrEmpty()][System.String]$RequiredModulesRepo = "JumpCloudPowerShell-Dev"
+    [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Required Modules Repository')][ValidateNotNullOrEmpty()][System.String]$RequiredModulesRepo = "JumpCloudPowerShell-Dev"
 )
 #$ModuleName = "JumpCloud"
 #$ModuleFolderName = "./PowerShell"
@@ -27,7 +27,19 @@ param (
 #$NUGETAPIKEY = $env:NUGETAPIKEY
 #$SYSTEM_ACCESSTOKEN = $env:SYSTEM_ACCESSTOKEN
 #$RequiredModulesRepo = $env:REQUIREDMODULESREPO
-
+Write-Host "ModuleName: $ModuleName"
+Write-Host "ModuleFolderName: $ModuleFolderName"
+Write-Host "DeployFolder: $DeployFolder"
+Write-Host "GitSourceBranch: $GitSourceBranch"
+Write-Host "GitSourceRepo : $GitSourceRepo "
+Write-Host "StagingDirectory: $StagingDirectory"
+Write-Host "GitSourceRepoWiki: $GitSourceRepoWiki"
+Write-Host "ReleaseType: $ReleaseType"
+Write-Host "XAPIKEY_PESTER: $XAPIKEY_PESTER"
+Write-Host "XAPIKEY_MTP: $XAPIKEY_MTP"
+Write-Host "NUGETAPIKEY: $NUGETAPIKEY"
+Write-Host "SYSTEM_ACCESSTOKEN : $SYSTEM_ACCESSTOKEN "
+Write-Host "RequiredModulesRepo: $RequiredModulesRepo"
 # Log statuses
 Write-Host ('[status]Platform: ' + [environment]::OSVersion.Platform)
 Write-Host ('[status]PowerShell Version: ' + ($PSVersionTable.PSVersion -join '.'))
