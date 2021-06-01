@@ -10,23 +10,11 @@ param (
     [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Release Type')][ValidateNotNullOrEmpty()][System.String]$ReleaseType,
     [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Windows Pester JumpCloud API Key')][ValidateNotNullOrEmpty()][System.String]$XAPIKEY_PESTER = $env:XAPIKEY_PESTER,
     [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'MTP Pester JumpCloud API Key')][ValidateNotNullOrEmpty()][System.String]$XAPIKEY_MTP = $env:XAPIKEY_PESTER_MTP,
-    [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Nuget API Key')][ValidateNotNullOrEmpty()][System.String]$NUGETAPIKEY = $env:NUGETAPIKEY,
+    [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Nuget API Key')][System.String]$NUGETAPIKEY = $env:NUGETAPIKEY,
     [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'System Access Token')][System.String]$SYSTEM_ACCESSTOKEN = $env:SYSTEM_ACCESSTOKEN,
     [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Required Modules Repository')][ValidateNotNullOrEmpty()][System.String]$RequiredModulesRepo = "JumpCloudPowerShell-Dev"
 )
-#$ModuleName = "JumpCloud"
-#$ModuleFolderName = "./PowerShell"
-#$DeployFolder = "$(ModuleFolderName)/Deploy"
-#$GitSourceBranch = << pipeline.git.branch >>
-#$GitSourceRepo = << pipeline.project.git_url >>
-#$StagingDirectory = $env:BUILD_ARTIFACTSTAGINGDIRECTORY
-#$GitSourceRepoWiki = "$($GitSourceRepo).wiki"
-#$RELEASETYPE = "patch"
-#$XAPIKEY_PESTER = $env:XAPIKEY_PESTER
-#$XAPIKEY_MTP = $env:XAPIKEY_MTP
-#$NUGETAPIKEY = $env:NUGETAPIKEY
-#$SYSTEM_ACCESSTOKEN = $env:SYSTEM_ACCESSTOKEN
-#$RequiredModulesRepo = $env:REQUIREDMODULESREPO
+# Log Parameters
 Write-Host "ModuleName: $ModuleName"
 Write-Host "ModuleFolderName: $ModuleFolderName"
 Write-Host "DeployFolder: $DeployFolder"
