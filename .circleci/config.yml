@@ -64,7 +64,6 @@ commands:
                 at: .
             - run:
                 name: Build Module
-                shell: pwsh.exe
                 command: |
                   $ErrorActionPreference = 'Stop'
                   ./PowerShell/Deploy/Build-Module.ps1  
