@@ -28,12 +28,12 @@ ForEach ($DependentModule In $DependentModules)
 If ($RequiredModulesRepo -ne 'PSGallery')
 {
     # Set default -Repository parameter value to be $RequiredModulesRepo
-    Get-Command -Module:('PowerShellGet', 'PackageManagement') -ParameterName 'Repository' | ForEach-Object {
-        If ( -not $global:PSDefaultParameterValues.GetEnumerator() | Where-Object { $_.Key -eq "$($_.Name):Repository" -and $_.Value -eq $RequiredModulesRepo })
-        {
-            $global:PSDefaultParameterValues["$($_.Name):Repository"] = $RequiredModulesRepo
-        }
-    }
+    #Get-Command -Module:('PowerShellGet', 'PackageManagement') -ParameterName 'Repository' | ForEach-Object {
+    #    If ( -not $global:PSDefaultParameterValues.GetEnumerator() | Where-Object { $_.Key -eq "$($_.Name):Repository" -and $_.Value -eq $RequiredModulesRepo })
+    #    {
+    #        $global:PSDefaultParameterValues["$($_.Name):Repository"] = $RequiredModulesRepo
+    #    }
+    #}
     # Set default -AllowPrerelease parameter value to be $True
     #Get-Command -Module:('PowerShellGet', 'PackageManagement') -ParameterName 'AllowPrerelease' | ForEach-Object {
     #    If ( -not $global:PSDefaultParameterValues.GetEnumerator() | Where-Object { $_.Key -eq "$($_.Name):AllowPrerelease" -and $_.Value -eq $true })
@@ -41,28 +41,28 @@ If ($RequiredModulesRepo -ne 'PSGallery')
     #        $global:PSDefaultParameterValues["$($_.Name):AllowPrerelease"] = $true
     #    }
     #}
-    
-    If (-not [System.String]::IsNullOrEmpty($env:SYSTEM_ACCESSTOKEN))
-    {
-        $global:RepositoryCredentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $env:SYSTEM_ACCESSTOKEN, ($env:SYSTEM_ACCESSTOKEN | ConvertTo-SecureString -AsPlainText -Force)
-        # Set default -Credential parameter value to be $RepositoryCredentials
-        Get-Command -Module:('PowerShellGet', 'PackageManagement') -ParameterName 'Credential' | ForEach-Object {
-            If ( -not $global:PSDefaultParameterValues.GetEnumerator() | Where-Object { $_.Key -eq "$($_.Name):Credential" -and $_.Value -eq $RepositoryCredentials })
-            {
-                $global:PSDefaultParameterValues["$($_.Name):Credential"] = $RepositoryCredentials
-            }
-        }
-    }
-    Else
-    {
-        Write-Warning ('No SYSTEM_ACCESSTOKEN has been provided')
-    }
+    #
+    #If (-not [System.String]::IsNullOrEmpty($env:SYSTEM_ACCESSTOKEN))
+    #{
+    #    $global:RepositoryCredentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $env:SYSTEM_ACCESSTOKEN, ($env:SYSTEM_ACCESSTOKEN | ConvertTo-SecureString -AsPlainText -Force)
+    #    # Set default -Credential parameter value to be $RepositoryCredentials
+    #    Get-Command -Module:('PowerShellGet', 'PackageManagement') -ParameterName 'Credential' | ForEach-Object {
+    #        If ( -not $global:PSDefaultParameterValues.GetEnumerator() | Where-Object { $_.Key -eq "$($_.Name):Credential" -and $_.Value -eq $RepositoryCredentials })
+    #        {
+    #            $global:PSDefaultParameterValues["$($_.Name):Credential"] = $RepositoryCredentials
+    #        }
+    #    }
+    #}
+    #Else
+    #{
+    #    Write-Warning ('No SYSTEM_ACCESSTOKEN has been provided')
+    #}
     # Register PSRepository
-    If (-not (Get-PackageSource -Name:($RequiredModulesRepo) -ErrorAction SilentlyContinue))
-    {
-        Write-Host("[status]Register-PackageSource Setup '$RequiredModulesRepo'")
-        Register-PackageSource -Trusted -ProviderName:("PowerShellGet") -Name:($RequiredModulesRepo) -Credential:($RepositoryCredentials) -Location:("https://pkgs.dev.azure.com/$(($RequiredModulesRepo.Split('-'))[0])/_packaging/$($(($RequiredModulesRepo.Split('-'))[1]))/nuget/v2/")
-    }
+    #If (-not (Get-PackageSource -Name:($RequiredModulesRepo) -ErrorAction SilentlyContinue))
+    #{
+    #    Write-Host("[status]Register-PackageSource Setup '$RequiredModulesRepo'")
+    #    Register-PackageSource -Trusted -ProviderName:("PowerShellGet") -Name:($RequiredModulesRepo) -Credential:($RepositoryCredentials) -Location:("https://pkgs.dev.azure.com/$(($RequiredModulesRepo.Split('-'))[0])/_packaging/$($(($RequiredModulesRepo.Split('-'))[1]))/nuget/v2/")
+    #}
 }
 If (-not [System.String]::IsNullOrEmpty($Psd1))
 {
