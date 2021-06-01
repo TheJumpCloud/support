@@ -24,6 +24,7 @@ ForEach ($DependentModule In $DependentModules)
         Import-Module -Name:($DependentModule) -Force -Global
     }
 }
+### TODO: Switch to CodeArtifact
 If ($RequiredModulesRepo -ne 'PSGallery')
 {
     # Set default -Repository parameter value to be $RequiredModulesRepo
@@ -34,12 +35,13 @@ If ($RequiredModulesRepo -ne 'PSGallery')
         }
     }
     # Set default -AllowPrerelease parameter value to be $True
-    Get-Command -Module:('PowerShellGet', 'PackageManagement') -ParameterName 'AllowPrerelease' | ForEach-Object {
-        If ( -not $global:PSDefaultParameterValues.GetEnumerator() | Where-Object { $_.Key -eq "$($_.Name):AllowPrerelease" -and $_.Value -eq $true })
-        {
-            $global:PSDefaultParameterValues["$($_.Name):AllowPrerelease"] = $true
-        }
-    }
+    #Get-Command -Module:('PowerShellGet', 'PackageManagement') -ParameterName 'AllowPrerelease' | ForEach-Object {
+    #    If ( -not $global:PSDefaultParameterValues.GetEnumerator() | Where-Object { $_.Key -eq "$($_.Name):AllowPrerelease" -and $_.Value -eq $true })
+    #    {
+    #        $global:PSDefaultParameterValues["$($_.Name):AllowPrerelease"] = $true
+    #    }
+    #}
+    
     If (-not [System.String]::IsNullOrEmpty($env:SYSTEM_ACCESSTOKEN))
     {
         $global:RepositoryCredentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $env:SYSTEM_ACCESSTOKEN, ($env:SYSTEM_ACCESSTOKEN | ConvertTo-SecureString -AsPlainText -Force)
