@@ -57,7 +57,9 @@ $RequiredFiles | ForEach-Object {
     New-Variable -Name:('FilePath_' + $_) -Value:($FilePath) -Force;
 }
 # Get .psd1 contents
+Write-Host "Test 1"
 $Psd1 = Import-PowerShellDataFile -Path:($FilePath_psd1)
+Write-Host "Test 2"
 # Get module function names
 $Functions_Public = If (Test-Path -Path:($FolderPath_Public))
 {
