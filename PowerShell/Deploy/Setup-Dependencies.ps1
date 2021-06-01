@@ -15,7 +15,7 @@ ForEach ($DependentModule In $DependentModules)
     If ([System.String]::IsNullOrEmpty((Get-InstalledModule | Where-Object { $_.Name -eq $DependentModule })))
     {
         Write-Host("[status]Installing module: '$DependentModule' from 'PSGallery'")
-        Install-Module -Repository:('PSGallery') -Force -Name:($DependentModule) -Scope:('CurrentUser')
+        Install-Module -Repository:('PSGallery') -Force -Name:($DependentModule) -Scope:('CurrentUser') -AllowClobber
     }
     # Get-Module -Refresh -ListAvailable
     If ([System.String]::IsNullOrEmpty((Get-Module | Where-Object { $_.Name -eq $DependentModule })))
