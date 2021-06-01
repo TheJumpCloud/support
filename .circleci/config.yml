@@ -31,7 +31,6 @@ workflows:
       - Build Help Files:
           requires:
             - Setup
-            - Build Modules
 jobs:
   Setup:
     executor: win/default
