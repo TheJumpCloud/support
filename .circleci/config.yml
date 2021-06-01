@@ -8,6 +8,11 @@ parameters:
     description: 'When `true`, all build commands will run.'
     type: boolean
     default: true
+  ReleaseType:
+    description: 'Release Type. Accepted values [ Major, Minor, Patch ]'
+    type: enum
+    enum: ["Major", "Minor", "Patch"]
+    default: "Patch"
 
 orbs:
   win: circleci/windows@2.2.0
@@ -66,4 +71,4 @@ commands:
                 name: Build Module
                 command: |
                   $ErrorActionPreference = 'Stop'
-                  ./PowerShell/Deploy/Build-Module.ps1  
+                  ./PowerShell/Deploy/Build-Module.ps1 -GitSourceBranch << pipeline.git.branch >> -GitSourceRepo << pipeline.project.git_url >> -ReleaseType << pipeline.parameters.ReleaseType >>

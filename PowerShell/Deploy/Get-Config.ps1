@@ -1,24 +1,40 @@
 # Define variables that come from Azure DevOps Pipeline
-$ModuleName = "JumpCloud"
-$ModuleFolderName = "./PowerShell"
-$DEPLOYFOLDER = "$(ModuleFolderName)/Deploy"
-$GitSourceBranch = << pipeline.git.branch >>
-$GitSourceRepo = << pipeline.project.git_url >>
-$StagingDirectory = $env:BUILD_ARTIFACTSTAGINGDIRECTORY
-$GitSourceRepoWiki = "$($GitSourceRepo).wiki"
-$RELEASETYPE = "patch"
-$XAPIKEY_PESTER = $env:XAPIKEY_PESTER
-$XAPIKEY_MTP = $env:XAPIKEY_MTP
-$NUGETAPIKEY = $env:NUGETAPIKEY
-$SYSTEM_ACCESSTOKEN = $env:SYSTEM_ACCESSTOKEN
-$RequiredModulesRepo = $env:REQUIREDMODULESREPO
+param (
+    [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Name of module')][ValidateNotNullOrEmpty()][System.String]$ModuleName = 'JumpCloud',
+    [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Module Folder Name')][ValidateNotNullOrEmpty()][System.String]$ModuleFolderName = './PowerShell',
+    [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Deploy Folder Name')][ValidateNotNullOrEmpty()][System.String]$DeployFolder = "$(ModuleFolderName)/Deploy",
+    [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Git Source Branch')][ValidateNotNullOrEmpty()][System.String]$GitSourceBranch,
+    [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Git Source Repository')][ValidateNotNullOrEmpty()][System.String]$GitSourceRepo,
+    [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Git Source Repository')][ValidateNotNullOrEmpty()][System.String]$GitSourceRepoWiki = "$($GitSourceRepo).wiki",
+    [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Name of module')][ValidateNotNullOrEmpty()][System.String]$StagingDirectory = $env:BUILD_ARTIFACTSTAGINGDIRECTORY
+    [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Release Type')][ValidateNotNullOrEmpty()][System.String]$ReleaseType,
+    [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Windows Pester JumpCloud API Key')][ValidateNotNullOrEmpty()][System.String]$XAPIKEY_PESTER = $env:XAPIKEY_PESTER,
+    [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'MTP Pester JumpCloud API Key')][ValidateNotNullOrEmpty()][System.String]$XAPIKEY_MTP = $env:XAPIKEY_PESTER_MTP
+    [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Nuget API Key')][ValidateNotNullOrEmpty()][System.String]$NUGETAPIKEY = $env:NUGETAPIKEY,
+    [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'System Access Token')][ValidateNotNullOrEmpty()][System.String]$SYSTEM_ACCESSTOKEN = $env:SYSTEM_ACCESSTOKEN,
+    [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Required Modules Repository')][ValidateNotNullOrEmpty()][System.String]$RequiredModulesRepo = "JumpCloudPowerShell-Dev"
+)
+#$ModuleName = "JumpCloud"
+#$ModuleFolderName = "./PowerShell"
+#$DeployFolder = "$(ModuleFolderName)/Deploy"
+#$GitSourceBranch = << pipeline.git.branch >>
+#$GitSourceRepo = << pipeline.project.git_url >>
+#$StagingDirectory = $env:BUILD_ARTIFACTSTAGINGDIRECTORY
+#$GitSourceRepoWiki = "$($GitSourceRepo).wiki"
+#$RELEASETYPE = "patch"
+#$XAPIKEY_PESTER = $env:XAPIKEY_PESTER
+#$XAPIKEY_MTP = $env:XAPIKEY_MTP
+#$NUGETAPIKEY = $env:NUGETAPIKEY
+#$SYSTEM_ACCESSTOKEN = $env:SYSTEM_ACCESSTOKEN
+#$RequiredModulesRepo = $env:REQUIREDMODULESREPO
+
 # Log statuses
 Write-Host ('[status]Platform: ' + [environment]::OSVersion.Platform)
 Write-Host ('[status]PowerShell Version: ' + ($PSVersionTable.PSVersion -join '.'))
 Write-Host ('[status]Host: ' + (Get-Host).Name)
 Write-Host ('[status]Loaded config: ' + $MyInvocation.MyCommand.Path)
 # Set variables from Azure Pipelines
-$ScriptRoot = Switch ($DEPLOYFOLDER) { $true { $DEPLOYFOLDER } Default { $PSScriptRoot } }
+$ScriptRoot = Switch ($DeployFolder) { $true { $DeployFolder } Default { $PSScriptRoot } }
 $FolderPath_ModuleRootPath = (Get-Item -Path:($ScriptRoot)).Parent.FullName
 $GitHubWikiUrl = 'https://github.com/TheJumpCloud/support/wiki/'
 $FilePath_ModuleBanner = $FolderPath_ModuleRootPath + '/ModuleBanner.md'
