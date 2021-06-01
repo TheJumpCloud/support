@@ -1,8 +1,8 @@
 # Define variables that come from Azure DevOps Pipeline
 param (
     [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Name of module')][ValidateNotNullOrEmpty()][System.String]$ModuleName = 'JumpCloud',
-    [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Module Folder Name')][ValidateNotNullOrEmpty()][System.String]$ModuleFolderName = './PowerShell',
-    [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Deploy Folder Name')][ValidateNotNullOrEmpty()][System.String]$DeployFolder = "$($ModuleFolderName)/Deploy",
+    [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Module Folder Name')][ValidateNotNullOrEmpty()][System.String]$ModuleFolderName = 'JumpCloud Module',
+    [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Deploy Folder Name')][ValidateNotNullOrEmpty()][System.String]$DeployFolder = "/Powershell/Deploy",
     [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Git Source Branch')][ValidateNotNullOrEmpty()][System.String]$GitSourceBranch,
     [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Git Source Repository')][ValidateNotNullOrEmpty()][System.String]$GitSourceRepo,
     [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Git Source Repository')][ValidateNotNullOrEmpty()][System.String]$GitSourceRepoWiki = "$($GitSourceRepo).wiki",
@@ -43,7 +43,7 @@ $FilePath_ModuleChangelog = $FolderPath_ModuleRootPath + '/ModuleChangelog.md'
 $RequiredFiles = ('LICENSE', 'psm1', 'psd1')
 $RequiredFolders = ('Docs', 'Private', 'Public', 'Tests', 'en-US')
 # Define folder path variables
-$FolderPath_Module = $FolderPath_ModuleRootPath #+ '/' + $ModuleFolderName
+$FolderPath_Module = $FolderPath_ModuleRootPath + '/' + $ModuleFolderName
 $RequiredFolders | ForEach-Object {
     $FolderName = $_
     $FolderPath = $FolderPath_Module + '/' + $FolderName
