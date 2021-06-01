@@ -40,10 +40,14 @@ jobs:
   Build Modules:
     executor: win/default
     steps:
+      - attach_workspace:
+          at: .
       - build-module
   Build Help Files:
     executor: win/default
     steps:
+      - attach_workspace:
+          at: .
       - build-helpfiles
 commands:
   setup:
