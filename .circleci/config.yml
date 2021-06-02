@@ -26,9 +26,15 @@ workflows:
     jobs:
       - Setup
       - Build Modules:
+          when:
+            condition:
+              equal: [ true, << pipeline.parameters.BuildModule >> ]
           requires:
             - Setup
       - Build Help Files:
+          when:
+            condition:
+              equal: [ true, << pipeline.parameters.BuildHelpFiles >> ]
           requires:
             - Setup
 jobs:
@@ -38,16 +44,10 @@ jobs:
       - setup
       - debugging
   Build Modules:
-    when:
-      condition:
-        equal: [ true, << pipeline.parameters.BuildModule >> ]
     executor: win/default
     steps:
       - build-module
   Build Help Files:
-    when:
-      condition:
-        equal: [ true, << pipeline.parameters.BuildHelpFiles >> ]
     executor: win/default
     steps:
       - attach_workspace:
