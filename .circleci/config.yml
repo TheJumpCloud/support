@@ -103,4 +103,7 @@ commands:
                  Install-Module JumpCloud.SDK.DirectoryInsights -Force
                  Install-Module JumpCloud.SDK.V1 -Force
                  Install-Module JumpCloud.SDK.V2 -Force
+                 Import-Module JumpCloud.SDK.V1
+                 Import-Module JumpCloud.SDK.V2
+                 Import-Module JumpCloud.SDK.DirectoryInsights
                  ./PowerShell/Deploy/Build-HelpFiles.ps1 -ModuleName JumpCloud -ModulePath "./PowerShell/JumpCloud Module"
