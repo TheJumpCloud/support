@@ -38,12 +38,16 @@ jobs:
       - setup
       - debugging
   Build Modules:
+    when:
+      condition:
+        equal: [ true, << pipeline.parameters.BuildModule >> ]
     executor: win/default
     steps:
-      - attach_workspace:
-          at: .
       - build-module
   Build Help Files:
+    when:
+      condition:
+        equal: [ true, << pipeline.parameters.BuildHelpFiles >> ]
     executor: win/default
     steps:
       - attach_workspace:
@@ -76,31 +80,23 @@ commands:
                   ./PowerShell/Deploy/Get-SessionVariables.ps1
   build-module:
     steps:
-      - when:
-          condition:
-            equal: [ true, << pipeline.parameters.BuildModule >> ]
-          steps:
-            - attach_workspace:
-                at: .
-            - run:
-                name: Build Module
-                command: |
-                  $ErrorActionPreference = 'Stop'
-                  ./PowerShell/Deploy/Get-Config.ps1 -GitSourceBranch << pipeline.git.branch >> -GitSourceRepo << pipeline.project.git_url >> -ReleaseType << pipeline.parameters.ReleaseType >>
-                  ./PowerShell/Deploy/Build-Module.ps1
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build Module
+          command: |
+            $ErrorActionPreference = 'Stop'
+            ./PowerShell/Deploy/Get-Config.ps1 -GitSourceBranch << pipeline.git.branch >> -GitSourceRepo << pipeline.project.git_url >> -ReleaseType << pipeline.parameters.ReleaseType >>
+            ./PowerShell/Deploy/Build-Module.ps1
   build-helpfiles:
     steps:
-      - when:
-          condition:
-            equal: [ true, << pipeline.parameters.BuildHelpFiles >> ]
-          steps:
-            - attach_workspace:
-               at: .
-            - run:
-               name: Build Help Files
-               command: |
-                 $ErrorActionPreference = 'Stop'
-                 Install-Module JumpCloud.SDK.DirectoryInsights -Force
-                 Install-Module JumpCloud.SDK.V1 -Force
-                 Install-Module JumpCloud.SDK.V2 -Force
-                 ./PowerShell/Deploy/Build-HelpFiles.ps1
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build Help Files
+          command: |
+            $ErrorActionPreference = 'Stop'
+            Install-Module JumpCloud.SDK.DirectoryInsights -Force
+            Install-Module JumpCloud.SDK.V1 -Force
+            Install-Module JumpCloud.SDK.V2 -Force
+            ./PowerShell/Deploy/Build-HelpFiles.ps1
