@@ -100,4 +100,4 @@ commands:
                name: Build Help Files
                command: |
                  $ErrorActionPreference = 'Stop'
-                 ./PowerShell/Deploy/Build-HelpFiles.ps1 -ModuleName JumpCloud -ModulePath "PowerShell/JumpCloud Module"
+                 ./PowerShell/Deploy/Build-HelpFiles.ps1 -ModuleName JumpCloud -ModulePath "./PowerShell/JumpCloud Module"
