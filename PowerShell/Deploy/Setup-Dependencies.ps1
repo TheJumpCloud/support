@@ -97,6 +97,7 @@ If (-not [System.String]::IsNullOrEmpty($Psd1))
         {
             Write-Host "Importing $($DeployFunction.FullName)"
             . $DeployFunction.FullName
+            Get-Command $DeployFunction
         }
         Catch
         {
