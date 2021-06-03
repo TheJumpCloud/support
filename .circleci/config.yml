@@ -54,6 +54,15 @@ commands:
     steps:
       - checkout
       - run: echo << pipeline.git.branch >>
+      - run:
+          name: Install PowerShell Core
+          command: dotnet tool install --global PowerShell
+      - run:
+          name: Install Modules
+          command: |
+            Install-Module JumpCloud.SDK.DirectoryInsights -Force
+            Install-Module JumpCloud.SDK.V1 -Force
+            Install-Module JumpCloud.SDK.V2 -Force
       - persist_to_workspace:
           root: .
           paths:
@@ -66,9 +75,6 @@ commands:
           steps:
             - attach_workspace:
                 at: .
-            - run:
-                name: Install PowerShell Core
-                command: dotnet tool install --global PowerShell
             - run:
                 name: Display Session Variables (For Debugging)
                 shell: pwsh.exe
@@ -100,8 +106,5 @@ commands:
                name: Build Help Files
                command: |
                   $ErrorActionPreference = 'Stop'
-                  Install-Module JumpCloud.SDK.DirectoryInsights -Force
-                  Install-Module JumpCloud.SDK.V1 -Force
-                  Install-Module JumpCloud.SDK.V2 -Force
                   ./PowerShell\Deploy\SdkSync\jcapiToSupportSync.ps1
                   ./PowerShell/Deploy/Build-HelpFiles.ps1 -ModuleName JumpCloud -ModulePath "./PowerShell/JumpCloud Module"
