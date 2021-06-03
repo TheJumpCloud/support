@@ -12,6 +12,10 @@ parameters:
     description: 'When `true`, Help files will be built.'
     type: boolean
     default: true
+  BuildTestFiles:
+    description: 'When `true`, Help files will be built.'
+    type: boolean
+    default: true
   ReleaseType:
     description: 'Release Type. Accepted values [ Major, Minor, Patch ]'
     type: enum
@@ -49,6 +53,7 @@ jobs:
       - attach_workspace:
           at: .
       - build-helpfiles
+      - build-testfiles
 commands:
   setup:
     steps:
@@ -108,7 +113,20 @@ commands:
                name: Build Help Files
                shell: pwsh.exe
                command: |
-                  $ErrorActionPreference = 'Stop'                  
+                  $ErrorActionPreference = 'Stop'
                   ./PowerShell\Deploy\SdkSync\jcapiToSupportSync.ps1
                   ./PowerShell/Deploy/Build-HelpFiles.ps1 -ModuleName JumpCloud -ModulePath "./PowerShell/JumpCloud Module"
+  build-testfiles:
+    steps:
+      - when:
+          condition:
+            equal: [ true, << pipeline.parameters.BuildTestFiles >> ]
+          steps:
+            - attach_workspace:
+               at: .
+            - run:
+               name: Build Help Files
+               shell: pwsh.exe
+               command: |
+                  $ErrorActionPreference = 'Stop'
                   ./PowerShell/Deploy/Build-PesterTestFiles.ps1
