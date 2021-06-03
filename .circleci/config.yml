@@ -7,7 +7,7 @@ parameters:
   BuildModule:
     description: 'When `true`, all build commands will run.'
     type: boolean
-    default: false
+    default: true
   BuildHelpFiles:
     description: 'When `true`, Help files will be built.'
     type: boolean
