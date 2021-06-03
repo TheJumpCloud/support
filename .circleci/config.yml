@@ -57,6 +57,13 @@ commands:
       - run:
           name: Install PowerShell Core
           command: dotnet tool install --global PowerShell
+      - run:
+          name: Install Modules
+          shell: pwsh.exe
+          command: |
+            Install-Module JumpCloud.SDK.DirectoryInsights -Force
+            Install-Module JumpCloud.SDK.V1 -Force
+            Install-Module JumpCloud.SDK.V2 -Force
       - persist_to_workspace:
           root: .
           paths:
@@ -84,11 +91,9 @@ commands:
                 at: .
             - run:
                 name: Build Module
+                shell: pwsh.exe
                 command: |
                   $ErrorActionPreference = 'Stop'
-                  Install-Module JumpCloud.SDK.DirectoryInsights -Force
-                  Install-Module JumpCloud.SDK.V1 -Force
-                  Install-Module JumpCloud.SDK.V2 -Force
                   ./PowerShell/Deploy/Get-Config.ps1 -GitSourceBranch << pipeline.git.branch >> -GitSourceRepo << pipeline.project.git_url >> -ReleaseType << pipeline.parameters.ReleaseType >>
                   ./PowerShell/Deploy/Build-Module.ps1
   build-helpfiles:
@@ -101,10 +106,8 @@ commands:
                at: .
             - run:
                name: Build Help Files
+               shell: pwsh.exe
                command: |
-                  $ErrorActionPreference = 'Stop'
-                  Install-Module JumpCloud.SDK.DirectoryInsights -Force
-                  Install-Module JumpCloud.SDK.V1 -Force
-                  Install-Module JumpCloud.SDK.V2 -Force                  
+                  $ErrorActionPreference = 'Stop'                  
                   ./PowerShell\Deploy\SdkSync\jcapiToSupportSync.ps1
                   ./PowerShell/Deploy/Build-HelpFiles.ps1 -ModuleName JumpCloud -ModulePath "./PowerShell/JumpCloud Module"
