@@ -1,4 +1,4 @@
-. ($PSScriptRoot + '/' + 'Get-Config.ps1')
+. "$PSScriptRoot/Get-Config.ps1"
 ###########################################################################
 Write-Host ('[status]Creating files for Pester tests')
 $Files = $Functions_Public + $Functions_Private

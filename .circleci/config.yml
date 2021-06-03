@@ -108,3 +108,4 @@ commands:
                   Install-Module JumpCloud.SDK.V2 -Force                  
                   ./PowerShell\Deploy\SdkSync\jcapiToSupportSync.ps1
                   ./PowerShell/Deploy/Build-HelpFiles.ps1 -ModuleName JumpCloud -ModulePath "./PowerShell/JumpCloud Module"
+                  ./PowerShell/Deploy/Build-PesterTestFiles.ps1
