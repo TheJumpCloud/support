@@ -12,7 +12,7 @@ param (
     [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'MTP Pester JumpCloud API Key')][ValidateNotNullOrEmpty()][System.String]$XAPIKEY_MTP = $env:XAPIKEY_PESTER_MTP,
     [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Nuget API Key')][System.String]$NUGETAPIKEY = $env:NUGETAPIKEY,
     [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'System Access Token')][System.String]$SYSTEM_ACCESSTOKEN = $env:SYSTEM_ACCESSTOKEN,
-    [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Required Modules Repository')][ValidateNotNullOrEmpty()][System.String]$RequiredModulesRepo = "JumpCloudPowerShell-Dev"
+    [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Required Modules Repository')][ValidateNotNullOrEmpty()][System.String]$RequiredModulesRepo = "PSGallery"
 )
 # Log Parameters
 Write-Host "ModuleName: $ModuleName"
@@ -68,4 +68,4 @@ $Functions_Private = If (Test-Path -Path:($FolderPath_Private))
     Get-ChildItem -Path:($FolderPath_Private + '/' + '*.ps1') -Recurse
 }
 # Setup-Dependencies.ps1
-.("$ScriptRoot/Setup-Dependencies.ps1") -RequiredModulesRepo:('PSGallery')
+.("$ScriptRoot/Setup-Dependencies.ps1") -RequiredModulesRepo:($RequiredModulesRepo)
