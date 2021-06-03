@@ -8,7 +8,7 @@ parameters:
     description: 'When `true`, all build commands will run.'
     type: boolean
     default: true
-  Buildhelp-and-test-files:
+  BuildHelpFiles:
     description: 'When `true`, Help files will be built.'
     type: boolean
     default: true
@@ -48,7 +48,7 @@ jobs:
     steps:
       - attach_workspace:
           at: .
-      - build-help-and-test-files
+      - build-helpfiles
 commands:
   setup:
     steps:
@@ -91,11 +91,11 @@ commands:
                   Install-Module JumpCloud.SDK.V2 -Force
                   ./PowerShell/Deploy/Get-Config.ps1 -GitSourceBranch << pipeline.git.branch >> -GitSourceRepo << pipeline.project.git_url >> -ReleaseType << pipeline.parameters.ReleaseType >>
                   ./PowerShell/Deploy/Build-Module.ps1
-  build-help-and-test-files:
+  build-helpfiles:
     steps:
       - when:
           condition:
-            equal: [ true, << pipeline.parameters.Buildhelp-and-test-files >> ]
+            equal: [ true, << pipeline.parameters.BuildHelpFiles >> ]
           steps:
             - attach_workspace:
                at: .
@@ -105,10 +105,7 @@ commands:
                   $ErrorActionPreference = 'Stop'
                   Install-Module JumpCloud.SDK.DirectoryInsights -Force
                   Install-Module JumpCloud.SDK.V1 -Force
-                  Install-Module JumpCloud.SDK.V2 -Force
+                  Install-Module JumpCloud.SDK.V2 -Force                  
                   ./PowerShell\Deploy\SdkSync\jcapiToSupportSync.ps1
                   ./PowerShell/Deploy/Build-HelpFiles.ps1 -ModuleName JumpCloud -ModulePath "./PowerShell/JumpCloud Module"
-            - run:
-              name: Build Pester Test Files
-              command: |
                   ./PowerShell/Deploy/Build-PesterTestFiles.ps1
