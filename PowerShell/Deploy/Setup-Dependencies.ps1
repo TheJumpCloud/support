@@ -91,13 +91,14 @@ If (-not [System.String]::IsNullOrEmpty($Psd1))
     # Load "Deploy" functions
     Write-Host("[status]Importing deploy functions: '$PSScriptRoot/Functions/*.ps1'")
     $DeployFunctions = @(Get-ChildItem -Path:($PSScriptRoot + '/Functions/*.ps1') -Recurse)
+    $DeployFunctions
     Foreach ($DeployFunction In $DeployFunctions)
     {
         Try
         {
             Write-Host "Importing $($DeployFunction.FullName)"
             . $DeployFunction.FullName
-            Get-Command $DeployFunction
+            #Get-Command $DeployFunction
         }
         Catch
         {
