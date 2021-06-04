@@ -1,3 +1,17 @@
+[CmdletBinding()]
+param (
+    [Parameter()]
+    [TypeName]
+    $GitSourceBranch,
+    [Parameter()]
+    [TypeName]
+    $GitSourceRepo,
+    [Parameter()]
+    [TypeName]
+    $ReleaseType
+)
+./PowerShell/Deploy/Get-Config.ps1 -GitSourceBranch:($GitSourceBranch) -GitSourceRepo:($GitSourceRepo) -ReleaseType:($ReleaseType)
+
 # Region Checking PowerShell Gallery module version
 Write-Host ('[status]Check PowerShell Gallery for module version info')
 $PSGalleryInfo = Get-PSGalleryModuleVersion -Name:($ModuleName) -ReleaseType:($RELEASETYPE) #('Major', 'Minor', 'Patch')

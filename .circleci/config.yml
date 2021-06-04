@@ -99,8 +99,8 @@ commands:
                 shell: pwsh.exe
                 command: |
                   $ErrorActionPreference = 'Stop'
-                  ./PowerShell/Deploy/Get-Config.ps1 -GitSourceBranch << pipeline.git.branch >> -GitSourceRepo << pipeline.project.git_url >> -ReleaseType << pipeline.parameters.ReleaseType >>
-                  ./PowerShell/Deploy/Build-Module.ps1
+                  # ./PowerShell/Deploy/Get-Config.ps1 -GitSourceBranch << pipeline.git.branch >> -GitSourceRepo << pipeline.project.git_url >> -ReleaseType << pipeline.parameters.ReleaseType >>
+                  ./PowerShell/Deploy/Build-Module.ps1 -GitSourceBranch << pipeline.git.branch >> -GitSourceRepo << pipeline.project.git_url >> -ReleaseType << pipeline.parameters.ReleaseType >>
   build-helpfiles:
     steps:
       - when:
