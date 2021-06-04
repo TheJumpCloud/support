@@ -215,7 +215,7 @@ commands:
                name: Invoke Pester
                shell: pwsh.exe
                command: |
-                  $ErrorActionPreference = 'Stop'
+                  $ErrorActionPreference = 'Continue'
                   . "./PowerShell/JumpCloud Module/Tests/InvokePester.ps1" -JumpCloudApiKey << parameters.JumpCloudApiKey >> -JumpCloudApiKeyMsp << parameters.JumpCloudApiKeyMsp >> -ExcludeTagList << parameters.ExcludeTagList >> -IncludeTagList << parameters.IncludeTagList >> -RequiredModulesRepo << parameters.RequiredModulesRepo >>
             - persist_to_workspace:
                 root: .
