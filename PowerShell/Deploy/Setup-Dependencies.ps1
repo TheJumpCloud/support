@@ -67,6 +67,7 @@ If ($RequiredModulesRepo -ne 'PSGallery')
 If (-not [System.String]::IsNullOrEmpty($Psd1))
 {
     # Install required modules
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 
     ForEach ($RequiredModule In $Psd1.RequiredModules)
     {
         # Check to see if the module is installed
