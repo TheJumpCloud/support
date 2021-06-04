@@ -49,7 +49,10 @@ function New-NuspecFile
         [PSObject[]]$Dependencies,
 
         [Parameter()]
-        [PSObject[]]$Files
+        [PSObject[]]$Files,
+
+        [Parameter()]
+        [System.string]$buildNumber
 
     )
     Set-StrictMode -Off
@@ -75,7 +78,7 @@ function New-NuspecFile
 
     $metaDataElementsHash = [ordered]@{
         id                       = $Id
-        version                  = $Version
+        version                  = $Version + ".$buildNumber"
         description              = $Description
         authors                  = $Authors -Join ","
         owners                   = $Owners -Join ","

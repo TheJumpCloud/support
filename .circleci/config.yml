@@ -73,6 +73,8 @@ jobs:
     executor: win/default
     steps:
       - build-nuspec
+      - deploy-nupkg:
+          source: CodeArtifact
   Module Validation Tests:
     executor: win/default
     steps:
@@ -187,6 +189,42 @@ commands:
                 root: .
                 paths:
                   - .
+  deploy-nupkg:
+    parameters:
+      source:
+        description: Name of the source to deploy to
+        type: string
+    steps:
+      - run:
+          name: Install Dependencies
+          command: |
+            Install-Module -Name PowerShellGet -AllowPrerelease -RequiredVersion '3.0.0-beta10' -Force
+            Install-Module -Name AWS.Tools.Common -Force
+            Install-Module -Name AWS.Tools.CodeArtifact -Force
+            if ( -not ( Test-Path -Path ./Deploy/utils ) ) {
+              mkdir ./Deploy/utils
+              wget https://dist.nuget.org/win-x86-commandline/v3.3.0/nuget.exe -Outfile ./Deploy/utils/nuget.exe
+            }
+      - run:
+          name: Add nuget sources
+          shell: pwsh.exe
+          command: |
+            Set-AWSCredential -AccessKey:($env:AWS_ACCESS_KEY_ID) -SecretKey:($env:AWS_SECRET_ACCESS_KEY)
+            $CARepoEndpoint = "$(Get-CARepositoryEndpoint -Domain jumpcloud-artifacts -Region us-east-1 -Repository jumpcloud-nuget-modules -Format nuget)v3/index.json"
+            dotnet nuget add source $CARepoEndpoint --name CodeArtifact --username aws --password (Get-CAAuthorizationToken -Domain:("jumpcloud-artifacts") -Region:("us-east-1")).AuthorizationToken
+            dotnet nuget add source "https://www.powershellgallery.com/api/v2" --name PSGallery
+      - run:
+          name: Pack nuspec
+          command: |
+            ./Deploy/utils/nuget.exe pack "./PowerShell/JumpCloud Module/JumpCloud.nuspec"
+      - run:
+          name: Publishing to "<< parameters.source >>" repo
+          shell: pwsh.exe
+          command: |
+            $NupkgPath = (Get-ChildItem -Path:("./*.nupkg")).FullName
+            If('<< parameters.source >>' -eq 'CodeArtifact'){dotnet nuget push $NupkgPath --source << parameters.source >>}
+            ElseIf('<< parameters.source >>' -eq 'PSGallery'){dotnet nuget push $NupkgPath --source << parameters.source >> --api-key $env:NuGetApiKey}
+            Else {Write-Error "Unknown source value: << parameters.source >>"}
   invoke-pester:
     parameters:
       JumpCloudApiKey:
