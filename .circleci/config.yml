@@ -75,6 +75,7 @@ jobs:
       - build-nuspec
       - deploy-nupkg:
           source: CodeArtifact
+    context: aws-credentials
   Module Validation Tests:
     executor: win/default
     steps:
