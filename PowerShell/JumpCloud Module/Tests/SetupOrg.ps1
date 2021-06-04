@@ -43,7 +43,7 @@ Try
         # Remove all groups from an org
         If ($Groups)
         {
-            $null = Get-JCGroup | ForEach-Object { If ($_.Type -eq 'system_group') { Remove-JCSystemGroup -GroupName:($_.Name) -force }ElseIf ($_.Type -eq 'user_group') { Remove-JCUserGroup -GroupName:($_.Name) -force }Else { Write-Error('Unknown') } }
+            $null = Get-JCGroup | ForEach-Object { If ($_.Type -eq 'system_group') { Remove-JCSystemGroup -GroupName:($_.Name) -force }ElseIf ($_.Type -eq 'user_group') { Remove-JCUserGroup -GroupName:($_.Name) -force }Else { Write-Warning('No Groups Exist') } }
         }
         # Remove all Commands from an org
         If ($Commands)
@@ -56,7 +56,7 @@ Try
             $null = Get-JCRadiusServer | Remove-JCRadiusServer -Force
         }
     }
-    Remove-Org -Users -Groups -Commands -RadiusServers -ErrorAction Continue
+    Remove-Org -Users -Groups -Commands -RadiusServers
 
     # Setup org
     $PesterParamsHash_BuildOrg = @{
