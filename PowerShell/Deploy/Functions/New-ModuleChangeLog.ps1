@@ -1,5 +1,5 @@
 
-Function New-ModuleChangelog
+Function Global:New-ModuleChangelog
 {
     Param(
         [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0)][ValidateNotNullOrEmpty()][System.String]$LatestVersion
