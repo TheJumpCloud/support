@@ -77,8 +77,8 @@ jobs:
     executor: win/default
     steps:
       - invoke-pester:
-          JumpCloudApiKey: $XAPIKEY_PESTER
-          JumpCloudApiKeyMsp: $XAPIKEY_PESTER_LINUX
+          JumpCloudApiKey: $env:XAPIKEY_PESTER
+          JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_LINUX
           ExcludeTagList: 'None'
           IncludeTagList: 'ModuleValidation'
           RequiredModulesRepo: PSGallery
@@ -191,10 +191,10 @@ commands:
     parameters:
       JumpCloudApiKey:
         type: string
-        default: $XAPIKEY_PESTER
+        default: $env:XAPIKEY_PESTER
       JumpCloudApiKeyMsp:
         type: string
-        default: $XAPIKEY_PESTER_MTP
+        default: $env:XAPIKEY_PESTER_MTP
       ExcludeTagList:
         type: string
         default: 'None'
