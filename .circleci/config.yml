@@ -49,6 +49,7 @@ workflows:
             - Setup
             - Build Modules
             - Build Help and Test Files
+          context: aws-credentials
       - Module Validation Tests:
           requires:
             - Setup
@@ -75,7 +76,6 @@ jobs:
       - build-nuspec
       - deploy-nupkg:
           source: CodeArtifact
-    context: aws-credentials
   Module Validation Tests:
     executor: win/default
     steps:
