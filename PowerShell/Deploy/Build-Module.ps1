@@ -8,7 +8,10 @@ param (
     $GitSourceRepo,
     [Parameter()]
     [String]
-    $ReleaseType
+    $ReleaseType,
+    [Parameter()]
+    [String]
+    $ModuleName
 )
 ./PowerShell/Deploy/Get-Config.ps1 -GitSourceBranch:($GitSourceBranch) -GitSourceRepo:($GitSourceRepo) -ReleaseType:($ReleaseType)
 
