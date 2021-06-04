@@ -69,6 +69,3 @@ $Functions_Private = If (Test-Path -Path:($FolderPath_Private))
 {
     Get-ChildItem -Path:($FolderPath_Private + '/' + '*.ps1') -Recurse
 }
-# Setup-Dependencies.ps1
-Set-Variable $Functions_Private -Scope Global
-.("$ScriptRoot/Setup-Dependencies.ps1") -RequiredModulesRepo:($RequiredModulesRepo)
