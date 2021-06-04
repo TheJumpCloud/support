@@ -20,6 +20,10 @@ parameters:
     description: 'When `true`, Help files will be built.'
     type: boolean
     default: true
+  ValidateModule:
+    description: 'When `true`, Help files will be built.'
+    type: boolean
+    default: true
   ReleaseType:
     description: 'Release Type. Accepted values [ Major, Minor, Patch ]'
     type: enum
@@ -45,6 +49,11 @@ workflows:
             - Setup
             - Build Modules
             - Build Help and Test Files
+      - Module Validation Tests:
+          requires:
+            - Setup
+            - Build Help and Test Files
+            - Build Nuspec
 jobs:
   Setup:
     executor: win/default
@@ -64,6 +73,15 @@ jobs:
     executor: win/default
     steps:
       - build-nuspec
+  Module Validation Tests:
+    executor: win/default
+    steps:
+      - invoke-pester:
+          JumpCloudApiKey: $XAPIKEY_PESTER
+          JumpCloudApiKeyMsp: $XAPIKEY_PESTER_LINUX
+          ExcludeTagList: 'None'
+          IncludeTagList: 'ModuleValidation'
+          RequiredModulesRepo: PSGallery
 commands:
   setup:
     steps:
@@ -165,6 +183,38 @@ commands:
                command: |
                   $ErrorActionPreference = 'Stop'
                   ./PowerShell/Deploy/BuildNuspecFromPsd1.ps1
+            - persist_to_workspace:
+                root: .
+                paths:
+                  - .
+  invoke-pester:
+    steps:
+      - when:
+          condition:
+            equal: [ true, << pipeline.parameters.ValidateModule >> ]
+          parameters:
+            JumpCloudApiKey:
+              type: string
+              default: $XAPIKEY_PESTER
+            JumpCloudApiKeyMsp:
+              type: string
+              default: $XAPIKEY_PESTER_MTP
+            ExcludeTagList:
+              type: string
+            IncludeTagList:
+              type: string
+            RequiredModulesRepo:
+              type: string
+              default: PSGallery
+          steps:
+            - attach_workspace:
+               at: .
+            - run:
+               name: Build Nuspec
+               shell: pwsh.exe
+               command: |
+                  $ErrorActionPreference = 'Stop'
+                  ./PowerShell/JumpCloud\ Module/Tests/InvokePester.ps1 -JumpCloudApiKey << parameters.JumpCloudApiKey >> -JumpCloudApiKeyMsp << parameters.JumpCloudApiKeyMsp >> -ExcludeTagList << parameters.ExcludeTagList >> -IncludeTagList << parameters.IncludeTagList >> -RequiredModulesRepo << parameters.RequiredModulesRepo >>
             - persist_to_workspace:
                 root: .
                 paths:
