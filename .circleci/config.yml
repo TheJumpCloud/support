@@ -3,7 +3,7 @@ parameters:
   EnableDebugging:
     description: 'When `true`, debugging commands will run and output to terminal.'
     type: boolean
-    default: false
+    default: true
   BuildModule:
     description: 'When `true`, all build commands will run.'
     type: boolean
@@ -116,6 +116,7 @@ commands:
                 name: Display Session Variables (For Debugging)
                 shell: pwsh.exe
                 command: |
+                  Write-Host "env:CIRCLE_BUILD_NUM: $($env:CIRCLE_BUILD_NUM)"
                   ./PowerShell/Deploy/Get-SessionVariables.ps1
   build-module:
     steps:
