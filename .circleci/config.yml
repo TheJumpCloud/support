@@ -185,7 +185,7 @@ commands:
                shell: pwsh.exe
                command: |
                   $ErrorActionPreference = 'Stop'
-                  ./PowerShell/Deploy/BuildNuspecFromPsd1.ps1 -buildNumber:($env:CIRCLE_BUILD_NUM)
+                  ./PowerShell/Deploy/BuildNuspecFromPsd1.ps1 -buildNumber:("$env:CIRCLE_BUILD_NUM")
             - persist_to_workspace:
                 root: .
                 paths:
