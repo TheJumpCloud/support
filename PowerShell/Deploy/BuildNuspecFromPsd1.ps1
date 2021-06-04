@@ -51,7 +51,7 @@ function New-NuspecFile
         [Parameter()]
         [PSObject[]]$Files,
 
-        [Parameter()]
+        [Parameter(Mandatory = $true)]
         [System.string]$buildNumber
 
     )
@@ -78,7 +78,7 @@ function New-NuspecFile
 
     $metaDataElementsHash = [ordered]@{
         id                       = $Id
-        version                  = $Version + ".$buildNumber"
+        version                  = $Version + ".$($buildNumber)"
         description              = $Description
         authors                  = $Authors -Join ","
         owners                   = $Owners -Join ","
