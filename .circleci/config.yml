@@ -188,24 +188,26 @@ commands:
                 paths:
                   - .
   invoke-pester:
+    parameters:
+      JumpCloudApiKey:
+        type: string
+        default: $XAPIKEY_PESTER
+      JumpCloudApiKeyMsp:
+        type: string
+        default: $XAPIKEY_PESTER_MTP
+      ExcludeTagList:
+        type: string
+        default: 'None'
+      IncludeTagList:
+        type: string
+        default: 'None'
+      RequiredModulesRepo:
+        type: string
+        default: 'PSGallery'
     steps:
       - when:
           condition:
             equal: [ true, << pipeline.parameters.ValidateModule >> ]
-          parameters:
-            JumpCloudApiKey:
-              type: string
-              default: $XAPIKEY_PESTER
-            JumpCloudApiKeyMsp:
-              type: string
-              default: $XAPIKEY_PESTER_MTP
-            ExcludeTagList:
-              type: string
-            IncludeTagList:
-              type: string
-            RequiredModulesRepo:
-              type: string
-              default: PSGallery
           steps:
             - attach_workspace:
                at: .
