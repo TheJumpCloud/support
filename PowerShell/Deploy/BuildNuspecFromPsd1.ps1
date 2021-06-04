@@ -1,4 +1,4 @@
-. ($PSScriptRoot + '/Get-Config.ps1')
+. "$PSScriptRoot/Get-Config.ps1"
 $nuspecFiles = @{ src = 'en-Us/**;Private/**;Public/**;JumpCloud.psd1;JumpCloud.psm1;LICENSE'; }
 # Addapted from PowerShell Get
 # https://github.com/PowerShell/PowerShellGetv2/blob/7de99ee0c38611556e5c583ffaca98bb1922a0d4/src/PowerShellGet/private/functions/New-NuspecFile.ps1

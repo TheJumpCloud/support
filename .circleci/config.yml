@@ -16,6 +16,10 @@ parameters:
     description: 'When `true`, Help files will be built.'
     type: boolean
     default: true
+  BuildNuspec:
+    description: 'When `true`, Help files will be built.'
+    type: boolean
+    default: true
   ReleaseType:
     description: 'Release Type. Accepted values [ Major, Minor, Patch ]'
     type: enum
@@ -32,9 +36,14 @@ workflows:
       - Build Modules:
           requires:
             - Setup
-      - Build Help Files:
+      - Build Help and Test Files:
           requires:
             - Setup
+      - Build Nuspec:
+          requires:
+            - Setup
+            - Build Modules
+            - Build Help and Test Files
 jobs:
   Setup:
     executor: win/default
@@ -44,16 +53,16 @@ jobs:
   Build Modules:
     executor: win/default
     steps:
-      - attach_workspace:
-          at: .
       - build-module
-  Build Help Files:
+  Build Help and Test Files:
     executor: win/default
     steps:
-      - attach_workspace:
-          at: .
       - build-helpfiles
       - build-testfiles
+  Build Nuspec:
+    executor: win/default
+    steps:
+      - build-nuspec
 commands:
   setup:
     steps:
@@ -99,8 +108,11 @@ commands:
                 shell: pwsh.exe
                 command: |
                   $ErrorActionPreference = 'Stop'
-                  # ./PowerShell/Deploy/Get-Config.ps1 -GitSourceBranch << pipeline.git.branch >> -GitSourceRepo << pipeline.project.git_url >> -ReleaseType << pipeline.parameters.ReleaseType >>
                   ./PowerShell/Deploy/Build-Module.ps1 -GitSourceBranch << pipeline.git.branch >> -GitSourceRepo << pipeline.project.git_url >> -ReleaseType << pipeline.parameters.ReleaseType >> -ModuleName:('JumpCloud')
+            - persist_to_workspace:
+                root: .
+                paths:
+                  - .
   build-helpfiles:
     steps:
       - when:
@@ -116,6 +128,10 @@ commands:
                   $ErrorActionPreference = 'Stop'
                   ./PowerShell\Deploy\SdkSync\jcapiToSupportSync.ps1
                   ./PowerShell/Deploy/Build-HelpFiles.ps1 -ModuleName JumpCloud -ModulePath "./PowerShell/JumpCloud Module"
+            - persist_to_workspace:
+                root: .
+                paths:
+                  - .
   build-testfiles:
     steps:
       - when:
@@ -130,3 +146,25 @@ commands:
                command: |
                   $ErrorActionPreference = 'Stop'
                   ./PowerShell/Deploy/Build-PesterTestFiles.ps1
+            - persist_to_workspace:
+                root: .
+                paths:
+                  - .
+  build-nuspec:
+    steps:
+      - when:
+          condition:
+            equal: [ true, << pipeline.parameters.BuildNuspec >> ]
+          steps:
+            - attach_workspace:
+               at: .
+            - run:
+               name: Build Nuspec
+               shell: pwsh.exe
+               command: |
+                  $ErrorActionPreference = 'Stop'
+                  ./PowerShell/Deploy/BuildNuspecFromPsd1.ps1
+            - persist_to_workspace:
+                root: .
+                paths:
+                  - .
