@@ -125,7 +125,7 @@ commands:
             - attach_workspace:
                at: .
             - run:
-               name: Build Help Files
+               name: Build Test Files
                shell: pwsh.exe
                command: |
                   $ErrorActionPreference = 'Stop'
