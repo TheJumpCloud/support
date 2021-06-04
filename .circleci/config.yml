@@ -212,7 +212,7 @@ commands:
             - attach_workspace:
                at: .
             - run:
-               name: Build Nuspec
+               name: Invoke Pester
                shell: pwsh.exe
                command: |
                   $ErrorActionPreference = 'Stop'

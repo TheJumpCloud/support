@@ -4,6 +4,8 @@ Param(
 )
 Try
 {
+    # Import JC Module
+    Import-Module "$PSScriptRoot/../JumpCloud.psd1"
     # Authenticate to JumpCloud
     Connect-JCOnline -JumpCloudApiKey:($JumpCloudApiKey) -force | Out-Null
     # Define variable names
