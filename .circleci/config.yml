@@ -38,6 +38,7 @@ workflows:
             - Setup
       - Build Help and Test Files:
           requires:
+            - Build Modules
             - Setup
       - Build Nuspec:
           requires:
