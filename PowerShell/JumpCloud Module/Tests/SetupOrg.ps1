@@ -56,7 +56,7 @@ Try
             $null = Get-JCRadiusServer | Remove-JCRadiusServer -Force
         }
     }
-    Remove-Org -Users -Groups -Commands -RadiusServers
+    Remove-Org -Users -Groups -Commands -RadiusServers -ErrorAction Continue
 
     # Setup org
     $PesterParamsHash_BuildOrg = @{
