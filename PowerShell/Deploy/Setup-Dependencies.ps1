@@ -73,7 +73,7 @@ If (-not [System.String]::IsNullOrEmpty($Psd1))
         If ([System.String]::IsNullOrEmpty((Get-InstalledModule | Where-Object { $_.Name -eq $RequiredModule })))
         {
             Write-Host("[status]Installing module: '$RequiredModule' from '$RequiredModulesRepo'")
-            Install-Module -Force -Name:($RequiredModule) -Scope:('CurrentUser') -Repository:($RequiredModulesRepo) -Credential:($RepositoryCredentials) -AllowPrerelease
+            Install-Module -Force -Name:($RequiredModule) -Scope:('CurrentUser') -Repository:('PSGallery') -Credential:($RepositoryCredentials) -AllowPrerelease
         }
         # Get-Module -Refresh -ListAvailable
         If ([System.String]::IsNullOrEmpty((Get-Module | Where-Object { $_.Name -eq $RequiredModule })))
