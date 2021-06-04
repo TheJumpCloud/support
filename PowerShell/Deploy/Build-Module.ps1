@@ -1,13 +1,13 @@
 [CmdletBinding()]
 param (
     [Parameter()]
-    [TypeName]
+    [String]
     $GitSourceBranch,
     [Parameter()]
-    [TypeName]
+    [String]
     $GitSourceRepo,
     [Parameter()]
-    [TypeName]
+    [String]
     $ReleaseType
 )
 ./PowerShell/Deploy/Get-Config.ps1 -GitSourceBranch:($GitSourceBranch) -GitSourceRepo:($GitSourceRepo) -ReleaseType:($ReleaseType)
