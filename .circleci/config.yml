@@ -73,7 +73,6 @@ jobs:
   Build Nuspec:
     executor: win/default
     steps:
-      - build-nuspec
       - deploy-nupkg:
           source: CodeArtifact
   Module Validation Tests:
@@ -172,66 +171,61 @@ commands:
                 root: .
                 paths:
                   - .
-  build-nuspec:
-    steps:
-      - when:
-          condition:
-            equal: [ true, << pipeline.parameters.BuildNuspec >> ]
-          steps:
-            - attach_workspace:
-               at: .
-            - run:
-               name: Build Nuspec
-               shell: pwsh.exe
-               command: |
-                  $ErrorActionPreference = 'Stop'
-                  Write-Host "env:CIRCLE_BUILD_NUM: $($env:CIRCLE_BUILD_NUM)"
-                  . "./PowerShell/Deploy/BuildNuspecFromPsd1.ps1" -buildNumber $env:CIRCLE_BUILD_NUM
-            - persist_to_workspace:
-                root: .
-                paths:
-                  - .
   deploy-nupkg:
     parameters:
       source:
         description: Name of the source to deploy to
         type: string
     steps:
-      - run:
-          name: Install Dependencies
-          shell: pwsh.exe
-          command: |
-            Install-Module -Name PowerShellGet -AllowPrerelease -RequiredVersion '3.0.0-beta10' -Force
-            Install-Module -Name AWS.Tools.Common -Force
-            Install-Module -Name AWS.Tools.CodeArtifact -Force
-      - run:
-          name: Download Nuget
-          command: |
-            if ( -not ( Test-Path -Path ./Deploy/utils ) ) {
-              mkdir ./Deploy/utils
-              wget https://dist.nuget.org/win-x86-commandline/v3.3.0/nuget.exe -Outfile ./Deploy/utils/nuget.exe
-            }
-      - run:
-          name: Add nuget sources
-          shell: pwsh.exe
-          command: |
-            Set-AWSCredential -AccessKey:($env:AWS_ACCESS_KEY_ID) -SecretKey:($env:AWS_SECRET_ACCESS_KEY)
-            $CARepoEndpoint = "$(Get-CARepositoryEndpoint -Domain jumpcloud-artifacts -Region us-east-1 -Repository jumpcloud-nuget-modules -Format nuget)v3/index.json"
-            dotnet nuget add source $CARepoEndpoint --name CodeArtifact --username aws --password (Get-CAAuthorizationToken -Domain:("jumpcloud-artifacts") -Region:("us-east-1")).AuthorizationToken
-            dotnet nuget add source "https://www.powershellgallery.com/api/v2" --name PSGallery
-      - run:
-          name: Pack nuspec
-          shell: pwsh.exe
-          command: |
-            ./Deploy/utils/nuget.exe pack "./PowerShell/JumpCloud Module/JumpCloud.nuspec"
-      - run:
-          name: Publishing to "<< parameters.source >>" repo
-          shell: pwsh.exe
-          command: |
-            $NupkgPath = (Get-ChildItem -Path:("./*.nupkg")).FullName
-            If('<< parameters.source >>' -eq 'CodeArtifact'){dotnet nuget push $NupkgPath --source << parameters.source >>}
-            ElseIf('<< parameters.source >>' -eq 'PSGallery'){dotnet nuget push $NupkgPath --source << parameters.source >> --api-key $env:NuGetApiKey}
-            Else {Write-Error "Unknown source value: << parameters.source >>"}
+      - when:
+          condition:
+            equal: [ true, << pipeline.parameters.BuildNuspec >> ]
+          steps:
+            - run:
+                name: Set $env variable
+                shell: pwsh.exe
+                command: $env:Source = "<< parameters.source >>"
+            - run:
+                name: Build Nuspec
+                shell: pwsh.exe
+                command: |
+                  $ErrorActionPreference = 'Stop'
+                  . "./PowerShell/Deploy/BuildNuspecFromPsd1.ps1"
+            - run:
+                name: Install Dependencies
+                shell: pwsh.exe
+                command: |
+                  Install-Module -Name PowerShellGet -AllowPrerelease -RequiredVersion '3.0.0-beta10' -Force
+                  Install-Module -Name AWS.Tools.Common -Force
+                  Install-Module -Name AWS.Tools.CodeArtifact -Force
+            - run:
+                name: Download Nuget
+                command: |
+                  if ( -not ( Test-Path -Path ./Deploy/utils ) ) {
+                    mkdir ./Deploy/utils
+                    wget https://dist.nuget.org/win-x86-commandline/v3.3.0/nuget.exe -Outfile ./Deploy/utils/nuget.exe
+                  }
+            - run:
+                name: Add nuget sources
+                shell: pwsh.exe
+                command: |
+                  Set-AWSCredential -AccessKey:($env:AWS_ACCESS_KEY_ID) -SecretKey:($env:AWS_SECRET_ACCESS_KEY)
+                  $CARepoEndpoint = "$(Get-CARepositoryEndpoint -Domain jumpcloud-artifacts -Region us-east-1 -Repository jumpcloud-nuget-modules -Format nuget)v3/index.json"
+                  dotnet nuget add source $CARepoEndpoint --name CodeArtifact --username aws --password (Get-CAAuthorizationToken -Domain:("jumpcloud-artifacts") -Region:("us-east-1")).AuthorizationToken
+                  dotnet nuget add source "https://www.powershellgallery.com/api/v2" --name PSGallery
+            - run:
+                name: Pack nuspec
+                shell: pwsh.exe
+                command: |
+                  ./Deploy/utils/nuget.exe pack "./PowerShell/JumpCloud Module/JumpCloud.nuspec"
+            - run:
+                name: Publishing to "<< parameters.source >>" repo
+                shell: pwsh.exe
+                command: |
+                  $NupkgPath = (Get-ChildItem -Path:("./*.nupkg")).FullName
+                  If('<< parameters.source >>' -eq 'CodeArtifact'){dotnet nuget push $NupkgPath --source << parameters.source >>}
+                  ElseIf('<< parameters.source >>' -eq 'PSGallery'){dotnet nuget push $NupkgPath --source << parameters.source >> --api-key $env:NuGetApiKey}
+                  Else {Write-Error "Unknown source value: << parameters.source >>"}
   invoke-pester:
     parameters:
       JumpCloudApiKey:

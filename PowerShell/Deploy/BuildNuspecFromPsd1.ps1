@@ -15,7 +15,7 @@ function New-NuspecFile
         [Parameter(Mandatory = $true)]
         [string]$Version,
 
-        [Parameter(Mandatory = $true)]
+        [Parameter()]
         [String]$buildNumber,
 
         [Parameter(Mandatory = $true)]
@@ -76,9 +76,15 @@ function New-NuspecFile
         Write-Warning -Message "Tag list exceeded 4000 characters and may not be accepted by some Nuget feeds."
     }
 
+    # Append buildNumber if something
+    if ($env:Source -eq "CodeArtifact")
+    {
+        $Version = $Version + ".$($buildNumber)"
+    }
+    
     $metaDataElementsHash = [ordered]@{
         id                       = $Id
-        version                  = $Version + ".$($buildNumber)"
+        version                  = $Version
         description              = $Description
         authors                  = $Authors -Join ","
         owners                   = $Owners -Join ","
