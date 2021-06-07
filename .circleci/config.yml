@@ -186,7 +186,7 @@ commands:
                command: |
                   $ErrorActionPreference = 'Stop'
                   Write-Host "env:CIRCLE_BUILD_NUM: $($env:CIRCLE_BUILD_NUM)"
-                  ./PowerShell/Deploy/BuildNuspecFromPsd1.ps1 -buildNumber:($env:CIRCLE_BUILD_NUM)
+                  . "./PowerShell/Deploy/BuildNuspecFromPsd1.ps1" -buildNumber $env:CIRCLE_BUILD_NUM
             - persist_to_workspace:
                 root: .
                 paths:
