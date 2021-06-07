@@ -181,6 +181,8 @@ commands:
           condition:
             equal: [ true, << pipeline.parameters.BuildNuspec >> ]
           steps:
+            - attach_workspace:
+               at: .
             - run:
                 name: Set $env variable
                 shell: pwsh.exe
