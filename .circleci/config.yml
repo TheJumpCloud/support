@@ -116,7 +116,6 @@ commands:
                 name: Display Session Variables (For Debugging)
                 shell: pwsh.exe
                 command: |
-                  Write-Host "env:CIRCLE_BUILD_NUM: $($env:CIRCLE_BUILD_NUM)"
                   ./PowerShell/Deploy/Get-SessionVariables.ps1
   build-module:
     steps:
@@ -186,6 +185,7 @@ commands:
                shell: pwsh.exe
                command: |
                   $ErrorActionPreference = 'Stop'
+                  Write-Host "env:CIRCLE_BUILD_NUM: $($env:CIRCLE_BUILD_NUM)"
                   ./PowerShell/Deploy/BuildNuspecFromPsd1.ps1 -buildNumber:("$env:CIRCLE_BUILD_NUM")
             - persist_to_workspace:
                 root: .
