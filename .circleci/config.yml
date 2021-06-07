@@ -204,6 +204,9 @@ commands:
             Install-Module -Name PowerShellGet -AllowPrerelease -RequiredVersion '3.0.0-beta10' -Force
             Install-Module -Name AWS.Tools.Common -Force
             Install-Module -Name AWS.Tools.CodeArtifact -Force
+      - run:
+          name: Download Nuget
+          command: |
             if ( -not ( Test-Path -Path ./Deploy/utils ) ) {
               mkdir ./Deploy/utils
               wget https://dist.nuget.org/win-x86-commandline/v3.3.0/nuget.exe -Outfile ./Deploy/utils/nuget.exe
