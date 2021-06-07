@@ -1,6 +1,6 @@
 
 #Function to create a folder and any child folders
-Function New-FolderRecursive
+Function Global:New-FolderRecursive
 {
     [cmdletbinding(SupportsShouldProcess = $True)]
     Param(

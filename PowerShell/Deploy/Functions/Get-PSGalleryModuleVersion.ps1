@@ -1,4 +1,4 @@
-Function Get-PSGalleryModuleVersion
+Function Global:Get-PSGalleryModuleVersion
 {
     Param (
         [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0)][ValidateNotNullOrEmpty()][string]$Name,

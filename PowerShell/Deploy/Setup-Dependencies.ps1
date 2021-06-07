@@ -67,13 +67,14 @@ If ($RequiredModulesRepo -ne 'PSGallery')
 If (-not [System.String]::IsNullOrEmpty($Psd1))
 {
     # Install required modules
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 
     ForEach ($RequiredModule In $Psd1.RequiredModules)
     {
         # Check to see if the module is installed
         If ([System.String]::IsNullOrEmpty((Get-InstalledModule | Where-Object { $_.Name -eq $RequiredModule })))
         {
             Write-Host("[status]Installing module: '$RequiredModule' from '$RequiredModulesRepo'")
-            Install-Module -Force -Name:($RequiredModule) -Scope:('CurrentUser') -Repository:($RequiredModulesRepo) -Credential:($RepositoryCredentials) -AllowPrerelease
+            Install-Module -Force -Name:($RequiredModule) -Scope:('CurrentUser') #-Repository:('PSGallery') -Credential:($RepositoryCredentials) -AllowPrerelease
         }
         # Get-Module -Refresh -ListAvailable
         If ([System.String]::IsNullOrEmpty((Get-Module | Where-Object { $_.Name -eq $RequiredModule })))
@@ -98,7 +99,7 @@ If (-not [System.String]::IsNullOrEmpty($Psd1))
         {
             Write-Host "Importing $($DeployFunction.FullName)"
             . $DeployFunction.FullName
-            #Get-Command $DeployFunction
+            # Get-Command $DeployFunction
         }
         Catch
         {

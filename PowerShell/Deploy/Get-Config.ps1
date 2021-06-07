@@ -47,26 +47,27 @@ $FolderPath_Module = $FolderPath_ModuleRootPath + '/' + $ModuleFolderName
 $RequiredFolders | ForEach-Object {
     $FolderName = $_
     $FolderPath = $FolderPath_Module + '/' + $FolderName
-    New-Variable -Name:('FolderName_' + $_.Replace('-', '')) -Value:($FolderName) -Force;
-    New-Variable -Name:('FolderPath_' + $_.Replace('-', '')) -Value:($FolderPath) -Force
+    New-Variable -Name:('FolderName_' + $_.Replace('-', '')) -Value:($FolderName) -Force -Scope Global;
+    New-Variable -Name:('FolderPath_' + $_.Replace('-', '')) -Value:($FolderPath) -Force -Scope Global
 }
 $RequiredFiles | ForEach-Object {
     $FileName = If ($_ -in ('psm1', 'psd1')) { $ModuleName + '.' + $_ } Else { $_ }
     $FilePath = $FolderPath_Module + '/' + $FileName
-    New-Variable -Name:('FileName_' + $_) -Value:($FileName) -Force;
-    New-Variable -Name:('FilePath_' + $_) -Value:($FilePath) -Force;
+    New-Variable -Name:('FileName_' + $_) -Value:($FileName) -Force -Scope Global;
+    New-Variable -Name:('FilePath_' + $_) -Value:($FilePath) -Force -Scope Global;
 }
 # Get .psd1 contents
 $Psd1 = Import-PowerShellDataFile -Path:($FilePath_psd1)
+Set-Variable $Psd1 -Scope Global
 # Get module function names
 $Functions_Public = If (Test-Path -Path:($FolderPath_Public))
 {
     Get-ChildItem -Path:($FolderPath_Public + '/' + '*.ps1') -Recurse
 }
+Set-Variable $Functions_Public -Scope Global
 $Functions_Private = If (Test-Path -Path:($FolderPath_Private))
 {
     Get-ChildItem -Path:($FolderPath_Private + '/' + '*.ps1') -Recurse
 }
 # Setup-Dependencies.ps1
-. .("$ScriptRoot/Setup-Dependencies.ps1") 
-Setup-Dependencies -RequiredModulesRepo:($RequiredModulesRepo)
+.("$ScriptRoot/Setup-Dependencies.ps1") -RequiredModulesRepo:($RequiredModulesRepo)

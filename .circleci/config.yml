@@ -3,7 +3,7 @@ parameters:
   EnableDebugging:
     description: 'When `true`, debugging commands will run and output to terminal.'
     type: boolean
-    default: false
+    default: true
   BuildModule:
     description: 'When `true`, all build commands will run.'
     type: boolean
@@ -13,6 +13,14 @@ parameters:
     type: boolean
     default: true
   BuildTestFiles:
+    description: 'When `true`, Help files will be built.'
+    type: boolean
+    default: true
+  BuildNuspec:
+    description: 'When `true`, Help files will be built.'
+    type: boolean
+    default: true
+  ValidateModule:
     description: 'When `true`, Help files will be built.'
     type: boolean
     default: true
@@ -32,9 +40,21 @@ workflows:
       - Build Modules:
           requires:
             - Setup
-      - Build Help Files:
+      - Build Help and Test Files:
+          requires:
+            - Build Modules
+            - Setup
+      - Build Nuspec:
           requires:
             - Setup
+            - Build Modules
+            - Build Help and Test Files
+          context: aws-credentials
+      - Module Validation Tests:
+          requires:
+            - Setup
+            - Build Help and Test Files
+            - Build Nuspec
 jobs:
   Setup:
     executor: win/default
@@ -44,16 +64,26 @@ jobs:
   Build Modules:
     executor: win/default
     steps:
-      - attach_workspace:
-          at: .
       - build-module
-  Build Help Files:
+  Build Help and Test Files:
     executor: win/default
     steps:
-      - attach_workspace:
-          at: .
       - build-helpfiles
       - build-testfiles
+  Build Nuspec:
+    executor: win/default
+    steps:
+      - deploy-nupkg:
+          source: CodeArtifact
+  Module Validation Tests:
+    executor: win/default
+    steps:
+      - invoke-pester:
+          JumpCloudApiKey: $env:XAPIKEY_PESTER
+          JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_LINUX
+          ExcludeTagList: 'None'
+          IncludeTagList: 'ModuleValidation'
+          RequiredModulesRepo: PSGallery
 commands:
   setup:
     steps:
@@ -99,8 +129,11 @@ commands:
                 shell: pwsh.exe
                 command: |
                   $ErrorActionPreference = 'Stop'
-                  ./PowerShell/Deploy/Get-Config.ps1 -GitSourceBranch << pipeline.git.branch >> -GitSourceRepo << pipeline.project.git_url >> -ReleaseType << pipeline.parameters.ReleaseType >>
-                  ./PowerShell/Deploy/Build-Module.ps1
+                  ./PowerShell/Deploy/Build-Module.ps1 -GitSourceBranch << pipeline.git.branch >> -GitSourceRepo << pipeline.project.git_url >> -ReleaseType << pipeline.parameters.ReleaseType >> -ModuleName:('JumpCloud')
+            - persist_to_workspace:
+                root: .
+                paths:
+                  - .
   build-helpfiles:
     steps:
       - when:
@@ -116,6 +149,10 @@ commands:
                   $ErrorActionPreference = 'Stop'
                   ./PowerShell\Deploy\SdkSync\jcapiToSupportSync.ps1
                   ./PowerShell/Deploy/Build-HelpFiles.ps1 -ModuleName JumpCloud -ModulePath "./PowerShell/JumpCloud Module"
+            - persist_to_workspace:
+                root: .
+                paths:
+                  - .
   build-testfiles:
     steps:
       - when:
@@ -125,8 +162,106 @@ commands:
             - attach_workspace:
                at: .
             - run:
-               name: Build Help Files
+               name: Build Test Files
                shell: pwsh.exe
                command: |
                   $ErrorActionPreference = 'Stop'
                   ./PowerShell/Deploy/Build-PesterTestFiles.ps1
+            - persist_to_workspace:
+                root: .
+                paths:
+                  - .
+  deploy-nupkg:
+    parameters:
+      source:
+        description: Name of the source to deploy to
+        type: string
+    steps:
+      - when:
+          condition:
+            equal: [ true, << pipeline.parameters.BuildNuspec >> ]
+          steps:
+            - attach_workspace:
+               at: .
+            - run:
+                name: Set $env variable
+                shell: pwsh.exe
+                command: $env:Source = "<< parameters.source >>"
+            - run:
+                name: Build Nuspec
+                shell: pwsh.exe
+                command: |
+                  $ErrorActionPreference = 'Stop'
+                  . "./PowerShell/Deploy/BuildNuspecFromPsd1.ps1"
+            - run:
+                name: Install Dependencies
+                shell: pwsh.exe
+                command: |
+                  Install-Module -Name PowerShellGet -AllowPrerelease -RequiredVersion '3.0.0-beta10' -Force
+                  Install-Module -Name AWS.Tools.Common -Force
+                  Install-Module -Name AWS.Tools.CodeArtifact -Force
+            - run:
+                name: Download Nuget
+                command: |
+                  if ( -not ( Test-Path -Path ./Deploy/utils ) ) {
+                    mkdir ./Deploy/utils
+                    wget https://dist.nuget.org/win-x86-commandline/v3.3.0/nuget.exe -Outfile ./Deploy/utils/nuget.exe
+                  }
+            - run:
+                name: Add nuget sources
+                shell: pwsh.exe
+                command: |
+                  Set-AWSCredential -AccessKey:($env:AWS_ACCESS_KEY_ID) -SecretKey:($env:AWS_SECRET_ACCESS_KEY)
+                  $CARepoEndpoint = "$(Get-CARepositoryEndpoint -Domain jumpcloud-artifacts -Region us-east-1 -Repository jumpcloud-nuget-modules -Format nuget)v3/index.json"
+                  dotnet nuget add source $CARepoEndpoint --name CodeArtifact --username aws --password (Get-CAAuthorizationToken -Domain:("jumpcloud-artifacts") -Region:("us-east-1")).AuthorizationToken
+                  dotnet nuget add source "https://www.powershellgallery.com/api/v2" --name PSGallery
+            - run:
+                name: Pack nuspec
+                shell: pwsh.exe
+                command: |
+                  ./Deploy/utils/nuget.exe pack "./PowerShell/JumpCloud Module/JumpCloud.nuspec"
+            - run:
+                name: Publishing to "<< parameters.source >>" repo
+                shell: pwsh.exe
+                command: |
+                  $NupkgPath = (Get-ChildItem -Path:("./*.nupkg")).FullName
+                  If('<< parameters.source >>' -eq 'CodeArtifact'){dotnet nuget push $NupkgPath --source << parameters.source >>}
+                  ElseIf('<< parameters.source >>' -eq 'PSGallery'){dotnet nuget push $NupkgPath --source << parameters.source >> --api-key $env:NuGetApiKey}
+                  Else {Write-Error "Unknown source value: << parameters.source >>"}
+  invoke-pester:
+    parameters:
+      JumpCloudApiKey:
+        type: string
+        default: $env:XAPIKEY_PESTER
+      JumpCloudApiKeyMsp:
+        type: string
+        default: $env:XAPIKEY_PESTER_MTP
+      ExcludeTagList:
+        type: string
+        default: 'None'
+      IncludeTagList:
+        type: string
+        default: 'None'
+      RequiredModulesRepo:
+        type: string
+        default: 'PSGallery'
+    steps:
+      - when:
+          condition:
+            equal: [ true, << pipeline.parameters.ValidateModule >> ]
+          steps:
+            - attach_workspace:
+               at: .
+            - run:
+               name: Invoke Pester
+               shell: pwsh.exe
+               command: |
+                  $ErrorActionPreference = 'stop'
+                  . "./PowerShell/JumpCloud Module/Tests/InvokePester.ps1" -JumpCloudApiKey << parameters.JumpCloudApiKey >> -JumpCloudApiKeyMsp << parameters.JumpCloudApiKeyMsp >> -ExcludeTagList << parameters.ExcludeTagList >> -IncludeTagList << parameters.IncludeTagList >> -RequiredModulesRepo << parameters.RequiredModulesRepo >>
+            - store_test_results:
+                name: Uploading test results'
+                path: "./PowerShell/JumpCloud Module/Tests/test_results/"
+            - persist_to_workspace:
+                root: .
+                paths:
+                  - .
