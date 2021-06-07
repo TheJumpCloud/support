@@ -78,7 +78,7 @@ function New-NuspecFile
 
     Write-Host "env:Source = $($env:Source)`r`nglobal:Source = $($global:Source)"
     # Append buildNumber if something
-    if ($global:Source -eq "CodeArtifact")
+    if ($env:Source -eq "CodeArtifact")
     {
         $Version = $Version + ".$($buildNumber)"
     }

@@ -184,12 +184,10 @@ commands:
             - attach_workspace:
                at: .
             - run:
-                name: Set $env variable
-                shell: pwsh.exe
-                command: $global:Source = "<< parameters.source >>"
-            - run:
                 name: Build Nuspec
                 shell: pwsh.exe
+                environment:
+                  Source: << parameters.Source >>
                 command: |
                   $ErrorActionPreference = 'Stop'
                   . "./PowerShell/Deploy/BuildNuspecFromPsd1.ps1"
