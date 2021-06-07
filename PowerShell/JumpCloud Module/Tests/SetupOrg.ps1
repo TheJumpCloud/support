@@ -43,7 +43,19 @@ Try
         # Remove all groups from an org
         If ($Groups)
         {
-            $null = Get-JCGroup | ForEach-Object { If ($_.Type -eq 'system_group') { Remove-JCSystemGroup -GroupName:($_.Name) -force }ElseIf ($_.Type -eq 'user_group') { Remove-JCUserGroup -GroupName:($_.Name) -force }Else { Write-Warning('No Groups Exist') } }
+            # TODO: if system group is assigned to MDM this will throw an error
+            $null = Get-JCGroup | ForEach-Object {
+                If ($_.Type -eq 'system_group')
+                {
+                    # write-host $_.Name
+                    Remove-JCSystemGroup -GroupName:($_.Name) -force
+                }
+                elseif ($_.Type -eq 'user_group')
+                {
+                    # write-host $_.Name
+                    Remove-JCUserGroup -GroupName:($_.Name) -force
+                }
+            }
         }
         # Remove all Commands from an org
         If ($Commands)

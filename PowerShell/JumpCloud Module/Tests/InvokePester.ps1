@@ -48,12 +48,33 @@ Write-Host ('[status]Setting up org: ' + "$PSScriptRoot/SetupOrg.ps1")
 # Load HelperFunctions
 Write-Host ('[status]Load HelperFunctions: ' + "$PSScriptRoot/HelperFunctions.ps1")
 . ("$PSScriptRoot/HelperFunctions.ps1")
+$PesterResultsFileXmldir = "$PSScriptRoot/test_results/"
+# $PesterResultsFileXml = $PesterResultsFileXmldir + "results.xml"
+if (-not (Test-Path $PesterResultsFileXmldir))
+{
+    new-item -path $PesterResultsFileXmldir -ItemType Directory
+}
 # Remove old test results file if exists
-If (Test-Path -Path:($PesterParams_PesterResultsFileXml)) { Remove-Item -Path:($PesterParams_PesterResultsFileXml) -Force }
+If (Test-Path -Path:("$PSScriptRoot/test_results/$PesterParams_PesterResultsFileXml")) { Remove-Item -Path:("$PSScriptRoot/test_results/$PesterParams_PesterResultsFileXml") -Force }
 # Run Pester tests
+
+$configuration = [PesterConfiguration]::Default
+$configuration.Run.Path = "$PSScriptRoot"
+$configuration.Should.ErrorAction = 'Continue'
+$configuration.CodeCoverage.Enabled = $true
+$configuration.testresult.Enabled = $true
+$configuration.testresult.OutputFormat = 'JUnitXml'
+$configuration.Filter.Tag = $IncludeTags
+$configuration.Filter.ExcludeTag = $ExcludeTagList
+$configuration.CodeCoverage.OutputPath = ($PesterResultsFileXmldir + 'coverage.xml')
+$configuration.testresult.OutputPath = ($PesterResultsFileXmldir + 'results.xml')
+
+Invoke-Pester -configuration $configuration
+
 Write-Host ("[RUN COMMAND] Invoke-Pester -Path:('$PSScriptRoot') -TagFilter:('$($IncludeTags -join "','")') -ExcludeTagFilter:('$($ExcludeTagList -join "','")') -PassThru") -BackgroundColor:('Black') -ForegroundColor:('Magenta')
-$PesterResults = Invoke-Pester -PassThru -Path:($PSScriptRoot) -TagFilter:($IncludeTags) -ExcludeTagFilter:($ExcludeTagList)
-$PesterResults | Export-NUnitReport -Path:($PesterParams_PesterResultsFileXml)
+# $PesterResults = Invoke-Pester -PassThru -Path:($PSScriptRoot) -TagFilter:($IncludeTags) -ExcludeTagFilter:($ExcludeTagList)
+# $PesterResults | Export-JUnitReport -Path:("$PSScriptRoot/test_results/text.xml")
+# $PesterResults | Export-JUnitReport -Path:("$PSScriptRoot/test_results/$PesterParams_PesterResultsFileXml")
 If (Test-Path -Path:($PesterParams_PesterResultsFileXml))
 {
     [xml]$PesterResults = Get-Content -Path:($PesterParams_PesterResultsFileXml)
