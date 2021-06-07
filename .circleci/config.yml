@@ -199,6 +199,7 @@ commands:
     steps:
       - run:
           name: Install Dependencies
+          shell: pwsh.exe
           command: |
             Install-Module -Name PowerShellGet -AllowPrerelease -RequiredVersion '3.0.0-beta10' -Force
             Install-Module -Name AWS.Tools.Common -Force
@@ -217,6 +218,7 @@ commands:
             dotnet nuget add source "https://www.powershellgallery.com/api/v2" --name PSGallery
       - run:
           name: Pack nuspec
+          shell: pwsh.exe
           command: |
             ./Deploy/utils/nuget.exe pack "./PowerShell/JumpCloud Module/JumpCloud.nuspec"
       - run:
