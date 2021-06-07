@@ -186,7 +186,7 @@ commands:
             - run:
                 name: Set $env variable
                 shell: pwsh.exe
-                command: $env:Source = "<< parameters.source >>"
+                command: $global:Source = "<< parameters.source >>"
             - run:
                 name: Build Nuspec
                 shell: pwsh.exe
