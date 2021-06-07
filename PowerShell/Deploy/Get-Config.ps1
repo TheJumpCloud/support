@@ -15,19 +15,20 @@ param (
     [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Required Modules Repository')][ValidateNotNullOrEmpty()][System.String]$RequiredModulesRepo = "PSGallery"
 )
 # Log Parameters
-Write-Host "ModuleName: $ModuleName"
-Write-Host "ModuleFolderName: $ModuleFolderName"
-Write-Host "DeployFolder: $DeployFolder"
-Write-Host "GitSourceBranch: $GitSourceBranch"
-Write-Host "GitSourceRepo : $GitSourceRepo "
-Write-Host "StagingDirectory: $StagingDirectory"
-Write-Host "GitSourceRepoWiki: $GitSourceRepoWiki"
-Write-Host "ReleaseType: $ReleaseType"
-Write-Host "XAPIKEY_PESTER: $XAPIKEY_PESTER"
-Write-Host "XAPIKEY_MTP: $XAPIKEY_MTP"
-Write-Host "NUGETAPIKEY: $NUGETAPIKEY"
-Write-Host "SYSTEM_ACCESSTOKEN : $SYSTEM_ACCESSTOKEN "
-Write-Host "RequiredModulesRepo: $RequiredModulesRepo"
+#Write-Host "ModuleName: $ModuleName"
+#Write-Host "ModuleFolderName: $ModuleFolderName"
+#Write-Host "DeployFolder: $DeployFolder"
+#Write-Host "GitSourceBranch: $GitSourceBranch"
+#Write-Host "GitSourceRepo : $GitSourceRepo "
+#Write-Host "StagingDirectory: $StagingDirectory"
+#Write-Host "GitSourceRepoWiki: $GitSourceRepoWiki"
+#Write-Host "ReleaseType: $ReleaseType"
+#Write-Host "XAPIKEY_PESTER: $XAPIKEY_PESTER"
+#Write-Host "XAPIKEY_MTP: $XAPIKEY_MTP"
+#Write-Host "NUGETAPIKEY: $NUGETAPIKEY"
+#Write-Host "SYSTEM_ACCESSTOKEN : $SYSTEM_ACCESSTOKEN "
+#Write-Host "RequiredModulesRepo: $RequiredModulesRepo"
+
 # Log statuses
 Write-Host ('[status]Platform: ' + [environment]::OSVersion.Platform)
 Write-Host ('[status]PowerShell Version: ' + ($PSVersionTable.PSVersion -join '.'))
