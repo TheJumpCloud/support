@@ -52,7 +52,7 @@ function New-NuspecFile
         [PSObject[]]$Files,
 
         [Parameter(Mandatory = $true)]
-        [System.string]$buildNumber
+        [String]$buildNumber = "001"
 
     )
     Set-StrictMode -Off
