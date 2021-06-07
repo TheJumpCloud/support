@@ -187,7 +187,7 @@ commands:
                 name: Build Nuspec
                 shell: pwsh.exe
                 environment:
-                  Source: << parameters.Source >>
+                  Source: << parameters.source >>
                 command: |
                   $ErrorActionPreference = 'Stop'
                   . "./PowerShell/Deploy/BuildNuspecFromPsd1.ps1"
