@@ -16,6 +16,9 @@ function New-NuspecFile
         [string]$Version,
 
         [Parameter(Mandatory = $true)]
+        [String]$buildNumber,
+
+        [Parameter(Mandatory = $true)]
         [string]$Description,
 
         [Parameter(Mandatory = $true)]
@@ -49,10 +52,7 @@ function New-NuspecFile
         [PSObject[]]$Dependencies,
 
         [Parameter()]
-        [PSObject[]]$Files,
-
-        [Parameter(Mandatory = $true)]
-        [String]$buildNumber = "001"
+        [PSObject[]]$Files
 
     )
     Set-StrictMode -Off
@@ -148,6 +148,7 @@ $Psd1 = Import-PowerShellDataFile -Path:($FilePath_psd1)
 $params = @{
     OutputPath   = $FolderPath_Module
     Id           = $(Get-Item ($FilePath_psd1)).BaseName
+    buildNumber  = $env:CIRCLE_BUILD_NUM
     Version      = $Psd1.ModuleVersion
     Authors      = $Psd1.Author
     Owners       = $Psd1.CompanyName
