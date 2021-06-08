@@ -46,6 +46,14 @@ executors:
       xcode: 11.3.0
 workflows:
   version: 2
+  check-updated-files:
+    jobs:
+    - path-filtering/filter:
+        mapping: |
+          PowerShell/.* RunJob true
+          .circleci/.* RunJob true
+        base-revision: master
+        config-path: .circleci/config.yml
   ci:
     when: << pipeline.parameters.RunJob >>
     jobs:
@@ -93,13 +101,6 @@ workflows:
             - Module Validation Tests
             - Invoke Git Commit
 jobs:
-  check-path-filtering:
-    - path-filtering/filter:
-        base-revision: master
-        config-path: .circleci/config.yml
-        mapping: |
-          PowerShell/.* RunJob true
-          .circleci/.* RunJob true
   Initial Setup:
     executor: win/default
     steps:
