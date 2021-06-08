@@ -32,6 +32,10 @@ parameters:
 
 orbs:
   win: circleci/windows@2.2.0
+executors:
+  macos_exec:
+    macos:
+      xcode: 11.3.0
 workflows:
   version: 2
   ci:
@@ -55,7 +59,13 @@ workflows:
             - Setup
             - Build Help and Test Files
             - Build Nuspec
-      - Pester Tests:
+      - Pester Tests (Windows):
+          requires:
+            - Setup
+            - Build Help and Test Files
+            - Build Nuspec
+            - Module Validation Tests
+      - Pester Tests (Mac):
           requires:
             - Setup
             - Build Help and Test Files
@@ -90,12 +100,31 @@ jobs:
           ExcludeTagList: 'None'
           IncludeTagList: 'ModuleValidation'
           RequiredModulesRepo: PSGallery
-  Pester Tests:
+  Pester Tests (Windows):
     executor: win/default
     steps:
       - invoke-pester:
           JumpCloudApiKey: $env:XAPIKEY_PESTER
-          JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_LINUX
+          JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_MTP
+          ExcludeTagList: 'ModuleValidation, JCUsersFromCSV, JCDeployment, JCModule'
+          IncludeTagList: '*'
+          RequiredModulesRepo: PSGallery
+  Pester Tests (Windows):
+    executor: macos_exec
+    steps:
+      - invoke-pester:
+          JumpCloudApiKey: $env:XAPIKEY_PESTER_MAC
+          JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_MTP
+          ExcludeTagList: 'ModuleValidation, JCUsersFromCSV, JCDeployment, JCModule'
+          IncludeTagList: '*'
+          RequiredModulesRepo: PSGallery
+  Pester Tests (Linux):
+    machine:
+      image: ubuntu-1604:202007-01
+    steps:
+      - invoke-pester:
+          JumpCloudApiKey: $env:XAPIKEY_PESTER_LINUX
+          JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_MTP
           ExcludeTagList: 'ModuleValidation, JCUsersFromCSV, JCDeployment, JCModule'
           IncludeTagList: '*'
           RequiredModulesRepo: PSGallery
