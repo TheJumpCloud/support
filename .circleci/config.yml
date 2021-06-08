@@ -10,5 +10,5 @@ workflows:
         mapping: |
           PowerShell/.* PowerShellModified true
           .circleci/.* PowerShellModified true
-        base-revision: master
+        base-revision: << pipeline.git.branch >>
         config-path: .circleci/workflows.yml
