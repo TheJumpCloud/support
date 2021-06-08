@@ -54,6 +54,7 @@ workflows:
             .circleci/.* RunJob true
   ci:
     when: << pipeline.parameters.RunJob >>
+    jobs:
       - Setup
       - Build Modules:
           requires:
