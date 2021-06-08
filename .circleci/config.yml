@@ -112,6 +112,7 @@ jobs:
   Pester Tests (Windows):
     executor: macos_exec
     steps:
+      - setup-pester-env-mac:
       - invoke-pester:
           JumpCloudApiKey: $env:XAPIKEY_PESTER_MAC
           JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_MTP
@@ -122,6 +123,7 @@ jobs:
     machine:
       image: ubuntu-1604:202007-01
     steps:
+      - setup-pester-env-linux:
       - invoke-pester:
           JumpCloudApiKey: $env:XAPIKEY_PESTER_LINUX
           JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_MTP
@@ -297,6 +299,7 @@ commands:
             - run:
                name: Invoke Pester
                shell: pwsh.exe
+               no_output_timeout: 30m
                command: |
                   $ErrorActionPreference = 'stop'
                   . "./PowerShell/JumpCloud Module/Tests/InvokePester.ps1" -JumpCloudApiKey << parameters.JumpCloudApiKey >> -JumpCloudApiKeyMsp << parameters.JumpCloudApiKeyMsp >> -ExcludeTagList << parameters.ExcludeTagList >> -IncludeTagList << parameters.IncludeTagList >> -RequiredModulesRepo << parameters.RequiredModulesRepo >>
@@ -307,3 +310,30 @@ commands:
                 root: .
                 paths:
                   - .
+  setup-pester-env-mac:
+    steps:
+      - run:
+          name: Setup Pester Mac
+          shell: bash
+          command: |
+            brew install --cask powershell
+  setup-pester-env-linux:
+    steps:
+      - run:
+          name: Setup Pester Linux
+          shell: bash
+          command: |
+            # Update the list of packages
+            apt-get update
+            # Install pre-requisite packages.
+            apt-get install -y wget apt-transport-https software-properties-common
+            # Download the Microsoft repository GPG keys
+            wget -q https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb
+            # Register the Microsoft repository GPG keys
+            dpkg -i packages-microsoft-prod.deb
+            # Update the list of products
+            apt-get update
+            # Enable the "universe" repositories
+            add-apt-repository universe
+            # Install PowerShell
+            apt-get install -y powershell
