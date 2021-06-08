@@ -119,7 +119,7 @@ jobs:
   Pester Tests Mac:
     executor: macos_exec
     steps:
-      - setup-pester-env-mac:
+      - setup-pester-env-mac
       - invoke-pester:
           JumpCloudApiKey: $env:XAPIKEY_PESTER_MAC
           JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_MTP
@@ -131,7 +131,7 @@ jobs:
     machine:
       image: ubuntu-1604:202007-01
     steps:
-      - setup-pester-env-linux:
+      - setup-pester-env-linux
       - invoke-pester:
           JumpCloudApiKey: $env:XAPIKEY_PESTER_LINUX
           JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_MTP
