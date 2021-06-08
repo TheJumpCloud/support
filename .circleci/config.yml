@@ -57,23 +57,23 @@ workflows:
   ci:
     when: << pipeline.parameters.RunJob >>
     jobs:
-      - Setup
+      - Initial Setup
       - Build Modules:
           requires:
-            - Setup
+            - Initial Setup
       - Build Help and Test Files:
           requires:
             - Build Modules
-            - Setup
+            - Initial Setup
       - Build Nuspec:
           requires:
-            - Setup
+            - Initial Setup
             - Build Modules
             - Build Help and Test Files
           context: aws-credentials
       - Module Validation Tests:
           requires:
-            - Setup
+            - Initial Setup
             - Build Help and Test Files
             - Build Nuspec
       - Invoke Git Commit:
@@ -81,30 +81,30 @@ workflows:
             - Module Validation Tests
       - Pester Tests Windows:
           requires:
-            - Setup
+            - Initial Setup
             - Build Help and Test Files
             - Build Nuspec
             - Module Validation Tests
             - Invoke Git Commit
       - Pester Tests Mac:
           requires:
-            - Setup
+            - Initial Setup
             - Build Help and Test Files
             - Build Nuspec
             - Module Validation Tests
             - Invoke Git Commit
       - Pester Tests Linux:
           requires:
-            - Setup
+            - Initial Setup
             - Build Help and Test Files
             - Build Nuspec
             - Module Validation Tests
             - Invoke Git Commit
 jobs:
-  Setup:
+  Initial Setup:
     executor: win/default
     steps:
-      - setup
+      - initial-setup
       - debugging
   Build Modules:
     executor: win/default
@@ -167,7 +167,7 @@ jobs:
           RequiredModulesRepo: PSGallery
           Shell: 'pwsh'
 commands:
-  setup:
+  initial-setup:
     steps:
       - checkout
       - run: echo << pipeline.git.branch >>
