@@ -55,6 +55,12 @@ workflows:
             - Setup
             - Build Help and Test Files
             - Build Nuspec
+      - Pester Tests:
+          requires:
+            - Setup
+            - Build Help and Test Files
+            - Build Nuspec
+            - Module Validation Tests
 jobs:
   Setup:
     executor: win/default
@@ -83,6 +89,15 @@ jobs:
           JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_LINUX
           ExcludeTagList: 'None'
           IncludeTagList: 'ModuleValidation'
+          RequiredModulesRepo: PSGallery
+  Pester Tests:
+    executor: win/default
+    steps:
+      - invoke-pester:
+          JumpCloudApiKey: $env:XAPIKEY_PESTER
+          JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_LINUX
+          ExcludeTagList: 'ModuleValidation, JCUsersFromCSV, JCDeployment, JCModule'
+          IncludeTagList: '*'
           RequiredModulesRepo: PSGallery
 commands:
   setup:
