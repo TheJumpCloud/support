@@ -245,7 +245,7 @@ commands:
           shell: pwsh.exe
           command: |
             $ErrorActionPreference = 'Stop'
-            ./PowerShell/Deploy/Invoke-GitCommit.ps1
+            ./PowerShell/Deploy/Invoke-GitCommit.ps1 -BranchName $env:CIRCLE_BRANCH
       - persist_to_workspace:
           root: .
           paths:
