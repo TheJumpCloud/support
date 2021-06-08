@@ -1,23 +1,13 @@
 version: 2.1
-
 setup: true
-
-parameters:
-  RunJob:
-    description: 'Used by Path Filtering Orb to determine if changes occurred in the ./PowerShell/ folder'
-    type: boolean
-    default: false
-
 orbs:
   path-filtering: circleci/path-filtering@0.0.2
-  win: circleci/windows@2.2.0
 workflows:
   version: 2
   check-updated-files:
     jobs:
     - path-filtering/filter:
         mapping: |
-          PowerShell/.* RunJob true
-          .circleci/.* RunJob true
+          PowerShell/.* PowerShellModified true
         base-revision: master
         config-path: .circleci/workflows.yml
