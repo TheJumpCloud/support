@@ -241,15 +241,19 @@ commands:
       - attach_workspace:
           at: .
       - run:
-          name: Invoke Script
+          when: on_success
+          name: 'Commit PowerShell Module to << pipeline.git.branch >>'
           shell: pwsh.exe
           command: |
-            $ErrorActionPreference = 'Stop'
-            ./PowerShell/Deploy/Invoke-GitCommit.ps1 -BranchName $env:CIRCLE_BRANCH
-      - persist_to_workspace:
-          root: .
-          paths:
-            - .
+            $UserEmail = If ($env:CIRCLE_PROJECT_USERNAME) { $env:CIRCLE_PROJECT_USERNAME } Else { ($env:USERNAME).Replace(' ', '') + '@FakeEmail.com' }
+            $UserName = If ($env:CIRCLE_PROJECT_USERNAME) { $env:CIRCLE_PROJECT_USERNAME } Else { $env:USERNAME }
+            git config user.email "$UserEmail"
+            git config user.name "$UserName"
+            git pull
+            git add -A
+            git status
+            git commit -m "Updating PowerShell Module;[skip ci]"
+            git push origin << pipeline.git.branch >>
   deploy-nupkg:
     parameters:
       source:
