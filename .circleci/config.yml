@@ -9,5 +9,5 @@ workflows:
     - path-filtering/filter:
         mapping: |
           PowerShell/.* PowerShellModified true
-        base-revision: << pipeline.git.branch >>
+        base-revision: master
         config-path: .circleci/workflows.yml
