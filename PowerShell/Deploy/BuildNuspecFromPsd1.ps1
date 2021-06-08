@@ -76,12 +76,13 @@ function New-NuspecFile
         Write-Warning -Message "Tag list exceeded 4000 characters and may not be accepted by some Nuget feeds."
     }
 
+    Write-Host "env:Source = $($env:Source)`r`nglobal:Source = $($global:Source)"
     # Append buildNumber if something
     if ($env:Source -eq "CodeArtifact")
     {
         $Version = $Version + ".$($buildNumber)"
     }
-    
+
     $metaDataElementsHash = [ordered]@{
         id                       = $Id
         version                  = $Version
