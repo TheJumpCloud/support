@@ -54,6 +54,7 @@ workflows:
           config-path: .circleci/config.yml
           mapping: |
             PowerShell/.* RunJob true
+            .circleci/.* RunJob true
       - Setup
       - Build Modules:
           requires:
