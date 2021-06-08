@@ -47,13 +47,14 @@ executors:
 workflows:
   version: 2
   check-path-filtering:
-    jobs:
-      - path-filtering/filter:
-          base-revision: master
-          config-path: .circleci/config.yml
-          mapping: |
-            PowerShell/.* RunJob true
-            .circleci/.* RunJob true
+    setup:
+      jobs:
+        - path-filtering/filter:
+            base-revision: master
+            config-path: .circleci/config.yml
+            mapping: |
+              PowerShell/.* RunJob true
+              .circleci/.* RunJob true
   ci:
     when: << pipeline.parameters.RunJob >>
     jobs:
