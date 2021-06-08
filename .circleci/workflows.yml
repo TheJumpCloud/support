@@ -30,7 +30,7 @@ parameters:
     type: enum
     enum: ["Major", "Minor", "Patch"]
     default: "Patch"
-  RunJob:
+  PowerShellModified:
     description: 'Used by Path Filtering Orb to determine if changes occurred in the ./PowerShell/ folder'
     type: boolean
     default: false
@@ -44,7 +44,7 @@ executors:
 workflows:
   version: 2
   ci:
-    when: << pipeline.parameters.RunJob >>
+    when: << pipeline.parameters.PowerShellModified >>
     jobs:
       - Initial Setup
       - Build Modules:
