@@ -59,13 +59,19 @@ workflows:
             - Setup
             - Build Help and Test Files
             - Build Nuspec
-      - Pester Tests (Windows):
+      - Pester Tests Windows:
           requires:
             - Setup
             - Build Help and Test Files
             - Build Nuspec
             - Module Validation Tests
-      - Pester Tests (Mac):
+      - Pester Tests Mac:
+          requires:
+            - Setup
+            - Build Help and Test Files
+            - Build Nuspec
+            - Module Validation Tests
+      - Pester Tests Linux:
           requires:
             - Setup
             - Build Help and Test Files
@@ -100,7 +106,7 @@ jobs:
           ExcludeTagList: 'None'
           IncludeTagList: 'ModuleValidation'
           RequiredModulesRepo: PSGallery
-  Pester Tests (Windows):
+  Pester Tests Windows:
     executor: win/default
     steps:
       - invoke-pester:
@@ -109,7 +115,7 @@ jobs:
           ExcludeTagList: 'ModuleValidation, JCUsersFromCSV, JCDeployment, JCModule'
           IncludeTagList: '*'
           RequiredModulesRepo: PSGallery
-  Pester Tests (Windows):
+  Pester Tests Mac:
     executor: macos_exec
     steps:
       - invoke-pester:
@@ -118,7 +124,7 @@ jobs:
           ExcludeTagList: 'ModuleValidation, JCUsersFromCSV, JCDeployment, JCModule'
           IncludeTagList: '*'
           RequiredModulesRepo: PSGallery
-  Pester Tests (Linux):
+  Pester Tests Linux:
     machine:
       image: ubuntu-1604:202007-01
     steps:
