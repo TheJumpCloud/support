@@ -29,8 +29,13 @@ parameters:
     type: enum
     enum: ["Major", "Minor", "Patch"]
     default: "Patch"
+  RunJob:
+    description: 'Used by Path Filtering Orb to determine if changes occurred in the ./PowerShell/ folder'
+    type: boolean
+    default: false
 
 orbs:
+  path-filtering: circleci/pathfiltering@0.0.2
   win: circleci/windows@2.2.0
 executors:
   macos_exec:
@@ -39,6 +44,7 @@ executors:
 workflows:
   version: 2
   ci:
+    when: << pipeline.parameters.RunJob >>
     jobs:
       - Setup
       - Build Modules:
@@ -89,6 +95,12 @@ jobs:
     steps:
       - setup
       - debugging
+  Check Updated Files:
+    - path-filtering/filter:
+        mapping: |
+          PowerShell/.* RunJob true
+        base-revision: << pipeline.git.branch >>
+        config-path: .circleci/config.yaml
   Build Modules:
     executor: win/default
     steps:
