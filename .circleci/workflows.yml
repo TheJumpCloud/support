@@ -65,30 +65,30 @@ workflows:
             - Initial Setup
             - Build Help and Test Files
             - Build Nuspec
-      - Invoke Git Commit:
-          requires:
-            - Module Validation Tests
+      # - Invoke Git Commit:
+      #     requires:
+      #       - Module Validation Tests
       - Pester Tests Windows:
           requires:
             - Initial Setup
             - Build Help and Test Files
             - Build Nuspec
             - Module Validation Tests
-            - Invoke Git Commit
+            # - Invoke Git Commit
       - Pester Tests Mac:
           requires:
             - Initial Setup
             - Build Help and Test Files
             - Build Nuspec
             - Module Validation Tests
-            - Invoke Git Commit
+            # - Invoke Git Commit
       - Pester Tests Linux:
           requires:
             - Initial Setup
             - Build Help and Test Files
             - Build Nuspec
             - Module Validation Tests
-            - Invoke Git Commit
+            # - Invoke Git Commit
 jobs:
   Initial Setup:
     executor: win/default
@@ -102,8 +102,14 @@ jobs:
   Build Help and Test Files:
     executor: win/default
     steps:
+      - attach_workspace:
+          at: .
       - build-helpfiles
       - build-testfiles
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
   Build Nuspec:
     executor: win/default
     steps:
@@ -118,10 +124,10 @@ jobs:
           ExcludeTagList: 'None'
           IncludeTagList: 'ModuleValidation'
           RequiredModulesRepo: PSGallery
-  Invoke Git Commit:
-    executor: win/default
-    steps:
-      - invoke-script
+  # Invoke Git Commit:
+  #   executor: win/default
+  #   steps:
+  #     - invoke-script
   Pester Tests Windows:
     executor: win/default
     steps:
@@ -211,8 +217,6 @@ commands:
           condition:
             equal: [ true, << pipeline.parameters.BuildHelpFiles >> ]
           steps:
-            - attach_workspace:
-               at: .
             - run:
                name: Build Help Files
                shell: pwsh.exe
@@ -220,28 +224,18 @@ commands:
                   $ErrorActionPreference = 'Stop'
                   ./PowerShell\Deploy\SdkSync\jcapiToSupportSync.ps1
                   ./PowerShell/Deploy/Build-HelpFiles.ps1 -ModuleName JumpCloud -ModulePath "./PowerShell/JumpCloud Module"
-            - persist_to_workspace:
-                root: .
-                paths:
-                  - .
   build-testfiles:
     steps:
       - when:
           condition:
             equal: [ true, << pipeline.parameters.BuildTestFiles >> ]
           steps:
-            - attach_workspace:
-               at: .
             - run:
                name: Build Test Files
                shell: pwsh.exe
                command: |
                   $ErrorActionPreference = 'Stop'
                   ./PowerShell/Deploy/Build-PesterTestFiles.ps1
-            - persist_to_workspace:
-                root: .
-                paths:
-                  - .
   invoke-script:
     steps:
       - attach_workspace:
