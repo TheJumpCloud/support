@@ -44,8 +44,7 @@ executors:
       xcode: 11.3.0
 workflows:
   version: 2
-  ci:
-    when: << pipeline.parameters.RunJob >>
+  check-path-filtering:
     jobs:
       - path-filtering/filter:
           base-revision: master
@@ -53,6 +52,8 @@ workflows:
           mapping: |
             PowerShell/.* RunJob true
             .circleci/.* RunJob true
+  ci:
+    when: << pipeline.parameters.RunJob >>
       - Setup
       - Build Modules:
           requires:
