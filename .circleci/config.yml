@@ -59,24 +59,30 @@ workflows:
             - Setup
             - Build Help and Test Files
             - Build Nuspec
+      - Invoke Git Commit:
+          requires:
+            - Module Validation Tests
       - Pester Tests Windows:
           requires:
             - Setup
             - Build Help and Test Files
             - Build Nuspec
             - Module Validation Tests
+            - Invoke Git Commit
       - Pester Tests Mac:
           requires:
             - Setup
             - Build Help and Test Files
             - Build Nuspec
             - Module Validation Tests
+            - Invoke Git Commit
       - Pester Tests Linux:
           requires:
             - Setup
             - Build Help and Test Files
             - Build Nuspec
             - Module Validation Tests
+            - Invoke Git Commit
 jobs:
   Setup:
     executor: win/default
@@ -106,6 +112,10 @@ jobs:
           ExcludeTagList: 'None'
           IncludeTagList: 'ModuleValidation'
           RequiredModulesRepo: PSGallery
+  Invoke Git Commit:
+    executor: win/default
+    steps:
+      - invoke-script
   Pester Tests Windows:
     executor: win/default
     steps:
@@ -226,6 +236,20 @@ commands:
                 root: .
                 paths:
                   - .
+  invoke-script:
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Invoke Script
+          shell: pwsh.exe
+          command: |
+            $ErrorActionPreference = 'Stop'
+            ./PowerShell/Deploy/Invoke-GitCommit.ps1
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
   deploy-nupkg:
     parameters:
       source:
