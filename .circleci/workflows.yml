@@ -124,10 +124,10 @@ jobs:
           ExcludeTagList: 'None'
           IncludeTagList: 'ModuleValidation'
           RequiredModulesRepo: PSGallery
-  # Invoke Git Commit:
-  #   executor: win/default
-  #   steps:
-  #     - invoke-script
+  Invoke Git Commit:
+    executor: win/default
+    steps:
+      - invoke-script
   Pester Tests Windows:
     executor: win/default
     steps:
