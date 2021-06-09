@@ -251,6 +251,7 @@ commands:
           name: 'Commit PowerShell Module to << pipeline.git.branch >>'
           shell: pwsh.exe
           command: |
+            ssh-keyscan github.com >> ./.ssh/known_hosts
             $UserEmail = If ($env:CIRCLE_PROJECT_USERNAME) { $env:CIRCLE_PROJECT_USERNAME } Else { ($env:USERNAME).Replace(' ', '') + '@FakeEmail.com' }
             $UserName = If ($env:CIRCLE_PROJECT_USERNAME) { $env:CIRCLE_PROJECT_USERNAME } Else { $env:USERNAME }
             git config user.email "$UserEmail"
