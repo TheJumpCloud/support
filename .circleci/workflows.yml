@@ -243,6 +243,9 @@ commands:
     steps:
       - attach_workspace:
           at: .
+      - add_ssh_keys:
+          fingerprints:
+            - '24:54:e1:c2:70:c6:f7:61:71:4b:c5:52:9f:20:b9:63'
       - run:
           when: on_success
           name: 'Commit PowerShell Module to << pipeline.git.branch >>'
