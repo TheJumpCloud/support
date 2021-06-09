@@ -160,7 +160,7 @@ commands:
     steps:
       - add_ssh_keys:
           fingerprints:
-            - '88:6e:fb:88:bf:bf:06:2c:b2:7b:1b:ad:69:6a:81:9b'
+            - '96:55:e6:ea:55:e0:3b:53:19:aa:6d:7e:5f:82:07:89'
       - checkout
       - run: echo << pipeline.git.branch >>
       - run:
