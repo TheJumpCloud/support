@@ -247,7 +247,7 @@ commands:
       - checkout
       - add_ssh_keys:
           fingerprints:
-            - '44:93:41:8e:8b:5d:93:a5:ac:42:8e:11:4a:2d:fa:5b'
+            - '24:54:e1:c2:70:c6:f7:61:71:4b:c5:52:9f:20:b9:63'
       - attach_workspace:
           at: .
       - run:
