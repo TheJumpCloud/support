@@ -164,6 +164,9 @@ jobs:
 commands:
   initial-setup:
     steps:
+      - add_ssh_keys:
+          fingerprints:
+            - '96:55:e6:ea:55:e0:3b:53:19:aa:6d:7e:5f:82:07:89'
       - checkout
       - run: echo << pipeline.git.branch >>
       - run:
