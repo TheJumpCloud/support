@@ -65,30 +65,30 @@ workflows:
             - Initial Setup
             - Build Help and Test Files
             - Build Nuspec
-      # - Invoke Git Commit:
-      #     requires:
-      #       - Module Validation Tests
+      - Invoke Git Commit:
+          requires:
+            - Module Validation Tests
       - Pester Tests Windows:
           requires:
             - Initial Setup
             - Build Help and Test Files
             - Build Nuspec
             - Module Validation Tests
-            # - Invoke Git Commit
+            - Invoke Git Commit
       - Pester Tests Mac:
           requires:
             - Initial Setup
             - Build Help and Test Files
             - Build Nuspec
             - Module Validation Tests
-            # - Invoke Git Commit
+            - Invoke Git Commit
       - Pester Tests Linux:
           requires:
             - Initial Setup
             - Build Help and Test Files
             - Build Nuspec
             - Module Validation Tests
-            # - Invoke Git Commit
+            - Invoke Git Commit
 jobs:
   Initial Setup:
     executor: win/default
