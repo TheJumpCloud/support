@@ -159,8 +159,8 @@ commands:
   initial-setup:
     steps:
       - add_ssh_keys:
-        fingerprints:
-          - '14:78:b4:7b:f0:bb:3b:ef:a7:ba:06:49:87:50:79:e9'
+          fingerprints:
+            - '88:6e:fb:88:bf:bf:06:2c:b2:7b:1b:ad:69:6a:81:9b'
       - checkout
       - run: echo << pipeline.git.branch >>
       - run:
