@@ -158,9 +158,6 @@ jobs:
 commands:
   initial-setup:
     steps:
-      - add_ssh_keys:
-          fingerprints:
-            - '88:6e:fb:88:bf:bf:06:2c:b2:7b:1b:ad:69:6a:81:9b'
       - checkout
       - run: echo << pipeline.git.branch >>
       - run:
@@ -249,6 +246,9 @@ commands:
     steps:
       - attach_workspace:
           at: .
+      - add_ssh_keys:
+          fingerprints:
+            - '88:6e:fb:88:bf:bf:06:2c:b2:7b:1b:ad:69:6a:81:9b'
       - run:
           when: on_success
           name: 'Commit PowerShell Module to << pipeline.git.branch >>'
