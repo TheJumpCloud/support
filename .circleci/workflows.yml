@@ -158,9 +158,6 @@ jobs:
 commands:
   initial-setup:
     steps:
-      - add_ssh_keys:
-          fingerprints:
-            - '44:93:41:8e:8b:5d:93:a5:ac:42:8e:11:4a:2d:fa:5b'
       - checkout
       - run: echo << pipeline.git.branch >>
       - run:
@@ -247,6 +244,10 @@ commands:
                   - .
   invoke-script:
     steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - '44:93:41:8e:8b:5d:93:a5:ac:42:8e:11:4a:2d:fa:5b'
       - attach_workspace:
           at: .
       - run:
