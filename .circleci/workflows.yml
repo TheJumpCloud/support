@@ -164,9 +164,6 @@ jobs:
 commands:
   initial-setup:
     steps:
-      - add_ssh_keys:
-          fingerprints:
-            - '24:54:e1:c2:70:c6:f7:61:71:4b:c5:52:9f:20:b9:63'
       - checkout
       - run: echo << pipeline.git.branch >>
       - run:
@@ -241,6 +238,10 @@ commands:
                   ./PowerShell/Deploy/Build-PesterTestFiles.ps1
   invoke-script:
     steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - '24:54:e1:c2:70:c6:f7:61:71:4b:c5:52:9f:20:b9:63'
       - attach_workspace:
           at: .
       - add_ssh_keys:
@@ -349,6 +350,7 @@ commands:
                no_output_timeout: 30m
                command: |
                   $ErrorActionPreference = 'stop'
+                  ./PowerShell\Deploy\SdkSync\jcapiToSupportSync.ps1
                   . "./PowerShell/JumpCloud Module/Tests/InvokePester.ps1" -JumpCloudApiKey << parameters.JumpCloudApiKey >> -JumpCloudApiKeyMsp << parameters.JumpCloudApiKeyMsp >> -ExcludeTagList << parameters.ExcludeTagList >> -IncludeTagList << parameters.IncludeTagList >> -RequiredModulesRepo << parameters.RequiredModulesRepo >>
             - store_test_results:
                 name: Uploading test results'
