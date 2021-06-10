@@ -2,7 +2,7 @@ Describe -Tag:('JCGroup') 'Get-JCGroup 1.0' {
     BeforeAll { Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null }
     It 'Gets all groups: System and User' {
 
-        $Groups = Get-JCGroup
+        $Groups = Get-JCGroup | Where-Object { ($_.type -eq "system_group") -or ( $_.type -eq "user_group" ) }
         $TwoGroups = $Groups.type | Select-Object -Unique | Measure-Object
         $TwoGroups.Count | Should -Be 2
     }
