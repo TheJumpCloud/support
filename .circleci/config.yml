@@ -8,8 +8,6 @@ workflows:
     jobs:
     - path-filtering/filter:
         mapping: |
-          "PowerShell/Deploy" PowerShellModified true
-          "PowerShell/JumpCloud Module" PowerShellModified true
-          "PowerShell/JumpCLoud" PowerShellModified true
+          PowerShell/.* PowerShellModified true
         base-revision: master
         config-path: .circleci/workflows.yml
