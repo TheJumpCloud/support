@@ -34,6 +34,9 @@ parameters:
     description: 'Used by Path Filtering Orb to determine if changes occurred in the ./PowerShell/ folder'
     type: boolean
     default: false
+  PublishToPSGallery:
+    description: 'When true and when run against Master branch, this workflow will publish the latest code to PSGallery'
+    default: false
 
 orbs:
   win: circleci/windows@2.2.0
@@ -89,6 +92,13 @@ workflows:
             - Build Nuspec
             - Module Validation Tests
             - Invoke Git Commit
+  Publish:
+    when:
+      and:
+        - equal: [ master, << pipeline.git.branch >> ]
+        - equal: [ true, << pipeline.parameters.BuildAWS >> ]
+    jobs:
+      - Initial Setup #TODO: change this
 jobs:
   Initial Setup:
     executor: win/default
