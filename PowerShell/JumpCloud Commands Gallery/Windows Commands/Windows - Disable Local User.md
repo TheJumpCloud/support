@@ -23,7 +23,7 @@ windows
 
 # Settings, set $true or $false
 $disable = $true
-$reboot = $false
+$reboot = $true
 
 # Enter user(s) patterns you want to match against (user admin bobsAccount)
 $usersToMatch = @("userToDisable", "anotherUserToDisable")
