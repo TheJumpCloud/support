@@ -30,6 +30,10 @@ parameters:
     type: enum
     enum: ["Major", "Minor", "Patch"]
     default: "Patch"
+  Release:
+    description: 'When `true`, Module will release on merge to master.'
+    type: boolean
+    default: true
   PowerShellModified:
     description: 'Used by Path Filtering Orb to determine if changes occurred in the ./PowerShell/ folder'
     type: boolean
@@ -89,6 +93,17 @@ workflows:
             - Build Nuspec
             - Module Validation Tests
             - Invoke Git Commit
+  release:
+    when:
+      and:
+        - equal: [ master, << pipeline.git.branch >> ]
+        - equal: [ true, << pipeline.parameters.Release >> ]
+    jobs:
+      - Rename Module Folder
+      - Get BuildVersion
+      - Nuget Pack
+      - Approval Step
+      - Nuget Push
 jobs:
   Initial Setup:
     executor: win/default
