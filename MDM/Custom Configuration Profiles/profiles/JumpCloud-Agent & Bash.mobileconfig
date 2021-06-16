@@ -1,71 +1,148 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-<dict>
-	<key>PayloadContent</key>
-	<array>
-		<dict>
-			<key>PayloadDescription</key>
-			<string>FDA for JumpCloud-Agent</string>
-			<key>PayloadDisplayName</key>
-			<string>JumpCloud-Agent &amp; Bash</string>
-			<key>PayloadIdentifier</key>
-			<string>com.jumpcloud.28582860-5D25-4455-A29B-0B4186B1906C</string>
-			<key>PayloadOrganization</key>
-			<string>JumpCloud</string>
-			<key>PayloadType</key>
-			<string>com.apple.TCC.configuration-profile-policy</string>
-			<key>PayloadUUID</key>
-			<string>5A9F13E9-0871-460D-ADB7-E318F90A2411</string>
-			<key>PayloadVersion</key>
-			<integer>1</integer>
-			<key>Services</key>
-			<dict>
-				<key>SystemPolicyAllFiles</key>
-				<array>
-					<dict>
-						<key>Allowed</key>
-						<true/>
-						<key>CodeRequirement</key>
-						<string>identifier "jumpcloud-agent" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = N985MXSH85</string>
-						<key>Comment</key>
-						<string></string>
-						<key>Identifier</key>
-						<string>/opt/jc/bin/jumpcloud-agent</string>
-						<key>IdentifierType</key>
-						<string>path</string>
-					</dict>
-					<dict>
-						<key>Allowed</key>
-						<true/>
-						<key>CodeRequirement</key>
-						<string>identifier "com.apple.bash" and anchor apple</string>
-						<key>Comment</key>
-						<string></string>
-						<key>Identifier</key>
-						<string>/bin/bash</string>
-						<key>IdentifierType</key>
-						<string>path</string>
-					</dict>
-				</array>
-			</dict>
-		</dict>
-	</array>
-	<key>PayloadDescription</key>
-	<string>FDA for JumpCloud-Agent</string>
-	<key>PayloadDisplayName</key>
-	<string>JumpCloud-Agent &amp; Bash</string>
-	<key>PayloadIdentifier</key>
-	<string>com.jumpcloud.28582860-5D25-4455-A29B-0B4186B1906C</string>
-	<key>PayloadOrganization</key>
-	<string>JumpCloud</string>
-	<key>PayloadScope</key>
-	<string>System</string>
-	<key>PayloadType</key>
-	<string>Configuration</string>
-	<key>PayloadUUID</key>
-	<string>DB53C333-BEF9-45A4-A4CA-8A28BAFE2AA5</string>
-	<key>PayloadVersion</key>
-	<integer>1</integer>
-</dict>
+    <dict>
+        <key>PayloadContent</key>
+        <array>
+            <dict>
+                <key>PayloadDescription</key>
+                <string>JumpCloud-Agent PPPC</string>
+                <key>PayloadDisplayName</key>
+                <string>JumpCloud-Agent PPPC</string>
+                <key>PayloadIdentifier</key>
+                <string>7914C353-F0B4-466A-BD85-A30E5FB403B6</string>
+                <key>PayloadOrganization</key>
+                <string>jc</string>
+                <key>PayloadType</key>
+                <string>com.apple.TCC.configuration-profile-policy</string>
+                <key>PayloadUUID</key>
+                <string>516630EC-8900-4F54-9970-B40C8A57D19A</string>
+                <key>PayloadVersion</key>
+                <integer>1</integer>
+                <key>Services</key>
+                <dict>
+                    <key>Accessibility</key>
+                    <array>
+                        <dict>
+                            <key>Authorization</key>
+                            <string>Allow</string>
+                            <key>CodeRequirement</key>
+                            <string>identifier "jumpcloud-agent" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = N985MXSH85</string>
+                            <key>Comment</key>
+                            <string></string>
+                            <key>Identifier</key>
+                            <string>/opt/jc/bin/jumpcloud-agent</string>
+                            <key>IdentifierType</key>
+                            <string>path</string>
+                        </dict>
+                    </array>
+                    <key>AppleEvents</key>
+                    <array>
+                        <dict>
+                            <key>AEReceiverCodeRequirement</key>
+                            <string>identifier "com.apple.finder" and anchor apple</string>
+                            <key>AEReceiverIdentifier</key>
+                            <string>com.apple.finder</string>
+                            <key>AEReceiverIdentifierType</key>
+                            <string>bundleID</string>
+                            <key>Authorization</key>
+                            <string>Allow</string>
+                            <key>CodeRequirement</key>
+                            <string>identifier "jumpcloud-agent" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = N985MXSH85</string>
+                            <key>Comment</key>
+                            <string></string>
+                            <key>Identifier</key>
+                            <string>/opt/jc/bin/jumpcloud-agent</string>
+                            <key>IdentifierType</key>
+                            <string>path</string>
+                        </dict>
+                        <dict>
+                            <key>AEReceiverCodeRequirement</key>
+                            <string>identifier "com.apple.systemuiserver" and anchor apple</string>
+                            <key>AEReceiverIdentifier</key>
+                            <string>com.apple.systemuiserver</string>
+                            <key>AEReceiverIdentifierType</key>
+                            <string>bundleID</string>
+                            <key>Authorization</key>
+                            <string>Allow</string>
+                            <key>CodeRequirement</key>
+                            <string>identifier "jumpcloud-agent" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = N985MXSH85</string>
+                            <key>Comment</key>
+                            <string></string>
+                            <key>Identifier</key>
+                            <string>/opt/jc/bin/jumpcloud-agent</string>
+                            <key>IdentifierType</key>
+                            <string>path</string>
+                        </dict>
+                        <dict>
+                            <key>AEReceiverCodeRequirement</key>
+                            <string>identifier "com.apple.systemevents" and anchor apple</string>
+                            <key>AEReceiverIdentifier</key>
+                            <string>com.apple.systemevents</string>
+                            <key>AEReceiverIdentifierType</key>
+                            <string>bundleID</string>
+                            <key>Authorization</key>
+                            <string>Allow</string>
+                            <key>CodeRequirement</key>
+                            <string>identifier "jumpcloud-agent" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = N985MXSH85</string>
+                            <key>Comment</key>
+                            <string></string>
+                            <key>Identifier</key>
+                            <string>/opt/jc/bin/jumpcloud-agent</string>
+                            <key>IdentifierType</key>
+                            <string>path</string>
+                        </dict>
+                    </array>
+                    <key>PostEvent</key>
+                    <array>
+                        <dict>
+                            <key>Authorization</key>
+                            <string>Allow</string>
+                            <key>CodeRequirement</key>
+                            <string>identifier "jumpcloud-agent" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = N985MXSH85</string>
+                            <key>Comment</key>
+                            <string></string>
+                            <key>Identifier</key>
+                            <string>/opt/jc/bin/jumpcloud-agent</string>
+                            <key>IdentifierType</key>
+                            <string>path</string>
+                        </dict>
+                    </array>
+                    <key>SystemPolicyAllFiles</key>
+                    <array>
+                        <dict>
+                            <key>Authorization</key>
+                            <string>Allow</string>
+                            <key>CodeRequirement</key>
+                            <string>identifier "jumpcloud-agent" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = N985MXSH85</string>
+                            <key>Comment</key>
+                            <string></string>
+                            <key>Identifier</key>
+                            <string>/opt/jc/bin/jumpcloud-agent</string>
+                            <key>IdentifierType</key>
+                            <string>path</string>
+                        </dict>
+                    </array>
+                </dict>
+            </dict>
+        </array>
+        <key>PayloadDescription</key>
+        <string>jc-agent</string>
+        <key>PayloadDisplayName</key>
+        <string>jc-agent</string>
+        <key>PayloadIdentifier</key>
+        <string>com.jumpcloud.mdm.custom-policy.a8d0805d-37ba-5cf1-b2d0-b4c0215c2b4c</string>
+        <key>PayloadOrganization</key>
+        <string>jc</string>
+        <key>PayloadRemovalDisallowed</key>
+        <true/>
+        <key>PayloadScope</key>
+        <string>System</string>
+        <key>PayloadType</key>
+        <string>Configuration</string>
+        <key>PayloadUUID</key>
+        <string>a8d0805d-37ba-5cf1-b2d0-b4c0215c2b4c</string>
+        <key>PayloadVersion</key>
+        <integer>1</integer>
+    </dict>
 </plist>

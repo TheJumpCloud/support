@@ -1,6 +1,6 @@
 #### Name
 
-Mac - Send Notification Message | v1.0 JCCG 
+Mac - Send Notification Message | v1.1 JCCG
 
 #### commandType
 
@@ -9,14 +9,13 @@ mac
 #### Command
 
 ```
+#!/bin/bash
 # Enter the notification message
 # Enter the message within the "" of Notification=""
-
-Notification=""
+Notification="Hello There"
 
 #------- Do not modify below this line ------
-user=`ls -la /dev/console | cut -d " " -f 4`
-sudo -u $user osascript -e 'tell application (path to frontmost application as text) to display dialog "'"$Notification"'" buttons {"OK"} with icon stop'
+sudo -u $(stat -f "%Su" /dev/console) osascript -e 'tell app "System Events" to display dialog "'"$Notification"'"'
 ```
 
 #### Description
