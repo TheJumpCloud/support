@@ -9,7 +9,7 @@ linux
 #### Command
 
 ```
-#!/bin/bash
+#!/bin/sh
 ################################################################################
 # This script will disable the *matched* username patterns in the usersToMatch
 # list variable. For Example:
@@ -24,10 +24,10 @@ linux
 
 # Settings, set true or false
 disable=true
-reboot=true
 
 # Enter user(s) patterns you want to match against (user admin bobsAccount)
-usersToMatch=(userToDisable anotherUserToDisable)
+export usersToMatch="Inflad supercool"
+LAST_ITEM="${usersToMatch##* }"
 
 # Do not modify below this line
 ################################################################################
@@ -35,59 +35,40 @@ usersToMatch=(userToDisable anotherUserToDisable)
 # regexMatchregexPattern
 regexPattern=""
 
-# build regex matching regexPattern
-pos=$(( ${#usersToMatch[*]} - 1 ))
-last=${usersToMatch[$pos]}
-for user in ${usersToMatch[@]}; do
-    # add to regexPattern
-    if [[ $user == $last ]]; then
-        regexPattern+="${user}[^\s]*"
+for user in $usersToMatch; do
+    echo "adding $user to regex pattern"
+    if [ "$user" = "$LAST_ITEM" ]; then
+        regexPattern="${regexPattern:+${regexPattern}}${user}[^\s]*"
     else
-        regexPattern+="${user}[^\s]*|"
+        regexPattern="${regexPattern:+${regexPattern}}${user}[^\s]*|"
     fi
 done
 
-echo "Searching System for the following users: ${usersToMatch[@]}"
+echo "Searching System for the following users: $usersToMatch"
 echo "Regex Pattern: $regexPattern"
 
 # Get usernames on system:
 allUsers=$(cut -d : -f 1 /etc/passwd)
 
-
-# Try to find match:
-# Case insensitive search:
-# set nocasematch option
-shopt -s nocasematch
-
-foundUsers=()
-for value in ${allUsers[@]}; do
-    if [[ $value =~ $regexPattern ]]; then
-        echo "matched $value user"
-        foundUsers+=($value)
+foundUsers=""
+for value in $allUsers; do
+    if echo "$value" | grep -iqE "$regexPattern"; then
+        echo "found user $value on system"
+        foundUsers="${foundUsers:+${foundUsers}}${value} "
     fi
 done
-
-# unset nocasematch option
-shopt -u nocasematch
-
-echo "The Following users will be disabled: ${foundUsers[@]}"
-for user in ${foundUsers[@]}; do
-    if [[ $disable = true ]]; then
-        echo "[status] Attempting to disable $user's login shell..."
-        sudo usermod --expiredate 1 $user
-        if [ $? -eq 0 ]; then
-            echo "[success] $user's login shell was disabled"
-        else
-            echo "[failure] $user's login shell could not be disabled"
+loggedInUsers=$(who -u)
+for user in $foundUsers; do
+    echo "Disabling $user's login shell..."
+    # echo "testing for $user in $loggedInUsers"
+    if [ $disable = true ]; then
+        if echo "$loggedInUsers" | grep -iqE "$user"; then
+            echo "logging $user out of system"
+            pkill -KILL -u "${user}"
         fi
-    else
-        echo "[status] $user's account would have been disabled"
+        sudo usermod --expiredate 1 $user
     fi
 done
-
-if [[ $reboot = true ]]; then
-    reboot
-fi
 
 ```
 

@@ -24,10 +24,9 @@ mac
 
 # Settings, set true or false
 disable=true
-reboot=true
 
 # Enter user(s) patterns you want to match against (user admin bobsAccount)
-usersToMatch=(userToDisable anotherUserToDisable)
+usersToMatch=(inflad)
 
 # Do not modify below this line
 ################################################################################
@@ -71,26 +70,18 @@ done
 
 # unset nocasematch option
 shopt -u nocasematch
-
+loggedInUsers=$(who -u)
 echo "The Following users will be disabled: ${foundUsers[@]}"
 for user in ${foundUsers[@]}; do
+    echo "Disabling $user's login shell..."
     if [[ $disable = true ]]; then
-    echo "[status] Attempting to disable $user's login shell..."
-        chsh -s /usr/bin/false $user
-        if [ $? -eq 0 ]; then
-            echo "[success] $user's login shell was disabled"
-        else
-            echo "[failure] $user's login shell could not be disabled"
+        if echo "$loggedInUsers" | grep -iqE "$user"; then
+            echo "logging $user out of system"
+            sudo launchctl bootout user/$(id -u "${user}")
         fi
-    else
-        echo "[status] $user's account would have been disabled"
+        chsh -s /usr/bin/false $user
     fi
 done
-
-if [[ $reboot = true ]]; then
-    shutdown -r now
-fi
-
 ```
 
 #### Description

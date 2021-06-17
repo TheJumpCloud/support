@@ -23,10 +23,9 @@ windows
 
 # Settings, set $true or $false
 $disable = $true
-$reboot = $true
 
 # Enter user(s) patterns you want to match against (user admin bobsAccount)
-$usersToMatch = @("userToDisable", "anotherUserToDisable")
+$usersToMatch = @("inflad", "boogie")
 
 # Do not modify below this line
 ################################################################################
@@ -58,15 +57,23 @@ foreach ($username in $localUsers.name)
 }
 
 Write-Host "The Following users will be disabled: $foundUsers"
-
+$loggedInUsers=query user
 foreach ($username in $foundUsers){
     if ($disable){
+        if ($loggedInUsers -match $username) {
+            Write-Host "Logging $username out of system"
+            $session = quser | Where-Object { $_ -match $username }
+            ## Parse the session IDs from the output
+            $sessionIds = ($session -split ' +')[2]
+            Write-Host "Found $sessionIds for $username on system."
+            ## Loop through each session ID and pass each to the logoff command
+            $sessionIds | ForEach-Object {
+                Write-Host "Logging off session id [$($_)]..."
+                logoff $_
+            }
+        }
         Disable-LocalUser -Name $username
     }
-}
-
-if ($reboot){
-    shutdown /r
 }
 ```
 
