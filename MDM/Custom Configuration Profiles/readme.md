@@ -184,11 +184,11 @@ Instead, system users are brought right into the Zoom Application.
 
 #### Example PPPC Profile for the JumpCloud Agent
 
-The JumpCloud Agent does more than provision and manage users on systems. It’s also serves as the binary application on your system that invokes commands issued from the JumpCloud console. To ensure commands from the JumpCloud console can take advantage of PPPC policy settings, both the JumpCloud-Agent and the bash binary (which is called by the JumpCloud Agent) need to be added to a PPPC profile. The JumpCloud-Agent binary is generally hidden from the user in the /opt/jc/ directory, you wouldn't be able to simply browse to its location without changing permissions. The [jumpcloud-agent.mobileconfig](./profiles/JumpCloud-Agent%20&%20Bash.mobileconfig) profile template contains the paths to both binary files and a payload to "Allow" access to "SystemPolicyAllFiles". That profile template can be imported in PPPC Utility to modify preference permissions.
+The JumpCloud Agent does more than provision and manage users on systems. It’s also serves as the binary application on your system that invokes commands issued from the JumpCloud console. To ensure commands from the JumpCloud console can take advantage of PPPC policy settings, both the JumpCloud-Agent and the bash binary (which is called by the JumpCloud Agent) need to be added to a PPPC profile. The JumpCloud-Agent binary is generally hidden from the user in the /opt/jc/ directory, you wouldn't be able to simply browse to its location without changing permissions. The [jumpcloud-agent.mobileconfig](./profiles/JumpCloud-Agent.mobileconfig) profile template contains the paths to both binary files and a payload to "Allow" access to "SystemPolicyAllFiles". That profile template can be imported in PPPC Utility to modify preference permissions.
 
-The code signatures in the [example profile](./profiles/JumpCloud-Agent%20&%20Bash.mobileconfig) should match the values below:
+The code signatures in the [example profile](./profiles/JumpCloud-Agent.mobileconfig) should match the values below:
 
-To get the codesign signature of the JumpCloud Agent:
+To get the code-sign signature of the JumpCloud Agent:
 
 `sudo codesign -dr - /opt/jc/bin/jumpcloud-agent`
 
@@ -198,9 +198,9 @@ Should return:
 
 `designated => identifier "jumpcloud-agent" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = N985MXSH85`
 
-The identifer of the agent is listed after `designated =>` this identifier data can be used to populate PPPC profiles to automate actions on macOS systems
+The identifier of the agent is listed after `designated =>` this identifier data can be used to populate PPPC profiles to automate actions on macOS systems
 
-To get the codesign signature of the Bash binary:
+To get the code-sign signature of the Bash binary:
 
 `sudo codesign -dr - /bin/bash`
 
