@@ -74,9 +74,16 @@ shopt -u nocasematch
 
 echo "The Following users will be disabled: ${foundUsers[@]}"
 for user in ${foundUsers[@]}; do
-    echo "Disabling $user's login shell..."
     if [[ $disable = true ]]; then
+    echo "[status] Attempting to disable $user's login shell..."
         chsh -s /usr/bin/false $user
+        if [ $? -eq 0 ]; then
+            echo "[success] $user's login shell was disabled"
+        else
+            echo "[failure] $user's login shell could not be disabled"
+        fi
+    else
+        echo "[status] $user's account would have been disabled"
     fi
 done
 
