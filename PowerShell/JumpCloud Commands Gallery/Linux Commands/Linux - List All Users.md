@@ -14,7 +14,7 @@ awk -F'[/:]' '{if ($3 >= 1000 && $3 != 65534) print $1}' /etc/passwd
 
 #### Description
 
-Lists all local users on a Linux system
+Lists all users on a Linux system
 
 #### *Import This Command*
 
