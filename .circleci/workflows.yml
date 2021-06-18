@@ -100,10 +100,10 @@ workflows:
         - equal: [ true, << pipeline.parameters.Release >> ]
     jobs:
       - Rename Module Folder
-      - Get BuildVersion
-      - Nuget Pack
-      - Approval Step
-      - Nuget Push
+      # - Get BuildVersion
+      # - Nuget Pack
+      # - Approval Step
+      # - Nuget Push
 jobs:
   Initial Setup:
     executor: win/default
@@ -170,6 +170,14 @@ jobs:
           IncludeTagList: '*'
           RequiredModulesRepo: PSGallery
           Shell: 'pwsh'
+  Rename Module Folder:
+    executor: win/default
+    steps:
+      - run:
+          name: rename
+          shell: pwsh.exe
+          command: |
+            write-host "rename Module"
 commands:
   initial-setup:
     steps:
