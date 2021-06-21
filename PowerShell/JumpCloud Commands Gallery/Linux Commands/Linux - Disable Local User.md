@@ -80,7 +80,7 @@ Steve, Administrator, IT-Admin
 
 And the usersToMatch variable is set to (admin it), both the 'Administrator' and 'IT-Admin' Account would be disabled. The Regex pattern searches usernames for partial matches.
 
-Run this script with disable=false to test what accounts would be disabled before running disable=true. Set the reboot=true variable to reboot the system, upon next restart the disabled users will be unable to login.
+Run this script with disable=false to test what accounts would be disabled before running disable=true.
 
 #### *Import This Command*
 
