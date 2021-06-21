@@ -13,7 +13,7 @@ windows
 # This script will disable the *matched* username patterns in the usersToMatch
 # list variable. For Example:
 # Users on the system: administrator, steve, it-staff
-# $usersToMatch=(admin it)
+# $usersToMatch = @("admin", "it")
 # both the administrator and it-staff would be disabled
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Test how this command will run by setting the disable variable to false. When
@@ -25,7 +25,7 @@ windows
 $disable = $true
 
 # Enter user(s) patterns you want to match against (user admin bobsAccount)
-$usersToMatch = @("inflad", "boogie")
+$usersToMatch = @("admin", "it")
 
 # Do not modify below this line
 ################################################################################

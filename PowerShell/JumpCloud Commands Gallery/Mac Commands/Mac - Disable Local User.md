@@ -26,7 +26,7 @@ mac
 disable=true
 
 # Enter user(s) patterns you want to match against (user admin bobsAccount)
-usersToMatch=(inflad)
+usersToMatch=(admin it)
 
 # Do not modify below this line
 ################################################################################
