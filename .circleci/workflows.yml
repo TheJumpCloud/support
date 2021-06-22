@@ -117,7 +117,7 @@ workflows:
       and:
         - equal: [ circleci-project-setup_JW, << pipeline.git.branch >> ]
         - equal: [ true, << pipeline.parameters.PublishToPSGallery >> ]
-        - equal: [ true, << pipeline.parameters.PowerShellModified >> ]
+        # - equal: [ true, << pipeline.parameters.PowerShellModified >> ]
     jobs:
       - Prepare for release
       - Build Nuspec for PSGallery:
