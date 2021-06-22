@@ -1,6 +1,10 @@
 version: 2.1
 
 parameters:
+  ManualBuild:
+    description: 'When `true`, pipeline will continue to build even if it's been filtered out by config.yml'
+    type: boolean
+    default: true
   EnableDebugging:
     description: 'When `true`, debugging commands will run and output to terminal.'
     type: boolean
@@ -48,7 +52,10 @@ executors:
 workflows:
   version: 2
   ci:
-    when: << pipeline.parameters.PowerShellModified >>
+    when:
+      or:
+        equal: [ true, << pipeline.parameters.PowerShellModified >> ]
+        equal: [ true, << pipeline.parameters.ManualBuild >> ]
     jobs:
       - Initial Setup
       - Build Modules:
