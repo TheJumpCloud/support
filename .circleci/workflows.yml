@@ -30,6 +30,10 @@ parameters:
     type: enum
     enum: ["Major", "Minor", "Patch"]
     default: "Patch"
+  Release:
+    description: 'When `true`, Module will release on merge to master.'
+    type: boolean
+    default: true
   PowerShellModified:
     description: 'Used by Path Filtering Orb to determine if changes occurred in the ./PowerShell/ folder'
     type: boolean
@@ -92,13 +96,21 @@ workflows:
             - Build Nuspec
             - Module Validation Tests
             - Invoke Git Commit
-  Publish:
+  release:
     when:
       and:
-        - equal: [ master, << pipeline.git.branch >> ]
-        - equal: [ true, << pipeline.parameters.BuildAWS >> ]
+        - equal: [ circleci-project-setup_JW, << pipeline.git.branch >> ]
+        - equal: [ true, << pipeline.parameters.Release >> ]
+        - equal: [ true, << pipeline.parameters.PowerShellModified >> ]
     jobs:
-      - Initial Setup #TODO: change this
+      - Prepare for release
+      - Build Nuspec for PSGallery:
+          type: approval
+          requires:
+            - Prepare for release
+      # - Approval Step
+      # - Nuget Push
+      # - Git Draft Release
 jobs:
   Initial Setup:
     executor: win/default
@@ -171,6 +183,22 @@ jobs:
           IncludeTagList: '*'
           RequiredModulesRepo: PSGallery
           Shell: 'pwsh'
+  Prepare for release:
+    executor: win/default
+    steps:
+      - run:
+          name: rename
+          shell: pwsh.exe
+          command: |
+            write-host "Preparring env to release JumpCloud Module"
+            Rename-Item -Path:(./PowerShell/JumpCloud Module) -NewName:("JumpCloud")
+            $ModuleVersion = Import-PowerShellDataFile -Path:("./PowerShell/JumpCloud/JumpCloud.psd1")
+            Write-Host "JumpCloud Module Version to release is: $($ModuleVersion.ModuleVersion)"
+  Build Nuspec for PSGallery:
+    executor: win/default
+    steps:
+      - deploy-nupkg:
+          source: PSGallery
 commands:
   initial-setup:
     steps:
