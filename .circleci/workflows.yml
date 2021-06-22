@@ -109,9 +109,9 @@ workflows:
   release:
     when:
       and:
-        - equal: [ circleci-project-setup_JW, << pipeline.git.branch >> ]
+        - equal: [ master, << pipeline.git.branch >> ]
         - equal: [ true, << pipeline.parameters.PublishToPSGallery >> ]
-        # - equal: [ true, << pipeline.parameters.PowerShellModified >> ] #TODO: Uncomment for publish step to work
+        - equal: [ true, << pipeline.parameters.PowerShellModified >> ]
     jobs:
       - Prepare for release
       - draft-github-release:
