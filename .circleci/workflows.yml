@@ -96,14 +96,18 @@ workflows:
   release:
     when:
       and:
-        - equal: [ master, << pipeline.git.branch >> ]
+        - equal: [ circleci-project-setup_JW, << pipeline.git.branch >> ]
         - equal: [ true, << pipeline.parameters.Release >> ]
+        - equal: [ true, << pipeline.parameters.PowerShellModified >> ]
     jobs:
-      - Rename Module Folder
-      # - Get BuildVersion
-      # - Nuget Pack
+      - Prepare for release
+      - Build Nuspec for PSGallery
+        type: approval
+        requires:
+          - Prepare for release
       # - Approval Step
       # - Nuget Push
+      # - Git Draft Release
 jobs:
   Initial Setup:
     executor: win/default
@@ -170,14 +174,22 @@ jobs:
           IncludeTagList: '*'
           RequiredModulesRepo: PSGallery
           Shell: 'pwsh'
-  Rename Module Folder:
+  Prepare for release:
     executor: win/default
     steps:
       - run:
           name: rename
           shell: pwsh.exe
           command: |
-            write-host "rename Module"
+            write-host "Preparring env to release JumpCloud Module"
+            Rename-Item -Path:(./PowerShell/JumpCloud Module) -NewName:("JumpCloud")
+            $ModuleVersion = Import-PowerShellDataFile -Path:("./PowerShell/JumpCloud/JumpCloud.psd1")
+            Write-Host "JumpCloud Module Version to release is: $($ModuleVersion.ModuleVersion)"
+  Build Nuspec for PSGallery:
+    executor: win/default
+    steps:
+      - deploy-nupkg:
+          source: PSGallery
 commands:
   initial-setup:
     steps:
