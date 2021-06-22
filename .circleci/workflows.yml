@@ -215,6 +215,10 @@ jobs:
             Rename-Item -Path:("./PowerShell/JumpCloud Module") -NewName:("JumpCloud")
             $ModuleVersion = Import-PowerShellDataFile -Path:("./PowerShell/JumpCloud/JumpCloud.psd1")
             Write-Host "JumpCloud Module Version to release is: $($ModuleVersion.ModuleVersion)"
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
   Build Nuspec for PSGallery:
     executor: win/default
     steps:
