@@ -36,6 +36,7 @@ parameters:
     default: false
   PublishToPSGallery:
     description: 'When true and when run against Master branch, this workflow will publish the latest code to PSGallery'
+    type: boolean
     default: true
 
 orbs:
