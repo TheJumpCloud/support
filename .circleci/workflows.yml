@@ -86,6 +86,10 @@ workflows:
             - Build Nuspec
             - Module Validation Tests
             - Invoke Git Commit
+          filters:
+            branches:
+              ignore:
+                - circleci-project-setup_JW
       - Pester Tests Mac:
           requires:
             - Initial Setup
@@ -93,6 +97,10 @@ workflows:
             - Build Nuspec
             - Module Validation Tests
             - Invoke Git Commit
+          filters:
+            branches:
+              ignore:
+                - circleci-project-setup_JW
       - Pester Tests Linux:
           requires:
             - Initial Setup
@@ -100,6 +108,10 @@ workflows:
             - Build Nuspec
             - Module Validation Tests
             - Invoke Git Commit
+          filters:
+            branches:
+              ignore:
+                - circleci-project-setup_JW
   release:
     when:
       and:
