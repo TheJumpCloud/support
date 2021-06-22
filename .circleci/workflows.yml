@@ -18,15 +18,15 @@ parameters:
     type: boolean
     default: true
   BuildTestFiles:
-    description: 'When `true`, Help files will be built.'
+    description: 'When `true`, Test files will be built.'
     type: boolean
     default: true
   BuildNuspec:
-    description: 'When `true`, Help files will be built.'
+    description: 'When `true`, Nuspec will be built and pack/ push steps complete.'
     type: boolean
     default: true
   ValidateModule:
-    description: 'When `true`, Help files will be built.'
+    description: 'When `true`, Pester Tests will be run for moduleValidation tags.'
     type: boolean
     default: true
   ReleaseType:
@@ -209,7 +209,7 @@ jobs:
           command: |
             $ErrorActionPreference = 'Stop'
             write-host "Preparring env to release JumpCloud Module"
-            Rename-Item -Path:(./PowerShell/JumpCloud Module) -NewName:("JumpCloud")
+            Rename-Item -Path:("./PowerShell/JumpCloud Module") -NewName:("JumpCloud")
             $ModuleVersion = Import-PowerShellDataFile -Path:("./PowerShell/JumpCloud/JumpCloud.psd1")
             Write-Host "JumpCloud Module Version to release is: $($ModuleVersion.ModuleVersion)"
   Build Nuspec for PSGallery:
