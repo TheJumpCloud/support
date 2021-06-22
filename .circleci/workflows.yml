@@ -101,10 +101,10 @@ workflows:
         - equal: [ true, << pipeline.parameters.PowerShellModified >> ]
     jobs:
       - Prepare for release
-      - Build Nuspec for PSGallery
-        type: approval
-        requires:
-          - Prepare for release
+      - Build Nuspec for PSGallery:
+          type: approval
+          requires:
+            - Prepare for release
       # - Approval Step
       # - Nuget Push
       # - Git Draft Release
