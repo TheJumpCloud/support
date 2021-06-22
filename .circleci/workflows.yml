@@ -4,7 +4,7 @@ parameters:
   ManualBuild:
     description: 'When `true`, pipeline will continue to build even if its been filtered out by config.yml'
     type: boolean
-    default: true
+    default: false
   EnableDebugging:
     description: 'When `true`, debugging commands will run and output to terminal.'
     type: boolean
@@ -202,10 +202,12 @@ jobs:
   Prepare for release:
     executor: win/default
     steps:
+      - checkout
       - run:
           name: rename
           shell: pwsh.exe
           command: |
+            $ErrorActionPreference = 'Stop'
             write-host "Preparring env to release JumpCloud Module"
             Rename-Item -Path:(./PowerShell/JumpCloud Module) -NewName:("JumpCloud")
             $ModuleVersion = Import-PowerShellDataFile -Path:("./PowerShell/JumpCloud/JumpCloud.psd1")
