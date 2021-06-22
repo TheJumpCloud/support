@@ -30,17 +30,13 @@ parameters:
     type: enum
     enum: ["Major", "Minor", "Patch"]
     default: "Patch"
-  Release:
-    description: 'When `true`, Module will release on merge to master.'
-    type: boolean
-    default: true
   PowerShellModified:
     description: 'Used by Path Filtering Orb to determine if changes occurred in the ./PowerShell/ folder'
     type: boolean
     default: false
   PublishToPSGallery:
     description: 'When true and when run against Master branch, this workflow will publish the latest code to PSGallery'
-    default: false
+    default: true
 
 orbs:
   win: circleci/windows@2.2.0
@@ -100,7 +96,7 @@ workflows:
     when:
       and:
         - equal: [ circleci-project-setup_JW, << pipeline.git.branch >> ]
-        - equal: [ true, << pipeline.parameters.Release >> ]
+        - equal: [ true, << pipeline.parameters.PublishToPSGallery >> ]
         - equal: [ true, << pipeline.parameters.PowerShellModified >> ]
     jobs:
       - Prepare for release
