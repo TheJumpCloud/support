@@ -229,24 +229,7 @@ jobs:
       - run:
           name: "Publish Release on GitHub"
           command: |
-            import (
-              "fmt"
-              "io/ioutil"
-              "log"
-              "regexp"
-            )
-            // Get content from psd1 file
-            content, err := ioutil.ReadFile("./PowerShell/JumpCloud/JumpCloud.psd1")
-
-            if err != nil {
-                  log.Fatal(err)
-            }
-
-            // Get semantic version from psd1
-            r, _ := regexp.Compile(`\d+\.\d+\.\d+`)
-            VERSION := (r.FindString(string(content)))
-            // Return Version variable
-            fmt.Println(VERSION)
+            VERSION=$(grep -o '\d\+\.\d\+\.\d' ./PowerShell/JumpCloud/JumpCloud.psd1)
             ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./ --prerelease
 commands:
   initial-setup:
