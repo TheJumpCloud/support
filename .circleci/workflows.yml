@@ -120,6 +120,7 @@ workflows:
         # - equal: [ true, << pipeline.parameters.PowerShellModified >> ]
     jobs:
       - Prepare for release
+      - publish-github-release
       - Build Nuspec for PSGallery:
           type: approval
           requires:
@@ -217,6 +218,34 @@ jobs:
     steps:
       - deploy-nupkg:
           source: PSGallery
+  publish-github-release:
+    docker:
+      - image: cibuilds/github:0.10
+    steps:
+      - attach_workspace:
+          at: ./artifacts
+      - run:
+          name: "Publish Release on GitHub"
+          command: |
+            import (
+              "fmt"
+              "io/ioutil"
+              "log"
+              "regexp"
+            )
+            // Get content from psd1 file
+            content, err := ioutil.ReadFile("./PowerShell/JumpCloud/JumpCloud.psd1")
+
+            if err != nil {
+                  log.Fatal(err)
+            }
+
+            // Get semantic version from psd1
+            r, _ := regexp.Compile(`\d+\.\d+\.\d+`)
+            VERSION := (r.FindString(string(content)))
+            // Return Version variable
+            fmt.Println(VERSION)
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./ --prerelease
 commands:
   initial-setup:
     steps:
