@@ -4,7 +4,7 @@ parameters:
   ManualBuild:
     description: 'When `true`, pipeline will continue to build even if its been filtered out by config.yml'
     type: boolean
-    default: false
+    default: true
   EnableDebugging:
     description: 'When `true`, debugging commands will run and output to terminal.'
     type: boolean
@@ -39,7 +39,7 @@ parameters:
     type: boolean
     default: false
   PublishToPSGallery:
-    description: 'When true and when run against Master branch, this workflow will publish the latest code to PSGallery'
+    description: 'When `true` and when run against Master branch, this workflow will publish the latest code to PSGallery'
     type: boolean
     default: true
 
@@ -54,8 +54,14 @@ workflows:
   ci:
     when:
       or:
-        - equal: [ true, << pipeline.parameters.PowerShellModified >> ]
-        - equal: [ true, << pipeline.parameters.ManualBuild >> ]
+        - and:
+          - not:
+              matches:
+                pattern: "^circleci-project-setup_JW$" #TODO: switch to master
+                value: << pipeline.git.branch >>
+        - or:
+          - equal: [ true, << pipeline.parameters.PowerShellModified >> ]
+          - equal: [ true, << pipeline.parameters.ManualBuild >> ]
     jobs:
       - Initial Setup
       - Build Modules:
@@ -86,10 +92,6 @@ workflows:
             - Build Nuspec
             - Module Validation Tests
             - Invoke Git Commit
-          filters:
-            branches:
-              ignore:
-                - circleci-project-setup_JW
       - Pester Tests Mac:
           requires:
             - Initial Setup
@@ -97,10 +99,6 @@ workflows:
             - Build Nuspec
             - Module Validation Tests
             - Invoke Git Commit
-          filters:
-            branches:
-              ignore:
-                - circleci-project-setup_JW
       - Pester Tests Linux:
           requires:
             - Initial Setup
@@ -108,28 +106,21 @@ workflows:
             - Build Nuspec
             - Module Validation Tests
             - Invoke Git Commit
-          filters:
-            branches:
-              ignore:
-                - circleci-project-setup_JW
   release:
     when:
       and:
         - equal: [ circleci-project-setup_JW, << pipeline.git.branch >> ]
         - equal: [ true, << pipeline.parameters.PublishToPSGallery >> ]
-        # - equal: [ true, << pipeline.parameters.PowerShellModified >> ]
+        # - equal: [ true, << pipeline.parameters.PowerShellModified >> ] #TODO: Uncomment for publish step to work
     jobs:
       - Prepare for release
-      - publish-github-release:
+      - draft-github-release:
           requires:
             - Prepare for release
       - Build Nuspec for PSGallery:
           type: approval
           requires:
             - Prepare for release
-      # - Approval Step
-      # - Nuget Push
-      # - Git Draft Release
 jobs:
   Initial Setup:
     executor: win/default
@@ -224,17 +215,21 @@ jobs:
     steps:
       - deploy-nupkg:
           source: PSGallery
-  publish-github-release:
+  draft-github-release:
     docker:
       - image: cibuilds/github:0.10
     steps:
       - attach_workspace:
           at: ./artifacts
       - run:
-          name: "Publish Release on GitHub"
+          name: "Draft Release on GitHub"
           command: |
             VERSION=$(grep -o '\d\+\.\d\+\.\d' /root/project/artifacts/PowerShell/JumpCloud/JumpCloud.psd1)
-            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./ --prerelease
+            TITLE="JumpCloudModule_$VERSION"
+            VERSION="v$VERSION"
+            BODY="Latest Release of JumpCloud PowerShell Module"
+            #TODO: implement TITLE & BODY later, for some reason these params don't work
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete -draft ${VERSION} /root/project/artifacts/PowerShell/
 commands:
   initial-setup:
     steps:
