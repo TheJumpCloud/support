@@ -53,7 +53,7 @@ workflows:
   version: 2
   ci:
     when:
-      or:
+      and:
         - and:
           - not:
               matches:
