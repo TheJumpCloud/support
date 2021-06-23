@@ -8,6 +8,6 @@ workflows:
     jobs:
     - path-filtering/filter:
         mapping: |
-          Powershell/(?!JumpCloud\sCommands\sGallery|JumpCloud\.Office365\.SSO).* PowerShellModified true
+          Powershell/.* PowerShellModified true
         base-revision: master
         config-path: .circleci/workflows.yml
