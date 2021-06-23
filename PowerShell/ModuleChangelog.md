@@ -1,3 +1,12 @@
+## 1.18.5
+
+Release Date: June 23, 2021
+
+#### RELEASE NOTES
+
+* switch to circleci pipeline
+* Update tsts with valid radius reply attributes
+
 ## 1.18.4
 
 Release Date: May 03, 2021

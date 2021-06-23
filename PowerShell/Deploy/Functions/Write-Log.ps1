@@ -1,5 +1,5 @@
 #Function to log information/error in console and file
-Function Write-Log
+Function Global:Write-Log
 {
     Param(
         [Parameter(Mandatory = $true, Position = 0)][ValidateNotNullOrEmpty()]$Message,

@@ -15,7 +15,7 @@ ForEach ($DependentModule In $DependentModules)
     If ([System.String]::IsNullOrEmpty((Get-InstalledModule | Where-Object { $_.Name -eq $DependentModule })))
     {
         Write-Host("[status]Installing module: '$DependentModule' from 'PSGallery'")
-        Install-Module -Repository:('PSGallery') -Force -Name:($DependentModule) -Scope:('CurrentUser')
+        Install-Module -Repository:('PSGallery') -Force -Name:($DependentModule) -Scope:('CurrentUser') -AllowClobber
     }
     # Get-Module -Refresh -ListAvailable
     If ([System.String]::IsNullOrEmpty((Get-Module | Where-Object { $_.Name -eq $DependentModule })))
@@ -24,54 +24,57 @@ ForEach ($DependentModule In $DependentModules)
         Import-Module -Name:($DependentModule) -Force -Global
     }
 }
+### TODO: Switch to CodeArtifact
 If ($RequiredModulesRepo -ne 'PSGallery')
 {
     # Set default -Repository parameter value to be $RequiredModulesRepo
-    Get-Command -Module:('PowerShellGet', 'PackageManagement') -ParameterName 'Repository' | ForEach-Object {
-        If ( -not $global:PSDefaultParameterValues.GetEnumerator() | Where-Object { $_.Key -eq "$($_.Name):Repository" -and $_.Value -eq $RequiredModulesRepo })
-        {
-            $global:PSDefaultParameterValues["$($_.Name):Repository"] = $RequiredModulesRepo
-        }
-    }
+    #Get-Command -Module:('PowerShellGet', 'PackageManagement') -ParameterName 'Repository' | ForEach-Object {
+    #    If ( -not $global:PSDefaultParameterValues.GetEnumerator() | Where-Object { $_.Key -eq "$($_.Name):Repository" -and $_.Value -eq $RequiredModulesRepo })
+    #    {
+    #        $global:PSDefaultParameterValues["$($_.Name):Repository"] = $RequiredModulesRepo
+    #    }
+    #}
     # Set default -AllowPrerelease parameter value to be $True
-    Get-Command -Module:('PowerShellGet', 'PackageManagement') -ParameterName 'AllowPrerelease' | ForEach-Object {
-        If ( -not $global:PSDefaultParameterValues.GetEnumerator() | Where-Object { $_.Key -eq "$($_.Name):AllowPrerelease" -and $_.Value -eq $true })
-        {
-            $global:PSDefaultParameterValues["$($_.Name):AllowPrerelease"] = $true
-        }
-    }
-    If (-not [System.String]::IsNullOrEmpty($env:SYSTEM_ACCESSTOKEN))
-    {
-        $global:RepositoryCredentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $env:SYSTEM_ACCESSTOKEN, ($env:SYSTEM_ACCESSTOKEN | ConvertTo-SecureString -AsPlainText -Force)
-        # Set default -Credential parameter value to be $RepositoryCredentials
-        Get-Command -Module:('PowerShellGet', 'PackageManagement') -ParameterName 'Credential' | ForEach-Object {
-            If ( -not $global:PSDefaultParameterValues.GetEnumerator() | Where-Object { $_.Key -eq "$($_.Name):Credential" -and $_.Value -eq $RepositoryCredentials })
-            {
-                $global:PSDefaultParameterValues["$($_.Name):Credential"] = $RepositoryCredentials
-            }
-        }
-    }
-    Else
-    {
-        Write-Warning ('No SYSTEM_ACCESSTOKEN has been provided')
-    }
+    #Get-Command -Module:('PowerShellGet', 'PackageManagement') -ParameterName 'AllowPrerelease' | ForEach-Object {
+    #    If ( -not $global:PSDefaultParameterValues.GetEnumerator() | Where-Object { $_.Key -eq "$($_.Name):AllowPrerelease" -and $_.Value -eq $true })
+    #    {
+    #        $global:PSDefaultParameterValues["$($_.Name):AllowPrerelease"] = $true
+    #    }
+    #}
+    #
+    #If (-not [System.String]::IsNullOrEmpty($env:SYSTEM_ACCESSTOKEN))
+    #{
+    #    $global:RepositoryCredentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $env:SYSTEM_ACCESSTOKEN, ($env:SYSTEM_ACCESSTOKEN | ConvertTo-SecureString -AsPlainText -Force)
+    #    # Set default -Credential parameter value to be $RepositoryCredentials
+    #    Get-Command -Module:('PowerShellGet', 'PackageManagement') -ParameterName 'Credential' | ForEach-Object {
+    #        If ( -not $global:PSDefaultParameterValues.GetEnumerator() | Where-Object { $_.Key -eq "$($_.Name):Credential" -and $_.Value -eq $RepositoryCredentials })
+    #        {
+    #            $global:PSDefaultParameterValues["$($_.Name):Credential"] = $RepositoryCredentials
+    #        }
+    #    }
+    #}
+    #Else
+    #{
+    #    Write-Warning ('No SYSTEM_ACCESSTOKEN has been provided')
+    #}
     # Register PSRepository
-    If (-not (Get-PackageSource -Name:($RequiredModulesRepo) -ErrorAction SilentlyContinue))
-    {
-        Write-Host("[status]Register-PackageSource Setup '$RequiredModulesRepo'")
-        Register-PackageSource -Trusted -ProviderName:("PowerShellGet") -Name:($RequiredModulesRepo) -Credential:($RepositoryCredentials) -Location:("https://pkgs.dev.azure.com/$(($RequiredModulesRepo.Split('-'))[0])/_packaging/$($(($RequiredModulesRepo.Split('-'))[1]))/nuget/v2/")
-    }
+    #If (-not (Get-PackageSource -Name:($RequiredModulesRepo) -ErrorAction SilentlyContinue))
+    #{
+    #    Write-Host("[status]Register-PackageSource Setup '$RequiredModulesRepo'")
+    #    Register-PackageSource -Trusted -ProviderName:("PowerShellGet") -Name:($RequiredModulesRepo) -Credential:($RepositoryCredentials) -Location:("https://pkgs.dev.azure.com/$(($RequiredModulesRepo.Split('-'))[0])/_packaging/$($(($RequiredModulesRepo.Split('-'))[1]))/nuget/v2/")
+    #}
 }
 If (-not [System.String]::IsNullOrEmpty($Psd1))
 {
     # Install required modules
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 
     ForEach ($RequiredModule In $Psd1.RequiredModules)
     {
         # Check to see if the module is installed
         If ([System.String]::IsNullOrEmpty((Get-InstalledModule | Where-Object { $_.Name -eq $RequiredModule })))
         {
             Write-Host("[status]Installing module: '$RequiredModule' from '$RequiredModulesRepo'")
-            Install-Module -Force -Name:($RequiredModule) -Scope:('CurrentUser') -Repository:($RequiredModulesRepo) -Credential:($RepositoryCredentials) -AllowPrerelease
+            Install-Module -Force -Name:($RequiredModule) -Scope:('CurrentUser') #-Repository:('PSGallery') -Credential:($RepositoryCredentials) -AllowPrerelease
         }
         # Get-Module -Refresh -ListAvailable
         If ([System.String]::IsNullOrEmpty((Get-Module | Where-Object { $_.Name -eq $RequiredModule })))
@@ -89,11 +92,14 @@ If (-not [System.String]::IsNullOrEmpty($Psd1))
     # Load "Deploy" functions
     Write-Host("[status]Importing deploy functions: '$PSScriptRoot/Functions/*.ps1'")
     $DeployFunctions = @(Get-ChildItem -Path:($PSScriptRoot + '/Functions/*.ps1') -Recurse)
+    $DeployFunctions
     Foreach ($DeployFunction In $DeployFunctions)
     {
         Try
         {
+            Write-Host "Importing $($DeployFunction.FullName)"
             . $DeployFunction.FullName
+            # Get-Command $DeployFunction
         }
         Catch
         {
