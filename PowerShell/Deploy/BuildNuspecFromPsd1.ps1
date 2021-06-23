@@ -1,4 +1,4 @@
-. ($PSScriptRoot + '/' + 'Get-Config.ps1')
+. "$PSScriptRoot/Get-Config.ps1"
 $nuspecFiles = @{ src = 'en-Us/**;Private/**;Public/**;JumpCloud.psd1;JumpCloud.psm1;LICENSE'; }
 # Addapted from PowerShell Get
 # https://github.com/PowerShell/PowerShellGetv2/blob/7de99ee0c38611556e5c583ffaca98bb1922a0d4/src/PowerShellGet/private/functions/New-NuspecFile.ps1
@@ -14,6 +14,9 @@ function New-NuspecFile
 
         [Parameter(Mandatory = $true)]
         [string]$Version,
+
+        [Parameter()]
+        [String]$buildNumber,
 
         [Parameter(Mandatory = $true)]
         [string]$Description,
@@ -71,6 +74,13 @@ function New-NuspecFile
     if ($tagsString.Length -gt 4000)
     {
         Write-Warning -Message "Tag list exceeded 4000 characters and may not be accepted by some Nuget feeds."
+    }
+
+    Write-Host "env:Source = $($env:Source)`r`nglobal:Source = $($global:Source)"
+    # Append buildNumber if something
+    if ($env:Source -eq "CodeArtifact")
+    {
+        $Version = $Version + ".$($buildNumber)"
     }
 
     $metaDataElementsHash = [ordered]@{
@@ -145,6 +155,7 @@ $Psd1 = Import-PowerShellDataFile -Path:($FilePath_psd1)
 $params = @{
     OutputPath   = $FolderPath_Module
     Id           = $(Get-Item ($FilePath_psd1)).BaseName
+    buildNumber  = $env:CIRCLE_BUILD_NUM
     Version      = $Psd1.ModuleVersion
     Authors      = $Psd1.Author
     Owners       = $Psd1.CompanyName

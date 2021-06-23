@@ -48,24 +48,45 @@ Write-Host ('[status]Setting up org: ' + "$PSScriptRoot/SetupOrg.ps1")
 # Load HelperFunctions
 Write-Host ('[status]Load HelperFunctions: ' + "$PSScriptRoot/HelperFunctions.ps1")
 . ("$PSScriptRoot/HelperFunctions.ps1")
-# Remove old test results file if exists
-If (Test-Path -Path:($PesterParams_PesterResultsFileXml)) { Remove-Item -Path:($PesterParams_PesterResultsFileXml) -Force }
-# Run Pester tests
-Write-Host ("[RUN COMMAND] Invoke-Pester -Path:('$PSScriptRoot') -TagFilter:('$($IncludeTags -join "','")') -ExcludeTagFilter:('$($ExcludeTagList -join "','")') -PassThru") -BackgroundColor:('Black') -ForegroundColor:('Magenta')
-$PesterResults = Invoke-Pester -PassThru -Path:($PSScriptRoot) -TagFilter:($IncludeTags) -ExcludeTagFilter:($ExcludeTagList)
-$PesterResults | Export-NUnitReport -Path:($PesterParams_PesterResultsFileXml)
-If (Test-Path -Path:($PesterParams_PesterResultsFileXml))
+$PesterResultsFileXmldir = "$PSScriptRoot/test_results/"
+# $PesterResultsFileXml = $PesterResultsFileXmldir + "results.xml"
+if (-not (Test-Path $PesterResultsFileXmldir))
 {
-    [xml]$PesterResults = Get-Content -Path:($PesterParams_PesterResultsFileXml)
-    $FailedTests = $PesterResults.'test-results'.'test-suite'.'results'.'test-suite' | Where-Object { $_.success -eq 'False' }
-    If ($FailedTests)
+    new-item -path $PesterResultsFileXmldir -ItemType Directory
+}
+# Remove old test results file if exists (not needed)
+# If (Test-Path -Path:("$PSScriptRoot/test_results/$PesterParams_PesterResultsFileXml")) { Remove-Item -Path:("$PSScriptRoot/test_results/$PesterParams_PesterResultsFileXml") -Force }
+# Run Pester tests
+
+$configuration = [PesterConfiguration]::Default
+$configuration.Run.Path = "$PSScriptRoot"
+$configuration.Should.ErrorAction = 'Continue'
+$configuration.CodeCoverage.Enabled = $true
+$configuration.testresult.Enabled = $true
+$configuration.testresult.OutputFormat = 'JUnitXml'
+$configuration.Filter.Tag = $IncludeTags
+$configuration.Filter.ExcludeTag = $ExcludeTagList
+$configuration.CodeCoverage.OutputPath = ($PesterResultsFileXmldir + 'coverage.xml')
+$configuration.testresult.OutputPath = ($PesterResultsFileXmldir + 'results.xml')
+
+Write-Host ("[RUN COMMAND] Invoke-Pester -Path:('$PSScriptRoot') -TagFilter:('$($IncludeTags -join "','")') -ExcludeTagFilter:('$($ExcludeTagList -join "','")') -PassThru") -BackgroundColor:('Black') -ForegroundColor:('Magenta')
+Invoke-Pester -configuration $configuration
+
+$PesterTestResultPath = (Get-ChildItem -Path:("$($PesterResultsFileXmldir)")).FullName | Where-Object { $_ -match "results.xml" }
+If (Test-Path -Path:($PesterTestResultPath))
+{
+    [xml]$PesterResults = Get-Content -Path:($PesterTestResultPath)
+    If ($PesterResults.ChildNodes.failures -gt 0)
     {
-        Write-Host ('')
-        Write-Host ('##############################################################################################################')
-        Write-Host ('##############################Error Description###############################################################')
-        Write-Host ('##############################################################################################################')
-        Write-Host ('')
-        $FailedTests | ForEach-Object { $_.InnerText + ';' }
-        Write-Error -Message:('Tests Failed: ' + [string]($FailedTests | Measure-Object).Count)
+        Write-Error ("Test Failures: $($PesterResults.ChildNodes.failures)")
+    }
+    If ($PesterResults.ChildNodes.errors -gt 0)
+    {
+        Write-Error ("Test Errors: $($PesterResults.ChildNodes.errors)")
     }
 }
+Else
+{
+    Write-Error ("Unable to find file path: $PesterTestResultPath")
+}
+Write-Host -ForegroundColor Green '-------------Done-------------'

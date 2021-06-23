@@ -9,8 +9,8 @@ Else
 {
     #Logging
     $CommitMessage = 'Push to ' + $BranchName + ';[skip ci]'
-    $UserEmail = 'AzurePipelines@FakeEmail.com'
-    $UserName = 'AzurePipelines'
+    $UserEmail = 'CircleCI@FakeEmail.com'
+    $UserName = 'CircleCI'
     Function Invoke-Git
     {
         Param($Arguments)

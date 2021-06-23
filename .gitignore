@@ -1,2 +1,4 @@
 .DS_Store
 .vscode
+# Ignore Test Results Directory
+*test_results

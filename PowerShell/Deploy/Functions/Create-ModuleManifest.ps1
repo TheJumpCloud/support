@@ -1,4 +1,4 @@
-Function New-JCModuleManifest
+Function Global:New-JCModuleManifest
 {
     [cmdletbinding(SupportsShouldProcess = $True)]
     Param()

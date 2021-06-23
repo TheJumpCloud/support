@@ -15,8 +15,8 @@ Query the API for Directory Insights events
 ### GetExpanded (Default)
 ```
 Get-JCEvent -Service <String[]> -StartTime <DateTime> [-EndTime <DateTime>] [-Fields <String[]>]
- [-SearchAfter <IEventQuerySearchAfterItem[]>] [-SearchTermAnd <Hashtable>] [-SearchTermOr <Hashtable>]
- [-Sort <String>] [-WhatIf] [-Confirm] [<CommonParameters>]
+ [-SearchAfter <String[]>] [-SearchTermAnd <Hashtable>] [-SearchTermOr <Hashtable>] [-Sort <String>] [-WhatIf]
+ [-Confirm] [<CommonParameters>]
 ```
 
 ### Get
@@ -137,7 +137,7 @@ Accept wildcard characters: False
 Specific query to search after, see x-* response headers for next values
 
 ```yaml
-Type: JumpCloud.SDK.DirectoryInsights.Models.IEventQuerySearchAfterItem[]
+Type: System.String[]
 Parameter Sets: GetExpanded
 Aliases:
 
@@ -264,6 +264,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## OUTPUTS
 
 ### JumpCloud.SDK.DirectoryInsights.Models.IPost200ApplicationJsonItemsItem
+### System.String
 ## NOTES
 COMPLEX PARAMETER PROPERTIES
 To create the parameters described below, construct a hash table containing the appropriate properties.

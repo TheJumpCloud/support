@@ -1,6 +1,6 @@
 Param(
     [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Name of module')][ValidateNotNullOrEmpty()][System.String]$ModuleName = 'JumpCloud'
-    , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Path to module root')][ValidateNotNullOrEmpty()][System.String]$ModulePath = (Get-Location).Path # $PSScriptRoot
+    , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Path to module root')][ValidateNotNullOrEmpty()][System.String]$ModulePath = './PowerShell/JumpCloud Module' # $PSScriptRoot
     , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Which parameter set to be used for New-MarkdownHelp')][ValidateNotNullOrEmpty()][ValidateSet('FromCommand', 'FromModule')][System.String]$NewMarkdownHelpParamSet = 'FromCommand'
     , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Language locale')][ValidateNotNullOrEmpty()][System.String]$Locale = 'en-US'
     , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'For adding comment based help')][ValidateNotNullOrEmpty()][System.Boolean]$AddCommentBasedHelp = $false
