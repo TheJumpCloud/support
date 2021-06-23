@@ -2,9 +2,9 @@ version: 2.1
 
 parameters:
   ManualBuild:
-    description: 'When `true`, pipeline will continue to build even if its been filtered out by config.yml'
+    description: 'When `true`, pipeline will continue to build even if its been filtered out by config.yml (Will Not Run on Master Branch)'
     type: boolean
-    default: true
+    default: false
   EnableDebugging:
     description: 'When `true`, debugging commands will run and output to terminal.'
     type: boolean
