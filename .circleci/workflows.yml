@@ -1,5 +1,4 @@
 version: 2.1
-
 parameters:
   ManualBuild:
     description: 'When `true`, pipeline will continue to build even if its been filtered out by config.yml (Will Not Run on Master Branch)'
@@ -42,7 +41,6 @@ parameters:
     description: 'When `true` and when run against Master branch, this workflow will publish the latest code to PSGallery'
     type: boolean
     default: true
-
 orbs:
   win: circleci/windows@2.2.0
 executors:
@@ -55,13 +53,13 @@ workflows:
     when:
       and:
         - and:
-          - not:
-              matches:
-                pattern: "^master$"
-                value: << pipeline.git.branch >>
+            - not:
+                matches:
+                  pattern: "^master$"
+                  value: << pipeline.git.branch >>
         - or:
-          - equal: [ true, << pipeline.parameters.PowerShellModified >> ]
-          - equal: [ true, << pipeline.parameters.ManualBuild >> ]
+            - equal: [true, << pipeline.parameters.PowerShellModified >>]
+            - equal: [true, << pipeline.parameters.ManualBuild >>]
     jobs:
       - Initial Setup
       - Build Modules:
@@ -106,12 +104,18 @@ workflows:
             - Build Nuspec
             - Module Validation Tests
             - Invoke Git Commit
+      - Publish Module Validation:
+          requires:
+            - Initial Setup
+            - Build Help and Test Files
+            - Build Nuspec
+            - Module Validation Tests
+            - Invoke Git Commit
   release:
     when:
       and:
-        - equal: [ master, << pipeline.git.branch >> ]
-        - equal: [ true, << pipeline.parameters.PublishToPSGallery >> ]
-        - equal: [ true, << pipeline.parameters.PowerShellModified >> ]
+        - equal: [master, << pipeline.git.branch >>]
+        - equal: [true, << pipeline.parameters.PublishToPSGallery >>]
     jobs:
       - Prepare for release
       - draft-github-release:
@@ -121,6 +125,12 @@ workflows:
           type: approval
           requires:
             - Prepare for release
+      - Publish Module Validation:
+          requires:
+            - Build Nuspec for PSGallery
+      - Invoke Git Commit:
+          requires:
+            - Publish Module Validation
 jobs:
   Initial Setup:
     executor: win/default
@@ -193,6 +203,12 @@ jobs:
           IncludeTagList: '*'
           RequiredModulesRepo: PSGallery
           Shell: 'pwsh'
+  Publish Module Validation:
+    machine:
+      image: ubuntu-1604:202007-01
+    steps:
+      - validate-pipeline-param:
+          branch: << pipeline.git.branch  >>
   Prepare for release:
     executor: win/default
     steps:
@@ -203,8 +219,8 @@ jobs:
           command: |
             $ErrorActionPreference = 'Stop'
             write-host "Preparring env to release JumpCloud Module"
-            Rename-Item -Path:("./PowerShell/JumpCloud Module") -NewName:("JumpCloud")
-            $ModuleVersion = Import-PowerShellDataFile -Path:("./PowerShell/JumpCloud/JumpCloud.psd1")
+            # Rename-Item -Path:("./PowerShell/JumpCloud Module") -NewName:("JumpCloud")
+            $ModuleVersion = Import-PowerShellDataFile -Path:("./PowerShell/JumpCloud Module/JumpCloud.psd1")
             Write-Host "JumpCloud Module Version to release is: $($ModuleVersion.ModuleVersion)"
       - persist_to_workspace:
           root: .
@@ -220,16 +236,16 @@ jobs:
       - image: cibuilds/github:0.10
     steps:
       - attach_workspace:
-          at: ./artifacts
+          at: .
       - run:
           name: "Draft Release on GitHub"
           command: |
-            VERSION=$(grep -o '\d\+\.\d\+\.\d' /root/project/artifacts/PowerShell/JumpCloud/JumpCloud.psd1)
+            VERSION=$(grep -o '\d\+\.\d\+\.\d' /root/project/PowerShell/JumpCloud\ Module/JumpCloud.psd1)
             TITLE="JumpCloudModule_$VERSION"
             VERSION="v$VERSION"
             BODY="Latest Release of JumpCloud PowerShell Module"
             #TODO: implement TITLE & BODY later, for some reason these params don't work
-            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete -draft ${VERSION} /root/project/artifacts/PowerShell/
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete -draft ${VERSION} /root/project/PowerShell/
 commands:
   initial-setup:
     steps:
@@ -253,7 +269,7 @@ commands:
     steps:
       - when:
           condition:
-            equal: [ true, << pipeline.parameters.EnableDebugging >> ]
+            equal: [true, << pipeline.parameters.EnableDebugging >>]
           steps:
             - attach_workspace:
                 at: .
@@ -266,7 +282,7 @@ commands:
     steps:
       - when:
           condition:
-            equal: [ true, << pipeline.parameters.BuildModule >> ]
+            equal: [true, << pipeline.parameters.BuildModule >>]
           steps:
             - attach_workspace:
                 at: .
@@ -284,12 +300,12 @@ commands:
     steps:
       - when:
           condition:
-            equal: [ true, << pipeline.parameters.BuildHelpFiles >> ]
+            equal: [true, << pipeline.parameters.BuildHelpFiles >>]
           steps:
             - run:
-               name: Build Help Files
-               shell: pwsh.exe
-               command: |
+                name: Build Help Files
+                shell: pwsh.exe
+                command: |
                   $ErrorActionPreference = 'Stop'
                   ./PowerShell\Deploy\SdkSync\jcapiToSupportSync.ps1
                   ./PowerShell/Deploy/Build-HelpFiles.ps1 -ModuleName JumpCloud -ModulePath "./PowerShell/JumpCloud Module"
@@ -297,12 +313,12 @@ commands:
     steps:
       - when:
           condition:
-            equal: [ true, << pipeline.parameters.BuildTestFiles >> ]
+            equal: [true, << pipeline.parameters.BuildTestFiles >>]
           steps:
             - run:
-               name: Build Test Files
-               shell: pwsh.exe
-               command: |
+                name: Build Test Files
+                shell: pwsh.exe
+                command: |
                   $ErrorActionPreference = 'Stop'
                   ./PowerShell/Deploy/Build-PesterTestFiles.ps1
   invoke-script:
@@ -339,10 +355,10 @@ commands:
     steps:
       - when:
           condition:
-            equal: [ true, << pipeline.parameters.BuildNuspec >> ]
+            equal: [true, << pipeline.parameters.BuildNuspec >>]
           steps:
             - attach_workspace:
-               at: .
+                at: .
             - run:
                 name: Build Nuspec
                 shell: pwsh.exe
@@ -409,15 +425,15 @@ commands:
     steps:
       - when:
           condition:
-            equal: [ true, << pipeline.parameters.ValidateModule >> ]
+            equal: [true, << pipeline.parameters.ValidateModule >>]
           steps:
             - attach_workspace:
-               at: .
+                at: .
             - run:
-               name: Invoke Pester
-               shell: << parameters.Shell >>
-               no_output_timeout: 30m
-               command: |
+                name: Invoke Pester
+                shell: << parameters.Shell >>
+                no_output_timeout: 30m
+                command: |
                   $ErrorActionPreference = 'stop'
                   ./PowerShell\Deploy\SdkSync\jcapiToSupportSync.ps1
                   . "./PowerShell/JumpCloud Module/Tests/InvokePester.ps1" -JumpCloudApiKey << parameters.JumpCloudApiKey >> -JumpCloudApiKeyMsp << parameters.JumpCloudApiKeyMsp >> -ExcludeTagList << parameters.ExcludeTagList >> -IncludeTagList << parameters.IncludeTagList >> -RequiredModulesRepo << parameters.RequiredModulesRepo >>
@@ -455,3 +471,36 @@ commands:
             sudo add-apt-repository universe
             # Install PowerShell
             sudo apt-get install -y powershell
+  validate-pipeline-param:
+    parameters:
+      branch:
+        description: Name of the branch to deploy to
+        type: string
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Reset Publish To Gallery Param
+          shell: bash
+          environment:
+            branch: << parameters.branch >>
+          command: |
+            sudo snap install yq
+            publish=$(/snap/bin/yq e '.parameters.PublishToPSGallery.default' ~/project/.circleci/workflows.yml)
+            if [[ $branch != 'master' ]]; then
+                echo "Running on $branch, checking to see if PublishToPSGallery param is set..."
+                if [[ $publish == "false" ]]; then
+                  echo "CircleCI Param PublishToPSGallery is not set to 'true' (currently: $publish) - Module will not publish on merge to master"
+                  exit 1
+                elif [[ $publish == "true" ]]; then
+                  echo "CircleCI Param PublishToPSGallery is set to 'true' - Module will publish on merge to master"
+                fi
+            fi
+            if [[ $branch == 'master' ]]; then
+                echo "Running on $branch, resetting PublishToPSGallery param..."
+                /snap/bin/yq e '.parameters.PublishToPSGallery.default = false' -i ~/project/.circleci/workflows.yml
+            fi
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
