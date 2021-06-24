@@ -40,7 +40,7 @@ parameters:
   PublishToPSGallery:
     description: 'When `true` and when run against Master branch, this workflow will publish the latest code to PSGallery'
     type: boolean
-    default: false
+    default: true
 orbs:
   win: circleci/windows@2.2.0
 executors:
