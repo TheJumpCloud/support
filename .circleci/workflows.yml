@@ -517,7 +517,8 @@ commands:
                 elif [[ $publish == "true" ]]; then
                   echo "CircleCI Param PublishToPSGallery is set to 'true' - Module will publish on merge to master"
                 fi
-            elif [[ $branch == 'circleci-project-setup' ]]; then
+            fi
+            if [[ $branch == 'circleci-project-setup' ]]; then
                 echo "Running on $branch, resetting PublishToPSGallery param..."
                 /snap/bin/yq e '.parameters.PublishToPSGallery.default = false' -i ~/project/.circleci/workflows.yml
             fi
