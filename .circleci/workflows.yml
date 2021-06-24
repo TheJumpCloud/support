@@ -51,6 +51,26 @@ executors:
       xcode: 11.3.0
 workflows:
   version: 2
+  test:
+    when:
+      and:
+        - equal: [ true, << pipeline.parameters.ManualBuild >> ]
+    jobs:
+      - Prepare for release
+        - draft-github-release:
+            requires:
+              - Prepare for release
+        # - Build Nuspec for PSGallery:
+        #     type: approval
+        #     requires:
+        #       - Prepare for release
+        - Publish Module Validation:
+            requires:
+              - Prepare for release
+        - Invoke Git Commit:
+            requires:
+              - Prepare for release
+
   ci:
     when:
       and:
@@ -61,7 +81,7 @@ workflows:
                 value: << pipeline.git.branch >>
         - or:
           - equal: [ true, << pipeline.parameters.PowerShellModified >> ]
-          - equal: [ true, << pipeline.parameters.ManualBuild >> ]
+          # - equal: [ true, << pipeline.parameters.ManualBuild >> ]
     jobs:
       - Initial Setup
       - Build Modules:
@@ -118,7 +138,6 @@ workflows:
       and:
         - equal: [ master, << pipeline.git.branch >> ]
         - equal: [ true, << pipeline.parameters.PublishToPSGallery >> ]
-        - equal: [ true, << pipeline.parameters.PowerShellModified >> ]
     jobs:
       - Prepare for release
       - draft-github-release:
