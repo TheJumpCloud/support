@@ -12,23 +12,23 @@ parameters:
   BuildModule:
     description: 'When `true`, all build commands will run.'
     type: boolean
-    default: false
+    default: true
   BuildHelpFiles:
     description: 'When `true`, Help files will be built.'
     type: boolean
-    default: false
+    default: true
   BuildTestFiles:
     description: 'When `true`, Test files will be built.'
     type: boolean
-    default: false
+    default: true
   BuildNuspec:
     description: 'When `true`, Nuspec will be built and pack/ push steps complete.'
     type: boolean
-    default: false
+    default: true
   ValidateModule:
     description: 'When `true`, Pester Tests will be run for moduleValidation tags.'
     type: boolean
-    default: false
+    default: true
   ReleaseType:
     description: 'Release Type. Accepted values [ Major, Minor, Patch ]'
     type: enum
@@ -109,10 +109,11 @@ workflows:
   release:
     when:
       and:
+        - equal: [ master, << pipeline.git.branch >> ]
         - equal: [ true, << pipeline.parameters.PublishToPSGallery >> ]
         - equal: [ true, << pipeline.parameters.PowerShellModified >> ]
     jobs:
-      - Prepare for release:
+      - Prepare for release
       - draft-github-release:
           requires:
             - Prepare for release
