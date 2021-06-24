@@ -507,9 +507,9 @@ commands:
           environment:
             branch: << parameters.branch >>
           command: |
-            snap install yq
+            sudo snap install yq
             publish=$(yq e '.parameters.PublishToPSGallery.default' /root/project/.circleci/workflow.yaml)
-            if [[$branch != 'master' ]]; then
+            if [[ $branch != 'master' ]]; then
                 echo "Running on $branch, checking to see if PublishToPSGallery param is set..."
                 if [[ $publish == "false" ]]; then
                   echo "CircleCI Param PublishToPSGallery is not set to 'true' (currently: $publish) - Module will not publish on merge to master"
@@ -517,7 +517,7 @@ commands:
                 elif [[ $publish == "true" ]]; then
                   echo "CircleCI Param PublishToPSGallery is set to 'true' - Module will publish on merge to master"
                 fi
-            elif [[$branch == 'master' ]]; then
+            elif [[ $branch == 'master' ]]; then
                 echo "Running on $branch, resetting PublishToPSGallery param..."
                 yq e '.parameters.PublishToPSGallery.default = false' -i /root/project/.circleci/workflow.yaml
             fi
