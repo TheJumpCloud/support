@@ -242,7 +242,7 @@ jobs:
             $ErrorActionPreference = 'Stop'
             write-host "Preparring env to release JumpCloud Module"
             # Rename-Item -Path:("./PowerShell/JumpCloud Module") -NewName:("JumpCloud")
-            $ModuleVersion = Import-PowerShellDataFile -Path:("./PowerShell/JumpCloud/JumpCloud.psd1")
+            $ModuleVersion = Import-PowerShellDataFile -Path:("./PowerShell/JumpCloud Module/JumpCloud.psd1")
             Write-Host "JumpCloud Module Version to release is: $($ModuleVersion.ModuleVersion)"
       - persist_to_workspace:
           root: .
@@ -258,16 +258,16 @@ jobs:
       - image: cibuilds/github:0.10
     steps:
       - attach_workspace:
-          at: ./artifacts
+          at: .
       - run:
           name: "Draft Release on GitHub"
           command: |
-            VERSION=$(grep -o '\d\+\.\d\+\.\d' /root/project/artifacts/PowerShell/JumpCloud/JumpCloud.psd1)
+            VERSION=$(grep -o '\d\+\.\d\+\.\d' /root/project/PowerShell/JumpCloud\ Module/JumpCloud.psd1)
             TITLE="JumpCloudModule_$VERSION"
             VERSION="v$VERSION"
             BODY="Latest Release of JumpCloud PowerShell Module"
             #TODO: implement TITLE & BODY later, for some reason these params don't work
-            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete -draft ${VERSION} /root/project/artifacts/PowerShell/
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete -draft ${VERSION} /root/project/PowerShell/
 commands:
   initial-setup:
     steps:
