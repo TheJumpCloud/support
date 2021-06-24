@@ -40,7 +40,7 @@ parameters:
   PublishToPSGallery:
     description: 'When `true` and when run against Master branch, this workflow will publish the latest code to PSGallery'
     type: boolean
-    default: true
+    default: false
 orbs:
   win: circleci/windows@2.2.0
 executors:
@@ -393,7 +393,7 @@ commands:
                   Set-AWSCredential -AccessKey:($env:AWS_ACCESS_KEY_ID) -SecretKey:($env:AWS_SECRET_ACCESS_KEY)
                   $CARepoEndpoint = "$(Get-CARepositoryEndpoint -Domain jumpcloud-artifacts -Region us-east-1 -Repository jumpcloud-nuget-modules -Format nuget)v3/index.json"
                   dotnet nuget add source $CARepoEndpoint --name CodeArtifact --username aws --password (Get-CAAuthorizationToken -Domain:("jumpcloud-artifacts") -Region:("us-east-1")).AuthorizationToken
-                  dotnet nuget add source "https://www.powershellgallery.com/api/v2" --name PSGallery
+                  dotnet nuget add source "https://www.powershellgallery.com/api/v2/package" --name PSGallery
             - run:
                 name: Pack nuspec
                 shell: pwsh.exe
