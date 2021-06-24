@@ -49,27 +49,6 @@ executors:
       xcode: 11.3.0
 workflows:
   version: 2
-  test:
-    when:
-      and:
-        - equal: [true, << pipeline.parameters.ManualBuild >>]
-    jobs:
-      - Prepare for release
-      - draft-github-release:
-          requires:
-            - Prepare for release
-      #     type: approval
-
-      #     requires:
-
-      #       - Prepare for release
-      - Publish Module Validation:
-          requires:
-            - Prepare for release
-        # - Build Nuspec for PSGallery:
-      - Invoke Git Commit:
-          requires:
-            - Publish Module Validation
   ci:
     when:
       and:
@@ -80,7 +59,7 @@ workflows:
                   value: << pipeline.git.branch >>
         - or:
             - equal: [true, << pipeline.parameters.PowerShellModified >>]
-          # - equal: [ true, << pipeline.parameters.ManualBuild >> ]
+            - equal: [true, << pipeline.parameters.ManualBuild >>]
     jobs:
       - Initial Setup
       - Build Modules:
@@ -517,7 +496,7 @@ commands:
                   echo "CircleCI Param PublishToPSGallery is set to 'true' - Module will publish on merge to master"
                 fi
             fi
-            if [[ $branch == 'circleci-project-setup' ]]; then
+            if [[ $branch == 'master' ]]; then
                 echo "Running on $branch, resetting PublishToPSGallery param..."
                 /snap/bin/yq e '.parameters.PublishToPSGallery.default = false' -i ~/project/.circleci/workflows.yml
             fi
