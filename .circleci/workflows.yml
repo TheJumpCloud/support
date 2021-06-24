@@ -121,16 +121,21 @@ workflows:
       - draft-github-release:
           requires:
             - Prepare for release
-      - Build Nuspec for PSGallery:
+      - Approve Module:
           type: approval
           requires:
             - Prepare for release
+      - Build Nuspec for PSGallery:
+          requires:
+            - Approve Module
       - Publish Module Validation:
           requires:
             - Build Nuspec for PSGallery
+            - Approve Module
       - Invoke Git Commit:
           requires:
             - Publish Module Validation
+            - Approve Module
 jobs:
   Initial Setup:
     executor: win/default
@@ -157,6 +162,11 @@ jobs:
     steps:
       - deploy-nupkg:
           source: CodeArtifact
+  Build Nuspec for PSGallery:
+    executor: win/default
+    steps:
+      - deploy-nupkg:
+          source: PSGallery
   Module Validation Tests:
     executor: win/default
     steps:
@@ -226,11 +236,6 @@ jobs:
           root: .
           paths:
             - .
-  Build Nuspec for PSGallery:
-    executor: win/default
-    steps:
-      - deploy-nupkg:
-          source: PSGallery
   draft-github-release:
     docker:
       - image: cibuilds/github:0.10
