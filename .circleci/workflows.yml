@@ -69,7 +69,7 @@ workflows:
             - Prepare for release
       - Invoke Git Commit:
           requires:
-            - Prepare for release
+            - Publish Module Validation
 
   ci:
     when:
@@ -80,7 +80,7 @@ workflows:
                 pattern: "^master$"
                 value: << pipeline.git.branch >>
         - or:
-          - equal: [ false, << pipeline.parameters.PowerShellModified >> ]
+          - equal: [ true, << pipeline.parameters.PowerShellModified >> ]
           # - equal: [ true, << pipeline.parameters.ManualBuild >> ]
     jobs:
       - Initial Setup
