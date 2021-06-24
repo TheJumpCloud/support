@@ -1,5 +1,4 @@
 version: 2.1
-
 parameters:
   ManualBuild:
     description: 'When `true`, pipeline will continue to build even if its been filtered out by config.yml (Will Not Run on Master Branch)'
@@ -41,8 +40,7 @@ parameters:
   PublishToPSGallery:
     description: 'When `true` and when run against Master branch, this workflow will publish the latest code to PSGallery'
     type: boolean
-    default: true
-
+    default: false
 orbs:
   win: circleci/windows@2.2.0
 executors:
@@ -54,33 +52,34 @@ workflows:
   test:
     when:
       and:
-        - equal: [ true, << pipeline.parameters.ManualBuild >> ]
+        - equal: [true, << pipeline.parameters.ManualBuild >>]
     jobs:
       - Prepare for release
       - draft-github-release:
           requires:
             - Prepare for release
-      # - Build Nuspec for PSGallery:
       #     type: approval
+
       #     requires:
+
       #       - Prepare for release
       - Publish Module Validation:
           requires:
             - Prepare for release
+        # - Build Nuspec for PSGallery:
       - Invoke Git Commit:
           requires:
             - Publish Module Validation
-
   ci:
     when:
       and:
         - and:
-          - not:
-              matches:
-                pattern: "^master$"
-                value: << pipeline.git.branch >>
+            - not:
+                matches:
+                  pattern: "^master$"
+                  value: << pipeline.git.branch >>
         - or:
-          - equal: [ true, << pipeline.parameters.PowerShellModified >> ]
+            - equal: [true, << pipeline.parameters.PowerShellModified >>]
           # - equal: [ true, << pipeline.parameters.ManualBuild >> ]
     jobs:
       - Initial Setup
@@ -136,8 +135,8 @@ workflows:
   release:
     when:
       and:
-        - equal: [ master, << pipeline.git.branch >> ]
-        - equal: [ true, << pipeline.parameters.PublishToPSGallery >> ]
+        - equal: [master, << pipeline.git.branch >>]
+        - equal: [true, << pipeline.parameters.PublishToPSGallery >>]
     jobs:
       - Prepare for release
       - draft-github-release:
@@ -291,7 +290,7 @@ commands:
     steps:
       - when:
           condition:
-            equal: [ true, << pipeline.parameters.EnableDebugging >> ]
+            equal: [true, << pipeline.parameters.EnableDebugging >>]
           steps:
             - attach_workspace:
                 at: .
@@ -304,7 +303,7 @@ commands:
     steps:
       - when:
           condition:
-            equal: [ true, << pipeline.parameters.BuildModule >> ]
+            equal: [true, << pipeline.parameters.BuildModule >>]
           steps:
             - attach_workspace:
                 at: .
@@ -322,12 +321,12 @@ commands:
     steps:
       - when:
           condition:
-            equal: [ true, << pipeline.parameters.BuildHelpFiles >> ]
+            equal: [true, << pipeline.parameters.BuildHelpFiles >>]
           steps:
             - run:
-               name: Build Help Files
-               shell: pwsh.exe
-               command: |
+                name: Build Help Files
+                shell: pwsh.exe
+                command: |
                   $ErrorActionPreference = 'Stop'
                   ./PowerShell\Deploy\SdkSync\jcapiToSupportSync.ps1
                   ./PowerShell/Deploy/Build-HelpFiles.ps1 -ModuleName JumpCloud -ModulePath "./PowerShell/JumpCloud Module"
@@ -335,12 +334,12 @@ commands:
     steps:
       - when:
           condition:
-            equal: [ true, << pipeline.parameters.BuildTestFiles >> ]
+            equal: [true, << pipeline.parameters.BuildTestFiles >>]
           steps:
             - run:
-               name: Build Test Files
-               shell: pwsh.exe
-               command: |
+                name: Build Test Files
+                shell: pwsh.exe
+                command: |
                   $ErrorActionPreference = 'Stop'
                   ./PowerShell/Deploy/Build-PesterTestFiles.ps1
   invoke-script:
@@ -377,10 +376,10 @@ commands:
     steps:
       - when:
           condition:
-            equal: [ true, << pipeline.parameters.BuildNuspec >> ]
+            equal: [true, << pipeline.parameters.BuildNuspec >>]
           steps:
             - attach_workspace:
-               at: .
+                at: .
             - run:
                 name: Build Nuspec
                 shell: pwsh.exe
@@ -447,15 +446,15 @@ commands:
     steps:
       - when:
           condition:
-            equal: [ true, << pipeline.parameters.ValidateModule >> ]
+            equal: [true, << pipeline.parameters.ValidateModule >>]
           steps:
             - attach_workspace:
-               at: .
+                at: .
             - run:
-               name: Invoke Pester
-               shell: << parameters.Shell >>
-               no_output_timeout: 30m
-               command: |
+                name: Invoke Pester
+                shell: << parameters.Shell >>
+                no_output_timeout: 30m
+                command: |
                   $ErrorActionPreference = 'stop'
                   ./PowerShell\Deploy\SdkSync\jcapiToSupportSync.ps1
                   . "./PowerShell/JumpCloud Module/Tests/InvokePester.ps1" -JumpCloudApiKey << parameters.JumpCloudApiKey >> -JumpCloudApiKeyMsp << parameters.JumpCloudApiKeyMsp >> -ExcludeTagList << parameters.ExcludeTagList >> -IncludeTagList << parameters.IncludeTagList >> -RequiredModulesRepo << parameters.RequiredModulesRepo >>
