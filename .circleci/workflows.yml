@@ -508,7 +508,7 @@ commands:
             branch: << parameters.branch >>
           command: |
             sudo snap install yq
-            publish=$(yq e '.parameters.PublishToPSGallery.default' /root/project/.circleci/workflow.yaml)
+            publish=$(/snap/bin/yq e '.parameters.PublishToPSGallery.default' ~/project/.circleci/workflows.yml)
             if [[ $branch != 'master' ]]; then
                 echo "Running on $branch, checking to see if PublishToPSGallery param is set..."
                 if [[ $publish == "false" ]]; then
@@ -519,7 +519,7 @@ commands:
                 fi
             elif [[ $branch == 'master' ]]; then
                 echo "Running on $branch, resetting PublishToPSGallery param..."
-                yq e '.parameters.PublishToPSGallery.default = false' -i /root/project/.circleci/workflow.yaml
+                /snap/bin/yq e '.parameters.PublishToPSGallery.default = false' -i ~/project/.circleci/workflows.yml
             fi
       - persist_to_workspace:
           root: .
