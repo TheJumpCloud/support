@@ -241,7 +241,7 @@ jobs:
           command: |
             $ErrorActionPreference = 'Stop'
             write-host "Preparring env to release JumpCloud Module"
-            Rename-Item -Path:("./PowerShell/JumpCloud Module") -NewName:("JumpCloud")
+            # Rename-Item -Path:("./PowerShell/JumpCloud Module") -NewName:("JumpCloud")
             $ModuleVersion = Import-PowerShellDataFile -Path:("./PowerShell/JumpCloud/JumpCloud.psd1")
             Write-Host "JumpCloud Module Version to release is: $($ModuleVersion.ModuleVersion)"
       - persist_to_workspace:
