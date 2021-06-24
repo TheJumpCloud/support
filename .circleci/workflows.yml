@@ -106,6 +106,13 @@ workflows:
             - Build Nuspec
             - Module Validation Tests
             - Invoke Git Commit
+      - Publish Module Validation:
+          requires:
+            - Initial Setup
+            - Build Help and Test Files
+            - Build Nuspec
+            - Module Validation Tests
+            - Invoke Git Commit
   release:
     when:
       and:
@@ -121,6 +128,12 @@ workflows:
           type: approval
           requires:
             - Prepare for release
+      - Publish Module Validation:
+          requires:
+            - Build Nuspec for PSGallery
+      - Invoke Git Commit:
+          requires:
+            - Publish Module Validation
 jobs:
   Initial Setup:
     executor: win/default
@@ -193,6 +206,12 @@ jobs:
           IncludeTagList: '*'
           RequiredModulesRepo: PSGallery
           Shell: 'pwsh'
+  Publish Module Validation:
+    machine:
+      image: ubuntu-1604:202007-01
+    steps:
+      - validate-pipeline-param:
+          branch: << pipeline.git.branch  >>
   Prepare for release:
     executor: win/default
     steps:
@@ -455,3 +474,35 @@ commands:
             sudo add-apt-repository universe
             # Install PowerShell
             sudo apt-get install -y powershell
+  validate-pipeline-param:
+    parameters:
+      branch:
+        description: Name of the branch to deploy to
+        type: string
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Reset Publish To Gallery Param
+          shell: bash
+          environment:
+            branch: << parameters.branch >>
+          command: |
+            snap install yq
+            publish=$(yq e '.parameters.PublishToPSGallery.default' /root/project/.circleci/workflow.yaml)
+            if [[$branch != 'master' ]]; then
+                echo "Running on $branch, checking to see if PublishToPSGallery param is set..."
+                if [[ $publish == "false" ]]; then
+                  echo "CircleCI Param PublishToPSGallery is not set to 'true' (currently: $publish) - Module will not publish on merge to master"
+                  exit 1
+                elif [[ $publish == "true" ]]; then
+                  echo "CircleCI Param PublishToPSGallery is set to 'true' - Module will publish on merge to master"
+                fi
+            elif [[$branch == 'master' ]]; then
+                echo "Running on $branch, resetting PublishToPSGallery param..."
+                yq e '.parameters.PublishToPSGallery.default = false' -i /root/project/.circleci/workflow.yaml
+            fi
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
