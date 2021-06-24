@@ -57,19 +57,19 @@ workflows:
         - equal: [ true, << pipeline.parameters.ManualBuild >> ]
     jobs:
       - Prepare for release
-        - draft-github-release:
-            requires:
-              - Prepare for release
-        # - Build Nuspec for PSGallery:
-        #     type: approval
-        #     requires:
-        #       - Prepare for release
-        - Publish Module Validation:
-            requires:
-              - Prepare for release
-        - Invoke Git Commit:
-            requires:
-              - Prepare for release
+      - draft-github-release:
+          requires:
+            - Prepare for release
+      # - Build Nuspec for PSGallery:
+      #     type: approval
+      #     requires:
+      #       - Prepare for release
+      - Publish Module Validation:
+          requires:
+            - Prepare for release
+      - Invoke Git Commit:
+          requires:
+            - Prepare for release
 
   ci:
     when:
@@ -80,7 +80,7 @@ workflows:
                 pattern: "^master$"
                 value: << pipeline.git.branch >>
         - or:
-          - equal: [ true, << pipeline.parameters.PowerShellModified >> ]
+          - equal: [ false, << pipeline.parameters.PowerShellModified >> ]
           # - equal: [ true, << pipeline.parameters.ManualBuild >> ]
     jobs:
       - Initial Setup
