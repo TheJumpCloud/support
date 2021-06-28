@@ -128,7 +128,7 @@ function info_out() {
   SERVICE="jcagent"
   STATUS=$( service "${SERVICE}" status 2> /dev/null )
   if [[ -z "${STATUS}" ]]; then
-    STATUS=$( echo "PID  PATH" ; pgrep -f -a "jcagent" | awk '{print $1" "$5}')
+    STATUS=$( echo "PID  PATH" ; pgrep -f -a "jumpcloud-agent" | awk '{print $1" "$5}')
   fi
   OS=$( grep PRETTY_NAME /etc/os-release | cut -d\" -f2)
   TZONE=$( date +"%Z %z" )
