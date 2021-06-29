@@ -66,7 +66,11 @@ for user in $foundUsers; do
             echo "logging $user out of system"
             pkill -KILL -u "${user}"
         fi
+        # Expire the user's password
         sudo usermod --expiredate 1 $user
+        # Remove the user from the login screen
+        printf "[User]\nSystemAccount=true\n" | sudo tee /var/lib/AccountsService/users/$user
+        sudo systemctl restart accounts-daemon.service
     fi
 done
 
