@@ -26,10 +26,10 @@ if [[ ! -d "${JCPATH}" ]]; then
 fi
 
 # Is zip installed?
-if ! which zip 1> /dev/null; then
+if ! command -v zip 1> /dev/null; then
   ZPATH="false"
 else
-  ZPATH=$(which zip)
+  ZPATH=$(command -v zip)
 fi
 
 function indent() {
@@ -67,7 +67,10 @@ function zipjc() {
 
 function ziplog() {
   # Zip the log files.
-  LOGFILES=("jcagent.log" "jcUpdate.log")
+  LOGFILES=(
+  "jcagent.log" "jcUpdate.log"
+  "jcagent.log.1" "jcagent.log.2" "jcagent.log.3" "jcagent.log.4" "jcagent.log.5" "jcagent.log.6" "jcagent.log.7" "jcagent.log.8" "jcagent.log.9"
+  )
   if [[ "${ZPATH}" = "false" ]]; then
     for i in "${LOGFILES[@]}"; do
       if [[ -f "${JCLOG}""${i}" ]]; then
@@ -75,7 +78,7 @@ function ziplog() {
         LOGIT+=("${JCLOG}${i} has been added to ${TARFILE}.")
       fi
     done
-  else  
+  else
     for i in "${LOGFILES[@]}"; do
       if [[ -f "${JCLOG}""${i}" ]]; then
         zip -r "${ZIPFILE}" "${JCLOG}""${i}" 1> /dev/null
@@ -88,7 +91,7 @@ function ziplog() {
 function users() {
   # Get a list of users.
   PSWDFILE="/etc/passwd"
-  USERLIST=( $(grep -v "nologin" ${PSWDFILE} | cut -d':' -f 1) )
+  USERLIST=( $(grep -v "nologin" "${PSWDFILE}" | cut -d':' -f 1) )
   for i in "${USERLIST[@]}"; do
     if ! [[ "${i}" == 'root' ]] && ! [[ "${i}" == 'halt' ]] && ! [[ "${i}" == 'restart' ]]; then
     	USERS+=("${i}")
@@ -99,7 +102,7 @@ function users() {
 function sudoers() {
   # Get a list of the sudoers list.
   SUDODIR="/etc/sudoers.d"
-  SUDOLIST=( $(ls ${SUDODIR}) )
+  SUDOLIST=( $(ls "${SUDODIR}") )
   for i in "${SUDOLIST[@]}"; do
     SUDOERS+=("${i}")
   done
@@ -123,9 +126,9 @@ function info_out() {
     OS=$( grep release /etc/redhat-release )
   fi
   SERVICE="jcagent"
-  STATUS=$( service ${SERVICE} status 2> /dev/null )
+  STATUS=$( service "${SERVICE}" status 2> /dev/null )
   if [[ -z "${STATUS}" ]]; then
-    STATUS=$( echo "PID  PATH" ; ps ax | grep [j]cagent | awk '{print $1" "$5}')
+    STATUS=$( echo "PID  PATH" ; pgrep -f -a "jumpcloud-agent" | awk '{print $1" "$5}')
   fi
   OS=$( grep PRETTY_NAME /etc/os-release | cut -d\" -f2)
   TZONE=$( date +"%Z %z" )
@@ -174,3 +177,4 @@ function main() {
 }
 
 main
+

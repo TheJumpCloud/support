@@ -73,8 +73,11 @@ function ziplog() {
   USER_DIR="/Users"
   USER_AGENT_LOG_DIR="Library/Logs/JumpCloud"
   USER_AGENT_CURR_LOG="jc-user-agent.log"
-  USER_AGENT_PREV_LOG="${USER_AGENT_CURR_LOG}.prev"
-  LOGFILES=("jcagent.log" "jcagent.log.prev" "jcUpdate.log" "jctray.log" "jumpcloud-loginwindow" "jcagent-preinstall.log" "jcagent-postinstall.log" "jcUninstall.log")
+  USER_AGENT_PREV_LOG="${USER_AGENT_CURR_LOG}.1"
+  LOGFILES=(
+  "jcagent.log" "jcUpdate.log" "jctray.log" "jumpcloud-loginwindow" "jcagent-preinstall.log" "jcagent-postinstall.log" "jcUninstall.log"
+  "jcagent.log.1" "jcagent.log.2" "jcagent.log.3" "jcagent.log.4" "jcagent.log.5" "jcagent.log.6" "jcagent.log.7" "jcagent.log.8" "jcagent.log.9"
+  )
   if [[ "${ZPATH}" == "false" ]]; then
     ARC_FILE="${TARFILE}"
     ZIP_CMD="tar -rf "
@@ -110,7 +113,7 @@ function ziplog() {
 function users() {
   # Get a list of users.
   USERLIST=()
-  while IFS='' read -r line; do USERLIST+=("$line"); done < <(dscl . list /Users | grep -v '_')
+  while IFS='' read -r line; do USERLIST+=("${line}"); done < <(dscl . list /Users | grep -v '_')
   for i in "${USERLIST[@]}"; do
     if ! [[ ${i} == "root" ]] && ! [[ ${i} == "daemon" ]] && ! [[ ${i} == "nobody" ]]; then
       USERS+=("${i}")
@@ -122,7 +125,7 @@ function sudoers() {
   # Get a list of the sudoers directory.
   SUDODIR="/etc/sudoers.d"
   SUDOLIST=()
-  while IFS='' read -r line; do SUDOLIST+=("$line"); done < <(ls ${SUDODIR})
+  while IFS='' read -r line; do SUDOLIST+=("${line}"); done < <(ls "${SUDODIR}")
   for i in "${SUDOLIST[@]}"; do
     SUDOERS+=("${i}")
   done
