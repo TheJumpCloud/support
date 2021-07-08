@@ -34,7 +34,7 @@ func getSystemGroupsforSystem(apiClientV2 *jcapiv2.APIClient, auth context.Conte
 		// add the retrieved system groups names to the list for the current system:
 		for _, graph := range graphs {
 			// get the details of the current system group:
-			systemGroup, _, err := apiClientV2.SystemGroupsApi.GroupsSystemGet(auth, graph.Id, contentType, accept)
+			systemGroup, _, err := apiClientV2.SystemGroupsApi.GroupsSystemGet(auth, graph.Id, contentType, accept, optionals)
 			if err != nil {
 				// just log a message and skip the system group if there's an error retrieving details:
 				log.Printf("Could not retrieve info for system group ID %s, err='%s'\n", graph.Id, err)
