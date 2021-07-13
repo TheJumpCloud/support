@@ -17,6 +17,9 @@ JumpCloud supports the management of Custom MDM Configuration [profiles](https:/
     - [Radius EAP-TTLS/PAP Network Profile](#radius-eap-ttlspap-network-profile)
       - [Manually Configure the Radius Profile](#manually-configure-the-radius-profile)
       - [Use the Radius Profile Template](#use-the-radius-profile-template)
+    - [Create a System Extension Profile](#create-a-system-extension-profile)
+      - [Distributing an App with System Extension Profile](#distributing-an-app-with-system-extension-profile)
+      - [Google Santa distribution steps](#google-santa-distribution-steps)
     - [Create a Privacy Preference Policy Control Profile](#create-a-privacy-preference-policy-control-profile)
       - [About PPPC Profiles](#about-pppc-profiles)
       - [Example PPPC Profile](#example-pppc-profile)
@@ -157,6 +160,36 @@ Add the Radius Cert to the Wifi payload within the profile
 ![Radius Certificate Wifi Payload](images/radius_wifi.png)
 
 Distribute this profile to JumpCloud systems through [Custom MDM profiles](https://jumpcloud.com/blog/custom-configuration-profiles).
+
+### Create a System Extension Profile
+
+[Kernel Extensions](https://support.apple.com/guide/deployment-reference-macos/kernel-extensions-in-macos-apd37565d329/web) and [System Extensions](https://support.apple.com/en-us/HT210999) are two disparate yet often confused profile configuration types. In most cases software developers who have previously released Kernel Extensions have already released compatible System Extensions.
+
+System Extension Profiles are often times published by the software vendor that requires the extension. If a system extension is required by an application, the application vendor may publish a system extension .mobileconfig file which can be uploaded to JumpCloud and deployed through [Custom MDM Profiles](https://jumpcloud.com/blog/custom-configuration-profiles)
+
+#### Distributing an App with System Extension Profile
+
+System extensions can be distributed using JumpCloud [Custom MDM Profiles](https://jumpcloud.com/blog/custom-configuration-profiles), in this example we'll follow the steps to distribute [Google Santa](https://github.com/google/santa) - An app to track and block execution of binary applications to a managed macOS system. Google Santa requires a [system extension](https://github.com/google/santa/blob/main/docs/deployment/system-extension-policy.santa.example.mobileconfig) to run the required daemon.
+
+System Extensions can be deployed to systems before their corresponding application is installed on a managed system.
+
+#### Google Santa distribution steps
+
+First deploy the necessary profiles to a JumpCloud test system
+
+* Distribute the required [Google Santa System Extension profile](https://github.com/google/santa/blob/main/docs/deployment/system-extension-policy.santa.example.mobileconfig) to a JumpCloud system through [Custom MDM profiles](https://jumpcloud.com/blog/custom-configuration-profiles).
+* Distribute the required [PPPC](https://github.com/google/santa/blob/main/docs/deployment/tcc.configuration-profile-policy.santa.example.mobileconfig) and [notification](https://github.com/google/santa/blob/main/docs/deployment/notificationsettings.santa.example.mobileconfig) profiles o a JumpCloud system through [Custom MDM profiles](https://jumpcloud.com/blog/custom-configuration-profiles).
+
+![santa profiles in JumpCloud](./images/santa_profiles.png)
+![santa profiles on system](./images/santa_profiles_onSystem.png)
+
+Then deploy the Google Santa application to a JumpCloud test system. Applications can be distributed though commands or installed manually. In this instance, I've compiled a custom pkg, uploaded it to my deployment server and set the JumpCloud [Software Management](https://jumpcloud-support.force.com/support/s/article/Software-Management-Mac-OS) feature to deploy the Santa App.
+
+![santa install](./images/santa_install.png)
+
+After installation on a system, the binary application runs as expected without user input or system extension approval.
+
+![santa running](./images/santa_running.png)
 
 ### Create a Privacy Preference Policy Control Profile
 
