@@ -32,7 +32,7 @@ ForEach ($DependentModule In $DependentModules)
 ### TODO: Switch to CodeArtifact
 If ($RequiredModulesRepo -ne 'PSGallery')
 {
-    $env:SYSTEM_ACCESSTOKEN = Get-CAAuthorizationToken -Domain jumpcloud-artifacts -Region us-east-1    # Set default -Repository parameter value to be $RequiredModulesRepo
+    $SYSTEM_ACCESSTOKEN = Get-CAAuthorizationToken -Domain jumpcloud-artifacts -Region us-east-1    # Set default -Repository parameter value to be $RequiredModulesRepo
     Get-Command -Module:('PowerShellGet', 'PackageManagement') -ParameterName 'Repository' | ForEach-Object {
        If ( -not $global:PSDefaultParameterValues.GetEnumerator() | Where-Object { $_.Key -eq "$($_.Name):Repository" -and $_.Value -eq $RequiredModulesRepo })
        {
@@ -46,9 +46,9 @@ If ($RequiredModulesRepo -ne 'PSGallery')
            $global:PSDefaultParameterValues["$($_.Name):AllowPrerelease"] = $true
        }
     }
-    If (-not [System.String]::IsNullOrEmpty($env:SYSTEM_ACCESSTOKEN))
+    If (-not [System.String]::IsNullOrEmpty($SYSTEM_ACCESSTOKEN))
     {
-       $global:RepositoryCredentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $env:SYSTEM_ACCESSTOKEN, ($env:SYSTEM_ACCESSTOKEN | ConvertTo-SecureString -AsPlainText -Force)
+       $RepositoryCredentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $SYSTEM_ACCESSTOKEN, ($SYSTEM_ACCESSTOKEN | ConvertTo-SecureString -AsPlainText -Force)
        # Set default -Credential parameter value to be $RepositoryCredentials
        Get-Command -Module:('PowerShellGet', 'PackageManagement') -ParameterName 'Credential' | ForEach-Object {
            If ( -not $global:PSDefaultParameterValues.GetEnumerator() | Where-Object { $_.Key -eq "$($_.Name):Credential" -and $_.Value -eq $RepositoryCredentials })
