@@ -70,6 +70,7 @@ workflows:
       - Build Modules:
           requires:
             - Initial Setup
+          context: aws-credentials
       - Build Help and Test Files:
           requires:
             - Build Modules
@@ -85,6 +86,7 @@ workflows:
             - Initial Setup
             - Build Help and Test Files
             - Build Nuspec
+          context: aws-credentials
       - Invoke Git Commit:
           requires:
             - Module Validation Tests
@@ -95,6 +97,7 @@ workflows:
             - Build Nuspec
             - Module Validation Tests
             - Invoke Git Commit
+          context: aws-credentials
       - Pester Tests Mac:
           requires:
             - Initial Setup
@@ -102,6 +105,7 @@ workflows:
             - Build Nuspec
             - Module Validation Tests
             - Invoke Git Commit
+          context: aws-credentials
       - Pester Tests Linux:
           requires:
             - Initial Setup
@@ -109,6 +113,7 @@ workflows:
             - Build Nuspec
             - Module Validation Tests
             - Invoke Git Commit
+          context: aws-credentials
       - Publish Module Validation:
           requires:
             - Initial Setup
