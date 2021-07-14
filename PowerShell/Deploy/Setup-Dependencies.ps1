@@ -15,7 +15,12 @@ ForEach ($DependentModule In $DependentModules)
     If ([System.String]::IsNullOrEmpty((Get-InstalledModule | Where-Object { $_.Name -eq $DependentModule })))
     {
         Write-Host("[status]Installing module: '$DependentModule' from 'PSGallery'")
-        Install-Module -Repository:('PSGallery') -Force -Name:($DependentModule) -Scope:('CurrentUser') -AllowClobber
+        if ($DependentModule -eq 'PowerShellGet'){
+            Install-Module -Name $DependentModule -Repository:('PSGallery') -AllowPrerelease -RequiredVersion '3.0.0-beta10'
+        }
+        else{
+            Install-Module -Repository:('PSGallery') -Force -Name:($DependentModule) -Scope:('CurrentUser') -AllowClobber
+        }
     }
     # Get-Module -Refresh -ListAvailable
     If ([System.String]::IsNullOrEmpty((Get-Module | Where-Object { $_.Name -eq $DependentModule })))
