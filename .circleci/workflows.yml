@@ -175,7 +175,7 @@ jobs:
           JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_LINUX
           ExcludeTagList: 'None'
           IncludeTagList: 'ModuleValidation'
-          RequiredModulesRepo: PSGallery
+          RequiredModulesRepo: CodeArtifact
   Invoke Git Commit:
     executor: win/default
     steps:
@@ -188,7 +188,7 @@ jobs:
           JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_MTP
           ExcludeTagList: 'ModuleValidation, JCUsersFromCSV, JCDeployment, JCModule'
           IncludeTagList: '*'
-          RequiredModulesRepo: PSGallery
+          RequiredModulesRepo: CodeArtifact
           Shell: 'pwsh.exe'
   Pester Tests Mac:
     executor: macos_exec
@@ -199,7 +199,7 @@ jobs:
           JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_MTP
           ExcludeTagList: 'ModuleValidation, JCUsersFromCSV, JCDeployment, JCModule'
           IncludeTagList: '*'
-          RequiredModulesRepo: PSGallery
+          RequiredModulesRepo: CodeArtifact
           Shell: 'pwsh'
   Pester Tests Linux:
     machine:
@@ -211,7 +211,7 @@ jobs:
           JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_MTP
           ExcludeTagList: 'ModuleValidation, JCUsersFromCSV, JCDeployment, JCModule'
           IncludeTagList: '*'
-          RequiredModulesRepo: PSGallery
+          RequiredModulesRepo: CodeArtifact
           Shell: 'pwsh'
   Publish Module Validation:
     machine:
