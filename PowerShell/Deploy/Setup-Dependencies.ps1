@@ -81,15 +81,18 @@ If (-not [System.String]::IsNullOrEmpty($Psd1))
             Write-Host("[status]Installing module: '$RequiredModule' from '$RequiredModulesRepo'")
             If ($RequiredModulesRepo -ne 'PSGallery'){
                 install-PSResource -Name:($RequiredModule) -Repository:($RequiredModulesRepo) -Credential $RepositoryCredentials -Prerelease -Scope:('CurrentUser')
+                $modulePath = "C:\Users\circleci\Documents\PowerShell\Modules"
+                $installedModule = Get-PSResource -name:($RequiredModule) -path $modulePath
+                import-module -Name C:\Users\circleci\Documents\PowerShell\Modules\$($installedModule.Name)\$($installedModule.Version)\$($installedModule.Name).psd1 -Force -Global
             }
             else{
                 Install-Module -Force -Name:($RequiredModule) -Scope:('CurrentUser') -Repository:($RequiredModulesRepo) -Credential:($RepositoryCredentials) -AllowPrerelease
-            }
-            # Get-Module -Refresh -ListAvailable
-            If ([System.String]::IsNullOrEmpty((Get-Module | Where-Object { $_.Name -eq $RequiredModule })))
-            {
-                Write-Host("[status]Importing module: '$RequiredModule'")
-                Import-Module -Name:($RequiredModule) -Force -Global
+                # Get-Module -Refresh -ListAvailable
+                If ([System.String]::IsNullOrEmpty((Get-Module | Where-Object { $_.Name -eq $RequiredModule })))
+                {
+                    Write-Host("[status]Importing module: '$RequiredModule'")
+                    Import-Module -Name:($RequiredModule) -Force -Global
+                }
             }
         }
     }
