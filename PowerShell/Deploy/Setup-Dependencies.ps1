@@ -16,7 +16,7 @@ ForEach ($DependentModule In $DependentModules)
     {
         Write-Host("[status]Installing module: '$DependentModule' from 'PSGallery'")
         if ($DependentModule -eq 'PowerShellGet'){
-            Install-Module -Name $DependentModule -Repository:('PSGallery') -AllowPrerelease -RequiredVersion '3.0.0-beta10'
+            Install-Module -Name $DependentModule -Repository:('PSGallery') -AllowPrerelease -RequiredVersion '3.0.0-beta10' -Force
         }
         else{
             Install-Module -Repository:('PSGallery') -Force -Name:($DependentModule) -Scope:('CurrentUser') -AllowClobber
