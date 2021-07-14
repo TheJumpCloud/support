@@ -48,14 +48,14 @@ If ($RequiredModulesRepo -ne 'PSGallery')
     }
     If (-not [System.String]::IsNullOrEmpty($SYSTEM_ACCESSTOKEN))
     {
-       $RepositoryCredentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $SYSTEM_ACCESSTOKEN, ($SYSTEM_ACCESSTOKEN | ConvertTo-SecureString -AsPlainText -Force)
-       # Set default -Credential parameter value to be $RepositoryCredentials
-       Get-Command -Module:('PowerShellGet', 'PackageManagement') -ParameterName 'Credential' | ForEach-Object {
-           If ( -not $global:PSDefaultParameterValues.GetEnumerator() | Where-Object { $_.Key -eq "$($_.Name):Credential" -and $_.Value -eq $RepositoryCredentials })
-           {
-               $global:PSDefaultParameterValues["$($_.Name):Credential"] = $RepositoryCredentials
-           }
-       }
+        $RepositoryCredentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $authToken.AuthorizationToken , ($authToken.AuthorizationToken | ConvertTo-SecureString -AsPlainText -Force)
+        # Set default -Credential parameter value to be $RepositoryCredentials
+        Get-Command -Module:('PowerShellGet', 'PackageManagement') -ParameterName 'Credential' | ForEach-Object {
+            If ( -not $global:PSDefaultParameterValues.GetEnumerator() | Where-Object { $_.Key -eq "$($_.Name):Credential" -and $_.Value -eq $RepositoryCredentials })
+            {
+                $global:PSDefaultParameterValues["$($_.Name):Credential"] = $RepositoryCredentials
+            }
+        }
     }
     Else
     {
