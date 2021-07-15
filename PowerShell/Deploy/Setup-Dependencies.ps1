@@ -46,7 +46,7 @@ If ($RequiredModulesRepo -ne 'PSGallery')
     #        $global:PSDefaultParameterValues["$($_.Name):AllowPrerelease"] = $true
     #    }
     # }
-    If (-not [System.String]::IsNullOrEmpty($SYSTEM_ACCESSTOKEN))
+    If (-not [System.String]::IsNullOrEmpty($authToken))
     {
         $RepositoryCredentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $authToken.AuthorizationToken , ($authToken.AuthorizationToken | ConvertTo-SecureString -AsPlainText -Force)
         # Set default -Credential parameter value to be $RepositoryCredentials
@@ -59,15 +59,15 @@ If ($RequiredModulesRepo -ne 'PSGallery')
     }
     Else
     {
-       Write-Warning ('No SYSTEM_ACCESSTOKEN has been provided')
+        Write-Warning ('No authToken has been provided')
     }
     # Register PSRepository
-    If (-not (Get-PSResourceRepository -Name:($RequiredModulesRepo) -ErrorAction SilentlyContinue))
-    {
+    # If (-not (Get-PSResourceRepository -Name:($RequiredModulesRepo) -ErrorAction SilentlyContinue))
+    # {
        Write-Host("[status]Register-PackageSource Setup '$RequiredModulesRepo'")
     #    Register-PackageSource -Trusted -ProviderName:("PowerShellGet") -Name:($RequiredModulesRepo) -Credential:($RepositoryCredentials) -Location:("https://pkgs.dev.azure.com/$(($RequiredModulesRepo.Split('-'))[0])/_packaging/$($(($RequiredModulesRepo.Split('-'))[1]))/nuget/v2/")
         Register-PSResourceRepository -Name $RequiredModulesRepo -URL "https://jumpcloud-artifacts-868503801984.d.codeartifact.us-east-1.amazonaws.com/nuget/jumpcloud-nuget-modules/v3/index.json" -Trusted
-    }
+    # }
 }
 If (-not [System.String]::IsNullOrEmpty($Psd1))
 {
