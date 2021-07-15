@@ -75,6 +75,7 @@ workflows:
           requires:
             - Build Modules
             - Initial Setup
+          context: aws-credentials
       - Build Nuspec:
           requires:
             - Initial Setup
