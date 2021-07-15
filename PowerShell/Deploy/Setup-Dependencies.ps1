@@ -1,5 +1,5 @@
 Param(
-    [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 0)][System.String[]]$DependentModules = ('PowerShellGet', 'PackageManagement', 'PSScriptAnalyzer', 'PlatyPS', 'Pester', 'AWS.Tools.Common', 'AWS.Tools.CodeArtifact', 'AWS.Tools.IdentityManagement')
+    [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 0)][System.String[]]$DependentModules = ('PowerShellGet', 'PackageManagement', 'PSScriptAnalyzer', 'PlatyPS', 'Pester', 'AWS.Tools.Common', 'AWS.Tools.CodeArtifact')
     , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 1)][System.String]$RequiredModulesRepo = 'PSGallery'
 )
 # Install NuGet
@@ -32,30 +32,30 @@ ForEach ($DependentModule In $DependentModules)
 ### TODO: Switch to CodeArtifact
 If ($RequiredModulesRepo -ne 'PSGallery')
 {
-    $SYSTEM_ACCESSTOKEN = Get-CAAuthorizationToken -Domain jumpcloud-artifacts -Region us-east-1    # Set default -Repository parameter value to be $RequiredModulesRepo
-    Get-Command -Module:('PowerShellGet', 'PackageManagement') -ParameterName 'Repository' | ForEach-Object {
-       If ( -not $global:PSDefaultParameterValues.GetEnumerator() | Where-Object { $_.Key -eq "$($_.Name):Repository" -and $_.Value -eq $RequiredModulesRepo })
-       {
-           $global:PSDefaultParameterValues["$($_.Name):Repository"] = $RequiredModulesRepo
-       }
-    }
+    $authToken = Get-CAAuthorizationToken -Domain jumpcloud-artifacts -Region us-east-1
+    # Get-Command -Module:('PowerShellGet', 'PackageManagement') -ParameterName 'Repository' | ForEach-Object {
+    #    If ( -not $global:PSDefaultParameterValues.GetEnumerator() | Where-Object { $_.Key -eq "$($_.Name):Repository" -and $_.Value -eq $RequiredModulesRepo })
+    #    {
+    #        $global:PSDefaultParameterValues["$($_.Name):Repository"] = $RequiredModulesRepo
+    #    }
+    # }
     # Set default -AllowPrerelease parameter value to be $True
-    Get-Command -Module:('PowerShellGet', 'PackageManagement') -ParameterName 'AllowPrerelease' | ForEach-Object {
-       If ( -not $global:PSDefaultParameterValues.GetEnumerator() | Where-Object { $_.Key -eq "$($_.Name):AllowPrerelease" -and $_.Value -eq $true })
-       {
-           $global:PSDefaultParameterValues["$($_.Name):AllowPrerelease"] = $true
-       }
-    }
+    # Get-Command -Module:('PowerShellGet', 'PackageManagement') -ParameterName 'AllowPrerelease' | ForEach-Object {
+    #    If ( -not $global:PSDefaultParameterValues.GetEnumerator() | Where-Object { $_.Key -eq "$($_.Name):AllowPrerelease" -and $_.Value -eq $true })
+    #    {
+    #        $global:PSDefaultParameterValues["$($_.Name):AllowPrerelease"] = $true
+    #    }
+    # }
     If (-not [System.String]::IsNullOrEmpty($SYSTEM_ACCESSTOKEN))
     {
-        $RepositoryCredentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList "userName" , (ConvertTo-SecureString -String "($($SYSTEM_ACCESSTOKEN.AuthorizationToken)" -AsPlainText -Force)
+        $RepositoryCredentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $authToken.AuthorizationToken , ($authToken.AuthorizationToken | ConvertTo-SecureString -AsPlainText -Force)
         # Set default -Credential parameter value to be $RepositoryCredentials
-        Get-Command -Module:('PowerShellGet', 'PackageManagement') -ParameterName 'Credential' | ForEach-Object {
-            If ( -not $global:PSDefaultParameterValues.GetEnumerator() | Where-Object { $_.Key -eq "$($_.Name):Credential" -and $_.Value -eq $RepositoryCredentials })
-            {
-                $global:PSDefaultParameterValues["$($_.Name):Credential"] = $RepositoryCredentials
-            }
-        }
+        # Get-Command -Module:('PowerShellGet', 'PackageManagement') -ParameterName 'Credential' | ForEach-Object {
+        #     If ( -not $global:PSDefaultParameterValues.GetEnumerator() | Where-Object { $_.Key -eq "$($_.Name):Credential" -and $_.Value -eq $RepositoryCredentials })
+        #     {
+        #         $global:PSDefaultParameterValues["$($_.Name):Credential"] = $RepositoryCredentials
+        #     }
+        # }
     }
     Else
     {
@@ -65,14 +65,8 @@ If ($RequiredModulesRepo -ne 'PSGallery')
     If (-not (Get-PackageSource -Name:($RequiredModulesRepo) -ErrorAction SilentlyContinue))
     {
        Write-Host("[status]Register-PackageSource Setup '$RequiredModulesRepo'")
-
-        $iamUser = Get-IAMUser 
-        $arnRaw = $iamUser.Arn
-        $arnRaw -Match "iam::(.*):"
-        $arn = $Matches[1]
-        Write-Host $arn
     #    Register-PackageSource -Trusted -ProviderName:("PowerShellGet") -Name:($RequiredModulesRepo) -Credential:($RepositoryCredentials) -Location:("https://pkgs.dev.azure.com/$(($RequiredModulesRepo.Split('-'))[0])/_packaging/$($(($RequiredModulesRepo.Split('-'))[1]))/nuget/v2/")
-        Register-PSResourceRepository -Name $RequiredModulesRepo -URL "https://jumpcloud-artifacts-$($arn).d.codeartifact.us-east-1.amazonaws.com/nuget/jumpcloud-nuget-modules/v3/index.json" -Trusted
+        Register-PSResourceRepository -Name $RequiredModulesRepo -URL "https://jumpcloud-artifacts-868503801984.d.codeartifact.us-east-1.amazonaws.com/nuget/jumpcloud-nuget-modules/v3/index.json" -Trusted
     }
 }
 If (-not [System.String]::IsNullOrEmpty($Psd1))
