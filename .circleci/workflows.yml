@@ -382,7 +382,7 @@ commands:
                   Source: << parameters.source >>
                 command: |
                   $ErrorActionPreference = 'Stop'
-                  . "./PowerShell/Deploy/BuildNuspecFromPsd1.ps1"
+                  . "./PowerShell/Deploy/BuildNuspecFromPsd1.ps1" -RequiredModulesRepo << pipeline.parameters.RequiredModulesRepo >>
             - run:
                 name: Install Dependencies
                 shell: pwsh.exe
