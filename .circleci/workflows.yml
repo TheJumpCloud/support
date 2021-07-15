@@ -323,7 +323,7 @@ commands:
                 shell: pwsh.exe
                 command: |
                   $ErrorActionPreference = 'Stop'
-                  ./PowerShell\Deploy\SdkSync\jcapiToSupportSync.ps1 -RequiredModulesRepo "<< pipeline.parameters.RequiredModulesRepo >>"
+                  ./PowerShell\Deploy\SdkSync\jcapiToSupportSync.ps1 -RequiredModulesRepo << pipeline.parameters.RequiredModulesRepo >>
                   ./PowerShell/Deploy/Build-HelpFiles.ps1 -ModuleName JumpCloud -ModulePath "./PowerShell/JumpCloud Module"
   build-testfiles:
     steps:
