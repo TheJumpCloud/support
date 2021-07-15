@@ -336,7 +336,7 @@ commands:
                 shell: pwsh.exe
                 command: |
                   $ErrorActionPreference = 'Stop'
-                  ./PowerShell/Deploy/Build-PesterTestFiles.ps1
+                  ./PowerShell/Deploy/Build-PesterTestFiles.ps1 -RequiredModulesRepo << pipeline.parameters.RequiredModulesRepo >>
   invoke-script:
     steps:
       - checkout
