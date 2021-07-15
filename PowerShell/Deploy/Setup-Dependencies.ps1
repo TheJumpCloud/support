@@ -1,5 +1,5 @@
 Param(
-    [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 0)][System.String[]]$DependentModules = ('PowerShellGet', 'PackageManagement', 'PSScriptAnalyzer', 'PlatyPS', 'Pester', 'AWS.Tools.Common', 'AWS.Tools.CodeArtifact')
+    [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 0)][System.String[]]$DependentModules = ('PowerShellGet', 'PackageManagement', 'PSScriptAnalyzer', 'PlatyPS', 'Pester', 'AWS.Tools.Common', 'AWS.Tools.CodeArtifact', 'AWS.Tools.IdentityManagement')
     , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 1)][System.String]$RequiredModulesRepo = 'PSGallery'
 )
 # Install NuGet
@@ -65,8 +65,14 @@ If ($RequiredModulesRepo -ne 'PSGallery')
     If (-not (Get-PackageSource -Name:($RequiredModulesRepo) -ErrorAction SilentlyContinue))
     {
        Write-Host("[status]Register-PackageSource Setup '$RequiredModulesRepo'")
+
+        $iamUser = Get-IAMUser 
+        $arnRaw = $iamUser.Arn
+        $arnRaw -Match "iam::(.*):"
+        $arn = $Matches[1]
+        Write-Host $arn
     #    Register-PackageSource -Trusted -ProviderName:("PowerShellGet") -Name:($RequiredModulesRepo) -Credential:($RepositoryCredentials) -Location:("https://pkgs.dev.azure.com/$(($RequiredModulesRepo.Split('-'))[0])/_packaging/$($(($RequiredModulesRepo.Split('-'))[1]))/nuget/v2/")
-        Register-PSResourceRepository -Name $RequiredModulesRepo -URL "https://jumpcloud-artifacts-868503801984.d.codeartifact.us-east-1.amazonaws.com/nuget/jumpcloud-nuget-modules/v3/index.json" -Trusted 
+        Register-PSResourceRepository -Name $RequiredModulesRepo -URL "https://jumpcloud-artifacts-$($arn).d.codeartifact.us-east-1.amazonaws.com/nuget/jumpcloud-nuget-modules/v3/index.json" -Trusted
     }
 }
 If (-not [System.String]::IsNullOrEmpty($Psd1))
