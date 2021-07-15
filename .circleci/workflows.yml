@@ -451,7 +451,7 @@ commands:
                 no_output_timeout: 30m
                 command: |
                   $ErrorActionPreference = 'stop'
-                  ./PowerShell\Deploy\SdkSync\jcapiToSupportSync.ps1
+                  ./PowerShell\Deploy\SdkSync\jcapiToSupportSync.ps1 -RequiredModulesRepo << pipeline.parameters.RequiredModulesRepo >>
                   . "./PowerShell/JumpCloud Module/Tests/InvokePester.ps1" -JumpCloudApiKey << parameters.JumpCloudApiKey >> -JumpCloudApiKeyMsp << parameters.JumpCloudApiKeyMsp >> -ExcludeTagList << parameters.ExcludeTagList >> -IncludeTagList << parameters.IncludeTagList >> -RequiredModulesRepo << parameters.RequiredModulesRepo >>
             - store_test_results:
                 name: Uploading test results'
