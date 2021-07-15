@@ -96,7 +96,7 @@ If (-not [System.String]::IsNullOrEmpty($Psd1))
                 $moduleFound = Get-PSResource -name $RequiredModule -path C:\Users\circleci\Documents\PowerShell\Modules
                 if (-not [string]::isnullorempty($moduleFound)) {
                     # Remove Module If It Exists
-                    If (Get-PSResource -Name:($_) -Path:($LocalPSModulePath)) { Remove-Item -Path:($ModulePath) -Recurse -Force; }
+                    If (Get-PSResource -Name:($RequiredModule) -Path:($LocalPSModulePath)) { Remove-Item -Path:($ModulePath) -Recurse -Force; }
                 }
                 # Install Module Commands
                 $LocalPSModulePath = $env:PSModulePath.split(';') | Where-Object { $_ -like '*documents*' }
