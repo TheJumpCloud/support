@@ -62,8 +62,8 @@ If ($RequiredModulesRepo -ne 'PSGallery')
         Write-Warning ('No authToken has been provided')
     }
     # Register PSRepository
-    # If (-not (Get-PSResourceRepository -Name:($RequiredModulesRepo) -ErrorAction SilentlyContinue))
-    # {
+    If (-not (Get-PSResourceRepository -Name:($RequiredModulesRepo) -ErrorAction SilentlyContinue))
+    {
         Write-Host("[status]Register-PackageSource Setup '$RequiredModulesRepo'")
         $AWSRepo = 'jumpcloud-nuget-modules'
         $AWSDomain = 'jumpcloud-artifacts'
@@ -72,7 +72,7 @@ If ($RequiredModulesRepo -ne 'PSGallery')
         Register-PSResourceRepository -Name:($RequiredModulesRepo) -URL:("$($AWSCARepoEndpoint)v3/index.json") -Trusted
     #    Register-PackageSource -Trusted -ProviderName:("PowerShellGet") -Name:($RequiredModulesRepo) -Credential:($RepositoryCredentials) -Location:("https://pkgs.dev.azure.com/$(($RequiredModulesRepo.Split('-'))[0])/_packaging/$($(($RequiredModulesRepo.Split('-'))[1]))/nuget/v2/")
         # Register-PSResourceRepository -Name $RequiredModulesRepo -URL "https://jumpcloud-artifacts-868503801984.d.codeartifact.us-east-1.amazonaws.com/nuget/jumpcloud-nuget-modules/v3/index.json" -Trusted
-    # }
+    }
 }
 If (-not [System.String]::IsNullOrEmpty($Psd1))
 {
