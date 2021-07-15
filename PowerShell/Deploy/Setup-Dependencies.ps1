@@ -93,7 +93,7 @@ If (-not [System.String]::IsNullOrEmpty($Psd1))
                 # $installedModule = Get-PSResource -name:($RequiredModule) -path $modulePath
                 # Write-Host("[status]Importing module: '$RequiredModule'")
                 # import-module -Name C:\Users\circleci\Documents\PowerShell\Modules\$($installedModule.Name)\$($installedModule.Version)\$($installedModule.Name).psd1 -Force -Global
-                $moduleFound = Get-PSResource -name $RequiredModule -path C:\Users\circleci\Documents\PowerShell\Modules
+                $moduleFound = Get-PSResource -name $RequiredModule -path "C:\Users\circleci\Documents\PowerShell\Modules"
                 if (-not [string]::isnullorempty($moduleFound)) {
                     # Remove Module If It Exists
                     If (Get-PSResource -Name:($RequiredModule) -Path:($LocalPSModulePath)) { Remove-Item -Path:($ModulePath) -Recurse -Force; }
