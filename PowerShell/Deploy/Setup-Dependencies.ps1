@@ -93,7 +93,7 @@ If (-not [System.String]::IsNullOrEmpty($Psd1))
 
                 # Install Module Command
                 $LocalPSModulePath = $env:PSModulePath.split(';') | Where-Object { $_ -like '*documents*' }
-                $ModulePath = "$($LocalPSModulePath)/$($_)"
+                $ModulePath = "$($LocalPSModulePath)/$($RequiredModule)"
                 # Remove existing module
                 # If (Get-PSResource -Name:($_) -Path:($LocalPSModulePath)) { Remove-Item -Path:($ModulePath) -Recurse -Force; }
                 # Install new module
