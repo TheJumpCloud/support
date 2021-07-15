@@ -64,9 +64,14 @@ If ($RequiredModulesRepo -ne 'PSGallery')
     # Register PSRepository
     # If (-not (Get-PSResourceRepository -Name:($RequiredModulesRepo) -ErrorAction SilentlyContinue))
     # {
-       Write-Host("[status]Register-PackageSource Setup '$RequiredModulesRepo'")
+        Write-Host("[status]Register-PackageSource Setup '$RequiredModulesRepo'")
+        $env:AWSRepo = 'jumpcloud-nuget-modules'
+        $AWSDomain = 'jumpcloud-artifacts'
+        $AWSRegion = 'us-east-1'
+        $AWSCARepoEndpoint = Get-CARepositoryEndpoint -Domain:($AWSDomain) -Repository:($env:AWSRepo) -Region:($AWSRegion) -Format:('nuget')
+        Register-PSResourceRepository -Name:($env:AWSRepoName) -URL:("$($env:AWSCARepoEndpoint)v3/index.json") -Trusted
     #    Register-PackageSource -Trusted -ProviderName:("PowerShellGet") -Name:($RequiredModulesRepo) -Credential:($RepositoryCredentials) -Location:("https://pkgs.dev.azure.com/$(($RequiredModulesRepo.Split('-'))[0])/_packaging/$($(($RequiredModulesRepo.Split('-'))[1]))/nuget/v2/")
-        Register-PSResourceRepository -Name $RequiredModulesRepo -URL "https://jumpcloud-artifacts-868503801984.d.codeartifact.us-east-1.amazonaws.com/nuget/jumpcloud-nuget-modules/v3/index.json" -Trusted
+        # Register-PSResourceRepository -Name $RequiredModulesRepo -URL "https://jumpcloud-artifacts-868503801984.d.codeartifact.us-east-1.amazonaws.com/nuget/jumpcloud-nuget-modules/v3/index.json" -Trusted
     # }
 }
 If (-not [System.String]::IsNullOrEmpty($Psd1))
@@ -80,10 +85,24 @@ If (-not [System.String]::IsNullOrEmpty($Psd1))
         {
             Write-Host("[status]Installing module: '$RequiredModule' from '$RequiredModulesRepo'")
             If ($RequiredModulesRepo -ne 'PSGallery'){
-                install-PSResource -Name:($RequiredModule) -Repository:($RequiredModulesRepo) -Credential $RepositoryCredentials -Prerelease -Scope:('CurrentUser')
-                $modulePath = "C:\Users\circleci\Documents\PowerShell\Modules"
-                $installedModule = Get-PSResource -name:($RequiredModule) -path $modulePath
-                import-module -Name C:\Users\circleci\Documents\PowerShell\Modules\$($installedModule.Name)\$($installedModule.Version)\$($installedModule.Name).psd1 -Force -Global
+                # install-PSResource -Name:($RequiredModule) -Repository:($RequiredModulesRepo) -Credential $RepositoryCredentials -Prerelease -Scope:('CurrentUser')
+                # $modulePath = "C:\Users\circleci\Documents\PowerShell\Modules"
+                # $installedModule = Get-PSResource -name:($RequiredModule) -path $modulePath
+                # Write-Host("[status]Importing module: '$RequiredModule'")
+                # import-module -Name C:\Users\circleci\Documents\PowerShell\Modules\$($installedModule.Name)\$($installedModule.Version)\$($installedModule.Name).psd1 -Force -Global
+
+                # Install Module Command
+                $LocalPSModulePath = $env:PSModulePath.split(';') | Where-Object { $_ -like '*documents*' }
+                $ModulePath = "$($LocalPSModulePath)/$($_)"
+                # Remove existing module
+                # If (Get-PSResource -Name:($_) -Path:($LocalPSModulePath)) { Remove-Item -Path:($ModulePath) -Recurse -Force; }
+                # Install new module
+                Install-PSResource -Name:($_) -Repository:($env:AWSRepoName) -Credential:($RepositoryCredentials) -Prerelease -Reinstall;
+                # Rename version folder and import module
+                Get-ChildItem -Path:($ModulePath) | ForEach-Object {
+                    If ($_.Name -match '-') { Rename-Item -Path:($_.FullName) -NewName:(($_.Name.split('-'))[0]) -Force; };
+                    Import-Module -Name:($_.Parent.Name) -Force;
+                };
             }
             else{
                 Install-Module -Force -Name:($RequiredModule) -Scope:('CurrentUser') -Repository:($RequiredModulesRepo) -Credential:($RepositoryCredentials) -AllowPrerelease
