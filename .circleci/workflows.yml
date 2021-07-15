@@ -324,7 +324,7 @@ commands:
                 command: |
                   $ErrorActionPreference = 'Stop'
                   ./PowerShell\Deploy\SdkSync\jcapiToSupportSync.ps1 -RequiredModulesRepo << pipeline.parameters.RequiredModulesRepo >>
-                  ./PowerShell/Deploy/Build-HelpFiles.ps1 -ModuleName JumpCloud -ModulePath "./PowerShell/JumpCloud Module"
+                  ./PowerShell/Deploy/Build-HelpFiles.ps1 -ModuleName JumpCloud -ModulePath "./PowerShell/JumpCloud Module" -RequiredModulesRepo << pipeline.parameters.RequiredModulesRepo >>
   build-testfiles:
     steps:
       - when:
