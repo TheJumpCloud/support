@@ -93,23 +93,21 @@ If (-not [System.String]::IsNullOrEmpty($Psd1))
                 # $installedModule = Get-PSResource -name:($RequiredModule) -path $modulePath
                 # Write-Host("[status]Importing module: '$RequiredModule'")
                 # import-module -Name C:\Users\circleci\Documents\PowerShell\Modules\$($installedModule.Name)\$($installedModule.Version)\$($installedModule.Name).psd1 -Force -Global
-                # $module = Get-PSResource -name jumpcloud.sdk.directoryinsgiths -path C:\Users\circleci\Documents\PowerShell\Modules
-                # if ([string]::isnullorempty($module)) {
-
-
-                # Install Module Command
-                $LocalPSModulePath = $env:PSModulePath.split(';') | Where-Object { $_ -like '*documents*' }
-                $ModulePath = "$($LocalPSModulePath)/$($RequiredModule)"
-                # Remove existing module
-                If (Get-PSResource -Name:($_) -Path:($LocalPSModulePath)) { Remove-Item -Path:($ModulePath) -Recurse -Force; }
-                # Install new module
-                Install-PSResource -Name:($RequiredModule) -Repository:($RequiredModulesRepo) -Credential:($RepositoryCredentials) -Prerelease -Reinstall;
-                # Rename version folder and import module
-                Get-ChildItem -Path:($ModulePath) | ForEach-Object {
-                    If ($_.Name -match '-') { Rename-Item -Path:($_.FullName) -NewName:(($_.Name.split('-'))[0]) -Force; };
-                    Import-Module -Name:($_.Parent.Name) -Force;
-                };
-                # }
+                $moduleFound = Get-PSResource -name jumpcloud.sdk.directoryinsgiths -path C:\Users\circleci\Documents\PowerShell\Modules
+                if ([string]::isnullorempty($moduleFound)) {
+                    # Install Module Command
+                    $LocalPSModulePath = $env:PSModulePath.split(';') | Where-Object { $_ -like '*documents*' }
+                    $ModulePath = "$($LocalPSModulePath)/$($RequiredModule)"
+                    # Remove existing module
+                    # If (Get-PSResource -Name:($_) -Path:($LocalPSModulePath)) { Remove-Item -Path:($ModulePath) -Recurse -Force; }
+                    # Install new module
+                    Install-PSResource -Name:($RequiredModule) -Repository:($RequiredModulesRepo) -Credential:($RepositoryCredentials) -Prerelease -Reinstall;
+                    # Rename version folder and import module
+                    Get-ChildItem -Path:($ModulePath) | ForEach-Object {
+                        If ($_.Name -match '-') { Rename-Item -Path:($_.FullName) -NewName:(($_.Name.split('-'))[0]) -Force; };
+                        Import-Module -Name:($_.Parent.Name) -Force;
+                    };
+                }
             }
             else{
                 Install-Module -Force -Name:($RequiredModule) -Scope:('CurrentUser') -Repository:($RequiredModulesRepo) -Credential:($RepositoryCredentials) -AllowPrerelease
