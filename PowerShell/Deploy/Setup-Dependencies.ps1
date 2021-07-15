@@ -97,7 +97,7 @@ If (-not [System.String]::IsNullOrEmpty($Psd1))
                 # Remove existing module
                 # If (Get-PSResource -Name:($_) -Path:($LocalPSModulePath)) { Remove-Item -Path:($ModulePath) -Recurse -Force; }
                 # Install new module
-                Install-PSResource -Name:($_) -Repository:($env:AWSRepoName) -Credential:($RepositoryCredentials) -Prerelease -Reinstall;
+                Install-PSResource -Name:($RequiredModule) -Repository:($env:AWSRepoName) -Credential:($RepositoryCredentials) -Prerelease -Reinstall;
                 # Rename version folder and import module
                 Get-ChildItem -Path:($ModulePath) | ForEach-Object {
                     If ($_.Name -match '-') { Rename-Item -Path:($_.FullName) -NewName:(($_.Name.split('-'))[0]) -Force; };
