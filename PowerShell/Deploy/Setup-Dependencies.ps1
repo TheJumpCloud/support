@@ -65,11 +65,11 @@ If ($RequiredModulesRepo -ne 'PSGallery')
     # If (-not (Get-PSResourceRepository -Name:($RequiredModulesRepo) -ErrorAction SilentlyContinue))
     # {
         Write-Host("[status]Register-PackageSource Setup '$RequiredModulesRepo'")
-        $env:AWSRepo = 'jumpcloud-nuget-modules'
+        $AWSRepo = 'jumpcloud-nuget-modules'
         $AWSDomain = 'jumpcloud-artifacts'
         $AWSRegion = 'us-east-1'
-        $AWSCARepoEndpoint = Get-CARepositoryEndpoint -Domain:($AWSDomain) -Repository:($env:AWSRepo) -Region:($AWSRegion) -Format:('nuget')
-        Register-PSResourceRepository -Name:($RequiredModulesRepo) -URL:("$($env:AWSCARepoEndpoint)v3/index.json") -Trusted
+        $AWSCARepoEndpoint = Get-CARepositoryEndpoint -Domain:($AWSDomain) -Repository:($AWSRepo) -Region:($AWSRegion) -Format:('nuget')
+        Register-PSResourceRepository -Name:($RequiredModulesRepo) -URL:("$($AWSCARepoEndpoint)v3/index.json") -Trusted
     #    Register-PackageSource -Trusted -ProviderName:("PowerShellGet") -Name:($RequiredModulesRepo) -Credential:($RepositoryCredentials) -Location:("https://pkgs.dev.azure.com/$(($RequiredModulesRepo.Split('-'))[0])/_packaging/$($(($RequiredModulesRepo.Split('-'))[1]))/nuget/v2/")
         # Register-PSResourceRepository -Name $RequiredModulesRepo -URL "https://jumpcloud-artifacts-868503801984.d.codeartifact.us-east-1.amazonaws.com/nuget/jumpcloud-nuget-modules/v3/index.json" -Trusted
     # }
