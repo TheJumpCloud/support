@@ -93,14 +93,14 @@ If (-not [System.String]::IsNullOrEmpty($Psd1))
                 # $installedModule = Get-PSResource -name:($RequiredModule) -path $modulePath
                 # Write-Host("[status]Importing module: '$RequiredModule'")
                 # import-module -Name C:\Users\circleci\Documents\PowerShell\Modules\$($installedModule.Name)\$($installedModule.Version)\$($installedModule.Name).psd1 -Force -Global
+                $LocalPSModulePath = $env:PSModulePath.split(';') | Where-Object { $_ -like '*documents*' }
+                $ModulePath = "$($LocalPSModulePath)/$($RequiredModule)"
                 $moduleFound = Get-PSResource -name $RequiredModule -path "C:\Users\circleci\Documents\PowerShell\Modules"
                 if (-not [string]::isnullorempty($moduleFound)) {
                     # Remove Module If It Exists
                     If (Get-PSResource -Name:($RequiredModule) -Path:($LocalPSModulePath)) { Remove-Item -Path:($ModulePath) -Recurse -Force; }
                 }
                 # Install Module Commands
-                $LocalPSModulePath = $env:PSModulePath.split(';') | Where-Object { $_ -like '*documents*' }
-                $ModulePath = "$($LocalPSModulePath)/$($RequiredModule)"
                 # Install new module
                 Install-PSResource -Name:($RequiredModule) -Repository:($RequiredModulesRepo) -Credential:($RepositoryCredentials) -Prerelease -Reinstall;
                 # Rename version folder and import module
