@@ -110,7 +110,7 @@ If (-not [System.String]::IsNullOrEmpty($Psd1))
                 }
                 # Install Module Commands
                 # Install new module
-                Install-PSResource -Name:($RequiredModule) -Repository:($RequiredModulesRepo) -Credential:($RepositoryCredentials) -Prerelease -Scope 'CurrectUser';
+                Install-PSResource -Name:($RequiredModule) -Repository:($RequiredModulesRepo) -Credential:($RepositoryCredentials) -Prerelease -Scope 'CurrentUser';
                 # Rename version folder and import module
                 Get-ChildItem -Path:($ModulePath) | ForEach-Object {
                     If ($_.Name -match '-') { Rename-Item -Path:($_.FullName) -NewName:(($_.Name.split('-'))[0]) -Force; };
