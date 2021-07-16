@@ -1,4 +1,12 @@
-. ((Get-Item -Path:($PSScriptRoot)).Parent.FullName + '/' + 'Get-Config.ps1')
+[CmdletBinding()]
+param (
+    [Parameter()]
+    [string]
+    $RequiredModulesRepo
+)
+
+. "$PSScriptRoot/../Get-Config.ps1" -RequiredModulesRepo:($RequiredModulesRepo)
+# . ((Get-Item -Path:($PSScriptRoot)).Parent.FullName + '/' + 'Get-Config.ps1')
 ###########################################################################
 $ApprovedFunctions = [Ordered]@{
     'JumpCloud.SDK.DirectoryInsights' = @(

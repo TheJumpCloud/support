@@ -1,4 +1,11 @@
-. "$PSScriptRoot/Get-Config.ps1"
+[CmdletBinding()]
+param (
+    [Parameter()]
+    [string]
+    $RequiredModulesRepo
+)
+
+. "$PSScriptRoot/Get-Config.ps1" -RequiredModulesRepo:($RequiredModulesRepo)
 ################################################################################
 # This script creates a new test file for each function in the PowerShell Module
 ################################################################################

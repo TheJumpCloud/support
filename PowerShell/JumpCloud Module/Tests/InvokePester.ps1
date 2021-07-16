@@ -6,7 +6,8 @@ Param(
     , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 4)][System.String]$RequiredModulesRepo = 'PSGallery'
 )
 # Load Get-Config.ps1
-. (Join-Path -Path:((Get-Item -Path:($PSScriptRoot)).Parent.Parent.FullName) -ChildPath:('Deploy/Get-Config.ps1') -Resolve)
+. "$PSScriptRoot/../../Deploy/Get-Config.ps1" -RequiredModulesRepo:($RequiredModulesRepo)
+# . (Join-Path -Path:((Get-Item -Path:($PSScriptRoot)).Parent.Parent.FullName) -ChildPath:('Deploy/Get-Config.ps1') -Resolve)
 # Get list of tags and validate that tags have been applied
 $PesterTests = Get-ChildItem -Path:($PSScriptRoot + '/*.Tests.ps1') -Recurse
 $Tags = ForEach ($PesterTest In $PesterTests)
@@ -38,7 +39,7 @@ Else
     $Tags | Where-Object { $_ -notin $ExcludeTags } | Select-Object -Unique
 }
 # Load DefineEnvironment
-. ("$PSScriptRoot/DefineEnvironment.ps1") -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp)
+. ("$PSScriptRoot/DefineEnvironment.ps1") -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp) -RequiredModulesRepo:($RequiredModulesRepo)
 # Load private functions
 Write-Host ('[status]Load private functions: ' + "$PSScriptRoot/../Private/*.ps1")
 Get-ChildItem -Path:("$PSScriptRoot/../Private/*.ps1") -Recurse | ForEach-Object { . $_.FullName }
