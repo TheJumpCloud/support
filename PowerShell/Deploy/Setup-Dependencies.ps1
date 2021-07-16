@@ -94,12 +94,13 @@ If (-not [System.String]::IsNullOrEmpty($Psd1))
                 # Write-Host("[status]Importing module: '$RequiredModule'")
                 # import-module -Name C:\Users\circleci\Documents\PowerShell\Modules\$($installedModule.Name)\$($installedModule.Version)\$($installedModule.Name).psd1 -Force -Global
                 # For Either Mac or Unix based PWSH determine PSModule Path
-                if ($string -match '.local/share')
+                $PowerShellModulesPaths = $env:PSModulePath
+                if ($PowerShellModulesPaths -match '.local/share')
                 {
                     $LocalPSModulePath = $env:PSModulePath.split(':') | Where-Object { $_ -like '*.local/share*' }
                     Write-Host "Module Installation Path: $LocalPSModulePath"
                 }
-                elseif ($string -match 'documents')
+                elseif ($PowerShellModulesPaths -match 'documents')
                 {
                     $LocalPSModulePath = $env:PSModulePath.split(';') | Where-Object { $_ -like '*documents*' }
                     Write-Host "Module Installation Path: $LocalPSModulePath"
