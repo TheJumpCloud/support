@@ -98,11 +98,19 @@ If (-not [System.String]::IsNullOrEmpty($Psd1))
                 $moduleFound = Get-PSResource -name $RequiredModule -path "C:\Users\circleci\Documents\PowerShell\Modules"
                 if (-not [string]::isnullorempty($moduleFound)) {
                     # Remove Module If It Exists
-                    If (Get-PSResource -Name:($RequiredModule) -Path:($LocalPSModulePath)) { Remove-Item -Path:($ModulePath) -Recurse -Force; }
+                    If (Get-PSResource -Name:($RequiredModule) -Path:($LocalPSModulePath)) {
+                        try
+                        {
+                            Remove-Item -Path:($ModulePath) -Recurse -Force;
+                        }
+                        catch{
+                            Write-Host "Could not remove, this may not be an issue"
+                        }
+                    }
                 }
                 # Install Module Commands
                 # Install new module
-                Install-PSResource -Name:($RequiredModule) -Repository:($RequiredModulesRepo) -Credential:($RepositoryCredentials) -Prerelease -Reinstall;
+                Install-PSResource -Name:($RequiredModule) -Repository:($RequiredModulesRepo) -Credential:($RepositoryCredentials) -Prerelease -Scope 'CurrectUser';
                 # Rename version folder and import module
                 Get-ChildItem -Path:($ModulePath) | ForEach-Object {
                     If ($_.Name -match '-') { Rename-Item -Path:($_.FullName) -NewName:(($_.Name.split('-'))[0]) -Force; };
