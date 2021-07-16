@@ -95,25 +95,26 @@ If (-not [System.String]::IsNullOrEmpty($Psd1))
                 # import-module -Name C:\Users\circleci\Documents\PowerShell\Modules\$($installedModule.Name)\$($installedModule.Version)\$($installedModule.Name).psd1 -Force -Global
                 $LocalPSModulePath = $env:PSModulePath.split(';') | Where-Object { $_ -like '*documents*' }
                 $ModulePath = "$($LocalPSModulePath)/$($RequiredModule)"
-                $moduleFound = Get-PSResource -name $RequiredModule -path "C:\Users\circleci\Documents\PowerShell\Modules"
-                if (-not [string]::isnullorempty($moduleFound)) {
-                    # Remove Module If It Exists
-                    If (Get-PSResource -Name:($RequiredModule) -Path:($LocalPSModulePath)) {
-                        try
-                        {
-                            Remove-Item -Path:($ModulePath) -Recurse -Force;
-                        }
-                        catch{
-                            Write-Host "Could not remove, this may not be an issue"
-                        }
-                    }
+                $moduleFound = Get-PSResource -name $RequiredModule -path $LocalPSModulePath
+                if ([string]::isnullorempty($moduleFound)) {
+                    # # Remove Module If It Exists
+                    # If (Get-PSResource -Name:($RequiredModule) -Path:($LocalPSModulePath)) {
+                    #     try
+                    #     {
+                    #         Remove-Item -Path:($ModulePath) -Recurse -Force;
+                    #     }
+                    #     catch{
+                    #         Write-Host "Could not remove, this may not be an issue"
+                    #     }
+                    # }
+                    # Install new module
+                    Install-PSResource -Name:($RequiredModule) -Repository:($RequiredModulesRepo) -Credential:($RepositoryCredentials) -Prerelease -Scope 'CurrentUser';
                 }
                 # Install Module Commands
-                # Install new module
-                Install-PSResource -Name:($RequiredModule) -Repository:($RequiredModulesRepo) -Credential:($RepositoryCredentials) -Prerelease -Scope 'CurrentUser';
                 # Rename version folder and import module
                 Get-ChildItem -Path:($ModulePath) | ForEach-Object {
                     If ($_.Name -match '-') { Rename-Item -Path:($_.FullName) -NewName:(($_.Name.split('-'))[0]) -Force; };
+                    Write-Host("[status]Importing module: '$RequiredModule'")
                     Import-Module -Name:($_.Parent.Name) -Force;
                 };
             }
