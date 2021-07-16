@@ -37,7 +37,7 @@ parameters:
     description: 'Release Type. Accepted values [ Major, Minor, Patch ]'
     type: enum
     enum: ["PSGallery", "CodeArtifact"]
-    default: "CodeArtifact"
+    default: "PSGallery"
   PowerShellModified:
     description: 'Used by Path Filtering Orb to determine if changes occurred in the ./PowerShell/ folder'
     type: boolean
