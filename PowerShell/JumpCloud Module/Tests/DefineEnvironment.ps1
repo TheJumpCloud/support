@@ -67,10 +67,6 @@ If ($env:USERNAME -ne 'VssAdministrator')
 }
 # Parameters that are not Org specific
 $authToken = Get-CAAuthorizationToken -Domain jumpcloud-artifacts -Region us-east-1
-If (-not [System.String]::IsNullOrEmpty($authToken))
-{
-    $RepositoryCredentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $authToken.AuthorizationToken , ($authToken.AuthorizationToken | ConvertTo-SecureString -AsPlainText -Force)
-}
 $PesterParamsHash_Common = @{
     SYSTEM_ACCESSTOKEN              = $authToken
     RequiredModulesRepo             = $RequiredModulesRepo

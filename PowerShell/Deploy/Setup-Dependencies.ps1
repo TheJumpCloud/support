@@ -32,30 +32,15 @@ ForEach ($DependentModule In $DependentModules)
 ### TODO: Switch to CodeArtifact
 If ($RequiredModulesRepo -ne 'PSGallery')
 {
-    $authToken = Get-CAAuthorizationToken -Domain jumpcloud-artifacts -Region us-east-1
-    # Get-Command -Module:('PowerShellGet', 'PackageManagement') -ParameterName 'Repository' | ForEach-Object {
-    #    If ( -not $global:PSDefaultParameterValues.GetEnumerator() | Where-Object { $_.Key -eq "$($_.Name):Repository" -and $_.Value -eq $RequiredModulesRepo })
-    #    {
-    #        $global:PSDefaultParameterValues["$($_.Name):Repository"] = $RequiredModulesRepo
-    #    }
-    # }
-    # Set default -AllowPrerelease parameter value to be $True
-    # Get-Command -Module:('PowerShellGet', 'PackageManagement') -ParameterName 'AllowPrerelease' | ForEach-Object {
-    #    If ( -not $global:PSDefaultParameterValues.GetEnumerator() | Where-Object { $_.Key -eq "$($_.Name):AllowPrerelease" -and $_.Value -eq $true })
-    #    {
-    #        $global:PSDefaultParameterValues["$($_.Name):AllowPrerelease"] = $true
-    #    }
-    # }
+    $AWSRepo = 'jumpcloud-nuget-modules'
+    $AWSDomain = 'jumpcloud-artifacts'
+    $AWSRegion = 'us-east-1'
+    # Set AWS authToken using context from CI Pipeline (context: aws-credentials)
+    $authToken = Get-CAAuthorizationToken -Domain $AWSDomain -Region $AWSRegion
     If (-not [System.String]::IsNullOrEmpty($authToken))
     {
+        # Create Credential Object
         $RepositoryCredentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $authToken.AuthorizationToken , ($authToken.AuthorizationToken | ConvertTo-SecureString -AsPlainText -Force)
-        # Set default -Credential parameter value to be $RepositoryCredentials
-        # Get-Command -Module:('PowerShellGet', 'PackageManagement') -ParameterName 'Credential' | ForEach-Object {
-        #     If ( -not $global:PSDefaultParameterValues.GetEnumerator() | Where-Object { $_.Key -eq "$($_.Name):Credential" -and $_.Value -eq $RepositoryCredentials })
-        #     {
-        #         $global:PSDefaultParameterValues["$($_.Name):Credential"] = $RepositoryCredentials
-        #     }
-        # }
     }
     Else
     {
@@ -63,6 +48,7 @@ If ($RequiredModulesRepo -ne 'PSGallery')
     }
     # Register PSRepository
     try {
+        # Search for Repo Object, moved to try/ catch loop to avoid issue w/ PowerShell Get Beta10
         $resourceRepos = Get-PSResourceRepository -Name:($RequiredModulesRepo)
         if ([String]::IsNullOrEmpty($resourceRepos)){
             Write-Host "Could not Find $RequiredModulesRepo"
@@ -70,10 +56,9 @@ If ($RequiredModulesRepo -ne 'PSGallery')
     }
     catch {
         Write-Host("[status]Register-PackageSource Setup '$RequiredModulesRepo'")
-        $AWSRepo = 'jumpcloud-nuget-modules'
-        $AWSDomain = 'jumpcloud-artifacts'
-        $AWSRegion = 'us-east-1'
+        # Set Endpoint URL
         $AWSCARepoEndpoint = Get-CARepositoryEndpoint -Domain:($AWSDomain) -Repository:($AWSRepo) -Region:($AWSRegion) -Format:('nuget')
+        # Set Resource Repository
         Register-PSResourceRepository -Name:($RequiredModulesRepo) -URL:("$($AWSCARepoEndpoint)v3/index.json") -Trusted
     }
 }
@@ -88,42 +73,31 @@ If (-not [System.String]::IsNullOrEmpty($Psd1))
         {
             Write-Host("[status]Installing module: '$RequiredModule' from '$RequiredModulesRepo'")
             If ($RequiredModulesRepo -ne 'PSGallery'){
-                # install-PSResource -Name:($RequiredModule) -Repository:($RequiredModulesRepo) -Credential $RepositoryCredentials -Prerelease -Scope:('CurrentUser')
-                # $modulePath = "C:\Users\circleci\Documents\PowerShell\Modules"
-                # $installedModule = Get-PSResource -name:($RequiredModule) -path $modulePath
-                # Write-Host("[status]Importing module: '$RequiredModule'")
-                # import-module -Name C:\Users\circleci\Documents\PowerShell\Modules\$($installedModule.Name)\$($installedModule.Version)\$($installedModule.Name).psd1 -Force -Global
-                # For Either Mac or Unix based PWSH determine PSModule Path
+                # Depending on OS (Unix or Windows) select the default Module Path
                 $PowerShellModulesPaths = $env:PSModulePath
                 if ($PowerShellModulesPaths -match '.local/share')
                 {
+                    # Unix Systems: Mac/ Linux
                     $LocalPSModulePath = $env:PSModulePath.split(':') | Where-Object { $_ -like '*.local/share*' }
                     Write-Host "Module Installation Path: $LocalPSModulePath"
                 }
                 elseif ($PowerShellModulesPaths -match 'documents')
                 {
+                    # Windows Ststems
                     $LocalPSModulePath = $env:PSModulePath.split(';') | Where-Object { $_ -like '*documents*' }
                     Write-Host "Module Installation Path: $LocalPSModulePath"
                 }
-                # $LocalPSModulePath = $env:PSModulePath.split(';') | Where-Object { $_ -like '*documents*' }
+                # Set Module Path from required Module
                 $ModulePath = "$($LocalPSModulePath)/$($RequiredModule)"
+                # Search for module in localPSModulePath
                 $moduleFound = Get-PSResource -name $RequiredModule -path $LocalPSModulePath
                 if ([string]::isnullorempty($moduleFound)) {
-                    # # Remove Module If It Exists
-                    # If (Get-PSResource -Name:($RequiredModule) -Path:($LocalPSModulePath)) {
-                    #     try
-                    #     {
-                    #         Remove-Item -Path:($ModulePath) -Recurse -Force;
-                    #     }
-                    #     catch{
-                    #         Write-Host "Could not remove, this may not be an issue"
-                    #     }
-                    # }
-                    # Install new module
+                    # Install module if it does not exist
                     Install-PSResource -Name:($RequiredModule) -Repository:($RequiredModulesRepo) -Credential:($RepositoryCredentials) -Prerelease -Scope 'CurrentUser';
                 }
-                # Install Module Commands
                 # Rename version folder and import module
+                # Satisfy the version requirements & naming convertion for SDKS
+                # x.x.x-someversion is not supported, split to just semantic version
                 Get-ChildItem -Path:($ModulePath) | ForEach-Object {
                     If ($_.Name -match '-') { Rename-Item -Path:($_.FullName) -NewName:(($_.Name.split('-'))[0]) -Force; };
                     Write-Host("[status]Importing module: '$RequiredModule'")
@@ -131,6 +105,7 @@ If (-not [System.String]::IsNullOrEmpty($Psd1))
                 };
             }
             else{
+                # If not CodeArtifact, just install the module from the default repository (PSGallery)
                 Install-Module -Force -Name:($RequiredModule) -Scope:('CurrentUser') # -Repository:($RequiredModulesRepo) -Credential:($RepositoryCredentials) -AllowPrerelease
                 # Get-Module -Refresh -ListAvailable
                 If ([System.String]::IsNullOrEmpty((Get-Module | Where-Object { $_.Name -eq $RequiredModule })))
