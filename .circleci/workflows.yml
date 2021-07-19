@@ -34,7 +34,7 @@ parameters:
     enum: ["Major", "Minor", "Patch"]
     default: "Patch"
   RequiredModulesRepo:
-    description: 'Release Type. Accepted values [ Major, Minor, Patch ]'
+    description: 'PowerShell Repository for JumpCloud SDKs'
     type: enum
     enum: ["PSGallery", "CodeArtifact"]
     default: "PSGallery"
