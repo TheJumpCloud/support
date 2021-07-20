@@ -1,11 +1,3 @@
-## 1.18.6
-
-Release Date: July 16, 2021
-
-#### RELEASE NOTES
-
-* Allow JumpCloud Module to be tested against artifacts in private repository
-
 ## 1.18.5
 
 Release Date: June 23, 2021
