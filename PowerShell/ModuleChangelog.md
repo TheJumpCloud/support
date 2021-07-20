@@ -1,3 +1,10 @@
+## 1.18.6
+
+Release Date: June 23, 2021
+
+#### RELEASE NOTES
+
+* remove me
 ## 1.18.5
 
 Release Date: June 23, 2021
