@@ -5,8 +5,6 @@ param (
     $RequiredModulesRepo
 )
 . "$PSScriptRoot/../Get-Config.ps1" -RequiredModulesRepo:($RequiredModulesRepo)
-
-# . ((Get-Item -Path:($PSScriptRoot)).Parent.FullName + '/' + 'Get-Config.ps1') -RequiredModulesRepo:($RequiredModulesRepo)
 ###########################################################################
 $ApprovedFunctions = [Ordered]@{
     'JumpCloud.SDK.DirectoryInsights' = @(
@@ -77,7 +75,6 @@ $MSCopyrightHeader = "`n# ------------------------------------------------------
 $Divider = '|#|#|#|#|#|#|#|#|#|#|#|#|#|#|#|'
 $FunctionTemplate = "{0}`nFunction {1}`n{{`n$($IndentChar){2}`n$($IndentChar)Param(`n{3}`n$($IndentChar))`n$($IndentChar)Begin`n$($IndentChar){{`n{4}`n$($IndentChar)}}`n$($IndentChar)Process`n$($IndentChar){{`n{5}`n$($IndentChar)}}`n$($IndentChar)End`n$($IndentChar){{`n{6}`n$($IndentChar)}}`n}}"
 $ScriptAnalyzerResults = @()
-# $JumpCloudModulePath = ((Get-Item -Path:($PSScriptRoot)).Parent.Parent.FullName + '/JumpCloud Module')
 $JumpCloudModulePath = "$PSScriptRoot/../../JumpCloud Module"
 Get-Module -Refresh -ListAvailable -All | Out-Null
 $Modules = Get-Module -Name:($Psd1.RequiredModules | Where-Object { $_ -in $ApprovedFunctions.Keys })
