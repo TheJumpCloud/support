@@ -87,8 +87,6 @@ If (-not [System.String]::IsNullOrEmpty($Modules))
         {
             $FunctionName = $Function.Name
             $FunctionDestination = $Function.Destination
-            
-            # $OutputPath = "$JumpCloudModulePath/$FunctionDestination"
             $OutputPath = Join-Path -Path $JumpCloudModulePath -ChildPath $FunctionDestination #"$JumpCloudModulePath/$FunctionDestination"
             $Command = Get-Command -Name:($FunctionName)
             foreach ($individualCommand in $Command)
