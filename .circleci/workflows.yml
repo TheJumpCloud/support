@@ -33,6 +33,11 @@ parameters:
     type: enum
     enum: ["Major", "Minor", "Patch"]
     default: "Patch"
+  RequiredModulesRepo:
+    description: 'PowerShell Repository for JumpCloud SDKs'
+    type: enum
+    enum: ["PSGallery", "CodeArtifact"]
+    default: "PSGallery"
   PowerShellModified:
     description: 'Used by Path Filtering Orb to determine if changes occurred in the ./PowerShell/ folder'
     type: boolean
@@ -65,10 +70,12 @@ workflows:
       - Build Modules:
           requires:
             - Initial Setup
+          context: aws-credentials
       - Build Help and Test Files:
           requires:
             - Build Modules
             - Initial Setup
+          context: aws-credentials
       - Build Nuspec:
           requires:
             - Initial Setup
@@ -80,6 +87,7 @@ workflows:
             - Initial Setup
             - Build Help and Test Files
             - Build Nuspec
+          context: aws-credentials
       - Invoke Git Commit:
           requires:
             - Module Validation Tests
@@ -90,6 +98,7 @@ workflows:
             - Build Nuspec
             - Module Validation Tests
             - Invoke Git Commit
+          context: aws-credentials
       - Pester Tests Mac:
           requires:
             - Initial Setup
@@ -97,6 +106,7 @@ workflows:
             - Build Nuspec
             - Module Validation Tests
             - Invoke Git Commit
+          context: aws-credentials
       - Pester Tests Linux:
           requires:
             - Initial Setup
@@ -104,6 +114,7 @@ workflows:
             - Build Nuspec
             - Module Validation Tests
             - Invoke Git Commit
+          context: aws-credentials
       - Publish Module Validation:
           requires:
             - Initial Setup
@@ -175,7 +186,7 @@ jobs:
           JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_LINUX
           ExcludeTagList: 'None'
           IncludeTagList: 'ModuleValidation'
-          RequiredModulesRepo: PSGallery
+          RequiredModulesRepo: << pipeline.parameters.RequiredModulesRepo >>
   Invoke Git Commit:
     executor: win/default
     steps:
@@ -188,7 +199,7 @@ jobs:
           JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_MTP
           ExcludeTagList: 'ModuleValidation, JCUsersFromCSV, JCDeployment, JCModule'
           IncludeTagList: '*'
-          RequiredModulesRepo: PSGallery
+          RequiredModulesRepo: << pipeline.parameters.RequiredModulesRepo >>
           Shell: 'pwsh.exe'
   Pester Tests Mac:
     executor: macos_exec
@@ -199,7 +210,7 @@ jobs:
           JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_MTP
           ExcludeTagList: 'ModuleValidation, JCUsersFromCSV, JCDeployment, JCModule'
           IncludeTagList: '*'
-          RequiredModulesRepo: PSGallery
+          RequiredModulesRepo: << pipeline.parameters.RequiredModulesRepo >>
           Shell: 'pwsh'
   Pester Tests Linux:
     machine:
@@ -211,7 +222,7 @@ jobs:
           JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_MTP
           ExcludeTagList: 'ModuleValidation, JCUsersFromCSV, JCDeployment, JCModule'
           IncludeTagList: '*'
-          RequiredModulesRepo: PSGallery
+          RequiredModulesRepo: << pipeline.parameters.RequiredModulesRepo >>
           Shell: 'pwsh'
   Publish Module Validation:
     machine:
@@ -296,7 +307,7 @@ commands:
                 shell: pwsh.exe
                 command: |
                   $ErrorActionPreference = 'Stop'
-                  ./PowerShell/Deploy/Build-Module.ps1 -GitSourceBranch << pipeline.git.branch >> -GitSourceRepo << pipeline.project.git_url >> -ReleaseType << pipeline.parameters.ReleaseType >> -ModuleName:('JumpCloud')
+                  ./PowerShell/Deploy/Build-Module.ps1 -GitSourceBranch << pipeline.git.branch >> -GitSourceRepo << pipeline.project.git_url >> -ReleaseType << pipeline.parameters.ReleaseType >> -ModuleName:('JumpCloud') -RequiredModulesRepo << pipeline.parameters.RequiredModulesRepo >>
             - persist_to_workspace:
                 root: .
                 paths:
@@ -312,7 +323,7 @@ commands:
                 shell: pwsh.exe
                 command: |
                   $ErrorActionPreference = 'Stop'
-                  ./PowerShell\Deploy\SdkSync\jcapiToSupportSync.ps1
+                  ./PowerShell\Deploy\SdkSync\jcapiToSupportSync.ps1 -RequiredModulesRepo << pipeline.parameters.RequiredModulesRepo >>
                   ./PowerShell/Deploy/Build-HelpFiles.ps1 -ModuleName JumpCloud -ModulePath "./PowerShell/JumpCloud Module"
   build-testfiles:
     steps:
@@ -325,7 +336,7 @@ commands:
                 shell: pwsh.exe
                 command: |
                   $ErrorActionPreference = 'Stop'
-                  ./PowerShell/Deploy/Build-PesterTestFiles.ps1
+                  ./PowerShell/Deploy/Build-PesterTestFiles.ps1 -RequiredModulesRepo << pipeline.parameters.RequiredModulesRepo >>
   invoke-script:
     steps:
       - checkout
@@ -371,7 +382,7 @@ commands:
                   Source: << parameters.source >>
                 command: |
                   $ErrorActionPreference = 'Stop'
-                  . "./PowerShell/Deploy/BuildNuspecFromPsd1.ps1"
+                  . "./PowerShell/Deploy/BuildNuspecFromPsd1.ps1" -RequiredModulesRepo << pipeline.parameters.RequiredModulesRepo >>
             - run:
                 name: Install Dependencies
                 shell: pwsh.exe
@@ -440,7 +451,7 @@ commands:
                 no_output_timeout: 30m
                 command: |
                   $ErrorActionPreference = 'stop'
-                  ./PowerShell\Deploy\SdkSync\jcapiToSupportSync.ps1
+                  ./PowerShell\Deploy\SdkSync\jcapiToSupportSync.ps1 -RequiredModulesRepo << pipeline.parameters.RequiredModulesRepo >>
                   . "./PowerShell/JumpCloud Module/Tests/InvokePester.ps1" -JumpCloudApiKey << parameters.JumpCloudApiKey >> -JumpCloudApiKeyMsp << parameters.JumpCloudApiKeyMsp >> -ExcludeTagList << parameters.ExcludeTagList >> -IncludeTagList << parameters.IncludeTagList >> -RequiredModulesRepo << parameters.RequiredModulesRepo >>
             - store_test_results:
                 name: Uploading test results'

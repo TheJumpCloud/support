@@ -1,4 +1,10 @@
-. ((Get-Item -Path:($PSScriptRoot)).Parent.FullName + '/' + 'Get-Config.ps1')
+[CmdletBinding()]
+param (
+    [Parameter()]
+    [string]
+    $RequiredModulesRepo
+)
+. "$PSScriptRoot/../Get-Config.ps1" -RequiredModulesRepo:($RequiredModulesRepo)
 ###########################################################################
 $ApprovedFunctions = [Ordered]@{
     'JumpCloud.SDK.DirectoryInsights' = @(
@@ -69,7 +75,7 @@ $MSCopyrightHeader = "`n# ------------------------------------------------------
 $Divider = '|#|#|#|#|#|#|#|#|#|#|#|#|#|#|#|'
 $FunctionTemplate = "{0}`nFunction {1}`n{{`n$($IndentChar){2}`n$($IndentChar)Param(`n{3}`n$($IndentChar))`n$($IndentChar)Begin`n$($IndentChar){{`n{4}`n$($IndentChar)}}`n$($IndentChar)Process`n$($IndentChar){{`n{5}`n$($IndentChar)}}`n$($IndentChar)End`n$($IndentChar){{`n{6}`n$($IndentChar)}}`n}}"
 $ScriptAnalyzerResults = @()
-$JumpCloudModulePath = (Get-Item -Path:($PSScriptRoot)).Parent.Parent.FullName + '/JumpCloud Module'
+$JumpCloudModulePath = "$PSScriptRoot/../JumpCloud Module"
 Get-Module -Refresh -ListAvailable -All | Out-Null
 $Modules = Get-Module -Name:($Psd1.RequiredModules | Where-Object { $_ -in $ApprovedFunctions.Keys })
 If (-not [System.String]::IsNullOrEmpty($Modules))
@@ -81,7 +87,7 @@ If (-not [System.String]::IsNullOrEmpty($Modules))
         {
             $FunctionName = $Function.Name
             $FunctionDestination = $Function.Destination
-            $OutputPath = "$JumpCloudModulePath/$FunctionDestination"
+            $OutputPath = Join-Path -Path $JumpCloudModulePath -ChildPath $FunctionDestination #"$JumpCloudModulePath/$FunctionDestination"
             $Command = Get-Command -Name:($FunctionName)
             foreach ($individualCommand in $Command)
             {
@@ -94,14 +100,14 @@ If (-not [System.String]::IsNullOrEmpty($Modules))
                 $FunctionContent = If ($CommandFilePath -like '*ProxyCmdletDefinitions.ps1')
                 {
                     <# When the autorest generated module has been installed and imported from the PSGallery all the
-                cmdlets will exist in a single ProxyCmdletDefinitions.ps1 file. We need to parse
-                out the specific function in order to gather the parts we need to copy over. #>
+                    cmdlets will exist in a single ProxyCmdletDefinitions.ps1 file. We need to parse
+                    out the specific function in order to gather the parts we need to copy over. #>
                     $CommandFilePathContent.Replace($MSCopyrightHeader, $Divider).Split($Divider) | Where-Object { $_ -like ('*' + "function $CommandName {" + '*') }
                 }
                 Else
                 {
                     <# When the autorest generated module has been imported from a local psd1 module the function will
-                remain in their individual files. #>
+                    remain in their individual files. #>
                     $CommandFilePathContent
                 }
                 # Extract the sections we want to copy over to our new function.
@@ -135,6 +141,7 @@ If (-not [System.String]::IsNullOrEmpty($Modules))
                     # Fix line endings
                     $NewScript = $NewScript.Replace("`r`n", "`n").Trim()
                     # Export the function
+                    Write-Host ("[STATUS] Writing File: $OutputPath/$NewCommandName") -BackgroundColor:('Black') -ForegroundColor:('Magenta')
                     $OutputFilePath = "$OutputPath/$NewCommandName.ps1"
                     New-FolderRecursive -Path:($OutputFilePath) -Force
                     $NewScript | Out-File -FilePath:($OutputFilePath) -Force

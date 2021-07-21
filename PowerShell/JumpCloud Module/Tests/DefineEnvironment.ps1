@@ -1,6 +1,7 @@
 Param(
     [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0)][ValidateNotNullOrEmpty()][System.String]$JumpCloudApiKey
     , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 1)][ValidateNotNullOrEmpty()][System.String]$JumpCloudApiKeyMsp
+    , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 1)][ValidateNotNullOrEmpty()][System.String]$RequiredModulesRepo
 )
 # Define variable names
 $PesterParamsHash_VariableName = @{
@@ -65,9 +66,10 @@ If ($env:USERNAME -ne 'VssAdministrator')
     $PesterParamsHash_OS.networkSourceIpUpdate = [IPAddress]::Parse([String](Get-Random)).IPAddressToString
 }
 # Parameters that are not Org specific
+$authToken = Get-CAAuthorizationToken -Domain jumpcloud-artifacts -Region us-east-1
 $PesterParamsHash_Common = @{
-    SYSTEM_ACCESSTOKEN              = $env:SYSTEM_ACCESSTOKEN
-    RequiredModulesRepo             = $env:RequiredModulesRepo
+    SYSTEM_ACCESSTOKEN              = $authToken
+    RequiredModulesRepo             = $RequiredModulesRepo
     ModuleName                      = 'JumpCloud'
     ModuleManifestName              = 'JumpCloud.psd1'
     ModuleManifestPath              = "$PSScriptRoot/../"
