@@ -101,14 +101,14 @@ If (-not [System.String]::IsNullOrEmpty($Modules))
                 $FunctionContent = If ($CommandFilePath -like '*ProxyCmdletDefinitions.ps1')
                 {
                     <# When the autorest generated module has been installed and imported from the PSGallery all the
-                cmdlets will exist in a single ProxyCmdletDefinitions.ps1 file. We need to parse
-                out the specific function in order to gather the parts we need to copy over. #>
+                    cmdlets will exist in a single ProxyCmdletDefinitions.ps1 file. We need to parse
+                    out the specific function in order to gather the parts we need to copy over. #>
                     $CommandFilePathContent.Replace($MSCopyrightHeader, $Divider).Split($Divider) | Where-Object { $_ -like ('*' + "function $CommandName {" + '*') }
                 }
                 Else
                 {
                     <# When the autorest generated module has been imported from a local psd1 module the function will
-                remain in their individual files. #>
+                    remain in their individual files. #>
                     $CommandFilePathContent
                 }
                 # Extract the sections we want to copy over to our new function.
@@ -142,6 +142,7 @@ If (-not [System.String]::IsNullOrEmpty($Modules))
                     # Fix line endings
                     $NewScript = $NewScript.Replace("`r`n", "`n").Trim()
                     # Export the function
+                    Write-Host ("[STATUS] Writing File: $OutputPath/$NewCommandName") -BackgroundColor:('Black') -ForegroundColor:('Magenta')
                     $OutputFilePath = "$OutputPath/$NewCommandName.ps1"
                     New-FolderRecursive -Path:($OutputFilePath) -Force
                     $NewScript | Out-File -FilePath:($OutputFilePath) -Force
