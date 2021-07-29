@@ -9,6 +9,9 @@
 # guard against the script being run in a non-POSIX shell environment
 set +o posix
 
+# create an empty array if a glob produces no matches
+shopt -s nullglob
+
 if [[ "${UID}" != 0 ]]; then
   (echo >&2 "Error:  $0 must be run as root")
   exit 1
@@ -16,7 +19,7 @@ fi
 
 # Some global variables
 JCPATH="/opt/jc"
-JCLOG="/var/log/"
+JCLOG="/var/log"
 STAMP=$(date +"%Y%m%d%H%M%S")
 ZIPFILE="./jc${STAMP}.zip"
 TARFILE="./jc${STAMP}.tar"
@@ -74,10 +77,9 @@ function ziplog() {
   USER_AGENT_LOG_DIR="Library/Logs/JumpCloud"
   USER_AGENT_CURR_LOG="jc-user-agent.log"
   USER_AGENT_PREV_LOG="${USER_AGENT_CURR_LOG}.1"
-  LOGFILES=(
-  "jcagent.log" "jcUpdate.log" "jctray.log" "jumpcloud-loginwindow" "jcagent-preinstall.log" "jcagent-postinstall.log" "jcUninstall.log"
-  "jcagent.log.1" "jcagent.log.2" "jcagent.log.3" "jcagent.log.4" "jcagent.log.5" "jcagent.log.6" "jcagent.log.7" "jcagent.log.8" "jcagent.log.9"
-  )
+  # we *want* globbing, so disable the shellcheck warning
+  # shellcheck disable=SC2206
+  LOGFILES=( ${JCLOG}/jc* ${JCLOG}/jumpcloud-loginwindow/* )
   if [[ "${ZPATH}" == "false" ]]; then
     ARC_FILE="${TARFILE}"
     ZIP_CMD="tar -rf "
@@ -87,9 +89,9 @@ function ziplog() {
   fi
 
   for i in "${LOGFILES[@]}"; do
-    if [[ -f "${JCLOG}""${i}" ]] || [[ -d "${JCLOG}""${i}" ]]; then
-      ${ZIP_CMD} "${ARC_FILE}" "${JCLOG}""${i}" 1>/dev/null
-      LOGIT+=("${JCLOG}${i} has been added to ${ARC_FILE}.")
+    if [[ -f "${i}" ]] || [[ -d "${i}" ]]; then
+      ${ZIP_CMD} "${ARC_FILE}" "${i}" 1>/dev/null
+      LOGIT+=("${i} has been added to ${ARC_FILE}.")
     fi
   done
 
@@ -158,8 +160,8 @@ function info_out() {
     printf "JCAGENT VERSION:\n"
     printf "%s\n" "${SERVICEVERSION}" | indent
     printf "JCAGENT STATUS:\n"
-    printf "PID = %s" " ${STATUS}" | indent
-    printf "TIMEZONE:\n"
+    printf "PID = %s\n" " ${STATUS}" | indent
+    printf "TIMEZONE: "
     printf "%s\n" "${TZONE}" | indent
     printf "SYSTEM USERS:\n"
     printf "%s\n" "${USERS[@]}" | indent
