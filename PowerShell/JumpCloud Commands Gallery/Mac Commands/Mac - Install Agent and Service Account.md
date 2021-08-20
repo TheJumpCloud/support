@@ -1,6 +1,6 @@
 #### Name
 
-Mac - Install Agent and Service Account | v1.1 JCCG
+Mac - Install Agent and Service Account | v1.2 JCCG
 
 #### commandType
 
@@ -210,9 +210,15 @@ else
 }
 EOF
 
-  cat <<-EOF >/var/run/JumpCloud-SecureToken-Creds.txt
+  if [ "$SILENT_INSTALL" -eq "0" ]; then
+    cat <<-EOF >/var/run/JumpCloud-SecureToken-Creds.txt
 $SECURETOKEN_ADMIN_USERNAME;$SECURETOKEN_ADMIN_PASSWORD
 EOF
+  else
+    cat <<-EOF >/var/run/JumpCloud-SecureToken-Creds.txt
+=skip
+EOF
+  fi
   # The file JumpCloud-SecureToken-Creds.txt IS DELETED during the agent install process
   installer -pkg /tmp/jumpcloud-agent.pkg -target /
   result=$(echo "$?")
