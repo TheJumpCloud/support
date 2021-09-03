@@ -5,20 +5,8 @@ Release Date: September 03, 2021
 #### RELEASE NOTES
 
 ```
-{{Fill in the Release Notes}}
+* Updated the help docs for Get-JCSystemInsights
 ```
-
-#### FEATURES:
-
-{{Fill in the Features}}
-
-#### IMPROVEMENTS:
-
-{{Fill in the Improvements}}
-
-#### BUG FIXES:
-
-{{Fill in the Bug Fixes}}
 
 ## 1.18.5
 
