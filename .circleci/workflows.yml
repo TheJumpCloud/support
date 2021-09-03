@@ -87,10 +87,13 @@ workflows:
             - Initial Setup
             - Build Help and Test Files
             - Build Nuspec
+            - Invoke Git Commit
           context: aws-credentials
       - Invoke Git Commit:
           requires:
-            - Module Validation Tests
+            - Initial Setup
+            - Build Help and Test Files
+            - Build Nuspec
       - Pester Tests Windows:
           requires:
             - Initial Setup
