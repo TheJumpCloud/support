@@ -47,7 +47,7 @@ parameters:
     type: boolean
     default: false
 orbs:
-  win: circleci/windows@2.4.1
+  win: circleci/windows@2.2.0
 executors:
   macos_exec:
     macos:
