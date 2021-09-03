@@ -39,6 +39,7 @@ Function Get-JCSystemInsights
         [System.String]
         # Name of the SystemInsights table to query.
         # See docs.jumpcloud.com for list of available table endpoints.
+        # Use TAB to see a list of available tables ex: Get-JCSystemInsights -Table <TAB>
         $Table,
 
         [Parameter()]
