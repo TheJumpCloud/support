@@ -40,20 +40,6 @@ Function Get-JCSystemInsights
         # Name of the SystemInsights table to query.
         # See docs.jumpcloud.com for list of available table endpoints.
         # Use TAB to see a list of available tables ex: Get-JCSystemInsights -Table <TAB>
-        $Table,
-
-        [Parameter()]
-        [System.String[]]
-        [Alias('_id', 'id', 'system_id')]
-        # Id of system to filter on.
-        $SystemId,
-
-        [Parameter()]
-        [System.String[]]
-        # Supported values and operators are specified for each table.
-        # See docs.jumpcloud.com and search for specific table for a list of available filter options.
-        # Use tab complete to see available filters. Ex:
-        # Input: Get-JCSystemInsights -Table <TAB>
         # Output:
         # Alf                    FirefoxAddon           Shadow                 
         # AlfException           Group                  SharedFolder           
@@ -73,6 +59,19 @@ Function Get-JCSystemInsights
         # DiskInfo               SafariExtension        WindowSecurityProduct  
         # DnsResolver            ScheduledTask          
         # EtcHost                Service
+        $Table,
+
+        [Parameter()]
+        [System.String[]]
+        [Alias('_id', 'id', 'system_id')]
+        # Id of system to filter on.
+        $SystemId,
+
+        [Parameter()]
+        [System.String[]]
+        # Supported values and operators are specified for each table.
+        # See docs.jumpcloud.com and search for specific table for a list of available filter options.
+        # Use tab complete to see available filters. 
         $Filter,
 
         [Parameter(DontShow)]
