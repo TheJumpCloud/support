@@ -18,6 +18,9 @@ ForEach ($DependentModule In $DependentModules)
         if ($DependentModule -eq 'PowerShellGet'){
             Install-Module -Name $DependentModule -Repository:('PSGallery') -AllowPrerelease -RequiredVersion '3.0.0-beta10' -Force
         }
+        elseif ($DependentModule -eq 'PSScriptAnalyzer') {
+            Install-Module -Name $DependentModule -Repository:('PSGallery') -RequiredVersion '1.19.1' -Force
+        }
         else{
             Install-Module -Repository:('PSGallery') -Force -Name:($DependentModule) -Scope:('CurrentUser') -AllowClobber
         }

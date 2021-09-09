@@ -3,7 +3,7 @@ parameters:
   ManualBuild:
     description: 'When `true`, pipeline will continue to build even if its been filtered out by config.yml (Will Not Run on Master Branch)'
     type: boolean
-    default: false
+    default: true
   EnableDebugging:
     description: 'When `true`, debugging commands will run and output to terminal.'
     type: boolean
@@ -45,7 +45,7 @@ parameters:
   PublishToPSGallery:
     description: 'When `true` and when run against Master branch, this workflow will publish the latest code to PSGallery'
     type: boolean
-    default: false
+    default: true
 orbs:
   win: circleci/windows@2.2.0
 executors:
@@ -87,10 +87,13 @@ workflows:
             - Initial Setup
             - Build Help and Test Files
             - Build Nuspec
+            - Invoke Git Commit
           context: aws-credentials
       - Invoke Git Commit:
           requires:
-            - Module Validation Tests
+            - Initial Setup
+            - Build Help and Test Files
+            - Build Nuspec
       - Pester Tests Windows:
           requires:
             - Initial Setup
