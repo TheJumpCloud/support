@@ -146,7 +146,7 @@
                                         # Build the attributes for the json body string
                                         $AttributesValue = If ($Action -eq 'add' -and $Attributes)
                                         {
-                                            $Attributes | ConvertTo-Json -Depth:(99) -Compress
+                                            $Attributes.Attributes | ConvertTo-Json -Depth:(99) -Compress
                                         }
                                         Else
                                         {
