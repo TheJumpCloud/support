@@ -12,7 +12,7 @@ Describe -Tag:('JCAssociation') "Copy-JCAssociation Tests" {
             $associationSystem = Get-JCSystem | Select-Object -First 1
             If (-not (Get-JCAssociation -Type:('user') -Id:($PesterParams_User1._id) -TargetType:('system') | Where-Object { $_.TargetId -eq $associationSystem.id }))
             {
-                Add-JCAssociation -Type:('user') -Id:($PesterParams_User1._id) -TargetType:('user_group') -TargetId:($associationSystem.id) -Force
+                Add-JCAssociation -Type:('user') -Id:($PesterParams_User1._id) -TargetType:('user_group') -TargetId:($associationSystem._id) -Force
             }
         }
         It ('Tests attributes from users to systems are copied'){
@@ -23,7 +23,7 @@ Describe -Tag:('JCAssociation') "Copy-JCAssociation Tests" {
             Get-JCAssociation -Id:($tempUser._id) -type User -TargetType system | Should -not -Benullorempty
         }
         AfterAll{
-            Remove-JCUser -id:($tempUser.id)
+            Remove-JCUser -ById:($tempUser.id)
         }
     }
     # Context ('User and Id Association Tests') {
