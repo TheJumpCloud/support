@@ -4,26 +4,21 @@ BeforeAll {
     # {
     #     Add-JCAssociation -Type:('user') -Id:($PesterParams_User1._id) -TargetType:('user_group') -TargetId:($PesterParams_UserGroup.id) -Force
     # }
-
+    $associationSystem = Get-JCSystem | Select-Object -First 1
+    If (-not (Get-JCAssociation -Type:('user') -Id:($PesterParams_User1._id) -TargetType:('system') | Where-Object { $_.TargetId -eq $associationSystem.id }))
+    {
+        Add-JCAssociation -Type:('user') -Id:($PesterParams_User1._id) -TargetType:('system') -TargetId:($associationSystem._id) -Force
+    }
+    # Generate new user
+    $user1 = "association_" + -join ((65..90) + (97..122) | Get-Random -Count 5 | ForEach-Object { [char]$_ })
+    $tempUser = New-JCUser -username:($user1) -firstname:($user1) -lastname:($user1) -email:("$user1@pesterlinux.org")
 }
 Describe -Tag:('JCAssociation') "Copy-JCAssociation Tests" {
-    Context ('Tests Copy-JCAssociation function with attributes'){
-        BeforeAll {
-            $associationSystem = Get-JCSystem | Select-Object -First 1
-            If (-not (Get-JCAssociation -Type:('user') -Id:($PesterParams_User1._id) -TargetType:('system') | Where-Object { $_.TargetId -eq $associationSystem.id }))
-            {
-                Add-JCAssociation -Type:('user') -Id:($PesterParams_User1._id) -TargetType:('user_group') -TargetId:($associationSystem._id) -Force
-            }
-        }
-        It ('Tests attributes from users to systems are copied'){
-            $user1 = "association_" + -join ((65..90) + (97..122) | Get-Random -Count 5 | ForEach-Object { [char]$_ })
-            $tempUser = New-JCUser -username:($user1) -email:("$user1@pesterlinux.org")
-            Copy-JCAssociation -Id:($PesterParams_User1._id) -TargetId:($tempUser.id) -Type:(user) -Force
+    Context ('Tests Copy-JCAssociation function with attributes') {
+        It ('Tests attributes from users to systems are copied') {
+            Copy-JCAssociation -Id:($PesterParams_User1._id) -TargetId:($tempUser.id) -Type:("user") -Force
             # Test that the association was copied
             Get-JCAssociation -Id:($tempUser._id) -type User -TargetType system | Should -not -Benullorempty
-        }
-        AfterAll{
-            Remove-JCUser -ById:($tempUser.id)
         }
     }
     # Context ('User and Id Association Tests') {
@@ -56,4 +51,7 @@ Describe -Tag:('JCAssociation') "Copy-JCAssociation Tests" {
     #         # $User1Associations.compiledAttributes | Should -Be $User2Associations.compiledAttributes
     #     }
     # }
+}
+AfterAll {
+    Remove-JCUser -UserID:($tempUser.id) -force
 }
