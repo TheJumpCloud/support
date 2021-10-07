@@ -17,8 +17,15 @@ Describe -Tag:('JCAssociation') "Copy-JCAssociation Tests" {
     Context ('Tests Copy-JCAssociation function with attributes') {
         It ('Tests attributes from users to systems are copied') {
             Copy-JCAssociation -Id:($PesterParams_User1._id) -TargetId:($tempUser.id) -Type:("user") -Force
-            # Test that the association was copied
+            # Test that the association was copied: Should Not Be Null or Empty
             Get-JCAssociation -Id:($tempUser._id) -type User -TargetType system | Should -not -Benullorempty
+            # Get User Association to Systems. The copied association should be the same as the original association
+            $theCopiedAssociation = Get-JcSdkUserAssociation -UserId:($($tempUser.id)) -Targets:("system")
+            $FromAssociation = Get-JcSdkUserAssociation -UserId:($($PesterParams_User1._id)) -Targets:("system")
+            # Compare the attributes, these should be the same, including sudo attributes
+            ($theCopiedAssociation.Attributes | ConvertTo-Json -Depth:(99) -Compress) | Should -Be ($FromAssociation.attributes | ConvertTo-Json -Depth:(99) -Compress)
+
+
         }
     }
     # Context ('User and Id Association Tests') {

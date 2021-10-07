@@ -20,7 +20,7 @@
     }
     Process
     {
-        # For DynamicParam with a default value set that value and then convert the DynamicParam inputs into new variables for the script to use
+        # For DynamicParam with a default value, set that value and then convert the DynamicParam inputs into new variables for the script to use
         Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDynamicParamProcess) -ArgumentList:($PsBoundParameters, $PSCmdlet, $RuntimeParameterDictionary) -NoNewScope
         Try
         {
@@ -84,7 +84,7 @@
                         If ($Action -eq 'get')
                         {
                             $AssociationOut = @()
-                            # If switches are not passed in set them to be false so they can be used with Format-JCAssociation
+                            # If switches are not passed in, set them to be false so they can be used with Format-JCAssociation
                             If (!($IncludeInfo)) { $IncludeInfo = $false; }
                             If (!($IncludeNames)) { $IncludeNames = $false; }
                             If (!($IncludeVisualPath)) { $IncludeVisualPath = $false; }
@@ -146,7 +146,22 @@
                                         # Build the attributes for the json body string
                                         $AttributesValue = If ($Action -eq 'add' -and $Attributes)
                                         {
-                                            $Attributes.Attributes | ConvertTo-Json -Depth:(99) -Compress
+                                            $foundAttributes = $Attributes | ConvertTo-Json -Depth:(99) -Compress
+                                            $foundAttributes = $foundAttributes | ConvertFrom-Json
+                                            $additionalProperties = $foundAttributes.AdditionalProperties
+                                            # Determine: AttributeSudoEnabled / AttributeSudoWithoutPassword
+                                            if ($additionalProperties.sudo.enabled -And -Not $additionalProperties.sudo.withoutPassword) {
+                                                $Command_Template_Associations_Targets_Post = 'JumpCloud.SDK.V2\Set-JcSdk{0}Association -{0}Id:("{1}") -Id:("{2}") -Op:("{3}") -Type:("{4}") -AttributeSudoEnabled'
+                                            }
+                                            if ($additionalProperties.sudo.withoutPassword -And -Not $additionalProperties.sudo.enabled){
+
+                                                $Command_Template_Associations_Targets_Post = 'JumpCloud.SDK.V2\Set-JcSdk{0}Association -{0}Id:("{1}") -Id:("{2}") -Op:("{3}") -Type:("{4}") -AttributeSudoWithoutPassword'
+                                            }
+                                            if ($additionalProperties.sudo.enabled -And $additionalProperties.sudo.withoutPassword){
+
+                                                $Command_Template_Associations_Targets_Post = 'JumpCloud.SDK.V2\Set-JcSdk{0}Association -{0}Id:("{1}") -Id:("{2}") -Op:("{3}") -Type:("{4}") -AttributeSudoEnabled -AttributeSudoWithoutPassword'
+                                            }
+                                            $foundAttributes
                                         }
                                         Else
                                         {
@@ -195,7 +210,7 @@
                                                         {
                                                             Invoke-Expression -Command:($Command_Associations_POST)
                                                         }
-                                                        else 
+                                                        else
                                                         {
                                                             Write-Verbose ('" The association between the "' + $SourceItemTypeNameSingular + '" "' + $SourceItemName + '" and the "' + $TargetItemTypeNameSingular + '" "' + $TargetItemName + '"' + '" Already exists "')
                                                             $TestAssociation
@@ -207,7 +222,7 @@
                                                         {
                                                             Invoke-Expression -Command:($Command_Associations_POST)
                                                         }
-                                                        else 
+                                                        else
                                                         {
                                                             Write-Verbose ('" The association between the "' + $SourceItemTypeNameSingular + '" "' + $SourceItemName + '" and the "' + $TargetItemTypeNameSingular + '" "' + $TargetItemName + '"' + '" Does not exist "')
                                                             $TestAssociation
