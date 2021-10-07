@@ -152,20 +152,17 @@
                                             # Determine: AttributeSudoEnabled / AttributeSudoWithoutPassword
                                             if ($additionalProperties.sudo.enabled -And -Not $additionalProperties.sudo.withoutPassword) {
                                                 $Command_Template_Associations_Targets_Post = 'JumpCloud.SDK.V2\Set-JcSdk{0}Association -{0}Id:("{1}") -Id:("{2}") -Op:("{3}") -Type:("{4}") -AttributeSudoEnabled'
-                                                $foundAttributes
                                             }
                                             if ($additionalProperties.sudo.withoutPassword -And -Not $additionalProperties.sudo.enabled){
                                                 $Command_Template_Associations_Targets_Post = 'JumpCloud.SDK.V2\Set-JcSdk{0}Association -{0}Id:("{1}") -Id:("{2}") -Op:("{3}") -Type:("{4}") -AttributeSudoWithoutPassword'
-                                                $foundAttributes
                                             }
                                             if ($additionalProperties.sudo.enabled -And $additionalProperties.sudo.withoutPassword){
                                                 $Command_Template_Associations_Targets_Post = 'JumpCloud.SDK.V2\Set-JcSdk{0}Association -{0}Id:("{1}") -Id:("{2}") -Op:("{3}") -Type:("{4}") -AttributeSudoEnabled -AttributeSudoWithoutPassword'
-                                                $foundAttributes
                                             }
                                             if (-Not $additionalProperties.sudo.enabled -And -Not $additionalProperties.sudo.withoutPassword){
                                                 $Command_Template_Associations_Targets_Post = 'JumpCloud.SDK.V2\Set-JcSdk{0}Association -{0}Id:("{1}") -Id:("{2}") -Op:("{3}") -Type:("{4}")'
-                                                $foundAttributes
                                             }
+                                            $foundAttributes
                                         }
                                         Else
                                         {
