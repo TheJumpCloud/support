@@ -1,3 +1,17 @@
+## 1.18.7
+
+Release Date: September 30, 2021
+
+#### RELEASE NOTES
+
+```
+Patch release to address bug with Copy-JCAssociations
+```
+
+#### BUG FIXES:
+
+Bug Fix: SA-2083 Copy Associations with attributes not working as expected. Copy-JCAssociations should now copy associations with attributes and not error
+
 ## 1.18.6
 
 Release Date: September 03, 2021
