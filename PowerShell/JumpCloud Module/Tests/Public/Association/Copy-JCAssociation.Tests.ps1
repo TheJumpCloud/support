@@ -24,7 +24,9 @@ Describe -Tag:('JCAssociation') "Copy-JCAssociation Tests" {
             $theCopiedAssociation = Get-JcSdkUserAssociation -UserId:($($tempUser.id)) -Targets:("system") | Where-Object { $_.ToId -eq $associationSystem._id }
             $FromAssociation = Get-JcSdkUserAssociation -UserId:($($PesterParams_User1._id)) -Targets:("system") | Where-Object { $_.ToId -eq $associationSystem._id }
             # Compare the attributes, these should be the same, including sudo attributes
-            ($theCopiedAssociation.Attributes | ConvertTo-Json -Depth:(99) -Compress) | Should -Be ($FromAssociation.attributes | ConvertTo-Json -Depth:(99) -Compress)
+            $theCopiedAssociation.Attributes.AdditionalProperties.sudo.enabled | Should -Be $FromAssociation.Attributes.AdditionalProperties.sudo.enabled
+            $theCopiedAssociation.Attributes.AdditionalProperties.sudo.withoutPassword | Should -Be $FromAssociation.Attributes.AdditionalProperties.sudo.withoutPassword
+            # ($theCopiedAssociation.Attributes | ConvertTo-Json -Depth:(99) -Compress) | Should -Be ($FromAssociation.attributes | ConvertTo-Json -Depth:(99) -Compress)
         }
         It ('Tests attributes (sudoEnabled) from users to systems are copied') {
             # Set SudoEnable attribute on tempUser system association
@@ -32,10 +34,12 @@ Describe -Tag:('JCAssociation') "Copy-JCAssociation Tests" {
             # Copy association from tempUser to tempUser2
             Copy-JCAssociation -Id:($tempUser.id) -TargetId:($tempUser2.id) -Type:("user") -Force
 
-            $theCopiedAssociation2 = Get-JcSdkUserAssociation -UserId:($($tempUser2.id)) -Targets:("system") | Where-Object { $_.ToId -eq $associationSystem._id }
-            $FromAssociation2 = Get-JcSdkUserAssociation -UserId:($($tempUser.id)) -Targets:("system") | Where-Object { $_.ToId -eq $associationSystem._id }
+            $theCopiedAssociation = Get-JcSdkUserAssociation -UserId:($($tempUser2.id)) -Targets:("system") | Where-Object { $_.ToId -eq $associationSystem._id }
+            $FromAssociation = Get-JcSdkUserAssociation -UserId:($($tempUser.id)) -Targets:("system") | Where-Object { $_.ToId -eq $associationSystem._id }
             # Compare the attributes, these should be the same, including sudo attributes
-            ($theCopiedAssociation2.Attributes | ConvertTo-Json -Depth:(99) -Compress) | Should -Be ($FromAssociation2.attributes | ConvertTo-Json -Depth:(99) -Compress)
+            $theCopiedAssociation.Attributes.AdditionalProperties.sudo.enabled | Should -Be $FromAssociation.Attributes.AdditionalProperties.sudo.enabled
+            $theCopiedAssociation.Attributes.AdditionalProperties.sudo.withoutPassword | Should -Be $FromAssociation.Attributes.AdditionalProperties.sudo.withoutPassword
+            # ($theCopiedAssociation2.Attributes | ConvertTo-Json -Depth:(99) -Compress) | Should -Be ($FromAssociation2.attributes | ConvertTo-Json -Depth:(99) -Compress)
         }
     }
     # Context ('User and Id Association Tests') {
