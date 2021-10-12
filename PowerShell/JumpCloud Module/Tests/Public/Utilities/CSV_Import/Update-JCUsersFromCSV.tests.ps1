@@ -316,6 +316,21 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
     It "Removes users Where-Object Email -like *pleasedelete* " {
         Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
     }
+    It "Updates users from a CSV populated with uid/ gid attributes" {
+        $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/ImportExample_uid_guid.csv" -force
+        $UserCSVUpdate = Update-JCUsersFromCSV -CSVFilePath "$PesterParams_UpdatePath/UpdateExample_uid_guid.csv" -force
+        $UserImportInfo = Import-Csv "$PesterParams_ImportPath/ImportExample_uid_guid.csv"
+
+        foreach ($User in $UserCSVUpdate)
+        {
+            $NewUserInfo = Get-JCUser -username $User.username
+            $ImportCheck = $UserImportInfo | Where-Object Username -EQ "$($User.username)"
+
+            $ImportCheck.unix_uid | Should -Be $($NewUserInfo.unix_uid)
+            $ImportCheck.unix_guid | Should -Be $($NewUserInfo.unix_guid)
+        }
+        Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
+    }
 
     It "Updates users from a CSV populated with no information" {
 
