@@ -5,12 +5,12 @@ Release Date: October 12, 2021
 #### RELEASE NOTES
 
 ```
-Patch release to address missing unix_uid field in with Import/Update-JCUserFromCSV
+Patch release to address missing unix_uid field in Import/Update-JCUserFromCSV functions
 ```
 
 #### FEATURES:
 
-Users UID/GUID can now be set from the Import/Update-JCUserFromCSV functions
+Users unix UID/GUID can now be set from the Import/Update-JCUserFromCSV functions
 
 ## 1.18.7
 
