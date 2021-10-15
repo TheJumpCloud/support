@@ -200,7 +200,7 @@ jobs:
       - invoke-pester:
           JumpCloudApiKey: $env:XAPIKEY_PESTER
           JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_MTP
-          ExcludeTagList: 'ModuleValidation, JCUsersFromCSV, JCDeployment, JCModule'
+          ExcludeTagList: 'ModuleValidation, JCUsersFromCSV, JCDeployment'
           IncludeTagList: '*'
           RequiredModulesRepo: << pipeline.parameters.RequiredModulesRepo >>
           Shell: 'pwsh.exe'
@@ -390,7 +390,7 @@ commands:
                 name: Install Dependencies
                 shell: pwsh.exe
                 command: |
-                  Install-Module -Name PowerShellGet -AllowPrerelease -RequiredVersion '3.0.0-beta10' -Force
+                  Install-Module -Name PowerShellGet -AllowPrerelease -Force
                   Install-Module -Name AWS.Tools.Common -Force
                   Install-Module -Name AWS.Tools.CodeArtifact -Force
             - run:
