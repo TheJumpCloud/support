@@ -420,6 +420,20 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
         }
         Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
     }
+    It "Imports users from a CSV populated with uid/ gid attributes" {
+        $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/ImportExample_uid_guid.csv" -force
+        $UserImportInfo = Import-Csv "$PesterParams_ImportPath/ImportExample_uid_guid.csv"
+
+        foreach ($User in $UserCSVImport)
+        {
+            $NewUserInfo = Get-JCUser -username $User.username
+            $ImportCheck = $UserImportInfo | Where-Object Username -EQ "$($User.username)"
+
+            $ImportCheck.unix_uid | Should -Be $($NewUserInfo.unix_uid)
+            $ImportCheck.unix_guid | Should -Be $($NewUserInfo.unix_guid)
+        }
+        Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
+    }
 
     It "Imports users from a CSV populated with telephony, location, and user information attributes" {
 

@@ -212,6 +212,23 @@ Function New-JCImportTemplate()
 
         elseif ($ConfirmLDAPTelephonyAttributes -eq 'N') { }
 
+        Write-Host "`nDo you want to set unix UID/GUID values during import?"
+        Write-Host 'UID/GUID value attributes include: ' -NoNewline
+        Write-Host  'unix_uid, unix_guid' -ForegroundColor Yellow
+
+        while ($ConfirmUIDGUIDAttributes -ne 'Y' -and $ConfirmUIDGUIDAttributes -ne 'N')
+        {
+            $ConfirmUIDGUIDAttributes = Read-Host  "Enter Y for Yes or N for No"
+        }
+
+        if ($ConfirmUIDGUIDAttributes -eq 'Y')
+        {
+
+            $CSV.add('unix_uid', $null)
+            $CSV.add('unix_guid', $null)
+        }
+
+        elseif ($ConfirmUIDGUIDAttributes -eq 'N') { }
 
 
         Write-Host "`nDo you want to bind your users to existing JumpCloud systems during import?"

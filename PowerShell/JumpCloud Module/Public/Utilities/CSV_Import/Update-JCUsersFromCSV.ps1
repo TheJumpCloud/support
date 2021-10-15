@@ -78,6 +78,7 @@ Function Update-JCUsersFromCSV ()
         $UserUpdateParams.Add("passwordless_sudo", "passwordless_sudo")
         $UserUpdateParams.Add("sudo", "sudo")
         $UserUpdateParams.Add("unix_guid", "unix_guid")
+        $UserUpdateParams.Add("unix_uid", "unix_uid")
         $UserUpdateParams.Add("password_never_expires", "password_never_expires")
 
 
