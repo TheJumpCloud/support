@@ -37,7 +37,7 @@ parameters:
     description: 'PowerShell Repository for JumpCloud SDKs'
     type: enum
     enum: ["PSGallery", "CodeArtifact"]
-    default: "PSGallery"
+    default: "CodeArtifact"
   PowerShellModified:
     description: 'Used by Path Filtering Orb to determine if changes occurred in the ./PowerShell/ folder'
     type: boolean
