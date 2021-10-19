@@ -10,12 +10,49 @@ Function Update-JCModule
     {
         $ModuleName = 'JumpCloud'
         # Find the module on the specified repository
-        $FoundModule = If (-not [System.String]::IsNullOrEmpty($RepositoryCredentials))
+        If (-not [System.String]::IsNullOrEmpty($RepositoryCredentials))
         {
-            Find-PSResource -Name:($ModuleName) -Repository:($Repository) -Credential:($RepositoryCredentials) -Prerelease
+            $PSGetModuleName = 'PowerShellGet'
+            $PSGetLatestVersion = (Find-Module PowerShellGet -AllowPrerelease).Version
+            $PSGet = Get-InstalledModule PowerShellGet
+            $PSGetVersion = (Get-InstalledModule PowerShellGet).Version
+            $PSGetSemanticRegex = [Regex]"[0-9]+.[0-9]+.[0-9]+"
+            $PSGetSemeanticVersion = Select-String -InputObject $PSGet.Version -pattern ($PSGetSemanticRegex)
+            # $PSGetSemeanticVersion.Matches[0].Value # This should be the semantic version installed
+            # Prelease regex 
+            # $PSGetPrereleaseRegex = [regex]"[0-9]+.[0-9]+.[0-9]+-(.*)"
+            # $PSGetPrereleaseVersion = Select-String -InputObject $PSGet.Version -pattern ($PSGetPrereleaseRegex)
+            # Convert base versions to semantic versioning so we can compare if the beta version of 3.0.11 is installed.
+            if ([version]$PSGetSemeanticVersion.Matches[0].Value -lt [version]"3.0.11") {
+                If (!($Force))
+                {
+                    Do
+                    {
+                        Write-Host "$PSGetModuleName ($PSGetVersion) is installed but a newer version is required to interact with V3 nuget feeds. Enter ''Y'' to update the ' + $PSGetModuleName + ' PowerShell module to the latest version or enter ''N'' to cancel:"
+                        Write-Host ('Enter ''Y'' to update the ' + $PSGetModuleName + ' module to the latest version ' + "($PSGetLatestVersion)" + ' or enter ''N'' to cancel:') #-BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_UserPrompt) -NoNewline
+                        Write-Host (' ') -NoNewline
+                        $UserInput = Read-Host
+                    }
+                    Until ($UserInput.ToUpper() -in ('Y', 'N'))
+                }
+                Else
+                {
+                    $UserInput = 'Y'
+                }
+                If ($UserInput.ToUpper() -eq 'N')
+                {
+                    Write-Host ('Exiting the ' + $ModuleName + ' PowerShell module update process.') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action)
+                }
+                Else
+                {
+                    Install-Module -Name $PSGetModuleName -AllowPrerelease -Force
+                    Import-Module $PSGetModuleName
+                }
+            }
+            $FoundModule = Find-PSResource -Name:($ModuleName) -Repository:($Repository) -Credential:($RepositoryCredentials) -Prerelease
         }Else
         {
-            Find-Module -Name:($ModuleName) -Repository:($Repository)
+            $FoundModule = Find-Module -Name:($ModuleName) -Repository:($Repository)
         }
         # Get the version of the module installed locally
         $InstalledModulePreUpdate = Get-InstalledModule -Name:($ModuleName) -AllVersions -ErrorAction:('Ignore')
@@ -24,17 +61,29 @@ Function Update-JCModule
         $ModuleChangeLog = Get-ModuleChangeLog
         # To change update dependency from PowerShell Gallery to Github flip the commented code below
         ###### $UpdateTrigger = $ModuleBanner.'Latest Version'
-        $UpdateTrigger = $FoundModule.Version
+        if ($FoundModule.PrereleaseLabel){
+            $UpdateTrigger = "$($FoundModule.Version)"
+            $UpdateTriggerFull = "$($FoundModule.Version)-$($FoundModule.PrereleaseLabel)"
+        }else{
+            $UpdateTrigger = $FoundModule.Version
+        }
         # Get the release notes for a specific version
         $ModuleChangeLogLatestVersion = $ModuleChangeLog | Where-Object { $_.Version -eq $UpdateTrigger }
         # To change update dependency from PowerShell Gallery to Github flip the commented code below
         ###### $LatestVersionReleaseDate = $ModuleChangeLogLatestVersion.'RELEASE DATE'
-        $LatestVersionReleaseDate = ($FoundModule | ForEach-Object { ($_.Version).ToString() + ' (' + (Get-Date $_.PublishedDate).ToString('MMMM dd, yyyy') + ')' })
+        If (-not [System.String]::IsNullOrEmpty($RepositoryCredentials)) {
+            $LatestVersionReleaseDate = ($FoundModule | ForEach-Object { $_.Version.ToString() + ' (' + $foundModule.PrereleaseLabel + ')' })
+        }Else{
+            $LatestVersionReleaseDate = ($FoundModule | ForEach-Object { ($_.Version).ToString() + ' (' + (Get-Date $_.PublishedDate).ToString('yyyy-MM-dd') + ')' })
+        }
+        # $LatestVersionReleaseDate = ($FoundModule | ForEach-Object { ($_.Version).ToString() + ' (' + [datetime]::parseexact($foundModule.PrereleaseLabel, 'yyyyMMddHHmm', $null) + ')' })
+        # $LatestVersionReleaseDate = [datetime]::parseexact($foundModule.PrereleaseLabel, 'yyyyMMddHHmm', $null)
+        # $LatestVersionReleaseDate = ($FoundModule | ForEach-Object { ($_.Version).ToString() + ' (' + (Get-Date $_.foundModule.PrereleaseLabel).ToString('yyyyMMddHHmm') + ')' })
         # Build welcome page
         $WelcomePage = New-Object -TypeName:('PSCustomObject') | Select-Object `
         @{Name = 'MESSAGE'; Expression = { $ModuleBanner.'Banner Current' } } `
-            , @{Name = 'INSTALLED VERSION(S)'; Expression = { $InstalledModulePreUpdate | ForEach-Object { ($_.Version).ToString() + ' (' + (Get-Date $_.PublishedDate).ToString('MMMM dd, yyyy') + ')' } } } `
-            , @{Name = 'LATEST VERSION'; Expression = { $UpdateTrigger + ' (' + (Get-Date $LatestVersionReleaseDate).ToString('MMMM dd, yyyy') + ')' } } `
+            , @{Name = 'INSTALLED VERSION(S)'; Expression = { $InstalledModulePreUpdate | ForEach-Object { ($_.Version).ToString() + ' (' + (Get-Date $_.PublishedDate).ToString('yyyy-MM-dd HH:mm') + ')' } } } `
+            , @{Name = 'LATEST VERSION'; Expression = { $UpdateTrigger + ' (' + (Get-Date $LatestVersionReleaseDate).ToString('yyyy-MM-dd HH:mm') + ')' } } `
             , @{Name = 'RELEASE NOTES'; Expression = { $ModuleChangeLogLatestVersion.'RELEASE NOTES' } } `
             , @{Name = 'FEATURES'; Expression = { $ModuleChangeLogLatestVersion.'FEATURES' } } `
             , @{Name = 'IMPROVEMENTS'; Expression = { $ModuleChangeLogLatestVersion.'IMPROVEMENTS' } } `
@@ -55,15 +104,13 @@ Function Update-JCModule
             Else
             {
                 # Populate status message
-                $Status = If ($UpdateTrigger -notin $InstalledModulePreUpdate.Version)
+                $Status = If ([version]$UpdateTrigger -gt [version]$InstalledModulePreUpdate.Version)
                 {
                     'An update is available for the ' + $ModuleName + ' PowerShell module.'
-                }
-                ElseIf ($UpdateTrigger -in $InstalledModulePreUpdate.Version)
+                }ElseIf ($UpdateTrigger -in $InstalledModulePreUpdate.Version)
                 {
                     'The ' + $ModuleName + ' PowerShell module is up to date.'
-                }
-                Else
+                }Else
                 {
                     Write-Error ('Unable to determine ' + $ModuleName + ' PowerShell module install status.')
                 }
@@ -117,43 +164,106 @@ Function Update-JCModule
                     }
                     Else
                     {
-                        # Update the module to the latest version
-                        Write-Host ('Updating ' + $ModuleName + ' module to version: ') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewline
-                        Write-Host ($UpdateTrigger) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
-                        If (-not [System.String]::IsNullOrEmpty($RepositoryCredentials))
-                        {
-                            $InstalledModulePreUpdate | Update-Module -Force -Credential:($RepositoryCredentials) -AllowPrerelease
-                        }
-                        Else
-                        {
-                            $InstalledModulePreUpdate | Update-Module -Force
-                        }
-                        # Remove existing module from the session
-                        Get-Module -Name:($ModuleName) -ListAvailable -All | Remove-Module -Force
-                        # Uninstall previous versions
-                        If (!($SkipUninstallOld))
-                        {
-                            $InstalledModulePreUpdate | ForEach-Object {
-                                Write-Host ('Uninstalling ' + $_.Name + ' module version: ') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewline
-                                Write-Host (($_.Version).ToString()) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
-                                $_ | Uninstall-Module -Force
+                        # TODO: if the module is on a different repository, Install from the latest, uninstall the current
+
+                        if (($InstalledModulePreUpdate.Repository -eq 'PSGallery') -And ($Repository -eq 'CodeArtifact')){
+                            # PSGallery orig, updating to CodeArtifact Source
+                            Write-Host ('Updating ' + $ModuleName + ' module to version: ') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewline
+                            Write-Host ($UpdateTrigger) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
+                            # install from CodeArtifact
+                            Install-PSResource -Name:($ModuleName) -Repository:('CodeArtifact') -Credential:($RepositoryCredentials) -Prerelease;
+                            # Remove existing module from the session
+                            Get-Module -Name:($ModuleName) -ListAvailable -All | Remove-Module -Force
+                            # Uninstall previous versions
+                            If (!($SkipUninstallOld))
+                            {
+                                $InstalledModulePreUpdate | ForEach-Object {
+                                    Write-Host ('Uninstalling ' + $_.Name + ' module version: ') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewline
+                                    Write-Host (($_.Version).ToString()) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
+                                    $_ | Uninstall-Module -Force
+                                }
+                            }
+                            # Validate install
+                            $InstalledModulePostUpdate = Get-InstalledPSResource -Name:($ModuleName)
+                            # Check to see if the module version on the PowerShell gallery does not match the local module version
+                            If ([version]$UpdateTrigger -eq [version]$InstalledModulePostUpdate.Version)
+                            {
+                                # Load new module
+                                Import-Module -Name:($ModuleName) -Scope:('Global') -Force
+                                # Confirm to user module update has been successful
+                                Write-Host ('STATUS:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
+                                Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
+                                Write-Host ('The ' + $ModuleName + ' PowerShell module has successfully been updated!') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
+                            }
+                            Else
+                            {
+                                Write-Error ("Failed to update the $($ModuleName) PowerShell module to the latest version. $($UpdateTrigger) is not in $($InstalledModulePostUpdate.Version -join ', ')")
                             }
                         }
-                        # Validate install
-                        $InstalledModulePostUpdate = Get-InstalledModule -Name:($ModuleName) -AllVersions
-                        # Check to see if the module version on the PowerShell gallery does not match the local module version
-                        If ($UpdateTrigger -in $InstalledModulePostUpdate.Version)
-                        {
-                            # Load new module
-                            Import-Module -Name:($ModuleName) -Scope:('Global') -Force
-                            # Confirm to user module update has been successful
-                            Write-Host ('STATUS:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
-                            Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
-                            Write-Host ('The ' + $ModuleName + ' PowerShell module has successfully been updated!') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
+                        elseif (($InstalledModulePreUpdate.Repository -eq 'CodeArtifact') -And ($Repository -eq 'CodeArtifact')) {
+                            Write-Host ('Updating ' + $ModuleName + ' module to version: ') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewline
+                            Write-Host ($UpdateTrigger) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
+                            $InstalledModulePreUpdate | Update-PSResource -Name JumpCloud -Repository 'CodeArtifact' -Prerelease -Credential $RepositoryCredentials
+                            # Remove existing module from the session
+                            Get-Module -Name:($ModuleName) -ListAvailable -All | Remove-Module -Force
+                            # Uninstall previous versions
+                            If (!($SkipUninstallOld))
+                            {
+                                $InstalledModulePreUpdate | ForEach-Object {
+                                    Write-Host ('Uninstalling ' + $_.Name + ' module version: ') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewline
+                                    Write-Host (($_.Version).ToString()) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
+                                    $_ | Uninstall-PSResource -Force
+                                }
+                            }
+                            # Validate install
+                            $InstalledModulePostUpdate = Get-InstalledPSResource -Name:($ModuleName)
+                            # Check to see if the module version on the PowerShell gallery does not match the local module version
+                            If ([version]$UpdateTrigger -eq [version]$InstalledModulePostUpdate.Version)
+                            {
+                                # Load new module
+                                Import-Module -Name:($ModuleName) -Scope:('Global') -Force
+                                # Confirm to user module update has been successful
+                                Write-Host ('STATUS:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
+                                Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
+                                Write-Host ('The ' + $ModuleName + ' PowerShell module has successfully been updated!') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
+                            }
+                            Else
+                            {
+                                Write-Error ("Failed to update the $($ModuleName) PowerShell module to the latest version. $($UpdateTrigger) is not in $($InstalledModulePostUpdate.Version -join ', ')")
+                            }
                         }
-                        Else
-                        {
-                            Write-Error ("Failed to update the $($ModuleName) PowerShell module to the latest version. $($UpdateTrigger) is not in $($InstalledModulePostUpdate.Version -join ', ')")
+                        else{
+                            # Update the module to the latest version
+                            Write-Host ('Updating ' + $ModuleName + ' module to version: ') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewline
+                            Write-Host ($UpdateTrigger) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
+                            $InstalledModulePreUpdate | Update-Module -Force
+                            # Remove existing module from the session
+                            Get-Module -Name:($ModuleName) -ListAvailable -All | Remove-Module -Force
+                            # Uninstall previous versions
+                            If (!($SkipUninstallOld))
+                            {
+                                $InstalledModulePreUpdate | ForEach-Object {
+                                    Write-Host ('Uninstalling ' + $_.Name + ' module version: ') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewline
+                                    Write-Host (($_.Version).ToString()) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
+                                    $_ | Uninstall-Module -Force
+                                }
+                            }
+                            # Validate install
+                            $InstalledModulePostUpdate = Get-InstalledModule -Name:($ModuleName) -AllVersions
+                            # Check to see if the module version on the PowerShell gallery does not match the local module version
+                            If ([version]$UpdateTrigger -eq [version]$InstalledModulePostUpdate.Version)
+                            {
+                                # Load new module
+                                Import-Module -Name:($ModuleName) -Scope:('Global') -Force
+                                # Confirm to user module update has been successful
+                                Write-Host ('STATUS:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
+                                Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
+                                Write-Host ('The ' + $ModuleName + ' PowerShell module has successfully been updated!') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
+                            }
+                            Else
+                            {
+                                Write-Error ("Failed to update the $($ModuleName) PowerShell module to the latest version. $($UpdateTrigger) is not in $($InstalledModulePostUpdate.Version -join ', ')")
+                            }
                         }
                     }
                 }
