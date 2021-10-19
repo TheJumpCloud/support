@@ -13,7 +13,21 @@ Describe -Tag:('JCModule') 'Test for Update-JCModule' {
         }
         Else
         {
-            Update-JCModule -SkipUninstallOld -Force -Repository:($PesterParams_RequiredModulesRepo) -RepositoryCredentials:(New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $PesterParams_SYSTEM_ACCESSTOKEN, ($PesterParams_SYSTEM_ACCESSTOKEN | ConvertTo-SecureString -AsPlainText -Force))
+            $AWSRepo = 'jumpcloud-nuget-modules'
+            $AWSDomain = 'jumpcloud-artifacts'
+            $AWSRegion = 'us-east-1'
+            # Set AWS authToken using context from CI Pipeline (context: aws-credentials)
+            $authToken = Get-CAAuthorizationToken -Domain $AWSDomain -Region $AWSRegion
+            If (-not [System.String]::IsNullOrEmpty($authToken))
+            {
+                # Create Credential Object
+                $RepositoryCredentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $authToken.AuthorizationToken , ($authToken.AuthorizationToken | ConvertTo-SecureString -AsPlainText -Force)
+            }
+            Else
+            {
+                Write-Warning ('No authToken has been provided')
+            }
+            Update-JCModule -SkipUninstallOld -Force -Repository:($PesterParams_RequiredModulesRepo) -RepositoryCredentials:($RepositoryCredentials)
         }
         $InitialModule | Remove-Module
         # Remove prerelease tag from build number
