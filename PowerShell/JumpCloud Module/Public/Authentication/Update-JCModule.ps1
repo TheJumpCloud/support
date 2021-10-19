@@ -12,9 +12,8 @@ Function Update-JCModule
         # Find the module on the specified repository
         $FoundModule = If (-not [System.String]::IsNullOrEmpty($RepositoryCredentials))
         {
-            Find-Module -Name:($ModuleName) -Repository:($Repository) -Credential:($RepositoryCredentials) -AllowPrerelease
-        }
-        Else
+            Find-PSResource -Name:($ModuleName) -Repository:($Repository) -Credential:($RepositoryCredentials) -Prerelease
+        }Else
         {
             Find-Module -Name:($ModuleName) -Repository:($Repository)
         }

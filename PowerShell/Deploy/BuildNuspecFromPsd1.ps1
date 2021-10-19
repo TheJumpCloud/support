@@ -75,7 +75,6 @@ function New-NuspecFile
     #create top-level elements
     $packageElement = $xml.CreateElement("package", $nameSpaceUri)
     $metaDataElement = $xml.CreateElement("metadata", $nameSpaceUri)
-
     # warn we're over 4000 characters for standard nuget servers
     $tagsString = $Tags -Join " "
     if ($tagsString.Length -gt 4000)
@@ -87,9 +86,10 @@ function New-NuspecFile
     # Append buildNumber
     if ($env:Source -eq "CodeArtifact")
     {
-        $date = Get-Date -UFormat %Y%m%d%M%S
-        $BuildString = "build$($env:CIRCLE_BUILD_NUM)datetime$($date)"
-        $Version = $Version + "-$($BuildString)"
+        $date = (Get-Date).ToString("yyyyMMddHHmm")
+        # $BuildString = "build$($env:CIRCLE_BUILD_NUM)datetime$($date)"
+        $build = $($env:CIRCLE_BUILD_NUM)
+        $Version = $Version + ".$($build)" + "-$date"
     }
 
     $metaDataElementsHash = [ordered]@{
