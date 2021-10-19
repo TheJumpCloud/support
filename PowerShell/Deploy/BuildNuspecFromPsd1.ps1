@@ -158,11 +158,20 @@ function New-NuspecFile
     Write-Output $nuspecFullName
 }
 # Set Variables for New-NuspecFile
+# 31-build597datetime202105131803
+if ($RequiredModulesRepo -eq 'CodeArtifact'){
+    $date = Get-Date -UFormat %Y%m%d%M%S
+    $BuildString = "build$($env:CIRCLE_BUILD_NUM)datetime$($date)"
+
+}
+else{
+    $BuildString = $env:CIRCLE_BUILD_NUM
+}
 $Psd1 = Import-PowerShellDataFile -Path:($FilePath_psd1)
 $params = @{
     OutputPath   = $FolderPath_Module
     Id           = $(Get-Item ($FilePath_psd1)).BaseName
-    buildNumber  = $env:CIRCLE_BUILD_NUM
+    buildNumber  = $BuildString
     Version      = $Psd1.ModuleVersion
     Authors      = $Psd1.Author
     Owners       = $Psd1.CompanyName
