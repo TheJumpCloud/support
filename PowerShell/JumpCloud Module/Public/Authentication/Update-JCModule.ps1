@@ -46,7 +46,7 @@ Function Update-JCModule
                 Else
                 {
                     Install-Module -Name $PSGetModuleName -AllowPrerelease -Force
-                    Import-Module $PSGetModuleName
+                    Import-Module $PSGetModuleName -Force
                 }
             }
             $FoundModule = Find-PSResource -Name:($ModuleName) -Repository:($Repository) -Credential:($RepositoryCredentials) -Prerelease
@@ -63,7 +63,10 @@ Function Update-JCModule
         ###### $UpdateTrigger = $ModuleBanner.'Latest Version'
         if ($FoundModule.PrereleaseLabel){
             $UpdateTrigger = "$($FoundModule.Version)"
+            $UpdateTriggerWithoutRevision = "$(([version]$($FoundModule.Version)).Major).$(([version]$($FoundModule.Version)).Minor).$(([version]$($FoundModule.Version)).Build)"
             $UpdateTriggerFull = "$($FoundModule.Version)-$($FoundModule.PrereleaseLabel)"
+            $UpdateTriggerFullRegex = [regex]"^[0-9]+.[0-9]+.[0-9]+.[0-9]+-(.*)"
+            $UpdateTriggerFullDatetime = (Select-String -InputObject $UpdateTriggerFull -pattern ($UpdateTriggerFullRegex)).Matches.Groups[1].value
         }else{
             $UpdateTrigger = $FoundModule.Version
         }
@@ -164,8 +167,6 @@ Function Update-JCModule
                     }
                     Else
                     {
-                        # TODO: if the module is on a different repository, Install from the latest, uninstall the current
-
                         if (($InstalledModulePreUpdate.Repository -eq 'PSGallery') -And ($Repository -eq 'CodeArtifact')){
                             # PSGallery orig, updating to CodeArtifact Source
                             Write-Host ('Updating ' + $ModuleName + ' module to version: ') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewline
@@ -186,7 +187,7 @@ Function Update-JCModule
                             # Validate install
                             $InstalledModulePostUpdate = Get-InstalledPSResource -Name:($ModuleName)
                             # Check to see if the module version on the PowerShell gallery does not match the local module version
-                            If ([version]$UpdateTrigger -eq [version]$InstalledModulePostUpdate.Version)
+                            If (([version]$UpdateTriggerWithoutRevision -eq [version]$InstalledModulePostUpdate.Version) -And ($UpdateTriggerFullDatetime -eq $InstalledModulePostUpdate.PrereleaseLabel))
                             {
                                 # Load new module
                                 Import-Module -Name:($ModuleName) -Scope:('Global') -Force

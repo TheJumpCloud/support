@@ -412,7 +412,7 @@ commands:
                 name: Pack nuspec
                 shell: pwsh.exe
                 command: |
-                  ./Deploy/utils/nuget.exe pack "./PowerShell/JumpCloud Module/JumpCloud.nuspec"
+                  ./Deploy/utils/nuget.exe pack "./PowerShell/JumpCloud Module/JumpCloud.nuspec" -Properties NoWarn=NU5111,NU5110
             - run:
                 name: Publishing to "<< parameters.source >>" repo
                 shell: pwsh.exe
