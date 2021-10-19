@@ -89,7 +89,7 @@ function New-NuspecFile
         $date = (Get-Date).ToString("yyyyMMddHHmm")
         # $BuildString = "build$($env:CIRCLE_BUILD_NUM)datetime$($date)"
         $build = $($env:CIRCLE_BUILD_NUM)
-        $Version = $Version + "-build$($build)datetime$($date)"
+        $Version = $Version + ".$($build)" + "-$date"
     }
 
     $metaDataElementsHash = [ordered]@{
