@@ -30,7 +30,7 @@ Describe -Tag:('JCModule') 'Test for Update-JCModule' {
             $PowerShellGalleryModule = Find-PSResource -Name:('JumpCloud') -Repository:($env:RequiredModulesRepo) -Credential:($RepositoryCredentials) -Prerelease
             Write-Host ("$env:RequiredModulesRepo Version: $($PowerShellGalleryModule.Version)")
 
-            Update-JCModule -SkipUninstallOld -Force -Repository:($PesterParams_RequiredModulesRepo) -RepositoryCredentials:($RepositoryCredentials)
+            Update-JCModule -SkipUninstallOld -Force -Repository:($env:RequiredModulesRepo) -RepositoryCredentials:($RepositoryCredentials)
         }
         $InitialModule | Remove-Module
         # Remove prerelease tag from build number
