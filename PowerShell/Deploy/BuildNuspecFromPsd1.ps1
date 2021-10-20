@@ -7,10 +7,10 @@ param (
 
 . "$PSScriptRoot/Get-Config.ps1" -RequiredModulesRepo:($RequiredModulesRepo)
 # $nuspecFiles = @{ src = 'en-Us/**;Private/**;Public/**;JumpCloud.psd1;JumpCloud.psm1;LICENSE'; }
-$nuspecFiles = @( 
-    @{src = "en-Us/**" },
-    @{src = "Public/**.ps1" },
-    @{src = "Private/**.ps1" },
+$nuspecFiles = @(
+    @{src = "en-Us/**/*.*"; target = "en-Us" },
+    @{src = "Public/**/*.*"; target = "Public" },
+    @{src = "Private/**/*.*"; target = "Private" },
     @{src = "JumpCloud.psd1" },
     @{src = "JumpCloud.psm1" },
     @{src = "LICENSE" }
