@@ -34,9 +34,9 @@ Describe -Tag:('JCModule') 'Test for Update-JCModule' {
         }
         $InitialModule | Remove-Module
         # Remove prerelease tag from build number
-        $PowerShellGalleryModuleVersion = If ($PowerShellGalleryModule.AdditionalMetadata.IsPrerelease)
+        $PowerShellGalleryModuleVersion = If ($PowerShellGalleryModule.IsPrerelease)
         {
-            $PowerShellGalleryModule.Version.Split('-')[0]
+            "$(($($PowerShellGalleryModule.Version)).Major).$(($($PowerShellGalleryModule.Version)).Minor).$(($($PowerShellGalleryModule.Version)).Build)"
         }Else
         {
             $PowerShellGalleryModule.Version
@@ -46,8 +46,7 @@ Describe -Tag:('JCModule') 'Test for Update-JCModule' {
         {
             Write-Host ('Local Version After: ' + $LocalModulePost.Version)
             $LocalModulePost | Remove-Module
-        }
-        Else
+        }Else
         {
             Write-Error ('Unable to find latest version of the JumpCloud PowerShell module installed on local machine.')
         }

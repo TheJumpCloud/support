@@ -18,13 +18,16 @@ Function Update-JCModule
             $PSGetVersion = (Get-InstalledModule PowerShellGet).Version
             $PSGetSemanticRegex = [Regex]"[0-9]+.[0-9]+.[0-9]+"
             $PSGetSemeanticVersion = Select-String -InputObject $PSGet.Version -pattern ($PSGetSemanticRegex)
-            $PSGetVersionMatch = $PSGetSemeanticVersion.Matches[0].Value
+            $PSGetVersionMatch = $PSGetSemeanticVersion.Matches[0].Value.ToString()
             # $PSGetSemeanticVersion.Matches[0].Value # This should be the semantic version installed
             # Prelease regex 
             # $PSGetPrereleaseRegex = [regex]"[0-9]+.[0-9]+.[0-9]+-(.*)"
             # $PSGetPrereleaseVersion = Select-String -InputObject $PSGet.Version -pattern ($PSGetPrereleaseRegex)
             # Convert base versions to semantic versioning so we can compare if the beta version of 3.0.11 is installed.
-            if ([version]$PSGetVersionMatch -lt [version]"3.0.11") {
+            Write-Host "PSGetVersion: $PSGetVersionMatch"
+            [System.Version]$PSGetVersionMatch
+
+            if ([System.Version]$PSGetVersionMatch -lt [System.Version]"3.0.11") {
                 If (!($Force))
                 {
                     Do
@@ -67,9 +70,10 @@ Function Update-JCModule
         $ModuleChangeLog = Get-ModuleChangeLog
         # To change update dependency from PowerShell Gallery to Github flip the commented code below
         ###### $UpdateTrigger = $ModuleBanner.'Latest Version'
+        "test"
         if ($FoundModule.PrereleaseLabel){
             $UpdateTrigger = "$($FoundModule.Version)"
-            $UpdateTriggerWithoutRevision = "$(([version]$($FoundModule.Version)).Major).$(([version]$($FoundModule.Version)).Minor).$(([version]$($FoundModule.Version)).Build)"
+            $UpdateTriggerWithoutRevision = "$(($($FoundModule.Version)).Major).$(($($FoundModule.Version)).Minor).$(($($FoundModule.Version)).Build)"
             $UpdateTriggerFull = "$($FoundModule.Version)-$($FoundModule.PrereleaseLabel)"
             $UpdateTriggerFullRegex = [regex]"^[0-9]+.[0-9]+.[0-9]+.[0-9]+-(.*)"
             $UpdateTriggerFullDatetime = (Select-String -InputObject $UpdateTriggerFull -pattern ($UpdateTriggerFullRegex)).Matches.Groups[1].value
@@ -113,7 +117,14 @@ Function Update-JCModule
             Else
             {
                 # Populate status message
-                $Status = If ([version]$UpdateTrigger -gt [version]$InstalledModulePreUpdate.Version)
+                "test2"
+                [System.Version]($UpdateTrigger.ToString())
+                ($InstalledModulePreUpdate.Version | Select-Object -First 1)
+                
+                $new = ($InstalledModulePreUpdate.Version | measure -Maximum ).Maximum
+
+                # [System.Version]($InstalledModulePreUpdate.Version.ToString())
+                $Status = If ([System.Version]($UpdateTrigger.ToString()) -gt [System.Version]($new))
                 {
                     'An update is available for the ' + $ModuleName + ' PowerShell module.'
                 }ElseIf ($UpdateTrigger -in $InstalledModulePreUpdate.Version)
@@ -193,7 +204,7 @@ Function Update-JCModule
                             # Validate install
                             $InstalledModulePostUpdate = Get-InstalledPSResource -Name:($ModuleName)
                             # Check to see if the module version on the PowerShell gallery does not match the local module version
-                            If (([version]$UpdateTriggerWithoutRevision -eq [version]$InstalledModulePostUpdate.Version) -And ($UpdateTriggerFullDatetime -eq $InstalledModulePostUpdate.PrereleaseLabel))
+                            If (([System.Version]$UpdateTriggerWithoutRevision -eq [System.Version]($InstalledModulePostUpdate.Version | Measure-Object -Maximum ).Maximum) -And ([System.String]$UpdateTriggerFullDatetime -eq [System.String]($InstalledModulePostUpdate.PrereleaseLabel | Measure-Object -Maximum ).Maximum))
                             {
                                 # Load new module
                                 Import-Module -Name:($ModuleName) -Scope:('Global') -Force
@@ -225,7 +236,7 @@ Function Update-JCModule
                             # Validate install
                             $InstalledModulePostUpdate = Get-InstalledPSResource -Name:($ModuleName)
                             # Check to see if the module version on the PowerShell gallery does not match the local module version
-                            If ([version]$UpdateTrigger -eq [version]$InstalledModulePostUpdate.Version)
+                            If ([System.Version]$UpdateTrigger -eq [System.Version]$InstalledModulePostUpdate.Version)
                             {
                                 # Load new module
                                 Import-Module -Name:($ModuleName) -Scope:('Global') -Force
@@ -258,7 +269,7 @@ Function Update-JCModule
                             # Validate install
                             $InstalledModulePostUpdate = Get-InstalledModule -Name:($ModuleName) -AllVersions
                             # Check to see if the module version on the PowerShell gallery does not match the local module version
-                            If ([version]$UpdateTrigger -eq [version]$InstalledModulePostUpdate.Version)
+                            If ([System.Version]$UpdateTrigger -eq [System.Version]$InstalledModulePostUpdate.Version)
                             {
                                 # Load new module
                                 Import-Module -Name:($ModuleName) -Scope:('Global') -Force
