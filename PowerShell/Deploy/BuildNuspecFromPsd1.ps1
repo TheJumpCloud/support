@@ -6,7 +6,15 @@ param (
 )
 
 . "$PSScriptRoot/Get-Config.ps1" -RequiredModulesRepo:($RequiredModulesRepo)
-$nuspecFiles = @{ src = 'en-Us/**;Private/**;Public/**;JumpCloud.psd1;JumpCloud.psm1;LICENSE'; }
+# $nuspecFiles = @{ src = 'en-Us/**;Private/**;Public/**;JumpCloud.psd1;JumpCloud.psm1;LICENSE'; }
+$nuspecFiles = @( 
+    @{src = "en-Us/**" },
+    @{src = "Public/**.ps1" },
+    @{src = "Private/**.ps1" },
+    @{src = "JumpCloud.psd1" },
+    @{src = "JumpCloud.psm1" },
+    @{src = "LICENSE" }
+)
 # Addapted from PowerShell Get
 # https://github.com/PowerShell/PowerShellGetv2/blob/7de99ee0c38611556e5c583ffaca98bb1922a0d4/src/PowerShellGet/private/functions/New-NuspecFile.ps1
 function New-NuspecFile
