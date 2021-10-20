@@ -18,12 +18,13 @@ Function Update-JCModule
             $PSGetVersion = (Get-InstalledModule PowerShellGet).Version
             $PSGetSemanticRegex = [Regex]"[0-9]+.[0-9]+.[0-9]+"
             $PSGetSemeanticVersion = Select-String -InputObject $PSGet.Version -pattern ($PSGetSemanticRegex)
+            $PSGetVersionMatch = $PSGetSemeanticVersion.Matches[0].Value
             # $PSGetSemeanticVersion.Matches[0].Value # This should be the semantic version installed
             # Prelease regex 
             # $PSGetPrereleaseRegex = [regex]"[0-9]+.[0-9]+.[0-9]+-(.*)"
             # $PSGetPrereleaseVersion = Select-String -InputObject $PSGet.Version -pattern ($PSGetPrereleaseRegex)
             # Convert base versions to semantic versioning so we can compare if the beta version of 3.0.11 is installed.
-            if ([version]$PSGetSemeanticVersion.Matches[0].Value -lt [version]"3.0.11") {
+            if ([version]$PSGetVersionMatch -lt [version]"3.0.11") {
                 If (!($Force))
                 {
                     Do
@@ -177,7 +178,7 @@ Function Update-JCModule
                             Write-Host ('Updating ' + $ModuleName + ' module to version: ') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewline
                             Write-Host ($UpdateTrigger) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
                             # install from CodeArtifact
-                            Install-PSResource -Name:($ModuleName) -Repository:('CodeArtifact') -Credential:($RepositoryCredentials) -Prerelease;
+                            Install-PSResource -Name:($ModuleName) -Repository:('CodeArtifact') -Credential:($RepositoryCredentials) -Prerelease -Reinstall;
                             # Remove existing module from the session
                             Get-Module -Name:($ModuleName) -ListAvailable -All | Remove-Module -Force
                             # Uninstall previous versions

@@ -3,15 +3,16 @@ Describe -Tag:('JCModule') 'Test for Update-JCModule' {
         $EarliestVersion = Find-Module -Name:('JumpCloud') -AllVersions | Sort-Object PublishedDate | Select-Object -First 1
         Install-Module -Name:('JumpCloud') -RequiredVersion:($EarliestVersion.Version) -Scope:('CurrentUser') -Force
         $InitialModule = Get-Module -Name:('JumpCloud') -All | Where-Object { $_.Version -eq $EarliestVersion.Version }
-        $PowerShellGalleryModule = Find-Module -Name:('JumpCloud')
         $LocalModulePre = Get-Module -Name:('JumpCloud')
-        Write-Host ("$env:RequiredModulesRepo Version: $($PowerShellGalleryModule.Version)")
         Write-Host ("Local Version Before: $($LocalModulePre.Version)")
         If ($env:RequiredModulesRepo -eq 'PSGallery')
         {
+            $PowerShellGalleryModule = Find-Module -Name:('JumpCloud')
+
+            Write-Host ("$env:RequiredModulesRepo Version: $($PowerShellGalleryModule.Version)")
+
             Update-JCModule -SkipUninstallOld -Force -Repository:('PSGallery')
-        }
-        Else
+        }Else
         {
             $AWSRepo = 'jumpcloud-nuget-modules'
             $AWSDomain = 'jumpcloud-artifacts'
@@ -22,11 +23,13 @@ Describe -Tag:('JCModule') 'Test for Update-JCModule' {
             {
                 # Create Credential Object
                 $RepositoryCredentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $authToken.AuthorizationToken , ($authToken.AuthorizationToken | ConvertTo-SecureString -AsPlainText -Force)
-            }
-            Else
+            }Else
             {
                 Write-Warning ('No authToken has been provided')
             }
+            $PowerShellGalleryModule = Find-PSResource -Name:('JumpCloud') -Repository:($env:RequiredModulesRepo) -Credential:($RepositoryCredentials) -Prerelease
+            Write-Host ("$env:RequiredModulesRepo Version: $($PowerShellGalleryModule.Version)")
+
             Update-JCModule -SkipUninstallOld -Force -Repository:($PesterParams_RequiredModulesRepo) -RepositoryCredentials:($RepositoryCredentials)
         }
         $InitialModule | Remove-Module
@@ -34,8 +37,7 @@ Describe -Tag:('JCModule') 'Test for Update-JCModule' {
         $PowerShellGalleryModuleVersion = If ($PowerShellGalleryModule.AdditionalMetadata.IsPrerelease)
         {
             $PowerShellGalleryModule.Version.Split('-')[0]
-        }
-        Else
+        }Else
         {
             $PowerShellGalleryModule.Version
         }
