@@ -55,7 +55,12 @@ Function Update-JCModule
             $FoundModule = Find-Module -Name:($ModuleName) -Repository:($Repository)
         }
         # Get the version of the module installed locally
+        #TODO: condition for CodeArtifact
         $InstalledModulePreUpdate = Get-InstalledModule -Name:($ModuleName) -AllVersions -ErrorAction:('Ignore')
+        If ([System.String]::IsNullOrEmpty($InstalledModulePreUpdate)){
+            $InstalledModulePreUpdate = Get-InstalledPSResource -Name:($ModuleName) #-AllVersions -ErrorAction:('Ignore')
+
+        }
         # Get module info from GitHub - This should not impact the auto update ability, only the banner message
         $ModuleBanner = Get-ModuleBanner
         $ModuleChangeLog = Get-ModuleChangeLog
