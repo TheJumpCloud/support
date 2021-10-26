@@ -10,6 +10,7 @@ Function Update-JCModule
     {
         $ModuleName = 'JumpCloud'
         # Find the module on the specified repository
+        # If Repository Credneials are passed in, follow the flow to check for pre-release versions of the Module & SDKs
         If (-not [System.String]::IsNullOrEmpty($RepositoryCredentials))
         {
             $PSGetModuleName = 'PowerShellGet'
@@ -20,13 +21,11 @@ Function Update-JCModule
             $PSGetSemeanticVersion = Select-String -InputObject $PSGet.Version -pattern ($PSGetSemanticRegex)
             $PSGetVersionMatch = $PSGetSemeanticVersion.Matches[0].Value.ToString()
             # $PSGetSemeanticVersion.Matches[0].Value # This should be the semantic version installed
-            # Prelease regex 
+            # Prelease regex
             # $PSGetPrereleaseRegex = [regex]"[0-9]+.[0-9]+.[0-9]+-(.*)"
             # $PSGetPrereleaseVersion = Select-String -InputObject $PSGet.Version -pattern ($PSGetPrereleaseRegex)
             # Convert base versions to semantic versioning so we can compare if the beta version of 3.0.11 is installed.
-            Write-Host "PSGetVersion: $PSGetVersionMatch"
-            [System.Version]$PSGetVersionMatch
-
+            # As of October 2021, powershell get 3.0.11 beta is required
             if ([System.Version]$PSGetVersionMatch -lt [System.Version]"3.0.11") {
                 If (!($Force))
                 {
@@ -53,24 +52,25 @@ Function Update-JCModule
                     Import-Module $PSGetModuleName -Force
                 }
             }
+            else {
+                Import-Module $PSGetModuleName
+            }
             $FoundModule = Find-PSResource -Name:($ModuleName) -Repository:($Repository) -Credential:($RepositoryCredentials) -Prerelease
         }Else
         {
-            $FoundModule = Find-Module -Name:($ModuleName) -Repository:($Repository)
+            $FoundModule = Find-PSResource -Name:($ModuleName) -Repository:($Repository) -Credential:($RepositoryCredentials) -Prerelease
         }
         # Get the version of the module installed locally
         #TODO: condition for CodeArtifact
         $InstalledModulePreUpdate = Get-InstalledModule -Name:($ModuleName) -AllVersions -ErrorAction:('Ignore')
         If ([System.String]::IsNullOrEmpty($InstalledModulePreUpdate)){
             $InstalledModulePreUpdate = Get-InstalledPSResource -Name:($ModuleName) #-AllVersions -ErrorAction:('Ignore')
-
         }
         # Get module info from GitHub - This should not impact the auto update ability, only the banner message
         $ModuleBanner = Get-ModuleBanner
         $ModuleChangeLog = Get-ModuleChangeLog
         # To change update dependency from PowerShell Gallery to Github flip the commented code below
         ###### $UpdateTrigger = $ModuleBanner.'Latest Version'
-        "test"
         if ($FoundModule.PrereleaseLabel){
             $UpdateTrigger = "$($FoundModule.Version)"
             $UpdateTriggerWithoutRevision = "$(($($FoundModule.Version)).Major).$(($($FoundModule.Version)).Minor).$(($($FoundModule.Version)).Build)"
@@ -95,7 +95,14 @@ Function Update-JCModule
         # Build welcome page
         $WelcomePage = New-Object -TypeName:('PSCustomObject') | Select-Object `
         @{Name = 'MESSAGE'; Expression = { $ModuleBanner.'Banner Current' } } `
-            , @{Name = 'INSTALLED VERSION(S)'; Expression = { $InstalledModulePreUpdate | ForEach-Object { ($_.Version).ToString() + ' (' + (Get-Date $_.PublishedDate).ToString('yyyy-MM-dd HH:mm') + ')' } } } `
+            , @{Name = 'INSTALLED VERSION(S)'; Expression = { $InstalledModulePreUpdate | ForEach-Object {
+                    if ($InstalledModulePreUpdate.Repository -eq $Repository){
+                        ($_.Version).ToString() + ' (' + [datetime]::parseexact($_.PrereleaseLabel, 'yyyyMMddHHmm', $null) + ')'
+                    }
+                    else{
+                        ($_.Version).ToString() + ' (' + (Get-Date $_.PublishedDate).ToString('yyyy-MM-dd HH:mm') + ')'
+                    }
+            }} } `
             , @{Name = 'LATEST VERSION'; Expression = { $UpdateTrigger + ' (' + (Get-Date $LatestVersionReleaseDate).ToString('yyyy-MM-dd HH:mm') + ')' } } `
             , @{Name = 'RELEASE NOTES'; Expression = { $ModuleChangeLogLatestVersion.'RELEASE NOTES' } } `
             , @{Name = 'FEATURES'; Expression = { $ModuleChangeLogLatestVersion.'FEATURES' } } `
@@ -117,14 +124,12 @@ Function Update-JCModule
             Else
             {
                 # Populate status message
-                "test2"
-                [System.Version]($UpdateTrigger.ToString())
-                ($InstalledModulePreUpdate.Version | Select-Object -First 1)
-                
-                $new = ($InstalledModulePreUpdate.Version | measure -Maximum ).Maximum
+                # [System.Version]($UpdateTrigger.ToString())
+                # ($InstalledModulePreUpdate.Version | Select-Object -First 1)
+                $latestVersionInstalled = ($InstalledModulePreUpdate.Version | Measure-Object -Maximum ).Maximum
 
                 # [System.Version]($InstalledModulePreUpdate.Version.ToString())
-                $Status = If ([System.Version]($UpdateTrigger.ToString()) -gt [System.Version]($new))
+                $Status = If ([System.Version]($UpdateTrigger.ToString()) -gt [System.Version]($latestVersionInstalled))
                 {
                     'An update is available for the ' + $ModuleName + ' PowerShell module.'
                 }ElseIf ($UpdateTrigger -in $InstalledModulePreUpdate.Version)
@@ -221,13 +226,13 @@ Function Update-JCModule
                         elseif (($InstalledModulePreUpdate.Repository -eq 'CodeArtifact') -And ($Repository -eq 'CodeArtifact')) {
                             Write-Host ('Updating ' + $ModuleName + ' module to version: ') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewline
                             Write-Host ($UpdateTrigger) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
-                            $InstalledModulePreUpdate | Update-PSResource -Name JumpCloud -Repository 'CodeArtifact' -Prerelease -Credential $RepositoryCredentials
+                            Install-PSResource -Name $ModuleName -Repository 'CodeArtifact' -Prerelease -Credential $RepositoryCredentials -Reinstall
                             # Remove existing module from the session
                             Get-Module -Name:($ModuleName) -ListAvailable -All | Remove-Module -Force
                             # Uninstall previous versions
                             If (!($SkipUninstallOld))
                             {
-                                $InstalledModulePreUpdate | ForEach-Object {
+                                $InstalledModulePreUpdate | Where-Object { $_.PrereleaseLabel -ne $InstalledModulePreUpdate.PrereleaseLabel } | ForEach-Object {
                                     Write-Host ('Uninstalling ' + $_.Name + ' module version: ') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewline
                                     Write-Host (($_.Version).ToString()) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
                                     $_ | Uninstall-PSResource -Force
@@ -236,7 +241,7 @@ Function Update-JCModule
                             # Validate install
                             $InstalledModulePostUpdate = Get-InstalledPSResource -Name:($ModuleName)
                             # Check to see if the module version on the PowerShell gallery does not match the local module version
-                            If ([System.Version]$UpdateTrigger -eq [System.Version]$InstalledModulePostUpdate.Version)
+                            If (([System.Version]$UpdateTriggerWithoutRevision -eq [System.Version]($InstalledModulePostUpdate.Version | Measure-Object -Maximum ).Maximum) -And ([System.String]$UpdateTriggerFullDatetime -eq [System.String]($InstalledModulePostUpdate.PrereleaseLabel | Measure-Object -Maximum ).Maximum))
                             {
                                 # Load new module
                                 Import-Module -Name:($ModuleName) -Scope:('Global') -Force
