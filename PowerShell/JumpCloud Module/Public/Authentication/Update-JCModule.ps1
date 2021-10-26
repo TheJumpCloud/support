@@ -10,23 +10,29 @@ Function Update-JCModule
     {
         $ModuleName = 'JumpCloud'
         # Find the module on the specified repository
+        # Until PowerShellGet is updated to query nuget v3 modules, we need to determine PSGet versions ahead of function process block
+        $PSGetModuleName = 'PowerShellGet'
+        $PSGetLatestVersion = (Find-Module PowerShellGet -AllowPrerelease).Version
+        $PSGet = Get-InstalledModule PowerShellGet
+        $PSGetVersion = (Get-InstalledModule PowerShellGet).Version
+        $PSGetSemanticRegex = [Regex]"[0-9]+.[0-9]+.[0-9]+"
+        $PSGetSemeanticVersion = Select-String -InputObject $PSGet.Version -pattern ($PSGetSemanticRegex)
+        $PSGetVersionMatch = $PSGetSemeanticVersion.Matches[0].Value.ToString()
+        # $PSGetSemeanticVersion.Matches[0].Value # This should be the semantic version installed
+        # Prelease regex
+        # $PSGetPrereleaseRegex = [regex]"[0-9]+.[0-9]+.[0-9]+-(.*)"
+        # $PSGetPrereleaseVersion = Select-String -InputObject $PSGet.Version -pattern ($PSGetPrereleaseRegex)
+        # Convert base versions to semantic versioning so we can compare if the beta version of 3.0.11 is installed.
+        # As of October 2021, powershell get 3.0.11 beta is required
+        if ([System.Version]$PSGetVersionMatch -lt [System.Version]"3.0.11") {
+            $PSGetBetaInstalled = $false
+        }else {
+            $PSGetBetaInstalled = $true
+        }
         # If Repository Credneials are passed in, follow the flow to check for pre-release versions of the Module & SDKs
         If (-not [System.String]::IsNullOrEmpty($RepositoryCredentials))
         {
-            $PSGetModuleName = 'PowerShellGet'
-            $PSGetLatestVersion = (Find-Module PowerShellGet -AllowPrerelease).Version
-            $PSGet = Get-InstalledModule PowerShellGet
-            $PSGetVersion = (Get-InstalledModule PowerShellGet).Version
-            $PSGetSemanticRegex = [Regex]"[0-9]+.[0-9]+.[0-9]+"
-            $PSGetSemeanticVersion = Select-String -InputObject $PSGet.Version -pattern ($PSGetSemanticRegex)
-            $PSGetVersionMatch = $PSGetSemeanticVersion.Matches[0].Value.ToString()
-            # $PSGetSemeanticVersion.Matches[0].Value # This should be the semantic version installed
-            # Prelease regex
-            # $PSGetPrereleaseRegex = [regex]"[0-9]+.[0-9]+.[0-9]+-(.*)"
-            # $PSGetPrereleaseVersion = Select-String -InputObject $PSGet.Version -pattern ($PSGetPrereleaseRegex)
-            # Convert base versions to semantic versioning so we can compare if the beta version of 3.0.11 is installed.
-            # As of October 2021, powershell get 3.0.11 beta is required
-            if ([System.Version]$PSGetVersionMatch -lt [System.Version]"3.0.11") {
+            if (-not $PSGetBetaInstalled) {
                 If (!($Force))
                 {
                     Do
@@ -34,15 +40,15 @@ Function Update-JCModule
                         Write-Host "$PSGetModuleName ($PSGetVersion) is installed but a newer version is required to interact with V3 nuget feeds. Enter ''Y'' to update the ' + $PSGetModuleName + ' PowerShell module to the latest version or enter ''N'' to cancel:"
                         Write-Host ('Enter ''Y'' to update the ' + $PSGetModuleName + ' module to the latest version ' + "($PSGetLatestVersion)" + ' or enter ''N'' to cancel:') #-BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_UserPrompt) -NoNewline
                         Write-Host (' ') -NoNewline
-                        $UserInput = Read-Host
+                        $UserInputPSGet = Read-Host
                     }
-                    Until ($UserInput.ToUpper() -in ('Y', 'N'))
+                    Until ($UserInputPSGet.ToUpper() -in ('Y', 'N'))
                 }
                 Else
                 {
-                    $UserInput = 'Y'
+                    $UserInputPSGet = 'Y'
                 }
-                If ($UserInput.ToUpper() -eq 'N')
+                If ($UserInputPSGet.ToUpper() -eq 'N')
                 {
                     Write-Host ('Exiting the ' + $ModuleName + ' PowerShell module update process.') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action)
                 }
@@ -58,13 +64,33 @@ Function Update-JCModule
             $FoundModule = Find-PSResource -Name:($ModuleName) -Repository:($Repository) -Credential:($RepositoryCredentials) -Prerelease
         }Else
         {
-            $FoundModule = Find-PSResource -Name:($ModuleName) -Repository:($Repository) -Credential:($RepositoryCredentials) -Prerelease
+            $FoundModule = Find-Module -Name:($ModuleName) #-Repository:($Repository) -Credential:($RepositoryCredentials) -Prerelease
         }
         # Get the version of the module installed locally
-        #TODO: condition for CodeArtifact
         $InstalledModulePreUpdate = Get-InstalledModule -Name:($ModuleName) -AllVersions -ErrorAction:('Ignore')
+        # if null and beta version of PSGet installed:
+        if (($PSGetBetaInstalled) -And [System.String]::IsNullOrEmpty($InstalledModulePreUpdate)) {
+            If (!($Force)){
+                Do{
+                    Write-Host "The $Module PowerShell module was not installed from any PSGallery repositories"
+                    Write-Host "$PSGetModuleName ($PSGetVersion) is installed. Enter ''Y'' to search for $ModuleName PowerShell modules in a NugetV3 feed ''N'' to cancel:"
+                    $UserInputSearch = Read-Host
+                }
+                Until ($UserInputSearch.ToUpper() -in ('Y', 'N'))
+            }
+            else{
+                $UserInputSearch = 'Y'
+            }
+            If ($UserInputSearch.ToUpper() -eq 'N')
+            {
+                Write-Host ('Exiting the ' + $ModuleName + ' PowerShell module update process.') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action)
+            }
+            Else
+            {
+                $InstalledModulePreUpdate = Get-InstalledPSResource -Name:($ModuleName) #-AllVersions -ErrorAction:('Ignore')
+            }
+        }
         If ([System.String]::IsNullOrEmpty($InstalledModulePreUpdate)){
-            $InstalledModulePreUpdate = Get-InstalledPSResource -Name:($ModuleName) #-AllVersions -ErrorAction:('Ignore')
         }
         # Get module info from GitHub - This should not impact the auto update ability, only the banner message
         $ModuleBanner = Get-ModuleBanner
@@ -96,13 +122,16 @@ Function Update-JCModule
         $WelcomePage = New-Object -TypeName:('PSCustomObject') | Select-Object `
         @{Name = 'MESSAGE'; Expression = { $ModuleBanner.'Banner Current' } } `
             , @{Name = 'INSTALLED VERSION(S)'; Expression = { $InstalledModulePreUpdate | ForEach-Object {
-                    if ($InstalledModulePreUpdate.Repository -eq $Repository){
+                    if ($InstalledModulePreUpdate.Repository -eq $Repository)
+                    {
                         ($_.Version).ToString() + ' (' + [datetime]::parseexact($_.PrereleaseLabel, 'yyyyMMddHHmm', $null) + ')'
                     }
-                    else{
+                    else
+                    {
                         ($_.Version).ToString() + ' (' + (Get-Date $_.PublishedDate).ToString('yyyy-MM-dd HH:mm') + ')'
                     }
-            }} } `
+                } }
+        } `
             , @{Name = 'LATEST VERSION'; Expression = { $UpdateTrigger + ' (' + (Get-Date $LatestVersionReleaseDate).ToString('yyyy-MM-dd HH:mm') + ')' } } `
             , @{Name = 'RELEASE NOTES'; Expression = { $ModuleChangeLogLatestVersion.'RELEASE NOTES' } } `
             , @{Name = 'FEATURES'; Expression = { $ModuleChangeLogLatestVersion.'FEATURES' } } `
