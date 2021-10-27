@@ -77,7 +77,7 @@ $FunctionTemplate = "{0}`nFunction {1}`n{{`n$($IndentChar){2}`n$($IndentChar)Par
 $ScriptAnalyzerResults = @()
 $JumpCloudModulePath = "$PSScriptRoot/../JumpCloud Module"
 Get-Module -Refresh -ListAvailable -All | Out-Null
-$Modules = Get-Module -Name:($Psd1.RequiredModules | Where-Object { $_ -in $ApprovedFunctions.Keys })
+$Modules = Get-Module -Name:($Psd1.RequiredModules.ModuleName | Where-Object { $_ -in $ApprovedFunctions.Keys })
 If (-not [System.String]::IsNullOrEmpty($Modules))
 {
     ForEach ($Module In $Modules)
