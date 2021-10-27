@@ -269,7 +269,7 @@ Function Update-JCModule
                             }
                             # Validate install
                             $InstalledModulePostUpdate = Get-InstalledPSResource -Name:($ModuleName)
-                            # Check to see if the module version on the PowerShell gallery does not match the local module version
+                            # Check to see if the module version on the CA match the local module version
                             If (([System.Version]$UpdateTriggerWithoutRevision -eq [System.Version]($InstalledModulePostUpdate.Version | Measure-Object -Maximum ).Maximum) -And ([System.String]$UpdateTriggerFullDatetime -eq [System.String]($InstalledModulePostUpdate.PrereleaseLabel | Measure-Object -Maximum ).Maximum))
                             {
                                 # Load new module
@@ -285,6 +285,8 @@ Function Update-JCModule
                             }
                         }
                         else{
+                            # TODO: Cover the case where Insatlled JC PS Module is lt, Found JC PS Module in PSGallery
+                            # To test, Download, Install older version of the PS Module from CA, try and update using update-jcmodule.
                             # Update the module to the latest version
                             Write-Host ('Updating ' + $ModuleName + ' module to version: ') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewline
                             Write-Host ($UpdateTrigger) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
@@ -298,11 +300,13 @@ Function Update-JCModule
                                     Write-Host ('Uninstalling ' + $_.Name + ' module version: ') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewline
                                     Write-Host (($_.Version).ToString()) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
                                     $_ | Uninstall-Module -Force
+                                    #TODO: if insatlled version is from CA, Uninstall-PSResource
                                 }
                             }
                             # Validate install
                             $InstalledModulePostUpdate = Get-InstalledModule -Name:($ModuleName) -AllVersions
                             # Check to see if the module version on the PowerShell gallery does not match the local module version
+                            # TODO: These version casting statement don't work if multiple versions are installed, see prior elseif statement for reference
                             If ([System.Version]$UpdateTrigger -eq [System.Version]$InstalledModulePostUpdate.Version)
                             {
                                 # Load new module
