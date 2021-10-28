@@ -286,7 +286,7 @@ Function Update-JCModule
                         }
                         else{
                             # TODO: Cover the case where Insatlled JC PS Module is lt, Found JC PS Module in PSGallery
-                            # To test, Download, Install older version of the PS Module from CA, try and update using update-jcmodule.
+                            # To test, Download, Install older version of the PS Module from CA, try and update using update-jcmodule
                             # Update the module to the latest version
                             Write-Host ('Updating ' + $ModuleName + ' module to version: ') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewline
                             Write-Host ($UpdateTrigger) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
@@ -297,10 +297,17 @@ Function Update-JCModule
                             If (!($SkipUninstallOld))
                             {
                                 $InstalledModulePreUpdate | ForEach-Object {
-                                    Write-Host ('Uninstalling ' + $_.Name + ' module version: ') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewline
-                                    Write-Host (($_.Version).ToString()) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
-                                    $_ | Uninstall-Module -Force
                                     #TODO: if insatlled version is from CA, Uninstall-PSResource
+                                    if ($_.Repository -eq "CodeArtifact") {
+                                        Write-Host ('Uninstalling ' + $_.Name + ' module version: ') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewline
+                                        Write-Host (($_.Version).ToString()) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
+                                        $_ | Uninstall-PSResource -Force
+                                    }
+                                    else {
+                                        Write-Host ('Uninstalling ' + $_.Name + ' module version: ') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewline
+                                        Write-Host (($_.Version).ToString()) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
+                                        $_ | Uninstall-Module -Force
+                                    }
                                 }
                             }
                             # Validate install
