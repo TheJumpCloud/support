@@ -8,6 +8,8 @@ Function Update-JCModule
     )
     Begin
     {
+        # Load color scheme
+        $JCColorConfig = Get-JCColorConfig
         $ModuleName = 'JumpCloud'
         # Find the module on the specified repository
         # Until PowerShellGet is updated to query nuget v3 modules, we need to determine PSGet versions ahead of function process block
@@ -37,8 +39,8 @@ Function Update-JCModule
                 {
                     Do
                     {
-                        Write-Host "$PSGetModuleName ($PSGetVersion) is installed but a newer version is required to interact with V3 nuget feeds. Enter ''Y'' to update the ' + $PSGetModuleName + ' PowerShell module to the latest version or enter ''N'' to cancel:"
-                        Write-Host ('Enter ''Y'' to update the ' + $PSGetModuleName + ' module to the latest version ' + "($PSGetLatestVersion)" + ' or enter ''N'' to cancel:') #-BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_UserPrompt) -NoNewline
+                        Write-Host ("$PSGetModuleName ($PSGetVersion) is installed but a newer version is required to interact with V3 nuget feeds. Enter ''Y'' to update the ' + $PSGetModuleName + ' PowerShell module to the latest version or enter ''N'' to cancel:") -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
+                        Write-Host ('Enter ''Y'' to update the ' + $PSGetModuleName + ' module to the latest version ' + "($PSGetLatestVersion)" + ' or enter ''N'' to cancel:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_UserPrompt)
                         Write-Host (' ') -NoNewline
                         $UserInputPSGet = Read-Host
                     }
@@ -72,8 +74,8 @@ Function Update-JCModule
         if (($PSGetBetaInstalled) -And [System.String]::IsNullOrEmpty($InstalledModulePreUpdate)) {
             If (!($Force)){
                 Do{
-                    Write-Host "The $Module PowerShell module was not installed from any PSGallery repositories"
-                    Write-Host "$PSGetModuleName ($PSGetVersion) is installed. Enter ''Y'' to search for $ModuleName PowerShell modules in a NugetV3 feed ''N'' to cancel:"
+                    Write-Host ("The $ModuleName PowerShell module was not installed from any PSGallery repositories") -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
+                    Write-Host ("$PSGetModuleName ($PSGetVersion) is installed. Enter 'Y' to search for $ModuleName PowerShell modules in a NugetV3 feed 'N' to cancel:") -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_UserPrompt)
                     $UserInputSearch = Read-Host
                 }
                 Until ($UserInputSearch.ToUpper() -in ('Y', 'N'))
@@ -87,7 +89,7 @@ Function Update-JCModule
             }
             Else
             {
-                $InstalledModulePreUpdate = Get-InstalledPSResource -Name:($ModuleName) #-AllVersions -ErrorAction:('Ignore')
+                $InstalledModulePreUpdate = Get-InstalledPSResource -Name:($ModuleName) | Where-Object { $_.repository -eq 'codeartifact' } #-AllVersions -ErrorAction:('Ignore')
             }
         }
         If ([System.String]::IsNullOrEmpty($InstalledModulePreUpdate)){
@@ -141,8 +143,7 @@ Function Update-JCModule
     }
     Process
     {
-        # Load color scheme
-        $JCColorConfig = Get-JCColorConfig
+
         Try
         {
             # Check to see if module is already installed
@@ -285,22 +286,47 @@ Function Update-JCModule
                             }
                         }
                         else{
-                            # TODO: Cover the case where Insatlled JC PS Module is lt, Found JC PS Module in PSGallery
-                            # To test, Download, Install older version of the PS Module from CA, try and update using update-jcmodule.
-                            # Update the module to the latest version
                             Write-Host ('Updating ' + $ModuleName + ' module to version: ') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewline
                             Write-Host ($UpdateTrigger) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
-                            $InstalledModulePreUpdate | Update-Module -Force
+                            If ($InstalledModulePreUpdate.Repository -eq 'CodeArtifact')
+                            {
+                                # Install-PSResource here if InstalledModulePreUpdate.repository is codeartifact
+                                # Install-PSResource -Name:($ModuleName) -Repository:('CodeArtifact') -Credential:($RepositoryCredentials) -Prerelease
+                                Install-Module -Name:($ModuleName) -Force -Repository:('PSGallery')
+                            }
+                            else{
+
+                                $InstalledModulePreUpdate | Update-Module -Force
+                            }
                             # Remove existing module from the session
                             Get-Module -Name:($ModuleName) -ListAvailable -All | Remove-Module -Force
                             # Uninstall previous versions
                             If (!($SkipUninstallOld))
                             {
-                                $InstalledModulePreUpdate | ForEach-Object {
-                                    Write-Host ('Uninstalling ' + $_.Name + ' module version: ') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewline
-                                    Write-Host (($_.Version).ToString()) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
-                                    $_ | Uninstall-Module -Force
-                                    #TODO: if insatlled version is from CA, Uninstall-PSResource
+                                If ($InstalledModulePreUpdate.Repository -eq 'CodeArtifact')
+                                {
+                                    # Uninstall Code Artifact Version of JumpCloud Module
+                                    $InstalledModulePreUpdate | ForEach-Object {
+                                        Write-Host ('Uninstalling ' + $_.Name + ' module version: ') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewline
+                                        Write-Host (($_.Version).ToString()) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
+                                        # Get just the version number if a build number is associated
+                                        $VersionWithoutBuild = "$(($($_.Version)).Major).$(($($_.Version)).Minor).$(($($_.Version)).Build)"
+                                        # Specify the version, Uninstall-PSResource will remove all versions of a module if not specified
+                                        Uninstall-PSResource -Name 'JumpCloud' -Version $VersionWithoutBuild -Force
+                                    }
+                                    # Uninstall Code Artifact Versions of JumpCloud SDK Modules
+                                    Get-InstalledPSResource | Where-Object { ($_.Name -match 'JumpCloud.SDK') -and ($_.Repository -match 'CodeArtifact') } | ForEach-Object {
+                                        Write-Host ('Uninstalling ' + $_.Name + ' module version: ') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewline
+                                        Write-Host (($_.Version).ToString()) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
+                                        Uninstall-PSResource $_.Name -Version $_.Version -Force
+                                    }
+                                }
+                                else{
+                                    $InstalledModulePreUpdate | ForEach-Object {
+                                        Write-Host ('Uninstalling ' + $_.Name + ' module version: ') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewline
+                                        Write-Host (($_.Version).ToString()) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
+                                        $_ | Uninstall-Module -Force
+                                    }
                                 }
                             }
                             # Validate install
