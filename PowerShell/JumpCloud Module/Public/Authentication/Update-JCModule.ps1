@@ -332,7 +332,6 @@ Function Update-JCModule
                             # Validate install
                             $InstalledModulePostUpdate = Get-InstalledModule -Name:($ModuleName) -AllVersions
                             # Check to see if the module version on the PowerShell gallery does not match the local module version
-                            # TODO: These version casting statement don't work if multiple versions are installed, see prior elseif statement for reference
                             If ([System.Version]$UpdateTrigger -eq [System.Version]$InstalledModulePostUpdate.Version)
                             {
                                 # Load new module
