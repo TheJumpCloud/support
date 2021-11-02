@@ -4294,6 +4294,14 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
           <maml:para></maml:para>
         </maml:description>
       </command:returnValue>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
     </command:returnValues>
     <maml:alertSet>
       <maml:alert>
@@ -4686,6 +4694,14 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
       <command:returnValue>
         <dev:type>
           <maml:name>System.Int64</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
         </dev:type>
         <maml:description>
           <maml:para></maml:para>
