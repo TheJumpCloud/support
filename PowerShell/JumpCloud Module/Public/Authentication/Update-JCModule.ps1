@@ -332,7 +332,7 @@ Function Update-JCModule
                             # Validate install
                             $InstalledModulePostUpdate = Get-InstalledModule -Name:($ModuleName) -AllVersions
                             # Check to see if the module version on the PowerShell gallery does not match the local module version
-                            If ([System.Version]$UpdateTrigger -eq [System.Version]$InstalledModulePostUpdate.Version)
+                            If ([System.Version]$UpdateTrigger -eq [System.Version]($InstalledModulePostUpdate.Version | Measure-Object -Maximum).Maximum)
                             {
                                 # Load new module
                                 Import-Module -Name:($ModuleName) -Scope:('Global') -Force
