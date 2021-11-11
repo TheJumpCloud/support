@@ -1,3 +1,13 @@
+## 1.18.9
+
+Release Date: October 12, 2021
+
+#### RELEASE NOTES
+
+```
+Add CodeArtifact support to Update-JCModule Enable the PowerShell Module to be tested from latest development versions of the PowerShell SDKs
+```
+
 ## 1.18.8
 
 Release Date: October 12, 2021
