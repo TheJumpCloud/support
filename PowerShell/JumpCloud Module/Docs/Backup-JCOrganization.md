@@ -14,12 +14,12 @@ Backup your JumpCloud organization to local json files
 
 ### All (Default)
 ```
-Backup-JCOrganization -Path <String> [-All] [-Format <String>] [-PassThru] [<CommonParameters>]
+Backup-JCOrganization -Path <FileInfo> [-All] [-Format <String>] [-PassThru] [<CommonParameters>]
 ```
 
 ### Type
 ```
-Backup-JCOrganization -Path <String> [-Type <String[]>] [-Association] [-Format <String>] [-PassThru]
+Backup-JCOrganization -Path <FileInfo> [-Type <String[]>] [-Association] [-Format <String>] [-PassThru]
  [<CommonParameters>]
 ```
 
@@ -134,7 +134,7 @@ Accept wildcard characters: False
 File path for backup output
 
 ```yaml
-Type: System.String
+Type: System.IO.FileInfo
 Parameter Sets: (All)
 Aliases:
 

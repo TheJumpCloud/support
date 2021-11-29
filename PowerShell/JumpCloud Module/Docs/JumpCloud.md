@@ -2,7 +2,7 @@
 Module Name: JumpCloud
 Module Guid: 31c023d1-a901-48c4-90a3-082f91b31646
 Download Help Link: https://github.com/TheJumpCloud/support/wiki
-Help Version: 1.18.8
+Help Version: 1.18.9
 Locale: en-US
 ---
 
@@ -173,6 +173,9 @@ Removes a JumpCloud User Group
 
 ### [Remove-JCUserGroupMember](Remove-JCUserGroupMember.md)
 Removes a JumpCloud User from a JumpCloud User Group
+
+### [Restore-JCOrganization](Restore-JCOrganization.md)
+The function exports objects from your JumpCloud organization to local json files
 
 ### [Send-JCPasswordReset](Send-JCPasswordReset.md)
 Sends a JumpCloud activation/password reset email.
