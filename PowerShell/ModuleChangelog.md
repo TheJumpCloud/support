@@ -5,20 +5,12 @@ Release Date: November 29, 2021
 #### RELEASE NOTES
 
 ```
-{{Fill in the Release Notes}}
+This release contains a fix for the Set-JCUser function where the MFA enrollment parameter wouldn't set correctly
 ```
-
-#### FEATURES:
-
-{{Fill in the Features}}
-
-#### IMPROVEMENTS:
-
-{{Fill in the Improvements}}
 
 #### BUG FIXES:
 
-{{Fill in the Bug Fixes}}
+SA-2258 - Fix Set-JCUser function where it would error when setting a user's enrollment windows anywhere between 4-7 days.
 
 ## 1.18.8
 
