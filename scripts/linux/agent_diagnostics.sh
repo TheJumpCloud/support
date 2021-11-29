@@ -6,6 +6,9 @@
 # about the system for quick referrence and an inventory of the files included
 # in the zip file.
 
+# create an empty array if a glob produces no matches
+shopt -s nullglob
+
 if [[ "${UID}" != 0 ]]; then
   (>&2 echo "Error:  $0 must be run as root")
   exit 1
@@ -26,10 +29,10 @@ if [[ ! -d "${JCPATH}" ]]; then
 fi
 
 # Is zip installed?
-if ! which zip 1> /dev/null; then
+if ! command -v zip 1> /dev/null; then
   ZPATH="false"
 else
-  ZPATH=$(which zip)
+  ZPATH=$(command -v zip)
 fi
 
 function indent() {
@@ -65,21 +68,23 @@ function zipjc() {
   fi
 }
 
+# Zip the log files.
 function ziplog() {
-  # Zip the log files.
-  LOGFILES=("jcagent.log" "jcUpdate.log")
+  # we *want* globbing, so disable the shellcheck warning
+  # shellcheck disable=SC2206
+  LOGFILES=( ${JCLOG}/jc* )
   if [[ "${ZPATH}" = "false" ]]; then
     for i in "${LOGFILES[@]}"; do
-      if [[ -f "${JCLOG}""${i}" ]]; then
-        tar -rf "${TARFILE}" "${JCLOG}""${i}" 1> /dev/null
-        LOGIT+=("${JCLOG}${i} has been added to ${TARFILE}.")
+      if [[ -f "${i}" ]]; then
+        tar -rf "${TARFILE}" "${i}" 1> /dev/null
+        LOGIT+=("${i} has been added to ${TARFILE}.")
       fi
     done
-  else  
+  else
     for i in "${LOGFILES[@]}"; do
-      if [[ -f "${JCLOG}""${i}" ]]; then
-        zip -r "${ZIPFILE}" "${JCLOG}""${i}" 1> /dev/null
-        LOGIT+=("${JCLOG}${i} has been added to ${ZIPFILE}.")
+      if [[ -f "${i}" ]]; then
+        zip -r "${ZIPFILE}" "${i}" 1> /dev/null
+        LOGIT+=("${i} has been added to ${ZIPFILE}.")
       fi
     done
   fi
@@ -88,8 +93,8 @@ function ziplog() {
 function users() {
   # Get a list of users.
   PSWDFILE="/etc/passwd"
-  USERLIST=( $(grep -v "nologin" ${PSWDFILE} | cut -d':' -f 1) )
-  for i in "${USERLIST[@]}"; do
+  mapfile -t < <(grep -v "nologin" "${PSWDFILE}" | cut -d':' -f 1)
+  for i in "${MAPFILE[@]}"; do
     if ! [[ "${i}" == 'root' ]] && ! [[ "${i}" == 'halt' ]] && ! [[ "${i}" == 'restart' ]]; then
     	USERS+=("${i}")
     fi
@@ -99,16 +104,16 @@ function users() {
 function sudoers() {
   # Get a list of the sudoers list.
   SUDODIR="/etc/sudoers.d"
-  SUDOLIST=( $(ls ${SUDODIR}) )
-  for i in "${SUDOLIST[@]}"; do
+  mapfile -t < <(ls "${SUDODIR}")
+  for i in "${MAPFILE[@]}"; do
     SUDOERS+=("${i}")
   done
 }
 
 function jconf() {
   # Get and format the contents of the jcagent.conf for quick display in the output.log.
-  JCAGENTCONFIG=( $(sed 's/,/\n/g' "${JCPATH}"/jcagent.conf | sed 's/[{}]//g') )
-  for i in "${JCAGENTCONFIG[@]}"; do
+  mapfile -t < <(sed 's/,/\n/g' "${JCPATH}"/jcagent.conf | sed 's/[{}]//g')
+  for i in "${MAPFILE[@]}"; do
     JCONF+=("${i}")
   done
 }
@@ -123,9 +128,9 @@ function info_out() {
     OS=$( grep release /etc/redhat-release )
   fi
   SERVICE="jcagent"
-  STATUS=$( service ${SERVICE} status 2> /dev/null )
+  STATUS=$( service "${SERVICE}" status 2> /dev/null )
   if [[ -z "${STATUS}" ]]; then
-    STATUS=$( echo "PID  PATH" ; ps ax | grep [j]cagent | awk '{print $1" "$5}')
+    STATUS=$( echo "PID  PATH" ; pgrep -f -a "jumpcloud-agent" | awk '{print $1" "$5}')
   fi
   OS=$( grep PRETTY_NAME /etc/os-release | cut -d\" -f2)
   TZONE=$( date +"%Z %z" )
@@ -137,11 +142,11 @@ function info_out() {
   printf "OS/BUILD INFO:\n"
   printf "%s\n" "${OS}" | indent
   printf "%s\n" "${SYSINFO}" | indent
-  printf "JCAGENT VERSION:\n"
+  printf "JCAGENT VERSION: "
   printf "%s\n" "${SERVICEVERSION}" | indent
   printf "JCAGENT STATUS:\n"
   printf "%s\n" "${STATUS}" | indent
-  printf "TIMEZONE:\n"
+  printf "TIMEZONE: "
   printf "%s\n" "${TZONE}" | indent
   printf "SYSTEM USERS:\n"
   printf "%s\n" "${USERS[@]}" | indent
@@ -174,3 +179,4 @@ function main() {
 }
 
 main
+

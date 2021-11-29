@@ -11,12 +11,21 @@ mac
 ```
 #!/bin/bash
 
-# curl AutoPkg 1.2 into /tmp/
-curl -L -o /tmp/autopkg-1.2.pkg "https://github.com/autopkg/autopkg/releases/download/v1.2/autopkg-1.2.pkg" >/dev/null
-# run installer command to install AutoPkg
-installer -pkg /tmp/autopkg-1.2.pkg -target /
+# Get latest pkg release url from GitHub
+url=$(curl -s https://api.github.com/repos/autopkg/autopkg/releases/latest |  python -c 'import json,sys;obj=json.load(sys.stdin);print obj["assets"][0]["browser_download_url"];')
 
-exit 0
+# Regex match the version from the URL
+if [[ $url =~ \/v(.+)\/ ]]; then
+    # echo ${BASH_REMATCH[1]} ;
+    version=${BASH_REMATCH[1]}
+else
+    echo "Not proper format";
+fi
+
+# curl AutoPkg into /tmp/
+curl -L -o /tmp/autopkg-$version.pkg $url >/dev/null
+# run installer command to install AutoPkg
+installer -pkg /tmp/autopkg-$version.pkg -target /
 ```
 
 #### Description

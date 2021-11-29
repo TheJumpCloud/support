@@ -1,5 +1,14 @@
-. ($PSScriptRoot + '/' + 'Get-Config.ps1')
-###########################################################################
+[CmdletBinding()]
+param (
+    [Parameter()]
+    [string]
+    $RequiredModulesRepo
+)
+
+. "$PSScriptRoot/Get-Config.ps1" -RequiredModulesRepo:($RequiredModulesRepo)
+################################################################################
+# This script creates a new test file for each function in the PowerShell Module
+################################################################################
 Write-Host ('[status]Creating files for Pester tests')
 $Files = $Functions_Public + $Functions_Private
 Foreach ($File in $Files)

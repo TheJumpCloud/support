@@ -1,4 +1,4 @@
-Function New-DynamicParameter ()
+Function Global:New-DynamicParameter ()
 {
     <#
   .SYNOPSIS

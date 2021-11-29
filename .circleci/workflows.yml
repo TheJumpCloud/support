@@ -1,0 +1,525 @@
+version: 2.1
+parameters:
+  ManualBuild:
+    description: 'When `true`, pipeline will continue to build even if its been filtered out by config.yml (Will Not Run on Master Branch)'
+    type: boolean
+    default: true
+  EnableDebugging:
+    description: 'When `true`, debugging commands will run and output to terminal.'
+    type: boolean
+    default: true
+  BuildModule:
+    description: 'When `true`, all build commands will run.'
+    type: boolean
+    default: true
+  BuildHelpFiles:
+    description: 'When `true`, Help files will be built.'
+    type: boolean
+    default: true
+  BuildTestFiles:
+    description: 'When `true`, Test files will be built.'
+    type: boolean
+    default: true
+  BuildNuspec:
+    description: 'When `true`, Nuspec will be built and pack/ push steps complete.'
+    type: boolean
+    default: true
+  ValidateModule:
+    description: 'When `true`, Pester Tests will be run for moduleValidation tags.'
+    type: boolean
+    default: true
+  ReleaseType:
+    description: 'Release Type. Accepted values [ Major, Minor, Patch ]'
+    type: enum
+    enum: ["Major", "Minor", "Patch"]
+    default: "Patch"
+  RequiredModulesRepo:
+    description: 'PowerShell Repository for JumpCloud SDKs'
+    type: enum
+    enum: ["PSGallery", "CodeArtifact"]
+    default: "PSGallery"
+  PowerShellModified:
+    description: 'Used by Path Filtering Orb to determine if changes occurred in the ./PowerShell/ folder'
+    type: boolean
+    default: false
+  PublishToPSGallery:
+    description: 'When `true` and when run against Master branch, this workflow will publish the latest code to PSGallery'
+    type: boolean
+    default: false
+orbs:
+  win: circleci/windows@2.2.0
+executors:
+  macos_exec:
+    macos:
+      xcode: 11.3.0
+workflows:
+  version: 2
+  ci:
+    when:
+      and:
+        - and:
+            - not:
+                matches:
+                  pattern: "^master$"
+                  value: << pipeline.git.branch >>
+        - or:
+            - equal: [true, << pipeline.parameters.PowerShellModified >>]
+            - equal: [true, << pipeline.parameters.ManualBuild >>]
+    jobs:
+      - Initial Setup
+      - Build Modules:
+          requires:
+            - Initial Setup
+          context: aws-credentials
+      - Build Help and Test Files:
+          requires:
+            - Build Modules
+            - Initial Setup
+          context: aws-credentials
+      - Build Nuspec:
+          requires:
+            - Initial Setup
+            - Build Modules
+            - Build Help and Test Files
+          context: aws-credentials
+      - Module Validation Tests:
+          requires:
+            - Initial Setup
+            - Build Help and Test Files
+            - Build Nuspec
+            - Invoke Git Commit
+          context: aws-credentials
+      - Invoke Git Commit:
+          requires:
+            - Initial Setup
+            - Build Help and Test Files
+            - Build Nuspec
+      - Pester Tests Windows:
+          requires:
+            - Initial Setup
+            - Build Help and Test Files
+            - Build Nuspec
+            - Module Validation Tests
+            - Invoke Git Commit
+          context: aws-credentials
+      - Pester Tests Mac:
+          requires:
+            - Initial Setup
+            - Build Help and Test Files
+            - Build Nuspec
+            - Module Validation Tests
+            - Invoke Git Commit
+          context: aws-credentials
+      - Pester Tests Linux:
+          requires:
+            - Initial Setup
+            - Build Help and Test Files
+            - Build Nuspec
+            - Module Validation Tests
+            - Invoke Git Commit
+          context: aws-credentials
+      - Publish Module Validation:
+          requires:
+            - Initial Setup
+            - Build Help and Test Files
+            - Build Nuspec
+            - Module Validation Tests
+            - Invoke Git Commit
+  release:
+    when:
+      and:
+        - equal: [master, << pipeline.git.branch >>]
+        - equal: [true, << pipeline.parameters.PublishToPSGallery >>]
+    jobs:
+      - Prepare for release
+      - draft-github-release:
+          requires:
+            - Prepare for release
+      - Approve Module:
+          type: approval
+          requires:
+            - Prepare for release
+      - Build Nuspec for PSGallery:
+          requires:
+            - Approve Module
+      - Publish Module Validation:
+          requires:
+            - Build Nuspec for PSGallery
+            - Approve Module
+      - Invoke Git Commit:
+          requires:
+            - Publish Module Validation
+            - Approve Module
+jobs:
+  Initial Setup:
+    executor: win/default
+    steps:
+      - initial-setup
+      - debugging
+  Build Modules:
+    executor: win/default
+    steps:
+      - build-module
+  Build Help and Test Files:
+    executor: win/default
+    steps:
+      - attach_workspace:
+          at: .
+      - build-helpfiles
+      - build-testfiles
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+  Build Nuspec:
+    executor: win/default
+    steps:
+      - deploy-nupkg:
+          source: CodeArtifact
+  Build Nuspec for PSGallery:
+    executor: win/default
+    steps:
+      - deploy-nupkg:
+          source: PSGallery
+  Module Validation Tests:
+    executor: win/default
+    steps:
+      - invoke-pester:
+          JumpCloudApiKey: $env:XAPIKEY_PESTER
+          JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_LINUX
+          ExcludeTagList: 'None'
+          IncludeTagList: 'ModuleValidation'
+          RequiredModulesRepo: << pipeline.parameters.RequiredModulesRepo >>
+  Invoke Git Commit:
+    executor: win/default
+    steps:
+      - invoke-script
+  Pester Tests Windows:
+    executor: win/default
+    steps:
+      - invoke-pester:
+          JumpCloudApiKey: $env:XAPIKEY_PESTER
+          JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_MTP
+          ExcludeTagList: 'ModuleValidation, JCUsersFromCSV, JCDeployment, JCModule'
+          IncludeTagList: '*'
+          RequiredModulesRepo: << pipeline.parameters.RequiredModulesRepo >>
+          Shell: 'pwsh.exe'
+  Pester Tests Mac:
+    executor: macos_exec
+    steps:
+      - setup-pester-env-mac
+      - invoke-pester:
+          JumpCloudApiKey: $env:XAPIKEY_PESTER_MAC
+          JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_MTP
+          ExcludeTagList: 'ModuleValidation, JCUsersFromCSV, JCDeployment, JCModule'
+          IncludeTagList: '*'
+          RequiredModulesRepo: << pipeline.parameters.RequiredModulesRepo >>
+          Shell: 'pwsh'
+  Pester Tests Linux:
+    machine:
+      image: ubuntu-1604:202007-01
+    steps:
+      - setup-pester-env-linux
+      - invoke-pester:
+          JumpCloudApiKey: $env:XAPIKEY_PESTER_LINUX
+          JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_MTP
+          ExcludeTagList: 'ModuleValidation, JCUsersFromCSV, JCDeployment, JCModule'
+          IncludeTagList: '*'
+          RequiredModulesRepo: << pipeline.parameters.RequiredModulesRepo >>
+          Shell: 'pwsh'
+  Publish Module Validation:
+    machine:
+      image: ubuntu-1604:202007-01
+    steps:
+      - validate-pipeline-param:
+          branch: << pipeline.git.branch  >>
+  Prepare for release:
+    executor: win/default
+    steps:
+      - checkout
+      - run:
+          name: rename
+          shell: pwsh.exe
+          command: |
+            $ErrorActionPreference = 'Stop'
+            write-host "Preparring env to release JumpCloud Module"
+            # Rename-Item -Path:("./PowerShell/JumpCloud Module") -NewName:("JumpCloud")
+            $ModuleVersion = Import-PowerShellDataFile -Path:("./PowerShell/JumpCloud Module/JumpCloud.psd1")
+            Write-Host "JumpCloud Module Version to release is: $($ModuleVersion.ModuleVersion)"
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+  draft-github-release:
+    docker:
+      - image: cibuilds/github:0.10
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: "Draft Release on GitHub"
+          command: |
+            VERSION=$(grep -o '\d\+\.\d\+\.\d' /root/project/PowerShell/JumpCloud\ Module/JumpCloud.psd1)
+            TITLE="JumpCloudModule_$VERSION"
+            VERSION="v$VERSION"
+            BODY="Latest Release of JumpCloud PowerShell Module"
+            #TODO: implement TITLE & BODY later, for some reason these params don't work
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete -draft ${VERSION} /root/project/PowerShell/
+commands:
+  initial-setup:
+    steps:
+      - checkout
+      - run: echo << pipeline.git.branch >>
+      - run:
+          name: Install PowerShell Core
+          command: dotnet tool install --global PowerShell --version 7.1.5
+      - run:
+          name: Install Modules
+          shell: pwsh.exe
+          command: |
+            Install-Module JumpCloud.SDK.DirectoryInsights -Force
+            Install-Module JumpCloud.SDK.V1 -Force
+            Install-Module JumpCloud.SDK.V2 -Force
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+  debugging:
+    steps:
+      - when:
+          condition:
+            equal: [true, << pipeline.parameters.EnableDebugging >>]
+          steps:
+            - attach_workspace:
+                at: .
+            - run:
+                name: Display Session Variables (For Debugging)
+                shell: pwsh.exe
+                command: |
+                  ./PowerShell/Deploy/Get-SessionVariables.ps1
+  build-module:
+    steps:
+      - when:
+          condition:
+            equal: [true, << pipeline.parameters.BuildModule >>]
+          steps:
+            - attach_workspace:
+                at: .
+            - run:
+                name: Build Module
+                shell: pwsh.exe
+                command: |
+                  $ErrorActionPreference = 'Stop'
+                  ./PowerShell/Deploy/Build-Module.ps1 -GitSourceBranch << pipeline.git.branch >> -GitSourceRepo << pipeline.project.git_url >> -ReleaseType << pipeline.parameters.ReleaseType >> -ModuleName:('JumpCloud') -RequiredModulesRepo << pipeline.parameters.RequiredModulesRepo >>
+            - persist_to_workspace:
+                root: .
+                paths:
+                  - .
+  build-helpfiles:
+    steps:
+      - when:
+          condition:
+            equal: [true, << pipeline.parameters.BuildHelpFiles >>]
+          steps:
+            - run:
+                name: Build Help Files
+                shell: pwsh.exe
+                command: |
+                  $ErrorActionPreference = 'Stop'
+                  ./PowerShell\Deploy\SdkSync\jcapiToSupportSync.ps1 -RequiredModulesRepo << pipeline.parameters.RequiredModulesRepo >>
+                  ./PowerShell/Deploy/Build-HelpFiles.ps1 -ModuleName JumpCloud -ModulePath "./PowerShell/JumpCloud Module"
+  build-testfiles:
+    steps:
+      - when:
+          condition:
+            equal: [true, << pipeline.parameters.BuildTestFiles >>]
+          steps:
+            - run:
+                name: Build Test Files
+                shell: pwsh.exe
+                command: |
+                  $ErrorActionPreference = 'Stop'
+                  ./PowerShell/Deploy/Build-PesterTestFiles.ps1 -RequiredModulesRepo << pipeline.parameters.RequiredModulesRepo >>
+  invoke-script:
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - '24:54:e1:c2:70:c6:f7:61:71:4b:c5:52:9f:20:b9:63'
+      - attach_workspace:
+          at: .
+      - add_ssh_keys:
+          fingerprints:
+            - '24:54:e1:c2:70:c6:f7:61:71:4b:c5:52:9f:20:b9:63'
+      - run:
+          when: on_success
+          name: 'Commit PowerShell Module to << pipeline.git.branch >>'
+          shell: pwsh.exe
+          command: |
+            ssh-keyscan github.com >> ./.ssh/known_hosts
+            $UserEmail = If ($env:CIRCLE_PROJECT_USERNAME) { $env:CIRCLE_PROJECT_USERNAME } Else { ($env:USERNAME).Replace(' ', '') + '@FakeEmail.com' }
+            $UserName = If ($env:CIRCLE_PROJECT_USERNAME) { $env:CIRCLE_PROJECT_USERNAME } Else { $env:USERNAME }
+            git config user.email "$UserEmail"
+            git config user.name "$UserName"
+            git pull
+            git add -A
+            git status
+            git commit -m "Updating PowerShell Module;[skip ci]"
+            git push origin << pipeline.git.branch >>
+  deploy-nupkg:
+    parameters:
+      source:
+        description: Name of the source to deploy to
+        type: string
+    steps:
+      - when:
+          condition:
+            equal: [true, << pipeline.parameters.BuildNuspec >>]
+          steps:
+            - attach_workspace:
+                at: .
+            - run:
+                name: Build Nuspec
+                shell: pwsh.exe
+                environment:
+                  Source: << parameters.source >>
+                command: |
+                  $ErrorActionPreference = 'Stop'
+                  . "./PowerShell/Deploy/BuildNuspecFromPsd1.ps1" -RequiredModulesRepo << pipeline.parameters.RequiredModulesRepo >>
+            - run:
+                name: Install Dependencies
+                shell: pwsh.exe
+                command: |
+                  Install-Module -Name PowerShellGet -AllowPrerelease -RequiredVersion '3.0.0-beta10' -Force
+                  Install-Module -Name AWS.Tools.Common -Force
+                  Install-Module -Name AWS.Tools.CodeArtifact -Force
+            - run:
+                name: Download Nuget
+                command: |
+                  if ( -not ( Test-Path -Path ./Deploy/utils ) ) {
+                    mkdir ./Deploy/utils
+                    wget https://dist.nuget.org/win-x86-commandline/v3.3.0/nuget.exe -Outfile ./Deploy/utils/nuget.exe
+                  }
+            - run:
+                name: Add nuget sources
+                shell: pwsh.exe
+                command: |
+                  Set-AWSCredential -AccessKey:($env:AWS_ACCESS_KEY_ID) -SecretKey:($env:AWS_SECRET_ACCESS_KEY)
+                  $CARepoEndpoint = "$(Get-CARepositoryEndpoint -Domain jumpcloud-artifacts -Region us-east-1 -Repository jumpcloud-nuget-modules -Format nuget)v3/index.json"
+                  dotnet nuget add source $CARepoEndpoint --name CodeArtifact --username aws --password (Get-CAAuthorizationToken -Domain:("jumpcloud-artifacts") -Region:("us-east-1")).AuthorizationToken
+                  dotnet nuget add source "https://www.powershellgallery.com/api/v2/package" --name PSGallery
+            - run:
+                name: Pack nuspec
+                shell: pwsh.exe
+                command: |
+                  ./Deploy/utils/nuget.exe pack "./PowerShell/JumpCloud Module/JumpCloud.nuspec"
+            - run:
+                name: Publishing to "<< parameters.source >>" repo
+                shell: pwsh.exe
+                command: |
+                  $NupkgPath = (Get-ChildItem -Path:("./*.nupkg")).FullName
+                  If('<< parameters.source >>' -eq 'CodeArtifact'){dotnet nuget push $NupkgPath --source << parameters.source >>}
+                  ElseIf('<< parameters.source >>' -eq 'PSGallery'){dotnet nuget push $NupkgPath --source << parameters.source >> --api-key $env:NuGetApiKey}
+                  Else {Write-Error "Unknown source value: << parameters.source >>"}
+  invoke-pester:
+    parameters:
+      JumpCloudApiKey:
+        type: string
+        default: $env:XAPIKEY_PESTER
+      JumpCloudApiKeyMsp:
+        type: string
+        default: $env:XAPIKEY_PESTER_MTP
+      ExcludeTagList:
+        type: string
+        default: 'None'
+      IncludeTagList:
+        type: string
+        default: 'None'
+      RequiredModulesRepo:
+        type: string
+        default: 'PSGallery'
+      Shell:
+        type: string
+        default: 'pwsh.exe'
+    steps:
+      - when:
+          condition:
+            equal: [true, << pipeline.parameters.ValidateModule >>]
+          steps:
+            - attach_workspace:
+                at: .
+            - run:
+                name: Invoke Pester
+                shell: << parameters.Shell >>
+                no_output_timeout: 30m
+                command: |
+                  $ErrorActionPreference = 'stop'
+                  ./PowerShell\Deploy\SdkSync\jcapiToSupportSync.ps1 -RequiredModulesRepo << pipeline.parameters.RequiredModulesRepo >>
+                  . "./PowerShell/JumpCloud Module/Tests/InvokePester.ps1" -JumpCloudApiKey << parameters.JumpCloudApiKey >> -JumpCloudApiKeyMsp << parameters.JumpCloudApiKeyMsp >> -ExcludeTagList << parameters.ExcludeTagList >> -IncludeTagList << parameters.IncludeTagList >> -RequiredModulesRepo << parameters.RequiredModulesRepo >>
+            - store_test_results:
+                name: Uploading test results'
+                path: "./PowerShell/JumpCloud Module/Tests/test_results/"
+            - persist_to_workspace:
+                root: .
+                paths:
+                  - .
+  setup-pester-env-mac:
+    steps:
+      - run:
+          name: Setup Pester Mac
+          shell: bash
+          command: |
+            brew install --cask powershell
+  setup-pester-env-linux:
+    steps:
+      - run:
+          name: Setup Pester Linux
+          shell: bash
+          command: |
+            # Update the list of packages
+            sudo apt-get update
+            # Install pre-requisite packages.
+            sudo apt-get install -y wget apt-transport-https software-properties-common
+            # Download the Microsoft repository GPG keys
+            wget -q https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb
+            # Register the Microsoft repository GPG keys
+            sudo dpkg -i packages-microsoft-prod.deb
+            # Update the list of products
+            sudo apt-get update
+            # Enable the "universe" repositories
+            sudo add-apt-repository universe
+            # Install PowerShell
+            sudo apt-get install -y powershell
+  validate-pipeline-param:
+    parameters:
+      branch:
+        description: Name of the branch to deploy to
+        type: string
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Reset Publish To Gallery Param
+          shell: bash
+          environment:
+            branch: << parameters.branch >>
+          command: |
+            sudo snap install yq
+            publish=$(/snap/bin/yq e '.parameters.PublishToPSGallery.default' ~/project/.circleci/workflows.yml)
+            if [[ $branch != 'master' ]]; then
+                echo "Running on $branch, checking to see if PublishToPSGallery param is set..."
+                if [[ $publish == "false" ]]; then
+                  echo "CircleCI Param PublishToPSGallery is not set to 'true' (currently: $publish) - Module will not publish on merge to master"
+                  exit 1
+                elif [[ $publish == "true" ]]; then
+                  echo "CircleCI Param PublishToPSGallery is set to 'true' - Module will publish on merge to master"
+                fi
+            fi
+            if [[ $branch == 'master' ]]; then
+                echo "Running on $branch, resetting PublishToPSGallery param..."
+                /snap/bin/yq e '.parameters.PublishToPSGallery.default = false' -i ~/project/.circleci/workflows.yml
+            fi
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .

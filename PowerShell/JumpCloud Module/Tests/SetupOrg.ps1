@@ -4,6 +4,8 @@ Param(
 )
 Try
 {
+    # Import JC Module
+    Import-Module "$PSScriptRoot/../JumpCloud.psd1"
     # Authenticate to JumpCloud
     Connect-JCOnline -JumpCloudApiKey:($JumpCloudApiKey) -force | Out-Null
     # Define variable names
@@ -41,7 +43,19 @@ Try
         # Remove all groups from an org
         If ($Groups)
         {
-            $null = Get-JCGroup | ForEach-Object { If ($_.Type -eq 'system_group') { Remove-JCSystemGroup -GroupName:($_.Name) -force }ElseIf ($_.Type -eq 'user_group') { Remove-JCUserGroup -GroupName:($_.Name) -force }Else { Write-Error('Unknown') } }
+            # TODO: if system group is assigned to MDM this will throw an error
+            $null = Get-JCGroup | ForEach-Object {
+                If ($_.Type -eq 'system_group')
+                {
+                    # write-host $_.Name
+                    Remove-JCSystemGroup -GroupName:($_.Name) -force
+                }
+                elseif ($_.Type -eq 'user_group')
+                {
+                    # write-host $_.Name
+                    Remove-JCUserGroup -GroupName:($_.Name) -force
+                }
+            }
         }
         # Remove all Commands from an org
         If ($Commands)
@@ -81,6 +95,7 @@ Try
         SystemWindows  = Get-JCSystem -displayName:($PesterParams_SystemNameWindows)
         CommandResults = Get-JCCommandResult
     }
+
     $PesterParamsHash_Associations = @{
         PolicySystemGroupMembership   = $PesterParamsHash_BuildOrg.MultiplePolicy | ForEach-Object {
             If (-not (Get-JCAssociation -Type:('policy') -Id:($_.id) -TargetType:('system_group') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.SystemGroup.id })) { New-JCAssociation -Type:('policy') -Id:($_.id) -TargetType:('system_group') -TargetId:($PesterParamsHash_BuildOrg.SystemGroup.id) -force; };
@@ -92,7 +107,7 @@ Try
         Command2SystemGroupMembership = If (-not (Get-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command2._id) -TargetType:('system_group') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.SystemGroup.id })) { New-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command2._id) -TargetType:('system_group') -TargetId:($PesterParamsHash_BuildOrg.SystemGroup.id) -force; };
         Command3SystemGroupMembership = If (-not (Get-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command3._id) -TargetType:('system_group') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.SystemGroup.id })) { New-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command3._id) -TargetType:('system_group') -TargetId:($PesterParamsHash_BuildOrg.SystemGroup.id) -force; };
     }
-    # Generate command results of they dont exist
+    # Generate command results if they dont exist
     If ([System.String]::IsNullOrEmpty($PesterParamsHash_BuildOrg.CommandResults) -or $PesterParamsHash_BuildOrg.CommandResults.Count -lt $PesterParams_CommandResultCount)
     {
         If (-not (Get-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command1._id) -TargetType:('system') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.SystemLinux._id }))
@@ -121,5 +136,9 @@ Try
 }
 Catch
 {
-    Write-Error ($_)
+    Write-Error ($_.Exception)
+    Write-Error ($_.FullyQualifiedErrorId)
+    Write-Error ($_.ScriptStackTrace)
+    Write-Error ($_.TargetObject)
+    Write-Error ($_.PSMessageDetails)
 }

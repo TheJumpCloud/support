@@ -24,17 +24,22 @@ _Note: This document assumes the use of Python 3+_
   - Paste the following Policy Statement into the Bucket Policy Editor (replace `<YOUR BUCKET NAME>` with the name of your S3 bucket)
     ```
     {
-        "Version": "2012-10-17",
-        "Statement": [
-            {
-                "Effect": "Allow",
-                "Principal": {
-                    "Service":  "serverlessrepo.amazonaws.com"
-            },
-           "Action": "s3:GetObject",
-           "Resource": "arn:aws:s3:::<YOUR BUCKET NAME>/*"
+          "Version":"2012-10-17",
+          "Statement":[
+              {
+                "Effect":"Allow",
+                "Principal":{
+                    "Service":"serverlessrepo.amazonaws.com"
+                },
+                "Action":"s3:GetObject",
+                "Resource":"arn:aws:s3:::<YOUR BUCKET NAME>/*",
+                "Condition":{
+                    "StringEquals":{
+                      "aws:SourceAccount":"AWS::AccountId"
+            }
+          }
         }
-        ]
+      ]
     }
     ```
   

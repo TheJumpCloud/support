@@ -17,6 +17,9 @@ JumpCloud supports the management of Custom MDM Configuration [profiles](https:/
     - [Radius EAP-TTLS/PAP Network Profile](#radius-eap-ttlspap-network-profile)
       - [Manually Configure the Radius Profile](#manually-configure-the-radius-profile)
       - [Use the Radius Profile Template](#use-the-radius-profile-template)
+    - [Create a System Extension Profile](#create-a-system-extension-profile)
+      - [Distributing an App with System Extension Profile](#distributing-an-app-with-system-extension-profile)
+      - [Google Santa distribution steps](#google-santa-distribution-steps)
     - [Create a Privacy Preference Policy Control Profile](#create-a-privacy-preference-policy-control-profile)
       - [About PPPC Profiles](#about-pppc-profiles)
       - [Example PPPC Profile](#example-pppc-profile)
@@ -158,6 +161,36 @@ Add the Radius Cert to the Wifi payload within the profile
 
 Distribute this profile to JumpCloud systems through [Custom MDM profiles](https://jumpcloud.com/blog/custom-configuration-profiles).
 
+### Create a System Extension Profile
+
+[Kernel Extensions](https://support.apple.com/guide/deployment-reference-macos/kernel-extensions-in-macos-apd37565d329/web) and [System Extensions](https://support.apple.com/en-us/HT210999) are two disparate yet often confused profile configuration types. In most cases software developers who have previously released Kernel Extensions have already released compatible System Extensions.
+
+System Extension Profiles are often times published by the software vendor that requires the extension. If a system extension is required by an application, the application vendor may publish a system extension .mobileconfig file which can be uploaded to JumpCloud and deployed through [Custom MDM Profiles](https://jumpcloud.com/blog/custom-configuration-profiles)
+
+#### Distributing an App with System Extension Profile
+
+System extensions can be distributed using JumpCloud [Custom MDM Profiles](https://jumpcloud.com/blog/custom-configuration-profiles), in this example we'll follow the steps to distribute [Google Santa](https://github.com/google/santa) - An app to track and block execution of binary applications to a managed macOS system. Google Santa requires a [system extension](https://github.com/google/santa/blob/main/docs/deployment/system-extension-policy.santa.example.mobileconfig) to run the required daemon.
+
+System Extensions can be deployed to systems before their corresponding application is installed on a managed system.
+
+#### Google Santa distribution steps
+
+First deploy the necessary profiles to a JumpCloud test system
+
+* Distribute the required [Google Santa System Extension profile](https://github.com/google/santa/blob/main/docs/deployment/system-extension-policy.santa.example.mobileconfig) to a JumpCloud system through [Custom MDM profiles](https://jumpcloud.com/blog/custom-configuration-profiles).
+* Distribute the required [PPPC](https://github.com/google/santa/blob/main/docs/deployment/tcc.configuration-profile-policy.santa.example.mobileconfig) and [notification](https://github.com/google/santa/blob/main/docs/deployment/notificationsettings.santa.example.mobileconfig) profiles o a JumpCloud system through [Custom MDM profiles](https://jumpcloud.com/blog/custom-configuration-profiles).
+
+![santa profiles in JumpCloud](./images/santa_profiles.png)
+![santa profiles on system](./images/santa_profiles_onSystem.png)
+
+Then deploy the Google Santa application to a JumpCloud test system. Applications can be distributed though commands or installed manually. In this instance, I've compiled a custom pkg, uploaded it to my deployment server and set the JumpCloud [Software Management](https://jumpcloud-support.force.com/support/s/article/Software-Management-Mac-OS) feature to deploy the Santa App.
+
+![santa install](./images/santa_install.png)
+
+After installation on a system, the binary application runs as expected without user input or system extension approval.
+
+![santa running](./images/santa_running.png)
+
 ### Create a Privacy Preference Policy Control Profile
 
 #### About PPPC Profiles
@@ -184,11 +217,11 @@ Instead, system users are brought right into the Zoom Application.
 
 #### Example PPPC Profile for the JumpCloud Agent
 
-The JumpCloud Agent does more than provision and manage users on systems. It’s also serves as the binary application on your system that invokes commands issued from the JumpCloud console. To ensure commands from the JumpCloud console can take advantage of PPPC policy settings, both the JumpCloud-Agent and the bash binary (which is called by the JumpCloud Agent) need to be added to a PPPC profile. The JumpCloud-Agent binary is generally hidden from the user in the /opt/jc/ directory, you wouldn't be able to simply browse to its location without changing permissions. The [jumpcloud-agent.mobileconfig](./profiles/JumpCloud-Agent%20&%20Bash.mobileconfig) profile template contains the paths to both binary files and a payload to "Allow" access to "SystemPolicyAllFiles". That profile template can be imported in PPPC Utility to modify preference permissions.
+The JumpCloud Agent does more than provision and manage users on systems. It’s also serves as the binary application on your system that invokes commands issued from the JumpCloud console. To ensure commands from the JumpCloud console can take advantage of PPPC policy settings, both the JumpCloud-Agent and the bash binary (which is called by the JumpCloud Agent) need to be added to a PPPC profile. The JumpCloud-Agent binary is generally hidden from the user in the /opt/jc/ directory, you wouldn't be able to simply browse to its location without changing permissions. The [jumpcloud-agent.mobileconfig](./profiles/JumpCloud-Agent.mobileconfig) profile template contains the paths to both binary files and a payload to "Allow" access to "SystemPolicyAllFiles". That profile template can be imported in PPPC Utility to modify preference permissions.
 
-The code signatures in the [example profile](./profiles/JumpCloud-Agent%20&%20Bash.mobileconfig) should match the values below:
+The code signatures in the [example profile](./profiles/JumpCloud-Agent.mobileconfig) should match the values below:
 
-To get the codesign signature of the JumpCloud Agent:
+To get the code-sign signature of the JumpCloud Agent:
 
 `sudo codesign -dr - /opt/jc/bin/jumpcloud-agent`
 
@@ -198,9 +231,9 @@ Should return:
 
 `designated => identifier "jumpcloud-agent" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = N985MXSH85`
 
-The identifer of the agent is listed after `designated =>` this identifier data can be used to populate PPPC profiles to automate actions on macOS systems
+The identifier of the agent is listed after `designated =>` this identifier data can be used to populate PPPC profiles to automate actions on macOS systems
 
-To get the codesign signature of the Bash binary:
+To get the code-sign signature of the Bash binary:
 
 `sudo codesign -dr - /bin/bash`
 

@@ -1,4 +1,4 @@
-Function Invoke-GitClone
+Function Global:Invoke-GitClone
 {
     param (
         [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0)][ValidateNotNullOrEmpty()][string]$Repo

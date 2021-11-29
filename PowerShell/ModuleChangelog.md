@@ -1,3 +1,66 @@
+## 1.18.8
+
+Release Date: October 12, 2021
+
+#### RELEASE NOTES
+
+```
+Patch release to address missing unix_uid field in Import/Update-JCUserFromCSV functions
+```
+
+#### FEATURES:
+
+Users unix UID/GUID can now be set from the Import/Update-JCUserFromCSV functions
+
+## 1.18.7
+
+Release Date: September 30, 2021
+
+#### RELEASE NOTES
+
+```
+Patch release to address bug with Copy-JCAssociations
+```
+
+#### BUG FIXES:
+
+Bug Fix: SA-2083 Copy Associations with attributes not working as expected. Copy-JCAssociations should now copy associations with attributes and not error
+
+## 1.18.6
+
+Release Date: September 03, 2021
+
+#### RELEASE NOTES
+
+```
+* Updated the help docs for Get-JCSystemInsights
+```
+
+## 1.18.5
+
+Release Date: June 23, 2021
+
+#### RELEASE NOTES
+
+* switch to circleci pipeline
+* Update tsts with valid radius reply attributes
+
+## 1.18.4
+
+Release Date: May 03, 2021
+
+#### RELEASE NOTES
+
+* Invoke-JCDeployment updated to use SDK versions of the PowerShell Module
+
+#### FEATURES
+
+#### IMPROVEMENTS
+
+#### BUG FIXES
+
+* Invoke-JCDeployment will no longer reset a command type to linux when run
+
 ## 1.18.3
 
 Release Date: January 04, 2021

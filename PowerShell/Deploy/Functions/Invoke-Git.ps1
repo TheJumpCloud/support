@@ -1,4 +1,4 @@
-Function Invoke-Git
+Function Global:Invoke-Git
 {
     Param($Arguments)
     If ([environment]::OSVersion.Platform -eq 'Win32NT') { $env:GIT_REDIRECT_STDERR = '2>&1' }

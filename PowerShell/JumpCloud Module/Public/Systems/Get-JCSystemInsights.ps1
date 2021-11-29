@@ -39,6 +39,26 @@ Function Get-JCSystemInsights
         [System.String]
         # Name of the SystemInsights table to query.
         # See docs.jumpcloud.com for list of available table endpoints.
+        # Use TAB to see a list of available tables ex: Get-JCSystemInsights -Table <TAB>
+        # Output:
+        # Alf                    FirefoxAddon           Shadow                 
+        # AlfException           Group                  SharedFolder           
+        # AlfExplicitAuth        IeExtension            SharedResource         
+        # App                    InterfaceAddress       SharingPreference      
+        # AppCompatShim          InterfaceDetail        SipConfig              
+        # AuthorizedKey          KernelInfo             StartupItem            
+        # Battery                Launchd                SystemControl          
+        # BitlockerInfo          LoggedinUser           SystemInfo             
+        # BrowserPlugin          LogicalDrive           Uptime                 
+        # Certificate            ManagedPolicy          UsbDevice              
+        # ChromeExtension        Mount                  User                   
+        # Connectivity           OSVersion              UserGroup              
+        # Crash                  Patch                  UserSshKey             
+        # CupDestination         Program                WifiNetwork            
+        # DiskEncryption         PythonPackage          WifiStatus             
+        # DiskInfo               SafariExtension        WindowSecurityProduct  
+        # DnsResolver            ScheduledTask          
+        # EtcHost                Service
         $Table,
 
         [Parameter()]
@@ -51,7 +71,7 @@ Function Get-JCSystemInsights
         [System.String[]]
         # Supported values and operators are specified for each table.
         # See docs.jumpcloud.com and search for specific table for a list of available filter options.
-        # Use tab complete to see available filters.
+        # Use tab complete to see available filters. 
         $Filter,
 
         [Parameter(DontShow)]

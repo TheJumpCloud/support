@@ -1,6 +1,6 @@
 #!/bin/bash
 ###############################################################################
-# Version 1.2
+# Version 1.3
 #
 # RenameMacUserNameAndHomeDirectory.sh - Script to rename the username of a
 # user account on MacOS. The script updates the users record name (username),
@@ -81,7 +81,7 @@ if [[ "${oldUser}" == "${newUser}" ]]; then
 fi
 
 # Query existing user accounts
-readonly existingUsers=($(dscl . -list /Users | grep -Ev "^_|com.*|root|nobody|daemon|\/" | cut -d, -f1 | sed 's|CN=||g'))
+readonly existingUsers=($(dscl . -list /Users | grep -Ev "^_|com\..*|root|nobody|daemon|\/" | cut -d, -f1 | sed 's|CN=||g'))
 
 # Ensure old user account is correct and account exists on system
 if [[ ! " ${existingUsers[@]} " =~ " ${oldUser} " ]]; then
@@ -176,14 +176,14 @@ ln -s "/Users/${newUser}" "${origHomeDir}"
 
 # Success message
 read -r -d '' successOutput <<EOM
-Success ${oldUser} username has been updated to ${newUser}
-Folder "${origHomeDir}" has been renamed to "/Users/${newUser}"
-RecordName: ${newUser}
-NFSHomeDirectory: "/Users/${newUser}"
-SYSTEM RESTARTING in 5 seconds to complete username update.
+${log} Success ${oldUser} username has been updated to ${newUser}
+${log} Folder "${origHomeDir}" has been renamed to "/Users/${newUser}"
+${log} RecordName: ${newUser}
+${log} NFSHomeDirectory: "/Users/${newUser}"
+${log} SYSTEM RESTARTING in 5 seconds to complete username update.
 EOM
 
-echo "${log} ${successOutput}" 2>&1 | tee -a JC_RENAME.log
+echo "${successOutput}" 2>&1 | tee -a JC_RENAME.log
 
 # System restart
 Sleep 5

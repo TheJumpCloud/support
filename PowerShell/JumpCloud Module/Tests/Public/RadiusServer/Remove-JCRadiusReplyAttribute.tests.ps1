@@ -4,23 +4,23 @@ Describe -Tag:('JCRadiusReplyAttribute') "Remove-JCRadiusReplyAttributes 1.9.0" 
 
         $NewGroup = New-JCUserGroup -GroupName $(New-RandomStringLower)
 
-        $Attr1Name = "Attr1Name"
+        $Attr1Name = "Tunnel-Type:1"
 
-        $Attr1Value = "Attr1Value"
+        $Attr1Value = "VLAN"
 
-        $Attr2Name = "Attr2Name"
+        $Attr2Name = "Tunnel-Type:2"
 
-        $Attr2Value = "Attr2Value"
+        $Attr2Value = "VLAN2"
 
         $AttributesAdd = Add-JCRadiusReplyAttribute -GroupName $NewGroup.Name -NumberOfAttributes 2 -Attribute1_name $Attr1Name -Attribute1_value $Attr1Value -Attribute2_name $Attr2Name -Attribute2_value $Attr2Value
 
         $AttributesRemove = Remove-JCRadiusReplyAttribute -GroupName $NewGroup.Name -AttributeName $Attr1Name
 
-        $Attr1Verify = $AttributesRemove | Where-Object Name -EQ "Attr1Name" | Select-Object -ExpandProperty value
+        $Attr1Verify = $AttributesRemove | Where-Object Name -EQ "Tunnel-Type:1" | Select-Object -ExpandProperty value
 
         $Attr1Verify | Should -Be $null
 
-        $Attr2Verify = $AttributesRemove | Where-Object Name -EQ "Attr2Name" | Select-Object -ExpandProperty value
+        $Attr2Verify = $AttributesRemove | Where-Object Name -EQ "Tunnel-Type:2" | Select-Object -ExpandProperty value
 
         $Attr2Verify | Should -Be $Attr2Value
 
@@ -32,23 +32,23 @@ Describe -Tag:('JCRadiusReplyAttribute') "Remove-JCRadiusReplyAttributes 1.9.0" 
 
         $NewGroup = New-JCUserGroup -GroupName $(New-RandomStringLower)
 
-        $Attr1Name = "Attr1Name"
+        $Attr1Name = "Tunnel-Type:1"
 
-        $Attr1Value = "Attr1Value"
+        $Attr1Value = "VLAN"
 
-        $Attr2Name = "Attr2Name"
+        $Attr2Name = "Tunnel-Type:2"
 
-        $Attr2Value = "Attr2Value"
+        $Attr2Value = "VLAN2"
 
         $AttributesAdd = Add-JCRadiusReplyAttribute -GroupName $NewGroup.Name -NumberOfAttributes 2 -Attribute1_name $Attr1Name -Attribute1_value $Attr1Value -Attribute2_name $Attr2Name -Attribute2_value $Attr2Value
 
         $AttributesRemove = Remove-JCRadiusReplyAttribute -GroupName $NewGroup.Name -AttributeName $Attr1Name, $Attr2Name
 
-        $Attr1Verify = $AttributesRemove | Where-Object Name -EQ "Attr1Name" | Select-Object -ExpandProperty value
+        $Attr1Verify = $AttributesRemove | Where-Object Name -EQ "Tunnel-Type:1" | Select-Object -ExpandProperty value
 
         $Attr1Verify | Should -Be $null
 
-        $Attr2Verify = $AttributesRemove | Where-Object Name -EQ "Attr2Name" | Select-Object -ExpandProperty value
+        $Attr2Verify = $AttributesRemove | Where-Object Name -EQ "Tunnel-Type:2" | Select-Object -ExpandProperty value
 
         $Attr2Verify | Should -Be $null
 
@@ -61,13 +61,13 @@ Describe -Tag:('JCRadiusReplyAttribute') "Remove-JCRadiusReplyAttributes 1.9.0" 
 
         $NewGroup = New-JCUserGroup -GroupName $(New-RandomStringLower)
 
-        $Attr1Name = "Attr1Name"
+        $Attr1Name = "Tunnel-Type:1"
 
-        $Attr1Value = "Attr1Value"
+        $Attr1Value = "VLAN"
 
-        $Attr2Name = "Attr2Name"
+        $Attr2Name = "Tunnel-Type:2"
 
-        $Attr2Value = "Attr2Value"
+        $Attr2Value = "VLAN2"
 
         $VLAN = Get-Random -Minimum 1 -Maximum 4064
 
