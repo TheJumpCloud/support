@@ -18,16 +18,16 @@ Describe -Tag:('JCBackup') "Restore-JCOrganization" {
     }
     It "Backs up and restores to a JumpCloud Org with no changes" {
         # Gather Info About Current Org
-        $userCount = (Get-JcSdkSystemUser).Count
+        $userCount = (Get-JcSdkUser).Count
         $systemGroupCount = (Get-JcSdkSystemGroup).Count
         $systemUserCount = (Get-JcSdkUserGroup).Count
         # Backup
         $backupLocation = Backup-JCOrganization -Path ./ -All
         $zipArchive = Get-Item "$($backupLocation.FullName).zip"
         # Restore
-        Restore-JCOrganization -Path $zipArchive -Type All
+        { Restore-JCOrganization -Path $zipArchive } | Should -Not -Throw
         # Test Data
-        $userCountAfter = (Get-JcSdkSystemUser).Count
+        $userCountAfter = (Get-JcSdkUser).Count
         $systemGroupCountAfter = (Get-JcSdkSystemGroup).Count
         $systemUserCountAfter = (Get-JcSdkUserGroup).Count
         # Test Changes (Should be none)
@@ -36,7 +36,7 @@ Describe -Tag:('JCBackup') "Restore-JCOrganization" {
         $systemUserCount | should -BeExactly $systemUserCountAfter
         # Cleanup
         $zipArchive | Remove-Item -Force
-        $backupLocation | Remove-Item -Recurse -Force
+        # $backupLocation | Remove-Item -Recurse -Force
     }
     It "Backs up and restores to a JumpCloud Org with changes" {
         # # Backup
@@ -132,7 +132,7 @@ Describe -Tag:('JCBackup') "Restore-JCOrganization" {
             $associations.TargetID | Should -Contain $restoredUser.Id
             # Cleanup
             $zipArchive | Remove-Item -Force
-            $backupLocation | Remove-Item -Recurse -Force
+            # $backupLocation | Remove-Item -Recurse -Force
         }
         It "When a deleted user, and deleted associated objects are restored, the user and objects are restored AND the associations to those objects and user are restored" {}
     }
