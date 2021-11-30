@@ -1,4 +1,4 @@
-Describe -Tag:('JCBackup') "Restore-JCOrganization" {
+Describe -Tag:('RestoreJCOrganization') "Restore-JCOrganization" {
     BeforeAll {
         Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
         If (-not (Get-JCAssociation -Type:('user') -Name:($PesterParams_User1.username) -TargetType:('system') -IncludeNames | Where-Object { $_.TargetName -eq $PesterParams_SystemLinux.displayName })) {
@@ -16,7 +16,7 @@ Describe -Tag:('JCBackup') "Restore-JCOrganization" {
         # $user = "RestoreJC_" + -join ((65..90) + (97..122) | Get-Random -Count 5 | ForEach-Object { [char]$_ })
         # $newUser = New-JcSdkUser -Username $user -Email "$user@pestertest.org" -Password "Temp123!"
     }
-    It "Backs up and restores to a JumpCloud Org with no changes" {
+    It "Backs up and restores to a JumpCloud Org with no changes" -skip {
         # Gather Info About Current Org
         $userCount = (Get-JcSdkUser).Count
         $systemGroupCount = (Get-JcSdkSystemGroup).Count
@@ -25,7 +25,7 @@ Describe -Tag:('JCBackup') "Restore-JCOrganization" {
         $backupLocation = Backup-JCOrganization -Path ./ -All
         $zipArchive = Get-Item "$($backupLocation.FullName).zip"
         # Restore
-        { Restore-JCOrganization -Path $zipArchive } | Should -Not -Throw
+        { Restore-JCOrganization -Path $zipArchive -debug } | Should -Not -Throw
         # Test Data
         $userCountAfter = (Get-JcSdkUser).Count
         $systemGroupCountAfter = (Get-JcSdkSystemGroup).Count
@@ -94,7 +94,7 @@ Describe -Tag:('JCBackup') "Restore-JCOrganization" {
             # Change an attribute on the restored user
             # Restore-JCOrg to restore the user, it should be able to write the attribute back even though the user has a different ID
         }
-        Id "An Application, SoftwareApp can be restored by it's identifier name"
+        It "An Application, SoftwareApp can be restored by it's identifier name" {}
     }
 
     Context "Common restore scenarios where we'd rather do nothing vs. overwrite data"{
@@ -112,22 +112,24 @@ Describe -Tag:('JCBackup') "Restore-JCOrganization" {
             # Generate new user
             $user = "RestoreJC_" + -join ((65..90) + (97..122) | Get-Random -Count 5 | ForEach-Object { [char]$_ })
             $newUser = New-JcSdkUser -Username $user -Email "$user@pestertest.org" -Password "Temp123!"
+            write-host $newUser
             # Add association
             # Add-JCAssociation -Type:('user') -Name:($newUser.username) -TargetType:('user_group') -TargetName:('Default') -Force
             Add-JCAssociation -Type:('user') -Name:($newUser.username) -TargetType:('user_group') -TargetName:($PesterParams_UserGroup.Name) -Force
             # Backup
-            $backupLocation = Backup-JCOrganization -Path ./ -All
+            $backupLocation = Backup-JCOrganization -Path ./ -Type User -Association
             $zipArchive = Get-Item "$($backupLocation.FullName).zip"
             # Delete User
             Remove-JCsdkUser -Id $($newUser.Id)
             # Restore & test that command should not throw
-            { Restore-JCOrganization -Path $zipArchive -Association } | Should -Not -Throw
+            { Restore-JCOrganization -Path $zipArchive -Type User -Association } | Should -Not -Throw
             # Tests
             # Get Associations on group
             # $associations = Get-JCAssociation -Type user_group -Name "Default" -TargetType user
             $associations = Get-JCAssociation -Type user_group -Name:($PesterParams_UserGroup.Name) -TargetType user
             # Get restored user ID
             $restoredUser = Get-JCSdkUser | Where-Object { $_.Username -match $user }
+            write-host $restoredUser
             # Associations of userGroup should contain the newly restored userID.
             $associations.TargetID | Should -Contain $restoredUser.Id
             # Cleanup
