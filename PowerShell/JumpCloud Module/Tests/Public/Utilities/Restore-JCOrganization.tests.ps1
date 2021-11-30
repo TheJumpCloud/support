@@ -6,6 +6,15 @@ Describe -Tag:('JCBackup') "Restore-JCOrganization" {
         }
         Add-JCUserGroupMember -GroupName $PesterParams_UserGroup.Name -username $PesterParams_User1.Username
         Add-JCSystemGroupMember -GroupName $PesterParams_SystemGroup.Name -SystemID $PesterParams_SystemLinux._id
+        # For these tests, randomly generated users are created, deleted and modified.
+        # If any users exist on the org that match the username pattern: RestoreJC_*, delete those users
+        $matchedUsers = Get-JCSdkUser | Where-Object {$_.Username -match "RestoreJC_"}
+        foreach ($MatchedUser in $matchedUsers) {
+            Remove-JCsdkUser -Id $MatchedUser.Id
+        }
+        # Pattern to create new users as an example:
+        # $user = "RestoreJC_" + -join ((65..90) + (97..122) | Get-Random -Count 5 | ForEach-Object { [char]$_ })
+        # $newUser = New-JcSdkUser -Username $user -Email "$user@pestertest.org" -Password "Temp123!"
     }
     It "Backs up and restores to a JumpCloud Org with no changes" {
         # Gather Info About Current Org
@@ -16,7 +25,7 @@ Describe -Tag:('JCBackup') "Restore-JCOrganization" {
         $backupLocation = Backup-JCOrganization -Path ./ -All
         $zipArchive = Get-Item "$($backupLocation.FullName).zip"
         # Restore
-        Restore-JCsdkOrganization -Path $zipArchive -Type All
+        Restore-JCOrganization -Path $zipArchive -Type All
         # Test Data
         $userCountAfter = (Get-JcSdkSystemUser).Count
         $systemGroupCountAfter = (Get-JcSdkSystemGroup).Count
@@ -97,5 +106,34 @@ Describe -Tag:('JCBackup') "Restore-JCOrganization" {
             # Attempt to restore users
             # The second user with the email from the first user SHOULD NOT be overwritten with attributes from the first user.
         }
+    }
+    Context "Association Tests"{
+        It "When a deleted user is restored, their previous associations to existing resources are also restored" {
+            # Generate new user
+            $user = "RestoreJC_" + -join ((65..90) + (97..122) | Get-Random -Count 5 | ForEach-Object { [char]$_ })
+            $newUser = New-JcSdkUser -Username $user -Email "$user@pestertest.org" -Password "Temp123!"
+            # Add association
+            # Add-JCAssociation -Type:('user') -Name:($newUser.username) -TargetType:('user_group') -TargetName:('Default') -Force
+            Add-JCAssociation -Type:('user') -Name:($newUser.username) -TargetType:('user_group') -TargetName:($PesterParams_UserGroup.Name) -Force
+            # Backup
+            $backupLocation = Backup-JCOrganization -Path ./ -All
+            $zipArchive = Get-Item "$($backupLocation.FullName).zip"
+            # Delete User
+            Remove-JCsdkUser -Id $($newUser.Id)
+            # Restore & test that command should not throw
+            { Restore-JCOrganization -Path $zipArchive -Association } | Should -Not -Throw
+            # Tests
+            # Get Associations on group
+            # $associations = Get-JCAssociation -Type user_group -Name "Default" -TargetType user
+            $associations = Get-JCAssociation -Type user_group -Name:($PesterParams_UserGroup.Name) -TargetType user
+            # Get restored user ID
+            $restoredUser = Get-JCSdkUser | Where-Object { $_.Username -match $user }
+            # Associations of userGroup should contain the newly restored userID.
+            $associations.TargetID | Should -Contain $restoredUser.Id
+            # Cleanup
+            $zipArchive | Remove-Item -Force
+            $backupLocation | Remove-Item -Recurse -Force
+        }
+        It "When a deleted user, and deleted associated objects are restored, the user and objects are restored AND the associations to those objects and user are restored" {}
     }
 }
