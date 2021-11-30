@@ -5,20 +5,12 @@ Release Date: November 29, 2021
 #### RELEASE NOTES
 
 ```
-{{Fill in the Release Notes}}
+This release includes the new Restore-JCOrganization function. Restore-JCOrganization takes the output of Backup-JCOrganization to restore data from a backup.
 ```
 
 #### FEATURES:
 
-{{Fill in the Features}}
-
-#### IMPROVEMENTS:
-
-{{Fill in the Improvements}}
-
-#### BUG FIXES:
-
-{{Fill in the Bug Fixes}}
+Restore-JCOrganization function included in this release. Restore-JCOrganization enables admins to restore data from Backup-JCOrganization backups
 
 ## 1.18.8
 

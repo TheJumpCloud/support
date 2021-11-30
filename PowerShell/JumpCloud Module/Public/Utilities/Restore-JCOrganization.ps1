@@ -70,6 +70,7 @@ Function Restore-JCOrganization
     )
     Begin
     {
+        If ([System.String]::IsNullOrEmpty($env:JCApiKey) -or [System.String]::IsNullOrEmpty($env:JCOrgId)) { Connect-JCOnline }
         $TimerTotal = [Diagnostics.Stopwatch]::StartNew()
         # Unzip folder
         $ZipArchive = Get-Item -Path:($Path)
@@ -85,6 +86,7 @@ Function Restore-JCOrganization
         {
             $PSBoundParameters.Type
         }
+        # TODO: verify that this works as expected and works for nested objects
         # Test and convert CSVs back to JSON
         $csvFiles = $ExpandedArchivePath | Get-ChildItem | Where-Object { $_.Name -match ".csv" }
         if ($csvFiles)
