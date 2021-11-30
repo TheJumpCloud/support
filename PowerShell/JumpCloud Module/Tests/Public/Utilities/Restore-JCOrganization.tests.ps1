@@ -82,6 +82,54 @@ Describe -Tag:('JCBackup') "Restore-JCOrganization" {
     }
 
     Context "CSV Functionality" {
+        It "CSV Backs up and restores to a JumpCloud Org with no changes" {
+            # Gather Info About Current Org
+            $userCount = (Get-JcSdkUser).Count
+            $systemGroupCount = (Get-JcSdkSystemGroup).Count
+            $systemUserCount = (Get-JcSdkUserGroup).Count
+            # Backup to CSV format
+            $backupLocation = Backup-JCOrganization -Path ./ -Format:('csv') -All
+            $zipArchive = Get-Item "$($backupLocation.FullName).zip"
+            # Restore
+            { Restore-JCOrganization -Path $zipArchive } | Should -Not -Throw
+            # Test Data
+            $userCountAfter = (Get-JcSdkUser).Count
+            $systemGroupCountAfter = (Get-JcSdkSystemGroup).Count
+            $systemUserCountAfter = (Get-JcSdkUserGroup).Count
+            # Test Changes (Should be none)
+            $userCount | should -BeExactly $userCountAfter
+            $systemGroupCount | should -BeExactly $systemGroupCountAfter
+            $systemUserCount | should -BeExactly $systemUserCountAfter
+            # Cleanup
+            $zipArchive | Remove-Item -Force
+        }
+
+        It "CSV Backs up and restores to a JumpCloud Org with changes" {
+            # Create a new user
+            $user = "RestoreJC_" + -join ((65..90) + (97..122) | Get-Random -Count 5 | ForEach-Object { [char]$_ })
+            $newUser = New-JcSdkUser -Username $user -Email "$user@pestertest.org" -Password "Temp123!"
+            # Gather Info About Current Org
+            $userCount = (Get-JcSdkUser).Count
+            $systemGroupCount = (Get-JcSdkSystemGroup).Count
+            $systemUserCount = (Get-JcSdkUserGroup).Count
+            # Backup to CSV format
+            $backupLocation = Backup-JCOrganization -Path ./ -Format:('csv') -All
+            $zipArchive = Get-Item "$($backupLocation.FullName).zip"
+            # Delete newUser
+            Remove-JcSdkUser -Id $newUser.Id
+            # Restore
+            { Restore-JCOrganization -Path $zipArchive } | Should -Not -Throw
+            # Test Data
+            $userCountAfter = (Get-JcSdkUser).Count
+            $systemGroupCountAfter = (Get-JcSdkSystemGroup).Count
+            $systemUserCountAfter = (Get-JcSdkUserGroup).Count
+            $restoredUser = Get-JcSdkUser -Filter "email:eq:$user@pestertest.org"
+            # Test Changes
+            $restoredUser.Id | should -Not -Be $newUser.Id
+            $restoredUser.Email | should -BeExactly $newUser.Email
+            $restoredUser.Username | should -BeExactly $newUser.Username
+        }
+
         It "CSV Restore can restore nested level objects" {}
     }
 
