@@ -15,9 +15,8 @@ if (-not (Get-InstalledModule -Name JumpCloud)) {
     Install-Module JumpCloud -Force
 }
 Connect-JCOnline -force $JumpCloudApiKey
-# TODO: if file exists, have a different note & ask if we want to regenerate.
 
-# If the file does not exist
+# Check if file exists
 if (-not(Test-Path -Path $csvPath -PathType Leaf)) {
     Write-Host "################################################################################"
     Write-Host ""
@@ -41,7 +40,7 @@ else {
 
 Write-Host "################################################################################"
 Write-Host ""
-Write-Host "Importing CSV located at $csvPath, please ensure that data is correct/present"
+Write-Host "Importing CSV from $csvPath, please ensure that data is correct/present"
 Write-Host ""
 Write-Host "################################################################################"
 Read-Host -Prompt "Press any key to continue or CTRL+C to quit"
