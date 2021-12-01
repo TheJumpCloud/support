@@ -81,7 +81,7 @@ Describe -Tag:('RestoreJCOrganization') "Restore-JCOrganization" {
         }
     }
 
-    Context "CSV Functionality" {
+    Context "CSV Functionality" -skip {
         It "CSV Backs up and restores to a JumpCloud Org with no changes" {
             # Gather Info About Current Org
             $userCount = (Get-JcSdkUser).Count
@@ -104,7 +104,7 @@ Describe -Tag:('RestoreJCOrganization') "Restore-JCOrganization" {
             $zipArchive | Remove-Item -Force
         }
 
-        It "CSV Backs up and restores to a JumpCloud Org with changes" {
+        It "CSV Backs up and restores to a JumpCloud Org with changes" -skip {
             # Create a new user
             $user = "RestoreJC_" + -join ((65..90) + (97..122) | Get-Random -Count 5 | ForEach-Object { [char]$_ })
             $newUser = New-JcSdkUser -Username $user -Email "$user@pestertest.org" -Password "Temp123!"

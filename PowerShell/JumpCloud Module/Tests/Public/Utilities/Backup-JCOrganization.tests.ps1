@@ -1,4 +1,4 @@
-Describe -Tag:('JCBackup') "Backup-JCOrganization" {
+Describe -Tag:('BackupJCOrganization') "Backup-JCOrganization" {
     BeforeAll {
         Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
     }
