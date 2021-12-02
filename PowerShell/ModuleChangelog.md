@@ -5,12 +5,14 @@ Release Date: November 29, 2021
 #### RELEASE NOTES
 
 ```
-This release contains a fix for the Set-JCUser function where the MFA enrollment parameter wouldn't set correctly
+This release contains a fix for the Set-JCUser function where the MFA enrollment parameter wouldn't set correctly. A fix for Impport-JCCommand failing to import commands was also identified and fixed in this release.
 ```
 
 #### BUG FIXES:
 
 SA-2258 - Fix Set-JCUser function where it would error when setting a user's enrollment windows anywhere between 4-7 days.
+
+SA-2271 - Fix the Regex Pattern used in Import-JCCommand to address change in GitHub.
 
 ## 1.18.8
 
