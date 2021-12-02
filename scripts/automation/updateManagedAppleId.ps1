@@ -14,6 +14,7 @@ if (-not (Get-InstalledModule -Name JumpCloud)) {
     Write-Host "Installing JumpCloud PowerShell Module"
     Install-Module JumpCloud -Force
 }
+Write-Host "Connecting to JumpCloud..."
 Connect-JCOnline -force $JumpCloudApiKey
 
 # Check if file exists
@@ -25,7 +26,7 @@ if (-not(Test-Path -Path $csvPath -PathType Leaf)) {
     Write-Host "This will include Id, Email and a blank ManagedAppleId field"
     Write-Host ""
     Write-Host "################################################################################"
-    Get-JCSdkUser | Select ID, Email, ManagedAppleId | Export-Csv -Path $csvPath -Confirm
+    Get-JCSdkUser | Select-Object ID, Email, ManagedAppleId | Export-Csv -Path $csvPath -Confirm
 }
 else {
     Write-Host "################################################################################"
@@ -35,7 +36,7 @@ else {
     Write-Host "This will include Id, Email and a blank ManagedAppleId field"
     Write-Host ""
     Write-Host "################################################################################"
-    Get-JCSdkUser | Select ID, Email, ManagedAppleId | Export-Csv -Path $csvPath -Confirm
+    Get-JCSdkUser | Select-Object ID, Email, ManagedAppleId | Export-Csv -Path $csvPath -Confirm
 }
 
 Write-Host "################################################################################"
@@ -45,6 +46,7 @@ Write-Host ""
 Write-Host "################################################################################"
 Read-Host -Prompt "Press any key to continue or CTRL+C to quit"
 
+$skippedRows = @()
 $managedAppleIdUsers = Import-CSV $csvPath
 foreach ($user in $managedAppleIdUsers) {
     $emailRegex = "^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$"
@@ -54,11 +56,19 @@ foreach ($user in $managedAppleIdUsers) {
 
     # Validate CSV information
     if ([String]::IsNullOrWhiteSpace($managedAppleId) -or [String]::IsNullOrWhiteSpace($jcUserEmail) -or [String]::IsNullOrWhiteSpace($jcUserId)) {
-        Write-Host "Row $($managedAppleIdUsers.indexOf($user)+2) contains a null value or whitespace"
+        # Write-Host "Row $($managedAppleIdUsers.indexOf($user)+2) contains a null value or whitespace"
+        $skippedRows += [PSCustomObject]@{
+            row   = $($managedAppleIdUsers.indexOf($user) + 2);
+            email = $jcUserEmail;
+        }
         continue
     }
     if (($managedAppleId -notmatch $emailRegex) -or ($jcUserEmail -notmatch $emailRegex)) {
-        Write-Host "Row $($managedAppleIdUsers.indexOf($user)+2) contains an invalid email address"
+        # Write-Host "Row $($managedAppleIdUsers.indexOf($user)+2) contains an invalid email address"
+        $skippedRows += [PSCustomObject]@{
+            row   = $($managedAppleIdUsers.indexOf($user) + 2);
+            email = $jcUserEmail;
+        }
         continue
     }
 
@@ -78,5 +88,12 @@ foreach ($user in $managedAppleIdUsers) {
     catch {
         $StatusCode = $_.Exception.Response.StatusCode.value__
         Write-Error -Message "Encountered error with Row $($managedAppleIdUsers.indexOf($user)+2): $StatusCode"
+    }
+}
+if ($skippedRows){
+    Write-Host "$($skippedRows.values.count) rows were skipped"
+    $view = Read-Host -Prompt "Press y to view skipped rows. Press any other key to cancel"
+    if ($view.ToLower() -eq 'y'){
+        $skippedRows
     }
 }
