@@ -26,9 +26,9 @@ Function New-JCCommandFromURL
 
         $Code = ((((($CodeRaw -replace "&amp;", "&") -replace "&lt;", "<") -replace "&gt;", ">") -replace "&quot;", '"') -Replace "&apos;", "'") # Replace XML character references
 
-        $Name = (((((($Command -split 'Name</h4>')[1]) -replace "`n", "") -split '</p>')[0]) -replace '<p>', '')
+        $Name = (((((($Command -split 'Name</h4>')[1]) -replace "`n", "") -split '</p>')[0]) -replace '(\<p)(.*?)(\>)', '')
 
-        $commandType = (((($Command -split 'commandType</h4>')[1] -replace "`n", "") -split '</p>')[0] -replace "<p>", "")
+        $commandType = (((($Command -split 'commandType</h4>')[1] -replace "`n", "") -split '</p>')[0] -replace '(\<p)(.*?)(\>)', "")
 
         $NewCommandParams = @{
 
