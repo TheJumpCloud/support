@@ -301,12 +301,12 @@ Describe -Tag:('JCSystem') "Get-JCSystem 1.4" {
 Describe -Tag:('JCSystem') "Get-JCSystem 1.15.2" {
     It "Searches for a JumpCloud system using filterDateProperty lastContact and after" {
         $NewestSystemlastContact = ([DateTime]::Parse((Get-JCSystem -active $false -returnProperties lastContact | Where-Object lastContact -ne $null | Select-Object -Last 1 -ExpandProperty lastContact))).ToUniversalTime()
-        $NewestSystemlastContactVerify = ([DateTime]::Parse((Get-JCSystem -filterDateProperty lastContact -dateFilter after -date $NewestSystemlastContact.addDays(-1) | Select-Object -Last 1 -ExpandProperty lastContact))).ToUniversalTime()
+        $NewestSystemlastContactVerify = ([DateTime]::Parse((Get-JCSystem -active $false -filterDateProperty lastContact -dateFilter after -date $NewestSystemlastContact.addDays(-1) | Select-Object -Last 1 -ExpandProperty lastContact))).ToUniversalTime()
         $NewestSystemlastContact | Should -Be $NewestSystemlastContactVerify
     }
     It "Searches for a JumpCloud system using filterDateProperty lastContact and before" {
         $OldestSystemlastContact = ([DateTime]::Parse((Get-JCSystem -active $false -returnProperties lastContact | Where-Object lastContact -ne $null | Select-Object -First 1 -ExpandProperty lastContact))).ToUniversalTime()
-        $OldestSystemlastContactVerify = ([DateTime]::Parse((Get-JCSystem -filterDateProperty lastContact -dateFilter before -date $OldestSystemlastContact.addDays(1) | Select-Object -First 1 -ExpandProperty lastContact))).ToUniversalTime()
+        $OldestSystemlastContactVerify = ([DateTime]::Parse((Get-JCSystem -active $false -filterDateProperty lastContact -dateFilter before -date $OldestSystemlastContact.addDays(1) | Select-Object -First 1 -ExpandProperty lastContact))).ToUniversalTime()
         $OldestSystemlastContact | Should -Be $OldestSystemlastContactVerify
     }
 }

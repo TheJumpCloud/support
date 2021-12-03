@@ -45,7 +45,7 @@ parameters:
   PublishToPSGallery:
     description: 'When `true` and when run against Master branch, this workflow will publish the latest code to PSGallery'
     type: boolean
-    default: false
+    default: true
 orbs:
   win: circleci/windows@2.2.0
 executors:
@@ -272,7 +272,7 @@ commands:
       - run: echo << pipeline.git.branch >>
       - run:
           name: Install PowerShell Core
-          command: dotnet tool install --global PowerShell
+          command: dotnet tool install --global PowerShell --version 7.1.5
       - run:
           name: Install Modules
           shell: pwsh.exe
