@@ -6,7 +6,15 @@ param (
 )
 
 . "$PSScriptRoot/Get-Config.ps1" -RequiredModulesRepo:($RequiredModulesRepo)
-$nuspecFiles = @{ src = 'en-Us/**;Private/**;Public/**;JumpCloud.psd1;JumpCloud.psm1;LICENSE'; }
+# $nuspecFiles = @{ src = 'en-Us/**;Private/**;Public/**;JumpCloud.psd1;JumpCloud.psm1;LICENSE'; }
+$nuspecFiles = @(
+    @{src = "en-Us/**/*.*"; target = "en-Us" },
+    @{src = "Public/**/*.*"; target = "Public" },
+    @{src = "Private/**/*.*"; target = "Private" },
+    @{src = "JumpCloud.psd1" },
+    @{src = "JumpCloud.psm1" },
+    @{src = "LICENSE" }
+)
 # Addapted from PowerShell Get
 # https://github.com/PowerShell/PowerShellGetv2/blob/7de99ee0c38611556e5c583ffaca98bb1922a0d4/src/PowerShellGet/private/functions/New-NuspecFile.ps1
 function New-NuspecFile
@@ -75,7 +83,6 @@ function New-NuspecFile
     #create top-level elements
     $packageElement = $xml.CreateElement("package", $nameSpaceUri)
     $metaDataElement = $xml.CreateElement("metadata", $nameSpaceUri)
-
     # warn we're over 4000 characters for standard nuget servers
     $tagsString = $Tags -Join " "
     if ($tagsString.Length -gt 4000)
@@ -84,10 +91,13 @@ function New-NuspecFile
     }
 
     Write-Host "env:Source = $($env:Source)`r`nglobal:Source = $($global:Source)"
-    # Append buildNumber if something
+    # Append buildNumber
     if ($env:Source -eq "CodeArtifact")
     {
-        $Version = $Version + ".$($buildNumber)"
+        $date = (Get-Date).ToString("yyyyMMddHHmm")
+        # $BuildString = "build$($env:CIRCLE_BUILD_NUM)datetime$($date)"
+        $build = $($env:CIRCLE_BUILD_NUM)
+        $Version = $Version + ".$($build)" + "-$date"
     }
 
     $metaDataElementsHash = [ordered]@{
@@ -174,7 +184,7 @@ $params = @{
     LicenseUrl   = $Psd1.PrivateData.PSData.LicenseUri
     ProjectUrl   = $Psd1.PrivateData.PSData.ProjectUri
     IconUrl      = $Psd1.PrivateData.PSData.IconUri
-    Dependencies = $Psd1.RequiredModules
+    Dependencies = $Psd1.RequiredModules.ModuleName
     Files        = $nuspecFiles
 }
 New-NuspecFile @params

@@ -1,6 +1,6 @@
 ## 1.18.9
 
-Release Date: November 29, 2021
+Release Date: December 3, 2021
 
 #### RELEASE NOTES
 
@@ -13,6 +13,12 @@ This release contains a fix for the Set-JCUser function where the MFA enrollment
 SA-2258 - Fix Set-JCUser function where it would error when setting a user's enrollment windows anywhere between 4-7 days.
 
 SA-2271 - Fix the Regex Pattern used in Import-JCCommand to address change in GitHub.
+
+#### IMPROVEMENTS:
+
+```
+Add CodeArtifact support to Update-JCModule Enable the PowerShell Module to be tested from latest development versions of the PowerShell SDKs
+```
 
 ## 1.18.8
 
