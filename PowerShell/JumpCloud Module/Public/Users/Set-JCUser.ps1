@@ -254,7 +254,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
             $ParameterAttribute.Mandatory = $false
             $ParameterAttribute.HelpMessage = 'Number of days to allow for MFA enrollment.'
             # Generate and set the ValidateSet
-            $ValidateRangeAttribute = New-Object System.Management.Automation.ValidateRangeAttribute('1', '365')
+            $ValidateRangeAttribute = New-Object System.Management.Automation.ValidateRangeAttribute(1, 365)
             # Add the ValidateSet to the attributes collection
             $AttributeCollection.Add($ValidateRangeAttribute)
             # Add the attributes to the attributes collection

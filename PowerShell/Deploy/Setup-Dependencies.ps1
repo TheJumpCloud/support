@@ -16,7 +16,7 @@ ForEach ($DependentModule In $DependentModules)
     {
         Write-Host("[status]Installing module: '$DependentModule' from 'PSGallery'")
         if ($DependentModule -eq 'PowerShellGet'){
-            Install-Module -Name $DependentModule -Repository:('PSGallery') -AllowPrerelease -RequiredVersion '3.0.0-beta10' -Force
+            Install-Module -Name $DependentModule -Repository:('PSGallery') -AllowPrerelease -Force
         }
         elseif ($DependentModule -eq 'PSScriptAnalyzer') {
             Install-Module -Name $DependentModule -Repository:('PSGallery') -RequiredVersion '1.19.1' -Force
@@ -69,7 +69,7 @@ If (-not [System.String]::IsNullOrEmpty($Psd1))
 {
     # Install required modules
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-    ForEach ($RequiredModule In $Psd1.RequiredModules)
+    ForEach ($RequiredModule In $Psd1.RequiredModules.ModuleName)
     {
         # Check to see if the module is installed
         If ([System.String]::IsNullOrEmpty((Get-InstalledModule | Where-Object { $_.Name -eq $RequiredModule })))
@@ -93,7 +93,7 @@ If (-not [System.String]::IsNullOrEmpty($Psd1))
                 # Set Module Path from required Module
                 $ModulePath = "$($LocalPSModulePath)/$($RequiredModule)"
                 # Search for module in localPSModulePath
-                $moduleFound = Get-PSResource -name $RequiredModule -path $LocalPSModulePath
+                $moduleFound = Get-InstalledPSResource -name $RequiredModule -path $LocalPSModulePath
                 if ([string]::isnullorempty($moduleFound)) {
                     # Install module if it does not exist
                     Install-PSResource -Name:($RequiredModule) -Repository:($RequiredModulesRepo) -Credential:($RepositoryCredentials) -Prerelease -Scope 'CurrentUser';
@@ -101,11 +101,12 @@ If (-not [System.String]::IsNullOrEmpty($Psd1))
                 # Rename version folder and import module
                 # Satisfy the version requirements & naming convertion for SDKS
                 # x.x.x-someversion is not supported, split to just semantic version
-                Get-ChildItem -Path:($ModulePath) | ForEach-Object {
-                    If ($_.Name -match '-') { Rename-Item -Path:($_.FullName) -NewName:(($_.Name.split('-'))[0]) -Force; };
-                    Write-Host("[status]Importing module: '$RequiredModule'")
-                    Import-Module -Name:($_.Parent.Name) -Force;
-                };
+                #TODO: remove w/ powershell get 3.0.11 this is no longer an issue
+                # Get-ChildItem -Path:($ModulePath) | ForEach-Object {
+                #     If ($_.Name -match '-') { Rename-Item -Path:($_.FullName) -NewName:(($_.Name.split('-'))[0]) -Force; };
+                #     Write-Host("[status]Importing module: '$RequiredModule'")
+                #     Import-Module -Name:($_.Parent.Name) -Force;
+                # };
             }
             else{
                 # If not CodeArtifact, just install the module from the default repository (PSGallery)

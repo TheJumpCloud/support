@@ -1174,9 +1174,9 @@ Describe -Tag:('JCUser') "Set-JCUser MFA Enrollment periods 1.10" {
         $Newuser.mfa.exclusion | Should -Be $true
         $Newuser | Remove-JCUser -ByID -force
     }
-    It "Updates an existing user with enable_user_portal_multifactor -eq False to enable_user_portal_multifactor -eq True and a 30 days specified for EnrollmentDays" {
+    It "Updates an existing user with enable_user_portal_multifactor -eq False to enable_user_portal_multifactor -eq True and a 7 days specified for EnrollmentDays" {
         $CreateUser = New-RandomUser -domain "deleteme" | New-JCUser -enable_user_portal_multifactor $false
-        $EnrollmentDays = 30
+        $EnrollmentDays = 7
         $NewUser = $CreateUser | Set-JCUser -enable_user_portal_multifactor $true -EnrollmentDays $EnrollmentDays
         $Newuser.mfa.exclusion | Should -Be $true
         $Newuser | Remove-JCUser -ByID -force
@@ -1194,9 +1194,9 @@ Describe -Tag:('JCUser') "Set-JCUser MFA Enrollment periods 1.10" {
         $Newuser.mfa.exclusion | Should -Be $true
         $Newuser | Remove-JCUser -ByID -force
     }
-    It "Updates an existing user with enable_user_portal_multifactor -eq False to enable_user_portal_multifactor -eq True and a 30 days specified for EnrollmentDays -ByID" {
+    It "Updates an existing user with enable_user_portal_multifactor -eq False to enable_user_portal_multifactor -eq True and a 7 days specified for EnrollmentDays -ByID" {
         $CreateUser = New-RandomUser -domain "deleteme" | New-JCUser -enable_user_portal_multifactor $false
-        $EnrollmentDays = 30
+        $EnrollmentDays = 7
         $NewUser = $CreateUser | Set-JCUser -enable_user_portal_multifactor $true -EnrollmentDays $EnrollmentDays -ByID
         $Newuser.mfa.exclusion | Should -Be $true
         $Newuser | Remove-JCUser -ByID -force
@@ -1214,8 +1214,8 @@ Describe -Tag:('JCUser') "Set-JCUser MFA Enrollment periods 1.10" {
         $Newuser.mfa.exclusion | Should -Be $true
         $Newuser | Remove-JCUser -ByID -force
     }
-    It "Updates an existing user with enable_user_portal_multifactor -eq True and a 30 days specified for EnrollmentDays with Attributes" {
-        $EnrollmentDays = 30
+    It "Updates an existing user with enable_user_portal_multifactor -eq True and a 7 days specified for EnrollmentDays with Attributes" {
+        $EnrollmentDays = 7
         $CreateUser = New-RandomUser -domain "deleteme" -Attributes | New-JCUser -NumberOfCustomAttributes 2 -enable_user_portal_multifactor $True
         $NewUser = $CreateUser | Set-JCUser -enable_user_portal_multifactor $true -EnrollmentDays $EnrollmentDays -NumberOfCustomAttributes 1 -Attribute1_name 'attr1' -Attribute1_value 'attr1v'
         $Newuser.mfa.exclusion | Should -Be $true
@@ -1227,9 +1227,9 @@ Describe -Tag:('JCUser') "Set-JCUser MFA Enrollment periods 1.10" {
         $Newuser.mfa.exclusion | Should -Be $true
         $Newuser | Remove-JCUser -ByID -force
     }
-    It "Updates an existing user with enable_user_portal_multifactor -eq True and a 30 days specified for EnrollmentDays with removeAttributes" {
+    It "Updates an existing user with enable_user_portal_multifactor -eq True and a 7 days specified for EnrollmentDays with removeAttributes" {
         $CreateUser = New-RandomUser -domain "deleteme" | New-JCUser -enable_user_portal_multifactor $true
-        $EnrollmentDays = 30
+        $EnrollmentDays = 7
         $NewUser = $CreateUser | Set-JCUser -enable_user_portal_multifactor $true -EnrollmentDays $EnrollmentDays
         $Newuser.mfa.exclusion | Should -Be $true
         $Newuser | Remove-JCUser -ByID -force

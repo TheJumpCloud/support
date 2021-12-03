@@ -45,7 +45,7 @@ parameters:
   PublishToPSGallery:
     description: 'When `true` and when run against Master branch, this workflow will publish the latest code to PSGallery'
     type: boolean
-    default: false
+    default: true
 orbs:
   win: circleci/windows@2.2.0
 executors:
@@ -200,7 +200,7 @@ jobs:
       - invoke-pester:
           JumpCloudApiKey: $env:XAPIKEY_PESTER
           JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_MTP
-          ExcludeTagList: 'ModuleValidation, JCUsersFromCSV, JCDeployment, JCModule'
+          ExcludeTagList: 'ModuleValidation, JCUsersFromCSV, JCDeployment'
           IncludeTagList: '*'
           RequiredModulesRepo: << pipeline.parameters.RequiredModulesRepo >>
           Shell: 'pwsh.exe'
@@ -211,7 +211,7 @@ jobs:
       - invoke-pester:
           JumpCloudApiKey: $env:XAPIKEY_PESTER_MAC
           JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_MTP
-          ExcludeTagList: 'ModuleValidation, JCUsersFromCSV, JCDeployment, JCModule'
+          ExcludeTagList: 'ModuleValidation, JCUsersFromCSV, JCDeployment'
           IncludeTagList: '*'
           RequiredModulesRepo: << pipeline.parameters.RequiredModulesRepo >>
           Shell: 'pwsh'
@@ -223,7 +223,7 @@ jobs:
       - invoke-pester:
           JumpCloudApiKey: $env:XAPIKEY_PESTER_LINUX
           JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_MTP
-          ExcludeTagList: 'ModuleValidation, JCUsersFromCSV, JCDeployment, JCModule'
+          ExcludeTagList: 'ModuleValidation, JCUsersFromCSV, JCDeployment'
           IncludeTagList: '*'
           RequiredModulesRepo: << pipeline.parameters.RequiredModulesRepo >>
           Shell: 'pwsh'
@@ -272,7 +272,7 @@ commands:
       - run: echo << pipeline.git.branch >>
       - run:
           name: Install PowerShell Core
-          command: dotnet tool install --global PowerShell
+          command: dotnet tool install --global PowerShell --version 7.1.5
       - run:
           name: Install Modules
           shell: pwsh.exe
@@ -390,7 +390,7 @@ commands:
                 name: Install Dependencies
                 shell: pwsh.exe
                 command: |
-                  Install-Module -Name PowerShellGet -AllowPrerelease -RequiredVersion '3.0.0-beta10' -Force
+                  Install-Module -Name PowerShellGet -AllowPrerelease -Force
                   Install-Module -Name AWS.Tools.Common -Force
                   Install-Module -Name AWS.Tools.CodeArtifact -Force
             - run:
@@ -398,7 +398,7 @@ commands:
                 command: |
                   if ( -not ( Test-Path -Path ./Deploy/utils ) ) {
                     mkdir ./Deploy/utils
-                    wget https://dist.nuget.org/win-x86-commandline/v3.3.0/nuget.exe -Outfile ./Deploy/utils/nuget.exe
+                    wget https://dist.nuget.org/win-x86-commandline/latest/nuget.exe -Outfile ./Deploy/utils/nuget.exe
                   }
             - run:
                 name: Add nuget sources
@@ -412,7 +412,7 @@ commands:
                 name: Pack nuspec
                 shell: pwsh.exe
                 command: |
-                  ./Deploy/utils/nuget.exe pack "./PowerShell/JumpCloud Module/JumpCloud.nuspec"
+                  ./Deploy/utils/nuget.exe pack "./PowerShell/JumpCloud Module/JumpCloud.nuspec" -Properties NoWarn=NU5111,NU5110
             - run:
                 name: Publishing to "<< parameters.source >>" repo
                 shell: pwsh.exe
