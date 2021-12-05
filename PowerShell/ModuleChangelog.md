@@ -1,28 +1,6 @@
-## 1.18.9
-
-Release Date: December 05, 2021
-
-#### RELEASE NOTES
-
-```
-{{Fill in the Release Notes}}
-```
-
-#### FEATURES:
-
-{{Fill in the Features}}
-
-#### IMPROVEMENTS:
-
-{{Fill in the Improvements}}
-
-#### BUG FIXES:
-
-{{Fill in the Bug Fixes}}
-
 ## 1.18.10
 
-Release Date: December 3, 2021
+Release Date: December 5, 2021
 
 #### RELEASE NOTES
 
