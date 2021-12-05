@@ -14,7 +14,15 @@ Function Update-JCModule
         # Find the module on the specified repository
         # Until PowerShellGet is updated to query nuget v3 modules, we need to determine PSGet versions ahead of function process block
         $PSGetModuleName = 'PowerShellGet'
-        $PSGetLatestVersion = (Find-Module PowerShellGet -AllowPrerelease).Version
+        # TODO: if you are on powershellGet v1.0.0.1 skip this check - there's no way to view a prerelease module with that version
+        try
+        {
+            $PSGetLatestVersion = (Find-Module PowerShellGet -AllowPrerelease).Version
+        }
+        catch
+        {
+            $PSGetBetaInstalled = $false
+        }
         $PSGet = Get-InstalledModule PowerShellGet
         $PSGetVersion = (Get-InstalledModule PowerShellGet).Version
         $PSGetSemanticRegex = [Regex]"[0-9]+.[0-9]+.[0-9]+"
@@ -26,15 +34,19 @@ Function Update-JCModule
         # $PSGetPrereleaseVersion = Select-String -InputObject $PSGet.Version -pattern ($PSGetPrereleaseRegex)
         # Convert base versions to semantic versioning so we can compare if the beta version of 3.0.11 is installed.
         # As of October 2021, powershell get 3.0.11 beta is required
-        if ([System.Version]$PSGetVersionMatch -lt [System.Version]"3.0.11") {
+        if ([System.Version]$PSGetVersionMatch -lt [System.Version]"3.0.11")
+        {
             $PSGetBetaInstalled = $false
-        }else {
+        }
+        else
+        {
             $PSGetBetaInstalled = $true
         }
-        # If Repository Credneials are passed in, follow the flow to check for pre-release versions of the Module & SDKs
+        # If Repository Credentials are passed in, follow the flow to check for pre-release versions of the Module & SDKs
         If (-not [System.String]::IsNullOrEmpty($RepositoryCredentials))
         {
-            if (-not $PSGetBetaInstalled) {
+            if (-not $PSGetBetaInstalled)
+            {
                 If (!($Force))
                 {
                     Do
@@ -60,27 +72,33 @@ Function Update-JCModule
                     Import-Module $PSGetModuleName -Force
                 }
             }
-            else {
+            else
+            {
                 Import-Module $PSGetModuleName
             }
             $FoundModule = Find-PSResource -Name:($ModuleName) -Repository:($Repository) -Credential:($RepositoryCredentials) -Prerelease
-        }Else
+        }
+        Else
         {
             $FoundModule = Find-Module -Name:($ModuleName) #-Repository:($Repository) -Credential:($RepositoryCredentials) -Prerelease
         }
         # Get the version of the module installed locally
         $InstalledModulePreUpdate = Get-InstalledModule -Name:($ModuleName) -AllVersions -ErrorAction:('Ignore')
         # if null and beta version of PSGet installed:
-        if (($PSGetBetaInstalled) -And [System.String]::IsNullOrEmpty($InstalledModulePreUpdate)) {
-            If (!($Force)){
-                Do{
+        if (($PSGetBetaInstalled) -And [System.String]::IsNullOrEmpty($InstalledModulePreUpdate))
+        {
+            If (!($Force))
+            {
+                Do
+                {
                     Write-Host ("The $ModuleName PowerShell module was not installed from any PSGallery repositories") -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
                     Write-Host ("$PSGetModuleName ($PSGetVersion) is installed. Enter 'Y' to search for $ModuleName PowerShell modules in a NugetV3 feed 'N' to cancel:") -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_UserPrompt)
                     $UserInputSearch = Read-Host
                 }
                 Until ($UserInputSearch.ToUpper() -in ('Y', 'N'))
             }
-            else{
+            else
+            {
                 $UserInputSearch = 'Y'
             }
             If ($UserInputSearch.ToUpper() -eq 'N')
@@ -92,29 +110,36 @@ Function Update-JCModule
                 $InstalledModulePreUpdate = Get-InstalledPSResource -Name:($ModuleName) | Where-Object { $_.repository -eq 'codeartifact' } #-AllVersions -ErrorAction:('Ignore')
             }
         }
-        If ([System.String]::IsNullOrEmpty($InstalledModulePreUpdate)){
+        If ([System.String]::IsNullOrEmpty($InstalledModulePreUpdate))
+        {
         }
         # Get module info from GitHub - This should not impact the auto update ability, only the banner message
         $ModuleBanner = Get-ModuleBanner
         $ModuleChangeLog = Get-ModuleChangeLog
         # To change update dependency from PowerShell Gallery to Github flip the commented code below
         ###### $UpdateTrigger = $ModuleBanner.'Latest Version'
-        if ($FoundModule.PrereleaseLabel){
+        if ($FoundModule.PrereleaseLabel)
+        {
             $UpdateTrigger = "$($FoundModule.Version)"
             $UpdateTriggerWithoutRevision = "$(($($FoundModule.Version)).Major).$(($($FoundModule.Version)).Minor).$(($($FoundModule.Version)).Build)"
             $UpdateTriggerFull = "$($FoundModule.Version)-$($FoundModule.PrereleaseLabel)"
             $UpdateTriggerFullRegex = [regex]"^[0-9]+.[0-9]+.[0-9]+.[0-9]+-(.*)"
             $UpdateTriggerFullDatetime = (Select-String -InputObject $UpdateTriggerFull -pattern ($UpdateTriggerFullRegex)).Matches.Groups[1].value
-        }else{
+        }
+        else
+        {
             $UpdateTrigger = $FoundModule.Version
         }
         # Get the release notes for a specific version
         $ModuleChangeLogLatestVersion = $ModuleChangeLog | Where-Object { $_.Version -eq $UpdateTrigger }
         # To change update dependency from PowerShell Gallery to Github flip the commented code below
         ###### $LatestVersionReleaseDate = $ModuleChangeLogLatestVersion.'RELEASE DATE'
-        If (-not [System.String]::IsNullOrEmpty($RepositoryCredentials)) {
+        If (-not [System.String]::IsNullOrEmpty($RepositoryCredentials))
+        {
             $LatestVersionReleaseDate = ($FoundModule | ForEach-Object { $_.Version.ToString() + ' (' + $foundModule.PrereleaseLabel + ')' })
-        }Else{
+        }
+        Else
+        {
             $LatestVersionReleaseDate = ($FoundModule | ForEach-Object { ($_.Version).ToString() + ' (' + (Get-Date $_.PublishedDate).ToString('yyyy-MM-dd') + ')' })
         }
         # $LatestVersionReleaseDate = ($FoundModule | ForEach-Object { ($_.Version).ToString() + ' (' + [datetime]::parseexact($foundModule.PrereleaseLabel, 'yyyyMMddHHmm', $null) + ')' })
@@ -162,10 +187,12 @@ Function Update-JCModule
                 $Status = If ([System.Version]($UpdateTrigger.ToString()) -gt [System.Version]($latestVersionInstalled))
                 {
                     'An update is available for the ' + $ModuleName + ' PowerShell module.'
-                }ElseIf ($UpdateTrigger -in $InstalledModulePreUpdate.Version)
+                }
+                ElseIf ($UpdateTrigger -in $InstalledModulePreUpdate.Version)
                 {
                     'The ' + $ModuleName + ' PowerShell module is up to date.'
-                }Else
+                }
+                Else
                 {
                     Write-Error ('Unable to determine ' + $ModuleName + ' PowerShell module install status.')
                 }
@@ -219,8 +246,9 @@ Function Update-JCModule
                     }
                     Else
                     {
-                        if (($InstalledModulePreUpdate.Repository -eq 'PSGallery') -And ($Repository -eq 'CodeArtifact')){
-                            # PSGallery orig, updating to CodeArtifact Source
+                        if (($InstalledModulePreUpdate.Repository -eq 'PSGallery') -And ($Repository -eq 'CodeArtifact'))
+                        {
+                            # Module installed from PSGallery, updating to CodeArtifact Source
                             Write-Host ('Updating ' + $ModuleName + ' module to version: ') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewline
                             Write-Host ($UpdateTrigger) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
                             # install from CodeArtifact
@@ -253,7 +281,8 @@ Function Update-JCModule
                                 Write-Error ("Failed to update the $($ModuleName) PowerShell module to the latest version. $($UpdateTrigger) is not in $($InstalledModulePostUpdate.Version -join ', ')")
                             }
                         }
-                        elseif (($InstalledModulePreUpdate.Repository -eq 'CodeArtifact') -And ($Repository -eq 'CodeArtifact')) {
+                        elseif (($InstalledModulePreUpdate.Repository -eq 'CodeArtifact') -And ($Repository -eq 'CodeArtifact'))
+                        {
                             Write-Host ('Updating ' + $ModuleName + ' module to version: ') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewline
                             Write-Host ($UpdateTrigger) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
                             Install-PSResource -Name $ModuleName -Repository 'CodeArtifact' -Prerelease -Credential $RepositoryCredentials -Reinstall
@@ -285,7 +314,8 @@ Function Update-JCModule
                                 Write-Error ("Failed to update the $($ModuleName) PowerShell module to the latest version. $($UpdateTrigger) is not in $($InstalledModulePostUpdate.Version -join ', ')")
                             }
                         }
-                        else{
+                        else
+                        {
                             Write-Host ('Updating ' + $ModuleName + ' module to version: ') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewline
                             Write-Host ($UpdateTrigger) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
                             If ($InstalledModulePreUpdate.Repository -eq 'CodeArtifact')
@@ -294,7 +324,8 @@ Function Update-JCModule
                                 # Install-PSResource -Name:($ModuleName) -Repository:('CodeArtifact') -Credential:($RepositoryCredentials) -Prerelease
                                 Install-Module -Name:($ModuleName) -Force -Repository:('PSGallery')
                             }
-                            else{
+                            else
+                            {
 
                                 $InstalledModulePreUpdate | Update-Module -Force
                             }
@@ -321,7 +352,8 @@ Function Update-JCModule
                                         Uninstall-PSResource $_.Name -Version $_.Version -Force
                                     }
                                 }
-                                else{
+                                else
+                                {
                                     $InstalledModulePreUpdate | ForEach-Object {
                                         Write-Host ('Uninstalling ' + $_.Name + ' module version: ') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewline
                                         Write-Host (($_.Version).ToString()) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
