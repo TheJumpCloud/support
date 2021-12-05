@@ -27,7 +27,7 @@ parameters:
   ValidateModule:
     description: 'When `true`, Pester Tests will be run for moduleValidation tags.'
     type: boolean
-    default: false
+    default: true
   ReleaseType:
     description: 'Release Type. Accepted values [ Major, Minor, Patch ]'
     type: enum
