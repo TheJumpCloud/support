@@ -14,12 +14,16 @@ param (
     $ModuleName,
     [Parameter()]
     [string]
-    $RequiredModulesRepo
+    $RequiredModulesRepo,
+    [Parameter()]
+    [Boolean]
+    $ManualModuleVersion
 )
 . "$PSScriptRoot/Get-Config.ps1" -GitSourceBranch:($GitSourceBranch) -GitSourceRepo:($GitSourceRepo) -ReleaseType:($ReleaseType) -RequiredModulesRepo:($RequiredModulesRepo)
 # Region Checking PowerShell Gallery module version
 Write-Host ('[status]Check PowerShell Gallery for module version info')
 $PSGalleryInfo = Get-PSGalleryModuleVersion -Name:($ModuleName) -ReleaseType:($RELEASETYPE) #('Major', 'Minor', 'Patch')
+# TODO: if ManualModuleVersion is set to true, then find module version from .psd1 file and set $ModuleVersion
 $ModuleVersion = $PSGalleryInfo.NextVersion
 Write-Host ('[status]PowerShell Gallery Name:' + $PSGalleryInfo.Name + ';CurrentVersion:' + $PSGalleryInfo.Version + '; NextVersion:' + $ModuleVersion )
 # EndRegion Checking PowerShell Gallery module version

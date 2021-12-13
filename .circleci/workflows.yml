@@ -46,6 +46,10 @@ parameters:
     description: 'When `true` and when run against Master branch, this workflow will publish the latest code to PSGallery'
     type: boolean
     default: false
+  ManualModuleVersion:
+    description: 'When `true` the pipeline will use the Module Version specified in JumpCloud Module JumpCloud.psd1 file'
+    type: boolean
+    default: true
 orbs:
   win: circleci/windows@2.2.0
 executors:
@@ -310,7 +314,7 @@ commands:
                 shell: pwsh.exe
                 command: |
                   $ErrorActionPreference = 'Stop'
-                  ./PowerShell/Deploy/Build-Module.ps1 -GitSourceBranch << pipeline.git.branch >> -GitSourceRepo << pipeline.project.git_url >> -ReleaseType << pipeline.parameters.ReleaseType >> -ModuleName:('JumpCloud') -RequiredModulesRepo << pipeline.parameters.RequiredModulesRepo >>
+                  ./PowerShell/Deploy/Build-Module.ps1 -GitSourceBranch << pipeline.git.branch >> -GitSourceRepo << pipeline.project.git_url >> -ReleaseType << pipeline.parameters.ReleaseType >> -ModuleName:('JumpCloud') -RequiredModulesRepo << pipeline.parameters.RequiredModulesRepo >> -ManualModuleVersion << pipeline.parameters.ManualModuleVersion >>
             - persist_to_workspace:
                 root: .
                 paths:
@@ -517,6 +521,7 @@ commands:
             fi
             if [[ $branch == 'master' ]]; then
                 echo "Running on $branch, resetting PublishToPSGallery param..."
+                #TODO: Reset the manual module version parameter to false... see below
                 /snap/bin/yq e '.parameters.PublishToPSGallery.default = false' -i ~/project/.circleci/workflows.yml
             fi
       - persist_to_workspace:
