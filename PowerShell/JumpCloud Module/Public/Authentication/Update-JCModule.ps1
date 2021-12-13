@@ -18,16 +18,16 @@ Function Update-JCModule
         try
         {
             $PSGetLatestVersion = (Find-Module PowerShellGet -AllowPrerelease).Version
+            $PSGet = Get-InstalledModule PowerShellGet
+            $PSGetVersion = (Get-InstalledModule PowerShellGet).Version
+            $PSGetSemanticRegex = [Regex]"[0-9]+.[0-9]+.[0-9]+"
+            $PSGetSemeanticVersion = Select-String -InputObject $PSGet.Version -pattern ($PSGetSemanticRegex)
+            $PSGetVersionMatch = $PSGetSemeanticVersion.Matches[0].Value.ToString()
         }
         catch
         {
             $PSGetBetaInstalled = $false
         }
-        $PSGet = Get-InstalledModule PowerShellGet
-        $PSGetVersion = (Get-InstalledModule PowerShellGet).Version
-        $PSGetSemanticRegex = [Regex]"[0-9]+.[0-9]+.[0-9]+"
-        $PSGetSemeanticVersion = Select-String -InputObject $PSGet.Version -pattern ($PSGetSemanticRegex)
-        $PSGetVersionMatch = $PSGetSemeanticVersion.Matches[0].Value.ToString()
         # $PSGetSemeanticVersion.Matches[0].Value # This should be the semantic version installed
         # Prelease regex
         # $PSGetPrereleaseRegex = [regex]"[0-9]+.[0-9]+.[0-9]+-(.*)"
