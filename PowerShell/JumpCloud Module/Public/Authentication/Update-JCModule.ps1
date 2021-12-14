@@ -14,7 +14,6 @@ Function Update-JCModule
         # Find the module on the specified repository
         # Until PowerShellGet is updated to query nuget v3 modules, we need to determine PSGet versions ahead of function process block
         $PSGetModuleName = 'PowerShellGet'
-        # TODO: if you are on powershellGet v1.0.0.1 skip this check - there's no way to view a prerelease module with that version
         try
         {
             $PSGetLatestVersion = (Find-Module PowerShellGet -AllowPrerelease).Version

@@ -521,7 +521,7 @@ commands:
             fi
             if [[ $branch == 'master' ]]; then
                 echo "Running on $branch, resetting PublishToPSGallery param..."
-                #TODO: Reset the manual module version parameter to false... see below
+                /snap/bin/yq e '.parameters.ManualModuleVersion.default = false' -i ~/project/.circleci/workflows.yml
                 /snap/bin/yq e '.parameters.PublishToPSGallery.default = false' -i ~/project/.circleci/workflows.yml
             fi
       - persist_to_workspace:
