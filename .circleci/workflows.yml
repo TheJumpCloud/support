@@ -314,7 +314,7 @@ commands:
                 shell: pwsh.exe
                 command: |
                   $ErrorActionPreference = 'Stop'
-                  ./PowerShell/Deploy/Build-Module.ps1 -GitSourceBranch << pipeline.git.branch >> -GitSourceRepo << pipeline.project.git_url >> -ReleaseType << pipeline.parameters.ReleaseType >> -ModuleName:('JumpCloud') -RequiredModulesRepo << pipeline.parameters.RequiredModulesRepo >> -ManualModuleVersion << pipeline.parameters.ManualModuleVersion >>
+                  ./PowerShell/Deploy/Build-Module.ps1 -GitSourceBranch << pipeline.git.branch >> -GitSourceRepo << pipeline.project.git_url >> -ReleaseType << pipeline.parameters.ReleaseType >> -ModuleName:('JumpCloud') -RequiredModulesRepo << pipeline.parameters.RequiredModulesRepo >> -ManualModuleVersion $<< pipeline.parameters.ManualModuleVersion >>
             - persist_to_workspace:
                 root: .
                 paths:
