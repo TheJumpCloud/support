@@ -1,3 +1,19 @@
+## 1.18.11
+
+Release Date: December 16, 2021
+
+#### RELEASE NOTES
+
+```
+This release reverts a change to the Update-JCModule function which displayed erroneous error messages and includes a roll up bug fixes from the 1.18.9 release.
+```
+
+#### BUG FIXES:
+
+SA-2258 - Fix Set-JCUser function where it would error when setting a user's enrollment windows anywhere between 4-7 days.
+
+SA-2271 - Fix the Regex Pattern used in Import-JCCommand to address change in GitHub.
+
 ## 1.18.10
 
 Release Date: December 5, 2021

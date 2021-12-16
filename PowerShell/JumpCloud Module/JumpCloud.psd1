@@ -12,7 +12,7 @@
 RootModule = 'JumpCloud.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.18.10'
+ModuleVersion = '1.18.11'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -51,9 +51,9 @@ PowerShellVersion = '4.0'
 # ProcessorArchitecture = ''
 
 # Modules that must be imported into the global environment prior to importing this module
-RequiredModules = @(@{ModuleName = 'JumpCloud.SDK.DirectoryInsights'; ModuleVersion = '0.0.14'; }, 
-               @{ModuleName = 'JumpCloud.SDK.V2'; ModuleVersion = '0.0.30'; }, 
-               @{ModuleName = 'JumpCloud.SDK.V1'; ModuleVersion = '0.0.26'; })
+RequiredModules = @('JumpCloud.SDK.DirectoryInsights', 
+               'JumpCloud.SDK.V1', 
+               'JumpCloud.SDK.V2')
 
 # Assemblies that must be loaded prior to importing this module
 # RequiredAssemblies = @()
