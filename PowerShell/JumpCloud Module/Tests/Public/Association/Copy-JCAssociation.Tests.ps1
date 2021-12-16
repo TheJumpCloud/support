@@ -40,7 +40,7 @@ Describe -Tag:('JCAssociation') "Copy-JCAssociation Tests" {
             {
                 Set-JcSdkUserAssociation -Op remove -UserId:($($tempUser.id)) -Id:($($associationSystem._id)) -type system
             }
-            Set-JcSdkUserAssociation -UserId:($tempUser.id) -Id:($associationSystem._id) -Op:("update") -Type:("system") -AttributeSudoEnabled
+            Set-JcSdkUserAssociation -UserId:($tempUser.id) -Id:($associationSystem._id) -Op:("add") -Type:("system") -AttributeSudoEnabled
             # Copy association from tempUser to tempUser2
             Copy-JCAssociation -Id:($tempUser.id) -TargetId:($tempUser2.id) -Type:("user") -Force
 
