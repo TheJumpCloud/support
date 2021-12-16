@@ -18,6 +18,11 @@ BeforeAll {
 Describe -Tag:('JCAssociation') "Copy-JCAssociation Tests" {
     Context ('Tests Copy-JCAssociation function with attributes') {
         It ('Tests attributes from users to systems are copied') {
+            $existingAssociation = Get-JcSdkUserAssociation -UserId:($($tempUser.id)) -Targets:("system") | Where-Object { $_.ToId -eq $associationSystem._id }
+            if ($existingAssociation)
+            {
+                Set-JcSdkUserAssociation -Op remove -UserId:($($tempUser.id)) -Id:($($associationSystem._id)) -type system
+            }
             Copy-JCAssociation -Id:($PesterParams_User1._id) -TargetId:($tempUser.id) -Type:("user") -Force
             # Test that the association was copied: Should Not Be Null or Empty
             # Get User Association to Systems. The copied association should be the same as the original association
@@ -30,6 +35,11 @@ Describe -Tag:('JCAssociation') "Copy-JCAssociation Tests" {
         }
         It ('Tests attributes (sudoEnabled) from users to systems are copied') {
             # Set SudoEnable attribute on tempUser system association
+            $existingAssociation = Get-JcSdkUserAssociation -UserId:($($tempUser.id)) -Targets:("system") | Where-Object { $_.ToId -eq $associationSystem._id }
+            if ($existingAssociation)
+            {
+                Set-JcSdkUserAssociation -Op remove -UserId:($($tempUser.id)) -Id:($($associationSystem._id)) -type system
+            }
             Set-JcSdkUserAssociation -UserId:($tempUser.id) -Id:($associationSystem._id) -Op:("update") -Type:("system") -AttributeSudoEnabled
             # Copy association from tempUser to tempUser2
             Copy-JCAssociation -Id:($tempUser.id) -TargetId:($tempUser2.id) -Type:("user") -Force
@@ -74,6 +84,5 @@ Describe -Tag:('JCAssociation') "Copy-JCAssociation Tests" {
     # }
 }
 AfterAll {
-    Remove-JCUser -UserID:($tempUser.id) -force
-    Remove-JCUser -UserID:($tempUser2.id) -force
+    Get-JCUser | where-object { $_.username -match "association_" } | Remove-JCUser -force
 }
