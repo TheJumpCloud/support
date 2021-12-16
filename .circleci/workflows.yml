@@ -45,11 +45,11 @@ parameters:
   PublishToPSGallery:
     description: 'When `true` and when run against Master branch, this workflow will publish the latest code to PSGallery'
     type: boolean
-    default: false
+    default: true
   ManualModuleVersion:
     description: 'When `true` the pipeline will use the Module Version specified in JumpCloud Module JumpCloud.psd1 file'
     type: boolean
-    default: false
+    default: true
 orbs:
   win: circleci/windows@2.2.0
 executors:
@@ -204,7 +204,7 @@ jobs:
       - invoke-pester:
           JumpCloudApiKey: $env:XAPIKEY_PESTER
           JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_MTP
-          ExcludeTagList: 'ModuleValidation, JCUsersFromCSV, JCDeployment'
+          ExcludeTagList: 'ModuleValidation, JCUsersFromCSV, JCDeployment, JCModule'
           IncludeTagList: '*'
           RequiredModulesRepo: << pipeline.parameters.RequiredModulesRepo >>
           Shell: 'pwsh.exe'
@@ -215,7 +215,7 @@ jobs:
       - invoke-pester:
           JumpCloudApiKey: $env:XAPIKEY_PESTER_MAC
           JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_MTP
-          ExcludeTagList: 'ModuleValidation, JCUsersFromCSV, JCDeployment'
+          ExcludeTagList: 'ModuleValidation, JCUsersFromCSV, JCDeployment, JCModule'
           IncludeTagList: '*'
           RequiredModulesRepo: << pipeline.parameters.RequiredModulesRepo >>
           Shell: 'pwsh'
@@ -227,7 +227,7 @@ jobs:
       - invoke-pester:
           JumpCloudApiKey: $env:XAPIKEY_PESTER_LINUX
           JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_MTP
-          ExcludeTagList: 'ModuleValidation, JCUsersFromCSV, JCDeployment'
+          ExcludeTagList: 'ModuleValidation, JCUsersFromCSV, JCDeployment, JCModule'
           IncludeTagList: '*'
           RequiredModulesRepo: << pipeline.parameters.RequiredModulesRepo >>
           Shell: 'pwsh'
