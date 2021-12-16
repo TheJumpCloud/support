@@ -5,32 +5,35 @@ BeforeAll {
     #     Add-JCAssociation -Type:('user') -Id:($PesterParams_User1._id) -TargetType:('user_group') -TargetId:($PesterParams_UserGroup.id) -Force
     # }
     $associationSystem = Get-JCSystem | Select-Object -First 1
-    If (-not (Get-JCAssociation -Type:('user') -Id:($PesterParams_User1._id) -TargetType:('system') | Where-Object { $_.TargetId -eq $associationSystem.id }))
-    {
-        Add-JCAssociation -Type:('user') -Id:($PesterParams_User1._id) -TargetType:('system') -TargetId:($associationSystem._id) -Force
-    }
-    # Generate new users
-    $user1 = "association_" + -join ((65..90) + (97..122) | Get-Random -Count 5 | ForEach-Object { [char]$_ })
-    $user2 = "association_" + -join ((65..90) + (97..122) | Get-Random -Count 5 | ForEach-Object { [char]$_ })
-    $tempUser = New-JCUser -username:($user1) -firstname:($user1) -lastname:($user1) -email:("$user1@pesterlinux.org")
-    $tempUser2 = New-JCUser -username:($user2) -firstname:($user2) -lastname:($user2) -email:("$user2@pesterlinux.org")
 }
 Describe -Tag:('JCAssociation') "Copy-JCAssociation Tests" {
     Context ('Tests Copy-JCAssociation function with attributes') {
         It ('Tests attributes from users to systems are copied') {
-            Copy-JCAssociation -Id:($PesterParams_User1._id) -TargetId:($tempUser.id) -Type:("user") -Force
+            # Generate new users
+            $user1 = "association_" + -join ((65..90) + (97..122) | Get-Random -Count 5 | ForEach-Object { [char]$_ })
+            $user2 = "association_" + -join ((65..90) + (97..122) | Get-Random -Count 5 | ForEach-Object { [char]$_ })
+            $tempUser = New-JCUser -username:($user1) -firstname:($user1) -lastname:($user1) -email:("$user1@pesterlinux.org")
+            $tempUser2 = New-JCUser -username:($user2) -firstname:($user2) -lastname:($user2) -email:("$user2@pesterlinux.org")
+            # Set associations and copy
+            Add-JCAssociation -Type:('user') -Id:($tempUser._id) -TargetType:('system') -TargetId:($associationSystem._id) -Force
+            Copy-JCAssociation -Id:($tempUser._id) -TargetId:($tempUser2.id) -Type:("user") -Force
             # Test that the association was copied: Should Not Be Null or Empty
             # Get User Association to Systems. The copied association should be the same as the original association
-            $theCopiedAssociation = Get-JcSdkUserAssociation -UserId:($($tempUser.id)) -Targets:("system") | Where-Object { $_.ToId -eq $associationSystem._id }
-            $FromAssociation = Get-JcSdkUserAssociation -UserId:($($PesterParams_User1._id)) -Targets:("system") | Where-Object { $_.ToId -eq $associationSystem._id }
+            $theCopiedAssociation = Get-JcSdkUserAssociation -UserId:($($tempUser2.id)) -Targets:("system") | Where-Object { $_.ToId -eq $associationSystem._id }
+            $FromAssociation = Get-JcSdkUserAssociation -UserId:($($tempUser._id)) -Targets:("system") | Where-Object { $_.ToId -eq $associationSystem._id }
             # Compare the attributes, these should be the same, including sudo attributes
             $theCopiedAssociation.Attributes.AdditionalProperties.sudo.enabled | Should -Be $FromAssociation.Attributes.AdditionalProperties.sudo.enabled
             $theCopiedAssociation.Attributes.AdditionalProperties.sudo.withoutPassword | Should -Be $FromAssociation.Attributes.AdditionalProperties.sudo.withoutPassword
             # ($theCopiedAssociation.Attributes | ConvertTo-Json -Depth:(99) -Compress) | Should -Be ($FromAssociation.attributes | ConvertTo-Json -Depth:(99) -Compress)
         }
         It ('Tests attributes (sudoEnabled) from users to systems are copied') {
+            # Generate new users
+            $user1 = "association_" + -join ((65..90) + (97..122) | Get-Random -Count 5 | ForEach-Object { [char]$_ })
+            $user2 = "association_" + -join ((65..90) + (97..122) | Get-Random -Count 5 | ForEach-Object { [char]$_ })
+            $tempUser = New-JCUser -username:($user1) -firstname:($user1) -lastname:($user1) -email:("$user1@pesterlinux.org")
+            $tempUser2 = New-JCUser -username:($user2) -firstname:($user2) -lastname:($user2) -email:("$user2@pesterlinux.org")
             # Set SudoEnable attribute on tempUser system association
-            Set-JcSdkUserAssociation -UserId:($tempUser.id) -Id:($associationSystem._id) -Op:("update") -Type:("system") -AttributeSudoEnabled
+            Set-JcSdkUserAssociation -UserId:($tempUser.id) -Id:($associationSystem._id) -Op:("add") -Type:("system") -AttributeSudoEnabled
             # Copy association from tempUser to tempUser2
             Copy-JCAssociation -Id:($tempUser.id) -TargetId:($tempUser2.id) -Type:("user") -Force
 
@@ -74,6 +77,5 @@ Describe -Tag:('JCAssociation') "Copy-JCAssociation Tests" {
     # }
 }
 AfterAll {
-    Remove-JCUser -UserID:($tempUser.id) -force
-    Remove-JCUser -UserID:($tempUser2.id) -force
+    Get-JCUser | where-object { $_.username -match "association_" } | Remove-JCUser -force
 }

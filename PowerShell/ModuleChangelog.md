@@ -1,3 +1,17 @@
+## 1.18.10
+
+Release Date: December 5, 2021
+
+#### RELEASE NOTES
+
+```
+This release includes a fix for Update-JCModule to account for systems with an older version of the PowerShellGet module.
+```
+
+#### BUG FIXES:
+
+SA-2273 - Fixes an error on systems where the PowerShellGet module could not support "AllowPreRelease" parameters
+
 ## 1.18.9
 
 Release Date: December 3, 2021

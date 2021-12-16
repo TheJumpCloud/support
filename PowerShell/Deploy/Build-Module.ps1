@@ -14,13 +14,23 @@ param (
     $ModuleName,
     [Parameter()]
     [string]
-    $RequiredModulesRepo
+    $RequiredModulesRepo,
+    [Parameter()]
+    [Boolean]
+    $ManualModuleVersion
 )
 . "$PSScriptRoot/Get-Config.ps1" -GitSourceBranch:($GitSourceBranch) -GitSourceRepo:($GitSourceRepo) -ReleaseType:($ReleaseType) -RequiredModulesRepo:($RequiredModulesRepo)
 # Region Checking PowerShell Gallery module version
 Write-Host ('[status]Check PowerShell Gallery for module version info')
 $PSGalleryInfo = Get-PSGalleryModuleVersion -Name:($ModuleName) -ReleaseType:($RELEASETYPE) #('Major', 'Minor', 'Patch')
-$ModuleVersion = $PSGalleryInfo.NextVersion
+# Check to see if ManualModuleVersion parameter is set to true
+if ($ManualModuleVersion) {
+    $ManualModuleVersionRetrieval = Get-Content -Path:($FilePath_psd1) | Where-Object {$_ -like '*ModuleVersion*'}
+    $ModuleVersion = $ManualModuleVersionRetrieval[0] | ForEach-Object{$_.split("'")[1]}
+}
+else {
+    $ModuleVersion = $PSGalleryInfo.NextVersion
+}
 Write-Host ('[status]PowerShell Gallery Name:' + $PSGalleryInfo.Name + ';CurrentVersion:' + $PSGalleryInfo.Version + '; NextVersion:' + $ModuleVersion )
 # EndRegion Checking PowerShell Gallery module version
 # Region Building New-JCModuleManifest
