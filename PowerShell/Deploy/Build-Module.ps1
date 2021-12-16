@@ -26,7 +26,9 @@ $PSGalleryInfo = Get-PSGalleryModuleVersion -Name:($ModuleName) -ReleaseType:($R
 # Check to see if ManualModuleVersion parameter is set to true
 if ($ManualModuleVersion) {
     $ManualModuleVersionRetrieval = Get-Content -Path:($FilePath_psd1) | Where-Object {$_ -like '*ModuleVersion*'}
-    $ModuleVersion = $ManualModuleVersionRetrieval[0] | ForEach-Object{$_.split("'")[1]}
+    $SemanticRegex = [Regex]"[0-9]+.[0-9]+.[0-9]+"
+    $SemeanticVersion = Select-String -InputObject $ManualModuleVersionRetrieval -pattern ($SemanticRegex)
+    $ModuleVersion = $SemeanticVersion[0].Matches.Value
 }
 else {
     $ModuleVersion = $PSGalleryInfo.NextVersion
