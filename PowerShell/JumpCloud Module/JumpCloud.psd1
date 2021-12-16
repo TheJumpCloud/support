@@ -51,9 +51,9 @@ PowerShellVersion = '4.0'
 # ProcessorArchitecture = ''
 
 # Modules that must be imported into the global environment prior to importing this module
-RequiredModules = @(@{ModuleName = 'JumpCloud.SDK.DirectoryInsights'}, 
-               @{ModuleName = 'JumpCloud.SDK.V2'}, 
-               @{ModuleName = 'JumpCloud.SDK.V1'})
+RequiredModules = @('JumpCloud.SDK.DirectoryInsights', 
+               'JumpCloud.SDK.V1', 
+               'JumpCloud.SDK.V2')
 
 # Assemblies that must be loaded prior to importing this module
 # RequiredAssemblies = @()
