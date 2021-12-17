@@ -1,3 +1,16 @@
+## 1.18.12
+
+Release Date: December 16, 2021
+
+#### RELEASE NOTES
+
+```
+This release includes changes to JumpCloud Module tests.
+```
+
+#### BUG FIXES:
+
+SA-2294 - Fix Flakey Tests
 ## 1.18.11
 
 Release Date: December 16, 2021
