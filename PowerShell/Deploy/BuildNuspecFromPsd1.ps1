@@ -184,7 +184,7 @@ $params = @{
     LicenseUrl   = $Psd1.PrivateData.PSData.LicenseUri
     ProjectUrl   = $Psd1.PrivateData.PSData.ProjectUri
     IconUrl      = $Psd1.PrivateData.PSData.IconUri
-    Dependencies = $Psd1.RequiredModules.ModuleName
+    Dependencies = $Psd1.RequiredModules
     Files        = $nuspecFiles
 }
 New-NuspecFile @params

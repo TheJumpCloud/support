@@ -1,3 +1,16 @@
+## 1.18.12
+
+Release Date: December 17, 2021
+
+#### RELEASE NOTES
+
+```
+This release reverts a change to the Update-JCModule function which displayed erroneous error messages and includes a roll up bug fixes from the 1.18.9 release. This release includes an updated nuspec file to require the PowerShell SDKs
+```
+
+#### BUG FIXES:
+
+SA-2296 - Require the SDKs in the generated Nuspec file before creating module
 ## 1.18.11
 
 Release Date: December 16, 2021
