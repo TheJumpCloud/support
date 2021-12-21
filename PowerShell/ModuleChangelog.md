@@ -5,7 +5,7 @@ Release Date: December 21, 2021
 #### RELEASE NOTES
 
 ```
-{{Fill in the Release Notes}}
+Release of the PowerShell Moudle
 ```
 
 #### FEATURES:
@@ -14,7 +14,7 @@ Release Date: December 21, 2021
 
 #### IMPROVEMENTS:
 
-{{Fill in the Improvements}}
+Fix flakey tests, CI workflow improvments
 
 #### BUG FIXES:
 
