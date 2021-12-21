@@ -10,11 +10,8 @@ Release of the PowerShell Moudle
 
 #### IMPROVEMENTS:
 
-Fix flakey tests, CI workflow improvments
+Fix flakey tests, CI workflow improvements
 
-#### BUG FIXES:
-
-{{Fill in the Bug Fixes}}
 
 ## 1.18.12
 
