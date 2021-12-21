@@ -5,20 +5,12 @@ Release Date: December 21, 2021
 #### RELEASE NOTES
 
 ```
-{{Fill in the Release Notes}}
+Module release for the JumpCloud PowerShell Module
 ```
-
-#### FEATURES:
-
-{{Fill in the Features}}
 
 #### IMPROVEMENTS:
 
-{{Fill in the Improvements}}
-
-#### BUG FIXES:
-
-{{Fill in the Bug Fixes}}
+When releasing the PowerShell Module to the main branch the CI process will automatically draft a release with the release notes for that release version from the module changelog file.
 
 ## 1.18.12
 
