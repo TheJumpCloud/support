@@ -77,7 +77,7 @@ The value specified for the ''-VLAN'' parameter is populated for the value of **
             $VLANattr.Mandatory = $false
             $VLANattr.ValueFromPipelineByPropertyName = $true
             $VLANattr.HelpMessage = 'Specifies the VLAN id which is applied to all attribute names.'
-            $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($(0..31))
+            $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($(1..31))
 
             $VLANattrColl = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
             $VLANattrColl.Add($VLANattr)
