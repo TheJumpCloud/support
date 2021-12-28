@@ -727,7 +727,6 @@
             <maml:para>Specifies the VLAN id which is applied to all attribute names.</maml:para>
           </maml:description>
           <command:parameterValueGroup>
-            <command:parameterValue required="false" command:variableLength="false">0</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">1</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">2</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">3</command:parameterValue>
@@ -13777,7 +13776,6 @@ Enter a value between 1 and 2:</dev:code>
             <maml:para>Specifies the VLAN id which is applied to all attribute names.</maml:para>
           </maml:description>
           <command:parameterValueGroup>
-            <command:parameterValue required="false" command:variableLength="false">0</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">1</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">2</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">3</command:parameterValue>

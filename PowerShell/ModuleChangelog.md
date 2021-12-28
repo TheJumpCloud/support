@@ -1,14 +1,25 @@
 ## 1.18.13
 
-Release Date: December 21, 2021
+Release Date: December 23, 2021
 
 #### RELEASE NOTES
 
 ```
 Module release for the JumpCloud PowerShell Module
+This release includes changes to JumpCloud Module tests.
 ```
 
 #### IMPROVEMENTS:
+
+Fix flakey tests, CI workflow improvements
+
+#### BUG FIXES:
+
+SA-2294 - Fix Flakey Tests
+
+## 1.18.12
+
+Release Date: December 16, 2021
 
 When releasing the PowerShell Module to the main branch the CI process will automatically draft a release with the release notes for that release version from the module changelog file.
 
@@ -25,6 +36,7 @@ This release reverts a change to the Update-JCModule function which displayed er
 #### BUG FIXES:
 
 SA-2296 - Require the SDKs in the generated Nuspec file before creating module
+
 ## 1.18.11
 
 Release Date: December 16, 2021
