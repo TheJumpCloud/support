@@ -1,7 +1,7 @@
 ---
 ---
 
-@import "";
+@import "{{ site.theme }}";
 @import url('https://fonts.googleapis.com/css2?family=Source+Serif+Pro&display=swap');
 .page-header {
     color: #202D38;
