@@ -8,10 +8,22 @@
     background-color: #41C8C3;
     background-image: linear-gradient(120deg, #41C8C3, #41c8c37c)
 }
+.btn {
+    color: #202D38;
+    background-color: rgba(255,255,255,0.00);
+    border-color: #FFA800;
+}
+.btn:hover {
+    background-color: #FFA800
+}
 body {
     font-family: 'Source Serif Pro', serif;
     color: #202D38;
 }
 .main-content h1, .main-content h2, .main-content h3, .main-content h4, .main-content h5, .main-content h6 {
-    color: #41C8C3;
+    color: #A796FF;
+}
+a {
+    color: #14a19c;
+    font-weight: 600;
 }
