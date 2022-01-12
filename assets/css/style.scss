@@ -3,6 +3,9 @@
 
 @import "{{ site.theme }}";
 @import url('https://fonts.googleapis.com/css2?family=Source+Serif+Pro&display=swap');
+html {
+    -webkit-font-smoothing: antialiased;
+}
 .page-header {
     color: #202D38;
     background-color: #41C8C3;
