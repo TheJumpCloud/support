@@ -2,14 +2,14 @@
 ---
 
 @import "";
-@import url('http://fonts.cdnfonts.com/css/source-serif-pro');
+@import url('https://fonts.googleapis.com/css2?family=Source+Serif+Pro&display=swap');
 .page-header {
     color: #202D38;
     background-color: #41C8C3;
-    background-image: linear-gradient(120deg, #A796FF, #41C8C3)
+    background-image: linear-gradient(120deg, #41C8C3, #41c8c37c)
 }
 body {
-    font-family: 'Source Serif Pro', sans-serif;
+    font-family: 'Source Serif Pro', serif;
     color: #202D38;
 }
 .main-content h1, .main-content h2, .main-content h3, .main-content h4, .main-content h5, .main-content h6 {
