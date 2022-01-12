@@ -1,12 +1,18 @@
-## Welcome to GitHub Pages
+## Example Script Repository
 
-You can use the [editor on GitHub](https://github.com/TheJumpCloud/support/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+This page collection features script examples and automated solutions using the [JumpCloud Api](https:/docs.jumpcloud.com). In general these examples are written using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Using-the-JumpCloud-PowerShell-Module) and [SDKs](https://www.powershellgallery.com/packages?q=jumpcloud.sdk). These examples are published with the intent to **inspire** administrators to automate their own solutions.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+### JumpCloud PowerShell Module and the PowerShell SDKs
 
-### Markdown
+In several script examples make use of both the JumpCloud PowerShell Module and it's SDKs.
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+The [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Using-the-JumpCloud-PowerShell-Module) is a collection of functions written to help administrators automate actions within their JumpCloud organizations. This module contains custom functions outside the scope of the API. Several functions have been modified to accept things like Name values instead of Ids.
+
+The [JumpCloud PowerShell SDKs](https://www.powershellgallery.com/packages?q=jumpcloud.sdk) are an automatically generated and verbose interpretation of the JumpCloud Api. Pagination is built into these functions but core functionality of a given function is dictated by the Api. The latest version of these SDK modules are installed whenever the JumpCloud PowerShell Module is installed or updated to a new version.
+
+### Script Examples
+
+[User to System & Group](./powershell/Report-Users_Bound_To_Groups.md): Report on users and return which groups and systems they are bound to.
 
 ```markdown
 Syntax highlighted code block
