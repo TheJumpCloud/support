@@ -55,20 +55,7 @@ Function DownloadLink($Link, $Path)
 {
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     $WebClient = New-Object -TypeName:('System.Net.WebClient')
-    $Global:IsDownloaded = $false
-    $SplatArgs = @{ InputObject = $WebClient
-        EventName               = 'DownloadFileCompleted'
-        Action                  = { $Global:IsDownloaded = $true; }
-    }
-    $DownloadCompletedEventSubscriber = Register-ObjectEvent @SplatArgs
-    $WebClient.DownloadFileAsync("$Link", "$Path")
-    While (-not $Global:IsDownloaded)
-    {
-        Start-Sleep -Seconds 3
-    } # While
-    $DownloadCompletedEventSubscriber.Dispose()
-    $WebClient.Dispose()
-
+    $WebClient.DownloadFile("$Link", "$Path")
 }
 
 
