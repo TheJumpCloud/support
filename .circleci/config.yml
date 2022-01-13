@@ -3,6 +3,11 @@ jobs:
   ignore-ghpages:
     docker:
       - image: cimg/base:stable
+    steps:
+      - skip:
+          name: skip
+          command: |
+            echo "skipping gh-pages ci run"
 
 workflows:
   basic-workflow:
