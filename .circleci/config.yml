@@ -1,18 +1,23 @@
 version: 2.1
+
+workflows:
+  version: 2
+  basic-workflow:
+    jobs:
+      - ignore_gh_pages
+
 jobs:
-  ignore-ghpages:
+  ignore_gh_pages:
     docker:
       - image: cimg/base:stable
     steps:
-      - skip:
-          name: skip
+      - skip_run
+
+
+commands:
+  skip_run:
+    steps:
+      - run:
+          name: skip run
           command: |
             echo "skipping gh-pages ci run"
-
-workflows:
-  basic-workflow:
-    jobs:
-      - ignore-ghpages:
-          filters:
-            branches:
-              ignore: gh-pages
