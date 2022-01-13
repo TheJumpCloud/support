@@ -1,0 +1,13 @@
+version: 2.1
+jobs:
+  ignore-ghpages:
+    docker:
+      - image: cimg/base:stable
+
+workflows:
+  basic-workflow:
+    jobs:
+      - ignore-ghpages:
+          filters:
+            branches:
+              ignore: gh-pages
