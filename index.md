@@ -12,7 +12,7 @@ The [JumpCloud PowerShell SDKs](https://www.powershellgallery.com/packages?q=jum
 
 ### Script Examples
 
-[User to System & Group](./_posts/Report-Users_Bound_To_Groups.md): Report on users and return which groups and systems they are bound to.
+[User to System & Group](./scripts/Report-Users_Bound_To_Groups.md): Report on users and return which groups and systems they are bound to.
 
 ```markdown
 Syntax highlighted code block

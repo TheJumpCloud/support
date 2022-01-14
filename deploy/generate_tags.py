@@ -10,7 +10,7 @@ No plugins required.
 import glob
 import os
 
-post_dir = '../_posts/'
+post_dir = '../scripts/'
 draft_dir = '../_drafts/'
 tag_dir = '../tag/'
 
