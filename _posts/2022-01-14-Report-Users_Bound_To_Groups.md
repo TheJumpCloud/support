@@ -7,12 +7,8 @@ tags:
   - reports
   - automation
 ---
-## Report on Users and associated Groups and Systems
-
-### Description
 
 A CSV report of user associations (Groups and Systems). This script will generate a "Report-UserToGroupAssociation.csv" file relative to the location this script is saved and ran.
-
 ### Basic Usage:
 
 * Install the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Using-the-JumpCloud-PowerShell-Module)
