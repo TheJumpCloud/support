@@ -10,14 +10,14 @@ No plugins required.
 import glob
 import os
 
-post_dir = '../_posts/'
-draft_dir = '../_drafts/'
-tag_dir = '../tag/'
+post_dir = '_posts/'
+draft_dir = '_drafts/'
+tag_dir = 'tag/'
 
 filenames = glob.glob(post_dir + '*md')
-print(filenames)
+#print(filenames)
 filenames = filenames + glob.glob(draft_dir + '*md')
-print(filenames)
+#print(filenames)
 
 total_tags = []
 for filename in filenames:

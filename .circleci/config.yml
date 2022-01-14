@@ -2,9 +2,9 @@ version: 2.1
 
 workflows:
   version: 2
-  basic-workflow:
+  gh-pages-workflow:
     jobs:
-      - ignore_gh_pages
+      - tag_generation
 
 jobs:
   ignore_gh_pages:
@@ -12,7 +12,12 @@ jobs:
       - image: cimg/base:stable
     steps:
       - skip_run
-
+  tag_generation:
+    docker:
+      - image: circleci/python:3.6.4
+    steps:
+      - checkout
+      - generate_tags
 
 commands:
   skip_run:
@@ -21,3 +26,9 @@ commands:
           name: skip run
           command: |
             echo "skipping gh-pages ci run"
+  generate_tags:
+    steps:
+      - run:
+          name: run generate tag script
+          command: |
+            python3 deploy/generate_tags.py
