@@ -15,32 +15,6 @@ The [JumpCloud PowerShell SDKs](https://www.powershellgallery.com/packages?q=jum
 [User to System & Group](./_posts_/Report-Users_Bound_To_Groups.md): Report on users and return which groups and systems they are bound to.
 
 <!-- Normal posts listed in the order of time -->
-<div class="posts">
-  {% for post in site.posts %}
-  <div class="post">
-  {% endif %}
-    <h1 class="post-title">
-      <a href="{{ post.url }}">
-        {{ post.title }}
-      </a>
-    </h1>
-
-    <span class="post-tags">
-      [&nbsp;
-      {% for tag in post.tags %}
-        {% capture tag_name %}{{ tag }}{% endcapture %}
-        <a class="no-underline" href="/support/tag/{{ tag_name }}"><code class="highligher-rouge"><nobr>{{ tag_name }}</nobr></code>&nbsp;</a>
-      {% endfor %}
-      ]
-    </span>
-
-    <span class="post-date">{{ post.date | date_to_string }}</span>
-
-    {{ post.content }}
-  </div>
-  <hr>
-  {% endfor %}
-</div>
 
 ```markdown
 Syntax highlighted code block
