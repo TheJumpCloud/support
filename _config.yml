@@ -1,6 +1,10 @@
 title: JumpCloud Support Repository
 tagline: JumpCloud Support Repository
-description: Documentation and example useage of the JumpCloud PowerShell Module, SDKs and API
+description: Documentation and example usage of the JumpCloud PowerShell Module, SDKs and API
 show_downloads: false
 google_analytics:
 theme:
+
+# Gems
+plugins:
+  - jekyll-paginate
