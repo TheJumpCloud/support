@@ -49,8 +49,8 @@ commands:
           shell: bash
           command: |
             ssh-keyscan github.com >> ../.ssh/known_hosts
-            $UserEmail = $CIRCLE_PROJECT_USERNAME + '@FakeEmail.com'
-            $UserName = $CIRCLE_PROJECT_USERNAME
+            UserEmail="${CIRCLE_PROJECT_USERNAME}@FakeEmail.com"
+            UserName="${CIRCLE_PROJECT_USERNAME}"
             git config user.email $UserEmail
             git config user.name $UserName
             git pull
