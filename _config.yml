@@ -8,3 +8,6 @@ theme:
 # Gems
 plugins:
   - jekyll-paginate
+
+# Pagination Settings
+paginate: 5
