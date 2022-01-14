@@ -78,7 +78,7 @@ $jcBrand: #14a19c;
 
 
 .page-header {
-    color: #202D38;
+    color: $jcSecondary;
     background-color: $jcPrimary;
     background-image: linear-gradient(120deg, $jcPrimary, #41c8c37c)
 }
@@ -88,24 +88,25 @@ $jcBrand: #14a19c;
     flex-wrap: wrap;
 }
 .btn {
-    color: #202D38;
+    color: $jcSecondary;
     background-color: rgba(255,255,255,0.00);
-    border-color: $jcWarning50;
+    border-color: $jcWarning400;
+    flex: 1 1 200px;
 }
 .btn:hover {
     background-color: $jcWarning400
 }
 body {
     font-family: 'Lato', serif;
-    color: #202D38;
-    background-color: #F0FCFD
+    color: $jcSecondary;
+    background-color: $jcTertiary;
 }
 .main-content h1, .main-content h2, .main-content h3, .main-content h4, .main-content h5, .main-content h6 {
-    color: #202D38;
+    color: $jcSecondary;
     font-weight: 600;
 }
 .main-content a {
-    color: jcBrand;
+    color: $jcBrand;
     font-weight: 600;
 }
 
