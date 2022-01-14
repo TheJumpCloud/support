@@ -14,8 +14,6 @@ The [JumpCloud PowerShell SDKs](https://www.powershellgallery.com/packages?q=jum
 
 [User to System & Group](./_posts_/Report-Users_Bound_To_Groups.md): Report on users and return which groups and systems they are bound to.
 
-<!-- Normal posts listed in the order of time -->
-
 ```markdown
 Syntax highlighted code block
 
