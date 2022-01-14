@@ -11,10 +11,16 @@ html {
     background-color: #41C8C3;
     background-image: linear-gradient(120deg, #41C8C3, #41c8c37c)
 }
+.div-btn{
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
 .btn {
     color: #202D38;
     background-color: rgba(255,255,255,0.00);
     border-color: #FFA800;
+    flex: 1 1 200px;
 }
 .btn:hover {
     background-color: #FFA800
@@ -22,9 +28,11 @@ html {
 body {
     font-family: 'Lato', serif;
     color: #202D38;
+    background-color: #F0FCFD
 }
 .main-content h1, .main-content h2, .main-content h3, .main-content h4, .main-content h5, .main-content h6 {
-    color: #A796FF;
+    color: #202D38;
+    font-weight: 600;
 }
 .main-content a {
     color: #14a19c;
