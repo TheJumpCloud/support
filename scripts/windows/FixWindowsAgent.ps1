@@ -150,7 +150,10 @@ Function InstallAgent()
 }
 Function DownloadAgentInstaller()
 {
-    (New-Object System.Net.WebClient).DownloadFile("${AGENT_INSTALLER_URL}", "${AGENT_INSTALLER_PATH}")
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+    $WebClient = New-Object -TypeName:('System.Net.WebClient')
+    $WebClient.DownloadFile("${AGENT_INSTALLER_URL}", "${AGENT_INSTALLER_PATH}")
+    $WebClient.Dispose()
 }
 
 Function CheckProgramInstalled($programName)
@@ -169,19 +172,9 @@ Function CheckProgramInstalled($programName)
 Function DownloadLink($Link, $Path)
 {
 
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     $WebClient = New-Object -TypeName:('System.Net.WebClient')
-    $Global:IsDownloaded = $false
-    $SplatArgs = @{ InputObject = $WebClient
-        EventName               = 'DownloadFileCompleted'
-        Action                  = { $Global:IsDownloaded = $true; }
-    }
-    $DownloadCompletedEventSubscriber = Register-ObjectEvent @SplatArgs
-    $WebClient.DownloadFileAsync("$Link", "$Path")
-    While (-not $Global:IsDownloaded)
-    {
-        Start-Sleep -Seconds 3
-    } # While
-    $DownloadCompletedEventSubscriber.Dispose()
+    $WebClient.DownloadFile("$Link", "$Path")
     $WebClient.Dispose()
 
 }
