@@ -52,13 +52,13 @@ layout: default
 {% if paginator.total_pages > 1 %}
 <div class="pagination{% if paginator.next_page == 2 %} next{% endif %}" role="navigation" aria-label="pagination">
     {% if paginator.previous_page %}
-        <a href="{{ paginator.previous_page_path }}" class="previous">&larr; Previous</a>
+        <a href="{{ paginator.previous_page_path | prepend: site.baseurl | prepend: site.url }}" class="previous">&larr; Previous</a>
     {% endif %}
 
     <span class="page_number">Page {{ paginator.page }} of {{ paginator.total_pages }}</span>
 
     {% if paginator.next_page %}
-        <a href="{{ paginator.next_page_path }}" class="next">Next &rarr;</a>
+        <a href="{{ paginator.next_page_path | prepend: site.baseurl | prepend: site.url }}" class="next">Next &rarr;</a>
     {% endif %}
 </div>
 {% endif %}
