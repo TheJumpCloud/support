@@ -23,8 +23,8 @@ The purpose of this python script is to gather the assigned Directories (GSuite/
 
 ### Additional Information
 
-Run the script from your desired directory
-The discovery.csv will be located in the directory the script was executed from
+* Run the script from your desired directory
+* The discovery.csv will be located in the directory the script was executed from
 
 ![script](https://user-images.githubusercontent.com/89030113/134062660-b9799190-9c8a-4484-b3ec-7b031ba125b9.gif)
 
