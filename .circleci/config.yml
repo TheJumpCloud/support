@@ -18,6 +18,7 @@ jobs:
     steps:
       - checkout
       - generate_tags
+      - invoke_commit
 
 commands:
   skip_run:
@@ -32,3 +33,28 @@ commands:
           name: run generate tag script
           command: |
             python3 deploy/generate_tags.py
+  invoke_commit:
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - '24:54:e1:c2:70:c6:f7:61:71:4b:c5:52:9f:20:b9:63'
+      - attach_workspace:
+          at: .
+      - add_ssh_keys:
+          fingerprints:
+            - '24:54:e1:c2:70:c6:f7:61:71:4b:c5:52:9f:20:b9:63'
+      - run:
+          when: on_success
+          name: 'Commit gh-pages to $CIRCLE_BRANCH'
+          shell: bash
+          command: |
+            ssh-keyscan github.com >> ../.ssh/known_hosts
+            UserEmail="${CIRCLE_PROJECT_USERNAME}@FakeEmail.com"
+            UserName="${CIRCLE_PROJECT_USERNAME}"
+            git config user.email $UserEmail
+            git config user.name $UserName
+            git pull
+            git add -A
+            git status
+            git commit -m "Updating gh-pages;[skip ci]"
+            git push origin $CIRCLE_BRANCH

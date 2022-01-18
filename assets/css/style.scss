@@ -1,32 +1,160 @@
 ---
 ---
 
-@import "{{ site.theme }}";
-@import url('https://fonts.googleapis.com/css2?family=Source+Serif+Pro&display=swap');
+@import 'jekyll-theme-cayman';
+@import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
 html {
     -webkit-font-smoothing: antialiased;
 }
+
+// JumpCloud Generated Style Variables
+$jcPrimary50: #e8f8f8;
+$jcPrimary100: #d0f1f0;
+$jcPrimary200: #a0e4e1;
+$jcPrimary300: #71d6d2;
+$jcPrimary: #41c8c3;
+$jcPrimary700: #32bbb5;
+$jcPrimary900: #1ca7a1;
+$jcSecondary: #202d38;
+$jcTertiary100: #fbfeff;
+$jcTertiary200: #f8fefe;
+$jcTertiary300: #f4fdfe;
+$jcTertiary: #f0fcfd;
+$jcQuaternary100: #e9e5ff;
+$jcQuaternary200: #d3cbff;
+$jcQuaternary300: #bdb0ff;
+$jcQuaternary: #a796ff;
+$jcSuccess50: #e6f8f2;
+$jcSuccess100: #caf1e4;
+$jcSuccess300: #61d4ad;
+$jcSuccess: #2cc692;
+$jcSuccess700: #21b97f;
+$jcSuccess900: #10a463;
+$jcWarning50: #fff5e0;
+$jcWarning100: #ffe9bf;
+$jcWarning200: #ffd480;
+$jcWarning300: #ffbe40;
+$jcWarning400: #ffa800;
+$jcWarning700: #ff9700;
+$jcWarning900: #ff7d00;
+$jcError50: #fdedee;
+$jcError100: #f9d1d4;
+$jcError300: #ec767d;
+$jcError: #e54852;
+$jcError700: #de3841;
+$jcError900: #b31e23;
+$jcInformational50: #f5f9ff;
+$jcInformational100: #ebf2ff;
+$jcInformational200: #d7e5ff;
+$jcInformational300: #c3d8ff;
+$jcInformational: #afcbff;
+$jcInformational700: #9fbeff;
+$jcInformational900: #4373c7;
+$jcGrey100: #f1f3f4;
+$jcGrey200: #e3e8e9;
+$jcGrey300: #c9cccf;
+$jcGrey400: #92999e;
+$jcGrey: #626b73;
+$jcGrey600: #414c55;
+$jcGrey700: #454c52;
+$jcGrey800: #202d38;
+$jcGrey900: #161f32;
+$jcWhite50: #ffffff;
+$jcWhite100: #fdfdfe;
+$jcWhite200: #fbfbfd;
+$jcWhite300: #f9fafb;
+$jcWhite: #f7f7fb;
+$jcBlack: #000000;
+$jcDataVizA: #b5a3fd;
+$jcDataVizB: #1eb6e5;
+$jcDataVizC: #fa9e49;
+$jcDataVizD: #71d6d2;
+$jcDataVizE: #ff616b;
+$jcDataVizF: #fdf889;
+$jcBrand100: #c4e8e6;
+$jcBrand200: #8ad0ce;
+$jcBrand300: #4fb9b5;
+$jcBrand: #14a19c;
+
 .page-header {
-    color: #202D38;
-    background-color: #41C8C3;
-    background-image: linear-gradient(120deg, #41C8C3, #41c8c37c)
+    color: $jcSecondary;
+    background-color: $jcPrimary;
+    background-image: linear-gradient(120deg, $jcPrimary, #41c8c37c)
+}
+.div-btn{
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
 }
 .btn {
-    color: #202D38;
+    color: $jcSecondary;
     background-color: rgba(255,255,255,0.00);
-    border-color: #FFA800;
+    border-color: $jcTertiary;
+    flex: 1 1 200px;
 }
 .btn:hover {
-    background-color: #FFA800
+    background-color: $jcSecondary
 }
 body {
-    font-family: 'Source Serif Pro', serif;
-    color: #202D38;
+    font-family: 'Lato', serif;
+    color: $jcSecondary;
+    background-color: $jcTertiary;
 }
 .main-content h1, .main-content h2, .main-content h3, .main-content h4, .main-content h5, .main-content h6 {
-    color: #A796FF;
+    color: $jcSecondary;
+    font-weight: 600;
 }
 .main-content a {
-    color: #14a19c;
+    color: $jcBrand;
     font-weight: 600;
+}
+
+
+.post { position: relative; margin: 40px 0 0; padding: 40px 40px 40px; border: 1px solid $jcSecondary; background: $jcWhite100; box-shadow: 0 2px 3px rgba($jcBlack, .05);
+	&.page { padding: 40px; }
+
+	&:first-of-type { margin: 0; }
+
+	.post-header {
+		ul { margin: 0 0 6px; list-style-type: none; padding: 0; margin: 0; /* Remove margins */
+			li { position: relative; margin: 0 0 0 10px; padding: 0 0 0 12px; text-transform: uppercase; font-size: 12px; letter-spacing: 0.06em; color: $jcSecondary;
+				&:first-of-type { margin: 0; padding: 0;
+					&:before { content: none; }
+				}
+				&:before { position: absolute; top: 50%; left: 0; width: 3px; height: 3px; border-radius: 50%; background: $jcTertiary200; content: ""; }
+				// &.cats a { color: $jcTertiary100; border-bottom: 1px solid transparent;
+				// 	&:last-of-type:after { content: none; }
+				// 	&:after { content: ","; }
+				// 	&:hover { color: $jcPrimary300; border-bottom: 1px solid $jcPrimary300; }
+				// }
+			}
+		}
+		h1, h2 { font-size: 30px; font-weight: 900; margin: 0 0 20px; color: $jcSecondary;
+			a { color: $jcSecondary;
+				&:hover { color: $jcPrimary300; }
+			}
+		}
+	}
+
+	.post-content {
+		abbr { border-bottom: 1px dotted $jcGrey400; text-decoration: none; cursor: help; }
+		code, kbd, pre { margin: 0; font-family: monospace; word-wrap: break-word; word-break: break-word; white-space: pre-wrap; }
+		address, cite, var { font-style: italic; }
+		blockquote { margin: 40px 0; padding-left: 30px; font-style: italic; border-left: 3px solid $jcTertiary100; }
+
+		em, strong { color: $jcSecondary; }
+
+		a { color: $jcPrimary300; border-bottom: 1px solid $jcPrimary300;
+			&:hover { border: none; }
+		}
+
+	}
+
+}
+
+.pagination { position: relative; margin: 40px 0 0;
+	.previous, .next { padding: 14px 20px; border: 1px solid $jcPrimary50; background: $jcWhite; box-shadow: 0 2px 3px rgba($jcBlack,.05); text-transform: uppercase; font-size: 14px; font-weight: 900; color: $jcGrey400;
+		&:hover { background: $jcPrimary300; color: $jcWhite; }
+	}
+	.page_number { position: absolute; left: 50%; top: 50%; font-size: 12px; color: $jcTertiary100; }
 }
