@@ -3,12 +3,16 @@ layout: default
 ---
 
 <div class="post">
+  <h3>Summary</h3>
+  <div class="post-content">
+    {{ page.content }}
+  </div>
+  <h5>Tags:</h5>
   <span>[
   {% for tag in page.tags %}
     {% capture tag_name %}{{ tag }}{% endcapture %}
     <a href="{{ site.baseurl | prepend: site.url }}/tag/{{ tag_name }}"><code class="highligher-rouge"><nobr>{{ tag_name }}</nobr></code>&nbsp;</a>
     <!-- <li><a href="{{ site.baseurl | prepend: site.url }}/tag/{{ tag }}">{{ tag }}</a></li> -->
   {% endfor %}
-]</span>
-  {{ content }}
+  ]</span>
 </div>

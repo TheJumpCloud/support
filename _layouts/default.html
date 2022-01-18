@@ -16,7 +16,7 @@
       <h2 class="project-tagline">{{ page.description | default: site.description | default: site.github.project_tagline }}</h2>
       {% if site.github.is_project_page %}
       <div class="div-btn">
-        <a href="https://thejumpcloud.github.io/support/" class="btn">Home</a>
+        <a href="{{ site.baseurl | prepend: site.url }}" class="btn">Home</a>
         <a href="https://docs.jumpcloud.com/api/index.html" class="btn">JumpCloud API Docs</a>
         <a href="https://github.com/TheJumpCloud/support/wiki/Using-the-JumpCloud-PowerShell-Module" class="btn">JumpCloud PowerShell Module</a>
       </div>

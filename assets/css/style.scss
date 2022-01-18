@@ -76,7 +76,6 @@ $jcBrand200: #8ad0ce;
 $jcBrand300: #4fb9b5;
 $jcBrand: #14a19c;
 
-
 .page-header {
     color: $jcSecondary;
     background-color: $jcPrimary;
@@ -90,11 +89,11 @@ $jcBrand: #14a19c;
 .btn {
     color: $jcSecondary;
     background-color: rgba(255,255,255,0.00);
-    border-color: $jcWarning400;
+    border-color: $jcTertiary;
     flex: 1 1 200px;
 }
 .btn:hover {
-    background-color: $jcWarning400
+    background-color: $jcQuaternary200
 }
 body {
     font-family: 'Lato', serif;
@@ -108,6 +107,11 @@ body {
 .main-content a {
     color: $jcBrand;
     font-weight: 600;
+}
+.main-content ul{
+	// list-style-type: none; /* Remove bullets */
+	// padding: 0; /* Remove padding */
+	// margin: 0; /* Remove margins */
 }
 
 // Work in progress
@@ -134,9 +138,7 @@ $on-phone:				480px;
 		&:first-of-type { margin: 0; }
 
 		.post-header {
-			ul { margin: 0 0 6px; list-style-type: none; /* Remove bullets */
-  padding: 0; /* Remove padding */
-  margin: 0; /* Remove margins */
+			ul { margin: 0 0 6px; list-style-type: none; padding: 0; margin: 0; /* Remove margins */
 				li { position: relative; margin: 0 0 0 10px; padding: 0 0 0 12px; text-transform: uppercase; font-size: 12px; letter-spacing: 0.06em; color: $jcPrimary;
 					&:first-of-type { margin: 0; padding: 0;
 						&:before { content: none; }
@@ -164,13 +166,13 @@ $on-phone:				480px;
 
 			em, strong { color: $jcSecondary; }
 
-			h1, h2, h3, h4, h5, h6 { position: relative; left: -40px; padding: 0 0 0 40px; margin: 30px 0; color: $jcSecondary; }
-			h1 { font-size: 30px; }
-			h2 { font-size: 26px; }
-			h3 { font-size: 22px; }
-			h4 { font-size: 20px; }
-			h5 { font-size: 18px; }
-			h6 { font-size: 16px; }
+			// h1, h2, h3, h4, h5, h6 { position: relative; left: -40px; padding: 0 0 0 40px; margin: 30px 0; color: $jcSecondary; }
+			// h1 { font-size: 30px; }
+			// h2 { font-size: 26px; }
+			// h3 { font-size: 22px; }
+			// h4 { font-size: 20px; }
+			// h5 { font-size: 18px; }
+			// h6 { font-size: 16px; }
 
 			.heading-marker { position: absolute; left: 15px; top: 50%; border: none; font-weight: 400; color: darken($jcPrimary50, 8%); font-size: 24px;
 				&:hover { color: $jcTertiary100; }
@@ -229,7 +231,7 @@ $on-phone:				480px;
 					}
 				}
 				&.tags { width: 100%; padding: 0 10px; text-transform: lowercase;
-					ul {
+					ul { list-style-type: none;
 						li { margin: 0 0 0 5px;
 							a { color: $jcTertiary100; background: $jcPrimary50; padding: 4px 10px; border-radius: 18px;
 								&:hover { background: darken($jcPrimary50, 4%); }
