@@ -20,7 +20,7 @@ layout: default
   {% assign tagitems = temptag | split: '#' %}
   {% capture tagname %}{{ tagitems[1] }}{% endcapture %}
   {% capture tagsize %}{{ tagitems[2] }}{% endcapture %}
-  <a href="/support/tag/{{ tagname }}"><code class="highligher-rouge"><nobr>{{ tagname }}({{ tagsize }})</nobr></code></a>
+  <a href="{{ site.baseurl | prepend: site.url }}/tag/{{ tagname }}"><code class="highligher-rouge"><nobr>{{ tagname }}({{ tagsize }})</nobr></code></a>
 {% endfor %}
 
 <h3>Latest Posts:</h3>
