@@ -1,11 +1,6 @@
-# The Cayman theme
+# JumpCloud Support Repository 
 
-[![.github/workflows/ci.yaml](https://github.com/pages-themes/cayman/actions/workflows/ci.yaml/badge.svg)](https://github.com/pages-themes/cayman/actions/workflows/ci.yaml) [![Gem Version](https://badge.fury.io/rb/jekyll-theme-cayman.svg)](https://badge.fury.io/rb/jekyll-theme-cayman)
-
-*Cayman is a Jekyll theme for GitHub Pages. You can [preview the theme to see what it looks like](http://pages-themes.github.io/cayman), or even [use it today](#usage).*
-
-![Thumbnail of Cayman](thumbnail.png)
-
+This repo is a clone and modified project of the [cayman theme]((http://pages-themes.github.io/cayman))
 ## Usage
 
 To use the Cayman theme:
@@ -89,28 +84,17 @@ Templates often rely on URLs supplied by GitHub such as links to your repository
 
 For more information, see [the Jekyll variables documentation](https://jekyllrb.com/docs/variables/).
 
-## Roadmap
+### Tagging
 
-See the [open issues](https://github.com/pages-themes/cayman/issues) for a list of proposed features (and known issues).
-
-## Project philosophy
-
-The Cayman theme is intended to make it quick and easy for GitHub Pages users to create their first (or 100th) website. The theme should meet the vast majority of users' needs out of the box, erring on the side of simplicity rather than flexibility, and provide users the opportunity to opt-in to additional complexity if they have specific needs or wish to further customize their experience (such as adding custom CSS or modifying the default layout). It should also look great, but that goes without saying.
-
-## Contributing
-
-Interested in contributing to Cayman? We'd love your help. Cayman is an open source project, built one contribution at a time by users like you. See [the CONTRIBUTING file](docs/CONTRIBUTING.md) for instructions on how to contribute.
-
+Tagging is a concept adapted from [Long Qian](https://longqian.me/2017/02/09/github-jekyll-tag/) and [Arturo Moncade-Torres'](https://arturomoncadatorres.com/automatically-generating-tag-posts-for-github-pages-using-jekyll/) github blogs. We have adapted their concepts in this page. Tags are generated on commit to github and commit back using the circle ci workflow.
 ### Previewing the theme locally
 
 If you'd like to preview the theme locally (for example, in the process of proposing a change):
 
-1. Clone down the theme's repository (`git clone https://github.com/pages-themes/cayman`)
+1. **Clone** this repository
 2. `cd` into the theme's directory
-3. Run `script/bootstrap` to install the necessary dependencies
-4. Run `bundle exec jekyll serve` to start the preview server
-5. Visit [`localhost:4000`](http://localhost:4000) in your browser to preview the theme
-
-### Running tests
-
-The theme contains a minimal test suite, to ensure a site with the theme would build successfully. To run the tests, simply run `script/cibuild`. You'll need to run `script/bootstrap` once before the test script will work.
+3. Install [jekyll](Install this: https://jekyllrb.com)
+4. Run `deploy/bootstrap` to install the necessary dependencies
+5. Run`bundle add webrick` (potentially already installed)
+6. Run `bundle exec jekyll serve` to start the preview server
+7. Visit [`localhost:4000`](http://localhost:4000) in your browser to preview the theme
