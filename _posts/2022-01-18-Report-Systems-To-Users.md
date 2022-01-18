@@ -19,6 +19,19 @@ A CSV report of systems and their user associations (inactive and active). This 
   * `~/Report-Systems_To_User_Associations.ps1`
   * Follow prompts to enter your API Key & OrgID
 
+### Additional Information
+
+This script will post a warning message when it finds an inactive user.
+
+### Expected Output
+
+A table should be generated for systems and their associated users. If inactive users are bound to the system they'll appear in the `inactiveUser` column.
+
+|systemID                |systemHostname   |systemDisplayname|systemLastContact   |systemCreated        |systemSerialNo|systemModel  |uptimeHours       |activeUser                     |inactiveUser|
+|------------------------|-----------------|-----------------|--------------------|---------------------|--------------|-------------|------------------|-------------------------------|------------|
+|5e90f19ecc99d210ecb3406c|mac-system.shared|MDM System       |8/28/2020 9:21:44 PM|4/10/2020 10:22:22 PM|CXXXXXXXXXXX  |Parallels16,1|1.4730555555555600|totpuser;Farmer_0;henry.murphy;|Farmer_6    |
+
+
 ### Script Example:
 
 ```powershell
