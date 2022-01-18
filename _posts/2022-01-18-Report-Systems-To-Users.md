@@ -1,7 +1,7 @@
 ---
 layout: post
-title: Report on Users and associated Groups and Systems
-description: Generate a CSV report for users that are associated to systems and user groups
+title: Report on Systems and Users
+description: Generate a CSV report for systems and their associated users
 tags:
   - powershell
   - reports
