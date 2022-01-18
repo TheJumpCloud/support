@@ -109,23 +109,6 @@ body {
     font-weight: 600;
 }
 
-// Work in progress
-$background-color: 		#fcfcfc;
-
-$black:					#000;
-$white:					#fff;
-
-$grey-color-darker: 	#111;
-$grey-color-normal: 	#666;
-
-
-$facebook-brand-color:	#3b5998;
-$twitter-brand-color:	#55acee;
-
-$default-width:			1100px;
-$on-tablet:				768px;
-$on-smaller-tablets:    640px;
-$on-phone:				480px;
 
 .post { position: relative; margin: 40px 0 0; padding: 40px 40px 40px; border: 1px solid $jcSecondary; background: $jcWhite100; box-shadow: 0 2px 3px rgba($jcBlack, .05);
 	&.page { padding: 40px; }
@@ -154,7 +137,7 @@ $on-phone:				480px;
 	}
 
 	.post-content {
-		abbr { border-bottom: 1px dotted $grey-color-normal; text-decoration: none; cursor: help; }
+		abbr { border-bottom: 1px dotted $jcGrey400; text-decoration: none; cursor: help; }
 		code, kbd, pre { margin: 0; font-family: monospace; word-wrap: break-word; word-break: break-word; white-space: pre-wrap; }
 		address, cite, var { font-style: italic; }
 		blockquote { margin: 40px 0; padding-left: 30px; font-style: italic; border-left: 3px solid $jcTertiary100; }
@@ -170,8 +153,8 @@ $on-phone:				480px;
 }
 
 .pagination { position: relative; margin: 40px 0 0;
-	.previous, .next { padding: 14px 20px; border: 1px solid $jcPrimary50; background: $white; box-shadow: 0 2px 3px rgba($black,.05); text-transform: uppercase; font-size: 14px; font-weight: 900; color: $grey-color-normal;
-		&:hover { background: $jcPrimary300; color: $white; }
+	.previous, .next { padding: 14px 20px; border: 1px solid $jcPrimary50; background: $jcWhite; box-shadow: 0 2px 3px rgba($jcBlack,.05); text-transform: uppercase; font-size: 14px; font-weight: 900; color: $jcGrey400;
+		&:hover { background: $jcPrimary300; color: $jcWhite; }
 	}
 	.page_number { position: absolute; left: 50%; top: 50%; font-size: 12px; color: $jcTertiary100; }
 }
