@@ -14,6 +14,9 @@ if (-not (Get-InstalledModule -Name JumpCloud)) {
     Write-Host "Installing JumpCloud PowerShell Module"
     Install-Module JumpCloud -Force
 }
+if ((Get-InstalledModule -Name JumpCloud.SDK.V1).Version -notmatch 0.0.27) {
+    Install-Module JumpCloud.SDK.V1 -Force
+}
 Write-Host "Connecting to JumpCloud..."
 Connect-JCOnline -force $JumpCloudApiKey
 
@@ -23,7 +26,7 @@ if (-not(Test-Path -Path $csvPath -PathType Leaf)) {
     Write-Host ""
     Write-Host "No file was located at $csvPath"
     Write-Host "Would you like to generate a CSV containing all users in your JumpCloud organization?"
-    Write-Host "This will include Id, Email and a blank ManagedAppleId field"
+    Write-Host "This will include Id, Email and ManagedAppleId field"
     Write-Host ""
     Write-Host "################################################################################"
     Get-JCSdkUser | Select-Object ID, Email, ManagedAppleId | Export-Csv -Path $csvPath -Confirm
@@ -33,7 +36,7 @@ else {
     Write-Host ""
     Write-Host "Existing file was located at $csvPath"
     Write-Host "Would you like to regenerate the CSV?"
-    Write-Host "This will include Id, Email and a blank ManagedAppleId field"
+    Write-Host "This will include Id, Email and ManagedAppleId field"
     Write-Host ""
     Write-Host "################################################################################"
     Get-JCSdkUser | Select-Object ID, Email, ManagedAppleId | Export-Csv -Path $csvPath -Confirm
@@ -48,6 +51,7 @@ Read-Host -Prompt "Press any key to continue or CTRL+C to quit"
 
 $skippedRows = @()
 $managedAppleIdUsers = Import-CSV $csvPath
+Write-Host "Setting ManagedAppleId attributes..."
 foreach ($user in $managedAppleIdUsers) {
     $emailRegex = "^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$"
     $managedAppleId = $user.ManagedAppleId
@@ -60,6 +64,7 @@ foreach ($user in $managedAppleIdUsers) {
         $skippedRows += [PSCustomObject]@{
             row   = $($managedAppleIdUsers.indexOf($user) + 2);
             email = $jcUserEmail;
+            reason = "Null value or whitespace"
         }
         continue
     }
@@ -68,32 +73,27 @@ foreach ($user in $managedAppleIdUsers) {
         $skippedRows += [PSCustomObject]@{
             row   = $($managedAppleIdUsers.indexOf($user) + 2);
             email = $jcUserEmail;
+            reason = "Invalid email address"
         }
         continue
     }
 
-    $headers = @{
-        Accept      = "application/json";
-        'x-api-key' = $JumpCloudApiKey;
+    if ((Get-JCSdkUser -Id $jcUserId | Select-Object ManagedAppleId) -notmatch $managedAppleId) {
+        Set-JCSdkUser -Id $jcUserId -ManagedAppleId $managedAppleId | Out-Null
     }
-    $body = @{
-        'managedAppleId'   = "$managedAppleId"
-    } | ConvertTo-Json
-
-    try {
-        $Response = Invoke-WebRequest -Method Put -Uri "https://console.jumpcloud.com/api/systemusers/$jcUserId" -Headers $headers -Body $body -ContentType 'application/json' -UseBasicParsing
-        $StatusCode = $Response.StatusCode
-        Write-Host "Assigning $jcUserEmail with the following Managed Apple ID: $managedAppleId"
-    }
-    catch {
-        $StatusCode = $_.Exception.Response.StatusCode.value__
-        Write-Error -Message "Encountered error with Row $($managedAppleIdUsers.indexOf($user)+2): $StatusCode"
+    else {
+        $skippedRows += [PSCustomObject]@{
+            row   = $($managedAppleIdUsers.indexOf($user) + 2);
+            email = $jcUserEmail;
+            reason = "ManagedAppleID already matches"
+        }
+        continue
     }
 }
 if ($skippedRows){
     Write-Host "$($skippedRows.values.count) rows were skipped"
     $view = Read-Host -Prompt "Press y to view skipped rows. Press any other key to cancel"
     if ($view.ToLower() -eq 'y'){
-        $skippedRows
+        Write-Host ($skippedRows | Format-Table | Out-String)
     }
 }
