@@ -14,7 +14,7 @@ if (-not (Get-InstalledModule -Name JumpCloud)) {
     Write-Host "Installing JumpCloud PowerShell Module"
     Install-Module JumpCloud -Force
 }
-if ((Get-InstalledModule -Name JumpCloud.SDK.V1).Version -notmatch 0.0.27) {
+if ((Get-InstalledModule -Name JumpCloud.SDK.V1).Version -lt 0.0.27) {
     Install-Module JumpCloud.SDK.V1 -Force
 }
 Write-Host "Connecting to JumpCloud..."
