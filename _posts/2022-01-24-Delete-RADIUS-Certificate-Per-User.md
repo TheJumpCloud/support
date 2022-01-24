@@ -36,8 +36,10 @@ must be uniquely specified either by a string found in its common name, or by it
 # Get last user logged into console and put into variable "lastUser"
 lastUser=`stat -f %Su /dev/console`
 
-## Delete SHA-1 for radius.jumpcloud.com certificate which expired on 10/23/2021  
+## Delete SHA-1 for radius.jumpcloud.com certificate which expired 
 security delete-certificate -Z <SHA-1 HASH> /Users/$lastUser/Library/Keychains/login.keychain-db
 ```
 
 ### Command Setup
+![image](https://user-images.githubusercontent.com/89030113/150854220-e563fc1e-3d69-4222-ad65-ef3435e46a25.png)
+
