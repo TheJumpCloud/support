@@ -16,6 +16,7 @@ if (-not (Get-InstalledModule -Name JumpCloud)) {
 }
 if ([Version](Get-InstalledModule -Name JumpCloud.SDK.V1).Version -lt [Version]"0.0.27") {
     Install-Module JumpCloud.SDK.V1 -Force
+    Install-Module JumpCloud -Force
 }
 Write-Host "Connecting to JumpCloud..."
 Connect-JCOnline -force $JumpCloudApiKey
