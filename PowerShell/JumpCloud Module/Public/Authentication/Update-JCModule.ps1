@@ -9,6 +9,7 @@ Function Update-JCModule
     Begin
     {
         $ModuleName = 'JumpCloud'
+        #TODO: Add SDK Module Names
         # Find the module on the specified repository
         $FoundModule = If (-not [System.String]::IsNullOrEmpty($RepositoryCredentials))
         {
