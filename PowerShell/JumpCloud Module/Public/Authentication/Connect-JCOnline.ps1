@@ -56,6 +56,12 @@ Function Connect-JCOnline ()
         {
             $Param_JCEnvironment.Add('Default', 'production');
         }
+        $settings = @{
+            OrgName = ''
+            ContactName = ''
+            ContactEmail = ''
+        }
+        $Env:JCOrgSettings = $settings
         # Build output
         # Build parameter array
         $RuntimeParameterDictionary = New-Object -TypeName System.Management.Automation.RuntimeDefinedParameterDictionary
