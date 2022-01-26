@@ -9,24 +9,35 @@ Function Update-JCModule
     Begin
     {
         $ModuleName = 'JumpCloud'
-        #TODO: Add SDK Module Names
+        $DiSdkModuleName = 'JumpCloud.SDK.DirectoryInsights'
+        $V2SdkModuleName = 'JumpCloud.SDK.V2'
+        $V1SdkModuleName = 'JumpCloud.SDK.V1'
         # Find the module on the specified repository
-        $FoundModule = If (-not [System.String]::IsNullOrEmpty($RepositoryCredentials))
+        If (-not [System.String]::IsNullOrEmpty($RepositoryCredentials))
         {
-            Find-Module -Name:($ModuleName) -Repository:($Repository) -Credential:($RepositoryCredentials) -AllowPrerelease
+            $FoundModule = Find-Module -Name:($ModuleName) -Repository:($Repository) -Credential:($RepositoryCredentials) -AllowPrerelease
         }
         Else
         {
-            Find-Module -Name:($ModuleName) -Repository:($Repository)
+            $FoundModule = Find-Module -Name:($ModuleName) -Repository:($Repository)
+            $FoundDiSdkModule = Find-Module -Name:($DiSdkModuleName) -Repository:($Repository)
+            $FoundV2SdkModule = Find-Module -Name:($V2SdkModuleName) -Repository:($Repository)
+            $FoundV1SdkModule = Find-Module -Name:($V1SdkModuleName) -Repository:($Repository)
         }
         # Get the version of the module installed locally
         $InstalledModulePreUpdate = Get-InstalledModule -Name:($ModuleName) -AllVersions -ErrorAction:('Ignore')
+        $InstalledDiSdkModulePreUpdate = Get-InstalledModule -Name:($DiSdkModuleName) -AllVersions -ErrorAction:('Ignore')
+        $InstalledV2SdkModulePreUpdate = Get-InstalledModule -Name:($V2SdkModuleName) -AllVersions -ErrorAction:('Ignore')
+        $InstalledV1SdkModulePreUpdate = Get-InstalledModule -Name:($V1SdkModuleName) -AllVersions -ErrorAction:('Ignore')
         # Get module info from GitHub - This should not impact the auto update ability, only the banner message
         $ModuleBanner = Get-ModuleBanner
         $ModuleChangeLog = Get-ModuleChangeLog
         # To change update dependency from PowerShell Gallery to Github flip the commented code below
         ###### $UpdateTrigger = $ModuleBanner.'Latest Version'
         $UpdateTrigger = $FoundModule.Version
+        $UpdateTriggerDi = $FoundDiSdkModule.Version
+        $UpdateTriggerV2 = $FoundV2SdkModule.Version
+        $UpdateTriggerV1 = $FoundV1SdkModule.Version
         # Get the release notes for a specific version
         $ModuleChangeLogLatestVersion = $ModuleChangeLog | Where-Object { $_.Version -eq $UpdateTrigger }
         # To change update dependency from PowerShell Gallery to Github flip the commented code below
