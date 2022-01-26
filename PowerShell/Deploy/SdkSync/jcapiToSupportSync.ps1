@@ -71,11 +71,11 @@ $ApprovedFunctions = [Ordered]@{
 $SdkPrefix = 'JcSdk'
 $JumpCloudModulePrefix = 'JC'
 $IndentChar = '    '
-$MSCopyrightHeader = "`n# ----------------------------------------------------------------------------------`n#`n# Copyright Microsoft Corporation`n# Licensed under the Apache License, Version 2.0 (the ""License"");`n# you may not use this file except in compliance with the License.`n# You may obtain a copy of the License at`n# http://www.apache.org/licenses/LICENSE-2.0`n# Unless required by applicable law or agreed to in writing, software`n# distributed under the License is distributed on an ""AS IS"" BASIS,`n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.`n# See the License for the specific language governing permissions and`n# limitations under the License.`n# ----------------------------------------------------------------------------------`n"
-$Divider = '|#|#|#|#|#|#|#|#|#|#|#|#|#|#|#|'
+$MSCopyrightHeader = "`n<#`n.Synopsis`n"
+$Divider = "`n[SPLIT]`n<#`n.Synopsis`n"
 $FunctionTemplate = "{0}`nFunction {1}`n{{`n$($IndentChar){2}`n$($IndentChar)Param(`n{3}`n$($IndentChar))`n$($IndentChar)Begin`n$($IndentChar){{`n{4}`n$($IndentChar)}}`n$($IndentChar)Process`n$($IndentChar){{`n{5}`n$($IndentChar)}}`n$($IndentChar)End`n$($IndentChar){{`n{6}`n$($IndentChar)}}`n}}"
 $ScriptAnalyzerResults = @()
-$JumpCloudModulePath = "$PSScriptRoot/../JumpCloud Module"
+$JumpCloudModulePath = "$PSScriptRoot/../../JumpCloud Module"
 Get-Module -Refresh -ListAvailable -All | Out-Null
 $Modules = Get-Module -Name:($Psd1.RequiredModules | Where-Object { $_ -in $ApprovedFunctions.Keys })
 If (-not [System.String]::IsNullOrEmpty($Modules))
@@ -102,7 +102,16 @@ If (-not [System.String]::IsNullOrEmpty($Modules))
                     <# When the autorest generated module has been installed and imported from the PSGallery all the
                     cmdlets will exist in a single ProxyCmdletDefinitions.ps1 file. We need to parse
                     out the specific function in order to gather the parts we need to copy over. #>
-                    $CommandFilePathContent.Replace($MSCopyrightHeader, $Divider).Split($Divider) | Where-Object { $_ -like ('*' + "function $CommandName {" + '*') }
+                    $ProxyContent = $CommandFilePathContent.Replace($MSCopyrightHeader, $Divider)
+                    $ProxyContentSplit = $ProxyContent.Split("[SPLIT]")
+                    foreach ($functionSplit in $ProxyContentSplit)
+                    {
+                        if ($functionSplit -match "function $CommandName {")
+                        {
+                            # return the matched content
+                            $functionSplit
+                        }
+                    }
                 }
                 Else
                 {
