@@ -27,7 +27,7 @@ try {
     Invoke-WebRequest -Uri $installerURL -OutFile $installerTempLocation
 }
 catch {
-    Write-Error("Unable to download Falcon Agent installer.".)
+    Write-Error("Unable to download Falcon Agent installer.")
     exit 1
 }
 Write-Host("Finished downloading Falcon Agent installer.")
