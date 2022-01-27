@@ -1,12 +1,12 @@
 # Custom Configuration Profiles in JumpCloud
 
-JumpCloud supports the management of Custom MDM Configuration [profiles](https://developer.apple.com/documentation/devicemanagement/using_configuration_profiles?language=objc) through [Custom MDM Profiles](https://jumpcloud.com/blog/custom-configuration-profiles). Tools like [ProfileCreator](https://github.com/ProfileCreator/ProfileCreator), [imazing Profile Editor](https://imazing.com/profile-editor/download) or [Apple Configurator 2](https://apps.apple.com/us/app/apple-configurator-2/id1037126344?mt=12) can be used to generate .mobileconfig files which contain preferences for systems and macOS applications.
+JumpCloud supports the management of Custom MDM Configuration [profiles](https://developer.apple.com/documentation/devicemanagement/using_configuration_profiles?language=objc) through [Custom MDM Profiles](https://jumpcloud.com/blog/custom-configuration-profiles). Tools like [imazing Profile Editor](https://imazing.com/profile-editor/download) or [Apple Configurator 2](https://apps.apple.com/us/app/apple-configurator-2/id1037126344?mt=12) can be used to generate .mobileconfig files which contain preferences for systems and macOS applications.
 
 ## Table of Contents
 
 - [Custom Configuration Profiles in JumpCloud](#custom-configuration-profiles-in-jumpcloud)
   - [Table of Contents](#table-of-contents)
-  - [General settings for ProfileCreator](#general-settings-for-profilecreator)
+  - [General settings for Profiles](#general-settings-for-profiles)
   - [Configuration Profile Examples](#configuration-profile-examples)
     - [Catalina Notifications Profile](#catalina-notifications-profile)
     - [Firefox Custom Profile](#firefox-custom-profile)
@@ -30,11 +30,9 @@ JumpCloud supports the management of Custom MDM Configuration [profiles](https:/
     - [Removal of profiles](#removal-of-profiles)
   - [.mobileconfig Profile Examples](#mobileconfig-profile-examples)
 
-## General settings for ProfileCreator
+## General settings for Profiles
 
-The ProfileCreator application has a well-documented [wiki](https://github.com/ProfileCreator/ProfileCreator/wiki). Consult the wiki for ProfileCreator specific issues or join the conversion over in the #profilecreator channel in the [MacAdmins Slack](https://www.macadmins.org/) for additional help.
-
-When opening ProfileCreator for the first time, it's advised to set organizational identifiers. Profiles exported with ProfileCreator are identified with the organizational identifiers set under ProfileCreator > Preferences > Profile Defaults:
+When opening iMazing Profile Editor for the first time, it's advised to set organizational identifiers. Profiles exported are then identified with the organizational identifiers.
 
 ![example preferences](images/preferences.png)
 
@@ -50,7 +48,7 @@ As of the release of macOS Catalina 10.15 users are prompted to allow or deny sp
 
 This specific profile will allow the JumpCloud tray application to send the user notifications.
 
-To create a new profile, open ProfileCreator and click the [ + ] icon.
+To create a new profile, open iMazing Profile Editor and click the [ + ] icon.
 
 ![new profile window](images/new_profile.png)
 
@@ -90,7 +88,7 @@ Save and [Export](#export-a-profile) the profile for deployment. Distribute to J
 
 ### Chrome Custom Profile
 
-Chrome settings and other browser settings can be managed through a custom configuration profile. The Chrome profile in this example will silently install extensions. To create an application manifest payload. Select the application icon in ProfileCreator and add the Chrome profile. Under the 'Extensions' settings, scroll to the "Extension/App IDs and update URLs to be silently installed:
+Chrome settings and other browser settings can be managed through a custom configuration profile. The Chrome profile in this example will silently install extensions. To create an application manifest payload. Select the application icon in iMazing Profile Editor and add the Chrome profile. Under the 'Extensions' settings, scroll to the "Extension/App IDs and update URLs to be silently installed:
 
 Each Chrome Extension has a unique ID, when entered in this payload, Chrome will silently reference that ID and install that Extension on a systems Chrome Browser.
 
@@ -104,7 +102,7 @@ Unique ID's from several extensions can be populated in the same payload like th
 
 ### Custom Dock Profile
 
-An admin can configure a custom dock payload for their systems using ProfileCreator. The example payload below demonstrates a configuration to add Chess, Calendar and Terminal to the users dock. (Note. This configuration will only work with Catalina systems since only Catalina OS has system applications Stored under the `/System/Applications/` path)
+An admin can configure a custom dock payload for their systems using iMazing Profile Editor. The example payload below demonstrates a configuration to add Chess, Calendar and Terminal to the users dock. (Note. This configuration will only work with Catalina systems since only Catalina OS has system applications Stored under the `/System/Applications/` path)
 
 This example sets the dock pixel size to 24px and positions the dock on the left side of the screen.
 
@@ -199,7 +197,7 @@ In macOS Mojave, Apple introduced several security controls to enable apps to em
 
 System administrators can choose to whitelist these applications using Privacy Preference Policy Controls (PPPC) profiles. As long as an application is [codesigned](https://developer.apple.com/library/archive/documentation/Security/Conceptual/CodeSigningGuide/Procedures/Procedures.html), that application can be whitelisted though a PPPC profile, the only other requirement being that the MDM whitelisting that profile be either user approved or enrolled in DEP on that particular system.
 
-PPPC Profiles can been created with tools like [ProfileCreator](https://github.com/ProfileCreator/ProfileCreator), [imazing Profile Editor](https://imazing.com/profile-editor/download) or [Apple Configurator 2](https://apps.apple.com/us/app/apple-configurator-2/id1037126344?mt=12). Other tools such as [PPPC Utility](https://github.com/jamf/PPPC-Utility) were built to make the process of PPPC profile creation as simple as possible. PPPC Utility also allows .mobileconfig files to be exported and distributed through [Custom MDM profiles](https://jumpcloud.com/blog/custom-configuration-profiles).
+PPPC Profiles can been created with tools like [imazing Profile Editor](https://imazing.com/profile-editor/download) or [Apple Configurator 2](https://apps.apple.com/us/app/apple-configurator-2/id1037126344?mt=12). Other tools such as [PPPC Utility](https://github.com/jamf/PPPC-Utility) were built to make the process of PPPC profile creation as simple as possible. PPPC Utility also allows .mobileconfig files to be exported and distributed through [Custom MDM profiles](https://jumpcloud.com/blog/custom-configuration-profiles).
 
 #### Example PPPC Profile
 
@@ -245,7 +243,7 @@ Should return:
 
 ## Export a profile
 
-Assuming a profile is ready for deployment. Save and Export the profile using the ProfileCreator file menu. File > Export...
+Assuming a profile is ready for deployment. Save and Export the profile using the iMazing Profile Editor file menu. File > Save As...
 
 On the export menu, choose a location to save the profile. The profile will be uploaded and sent to systems with JumpCloud's Custom MDM Configuration Profile.
 
