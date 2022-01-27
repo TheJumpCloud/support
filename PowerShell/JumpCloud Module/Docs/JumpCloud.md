@@ -2,7 +2,7 @@
 Module Name: JumpCloud
 Module Guid: 31c023d1-a901-48c4-90a3-082f91b31646
 Download Help Link: https://github.com/TheJumpCloud/support/wiki
-Help Version: 1.18.12
+Help Version: 1.18.13
 Locale: en-US
 ---
 
@@ -52,12 +52,6 @@ Returns all JumpCloud Command Results within a JumpCloud tenant or a single Jump
 
 ### [Get-JCCommandTarget](Get-JCCommandTarget.md)
 Returns the JumpCloud systems or system groups associated with a JumpCloud command.
-
-### [Get-JCEvent](Get-JCEvent.md)
-Query the API for Directory Insights events
-
-### [Get-JCEventCount](Get-JCEventCount.md)
-Query the API for a count of matching events
 
 ### [Get-JCGroup](Get-JCGroup.md)
 Returns all JumpCloud System and User Groups.
