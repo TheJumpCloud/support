@@ -17,36 +17,31 @@ $installerURL="ENTER URL TO FALCON AGENT INSTALLER HERE"
 $installerTempLocation="C:\Windows\Temp\CSFalconAgentInstaller.exe"
 
 if(Get-Service "CSFalconService" -ErrorAction SilentlyContinue) {
-    write-host("Falcon Agent already installed, nothing to do.")
+    Write-Host("Falcon Agent already installed, nothing to do.")
     exit 0
 }
-write-host("Falcon Agent not installed.")
+Write-Host("Falcon Agent not installed.")
 
-write-host("Downloading Falcon Agent installer now.")
+Write-Host("Downloading Falcon Agent installer now.")
 try {
-    $webClient = New-Object System.Net.WebClient 
-    $webClient.DownloadFile($installerURL, $installerTempLocation)
-}
-catch [System.Net.WebException],[System.IO.IOException] {
-    write-host("Unable to download Falcon Agent Installer")
-    exit 1
+    Invoke-WebRequest -Uri $installerURL -OutFile $installerTempLocation
 }
 catch {
-    write-host("An unknown error occurred downloading the Falcon Agent Installer.")
+    Write-Error("Unable to download Falcon Agent Installer".)
     exit 1
 }
-write-host("Finished downloading Falcon Agent installer.")
+Write-Host("Finished downloading Falcon Agent installer.")
 
-write-host("Installing Falcon Agent now, this may take a few minutes.")
+Write-Host("Installing Falcon Agent now, this may take a few minutes.")
 try {
     $args = @("/install","/quiet","/norestart","CID=$CID") 
     $installerProcess = Start-Process -FilePath $installerTempLocation -Wait -PassThru -ArgumentList $args
 }
 catch {
-    write-error("Failed to run Falcon Agent installer.")
+    Write-Error("Failed to run Falcon Agent installer.")
     exit 1
 }
-write-host("Falcon Agent installer returned $($installerProcess.ExitCode).")
+Write-Host("Falcon Agent installer returned $($installerProcess.ExitCode).")
 
 exit $installerProcess.ExitCode
 
