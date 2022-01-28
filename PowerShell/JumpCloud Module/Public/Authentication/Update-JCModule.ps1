@@ -38,6 +38,12 @@ Function Update-JCModule
         $UpdateTriggerDi = $FoundDiSdkModule.Version
         $UpdateTriggerV2 = $FoundV2SdkModule.Version
         $UpdateTriggerV1 = $FoundV1SdkModule.Version
+        # Create hashtables for each SDK
+        $DiSdkHash = @{Name = $DiSdkModuleName; CurrentVersion = $UpdateTriggerDi; InstalledModule = $InstalledDiSdkModulePreUpdate}
+        $V2SdkHash = @{Name = $V2SdkModuleName; CurrentVersion = $UpdateTriggerV2; InstalledModule = $InstalledV2SdkModulePreUpdate}
+        $V1SdkHash = @{Name = $V1SdkModuleName; CurrentVersion = $UpdateTriggerV1; InstalledModule = $InstalledV1SdkModulePreUpdate}
+        # Create Array Holding SDK Hashes
+        $sdkArray = @($DiSdkHash, $V2SdkHash, $V1SdkHash)
         # Get the release notes for a specific version
         $ModuleChangeLogLatestVersion = $ModuleChangeLog | Where-Object { $_.Version -eq $UpdateTrigger }
         # To change update dependency from PowerShell Gallery to Github flip the commented code below
@@ -60,6 +66,29 @@ Function Update-JCModule
         $JCColorConfig = Get-JCColorConfig
         Try
         {
+            # Loop through each SDK and perform version checks/updates
+            foreach ($sdk in $sdkArray) {
+                # If no installed module is found - install and import
+                if ([System.String]::IsNullOrEmpty($sdk.InstalledModule)) {
+                    Install-Module $sdk.Name -Force
+                    Import-Module $sdk.Name -Force
+                }
+                else {
+                    # If update is available for sdk, update and import new version into session
+                    if ($sdk.CurrentVersion -notin $sdk.InstalledModule.Version) {
+                        Write-Host 'An update is available for the ' + $sdk.Name + 'PowerShell module.' -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
+                        $sdk.InstalledModule | Update-Module -Force
+                        Get-Module -Name:($sdk.Name) -ListAvailable -All | Remove-Module -Force
+                        Import-Module $sdk.Name -Scope:('Global') -Force
+                    }
+                    elseif ($sdk.CurrentVersion -in $sdk.InstalledModule.Version) {
+                        Write-Host 'The ' + $sdk.Name + ' PowerShell module is up to date' -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
+                    }
+                    else {
+                        Write-Error ('Unable to determine ' + $sdk.Name + 'PowerShell module install status.')
+                    }
+                }
+            }
             # Check to see if module is already installed
             If ([System.String]::IsNullOrEmpty($InstalledModulePreUpdate))
             {
