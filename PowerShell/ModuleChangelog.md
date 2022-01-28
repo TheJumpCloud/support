@@ -5,20 +5,12 @@ Release Date: January 27, 2022
 #### RELEASE NOTES
 
 ```
-{{Fill in the Release Notes}}
+when new sdks are available, the module will prompt for update
 ```
 
 #### FEATURES:
 
-{{Fill in the Features}}
-
-#### IMPROVEMENTS:
-
-{{Fill in the Improvements}}
-
-#### BUG FIXES:
-
-{{Fill in the Bug Fixes}}
+sdks should auto update
 
 ## 1.18.12
 
