@@ -69,7 +69,12 @@ Describe -Tag:('JCModule') 'Test for Update-JCModule' {
         # Get previous version of the SDKs
         foreach ($SDK in $latestSDKs) {
             # Find Previous Version
-            Clear-Variable foundPrevious
+            try {
+                Clear-Variable foundPrevious
+            }
+            catch {
+                Write-Debug "No Variable named 'foundPrevious' existed"
+            }
             write-host "$($SDK.Name)"
             while (-not $foundPrevious){
                 try {
