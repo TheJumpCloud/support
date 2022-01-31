@@ -3970,6 +3970,777 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
+      <command:name>Get-JCEvent</command:name>
+      <command:verb>Get</command:verb>
+      <command:noun>JCEvent</command:noun>
+      <maml:description>
+        <maml:para>Query the API for Directory Insights events</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Query the API for Directory Insights events</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Get-JCEvent</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
+          <maml:name>Body</maml:name>
+          <maml:description>
+            <maml:para>EventQuery is the users' command to search our auth logs To construct, see NOTES section for BODY properties and create a hash table.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">JumpCloud.SDK.DirectoryInsights.Models.IEventQuery</command:parameterValue>
+          <dev:type>
+            <maml:name>JumpCloud.SDK.DirectoryInsights.Models.IEventQuery</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Get-JCEvent</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>EndTime</maml:name>
+          <maml:description>
+            <maml:para>optional query end time, UTC in RFC3339 format</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.DateTime</command:parameterValue>
+          <dev:type>
+            <maml:name>System.DateTime</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Fields</maml:name>
+          <maml:description>
+            <maml:para>optional list of fields to return from query</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>SearchAfter</maml:name>
+          <maml:description>
+            <maml:para>Specific query to search after, see x-* response headers for next values</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>SearchTermAnd</maml:name>
+          <maml:description>
+            <maml:para>TermConjunction represents a conjunction (and/or)NOTE: the validator limits what the operator can be, not the object for future-proof-ness and a list of sub-values</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+          <dev:type>
+            <maml:name>System.Collections.Hashtable</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>SearchTermOr</maml:name>
+          <maml:description>
+            <maml:para>TermConjunction represents a conjunction (and/or)NOTE: the validator limits what the operator can be, not the object for future-proof-ness and a list of sub-values</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+          <dev:type>
+            <maml:name>System.Collections.Hashtable</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Service</maml:name>
+          <maml:description>
+            <maml:para>service name to query. Known services: systems,radius,sso,directory,ldap,all</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Sort</maml:name>
+          <maml:description>
+            <maml:para>ASC or DESC order for timestamp</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>StartTime</maml:name>
+          <maml:description>
+            <maml:para>query start time, UTC in RFC3339 format</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.DateTime</command:parameterValue>
+          <dev:type>
+            <maml:name>System.DateTime</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
+        <maml:name>Body</maml:name>
+        <maml:description>
+          <maml:para>EventQuery is the users' command to search our auth logs To construct, see NOTES section for BODY properties and create a hash table.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">JumpCloud.SDK.DirectoryInsights.Models.IEventQuery</command:parameterValue>
+        <dev:type>
+          <maml:name>JumpCloud.SDK.DirectoryInsights.Models.IEventQuery</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>EndTime</maml:name>
+        <maml:description>
+          <maml:para>optional query end time, UTC in RFC3339 format</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.DateTime</command:parameterValue>
+        <dev:type>
+          <maml:name>System.DateTime</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Fields</maml:name>
+        <maml:description>
+          <maml:para>optional list of fields to return from query</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String[]</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>SearchAfter</maml:name>
+        <maml:description>
+          <maml:para>Specific query to search after, see x-* response headers for next values</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String[]</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>SearchTermAnd</maml:name>
+        <maml:description>
+          <maml:para>TermConjunction represents a conjunction (and/or)NOTE: the validator limits what the operator can be, not the object for future-proof-ness and a list of sub-values</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Collections.Hashtable</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>SearchTermOr</maml:name>
+        <maml:description>
+          <maml:para>TermConjunction represents a conjunction (and/or)NOTE: the validator limits what the operator can be, not the object for future-proof-ness and a list of sub-values</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Collections.Hashtable</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Service</maml:name>
+        <maml:description>
+          <maml:para>service name to query. Known services: systems,radius,sso,directory,ldap,all</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String[]</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Sort</maml:name>
+        <maml:description>
+          <maml:para>ASC or DESC order for timestamp</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>StartTime</maml:name>
+        <maml:description>
+          <maml:para>query start time, UTC in RFC3339 format</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.DateTime</command:parameterValue>
+        <dev:type>
+          <maml:name>System.DateTime</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+        <maml:name>Confirm</maml:name>
+        <maml:description>
+          <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Management.Automation.SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+        <maml:name>WhatIf</maml:name>
+        <maml:description>
+          <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Management.Automation.SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>JumpCloud.SDK.DirectoryInsights.Models.IEventQuery</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>JumpCloud.SDK.DirectoryInsights.Models.IPost200ApplicationJsonItemsItem</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>COMPLEX PARAMETER PROPERTIES To create the parameters described below, construct a hash table containing the appropriate properties. For information on hash tables, run Get-Help about_Hash_Tables.</maml:para>
+        <maml:para>EVENTQUERYBODY &lt;IEventQuery&gt;: EventQuery is the users' command to search our auth logs   [EndTime &lt;DateTime?&gt;]: optional query end time, UTC in RFC3339 format   [Fields &lt;String[]&gt;]: optional list of fields to return from query   [Limit &lt;Int64?&gt;]: Max number of rows to return   [SearchAfter &lt;String[]&gt;]: Specific query to search after, see x-* response headers for next values   [SearchTermAnd &lt;ISearchTermAnd&gt;]: list of event terms. If all terms match the event will be returned by the service.     [(Any) &lt;Object&gt;]: This indicates any property can be added to this object.   [SearchTermOr &lt;ISearchTermOr&gt;]: list of event terms. If any term matches, the event will be returned by the service.     [(Any) &lt;Object&gt;]: This indicates any property can be added to this object.   [Service &lt;String[]&gt;]: service name to query. Known services: systems,radius,sso,directory,ldap,all   [Sort &lt;String&gt;]: ASC or DESC order for timestamp   [StartTime &lt;DateTime?&gt;]: query start time, UTC in RFC3339 format</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
+        <dev:code>(Get-JCEvent -Service:('all') -StartTime:((Get-date).AddDays(-30)))</dev:code>
+        <dev:remarks>
+          <maml:para>Pull all event records from the last thirty days</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- EXAMPLE 2 --------------------------</maml:title>
+        <dev:code>(Get-JCEvent -Service:('directory') -StartTime:((Get-date).AddHours(-1)) -Limit:('10'))</dev:code>
+        <dev:remarks>
+          <maml:para>Get directory results from the last hour limit to the last 10 results in the time range</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- EXAMPLE 3 --------------------------</maml:title>
+        <dev:code>(Get-JCEvent -Service:('directory') -StartTime:((Get-date).AddDays(-30)) -Sort:("DESC") -EndTime:((Get-date).AddDays(-5)))</dev:code>
+        <dev:remarks>
+          <maml:para>Get directory results between 30 and 5 days ago, sort timestamp by descending value</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- EXAMPLE 4 --------------------------</maml:title>
+        <dev:code>(Get-JCEvent -Service:('directory') -StartTime:((Get-date).AddDays(-30)) -Limit:('10') -searchTermAnd:@{"event_type" = "group_create"})</dev:code>
+        <dev:remarks>
+          <maml:para>Get only group_create from the last thirty days</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- EXAMPLE 5 --------------------------</maml:title>
+        <dev:code>(Get-JCEvent -Service:('all') -StartTime:('2020-04-14T00:00:00Z') -EndTime:('2020-04-20T23:00:00Z') -SearchTermOr @{"initiated_by.username" = @("user.1", "user.2")})</dev:code>
+        <dev:remarks>
+          <maml:para>Get login events initiated by either "user.1" or "user.2" between a universal time zone range</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- EXAMPLE 6 --------------------------</maml:title>
+        <dev:code>(Get-JCEvent -Service:('all') -StartTime:('2020-04-14T00:00:00Z') -EndTime:('2020-04-20T23:00:00Z') -SearchTermAnd @{"event_type" = "admin_login_attempt"; "resource.email" = "admin.user@adminbizorg.com"})</dev:code>
+        <dev:remarks>
+          <maml:para>Get all events between a date range and match event_type = admin_login_attempt and resource.email = admin.user@adminbizorg.com</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- EXAMPLE 7 --------------------------</maml:title>
+        <dev:code>(Get-JCEvent -Service:('sso') -StartTime:('2020-04-14T00:00:00Z')  -EndTime:('2020-04-20T23:00:00Z') -SearchTermAnd @{"initiated_by.username" = "user.1"})</dev:code>
+        <dev:remarks>
+          <maml:para>Get sso events with the search term initiated_by: username with value "user.1"</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- EXAMPLE 8 --------------------------</maml:title>
+        <dev:code>(Get-JCEvent -Service:('all') -StartTime:('2020-04-14T00:00:00Z') -EndTime:('2020-04-20T23:00:00Z') -SearchTermAnd @{"event_type" = "organization_update"})</dev:code>
+        <dev:remarks>
+          <maml:para>Get all events filtered by organization_update term between a date range</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>https://github.com/TheJumpCloud/support/wiki/Get-JCEvent</maml:linkText>
+        <maml:uri>https://github.com/TheJumpCloud/support/wiki/Get-JCEvent</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Get-JCEventCount</command:name>
+      <command:verb>Get</command:verb>
+      <command:noun>JCEventCount</command:noun>
+      <maml:description>
+        <maml:para>Query the API for a count of matching events</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Query the API for a count of matching events</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Get-JCEventCount</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
+          <maml:name>Body</maml:name>
+          <maml:description>
+            <maml:para>EventQuery is the users' command to search our auth logs To construct, see NOTES section for BODY properties and create a hash table.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">JumpCloud.SDK.DirectoryInsights.Models.IEventQuery</command:parameterValue>
+          <dev:type>
+            <maml:name>JumpCloud.SDK.DirectoryInsights.Models.IEventQuery</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Get-JCEventCount</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>EndTime</maml:name>
+          <maml:description>
+            <maml:para>optional query end time, UTC in RFC3339 format</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.DateTime</command:parameterValue>
+          <dev:type>
+            <maml:name>System.DateTime</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Fields</maml:name>
+          <maml:description>
+            <maml:para>optional list of fields to return from query</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>SearchAfter</maml:name>
+          <maml:description>
+            <maml:para>Specific query to search after, see x-* response headers for next values</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>SearchTermAnd</maml:name>
+          <maml:description>
+            <maml:para>TermConjunction represents a conjunction (and/or)NOTE: the validator limits what the operator can be, not the object for future-proof-ness and a list of sub-values</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+          <dev:type>
+            <maml:name>System.Collections.Hashtable</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>SearchTermOr</maml:name>
+          <maml:description>
+            <maml:para>TermConjunction represents a conjunction (and/or)NOTE: the validator limits what the operator can be, not the object for future-proof-ness and a list of sub-values</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+          <dev:type>
+            <maml:name>System.Collections.Hashtable</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Service</maml:name>
+          <maml:description>
+            <maml:para>service name to query. Known services: systems,radius,sso,directory,ldap,all</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Sort</maml:name>
+          <maml:description>
+            <maml:para>ASC or DESC order for timestamp</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>StartTime</maml:name>
+          <maml:description>
+            <maml:para>query start time, UTC in RFC3339 format</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.DateTime</command:parameterValue>
+          <dev:type>
+            <maml:name>System.DateTime</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
+        <maml:name>Body</maml:name>
+        <maml:description>
+          <maml:para>EventQuery is the users' command to search our auth logs To construct, see NOTES section for BODY properties and create a hash table.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">JumpCloud.SDK.DirectoryInsights.Models.IEventQuery</command:parameterValue>
+        <dev:type>
+          <maml:name>JumpCloud.SDK.DirectoryInsights.Models.IEventQuery</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>EndTime</maml:name>
+        <maml:description>
+          <maml:para>optional query end time, UTC in RFC3339 format</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.DateTime</command:parameterValue>
+        <dev:type>
+          <maml:name>System.DateTime</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Fields</maml:name>
+        <maml:description>
+          <maml:para>optional list of fields to return from query</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String[]</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>SearchAfter</maml:name>
+        <maml:description>
+          <maml:para>Specific query to search after, see x-* response headers for next values</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String[]</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>SearchTermAnd</maml:name>
+        <maml:description>
+          <maml:para>TermConjunction represents a conjunction (and/or)NOTE: the validator limits what the operator can be, not the object for future-proof-ness and a list of sub-values</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Collections.Hashtable</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>SearchTermOr</maml:name>
+        <maml:description>
+          <maml:para>TermConjunction represents a conjunction (and/or)NOTE: the validator limits what the operator can be, not the object for future-proof-ness and a list of sub-values</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Collections.Hashtable</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Service</maml:name>
+        <maml:description>
+          <maml:para>service name to query. Known services: systems,radius,sso,directory,ldap,all</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String[]</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Sort</maml:name>
+        <maml:description>
+          <maml:para>ASC or DESC order for timestamp</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>StartTime</maml:name>
+        <maml:description>
+          <maml:para>query start time, UTC in RFC3339 format</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.DateTime</command:parameterValue>
+        <dev:type>
+          <maml:name>System.DateTime</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+        <maml:name>Confirm</maml:name>
+        <maml:description>
+          <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Management.Automation.SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+        <maml:name>WhatIf</maml:name>
+        <maml:description>
+          <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Management.Automation.SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>JumpCloud.SDK.DirectoryInsights.Models.IEventQuery</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Int64</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>COMPLEX PARAMETER PROPERTIES</maml:para>
+        <maml:para>To create the parameters described below, construct a hash table containing the appropriate properties. For information on hash tables, run Get-Help about_Hash_Tables.</maml:para>
+        <maml:para>BODY &lt;IEventQuery&gt;: EventQuery is the users' command to search our auth logs   Service &lt;String[]&gt;: service name to query. Known services: systems,radius,sso,directory,ldap,all   StartTime &lt;DateTime&gt;: query start time, UTC in RFC3339 format   [EndTime &lt;DateTime?&gt;]: optional query end time, UTC in RFC3339 format   [Fields &lt;String[]&gt;]: optional list of fields to return from query   [Limit &lt;Int64?&gt;]: Max number of rows to return   [SearchAfter &lt;String[]&gt;]: Specific query to search after, see x-* response headers for next values   [SearchTermAnd &lt;ISearchTermAnd&gt;]: list of event terms. If all terms match the event will be returned by the service.     [(Any) &lt;Object&gt;]: This indicates any property can be added to this object.   [SearchTermOr &lt;ISearchTermOr&gt;]: list of event terms. If any term matches, the event will be returned by the service.     [(Any) &lt;Object&gt;]: This indicates any property can be added to this object.   [Sort &lt;String&gt;]: ASC or DESC order for timestamp</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
+        <dev:code>Get-JCEventCount -Service:('all') -StartTime:((Get-date).AddDays(-30))</dev:code>
+        <dev:remarks>
+          <maml:para>Pull all event records from a specified time and count the results</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- EXAMPLE 2 --------------------------</maml:title>
+        <dev:code>Get-JCEventCount -Service:('sso') -StartTime:('2020-04-14T00:00:00Z')</dev:code>
+        <dev:remarks>
+          <maml:para>Pull all SSO event records from a specified time and count the results</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- EXAMPLE 3 --------------------------</maml:title>
+        <dev:code>Get-JCEventCount -Service:('all') -StartTime:('2020-04-14T00:00:00Z') -EndTime:('2020-04-20T23:00:00Z') -SearchTermAnd @{"event_type" = "admin_login_attempt"; "resource.email" = "admin.user@adminbizorg.com"}</dev:code>
+        <dev:remarks>
+          <maml:para>Get all events counts between a date range and match event_type = admin_login_attempt and resource.email = admin.user@adminbizorg.com</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- EXAMPLE 4 --------------------------</maml:title>
+        <dev:code>Get-JCEventCount -Service:('directory') -StartTime:((Get-date).AddDays(-30)) -searchTermAnd:@{"event_type" = "group_create"}</dev:code>
+        <dev:remarks>
+          <maml:para>Get only group_create event counts the last thirty days</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version:</maml:linkText>
+        <maml:uri>https://github.com/TheJumpCloud/support/wiki/Get-JCEventCount</maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>https://github.com/TheJumpCloud/jcapi-powershell/tree/master/SDKs/PowerShell/jumpcloud.sdk.directoryinsights/get-jcsdkeventcount</maml:linkText>
+        <maml:uri>https://github.com/TheJumpCloud/jcapi-powershell/tree/master/SDKs/PowerShell/jumpcloud.sdk.directoryinsights/get-jcsdkeventcount</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
       <command:name>Get-JCGroup</command:name>
       <command:verb>Get</command:verb>
       <command:noun>JCGroup</command:noun>

@@ -53,6 +53,12 @@ Returns all JumpCloud Command Results within a JumpCloud tenant or a single Jump
 ### [Get-JCCommandTarget](Get-JCCommandTarget.md)
 Returns the JumpCloud systems or system groups associated with a JumpCloud command.
 
+### [Get-JCEvent](Get-JCEvent.md)
+Query the API for Directory Insights events
+
+### [Get-JCEventCount](Get-JCEventCount.md)
+Query the API for a count of matching events
+
 ### [Get-JCGroup](Get-JCGroup.md)
 Returns all JumpCloud System and User Groups.
 
