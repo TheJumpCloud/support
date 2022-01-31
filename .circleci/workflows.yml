@@ -205,7 +205,7 @@ jobs:
       - invoke-pester:
           JumpCloudApiKey: $env:XAPIKEY_PESTER
           JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_MTP
-          ExcludeTagList: 'ModuleValidation, JCUsersFromCSV, JCDeployment, JCModule'
+          ExcludeTagList: 'ModuleValidation, JCUsersFromCSV, JCDeployment'
           IncludeTagList: '*'
           RequiredModulesRepo: << pipeline.parameters.RequiredModulesRepo >>
           Shell: 'pwsh.exe'
