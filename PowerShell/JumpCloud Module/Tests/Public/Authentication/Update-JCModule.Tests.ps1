@@ -104,11 +104,11 @@ Describe -Tag:('JCModule') 'Test for Update-JCModule' {
             $previousSDKs += $foundPrevious
         }
         # Uninstall current version of Module the SDKs
-        Uninstall-Module -Name "JumpCloud" -Force
         Get-Module Jumpcloud | Remove-Module
+        Uninstall-Module -Name "JumpCloud" -Force
         foreach ($SDK in $installedSDKs) {
-            Uninstall-Module -Name $SDK.Name -RequiredVersion $SDK.version -Force
             Get-Module -Name $SDK.Name | Remove-Module -Force
+            Uninstall-Module -Name $SDK.Name -RequiredVersion $SDK.version -Force
         }
         # Install Previous version of the SDKs
         foreach ($SDK in $previousSDKs){
