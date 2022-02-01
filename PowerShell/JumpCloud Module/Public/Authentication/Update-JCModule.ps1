@@ -70,19 +70,39 @@ Function Update-JCModule
             foreach ($sdk in $sdkArray) {
                 # If no installed module is found - install and import
                 if ([System.String]::IsNullOrEmpty($sdk.InstalledModule)) {
+                    # TODO: do we need this?
                     Install-Module $sdk.Name -Force
                     Import-Module $sdk.Name -Force
                 }
                 else {
+                    # TODO: Prompt the user similar to line 164 to update the module; else if the -Force param is supplied, update the module 
                     # If update is available for sdk, update and import new version into session
                     if ($sdk.CurrentVersion -notin $sdk.InstalledModule.Version) {
-                        Write-Host 'An update is available for the ' + $sdk.Name + 'PowerShell module.' -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
+                        # TODO: Eventually replace the write-hosts with debug
+                        Write-Host "An dependancy is available for the $($sdk.Name) PowerShell module." -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
+                        Write-Host 'attempting to update module'
                         $sdk.InstalledModule | Update-Module -Force
+                        Write-Host 'attempting to remove loaded module from memory'
                         Get-Module -Name:($sdk.Name) -ListAvailable -All | Remove-Module -Force
-                        Import-Module $sdk.Name -Scope:('Global') -Force
+                        # Uninstall previous versions
+                        If (!($SkipUninstallOld))
+                        {
+                            Write-Host ('Uninstalling ' + $sdk.Name + ' module version: ') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewline
+                            Write-Host (($sdk.InstalledModule.Version).ToString()) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
+                            Uninstall-Module -Name $sdk.Name -RequiredVersion $sdk.InstalledModule.Version -Force
+                        }
+                        Write-Host 'attempting to import dependant module'
+                        try{
+                            Import-Module $sdk.Name -Scope:('Global') -Force
+                        }
+                        catch{
+                            # TODO: don't prompt each time, just prompt once at the end if any of the modules failed to import.
+                            # TODO: Summary of the SDK modules (and versions) we uninstalled, and the ones that we installed.
+                            Write-Warning "Hey we couldn't import the $($sdk.Name) module - restart your session to use the latest sdks"
+                        }
                     }
                     elseif ($sdk.CurrentVersion -in $sdk.InstalledModule.Version) {
-                        Write-Host 'The ' + $sdk.Name + ' PowerShell module is up to date' -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
+                        Write-Host 'The ' $sdk.Name ' PowerShell module is up to date' -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
                     }
                     else {
                         Write-Error ('Unable to determine ' + $sdk.Name + 'PowerShell module install status.')
