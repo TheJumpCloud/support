@@ -70,7 +70,7 @@ Describe -Tag:('JCModule') 'Test for Update-JCModule' {
         foreach ($SDK in $latestSDKs) {
             # Find Previous Version
             try {
-                Clear-Variable foundPrevious
+                Clear-Variable foundPrevious -ErrorAction Ignore
             }
             catch {
                 Write-Debug "No Variable named 'foundPrevious' existed"
@@ -113,6 +113,7 @@ Describe -Tag:('JCModule') 'Test for Update-JCModule' {
         # Install Previous version of the SDKs
         foreach ($SDK in $previousSDKs){
             Install-Module -Name $SDK.Name -RequiredVersion $SDK.version -Force
+            # Importing will throw the assembly error (since we already have it loaded)
             Import-Module -Name $SDK.Name -Force
         }
         Import-Module -Name:("$PesterParams_ModuleManifestPath/$PesterParams_ModuleManifestName") -Force -Global
@@ -120,7 +121,9 @@ Describe -Tag:('JCModule') 'Test for Update-JCModule' {
         Update-JCModule -Force
         # Installed Module Should be equal to versions from $installedSDKs (updates should have occured)
         $TestSDKs = Get-InstalledModule | Where-Object { $_.Name -match "JumpCloud.SDK" }
-        $TestSDKs | Should -Be $latestSDKs
-        # Old modules should not be installed or loaded
+        # Test that the version of the TestSDKs is indeed the version of the LatestSDKs
+        foreach ($sdk in $TestSDKs) {
+            ($TestSDKs | Where-Object { $_.Name -eq $sdk.Name }).Version | Should -Not -Be ($previousSDKs | Where-Object { $_.Name -eq $sdk.Name }).Version
+        }
     }
 }
