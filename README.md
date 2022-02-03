@@ -1,6 +1,47 @@
-# JumpCloud Support Repository 
+# JumpCloud Support Repository
 
 This repo is a clone and modified project of the [cayman theme]((http://pages-themes.github.io/cayman))
+
+## Contributing to this repository
+
+To contribute to this repository, create a new branch with the linked Jira Issue. EX. SA-3333-ExampleScriptForWindows. In the new branch locate the [postTemplate.md](_posts/postTemplate.md) - this is the general layout for creating a new 'blog' post.
+
+### Naming
+
+Save a new copy of the [postTemplate.md](_posts/postTemplate.md) file using the YYYY-MM-DD-Name-Of-Report.md syntax
+
+### Title/ Description/ Tags
+
+Update the header/ metadata of the post to include relevant information about the script/ example. Tags are lowercase and single word 'tags' to group similar posts together.
+
+```md
+---
+layout: post
+title: Title of post
+description: Description of post (what the automation does)
+tags:
+  - powershell
+  - reports
+  - tags
+---
+```
+
+### Previewing the theme locally
+
+If you'd like to preview the theme locally (for example, in the process of proposing a change):
+
+1. **Clone** this repository
+2. `cd` into the theme's directory
+3. Install [jekyll](Install this: https://jekyllrb.com)
+4. Run `deploy/bootstrap` to install the necessary dependencies
+5. Run`bundle add webrick` (potentially already installed)
+6. Run `bundle exec jekyll serve` to start the preview server
+7. Visit [`localhost:4000`](http://localhost:4000) in your browser to preview the theme
+
+### Publishing
+
+When satisfied with the work. Open a pull request of the branch to the `gh-pages` branch. For all intents and purposes the `gh-pages` is the `main` branch for the hosted GitHub Page.
+
 ## Usage
 
 To use the Cayman theme:
@@ -87,14 +128,4 @@ For more information, see [the Jekyll variables documentation](https://jekyllrb.
 ### Tagging
 
 Tagging is a concept adapted from [Long Qian](https://longqian.me/2017/02/09/github-jekyll-tag/) and [Arturo Moncade-Torres'](https://arturomoncadatorres.com/automatically-generating-tag-posts-for-github-pages-using-jekyll/) github blogs. We have adapted their concepts in this page. Tags are generated on commit to github and commit back using the circle ci workflow.
-### Previewing the theme locally
 
-If you'd like to preview the theme locally (for example, in the process of proposing a change):
-
-1. **Clone** this repository
-2. `cd` into the theme's directory
-3. Install [jekyll](Install this: https://jekyllrb.com)
-4. Run `deploy/bootstrap` to install the necessary dependencies
-5. Run`bundle add webrick` (potentially already installed)
-6. Run `bundle exec jekyll serve` to start the preview server
-7. Visit [`localhost:4000`](http://localhost:4000) in your browser to preview the theme
