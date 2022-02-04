@@ -113,8 +113,8 @@ Describe -Tag:('JCModule') 'Test for Update-JCModule' {
         # Install Previous version of the SDKs
         foreach ($SDK in $previousSDKs){
             Install-Module -Name $SDK.Name -RequiredVersion $SDK.version -Force
-            # Importing will throw the assembly error (since we already have it loaded)
-            Import-Module -Name $SDK.Name -Force
+            # Importing will throw the assembly error (since we already have it loaded) / Check w/o importing
+            # Import-Module -Name $SDK.Name -Force
         }
         Import-Module -Name:("$PesterParams_ModuleManifestPath/$PesterParams_ModuleManifestName") -Force -Global
         # Run Update-JCModule with -Force
