@@ -104,8 +104,8 @@ Describe -Tag:('JCModule') 'Test for Update-JCModule' {
             $previousSDKs += $foundPrevious
         }
         # Uninstall current version of Module the SDKs
-        Get-Module Jumpcloud | Remove-Module
-        Uninstall-Module -Name "JumpCloud" -Force
+        # Get-Module Jumpcloud | Remove-Module
+        # Uninstall-Module -Name "JumpCloud" -Force
         foreach ($SDK in $installedSDKs) {
             Get-Module -Name $SDK.Name | Remove-Module -Force
             Uninstall-Module -Name $SDK.Name -RequiredVersion $SDK.version -Force
@@ -116,7 +116,7 @@ Describe -Tag:('JCModule') 'Test for Update-JCModule' {
             # Importing will throw the assembly error (since we already have it loaded) / Check w/o importing
             # Import-Module -Name $SDK.Name -Force
         }
-        Import-Module -Name:("$PesterParams_ModuleManifestPath/$PesterParams_ModuleManifestName") -Force -Global
+        # Import-Module -Name:("$PesterParams_ModuleManifestPath/$PesterParams_ModuleManifestName") -Force -Global
         # Run Update-JCModule with -Force
         Update-JCModule -Force
         # Installed Module Should be equal to versions from $installedSDKs (updates should have occured)

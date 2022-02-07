@@ -35,7 +35,7 @@ Describe -Tag:('JCAssociation') "Copy-JCAssociation Tests" {
             # Set SudoEnable attribute on tempUser system association
             # TODO: SA-2378 Attribute Object needs custom type
             $attributes = [JumpCloud.SDK.V2.Models.IGraphOperationSystemAttributes]@{ 'sudo' = @{'enabled' = $true; 'withoutPassword' = $false } }
-            Set-JcSdkUserAssociation -UserId:($tempUser.id) -Id:($associationSystem._id) -Op:("add") -Type:("system") -Attributes $attributes
+            Set-JcSdkUserAssociation -UserId:($tempUser.id) -Id:($associationSystem._id) -Op:("add") -Type:("system") -Attributes $attributes.AdditionalProperties
             # Copy association from tempUser to tempUser2
             Copy-JCAssociation -Id:($tempUser.id) -TargetId:($tempUser2.id) -Type:("user") -Force
 
