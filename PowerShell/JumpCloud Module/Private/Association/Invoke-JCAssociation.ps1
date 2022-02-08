@@ -151,13 +151,7 @@
                                             $additionalProperties = $foundAttributes.AdditionalProperties
                                             # Determine: AttributeSudoEnabled / AttributeSudoWithoutPassword
                                             if ($additionalProperties.sudo.enabled -And -Not $additionalProperties.sudo.withoutPassword) {
-                                                $Command_Template_Associations_Targets_Post = 'JumpCloud.SDK.V2\Set-JcSdk{0}Association -{0}Id:("{1}") -Id:("{2}") -Op:("{3}") -Type:("{4}") -AttributeSudoEnabled'
-                                            }
-                                            if ($additionalProperties.sudo.withoutPassword -And -Not $additionalProperties.sudo.enabled){
-                                                $Command_Template_Associations_Targets_Post = 'JumpCloud.SDK.V2\Set-JcSdk{0}Association -{0}Id:("{1}") -Id:("{2}") -Op:("{3}") -Type:("{4}") -AttributeSudoWithoutPassword'
-                                            }
-                                            if ($additionalProperties.sudo.enabled -And $additionalProperties.sudo.withoutPassword){
-                                                $Command_Template_Associations_Targets_Post = 'JumpCloud.SDK.V2\Set-JcSdk{0}Association -{0}Id:("{1}") -Id:("{2}") -Op:("{3}") -Type:("{4}") -AttributeSudoEnabled -AttributeSudoWithoutPassword'
+                                                $Command_Template_Associations_Targets_Post = 'JumpCloud.SDK.V2\Set-JcSdk{0}Association -{0}Id:("{1}") -Id:("{2}") -Op:("{3}") -Type:("{4}") -Attributes:("{5}")'
                                             }
                                             if (-Not $additionalProperties.sudo.enabled -And -Not $additionalProperties.sudo.withoutPassword){
                                                 $Command_Template_Associations_Targets_Post = 'JumpCloud.SDK.V2\Set-JcSdk{0}Association -{0}Id:("{1}") -Id:("{2}") -Op:("{3}") -Type:("{4}")'
@@ -186,7 +180,7 @@
                                             }
                                             Else
                                             {
-                                                $Command_Associations_POST = $Command_Template_Associations_Targets_Post -f $SourceItemTypeNameSingular.Replace('_', ''), $SourceItemId, $TargetItemId, $Action, $TargetItemTypeNameSingular, $AttributesValue
+                                                $Command_Associations_POST = $Command_Template_Associations_Targets_Post -f $SourceItemTypeNameSingular.Replace('_', ''), $SourceItemId, $TargetItemId, $Action, $TargetItemTypeNameSingular, $AttributesValue, $additionalProperties
                                             }
                                             $Command_Associations_POST = $Command_Associations_POST.Replace('usergroupId', 'GroupId').Replace('systemgroupId', 'GroupId').Replace(' -Attributes:("null")', '').Replace(' -Attributes:("{}")', '')
                                             # Send body to endpoint.
