@@ -3,7 +3,7 @@ parameters:
   ManualBuild:
     description: 'When `true`, pipeline will continue to build even if its been filtered out by config.yml (Will Not Run on Master Branch)'
     type: boolean
-    default: true
+    default: false
   EnableDebugging:
     description: 'When `true`, debugging commands will run and output to terminal.'
     type: boolean
@@ -205,7 +205,7 @@ jobs:
       - invoke-pester:
           JumpCloudApiKey: $env:XAPIKEY_PESTER
           JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_MTP
-          ExcludeTagList: 'ModuleValidation, JCUsersFromCSV, JCDeployment, JCModule'
+          ExcludeTagList: 'ModuleValidation, JCUsersFromCSV, JCDeployment'
           IncludeTagList: '*'
           RequiredModulesRepo: << pipeline.parameters.RequiredModulesRepo >>
           Shell: 'pwsh.exe'
@@ -216,7 +216,7 @@ jobs:
       - invoke-pester:
           JumpCloudApiKey: $env:XAPIKEY_PESTER_MAC
           JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_MTP
-          ExcludeTagList: 'ModuleValidation, JCUsersFromCSV, JCDeployment, JCModule'
+          ExcludeTagList: 'ModuleValidation, JCUsersFromCSV, JCDeployment'
           IncludeTagList: '*'
           RequiredModulesRepo: << pipeline.parameters.RequiredModulesRepo >>
           Shell: 'pwsh'
@@ -228,7 +228,7 @@ jobs:
       - invoke-pester:
           JumpCloudApiKey: $env:XAPIKEY_PESTER_LINUX
           JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_MTP
-          ExcludeTagList: 'ModuleValidation, JCUsersFromCSV, JCDeployment, JCModule'
+          ExcludeTagList: 'ModuleValidation, JCUsersFromCSV, JCDeployment'
           IncludeTagList: '*'
           RequiredModulesRepo: << pipeline.parameters.RequiredModulesRepo >>
           Shell: 'pwsh'

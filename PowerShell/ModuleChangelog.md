@@ -1,10 +1,17 @@
 ## 1.18.13
 
-Release Date: December 23, 2021
+Release Date: January 27, 2022
 
 #### RELEASE NOTES
 
 ```
+when new sdks are available, the module will prompt for update
+```
+
+#### FEATURES:
+
+```
+sdks should auto update
 Module release for the JumpCloud PowerShell Module
 This release includes changes to JumpCloud Module tests.
 ```
