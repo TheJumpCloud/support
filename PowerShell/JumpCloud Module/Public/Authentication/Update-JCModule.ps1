@@ -140,7 +140,7 @@ Function Update-JCModule
             }
             else{
                 # Print streamlined version
-                $SDKUpdateTable | Where-Object {$_.'Update Action' -ne 'uninstall'} | Select-Object 'SDK Name', 'Installed Version', 'Latest Version' | Format-Table | Out-Host
+                $SDKUpdateTable | Where-Object { ($_.'Update Action' -ne 'uninstall') -And ($_.'Update Action' -ne 'No Action') } | Select-Object 'SDK Name', 'Installed Version', 'Latest Version' | Format-Table | Out-Host
             }
             # Ask user if they want to update the module
             If (!($Force))
@@ -194,13 +194,31 @@ Function Update-JCModule
                             'Imported' = $false
                         }
                     }
+                    If (Get-InstalledModule -Name $($SDK.Name) -RequiredVersion $($SDK.Version)){
+                        Try {
+                            Uninstall-Module -Name $($SDK.Name) -RequiredVersion $($SDK.Version)
+                            $SDKUninstallSummary += [PSCustomObject]@{
+                                'SDK Name'            = $($SDK.Name)
+                                'Uninstalled Version' = $($SDK.Version)
+                                'Uninstalled'         = $true
+                            }
+                        }
+                        Catch{
+                                Write-Warning -Message "Could not uninstall $($SDK.Name) $($SDK.Version)"
+                                $SDKUninstallSummary += [PSCustomObject]@{
+                                    'SDK Name'            = $($SDK.Name)
+                                    'Uninstalled Version' = $($SDK.Version)
+                                    'Uninstalled'         = $false
+                                }
+                        }
+                    }
                 }
             }
         }
         # For each SDK in uninstall list
         If (!($SkipUninstallOld))
         {
-            if ($PSBoundParameters.Debug -eq $true) {
+            if ($PSBoundParameters.Debug -eq $true -And $SDKsToUninstall.Count -ge 1) {
                 Write-Debug "The following out-of-date SDK Module(s) will be uninstalled"
                 $SDKUpdateTable | Where-Object { $_.'Update Action' -eq 'uninstall' } | Format-Table | Out-Host
             }
@@ -218,7 +236,7 @@ Function Update-JCModule
                 }
                 catch
                 {
-                    # Write-Warning -Message "Could not uninstall $($SDK.Name) $($SDK.Version)"
+                    Write-Warning -Message "Could not uninstall $($SDK.Name) $($SDK.Version)"
                     $SDKUninstallSummary += [PSCustomObject]@{
                         'SDK Name'            = $($SDK.Name)
                         'Uninstalled Version' = $($SDK.Version)
