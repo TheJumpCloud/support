@@ -8,7 +8,7 @@ tags:
   - automation
 ---
 
-This script prompts the user to enter username, system Id, and minutes of how long the user is going to be an admin/sudo. If no system Id is found, the script outputs a table of systems with hostname, id, and version that is bound to user. After granted admin status, the user will need to relogin to see the admin access change. The user is revoked admin status after x mins provided in the function. User must relogin to be demoted to standard user.
+This script prompts the user to enter username, system Id, and minutes of how long the user is going to be an admin/sudo. If inputed system Id is not found, the script outputs a table of systems with hostname, id, and version that is bound to user. After granted admin status, the user will need to relogin to see the admin access change. The user is revoked admin status after x mins provided in the function. User must relogin to be demoted to standard user.
 
 ### Basic Usage
 
@@ -20,10 +20,6 @@ This script prompts the user to enter username, system Id, and minutes of how lo
     * System Id
     * Amount of minutes user is granted admin access
 * User will need to re-login to be granted/revoked admin access
-
-### Additional Information
-
-This script will ask for username, system Id, minutes then 
 
 ### Script
 
