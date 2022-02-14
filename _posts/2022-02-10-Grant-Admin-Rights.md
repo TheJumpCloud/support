@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Grant System Administrator Right to User
+title: Grant Administrator Right to User
 description: Add/automate granting sudo/administrator right to user
 tags:
   - powershell
@@ -13,23 +13,31 @@ This script prompts the user to enter username, system Id, and minutes of how lo
 ### Basic Usage
 
 * The PowerShell Module is required to run this script
-* Save the script to a location
+* Save the script to your desired location
 * In a PowerShell terminal window, run the script `~/Path/To/Scrpt/filename.ps1`
 * Follow the prompts to enter:
     * Username
     * System Id
     * Amount of minutes user is granted admin access
-* User will need to re-login to be granted/revoked admin access
+* User will need to re-login to the system to be granted/revoked admin access
 
+### Additional Information
+
+* Run the script from your desired directory
+
+![Grant admin prompts](https://github.com/TheJumpCloud/support/blob/SA-2377-Grant-or-Demote-Admin-Automation/images/grantAdminPrompts.gif)
+
+![Grant admin Jc portal gif](https://github.com/TheJumpCloud/support/blob/SA-2377-Grant-or-Demote-Admin-Automation/images/grantAdminPrompts.gif)
 ### Script
 
 ```powershell
-function Get-User {
+function Get-User 
+{
     # Get users
     $users = Get-JcSdkUser
     #List of users with Id
     $userLst = @{}
-    $UserName = Read-Host "Please enter in the JumpCloud Username of the target User you'd like to elevate to Sudo temporarily"
+    $UserName = Read-Host "Please enter the target JumpCloud User you'd like to elevate to admin/sudo temporarily"
     #If UserName input is correct then get the UserId
     foreach ($user in $users) {
         #Create hash table that contains all users and their Id
@@ -37,14 +45,17 @@ function Get-User {
     }
     #Check if username/userId input in the JC
     if ($userLst.Contains($UserName)) {
-        Write-Host "Id for username: $Username found: "$userLst.$UserName
+        Write-Host "Id for $Username found"
         #Return if the username provided is correct
         return $userLst.$UserName
     }
-    else {
-        Do {
+    else 
+    {
+        Do 
+        {
             $userInput = Read-Host "Username provided not found, please enter the correct username"
-            if ($userInput -eq "exit") {
+            if ($userInput -eq "exit") 
+            {
                 break;
             }
         }
@@ -53,18 +64,19 @@ function Get-User {
         return $userLst.$userInput
     }
 }
-function Get-SystemId {
+function Get-SystemId 
+{
     param (
         [Parameter()]
         [System.String]
         $UserId
     )
-    $SystemId = Read-Host "Please enter the SystemID of the Device that needs Sudo/Admin privileges"
     # Get everyone from a group
     $systemAssociations = Get-JcSdkUserTraverseSystem -UserId $UserId
-    #Systems bound to User
+    # Systems bound to User
     $systemsBoundtoUser = @()
-    foreach ($systemAssociation in $systemAssociations) {
+    foreach ($systemAssociation in $systemAssociations) 
+    {
         $systems = Get-JcSdkSystem -Id $systemAssociation.Id
 
         #Table of systems
@@ -76,14 +88,22 @@ function Get-SystemId {
         }
         $systemsBoundtoUser += $devices
     }
-    if ($systemAssociations.Id.Contains($SystemId)) {
-        Write-Host "Searched: " $SystemId "found in " $systemAssociations.Id
+
+    # Output the systems bound to user
+    Write-Host "Systems that are bound to user" ($systemsBoundtoUser | Out-String) -ForegroundColor Blue
+    $SystemId = Read-Host "Please enter the SystemId that needs sudo/admin privileges"
+    if ($systemAssociations.Id.Contains($SystemId)) 
+    {
+        Write-Host "System Id found: " $SystemId
         return $SystemId
-    } else {
-        Write-Host ($systemsBoundtoUser | Out-String) -ForegroundColor Red
-        Do {
-            $systemInput = Read-Host "System Id provided not found. Please enter the hostname to grant admin rights" 
-            if ($systemInput -eq "exit") {
+    } 
+    else
+     {
+        Do 
+        {
+            $systemInput = Read-Host "System Id provided not found. Please enter the system id to grant admin rights" 
+            if ($systemInput -eq "exit") 
+            {
                 break;
             }
         }
@@ -93,7 +113,8 @@ function Get-SystemId {
     }
 }
 #Function to elevate permission in x amount of minutes then set the user back to its old permission
-Function GrantElevatedPermissions {
+Function GrantElevatedPermissions 
+{
     [CmdletBinding()]
     param (
         # The ID of the user to grant elevated permissions
@@ -122,7 +143,9 @@ Function GrantElevatedPermissions {
     Start-Sleep -Seconds $SleepCalculated
     # Sets the user back to old permissions
     Set-JcSdkSystemAssociation -systemid $SystemId -id $UserId -op 'update' -type 'user'
+    Write-Warning "Please re-login to the system to for the updated user rights"
 }
+
 $user = Get-User($UserId)
 $SysId = Get-SystemId -UserId $user
 $Mins = Read-Host "How many minutes would you like to elevate this user for to Sudo/Admin for?"
