@@ -7,8 +7,8 @@ tags:
   - settings
   - automation
 ---
-
-This script prompts the user to enter username, system Id, and minutes of how long the user is going to be an admin/sudo. If inputed system Id is not found, the script outputs a table of systems with hostname, id, and version that is bound to user. After granted admin status, the user will need to relogin to see the admin access change. The user is revoked admin status after x mins provided in the function. User must relogin to be demoted to standard user.
+The purpose of this script is to grant admin access to a JumpCloud user to a bound system.
+This script prompts the user to enter username, system Id, and minutes of how long the user is going to be an admin/sudo. After granted admin status, the user will need to re-login if on Windows machine to see the admin access change. The user is revoked admin status after x mins. User must re-login if on Windows machine to be demoted to standard user. 
 
 ### Basic Usage
 
@@ -19,49 +19,48 @@ This script prompts the user to enter username, system Id, and minutes of how lo
     * Username
     * System Id
     * Amount of minutes user is granted admin access
-* User will need to re-login to the system to be granted/revoked admin access
+* User will need to re-login if on Windows Machine to be granted/revoked admin access
 
 ### Additional Information
 
 * Run the script from your desired directory
+* Mac and Linux machines will not need to re-login
 
-![Grant admin prompts](https://github.com/TheJumpCloud/support/blob/SA-2377-Grant-or-Demote-Admin-Automation/images/grantAdminPrompts.gif)
+* Powershell prompts to grant admin rights
+![Grant admin prompts](./../../../images/grantAdminPrompts.gif)
 
-![Grant admin Jc portal](https://github.com/TheJumpCloud/support/blob/SA-2377-Grant-or-Demote-Admin-Automation/images/grantAdminPrompts.gif)
+
+* JumpCloud portal permission change
+![Grant admin Jc portal](./../../../images/grantAdminJcPortal.gif)
 ### Script
 
 ```powershell
 function Get-User 
 {
+    $Username = Read-Host "Please enter the target JumpCloud User you'd like to elevate to admin/sudo temporarily"
+
     # Get users
-    $users = Get-JcSdkUser
-    #List of users with Id
-    $userLst = @{}
-    $UserName = Read-Host "Please enter the target JumpCloud User you'd like to elevate to admin/sudo temporarily"
-    #If UserName input is correct then get the UserId
-    foreach ($user in $users) {
-        #Create hash table that contains all users and their Id
-        $userLst.Add($user.Username, $user.Id)
-    }
+    $users = Get-JCUser -UserName $UserName
     #Check if username/userId input in the JC
-    if ($userLst.Contains($UserName)) {
-        Write-Host "Id for $Username found"
+    if ($users) {
+        Write-Host "User found" -ForegroundColor Yellow
         #Return if the username provided is correct
-        return $userLst.$UserName
+        return $users.Id
     }
     else 
     {
         Do 
         {
-            $userInput = Read-Host "Username provided not found, please enter the correct username"
-            if ($userInput -eq "exit") 
+            $UserName = Read-Host "Username provided not found, please enter the correct username"
+            if ($UserName -eq "exit") 
             {
                 break;
             }
+           $users = Get-JCUser -UserName $UserName
         }
-        Until ($userLst.Contains($userInput))
-        Write-Host "User found: "$userInput
-        return $userLst.$userInput
+        Until ($users)
+        Write-Host "User found" -ForegroundColor Yellow
+        return $users.Id
     }
 }
 function Get-SystemId 
@@ -94,7 +93,7 @@ function Get-SystemId
     $SystemId = Read-Host "Please enter the SystemId that needs sudo/admin privileges"
     if ($systemAssociations.Id.Contains($SystemId)) 
     {
-        Write-Host "System Id found: " $SystemId
+        Write-Host "System Id found" -ForegroundColor Yellow
         return $SystemId
     } 
     else
@@ -108,11 +107,11 @@ function Get-SystemId
             }
         }
         Until ($systemAssociations.Id.Contains($systemInput))
-        Write-Host "System found: "$systemInput
+        Write-Host "System found" -ForegroundColor Yellow
         return $systemInput
     }
 }
-#Function to elevate permission in x amount of minutes then set the user back to its old permission
+#Function to elevate permission in x amount of minutes then revokes admin right to user
 Function GrantElevatedPermissions 
 {
     [CmdletBinding()]
@@ -136,6 +135,7 @@ Function GrantElevatedPermissions
     Write-Warning "Do not close this window until the script is finished or the user will remain admin!"
     # Calculate the seconds to sleep for 
     $SleepCalculated = $Mins * 60
+    # Admin attributes
     $attributes = [JumpCloud.SDK.V2.Models.IGraphOperationSystemAttributes]@{ 'sudo' = @{'enabled' = $true; 'withoutPassword' = $false } }
     # Set the user to admin
     Set-JcSdkSystemAssociation -systemid $SystemId -id $UserId -op 'update' -type 'user' -Attributes $attributes.AdditionalProperties
@@ -143,10 +143,9 @@ Function GrantElevatedPermissions
     Start-Sleep -Seconds $SleepCalculated
     # Sets the user back to old permissions
     Set-JcSdkSystemAssociation -systemid $SystemId -id $UserId -op 'update' -type 'user'
-    Write-Warning "Please re-login to the system to for the updated user rights"
+    Write-Warning "Please re-login if on Windows machine to update admin rights"
 }
-
-$user = Get-User($UserId)
+$user = Get-User
 $SysId = Get-SystemId -UserId $user
 $Mins = Read-Host "How many minutes would you like to elevate this user for to Sudo/Admin for?"
 
