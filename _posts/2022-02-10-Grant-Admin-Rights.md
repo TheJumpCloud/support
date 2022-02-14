@@ -27,7 +27,7 @@ This script prompts the user to enter username, system Id, and minutes of how lo
 
 ![Grant admin prompts](https://github.com/TheJumpCloud/support/blob/SA-2377-Grant-or-Demote-Admin-Automation/images/grantAdminPrompts.gif)
 
-![Grant admin Jc portal gif](https://github.com/TheJumpCloud/support/blob/SA-2377-Grant-or-Demote-Admin-Automation/images/grantAdminPrompts.gif)
+![Grant admin Jc portal](https://github.com/TheJumpCloud/support/blob/SA-2377-Grant-or-Demote-Admin-Automation/images/grantAdminPrompts.gif)
 ### Script
 
 ```powershell
