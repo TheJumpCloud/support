@@ -147,7 +147,7 @@ Function GrantElevatedPermissions
 }
 $user = Get-User
 $SysId = Get-SystemId -UserId $user
-$Mins = Read-Host "How many minutes would you like to elevate this user for to Sudo/Admin for?"
+$Mins = Read-Host "HHow many minutes should this user be elevated as Sudo/Admin?"
 
 GrantElevatedPermissions -Userid $user -systemid $SysId -mins $Mins
 ```
