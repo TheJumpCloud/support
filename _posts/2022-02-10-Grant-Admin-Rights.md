@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Grant Administrator Right to User
-description: Add/automate granting sudo/administrator right to user
+description: Grant sudo/administrator right to user and its bound systems
 tags:
   - powershell
   - settings
