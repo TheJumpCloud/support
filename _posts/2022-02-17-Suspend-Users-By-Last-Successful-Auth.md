@@ -9,7 +9,7 @@ tags:
   - authentication
 ---
 
-To suspend users by their last known successful authentication we first need to know some data about the users. Directory Insights data contains infomration about a users last known authentication time. The `Get-JcLoginEvent` function is a streamlined function to help query users who have completed a successful authentication within a defined time period. This function returns a user's last known sucessful "radius_auth", "sso_auth", "login_attempt", "ldap_bind" and/or "user_login_attempt".
+To suspend users by their last known successful authentication we first need to know some data about the users. Directory Insights data contains information about a users last known authentication time. The `Get-JcLoginEvent` function is a streamlined function to help query users who have completed a successful authentication within a defined time period. This function returns a user's last known successful "radius_auth", "sso_auth", "login_attempt", "ldap_bind" and/or "user_login_attempt".
 
 The `Suspend-InactiveUsers` function will suspend users who's last timestamp is greater (older) than the `daysSinceLogin` parameter (or if they have no known last authentication time)
 
@@ -45,7 +45,7 @@ The `Suspend-InactiveUsers` function will suspend users who have not successfull
 
 This function takes the CSV generated from `Get-JCLoginEvent` and suspends users who's last known login date is `DaysSinceLogin` (days) older than the date generated and saved in the `jc-login-suspend-last-run.txt` file.'
 
-The following parameters can be used with this fucntion: `ReadOnly`, `CsvPath`, `ExcludeAttribute` and `DaysSinceLogin`
+The following parameters can be used with this function: `ReadOnly`, `CsvPath`, `ExcludeAttribute` and `DaysSinceLogin`
 
 `ReadOnly` can be set to `$true`. Setting the parameter to true will will query users and print the users that would be suspended if the parameter was not set - this can be helpful for testing.
 
