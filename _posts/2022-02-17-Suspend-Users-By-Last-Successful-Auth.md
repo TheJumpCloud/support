@@ -26,8 +26,8 @@ function Suspend-InactiveUsers{
     ... # function contents
 }
 Connect-JCOnline -JumpCloudApiKey:("jsdaf892370asdfkljfdaslkjjsdaf892370asdf")
-Get-JcLoginEvent -CsvPath:(~/suspension/authnticationTimestamps.csv) -StartDate((Get-Date).AddDays(-30))
-Suspend-InactiveUsers -CsvPath:(~/suspension/authnticationTimestamps.csv) -DaysSinceLogin:(30) -ExcludeAttribute:('serviceAccount')
+Get-JcLoginEvent -CsvPath:("~/suspension/authnticationTimestamps.csv") -StartDate((Get-Date).AddDays(-30))
+Suspend-InactiveUsers -CsvPath:("~/suspension/authnticationTimestamps.csv") -DaysSinceLogin:(30) -ExcludeAttribute:('serviceAccount')
 ```
 
 To enable all users who've been disabled:
