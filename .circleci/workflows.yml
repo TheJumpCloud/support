@@ -27,7 +27,7 @@ parameters:
   ValidateModule:
     description: 'When `true`, Pester Tests will be run for moduleValidation tags.'
     type: boolean
-    default: true
+    default: false
   ReleaseType:
     description: 'Release Type. Accepted values [ Major, Minor, Patch ]'
     type: enum
@@ -37,7 +37,7 @@ parameters:
     description: 'PowerShell Repository for JumpCloud SDKs'
     type: enum
     enum: ["PSGallery", "CodeArtifact"]
-    default: "PSGallery"
+    default: "CodeArtifact"
   PowerShellModified:
     description: 'Used by Path Filtering Orb to determine if changes occurred in the ./PowerShell/ folder'
     type: boolean
@@ -51,11 +51,12 @@ parameters:
     type: boolean
     default: false
 orbs:
-  win: circleci/windows@2.2.0
+  win: circleci/windows@2.4.1
 executors:
   macos_exec:
     macos:
-      xcode: 11.3.0
+      xcode: 13.2.1
+    resource_class: macos.x86.medium.gen2
 workflows:
   version: 2
   ci:
@@ -204,7 +205,7 @@ jobs:
       - invoke-pester:
           JumpCloudApiKey: $env:XAPIKEY_PESTER
           JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_MTP
-          ExcludeTagList: 'ModuleValidation, JCUsersFromCSV, JCDeployment, JCModule'
+          ExcludeTagList: 'ModuleValidation, JCUsersFromCSV, JCDeployment'
           IncludeTagList: '*'
           RequiredModulesRepo: << pipeline.parameters.RequiredModulesRepo >>
           Shell: 'pwsh.exe'
@@ -215,25 +216,25 @@ jobs:
       - invoke-pester:
           JumpCloudApiKey: $env:XAPIKEY_PESTER_MAC
           JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_MTP
-          ExcludeTagList: 'ModuleValidation, JCUsersFromCSV, JCDeployment, JCModule'
+          ExcludeTagList: 'ModuleValidation, JCUsersFromCSV, JCDeployment'
           IncludeTagList: '*'
           RequiredModulesRepo: << pipeline.parameters.RequiredModulesRepo >>
           Shell: 'pwsh'
   Pester Tests Linux:
     machine:
-      image: ubuntu-1604:202007-01
+      image: ubuntu-2004:202201-02
     steps:
       - setup-pester-env-linux
       - invoke-pester:
           JumpCloudApiKey: $env:XAPIKEY_PESTER_LINUX
           JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_MTP
-          ExcludeTagList: 'ModuleValidation, JCUsersFromCSV, JCDeployment, JCModule'
+          ExcludeTagList: 'ModuleValidation, JCUsersFromCSV, JCDeployment'
           IncludeTagList: '*'
           RequiredModulesRepo: << pipeline.parameters.RequiredModulesRepo >>
           Shell: 'pwsh'
   Publish Module Validation:
     machine:
-      image: ubuntu-1604:202007-01
+      image: ubuntu-2004:202201-02
     steps:
       - validate-pipeline-param:
           branch: << pipeline.git.branch  >>
@@ -263,12 +264,15 @@ jobs:
       - run:
           name: "Draft Release on GitHub"
           command: |
-            VERSION=$(grep -o '\d\+\.\d\+\.\d' /root/project/PowerShell/JumpCloud\ Module/JumpCloud.psd1)
-            TITLE="JumpCloudModule_$VERSION"
-            VERSION="v$VERSION"
-            BODY="Latest Release of JumpCloud PowerShell Module"
-            #TODO: implement TITLE & BODY later, for some reason these params don't work
-            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete -draft ${VERSION} /root/project/PowerShell/
+            # Module Version
+            VERSION=$(grep -o '\d\+\.\d\+\.\d\+' /root/project/PowerShell/JumpCloud\ Module/JumpCloud.psd1)
+            TITLE="JumpCloud PowerShell Module v$VERSION"
+            # Get the changelog text between the latest release # and the next sequential "## SemanticVersionNumber"
+            CHANGELOG=$(cat /root/project/PowerShell/ModuleChangelog.md |awk "/^## $VERSION/{ f = 1; next } /## [0-9]+.[0-9]+.[0-9]+/{ f = 0 } f")
+            TAG="v$VERSION"
+            BODY="$TITLE $CHANGELOG"
+            # Post Draft Release
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -n "$TITLE" -b "$BODY" -delete -draft "$TAG" /root/project/PowerShell/
 commands:
   initial-setup:
     steps:
