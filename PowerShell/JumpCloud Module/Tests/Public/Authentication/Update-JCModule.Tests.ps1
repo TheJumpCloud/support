@@ -56,4 +56,74 @@ Describe -Tag:('JCModule') 'Test for Update-JCModule' {
     AfterAll {
         Import-Module -Name:("$PesterParams_ModuleManifestPath/$PesterParams_ModuleManifestName") -Force -Global
     }
+    It ("When a previous version of an SDK is installed, Update-JCModule prompts to update and the next version of that SDK is insatlled") {
+        # Get Installed SDKs
+        $SDKlist = ('JumpCloud.SDK.v2','JumpCloud.SDK.v1','JumpCloud.SDK.directoryinsights')
+
+        $latestSDKs += foreach ($SDK in $SDKlist) {
+            Find-Module -Name $SDK
+        }
+        # Get-InstalledModule | Where-Object { $_.Name -match "JumpCloud.SDK" }
+        $installedSDKs = Get-InstalledModule | Where-Object { $_.Name -match "JumpCloud.SDK" }
+        $previousSDKs = @()
+        # Get previous version of the SDKs
+        foreach ($SDK in $latestSDKs) {
+            # Find Previous Version
+            try {
+                Clear-Variable foundPrevious -ErrorAction Ignore
+            }
+            catch {
+                Write-Debug "No Variable named 'foundPrevious' existed"
+            }
+            write-host "$($SDK.Name)"
+            while (-not $foundPrevious){
+                try {
+                    # $PreviousBuildVersion = ([Version]$SDK.Version).Build - 1
+                    $PreviousVersion = [Version]::new(([Version]$SDK.Version).Major, ([Version]$SDK.Version).Minor, (([Version]$SDK.Version).Build - 1))
+                    $foundPrevious = Find-Module -Name $SDK.Name -RequiredVersion $PreviousVersion
+                }
+                catch {
+                    Write-Debug "no previous version found"
+                }
+                try {
+                    $PreviousVersion = [Version]::new(([Version]$SDK.Version).Major, (([Version]$SDK.Version).Minor - 1), ([Version]$SDK.Version).Build)
+                    $foundPrevious = Find-Module -Name $SDK.Name -RequiredVersion $PreviousVersion
+                }
+                catch{
+                    Write-Debug "no previous version found"
+                }
+                try {
+                    $PreviousVersion = [Version]::new((([Version]$SDK.Version).Major - 1), ([Version]$SDK.Version).Minor, ([Version]$SDK.Version).Build)
+                    $foundPrevious = Find-Module -Name $SDK.Name -RequiredVersion $PreviousVersion
+                }
+                catch {
+                    Write-Debug "no previous version found"
+                }
+            }
+            $foundPrevious
+            $previousSDKs += $foundPrevious
+        }
+        # Uninstall current version of Module the SDKs
+        # Get-Module Jumpcloud | Remove-Module
+        # Uninstall-Module -Name "JumpCloud" -Force
+        # foreach ($SDK in $installedSDKs) {
+        #     Get-Module -Name $SDK.Name | Remove-Module -Force
+        #     Uninstall-Module -Name $SDK.Name -RequiredVersion $SDK.version -Force
+        # }
+        # Install Previous version of the SDKs
+        foreach ($SDK in $previousSDKs){
+            Install-Module -Name $SDK.Name -RequiredVersion $SDK.version -Force
+            # Importing will throw the assembly error (since we already have it loaded) / Check w/o importing
+            # Import-Module -Name $SDK.Name -Force
+        }
+        # Import-Module -Name:("$PesterParams_ModuleManifestPath/$PesterParams_ModuleManifestName") -Force -Global
+        # Run Update-JCModule with -Force
+        Update-JCModule -Force
+        # Installed Module Should be equal to versions from $installedSDKs (updates should have occured)
+        $TestSDKs = Get-InstalledModule | Where-Object { $_.Name -match "JumpCloud.SDK" }
+        # Test that the version of the TestSDKs is indeed the version of the LatestSDKs
+        foreach ($sdk in $TestSDKs) {
+            ($TestSDKs | Where-Object { $_.Name -eq $sdk.Name }).Version | Should -Not -Be ($previousSDKs | Where-Object { $_.Name -eq $sdk.Name }).Version
+        }
+    }
 }

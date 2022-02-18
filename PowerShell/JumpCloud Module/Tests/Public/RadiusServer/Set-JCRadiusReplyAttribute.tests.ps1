@@ -34,13 +34,13 @@ Describe -Tag:('JCRadiusReplyAttribute') "Set-JCRadiusReplyAttribute 1.9.0" {
 
         $VLAN = Get-Random -Minimum 1 -Maximum 4064
 
-        $VLANTag = Get-Random -Minimum 0 -Maximum 31
+        $VLANTag = Get-Random -Minimum 1 -Maximum 31
 
         $AttributesAdd = Add-JCRadiusReplyAttribute -VLAN $VLAN -GroupName $NewGroup.Name -VLANTag $VLANTag
 
         $UpdateVLAN = Get-Random -Minimum 1 -Maximum 4064
 
-        $UpdateVLANTag = Get-Random -Minimum 0 -Maximum 31
+        $UpdateVLANTag = Get-Random -Minimum 1 -Maximum 31
 
         $AttributeUpdate = Set-JCRadiusReplyAttribute -VLAN $UpdateVLAN -GroupName $NewGroup.name -VLANTag $UpdateVLANTag
 
