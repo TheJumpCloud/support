@@ -149,7 +149,7 @@ The CommandID will be the 24 character string populated for the _id field.')]
         $ExistingCommand = Get-JCSDKCommand -Id $CommandID
 
         # set command w/ origional type and new trigger
-        $Command = Set-JCSDKCommand -ID $CommandID -launchType trigger -trigger $trigger -Command $ExistingCommand.Command1 -CommandType $ExistingCommand.CommandType -Shell $ExistingCommand.Shell
+        $Command = Set-JCSDKCommand -ID $CommandID -launchType trigger -trigger $trigger -Command $ExistingCommand.Command1 -CommandType $ExistingCommand.CommandType -Shell $ExistingCommand.Shell -Name $ExistingCommand.Name
 
         $DeploymentInfo = Import-Csv $CSVFilePath
 
