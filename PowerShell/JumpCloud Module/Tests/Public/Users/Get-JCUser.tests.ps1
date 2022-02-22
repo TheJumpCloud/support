@@ -52,13 +52,41 @@ Describe -Tag:('JCUser') 'Get-JCUser 1.1' {
     }
 
     It "Searches a JumpCloud user by email" {
-
         $email = "deleteme@$(New-RandomString -NumberOfChars 8).com"
         $NewUser = New-RandomUser -Domain DeleteMe | New-JCUser -email $email
         $NewUser = Get-JCUser -email $email
         $NewUser.email | Should -Be $email
         Remove-JCUser -UserID $NewUser._id -force
-
+    }
+    It "Searches a JumpCloud user by alternateEmail" {
+        # TODO: fix function
+        $alternateEmail = "deleteme@$(New-RandomString -NumberOfChars 8).com"
+        $NewUser = New-RandomUser -Domain DeleteMe | New-JCUser -alternateEmail $alternateEmail
+        $NewUser = Get-JCUser -alternateEmail $alternateEmail
+        $NewUser.alternateEmail | Should -Be $alternateEmail
+        Remove-JCUser -UserID $NewUser._id -force
+    }
+    It "Searches a JumpCloud user by managedAppleID" {
+        $managedAppleID = "deleteme@$(New-RandomString -NumberOfChars 8).com"
+        $NewUser = New-RandomUser -Domain DeleteMe | New-JCUser -managedAppleID $managedAppleID
+        $NewUser = Get-JCUser -managedAppleID $managedAppleID
+        $NewUser.managedAppleID | Should -Be $managedAppleID
+        Remove-JCUser -UserID $NewUser._id -force
+    }
+    It "Searches a JumpCloud user by managerID" {
+        $manager = $PesterParams_User1.id
+        $NewUser = New-RandomUser -Domain DeleteMe | New-JCUser -manager $manager
+        $NewUser = Get-JCUser -manager $manager
+        $NewUser.manager | Should -Be $manager
+        Remove-JCUser -UserID $NewUser._id -force
+    }
+    It "Searches a JumpCloud user by managerUsername" {
+        $managerUsername = $PesterParams_User1.username
+        $managerId = $PesterParams_User1.id
+        $NewUser = New-RandomUser -Domain DeleteMe | New-JCUser -manager $managerUsername
+        $NewUser = Get-JCUser -manager $managerUsername
+        $NewUser.manager | Should -Be $managerId
+        Remove-JCUser -UserID $NewUser._id -force
     }
 
 }
@@ -214,14 +242,16 @@ Describe -Tag:('JCUser') "Get-JCUser 1.4" {
         $PesterUser.username | Should -Be $PesterParams_User1.Username
     }
 
-    It "Searches for a JumpCloud user using username and returns all properties " {
-        $PesterUser = Get-JCUser -username $PesterParams_User1.Username  -returnProperties 'created', 'account_locked', 'activated', 'addresses', 'allow_public_key', 'attributes', 'email', 'enable_managed_uid', 'enable_user_portal_multifactor', 'externally_managed', 'firstname', 'lastname', 'ldap_binding_user', 'passwordless_sudo', 'password_expired', 'password_never_expires', 'phoneNumbers', 'samba_service_user', 'ssh_keys', 'sudo', 'totp_enabled', 'unix_guid', 'unix_uid', 'username'
-        $PesterUser.created | Should -Not -Be $null
+    It "Searches for a JumpCloud user using username and returns all properties" {
+        # TODO: Fix broken function - AlternateEmail not returned when we search by username
+        $PesterUser = Get-JCUser -username $PesterParams_User1.Username  -returnProperties 'created', 'account_locked', 'activated', 'addresses', 'allow_public_key', 'attributes', 'email', 'enable_managed_uid', 'enable_user_portal_multifactor', 'externally_managed', 'firstname', 'lastname', 'ldap_binding_user', 'passwordless_sudo', 'password_expired', 'password_never_expires', 'phoneNumbers', 'samba_service_user', 'ssh_keys', 'sudo', 'totp_enabled', 'unix_guid', 'unix_uid', 'username', 'alternateEmail', 'managedAppleId'
         $PesterUser.account_locked | Should -Not -Be $null
         $PesterUser.activated | Should -Not -Be $null
         $PesterUser.addresses | Should -Not -Be $null
         $PesterUser.allow_public_key | Should -Not -Be $null
+        $PesterUser.alternateEmail | Should -Not -Be $null
         $PesterUser.attributes | Should -Not -Be $null
+        $PesterUser.created | Should -Not -Be $null
         $PesterUser.email | Should -Not -Be $null
         $PesterUser.enable_managed_uid | Should -Not -Be $null
         $PesterUser.enable_user_portal_multifactor | Should -Not -Be $null
@@ -229,17 +259,17 @@ Describe -Tag:('JCUser') "Get-JCUser 1.4" {
         $PesterUser.firstname | Should -Not -Be $null
         $PesterUser.lastname | Should -Not -Be $null
         $PesterUser.ldap_binding_user | Should -Not -Be $null
-        $PesterUser.passwordless_sudo | Should -Not -Be $null
+        $PesterUser.managedAppleID | Should -Not -Be $null
         $PesterUser.password_expired | Should -Not -Be $null
         $PesterUser.password_never_expires | Should -Not -Be $null
+        $PesterUser.passwordless_sudo | Should -Not -Be $null
+        $PesterUser.phoneNumbers | Should -Not -Be $null
         $PesterUser.samba_service_user | Should -Not -Be $null
         $PesterUser.sudo | Should -Not -Be $null
         $PesterUser.totp_enabled | Should -Not -Be $null
-        $PesterUser.phoneNumbers | Should -Not -Be $null
         $PesterUser.unix_guid | Should -Not -Be $null
         $PesterUser.unix_uid | Should -Not -Be $null
         $PesterUser.username | Should -Not -Be $null
-
     }
 
 
@@ -285,6 +315,15 @@ Describe -Tag:('JCUser') "Get-JCUser with new attributes 1.8.0" {
     It "Searches for a user by location" {
         $Search = Get-JCUser -location $PesterParams_User1.location -returnProperties location
         $Search.location | Should -Be $PesterParams_User1.location
+    }
+    It "Searches for a user by alternateEmail"{
+        #TODO: fix broken test/ function
+        $Search = Get-JCUser -alternateEmail $PesterParams_User1.alternateEmail -returnProperties alternateEmail
+        $Search.alternateEmail | Should -Be $PesterParams_User1.alternateEmail
+    }
+    It "Searches for a user by managedAppleID" {
+        $Search = Get-JCUser -managedAppleId $PesterParams_User1.managedAppleID -returnProperties managedAppleId
+        $Search.managedAppleID | Should -Be $PesterParams_User1.managedAppleID
     }
 }
 
