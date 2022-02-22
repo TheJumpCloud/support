@@ -208,7 +208,7 @@ The CommandID will be the 24 character string populated for the _id field.')]
             $resultsArray += $SingleResult
 
         }
-        $null = Set-JCSDKCommand -ID $CommandID -launchType manual -Command $ExistingCommand.Command1 -CommandType $ExistingCommand.CommandType -Shell $ExistingCommand.Shell
+        $null = Set-JCSDKCommand -ID $CommandID -launchType manual -Command $ExistingCommand.Command1 -CommandType $ExistingCommand.CommandType -Shell $ExistingCommand.Shell -Name $ExistingCommand.Name
     }
 
     end
