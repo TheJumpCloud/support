@@ -235,6 +235,11 @@
                                                                 $patterns = (Select-String -inputObject $item -pattern $regex)
                                                                 $paramHash.Add($patterns.matches.groups[1].value, $patterns.matches.groups[3].value)
                                                             }
+                                                            if ('Attributes' -in $paramHash.keys){
+                                                                # write-host $paramHash['Attributes']
+                                                                $paramHash['Attributes'] = $AttributesValue
+                                                                # write-host $paramHash['Attributes']
+                                                            }
                                                             write-host "we are going to run this command: $sdkFunction"
                                                             Write-Host "with these params:"
                                                             Write-Host $paramHash.keys
