@@ -1,8 +1,16 @@
 <#
 .Synopsis
 Query the API for Directory Insights events
+#### Sample Request
+```
+curl -X POST 'https://api.jumpcloud.com/insights/directory/v1/events' -H 'Content-Type: application/json' -H 'x-api-key: {API_KEY}' --data '{\"service\": [\"all\"], \"start_time\": \"2021-07-14T23:00:00Z\", \"end_time\": \"2021-07-28T14:00:00Z\", \"sort\": \"DESC\", \"fields\": [\"timestamp\", \"event_type\", \"initiated_by\", \"success\", \"client_ip\", \"provider\", \"organization\"]}'
+```
 .Description
 Query the API for Directory Insights events
+#### Sample Request
+```
+curl -X POST 'https://api.jumpcloud.com/insights/directory/v1/events' -H 'Content-Type: application/json' -H 'x-api-key: {API_KEY}' --data '{\"service\": [\"all\"], \"start_time\": \"2021-07-14T23:00:00Z\", \"end_time\": \"2021-07-28T14:00:00Z\", \"sort\": \"DESC\", \"fields\": [\"timestamp\", \"event_type\", \"initiated_by\", \"success\", \"client_ip\", \"provider\", \"organization\"]}'
+```
 .Example
 PS C:\> Get-JCEvent -Service:('all') -StartTime:((Get-date).AddDays(-30))
 
@@ -40,15 +48,13 @@ Get all events filtered by organization_update term between a date range
 JumpCloud.SDK.DirectoryInsights.Models.IEventQuery
 .Outputs
 JumpCloud.SDK.DirectoryInsights.Models.IPost200ApplicationJsonItemsItem
-.Outputs
-System.String
 .Notes
 COMPLEX PARAMETER PROPERTIES
 
 To create the parameters described below, construct a hash table containing the appropriate properties. For information on hash tables, run Get-Help about_Hash_Tables.
 
 BODY <IEventQuery>: EventQuery is the users' command to search our auth logs
-  Service <String[]>: service name to query. Known services: systems,radius,sso,directory,ldap,all
+  Service <String[]>: service name to query.
   StartTime <DateTime>: query start time, UTC in RFC3339 format
   [EndTime <DateTime?>]: optional query end time, UTC in RFC3339 format
   [Fields <String[]>]: optional list of fields to return from query
@@ -63,14 +69,14 @@ https://github.com/TheJumpCloud/jcapi-powershell/tree/master/SDKs/PowerShell/Jum
 #>
 Function Get-JCEvent
 {
-    [OutputType([JumpCloud.SDK.DirectoryInsights.Models.IPost200ApplicationJsonItemsItem], [System.String])]
+    [OutputType([JumpCloud.SDK.DirectoryInsights.Models.IPost200ApplicationJsonItemsItem])]
     [CmdletBinding(DefaultParameterSetName='GetExpanded', PositionalBinding=$false, SupportsShouldProcess, ConfirmImpact='Medium')]
     Param(
     [Parameter(ParameterSetName='GetExpanded', Mandatory)]
+    [AllowEmptyCollection()]
     [JumpCloud.SDK.DirectoryInsights.Category('Body')]
     [System.String[]]
     # service name to query.
-    # Known services: systems,radius,sso,directory,ldap,all
     ${Service},
 
     [Parameter(ParameterSetName='GetExpanded', Mandatory)]
@@ -86,12 +92,14 @@ Function Get-JCEvent
     ${EndTime},
 
     [Parameter(ParameterSetName='GetExpanded')]
+    [AllowEmptyCollection()]
     [JumpCloud.SDK.DirectoryInsights.Category('Body')]
     [System.String[]]
     # optional list of fields to return from query
     ${Fields},
 
     [Parameter(ParameterSetName='GetExpanded')]
+    [AllowEmptyCollection()]
     [JumpCloud.SDK.DirectoryInsights.Category('Body')]
     [System.String[]]
     # Specific query to search after, see x-* response headers for next values

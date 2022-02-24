@@ -1,4 +1,4 @@
-Function Get-JCUser ()
+Function Get-JCUser () 
 {
     [CmdletBinding(DefaultParameterSetName = 'SearchFilter')]
 
@@ -73,8 +73,8 @@ Function Get-JCUser ()
         [ValidateSet('created', 'password_expiration_date')]
         [String]$filterDateProperty,
 
-        [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'Allows you to return select properties on JumpCloud user objects. Specifying what properties are returned can drastically increase the speed of the API call with a large data set. Valid properties that can be returned are: ''created'', ''password_expiration_date'', ''account_locked'', ''activated'', ''addresses'', ''allow_public_key'', ''attributes'', ''email'', ''enable_managed_uid'', ''enable_user_portal_multifactor'', ''externally_managed'', ''firstname'', ''lastname'', ''ldap_binding_user'', ''passwordless_sudo'', ''password_expired'', ''password_never_expires'', ''phoneNumbers'', ''samba_service_user'', ''ssh_keys'', ''sudo'', ''totp_enabled'', ''unix_guid'', ''unix_uid'', ''username'',''suspended''')]
-        [ValidateSet('created', 'password_expiration_date', 'account_locked', 'activated', 'addresses', 'allow_public_key', 'attributes', 'email', 'enable_managed_uid', 'enable_user_portal_multifactor', 'externally_managed', 'firstname', 'lastname', 'ldap_binding_user', 'passwordless_sudo', 'password_expired', 'password_never_expires', 'phoneNumbers', 'samba_service_user', 'ssh_keys', 'sudo', 'totp_enabled', 'unix_guid', 'unix_uid', 'username', 'middlename', 'displayname', 'jobTitle', 'employeeIdentifier', 'department', 'costCenter', 'company', 'employeeType', 'description', 'location', 'external_source_type', 'external_dn', 'suspended', 'mfa')]
+        [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'Allows you to return select properties on JumpCloud user objects. Specifying what properties are returned can drastically increase the speed of the API call with a large data set. Valid properties that can be returned are: ''created'', ''password_expiration_date'', ''account_locked'', ''activated'', ''addresses'', ''allow_public_key'', ''attributes'', ''alternateEmail'',''email'', ''enable_managed_uid'', ''enable_user_portal_multifactor'', ''externally_managed'', ''firstname'', ''lastname'', ''ldap_binding_user'', ''passwordless_sudo'', ''password_expired'', ''password_never_expires'', ''phoneNumbers'', ''samba_service_user'', ''ssh_keys'', ''sudo'', ''totp_enabled'', ''unix_guid'', ''unix_uid'', ''managedAppleId'',''manager'',''username'',''suspended''')]
+        [ValidateSet('created', 'password_expiration_date', 'account_locked', 'activated', 'addresses', 'allow_public_key', 'attributes', 'alternateEmail', 'managedAppleId', 'manager', 'email', 'enable_managed_uid', 'enable_user_portal_multifactor', 'externally_managed', 'firstname', 'lastname', 'ldap_binding_user', 'passwordless_sudo', 'password_expired', 'password_never_expires', 'phoneNumbers', 'samba_service_user', 'ssh_keys', 'sudo', 'totp_enabled', 'unix_guid', 'unix_uid', 'username', 'middlename', 'displayname', 'jobTitle', 'employeeIdentifier', 'department', 'costCenter', 'company', 'employeeType', 'description', 'location', 'external_source_type', 'external_dn', 'suspended', 'mfa')]
         [String[]]$returnProperties,
 
         #New parameters as of 1.8 release
@@ -112,16 +112,25 @@ Function Get-JCUser ()
         [String]$external_dn,
 
         [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'The externally managed user source type (ADB Externally managed users only)')]
-        [String]$external_source_type
+        [String]$external_source_type,
+
+        [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'The managedAppleId of the JumpCloud user you wish to search for.')]
+        [String]$managedAppleId,
+
+        [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'The manager of the JumpCloud user you wish to search for.')]
+        [String]$manager,
+
+        [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'The alternateEmail of the JumpCloud user you wish to search for.')]
+        [String]$alternateEmail
     )
 
-    DynamicParam
+    DynamicParam 
     {
-        If ((Get-PSCallStack).Command -like '*MarkdownHelp')
+        If ((Get-PSCallStack).Command -like '*MarkdownHelp') 
         {
             $filterDateProperty = 'created'
         }
-        if ($filterDateProperty)
+        if ($filterDateProperty) 
         {
             # Create the dictionary
             $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
@@ -166,7 +175,6 @@ Function Get-JCUser ()
     }
 
     begin
-
     {
         Write-Verbose 'Verifying JCAPI Key'
         if ($JCAPIKEY.length -ne 40) { Connect-JCOnline }
@@ -194,7 +202,6 @@ Function Get-JCUser ()
     }
 
     process
-
     {
         [int]$limit = '1000'
         Write-Verbose "Setting limit to $limit"
@@ -233,6 +240,7 @@ Function Get-JCUser ()
                         $Search = @{
                             filter = @(
                                 @{
+
                                 }
                             )
                             limit  = $limit
@@ -241,7 +249,7 @@ Function Get-JCUser ()
                         } #Initialize search
 
                     }
-
+                    
                     foreach ($param in $PSBoundParameters.GetEnumerator())
                     {
                         if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }
@@ -311,15 +319,55 @@ Function Get-JCUser ()
                     {
                         (($Search.filter).GetEnumerator()).add($DateProperty, @{$DateQuery = $Timestamp })
                     }
+                    
+                    # Get the manager using manager username instead of userId
+                    if ("manager" -in $Search.filter.keys)
+                    {
+                        $managerSearch = @{
+                            filter = @{
+                                or = @(
+                                    'username:$regex:/' + $Search.filter.Values + '/i'
+                                )
+                            }
+                        }
+                        $managerSearchJSON = $managerSearch | ConvertTo-Json -Compress -Depth 4
+                        $managerUrl = "$JCUrlBasePath/api/search/systemusers"
+                        $managerCallRes = Invoke-RestMethod -Method POST -Uri $managerUrl  -Header $hdrs -Body $managerSearchJSON
+                        $managerRes = $managerCallRes.results.id
+                        # Check if either username or userId
+                        if (!$managerRes)
+                        {
+                            Write-Debug 'Using managerId'
+                            $Search = @{
+                                filter = @{
+                                    or = @(
+                                        'manager:' + $manager
+                                    )
+                                }
+                            }
+                            $SearchJSON = $Search | ConvertTo-Json -Compress -Depth 4
+                        }
+                        else
+                        {
+                            Write-Debug 'Using manager username'
+                            # Search for the manager
+                            $Search = @{
+                                filter = @{
+                                    or = @(
+                                        'manager:' + $managerRes
+                                    )
+                                }
+                            }
+                        }
+                    }
 
                     $SearchJSON = $Search | ConvertTo-Json -Compress -Depth 4
-
-                    Write-Debug $SearchJSON
 
                     $URL = "$JCUrlBasePath/api/search/systemusers"
 
                     $Results = Invoke-RestMethod -Method POST -Uri $Url  -Header $hdrs -Body $SearchJSON -UserAgent:(Get-JCUserAgent)
-
+                    
+                    #Prints the results
                     $null = $resultsArrayList.Add($Results)
 
                     $Skip += $limit
@@ -343,7 +391,6 @@ Function Get-JCUser ()
     } # End process
 
     end
-
     {
 
         switch ($PSCmdlet.ParameterSetName)

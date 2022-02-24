@@ -143,7 +143,19 @@ Function New-JCUser ()
         [string]$work_fax_number,
 
         [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'A boolean $true/$false value for putting the account into a suspended state')]
-        [bool]$suspended
+        [bool]$suspended,
+
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The manager for the user must be a JumpCloud user')]
+        [string]
+        $manager,
+
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The managedAppleId for the user')]
+        [string]
+        $managedAppleId,
+
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The alternateEmail for the user')]
+        [string]
+        $alternateEmail
 
     )
     DynamicParam
@@ -292,6 +304,32 @@ Function New-JCUser ()
                 }
 
                 $body.add($param.Key, $enable_user_portal_multifactor)
+                continue
+            }
+            if ('manager' -in $param.Key)
+            {
+                Write-Debug $param.Value
+                # Search if the manager parameter is a username
+                $Search = @{
+                    filter = @{
+                        or = @(
+                            'username:$regex:/' + $param.Value + '/i'
+                        )
+                    }
+                }
+                $SearchJSON = $Search | ConvertTo-Json -Compress -Depth 4
+                $url2 = "$JCUrlBasePath/api/search/systemusers"
+                $managerIdRes = Invoke-RestMethod -Method POST -Uri $url2  -Header $hdrs -Body $SearchJSON
+                $managerId = $managerIdRes.results.id
+                
+                if (!$managerId)
+                {
+                    $body.Add($param.Key, $param.Value)
+                }
+                else
+                {
+                    $body.Add($param.Key, $managerId)
+                }   
                 continue
             }
 

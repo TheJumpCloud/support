@@ -231,7 +231,19 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
         $external_source_type,
 
         [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'A boolean $true/$false value for putting the account into a suspended state')]
-        [bool]$suspended
+        [bool]$suspended,
+
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The manager for the user')]
+        [string]
+        $manager,
+
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The managedAppleId for the user')]
+        [string]
+        $managedAppleId,
+
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The alternateEmail for the user')]
+        [string]
+        $alternateEmail
 
     )
 
@@ -540,7 +552,6 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
             }
 
         }
-
         if ($PSCmdlet.ParameterSetName -eq 'Username' -and !$NumberOfCustomAttributes)
         {
             if ($UserHash.ContainsKey($Username))
@@ -551,9 +562,10 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
                 $URL = "$JCUrlBasePath/api/Systemusers/$URL_ID"
                 Write-Debug $URL
-
+                
                 foreach ($param in $PSBoundParameters.GetEnumerator())
                 {
+                    
                     if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }
 
                     if ($param.key -in ('Username', 'EnrollmentDays')) { continue }
@@ -563,11 +575,35 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                     if ($param.Key -like 'work_*') { continue }
 
                     if ($param.Key -like 'home_*') { continue }
-
+                    
+                    if ('manager' -in $param.Key) 
+                    {
+                        $managerSearch = @{
+                            filter = @{
+                                or = @(
+                                    'username:$regex:/' + $param.Value + '/i'
+                                )
+                            }
+                        }
+                        $managerSearchJSON = $managerSearch | ConvertTo-Json -Compress -Depth 4
+                        $managerUrl = "$JCUrlBasePath/api/search/systemusers"
+                        $managerCallRes = Invoke-RestMethod -Method POST -Uri $managerUrl  -Header $hdrs -Body $managerSearchJSON
+                        $managerRes = $managerCallRes.results.id
+                        # Check if the api call returned manager Id
+                        if (!$managerRes)
+                        {
+                            $body['manager'] = $param.Value 
+                        }
+                        else
+                        {
+                            $body['manager'] = $managerRes
+                        }
+                        continue 
+                    } 
+                    
                     $body.add($param.Key, $param.Value)
-
                 }
-
+                 
                 if ($enable_user_portal_multifactor -eq $True)
                 {
                     if ($PSBoundParameters['EnrollmentDays'])
@@ -590,6 +626,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                 Write-Debug $jsonbody
 
                 $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent)
+                Write-Debug $NewUserInfo
 
                 $UpdatedUserArray += $NewUserInfo
             }
@@ -614,7 +651,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
                 $CustomAttributeArrayList = New-Object System.Collections.ArrayList
 
-
+                
                 foreach ($param in $PSBoundParameters.GetEnumerator())
                 {
                     if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }
