@@ -147,43 +147,31 @@
                                         $AttributesValue = If ($Action -eq 'add' -and $Attributes)
                                         {
                                             $foundAttributes = $Attributes | ConvertTo-Json -Depth:(99) -Compress
-                                            # write-host $Attributes.AdditionalProperties
-                                            # write-host $foundAttributes
                                             $foundAttributes = $foundAttributes | ConvertFrom-Json
                                             $additionalProperties = $foundAttributes.AdditionalProperties
-                                            # write-host $additionalProperties
-                                            # write-host $foundAttributes
-                                            # write-host $foundAttributes
                                             # Determine: AttributeSudoEnabled / AttributeSudoWithoutPassword
-                                            $dict = New-Object 'system.collections.generic.dictionary[System.String, System.object]'
                                             if ($additionalProperties.sudo.enabled -And -Not $additionalProperties.sudo.withoutPassword)
                                             {
-                                                $dict.sudo = @{'enabled' = $true; 'withoutPassword' = $false }
-                                                $Command_Template_Associations_Targets_Post = 'JumpCloud.SDK.V2\Set-JcSdk{0}Association -{0}Id:("{1}") -Id:("{2}") -Op:("{3}") -Type:("{4}") -Attributes:("{5}")'
+                                                $Command_Template_Associations_Targets_Post = 'JumpCloud.SDK.V2\Set-JcSdk{0}Association -{0}Id:("{1}") -Id:("{2}") -Op:("{3}") -Type:("{4}") -AttributeSudoEnabled'
                                             }
                                             if ($additionalProperties.sudo.withoutPassword -And -Not $additionalProperties.sudo.enabled)
                                             {
-                                                $dict.sudo = @{'enabled' = $false; 'withoutPassword' = $true }
-                                                $Command_Template_Associations_Targets_Post = 'JumpCloud.SDK.V2\Set-JcSdk{0}Association -{0}Id:("{1}") -Id:("{2}") -Op:("{3}") -Type:("{4}") -Attributes:("{5}")'
+                                                $Command_Template_Associations_Targets_Post = 'JumpCloud.SDK.V2\Set-JcSdk{0}Association -{0}Id:("{1}") -Id:("{2}") -Op:("{3}") -Type:("{4}") -AttributeSudoWithoutPassword'
                                             }
                                             if ($additionalProperties.sudo.enabled -And $additionalProperties.sudo.withoutPassword)
                                             {
-                                                $dict.sudo = @{'enabled' = $true; 'withoutPassword' = $true }
-                                                $Command_Template_Associations_Targets_Post = 'JumpCloud.SDK.V2\Set-JcSdk{0}Association -{0}Id:("{1}") -Id:("{2}") -Op:("{3}") -Type:("{4}") -Attributes:("{5}")'
+                                                $Command_Template_Associations_Targets_Post = 'JumpCloud.SDK.V2\Set-JcSdk{0}Association -{0}Id:("{1}") -Id:("{2}") -Op:("{3}") -Type:("{4}") -AttributeSudoEnabled -AttributeSudoWithoutPassword'
                                             }
                                             if (-Not $additionalProperties.sudo.enabled -And -Not $additionalProperties.sudo.withoutPassword)
                                             {
                                                 $Command_Template_Associations_Targets_Post = 'JumpCloud.SDK.V2\Set-JcSdk{0}Association -{0}Id:("{1}") -Id:("{2}") -Op:("{3}") -Type:("{4}")'
                                             }
-                                            # write-host $dict
-                                            $dict
+                                            $foundAttributes
                                         }
                                         Else
                                         {
                                             'null'
                                         }
-
-                                        # write-host $Attributes.AdditionalProperties
                                         # Validate that the association exists
                                         $TestAssociation = Format-JCAssociation -Command:($Command_Associations_GET) -Source:($SourceItem) -TargetId:($TargetItemId) -IncludeNames:($true)
                                         $IndirectAssociations = $TestAssociation | Where-Object { $_.associationType -eq 'indirect' }
@@ -192,6 +180,22 @@
                                         # If the target is not only an indirect association
                                         If ($TargetItemId -in $DirectAssociations.targetId -or $Action -eq 'add')
                                         {
+                                            If (($SourceItemTypeNameSingular -eq 'system' -and $SourceItemTargetSingular -eq 'system_group') -or ($SourceItemTypeNameSingular -eq 'user' -and $SourceItemTargetSingular -eq 'user_group'))
+                                            {
+                                                $Command_Associations_POST = $Command_Template_Associations_Members -f $TargetItemTypeNameSingular.Replace('_', ''), $TargetItemId, $SourceItemId, $Action
+                                            }
+                                            ElseIf (($SourceItemTypeNameSingular -eq 'system_group' -and $SourceItemTargetSingular -eq 'system') -or ($SourceItemTypeNameSingular -eq 'user_group' -and $SourceItemTargetSingular -eq 'user'))
+                                            {
+                                                $Command_Associations_POST = $Command_Template_Associations_Members -f $SourceItemTypeNameSingular.Replace('_', ''), $SourceItemId, $TargetItemId, $Action
+                                            }
+                                            Else
+                                            {
+                                                $Command_Associations_POST = $Command_Template_Associations_Targets_Post -f $SourceItemTypeNameSingular.Replace('_', ''), $SourceItemId, $TargetItemId, $Action, $TargetItemTypeNameSingular, $AttributesValue
+                                            }
+                                            $Command_Associations_POST = $Command_Associations_POST.Replace('usergroupId', 'GroupId').Replace('systemgroupId', 'GroupId').Replace(' -Attributes:("null")', '').Replace(' -Attributes:("{}")', '')
+                                            # Send body to endpoint.
+                                            Write-Verbose ('"' + $Action + '" the association between the "' + $SourceItemTypeNameSingular + '" "' + $SourceItemName + '" and the "' + $TargetItemTypeNameSingular + '" "' + $TargetItemName + '"')
+                                            Write-Debug ('[CommandTemplate]:' + $Command_Associations_POST + ';')
                                             If (!($Force))
                                             {
                                                 Do
@@ -209,82 +213,7 @@
                                                     {
                                                         if ( -not $TestAssociation )
                                                         {
-                                                            If (($SourceItemTypeNameSingular -eq 'system' -and $SourceItemTargetSingular -eq 'system_group') -or ($SourceItemTypeNameSingular -eq 'user' -and $SourceItemTargetSingular -eq 'user_group'))
-                                                            {
-                                                                write-host "Case 1"
-                                                                $Command_Associations_POST = $Command_Template_Associations_Members -f $TargetItemTypeNameSingular.Replace('_', ''), $TargetItemId, $SourceItemId, $Action
-                                                                Invoke-Command -ScriptBlock {
-                                                                    Param ($SourceItemTypeNameSingular, $TargetItemId, $SourceItemId, $Action)
-                                                                    # Splat variable
-                                                                    $sourceCompiledName = "$($SourceItemTypeNameSingular)Id"
-                                                                    if (($sourceCompiledName -eq 'usergroupId') -or ($sourceCompiledName -eq 'systemgroupId'))
-                                                                    {
-                                                                        $sourceCompiledName = 'GroupId'
-                                                                    }
-                                                                    $splatParams = @{
-                                                                        $sourceCompiledName = $TargetItemId;
-                                                                        Id                  = $SourceItemId;
-                                                                        Op                  = $Action;
-                                                                    }
-                                                                    . "JumpCloud.SDK.V2\Set-JcSdk$($SourceItemTypeNameSingular)Association" @splatParams
-                                                                } -ArgumentList ($SourceItemTypeNameSingular.Replace('_', ''), $TargetItemId, $SourceItemId, $Action)
-                                                                # In
-                                                            }
-                                                            ElseIf (($SourceItemTypeNameSingular -eq 'system_group' -and $SourceItemTargetSingular -eq 'system') -or ($SourceItemTypeNameSingular -eq 'user_group' -and $SourceItemTargetSingular -eq 'user'))
-                                                            {
-                                                                write-host "Case 2"
-                                                                $Command_Associations_POST = $Command_Template_Associations_Members -f $SourceItemTypeNameSingular.Replace('_', ''), $SourceItemId, $TargetItemId, $Action
-                                                                Invoke-Command -ScriptBlock {
-                                                                    Param ($SourceItemTypeNameSingular, $SourceItemId, $TargetItemId, $Action)
-                                                                    # Splat variable
-                                                                    $sourceCompiledName = "$($SourceItemTypeNameSingular)Id"
-                                                                    if (($sourceCompiledName -eq 'usergroupId') -or ($sourceCompiledName -eq 'systemgroupId'))
-                                                                    {
-                                                                        $sourceCompiledName = 'GroupId'
-                                                                    }
-                                                                    $splatParams = @{
-                                                                        $sourceCompiledName = $SourceItemId;
-                                                                        Id                  = $TargetItemId;
-                                                                        Op                  = $Action;
-                                                                    }
-                                                                    . "JumpCloud.SDK.V2\Set-JcSdk$($SourceItemTypeNameSingular)Association" @splatParams
-                                                                } -ArgumentList ($SourceItemTypeNameSingular.Replace('_', ''), $SourceItemId, $TargetItemId, $Action)
-                                                            }
-                                                            Else
-                                                            {
-                                                                $Command_Associations_POST = $Command_Template_Associations_Targets_Post -f $SourceItemTypeNameSingular.Replace('_', ''), $SourceItemId, $TargetItemId, $Action, $TargetItemTypeNameSingular, $AttributesValue
-                                                                # write-host "attempting to set command to:"
-                                                                # write-host "JumpCloud.SDK.V2\Set-JcSdk[0]Association".replace( '[0]', $SourceItemTypeNameSingular)
-                                                                # write-host $SourceItemId, $targetId, $Id, $Action, $Type, $Attributes
-                                                                Invoke-Command -ScriptBlock {
-                                                                    Param ($SourceItemTypeNameSingular, $SourceItemId, $targetId, $Id, $Action, $TargetItemTypeNameSingular, $Attributes)
-                                                                    # Splat variable
-                                                                    $sourceCompiledName = "$($SourceItemTypeNameSingular)Id"
-                                                                    if (($sourceCompiledName -eq 'usergroupId') -or ($sourceCompiledName -eq 'systemgroupId')) {
-                                                                        $sourceCompiledName = 'GroupId'
-                                                                    }
-                                                                    $splatParams = @{
-                                                                        $sourceCompiledName = $SourceItemId;
-                                                                        Id                  = $targetId;
-                                                                        Op                  = $Action;
-                                                                        Type                = $TargetItemTypeNameSingular;
-                                                                        Attributes          = $Attributes
-                                                                    }
-                                                                    . "JumpCloud.SDK.V2\Set-JcSdk$($SourceItemTypeNameSingular)Association" @splatParams
-                                                                    # . "JumpCloud.SDK.V2\Set-JcSdk[0]Association".replace( '[0]', $SourceItemTypeNameSingular) @splatParams
-                                                                } -ArgumentList ($SourceItemTypeNameSingular.Replace('_', ''), $SourceItemId, $targetId, $Id, $Action, $TargetItemTypeNameSingular, $AttributesValue)
-                                                            }
-                                                            # TODO: reintegrate this:
-                                                            $Command_Associations_POST = $Command_Associations_POST.Replace('usergroupId', 'GroupId').Replace('systemgroupId', 'GroupId').Replace(' -Attributes:("null")', '').Replace(' -Attributes:("{}")', '')
-                                                            # Send body to endpoint.
-                                                            Write-Verbose ('"' + $Action + '" the association between the "' + $SourceItemTypeNameSingular + '" "' + $SourceItemName + '" and the "' + $TargetItemTypeNameSingular + '" "' + $TargetItemName + '"')
-                                                            Write-host ('[CommandTemplate]:' + $Command_Associations_POST + ';')
-                                                            Write-Debug ('[CommandTemplate]:' + $Command_Associations_POST + ';')
-                                                            # write-host "before"
-                                                            # $params = " -Attributes:($AttributesValue)"
-                                                            # #TODO: replace w/ invoke-command
-                                                            # Invoke-Expression "$Command_Associations_POST $params"
-                                                            # write-host "after"
+                                                            Invoke-Expression -Command:($Command_Associations_POST)
                                                         }
                                                         else
                                                         {
@@ -296,7 +225,6 @@
                                                     {
                                                         if ( $TestAssociation )
                                                         {
-                                                            #TODO: replace w/ invoke-command
                                                             Invoke-Expression -Command:($Command_Associations_POST)
                                                         }
                                                         else
