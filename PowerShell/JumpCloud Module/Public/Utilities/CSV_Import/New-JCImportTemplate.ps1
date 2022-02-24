@@ -78,11 +78,12 @@ Function New-JCImportTemplate()
         if ($ConfirmUpdateVsNew -eq 'N')
         {
             $CSV = [ordered]@{
-                FirstName = $null
-                LastName  = $null
-                Username  = $null
-                Email     = $null
-                Password  = $null
+                FirstName      = $null
+                LastName       = $null
+                Username       = $null
+                Password       = $null
+                Email          = $null
+                
             }
 
             $fileName = 'JCUserImport_' + $date + '.csv'
@@ -135,7 +136,7 @@ Function New-JCImportTemplate()
 
         Write-Host "`nDo you want to add extended user information attributes available over JumpCloud LDAP to your users during import?"
         Write-Host 'Extended user information attributes include: ' -NoNewline
-        Write-Host -ForegroundColor Yellow 'MiddleName, preferredName, jobTitle, employeeIdentifier, department, costCenter, company, employeeType, description, and location'
+        Write-Host -ForegroundColor Yellow 'AlternateEmail, Manager, ManagedAppleId, MiddleName, preferredName, jobTitle, employeeIdentifier, department, costCenter, company, employeeType, description, and location'
 
 
         while ($ConfirmLDAPAttributes -ne 'Y' -and $ConfirmLDAPAttributes -ne 'N')
@@ -145,7 +146,9 @@ Function New-JCImportTemplate()
 
         if ($ConfirmLDAPAttributes -eq 'Y')
         {
-
+            $CSV.add('alternateEmail', $null)
+            $CSV.add('manager', $null)
+            $CSV.add('managedAppleId', $null)
             $CSV.add('MiddleName', $null)
             $CSV.add('preferredName', $null)
             $CSV.add('jobTitle', $null)

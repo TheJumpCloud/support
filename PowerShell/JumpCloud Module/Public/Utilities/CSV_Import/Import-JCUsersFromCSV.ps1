@@ -24,6 +24,9 @@ Function Import-JCUsersFromCSV ()
         $UserUpdateParams.Add("LastName", "LastName")
         $UserUpdateParams.Add("Email", "Email")
         $UserUpdateParams.Add("Password", "Password")
+        $UserUpdateParams.Add("alternateEmail", "alternateEmail")
+        $UserUpdateParams.Add("manager", "manager")
+        $UserUpdateParams.Add("managedAppleId", "managedAppleId")
         $UserUpdateParams.Add("middlename", "middlename")
         $UserUpdateParams.Add("preferredName", "preferredName")
         $UserUpdateParams.Add("jobTitle", "jobTitle")
@@ -196,6 +199,29 @@ Function Import-JCUsersFromCSV ()
                 Write-Host -BackgroundColor Green -ForegroundColor Black "employeeIdentifier check complete"
             }
 
+            # Manager check if the email is a valid JC user email
+            # $ManagerCount = $NewUsers.manager | Where-Object Length -gt 1 | Select-Object -unique
+            # if ($ManagerCount -gt 0)
+            # {
+            #     Write-Host ""
+            #     Write-Host -BackgroundColor Green -ForegroundColor Black "Validating $($SystemCount.count) Systems"
+            #     $ManagerCheck = Get-Hash_Email_ID
+
+            #     foreach($User in $ManagerCount)
+            #     {
+            #         if ($User.manager.length -gt 1) 
+            #         {
+            #             if ($ManagerCheck.ContainsKey($User.manager))
+            #             {
+            #              Write-Verbose "$($User.manager) exists"   
+            #             }
+            #             else {
+            #                 Write-Warning "Manager with email: $($User.manager) does not exist and will not be bound to user $($User.Username)"
+            #             }    
+            #         }
+            #     }
+            # }
+
             $SystemCount = $NewUsers.SystemID | Where-Object Length -gt 1 | Select-Object -unique
 
             if ($SystemCount.count -gt 0)
@@ -351,6 +377,7 @@ Function Import-JCUsersFromCSV ()
                 $UserUpdateParams.Add($attr.name, $attr.name)
             }
             $ResultsArrayList = New-Object System.Collections.ArrayList
+            #Write-Debug $ResultsArrayList
             $NumberOfNewUsers = $NewUsers.email.count
 
         }
@@ -365,7 +392,6 @@ Function Import-JCUsersFromCSV ()
         {
             $UpdateParamsRaw = $UserAdd.psobject.properties | Where-Object { ($_.Value -ne $Null) -and ($_.Value -ne "") } | Select-Object Name, Value
             $UpdateParams = @{ }
-
             foreach ($Param in $UpdateParamsRaw)
             {
                 if ($UserUpdateParams.$($Param.name))
@@ -397,7 +423,6 @@ Function Import-JCUsersFromCSV ()
             $CustomGroupArrayList = $Null
 
             $CustomAttributes = $UserAdd | Get-Member | Where-Object Name -Like "*Attribute*" | Where-Object { $_.Definition -NotLike "*=" -and $_.Definition -NotLike "*null" } | Select-Object Name
-
             Write-Verbose $CustomAttributes.name.count
 
             if ($CustomAttributes.name.count -gt 1)
@@ -581,9 +606,9 @@ Function Import-JCUsersFromCSV ()
                 try
                 {
                     $JSONParams = $UpdateParams | ConvertTo-Json
-
+                    Write-Debug $JSONParams
                     Write-Verbose "$($JSONParams)"
-
+                    Write-Debug @UpdateParams
                     $NewUser = New-JCUser @UpdateParams
 
                     if ($NewUser._id)
