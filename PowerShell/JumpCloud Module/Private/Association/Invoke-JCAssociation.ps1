@@ -147,26 +147,36 @@
                                         $AttributesValue = If ($Action -eq 'add' -and $Attributes)
                                         {
                                             $foundAttributes = $Attributes | ConvertTo-Json -Depth:(99) -Compress
+                                            write-host $Attributes.AdditionalProperties
+                                            write-host $foundAttributes
                                             $foundAttributes = $foundAttributes | ConvertFrom-Json
                                             $additionalProperties = $foundAttributes.AdditionalProperties
+                                            write-host $additionalProperties
+                                            write-host $foundAttributes
+                                            write-host $foundAttributes
                                             # Determine: AttributeSudoEnabled / AttributeSudoWithoutPassword
+                                            $dict = New-Object 'system.collections.generic.dictionary[System.String, System.object]'
                                             if ($additionalProperties.sudo.enabled -And -Not $additionalProperties.sudo.withoutPassword)
                                             {
-                                                $Command_Template_Associations_Targets_Post = 'JumpCloud.SDK.V2\Set-JcSdk{0}Association -{0}Id:("{1}") -Id:("{2}") -Op:("{3}") -Type:("{4}") -AttributeSudoEnabled'
+                                                $dict.sudo = @{'enabled' = $true; 'withoutPassword' = $false }
+                                                $Command_Template_Associations_Targets_Post = 'JumpCloud.SDK.V2\Set-JcSdk{0}Association -{0}Id:("{1}") -Id:("{2}") -Op:("{3}") -Type:("{4}") -Attributes:("{5}")'
                                             }
                                             if ($additionalProperties.sudo.withoutPassword -And -Not $additionalProperties.sudo.enabled)
                                             {
-                                                $Command_Template_Associations_Targets_Post = 'JumpCloud.SDK.V2\Set-JcSdk{0}Association -{0}Id:("{1}") -Id:("{2}") -Op:("{3}") -Type:("{4}") -AttributeSudoWithoutPassword'
+                                                $dict.sudo = @{'enabled' = $false; 'withoutPassword' = $true }
+                                                $Command_Template_Associations_Targets_Post = 'JumpCloud.SDK.V2\Set-JcSdk{0}Association -{0}Id:("{1}") -Id:("{2}") -Op:("{3}") -Type:("{4}") -Attributes:("{5}")'
                                             }
                                             if ($additionalProperties.sudo.enabled -And $additionalProperties.sudo.withoutPassword)
                                             {
-                                                $Command_Template_Associations_Targets_Post = 'JumpCloud.SDK.V2\Set-JcSdk{0}Association -{0}Id:("{1}") -Id:("{2}") -Op:("{3}") -Type:("{4}") -AttributeSudoEnabled -AttributeSudoWithoutPassword'
+                                                $dict.sudo = @{'enabled' = $true; 'withoutPassword' = $true }
+                                                $Command_Template_Associations_Targets_Post = 'JumpCloud.SDK.V2\Set-JcSdk{0}Association -{0}Id:("{1}") -Id:("{2}") -Op:("{3}") -Type:("{4}") -Attributes:("{5}")'
                                             }
                                             if (-Not $additionalProperties.sudo.enabled -And -Not $additionalProperties.sudo.withoutPassword)
                                             {
                                                 $Command_Template_Associations_Targets_Post = 'JumpCloud.SDK.V2\Set-JcSdk{0}Association -{0}Id:("{1}") -Id:("{2}") -Op:("{3}") -Type:("{4}")'
                                             }
-                                            $foundAttributes
+                                            # write-host $dict
+                                            $dict
                                         }
                                         Else
                                         {
@@ -195,7 +205,7 @@
                                             $Command_Associations_POST = $Command_Associations_POST.Replace('usergroupId', 'GroupId').Replace('systemgroupId', 'GroupId').Replace(' -Attributes:("null")', '').Replace(' -Attributes:("{}")', '')
                                             # Send body to endpoint.
                                             Write-Verbose ('"' + $Action + '" the association between the "' + $SourceItemTypeNameSingular + '" "' + $SourceItemName + '" and the "' + $TargetItemTypeNameSingular + '" "' + $TargetItemName + '"')
-                                            Write-Debug ('[CommandTemplate]:' + $Command_Associations_POST + ';')
+                                            Write-host ('[CommandTemplate]:' + $Command_Associations_POST + ';')
                                             If (!($Force))
                                             {
                                                 Do
@@ -213,7 +223,29 @@
                                                     {
                                                         if ( -not $TestAssociation )
                                                         {
-                                                            Invoke-Expression -Command:($Command_Associations_POST)
+                                                            #TODO: Replace with invoke-command:
+                                                            $sdkFunction = $Command_Associations_POST.split(" ") | Select-Object -First 1
+                                                            # Get Parameters
+                                                            $regex = [regex]'-(.*):(\(\"(.*)\"\))'
+                                                            $Params = $Command_Associations_POST.split(" ") | Select-Object -Skip 1
+                                                            $paramHash = @{}
+                                                            foreach ($item in $params)
+                                                            {
+                                                                # Get the params & values
+                                                                $patterns = (Select-String -inputObject $item -pattern $regex)
+                                                                $paramHash.Add($patterns.matches.groups[1].value, $patterns.matches.groups[3].value)
+                                                            }
+                                                            write-host "we are going to run this command: $sdkFunction"
+                                                            Write-Host "with these params:"
+                                                            Write-Host $paramHash.keys
+                                                            Write-Host $paramHash.values
+                                                            Write-Host "Start"
+                                                            Invoke-Command -ScriptBlock {
+                                                                Param ($sdkFunction, $paramHash)
+                                                                # Invoke Command Expression:
+                                                                . "$sdkFunction" @paramHash
+                                                            } -ArgumentList ($sdkFunction, $paramHash)
+                                                            # Invoke-Expression -Command:($Command_Associations_POST)
                                                         }
                                                         else
                                                         {
