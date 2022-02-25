@@ -562,10 +562,10 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
                 $URL = "$JCUrlBasePath/api/Systemusers/$URL_ID"
                 Write-Debug $URL
-                
+
                 foreach ($param in $PSBoundParameters.GetEnumerator())
                 {
-                    
+
                     if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }
 
                     if ($param.key -in ('Username', 'EnrollmentDays')) { continue }
@@ -575,8 +575,8 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                     if ($param.Key -like 'work_*') { continue }
 
                     if ($param.Key -like 'home_*') { continue }
-                    
-                    if ('manager' -in $param.Key) 
+
+                    if (('manager' -in $param.Key) -And (-Not ($param.Value)::IsNullOrEmpty))
                     {
                         $managerSearch = @{
                             filter = @{
@@ -592,18 +592,21 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                         # Check if the api call returned manager Id
                         if (!$managerRes)
                         {
-                            $body['manager'] = $param.Value 
+                            $body['manager'] = $param.Value
                         }
                         else
                         {
                             $body['manager'] = $managerRes
                         }
-                        continue 
-                    } 
-                    
+                        continue
+                    }
+                    if (('manager' -in $param.Key) -And (($param.Value)::IsNullOrEmpty)){
+                        break
+                    }
+
                     $body.add($param.Key, $param.Value)
                 }
-                 
+
                 if ($enable_user_portal_multifactor -eq $True)
                 {
                     if ($PSBoundParameters['EnrollmentDays'])
@@ -626,7 +629,6 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                 Write-Debug $jsonbody
 
                 $NewUserInfo = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent)
-                Write-Debug $NewUserInfo
 
                 $UpdatedUserArray += $NewUserInfo
             }
@@ -651,7 +653,6 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
                 $CustomAttributeArrayList = New-Object System.Collections.ArrayList
 
-                
                 foreach ($param in $PSBoundParameters.GetEnumerator())
                 {
                     if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }

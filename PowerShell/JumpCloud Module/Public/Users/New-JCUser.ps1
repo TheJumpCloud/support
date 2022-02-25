@@ -306,7 +306,7 @@ Function New-JCUser ()
                 $body.add($param.Key, $enable_user_portal_multifactor)
                 continue
             }
-            if ('manager' -in $param.Key)
+            if (('manager' -in $param.Key) -And (-Not ($param.Value)::IsNullOrEmpty))
             {
                 Write-Debug $param.Value
                 # Search if the manager parameter is a username
@@ -331,6 +331,9 @@ Function New-JCUser ()
                     $body.Add($param.Key, $managerId)
                 }   
                 continue
+            }
+            if (('manager' -in $param.Key) -And (($param.Value)::IsNullOrEmpty)){
+                break
             }
 
             $body.add($param.Key, $param.Value)

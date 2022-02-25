@@ -136,7 +136,7 @@ $PesterParamsHash_Definitions = @{
     };
     NewUser2        = @{
         allow_public_key         = $false
-        alternateEmail           = "$($RandomStrin21)ae@DeleteMe.com"
+        alternateEmail           = "$($RandomString2)ae@DeleteMe.com"
         Attribute1_name          = 'One2'
         Attribute1_value         = 'Attr_2'
         company                  = 'company_2'
@@ -158,7 +158,7 @@ $PesterParamsHash_Definitions = @{
         jobTitle                 = 'jobTitle_2'
         lastname                 = 'Tester_2'
         location                 = 'location_2'
-        managedAppleId           = "$($RandomStrin21)maid@DeleteMe.com"
+        managedAppleId           = "$($RandomString2)maid@DeleteMe.com"
         MiddleName               = 'middlename_2'
         mobile_number            = 'mobile_number_2'
         NumberOfCustomAttributes = 1
