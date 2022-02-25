@@ -145,6 +145,8 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
             $ImportCheck.preferredName | Should -Be $NewUserInfo.displayname
             $ImportCheck.jobTitle | Should -Be $NewUserInfo.jobTitle
             $ImportCheck.employeeIdentifier | Should -Be $NewUserInfo.employeeIdentifier
+            $ImportCheck.alternateEmail | Should -Be $NewUserInfo.alternateEmail
+            $ImportCheck.managedAppleId | Should -Be $NewUserInfo.managedAppleId
             $ImportCheck.department | Should -Be $NewUserInfo.department
             $ImportCheck.costCenter | Should -Be $NewUserInfo.costCenter
             $ImportCheck.company | Should -Be $NewUserInfo.company
@@ -201,6 +203,8 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
             $UpdateCheck.preferredName | Should -Be $UpdateUserInfo.displayname
             $UpdateCheck.jobTitle | Should -Be $UpdateUserInfo.jobTitle
             $UpdateCheck.employeeIdentifier | Should -Be $UpdateUserInfo.employeeIdentifier
+            $UpdateCheck.employeeIdentifier | Should -Be $UpdateUserInfo.employeeIdentifier
+            $UpdateCheck.employeeIdentifier | Should -Be $UpdateUserInfo.employeeIdentifier
             $UpdateCheck.department | Should -Be $UpdateUserInfo.department
             $UpdateCheck.costCenter | Should -Be $UpdateUserInfo.costCenter
             $UpdateCheck.company | Should -Be $UpdateUserInfo.company
@@ -233,6 +237,8 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
             $ImportCheck.preferredName | Should -Be $NewUserInfo.displayname
             $ImportCheck.jobTitle | Should -Be $NewUserInfo.jobTitle
             $ImportCheck.employeeIdentifier | Should -Be $NewUserInfo.employeeIdentifier
+            $ImportCheck.alternateEmail | Should -Be $NewUserInfo.alternateEmail
+            $ImportCheck.managedAppleId | Should -Be $NewUserInfo.managedAppleId
             $ImportCheck.department | Should -Be $NewUserInfo.department
             $ImportCheck.costCenter | Should -Be $NewUserInfo.costCenter
             $ImportCheck.company | Should -Be $NewUserInfo.company
@@ -290,6 +296,8 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
             $UpdateCheck.preferredName | Should -Be $UpdateUserInfo.displayname
             $UpdateCheck.jobTitle | Should -Be $UpdateUserInfo.jobTitle
             $UpdateCheck.employeeIdentifier | Should -Be $UpdateUserInfo.employeeIdentifier
+            $UpdateCheck.alternateEmail | Should -Be $UpdateUserInfo.alternateEmail
+            $UpdateCheck.managedAppleId | Should -Be $UpdateUserInfo.managedAppleId
             $UpdateCheck.department | Should -Be $UpdateUserInfo.department
             $UpdateCheck.costCenter | Should -Be $UpdateUserInfo.costCenter
             $UpdateCheck.company | Should -Be $UpdateUserInfo.company
@@ -346,6 +354,8 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
             $ImportCheck.preferredName | Should -Be $NewUserInfo.displayname
             $ImportCheck.jobTitle | Should -Be $NewUserInfo.jobTitle
             $ImportCheck.employeeIdentifier | Should -Be $NewUserInfo.employeeIdentifier
+            $ImportCheck.alternateEmail | Should -Be $NewUserInfo.alternateEmail
+            $ImportCheck.managedAppleId | Should -Be $NewUserInfo.managedAppleId
             $ImportCheck.department | Should -Be $NewUserInfo.department
             $ImportCheck.costCenter | Should -Be $NewUserInfo.costCenter
             $ImportCheck.company | Should -Be $NewUserInfo.company
@@ -386,6 +396,8 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
             $ImportCheck.preferredName | Should -Be $NewUserInfo.displayname
             $ImportCheck.jobTitle | Should -Be $NewUserInfo.jobTitle
             $ImportCheck.employeeIdentifier | Should -Be $NewUserInfo.employeeIdentifier
+            $ImportCheck.alternateEmail | Should -Be $NewUserInfo.alternateEmail
+            $ImportCheck.managedAppleId | Should -Be $NewUserInfo.managedAppleId
             $ImportCheck.department | Should -Be $NewUserInfo.department
             $ImportCheck.costCenter | Should -Be $NewUserInfo.costCenter
             $ImportCheck.company | Should -Be $NewUserInfo.company
