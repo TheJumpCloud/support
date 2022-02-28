@@ -68,7 +68,7 @@ Describe -Tag:('JCUser') 'Set-JCUser 1.0' {
         $ManagerUser = New-RandomUser "PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser
         $NewUser = New-RandomUser "PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser
         $NewManager = Set-JCUser -Username $NewUser.Username -manager $ManagerUser.Username
-        $NewManager.manager | Should -Be $ManagerId
+        $NewManager.manager | Should -Be $ManagerUser.id
         Remove-JCUser -UserID $NewUser._id -force
         Remove-JCUser -UserID $ManagerUser._id -force
     }
@@ -76,7 +76,7 @@ Describe -Tag:('JCUser') 'Set-JCUser 1.0' {
         $ManagerUser = New-RandomUser "PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser
         $NewUser = New-RandomUser "PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser
         $NewManager = Set-JCUser -ByID -UserID $NewUser._id -manager $ManagerUser.Username
-        $NewManager.manager | Should -Be $ManagerId
+        $NewManager.manager | Should -Be $ManagerUser.id
         Remove-JCUser -UserID $NewUser._id -force
         Remove-JCUser -UserID $ManagerUser._id -force
     }
