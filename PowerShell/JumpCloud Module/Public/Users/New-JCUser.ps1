@@ -304,29 +304,44 @@ Function New-JCUser ()
                 $body.add($param.Key, $enable_user_portal_multifactor)
                 continue
             }
-            if (('manager' -in $param.Key) -And (-Not ($param.Value)::IsNullOrEmpty))
+            # Get the manager using manager username instead of userId
+            if ("manager" -in $param.Key)
             {
-                write-debug $param.Value
-                # Search if the manager parameter is a username
-                $Search = @{
-                    filter = @{
-                        or = @(
-                            'username:$regex:/' + $param.Value + '/i'
-                        )
-                    }
+                # write-host "start"
+                # write-host "$($param.Key)"
+                # write-host "$($param.Value)"
+                # First check if manager returns valid user
+                $managerUrl = "$JCUrlBasePath/api/Systemusers/$($param.Value)"
+                Write-Verbose $managerUrl
+                try
+                {
+                    $managerResults = Invoke-RestMethod -Method GET -Uri $managerUrl -Headers $hdrs -UserAgent:(Get-JCUserAgent)
+                    $managerValue = $managerResults.id
                 }
-                $SearchJSON = $Search | ConvertTo-Json -Compress -Depth 4
-                $url2 = "$JCUrlBasePath/api/search/systemusers"
-                $managerIdRes = Invoke-RestMethod -Method POST -Uri $url2  -Header $hdrs -Body $SearchJSON
-                $managerId = $managerIdRes.results.id
+                catch
+                {
+                    $managerResults = $null
+                }
 
-                if (!$managerId)
+                if (!$managerResults)
                 {
-                    $body.Add($param.Key, $param.Value)
+                    $managerSearch = @{
+                        filter = @{
+                            or = @(
+                                'username:$regex:/' + $param.Value + '/i'
+                            )
+                        }
+                    }
+                    $managerSearchJSON = $managerSearch | ConvertTo-Json -Compress -Depth 4
+                    $managerUrl = "$JCUrlBasePath/api/search/systemusers"
+                    $managerResults = Invoke-RestMethod -Method POST -Uri $managerUrl  -Header $hdrs -Body $managerSearchJSON
+                    $managerValue = $managerResults.results.id
                 }
-                else
-                {
-                    $body.Add($param.Key, $managerId)
+                # Write-Host "manager restuls"
+                # Write-Host "$managerResults"
+                # Write-Host "$managerValue"
+                if ($managerValue) {
+                    $body.add($param.Key, $managerValue)
                 }
                 continue
             }

@@ -576,27 +576,44 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
                     if ($param.Key -like 'home_*') { continue }
 
-                    if (('manager' -in $param.Key) -And (-Not ($param.Value)::IsNullOrEmpty))
+                    # Get the manager using manager username instead of userId
+                    if ("manager" -in $param.Key)
                     {
-                        $managerSearch = @{
-                            filter = @{
-                                or = @(
-                                    'username:$regex:/' + $param.Value + '/i'
-                                )
+                        # write-host "start"
+                        # write-host "$($param.Key)"
+                        # write-host "$($param.Value)"
+                        # First check if manager returns valid user
+                        $managerUrl = "$JCUrlBasePath/api/Systemusers/$($param.Value)"
+                        Write-Verbose $managerUrl
+                        try
+                        {
+                            $managerResults = Invoke-RestMethod -Method GET -Uri $managerUrl -Headers $hdrs -UserAgent:(Get-JCUserAgent)
+                            $managerValue = $managerResults.id
+                        }
+                        catch
+                        {
+                            $managerResults = $null
+                        }
+
+                        if (!$managerResults)
+                        {
+                            $managerSearch = @{
+                                filter = @{
+                                    or = @(
+                                        'username:$regex:/' + $param.Value + '/i'
+                                    )
+                                }
                             }
+                            $managerSearchJSON = $managerSearch | ConvertTo-Json -Compress -Depth 4
+                            $managerUrl = "$JCUrlBasePath/api/search/systemusers"
+                            $managerResults = Invoke-RestMethod -Method POST -Uri $managerUrl  -Header $hdrs -Body $managerSearchJSON
+                            $managerValue = $managerResults.results.id
                         }
-                        $managerSearchJSON = $managerSearch | ConvertTo-Json -Compress -Depth 4
-                        $managerUrl = "$JCUrlBasePath/api/search/systemusers"
-                        $managerCallRes = Invoke-RestMethod -Method POST -Uri $managerUrl  -Header $hdrs -Body $managerSearchJSON
-                        $managerRes = $managerCallRes.results.id
-                        # Check if the api call returned manager Id
-                        if (!$managerRes)
-                        {
-                            $body['manager'] = $param.Value
-                        }
-                        else
-                        {
-                            $body['manager'] = $managerRes
+                        # Write-Host "manager restuls"
+                        # Write-Host "$managerResults"
+                        # Write-Host "$managerValue"
+                        if ($managerValue) {
+                            $body.add($param.Key, $managerValue)
                         }
                         continue
                     }

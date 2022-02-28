@@ -299,7 +299,7 @@ Function Get-JCUser ()
                             try
                             {
                                 $managerResults = Invoke-RestMethod -Method GET -Uri $managerUrl -Headers $hdrs -UserAgent:(Get-JCUserAgent)
-                                $Value = $managerResults.id
+                                $managerValue = $managerResults.id
                             }
                             catch
                             {
@@ -318,9 +318,11 @@ Function Get-JCUser ()
                                 $managerSearchJSON = $managerSearch | ConvertTo-Json -Compress -Depth 4
                                 $managerUrl = "$JCUrlBasePath/api/search/systemusers"
                                 $managerResults = Invoke-RestMethod -Method POST -Uri $managerUrl  -Header $hdrs -Body $managerSearchJSON
-                                $Value = $managerResults.results.id
+                                $managerValue = $managerResults.results.id
                             }
-                            ($Search.filter).GetEnumerator().add($param.Key, $Value)
+                            if ($managerValue) {
+                                ($Search.filter).GetEnumerator().add($param.Key, $managerValue)
+                            }
                             continue
                         }
 
