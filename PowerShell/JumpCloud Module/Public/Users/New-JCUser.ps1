@@ -233,7 +233,7 @@ Function New-JCUser ()
 
         foreach ($param in $PSBoundParameters.GetEnumerator())
         {
-            Write-Host $param
+            # Write-Host $param
             if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }
 
             if ($param.key -in ('_id', 'JCAPIKey', 'NumberOfCustomAttributes', 'EnrollmentDays')) { continue }
