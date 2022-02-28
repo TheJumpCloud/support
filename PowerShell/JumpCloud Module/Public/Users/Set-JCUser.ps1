@@ -600,9 +600,6 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                         }
                         continue
                     }
-                    if (('manager' -in $param.Key) -And (($param.Value)::IsNullOrEmpty)){
-                        break
-                    }
 
                     $body.add($param.Key, $param.Value)
                 }

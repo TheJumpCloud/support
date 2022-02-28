@@ -145,17 +145,14 @@ Function New-JCUser ()
         [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'A boolean $true/$false value for putting the account into a suspended state')]
         [bool]$suspended,
 
-        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The manager for the user must be a JumpCloud user')]
-        [string]
-        $manager,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'The manager for the user must be a JumpCloud user')]
+        [string]$manager,
 
-        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The managedAppleId for the user')]
-        [string]
-        $managedAppleId,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'The managedAppleId for the user')]
+        [string]$managedAppleId,
 
-        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The alternateEmail for the user')]
-        [string]
-        $alternateEmail
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'The alternateEmail for the user')]
+        [string]$alternateEmail
 
     )
     DynamicParam
@@ -236,6 +233,7 @@ Function New-JCUser ()
 
         foreach ($param in $PSBoundParameters.GetEnumerator())
         {
+            Write-Host $param
             if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }
 
             if ($param.key -in ('_id', 'JCAPIKey', 'NumberOfCustomAttributes', 'EnrollmentDays')) { continue }
@@ -308,7 +306,7 @@ Function New-JCUser ()
             }
             if (('manager' -in $param.Key) -And (-Not ($param.Value)::IsNullOrEmpty))
             {
-                Write-Debug $param.Value
+                write-debug $param.Value
                 # Search if the manager parameter is a username
                 $Search = @{
                     filter = @{
@@ -321,7 +319,7 @@ Function New-JCUser ()
                 $url2 = "$JCUrlBasePath/api/search/systemusers"
                 $managerIdRes = Invoke-RestMethod -Method POST -Uri $url2  -Header $hdrs -Body $SearchJSON
                 $managerId = $managerIdRes.results.id
-                
+
                 if (!$managerId)
                 {
                     $body.Add($param.Key, $param.Value)
@@ -329,11 +327,8 @@ Function New-JCUser ()
                 else
                 {
                     $body.Add($param.Key, $managerId)
-                }   
+                }
                 continue
-            }
-            if (('manager' -in $param.Key) -And (($param.Value)::IsNullOrEmpty)){
-                break
             }
 
             $body.add($param.Key, $param.Value)
