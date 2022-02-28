@@ -1,4 +1,4 @@
-Function Get-JCUser () 
+Function Get-JCUser ()
 {
     [CmdletBinding(DefaultParameterSetName = 'SearchFilter')]
 
@@ -124,13 +124,13 @@ Function Get-JCUser ()
         [String]$alternateEmail
     )
 
-    DynamicParam 
+    DynamicParam
     {
-        If ((Get-PSCallStack).Command -like '*MarkdownHelp') 
+        If ((Get-PSCallStack).Command -like '*MarkdownHelp')
         {
             $filterDateProperty = 'created'
         }
-        if ($filterDateProperty) 
+        if ($filterDateProperty)
         {
             # Create the dictionary
             $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
@@ -249,7 +249,7 @@ Function Get-JCUser ()
                         } #Initialize search
 
                     }
-                    
+
                     foreach ($param in $PSBoundParameters.GetEnumerator())
                     {
                         if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }
@@ -290,6 +290,39 @@ Function Get-JCUser ()
 
                             continue
                         }
+                        # Get the manager using manager username instead of userId
+                        if ("manager" -in $param.Key)
+                        {
+                            # First check if manager returns valid user
+                            $managerUrl = "$JCUrlBasePath/api/Systemusers/$($param.Value)"
+                            Write-Verbose $managerUrl
+                            try
+                            {
+                                $managerResults = Invoke-RestMethod -Method GET -Uri $managerUrl -Headers $hdrs -UserAgent:(Get-JCUserAgent)
+                                $Value = $managerResults.id
+                            }
+                            catch
+                            {
+                                $managerResults = $null
+                            }
+
+                            if (!$managerResults)
+                            {
+                                $managerSearch = @{
+                                    filter = @{
+                                        or = @(
+                                            'username:$regex:/' + $param.Value + '/i'
+                                        )
+                                    }
+                                }
+                                $managerSearchJSON = $managerSearch | ConvertTo-Json -Compress -Depth 4
+                                $managerUrl = "$JCUrlBasePath/api/search/systemusers"
+                                $managerResults = Invoke-RestMethod -Method POST -Uri $managerUrl  -Header $hdrs -Body $managerSearchJSON
+                                $Value = $managerResults.results.id
+                            }
+                            ($Search.filter).GetEnumerator().add($param.Key, $Value)
+                            continue
+                        }
 
                         $Value = ($param.value).replace('*', '')
 
@@ -319,54 +352,13 @@ Function Get-JCUser ()
                     {
                         (($Search.filter).GetEnumerator()).add($DateProperty, @{$DateQuery = $Timestamp })
                     }
-                    
-                    # Get the manager using manager username instead of userId
-                    if ("manager" -in $Search.filter.keys)
-                    {
-                        $managerSearch = @{
-                            filter = @{
-                                or = @(
-                                    'username:$regex:/' + $Search.filter.Values + '/i'
-                                )
-                            }
-                        }
-                        $managerSearchJSON = $managerSearch | ConvertTo-Json -Compress -Depth 4
-                        $managerUrl = "$JCUrlBasePath/api/search/systemusers"
-                        $managerCallRes = Invoke-RestMethod -Method POST -Uri $managerUrl  -Header $hdrs -Body $managerSearchJSON
-                        $managerRes = $managerCallRes.results.id
-                        # Check if either username or userId
-                        if (!$managerRes)
-                        {
-                            Write-Debug 'Using managerId'
-                            $Search = @{
-                                filter = @{
-                                    or = @(
-                                        'manager:' + $manager
-                                    )
-                                }
-                            }
-                            $SearchJSON = $Search | ConvertTo-Json -Compress -Depth 4
-                        }
-                        else
-                        {
-                            Write-Debug 'Using manager username'
-                            # Search for the manager
-                            $Search = @{
-                                filter = @{
-                                    or = @(
-                                        'manager:' + $managerRes
-                                    )
-                                }
-                            }
-                        }
-                    }
 
                     $SearchJSON = $Search | ConvertTo-Json -Compress -Depth 4
 
                     $URL = "$JCUrlBasePath/api/search/systemusers"
 
                     $Results = Invoke-RestMethod -Method POST -Uri $Url  -Header $hdrs -Body $SearchJSON -UserAgent:(Get-JCUserAgent)
-                    
+
                     #Prints the results
                     $null = $resultsArrayList.Add($Results)
 
