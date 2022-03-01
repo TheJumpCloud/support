@@ -150,23 +150,28 @@
                                             $foundAttributes = $foundAttributes | ConvertFrom-Json
                                             $additionalProperties = $foundAttributes.AdditionalProperties
                                             # Determine: AttributeSudoEnabled / AttributeSudoWithoutPassword
+                                            $attributeDictionary = New-Object 'system.collections.generic.dictionary[System.String, System.object]'
                                             if ($additionalProperties.sudo.enabled -And -Not $additionalProperties.sudo.withoutPassword)
                                             {
-                                                $Command_Template_Associations_Targets_Post = 'JumpCloud.SDK.V2\Set-JcSdk{0}Association -{0}Id:("{1}") -Id:("{2}") -Op:("{3}") -Type:("{4}") -AttributeSudoEnabled'
+                                                $attributeDictionary.sudo = @{'enabled' = $true; 'withoutPassword' = $false }
+                                                $Command_Template_Associations_Targets_Post = 'JumpCloud.SDK.V2\Set-JcSdk{0}Association -{0}Id:("{1}") -Id:("{2}") -Op:("{3}") -Type:("{4}") -Attributes:("{5}")'
                                             }
                                             if ($additionalProperties.sudo.withoutPassword -And -Not $additionalProperties.sudo.enabled)
                                             {
-                                                $Command_Template_Associations_Targets_Post = 'JumpCloud.SDK.V2\Set-JcSdk{0}Association -{0}Id:("{1}") -Id:("{2}") -Op:("{3}") -Type:("{4}") -AttributeSudoWithoutPassword'
+                                                $attributeDictionary.sudo = @{'enabled' = $false; 'withoutPassword' = $true }
+                                                $Command_Template_Associations_Targets_Post = 'JumpCloud.SDK.V2\Set-JcSdk{0}Association -{0}Id:("{1}") -Id:("{2}") -Op:("{3}") -Type:("{4}") -Attributes:("{5}")'
                                             }
                                             if ($additionalProperties.sudo.enabled -And $additionalProperties.sudo.withoutPassword)
                                             {
-                                                $Command_Template_Associations_Targets_Post = 'JumpCloud.SDK.V2\Set-JcSdk{0}Association -{0}Id:("{1}") -Id:("{2}") -Op:("{3}") -Type:("{4}") -AttributeSudoEnabled -AttributeSudoWithoutPassword'
+                                                $attributeDictionary.sudo = @{'enabled' = $true; 'withoutPassword' = $true }
+                                                $Command_Template_Associations_Targets_Post = 'JumpCloud.SDK.V2\Set-JcSdk{0}Association -{0}Id:("{1}") -Id:("{2}") -Op:("{3}") -Type:("{4}") -Attributes:("{5}")'
                                             }
                                             if (-Not $additionalProperties.sudo.enabled -And -Not $additionalProperties.sudo.withoutPassword)
                                             {
                                                 $Command_Template_Associations_Targets_Post = 'JumpCloud.SDK.V2\Set-JcSdk{0}Association -{0}Id:("{1}") -Id:("{2}") -Op:("{3}") -Type:("{4}")'
                                             }
-                                            $foundAttributes
+                                            # Return Attributes
+                                            $attributeDictionary
                                         }
                                         Else
                                         {
@@ -213,7 +218,25 @@
                                                     {
                                                         if ( -not $TestAssociation )
                                                         {
-                                                            Invoke-Expression -Command:($Command_Associations_POST)
+                                                            $sdkFunction = $Command_Associations_POST.split(" ") | Select-Object -First 1
+                                                            # Get Parameters
+                                                            $regex = [regex]'-(.*):(\(\"(.*)\"\))'
+                                                            $Params = $Command_Associations_POST.split(" ") | Select-Object -Skip 1
+                                                            $paramHash = @{}
+                                                            foreach ($item in $params)
+                                                            {
+                                                                # Get the params & values
+                                                                $patterns = (Select-String -inputObject $item -pattern $regex)
+                                                                $paramHash.Add($patterns.matches.groups[1].value, $patterns.matches.groups[3].value)
+                                                            }
+                                                            if ('Attributes' -in $paramHash.keys){
+                                                                $paramHash['Attributes'] = $AttributesValue
+                                                            }
+                                                            Invoke-Command -ScriptBlock {
+                                                                Param ($sdkFunction, $paramHash)
+                                                                # Invoke Command Expression:
+                                                                . "$sdkFunction" @paramHash
+                                                            } -ArgumentList ($sdkFunction, $paramHash)
                                                         }
                                                         else
                                                         {
