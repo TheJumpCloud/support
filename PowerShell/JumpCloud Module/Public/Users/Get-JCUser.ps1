@@ -291,33 +291,65 @@ Function Get-JCUser ()
                             continue
                         }
                         # Get the manager using manager username instead of userId
-                        if ("manager" -in $param.Key)
+                        if ("manager" -eq $param.Key)
                         {
-                            # First check if manager returns valid user
-                            $managerUrl = "$JCUrlBasePath/api/Systemusers/$($param.Value)"
-                            Write-Verbose $managerUrl
-                            try
-                            {
-                                $managerResults = Invoke-RestMethod -Method GET -Uri $managerUrl -Headers $hdrs -UserAgent:(Get-JCUserAgent)
-                                $managerValue = $managerResults.id
+                            # First check if manager returns valid user with id
+                            # Regex match a userid
+                            $regexPattern = [Regex]'[a-z0-9]{24}'
+                            if (((Select-String -InputObject $param.Value -Pattern $regexPattern).Matches.value)::IsNullOrEmpty){
+                                # 99.999% of the time this is all you need
+                                $managerValue = $param.Value
+                                # Except when someone's username is 24 chars exactly
+                                # TODO: account for the case above
+                                # validate with https://docs.jumpcloud.com/api/1.0/index.html#operation/systemusers_get (doesnt require pagination)
+                                # or https://docs.jumpcloud.com/api/1.0/index.html#operation/search_systemusers_post (requires pagination)
+                                # else pass to block below to do username search
+                                # try{
+                                #     $managerSearch = @{
+                                #         filter = @{
+                                #             or =@(
+                                #                 '_id:$eq:' + $param.Value
+                                #             )
+                                #         }
+                                #         limit  = $limit
+                                #         skip   = $skip
+                                #     }
+                                #     $managerSearchJSON = $managerSearch | ConvertTo-Json -Compress -Depth 4
+                                #     $managerUrl = "$JCUrlBasePath/api/search/systemusers"
+                                #     $managerResults = Invoke-RestMethod -Method POST -Uri $managerUrl -Header $hdrs -Body $managerSearchJSON
+                                #     $managerValue = $managerResults.results.id
+                                # }
+                                # catch {
+                                #     $managerSearch = @{
+                                #         filter = @{
+                                #             or =@(
+                                #                 'username:$eq:' + $param.Value
+                                #             )
+                                #         }
+                                #         limit  = $limit
+                                #         skip   = $skip
+                                #     }
+                                #     $managerSearchJSON = $managerSearch | ConvertTo-Json -Compress -Depth 4
+                                #     $managerUrl = "$JCUrlBasePath/api/search/systemusers"
+                                #     $managerResults = Invoke-RestMethod -Method POST -Uri $managerUrl -Header $hdrs -Body $managerSearchJSON
+                                #     $managerValue = $managerResults.results.id
+                                # }
                             }
-                            catch
-                            {
-                                $managerResults = $null
-                            }
-
-                            if (!$managerResults)
-                            {
+                            else {
+                                # TODO: figure out skip and limit for this function to account for orgs with 1000+ users
                                 $managerSearch = @{
                                     filter = @{
-                                        or = @(
-                                            'username:$regex:/' + $param.Value + '/i'
+                                        or =@(
+                                            'username:$eq:' + $param.Value
                                         )
                                     }
+                                    limit  = $limit
+                                    skip   = $skip
                                 }
                                 $managerSearchJSON = $managerSearch | ConvertTo-Json -Compress -Depth 4
                                 $managerUrl = "$JCUrlBasePath/api/search/systemusers"
-                                $managerResults = Invoke-RestMethod -Method POST -Uri $managerUrl  -Header $hdrs -Body $managerSearchJSON
+                                $managerResults = Invoke-RestMethod -Method POST -Uri $managerUrl -Header $hdrs -Body $managerSearchJSON
+
                                 $managerValue = $managerResults.results.id
                             }
                             if ($managerValue) {
@@ -359,7 +391,7 @@ Function Get-JCUser ()
 
                     $URL = "$JCUrlBasePath/api/search/systemusers"
 
-                    $Results = Invoke-RestMethod -Method POST -Uri $Url  -Header $hdrs -Body $SearchJSON -UserAgent:(Get-JCUserAgent)
+                    $Results = Invoke-RestMethod -Method POST -Uri $Url -Header $hdrs -Body $SearchJSON -UserAgent:(Get-JCUserAgent)
 
                     #Prints the results
                     $null = $resultsArrayList.Add($Results)
@@ -367,7 +399,6 @@ Function Get-JCUser ()
                     $Skip += $limit
 
                     $Counter += $limit
-
                 } #End While
 
             } #End search
