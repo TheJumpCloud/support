@@ -222,7 +222,7 @@ jobs:
           Shell: 'pwsh'
   Pester Tests Linux:
     machine:
-      image: ubuntu-1604:202007-01
+      image: ubuntu-2004:202201-02
     steps:
       - setup-pester-env-linux
       - invoke-pester:
@@ -234,7 +234,7 @@ jobs:
           Shell: 'pwsh'
   Publish Module Validation:
     machine:
-      image: ubuntu-1604:202007-01
+      image: ubuntu-2004:202201-02
     steps:
       - validate-pipeline-param:
           branch: << pipeline.git.branch  >>

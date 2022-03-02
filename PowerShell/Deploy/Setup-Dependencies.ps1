@@ -93,7 +93,7 @@ If (-not [System.String]::IsNullOrEmpty($Psd1))
                 # Set Module Path from required Module
                 $ModulePath = "$($LocalPSModulePath)/$($RequiredModule)"
                 # Search for module in localPSModulePath
-                $moduleFound = Get-InstalledPSResource -name $RequiredModule -path $LocalPSModulePath
+                $moduleFound = Get-PSResource -name $RequiredModule -path $LocalPSModulePath
                 if ([string]::isnullorempty($moduleFound)) {
                     # Install module if it does not exist
                     Install-PSResource -Name:($RequiredModule) -Repository:($RequiredModulesRepo) -Credential:($RepositoryCredentials) -Prerelease -Scope 'CurrentUser';
