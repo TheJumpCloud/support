@@ -290,65 +290,41 @@ Function Get-JCUser ()
 
                             continue
                         }
-                        # Get the manager using manager username instead of userId
+
+                        # manager lookup
                         if ("manager" -eq $param.Key)
                         {
                             # First check if manager returns valid user with id
                             # Regex match a userid
-                            $regexPattern = [Regex]'[a-z0-9]{24}'
+                            $regexPattern = [Regex]'^[a-z0-9]{24}$'
                             if (((Select-String -InputObject $param.Value -Pattern $regexPattern).Matches.value)::IsNullOrEmpty){
-                                # 99.999% of the time this is all you need
-                                $managerValue = $param.Value
-                                # Except when someone's username is 24 chars exactly
-                                # TODO: account for the case above
-                                # validate with https://docs.jumpcloud.com/api/1.0/index.html#operation/systemusers_get (doesnt require pagination)
-                                # or https://docs.jumpcloud.com/api/1.0/index.html#operation/search_systemusers_post (requires pagination)
-                                # else pass to block below to do username search
-                                # TODO: if this doesn't return anything:
-                                # Test with 24 char username
-                                # $Search = @{
-                                #     filter = @{
-                                #         or = @(
-                                #             '_id:$eq:' + $param.Value
-                                #         )
-                                #     }
-                                # }
-                                # $managerResults = Search-JcSdkUser -Body:($Search)
-                                # $managerValue = $managerResults.results.id
-                                # Then run the username search:
-                                # try{
-                                #     $managerSearch = @{
-                                #         filter = @{
-                                #             or =@(
-                                #                 '_id:$eq:' + $param.Value
-                                #             )
-                                #         }
-                                #         limit  = $limit
-                                #         skip   = $skip
-                                #     }
-                                #     $managerSearchJSON = $managerSearch | ConvertTo-Json -Compress -Depth 4
-                                #     $managerUrl = "$JCUrlBasePath/api/search/systemusers"
-                                #     $managerResults = Invoke-RestMethod -Method POST -Uri $managerUrl -Header $hdrs -Body $managerSearchJSON
-                                #     $managerValue = $managerResults.results.id
-                                # }
-                                # catch {
-                                #     $managerSearch = @{
-                                #         filter = @{
-                                #             or =@(
-                                #                 'username:$eq:' + $param.Value
-                                #             )
-                                #         }
-                                #         limit  = $limit
-                                #         skip   = $skip
-                                #     }
-                                #     $managerSearchJSON = $managerSearch | ConvertTo-Json -Compress -Depth 4
-                                #     $managerUrl = "$JCUrlBasePath/api/search/systemusers"
-                                #     $managerResults = Invoke-RestMethod -Method POST -Uri $managerUrl -Header $hdrs -Body $managerSearchJSON
-                                #     $managerValue = $managerResults.results.id
-                                # }
+                                # if we have a 24 characterid, try to match the id using the search endpoint
+                                $managerSearch = @{
+                                    filter = @{
+                                        or = @(
+                                            '_id:$eq:' + $param.Value
+                                        )
+                                    }
+                                }
+                                $managerResults = Search-JcSdkUser -Body:($managerSearch)
+                                # Set managerValue; this is a validated user id
+                                $managerValue = $managerResults.id
+                                # if no value was returned, then assume the case this is actuallty a username and search
+                                if (!$managerValue){
+                                    $managerSearch = @{
+                                        filter = @{
+                                            or = @(
+                                                'username:$eq:' + $param.Value
+                                            )
+                                        }
+                                    }
+                                    $managerResults = Search-JcSdkUser -Body:($managerSearch)
+                                    # Set managerValue from the matched username
+                                    $managerValue = $managerResults.id
+                                }
                             }
                             else {
-                                # TODO: figure out skip and limit for this function to account for orgs with 1000+ users
+                                # search the username in the search endpoint
                                 $managerSearch = @{
                                     filter = @{
                                         or = @(
@@ -357,10 +333,16 @@ Function Get-JCUser ()
                                     }
                                 }
                                 $managerResults = Search-JcSdkUser -Body:($managerSearch)
+                                # Set managerValue from the matched username
                                 $managerValue = $managerResults.id
                             }
                             if ($managerValue) {
+                                # if an ID was validated
                                 ($Search.filter).GetEnumerator().add($param.Key, $managerValue)
+                            }
+                            else {
+                                # if id was not validated, return value, let the API manage the error message
+                                ($Search.filter).GetEnumerator().add($param.Key, $param.Value)
                             }
                             continue
                         }
