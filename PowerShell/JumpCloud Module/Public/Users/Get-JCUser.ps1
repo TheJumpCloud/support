@@ -304,6 +304,18 @@ Function Get-JCUser ()
                                 # validate with https://docs.jumpcloud.com/api/1.0/index.html#operation/systemusers_get (doesnt require pagination)
                                 # or https://docs.jumpcloud.com/api/1.0/index.html#operation/search_systemusers_post (requires pagination)
                                 # else pass to block below to do username search
+                                # TODO: if this doesn't return anything:
+                                # Test with 24 char username
+                                # $Search = @{
+                                #     filter = @{
+                                #         or = @(
+                                #             '_id:$eq:' + $param.Value
+                                #         )
+                                #     }
+                                # }
+                                # $managerResults = Search-JcSdkUser -Body:($Search)
+                                # $managerValue = $managerResults.results.id
+                                # Then run the username search:
                                 # try{
                                 #     $managerSearch = @{
                                 #         filter = @{
@@ -337,19 +349,14 @@ Function Get-JCUser ()
                             }
                             else {
                                 # TODO: figure out skip and limit for this function to account for orgs with 1000+ users
-                                $managerSearch = @{
+                                $Search = @{
                                     filter = @{
-                                        or =@(
+                                        or = @(
                                             'username:$eq:' + $param.Value
                                         )
                                     }
-                                    limit  = $limit
-                                    skip   = $skip
                                 }
-                                $managerSearchJSON = $managerSearch | ConvertTo-Json -Compress -Depth 4
-                                $managerUrl = "$JCUrlBasePath/api/search/systemusers"
-                                $managerResults = Invoke-RestMethod -Method POST -Uri $managerUrl -Header $hdrs -Body $managerSearchJSON
-
+                                $managerResults = Search-JcSdkUser -Body:($Search)
                                 $managerValue = $managerResults.results.id
                             }
                             if ($managerValue) {
