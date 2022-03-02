@@ -349,15 +349,15 @@ Function Get-JCUser ()
                             }
                             else {
                                 # TODO: figure out skip and limit for this function to account for orgs with 1000+ users
-                                $Search = @{
+                                $managerSearch = @{
                                     filter = @{
                                         or = @(
                                             'username:$eq:' + $param.Value
                                         )
                                     }
                                 }
-                                $managerResults = Search-JcSdkUser -Body:($Search)
-                                $managerValue = $managerResults.results.id
+                                $managerResults = Search-JcSdkUser -Body:($managerSearch)
+                                $managerValue = $managerResults.id
                             }
                             if ($managerValue) {
                                 ($Search.filter).GetEnumerator().add($param.Key, $managerValue)
