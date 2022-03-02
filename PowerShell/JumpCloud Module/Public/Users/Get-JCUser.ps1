@@ -292,7 +292,7 @@ Function Get-JCUser ()
                         }
 
                         # manager lookup
-                        if ("manager" -eq $param.Key)
+                        if (("manager" -eq $param.Key) -and (-not ($parm.value)::IsNullOrEmpty))
                         {
                             # First check if manager returns valid user with id
                             # Regex match a userid

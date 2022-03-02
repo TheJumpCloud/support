@@ -305,15 +305,8 @@ Function New-JCUser ()
                 continue
             }
             # Get the manager using manager username instead of userId
-            if ("manager" -in $param.Key)
+            if (("manager" -eq $param.Key) -and (-not ($parm.value)::IsNullOrEmpty))
             {
-                # write-host "start"
-                # write-host "$($param.Key)"
-                # write-host "$($param.Value)"
-                # First check if manager returns valid user
-
-
-
                 $regexPattern = [Regex]'^[a-z0-9]{24}$'
                 if (((Select-String -InputObject $param.Value -Pattern $regexPattern).Matches.value)::IsNullOrEmpty){
                     # if we have a 24 characterid, try to match the id using the search endpoint
