@@ -311,37 +311,54 @@ Function New-JCUser ()
                 # write-host "$($param.Key)"
                 # write-host "$($param.Value)"
                 # First check if manager returns valid user
-                $managerUrl = "$JCUrlBasePath/api/Systemusers/$($param.Value)"
-                Write-Verbose $managerUrl
-                try
-                {
-                    $managerResults = Invoke-RestMethod -Method GET -Uri $managerUrl -Headers $hdrs -UserAgent:(Get-JCUserAgent)
-                    $managerValue = $managerResults.id
-                }
-                catch
-                {
-                    $managerResults = $null
-                }
 
-                if (!$managerResults)
-                {
+
+
+                $regexPattern = [Regex]'^[a-z0-9]{24}$'
+                if (((Select-String -InputObject $param.Value -Pattern $regexPattern).Matches.value)::IsNullOrEmpty){
+                    # if we have a 24 characterid, try to match the id using the search endpoint
                     $managerSearch = @{
                         filter = @{
                             or = @(
-                                'username:$regex:/' + $param.Value + '/i'
+                                '_id:$eq:' + $param.Value
                             )
                         }
                     }
-                    $managerSearchJSON = $managerSearch | ConvertTo-Json -Compress -Depth 4
-                    $managerUrl = "$JCUrlBasePath/api/search/systemusers"
-                    $managerResults = Invoke-RestMethod -Method POST -Uri $managerUrl  -Header $hdrs -Body $managerSearchJSON
-                    $managerValue = $managerResults.results.id
+                    $managerResults = Search-JcSdkUser -Body:($managerSearch)
+                    # Set managerValue; this is a validated user id
+                    $managerValue = $managerResults.id
+                    # if no value was returned, then assume the case this is actuallty a username and search
+                    if (!$managerValue){
+                        $managerSearch = @{
+                            filter = @{
+                                or = @(
+                                    'username:$eq:' + $param.Value
+                                )
+                            }
+                        }
+                        $managerResults = Search-JcSdkUser -Body:($managerSearch)
+                        # Set managerValue from the matched username
+                        $managerValue = $managerResults.id
+                    }
                 }
-                # Write-Host "manager restuls"
-                # Write-Host "$managerResults"
-                # Write-Host "$managerValue"
+                else {
+                    # search the username in the search endpoint
+                    $managerSearch = @{
+                        filter = @{
+                            or = @(
+                                'username:$eq:' + $param.Value
+                            )
+                        }
+                    }
+                    $managerResults = Search-JcSdkUser -Body:($managerSearch)
+                    # Set managerValue from the matched username
+                    $managerValue = $managerResults.id
+                }
                 if ($managerValue) {
                     $body.add($param.Key, $managerValue)
+                }
+                else {
+                    $body.add($param.Key, $param.Value)
                 }
                 continue
             }
