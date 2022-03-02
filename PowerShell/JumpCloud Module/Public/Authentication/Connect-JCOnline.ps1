@@ -154,6 +154,7 @@ Function Connect-JCOnline ()
                 # Each time a new org is selected get settings info
                 $global:JCSettingsUrl = $JCUrlBasePath + '/api/settings'
                 $global:JCSettings = Invoke-JCApi -Method:('GET') -Url:($JCSettingsUrl)
+                $global:JCOrgSettings = (Get-JcSdkOrganization -Id $env:JCOrgId).Settings
                 #EndRegion Set environment variables that can be used by other scripts
                 If (([System.String]::IsNullOrEmpty($JCOrgId)) -or ([System.String]::IsNullOrEmpty($env:JCOrgId)))
                 {
