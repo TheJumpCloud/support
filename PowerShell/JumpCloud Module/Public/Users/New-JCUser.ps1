@@ -305,55 +305,63 @@ Function New-JCUser ()
                 continue
             }
             # Get the manager using manager username instead of userId
-            if (("manager" -eq $param.Key) -and (-not ($parm.value)::IsNullOrEmpty))
+            if ("manager" -eq $param.Key)
             {
-                $regexPattern = [Regex]'^[a-z0-9]{24}$'
-                if (((Select-String -InputObject $param.Value -Pattern $regexPattern).Matches.value)::IsNullOrEmpty){
-                    # if we have a 24 characterid, try to match the id using the search endpoint
-                    $managerSearch = @{
-                        filter = @{
-                            or = @(
-                                '_id:$eq:' + $param.Value
-                            )
-                        }
-                    }
-                    $managerResults = Search-JcSdkUser -Body:($managerSearch)
-                    # Set managerValue; this is a validated user id
-                    $managerValue = $managerResults.id
-                    # if no value was returned, then assume the case this is actuallty a username and search
-                    if (!$managerValue){
-                        $managerSearch = @{
-                            filter = @{
-                                or = @(
-                                    'username:$eq:' + $param.Value
-                                )
+                if ([System.String]::isNullOrEmpty($param.Value)) {
+                    # If manager field is null, skip
+                    continue
+                }
+                else {
+                    # First check if manager returns valid user with id
+                        # Regex match a userid
+                        $regexPattern = [Regex]'^[a-z0-9]{24}$'
+                        if (((Select-String -InputObject $param.Value -Pattern $regexPattern).Matches.value)::IsNullOrEmpty){
+                            # if we have a 24 characterid, try to match the id using the search endpoint
+                            $managerSearch = @{
+                                filter = @{
+                                    or = @(
+                                        '_id:$eq:' + $param.Value
+                                    )
+                                }
+                            }
+                            $managerResults = Search-JcSdkUser -Body:($managerSearch)
+                            # Set managerValue; this is a validated user id
+                            $managerValue = $managerResults.id
+                            # if no value was returned, then assume the case this is actuallty a username and search
+                            if (!$managerValue){
+                                $managerSearch = @{
+                                    filter = @{
+                                        or = @(
+                                            'username:$eq:' + $param.Value
+                                        )
+                                    }
+                                }
+                                $managerResults = Search-JcSdkUser -Body:($managerSearch)
+                                # Set managerValue from the matched username
+                                $managerValue = $managerResults.id
                             }
                         }
-                        $managerResults = Search-JcSdkUser -Body:($managerSearch)
-                        # Set managerValue from the matched username
-                        $managerValue = $managerResults.id
-                    }
-                }
-                else {
-                    # search the username in the search endpoint
-                    $managerSearch = @{
-                        filter = @{
-                            or = @(
-                                'username:$eq:' + $param.Value
-                            )
+                        else {
+                            # search the username in the search endpoint
+                            $managerSearch = @{
+                                filter = @{
+                                    or = @(
+                                        'username:$eq:' + $param.Value
+                                    )
+                                }
+                            }
+                            $managerResults = Search-JcSdkUser -Body:($managerSearch)
+                            # Set managerValue from the matched username
+                            $managerValue = $managerResults.id
                         }
+                    if ($managerValue) {
+                        $body.add($param.Key, $managerValue)
                     }
-                    $managerResults = Search-JcSdkUser -Body:($managerSearch)
-                    # Set managerValue from the matched username
-                    $managerValue = $managerResults.id
+                    else {
+                        $body.add($param.Key, $param.Value)
+                    }
+                    continue
                 }
-                if ($managerValue) {
-                    $body.add($param.Key, $managerValue)
-                }
-                else {
-                    $body.add($param.Key, $param.Value)
-                }
-                continue
             }
 
             $body.add($param.Key, $param.Value)
