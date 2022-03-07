@@ -117,11 +117,8 @@ Function Get-JCUser ()
         [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'The managedAppleId of the JumpCloud user you wish to search for.')]
         [String]$managedAppleId,
 
-        [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'The manager of the JumpCloud user you wish to search for.')]
-        [String]$manager,
-
-        [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'The alternateEmail of the JumpCloud user you wish to search for.')]
-        [String]$alternateEmail
+        [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'The manager username or ID of the JumpCloud user you wish to search for.')]
+        [String]$manager
     )
 
     DynamicParam

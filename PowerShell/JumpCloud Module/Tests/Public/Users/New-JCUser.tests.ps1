@@ -104,14 +104,13 @@ Describe -Tag:('JCUser') 'New-JCUser 1.0' {
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
     It "Creates a new User sets alternateEmail" {
-        # TODO: fix function 
-        $alternateEmail = "$($RandomString1)1@DeleteMe.com"
+        $alternateEmail = "$((New-RandomString -NumberOfChars 6))ae@DeleteMe.com"
         $NewUser = New-RandomUser -domain pleasedelete"PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser -alternateEmail $alternateEmail
         $NewUser.alternateEmail | Should -Be $alternateEmail
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
     It "Creates a new User sets managedAppleID" {
-        $managedAppleID = "$($RandomString1)1@DeleteMe.com"
+        $managedAppleID = "$((New-RandomString -NumberOfChars 6))maid@DeleteMe.com"
         $NewUser = New-RandomUser -domain pleasedelete"PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser -managedAppleID $managedAppleID
         $NewUser.managedAppleID | Should -Be $managedAppleID
         Remove-JCUser -UserID $NewUser._id -ByID -Force

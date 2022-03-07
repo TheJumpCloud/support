@@ -582,7 +582,7 @@ Function Import-JCUsersFromCSV ()
                 {
                     $JSONParams = $UpdateParams | ConvertTo-Json
 
-                    Write-Verbose "Test:$($JSONParams)"
+                    Write-Verbose "$($JSONParams)"
 
                     $NewUser = New-JCUser @UpdateParams
 

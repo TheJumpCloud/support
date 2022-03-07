@@ -58,8 +58,8 @@ Describe -Tag:('JCUser') 'Get-JCUser 1.1' {
         $NewUser.email | Should -Be $email
         Remove-JCUser -UserID $NewUser._id -force
     }
-    It "Searches a JumpCloud user by alternateEmail" {
-        # TODO: fix function
+    It "Searches a JumpCloud user by alternateEmail" -Skip {
+        # TODO: Implement in SA-2444
         $alternateEmail = "deleteme@$(New-RandomString -NumberOfChars 8).com"
         $NewUser = New-RandomUser -Domain DeleteMe | New-JCUser -alternateEmail $alternateEmail
         $NewUser = Get-JCUser -alternateEmail $alternateEmail
@@ -243,7 +243,6 @@ Describe -Tag:('JCUser') "Get-JCUser 1.4" {
     }
 
     It "Searches for a JumpCloud user using username and returns all properties" {
-        # TODO: Fix broken function - AlternateEmail not returned when we search by username
         $PesterUser = Get-JCUser -username $PesterParams_User1.Username  -returnProperties 'created', 'account_locked', 'activated', 'addresses', 'allow_public_key', 'attributes', 'email', 'enable_managed_uid', 'enable_user_portal_multifactor', 'externally_managed', 'firstname', 'lastname', 'ldap_binding_user', 'passwordless_sudo', 'password_expired', 'password_never_expires', 'phoneNumbers', 'samba_service_user', 'ssh_keys', 'sudo', 'totp_enabled', 'unix_guid', 'unix_uid', 'username', 'alternateEmail', 'managedAppleId'
         $PesterUser.account_locked | Should -Not -Be $null
         $PesterUser.activated | Should -Not -Be $null
@@ -316,8 +315,8 @@ Describe -Tag:('JCUser') "Get-JCUser with new attributes 1.8.0" {
         $Search = Get-JCUser -location $PesterParams_User1.location -returnProperties location
         $Search.location | Should -Be $PesterParams_User1.location
     }
-    It "Searches for a user by alternateEmail"{
-        #TODO: fix broken test/ function
+    It "Searches for a user by alternateEmail" -Skip {
+        #TODO: Implement in SA-2444
         $Search = Get-JCUser -alternateEmail $PesterParams_User1.alternateEmail -returnProperties alternateEmail
         $Search.alternateEmail | Should -Be $PesterParams_User1.alternateEmail
     }

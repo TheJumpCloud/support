@@ -145,7 +145,7 @@ Function New-JCUser ()
         [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'A boolean $true/$false value for putting the account into a suspended state')]
         [bool]$suspended,
 
-        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'The manager for the user must be a JumpCloud user')]
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'The manager username or ID of the JumpCloud manager user; must be a valid user')]
         [string]$manager,
 
         [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'The managedAppleId for the user')]
