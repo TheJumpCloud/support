@@ -1,33 +1,30 @@
-## 1.18.13
+## 1.19.0
 
-Release Date: January 27, 2022
+Release Date: March 7, 2022
 
 #### RELEASE NOTES
 
 ```
-when new sdks are available, the module will prompt for update
+This release incorperates the "alternateEmail", "manager" and "managedAppleID" files in both Get/Set/New-JCUser & the CSV Import Functions (Import-JCUsersFromCSV, Update-JCUsersFromCSV, New-JCImportTemplate)
 ```
 
 #### FEATURES:
 
+[alternateEmail, manager, managedAppleID attributes added to module](https://github.com/TheJumpCloud/support/pull/353)
+
 ```
-sdks should auto update
-Module release for the JumpCloud PowerShell Module
-This release includes changes to JumpCloud Module tests.
+SDKs should prompt to update on Connect-JConline
 ```
 
 #### IMPROVEMENTS:
 
-Fix flakey tests, CI workflow improvements
+[Organization Settings are saved on Connect-JCOnline](https://github.com/TheJumpCloud/support/pull/354)
+[CI updates to incorporate changes to SDK generation](https://github.com/TheJumpCloud/support/pull/350)
 
-#### BUG FIXES:
+#### Bug Fixes:
 
-SA-2294 - Fix Flakey Tests
-
-## 1.18.12
-
-Release Date: December 16, 2021
-
+Documentation updated for Set-JCRadiusReplyAttributes: 0 is not an allowed value for VLAN ID
+Fixed a bug which prevented system/user attributes with "sudo attributes" from being copied to another system/user with the Copy-JCAssociation function
 When releasing the PowerShell Module to the main branch the CI process will automatically draft a release with the release notes for that release version from the module changelog file.
 
 ## 1.18.12
