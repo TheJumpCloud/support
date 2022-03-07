@@ -143,7 +143,16 @@ Function New-JCUser ()
         [string]$work_fax_number,
 
         [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'A boolean $true/$false value for putting the account into a suspended state')]
-        [bool]$suspended
+        [bool]$suspended,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'The manager username or ID of the JumpCloud manager user; must be a valid user')]
+        [string]$manager,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'The managedAppleId for the user')]
+        [string]$managedAppleId,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'The alternateEmail for the user')]
+        [string]$alternateEmail
 
     )
     DynamicParam
@@ -224,6 +233,7 @@ Function New-JCUser ()
 
         foreach ($param in $PSBoundParameters.GetEnumerator())
         {
+            # Write-Host $param
             if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }
 
             if ($param.key -in ('_id', 'JCAPIKey', 'NumberOfCustomAttributes', 'EnrollmentDays')) { continue }
@@ -293,6 +303,65 @@ Function New-JCUser ()
 
                 $body.add($param.Key, $enable_user_portal_multifactor)
                 continue
+            }
+            # Get the manager using manager username instead of userId
+            if ("manager" -eq $param.Key)
+            {
+                if ([System.String]::isNullOrEmpty($param.Value)) {
+                    # If manager field is null, skip
+                    continue
+                }
+                else {
+                    # First check if manager returns valid user with id
+                        # Regex match a userid
+                        $regexPattern = [Regex]'^[a-z0-9]{24}$'
+                        if (((Select-String -InputObject $param.Value -Pattern $regexPattern).Matches.value)::IsNullOrEmpty){
+                            # if we have a 24 characterid, try to match the id using the search endpoint
+                            $managerSearch = @{
+                                filter = @{
+                                    or = @(
+                                        '_id:$eq:' + $param.Value
+                                    )
+                                }
+                            }
+                            $managerResults = Search-JcSdkUser -Body:($managerSearch)
+                            # Set managerValue; this is a validated user id
+                            $managerValue = $managerResults.id
+                            # if no value was returned, then assume the case this is actuallty a username and search
+                            if (!$managerValue){
+                                $managerSearch = @{
+                                    filter = @{
+                                        or = @(
+                                            'username:$eq:' + $param.Value
+                                        )
+                                    }
+                                }
+                                $managerResults = Search-JcSdkUser -Body:($managerSearch)
+                                # Set managerValue from the matched username
+                                $managerValue = $managerResults.id
+                            }
+                        }
+                        else {
+                            # search the username in the search endpoint
+                            $managerSearch = @{
+                                filter = @{
+                                    or = @(
+                                        'username:$eq:' + $param.Value
+                                    )
+                                }
+                            }
+                            $managerResults = Search-JcSdkUser -Body:($managerSearch)
+                            # Set managerValue from the matched username
+                            $managerValue = $managerResults.id
+                        }
+                    if ($managerValue) {
+                        $body.add($param.Key, $managerValue)
+                    }
+                    else {
+                        $body.add($param.Key, $param.Value)
+                    }
+                    continue
+                }
             }
 
             $body.add($param.Key, $param.Value)

@@ -24,6 +24,9 @@ Function Import-JCUsersFromCSV ()
         $UserUpdateParams.Add("LastName", "LastName")
         $UserUpdateParams.Add("Email", "Email")
         $UserUpdateParams.Add("Password", "Password")
+        $UserUpdateParams.Add("alternateEmail", "alternateEmail")
+        $UserUpdateParams.Add("manager", "manager")
+        $UserUpdateParams.Add("managedAppleId", "managedAppleId")
         $UserUpdateParams.Add("middlename", "middlename")
         $UserUpdateParams.Add("preferredName", "preferredName")
         $UserUpdateParams.Add("jobTitle", "jobTitle")
@@ -302,11 +305,8 @@ Function Import-JCUsersFromCSV ()
             $title = "Import Summary:"
 
             $menu = @"
-
     Number Of Users To Import = $NumberOfNewUsers
-
     Would you like to import these users?
-
 "@
 
             Write-Host $title -ForegroundColor Red

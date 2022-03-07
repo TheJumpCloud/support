@@ -90,6 +90,31 @@ Describe -Tag:('JCUser') 'New-JCUser 1.0' {
         $NewUser.unix_guid | Should -Be 100
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
+    It "Creates a new User sets manager" {
+        $managerID = $PesterParams_User1.id
+        $NewUser = New-RandomUser -domain pleasedelete"PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser -manager $managerID
+        $NewUser.manager | Should -Be $managerID
+        Remove-JCUser -UserID $NewUser._id -ByID -Force
+    }
+    It "Creates a new User sets managerUsername" {
+        $managerUsername = $PesterParams_User1.username
+        $managerID = $PesterParams_User1.id
+        $NewUser = New-RandomUser -domain pleasedelete"PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser -manager $managerUsername
+        $NewUser.manager | Should -Be $managerID
+        Remove-JCUser -UserID $NewUser._id -ByID -Force
+    }
+    It "Creates a new User sets alternateEmail" {
+        $alternateEmail = "$((New-RandomString -NumberOfChars 6))ae@DeleteMe.com"
+        $NewUser = New-RandomUser -domain pleasedelete"PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser -alternateEmail $alternateEmail
+        $NewUser.alternateEmail | Should -Be $alternateEmail
+        Remove-JCUser -UserID $NewUser._id -ByID -Force
+    }
+    It "Creates a new User sets managedAppleID" {
+        $managedAppleID = "$((New-RandomString -NumberOfChars 6))maid@DeleteMe.com"
+        $NewUser = New-RandomUser -domain pleasedelete"PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser -managedAppleID $managedAppleID
+        $NewUser.managedAppleID | Should -Be $managedAppleID
+        Remove-JCUser -UserID $NewUser._id -ByID -Force
+    }
 
     It "Creates a new User with 1 custom attributes" {
         $NewUser = New-RandomUser -Attributes -Domain DeleteMe | New-JCUser -NumberOfCustomAttributes 1
@@ -155,6 +180,8 @@ Describe -Tag:('JCUser') "New-JCUser 1.8.0" {
         $PesterParams_NewUser1.employeeType | Should -Be $PesterParams_User1.employeeType
         $PesterParams_NewUser1.description | Should -Be $PesterParams_User1.description
         $PesterParams_NewUser1.location | Should -Be $PesterParams_User1.location
+        $PesterParams_NewUser1.alternateEmail | Should -Be $PesterParams_User1.alternateEmail
+        $PesterParams_NewUser1.managedAppleID | Should -Be $PesterParams_User1.managedAppleID
 
     }
 
