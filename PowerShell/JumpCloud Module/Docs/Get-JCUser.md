@@ -24,7 +24,7 @@ Get-JCUser [[-username] <String>] [-firstname <String>] [-lastname <String>] [-e
  [-jobTitle <String>] [-employeeIdentifier <String>] [-department <String>] [-costCenter <String>]
  [-company <String>] [-employeeType <String>] [-description <String>] [-location <String>]
  [-external_dn <String>] [-external_source_type <String>] [-managedAppleId <String>] [-manager <String>]
- [-alternateEmail <String>] -dateFilter <String> -date <DateTime> [<CommonParameters>]
+ -dateFilter <String> -date <DateTime> [<CommonParameters>]
 ```
 
 ### ByID
@@ -109,21 +109,6 @@ A search filter to show accounts that are enabled ($true) or disabled ($true) to
 
 ```yaml
 Type: System.Boolean
-Parameter Sets: SearchFilter
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -alternateEmail
-The alternateEmail of the JumpCloud user you wish to search for.
-
-```yaml
-Type: System.String
 Parameter Sets: SearchFilter
 Aliases:
 
