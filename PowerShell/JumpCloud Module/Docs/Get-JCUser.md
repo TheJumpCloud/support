@@ -23,8 +23,8 @@ Get-JCUser [[-username] <String>] [-firstname <String>] [-lastname <String>] [-e
  [-filterDateProperty <String>] [-returnProperties <String[]>] [-middlename <String>] [-displayname <String>]
  [-jobTitle <String>] [-employeeIdentifier <String>] [-department <String>] [-costCenter <String>]
  [-company <String>] [-employeeType <String>] [-description <String>] [-location <String>]
- [-external_dn <String>] [-external_source_type <String>] -dateFilter <String> -date <DateTime>
- [<CommonParameters>]
+ [-external_dn <String>] [-external_source_type <String>] [-managedAppleId <String>] [-manager <String>]
+ -dateFilter <String> -date <DateTime> [<CommonParameters>]
 ```
 
 ### ByID
@@ -438,6 +438,36 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
+### -managedAppleId
+The managedAppleId of the JumpCloud user you wish to search for.
+
+```yaml
+Type: System.String
+Parameter Sets: SearchFilter
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -manager
+The manager of the JumpCloud user you wish to search for.
+
+```yaml
+Type: System.String
+Parameter Sets: SearchFilter
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
 ### -middlename
 The middlename of the JumpCloud user you wish to search for.
 
@@ -507,7 +537,7 @@ Valid properties that can be returned are: 'created', 'password_expiration_date'
 Type: System.String[]
 Parameter Sets: SearchFilter
 Aliases:
-Accepted values: created, password_expiration_date, account_locked, activated, addresses, allow_public_key, attributes, email, enable_managed_uid, enable_user_portal_multifactor, externally_managed, firstname, lastname, ldap_binding_user, passwordless_sudo, password_expired, password_never_expires, phoneNumbers, samba_service_user, ssh_keys, sudo, totp_enabled, unix_guid, unix_uid, username, middlename, displayname, jobTitle, employeeIdentifier, department, costCenter, company, employeeType, description, location, external_source_type, external_dn, suspended, mfa
+Accepted values: created, password_expiration_date, account_locked, activated, addresses, allow_public_key, attributes, alternateEmail, managedAppleId, manager, email, enable_managed_uid, enable_user_portal_multifactor, externally_managed, firstname, lastname, ldap_binding_user, passwordless_sudo, password_expired, password_never_expires, phoneNumbers, samba_service_user, ssh_keys, sudo, totp_enabled, unix_guid, unix_uid, username, middlename, displayname, jobTitle, employeeIdentifier, department, costCenter, company, employeeType, description, location, external_source_type, external_dn, suspended, mfa
 
 Required: False
 Position: Named

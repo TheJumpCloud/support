@@ -236,7 +236,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## OUTPUTS
 
 ### System.Int64
-### System.String
 ## NOTES
 COMPLEX PARAMETER PROPERTIES
 

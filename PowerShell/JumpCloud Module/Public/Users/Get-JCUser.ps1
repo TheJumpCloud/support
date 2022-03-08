@@ -73,8 +73,8 @@ Function Get-JCUser ()
         [ValidateSet('created', 'password_expiration_date')]
         [String]$filterDateProperty,
 
-        [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'Allows you to return select properties on JumpCloud user objects. Specifying what properties are returned can drastically increase the speed of the API call with a large data set. Valid properties that can be returned are: ''created'', ''password_expiration_date'', ''account_locked'', ''activated'', ''addresses'', ''allow_public_key'', ''attributes'', ''email'', ''enable_managed_uid'', ''enable_user_portal_multifactor'', ''externally_managed'', ''firstname'', ''lastname'', ''ldap_binding_user'', ''passwordless_sudo'', ''password_expired'', ''password_never_expires'', ''phoneNumbers'', ''samba_service_user'', ''ssh_keys'', ''sudo'', ''totp_enabled'', ''unix_guid'', ''unix_uid'', ''username'',''suspended''')]
-        [ValidateSet('created', 'password_expiration_date', 'account_locked', 'activated', 'addresses', 'allow_public_key', 'attributes', 'email', 'enable_managed_uid', 'enable_user_portal_multifactor', 'externally_managed', 'firstname', 'lastname', 'ldap_binding_user', 'passwordless_sudo', 'password_expired', 'password_never_expires', 'phoneNumbers', 'samba_service_user', 'ssh_keys', 'sudo', 'totp_enabled', 'unix_guid', 'unix_uid', 'username', 'middlename', 'displayname', 'jobTitle', 'employeeIdentifier', 'department', 'costCenter', 'company', 'employeeType', 'description', 'location', 'external_source_type', 'external_dn', 'suspended', 'mfa')]
+        [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'Allows you to return select properties on JumpCloud user objects. Specifying what properties are returned can drastically increase the speed of the API call with a large data set. Valid properties that can be returned are: ''created'', ''password_expiration_date'', ''account_locked'', ''activated'', ''addresses'', ''allow_public_key'', ''attributes'', ''alternateEmail'',''email'', ''enable_managed_uid'', ''enable_user_portal_multifactor'', ''externally_managed'', ''firstname'', ''lastname'', ''ldap_binding_user'', ''passwordless_sudo'', ''password_expired'', ''password_never_expires'', ''phoneNumbers'', ''samba_service_user'', ''ssh_keys'', ''sudo'', ''totp_enabled'', ''unix_guid'', ''unix_uid'', ''managedAppleId'',''manager'',''username'',''suspended''')]
+        [ValidateSet('created', 'password_expiration_date', 'account_locked', 'activated', 'addresses', 'allow_public_key', 'attributes', 'alternateEmail', 'managedAppleId', 'manager', 'email', 'enable_managed_uid', 'enable_user_portal_multifactor', 'externally_managed', 'firstname', 'lastname', 'ldap_binding_user', 'passwordless_sudo', 'password_expired', 'password_never_expires', 'phoneNumbers', 'samba_service_user', 'ssh_keys', 'sudo', 'totp_enabled', 'unix_guid', 'unix_uid', 'username', 'middlename', 'displayname', 'jobTitle', 'employeeIdentifier', 'department', 'costCenter', 'company', 'employeeType', 'description', 'location', 'external_source_type', 'external_dn', 'suspended', 'mfa')]
         [String[]]$returnProperties,
 
         #New parameters as of 1.8 release
@@ -112,7 +112,13 @@ Function Get-JCUser ()
         [String]$external_dn,
 
         [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'The externally managed user source type (ADB Externally managed users only)')]
-        [String]$external_source_type
+        [String]$external_source_type,
+
+        [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'The managedAppleId of the JumpCloud user you wish to search for.')]
+        [String]$managedAppleId,
+
+        [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'The manager username or ID of the JumpCloud user you wish to search for.')]
+        [String]$manager
     )
 
     DynamicParam
@@ -166,7 +172,6 @@ Function Get-JCUser ()
     }
 
     begin
-
     {
         Write-Verbose 'Verifying JCAPI Key'
         if ($JCAPIKEY.length -ne 40) { Connect-JCOnline }
@@ -194,7 +199,6 @@ Function Get-JCUser ()
     }
 
     process
-
     {
         [int]$limit = '1000'
         Write-Verbose "Setting limit to $limit"
@@ -233,6 +237,7 @@ Function Get-JCUser ()
                         $Search = @{
                             filter = @(
                                 @{
+
                                 }
                             )
                             limit  = $limit
@@ -283,6 +288,68 @@ Function Get-JCUser ()
                             continue
                         }
 
+                        # manager lookup
+                        if ("manager" -eq $param.Key)
+                        {
+                            if ([System.String]::isNullOrEmpty($param.value)) {
+                                # If manager field is null skip
+                                continue
+                            }
+                            else {
+                                # First check if manager returns valid user with id
+                                # Regex match a userid
+                                $regexPattern = [Regex]'^[a-z0-9]{24}$'
+                                if (((Select-String -InputObject $param.Value -Pattern $regexPattern).Matches.value)::IsNullOrEmpty){
+                                    # if we have a 24 characterid, try to match the id using the search endpoint
+                                    $managerSearch = @{
+                                        filter = @{
+                                            or = @(
+                                                '_id:$eq:' + $param.Value
+                                            )
+                                        }
+                                    }
+                                    $managerResults = Search-JcSdkUser -Body:($managerSearch)
+                                    # Set managerValue; this is a validated user id
+                                    $managerValue = $managerResults.id
+                                    # if no value was returned, then assume the case this is actuallty a username and search
+                                    if (!$managerValue){
+                                        $managerSearch = @{
+                                            filter = @{
+                                                or = @(
+                                                    'username:$eq:' + $param.Value
+                                                )
+                                            }
+                                        }
+                                        $managerResults = Search-JcSdkUser -Body:($managerSearch)
+                                        # Set managerValue from the matched username
+                                        $managerValue = $managerResults.id
+                                    }
+                                }
+                                else {
+                                    # search the username in the search endpoint
+                                    $managerSearch = @{
+                                        filter = @{
+                                            or = @(
+                                                'username:$eq:' + $param.Value
+                                            )
+                                        }
+                                    }
+                                    $managerResults = Search-JcSdkUser -Body:($managerSearch)
+                                    # Set managerValue from the matched username
+                                    $managerValue = $managerResults.id
+                                }
+                                if ($managerValue) {
+                                    # if an ID was validated
+                                    ($Search.filter).GetEnumerator().add($param.Key, $managerValue)
+                                }
+                                else {
+                                    # if id was not validated, return value, let the API manage the error message
+                                    ($Search.filter).GetEnumerator().add($param.Key, $param.Value)
+                                }
+                                continue
+                            }
+                        }
+
                         $Value = ($param.value).replace('*', '')
 
                         if (($param.Value -match '.+?\*$') -and ($param.Value -match '^\*.+?'))
@@ -314,18 +381,16 @@ Function Get-JCUser ()
 
                     $SearchJSON = $Search | ConvertTo-Json -Compress -Depth 4
 
-                    Write-Debug $SearchJSON
-
                     $URL = "$JCUrlBasePath/api/search/systemusers"
 
-                    $Results = Invoke-RestMethod -Method POST -Uri $Url  -Header $hdrs -Body $SearchJSON -UserAgent:(Get-JCUserAgent)
+                    $Results = Invoke-RestMethod -Method POST -Uri $Url -Header $hdrs -Body $SearchJSON -UserAgent:(Get-JCUserAgent)
 
+                    #Prints the results
                     $null = $resultsArrayList.Add($Results)
 
                     $Skip += $limit
 
                     $Counter += $limit
-
                 } #End While
 
             } #End search
@@ -343,7 +408,6 @@ Function Get-JCUser ()
     } # End process
 
     end
-
     {
 
         switch ($PSCmdlet.ParameterSetName)

@@ -727,7 +727,6 @@
             <maml:para>Specifies the VLAN id which is applied to all attribute names.</maml:para>
           </maml:description>
           <command:parameterValueGroup>
-            <command:parameterValue required="false" command:variableLength="false">0</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">1</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">2</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">3</command:parameterValue>
@@ -4294,14 +4293,6 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
           <maml:para></maml:para>
         </maml:description>
       </command:returnValue>
-      <command:returnValue>
-        <dev:type>
-          <maml:name>System.String</maml:name>
-        </dev:type>
-        <maml:description>
-          <maml:para></maml:para>
-        </maml:description>
-      </command:returnValue>
     </command:returnValues>
     <maml:alertSet>
       <maml:alert>
@@ -4694,14 +4685,6 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
       <command:returnValue>
         <dev:type>
           <maml:name>System.Int64</maml:name>
-        </dev:type>
-        <maml:description>
-          <maml:para></maml:para>
-        </maml:description>
-      </command:returnValue>
-      <command:returnValue>
-        <dev:type>
-          <maml:name>System.String</maml:name>
         </dev:type>
         <maml:description>
           <maml:para></maml:para>
@@ -7493,6 +7476,30 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>managedAppleId</maml:name>
+          <maml:description>
+            <maml:para>The managedAppleId of the JumpCloud user you wish to search for.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>manager</maml:name>
+          <maml:description>
+            <maml:para>The manager of the JumpCloud user you wish to search for.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
           <maml:name>middlename</maml:name>
           <maml:description>
             <maml:para>The middlename of the JumpCloud user you wish to search for.</maml:para>
@@ -7553,6 +7560,9 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
             <command:parameterValue required="false" command:variableLength="false">addresses</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">allow_public_key</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">attributes</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">alternateEmail</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">managedAppleId</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">manager</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">email</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">enable_managed_uid</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">enable_user_portal_multifactor</command:parameterValue>
@@ -7991,6 +8001,30 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
         <maml:name>location</maml:name>
         <maml:description>
           <maml:para>The location of the JumpCloud user you wish to search for.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>managedAppleId</maml:name>
+        <maml:description>
+          <maml:para>The managedAppleId of the JumpCloud user you wish to search for.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>manager</maml:name>
+        <maml:description>
+          <maml:para>The manager of the JumpCloud user you wish to search for.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
         <dev:type>
@@ -9601,6 +9635,18 @@ SystemID                 CommandID                Status
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>alternateEmail</maml:name>
+          <maml:description>
+            <maml:para>The alternateEmail for the user</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
           <maml:name>Attribute1_name</maml:name>
           <maml:description>
@@ -9932,6 +9978,30 @@ SystemID                 CommandID                Status
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>managedAppleId</maml:name>
+          <maml:description>
+            <maml:para>The managedAppleId for the user</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>manager</maml:name>
+          <maml:description>
+            <maml:para>The manager for the user must be a JumpCloud user</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
           <maml:name>middlename</maml:name>
           <maml:description>
             <maml:para>Specifies the user's home location. The LDAP displayName of this property is initials.</maml:para>
@@ -10182,6 +10252,18 @@ SystemID                 CommandID                Status
         <command:parameterValue required="true" variableLength="false">System.Boolean</command:parameterValue>
         <dev:type>
           <maml:name>System.Boolean</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>alternateEmail</maml:name>
+        <maml:description>
+          <maml:para>The alternateEmail for the user</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -10502,6 +10584,30 @@ SystemID                 CommandID                Status
         <maml:name>location</maml:name>
         <maml:description>
           <maml:para>Specifies the user's home location. The LDAP displayName of this property is physicalDeliveryOfficeName.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>managedAppleId</maml:name>
+        <maml:description>
+          <maml:para>The managedAppleId for the user</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>manager</maml:name>
+        <maml:description>
+          <maml:para>The manager for the user must be a JumpCloud user</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
         <dev:type>
@@ -13777,7 +13883,6 @@ Enter a value between 1 and 2:</dev:code>
             <maml:para>Specifies the VLAN id which is applied to all attribute names.</maml:para>
           </maml:description>
           <command:parameterValueGroup>
-            <command:parameterValue required="false" command:variableLength="false">0</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">1</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">2</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">3</command:parameterValue>
@@ -14902,6 +15007,18 @@ Enter a value between 1 and 2:</dev:code>
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>alternateEmail</maml:name>
+          <maml:description>
+            <maml:para>The alternateEmail for the user</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
           <maml:name>Attribute1_name</maml:name>
           <maml:description>
@@ -15274,6 +15391,30 @@ Enter a value between 1 and 2:</dev:code>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>managedAppleId</maml:name>
+          <maml:description>
+            <maml:para>The managedAppleId for the user</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>manager</maml:name>
+          <maml:description>
+            <maml:para>The manager for the user</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
           <maml:name>middlename</maml:name>
           <maml:description>
             <maml:para>Specifies the user's home location. The LDAP displayName of this property is initials.</maml:para>
@@ -15552,6 +15693,18 @@ Enter a value between 1 and 2:</dev:code>
           <command:parameterValue required="true" variableLength="false">System.Boolean</command:parameterValue>
           <dev:type>
             <maml:name>System.Boolean</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>alternateEmail</maml:name>
+          <maml:description>
+            <maml:para>The alternateEmail for the user</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -15908,6 +16061,30 @@ Enter a value between 1 and 2:</dev:code>
           <maml:name>location</maml:name>
           <maml:description>
             <maml:para>Specifies the user's home location. The LDAP displayName of this property is physicalDeliveryOfficeName.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>managedAppleId</maml:name>
+          <maml:description>
+            <maml:para>The managedAppleId for the user</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>manager</maml:name>
+          <maml:description>
+            <maml:para>The manager for the user</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
           <dev:type>
@@ -16195,6 +16372,18 @@ Enter a value between 1 and 2:</dev:code>
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>alternateEmail</maml:name>
+          <maml:description>
+            <maml:para>The alternateEmail for the user</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
           <maml:name>Attribute1_name</maml:name>
           <maml:description>
@@ -16556,6 +16745,30 @@ Enter a value between 1 and 2:</dev:code>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>managedAppleId</maml:name>
+          <maml:description>
+            <maml:para>The managedAppleId for the user</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>manager</maml:name>
+          <maml:description>
+            <maml:para>The manager for the user</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
           <maml:name>middlename</maml:name>
           <maml:description>
             <maml:para>Specifies the user's home location. The LDAP displayName of this property is initials.</maml:para>
@@ -16806,6 +17019,18 @@ Enter a value between 1 and 2:</dev:code>
         <command:parameterValue required="true" variableLength="false">System.Boolean</command:parameterValue>
         <dev:type>
           <maml:name>System.Boolean</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>alternateEmail</maml:name>
+        <maml:description>
+          <maml:para>The alternateEmail for the user</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -17174,6 +17399,30 @@ Enter a value between 1 and 2:</dev:code>
         <maml:name>location</maml:name>
         <maml:description>
           <maml:para>Specifies the user's home location. The LDAP displayName of this property is physicalDeliveryOfficeName.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>managedAppleId</maml:name>
+        <maml:description>
+          <maml:para>The managedAppleId for the user</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>manager</maml:name>
+        <maml:description>
+          <maml:para>The manager for the user</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
         <dev:type>

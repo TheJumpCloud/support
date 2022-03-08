@@ -104,8 +104,8 @@ Describe -Tag:('JCAssociation') "Association Tests" {
                     $TargetByType = $_.TargetId
                 }
                 $JCAssociationTestCases += @{
-                    TestDescription = 'Get/ Remove Origional Associations By ' + ($ByType.ByType )
-                    TestType        = "origional"
+                    TestDescription = 'Get/ Remove original Associations By ' + ($ByType.ByType )
+                    TestType        = "original"
                     TestParam       = $_
                     Commands        = [ordered]@{
                         '0' = "Get-JCAssociation -Type:('$($_.SourceType)') -$($ByType.SourceTarget):('$($SourceByType)') -Direct";
@@ -150,11 +150,11 @@ Describe -Tag:('JCAssociation') "Association Tests" {
             # Write-Host("#### Test Name: " + $TestDescription + " ####")
             foreach ($value in $Commands.values)
             {
-                # Write-Host("Command: " + $value)
+                Write-Host("Command: " + $value)
                 $Associations_Test = Invoke-Expression -Command:($value)
-                if ($TestType -eq "origional")
+                if ($TestType -eq "original")
                 {
-                    # Write-Host("Origional command: " + $value)
+                    Write-Host("original command: " + $value)
                     if ($Associations_Test)
                     {
                         $Associations_Test = $Associations_Test | Remove-JCAssociation -Force
@@ -163,13 +163,13 @@ Describe -Tag:('JCAssociation') "Association Tests" {
                     }
                     else
                     {
-                        # Write-Host("No Association Found")
+                        Write-Host("No Association Found")
                         $Associations_Test | Should -Be $null
                     }
                 }
                 else
                 {
-                    # Write-Host("Test Object" + $Associations_Test)
+                    Write-Host("Test Object" + $Associations_Test)
                     $Associations_Test | Should -Not -BeNullOrEmpty
                     ($Associations_Test | Measure-Object).Count | Should -BeGreaterThan 0
                     If ($value -match '-Raw')
