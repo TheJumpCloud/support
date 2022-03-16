@@ -30,7 +30,7 @@ This script will create a CSV report based on the given PolicyId. The script pro
 ### Script
 
 ```powershell
-$policy =  Read-Host -Prompt "Enter policy id" 
+$policy =  Read-Host -Prompt "Enter policy id"
 $policyId = $policy
 $csvFilePath = Read-Host -Prompt "Enter folder directory to save the report"
 $today = (get-date).tostring("yyyyMMddHHmm")
@@ -62,7 +62,24 @@ $hash = @{}
 $latestpresult = Get-JcSdkPolicyStatus -PolicyId $policyId
 
 #Form attributes
-$output = $latestpresult | select @{Name = 'HostName'; Expression = { $hash.($_.systemID) } }, @{Name = 'Time(UTC)'; Expression = { [TimeZoneInfo]::ConvertTimeToUtc(([DateTime]$_.endedAt).ToUniversalTime()) } }, State, Success, StdOut, StdErr
+$output = @()
+foreach ($item in $latestpresult)
+{
+  $matchingSystem = $hash.($item.systemID)
+  # Policy results will contain records for deleted systems, do not include them in this report.
+  # if system exists in system list, continue.
+  if ($matchingSystem)
+  {
+      $output += [PSCustomObject]@{
+          HostName    = $matchingSystem
+          'Time(UTC)' = ([TimeZoneInfo]::ConvertTimeToUtc(([DateTime]$item.endedAt).ToUniversalTime()))
+          State       = $item.State
+          Success     = $item.Success
+          StdOut      = $item.StdOut
+          StdErr      = $item.StdErr
+      }
+  }
+}
 
 #Output to csv
 $output | Export-Csv -NoTypeInformation ($outcsvpath + $outcsv)
