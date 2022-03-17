@@ -71,12 +71,12 @@ foreach ($item in $latestpresult)
   if ($matchingSystem)
   {
       $output += [PSCustomObject]@{
-          HostName    = $matchingSystem
-          'Time(UTC)' = ([TimeZoneInfo]::ConvertTimeToUtc(([DateTime]$item.endedAt).ToUniversalTime()))
-          State       = $item.State
-          Success     = $item.Success
-          StdOut      = $item.StdOut
-          StdErr      = $item.StdErr
+          HostName        = $matchingSystem
+          'Time(UTC)'     = ([TimeZoneInfo]::ConvertTimeToUtc(([DateTime]$item.endedAt).ToUniversalTime()))
+          State           = $item.State
+          Result          = $item.Success
+          Result_Message  = $item.StdOut
+          Error           = $item.StdErr
       }
   }
 }
