@@ -22,7 +22,7 @@ This script will create a CSV report based on the given PolicyId. The script pro
   
 ### Expected Output
 
-|HostName       |Time(UTC)           |State  |Success|StdOut                                               |StdErr|
+|HostName       |Time(UTC)           |State  |Result |Result Message                                       |Error |
 |---------------|--------------------|-------|-------|-----------------------------------------------------|------|
 |KENMARANIOND64B|3/4/2022 4:35:51 PM |success|True   |removablestorage_windows policy successfully applied.|      |
 |KENMARANION3EDC|3/14/2022 5:07:05 PM|success|True   |removablestorage_windows policy successfully applied.|      |
