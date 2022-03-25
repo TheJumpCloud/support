@@ -81,9 +81,6 @@ workflows:
             - Build Modules
             - Initial Setup
           context: aws-credentials
-      - Publish Wiki Docs:
-          requires:
-            - Build Help and Test Files
       - Build Nuspec:
           requires:
             - Initial Setup
@@ -154,7 +151,10 @@ workflows:
           requires:
             - Build Nuspec for PSGallery
             - Approve Module
-      - Publish Wiki Docs
+      - Publish Wiki Docs:
+          requires:
+            - Publish Module Validation
+            - Approve Module
       - Invoke Git Commit:
           requires:
             - Publish Module Validation
