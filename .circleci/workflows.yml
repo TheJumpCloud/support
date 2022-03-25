@@ -368,7 +368,7 @@ commands:
           name: 'Publish Wiki Documentaiton'
           shell: pwsh.exe
           command: |
-            ./Powerhell/Deploy/Build-WikiPages.ps1
+            ./PowerShell/Deploy/Build-WikiPages.ps1
   invoke-script:
     steps:
       - checkout
