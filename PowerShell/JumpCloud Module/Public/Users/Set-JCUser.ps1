@@ -230,8 +230,14 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
         [string]
         $external_source_type,
 
-        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'A boolean $true/$false value for putting the account into a suspended state')]
-        [bool]$suspended,
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'A string value for putting the account into an activated or suspended state')]
+        [ValidateSet('ACTIVATED', 'SUSPENDED')]
+        [string]
+        $state,
+
+        [Parameter(DontShow, ValueFromPipelineByPropertyName = $True, HelpMessage = 'A boolean $true/$false value for putting the account into a suspended state')]
+        [bool]
+        $suspended,
 
         [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The manager username or ID of the JumpCloud manager user; must be a valid user')]
         [string]
