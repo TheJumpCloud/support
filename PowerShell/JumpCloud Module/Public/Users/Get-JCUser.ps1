@@ -66,7 +66,7 @@ Function Get-JCUser ()
         [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'A search filter to show accounts that are enabled ($true) or disabled ($false) for password_never_expires')]
         [bool]$password_never_expires,
 
-        [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'A search filter to show accounts that are enabled ($true) or disabled ($false) for password_never_expires')]
+        [Parameter(DontShow, ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'A search filter to show accounts that are enabled ($true) or disabled ($false) for password_never_expires')]
         [bool]$suspended,
 
         [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'A parameter that can filter the properties ''created'' or ''password_expiration_date''. This parameter if used creates two more dynamic parameters ''dateFilter'' and ''date''. See EXAMPLE 4 above for full syntax.')]
@@ -118,7 +118,10 @@ Function Get-JCUser ()
         [String]$managedAppleId,
 
         [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'The manager username or ID of the JumpCloud user you wish to search for.')]
-        [String]$manager
+        [String]$manager,
+
+        [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'A search filter to return users that are in an ACTIVATED or SUSPENDED state')]
+        [String]$state
     )
 
     DynamicParam
