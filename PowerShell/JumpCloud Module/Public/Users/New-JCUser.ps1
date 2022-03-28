@@ -142,7 +142,10 @@ Function New-JCUser ()
         [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s work fax number. The LDAP displayName of this property is facsimileTelephoneNumber.')]
         [string]$work_fax_number,
 
-        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'A boolean $true/$false value for putting the account into a suspended state')]
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'A boolean $true/$false value for putting the account into an activated state')]
+        [bool]$activated,
+
+        [Parameter(DontShow, ValueFromPipelineByPropertyName = $True, HelpMessage = 'A boolean $true/$false value for putting the account into a suspended state')]
         [bool]$suspended,
 
         [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'The manager username or ID of the JumpCloud manager user; must be a valid user')]
