@@ -1398,12 +1398,6 @@ Describe -Tag:('JCUser') 'Set-JCUser with State param' {
         $UpdatedUser.state | Should -Be "SUSPENDED"
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
-    It 'Updates a user state to STAGED' {
-        $NewUser = New-RandomUser -domain pleasedelete"PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser
-        $UpdatedUser = $NewUser | Set-JCUser -state "STAGED"
-        $UpdatedUser.state | Should -Be "STAGED"
-        Remove-JCUser -UserID $NewUser._id -ByID -Force
-    }
     It 'Updates a user state to ACTIVATED' {
         $NewUser = New-RandomUser -domain pleasedelete"PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser -state "SUSPENDED"
         $UpdatedUser = $NewUser | Set-JCUser -state "ACTIVATED"

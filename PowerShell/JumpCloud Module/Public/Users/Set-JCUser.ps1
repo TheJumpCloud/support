@@ -230,8 +230,8 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
         [string]
         $external_source_type,
 
-        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'A string value for putting the account into a staged, activated or suspended state')]
-        [ValidateSet('STAGED','ACTIVATED', 'SUSPENDED')]
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'A string value for putting the account into an activated or suspended state')]
+        [ValidateSet('ACTIVATED','SUSPENDED')]
         [string]
         $state,
 
@@ -661,6 +661,13 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                     $body.Add('mfa', $mfa)
                 }
 
+                if ($state -eq 'SUSPENDED') {
+                    $body['suspended'] = $true
+                }
+                elseif ($state -eq 'ACTIVATED') {
+                    $body['suspended'] = $false
+                }
+
                 $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
 
                 Write-Debug $jsonbody
@@ -703,6 +710,14 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                     if ($param.Key -like 'work_*') { continue }
 
                     if ($param.Key -like 'home_*') { continue }
+
+                    if ('state' -eq $param.Key)
+                    {
+                        if ($param.value -eq "SUSPENDED") {
+                            $body.Add('suspended', $true)
+                        }
+                        else { $body.Add('suspended', $false) }
+                    }
 
                     # Get the manager using manager username instead of userId
                     if ("manager" -eq $param.Key)
@@ -910,6 +925,14 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
                     if ($param.Key -like 'home_*') { continue }
 
+                    if ('state' -eq $param.Key)
+                    {
+                        if ($param.value -eq "SUSPENDED") {
+                            $body.Add('suspended', $true)
+                        }
+                        else { $body.Add('suspended', $false) }
+                    }
+
                     # Get the manager using manager username instead of userId
                     if ("manager" -eq $param.Key)
                     {
@@ -1063,6 +1086,14 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                 if ($param.Key -like 'work_*') { continue }
 
                 if ($param.Key -like 'home_*') { continue }
+
+                if ('state' -eq $param.Key)
+                    {
+                        if ($param.value -eq "SUSPENDED") {
+                            $body.Add('suspended', $true)
+                        }
+                        else { $body.Add('suspended', $false) }
+                    }
 
                 # Get the manager using manager username instead of userId
                 if ("manager" -eq $param.Key)
@@ -1284,10 +1315,6 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                 $mfa.Add("exclusion", $true)
                 $mfa.Add("exclusionUntil", [string]$exclusionUntil)
                 $body.Add('mfa', $mfa)
-            }
-
-            if ($state -eq 'SUSPENDED') {
-                $body.Add('suspended', $true)
             }
 
             $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
