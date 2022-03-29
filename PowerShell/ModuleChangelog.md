@@ -5,20 +5,20 @@ Release Date: March 29, 2022
 #### RELEASE NOTES
 
 ```
-{{Fill in the Release Notes}}
+This release incorperates the "state" parameter into Get/Set/New-JCUser
 ```
 
 #### FEATURES:
 
-{{Fill in the Features}}
+[state parameter added to module]()
 
 #### IMPROVEMENTS:
 
-{{Fill in the Improvements}}
+N/A
 
 #### BUG FIXES:
 
-{{Fill in the Bug Fixes}}
+N/A
 
 ## 1.19.0
 
