@@ -230,8 +230,8 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
         [string]
         $external_source_type,
 
-        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'A string value for putting the account into an activated or suspended state')]
-        [ValidateSet('ACTIVATED', 'SUSPENDED')]
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'A string value for putting the account into a staged, activated or suspended state')]
+        [ValidateSet('STAGED','ACTIVATED', 'SUSPENDED')]
         [string]
         $state,
 
@@ -1284,6 +1284,10 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                 $mfa.Add("exclusion", $true)
                 $mfa.Add("exclusionUntil", [string]$exclusionUntil)
                 $body.Add('mfa', $mfa)
+            }
+
+            if ($state -eq 'SUSPENDED') {
+                $body.Add('suspended', $true)
             }
 
             $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
