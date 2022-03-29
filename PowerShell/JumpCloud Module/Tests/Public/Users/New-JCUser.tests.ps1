@@ -127,6 +127,19 @@ Describe -Tag:('JCUser') 'New-JCUser 1.0' {
         $NewUser.attributes._id.Count | Should -Be 3
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
+
+    It "Creates a new User with state SUSPENDED" {
+        $NewUser = New-RandomUser -Attributes -Domain DeleteMe | New-JCUser -state "SUSPENDED"
+        $NewUser.suspended | Should -Be True
+        $NewUser.state | Should -Be "SUSPENDED"
+        Remove-JCUser -UserID $NewUser._id -ByID -Force
+    }
+
+    It "Creates a new User with state STAGED" {
+        $NewUser = New-RandomUser -Attributes -Domain DeleteMe | New-JCUser -state "STAGED"
+        $NewUser.state | Should -Be "STAGED"
+        Remove-JCUser -UserID $NewUser._id -ByID -Force
+    }
 }
 
 
