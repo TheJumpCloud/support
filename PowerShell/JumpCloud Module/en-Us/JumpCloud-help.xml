@@ -15497,7 +15497,6 @@ Enter a value between 1 and 2:</dev:code>
             <maml:para>A string value for putting the account into a staged, activated or suspended state</maml:para>
           </maml:description>
           <command:parameterValueGroup>
-            <command:parameterValue required="false" command:variableLength="false">STAGED</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">ACTIVATED</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">SUSPENDED</command:parameterValue>
           </command:parameterValueGroup>
@@ -16193,7 +16192,6 @@ Enter a value between 1 and 2:</dev:code>
             <maml:para>A string value for putting the account into a staged, activated or suspended state</maml:para>
           </maml:description>
           <command:parameterValueGroup>
-            <command:parameterValue required="false" command:variableLength="false">STAGED</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">ACTIVATED</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">SUSPENDED</command:parameterValue>
           </command:parameterValueGroup>
@@ -16861,7 +16859,6 @@ Enter a value between 1 and 2:</dev:code>
             <maml:para>A string value for putting the account into a staged, activated or suspended state</maml:para>
           </maml:description>
           <command:parameterValueGroup>
-            <command:parameterValue required="false" command:variableLength="false">STAGED</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">ACTIVATED</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">SUSPENDED</command:parameterValue>
           </command:parameterValueGroup>

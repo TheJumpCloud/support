@@ -797,7 +797,7 @@ A string value for putting the account into a staged, activated or suspended sta
 Type: System.String
 Parameter Sets: (All)
 Aliases:
-Accepted values: STAGED, ACTIVATED, SUSPENDED
+Accepted values: ACTIVATED, SUSPENDED
 
 Required: False
 Position: Named
