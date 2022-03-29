@@ -19,11 +19,11 @@ Get-JCUser [[-username] <String>] [-firstname <String>] [-lastname <String>] [-e
  [-activated <Boolean>] [-password_expired <Boolean>] [-account_locked <Boolean>]
  [-passwordless_sudo <Boolean>] [-externally_managed <Boolean>] [-ldap_binding_user <Boolean>]
  [-enable_user_portal_multifactor <Boolean>] [-totp_enabled <Boolean>] [-allow_public_key <Boolean>]
- [-samba_service_user <Boolean>] [-password_never_expires <Boolean>] [-suspended <Boolean>]
- [-filterDateProperty <String>] [-returnProperties <String[]>] [-middlename <String>] [-displayname <String>]
- [-jobTitle <String>] [-employeeIdentifier <String>] [-department <String>] [-costCenter <String>]
- [-company <String>] [-employeeType <String>] [-description <String>] [-location <String>]
- [-external_dn <String>] [-external_source_type <String>] [-managedAppleId <String>] [-manager <String>]
+ [-samba_service_user <Boolean>] [-password_never_expires <Boolean>] [-filterDateProperty <String>]
+ [-returnProperties <String[]>] [-middlename <String>] [-displayname <String>] [-jobTitle <String>]
+ [-employeeIdentifier <String>] [-department <String>] [-costCenter <String>] [-company <String>]
+ [-employeeType <String>] [-description <String>] [-location <String>] [-external_dn <String>]
+ [-external_source_type <String>] [-managedAppleId <String>] [-manager <String>] [-state <String>]
  -dateFilter <String> -date <DateTime> [<CommonParameters>]
 ```
 
@@ -561,11 +561,11 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
-### -sudo
-A search filter to show accounts that are enabled ($true) or disabled ($false) for sudo
+### -state
+A search filter to return users that are in an ACTIVATED or SUSPENDED state
 
 ```yaml
-Type: System.Boolean
+Type: System.String
 Parameter Sets: SearchFilter
 Aliases:
 
@@ -576,8 +576,8 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
-### -suspended
-A search filter to show accounts that are enabled ($true) or disabled ($false) for password_never_expires
+### -sudo
+A search filter to show accounts that are enabled ($true) or disabled ($false) for sudo
 
 ```yaml
 Type: System.Boolean

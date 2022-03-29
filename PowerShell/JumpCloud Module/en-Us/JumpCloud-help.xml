@@ -7616,21 +7616,21 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
-          <maml:name>sudo</maml:name>
+          <maml:name>state</maml:name>
           <maml:description>
-            <maml:para>A search filter to show accounts that are enabled ($true) or disabled ($false) for sudo</maml:para>
+            <maml:para>A search filter to return users that are in an ACTIVATED or SUSPENDED state</maml:para>
           </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.Boolean</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
           <dev:type>
-            <maml:name>System.Boolean</maml:name>
+            <maml:name>System.String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
-          <maml:name>suspended</maml:name>
+          <maml:name>sudo</maml:name>
           <maml:description>
-            <maml:para>A search filter to show accounts that are enabled ($true) or disabled ($false) for password_never_expires</maml:para>
+            <maml:para>A search filter to show accounts that are enabled ($true) or disabled ($false) for sudo</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.Boolean</command:parameterValue>
           <dev:type>
@@ -8106,21 +8106,21 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
-        <maml:name>sudo</maml:name>
+        <maml:name>state</maml:name>
         <maml:description>
-          <maml:para>A search filter to show accounts that are enabled ($true) or disabled ($false) for sudo</maml:para>
+          <maml:para>A search filter to return users that are in an ACTIVATED or SUSPENDED state</maml:para>
         </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.Boolean</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
         <dev:type>
-          <maml:name>System.Boolean</maml:name>
+          <maml:name>System.String</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
-        <maml:name>suspended</maml:name>
+        <maml:name>sudo</maml:name>
         <maml:description>
-          <maml:para>A search filter to show accounts that are enabled ($true) or disabled ($false) for password_never_expires</maml:para>
+          <maml:para>A search filter to show accounts that are enabled ($true) or disabled ($false) for sudo</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.Boolean</command:parameterValue>
         <dev:type>
@@ -10074,21 +10074,26 @@ SystemID                 CommandID                Status
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
-          <maml:name>sudo</maml:name>
+          <maml:name>state</maml:name>
           <maml:description>
-            <maml:para>A boolean $true/$false value if you want to enable the user to be an administrator on any and all systems the user is bound to.</maml:para>
+            <maml:para>A string value for putting the account into a staged, activated or suspended state</maml:para>
           </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.Boolean</command:parameterValue>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">STAGED</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">ACTIVATED</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">SUSPENDED</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
           <dev:type>
-            <maml:name>System.Boolean</maml:name>
+            <maml:name>System.String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
-          <maml:name>suspended</maml:name>
+          <maml:name>sudo</maml:name>
           <maml:description>
-            <maml:para>A boolean $true/$false value for putting the account into a suspended state</maml:para>
+            <maml:para>A boolean $true/$false value if you want to enable the user to be an administrator on any and all systems the user is bound to.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.Boolean</command:parameterValue>
           <dev:type>
@@ -10689,21 +10694,21 @@ SystemID                 CommandID                Status
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
-        <maml:name>sudo</maml:name>
+        <maml:name>state</maml:name>
         <maml:description>
-          <maml:para>A boolean $true/$false value if you want to enable the user to be an administrator on any and all systems the user is bound to.</maml:para>
+          <maml:para>A string value for putting the account into a staged, activated or suspended state</maml:para>
         </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.Boolean</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
         <dev:type>
-          <maml:name>System.Boolean</maml:name>
+          <maml:name>System.String</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
-        <maml:name>suspended</maml:name>
+        <maml:name>sudo</maml:name>
         <maml:description>
-          <maml:para>A boolean $true/$false value for putting the account into a suspended state</maml:para>
+          <maml:para>A boolean $true/$false value if you want to enable the user to be an administrator on any and all systems the user is bound to.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.Boolean</command:parameterValue>
         <dev:type>
@@ -15487,21 +15492,26 @@ Enter a value between 1 and 2:</dev:code>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
-          <maml:name>sudo</maml:name>
+          <maml:name>state</maml:name>
           <maml:description>
-            <maml:para>A boolean $true/$false value if you want to enable the user to be an administrator on any and all systems the user is bound to.</maml:para>
+            <maml:para>A string value for putting the account into a staged, activated or suspended state</maml:para>
           </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.Boolean</command:parameterValue>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">STAGED</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">ACTIVATED</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">SUSPENDED</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
           <dev:type>
-            <maml:name>System.Boolean</maml:name>
+            <maml:name>System.String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
-          <maml:name>suspended</maml:name>
+          <maml:name>sudo</maml:name>
           <maml:description>
-            <maml:para>A boolean $true/$false value for putting the account into a suspended state</maml:para>
+            <maml:para>A boolean $true/$false value if you want to enable the user to be an administrator on any and all systems the user is bound to.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.Boolean</command:parameterValue>
           <dev:type>
@@ -16178,21 +16188,26 @@ Enter a value between 1 and 2:</dev:code>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
-          <maml:name>sudo</maml:name>
+          <maml:name>state</maml:name>
           <maml:description>
-            <maml:para>A boolean $true/$false value if you want to enable the user to be an administrator on any and all systems the user is bound to.</maml:para>
+            <maml:para>A string value for putting the account into a staged, activated or suspended state</maml:para>
           </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.Boolean</command:parameterValue>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">STAGED</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">ACTIVATED</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">SUSPENDED</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
           <dev:type>
-            <maml:name>System.Boolean</maml:name>
+            <maml:name>System.String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
-          <maml:name>suspended</maml:name>
+          <maml:name>sudo</maml:name>
           <maml:description>
-            <maml:para>A boolean $true/$false value for putting the account into a suspended state</maml:para>
+            <maml:para>A boolean $true/$false value if you want to enable the user to be an administrator on any and all systems the user is bound to.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.Boolean</command:parameterValue>
           <dev:type>
@@ -16841,21 +16856,26 @@ Enter a value between 1 and 2:</dev:code>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
-          <maml:name>sudo</maml:name>
+          <maml:name>state</maml:name>
           <maml:description>
-            <maml:para>A boolean $true/$false value if you want to enable the user to be an administrator on any and all systems the user is bound to.</maml:para>
+            <maml:para>A string value for putting the account into a staged, activated or suspended state</maml:para>
           </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.Boolean</command:parameterValue>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">STAGED</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">ACTIVATED</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">SUSPENDED</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
           <dev:type>
-            <maml:name>System.Boolean</maml:name>
+            <maml:name>System.String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
-          <maml:name>suspended</maml:name>
+          <maml:name>sudo</maml:name>
           <maml:description>
-            <maml:para>A boolean $true/$false value for putting the account into a suspended state</maml:para>
+            <maml:para>A boolean $true/$false value if you want to enable the user to be an administrator on any and all systems the user is bound to.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.Boolean</command:parameterValue>
           <dev:type>
@@ -17516,21 +17536,21 @@ Enter a value between 1 and 2:</dev:code>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
-        <maml:name>sudo</maml:name>
+        <maml:name>state</maml:name>
         <maml:description>
-          <maml:para>A boolean $true/$false value if you want to enable the user to be an administrator on any and all systems the user is bound to.</maml:para>
+          <maml:para>A string value for putting the account into a staged, activated or suspended state</maml:para>
         </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.Boolean</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
         <dev:type>
-          <maml:name>System.Boolean</maml:name>
+          <maml:name>System.String</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
-        <maml:name>suspended</maml:name>
+        <maml:name>sudo</maml:name>
         <maml:description>
-          <maml:para>A boolean $true/$false value for putting the account into a suspended state</maml:para>
+          <maml:para>A boolean $true/$false value if you want to enable the user to be an administrator on any and all systems the user is bound to.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.Boolean</command:parameterValue>
         <dev:type>
