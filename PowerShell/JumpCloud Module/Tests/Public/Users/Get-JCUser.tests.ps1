@@ -90,20 +90,20 @@ Describe -Tag:('JCUser') 'Get-JCUser 1.1' {
     }
     It "Searches a JumpCloud user by state SUSPENDED" {
         $NewUser = New-RandomUser -Domain DeleteMe | New-JcUser -state "SUSPENDED"
-        $NewUser = Get-JCUser -state "SUSPENDED"
-        $NewUser.state | Should -Be "SUSPENDED"
+        $SearchUser = Get-JCUser -state "SUSPENDED" | Select-Object -First 1
+        $SearchUser.state | Should -Be "SUSPENDED"
         Remove-JCUser -UserId $NewUser._id -force
     }
     It "Searches a JumpCloud user by state STAGED" {
         $NewUser = New-RandomUser -Domain DeleteMe | New-JcUser -state "STAGED"
-        $NewUser = Get-JCUser -state "STAGED"
-        $NewUser.state | Should -Be "STAGED"
+        $SearchUser = Get-JCUser -state "STAGED" | Select-Object -First 1
+        $SearchUser.state | Should -Be "STAGED"
         Remove-JCUser -UserId $NewUser._id -force
     }
     It "Searches a JumpCloud user by state ACTIVATED" {
         $NewUser = New-RandomUser -Domain DeleteMe | New-JcUser -state "ACTIVATED"
-        $NewUser = Get-JCUser -state "ACTIVATED"
-        $NewUser.state | Should -Be "ACTIVATED"
+        $SearchUser = Get-JCUser -state "ACTIVATED" | Select-Object -First 1
+        $SearchUser.state | Should -Be "ACTIVATED"
         Remove-JCUser -UserId $NewUser._id -force
     }
 
@@ -261,7 +261,7 @@ Describe -Tag:('JCUser') "Get-JCUser 1.4" {
     }
 
     It "Searches for a JumpCloud user using username and returns all properties" {
-        $PesterUser = Get-JCUser -username $PesterParams_User1.Username  -returnProperties 'created', 'account_locked', 'activated', 'addresses', 'allow_public_key', 'attributes', 'email', 'enable_managed_uid', 'enable_user_portal_multifactor', 'externally_managed', 'firstname', 'lastname', 'ldap_binding_user', 'passwordless_sudo', 'password_expired', 'password_never_expires', 'phoneNumbers', 'samba_service_user', 'ssh_keys', 'sudo', 'suspended', 'state', 'totp_enabled', 'unix_guid', 'unix_uid', 'username', 'alternateEmail', 'managedAppleId'
+        $PesterUser = Get-JCUser -username $PesterParams_User1.Username  -returnProperties 'created', 'account_locked', 'activated', 'addresses', 'allow_public_key', 'attributes', 'email', 'enable_managed_uid', 'enable_user_portal_multifactor', 'externally_managed', 'firstname', 'lastname', 'ldap_binding_user', 'passwordless_sudo', 'password_expired', 'password_never_expires', 'phoneNumbers', 'samba_service_user', 'ssh_keys', 'sudo', 'suspended', 'totp_enabled', 'unix_guid', 'unix_uid', 'username', 'alternateEmail', 'managedAppleId'
         $PesterUser.account_locked | Should -Not -Be $null
         $PesterUser.activated | Should -Not -Be $null
         $PesterUser.addresses | Should -Not -Be $null
@@ -282,7 +282,6 @@ Describe -Tag:('JCUser') "Get-JCUser 1.4" {
         $PesterUser.passwordless_sudo | Should -Not -Be $null
         $PesterUser.phoneNumbers | Should -Not -Be $null
         $PesterUser.samba_service_user | Should -Not -Be $null
-        $PesterUser.state | Should -Not -Be $null
         $PesterUser.sudo | Should -Not -Be $null
         $PesterUser.suspended | Should -Not -Be $null
         $PesterUser.totp_enabled | Should -Not -Be $null
