@@ -879,6 +879,12 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                     $body.Add('mfa', $mfa)
                 }
 
+                switch ($suspended)
+                {
+                    $true { $body['state'] = 'SUSPENDED' }
+                    $false { $body['state'] = 'ACTIVATED' }
+                }
+
                 switch ($state) 
                 {
                     SUSPENDED { $body['suspended'] = $true }
@@ -1045,6 +1051,12 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                     $body.Add('mfa', $mfa)
                 }
 
+                switch ($suspended)
+                {
+                    $true { $body['state'] = 'SUSPENDED' }
+                    $false { $body['state'] = 'ACTIVATED' }
+                }
+
                 switch ($state) 
                 {
                     SUSPENDED { $body['suspended'] = $true }
@@ -1171,6 +1183,12 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                 $mfa.Add("exclusionUntil", [string]$exclusionUntil)
                 $body.Add('mfa', $mfa)
             }
+
+            switch ($suspended)
+                {
+                    $true { $body['state'] = 'SUSPENDED' }
+                    $false { $body['state'] = 'ACTIVATED' }
+                }
 
             switch ($state) 
                 {
@@ -1315,6 +1333,12 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                 $mfa.Add("exclusionUntil", [string]$exclusionUntil)
                 $body.Add('mfa', $mfa)
             }
+
+            switch ($suspended)
+                {
+                    $true { $body['state'] = 'SUSPENDED' }
+                    $false { $body['state'] = 'ACTIVATED' }
+                }
 
             switch ($state) 
                 {
