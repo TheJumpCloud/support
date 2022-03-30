@@ -661,11 +661,10 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                     $body.Add('mfa', $mfa)
                 }
 
-                if ($state -eq 'SUSPENDED') {
-                    $body['suspended'] = $true
-                }
-                elseif ($state -eq 'ACTIVATED') {
-                    $body['suspended'] = $false
+                switch ($state) 
+                {
+                    SUSPENDED { $body['suspended'] = $true }
+                    ACTIVATED { $body['suspended'] = $false }
                 }
 
                 $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
@@ -882,6 +881,12 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                     $body.Add('mfa', $mfa)
                 }
 
+                switch ($state) 
+                {
+                    SUSPENDED { $body['suspended'] = $true }
+                    ACTIVATED { $body['suspended'] = $false }
+                }
+
                 $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
 
                 Write-Debug $jsonbody
@@ -1050,6 +1055,12 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                     $body.Add('mfa', $mfa)
                 }
 
+                switch ($state) 
+                {
+                    SUSPENDED { $body['suspended'] = $true }
+                    ACTIVATED { $body['suspended'] = $false }
+                }
+
                 $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
 
                 Write-Debug $jsonbody
@@ -1178,6 +1189,12 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                 $mfa.Add("exclusionUntil", [string]$exclusionUntil)
                 $body.Add('mfa', $mfa)
             }
+
+            switch ($state) 
+                {
+                    SUSPENDED { $body['suspended'] = $true }
+                    ACTIVATED { $body['suspended'] = $false }
+                }
 
             $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
 
@@ -1316,6 +1333,12 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                 $mfa.Add("exclusionUntil", [string]$exclusionUntil)
                 $body.Add('mfa', $mfa)
             }
+
+            switch ($state) 
+                {
+                    SUSPENDED { $body['suspended'] = $true }
+                    ACTIVATED { $body['suspended'] = $false }
+                }
 
             $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
 
