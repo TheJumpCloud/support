@@ -661,6 +661,12 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                     $body.Add('mfa', $mfa)
                 }
 
+                switch ($suspended)
+                {
+                    $true { $body['state'] = 'SUSPENDED' }
+                    $false { $body['state'] = 'ACTIVATED' }
+                }
+
                 switch ($state) 
                 {
                     SUSPENDED { $body['suspended'] = $true }
@@ -709,14 +715,6 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                     if ($param.Key -like 'work_*') { continue }
 
                     if ($param.Key -like 'home_*') { continue }
-
-                    if ('state' -eq $param.Key)
-                    {
-                        if ($param.value -eq "SUSPENDED") {
-                            $body.Add('suspended', $true)
-                        }
-                        else { $body.Add('suspended', $false) }
-                    }
 
                     # Get the manager using manager username instead of userId
                     if ("manager" -eq $param.Key)
@@ -930,14 +928,6 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
                     if ($param.Key -like 'home_*') { continue }
 
-                    if ('state' -eq $param.Key)
-                    {
-                        if ($param.value -eq "SUSPENDED") {
-                            $body.Add('suspended', $true)
-                        }
-                        else { $body.Add('suspended', $false) }
-                    }
-
                     # Get the manager using manager username instead of userId
                     if ("manager" -eq $param.Key)
                     {
@@ -1097,14 +1087,6 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                 if ($param.Key -like 'work_*') { continue }
 
                 if ($param.Key -like 'home_*') { continue }
-
-                if ('state' -eq $param.Key)
-                    {
-                        if ($param.value -eq "SUSPENDED") {
-                            $body.Add('suspended', $true)
-                        }
-                        else { $body.Add('suspended', $false) }
-                    }
 
                 # Get the manager using manager username instead of userId
                 if ("manager" -eq $param.Key)
