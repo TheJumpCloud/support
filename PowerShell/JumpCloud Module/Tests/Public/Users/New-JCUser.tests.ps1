@@ -412,7 +412,7 @@ Describe -Tag:('JCUser') "New-JCUser MFA with enrollment periods 1.10" {
 Describe -Tag:('JCUser') "New-JCUser with suspend param 1.15" {
 
     It "Creates a new User suspended -eq True " {
-        $NewUser = New-RandomUser -domain pleasedelete"PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser  -suspended $true
+        $NewUser = New-RandomUser -domain pleasedelete"PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser -suspended $true
         $NewUser.suspended | Should -Be True
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }

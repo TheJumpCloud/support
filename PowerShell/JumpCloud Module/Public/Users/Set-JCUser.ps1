@@ -235,7 +235,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
         [string]
         $state,
 
-        [Parameter(DontShow, ValueFromPipelineByPropertyName = $True, HelpMessage = 'A boolean $true/$false value for putting the account into a suspended state')]
+        [Parameter(DontShow, ValueFromPipelineByPropertyName = $False, HelpMessage = 'A boolean $true/$false value for putting the account into a suspended state')]
         [bool]
         $suspended,
 
@@ -661,16 +661,28 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                     $body.Add('mfa', $mfa)
                 }
 
-                switch ($suspended)
-                {
-                    $true { $body['state'] = 'SUSPENDED' }
-                    $false { $body['state'] = 'ACTIVATED' }
-                }
-
-                switch ($state) 
-                {
-                    SUSPENDED { $body['suspended'] = $true }
-                    ACTIVATED { $body['suspended'] = $false }
+                if (("state" -in $UpdateParms.key) -And ("suspended" -in $UpdateParms.key)) {
+                    if ($suspended -eq $false) {
+                        $body['state'] = 'ACTIVATED'
+                        $body['suspended'] = $false
+                    }
+                    elseif ($suspended -eq $true) {
+                        $body['state'] = 'SUSPENDED'
+                        $body['suspended'] = $true
+                    }
+                    else {
+                        switch ($state) 
+                        {
+                            SUSPENDED { 
+                                $body['suspended'] = $true 
+                                $body['state'] = 'SUSPENDED' 
+                            }
+                            ACTIVATED { 
+                                $body['suspended'] = $false
+                                $body['state'] = 'ACTIVATED'
+                            }
+                        }
+                    }
                 }
 
                 $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
@@ -879,16 +891,22 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                     $body.Add('mfa', $mfa)
                 }
 
-                switch ($suspended)
-                {
-                    $true { $body['state'] = 'SUSPENDED' }
-                    $false { $body['state'] = 'ACTIVATED' }
+                if ($suspended -eq $true) {
+                    $body['state'] = 'SUSPENDED'
+                    $body['suspended'] = $true
                 }
-
-                switch ($state) 
-                {
-                    SUSPENDED { $body['suspended'] = $true }
-                    ACTIVATED { $body['suspended'] = $false }
+                else {
+                    switch ($state) 
+                    {
+                        SUSPENDED { 
+                            $body['suspended'] = $true 
+                            $body['state'] = 'SUSPENDED' 
+                        }
+                        ACTIVATED { 
+                            $body['suspended'] = $false
+                            $body['state'] = 'ACTIVATED'
+                        }
+                    }
                 }
 
                 $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
@@ -1051,17 +1069,23 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                     $body.Add('mfa', $mfa)
                 }
 
-                switch ($suspended)
-                {
-                    $true { $body['state'] = 'SUSPENDED' }
-                    $false { $body['state'] = 'ACTIVATED' }
-                }
-
+                if ($suspended -eq $true) {
+                $body['state'] = 'SUSPENDED'
+                $body['suspended'] = $true
+            }
+            else {
                 switch ($state) 
                 {
-                    SUSPENDED { $body['suspended'] = $true }
-                    ACTIVATED { $body['suspended'] = $false }
+                    SUSPENDED { 
+                        $body['suspended'] = $true 
+                        $body['state'] = 'SUSPENDED' 
+                    }
+                    ACTIVATED { 
+                        $body['suspended'] = $false
+                        $body['state'] = 'ACTIVATED'
+                    }
                 }
+            }
 
                 $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
 
@@ -1184,17 +1208,23 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                 $body.Add('mfa', $mfa)
             }
 
-            switch ($suspended)
+            if ($suspended -eq $true) {
+                $body['state'] = 'SUSPENDED'
+                $body['suspended'] = $true
+            }
+            else {
+                switch ($state) 
                 {
-                    $true { $body['state'] = 'SUSPENDED' }
-                    $false { $body['state'] = 'ACTIVATED' }
+                    SUSPENDED { 
+                        $body['suspended'] = $true 
+                        $body['state'] = 'SUSPENDED' 
+                    }
+                    ACTIVATED { 
+                        $body['suspended'] = $false
+                        $body['state'] = 'ACTIVATED'
+                    }
                 }
-
-            switch ($state) 
-                {
-                    SUSPENDED { $body['suspended'] = $true }
-                    ACTIVATED { $body['suspended'] = $false }
-                }
+            }
 
             $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
 
@@ -1334,17 +1364,23 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                 $body.Add('mfa', $mfa)
             }
 
-            switch ($suspended)
+            if ($suspended -eq $true) {
+                $body['state'] = 'SUSPENDED'
+                $body['suspended'] = $true
+            }
+            else {
+                switch ($state) 
                 {
-                    $true { $body['state'] = 'SUSPENDED' }
-                    $false { $body['state'] = 'ACTIVATED' }
+                    SUSPENDED { 
+                        $body['suspended'] = $true 
+                        $body['state'] = 'SUSPENDED' 
+                    }
+                    ACTIVATED { 
+                        $body['suspended'] = $false
+                        $body['state'] = 'ACTIVATED'
+                    }
                 }
-
-            switch ($state) 
-                {
-                    SUSPENDED { $body['suspended'] = $true }
-                    ACTIVATED { $body['suspended'] = $false }
-                }
+            }
 
             $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
 

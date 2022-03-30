@@ -410,8 +410,18 @@ Function New-JCUser ()
             $body.Add('mfa', $mfa)
         }
 
-        if ($state -eq 'SUSPENDED') {
-            $body.Add('suspended', $true)
+        if ($suspended -eq $true) {
+            $body['state'] = 'SUSPENDED'
+        }
+
+        switch ($state) 
+        {
+            SUSPENDED { 
+                $body['suspended'] = $true 
+            }
+            ACTIVATED { 
+                $body['suspended'] = $false
+            }
         }
         
         If ($NewAttributes) { $body.add('attributes', $NewAttributes) }
