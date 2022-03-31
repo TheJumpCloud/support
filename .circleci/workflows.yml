@@ -151,6 +151,10 @@ workflows:
           requires:
             - Build Nuspec for PSGallery
             - Approve Module
+      - Publish Wiki Docs:
+          requires:
+            - Publish Module Validation
+            - Approve Module
       - Invoke Git Commit:
           requires:
             - Publish Module Validation
@@ -195,6 +199,10 @@ jobs:
           ExcludeTagList: 'None'
           IncludeTagList: 'ModuleValidation'
           RequiredModulesRepo: << pipeline.parameters.RequiredModulesRepo >>
+  Publish Wiki Docs:
+    executor: win/default
+    steps:
+      - publish-wiki
   Invoke Git Commit:
     executor: win/default
     steps:
@@ -348,6 +356,19 @@ commands:
                 command: |
                   $ErrorActionPreference = 'Stop'
                   ./PowerShell/Deploy/Build-PesterTestFiles.ps1 -RequiredModulesRepo << pipeline.parameters.RequiredModulesRepo >>
+  publish-wiki:
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - '24:54:e1:c2:70:c6:f7:61:71:4b:c5:52:9f:20:b9:63'
+      - attach_workspace:
+          at: .
+      - run:
+          name: 'Publish Wiki Documentaiton'
+          shell: pwsh.exe
+          command: |
+            ./PowerShell/Deploy/Build-WikiPages.ps1
   invoke-script:
     steps:
       - checkout
@@ -356,9 +377,6 @@ commands:
             - '24:54:e1:c2:70:c6:f7:61:71:4b:c5:52:9f:20:b9:63'
       - attach_workspace:
           at: .
-      - add_ssh_keys:
-          fingerprints:
-            - '24:54:e1:c2:70:c6:f7:61:71:4b:c5:52:9f:20:b9:63'
       - run:
           when: on_success
           name: 'Commit PowerShell Module to << pipeline.git.branch >>'
