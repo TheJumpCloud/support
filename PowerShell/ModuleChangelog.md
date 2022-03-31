@@ -1,6 +1,6 @@
 ## 1.19.1
 
-Release Date: March 29, 2022
+Release Date: March 31, 2022
 
 #### RELEASE NOTES
 
@@ -10,7 +10,7 @@ This release incorperates the "state" parameter into Get/Set/New-JCUser
 
 #### FEATURES:
 
-[state parameter added to module]()
+[state parameter added to module](https://github.com/TheJumpCloud/support/pull/361)
 
 #### IMPROVEMENTS:
 
