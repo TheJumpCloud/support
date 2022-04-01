@@ -31,7 +31,7 @@ netsh wlan export profile "NameOfWifiNetwork" key=clear
 
 This command will export an .XML file in the current working directory titled "WIFI-NameOfWifiNetwork"
 
-![export a wife profile](../images/WifiProfileExport.png)
+![export a wifi profile](../images/WifiProfileExport.png)
 
 ### Clean/ Modify the XML as necessary
 
