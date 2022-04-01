@@ -31,7 +31,7 @@ netsh wlan export profile "NameOfWifiNetwork" key=clear
 
 This command will export an .XML file in the current working directory titled "WIFI-NameOfWifiNetwork"
 
-![export a wifi profile](../images/WifiProfileExport.png)
+![export a wifi profile](./../../../images/WifiProfileExport.png)
 
 ### Clean/ Modify the XML as necessary
 
@@ -47,7 +47,7 @@ netsh wlan add profile filename=C:\Windows\Temp\Wi-Fi-TP-Link_3832_5G.xml user=a
 
 **Note** in the example above and below the XML file is titled "Wi-Fi-TP-Link_3832_5G.xml" the file generated in step one will almost certainly be different.
 
-![jumpcloud command configured](../images/WifiProfileCommand.png)
+![jumpcloud command configured](./../../../images/WifiProfileCommand.png)
 
 #### Deploy the profile to systems via JumpCloud
 
