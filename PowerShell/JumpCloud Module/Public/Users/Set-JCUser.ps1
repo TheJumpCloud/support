@@ -236,7 +236,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
         $state,
 
         [Parameter(DontShow, ValueFromPipelineByPropertyName = $False, HelpMessage = 'A boolean $true/$false value for putting the account into a suspended state')]
-        [bool]
+        [nullable[bool]]
         $suspended,
 
         [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The manager username or ID of the JumpCloud manager user; must be a valid user')]
@@ -574,7 +574,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
                     if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }
 
-                    if ($param.key -in ('Username', 'EnrollmentDays')) { continue }
+                    if ($param.key -in ('Username', 'EnrollmentDays', 'state')) { continue }
 
                     if ($param.Key -like '*_number') { continue }
 
@@ -640,7 +640,6 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                             continue
                         }
                     }
-
                     $body.add($param.Key, $param.Value)
                 }
 
@@ -660,27 +659,27 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                     $mfa.Add("exclusionUntil", [string]$exclusionUntil)
                     $body.Add('mfa', $mfa)
                 }
-
-                if (("state" -in $UpdateParms.key) -And ("suspended" -in $UpdateParms.key)) {
-                    if ($suspended -eq $false) {
-                        $body['state'] = 'ACTIVATED'
-                        $body['suspended'] = $false
-                    }
-                    elseif ($suspended -eq $true) {
-                        $body['state'] = 'SUSPENDED'
+                switch ($state) 
+                {
+                    SUSPENDED { 
                         $body['suspended'] = $true
                     }
-                    else {
-                        switch ($state) 
-                        {
-                            SUSPENDED { 
-                                $body['suspended'] = $true 
-                                $body['state'] = 'SUSPENDED' 
-                            }
-                            ACTIVATED { 
-                                $body['suspended'] = $false
-                                $body['state'] = 'ACTIVATED'
-                            }
+                    ACTIVATED { 
+                        $body['suspended'] = $false
+                    }
+                }
+                if (("state" -in $UpdateParms.key) -And ("suspended" -in $UpdateParms.key)) {
+                    if ($body.suspended -ne $suspended) {
+                        if (!$body.state -And $suspended -eq $false) {
+                            $body['state'] = 'ACTIVATED'
+                            $body['suspended'] = $false
+                        }
+                        elseif ((($state -eq "ACTIVATED") -And ($suspended -eq $true)) -Or (($suspended -eq $false) -And ($state -eq "SUSPENDED"))){
+                            throw "Cannot save conflicting state and suspended fields. (state=$state suspended=$suspended)"
+                        }
+                        elseif ($suspended -eq $true) {
+                            $body['state'] = 'SUSPENDED'
+                            $body['suspended'] = $true
                         }
                     }
                 }
@@ -891,24 +890,6 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                     $body.Add('mfa', $mfa)
                 }
 
-                if ($suspended -eq $true) {
-                    $body['state'] = 'SUSPENDED'
-                    $body['suspended'] = $true
-                }
-                else {
-                    switch ($state) 
-                    {
-                        SUSPENDED { 
-                            $body['suspended'] = $true 
-                            $body['state'] = 'SUSPENDED' 
-                        }
-                        ACTIVATED { 
-                            $body['suspended'] = $false
-                            $body['state'] = 'ACTIVATED'
-                        }
-                    }
-                }
-
                 $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
 
                 Write-Debug $jsonbody
@@ -1069,24 +1050,6 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                     $body.Add('mfa', $mfa)
                 }
 
-                if ($suspended -eq $true) {
-                $body['state'] = 'SUSPENDED'
-                $body['suspended'] = $true
-            }
-            else {
-                switch ($state) 
-                {
-                    SUSPENDED { 
-                        $body['suspended'] = $true 
-                        $body['state'] = 'SUSPENDED' 
-                    }
-                    ACTIVATED { 
-                        $body['suspended'] = $false
-                        $body['state'] = 'ACTIVATED'
-                    }
-                }
-            }
-
                 $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
 
                 Write-Debug $jsonbody
@@ -1206,24 +1169,6 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                 $mfa.Add("exclusion", $true)
                 $mfa.Add("exclusionUntil", [string]$exclusionUntil)
                 $body.Add('mfa', $mfa)
-            }
-
-            if ($suspended -eq $true) {
-                $body['state'] = 'SUSPENDED'
-                $body['suspended'] = $true
-            }
-            else {
-                switch ($state) 
-                {
-                    SUSPENDED { 
-                        $body['suspended'] = $true 
-                        $body['state'] = 'SUSPENDED' 
-                    }
-                    ACTIVATED { 
-                        $body['suspended'] = $false
-                        $body['state'] = 'ACTIVATED'
-                    }
-                }
             }
 
             $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
@@ -1364,24 +1309,6 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                 $body.Add('mfa', $mfa)
             }
 
-            if ($suspended -eq $true) {
-                $body['state'] = 'SUSPENDED'
-                $body['suspended'] = $true
-            }
-            else {
-                switch ($state) 
-                {
-                    SUSPENDED { 
-                        $body['suspended'] = $true 
-                        $body['state'] = 'SUSPENDED' 
-                    }
-                    ACTIVATED { 
-                        $body['suspended'] = $false
-                        $body['state'] = 'ACTIVATED'
-                    }
-                }
-            }
-
             $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
 
             Write-Debug $jsonbody
@@ -1399,3 +1326,6 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
         return $UpdatedUserArray
     }
 }
+# ."/Users/gwein/Documents/GitHub/support/PowerShell/JumpCloud Module/Private/NestedFunctions/Get-JCUserAgent.ps1"
+# $NewUser = New-JcUser -firstname "User" -lastname "Test" -username "user.test2" -email "user.test2@deleteme.com" -password Test@123! -suspended $true
+# $UpdatedUser = $NewUser | Set-JcUser -suspended $false -state "ACTIVATED"

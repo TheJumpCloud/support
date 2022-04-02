@@ -1388,6 +1388,11 @@ Describe -Tag:('JCUser') "Set-JCUser with Suspend param 1.15 via pipeline" {
         $UpdatedUser.suspended | Should -Be False
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
+    It 'Updates a user state from SUSPENDED to ACTIVATED with suspended true should error' {
+        $NewUser = New-RandomUser -domain pleasedelete"PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser -suspended $true
+        $NewUser | Set-JCUser -state "ACTIVATED" -suspended $true | Should -Throw
+        Remove-JCUser -UserID $NewUser._id -ByID -Force
+    }
 }
 
 Describe -Tag:('JCUser') "Set-JCUser with Suspend param via Username" {
@@ -1403,6 +1408,11 @@ Describe -Tag:('JCUser') "Set-JCUser with Suspend param via Username" {
         $UpdatedUser.suspended | Should -Be False
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
+    It 'Updates a user state from SUSPENDED to ACTIVATED with suspended true should error' {
+        $NewUser = New-RandomUser -domain pleasedelete"PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser -suspended $true
+        Set-JCUser -Username $NewUser.username -state "ACTIVATED" -suspended $true | Should -Throw
+        Remove-JCUser -UserID $NewUser._id -ByID -Force
+    }
 }
 
 Describe -Tag:('JCUser') "Set-JCUser with Suspend param via UserID" {
@@ -1416,6 +1426,11 @@ Describe -Tag:('JCUser') "Set-JCUser with Suspend param via UserID" {
         $NewUser = New-RandomUser -domain pleasedelete"PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser -suspended $true
         $UpdatedUser = Set-JCUser -UserID $NewUser.id  -suspended $false
         $UpdatedUser.suspended | Should -Be False
+        Remove-JCUser -UserID $NewUser._id -ByID -Force
+    }
+    It 'Updates a user state from SUSPENDED to ACTIVATED with suspended true should error' {
+        $NewUser = New-RandomUser -domain pleasedelete"PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser -suspended $true
+        Set-JCUser -UserID $NewUser.id -state "ACTIVATED" -suspended $true | Should -Throw
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
 }
@@ -1435,6 +1450,16 @@ Describe -Tag:('JCUser') 'Set-JCUser with State param via pipeline' {
         $UpdatedUser.state | Should -Be "ACTIVATED"
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
+    It 'Updates a user state from ACTIVATED to SUSPENDED with suspended false should error' {
+        $NewUser = New-RandomUser -domain pleasedelete"PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser
+        $NewUser | Set-JCUser -state "SUSPENDED" -suspended $false | Should -Throw
+        Remove-JCUser -UserID $NewUser._id -ByID -Force
+    }
+    It 'Updates a user state from SUSPENDED to ACTIVATED with suspended true should error' {
+        $NewUser = New-RandomUser -domain pleasedelete"PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser -state "SUSPENDED"
+        $NewUser | Set-JCUser -state "ACTIVATED" -suspended $true | Should -Throw
+        Remove-JCUser -UserID $NewUser._id -ByID -Force
+    }
 }
 
 Describe -Tag:('JCUser') 'Set-JCUser with State param via Username' {
@@ -1452,6 +1477,16 @@ Describe -Tag:('JCUser') 'Set-JCUser with State param via Username' {
         $UpdatedUser.state | Should -Be "ACTIVATED"
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
+    It 'Updates a user state from ACTIVATED to SUSPENDED with suspended false should error' {
+        $NewUser = New-RandomUser -domain pleasedelete"PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser
+        Set-JCUser -Username $NewUser.username -state "SUSPENDED" -suspended $false | Should -Throw
+        Remove-JCUser -UserID $NewUser._id -ByID -Force
+    }
+    It 'Updates a user state from SUSPENDED to ACTIVATED with suspended true should error' {
+        $NewUser = New-RandomUser -domain pleasedelete"PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser -state "SUSPENDED"
+        Set-JCUser -Username $NewUser.username -state "ACTIVATED" -suspended $true | Should -Throw
+        Remove-JCUser -UserID $NewUser._id -ByID -Force
+    }
 }
 
 Describe -Tag:('JCUser') 'Set-JCUser with State param via UserID' {
@@ -1467,6 +1502,16 @@ Describe -Tag:('JCUser') 'Set-JCUser with State param via UserID' {
         $UpdatedUser = Set-JCUser -UserID $NewUser.id -state "ACTIVATED"
         $UpdatedUser.suspended | Should -Be False
         $UpdatedUser.state | Should -Be "ACTIVATED"
+        Remove-JCUser -UserID $NewUser._id -ByID -Force
+    }
+    It 'Updates a user state from ACTIVATED to SUSPENDED with suspended false should error' {
+        $NewUser = New-RandomUser -domain pleasedelete"PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser
+        Set-JCUser -UserID $NewUser.id -state "SUSPENDED" -suspended $false | Should -Throw
+        Remove-JCUser -UserID $NewUser._id -ByID -Force
+    }
+    It 'Updates a user state from SUSPENDED to ACTIVATED with suspended true should error' {
+        $NewUser = New-RandomUser -domain pleasedelete"PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser -state "SUSPENDED"
+        Set-JCUser -UserID $NewUser.id -state "ACTIVATED" -suspended $true | Should -Throw
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
 }

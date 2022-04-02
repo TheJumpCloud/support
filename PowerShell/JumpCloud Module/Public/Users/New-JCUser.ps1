@@ -142,11 +142,11 @@ Function New-JCUser ()
         [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s work fax number. The LDAP displayName of this property is facsimileTelephoneNumber.')]
         [string]$work_fax_number,
 
-        [Parameter(DontShow, ValueFromPipelineByPropertyName = $True, HelpMessage = 'A boolean $true/$false value for putting the account into a suspended state')]
-        [bool]$suspended,
+        [Parameter(DontShow, ValueFromPipelineByPropertyName = $False, HelpMessage = 'A boolean $true/$false value for putting the account into a suspended state')]
+        [nullable[bool]]$suspended,
 
         [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'A string value for putting the account into a staged, activated or suspended state')]
-        [ValidateSet('STAGED','ACTIVATED', 'SUSPENDED')]
+        [ValidateSet('STAGED','ACTIVATED','SUSPENDED')]
         [string]
         $state,
 
@@ -410,17 +410,24 @@ Function New-JCUser ()
             $body.Add('mfa', $mfa)
         }
 
-        if ($suspended -eq $true) {
+        if ((($suspended -eq $true) -And ($state -eq "STAGED")) -Or (($suspended -eq $true) -And ($state -eq "ACTIVATED")) -Or (($suspended -eq $false) -And ($state -eq "SUSPENDED"))){
+            throw "Cannot save conflicting state and suspended fields. (state=$state suspended=$suspended)"
+        }
+        elseif ($suspended -eq $true) {
             $body['state'] = 'SUSPENDED'
         }
-
-        switch ($state) 
-        {
-            SUSPENDED { 
-                $body['suspended'] = $true 
-            }
-            ACTIVATED { 
-                $body['suspended'] = $false
+        else {
+            switch ($state) 
+            {
+                SUSPENDED { 
+                    $body['suspended'] = $true 
+                }
+                ACTIVATED { 
+                    $body['suspended'] = $false
+                }
+                STAGED {
+                    $body['suspended'] = $false
+                }
             }
         }
         
