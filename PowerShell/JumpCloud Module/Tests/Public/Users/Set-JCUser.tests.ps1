@@ -1378,14 +1378,14 @@ Describe -Tag:('JCUser') "Set-JCUser 1.12" {
 Describe -Tag:('JCUser') "Set-JCUser with Suspend param 1.15 via pipeline" {
     It "Updates a user suspended -eq True " {
         $NewUser = New-RandomUser -domain pleasedelete"PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser
-        $UpdatedUser = $NewUser | Set-JCUser -suspended $True
-        $UpdatedUser.suspended | Should -Be True
+        # This is a conflicting and unsupport state/ suspended pairing
+        {$NewUser | Set-JCUser -suspended $True} | Should -Throw
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
     It "Updates a user suspended -eq false " {
         $NewUser = New-RandomUser -domain pleasedelete"PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser -suspended $true
-        $UpdatedUser = $NewUser | Set-JCUser -suspended $false
-        $UpdatedUser.suspended | Should -Be False
+        # This is a conflicting and unsupport state/ suspended pairing
+        {$NewUser | Set-JCUser -suspended $false} | Should -Throw
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
     It 'Updates a user state from SUSPENDED to ACTIVATED with suspended true should error' {

@@ -120,7 +120,7 @@ Function Get-JCUser ()
         [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'The manager username or ID of the JumpCloud user you wish to search for.')]
         [String]$manager,
 
-        [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'A search filter to return users that are in an ACTIVATED or SUSPENDED state')]
+        [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'A search filter to return users that are in an ACTIVATED, STAGED or SUSPENDED state')]
         [String]$state
     )
 

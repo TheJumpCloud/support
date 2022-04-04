@@ -574,7 +574,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
                     if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }
 
-                    if ($param.key -in ('Username', 'EnrollmentDays', 'state')) { continue }
+                    if ($param.key -in ('Username', 'EnrollmentDays')) { continue }
 
                     if ($param.Key -like '*_number') { continue }
 
@@ -659,7 +659,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                     $mfa.Add("exclusionUntil", [string]$exclusionUntil)
                     $body.Add('mfa', $mfa)
                 }
-                
+
                 if ((($suspended -eq $true) -And ($state -eq "ACTIVATED")) -Or (($suspended -eq $false) -And ($state -eq "SUSPENDED"))){
                     throw "Cannot save conflicting state and suspended fields. (state=$state suspended=$suspended)"
                 }

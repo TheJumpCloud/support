@@ -32,7 +32,7 @@ parameters:
     description: 'Release Type. Accepted values [ Major, Minor, Patch ]'
     type: enum
     enum: ["Major", "Minor", "Patch"]
-    default: "Patch"
+    default: "Minor"
   RequiredModulesRepo:
     description: 'PowerShell Repository for JumpCloud SDKs'
     type: enum
