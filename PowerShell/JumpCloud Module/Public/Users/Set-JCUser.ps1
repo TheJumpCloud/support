@@ -659,27 +659,21 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                     $mfa.Add("exclusionUntil", [string]$exclusionUntil)
                     $body.Add('mfa', $mfa)
                 }
-                switch ($state) 
-                {
-                    SUSPENDED { 
-                        $body['suspended'] = $true
-                    }
-                    ACTIVATED { 
-                        $body['suspended'] = $false
-                    }
+                
+                if ((($suspended -eq $true) -And ($state -eq "ACTIVATED")) -Or (($suspended -eq $false) -And ($state -eq "SUSPENDED"))){
+                    throw "Cannot save conflicting state and suspended fields. (state=$state suspended=$suspended)"
                 }
-                if (("state" -in $UpdateParms.key) -And ("suspended" -in $UpdateParms.key)) {
-                    if ($body.suspended -ne $suspended) {
-                        if (!$body.state -And $suspended -eq $false) {
-                            $body['state'] = 'ACTIVATED'
+                elseif ($suspended -eq $true) {
+                    $body['state'] = 'SUSPENDED'
+                }
+                else {
+                    switch ($state) 
+                    {
+                        SUSPENDED { 
+                            $body['suspended'] = $true 
+                        }
+                        ACTIVATED { 
                             $body['suspended'] = $false
-                        }
-                        elseif ((($state -eq "ACTIVATED") -And ($suspended -eq $true)) -Or (($suspended -eq $false) -And ($state -eq "SUSPENDED"))){
-                            throw "Cannot save conflicting state and suspended fields. (state=$state suspended=$suspended)"
-                        }
-                        elseif ($suspended -eq $true) {
-                            $body['state'] = 'SUSPENDED'
-                            $body['suspended'] = $true
                         }
                     }
                 }
@@ -890,6 +884,24 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                     $body.Add('mfa', $mfa)
                 }
 
+                if ((($suspended -eq $true) -And ($state -eq "ACTIVATED")) -Or (($suspended -eq $false) -And ($state -eq "SUSPENDED"))){
+                    throw "Cannot save conflicting state and suspended fields. (state=$state suspended=$suspended)"
+                }
+                elseif ($suspended -eq $true) {
+                    $body['state'] = 'SUSPENDED'
+                }
+                else {
+                    switch ($state) 
+                    {
+                        SUSPENDED { 
+                            $body['suspended'] = $true 
+                        }
+                        ACTIVATED { 
+                            $body['suspended'] = $false
+                        }
+                    }
+                }
+
                 $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
 
                 Write-Debug $jsonbody
@@ -1050,6 +1062,24 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                     $body.Add('mfa', $mfa)
                 }
 
+                if ((($suspended -eq $true) -And ($state -eq "ACTIVATED")) -Or (($suspended -eq $false) -And ($state -eq "SUSPENDED"))){
+                    throw "Cannot save conflicting state and suspended fields. (state=$state suspended=$suspended)"
+                }
+                elseif ($suspended -eq $true) {
+                    $body['state'] = 'SUSPENDED'
+                }
+                else {
+                    switch ($state) 
+                    {
+                        SUSPENDED { 
+                            $body['suspended'] = $true 
+                        }
+                        ACTIVATED { 
+                            $body['suspended'] = $false
+                        }
+                    }
+                }
+
                 $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
 
                 Write-Debug $jsonbody
@@ -1169,6 +1199,24 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                 $mfa.Add("exclusion", $true)
                 $mfa.Add("exclusionUntil", [string]$exclusionUntil)
                 $body.Add('mfa', $mfa)
+            }
+
+            if ((($suspended -eq $true) -And ($state -eq "ACTIVATED")) -Or (($suspended -eq $false) -And ($state -eq "SUSPENDED"))){
+                throw "Cannot save conflicting state and suspended fields. (state=$state suspended=$suspended)"
+            }
+            elseif ($suspended -eq $true) {
+                $body['state'] = 'SUSPENDED'
+            }
+            else {
+                switch ($state) 
+                {
+                    SUSPENDED { 
+                        $body['suspended'] = $true 
+                    }
+                    ACTIVATED { 
+                        $body['suspended'] = $false
+                    }
+                }
             }
 
             $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
@@ -1307,6 +1355,24 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                 $mfa.Add("exclusion", $true)
                 $mfa.Add("exclusionUntil", [string]$exclusionUntil)
                 $body.Add('mfa', $mfa)
+            }
+
+            if ((($suspended -eq $true) -And ($state -eq "ACTIVATED")) -Or (($suspended -eq $false) -And ($state -eq "SUSPENDED"))){
+                throw "Cannot save conflicting state and suspended fields. (state=$state suspended=$suspended)"
+            }
+            elseif ($suspended -eq $true) {
+                $body['state'] = 'SUSPENDED'
+            }
+            else {
+                switch ($state) 
+                {
+                    SUSPENDED { 
+                        $body['suspended'] = $true 
+                    }
+                    ACTIVATED { 
+                        $body['suspended'] = $false
+                    }
+                }
             }
 
             $jsonbody = $body | ConvertTo-Json -Compress -Depth 4
