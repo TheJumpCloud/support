@@ -1326,6 +1326,3 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
         return $UpdatedUserArray
     }
 }
-# ."/Users/gwein/Documents/GitHub/support/PowerShell/JumpCloud Module/Private/NestedFunctions/Get-JCUserAgent.ps1"
-# $NewUser = New-JcUser -firstname "User" -lastname "Test" -username "user.test2" -email "user.test2@deleteme.com" -password Test@123! -suspended $true
-# $UpdatedUser = $NewUser | Set-JcUser -suspended $false -state "ACTIVATED"
