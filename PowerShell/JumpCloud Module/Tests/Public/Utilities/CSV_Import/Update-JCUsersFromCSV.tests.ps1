@@ -415,6 +415,18 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
             $ImportCheck.work_country | Should -Be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty country)
         }
     }
+
+    It "Updates a new user from a CSV with a null custom attribute should throw" {
+        # Get an existing user:
+        $user = Get-JCUser -username $PesterParams_NewUser1.Username
+        $CSVDATA = @{
+            Username = $user.username
+            Attribute1_name = '9898'
+            Attribute1_value = ''
+        }
+        $CSVFILE = $CSVDATA | Export-Csv "$PesterParams_UpdatePath/UpdateExample_missingAttribute.csv"
+        { Update-JCUsersFromCSV -CSVFilePath "$PesterParams_UpdatePath/UpdateExample_missingAttribute.csv" -force } | Should -Throw
+    }
     It "Removes users Where-Object Email -like *pleasedelete* " {
         Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
     }

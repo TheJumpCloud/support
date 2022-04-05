@@ -367,13 +367,13 @@ Function Import-JCUsersFromCSV ()
             $UpdateParamsAttrValidate = $UserAdd.psobject.properties | Where-Object { ($_.Name -match "Attribute") } |  Select-Object Name, Value
             foreach ($Param in $UpdateParamsAttrValidate)
             {
-                If ($Param.Name -match "_name")
+                If (($Param.Name -match "_name") -And (![string]::IsNullOrEmpty($Param.Value)))
                 {
                     $matchingValueField = $Param.Name.Replace("_name", "_value")
                     $matchingValue = $UpdateParamsAttrValidate | Where-Object { ($_.Name -eq $matchingValueField) }
                     if ([string]::IsNullOrEmpty($matchingValue.Value))
                     {
-                        write-error "A Custom Attribute name: $($Param.Name) was specified but is missing a corresponding value: $($matchingValue.Name). Null attribute values are not supported"
+                        Throw "A Custom Attribute name: $($Param.Name):$($Param.Value) was specified but is missing a corresponding value: $($matchingValue.Name):$($matchingValue.Value). Null attribute values are not supported"
                     }
                     else
                     {
