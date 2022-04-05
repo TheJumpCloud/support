@@ -417,12 +417,12 @@ Function New-JCUser ()
             $body['state'] = 'SUSPENDED'
         }
         else {
-            switch ($state) 
+            switch ($state)
             {
-                SUSPENDED { 
-                    $body['suspended'] = $true 
+                SUSPENDED {
+                    $body['suspended'] = $true
                 }
-                ACTIVATED { 
+                ACTIVATED {
                     $body['suspended'] = $false
                 }
                 STAGED {
@@ -430,7 +430,7 @@ Function New-JCUser ()
                 }
             }
         }
-        
+
         If ($NewAttributes) { $body.add('attributes', $NewAttributes) }
 
         $jsonbody = $body | ConvertTo-Json

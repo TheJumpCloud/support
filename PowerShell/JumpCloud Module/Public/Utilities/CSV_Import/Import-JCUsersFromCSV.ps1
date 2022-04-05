@@ -363,6 +363,24 @@ Function Import-JCUsersFromCSV ()
 
         foreach ($UserAdd in $NewUsers)
         {
+            $UniqueAttrValues = @()
+            $UpdateParamsAttrValidate = $UserAdd.psobject.properties | Where-Object { ($_.Name -match "Attribute") } |  Select-Object Name, Value
+            foreach ($Param in $UpdateParamsAttrValidate)
+            {
+                If ($Param.Name -match "_name")
+                {
+                    $matchingValueField = $Param.Name.Replace("_name", "_value")
+                    $matchingValue = $UpdateParamsAttrValidate | Where-Object { ($_.Name -eq $matchingValueField) }
+                    if ([string]::IsNullOrEmpty($matchingValue.Value))
+                    {
+                        write-error "A Custom Attribute name: $($Param.Name) was specified but is missing a corresponding value: $($matchingValue.Name). Null attribute values are not supported"
+                    }
+                    else
+                    {
+                        $UniqueAttrValues += $matchingValue.Value
+                    }
+                }
+            }
             $UpdateParamsRaw = $UserAdd.psobject.properties | Where-Object { ($_.Value -ne $Null) -and ($_.Value -ne "") } | Select-Object Name, Value
             $UpdateParams = @{ }
 
@@ -553,13 +571,19 @@ Function Import-JCUsersFromCSV ()
 
                 catch
                 {
+                    If ($_.ErrorDetails){
 
-                    $Status = $_.ErrorDetails
+                        $Status = $_.ErrorDetails
+                    }
+                    elseif ($_.Exception) {
+                        $Status = $_.Exception
+                    }
 
                     $FormattedResults = [PSCustomObject]@{
 
                         'Username'  = $UserAdd.username
                         'Status'    = "Not created, CSV format issue?"
+                        'AdditionalInfo' = $Status.Message
                         'UserID'    = $Null
                         'GroupsAdd' = $Null
                         'SystemID'  = $Null
