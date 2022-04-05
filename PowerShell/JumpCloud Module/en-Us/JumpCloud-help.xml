@@ -8495,7 +8495,11 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Import-JCUsersFromCSV function does data validation when importing JumpCloud users from a CSV file to warn the administrator of any potential issues during the import process. Examples of warnings include warning messages for users that already exist, systems that do not exist, and groups that do not exist. The Import-JCUserFromCSV function allows administrator to create JumpCloud users, add them to JumpCloud User Groups, and associate them with a JumpCloud system. The Import-JCUserFromCSV command takes ~ 1 minute for every 100 users. This time varies based on if users are added to groups or associated with systems during import. During import a JumpCloud administrator can ensure the import is working by watching their JumpCloud user count increase in the admin console.</maml:para>
+      <maml:para>The Import-JCUsersFromCSV function does data validation when importing JumpCloud users from a CSV file to warn the administrator of any potential issues during the import process. Examples of warnings include warning messages for users that already exist, systems that do not exist, and groups that do not exist.</maml:para>
+      <maml:para>The Import-JCUserFromCSV function allows administrator to create JumpCloud users, add them to JumpCloud User Groups, and associate them with a JumpCloud system.</maml:para>
+      <maml:para>Note: Custom Attribute values must be non-null and unique.</maml:para>
+      <maml:para>The Import-JCUserFromCSV command takes ~ 1 minute for every 100 users. This time varies based on if users are added to groups or associated with systems during import.</maml:para>
+      <maml:para>During import a JumpCloud administrator can ensure the import is working by watching their JumpCloud user count increase in the admin console.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -18110,7 +18114,10 @@ Enter a value between 1 and 2:</dev:code>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Update-JCUsersFromCSV function does data validation when updating JumpCloud users in bulk from a CSV file to warn the administrator of any potential issues during the import process. Examples of warnings include warning messages for employeeIdentifiers that already exist, systems that do not exist, and groups that do not exist. The Update-JCUserFromCSV command can be used to update user attributes, add users to groups, and bind users to systems in bulk. The Update-JCUserFromCSV command also has a '-force' parameter which admins can use to skip the data validate or to use the function in an automation script.</maml:para>
+      <maml:para>The Update-JCUsersFromCSV function does data validation when updating JumpCloud users in bulk from a CSV file to warn the administrator of any potential issues during the import process. Examples of warnings include warning messages for employeeIdentifiers that already exist, systems that do not exist, and groups that do not exist.</maml:para>
+      <maml:para>The Update-JCUserFromCSV command can be used to update user attributes, add users to groups, and bind users to systems in bulk.</maml:para>
+      <maml:para>Note: Custom Attribute values must be non-null and unique.</maml:para>
+      <maml:para>The Update-JCUserFromCSV command also has a '-force' parameter which admins can use to skip the data validate or to use the function in an automation script.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
