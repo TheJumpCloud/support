@@ -127,6 +127,19 @@ Describe -Tag:('JCUser') 'New-JCUser 1.0' {
         $NewUser.attributes._id.Count | Should -Be 3
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
+
+    It "Creates a new User with state SUSPENDED" {
+        $NewUser = New-RandomUser -Attributes -Domain DeleteMe | New-JCUser -state "SUSPENDED"
+        $NewUser.suspended | Should -Be True
+        $NewUser.state | Should -Be "SUSPENDED"
+        Remove-JCUser -UserID $NewUser._id -ByID -Force
+    }
+
+    It "Creates a new User with state STAGED" {
+        $NewUser = New-RandomUser -Attributes -Domain DeleteMe | New-JCUser -state "STAGED"
+        $NewUser.state | Should -Be "STAGED"
+        Remove-JCUser -UserID $NewUser._id -ByID -Force
+    }
 }
 
 
@@ -399,7 +412,7 @@ Describe -Tag:('JCUser') "New-JCUser MFA with enrollment periods 1.10" {
 Describe -Tag:('JCUser') "New-JCUser with suspend param 1.15" {
 
     It "Creates a new User suspended -eq True " {
-        $NewUser = New-RandomUser -domain pleasedelete"PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser  -suspended $true
+        $NewUser = New-RandomUser -domain pleasedelete"PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser -suspended $true
         $NewUser.suspended | Should -Be True
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }

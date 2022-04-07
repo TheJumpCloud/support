@@ -324,6 +324,20 @@ Function Update-JCUsersFromCSV ()
 
         foreach ($UserUpdate in $UpdateUsers)
         {
+            $UniqueAttrValues = @()
+            $UpdateParamsAttrValidate = $UserUpdate.psobject.properties | Where-Object { ($_.Name -match "Attribute") } |  Select-Object Name, Value
+            foreach ($Param in $UpdateParamsAttrValidate){
+                If (($Param.Name -match "_name") -And (![string]::IsNullOrEmpty($Param.Value))){
+                    $matchingValueField = $Param.Name.Replace("_name", "_value")
+                    $matchingValue = $UpdateParamsAttrValidate | Where-Object { ($_.Name -eq $matchingValueField) }
+                    if ([string]::IsNullOrEmpty($matchingValue.Value)){
+                        Throw "A Custom Attribute name: $($Param.Name):$($Param.Value) was specified but is missing a corresponding value: $($matchingValue.Name):$($matchingValue.Value). Null attribute values are not supported"
+                    }
+                    else {
+                        $UniqueAttrValues += $matchingValue.Value
+                    }
+                }
+            }
             $UpdateParamsRaw = $UserUpdate.psobject.properties | Where-Object { ($_.Value -ne $Null) -and ($_.Value -ne "") } | Select-Object Name, Value
             $UpdateParams = @{ }
 

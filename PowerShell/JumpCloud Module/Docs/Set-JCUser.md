@@ -26,7 +26,7 @@ Set-JCUser [-Username] <String> [-email <String>] [-firstname <String>] [-lastna
  [-home_poBox <String>] [-home_locality <String>] [-home_region <String>] [-home_postalCode <String>]
  [-home_country <String>] [-mobile_number <String>] [-home_number <String>] [-work_number <String>]
  [-work_mobile_number <String>] [-work_fax_number <String>] [-external_dn <String>]
- [-external_source_type <String>] [-suspended <Boolean>] [-manager <String>] [-managedAppleId <String>]
+ [-external_source_type <String>] [-state <String>] [-manager <String>] [-managedAppleId <String>]
  [-alternateEmail <String>] [-EnrollmentDays <Int32>] -Attribute1_name <String> -Attribute1_value <String>
  -Attribute2_name <String> -Attribute2_value <String> [<CommonParameters>]
 ```
@@ -45,7 +45,7 @@ Set-JCUser [-Username] <String> [-email <String>] [-firstname <String>] [-lastna
  [-home_streetAddress <String>] [-home_poBox <String>] [-home_locality <String>] [-home_region <String>]
  [-home_postalCode <String>] [-home_country <String>] [-mobile_number <String>] [-home_number <String>]
  [-work_number <String>] [-work_mobile_number <String>] [-work_fax_number <String>] [-external_dn <String>]
- [-external_source_type <String>] [-suspended <Boolean>] [-manager <String>] [-managedAppleId <String>]
+ [-external_source_type <String>] [-state <String>] [-manager <String>] [-managedAppleId <String>]
  [-alternateEmail <String>] [-EnrollmentDays <Int32>] -Attribute1_name <String> -Attribute1_value <String>
  -Attribute2_name <String> -Attribute2_value <String> [<CommonParameters>]
 ```
@@ -64,7 +64,7 @@ Set-JCUser -UserID <String> [-email <String>] [-firstname <String>] [-lastname <
  [-home_poBox <String>] [-home_locality <String>] [-home_region <String>] [-home_postalCode <String>]
  [-home_country <String>] [-mobile_number <String>] [-home_number <String>] [-work_number <String>]
  [-work_mobile_number <String>] [-work_fax_number <String>] [-external_dn <String>]
- [-external_source_type <String>] [-suspended <Boolean>] [-manager <String>] [-managedAppleId <String>]
+ [-external_source_type <String>] [-state <String>] [-manager <String>] [-managedAppleId <String>]
  [-alternateEmail <String>] [-EnrollmentDays <Int32>] -Attribute1_name <String> -Attribute1_value <String>
  -Attribute2_name <String> -Attribute2_value <String> [<CommonParameters>]
 ```
@@ -790,13 +790,14 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
-### -sudo
-A boolean $true/$false value if you want to enable the user to be an administrator on any and all systems the user is bound to.
+### -state
+A string value for putting the account into a staged, activated or suspended state
 
 ```yaml
-Type: System.Boolean
+Type: System.String
 Parameter Sets: (All)
 Aliases:
+Accepted values: ACTIVATED, SUSPENDED
 
 Required: False
 Position: Named
@@ -805,8 +806,8 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
-### -suspended
-A boolean $true/$false value for putting the account into a suspended state
+### -sudo
+A boolean $true/$false value if you want to enable the user to be an administrator on any and all systems the user is bound to.
 
 ```yaml
 Type: System.Boolean

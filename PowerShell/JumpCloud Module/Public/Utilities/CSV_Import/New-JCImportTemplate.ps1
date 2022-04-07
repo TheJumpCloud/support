@@ -295,7 +295,7 @@ Function New-JCImportTemplate()
 
 
         Write-Host ""
-        Write-Host 'Do you want to add any custom attributes to your users during import?'
+        Write-Host 'Do you want to add any custom attributes to your users during import? Note, customAttribute values must be unique'
 
         while ($ConfirmAttributes -ne 'Y' -and $ConfirmAttributes -ne 'N')
         {
