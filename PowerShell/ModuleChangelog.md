@@ -1,24 +1,24 @@
-## 1.19.1
+## 1.20.0
 
 Release Date: March 31, 2022
 
 #### RELEASE NOTES
 
 ```
-{{Fill in the Release Notes}}
+This release incorporates the "state" parameter into Get/Set/New-JCUser
 ```
 
 #### FEATURES:
 
-{{Fill in the Features}}
+[state parameter added to module](https://github.com/TheJumpCloud/support/pull/361) see [Managing User State documentation](https://support.jumpcloud.com/support/s/article/Managing-User-States#:~:text=A%20user%20state%20indicates%20where,still%20need%20to%20be%20onboarded.).
 
 #### IMPROVEMENTS:
 
-{{Fill in the Improvements}}
+* Import/Update-JCUsersFromCSV will validate that custom attribute values are not null before attempting to Import/Update users.
 
 #### BUG FIXES:
 
-{{Fill in the Bug Fixes}}
+N/A
 
 ## 1.19.0
 

@@ -535,5 +535,12 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
         Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
 
     }
+    It "Imports a new user from a CSV with a null custom attribute should throw" {
+        $UserImportInfo = Import-Csv "$PesterParams_ImportPath/ImportExample_missingAttribute.csv"
+        { Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/ImportExample_missingAttribute.csv" -force } | Should -Throw
+
+        Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
+
+    }
 
 }

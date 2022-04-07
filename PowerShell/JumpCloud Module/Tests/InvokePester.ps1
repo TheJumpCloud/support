@@ -43,12 +43,12 @@ Else
 # Load private functions
 Write-Host ('[status]Load private functions: ' + "$PSScriptRoot/../Private/*.ps1")
 Get-ChildItem -Path:("$PSScriptRoot/../Private/*.ps1") -Recurse | ForEach-Object { . $_.FullName }
-# Load SetupOrg
-Write-Host ('[status]Setting up org: ' + "$PSScriptRoot/SetupOrg.ps1")
-. ("$PSScriptRoot/SetupOrg.ps1") -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp)
 # Load HelperFunctions
 Write-Host ('[status]Load HelperFunctions: ' + "$PSScriptRoot/HelperFunctions.ps1")
 . ("$PSScriptRoot/HelperFunctions.ps1")
+# Load SetupOrg
+Write-Host ('[status]Setting up org: ' + "$PSScriptRoot/SetupOrg.ps1")
+. ("$PSScriptRoot/SetupOrg.ps1") -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp)
 $PesterResultsFileXmldir = "$PSScriptRoot/test_results/"
 # $PesterResultsFileXml = $PesterResultsFileXmldir + "results.xml"
 if (-not (Test-Path $PesterResultsFileXmldir))
