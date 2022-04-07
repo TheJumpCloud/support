@@ -171,8 +171,45 @@ Function Connect-JCOnline ()
                 {
                     If ([System.String]::IsNullOrEmpty($env:JcUpdateModule) -or $env:JcUpdateModule -eq 'True')
                     {
-                        $env:JcUpdateModule = $false
-                        Update-JCModule | Out-Null
+                        $JCGhChangelog = 'https://github.com/TheJumpCloud/support/blob/master/PowerShell/ModuleChangelog.md'
+                        $JCGhBanner = 'https://github.com/TheJumpCloud/support/blob/master/PowerShell/ModuleBanner.md'
+                        $JCPwshGallery = 'https://www.powershellgallery.com/packages/JumpCloud/'
+                        $moduleSites = @($JCPwshGallery,$JCGhChangelog,$JCGhBanner)
+                        $downRepo = @()
+                        foreach($site in $moduleSites){
+                            $HTTP_Request = [System.Net.WebRequest]::Create($site)
+
+                            try {
+                                
+                                $HTTP_Response = $HTTP_Request.GetResponse()
+
+                            }
+                            catch [System.Net.WebException]{
+                                $HTTP_Response = $_.Exception.Response
+                            }
+                            $HTTP_Status = [int]$HTTP_Response.StatusCode
+
+                            If ($HTTP_Status -eq 200) {} #Site is working properly
+                            Else {
+                                $downRepo += $site
+                            }
+                            # Clean up the http request by closing it.
+                            If ($HTTP_Response -eq $null) { } 
+                            Else { $HTTP_Response.Close() }
+                        }
+                        # Check if all 3 sites are down
+                        if ($downRepo.Count -gt 1) 
+                        {
+                            Write-Warning ("Unable to update the module to repositories being down" )
+                        }
+                        else
+                        {
+                            $env:JcUpdateModule = $false
+                            Update-JCModule | Out-Null
+                        }
+
+                        
+                        
                     }
                     If ($IndShowMessages)
                     {
