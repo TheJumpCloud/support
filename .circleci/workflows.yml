@@ -81,7 +81,7 @@ workflows:
             - Build Modules
             - Initial Setup
           context: aws-credentials
-      - Publish Wiki Docs
+      - Publish Wiki Docs:
           requires:
             - Build Modules
             - Initial Setup
