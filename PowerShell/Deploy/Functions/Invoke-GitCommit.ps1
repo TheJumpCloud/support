@@ -36,6 +36,6 @@ Function Global:Invoke-GitCommit{
         Invoke-Git -Arguments:('status;')
         Invoke-Git -Arguments:('remote;')
         Invoke-Git -Arguments:('commit -m ' + '"' + $CommitMessage + '";')
-        Invoke-Git -Arguments:('push origin ' + 'master' + ' --dry-run' + ';')
+        Invoke-Git -Arguments:('push origin HEAD:refs/heads/' + $BranchName + ' --dry-run' + ';')
     }
 }
