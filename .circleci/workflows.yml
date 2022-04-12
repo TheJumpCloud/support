@@ -81,6 +81,7 @@ workflows:
             - Build Modules
             - Initial Setup
           context: aws-credentials
+      - Publish Wiki Docs
       - Build Nuspec:
           requires:
             - Initial Setup
