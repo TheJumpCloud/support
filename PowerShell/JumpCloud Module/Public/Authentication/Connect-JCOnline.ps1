@@ -171,8 +171,40 @@ Function Connect-JCOnline ()
                 {
                     If ([System.String]::IsNullOrEmpty($env:JcUpdateModule) -or $env:JcUpdateModule -eq 'True')
                     {
-                        $env:JcUpdateModule = $false
-                        Update-JCModule | Out-Null
+                        # Update-JCModule depends on these resources being available, check if available then continue
+                        $moduleSites = @(
+                            'https://github.com/TheJumpCloud/support/blob/master/PowerShell/ModuleChangelog.md',
+                            'https://github.com/TheJumpCloud/support/blob/master/PowerShell/ModuleBanner.md',
+                            'https://www.powershellgallery.com/packages/JumpCloud/'
+                        )
+                        $downRepo = @()
+                        foreach($site in $moduleSites){
+                            $HTTP_Request = [System.Net.WebRequest]::Create($site)
+                            try {
+                                $HTTP_Response = $HTTP_Request.GetResponse()
+                            }
+                            catch [System.Net.WebException]{
+                                $HTTP_Response = $_.Exception.Response
+                            }
+                            $HTTP_Status = [int]$HTTP_Response.StatusCode
+                            If ($HTTP_Status -eq 200) {} #Site is working properly
+                            Else {
+                                $downRepo += $site
+                            }
+                            # Clean up the http request by closing it.
+                            If ($HTTP_Response -eq $null) { }
+                            Else { $HTTP_Response.Close() }
+                        }
+                        # If one of the 3 sites are inaccessible, skip running Update-JCModule
+                        if ($downRepo.Count -ge 1)
+                        {
+                            Write-Verbose ("One or more of the required resources to update the JumpCloud Module are inaccessible at the moment" )
+                        }
+                        else
+                        {
+                            $env:JcUpdateModule = $false
+                            Update-JCModule | Out-Null
+                        }
                     }
                     If ($IndShowMessages)
                     {

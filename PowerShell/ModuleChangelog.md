@@ -1,28 +1,6 @@
 ## 1.20.1
 
-Release Date: April 12, 2022
-
-#### RELEASE NOTES
-
-```
-{{Fill in the Release Notes}}
-```
-
-#### FEATURES:
-
-{{Fill in the Features}}
-
-#### IMPROVEMENTS:
-
-{{Fill in the Improvements}}
-
-#### BUG FIXES:
-
-{{Fill in the Bug Fixes}}
-
-## 1.21.0
-
-Release Date: April 12, 2022
+Release Date: April 13, 2022
 
 #### RELEASE NOTES
 
@@ -55,6 +33,7 @@ This release incorporates the "state" parameter into Get/Set/New-JCUser
 #### FEATURES:
 
 [state parameter added to module](https://github.com/TheJumpCloud/support/pull/361) see [Managing User State documentation](https://support.jumpcloud.com/support/s/article/Managing-User-States#:~:text=A%20user%20state%20indicates%20where,still%20need%20to%20be%20onboarded.).
+
 
 #### IMPROVEMENTS:
 
