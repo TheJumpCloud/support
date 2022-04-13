@@ -1,3 +1,25 @@
+## 1.21.0
+
+Release Date: April 13, 2022
+
+#### RELEASE NOTES
+
+```
+{{Fill in the Release Notes}}
+```
+
+#### FEATURES:
+
+{{Fill in the Features}}
+
+#### IMPROVEMENTS:
+
+{{Fill in the Improvements}}
+
+#### BUG FIXES:
+
+{{Fill in the Bug Fixes}}
+
 ## 1.20.1
 
 Release Date: April 08, 2022
