@@ -24,8 +24,13 @@ Import-JCUsersFromCSV [-CSVFilePath] <String> [-force] [<CommonParameters>]
 
 ## DESCRIPTION
 The Import-JCUsersFromCSV function does data validation when importing JumpCloud users from a CSV file to warn the administrator of any potential issues during the import process. Examples of warnings include warning messages for users that already exist, systems that do not exist, and groups that do not exist.
+
 The Import-JCUserFromCSV function allows administrator to create JumpCloud users, add them to JumpCloud User Groups, and associate them with a JumpCloud system.
+
+Note: Custom Attribute values must be non-null and unique.
+
 The Import-JCUserFromCSV command takes ~ 1 minute for every 100 users. This time varies based on if users are added to groups or associated with systems during import.
+
 During import a JumpCloud administrator can ensure the import is working by watching their JumpCloud user count increase in the admin console.
 
 ## EXAMPLES

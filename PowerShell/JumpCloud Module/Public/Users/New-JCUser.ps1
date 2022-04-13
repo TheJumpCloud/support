@@ -142,8 +142,13 @@ Function New-JCUser ()
         [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'Specifies the user''s work fax number. The LDAP displayName of this property is facsimileTelephoneNumber.')]
         [string]$work_fax_number,
 
-        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'A boolean $true/$false value for putting the account into a suspended state')]
-        [bool]$suspended,
+        [Parameter(DontShow, ValueFromPipelineByPropertyName = $False, HelpMessage = 'A boolean $true/$false value for putting the account into a suspended state')]
+        [nullable[bool]]$suspended,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'A string value for putting the account into a staged, activated or suspended state')]
+        [ValidateSet('STAGED','ACTIVATED','SUSPENDED')]
+        [string]
+        $state,
 
         [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'The manager username or ID of the JumpCloud manager user; must be a valid user')]
         [string]$manager,
@@ -403,6 +408,27 @@ Function New-JCUser ()
             $mfa.Add("exclusion", $true)
             $mfa.Add("exclusionUntil", [string]$exclusionUntil)
             $body.Add('mfa', $mfa)
+        }
+
+        if ((($suspended -eq $true) -And ($state -eq "STAGED")) -Or (($suspended -eq $true) -And ($state -eq "ACTIVATED")) -Or (($suspended -eq $false) -And ($state -eq "SUSPENDED"))){
+            throw "Cannot save conflicting state and suspended fields. (state=$state suspended=$suspended)"
+        }
+        elseif ($suspended -eq $true) {
+            $body['state'] = 'SUSPENDED'
+        }
+        else {
+            switch ($state)
+            {
+                SUSPENDED {
+                    $body['suspended'] = $true
+                }
+                ACTIVATED {
+                    $body['suspended'] = $false
+                }
+                STAGED {
+                    $body['suspended'] = $false
+                }
+            }
         }
 
         If ($NewAttributes) { $body.add('attributes', $NewAttributes) }
