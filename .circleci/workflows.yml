@@ -32,7 +32,7 @@ parameters:
     description: 'Release Type. Accepted values [ Major, Minor, Patch ]'
     type: enum
     enum: ["Major", "Minor", "Patch"]
-    default: "Minor"
+    default: "Patch"
   RequiredModulesRepo:
     description: 'PowerShell Repository for JumpCloud SDKs'
     type: enum
@@ -368,7 +368,8 @@ commands:
           name: 'Publish Wiki Documentaiton'
           shell: pwsh.exe
           command: |
-            ./PowerShell/Deploy/Build-WikiPages.ps1
+            Set-Location -Path "./PowerShell/Deploy/"
+            ./Build-WikiPages.ps1
   invoke-script:
     steps:
       - checkout
