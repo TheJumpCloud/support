@@ -72,6 +72,10 @@ workflows:
             - equal: [true, << pipeline.parameters.ManualBuild >>]
     jobs:
       - Initial Setup
+      - draft-github-release:
+          requires:
+            - Initial Setup
+          context: github-credentials
       - Build Modules:
           requires:
             - Initial Setup
