@@ -75,7 +75,6 @@ workflows:
       - draft-github-release:
           requires:
             - Initial Setup
-          context: github-credentials
       - Build Modules:
           requires:
             - Initial Setup
@@ -284,7 +283,7 @@ jobs:
             TAG="v$VERSION"
             BODY="$TITLE $CHANGELOG"
             # Post Draft Release
-            ghr -t $env:GITHUB_TOKEN -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -n "$TITLE" -b "$BODY" -delete -draft "$TAG" /root/project/PowerShell/
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -n "$TITLE" -b "$BODY" -delete -draft "$TAG" /root/project/PowerShell/
 commands:
   initial-setup:
     steps:
