@@ -1,6 +1,6 @@
 #### Name
 
-Mac - Install Agent and Service Account | v1.2 JCCG
+Mac - Install Agent and Service Account | v1.3 JCCG
 
 #### commandType
 
@@ -25,9 +25,12 @@ SECURETOKEN_ADMIN_PASSWORD=''
 # Flag for installing without checking SECURETOKEN_ADMIN_USERNAME or SECURETOKEN_ADMIN_PASSWORD
 SILENT_INSTALL=0
 
+# Flag for installing without interactive prompts
+UNATTENDED_INSTALL=0
+
 # You can also specify one or more values with parameters
 # -k YOUR_CONNECT_KEY -u SECURETOKEN_ADMIN_USERNAME -p SECURETOKEN_ADMIN_PASSWORD
-while getopts k:u:p:sh option; do
+while getopts k:u:p:shf option; do
   case "${option}" in
   k) YOUR_CONNECT_KEY=${OPTARG} ;;
   u) SECURETOKEN_ADMIN_USERNAME=${OPTARG} ;;
@@ -40,6 +43,7 @@ while getopts k:u:p:sh option; do
     exit 0
     ;;
   s) SILENT_INSTALL=1 ;;
+  f) UNATTENDED_INSTALL=1 ;;
   *) echo "Invalid parameter"
      exit 1
      ;;
@@ -56,6 +60,18 @@ if [[ $MacOSMajorVersion -eq 10 && $MacOSMinorVersion -lt 13 ]]; then
   echo "Error:  Target system is not on macOS 10.13"
   exit 2
 else
+
+  # asks the user to confirm "y" or "n" before continuing
+  confirmUserContinue() {
+    while true; do
+      read -p 'Continue (y/n)? ' confirmation
+      case "$confirmation" in
+        y|Y ) break ;;
+        n|N ) exit 1 ;;
+        * ) echo 'Invalid option. Please enter either "y" or "n" to continue' ;;
+      esac
+    done
+  }
 
   # This function checks whether the given user is secure token enabled:
   secureTokenEnabledForUser() {
@@ -182,6 +198,17 @@ else
   if [ ${#YOUR_CONNECT_KEY} != 40 ]; then
     echo 'Connect key is not 40 characters. Please provide a valid connect key in the script or via the -k parameter'
     exit 1
+  fi
+
+  # FDA is only needed on Monterey and later
+  if [[ "$MacOSMajorVersion" -ge 12 ]]; then
+    FDA_MESSAGE='JumpCloud requires Full Disk Access for our agent to properly configure the PAM Modules for authentication. During installation, System Preferences will open, and Full Disk Access will need to be manually allowed within 5 minutes to successfully complete the installation.'
+    if [ "$UNATTENDED_INSTALL" -eq "0" ]; then
+      printf "${FDA_MESSAGE}\n\nIf you are installing this with no user session (as root or over SSH), this installation may fail.\n\n"
+      confirmUserContinue
+    else
+      printf "This command was invoked with the '-f' option disabling any user confirmation.\n\n${FDA_MESSAGE}\n"
+    fi
   fi
 
   if [ "$SILENT_INSTALL" -eq "0" ]; then
