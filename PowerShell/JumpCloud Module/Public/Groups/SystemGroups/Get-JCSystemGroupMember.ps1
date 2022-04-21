@@ -77,14 +77,16 @@ Function Get-JCSystemGroupMember ()
                     [int]$skip = 0 #Do not change!
                     Write-Debug "Setting skip to $skip"
 
-                    while ($rawResults.Count -ge $skip)
-                    {
-                        $limitURL = "$JCUrlBasePath/api/v2/Systemgroups/$Group_ID/members?limit=$limit&skip=$skip"
-                        Write-Debug $limitURL
-                        $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
-                        $skip += $limit
-                        $rawResults += $results
-                    }
+                    # while ($rawResults.Count -ge $skip)
+                    # {
+                    #     $limitURL = "$JCUrlBasePath/api/v2/Systemgroups/$Group_ID/members?limit=$limit&skip=$skip"
+                    #     Write-Debug $limitURL
+                    #     $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
+                    #     $skip += $limit
+                    #     $rawResults += $results
+                    # }
+
+                    $rawResults = Get-JCResults -Url "$JCUrlBasePath/api/v2/Systemgroups/$Group_ID/members"
 
                     foreach ($uid in $rawResults)
                     {
