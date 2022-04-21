@@ -74,8 +74,8 @@ Function Get-JCSystemGroupMember ()
                     $Group_ID = $GroupNameHash.Get_Item($Group)
                     Write-Debug "$Group_ID"
 
-                    [int]$skip = 0 #Do not change!
-                    Write-Debug "Setting skip to $skip"
+                    # [int]$skip = 0 #Do not change!
+                    # Write-Debug "Setting skip to $skip"
 
                     # while ($rawResults.Count -ge $skip)
                     # {
@@ -86,7 +86,8 @@ Function Get-JCSystemGroupMember ()
                     #     $rawResults += $results
                     # }
 
-                    $rawResults = Get-JCResults -Url "$JCUrlBasePath/api/v2/Systemgroups/$Group_ID/members"
+                    $limitURL = "{0}/api/v2/Systemgroups/{1}/members" -f $JCUrlBasePath, $Group_ID
+                    $rawResults = Get-JCResults -Url $limitURL
 
                     foreach ($uid in $rawResults)
                     {
@@ -114,17 +115,20 @@ Function Get-JCSystemGroupMember ()
         elseif ($PSCmdlet.ParameterSetName -eq 'ByID')
 
         {
-            [int]$skip = 0 #Do not change!
+            # [int]$skip = 0 #Do not change!
 
-            while ($resultsArray.Count -ge $skip)
-            {
+            # while ($resultsArray.Count -ge $skip)
+            # {
 
-                $limitURL = "$JCUrlBasePath/api/v2/Systemgroups/$ByID/members?limit=$limit&skip=$skip"
-                Write-Debug $limitURL
-                $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
-                $skip += $limit
-                $resultsArray += $results
-            }
+            #     $limitURL = "$JCUrlBasePath/api/v2/Systemgroups/$ByID/members?limit=$limit&skip=$skip"
+            #     Write-Debug $limitURL
+            #     $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
+            #     $skip += $limit
+            #     $resultsArray += $results
+            # }
+
+            $limitURL = "{0}/api/v2/Systemgroups/{1}/members" -f $JCUrlBasePath, $ByID
+            $resultsArray = Get-JCResults -Url $limitURL
 
         }
     }
