@@ -26,23 +26,6 @@ Function Get-JCSystemGroupMember ()
         Write-Debug 'Verifying JCAPI Key'
         if ($JCAPIKEY.length -ne 40) {Connect-JConline}
 
-        Write-Debug 'Populating API headers'
-        $hdrs = @{
-
-            'Content-Type' = 'application/json'
-            'Accept'       = 'application/json'
-            'X-API-KEY'    = $JCAPIKEY
-
-        }
-
-        if ($JCOrgID)
-        {
-            $hdrs.Add('x-org-id', "$($JCOrgID)")
-        }
-
-        [int]$limit = '100'
-        Write-Debug "Setting limit to $limit"
-
         Write-Debug 'Initilizing resultsArray and results ArraryByID'
         $rawResults = @()
         $resultsArray = @()
@@ -56,7 +39,6 @@ Function Get-JCSystemGroupMember ()
         }
 
     }
-
 
     process
 
@@ -73,18 +55,6 @@ Function Get-JCSystemGroupMember ()
                 {
                     $Group_ID = $GroupNameHash.Get_Item($Group)
                     Write-Debug "$Group_ID"
-
-                    # [int]$skip = 0 #Do not change!
-                    # Write-Debug "Setting skip to $skip"
-
-                    # while ($rawResults.Count -ge $skip)
-                    # {
-                    #     $limitURL = "$JCUrlBasePath/api/v2/Systemgroups/$Group_ID/members?limit=$limit&skip=$skip"
-                    #     Write-Debug $limitURL
-                    #     $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
-                    #     $skip += $limit
-                    #     $rawResults += $results
-                    # }
 
                     $limitURL = "{0}/api/v2/Systemgroups/{1}/members" -f $JCUrlBasePath, $Group_ID
                     $rawResults = Get-JCResults -Url $limitURL
@@ -107,7 +77,7 @@ Function Get-JCSystemGroupMember ()
 
                 }
 
-                else { Throw "Group does not exist. Run 'Get-JCGroup -type System' to see a list of all your JumpCloud System groups."}
+                else { Throw "Group does not exist. Run 'Get-JCGroup -type System' to see a list of all your JumpCloud System groups." }
 
             }
         }
@@ -115,18 +85,6 @@ Function Get-JCSystemGroupMember ()
         elseif ($PSCmdlet.ParameterSetName -eq 'ByID')
 
         {
-            # [int]$skip = 0 #Do not change!
-
-            # while ($resultsArray.Count -ge $skip)
-            # {
-
-            #     $limitURL = "$JCUrlBasePath/api/v2/Systemgroups/$ByID/members?limit=$limit&skip=$skip"
-            #     Write-Debug $limitURL
-            #     $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
-            #     $skip += $limit
-            #     $resultsArray += $results
-            # }
-
             $limitURL = "{0}/api/v2/Systemgroups/{1}/members" -f $JCUrlBasePath, $ByID
             $resultsArray = Get-JCResults -Url $limitURL
 
