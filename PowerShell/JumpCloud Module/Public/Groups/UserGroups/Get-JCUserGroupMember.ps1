@@ -19,23 +19,6 @@ Function Get-JCUserGroupMember ()
         Write-Debug 'Verifying JCAPI Key'
         if ($JCAPIKEY.length -ne 40) {Connect-JConline}
 
-        Write-Debug 'Populating API headers'
-        $hdrs = @{
-
-            'Content-Type' = 'application/json'
-            'Accept'       = 'application/json'
-            'X-API-KEY'    = $JCAPIKEY
-
-        }
-
-        if ($JCOrgID)
-        {
-            $hdrs.Add('x-org-id', "$($JCOrgID)")
-        }
-
-        [int]$limit = '100'
-        Write-Debug "Setting limit to $limit"
-
         Write-Debug 'Initilizing resultsArray and results ArraryByID'
         $rawResults = @()
         $resultsArray = @()
@@ -67,17 +50,9 @@ Function Get-JCUserGroupMember ()
                     $Group_ID = $GroupNameHash.Get_Item($Group)
                     Write-Debug "$Group_ID"
 
-                    [int]$skip = 0 #Do not change!
-                    Write-Debug "Setting skip to $skip"
-
-                    while ($rawResults.Count -ge $skip)
-                    {
-                        $limitURL = "$JCUrlBasePath/api/v2/usergroups/$Group_ID/members?limit=$limit&skip=$skip"
-                        Write-Debug $limitURL
-                        $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
-                        $skip += $limit
-                        $rawResults += $results
-                    }
+                    $limitURL = "{0}/api/v2/usergroups/{1}/members" -f $JCUrlBasePath, $Group_ID
+                    Write-Debug $limitURL
+                    $rawResults = Get-JCResults -Url $limitURL
 
                     foreach ($uid in $rawResults)
                     {
@@ -105,17 +80,9 @@ Function Get-JCUserGroupMember ()
         elseif ($PSCmdlet.ParameterSetName -eq 'ByID')
 
         {
-            [int]$skip = 0 #Do not change!
-
-            while ($resultsArray.Count -ge $skip)
-            {
-
-                $limitURL = "$JCUrlBasePath/api/v2/usergroups/$ByID/members?limit=$limit&skip=$skip"
-                Write-Debug $limitURL
-                $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
-                $skip += $limit
-                $resultsArray += $results
-            }
+            $limitURL = "{0}/api/v2/usergroups/{1}/members" -f $JCUrlBasePath, $Group_ID
+            Write-Debug $limitURL
+            $resultsArray = Get-JCResults -Url $limitURL
 
         }
     }
