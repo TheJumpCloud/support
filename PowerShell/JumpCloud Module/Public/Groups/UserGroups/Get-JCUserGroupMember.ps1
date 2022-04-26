@@ -80,7 +80,7 @@ Function Get-JCUserGroupMember ()
         elseif ($PSCmdlet.ParameterSetName -eq 'ByID')
 
         {
-            $limitURL = "{0}/api/v2/usergroups/{1}/members" -f $JCUrlBasePath, $Group_ID
+            $limitURL = "{0}/api/v2/usergroups/{1}/members" -f $JCUrlBasePath, $ByID
             Write-Debug $limitURL
             $resultsArray = Get-JCResults -Url $limitURL
 
