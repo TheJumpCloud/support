@@ -22,9 +22,9 @@ Function New-JCCommandFromURL
 
         $Command = Invoke-WebRequest -Uri $GitHubURL -UseBasicParsing -UserAgent:(Get-JCUserAgent) | Select-Object RawContent
 
-        $CodeRaw = (($Command -split '<code>')[1] -split '</code>')[0] # Contain XML escape characters
+        $CodeRaw = $Command | Select-String '(?<=\<code(.*?)\>)((.|\n|\r)*?)(?=<\/code>)' # Contain XML escape characters
 
-        $Code = ((((($CodeRaw -replace "&amp;", "&") -replace "&lt;", "<") -replace "&gt;", ">") -replace "&quot;", '"') -Replace "&apos;", "'") # Replace XML character references
+        $Code = ((((($CodeRaw.Matches.Value.Trim() -replace "&amp;", "&") -replace "&lt;", "<") -replace "&gt;", ">") -replace "&quot;", '"') -Replace "&apos;", "'") # Replace XML character references
 
         $Name = (((((($Command -split 'Name</h4>')[1]) -replace "`n", "") -split '</p>')[0]) -replace '(\<p)(.*?)(\>)', '')
 
