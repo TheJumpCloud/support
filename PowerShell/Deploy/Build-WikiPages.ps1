@@ -2,7 +2,7 @@
 ###########################################################################
 Invoke-GitClone -Repo:($GitSourceRepoWiki)
 $SupportRepoDocs = "$FolderPath_Module/Docs"
-$SupportWiki = "$ScriptRoot/../support.wiki"
+$SupportWiki = "$ScriptRoot/support.wiki"
 If (!(Test-Path -Path:($SupportWiki))) { New-Item -Path:($SupportWiki) -ItemType:('Directory') }
 Set-Location -Path:($SupportWiki)
 $Docs = Get-ChildItem -Path:($SupportRepoDocs + '/*.md') -Recurse
