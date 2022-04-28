@@ -7,7 +7,6 @@ Release Date: April 28, 2022
 ```
 This releasse includes a patch to fix pagination where a null system record exists in Get-JCSystemGroupMember.
 ```
-
 #### IMPROVEMENTS:
 
 * Import/Update-JCUsersFromCSV will validate that custom attribute values are not null before attempting to Import/Update users.
