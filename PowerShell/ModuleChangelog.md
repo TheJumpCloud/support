@@ -1,24 +1,21 @@
 ## 1.20.1
 
-Release Date: April 13, 2022
+Release Date: April 28, 2022
 
 #### RELEASE NOTES
 
 ```
-{{Fill in the Release Notes}}
+This releasse includes a patch to fix pagination where a null system record exists in Get-JCSystemGroupMember.
 ```
-
-#### FEATURES:
-
-{{Fill in the Features}}
 
 #### IMPROVEMENTS:
 
-{{Fill in the Improvements}}
+* Import/Update-JCUsersFromCSV will validate that custom attribute values are not null before attempting to Import/Update users.
+* Addressed an issue with Update-JCModule failing if GitHub or PowerShellGallery were inaccessible
 
 #### BUG FIXES:
 
-{{Fill in the Bug Fixes}}
+* [Fixed issue involving Get-JCSystemGroupMember not returning all expected results](https://github.com/TheJumpCloud/support/pull/370)
 
 ## 1.20.0
 
