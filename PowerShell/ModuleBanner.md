@@ -7,12 +7,11 @@
 #### Banner Current
 
 ```
-* Get-JcUser, Set-JcUser and New-JcUser will soon be deprecating the -suspended parameter. Please use the -state paramater as a replacement.
+{{Fill in the Banner Current}}
 ```
 
 #### Banner Old
 
 ```
-* New Function, Backup-JCOrganization
-* https://github.com/TheJumpCloud/support/tree/master/PowerShell/JumpCloud%20Module/Docs/Backup-JCOrganization.md
+{{Fill in the Banner Old}}
 ```

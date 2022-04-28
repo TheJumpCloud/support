@@ -1,24 +1,21 @@
 ## 1.20.1
 
-Release Date: April 21, 2022
+Release Date: April 28, 2022
 
 #### RELEASE NOTES
 
 ```
-This releasse includes a patch to fix pagination where a null system record exists.
+This releasse includes a patch to fix pagination where a null system record exists in Get-JCSystemGroupMember.
 ```
-
-#### FEATURES:
-
-[state parameter added to module](https://github.com/TheJumpCloud/support/pull/361) see [Managing User State documentation](https://support.jumpcloud.com/support/s/article/Managing-User-States#:~:text=A%20user%20state%20indicates%20where,still%20need%20to%20be%20onboarded.).
 
 #### IMPROVEMENTS:
 
 * Import/Update-JCUsersFromCSV will validate that custom attribute values are not null before attempting to Import/Update users.
+* Addressed an issue with Update-JCModule failing if GitHub or PowerShellGallery were inaccessible
 
 #### BUG FIXES:
 
-N/A
+* [Fixed issue involving Get-JCSystemGroupMember not returning all expected results](https://github.com/TheJumpCloud/support/pull/370)
 
 ## 1.20.0
 
@@ -33,6 +30,7 @@ This release incorporates the "state" parameter into Get/Set/New-JCUser
 #### FEATURES:
 
 [state parameter added to module](https://github.com/TheJumpCloud/support/pull/361) see [Managing User State documentation](https://support.jumpcloud.com/support/s/article/Managing-User-States#:~:text=A%20user%20state%20indicates%20where,still%20need%20to%20be%20onboarded.).
+
 
 #### IMPROVEMENTS:
 
