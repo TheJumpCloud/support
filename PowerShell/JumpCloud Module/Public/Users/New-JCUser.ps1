@@ -371,6 +371,15 @@ Function New-JCUser ()
                     continue
                 }
             }
+            # Convert recoveryEmail from string to an object
+            if ($param.Key -like 'recoveryEmail')
+            {
+                $recoveryEmailAddress = @{
+                    'address' = $recoveryEmail
+                }
+                $body.Add('recoveryEmail', $recoveryEmailAddress)
+                continue
+            }
 
             $body.add($param.Key, $param.Value)
 
