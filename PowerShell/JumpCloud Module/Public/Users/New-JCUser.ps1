@@ -157,7 +157,10 @@ Function New-JCUser ()
         [string]$managedAppleId,
 
         [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'The alternateEmail for the user')]
-        [string]$alternateEmail
+        [string]$alternateEmail,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'The recoveryEmail for the user')]
+        [string]$recoveryEmail
 
     )
     DynamicParam
