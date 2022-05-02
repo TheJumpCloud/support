@@ -383,8 +383,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
             $recoveryEmailAddress = @{
                 'address' = $recoveryEmail
             }
-            $PSBoundParameters.Remove('recoveryEmail')
-            $PSBoundParameters.Add('recoveryEmail', $recoveryEmailAddress)
+            $PSBoundParameters['recoveryEmail'] = $recoveryEmailAddress
         }
         
     }
