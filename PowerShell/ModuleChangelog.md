@@ -1,3 +1,19 @@
+## 1.21.0
+
+Release Date: May 3, 2022
+
+#### RELEASE NOTES
+
+```
+This release adds -recoveryemail parameter to Set, Get, New-JCUser
+```
+#### IMPROVEMENTS:
+
+* Added recovery email parameter for Set, Get, New-JCUser
+
+#### BUG FIXES:
+
+N/A
 ## 1.20.1
 
 Release Date: April 28, 2022
