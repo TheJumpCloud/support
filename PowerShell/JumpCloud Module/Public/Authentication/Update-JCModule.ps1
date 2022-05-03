@@ -25,7 +25,15 @@ Function Update-JCModule
             $FoundModule = Find-Module -Name:($ModuleName) -Repository:($Repository)
             $FoundSDKs = foreach ($SDK in $SDKs)
             {
-                Find-Module -Name:($SDK) -Repository:($Repository)
+                if ($SDK -eq 'JumpCloud.SDK.DirectoryInsights'){
+                    Find-Module -Name:($SDK) -Repository:($Repository) -RequiredVersion '0.0.16'
+                }
+                if ($SDK -eq 'JumpCloud.SDK.V2'){
+                    Find-Module -Name:($SDK) -Repository:($Repository) -RequiredVersion '0.0.32'
+                }
+                if ($SDK -eq 'JumpCloud.SDK.V1'){
+                    Find-Module -Name:($SDK) -Repository:($Repository) -RequiredVersion '0.0.28'
+                }
             }
         }
         # Get the version of the module installed locally
@@ -44,7 +52,7 @@ Function Update-JCModule
         $SDKsToUninstall = @()
         $SDKsToUpdate = @()
         $SDKsUpToDate = @()
-        $SDKsInstalledSummary = @{}
+        $SDKsInstalledSummary = @()
         $SDKUpdateTable = @()
         $SDKResultsSummary = @()
         $SDKUninstallSummary = @()
@@ -147,7 +155,7 @@ Function Update-JCModule
             {
                 Do
                 {
-                    Write-Host ('Enter ''Y'' to update the SDK modules or enter ''N'' to cancel:')
+                    Write-Host ('Enter ''Y'' to update the SDK modules or enter ''N'' to cancel:') -NoNewline
                     Write-Host (' ') -NoNewline
                     $UserInput = Read-Host
                 }
@@ -164,50 +172,59 @@ Function Update-JCModule
             Else
             {
                 # For each SDK in update list
-                foreach ($SDK in $ComparedSDKsToUpdate)
+                foreach ($SDK in $SDKUpdateTable)
                 {
                     try
                     {
-                        Update-Module -Name $SDK.Name -Force
-                        $SDKsInstalledSummary.Add($SDK.Name, 'Success')
+                        Write-Debug -Message "Running Command: Install-Module -Name $($SDK."SDK Name") -RequiredVersion $($SDK."Latest Version") -Force"
+                        Install-Module -Name $($SDK."SDK Name") -RequiredVersion $($SDK."Latest Version") -Force
+                        $SDKsInstalledSummary += [PSCustomObject]@{
+                                'SDK Name'            = $($SDK."SDK Name")
+                                'Target Version'   = $($SDK."Latest Version")
+                                'Install Success'         = $true
+                        }
                     }
                     catch
                     {
-                        $SDKsInstalledSummary.Add($SDK.Name, 'Failure')
-                        Write-Warning -Message "$($SDK.Name) Could not be updated automatically; run the following command to install manually:"
-                        Write-Warning -Message "Install-Module -Name $($SDK.Name)"
+                        $SDKsInstalledSummary += [PSCustomObject]@{
+                                'SDK Name'            = $($SDK."SDK Name")
+                                'Target Version'    = $($SDK."Latest Version")
+                                'Install Success'         = $false
+                        }
+                        Write-Warning -Message "$($SDK."SDK Name") Could not be updated automatically; run the following command to install manually:"
+                        Write-Warning -Message "Install-Module -Name $($SDK."SDK Name") -RequiredVersion $($SDK."Latest Version") -Force"
                     }
                     # Get and remove the current module
-                    Get-Module -Name:($SDK.Name) -ListAvailable -All | Remove-Module -Force
+                    Get-Module -Name:($SDK."SDK Name") -ListAvailable -All | Remove-Module -Force
                     try
                     {
-                        Import-Module $SDK.Name -Scope:('Global') -Force
+                        Import-Module $SDK."SDK Name" -Scope:('Global') -Force -ErrorAction Ignore
                         $SDKResultsSummary += [PSCustomObject]@{
-                            'SDK Name' = $($SDK.Name)
+                            'SDK Name' = $($SDK."SDK Name")
                             'Imported' = $true
                         }
                     }
                     catch
                     {
                         $SDKResultsSummary += [PSCustomObject]@{
-                            'SDK Name' = $($SDK.Name)
+                            'SDK Name' = $($SDK."SDK Name")
                             'Imported' = $false
                         }
                     }
-                    If (Get-InstalledModule -Name $($SDK.Name) -RequiredVersion $($SDK.Version)){
+                    If (Get-InstalledModule -Name $($SDK."SDK Name") -RequiredVersion $($SDK."Installed Version")){
                         Try {
-                            Uninstall-Module -Name $($SDK.Name) -RequiredVersion $($SDK.Version)
+                            Uninstall-Module -Name $($SDK."SDK Name") -RequiredVersion $($SDK."Installed Version") -Force -ErrorAction Ignore
                             $SDKUninstallSummary += [PSCustomObject]@{
-                                'SDK Name'            = $($SDK.Name)
-                                'Uninstalled Version' = $($SDK.Version)
+                                'SDK Name'            = $($SDK."SDK Name")
+                                'Uninstalled Version' = $($SDK."Installed Version")
                                 'Uninstalled'         = $true
                             }
                         }
                         Catch{
-                                Write-Warning -Message "Could not uninstall $($SDK.Name) $($SDK.Version)"
+                                Write-Warning -Message "Could not uninstall $($SDK."SDK Name") $($SDK."Installed Version")"
                                 $SDKUninstallSummary += [PSCustomObject]@{
-                                    'SDK Name'            = $($SDK.Name)
-                                    'Uninstalled Version' = $($SDK.Version)
+                                    'SDK Name'            = $($SDK."SDK Name")
+                                    'Uninstalled Version' = $($SDK."Installed Version")
                                     'Uninstalled'         = $false
                                 }
                         }
@@ -361,8 +378,16 @@ Function Update-JCModule
     {
         if ($SDKUninstallSummary)
         {
-            if ($PSBoundParameters.Debug -eq $true) {
-                Write-Debug "The following modules were sucessfully uninstalled:"
+            if ($false -in $SDKUninstallSummary.Uninstalled){
+                if ($PSBoundParameters.Debug -eq $true) {
+                    Write-Warning "One or more of the previous SDK modules could not be uninstalled in this session"
+                    Write-Warning "Please restart this powershell session"
+                    Write-Debug "The following modules were unabled to be uninstalled:"
+                    $SDKUninstallSummary | Format-Table | Out-Host
+                }
+            }
+            else{
+                Write-Debug "The following modules were uninstalled:"
                 $SDKUninstallSummary | Format-Table | Out-Host
             }
         }
@@ -370,16 +395,16 @@ Function Update-JCModule
         {
             If ($false -in $SDKResultsSummary.Imported)
             {
-                Write-Warning "One or more of the SDK modules could not be imported to this session"
+                Write-Warning "One or more of the updated SDK modules could not be imported to this session"
                 Write-Warning "Please restart this powershell session to use the new SDK module "
                 if ($PSBoundParameters.Debug -eq $true) {
-                $SDKResultsSummary | Format-Table | Out-Host
+                    $SDKResultsSummary | Format-Table | Out-Host
                 }
             }
             else {
                 if ($PSBoundParameters.Debug -eq $true) {
                     Write-Debug "The following modules were sucessfully updated:"
-                $SDKResultsSummary | Format-Table | Out-Host
+                    $SDKResultsSummary | Format-Table | Out-Host
                 }
             }
         }
