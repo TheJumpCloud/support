@@ -25,8 +25,9 @@ New-JCUser -firstname <String> -lastname <String> -username <String> -email <Str
  [-home_poBox <String>] [-home_locality <String>] [-home_region <String>] [-home_postalCode <String>]
  [-home_country <String>] [-mobile_number <String>] [-home_number <String>] [-work_number <String>]
  [-work_mobile_number <String>] [-work_fax_number <String>] [-state <String>] [-manager <String>]
- [-managedAppleId <String>] [-alternateEmail <String>] [-enrollmentDays <Int32>] -Attribute1_name <String>
- -Attribute1_value <String> -Attribute2_name <String> -Attribute2_value <String> [<CommonParameters>]
+ [-managedAppleId <String>] [-alternateEmail <String>] [-recoveryEmail <String>] [-enrollmentDays <Int32>]
+ -Attribute1_name <String> -Attribute1_value <String> -Attribute2_name <String> -Attribute2_value <String>
+ [<CommonParameters>]
 ```
 
 ### Attributes
@@ -42,9 +43,9 @@ New-JCUser -firstname <String> -lastname <String> -username <String> -email <Str
  [-home_streetAddress <String>] [-home_poBox <String>] [-home_locality <String>] [-home_region <String>]
  [-home_postalCode <String>] [-home_country <String>] [-mobile_number <String>] [-home_number <String>]
  [-work_number <String>] [-work_mobile_number <String>] [-work_fax_number <String>] [-state <String>]
- [-manager <String>] [-managedAppleId <String>] [-alternateEmail <String>] [-enrollmentDays <Int32>]
- -Attribute1_name <String> -Attribute1_value <String> -Attribute2_name <String> -Attribute2_value <String>
- [<CommonParameters>]
+ [-manager <String>] [-managedAppleId <String>] [-alternateEmail <String>] [-recoveryEmail <String>]
+ [-enrollmentDays <Int32>] -Attribute1_name <String> -Attribute1_value <String> -Attribute2_name <String>
+ -Attribute2_value <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -648,6 +649,21 @@ A boolean $true/$false value if you want to enable passwordless_sudo
 
 ```yaml
 Type: System.Boolean
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -recoveryEmail
+The recoveryEmail for the user
+
+```yaml
+Type: System.String
 Parameter Sets: (All)
 Aliases:
 
