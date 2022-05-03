@@ -199,7 +199,7 @@ Function Update-JCModule
                     try
                     {
                         Write-Debug -Message "Running Command: Import-Module -Name $($SDK."SDK Name") -RequiredVersion $($SDK."Latest Version") -Force"
-                        Import-Module $SDK."SDK Name" -RequiredVersion $($SDK."Installed Version") -Force
+                        Import-Module $SDK."SDK Name" -RequiredVersion $($SDK."Latest Version") -Scope:('Global') -Force
                         $SDKResultsSummary += [PSCustomObject]@{
                             'SDK Name' = $($SDK."SDK Name")
                             'Imported' = $true
