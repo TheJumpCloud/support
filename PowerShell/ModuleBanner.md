@@ -1,17 +1,17 @@
 #### Latest Version
 
 ```
-1.20.2
+1.21.0
 ```
 
 #### Banner Current
 
 ```
-{{Fill in the Banner Current}}
+New parameter -recoveryemail for Set, Get, New-JCUser
 ```
 
 #### Banner Old
 
 ```
-{{Fill in the Banner Old}}
+Get-JcUser, Set-JcUser and New-JcUser will soon be deprecating the -suspended parameter. Please use the -state paramater as a replacement.
 ```
