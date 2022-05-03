@@ -249,7 +249,10 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
         [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The alternateEmail for the user')]
         [string]
-        $alternateEmail
+        $alternateEmail,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'The recoveryEmail for the user')]
+        [string]$recoveryEmail
 
     )
 
@@ -374,6 +377,15 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
             $URL_ID = $UserID
         }
 
+        # Convert recoveryEmail to an object
+        if ($recoveryEmail)
+        {
+            $recoveryEmailAddress = @{
+                'address' = $recoveryEmail
+            }
+            $PSBoundParameters['recoveryEmail'] = $recoveryEmailAddress
+        }
+        
     }
 
 

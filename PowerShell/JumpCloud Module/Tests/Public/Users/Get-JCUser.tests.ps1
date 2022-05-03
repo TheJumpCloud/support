@@ -386,4 +386,9 @@ Describe -Tag:('JCUser') "Get-JCUser 1.12" {
 
     }
 
+    It "Searches for a user by recoveryEmail" {
+        $Search = Get-JCUser -recoveryEmail $PesterParams_User1.recoveryEmail -returnProperties recoveryEmail
+        $Search.recoveryEmail.address | Should -Be $PesterParams_User1.recoveryEmail
+    }
+
 }
