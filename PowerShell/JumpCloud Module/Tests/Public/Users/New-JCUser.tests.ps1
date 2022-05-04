@@ -110,8 +110,8 @@ Describe -Tag:('JCUser') 'New-JCUser 1.0' {
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
     It "Creates a new User sets recoveryEmail" {
-        $recoveryEmail = "$((New-RandomString -NumberOfChars 6))ae@DeleteMe.com"
-        $NewUser = New-RandomUser -domain pleasedelete"PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser -alternateEmail $recoveryEmail
+        $recoveryEmail = "$((New-RandomString -NumberOfChars 6))re@DeleteMe.com"
+        $NewUser = New-RandomUser -domain pleasedelete"PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser -recoveryEmail $recoveryEmail
         $NewUser.recoveryEmail | Should -Be $recoveryEmail
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }

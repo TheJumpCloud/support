@@ -343,6 +343,10 @@ Describe -Tag:('JCUser') "Get-JCUser with new attributes 1.8.0" {
         $Search = Get-JCUser -managedAppleId $PesterParams_User1.managedAppleID -returnProperties managedAppleId
         $Search.managedAppleID | Should -Be $PesterParams_User1.managedAppleID
     }
+    It "Searches for a user by recoveryEmail" {
+        $Search = Get-JCUser -recoveryEmail $PesterParams_User1.recoveryEmail -returnProperties recoveryEmail
+        $Search.recoveryEmail | Should -Be $PesterParams_User1.recoveryEmail
+    }
 }
 
 
@@ -385,10 +389,4 @@ Describe -Tag:('JCUser') "Get-JCUser 1.12" {
         $SearchUser._id | Should -Be $Newuser._id
 
     }
-
-    It "Searches for a user by recoveryEmail" {
-        $Search = Get-JCUser -recoveryEmail $PesterParams_User1.recoveryEmail -returnProperties recoveryEmail
-        $Search.recoveryEmail.address | Should -Be $PesterParams_User1.recoveryEmail
-    }
-
 }
