@@ -324,7 +324,7 @@ Function Get-JCUser ()
                                     $managerResults = Search-JcSdkUser -Body:($managerSearch)
                                     # Set managerValue; this is a validated user id
                                     $managerValue = $managerResults.id
-                                    # if no value was returned, then assume the case this is actuallty a username and search
+                                    # if no value was returned, then assume the case this is actually a username and search
                                     if (!$managerValue){
                                         $managerSearch = @{
                                             filter = @{
