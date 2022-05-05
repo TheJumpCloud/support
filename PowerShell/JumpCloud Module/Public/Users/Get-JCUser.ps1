@@ -196,13 +196,6 @@ Function Get-JCUser ()
             $hdrs.Add('x-org-id', "$($JCOrgID)")
         }
 
-        # reformat the recoveryEmail parameter to match the API prior to iteration
-        if ($recoveryEmail)
-        {
-            $PSBoundParameters.Add('recoveryEmail.address', $recoveryEmail)
-            $PSBoundParameters.Remove('recoveryEmail')
-        }
-
         Write-Verbose 'Initilizing resultsArray'
 
         $resultsArrayList = New-Object -TypeName System.Collections.ArrayList
@@ -291,6 +284,12 @@ Function Get-JCUser ()
                                 after { $DateQuery = '$gt' }
                             }
 
+                            continue
+                        }
+
+                        if ($param.key -eq 'recoveryEmail')
+                        {
+                            $recoveryEmail = $param.value
                             continue
                         }
 
@@ -390,6 +389,10 @@ Function Get-JCUser ()
                     if ($filterDateProperty)
                     {
                         (($Search.filter).GetEnumerator()).add($DateProperty, @{$DateQuery = $Timestamp })
+                    }
+                    if ($recoveryEmail)
+                    {
+                        (($Search.filter).GetEnumerator()).add('recoveryEmail.address', $recoveryEmail )
                     }
 
                     $SearchJSON = $Search | ConvertTo-Json -Compress -Depth 4
