@@ -7608,6 +7608,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
             <command:parameterValue required="false" command:variableLength="false">external_dn</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">suspended</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">mfa</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">recoveryEmail</command:parameterValue>
           </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
           <dev:type>
