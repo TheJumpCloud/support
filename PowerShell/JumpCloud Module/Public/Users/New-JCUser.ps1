@@ -374,7 +374,10 @@ Function New-JCUser ()
             # Convert recoveryEmail from string to an object
             if ($param.Key -eq 'recoveryEmail')
             {
-                $body.Add($param.Key, $recoveryEmail)
+                $recoveryEmailAddress = @{
+                    'address' = $recoveryEmail
+                }
+                $body.Add($param.Key, $recoveryEmailAddress)
                 continue
             }
 
