@@ -25,15 +25,7 @@ Function Update-JCModule
             $FoundModule = Find-Module -Name:($ModuleName) -Repository:($Repository)
             $FoundSDKs = foreach ($SDK in $SDKs)
             {
-                if ($SDK -eq 'JumpCloud.SDK.DirectoryInsights'){
-                    Find-Module -Name:($SDK) -Repository:($Repository) -RequiredVersion '0.0.16'
-                }
-                if ($SDK -eq 'JumpCloud.SDK.V2'){
-                    Find-Module -Name:($SDK) -Repository:($Repository) -RequiredVersion '0.0.32'
-                }
-                if ($SDK -eq 'JumpCloud.SDK.V1'){
-                    Find-Module -Name:($SDK) -Repository:($Repository) -RequiredVersion '0.0.28'
-                }
+                Find-Module -Name:($SDK) -Repository:($Repository)
             }
         }
         # Get the version of the module installed locally
