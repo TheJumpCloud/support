@@ -59,11 +59,17 @@ Describe -Tag:('JCUser') 'Get-JCUser 1.1' {
         Remove-JCUser -UserID $NewUser._id -force
     }
     It "Searches a JumpCloud user by alternateEmail" -Skip {
-        # TODO: Implement in SA-2444
         $alternateEmail = "deleteme@$(New-RandomString -NumberOfChars 8).com"
         $NewUser = New-RandomUser -Domain DeleteMe | New-JCUser -alternateEmail $alternateEmail
         $NewUser = Get-JCUser -alternateEmail $alternateEmail
         $NewUser.alternateEmail | Should -Be $alternateEmail
+        Remove-JCUser -UserID $NewUser._id -force
+    }
+    It "Searches a JumpCloud user by recoveryEmail" {
+        $recoveryEmail = "deleteme@$(New-RandomString -NumberOfChars 8).com"
+        $NewUser = New-RandomUser -Domain DeleteMe | New-JCUser -recoveryEmail $recoveryEmail
+        $NewUser = Get-JCUser -recoveryEmail $recoveryEmail
+        $NewUser.recoveryEmail | Should -Be $recoveryEmail
         Remove-JCUser -UserID $NewUser._id -force
     }
     It "Searches a JumpCloud user by managedAppleID" {
