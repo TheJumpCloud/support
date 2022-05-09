@@ -69,7 +69,7 @@ Describe -Tag:('JCUser') 'Get-JCUser 1.1' {
         $recoveryEmail = "deleteme@$(New-RandomString -NumberOfChars 8).com"
         $NewUser = New-RandomUser -Domain DeleteMe | New-JCUser -recoveryEmail $recoveryEmail
         $NewUser = Get-JCUser -recoveryEmail $recoveryEmail
-        $NewUser.recoveryEmail | Should -Be $recoveryEmail
+        $NewUser.recoveryEmail.address | Should -Be $recoveryEmail
         Remove-JCUser -UserID $NewUser._id -force
     }
     It "Searches a JumpCloud user by managedAppleID" {
@@ -350,8 +350,8 @@ Describe -Tag:('JCUser') "Get-JCUser with new attributes 1.8.0" {
         $Search.managedAppleID | Should -Be $PesterParams_User1.managedAppleID
     }
     It "Searches for a user by recoveryEmail" {
-        $Search = Get-JCUser -recoveryEmail $PesterParams_User1.recoveryEmail -returnProperties recoveryEmail
-        $Search.recoveryEmail | Should -Be $PesterParams_User1.recoveryEmail
+        $Search = Get-JCUser -recoveryEmail $PesterParams_User1.recoveryEmail.address -returnProperties recoveryEmail
+        $Search.recoveryEmail.address | Should -Be $PesterParams_User1.recoveryEmail.address
     }
 }
 
