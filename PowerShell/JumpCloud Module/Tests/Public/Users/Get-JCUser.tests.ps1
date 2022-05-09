@@ -267,7 +267,7 @@ Describe -Tag:('JCUser') "Get-JCUser 1.4" {
     }
 
     It "Searches for a JumpCloud user using username and returns all properties" {
-        $PesterUser = Get-JCUser -username $PesterParams_User1.Username  -returnProperties 'created', 'account_locked', 'activated', 'addresses', 'allow_public_key', 'attributes', 'email', 'enable_managed_uid', 'enable_user_portal_multifactor', 'externally_managed', 'firstname', 'lastname', 'ldap_binding_user', 'passwordless_sudo', 'password_expired', 'password_never_expires', 'phoneNumbers', 'samba_service_user', 'ssh_keys', 'sudo', 'suspended', 'totp_enabled', 'unix_guid', 'unix_uid', 'username', 'alternateEmail', 'managedAppleId'
+        $PesterUser = Get-JCUser -username $PesterParams_User1.Username  -returnProperties 'created', 'account_locked', 'activated', 'addresses', 'allow_public_key', 'attributes', 'email', 'enable_managed_uid', 'enable_user_portal_multifactor', 'externally_managed', 'firstname', 'lastname', 'ldap_binding_user', 'passwordless_sudo', 'password_expired', 'password_never_expires', 'phoneNumbers', 'samba_service_user', 'ssh_keys', 'sudo', 'suspended', 'totp_enabled', 'unix_guid', 'unix_uid', 'username', 'alternateEmail', 'managedAppleId', 'recoveryEmail'
         $PesterUser.account_locked | Should -Not -Be $null
         $PesterUser.activated | Should -Not -Be $null
         $PesterUser.addresses | Should -Not -Be $null
@@ -276,6 +276,7 @@ Describe -Tag:('JCUser') "Get-JCUser 1.4" {
         $PesterUser.attributes | Should -Not -Be $null
         $PesterUser.created | Should -Not -Be $null
         $PesterUser.email | Should -Not -Be $null
+        $PesterUser.recoveryEmail | Should -Not -Be $null
         $PesterUser.enable_managed_uid | Should -Not -Be $null
         $PesterUser.enable_user_portal_multifactor | Should -Not -Be $null
         $PesterUser.externally_managed | Should -Not -Be $null
