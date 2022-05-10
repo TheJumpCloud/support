@@ -1,22 +1,26 @@
 ## 1.21.0
 
-Release Date: May 03, 2022
+Release Date: May 3, 2022
 
 #### RELEASE NOTES
 
 ```
-This release adds -recoveryemail parameter to Set, Get, New-JCUser
+This release includes an update to Update-JCModule intended to help updating future fersions of the PowerShell SDK
+
+```
+#### IMPROVEMENTS:
+
+* Update-JCModule specifically targets which version of the new SDK to install and uninstall.
+
 ```
 #### FEATURES:
 
-N/A
+* This release adds the -recoveryemail parameter to Set, Get, New-JCUser
 
-#### IMPROVEMENTS:
-
-N/A
 #### BUG FIXES:
 
 N/A
+
 ## 1.20.1
 
 Release Date: April 28, 2022
