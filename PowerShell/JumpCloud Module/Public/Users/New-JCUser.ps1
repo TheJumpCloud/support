@@ -157,7 +157,10 @@ Function New-JCUser ()
         [string]$managedAppleId,
 
         [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'The alternateEmail for the user')]
-        [string]$alternateEmail
+        [string]$alternateEmail,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'The recoveryEmail for the user')]
+        [string]$recoveryEmail
 
     )
     DynamicParam
@@ -367,6 +370,15 @@ Function New-JCUser ()
                     }
                     continue
                 }
+            }
+            # Convert recoveryEmail from string to an object
+            if ($param.Key -eq 'recoveryEmail')
+            {
+                $recoveryEmailAddress = @{
+                    'address' = $recoveryEmail
+                }
+                $body.Add($param.Key, $recoveryEmailAddress)
+                continue
             }
 
             $body.add($param.Key, $param.Value)

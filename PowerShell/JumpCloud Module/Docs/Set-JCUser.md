@@ -27,8 +27,8 @@ Set-JCUser [-Username] <String> [-email <String>] [-firstname <String>] [-lastna
  [-home_country <String>] [-mobile_number <String>] [-home_number <String>] [-work_number <String>]
  [-work_mobile_number <String>] [-work_fax_number <String>] [-external_dn <String>]
  [-external_source_type <String>] [-state <String>] [-manager <String>] [-managedAppleId <String>]
- [-alternateEmail <String>] [-EnrollmentDays <Int32>] -Attribute1_name <String> -Attribute1_value <String>
- -Attribute2_name <String> -Attribute2_value <String> [<CommonParameters>]
+ [-alternateEmail <String>] [-recoveryEmail <String>] [-EnrollmentDays <Int32>] -Attribute1_name <String>
+ -Attribute1_value <String> -Attribute2_name <String> -Attribute2_value <String> [<CommonParameters>]
 ```
 
 ### RemoveAttribute
@@ -46,8 +46,8 @@ Set-JCUser [-Username] <String> [-email <String>] [-firstname <String>] [-lastna
  [-home_postalCode <String>] [-home_country <String>] [-mobile_number <String>] [-home_number <String>]
  [-work_number <String>] [-work_mobile_number <String>] [-work_fax_number <String>] [-external_dn <String>]
  [-external_source_type <String>] [-state <String>] [-manager <String>] [-managedAppleId <String>]
- [-alternateEmail <String>] [-EnrollmentDays <Int32>] -Attribute1_name <String> -Attribute1_value <String>
- -Attribute2_name <String> -Attribute2_value <String> [<CommonParameters>]
+ [-alternateEmail <String>] [-recoveryEmail <String>] [-EnrollmentDays <Int32>] -Attribute1_name <String>
+ -Attribute1_value <String> -Attribute2_name <String> -Attribute2_value <String> [<CommonParameters>]
 ```
 
 ### ByID
@@ -65,8 +65,8 @@ Set-JCUser -UserID <String> [-email <String>] [-firstname <String>] [-lastname <
  [-home_country <String>] [-mobile_number <String>] [-home_number <String>] [-work_number <String>]
  [-work_mobile_number <String>] [-work_fax_number <String>] [-external_dn <String>]
  [-external_source_type <String>] [-state <String>] [-manager <String>] [-managedAppleId <String>]
- [-alternateEmail <String>] [-EnrollmentDays <Int32>] -Attribute1_name <String> -Attribute1_value <String>
- -Attribute2_name <String> -Attribute2_value <String> [<CommonParameters>]
+ [-alternateEmail <String>] [-recoveryEmail <String>] [-EnrollmentDays <Int32>] -Attribute1_name <String>
+ -Attribute1_value <String> -Attribute2_name <String> -Attribute2_value <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -764,6 +764,21 @@ A boolean $true/$false value if you want to enable passwordless_sudo
 
 ```yaml
 Type: System.Boolean
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -recoveryEmail
+The recoveryEmail for the user
+
+```yaml
+Type: System.String
 Parameter Sets: (All)
 Aliases:
 

@@ -73,8 +73,8 @@ Function Get-JCUser ()
         [ValidateSet('created', 'password_expiration_date')]
         [String]$filterDateProperty,
 
-        [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'Allows you to return select properties on JumpCloud user objects. Specifying what properties are returned can drastically increase the speed of the API call with a large data set. Valid properties that can be returned are: ''created'', ''password_expiration_date'', ''account_locked'', ''activated'', ''addresses'', ''allow_public_key'', ''attributes'', ''alternateEmail'',''email'', ''enable_managed_uid'', ''enable_user_portal_multifactor'', ''externally_managed'', ''firstname'', ''lastname'', ''ldap_binding_user'', ''passwordless_sudo'', ''password_expired'', ''password_never_expires'', ''phoneNumbers'', ''samba_service_user'', ''ssh_keys'', ''sudo'', ''totp_enabled'', ''unix_guid'', ''unix_uid'', ''managedAppleId'',''manager'',''username'',''suspended''')]
-        [ValidateSet('created', 'password_expiration_date', 'account_locked', 'activated', 'addresses', 'allow_public_key', 'attributes', 'alternateEmail', 'managedAppleId', 'manager', 'email', 'enable_managed_uid', 'enable_user_portal_multifactor', 'externally_managed', 'firstname', 'lastname', 'ldap_binding_user', 'passwordless_sudo', 'password_expired', 'password_never_expires', 'phoneNumbers', 'samba_service_user', 'ssh_keys', 'sudo', 'totp_enabled', 'unix_guid', 'unix_uid', 'username', 'middlename', 'displayname', 'jobTitle', 'employeeIdentifier', 'department', 'costCenter', 'company', 'employeeType', 'description', 'location', 'external_source_type', 'external_dn', 'suspended', 'mfa')]
+        [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'Allows you to return select properties on JumpCloud user objects. Specifying what properties are returned can drastically increase the speed of the API call with a large data set. Valid properties that can be returned are: ''created'', ''password_expiration_date'', ''account_locked'', ''activated'', ''addresses'', ''allow_public_key'', ''attributes'', ''alternateEmail'',''email'', ''enable_managed_uid'', ''enable_user_portal_multifactor'', ''externally_managed'', ''firstname'', ''lastname'', ''ldap_binding_user'', ''passwordless_sudo'', ''password_expired'', ''password_never_expires'', ''phoneNumbers'', ''samba_service_user'', ''ssh_keys'', ''sudo'', ''totp_enabled'', ''unix_guid'', ''unix_uid'', ''managedAppleId'',''manager'',''username'',''suspended'',''recoveryEmail''')]
+        [ValidateSet('created', 'password_expiration_date', 'account_locked', 'activated', 'addresses', 'allow_public_key', 'attributes', 'alternateEmail', 'recoveryEmail', 'managedAppleId', 'manager', 'email', 'enable_managed_uid', 'enable_user_portal_multifactor', 'externally_managed', 'firstname', 'lastname', 'ldap_binding_user', 'passwordless_sudo', 'password_expired', 'password_never_expires', 'phoneNumbers', 'samba_service_user', 'ssh_keys', 'sudo', 'totp_enabled', 'unix_guid', 'unix_uid', 'username', 'middlename', 'displayname', 'jobTitle', 'employeeIdentifier', 'department', 'costCenter', 'company', 'employeeType', 'description', 'location', 'external_source_type', 'external_dn', 'suspended', 'mfa', 'recoveryEmail')]
         [String[]]$returnProperties,
 
         #New parameters as of 1.8 release
@@ -121,7 +121,10 @@ Function Get-JCUser ()
         [String]$manager,
 
         [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'A search filter to return users that are in an ACTIVATED, STAGED or SUSPENDED state')]
-        [String]$state
+        [String]$state,
+
+        [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'The recovery email of the JumpCloud user you wish to search for.')]
+        [String]$recoveryEmail
     )
 
     DynamicParam
@@ -284,6 +287,12 @@ Function Get-JCUser ()
                             continue
                         }
 
+                        if ($param.key -eq 'recoveryEmail')
+                        {
+                            $recoveryEmail = $param.value
+                            continue
+                        }
+
                         if ($param.key -eq 'date')
                         {
                             $Timestamp = Get-Date $param.Value -format o
@@ -314,7 +323,7 @@ Function Get-JCUser ()
                                     $managerResults = Search-JcSdkUser -Body:($managerSearch)
                                     # Set managerValue; this is a validated user id
                                     $managerValue = $managerResults.id
-                                    # if no value was returned, then assume the case this is actuallty a username and search
+                                    # if no value was returned, then assume the case this is actually a username and search
                                     if (!$managerValue){
                                         $managerSearch = @{
                                             filter = @{
@@ -380,6 +389,10 @@ Function Get-JCUser ()
                     if ($filterDateProperty)
                     {
                         (($Search.filter).GetEnumerator()).add($DateProperty, @{$DateQuery = $Timestamp })
+                    }
+                    if ($recoveryEmail)
+                    {
+                        (($Search.filter).GetEnumerator()).add('recoveryEmail.address', $recoveryEmail )
                     }
 
                     $SearchJSON = $Search | ConvertTo-Json -Compress -Depth 4
