@@ -109,6 +109,12 @@ Describe -Tag:('JCUser') 'New-JCUser 1.0' {
         $NewUser.alternateEmail | Should -Be $alternateEmail
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
+    It "Creates a new User sets recoveryEmail" {
+        $recoveryEmail = "$((New-RandomString -NumberOfChars 6))re@DeleteMe.com"
+        $NewUser = New-RandomUser -domain pleasedelete"PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser -recoveryEmail $recoveryEmail
+        $NewUser.recoveryEmail.address | Should -Be $recoveryEmail
+        Remove-JCUser -UserID $NewUser._id -ByID -Force
+    }
     It "Creates a new User sets managedAppleID" {
         $managedAppleID = "$((New-RandomString -NumberOfChars 6))maid@DeleteMe.com"
         $NewUser = New-RandomUser -domain pleasedelete"PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser -managedAppleID $managedAppleID

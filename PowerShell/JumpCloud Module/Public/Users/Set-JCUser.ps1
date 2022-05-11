@@ -249,7 +249,10 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
         [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The alternateEmail for the user')]
         [string]
-        $alternateEmail
+        $alternateEmail,
+
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'The recoveryEmail for the user')]
+        [string]$recoveryEmail
 
     )
 
@@ -374,6 +377,14 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
             $URL_ID = $UserID
         }
 
+        # Convert recoveryEmail to an object
+        if ($recoveryEmail)
+        {
+            $recoveryEmailAddress = @{
+                'address' = $recoveryEmail
+            }
+            $PSBoundParameters['recoveryEmail'] = $recoveryEmailAddress
+        }
     }
 
 
@@ -667,12 +678,12 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                     $body['state'] = 'SUSPENDED'
                 }
                 else {
-                    switch ($state) 
+                    switch ($state)
                     {
-                        SUSPENDED { 
-                            $body['suspended'] = $true 
+                        SUSPENDED {
+                            $body['suspended'] = $true
                         }
-                        ACTIVATED { 
+                        ACTIVATED {
                             $body['suspended'] = $false
                         }
                     }
@@ -745,7 +756,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                                 $managerResults = Search-JcSdkUser -Body:($managerSearch)
                                 # Set managerValue; this is a validated user id
                                 $managerValue = $managerResults.id
-                                # if no value was returned, then assume the case this is actuallty a username and search
+                                # if no value was returned, then assume the case this is actually a username and search
                                 if (!$managerValue)
                                 {
                                     $managerSearch = @{
@@ -891,12 +902,12 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                     $body['state'] = 'SUSPENDED'
                 }
                 else {
-                    switch ($state) 
+                    switch ($state)
                     {
-                        SUSPENDED { 
-                            $body['suspended'] = $true 
+                        SUSPENDED {
+                            $body['suspended'] = $true
                         }
-                        ACTIVATED { 
+                        ACTIVATED {
                             $body['suspended'] = $false
                         }
                     }

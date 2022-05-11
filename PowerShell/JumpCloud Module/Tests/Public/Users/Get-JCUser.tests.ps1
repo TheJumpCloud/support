@@ -59,11 +59,17 @@ Describe -Tag:('JCUser') 'Get-JCUser 1.1' {
         Remove-JCUser -UserID $NewUser._id -force
     }
     It "Searches a JumpCloud user by alternateEmail" -Skip {
-        # TODO: Implement in SA-2444
         $alternateEmail = "deleteme@$(New-RandomString -NumberOfChars 8).com"
         $NewUser = New-RandomUser -Domain DeleteMe | New-JCUser -alternateEmail $alternateEmail
         $NewUser = Get-JCUser -alternateEmail $alternateEmail
         $NewUser.alternateEmail | Should -Be $alternateEmail
+        Remove-JCUser -UserID $NewUser._id -force
+    }
+    It "Searches a JumpCloud user by recoveryEmail" {
+        $recoveryEmail = "deleteme@$(New-RandomString -NumberOfChars 8).com"
+        $NewUser = New-RandomUser -Domain DeleteMe | New-JCUser -recoveryEmail $recoveryEmail
+        $NewUser = Get-JCUser -recoveryEmail $recoveryEmail
+        $NewUser.recoveryEmail.address | Should -Be $recoveryEmail
         Remove-JCUser -UserID $NewUser._id -force
     }
     It "Searches a JumpCloud user by managedAppleID" {
@@ -261,7 +267,7 @@ Describe -Tag:('JCUser') "Get-JCUser 1.4" {
     }
 
     It "Searches for a JumpCloud user using username and returns all properties" {
-        $PesterUser = Get-JCUser -username $PesterParams_User1.Username  -returnProperties 'created', 'account_locked', 'activated', 'addresses', 'allow_public_key', 'attributes', 'email', 'enable_managed_uid', 'enable_user_portal_multifactor', 'externally_managed', 'firstname', 'lastname', 'ldap_binding_user', 'passwordless_sudo', 'password_expired', 'password_never_expires', 'phoneNumbers', 'samba_service_user', 'ssh_keys', 'sudo', 'suspended', 'totp_enabled', 'unix_guid', 'unix_uid', 'username', 'alternateEmail', 'managedAppleId'
+        $PesterUser = Get-JCUser -username $PesterParams_User1.Username  -returnProperties 'created', 'account_locked', 'activated', 'addresses', 'allow_public_key', 'attributes', 'email', 'enable_managed_uid', 'enable_user_portal_multifactor', 'externally_managed', 'firstname', 'lastname', 'ldap_binding_user', 'passwordless_sudo', 'password_expired', 'password_never_expires', 'phoneNumbers', 'samba_service_user', 'ssh_keys', 'sudo', 'suspended', 'totp_enabled', 'unix_guid', 'unix_uid', 'username', 'alternateEmail', 'managedAppleId', 'recoveryEmail'
         $PesterUser.account_locked | Should -Not -Be $null
         $PesterUser.activated | Should -Not -Be $null
         $PesterUser.addresses | Should -Not -Be $null
@@ -270,6 +276,7 @@ Describe -Tag:('JCUser') "Get-JCUser 1.4" {
         $PesterUser.attributes | Should -Not -Be $null
         $PesterUser.created | Should -Not -Be $null
         $PesterUser.email | Should -Not -Be $null
+        $PesterUser.recoveryEmail | Should -Not -Be $null
         $PesterUser.enable_managed_uid | Should -Not -Be $null
         $PesterUser.enable_user_portal_multifactor | Should -Not -Be $null
         $PesterUser.externally_managed | Should -Not -Be $null
@@ -335,13 +342,16 @@ Describe -Tag:('JCUser') "Get-JCUser with new attributes 1.8.0" {
         $Search.location | Should -Be $PesterParams_User1.location
     }
     It "Searches for a user by alternateEmail" -Skip {
-        #TODO: Implement in SA-2444
         $Search = Get-JCUser -alternateEmail $PesterParams_User1.alternateEmail -returnProperties alternateEmail
         $Search.alternateEmail | Should -Be $PesterParams_User1.alternateEmail
     }
     It "Searches for a user by managedAppleID" {
         $Search = Get-JCUser -managedAppleId $PesterParams_User1.managedAppleID -returnProperties managedAppleId
         $Search.managedAppleID | Should -Be $PesterParams_User1.managedAppleID
+    }
+    It "Searches for a user by recoveryEmail" {
+        $Search = Get-JCUser -recoveryEmail $PesterParams_User1.recoveryEmail.address -returnProperties recoveryEmail
+        $Search.recoveryEmail.address | Should -Be $PesterParams_User1.recoveryEmail.address
     }
 }
 
@@ -385,5 +395,4 @@ Describe -Tag:('JCUser') "Get-JCUser 1.12" {
         $SearchUser._id | Should -Be $Newuser._id
 
     }
-
 }

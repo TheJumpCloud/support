@@ -46,6 +46,12 @@ Describe -Tag:('JCUser') 'Set-JCUser 1.0' {
         $Newalternateemail.alternateEmail | Should -Be $RandomEmail
         Remove-JCUser -UserID $NewUser._id -force
     }
+    It "Updates the recoveryEmail using -Username" {
+        $NewUser = New-RandomUser "PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser
+        $Newrecoveryemail = Set-JCUser -Username $NewUser.Username -recoveryEmail $RandomEmail
+        $Newrecoveryemail.recoveryEmail.address | Should -Be $RandomEmail
+        Remove-JCUser -UserID $NewUser._id -force
+    }
     It "Updates the alternateEmail using -ByID and -UserID" {
         $NewUser = New-RandomUser "PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser
         $Newalternateemail = Set-JCUser -ByID -UserID $NewUser._id -alternateEmail $RandomEmail

@@ -44,7 +44,7 @@ Function Update-JCModule
         $SDKsToUninstall = @()
         $SDKsToUpdate = @()
         $SDKsUpToDate = @()
-        $SDKsInstalledSummary = @{}
+        $SDKsInstalledSummary = @()
         $SDKUpdateTable = @()
         $SDKResultsSummary = @()
         $SDKUninstallSummary = @()
@@ -147,7 +147,7 @@ Function Update-JCModule
             {
                 Do
                 {
-                    Write-Host ('Enter ''Y'' to update the SDK modules or enter ''N'' to cancel:')
+                    Write-Host ('Enter ''Y'' to update the SDK modules or enter ''N'' to cancel:') -NoNewline
                     Write-Host (' ') -NoNewline
                     $UserInput = Read-Host
                 }
@@ -163,84 +163,96 @@ Function Update-JCModule
             }
             Else
             {
-                # For each SDK in update list
-                foreach ($SDK in $ComparedSDKsToUpdate)
+                # For each SDK in update list where we need to update:
+                foreach ($SDK in $SDKUpdateTable | Where-Object { $_."Update Action" -eq 'Update' })
                 {
                     try
                     {
-                        Update-Module -Name $SDK.Name -Force
-                        $SDKsInstalledSummary.Add($SDK.Name, 'Success')
+                        Write-Debug -Message "Running Command: Install-Module -Name $($SDK."SDK Name") -RequiredVersion $($SDK."Latest Version") -Force"
+                        Install-Module -Name $($SDK."SDK Name") -RequiredVersion $($SDK."Latest Version") -Force
+                        $SDKsInstalledSummary += [PSCustomObject]@{
+                            'SDK Name'            = $($SDK."SDK Name")
+                            'Target Version'   = $($SDK."Latest Version")
+                            'Install Success'         = $true
+                        }
                     }
                     catch
                     {
-                        $SDKsInstalledSummary.Add($SDK.Name, 'Failure')
-                        Write-Warning -Message "$($SDK.Name) Could not be updated automatically; run the following command to install manually:"
-                        Write-Warning -Message "Install-Module -Name $($SDK.Name)"
+                        $SDKsInstalledSummary += [PSCustomObject]@{
+                            'SDK Name'            = $($SDK."SDK Name")
+                            'Target Version'    = $($SDK."Latest Version")
+                            'Install Success'         = $false
+                        }
+                        Write-Warning -Message "$($SDK."SDK Name") Could not be updated automatically; run the following command to install manually:"
+                        Write-Warning -Message "Install-Module -Name $($SDK."SDK Name") -RequiredVersion $($SDK."Latest Version") -Force"
                     }
                     # Get and remove the current module
-                    Get-Module -Name:($SDK.Name) -ListAvailable -All | Remove-Module -Force
+                    Get-Module -Name:($SDK."SDK Name") -ListAvailable -All | Remove-Module -Force
                     try
                     {
-                        Import-Module $SDK.Name -Scope:('Global') -Force
+                        Write-Debug -Message "Running Command: Import-Module -Name $($SDK."SDK Name") -RequiredVersion $($SDK."Latest Version") -Force"
+                        Import-Module $SDK."SDK Name" -RequiredVersion $($SDK."Latest Version") -Scope:('Global') -Force
                         $SDKResultsSummary += [PSCustomObject]@{
-                            'SDK Name' = $($SDK.Name)
+                            'SDK Name' = $($SDK."SDK Name")
                             'Imported' = $true
                         }
                     }
                     catch
                     {
+                        Write-Debug -Message "Error: Import-Module -Name $($SDK."SDK Name") -RequiredVersion $($SDK."Latest Version") -Force"
                         $SDKResultsSummary += [PSCustomObject]@{
-                            'SDK Name' = $($SDK.Name)
+                            'SDK Name' = $($SDK."SDK Name")
                             'Imported' = $false
                         }
                     }
-                    If (Get-InstalledModule -Name $($SDK.Name) -RequiredVersion $($SDK.Version)){
+                    If (Get-InstalledModule -Name $($SDK."SDK Name") -RequiredVersion $($SDK."Installed Version")){
                         Try {
-                            Uninstall-Module -Name $($SDK.Name) -RequiredVersion $($SDK.Version)
+                            Write-Debug -Message "Running Command: Uninstall-Module -Name $($SDK."SDK Name") -RequiredVersion $($SDK."Installed Version") -Force"
+                            Uninstall-Module -Name $($SDK."SDK Name") -RequiredVersion $($SDK."Installed Version") -Force
                             $SDKUninstallSummary += [PSCustomObject]@{
-                                'SDK Name'            = $($SDK.Name)
-                                'Uninstalled Version' = $($SDK.Version)
+                                'SDK Name'            = $($SDK."SDK Name")
+                                'Uninstalled Version' = $($SDK."Installed Version")
                                 'Uninstalled'         = $true
                             }
                         }
                         Catch{
-                                Write-Warning -Message "Could not uninstall $($SDK.Name) $($SDK.Version)"
-                                $SDKUninstallSummary += [PSCustomObject]@{
-                                    'SDK Name'            = $($SDK.Name)
-                                    'Uninstalled Version' = $($SDK.Version)
-                                    'Uninstalled'         = $false
-                                }
+                            Write-Warning -Message "Could not uninstall $($SDK."SDK Name") $($SDK."Installed Version")"
+                            $SDKUninstallSummary += [PSCustomObject]@{
+                                'SDK Name'            = $($SDK."SDK Name")
+                                'Uninstalled Version' = $($SDK."Installed Version")
+                                'Uninstalled'         = $false
+                            }
                         }
                     }
                 }
-            }
-        }
-        # For each SDK in uninstall list
-        If (!($SkipUninstallOld))
-        {
-            if ($PSBoundParameters.Debug -eq $true -And $SDKsToUninstall.Count -ge 1) {
-                Write-Debug "The following out-of-date SDK Module(s) will be uninstalled"
-                $SDKUpdateTable | Where-Object { $_.'Update Action' -eq 'uninstall' } | Format-Table | Out-Host
-            }
-            foreach ($SDK in $SDKsToUninstall)
-            {
-                # Write-Host ('Uninstalling ' + $SDK.Name + ' module version: ' + $SDK.Version)
-                try
+                # For each SDK in uninstall list
+                If (!($SkipUninstallOld))
                 {
-                    Uninstall-Module -Name $SDK.Name -RequiredVersion $SDK.Version -Force
-                    $SDKUninstallSummary += [PSCustomObject]@{
-                        'SDK Name'            = $($SDK.Name)
-                        'Uninstalled Version' = $($SDK.Version)
-                        'Uninstalled'         = $true
+                    if ($PSBoundParameters.Debug -eq $true -And $SDKsToUninstall.Count -ge 1) {
+                        Write-Debug "The following out-of-date SDK Module(s) will be uninstalled"
+                        $SDKUpdateTable | Where-Object { $_.'Update Action' -eq 'uninstall' } | Format-Table | Out-Host
                     }
-                }
-                catch
-                {
-                    Write-Warning -Message "Could not uninstall $($SDK.Name) $($SDK.Version)"
-                    $SDKUninstallSummary += [PSCustomObject]@{
-                        'SDK Name'            = $($SDK.Name)
-                        'Uninstalled Version' = $($SDK.Version)
-                        'Uninstalled'         = $false
+                    foreach ($SDK in $SDKUpdateTable | Where-Object { $_."Update Action" -eq 'Uninstall' })
+                    {
+                        If (Get-InstalledModule -Name $($SDK."SDK Name") -RequiredVersion $($SDK."Installed Version")){
+                            Try {
+                                Write-Debug -Message "Running Command: Uninstall-Module -Name $($SDK."SDK Name") -RequiredVersion $($SDK."Installed Version") -Force"
+                                Uninstall-Module -Name $($SDK."SDK Name") -RequiredVersion $($SDK."Installed Version") -Force
+                                $SDKUninstallSummary += [PSCustomObject]@{
+                                    'SDK Name'            = $($SDK."SDK Name")
+                                    'Uninstalled Version' = $($SDK."Installed Version")
+                                    'Uninstalled'         = $true
+                                }
+                            }
+                            Catch{
+                                    Write-Warning -Message "Could not uninstall $($SDK."SDK Name") $($SDK."Installed Version")"
+                                    $SDKUninstallSummary += [PSCustomObject]@{
+                                        'SDK Name'            = $($SDK."SDK Name")
+                                        'Uninstalled Version' = $($SDK."Installed Version")
+                                        'Uninstalled'         = $false
+                                    }
+                            }
+                        }
                     }
                 }
             }
@@ -361,8 +373,16 @@ Function Update-JCModule
     {
         if ($SDKUninstallSummary)
         {
-            if ($PSBoundParameters.Debug -eq $true) {
-                Write-Debug "The following modules were sucessfully uninstalled:"
+            if ($false -in $SDKUninstallSummary.Uninstalled){
+                if ($PSBoundParameters.Debug -eq $true) {
+                    Write-Warning "One or more of the previous SDK modules could not be uninstalled in this session"
+                    Write-Warning "Please restart this powershell session"
+                    Write-Debug "The following modules were unabled to be uninstalled:"
+                    $SDKUninstallSummary | Format-Table | Out-Host
+                }
+            }
+            else{
+                Write-Debug "The following modules were uninstalled:"
                 $SDKUninstallSummary | Format-Table | Out-Host
             }
         }
@@ -370,16 +390,16 @@ Function Update-JCModule
         {
             If ($false -in $SDKResultsSummary.Imported)
             {
-                Write-Warning "One or more of the SDK modules could not be imported to this session"
-                Write-Warning "Please restart this powershell session to use the new SDK module "
+                Write-Warning "One or more of the updated SDK modules could not be imported to this session"
+                Write-Warning "Please restart this powershell session to use the new SDK module(s)"
                 if ($PSBoundParameters.Debug -eq $true) {
-                $SDKResultsSummary | Format-Table | Out-Host
+                    $SDKResultsSummary | Format-Table | Out-Host
                 }
             }
             else {
                 if ($PSBoundParameters.Debug -eq $true) {
                     Write-Debug "The following modules were sucessfully updated:"
-                $SDKResultsSummary | Format-Table | Out-Host
+                    $SDKResultsSummary | Format-Table | Out-Host
                 }
             }
         }
