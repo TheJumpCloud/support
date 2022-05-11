@@ -299,18 +299,11 @@ Function Backup-JCOrganization
                                             # The direct association/"Get-JcSdk*Membership" endpoints return null for FromId. So manually populate them here.
                                             $AssociationResult.Paths | ForEach-Object {
                                                 $_ | ForEach-Object {
-                                                    If ([System.String]::IsNullOrEmpty($_.FromId))
-                                                    {
-                                                        $_.FromId = $BackupRecord.id
-                                                    }
-                                                    # The direct association/"Get-JcSdk*Membership" endpoints return null for FromType. So manually populate them here.
-                                                    If ([System.String]::IsNullOrEmpty($_.FromType))
-                                                    {
-                                                        $_.FromType = $SourceTypeMap.Value.Name
+                                                    if ($_.FromType -eq $SourceTypeMap.Value.Name -and $_.ToType -eq $TargetTypeMap.Value.Name){
+                                                        $AssociationResults += $_
                                                     }
                                                 }
                                             }
-                                            $AssociationResults += $AssociationResult
                                         }
                                     }
                                     ElseIf (($SourceTypeMap.Value.Name -eq 'system' -and $TargetTypeMap.Value.Name -eq 'command' -and $Global:JCSettings.ROLE -eq 'Read Only') -or ($SourceTypeMap.Value.Name -eq 'system_group' -and $TargetTypeMap.Value.Name -eq 'command' -and $Global:JCSettings.ROLE -eq 'Read Only'))
@@ -323,18 +316,12 @@ Function Backup-JCOrganization
                                             # The direct association/"Get-JcSdk*Membership" endpoints return null for FromId. So manually populate them here.
                                             $AssociationResult.Paths | ForEach-Object {
                                                 $_ | ForEach-Object {
-                                                    If ([System.String]::IsNullOrEmpty($_.FromId))
+                                                    if ($_.FromType -eq $SourceTypeMap.Value.Name -and $_.ToType -eq $TargetTypeMap.Value.Name)
                                                     {
-                                                        $_.FromId = $BackupRecord.id
-                                                    }
-                                                    # The direct association/"Get-JcSdk*Membership" endpoints return null for FromType. So manually populate them here.
-                                                    If ([System.String]::IsNullOrEmpty($_.FromType))
-                                                    {
-                                                        $_.FromType = $SourceTypeMap.Value.Name
+                                                        $AssociationResults += $_
                                                     }
                                                 }
                                             }
-                                            $AssociationResults += $AssociationResult
                                         }
                                     }
                                     ElseIf (($SourceTypeMap.Value.Name -eq 'SoftwareApp' -and $TargetTypeMap.Value.Name -eq 'system' -and $Global:JCSettings.ROLE -eq 'Read Only') -or ($SourceTypeMap.Value.Name -eq 'SoftwareApp' -and $TargetTypeMap.Value.Name -eq 'system_group' -and $Global:JCSettings.ROLE -eq 'Read Only'))
@@ -347,18 +334,12 @@ Function Backup-JCOrganization
                                             # The direct association/"Get-JcSdk*Membership" endpoints return null for FromId. So manually populate them here.
                                             $AssociationResult.Paths | ForEach-Object {
                                                 $_ | ForEach-Object {
-                                                    If ([System.String]::IsNullOrEmpty($_.FromId))
+                                                    if ($_.FromType -eq $SourceTypeMap.Value.Name -and $_.ToType -eq $TargetTypeMap.Value.Name)
                                                     {
-                                                        $_.FromId = $BackupRecord.id
-                                                    }
-                                                    # The direct association/"Get-JcSdk*Membership" endpoints return null for FromType. So manually populate them here.
-                                                    If ([System.String]::IsNullOrEmpty($_.FromType))
-                                                    {
-                                                        $_.FromType = $SourceTypeMap.Value.Name
+                                                        $AssociationResults += $_
                                                     }
                                                 }
                                             }
-                                            $AssociationResults += $AssociationResult
                                         }
                                     }
                                     ElseIf (($SourceTypeMap.Value.Name -eq 'system' -and $TargetTypeMap.Value.Name -eq 'SoftwareApp' -and $Global:JCSettings.ROLE -eq 'Read Only') -or ($SourceTypeMap.Value.Name -eq 'system_group' -and $TargetTypeMap.Value.Name -eq 'SoftwareApp' -and $Global:JCSettings.ROLE -eq 'Read Only'))
@@ -371,18 +352,12 @@ Function Backup-JCOrganization
                                             # The direct association/"Get-JcSdk*Membership" endpoints return null for FromId. So manually populate them here.
                                             $AssociationResult.Paths | ForEach-Object {
                                                 $_ | ForEach-Object {
-                                                    If ([System.String]::IsNullOrEmpty($_.FromId))
+                                                    if ($_.FromType -eq $SourceTypeMap.Value.Name -and $_.ToType -eq $TargetTypeMap.Value.Name)
                                                     {
-                                                        $_.FromId = $BackupRecord.id
-                                                    }
-                                                    # The direct association/"Get-JcSdk*Membership" endpoints return null for FromType. So manually populate them here.
-                                                    If ([System.String]::IsNullOrEmpty($_.FromType))
-                                                    {
-                                                        $_.FromType = $SourceTypeMap.Value.Name
+                                                        $AssociationResults += $_
                                                     }
                                                 }
                                             }
-                                            $AssociationResults += $AssociationResult
                                         }
                                     }
                                     Else
