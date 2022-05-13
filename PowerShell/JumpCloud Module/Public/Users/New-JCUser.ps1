@@ -350,7 +350,8 @@ Function New-JCUser ()
                             }
                         }
                         # Use class mailaddress to check if $param.value is email
-                        elseif ([mailaddress]$param.value) {
+                        try {
+                            $null = [mailaddress]$EmailAddress
                             $managerSearch = @{
                                 filter = @{
                                     or = @(
@@ -375,7 +376,7 @@ Function New-JCUser ()
                                 $managerValue = $managerResults.id
                             }
                         }
-                        else {
+                        catch {
                             # search the username in the search endpoint
                             $managerSearch = @{
                                 filter = @{

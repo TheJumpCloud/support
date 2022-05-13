@@ -615,7 +615,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                                     $managerResults = Search-JcSdkUser -Body:($managerSearch)
                                     # Set managerValue; this is a validated user id
                                     $managerValue = $managerResults.id
-                                    # if no value was returned, then assume the case this is actuallty a username and search
+                                    # if no value was returned, then assume the case this is actually a username and search
                                     if (!$managerValue){
                                         $managerSearch = @{
                                             filter = @{
@@ -630,8 +630,8 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                                     }
                                 }
                                 # Use class mailaddress to check if $param.value is email
-                                elseif([mailaddress]$param.value) # If value is email
-                                {
+                                try {
+                                    $null = [mailaddress]$EmailAddress
                                     Write-Debug "This is true"
                                     # Search for manager using email
                                     $managerSearch = @{
@@ -644,7 +644,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                                     $managerResults = Search-JcSdkUser -Body:($managerSearch)
                                     # Set managerValue; this is a validated user id
                                     $managerValue = $managerResults.id
-                                    # if no value was returned, then assume the case this is actuallty a username and search
+                                    # if no value was returned, then assume the case this is actually a username and search
                                     if (!$managerValue){
                                         $managerSearch = @{
                                             filter = @{
@@ -658,7 +658,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                                         $managerValue = $managerResults.id
                                     }
                                 }
-                                else {
+                                catch {
                                     # search the username in the search endpoint
                                     $managerSearch = @{
                                         filter = @{
@@ -800,8 +800,36 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                                     $managerValue = $managerResults.id
                                 }
                             }
-                            else
-                            {
+                            # Use class mailaddress to check if $param.value is email
+                            try {
+                                $null = [mailaddress]$EmailAddress
+                                Write-Debug "This is true"
+                                # Search for manager using email
+                                $managerSearch = @{
+                                    filter = @{
+                                        or = @(
+                                            'email:$eq:' + $param.Value
+                                        )
+                                    }
+                                }
+                                $managerResults = Search-JcSdkUser -Body:($managerSearch)
+                                # Set managerValue; this is a validated user id
+                                $managerValue = $managerResults.id
+                                # if no value was returned, then assume the case this is actually a username and search
+                                if (!$managerValue){
+                                    $managerSearch = @{
+                                        filter = @{
+                                            or = @(
+                                                'username:$eq:' + $param.Value
+                                            )
+                                        }
+                                    }
+                                    $managerResults = Search-JcSdkUser -Body:($managerSearch)
+                                    # Set managerValue from the matched username
+                                    $managerValue = $managerResults.id
+                                }
+                            }
+                            catch {
                                 # search the username in the search endpoint
                                 $managerSearch = @{
                                     filter = @{
@@ -1009,7 +1037,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                                 $managerResults = Search-JcSdkUser -Body:($managerSearch)
                                 # Set managerValue; this is a validated user id
                                 $managerValue = $managerResults.id
-                                # if no value was returned, then assume the case this is actuallty a username and search
+                                # if no value was returned, then assume the case this is actually a username and search
                                 if (!$managerValue)
                                 {
                                     $managerSearch = @{
@@ -1024,8 +1052,36 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                                     $managerValue = $managerResults.id
                                 }
                             }
-                            else
-                            {
+                            # Use class mailaddress to check if $param.value is email
+                            try {
+                                $null = [mailaddress]$EmailAddress
+                                Write-Debug "This is true"
+                                # Search for manager using email
+                                $managerSearch = @{
+                                    filter = @{
+                                        or = @(
+                                            'email:$eq:' + $param.Value
+                                        )
+                                    }
+                                }
+                                $managerResults = Search-JcSdkUser -Body:($managerSearch)
+                                # Set managerValue; this is a validated user id
+                                $managerValue = $managerResults.id
+                                # if no value was returned, then assume the case this is actually a username and search
+                                if (!$managerValue){
+                                    $managerSearch = @{
+                                        filter = @{
+                                            or = @(
+                                                'username:$eq:' + $param.Value
+                                            )
+                                        }
+                                    }
+                                    $managerResults = Search-JcSdkUser -Body:($managerSearch)
+                                    # Set managerValue from the matched username
+                                    $managerValue = $managerResults.id
+                                }
+                            }
+                            catch {
                                 # search the username in the search endpoint
                                 $managerSearch = @{
                                     filter = @{
@@ -1179,7 +1235,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                                 $managerResults = Search-JcSdkUser -Body:($managerSearch)
                                 # Set managerValue; this is a validated user id
                                 $managerValue = $managerResults.id
-                                # if no value was returned, then assume the case this is actuallty a username and search
+                                # if no value was returned, then assume the case this is actually a username and search
                                 if (!$managerValue){
                                     $managerSearch = @{
                                         filter = @{
@@ -1193,7 +1249,36 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                                     $managerValue = $managerResults.id
                                 }
                             }
-                            else {
+                            # Use class mailaddress to check if $param.value is email
+                            try {
+                                $null = [mailaddress]$EmailAddress
+                                Write-Debug "This is true"
+                                # Search for manager using email
+                                $managerSearch = @{
+                                    filter = @{
+                                        or = @(
+                                            'email:$eq:' + $param.Value
+                                        )
+                                    }
+                                }
+                                $managerResults = Search-JcSdkUser -Body:($managerSearch)
+                                # Set managerValue; this is a validated user id
+                                $managerValue = $managerResults.id
+                                # if no value was returned, then assume the case this is actually a username and search
+                                if (!$managerValue){
+                                    $managerSearch = @{
+                                        filter = @{
+                                            or = @(
+                                                'username:$eq:' + $param.Value
+                                            )
+                                        }
+                                    }
+                                    $managerResults = Search-JcSdkUser -Body:($managerSearch)
+                                    # Set managerValue from the matched username
+                                    $managerValue = $managerResults.id
+                                }
+                            }
+                            catch {
                                 # search the username in the search endpoint
                                 $managerSearch = @{
                                     filter = @{
