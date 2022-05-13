@@ -349,6 +349,32 @@ Function New-JCUser ()
                                 $managerValue = $managerResults.id
                             }
                         }
+                        # Use class mailaddress to check if $param.value is email
+                        elseif ([mailaddress]$param.value) {
+                            $managerSearch = @{
+                                filter = @{
+                                    or = @(
+                                        'email:$eq:' + $param.Value
+                                    )
+                                }
+                            }
+                            $managerResults = Search-JcSdkUser -Body:($managerSearch)
+                            # Set managerValue; this is a validated user id
+                            $managerValue = $managerResults.id
+                            # if no value was returned, then assume the case this is actuallty a username and search
+                            if (!$managerValue){
+                                $managerSearch = @{
+                                    filter = @{
+                                        or = @(
+                                            'username:$eq:' + $param.Value
+                                        )
+                                    }
+                                }
+                                $managerResults = Search-JcSdkUser -Body:($managerSearch)
+                                # Set managerValue from the matched username
+                                $managerValue = $managerResults.id
+                            }
+                        }
                         else {
                             # search the username in the search endpoint
                             $managerSearch = @{

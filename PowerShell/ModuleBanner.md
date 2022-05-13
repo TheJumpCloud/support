@@ -1,17 +1,17 @@
 #### Latest Version
 
 ```
-1.21.0
+1.22.0
 ```
 
 #### Banner Current
 
 ```
-New parameter -recoveryemail for Set, Get, New-JCUser
+Added functionality for Set, Get, New-JCUser to Search by Email to Manager Field
 ```
 
 #### Banner Old
 
 ```
-Get-JcUser, Set-JcUser and New-JcUser will soon be deprecating the -suspended parameter. Please use the -state paramater as a replacement.
+New parameter -recoveryemail for Set, Get, New-JCUser
 ```
