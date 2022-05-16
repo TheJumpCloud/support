@@ -1,10 +1,13 @@
+
 ## 1.22.0
 
 Release Date: May 16, 2022
 
+
 #### RELEASE NOTES
 
 ```
+
 This release includes an update to private functions that will further improve performance with gathering data from API endpoints
 
 ```
@@ -19,6 +22,7 @@ This release includes an update to private functions that will further improve p
 #### BUG FIXES:
 
 N/A
+
 ## 1.21.0
 
 Release Date: May 11, 2022
