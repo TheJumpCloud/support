@@ -606,10 +606,9 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                                 if (((Select-String -InputObject $param.Value -Pattern $regexPattern).Matches.value)::IsNullOrEmpty){
                                     # if we have a 24 characterid, try to match the id using the search endpoint
                                     $managerSearch = @{
-                                        filter = @{
-                                            or = @(
-                                                '_id:$eq:' + $param.Value
-                                            )
+                                        searchFilter = @{
+                                            searchTerm = @($param.Value)
+                                            fields = @('_id')
                                         }
                                     }
                                     $managerResults = Search-JcSdkUser -Body:($managerSearch)
@@ -618,10 +617,9 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                                     # if no value was returned, then assume the case this is actually a username and search
                                     if (!$managerValue){
                                         $managerSearch = @{
-                                            filter = @{
-                                                or = @(
-                                                    'username:$eq:' + $param.Value
-                                                )
+                                            searchFilter = @{
+                                                searchTerm = @($param.Value)
+                                                fields = @('username')
                                             }
                                         }
                                         $managerResults = Search-JcSdkUser -Body:($managerSearch)
@@ -632,13 +630,11 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                                 # Use class mailaddress to check if $param.value is email
                                 try {
                                     $null = [mailaddress]$EmailAddress
-                                    Write-Debug "This is true"
                                     # Search for manager using email
                                     $managerSearch = @{
-                                        filter = @{
-                                            or = @(
-                                                'email:$eq:' + $param.Value
-                                            )
+                                        searchFilter = @{
+                                            searchTerm = @($param.Value)
+                                            fields = @('email')
                                         }
                                     }
                                     $managerResults = Search-JcSdkUser -Body:($managerSearch)
@@ -647,10 +643,9 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                                     # if no value was returned, then assume the case this is actually a username and search
                                     if (!$managerValue){
                                         $managerSearch = @{
-                                            filter = @{
-                                                or = @(
-                                                    'username:$eq:' + $param.Value
-                                                )
+                                            searchFilter = @{
+                                                searchTerm = @($param.Value)
+                                                fields = @('username')
                                             }
                                         }
                                         $managerResults = Search-JcSdkUser -Body:($managerSearch)
@@ -661,10 +656,9 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                                 catch {
                                     # search the username in the search endpoint
                                     $managerSearch = @{
-                                        filter = @{
-                                            or = @(
-                                                'username:$eq:' + $param.Value
-                                            )
+                                        searchFilter = @{
+                                            searchTerm = @($param.Value)
+                                            fields = @('username')
                                         }
                                     }
                                     $managerResults = Search-JcSdkUser -Body:($managerSearch)
