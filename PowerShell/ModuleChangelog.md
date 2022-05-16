@@ -1,3 +1,24 @@
+## 1.21.1
+
+Release Date: May 16, 2022
+
+#### RELEASE NOTES
+
+```
+This release includes an update to private functions that will further improve performance with gathering data from API endpoints
+
+```
+#### IMPROVEMENTS:
+
+* Get-JCResults private function updates to further improve performance with API endpoints
+
+#### FEATURES:
+
+* This release adds new parameters to Get-JCResults private function
+
+#### BUG FIXES:
+
+N/A
 ## 1.21.0
 
 Release Date: May 11, 2022
