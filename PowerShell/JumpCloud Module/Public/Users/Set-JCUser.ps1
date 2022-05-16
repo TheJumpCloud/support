@@ -608,7 +608,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                                     $managerSearch = @{
                                         searchFilter = @{
                                             searchTerm = @($param.Value)
-                                            fields = @('_id')
+                                            fields = @('id')
                                         }
                                     }
                                     $managerResults = Search-JcSdkUser -Body:($managerSearch)

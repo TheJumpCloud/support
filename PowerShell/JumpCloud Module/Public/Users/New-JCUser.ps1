@@ -328,7 +328,7 @@ Function New-JCUser ()
                             $managerSearch = @{
                                 searchFilter = @{
                                     searchTerm = @($param.Value)
-                                    fields = @('_id')
+                                    fields = @('id')
                                 }
                             }
                             $managerResults = Search-JcSdkUser -Body:($managerSearch)
