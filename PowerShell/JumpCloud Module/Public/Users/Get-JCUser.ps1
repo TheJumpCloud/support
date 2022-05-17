@@ -117,7 +117,7 @@ Function Get-JCUser ()
         [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'The managedAppleId of the JumpCloud user you wish to search for.')]
         [String]$managedAppleId,
 
-        [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'The manager username or ID of the JumpCloud user you wish to search for.')]
+        [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'The manager username, primary email or ID of the JumpCloud user you wish to search for.')]
         [String]$manager,
 
         [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'A search filter to return users that are in an ACTIVATED, STAGED or SUSPENDED state')]
@@ -314,22 +314,20 @@ Function Get-JCUser ()
                                 if (((Select-String -InputObject $param.Value -Pattern $regexPattern).Matches.value)::IsNullOrEmpty){
                                     # if we have a 24 characterid, try to match the id using the search endpoint
                                     $managerSearch = @{
-                                        filter = @{
-                                            or = @(
-                                                '_id:$eq:' + $param.Value
-                                            )
+                                        searchFilter = @{
+                                            searchTerm = @($param.Value)
+                                            fields = @('id')
                                         }
                                     }
                                     $managerResults = Search-JcSdkUser -Body:($managerSearch)
                                     # Set managerValue; this is a validated user id
                                     $managerValue = $managerResults.id
-                                    # if no value was returned, then assume the case this is actually a username and search
+                                   # if no value was returned, then assume the case this is actually a username and search
                                     if (!$managerValue){
                                         $managerSearch = @{
-                                            filter = @{
-                                                or = @(
-                                                    'username:$eq:' + $param.Value
-                                                )
+                                            searchFilter = @{
+                                                searchTerm = @($param.Value)
+                                                fields = @('username')
                                             }
                                         }
                                         $managerResults = Search-JcSdkUser -Body:($managerSearch)
@@ -337,13 +335,37 @@ Function Get-JCUser ()
                                         $managerValue = $managerResults.id
                                     }
                                 }
-                                else {
+                                # Use class mailaddress to check if $param.value is email
+                                try {
+                                    $null = [mailaddress]$EmailAddress
+                                    # Search manager using email
+                                    $managerSearch = @{
+                                        searchFilter = @{
+                                            searchTerm = @($param.Value)
+                                            fields = @('email')
+                                        }
+                                    }
+                                    $managerResults = Search-JcSdkUser -Body:($managerSearch)
+                                    # Set managerValue; this is a validated user id
+                                    $managerValue = $managerResults.id
+                                    if (!$managerValue){
+                                        $managerSearch = @{
+                                            searchFilter = @{
+                                                searchTerm = @($param.Value)
+                                                fields = @('username')
+                                            }
+                                        }
+                                        $managerResults = Search-JcSdkUser -Body:($managerSearch)
+                                        # Set managerValue from the matched username
+                                        $managerValue = $managerResults.id
+                                    }
+                                }
+                                catch {
                                     # search the username in the search endpoint
                                     $managerSearch = @{
-                                        filter = @{
-                                            or = @(
-                                                'username:$eq:' + $param.Value
-                                            )
+                                        searchFilter = @{
+                                            searchTerm = @($param.Value)
+                                            fields = @('username')
                                         }
                                     }
                                     $managerResults = Search-JcSdkUser -Body:($managerSearch)

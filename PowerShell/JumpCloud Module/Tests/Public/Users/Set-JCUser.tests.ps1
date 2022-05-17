@@ -78,10 +78,26 @@ Describe -Tag:('JCUser') 'Set-JCUser 1.0' {
         Remove-JCUser -UserID $NewUser._id -force
         Remove-JCUser -UserID $ManagerUser._id -force
     }
+    It "Updates the managerUsername using email" {
+        $ManagerUser = New-RandomUser "PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser
+        $NewUser = New-RandomUser "PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser
+        $NewManager = Set-JCUser -Username $NewUser.Username -manager $ManagerUser.email
+        $NewManager.manager | Should -Be $ManagerUser.id
+        Remove-JCUser -UserID $NewUser._id -force
+        Remove-JCUser -UserID $ManagerUser._id -force
+    }
     It "Updates the managerUsername using -ByID and -UserID" {
         $ManagerUser = New-RandomUser "PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser
         $NewUser = New-RandomUser "PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser
         $NewManager = Set-JCUser -ByID -UserID $NewUser._id -manager $ManagerUser.Username
+        $NewManager.manager | Should -Be $ManagerUser.id
+        Remove-JCUser -UserID $NewUser._id -force
+        Remove-JCUser -UserID $ManagerUser._id -force
+    }
+    It "Updates the managerEmail using -ByID and -UserID" {
+        $ManagerUser = New-RandomUser "PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser
+        $NewUser = New-RandomUser "PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser
+        $NewManager = Set-JCUser -ByID -UserID $NewUser._id -manager $ManagerUser.email
         $NewManager.manager | Should -Be $ManagerUser.id
         Remove-JCUser -UserID $NewUser._id -force
         Remove-JCUser -UserID $ManagerUser._id -force
