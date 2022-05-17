@@ -2,7 +2,10 @@ Function Get-JCResults
 {
     [CmdletBinding()]
     Param(
-        [Parameter(Mandatory = $true, HelpMessage = 'URL of Endpoint')][ValidateNotNullOrEmpty()]$URL
+        [Parameter(Mandatory = $true, HelpMessage = 'URL of Endpoint')][ValidateNotNullOrEmpty()]$URL,
+        [Parameter(Mandatory = $true, HelpMessage = 'Method of WebRequest')][ValidateNotNullOrEmpty()]$method,
+        [Parameter(Mandatory = $true, HelpMessage = 'Limit of WebRequest')][ValidateNotNullOrEmpty()]$limit,
+        [Parameter(Mandatory = $false, HelpMessage = 'Body of WebRequest, if required')]$body
     )
     begin {
         $hdrs = @{
@@ -16,7 +19,7 @@ Function Get-JCResults
         }
         $resultsArray = @()
         $totalCount = 1
-        $limit = 100
+        $limit = [int]$limit
         $skip = 0
     }
     process {
@@ -29,11 +32,16 @@ Function Get-JCResults
         $passCounter = [math]::ceiling($totalCount/$limit)
         Write-Debug "number of passes: $passCounter"
         $resultsArray += $response.Content | ConvertFrom-Json
-
+        
         for($i = 1; $i -lt $passCounter; $i++) {
             $skip += $limit
             $limitURL = $URL + "?limit=$limit&skip=$skip"
-            $response = Invoke-WebRequest -Method GET -Uri $limitURL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
+            if ($body){
+                $response = Invoke-WebRequest -Method $method -Body $body -Uri $limitURL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
+            }
+            else {
+                $response = Invoke-WebRequest -Method $method -Uri $limitURL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
+            }
             $resultsArray += $response.Content | ConvertFrom-Json
             Write-Debug ("Pass: $i Amount: " + ($response.Content | ConvertFrom-Json).Count)
         }

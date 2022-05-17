@@ -1,12 +1,12 @@
+
 ## 1.22.0
 
-Release Date: May 13, 2022
+Release Date: May 16, 2022
 
 #### RELEASE NOTES
 
 ```
 This release includes an update to Set, Get, New-JCUser to add the use of Email to the Manager field
-
 ```
 #### IMPROVEMENTS:
 
@@ -16,9 +16,15 @@ This release includes an update to Set, Get, New-JCUser to add the use of Email 
 
 * This release adds email search to manager field in Set, Get, New-JCUser
 
+
+#### FEATURES:
+
+* This release adds new parameters to Get-JCResults private function
+
 #### BUG FIXES:
 
 N/A
+
 ## 1.21.0
 
 Release Date: May 11, 2022
