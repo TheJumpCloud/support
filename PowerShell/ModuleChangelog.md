@@ -1,3 +1,24 @@
+## 1.22.0
+
+Release Date: May 16, 2022
+
+#### RELEASE NOTES
+
+This release includes an update to Set, Get, New-JCUser to search manager by a valid JumpCloud user's primary email
+
+#### IMPROVEMENTS:
+
+* Set, Get, New-JCUser will validate email address value given to -manager
+
+#### FEATURES:
+
+* This release adds email search to manager field in Set, Get, New-JCUser
+* This release adds new parameters to Get-JCResults private function
+
+#### BUG FIXES:
+
+* Backup-JCOrganization no longer throws a forbidden error message when run with a read-only API Key.
+
 ## 1.21.0
 
 Release Date: May 11, 2022

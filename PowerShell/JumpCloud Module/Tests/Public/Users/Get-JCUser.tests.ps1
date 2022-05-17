@@ -94,6 +94,14 @@ Describe -Tag:('JCUser') 'Get-JCUser 1.1' {
         $NewUser.manager | Should -Be $managerId
         Remove-JCUser -UserID $NewUser._id -force
     }
+    It "Searches a JumpCloud user by managerEmail" {
+        $managerEmail = $PesterParams_User1.email
+        $managerId = $PesterParams_User1.id
+        $NewUser = New-RandomUser -Domain DeleteMe | New-JCUser -manager $managerEmail
+        $NewUser = Get-JCUser -manager $managerEmail
+        $NewUser.manager | Should -Be $managerId
+        Remove-JCUser -UserID $NewUser._id -force
+    }
     It "Searches a JumpCloud user by state SUSPENDED" {
         $NewUser = New-RandomUser -Domain DeleteMe | New-JcUser -state "SUSPENDED"
         $SearchUser = Get-JCUser -state "SUSPENDED" | Select-Object -First 1

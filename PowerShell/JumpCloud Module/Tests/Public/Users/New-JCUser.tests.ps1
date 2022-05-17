@@ -103,6 +103,13 @@ Describe -Tag:('JCUser') 'New-JCUser 1.0' {
         $NewUser.manager | Should -Be $managerID
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
+    It "Creates a new User sets managerEmail" {
+        $managerEmail = $PesterParams_User1.email
+        $managerID = $PesterParams_User1.id
+        $NewUser = New-RandomUser -domain pleasedelete"PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser -manager $managerEmail
+        $NewUser.manager | Should -Be $managerID
+        Remove-JCUser -UserID $NewUser._id -ByID -Force
+    }
     It "Creates a new User sets alternateEmail" {
         $alternateEmail = "$((New-RandomString -NumberOfChars 6))ae@DeleteMe.com"
         $NewUser = New-RandomUser -domain pleasedelete"PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser -alternateEmail $alternateEmail
