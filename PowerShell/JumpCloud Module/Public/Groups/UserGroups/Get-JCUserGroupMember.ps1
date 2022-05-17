@@ -52,7 +52,7 @@ Function Get-JCUserGroupMember ()
 
                     $limitURL = "{0}/api/v2/usergroups/{1}/members" -f $JCUrlBasePath, $Group_ID
                     Write-Debug $limitURL
-                    $rawResults = Get-JCResults -Url $limitURL
+                    $rawResults = Get-JCResults -Url $limitURL -method "GET" -limit 100
 
                     foreach ($uid in $rawResults)
                     {
@@ -82,7 +82,7 @@ Function Get-JCUserGroupMember ()
         {
             $limitURL = "{0}/api/v2/usergroups/{1}/members" -f $JCUrlBasePath, $ByID
             Write-Debug $limitURL
-            $resultsArray = Get-JCResults -Url $limitURL
+            $resultsArray = Get-JCResults -Url $limitURL -method "GET" -limit 100
 
         }
     }

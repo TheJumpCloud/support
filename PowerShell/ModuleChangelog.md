@@ -1,22 +1,49 @@
 ## 1.21.1
 
-Release Date: May 11, 2022
+Release Date: May 16, 2022
 
 #### RELEASE NOTES
 
 ```
-This patch release address a bug with Backup-JCOrganization and read-only API Keys
+{{Fill in the Release Notes}}
 ```
-#### IMPROVEMENTS:
 
-N/A
 #### FEATURES:
 
-N/A
+{{Fill in the Features}}
+
+#### IMPROVEMENTS:
+
+{{Fill in the Improvements}}
 
 #### BUG FIXES:
 
-SA-2014 - Backup-JCOrganization throws a forbidden error message when run with a read-only API Key.
+{{Fill in the Bug Fixes}}
+
+
+## 1.22.0
+
+Release Date: May 16, 2022
+
+
+#### RELEASE NOTES
+
+```
+
+This release includes an update to private functions that will further improve performance with gathering data from API endpoints
+
+```
+#### IMPROVEMENTS:
+
+* Get-JCResults private function updates to further improve performance with API endpoints
+
+#### FEATURES:
+
+* This release adds new parameters to Get-JCResults private function
+
+#### BUG FIXES:
+
+N/A
 
 ## 1.21.0
 
