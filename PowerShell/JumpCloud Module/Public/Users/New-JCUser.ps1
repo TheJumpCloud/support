@@ -150,7 +150,7 @@ Function New-JCUser ()
         [string]
         $state,
 
-        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'The manager username or ID of the JumpCloud manager user; must be a valid user')]
+        [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'The manager username, ID or primary email of the JumpCloud manager user; must be a valid user')]
         [string]$manager,
 
         [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'The managedAppleId for the user')]

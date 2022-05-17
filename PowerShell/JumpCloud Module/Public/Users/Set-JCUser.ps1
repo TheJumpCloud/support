@@ -239,7 +239,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
         [nullable[bool]]
         $suspended,
 
-        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The manager username or ID of the JumpCloud manager user; must be a valid user')]
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The manager username, ID or primary email of the JumpCloud manager user; must be a valid user')]
         [string]
         $manager,
 
