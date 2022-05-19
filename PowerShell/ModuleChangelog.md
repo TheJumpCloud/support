@@ -1,5 +1,17 @@
 ## 1.22.0
 
+Release Date: May 19, 2022
+
+#### RELEASE NOTES
+
+This release includes a bugfix for read only API Keys and running Backup-JCOrganization
+
+#### BUG FIXES:
+
+* Backup-JCOrganization no longer throws a forbidden error message when run with a read-only API Key. In the previous release, we solved for only a subset of Backup-JCOrganizations' Read-Only error messages, these should now be resolved.
+
+## 1.22.0
+
 Release Date: May 16, 2022
 
 #### RELEASE NOTES
