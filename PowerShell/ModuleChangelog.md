@@ -4,29 +4,7 @@ Release Date: May 19, 2022
 
 #### RELEASE NOTES
 
-```
-{{Fill in the Release Notes}}
-```
-
-#### FEATURES:
-
-{{Fill in the Features}}
-
-#### IMPROVEMENTS:
-
-{{Fill in the Improvements}}
-
-#### BUG FIXES:
-
-{{Fill in the Bug Fixes}}
-
-## 1.22.0
-
-Release Date: May 19, 2022
-
-#### RELEASE NOTES
-
-This release includes a bugfix for read only API Keys and running Backup-JCOrganization
+This release includes a bug-fix for read only API Keys and running Backup-JCOrganization
 
 #### BUG FIXES:
 
