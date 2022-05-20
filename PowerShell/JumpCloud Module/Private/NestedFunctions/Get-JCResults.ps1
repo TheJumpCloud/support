@@ -45,15 +45,16 @@ Function Get-JCResults
             $content = $response.Content
             $resultsArray.Add($content)
             if ($passCounter -gt 1) {
+                $GetJCUserAgent = Get-JCUserAgent
                 1..$passCounter | ForEach-Object -Parallel {
                     $resultsArray = $using:resultsArray
                     $skip = $_ * $using:limit
                     $limitURL = $using:URL + "?limit=$using:limit&skip=$skip"
                     if ($using:body){
-                        $response = Invoke-WebRequest -Method $using:method -Body $using:body -Uri $limitURL -Headers $using:hdrs -UserAgent:(Get-JCUserAgent)
+                        $response = Invoke-WebRequest -Method $using:method -Body $using:body -Uri $limitURL -Headers $using:hdrs -UserAgent:($using:GetJCUserAgent)
                     }
                     else {
-                        $response = Invoke-WebRequest -Method $using:method -Uri $limitURL -Headers $using:hdrs -UserAgent:(Get-JCUserAgent)
+                        $response = Invoke-WebRequest -Method $using:method -Uri $limitURL -Headers $using:hdrs -UserAgent:($using:GetJCUserAgent)
                     }
                     $content = $response.Content
                     $resultsArray.Add($content)
