@@ -7,11 +7,11 @@
 #### Banner Current
 
 ```
-{{Fill in the Banner Current}}
+* Added functionality for Set, Get, New-JCUser to Search by Email to Manager Field
 ```
 
 #### Banner Old
 
 ```
-{{Fill in the Banner Old}}
+* New parameter -recoveryemail for Set, Get, New-JCUser
 ```
