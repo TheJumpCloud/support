@@ -6,7 +6,7 @@ Function Get-JCResults
         [Parameter(Mandatory = $true, HelpMessage = 'Method of WebRequest')][ValidateNotNullOrEmpty()]$method,
         [Parameter(Mandatory = $true, HelpMessage = 'Limit of WebRequest')][ValidateNotNullOrEmpty()]$limit,
         [Parameter(Mandatory = $false, HelpMessage = 'Body of WebRequest, if required')]$body,
-        [Parameter(Mandatory = $false, HelpMessage = 'Boolean: True to run in parallel, False to run in sequential')][bool]$parallel = $false
+        [Parameter(Mandatory = $false, HelpMessage = 'Boolean: True to run in parallel, False to run in sequential; Default value: false')][bool]$parallel = $false
     )
     begin {
         $hdrs = @{
@@ -21,6 +21,7 @@ Function Get-JCResults
         if (($PSVersionTable.PSVersion.Major -ge 7) -and ($parallel -eq $true)) {
             Write-Debug "Parallel set to True, PSVersion greater than 7"
             $resultsArray = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
+            $errorResults = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
         }
         else {
             Write-Debug "Running in Sequential"
@@ -33,7 +34,12 @@ Function Get-JCResults
     process {
         $limitURL = $URL + "?limit=$limit&skip=$skip"
         Write-Debug $limitURL
-        $response = Invoke-WebRequest -Method GET -Uri $limitURL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
+        try {
+            $response = Invoke-WebRequest -Method GET -Uri $limitURL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
+        }
+        catch {
+            throw $_
+        }
         $totalCount = $response.Headers."x-total-count"
         $totalCount = [int]$totalCount.Trim()
         Write-Debug "total count: $totalCount"
@@ -44,34 +50,38 @@ Function Get-JCResults
         if (($PSVersionTable.PSVersion.Major -ge 7) -and ($parallel -eq $true)) {
             $content = $response.Content
             $resultsArray.Add($content)
-            $errorResults = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
             if ($passCounter -gt 1) {
                 $GetJCUserAgent = Get-JCUserAgent
                 1..$passCounter | ForEach-Object -Parallel {
+                    $errorResults = $using:errorResults
                     $resultsArray = $using:resultsArray
                     $skip = $_ * $using:limit
                     $limitURL = $using:URL + "?limit=$using:limit&skip=$skip"
                     if ($using:body){
                         try {
                             $response = Invoke-WebRequest -Method $using:method -Body $using:body -Uri $limitURL -Headers $using:hdrs -UserAgent:($using:GetJCUserAgent)
+                            $content = $response.Content
+                            $resultsArray.Add($content)
                         }
                         catch {
-                            $errorResults.Add($_)
+                            $errorMessage = $_
+                            $errorResults.Add($errorMessage)
                         }
                     }
                     else {
                         try {
                             $response = Invoke-WebRequest -Method $using:method -Uri $limitURL -Headers $using:hdrs -UserAgent:($using:GetJCUserAgent)
+                            $content = $response.Content
+                            $resultsArray.Add($content)
                         }
                         catch {
-                            $errorResults.Add($_)
+                            $errorMessage = $_
+                            $errorResults.Add($errorMessage)
                         }
                     }
-                    $content = $response.Content
-                    $resultsArray.Add($content)
                 }
             }
-            if ($errorResults.Count -gt 1){
+            if ($errorResults.Count -ge 1){
                 throw $errorResults
             }
             else {
