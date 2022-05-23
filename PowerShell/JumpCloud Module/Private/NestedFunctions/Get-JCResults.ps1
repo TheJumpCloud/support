@@ -91,6 +91,9 @@ Function Get-JCResults
         # Running Function in Sequential
         else {
             $resultsArray += $response.Content | ConvertFrom-Json
+            if ($parallel -eq $true) {
+                Write-Warning "The installed version of PowerShell does not support Parallel functionality. Consider updating to PowerShell 7 to use this feature."
+            }
             for($i = 1; $i -lt $passCounter; $i++) {
                 $skip += $limit
                 $limitURL = $URL + "?limit=$limit&skip=$skip"
