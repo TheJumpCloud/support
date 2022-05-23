@@ -44,6 +44,7 @@ Function Get-JCResults
         if (($PSVersionTable.PSVersion.Major -ge 7) -and ($parallel -eq $true)) {
             $content = $response.Content
             $resultsArray.Add($content)
+            $errorResults = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
             if ($passCounter -gt 1) {
                 $GetJCUserAgent = Get-JCUserAgent
                 1..$passCounter | ForEach-Object -Parallel {
@@ -51,16 +52,31 @@ Function Get-JCResults
                     $skip = $_ * $using:limit
                     $limitURL = $using:URL + "?limit=$using:limit&skip=$skip"
                     if ($using:body){
-                        $response = Invoke-WebRequest -Method $using:method -Body $using:body -Uri $limitURL -Headers $using:hdrs -UserAgent:($using:GetJCUserAgent)
+                        try {
+                            $response = Invoke-WebRequest -Method $using:method -Body $using:body -Uri $limitURL -Headers $using:hdrs -UserAgent:($using:GetJCUserAgent)
+                        }
+                        catch {
+                            $errorResults.Add($_)
+                        }
                     }
                     else {
-                        $response = Invoke-WebRequest -Method $using:method -Uri $limitURL -Headers $using:hdrs -UserAgent:($using:GetJCUserAgent)
+                        try {
+                            $response = Invoke-WebRequest -Method $using:method -Uri $limitURL -Headers $using:hdrs -UserAgent:($using:GetJCUserAgent)
+                        }
+                        catch {
+                            $errorResults.Add($_)
+                        }
                     }
                     $content = $response.Content
                     $resultsArray.Add($content)
                 }
             }
-            $resultsArray = $resultsArray | ConvertFrom-Json
+            if ($errorResults.Count -gt 1){
+                throw $errorResults
+            }
+            else {
+                $resultsArray = $resultsArray | ConvertFrom-Json
+            }
         }
         # Running Function in Sequential
         else {
