@@ -29,11 +29,11 @@ Function Get-JCResults
             Write-Warning "The installed version of PowerShell does not support Parallel functionality. Consider updating to PowerShell 7 to use this feature."
             Write-Warning "Visit aka.ms/powershell-release?tag=stable for latest release"
             Write-Debug "Unsupported Parallel configuration... Running in Sequential"
-            $resultsArray = @()
+            $resultsArray = [System.Collections.Generic.List[PSObject]]::new()
         }
         else {
             Write-Debug "Running in Sequential"
-            $resultsArray = @()
+            $resultsArray = [System.Collections.Generic.List[PSObject]]::new()
         }
         $totalCount = 1
         $limit = [int]$limit
@@ -119,14 +119,15 @@ Function Get-JCResults
                 throw $errorResults
             }
             else {
-                # Convert threadsafe JSON to hashtable
+                # Convert threadsafe JSON list to hashtable
                 $resultsArray = $resultsArray | ConvertFrom-Json
             }
         }
         # Running Function in Sequential
         else {
-            # Add results to results Array
-            $resultsArray += $response.Content | ConvertFrom-Json
+            # Add results to results list
+            $content = $response.Content
+            [void]$resultsArray.Add($content)
 
             # Perform Sequential loop; only if there is more than 1 page of results
             for($i = 1; $i -lt $passCounter; $i++) {
@@ -153,10 +154,14 @@ Function Get-JCResults
                     }
                 }
 
-                # Add results to results Array
-                $resultsArray += $response.Content | ConvertFrom-Json
+                # Add results to results list
+                $content = $response.Content
+                [void]$resultsArray.Add($content)
                 Write-Debug ("Pass: $i Amount: " + ($response.Content | ConvertFrom-Json).Count)
             }
+
+            # Convert JSON list to hashtable
+            $resultsArray = $resultsArray | ConvertFrom-Json
         }
     }
     end {
