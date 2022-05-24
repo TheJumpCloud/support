@@ -18,10 +18,18 @@ Function Get-JCResults
         {
             $hdrs.Add('x-org-id', "$($JCOrgID)")
         }
+        # Check if parallel is supported
         if (($PSVersionTable.PSVersion.Major -ge 7) -and ($parallel -eq $true)) {
             Write-Debug "Parallel set to True, PSVersion greater than 7"
             $resultsArray = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
             $errorResults = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
+        }
+        # Check if unsupported parallel, give warning
+        elseif (($PSVersionTable.PSVersion.Major -lt 7) -and ($parallel -eq $true)) {
+            Write-Warning "The installed version of PowerShell does not support Parallel functionality. Consider updating to PowerShell 7 to use this feature."
+            Write-Warning "Visit aka.ms/powershell-release?tag=stable for latest release"
+            Write-Debug "Unsupported Parallel configuration... Running in Sequential"
+            $resultsArray = @()
         }
         else {
             Write-Debug "Running in Sequential"
@@ -119,12 +127,6 @@ Function Get-JCResults
         else {
             # Add results to results Array
             $resultsArray += $response.Content | ConvertFrom-Json
-
-            # Check if unsupported parallel, give warning
-            if ($parallel -eq $true) {
-                Write-Warning "The installed version of PowerShell does not support Parallel functionality. Consider updating to PowerShell 7 to use this feature."
-                Write-Warning "Visit aka.ms/powershell-release?tag=stable for latest release"
-            }
 
             # Perform Sequential loop; only if there is more than 1 page of results
             for($i = 1; $i -lt $passCounter; $i++) {
