@@ -1,6 +1,6 @@
-## 1.22.2
+## 1.23.0
 
-Release Date: May 20, 2022
+Release Date: May 25, 2022
 
 #### RELEASE NOTES
 
