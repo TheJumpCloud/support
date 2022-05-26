@@ -1,3 +1,25 @@
+## 1.23.0
+
+Release Date: May 25, 2022
+
+#### RELEASE NOTES
+
+```
+This release contains framework for upcoming features to improve performance
+```
+
+#### FEATURES:
+
+* Added Parallel Functionality to Get-JCResults
+
+#### IMPROVEMENTS:
+
+* Added Parallel Functionality to Get-JCResults
+
+#### BUG FIXES:
+
+N/A
+
 ## 1.22.1
 
 Release Date: May 19, 2022

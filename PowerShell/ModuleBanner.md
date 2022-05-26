@@ -1,10 +1,10 @@
 #### Latest Version
 
 ```
-1.22.1
+1.23.0
 ```
 
-#### Banner Current
+ #### Banner Current
 
 ```
 * Added functionality for Set, Get, New-JCUser to Search by Email to Manager Field
