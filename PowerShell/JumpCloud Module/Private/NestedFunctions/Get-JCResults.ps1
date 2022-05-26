@@ -88,7 +88,7 @@ Function Get-JCResults
                     if ($using:body){
                         try {
                             # Collect results and add to threadsafe array
-                            $response = Invoke-WebRequest -Method $using:method -Body $using:body -Uri $limitURL -Headers $using:hdrs -UserAgent:($using:GetJCUserAgent)
+                            $response = Invoke-WebRequest -Method $using:method -Body $using:body -Uri $limitURL -Headers $using:hdrs -MaximumRetryCount 5 -RetryIntervalSec 5 -UserAgent:($using:GetJCUserAgent)
                             $content = $response.Content
                             $resultsArray.Add($content)
                         }
@@ -101,7 +101,7 @@ Function Get-JCResults
                     else {
                         try {
                             # Collect results and add to threadsafe array
-                            $response = Invoke-WebRequest -Method $using:method -Uri $limitURL -Headers $using:hdrs -UserAgent:($using:GetJCUserAgent)
+                            $response = Invoke-WebRequest -Method $using:method -Uri $limitURL -Headers $using:hdrs -MaximumRetryCount 5 -RetryIntervalSec 5 -UserAgent:($using:GetJCUserAgent)
                             $content = $response.Content
                             $resultsArray.Add($content)
                         }
