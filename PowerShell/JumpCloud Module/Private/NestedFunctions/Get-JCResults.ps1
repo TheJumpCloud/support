@@ -57,9 +57,9 @@ Function Get-JCResults
         $totalCount = [int]$totalCount.Trim()
         Write-Debug "total count: $totalCount"
 
-        # Divide amount of results by limit to find amount of passes to fully collect results
-        $passCounter = [math]::ceiling($totalCount/$limit)
-        Write-Debug "number of passes: $passCounter"
+        # Divide amount of results by limit to find amount of pages to fully collect results
+        $pageCounter = [math]::ceiling($totalCount/$limit)
+        Write-Debug "number of pages: $pageCounter"
 
         # Running Function in Parallel
         if (($PSVersionTable.PSVersion.Major -ge 7) -and ($parallel -eq $true)) {
@@ -69,18 +69,18 @@ Function Get-JCResults
             $resultsArray.Add($content)
 
             # If the amount of results are greater than 1 page, proceed with parallel processing
-            if ($passCounter -gt 1) {
+            if ($pageCounter -gt 1) {
 
                 # Store JCUserAgent in variable to reference in each parallel session
                 $GetJCUserAgent = Get-JCUserAgent
-
+                
                 # Perform Parallel Loop
-                1..$passCounter | ForEach-Object -Parallel {
+                1..$pageCounter | ForEach-Object -Parallel {
                     # Variables for containing results and errors
                     $errorResults = $using:errorResults
                     $resultsArray = $using:resultsArray
 
-                    # Increment skip by limit after each pass and update URL
+                    # Increment skip by limit after each page and update URL
                     $skip = $_ * $using:limit
                     $limitURL = $using:URL + "?limit=$using:limit&skip=$skip"
 
@@ -130,9 +130,9 @@ Function Get-JCResults
             [void]$resultsArray.Add($content)
 
             # Perform Sequential loop; only if there is more than 1 page of results
-            for($i = 1; $i -lt $passCounter; $i++) {
+            for($i = 1; $i -lt $pageCounter; $i++) {
 
-                # Increment skip by limit after each pass and update URL
+                # Increment skip by limit after each page and update URL
                 $skip += $limit
                 $limitURL = $URL + "?limit=$limit&skip=$skip"
 
@@ -157,7 +157,7 @@ Function Get-JCResults
                 # Add results to results list
                 $content = $response.Content
                 [void]$resultsArray.Add($content)
-                Write-Debug ("Pass: $i Amount: " + ($response.Content | ConvertFrom-Json).Count)
+                Write-Debug ("Page: $i Amount: " + ($response.Content | ConvertFrom-Json).Count)
             }
 
             # Convert JSON list to hashtable
