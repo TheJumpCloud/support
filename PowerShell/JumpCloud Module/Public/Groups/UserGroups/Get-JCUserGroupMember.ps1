@@ -4,13 +4,12 @@ Function Get-JCUserGroupMember ()
 
     param
     (
-
         [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'ByGroup', Position = 0, HelpMessage = 'The name of the JumpCloud User Group you want to return the members of.')]
-        [Alias('name')]
-        [String]$GroupName,
-
+        [Alias('name')][String]$GroupName,
         [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'ByID', HelpMessage = 'If searching for a User Group using the GroupID populate the GroupID in the -ByID field.')]
-        [String]$ByID
+        [String]$ByID,
+        [Parameter(Mandatory=$false, ValueFromPipelineByPropertyName, ParameterSetName = 'Parallel', HelpMessage = 'Boolean: $true to run in parallel, $false to run in sequential; Default value: false')]
+        [Bool]$Parallel=$false
     )
 
     begin
@@ -52,7 +51,14 @@ Function Get-JCUserGroupMember ()
 
                     $limitURL = "{0}/api/v2/usergroups/{1}/members" -f $JCUrlBasePath, $Group_ID
                     Write-Debug $limitURL
-                    $rawResults = Get-JCResults -Url $limitURL -method "GET" -limit 100
+
+                    if ($Parallel) {
+                        $rawResults = Get-JCResults -Url $limitURL -method "GET" -limit 100 -parallel $true
+                    }
+                    else {
+                        $rawResults = Get-JCResults -Url $limitURL -method "GET" -limit 100
+                    }
+                    
 
                     foreach ($uid in $rawResults)
                     {
@@ -82,7 +88,13 @@ Function Get-JCUserGroupMember ()
         {
             $limitURL = "{0}/api/v2/usergroups/{1}/members" -f $JCUrlBasePath, $ByID
             Write-Debug $limitURL
-            $resultsArray = Get-JCResults -Url $limitURL -method "GET" -limit 100
+            
+            if ($Parallel) {
+                $rawResults = Get-JCResults -Url $limitURL -method "GET" -limit 100 -parallel $true
+            }
+            else {
+                $rawResults = Get-JCResults -Url $limitURL -method "GET" -limit 100
+            }
 
         }
     }
