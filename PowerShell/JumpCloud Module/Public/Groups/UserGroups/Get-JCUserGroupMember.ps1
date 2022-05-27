@@ -88,12 +88,12 @@ Function Get-JCUserGroupMember ()
         {
             $limitURL = "{0}/api/v2/usergroups/{1}/members" -f $JCUrlBasePath, $ByID
             Write-Debug $limitURL
-            
+
             if ($Parallel) {
-                $rawResults = Get-JCResults -Url $limitURL -method "GET" -limit 100 -parallel $true
+                $resultsArray = Get-JCResults -Url $limitURL -method "GET" -limit 100 -parallel $true
             }
             else {
-                $rawResults = Get-JCResults -Url $limitURL -method "GET" -limit 100
+                $resultsArray = Get-JCResults -Url $limitURL -method "GET" -limit 100
             }
 
         }
