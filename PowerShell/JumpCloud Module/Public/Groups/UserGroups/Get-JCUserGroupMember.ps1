@@ -8,7 +8,7 @@ Function Get-JCUserGroupMember ()
         [Alias('name')][String]$GroupName,
         [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'ByID', HelpMessage = 'If searching for a User Group using the GroupID populate the GroupID in the -ByID field.')]
         [String]$ByID,
-        [Parameter(Mandatory=$false, ValueFromPipelineByPropertyName, ParameterSetName = 'Parallel', HelpMessage = 'Boolean: $true to run in parallel, $false to run in sequential; Default value: false')]
+        [Parameter(Mandatory=$false, ValueFromPipelineByPropertyName, HelpMessage = 'Boolean: $true to run in parallel, $false to run in sequential; Default value: false')]
         [Bool]$Parallel=$false
     )
 
@@ -20,15 +20,12 @@ Function Get-JCUserGroupMember ()
 
         Write-Debug 'Initilizing resultsArray and results ArraryByID'
         $rawResults = @()
-        $resultsArray = @()
+        $resultsArray = [System.Collections.Generic.List[PSObject]]::new()
 
-        if ($PSCmdlet.ParameterSetName -eq 'ByGroup')
-        {
-            Write-Debug 'Populating GroupNameHash'
-            $GroupNameHash = Get-Hash_UserGroupName_ID
-            Write-Debug 'Populating UserIDHash'
-            $UserIDHash = Get-Hash_ID_Username
-        }
+        Write-Debug 'Populating GroupNameHash'
+        $GroupNameHash = Get-Hash_UserGroupName_ID
+        Write-Debug 'Populating UserIDHash'
+        $UserIDHash = Get-Hash_ID_Username
 
     }
 
@@ -71,7 +68,7 @@ Function Get-JCUserGroupMember ()
                             'UserID'    = $uid.to.id
                         }
 
-                        $resultsArray += $FomattedResult
+                        $resultsArray.Add($FomattedResult)
                     }
 
                     $rawResults = $null
@@ -86,15 +83,35 @@ Function Get-JCUserGroupMember ()
         elseif ($PSCmdlet.ParameterSetName -eq 'ByID')
 
         {
+            $GroupName = ($GroupNameHash.GetEnumerator() | Where-Object Value -eq $ByID).Name
+            Write-Debug "$GroupName"
+
             $limitURL = "{0}/api/v2/usergroups/{1}/members" -f $JCUrlBasePath, $ByID
             Write-Debug $limitURL
 
             if ($Parallel) {
-                $resultsArray = Get-JCResults -Url $limitURL -method "GET" -limit 100 -parallel $true
+                $rawResults = Get-JCResults -Url $limitURL -method "GET" -limit 100 -parallel $true
             }
             else {
-                $resultsArray = Get-JCResults -Url $limitURL -method "GET" -limit 100
+                $rawResults = Get-JCResults -Url $limitURL -method "GET" -limit 100
             }
+            
+
+            foreach ($uid in $rawResults)
+            {
+                $Username = $UserIDHash.Get_Item($uid.to.id)
+
+                $FomattedResult = [pscustomobject]@{
+
+                    'GroupName' = $GroupName
+                    'Username'  = $Username
+                    'UserID'    = $uid.to.id
+                }
+
+                $resultsArray.Add($FomattedResult)
+            }
+
+            $rawResults = $null
 
         }
     }
