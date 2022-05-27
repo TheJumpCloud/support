@@ -14,17 +14,12 @@ Returns the User Group members of a JumpCloud User Group.
 
 ### ByGroup (Default)
 ```
-Get-JCUserGroupMember [-GroupName] <String> [<CommonParameters>]
+Get-JCUserGroupMember [-GroupName] <String> [-Parallel <Boolean>] [<CommonParameters>]
 ```
 
 ### ByID
 ```
-Get-JCUserGroupMember -ByID <String> [<CommonParameters>]
-```
-
-### Parallel
-```
-Get-JCUserGroupMember [-Parallel <Boolean>] [<CommonParameters>]
+Get-JCUserGroupMember -ByID <String> [-Parallel <Boolean>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -90,7 +85,7 @@ Boolean: $true to run in parallel, $false to run in sequential; Default value: f
 
 ```yaml
 Type: System.Boolean
-Parameter Sets: Parallel
+Parameter Sets: (All)
 Aliases:
 
 Required: False
