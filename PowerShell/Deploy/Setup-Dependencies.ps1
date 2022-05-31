@@ -16,7 +16,7 @@ ForEach ($DependentModule In $DependentModules)
     {
         Write-Host("[status]Installing module: '$DependentModule' from 'PSGallery'")
         if ($DependentModule -eq 'PowerShellGet'){
-            Install-Module -Name $DependentModule -Repository:('PSGallery') -AllowPrerelease -Force
+            Install-Module -Name $DependentModule -Repository:('PSGallery') -RequiredVersion '3.0.12-beta' -AllowPrerelease -Force
         }
         elseif ($DependentModule -eq 'PSScriptAnalyzer') {
             Install-Module -Name $DependentModule -Repository:('PSGallery') -RequiredVersion '1.19.1' -Force
