@@ -29,11 +29,11 @@ Function Get-JCResults
             Write-Warning "The installed version of PowerShell does not support Parallel functionality. Consider updating to PowerShell 7 to use this feature."
             Write-Warning "Visit aka.ms/powershell-release?tag=stable for latest release"
             Write-Debug "Unsupported Parallel configuration... Running in Sequential"
-            $resultsArray = [System.Collections.Generic.List[PSObject]]::new()
+            $resultsArray = [System.Collections.Generic.List[object]]::new()
         }
         else {
             Write-Debug "Running in Sequential"
-            $resultsArray = [System.Collections.Generic.List[PSObject]]::new()
+            $resultsArray = [System.Collections.Generic.List[object]]::new()
         }
         $totalCount = 1
         $limit = [int]$limit
@@ -46,16 +46,36 @@ Function Get-JCResults
 
         # Attempt initial call and collect first page of results
         try {
-            $response = Invoke-WebRequest -Method GET -Uri $limitURL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
+            if ($body) {
+                $response = Invoke-WebRequest -Method $method -Body $body -Uri $limitURL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
+            }
+            else {
+                $response = Invoke-WebRequest -Method $method -Uri $limitURL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
+            }
+            
         }
         catch {
             throw $_
         }
 
         # Find total amount of results
-        $totalCount = $response.Headers."x-total-count"
-        $totalCount = [int]$totalCount.Trim()
-        Write-Debug "total count: $totalCount"
+
+        if ($null -eq $response.Headers."x-total-count") {
+            Write-Debug "No x-total-count header, checking response content for totalCount"
+            $totalCountHeader = $false  
+            $content = $response.Content | ConvertFrom-Json
+            $totalCount = $content.totalCount
+            $totalCount = [int]$totalCount
+            Write-Debug "total count: $totalCount"
+        }
+        else {
+            Write-Debug "x-total-count header present"
+            $totalCountHeader = $true 
+            $totalCount = $response.Headers."x-total-count"
+            $totalCount = [int]$totalCount.Trim()
+            Write-Debug "total count: $totalCount"
+        }
+        
 
         # Divide amount of results by limit to find amount of pages to fully collect results
         $pageCounter = [math]::ceiling($totalCount/$limit)
@@ -63,10 +83,20 @@ Function Get-JCResults
 
         # Running Function in Parallel
         if (($PSVersionTable.PSVersion.Major -ge 7) -and ($parallel -eq $true)) {
-
-            # Add content to threadsafe object
-            $content = $response.Content
-            $resultsArray.Add($content)
+            Write-Debug "Parallel validated"
+            if ($totalCountHeader) {
+                # Add content to threadsafe object
+                $content = $response.Content
+                $resultsArray.Add($content)
+            }
+            else {
+                # Add content to threadsafe object
+                $results = $content.results
+                $results | ForEach-Object {
+                    [void]$resultsArray.Add($_)
+                }
+            }
+            
 
             # If the amount of results are greater than 1 page, proceed with parallel processing
             if ($pageCounter -gt 1) {
@@ -79,36 +109,69 @@ Function Get-JCResults
                     # Variables for containing results and errors
                     $errorResults = $using:errorResults
                     $resultsArray = $using:resultsArray
+                    $totalCountHeader = $using:totalCountHeader
+                    $body = $using:body
 
                     # Increment skip by limit after each page and update URL
                     $skip = $_ * $using:limit
                     $limitURL = $using:URL + "?limit=$using:limit&skip=$skip"
 
                     # Check if body is present
-                    if ($using:body){
+                    if ($body){
                         try {
+                            if ($limitURL -like "*/search/*") {
+                                $updatedBody = $body | ConvertFrom-Json -AsHashtable
+                                $updatedBody["limit"] = $using:limit
+                                $updatedBody["skip"] = $skip
+                                $updatedBody = $updatedBody | ConvertTo-Json -Compress -Depth 4
+                            }
                             # Collect results and add to threadsafe array
-                            $response = Invoke-WebRequest -Method $using:method -Body $using:body -Uri $limitURL -Headers $using:hdrs -MaximumRetryCount 5 -RetryIntervalSec 5 -UserAgent:($using:GetJCUserAgent)
-                            $content = $response.Content
-                            $resultsArray.Add($content)
+                            $response = Invoke-WebRequest -Method $using:method -Body $updatedBody -Uri $limitURL -Headers $using:hdrs -MaximumRetryCount 5 -RetryIntervalSec 5 -UserAgent:($using:GetJCUserAgent)
                         }
                         catch {
                             # If error is encountered, add error object to threadsafe error array
                             $errorMessage = $_
                             $errorResults.Add($errorMessage)
                         }
+
+                        if ($totalCountHeader) {
+                            # Add content to threadsafe object
+                            $content = $response.Content 
+                            $resultsArray.Add($content)
+                        }
+                        else {
+                            # Add content to threadsafe object
+                            $content = $response.Content | ConvertFrom-Json
+                            $results = $content.results
+                            $results | ForEach-Object {
+                                [void]$resultsArray.Add($_)
+                            }
+                        }
+
                     }
                     else {
                         try {
                             # Collect results and add to threadsafe array
                             $response = Invoke-WebRequest -Method $using:method -Uri $limitURL -Headers $using:hdrs -MaximumRetryCount 5 -RetryIntervalSec 5 -UserAgent:($using:GetJCUserAgent)
-                            $content = $response.Content
-                            $resultsArray.Add($content)
                         }
                         catch {
                             # If error is encountered, add error object to threadsafe error array
                             $errorMessage = $_
                             $errorResults.Add($errorMessage)
+                        }
+
+                        if ($totalCountHeader) {
+                            # Add content to threadsafe object
+                            $content = $response.Content
+                            $resultsArray.Add($content)
+                        }
+                        else {
+                            # Add content to threadsafe object
+                            $content = $response.Content | ConvertFrom-Json
+                            $results = $content.results
+                            $results | ForEach-Object {
+                                [void]$resultsArray.Add($_)
+                            }
                         }
                     }
                 }
@@ -118,16 +181,20 @@ Function Get-JCResults
             if ($errorResults.Count -ge 1){
                 throw $errorResults
             }
-            else {
-                # Convert threadsafe JSON list to hashtable
-                $resultsArray = $resultsArray | ConvertFrom-Json
-            }
         }
         # Running Function in Sequential
         else {
-            # Add results to results list
-            $content = $response.Content
-            [void]$resultsArray.Add($content)
+            if ($totalCountHeader) {
+                # Add results to results list
+                $content = $response.Content
+                [void]$resultsArray.Add($content)
+            }
+            else {
+                # Add results to results list
+                $content = $response.Content | ConvertFrom-Json
+                $results = $content.results | ConvertTo-Json -Compress -Depth 4 | ConvertFrom-Json
+                [void]$resultsArray.AddRange($results)
+            }
 
             # Perform Sequential loop; only if there is more than 1 page of results
             for($i = 1; $i -lt $pageCounter; $i++) {
@@ -135,10 +202,17 @@ Function Get-JCResults
                 # Increment skip by limit after each page and update URL
                 $skip += $limit
                 $limitURL = $URL + "?limit=$limit&skip=$skip"
+                Write-Debug $limitURL
 
                 # Check if body is present
                 if ($body) {
                     try {
+                        if ($limitURL -like "*/search/*") {
+                            $body = $body | ConvertFrom-Json -AsHashtable
+                            $body["limit"] = $limit
+                            $body["skip"] = $skip
+                            $body = $body | ConvertTo-Json -Compress -Depth 4
+                        }
                         $response = Invoke-WebRequest -Method $method -Body $body -Uri $limitURL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
                     }
                     catch {
@@ -155,16 +229,26 @@ Function Get-JCResults
                 }
 
                 # Add results to results list
-                $content = $response.Content
-                [void]$resultsArray.Add($content)
-                Write-Debug ("Page: $i Amount: " + ($response.Content | ConvertFrom-Json).Count)
+                if ($totalCountHeader) {
+                    # Add results to results list
+                    $content = $response.Content
+                    [void]$resultsArray.Add($content)
+                    Write-Debug ("Page: $i Amount: " + ($content | ConvertFrom-Json).Count)
+                }
+                else {
+                    # Add results to results list
+                    $content = $response.Content | ConvertFrom-Json
+                    $results = $content.results | ConvertTo-Json -Compress -Depth 4 | ConvertFrom-Json
+                    [void]$resultsArray.AddRange($results)
+                    Write-Debug ("Page: $i Amount: " + ($results).Count)
+                }
             }
-
-            # Convert JSON list to hashtable
-            $resultsArray = $resultsArray | ConvertFrom-Json
         }
     }
     end {
+        if ($totalCountHeader) {
+            $resultsArray = $resultsArray | ConvertFrom-Json
+        }
         # Return complete results
         return $resultsArray
     }
