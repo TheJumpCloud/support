@@ -16,7 +16,7 @@ ForEach ($DependentModule In $DependentModules)
     {
         Write-Host("[status]Installing module: '$DependentModule' from 'PSGallery'")
         if ($DependentModule -eq 'PowerShellGet'){
-            Install-Module -Name $DependentModule -Repository:('PSGallery') -AllowPrerelease -Force
+            Install-Module -Name $DependentModule -Repository:('PSGallery') -RequiredVersion '3.0.12-beta' -AllowPrerelease -Force
         }
         elseif ($DependentModule -eq 'PSScriptAnalyzer') {
             Install-Module -Name $DependentModule -Repository:('PSGallery') -RequiredVersion '1.19.1' -Force
@@ -29,7 +29,12 @@ ForEach ($DependentModule In $DependentModules)
     If ([System.String]::IsNullOrEmpty((Get-Module | Where-Object { $_.Name -eq $DependentModule })))
     {
         Write-Host("[status]Importing module: '$DependentModule'")
-        Import-Module -Name:($DependentModule) -Force -Global
+        if ($DependentModule -eq "JumpCloud.SDK.V2"){
+            Import-Module -Name:($DependentModule) -Force -Global -AllowClobber
+        }
+        else{
+            Import-Module -Name:($DependentModule) -Force -Global
+        }
     }
 }
 ### TODO: Switch to CodeArtifact
