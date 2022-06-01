@@ -1,14 +1,35 @@
 Function Get-Hash_SystemID_DisplayName ()
 {
+    [CmdletBinding()]
 
-    $SystemsHash =  New-Object System.Collections.Hashtable
+    param (
+        [Parameter(Mandatory=$false, ValueFromPipelineByPropertyName, HelpMessage = 'Boolean: $true to run in parallel, $false to run in sequential; Default value: false')]
+        [Bool]$Parallel=$false
+    )
 
-    $Systems = Get-JCSystem -returnProperties displayName
+    begin {
+        $SystemsHash = New-Object System.Collections.Hashtable
 
-        foreach ($System in $Systems)
-        {
-            $SystemsHash.Add($System._id, $System.DisplayName)
-
+        $URL = "{0}/api/search/systems" -f $JCUrlBasePath
+        $Search = @{
+            filter = @(
+                @{}
+            )
+            fields = "displayName"
         }
-    return $SystemsHash
+        $SearchJSON = $Search | ConvertTo-Json -Compress -Depth 4
+
+        if ($Parallel) {
+            $SystemsObject = Get-JCResults -Url $URL -method "POST" -body $SearchJSON -limit 1000 -parallel $true
+        }
+        else {
+            $SystemsObject = Get-JCResults -Url $URL -method "POST" -body $SearchJSON -limit 1000
+        }
+
+        $SystemsObject | ForEach-Object {
+            $SystemsHash.Add($_._id, $_.displayName)
+        }
+        
+        return $SystemsHash
+    }
 }

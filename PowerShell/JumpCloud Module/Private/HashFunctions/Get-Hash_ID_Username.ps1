@@ -1,14 +1,36 @@
 Function Get-Hash_ID_Username ()
 {
+    [CmdletBinding()]
 
-    $UsersHash = New-Object System.Collections.Hashtable
+    param (
+        [Parameter(Mandatory=$false, ValueFromPipelineByPropertyName, HelpMessage = 'Boolean: $true to run in parallel, $false to run in sequential; Default value: false')]
+        [Bool]$Parallel=$false
+    )
 
-    $Users = Get-JCUser -returnProperties username
+    begin {
 
-    foreach ($User in $Users)
-    {
-        $UsersHash.Add($User._id, $User.username)
+        $UsersHash = New-Object System.Collections.Hashtable
 
+        $URL = "{0}/api/search/systemusers" -f $JCUrlBasePath
+        $Search = @{
+            filter = @(
+                @{}
+            )
+            fields = "username"
+        }
+        $SearchJSON = $Search | ConvertTo-Json -Compress -Depth 4
+
+        if ($Parallel) {
+            $UsersObject = Get-JCResults -Url $URL -method "POST" -body $SearchJSON -limit 1000 -parallel $true
+        }
+        else {
+            $UsersObject = Get-JCResults -Url $URL -method "POST" -body $SearchJSON -limit 1000
+        }
+
+        $UsersObject | ForEach-Object {
+            $UsersHash.Add($_._id, $_.username)
+        }
+
+        return $UsersHash
     }
-    return $UsersHash
 }
