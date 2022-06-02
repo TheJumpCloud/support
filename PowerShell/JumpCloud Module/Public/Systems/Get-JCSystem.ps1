@@ -398,10 +398,9 @@ Function Get-JCSystem ()
 
         } # End switch
     } # End process
-
+    
     end
     {
-
         switch ($PSCmdlet.ParameterSetName)
         {
             SearchFilter
@@ -412,8 +411,6 @@ Function Get-JCSystem ()
             {
                 return $resultsArrayList | Select-Object -ExcludeProperty associatedTagCount
             }
-
         }
-
     }
 }
