@@ -189,7 +189,12 @@ Function Get-JCResults
             else {
                 # Add results to results list
                 $content = $response.Content | ConvertFrom-Json
-                [void]$resultsArray.AddRange($content.results)
+                if ($null -eq $content.results) {
+                    [void]$resultsArray.Add($content)
+                }
+                else {
+                    [void]$resultsArray.AddRange($content.results)
+                }
             }
 
             # Perform Sequential loop; only if there is more than 1 page of results
@@ -231,13 +236,19 @@ Function Get-JCResults
                     # Add results to results list
                     $content = $response.Content
                     [void]$resultsArray.Add($content)
-                    Write-Debug ("Page: $i Amount: " + ($content | ConvertFrom-Json).Count)
+                    Write-Debug ("Page: $($i+1) Amount: " + ($content | ConvertFrom-Json).Count)
                 }
                 else {
                     # Add results to results list
                     $content = $response.Content | ConvertFrom-Json
-                    [void]$resultsArray.AddRange($content.results)
-                    Write-Debug ("Page: $i Amount: " + ($content.results).Count)
+                    if ($null -eq $content.results) {
+                        [void]$resultsArray.Add($content)
+                        Write-Debug ("Page: $($i+1) Amount: " + ($content | ConvertFrom-Json).Count)
+                    }
+                    else {
+                        [void]$resultsArray.AddRange($content.results)
+                        Write-Debug ("Page: $($i+1) Amount: " + ($content.results).Count)
+                    } 
                 }
             }
         }
