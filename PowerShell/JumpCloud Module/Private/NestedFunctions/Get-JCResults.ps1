@@ -81,22 +81,22 @@ Function Get-JCResults
         $pageCounter = [math]::ceiling($totalCount/$limit)
         Write-Debug "number of pages: $pageCounter"
 
-        if ($totalCountHeader) {
-            # Add content to threadsafe object
-            $content = $response.Content
-            $resultsArray.Add($content)
-        }
-        else {
-            # Add content to threadsafe object
-            $results = $content.results
-            ForEach ($result in $results) {
-                [void]$resultsArray.Add($result)
-            }
-        }
-
         # Running Function in Parallel
         if (($PSVersionTable.PSVersion.Major -ge 7) -and ($parallel -eq $true)) {
             Write-Debug "Parallel validated"
+            if ($totalCountHeader) {
+                # Add content to threadsafe object
+                $content = $response.Content
+                $resultsArray.Add($content)
+            }
+            else {
+                # Add content to threadsafe object
+                $results = $content.results
+                ForEach ($result in $results) {
+                    [void]$resultsArray.Add($result)
+                }
+            }
+            
             # If the amount of results are greater than 1 page, proceed with parallel processing
             if ($pageCounter -gt 1) {
 
@@ -181,6 +181,23 @@ Function Get-JCResults
         }
         # Running Function in Sequential
         else {
+            if ($totalCountHeader) {
+                # Add results to results list
+                $content = $response.Content
+                [void]$resultsArray.Add($content)
+            }
+            else {
+                # Add results to results list
+                $content = $response.Content | ConvertFrom-Json
+                if ($content.results.Count -gt 1) {
+                    [void]$resultsArray.AddRange($content.results)
+                }
+                else {
+                    [void]$resultsArray.Add($content)
+                }
+                
+            }
+
             # Perform Sequential loop; only if there is more than 1 page of results
             for($i = 1; $i -lt $pageCounter; $i++) {
 
