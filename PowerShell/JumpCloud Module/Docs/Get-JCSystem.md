@@ -19,13 +19,14 @@ Get-JCSystem [[-hostname] <String>] [-displayName <String>] [-version <String>] 
  [-systemTimezone <String>] [-active <Boolean>] [-allowMultiFactorAuthentication <Boolean>]
  [-allowPublicKeyAuthentication <Boolean>] [-allowSshPasswordAuthentication <Boolean>]
  [-allowSshRootLogin <Boolean>] [-modifySSHDConfig <Boolean>] [-hasServiceAccount <Boolean>]
- [-filterDateProperty <String>] [-returnProperties <String[]>] -dateFilter <String> -date <DateTime>
- [<CommonParameters>]
+ [-filterDateProperty <String>] [-returnProperties <String[]>] [-Parallel <Boolean>] -dateFilter <String>
+ -date <DateTime> [<CommonParameters>]
 ```
 
 ### ByID
 ```
-Get-JCSystem -SystemID <String> [-SystemFDEKey] -dateFilter <String> -date <DateTime> [<CommonParameters>]
+Get-JCSystem -SystemID <String> [-SystemFDEKey] [-Parallel <Boolean>] -dateFilter <String> -date <DateTime>
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -298,6 +299,21 @@ A search filter to search systems by the OS.
 ```yaml
 Type: System.String
 Parameter Sets: SearchFilter
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Parallel
+Boolean: $true to run in parallel, $false to run in sequential; Default value: false
+
+```yaml
+Type: System.Boolean
+Parameter Sets: (All)
 Aliases:
 
 Required: False

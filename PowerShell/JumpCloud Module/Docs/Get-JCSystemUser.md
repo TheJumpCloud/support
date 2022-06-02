@@ -13,7 +13,7 @@ Returns all JumpCloud Users associated with a JumpCloud System.
 ## SYNTAX
 
 ```
-Get-JCSystemUser [-SystemID] <String> [<CommonParameters>]
+Get-JCSystemUser [-SystemID] <String> [-Parallel <Boolean>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -51,6 +51,21 @@ This example returns all the JumpCloud users whos have Administrator permissions
 
 ## PARAMETERS
 
+### -Parallel
+Boolean: $true to run in parallel, $false to run in sequential; Default value: false
+
+```yaml
+Type: System.Boolean
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
 ### -SystemID
 The _id of the System which you want to query.
 
@@ -82,6 +97,8 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
+
+### System.Boolean
 
 ## OUTPUTS
 
