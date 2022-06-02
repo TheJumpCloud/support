@@ -10,26 +10,17 @@ Function Get-Hash_SystemID_DisplayName ()
     begin {
         $SystemsHash = New-Object System.Collections.Hashtable
 
-        $URL = "{0}/api/search/systems" -f $JCUrlBasePath
-        $Search = @{
-            filter = @(
-                @{}
-            )
-            fields = "displayName"
-        }
-        $SearchJSON = $Search | ConvertTo-Json -Compress -Depth 4
-
         if ($Parallel) {
-            $SystemsObject = Get-JCResults -Url $URL -method "POST" -body $SearchJSON -limit 1000 -parallel $true
+            $Systems = Get-JCSystem -parallel $true -returnProperties displayName
         }
         else {
-            $SystemsObject = Get-JCResults -Url $URL -method "POST" -body $SearchJSON -limit 1000
+            $Systems = Get-JCSystem -returnProperties displayName
         }
 
-        $SystemsObject | ForEach-Object {
-            $SystemsHash.Add($_._id, $_.displayName)
+        foreach ($System in $Systems) {
+                $SystemsHash.Add($System._id, $System.displayName)
         }
-        
+
         return $SystemsHash
     }
 }

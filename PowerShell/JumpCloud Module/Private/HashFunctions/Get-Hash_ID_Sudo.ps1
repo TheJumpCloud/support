@@ -11,24 +11,15 @@ Function Get-Hash_ID_Sudo()
 
         $UsersHash = New-Object System.Collections.Hashtable
 
-        $URL = "{0}/api/search/systemusers" -f $JCUrlBasePath
-        $Search = @{
-            filter = @(
-                @{"sudo"=$true}
-            )
-            fields = "sudo"
-        }
-        $SearchJSON = $Search | ConvertTo-Json -Compress -Depth 4
-
         if ($Parallel) {
-            $UsersObject = Get-JCResults -Url $URL -method "POST" -body $SearchJSON -limit 1000 -parallel $true
+            $Users = Get-JCUser -parallel $true -sudo $true -returnProperties sudo
         }
         else {
-            $UsersObject = Get-JCResults -Url $URL -method "POST" -body $SearchJSON -limit 1000
+            $Users = Get-JCUser -sudo $true -returnProperties sudo
         }
-        
-        $UsersObject | ForEach-Object {
-            $UsersHash.Add($_._id, $_.sudo)
+
+        foreach ($User in $Users) {
+                $UsersHash.Add($User._id, $User.sudo)
         }
 
         return $UsersHash

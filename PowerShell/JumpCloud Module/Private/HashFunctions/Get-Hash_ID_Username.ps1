@@ -11,24 +11,15 @@ Function Get-Hash_ID_Username ()
 
         $UsersHash = New-Object System.Collections.Hashtable
 
-        $URL = "{0}/api/search/systemusers" -f $JCUrlBasePath
-        $Search = @{
-            filter = @(
-                @{}
-            )
-            fields = "username"
-        }
-        $SearchJSON = $Search | ConvertTo-Json -Compress -Depth 4
-
         if ($Parallel) {
-            $UsersObject = Get-JCResults -Url $URL -method "POST" -body $SearchJSON -limit 1000 -parallel $true
+            $Users = Get-JCUser -parallel $true -returnProperties username
         }
         else {
-            $UsersObject = Get-JCResults -Url $URL -method "POST" -body $SearchJSON -limit 1000
+            $Users = Get-JCUser -returnProperties username
         }
 
-        $UsersObject | ForEach-Object {
-            $UsersHash.Add($_._id, $_.username)
+        foreach ($User in $Users) {
+                $UsersHash.Add($User._id, $User.username)
         }
 
         return $UsersHash
