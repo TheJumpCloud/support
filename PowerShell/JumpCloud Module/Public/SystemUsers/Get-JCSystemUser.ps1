@@ -107,7 +107,7 @@ SystemID has an Alias of _id. This means you can leverage the PowerShell pipelin
                 $Username = $UserIDHash.Get_Item($UserID)
                 $Groups = $_.compiledAttributes.ldapGroups.name
 
-                if (($_.paths.to).Count -eq $null)
+                if ($null -eq ($_.paths.to).Count)
                 {
                     $DirectBind = $true
                 }
@@ -164,7 +164,7 @@ SystemID has an Alias of _id. This means you can leverage the PowerShell pipelin
                 $Username = $UserIDHash.Get_Item($UserID)
                 $Groups = $result.compiledAttributes.ldapGroups.name
 
-                if (($result.paths.to).Count -eq $null)
+                if ($null -eq ($result.paths.to).Count)
                 {
                     $DirectBind = $true
                 }
