@@ -1,6 +1,6 @@
 #### Name
 
-Mac - Rename System HostName, LocalHostName and ComputerName from JumpCloud | v1.0 JCCG
+Mac - Rename System HostName, LocalHostName and ComputerName from JumpCloud | v2.0 JCCG
 
 #### commandType
 
@@ -10,63 +10,143 @@ mac
 
 ```
 #!/bin/bash
-conf="$(cat /opt/jc/jcagent.conf)"
-regex='\"systemKey\":\"[a-zA-Z0-9]{24}\"'
+################################################################################
+# This script will update the system hostname, localHostname & computerName to
+# match the value of the this systems displayName in the JumpCloud console.
+# An API Key with read access is required to run this script.
+################################################################################
 
-if [[ $conf =~ $regex ]]; then
-    systemKey="${BASH_REMATCH[@]}"
-fi
+# Set Read API KEY - Required to read "DisplayName" from console.jumpcloud.com
+API_KEY="YourReadOnlyAPIKey"
 
-echo "$(date "+%Y-%m-%dT%H:%M:%S"): systemKey = $systemKey "
-
-regex='[a-zA-Z0-9]{24}'
-if [[ $systemKey =~ $regex ]]; then
-    systemID="${BASH_REMATCH[@]}"
-fi
-
-echo "$(date "+%Y-%m-%dT%H:%M:%S"): systemID = $systemID "
-
-now=$(date -u "+%a, %d %h %Y %H:%M:%S GMT")
-
-# create the string to sign from the request-line and the date
-signstr="GET /api/systems/${systemID} HTTP/1.1\ndate: ${now}"
-
-# create the signature
-signature=$(printf "$signstr" | openssl dgst -sha256 -sign /opt/jc/client.key | openssl enc -e -a | tr -d '\n')
-
+# ------- Do not modify below this line ------
+# Functions
+function validateVariable() {
+    var=$1
+    if [[ -z "$var" ]]; then
+        echo "[error] Required variable was null, exiting..."
+        exit 1
+    fi
+} >&2
+function validateLocalHostname() {
+    var=$1
+    # Validate LocalHostName is Alphanumeric, contains '-' and no spaces
+    # Attempt to remove the space characters if they exist
+    if [[ "$var" =~ \ |\' ]]; then
+        echo "[debug] whitespace characters found in LocalHostName, removing..."
+        var="${var//[[:blank:]]/}"
+    fi
+    # Check for special characters & length of 63 characters
+    # does not begin or end with '-'
+    if [[ "$var" =~ ^[^-][a-zA-Z0-9-]{1,63}[^-]$ ]]; then
+        echo "[debug] LocalHostname appears to be valid: $var"
+    else
+        echo "[debug] special characters found in LocalHostname, removing..."
+        # Attempt to remove special characters if they exist
+        var=$(echo "$var" | sed "s/[^[:alnum:]-]//g")
+        # Finally validate updated variable
+        if [[ "$var" =~ ^[^-][a-zA-Z0-9-]{1,63}[^-]$ ]]; then
+            echo "[debug] LocalHostname appears to be valid: $var"
+        else
+            echo "[error] LocalHostName could not be set, exiting"
+            exit 1
+        fi
+    fi
+    validatedHostname="$var"
+}
+# Get System Key
+function getSystemKey() {
+    conf="$(cat /opt/jc/jcagent.conf)"
+    regex='\"systemKey\":\"[a-zA-Z0-9]{24}\"'
+    if [[ $conf =~ $regex ]]; then
+        systemKey="${BASH_REMATCH[@]}"
+    fi
+    # echo "$(date "+%Y-%m-%dT%H:%M:%S"): systemKey = $systemKey "
+    regex='[a-zA-Z0-9]{24}'
+    if [[ $systemKey =~ $regex ]]; then
+        systemID="${BASH_REMATCH[@]}"
+    fi
+    # echo "$(date "+%Y-%m-%dT%H:%M:%S"): systemID = $systemID "
+    echo "$systemID"
+}
+systemID=$(getSystemKey)
 search=$(
-    curl \
-        -X 'GET' "https://console.jumpcloud.com/api/systems/${systemID}" \
-        -H 'Content-Type: application/json' \
+    curl -s -f -X GET https://console.jumpcloud.com/api/systems/${systemID} \
         -H 'Accept: application/json' \
-        -H "Date: ${now}" \
-        -H "Authorization: Signature keyId=\"system/${systemID}\",headers=\"request-line date\",algorithm=\"rsa-sha256\",signature=\"${signature}\"" \
+        -H 'Content-Type: application/json' \
+        -H "x-api-key: ${API_KEY}"
 )
-
 # regex pattern to search displayNames. This pattern selects the text after "displayName":" and before ",
 regex='("displayName":")([^"]*)(",)'
 if [[ $search =~ $regex ]]; then
     match="${BASH_REMATCH[2]}"
 fi
 
-echo $match
-
-# set the hostname, localhostname and computer name
+# Get old system name
+oldName=$(scutil --get HostName)
+# If hostname is not set for any reason, try again with localHostName
+if [[ "$oldName" == "" ]];then
+    echo "[debug] HostName was not set, trying to get the LocalHostName"
+    oldName=$(scutil --get LocalHostName)
+fi
+# Validate oldName, Match (new Name), systemID
+validateVariable "$oldName"
+validateVariable "$systemID"
+validateVariable "$match"
+echo "[status] Attempting to set ComputerName, LocalHostName & Hostname to: $match"
+# Validate localHostName is alphanumeric, 63 chars in length & no special chars
+validateLocalHostname "$match"
+# if validatedHostname variable exists, continue
+validateVariable "$validatedHostname"
+echo "[debug] script variables were validated"
+# set the hostname, LocalHostName and computer name
+# hostname:
 scutil --set HostName "$match"
-scutil --set LocalHostName "$match"
-scutil --set ComputerName "$match"
+if [[ $? -eq 0 ]]; then
+    echo "[status] HostName Set: $(scutil --get HostName)"
+else
+    echo "[error] Hostname was not set"
+    exit 1
+fi
 
-# print out the names
-echo "HostName:" && scutil --get HostName
-echo "LocalHostName:" && scutil --get LocalHostName
-echo "ComputerName:" && scutil --get ComputerName
+
+if validateVariable "$validatedHostname"; then
+    # Set validated variable
+    scutil --set LocalHostName "$validatedHostname"
+    if [[ $? -eq 0 ]]; then
+        echo "[status] LocalHostName Set: $(scutil --get LocalHostName)"
+    else
+        echo "[error] LocalHostName was not set"
+        exit 1
+    fi
+else
+    echo "[error] Could not validate LocalHostName"
+    exit 1
+fi
+scutil --set ComputerName "$match"
+if [[ $? -eq 0 ]]; then
+    echo "[status] ComputerName Set: $(scutil --get ComputerName)"
+else
+    echo "[error] ComputerName was not set"
+    exit 1
+fi
+
+echo "[status] $oldName was renamed to $match"
+exit 0
 ```
 
 #### Description
 
-This script uses the system context API to gather info about the current system. Using Regex, the code filters out the displayName of a given system and sets the system HostName, LocalHostName and ComputerName to the name set in the JumpCloud console.
+This script uses a read only API key to gather info about the current system. Using Regex, the code filters out the displayName of a given system and sets the system HostName, LocalHostName and ComputerName to the name set in the JumpCloud console.
 
-The current regex pattern attempts to select the text between "displayName":" and ", of the returned results if a displayName contains quotes or commas, this script may not run as intended.
+Please note, there are specific rules for the LocalHostName value. LocalHostNames must:
+
+* Be a maximum 63 characters in length
+* Contain no whitespace characters
+* Contain only alphanumeric characters and hyphens '-'
+* Hyphens must not exist at the beginning or end of the string ex. '-system-1-' is not allowed
+
+This script will attempt to strip whitespace and special characters before setting the system's LocalHostName. HostNames and ComputerNames are not modified as their requirements differ from the LocalHostName.
 
 #### *Import This Command*
 
