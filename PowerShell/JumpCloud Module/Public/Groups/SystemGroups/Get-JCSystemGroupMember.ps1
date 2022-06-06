@@ -18,16 +18,28 @@ Function Get-JCSystemGroupMember ()
         Write-Debug 'Verifying JCAPI Key'
         if ($JCAPIKEY.length -ne 40) {Connect-JConline}
 
-        Write-Debug 'Initilizing resultsArray and results ArraryByID'
-        $rawResults = @()
-        $resultsArray = [System.Collections.Generic.List[PSObject]]::new()
+        if (($PSVersionTable.PSVersion.Major -ge 7) -and ($parallel -eq $true)) {
+            Write-Debug "Parallel set to True, PSVersion greater than 7"
+            Write-Debug 'Initilizing resultsArray and results ArraryByID'
+            $rawResults = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
+            $resultsArray = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
 
-        
-        Write-Debug 'Populating GroupNameHash'
-        $GroupNameHash = Get-Hash_SystemGroupName_ID
-        Write-Debug 'Populating SystemIDHash'
-        $SystemIDHash = Get-Hash_SystemID_HostName
-        
+            Write-Debug 'Populating GroupNameHash'
+            $GroupNameHash = Get-Hash_SystemGroupName_ID
+            Write-Debug 'Populating SystemIDHash'
+            $SystemIDHash = Get-Hash_SystemID_HostName -parallel $true
+        }
+        else {
+            Write-Debug 'Initilizing resultsArray and results ArraryByID'
+            $rawResults = @()
+            $resultsArray = [System.Collections.Generic.List[PSObject]]::new()
+
+            
+            Write-Debug 'Populating GroupNameHash'
+            $GroupNameHash = Get-Hash_SystemGroupName_ID
+            Write-Debug 'Populating SystemIDHash'
+            $SystemIDHash = Get-Hash_SystemID_HostName
+        }
     }
 
     process
