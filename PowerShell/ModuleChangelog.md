@@ -5,16 +5,25 @@ Release Date: May 25, 2022
 #### RELEASE NOTES
 
 ```
-This release contains framework for upcoming features to improve performance
+This release introduces Parallel processing functionality to several functions (Get-JCUser, Get-JCSystem, Get-JCSystemUser, Get-JCSystemGroupMember, Get-JCUserGroupMember)
+
+Note: In order to use the parallel functionality, the feature requires PowerShell version 7 or higher
 ```
 
 #### FEATURES:
 
-* Added Parallel Functionality to Get-JCResults
+* This release adds parallel processing functionality to potentially alleviate long processing times for large scale operations
+    * Note: Feature requires PowerShell version 7 or higher
+    * This release adds the -parallel flag to the following functions:
+        * Get-JCUser
+        * Get-JCSystem
+        * Get-JCSystemUser
+        * Get-JCSystemGroupMember
+        * Get-JCUserGroupMember
 
 #### IMPROVEMENTS:
 
-* Added Parallel Functionality to Get-JCResults
+* Adjusted output for Get-JCSystemGroupMember -ByID and Get-JCUserGroupMember -ByID to match the output of -GroupName
 
 #### BUG FIXES:
 
