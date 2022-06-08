@@ -73,8 +73,8 @@ Describe -Tag:('Parallel') "Get-JCResults Parallel" {
 
         $ParallelSystemGroupMembers.Count | Should -Be $SerialSystemGroupMembers.Count
 
-        $SortedParallelMembers = $ParallelSystemGroupMembers | Sort-Object -Property SystemID
-        $SortedSerialMembers = $SerialSystemGroupMembers | Sort-Object -Property SystemID
+        $SortedParallelMembers = $ParallelSystemGroupMembers | Sort-Object -Property SystemID | ConvertTo-Json
+        $SortedSerialMembers = $SerialSystemGroupMembers | Sort-Object -Property SystemID | ConvertTo-Json
 
         $SortedParallelMembers | Should -Be $SortedSerialMembers
     }
@@ -103,8 +103,8 @@ Describe -Tag:('Parallel') "Get-JCResults Parallel" {
 
         $ParallelUserGroupMembers.Count | Should -Be $SerialUserGroupMembers.Count
 
-        $SortedParallelMembers = $ParallelUserGroupMembers | Sort-Object -Property Username
-        $SortedSerialMembers = $SerialUserGroupMembers | Sort-Object -Property Username
+        $SortedParallelMembers = $ParallelUserGroupMembers | Sort-Object -Property UserID | ConvertTo-Json
+        $SortedSerialMembers = $SerialUserGroupMembers | Sort-Object -Property UserID | ConvertTo-Json
 
         $SortedParallelMembers | Should -Be $SortedSerialMembers
     }
