@@ -53,7 +53,7 @@ Describe -Tag:('Parallel') "Get-JCResults Parallel" {
         $limitURL = "{0}/api/v2/Systemgroups/{1}/members" -f $JCUrlBasePath, $PesterParams_SystemGroup.Id
         $rawResults = Get-JCResults -Url $limitURL -method "GET" -limit 1 -parallel $true
 
-        $ParallelSystemGroupMembers = @()
+        $ParallelSystemGroupMembers = [System.Collections.Generic.List[PSObject]]::new()
         foreach ($uid in $rawResults)
             {
                 $System = Get-JCSystem -id:($uid.to.id)
@@ -65,7 +65,7 @@ Describe -Tag:('Parallel') "Get-JCResults Parallel" {
                     'SystemID'  = $uid.to.id
                 }
 
-                $ParallelSystemGroupMembers += $FomattedResult
+                $ParallelSystemGroupMembers.add($FomattedResult)
             }
 
 
@@ -83,7 +83,7 @@ Describe -Tag:('Parallel') "Get-JCResults Parallel" {
         $limitURL = "{0}/api/v2/Usergroups/{1}/members" -f $JCUrlBasePath, $PesterParams_UserGroup.Id
         $rawResults = Get-JCResults -Url $limitURL -method "GET" -limit 1 -parallel $true
 
-        $ParallelUserGroupMembers = @()
+        $ParallelUserGroupMembers = [System.Collections.Generic.List[PSObject]]::new()
         foreach ($uid in $rawResults)
             {
                 $User = Get-JCUser -id:($uid.to.id)
@@ -95,7 +95,7 @@ Describe -Tag:('Parallel') "Get-JCResults Parallel" {
                     'UserID'  = $uid.to.id
                 }
 
-                $ParallelUserGroupMembers += $FomattedResult
+                $ParallelUserGroupMembers.add($FomattedResult)
             }
 
 
