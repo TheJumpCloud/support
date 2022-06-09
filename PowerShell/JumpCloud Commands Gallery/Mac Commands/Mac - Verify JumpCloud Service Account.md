@@ -9,14 +9,13 @@ mac
 #### Command
 
 ```
-#!/bin/bash
+#!/bin/zsh
+autoload is-at-least
+macOSVer=$(sw_vers -productVersion)
 
-MacOSMajorVersion=$(sw_vers -productVersion | cut -d '.' -f 1)
-MacOSMinorVersion=$(sw_vers -productVersion | cut -d '.' -f 2)
-MacOSPatchVersion=$(sw_vers -productVersion | cut -d '.' -f 3)
-
-if [[ $MacOSMajorVersion -eq 10 && $MacOSMinorVersion -lt 13 ]]; then
-    echo "Error:  System must be running 10.13+ to install Service Account."
+is-at-least "10.13" $macOSVer
+if [[ ! $? == "0" ]]; then
+    echo "<result>Error:  System must be running 10.13+ to install Service Account.</result>"
     exit 2
 fi
 
