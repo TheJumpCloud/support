@@ -12,7 +12,7 @@ mac
 #!/bin/bash
 ################################################################################
 # This script will update the system hostname, localHostname & computerName to
-# match the value of the this systems displayName in the JumpCloud console.
+# match the value of this systems displayName in the JumpCloud console.
 # An API Key with read access is required to run this script.
 ################################################################################
 
