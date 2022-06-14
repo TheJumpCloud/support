@@ -78,26 +78,17 @@ function Get-JCCommandResult ()
             }
             ReturnAll
             {
-                Write-Verbose "Setting skip to $skip"
-
-                [int]$Counter = 0
-
-                while (($resultsArrayList.results).count -ge $Counter)
-                {
-                    $limitURL = "$JCUrlBasePath/api/commandresults?limit=$limit&skip=$skip"
-                    Write-Verbose $limitURL
-
-                    $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
-
-                    $skip += $limit
-                    $Counter += $limit
-                    Write-Verbose "Setting skip to $skip"
-                    Write-Verbose "Setting Counter to $Counter"
-
-                    $null = $resultsArrayList.Add($results)
-                    $count = ($resultsArrayList.results.Count)
-                    Write-Verbose "Results count equals $count"
+                $limitURL = "$JCUrlBasePath/api/commandresults"
+                if ($Parallel) {
+                    $results = Get-JCResults -Url $limitURL -method "GET" -limit $limit -parallel $true
                 }
+                else {
+                    $results = Get-JCResults -Url $limitURL -method "GET" -limit $limit
+                }
+
+                $null = $resultsArrayList.Add($results)
+                $count = ($resultsArrayList.results.Count)
+                Write-Verbose "Results count equals $count"
             }
             MaxResults
             {
@@ -180,7 +171,7 @@ function Get-JCCommandResult ()
 
                         $URL = "$using:JCUrlBasePath/api/commandresults/$($_._id)"
 
-                        $CommandResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $using:hdrs -UserAgent:$using:GetJCUserAgent
+                        $CommandResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $using:hdrs -MaximumRetryCount 5 -RetryIntervalSec 5 -UserAgent:$using:GetJCUserAgent
 
                         $FormattedResults = [PSCustomObject]@{
                             name               = $CommandResults.name
@@ -277,7 +268,7 @@ function Get-JCCommandResult ()
     {
         switch ($PSCmdlet.ParameterSetName)
         {
-            ReturnAll {Return $resultsArrayList.results}
+            ReturnAll {Return $resultsArrayList}
             MaxResults {Return $resultsArrayList.results}
             TotalCount {Return  $resultsArrayList }
             ByCommandID {Return  $resultsArrayList }
