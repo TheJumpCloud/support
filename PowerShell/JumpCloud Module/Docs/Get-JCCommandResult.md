@@ -14,22 +14,28 @@ Returns all JumpCloud Command Results within a JumpCloud tenant or a single Jump
 
 ### ReturnAll (Default)
 ```
-Get-JCCommandResult [-Skip <Int32>] [-Limit <Int32>] [<CommonParameters>]
+Get-JCCommandResult [-Skip <Int32>] [-Limit <Int32>] [-Parallel <Boolean>] [<CommonParameters>]
 ```
 
 ### ByID
 ```
-Get-JCCommandResult [-CommandResultID] <String> [-ByID] [<CommonParameters>]
+Get-JCCommandResult [-CommandResultID] <String> [-ByID] [-Parallel <Boolean>] [<CommonParameters>]
+```
+
+### ByCommandID
+```
+Get-JCCommandResult [-CommandID <String>] [-Parallel <Boolean>] [<CommonParameters>]
 ```
 
 ### TotalCount
 ```
-Get-JCCommandResult [-TotalCount] [<CommonParameters>]
+Get-JCCommandResult [-TotalCount] [-Parallel <Boolean>] [<CommonParameters>]
 ```
 
 ### MaxResults
 ```
-Get-JCCommandResult [-Skip <Int32>] [-Limit <Int32>] [-MaxResults <Int32>] [<CommonParameters>]
+Get-JCCommandResult [-Skip <Int32>] [-Limit <Int32>] [-MaxResults <Int32>] [-Parallel <Boolean>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -106,6 +112,21 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -CommandID
+The _id of the JumpCloud Command you wish to query.
+
+```yaml
+Type: System.String
+Parameter Sets: ByCommandID
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -CommandResultID
 The _id of the JumpCloud Command Result you wish to query.
 
@@ -151,6 +172,21 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -Parallel
+Boolean: $true to run in parallel, $false to run in sequential; Default value: false
+
+```yaml
+Type: System.Boolean
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
 ### -TotalCount
 A switch parameter to only return the number of command results.
 
@@ -187,6 +223,8 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
+
+### System.Boolean
 
 ## OUTPUTS
 
