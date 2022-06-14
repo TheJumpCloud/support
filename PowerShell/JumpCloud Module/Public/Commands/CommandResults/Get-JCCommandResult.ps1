@@ -202,6 +202,8 @@ function Get-JCCommandResult ()
         
                         $null = $resultsArrayList.Add($FormattedResults)
                     }
+
+                    $resultsArrayList = $resultsArrayList | Sort-Object -Property requestTime
                 }
                 else {
                     $resultsArray | Foreach-Object {
@@ -231,6 +233,10 @@ function Get-JCCommandResult ()
         
                         $null = $resultsArrayList.Add($FormattedResults)
                     }
+                }
+
+                if ($resultsArrayList.count -eq 0) {
+                    throw "No command results found"
                 }
             }
             ByID
