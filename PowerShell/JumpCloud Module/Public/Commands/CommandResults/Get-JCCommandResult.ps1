@@ -11,13 +11,14 @@ function Get-JCCommandResult ()
         [Parameter(ParameterSetName = 'ByID', HelpMessage = 'Use the -ByID parameter when you want to query the contents of a specific Command Result or if the -CommandResultID is being passed over the pipeline to return the full contents of a JumpCloud Command Result. The -ByID SwitchParameter will set the ParameterSet to ''ByID'' which queries one JumpCloud Command Result at a time.')]
         [Switch]$ByID,
 
-        [Parameter(ParameterSetName = 'ByCommandID', HelpMessage = 'The _id of the JumpCloud Command you wish to query.')]
+        [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'ByCommandID', HelpMessage = 'The _id of the JumpCloud Command you wish to query.')]
+        [Alias('WorkflowID')]
         [String]$CommandID,
 
         [Parameter(ParameterSetName = 'TotalCount', HelpMessage = 'A switch parameter to only return the number of command results.')]
         [Switch]$TotalCount,
 
-        [Parameter(Mandatory=$false, ValueFromPipelineByPropertyName, HelpMessage = 'Boolean: $true to run in parallel, $false to run in sequential; Default value: false')]
+        [Parameter(ValueFromPipelineByPropertyName , HelpMessage = 'Boolean: $true to run in parallel, $false to run in sequential; Default value: false')]
         [Bool]$Parallel=$false
     )
     begin
@@ -115,7 +116,7 @@ function Get-JCCommandResult ()
                     $resultsArray | Foreach-Object {
                         if ($_.workflowId -ne $CommandID) { return }
                         $URL = "$JCUrlBasePath/api/commandresults/$($_._id)"
-                        $CommandResults = Get-JCResults -Method "GET" -Uri $URL -limit $limit
+                        $CommandResults = Get-JCResults -Method "GET" -URL $URL -limit $limit
 
                         $FormattedResults = [PSCustomObject]@{
                             name               = $CommandResults.name
