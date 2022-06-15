@@ -80,14 +80,13 @@ function Get-JCCommandResult ()
             {
                 $limitURL = "$JCUrlBasePath/api/commandresults"
                 if ($Parallel) {
-                    $results = Get-JCResults -Url $limitURL -method "GET" -limit $limit -parallel $true
+                    $resultsArrayList = Get-JCResults -Url $limitURL -method "GET" -limit $limit -parallel $true
                 }
                 else {
-                    $results = Get-JCResults -Url $limitURL -method "GET" -limit $limit
+                    $resultsArrayList = Get-JCResults -Url $limitURL -method "GET" -limit $limit
                 }
 
-                $null = $resultsArrayList.Add($results)
-                $count = ($resultsArrayList.results.Count)
+                $count = ($resultsArrayList.Count)
                 Write-Verbose "Results count equals $count"
             }
             MaxResults
