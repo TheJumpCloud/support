@@ -55,45 +55,15 @@ Describe -Tag:('JCCommandResult') "Get-JCCommandResult 1.4.1" {
         $TotalCount = Get-JCCommandResult -TotalCount
         $TotalCount | Should -BeGreaterThan 0
     }
-    It "Uses the -Skip parameter of JumpCloud command results" {
-        $TotalCount = Get-JCCommandResult -TotalCount
-        $Skip = 2
-        $SkipResults = Get-JCCommandResult -skip $Skip
-        $Total = $SkipResults.count + $Skip
-        $Total | Should -Be $TotalCount
-    }
-    It "Users the -Limit parameter of JumpCloud command results" {
-        $TotalCount = Get-JCCommandResult -TotalCount
-        $Limit = '4'
-        $LimitTotal = Get-JCCommandResult -limit $Limit
-        $LimitTotal.count | Should -Be $TotalCount
-
-    }
-}
-Describe -Tag:('JCCommandResult') "Get-JCCommandResult 1.4.2" {
-    It "Returns the max results" {
-        $TotalCount = Get-JCCommandResult -TotalCount
-        $MaxResults = $TotalCount - 1
-        $Results = Get-JCCommandResult -MaxResults $MaxResults
-        $UniqueResults = $Results | Select-Object -Property _id -Unique
-        $UniqueResults.count | Should -Be $MaxResults
-    }
-    It "Returns the max results using skip" {
-        $TotalCount = Get-JCCommandResult -TotalCount
-        $MaxResults = $TotalCount - 2
-        $Results = Get-JCCommandResult -MaxResults $MaxResults -Skip 1
-        $UniqueResults = $Results | Select-Object -Property _id -Unique
-        $UniqueResults.count | Should -Be $MaxResults
-    }
 }
 Describe -Tag:('JCCommandResult') "Get-JCCommandResult 1.5.0" {
     It "Returns a command result with the SystemID" {
-        $CommandResult = Get-JCCommandResult -MaxResults 1
+        $CommandResult = Get-JCCommandResult | Select-Object -Last 1
         $VerifySystemID = Get-JCSystem -SystemID $CommandResult.SystemID
         $CommandResult.system | Should -Be $VerifySystemID.displayname
     }
     It "Returns a command result -byID with the SystemID" {
-        $CommandResult = Get-JCCommandResult -MaxResults 1 | Get-JCCommandResult -ByID
+        $CommandResult = Get-JCCommandResult | Select-Object -Last 1 | Get-JCCommandResult -ByID
         $VerifySystemID = Get-JCSystem -SystemID $CommandResult.SystemID
         $CommandResult.system | Should -Be $VerifySystemID.displayname
     }
