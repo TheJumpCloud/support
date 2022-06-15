@@ -68,3 +68,19 @@ Describe -Tag:('JCCommandResult') "Get-JCCommandResult 1.5.0" {
         $CommandResult.system | Should -Be $VerifySystemID.displayname
     }
 }
+Describe -Tag:('JCCommandResult') "Get-JCCommandResult 2.0" {
+    It "Returns command results with the workflowId" {
+        $Command = Get-JCCommandResult | Select-Object -First 1
+        $CommandResults = Get-JCCommandResult -WorkflowId $Command.workflowId
+        $CommandResults | Should -Not -BeNullOrEmpty
+    }
+    It "Returns command results with the CommandId" {
+        $Command = Get-JCCommandResult | Select-Object -First 1
+        $CommandResults = Get-JCCommandResult -CommandID $Command.workflowId
+        $CommandResults | Should -Not -BeNullOrEmpty
+    }
+    It "Returns all results for Command via pipeline" {
+        $CommandResults = Get-JCCommandResult | Select-Object -First 1 | Get-JCCommandResult -WorkflowId
+        $CommandResults | Should -Not -BeNullOrEmpty
+    }
+}
