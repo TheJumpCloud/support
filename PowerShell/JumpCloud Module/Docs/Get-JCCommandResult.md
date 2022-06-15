@@ -112,12 +112,12 @@ The _id of the JumpCloud Command you wish to query.
 ```yaml
 Type: System.String
 Parameter Sets: ByCommandID
-Aliases:
+Aliases: WorkflowID
 
 Required: False
 Position: Named
 Default value: None
-Accept pipeline input: False
+Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 

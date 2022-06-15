@@ -3629,7 +3629,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
       </command:syntaxItem>
       <command:syntaxItem>
         <maml:name>Get-JCCommandResult</maml:name>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="WorkflowID">
           <maml:name>CommandID</maml:name>
           <maml:description>
             <maml:para>The _id of the JumpCloud Command you wish to query.</maml:para>
@@ -3694,7 +3694,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
         </dev:type>
         <dev:defaultValue>False</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="WorkflowID">
         <maml:name>CommandID</maml:name>
         <maml:description>
           <maml:para>The _id of the JumpCloud Command you wish to query.</maml:para>
