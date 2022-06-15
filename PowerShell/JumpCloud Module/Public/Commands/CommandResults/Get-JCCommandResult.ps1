@@ -17,17 +17,6 @@ function Get-JCCommandResult ()
         [Parameter(ParameterSetName = 'TotalCount', HelpMessage = 'A switch parameter to only return the number of command results.')]
         [Switch]$TotalCount,
 
-        [Parameter(ParameterSetName = 'ReturnAll', HelpMessage = 'The number of command results to skip over before returning results. ')]
-        [Parameter(ParameterSetName = 'MaxResults', HelpMessage = 'The number of command results to skip over before returning results. ')]
-        [int]$Skip = 0,
-
-        [Parameter(ParameterSetName = 'ReturnAll', HelpMessage = 'How many command results to return in each API call.')]
-        [Parameter(ParameterSetName = 'MaxResults', HelpMessage = 'How many command results to return in each API call.')]
-        [ValidateRange(0, 100)][int]$Limit = 100,
-
-        [Parameter(ParameterSetName = 'MaxResults', HelpMessage = 'The maximum number of results to return.')]
-        [Int]$MaxResults,
-
         [Parameter(Mandatory=$false, ValueFromPipelineByPropertyName, HelpMessage = 'Boolean: $true to run in parallel, $false to run in sequential; Default value: false')]
         [Bool]$Parallel=$false
     )
@@ -59,23 +48,18 @@ function Get-JCCommandResult ()
             $resultsArray = New-Object -TypeName System.Collections.ArrayList
             $resultsArrayList = New-Object -TypeName System.Collections.ArrayList
         }
+        $limit = 100
     }
-
     process
-
     {
-
         switch ($PSCmdlet.ParameterSetName)
         {
             TotalCount
             {
-
                 $CountURL = "$JCUrlBasePath/api/commandresults?limit=1&skip=0"
                 $results = Invoke-RestMethod -Method GET -Uri  $CountURL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
                 $null = $resultsArrayList.Add($results.totalCount)
-
-
-            }
+            }#End TotalCount
             ReturnAll
             {
                 $limitURL = "$JCUrlBasePath/api/commandresults"
@@ -85,91 +69,25 @@ function Get-JCCommandResult ()
                 else {
                     $resultsArrayList = Get-JCResults -Url $limitURL -method "GET" -limit $limit
                 }
-
                 $count = ($resultsArrayList.Count)
                 Write-Verbose "Results count equals $count"
-            }
-            MaxResults
-            {
-
-                switch ($MaxResults)
-                {
-                    { $_ -le $limit}
-                    {
-
-                        $Limit = $MaxResults
-                        $limitURL = "$JCUrlBasePath/api/commandresults?limit=$limit&skip=$skip"
-                        Write-Verbose $limitURL
-
-                        $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
-
-
-                        $null = $resultsArrayList.Add($results)
-                        $count = ($resultsArrayList).Count
-                        Write-Verbose "Results count equals $count"
-
-                    }
-                    {$_ -gt $limit}
-                    {
-
-                        Write-Verbose "Setting skip to $skip"
-
-                        [int]$Counter = 0
-
-                        while ($MaxResults -ne 0)
-                        {
-                            $limitURL = "$JCUrlBasePath/api/commandresults?limit=$limit&skip=$skip"
-                            Write-Verbose $limitURL
-
-                            $results = Invoke-RestMethod -Method GET -Uri $limitURL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
-
-                            $MaxResults = $MaxResults - $limit
-
-                            $skip += $limit
-                            $Counter += $limit
-                            Write-Verbose "Setting skip to $skip"
-                            Write-Verbose "Setting Counter to $Counter"
-
-                            $null = $resultsArrayList.Add($results)
-                            $count = ($resultsArrayList.results.Count)
-                            Write-Verbose "Results count equals $count"
-
-                            if ($MaxResults -le $limit)
-                            {
-                                $limit = $MaxResults
-                            }
-                        }
-
-
-                    }
-                }
-
-
-            }
+            }#End ReturnAll
             ByCommandID 
             {
                 $limitURL = "$JCUrlBasePath/api/commandresults"
-
                 if ($Parallel) {
                     $resultsArray = Get-JCResults -Url $limitURL -method "GET" -limit $limit -parallel $true
                 }
                 else {
                     $resultsArray = Get-JCResults -Url $limitURL -method "GET" -limit $limit
                 }
-
                 if (($resultsArray.count -gt 1) -and $Parallel) {
-
                     $GetJCUserAgent = Get-JCUserAgent
-
                     $resultsArray | Foreach-Object -Parallel {
                         $CommandID = $using:CommandID
-
                         if ($_.workflowId -ne $CommandID) { return }
-
                         $resultsArrayList = $using:resultsArrayList
-
                         $URL = "$using:JCUrlBasePath/api/commandresults/$($_._id)"
-
                         $CommandResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $using:hdrs -MaximumRetryCount 5 -RetryIntervalSec 5 -UserAgent:$using:GetJCUserAgent
 
                         $FormattedResults = [PSCustomObject]@{
@@ -189,19 +107,15 @@ function Get-JCCommandResult ()
                             _id                = $CommandResults._id
                             error              = $CommandResults.response.error
                         }
-        
                         $null = $resultsArrayList.Add($FormattedResults)
                     }
-
                     $resultsArrayList = $resultsArrayList | Sort-Object -Property requestTime
                 }
                 else {
                     $resultsArray | Foreach-Object {
                         if ($_.workflowId -ne $CommandID) { return }
-
                         $URL = "$JCUrlBasePath/api/commandresults/$($_._id)"
-
-                        $CommandResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
+                        $CommandResults = Get-JCResults -Method "GET" -Uri $URL -limit $limit
 
                         $FormattedResults = [PSCustomObject]@{
                             name               = $CommandResults.name
@@ -220,22 +134,18 @@ function Get-JCCommandResult ()
                             _id                = $CommandResults._id
                             error              = $CommandResults.response.error
                         }
-        
                         $null = $resultsArrayList.Add($FormattedResults)
                     }
                 }
-
                 if ($resultsArrayList.count -eq 0) {
                     throw "No command results found"
                 }
-            }
+            }#End ByCommandID
             ByID
             {
                 $URL = "$JCUrlBasePath/api/commandresults/$CommandResultID"
                 Write-Verbose $URL
-
                 $CommandResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
-
                 $FormattedResults = [PSCustomObject]@{
 
                     name               = $CommandResults.name
@@ -253,22 +163,16 @@ function Get-JCCommandResult ()
                     responseTime       = $CommandResults.responseTime
                     _id                = $CommandResults._id
                     error              = $CommandResults.response.error
-
                 }
-
                 $null = $resultsArrayList.Add($FormattedResults)
-
-            }
+            }#End ByID
         }
     }
-
     end
-
     {
         switch ($PSCmdlet.ParameterSetName)
         {
             ReturnAll {Return $resultsArrayList}
-            MaxResults {Return $resultsArrayList.results}
             TotalCount {Return  $resultsArrayList }
             ByCommandID {Return  $resultsArrayList }
             ByID {Return  $resultsArrayList }
