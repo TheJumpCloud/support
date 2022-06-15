@@ -14,7 +14,7 @@ Returns all JumpCloud Command Results within a JumpCloud tenant or a single Jump
 
 ### ReturnAll (Default)
 ```
-Get-JCCommandResult [-Skip <Int32>] [-Limit <Int32>] [-Parallel <Boolean>] [<CommonParameters>]
+Get-JCCommandResult [-Parallel <Boolean>] [<CommonParameters>]
 ```
 
 ### ByID
@@ -30,12 +30,6 @@ Get-JCCommandResult [-CommandID <String>] [-Parallel <Boolean>] [<CommonParamete
 ### TotalCount
 ```
 Get-JCCommandResult [-TotalCount] [-Parallel <Boolean>] [<CommonParameters>]
-```
-
-### MaxResults
-```
-Get-JCCommandResult [-Skip <Int32>] [-Limit <Int32>] [-MaxResults <Int32>] [-Parallel <Boolean>]
- [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -142,36 +136,6 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
-### -Limit
-How many command results to return in each API call.
-
-```yaml
-Type: System.Int32
-Parameter Sets: ReturnAll, MaxResults
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -MaxResults
-The maximum number of results to return.
-
-```yaml
-Type: System.Int32
-Parameter Sets: MaxResults
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -Parallel
 Boolean: $true to run in parallel, $false to run in sequential; Default value: false
 
@@ -193,21 +157,6 @@ A switch parameter to only return the number of command results.
 ```yaml
 Type: System.Management.Automation.SwitchParameter
 Parameter Sets: TotalCount
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Skip
-The number of command results to skip over before returning results.
-
-```yaml
-Type: System.Int32
-Parameter Sets: ReturnAll, MaxResults
 Aliases:
 
 Required: False
