@@ -79,22 +79,31 @@ function Get-JCCommandResult ()
             }#End ReturnAll
             ByCommandID 
             {
+                # Gather all CommandResults
                 $limitURL = "$JCUrlBasePath/api/commandresults"
-                if ($CommandID -match "@{"){
-                    Write-Debug "Command from pipeline..."
-                    $Match = Select-String "_id=(\S*);" -inputobject $CommandID
-                    $CommandID = $Match.matches.groups[1].value
-                    Write-Debug "Match: $($Match.matches.groups[1].value)"
-                }
                 if ($Parallel) {
                     $resultsArray = Get-JCResults -Url $limitURL -method "GET" -limit $limit -parallel $true
                 }
                 else {
                     $resultsArray = Get-JCResults -Url $limitURL -method "GET" -limit $limit
                 }
+
+                # If -ByCommandID is specified and an object is piped into the function, the object will be converted to string
+                if ($CommandID -match "@{"){
+                    Write-Debug "Command from pipeline..."
+                    $Match = Select-String "_id=(\S*);" -inputobject $CommandID
+                    # Get the CommandID via regex
+                    $CommandID = $Match.matches.groups[1].value
+                    Write-Debug "Match: $($Match.matches.groups[1].value)"
+                }
+
+                # Validate that parallel is valid
                 if (($resultsArray.count -gt 1) -and $Parallel) {
+                    Write-Debug "Parallel validated..."
                     $GetJCUserAgent = Get-JCUserAgent
+                    # Iterate through all the CommandResults objects
                     $resultsArray | Foreach-Object -Parallel {
+                        # If the workflowId for the CommandResult does not match the CommandID, skip
                         $CommandID = $using:CommandID
                         if ($_.workflowId -ne $CommandID) { return }
                         $resultsArrayList = $using:resultsArrayList
@@ -120,6 +129,7 @@ function Get-JCCommandResult ()
                         }
                         $null = $resultsArrayList.Add($FormattedResults)
                     }
+                    # After parallel loop is complete, sort final object by requestTime
                     $resultsArrayList = $resultsArrayList | Sort-Object -Property requestTime
                 }
                 else {
