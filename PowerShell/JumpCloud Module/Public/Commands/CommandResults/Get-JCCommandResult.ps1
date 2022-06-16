@@ -4,21 +4,25 @@ function Get-JCCommandResult ()
 
     param
     (
-        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'ByID', Position = 0, HelpMessage = 'The _id of the JumpCloud Command Result you wish to query.')]
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'ByID', Position = 0, HelpMessage = 'The _id of the JumpCloud Command Result you wish to query.')]
         [Alias('_id', 'id')]
         [String]$CommandResultID,
 
         [Parameter(ParameterSetName = 'ByID', HelpMessage = 'Use the -ByID parameter when you want to query the contents of a specific Command Result or if the -CommandResultID is being passed over the pipeline to return the full contents of a JumpCloud Command Result. The -ByID SwitchParameter will set the ParameterSet to ''ByID'' which queries one JumpCloud Command Result at a time.')]
         [Switch]$ByID,
 
-        [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'ByCommandID', HelpMessage = 'The _id of the JumpCloud Command you wish to query.')]
+        [Parameter(ValueFromPipeline, ParameterSetName = 'ByCommandID', HelpMessage = 'Use the -ByCommandID or -ByWorkflowID parameter when you want to query the results of a specific Command. The -ByCommandID or -ByWorkflowID SwitchParameter will set the ParameterSet to ''ByCommandID'' which queries all JumpCloud Command Results for that particular Command.')]
+        [Alias('ByWorkflowID')]
+        [Switch]$ByCommandID,
+
+        [Parameter(ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'ByCommandID', HelpMessage = 'The _id of the JumpCloud Command you wish to query.')]
         [Alias('WorkflowID')]
         [String]$CommandID,
 
         [Parameter(ParameterSetName = 'TotalCount', HelpMessage = 'A switch parameter to only return the number of command results.')]
         [Switch]$TotalCount,
 
-        [Parameter(ValueFromPipelineByPropertyName , HelpMessage = 'Boolean: $true to run in parallel, $false to run in sequential; Default value: false')]
+        [Parameter(ValueFromPipelineByPropertyName, HelpMessage = 'Boolean: $true to run in parallel, $false to run in sequential; Default value: false')]
         [Bool]$Parallel=$false
     )
     begin
@@ -76,6 +80,12 @@ function Get-JCCommandResult ()
             ByCommandID 
             {
                 $limitURL = "$JCUrlBasePath/api/commandresults"
+                if ($CommandID -match "@{"){
+                    Write-Debug "Command from pipeline..."
+                    $Match = Select-String "_id=(\S*);" -inputobject $CommandID
+                    $CommandID = $Match.matches.groups[1].value
+                    Write-Debug "Match: $($Match.matches.groups[1].value)"
+                }
                 if ($Parallel) {
                     $resultsArray = Get-JCResults -Url $limitURL -method "GET" -limit $limit -parallel $true
                 }
@@ -146,7 +156,12 @@ function Get-JCCommandResult ()
             {
                 $URL = "$JCUrlBasePath/api/commandresults/$CommandResultID"
                 Write-Verbose $URL
-                $CommandResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
+                try {
+                    $CommandResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
+                }
+                catch{
+                    throw $_
+                }
                 $FormattedResults = [PSCustomObject]@{
 
                     name               = $CommandResults.name
