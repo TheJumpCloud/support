@@ -45,10 +45,6 @@ Describe -Tag:('JCCommandResult') 'Get-JCCommandResults 1.0' {
         $SingleCommandResult = Get-JCCommandResult | Select-Object -Last 1 | Get-JCCommandResult -ByID
         $SingleCommandResult._id | Should -Not -BeNullOrEmpty
     }
-    It "Gets a single JumpCloud command result passed through the pipeline without declaring -ByID" {
-        $SingleCommandResult = Get-JCCommandResult | Select-Object -Last 1 | Get-JCCommandResult
-        $SingleCommandResult._id | Should -Not -BeNullOrEmpty
-    }
 }
 Describe -Tag:('JCCommandResult') "Get-JCCommandResult 1.4.1" {
     It "Returns the total count of JumpCloud command results" {
@@ -81,12 +77,6 @@ Describe -Tag:('JCCommandResult') "Get-JCCommandResult 2.0" {
     }
     It "Returns all results for Command via pipeline (commandresult object)" {
         $CommandResults = Get-JCCommandResult | Select-Object -First 1 | Get-JCCommandResult -ByWorkflowId
-        $CommandResults | Should -Not -BeNullOrEmpty
-    }
-    It "Returns all results for Command via pipeline (command object)" {
-        $InitialCommandResult = Get-JCCommandResult | Select-Object -Last 1
-        $Command = Get-JCCommand -byId $InitialCommandResult
-        $CommandResults = $Command | Get-JCCommandResult -ByCommandID
         $CommandResults | Should -Not -BeNullOrEmpty
     }
 }
