@@ -24,7 +24,7 @@ Get-JCCommandResult [-CommandResultID] <String> [-ByID] [-Parallel <Boolean>] [<
 
 ### ByCommandID
 ```
-Get-JCCommandResult [-CommandID <String>] [-Parallel <Boolean>] [<CommonParameters>]
+Get-JCCommandResult [-ByCommandID] [-CommandID <String>] [-Parallel <Boolean>] [<CommonParameters>]
 ```
 
 ### TotalCount
@@ -90,6 +90,21 @@ Skips returning the first 100 command results and only returns the 10 results af
 
 ## PARAMETERS
 
+### -ByCommandID
+Use the -ByCommandID or -ByWorkflowID parameter when you want to query the results of a specific Command. The -ByCommandID or -ByWorkflowID SwitchParameter will set the ParameterSet to 'ByCommandID' which queries all JumpCloud Command Results for that particular Command.
+
+```yaml
+Type: System.Management.Automation.SwitchParameter
+Parameter Sets: ByCommandID
+Aliases: ByWorkflowID
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByValue)
+Accept wildcard characters: False
+```
+
 ### -ByID
 Use the -ByID parameter when you want to query the contents of a specific Command Result or if the -CommandResultID is being passed over the pipeline to return the full contents of a JumpCloud Command Result.
 The -ByID SwitchParameter will set the ParameterSet to 'ByID' which queries one JumpCloud Command Result at a time.
@@ -117,7 +132,7 @@ Aliases: WorkflowID
 Required: False
 Position: Named
 Default value: None
-Accept pipeline input: True (ByPropertyName)
+Accept pipeline input: True (ByPropertyName, ByValue)
 Accept wildcard characters: False
 ```
 
@@ -132,7 +147,7 @@ Aliases: _id, id
 Required: True
 Position: 0
 Default value: None
-Accept pipeline input: True (ByPropertyName)
+Accept pipeline input: True (ByPropertyName, ByValue)
 Accept wildcard characters: False
 ```
 
@@ -172,6 +187,8 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
+
+### System.Management.Automation.SwitchParameter
 
 ### System.Boolean
 
