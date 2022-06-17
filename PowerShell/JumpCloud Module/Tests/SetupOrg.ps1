@@ -61,6 +61,7 @@ Try
         If ($Commands)
         {
             $null = Get-JCCommand | Remove-JCCommand -force
+            $null = Get-JCCommandResult | Remove-JCCommandResult -force
         }
         # Remove all RadiusServers from an org
         If ($RadiusServers)
