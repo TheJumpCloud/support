@@ -96,7 +96,7 @@ Use the -ByCommandID or -ByWorkflowID parameter when you want to query the resul
 ```yaml
 Type: System.Management.Automation.SwitchParameter
 Parameter Sets: ByCommandID
-Aliases: ByWorkflowID
+Aliases:
 
 Required: False
 Position: Named
