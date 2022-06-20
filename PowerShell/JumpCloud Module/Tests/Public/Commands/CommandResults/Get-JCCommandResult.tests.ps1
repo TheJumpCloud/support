@@ -53,8 +53,8 @@ Describe -Tag:('JCCommandResult') "Get-JCCommandResult 2.0" {
         $CommandResults = Get-JCCommandResult -CommandID $Command.workflowId
         $CommandResults | Should -Not -BeNullOrEmpty
     }
-    It "Returns all results for Command via pipeline (commandresult object)" {
-        $CommandResults = Get-JCCommandResult | Select-Object -First 1 | Get-JCCommandResult -ByWorkflowId
-        $CommandResults | Should -Not -BeNullOrEmpty
+    It "Returns all results for Command via pipeline (command object)" {
+        $CommandResults = Get-JCCommand | Get-JCCommandResult -ByCommandID
+        $CommandResults | Should -Not -Throw
     }
 }

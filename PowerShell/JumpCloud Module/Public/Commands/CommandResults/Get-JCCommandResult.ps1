@@ -11,8 +11,7 @@ function Get-JCCommandResult ()
         [Parameter(ParameterSetName = 'ByID', HelpMessage = 'Use the -ByID parameter when you want to query the contents of a specific Command Result or if the -CommandResultID is being passed over the pipeline to return the full contents of a JumpCloud Command Result. The -ByID SwitchParameter will set the ParameterSet to ''ByID'' which queries one JumpCloud Command Result at a time.')]
         [Switch]$ByID,
 
-        [Parameter(ValueFromPipeline, ParameterSetName = 'ByCommandID', HelpMessage = 'Use the -ByCommandID or -ByWorkflowID parameter when you want to query the results of a specific Command. The -ByCommandID or -ByWorkflowID SwitchParameter will set the ParameterSet to ''ByCommandID'' which queries all JumpCloud Command Results for that particular Command.')]
-        [Alias('ByWorkflowID')]
+        [Parameter(ValueFromPipeline, ParameterSetName = 'ByCommandID', HelpMessage = 'Use the -ByCommandID parameter when you want to query the results of a specific Command via pipeline. The -ByCommandID SwitchParameter will set the ParameterSet to ''ByCommandID'' which queries all JumpCloud Command Results for that particular Command.')]
         [Switch]$ByCommandID,
 
         [Parameter(ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'ByCommandID', HelpMessage = 'The _id of the JumpCloud Command you wish to query.')]
@@ -97,6 +96,8 @@ function Get-JCCommandResult ()
                     Write-Debug "Match: $($Match.matches.groups[1].value)"
                 }
 
+                Write-Debug "CommandID: $CommandID"
+
                 # Validate that parallel is valid
                 if (($resultsArray.count -gt 1) -and $Parallel) {
                     Write-Debug "Parallel validated..."
@@ -157,9 +158,6 @@ function Get-JCCommandResult ()
                         }
                         $null = $resultsArrayList.Add($FormattedResults)
                     }
-                }
-                if ($resultsArrayList.count -eq 0) {
-                    throw "No command results found"
                 }
             }#End ByCommandID
             ByID
