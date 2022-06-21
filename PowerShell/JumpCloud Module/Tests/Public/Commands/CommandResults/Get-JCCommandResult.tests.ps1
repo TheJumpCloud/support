@@ -55,6 +55,6 @@ Describe -Tag:('JCCommandResult') "Get-JCCommandResult 2.0" {
     }
     It "Returns all results for Command via pipeline (command object)" {
         $CommandResults = Get-JCCommand | Get-JCCommandResult -ByCommandID
-        $CommandResults | Should -Not -Throw
+        $CommandResults | Should -Not -BeNullOrEmpty
     }
 }
