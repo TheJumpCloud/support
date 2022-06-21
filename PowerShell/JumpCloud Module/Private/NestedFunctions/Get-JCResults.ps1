@@ -62,6 +62,7 @@ Function Get-JCResults
 
         # Find total amount of results
         if ($null -eq $response.Headers."x-total-count") {
+            # Search Endpoint
             Write-Debug "No x-total-count header, checking response content for totalCount"
             $totalCountHeader = $false  
             $content = $response.Content | ConvertFrom-Json
