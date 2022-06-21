@@ -1,17 +1,17 @@
 #### Latest Version
 
 ```
-1.22.1
+1.23.0
 ```
 
 #### Banner Current
 
 ```
-* Added functionality for Set, Get, New-JCUser to Search by Email to Manager Field
+* Added search endpoint functionality and parameters to Get-jCCommand
 ```
 
 #### Banner Old
 
 ```
-* New parameter -recoveryemail for Set, Get, New-JCUser
+* Added functionality for Set, Get, New-JCUser to Search by Email to Manager Field
 ```

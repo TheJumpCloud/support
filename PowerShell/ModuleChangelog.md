@@ -1,3 +1,14 @@
+## 1.23.0
+
+Release Date: June 21, 2022
+
+#### RELEASE NOTES
+
+This release adds search endpoint functionality and new parameters to Get-JCCommand
+
+#### BUG FIXES:
+
+* N/A
 ## 1.22.1
 
 Release Date: May 19, 2022
