@@ -12,9 +12,11 @@ Returns all JumpCloud Commands within a JumpCloud tenant or a single JumpCloud C
 
 ## SYNTAX
 
-### ReturnAll (Default)
+### SearchFilter (Default)
 ```
-Get-JCCommand [<CommonParameters>]
+Get-JCCommand [[-command] <String>] [[-name] <String>] [[-commandType] <String>] [[-launchType] <String>]
+ [[-listensTo] <String>] [[-schedule] <String>] [[-trigger] <String>] [[-scheduleRepeatType] <String>]
+ [[-organization] <String>] [-returnProperties <String[]>] [<CommonParameters>]
 ```
 
 ### ByID
@@ -77,6 +79,21 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -command
+The command to execute on the server.
+
+```yaml
+Type: System.String
+Parameter Sets: SearchFilter
+Aliases:
+
+Required: False
+Position: 0
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
 ### -CommandID
 The _id of the JumpCloud command you wish to query.
 
@@ -102,10 +119,148 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
+### -commandType
+Command Type
+
+```yaml
+Type: System.String
+Parameter Sets: SearchFilter
+Aliases:
+
+Required: False
+Position: 0
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -launchType
+Launch Type
+
+```yaml
+Type: System.String
+Parameter Sets: SearchFilter
+Aliases:
+
+Required: False
+Position: 0
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -listensTo
+Listens To
+
+```yaml
+Type: System.String
+Parameter Sets: SearchFilter
+Aliases:
+
+Required: False
+Position: 0
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -name
+Name of the command
+
+```yaml
+Type: System.String
+Parameter Sets: SearchFilter
+Aliases:
+
+Required: False
+Position: 0
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -organization
+The ID of the organization
+
+```yaml
+Type: System.String
+Parameter Sets: SearchFilter
+Aliases:
+
+Required: False
+Position: 0
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -returnProperties
+Allows you to return select properties on JumpCloud user objects. Specifying what properties are returned can drastically increase the speed of the API call with a large data set. Valid properties that can be returned are: 'command', 'name','commandType', 'launchType','listensTo','schedule','trigger','scheduleRepeatType','organization'
+
+```yaml
+Type: System.String[]
+Parameter Sets: SearchFilter
+Aliases:
+Accepted values: command, name, commandType, launchType, listensTo, schedule, trigger, scheduleRepeatType, organization
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -schedule
+Schedule
+
+```yaml
+Type: System.String
+Parameter Sets: SearchFilter
+Aliases:
+
+Required: False
+Position: 0
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -scheduleRepeatType
+When the command will repeat
+
+```yaml
+Type: System.String
+Parameter Sets: SearchFilter
+Aliases:
+
+Required: False
+Position: 0
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -trigger
+The name of the command trigger
+
+```yaml
+Type: System.String
+Parameter Sets: SearchFilter
+Aliases:
+
+Required: False
+Position: 0
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
+
+### System.String
 
 ### System.String[]
 
