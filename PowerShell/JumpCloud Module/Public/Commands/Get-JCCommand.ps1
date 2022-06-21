@@ -11,20 +11,8 @@ Function Get-JCCommand ()
         [String]$command,
         [Parameter( ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', Position = 0, HelpMessage = 'Name of the command')]
         [String]$name,
-        [Parameter( ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', Position = 0, HelpMessage = 'System Id')]
-        [String]$systemId,
-        [Parameter( ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', Position = 0, HelpMessage = 'Command User')]
-        [String]$user,
-        [Parameter( ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', Position = 0, HelpMessage = 'Sudo User')]
-        [bool]$sudo,
-        [Parameter( ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', Position = 0, HelpMessage = 'Workflow Id')]
-        [string]$workflowId,
-        [Parameter( ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', Position = 0, HelpMessage = 'System Name')]
-        [string]$system,
         [Parameter( ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', Position = 0, HelpMessage = 'Command Type')]
         [string]$commandType,
-        [Parameter( ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', Position = 0, HelpMessage = 'Exit Code')]
-        [int]$exitCode,
         [Parameter( ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', Position = 0, HelpMessage = 'Launch Type')]
         [string]$launchType,
         [Parameter( ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', Position = 0, HelpMessage = 'Listens To')]
