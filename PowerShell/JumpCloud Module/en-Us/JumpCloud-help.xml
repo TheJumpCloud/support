@@ -3601,7 +3601,6 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
             <command:parameterValue required="false" command:variableLength="false">name</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">commandType</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">launchType</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">listensTo</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">schedule</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">trigger</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">scheduleRepeatType</command:parameterValue>

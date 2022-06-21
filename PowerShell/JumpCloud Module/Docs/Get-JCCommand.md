@@ -201,7 +201,7 @@ Allows you to return select properties on JumpCloud user objects. Specifying wha
 Type: System.String[]
 Parameter Sets: SearchFilter
 Aliases:
-Accepted values: command, name, commandType, launchType, listensTo, schedule, trigger, scheduleRepeatType, organization
+Accepted values: command, name, commandType, launchType, schedule, trigger, scheduleRepeatType, organization
 
 Required: False
 Position: Named
