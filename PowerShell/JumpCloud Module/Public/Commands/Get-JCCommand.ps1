@@ -25,8 +25,8 @@ Function Get-JCCommand ()
         [string]$scheduleRepeatType,
         [Parameter( ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', Position = 0, HelpMessage = 'The ID of the organization')]
         [string]$organization,
-        [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'Allows you to return select properties on JumpCloud user objects. Specifying what properties are returned can drastically increase the speed of the API call with a large data set. Valid properties that can be returned are: ''command'', ''name'',''commandType'', ''launchType'',''listensTo'',''schedule'',''trigger'',''scheduleRepeatType'',''organization''')]
-        [ValidateSet('command', 'name', 'commandType', 'launchType', 'listensTo', 'schedule', 'trigger', 'scheduleRepeatType', 'organization')]
+        [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'Allows you to return select properties on JumpCloud user objects. Specifying what properties are returned can drastically increase the speed of the API call with a large data set. Valid properties that can be returned are: ''command'', ''name'',''commandType'', ''launchType'',''schedule'',''trigger'',''scheduleRepeatType'',''organization''')]
+        [ValidateSet('command', 'name', 'commandType', 'launchType', 'schedule', 'trigger', 'scheduleRepeatType', 'organization')]
         [String[]]$returnProperties,
     #### NEW PARAMS END
         [Parameter(Mandatory,
