@@ -24,12 +24,12 @@ Get-JCUser [[-username] <String>] [-firstname <String>] [-lastname <String>] [-e
  [-employeeIdentifier <String>] [-department <String>] [-costCenter <String>] [-company <String>]
  [-employeeType <String>] [-description <String>] [-location <String>] [-external_dn <String>]
  [-external_source_type <String>] [-managedAppleId <String>] [-manager <String>] [-state <String>]
- [-recoveryEmail <String>] -dateFilter <String> -date <DateTime> [<CommonParameters>]
+ [-recoveryEmail <String>] [-Parallel <Boolean>] -dateFilter <String> -date <DateTime> [<CommonParameters>]
 ```
 
 ### ByID
 ```
-Get-JCUser -userid <String> -dateFilter <String> -date <DateTime> [<CommonParameters>]
+Get-JCUser -userid <String> [-Parallel <Boolean>] -dateFilter <String> -date <DateTime> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -474,6 +474,21 @@ The middlename of the JumpCloud user you wish to search for.
 ```yaml
 Type: System.String
 Parameter Sets: SearchFilter
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Parallel
+Boolean: $true to run in parallel, $false to run in sequential; Default value: false
+
+```yaml
+Type: System.Boolean
+Parameter Sets: (All)
 Aliases:
 
 Required: False

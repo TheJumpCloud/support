@@ -110,7 +110,7 @@ If (-not [System.String]::IsNullOrEmpty($Psd1))
             }
             else{
                 # If not CodeArtifact, just install the module from the default repository (PSGallery)
-                Install-Module -Force -Name:($RequiredModule) -Scope:('CurrentUser') # -Repository:($RequiredModulesRepo) -Credential:($RepositoryCredentials) -AllowPrerelease
+                Install-Module -Force -Name:($RequiredModule) -Scope:('CurrentUser') -AllowClobber # -Repository:($RequiredModulesRepo) -Credential:($RepositoryCredentials) -AllowPrerelease
                 # Get-Module -Refresh -ListAvailable
                 If ([System.String]::IsNullOrEmpty((Get-Module | Where-Object { $_.Name -eq $RequiredModule })))
                 {

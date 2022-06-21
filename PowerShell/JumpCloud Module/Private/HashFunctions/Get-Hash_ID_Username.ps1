@@ -1,14 +1,27 @@
 Function Get-Hash_ID_Username ()
 {
+    [CmdletBinding()]
 
-    $UsersHash = New-Object System.Collections.Hashtable
+    param (
+        [Parameter(Mandatory=$false, ValueFromPipelineByPropertyName, HelpMessage = 'Boolean: $true to run in parallel, $false to run in sequential; Default value: false')]
+        [Bool]$Parallel=$false
+    )
 
-    $Users = Get-JCUser -returnProperties username
+    begin {
 
-    foreach ($User in $Users)
-    {
-        $UsersHash.Add($User._id, $User.username)
+        $UsersHash = New-Object System.Collections.Hashtable
 
+        if ($Parallel) {
+            $Users = Get-JCUser -parallel $true -returnProperties username
+        }
+        else {
+            $Users = Get-JCUser -returnProperties username
+        }
+
+        foreach ($User in $Users) {
+                $UsersHash.Add($User._id, $User.username)
+        }
+
+        return $UsersHash
     }
-    return $UsersHash
 }

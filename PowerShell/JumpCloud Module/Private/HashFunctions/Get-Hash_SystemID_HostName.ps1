@@ -1,14 +1,26 @@
 Function Get-Hash_SystemID_HostName ()
 {
+    [CmdletBinding()]
 
-    $SystemsHash = New-Object System.Collections.Hashtable
+    param (
+        [Parameter(Mandatory=$false, ValueFromPipelineByPropertyName, HelpMessage = 'Boolean: $true to run in parallel, $false to run in sequential; Default value: false')]
+        [Bool]$Parallel=$false
+    )
 
-    $Systems = Get-JCsystem -returnProperties hostname
+    begin {
+        $SystemsHash = New-Object System.Collections.Hashtable
 
-    foreach ($System in $Systems)
-    {
-        $SystemsHash.Add($System._id, $System.HostName)
+        if ($Parallel) {
+            $Systems = Get-JCSystem -parallel $true -returnProperties hostname
+        }
+        else {
+            $Systems = Get-JCSystem -returnProperties hostname
+        }
 
+        foreach ($System in $Systems) {
+                $SystemsHash.Add($System._id, $System.hostname)
+        }
+
+        return $SystemsHash
     }
-    return $SystemsHash
 }

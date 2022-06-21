@@ -4,20 +4,12 @@ Function Get-JCSystemGroupMember ()
 
     param
     (
-
-        [Parameter(Mandatory, ValueFromPipelineByPropertyName,
-            ParameterSetName = 'ByGroup',
-            Position = 0,
-            HelpMessage = 'The name of the JumpCloud System Group you want to return the members of.')]
-        [Alias('name')]
-        [String]$GroupName,
-
-        [Parameter(Mandatory,
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'ByID',
-            HelpMessage = 'If searching for a System Group using the GroupID populate the GroupID in the -ByID field.')]
-        [Alias('_id', 'id')]
-        [String]$ByID
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'ByGroup', Position = 0, HelpMessage = 'The name of the JumpCloud System Group you want to return the members of.')]
+        [Alias('name')][String]$GroupName,
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'ByID', HelpMessage = 'If searching for a System Group using the GroupID populate the GroupID in the -ByID field.')]
+        [Alias('_id', 'id')][String]$ByID,
+        [Parameter(Mandatory=$false, ValueFromPipelineByPropertyName, HelpMessage = 'Boolean: $true to run in parallel, $false to run in sequential; Default value: false')]
+        [Bool]$Parallel=$false
     )
 
     begin
@@ -26,18 +18,28 @@ Function Get-JCSystemGroupMember ()
         Write-Debug 'Verifying JCAPI Key'
         if ($JCAPIKEY.length -ne 40) {Connect-JConline}
 
-        Write-Debug 'Initilizing resultsArray and results ArraryByID'
-        $rawResults = @()
-        $resultsArray = @()
+        if (($PSVersionTable.PSVersion.Major -ge 7) -and ($parallel -eq $true)) {
+            Write-Debug "Parallel set to True, PSVersion greater than 7"
+            Write-Debug 'Initilizing resultsArray and results ArraryByID'
+            $rawResults = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
+            $resultsArray = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
 
-        if ($PSCmdlet.ParameterSetName -eq 'ByGroup')
-        {
+            Write-Debug 'Populating GroupNameHash'
+            $GroupNameHash = Get-Hash_SystemGroupName_ID
+            Write-Debug 'Populating SystemIDHash'
+            $SystemIDHash = Get-Hash_SystemID_HostName -parallel $true
+        }
+        else {
+            Write-Debug 'Initilizing resultsArray and results ArraryByID'
+            $rawResults = @()
+            $resultsArray = [System.Collections.Generic.List[PSObject]]::new()
+
+            
             Write-Debug 'Populating GroupNameHash'
             $GroupNameHash = Get-Hash_SystemGroupName_ID
             Write-Debug 'Populating SystemIDHash'
             $SystemIDHash = Get-Hash_SystemID_HostName
         }
-
     }
 
     process
@@ -57,7 +59,14 @@ Function Get-JCSystemGroupMember ()
                     Write-Debug "$Group_ID"
 
                     $limitURL = "{0}/api/v2/Systemgroups/{1}/members" -f $JCUrlBasePath, $Group_ID
-                    $rawResults = Get-JCResults -Url $limitURL -method "GET" -limit 100
+                    Write-Debug $limitURL
+
+                    if ($Parallel) {
+                        $rawResults = Get-JCResults -Url $limitURL -method "GET" -limit 100 -parallel $true
+                    }
+                    else {
+                        $rawResults = Get-JCResults -Url $limitURL -method "GET" -limit 100
+                    }
 
                     foreach ($uid in $rawResults)
                     {
@@ -70,7 +79,7 @@ Function Get-JCSystemGroupMember ()
                             'SystemID'  = $uid.to.id
                         }
 
-                        $resultsArray += $FomattedResult
+                        $resultsArray.Add($FomattedResult)
                     }
 
                     $rawResults = $null
@@ -85,8 +94,34 @@ Function Get-JCSystemGroupMember ()
         elseif ($PSCmdlet.ParameterSetName -eq 'ByID')
 
         {
+            $GroupName = ($GroupNameHash.GetEnumerator() | Where-Object Value -eq $ByID).Name
+            Write-Debug "$GroupName"
+
             $limitURL = "{0}/api/v2/Systemgroups/{1}/members" -f $JCUrlBasePath, $ByID
-            $resultsArray = Get-JCResults -Url $limitURL -method "GET" -limit 100
+            Write-Debug $limitURL
+
+            if ($Parallel) {
+                $rawResults = Get-JCResults -Url $limitURL -method "GET" -limit 100 -parallel $true
+            }
+            else {
+                $rawResults = Get-JCResults -Url $limitURL -method "GET" -limit 100
+            }
+
+            foreach ($uid in $rawResults)
+            {
+                $Systemname = $SystemIDHash.Get_Item($uid.to.id)
+
+                $FomattedResult = [pscustomobject]@{
+
+                    'GroupName' = $GroupName
+                    'System'    = $Systemname
+                    'SystemID'  = $uid.to.id
+                }
+
+                $resultsArray.Add($FomattedResult)
+            }
+
+            $rawResults = $null
 
         }
     }

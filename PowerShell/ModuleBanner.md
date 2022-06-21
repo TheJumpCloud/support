@@ -1,17 +1,24 @@
 #### Latest Version
 
 ```
-1.22.1
+1.23.0
 ```
 
-#### Banner Current
+ #### Banner Current
 
 ```
-* Added functionality for Set, Get, New-JCUser to Search by Email to Manager Field
+* This release adds parallel processing functionality to potentially alleviate long processing times for large scale operations
+    * This release adds the -parallel flag to the following functions:
+        * Get-JCUser
+        * Get-JCSystem
+        * Get-JCSystemUser
+        * Get-JCSystemGroupMember
+        * Get-JCUserGroupMember
+* Adjusted output for Get-JCSystemGroupMember -ByID and Get-JCUserGroupMember -ByID to match the output of -GroupName
 ```
 
 #### Banner Old
 
 ```
-* New parameter -recoveryemail for Set, Get, New-JCUser
+* Added functionality for Set, Get, New-JCUser to Search by Email to Manager Field
 ```

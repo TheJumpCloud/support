@@ -1,14 +1,26 @@
 Function Get-Hash_SystemID_DisplayName ()
 {
+    [CmdletBinding()]
 
-    $SystemsHash =  New-Object System.Collections.Hashtable
+    param (
+        [Parameter(Mandatory=$false, ValueFromPipelineByPropertyName, HelpMessage = 'Boolean: $true to run in parallel, $false to run in sequential; Default value: false')]
+        [Bool]$Parallel=$false
+    )
 
-    $Systems = Get-JCSystem -returnProperties displayName
+    begin {
+        $SystemsHash = New-Object System.Collections.Hashtable
 
-        foreach ($System in $Systems)
-        {
-            $SystemsHash.Add($System._id, $System.DisplayName)
-
+        if ($Parallel) {
+            $Systems = Get-JCSystem -parallel $true -returnProperties displayName
         }
-    return $SystemsHash
+        else {
+            $Systems = Get-JCSystem -returnProperties displayName
+        }
+
+        foreach ($System in $Systems) {
+                $SystemsHash.Add($System._id, $System.displayName)
+        }
+
+        return $SystemsHash
+    }
 }
