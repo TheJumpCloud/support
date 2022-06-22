@@ -54,10 +54,27 @@ Note that when running this command the time for the output to display will be d
 
 ### Example 4
 ```powershell
-PS C:\> Get-JCCommand | Where-Object launchType -EQ 'trigger' | Get-JCCommand -ByID
+PS C:\> Get-JCCommand -name '*BitLocker*' | Get-JCCommand -ByID
+```
+
+Returns all information describing all JumpCloud commands with a name of '*trigger*' by passing the -CommandID Parameter to the -ByID Parameter using the pipeline and Parameter Binding. Note, search parameters on Get-JCCommand support wildcard characters. In this example commands with the name BitLocker somewhere in the name would be returned.
+
+Note that when running this command the time for the output to display will be directly proportionate to how many JumpCloud commands you have with a launchType of 'trigger'. The command 'Get-JCCommand -ByID' runs once for every JumpCloud command within your tenant with a launchType of 'trigger'.
+### Example 5
+```powershell
+PS C:\> Get-JCCommand -launchType 'trigger' | Get-JCCommand -ByID
 ```
 
 Returns all information describing all JumpCloud commands with a launchType of 'trigger' by passing the -CommandID Parameter to the -ByID Parameter using the pipeline and Parameter Binding.
+
+Note that when running this command the time for the output to display will be directly proportionate to how many JumpCloud commands you have with a launchType of 'trigger'. The command 'Get-JCCommand -ByID' runs once for every JumpCloud command within your tenant with a launchType of 'trigger'.
+
+### Example 6
+```powershell
+PS C:\> Get-JCCommand -command '*fdesetup*' | Get-JCCommand -ByID
+```
+
+Returns all information describing all JumpCloud commands with a command string and the search term "fdesetup", by passing the -CommandID Parameter to the -ByID Parameter using the pipeline and Parameter Binding. Note, search parameters on Get-JCCommand support wildcard characters. In this example commands with the string "fdesetup" somewhere in the command body would be returned.
 
 Note that when running this command the time for the output to display will be directly proportionate to how many JumpCloud commands you have with a launchType of 'trigger'. The command 'Get-JCCommand -ByID' runs once for every JumpCloud command within your tenant with a launchType of 'trigger'.
 
