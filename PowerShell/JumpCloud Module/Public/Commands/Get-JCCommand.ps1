@@ -6,19 +6,19 @@ Function Get-JCCommand ()
     param
     (
 
-        [Parameter( ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', Position = 0, HelpMessage = 'The command body text of the JumpCloud Command you wish to search for ex. Get-JCCommand -command <commandBody>')]
+        [Parameter( ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'The command body text of the JumpCloud Command you wish to search for ex. Get-JCCommand -command <commandBody>')]
         [String]$command,
-        [Parameter( ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', Position = 0, HelpMessage = 'The name of the JumpCloud Command you wish to search for ex. Get-JCCommand -name <commandName>')]
+        [Parameter( ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'The name of the JumpCloud Command you wish to search for ex. Get-JCCommand -name <commandName>')]
         [String]$name,
-        [Parameter( ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', Position = 0, HelpMessage = 'The type (windows, mac, linux) of the JumpCloud Command you wish to search for ex. Get-JCCommand -commandType <commandType>')] 
+        [Parameter( ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'The type (windows, mac, linux) of the JumpCloud Command you wish to search for ex. Get-JCCommand -commandType <commandType>')] 
         [ValidateSet('windows', 'mac', 'linux')]
         [string]$commandType,
-        [Parameter( ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', Position = 0, HelpMessage = 'The launch type of the JumpCloud Command you wish to search for ex. Get-JCCommand -launchType <typeOfLaunch> ' )] 
+        [Parameter( ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'The launch type of the JumpCloud Command you wish to search for ex. Get-JCCommand -launchType <typeOfLaunch> ' )] 
         [ValidateSet('repeated','one-time','manual', 'trigger')]
         [string]$launchType,
-        [Parameter( ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', Position = 0, HelpMessage = 'The trigger name of the JumpCloud Command you wish to search for ex. Get-JCCommand -trigger <triggerId> ')]
+        [Parameter( ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'The trigger name of the JumpCloud Command you wish to search for ex. Get-JCCommand -trigger <triggerId> ')]
         [string]$trigger,
-        [Parameter( ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', Position = 0, HelpMessage = 'The scheduled command repeat type (minute, hour, day, week, month) of the JumpCloud Command you wish to search for ex. Get-JCCommand -scheduleRepeatType <repeatType>')] 
+        [Parameter( ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'The scheduled command repeat type (minute, hour, day, week, month) of the JumpCloud Command you wish to search for ex. Get-JCCommand -scheduleRepeatType <repeatType>')] 
         [ValidateSet('minute', 'hour', 'day', 'week', 'month')]
         [string]$scheduleRepeatType,
         [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'Allows you to return select properties on JumpCloud commands objects. Specifying what properties are returned can drastically increase the speed of the API call with a large data set. Valid properties that can be returned are: ''command'', ''name'',''launchType'',''commandType'',''trigger'',''scheduleRepeatType''')]
