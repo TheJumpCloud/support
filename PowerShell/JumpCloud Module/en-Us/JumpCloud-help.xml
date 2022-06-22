@@ -3520,45 +3520,9 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
-          <maml:name>listensTo</maml:name>
-          <maml:description>
-            <maml:para>Listens To</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
-          <dev:type>
-            <maml:name>System.String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
           <maml:name>name</maml:name>
           <maml:description>
             <maml:para>Name of the command</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
-          <dev:type>
-            <maml:name>System.String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
-          <maml:name>organization</maml:name>
-          <maml:description>
-            <maml:para>The ID of the organization</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
-          <dev:type>
-            <maml:name>System.String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
-          <maml:name>schedule</maml:name>
-          <maml:description>
-            <maml:para>Schedule</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
           <dev:type>
@@ -3572,6 +3536,13 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
           <maml:description>
             <maml:para>When the command will repeat</maml:para>
           </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">minute</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">hour</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">day</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">week</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">month</command:parameterValue>
+          </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
           <dev:type>
             <maml:name>System.String</maml:name>
@@ -3599,12 +3570,10 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
           <command:parameterValueGroup>
             <command:parameterValue required="false" command:variableLength="false">command</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">name</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">commandType</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">launchType</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">schedule</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">commandType</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">trigger</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">scheduleRepeatType</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">organization</command:parameterValue>
           </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
           <dev:type>
@@ -3681,33 +3650,9 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
-        <maml:name>listensTo</maml:name>
-        <maml:description>
-          <maml:para>Listens To</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
-        <dev:type>
-          <maml:name>System.String</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
         <maml:name>name</maml:name>
         <maml:description>
           <maml:para>Name of the command</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
-        <dev:type>
-          <maml:name>System.String</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
-        <maml:name>organization</maml:name>
-        <maml:description>
-          <maml:para>The ID of the organization</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
         <dev:type>
@@ -3724,18 +3669,6 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
         <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
         <dev:type>
           <maml:name>System.String[]</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
-        <maml:name>schedule</maml:name>
-        <maml:description>
-          <maml:para>Schedule</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
-        <dev:type>
-          <maml:name>System.String</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -3823,9 +3756,25 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
       </command:example>
       <command:example>
         <maml:title>-------------------------- Example 4 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCCommand | Where-Object launchType -EQ 'trigger' | Get-JCCommand -ByID</dev:code>
+        <dev:code>PS C:\&gt; Get-JCCommand -name '*BitLocker*' | Get-JCCommand -ByID</dev:code>
+        <dev:remarks>
+          <maml:para>Returns all information describing all JumpCloud commands with a name of ' trigger ' by passing the -CommandID Parameter to the -ByID Parameter using the pipeline and Parameter Binding. Note, search parameters on Get-JCCommand support wildcard characters. In this example commands with the name BitLocker somewhere in the name would be returned.</maml:para>
+          <maml:para>Note that when running this command the time for the output to display will be directly proportionate to how many JumpCloud commands you have with a launchType of 'trigger'. The command 'Get-JCCommand -ByID' runs once for every JumpCloud command within your tenant with a launchType of 'trigger'.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 5 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Get-JCCommand -launchType 'trigger' | Get-JCCommand -ByID</dev:code>
         <dev:remarks>
           <maml:para>Returns all information describing all JumpCloud commands with a launchType of 'trigger' by passing the -CommandID Parameter to the -ByID Parameter using the pipeline and Parameter Binding.</maml:para>
+          <maml:para>Note that when running this command the time for the output to display will be directly proportionate to how many JumpCloud commands you have with a launchType of 'trigger'. The command 'Get-JCCommand -ByID' runs once for every JumpCloud command within your tenant with a launchType of 'trigger'.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 6 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Get-JCCommand -command '*fdesetup*' | Get-JCCommand -ByID</dev:code>
+        <dev:remarks>
+          <maml:para>Returns all information describing all JumpCloud commands with a command string and the search term "fdesetup", by passing the -CommandID Parameter to the -ByID Parameter using the pipeline and Parameter Binding. Note, search parameters on Get-JCCommand support wildcard characters. In this example commands with the string "fdesetup" somewhere in the command body would be returned.</maml:para>
           <maml:para>Note that when running this command the time for the output to display will be directly proportionate to how many JumpCloud commands you have with a launchType of 'trigger'. The command 'Get-JCCommand -ByID' runs once for every JumpCloud command within your tenant with a launchType of 'trigger'.</maml:para>
         </dev:remarks>
       </command:example>

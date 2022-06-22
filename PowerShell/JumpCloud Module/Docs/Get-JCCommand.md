@@ -15,8 +15,7 @@ Returns all JumpCloud Commands within a JumpCloud tenant or a single JumpCloud C
 ### SearchFilter (Default)
 ```
 Get-JCCommand [[-command] <String>] [[-name] <String>] [[-commandType] <String>] [[-launchType] <String>]
- [[-listensTo] <String>] [[-schedule] <String>] [[-trigger] <String>] [[-scheduleRepeatType] <String>]
- [[-organization] <String>] [-returnProperties <String[]>] [<CommonParameters>]
+ [[-trigger] <String>] [[-scheduleRepeatType] <String>] [-returnProperties <String[]>] [<CommonParameters>]
 ```
 
 ### ByID
@@ -60,6 +59,7 @@ PS C:\> Get-JCCommand -name '*BitLocker*' | Get-JCCommand -ByID
 Returns all information describing all JumpCloud commands with a name of '*trigger*' by passing the -CommandID Parameter to the -ByID Parameter using the pipeline and Parameter Binding. Note, search parameters on Get-JCCommand support wildcard characters. In this example commands with the name BitLocker somewhere in the name would be returned.
 
 Note that when running this command the time for the output to display will be directly proportionate to how many JumpCloud commands you have with a launchType of 'trigger'. The command 'Get-JCCommand -ByID' runs once for every JumpCloud command within your tenant with a launchType of 'trigger'.
+
 ### Example 5
 ```powershell
 PS C:\> Get-JCCommand -launchType 'trigger' | Get-JCCommand -ByID
@@ -166,38 +166,8 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
-### -listensTo
-Listens To
-
-```yaml
-Type: System.String
-Parameter Sets: SearchFilter
-Aliases:
-
-Required: False
-Position: 0
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
 ### -name
 Name of the command
-
-```yaml
-Type: System.String
-Parameter Sets: SearchFilter
-Aliases:
-
-Required: False
-Position: 0
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -organization
-The ID of the organization
 
 ```yaml
 Type: System.String
@@ -218,25 +188,10 @@ Allows you to return select properties on JumpCloud user objects. Specifying wha
 Type: System.String[]
 Parameter Sets: SearchFilter
 Aliases:
-Accepted values: command, name, commandType, launchType, schedule, trigger, scheduleRepeatType, organization
+Accepted values: command, name, launchType, commandType, trigger, scheduleRepeatType
 
 Required: False
 Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -schedule
-Schedule
-
-```yaml
-Type: System.String
-Parameter Sets: SearchFilter
-Aliases:
-
-Required: False
-Position: 0
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -249,6 +204,7 @@ When the command will repeat
 Type: System.String
 Parameter Sets: SearchFilter
 Aliases:
+Accepted values: minute, hour, day, week, month
 
 Required: False
 Position: 0
