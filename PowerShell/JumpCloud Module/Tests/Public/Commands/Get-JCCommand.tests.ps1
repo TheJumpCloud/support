@@ -62,14 +62,6 @@ Describe -Tag('JCCommand') 'Get-JCCommand Search' {
         $Command = Get-JCCommand -launchType $PesterParams_Command1.launchType
         $Command.launchType | Should -Be $PesterParams_Command1.launchType
     }
-    It "Searches a JumpCloud command by listensTo" {
-        $Command = Get-JCCommand -listensTo $PesterParams_Command1.listensTo
-        $Command.listensTo | Should -Be $PesterParams_Command1.listensTo
-    }
-    It "Searches a JumpCloud command by schedule" {
-        $Command = Get-JCCommand -schedule $PesterParams_Command1.schedule
-        $Command.schedule | Should -Be $PesterParams_Command1.schedule
-    }
     It "Searches a JumpCloud command by trigger" {
         $Command = Get-JCCommand -trigger $PesterParams_Command1.trigger
         $Command.trigger | Should -Be $PesterParams_Command1.trigger
@@ -77,9 +69,5 @@ Describe -Tag('JCCommand') 'Get-JCCommand Search' {
     It "Searches a JumpCloud command by scheduleRepeatType" {
         $Command = Get-JCCommand -scheduleRepeatType $PesterParams_Command1.scheduleRepeatType
         $Command.scheduleRepeatType | Should -Be $PesterParams_Command1.scheduleRepeatType
-    }
-    It "Searches a JumpCloud command by organization" {
-        $Command = Get-JCCommand -organization $PesterParams_Command1.organization
-        $Command.organization | Should -Be $PesterParams_Command1.organization
     }
 }
