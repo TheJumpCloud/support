@@ -3483,7 +3483,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
       </command:syntaxItem>
       <command:syntaxItem>
         <maml:name>Get-JCCommand</maml:name>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
           <maml:name>command</maml:name>
           <maml:description>
             <maml:para>The command to execute on the server.</maml:para>
@@ -3495,53 +3495,15 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
           <maml:name>commandType</maml:name>
           <maml:description>
             <maml:para>Command Type</maml:para>
           </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
-          <dev:type>
-            <maml:name>System.String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
-          <maml:name>launchType</maml:name>
-          <maml:description>
-            <maml:para>Launch Type</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
-          <dev:type>
-            <maml:name>System.String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
-          <maml:name>name</maml:name>
-          <maml:description>
-            <maml:para>Name of the command</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
-          <dev:type>
-            <maml:name>System.String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
-          <maml:name>scheduleRepeatType</maml:name>
-          <maml:description>
-            <maml:para>When the command will repeat</maml:para>
-          </maml:description>
           <command:parameterValueGroup>
-            <command:parameterValue required="false" command:variableLength="false">minute</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">hour</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">day</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">week</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">month</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">windows</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">mac</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">linux</command:parameterValue>
           </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
           <dev:type>
@@ -3550,10 +3512,28 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
-          <maml:name>trigger</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>launchType</maml:name>
           <maml:description>
-            <maml:para>The name of the command trigger</maml:para>
+            <maml:para>Launch Type</maml:para>
+          </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">repeated</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">one-time</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">manual</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">trigger</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>name</maml:name>
+          <maml:description>
+            <maml:para>Name of the command</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
           <dev:type>
@@ -3582,6 +3562,37 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>scheduleRepeatType</maml:name>
+          <maml:description>
+            <maml:para>When the command will repeat</maml:para>
+          </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">minute</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">hour</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">day</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">week</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">month</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>trigger</maml:name>
+          <maml:description>
+            <maml:para>The name of the command trigger</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
@@ -3597,7 +3608,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
         </dev:type>
         <dev:defaultValue>False</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
         <maml:name>command</maml:name>
         <maml:description>
           <maml:para>The command to execute on the server.</maml:para>
@@ -3625,7 +3636,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
         <maml:name>commandType</maml:name>
         <maml:description>
           <maml:para>Command Type</maml:para>
@@ -3637,7 +3648,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
         <maml:name>launchType</maml:name>
         <maml:description>
           <maml:para>Launch Type</maml:para>
@@ -3649,7 +3660,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
         <maml:name>name</maml:name>
         <maml:description>
           <maml:para>Name of the command</maml:para>
@@ -3673,7 +3684,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
         <maml:name>scheduleRepeatType</maml:name>
         <maml:description>
           <maml:para>When the command will repeat</maml:para>
@@ -3685,7 +3696,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
         <maml:name>trigger</maml:name>
         <maml:description>
           <maml:para>The name of the command trigger</maml:para>

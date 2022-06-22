@@ -14,8 +14,8 @@ Returns all JumpCloud Commands within a JumpCloud tenant or a single JumpCloud C
 
 ### SearchFilter (Default)
 ```
-Get-JCCommand [[-command] <String>] [[-name] <String>] [[-commandType] <String>] [[-launchType] <String>]
- [[-trigger] <String>] [[-scheduleRepeatType] <String>] [-returnProperties <String[]>] [<CommonParameters>]
+Get-JCCommand [-command <String>] [-name <String>] [-commandType <String>] [-launchType <String>]
+ [-trigger <String>] [-scheduleRepeatType <String>] [-returnProperties <String[]>] [<CommonParameters>]
 ```
 
 ### ByID
@@ -105,7 +105,7 @@ Parameter Sets: SearchFilter
 Aliases:
 
 Required: False
-Position: 0
+Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -143,9 +143,10 @@ Command Type
 Type: System.String
 Parameter Sets: SearchFilter
 Aliases:
+Accepted values: windows, mac, linux
 
 Required: False
-Position: 0
+Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -158,9 +159,10 @@ Launch Type
 Type: System.String
 Parameter Sets: SearchFilter
 Aliases:
+Accepted values: repeated, one-time, manual, trigger
 
 Required: False
-Position: 0
+Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -175,7 +177,7 @@ Parameter Sets: SearchFilter
 Aliases:
 
 Required: False
-Position: 0
+Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -207,7 +209,7 @@ Aliases:
 Accepted values: minute, hour, day, week, month
 
 Required: False
-Position: 0
+Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -222,7 +224,7 @@ Parameter Sets: SearchFilter
 Aliases:
 
 Required: False
-Position: 0
+Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
