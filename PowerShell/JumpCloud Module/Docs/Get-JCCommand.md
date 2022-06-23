@@ -56,7 +56,7 @@ Note that when running this command the time for the output to display will be d
 PS C:\> Get-JCCommand -name '*BitLocker*' | Get-JCCommand -ByID
 ```
 
-Returns all information describing all JumpCloud commands with a name of '*Bitlocker*' by passing the -CommandID Parameter to the -ByID Parameter using the pipeline and Parameter Binding. Note, search parameters on Get-JCCommand support wildcard characters. In this example commands with the string "BitLocker" somewhere in the name would be returned.
+Returns all information describing all JumpCloud commands with a name of '*BitLocker*' by passing the -CommandID Parameter to the -ByID Parameter using the pipeline and Parameter Binding. Note, search parameters on Get-JCCommand support wildcard characters. In this example commands with the string "BitLocker" somewhere in the name would be returned.
 
 
 ### Example 5
