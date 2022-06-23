@@ -12,9 +12,10 @@ Returns all JumpCloud Commands within a JumpCloud tenant or a single JumpCloud C
 
 ## SYNTAX
 
-### ReturnAll (Default)
+### SearchFilter (Default)
 ```
-Get-JCCommand [<CommonParameters>]
+Get-JCCommand [-command <String>] [-name <String>] [-commandType <String>] [-launchType <String>]
+ [-trigger <String>] [-scheduleRepeatType <String>] [-returnProperties <String[]>] [<CommonParameters>]
 ```
 
 ### ByID
@@ -52,10 +53,28 @@ Note that when running this command the time for the output to display will be d
 
 ### Example 4
 ```powershell
-PS C:\> Get-JCCommand | Where-Object launchType -EQ 'trigger' | Get-JCCommand -ByID
+PS C:\> Get-JCCommand -name '*BitLocker*' | Get-JCCommand -ByID
+```
+
+Returns all information describing all JumpCloud commands with a name of '*trigger*' by passing the -CommandID Parameter to the -ByID Parameter using the pipeline and Parameter Binding. Note, search parameters on Get-JCCommand support wildcard characters. In this example commands with the name BitLocker somewhere in the name would be returned.
+
+Note that when running this command the time for the output to display will be directly proportionate to how many JumpCloud commands you have with a launchType of 'trigger'. The command 'Get-JCCommand -ByID' runs once for every JumpCloud command within your tenant with a launchType of 'trigger'.
+
+### Example 5
+```powershell
+PS C:\> Get-JCCommand -launchType 'trigger' | Get-JCCommand -ByID
 ```
 
 Returns all information describing all JumpCloud commands with a launchType of 'trigger' by passing the -CommandID Parameter to the -ByID Parameter using the pipeline and Parameter Binding.
+
+Note that when running this command the time for the output to display will be directly proportionate to how many JumpCloud commands you have with a launchType of 'trigger'. The command 'Get-JCCommand -ByID' runs once for every JumpCloud command within your tenant with a launchType of 'trigger'.
+
+### Example 6
+```powershell
+PS C:\> Get-JCCommand -command '*fdesetup*' | Get-JCCommand -ByID
+```
+
+Returns all information describing all JumpCloud commands with a command string and the search term "fdesetup", by passing the -CommandID Parameter to the -ByID Parameter using the pipeline and Parameter Binding. Note, search parameters on Get-JCCommand support wildcard characters. In this example commands with the string "fdesetup" somewhere in the command body would be returned.
 
 Note that when running this command the time for the output to display will be directly proportionate to how many JumpCloud commands you have with a launchType of 'trigger'. The command 'Get-JCCommand -ByID' runs once for every JumpCloud command within your tenant with a launchType of 'trigger'.
 
@@ -74,6 +93,21 @@ Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -command
+The command to execute on the server.
+
+```yaml
+Type: System.String
+Parameter Sets: SearchFilter
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
@@ -102,10 +136,106 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
+### -commandType
+Command Type
+
+```yaml
+Type: System.String
+Parameter Sets: SearchFilter
+Aliases:
+Accepted values: windows, mac, linux
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -launchType
+Launch Type
+
+```yaml
+Type: System.String
+Parameter Sets: SearchFilter
+Aliases:
+Accepted values: repeated, one-time, manual, trigger
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -name
+Name of the command
+
+```yaml
+Type: System.String
+Parameter Sets: SearchFilter
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -returnProperties
+Allows you to return select properties on JumpCloud user objects. Specifying what properties are returned can drastically increase the speed of the API call with a large data set. Valid properties that can be returned are: 'command', 'name','commandType', 'launchType','listensTo','schedule','trigger','scheduleRepeatType','organization'
+
+```yaml
+Type: System.String[]
+Parameter Sets: SearchFilter
+Aliases:
+Accepted values: command, name, launchType, commandType, trigger, scheduleRepeatType
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -scheduleRepeatType
+When the command will repeat
+
+```yaml
+Type: System.String
+Parameter Sets: SearchFilter
+Aliases:
+Accepted values: minute, hour, day, week, month
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -trigger
+The name of the command trigger
+
+```yaml
+Type: System.String
+Parameter Sets: SearchFilter
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
+
+### System.String
 
 ### System.String[]
 
