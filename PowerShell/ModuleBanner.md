@@ -1,17 +1,17 @@
 #### Latest Version
 
 ```
-1.23.0
+1.24.0
 ```
 
 #### Banner Current
 
 ```
-* Added search endpoint functionality and parameters to Get-jCCommand
+{{Fill in the Banner Current}}
 ```
 
 #### Banner Old
 
 ```
-* Added functionality for Set, Get, New-JCUser to Search by Email to Manager Field
+{{Fill in the Banner Old}}
 ```
