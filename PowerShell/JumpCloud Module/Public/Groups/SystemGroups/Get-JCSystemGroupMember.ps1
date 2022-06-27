@@ -18,8 +18,9 @@ Function Get-JCSystemGroupMember ()
         Write-Debug 'Verifying JCAPI Key'
         if ($JCAPIKEY.length -ne 40) {Connect-JConline}
 
-        if (($PSVersionTable.PSVersion.Major -ge 7) -and ($parallel -eq $true)) {
-            Write-Debug "Parallel set to True, PSVersion greater than 7"
+        $Parallel = Get-JCParallelValidation -parallel $Parallel
+
+        if ($Parallel) {
             Write-Debug 'Initilizing resultsArray and results ArraryByID'
             $rawResults = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
             $resultsArray = [System.Collections.Concurrent.ConcurrentBag[object]]::new()

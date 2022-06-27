@@ -41,13 +41,14 @@ function Get-JCCommandResult ()
             $hdrs.Add('x-org-id', "$($JCOrgID)")
         }
 
-        if (($PSVersionTable.PSVersion.Major -ge 7) -and ($parallel -eq $true)) {
+        $Parallel = Get-JCParallelValidation -parallel $Parallel
+
+        if ($Parallel) {
             Write-Debug "Parallel set to True, PSVersion greater than 7"
             $resultsArray = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
             $resultsArrayList = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
         }
         else {
-            $parallel = $false
             Write-Verbose 'Initilizing resultsArraylist'
             $resultsArray = New-Object -TypeName System.Collections.ArrayList
             $resultsArrayList = New-Object -TypeName System.Collections.ArrayList

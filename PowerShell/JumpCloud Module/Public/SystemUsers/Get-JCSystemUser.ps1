@@ -41,8 +41,9 @@ SystemID has an Alias of _id. This means you can leverage the PowerShell pipelin
         [int]$limit = '100'
         Write-Verbose "Setting limit to $limit"
 
-        if (($PSVersionTable.PSVersion.Major -ge 7) -and ($parallel -eq $true)) {
-            Write-Debug "Parallel set to True, PSVersion greater than 7"
+        $Parallel = Get-JCParallelValidation -parallel $Parallel
+
+        if ($Parallel) {
             $resultsArray = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
             $resultsArrayList = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
 

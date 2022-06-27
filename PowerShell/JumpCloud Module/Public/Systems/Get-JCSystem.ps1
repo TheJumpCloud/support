@@ -217,9 +217,16 @@ Function Get-JCSystem ()
         Write-Verbose 'Verifying JCAPI Key'
         if ($JCAPIKEY.length -ne 40) { Connect-JCOnline }
 
-        Write-Verbose 'Initilizing resultsArray'
+        $Parallel = Get-JCParallelValidation -parallel $Parallel
 
-        $resultsArrayList = New-Object -TypeName System.Collections.ArrayList
+        if ($Parallel) {
+            Write-Verbose 'Initilizing resultsArray'
+            $resultsArrayList = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
+        }
+        else {
+            Write-Verbose 'Initilizing resultsArray'
+            $resultsArrayList = New-Object -TypeName System.Collections.ArrayList
+        }
 
         Write-Verbose "Parameter Set: $($PSCmdlet.ParameterSetName)"
 
