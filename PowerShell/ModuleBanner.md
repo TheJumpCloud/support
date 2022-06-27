@@ -7,11 +7,11 @@
 #### Banner Current
 
 ```
-{{Fill in the Banner Current}}
+* Added search endpoint functionality and parameters to Get-jCCommand
 ```
 
 #### Banner Old
 
 ```
-{{Fill in the Banner Old}}
+* Added functionality for Set, Get, New-JCUser to Search by Email to Manager Field
 ```

@@ -1,10 +1,29 @@
 
 Function Get-JCCommand ()
 {
-    [CmdletBinding(DefaultParameterSetName = 'ReturnAll')]
+    [CmdletBinding(DefaultParameterSetName = 'SearchFilter')]
 
     param
     (
+
+        [Parameter( ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'The command body text of the JumpCloud Command you wish to search for ex. Get-JCCommand -command <commandBody>')]
+        [String]$command,
+        [Parameter( ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'The name of the JumpCloud Command you wish to search for ex. Get-JCCommand -name <commandName>')]
+        [String]$name,
+        [Parameter( ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'The type (windows, mac, linux) of the JumpCloud Command you wish to search for ex. Get-JCCommand -commandType <commandType>')] 
+        [ValidateSet('windows', 'mac', 'linux')]
+        [string]$commandType,
+        [Parameter( ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'The launch type of the JumpCloud Command you wish to search for ex. Get-JCCommand -launchType <typeOfLaunch> ' )] 
+        [ValidateSet('repeated','one-time','manual', 'trigger')]
+        [string]$launchType,
+        [Parameter( ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'The trigger name of the JumpCloud Command you wish to search for ex. Get-JCCommand -trigger <triggerId> ')]
+        [string]$trigger,
+        [Parameter( ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'The scheduled command repeat type (minute, hour, day, week, month) of the JumpCloud Command you wish to search for ex. Get-JCCommand -scheduleRepeatType <repeatType>')] 
+        [ValidateSet('minute', 'hour', 'day', 'week', 'month')]
+        [string]$scheduleRepeatType,
+        [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'Allows you to return select properties on JumpCloud commands objects. Specifying what properties are returned can drastically increase the speed of the API call with a large data set. Valid properties that can be returned are: ''command'', ''name'',''launchType'',''commandType'',''trigger'',''scheduleRepeatType''')]
+        [ValidateSet('command', 'name', 'launchType', 'commandType','trigger', 'scheduleRepeatType')]
+        [String[]]$returnProperties,
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'ByID',
@@ -21,8 +40,6 @@ CommandID has an Alias of _id. This means you can leverage the PowerShell pipeli
         [Switch]
         $ByID
     )
-
-
     begin
 
     {
@@ -42,17 +59,23 @@ CommandID has an Alias of _id. This means you can leverage the PowerShell pipeli
         {
             $hdrs.Add('x-org-id', "$($JCOrgID)")
         }
+        Write-Verbose 'Initilizing resultsArray'
 
-        [int]$limit = '100'
-        Write-Debug "Setting limit to $limit"
+        $resultsArrayList = New-Object -TypeName System.Collections.ArrayList
 
-        Write-Debug 'Initilizing resultsArray and resultsArrayByID'
-        $resultsArray = @()
+        Write-Verbose "Parameter Set: $($PSCmdlet.ParameterSetName)"
     }
 
     process
 
     {
+        [int]$limit = '100'
+        Write-Verbose "Setting limit to $limit"
+
+        [int]$skip = '0'
+        Write-Verbose "Setting limit to $limit"
+
+        [int]$Counter = 0
 
         if ($PSCmdlet.ParameterSetName -eq 'ReturnAll')
 
@@ -61,7 +84,7 @@ CommandID has an Alias of _id. This means you can leverage the PowerShell pipeli
             Write-Debug 'Setting skip to zero'
             [int]$skip = 0 #Do not change!
 
-            while (($resultsArray).Count -ge $skip)
+            while (($resultsArrayList).Count -ge $skip)
             {
                 $limitURL = "$JCUrlBasePath/api/commands?sort=type,_id&limit=$limit&skip=$skip"
                 Write-Debug $limitURL
@@ -70,31 +93,139 @@ CommandID has an Alias of _id. This means you can leverage the PowerShell pipeli
 
                 $skip += $limit
                 Write-Debug "Setting skip to $skip"
-
-                $resultsArray += $results.results
-                $count = ($resultsArray).Count
+                $resultsArrayList += $results.results
+                $count = ($resultsArrayList).Count
                 Write-Debug "Results count equals $count"
             }
         }
 
-        elseif ($PSCmdlet.ParameterSetName -eq 'ByID')
-
+ 
+        switch ($PSCmdlet.ParameterSetName)
         {
-            foreach ($uid in $CommandID)
+            SearchFilter
+            {
+
+                while ((($resultsArrayList.Results).Count) -ge $Counter)
+                {
+
+                    if ($returnProperties)
+                    {
+
+                        $Search = @{
+                            filter = @(
+                                @{
+                                }
+                            )
+                            limit  = $limit
+                            skip   = $skip
+                            fields = $returnProperties
+                        } #Initialize search
+
+                    }
+
+                    else
+                    {
+
+                        $Search = @{
+                            filter = @(
+                                @{
+
+                                }
+                            )
+                            limit  = $limit
+                            skip   = $skip
+
+                        } #Initialize search
+
+                    }
+
+                    foreach ($param in $PSBoundParameters.GetEnumerator())
+                    {
+                        if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }
+                        if ($param.value -is [Boolean])
+                        {
+                            (($Search.filter).GetEnumerator()).add($param.Key, $param.value)
+
+                            continue
+                        }
+                        if ($param.key -eq 'returnProperties')
+                        {
+                            continue
+                        }
+
+                        $Value = ($param.value).replace('*', '')
+
+                        if (($param.Value -match '.+?\*$') -and ($param.Value -match '^\*.+?'))
+                        {
+                            # Front and back wildcard
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "$Value" })
+                        }
+                        elseif ($param.Value -match '.+?\*$')
+                        {
+                            # Back wildcard
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "^$Value" })
+                        }
+                        elseif ($param.Value -match '^\*.+?')
+                        {
+                            # Front wild card
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "$Value`$" })
+                        }
+                        else
+                        {
+                            (($Search.filter).GetEnumerator()).add($param.Key, $Value)
+                        }
+                        
+                    } # End foreach
+  
+
+                    $SearchJSON = $Search | ConvertTo-Json -Compress -Depth 4
+
+                    Write-Debug $SearchJSON
+
+                    $URL = "$JCUrlBasePath/api/search/commands"
+
+                    $Results = Invoke-RestMethod -Method POST -Uri $Url  -Header $hdrs -Body $SearchJSON -UserAgent:(Get-JCUserAgent)
+
+                    $null = $resultsArrayList.Add($Results)
+
+                    $Skip += $limit
+
+                    $Counter += $limit
+                } #End While
+
+    } # End Search
+    ByID
+    {
+        foreach ($uid in $CommandID)
             {
                 $URL = "$JCUrlBasePath/api/commands/$uid"
                 Write-Debug $URL
                 $CommandResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
-                $resultsArray += $CommandResults
+                $null = $resultsArrayList.add($CommandResults)
 
             }
+    }
+}# End Switch
+    }
+    end
+    {
+
+        switch ($PSCmdlet.ParameterSetName)
+        {
+            SearchFilter
+            {
+                return $resultsArrayList.Results | Select-Object -Property * 
+            }
+            ByID
+            {
+                return $resultsArrayList | Select-Object -Property * 
+            }
+
         }
 
     }
 
-    end
-
-    {
-        return $resultsArray
-    }
 }
+
+  
+    
