@@ -91,7 +91,7 @@ function Get-JCCommandResult ()
                 # If -ByCommandID is specified and an object is piped into the function, the object will be converted to string
                 if ($CommandID -match "@{"){
                     Write-Debug "Command from pipeline..."
-                    $Match = Select-String "_id=(\S*);" -inputobject $CommandID
+                    $Match = Select-String "_id=(\S*)[};]" -inputobject $CommandID
                     # Get the CommandID via regex
                     $CommandID = $Match.matches.groups[1].value
                     Write-Debug "Match: $($Match.matches.groups[1].value)"
