@@ -12,6 +12,10 @@ Foreach ($Import in @($Public + $Private))
         Write-Error -Message "Failed to import function $($Import.FullName): $_"
     }
 }
+
+# Check to see if parallel processing is available for the session
+$global:JCParallel = Get-JCParallelValidation
+
 # Set default values for function parameters
 $PSDefaultParameterValues['Invoke-RestMethod:ContentType'] = 'application/json; charset=utf-8'
 $PSDefaultParameterValues['Invoke-WebRequest:ContentType'] = 'application/json; charset=utf-8'
