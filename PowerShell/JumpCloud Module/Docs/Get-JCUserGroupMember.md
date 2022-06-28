@@ -14,12 +14,12 @@ Returns the User Group members of a JumpCloud User Group.
 
 ### ByGroup (Default)
 ```
-Get-JCUserGroupMember [-GroupName] <String> [-Parallel <Boolean>] [<CommonParameters>]
+Get-JCUserGroupMember [-GroupName] <String> [<CommonParameters>]
 ```
 
 ### ByID
 ```
-Get-JCUserGroupMember -ByID <String> [-Parallel <Boolean>] [<CommonParameters>]
+Get-JCUserGroupMember -ByID <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -80,29 +80,12 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
-### -Parallel
-Boolean: $true to run in parallel, $false to run in sequential; Default value: false
-
-```yaml
-Type: System.Boolean
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
 ### System.String
-
-### System.Boolean
 
 ## OUTPUTS
 
