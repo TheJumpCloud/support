@@ -7,9 +7,7 @@ Function Get-JCSystemGroupMember ()
         [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'ByGroup', Position = 0, HelpMessage = 'The name of the JumpCloud System Group you want to return the members of.')]
         [Alias('name')][String]$GroupName,
         [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'ByID', HelpMessage = 'If searching for a System Group using the GroupID populate the GroupID in the -ByID field.')]
-        [Alias('_id', 'id')][String]$ByID,
-        [Parameter(Mandatory=$false, ValueFromPipelineByPropertyName, HelpMessage = 'Boolean: $true to run in parallel, $false to run in sequential; Default value: false')]
-        [Bool]$Parallel
+        [Alias('_id', 'id')][String]$ByID
     )
 
     begin

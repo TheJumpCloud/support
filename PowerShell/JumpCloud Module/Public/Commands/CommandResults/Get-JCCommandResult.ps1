@@ -19,10 +19,7 @@ function Get-JCCommandResult ()
         [String]$CommandID,
 
         [Parameter(ParameterSetName = 'TotalCount', HelpMessage = 'A switch parameter to only return the number of command results.')]
-        [Switch]$TotalCount,
-
-        [Parameter(ValueFromPipelineByPropertyName, HelpMessage = 'Boolean: $true to run in parallel, $false to run in sequential; Default value: false')]
-        [Bool]$Parallel
+        [Switch]$TotalCount
     )
     begin
     {

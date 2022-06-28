@@ -124,10 +124,7 @@ Function Get-JCUser ()
         [String]$state,
 
         [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'The recovery email of the JumpCloud user you wish to search for.')]
-        [String]$recoveryEmail,
-
-        [Parameter(Mandatory=$false, ValueFromPipelineByPropertyName, HelpMessage = 'Boolean: $true to run in parallel, $false to run in sequential; Default value: false')]
-        [Bool]$Parallel
+        [String]$recoveryEmail
     )
 
     DynamicParam
