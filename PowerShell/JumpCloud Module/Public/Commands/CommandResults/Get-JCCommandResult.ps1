@@ -22,7 +22,7 @@ function Get-JCCommandResult ()
         [Switch]$TotalCount,
 
         [Parameter(ValueFromPipelineByPropertyName, HelpMessage = 'Boolean: $true to run in parallel, $false to run in sequential; Default value: false')]
-        [Bool]$Parallel=$false
+        [Bool]$Parallel
     )
     begin
     {
@@ -41,7 +41,7 @@ function Get-JCCommandResult ()
             $hdrs.Add('x-org-id', "$($JCOrgID)")
         }
 
-        $Parallel = Get-JCParallelValidation -parallel $Parallel
+        $Parallel = $JCParallel
 
         if ($Parallel) {
             Write-Debug "Parallel set to True, PSVersion greater than 7"

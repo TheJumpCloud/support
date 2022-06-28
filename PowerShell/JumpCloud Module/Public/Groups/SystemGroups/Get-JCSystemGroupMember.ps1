@@ -9,7 +9,7 @@ Function Get-JCSystemGroupMember ()
         [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'ByID', HelpMessage = 'If searching for a System Group using the GroupID populate the GroupID in the -ByID field.')]
         [Alias('_id', 'id')][String]$ByID,
         [Parameter(Mandatory=$false, ValueFromPipelineByPropertyName, HelpMessage = 'Boolean: $true to run in parallel, $false to run in sequential; Default value: false')]
-        [Bool]$Parallel=$false
+        [Bool]$Parallel
     )
 
     begin
@@ -18,7 +18,7 @@ Function Get-JCSystemGroupMember ()
         Write-Debug 'Verifying JCAPI Key'
         if ($JCAPIKEY.length -ne 40) {Connect-JConline}
 
-        $Parallel = Get-JCParallelValidation -parallel $Parallel
+        $Parallel = $JCParallel
 
         if ($Parallel) {
             Write-Debug 'Initilizing resultsArray and results ArraryByID'

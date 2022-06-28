@@ -151,7 +151,7 @@ Function Get-JCSystem ()
         [String[]]$returnProperties,
         
         [Parameter(Mandatory=$false, ValueFromPipelineByPropertyName, HelpMessage = 'Boolean: $true to run in parallel, $false to run in sequential; Default value: false')]
-        [Bool]$Parallel=$false
+        [Bool]$Parallel
 
     )
 
@@ -217,7 +217,7 @@ Function Get-JCSystem ()
         Write-Verbose 'Verifying JCAPI Key'
         if ($JCAPIKEY.length -ne 40) { Connect-JCOnline }
 
-        $Parallel = Get-JCParallelValidation -parallel $Parallel
+        $Parallel = $JCParallel
 
         if ($Parallel) {
             Write-Verbose 'Initilizing resultsArray'

@@ -15,7 +15,7 @@ SystemID has an Alias of _id. This means you can leverage the PowerShell pipelin
         [Alias('_id', 'id')]
         [String]$SystemID,
         [Parameter(Mandatory=$false, ValueFromPipelineByPropertyName, HelpMessage = 'Boolean: $true to run in parallel, $false to run in sequential; Default value: false')]
-        [Bool]$Parallel=$false
+        [Bool]$Parallel
     )
 
     begin
@@ -41,7 +41,7 @@ SystemID has an Alias of _id. This means you can leverage the PowerShell pipelin
         [int]$limit = '100'
         Write-Verbose "Setting limit to $limit"
 
-        $Parallel = Get-JCParallelValidation -parallel $Parallel
+        $Parallel = $JCParallel
 
         if ($Parallel) {
             $resultsArray = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
