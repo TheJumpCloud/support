@@ -386,24 +386,17 @@ Function Get-JCUser ()
 
                         $Value = ($param.value).replace('*', '')
 
-                        if (($param.Value -match '.+?\*$') -and ($param.Value -match '^\*.+?'))
-                        {
+                        if (($param.Value -match '.+?\*$') -and ($param.Value -match '^\*.+?')) {
                             # Front and back wildcard
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "$Value" })
-                        }
-                        elseif ($param.Value -match '.+?\*$')
-                        {
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)$Value" })
+                        } elseif ($param.Value -match '.+?\*$') {
                             # Back wildcard
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "^$Value" })
-                        }
-                        elseif ($param.Value -match '^\*.+?')
-                        {
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)^$Value" })
+                        } elseif ($param.Value -match '^\*.+?') {
                             # Front wild card
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "$Value`$" })
-                        }
-                        else
-                        {
-                            (($Search.filter).GetEnumerator()).add($param.Key, $Value)
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)$Value`$" })
+                        } else {
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)(^$Value`$)" })
                         }
 
                     } # End foreach

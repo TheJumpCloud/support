@@ -154,37 +154,33 @@ CommandID has an Alias of _id. This means you can leverage the PowerShell pipeli
                         }
 
                         $Value = ($param.value).replace('*', '')
-
-                        if (($param.Value -match '.+?\*$') -and ($param.Value -match '^\*.+?'))
-                        {
+                       
+                        if (($param.Value -match '.+?\*$') -and ($param.Value -match '^\*.+?')) {
                             # Front and back wildcard
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "$Value" })
-                        }
-                        elseif ($param.Value -match '.+?\*$')
-                        {
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)$Value" })
+                        } elseif ($param.Value -match '.+?\*$') {
                             # Back wildcard
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "^$Value" })
-                        }
-                        elseif ($param.Value -match '^\*.+?')
-                        {
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)^$Value" })
+                        } elseif ($param.Value -match '^\*.+?') {
                             # Front wild card
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "$Value`$" })
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)$Value`$" })
+                        } else {
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)(^$Value`$)" })
                         }
-                        else
-                        {
-                            (($Search.filter).GetEnumerator()).add($param.Key, $Value)
-                        }
+                        
                         
                     } # End foreach
   
 
                     $SearchJSON = $Search | ConvertTo-Json -Compress -Depth 4
+                    Write-Host $SearchJSON
 
                     Write-Debug $SearchJSON
 
                     $URL = "$JCUrlBasePath/api/search/commands"
 
                     $Results = Invoke-RestMethod -Method POST -Uri $Url  -Header $hdrs -Body $SearchJSON -UserAgent:(Get-JCUserAgent)
+                    Write-Host $Results
 
                     $null = $resultsArrayList.Add($Results)
 
