@@ -14,22 +14,22 @@ Returns all JumpCloud Command Results within a JumpCloud tenant or a single Jump
 
 ### ReturnAll (Default)
 ```
-Get-JCCommandResult [-Parallel <Boolean>] [<CommonParameters>]
+Get-JCCommandResult [<CommonParameters>]
 ```
 
 ### ByID
 ```
-Get-JCCommandResult [-CommandResultID] <String> [-ByID] [-Parallel <Boolean>] [<CommonParameters>]
+Get-JCCommandResult [-CommandResultID] <String> [-ByID] [<CommonParameters>]
 ```
 
 ### ByCommandID
 ```
-Get-JCCommandResult [-ByCommandID] [-CommandID <String>] [-Parallel <Boolean>] [<CommonParameters>]
+Get-JCCommandResult [-ByCommandID] [-CommandID <String>] [<CommonParameters>]
 ```
 
 ### TotalCount
 ```
-Get-JCCommandResult [-TotalCount] [-Parallel <Boolean>] [<CommonParameters>]
+Get-JCCommandResult [-TotalCount] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -151,21 +151,6 @@ Accept pipeline input: True (ByPropertyName, ByValue)
 Accept wildcard characters: False
 ```
 
-### -Parallel
-Boolean: $true to run in parallel, $false to run in sequential; Default value: false
-
-```yaml
-Type: System.Boolean
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
 ### -TotalCount
 A switch parameter to only return the number of command results.
 
@@ -189,8 +174,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ### System.String
 
 ### System.Management.Automation.SwitchParameter
-
-### System.Boolean
 
 ## OUTPUTS
 

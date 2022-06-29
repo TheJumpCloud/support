@@ -19,10 +19,7 @@ function Get-JCCommandResult ()
         [String]$CommandID,
 
         [Parameter(ParameterSetName = 'TotalCount', HelpMessage = 'A switch parameter to only return the number of command results.')]
-        [Switch]$TotalCount,
-
-        [Parameter(ValueFromPipelineByPropertyName, HelpMessage = 'Boolean: $true to run in parallel, $false to run in sequential; Default value: false')]
-        [Bool]$Parallel=$false
+        [Switch]$TotalCount
     )
     begin
     {
@@ -41,13 +38,14 @@ function Get-JCCommandResult ()
             $hdrs.Add('x-org-id', "$($JCOrgID)")
         }
 
-        if (($PSVersionTable.PSVersion.Major -ge 7) -and ($parallel -eq $true)) {
+        $Parallel = $JCParallel
+
+        if ($Parallel) {
             Write-Debug "Parallel set to True, PSVersion greater than 7"
             $resultsArray = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
             $resultsArrayList = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
         }
         else {
-            $parallel = $false
             Write-Verbose 'Initilizing resultsArraylist'
             $resultsArray = New-Object -TypeName System.Collections.ArrayList
             $resultsArrayList = New-Object -TypeName System.Collections.ArrayList
@@ -90,7 +88,7 @@ function Get-JCCommandResult ()
                 # If -ByCommandID is specified and an object is piped into the function, the object will be converted to string
                 if ($CommandID -match "@{"){
                     Write-Debug "Command from pipeline..."
-                    $Match = Select-String "_id=(\S*);" -inputobject $CommandID
+                    $Match = Select-String "_id=(\S*)[};]" -inputobject $CommandID
                     # Get the CommandID via regex
                     $CommandID = $Match.matches.groups[1].value
                     Write-Debug "Match: $($Match.matches.groups[1].value)"

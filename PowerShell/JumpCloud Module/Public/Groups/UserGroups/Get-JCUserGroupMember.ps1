@@ -7,9 +7,7 @@ Function Get-JCUserGroupMember ()
         [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'ByGroup', Position = 0, HelpMessage = 'The name of the JumpCloud User Group you want to return the members of.')]
         [Alias('name')][String]$GroupName,
         [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'ByID', HelpMessage = 'If searching for a User Group using the GroupID populate the GroupID in the -ByID field.')]
-        [String]$ByID,
-        [Parameter(Mandatory=$false, ValueFromPipelineByPropertyName, HelpMessage = 'Boolean: $true to run in parallel, $false to run in sequential; Default value: false')]
-        [Bool]$Parallel=$false
+        [String]$ByID
     )
 
     begin
@@ -18,8 +16,9 @@ Function Get-JCUserGroupMember ()
         Write-Debug 'Verifying JCAPI Key'
         if ($JCAPIKEY.length -ne 40) {Connect-JConline}
 
-        if (($PSVersionTable.PSVersion.Major -ge 7) -and ($parallel -eq $true)) {
-            Write-Debug "Parallel set to True, PSVersion greater than 7"
+        $Parallel = $JCParallel
+
+        if ($Parallel) {
             Write-Debug 'Initilizing resultsArray and results ArraryByID'
             $rawResults = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
             $resultsArray = [System.Collections.Concurrent.ConcurrentBag[object]]::new()

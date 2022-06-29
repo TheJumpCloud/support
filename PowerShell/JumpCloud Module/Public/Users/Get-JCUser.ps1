@@ -124,10 +124,7 @@ Function Get-JCUser ()
         [String]$state,
 
         [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'The recovery email of the JumpCloud user you wish to search for.')]
-        [String]$recoveryEmail,
-
-        [Parameter(Mandatory=$false, ValueFromPipelineByPropertyName, HelpMessage = 'Boolean: $true to run in parallel, $false to run in sequential; Default value: false')]
-        [Bool]$Parallel=$false
+        [String]$recoveryEmail
     )
 
     DynamicParam
@@ -185,9 +182,16 @@ Function Get-JCUser ()
         Write-Verbose 'Verifying JCAPI Key'
         if ($JCAPIKEY.length -ne 40) { Connect-JCOnline }
 
-        Write-Verbose 'Initilizing resultsArray'
+        $Parallel = $JCParallel
 
-        $resultsArrayList = New-Object -TypeName System.Collections.ArrayList
+        if ($Parallel) {
+            Write-Verbose 'Initilizing resultsArray'
+            $resultsArrayList = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
+        }
+        else {
+            Write-Verbose 'Initilizing resultsArray'
+            $resultsArrayList = New-Object -TypeName System.Collections.ArrayList
+        }
 
         Write-Verbose "Parameter Set: $($PSCmdlet.ParameterSetName)"
 

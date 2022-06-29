@@ -1,25 +1,39 @@
-## 1.24.0
+## 2.0.0
 
 Release Date: June 27, 2022
 
 #### RELEASE NOTES
 
 ```
-{{Fill in the Release Notes}}
+This release introduces Parallel processing functionality to several functions (Get-JCUser, Get-JCSystem, Get-JCSystemUser, Get-JCSystemGroupMember, Get-JCUserGroupMember, Get-JCCommandResult)
+
+Note: In order to use the parallel functionality, the feature requires PowerShell version 7 or higher
 ```
 
 #### FEATURES:
 
-{{Fill in the Features}}
-
+* This release adds parallel processing functionality to potentially alleviate long processing times for large scale operations
+    * Note: Feature requires PowerShell version 7 or higher
+    * This release adds the -parallel flag to the following functions:
+        * Get-JCUser
+        * Get-JCSystem
+        * Get-JCSystemUser
+        * Get-JCSystemGroupMember
+        * Get-JCUserGroupMember
+        * Get-JCCommandResult
+* Added -ByCommandID and -CommandID to Get-JCCommandResult
+    * The added functionality will allow admins to search for all command results pertaining to a single command via the commandID or the workflowID
+    * When using the pipeline for inputting a command object to Get-JCCommandResult, use the -ByCommandID switch
+        * Example: $OrgCommandResults = Get-JCCommand | Get-JCCommandResult -ByCommandID
+    * When using the pipeline for inputting a commandResult object to Get-JCCommandResult, use the -ByID switch
+        * Example: $OrgCommandResults = Get-JCCommandResult | Get-JCCommandResult -ByID
 #### IMPROVEMENTS:
 
-{{Fill in the Improvements}}
+* Adjusted output for Get-JCSystemGroupMember -ByID and Get-JCUserGroupMember -ByID to match the output of -GroupName
 
 #### BUG FIXES:
 
-{{Fill in the Bug Fixes}}
-
+N/A
 ## 1.23.0
 
 Release Date: June 21, 2022

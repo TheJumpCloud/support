@@ -13,9 +13,7 @@ PS C:\> Get-JCSystem | Select hostname, _id
 The SystemID will be the 24 character string populated for the _id field.
 SystemID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically using the Get-JCSystem function before calling Get-JCSystemUser. This is shown in EXAMPLES 2 and 3.')]
         [Alias('_id', 'id')]
-        [String]$SystemID,
-        [Parameter(Mandatory=$false, ValueFromPipelineByPropertyName, HelpMessage = 'Boolean: $true to run in parallel, $false to run in sequential; Default value: false')]
-        [Bool]$Parallel=$false
+        [String]$SystemID
     )
 
     begin
@@ -41,8 +39,9 @@ SystemID has an Alias of _id. This means you can leverage the PowerShell pipelin
         [int]$limit = '100'
         Write-Verbose "Setting limit to $limit"
 
-        if (($PSVersionTable.PSVersion.Major -ge 7) -and ($parallel -eq $true)) {
-            Write-Debug "Parallel set to True, PSVersion greater than 7"
+        $Parallel = $JCParallel
+
+        if ($Parallel) {
             $resultsArray = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
             $resultsArrayList = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
 
