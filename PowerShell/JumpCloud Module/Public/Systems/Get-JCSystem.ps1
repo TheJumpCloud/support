@@ -357,8 +357,6 @@ Function Get-JCSystem ()
 
                     $SearchJSON = $Search | ConvertTo-Json -Compress -Depth 4
 
-                    Write-Debug $SearchJSON
-
                     $URL = "$JCUrlBasePath/api/search/systems"
 
                     $Results = Invoke-RestMethod -Method POST -Uri $Url  -Header $hdrs -Body $SearchJSON -UserAgent:(Get-JCUserAgent)

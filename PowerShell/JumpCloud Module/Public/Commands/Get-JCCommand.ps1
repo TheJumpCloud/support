@@ -173,14 +173,10 @@ CommandID has an Alias of _id. This means you can leverage the PowerShell pipeli
   
 
                     $SearchJSON = $Search | ConvertTo-Json -Compress -Depth 4
-                    Write-Host $SearchJSON
-
-                    Write-Debug $SearchJSON
-
+    
                     $URL = "$JCUrlBasePath/api/search/commands"
 
                     $Results = Invoke-RestMethod -Method POST -Uri $Url  -Header $hdrs -Body $SearchJSON -UserAgent:(Get-JCUserAgent)
-                    Write-Host $Results
 
                     $null = $resultsArrayList.Add($Results)
 
