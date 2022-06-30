@@ -404,3 +404,47 @@ Describe -Tag:('JCUser') "Get-JCUser 1.12" {
 
     }
 }
+
+Describe -Tag:('JCUser') "Case Insensitivity Tests" {
+    It "Searches for usernames byLower" {
+        # 'username' should return same user as 'Username'
+        $userSearch = Get-JCUser -Username $PesterParams_User1.Username.toLower()
+        $userSearchDefault = Get-JCUser -Username $PesterParams_User1.Username
+        $userSearch._id | Should -Be $userSearchDefault._id
+    }
+    It "Searches for usernames, firstnames, lastnames with mixed capitalaztion" {
+        # search by username, firstname, lastname
+        # Get-JCuser -username uSeRnAmE should return same user as Get-JCuser -username Username
+        # Get-JCuser -firstname fIrStNaMe should return same user as Get-JCuser -firstname Firstname
+        # Get-JCuser -lastname lAsTnAmE should return same user as Get-JCuser -lastname Lastname
+        $params = ('username', 'firstname', 'lastname')
+        foreach ($param in $params) {
+            $string = $PesterParams_User1.$param.toLower()
+            $string.length
+            $stringList = @()
+            $stringFinal = ""
+            # for i in usernmae length, get the letters and capatlize ever other letter
+            for ($i = 0; $i -lt $string.length; $i++) {
+                <# Action that will repeat until the condition is met #>
+                $letter = $string.Substring($i, 1)
+                if ($i % 2 -eq 1) {
+                    $letter = $letter.TOUpper()
+                }
+                $stringList += ($letter)
+            }
+            foreach ($letter in $stringList) {
+                <# $currentItemName is the current item #>
+                $stringFinal += $letter
+            }
+            $Command_Associations_POST = "Get-JCUser -$($param) $stringFinal"
+            # $userSearch = Get-JCUser -$($param) $stringFinal
+            $userSearch = Invoke-Expression -Command:($Command_Associations_POST)
+            $Command_Associations_POST_DEFAULT = "Get-JCUser -$($param) $($PesterParams_User1.$param)"
+            # $userSearchDefault = $userSearchDefault = Get-JCUser -$($param) $PesterParams_User1.$param
+            $userSearchDefault = Invoke-Expression -Command:($Command_Associations_POST_DEFAULT)
+            Write-Host " $($userSearch.$param) should be $($userSearchDefault.$param)"
+            # Ids returned here should return the same restuls
+            $userSearch._id | Should -Be $userSearchDefault._id
+        }
+    }
+}
