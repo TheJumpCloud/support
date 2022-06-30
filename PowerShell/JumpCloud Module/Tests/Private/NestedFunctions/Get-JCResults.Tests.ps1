@@ -165,7 +165,7 @@ Describe -Tag:('Parallel') "Get-JCResults Parallel" {
 
     It "Returns all CommandResults in Parallel" {
         $limitURL = "$JCUrlBasePath/api/commandresults"
-        $ParallelCommandResults = Get-JCResults -Url $limitURL -method "GET" -limit $limit -parallel $true
+        $ParallelCommandResults = Get-JCResults -Url $limitURL -method "GET" -limit 1 -parallel $true
 
         # Ensure function runs in sequential
         $JCParallel = $false
