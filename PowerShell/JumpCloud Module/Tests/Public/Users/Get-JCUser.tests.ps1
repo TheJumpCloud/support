@@ -420,7 +420,6 @@ Describe -Tag:('JCUser') "Case Insensitivity Tests" {
         $params = ('username', 'firstname', 'lastname')
         foreach ($param in $params) {
             $string = $PesterParams_User1.$param.toLower()
-            $string.length
             $stringList = @()
             $stringFinal = ""
             # for i in usernmae length, get the letters and capatlize ever other letter
@@ -442,7 +441,7 @@ Describe -Tag:('JCUser') "Case Insensitivity Tests" {
             $Command_Associations_POST_DEFAULT = "Get-JCUser -$($param) $($PesterParams_User1.$param)"
             # $userSearchDefault = $userSearchDefault = Get-JCUser -$($param) $PesterParams_User1.$param
             $userSearchDefault = Invoke-Expression -Command:($Command_Associations_POST_DEFAULT)
-            Write-Host " $($userSearch.$param) should be $($userSearchDefault.$param)"
+            # Write-Host " $($userSearch.$param) should be $($userSearchDefault.$param)"
             # Ids returned here should return the same restuls
             $userSearch._id | Should -Be $userSearchDefault._id
         }
