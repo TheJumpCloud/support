@@ -121,6 +121,7 @@ Function Get-JCUser ()
         [String]$manager,
 
         [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'A search filter to return users that are in an ACTIVATED, STAGED or SUSPENDED state')]
+        [ValidateSet('ACTIVATED','SUSPENDED','STAGED')]
         [String]$state,
 
         [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'The recovery email of the JumpCloud user you wish to search for.')]
