@@ -136,7 +136,8 @@ CommandID has an Alias of _id. This means you can leverage the PowerShell pipeli
                 foreach ($uid in $CommandID) {
                     $URL = "$JCUrlBasePath/api/commands/$uid"
                     Write-Debug $URL
-                    $resultsArrayList = Get-JCResults -URL $URL -method "GET" -limit $limit
+                    $rawResults = Get-JCResults -URL $URL -method "GET" -limit $limit
+                    $resultsArrayList.Add($rawResults)
                 }
             }
         }# End Switch
