@@ -68,6 +68,8 @@ Function Get-JCCommandTarget {
                     # Parallel API call and resultsArrayList generation
                     $rawResults = Get-JCResults -Url $SystemURL -Method "GET" -limit $limit -parallel $true
                     $rawResults | ForEach-Object -Parallel {
+                        $errorResults = $using:errorResults
+                        $resultsArrayList = $using:resultsArrayList
                         try {
                             # Get stored hash in each parallel thread
                             $CommandNameHash = $using:CommandNameHash
@@ -83,7 +85,7 @@ Function Get-JCCommandTarget {
                             $Displyname = $SystemDisplayNameHash.($SystemID)
 
                             $CommandTargetSystem = [pscustomobject]@{
-                                'CommandID'   = $CommandID
+                                'CommandID'   = $using:CommandID
                                 'CommandName' = $CommandName
                                 'trigger'     = $Trigger
                                 'SystemID'    = $SystemID
@@ -95,6 +97,10 @@ Function Get-JCCommandTarget {
                         } catch {
                             $errorResults.Enqueue($_.ToString())
                         } # End try/catch
+                        # if parallel threads encountered error - throw
+                        if (!$errorResults.IsEmpty) {
+                            throw [AggregateException]::new($errorResults)
+                        }
                     } # End Parallel
                 } else {
                     # Sequential API call and resultsArrayList generation
@@ -117,7 +123,7 @@ Function Get-JCCommandTarget {
                         }
 
                         $resultsArrayList.Add($CommandTargetSystem) | Out-Null
-                    } # End ForEach
+                    } # end parallel foreach
                 } # End if else parallel
             } # end Systems switch
             Groups {
@@ -126,6 +132,8 @@ Function Get-JCCommandTarget {
                 if ($Parallel) {
                     $rawResults = Get-JCResults -Url $SystemGroupsURL -Method "GET" -limit $limit -parallel $true
                     $rawResults | ForEach-Object -Parallel {
+                        $errorResults = $using:errorResults
+                        $resultsArrayList = $using:resultsArrayList
                         try {
                             # Get stored hash in each parallel thread
                             $CommandNameHash = $using:CommandNameHash
@@ -137,7 +145,7 @@ Function Get-JCCommandTarget {
                             $GroupName = $SystemGroupNameHash.($GroupID)
 
                             $Group = [pscustomobject]@{
-                                'CommandID'   = $CommandID
+                                'CommandID'   = $using:CommandID
                                 'CommandName' = $CommandName
                                 'GroupID'     = $GroupID
                                 'GroupName'   = $GroupName
@@ -148,6 +156,10 @@ Function Get-JCCommandTarget {
                             $errorResults.Enqueue($_.ToString())
                         } # End try/catch
                     } # end parallel foreach
+                    # if parallel threads encountered error - throw
+                    if (!$errorResults.IsEmpty) {
+                        throw [AggregateException]::new($errorResults)
+                    }
                 } else {
                     # Sequential API call and resultsArrayList generation
                     $rawResults = Get-JCResults -Url $SystemGroupsURL -Method "GET" -limit $limit
@@ -174,17 +186,13 @@ Function Get-JCCommandTarget {
     } # end process
 
     end {
-        if (!$errorResults.IsEmpty) {
-            throw [AggregateException]::new($errorResults)
-        } else {
-            switch ($PSCmdlet.ParameterSetName) {
-                Systems {
-                    return $resultsArray | Sort-Object Displayname
-                }
-                Groups {
-                    return $resultsArray | Sort-Object GroupName
-                }
-            } # end switch
-        } # end if/else errorResults
+        switch ($PSCmdlet.ParameterSetName) {
+            Systems {
+                return $resultsArrayList | Sort-Object Displayname
+            }
+            Groups {
+                return $resultsArrayList | Sort-Object GroupName
+            }
+        } # end switch
     } # end
 }
