@@ -35,6 +35,7 @@ Get-JCUser -userid <String> -dateFilter <String> -date <DateTime> [<CommonParame
 ## DESCRIPTION
 The Get-JCUser function returns all information describing a JumpCloud user. By default it will return all Users.
 Note: String parameters are case-insensitive
+
 ## EXAMPLES
 
 ### Example 1

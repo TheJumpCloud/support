@@ -3448,7 +3448,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Get-JCCommand function returns all information describing a JumpCloud command. To find the contents and payload of a specific command the -ByID Parameter must be used as this information is only accessible when using this Parameter.</maml:para>
+      <maml:para>The Get-JCCommand function returns all information describing a JumpCloud command. To find the contents and payload of a specific command the -ByID Parameter must be used as this information is only accessible when using this Parameter. Note: String parameters are case-insensitive</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -3778,7 +3778,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
         <dev:code>PS C:\&gt; Get-JCCommand -launchType 'trigger' | Get-JCCommand -ByID</dev:code>
         <dev:remarks>
           <maml:para>Returns all information describing all JumpCloud commands with a launchType of 'trigger' by passing the -CommandID Parameter to the -ByID Parameter using the pipeline and Parameter Binding.</maml:para>
-          <maml:para>Note that when running this command the time for the output to display will be directly proportionate to how many JumpCloud commands you have with a launchType of 'trigger'. The command 'Get-JCCommand -ByID' runs once for every JumpCloud command within your tenant with a launchType of 'trigger'.</maml:para>
+          <maml:para>Note that when running this command the time for the output to display will be directly proportionate to how many JumpCloud commands you have with a launchType of 'trigger'. The command 'Get-JCCommand -ByID' runs once for every JumpCloud command within your tenant with a launchType of 'trigger'. LaunchType 'trigger' or 'Trigger' will return the same information due to case-insensitivity</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
@@ -6274,7 +6274,8 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Get-JCSystem function returns all information describing a JumpCloud system. By default this will return all Systems.</maml:para>
+      <maml:para>The Get-JCSystem function returns all information describing a JumpCloud system. By default this will return all Systems. </maml:para>
+      <maml:para>Note: String parameters are case-insensitive</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -6992,6 +6993,13 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
           <maml:para>Returns all JumpCloud systems and the properties remoteIP and active. The default properties that return are lastContact and _id.</maml:para>
         </dev:remarks>
       </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 7 --------------------------</maml:title>
+        <dev:code>Get-JCSystem -hostname thisjchost</dev:code>
+        <dev:remarks>
+          <maml:para>Returns JumpCloud system with hostname 'thisjchost' NOTE: String parameters are case-insensitive. Hostname 'thisjchost' and 'thisJcHost' will return the same information.</maml:para>
+        </dev:remarks>
+      </command:example>
     </command:examples>
     <command:relatedLinks>
       <maml:navigationLink>
@@ -7383,7 +7391,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Get-JCUser function returns all information describing a JumpCloud user. By default it will return all Users.</maml:para>
+      <maml:para>The Get-JCUser function returns all information describing a JumpCloud user. By default it will return all Users. Note: String parameters are case-insensitive</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -8488,9 +8496,11 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
       </command:example>
       <command:example>
         <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>Get-JCUser -Username cclemons</dev:code>
+        <dev:code>Get-JCUser -Username cclemons or Get-JCUser -Username cClemons</dev:code>
         <dev:remarks>
-          <maml:para>Returns the information describing the JumpCloud User with Username cclemons</maml:para>
+          <maml:para>Returns the information describing the JumpCloud User with Username cclemons or cCLemons(case-insensitive).</maml:para>
+          <maml:para>NOTE: String parameters are case-insensitive. Username cclemons and cClemons returns the same user information
+</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>

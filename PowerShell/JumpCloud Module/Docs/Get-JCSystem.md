@@ -77,7 +77,7 @@ Get-JCSystem -returnProperties remoteIP, active
 
 Returns all JumpCloud systems and the properties remoteIP and active. The default properties that return are lastContact and _id.
 
-### Example 7   
+### Example 7
 ```powershell
 Get-JCSystem -hostname thisjchost
 ```
