@@ -71,3 +71,49 @@ Describe -Tag('JCCommand') 'Get-JCCommand Search' {
         $Command.scheduleRepeatType | Should -Bein $PesterParams_Command3.scheduleRepeatType
     }
 }
+
+
+Describe -Tag:('JCCommand') "Case Insensitivity Tests" {
+    It "Searches parameters dynamically with mixed, lower and upper capitalaztion" {
+        $commandParameters = (GCM Get-JCCommand).Parameters
+        $gmr = Get-JCCommand -ByID $PesterParams_Command3._id | GM
+        # Get parameters that are not ID, ORGID and have a string following the param name
+        $parameters = $gmr | Where-Object { ($_.Definition -notmatch "organization") -And ($_.Definition -notmatch "id") -And ($_.Definition -match "string\s\w+=(\w+)") -And ($_.Name -In $commandParameters.Keys) }
+
+        foreach ($param in $parameters.Name) {
+            # Write-host "Testing $param"
+            $string = $PesterParams_Command3.$param.toLower()
+            $stringList = @()
+            $stringFinal = ""
+            # for i in string length, get the letters and capatlize ever other letter
+            for ($i = 0; $i -lt $string.length; $i++) {
+                <# Action that will repeat until the condition is met #>
+                $letter = $string.Substring($i, 1)
+                if ($i % 2 -eq 1) {
+                    $letter = $letter.TOUpper()
+                }
+                $stringList += ($letter)
+            }
+            foreach ($letter in $stringList) {
+                <# $letter is the current item #>
+                $stringFinal += $letter
+            }
+            $mixedCaseSearch = "Get-JCCommand -$($param) `"$stringFinal`""
+            $lowerCaseSearch = "Get-JCCommand -$($param) `"$($stringFinal.toLower())`""
+            $upperCaseSearch = "Get-JCCommand -$($param) `"$($stringFinal.TOUpper())`""
+            # Write-Host $mixedCaseSearch
+            # Write-Host $lowerCaseSearch
+            # Write-Host $upperCaseSearch
+            $userSearchMixed = Invoke-Expression -Command:($mixedCaseSearch)
+            $userSearchLower = Invoke-Expression -Command:($lowerCaseSearch)
+            $userSearchUpper = Invoke-Expression -Command:($upperCaseSearch)
+            # DefaultSearch is the expression without text formatting
+            $defaultSearch = "Get-JCCommand -$($param) `"$($PesterParams_Command3.$param)`""
+            $userSearchDefault = Invoke-Expression -Command:($defaultSearch)
+            # Ids returned here should return the same restuls
+            $userSearchUpper._id | Should -Be $userSearchDefault._id
+            $userSearchLower._id | Should -Be $userSearchDefault._id
+            $userSearchMixed._id | Should -Be $userSearchDefault._id
+        }
+    }
+}
