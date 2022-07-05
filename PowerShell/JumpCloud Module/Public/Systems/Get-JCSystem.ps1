@@ -332,8 +332,10 @@ Function Get-JCSystem ()
                         }
 
                         $Value = ($param.value).replace('*', '')
-
-                        if (($param.Value -match '.+?\*$') -and ($param.Value -match '^\*.+?')) {
+                        if($param.Value -match '^[-+]?\d+$'){
+                            (($Search.filter).GetEnumerator()).add($param.Key, $Value)
+                        }
+                        elseif (($param.Value -match '.+?\*$') -and ($param.Value -match '^\*.+?')) {
                             # Front and back wildcard
                             (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)$Value" })
                         } elseif ($param.Value -match '.+?\*$') {
@@ -342,7 +344,11 @@ Function Get-JCSystem ()
                         } elseif ($param.Value -match '^\*.+?') {
                             # Front wild card
                             (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)$Value`$" })
-                        } else {
+                        } elseif($param.Value -match '^[-+]?\d+$'){
+                            # Check for integer value
+                            (($Search.filter).GetEnumerator()).add($param.Key, $Value)
+                        } 
+                        else {
                             (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)(^$Value`$)" })
                         }
 
