@@ -1,25 +1,3 @@
-## 1.24.0
-
-Release Date: June 30, 2022
-
-#### RELEASE NOTES
-
-```
-{{Fill in the Release Notes}}
-```
-
-#### FEATURES:
-
-{{Fill in the Features}}
-
-#### IMPROVEMENTS:
-
-{{Fill in the Improvements}}
-
-#### BUG FIXES:
-
-{{Fill in the Bug Fixes}}
-
 ## 2.0.0
 
 Release Date: June 27, 2022
