@@ -388,12 +388,16 @@ Function Get-JCUser ()
                         # case insensitve state param
                         if ("state" -eq $param.Key)
                         {
-                            $stateValue = # TODO: Figure out what parameter value needs to be added here ($param.Value)
-                            # TODO: Convert $stateValue to uppercase characters
-                            if ($stateValue) {
-                                # if an ID was validated
-                                ($Search.filter).GetEnumerator().add($param.Key, $stateValue)
+                            # TODO: If $param.Value is exactly 'ACTIVATED','SUSPENDED' or 'STAGED' (test that the $param.value does case match 'ACTIVATED','SUSPENDED','STAGED')){
+                            if (#TODO Write the if statement ^)
+                            {
+                                $stateValue = $param.Value
                             }
+                            else {
+                                # This case should mean that the value passed in was not does not case match 'ACTIVATED','SUSPENDED'or 'STAGED'
+                                $stateValue = # TODO: convert $param.value to all uppercase letters
+                            }
+                            continue
                         }
 
                         $Value = ($param.value).replace('*', '')
@@ -427,6 +431,10 @@ Function Get-JCUser ()
                     if ($recoveryEmail)
                     {
                         (($Search.filter).GetEnumerator()).add('recoveryEmail.address', $recoveryEmail )
+                    }
+                    if ($stateValue)
+                    {
+                        (($Search.filter).GetEnumerator()).add('state', $stateValue )
                     }
 
                     $SearchJSON = $Search | ConvertTo-Json -Compress -Depth 4
