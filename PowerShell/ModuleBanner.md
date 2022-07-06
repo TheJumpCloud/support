@@ -22,6 +22,8 @@
         * Example: $OrgCommandResults = Get-JCCommand | Get-JCCommandResult -ByCommandID
     * When using the pipeline for inputting a commandResult object to Get-JCCommandResult, use the -ByID switch
         * Example: $OrgCommandResults = Get-JCCommandResult | Get-JCCommandResult -ByID
+* Added case-insensitivity to search endpoints Get-JCUser, Get-JCSystem, and Get-JCCommand 
+    * Example: command name 'List Users' = 'list users' or hostname 'thisPc' = 'ThisPC'
 ```
 
 #### Banner Old

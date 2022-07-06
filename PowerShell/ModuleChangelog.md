@@ -31,6 +31,7 @@ Note: In order to use the parallel functionality, the feature requires PowerShel
 
 * Adjusted output for Get-JCSystemGroupMember -ByID and Get-JCUserGroupMember -ByID to match the output of -GroupName
 * Added case-insensitivity to search endpoints Get-JCUser, Get-JCSystem, and Get-JCCommand
+  * Example: command name 'List Users' = 'list users' or hostname 'thisPc' = 'ThisPC'
 
 #### BUG FIXES:
 
