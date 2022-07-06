@@ -21,13 +21,9 @@ Describe -Tag:('JCCommand') 'Get-JCCommand 1.0' {
     It "Gets a single JumpCloud command using -ByID passed through the pipeline" {
         $SingleResult = Get-JCCommand | Select-Object -Last 1 | Get-JCCommand -ByID
         $SingleResult._id.Count | Should -Be 1
+        # Tests param from /commands/id is returned here
+        $SingleResult.timeToLiveSeconds | Should -Not -BeNullOrEmpty
     }
-
-    It "Gets a single JumpCloud command passed through the pipeline without declaring -ByID" {
-        $SingleResult = Get-JCCommand | Select-Object -Last 1 | Get-JCCommand
-        $SingleResult._id.Count | Should -Be 1
-    }
-
 
     It "Gets all JumpCloud command passed through the pipeline declaring -ByID" {
         $MultiResult = Get-JCCommand | Get-JCCommand -ByID

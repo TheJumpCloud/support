@@ -67,23 +67,8 @@ CommandID has an Alias of _id. This means you can leverage the PowerShell pipeli
     }
 
     process
+
     {
-
-        # Set the PS ParamSetName:
-        # If pipeline input contains '_id' or 'ById' is specified, search by ID
-        If (($PSItem._id) -or ($PSCmdlet.ParameterSetName -eq "ByID")) {
-            # Set PSSETNAME to 'ByID'
-            $PSSETNAME = 'ByID'
-            # If null, add objects from pipeline input into $CommandID
-            If ($PSItem._id -And ($PSItem._id -notin $CommandID)) {
-                $CommandID += $PSItem._id
-            }
-        }
-        else {
-            # Else continue to SearchFilter
-            $PSSETNAME = 'SearchFilter'
-        }
-
         [int]$limit = '100'
         Write-Verbose "Setting limit to $limit"
 
@@ -92,7 +77,6 @@ CommandID has an Alias of _id. This means you can leverage the PowerShell pipeli
 
         [int]$Counter = 0
 
-        # TODO: this condition is never used, should be removed:
         if ($PSCmdlet.ParameterSetName -eq 'ReturnAll')
 
         {
@@ -116,7 +100,7 @@ CommandID has an Alias of _id. This means you can leverage the PowerShell pipeli
         }
 
 
-        switch ($PSSETNAME)
+        switch ($PSCmdlet.ParameterSetName)
         {
             SearchFilter
             {
@@ -171,11 +155,6 @@ CommandID has an Alias of _id. This means you can leverage the PowerShell pipeli
 
                         $Value = ($param.value).replace('*', '')
 
-                        # if ($param.key -eq 'command')
-                        # {
-                        #     continue
-                        # }
-
                         if (($param.Value -match '.+?\*$') -and ($param.Value -match '^\*.+?')) {
                             # Front and back wildcard
                             (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)$Value" })
@@ -228,7 +207,7 @@ CommandID has an Alias of _id. This means you can leverage the PowerShell pipeli
     end
     {
 
-        switch ($PSSETNAME)
+        switch ($PSCmdlet.ParameterSetName)
         {
             SearchFilter
             {
