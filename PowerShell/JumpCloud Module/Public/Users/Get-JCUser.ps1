@@ -385,6 +385,17 @@ Function Get-JCUser ()
                             }
                         }
 
+                        # case insensitve state param
+                        if ("state" -eq $param.Key)
+                        {
+                            $stateValue = # TODO: Figure out what parameter value needs to be added here ($param.Value)
+                            # TODO: Convert $stateValue to uppercase characters
+                            if ($stateValue) {
+                                # if an ID was validated
+                                ($Search.filter).GetEnumerator().add($param.Key, $stateValue)
+                            }
+                        }
+
                         $Value = ($param.value).replace('*', '')
 
                         if (($param.Value -match '.+?\*$') -and ($param.Value -match '^\*.+?'))
@@ -419,6 +430,8 @@ Function Get-JCUser ()
                     }
 
                     $SearchJSON = $Search | ConvertTo-Json -Compress -Depth 4
+
+                    Write-Debug $SearchJSON
 
                     $URL = "$JCUrlBasePath/api/search/systemusers"
 
