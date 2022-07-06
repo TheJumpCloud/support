@@ -10,15 +10,15 @@ Function Get-JCCommand ()
         [String]$command,
         [Parameter( ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'The name of the JumpCloud Command you wish to search for ex. Get-JCCommand -name <commandName>')]
         [String]$name,
-        [Parameter( ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'The type (windows, mac, linux) of the JumpCloud Command you wish to search for ex. Get-JCCommand -commandType <commandType>')]
+        [Parameter( ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'The type (windows, mac, linux) of the JumpCloud Command you wish to search for ex. Get-JCCommand -commandType <commandType>')] 
         [ValidateSet('windows', 'mac', 'linux')]
         [string]$commandType,
-        [Parameter( ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'The launch type of the JumpCloud Command you wish to search for ex. Get-JCCommand -launchType <typeOfLaunch> ' )]
+        [Parameter( ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'The launch type of the JumpCloud Command you wish to search for ex. Get-JCCommand -launchType <typeOfLaunch> ' )] 
         [ValidateSet('repeated','one-time','manual', 'trigger')]
         [string]$launchType,
         [Parameter( ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'The trigger name of the JumpCloud Command you wish to search for ex. Get-JCCommand -trigger <triggerId> ')]
         [string]$trigger,
-        [Parameter( ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'The scheduled command repeat type (minute, hour, day, week, month) of the JumpCloud Command you wish to search for ex. Get-JCCommand -scheduleRepeatType <repeatType>')]
+        [Parameter( ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'The scheduled command repeat type (minute, hour, day, week, month) of the JumpCloud Command you wish to search for ex. Get-JCCommand -scheduleRepeatType <repeatType>')] 
         [ValidateSet('minute', 'hour', 'day', 'week', 'month')]
         [string]$scheduleRepeatType,
         [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'Allows you to return select properties on JumpCloud commands objects. Specifying what properties are returned can drastically increase the speed of the API call with a large data set. Valid properties that can be returned are: ''command'', ''name'',''launchType'',''commandType'',''trigger'',''scheduleRepeatType''')]
@@ -67,23 +67,8 @@ CommandID has an Alias of _id. This means you can leverage the PowerShell pipeli
     }
 
     process
+
     {
-
-        # Set the PS ParamSetName:
-        # If pipeline input contains '_id' or 'ById' is specified, search by ID
-        If (($PSItem._id) -or ($PSCmdlet.ParameterSetName -eq "ByID")) {
-            # Set PSSETNAME to 'ByID'
-            $PSSETNAME = 'ByID'
-            # If null, add objects from pipeline input into $CommandID
-            If ($PSItem._id -And ($PSItem._id -notin $CommandID)) {
-                $CommandID += $PSItem._id
-            }
-        }
-        else {
-            # Else continue to SearchFilter
-            $PSSETNAME = 'SearchFilter'
-        }
-
         [int]$limit = '100'
         Write-Verbose "Setting limit to $limit"
 
@@ -92,7 +77,6 @@ CommandID has an Alias of _id. This means you can leverage the PowerShell pipeli
 
         [int]$Counter = 0
 
-        # TODO: this condition is never used, should be removed:
         if ($PSCmdlet.ParameterSetName -eq 'ReturnAll')
 
         {
@@ -115,8 +99,8 @@ CommandID has an Alias of _id. This means you can leverage the PowerShell pipeli
             }
         }
 
-
-        switch ($PSSETNAME)
+ 
+        switch ($PSCmdlet.ParameterSetName)
         {
             SearchFilter
             {
@@ -170,12 +154,7 @@ CommandID has an Alias of _id. This means you can leverage the PowerShell pipeli
                         }
 
                         $Value = ($param.value).replace('*', '')
-
-                        # if ($param.key -eq 'command')
-                        # {
-                        #     continue
-                        # }
-
+                       
                         if (($param.Value -match '.+?\*$') -and ($param.Value -match '^\*.+?')) {
                             # Front and back wildcard
                             (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)$Value" })
@@ -191,15 +170,13 @@ CommandID has an Alias of _id. This means you can leverage the PowerShell pipeli
                         }  else {
                             (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)(^$Value`$)" })
                         }
-
-
+                        
+                        
                     } # End foreach
-
+  
 
                     $SearchJSON = $Search | ConvertTo-Json -Compress -Depth 4
-
-                    Write-Debug $SearchJSON
-
+    
                     $URL = "$JCUrlBasePath/api/search/commands"
 
                     $Results = Invoke-RestMethod -Method POST -Uri $Url  -Header $hdrs -Body $SearchJSON -UserAgent:(Get-JCUserAgent)
@@ -228,15 +205,15 @@ CommandID has an Alias of _id. This means you can leverage the PowerShell pipeli
     end
     {
 
-        switch ($PSSETNAME)
+        switch ($PSCmdlet.ParameterSetName)
         {
             SearchFilter
             {
-                return $resultsArrayList.Results | Select-Object -Property *
+                return $resultsArrayList.Results | Select-Object -Property * 
             }
             ByID
             {
-                return $resultsArrayList | Select-Object -Property *
+                return $resultsArrayList | Select-Object -Property * 
             }
 
         }
@@ -244,3 +221,6 @@ CommandID has an Alias of _id. This means you can leverage the PowerShell pipeli
     }
 
 }
+
+  
+    
