@@ -12,7 +12,7 @@ Note: In order to use the parallel functionality, the feature requires PowerShel
 
 #### FEATURES:
 
-- This release adds parallel processing functionality to potentially alleviate long processing times for large scale operations
+- This release adds parallel processing functionality to potentially alleviate long wait times for large scale operations
   - Note: Feature requires PowerShell version 7 or higher
   - This release adds parallel processing to the following functions:
     - Get-JCUser
