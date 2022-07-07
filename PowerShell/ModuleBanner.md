@@ -1,17 +1,17 @@
 #### Latest Version
 
 ```
-1.23.0
+1.23.1
 ```
 
 #### Banner Current
 
 ```
-* Added search endpoint functionality and parameters to Get-jCCommand
+* Get-JCUser -State should accept case insensitive values such as "suspended" "activated" "staged" and validate input
 ```
 
 #### Banner Old
 
 ```
-* Added functionality for Set, Get, New-JCUser to Search by Email to Manager Field
+* Added search endpoint functionality and parameters to Get-jCCommand
 ```

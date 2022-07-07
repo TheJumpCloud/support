@@ -1,3 +1,12 @@
+## 1.23.1
+
+Release Date: June 21, 2022
+
+#### RELEASE NOTES
+
+This release adds validate to the Get-JCUser -State parameter set. It should now validate supplied acceptable values.
+Documentation for Get-JCCommand updated thanks to JumpCloud Community member: Ryan Bailey @rybai
+
 ## 1.23.0
 
 Release Date: June 21, 2022
