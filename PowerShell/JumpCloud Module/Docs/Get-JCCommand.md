@@ -58,7 +58,6 @@ PS C:\> Get-JCCommand -name '*BitLocker*' | Get-JCCommand -ByID
 
 Returns all information describing all JumpCloud commands with a name of '*BitLocker*' by passing the -CommandID Parameter to the -ByID Parameter using the pipeline and Parameter Binding. Note, search parameters on Get-JCCommand support wildcard characters. In this example commands with the string "BitLocker" somewhere in the name would be returned.
 
-
 ### Example 5
 ```powershell
 PS C:\> Get-JCCommand -launchType 'trigger' | Get-JCCommand -ByID
@@ -74,7 +73,6 @@ PS C:\> Get-JCCommand -command '*fdesetup*' | Get-JCCommand -ByID
 ```
 
 Returns all information describing all JumpCloud commands with a command string and the search term "*fdesetup*", by passing the -CommandID Parameter to the -ByID Parameter using the pipeline and Parameter Binding. Note, search parameters on Get-JCCommand support wildcard characters. In this example commands with the string "fdesetup" somewhere in the command body would be returned.
-
 
 ## PARAMETERS
 
