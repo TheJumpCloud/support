@@ -121,6 +121,7 @@ Function Get-JCUser ()
         [String]$manager,
 
         [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'A search filter to return users that are in an ACTIVATED, STAGED or SUSPENDED state')]
+        [ValidateSet('ACTIVATED','SUSPENDED','STAGED')]
         [String]$state,
 
         [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'The recovery email of the JumpCloud user you wish to search for.')]
@@ -384,6 +385,19 @@ Function Get-JCUser ()
                             }
                         }
 
+                        # case insensitve state param
+                        if ("state" -eq $param.Key)
+                        {
+                            if ($param.Value -cin @('ACTIVATED', 'SUSPENDED', 'STAGED'))
+                            {
+                                $stateValue = $param.Value
+                            }
+                            else {
+                                $stateValue = ($param.Value).ToUpper()
+                            }
+                            continue
+                        }
+
                         $Value = ($param.value).replace('*', '')
 
                         if (($param.Value -match '.+?\*$') -and ($param.Value -match '^\*.+?'))
@@ -416,8 +430,14 @@ Function Get-JCUser ()
                     {
                         (($Search.filter).GetEnumerator()).add('recoveryEmail.address', $recoveryEmail )
                     }
+                    if ($stateValue)
+                    {
+                        (($Search.filter).GetEnumerator()).add('state', $stateValue )
+                    }
 
                     $SearchJSON = $Search | ConvertTo-Json -Compress -Depth 4
+
+                    Write-Debug $SearchJSON
 
                     $URL = "$JCUrlBasePath/api/search/systemusers"
 
