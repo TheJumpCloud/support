@@ -105,19 +105,31 @@ Describe -Tag:('JCUser') 'Get-JCUser 1.1' {
     It "Searches a JumpCloud user by state SUSPENDED" {
         $NewUser = New-RandomUser -Domain DeleteMe | New-JcUser -state "SUSPENDED"
         $SearchUser = Get-JCUser -state "SUSPENDED" | Select-Object -First 1
+        $SearchUserLower = Get-JCUser -state "suspended" | Select-Object -First 1
+        $SearchUserMixed = Get-JCUser -state "Suspended" | Select-Object -First 1
         $SearchUser.state | Should -Be "SUSPENDED"
+        $SearchUserLower.state | Should -Be "SUSPENDED"
+        $SearchUserMixed.state | Should -Be "SUSPENDED"
         Remove-JCUser -UserId $NewUser._id -force
     }
     It "Searches a JumpCloud user by state STAGED" {
         $NewUser = New-RandomUser -Domain DeleteMe | New-JcUser -state "STAGED"
         $SearchUser = Get-JCUser -state "STAGED" | Select-Object -First 1
+        $SearchUserLower = Get-JCUser -state "staged" | Select-Object -First 1
+        $SearchUserMixed = Get-JCUser -state "Staged" | Select-Object -First 1
         $SearchUser.state | Should -Be "STAGED"
+        $SearchUserLower.state | Should -Be "STAGED"
+        $SearchUserMixed.state | Should -Be "STAGED"
         Remove-JCUser -UserId $NewUser._id -force
     }
     It "Searches a JumpCloud user by state ACTIVATED" {
         $NewUser = New-RandomUser -Domain DeleteMe | New-JcUser -state "ACTIVATED"
         $SearchUser = Get-JCUser -state "ACTIVATED" | Select-Object -First 1
+        $SearchUserLower = Get-JCUser -state "activated" | Select-Object -First 1
+        $SearchUserMixed = Get-JCUser -state "Activated" | Select-Object -First 1
         $SearchUser.state | Should -Be "ACTIVATED"
+        $SearchUserLower.state | Should -Be "ACTIVATED"
+        $SearchUserMixed.state | Should -Be "ACTIVATED"
         Remove-JCUser -UserId $NewUser._id -force
     }
 

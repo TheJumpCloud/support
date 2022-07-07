@@ -3769,8 +3769,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
         <maml:title>-------------------------- Example 4 --------------------------</maml:title>
         <dev:code>PS C:\&gt; Get-JCCommand -name '*BitLocker*' | Get-JCCommand -ByID</dev:code>
         <dev:remarks>
-          <maml:para>Returns all information describing all JumpCloud commands with a name of ' trigger ' by passing the -CommandID Parameter to the -ByID Parameter using the pipeline and Parameter Binding. Note, search parameters on Get-JCCommand support wildcard characters. In this example commands with the name BitLocker somewhere in the name would be returned.</maml:para>
-          <maml:para>Note that when running this command the time for the output to display will be directly proportionate to how many JumpCloud commands you have with a launchType of 'trigger'. The command 'Get-JCCommand -ByID' runs once for every JumpCloud command within your tenant with a launchType of 'trigger'.</maml:para>
+          <maml:para>Returns all information describing all JumpCloud commands with a name of ' BitLocker ' by passing the -CommandID Parameter to the -ByID Parameter using the pipeline and Parameter Binding. Note, search parameters on Get-JCCommand support wildcard characters. In this example commands with the string "BitLocker" somewhere in the name would be returned.</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
@@ -3785,8 +3784,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
         <maml:title>-------------------------- Example 6 --------------------------</maml:title>
         <dev:code>PS C:\&gt; Get-JCCommand -command '*fdesetup*' | Get-JCCommand -ByID</dev:code>
         <dev:remarks>
-          <maml:para>Returns all information describing all JumpCloud commands with a command string and the search term "fdesetup", by passing the -CommandID Parameter to the -ByID Parameter using the pipeline and Parameter Binding. Note, search parameters on Get-JCCommand support wildcard characters. In this example commands with the string "fdesetup" somewhere in the command body would be returned.</maml:para>
-          <maml:para>Note that when running this command the time for the output to display will be directly proportionate to how many JumpCloud commands you have with a launchType of 'trigger'. The command 'Get-JCCommand -ByID' runs once for every JumpCloud command within your tenant with a launchType of 'trigger'.</maml:para>
+          <maml:para>Returns all information describing all JumpCloud commands with a command string and the search term " fdesetup ", by passing the -CommandID Parameter to the -ByID Parameter using the pipeline and Parameter Binding. Note, search parameters on Get-JCCommand support wildcard characters. In this example commands with the string "fdesetup" somewhere in the command body would be returned.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -7811,6 +7809,11 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
           <maml:description>
             <maml:para>A search filter to return users that are in an ACTIVATED or SUSPENDED state</maml:para>
           </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">ACTIVATED</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">SUSPENDED</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">STAGED</command:parameterValue>
+          </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
           <dev:type>
             <maml:name>System.String</maml:name>
