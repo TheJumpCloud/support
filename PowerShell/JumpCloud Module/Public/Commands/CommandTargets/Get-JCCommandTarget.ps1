@@ -1,5 +1,4 @@
-Function Get-JCCommandTarget
-{
+Function Get-JCCommandTarget {
     [CmdletBinding(DefaultParameterSetName = 'Systems')]
     param (
 
@@ -13,173 +12,187 @@ Function Get-JCCommandTarget
 
     )
 
-    begin
-    {
+    begin {
 
-        Write-Verbose 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {Connect-JConline}
-
-        Write-Verbose 'Populating API headers'
-        $hdrs = @{
-
-            'Content-Type' = 'application/json'
-            'Accept'       = 'application/json'
-            'X-API-KEY'    = $JCAPIKEY
-
+        Write-Debug 'Verifying JCAPI Key'
+        if ($JCAPIKEY.length -ne 40) {
+            Connect-JConline
         }
 
-        if ($JCOrgID)
-        {
-            $hdrs.Add('x-org-id', "$($JCOrgID)")
+        $Parallel = $JCParallel
+
+        if ($Parallel) {
+            Write-Debug 'Initilizing resultsArray'
+            $resultsArrayList = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
+            Write-Debug 'Initilizing errorResults for Parallel error catching'
+            $errorResults = [System.Collections.Concurrent.ConcurrentQueue[Exception]]::new()
+        } else {
+            Write-Debug 'Initilizing resultsArray'
+            $resultsArrayList = New-Object -TypeName System.Collections.ArrayList
         }
 
-
-        if ($PSCmdlet.ParameterSetName -eq 'Groups')
-        {
-
-            Write-Verbose 'Populating SystemGroupNameHash'
+        if ($PSCmdlet.ParameterSetName -eq 'Groups') {
+            Write-Debug 'Populating SystemGroupNameHash'
             $SystemGroupNameHash = Get-Hash_ID_SystemGroupName
-
         }
 
-        if ($PSCmdlet.ParameterSetName -eq 'Systems')
-        {
-
-            Write-Verbose 'Populating SystemDisplayNameHash'
+        if ($PSCmdlet.ParameterSetName -eq 'Systems') {
+            Write-Debug 'Populating SystemDisplayNameHash'
             $SystemDisplayNameHash = Get-Hash_SystemID_DisplayName
 
-            Write-Verbose 'Populating SystemIDHash'
+            Write-Debug 'Populating SystemIDHash'
             $SystemHostNameHash = Get-Hash_SystemID_HostName
-
         }
 
-
-        Write-Verbose 'Populating CommandNameHash'
+        Write-Debug 'Populating CommandNameHash'
         $CommandNameHash = Get-Hash_CommandID_Name
 
-        Write-Verbose 'Populating CommandTriggerHash'
+        Write-Debug 'Populating CommandTriggerHash'
         $CommandTriggerHash = Get-Hash_CommandID_Trigger
 
-
         [int]$limit = '100'
-        Write-Verbose "Setting limit to $limit"
+        Write-Debug "Setting limit to $limit"
 
-        Write-Verbose 'Initilizing RawResults and resultsArrayList'
+        Write-Debug 'Initilizing RawResults'
         $RawResults = @()
-        $resultsArrayList = New-Object System.Collections.ArrayList
 
-        Write-Verbose "parameter set: $($PSCmdlet.ParameterSetName)"
-
-
+        Write-Debug "parameter set: $($PSCmdlet.ParameterSetName)"
     }
 
-    process
-    {
+    process {
+        switch ($PSCmdlet.ParameterSetName) {
+            Systems {
+                $SystemURL = "$JCUrlBasePath/api/v2/commands/$CommandID/systems"
+                Write-Debug $SystemURL
+                if ($Parallel) {
+                    # Parallel API call and resultsArrayList generation
+                    $rawResults = Get-JCResults -Url $SystemURL -Method "GET" -limit $limit -parallel $true
+                    $rawResults | ForEach-Object -Parallel {
+                        $errorResults = $using:errorResults
+                        $resultsArrayList = $using:resultsArrayList
+                        try {
+                            # Get stored hash in each parallel thread
+                            $CommandNameHash = $using:CommandNameHash
+                            $CommandTriggerHash = $using:CommandTriggerHash
+                            $SystemHostNameHash = $using:SystemHostNameHash
+                            $SystemDisplayNameHash = $using:SystemDisplayNameHash
 
-        [int]$skip = 0 #Do not change!
-        [int]$count = 0 #Do not change
-        Write-Verbose 'Setting skip and count to zero'
-        $RawResults = $null
+                            # resultsArrayList generation
+                            $CommandName = $CommandNameHash.($using:CommandID)
+                            $Trigger = $CommandTriggerHash.($using:CommandID)
+                            $SystemID = $_.id
+                            $Hostname = $SystemHostNameHash.($SystemID)
+                            $Displyname = $SystemDisplayNameHash.($SystemID)
 
-        switch ($PSCmdlet.ParameterSetName)
-        {
+                            $CommandTargetSystem = [pscustomobject]@{
+                                'CommandID'   = $using:CommandID
+                                'CommandName' = $CommandName
+                                'trigger'     = $Trigger
+                                'SystemID'    = $SystemID
+                                'DisplayName' = $Displyname
+                                'HostName'    = $Hostname
+                            }
 
-            Systems
-            {
+                            $resultsArrayList.Add($CommandTargetSystem) | Out-Null
+                        } catch {
+                            $errorResults.Enqueue($_.ToString())
+                        } # End try/catch
+                        # if parallel threads encountered error - throw
+                        if (!$errorResults.IsEmpty) {
+                            throw [AggregateException]::new($errorResults)
+                        }
+                    } # End Parallel
+                } else {
+                    # Sequential API call and resultsArrayList generation
+                    $rawResults = Get-JCResults -Url $SystemURL -Method "GET" -limit $limit
+                    foreach ($result in $RawResults) {
+                        # resultsArrayList generation
+                        $CommandName = $CommandNameHash.($CommandID)
+                        $Trigger = $CommandTriggerHash.($CommandID)
+                        $SystemID = $result.id
+                        $Hostname = $SystemHostNameHash.($SystemID)
+                        $Displyname = $SystemDisplayNameHash.($SystemID)
 
-                while ($count -ge $skip)
-                {
-                    $SystemURL = "$JCUrlBasePath/api/v2/commands/$CommandID/systems?limit=$limit&skip=$skip"
+                        $CommandTargetSystem = [pscustomobject]@{
+                            'CommandID'   = $CommandID
+                            'CommandName' = $CommandName
+                            'trigger'     = $Trigger
+                            'SystemID'    = $SystemID
+                            'DisplayName' = $Displyname
+                            'HostName'    = $Hostname
+                        }
 
-
-                    Write-Verbose $SystemURL
-
-                    $APIresults = Invoke-RestMethod -Method GET -Uri  $SystemURL  -Header $hdrs -UserAgent:(Get-JCUserAgent)
-
-                    $skip += $limit
-                    Write-Verbose "Setting skip to  $skip"
-
-                    $RawResults += $APIresults
-
-                    $count = ($RawResults).Count
-                    Write-Verbose "Results count equals $count"
-
-                } #end while
-
-                foreach ($result in $RawResults)
-                {
-
-                    $CommandName = $CommandNameHash.($CommandID)
-                    $Trigger = $CommandTriggerHash.($CommandID)
-                    $SystemID = $result.id
-                    $Hostname = $SystemHostNameHash.($SystemID )
-                    $Displyname = $SystemDisplayNameHash.($SystemID)
-
-                    $CommandTargetSystem = [pscustomobject]@{
-
-                        'CommandID'   = $CommandID
-                        'CommandName' = $CommandName
-                        'trigger'     = $Trigger
-                        'SystemID'    = $SystemID
-                        'DisplayName' = $Displyname
-                        'HostName'    = $Hostname
-
-                    }
-
-                    $resultsArrayList.Add($CommandTargetSystem) | Out-Null
-
-                } # end foreach
-
+                        $resultsArrayList.Add($CommandTargetSystem) | Out-Null
+                    } # end parallel foreach
+                } # End if else parallel
             } # end Systems switch
+            Groups {
+                $SystemGroupsURL = "$JCUrlBasePath/api/v2/commands/$CommandID/systemgroups"
+                Write-Debug $SystemGroupsURL
+                if ($Parallel) {
+                    $rawResults = Get-JCResults -Url $SystemGroupsURL -Method "GET" -limit $limit -parallel $true
+                    $rawResults | ForEach-Object -Parallel {
+                        $errorResults = $using:errorResults
+                        $resultsArrayList = $using:resultsArrayList
+                        try {
+                            # Get stored hash in each parallel thread
+                            $CommandNameHash = $using:CommandNameHash
+                            $SystemGroupNameHash = $using:SystemGroupNameHash
 
-            Groups
-            {
+                            # resultsArrayList generation
+                            $CommandName = $CommandNameHash.($using:CommandID)
+                            $GroupID = $_.id
+                            $GroupName = $SystemGroupNameHash.($GroupID)
 
-                while ($count -ge $skip)
-                {
-                    $SystemGroupsURL = "$JCUrlBasePath/api/v2/commands/$CommandID/systemgroups?limit=$limit&skip=$skip"
+                            $Group = [pscustomobject]@{
+                                'CommandID'   = $using:CommandID
+                                'CommandName' = $CommandName
+                                'GroupID'     = $GroupID
+                                'GroupName'   = $GroupName
+                            }
 
-
-                    Write-Verbose $SystemGroupsURL
-
-                    $APIresults = Invoke-RestMethod -Method GET -Uri  $SystemGroupsURL  -Header $hdrs -UserAgent:(Get-JCUserAgent)
-
-                    $skip += $limit
-                    Write-Verbose "Setting skip to  $skip"
-
-                    $RawResults += $APIresults
-
-                    $count = ($RawResults).Count
-                    Write-Verbose "Results count equals $count"
-                } # end while
-
-                foreach ($result in $RawResults)
-                {
-
-                    $CommandName = $CommandNameHash.($CommandID)
-                    $GroupID = $result.id
-                    $GroupName = $SystemGroupNameHash.($GroupID)
-
-                    $Group = [pscustomobject]@{
-
-                        'CommandID'   = $CommandID
-                        'CommandName' = $CommandName
-                        'GroupID'     = $GroupID
-                        'GroupName'   = $GroupName
-
+                            $resultsArrayList.Add($Group) | Out-Null
+                        } catch {
+                            $errorResults.Enqueue($_.ToString())
+                        } # End try/catch
+                    } # end parallel foreach
+                    # if parallel threads encountered error - throw
+                    if (!$errorResults.IsEmpty) {
+                        throw [AggregateException]::new($errorResults)
                     }
+                } else {
+                    # Sequential API call and resultsArrayList generation
+                    $rawResults = Get-JCResults -Url $SystemGroupsURL -Method "GET" -limit $limit
+                    foreach ($result in $RawResults) {
+                        # resultsArrayList generation
+                        $CommandName = $CommandNameHash.($CommandID)
+                        $GroupID = $result.id
+                        $GroupName = $SystemGroupNameHash.($GroupID)
 
-                    $resultsArrayList.Add($Group) | Out-Null
+                        $Group = [pscustomobject]@{
 
-                } # end foreach
+                            'CommandID'   = $CommandID
+                            'CommandName' = $CommandName
+                            'GroupID'     = $GroupID
+                            'GroupName'   = $GroupName
 
+                        }
+
+                        $resultsArrayList.Add($Group) | Out-Null
+                    } # end foreach
+                } # end if/else parallel
             } # end Groups switch
         } # end switch
     } # end process
 
-    end
-    {
-
-        Return $resultsArrayList
-    }
+    end {
+        switch ($PSCmdlet.ParameterSetName) {
+            Systems {
+                return $resultsArrayList | Sort-Object Displayname
+            }
+            Groups {
+                return $resultsArrayList | Sort-Object GroupName
+            }
+        } # end switch
+    } # end
 }
