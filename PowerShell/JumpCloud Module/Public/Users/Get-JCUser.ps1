@@ -356,35 +356,41 @@ Function Get-JCUser () {
                         }
                     }
 
-                    if (($param.Value -match '.+?\*$') -and ($param.Value -match '^\*.+?'))
-                    {
+                    # case insensitve state param
+                    if ("state" -eq $param.Key) {
+                        if ($param.Value -cin @('ACTIVATED', 'SUSPENDED', 'STAGED')) {
+                            $stateValue = $param.Value
+                        } else {
+                            $stateValue = ($param.Value).ToUpper()
+                        }
+                        continue
+                    }
+
+                    $Value = ($param.value).replace('*', '')
+
+                    if (($param.Value -match '.+?\*$') -and ($param.Value -match '^\*.+?')) {
                         # Front and back wildcard
                         (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "$Value" })
-                    }
-                    elseif ($param.Value -match '.+?\*$')
-                    {
+                    } elseif ($param.Value -match '.+?\*$') {
                         # Back wildcard
                         (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "^$Value" })
-                    }
-                    elseif ($param.Value -match '^\*.+?')
-                    {
+                    } elseif ($param.Value -match '^\*.+?') {
                         # Front wild card
                         (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "$Value`$" })
-                    }
-                    else
-                    {
+                    } else {
                         (($Search.filter).GetEnumerator()).add($param.Key, $Value)
                     }
 
                 } # End foreach
 
-                if ($filterDateProperty)
-                {
+                if ($filterDateProperty) {
                     (($Search.filter).GetEnumerator()).add($DateProperty, @{$DateQuery = $Timestamp })
                 }
-                if ($recoveryEmail)
-                {
+                if ($recoveryEmail) {
                     (($Search.filter).GetEnumerator()).add('recoveryEmail.address', $recoveryEmail )
+                }
+                if ($stateValue) {
+                        (($Search.filter).GetEnumerator()).add('state', $stateValue )
                 }
 
                 $SearchJSON = $Search | ConvertTo-Json -Compress -Depth 4
@@ -395,15 +401,13 @@ Function Get-JCUser () {
 
                 if ($Parallel) {
                     $resultsArrayList = Get-JCResults -URL $URL -method "POST" -limit $limit -body $SearchJSON -Parallel $true
-                }
-                else {
+                } else {
                     $resultsArrayList = Get-JCResults -URL $URL -method "POST" -limit $limit -body $SearchJSON
                 }
 
             } #End search
 
-            ByID
-            {
+            ByID {
 
                 $URL = "$JCUrlBasePath/api/Systemusers/$Userid"
                 Write-Verbose $URL
@@ -413,17 +417,13 @@ Function Get-JCUser () {
         } # End switch
     } # End process
 
-    end
-    {
+    end {
 
-        switch ($PSCmdlet.ParameterSetName)
-        {
-            SearchFilter
-            {
+        switch ($PSCmdlet.ParameterSetName) {
+            SearchFilter {
                 return $resultsArrayList | Select-Object -ExcludeProperty associatedTagCount, id, sshRootEnabled
             }
-            ByID
-            {
+            ByID {
                 return $resultsArrayList | Select-Object -ExcludeProperty associatedTagCount
             }
         }
