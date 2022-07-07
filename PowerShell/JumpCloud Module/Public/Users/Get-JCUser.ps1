@@ -388,14 +388,12 @@ Function Get-JCUser ()
                         # case insensitve state param
                         if ("state" -eq $param.Key)
                         {
-                            # TODO: If $param.Value is exactly 'ACTIVATED','SUSPENDED' or 'STAGED' (test that the $param.value does case match 'ACTIVATED','SUSPENDED','STAGED')){
-                            if (#TODO Write the if statement ^)
+                            if ($param.Value -cin @('ACTIVATED', 'SUSPENDED', 'STAGED'))
                             {
                                 $stateValue = $param.Value
                             }
                             else {
-                                # This case should mean that the value passed in was not does not case match 'ACTIVATED','SUSPENDED'or 'STAGED'
-                                $stateValue = # TODO: convert $param.value to all uppercase letters
+                                $stateValue = ($param.Value).ToUpper()
                             }
                             continue
                         }
