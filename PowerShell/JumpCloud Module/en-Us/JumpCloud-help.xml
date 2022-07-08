@@ -7809,11 +7809,6 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
           <maml:description>
             <maml:para>A search filter to return users that are in an ACTIVATED or SUSPENDED state</maml:para>
           </maml:description>
-          <command:parameterValueGroup>
-            <command:parameterValue required="false" command:variableLength="false">ACTIVATED</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">SUSPENDED</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">STAGED</command:parameterValue>
-          </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
           <dev:type>
             <maml:name>System.String</maml:name>
