@@ -33,22 +33,16 @@ Function Get-JCCommandTarget {
 
         if ($PSCmdlet.ParameterSetName -eq 'Groups') {
             Write-Debug 'Populating SystemGroupNameHash'
-            $SystemGroupNameHash = Get-Hash_ID_SystemGroupName
+            $SystemGroupNameHash = Get-DynamicHash -Object Group -GroupType System -returnProperties name
         }
 
         if ($PSCmdlet.ParameterSetName -eq 'Systems') {
-            Write-Debug 'Populating SystemDisplayNameHash'
-            $SystemDisplayNameHash = Get-Hash_SystemID_DisplayName
-
-            Write-Debug 'Populating SystemIDHash'
-            $SystemHostNameHash = Get-Hash_SystemID_HostName
+            Write-Debug 'Populating SystemHash'
+            $SystemHash = Get-DynamicHash -Object System -returnProperties displayName, hostname
         }
 
-        Write-Debug 'Populating CommandNameHash'
-        $CommandNameHash = Get-Hash_CommandID_Name
-
-        Write-Debug 'Populating CommandTriggerHash'
-        $CommandTriggerHash = Get-Hash_CommandID_Trigger
+        Write-Debug 'Populating CommandHash'
+        $CommandHash = Get-DynamicHash -Object Command -returnProperties name, trigger
 
         [int]$limit = '100'
         Write-Debug "Setting limit to $limit"
@@ -72,17 +66,15 @@ Function Get-JCCommandTarget {
                         $resultsArrayList = $using:resultsArrayList
                         try {
                             # Get stored hash in each parallel thread
-                            $CommandNameHash = $using:CommandNameHash
-                            $CommandTriggerHash = $using:CommandTriggerHash
-                            $SystemHostNameHash = $using:SystemHostNameHash
-                            $SystemDisplayNameHash = $using:SystemDisplayNameHash
+                            $CommandHash = $using:CommandHash
+                            $SystemHash = $using:SystemHash
 
                             # resultsArrayList generation
-                            $CommandName = $CommandNameHash.($using:CommandID)
-                            $Trigger = $CommandTriggerHash.($using:CommandID)
+                            $CommandName = $CommandHash[($using:CommandID)].name
+                            $Trigger = $CommandHash[($using:CommandID)].trigger
                             $SystemID = $_.id
-                            $Hostname = $SystemHostNameHash.($SystemID)
-                            $Displyname = $SystemDisplayNameHash.($SystemID)
+                            $Hostname = $SystemHash[$SystemID].hostname
+                            $Displyname = $SystemHash[$SystemID].displayName
 
                             $CommandTargetSystem = [pscustomobject]@{
                                 'CommandID'   = $using:CommandID
@@ -107,11 +99,11 @@ Function Get-JCCommandTarget {
                     $rawResults = Get-JCResults -Url $SystemURL -Method "GET" -limit $limit
                     foreach ($result in $RawResults) {
                         # resultsArrayList generation
-                        $CommandName = $CommandNameHash.($CommandID)
-                        $Trigger = $CommandTriggerHash.($CommandID)
-                        $SystemID = $result.id
-                        $Hostname = $SystemHostNameHash.($SystemID)
-                        $Displyname = $SystemDisplayNameHash.($SystemID)
+                        $CommandName = $CommandHash[$CommandID].name
+                        $Trigger = $CommandHash[$CommandID].trigger
+                        $SystemID = $_.id
+                        $Hostname = $SystemHash[$SystemID].hostname
+                        $Displyname = $SystemHash[$SystemID].displayName
 
                         $CommandTargetSystem = [pscustomobject]@{
                             'CommandID'   = $CommandID
@@ -136,13 +128,13 @@ Function Get-JCCommandTarget {
                         $resultsArrayList = $using:resultsArrayList
                         try {
                             # Get stored hash in each parallel thread
-                            $CommandNameHash = $using:CommandNameHash
+                            $CommandHash = $using:CommandHash
                             $SystemGroupNameHash = $using:SystemGroupNameHash
 
                             # resultsArrayList generation
-                            $CommandName = $CommandNameHash.($using:CommandID)
+                            $CommandName = $CommandHash[($using:CommandID)].name
                             $GroupID = $_.id
-                            $GroupName = $SystemGroupNameHash.($GroupID)
+                            $GroupName = $SystemGroupNameHash[$GroupID].name
 
                             $Group = [pscustomobject]@{
                                 'CommandID'   = $using:CommandID
@@ -165,9 +157,9 @@ Function Get-JCCommandTarget {
                     $rawResults = Get-JCResults -Url $SystemGroupsURL -Method "GET" -limit $limit
                     foreach ($result in $RawResults) {
                         # resultsArrayList generation
-                        $CommandName = $CommandNameHash.($CommandID)
-                        $GroupID = $result.id
-                        $GroupName = $SystemGroupNameHash.($GroupID)
+                        $CommandName = $CommandHash[$CommandID].name
+                        $GroupID = $_.id
+                        $GroupName = $SystemGroupNameHash[$GroupID].name
 
                         $Group = [pscustomobject]@{
 
