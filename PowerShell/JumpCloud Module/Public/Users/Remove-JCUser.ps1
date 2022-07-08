@@ -63,7 +63,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
     process {
         if ($PSCmdlet.ParameterSetName -eq 'Username' ) {
             if ($UserHash.Values.username -contains ($Username)) {
-                $UserID = $UserNameHash.GetEnumerator().Where({ $_.Value.username -contains ($Username) }).Name
+                $UserID = $UserHash.GetEnumerator().Where({ $_.Value.username -contains ($Username) }).Name
             } else {
                 Throw "Username does not exist. Run 'Get-JCUser | Select-Object username' to see a list of all your JumpCloud users."
             }
