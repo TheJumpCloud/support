@@ -1,5 +1,5 @@
 Param(
-    [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 0)][System.String[]]$DependentModules = ('PowerShellGet', 'PackageManagement', 'PSScriptAnalyzer', 'PlatyPS', 'Pester', 'AWS.Tools.Common', 'AWS.Tools.CodeArtifact')
+    [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 0)][System.String[]]$DependentModules = ('PowerShellGet', 'PackageManagement', 'PSScriptAnalyzer', 'PlatyPS', 'Pester', 'AWS.Tools.Installer')
     , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 1)][System.String]$RequiredModulesRepo = 'PSGallery'
 )
 # Install NuGet
@@ -16,8 +16,9 @@ ForEach ($DependentModule In $DependentModules) {
             Install-Module -Name $DependentModule -Repository:('PSGallery') -RequiredVersion '3.0.12-beta' -AllowPrerelease -Force
         } elseif ($DependentModule -eq 'PSScriptAnalyzer') {
             Install-Module -Name $DependentModule -Repository:('PSGallery') -RequiredVersion '1.19.1' -Force
-        } elseif ($DependentModule -eq 'AWS.Tools.Common') {
-            Install-Module -Name $DependentModule -Repository:('PSGallery') -RequiredVersion '4.1.118' -Force
+        } elseif ($DependentModule -eq 'AWS.Tools.Installer') {
+            Install-Module -Name $DependentModule -Repository:('PSGallery') -Force
+            Install-AWSToolsModule AWS.Tools.Common, AWS.Tools.CodeArtifact -CleanUp
         } else {
             Install-Module -Repository:('PSGallery') -Force -Name:($DependentModule) -Scope:('CurrentUser') -AllowClobber
         }
