@@ -18,7 +18,7 @@ ForEach ($DependentModule In $DependentModules) {
             Install-Module -Name $DependentModule -Repository:('PSGallery') -RequiredVersion '1.19.1' -Force
         } elseif ($DependentModule -eq 'AWS.Tools.Installer') {
             Install-Module -Name $DependentModule -Repository:('PSGallery') -Force
-            Install-AWSToolsModule AWS.Tools.Common, AWS.Tools.CodeArtifact -CleanUp
+            Install-AWSToolsModule AWS.Tools.Common, AWS.Tools.CodeArtifact -CleanUp -Force
         } else {
             Install-Module -Repository:('PSGallery') -Force -Name:($DependentModule) -Scope:('CurrentUser') -AllowClobber
         }
