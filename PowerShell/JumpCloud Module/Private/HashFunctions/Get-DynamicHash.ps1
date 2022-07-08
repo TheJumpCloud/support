@@ -1,8 +1,8 @@
 Function Get-DynamicHash () {
     [CmdletBinding()]
     param (
-        [Parameter(Position = 0)][ValidateSet('System', 'User', 'Command', 'Group')][string]$Object,
-        [Parameter(Position = 1)][string[]]$returnProperties
+        [Parameter(Position = 0, Mandatory = $true)][ValidateSet('System', 'User', 'Command', 'Group')][string]$Object,
+        [Parameter(Position = 1, Mandatory = $true)][ValidateNotNullOrEmpty()][string[]]$returnProperties
     )
     DynamicParam {
         if ($Object -eq 'Group') {
