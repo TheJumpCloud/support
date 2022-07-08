@@ -17,7 +17,7 @@ ForEach ($DependentModule In $DependentModules) {
         } elseif ($DependentModule -eq 'PSScriptAnalyzer') {
             Install-Module -Name $DependentModule -Repository:('PSGallery') -RequiredVersion '1.19.1' -Force
         } elseif ($DependentModule -eq 'AWS.Tools.Common') {
-            Install-Module -Name $DependentModule -Repository:('PSGallery') -RequiredVersion '4.1.120' -Force
+            Install-Module -Name $DependentModule -Repository:('PSGallery') -RequiredVersion '4.1.120' -SkipPublisherCheck -Force
         } else {
             Install-Module -Repository:('PSGallery') -Force -Name:($DependentModule) -Scope:('CurrentUser') -AllowClobber
         }
