@@ -1,5 +1,4 @@
-Function Add-JCCommandTarget
-{
+Function Add-JCCommandTarget {
     [CmdletBinding(DefaultParameterSetName = 'SystemID')]
     param (
 
@@ -48,13 +47,14 @@ Function Add-JCCommandTarget
 
     )
 
-    begin
-    {
+    begin {
 
         Write-Verbose "parameter set: $($PSCmdlet.ParameterSetName)"
 
         Write-Verbose 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {Connect-JConline}
+        if ($JCAPIKEY.length -ne 40) {
+            Connect-JConline
+        }
 
         Write-Verbose 'Populating API headers'
         $hdrs = @{
@@ -65,34 +65,31 @@ Function Add-JCCommandTarget
 
         }
 
-        if ($JCOrgID)
-        {
+        if ($JCOrgID) {
             $hdrs.Add('x-org-id', "$($JCOrgID)")
         }
 
 
-        if ($PSCmdlet.ParameterSetName -eq 'GroupName')
-        {
+        if ($PSCmdlet.ParameterSetName -eq 'GroupName') {
 
             Write-Verbose 'Populating SystemGroupNameHash'
-            $SystemGroupNameHash = Get-Hash_SystemGroupName_ID
+            $SystemGroupNameHash = Get-DynamicHash -Object Group -GroupType System -returnProperties name
 
+            Write-Verbose 'Populating CommandNameHash'
+            $CommandNameHash = Get-DynamicHash -Object Command -returnProperties name
         }
 
 
 
-        if ($PSCmdlet.ParameterSetName -eq 'SystemID')
-        {
+        if ($PSCmdlet.ParameterSetName -eq 'SystemID') {
 
-            Write-Verbose 'Populating CommandID_Type hash'
-            $CommandID_TypeHash = Get-Hash_CommandID_Type
+            Write-Verbose 'Populating CommandHash'
+            $CommandNameHash = Get-DynamicHash -Object Command -returnProperties name, type
 
-            Write-Verbose 'Populating SystemID_OS hash'
-            $SystemID_OSHash = Get-Hash_SystemID_OS
+            Write-Verbose 'Populating SystemHash'
+            $SystemHash = Get-DynamicHash -Object System -returnProperties os
         }
 
-        Write-Verbose 'Populating CommandNameHash'
-        $CommandNameHash = Get-Hash_CommandID_Name
 
         Write-Verbose 'Initilizing RawResults and resultsArrayList'
         $resultsArray = @()
@@ -100,34 +97,33 @@ Function Add-JCCommandTarget
 
     }
 
-    process
-    {
+    process {
 
 
-        switch ($PSCmdlet.ParameterSetName)
-        {
+        switch ($PSCmdlet.ParameterSetName) {
 
-            SystemID
-            {
+            SystemID {
 
-                $SystemOS_Raw = $SystemID_OSHash.($SystemID)
+                $SystemOS_Raw = $SystemHash[$SystemID].os
 
-                $CommandType = $CommandID_TypeHash.($CommandID)
+                $CommandType = $CommandNameHash[$CommandID].type
 
-                switch ($SystemOS_Raw)
-                {
-                    "Mac OS X" {  $SystemType = 'mac'}
-                    Windows {  $SystemType = 'windows'}
-                    Default {  $SystemType = 'linux' }
+                switch ($SystemOS_Raw) {
+                    "Mac OS X" {
+                        $SystemType = 'mac'
+                    }
+                    Windows {
+                        $SystemType = 'windows'
+                    }
+                    Default {
+                        $SystemType = 'linux'
+                    }
                 }
 
-                if ($SystemType -eq $CommandType)
-                {
+                if ($SystemType -eq $CommandType) {
 
                     $OS_conflict = $false
-                }
-                else
-                {
+                } else {
                     $OS_conflict = $true
                     $Status = 'OS_Conflict'
                 }
@@ -142,10 +138,9 @@ Function Add-JCCommandTarget
 
             } # end SystemID switch
 
-            GroupName
-            {
+            GroupName {
 
-                $GroupID = $SystemGroupNameHash.($GroupName)
+                $GroupID = $SystemGroupNameHash.GetEnumerator().Where({ $_.Value.name -contains ($GroupName) }).Name
 
                 $body = @{
 
@@ -157,8 +152,7 @@ Function Add-JCCommandTarget
 
             } # end GroupName switch
 
-            GroupID
-            {
+            GroupID {
 
                 $body = @{
 
@@ -175,18 +169,14 @@ Function Add-JCCommandTarget
         $URL = "$JCUrlBasePath/api/v2/commands/$($CommandID)/associations"
 
 
-        if ($OS_conflict -ne $true)
-        {
+        if ($OS_conflict -ne $true) {
 
-            try
-            {
+            try {
 
                 $APIresults = Invoke-RestMethod -Method Post -Uri  $URL  -Header $hdrs -Body $jsonbody -UserAgent:(Get-JCUserAgent)
                 $Status = 'Added'
 
-            }
-            catch
-            {
+            } catch {
 
                 $Status = $_.ErrorDetails
 
@@ -194,7 +184,7 @@ Function Add-JCCommandTarget
 
         }
 
-        $CommandName = $CommandNameHash.($CommandID)
+        $CommandName = $CommandNameHash[$CommandID].name
 
         $FormattedResults = [PSCustomObject]@{
 
@@ -211,8 +201,7 @@ Function Add-JCCommandTarget
 
     } # end process
 
-    end
-    {
+    end {
 
         Return $resultsArray
     }

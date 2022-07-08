@@ -1,5 +1,4 @@
-Function Set-JCUserGroupLDAP
-{
+Function Set-JCUserGroupLDAP {
     [CmdletBinding(DefaultParameterSetName = 'GroupName')]
 
     param
@@ -32,11 +31,11 @@ Function Set-JCUserGroupLDAP
         [Boolean]$LDAPEnabled
     )
 
-    begin
-
-    {
+    begin {
         Write-Debug 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {Connect-JConline}
+        if ($JCAPIKEY.length -ne 40) {
+            Connect-JConline
+        }
 
         Write-Debug 'Populating API headers'
         $hdrs = @{
@@ -47,8 +46,7 @@ Function Set-JCUserGroupLDAP
 
         }
 
-        if ($JCOrgID)
-        {
+        if ($JCOrgID) {
             $hdrs.Add('x-org-id', "$($JCOrgID)")
         }
 
@@ -58,18 +56,16 @@ Function Set-JCUserGroupLDAP
 
 
 
-        if ($PSCmdlet.ParameterSetName -eq 'GroupName')
-        {
+        if ($PSCmdlet.ParameterSetName -eq 'GroupName') {
 
             Write-Debug 'Populating GroupNameHash'
-            $GroupNameHash = Get-Hash_UserGroupName_ID
+            $GroupNameHash = Get-DynamicHash -Object Group -GroupType User -returnProperties name
 
         }
 
         $LDAPServer = Get-JCObject -Type:('ldap_server')
 
-        if ($LDAPServer.Count -gt 1)
-        {
+        if ($LDAPServer.Count -gt 1) {
             Write-Error "More than 1 LDAP Server. Action aborted"
             Return
         }
@@ -77,21 +73,17 @@ Function Set-JCUserGroupLDAP
         $LDAPServerID = $LDAPServer.id
     }
 
-    process
-    {
+    process {
 
 
-        if ($PSCmdlet.ParameterSetName -eq 'GroupName')
-        {
+        if ($PSCmdlet.ParameterSetName -eq 'GroupName') {
 
-            $GroupID = $GroupNameHash.Get_Item($GroupName)
+            $GroupID = $GroupNameHash.GetEnumerator().Where({ $_.Value.name -contains ($GroupName) }).Name
 
             $POSTUrl = "$JCUrlBasePath/api/v2/usergroups/$GroupID/associations"
 
-            switch ($LDAPEnabled)
-            {
-                $true
-                {
+            switch ($LDAPEnabled) {
+                $true {
 
                     $PostBody = @{
                         op         = 'add'
@@ -101,8 +93,7 @@ Function Set-JCUserGroupLDAP
                     }
 
                 }
-                $false
-                {
+                $false {
 
                     $PostBody = @{
                         op         = 'remove'
@@ -115,8 +106,7 @@ Function Set-JCUserGroupLDAP
 
             $JsonPostBody = $PostBody | ConvertTo-Json
 
-            try
-            {
+            try {
 
                 $LDAPUpdate = Invoke-RestMethod -Method Post -Uri $POSTUrl -Body $JsonPostBody -Headers $hdrs -UserAgent:(Get-JCUserAgent)
 
@@ -127,9 +117,7 @@ Function Set-JCUserGroupLDAP
 
                 }
 
-            }
-            catch
-            {
+            } catch {
 
                 $Results = [PSCustomObject]@{
 
@@ -145,15 +133,12 @@ Function Set-JCUserGroupLDAP
 
         } #End if
 
-        elseif ($PSCmdlet.ParameterSetName -eq 'GroupID')
-        {
+        elseif ($PSCmdlet.ParameterSetName -eq 'GroupID') {
 
             $POSTUrl = "$JCUrlBasePath/api/v2/usergroups/$GroupID/associations"
 
-            switch ($LDAPEnabled)
-            {
-                $true
-                {
+            switch ($LDAPEnabled) {
+                $true {
 
                     $PostBody = @{
                         op         = 'add'
@@ -163,8 +148,7 @@ Function Set-JCUserGroupLDAP
                     }
 
                 }
-                $false
-                {
+                $false {
 
                     $PostBody = @{
                         op         = 'remove'
@@ -177,8 +161,7 @@ Function Set-JCUserGroupLDAP
 
             $JsonPostBody = $PostBody | ConvertTo-Json
 
-            try
-            {
+            try {
 
                 $LDAPUpdate = Invoke-RestMethod -Method Post -Uri $POSTUrl -Body $JsonPostBody -Headers $hdrs -UserAgent:(Get-JCUserAgent)
 
@@ -189,9 +172,7 @@ Function Set-JCUserGroupLDAP
 
                 }
 
-            }
-            catch
-            {
+            } catch {
 
                 $Results = [PSCustomObject]@{
 
@@ -208,8 +189,7 @@ Function Set-JCUserGroupLDAP
 
     } #Ened process
 
-    end
-    {
+    end {
 
         Return $resultsArray
 

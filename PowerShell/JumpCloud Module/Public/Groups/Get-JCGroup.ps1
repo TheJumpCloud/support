@@ -40,10 +40,10 @@ Function Get-JCGroup () {
         if ($param.IsSet) {
             if ($Type -eq 'System') {
                 Write-Verbose 'Populating SystemGroupHash'
-                $SystemGroupHash = Get-Hash_SystemGroupName_ID
+                $SystemGroupHash = Get-DynamicHash -Object Group -GroupType System -returnProperties name
             } elseif ($Type -eq 'User') {
                 Write-Verbose 'Populating UserGroupHash'
-                $UserGroupHash = Get-Hash_UserGroupName_ID
+                $UserGroupHash = Get-DynamicHash -Object Group -GroupType User -returnProperties name
             }
         }
     }
@@ -82,7 +82,7 @@ Function Get-JCGroup () {
             }
         } elseif (($PSCmdlet.ParameterSetName -eq 'Type') -and ($param.IsSet)) {
             if ($Type -eq 'System') {
-                $GID = $SystemGroupHash.Get_Item($param.Value)
+                $GID = $SystemGroupHash.GetEnumerator().Where({ $_.Value.name -contains ($param.Value) }).Name
                 if ($GID) {
                     $GURL = "$JCUrlBasePath/api/v2/systemgroups/$GID"
                     $resultsArray = Get-JCResults -URL $GURL -Method "GET" -limit $limit
@@ -90,7 +90,7 @@ Function Get-JCGroup () {
                     Write-Error "There is no $Type group named $($param.Value). NOTE: Group names are case sensitive."
                 }
             } elseif ($Type -eq 'User') {
-                $GID = $UserGroupHash.Get_Item($param.Value)
+                $GID = $UserGroupHash.GetEnumerator().Where({ $_.Value.name -contains ($param.Value) }).Name
                 if ($GID) {
                     $GURL = "$JCUrlBasePath/api/v2/usergroups/$GID"
                     $resultsArray = Get-JCResults -URL $GURL -Method "GET" -limit $limit

@@ -1,5 +1,4 @@
-function Get-JCSystemUser ()
-{
+function Get-JCSystemUser () {
     [CmdletBinding()]
 
     param
@@ -17,10 +16,11 @@ SystemID has an Alias of _id. This means you can leverage the PowerShell pipelin
     )
 
     begin
-
     {
         Write-Verbose 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {Connect-JConline}
+        if ($JCAPIKEY.length -ne 40) {
+            Connect-JConline
+        }
 
         Write-Verbose 'Populating API headers'
         $hdrs = @{
@@ -31,8 +31,7 @@ SystemID has an Alias of _id. This means you can leverage the PowerShell pipelin
 
         }
 
-        if ($JCOrgID)
-        {
+        if ($JCOrgID) {
             $hdrs.Add('x-org-id', "$($JCOrgID)")
         }
 
@@ -44,48 +43,24 @@ SystemID has an Alias of _id. This means you can leverage the PowerShell pipelin
         if ($Parallel) {
             $resultsArray = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
             $resultsArrayList = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
-
-            Write-Verbose 'Populating UserIDHash'
-            $UserIDHash = Get-Hash_ID_Username -Parallel $true
-
-            Write-Verbose 'Populating SystemIDHash'
-            $SystemIDHash = Get-Hash_SystemID_HostName -Parallel $true
-
-            Write-Verbose 'Populating DisplayNameHash'
-            $DisplayNameHash = Get-Hash_SystemID_DisplayName -Parallel $true
-
-            Write-Verbose 'Populating SudoHash'
-            $SudoHash = Get-Hash_ID_Sudo -Parallel $true
-        }
-        else {
+        } else {
             Write-Verbose 'Initilizing resultsArrayList and resultsArray'
             $resultsArrayList = New-Object System.Collections.ArrayList
             $resultsArray = @()
-
-            Write-Verbose 'Populating UserIDHash'
-            $UserIDHash = Get-Hash_ID_Username
-
-            Write-Verbose 'Populating SystemIDHash'
-            $SystemIDHash = Get-Hash_SystemID_HostName
-
-            Write-Verbose 'Populating DisplayNameHash'
-            $DisplayNameHash = Get-Hash_SystemID_DisplayName
-
-            Write-Verbose 'Populating SudoHash'
-            $SudoHash = Get-Hash_ID_Sudo
         }
+
+        $UserHash = Get-DynamicHash -Object User -returnProperties username, sudo
+        $SystemHash = Get-DynamicHash -Object System -returnProperties hostname, displayName
     }
 
-    process
-    {
+    process {
         $limitURL = "{0}/api/v2/systems/{1}/users" -f $JCUrlBasePath, $SystemID
 
         Write-Verbose $limitURL
 
         if ($Parallel) {
             $resultsArray = Get-JCResults -Url $limitURL -method "GET" -limit $limit -parallel $true
-        }
-        else {
+        } else {
             $resultsArray = Get-JCResults -Url $limitURL -method "GET" -limit $limit
         }
 
@@ -93,51 +68,40 @@ SystemID has an Alias of _id. This means you can leverage the PowerShell pipelin
         Write-Verbose "Results count equals $count"
 
 
-        $Hostname = $SystemIDHash.Get_Item($SystemID)
-        $DisplayName = $DisplayNameHash.Get_Item($SystemID)
+        $Hostname = $SystemHash.Get_Item($SystemID).hostname
+        $DisplayName = $SystemHash.Get_Item($SystemID).displayName
 
         if ($Parallel) {
             $resultsArray | ForEach-Object -Parallel {
-                $UserIDHash = $using:UserIDHash
-                $SudoHash = $using:SudoHash
+                $UserHash = $using:UserHash
                 $resultsArrayList = $using:resultsArrayList
 
                 $UserID = $_.id
-                $Username = $UserIDHash.Get_Item($UserID)
+                $Username = $UserHash.Get_Item($UserID).username
                 $Groups = $_.compiledAttributes.ldapGroups.name
 
-                if ($null -eq ($_.paths.to).Count)
-                {
+                if ($null -eq ($_.paths.to).Count) {
                     $DirectBind = $true
-                }
-                elseif ((($_.paths.to).Count % 3 -eq 0))
-                {
+                } elseif ((($_.paths.to).Count % 3 -eq 0)) {
                     $DirectBind = $false
-                }
-                else
-                {
+                } else {
                     $DirectBind = $true
                 }
 
-                if ($_.compiledAttributes.sudo.enabled -eq $true)
-                {
+                if ($_.compiledAttributes.sudo.enabled -eq $true) {
 
                     $Admin = $true
-                }
-                else
-                {
+                } else {
 
-                    $Sudo = $SudoHash.Get_Item($UserID)
+                    $Sudo = $UserHash.Get_Item($UserID).sudo
 
-                    if ($Sudo -eq $true)
-                    {
+                    if ($Sudo -eq $true) {
 
                         $Admin = $true
 
                     }
 
-                    else
-                    {
+                    else {
                         $Admin = $false
                     }
 
@@ -155,46 +119,34 @@ SystemID has an Alias of _id. This means you can leverage the PowerShell pipelin
 
                 $resultsArrayList.Add($SystemUser) | Out-Null
             }
-        }
-        else {
-            foreach ($result in $resultsArray)
-            {
+        } else {
+            foreach ($result in $resultsArray) {
                 $UserID = $result.id
-                $Username = $UserIDHash.Get_Item($UserID)
+                $Username = $UserHash.Get_Item($UserID).username
                 $Groups = $result.compiledAttributes.ldapGroups.name
 
-                if ($null -eq ($result.paths.to).Count)
-                {
+                if ($null -eq ($result.paths.to).Count) {
                     $DirectBind = $true
-                }
-                elseif ((($result.paths.to).Count % 3 -eq 0))
-                {
+                } elseif ((($result.paths.to).Count % 3 -eq 0)) {
                     $DirectBind = $false
-                }
-                else
-                {
+                } else {
                     $DirectBind = $true
                 }
 
-                if ($result.compiledAttributes.sudo.enabled -eq $true)
-                {
+                if ($result.compiledAttributes.sudo.enabled -eq $true) {
 
                     $Admin = $true
-                }
-                else
-                {
+                } else {
 
-                    $Sudo = $SudoHash.Get_Item($UserID)
+                    $Sudo = $UserHash.Get_Item($UserID).sudo
 
-                    if ($Sudo -eq $true)
-                    {
+                    if ($Sudo -eq $true) {
 
                         $Admin = $true
 
                     }
 
-                    else
-                    {
+                    else {
                         $Admin = $false
                     }
 
@@ -217,8 +169,7 @@ SystemID has an Alias of _id. This means you can leverage the PowerShell pipelin
         $resultsArray = $null
     }
 
-    end
-    {
+    end {
         return $resultsArrayList
     }
 }
