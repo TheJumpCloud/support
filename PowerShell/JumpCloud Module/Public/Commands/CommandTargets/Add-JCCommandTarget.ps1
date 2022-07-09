@@ -71,24 +71,17 @@ Function Add-JCCommandTarget {
 
 
         if ($PSCmdlet.ParameterSetName -eq 'GroupName') {
-
             Write-Verbose 'Populating SystemGroupNameHash'
             $SystemGroupNameHash = Get-DynamicHash -Object Group -GroupType System -returnProperties name
-
-            Write-Verbose 'Populating CommandNameHash'
-            $CommandNameHash = Get-DynamicHash -Object Command -returnProperties name
         }
 
-
-
         if ($PSCmdlet.ParameterSetName -eq 'SystemID') {
-
-            Write-Verbose 'Populating CommandHash'
-            $CommandNameHash = Get-DynamicHash -Object Command -returnProperties name, commandType
-
             Write-Verbose 'Populating SystemHash'
             $SystemHash = Get-DynamicHash -Object System -returnProperties os
         }
+
+        Write-Verbose 'Populating CommandHash'
+        $CommandNameHash = Get-DynamicHash -Object Command -returnProperties name, commandType
 
 
         Write-Verbose 'Initilizing RawResults and resultsArrayList'
