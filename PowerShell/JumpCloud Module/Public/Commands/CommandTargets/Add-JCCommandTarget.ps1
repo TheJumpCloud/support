@@ -84,7 +84,7 @@ Function Add-JCCommandTarget {
         if ($PSCmdlet.ParameterSetName -eq 'SystemID') {
 
             Write-Verbose 'Populating CommandHash'
-            $CommandNameHash = Get-DynamicHash -Object Command -returnProperties name, type
+            $CommandNameHash = Get-DynamicHash -Object Command -returnProperties name, commandType
 
             Write-Verbose 'Populating SystemHash'
             $SystemHash = Get-DynamicHash -Object System -returnProperties os
@@ -106,7 +106,7 @@ Function Add-JCCommandTarget {
 
                 $SystemOS_Raw = $SystemHash[$SystemID].os
 
-                $CommandType = $CommandNameHash[$CommandID].type
+                $CommandType = $CommandNameHash[$CommandID].commandType
 
                 switch ($SystemOS_Raw) {
                     "Mac OS X" {

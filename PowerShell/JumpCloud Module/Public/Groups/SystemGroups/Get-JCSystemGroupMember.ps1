@@ -36,7 +36,7 @@ Function Get-JCSystemGroupMember () {
 
         if ($PSCmdlet.ParameterSetName -eq 'ByGroup') {
             foreach ($Group in $GroupName) {
-                if ($GroupNameHash.Values.names -contains ($Group)) {
+                if ($GroupNameHash.Values.name -contains ($Group)) {
                     $Group_ID = $GroupNameHash.GetEnumerator().Where({ $_.Value.name -contains ($Group) }).Name
                     Write-Debug "$Group_ID"
 
