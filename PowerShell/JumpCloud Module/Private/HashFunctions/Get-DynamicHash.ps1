@@ -27,15 +27,19 @@ Function Get-DynamicHash () {
     process {
         switch ($Object) {
             System {
+                Write-Debug "Generating ResultsHash"
                 $ResultsHash = Get-JCSystem -returnProperties $returnProperties
             }
             User {
+                Write-Debug "Generating ResultsHash"
                 $ResultsHash = Get-JCUser -returnProperties $returnProperties
             }
             Command {
+                Write-Debug "Generating ResultsHash"
                 $ResultsHash = Get-JCCommand -returnProperties $returnProperties
             }
             Group {
+                Write-Debug "Generating ResultsHash"
                 $returnProperties += "id"
                 switch ($GroupType) {
                     System {
@@ -47,17 +51,13 @@ Function Get-DynamicHash () {
                 }
             }
         }
+        Write-Debug "Adding results to hashtable"
         foreach ($Result in $ResultsHash) {
-            $AttributeHash = $Result | Select-Object -ExcludeProperty $(if ($Result.id) {
-                    'id'
-                } else {
-                    '_id'
-                })
-            $DynamicHash.Add($(if ($Result.id) {
-                        $Result.id
-                    } else {
-                        $Result._id
-                    }), $AttributeHash)
+            if ($Result.id) {
+                $DynamicHash.Add($Result.id, @($Result | Select-Object -ExcludeProperty 'id'))
+            } else {
+                $DynamicHash.Add($Result._id, @($Result | Select-Object -ExcludeProperty '_id'))
+            }
         }
     }
     end {
