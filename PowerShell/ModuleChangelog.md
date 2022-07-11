@@ -34,6 +34,8 @@ Note: In order to use the parallel functionality, the feature requires PowerShel
 #### IMPROVEMENTS:
 
 - Adjusted output for Get-JCSystemGroupMember -ByID and Get-JCUserGroupMember -ByID to match the output of -GroupName
+- Removed individual hash functions in favor for dynamic hash function
+  - Replaced all references to old functions
 
 #### BUG FIXES:
 
