@@ -59,7 +59,7 @@ executors:
     resource_class: macos.x86.medium.gen2
 workflows:
   version: 2
-  ci:
+  PowerShell-CI:
     when:
       and:
         - and:
@@ -99,7 +99,7 @@ workflows:
             - Initial Setup
             - Build Help and Test Files
             - Build Nuspec
-      - Pester Tests Windows:
+      - Pester Tests Windows (Get):
           requires:
             - Initial Setup
             - Build Help and Test Files
@@ -107,7 +107,7 @@ workflows:
             - Module Validation Tests
             - Invoke Git Commit
           context: aws-credentials
-      - Pester Tests Mac:
+      - Pester Tests Mac (Get):
           requires:
             - Initial Setup
             - Build Help and Test Files
@@ -115,7 +115,79 @@ workflows:
             - Module Validation Tests
             - Invoke Git Commit
           context: aws-credentials
-      - Pester Tests Linux:
+      - Pester Tests Linux (Get):
+          requires:
+            - Initial Setup
+            - Build Help and Test Files
+            - Build Nuspec
+            - Module Validation Tests
+            - Invoke Git Commit
+          context: aws-credentials
+      - Pester Tests Windows (Put):
+          requires:
+            - Initial Setup
+            - Build Help and Test Files
+            - Build Nuspec
+            - Module Validation Tests
+            - Invoke Git Commit
+          context: aws-credentials
+      - Pester Tests Mac (Put):
+          requires:
+            - Initial Setup
+            - Build Help and Test Files
+            - Build Nuspec
+            - Module Validation Tests
+            - Invoke Git Commit
+          context: aws-credentials
+      - Pester Tests Linux (Put):
+          requires:
+            - Initial Setup
+            - Build Help and Test Files
+            - Build Nuspec
+            - Module Validation Tests
+            - Invoke Git Commit
+          context: aws-credentials
+      - Pester Tests Windows (Post):
+          requires:
+            - Initial Setup
+            - Build Help and Test Files
+            - Build Nuspec
+            - Module Validation Tests
+            - Invoke Git Commit
+          context: aws-credentials
+      - Pester Tests Mac (Post):
+          requires:
+            - Initial Setup
+            - Build Help and Test Files
+            - Build Nuspec
+            - Module Validation Tests
+            - Invoke Git Commit
+          context: aws-credentials
+      - Pester Tests Linux (Post):
+          requires:
+            - Initial Setup
+            - Build Help and Test Files
+            - Build Nuspec
+            - Module Validation Tests
+            - Invoke Git Commit
+          context: aws-credentials
+      - Pester Tests Windows (Remove):
+          requires:
+            - Initial Setup
+            - Build Help and Test Files
+            - Build Nuspec
+            - Module Validation Tests
+            - Invoke Git Commit
+          context: aws-credentials
+      - Pester Tests Mac (Remove):
+          requires:
+            - Initial Setup
+            - Build Help and Test Files
+            - Build Nuspec
+            - Module Validation Tests
+            - Invoke Git Commit
+          context: aws-credentials
+      - Pester Tests Linux (Remove):
           requires:
             - Initial Setup
             - Build Help and Test Files
@@ -130,7 +202,13 @@ workflows:
             - Build Nuspec
             - Module Validation Tests
             - Invoke Git Commit
-  release:
+  PowerShell-PR:
+    when:
+      - equal: [master, << pipeline.git.branch >>]
+      - equal: [true, << pipeline.parameters.PublishToPSGallery >>]
+    jobs:
+
+  PowerShell-Release:
     when:
       and:
         - equal: [master, << pipeline.git.branch >>]
