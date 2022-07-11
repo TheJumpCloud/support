@@ -26,8 +26,8 @@ foreach ($RequiredModule in $PSDependencies.Keys)
     # Get-Module -Refresh -ListAvailable
     If ([System.String]::IsNullOrEmpty((Get-Module | Where-Object { $_.Name -eq $RequiredModule })))
     {
-        Write-Host("[status]Importing module: '$DependentModule'")
-        Import-Module -Name:($DependentModule) -Force -Global
+        Write-Host("[status]Importing module: '$RequiredModule'")
+        Import-Module -Name:($RequiredModule) -Force -Global
     }
 }
 # # Install dependent modules
