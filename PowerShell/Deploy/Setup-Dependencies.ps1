@@ -21,9 +21,11 @@ $PSDependencies = @{
 
 foreach ($RequiredModule in $PSDependencies.Keys)
 {
-    Write-Host("[status]Installing module: '$RequiredModule'; version: $($PSDependencies[$RequiredModule].RequiredVersion) from $($PSDependencies[$RequiredModule].Repository)")
-    Install-Module -Name $RequiredModule -Repository:($($PSDependencies[$RequiredModule].Repository)) -RequiredVersion:($($PSDependencies[$RequiredModule].RequiredVersion)) -AllowPrerelease -Force
-    # Get-Module -Refresh -ListAvailable
+    If ([System.String]::IsNullOrEmpty((Get-InstalledModule | Where-Object { $_.Name -eq $RequiredModule })))
+        {
+            Write-Host("[status]Installing module: '$RequiredModule'; version: $($PSDependencies[$RequiredModule].RequiredVersion) from $($PSDependencies[$RequiredModule].Repository)")
+            Install-Module -Name $RequiredModule -Repository:($($PSDependencies[$RequiredModule].Repository)) -RequiredVersion:($($PSDependencies[$RequiredModule].RequiredVersion)) -AllowPrerelease -Force
+        }
     If ([System.String]::IsNullOrEmpty((Get-Module | Where-Object { $_.Name -eq $RequiredModule })))
     {
         Write-Host("[status]Importing module: '$RequiredModule'")
