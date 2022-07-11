@@ -7,11 +7,10 @@
 #### Banner Current
 
 ```
-{{Fill in the Banner Current}}
-```
+* Get-JCUser -State should accept case insensitive values such as "suspended" "activated" "staged" and validate input```
 
 #### Banner Old
 
 ```
-{{Fill in the Banner Old}}
+* Added search endpoint functionality and parameters to Get-jCCommand
 ```
