@@ -94,11 +94,41 @@ Describe -Tag:('JCUser') 'Get-JCUser 1.1' {
         $NewUser.manager | Should -Be $managerId
         Remove-JCUser -UserID $NewUser._id -force
     }
+    It "Searches a JumpCloud user by managerUsername & Email and should not return user with similar username" {
+        # Define two users who's username is contained by another user
+        $newUser1 = New-JCUser -username "jemartin" -firstname "je" -lastname "martin" -email "jemartin@deleteme.com"
+        $newUser2 = New-JCUser -username "emartin" -firstname "e" -lastname "martin" -email "emartin@deleteme.come"
+        $NewUser = New-RandomUser -Domain DeleteMe | New-JCUser -manager $newUser2.username
+        $NewUser = Get-JCUser -manager $newUser2.username
+        $NewUser = Get-JCUser -manager $newUser2.email
+        $NewUser.manager | Should -Be $newUser2.Id
+        $NewUser.manager | Should -Not -Be $newUser1.Id
+        # Remove all users from the test
+        Remove-JCUser -UserID $NewUser._id -force
+        Remove-JCUser -UserID $NewUser1._id -force
+        Remove-JCUser -UserID $NewUser2._id -force
+    }
+    It "Searches a JumpCloud user by managerUsername (Case Insensitive)" {
+        $managerUsername = $PesterParams_User1.username
+        $managerId = $PesterParams_User1.id
+        $NewUser = New-RandomUser -Domain DeleteMe | New-JCUser -manager $managerUsername
+        $NewUser = Get-JCUser -manager $($managerUsername.ToUpper())
+        $NewUser.manager | Should -Be $managerId
+        Remove-JCUser -UserID $NewUser._id -force
+    }
     It "Searches a JumpCloud user by managerEmail" {
         $managerEmail = $PesterParams_User1.email
         $managerId = $PesterParams_User1.id
         $NewUser = New-RandomUser -Domain DeleteMe | New-JCUser -manager $managerEmail
         $NewUser = Get-JCUser -manager $managerEmail
+        $NewUser.manager | Should -Be $managerId
+        Remove-JCUser -UserID $NewUser._id -force
+    }
+    It "Searches a JumpCloud user by managerEmail (Case Insensitive)" {
+        $managerEmail = $PesterParams_User1.email
+        $managerId = $PesterParams_User1.id
+        $NewUser = New-RandomUser -Domain DeleteMe | New-JCUser -manager $managerEmail
+        $NewUser = Get-JCUser -manager $($managerEmail.ToUpper())
         $NewUser.manager | Should -Be $managerId
         Remove-JCUser -UserID $NewUser._id -force
     }
@@ -414,5 +444,158 @@ Describe -Tag:('JCUser') "Get-JCUser 1.12" {
         $RemoveUser = Remove-JCUser -UserID  $Newuser._id -force
         $SearchUser._id | Should -Be $Newuser._id
 
+    }
+}
+
+Describe -Tag:('JCUser') "Case Insensitivity Tests" {
+    It "Searches parameters dynamically with mixed, lower and upper capitalaztion" {
+        # Get-JCuser -username uSeRnAmE should return same user as Get-JCuser -username Username
+        # Get-JCuser -username username should return same user as Get-JCuser -username Username
+        # Get-JCuser -username USERNAME should return same user as Get-JCuser -username Username
+        # Get-JCuser -firstname fIrStNaMe should return same user as Get-JCuser -firstname Firstname
+        # Get-JCuser -lastname lAsTnAmE should return same user as Get-JCuser -lastname Lastname
+        # Etc.
+        $commandParameters = (GCM Get-JCSystem).Parameters
+        $gmr = Get-JCUser -username $PesterParams_User1.username | GM
+        # Get parameters that are not ID, ORGID and have a string following the param name
+        $parameters = $gmr | Where-Object { ($_.Definition -notmatch "organization") -And ($_.Definition -notmatch "id") -And ($_.Definition -match "string\s\w+=(\w+)") -And ($_.Name -In $commandParameters.Keys) }
+
+        foreach ($param in $parameters.Name) {
+            # Write-host "Testing $param"
+            $string = $PesterParams_User1.$param.toLower()
+            $stringList = @()
+            $stringFinal = ""
+            # for i in string length, get the letters and capatlize ever other letter
+            for ($i = 0; $i -lt $string.length; $i++) {
+                <# Action that will repeat until the condition is met #>
+                $letter = $string.Substring($i, 1)
+                if ($i % 2 -eq 1) {
+                    $letter = $letter.TOUpper()
+                }
+                $stringList += ($letter)
+            }
+            foreach ($letter in $stringList) {
+                <# $letter is the current item #>
+                $stringFinal += $letter
+            }
+            $mixedCaseSearch = "Get-JCUser -$($param) `"$stringFinal`""
+            $lowerCaseSearch = "Get-JCUser -$($param) `"$($stringFinal.toLower())`""
+            $upperCaseSearch = "Get-JCUser -$($param) `"$($stringFinal.TOUpper())`""
+            # Write-Host $mixedCaseSearch
+            # Write-Host $lowerCaseSearch
+            # Write-Host $upperCaseSearch
+            $userSearchMixed = Invoke-Expression -Command:($mixedCaseSearch)
+            $userSearchLower = Invoke-Expression -Command:($lowerCaseSearch)
+            $userSearchUpper = Invoke-Expression -Command:($upperCaseSearch)
+            # DefaultSearch is the expression without text formatting
+            $defaultSearch = "Get-JCUser -$($param) `"$($PesterParams_User1.$param)`""
+            $userSearchDefault = Invoke-Expression -Command:($defaultSearch)
+            # Ids returned here should return the same restuls
+            $userSearchUpper._id | Should -Be $userSearchDefault._id
+            $userSearchLower._id | Should -Be $userSearchDefault._id
+            $userSearchMixed._id | Should -Be $userSearchDefault._id
+        }
+    }
+}
+
+Describe -Tag:('JCUser') "Case Insensitivity Tests" {
+    It "Searches parameters dynamically with mixed, lower and upper capitalaztion" {
+        # Get-JCuser -username uSeRnAmE should return same user as Get-JCuser -username Username
+        # Get-JCuser -username username should return same user as Get-JCuser -username Username
+        # Get-JCuser -username USERNAME should return same user as Get-JCuser -username Username
+        # Get-JCuser -firstname fIrStNaMe should return same user as Get-JCuser -firstname Firstname
+        # Get-JCuser -lastname lAsTnAmE should return same user as Get-JCuser -lastname Lastname
+        # Etc.
+        $commandParameters = (GCM Get-JCSystem).Parameters
+        $gmr = Get-JCUser -username $PesterParams_User1.username | GM
+        # Get parameters that are not ID, ORGID and have a string following the param name
+        $parameters = $gmr | Where-Object { ($_.Definition -notmatch "organization") -And ($_.Definition -notmatch "id") -And ($_.Definition -match "string\s\w+=(\w+)") -And ($_.Name -In $commandParameters.Keys) }
+
+        foreach ($param in $parameters.Name) {
+            # Write-host "Testing $param"
+            $string = $PesterParams_User1.$param.toLower()
+            $stringList = @()
+            $stringFinal = ""
+            # for i in string length, get the letters and capatlize ever other letter
+            for ($i = 0; $i -lt $string.length; $i++) {
+                <# Action that will repeat until the condition is met #>
+                $letter = $string.Substring($i, 1)
+                if ($i % 2 -eq 1) {
+                    $letter = $letter.TOUpper()
+                }
+                $stringList += ($letter)
+            }
+            foreach ($letter in $stringList) {
+                <# $letter is the current item #>
+                $stringFinal += $letter
+            }
+            $mixedCaseSearch = "Get-JCUser -$($param) `"$stringFinal`""
+            $lowerCaseSearch = "Get-JCUser -$($param) `"$($stringFinal.toLower())`""
+            $upperCaseSearch = "Get-JCUser -$($param) `"$($stringFinal.TOUpper())`""
+            # Write-Host $mixedCaseSearch
+            # Write-Host $lowerCaseSearch
+            # Write-Host $upperCaseSearch
+            $userSearchMixed = Invoke-Expression -Command:($mixedCaseSearch)
+            $userSearchLower = Invoke-Expression -Command:($lowerCaseSearch)
+            $userSearchUpper = Invoke-Expression -Command:($upperCaseSearch)
+            # DefaultSearch is the expression without text formatting
+            $defaultSearch = "Get-JCUser -$($param) `"$($PesterParams_User1.$param)`""
+            $userSearchDefault = Invoke-Expression -Command:($defaultSearch)
+            # Ids returned here should return the same restuls
+            $userSearchUpper._id | Should -Be $userSearchDefault._id
+            $userSearchLower._id | Should -Be $userSearchDefault._id
+            $userSearchMixed._id | Should -Be $userSearchDefault._id
+        }
+    }
+}
+
+Describe -Tag:('JCUser') "Case Insensitivity Tests" {
+    It "Searches parameters dynamically with mixed, lower and upper capitalaztion" {
+        # Get-JCuser -username uSeRnAmE should return same user as Get-JCuser -username Username
+        # Get-JCuser -username username should return same user as Get-JCuser -username Username
+        # Get-JCuser -username USERNAME should return same user as Get-JCuser -username Username
+        # Get-JCuser -firstname fIrStNaMe should return same user as Get-JCuser -firstname Firstname
+        # Get-JCuser -lastname lAsTnAmE should return same user as Get-JCuser -lastname Lastname
+        # Etc.
+        $commandParameters = (GCM Get-JCSystem).Parameters
+        $gmr = Get-JCUser -username $PesterParams_User1.username | GM
+        # Get parameters that are not ID, ORGID and have a string following the param name
+        $parameters = $gmr | Where-Object { ($_.Definition -notmatch "organization") -And ($_.Definition -notmatch "id") -And ($_.Definition -match "string\s\w+=(\w+)") -And ($_.Name -In $commandParameters.Keys) }
+
+        foreach ($param in $parameters.Name) {
+            # Write-host "Testing $param"
+            $string = $PesterParams_User1.$param.toLower()
+            $stringList = @()
+            $stringFinal = ""
+            # for i in string length, get the letters and capatlize ever other letter
+            for ($i = 0; $i -lt $string.length; $i++) {
+                <# Action that will repeat until the condition is met #>
+                $letter = $string.Substring($i, 1)
+                if ($i % 2 -eq 1) {
+                    $letter = $letter.TOUpper()
+                }
+                $stringList += ($letter)
+            }
+            foreach ($letter in $stringList) {
+                <# $letter is the current item #>
+                $stringFinal += $letter
+            }
+            $mixedCaseSearch = "Get-JCUser -$($param) `"$stringFinal`""
+            $lowerCaseSearch = "Get-JCUser -$($param) `"$($stringFinal.toLower())`""
+            $upperCaseSearch = "Get-JCUser -$($param) `"$($stringFinal.TOUpper())`""
+            # Write-Host $mixedCaseSearch
+            # Write-Host $lowerCaseSearch
+            # Write-Host $upperCaseSearch
+            $userSearchMixed = Invoke-Expression -Command:($mixedCaseSearch)
+            $userSearchLower = Invoke-Expression -Command:($lowerCaseSearch)
+            $userSearchUpper = Invoke-Expression -Command:($upperCaseSearch)
+            # DefaultSearch is the expression without text formatting
+            $defaultSearch = "Get-JCUser -$($param) `"$($PesterParams_User1.$param)`""
+            $userSearchDefault = Invoke-Expression -Command:($defaultSearch)
+            # Ids returned here should return the same restuls
+            $userSearchUpper._id | Should -Be $userSearchDefault._id
+            $userSearchLower._id | Should -Be $userSearchDefault._id
+            $userSearchMixed._id | Should -Be $userSearchDefault._id
+        }
     }
 }
