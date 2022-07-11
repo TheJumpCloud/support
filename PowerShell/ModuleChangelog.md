@@ -1,6 +1,6 @@
 ## 1.23.2
 
-Release Date: June 21, 2022
+Release Date: July 11, 2022
 
 #### RELEASE NOTES
 
@@ -12,7 +12,7 @@ This release modifies how the Manager Username Lookup works with Get-JCUser. Onl
 
 ## 1.23.1
 
-Release Date: June 21, 2022
+Release Date: July 7, 2022
 
 #### RELEASE NOTES
 
