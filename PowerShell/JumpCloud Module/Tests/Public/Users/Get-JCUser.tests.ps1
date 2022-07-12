@@ -464,12 +464,11 @@ Describe -Tag:('JCUser') "Case Insensitivity Tests" {
                 $SearchUser = Get-JCUser -external_source_type "$Random1" -external_dn "$Random2"
                 $SearchUser._id | Should -Be $Newuser._id
                 Remove-JCUser -UserID $NewUser._id -force
-            } elseif(($param -ne "email") -or ($param -ne "username") -or ($param -ne "state")) {
+            } elseif(($param -ne "email") -and ($param -ne "username") -and ($param -ne "state")) {
                 # Test for special characters
                 $paramInput = "$(New-RandomString -NumberOfChars 8)\|{[()^$.#"
                 $NewUser = "New-RandomUser -Domain DeleteMe | New-JCUser -$($param) `"$paramInput`""
                 $NewUserInvoke = Invoke-Expression -Command:($NewUser)
-                #$NewUser = Get-JCUser -$($param) $paramInput
                 $searchUser = "Get-JCUser -$($param) `"$paramInput`""
                 $NewUserSearch = Invoke-Expression -Command:($searchUser)
                 Write-Host "New User $userSearch"
