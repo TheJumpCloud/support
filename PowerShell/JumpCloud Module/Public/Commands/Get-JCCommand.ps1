@@ -168,7 +168,8 @@ CommandID has an Alias of _id. This means you can leverage the PowerShell pipeli
                             # Check for integer value
                             (($Search.filter).GetEnumerator()).add($param.Key, $Value)
                         }  else {
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)(^$Value`$)" })
+                            $filteredSearch = [regex]::Escape($Value)
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)(^$filteredSearch`$)" })
                         }
 
 

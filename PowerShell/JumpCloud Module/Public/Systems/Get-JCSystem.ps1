@@ -332,10 +332,8 @@ Function Get-JCSystem ()
                         }
 
                         $Value = ($param.value).replace('*', '')
-                        if($param.Value -match '^[-+]?\d+$'){
-                            (($Search.filter).GetEnumerator()).add($param.Key, $Value)
-                        }
-                        elseif (($param.Value -match '.+?\*$') -and ($param.Value -match '^\*.+?')) {
+
+                        if (($param.Value -match '.+?\*$') -and ($param.Value -match '^\*.+?')) {
                             # Front and back wildcard
                             (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)$Value" })
                         } elseif ($param.Value -match '.+?\*$') {
@@ -349,7 +347,8 @@ Function Get-JCSystem ()
                             (($Search.filter).GetEnumerator()).add($param.Key, $Value)
                         } 
                         else {
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)(^$Value`$)" })
+                            $filteredSearch = [regex]::Escape($Value)
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)(^$filteredSearch`$)" })
                         }
 
 

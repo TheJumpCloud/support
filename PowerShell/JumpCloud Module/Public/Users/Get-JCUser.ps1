@@ -399,7 +399,8 @@ Function Get-JCUser ()
                             # Check for integer value
                             (($Search.filter).GetEnumerator()).add($param.Key, $Value)
                         }  else {
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)(^$Value`$)" })
+                            $filteredSearch = [regex]::Escape($Value)
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)(^$filteredSearch`$)" })
                         }
 
                     } # End foreach

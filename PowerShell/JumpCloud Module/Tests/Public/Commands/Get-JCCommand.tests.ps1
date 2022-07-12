@@ -73,8 +73,8 @@ Describe -Tag:('JCCommand') "Case Insensitivity Tests" {
     It "Searches parameters dynamically with mixed, lower and upper capitalaztion" {
         $commandParameters = (GCM Get-JCCommand).Parameters
         $gmr = Get-JCCommand -ByID $PesterParams_Command3._id | GM
-        # Get parameters that are not ID, ORGID and have a string following the param name
-        $parameters = $gmr | Where-Object { ($_.Definition -notmatch "organization") -And ($_.Definition -notmatch "id") -And ($_.Definition -match "string\s\w+=(\w+)") -And ($_.Name -In $commandParameters.Keys) }
+        # Get parameters that are not ID, ORGID, bool, and int
+        $parameters = $gmr | Where-Object { ($_.Definition -notmatch "organization") -And ($_.Name -In $commandParameters.Keys) -and ($_.Definition -notmatch "bool") -and ($_.Definition -notmatch "int")}
 
         foreach ($param in $parameters.Name) {
             # Write-host "Testing $param"
@@ -100,16 +100,31 @@ Describe -Tag:('JCCommand') "Case Insensitivity Tests" {
             # Write-Host $mixedCaseSearch
             # Write-Host $lowerCaseSearch
             # Write-Host $upperCaseSearch
-            $userSearchMixed = Invoke-Expression -Command:($mixedCaseSearch)
-            $userSearchLower = Invoke-Expression -Command:($lowerCaseSearch)
-            $userSearchUpper = Invoke-Expression -Command:($upperCaseSearch)
+            $commandSearchMixed = Invoke-Expression -Command:($mixedCaseSearch)
+            $commandSearchLower = Invoke-Expression -Command:($lowerCaseSearch)
+            $commandSearchUpper = Invoke-Expression -Command:($upperCaseSearch)
             # DefaultSearch is the expression without text formatting
             $defaultSearch = "Get-JCCommand -$($param) `"$($PesterParams_Command3.$param)`""
             $userSearchDefault = Invoke-Expression -Command:($defaultSearch)
             # Ids returned here should return the same restuls
-            $userSearchUpper._id | Should -Be $userSearchDefault._id
-            $userSearchLower._id | Should -Be $userSearchDefault._id
-            $userSearchMixed._id | Should -Be $userSearchDefault._id
+            $commandSearchUpper._id | Should -Be $userSearchDefault._id
+            $commandSearchLower._id | Should -Be $userSearchDefault._id
+            $commandSearchMixed._id | Should -Be $userSearchDefault._id
+
+            # Test special characters with -name and -command
+            if (($param -eq "name") -or ($param -eq "command")) {
+                $curCommand = $PesterParams_Command3.$param
+                $randomParamInput = "$(New-RandomString -NumberOfChars 8)\+?|{[()^$.#"
+                $setParam = "Set-JCCommand -commandId $($PesterParams_Command3._id) -$($param)  `"$($randomParamInput)`""
+                $commandParamInvoke = Invoke-Expression -Command:($setParam)
+                $searchCommand = "Get-JCCommand -$($param) `"$randomParamInput`""
+                $InvokeCommand = Invoke-Expression -Command:($searchCommand)
+                $commandParamInvoke.$param | Should -Be $InvokeCommand.$param
+
+                #Set to original
+                $setParam = "Set-JCCommand -commandId $($PesterParams_Command3._id) -$($param)  `"$($curCommand)`""
+            }
+
         }
     }
 }

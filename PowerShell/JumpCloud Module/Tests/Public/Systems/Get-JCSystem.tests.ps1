@@ -336,22 +336,37 @@ Describe -Tag:('JCSystem') "Case Insensitivity Tests" {
                 <# $letter is the current item #>
                 $stringFinal += $letter
             }
+            
             $mixedCaseSearch = "Get-JCSystem -$($param) `"$stringFinal`""
             $lowerCaseSearch = "Get-JCSystem -$($param) `"$($stringFinal.toLower())`""
             $upperCaseSearch = "Get-JCSystem -$($param) `"$($stringFinal.TOUpper())`""
             # Write-Host $mixedCaseSearch
             # Write-Host $lowerCaseSearch
             # Write-Host $upperCaseSearch
-            $userSearchMixed = Invoke-Expression -Command:($mixedCaseSearch)
-            $userSearchLower = Invoke-Expression -Command:($lowerCaseSearch)
-            $userSearchUpper = Invoke-Expression -Command:($upperCaseSearch)
+            $systemSearchMixed = Invoke-Expression -Command:($mixedCaseSearch)
+            $systemSearchLower = Invoke-Expression -Command:($lowerCaseSearch)
+            $systemSearchUpper = Invoke-Expression -Command:($upperCaseSearch)
             # DefaultSearch is the expression without text formatting
             $defaultSearch = "Get-JCSystem -$($param) `"$($PesterParams_SystemLinux.$param)`""
             $userSearchDefault = Invoke-Expression -Command:($defaultSearch)
             # Ids returned here should return the same restuls
-            $userSearchUpper._id | Should -Be $userSearchDefault._id
-            $userSearchLower._id | Should -Be $userSearchDefault._id
-            $userSearchMixed._id | Should -Be $userSearchDefault._id
+            $systemSearchUpper._id | Should -Be $userSearchDefault._id
+            $systemSearchLower._id | Should -Be $userSearchDefault._id
+            $systemSearchMixed._id | Should -Be $userSearchDefault._id
+
+            if (($param -eq "displayName") -or ($param -eq "description")) {
+                $originalParam = $PesterParams_SystemLinux.$param
+                $curDisplayName = $PesterParams_SystemLinux.displayName
+                $RandomDisplayName = "$(New-RandomString -NumberOfChars 8)\+?|{[()^$.#"
+                $SetSystem = Set-JCSystem $PesterParams_SystemLinux._id -hostName $RandomDisplayName
+                $SearchSystem = Get-JCSystem -hostname $RandomDisplayName
+                $SetSystem.$param | Should -Be $SearchSystem.$param
+
+                #Set PesterLinux displayName and description to original
+                Set-JCSystem -SystemID $PesterParams_SystemLinux._id -displayName $curDisplayName
+                $setSystemToOriginal = "Set-JCSystem -SystemID $($PesterParams_SystemLinux._id) -$($param) `"$originalParam`""
+                Invoke-Expression -Command:($setSystemToOriginal)
+            }
         }
     }
 }

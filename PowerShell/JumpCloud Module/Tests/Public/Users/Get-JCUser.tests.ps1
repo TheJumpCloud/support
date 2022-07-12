@@ -35,16 +35,15 @@ Describe -Tag:('JCUser') 'Get-JCUser 1.1' {
     It "Searches a JumpCloud user by lastname" {
 
         $lastname = New-RandomString -NumberOfChars 8
-        $NewUser = New-RandomUser -Domain DeleteMe | New-JCUser -lastname $lastname
+        $NewUser = New-RandomUser -Domain DeleteMe | New-JCUser -lastname  
         $NewUser = Get-JCUser -lastname $lastname
         $NewUser.lastname | Should -Be $lastname
         Remove-JCUser -UserID $NewUser._id -force
     }
 
     It "Searches a JumpCloud user by firstname" {
-
         $firstname = New-RandomString -NumberOfChars 8
-        $NewUser = New-RandomUser -Domain DeleteMe | New-JCUser -firstname $firstname
+        $NewUser = New-RandomUser -Domain DeleteMe | New-JCUser -firstname 
         $NewUser = Get-JCUser -firstname $firstname
         $NewUser.firstname | Should -Be $firstname
         Remove-JCUser -UserID $NewUser._id -force
@@ -370,8 +369,8 @@ Describe -Tag:('JCUser') "Get-JCUser 1.12" {
     It "Searches for a user by external_source_type" {
 
         $Newuser = New-RandomUser -domain "deleteme" | New-JCUser
-        $Random1 = $(Get-Random)
-        $Random2 = $(Get-Random)
+        $Random1 = "$(Get-Random)\+?|{[()^$.#"
+        $Random2 = "$(Get-Random)\+?|{[()^$.#"
         $SetUser = Set-JCUser -Username $Newuser.username -external_source_type "$Random1" -external_dn "$Random2"
         $SearchUser = Get-JCUser -external_source_type $Random1
         $RemoveUser = Remove-JCUser -UserID  $Newuser._id -force
@@ -383,8 +382,8 @@ Describe -Tag:('JCUser') "Get-JCUser 1.12" {
     It "Searches for a user by external_dn" {
 
         $Newuser = New-RandomUser -domain "deleteme" | New-JCUser
-        $Random1 = $(Get-Random)
-        $Random2 = $(Get-Random)
+        $Random1 = Get-Random
+        $Random2 = Get-Random
         $SetUser = Set-JCUser -Username $Newuser.username -external_source_type "$Random1" -external_dn "$Random2"
         $SearchUser = Get-JCUser -external_source_type $Random1
         $RemoveUser = Remove-JCUser -UserID  $Newuser._id -force
@@ -395,8 +394,8 @@ Describe -Tag:('JCUser') "Get-JCUser 1.12" {
     It "Searches for a user by external_dn and external_source_type" {
 
         $Newuser = New-RandomUser -domain "deleteme" | New-JCUser
-        $Random1 = $(Get-Random)
-        $Random2 = $(Get-Random)
+        $Random1 = Get-Random
+        $Random2 = Get-Random
         $SetUser = Set-JCUser -Username $Newuser.username -external_source_type "$Random1" -external_dn "$Random2"
         $SearchUser = Get-JCUser -external_source_type "$Random1" -external_dn "$Random2"
         $RemoveUser = Remove-JCUser -UserID  $Newuser._id -force
@@ -413,10 +412,11 @@ Describe -Tag:('JCUser') "Case Insensitivity Tests" {
         # Get-JCuser -firstname fIrStNaMe should return same user as Get-JCuser -firstname Firstname
         # Get-JCuser -lastname lAsTnAmE should return same user as Get-JCuser -lastname Lastname
         # Etc.
-        $commandParameters = (GCM Get-JCSystem).Parameters
+        $commandParameters = (GCM Get-JCUser).Parameters
         $gmr = Get-JCUser -username $PesterParams_User1.username | GM
         # Get parameters that are not ID, ORGID and have a string following the param name
-        $parameters = $gmr | Where-Object { ($_.Definition -notmatch "organization") -And ($_.Definition -notmatch "id") -And ($_.Definition -match "string\s\w+=(\w+)") -And ($_.Name -In $commandParameters.Keys) }
+        $parameters = $gmr | Where-Object { ($_.Definition -notmatch "organization") -And ($_.Definition -notmatch "id") -And ($_.Name -In $commandParameters.Keys) -And ($_.Definition -notmatch "bool") -and ($_.Definition -notmatch "manager")}
+        $parameters
 
         foreach ($param in $parameters.Name) {
             # Write-host "Testing $param"
@@ -436,6 +436,7 @@ Describe -Tag:('JCUser') "Case Insensitivity Tests" {
                 <# $letter is the current item #>
                 $stringFinal += $letter
             }
+            
             $mixedCaseSearch = "Get-JCUser -$($param) `"$stringFinal`""
             $lowerCaseSearch = "Get-JCUser -$($param) `"$($stringFinal.toLower())`""
             $upperCaseSearch = "Get-JCUser -$($param) `"$($stringFinal.TOUpper())`""
@@ -452,6 +453,29 @@ Describe -Tag:('JCUser') "Case Insensitivity Tests" {
             $userSearchUpper._id | Should -Be $userSearchDefault._id
             $userSearchLower._id | Should -Be $userSearchDefault._id
             $userSearchMixed._id | Should -Be $userSearchDefault._id
+
+
+            if (($param -eq "external_dn") -or ($param -eq "external_source_type")) {
+                # Test external_source_type and external_dn
+                $Newuser = New-RandomUser -domain "deleteme" | New-JCUser
+                $Random1 = "$(Get-Random)\+?|{[()^$.#"
+                $Random2 = "$(Get-Random)\+?|{[()^$.#"
+                Set-JCUser -Username $Newuser.username -external_source_type "$Random1" -external_dn "$Random2"
+                $SearchUser = Get-JCUser -external_source_type "$Random1" -external_dn "$Random2"
+                $SearchUser._id | Should -Be $Newuser._id
+                Remove-JCUser -UserID $NewUser._id -force
+            } elseif(($param -ne "email") -or ($param -ne "username") -or ($param -ne "state")) {
+                # Test for special characters
+                $paramInput = "$(New-RandomString -NumberOfChars 8)\|{[()^$.#"
+                $NewUser = "New-RandomUser -Domain DeleteMe | New-JCUser -$($param) `"$paramInput`""
+                $NewUserInvoke = Invoke-Expression -Command:($NewUser)
+                #$NewUser = Get-JCUser -$($param) $paramInput
+                $searchUser = "Get-JCUser -$($param) `"$paramInput`""
+                $NewUserSearch = Invoke-Expression -Command:($searchUser)
+                Write-Host "New User $userSearch"
+                $NewUserInvoke.$param | Should -Be $NewUserSearch.$param
+                Remove-JCUser -UserID $NewUserInvoke._id -force
+            }
         }
     }
 }
