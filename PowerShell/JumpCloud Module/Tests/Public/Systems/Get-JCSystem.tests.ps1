@@ -356,14 +356,12 @@ Describe -Tag:('JCSystem') "Case Insensitivity Tests" {
 
             if (($param -eq "displayName") -or ($param -eq "description")) {
                 $originalParam = $PesterParams_SystemLinux.$param
-                $curDisplayName = $PesterParams_SystemLinux.displayName
                 $RandomDisplayName = "$(New-RandomString -NumberOfChars 8)\+?|{[()^$.#"
                 $SetSystem = Set-JCSystem $PesterParams_SystemLinux._id -hostName $RandomDisplayName
                 $SearchSystem = Get-JCSystem -hostname $RandomDisplayName
                 $SetSystem.$param | Should -Be $SearchSystem.$param
 
                 #Set PesterLinux displayName and description to original
-                Set-JCSystem -SystemID $PesterParams_SystemLinux._id -displayName $curDisplayName
                 $setSystemToOriginal = "Set-JCSystem -SystemID $($PesterParams_SystemLinux._id) -$($param) `"$originalParam`""
                 Invoke-Expression -Command:($setSystemToOriginal)
             }
