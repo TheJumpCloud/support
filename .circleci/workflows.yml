@@ -99,7 +99,7 @@ workflows:
             - Initial Setup
             - Build Help and Test Files
             - Build Nuspec
-      - Pester Tests Windows (Get):
+      - Pester Tests Windows:
           requires:
             - Initial Setup
             - Build Help and Test Files
@@ -107,7 +107,7 @@ workflows:
             - Module Validation Tests
             - Invoke Git Commit
           context: aws-credentials
-      - Pester Tests Mac (Get):
+      - Pester Tests Mac:
           requires:
             - Initial Setup
             - Build Help and Test Files
@@ -115,79 +115,7 @@ workflows:
             - Module Validation Tests
             - Invoke Git Commit
           context: aws-credentials
-      - Pester Tests Linux (Get):
-          requires:
-            - Initial Setup
-            - Build Help and Test Files
-            - Build Nuspec
-            - Module Validation Tests
-            - Invoke Git Commit
-          context: aws-credentials
-      - Pester Tests Windows (Put):
-          requires:
-            - Initial Setup
-            - Build Help and Test Files
-            - Build Nuspec
-            - Module Validation Tests
-            - Invoke Git Commit
-          context: aws-credentials
-      - Pester Tests Mac (Put):
-          requires:
-            - Initial Setup
-            - Build Help and Test Files
-            - Build Nuspec
-            - Module Validation Tests
-            - Invoke Git Commit
-          context: aws-credentials
-      - Pester Tests Linux (Put):
-          requires:
-            - Initial Setup
-            - Build Help and Test Files
-            - Build Nuspec
-            - Module Validation Tests
-            - Invoke Git Commit
-          context: aws-credentials
-      - Pester Tests Windows (Post):
-          requires:
-            - Initial Setup
-            - Build Help and Test Files
-            - Build Nuspec
-            - Module Validation Tests
-            - Invoke Git Commit
-          context: aws-credentials
-      - Pester Tests Mac (Post):
-          requires:
-            - Initial Setup
-            - Build Help and Test Files
-            - Build Nuspec
-            - Module Validation Tests
-            - Invoke Git Commit
-          context: aws-credentials
-      - Pester Tests Linux (Post):
-          requires:
-            - Initial Setup
-            - Build Help and Test Files
-            - Build Nuspec
-            - Module Validation Tests
-            - Invoke Git Commit
-          context: aws-credentials
-      - Pester Tests Windows (Remove):
-          requires:
-            - Initial Setup
-            - Build Help and Test Files
-            - Build Nuspec
-            - Module Validation Tests
-            - Invoke Git Commit
-          context: aws-credentials
-      - Pester Tests Mac (Remove):
-          requires:
-            - Initial Setup
-            - Build Help and Test Files
-            - Build Nuspec
-            - Module Validation Tests
-            - Invoke Git Commit
-          context: aws-credentials
-      - Pester Tests Linux (Remove):
+      - Pester Tests Linux:
           requires:
             - Initial Setup
             - Build Help and Test Files
@@ -202,12 +130,6 @@ workflows:
             - Build Nuspec
             - Module Validation Tests
             - Invoke Git Commit
-  PowerShell-PR:
-    when:
-      - equal: [master, << pipeline.git.branch >>]
-      - equal: [true, << pipeline.parameters.PublishToPSGallery >>]
-    jobs:
-
   PowerShell-Release:
     when:
       and:
@@ -550,6 +472,7 @@ commands:
       - when:
           condition:
             equal: [true, << pipeline.parameters.ValidateModule >>]
+          parallelism: 10
           steps:
             - attach_workspace:
                 at: .
@@ -560,7 +483,8 @@ commands:
                 command: |
                   $ErrorActionPreference = 'stop'
                   ./PowerShell\Deploy\SdkSync\jcapiToSupportSync.ps1 -RequiredModulesRepo << pipeline.parameters.RequiredModulesRepo >>
-                  . "./PowerShell/JumpCloud Module/Tests/InvokePester.ps1" -JumpCloudApiKey << parameters.JumpCloudApiKey >> -JumpCloudApiKeyMsp << parameters.JumpCloudApiKeyMsp >> -ExcludeTagList << parameters.ExcludeTagList >> -IncludeTagList << parameters.IncludeTagList >> -RequiredModulesRepo << parameters.RequiredModulesRepo >>
+                  $TEST=$(circleci tests split ./PowerShell/JumpCloud Module/Tests/circleCITags.txt)
+                  . "./PowerShell/JumpCloud Module/Tests/InvokePester.ps1" -JumpCloudApiKey << parameters.JumpCloudApiKey >> -JumpCloudApiKeyMsp << parameters.JumpCloudApiKeyMsp >> -ExcludeTagList << parameters.ExcludeTagList >> -IncludeTagList $TEST -RequiredModulesRepo << parameters.RequiredModulesRepo >>
             - store_test_results:
                 name: Uploading test results'
                 path: "./PowerShell/JumpCloud Module/Tests/test_results/"
