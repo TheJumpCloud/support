@@ -45,7 +45,7 @@ parameters:
   PublishToPSGallery:
     description: 'When `true` and when run against Master branch, this workflow will publish the latest code to PSGallery'
     type: boolean
-    default: false
+    default: true
   ManualModuleVersion:
     description: 'When `true` the pipeline will use the Module Version specified in JumpCloud Module JumpCloud.psd1 file'
     type: boolean
@@ -85,7 +85,6 @@ workflows:
           requires:
             - Initial Setup
             - Build Modules
-            - Build Help and Test Files
           context: aws-credentials
       - Module Validation Tests:
           requires:
@@ -104,7 +103,6 @@ workflows:
             - Initial Setup
             - Build Help and Test Files
             - Build Nuspec
-            - Module Validation Tests
             - Invoke Git Commit
           context: aws-credentials
       - Pester Tests Mac:
@@ -112,7 +110,6 @@ workflows:
             - Initial Setup
             - Build Help and Test Files
             - Build Nuspec
-            - Module Validation Tests
             - Invoke Git Commit
           context: aws-credentials
       - Pester Tests Linux:
@@ -120,7 +117,6 @@ workflows:
             - Initial Setup
             - Build Help and Test Files
             - Build Nuspec
-            - Module Validation Tests
             - Invoke Git Commit
           context: aws-credentials
       - Publish Module Validation:
@@ -128,7 +124,6 @@ workflows:
             - Initial Setup
             - Build Help and Test Files
             - Build Nuspec
-            - Module Validation Tests
             - Invoke Git Commit
   release:
     when:
