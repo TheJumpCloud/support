@@ -1,5 +1,4 @@
 Param(
-    # [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 0)][System.String[]]$DependentModules = ('PowerShellGet', 'PackageManagement', 'PSScriptAnalyzer', 'PlatyPS', 'Pester', 'AWS.Tools.Common', 'AWS.Tools.CodeArtifact')
     [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 0)][System.String]$RequiredModulesRepo = 'PSGallery'
 )
 # Install NuGet
@@ -32,30 +31,6 @@ foreach ($RequiredModule in $PSDependencies.Keys)
         Import-Module -Name:($RequiredModule) -Force -Global
     }
 }
-# # Install dependent modules
-# ForEach ($DependentModule In $DependentModules)
-# {
-#     # Check to see if the module is installed
-#     If ([System.String]::IsNullOrEmpty((Get-InstalledModule | Where-Object { $_.Name -eq $DependentModule })))
-#     {
-#         Write-Host("[status]Installing module: '$DependentModule' from 'PSGallery'")
-#         if ($DependentModule -eq 'PowerShellGet'){
-#             Install-Module -Name $DependentModule -Repository:('PSGallery') -RequiredVersion '3.0.12-beta' -AllowPrerelease -Force
-#         }
-#         elseif ($DependentModule -eq 'PSScriptAnalyzer') {
-#             Install-Module -Name $DependentModule -Repository:('PSGallery') -RequiredVersion '1.19.1' -Force
-#         }
-#         else{
-#             Install-Module -Repository:('PSGallery') -Force -Name:($DependentModule) -Scope:('CurrentUser') -AllowClobber
-#         }
-#     }
-#     # Get-Module -Refresh -ListAvailable
-#     If ([System.String]::IsNullOrEmpty((Get-Module | Where-Object { $_.Name -eq $DependentModule })))
-#     {
-#         Write-Host("[status]Importing module: '$DependentModule'")
-#         Import-Module -Name:($DependentModule) -Force -Global
-#     }
-# }
 ### TODO: Switch to CodeArtifact
 If ($RequiredModulesRepo -ne 'PSGallery')
 {
