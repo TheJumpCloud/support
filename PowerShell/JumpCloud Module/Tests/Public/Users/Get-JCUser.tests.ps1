@@ -404,14 +404,20 @@ Describe -Tag:('JCUser') "Get-JCUser 1.12" {
 }
 
 Describe -Tag:('JCUser') "Case Insensitivity Tests" {
-    It "Searches parameters dynamically with mixed, lower and upper capitalaztion" {
+    It "Searches parameters dynamically with mixed, lower special characters, and upper capitalaztion" {
         $commandParameters = (GCM Get-JCUser).Parameters
-        $gmr = Get-JCUser -Username $PesterParams_User1.Username | GM
+        $gmr = Get-JCUser -Username $PesterParams_User1.username | GM
         # Get parameters that are not ID, ORGID and have a string following the param name
         $parameters = $gmr | Where-Object { ($_.Definition -notmatch "organization") -And ($_.Definition -notmatch "id") -And ($_.Name -In $commandParameters.Keys) -And ($_.Definition -notmatch "bool") -and ($_.Definition -notmatch "manager") -and ($_.Definition -notmatch "external_dn") -and ($_.Definition -notmatch "external_source_type")}
         $splat = @{}
         foreach ($param in $parameters.Name) {
-            $string = $PesterParams_User1.$param.toLower()
+            $string = ""
+            if ($param -eq "recoveryEmail") {
+               $string = $PesterParams_User1.$param.address.toLower()
+            } else {
+                $string = $PesterParams_User1.$param.toLower()
+            }
+            
             $stringList = @()
             $stringFinal = ""
             # for i in string length, get the letters and capatlize ever other letter
@@ -430,7 +436,6 @@ Describe -Tag:('JCUser') "Case Insensitivity Tests" {
             
             $mixedCaseSearch = "Get-JCUser -$($param) `"$stringFinal`""
             $lowerCaseSearch = "Get-JCUser -$($param) `"$($stringFinal.toLower())`""
-            Write-Host "To Lower test: $lowercaseSearch"
             $upperCaseSearch = "Get-JCUser -$($param) `"$($stringFinal.TOUpper())`""
             $userSearchMixed = Invoke-Expression -Command:($mixedCaseSearch)
             $userSearchLower = Invoke-Expression -Command:($lowerCaseSearch)
@@ -449,12 +454,12 @@ Describe -Tag:('JCUser') "Case Insensitivity Tests" {
                 $splat.Add($param, $paramInput)
             }
     }
+    $NewUser = "New-RandomUser -Domain DeleteMe | New-JCUser @splat"
+    $splat.add('username', (New-RandomString -numberofchars 8))
+    $NewUserInvoke = Invoke-Expression -Command:($NewUser)
     foreach ($param in $splat.keys){
-        Write-Host "Param = $param"
         $searchUser = "Get-JCUser -$($param) `"$($splat[$param])`""
         $NewUserSearch = Invoke-Expression -Command:($searchUser)
-        Write-Host "New User $($NewUserSearch.$param)"
-        Write-Host "$($NewUserInvoke.$param) | Should -Be $($NewUserSearch.$param)"
         $NewUserInvoke.$param | Should -Be $NewUserSearch.$param
     }
     Remove-JCUser -username $NewUserInvoke.username -force
