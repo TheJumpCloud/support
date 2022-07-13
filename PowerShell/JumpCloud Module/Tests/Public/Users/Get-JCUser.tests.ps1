@@ -408,16 +408,21 @@ Describe -Tag:('JCUser') "Case Insensitivity Tests" {
         $commandParameters = (GCM Get-JCUser).Parameters
         $gmr = Get-JCUser -Username $PesterParams_User1.username | GM
         # Get parameters that are not ID, ORGID and have a string following the param name
-        $parameters = $gmr | Where-Object { ($_.Definition -notmatch "organization") -And ($_.Definition -notmatch "id") -And ($_.Name -In $commandParameters.Keys) -And ($_.Definition -notmatch "bool") -and ($_.Definition -notmatch "manager") -and ($_.Definition -notmatch "external_dn") -and ($_.Definition -notmatch "external_source_type")}
+        $parameters = $gmr | Where-Object { ($_.Definition -notmatch "organization") -And ($_.Definition -notmatch "id") -And ($_.Name -In $commandParameters.Keys) -And ($_.Definition -notmatch "bool") -and ($_.Definition -notmatch "manager") -and ($_.Definition -notmatch "external_dn") -and ($_.Definition -notmatch "external_source_type") }
         $splat = @{}
         foreach ($param in $parameters.Name) {
             $string = ""
+            $searchPester = ""
             if ($param -eq "recoveryEmail") {
-               $string = $PesterParams_User1.$param.address.toLower()
+                $string = $PesterParams_User1.$param.address.toLower()
+                $searchPester = $PesterParams_User1.$param.address
             } else {
                 $string = $PesterParams_User1.$param.toLower()
+                $searchPester = $PesterParams_User1.$param
             }
-            
+            $defaultSearch = "Get-JCUser -$($param) `"$searchPester`""
+            $userSearchDefault = Invoke-Expression -Command:($defaultSearch)
+
             $stringList = @()
             $stringFinal = ""
             # for i in string length, get the letters and capatlize ever other letter
@@ -433,7 +438,7 @@ Describe -Tag:('JCUser') "Case Insensitivity Tests" {
                 <# $letter is the current item #>
                 $stringFinal += $letter
             }
-            
+
             $mixedCaseSearch = "Get-JCUser -$($param) `"$stringFinal`""
             $lowerCaseSearch = "Get-JCUser -$($param) `"$($stringFinal.toLower())`""
             $upperCaseSearch = "Get-JCUser -$($param) `"$($stringFinal.TOUpper())`""
@@ -441,27 +446,26 @@ Describe -Tag:('JCUser') "Case Insensitivity Tests" {
             $userSearchLower = Invoke-Expression -Command:($lowerCaseSearch)
             $userSearchUpper = Invoke-Expression -Command:($upperCaseSearch)
             # DefaultSearch is the expression without text formatting
-            $defaultSearch = "Get-JCUser -$($param) `"$($PesterParams_User1.$param)`""
-            $userSearchDefault = Invoke-Expression -Command:($defaultSearch)
+
             # Ids returned here should return the same restuls
             $userSearchUpper._id | Should -Be $userSearchDefault._id
             $userSearchLower._id | Should -Be $userSearchDefault._id
             $userSearchMixed._id | Should -Be $userSearchDefault._id
 
-            if (($param -ne "email") -and ($param -ne "username") -and ($param -ne "state") -and ($param -ne "recoveryEmail")){
+            if (($param -ne "email") -and ($param -ne "username") -and ($param -ne "state") -and ($param -ne "recoveryEmail")) {
                 # Test for special characters
                 $paramInput = "$(New-RandomString -NumberOfChars 8)\|{[()^$.#"
                 $splat.Add($param, $paramInput)
             }
+        }
+        $NewUser = "New-RandomUser -Domain DeleteMe | New-JCUser @splat"
+        $splat.add('username', (New-RandomString -numberofchars 8))
+        $NewUserInvoke = Invoke-Expression -Command:($NewUser)
+        foreach ($param in $splat.keys) {
+            $searchUser = "Get-JCUser -$($param) `"$($splat[$param])`""
+            $NewUserSearch = Invoke-Expression -Command:($searchUser)
+            $NewUserInvoke.$param | Should -Be $NewUserSearch.$param
+        }
+        Remove-JCUser -username $NewUserInvoke.username -force
     }
-    $NewUser = "New-RandomUser -Domain DeleteMe | New-JCUser @splat"
-    $splat.add('username', (New-RandomString -numberofchars 8))
-    $NewUserInvoke = Invoke-Expression -Command:($NewUser)
-    foreach ($param in $splat.keys){
-        $searchUser = "Get-JCUser -$($param) `"$($splat[$param])`""
-        $NewUserSearch = Invoke-Expression -Command:($searchUser)
-        $NewUserInvoke.$param | Should -Be $NewUserSearch.$param
-    }
-    Remove-JCUser -username $NewUserInvoke.username -force
-}
 }
