@@ -503,7 +503,7 @@ commands:
                   # Load Private Functions
                   Get-ChildItem -Path:("./PowerShell/JumpCloud Module/Private/*.ps1") -Recurse | ForEach-Object { . $_.FullName }
                   # Load Helper Functions
-                  . ""./PowerShell/JumpCloud Module/Tests/HelperFunctions.ps1"
+                  . "./PowerShell/JumpCloud Module/Tests/HelperFunctions.ps1"
                   if (${CIRCLE_NODE_INDEX} = 0){
                     . "./PowerShell/JumpCloud Module/Tests/DefineEnvironment.ps1" -JumpCloudApiKey << parameters.JumpCloudApiKeyWindows >> -JumpCloudApiKeyMsp << parameters.JumpCloudApiKeyMsp >>
                     . "./PowerShell/JumpCloud Module/Tests/SetupOrg.ps1" -JumpCloudApiKey << parameters.JumpCloudApiKeyWindows >> -JumpCloudApiKeyMsp << parameters.JumpCloudApiKeyMsp >>
