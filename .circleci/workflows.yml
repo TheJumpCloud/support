@@ -219,6 +219,7 @@ jobs:
           JumpCloudApiKeyWindows: $env:XAPIKEY_PESTER_LINUX
           JumpCloudApiKeyLinux: $env:XAPIKEY_PESTER
           JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_MTP
+          RequiredModulesRepo: << pipeline.parameters.RequiredModulesRepo >>
   Pester Tests Windows:
     executor: win/default
     parallelism: 6
@@ -477,6 +478,9 @@ commands:
       JumpCloudApiKeyMsp:
         type: string
         default: $env:XAPIKEY_PESTER_MTP
+      RequiredModulesRepo:
+        type: string
+        default: "PSGallery"
       Shell:
         type: string
         default: "pwsh.exe"
@@ -494,6 +498,8 @@ commands:
                 no_output_timeout: 30m
                 command: |
                   $ErrorActionPreference = 'stop'
+                  # Load Get-Config.ps1
+                  . "./PowerShell/Deploy/Get-Config.ps1" -RequiredModulesRepo << parameters.RequiredModulesRepo >>
                   if (${CIRCLE_NODE_INDEX} = 0){
                     . "./PowerShell/JumpCloud Module/Tests/SetupOrg.ps1" -JumpCloudApiKey << parameters.JumpCloudApiKeyWindows >> -JumpCloudApiKeyMsp << parameters.JumpCloudApiKeyMsp >>
                   }
@@ -539,8 +545,6 @@ commands:
                   $ErrorActionPreference = 'stop'
                   # Get tests for parallel runs
                   $TESTS = . "./PowerShell/Deploy/Setup-Workflow.ps1" -ExcludeTagList << parameters.ExcludeTagList >> -IncludeTagList << parameters.IncludeTagList >>
-                  # Setup Org outs
-                  . "./PowerShell/JumpCloud Module/Tests/SetupOrg.ps1" -JumpCloudApiKey << parameters.JumpCloudApiKey >> -JumpCloudApiKeyMsp << parameters.JumpCloudApiKeyMsp >>
                   . "./PowerShell/JumpCloud Module/Tests/InvokePester.ps1" -JumpCloudApiKey << parameters.JumpCloudApiKey >> -JumpCloudApiKeyMsp << parameters.JumpCloudApiKeyMsp >> -IncludeTagList $TESTS -RequiredModulesRepo << parameters.RequiredModulesRepo >>
             - store_test_results:
                 name: Uploading test results'
