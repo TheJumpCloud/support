@@ -404,7 +404,7 @@ Describe -Tag:('JCUser') "Get-JCUser 1.12" {
 }
 
 Describe -Tag:('JCUser') "Case Insensitivity Tests" {
-    It "Searches parameters dynamically with mixed, lower special characters, and upper capitalaztion" {
+    It "Searches parameters dynamically with mixed, lower special characters, and upper capitalization" {
         $commandParameters = (GCM Get-JCUser).Parameters
         $gmr = Get-JCUser -Username $PesterParams_User1.username | GM
         # Get parameters that are not ID, ORGID and have a string following the param name
@@ -413,6 +413,7 @@ Describe -Tag:('JCUser') "Case Insensitivity Tests" {
         foreach ($param in $parameters.Name) {
             $string = ""
             $searchPester = ""
+            # Get recoveryEmail address from hashtable
             if ($param -eq "recoveryEmail") {
                 $string = $PesterParams_User1.$param.address.toLower()
                 $searchPester = $PesterParams_User1.$param.address

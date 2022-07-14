@@ -74,7 +74,7 @@ Describe -Tag:('JCCommand') "Case Insensitivity Tests" {
         $commandParameters = (GCM Get-JCCommand).Parameters
         $gmr = Get-JCCommand -ByID $PesterParams_Command3._id | GM
         # Get parameters that are not ID, ORGID, bool, and int
-        $parameters = $gmr | Where-Object { ($_.Definition -notmatch "organization") -And ($_.Name -In $commandParameters.Keys) -and ($_.Definition -notmatch "bool") -and ($_.Definition -notmatch "int")}
+        $parameters = $gmr | Where-Object { ($_.Definition -notmatch "organization") -And ($_.Name -In $commandParameters.Keys) -and ($_.Definition -notmatch "bool") -and ($_.Definition -notmatch "int") }
 
         foreach ($param in $parameters.Name) {
             # Write-host "Testing $param"
@@ -122,7 +122,9 @@ Describe -Tag:('JCCommand') "Case Insensitivity Tests" {
                 $commandParamInvoke.$param | Should -Be $InvokeCommand.$param
 
                 #Set to original
-                $setParam = "Set-JCCommand -commandId $($PesterParams_Command3._id) -$($param)  `"$($curCommand)`""
+                $originalParam = "Set-JCCommand -commandId $($PesterParams_Command3._id) -$($param)  `"$($curCommand)`""
+                Invoke-Expression -Command:($setParam)
+
             }
 
         }

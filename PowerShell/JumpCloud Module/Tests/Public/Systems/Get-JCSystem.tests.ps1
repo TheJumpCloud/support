@@ -336,7 +336,7 @@ Describe -Tag:('JCSystem') "Case Insensitivity Tests" {
                 <# $letter is the current item #>
                 $stringFinal += $letter
             }
-            
+
             $mixedCaseSearch = "Get-JCSystem -$($param) `"$stringFinal`""
             $lowerCaseSearch = "Get-JCSystem -$($param) `"$($stringFinal.toLower())`""
             $upperCaseSearch = "Get-JCSystem -$($param) `"$($stringFinal.TOUpper())`""
@@ -354,13 +354,14 @@ Describe -Tag:('JCSystem') "Case Insensitivity Tests" {
             $systemSearchLower._id | Should -Be $userSearchDefault._id
             $systemSearchMixed._id | Should -Be $userSearchDefault._id
 
+            # Special character tests for displayName and description
             if (($param -eq "displayName") -or ($param -eq "description")) {
                 $originalParam = $PesterParams_SystemLinux.$param
                 $randomParamInput = "$(New-RandomString -NumberOfChars 8)\+?|{[()^$.#"
                 $SetSystem = "Set-JCSystem -systemId $($PesterParams_SystemLinux._id) -$($param) `"$randomParamInput`""
-                $systemInvoke  = Invoke-Expression -Command:($SetSystem)
+                $systemInvoke = Invoke-Expression -Command:($SetSystem)
                 $SearchSystem = "Get-JCSystem -$($param) `"$randomParamInput`""
-                $SearchSystemInvoke  = Invoke-Expression -Command:($SearchSystem)
+                $SearchSystemInvoke = Invoke-Expression -Command:($SearchSystem)
                 $systemInvoke.$param | Should -Be $SearchSystemInvoke.$param
 
                 #Set PesterLinux displayName and description to original
