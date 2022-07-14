@@ -32,15 +32,15 @@ $IncludeTags = If ($IncludeTagList) {
 } Else {
     $Tags | Where-Object { $_ -notin $ExcludeTags } | Select-Object -Unique
 }
-# Load DefineEnvironment
-. ("$PSScriptRoot/DefineEnvironment.ps1") -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp) -RequiredModulesRepo:($RequiredModulesRepo)
-# Load private functions
-Write-Host ('[status]Load private functions: ' + "$PSScriptRoot/../Private/*.ps1")
-Get-ChildItem -Path:("$PSScriptRoot/../Private/*.ps1") -Recurse | ForEach-Object { . $_.FullName }
-# Load HelperFunctions
-Write-Host ('[status]Load HelperFunctions: ' + "$PSScriptRoot/HelperFunctions.ps1")
-. ("$PSScriptRoot/HelperFunctions.ps1")
 If (-Not ${CIRCLECI}) {
+    # Load DefineEnvironment
+    . ("$PSScriptRoot/DefineEnvironment.ps1") -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp) -RequiredModulesRepo:($RequiredModulesRepo)
+    # Load private functions
+    Write-Host ('[status]Load private functions: ' + "$PSScriptRoot/../Private/*.ps1")
+    Get-ChildItem -Path:("$PSScriptRoot/../Private/*.ps1") -Recurse | ForEach-Object { . $_.FullName }
+    # Load HelperFunctions
+    Write-Host ('[status]Load HelperFunctions: ' + "$PSScriptRoot/HelperFunctions.ps1")
+    . ("$PSScriptRoot/HelperFunctions.ps1")
     # Load SetupOrg
     Write-Host ('[status]Setting up org: ' + "$PSScriptRoot/SetupOrg.ps1")
     . ("$PSScriptRoot/SetupOrg.ps1") -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp)
