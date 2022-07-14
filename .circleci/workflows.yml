@@ -501,7 +501,7 @@ commands:
                   # Load Get-Config.ps1
                   . "./PowerShell/Deploy/Get-Config.ps1" -RequiredModulesRepo << parameters.RequiredModulesRepo >>
                   # Load Private Functions
-                  Get-ChildItem -Path:(""./PowerShell/JumpCloud Module/Private/*.ps1") -Recurse | ForEach-Object { . $_.FullName }
+                  Get-ChildItem -Path:("./PowerShell/JumpCloud Module/Private/*.ps1") -Recurse | ForEach-Object { . $_.FullName }
                   # Load Helper Functions
                   . ""./PowerShell/JumpCloud Module/Tests/HelperFunctions.ps1"
                   if (${CIRCLE_NODE_INDEX} = 0){
