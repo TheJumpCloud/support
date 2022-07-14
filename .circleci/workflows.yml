@@ -102,6 +102,7 @@ workflows:
           requires:
             - Initial Setup
             - Build Modules
+          context: aws-credentials
       - Pester Tests Windows:
           requires:
             - Initial Setup

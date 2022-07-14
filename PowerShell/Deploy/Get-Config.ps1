@@ -11,7 +11,6 @@ param (
     [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Windows Pester JumpCloud API Key')][ValidateNotNullOrEmpty()][System.String]$XAPIKEY_PESTER = $env:XAPIKEY_PESTER,
     [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'MTP Pester JumpCloud API Key')][ValidateNotNullOrEmpty()][System.String]$XAPIKEY_MTP = $env:XAPIKEY_PESTER_MTP,
     [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Nuget API Key')][System.String]$NUGETAPIKEY = $env:NUGETAPIKEY,
-    [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'System Access Token')][System.String]$SYSTEM_ACCESSTOKEN = $env:SYSTEM_ACCESSTOKEN,
     [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Required Modules Repository')][ValidateNotNullOrEmpty()][System.String]$RequiredModulesRepo = "PSGallery"
 )
 # Log Parameters
@@ -35,7 +34,13 @@ Write-Host ('[status]PowerShell Version: ' + ($PSVersionTable.PSVersion -join '.
 Write-Host ('[status]Host: ' + (Get-Host).Name)
 Write-Host ('[status]Loaded config: ' + $MyInvocation.MyCommand.Path)
 # Set variables from Azure Pipelines
-$ScriptRoot = Switch ($DeployFolder) { $true { $DeployFolder } Default { $PSScriptRoot } }
+$ScriptRoot = Switch ($DeployFolder) {
+    $true {
+        $DeployFolder 
+    } Default {
+        $PSScriptRoot 
+    } 
+}
 $FolderPath_ModuleRootPath = (Get-Item -Path:($ScriptRoot)).Parent.FullName
 $GitHubWikiUrl = 'https://github.com/TheJumpCloud/support/wiki/'
 $FilePath_ModuleBanner = $FolderPath_ModuleRootPath + '/ModuleBanner.md'
@@ -52,7 +57,11 @@ $RequiredFolders | ForEach-Object {
     New-Variable -Name:('FolderPath_' + $_.Replace('-', '')) -Value:($FolderPath) -Force -Scope Global
 }
 $RequiredFiles | ForEach-Object {
-    $FileName = If ($_ -in ('psm1', 'psd1')) { $ModuleName + '.' + $_ } Else { $_ }
+    $FileName = If ($_ -in ('psm1', 'psd1')) {
+        $ModuleName + '.' + $_ 
+    } Else {
+        $_ 
+    }
     $FilePath = $FolderPath_Module + '/' + $FileName
     New-Variable -Name:('FileName_' + $_) -Value:($FileName) -Force -Scope Global;
     New-Variable -Name:('FilePath_' + $_) -Value:($FilePath) -Force -Scope Global;
@@ -61,13 +70,11 @@ $RequiredFiles | ForEach-Object {
 $Psd1 = Import-PowerShellDataFile -Path:($FilePath_psd1)
 Set-Variable $Psd1 -Scope Global
 # Get module function names
-$Functions_Public = If (Test-Path -Path:($FolderPath_Public))
-{
+$Functions_Public = If (Test-Path -Path:($FolderPath_Public)) {
     Get-ChildItem -Path:($FolderPath_Public + '/' + '*.ps1') -Recurse
 }
 Set-Variable $Functions_Public -Scope Global
-$Functions_Private = If (Test-Path -Path:($FolderPath_Private))
-{
+$Functions_Private = If (Test-Path -Path:($FolderPath_Private)) {
     Get-ChildItem -Path:($FolderPath_Private + '/' + '*.ps1') -Recurse
 }
 # Setup-Dependencies.ps1
