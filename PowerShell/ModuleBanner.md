@@ -1,7 +1,7 @@
 #### Latest Version
 
 ```
-1.23.2
+1.23.3
 ```
 
 #### Banner Current
