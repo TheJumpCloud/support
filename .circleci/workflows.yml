@@ -505,15 +505,15 @@ commands:
                   # Load Helper Functions
                   . "./PowerShell/JumpCloud Module/Tests/HelperFunctions.ps1"
                   if (${CIRCLE_NODE_INDEX} = 0){
-                    . "./PowerShell/JumpCloud Module/Tests/DefineEnvironment.ps1" -JumpCloudApiKey << parameters.JumpCloudApiKeyWindows >> -JumpCloudApiKeyMsp << parameters.JumpCloudApiKeyMsp >>
+                    . "./PowerShell/JumpCloud Module/Tests/DefineEnvironment.ps1" -JumpCloudApiKey << parameters.JumpCloudApiKeyWindows >> -JumpCloudApiKeyMsp << parameters.JumpCloudApiKeyMsp >> -RequiredModulesRepo << parameters.RequiredModulesRepo >>
                     . "./PowerShell/JumpCloud Module/Tests/SetupOrg.ps1" -JumpCloudApiKey << parameters.JumpCloudApiKeyWindows >> -JumpCloudApiKeyMsp << parameters.JumpCloudApiKeyMsp >>
                   }
                   elseif (${CIRCLE_NODE_INDEX} = 1){
-                    . "./PowerShell/JumpCloud Module/Tests/DefineEnvironment.ps1" -JumpCloudApiKey << parameters.JumpCloudApiKeyLinux >> -JumpCloudApiKeyMsp << parameters.JumpCloudApiKeyMsp >>
+                    . "./PowerShell/JumpCloud Module/Tests/DefineEnvironment.ps1" -JumpCloudApiKey << parameters.JumpCloudApiKeyLinux >> -JumpCloudApiKeyMsp << parameters.JumpCloudApiKeyMsp >> -RequiredModulesRepo << parameters.RequiredModulesRepo >>
                     . "./PowerShell/JumpCloud Module/Tests/SetupOrg.ps1" -JumpCloudApiKey << parameters.JumpCloudApiKeyLinux >> -JumpCloudApiKeyMsp << parameters.JumpCloudApiKeyMsp >>
                   }
                   elseif (${CIRCLE_NODE_INDEX} = 2){
-                    . "./PowerShell/JumpCloud Module/Tests/DefineEnvironment.ps1" -JumpCloudApiKey << parameters.JumpCloudApiKeyMac >> -JumpCloudApiKeyMsp << parameters.JumpCloudApiKeyMsp >>
+                    . "./PowerShell/JumpCloud Module/Tests/DefineEnvironment.ps1" -JumpCloudApiKey << parameters.JumpCloudApiKeyMac >> -JumpCloudApiKeyMsp << parameters.JumpCloudApiKeyMsp >> -RequiredModulesRepo << parameters.RequiredModulesRepo >>
                     . "./PowerShell/JumpCloud Module/Tests/SetupOrg.ps1" -JumpCloudApiKey << parameters.JumpCloudApiKeyMac >> -JumpCloudApiKeyMsp << parameters.JumpCloudApiKeyMsp >>
                   }
   invoke-pester:
