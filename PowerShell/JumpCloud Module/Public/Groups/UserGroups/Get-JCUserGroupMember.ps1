@@ -1,5 +1,4 @@
-Function Get-JCUserGroupMember ()
-{
+Function Get-JCUserGroupMember () {
     [CmdletBinding(DefaultParameterSetName = 'ByGroup')]
 
     param
@@ -10,11 +9,11 @@ Function Get-JCUserGroupMember ()
         [String]$ByID
     )
 
-    begin
-
-    {
+    begin {
         Write-Debug 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {Connect-JConline}
+        if ($JCAPIKEY.length -ne 40) {
+            Connect-JConline
+        }
 
         $Parallel = $JCParallel
 
@@ -22,41 +21,25 @@ Function Get-JCUserGroupMember ()
             Write-Debug 'Initilizing resultsArray and results ArraryByID'
             $rawResults = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
             $resultsArray = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
-
-            Write-Debug 'Populating GroupNameHash'
-            $GroupNameHash = Get-Hash_UserGroupName_ID
-            Write-Debug 'Populating UserIDHash'
-            $UserIDHash = Get-Hash_ID_Username -parallel $true
-        }
-        else {
+        } else {
             Write-Debug 'Initilizing resultsArray and results ArraryByID'
             $rawResults = @()
             $resultsArray = [System.Collections.Generic.List[PSObject]]::new()
-
-            
-            Write-Debug 'Populating GroupNameHash'
-            $GroupNameHash = Get-Hash_UserGroupName_ID
-            Write-Debug 'Populating UserIDHash'
-            $UserIDHash = Get-Hash_ID_Username
         }
 
+        Write-Debug 'Populating GroupNameHash'
+        $GroupNameHash = Get-DynamicHash -Object Group -GroupType User -returnProperties name
+        Write-Debug 'Populating UserIDHash'
+        $UserIDHash = Get-DynamicHash -Object User -returnProperties username
     }
 
 
-    process
+    process {
 
-    {
-
-        if ($PSCmdlet.ParameterSetName -eq 'ByGroup')
-
-        {
-            foreach ($Group in $GroupName)
-
-            {
-                if ($GroupNameHash.containsKey($Group))
-
-                {
-                    $Group_ID = $GroupNameHash.Get_Item($Group)
+        if ($PSCmdlet.ParameterSetName -eq 'ByGroup') {
+            foreach ($Group in $GroupName) {
+                if ($GroupNameHash.Values.name -contains ($Group)) {
+                    $Group_ID = $GroupNameHash.GetEnumerator().Where({ $_.Value.name -contains ($Group) }).Name
                     Write-Debug "$Group_ID"
 
                     $limitURL = "{0}/api/v2/usergroups/{1}/members" -f $JCUrlBasePath, $Group_ID
@@ -64,15 +47,13 @@ Function Get-JCUserGroupMember ()
 
                     if ($Parallel) {
                         $rawResults = Get-JCResults -Url $limitURL -method "GET" -limit 100 -parallel $true
-                    }
-                    else {
+                    } else {
                         $rawResults = Get-JCResults -Url $limitURL -method "GET" -limit 100
                     }
-                    
 
-                    foreach ($uid in $rawResults)
-                    {
-                        $Username = $UserIDHash.Get_Item($uid.to.id)
+
+                    foreach ($uid in $rawResults) {
+                        $Username = $UserIDHash.Get_Item($uid.to.id).username
 
                         $FomattedResult = [pscustomobject]@{
 
@@ -88,15 +69,15 @@ Function Get-JCUserGroupMember ()
 
                 }
 
-                else { Throw "Group does not exist. Run 'Get-JCGroup -type User' to see a list of all your JumpCloud user groups."}
+                else {
+                    Throw "Group does not exist. Run 'Get-JCGroup -type User' to see a list of all your JumpCloud user groups."
+                }
 
             }
         }
 
-        elseif ($PSCmdlet.ParameterSetName -eq 'ByID')
-
-        {
-            $GroupName = ($GroupNameHash.GetEnumerator() | Where-Object Value -eq $ByID).Name
+        elseif ($PSCmdlet.ParameterSetName -eq 'ByID') {
+            $GroupName = $GroupNameHash[$ByID].name
             Write-Debug "$GroupName"
 
             $limitURL = "{0}/api/v2/usergroups/{1}/members" -f $JCUrlBasePath, $ByID
@@ -104,15 +85,13 @@ Function Get-JCUserGroupMember ()
 
             if ($Parallel) {
                 $rawResults = Get-JCResults -Url $limitURL -method "GET" -limit 100 -parallel $true
-            }
-            else {
+            } else {
                 $rawResults = Get-JCResults -Url $limitURL -method "GET" -limit 100
             }
-            
 
-            foreach ($uid in $rawResults)
-            {
-                $Username = $UserIDHash.Get_Item($uid.to.id)
+
+            foreach ($uid in $rawResults) {
+                $Username = $UserIDHash.Get_Item($uid.to.id).username
 
                 $FomattedResult = [pscustomobject]@{
 
@@ -128,8 +107,7 @@ Function Get-JCUserGroupMember ()
 
         }
     }
-    end
-    {
+    end {
         return $resultsArray
     }
 }

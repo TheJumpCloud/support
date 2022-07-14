@@ -1,5 +1,4 @@
-Function Remove-JCSystemGroupMember ()
-{
+Function Remove-JCSystemGroupMember () {
     [CmdletBinding(DefaultParameterSetName = 'ByName')]
     param
     (
@@ -21,11 +20,11 @@ The SystemID will be the 24 character string populated for the _id field. System
         [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'ByID', HelpMessage = 'The GroupID is used in the ParameterSet ''ByID''. The GroupID for a System Group can be found by running the command: PS C:\> Get-JCGroup -type ''System''')]
         [string]$GroupID
     )
-    begin
-
-    {
+    begin {
         Write-Debug 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {Connect-JConline}
+        if ($JCAPIKEY.length -ne 40) {
+            Connect-JConline
+        }
 
         Write-Debug 'Populating API headers'
         $hdrs = @{
@@ -36,34 +35,29 @@ The SystemID will be the 24 character string populated for the _id field. System
 
         }
 
-        if ($JCOrgID)
-        {
+        if ($JCOrgID) {
             $hdrs.Add('x-org-id', "$($JCOrgID)")
         }
 
         Write-Debug 'Initilizing resultsArray'
         $resultsArray = @()
 
-        if ($PSCmdlet.ParameterSetName -eq 'ByName')
-        {
+        if ($PSCmdlet.ParameterSetName -eq 'ByName') {
             Write-Debug 'Populating GroupNameHash'
-            $GroupNameHash = Get-Hash_SystemGroupName_ID
-            Write-Debug 'Populating SystemHostNameHash'
-            $SystemHostNameHash = Get-Hash_SystemID_HostName
+            $GroupNameHash = Get-DynamicHash -Object Group -GroupType System -returnProperties name
+            Write-Debug 'Populating SystemIDHash'
+            $SystemHostNameHash = Get-DynamicHash -Object System -returnProperties hostname
         }
     }
-    process
+    process {
 
-    {
+        if ($PSCmdlet.ParameterSetName -eq 'ByName') {
+            if ($GroupNameHash.Values.name -notcontains ($GroupName)) {
+                Throw "Group does not exist. Run 'Get-JCGroup -type System' to see a list of all your JumpCloud user groups."
+            }
 
-        if ($PSCmdlet.ParameterSetName -eq 'ByName')
-        {
-            if ($GroupNameHash.containsKey($GroupName)) {}
-
-            else { Throw "Group does not exist. Run 'Get-JCGroup -type System' to see a list of all your JumpCloud user groups."}
-
-            $GroupID = $GroupNameHash.Get_Item($GroupName)
-            $HostName = $SystemHostNameHash.Get_Item($SystemID)
+            $GroupID = $GroupNameHash.GetEnumerator().Where({ $_.Value.name -contains ($GroupName) }).Name
+            $HostName = $SystemHostNameHash.Get_Item($SystemID).hostname
 
             $body = @{
 
@@ -80,13 +74,10 @@ The SystemID will be the 24 character string populated for the _id field. System
             $GroupsURL = "$JCUrlBasePath/api/v2/systemgroups/$GroupID/members"
             Write-Debug $GroupsURL
 
-            try
-            {
+            try {
                 $GroupRemove = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
                 $Status = 'Removed'
-            }
-            catch
-            {
+            } catch {
                 $Status = $_.ErrorDetails
             }
 
@@ -104,14 +95,11 @@ The SystemID will be the 24 character string populated for the _id field. System
 
         }
 
-        elseif ($PSCmdlet.ParameterSetName -eq 'ByID')
-
-        {
-            if (!$GroupID)
-            {
+        elseif ($PSCmdlet.ParameterSetName -eq 'ByID') {
+            if (!$GroupID) {
                 Write-Debug 'Populating GroupNameHash'
-                $GroupNameHash = Get-Hash_SystemGroupName_ID
-                $GroupID = $GroupNameHash.Get_Item($GroupName)
+                $GroupNameHash = Get-DynamicHash -Object Group -GroupType System -returnProperties name
+                $GroupID = $GroupNameHash.GetEnumerator().Where({ $_.Value.name -contains ($GroupName) }).Name
             }
 
             $body = @{
@@ -129,13 +117,10 @@ The SystemID will be the 24 character string populated for the _id field. System
             $GroupsURL = "$JCUrlBasePath/api/v2/systemgroups/$GroupID/members"
             Write-Debug $GroupsURL
 
-            try
-            {
+            try {
                 $GroupRemove = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
                 $Status = 'Removed'
-            }
-            catch
-            {
+            } catch {
                 $Status = $_.ErrorDetails
             }
 
@@ -150,9 +135,7 @@ The SystemID will be the 24 character string populated for the _id field. System
         }
     }
 
-    end
-
-    {
+    end {
         return $resultsArray
     }
 

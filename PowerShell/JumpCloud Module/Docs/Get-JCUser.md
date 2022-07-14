@@ -583,7 +583,6 @@ A search filter to return users that are in an ACTIVATED or SUSPENDED state
 Type: System.String
 Parameter Sets: SearchFilter
 Aliases:
-Accepted values: ACTIVATED, SUSPENDED, STAGED
 
 Required: False
 Position: Named

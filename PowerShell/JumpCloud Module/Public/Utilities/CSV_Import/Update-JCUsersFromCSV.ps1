@@ -1,5 +1,4 @@
-Function Update-JCUsersFromCSV ()
-{
+Function Update-JCUsersFromCSV () {
     [CmdletBinding(DefaultParameterSetName = 'GUI')]
     param
     (
@@ -28,8 +27,7 @@ Function Update-JCUsersFromCSV ()
 
     )
 
-    begin
-    {
+    begin {
         $UserUpdateParams = @{ }
         $UserUpdateParams.Add("Username", "Username")
         $UserUpdateParams.Add("FirstName", "FirstName")
@@ -95,11 +93,12 @@ Function Update-JCUsersFromCSV ()
 
         Write-Verbose "$($PSCmdlet.ParameterSetName)"
 
-        if ($PSCmdlet.ParameterSetName -eq 'GUI')
-        {
+        if ($PSCmdlet.ParameterSetName -eq 'GUI') {
 
             Write-Verbose 'Verifying JCAPI Key'
-            if ($JCAPIKEY.length -ne 40) { Connect-JConline }
+            if ($JCAPIKEY.length -ne 40) {
+                Connect-JConline 
+            }
 
             $Banner = @"
        __                          ______ __                   __
@@ -111,7 +110,9 @@ Function Update-JCUsersFromCSV ()
                                                   User Update
 "@
 
-            If (!(Get-PSCallStack | Where-Object { $_.Command -match 'Pester' })) { Clear-Host }
+            If (!(Get-PSCallStack | Where-Object { $_.Command -match 'Pester' })) {
+                Clear-Host 
+            }
             Write-Host $Banner -ForegroundColor Green
             Write-Host ""
 
@@ -120,38 +121,30 @@ Function Update-JCUsersFromCSV ()
             $CustomAttributes = $UpdateUsers | Get-Member | Where-Object Name -Like "*Attribute*" | Select-Object Name
 
 
-            foreach ($attr in $CustomAttributes )
-            {
+            foreach ($attr in $CustomAttributes ) {
                 $UserUpdateParams.Add($attr.name, $attr.name)
             }
 
             $employeeIdentifierCheck = $UpdateUsers | Where-Object { ($_.employeeIdentifier -ne $Null) -and ($_.employeeIdentifier -ne "") }
 
-            if ($employeeIdentifierCheck.Count -gt 0)
-            {
+            if ($employeeIdentifierCheck.Count -gt 0) {
                 Write-Host ""
                 Write-Host -BackgroundColor Green -ForegroundColor Black "Validating $($employeeIdentifierCheck.employeeIdentifier.Count) employeeIdentifiers"
 
-                $ExistingEmployeeIdentifierCheck = Get-Hash_employeeIdentifier_username
+                $ExistingEmployeeIdentifierCheck = Get-DynamicHash -Object User -returnProperties username, employeeIdentifier
 
-                foreach ($User in $employeeIdentifierCheck)
-                {
-                    if ($ExistingEmployeeIdentifierCheck.ContainsKey($User.employeeIdentifier))
-                    {
-                        Write-Warning "The user $($ExistingEmployeeIdentifierCheck.($User.employeeIdentifier)) has the employeeIdentifier: $($User.employeeIdentifier). User $($User.username) will not be updated."
-                    }
-                    else
-                    {
+                foreach ($User in $employeeIdentifierCheck) {
+                    if ($ExistingEmployeeIdentifierCheck.Values.employeeIdentifier -contains ($User.employeeIdentifier)) {
+                        Write-Warning "The user $($ExistingEmployeeIdentifierCheck.GetEnumerator().Where({$_.Value.employeeIdentifier -contains $User.employeeIdentifier}).username) has the employeeIdentifier: $($User.employeeIdentifier). User $($User.username) will not be updated."
+                    } else {
                         Write-Verbose "$($User.employeeIdentifier) does not exist"
                     }
                 }
 
                 $employeeIdentifierDup = $employeeIdentifierCheck | Group-Object employeeIdentifier
 
-                ForEach ($U in $employeeIdentifierDup)
-                {
-                    if ($U.count -gt 1)
-                    {
+                ForEach ($U in $employeeIdentifierDup) {
+                    if ($U.count -gt 1) {
 
                         Write-Warning "Duplicate employeeIdentifier: $($U.name) in import file. employeeIdentifier must be unique. To resolve eliminate the duplicate employeeIdentifiers."
                     }
@@ -162,36 +155,29 @@ Function Update-JCUsersFromCSV ()
 
             $SystemCount = $UpdateUsers.SystemID | Where-Object Length -gt 1 | Select-Object -unique
 
-            if ($SystemCount.count -gt 0)
-            {
+            if ($SystemCount.count -gt 0) {
                 Write-Host ""
                 Write-Host -BackgroundColor Green -ForegroundColor Black "Validating $($SystemCount.count) Systems"
-                $SystemCheck = Get-Hash_SystemID_HostName
+                $SystemCheck = Get-DynamicHash -Object System -returnProperties hostname
 
-                foreach ($User in $UpdateUsers)
-                {
-                    if (($User.SystemID).length -gt 1)
-                    {
+                foreach ($User in $UpdateUsers) {
+                    if (($User.SystemID).length -gt 1) {
 
-                        if ($SystemCheck.ContainsKey($User.SystemID))
-                        {
+                        if ($SystemCheck[$User.SystemID]) {
                             Write-Verbose "$($User.SystemID) exists"
-                        }
-                        else
-                        {
+                        } else {
                             Write-Warning "A system with SystemID: $($User.SystemID) does not exist and will not be bound to user $($User.Username)"
                         }
+                    } else {
+                        Write-Verbose "No system" 
                     }
-                    else { Write-Verbose "No system" }
                 }
 
                 $Permissions = $UpdateUsers.Administrator | Where-Object Length -gt 1 | Select-Object -unique
 
-                foreach ($Value in $Permissions)
-                {
+                foreach ($Value in $Permissions) {
 
-                    if ( ($Value -notlike "*true" -and $Value -notlike "*false") )
-                    {
+                    if ( ($Value -notlike "*true" -and $Value -notlike "*false") ) {
 
                         Write-Warning "Administrator must be a boolean value and set to either '`$True/True' or '`$False/False' please correct value: $Value "
 
@@ -207,26 +193,24 @@ Function Update-JCUsersFromCSV ()
 
             $GroupArrayList = New-Object System.Collections.ArrayList
 
-            ForEach ($User in $UpdateUsers)
-            {
+            ForEach ($User in $UpdateUsers) {
 
                 $Groups = $User | Get-Member -Name Group* | Select-Object Name
 
-                foreach ($Group in $Groups)
-                {
+                foreach ($Group in $Groups) {
                     $CheckGroup = [pscustomobject]@{
                         Type  = 'GroupName'
                         Value = $User.($Group.Name)
                     }
 
-                    if ($CheckGroup.Value.Length -gt 1)
-                    {
+                    if ($CheckGroup.Value.Length -gt 1) {
 
                         $GroupArrayList.Add($CheckGroup) | Out-Null
 
                     }
 
-                    else { }
+                    else { 
+                    }
 
                 }
 
@@ -234,19 +218,14 @@ Function Update-JCUsersFromCSV ()
 
             $UniqueGroups = $GroupArrayList | Select-Object Value -Unique
 
-            if ($UniqueGroups.count -gt 0)
-            {
+            if ($UniqueGroups.count -gt 0) {
                 Write-Host -BackgroundColor Green -ForegroundColor Black "Validating $($UniqueGroups.count) Groups"
-                $GroupCheck = Get-Hash_UserGroupName_ID
+                $GroupCheck = Get-DynamicHash -Object Group -GroupType User -returnProperties name
 
-                foreach ($GroupTest in $UniqueGroups)
-                {
-                    if ($GroupCheck.ContainsKey($GroupTest.Value))
-                    {
+                foreach ($GroupTest in $UniqueGroups) {
+                    if ($GroupCheck.Values.name -contains ($GroupTest.Value)) {
                         Write-Verbose "$($GroupTest.Value) exists"
-                    }
-                    else
-                    {
+                    } else {
                         Write-Host "The JumpCloud Group:" -NoNewLine
                         Write-Host " $($GroupTest.Value)" -ForegroundColor Yellow -NoNewLine
                         Write-Host " does not exist. Users will not be added to this Group."
@@ -277,13 +256,11 @@ Function Update-JCUsersFromCSV ()
             Write-Host $menu -ForegroundColor Yellow
 
 
-            while ($Confirm -ne 'Y' -and $Confirm -ne 'N')
-            {
+            while ($Confirm -ne 'Y' -and $Confirm -ne 'N') {
                 $Confirm = Read-Host "Press Y to confirm or N to quit"
             }
 
-            if ($Confirm -eq 'Y')
-            {
+            if ($Confirm -eq 'Y') {
 
                 Write-Host ''
                 Write-Host "Hang tight! Updating your users. " -NoNewline
@@ -293,15 +270,13 @@ Function Update-JCUsersFromCSV ()
 
             }
 
-            elseif ($Confirm -eq 'N')
-            {
+            elseif ($Confirm -eq 'N') {
                 break
             }
 
         }
 
-        elseif ($PSCmdlet.ParameterSetName -eq 'force')
-        {
+        elseif ($PSCmdlet.ParameterSetName -eq 'force') {
 
             $UpdateUsers = Import-Csv -Path $CSVFilePath
             $NumberOfNewUsers = $UpdateUsers.username.count
@@ -310,30 +285,26 @@ Function Update-JCUsersFromCSV ()
             $CustomAttributes = $UpdateUsers | Get-Member | Where-Object Name -Like "*Attribute*" | Select-Object Name
 
 
-            foreach ($attr in $CustomAttributes )
-            {
+            foreach ($attr in $CustomAttributes ) {
                 $UserUpdateParams.Add($attr.name, $attr.name)
             }
         }
 
     } #begin block end
 
-    process
-    {
+    process {
         [int]$ProgressCounter = 0
 
-        foreach ($UserUpdate in $UpdateUsers)
-        {
+        foreach ($UserUpdate in $UpdateUsers) {
             $UniqueAttrValues = @()
             $UpdateParamsAttrValidate = $UserUpdate.psobject.properties | Where-Object { ($_.Name -match "Attribute") } |  Select-Object Name, Value
-            foreach ($Param in $UpdateParamsAttrValidate){
-                If (($Param.Name -match "_name") -And (![string]::IsNullOrEmpty($Param.Value))){
+            foreach ($Param in $UpdateParamsAttrValidate) {
+                If (($Param.Name -match "_name") -And (![string]::IsNullOrEmpty($Param.Value))) {
                     $matchingValueField = $Param.Name.Replace("_name", "_value")
                     $matchingValue = $UpdateParamsAttrValidate | Where-Object { ($_.Name -eq $matchingValueField) }
-                    if ([string]::IsNullOrEmpty($matchingValue.Value)){
+                    if ([string]::IsNullOrEmpty($matchingValue.Value)) {
                         Throw "A Custom Attribute name: $($Param.Name):$($Param.Value) was specified but is missing a corresponding value: $($matchingValue.Name):$($matchingValue.Value). Null attribute values are not supported"
-                    }
-                    else {
+                    } else {
                         $UniqueAttrValues += $matchingValue.Value
                     }
                 }
@@ -341,10 +312,8 @@ Function Update-JCUsersFromCSV ()
             $UpdateParamsRaw = $UserUpdate.psobject.properties | Where-Object { ($_.Value -ne $Null) -and ($_.Value -ne "") } | Select-Object Name, Value
             $UpdateParams = @{ }
 
-            foreach ($Param in $UpdateParamsRaw)
-            {
-                if ($UserUpdateParams.$($Param.name))
-                {
+            foreach ($Param in $UpdateParamsRaw) {
+                if ($UserUpdateParams.$($Param.name)) {
                     $UpdateParams.Add($Param.name, $Param.value)
                 }
 
@@ -373,10 +342,8 @@ Function Update-JCUsersFromCSV ()
 
             Write-Verbose $CustomAttributes.name.count
 
-            if ($CustomAttributes.name.count -gt 1)
-            {
-                try
-                {
+            if ($CustomAttributes.name.count -gt 1) {
+                try {
                     $NumberOfCustomAttributes = ($CustomAttributes.name.count) / 2
 
                     $UpdateParams.Add("NumberOfCustomAttributes", $NumberOfCustomAttributes)
@@ -387,53 +354,40 @@ Function Update-JCUsersFromCSV ()
 
                     $NewUser = Set-JCUser @UpdateParams
 
-                    if ($NewUser._id)
-                    {
+                    if ($NewUser._id) {
 
                         $Status = 'User Updated'
                     }
 
-                    elseif (-not $NewUser._id)
-                    {
+                    elseif (-not $NewUser._id) {
                         $Status = 'User does not exist'
                     }
 
-                    try #User is created
-                    {
-                        if ($UserUpdate.SystemID)
-                        {
+                    try { #User is created
+                        if ($UserUpdate.SystemID) {
 
-                            if ($UserUpdate.Administrator)
-                            {
+                            if ($UserUpdate.Administrator) {
 
-                                if ($UserUpdate.Administrator -like "*True")
-                                {
+                                if ($UserUpdate.Administrator -like "*True") {
 
                                     Write-Verbose "Admin set to true"
 
-                                    try
-                                    {
+                                    try {
                                         $SystemAdd = Add-JCSystemUser -SystemID $UserUpdate.SystemID -UserID $NewUser._id -Administrator $true
                                         $SystemAddStatus = $SystemAdd.Status
-                                    }
-                                    catch
-                                    {
+                                    } catch {
                                         $SystemAddStatus = $_.ErrorDetails
                                     }
                                 }
 
-                                elseif ($UserUpdate.Administrator -like "*False")
-                                {
+                                elseif ($UserUpdate.Administrator -like "*False") {
 
                                     Write-Verbose "Admin set to false"
 
-                                    try
-                                    {
+                                    try {
                                         $SystemAdd = Add-JCSystemUser -SystemID $UserUpdate.SystemID -UserID $NewUser._id -Administrator $false
                                         $SystemAddStatus = $SystemAdd.Status
-                                    }
-                                    catch
-                                    {
+                                    } catch {
                                         $SystemAddStatus = $_.ErrorDetails
                                     }
 
@@ -441,19 +395,15 @@ Function Update-JCUsersFromCSV ()
 
                             }
 
-                            else
-                            {
+                            else {
 
                                 Write-Verbose "No admin set"
 
-                                try
-                                {
+                                try {
                                     $SystemAdd = Add-JCSystemUser -SystemID $UserUpdate.SystemID -UserID $NewUser._id
                                     Write-Verbose  "$($SystemAdd.Status)"
                                     $SystemAddStatus = $SystemAdd.Status
-                                }
-                                catch
-                                {
+                                } catch {
                                     $SystemAddStatus = $_.ErrorDetails
                                 }
 
@@ -463,8 +413,7 @@ Function Update-JCUsersFromCSV ()
 
                         $CustomGroups = $UserUpdate | Get-Member | Where-Object Name -Like "*Group*" | Where-Object { $_.Definition -NotLike "*=" -and $_.Definition -NotLike "*null" } | Select-Object Name
 
-                        foreach ($Group in $CustomGroups)
-                        {
+                        foreach ($Group in $CustomGroups) {
                             $GetGroup = [pscustomobject]@{
                                 Type  = 'GroupName'
                                 Value = $UserUpdate.($Group.Name)
@@ -476,10 +425,8 @@ Function Update-JCUsersFromCSV ()
 
                         $UserGroupArrayList = New-Object System.Collections.ArrayList
 
-                        foreach ($Group in $CustomGroupArrayList)
-                        {
-                            try
-                            {
+                        foreach ($Group in $CustomGroupArrayList) {
+                            try {
 
                                 $GroupAdd = Add-JCUserGroupMember -ByID -UserID $NewUser._id -GroupName $Group.value
 
@@ -492,8 +439,7 @@ Function Update-JCUsersFromCSV ()
                                 $UserGroupArrayList.Add($FormatGroupOutput) | Out-Null
                             }
 
-                            catch
-                            {
+                            catch {
 
                                 $FormatGroupOutput = [PSCustomObject]@{
 
@@ -504,9 +450,7 @@ Function Update-JCUsersFromCSV ()
                                 $UserGroupArrayList.Add($FormatGroupOutput) | Out-Null
                             }
                         }
-                    }
-                    catch
-                    {
+                    } catch {
 
                     }
 
@@ -525,8 +469,7 @@ Function Update-JCUsersFromCSV ()
 
                 }
 
-                catch
-                {
+                catch {
 
                     $Status = 'User does not exist'
 
@@ -550,66 +493,51 @@ Function Update-JCUsersFromCSV ()
 
             }
 
-            else
-            {
-                try
-                {
+            else {
+                try {
                     $JSONParams = $UpdateParams | ConvertTo-Json
 
                     Write-Verbose "$($JSONParams)"
 
                     $NewUser = Set-JCUser @UpdateParams
 
-                    if ($NewUser._id)
-                    {
+                    if ($NewUser._id) {
 
                         $Status = 'User Updated'
                     }
 
-                    elseif (-not $NewUser._id)
-                    {
+                    elseif (-not $NewUser._id) {
                         $Status = 'User does not exist'
                     }
 
 
-                    try #User is created
-                    {
-                        if ($UserUpdate.SystemID)
-                        {
+                    try { #User is created
+                        if ($UserUpdate.SystemID) {
 
-                            if ($UserUpdate.Administrator)
-                            {
+                            if ($UserUpdate.Administrator) {
 
                                 Write-Verbose "Admin set"
 
-                                if ($UserUpdate.Administrator -like "*True")
-                                {
+                                if ($UserUpdate.Administrator -like "*True") {
 
                                     Write-Verbose "Admin set to true"
 
-                                    try
-                                    {
+                                    try {
                                         $SystemAdd = Add-JCSystemUser -SystemID $UserUpdate.SystemID -UserID $NewUser._id -Administrator $true
                                         $SystemAddStatus = $SystemAdd.Status
-                                    }
-                                    catch
-                                    {
+                                    } catch {
                                         $SystemAddStatus = $_.ErrorDetails
                                     }
                                 }
 
-                                elseif ($UserUpdate.Administrator -like "*False")
-                                {
+                                elseif ($UserUpdate.Administrator -like "*False") {
 
                                     Write-Verbose "Admin set to false"
 
-                                    try
-                                    {
+                                    try {
                                         $SystemAdd = Add-JCSystemUser -SystemID $UserUpdate.SystemID -UserID $NewUser._id -Administrator $false
                                         $SystemAddStatus = $SystemAdd.Status
-                                    }
-                                    catch
-                                    {
+                                    } catch {
                                         $SystemAddStatus = $_.ErrorDetails
                                     }
 
@@ -618,19 +546,15 @@ Function Update-JCUsersFromCSV ()
 
                             }
 
-                            else
-                            {
+                            else {
 
                                 Write-Verbose "No admin set"
 
-                                try
-                                {
+                                try {
                                     $SystemAdd = Add-JCSystemUser -SystemID $UserUpdate.SystemID -UserID $NewUser._id
                                     Write-Verbose  "$($SystemAdd.Status)"
                                     $SystemAddStatus = $SystemAdd.Status
-                                }
-                                catch
-                                {
+                                } catch {
                                     $SystemAddStatus = $_.ErrorDetails
                                 }
 
@@ -644,8 +568,7 @@ Function Update-JCUsersFromCSV ()
 
                         $CustomGroups = $UserUpdate | Get-Member | Where-Object Name -Like "*Group*" | Where-Object { $_.Definition -NotLike "*=" -and $_.Definition -NotLike "*null" } | Select-Object Name
 
-                        foreach ($Group in $CustomGroups)
-                        {
+                        foreach ($Group in $CustomGroups) {
                             $GetGroup = [pscustomobject]@{
                                 Type  = 'GroupName'
                                 Value = $UserUpdate.($Group.Name)
@@ -657,10 +580,8 @@ Function Update-JCUsersFromCSV ()
 
                         $UserGroupArrayList = New-Object System.Collections.ArrayList
 
-                        foreach ($Group in $CustomGroupArrayList)
-                        {
-                            try
-                            {
+                        foreach ($Group in $CustomGroupArrayList) {
+                            try {
 
                                 $GroupAdd = Add-JCUserGroupMember -ByID -UserID $NewUser._id -GroupName $Group.value
 
@@ -673,8 +594,7 @@ Function Update-JCUsersFromCSV ()
                                 $UserGroupArrayList.Add($FormatGroupOutput) | Out-Null
                             }
 
-                            catch
-                            {
+                            catch {
 
                                 $FormatGroupOutput = [PSCustomObject]@{
 
@@ -685,9 +605,7 @@ Function Update-JCUsersFromCSV ()
                                 $UserGroupArrayList.Add($FormatGroupOutput) | Out-Null
                             }
                         }
-                    }
-                    catch
-                    {
+                    } catch {
 
                     }
 
@@ -707,12 +625,10 @@ Function Update-JCUsersFromCSV ()
 
                 }
 
-                catch
-                {
+                catch {
                     $Status = "$($_.ErrorDetails)"
 
-                    if (-not (Get-JCUser -username $UpdateParams.username -returnProperties username))
-                    {
+                    if (-not (Get-JCUser -username $UpdateParams.username -returnProperties username)) {
                         $Status = 'User does not exist'
                     }
 
@@ -738,8 +654,7 @@ Function Update-JCUsersFromCSV ()
         }
     }
 
-    end
-    {
+    end {
         return $ResultsArrayList
     }
 }

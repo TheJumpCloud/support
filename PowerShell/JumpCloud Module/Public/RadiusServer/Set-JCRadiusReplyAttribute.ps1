@@ -1,5 +1,4 @@
-Function Set-JCRadiusReplyAttribute ()
-{
+Function Set-JCRadiusReplyAttribute () {
 
     [CmdletBinding(DefaultParameterSetName = 'ByGroup')]
     param
@@ -36,15 +35,11 @@ If an invalid attribute is configured on a user group this will prevent users wi
     )
 
 
-    DynamicParam
-    {
-        If ((Get-PSCallStack).Command -like '*MarkdownHelp')
-        {
+    DynamicParam {
+        If ((Get-PSCallStack).Command -like '*MarkdownHelp') {
             $NumberOfAttributes = 2
             $VLAN = 11
-        }
-        ElseIf ([System.String]::IsNullOrEmpty($NumberOfAttributes))
-        {
+        } ElseIf ([System.String]::IsNullOrEmpty($NumberOfAttributes)) {
             $NumberOfAttributes = 0
         }
         $dict = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
@@ -52,8 +47,7 @@ If an invalid attribute is configured on a user group this will prevent users wi
         [int]$NewParams = 0
         [int]$ParamNumber = 1
 
-        while ($NewParams -ne $NumberOfAttributes)
-        {
+        while ($NewParams -ne $NumberOfAttributes) {
 
             $attr = New-Object System.Management.Automation.ParameterAttribute
             $attr.HelpMessage = "Enter an attribute name"
@@ -77,8 +71,7 @@ If an invalid attribute is configured on a user group this will prevent users wi
             $ParamNumber++
         }
 
-        if ($VLAN)
-        {
+        if ($VLAN) {
             $VLANattr = New-Object System.Management.Automation.ParameterAttribute
             $VLANattr.Mandatory = $false
             $VLANattr.ValueFromPipelineByPropertyName = $true
@@ -97,11 +90,12 @@ If an invalid attribute is configured on a user group this will prevent users wi
 
     }
 
-    begin
-    {
+    begin {
 
         Write-Verbose 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) { Connect-JCOnline }
+        if ($JCAPIKEY.length -ne 40) {
+            Connect-JCOnline
+        }
 
         $hdrs = @{
 
@@ -110,28 +104,23 @@ If an invalid attribute is configured on a user group this will prevent users wi
             'X-API-KEY'    = $JCAPIKEY
         }
 
-        if ($JCOrgID)
-        {
+        if ($JCOrgID) {
             $hdrs.Add('x-org-id', "$($JCOrgID)")
         }
 
-        if ($PSCmdlet.ParameterSetName -eq 'ByGroup')
-        {
+        if ($PSCmdlet.ParameterSetName -eq 'ByGroup') {
             Write-Verbose 'Populating GroupNameHash'
-            $GroupNameHash = Get-Hash_UserGroupName_ID
+            $GroupNameHash = Get-DynamicHash -Object Group -GroupType User -returnProperties name
 
         }
 
         $ResultsArray = @()
     }
 
-    process
-    {
+    process {
 
-        if ($GroupNameHash.containsKey($GroupName))
-
-        {
-            $Group_ID = $GroupNameHash.Get_Item($GroupName)
+        if ($GroupNameHash.Values.name -contains ($GroupName)) {
+            $Group_ID = $GroupNameHash.GetEnumerator().Where({ $_.Value.name -contains ($GroupName) }).Name
             Write-Verbose "$Group_ID"
 
             $GroupInfo = Get-JCGroup -Type User -Name $GroupName
@@ -140,8 +129,9 @@ If an invalid attribute is configured on a user group this will prevent users wi
             Write-Verbose "$LdapGroupName"
 
             $ExistingAttributes = $GroupInfo | Select-Object -ExpandProperty attributes
+        } else {
+            Throw "Group does not exist. Run 'Get-JCGroup -type User' to see a list of all your JumpCloud user groups."
         }
-        else { Throw "Group does not exist. Run 'Get-JCGroup -type User' to see a list of all your JumpCloud user groups." }
 
         $replyAttributes = New-Object System.Collections.ArrayList
 
@@ -149,14 +139,16 @@ If an invalid attribute is configured on a user group this will prevent users wi
 
         $RadiusCustomAttributesArrayList = New-Object System.Collections.ArrayList
 
-        foreach ($param in $PSBoundParameters.GetEnumerator())
-        {
-            if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }
+        foreach ($param in $PSBoundParameters.GetEnumerator()) {
+            if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) {
+                continue
+            }
 
-            if ($param.key -eq 'Name', 'GroupName', 'JCAPIKey', 'NumberOfAttributes', 'VLAN', 'VLANTag') { continue }
+            if ($param.key -eq 'Name', 'GroupName', 'JCAPIKey', 'NumberOfAttributes', 'VLAN', 'VLANTag') {
+                continue
+            }
 
-            if ($param.Key -like 'Attribute*')
-            {
+            if ($param.Key -like 'Attribute*') {
                 $CustomAttribute = [pscustomobject]@{
 
                     CustomAttribute = ($Param.key).Split('_')[0]
@@ -170,14 +162,12 @@ If an invalid attribute is configured on a user group this will prevent users wi
 
                 $NewAttributes = New-Object System.Collections.ArrayList
 
-                foreach ($A in $UniqueAttributes )
-                {
+                foreach ($A in $UniqueAttributes ) {
                     $Props = $RadiusCustomAttributesArrayList | Where-Object CustomAttribute -EQ $A.CustomAttribute
 
                     $obj = New-Object PSObject
 
-                    foreach ($Prop in $Props)
-                    {
+                    foreach ($Prop in $Props) {
                         $obj | Add-Member -MemberType NoteProperty -Name $Prop.type -Value $Prop.value
                     }
 
@@ -191,16 +181,13 @@ If an invalid attribute is configured on a user group this will prevent users wi
 
         $NewAttributesHash = @{ }
 
-        foreach ($NewA in $NewAttributes)
-        {
+        foreach ($NewA in $NewAttributes) {
             $NewAttributesHash.Add($NewA.name, $NewA.value)
 
         }
 
-        if ($VLAN)
-        {
-            if ($PSBoundParameters['VLANTag'])
-            {
+        if ($VLAN) {
+            if ($PSBoundParameters['VLANTag']) {
                 $VLANTag = $PSBoundParameters['VLANTag']
                 $TunnelType = New-Object PSObject
                 $TunnelType | Add-Member -MemberType NoteProperty -Name "name" -Value "Tunnel-Type:$VLANTag"
@@ -223,8 +210,7 @@ If an invalid attribute is configured on a user group this will prevent users wi
                 $NewAttributesHash.Add($TunnelPrivateGroupID.name, $TunnelPrivateGroupID.value)
             }
 
-            else
-            {
+            else {
                 $TunnelType = New-Object PSObject
                 $TunnelType | Add-Member -MemberType NoteProperty -Name "name" -Value "Tunnel-Type"
                 $TunnelType | Add-Member -MemberType NoteProperty -Name "value" -Value "VLAN"
@@ -257,35 +243,29 @@ If an invalid attribute is configured on a user group this will prevent users wi
             "Tunnel-Private-Group-Id" = "Tunnel-Private-Group-Id"
         }
 
-        foreach ($CurrentA in $CurrentAttributes)
-        {
-            if ($VLAN)
-            {
+        foreach ($CurrentA in $CurrentAttributes) {
+            if ($VLAN) {
                 $TagSplit = ($CurrentA.name -split ":")[0]
 
-                if (($VLANAttrHash).ContainsKey($TagSplit)) { Continue }
+                if (($VLANAttrHash).ContainsKey($TagSplit)) {
+                    Continue
+                }
 
-                else
-                {
+                else {
                     $CurrentAttributesHash.Add($CurrentA.name, $CurrentA.value)
                 }
             }
 
-            else
-            {
+            else {
                 $CurrentAttributesHash.Add($CurrentA.name, $CurrentA.value)
             }
 
         }
 
-        foreach ($A in $NewAttributesHash.GetEnumerator())
-        {
-            if (($CurrentAttributesHash).Contains($A.Key))
-            {
+        foreach ($A in $NewAttributesHash.GetEnumerator()) {
+            if (($CurrentAttributesHash).Contains($A.Key)) {
                 $CurrentAttributesHash.set_Item($($A.key), $($A.value))
-            }
-            else
-            {
+            } else {
                 $CurrentAttributesHash.Add($($A.key), $($A.value))
             }
         }
@@ -293,8 +273,7 @@ If an invalid attribute is configured on a user group this will prevent users wi
         $UpdatedAttributeArrayList = New-Object System.Collections.ArrayList
 
 
-        foreach ($NewA in $CurrentAttributesHash.GetEnumerator())
-        {
+        foreach ($NewA in $CurrentAttributesHash.GetEnumerator()) {
             $temp = New-Object PSObject
             $temp | Add-Member -MemberType NoteProperty -Name name -Value $NewA.key
             $temp | Add-Member -MemberType NoteProperty -Name value -Value $NewA.value
@@ -305,8 +284,7 @@ If an invalid attribute is configured on a user group this will prevent users wi
 
 
 
-        if ($PSCmdlet.ParameterSetName -eq 'ByGroup')
-        {
+        if ($PSCmdlet.ParameterSetName -eq 'ByGroup') {
 
             $Body = @{
                 attributes = @{
@@ -317,8 +295,7 @@ If an invalid attribute is configured on a user group this will prevent users wi
                 "name"     = "$LdapGroupName"
             }
 
-            if ($ExistingAttributes.posixGroups)
-            {
+            if ($ExistingAttributes.posixGroups) {
                 $posixGroups = New-Object PSObject
                 $posixGroups | Add-Member -MemberType NoteProperty -Name name -Value $ExistingAttributes.posixGroups.name
                 $posixGroups | Add-Member -MemberType NoteProperty -Name id -Value $ExistingAttributes.posixGroups.id
@@ -326,15 +303,13 @@ If an invalid attribute is configured on a user group this will prevent users wi
                 $Body.attributes.Add("posixGroups", @($posixGroups))
             }
 
-            if ($ExistingAttributes.ldapGroups)
-            {
+            if ($ExistingAttributes.ldapGroups) {
                 $ldapGroups = New-Object PSObject
                 $ldapGroups | Add-Member -MemberType NoteProperty -Name name -Value $ExistingAttributes.ldapGroups.name
                 $Body.attributes.Add("ldapGroups", @($ldapGroups))
             }
 
-            if ($GroupInfo.attributes.sambaEnabled -eq $True)
-            {
+            if ($GroupInfo.attributes.sambaEnabled -eq $True) {
                 $Body.attributes.Add("sambaEnabled", $True)
             }
 
@@ -357,8 +332,7 @@ If an invalid attribute is configured on a user group this will prevent users wi
 
     }
 
-    end
-    {
+    end {
         return $ResultsArray
     }
 

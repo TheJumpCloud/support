@@ -1,5 +1,4 @@
-Function Set-JCSystemUser ()
-{
+Function Set-JCSystemUser () {
     [CmdletBinding(DefaultParameterSetName = 'ByName')]
 
     param
@@ -49,11 +48,11 @@ Function Set-JCSystemUser ()
 
     )
 
-    begin
-
-    {
+    begin {
         Write-Verbose 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {Connect-JConline}
+        if ($JCAPIKEY.length -ne 40) {
+            Connect-JConline
+        }
 
         Write-Verbose 'Populating API headers'
         $hdrs = @{
@@ -64,45 +63,39 @@ Function Set-JCSystemUser ()
 
         }
 
-        if ($JCOrgID)
-        {
+        if ($JCOrgID) {
             $hdrs.Add('x-org-id', "$($JCOrgID)")
         }
 
         Write-Verbose 'Initilizing SystemUpdateArray'
         $SystemUpdateArray = @()
 
-        if ($PSCmdlet.ParameterSetName -eq 'ByName')
-        {
+        if ($PSCmdlet.ParameterSetName -eq 'ByName') {
             Write-Verbose $PSCmdlet.ParameterSetName
 
             Write-Verbose 'Populating HostNameHash'
-            $HostNameHash = Get-Hash_SystemID_HostName
+            $HostNameHash = Get-DynamicHash -Object System -returnProperties hostname
             Write-Verbose 'Populating UserNameHash'
-            $UserNameHash = Get-Hash_UserName_ID
+            $UserNameHash = Get-DynamicHash -Object User -returnProperties username
         }
 
         Write-Verbose $PSCmdlet.ParameterSetName
     }
 
-    process
+    process {
+        if ($PSCmdlet.ParameterSetName -eq 'ByName') {
+            if (!$HostNameHash.containsKey($SystemID)) {
+                Throw "SystemID does not exist. Run 'Get-JCsystem | select Hostname, _id' to see a list of all your JumpCloud systems and the associated _id."
+            }
 
-    {
-        if ($PSCmdlet.ParameterSetName -eq 'ByName')
-        {
-            if ($HostNameHash.containsKey($SystemID)) {}
+            if ($UserNameHash.Values.username -notcontains ($Username)) {
+                Throw "Username does not exist. Run 'Get-JCUser | select username' to see a list of all your JumpCloud users."
+            }
 
-            else { Throw "SystemID does not exist. Run 'Get-JCsystem | select Hostname, _id' to see a list of all your JumpCloud systems and the associated _id."}
+            $UserID = $UserNameHash.GetEnumerator().Where({ $_.Value.username -contains ($Username) }).Name
+            $HostName = $HostNameHash.Get_Item($SystemID).hostname
 
-            if ($UserNameHash.containsKey($Username)) {}
-
-            else { Throw "Username does not exist. Run 'Get-JCUser | select username' to see a list of all your JumpCloud users."}
-
-            $UserID = $UserNameHash.Get_Item($Username)
-            $HostName = $HostNameHash.Get_Item($SystemID)
-
-            if ($Administrator -eq $true)
-            {
+            if ($Administrator -eq $true) {
 
                 $body = @{
 
@@ -121,8 +114,7 @@ Function Set-JCSystemUser ()
 
             }
 
-            elseif ($Administrator -eq $false)
-            {
+            elseif ($Administrator -eq $false) {
 
                 $body = @{
 
@@ -150,14 +142,11 @@ Function Set-JCSystemUser ()
             Write-Verbose $URL
 
 
-            try
-            {
+            try {
                 $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent)
                 $Status = 'Updated'
 
-            }
-            catch
-            {
+            } catch {
                 $Status = $_.ErrorDetails
             }
 
@@ -175,10 +164,8 @@ Function Set-JCSystemUser ()
 
         }
 
-        elseif ($PSCmdlet.ParameterSetName -eq 'ByID')
-        {
-            if ($Administrator -eq $true)
-            {
+        elseif ($PSCmdlet.ParameterSetName -eq 'ByID') {
+            if ($Administrator -eq $true) {
 
                 $body = @{
 
@@ -197,8 +184,7 @@ Function Set-JCSystemUser ()
 
             }
 
-            elseif ($Administrator -eq $false)
-            {
+            elseif ($Administrator -eq $false) {
 
                 $body = @{
 
@@ -224,14 +210,11 @@ Function Set-JCSystemUser ()
             $URL = "$JCUrlBasePath/api/v2/systems/$SystemID/associations"
             Write-Verbose $URL
 
-            try
-            {
+            try {
                 $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent)
                 $Status = 'Updated'
 
-            }
-            catch
-            {
+            } catch {
                 $Status = $_.ErrorDetails
             }
 
@@ -247,9 +230,7 @@ Function Set-JCSystemUser ()
         }
     }
 
-    end
-
-    {
+    end {
         return $SystemUpdateArray
     }
 
