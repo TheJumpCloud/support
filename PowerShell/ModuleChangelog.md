@@ -11,7 +11,6 @@ Note: In order to use the parallel functionality, the feature requires PowerShel
 ```
 
 #### FEATURES:
-
 - This release adds parallel processing functionality to potentially alleviate long wait times for large scale operations
   - Note: Feature requires PowerShell version 7 or higher
   - This release adds parallel processing to the following functions:
@@ -36,10 +35,14 @@ Note: In order to use the parallel functionality, the feature requires PowerShel
 - Adjusted output for Get-JCSystemGroupMember -ByID and Get-JCUserGroupMember -ByID to match the output of -GroupName
 - Removed individual hash functions in favor for dynamic hash function
   - Replaced all references to old functions
+ - Added case-insensitivity to search endpoints Get-JCUser, Get-JCSystem, and Get-JCCommand
+      Example: command name 'List Users' = 'list users' or hostname 'thisPc' = 'ThisPC'
+
 
 #### BUG FIXES:
 
 N/A
+
 
 ## 1.23.0
 

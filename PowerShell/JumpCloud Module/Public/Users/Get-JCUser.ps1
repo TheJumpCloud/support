@@ -218,11 +218,9 @@ Function Get-JCUser () {
                 }
 
                 else {
-
                     $Search = @{
                         filter = @(
                             @{
-
                             }
                         )
                         limit  = $limit
@@ -241,7 +239,6 @@ Function Get-JCUser () {
                         (($Search.filter).GetEnumerator()).add($param.Key, $param.value)
                         continue
                     }
-
                     if ($param.key -eq 'returnProperties') {
                         continue
                     }
@@ -261,7 +258,6 @@ Function Get-JCUser () {
                                 $DateQuery = '$gt'
                             }
                         }
-
                         continue
                     }
 
@@ -369,17 +365,20 @@ Function Get-JCUser () {
                     $Value = ($param.value).replace('*', '')
 
                     if (($param.Value -match '.+?\*$') -and ($param.Value -match '^\*.+?')) {
-                        # Front and back wildcard
-                        (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "$Value" })
-                    } elseif ($param.Value -match '.+?\*$') {
-                        # Back wildcard
-                        (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "^$Value" })
-                    } elseif ($param.Value -match '^\*.+?') {
-                        # Front wild card
-                        (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "$Value`$" })
-                    } else {
-                        (($Search.filter).GetEnumerator()).add($param.Key, $Value)
-                    }
+                            # Front and back wildcard
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)$([regex]::Escape($Value))" })
+                        } elseif ($param.Value -match '.+?\*$') {
+                            # Back wildcard
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)^$([regex]::Escape($Value))" })
+                        } elseif ($param.Value -match '^\*.+?') {
+                            # Front wild card
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)$([regex]::Escape($Value))`$" })
+                        } elseif ($param.Value -match '^[-+]?\d+$') {
+                            # Check for integer value
+                            (($Search.filter).GetEnumerator()).add($param.Key, $([regex]::Escape($Value)))
+                        } else {
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)(^$([regex]::Escape($Value))`$)" })
+                        }
 
                 } # End foreach
 

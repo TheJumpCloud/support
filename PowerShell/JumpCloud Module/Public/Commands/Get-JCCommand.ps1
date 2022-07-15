@@ -88,35 +88,37 @@ CommandID has an Alias of _id. This means you can leverage the PowerShell pipeli
                         skip   = $skip
                     } #Initialize search
                 }
+                
                 foreach ($param in $PSBoundParameters.GetEnumerator()) {
-                    if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) {
-                        continue
-                    }
-                    if ($param.value -is [Boolean]) {
+                        if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }
+                        if ($param.value -is [Boolean]) {
                             (($Search.filter).GetEnumerator()).add($param.Key, $param.value)
 
-                        continue
-                    }
-                    if ($param.key -eq 'returnProperties') {
-                        continue
-                    }
+                            continue
+                        }
+                        if ($param.key -eq 'returnProperties') {
+                            continue
+                        }
 
-                    $Value = ($param.value).replace('*', '')
+                        $Value = ($param.value).replace('*', '')
 
-                    if (($param.Value -match '.+?\*$') -and ($param.Value -match '^\*.+?')) {
-                        # Front and back wildcard
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "$Value" })
-                    } elseif ($param.Value -match '.+?\*$') {
-                        # Back wildcard
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "^$Value" })
-                    } elseif ($param.Value -match '^\*.+?') {
-                        # Front wild card
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "$Value`$" })
-                    } else {
-                            (($Search.filter).GetEnumerator()).add($param.Key, $Value)
-                    }
-                } # End foreach
+                        if (($param.Value -match '.+?\*$') -and ($param.Value -match '^\*.+?')) {
+                            # Front and back wildcard
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)$([regex]::Escape($Value))" })
+                        } elseif ($param.Value -match '.+?\*$') {
+                            # Back wildcard
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)^$([regex]::Escape($Value))" })
+                        } elseif ($param.Value -match '^\*.+?') {
+                            # Front wild card
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)$([regex]::Escape($Value))`$" })
+                        } elseif ($param.Value -match '^[-+]?\d+$') {
+                            # Check for integer value
+                            (($Search.filter).GetEnumerator()).add($param.Key, $([regex]::Escape($Value)))
+                        } else {
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)(^$([regex]::Escape($Value))`$)" })
+                        }
 
+                    } # End foreach
 
                 $SearchJSON = $Search | ConvertTo-Json -Compress -Depth 4
 
@@ -129,7 +131,6 @@ CommandID has an Alias of _id. This means you can leverage the PowerShell pipeli
                 } else {
                     $resultsArrayList = Get-JCResults -URL $URL -method "POST" -limit $limit -body $SearchJSON
                 }
-
 
             } # End Search
             ByID {
@@ -154,6 +155,3 @@ CommandID has an Alias of _id. This means you can leverage the PowerShell pipeli
     }
 
 }
-
-
-
