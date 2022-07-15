@@ -499,15 +499,15 @@ commands:
                 no_output_timeout: 30m
                 command: |
                   $ErrorActionPreference = 'stop'
-                  if (${CIRCLE_NODE_INDEX} -eq 0){
+                  if ($ENV:CIRCLE_NODE_INDEX -eq 0){
                     Write-Host "Setting Up Pester Windows Org"
                     . "./PowerShell/Deploy/Setup-ParallelPesterOrg.ps1" -JumpCloudApiKey << parameters.JumpCloudApiKeyWindows >> -JumpCloudApiKeyMsp << parameters.JumpCloudApiKeyMsp >> -RequiredModulesRepo << parameters.RequiredModulesRepo >>
                   }
-                  elseif (${CIRCLE_NODE_INDEX} -eq 1){
+                  elseif ($ENV:CIRCLE_NODE_INDEX -eq 1){
                     Write-Host "Setting Up Pester Mac Org"
                     . "./PowerShell/Deploy/Setup-ParallelPesterOrg.ps1" -JumpCloudApiKey << parameters.JumpCloudApiKeyMac >> -JumpCloudApiKeyMsp << parameters.JumpCloudApiKeyMsp >> -RequiredModulesRepo << parameters.RequiredModulesRepo >>
                   }
-                  elseif (${CIRCLE_NODE_INDEX} -eq 2){
+                  elseif ($ENV:CIRCLE_NODE_INDEX -eq 2){
                     Write-Host "Setting Up Pester Linux Org"
                     . "./PowerShell/Deploy/Setup-ParallelPesterOrg.ps1" -JumpCloudApiKey << parameters.JumpCloudApiKeyLinux >> -JumpCloudApiKeyMsp << parameters.JumpCloudApiKeyMsp >> -RequiredModulesRepo << parameters.RequiredModulesRepo >>
                   }
