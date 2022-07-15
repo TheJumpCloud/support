@@ -1,5 +1,4 @@
-Function Get-JCSystem ()
-{
+Function Get-JCSystem () {
     [CmdletBinding(DefaultParameterSetName = 'SearchFilter')]
 
     param
@@ -152,14 +151,11 @@ Function Get-JCSystem ()
 
     )
 
-    DynamicParam
-    {
-        If ((Get-PSCallStack).Command -like '*MarkdownHelp')
-        {
+    DynamicParam {
+        If ((Get-PSCallStack).Command -like '*MarkdownHelp') {
             $filterDateProperty = 'created'
         }
-        if ($filterDateProperty)
-        {
+        if ($filterDateProperty) {
 
             # Create the dictionary
             $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
@@ -209,7 +205,6 @@ Function Get-JCSystem ()
     }
 
     begin
-
     {
         Write-Verbose 'Verifying JCAPI Key'
         if ($JCAPIKEY.length -ne 40) { Connect-JCOnline }
@@ -223,8 +218,7 @@ Function Get-JCSystem ()
 
         }
 
-        if ($JCOrgID)
-        {
+        if ($JCOrgID) {
             $hdrs.Add('x-org-id', "$($JCOrgID)")
         }
 
@@ -237,7 +231,6 @@ Function Get-JCSystem ()
     }
 
     process
-
     {
         [int]$limit = '1000'
         Write-Verbose "Setting limit to $limit"
@@ -247,19 +240,15 @@ Function Get-JCSystem ()
 
         [int]$Counter = 0
 
-        switch ($PSCmdlet.ParameterSetName)
-        {
+        switch ($PSCmdlet.ParameterSetName) {
 
-            SearchFilter
-            {
+            SearchFilter {
 
 
-                while ((($resultsArrayList.results).Count) -ge $Counter)
-                {
+                while ((($resultsArrayList.results).Count) -ge $Counter) {
 
 
-                    if ($returnProperties)
-                    {
+                    if ($returnProperties) {
 
                         $Search = @{
                             filter = @(
@@ -273,8 +262,7 @@ Function Get-JCSystem ()
 
                     }
 
-                    else
-                    {
+                    else {
 
                         $Search = @{
                             filter = @(
@@ -289,34 +277,28 @@ Function Get-JCSystem ()
                     }
 
 
-                    foreach ($param in $PSBoundParameters.GetEnumerator())
-                    {
+                    foreach ($param in $PSBoundParameters.GetEnumerator()) {
                         if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }
 
-                        if ($param.value -is [Boolean])
-                        {
+                        if ($param.value -is [Boolean]) {
                             (($Search.filter).GetEnumerator()).add($param.Key, $param.value)
 
                             continue
                         }
 
-                        if ($param.key -eq 'returnProperties')
-                        {
+                        if ($param.key -eq 'returnProperties') {
                             continue
                         }
 
-                        if ($param.key -eq 'filterDateProperty')
-                        {
+                        if ($param.key -eq 'filterDateProperty') {
                             $DateProperty = $param.value
 
                             continue
                         }
 
 
-                        if ($param.key -eq 'dateFilter')
-                        {
-                            switch ($param.value)
-                            {
+                        if ($param.key -eq 'dateFilter') {
+                            switch ($param.value) {
                                 before { $DateQuery = '$lt' }
                                 after { $DateQuery = '$gt' }
                             }
@@ -324,8 +306,7 @@ Function Get-JCSystem ()
                             continue
                         }
 
-                        if ($param.key -eq 'date')
-                        {
+                        if ($param.key -eq 'date') {
                             $Timestamp = Get-Date $param.Value -format o
 
                             continue
@@ -335,27 +316,24 @@ Function Get-JCSystem ()
 
                         if (($param.Value -match '.+?\*$') -and ($param.Value -match '^\*.+?')) {
                             # Front and back wildcard
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)$Value" })
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)$([regex]::Escape($Value))" })
                         } elseif ($param.Value -match '.+?\*$') {
                             # Back wildcard
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)^$Value" })
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)^$([regex]::Escape($Value))" })
                         } elseif ($param.Value -match '^\*.+?') {
                             # Front wild card
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)$Value`$" })
-                        } elseif($param.Value -match '^[-+]?\d+$'){
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)$([regex]::Escape($Value))`$" })
+                        } elseif ($param.Value -match '^[-+]?\d+$') {
                             # Check for integer value
-                            (($Search.filter).GetEnumerator()).add($param.Key, $Value)
-                        } 
-                        else {
-                            $filteredSearch = [regex]::Escape($Value)
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)(^$filteredSearch`$)" })
+                            (($Search.filter).GetEnumerator()).add($param.Key, $([regex]::Escape($Value)))
+                        } else {
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)(^$([regex]::Escape($Value))`$)" })
                         }
 
 
                     } # End foreach
 
-                    if ($filterDateProperty)
-                    {
+                    if ($filterDateProperty) {
                         (($Search.filter).GetEnumerator()).add($DateProperty, @{$DateQuery = $Timestamp })
                     }
 
@@ -375,12 +353,10 @@ Function Get-JCSystem ()
 
             } #End search
 
-            ByID
-            {
+            ByID {
 
 
-                if ($SystemFDEKey)
-                {
+                if ($SystemFDEKey) {
 
                     $URL = "$JCUrlBasePath/api/v2/systems/$SystemID/fdekey"
                     Write-Verbose $URL
@@ -396,8 +372,7 @@ Function Get-JCSystem ()
 
                 }
 
-                else
-                {
+                else {
                     $URL = "$JCUrlBasePath/api/Systems/$SystemID"
                     Write-Verbose $URL
 
@@ -411,17 +386,13 @@ Function Get-JCSystem ()
         } # End switch
     } # End process
 
-    end
-    {
+    end {
 
-        switch ($PSCmdlet.ParameterSetName)
-        {
-            SearchFilter
-            {
+        switch ($PSCmdlet.ParameterSetName) {
+            SearchFilter {
                 return $resultsArrayList.Results | Select-Object -Property *  -ExcludeProperty associatedTagCount, id, sshRootEnabled
             }
-            ByID
-            {
+            ByID {
                 return $resultsArrayList | Select-Object -Property *  -ExcludeProperty associatedTagCount
             }
 

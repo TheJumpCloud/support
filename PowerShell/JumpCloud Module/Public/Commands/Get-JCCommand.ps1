@@ -1,6 +1,5 @@
 
-Function Get-JCCommand ()
-{
+Function Get-JCCommand () {
     [CmdletBinding(DefaultParameterSetName = 'SearchFilter')]
 
     param
@@ -14,7 +13,7 @@ Function Get-JCCommand ()
         [ValidateSet('windows', 'mac', 'linux')]
         [string]$commandType,
         [Parameter( ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'The launch type of the JumpCloud Command you wish to search for ex. Get-JCCommand -launchType <typeOfLaunch> ' )]
-        [ValidateSet('repeated','one-time','manual', 'trigger')]
+        [ValidateSet('repeated', 'one-time', 'manual', 'trigger')]
         [string]$launchType,
         [Parameter( ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'The trigger name of the JumpCloud Command you wish to search for ex. Get-JCCommand -trigger <triggerId> ')]
         [string]$trigger,
@@ -22,7 +21,7 @@ Function Get-JCCommand ()
         [ValidateSet('minute', 'hour', 'day', 'week', 'month')]
         [string]$scheduleRepeatType,
         [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'Allows you to return select properties on JumpCloud commands objects. Specifying what properties are returned can drastically increase the speed of the API call with a large data set. Valid properties that can be returned are: ''command'', ''name'',''launchType'',''commandType'',''trigger'',''scheduleRepeatType''')]
-        [ValidateSet('command', 'name', 'launchType', 'commandType','trigger', 'scheduleRepeatType')]
+        [ValidateSet('command', 'name', 'launchType', 'commandType', 'trigger', 'scheduleRepeatType')]
         [String[]]$returnProperties,
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName,
@@ -40,11 +39,9 @@ CommandID has an Alias of _id. This means you can leverage the PowerShell pipeli
         [Switch]
         $ByID
     )
-    begin
-
-    {
+    begin {
         Write-Debug 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {Connect-JConline}
+        if ($JCAPIKEY.length -ne 40) { Connect-JConline }
 
         Write-Debug 'Populating API headers'
         $hdrs = @{
@@ -55,8 +52,7 @@ CommandID has an Alias of _id. This means you can leverage the PowerShell pipeli
 
         }
 
-        if ($JCOrgID)
-        {
+        if ($JCOrgID) {
             $hdrs.Add('x-org-id', "$($JCOrgID)")
         }
         Write-Verbose 'Initilizing resultsArray'
@@ -66,9 +62,7 @@ CommandID has an Alias of _id. This means you can leverage the PowerShell pipeli
         Write-Verbose "Parameter Set: $($PSCmdlet.ParameterSetName)"
     }
 
-    process
-
-    {
+    process {
         [int]$limit = '100'
         Write-Verbose "Setting limit to $limit"
 
@@ -77,15 +71,12 @@ CommandID has an Alias of _id. This means you can leverage the PowerShell pipeli
 
         [int]$Counter = 0
 
-        if ($PSCmdlet.ParameterSetName -eq 'ReturnAll')
-
-        {
+        if ($PSCmdlet.ParameterSetName -eq 'ReturnAll') {
 
             Write-Debug 'Setting skip to zero'
             [int]$skip = 0 #Do not change!
 
-            while (($resultsArrayList).Count -ge $skip)
-            {
+            while (($resultsArrayList).Count -ge $skip) {
                 $limitURL = "$JCUrlBasePath/api/commands?sort=type,_id&limit=$limit&skip=$skip"
                 Write-Debug $limitURL
 
@@ -100,16 +91,12 @@ CommandID has an Alias of _id. This means you can leverage the PowerShell pipeli
         }
 
 
-        switch ($PSCmdlet.ParameterSetName)
-        {
-            SearchFilter
-            {
+        switch ($PSCmdlet.ParameterSetName) {
+            SearchFilter {
 
-                while ((($resultsArrayList.Results).Count) -ge $Counter)
-                {
+                while ((($resultsArrayList.Results).Count) -ge $Counter) {
 
-                    if ($returnProperties)
-                    {
+                    if ($returnProperties) {
 
                         $Search = @{
                             filter = @(
@@ -123,8 +110,7 @@ CommandID has an Alias of _id. This means you can leverage the PowerShell pipeli
 
                     }
 
-                    else
-                    {
+                    else {
 
                         $Search = @{
                             filter = @(
@@ -139,17 +125,14 @@ CommandID has an Alias of _id. This means you can leverage the PowerShell pipeli
 
                     }
 
-                    foreach ($param in $PSBoundParameters.GetEnumerator())
-                    {
+                    foreach ($param in $PSBoundParameters.GetEnumerator()) {
                         if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }
-                        if ($param.value -is [Boolean])
-                        {
+                        if ($param.value -is [Boolean]) {
                             (($Search.filter).GetEnumerator()).add($param.Key, $param.value)
 
                             continue
                         }
-                        if ($param.key -eq 'returnProperties')
-                        {
+                        if ($param.key -eq 'returnProperties') {
                             continue
                         }
 
@@ -157,21 +140,19 @@ CommandID has an Alias of _id. This means you can leverage the PowerShell pipeli
 
                         if (($param.Value -match '.+?\*$') -and ($param.Value -match '^\*.+?')) {
                             # Front and back wildcard
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)$Value" })
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)$([regex]::Escape($Value))" })
                         } elseif ($param.Value -match '.+?\*$') {
                             # Back wildcard
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)^$Value" })
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)^$([regex]::Escape($Value))" })
                         } elseif ($param.Value -match '^\*.+?') {
                             # Front wild card
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)$Value`$" })
-                        } elseif($param.Value -match '^[-+]?\d+$'){
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)$([regex]::Escape($Value))`$" })
+                        } elseif ($param.Value -match '^[-+]?\d+$') {
                             # Check for integer value
-                            (($Search.filter).GetEnumerator()).add($param.Key, $Value)
-                        }  else {
-                            $filteredSearch = [regex]::Escape($Value)
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)(^$filteredSearch`$)" })
+                            (($Search.filter).GetEnumerator()).add($param.Key, $([regex]::Escape($Value)))
+                        } else {
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)(^$([regex]::Escape($Value))`$)" })
                         }
-
 
                     } # End foreach
 
@@ -191,31 +172,25 @@ CommandID has an Alias of _id. This means you can leverage the PowerShell pipeli
                     $Counter += $limit
                 } #End While
 
-    } # End Search
-    ByID
-    {
-        foreach ($uid in $CommandID)
-            {
-                $URL = "$JCUrlBasePath/api/commands/$uid"
-                Write-Debug $URL
-                $CommandResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
-                $null = $resultsArrayList.add($CommandResults)
+            } # End Search
+            ByID {
+                foreach ($uid in $CommandID) {
+                    $URL = "$JCUrlBasePath/api/commands/$uid"
+                    Write-Debug $URL
+                    $CommandResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
+                    $null = $resultsArrayList.add($CommandResults)
 
+                }
             }
+        }# End Switch
     }
-}# End Switch
-    }
-    end
-    {
+    end {
 
-        switch ($PSCmdlet.ParameterSetName)
-        {
-            SearchFilter
-            {
+        switch ($PSCmdlet.ParameterSetName) {
+            SearchFilter {
                 return $resultsArrayList.Results | Select-Object -Property *
             }
-            ByID
-            {
+            ByID {
                 return $resultsArrayList | Select-Object -Property *
             }
 
