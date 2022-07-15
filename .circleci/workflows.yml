@@ -511,6 +511,10 @@ commands:
                     Write-Host "Setting Up Pester Linux Org"
                     . "./PowerShell/Deploy/Setup-ParallelPesterOrg.ps1" -JumpCloudApiKey << parameters.JumpCloudApiKeyLinux >> -JumpCloudApiKeyMsp << parameters.JumpCloudApiKeyMsp >> -RequiredModulesRepo << parameters.RequiredModulesRepo >>
                   }
+            - persist_to_workspace:
+                root: .
+                paths:
+                  - .
   invoke-pester:
     parameters:
       JumpCloudApiKey:
