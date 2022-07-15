@@ -48,19 +48,19 @@ If (-Not ${CIRCLECI}) {
 
     Write-Host ('[status]Pester Org Should Be setup already')
     # Import Org Variables:
-    If ($CIRCLE_JOB -match 'Windows') {
+    If ($Env:CIRCLE_JOB -match 'Windows') {
         # Windows Org
         Get-Content -Path ./PesterTestWindows.cache.json | ConvertFrom-Json -Depth 99
         foreach ($item in $items ) {
             Set-Variable -Name:("$($item.Name)") -Value:($item.Value) -Scope:('Global')
         }
-    } elseIf ($CIRCLE_JOB -match 'Mac') {
+    } elseIf ($Env:CIRCLE_JOB -match 'Mac') {
         # Mac Org
         $items = Get-Content -Path ./PesterTestMac.cache.json | ConvertFrom-Json -Depth 99
         foreach ($item in $items ) {
             Set-Variable -Name:("$($item.Name)") -Value:($item.Value) -Scope:('Global')
         }
-    } elseIf ($CIRCLE_JOB -match 'Linux') {
+    } elseIf ($Env:CIRCLE_JOB -match 'Linux') {
         # Linux Org
         Get-Content -Path ./PesterTestLinux.cache.json | ConvertFrom-Json -Depth 99
         foreach ($item in $items ) {
