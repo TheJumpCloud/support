@@ -499,23 +499,14 @@ commands:
                 no_output_timeout: 30m
                 command: |
                   $ErrorActionPreference = 'stop'
-                  # Load Get-Config.ps1
-                  . "./PowerShell/Deploy/Get-Config.ps1" -RequiredModulesRepo << parameters.RequiredModulesRepo >>
-                  # Load Private Functions
-                  Get-ChildItem -Path:("./PowerShell/JumpCloud Module/Private/*.ps1") -Recurse | ForEach-Object { . $_.FullName }
-                  # Load Helper Functions
-                  . "./PowerShell/JumpCloud Module/Tests/HelperFunctions.ps1"
                   if (${CIRCLE_NODE_INDEX} = 0){
-                    . "./PowerShell/JumpCloud Module/Tests/DefineEnvironment.ps1" -JumpCloudApiKey << parameters.JumpCloudApiKeyWindows >> -JumpCloudApiKeyMsp << parameters.JumpCloudApiKeyMsp >> -RequiredModulesRepo << parameters.RequiredModulesRepo >>
-                    . "./PowerShell/JumpCloud Module/Tests/SetupOrg.ps1" -JumpCloudApiKey << parameters.JumpCloudApiKeyWindows >> -JumpCloudApiKeyMsp << parameters.JumpCloudApiKeyMsp >>
+                    . "./PowerShell/Deploy/Setup-ParallelPesterOrg.ps1" -JumpCloudApiKey << parameters.JumpCloudApiKeyWindows >> -JumpCloudApiKeyMsp << parameters.JumpCloudApiKeyMsp >> -RequiredModulesRepo << parameters.RequiredModulesRepo >>
                   }
                   elseif (${CIRCLE_NODE_INDEX} = 1){
-                    . "./PowerShell/JumpCloud Module/Tests/DefineEnvironment.ps1" -JumpCloudApiKey << parameters.JumpCloudApiKeyLinux >> -JumpCloudApiKeyMsp << parameters.JumpCloudApiKeyMsp >> -RequiredModulesRepo << parameters.RequiredModulesRepo >>
-                    . "./PowerShell/JumpCloud Module/Tests/SetupOrg.ps1" -JumpCloudApiKey << parameters.JumpCloudApiKeyLinux >> -JumpCloudApiKeyMsp << parameters.JumpCloudApiKeyMsp >>
+                    . "./PowerShell/Deploy/Setup-ParallelPesterOrg.ps1" -JumpCloudApiKey << parameters.JumpCloudApiKeyMac >> -JumpCloudApiKeyMsp << parameters.JumpCloudApiKeyMsp >> -RequiredModulesRepo << parameters.RequiredModulesRepo >>
                   }
                   elseif (${CIRCLE_NODE_INDEX} = 2){
-                    . "./PowerShell/JumpCloud Module/Tests/DefineEnvironment.ps1" -JumpCloudApiKey << parameters.JumpCloudApiKeyMac >> -JumpCloudApiKeyMsp << parameters.JumpCloudApiKeyMsp >> -RequiredModulesRepo << parameters.RequiredModulesRepo >>
-                    . "./PowerShell/JumpCloud Module/Tests/SetupOrg.ps1" -JumpCloudApiKey << parameters.JumpCloudApiKeyMac >> -JumpCloudApiKeyMsp << parameters.JumpCloudApiKeyMsp >>
+                    . "./PowerShell/Deploy/Setup-ParallelPesterOrg.ps1" -JumpCloudApiKey << parameters.JumpCloudApiKeyLinux >> -JumpCloudApiKeyMsp << parameters.JumpCloudApiKeyMsp >> -RequiredModulesRepo << parameters.RequiredModulesRepo >>
                   }
   invoke-pester:
     parameters:
