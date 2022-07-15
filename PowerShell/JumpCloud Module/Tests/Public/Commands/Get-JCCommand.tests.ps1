@@ -130,7 +130,7 @@ Describe -Tag:('JCCommand') "Case Insensitivity Tests" {
                 $randomParamInput | Should -Be $InvokeCommand.$param
 
                 # Set to original
-                Remove-JCCommand -CommandID $newCommand.id
+                Remove-JCCommand -CommandID $newCommand.id -force
             }
 
         }
