@@ -50,13 +50,22 @@ If (-Not ${CIRCLECI}) {
     # Import Org Variables:
     If ($CIRCLE_JOB -match 'Windows') {
         # Windows Org
-        Get-Content -Path ./PesterTestWindows.cache.json | ConvertFrom-Json -Depth 99 | Set-Variable -Scope Global
+        Get-Content -Path ./PesterTestWindows.cache.json | ConvertFrom-Json -Depth 99
+        foreach ($item in $items ) {
+            Set-Variable -Name:("$($item.Name)") -Value:($item.Value) -Scope:('Global')
+        }
     } elseIf ($CIRCLE_JOB -match 'Mac') {
         # Mac Org
-        Get-Content -Path ./PesterTestMac.cache.json | ConvertFrom-Json -Depth 99 | Set-Variable -Scope Global
+        $items = Get-Content -Path ./PesterTestMac.cache.json | ConvertFrom-Json -Depth 99
+        foreach ($item in $items ) {
+            Set-Variable -Name:("$($item.Name)") -Value:($item.Value) -Scope:('Global')
+        }
     } elseIf ($CIRCLE_JOB -match 'Linux') {
         # Linux Org
-        Get-Content -Path ./PesterTestLinux.cache.json | ConvertFrom-Json -Depth 99 | Set-Variable -Scope Global
+        Get-Content -Path ./PesterTestLinux.cache.json | ConvertFrom-Json -Depth 99
+        foreach ($item in $items ) {
+            Set-Variable -Name:("$($item.Name)") -Value:($item.Value) -Scope:('Global')
+        }
     }
 }
 $PesterResultsFileXmldir = "$PSScriptRoot/test_results/"

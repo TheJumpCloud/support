@@ -500,12 +500,15 @@ commands:
                 command: |
                   $ErrorActionPreference = 'stop'
                   if (${CIRCLE_NODE_INDEX} = 0){
+                    Write-Host "Setting Up Pester Windows Org"
                     . "./PowerShell/Deploy/Setup-ParallelPesterOrg.ps1" -JumpCloudApiKey << parameters.JumpCloudApiKeyWindows >> -JumpCloudApiKeyMsp << parameters.JumpCloudApiKeyMsp >> -RequiredModulesRepo << parameters.RequiredModulesRepo >>
                   }
                   elseif (${CIRCLE_NODE_INDEX} = 1){
+                    Write-Host "Setting Up Pester Mac Org"
                     . "./PowerShell/Deploy/Setup-ParallelPesterOrg.ps1" -JumpCloudApiKey << parameters.JumpCloudApiKeyMac >> -JumpCloudApiKeyMsp << parameters.JumpCloudApiKeyMsp >> -RequiredModulesRepo << parameters.RequiredModulesRepo >>
                   }
                   elseif (${CIRCLE_NODE_INDEX} = 2){
+                    Write-Host "Setting Up Pester Linux Org"
                     . "./PowerShell/Deploy/Setup-ParallelPesterOrg.ps1" -JumpCloudApiKey << parameters.JumpCloudApiKeyLinux >> -JumpCloudApiKeyMsp << parameters.JumpCloudApiKeyMsp >> -RequiredModulesRepo << parameters.RequiredModulesRepo >>
                   }
   invoke-pester:

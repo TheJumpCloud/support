@@ -14,4 +14,5 @@ Get-ChildItem -Path:("$PSScriptRoot/../JumpCloud Module/Private/*.ps1") -Recurse
 . "$PSScriptRoot/../JumpCloud Module/Tests/DefineEnvironment.ps1" -JumpCloudApiKey $JumpCloudApiKey -JumpCloudApiKeyMsp $JumpCloudApiKeyMsp -RequiredModulesRepo $RequiredModulesRepo
 . "$PSScriptRoot/../JumpCloud Module/Tests/SetupOrg.ps1" -JumpCloudApiKey $JumpCloudApiKey -JumpCloudApiKeyMsp $JumpCloudApiKeyMsp
 # Export Variables for pester tests
-Get-Variable -Name "PesterParams*" | ConvertTo-Json -Depth 99 | Out-File -Path "$PSScriptRoot/../JumpCloud Module/Tests/$($PesterParams_Org.displayName.Replace(" ", '')).cache.json"
+Get-Variable -Name "PesterParams*" | ConvertTo-Json -Depth 99 | Out-File -Path "$PSScriptRoot/../JumpCloud Module/Tests/$($PesterParams_Org.displayName.Replace(' ', '')).cache.json"
+Write-Host "Sucessfully Setup $($PesterParams_Org.displayName.Replace(' ', '')) Org"
