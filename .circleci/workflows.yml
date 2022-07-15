@@ -514,7 +514,7 @@ commands:
             - persist_to_workspace:
                 root: .
                 paths:
-                  - "./PowerShell/JumpCloud Module/Tests/*.cache.json.ps1"
+                  - ./PowerShell/JumpCloud Module/Tests/*.cache.json
   invoke-pester:
     parameters:
       JumpCloudApiKey:
