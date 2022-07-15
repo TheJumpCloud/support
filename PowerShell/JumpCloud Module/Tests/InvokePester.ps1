@@ -47,6 +47,12 @@ If (-Not $Env:CIRCLECI) {
     . ("$PSScriptRoot/SetupOrg.ps1") -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp)
 } else {
     Write-Host ('[status]Pester Org Should Be setup already')
+    # Load private functions
+    Write-Host ('[status]Load private functions: ' + "$PSScriptRoot/../Private/*.ps1")
+    Get-ChildItem -Path:("$PSScriptRoot/../Private/*.ps1") -Recurse | ForEach-Object { . $_.FullName }
+    # Load HelperFunctions
+    Write-Host ('[status]Load HelperFunctions: ' + "$PSScriptRoot/HelperFunctions.ps1")
+    . ("$PSScriptRoot/HelperFunctions.ps1")
     # Import Org Variables:
     If ($Env:CIRCLE_JOB -match 'Windows') {
         # Windows Org
