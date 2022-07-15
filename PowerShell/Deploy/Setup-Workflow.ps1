@@ -28,7 +28,7 @@ If (($IncludeTagList -eq '*') -OR (-not ($IncludeTagList))) {
 }
 
 $numItems = $tags.Count
-$numBuckets = ${CIRCLE_NODE_TOTAL} # Get Parallelism from CircleCI Environment
+$numBuckets = $Env:CIRCLE_NODE_TOTAL # Get Parallelism from CircleCI Environment
 
 # declare CI Index Array. Tests will reference this to run correct tests
 $CIindex = @()
@@ -54,4 +54,4 @@ for ($i = 0; $i -lt $numBuckets; $i++) {
     $CIindex += , ($CIIndexList)
 }
 # Tests returned here should be split for parallel runs:
-return $CIindex["${CIRCLE_NODE_INDEX}"]
+return $CIindex[$Env:CIRCLE_NODE_INDEX]
