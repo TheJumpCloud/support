@@ -357,7 +357,7 @@ Describe -Tag:('JCSystem') "Case Insensitivity Tests" {
     }
     It "Searches parameters after setting values to include special characters like \|{[()^$.#" {
         $commandParameters = (GCM Get-JCSystem).Parameters
-        $gmr = Get-JCSystem -SystemID $PesterParams_SystemWindows._id | GM
+        $gmr = Get-JCSystem -SystemID $($PesterParams_SystemWindows._id) | GM
         # Get parameters that are not ID, ORGID and have a string following the param name
         $parameters = $gmr | Where-Object { ($_.Definition -notmatch "organization") -And ($_.Definition -notmatch "id") -And ($_.Definition -match "string\s\w+=(\w+)") -And ($_.Name -In $commandParameters.Keys) }
 
