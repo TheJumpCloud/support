@@ -1,5 +1,4 @@
-Function Remove-JCSystem ()
-{
+Function Remove-JCSystem () {
     [CmdletBinding(DefaultParameterSetName = 'warn')]
 
     param
@@ -15,11 +14,11 @@ The SystemID will be the 24 character string populated for the _id field. System
         [Switch]$force
     )
 
-    begin
-
-    {
+    begin {
         Write-Debug 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {Connect-JConline}
+        if ($JCAPIKEY.length -ne 40) {
+            Connect-JConline
+        }
 
         Write-Debug 'Populating API headers'
         $hdrs = @{
@@ -30,33 +29,25 @@ The SystemID will be the 24 character string populated for the _id field. System
 
         }
 
-        if ($JCOrgID)
-        {
+        if ($JCOrgID) {
             $hdrs.Add('x-org-id', "$($JCOrgID)")
         }
 
         $deletedArray = @()
-        $HostNameHash = Get-Hash_SystemID_HostName
+        $HostNameHash = Get-DynamicHash -Object System -returnProperties hostname
 
     }
-    process
-
-    {
-        if ($PSCmdlet.ParameterSetName -eq 'warn')
-
-        {
-            $Hostname = $HostnameHash.Get_Item($SystemID)
+    process {
+        if ($PSCmdlet.ParameterSetName -eq 'warn') {
+            $Hostname = $HostnameHash.Get_Item($SystemID).hostname
             Write-Warning "Are you sure you wish to delete system: $Hostname ?" -WarningAction Inquire
 
-            try
-            {
+            try {
 
                 $URI = "$JCUrlBasePath/api/systems/$SystemID"
                 $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent:(Get-JCUserAgent)
                 $Status = 'Deleted'
-            }
-            catch
-            {
+            } catch {
                 $Status = $_.ErrorDetails
             }
 
@@ -71,18 +62,14 @@ The SystemID will be the 24 character string populated for the _id field. System
 
         }
 
-        elseif ($PSCmdlet.ParameterSetName -eq 'force')
-        {
+        elseif ($PSCmdlet.ParameterSetName -eq 'force') {
 
-            try
-            {
+            try {
 
                 $URI = "$JCUrlBasePath/api/systems/$SystemID"
                 $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent:(Get-JCUserAgent)
                 $Status = 'Deleted'
-            }
-            catch
-            {
+            } catch {
                 $Status = $_.ErrorDetails
             }
 
@@ -98,8 +85,7 @@ The SystemID will be the 24 character string populated for the _id field. System
         }
     }
 
-    end
-    {
+    end {
 
         return $deletedArray
 

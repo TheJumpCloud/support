@@ -1,16 +1,16 @@
-Function Get-JCPolicyTargetGroup
-{
+Function Get-JCPolicyTargetGroup {
     [CmdletBinding(DefaultParameterSetName = 'ById')]
     param (
         [Parameter(ParameterSetName = 'ByName', HelpMessage = 'Use the -ByName parameter when you want to query a specific policy. The -ByName SwitchParameter will set the ParameterSet to ''ByName'' which queries one JumpCloud policy at a time.')][Switch]$ByName,
         [Parameter(Mandatory = $True, ValueFromPipelineByPropertyName = $True, Position = 0, ParameterSetName = 'ById', HelpMessage = 'The PolicyID of the JumpCloud policy you wish to query.')][ValidateNotNullOrEmpty()][Alias('_id', 'id')][String]$PolicyID,
         [Parameter(Mandatory = $True, ValueFromPipelineByPropertyName = $True, Position = 0, ParameterSetName = 'ByName', HelpMessage = 'The Name of the JumpCloud policy you wish to query.')][ValidateNotNullOrEmpty()][Alias('Name')][String]$PolicyName
     )
-    Begin
-    {
+    Begin {
 
         Write-Verbose 'Verifying JCAPI Key'
-        If ($JCAPIKEY.length -ne 40) { Connect-JCOnline }
+        If ($JCAPIKEY.length -ne 40) {
+            Connect-JCOnline 
+        }
 
         Write-Verbose 'Populating API headers'
         $hdrs = @{
@@ -21,8 +21,7 @@ Function Get-JCPolicyTargetGroup
 
         }
 
-        if ($JCOrgID)
-        {
+        if ($JCOrgID) {
             $hdrs.Add('x-org-id', "$($JCOrgID)")
         }
 
@@ -31,25 +30,25 @@ Function Get-JCPolicyTargetGroup
         $resultsArrayList = New-Object System.Collections.ArrayList
         $URL_Template = "{0}/api/v2/policies/{1}/systemgroups"
         Write-Verbose 'Populating SystemGroupNameHash'
-        $SystemGroupNameHash = Get-Hash_ID_SystemGroupName
+        $SystemGroupNameHash = Get-DynamicHash -Object Group -GroupType System -returnProperties name
     }
-    Process
-    {
-        switch ($PSCmdlet.ParameterSetName)
-        {
-            'ByName' { $Policy = Get-JCPolicy -Name:($PolicyName) }
-            'ById' { $Policy = Get-JCPolicy -PolicyID:($PolicyID) }
+    Process {
+        switch ($PSCmdlet.ParameterSetName) {
+            'ByName' {
+                $Policy = Get-JCPolicy -Name:($PolicyName) 
+            }
+            'ById' {
+                $Policy = Get-JCPolicy -PolicyID:($PolicyID) 
+            }
         }
-        If ($Policy)
-        {
+        If ($Policy) {
             $PolicyId = $Policy.id
             $PolicyName = $Policy.Name
             $URL = $URL_Template -f $JCUrlBasePath, $PolicyID
             $Results = Invoke-JCApi -Method:('GET') -Paginate:($true) -Url:($URL)
-            ForEach ($Result In $Results)
-            {
+            ForEach ($Result In $Results) {
                 $GroupID = $Result.id
-                $GroupName = $SystemGroupNameHash.($GroupID)
+                $GroupName = $SystemGroupNameHash[$GroupID].name
                 $OutputObject = [PSCustomObject]@{
                     'PolicyID'   = $PolicyID
                     'PolicyName' = $PolicyName
@@ -58,14 +57,11 @@ Function Get-JCPolicyTargetGroup
                 }
                 $resultsArrayList.Add($OutputObject) | Out-Null
             } # end foreach
-        }
-        Else
-        {
+        } Else {
             Throw ('Policy provided does not exist. Run "Get-JCPolicy" to see a list of all your JumpCloud policies.')
         }
     } # end process
-    End
-    {
+    End {
         Return $resultsArrayList
 
     }

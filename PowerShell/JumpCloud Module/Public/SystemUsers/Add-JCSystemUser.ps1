@@ -1,5 +1,4 @@
-Function Add-JCSystemUser ()
-{
+Function Add-JCSystemUser () {
     [CmdletBinding(DefaultParameterSetName = 'ByName')]
 
     param
@@ -55,11 +54,11 @@ SystemID has an Alias of _id. This means you can leverage the PowerShell pipelin
 
     )
 
-    begin
-
-    {
+    begin {
         Write-Verbose 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {Connect-JConline}
+        if ($JCAPIKEY.length -ne 40) {
+            Connect-JConline
+        }
 
         Write-Verbose 'Populating API headers'
         $hdrs = @{
@@ -70,57 +69,47 @@ SystemID has an Alias of _id. This means you can leverage the PowerShell pipelin
 
         }
 
-        if ($JCOrgID)
-        {
+        if ($JCOrgID) {
             $hdrs.Add('x-org-id', "$($JCOrgID)")
         }
 
         Write-Verbose 'Initilizing SystemUpdateArray'
         $SystemUpdateArray = @()
 
-        if ($PSCmdlet.ParameterSetName -eq 'ByName')
-        {
+        if ($PSCmdlet.ParameterSetName -eq 'ByName') {
             Write-Verbose $PSCmdlet.ParameterSetName
 
             Write-Verbose 'Populating HostNameHash'
-            $HostNameHash = Get-Hash_SystemID_HostName
-
-            Write-Verbose 'Populating UserNameHash'
-            $UserNameHash = Get-Hash_UserName_ID
+            $HostNameHash = Get-DynamicHash -Object System -returnProperties hostname
         }
 
-        Write-Verbose 'Populating SudoHash'
-        $SudoHash = Get-Hash_ID_Sudo
+        Write-Verbose 'Populating UserHash'
+        $UserHash = Get-DynamicHash -Object User -returnProperties sudo, username
 
         Write-Verbose $PSCmdlet.ParameterSetName
     }
 
-    process
+    process {
+        if ($PSCmdlet.ParameterSetName -eq 'ByName') {
+            if (!$HostNameHash.containsKey($SystemID)) {
+                Throw "SystemID does not exist. Run 'Get-JCsystem | select Hostname, _id' to see a list of all your JumpCloud systems and the associated _id."
+            }
 
-    {
-        if ($PSCmdlet.ParameterSetName -eq 'ByName')
-        {
-            if ($HostNameHash.containsKey($SystemID)) {}
+            if ($UserHash.Values.username -notcontains ($Username)) {
+                Throw "Username does not exist. Run 'Get-JCUser | select username' to see a list of all your JumpCloud users."
+            }
 
-            else { Throw "SystemID does not exist. Run 'Get-JCsystem | select Hostname, _id' to see a list of all your JumpCloud systems and the associated _id."}
+            $UserID = $UserHash.GetEnumerator().Where({ $_.Value.username -contains ($Username) }).Name
 
-            if ($UserNameHash.containsKey($Username)) {}
+            $HostName = $HostNameHash.Get_Item($SystemID).hostname
 
-            else { Throw "Username does not exist. Run 'Get-JCUser | select username' to see a list of all your JumpCloud users."}
+            $GlobalAdmin = $UserHash.Get_Item($UserID).sudo
 
-            $UserID = $UserNameHash.Get_Item($Username)
-
-            $HostName = $HostNameHash.Get_Item($SystemID)
-
-            $GlobalAdmin = $SudoHash.Get_Item($UserID)
-
-            if ($GlobalAdmin -eq $true)
-            {
+            if ($GlobalAdmin -eq $true) {
                 $Administrator = $true
             }
 
-            if ($Administrator -eq $true)
-            {
+            if ($Administrator -eq $true) {
 
                 $body = @{
 
@@ -138,8 +127,7 @@ SystemID has an Alias of _id. This means you can leverage the PowerShell pipelin
 
             }
 
-            else
-            {
+            else {
 
                 $body = @{
 
@@ -159,14 +147,11 @@ SystemID has an Alias of _id. This means you can leverage the PowerShell pipelin
             Write-Verbose $URL
 
 
-            try
-            {
+            try {
                 $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent)
                 $Status = 'Added'
 
-            }
-            catch
-            {
+            } catch {
                 $Status = $_.ErrorDetails
             }
 
@@ -184,18 +169,15 @@ SystemID has an Alias of _id. This means you can leverage the PowerShell pipelin
 
         }
 
-        elseif ($PSCmdlet.ParameterSetName -eq 'ByID')
-        {
+        elseif ($PSCmdlet.ParameterSetName -eq 'ByID') {
 
-            $GlobalAdmin = $SudoHash.Get_Item($UserID)
+            $GlobalAdmin = $UserHash.Get_Item($UserID).sudo
 
-            if ($GlobalAdmin -eq $true)
-            {
+            if ($GlobalAdmin -eq $true) {
                 $Administrator = $true
             }
 
-            if ($Administrator -eq $true)
-            {
+            if ($Administrator -eq $true) {
 
                 $body = @{
 
@@ -213,8 +195,7 @@ SystemID has an Alias of _id. This means you can leverage the PowerShell pipelin
 
             }
 
-            else
-            {
+            else {
 
                 $body = @{
 
@@ -233,14 +214,11 @@ SystemID has an Alias of _id. This means you can leverage the PowerShell pipelin
             $URL = "$JCUrlBasePath/api/v2/systems/$SystemID/associations"
             Write-Verbose $URL
 
-            try
-            {
+            try {
                 $SystemUpdate = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent)
                 $Status = 'Added'
 
-            }
-            catch
-            {
+            } catch {
                 $Status = $_.ErrorDetails
             }
 
@@ -256,9 +234,7 @@ SystemID has an Alias of _id. This means you can leverage the PowerShell pipelin
         }
     }
 
-    end
-
-    {
+    end {
         return $SystemUpdateArray
     }
 

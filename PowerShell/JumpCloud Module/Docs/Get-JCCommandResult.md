@@ -14,7 +14,7 @@ Returns all JumpCloud Command Results within a JumpCloud tenant or a single Jump
 
 ### ReturnAll (Default)
 ```
-Get-JCCommandResult [-Skip <Int32>] [-Limit <Int32>] [<CommonParameters>]
+Get-JCCommandResult [<CommonParameters>]
 ```
 
 ### ByID
@@ -22,14 +22,14 @@ Get-JCCommandResult [-Skip <Int32>] [-Limit <Int32>] [<CommonParameters>]
 Get-JCCommandResult [-CommandResultID] <String> [-ByID] [<CommonParameters>]
 ```
 
+### ByCommandID
+```
+Get-JCCommandResult [-ByCommandID] [-CommandID <String>] [<CommonParameters>]
+```
+
 ### TotalCount
 ```
 Get-JCCommandResult [-TotalCount] [<CommonParameters>]
-```
-
-### MaxResults
-```
-Get-JCCommandResult [-Skip <Int32>] [-Limit <Int32>] [-MaxResults <Int32>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -90,6 +90,21 @@ Skips returning the first 100 command results and only returns the 10 results af
 
 ## PARAMETERS
 
+### -ByCommandID
+Use the -ByCommandID or -ByWorkflowID parameter when you want to query the results of a specific Command. The -ByCommandID or -ByWorkflowID SwitchParameter will set the ParameterSet to 'ByCommandID' which queries all JumpCloud Command Results for that particular Command.
+
+```yaml
+Type: System.Management.Automation.SwitchParameter
+Parameter Sets: ByCommandID
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByValue)
+Accept wildcard characters: False
+```
+
 ### -ByID
 Use the -ByID parameter when you want to query the contents of a specific Command Result or if the -CommandResultID is being passed over the pipeline to return the full contents of a JumpCloud Command Result.
 The -ByID SwitchParameter will set the ParameterSet to 'ByID' which queries one JumpCloud Command Result at a time.
@@ -106,6 +121,21 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -CommandID
+The _id of the JumpCloud Command you wish to query.
+
+```yaml
+Type: System.String
+Parameter Sets: ByCommandID
+Aliases: WorkflowID
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName, ByValue)
+Accept wildcard characters: False
+```
+
 ### -CommandResultID
 The _id of the JumpCloud Command Result you wish to query.
 
@@ -117,37 +147,7 @@ Aliases: _id, id
 Required: True
 Position: 0
 Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -Limit
-How many command results to return in each API call.
-
-```yaml
-Type: System.Int32
-Parameter Sets: ReturnAll, MaxResults
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -MaxResults
-The maximum number of results to return.
-
-```yaml
-Type: System.Int32
-Parameter Sets: MaxResults
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
+Accept pipeline input: True (ByPropertyName, ByValue)
 Accept wildcard characters: False
 ```
 
@@ -166,27 +166,14 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Skip
-The number of command results to skip over before returning results.
-
-```yaml
-Type: System.Int32
-Parameter Sets: ReturnAll, MaxResults
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
 ### System.String
+
+### System.Management.Automation.SwitchParameter
 
 ## OUTPUTS
 

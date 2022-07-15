@@ -1,5 +1,4 @@
-Function Set-JCUser ()
-{
+Function Set-JCUser () {
 
     [CmdletBinding(DefaultParameterSetName = 'Username')]
     param
@@ -231,7 +230,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
         $external_source_type,
 
         [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'A string value for putting the account into an activated or suspended state')]
-        [ValidateSet('ACTIVATED','SUSPENDED')]
+        [ValidateSet('ACTIVATED', 'SUSPENDED')]
         [string]
         $state,
 
@@ -256,16 +255,13 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
     )
 
-    DynamicParam
-    {
+    DynamicParam {
         $dict = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
-        If ((Get-PSCallStack).Command -like '*MarkdownHelp')
-        {
+        If ((Get-PSCallStack).Command -like '*MarkdownHelp') {
             $enable_user_portal_multifactor = $true
             $NumberOfCustomAttributes = 2
         }
-        If ($enable_user_portal_multifactor -eq $True)
-        {
+        If ($enable_user_portal_multifactor -eq $True) {
             # Set the dynamic parameters' name
             $ParamName = 'EnrollmentDays'
             # Create the collection of attributes
@@ -286,14 +282,12 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
         }
 
-        If ($NumberOfCustomAttributes)
-        {
+        If ($NumberOfCustomAttributes) {
 
             [int]$NewParams = 0
             [int]$ParamNumber = 1
 
-            while ($NewParams -ne $NumberOfCustomAttributes)
-            {
+            while ($NewParams -ne $NumberOfCustomAttributes) {
 
                 $attr = New-Object System.Management.Automation.ParameterAttribute
                 $attr.HelpMessage = "Enter an attribute name"
@@ -323,13 +317,13 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
         return $dict
     }
 
-    begin
-
-    {
+    begin {
         Write-Debug "Parameter set $($PSCmdlet.ParameterSetName)"
 
         Write-Debug 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) { Connect-JConline }
+        if ($JCAPIKEY.length -ne 40) {
+            Connect-JConline
+        }
 
         $hdrs = @{
 
@@ -338,17 +332,14 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
             'X-API-KEY'    = $JCAPIKEY
         }
 
-        if ($JCOrgID)
-        {
+        if ($JCOrgID) {
             $hdrs.Add('x-org-id', "$($JCOrgID)")
         }
 
         $UpdatedUserArray = @()
 
-        if ($PSCmdlet.ParameterSetName -ne 'ByID')
-
-        {
-            $UserHash = Get-Hash_UserName_ID
+        if ($PSCmdlet.ParameterSetName -ne 'ByID') {
+            $UserHash = Get-DynamicHash -Object User -returnProperties username
             $UserCount = ($UserHash).Count
             Write-Debug "Populated UserHash with $UserCount users"
         }
@@ -371,15 +362,12 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
         $ObjectParams.Add("work_mobile_number", "phoneNumbers")
         $ObjectParams.Add("work_fax_number", "phoneNumbers")
 
-        if ($PSCmdlet.ParameterSetName -eq 'ByID')
-
-        {
+        if ($PSCmdlet.ParameterSetName -eq 'ByID') {
             $URL_ID = $UserID
         }
 
         # Convert recoveryEmail to an object
-        if ($recoveryEmail)
-        {
+        if ($recoveryEmail) {
             $recoveryEmailAddress = @{
                 'address' = $recoveryEmail
             }
@@ -388,21 +376,16 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
     }
 
 
-    process
-    {
+    process {
         $body = @{ }
 
-        if ($PSCmdlet.ParameterSetName -ne 'ByID')
-        {
-            if ($UserHash.ContainsKey($Username))
-
-            {
-                $URL_ID = $UserHash.Get_Item($Username)
+        if ($PSCmdlet.ParameterSetName -ne 'ByID') {
+            if ($UserHash.Values.username -contains ($Username)) {
+                $URL_ID = $UserHash.GetEnumerator().Where({ $_.Value.username -contains ($Username) }).Name
                 Write-Debug $URL_ID
             }
 
-            else
-            {
+            else {
                 Throw "$Username does not exist. Run 'Get-JCUser | Select-Object username' to see a list of all your JumpCloud users."
             }
 
@@ -411,33 +394,27 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
         $UpdateParms = $PSBoundParameters.GetEnumerator() | Select-Object Key
         $UpdateObjectParams = @{ }
 
-        foreach ($param in $UpdateParms)
-        {
+        foreach ($param in $UpdateParms) {
 
-            if ($ObjectParams.ContainsKey($param.key))
-            {
+            if ($ObjectParams.ContainsKey($param.key)) {
                 $UpdateObjectParams.Add($param.key, $ObjectParams.($param.key))
             }
 
         }
 
-        if ($UpdateObjectParams.Count -gt 0)
-        {
+        if ($UpdateObjectParams.Count -gt 0) {
             $objectCheck = $UpdateObjectParams.Values | Select-Object -Unique
 
             $UserObjectCheck = Get-JCUser -userid $URL_ID
 
-            if ($objectCheck.contains("phoneNumbers"))
-            {
+            if ($objectCheck.contains("phoneNumbers")) {
                 $phoneNumbers = @()
 
                 $UpdatedNumbers = @{ }
 
-                foreach ($param in $PSBoundParameters.GetEnumerator())
-                {
+                foreach ($param in $PSBoundParameters.GetEnumerator()) {
 
-                    if ($param.Key -like '*_number')
-                    {
+                    if ($param.Key -like '*_number') {
                         $Number = @{ }
                         $Number.Add("type", ($($param.Key -replace "_number", "")))
                         $Number.Add("number", $param.Value)
@@ -448,17 +425,12 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
                 }
 
-                foreach ($ExitingNumber in $UserObjectCheck.phoneNumbers)
-                {
-                    if ($UpdatedNumbers.ContainsKey($ExitingNumber.type))
-                    {
+                foreach ($ExitingNumber in $UserObjectCheck.phoneNumbers) {
+                    if ($UpdatedNumbers.ContainsKey($ExitingNumber.type)) {
                         Continue
-                    }
-                    else
-                    {
+                    } else {
                         $Number = @{ }
-                        if ($ExitingNumber.number)
-                        {
+                        if ($ExitingNumber.number) {
                             $Number.Add("type", $ExitingNumber.type )
                             $Number.Add("number", $ExitingNumber.number)
                             $phoneNumbers += $Number
@@ -471,8 +443,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                 $body.Add('phoneNumbers', $phoneNumbers)
             }
 
-            if ($objectCheck.contains("addresses"))
-            {
+            if ($objectCheck.contains("addresses")) {
                 $Addresses = @()
 
                 $WorkAddressParams = @{ }
@@ -481,19 +452,17 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                 $HomeAddressParams = @{ }
                 $HomeAddressParams.Add("type", "home")
 
-                foreach ($param in $PSBoundParameters.GetEnumerator())
-                {
-                    if ($param.Key -like '*_number')
-                    { continue }
+                foreach ($param in $PSBoundParameters.GetEnumerator()) {
+                    if ($param.Key -like '*_number') {
+                        continue
+                    }
 
-                    if ($param.Key -like 'work_*')
-                    {
+                    if ($param.Key -like 'work_*') {
                         $WorkAddressParams.Add(($($param.Key -split "_", 2)[1]), $param.Value)
                         continue
                     }
 
-                    if ($param.Key -like 'home_*')
-                    {
+                    if ($param.Key -like 'home_*') {
                         $HomeAddressParams.Add(($($param.Key -split "_", 2)[1]), $param.Value)
                         continue
                     }
@@ -512,18 +481,14 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                 $ExistingWorkHash.Add("streetAddress", $ExistingWorkParams.streetAddress)
 
 
-                foreach ($WorkParam in $ExistingWorkHash.GetEnumerator())
-                {
+                foreach ($WorkParam in $ExistingWorkHash.GetEnumerator()) {
 
-                    if ($WorkAddressParams.ContainsKey($WorkParam.key))
-                    {
+                    if ($WorkAddressParams.ContainsKey($WorkParam.key)) {
                         Continue
                     }
 
-                    else
-                    {
-                        if ($WorkParam.value)
-                        {
+                    else {
+                        if ($WorkParam.value) {
                             $WorkAddressParams.Add($WorkParam.key, $WorkParam.value)
                         }
 
@@ -545,18 +510,14 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                 $ExistingHomeHash.Add("region", $ExistingHomeParams.region)
                 $ExistingHomeHash.Add("streetAddress", $ExistingHomeParams.streetAddress)
 
-                foreach ($HomeParam in $ExistingHomeHash.GetEnumerator())
-                {
+                foreach ($HomeParam in $ExistingHomeHash.GetEnumerator()) {
 
-                    if ($HomeAddressParams.ContainsKey($HomeParam.key))
-                    {
+                    if ($HomeAddressParams.ContainsKey($HomeParam.key)) {
                         Continue
                     }
 
-                    else
-                    {
-                        if ($HomeParam.value)
-                        {
+                    else {
+                        if ($HomeParam.value) {
                             $HomeAddressParams.Add($HomeParam.key, $HomeParam.value)
                         }
                     }
@@ -569,106 +530,108 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
             }
 
         }
-        if ($PSCmdlet.ParameterSetName -eq 'Username' -and !$NumberOfCustomAttributes)
-        {
-            if ($UserHash.ContainsKey($Username))
-
-            {
-                $URL_ID = $UserHash.Get_Item($Username)
+        if ($PSCmdlet.ParameterSetName -eq 'Username' -and !$NumberOfCustomAttributes) {
+            if ($UserHash.Values.username -contains ($Username)) {
+                $URL_ID = $UserHash.GetEnumerator().Where({ $_.Value.username -contains ($Username) }).Name
                 Write-Debug $URL_ID
 
                 $URL = "$JCUrlBasePath/api/Systemusers/$URL_ID"
                 Write-Debug $URL
 
-                foreach ($param in $PSBoundParameters.GetEnumerator())
-                {
+                foreach ($param in $PSBoundParameters.GetEnumerator()) {
 
-                    if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }
+                    if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) {
+                        continue
+                    }
 
-                    if ($param.key -in ('Username', 'EnrollmentDays')) { continue }
+                    if ($param.key -in ('Username', 'EnrollmentDays')) {
+                        continue
+                    }
 
-                    if ($param.Key -like '*_number') { continue }
+                    if ($param.Key -like '*_number') {
+                        continue
+                    }
 
-                    if ($param.Key -like 'work_*') { continue }
+                    if ($param.Key -like 'work_*') {
+                        continue
+                    }
 
-                    if ($param.Key -like 'home_*') { continue }
+                    if ($param.Key -like 'home_*') {
+                        continue
+                    }
 
                     # Get the manager using manager username instead of userId
-                    if ("manager" -eq $param.Key)
-                    {
+                    if ("manager" -eq $param.Key) {
                         if ([System.String]::isNullOrEmpty($param.value)) {
                             continue
-                        }
-                        else {
+                        } else {
                             # First check if manager returns valid user with id
-                                # Regex match a userid
-                                $regexPattern = [Regex]'^[a-z0-9]{24}$'
-                                if (((Select-String -InputObject $param.Value -Pattern $regexPattern).Matches.value)::IsNullOrEmpty){
-                                    # if we have a 24 characterid, try to match the id using the search endpoint
-                                    $managerSearch = @{
-                                        searchFilter = @{
-                                            searchTerm = @($param.Value)
-                                            fields = @('id')
-                                        }
-                                    }
-                                    $managerResults = Search-JcSdkUser -Body:($managerSearch)
-                                    # Set managerValue; this is a validated user id
-                                    $managerValue = $managerResults.id
-                                    # if no value was returned, then assume the case this is actually a username and search
-                                    if (!$managerValue){
-                                        $managerSearch = @{
-                                            searchFilter = @{
-                                                searchTerm = @($param.Value)
-                                                fields = @('username')
-                                            }
-                                        }
-                                        $managerResults = Search-JcSdkUser -Body:($managerSearch)
-                                        # Set managerValue from the matched username
-                                        $managerValue = $managerResults.id
+                            # Regex match a userid
+                            $regexPattern = [Regex]'^[a-z0-9]{24}$'
+                            if (((Select-String -InputObject $param.Value -Pattern $regexPattern).Matches.value)::IsNullOrEmpty) {
+                                # if we have a 24 characterid, try to match the id using the search endpoint
+                                $managerSearch = @{
+                                    searchFilter = @{
+                                        searchTerm = @($param.Value)
+                                        fields     = @('id')
                                     }
                                 }
-                                # Use class mailaddress to check if $param.value is email
-                                try {
-                                    $null = [mailaddress]$EmailAddress
-                                    # Search for manager using email
+                                $managerResults = Search-JcSdkUser -Body:($managerSearch)
+                                # Set managerValue; this is a validated user id
+                                $managerValue = $managerResults.id
+                                # if no value was returned, then assume the case this is actually a username and search
+                                if (!$managerValue) {
                                     $managerSearch = @{
                                         searchFilter = @{
                                             searchTerm = @($param.Value)
-                                            fields = @('email')
-                                        }
-                                    }
-                                    $managerResults = Search-JcSdkUser -Body:($managerSearch)
-                                    # Set managerValue; this is a validated user id
-                                    $managerValue = $managerResults.id
-                                    # if no value was returned, then assume the case this is actually a username and search
-                                    if (!$managerValue){
-                                        $managerSearch = @{
-                                            searchFilter = @{
-                                                searchTerm = @($param.Value)
-                                                fields = @('username')
-                                            }
-                                        }
-                                        $managerResults = Search-JcSdkUser -Body:($managerSearch)
-                                        # Set managerValue from the matched username
-                                        $managerValue = $managerResults.id
-                                    }
-                                }
-                                catch {
-                                    # search the username in the search endpoint
-                                    $managerSearch = @{
-                                        searchFilter = @{
-                                            searchTerm = @($param.Value)
-                                            fields = @('username')
+                                            fields     = @('username')
                                         }
                                     }
                                     $managerResults = Search-JcSdkUser -Body:($managerSearch)
                                     # Set managerValue from the matched username
                                     $managerValue = $managerResults.id
                                 }
+                            }
+                            # Use class mailaddress to check if $param.value is email
+                            try {
+                                $null = [mailaddress]$EmailAddress
+                                # Search for manager using email
+                                $managerSearch = @{
+                                    searchFilter = @{
+                                        searchTerm = @($param.Value)
+                                        fields     = @('email')
+                                    }
+                                }
+                                $managerResults = Search-JcSdkUser -Body:($managerSearch)
+                                # Set managerValue; this is a validated user id
+                                $managerValue = $managerResults.id
+                                # if no value was returned, then assume the case this is actually a username and search
+                                if (!$managerValue) {
+                                    $managerSearch = @{
+                                        searchFilter = @{
+                                            searchTerm = @($param.Value)
+                                            fields     = @('username')
+                                        }
+                                    }
+                                    $managerResults = Search-JcSdkUser -Body:($managerSearch)
+                                    # Set managerValue from the matched username
+                                    $managerValue = $managerResults.id
+                                }
+                            } catch {
+                                # search the username in the search endpoint
+                                $managerSearch = @{
+                                    searchFilter = @{
+                                        searchTerm = @($param.Value)
+                                        fields     = @('username')
+                                    }
+                                }
+                                $managerResults = Search-JcSdkUser -Body:($managerSearch)
+                                # Set managerValue from the matched username
+                                $managerValue = $managerResults.id
+                            }
                             if ($managerValue) {
                                 $body.add($param.Key, $managerValue)
-                            }
-                            else {
+                            } else {
                                 $body.add($param.Key, $param.Value)
                             }
                             continue
@@ -677,14 +640,10 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                     $body.add($param.Key, $param.Value)
                 }
 
-                if ($enable_user_portal_multifactor -eq $True)
-                {
-                    if ($PSBoundParameters['EnrollmentDays'])
-                    {
+                if ($enable_user_portal_multifactor -eq $True) {
+                    if ($PSBoundParameters['EnrollmentDays']) {
                         $exclusionUntil = (Get-Date).AddDays($PSBoundParameters['EnrollmentDays'])
-                    }
-                    else
-                    {
+                    } else {
                         $exclusionUntil = (Get-Date).AddDays(7)
                     }
 
@@ -694,15 +653,12 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                     $body.Add('mfa', $mfa)
                 }
 
-                if ((($suspended -eq $true) -And ($state -eq "ACTIVATED")) -Or (($suspended -eq $false) -And ($state -eq "SUSPENDED"))){
+                if ((($suspended -eq $true) -And ($state -eq "ACTIVATED")) -Or (($suspended -eq $false) -And ($state -eq "SUSPENDED"))) {
                     throw "Cannot save conflicting state and suspended fields. (state=$state suspended=$suspended)"
-                }
-                elseif ($suspended -eq $true) {
+                } elseif ($suspended -eq $true) {
                     $body['state'] = 'SUSPENDED'
-                }
-                else {
-                    switch ($state)
-                    {
+                } else {
+                    switch ($state) {
                         SUSPENDED {
                             $body['suspended'] = $true
                         }
@@ -721,16 +677,15 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                 $UpdatedUserArray += $NewUserInfo
             }
 
-            else { Throw "$Username does not exist. Run 'Get-JCUser | Select-Object username' to see a list of all your JumpCloud users." }
+            else {
+                Throw "$Username does not exist. Run 'Get-JCUser | Select-Object username' to see a list of all your JumpCloud users."
+            }
 
         }
 
-        elseif ($PSCmdlet.ParameterSetName -eq 'Username' -and ($NumberOfCustomAttributes))
-        {
-            if ($UserHash.ContainsKey($Username))
-
-            {
-                $URL_ID = $UserHash.Get_Item($Username)
+        elseif ($PSCmdlet.ParameterSetName -eq 'Username' -and ($NumberOfCustomAttributes)) {
+            if ($UserHash.Values.username -contains ($Username)) {
+                $URL_ID = $UserHash.GetEnumerator().Where({ $_.Value.username -contains ($Username) }).Name
                 Write-Debug $URL_ID
 
                 $URL = "$JCUrlBasePath/api/Systemusers/$URL_ID"
@@ -741,50 +696,56 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
                 $CustomAttributeArrayList = New-Object System.Collections.ArrayList
 
-                foreach ($param in $PSBoundParameters.GetEnumerator())
-                {
-                    if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }
+                foreach ($param in $PSBoundParameters.GetEnumerator()) {
+                    if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) {
+                        continue
+                    }
 
-                    if ($param.key -in ('Username', 'EnrollmentDays')) { continue }
+                    if ($param.key -in ('Username', 'EnrollmentDays')) {
+                        continue
+                    }
 
-                    if ($param.key -eq 'NumberOfCustomAttributes') { continue }
+                    if ($param.key -eq 'NumberOfCustomAttributes') {
+                        continue
+                    }
 
-                    if ($param.Key -like '*_number') { continue }
+                    if ($param.Key -like '*_number') {
+                        continue
+                    }
 
-                    if ($param.Key -like 'work_*') { continue }
+                    if ($param.Key -like 'work_*') {
+                        continue
+                    }
 
-                    if ($param.Key -like 'home_*') { continue }
+                    if ($param.Key -like 'home_*') {
+                        continue
+                    }
 
                     # Get the manager using manager username instead of userId
-                    if ("manager" -eq $param.Key)
-                    {
+                    if ("manager" -eq $param.Key) {
                         if ([System.String]::isNullOrEmpty($param.value)) {
                             continue
-                        }
-                        else
-                        {
+                        } else {
                             # First check if manager returns valid user with id
                             # Regex match a userid
                             $regexPattern = [Regex]'^[a-z0-9]{24}$'
-                            if (((Select-String -InputObject $param.Value -Pattern $regexPattern).Matches.value)::IsNullOrEmpty)
-                            {
+                            if (((Select-String -InputObject $param.Value -Pattern $regexPattern).Matches.value)::IsNullOrEmpty) {
                                 # if we have a 24 characterid, try to match the id using the search endpoint
                                 $managerSearch = @{
                                     searchFilter = @{
                                         searchTerm = @($param.Value)
-                                        fields = @('id')
+                                        fields     = @('id')
                                     }
                                 }
                                 $managerResults = Search-JcSdkUser -Body:($managerSearch)
                                 # Set managerValue; this is a validated user id
                                 $managerValue = $managerResults.id
                                 # if no value was returned, then assume the case this is actually a username and search
-                                if (!$managerValue)
-                                {
+                                if (!$managerValue) {
                                     $managerSearch = @{
                                         searchFilter = @{
                                             searchTerm = @($param.Value)
-                                            fields = @('username')
+                                            fields     = @('username')
                                         }
                                     }
                                     $managerResults = Search-JcSdkUser -Body:($managerSearch)
@@ -799,51 +760,46 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                                 $managerSearch = @{
                                     searchFilter = @{
                                         searchTerm = @($param.Value)
-                                        fields = @('email')
+                                        fields     = @('email')
                                     }
                                 }
                                 $managerResults = Search-JcSdkUser -Body:($managerSearch)
                                 # Set managerValue; this is a validated user id
                                 $managerValue = $managerResults.id
                                 # if no value was returned, then assume the case this is actually a username and search
-                                if (!$managerValue){
+                                if (!$managerValue) {
                                     $managerSearch = @{
                                         searchFilter = @{
                                             searchTerm = @($param.Value)
-                                            fields = @('username')
+                                            fields     = @('username')
                                         }
                                     }
                                     $managerResults = Search-JcSdkUser -Body:($managerSearch)
                                     # Set managerValue from the matched username
                                     $managerValue = $managerResults.id
                                 }
-                            }
-                            catch {
+                            } catch {
                                 # search the username in the search endpoint
                                 $managerSearch = @{
                                     searchFilter = @{
                                         searchTerm = @($param.Value)
-                                        fields = @('username')
+                                        fields     = @('username')
                                     }
                                 }
                                 $managerResults = Search-JcSdkUser -Body:($managerSearch)
                                 # Set managerValue from the matched username
                                 $managerValue = $managerResults.id
                             }
-                            if ($managerValue)
-                            {
+                            if ($managerValue) {
                                 $body.add($param.Key, $managerValue)
-                            }
-                            else
-                            {
+                            } else {
                                 $body.add($param.Key, $param.Value)
                             }
                             continue
                         }
                     }
 
-                    if ($param.Key -like 'Attribute*')
-                    {
+                    if ($param.Key -like 'Attribute*') {
                         $CustomAttribute = [pscustomobject]@{
 
                             CustomAttribute = ($Param.key).Split('_')[0]
@@ -857,14 +813,12 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
                         $NewAttributes = New-Object System.Collections.ArrayList
 
-                        foreach ($A in $UniqueAttributes )
-                        {
+                        foreach ($A in $UniqueAttributes ) {
                             $Props = $CustomAttributeArrayList | Where-Object CustomAttribute -EQ $A.CustomAttribute
 
                             $obj = New-Object PSObject
 
-                            foreach ($Prop in $Props)
-                            {
+                            foreach ($Prop in $Props) {
                                 $obj | Add-Member -MemberType NoteProperty -Name $Prop.type -Value $Prop.value
                             }
 
@@ -883,29 +837,23 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
                 $NewAttributesHash = @{ }
 
-                foreach ($NewA in $NewAttributes)
-                {
+                foreach ($NewA in $NewAttributes) {
                     $NewAttributesHash.Add($NewA.name, $NewA.value)
 
                 }
 
                 $CurrentAttributesHash = @{ }
 
-                foreach ($CurrentA in $CurrentAttributes)
-                {
+                foreach ($CurrentA in $CurrentAttributes) {
                     $CurrentAttributesHash.Add($CurrentA.name, $CurrentA.value)
                 }
 
 
 
-                foreach ($A in $NewAttributesHash.GetEnumerator())
-                {
-                    if (($CurrentAttributesHash).Contains($A.Key))
-                    {
+                foreach ($A in $NewAttributesHash.GetEnumerator()) {
+                    if (($CurrentAttributesHash).Contains($A.Key)) {
                         $CurrentAttributesHash.set_Item($($A.key), $($A.value))
-                    }
-                    else
-                    {
+                    } else {
                         $CurrentAttributesHash.Add($($A.key), $($A.value))
                     }
                 }
@@ -913,8 +861,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                 $UpdatedAttributeArrayList = New-Object System.Collections.ArrayList
 
 
-                foreach ($NewA in $CurrentAttributesHash.GetEnumerator())
-                {
+                foreach ($NewA in $CurrentAttributesHash.GetEnumerator()) {
                     $temp = New-Object PSObject
                     $temp | Add-Member -MemberType NoteProperty -Name name -Value $NewA.key
                     $temp | Add-Member -MemberType NoteProperty -Name value -Value $NewA.value
@@ -923,14 +870,10 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
                 $body.add('attributes', $UpdatedAttributeArrayList)
 
-                if ($enable_user_portal_multifactor -eq $True)
-                {
-                    if ($PSBoundParameters['EnrollmentDays'])
-                    {
+                if ($enable_user_portal_multifactor -eq $True) {
+                    if ($PSBoundParameters['EnrollmentDays']) {
                         $exclusionUntil = (Get-Date).AddDays($PSBoundParameters['EnrollmentDays'])
-                    }
-                    else
-                    {
+                    } else {
                         $exclusionUntil = (Get-Date).AddDays(7)
                     }
 
@@ -940,15 +883,12 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                     $body.Add('mfa', $mfa)
                 }
 
-                if ((($suspended -eq $true) -And ($state -eq "ACTIVATED")) -Or (($suspended -eq $false) -And ($state -eq "SUSPENDED"))){
+                if ((($suspended -eq $true) -And ($state -eq "ACTIVATED")) -Or (($suspended -eq $false) -And ($state -eq "SUSPENDED"))) {
                     throw "Cannot save conflicting state and suspended fields. (state=$state suspended=$suspended)"
-                }
-                elseif ($suspended -eq $true) {
+                } elseif ($suspended -eq $true) {
                     $body['state'] = 'SUSPENDED'
-                }
-                else {
-                    switch ($state)
-                    {
+                } else {
+                    switch ($state) {
                         SUSPENDED {
                             $body['suspended'] = $true
                         }
@@ -969,16 +909,15 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
             }
 
-            else { Throw "$Username does not exist. Run 'Get-JCUser | Select-Object username' to see a list of all your JumpCloud users." }
+            else {
+                Throw "$Username does not exist. Run 'Get-JCUser | Select-Object username' to see a list of all your JumpCloud users."
+            }
 
         }
 
-        elseif ($PSCmdlet.ParameterSetName -eq 'RemoveAttribute')
-        {
-            if ($UserHash.ContainsKey($Username))
-
-            {
-                $URL_ID = $UserHash.Get_Item($Username)
+        elseif ($PSCmdlet.ParameterSetName -eq 'RemoveAttribute') {
+            if ($UserHash.Values.username -contains ($Username)) {
+                $URL_ID = $UserHash.GetEnumerator().Where({ $_.Value.username -contains ($Username) }).Name
                 Write-Debug $URL_ID
 
                 $URL = "$JCUrlBasePath/api/Systemusers/$URL_ID"
@@ -987,50 +926,56 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                 $CurrentAttributes = Get-JCUser -UserID $URL_ID | Select-Object -ExpandProperty attributes | Select-Object value, name
                 Write-Debug "There are $($CurrentAttributes.count) existing attributes"
 
-                foreach ($param in $PSBoundParameters.GetEnumerator())
-                {
-                    if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }
+                foreach ($param in $PSBoundParameters.GetEnumerator()) {
+                    if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) {
+                        continue
+                    }
 
-                    if ($param.key -in ('Username', 'EnrollmentDays')) { continue }
+                    if ($param.key -in ('Username', 'EnrollmentDays')) {
+                        continue
+                    }
 
-                    if ($param.key -eq 'RemoveAttribute') { continue }
+                    if ($param.key -eq 'RemoveAttribute') {
+                        continue
+                    }
 
-                    if ($param.Key -like '*_number') { continue }
+                    if ($param.Key -like '*_number') {
+                        continue
+                    }
 
-                    if ($param.Key -like 'work_*') { continue }
+                    if ($param.Key -like 'work_*') {
+                        continue
+                    }
 
-                    if ($param.Key -like 'home_*') { continue }
+                    if ($param.Key -like 'home_*') {
+                        continue
+                    }
 
                     # Get the manager using manager username instead of userId
-                    if ("manager" -eq $param.Key)
-                    {
+                    if ("manager" -eq $param.Key) {
                         if ([System.String]::isNullOrEmpty($param.value)) {
                             continue
-                        }
-                        else
-                        {
+                        } else {
                             # First check if manager returns valid user with id
                             # Regex match a userid
                             $regexPattern = [Regex]'^[a-z0-9]{24}$'
-                            if (((Select-String -InputObject $param.Value -Pattern $regexPattern).Matches.value)::IsNullOrEmpty)
-                            {
+                            if (((Select-String -InputObject $param.Value -Pattern $regexPattern).Matches.value)::IsNullOrEmpty) {
                                 # if we have a 24 characterid, try to match the id using the search endpoint
                                 $managerSearch = @{
                                     searchFilter = @{
                                         searchTerm = @($param.Value)
-                                        fields = @('id')
+                                        fields     = @('id')
                                     }
                                 }
                                 $managerResults = Search-JcSdkUser -Body:($managerSearch)
                                 # Set managerValue; this is a validated user id
                                 $managerValue = $managerResults.id
                                 # if no value was returned, then assume the case this is actually a username and search
-                                if (!$managerValue)
-                                {
+                                if (!$managerValue) {
                                     $managerSearch = @{
                                         searchFilter = @{
                                             searchTerm = @($param.Value)
-                                            fields = @('username')
+                                            fields     = @('username')
                                         }
                                     }
                                     $managerResults = Search-JcSdkUser -Body:($managerSearch)
@@ -1046,43 +991,39 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                                 $managerSearch = @{
                                     searchFilter = @{
                                         searchTerm = @($param.Value)
-                                        fields = @('email')
+                                        fields     = @('email')
                                     }
                                 }
                                 $managerResults = Search-JcSdkUser -Body:($managerSearch)
                                 # Set managerValue; this is a validated user id
                                 $managerValue = $managerResults.id
                                 # if no value was returned, then assume the case this is actually a username and search
-                                if (!$managerValue){
+                                if (!$managerValue) {
                                     $managerSearch = @{
                                         searchFilter = @{
                                             searchTerm = @($param.Value)
-                                            fields = @('username')
+                                            fields     = @('username')
                                         }
                                     }
                                     $managerResults = Search-JcSdkUser -Body:($managerSearch)
                                     # Set managerValue from the matched username
                                     $managerValue = $managerResults.id
                                 }
-                            }
-                            catch {
+                            } catch {
                                 # search the username in the search endpoint
                                 $managerSearch = @{
                                     searchFilter = @{
                                         searchTerm = @($param.Value)
-                                        fields = @('username')
+                                        fields     = @('username')
                                     }
                                 }
                                 $managerResults = Search-JcSdkUser -Body:($managerSearch)
                                 # Set managerValue from the matched username
                                 $managerValue = $managerResults.id
                             }
-                            if ($managerValue)
-                            {
+                            if ($managerValue) {
                                 $body.add($param.Key, $managerValue)
-                            }
-                            else
-                            {
+                            } else {
                                 $body.add($param.Key, $param.Value)
                             }
                             continue
@@ -1095,15 +1036,12 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
                 $CurrentAttributesHash = @{ }
 
-                foreach ($CurrentA in $CurrentAttributes)
-                {
+                foreach ($CurrentA in $CurrentAttributes) {
                     $CurrentAttributesHash.Add($CurrentA.name, $CurrentA.value)
                 }
 
-                foreach ($Remove in $RemoveAttribute)
-                {
-                    if ($CurrentAttributesHash.ContainsKey($Remove))
-                    {
+                foreach ($Remove in $RemoveAttribute) {
+                    if ($CurrentAttributesHash.ContainsKey($Remove)) {
                         Write-Debug "$Remove is here"
                         $CurrentAttributesHash.Remove($Remove)
                     }
@@ -1114,8 +1052,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                 $UpdatedAttributeArrayList = New-Object System.Collections.ArrayList
 
 
-                foreach ($NewA in $CurrentAttributesHash.GetEnumerator())
-                {
+                foreach ($NewA in $CurrentAttributesHash.GetEnumerator()) {
                     $temp = New-Object PSObject
                     $temp | Add-Member -MemberType NoteProperty -Name name -Value $NewA.key
                     $temp | Add-Member -MemberType NoteProperty -Name value -Value $NewA.value
@@ -1124,14 +1061,10 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
                 $body.add('attributes', $UpdatedAttributeArrayList)
 
-                if ($enable_user_portal_multifactor -eq $True)
-                {
-                    if ($PSBoundParameters['EnrollmentDays'])
-                    {
+                if ($enable_user_portal_multifactor -eq $True) {
+                    if ($PSBoundParameters['EnrollmentDays']) {
                         $exclusionUntil = (Get-Date).AddDays($PSBoundParameters['EnrollmentDays'])
-                    }
-                    else
-                    {
+                    } else {
                         $exclusionUntil = (Get-Date).AddDays(7)
                     }
 
@@ -1141,19 +1074,16 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                     $body.Add('mfa', $mfa)
                 }
 
-                if ((($suspended -eq $true) -And ($state -eq "ACTIVATED")) -Or (($suspended -eq $false) -And ($state -eq "SUSPENDED"))){
+                if ((($suspended -eq $true) -And ($state -eq "ACTIVATED")) -Or (($suspended -eq $false) -And ($state -eq "SUSPENDED"))) {
                     throw "Cannot save conflicting state and suspended fields. (state=$state suspended=$suspended)"
-                }
-                elseif ($suspended -eq $true) {
+                } elseif ($suspended -eq $true) {
                     $body['state'] = 'SUSPENDED'
-                }
-                else {
-                    switch ($state) 
-                    {
-                        SUSPENDED { 
-                            $body['suspended'] = $true 
+                } else {
+                    switch ($state) {
+                        SUSPENDED {
+                            $body['suspended'] = $true
                         }
-                        ACTIVATED { 
+                        ACTIVATED {
                             $body['suspended'] = $false
                         }
                     }
@@ -1170,12 +1100,13 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
             }
 
-            else { Throw "$Username does not exist. Run 'Get-JCUser | Select-Object username' to see a list of all your JumpCloud users." }
+            else {
+                Throw "$Username does not exist. Run 'Get-JCUser | Select-Object username' to see a list of all your JumpCloud users."
+            }
 
         }
 
-        elseif ($PSCmdlet.ParameterSetName -eq 'ByID' -and (!$NumberOfCustomAttributes))
-        {
+        elseif ($PSCmdlet.ParameterSetName -eq 'ByID' -and (!$NumberOfCustomAttributes)) {
             Write-Debug $UserID
 
             $URL = "$JCUrlBasePath/api/Systemusers/$UserID"
@@ -1184,117 +1115,122 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
 
 
-            foreach ($param in $PSBoundParameters.GetEnumerator())
-            {
-                if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }
+            foreach ($param in $PSBoundParameters.GetEnumerator()) {
+                if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) {
+                    continue
+                }
 
-                if ($param.key -in ('EnrollmentDays')) { continue }
+                if ($param.key -in ('EnrollmentDays')) {
+                    continue
+                }
 
-                if ($param.Key -like '*_number') { continue }
+                if ($param.Key -like '*_number') {
+                    continue
+                }
 
-                if ($param.Key -like 'work_*') { continue }
+                if ($param.Key -like 'work_*') {
+                    continue
+                }
 
-                if ($param.Key -like 'home_*') { continue }
+                if ($param.Key -like 'home_*') {
+                    continue
+                }
 
                 # Get the manager using manager username instead of userId
-                if ("manager" -eq $param.Key)
-                {
+                if ("manager" -eq $param.Key) {
                     if ([System.String]::isNullOrEmpty($param.value)) {
                         continue
-                    }
-                    else {
+                    } else {
                         # First check if manager returns valid user with id
-                            # Regex match a userid
-                            $regexPattern = [Regex]'^[a-z0-9]{24}$'
-                            if (((Select-String -InputObject $param.Value -Pattern $regexPattern).Matches.value)::IsNullOrEmpty){
-                                # if we have a 24 characterid, try to match the id using the search endpoint
-                                $managerSearch = @{
-                                    searchFilter = @{
-                                        searchTerm = @($param.Value)
-                                        fields = @('id')
-                                    }
-                                }
-                                $managerResults = Search-JcSdkUser -Body:($managerSearch)
-                                # Set managerValue; this is a validated user id
-                                $managerValue = $managerResults.id
-                                # if no value was returned, then assume the case this is actually a username and search
-                                if (!$managerValue){
-                                    $managerSearch = @{
-                                        searchFilter = @{
-                                            searchTerm = @($param.Value)
-                                            fields = @('username')
-                                        }
-                                    }
-                                    $managerResults = Search-JcSdkUser -Body:($managerSearch)
-                                    # Set managerValue from the matched username
-                                    $managerValue = $managerResults.id
+                        # Regex match a userid
+                        $regexPattern = [Regex]'^[a-z0-9]{24}$'
+                        if (((Select-String -InputObject $param.Value -Pattern $regexPattern).Matches.value)::IsNullOrEmpty) {
+                            # if we have a 24 characterid, try to match the id using the search endpoint
+                            $managerSearch = @{
+                                searchFilter = @{
+                                    searchTerm = @($param.Value)
+                                    fields     = @('id')
                                 }
                             }
-                            # Use class mailaddress to check if $param.value is email
-                            try {
-                                $null = [mailaddress]$EmailAddress
-                                Write-Debug "This is true"
-                                # Search for manager using email
+                            $managerResults = Search-JcSdkUser -Body:($managerSearch)
+                            # Set managerValue; this is a validated user id
+                            $managerValue = $managerResults.id
+                            # if no value was returned, then assume the case this is actually a username and search
+                            if (!$managerValue) {
                                 $managerSearch = @{
                                     searchFilter = @{
                                         searchTerm = @($param.Value)
-                                        fields = @('email')
-                                    }
-                                }
-                                $managerResults = Search-JcSdkUser -Body:($managerSearch)
-                                # Set managerValue; this is a validated user id
-                                $managerValue = $managerResults.id
-                                # if no value was returned, then assume the case this is actually a username and search
-                                if (!$managerValue){
-                                    $managerSearch = @{
-                                        searchFilter = @{
-                                            searchTerm = @($param.Value)
-                                            fields = @('username')
-                                        }
-                                    }
-                                    $managerResults = Search-JcSdkUser -Body:($managerSearch)
-                                    # Set managerValue from the matched username
-                                    $managerValue = $managerResults.id
-                                }
-                            }
-                            catch {
-                                # search the username in the search endpoint
-                                $managerSearch = @{
-                                    searchFilter = @{
-                                        searchTerm = @($param.Value)
-                                        fields = @('username')
+                                        fields     = @('username')
                                     }
                                 }
                                 $managerResults = Search-JcSdkUser -Body:($managerSearch)
                                 # Set managerValue from the matched username
                                 $managerValue = $managerResults.id
                             }
+                        }
+                        # Use class mailaddress to check if $param.value is email
+                        try {
+                            $null = [mailaddress]$EmailAddress
+                            Write-Debug "This is true"
+                            # Search for manager using email
+                            $managerSearch = @{
+                                searchFilter = @{
+                                    searchTerm = @($param.Value)
+                                    fields     = @('email')
+                                }
+                            }
+                            $managerResults = Search-JcSdkUser -Body:($managerSearch)
+                            # Set managerValue; this is a validated user id
+                            $managerValue = $managerResults.id
+                            # if no value was returned, then assume the case this is actually a username and search
+                            if (!$managerValue) {
+                                $managerSearch = @{
+                                    searchFilter = @{
+                                        searchTerm = @($param.Value)
+                                        fields     = @('username')
+                                    }
+                                }
+                                $managerResults = Search-JcSdkUser -Body:($managerSearch)
+                                # Set managerValue from the matched username
+                                $managerValue = $managerResults.id
+                            }
+                        } catch {
+                            # search the username in the search endpoint
+                            $managerSearch = @{
+                                searchFilter = @{
+                                    searchTerm = @($param.Value)
+                                    fields     = @('username')
+                                }
+                            }
+                            $managerResults = Search-JcSdkUser -Body:($managerSearch)
+                            # Set managerValue from the matched username
+                            $managerValue = $managerResults.id
+                        }
                         if ($managerValue) {
                             $body.add($param.Key, $managerValue)
-                        }
-                        else {
+                        } else {
                             $body.add($param.Key, $param.Value)
                         }
                         continue
                     }
                 }
 
-                if ($param.key -eq 'UserID') { continue }
+                if ($param.key -eq 'UserID') {
+                    continue
+                }
 
-                if ($param.key -eq 'ByID') { continue }
+                if ($param.key -eq 'ByID') {
+                    continue
+                }
 
                 $body.add($param.Key, $param.Value)
 
             }
 
-            if ($enable_user_portal_multifactor -eq $True)
-            {
-                if ($PSBoundParameters['EnrollmentDays'])
-                {
+            if ($enable_user_portal_multifactor -eq $True) {
+                if ($PSBoundParameters['EnrollmentDays']) {
                     $exclusionUntil = (Get-Date).AddDays($PSBoundParameters['EnrollmentDays'])
-                }
-                else
-                {
+                } else {
                     $exclusionUntil = (Get-Date).AddDays(7)
                 }
 
@@ -1304,19 +1240,16 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                 $body.Add('mfa', $mfa)
             }
 
-            if ((($suspended -eq $true) -And ($state -eq "ACTIVATED")) -Or (($suspended -eq $false) -And ($state -eq "SUSPENDED"))){
+            if ((($suspended -eq $true) -And ($state -eq "ACTIVATED")) -Or (($suspended -eq $false) -And ($state -eq "SUSPENDED"))) {
                 throw "Cannot save conflicting state and suspended fields. (state=$state suspended=$suspended)"
-            }
-            elseif ($suspended -eq $true) {
+            } elseif ($suspended -eq $true) {
                 $body['state'] = 'SUSPENDED'
-            }
-            else {
-                switch ($state) 
-                {
-                    SUSPENDED { 
-                        $body['suspended'] = $true 
+            } else {
+                switch ($state) {
+                    SUSPENDED {
+                        $body['suspended'] = $true
                     }
-                    ACTIVATED { 
+                    ACTIVATED {
                         $body['suspended'] = $false
                     }
                 }
@@ -1333,8 +1266,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
         }
 
-        elseif ($PSCmdlet.ParameterSetName -eq 'ByID' -and ($NumberOfCustomAttributes))
-        {
+        elseif ($PSCmdlet.ParameterSetName -eq 'ByID' -and ($NumberOfCustomAttributes)) {
             Write-Debug $UserID
 
             $URL = "$JCUrlBasePath/api/Systemusers/$UserID"
@@ -1344,26 +1276,40 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
             $CustomAttributeArrayList = New-Object System.Collections.ArrayList
 
-            foreach ($param in $PSBoundParameters.GetEnumerator())
-            {
-                if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }
+            foreach ($param in $PSBoundParameters.GetEnumerator()) {
+                if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) {
+                    continue
+                }
 
-                if ($param.key -in ('Username', 'EnrollmentDays')) { continue }
+                if ($param.key -in ('Username', 'EnrollmentDays')) {
+                    continue
+                }
 
-                if ($param.key -eq 'ByID') { continue }
+                if ($param.key -eq 'ByID') {
+                    continue
+                }
 
-                if ($param.key -eq 'UserID') { continue }
+                if ($param.key -eq 'UserID') {
+                    continue
+                }
 
-                if ($param.key -eq 'NumberOfCustomAttributes') { continue }
+                if ($param.key -eq 'NumberOfCustomAttributes') {
+                    continue
+                }
 
-                if ($param.Key -like '*_number') { continue }
+                if ($param.Key -like '*_number') {
+                    continue
+                }
 
-                if ($param.Key -like 'work_*') { continue }
+                if ($param.Key -like 'work_*') {
+                    continue
+                }
 
-                if ($param.Key -like 'home_*') { continue }
+                if ($param.Key -like 'home_*') {
+                    continue
+                }
 
-                if ($param.Key -like 'Attribute*')
-                {
+                if ($param.Key -like 'Attribute*') {
                     $CustomAttribute = [pscustomobject]@{
 
                         CustomAttribute = ($Param.key).Split('_')[0]
@@ -1377,14 +1323,12 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
                     $NewAttributes = New-Object System.Collections.ArrayList
 
-                    foreach ($A in $UniqueAttributes )
-                    {
+                    foreach ($A in $UniqueAttributes ) {
                         $Props = $CustomAttributeArrayList | Where-Object CustomAttribute -EQ $A.CustomAttribute
 
                         $obj = New-Object PSObject
 
-                        foreach ($Prop in $Props)
-                        {
+                        foreach ($Prop in $Props) {
                             $obj | Add-Member -MemberType NoteProperty -Name $Prop.type -Value $Prop.value
                         }
 
@@ -1403,29 +1347,23 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
             $NewAttributesHash = @{ }
 
-            foreach ($NewA in $NewAttributes)
-            {
+            foreach ($NewA in $NewAttributes) {
                 $NewAttributesHash.Add($NewA.name, $NewA.value)
 
             }
 
             $CurrentAttributesHash = @{ }
 
-            foreach ($CurrentA in $CurrentAttributes)
-            {
+            foreach ($CurrentA in $CurrentAttributes) {
                 $CurrentAttributesHash.Add($CurrentA.name, $CurrentA.value)
             }
 
 
 
-            foreach ($A in $NewAttributesHash.GetEnumerator())
-            {
-                if (($CurrentAttributesHash).Contains($A.Key))
-                {
+            foreach ($A in $NewAttributesHash.GetEnumerator()) {
+                if (($CurrentAttributesHash).Contains($A.Key)) {
                     $CurrentAttributesHash.set_Item($($A.key), $($A.value))
-                }
-                else
-                {
+                } else {
                     $CurrentAttributesHash.Add($($A.key), $($A.value))
                 }
             }
@@ -1433,8 +1371,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
             $UpdatedAttributeArrayList = New-Object System.Collections.ArrayList
 
 
-            foreach ($NewA in $CurrentAttributesHash.GetEnumerator())
-            {
+            foreach ($NewA in $CurrentAttributesHash.GetEnumerator()) {
                 $temp = New-Object PSObject
                 $temp | Add-Member -MemberType NoteProperty -Name name -Value $NewA.key
                 $temp | Add-Member -MemberType NoteProperty -Name value -Value $NewA.value
@@ -1443,14 +1380,10 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
             $body.add('attributes', $UpdatedAttributeArrayList)
 
-            if ($enable_user_portal_multifactor -eq $True)
-            {
-                if ($PSBoundParameters['EnrollmentDays'])
-                {
+            if ($enable_user_portal_multifactor -eq $True) {
+                if ($PSBoundParameters['EnrollmentDays']) {
                     $exclusionUntil = (Get-Date).AddDays($PSBoundParameters['EnrollmentDays'])
-                }
-                else
-                {
+                } else {
                     $exclusionUntil = (Get-Date).AddDays(7)
                 }
 
@@ -1460,19 +1393,16 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                 $body.Add('mfa', $mfa)
             }
 
-            if ((($suspended -eq $true) -And ($state -eq "ACTIVATED")) -Or (($suspended -eq $false) -And ($state -eq "SUSPENDED"))){
+            if ((($suspended -eq $true) -And ($state -eq "ACTIVATED")) -Or (($suspended -eq $false) -And ($state -eq "SUSPENDED"))) {
                 throw "Cannot save conflicting state and suspended fields. (state=$state suspended=$suspended)"
-            }
-            elseif ($suspended -eq $true) {
+            } elseif ($suspended -eq $true) {
                 $body['state'] = 'SUSPENDED'
-            }
-            else {
-                switch ($state) 
-                {
-                    SUSPENDED { 
-                        $body['suspended'] = $true 
+            } else {
+                switch ($state) {
+                    SUSPENDED {
+                        $body['suspended'] = $true
                     }
-                    ACTIVATED { 
+                    ACTIVATED {
                         $body['suspended'] = $false
                     }
                 }
@@ -1490,8 +1420,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
         }
 
     }
-    end
-    {
+    end {
         return $UpdatedUserArray
     }
 }

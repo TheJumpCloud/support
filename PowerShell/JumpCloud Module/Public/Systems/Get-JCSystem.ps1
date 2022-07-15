@@ -148,7 +148,6 @@ Function Get-JCSystem () {
             HelpMessage = 'Allows you to return select properties on JumpCloud system objects. Specifying what properties are returned can drastically increase the speed of the API call with a large data set. Valid properties that can be returned are: ''created'', ''active'', ''agentVersion'', ''allowMultiFactorAuthentication'', ''allowPublicKeyAuthentication'', ''allowSshPasswordAuthentication'', ''allowSshRootLogin'', ''arch'', ''created'', ''displayName'', ''hostname'', ''lastContact'', ''modifySSHDConfig'', ''organization'', ''os'', ''remoteIP'', ''serialNumber'', ''sshdParams'', ''systemTimezone'', ''templateName'', ''version''')]
         [ValidateSet('created', 'active', 'agentVersion', 'allowMultiFactorAuthentication', 'allowPublicKeyAuthentication', 'allowSshPasswordAuthentication', 'allowSshRootLogin', 'arch', 'created', 'displayName', 'hostname', 'lastContact', 'modifySSHDConfig', 'organization', 'os', 'remoteIP', 'serialNumber', 'sshdParams', 'systemTimezone', 'templateName', 'version', 'fde', 'systemInsights', 'hasServiceAccount', 'fileSystem')]
         [String[]]$returnProperties
-
     )
 
     DynamicParam {
@@ -209,22 +208,16 @@ Function Get-JCSystem () {
         Write-Verbose 'Verifying JCAPI Key'
         if ($JCAPIKEY.length -ne 40) { Connect-JCOnline }
 
-        Write-Verbose 'Populating API headers'
-        $hdrs = @{
+        $Parallel = $JCParallel
 
-            'Content-Type' = 'application/json'
-            'Accept'       = 'application/json'
-            'X-API-KEY'    = $JCAPIKEY
-
+        if ($Parallel) {
+            Write-Verbose 'Initilizing resultsArray'
+            $resultsArrayList = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
         }
-
-        if ($JCOrgID) {
-            $hdrs.Add('x-org-id', "$($JCOrgID)")
+        else {
+            Write-Verbose 'Initilizing resultsArray'
+            $resultsArrayList = New-Object -TypeName System.Collections.ArrayList
         }
-
-        Write-Verbose 'Initilizing resultsArray'
-
-        $resultsArrayList = New-Object -TypeName System.Collections.ArrayList
 
         Write-Verbose "Parameter Set: $($PSCmdlet.ParameterSetName)"
 
@@ -238,83 +231,80 @@ Function Get-JCSystem () {
         [int]$skip = '0'
         Write-Verbose "Setting skip to $skip"
 
-        [int]$Counter = 0
-
-        switch ($PSCmdlet.ParameterSetName) {
-
+        switch ($PSCmdlet.ParameterSetName)
+        {
             SearchFilter {
-
-
-                while ((($resultsArrayList.results).Count) -ge $Counter) {
-
-
-                    if ($returnProperties) {
-
-                        $Search = @{
-                            filter = @(
-                                @{
-                                }
-                            )
-                            limit  = $limit
-                            skip   = $skip
-                            fields = $returnProperties
-                        } #Initialize search
-
-                    }
-
-                    else {
-
-                        $Search = @{
-                            filter = @(
-                                @{
-                                }
-                            )
-                            limit  = $limit
-                            skip   = $skip
-
-                        } #Initialize search
-
-                    }
-
-
-                    foreach ($param in $PSBoundParameters.GetEnumerator()) {
-                        if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }
-
-                        if ($param.value -is [Boolean]) {
-                            (($Search.filter).GetEnumerator()).add($param.Key, $param.value)
-
-                            continue
-                        }
-
-                        if ($param.key -eq 'returnProperties') {
-                            continue
-                        }
-
-                        if ($param.key -eq 'filterDateProperty') {
-                            $DateProperty = $param.value
-
-                            continue
-                        }
-
-
-                        if ($param.key -eq 'dateFilter') {
-                            switch ($param.value) {
-                                before { $DateQuery = '$lt' }
-                                after { $DateQuery = '$gt' }
+                if ($returnProperties)
+                {
+                    $Search = @{
+                        filter = @(
+                            @{
                             }
+                        )
+                        limit  = $limit
+                        skip   = $skip
+                        fields = $returnProperties
+                    } #Initialize search
+                }
+                else{
 
+                    $Search = @{
+                        filter = @(
+                            @{
+                            }
+                        )
+                        limit  = $limit
+                        skip   = $skip
+                    } #Initialize search
+
+                }
+
+
+                foreach ($param in $PSBoundParameters.GetEnumerator())
+                {
+                    if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }
+                    if ($param.value -is [Boolean])
+                    {
+                        if ($param.key -eq 'parallel') {
                             continue
                         }
 
-                        if ($param.key -eq 'date') {
-                            $Timestamp = Get-Date $param.Value -format o
+                        (($Search.filter).GetEnumerator()).add($param.Key, $param.value)
 
-                            continue
+                        continue
+                    }
+                    if ($param.key -eq 'returnProperties')
+                    {
+                        continue
+                    }
+
+                    if ($param.key -eq 'filterDateProperty')
+                    {
+                        $DateProperty = $param.value
+                        continue
+                    }
+
+                    if ($param.key -eq 'dateFilter')
+                    {
+                        switch ($param.value)
+                        {
+                            before { $DateQuery = '$lt' }
+                            after { $DateQuery = '$gt' }
                         }
+                        continue
+                    }
 
-                        $Value = ($param.value).replace('*', '')
+                    if ($param.key -eq 'date')
+                    {
+                        $Timestamp = Get-Date $param.Value -format o
 
-                        if (($param.Value -match '.+?\*$') -and ($param.Value -match '^\*.+?')) {
+                        continue
+                    }
+
+
+                    $Value = ($param.value).replace('*', '')
+
+                    if (($param.Value -match '.+?\*$') -and ($param.Value -match '^\*.+?')) {
                             # Front and back wildcard
                             (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)$([regex]::Escape($Value))" })
                         } elseif ($param.Value -match '.+?\*$') {
@@ -331,25 +321,25 @@ Function Get-JCSystem () {
                         }
 
 
-                    } # End foreach
+                } # End foreach
 
-                    if ($filterDateProperty) {
-                        (($Search.filter).GetEnumerator()).add($DateProperty, @{$DateQuery = $Timestamp })
-                    }
+                if ($filterDateProperty)
+                {
+                    (($Search.filter).GetEnumerator()).add($DateProperty, @{$DateQuery = $Timestamp })
+                }
 
+                $SearchJSON = $Search | ConvertTo-Json -Compress -Depth 4
 
-                    $SearchJSON = $Search | ConvertTo-Json -Compress -Depth 4
+                Write-Debug $SearchJSON
 
-                    $URL = "$JCUrlBasePath/api/search/systems"
+                $URL = "$JCUrlBasePath/api/search/systems"
 
-                    $Results = Invoke-RestMethod -Method POST -Uri $Url  -Header $hdrs -Body $SearchJSON -UserAgent:(Get-JCUserAgent)
-
-                    $null = $resultsArrayList.Add($Results)
-
-                    $Skip += $limit
-
-                    $Counter += $limit
-                } #End While
+                if ($Parallel) {
+                    $resultsArrayList = Get-JCResults -URL $URL -method "POST" -limit $limit -body $SearchJSON -Parallel $true
+                }
+                else {
+                    $resultsArrayList = Get-JCResults -URL $URL -method "POST" -limit $limit -body $SearchJSON
+                }
 
             } #End search
 
@@ -361,7 +351,7 @@ Function Get-JCSystem () {
                     $URL = "$JCUrlBasePath/api/v2/systems/$SystemID/fdekey"
                     Write-Verbose $URL
 
-                    $results = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
+                    $results = Get-JCResults -URL $URL -method "GET" -limit $limit
 
                     $FormattedObject = [PSCustomObject]@{
                         '_id' = $SystemID;
@@ -376,8 +366,7 @@ Function Get-JCSystem () {
                     $URL = "$JCUrlBasePath/api/Systems/$SystemID"
                     Write-Verbose $URL
 
-                    $results = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
-                    $null = $resultsArrayList.add($Results)
+                    $resultsArrayList = Get-JCResults -URL $URL -method "GET" -limit $limit
                 }
 
 
@@ -387,17 +376,18 @@ Function Get-JCSystem () {
     } # End process
 
     end {
-
-        switch ($PSCmdlet.ParameterSetName) {
-            SearchFilter {
-                return $resultsArrayList.Results | Select-Object -Property *  -ExcludeProperty associatedTagCount, id, sshRootEnabled
+        switch ($PSCmdlet.ParameterSetName)
+        {
+            SearchFilter
+            {
+                return $resultsArrayList | Select-Object -ExcludeProperty associatedTagCount, id, sshRootEnabled
             }
-            ByID {
-                return $resultsArrayList | Select-Object -Property *  -ExcludeProperty associatedTagCount
+            ByID
+            {
+                return $resultsArrayList | Select-Object -ExcludeProperty associatedTagCount
             }
 
         }
 
     }
-
 }
