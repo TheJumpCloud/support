@@ -14,7 +14,6 @@ Returns all JumpCloud Users within a JumpCloud tenant or searches for a JumpClou
 ## SYNTAX
 
 ### SearchFilter (Default)
-
 ```
 Get-JCUser [[-username] <String>] [-firstname <String>] [-lastname <String>] [-email <String>]
  [-unix_guid <String>] [-unix_uid <String>] [-sudo <Boolean>] [-enable_managed_uid <Boolean>]
@@ -30,7 +29,6 @@ Get-JCUser [[-username] <String>] [-firstname <String>] [-lastname <String>] [-e
 ```
 
 ### ByID
-
 ```
 Get-JCUser -userid <String> -dateFilter <String> -date <DateTime> [<CommonParameters>]
 ```
@@ -739,7 +737,6 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
-
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
@@ -753,7 +750,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## OUTPUTS
 
 ### System.Object
-
 ## NOTES
 
 ## RELATED LINKS

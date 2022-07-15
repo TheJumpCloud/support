@@ -8450,11 +8450,11 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
       </command:example>
       <command:example>
         <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>Get-JCUser -Username cclemons or Get-JCUser -Username cClemons</dev:code>
+        <dev:code>Get-JCUser -Username cclemons
+Get-JCUser -Username cClemons</dev:code>
         <dev:remarks>
-          <maml:para>Returns the information describing the JumpCloud User with Username cclemons or cCLemons(case-insensitive).</maml:para>
-          <maml:para>NOTE: String parameters are case-insensitive. Username cclemons and cClemons returns the same user information
-</maml:para>
+          <maml:para>Returns the information describing the JumpCloud User with Username cclemons or cCLemons (case-insensitive).</maml:para>
+          <maml:para>NOTE: String parameters are case-insensitive. Username cclemons and cClemons returns the same user information</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
