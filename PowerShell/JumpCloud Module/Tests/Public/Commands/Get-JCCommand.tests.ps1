@@ -111,20 +111,26 @@ Describe -Tag:('JCCommand') "Case Insensitivity Tests" {
             $commandSearchLower._id | Should -Be $userSearchDefault._id
             $commandSearchMixed._id | Should -Be $userSearchDefault._id
 
+        }
+    }
+    It "Searches parameters after setting values to include special characters like \|{[()^$.#" {
+        $commandParameters = (GCM Get-JCCommand).Parameters
+        $gmr = Get-JCCommand -ByID $PesterParams_Command3._id | GM
+        # Get parameters that are not ID, ORGID, bool, and int
+        $parameters = $gmr | Where-Object { ($_.Definition -notmatch "organization") -And ($_.Name -In $commandParameters.Keys) -and ($_.Definition -notmatch "bool") -and ($_.Definition -notmatch "int") }
+
+        foreach ($param in $parameters.Name) {
             # Test special characters with -name and -command
             if (($param -eq "name") -or ($param -eq "command")) {
-                $curCommand = $PesterParams_Command3.$param
                 $randomParamInput = "$(New-RandomString -NumberOfChars 8)\+?|{[()^$.#"
-                $setParam = "Set-JCCommand -commandId $($PesterParams_Command3._id) -$($param)  `"$($randomParamInput)`""
-                $commandParamInvoke = Invoke-Expression -Command:($setParam)
+                $newCommand = New-JCCommand -name $randomParamInput -command $randomParamInput -commandType linux
                 $searchCommand = "Get-JCCommand -$($param) `"$randomParamInput`""
                 $InvokeCommand = Invoke-Expression -Command:($searchCommand)
-                $commandParamInvoke.$param | Should -Be $InvokeCommand.$param
+                # search should return the string
+                $randomParamInput | Should -Be $InvokeCommand.$param
 
-                #Set to original
-                $originalParam = "Set-JCCommand -commandId $($PesterParams_Command3._id) -$($param)  `"$($curCommand)`""
-                Invoke-Expression -Command:($setParam)
-
+                # Set to original
+                Remove-JCCommand -CommandID $newCommand.id
             }
 
         }

@@ -409,7 +409,6 @@ Describe -Tag:('JCUser') "Case Insensitivity Tests" {
         $gmr = Get-JCUser -Username $PesterParams_User1.username | GM
         # Get parameters that are not ID, ORGID and have a string following the param name
         $parameters = $gmr | Where-Object { ($_.Definition -notmatch "organization") -And ($_.Definition -notmatch "id") -And ($_.Name -In $commandParameters.Keys) -And ($_.Definition -notmatch "bool") -and ($_.Definition -notmatch "manager") -and ($_.Definition -notmatch "external_dn") -and ($_.Definition -notmatch "external_source_type") }
-        $splat = @{}
         foreach ($param in $parameters.Name) {
             $string = ""
             $searchPester = ""
@@ -426,7 +425,7 @@ Describe -Tag:('JCUser') "Case Insensitivity Tests" {
 
             $stringList = @()
             $stringFinal = ""
-            # for i in string length, get the letters and capatlize ever other letter
+            # for i in string length, get the letters and capitalize ever other letter
             for ($i = 0; $i -lt $string.length; $i++) {
                 <# Action that will repeat until the condition is met #>
                 $letter = $string.Substring($i, 1)
@@ -448,11 +447,20 @@ Describe -Tag:('JCUser') "Case Insensitivity Tests" {
             $userSearchUpper = Invoke-Expression -Command:($upperCaseSearch)
             # DefaultSearch is the expression without text formatting
 
-            # Ids returned here should return the same restuls
+            # Ids returned here should return the same results
             $userSearchUpper._id | Should -Be $userSearchDefault._id
             $userSearchLower._id | Should -Be $userSearchDefault._id
             $userSearchMixed._id | Should -Be $userSearchDefault._id
 
+        }
+    }
+    It "Searches params after setting values to include special characters like \|{[()^$.#" {
+        $commandParameters = (GCM Get-JCUser).Parameters
+        $gmr = Get-JCUser -Username $PesterParams_User1.username | GM
+        # Get parameters that are not ID, ORGID and have a string following the param name
+        $parameters = $gmr | Where-Object { ($_.Definition -notmatch "organization") -And ($_.Definition -notmatch "id") -And ($_.Name -In $commandParameters.Keys) -And ($_.Definition -notmatch "bool") -and ($_.Definition -notmatch "manager") -and ($_.Definition -notmatch "external_dn") -and ($_.Definition -notmatch "external_source_type") }
+        $splat = @{}
+        foreach ($param in $parameters.Name) {
             if (($param -ne "email") -and ($param -ne "username") -and ($param -ne "state") -and ($param -ne "recoveryEmail")) {
                 # Test for special characters
                 $paramInput = "$(New-RandomString -NumberOfChars 8)\|{[()^$.#"
