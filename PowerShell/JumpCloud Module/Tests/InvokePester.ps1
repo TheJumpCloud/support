@@ -32,7 +32,8 @@ $IncludeTags = If ($IncludeTagList) {
 } Else {
     $Tags | Where-Object { $_ -notin $ExcludeTags } | Select-Object -Unique
 }
-If (-Not ${CIRCLECI}) {
+
+If (-Not $Env:CIRCLECI) {
     # Load DefineEnvironment
     . ("$PSScriptRoot/DefineEnvironment.ps1") -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp) -RequiredModulesRepo:($RequiredModulesRepo)
     # Load private functions
@@ -45,7 +46,6 @@ If (-Not ${CIRCLECI}) {
     Write-Host ('[status]Setting up org: ' + "$PSScriptRoot/SetupOrg.ps1")
     . ("$PSScriptRoot/SetupOrg.ps1") -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp)
 } else {
-
     Write-Host ('[status]Pester Org Should Be setup already')
     # Import Org Variables:
     If ($Env:CIRCLE_JOB -match 'Windows') {
