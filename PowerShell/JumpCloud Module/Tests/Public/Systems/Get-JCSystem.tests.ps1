@@ -353,19 +353,27 @@ Describe -Tag:('JCSystem') "Case Insensitivity Tests" {
             $systemSearchUpper._id | Should -Be $userSearchDefault._id
             $systemSearchLower._id | Should -Be $userSearchDefault._id
             $systemSearchMixed._id | Should -Be $userSearchDefault._id
+        }
+    }
+    It "Searches parameters after setting values to include special characters like \|{[()^$.#" {
+        $commandParameters = (GCM Get-JCSystem).Parameters
+        $gmr = Get-JCSystem -SystemID $PesterParams_SystemWindows._id | GM
+        # Get parameters that are not ID, ORGID and have a string following the param name
+        $parameters = $gmr | Where-Object { ($_.Definition -notmatch "organization") -And ($_.Definition -notmatch "id") -And ($_.Definition -match "string\s\w+=(\w+)") -And ($_.Name -In $commandParameters.Keys) }
 
+        foreach ($param in $parameters.Name) {
             # Special character tests for displayName and description
-            if (($param -eq "displayName") -or ($param -eq "description")) {
-                $originalParam = $PesterParams_SystemLinux.$param
+            if (($param -eq "description")) {
+                $originalParam = $PesterParams_SystemWindows.$param
                 $randomParamInput = "$(New-RandomString -NumberOfChars 8)\+?|{[()^$.#"
-                $SetSystem = "Set-JCSystem -systemId $($PesterParams_SystemLinux._id) -$($param) `"$randomParamInput`""
+                $SetSystem = "Set-JCSystem -systemId $($PesterParams_SystemWindows._id) -$($param) `"$randomParamInput`""
                 $systemInvoke = Invoke-Expression -Command:($SetSystem)
                 $SearchSystem = "Get-JCSystem -$($param) `"$randomParamInput`""
                 $SearchSystemInvoke = Invoke-Expression -Command:($SearchSystem)
                 $systemInvoke.$param | Should -Be $SearchSystemInvoke.$param
 
                 #Set PesterLinux displayName and description to original
-                $setSystemToOriginal = "Set-JCSystem -SystemID $($PesterParams_SystemLinux._id) -$($param) `"$originalParam`""
+                $setSystemToOriginal = "Set-JCSystem -SystemID $($PesterParams_SystemWindows._id) -$($param) `"$originalParam`""
                 Invoke-Expression -Command:($setSystemToOriginal)
             }
         }
