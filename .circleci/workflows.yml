@@ -77,8 +77,6 @@ workflows:
             - Initial Setup
           context: aws-credentials
       - Build Help and Test Files:
-          requires:
-            - Initial Setup
           context: aws-credentials
       - Build Nuspec:
           requires:
@@ -98,7 +96,6 @@ workflows:
           context: aws-credentials
       - Setup Orgs:
           requires:
-            - Initial Setup
             - Build Modules
           context: aws-credentials
       - Pester Tests Windows:
