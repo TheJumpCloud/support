@@ -57,21 +57,21 @@ If (-Not $Env:CIRCLECI) {
     If ($Env:CIRCLE_JOB -match 'Windows') {
         # Windows Org
         Write-Host ('[status]Load Windows Org Variables:')
-        $items = Get-Content -Path "$PSScriptRoot/PesterTestWindows.cache.json" | ConvertFrom-Json -Depth 99
+        $items = Get-Content -Path "$PSScriptRoot/PesterTestWindows.cache.json" | ConvertFrom-Json -Depth 99 -AsHashtable
         foreach ($item in $items ) {
             Set-Variable -Name:("$($item.Name)") -Value:($item.Value) -Scope:('Global')
         }
     } elseIf ($Env:CIRCLE_JOB -match 'Mac') {
         # Mac Org
         Write-Host ('[status]Load Mac Org Variables:')
-        $items = Get-Content -Path "$PSScriptRoot/PesterTestMac.cache.json" | ConvertFrom-Json -Depth 99
+        $items = Get-Content -Path "$PSScriptRoot/PesterTestMac.cache.json" | ConvertFrom-Json -Depth 99 -AsHashtable
         foreach ($item in $items ) {
             Set-Variable -Name:("$($item.Name)") -Value:($item.Value) -Scope:('Global')
         }
     } elseIf ($Env:CIRCLE_JOB -match 'Linux') {
         Write-Host ('[status]Load Linux Org Variables:')
         # Linux Org
-        $items = Get-Content -Path "$PSScriptRoot/PesterTestLinux.cache.json" | ConvertFrom-Json -Depth 99
+        $items = Get-Content -Path "$PSScriptRoot/PesterTestLinux.cache.json" | ConvertFrom-Json -Depth 99 -AsHashtable
         foreach ($item in $items ) {
             Set-Variable -Name:("$($item.Name)") -Value:($item.Value) -Scope:('Global')
         }
