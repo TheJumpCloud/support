@@ -77,16 +77,19 @@ workflows:
             - Initial Setup
           context: aws-credentials
       - Build Help and Test Files:
+          requires:
+            - Initial Setup
           context: aws-credentials
       - Build Nuspec:
           requires:
-            - Build Modules
+            - Initial Setup
           context: aws-credentials
       - Invoke Git Commit:
           requires:
             - Initial Setup
             - Build Help and Test Files
             - Build Nuspec
+            - Build Modules
           # - Module Validation Tests:
           #     requires:
           #       - Initial Setup
@@ -96,7 +99,7 @@ workflows:
           context: aws-credentials
       - Setup Orgs:
           requires:
-            - Build Modules
+            - Initial Setup
           context: aws-credentials
       - Pester Tests Windows:
           requires:
