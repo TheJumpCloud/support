@@ -1,11 +1,11 @@
 Param(
     [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0)][ValidateNotNullOrEmpty()][System.String]$JumpCloudApiKey
     , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 1)][ValidateNotNullOrEmpty()][System.String]$JumpCloudApiKeyMsp
-    , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 2)][ValidateNotNullOrEmpty()][System.String]$RequiredModulesRepo
+    , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 2)][ValidateNotNullOrEmpty()][System.String]$RequiredModulesRepo = "PSGallery"
 
 )
 # Load Get-Config.ps1
-. "$PSScriptRoot/Get-Config.ps1" -RequiredModulesRepo 'psgallery'
+. "$PSScriptRoot/Get-Config.ps1" -RequiredModulesRepo $RequiredModulesRepo
 # Load Private Functions
 Get-ChildItem -Path:("$PSScriptRoot/../JumpCloud Module/Private/*.ps1") -Recurse | ForEach-Object { . $_.FullName }
 # Load Helper Functions

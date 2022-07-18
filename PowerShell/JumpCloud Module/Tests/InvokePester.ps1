@@ -51,16 +51,15 @@ If (-Not $Env:CIRCLECI) {
     Write-Host ('[status]Load private functions: ' + "$PSScriptRoot/../Private/*.ps1")
     Get-ChildItem -Path:("$PSScriptRoot/../Private/*.ps1") -Recurse | ForEach-Object { . $_.FullName }
     # Load HelperFunctions
-    Write-Host ('[status]Load Windows Org Variables:')
+    Write-Host ('[status]Load HelperFunctions: ' + "$PSScriptRoot/HelperFunctions.ps1")
     . ("$PSScriptRoot/HelperFunctions.ps1")
     # Import Org Variables:
     If ($Env:CIRCLE_JOB -match 'Windows') {
         # Windows Org
-        Write-Host ('[status]Load HelperFunctions: ' + "$PSScriptRoot/HelperFunctions.ps1")
+        Write-Host ('[status]Load Windows Org Variables:')
         $items = Get-Content -Path "$PSScriptRoot/PesterTestWindows.cache.json" | ConvertFrom-Json -Depth 99
         foreach ($item in $items ) {
             Set-Variable -Name:("$($item.Name)") -Value:($item.Value) -Scope:('Global')
-            Get-Variable -Scope Global
         }
     } elseIf ($Env:CIRCLE_JOB -match 'Mac') {
         # Mac Org
@@ -68,7 +67,6 @@ If (-Not $Env:CIRCLECI) {
         $items = Get-Content -Path "$PSScriptRoot/PesterTestMac.cache.json" | ConvertFrom-Json -Depth 99
         foreach ($item in $items ) {
             Set-Variable -Name:("$($item.Name)") -Value:($item.Value) -Scope:('Global')
-            Get-Variable -Scope Global
         }
     } elseIf ($Env:CIRCLE_JOB -match 'Linux') {
         Write-Host ('[status]Load Linux Org Variables:')
@@ -76,9 +74,10 @@ If (-Not $Env:CIRCLECI) {
         $items = Get-Content -Path "$PSScriptRoot/PesterTestLinux.cache.json" | ConvertFrom-Json -Depth 99
         foreach ($item in $items ) {
             Set-Variable -Name:("$($item.Name)") -Value:($item.Value) -Scope:('Global')
-            Get-Variable -Scope Global
         }
     }
+    # Set OrgID for Helper Functions that do not call Connect-JCOnline
+    $env:JCApiKey = $PesterParams_ApiKey
 }
 $PesterResultsFileXmldir = "$PSScriptRoot/test_results/"
 # $PesterResultsFileXml = $PesterResultsFileXmldir + "results.xml"
