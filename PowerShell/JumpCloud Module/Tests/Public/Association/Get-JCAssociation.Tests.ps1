@@ -1,4 +1,9 @@
 BeforeDiscovery {
+    Write-Host ('[status]Load private functions: ' + "$PSScriptRoot/../Private/*.ps1")
+    Get-ChildItem -Path:("/Users/jworkman/Documents/GitHub/support/PowerShell/JumpCloud Module/Private/*.ps1") -Recurse | ForEach-Object { . $_.FullName }
+    # Load HelperFunctions
+    Write-Host ('[status]Load Windows Org Variables:')
+    . ("/Users/jworkman/Documents/GitHub/support/PowerShell/JumpCloud Module/Tests/HelperFunctions.ps1")
     function Get-JCAssociations {
         # Generate possible associations
         $JCAssociationTypes = Get-JCType | Where-Object { $_.Category -eq 'JumpCloud' } # | Get-Random -Count 1 # remove when not testing
@@ -133,9 +138,6 @@ BeforeDiscovery {
     }
 }
 Describe -Tag:('JCAssociationGet') "Association Tests" {
-    BeforeAll {
-        Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
-    }
 
     Context ('ID and Name Case Tests of Application Tests') {
         It '<TestDescription>' -TestCases:(Get-JCAssociationTestCases) {
