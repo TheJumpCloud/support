@@ -79,10 +79,12 @@ workflows:
       - Build Help and Test Files:
           requires:
             - Initial Setup
+            - Build Modules
           context: aws-credentials
       - Build Nuspec:
           requires:
             - Initial Setup
+            - Build Modules
           context: aws-credentials
       - Invoke Git Commit:
           requires:
