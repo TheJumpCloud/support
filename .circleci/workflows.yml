@@ -555,10 +555,6 @@ commands:
             - store_test_results:
                 name: Uploading test results'
                 path: "./PowerShell/JumpCloud Module/Tests/test_results/"
-            - persist_to_workspace:
-                root: .
-                paths:
-                  - .
   setup-pester-env-mac:
     steps:
       - run:
