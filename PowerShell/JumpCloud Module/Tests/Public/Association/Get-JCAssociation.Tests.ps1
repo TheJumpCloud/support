@@ -132,7 +132,7 @@ BeforeDiscovery {
         return $JCAssociationTestCases
     }
 }
-Describe -Tag:('JCAssociationGet') "Association Tests" {
+Describe -Tag:('JCAssociation') "Association Tests" {
 
     Context ('ID and Name Case Tests of Application Tests') {
         It '<TestDescription>' -TestCases:(Get-JCAssociationTestCases) {
