@@ -42,12 +42,12 @@ for ($i = 0; $i -lt $numBuckets; $i++) {
         $extra = $remainder
     }
     $indexList = ($itemsPerBucket + $extra)
-    Write-Host "Container $i contains $indexList items:"
+    # Write-Host "Container $i contains $indexList items:"
     $CIIndexList = @()
     $CIIndexList += for ($k = 0; $k -lt $indexList; $k++) {
         <# Action that will repeat until the condition is met #>
         $bucketIndex = $i * $itemsPerBucket
-        write-host "`$tags[$($bucketIndex + $k)] ="$tags[($bucketIndex + $k)]
+        # write-host "`$tags[$($bucketIndex + $k)] ="$tags[($bucketIndex + $k)]
         $tags[$bucketIndex + $k]
     }
     # add to ciIndex Array
