@@ -1456,11 +1456,6 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
         }
     }
-} } } } } } } } } } } } } } } } } } } } } } } } }
-
-        }
-
-    }
     end
     {
         return $UpdatedUserArray
