@@ -1,53 +1,53 @@
 version: 2.1
 parameters:
   ManualBuild:
-    description: 'When `true`, pipeline will continue to build even if its been filtered out by config.yml (Will Not Run on Master Branch)'
+    description: "When `true`, pipeline will continue to build even if its been filtered out by config.yml (Will Not Run on Master Branch)"
     type: boolean
     default: false
   EnableDebugging:
-    description: 'When `true`, debugging commands will run and output to terminal.'
+    description: "When `true`, debugging commands will run and output to terminal."
     type: boolean
     default: true
   BuildModule:
-    description: 'When `true`, all build commands will run.'
+    description: "When `true`, all build commands will run."
     type: boolean
     default: true
   BuildHelpFiles:
-    description: 'When `true`, Help files will be built.'
+    description: "When `true`, Help files will be built."
     type: boolean
     default: true
   BuildTestFiles:
-    description: 'When `true`, Test files will be built.'
+    description: "When `true`, Test files will be built."
     type: boolean
     default: true
   BuildNuspec:
-    description: 'When `true`, Nuspec will be built and pack/ push steps complete.'
+    description: "When `true`, Nuspec will be built and pack/ push steps complete."
     type: boolean
     default: true
   ValidateModule:
-    description: 'When `true`, Pester Tests will be run for moduleValidation tags.'
+    description: "When `true`, Pester Tests will be run for moduleValidation tags."
     type: boolean
     default: true
   ReleaseType:
-    description: 'Release Type. Accepted values [ Major, Minor, Patch ]'
+    description: "Release Type. Accepted values [ Major, Minor, Patch ]"
     type: enum
     enum: ["Major", "Minor", "Patch"]
     default: "Patch"
   RequiredModulesRepo:
-    description: 'PowerShell Repository for JumpCloud SDKs'
+    description: "PowerShell Repository for JumpCloud SDKs"
     type: enum
     enum: ["PSGallery", "CodeArtifact"]
     default: "PSGallery"
   PowerShellModified:
-    description: 'Used by Path Filtering Orb to determine if changes occurred in the ./PowerShell/ folder'
+    description: "Used by Path Filtering Orb to determine if changes occurred in the ./PowerShell/ folder"
     type: boolean
     default: false
   PublishToPSGallery:
-    description: 'When `true` and when run against Master branch, this workflow will publish the latest code to PSGallery'
+    description: "When `true` and when run against Master branch, this workflow will publish the latest code to PSGallery"
     type: boolean
-    default: false
+    default: true
   ManualModuleVersion:
-    description: 'When `true` the pipeline will use the Module Version specified in JumpCloud Module JumpCloud.psd1 file'
+    description: "When `true` the pipeline will use the Module Version specified in JumpCloud Module JumpCloud.psd1 file"
     type: boolean
     default: false
 orbs:
@@ -191,8 +191,8 @@ jobs:
       - invoke-pester:
           JumpCloudApiKey: $env:XAPIKEY_PESTER
           JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_LINUX
-          ExcludeTagList: 'None'
-          IncludeTagList: 'ModuleValidation'
+          ExcludeTagList: "None"
+          IncludeTagList: "ModuleValidation"
           RequiredModulesRepo: << pipeline.parameters.RequiredModulesRepo >>
   Publish Wiki Docs:
     executor: win/default
@@ -208,10 +208,10 @@ jobs:
       - invoke-pester:
           JumpCloudApiKey: $env:XAPIKEY_PESTER
           JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_MTP
-          ExcludeTagList: 'ModuleValidation, JCDeployment'
-          IncludeTagList: '*'
+          ExcludeTagList: "ModuleValidation, JCDeployment"
+          IncludeTagList: "*"
           RequiredModulesRepo: << pipeline.parameters.RequiredModulesRepo >>
-          Shell: 'pwsh.exe'
+          Shell: "pwsh.exe"
   Pester Tests Mac:
     executor: macos_exec
     steps:
@@ -219,10 +219,10 @@ jobs:
       - invoke-pester:
           JumpCloudApiKey: $env:XAPIKEY_PESTER_MAC
           JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_MTP
-          ExcludeTagList: 'ModuleValidation, JCDeployment'
-          IncludeTagList: '*'
+          ExcludeTagList: "ModuleValidation, JCDeployment"
+          IncludeTagList: "*"
           RequiredModulesRepo: << pipeline.parameters.RequiredModulesRepo >>
-          Shell: 'pwsh'
+          Shell: "pwsh"
   Pester Tests Linux:
     machine:
       image: ubuntu-2004:202201-02
@@ -231,10 +231,10 @@ jobs:
       - invoke-pester:
           JumpCloudApiKey: $env:XAPIKEY_PESTER_LINUX
           JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_MTP
-          ExcludeTagList: 'ModuleValidation, JCDeployment'
-          IncludeTagList: '*'
+          ExcludeTagList: "ModuleValidation, JCDeployment"
+          IncludeTagList: "*"
           RequiredModulesRepo: << pipeline.parameters.RequiredModulesRepo >>
-          Shell: 'pwsh'
+          Shell: "pwsh"
   Publish Module Validation:
     machine:
       image: ubuntu-2004:202201-02
@@ -356,11 +356,11 @@ commands:
       - checkout
       - add_ssh_keys:
           fingerprints:
-            - '24:54:e1:c2:70:c6:f7:61:71:4b:c5:52:9f:20:b9:63'
+            - "24:54:e1:c2:70:c6:f7:61:71:4b:c5:52:9f:20:b9:63"
       - attach_workspace:
           at: .
       - run:
-          name: 'Publish Wiki Documentaiton'
+          name: "Publish Wiki Documentaiton"
           shell: pwsh.exe
           command: |
             Set-Location -Path "./PowerShell/Deploy/"
@@ -370,12 +370,12 @@ commands:
       - checkout
       - add_ssh_keys:
           fingerprints:
-            - '24:54:e1:c2:70:c6:f7:61:71:4b:c5:52:9f:20:b9:63'
+            - "24:54:e1:c2:70:c6:f7:61:71:4b:c5:52:9f:20:b9:63"
       - attach_workspace:
           at: .
       - run:
           when: on_success
-          name: 'Commit PowerShell Module to << pipeline.git.branch >>'
+          name: "Commit PowerShell Module to << pipeline.git.branch >>"
           shell: pwsh.exe
           command: |
             ssh-keyscan github.com >> ./.ssh/known_hosts
@@ -453,16 +453,16 @@ commands:
         default: $env:XAPIKEY_PESTER_MTP
       ExcludeTagList:
         type: string
-        default: 'None'
+        default: "None"
       IncludeTagList:
         type: string
-        default: 'None'
+        default: "None"
       RequiredModulesRepo:
         type: string
-        default: 'PSGallery'
+        default: "PSGallery"
       Shell:
         type: string
-        default: 'pwsh.exe'
+        default: "pwsh.exe"
     steps:
       - when:
           condition:
