@@ -1,3 +1,16 @@
+## 1.23.3
+
+Release Date: July 20, 2022
+
+#### RELEASE NOTES
+
+This release modifies how the Manager Username Lookup works with Get-JCUser. Only usernames/ emails that match the full string of the search are now returned. In addition users set with Set-JCUser will correctly modify managers by email address.
+
+#### BUG FIXES:
+
+- Get-JCUser -Manager "someUser" could return multiple values if another user username: "User" exists in the Organization
+- Set-JCUser -Username "theUser" -Manager "someUser" could return multiple values if another user username: "User" exists in the Organization
+
 ## 1.23.2
 
 Release Date: July 11, 2022
@@ -8,7 +21,7 @@ This release modifies how the Manager Username Lookup works with Get-JCUser. Onl
 
 #### BUG FIXES:
 
-* Get-JCUser -Manager "someUser" could return multiple values if another user username: "User" exists in the Organization
+- Get-JCUser -Manager "someUser" could return multiple values if another user username: "User" exists in the Organization
 
 ## 1.23.1
 
@@ -29,7 +42,8 @@ This release adds search endpoint functionality and new parameters to Get-JCComm
 
 #### BUG FIXES:
 
-* N/A
+- N/A
+
 ## 1.22.1
 
 Release Date: May 19, 2022
@@ -40,7 +54,7 @@ This release includes a bug-fix for read only API Keys and running Backup-JCOrga
 
 #### BUG FIXES:
 
-* Backup-JCOrganization no longer throws a forbidden error message when run with a read-only API Key. In the previous release, we solved for only a subset of Backup-JCOrganizations' Read-Only error messages, these should now be resolved.
+- Backup-JCOrganization no longer throws a forbidden error message when run with a read-only API Key. In the previous release, we solved for only a subset of Backup-JCOrganizations' Read-Only error messages, these should now be resolved.
 
 ## 1.22.0
 
@@ -52,16 +66,16 @@ This release includes an update to Set, Get, New-JCUser to search manager by a v
 
 #### IMPROVEMENTS:
 
-* Set, Get, New-JCUser will validate email address value given to -manager
+- Set, Get, New-JCUser will validate email address value given to -manager
 
 #### FEATURES:
 
-* This release adds email search to manager field in Set, Get, New-JCUser
-* This release adds new parameters to Get-JCResults private function
+- This release adds email search to manager field in Set, Get, New-JCUser
+- This release adds new parameters to Get-JCResults private function
 
 #### BUG FIXES:
 
-* Backup-JCOrganization no longer throws a forbidden error message when run with a read-only API Key.
+- Backup-JCOrganization no longer throws a forbidden error message when run with a read-only API Key.
 
 ## 1.21.0
 
@@ -73,13 +87,14 @@ Release Date: May 11, 2022
 This release includes an update to Update-JCModule intended to help updating future fersions of the PowerShell SDK
 
 ```
+
 #### IMPROVEMENTS:
 
-* Update-JCModule specifically targets which version of the new SDK to install and uninstall.
+- Update-JCModule specifically targets which version of the new SDK to install and uninstall.
 
 #### FEATURES:
 
-* This release adds the -recoveryemail parameter to Set, Get, New-JCUser
+- This release adds the -recoveryemail parameter to Set, Get, New-JCUser
 
 #### BUG FIXES:
 
@@ -94,14 +109,15 @@ Release Date: April 28, 2022
 ```
 This releasse includes a patch to fix pagination where a null system record exists in Get-JCSystemGroupMember.
 ```
+
 #### IMPROVEMENTS:
 
-* Import/Update-JCUsersFromCSV will validate that custom attribute values are not null before attempting to Import/Update users.
-* Addressed an issue with Update-JCModule failing if GitHub or PowerShellGallery were inaccessible
+- Import/Update-JCUsersFromCSV will validate that custom attribute values are not null before attempting to Import/Update users.
+- Addressed an issue with Update-JCModule failing if GitHub or PowerShellGallery were inaccessible
 
 #### BUG FIXES:
 
-* [Fixed issue involving Get-JCSystemGroupMember not returning all expected results](https://github.com/TheJumpCloud/support/pull/370)
+- [Fixed issue involving Get-JCSystemGroupMember not returning all expected results](https://github.com/TheJumpCloud/support/pull/370)
 
 ## 1.20.0
 
@@ -117,10 +133,9 @@ This release incorporates the "state" parameter into Get/Set/New-JCUser
 
 [state parameter added to module](https://github.com/TheJumpCloud/support/pull/361) see [Managing User State documentation](https://support.jumpcloud.com/support/s/article/Managing-User-States#:~:text=A%20user%20state%20indicates%20where,still%20need%20to%20be%20onboarded.).
 
-
 #### IMPROVEMENTS:
 
-* Import/Update-JCUsersFromCSV will validate that custom attribute values are not null before attempting to Import/Update users.
+- Import/Update-JCUsersFromCSV will validate that custom attribute values are not null before attempting to Import/Update users.
 
 #### BUG FIXES:
 
@@ -265,8 +280,8 @@ Release Date: June 23, 2021
 
 #### RELEASE NOTES
 
-* switch to circleci pipeline
-* Update tsts with valid radius reply attributes
+- switch to circleci pipeline
+- Update tsts with valid radius reply attributes
 
 ## 1.18.4
 
@@ -274,7 +289,7 @@ Release Date: May 03, 2021
 
 #### RELEASE NOTES
 
-* Invoke-JCDeployment updated to use SDK versions of the PowerShell Module
+- Invoke-JCDeployment updated to use SDK versions of the PowerShell Module
 
 #### FEATURES
 
@@ -282,7 +297,7 @@ Release Date: May 03, 2021
 
 #### BUG FIXES
 
-* Invoke-JCDeployment will no longer reset a command type to linux when run
+- Invoke-JCDeployment will no longer reset a command type to linux when run
 
 ## 1.18.3
 
@@ -290,18 +305,18 @@ Release Date: January 04, 2021
 
 #### RELEASE NOTES
 
-* New Function, Backup-JCOrganization
-  * https://github.com/TheJumpCloud/support/tree/master/PowerShell/JumpCloud%20Module/Docs/Backup-JCOrganization.md
-* Get-JCBackup will no longer be supported and will soon be deprecated; Please use Backup-JCOrganization.
+- New Function, Backup-JCOrganization
+  - https://github.com/TheJumpCloud/support/tree/master/PowerShell/JumpCloud%20Module/Docs/Backup-JCOrganization.md
+- Get-JCBackup will no longer be supported and will soon be deprecated; Please use Backup-JCOrganization.
 
 #### FEATURES
 
-* Backup-JCOrganization can be used to backup your JumpCloud organization to local json files
+- Backup-JCOrganization can be used to backup your JumpCloud organization to local json files
 
 #### IMPROVEMENTS
 
-* Misc internal improvements.
-* User agent has been updated to accommodate for JcSlackBot tracking.
+- Misc internal improvements.
+- User agent has been updated to accommodate for JcSlackBot tracking.
 
 #### BUG FIXES
 
@@ -311,13 +326,13 @@ Release Date: September 3, 2020
 
 #### RELEASE NOTES
 
-The  `*-Association` functions now call functions from the  `JumpCloud.SDK.V2` instead of custom `Invoke-WebRequest` calls.
+The `*-Association` functions now call functions from the `JumpCloud.SDK.V2` instead of custom `Invoke-WebRequest` calls.
 
 #### FEATURES:
 
 #### IMPROVEMENTS:
 
-The  `*-Association` functions now call functions from the  `JumpCloud.SDK.V2` instead of custom `Invoke-WebRequest` calls. The functions no longer return objects with `IsSuccessStatusCode` and `Error` properties.
+The `*-Association` functions now call functions from the `JumpCloud.SDK.V2` instead of custom `Invoke-WebRequest` calls. The functions no longer return objects with `IsSuccessStatusCode` and `Error` properties.
 
 #### BUG FIXES:
 
@@ -327,14 +342,14 @@ Release Date: August 14, 2020
 
 #### RELEASE NOTES
 
-* `Get-JCUser` and `Get-JCSystem` updated to accept dates as a `datetime` type.
-  * Prevents "String not recognized as valid datetime" error in other non en-US regions
+- `Get-JCUser` and `Get-JCSystem` updated to accept dates as a `datetime` type.
+  - Prevents "String not recognized as valid datetime" error in other non en-US regions
 
 #### FEATURES:
 
 #### IMPROVEMENTS:
 
-Testing the JumpCloud PowerShell module and dependent JumpCloud.SDK.* modules with private repositories is supported.
+Testing the JumpCloud PowerShell module and dependent JumpCloud.SDK.\* modules with private repositories is supported.
 
 #### BUG FIXES:
 
@@ -346,15 +361,15 @@ Release Date: August 13, 2020
 
 #### RELEASE NOTES
 
-* `Get-JCSystemInsights` has been updated to use the `JumpCloud.SDK.V2` powershell module.
-  * Feature Enhancements
-    * New SystemInsights tables will be automatically added they become available.
-    * By using tab complete on the `-Filter` parameter an example of how to build the filter will be populated.
-  * Breaking Changes
-    * Table names no longer contain special characters. ex: `_`, `-`
-    * Returned object properties no longer contain special characters. ex: `_`, `-`
-    * Table names are singular instead of plural.
-    * Dropping the `-Name` parameter to increase performance.
+- `Get-JCSystemInsights` has been updated to use the `JumpCloud.SDK.V2` powershell module.
+  - Feature Enhancements
+    - New SystemInsights tables will be automatically added they become available.
+    - By using tab complete on the `-Filter` parameter an example of how to build the filter will be populated.
+  - Breaking Changes
+    - Table names no longer contain special characters. ex: `_`, `-`
+    - Returned object properties no longer contain special characters. ex: `_`, `-`
+    - Table names are singular instead of plural.
+    - Dropping the `-Name` parameter to increase performance.
 
 #### FEATURES
 
@@ -505,7 +520,6 @@ Need to update users email addresses in bulk? You can now do that using New-JCIm
 
 Resolved issue that caused module to attempt to update when running the latest version
 
-
 ## 1.15.4
 
 #### RELEASE DATE
@@ -564,21 +578,21 @@ Get-JCSystem -filterDateProperty parameter now accepts lastContact in addition t
 
 New SystemInsights tables available:
 
-* alf
-* battery
-* crashes
-* ie_extensions
-* launchd
-* logged_in_users
-* managed_policies
-* shadow
-* shared_folders
-* shared_resources
-* sharing_preferences
-* sip_config
-* usb_devices
-* user_groups
-* user_ssh_keys
+- alf
+- battery
+- crashes
+- ie_extensions
+- launchd
+- logged_in_users
+- managed_policies
+- shadow
+- shared_folders
+- shared_resources
+- sharing_preferences
+- sip_config
+- usb_devices
+- user_groups
+- user_ssh_keys
 
 #### IMPROVEMENTS
 
@@ -627,8 +641,8 @@ Update Get-JCBackup to use newer functions.
 
 #### BUG FIXES
 
-When piping to a *-JCAssociations function there was a variable scoping issue that incorrectly set the `skip` and `limit` values.
-When running a *-JCAssociations function JC types with only one target type were not correctly being populated due to an unnecessary validation step.
+When piping to a _-JCAssociations function there was a variable scoping issue that incorrectly set the `skip` and `limit` values.
+When running a _-JCAssociations function JC types with only one target type were not correctly being populated due to an unnecessary validation step.
 
 ## 1.14.0
 
@@ -961,7 +975,6 @@ Added functionality for JumpCloud internal developers to connect to staging and 
 
 - Resolved bug on Get-JCGroup where all group attributes would not display.
 
-
 ## 1.8.2
 
 #### RELEASE DATE
@@ -1045,8 +1058,8 @@ New LDAP location attributes: home_streetAddress, home_poBox home_city, home_sta
 - Updated Function: Import-JCUsersFromCSV to use splatting which allows for CSV to contain columns with non JumpCloud user information
 - Progress bars on Import-JCUsersFromCSV and Update-JCUsersFromCSV
 
-
 ## 1.7.0
+
 #### RELEASE DATE
 
 August 14, 2018
@@ -1068,7 +1081,7 @@ Use system specific payloads in your JumpCloud commands with variables populated
 
 #### IMPROVEMENTS
 
-- Warning action "Inquire" removed from Import-JCUsersFromCSV command. Resolves repetitive "Press Y to continue"  message during user validation.
+- Warning action "Inquire" removed from Import-JCUsersFromCSV command. Resolves repetitive "Press Y to continue" message during user validation.
 - Streamlined JumpCloud banners. Because less is more.
 
 #### BUG FIXES
@@ -1076,8 +1089,8 @@ Use system specific payloads in your JumpCloud commands with variables populated
 - Resolved bug on 'Import-JCUserFromCSV' where output for users that were not created due to duplicate username or email would show previously created user information.
 - Resolved bug on 'Import-JCUserFromCSV' where output for users that were not created would show 'User created'.
 
-
 ## 1.6.0
+
 #### RELEASE DATE
 
 August 3, 2018
@@ -1103,6 +1116,7 @@ Multi tenant admins can switch the org they are connected to using the Set-JCOrg
 - All Public functions have been updated to include the [x-org-id](https://docs.jumpcloud.com/2.0/authentication-and-authorization/multi-tenant-organization-api-header) header when a multi tenant API connection is established.
 
 ## 1.5.0
+
 #### RELEASE DATE
 
 July 16, 2018
@@ -1113,6 +1127,7 @@ July 16, 2018
 New Function: Get-JCBackup to backup user, system user, system, group information to CSV.
 Updated Function: Get-JCCommandResult to show SystemID
 ```
+
 #### FEATURES
 
 - New Function: Get-JCBackup to backup user, system user, system, user group, and system group information to CSV
@@ -1123,6 +1138,7 @@ Updated Function: Get-JCCommandResult to show SystemID
 - Module structure updated. .PSM1 function monolithic broken out into single function .PS1 files in [Public](https://github.com/TheJumpCloud/support/tree/master/PowerShell/JumpCloud%20Module/Public) and [Private](https://github.com/TheJumpCloud/support/tree/master/PowerShell/JumpCloud%20Module/Private) folders. This allows for easier debugging and updating of the functions within the module.
 
 ## 1.4.2
+
 #### RELEASE DATE
 
 May 31, 2018
@@ -1134,6 +1150,7 @@ Updated Function: Get-JCCommandResult with new parameter '-MaxResult'
 Using the parameter '-Skip' and '-MaxResult' admins can return a specific subset of command results.
 Performance fix for 'Get-JCCommandResult' with increase default limit to 1000
 ```
+
 #### FEATURES
 
 - Updated Function: Get-JCCommandResult with new parameters '-MaxResult'. '-MaxResult' can be combinded with '-Skip' to return a specific subset of command results.
@@ -1144,6 +1161,7 @@ Performance fix for 'Get-JCCommandResult' with increase default limit to 1000
 - Updated Function: Get-JCCommandResult increased default limit to 1000 results.
 
 ## 1.4.1
+
 #### RELEASE DATE
 
 May 25, 2018
@@ -1156,6 +1174,7 @@ Updated Function: Get-JCCommandResult with new parameters '-TotalCount' and '-Sk
 '-Skip' returns only the results after a specified number
 Bug fix for 'Get-JCSystem' to allow for pagination of over 1000 results.
 ```
+
 #### FEATURES
 
 - Updated Function: Get-JCCommandResult with new parameters '-TotalCount' to return the total number of command results and '-Skip' to return only command results after a specificed number. Using '-TotalCount' to first find the total number of results before running a command you can then use '-Skip' to query the new command results after running the command.
@@ -1164,8 +1183,8 @@ Bug fix for 'Get-JCSystem' to allow for pagination of over 1000 results.
 
 - Updated Functions: Get-JCSystem to allow for pagination of over 1000 results.
 
-
 ## 1.4.0
+
 #### RELEASE DATE
 
 May 18, 2018
@@ -1185,7 +1204,7 @@ Improvements: Optimized Helper Hash Functions to speed up hash table creation an
 
 #### FEATURES
 
-- Updated Function:  Invoke-JCCommand has added parameter '-NumberOfVariables' for passing in variables to JumpCloud commands. This parameter will create additional parameters dynamically based on the number of variables being passed. Learn more about passing objects to JumpCloud commands under the heading 'Sending data with triggers' [here](https://support.jumpcloud.com/customer/en/portal/articles/2443894-how-to-use-command-triggers).
+- Updated Function: Invoke-JCCommand has added parameter '-NumberOfVariables' for passing in variables to JumpCloud commands. This parameter will create additional parameters dynamically based on the number of variables being passed. Learn more about passing objects to JumpCloud commands under the heading 'Sending data with triggers' [here](https://support.jumpcloud.com/customer/en/portal/articles/2443894-how-to-use-command-triggers).
 - Updated Function: Get-JCSystem to use the [/search/systems API endpoint](https://docs.jumpcloud.com/1.0/search/search-systems).
   - Get-JCSystem can now do front and end wild card searches on all string properties
     - Example 'Get-JCsystem -hostname '\*admin\*'
@@ -1197,19 +1216,18 @@ Improvements: Optimized Helper Hash Functions to speed up hash table creation an
   - Get-JCUser can now do date searches on 'Created' and 'password_expiration_date' date fields using new parameter -filterDateProperty
   - Get-JCUser can now return only specific properties using new parameter -returnProperties
 
-
 #### BUG FIXES
 
 - Updated Functions: Get-JCSystemGroupMember to properly paginate results greater than 100 system group members.
-- Updated Function:  Add-JCUserGroupMember to handle user error additions more gracefully.
+- Updated Function: Add-JCUserGroupMember to handle user error additions more gracefully.
 - Updated Function: Connect-JCOnline to Write-Error instead of Write-Output if API key validation fails
 
 #### IMPROVEMENTS
 
 - Updated Helper Hash Functions to leverage the -returnProperties which speeds up hash table creation and overall performance.
 
-
 ## 1.3.0
+
 #### RELEASE DATE
 
 April 27, 2018
@@ -1232,14 +1250,13 @@ Updated Functions: Add-JCUser and Set-JCUser with boolean parameter '-password_n
 - New Function: Remove-JCCommandTarget to remove JumpCloud system or system group associations from JumpCloud commands.
 - Updated Functions: Add-JCUser and Set-JCUser with boolean parameter 'password_never_expires'.
 
-
 #### BUG FIXES
 
 - Updated Functions: Add-JCUser and Set-JCUser to allow UNIX_UID and UNIX_GUID to a value in the range 0-4294967295.
 - Updated Function: Get-JCSystemGroupMember to properly display output when using the 'ByID' parameter set.
 
-
 ## 1.2.0
+
 #### RELEASE DATE
 
 February 28, 2018
@@ -1261,7 +1278,6 @@ Updated Function Connect-JCOnline to check for and install module updates and ad
 - Updated Function: Get-JCUser to use the same search endpoint as the UI. Get-JCUser can now search via 'username','firstname','lastname', or 'email'. By default Get-JCUser still returns all users.
 - Updated Function: Connect-JCOnline added banner to display current JumpCloud module version information. Added parameter sets for 'Interactive' and 'Force' modes. 'Interactive' displays banner and automatic module update options when new version becomes available. 'Force' can be used in automation scenarios to connect to JumpCloud and set $JCAPIKEY variable.
 
-
 #### IMPROVEMENTS
 
 - Updated Function: Add-JCUserGroupMember with 'name' alias for 'GroupName' parameter to allow the command to accept pipeline input from the 'Get-JCGroup' command
@@ -1270,6 +1286,7 @@ Updated Function Connect-JCOnline to check for and install module updates and ad
 - Updated Function: Remove-JCSystemGroupMember with 'name' alias for 'GroupName' parameter to allow the command to accept pipeline input from the 'Get-JCGroup' command
 
 ## 1.1.0
+
 #### RELEASE DATE
 
 January 8, 2018
@@ -1287,7 +1304,6 @@ Updated import functions and Add/Get-JCSystemUser to accommodate for user / syst
 - New Helper Function: Get-Hash_ID_Sudo hash table of UserID and ($true/$false) for Sudo parameter
 - New Helper Function: Get-Hash_SystemID_HostName hash table of SystemID and system DisplayName
 
-
 #### IMPROVEMENTS
 
 - Updated Function: [Add-JCSystemUser](https://github.com/TheJumpCloud/support/wiki/Add-JCSystemUser) has boolean parameter '-Administrator' for setting system permissions during add
@@ -1297,8 +1313,6 @@ Updated import functions and Add/Get-JCSystemUser to accommodate for user / syst
 - Updated Function: [Import-JCUserFromCSV](https://github.com/TheJumpCloud/support/wiki/Import-JCUsersFromCSV) has switch '-Force' parameter to skip the Import GUI and data validation when importing users
 - Updated Function: [Import-JCUserFromCSV](https://github.com/TheJumpCloud/support/wiki/Import-JCUsersFromCSV) to look for duplicate email addresses and usernames in import .csv as part of data validation
 - Updated Function: [Get-JCGroup](https://github.com/TheJumpCloud/support/wiki/Get-JCGroup) has -Name parameter which can be used to find attributes like the POSIX group number of a given group
-
-
 
 #### BUG FIXES
 
@@ -1347,9 +1361,11 @@ Function        Set-JCUser                                         1.1.0      Ju
 ### [How to update to the latest version of the JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Updating-the-JumpCloud-PowerShell-Module)
 
 ## 1.0.0
+
 #### RELEASE DATE
 
 November 29, 2017
+
 ```PowerShell
 
 PS > Get-Command -Module JumpCloud
