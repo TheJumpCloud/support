@@ -1,10 +1,15 @@
 import os
+from os.path import dirname
 import re
 import json
+import pprint
 
 # Get location of the script
-rootPath = os.path.dirname(os.path.realpath(__file__))
-# rootPath = "./PowerShell/JumpCloud Commands Gallery"
+scriptPath = os.path.dirname(os.path.realpath(__file__))
+# rootPath is root of the directory
+rootPath = dirname(dirname(scriptPath))
+# CommandPath contains linux, mac, windows commands
+commandPath = os.path.join(rootPath, "PowerShell/JumpCloud Commands Gallery")
 pathParts = ['Linux Commands','Mac Commands', 'Windows Commands']
 
 def get_sections(s):
@@ -14,7 +19,7 @@ def get_sections(s):
 cmds = []
 
 for part in pathParts:
-    path = os.path.join(rootPath, part)
+    path = os.path.join(commandPath, part)
     for file in os.listdir(path):
         if file.endswith(".md") == False: continue
 
@@ -52,8 +57,12 @@ for part in pathParts:
 
             cmds.append(cmd)
 
-final = json.dumps(cmds, indent=2)
+final = json.dumps(cmds, indent=2, sort_keys=True)
+# l1 = sorted(final, key=lambda k:k['commandType'], reverse=True)
+# l2 = sorted(l1, key=lambda k:k['Name'])
+# print(l2)
 
-f = open(os.path.join(rootPath,"commands.json"), 'w+')
+
+f = open(os.path.join(commandPath,"commands.json"), 'w+')
 f.write(final)
 f.close()
