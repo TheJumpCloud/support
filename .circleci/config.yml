@@ -1,7 +1,7 @@
 version: 2.1
 setup: true
 orbs:
-  path-filtering: circleci/path-filtering@0.1.1
+  path-filtering: circleci/path-filtering@0.1.3
 workflows:
   version: 2
   check-updated-files:
@@ -9,10 +9,6 @@ workflows:
     - path-filtering/filter:
         mapping: |
           PowerShell\/(?!JumpCloud\sCommands\sGallery|JumpCloud\sOffice365\sSSO).* PowerShellModified true
-        base-revision: master
-        config-path: .circleci/workflows.yml
-    - path-filtering/filter:
-        mapping: |
           PowerShell\/(JumpCloud\sCommands\sGallery).* CommandsGalleryModified true
         base-revision: master
         config-path: .circleci/workflows.yml
