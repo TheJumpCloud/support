@@ -1,8 +1,8 @@
+from logging import exception
 import os
 from os.path import dirname
 import re
 import json
-import pprint
 
 # Get location of the script
 scriptPath = os.path.dirname(os.path.realpath(__file__))
@@ -36,28 +36,39 @@ for part in pathParts:
         with open(filePath) as f:
             content = f.read();
             for i,sec in enumerate(get_sections(content)):
-                secTitleMatch = re.match(r"#### ([\* \w]+)[\r\n]", sec)
-                if (secTitleMatch == None): continue;
+                secTitleMatch = re.match(r"#### ([\_ \w]+|[\* \w]+)[\r\n]", sec)
+                if (secTitleMatch == None):
+                    continue
 
-                secTitle = secTitleMatch.group(1).replace('*','')
+                secTitle = secTitleMatch.group(1).replace('*','').replace('_','')
                 secContent = sec.replace(f"#### {secTitle}", "").strip()
-
+                # if one of the content types are empty throw an error:
+                if (secContent == ''):
+                    raise exception(secTitle + " in file: " + os.path.basename(filePath) + " was null or misformatted")
+                # compile each object
                 if (secTitle == 'Name'):
                     cmd['name'] = secContent
                 elif(secTitle == 'commandType'):
-                    cmd['type'] = secContent
+                    cmd['type'] = secContent.lower()
                 elif(secTitle == 'Command'):
                     cmd['script'] = secContent
                 elif(secTitle == 'Description'):
                     cmd['description'] = secContent
-                elif(secTitle == 'Import This Command'):
+                elif((secTitle == 'Import This Command')):
                     linkMatch = re.search(r"Import-JCCommand.+(https:.+)\'", secContent)
                     if (linkMatch != None):
                         cmd['link'] = linkMatch.group(1).strip()
-
             cmds.append(cmd)
+# validate that no null objects are left in json
+for item in cmds:
+    for i in item.keys():
+        if (item[i] == ''):
+            raise exception("Missing value for " + i + " found in " + item['name'])
 
-final = json.dumps(cmds, indent=2, sort_keys=True)
+# default sort by type then name for each object
+cmds.sort(key=lambda x: (x["type"], x["name"]))
+# write out the json object
+final = json.dumps(cmds, indent=2)
 
 f = open(os.path.join(commandPath,"commands.json"), 'w+')
 f.write(final)

@@ -1,6 +1,6 @@
 #### Name
 
-Windows - Enable Task Scheduler History  | v1.0 JCCG
+Windows - Enable Task Scheduler History | v1.0 JCCG
 
 #### commandType
 
@@ -20,8 +20,9 @@ $TaskSchedulerLog.SaveChanges()
 
 #### Description
 
+This command will enable windows task schedule history on remote systems.
 
-#### *Import This Command*
+#### _Import This Command_
 
 To import this command into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
 
