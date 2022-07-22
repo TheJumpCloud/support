@@ -1,5 +1,4 @@
-Function New-JCCommandFromURL
-{
+Function New-JCCommandFromURL {
     [CmdletBinding()]
     param (
 
@@ -12,51 +11,47 @@ Function New-JCCommandFromURL
 
     )
 
-    begin
-    {
+    begin {
 
     }
+    process {
 
-    process
-    {
+        # Check for short url
+        if ($GitHubURL -match "https://git.io.*") {
+            $shortUrl = Invoke-WebRequest -Uri $GitHubURL
+            $absoluteUri = $shortUrl.BaseResponse.RequestMessage.RequestUri.AbsoluteUri
+        } else {
+            $absoluteUri = $GitHubURL
+        }
+        # Convert GitHub url to raw url
+        $httpUrl = $absoluteUri | Select-String -Pattern "\bmaster.*$" | % { $_.Matches }  | % { $_.Value }
+        $rawUrl = "https://raw.githubusercontent.com/TheJumpCloud/support/$httpUrl"
 
-        $Command = Invoke-WebRequest -Uri $GitHubURL -UseBasicParsing -UserAgent:(Get-JCUserAgent) | Select-Object RawContent
+        $rawUrlInvoke = Invoke-WebRequest -Uri $rawUrl -UseBasicParsing -UserAgent:(Get-JCUserAgent)
+        $content = [Regex]::Matches($rawUrlInvoke.Content, '#### (Name|commandType).*[\r\n]+(.*)|#### Command[\n\r]+.*\n([\s\S]*?)```$', [System.Text.RegularExpressions.RegexOptions]::Multiline)
 
-        $CodeRaw = $Command | Select-String '(?<=\<code(.*?)\>)((.|\n|\r)*?)(?=<\/code>)' # Contain XML escape characters
-
-        $Code = ((((($CodeRaw.Matches.Value.Trim() -replace "&amp;", "&") -replace "&lt;", "<") -replace "&gt;", ">") -replace "&quot;", '"') -Replace "&apos;", "'") # Replace XML character references
-
-        $Name = (((((($Command -split 'Name</h4>')[1]) -replace "`n", "") -split '</p>')[0]) -replace '(\<p)(.*?)(\>)', '')
-
-        $commandType = (((($Command -split 'commandType</h4>')[1] -replace "`n", "") -split '</p>')[0] -replace '(\<p)(.*?)(\>)', "")
+        # Command Values
+        $Name = $content[0].Groups[2].Value #Name
+        $commandType = $content[1].Groups[2].Value #CommandType
+        $Command = $content[2].Groups[3].Value #Command
 
         $NewCommandParams = @{
 
             name        = $Name
             commandType = $commandType
-            command     = $code
+            command     = $command
         }
-
-        Write-Verbose $NewCommandParams
-
-        try
-        {
+        try {
 
             $NewCommand = New-JCCommand @NewCommandParams
 
-        }
-
-
-        catch
-        {
+        } catch {
 
             $NewCommand = $_.ErrorDetails
 
         }
     }
-
-    end
-    {
+    end {
 
         Return $NewCommand
 
