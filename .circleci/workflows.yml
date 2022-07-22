@@ -42,6 +42,10 @@ parameters:
     description: "Used by Path Filtering Orb to determine if changes occurred in the ./PowerShell/ folder"
     type: boolean
     default: false
+  CommandsGalleryModified:
+    description: "Used by Path Filtering Orb to determine if changes occurred in the ./PowerShell/JumpCloud Commands Gallery folder"
+    type: boolean
+    default: false
   PublishToPSGallery:
     description: "When `true` and when run against Master branch, this workflow will publish the latest code to PSGallery"
     type: boolean
@@ -59,6 +63,17 @@ executors:
     resource_class: macos.x86.medium.gen2
 workflows:
   version: 2
+  CommandsGalleryCI:
+    when:
+      and:
+        - and:
+            - not:
+                matches:
+                  pattern: "^master$"
+                  value: << pipeline.git.branch >>
+            - equal: [true, << pipeline.parameters.CommandsGalleryModified >>]
+    jobs:
+      - CommandsCI
   ci:
     when:
       and:
@@ -155,6 +170,11 @@ workflows:
             - Publish Module Validation
             - Approve Module
 jobs:
+  CommandsCI:
+    docker:
+      - image: cimg/base:2021.04
+    steps:
+      - build-command-json
   Initial Setup:
     executor: win/default
     steps:
@@ -277,6 +297,14 @@ jobs:
             # Post Draft Release
             ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -n "$TITLE" -b "$BODY" -delete -draft "$TAG" /root/project/PowerShell/
 commands:
+  build-command-json:
+    steps:
+      - checkout
+      - run:
+          name: Build Commands Json
+          shell: python
+          command: |
+            ./PowerShell/JumpCloud Commands Gallery/parse_commands_to_json_py.py
   initial-setup:
     steps:
       - checkout
