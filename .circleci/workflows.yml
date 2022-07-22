@@ -302,7 +302,6 @@ commands:
       - checkout
       - run:
           name: Build Commands Json
-          shell: python
           command: |
             python3 "./PowerShell/JumpCloud Commands Gallery/parse_commands_to_json_py.py"
   initial-setup:

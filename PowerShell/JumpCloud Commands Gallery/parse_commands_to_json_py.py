@@ -2,7 +2,8 @@ import os
 import re
 import json
 
-rootPath = "./"
+# Get location of the script
+rootPath = os.path.dirname(os.path.realpath(__file__))
 # rootPath = "./PowerShell/JumpCloud Commands Gallery"
 pathParts = ['Linux Commands','Mac Commands', 'Windows Commands']
 
