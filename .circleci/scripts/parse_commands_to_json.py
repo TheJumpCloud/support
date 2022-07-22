@@ -58,10 +58,6 @@ for part in pathParts:
             cmds.append(cmd)
 
 final = json.dumps(cmds, indent=2, sort_keys=True)
-# l1 = sorted(final, key=lambda k:k['commandType'], reverse=True)
-# l2 = sorted(l1, key=lambda k:k['Name'])
-# print(l2)
-
 
 f = open(os.path.join(commandPath,"commands.json"), 'w+')
 f.write(final)

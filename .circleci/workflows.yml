@@ -306,7 +306,7 @@ commands:
       - run:
           name: Build Commands Json
           command: |
-            python3 "./PowerShell/JumpCloud Commands Gallery/parse_commands_to_json_py.py"
+            python3 "./.circleci/scripts/parse_commands_to_json.py"
       - run:
           name: Commit Commands Json
           command: |
