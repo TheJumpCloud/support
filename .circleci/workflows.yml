@@ -310,16 +310,13 @@ commands:
       - run:
           name: Commit Commands Json
           command: |
-            ssh-keyscan github.com >> ./.ssh/known_hosts
-            $UserEmail = If ($env:CIRCLE_PROJECT_USERNAME) { $env:CIRCLE_PROJECT_USERNAME } Else { ($env:USERNAME).Replace(' ', '') + '@FakeEmail.com' }
-            $UserName = If ($env:CIRCLE_PROJECT_USERNAME) { $env:CIRCLE_PROJECT_USERNAME } Else { $env:USERNAME }
-            git config user.email "$UserEmail"
-            git config user.name "$UserName"
+            git config user.email "$CIRCLE_PROJECT_USERNAME@CircleJC.com"
+            git config user.name "$CIRCLE_PROJECT_USERNAME"
             git pull
             git add -A
             git status
-            git commit -m "Updating PowerShell Module;[skip ci]"
-            git push origin << pipeline.git.branch >>
+            git commit -m "Updating Commands.json;[skip ci]"
+            git push origin "$CIRCLE_BRANCH"
   initial-setup:
     steps:
       - checkout

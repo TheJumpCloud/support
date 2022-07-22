@@ -54,6 +54,6 @@ for part in pathParts:
 
 final = json.dumps(cmds, indent=2)
 
-f = open('./commands.json', 'w+')
+f = open(os.path.join(rootPath,"commands.json"), 'w+')
 f.write(final)
 f.close()
