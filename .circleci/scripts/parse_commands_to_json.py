@@ -55,7 +55,7 @@ for part in pathParts:
                 elif(secTitle == 'Description'):
                     cmd['description'] = secContent
                 elif((secTitle == 'Import This Command')):
-                    linkMatch = re.search(r"Import-JCCommand.+(https:.+)\'", secContent)
+                    linkMatch = re.search(r"Import-JCCommand.+(https:.+)(\'|\")", secContent)
                     if (linkMatch != None):
                         cmd['link'] = linkMatch.group(1).strip()
             cmds.append(cmd)
