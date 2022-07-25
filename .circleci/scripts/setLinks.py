@@ -6,6 +6,7 @@ from urllib.parse import quote
 
 # Base URL:
 baseURL='https://github.com/TheJumpCloud/support/blob/master/'
+GalleryURLpart='PowerShell/JumpCloud Commands Gallery/'
 # Get location of the script
 scriptPath = os.path.dirname(os.path.realpath(__file__))
 # rootPath is root of the directory
@@ -24,7 +25,7 @@ for part in pathParts:
         filePath = os.path.join(path, file)
         with open(filePath) as f:
             content = f.read();
-            type=''
-            new_content = re.sub('(?:```\w+\n|```\n)Import-JCCommand -URL .*$\n```', '```\nImport-JCCommand -URL "' + baseURL + quote(os.path.join(*(filePath.split(os.path.sep)[6:]))) + '"' + '\n```', content, flags=re.MULTILINE)
+            # print (baseURL + quote(GalleryURLpart) +  quote(part) + "/" +  quote(os.path.basename(filePath)))
+            new_content = re.sub('(?:```\w+\n|```\n)Import-JCCommand -URL .*$\n```', '```\nImport-JCCommand -URL "' + baseURL + quote(GalleryURLpart) +  quote(part) + "/" +  quote(os.path.basename(filePath)) + '"' + '\n```', content, flags=re.MULTILINE)
         with open(filePath, 'w') as file:
             file.write(new_content)
