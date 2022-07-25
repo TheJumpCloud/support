@@ -28,7 +28,7 @@ for part in pathParts:
         cmd = {
             'name': '',
             'type': '',
-            'script': '',
+            'command': '',
             'link': '',
             'description': ''
         }
@@ -51,7 +51,7 @@ for part in pathParts:
                 elif(secTitle == 'commandType'):
                     cmd['type'] = secContent.lower()
                 elif(secTitle == 'Command'):
-                    cmd['script'] = secContent
+                    cmd['command'] = secContent
                 elif(secTitle == 'Description'):
                     cmd['description'] = secContent
                 elif((secTitle == 'Import This Command')):
