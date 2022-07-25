@@ -52,7 +52,7 @@ This command can be built manually as a Mac command where the 'run-as' user is s
 To import this command into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
 
 ```
-Import-JCCommand -URL "https://github.com/TheJumpCloud/support/blob/master/Mac%20Commands/Mac%20-%20Set%20Desktop%20Background.md"
+Import-JCCommand -URL "https://github.com/TheJumpCloud/support/blob/master/PowerShell/JumpCloud%20Commands%20Gallery/Mac%20Commands/Mac%20-%20Set%20Desktop%20Background.md"
 ```
 
 #### **Troubleshooting Tips**

@@ -51,5 +51,5 @@ This command will set the JumpCloud Agent Log Level to Default. After the comman
 To import this command into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
 
 ```
-Import-JCCommand -URL "https://github.com/TheJumpCloud/support/blob/master/Windows%20Commands/Windows%20-%20Set%20Agent%20Log%20Level%20to%20Default.md"
+Import-JCCommand -URL "https://github.com/TheJumpCloud/support/blob/master/PowerShell/JumpCloud%20Commands%20Gallery/Windows%20Commands/Windows%20-%20Set%20Agent%20Log%20Level%20to%20Default.md"
 ```

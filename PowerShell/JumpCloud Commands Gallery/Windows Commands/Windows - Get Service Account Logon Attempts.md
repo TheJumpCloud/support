@@ -63,7 +63,7 @@ For more details about these event records see:
 To import this command into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
 
 ```
-Import-JCCommand -URL "https://github.com/TheJumpCloud/support/blob/master/Windows%20Commands/Windows%20-%20Get%20Service%20Account%20Logon%20Attempts.md"
+Import-JCCommand -URL "https://github.com/TheJumpCloud/support/blob/master/PowerShell/JumpCloud%20Commands%20Gallery/Windows%20Commands/Windows%20-%20Get%20Service%20Account%20Logon%20Attempts.md"
 ```
 
 ![Windows - Get Service Account Logon Attempts](https://github.com/TheJumpCloud/support/blob/master/PowerShell/JumpCloud%20Commands%20Gallery/Files/Windows%20-%20Get%20Service%20Account%20Logon%20Attempts.png?raw=true)

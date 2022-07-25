@@ -45,5 +45,5 @@ If the value specified for the `AutoLogOutDelay` is set to 0 this will disable t
 To import this command into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
 
 ```
-Import-JCCommand -URL "https://github.com/TheJumpCloud/support/blob/master/Mac%20Commands/Mac%20-%20Set%20Auto%20Logout%20Delay.md"
+Import-JCCommand -URL "https://github.com/TheJumpCloud/support/blob/master/PowerShell/JumpCloud%20Commands%20Gallery/Mac%20Commands/Mac%20-%20Set%20Auto%20Logout%20Delay.md"
 ```
