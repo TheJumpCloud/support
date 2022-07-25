@@ -1,3 +1,11 @@
+## 1.24.0
+
+Release Date: July 25, 2022
+
+#### RELEASE NOTES
+
+This release modifies New-JCCommandURL to convert Import-JCCommand url to raw github content to prevent changes to GitHub HTML from breaking Import-JCCommand function
+
 ## 1.23.3
 
 Release Date: July 20, 2022

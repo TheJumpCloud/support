@@ -1,19 +1,19 @@
 #### Latest Version
 
 ```
-1.23.3
+1.24.0
 ```
 
 #### Banner Current
 
 ```
-* Get-JCUser -State should accept case insensitive values such as "suspended" "activated" "staged" and validate input```
+* Convert GitHub JCCommand gallery (https://github.com) input url from Import-JCCommand to raw (https://raw.githubusercontent.com/)
 
 ```
 
 #### Banner Old
 
 ```
-- Added search endpoint functionality and parameters to Get-jCCommand
+* Get-JCUser -State should accept case insensitive values such as "suspended" "activated" "staged" and validate input
 
 ```
