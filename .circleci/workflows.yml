@@ -304,6 +304,10 @@ commands:
             - "24:54:e1:c2:70:c6:f7:61:71:4b:c5:52:9f:20:b9:63"
       - checkout
       - run:
+          name: Set URLs
+          command: |
+            python3 "./.circleci/scripts/setLinks.py"
+      - run:
           name: Build Commands Json
           command: |
             python3 "./.circleci/scripts/parse_commands_to_json.py"
