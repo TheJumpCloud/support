@@ -21,5 +21,5 @@ Returns the hostname, OS Name, and OS Version including build number of a Window
 To import this command into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
 
 ```
-Import-JCCommand -URL 'https://git.io/jccg-windows-getosnameandversion'
+Import-JCCommand -URL "https://github.com/TheJumpCloud/support/blob/master/Windows%20Commands/Windows%20-%20Get%20OS%20Name%20and%20Version.md"
 ```

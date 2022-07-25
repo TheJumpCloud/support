@@ -27,5 +27,5 @@ This command will enable windows task schedule history on remote systems.
 To import this command into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
 
 ```
-Import-JCCommand -URL 'https://git.io/jccg-Windows-EnableTaskSchedulerHistory'
+Import-JCCommand -URL "https://github.com/TheJumpCloud/support/blob/master/Windows%20Commands/Windows%20-%20Enable%20Task%20Scheduler%20History.md"
 ```

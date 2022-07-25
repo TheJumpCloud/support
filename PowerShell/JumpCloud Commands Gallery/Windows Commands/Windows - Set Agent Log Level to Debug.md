@@ -54,5 +54,5 @@ This command will set the JumpCloud Agent Log Level to Debug. The Agent Log Leve
 To import this command into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
 
 ```
-Import-JCCommand -URL 'https://git.io/JUUdy'
+Import-JCCommand -URL "https://github.com/TheJumpCloud/support/blob/master/Windows%20Commands/Windows%20-%20Set%20Agent%20Log%20Level%20to%20Debug.md"
 ```

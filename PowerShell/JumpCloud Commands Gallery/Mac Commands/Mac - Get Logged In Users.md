@@ -22,5 +22,5 @@ If the command returns **root** then no user has signed in and the machine is on
 To import this command into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
 
 ```
-Import-JCCommand -URL 'https://git.io/jccg-Mac-GetLoggedInUsers'
+Import-JCCommand -URL "https://github.com/TheJumpCloud/support/blob/master/Mac%20Commands/Mac%20-%20Get%20Logged%20In%20Users.md"
 ```

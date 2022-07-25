@@ -41,5 +41,5 @@ Adds a software restriction policy to windows. This policy will restrict the exe
 To import this command into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
 
 ```
-Import-JCCommand -URL 'https://git.io/JvdPw'
+Import-JCCommand -URL "https://github.com/TheJumpCloud/support/blob/master/Windows%20Commands/Windows%20-%20Software%20Restriction%20Policy.md"
 ```

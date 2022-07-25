@@ -21,5 +21,5 @@ Returns the jcagent.log from a Windows system. If the jcagent.log is larger than
 To import this command into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
 
 ```
-Import-JCCommand -URL 'https://git.io/jccg-Windows-GetJCagent.log'
+Import-JCCommand -URL "https://github.com/TheJumpCloud/support/blob/master/Windows%20Commands/Windows%20-%20Get%20JCagent.log.md"
 ```

@@ -42,5 +42,5 @@ SECURETOKEN_ADMIN_USERNAME="" and the ADMIN_USERNAME=""
 To import this command into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
 
 ```
-Import-JCCommand -URL 'https://git.io/jccg-mac-checkuserforsecuretoken'
+Import-JCCommand -URL "https://github.com/TheJumpCloud/support/blob/master/Mac%20Commands/Mac%20-%20Check%20User%20for%20Secure%20Token.md"
 ```

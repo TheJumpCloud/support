@@ -72,5 +72,5 @@ Installs the JumpCloud MDM enrollment profile on macOS machines. **Note** your o
 To import this command into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
 
 ```
-Import-JCCommand -URL 'https://git.io/Jfv5e'
+Import-JCCommand -URL "https://github.com/TheJumpCloud/support/blob/master/Mac%20Commands/Mac%20-%20Install%20MDM%20Profile.md"
 ```

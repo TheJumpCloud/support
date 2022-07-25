@@ -65,5 +65,5 @@ This command installs the macOS Installer specified in the macosinstaller variab
 To import this command into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
 
 ```
-Import-JCCommand -URL 'https://git.io/JvSeS'
+Import-JCCommand -URL "https://github.com/TheJumpCloud/support/blob/master/Mac%20Commands/Mac%20-%20Install%20Latest%20MacOS%20Installer.md"
 ```
