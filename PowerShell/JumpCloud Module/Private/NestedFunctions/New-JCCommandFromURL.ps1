@@ -11,20 +11,10 @@ Function New-JCCommandFromURL {
 
     )
 
-    begin {
-
-    }
     process {
 
-        # Check for short url
-        if ($GitHubURL -match "https://git.io.*") {
-            $shortUrl = Invoke-WebRequest -Uri $GitHubURL
-            $absoluteUri = $shortUrl.BaseResponse.RequestMessage.RequestUri.AbsoluteUri
-        } else {
-            $absoluteUri = $GitHubURL
-        }
         # Convert GitHub url to raw url
-        $httpUrl = $absoluteUri | Select-String -Pattern "\bmaster.*$" | % { $_.Matches }  | % { $_.Value }
+        $httpUrl = $GitHubURL | Select-String -Pattern "\bmaster.*$" | % { $_.Matches }  | % { $_.Value }
         $rawUrl = "https://raw.githubusercontent.com/TheJumpCloud/support/$httpUrl"
 
         $rawUrlInvoke = Invoke-WebRequest -Uri $rawUrl -UseBasicParsing -UserAgent:(Get-JCUserAgent)
