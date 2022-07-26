@@ -42,6 +42,10 @@ parameters:
     description: "Used by Path Filtering Orb to determine if changes occurred in the ./PowerShell/ folder"
     type: boolean
     default: false
+  CommandsGalleryModified:
+    description: "Used by Path Filtering Orb to determine if changes occurred in the ./PowerShell/JumpCloud Commands Gallery folder"
+    type: boolean
+    default: false
   PublishToPSGallery:
     description: "When `true` and when run against Master branch, this workflow will publish the latest code to PSGallery"
     type: boolean
@@ -59,6 +63,17 @@ executors:
     resource_class: macos.x86.medium.gen2
 workflows:
   version: 2
+  CommandsGalleryCI:
+    when:
+      and:
+        - and:
+            - not:
+                matches:
+                  pattern: "^master$"
+                  value: << pipeline.git.branch >>
+            - equal: [true, << pipeline.parameters.CommandsGalleryModified >>]
+    jobs:
+      - CommandsCI
   ci:
     when:
       and:
@@ -155,6 +170,11 @@ workflows:
             - Publish Module Validation
             - Approve Module
 jobs:
+  CommandsCI:
+    docker:
+      - image: cimg/python:3.10.5
+    steps:
+      - build-command-json
   Initial Setup:
     executor: win/default
     steps:
@@ -277,6 +297,29 @@ jobs:
             # Post Draft Release
             ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -n "$TITLE" -b "$BODY" -delete -draft "$TAG" /root/project/PowerShell/
 commands:
+  build-command-json:
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "24:54:e1:c2:70:c6:f7:61:71:4b:c5:52:9f:20:b9:63"
+      - checkout
+      - run:
+          name: Set URLs
+          command: |
+            python3 "./.circleci/scripts/setLinks.py"
+      - run:
+          name: Build Commands Json
+          command: |
+            python3 "./.circleci/scripts/parse_commands_to_json.py"
+      - run:
+          name: Commit Commands Json
+          command: |
+            git config user.email "$CIRCLE_PROJECT_USERNAME@CircleJC.com"
+            git config user.name "$CIRCLE_PROJECT_USERNAME"
+            git add -A
+            git status
+            git commit -m "Updating Commands.json;[skip ci]"
+            git push origin "$CIRCLE_BRANCH"
   initial-setup:
     steps:
       - checkout
