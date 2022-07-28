@@ -4,7 +4,7 @@ Mac - Install CrowdStrike Falcon Agent | v1.0 JCCG
 
 #### commandType
 
-windows
+mac
 
 #### Command
 
