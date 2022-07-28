@@ -33,6 +33,7 @@ function Set-JCSettings {
                     # Create the collection of attributes
                     $AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
                     # Skip create dynamic params for these conditions:
+                    #TODO: maintain a list of non-editable params
                     if (($ParamName_Filter -Match "Validation") -or ($ParamName_Filter -eq 'updatesLastCheck')) {
                         continue
                     }

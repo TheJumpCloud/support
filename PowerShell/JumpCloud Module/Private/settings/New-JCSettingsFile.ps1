@@ -16,7 +16,7 @@ function New-JCSettingsFile {
         # Define Default Settings for the Config file
         $config = @{
             'parallel' = @{
-                'Eligible'         = $false;
+                'Eligible'         = Get-JCParallelValidation
                 'Override'         = $false;
                 'MessageDismissed' = $false;
             }
