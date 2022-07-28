@@ -1,4 +1,4 @@
-function Get-JCSettingsFile {
+function Get-JCSettings {
     [CmdletBinding()]
     param (
         [Parameter(
@@ -11,13 +11,13 @@ function Get-JCSettingsFile {
     begin {
         # Config should be in /PowerShell/JumpCloudModule/Config.json
         $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent.FullName
-        $ModulePsd1 = join-path -path $ModuleRoot -childpath 'Config.json'
+        $configFilePath = join-path -path $ModuleRoot -childpath 'Config.json'
 
-        if (test-path -path $ModulePsd1) {
-            "Found config"
-            $config = Get-Content -Path $ModulePsd1 | ConvertFrom-Json
+        if (test-path -path $configFilePath) {
+            # Get Contents
+            $config = Get-Content -Path $configFilePath | ConvertFrom-Json
         } else {
-            "missing config $ModulePsd1"
+            # Create new file with default settings
             New-JCSettingsFile
         }
     }

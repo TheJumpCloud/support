@@ -10,7 +10,7 @@ Foreach ($Import in @($Public + $Private)) {
 }
 
 # Check to see if parallel processing is available for the session
-$global:JCConfig = Get-JCSettingsFile
+$global:JCConfig = Get-JCSettings
 if ($JCConfig.Parallel.Override) {
     $global:JCParallel = $false
 } elseif ($JCConfig.Parallel.Eligible) {

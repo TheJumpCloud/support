@@ -11,7 +11,7 @@ function New-JCSettingsFile {
     begin {
         # Config should be in /PowerShell/JumpCloudModule/Config.json
         $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent.FullName
-        $ModulePsd1 = join-path -path $ModuleRoot -childpath 'Config.json'
+        $configFilePath = join-path -path $ModuleRoot -childpath 'Config.json'
 
         # Define Default Settings for the Config file
         $config = @{
@@ -39,12 +39,12 @@ function New-JCSettingsFile {
             $config.updates.lastCheck.addMonths(1)
         }
         $config.updates.NextCheck = $next
-        if ((test-path -path $ModulePsd1) -And ($force)) {
+        if ((test-path -path $configFilePath) -And ($force)) {
             "Found config"
-            $config | ConvertTo-Json | Out-FIle -path $ModulePsd1
+            $config | ConvertTo-Json | Out-FIle -path $configFilePath
         } else {
-            "missing config $ModulePsd1"
-            $config | ConvertTo-Json | Out-FIle -path $ModulePsd1
+            "missing config $configFilePath"
+            $config | ConvertTo-Json | Out-FIle -path $configFilePath
         }
     }
 

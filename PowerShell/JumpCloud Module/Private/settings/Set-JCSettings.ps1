@@ -9,22 +9,14 @@ function Set-JCSettings {
     )
     DynamicParam {
         $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent.FullName
-        $ModulePsd1 = join-path -path $ModuleRoot -childpath 'Config.json'
+        $configFilePath = join-path -path $ModuleRoot -childpath 'Config.json'
 
-        if (test-path -path $ModulePsd1) {
-            # "Found config"
-            $config = Get-Content -Path $ModulePsd1 | ConvertFrom-Json -AsHashtable
+        if (test-path -path $configFilePath) {
+            $config = Get-Content -Path $configFilePath | ConvertFrom-Json -AsHashtable
             # Create the dictionary
             $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
-            # # foreach ($key in $config.keys) {
-            # #     <# $key is the current item #>
-            # #     $arrSet += @($key)
-            # # }
-
-            # # # Create and return the dynamic parameter
-            # # foreach ($key in $config.keys) {
-            # #     <# $key is the current item #>
-            # }
+            # These params are not exposed as user editable
+            $skippedParams = @('updatesLastCheck', 'parallelEligiable')
             foreach ($key in $config.keys) {
                 foreach ($item in $config[$key].keys) {
                     # Set the dynamic parameters' name
@@ -33,8 +25,7 @@ function Set-JCSettings {
                     # Create the collection of attributes
                     $AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
                     # Skip create dynamic params for these conditions:
-                    #TODO: maintain a list of non-editable params
-                    if (($ParamName_Filter -Match "Validation") -or ($ParamName_Filter -eq 'updatesLastCheck')) {
+                    if (($ParamName_Filter -Match "Validation") -or ($ParamName_Filter -in $skippedParams)) {
                         continue
                     }
                     if ($($config[$key]["$($item)Validation"])) {
@@ -50,20 +41,13 @@ function Set-JCSettings {
                         $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($arrSet)
                         $AttributeCollection.Add($ValidateSetAttribute)
                     }
-
                     # Create and set the parameters' attributes
                     $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
                     $ParameterAttribute.Mandatory = $false
-                    $ParameterAttribute.HelpMessage = 'Condition to filter date on.'
-                    # Generate and set the ValidateSet
-                    # $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($arrSet)
-                    # Add the ValidateSet to the attributes collection
-                    # $AttributeCollection.Add($ValidateSetAttribute)
+                    # $ParameterAttribute.HelpMessage = 'todo dynamically add message'
                     # Add the attributes to the attributes collection
                     $AttributeCollection.Add($ParameterAttribute)
-
-                    <# $item is the current item #>
-                    # "$key$($item)"
+                    # Add the param
                     $RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter($ParamName_Filter, $paramType, $AttributeCollection)
                     $RuntimeParameterDictionary.Add($ParamName_Filter, $RuntimeParameter)
                 }
@@ -76,25 +60,21 @@ function Set-JCSettings {
     begin {
         # Config should be in /PowerShell/JumpCloudModule/Config.json
         $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent.FullName
-        $ModulePsd1 = join-path -path $ModuleRoot -childpath 'Config.json'
+        $configFilePath = join-path -path $ModuleRoot -childpath 'Config.json'
 
-        if (test-path -path $ModulePsd1) {
-            "Found config"
-            $config = Get-Content -Path $ModulePsd1 | ConvertFrom-Json -AsHashtable
+        if (test-path -path $configFilePath) {
+            $config = Get-Content -Path $configFilePath | ConvertFrom-Json -AsHashtable
         } else {
-            "missing config $ModulePsd1"
             New-JCSettingsFile
         }
     }
 
     process {
-        # $config['updates']
         $params = $PSBoundParameters
+        # update config settings
         foreach ($param in $params.Keys) {
             foreach ($key in $config.keys) {
-                # write-host "$key"
                 if ($param -match $key) {
-
                     # Split the name
                     $paramKey = $($param.split($key))
                     # assign the first group
@@ -106,7 +86,7 @@ function Set-JCSettings {
     }
 
     end {
-        $config | ConvertTo-Json | Out-FIle -path $ModulePsd1
+        # Write out the new settings
+        $config | ConvertTo-Json | Out-FIle -path $configFilePath
     }
 }
-# Set-JCSettings -updatesFrequency day -parallelMessageDismissed $false
