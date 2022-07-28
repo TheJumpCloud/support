@@ -51,7 +51,7 @@ for part in pathParts:
                 elif(secTitle == 'commandType'):
                     cmd['type'] = secContent.lower()
                 elif(secTitle == 'Command'):
-                    cmd['command'] = secContent
+                    cmd['command'] = secContent.replace('```', '').strip()
                 elif(secTitle == 'Description'):
                     cmd['description'] = secContent
                 elif((secTitle == 'Import This Command')):
