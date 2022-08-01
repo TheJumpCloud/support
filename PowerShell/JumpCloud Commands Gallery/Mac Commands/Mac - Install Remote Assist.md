@@ -33,6 +33,12 @@ done
 
 curl --silent --output "$LOCAL_DMG_PATH" "$REMOTE_DMG_URL" >/dev/null
 VOLUME=$(hdiutil attach "$LOCAL_DMG_PATH" | grep -Eo '(\/Volumes\/.*)')
+
+if ! codesign -dv "$VOLUME/$APP_NAME"; then
+    echo "Application lacks a valid signature, aborting installation"
+    exit 1
+fi
+
 rm -rf "/Applications/$APP_NAME"
 cp -a "$VOLUME/$APP_NAME" /Applications
 hdiutil detach "$VOLUME"
