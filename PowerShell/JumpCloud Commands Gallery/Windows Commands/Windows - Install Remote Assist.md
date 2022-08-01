@@ -25,18 +25,29 @@ catch {
 }
 Write-Host "Finished downloading JumpCloud Remote Assist installer."
 
-Write-Host "Installing JumpCloud Remote Assist now, this may take a few minutes."
 try {
-    $installerProcess = Start-Process -FilePath $installerTempLocation -Wait
-}
-catch {
-    Write-Error "Failed to run Falcon Agent installer."
-    exit 1
-}
-Write-Host "JumpCloud Remote Assist installer returned $($installerProcess.ExitCode)."
+    Write-Host "Verifying Authenticode Signature"
+    if ( $(Get-AuthenticodeSignature .\jumpcloud-assist-app.exe).Status -ne "Valid" )
+    {
+        Write-Host "No valid Authenticode signature found, aborting installation"
+        exit 1
+    }
 
-exit $installerProcess.ExitCode
+    Write-Host "Installing JumpCloud Remote Assist now, this may take a few minutes."
+    try {
+        $installerProcess = Start-Process -FilePath $installerTempLocation -Wait
+    }
+    catch {
+        Write-Error "Failed to run JumpCloud Remote Assist installer."
+        exit 1
+    }
+    Write-Host "JumpCloud Remote Assist installer returned $($installerProcess.ExitCode)."
 
+    exit $installerProcess.ExitCode
+}
+finally {
+    Remove-Item "$installerTempLocation"
+}
 ```
 
 #### Description
