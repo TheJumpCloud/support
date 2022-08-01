@@ -20,36 +20,34 @@ function New-JCSettingsFile {
                 'Override'         = $false;
                 'MessageDismissed' = $false;
             }
-            'updates'  = @{
-                'Frequency'           = 'week';
-                'FrequencyValidation' = 'day week month';
-                'LastCheck'           = (Get-Date);
-                'NextCheck'           = '';
-            }
+            # TODO: implement update frequency checks
+            # 'updates'  = @{
+            #     'Frequency'           = 'week';
+            #     'FrequencyValidation' = 'day week month';
+            #     'LastCheck'           = (Get-Date);
+            #     'NextCheck'           = '';
+            # }
         }
     }
 
     process {
-        $next = if ($config.updates.Frequency -eq 'day') {
-            $config.updates.lastCheck.addDays(1)
-        } elseif ($config.updates.Frequency -eq 'week') {
-            $config.updates.lastCheck.addDays(7)
+        # TODO: implement update frequency checks
+        # $next = if ($config.updates.Frequency -eq 'day') {
+        #     $config.updates.lastCheck.addDays(1)
+        # } elseif ($config.updates.Frequency -eq 'week') {
+        #     $config.updates.lastCheck.addDays(7)
 
-        } elseif ($config.updates.Frequency -eq 'month') {
-            $config.updates.lastCheck.addMonths(1)
-        }
-        $config.updates.NextCheck = $next
-        if ((test-path -path $configFilePath) -And ($force)) {
-            "Found config"
-            $config | ConvertTo-Json | Out-FIle -path $configFilePath
-        } else {
-            "missing config $configFilePath"
-            $config | ConvertTo-Json | Out-FIle -path $configFilePath
-        }
+        # } elseif ($config.updates.Frequency -eq 'month') {
+        #     $config.updates.lastCheck.addMonths(1)
+        # }
+        # $config.updates.NextCheck = $next
     }
 
     end {
-
+        if ((test-path -path $configFilePath) -And ($force)) {
+            $config | ConvertTo-Json | Out-FIle -path $configFilePath
+        } else {
+            $config | ConvertTo-Json | Out-FIle -path $configFilePath
+        }
     }
 }
-New-JCSettingsFile -Force

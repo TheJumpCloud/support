@@ -1,4 +1,4 @@
-function Set-JCSettings {
+function Set-JCSettingsFile {
     [CmdletBinding()]
     param (
         [Parameter(
@@ -17,6 +17,7 @@ function Set-JCSettings {
             $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
             # These params are not exposed as user editable
             $skippedParams = @('updatesLastCheck', 'parallelEligiable')
+            # Foreach key in the supplied config file:
             foreach ($key in $config.keys) {
                 foreach ($item in $config[$key].keys) {
                     # Set the dynamic parameters' name
@@ -29,7 +30,6 @@ function Set-JCSettings {
                         continue
                     }
                     if ($($config[$key]["$($item)Validation"])) {
-                        # write-host "found validati"
                         $arrSet = @($($config[$key]["$($item)Validation"]).split())
                         $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($arrSet)
                         $AttributeCollection.Add($ValidateSetAttribute)

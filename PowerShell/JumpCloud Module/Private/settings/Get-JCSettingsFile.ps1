@@ -1,4 +1,4 @@
-function Get-JCSettings {
+function Get-JCSettingsFile {
     [CmdletBinding()]
     param (
         [Parameter(
