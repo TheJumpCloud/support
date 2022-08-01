@@ -16,7 +16,7 @@ function Set-JCSettingsFile {
             # Create the dictionary
             $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
             # These params are not exposed as user editable
-            $skippedParams = @('updatesLastCheck', 'parallelEligiable')
+            $skippedParams = @('updatesLastCheck', 'parallelEligiable', 'parallelMessageDismissed')
             # Foreach key in the supplied config file:
             foreach ($key in $config.keys) {
                 foreach ($item in $config[$key].keys) {
@@ -26,7 +26,7 @@ function Set-JCSettingsFile {
                     # Create the collection of attributes
                     $AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
                     # Skip create dynamic params for these conditions:
-                    if (($ParamName_Filter -Match "Validation") -or ($ParamName_Filter -in $skippedParams)) {
+                    if (($ParamName_Filter -Match "Validation") -or ($ParamName_Filter -in $skippedParams) -or ($ParamName_Filter -match "help")) {
                         continue
                     }
                     if ($($config[$key]["$($item)Validation"])) {
@@ -44,7 +44,7 @@ function Set-JCSettingsFile {
                     # Create and set the parameters' attributes
                     $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
                     $ParameterAttribute.Mandatory = $false
-                    # $ParameterAttribute.HelpMessage = 'todo dynamically add message'
+                    $ParameterAttribute.HelpMessage = "sets the $($item) settings for the $($key) feature"
                     # Add the attributes to the attributes collection
                     $AttributeCollection.Add($ParameterAttribute)
                     # Add the param

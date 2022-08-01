@@ -19,6 +19,8 @@ function New-JCSettingsFile {
                 'Eligible'         = Get-JCParallelValidation
                 'Override'         = $false;
                 'MessageDismissed' = $false;
+                'MessageCount'     = 0;
+                'HelpMessage'      = 'JumpCloud PowerShell Module now processes Get requests in parallel, to disable this functionailty run: Set-JCSettingsFile -parallelOverride $true'
             }
             # TODO: implement update frequency checks
             # 'updates'  = @{
