@@ -6440,7 +6440,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
             <maml:para>Allows you to return select properties on JumpCloud system objects. Specifying what properties are returned can drastically increase the speed of the API call with a large data set. Valid properties that can be returned are: 'created', 'active', 'agentVersion', 'allowMultiFactorAuthentication', 'allowPublicKeyAuthentication', 'allowSshPasswordAuthentication', 'allowSshRootLogin', 'arch', 'created', 'displayName', 'hostname', 'lastContact', 'modifySSHDConfig', 'organization', 'os', 'remoteIP', 'serialNumber', 'sshdParams', 'systemTimezone', 'templateName', 'version'</maml:para>
           </maml:description>
           <command:parameterValueGroup>
-            <command:parameterValue required="false" command:variableLength="false">created</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">acknowledged</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">active</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">agentVersion</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">allowMultiFactorAuthentication</command:parameterValue>
@@ -6448,23 +6448,34 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
             <command:parameterValue required="false" command:variableLength="false">allowSshPasswordAuthentication</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">allowSshRootLogin</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">arch</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">azureAdJoined</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">connectionHistory</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">created</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">displayName</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">domainInfo</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">fde</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">fileSystem</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">hasServiceAccount</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">hostname</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">lastContact</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">mdm</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">modifySSHDConfig</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">networkInterfaces</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">organization</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">os</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">osFamily</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">provisionMetadata</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">remoteIP</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">serialNumber</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">serviceAccountState</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">sshdParams</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">systemTimezone</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">templateName</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">version</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">fde</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">systemInsights</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">hasServiceAccount</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">fileSystem</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">systemTimezone</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">systemToken</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">templateName</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">userMetrics</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">usernameHashes</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">version</command:parameterValue>
           </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
           <dev:type>
@@ -14761,6 +14772,170 @@ Enter a value between 1 and 2:</dev:code>
       <maml:navigationLink>
         <maml:linkText>Online Version:</maml:linkText>
         <maml:uri>https://github.com/TheJumpCloud/support/wiki/Set-JCRadiusServer</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Set-JCSettingsFile</command:name>
+      <command:verb>Set</command:verb>
+      <command:noun>JCSettingsFile</command:noun>
+      <maml:description>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>{{ Fill in the Description }}</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Set-JCSettingsFile</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>force</maml:name>
+          <maml:description>
+            <maml:para>To Force Re-Creation of the Config file, set the $force parameter to $tru</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.Boolean</command:parameterValue>
+          <dev:type>
+            <maml:name>System.Boolean</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>parallelEligible</maml:name>
+          <maml:description>
+            <maml:para>sets the Eligible settings for the parallel feature</maml:para>
+          </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">true</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">false</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">System.Boolean</command:parameterValue>
+          <dev:type>
+            <maml:name>System.Boolean</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>parallelMessageCount</maml:name>
+          <maml:description>
+            <maml:para>sets the MessageCount settings for the parallel feature</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.Int64</command:parameterValue>
+          <dev:type>
+            <maml:name>System.Int64</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>parallelOverride</maml:name>
+          <maml:description>
+            <maml:para>sets the Override settings for the parallel feature</maml:para>
+          </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">true</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">false</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">System.Boolean</command:parameterValue>
+          <dev:type>
+            <maml:name>System.Boolean</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>force</maml:name>
+        <maml:description>
+          <maml:para>To Force Re-Creation of the Config file, set the $force parameter to $tru</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Boolean</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Boolean</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>parallelEligible</maml:name>
+        <maml:description>
+          <maml:para>sets the Eligible settings for the parallel feature</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Boolean</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Boolean</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>parallelMessageCount</maml:name>
+        <maml:description>
+          <maml:para>sets the MessageCount settings for the parallel feature</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Int64</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Int64</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>parallelOverride</maml:name>
+        <maml:description>
+          <maml:para>sets the Override settings for the parallel feature</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Boolean</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Boolean</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para></maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- Example 1 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
+        <dev:remarks>
+          <maml:para>{{ Add example description here }}</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version:</maml:linkText>
+        <maml:uri>https://github.com/TheJumpCloud/support/wiki/</maml:uri>
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>

@@ -341,7 +341,7 @@ Valid properties that can be returned are: 'created', 'active', 'agentVersion', 
 Type: System.String[]
 Parameter Sets: SearchFilter
 Aliases:
-Accepted values: created, active, agentVersion, allowMultiFactorAuthentication, allowPublicKeyAuthentication, allowSshPasswordAuthentication, allowSshRootLogin, arch, created, displayName, hostname, lastContact, modifySSHDConfig, organization, os, remoteIP, serialNumber, sshdParams, systemTimezone, templateName, version, fde, systemInsights, hasServiceAccount, fileSystem
+Accepted values: acknowledged, active, agentVersion, allowMultiFactorAuthentication, allowPublicKeyAuthentication, allowSshPasswordAuthentication, allowSshRootLogin, arch, azureAdJoined, connectionHistory, created, displayName, domainInfo, fde, fileSystem, hasServiceAccount, hostname, lastContact, mdm, modifySSHDConfig, networkInterfaces, organization, os, osFamily, provisionMetadata, remoteIP, serialNumber, serviceAccountState, sshdParams, systemInsights, systemTimezone, systemToken, templateName, userMetrics, usernameHashes, version
 
 Required: False
 Position: Named

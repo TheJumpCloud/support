@@ -189,6 +189,9 @@ Updates or adds Radius reply attributes to a JumpCloud user group.
 ### [Set-JCRadiusServer](Set-JCRadiusServer.md)
 Updates a JumpCloud radius server.
 
+### [Set-JCSettingsFile](Set-JCSettingsFile.md)
+{{ Fill in the Synopsis }}
+
 ### [Set-JCSystem](Set-JCSystem.md)
 Updates an existing JumpCloud System
 
