@@ -73,7 +73,7 @@ Function Connect-JCOnline () {
     Begin {
         # Debug message for parameter call
         $PSBoundParameters | Out-DebugParameter | Write-Debug
-        $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent.FullName
+        $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent.Parent.FullName
         $configFilePath = join-path -path $ModuleRoot -childpath 'Config.json'
     }
     Process {
