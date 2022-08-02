@@ -13,8 +13,8 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Set-JCSettingsFile [[-force] <Boolean>] [-parallelOverride <Boolean>] [-parallelMessageCount <Int64>]
- [-parallelEligible <Boolean>] [<CommonParameters>]
+Set-JCSettingsFile [[-force] <Boolean>] [-parallelEligible <Boolean>] [-parallelOverride <Boolean>]
+ [-parallelMessageCount <Int64>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
