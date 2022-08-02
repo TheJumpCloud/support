@@ -36,7 +36,7 @@ VOLUME=$(hdiutil attach "$LOCAL_DMG_PATH" | grep -Eo '(\/Volumes\/.*)')
 
 CODESIGN_OUT=$(codesign -dv "$VOLUME/$APP_NAME")
 
-if !? ; then
+if [[ $? != 0 ]] ; then
     echo "Application lacks a valid signature, aborting installation"
     exit 1
 fi
