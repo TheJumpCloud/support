@@ -13,13 +13,12 @@ function Get-JCSettingsFile {
         $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent.FullName
         $configFilePath = join-path -path $ModuleRoot -childpath 'Config.json'
 
-        if (test-path -path $configFilePath) {
-            # Get Contents
-            $config = Get-Content -Path $configFilePath | ConvertFrom-Json
-        } else {
+        if (-Not (test-path -path $configFilePath)) {
             # Create new file with default settings
             New-JCSettingsFile
         }
+        # Get Contents
+        $config = Get-Content -Path $configFilePath | ConvertFrom-Json
     }
 
     process {

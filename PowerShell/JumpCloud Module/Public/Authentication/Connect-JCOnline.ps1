@@ -73,16 +73,11 @@ Function Connect-JCOnline () {
     Begin {
         # Debug message for parameter call
         $PSBoundParameters | Out-DebugParameter | Write-Debug
-        $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent.Parent.FullName
-        $configFilePath = join-path -path $ModuleRoot -childpath 'Config.json'
     }
     Process {
         # Load color scheme
         $JCColorConfig = Get-JCColorConfig
         # Process Module Notifications:
-        if (-Not (Test-Path -Path $configFilePath)) {
-            New-JCSettingsFile
-        }
         if (($JCConfig.parallel.MessageCount -le 5) -AND ($JCConfig.parallel.Eligible)) {
             Write-Host ('NOTICE:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
             Write-Host ($JCColorConfig.IndentChar + $JCConfig.parallel.HelpMessage) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
