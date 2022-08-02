@@ -2,15 +2,15 @@
 param (
     [Parameter()]
     [string]
-    $RequiredModulesRepo
+    $RequiredModulesRepo = 'PSGallery'
 )
 
 . "$PSScriptRoot/Get-Config.ps1" -RequiredModulesRepo:($RequiredModulesRepo)
 # $nuspecFiles = @{ src = 'en-Us/**;Private/**;Public/**;JumpCloud.psd1;JumpCloud.psm1;LICENSE'; }
 $nuspecFiles = @(
-    @{src = "en-Us/**/*.*"; target = "" },
-    @{src = "Public/**/*.*"; target = "" },
-    @{src = "Private/**/*.*"; target = "" },
+    @{src = "en-Us/**/*.*"; target = "./" },
+    @{src = "Public/**/*.*"; target = "./" },
+    @{src = "Private/**/*.*"; target = "./" },
     @{src = "JumpCloud.psd1" },
     @{src = "JumpCloud.psm1" },
     @{src = "LICENSE" }
@@ -110,13 +110,13 @@ function New-NuspecFile {
     }
 
     if ($LicenseUrl) {
-        $metaDataElementsHash.Add("licenseUrl", $LicenseUrl) 
+        $metaDataElementsHash.Add("licenseUrl", $LicenseUrl)
     }
     if ($ProjectUrl) {
-        $metaDataElementsHash.Add("projectUrl", $ProjectUrl) 
+        $metaDataElementsHash.Add("projectUrl", $ProjectUrl)
     }
     if ($IconUrl) {
-        $metaDataElementsHash.Add("iconUrl", $IconUrl) 
+        $metaDataElementsHash.Add("iconUrl", $IconUrl)
     }
 
     foreach ($key in $metaDataElementsHash.Keys) {
@@ -136,7 +136,7 @@ function New-NuspecFile {
             # $element.
             $element.SetAttribute("id", $dependency)
             if ($dependency.version) {
-                $element.SetAttribute("version", $dependency.version) 
+                $element.SetAttribute("version", $dependency.version)
             }
 
             $dependenciesElement.AppendChild($element) | Out-Null
@@ -151,10 +151,10 @@ function New-NuspecFile {
             $element = $xml.CreateElement("file", $nameSpaceUri)
             $element.SetAttribute("src", $file.src)
             if ($file.target) {
-                $element.SetAttribute("target", $file.target) 
+                $element.SetAttribute("target", $file.target)
             }
             if ($file.exclude) {
-                $element.SetAttribute("exclude", $file.exclude) 
+                $element.SetAttribute("exclude", $file.exclude)
             }
 
             $filesElement.AppendChild($element) | Out-Null
@@ -163,7 +163,7 @@ function New-NuspecFile {
 
     $packageElement.AppendChild($metaDataElement) | Out-Null
     if ($filesElement) {
-        $packageElement.AppendChild($filesElement) | Out-Null 
+        $packageElement.AppendChild($filesElement) | Out-Null
     }
 
     $xml.AppendChild($packageElement) | Out-Null
