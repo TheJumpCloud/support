@@ -27,7 +27,7 @@ Write-Host "Finished downloading JumpCloud Remote Assist installer."
 
 try {
     Write-Host "Verifying Authenticode Signature"
-    if ( $(Get-AuthenticodeSignature .\jumpcloud-assist-app.exe).Status -ne "Valid" )
+    if ( $(Get-AuthenticodeSignature "$installerTempLocation").Status -ne "Valid" )
     {
         Write-Host "No valid Authenticode signature found, aborting installation"
         exit 1
