@@ -34,7 +34,7 @@ done
 curl --silent --output "$LOCAL_DMG_PATH" "$REMOTE_DMG_URL" >/dev/null
 VOLUME=$(hdiutil attach "$LOCAL_DMG_PATH" | grep -Eo '(\/Volumes\/.*)')
 
-CODESIGN_OUT=$(codesign -dv "$VOLUME/$APP_NAME")
+CODESIGN_OUT=$(codesign -dv --verbose=4 "$VOLUME/$APP_NAME")
 
 if [[ $? != 0 ]] ; then
     echo "Application lacks a valid signature, aborting installation"
