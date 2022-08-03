@@ -16,7 +16,7 @@ LOCAL_DMG_PATH="/tmp/jumpcloud-assist-app.dmg"
 for SIGNAL in TERM KILL; do
     PID=
     for _ in $(seq 5); do
-        PID=$(launchctl list | grep com.jumpcloud.assist | cut -f1)
+        PID=$(ps -ef | grep -iE "Jumpcloud Assist App$" | awk '{print $2}')
         if [[ "$SIGNAL" == TERM ]]; then
             break
         elif [[ -n "$PID" ]]; then
