@@ -9,66 +9,55 @@ $PesterParamsHash_VariableName = @{
     VariableNamePrefixHash = 'PesterParamsHash_';
 }
 # Determine OS type
-$OS = If ($env:AGENT_OS)
-{
+$OS = If ($env:AGENT_OS) {
     $env:AGENT_OS
-}
-Else
-{
-    If ($PSVersionTable.PSEdition -eq 'Core')
-    {
-        If ($IsWindows) { 'Windows_NT' }
-        ElseIf ($IsMacOS) { 'Darwin' }
-        ElseIf ($IsLinux) { 'Linux' }
-        Else { Write-Error ('Unknown Operation System') }
-    }
-    Else
-    {
+} Else {
+    If ($PSVersionTable.PSEdition -eq 'Core') {
+        If ($IsWindows) {
+            'Windows_NT' 
+        } ElseIf ($IsMacOS) {
+            'Darwin' 
+        } ElseIf ($IsLinux) {
+            'Linux' 
+        } Else {
+            Write-Error ('Unknown Operation System') 
+        }
+    } Else {
         'Windows_NT'
     }
 }
 # Set test parameters bases on os
-$PesterParamsHash_OS = If ($OS -eq 'Windows_NT')
-{
+$PesterParamsHash_OS = If ($OS -eq 'Windows_NT') {
     @{
         OrgIdMsp1              = "5d2f6ff0e7aad925fc317577"
         OrgIdMsp2              = "5d2f6ffd8910770b8545756a"
         networkSourceIpInitial = '250.250.250.250'
         networkSourceIpUpdate  = '250.250.250.251'
     }
-}
-ElseIf ($OS -eq 'Darwin')
-{
+} ElseIf ($OS -eq 'Darwin') {
     @{
         OrgIdMsp1              = "5d2f7011f3b0a039b65f4e8b"
         OrgIdMsp2              = "5d2f701be7aad925fc317667"
         networkSourceIpInitial = '250.251.250.251'
         networkSourceIpUpdate  = '250.251.250.252'
     }
-}
-ElseIf ($OS -eq 'Linux')
-{
+} ElseIf ($OS -eq 'Linux') {
     @{
         OrgIdMsp1              = "5d2f7024f0e1526be4df38e7"
         OrgIdMsp2              = "5d35e14eb90ad46e65ba0739"
         networkSourceIpInitial = '250.252.250.252'
         networkSourceIpUpdate  = '250.252.250.253'
     }
-}
-Else
-{
+} Else {
     Write-Error ("Unknown OS: $($OS)")
 }
 # Configure for local testing
-If ($env:USERNAME -ne 'VssAdministrator')
-{
+If ($env:USERNAME -ne 'VssAdministrator') {
     $PesterParamsHash_OS.networkSourceIpInitial = [IPAddress]::Parse([String](Get-Random)).IPAddressToString
     $PesterParamsHash_OS.networkSourceIpUpdate = [IPAddress]::Parse([String](Get-Random)).IPAddressToString
 }
 # Parameters that are not Org specific
-$authToken = Get-CAAuthorizationToken -Domain jumpcloud-artifacts -Region us-east-1
 $PesterParamsHash_Common = @{
-    SYSTEM_ACCESSTOKEN              = $authToken
     RequiredModulesRepo             = $RequiredModulesRepo
     ModuleName                      = 'JumpCloud'
     ModuleManifestName              = 'JumpCloud.psd1'

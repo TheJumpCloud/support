@@ -77,12 +77,6 @@ Function Connect-JCOnline () {
     Process {
         # Load color scheme
         $JCColorConfig = Get-JCColorConfig
-        # Process Module Notifications:
-        if (($JCConfig.parallel.MessageCount -le 5) -AND ($JCConfig.parallel.Eligible)) {
-            Write-Host ('NOTICE:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
-            Write-Host ($JCColorConfig.IndentChar + $JCConfig.parallel.HelpMessage) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
-            Set-JCSettingsFile -parallelMessageCount ($JCConfig.parallel.messagecount + 1)
-        }
         # For DynamicParam with a default value set that value and then convert the DynamicParam inputs into new variables for the script to use
         Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDynamicParamProcess) -ArgumentList:($PsBoundParameters, $PSCmdlet, $RuntimeParameterDictionary) -NoNewScope
         Try {
@@ -183,6 +177,13 @@ Function Connect-JCOnline () {
                         Write-Host ('JumpCloudOrgName:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
                         Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
                         Write-Host ($Auth.JCOrgName) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
+                        # Process Module Notifications:
+                        if (($JCConfig.parallel.MessageCount -le 5) -AND ($JCConfig.parallel.Eligible)) {
+                            Write-Host ('Notice:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
+                            Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
+                            Write-Host $JCConfig.parallel.HelpMessage -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
+                            Set-JCSettingsFile -parallelMessageCount ($JCConfig.parallel.messagecount + 1)
+                        }
                     }
                 }
                 # Return [PSCustomObject]@{

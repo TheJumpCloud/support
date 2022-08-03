@@ -1,4 +1,7 @@
 function Set-JCSettingsFile {
+    [CmdletBinding()]
+    param (
+    )
     DynamicParam {
         $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent.FullName
         $configFilePath = join-path -path $ModuleRoot -childpath 'Config.json'
@@ -47,7 +50,9 @@ function Set-JCSettingsFile {
         }
     }
     begin {
-        Connect-JCOnline -force | Out-Null
+        if ($JCAPIKEY.length -ne 40) {
+            Connect-JCOnline | Out-Null
+        }
 
         # Config should be in /PowerShell/JumpCloudModule/Config.json
         $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent.FullName
