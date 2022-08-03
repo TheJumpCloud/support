@@ -8,7 +8,8 @@ schema: 2.0.0
 # Set-JCSettingsFile
 
 ## SYNOPSIS
-{{ Fill in the Synopsis }}
+
+Updates the JumpCloud Module Settings File
 
 ## SYNTAX
 
@@ -18,20 +19,23 @@ Set-JCSettingsFile [[-force] <Boolean>] [-parallelOverride <Boolean>] [-parallel
 ```
 
 ## DESCRIPTION
-{{ Fill in the Description }}
+
+The Set-JCSettingsFile function updates an the JumpCloud Module settings file.
 
 ## EXAMPLES
 
 ### Example 1
+
 ```powershell
-PS C:\> {{ Add example code here }}
+PS C:\> Set-JCSettingsFile -ParallelOverride
 ```
 
-{{ Add example description here }}
+Disables parallel processing of results in the JumpCloud PowerShell Module
 
 ## PARAMETERS
 
 ### -force
+
 To Force Re-Creation of the Config file, set the $force parameter to $tru
 
 ```yaml
@@ -47,6 +51,7 @@ Accept wildcard characters: False
 ```
 
 ### -parallelEligible
+
 sets the Eligible settings for the parallel feature
 
 ```yaml
@@ -63,6 +68,7 @@ Accept wildcard characters: False
 ```
 
 ### -parallelMessageCount
+
 sets the MessageCount settings for the parallel feature
 
 ```yaml
@@ -78,6 +84,7 @@ Accept wildcard characters: False
 ```
 
 ### -parallelOverride
+
 sets the Override settings for the parallel feature
 
 ```yaml
@@ -94,6 +101,7 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
+
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
@@ -103,6 +111,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## OUTPUTS
 
 ### System.Object
+
 ## NOTES
 
 ## RELATED LINKS

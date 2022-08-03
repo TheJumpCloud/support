@@ -7,12 +7,10 @@ function Set-JCSettingsFile {
             $config = Get-Content -Path $configFilePath | ConvertFrom-Json -AsHashtable
             # Create the dictionary
             $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
-            # These params are not exposed as user editable
-            # $skippedParams = @('parallelCalculated', 'parallelEligible', 'parallelMessageDismissed')
             # Foreach key in the supplied config file:
             foreach ($key in $config.keys) {
                 foreach ($item in $config[$key].keys) {
-                    # Skip create dynamic params for these conditions:
+                    # Skip create dynamic params for these not-writable properties:
                     if (($config[$key][$item]['write'] -eq $false)) {
                         continue
                     }
@@ -46,10 +44,11 @@ function Set-JCSettingsFile {
             }
             # Returns the dictionary
             return $RuntimeParameterDictionary
-
         }
     }
     begin {
+        Connect-JCOnline -force | Out-Null
+
         # Config should be in /PowerShell/JumpCloudModule/Config.json
         $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent.FullName
         $configFilePath = join-path -path $ModuleRoot -childpath 'Config.json'
