@@ -49,7 +49,7 @@ Unless output is explicitly redirected, the JumpCloud command_result will simply
 # Path to file can be anything you like, but it
 # cannot contain user-scoped variables like $ENV:TEMP,
 # since outside of the invoke-ascurrentuser block we have system scope
-$outfile = "C:\command_results.txt"
+$outfile = "C:\command_results.txt_$(Get-Date -Format FileDateTime)"
 
 # If $outfile does not exist, create it
 if (-not(Test-Path -Path $outfile -PathType Leaf)) {
