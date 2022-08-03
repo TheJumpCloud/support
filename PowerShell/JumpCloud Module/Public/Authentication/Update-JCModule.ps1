@@ -281,13 +281,13 @@ Function Update-JCModule {
                 If ($UserInput.ToUpper() -eq 'N') {
                     Write-Host ('Exiting the ' + $ModuleName + ' PowerShell module update process.') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action)
                 } Else {
-                    # Update the module to the latest version
                     # Get the module config from the current module:
                     try {
                         $savedJCSettings = Get-JCSettingsFile -raw
                     } catch {
                         Write-Warning ('Could not copy JumpCloud Module Settings')
                     }
+                    # Update the module to the latest version
                     Write-Host ('Updating ' + $ModuleName + ' module to version: ') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewlines
                     Write-Host ($UpdateTrigger) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
                     If (-not [System.String]::IsNullOrEmpty($RepositoryCredentials)) {

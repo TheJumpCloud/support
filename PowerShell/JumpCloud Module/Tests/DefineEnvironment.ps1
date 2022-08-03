@@ -14,13 +14,13 @@ $OS = If ($env:AGENT_OS) {
 } Else {
     If ($PSVersionTable.PSEdition -eq 'Core') {
         If ($IsWindows) {
-            'Windows_NT' 
+            'Windows_NT'
         } ElseIf ($IsMacOS) {
-            'Darwin' 
+            'Darwin'
         } ElseIf ($IsLinux) {
-            'Linux' 
+            'Linux'
         } Else {
-            Write-Error ('Unknown Operation System') 
+            Write-Error ('Unknown Operation System')
         }
     } Else {
         'Windows_NT'
