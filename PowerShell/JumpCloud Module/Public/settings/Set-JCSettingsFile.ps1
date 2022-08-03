@@ -82,11 +82,20 @@ function Set-JCSettingsFile {
                 }
             }
         }
-
+        # calculate parallel settings:
+        if (($config['parallel']['Override'] -eq $true) -And (($config['parallel']['Eligible'] -eq $true))) {
+            $config['parallel']['Calculated'] = $false
+        } elseif (($config['parallel']['Override'] -eq $false) -And (($config['parallel']['Eligible'] -eq $true))) {
+            $config['parallel']['Calculated'] = $true
+        } else {
+            $config['parallel']['Calculated'] = $false
+        }
     }
 
     end {
         # Write out the new settings
-        $config | ConvertTo-Json | Out-FIle -path $configFilePath
+        $config | ConvertTo-Json | Out-File -path $configFilePath
+        # Update Global Variable
+        $Global:JCConfig = Get-JCSettingsFile
     }
 }

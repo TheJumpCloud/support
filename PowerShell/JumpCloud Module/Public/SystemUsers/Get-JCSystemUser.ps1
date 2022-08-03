@@ -15,8 +15,7 @@ SystemID has an Alias of _id. This means you can leverage the PowerShell pipelin
         [String]$SystemID
     )
 
-    begin
-    {
+    begin {
         Write-Verbose 'Verifying JCAPI Key'
         if ($JCAPIKEY.length -ne 40) {
             Connect-JConline
@@ -38,7 +37,7 @@ SystemID has an Alias of _id. This means you can leverage the PowerShell pipelin
         [int]$limit = '100'
         Write-Verbose "Setting limit to $limit"
 
-        $Parallel = $JCParallel
+        $Parallel = $JCConfig.parallel.Calculated
 
         if ($Parallel) {
             $resultsArray = [System.Collections.Concurrent.ConcurrentBag[object]]::new()

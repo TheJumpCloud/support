@@ -11,13 +11,6 @@ Foreach ($Import in @($Public + $Private)) {
 
 # Check to see if parallel processing is available for the session
 $global:JCConfig = Get-JCSettingsFile
-if ($JCConfig.Parallel.Override) {
-    $global:JCParallel = $false
-} elseif ($JCConfig.Parallel.Eligible) {
-    $global:JCParallel = $true
-} else {
-    $global:JCParallel = $false
-}
 
 # Set default values for function parameters
 $PSDefaultParameterValues['Invoke-RestMethod:ContentType'] = 'application/json; charset=utf-8'

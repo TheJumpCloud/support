@@ -146,7 +146,7 @@ Function Get-JCSystem () {
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'SearchFilter',
             HelpMessage = 'Allows you to return select properties on JumpCloud system objects. Specifying what properties are returned can drastically increase the speed of the API call with a large data set. Valid properties that can be returned are: ''created'', ''active'', ''agentVersion'', ''allowMultiFactorAuthentication'', ''allowPublicKeyAuthentication'', ''allowSshPasswordAuthentication'', ''allowSshRootLogin'', ''arch'', ''created'', ''displayName'', ''hostname'', ''lastContact'', ''modifySSHDConfig'', ''organization'', ''os'', ''remoteIP'', ''serialNumber'', ''sshdParams'', ''systemTimezone'', ''templateName'', ''version''')]
-        [ValidateSet('acknowledged','active','agentVersion','allowMultiFactorAuthentication','allowPublicKeyAuthentication','allowSshPasswordAuthentication','allowSshRootLogin','arch','azureAdJoined','connectionHistory','created','displayName','domainInfo','fde','fileSystem','hasServiceAccount','hostname','lastContact','mdm','modifySSHDConfig','networkInterfaces','organization','os','osFamily','provisionMetadata','remoteIP','serialNumber','serviceAccountState','sshdParams','systemInsights','systemTimezone','systemToken','templateName','userMetrics','usernameHashes','version')]
+        [ValidateSet('acknowledged', 'active', 'agentVersion', 'allowMultiFactorAuthentication', 'allowPublicKeyAuthentication', 'allowSshPasswordAuthentication', 'allowSshRootLogin', 'arch', 'azureAdJoined', 'connectionHistory', 'created', 'displayName', 'domainInfo', 'fde', 'fileSystem', 'hasServiceAccount', 'hostname', 'lastContact', 'mdm', 'modifySSHDConfig', 'networkInterfaces', 'organization', 'os', 'osFamily', 'provisionMetadata', 'remoteIP', 'serialNumber', 'serviceAccountState', 'sshdParams', 'systemInsights', 'systemTimezone', 'systemToken', 'templateName', 'userMetrics', 'usernameHashes', 'version')]
         [String[]]$returnProperties
     )
 
@@ -203,18 +203,18 @@ Function Get-JCSystem () {
 
     }
 
-    begin
-    {
+    begin {
         Write-Verbose 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) { Connect-JCOnline }
+        if ($JCAPIKEY.length -ne 40) {
+            Connect-JCOnline 
+        }
 
-        $Parallel = $JCParallel
+        $Parallel = $JCConfig.parallel.Calculated
 
         if ($Parallel) {
             Write-Verbose 'Initilizing resultsArray'
             $resultsArrayList = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
-        }
-        else {
+        } else {
             Write-Verbose 'Initilizing resultsArray'
             $resultsArrayList = New-Object -TypeName System.Collections.ArrayList
         }
@@ -223,19 +223,16 @@ Function Get-JCSystem () {
 
     }
 
-    process
-    {
+    process {
         [int]$limit = '1000'
         Write-Verbose "Setting limit to $limit"
 
         [int]$skip = '0'
         Write-Verbose "Setting skip to $skip"
 
-        switch ($PSCmdlet.ParameterSetName)
-        {
+        switch ($PSCmdlet.ParameterSetName) {
             SearchFilter {
-                if ($returnProperties)
-                {
+                if ($returnProperties) {
                     $Search = @{
                         filter = @(
                             @{
@@ -245,8 +242,7 @@ Function Get-JCSystem () {
                         skip   = $skip
                         fields = $returnProperties
                     } #Initialize search
-                }
-                else{
+                } else {
 
                     $Search = @{
                         filter = @(
@@ -260,11 +256,11 @@ Function Get-JCSystem () {
                 }
 
 
-                foreach ($param in $PSBoundParameters.GetEnumerator())
-                {
-                    if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }
-                    if ($param.value -is [Boolean])
-                    {
+                foreach ($param in $PSBoundParameters.GetEnumerator()) {
+                    if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) {
+                        continue 
+                    }
+                    if ($param.value -is [Boolean]) {
                         if ($param.key -eq 'parallel') {
                             continue
                         }
@@ -273,29 +269,28 @@ Function Get-JCSystem () {
 
                         continue
                     }
-                    if ($param.key -eq 'returnProperties')
-                    {
+                    if ($param.key -eq 'returnProperties') {
                         continue
                     }
 
-                    if ($param.key -eq 'filterDateProperty')
-                    {
+                    if ($param.key -eq 'filterDateProperty') {
                         $DateProperty = $param.value
                         continue
                     }
 
-                    if ($param.key -eq 'dateFilter')
-                    {
-                        switch ($param.value)
-                        {
-                            before { $DateQuery = '$lt' }
-                            after { $DateQuery = '$gt' }
+                    if ($param.key -eq 'dateFilter') {
+                        switch ($param.value) {
+                            before {
+                                $DateQuery = '$lt' 
+                            }
+                            after {
+                                $DateQuery = '$gt' 
+                            }
                         }
                         continue
                     }
 
-                    if ($param.key -eq 'date')
-                    {
+                    if ($param.key -eq 'date') {
                         $Timestamp = Get-Date $param.Value -format o
 
                         continue
@@ -305,26 +300,25 @@ Function Get-JCSystem () {
                     $Value = ($param.value).replace('*', '')
 
                     if (($param.Value -match '.+?\*$') -and ($param.Value -match '^\*.+?')) {
-                            # Front and back wildcard
+                        # Front and back wildcard
                             (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)$([regex]::Escape($Value))" })
-                        } elseif ($param.Value -match '.+?\*$') {
-                            # Back wildcard
+                    } elseif ($param.Value -match '.+?\*$') {
+                        # Back wildcard
                             (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)^$([regex]::Escape($Value))" })
-                        } elseif ($param.Value -match '^\*.+?') {
-                            # Front wild card
+                    } elseif ($param.Value -match '^\*.+?') {
+                        # Front wild card
                             (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)$([regex]::Escape($Value))`$" })
-                        } elseif ($param.Value -match '^[-+]?\d+$') {
-                            # Check for integer value
+                    } elseif ($param.Value -match '^[-+]?\d+$') {
+                        # Check for integer value
                             (($Search.filter).GetEnumerator()).add($param.Key, $([regex]::Escape($Value)))
-                        } else {
+                    } else {
                             (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)(^$([regex]::Escape($Value))`$)" })
-                        }
+                    }
 
 
                 } # End foreach
 
-                if ($filterDateProperty)
-                {
+                if ($filterDateProperty) {
                     (($Search.filter).GetEnumerator()).add($DateProperty, @{$DateQuery = $Timestamp })
                 }
 
@@ -336,8 +330,7 @@ Function Get-JCSystem () {
 
                 if ($Parallel) {
                     $resultsArrayList = Get-JCResults -URL $URL -method "POST" -limit $limit -body $SearchJSON -Parallel $true
-                }
-                else {
+                } else {
                     $resultsArrayList = Get-JCResults -URL $URL -method "POST" -limit $limit -body $SearchJSON
                 }
 
@@ -376,14 +369,11 @@ Function Get-JCSystem () {
     } # End process
 
     end {
-        switch ($PSCmdlet.ParameterSetName)
-        {
-            SearchFilter
-            {
+        switch ($PSCmdlet.ParameterSetName) {
+            SearchFilter {
                 return $resultsArrayList | Select-Object -ExcludeProperty associatedTagCount, id, sshRootEnabled
             }
-            ByID
-            {
+            ByID {
                 return $resultsArrayList | Select-Object -ExcludeProperty associatedTagCount
             }
 

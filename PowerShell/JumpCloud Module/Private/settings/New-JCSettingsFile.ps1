@@ -21,6 +21,7 @@ function New-JCSettingsFile {
                 'MessageDismissed' = $false;
                 'MessageCount'     = 0;
                 'HelpMessage'      = 'JumpCloud PowerShell Module now processes Get requests in parallel, to disable this functionailty run: Set-JCSettingsFile -parallelOverride $true'
+                'Calculated'       = $false;
             }
             # TODO: implement update frequency checks
             # 'updates'  = @{
@@ -33,6 +34,14 @@ function New-JCSettingsFile {
     }
 
     process {
+        # Calculate the Parallel Setting Field:
+        if (($config.parallel.Override -eq $true) -And ($config.parallel.Eligible -eq $true)) {
+            $config.parallel.Calculated = $false
+        } elseif (($config.parallel.Override -eq $false) -And ($config.parallel.Eligible -eq $true)) {
+            $config.parallel.Calculated = $true
+        } else {
+            $config.parallel.Calculated = $false
+        }
         # TODO: implement update frequency checks
         # $next = if ($config.updates.Frequency -eq 'day') {
         #     $config.updates.lastCheck.addDays(1)
