@@ -22,9 +22,16 @@ Function Update-JCModule {
             }
         }
         # Get the version of the module installed locally
-        $InstalledModulePreUpdate = Get-InstalledModule -Name:($ModuleName) -AllVersions -ErrorAction:('Ignore')
-        $InstalledSDKsPreUpdate = foreach ($SDK in $SDKs) {
-            Get-InstalledModule -Name:($SDK) -AllVersions -ErrorAction:('Ignore')
+        If (-not [System.String]::IsNullOrEmpty($RepositoryCredentials)) {
+            $InstalledModulePreUpdate = Get-PSResource -Name:($ModuleName) -ErrorAction:('Ignore')
+            $InstalledSDKsPreUpdate = foreach ($SDK in $SDKs) {
+                Get-PSResource -Name:($SDK) -ErrorAction:('Ignore')
+            }
+        } else {
+            $InstalledModulePreUpdate = Get-InstalledModule -Name:($ModuleName) -AllVersions -ErrorAction:('Ignore')
+            $InstalledSDKsPreUpdate = foreach ($SDK in $SDKs) {
+                Get-InstalledModule -Name:($SDK) -AllVersions -ErrorAction:('Ignore')
+            }
         }
         # Get module info from GitHub - This should not impact the auto update ability, only the banner message
         $ModuleBanner = Get-ModuleBanner
@@ -44,11 +51,24 @@ Function Update-JCModule {
         $ModuleChangeLogLatestVersion = $ModuleChangeLog | Where-Object { $_.Version -eq $UpdateTrigger }
         # To change update dependency from PowerShell Gallery to Github flip the commented code below
         ###### $LatestVersionReleaseDate = $ModuleChangeLogLatestVersion.'RELEASE DATE'
-        $LatestVersionReleaseDate = ($FoundModule | ForEach-Object { ($_.Version).ToString() + ' (' + (Get-Date $_.PublishedDate).ToString('MMMM dd, yyyy') + ')' })
+        $LatestVersionReleaseDate = ($FoundModule | ForEach-Object { If ($_.PublishedDate) {
+    ($_.Version).ToString() + ' (' + (Get-Date $_.PublishedDate).ToString('MMMM dd, yyyy') + ')'
+                } elseif ($_.Prerelease) {
+                    <# Action when this condition is true #>
+    ($_.Version).ToString() + ' (' + (Get-Date -Year $_.Prerelease.Substring(0, 4) -Month $_.Prerelease.Substring(4, 2) -Day $_.Prerelease.Substring(6, 2) -Hour $_.Prerelease.Substring(8, 2) -Minute $_.Prerelease.Substring(10, 2)).ToString('MMMM dd, yyyy') + ')'
+                }
+            })
         # Build welcome page
         $WelcomePage = New-Object -TypeName:('PSCustomObject') | Select-Object `
         @{Name = 'MESSAGE'; Expression = { $ModuleBanner.'Banner Current' } } `
-            , @{Name = 'INSTALLED VERSION(S)'; Expression = { $InstalledModulePreUpdate | ForEach-Object { ($_.Version).ToString() + ' (' + (IF ($_.PublishedDate) { (Get-Date $_.PublishedDate).ToString('MMMM dd, yyyy') }elseif($_.Prerelease) { Get-Date -Year $_Prerelease.Substring(0, 4) -Month $_Prerelease.Substring(4, 2) -Day $_Prerelease.Substring(6, 2) -Hour $_Prerelease.Substring(8, 2) -Minute $_Prerelease.Substring(10, 2) }) + ')' } } } `
+            , @{Name = 'INSTALLED VERSION(S)'; Expression = { $InstalledModulePreUpdate | ForEach-Object { If ($_.PublishedDate) {
+    ($_.Version).ToString() + ' (' + (Get-Date $_.PublishedDate).ToString('MMMM dd, yyyy') + ')'
+                    } elseif ($_.Prerelease) {
+                        <# Action when this condition is true #>
+    ($_.Version).ToString() + ' (' + (Get-Date -Year $_.Prerelease.Substring(0, 4) -Month $_.Prerelease.Substring(4, 2) -Day $_.Prerelease.Substring(6, 2) -Hour $_.Prerelease.Substring(8, 2) -Minute $_.Prerelease.Substring(10, 2)).ToString('MMMM dd, yyyy') + ')'
+                    }
+                } }
+        } `
             , @{Name = 'LATEST VERSION'; Expression = { $UpdateTrigger + ' (' + (Get-Date $LatestVersionReleaseDate).ToString('MMMM dd, yyyy') + ')' } } `
             , @{Name = 'RELEASE NOTES'; Expression = { $ModuleChangeLogLatestVersion.'RELEASE NOTES' } } `
             , @{Name = 'FEATURES'; Expression = { $ModuleChangeLogLatestVersion.'FEATURES' } } `
@@ -263,11 +283,15 @@ Function Update-JCModule {
                 } Else {
                     # Update the module to the latest version
                     # Get the module config from the current module:
-                    $savedJCSettings = Get-JCSettingsFile
+                    try {
+                        $savedJCSettings = Get-JCSettingsFile
+                    } catch {
+                        Write-Warning ('Could not copy JumpCloud Module Settings')
+                    }
                     Write-Host ('Updating ' + $ModuleName + ' module to version: ') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewlines
                     Write-Host ($UpdateTrigger) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
                     If (-not [System.String]::IsNullOrEmpty($RepositoryCredentials)) {
-                        $InstalledModulePreUpdate | Update-PSResource -Credential $RepositoryCredentials -Repository CodeArtifact -Name:($ModuleName) -Prerelease -Force
+                        $InstalledModulePreUpdate | Update-PSResource -Credential $RepositoryCredentials -Repository CodeArtifact -Prerelease -Force
                     } Else {
                         $InstalledModulePreUpdate | Update-Module -Force
                     }

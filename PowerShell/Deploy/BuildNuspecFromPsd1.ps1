@@ -15,7 +15,7 @@ $nuspecFiles = @(
     @{src = "JumpCloud.psm1" },
     @{src = "LICENSE" }
 )
-# Addapted from PowerShell Get
+# Adapted from PowerShell Get
 # https://github.com/PowerShell/PowerShellGetv2/blob/7de99ee0c38611556e5c583ffaca98bb1922a0d4/src/PowerShellGet/private/functions/New-NuspecFile.ps1
 function New-NuspecFile {
     [CmdletBinding()]
