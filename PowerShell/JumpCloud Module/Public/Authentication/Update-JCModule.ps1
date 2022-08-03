@@ -284,7 +284,7 @@ Function Update-JCModule {
                     # Update the module to the latest version
                     # Get the module config from the current module:
                     try {
-                        $savedJCSettings = Get-JCSettingsFile
+                        $savedJCSettings = Get-JCSettingsFile -raw
                     } catch {
                         Write-Warning ('Could not copy JumpCloud Module Settings')
                     }

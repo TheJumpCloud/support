@@ -2,10 +2,11 @@ function Get-JCSettingsFile {
     [CmdletBinding()]
     param (
         [Parameter(
-            HelpMessage = 'To Force Re-Creation of the Config file, set the $force parameter to $tru'
+            DontShow,
+            HelpMessage = 'Returns Config.json with value, copy, write properties'
         )]
-        [bool]
-        $force
+        [switch]
+        $raw
     )
 
     begin {
@@ -17,11 +18,24 @@ function Get-JCSettingsFile {
             # Create new file with default settings
             New-JCSettingsFile
         }
-        # Get Contents
-        $config = Get-Content -Path $configFilePath | ConvertFrom-Json
     }
 
     process {
+        if (-Not $raw) {
+            $rawConfig = Get-Content -Path $configFilePath | ConvertFrom-Json
+            $config = @{}
+            foreach ($item in $rawConfig.psobject.Properties) {
+                # $config.$item
+                $config.Add($item.Name, @{})
+                foreach ($setting in $item.value.psobject.Properties) {
+                    # $setting
+                    $config.$($Item.Name).Add($setting.Name, $setting.value.value)
+                }
+            }
+        } else {
+            # Get Contents
+            $config = Get-Content -Path $configFilePath | ConvertFrom-Json
+        }
     }
 
     end {

@@ -16,12 +16,11 @@ function New-JCSettingsFile {
         # Define Default Settings for the Config file
         $config = @{
             'parallel' = @{
-                'Eligible'         = Get-JCParallelValidation
-                'Override'         = $false;
-                'MessageDismissed' = $false;
-                'MessageCount'     = 0;
-                'HelpMessage'      = 'JumpCloud PowerShell Module now processes Get requests in parallel, to disable this functionailty run: Set-JCSettingsFile -parallelOverride $true'
-                'Calculated'       = $false;
+                'Eligible'     = @{value = Get-JCParallelValidation; write = $false; copy = $true }
+                'Override'     = @{value = $false; write = $true; copy = $true }
+                'MessageCount' = @{value = 0; write = $true; copy = $true }
+                'HelpMessage'  = @{value = 'JumpCloud PowerShell Module now processes Get requests in parallel, to disable this functionailty run: Set-JCSettingsFile -parallelOverride $true'; write = $false; copy = $false };
+                'Calculated'   = @{value = $false; write = $false; copy = $true }
             }
             # TODO: implement update frequency checks
             # 'updates'  = @{
@@ -35,12 +34,12 @@ function New-JCSettingsFile {
 
     process {
         # Calculate the Parallel Setting Field:
-        if (($config.parallel.Override -eq $true) -And ($config.parallel.Eligible -eq $true)) {
-            $config.parallel.Calculated = $false
-        } elseif (($config.parallel.Override -eq $false) -And ($config.parallel.Eligible -eq $true)) {
-            $config.parallel.Calculated = $true
+        if (($config.parallel.Override.value -eq $true) -And ($config.parallel.Eligible.value -eq $true)) {
+            $config.parallel.Calculated.value = $false
+        } elseif (($config.parallel.Override.value -eq $false) -And ($config.parallel.Eligible.value -eq $true)) {
+            $config.parallel.Calculated.value = $true
         } else {
-            $config.parallel.Calculated = $false
+            $config.parallel.Calculated.value = $false
         }
         # TODO: implement update frequency checks
         # $next = if ($config.updates.Frequency -eq 'day') {

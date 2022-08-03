@@ -25,15 +25,14 @@ function Update-JCSettingsFile {
         foreach ($newSetting in $config.psobject.properties) {
             foreach ($copiedSetting in $settings.psobject.properties) {
                 if ($newSetting.name -eq $copiedSetting.name) {
-                    # Write-Host "found match $($newSetting.name) -- $($copiedSetting.name)"
+                    # If the new property is in the copied settings property list:
                     foreach ($newProperty in $newSetting.value.psobject.properties) {
                         foreach ($copiedProperty in $copiedSetting.value.psobject.properties) {
-                            if ( $newProperty.name -eq $copiedProperty.name) {
-                                # Write-Host $property.value $property2.value
-                                # Compare-Object -ReferenceObject $newProperty.value -DifferenceObject $copiedProperty.value -Property $newProperty.name
-                                if ( $newProperty.value -eq $copiedProperty.value) {
-                                } else {
-                                    $config.$($newsetting.name).$($newProperty.name) = $settings.$($copiedSetting.name).$($copiedProperty.name)
+                            # If the property names match & the new property is eligible to be copied, copy it
+                            if ( ($newProperty.name -eq $copiedProperty.name) -And ($newProperty.Value.copy -eq $true)) {
+                                # If the values are different, copy the values
+                                if ( $newProperty.value.value -ne $copiedProperty.value.value) {
+                                    $config.$($newsetting.name).$($newProperty.name).value = $settings.$($copiedSetting.name).$($copiedProperty.name).value
                                 }
                             }
                         }

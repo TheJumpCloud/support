@@ -1,12 +1,4 @@
 function Set-JCSettingsFile {
-    [CmdletBinding()]
-    param (
-        [Parameter(
-            HelpMessage = 'To Force Re-Creation of the Config file, set the $force parameter to $tru'
-        )]
-        [bool]
-        $force
-    )
     DynamicParam {
         $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent.FullName
         $configFilePath = join-path -path $ModuleRoot -childpath 'Config.json'
@@ -16,26 +8,26 @@ function Set-JCSettingsFile {
             # Create the dictionary
             $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
             # These params are not exposed as user editable
-            $skippedParams = @('updatesLastCheck', 'parallelEligiable', 'parallelMessageDismissed')
+            # $skippedParams = @('parallelCalculated', 'parallelEligible', 'parallelMessageDismissed')
             # Foreach key in the supplied config file:
             foreach ($key in $config.keys) {
                 foreach ($item in $config[$key].keys) {
+                    # Skip create dynamic params for these conditions:
+                    if (($config[$key][$item]['write'] -eq $false)) {
+                        continue
+                    }
                     # Set the dynamic parameters' name
-                    # write-host "adding dynamic param: $key$($item) $($config[$key][$item].getType().Name)"
+                    # write-host "adding dynamic param: $key$($item) $($config[$key][$item]['value'].getType().Name)"
                     $ParamName_Filter = "$key$($item)"
                     # Create the collection of attributes
                     $AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
-                    # Skip create dynamic params for these conditions:
-                    if (($ParamName_Filter -Match "Validation") -or ($ParamName_Filter -in $skippedParams) -or ($ParamName_Filter -match "help")) {
-                        continue
-                    }
                     if ($($config[$key]["$($item)Validation"])) {
                         $arrSet = @($($config[$key]["$($item)Validation"]).split())
                         $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($arrSet)
                         $AttributeCollection.Add($ValidateSetAttribute)
                     }
                     # $config[$key][$item].getType()
-                    $paramType = $($config[$key][$item].getType().Name)
+                    $paramType = $($config[$key][$item]['value'].getType().Name)
                     if ($paramType -eq 'boolean') {
                         $arrSet = @("true", "false")
                         $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($arrSet)
@@ -78,17 +70,17 @@ function Set-JCSettingsFile {
                     # Split the name
                     $paramKey = $($param.split($key))
                     # assign the first group
-                    $config[$key][$paramKey[1]] = $params[$param]
+                    $config[$key][$paramKey[1]]['value'] = $params[$param]
                 }
             }
         }
-        # calculate parallel settings:
-        if (($config['parallel']['Override'] -eq $true) -And (($config['parallel']['Eligible'] -eq $true))) {
-            $config['parallel']['Calculated'] = $false
-        } elseif (($config['parallel']['Override'] -eq $false) -And (($config['parallel']['Eligible'] -eq $true))) {
-            $config['parallel']['Calculated'] = $true
+        # Re-Calculate parallel settings:
+        if (($config['parallel']['Override']['value'] -eq $true) -And (($config['parallel']['Eligible']['value'] -eq $true))) {
+            $config['parallel']['Calculated']['value'] = $false
+        } elseif (($config['parallel']['Override']['value'] -eq $false) -And (($config['parallel']['Eligible']['value'] -eq $true))) {
+            $config['parallel']['Calculated']['value'] = $true
         } else {
-            $config['parallel']['Calculated'] = $false
+            $config['parallel']['Calculated']['value'] = $false
         }
     }
 
