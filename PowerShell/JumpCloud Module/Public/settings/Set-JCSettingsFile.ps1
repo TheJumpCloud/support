@@ -22,8 +22,9 @@ function Set-JCSettingsFile {
                     $ParamName_Filter = "$key$($item)"
                     # Create the collection of attributes
                     $AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
-                    if ($($config[$key]["$($item)Validation"])) {
-                        $arrSet = @($($config[$key]["$($item)Validation"]).split())
+                    #TODO: CHANGE THIS TO VALIDATE SET
+                    if ($config[$key][$item]['validateSet']) {
+                        $arrSet = @($($config[$key][$item]['validateSet']).split())
                         $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($arrSet)
                         $AttributeCollection.Add($ValidateSetAttribute)
                     }
