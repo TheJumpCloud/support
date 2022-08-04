@@ -14,7 +14,7 @@ function Update-JCSettingsFile {
 
         if (test-path -path $configFilePath) {
             # Get Contents
-            $config = Get-Content -Path $configFilePath | ConvertFrom-Json
+            Get-JCSettingsFile -Raw
         } else {
             # Create new file with default settings
             New-JCSettingsFile
@@ -43,6 +43,6 @@ function Update-JCSettingsFile {
     }
 
     end {
-        $config | ConvertTo-Json | Out-FIle -path $configFilePath
+        $config | ConvertTo-Json | Out-File -path $configFilePath
     }
 }

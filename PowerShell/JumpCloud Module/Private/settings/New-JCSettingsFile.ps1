@@ -53,9 +53,9 @@ function New-JCSettingsFile {
 
     end {
         if ((test-path -path $configFilePath) -And ($force)) {
-            $config | ConvertTo-Json | Out-FIle -path $configFilePath
+            $config | ConvertTo-Json | Out-File -path $configFilePath
         } else {
-            $config | ConvertTo-Json | Out-FIle -path $configFilePath
+            $config | ConvertTo-Json | Out-File -path $configFilePath
         }
     }
 }

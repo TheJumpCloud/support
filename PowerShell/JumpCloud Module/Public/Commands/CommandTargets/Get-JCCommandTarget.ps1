@@ -188,9 +188,3 @@ Function Get-JCCommandTarget {
         } # end switch
     } # end
 }
-# # . "/Users/jworkman/Documents/GitHub/support/PowerShell/Deploy/Get-Config.ps1"
-# # Get-JCCommandTarget -CommandID 62a3a5d2dd4ab03be16109a5
-. "/Users/jworkman/Documents/GitHub/support/PowerShell/JumpCloud Module/Private/HashFunctions/Get-DynamicHash.ps1"
-. "/Users/jworkman/Documents/GitHub/support/PowerShell/JumpCloud Module/Private/NestedFunctions/Get-JCResults.ps1"
-. "/Users/jworkman/Documents/GitHub/support/PowerShell/JumpCloud Module/Private/NestedFunctions/Get-JCUserAgent.ps1"
-Get-JCCommandTarget -CommandID 62a3a5d2dd4ab03be16109a5
