@@ -67,6 +67,6 @@ foreach ($Command in $Commands) {
     }
 }
 
-$csvObject | Export-csv -Path './commands_sequential.csv' -NoTypeInformation
+$csvObject | Export-csv -Path './commands_report.csv' -NoTypeInformation
 
 ```
