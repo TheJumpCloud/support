@@ -1,9 +1,4 @@
 Describe -Tag "JCSettingsFile" -Name "Set JCSettings Tests" {
-    BeforeAll {
-        . "/Users/jworkman/Documents/GitHub/support/PowerShell/JumpCloud Module/Private/settings/Get-JCSettingsFile.ps1"
-        . "/Users/jworkman/Documents/GitHub/support/PowerShell/JumpCloud Module/Private/settings/New-JCSettingsFile.ps1"
-        . "/Users/jworkman/Documents/GitHub/support/PowerShell/JumpCloud Module/Private/settings/Update-JCSettingsFile.ps1"
-    }
     it "Settings File can be modified" {
         # Get previous file modified Time
         $previousModifiedDate = (Get-Item "$PSScriptRoot\..\..\..\Config.json").LastWriteTime

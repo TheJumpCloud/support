@@ -1,10 +1,4 @@
 Describe -Tag "JCSettingsFile" -Name "New JCSettings Tests" {
-    BeforeAll {
-        . "/Users/jworkman/Documents/GitHub/support/PowerShell/JumpCloud Module/Private/settings/Get-JCSettingsFile.ps1"
-        . "/Users/jworkman/Documents/GitHub/support/PowerShell/JumpCloud Module/Private/settings/New-JCSettingsFile.ps1"
-        . "/Users/jworkman/Documents/GitHub/support/PowerShell/JumpCloud Module/Private/settings/Update-JCSettingsFile.ps1"
-        . "/Users/jworkman/Documents/GitHub/support/PowerShell/JumpCloud Module/Private/NestedFunctions/Get-JCParallelValidation.ps1"
-    }
     it "Settings File is overwritten when using the -force parameter" {
         # Get previous file modified Time
         $previousModifiedDate = (Get-Item "$PSScriptRoot\..\..\..\Config.json").LastWriteTime
