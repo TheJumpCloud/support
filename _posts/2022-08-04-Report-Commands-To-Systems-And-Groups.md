@@ -13,7 +13,7 @@ This script generates a CSV report of all commands and their associations to sys
 
 * The PowerShell Module is required to run this script
 * Save the script to a location
-* In a PowerShell terminal window, run the script `~/Path/To/Scrpt/commands_associations.ps1`
+* In a PowerShell terminal window, run the script `~/Path/To/Script/commands_associations.ps1`
 
 ### Additional Information
 
@@ -68,5 +68,5 @@ foreach ($Command in $Commands) {
 }
 
 $csvObject | Export-csv -Path './commands_sequential.csv' -NoTypeInformation
-}
+
 ```
