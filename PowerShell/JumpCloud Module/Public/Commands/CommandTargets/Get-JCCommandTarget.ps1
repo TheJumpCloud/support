@@ -101,7 +101,7 @@ Function Get-JCCommandTarget {
                         # resultsArrayList generation
                         $CommandName = $CommandHash[$CommandID].name
                         $Trigger = $CommandHash[$CommandID].trigger
-                        $SystemID = $_.id
+                        $SystemID = $result.id
                         $Hostname = $SystemHash[$SystemID].hostname
                         $Displyname = $SystemHash[$SystemID].displayName
 
