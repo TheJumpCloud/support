@@ -96,7 +96,7 @@ function Get-JCCommandResult () {
                         # If the workflowId for the CommandResult does not match the CommandID, skip
                         $CommandID = $using:CommandID
                         if ($_.workflowId -ne $CommandID) {
-                            return 
+                            return
                         }
                         $resultsArrayList = $using:resultsArrayList
                         $URL = "$using:JCUrlBasePath/api/commandresults/$($_._id)"
@@ -126,7 +126,7 @@ function Get-JCCommandResult () {
                 } else {
                     $resultsArray | Foreach-Object {
                         if ($_.workflowId -ne $CommandID) {
-                            return 
+                            return
                         }
                         $URL = "$JCUrlBasePath/api/commandresults/$($_._id)"
                         $CommandResults = Get-JCResults -Method "GET" -URL $URL -limit $limit
@@ -188,13 +188,13 @@ function Get-JCCommandResult () {
                 Return $resultsArrayList
             }
             TotalCount {
-                Return  $resultsArrayList 
+                Return  $resultsArrayList
             }
             ByCommandID {
-                Return  $resultsArrayList 
+                Return  $resultsArrayList
             }
             ByID {
-                Return  $resultsArrayList 
+                Return  $resultsArrayList
             }
         }
     }
