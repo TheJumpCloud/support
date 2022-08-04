@@ -25,7 +25,6 @@ function New-JCSettingsFile {
             'updates'  = @{
                 'Frequency' = @{value = 'day'; write = $true; copy = $true; validateSet = 'day week month' }
                 'LastCheck' = @{value = Get-Date; write = $false; copy = $true };
-                'NextCheck' = '';
             }
         }
     }
