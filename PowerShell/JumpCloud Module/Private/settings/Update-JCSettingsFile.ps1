@@ -14,7 +14,7 @@ function Update-JCSettingsFile {
 
         if (test-path -path $configFilePath) {
             # Get Contents
-            Get-JCSettingsFile -Raw
+            $config = Get-JCSettingsFile -Raw
         } else {
             # Create new file with default settings
             New-JCSettingsFile
