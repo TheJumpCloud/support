@@ -17,7 +17,7 @@ This script generates a CSV report of all commands and their associations to sys
 
 ### Additional Information
 
-This script will search for all commands in an organization and return command details along with bound systems and system groups
+This script will search for all commands in an organization and return command details along with bound systems and system groups. A commands_report.csv file will be generated in the working directory where the script is run.
 
 ### Script
 
