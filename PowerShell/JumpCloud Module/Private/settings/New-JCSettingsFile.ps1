@@ -24,10 +24,9 @@ function New-JCSettingsFile {
             }
             # TODO: implement update frequency checks
             # 'updates'  = @{
-            #     'Frequency'           = 'week';
-            #     'FrequencyValidation' = 'day week month';
-            #     'LastCheck'           = (Get-Date);
-            #     'NextCheck'           = '';
+            #     'Frequency' = @{value = 'day'; write = $true; copy = $true; validateSet = 'day week month' }
+            #     'LastCheck' = @{value = Get-Date; write = $false; copy = $true };
+            #     'NextCheck' = '';
             # }
         }
     }
