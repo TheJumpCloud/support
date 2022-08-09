@@ -39,20 +39,9 @@ try {
         exit 1
     }
 
-    try {
-        Get-Process "JumpCloud Assist App" -ErrorAction Stop | Stop-Process
-    }
-    catch [Microsoft.PowerShell.Commands.ProcessCommandException] {
-        # Not a problem if the app isn't already running
-    }
-    catch {
-        Write-Error "Failed to stop the running JumpCloud Remote Assist App."
-        exit 1
-    }
-
     Write-Host "Installing JumpCloud Remote Assist now, this may take a few minutes."
     try {
-        $installerProcess = Start-Process -FilePath $installerTempLocation -Wait -PassThru
+        $installerProcess = Start-Process -FilePath $installerTempLocation -Wait -PassThru -ArgumentList "/S"
     }
     catch {
         Write-Error "Failed to run JumpCloud Remote Assist installer."
