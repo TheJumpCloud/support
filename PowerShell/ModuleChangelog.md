@@ -1,3 +1,10 @@
+## 1.24.0
+
+Release Date: August 10, 2022
+
+#### RELEASE NOTES
+
+This release modifies New-JCImportTemplate, Update and Import-JCUsersFromCSV to allow imports and updates with LDAP bind and MFA + EnrollmentDays to users
 ## 1.23.4
 
 Release Date: July 25, 2022
