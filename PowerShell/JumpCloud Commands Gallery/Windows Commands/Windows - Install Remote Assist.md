@@ -20,6 +20,7 @@ try {
 }
 catch {
     Write-Error "Unable to download JumpCloud Remote Assist installer."
+    Write-Error $_
     exit 1
 }
 Write-Host "Finished downloading JumpCloud Remote Assist installer."
@@ -45,6 +46,7 @@ try {
     }
     catch {
         Write-Error "Failed to run JumpCloud Remote Assist installer."
+        Write-Error $_
         exit 1
     }
 
