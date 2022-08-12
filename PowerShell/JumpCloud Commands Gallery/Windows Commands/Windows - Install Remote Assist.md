@@ -13,17 +13,17 @@ $installerURL="https://cdn.awsstg.jumpcloud.com/TheJumpCloud/jumpcloud-remote-as
 $JumpCloudThumbprint="7A4844FBF481047BEDBB7A8054069C50E449D355"
 $installerTempLocation="C:\Windows\Temp\JumpCloudRemoteAssistInstaller.exe"
 
-Write-Host "Downloading JumpCloud Remote Assist installer now."
+Write-Host "Downloading JumpCloud Remote Assist installer now"
 try {
     $ProgressPreference = "SilentlyContinue"
     Invoke-WebRequest -Uri $installerURL -OutFile $installerTempLocation
 }
 catch {
-    Write-Error "Unable to download JumpCloud Remote Assist installer."
+    Write-Error "Unable to download JumpCloud Remote Assist installer"
     Write-Error $_
     exit 1
 }
-Write-Host "Finished downloading JumpCloud Remote Assist installer."
+Write-Host "Finished downloading JumpCloud Remote Assist installer"
 
 try {
     Write-Host "Verifying Authenticode Signature"
@@ -40,17 +40,17 @@ try {
         exit 1
     }
 
-    Write-Host "Installing JumpCloud Remote Assist now, this may take a few minutes."
+    Write-Host "Installing JumpCloud Remote Assist"
     try {
         $installerProcess = Start-Process -FilePath $installerTempLocation -Wait -PassThru -ArgumentList "/S"
     }
     catch {
-        Write-Error "Failed to run JumpCloud Remote Assist installer."
+        Write-Error "Failed to run JumpCloud Remote Assist installer"
         Write-Error $_
         exit 1
     }
 
-    Write-Host "JumpCloud Remote Assist installer returned $($installerProcess.ExitCode)."
+    Write-Host "JumpCloud Remote Assist installer returned $($installerProcess.ExitCode)"
 
     exit $installerProcess.ExitCode
 }
