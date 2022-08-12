@@ -22,10 +22,10 @@ function New-JCSettingsFile {
                 'HelpMessage'  = @{value = 'JumpCloud PowerShell Module now processes Get requests in parallel, to disable this functionailty run: Set-JCSettingsFile -parallelOverride $true'; write = $false; copy = $false };
                 'Calculated'   = @{value = $false; write = $false; copy = $true }
             }
-            # 'updates'  = @{
-            #     'Frequency' = @{value = 'day'; write = $true; copy = $true; validateSet = 'day week month' }
-            #     'LastCheck' = @{value = Get-Date; write = $false; copy = $true };
-            # }
+            'updates'  = @{
+                'Frequency' = @{value = 'day'; write = $true; copy = $true; validateSet = 'day week month' }
+                'LastCheck' = @{value = Get-Date; write = $false; copy = $true };
+            }
         }
     }
 
