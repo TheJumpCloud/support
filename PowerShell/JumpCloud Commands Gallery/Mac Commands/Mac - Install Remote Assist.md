@@ -9,6 +9,9 @@ mac
 #### Command
 
 ```
+set -eu
+set -o pipefail
+
 REMOTE_DMG_URL="https://cdn.awsstg.jumpcloud.com/TheJumpCloud/jumpcloud-remote-assist-agent/latest/jumpcloud-assist-app.dmg"
 APP_NAME="Jumpcloud Assist App.app"
 LOCAL_DMG_PATH="/tmp/jumpcloud-assist-app.dmg"
@@ -31,24 +34,32 @@ for SIGNAL in TERM KILL; do
     fi
 done
 
+echo "Downloading JumpCloud Remote Assist installer"
 curl --silent --output "$LOCAL_DMG_PATH" "$REMOTE_DMG_URL" >/dev/null
+echo "Download complete"
+( # Run in a subshell to ensure cleanup
 VOLUME=$(hdiutil attach "$LOCAL_DMG_PATH" | grep -Eo '(\/Volumes\/.*)')
 
+echo "Verifying installer signature"
 CODESIGN_OUT=$(codesign -dv --verbose=4 "$VOLUME/$APP_NAME" 2>&1)
 
 if [[ $? != 0 ]] ; then
-    echo "Application lacks a valid signature, aborting installation"
+    echo "Installer lacks a valid signature, aborting installation"
     exit 1
 fi
 
-if ! echo "$CODESIGN_OUT" | grep "Authority=Developer ID Application: JUMPCLOUD INC. (N985MXSH85)"; then
-    echo "Application is not signed by JumpCloud, aborting installation"
+if ! echo "$CODESIGN_OUT" | grep "Authority=Developer ID Application: JUMPCLOUD INC. (N985MXSH85)" &> /dev/null; then
+    echo "Installer lacks a valid signature, aborting installation"
     exit 1
 fi
 
+echo "Installing JumpCloud Remote Assist"
 rm -rf "/Applications/$APP_NAME"
 cp -a "$VOLUME/$APP_NAME" /Applications
-hdiutil detach "$VOLUME"
+echo "Installation complete"
+)
+set +e # Keep trying to clean up
+hdiutil detach "$VOLUME" &> /dev/null
 rm "$LOCAL_DMG_PATH"
 ```
 
