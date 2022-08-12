@@ -38,9 +38,6 @@ Function Update-JCModule {
             }
         }
 
-        # ###### $UpdateTrigger = $ModuleBanner.'Latest Version'
-        # $UpdateTrigger = $FoundModule.Version
-
         # SDK Lists
         $SDKsToUninstall = @()
         $SDKsToUpdate = @()
@@ -49,28 +46,9 @@ Function Update-JCModule {
         $SDKUpdateTable = @()
         $SDKResultsSummary = @()
         $SDKUninstallSummary = @()
-        # Get the release notes for a specific version
-        # $ModuleChangeLogLatestVersion = $ModuleChangeLog | Where-Object { $_.Version -eq $UpdateTrigger }
-        # To change update dependency from PowerShell Gallery to Github flip the commented code below
-        ###### $LatestVersionReleaseDate = $ModuleChangeLogLatestVersion.'RELEASE DATE'
-        #     $LatestVersionReleaseDate = ($FoundModule | ForEach-Object { If ($_.PublishedDate) {
-        # ($_.Version).ToString() + ' (' + (Get-Date $_.PublishedDate).ToString('MMMM dd, yyyy') + ')'
-        #             } elseif ($_.Prerelease) {
-        #                 <# Action when this condition is true #>
-        # ($_.Version).ToString() + ' (' + (Get-Date -Year $_.Prerelease.Substring(0, 4) -Month $_.Prerelease.Substring(4, 2) -Day $_.Prerelease.Substring(6, 2) -Hour $_.Prerelease.Substring(8, 2) -Minute $_.Prerelease.Substring(10, 2)).ToString('MMMM dd, yyyy') + ')'
-        #             }
-        #         })
+
         # Build welcome page
-        $WelcomePage = New-Object -TypeName:('PSCustomObject')# | Select-Object `
-        #     # @{Name = 'MESSAGE'; Expression = { $FoundModule.Version } } `
-        #     , @{Name = 'INSTALLED VERSION(S)'; Expression = { $InstalledModulePreUpdate | ForEach-Object { ($_.Version).ToString() + ' (' + (Get-Date $_.PublishedDate).ToString('MMMM dd, yyyy HH:MM') + ')' } } } `
-        #     , @{Name = 'LATEST VERSION(S)'; Expression = { $FoundModule | ForEach-Object { ($_.Version).ToString() + ' (' + (Get-Date $_.PublishedDate).ToString('MMMM dd, yyyy HH:MM') + ')' } } } `
-        #     , @{Name = 'RELEASE NOTES'; Expression = { $ModuleChangeLogLatestVersion.'RELEASE NOTES' } } `
-        #     , @{Name = 'FEATURES'; Expression = { $ModuleChangeLogLatestVersion.'FEATURES' } } `
-        #     , @{Name = 'IMPROVEMENTS'; Expression = { $ModuleChangeLogLatestVersion.'IMPROVEMENTS' } } `
-        #     , @{Name = 'BUG FIXES'; Expression = { $ModuleChangeLogLatestVersion.'BUG FIXES' } } `
-        #     , @{Name = 'Learn more about the ' + $ModuleName + ' PowerShell module here'; Expression = { 'https://github.com/TheJumpCloud/support/wiki' } }
-        # $WelcomePage
+        $WelcomePage = New-Object -TypeName:('PSCustomObject')
     }
     Process {
         # Load color scheme
@@ -126,15 +104,7 @@ Function Update-JCModule {
         }
         # If there are changes to the SDKs which should be made, prompt
         if (("Update" -in $SDKUpdateTable.'Update Action')) {
-            #TODO: add the status message here!
             # Populate status message
-            # $Status = If ($FoundModule.Version -notin $InstalledModulePreUpdate.Version) {
-            #     'An update is available for the JumpCloud SDK module(s) PowerShell module.'
-            # } ElseIf ($FoundModule.Version -in $InstalledModulePreUpdate.Version) {
-            #     'The ' + $ModuleName + ' PowerShell module is up to date.'
-            # } Else {
-            #     Write-Error ('Unable to determine ' + $ModuleName + ' PowerShell module install status.')
-            # }
             $WelcomePage = $WelcomePage | Select-Object @{Name = 'STATUS'; Expression = { 'An update is available for the JumpCloud SDK module(s) PowerShell module.' } }, *
             $WelcomePage.PSObject.Properties.Name | ForEach-Object {
                 If (-not [System.String]::IsNullOrEmpty($WelcomePage.($_))) {
@@ -310,6 +280,7 @@ Function Update-JCModule {
                     Write-Host ('Updating ' + $ModuleName + ' module to version: ') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewline
                     Write-Host ($FoundModule.Version) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
                     If (-not [System.String]::IsNullOrEmpty($RepositoryCredentials)) {
+                        # SkipDependancy, we manage SDKs seperatly
                         $InstalledModulePreUpdate | Update-PSResource -Credential $RepositoryCredentials -Repository CodeArtifact -Prerelease -Force -SkipDependencyCheck
                     } Else {
                         $InstalledModulePreUpdate | Update-Module -Force
@@ -336,9 +307,8 @@ Function Update-JCModule {
                     }
 
                     # Check to see if the module version on the PowerShell gallery does not match the local module version
-                    $updateCheck = IF ($CodeArtifact) {
+                    $updateCheck = If ($CodeArtifact) {
                         if ($FoundModule.Prerelease -eq $InstalledModulePostUpdate.Prerelease) {
-
                             $true
                         } else {
                             $false
@@ -357,21 +327,21 @@ Function Update-JCModule {
                         Import-Module -Name:($ModuleName) -Scope:('Global') -Force
                         # Copy saved settings to new config.json
                         if (-Not ($savedJCSettings)::IsNullOrEmpty) {
-                            # If not null or empty
-                            # Get Private functions:
+                            # Get private settings functions:
                             $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent.FullName
                             $SettingsFunctionsDir = join-path -path $ModuleRoot -childpath 'private/settings'
-                            $SettingsFunctionsDir
                             $Private = @( Get-ChildItem -Path $SettingsFunctionsDir -Recurse)
                             Foreach ($Import in @($Private)) {
                                 Try {
+                                    # Import the functions into the session
                                     . $Import.FullName
-                                    Write-Host "Imported: $($Import.Name)"
                                 } Catch {
                                     Write-Error -Message "Failed to import function $($Import.FullName): $_"
                                 }
                             }
+                            # update the settings file config.json
                             Update-JCSettingsFile -settings $savedJCSettings
+                            # re-import the settings file variable
                             $global:JCConfig = Get-JCSettingsFile
                         }
                         # Confirm to user module update has been successful
