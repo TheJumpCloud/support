@@ -13,7 +13,7 @@ $installerURL="https://cdn.awsstg.jumpcloud.com/TheJumpCloud/jumpcloud-remote-as
 $JumpCloudThumbprint="7A4844FBF481047BEDBB7A8054069C50E449D355"
 $installerTempLocation="C:\Windows\Temp\JumpCloudRemoteAssistInstaller.exe"
 
-Write-Host "Downloading JumpCloud Remote Assist installer now"
+Write-Host "Downloading JumpCloud Remote Assist installer"
 try {
     $ProgressPreference = "SilentlyContinue"
     Invoke-WebRequest -Uri $installerURL -OutFile $installerTempLocation
@@ -23,20 +23,20 @@ catch {
     Write-Error $_
     exit 1
 }
-Write-Host "Finished downloading JumpCloud Remote Assist installer"
+Write-Host "Download complete"
 
 try {
-    Write-Host "Verifying Authenticode Signature"
+    Write-Host "Verifying installer signature"
     $authenticode = Get-AuthenticodeSignature "$installerTempLocation"
     if ( $authenticode.Status -ne "Valid" )
     {
-        Write-Error "No valid Authenticode signature found, aborting installation"
+        Write-Error "Installer lacks a valid signature, aborting installation"
         exit 1
     }
 
     if ( $authenticode.SignerCertificate.Thumbprint -ne $JumpCloudThumbprint )
     {
-        Write-Error "No valid Authenticode signature found, aborting installation"
+        Write-Error "Installer lacks a valid signature, aborting installation"
         exit 1
     }
 
@@ -50,7 +50,7 @@ try {
         exit 1
     }
 
-    Write-Host "JumpCloud Remote Assist installer returned $($installerProcess.ExitCode)"
+    Write-Host "JumpCloud Remote Assist installer completed with exit code $($installerProcess.ExitCode)"
 
     exit $installerProcess.ExitCode
 }
