@@ -2,42 +2,44 @@ Function Update-JCModule {
     Param(
         [Parameter(HelpMessage = 'Skips the "Uninstall-Module" step that will uninstall old version of the module.')][Switch]$SkipUninstallOld
         , [Parameter(HelpMessage = 'ByPasses user prompts.')][Switch]$Force
-        , [Parameter(DontShow, HelpMessage = 'Specify which repository to pull from.')][System.String]$Repository = 'PSGallery'
-        , [Parameter(DontShow, HelpMessage = 'Specify the credentials for repository to pull from.')][System.Management.Automation.PSCredential]$RepositoryCredentials
+        , [Parameter(DontShow, ParameterSetName = 'CodeArtifact', HelpMessage = 'Specify the credentials for repository to pull from.')][System.Management.Automation.PSCredential]$RepositoryCredentials
+        , [Parameter(DontShow, ParameterSetName = 'CodeArtifact', HelpMessage = 'Switch to toggle CodeArtifact Updates')][Switch]$CodeArtifact
     )
     Begin {
         $ModuleName = 'JumpCloud'
         $SDKs = @('JumpCloud.SDK.DirectoryInsights'
             'JumpCloud.SDK.V2'
             'JumpCloud.SDK.V1')
-        If (-not [System.String]::IsNullOrEmpty($RepositoryCredentials)) {
-            $FoundModule = Find-PSResource -Name:($ModuleName) -Repository:($Repository) -Credential:($RepositoryCredentials) -Prerelease
-            $FoundSDKs = foreach ($SDK in $SDKs) {
-                Find-PSResource -Name:($SDK) -Repository:($Repository) -Credential:($RepositoryCredentials) -Prerelease
-            }
-        } Else {
-            $FoundModule = Find-Module -Name:($ModuleName) -Repository:($Repository)
-            $FoundSDKs = foreach ($SDK in $SDKs) {
-                Find-Module -Name:($SDK) -Repository:($Repository)
-            }
+        # Set Repository
+        $Repository = if ($CodeArtifact) {
+            'CodeArtifact'
+        } else {
+            'PSGallery'
         }
-        # Get the version of the module installed locally
-        If (-not [System.String]::IsNullOrEmpty($RepositoryCredentials)) {
-            $InstalledModulePreUpdate = Get-PSResource -Name:($ModuleName) -ErrorAction:('Ignore')
+
+        # Get Modules & SDKs From Remote & Locally Installed
+        if ($CodeArtifact) {
+            $FoundModule = Get-JCLatestModule -ModuleName:($ModuleName) -Repository:($Repository) -RepositoryCredentials:($RepositoryCredentials) -CodeArtifact
+            $FoundSDKs = foreach ($SDK in $SDKs) {
+                Get-JCLatestModule -ModuleName:($SDK) -Repository:($Repository) -RepositoryCredentials:($RepositoryCredentials) -CodeArtifact
+            }
+            $InstalledModulePreUpdate = Get-JCInstalledModule -ModuleName:($ModuleName) -CodeArtifact
             $InstalledSDKsPreUpdate = foreach ($SDK in $SDKs) {
-                Get-PSResource -Name:($SDK) -ErrorAction:('Ignore')
+                Get-JCInstalledModule -ModuleName:($SDK) -CodeArtifact
             }
         } else {
-            $InstalledModulePreUpdate = Get-InstalledModule -Name:($ModuleName) -AllVersions -ErrorAction:('Ignore')
+            $FoundModule = Get-JCLatestModule -ModuleName:($ModuleName) -Repository:($Repository)
+            $FoundSDKs = foreach ($SDK in $SDKs) {
+                Get-JCLatestModule -ModuleName:($SDK) -Repository:($Repository)
+            }
+            $InstalledModulePreUpdate = Get-JCInstalledModule -ModuleName:($ModuleName)
             $InstalledSDKsPreUpdate = foreach ($SDK in $SDKs) {
-                Get-InstalledModule -Name:($SDK) -AllVersions -ErrorAction:('Ignore')
+                Get-JCInstalledModule -ModuleName:($SDK)
             }
         }
-        # Get module info from GitHub - This should not impact the auto update ability, only the banner message
-        $ModuleBanner = Get-ModuleBanner
-        $ModuleChangeLog = Get-ModuleChangeLog
-        ###### $UpdateTrigger = $ModuleBanner.'Latest Version'
-        $UpdateTrigger = $FoundModule.Version
+
+        # ###### $UpdateTrigger = $ModuleBanner.'Latest Version'
+        # $UpdateTrigger = $FoundModule.Version
 
         # SDK Lists
         $SDKsToUninstall = @()
@@ -48,33 +50,27 @@ Function Update-JCModule {
         $SDKResultsSummary = @()
         $SDKUninstallSummary = @()
         # Get the release notes for a specific version
-        $ModuleChangeLogLatestVersion = $ModuleChangeLog | Where-Object { $_.Version -eq $UpdateTrigger }
+        # $ModuleChangeLogLatestVersion = $ModuleChangeLog | Where-Object { $_.Version -eq $UpdateTrigger }
         # To change update dependency from PowerShell Gallery to Github flip the commented code below
         ###### $LatestVersionReleaseDate = $ModuleChangeLogLatestVersion.'RELEASE DATE'
-        $LatestVersionReleaseDate = ($FoundModule | ForEach-Object { If ($_.PublishedDate) {
-    ($_.Version).ToString() + ' (' + (Get-Date $_.PublishedDate).ToString('MMMM dd, yyyy') + ')'
-                } elseif ($_.Prerelease) {
-                    <# Action when this condition is true #>
-    ($_.Version).ToString() + ' (' + (Get-Date -Year $_.Prerelease.Substring(0, 4) -Month $_.Prerelease.Substring(4, 2) -Day $_.Prerelease.Substring(6, 2) -Hour $_.Prerelease.Substring(8, 2) -Minute $_.Prerelease.Substring(10, 2)).ToString('MMMM dd, yyyy') + ')'
-                }
-            })
+        #     $LatestVersionReleaseDate = ($FoundModule | ForEach-Object { If ($_.PublishedDate) {
+        # ($_.Version).ToString() + ' (' + (Get-Date $_.PublishedDate).ToString('MMMM dd, yyyy') + ')'
+        #             } elseif ($_.Prerelease) {
+        #                 <# Action when this condition is true #>
+        # ($_.Version).ToString() + ' (' + (Get-Date -Year $_.Prerelease.Substring(0, 4) -Month $_.Prerelease.Substring(4, 2) -Day $_.Prerelease.Substring(6, 2) -Hour $_.Prerelease.Substring(8, 2) -Minute $_.Prerelease.Substring(10, 2)).ToString('MMMM dd, yyyy') + ')'
+        #             }
+        #         })
         # Build welcome page
-        $WelcomePage = New-Object -TypeName:('PSCustomObject') | Select-Object `
-        @{Name = 'MESSAGE'; Expression = { $ModuleBanner.'Banner Current' } } `
-            , @{Name = 'INSTALLED VERSION(S)'; Expression = { $InstalledModulePreUpdate | ForEach-Object { If ($_.PublishedDate) {
-    ($_.Version).ToString() + ' (' + (Get-Date $_.PublishedDate).ToString('MMMM dd, yyyy') + ')'
-                    } elseif ($_.Prerelease) {
-                        <# Action when this condition is true #>
-    ($_.Version).ToString() + ' (' + (Get-Date -Year $_.Prerelease.Substring(0, 4) -Month $_.Prerelease.Substring(4, 2) -Day $_.Prerelease.Substring(6, 2) -Hour $_.Prerelease.Substring(8, 2) -Minute $_.Prerelease.Substring(10, 2)).ToString('MMMM dd, yyyy') + ')'
-                    }
-                } }
-        } `
-            , @{Name = 'LATEST VERSION'; Expression = { $UpdateTrigger + ' (' + (Get-Date $LatestVersionReleaseDate).ToString('MMMM dd, yyyy') + ')' } } `
-            , @{Name = 'RELEASE NOTES'; Expression = { $ModuleChangeLogLatestVersion.'RELEASE NOTES' } } `
-            , @{Name = 'FEATURES'; Expression = { $ModuleChangeLogLatestVersion.'FEATURES' } } `
-            , @{Name = 'IMPROVEMENTS'; Expression = { $ModuleChangeLogLatestVersion.'IMPROVEMENTS' } } `
-            , @{Name = 'BUG FIXES'; Expression = { $ModuleChangeLogLatestVersion.'BUG FIXES' } } `
-            , @{Name = 'Learn more about the ' + $ModuleName + ' PowerShell module here'; Expression = { 'https://github.com/TheJumpCloud/support/wiki' } }
+        $WelcomePage = New-Object -TypeName:('PSCustomObject')# | Select-Object `
+        #     # @{Name = 'MESSAGE'; Expression = { $FoundModule.Version } } `
+        #     , @{Name = 'INSTALLED VERSION(S)'; Expression = { $InstalledModulePreUpdate | ForEach-Object { ($_.Version).ToString() + ' (' + (Get-Date $_.PublishedDate).ToString('MMMM dd, yyyy HH:MM') + ')' } } } `
+        #     , @{Name = 'LATEST VERSION(S)'; Expression = { $FoundModule | ForEach-Object { ($_.Version).ToString() + ' (' + (Get-Date $_.PublishedDate).ToString('MMMM dd, yyyy HH:MM') + ')' } } } `
+        #     , @{Name = 'RELEASE NOTES'; Expression = { $ModuleChangeLogLatestVersion.'RELEASE NOTES' } } `
+        #     , @{Name = 'FEATURES'; Expression = { $ModuleChangeLogLatestVersion.'FEATURES' } } `
+        #     , @{Name = 'IMPROVEMENTS'; Expression = { $ModuleChangeLogLatestVersion.'IMPROVEMENTS' } } `
+        #     , @{Name = 'BUG FIXES'; Expression = { $ModuleChangeLogLatestVersion.'BUG FIXES' } } `
+        #     , @{Name = 'Learn more about the ' + $ModuleName + ' PowerShell module here'; Expression = { 'https://github.com/TheJumpCloud/support/wiki' } }
+        # $WelcomePage
     }
     Process {
         # Load color scheme
@@ -130,7 +126,30 @@ Function Update-JCModule {
         }
         # If there are changes to the SDKs which should be made, prompt
         if (("Update" -in $SDKUpdateTable.'Update Action')) {
-            Write-Host "An update is avaiable for the installed JumpCloud SDK module(s)"
+            #TODO: add the status message here!
+            # Populate status message
+            # $Status = If ($FoundModule.Version -notin $InstalledModulePreUpdate.Version) {
+            #     'An update is available for the JumpCloud SDK module(s) PowerShell module.'
+            # } ElseIf ($FoundModule.Version -in $InstalledModulePreUpdate.Version) {
+            #     'The ' + $ModuleName + ' PowerShell module is up to date.'
+            # } Else {
+            #     Write-Error ('Unable to determine ' + $ModuleName + ' PowerShell module install status.')
+            # }
+            $WelcomePage = $WelcomePage | Select-Object @{Name = 'STATUS'; Expression = { 'An update is available for the JumpCloud SDK module(s) PowerShell module.' } }, *
+            $WelcomePage.PSObject.Properties.Name | ForEach-Object {
+                If (-not [System.String]::IsNullOrEmpty($WelcomePage.($_))) {
+                    Write-Host (($_) + ': ') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
+                    $WelcomePage.($_).Trim() -split ("`n") | ForEach-Object {
+                        If (-not [System.String]::IsNullOrEmpty(($_))) {
+                            Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
+
+                            Write-Host (($_).Trim())-BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
+
+                        }
+                    }
+                }
+            }
+            # Write-Host "An update is avaiable for the installed JumpCloud SDK module(s)"
             if ($PSBoundParameters.Debug -eq $true) {
                 $SDKUpdateTable | Format-Table | Out-Host
             } else {
@@ -140,7 +159,7 @@ Function Update-JCModule {
             # Ask user if they want to update the module
             If (!($Force)) {
                 Do {
-                    Write-Host ('Enter ''Y'' to update the SDK modules or enter ''N'' to cancel:') -NoNewline
+                    Write-Host ('Enter ''Y'' to update the ' + $ModuleName + ' SDK modules to the latest version or enter ''N'' to cancel:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_UserPrompt) -NoNewline
                     Write-Host (' ') -NoNewline
                     $UserInput = Read-Host
                 }
@@ -239,34 +258,34 @@ Function Update-JCModule {
             Write-Error ('The ' + $ModuleName + ' PowerShell module is not currently installed. To install the module please run the following command: Install-Module -Name ' + $ModuleName + ' -force;' )
         } Else {
             # Populate status message
-            $Status = If ($UpdateTrigger -notin $InstalledModulePreUpdate.Version) {
+            $WelcomePage = New-Object -TypeName:('PSCustomObject')
+            $Status = If ($FoundModule.Version -notin $InstalledModulePreUpdate.Version) {
                 'An update is available for the ' + $ModuleName + ' PowerShell module.'
-            } ElseIf ($UpdateTrigger -in $InstalledModulePreUpdate.Version) {
+            } ElseIf ($FoundModule.Version -in $InstalledModulePreUpdate.Version) {
                 'The ' + $ModuleName + ' PowerShell module is up to date.'
             } Else {
                 Write-Error ('Unable to determine ' + $ModuleName + ' PowerShell module install status.')
             }
             $WelcomePage = $WelcomePage | Select-Object @{Name = 'STATUS'; Expression = { $Status } }, *
             # Display message
+            # $WelcomePage.PSObject.Properties.Name | ForEach-Object {
+            #     Write-Host (($_).Trim())-BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
+            # }
             $WelcomePage.PSObject.Properties.Name | ForEach-Object {
                 If (-not [System.String]::IsNullOrEmpty($WelcomePage.($_))) {
                     Write-Host (($_) + ': ') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
                     $WelcomePage.($_).Trim() -split ("`n") | ForEach-Object {
                         If (-not [System.String]::IsNullOrEmpty(($_))) {
                             Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
-                            If (($_) -like '*http*' -or ($_) -like '*www.*' -or ($_) -like '*.com*') {
-                                Write-Host (($_).Trim())-BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Url)
-                            } ElseIf (($_) -like '*!!!*') {
-                                Write-Host (($_).Replace('!!!', '').Trim())-BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Important)
-                            } Else {
-                                Write-Host (($_).Trim())-BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
-                            }
+
+                            Write-Host (($_).Trim())-BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
+
                         }
                     }
                 }
             }
             # Check to see if the module version on the PowerShell Gallery does not match the local module version begin the update process (update existing module)
-            If ($UpdateTrigger -notin $InstalledModulePreUpdate.Version) {
+            If ($FoundModule.Version -notin $InstalledModulePreUpdate.Version) {
                 # Ask user if they want to update the module
                 If (!($Force)) {
                     Do {
@@ -288,38 +307,89 @@ Function Update-JCModule {
                         Write-Warning ('Could not copy JumpCloud Module Settings')
                     }
                     # Update the module to the latest version
-                    Write-Host ('Updating ' + $ModuleName + ' module to version: ') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewlines
-                    Write-Host ($UpdateTrigger) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
+                    Write-Host ('Updating ' + $ModuleName + ' module to version: ') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewline
+                    Write-Host ($FoundModule.Version) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
                     If (-not [System.String]::IsNullOrEmpty($RepositoryCredentials)) {
-                        $InstalledModulePreUpdate | Update-PSResource -Credential $RepositoryCredentials -Repository CodeArtifact -Prerelease -Force
+                        $InstalledModulePreUpdate | Update-PSResource -Credential $RepositoryCredentials -Repository CodeArtifact -Prerelease -Force -SkipDependencyCheck
                     } Else {
                         $InstalledModulePreUpdate | Update-Module -Force
                     }
                     # Remove existing module from the session
-                    Get-Module -Name:($ModuleName) -ListAvailable -All | Remove-Module -Force
-                    # Uninstall previous versions
-                    If (!($SkipUninstallOld)) {
-                        $InstalledModulePreUpdate | ForEach-Object {
-                            Write-Host ('Uninstalling ' + $_.Name + ' module version: ') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewline
-                            Write-Host (($_.Version).ToString()) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
-                            $_ | Uninstall-Module -Force
+                    if (-Not $CodeArtifact) {
+                        Get-Module -Name:($ModuleName) -ListAvailable -All | Remove-Module -Force
+                        If (!($SkipUninstallOld)) {
+                            $InstalledModulePreUpdate | ForEach-Object {
+                                Write-Host ('Uninstalling ' + $_.Name + ' module version: ') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Action) -NoNewline
+                                Write-Host (($_.Version).ToString()) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
+                                $_ | Uninstall-Module -Force
+                            }
+                        } else {
+                            Get-Module -Name:($ModuleName) -ListAvailable -All | Remove-Module -Force
                         }
                     }
+                    # Uninstall previous versions
                     # Validate install
-                    $InstalledModulePostUpdate = Get-InstalledModule -Name:($ModuleName) -AllVersions
+                    if ($CodeArtifact) {
+                        $InstalledModulePostUpdate = Get-JCInstalledModule -ModuleName:($ModuleName) -CodeArtifact
+                    } else {
+                        $InstalledModulePostUpdate = Get-JCInstalledModule -ModuleName:($ModuleName)
+                    }
+
                     # Check to see if the module version on the PowerShell gallery does not match the local module version
-                    If ($UpdateTrigger -in $InstalledModulePostUpdate.Version) {
+                    $updateCheck = IF ($CodeArtifact) {
+                        if ($FoundModule.Prerelease -eq $InstalledModulePostUpdate.Prerelease) {
+
+                            $true
+                        } else {
+                            $false
+                        }
+
+                    } else {
+                        if ($FoundModule -in $InstalledModulePostUpdate.Version) {
+                            $true
+                        } else {
+                            $false
+                        }
+                    }
+                    # Just compare the Major.Minor.Build Versions
+                    If ($updateCheck) {
                         # Load new module
                         Import-Module -Name:($ModuleName) -Scope:('Global') -Force
-                        # Confirm to user module update has been successful
-                        if ($savedJCSettings) {
-                            Update-JCSettingsFile -Settings $savedJCSettings
+                        # Copy saved settings to new config.json
+                        if (-Not ($savedJCSettings)::IsNullOrEmpty) {
+                            # If not null or empty
+                            # Get module config for new module version
+                            $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent.FullName
+                            $configFilePath = join-path -path $ModuleRoot -childpath 'Config.json'
+                            write-host $configFilePath
+                            $config = Get-Content -Path $configFilePath | ConvertFrom-Json
+                            foreach ($newSetting in $config.psobject.properties) {
+                                foreach ($copiedSetting in $savedJCSettings.psobject.properties) {
+                                    if ($newSetting.name -eq $copiedSetting.name) {
+                                        # If the new property is in the copied settings property list:
+                                        foreach ($newProperty in $newSetting.value.psobject.properties) {
+                                            foreach ($copiedProperty in $copiedSetting.value.psobject.properties) {
+                                                # If the property names match & the new property is eligible to be copied, copy it
+                                                if ( ($newProperty.name -eq $copiedProperty.name) -And ($newProperty.Value.copy -eq $true)) {
+                                                    # If the values are different, copy the values
+                                                    if ( $newProperty.value.value -ne $copiedProperty.value.value) {
+                                                        $config.$($newsetting.name).$($newProperty.name).value = $savedJCSettings.$($copiedSetting.name).$($copiedProperty.name).value
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            $config | ConvertTo-Json | Out-File -path $configFilePath
                         }
+                        # Confirm to user module update has been successful
                         Write-Host ('STATUS:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
                         Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
                         Write-Host ('The ' + $ModuleName + ' PowerShell module has successfully been updated!') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
                     } Else {
-                        Write-Error ("Failed to update the $($ModuleName) PowerShell module to the latest version. $($UpdateTrigger) is not in $($InstalledModulePostUpdate.Version -join ', ')")
+                        Write-Error ("Failed to update the $($ModuleName) PowerShell module to the latest version. $($FoundModule.Version) is not in $($InstalledModulePostUpdate.Version -join ', ')")
                     }
                 }
             }
