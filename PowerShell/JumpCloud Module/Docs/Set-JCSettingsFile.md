@@ -14,7 +14,8 @@ Updates the JumpCloud Module Settings File
 ## SYNTAX
 
 ```
-Set-JCSettingsFile [-parallelOverride <Boolean>] [-parallelMessageCount <Int64>] [<CommonParameters>]
+Set-JCSettingsFile [-parallelMessageCount <Int64>] [-parallelOverride <Boolean>] [-updatesFrequency <String>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -56,6 +57,22 @@ Type: System.Boolean
 Parameter Sets: (All)
 Aliases:
 Accepted values: true, false
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -updatesFrequency
+sets the Frequency settings for the updates feature
+
+```yaml
+Type: System.String
+Parameter Sets: (All)
+Aliases:
+Accepted values: day, week, month
 
 Required: False
 Position: Named
