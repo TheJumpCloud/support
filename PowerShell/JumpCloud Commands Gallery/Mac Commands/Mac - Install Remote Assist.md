@@ -9,39 +9,34 @@ mac
 #### Command
 
 ```
-set -eu
-set -o pipefail
+set -euo pipefail
 
-REMOTE_DMG_URL="https://cdn.awsstg.jumpcloud.com/TheJumpCloud/jumpcloud-remote-assist-agent/latest/jumpcloud-assist-app.dmg"
-APP_NAME="Jumpcloud Assist App.app"
-LOCAL_DMG_PATH="/tmp/jumpcloud-assist-app.dmg"
+declare -r REMOTE_DMG_URL="https://cdn.awsstg.jumpcloud.com/TheJumpCloud/jumpcloud-remote-assist-agent/latest/jumpcloud-assist-app.dmg"
+declare -r LOCAL_DMG_TMP_PATH="/tmp/jumpcloud-assist-app.dmg"
+declare -r APP_NAME="Jumpcloud Assist App"
+declare -r APP_FILENAME="$APP_NAME.app"
 
-for SIGNAL in TERM KILL; do
-    PID=
-    for _ in $(seq 5); do
-        PID=$(ps -ef | grep -iE "Jumpcloud Assist App$" | awk '{print $2}')
-        if [[ "$SIGNAL" == TERM ]]; then
-            break
-        elif [[ -n "$PID" ]]; then
-            sleep 1
-        fi
-    done
+function get_app_pid() {
+    ps -ef | awk "/$APP_NAME$/ {print \$2}"
+}
 
-    if [[ -n "$PID" ]]; then
-        kill -s "$SIGNAL" "$PID"
-    else
-        break
-    fi
-done
+if PID=$(get_app_pid) && [[ -n "$PID" ]]; then
+    kill -s TERM "$PID"
+    sleep 1
+fi
+
+if PID=$(get_app_pid) && [[ -n "$PID" ]]; then
+    kill -s KILL "$PID"
+fi
 
 echo "Downloading JumpCloud Remote Assist installer"
-curl --silent --output "$LOCAL_DMG_PATH" "$REMOTE_DMG_URL" >/dev/null
+curl --silent --output "$LOCAL_DMG_TMP_PATH" "$REMOTE_DMG_URL" >/dev/null
 echo "Download complete"
 ( # Run in a subshell to ensure cleanup
-VOLUME=$(hdiutil attach "$LOCAL_DMG_PATH" | grep -Eo '(\/Volumes\/.*)')
+VOLUME=$(hdiutil attach "$LOCAL_DMG_TMP_PATH" | grep -Eo '(\/Volumes\/.*)')
 
 echo "Verifying installer signature"
-CODESIGN_OUT=$(codesign -dv --verbose=4 "$VOLUME/$APP_NAME" 2>&1)
+CODESIGN_OUT=$(codesign -dv --verbose=4 "$VOLUME/$APP_FILENAME" 2>&1)
 
 if [[ $? != 0 ]] ; then
     echo "Installer lacks a valid signature, aborting installation"
@@ -54,13 +49,13 @@ if ! echo "$CODESIGN_OUT" | grep "Authority=Developer ID Application: JUMPCLOUD 
 fi
 
 echo "Installing JumpCloud Remote Assist"
-rm -rf "/Applications/$APP_NAME"
-cp -a "$VOLUME/$APP_NAME" /Applications
+rm -rf "/Applications/$APP_FILENAME"
+cp -a "$VOLUME/$APP_FILENAME" /Applications
 echo "Installation complete"
 )
 set +e # Keep trying to clean up
 hdiutil detach "$VOLUME" &> /dev/null
-rm "$LOCAL_DMG_PATH"
+rm "$LOCAL_DMG_TMP_PATH"
 ```
 
 #### Description
