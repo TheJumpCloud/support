@@ -63,6 +63,7 @@ function Set-JCSettingsFile {
             $config = Get-Content -Path $configFilePath | ConvertFrom-Json -AsHashtable
         } else {
             New-JCSettingsFile
+            $config = Get-Content -Path $configFilePath | ConvertFrom-Json -AsHashtable
         }
     }
 
