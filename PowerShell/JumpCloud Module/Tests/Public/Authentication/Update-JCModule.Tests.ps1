@@ -5,49 +5,41 @@ Describe -Tag:('JCModule') 'Test for Update-JCModule' {
         $InitialModule = Get-Module -Name:('JumpCloud') -All | Where-Object { $_.Version -eq $EarliestVersion.Version }
         $LocalModulePre = Get-Module -Name:('JumpCloud')
         Write-Host ("Local Version Before: $($LocalModulePre.Version)")
-        If ($PesterParams_RequiredModulesRepo -eq 'PSGallery')
-        {
+        If ($PesterParams_RequiredModulesRepo -eq 'PSGallery') {
             $PowerShellGalleryModule = Find-Module -Name:('JumpCloud')
 
             Write-Host ("$PesterParams_RequiredModulesRepo Version: $($PowerShellGalleryModule.Version)")
 
-            Update-JCModule -SkipUninstallOld -Force -Repository:('PSGallery')
-        }Else
-        {
+            Update-JCModule -SkipUninstallOld -Force
+        } Else {
             $AWSRepo = 'jumpcloud-nuget-modules'
             $AWSDomain = 'jumpcloud-artifacts'
             $AWSRegion = 'us-east-1'
             # Set AWS authToken using context from CI Pipeline (context: aws-credentials)
             $authToken = Get-CAAuthorizationToken -Domain $AWSDomain -Region $AWSRegion
-            If (-not [System.String]::IsNullOrEmpty($authToken))
-            {
+            If (-not [System.String]::IsNullOrEmpty($authToken)) {
                 # Create Credential Object
                 $RepositoryCredentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $authToken.AuthorizationToken , ($authToken.AuthorizationToken | ConvertTo-SecureString -AsPlainText -Force)
-            }Else
-            {
+            } Else {
                 Write-Warning ('No authToken has been provided')
             }
             $PowerShellGalleryModule = Find-PSResource -Name:('JumpCloud') -Repository:($PesterParams_RequiredModulesRepo) -Credential:($RepositoryCredentials) -Prerelease
             Write-Host ("$PesterParams_RequiredModulesRepo Version: $($PowerShellGalleryModule.Version)")
 
-            Update-JCModule -SkipUninstallOld -Force -Repository:($PesterParams_RequiredModulesRepo) -RepositoryCredentials:($RepositoryCredentials)
+            Update-JCModule -SkipUninstallOld -Force -CodeArtifact -RepositoryCredentials:($RepositoryCredentials)
         }
         $InitialModule | Remove-Module
         # Remove prerelease tag from build number
-        $PowerShellGalleryModuleVersion = If ($PowerShellGalleryModule.IsPrerelease)
-        {
+        $PowerShellGalleryModuleVersion = If ($PowerShellGalleryModule.IsPrerelease) {
             "$(($($PowerShellGalleryModule.Version)).Major).$(($($PowerShellGalleryModule.Version)).Minor).$(($($PowerShellGalleryModule.Version)).Build)"
-        }Else
-        {
+        } Else {
             $PowerShellGalleryModule.Version
         }
         $LocalModulePost = Get-Module -Name:('JumpCloud') -All | Where-Object { $_.Version -eq $PowerShellGalleryModuleVersion } | Get-Unique
-        If ($LocalModulePost)
-        {
+        If ($LocalModulePost) {
             Write-Host ('Local Version After: ' + $LocalModulePost.Version)
             $LocalModulePost | Remove-Module
-        }Else
-        {
+        } Else {
             Write-Error ('Unable to find latest version of the JumpCloud PowerShell module installed on local machine.')
         }
         $LocalModulePost.Version | Should -Be $PowerShellGalleryModuleVersion
@@ -58,7 +50,7 @@ Describe -Tag:('JCModule') 'Test for Update-JCModule' {
     }
     It ("When a previous version of an SDK is installed, Update-JCModule prompts to update and the next version of that SDK is insatlled") {
         # Get Installed SDKs
-        $SDKlist = ('JumpCloud.SDK.v2','JumpCloud.SDK.v1','JumpCloud.SDK.directoryinsights')
+        $SDKlist = ('JumpCloud.SDK.v2', 'JumpCloud.SDK.v1', 'JumpCloud.SDK.directoryinsights')
 
         $latestSDKs += foreach ($SDK in $SDKlist) {
             Find-Module -Name $SDK
@@ -71,32 +63,28 @@ Describe -Tag:('JCModule') 'Test for Update-JCModule' {
             # Find Previous Version
             try {
                 Clear-Variable foundPrevious -ErrorAction Ignore
-            }
-            catch {
+            } catch {
                 Write-Debug "No Variable named 'foundPrevious' existed"
             }
             write-host "$($SDK.Name)"
-            while (-not $foundPrevious){
+            while (-not $foundPrevious) {
                 try {
                     # $PreviousBuildVersion = ([Version]$SDK.Version).Build - 1
                     $PreviousVersion = [Version]::new(([Version]$SDK.Version).Major, ([Version]$SDK.Version).Minor, (([Version]$SDK.Version).Build - 1))
                     $foundPrevious = Find-Module -Name $SDK.Name -RequiredVersion $PreviousVersion
-                }
-                catch {
+                } catch {
                     Write-Debug "no previous version found"
                 }
                 try {
                     $PreviousVersion = [Version]::new(([Version]$SDK.Version).Major, (([Version]$SDK.Version).Minor - 1), ([Version]$SDK.Version).Build)
                     $foundPrevious = Find-Module -Name $SDK.Name -RequiredVersion $PreviousVersion
-                }
-                catch{
+                } catch {
                     Write-Debug "no previous version found"
                 }
                 try {
                     $PreviousVersion = [Version]::new((([Version]$SDK.Version).Major - 1), ([Version]$SDK.Version).Minor, ([Version]$SDK.Version).Build)
                     $foundPrevious = Find-Module -Name $SDK.Name -RequiredVersion $PreviousVersion
-                }
-                catch {
+                } catch {
                     Write-Debug "no previous version found"
                 }
             }
@@ -111,7 +99,7 @@ Describe -Tag:('JCModule') 'Test for Update-JCModule' {
         #     Uninstall-Module -Name $SDK.Name -RequiredVersion $SDK.version -Force
         # }
         # Install Previous version of the SDKs
-        foreach ($SDK in $previousSDKs){
+        foreach ($SDK in $previousSDKs) {
             Install-Module -Name $SDK.Name -RequiredVersion $SDK.version -Force
             # Importing will throw the assembly error (since we already have it loaded) / Check w/o importing
             # Import-Module -Name $SDK.Name -Force
