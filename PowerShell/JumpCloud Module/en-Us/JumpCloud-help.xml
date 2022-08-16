@@ -14791,6 +14791,18 @@ Enter a value between 1 and 2:</dev:code>
       <command:syntaxItem>
         <maml:name>Set-JCSettingsFile</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>moduleBannermessageCount</maml:name>
+          <maml:description>
+            <maml:para>sets the messageCount settings for the moduleBanner feature</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.Int64</command:parameterValue>
+          <dev:type>
+            <maml:name>System.Int64</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>parallelMessageCount</maml:name>
           <maml:description>
             <maml:para>sets the MessageCount settings for the parallel feature</maml:para>
@@ -14818,26 +14830,21 @@ Enter a value between 1 and 2:</dev:code>
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-          <maml:name>updatesFrequency</maml:name>
-          <maml:description>
-            <maml:para>sets the Frequency settings for the updates feature</maml:para>
-          </maml:description>
-          <command:parameterValueGroup>
-            <command:parameterValue required="false" command:variableLength="false">day</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">week</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">month</command:parameterValue>
-          </command:parameterValueGroup>
-          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
-          <dev:type>
-            <maml:name>System.String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>moduleBannermessageCount</maml:name>
+        <maml:description>
+          <maml:para>sets the messageCount settings for the moduleBanner feature</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Int64</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Int64</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>parallelMessageCount</maml:name>
         <maml:description>
@@ -14858,18 +14865,6 @@ Enter a value between 1 and 2:</dev:code>
         <command:parameterValue required="true" variableLength="false">System.Boolean</command:parameterValue>
         <dev:type>
           <maml:name>System.Boolean</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-        <maml:name>updatesFrequency</maml:name>
-        <maml:description>
-          <maml:para>sets the Frequency settings for the updates feature</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
-        <dev:type>
-          <maml:name>System.String</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -18511,7 +18506,7 @@ Enter a value between 1 and 2:</dev:code>
     <command:returnValues>
       <command:returnValue>
         <dev:type>
-          <maml:name>System.Object</maml:name>
+          <maml:name>System.Boolean</maml:name>
         </dev:type>
         <maml:description>
           <maml:para></maml:para>
