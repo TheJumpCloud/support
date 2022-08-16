@@ -27,14 +27,15 @@ The Set-JCSettingsFile function updates an the JumpCloud Module settings file.
 ### Example 1
 
 ```powershell
-PS C:\> Set-JCSettingsFile -ParallelOverride
+PS C:\> Set-JCSettingsFile -ParallelOverride $true
 ```
 
 Disables parallel processing of results in the JumpCloud PowerShell Module
 
 ## PARAMETERS
 
-### -moduleBannermessageCount
+### -moduleBannerMessageCount
+
 sets the messageCount settings for the moduleBanner feature
 
 ```yaml
@@ -50,6 +51,7 @@ Accept wildcard characters: False
 ```
 
 ### -parallelMessageCount
+
 sets the MessageCount settings for the parallel feature
 
 ```yaml
@@ -65,6 +67,7 @@ Accept wildcard characters: False
 ```
 
 ### -parallelOverride
+
 sets the Override settings for the parallel feature
 
 ```yaml
@@ -81,6 +84,7 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
+
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
@@ -90,6 +94,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## OUTPUTS
 
 ### System.Object
+
 ## NOTES
 
 ## RELATED LINKS
