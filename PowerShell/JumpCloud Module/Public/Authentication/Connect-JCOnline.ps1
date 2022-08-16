@@ -164,7 +164,7 @@ Function Connect-JCOnline () {
                             Write-Verbose ("One or more of the required resources to update the JumpCloud Module are inaccessible at the moment" )
                         } else {
                             $env:JcUpdateModule = $false
-                            Update-JCModule | Out-Null
+                            ($updateStatus = Update-JCModule) | Out-Null
                         }
                     }
                     If ($IndShowMessages) {
@@ -178,11 +178,14 @@ Function Connect-JCOnline () {
                         Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
                         Write-Host ($Auth.JCOrgName) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
                         # Process Module Notifications:
-                        if (($JCConfig.parallel.MessageCount -le 5) -AND ($JCConfig.parallel.Eligible)) {
+                        if (($JCConfig.moduleBanner.MessageCount -le 5)) {
                             Write-Host ('Notice:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
                             Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
-                            Write-Host $JCConfig.parallel.HelpMessage -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
-                            Set-JCSettingsFile -parallelMessageCount ($JCConfig.parallel.messagecount + 1)
+                            Write-Host $JCConfig.moduleBanner.Message -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
+                            If (-Not $updateStatus) {
+                                # If we recently updated the module, do not update messageCount
+                                Set-JCSettingsFile -moduleBannerMessageCount ($JCConfig.moduleBanner.messagecount + 1)
+                            }
                         }
                     }
                 }

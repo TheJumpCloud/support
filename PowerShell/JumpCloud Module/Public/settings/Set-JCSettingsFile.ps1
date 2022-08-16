@@ -22,13 +22,13 @@ function Set-JCSettingsFile {
                     $ParamName_Filter = "$key$($item)"
                     # Create the collection of attributes
                     $AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
-                    #TODO: CHANGE THIS TO VALIDATE SET
+                    # If ValidateSet is specificed in the config file, set the value here:
                     if ($config[$key][$item]['validateSet']) {
                         $arrSet = @($($config[$key][$item]['validateSet']).split())
                         $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($arrSet)
                         $AttributeCollection.Add($ValidateSetAttribute)
                     }
-                    # $config[$key][$item].getType()
+                    # If the type of value is a bool, create a custom validateSet attribute here:
                     $paramType = $($config[$key][$item]['value'].getType().Name)
                     if ($paramType -eq 'boolean') {
                         $arrSet = @("true", "false")
