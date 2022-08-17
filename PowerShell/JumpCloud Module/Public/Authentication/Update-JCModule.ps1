@@ -23,7 +23,7 @@ Function Update-JCModule {
             'PSGallery'
         }
         # Module Root Path
-        $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent.FullName
+        # $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent.FullName
 
         # Get Modules & SDKs From Remote & Locally Installed
         if ($CodeArtifact) {
@@ -312,7 +312,8 @@ Function Update-JCModule {
                                 Uninstall-Module -Name:($_.Name) -RequiredVersion:($_.Version) -Force
                             }
                         } else {
-                            Get-Module -Name:($ModuleName) -ListAvailable -All | Remove-Module -Force
+                            # Remove other versions of the JumpCloud Module
+                            Get-Module -Name:('JumpCloud') -ListAvailable -All | Where-Object { $_.Version -ne $FoundModule.Version } | Remove-Module -Force
                         }
                     }
                     # Uninstall previous versions
@@ -345,18 +346,18 @@ Function Update-JCModule {
                         # Copy saved settings to new config.json
                         if (-Not ($savedJCSettings)::IsNullOrEmpty) {
                             # Get private settings functions:
-                            $SettingsFunctionsDir = join-path -path $ModuleRoot -childpath 'private/settings'
-                            $regpattern = [regex]"(:?\/|\\)(\d+\.)?(\d+\.)?(\*|\d+)"
-                            $SettingsFunctionsDir = $SettingsFunctionsDir -replace $regpattern, $FoundModule.Version
-                            $Private = @( Get-ChildItem -Path $SettingsFunctionsDir -Recurse)
-                            Foreach ($Import in @($Private)) {
-                                Try {
-                                    # Import the functions into the session
-                                    . $Import.FullName
-                                } Catch {
-                                    Write-Error -Message "Failed to import function $($Import.FullName): $_"
-                                }
-                            }
+                            # $SettingsFunctionsDir = join-path -path $ModuleRoot -childpath 'private/settings'
+                            # $regpattern = [regex]"(:?\/|\\)(\d+\.)?(\d+\.)?(\*|\d+)"
+                            # $SettingsFunctionsDir = $SettingsFunctionsDir -replace $regpattern, $FoundModule.Version
+                            # $Private = @( Get-ChildItem -Path $SettingsFunctionsDir -Recurse)
+                            # Foreach ($Import in @($Private)) {
+                            #     Try {
+                            #         # Import the functions into the session
+                            #         . $Import.FullName
+                            #     } Catch {
+                            #         Write-Error -Message "Failed to import function $($Import.FullName): $_"
+                            #     }
+                            # }
                             # update the settings file config.json
                             Update-JCSettingsFile -settings $savedJCSettings
                             # re-import the settings file variable
