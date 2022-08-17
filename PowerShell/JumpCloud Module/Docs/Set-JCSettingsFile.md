@@ -14,7 +14,7 @@ Updates the JumpCloud Module Settings File
 ## SYNTAX
 
 ```
-Set-JCSettingsFile [-moduleBannerMessageCount <Int64>] [-parallelOverride <Boolean>] [<CommonParameters>]
+Set-JCSettingsFile [-parallelOverride <Boolean>] [-moduleBannerMessageCount <Int64>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
