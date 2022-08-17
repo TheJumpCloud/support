@@ -17,7 +17,7 @@ function New-JCSettingsFile {
         $config = @{
             'moduleBanner' = @{
                 'Message'      = @{value = 'JumpCloud PowerShell Module now processes Get requests in parallel, to disable this functionailty run: Set-JCSettingsFile -parallelOverride $true'; write = $false; copy = $false };
-                'MessageCount' = @{value = 0; write = $true; copy = $true }
+                'MessageCount' = @{value = 0; write = $true; copy = $false }
             }
             'parallel'     = @{
                 'Eligible'   = @{value = Get-JCParallelValidation; write = $false; copy = $true }

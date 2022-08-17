@@ -2,7 +2,7 @@ Describe -Tag:('JCModule') 'Test for Update-JCModule' {
     It ("Where the local version number has been updated to match the $PesterParams_RequiredModulesRepo version number") {
         $EarliestVersion = Find-Module -Name:('JumpCloud') -AllVersions | Sort-Object PublishedDate | Select-Object -First 1
         Install-Module -Name:('JumpCloud') -RequiredVersion:($EarliestVersion.Version) -Scope:('CurrentUser') -Force
-        $InitialModule = Get-Module -Name:('JumpCloud') -All | Where-Object { $_.Version -eq $EarliestVersion.Version }
+        $InitialModule = Get-Module -Name:('JumpCloud') -ListAvailable | Where-Object { $_.Version -eq $EarliestVersion.Version }
         $LocalModulePre = Get-Module -Name:('JumpCloud')
         Write-Host ("Local Version Before: $($LocalModulePre.Version)")
         If ($PesterParams_RequiredModulesRepo -eq 'PSGallery') {
@@ -35,7 +35,7 @@ Describe -Tag:('JCModule') 'Test for Update-JCModule' {
         } Else {
             $PowerShellGalleryModule.Version
         }
-        $LocalModulePost = Get-Module -Name:('JumpCloud') -All | Where-Object { $_.Version -eq $PowerShellGalleryModuleVersion } | Get-Unique
+        $LocalModulePost = Get-Module -Name:('JumpCloud') -ListAvailable | Where-Object { $_.Version -eq $PowerShellGalleryModuleVersion } | Get-Unique
         If ($LocalModulePost) {
             Write-Host ('Local Version After: ' + $LocalModulePost.Version)
             $LocalModulePost | Remove-Module
