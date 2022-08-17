@@ -11,7 +11,7 @@ windows
 ```
 $installerURL="https://cdn.awsstg.jumpcloud.com/TheJumpCloud/jumpcloud-remote-assist-agent/latest/jumpcloud-assist-app.exe"
 $JumpCloudThumbprint="7A4844FBF481047BEDBB7A8054069C50E449D355"
-$installerTempLocation=Join-Path $env:TEMP JumpCloudRemoteAssistInstaller.exe
+$installerTempLocation=Join-Path $([System.IO.Path]::GetTempPath()) JumpCloudRemoteAssistInstaller.exe
 
 Write-Host "Downloading JumpCloud Remote Assist installer"
 try {
