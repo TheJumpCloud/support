@@ -248,7 +248,7 @@ Function Update-JCModule {
             @{Name = 'INSTALLED VERSION(S)'; Expression = { $InstalledModulePreUpdate | ForEach-Object { ($_.Version).ToString() + ' (' + (Get-Date $_.PublishedDate).ToString('MMMM dd, yyyy') + ')' } } }
             If ($FoundModule.Version -notin $InstalledModulePreUpdate.Version) {
                 # If there is an update, display the latest version
-                $versionString = $FoundModule.Version + ' (' + (Get-Date $FoundModule.PublishedDate).ToString('MMMM dd, yyyy') + ')'
+                $versionString = $FoundModule.Version.ToString() + ' (' + (Get-Date $FoundModule.PublishedDate).ToString('MMMM dd, yyyy') + ')'
                 $WelcomePage | Add-Member -MemberType NoteProperty -Name "LATEST VERSION" -Value $versionString
             }
             $WelcomePage | Add-Member -MemberType NoteProperty -Name "Learn more about the $ModuleName PowerShell module here" -Value "https://github.com/TheJumpCloud/support/wiki"
