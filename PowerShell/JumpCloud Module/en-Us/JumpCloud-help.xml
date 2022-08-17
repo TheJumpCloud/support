@@ -14795,9 +14795,9 @@ Enter a value between 1 and 2:</dev:code>
           <maml:description>
             <maml:para>sets the messageCount settings for the moduleBanner feature</maml:para>
           </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.Int64</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">System.Management.Automation.PSObject</command:parameterValue>
           <dev:type>
-            <maml:name>System.Int64</maml:name>
+            <maml:name>System.Management.Automation.PSObject</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -14807,13 +14807,9 @@ Enter a value between 1 and 2:</dev:code>
           <maml:description>
             <maml:para>sets the Override settings for the parallel feature</maml:para>
           </maml:description>
-          <command:parameterValueGroup>
-            <command:parameterValue required="false" command:variableLength="false">true</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">false</command:parameterValue>
-          </command:parameterValueGroup>
-          <command:parameterValue required="true" variableLength="false">System.Boolean</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">System.Management.Automation.PSObject</command:parameterValue>
           <dev:type>
-            <maml:name>System.Boolean</maml:name>
+            <maml:name>System.Management.Automation.PSObject</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -14826,9 +14822,9 @@ Enter a value between 1 and 2:</dev:code>
         <maml:description>
           <maml:para>sets the messageCount settings for the moduleBanner feature</maml:para>
         </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.Int64</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">System.Management.Automation.PSObject</command:parameterValue>
         <dev:type>
-          <maml:name>System.Int64</maml:name>
+          <maml:name>System.Management.Automation.PSObject</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -14838,9 +14834,9 @@ Enter a value between 1 and 2:</dev:code>
         <maml:description>
           <maml:para>sets the Override settings for the parallel feature</maml:para>
         </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.Boolean</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">System.Management.Automation.PSObject</command:parameterValue>
         <dev:type>
-          <maml:name>System.Boolean</maml:name>
+          <maml:name>System.Management.Automation.PSObject</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>

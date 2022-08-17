@@ -14,7 +14,7 @@ Updates the JumpCloud Module Settings File
 ## SYNTAX
 
 ```
-Set-JCSettingsFile [-parallelOverride <Boolean>] [-moduleBannerMessageCount <Int64>] [<CommonParameters>]
+Set-JCSettingsFile [-parallelOverride <PSObject>] [-moduleBannerMessageCount <PSObject>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -38,7 +38,7 @@ Disables parallel processing of results in the JumpCloud PowerShell Module
 sets the messageCount settings for the moduleBanner feature
 
 ```yaml
-Type: System.Int64
+Type: System.Management.Automation.PSObject
 Parameter Sets: (All)
 Aliases:
 
@@ -54,10 +54,9 @@ Accept wildcard characters: False
 sets the Override settings for the parallel feature
 
 ```yaml
-Type: System.Boolean
+Type: System.Management.Automation.PSObject
 Parameter Sets: (All)
 Aliases:
-Accepted values: true, false
 
 Required: False
 Position: Named
