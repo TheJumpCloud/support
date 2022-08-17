@@ -74,7 +74,7 @@ function Set-JCSettingsFile {
             foreach ($key in $config.PSObject.Properties) {
                 if ($param -match $key.Name) {
                     # Split the name
-                    $paramKey = $($param.split($key.Name))
+                    $ParamKey = $param -split $key.Name
                     # assign the first group
                     $config.($($key.Name)).($paramKey[1]).value = $params[$param]
                 }
