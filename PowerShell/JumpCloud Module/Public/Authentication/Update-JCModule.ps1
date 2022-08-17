@@ -346,8 +346,8 @@ Function Update-JCModule {
                         if (-Not ($savedJCSettings)::IsNullOrEmpty) {
                             # Get private settings functions:
                             $SettingsFunctionsDir = join-path -path $ModuleRoot -childpath 'private/settings'
-                            $regpattern = [regex]"(:?\/|\\)(\d+\.)?(\d+\.)?(\*|\d+)"
-                            $SettingsFunctionsDir = $SettingsFunctionsDir -replace $regpattern, $FoundModule.Version
+                            $regpattern = [regex]"(\/|\\)(\d+\.)?(\d+\.)?(\*|\d+)(\/|\\)"
+                            $SettingsFunctionsDir = $SettingsFunctionsDir -replace $regpattern, "/$($FoundModule.Version)/"
                             $Private = @( Get-ChildItem -Path $SettingsFunctionsDir -Recurse)
                             Foreach ($Import in @($Private)) {
                                 Try {
