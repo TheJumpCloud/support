@@ -14,8 +14,7 @@ Updates the JumpCloud Module Settings File
 ## SYNTAX
 
 ```
-Set-JCSettingsFile [-parallelOverride <Boolean>] [-parallelMessageCount <Int64>]
- [-moduleBannermessageCount <Int64>] [<CommonParameters>]
+Set-JCSettingsFile [-moduleBannerMessageCount <Int64>] [-parallelOverride <Boolean>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -50,22 +49,6 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -parallelMessageCount
-
-sets the MessageCount settings for the parallel feature
-
-```yaml
-Type: System.Int64
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -parallelOverride
 
 sets the Override settings for the parallel feature
@@ -84,7 +67,6 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
-
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
@@ -94,7 +76,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## OUTPUTS
 
 ### System.Object
-
 ## NOTES
 
 ## RELATED LINKS

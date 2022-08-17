@@ -14791,21 +14791,9 @@ Enter a value between 1 and 2:</dev:code>
       <command:syntaxItem>
         <maml:name>Set-JCSettingsFile</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-          <maml:name>moduleBannermessageCount</maml:name>
+          <maml:name>moduleBannerMessageCount</maml:name>
           <maml:description>
             <maml:para>sets the messageCount settings for the moduleBanner feature</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.Int64</command:parameterValue>
-          <dev:type>
-            <maml:name>System.Int64</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-          <maml:name>parallelMessageCount</maml:name>
-          <maml:description>
-            <maml:para>sets the MessageCount settings for the parallel feature</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.Int64</command:parameterValue>
           <dev:type>
@@ -14834,21 +14822,9 @@ Enter a value between 1 and 2:</dev:code>
     </command:syntax>
     <command:parameters>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-        <maml:name>moduleBannermessageCount</maml:name>
+        <maml:name>moduleBannerMessageCount</maml:name>
         <maml:description>
           <maml:para>sets the messageCount settings for the moduleBanner feature</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.Int64</command:parameterValue>
-        <dev:type>
-          <maml:name>System.Int64</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-        <maml:name>parallelMessageCount</maml:name>
-        <maml:description>
-          <maml:para>sets the MessageCount settings for the parallel feature</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.Int64</command:parameterValue>
         <dev:type>
@@ -14898,7 +14874,7 @@ Enter a value between 1 and 2:</dev:code>
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Set-JCSettingsFile -ParallelOverride</dev:code>
+        <dev:code>PS C:\&gt; Set-JCSettingsFile -ParallelOverride $true</dev:code>
         <dev:remarks>
           <maml:para>Disables parallel processing of results in the JumpCloud PowerShell Module</maml:para>
         </dev:remarks>
