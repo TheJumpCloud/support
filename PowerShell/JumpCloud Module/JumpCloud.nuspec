@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>JumpCloud</id>
-    <version>2.0.0.6046-202208172228</version>
+    <version>2.0.0.6065-202208181510</version>
     <description>PowerShell functions to manage a JumpCloud Directory-as-a-Service</description>
     <authors>JumpCloud Solutions Architect Team</authors>
     <owners>JumpCloud</owners>
