@@ -16,7 +16,7 @@ $installerTempLocation=Join-Path $([System.IO.Path]::GetTempPath()) JumpCloudRem
 Write-Host "Downloading JumpCloud Remote Assist installer"
 try {
     $ProgressPreference = "SilentlyContinue"
-    [Net.ServicePointManager]::SecurityProtocol="Tls12, Tls13"
+    [Net.ServicePointManager]::SecurityProtocol="Tls12"
     Invoke-WebRequest -Uri $installerURL -OutFile $installerTempLocation
 }
 catch {
