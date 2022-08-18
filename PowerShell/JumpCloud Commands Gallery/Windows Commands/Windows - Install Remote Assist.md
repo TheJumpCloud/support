@@ -13,6 +13,8 @@ $installerURL="https://cdn.awsstg.jumpcloud.com/TheJumpCloud/jumpcloud-remote-as
 $JumpCloudThumbprint="7A4844FBF481047BEDBB7A8054069C50E449D355"
 $installerTempLocation=Join-Path $([System.IO.Path]::GetTempPath()) JumpCloudRemoteAssistInstaller.exe
 
+[Net.ServicePointManager]::SecurityProtocol="Tls12, Tls13"
+
 Write-Host "Downloading JumpCloud Remote Assist installer"
 try {
     $ProgressPreference = "SilentlyContinue"
