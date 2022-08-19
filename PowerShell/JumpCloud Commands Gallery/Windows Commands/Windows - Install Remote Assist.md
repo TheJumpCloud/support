@@ -14,9 +14,21 @@ $JumpCloudThumbprint="7A4844FBF481047BEDBB7A8054069C50E449D355"
 $installerTempLocation=Join-Path $([System.IO.Path]::GetTempPath()) JumpCloudRemoteAssistInstaller.exe
 
 Write-Host "Downloading JumpCloud Remote Assist installer"
+if ( [Environment]::OsVersion.Version.Major -eq 6 ) {
+    try {
+        [Net.ServicePointManager]::SecurityProtocol="Tls13"
+    }
+    catch {
+        Write-Host "Warning: TLS1.3 is not supported on this operating system, falling back to TLS1.2"
+        [Net.ServicePointManager]::SecurityProtocol="Tls12"
+    }
+}
+else {
+    [Net.ServicePointManager]::SecurityProtocol="Tls13"
+}
+
 try {
     $ProgressPreference = "SilentlyContinue"
-    [Net.ServicePointManager]::SecurityProtocol="Tls12"
     Invoke-WebRequest -Uri $installerURL -OutFile $installerTempLocation
 }
 catch {
