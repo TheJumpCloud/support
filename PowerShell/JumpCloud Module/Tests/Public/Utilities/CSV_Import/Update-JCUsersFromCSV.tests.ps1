@@ -5,8 +5,7 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
         $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/ImportExample_telephonyAttributes.csv" -force
         $UserImportInfo = Import-Csv "$PesterParams_ImportPath/ImportExample_telephonyAttributes.csv"
 
-        foreach ($User in $UserCSVImport)
-        {
+        foreach ($User in $UserCSVImport) {
             $NewUserInfo = Get-JCUser -username $User.username
             $ImportCheck = $UserImportInfo | Where-Object Username -EQ "$($User.username)"
 
@@ -20,8 +19,7 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
         $UserUpdateCSVImport = Update-JCUsersFromCSV -CSVFilePath "$PesterParams_UpdatePath/UpdateExample_telephonyAttributes.csv" -force
         $UserUpdateInfo = Import-Csv "$PesterParams_UpdatePath/UpdateExample_telephonyAttributes.csv"
 
-        foreach ($UpdateUser in $UserUpdateCSVImport)
-        {
+        foreach ($UpdateUser in $UserUpdateCSVImport) {
             $UpdateUserInfo = Get-JCUser -username $UpdateUser.username
             $UpdateCheck = $UserUpdateInfo | Where-Object Username -EQ "$($UpdateUser.username)"
 
@@ -39,8 +37,7 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
         $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/ImportExample_userInformationAttributes.csv" -force
         $UserImportInfo = Import-Csv "$PesterParams_ImportPath/ImportExample_userInformationAttributes.csv"
 
-        foreach ($User in $UserCSVImport)
-        {
+        foreach ($User in $UserCSVImport) {
             $NewUserInfo = Get-JCUser -username $User.username
             $ImportCheck = $UserImportInfo | Where-Object Username -EQ "$($User.username)"
 
@@ -60,8 +57,7 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
         $UserUpdateCSVImport = Update-JCUsersFromCSV -CSVFilePath "$PesterParams_UpdatePath/UpdateExample_userInformationAttributes.csv" -force
         $UserUpdateInfo = Import-Csv "$PesterParams_UpdatePath/UpdateExample_userInformationAttributes.csv"
 
-        foreach ($UpdateUser in $UserUpdateCSVImport)
-        {
+        foreach ($UpdateUser in $UserUpdateCSVImport) {
             $UpdateUserInfo = Get-JCUser -username $UpdateUser.username
             $UpdateCheck = $UserUpdateInfo | Where-Object Username -EQ "$($UpdateUser.username)"
 
@@ -84,8 +80,7 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
         $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/ImportExample_userLocationAttributes.csv" -force
         $UserImportInfo = Import-Csv "$PesterParams_ImportPath/ImportExample_userLocationAttributes.csv"
 
-        foreach ($User in $UserCSVImport)
-        {
+        foreach ($User in $UserCSVImport) {
             $NewUserInfo = Get-JCUser -username $User.username
             $ImportCheck = $UserImportInfo | Where-Object Username -EQ "$($User.username)"
 
@@ -108,8 +103,7 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
         $UserUpdateCSVImport = Update-JCUsersFromCSV -CSVFilePath "$PesterParams_UpdatePath/UpdateExample_userLocationAttributes.csv" -force
         $UserUpdateInfo = Import-Csv "$PesterParams_UpdatePath/UpdateExample_userLocationAttributes.csv"
 
-        foreach ($UpdateUser in $UserCSVUpdate)
-        {
+        foreach ($UpdateUser in $UserCSVUpdate) {
             $UpdateUserInfo = Get-JCUser -username $UpdateUser.username
             $UpdateCheck = $UserUpdateInfo | Where-Object Username -EQ "$($UpdateUser.username)"
 
@@ -136,8 +130,7 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
         $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/ImportExample_allNewAttributes.csv" -force
         $UserImportInfo = Import-Csv "$PesterParams_ImportPath/ImportExample_allNewAttributes.csv"
 
-        foreach ($User in $UserCSVImport)
-        {
+        foreach ($User in $UserCSVImport) {
             $NewUserInfo = Get-JCUser -username $User.username
             $ImportCheck = $UserImportInfo | Where-Object Username -EQ "$($User.username)"
 
@@ -177,8 +170,7 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
         $UserUpdateCSVImport = Update-JCUsersFromCSV -CSVFilePath "$PesterParams_UpdatePath/UpdateExample_AllNewAttributes.csv" -force
         $UserUpdateInfo = Import-Csv "$PesterParams_UpdatePath/UpdateExample_AllNewAttributes.csv"
 
-        foreach ($UpdateUser in $UserUpdateCSVImport)
-        {
+        foreach ($UpdateUser in $UserUpdateCSVImport) {
 
             $UpdateUserInfo = Get-JCUser -username $UpdateUser.username
             $UpdateCheck = $UserUpdateInfo | Where-Object Username -EQ "$($UpdateUser.username)"
@@ -221,8 +213,7 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
         $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/ImportExample_allNewAttributesAndAllCustom.csv" -force
         $UserImportInfo = Import-Csv "$PesterParams_ImportPath/ImportExample_allNewAttributesAndAllCustom.csv"
 
-        foreach ($User in $UserCSVImport)
-        {
+        foreach ($User in $UserCSVImport) {
             $NewUserInfo = Get-JCUser -username $User.username
             $ImportCheck = $UserImportInfo | Where-Object Username -EQ "$($User.username)"
 
@@ -265,8 +256,7 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
         $UserUpdateCSVImport = Update-JCUsersFromCSV -CSVFilePath "$PesterParams_UpdatePath/UpdateExample_AllNewAttributesAndAllCustom.csv" -force
         $UserUpdateInfo = Import-Csv "$PesterParams_UpdatePath/UpdateExample_AllNewAttributesAndAllCustom.csv"
 
-        foreach ($UpdateUser in $UserUpdateCSVImport)
-        {
+        foreach ($UpdateUser in $UserUpdateCSVImport) {
             $UpdateUserInfo = Get-JCUser -username $UpdateUser.username
             $UpdateCheck = $UserUpdateInfo | Where-Object Username -EQ "$($UpdateUser.username)"
             # TODO: Add back in when we auto create groups for this test
@@ -320,8 +310,7 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
         $UserCSVUpdate = Update-JCUsersFromCSV -CSVFilePath "$PesterParams_UpdatePath/UpdateExample_uid_guid.csv" -force
         $UserImportInfo = Import-Csv "$PesterParams_UpdatePath/UpdateExample_uid_guid.csv"
 
-        foreach ($User in $UserCSVUpdate)
-        {
+        foreach ($User in $UserCSVUpdate) {
             $NewUserInfo = Get-JCUser -username $User.username
             $ImportCheck = $UserImportInfo | Where-Object Username -EQ "$($User.username)"
 
@@ -336,8 +325,7 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
         $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/ImportExample_allNewAttributesAndAllCustom.csv" -force
         $UserImportInfo = Import-Csv "$PesterParams_ImportPath/ImportExample_allNewAttributesAndAllCustom.csv"
 
-        foreach ($User in $UserCSVImport)
-        {
+        foreach ($User in $UserCSVImport) {
             $NewUserInfo = Get-JCUser -username $User.username
             $ImportCheck = $UserImportInfo | Where-Object Username -EQ "$($User.username)"
 
@@ -378,8 +366,7 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
 
         $UserUpdateCSVImport = Update-JCUsersFromCSV -CSVFilePath "$PesterParams_UpdatePath/UpdateExample_NoChanges.csv" -force
 
-        foreach ($User in $UserCSVImport)
-        {
+        foreach ($User in $UserCSVImport) {
             $NewUserInfo = Get-JCUser -username $User.username
             $ImportCheck = $UserImportInfo | Where-Object Username -EQ "$($User.username)"
 
@@ -420,14 +407,129 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
         # Get an existing user:
         $user = Get-JCUser -username $PesterParams_NewUser1.Username
         $CSVDATA = @{
-            Username = $user.username
-            Attribute1_name = '9898'
+            Username         = $user.username
+            Attribute1_name  = '9898'
             Attribute1_value = ''
         }
         $CSVFILE = $CSVDATA | Export-Csv "$PesterParams_UpdatePath/UpdateExample_missingAttribute.csv"
         { Update-JCUsersFromCSV -CSVFilePath "$PesterParams_UpdatePath/UpdateExample_missingAttribute.csv" -force } | Should -Throw
     }
     It "Removes users Where-Object Email -like *pleasedelete* " {
+        Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
+    }
+}
+Describe -Tag:('JCUsersFromCSV') 'MFA Update Tests' {
+    It "User Created/ Updated with Update-JCUserFromCSV with MFA Required" {
+        # Setup Test
+        $user = New-RandomUser -Domain pleasedelete | New-JCUser
+        $CSVDATA = @{
+            Username                       = $user.username
+            enable_user_portal_multifactor = $true
+            EnrollmentDays                 = ''
+        }
+        $CSVFILE = $CSVDATA | Export-Csv "$PesterParams_UpdatePath/MFA_Update.csv" -Force
+        $MFAUser = Get-JCUser $user.Username
+        $MFAUser.mfa.exclusion | Should -Be $false
+        $MFAUser.mfa.configured | Should -Be $false
+        # Test Imported User
+        Update-JCUsersFromCSV -CSVFilePath "$PesterParams_UpdatePath/MFA_Update.csv" -force
+        $MFAUser = Get-JCUser $user.Username
+        $MFAUser.mfa.exclusion | Should -Be $True
+        $MFAUser.mfa.exclusionUntil | Should -BeOfType [datetime]
+        $MFAUser.mfa.configured | Should -Be $false
+    }
+    It "New User Created with MFA Required and Enrollment Period Specified" {
+        # Setup Test
+        $user = New-RandomUser -Domain pleasedelete | New-JCUser
+        $today = Get-Date
+        $EnrollmentDays = 14
+        $CSVDATA = @{
+            Username                       = $user.username
+            enable_user_portal_multifactor = $true
+            EnrollmentDays                 = $EnrollmentDays
+        }
+        $CSVFILE = $CSVDATA | Export-Csv "$PesterParams_UpdatePath/MFA_Update.csv" -Force
+        # Sleep one second before importing span should be 14 days:
+        Start-Sleep 1
+        $MFAUser = Get-JCUser $user.Username
+        $MFAUser.mfa.exclusion | Should -Be $false
+        $MFAUser.mfa.configured | Should -Be $false
+        # Test Imported User
+        Update-JCUsersFromCSV -CSVFilePath "$PesterParams_UpdatePath/MFA_Update.csv" -force
+        $MFAUser = Get-JCUser $user.Username
+        $MFAUser.mfa.exclusion | Should -Be $True
+        $MFAUser.mfa.exclusionUntil | Should -BeOfType [datetime]
+        $span = New-TimeSpan -Start $today -End $MFAUser.mfa.exclusionUntil
+        $span.Days | Should -Be $EnrollmentDays
+        $MFAUser.mfa.configured | Should -Be $false
+    }
+    It "Throw error if user updated with invalid enrollment days" {
+        $user = New-RandomUser -Domain pleasedelete | New-JCUser
+        $CSVDATA = @{
+            Username                       = $user.username
+            enable_user_portal_multifactor = $true
+            EnrollmentDays                 = (Get-Date).addDays(14)
+        }
+        $CSVFILE = $CSVDATA | Export-Csv "$PesterParams_UpdatePath/MFA_Update.csv" -Force
+        $ImportStatus = Update-JCUsersFromCSV -CSVFilePath "$PesterParams_UpdatePath/MFA_Update.csv" -force
+        # Test Imported User
+        $ImportStatus.Status | Should -Match "Cannot bind parameter"
+    }
+    AfterAll {
+        Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
+    }
+}
+Describe -Tag:('JCUsersFromCSV') 'LDAP Update Tests' {
+    It "New User updated and bound to LDAP server" {
+        $ldapServer = Get-JcSdkLdapServer
+        $user = New-RandomUser -Domain pleasedelete | New-JCUser
+        $CSVDATA = @{
+            Username          = $user.username
+            ldapserver_id     = $ldapServer.id
+            ldap_binding_user = ''
+        }
+        $CSVFILE = $CSVDATA | Export-Csv "$PesterParams_UpdatePath/Ldap_Update.csv" -Force
+        $UpdateStatus = Update-JCUsersFromCSV -CSVFilePath "$PesterParams_UpdatePath/Ldap_Update.csv" -force
+        $LDAPUser = Get-JCuser $user.username
+        $LDAPUser | should -Not -BeNullOrEmpty
+        $ldapAssociation = Get-JCAssociation -Type user -Name $LDAPUser.username -TargetType ldap_server
+        $ldapAssociation | should -Not -BeNullOrEmpty
+        $LDAPUser.ldap_binding_user | should -Be $False
+    }
+    It "New User Updated, bound to LDAP server and set as an Ldap Binding User" {
+        $ldapServer = Get-JcSdkLdapServer
+        $user = New-RandomUser -Domain pleasedelete | New-JCUser
+        $CSVDATA = @{
+            Username          = $user.username
+            ldapserver_id     = $ldapServer.id
+            ldap_binding_user = $true
+        }
+        $CSVFILE = $CSVDATA | Export-Csv "$PesterParams_UpdatePath/Ldap_Update.csv" -Force
+        $UpdateStatus = Update-JCUsersFromCSV -CSVFilePath "$PesterParams_UpdatePath/Ldap_Update.csv" -force
+        $LDAPUser = Get-JCuser $user.username
+        $LDAPUser | should -Not -BeNullOrEmpty
+        $ldapAssociation = Get-JCAssociation -Type user -Name $LDAPUser.username -TargetType ldap_server
+        $ldapAssociation | should -Not -BeNullOrEmpty
+        $LDAPUser.ldap_binding_user | should -Be $true
+    }
+    It "throw error with invalid params on ldap import" {
+        $ldapServer = Get-JcSdkLdapServer
+        $user = New-RandomUser -Domain pleasedelete | New-JCUser
+        $CSVDATA = @{
+            Username          = $user.username
+            ldapserver_id     = "$($ldapServer.id)"
+            ldap_binding_user = "yes"
+        }
+        $CSVFILE = $CSVDATA | Export-Csv "$PesterParams_UpdatePath/Ldap_Update.csv" -Force
+        $UpdateStatus = Update-JCUsersFromCSV -CSVFilePath "$PesterParams_UpdatePath/Ldap_Update.csv" -force
+        $LDAPUser = Get-JCuser $user.username
+        $LDAPUser | should -Not -BeNullOrEmpty
+        $ldapAssociation = Get-JCAssociation -Type user -Name $LDAPUser.username -TargetType ldap_server
+        $ldapAssociation | should -Not -BeNullOrEmpty
+        $LDAPUser.ldap_binding_user | should -Be $false
+        $UpdateStatus.LdapUserBind | Should -Match "not recognized as a valid Boolean"
+    }
+    AfterAll {
         Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
     }
 }

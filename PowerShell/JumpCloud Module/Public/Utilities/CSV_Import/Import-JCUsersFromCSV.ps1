@@ -74,7 +74,9 @@ Function Import-JCUsersFromCSV () {
         if ($PSCmdlet.ParameterSetName -eq 'GUI') {
 
             Write-Verbose 'Verifying JCAPI Key'
-            if ($JCAPIKEY.length -ne 40) { Connect-JConline }
+            if ($JCAPIKEY.length -ne 40) {
+                Connect-JConline
+            }
 
             $Banner = @"
        __                          ______ __                   __
@@ -86,7 +88,9 @@ Function Import-JCUsersFromCSV () {
                                                   User Import
 "@
 
-            If (!(Get-PSCallStack | Where-Object { $_.Command -match 'Pester' })) { Clear-Host }
+            If (!(Get-PSCallStack | Where-Object { $_.Command -match 'Pester' })) {
+                Clear-Host
+            }
             Write-Host $Banner -ForegroundColor Green
             Write-Host ""
 
@@ -192,7 +196,9 @@ Function Import-JCUsersFromCSV () {
                         } else {
                             Write-Warning "A system with SystemID: $($User.SystemID) does not exist and will not be bound to user $($User.Username)"
                         }
-                    } else { Write-Verbose "No system" }
+                    } else {
+                        Write-Verbose "No system"
+                    }
                 }
 
                 $Permissions = $NewUsers.Administrator | Where-Object Length -gt 1 | Select-Object -unique
@@ -231,7 +237,8 @@ Function Import-JCUsersFromCSV () {
 
                     }
 
-                    else { }
+                    else {
+                    }
 
                 }
 
@@ -395,7 +402,12 @@ Function Import-JCUsersFromCSV () {
                             try {
                                 $LdapAdd = Set-JcSdkLdapServerAssociation -LdapserverId $UserAdd.ldapserver_id -id $NewUser._id -op "add" -type "user"
                             } catch {
-                                $LdapBindStatus = $_.ErrorDetails
+                                $LdapBindStatus =
+                                if ($_.ErrorDetails) {
+                                    $_.ErrorDetails
+                                } elseif ($_.Exception) {
+                                    $_.Exception.Message
+                                }
                             }
                             try {
                                 $ldap_bind_boolean = [System.Convert]::ToBoolean($UserAdd.ldap_binding_user)
@@ -403,7 +415,12 @@ Function Import-JCUsersFromCSV () {
                                 $LdapBindStatus = $ldap_bind.ldap_binding_user
 
                             } catch {
-                                $LdapBindStatus = $_.ErrorDetails
+                                $LdapBindStatus =
+                                if ($_.ErrorDetails) {
+                                    $_.ErrorDetails
+                                } elseif ($_.Exception) {
+                                    $_.Exception.Message
+                                }
                             }
                         }
 
@@ -518,7 +535,7 @@ Function Import-JCUsersFromCSV () {
 
                         $Status = $_.ErrorDetails
                     } elseif ($_.Exception) {
-                        $Status = $_.Exception
+                        $Status = $_.Exception.Message
                     }
 
                     $FormattedResults = [PSCustomObject]@{
@@ -568,7 +585,12 @@ Function Import-JCUsersFromCSV () {
                             try {
                                 $LdapAdd = Set-JcSdkLdapServerAssociation -LdapserverId $UserAdd.ldapserver_id -id $NewUser._id -op "add" -type "user"
                             } catch {
-                                $LdapBindStatus = $_.ErrorDetails
+                                $LdapBindStatus =
+                                if ($_.ErrorDetails) {
+                                    $_.ErrorDetails
+                                } elseif ($_.Exception) {
+                                    $_.Exception.Message
+                                }
                             }
                             try {
                                 $ldap_bind_boolean = [System.Convert]::ToBoolean($UserAdd.ldap_binding_user)
@@ -576,7 +598,12 @@ Function Import-JCUsersFromCSV () {
                                 $LdapBindStatus = $ldap_bind.ldap_binding_user
 
                             } catch {
-                                $LdapBindStatus = $_.ErrorDetails
+                                $LdapBindStatus =
+                                if ($_.ErrorDetails) {
+                                    $_.ErrorDetails
+                                } elseif ($_.Exception) {
+                                    $_.Exception.Message
+                                }
                             }
 
                         }
@@ -701,10 +728,14 @@ Function Import-JCUsersFromCSV () {
                 catch {
 
 
+                    If ($_.ErrorDetails) {
+                        $Status = $_.ErrorDetails
+                    } elseif ($_.Exception) {
+                        $Status = $_.Exception.Message
+                    }
                     $FormattedResults = [PSCustomObject]@{
-
                         'Username'     = $UserAdd.username
-                        'Status'       = "$($_.ErrorDetails)"
+                        'Status'       = "$Status"
                         'UserID'       = $Null
                         'GroupsAdd'    = $Null
                         'SystemID'     = $Null
@@ -726,3 +757,6 @@ Function Import-JCUsersFromCSV () {
         return $ResultsArrayList
     }
 }
+
+# $PesterParams_ImportPath = "/Users/jworkman/Documents/GitHub/support/PowerShell/JumpCloud Module/Tests/Csv_Files/import"
+# Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/Ldap_Import.csv" -force

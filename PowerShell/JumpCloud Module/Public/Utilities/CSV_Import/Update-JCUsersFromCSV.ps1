@@ -97,7 +97,9 @@ Function Update-JCUsersFromCSV () {
         if ($PSCmdlet.ParameterSetName -eq 'GUI') {
 
             Write-Verbose 'Verifying JCAPI Key'
-            if ($JCAPIKEY.length -ne 40) { Connect-JConline }
+            if ($JCAPIKEY.length -ne 40) {
+                Connect-JConline
+            }
 
             $Banner = @"
        __                          ______ __                   __
@@ -109,7 +111,9 @@ Function Update-JCUsersFromCSV () {
                                                   User Update
 "@
 
-            If (!(Get-PSCallStack | Where-Object { $_.Command -match 'Pester' })) { Clear-Host }
+            If (!(Get-PSCallStack | Where-Object { $_.Command -match 'Pester' })) {
+                Clear-Host
+            }
             Write-Host $Banner -ForegroundColor Green
             Write-Host ""
 
@@ -165,7 +169,9 @@ Function Update-JCUsersFromCSV () {
                         } else {
                             Write-Warning "A system with SystemID: $($User.SystemID) does not exist and will not be bound to user $($User.Username)"
                         }
-                    } else { Write-Verbose "No system" }
+                    } else {
+                        Write-Verbose "No system"
+                    }
                 }
 
                 $Permissions = $UpdateUsers.Administrator | Where-Object Length -gt 1 | Select-Object -unique
@@ -204,7 +210,8 @@ Function Update-JCUsersFromCSV () {
 
                     }
 
-                    else { }
+                    else {
+                    }
 
                 }
 
@@ -371,7 +378,12 @@ Function Update-JCUsersFromCSV () {
                             try {
                                 $LdapAdd = Set-JcSdkLdapServerAssociation -LdapserverId $UserUpdate.ldapserver_id -id $NewUser._id -op "add" -type "user"
                             } catch {
-                                $LdapBindStatus = $_.ErrorDetails
+                                $LdapBindStatus =
+                                if ($_.ErrorDetails) {
+                                    $_.ErrorDetails
+                                } elseif ($_.Exception) {
+                                    $_.Exception.Message
+                                }
                             }
                             try {
                                 $ldap_bind_boolean = [System.Convert]::ToBoolean($UserUpdate.ldap_binding_user)
@@ -379,7 +391,12 @@ Function Update-JCUsersFromCSV () {
                                 $LdapBindStatus = $ldap_bind.ldap_binding_user
 
                             } catch {
-                                $LdapBindStatus = $_.ErrorDetails
+                                $LdapBindStatus =
+                                if ($_.ErrorDetails) {
+                                    $_.ErrorDetails
+                                } elseif ($_.Exception) {
+                                    $_.Exception.Message
+                                }
                             }
 
                         }
@@ -538,7 +555,12 @@ Function Update-JCUsersFromCSV () {
                             try {
                                 $LdapAdd = Set-JcSdkLdapServerAssociation -LdapserverId $UserUpdate.ldapserver_id -id $NewUser._id -op "add" -type "user"
                             } catch {
-                                $LdapBindStatus = $_.ErrorDetails
+                                $LdapBindStatus =
+                                if ($_.ErrorDetails) {
+                                    $_.ErrorDetails
+                                } elseif ($_.Exception) {
+                                    $_.Exception.Message
+                                }
                             }
                             try {
                                 $ldap_bind_boolean = [System.Convert]::ToBoolean($UserUpdate.ldap_binding_user)
@@ -546,7 +568,12 @@ Function Update-JCUsersFromCSV () {
                                 $LdapBindStatus = $ldap_bind.ldap_binding_user
 
                             } catch {
-                                $LdapBindStatus = $_.ErrorDetails
+                                $LdapBindStatus =
+                                if ($_.ErrorDetails) {
+                                    $_.ErrorDetails
+                                } elseif ($_.Exception) {
+                                    $_.Exception.Message
+                                }
                             }
 
                         }
@@ -665,7 +692,11 @@ Function Update-JCUsersFromCSV () {
                 }
 
                 catch {
-                    $Status = "$($_.ErrorDetails)"
+                    If ($_.ErrorDetails) {
+                        $Status = $_.ErrorDetails
+                    } elseif ($_.Exception) {
+                        $Status = $_.Exception.Message
+                    }
 
                     if (-not (Get-JCUser -username $UpdateParams.username -returnProperties username)) {
                         $Status = 'User does not exist'
