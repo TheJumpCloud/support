@@ -21,7 +21,9 @@ Function New-JCImportTemplate() {
 
         $Heading2 = 'The CSV file will be created within the directory:'
 
-        If (!(Get-PSCallStack | Where-Object { $_.Command -match 'Pester' })) { Clear-Host }
+        If (!(Get-PSCallStack | Where-Object { $_.Command -match 'Pester' })) {
+            Clear-Host
+        }
 
         Write-Host $Banner -ForegroundColor Green
         Write-Host "`n$Heading2`n"
@@ -99,11 +101,14 @@ Function New-JCImportTemplate() {
 
             if ($ConfirmUserPop -eq 'Y') {
                 Write-Verbose 'Verifying JCAPI Key'
-                if ($JCAPIKEY.length -ne 40) { Connect-JConline }
+                if ($JCAPIKEY.length -ne 40) {
+                    Connect-JConline
+                }
                 $ExistingUsers = Get-Hash_ID_Username
             }
 
-            elseif ($ConfirmUserPop -eq 'N') { }
+            elseif ($ConfirmUserPop -eq 'N') {
+            }
 
 
             Write-Host "`nWould you like to update users email addresses?"
@@ -116,19 +121,9 @@ Function New-JCImportTemplate() {
                 $CSV.add('email', $null)
             }
 
-            elseif ($ConfirmEmailAddress -eq 'N') { }
+            elseif ($ConfirmEmailAddress -eq 'N') {
+            }
         }
-
-        Write-Host "`nDo you want to bind the user to LDAP during import"
-        Write-Host -ForegroundColor Yellow 'Ldap_Binding_User, Ldapserver_id'
-        while ($ConfirmLDAPBind -ne 'Y' -and $ConfirmLDAPBind -ne 'N') {
-            $ConfirmLDAPBind = Read-Host  "Enter Y for Yes or N for No"
-        }
-
-        if ($ConfirmLDAPBind -eq 'Y') {
-            $CSV.add('ldap_binding_user', $null)
-            $CSV.add('ldapserver_id', $null)
-        } elseif ($ConfirmLDAPBind -eq 'N') { }
 
         Write-Host "`nDo you want to add extended user information attributes available over JumpCloud LDAP to your users during import?"
         Write-Host 'Extended user information attributes include: ' -NoNewline
@@ -156,7 +151,8 @@ Function New-JCImportTemplate() {
 
         }
 
-        elseif ($ConfirmLDAPLocationAttributes -eq 'N') { }
+        elseif ($ConfirmLDAPLocationAttributes -eq 'N') {
+        }
 
 
         Write-Host "`nDo you want to add extended user location attributes available over JumpCloud LDAP to your users during import?"
@@ -185,7 +181,8 @@ Function New-JCImportTemplate() {
 
         }
 
-        elseif ($ConfirmLDAPLocationAttributes -eq 'N') { }
+        elseif ($ConfirmLDAPLocationAttributes -eq 'N') {
+        }
 
         Write-Host "`nDo you want to add extended user telephony attributes available over JumpCloud LDAP to your users during import?"
         Write-Host 'Extended user telephony attributes include: ' -NoNewline
@@ -204,7 +201,8 @@ Function New-JCImportTemplate() {
             $CSV.add('work_fax_number', $null)
         }
 
-        elseif ($ConfirmLDAPTelephonyAttributes -eq 'N') { }
+        elseif ($ConfirmLDAPTelephonyAttributes -eq 'N') {
+        }
 
         Write-Host "`nDo you want to set unix UID/GUID values during import?"
         Write-Host 'UID/GUID value attributes include: ' -NoNewline
@@ -220,7 +218,8 @@ Function New-JCImportTemplate() {
             $CSV.add('unix_guid', $null)
         }
 
-        elseif ($ConfirmUIDGUIDAttributes -eq 'N') { }
+        elseif ($ConfirmUIDGUIDAttributes -eq 'N') {
+        }
 
         Write-Host "`nDo you want to require MFA to user?"
         Write-Host  'enable_user_portal_multifactor, EnrollmentDays' -ForegroundColor Yellow
@@ -231,7 +230,20 @@ Function New-JCImportTemplate() {
         if ($MFAOption -eq 'Y') {
             $CSV.add('enable_user_portal_multifactor', $null)
             $CSV.add('EnrollmentDays', $null)
-        } elseif ($MFAOption -eq 'N') { }
+        } elseif ($MFAOption -eq 'N') {
+        }
+
+        Write-Host "`nDo you want to bind the user to LDAP during import"
+        Write-Host -ForegroundColor Yellow 'Ldap_Binding_User, Ldapserver_id'
+        while ($ConfirmLDAPBind -ne 'Y' -and $ConfirmLDAPBind -ne 'N') {
+            $ConfirmLDAPBind = Read-Host  "Enter Y for Yes or N for No"
+        }
+
+        if ($ConfirmLDAPBind -eq 'Y') {
+            $CSV.add('ldap_binding_user', $null)
+            $CSV.add('ldapserver_id', $null)
+        } elseif ($ConfirmLDAPBind -eq 'N') {
+        }
 
         Write-Host "`nDo you want to bind your users to existing JumpCloud systems during import?"
 
@@ -257,7 +269,8 @@ Function New-JCImportTemplate() {
 
         }
 
-        elseif ($ConfirmAttributes -eq 'N') { }
+        elseif ($ConfirmAttributes -eq 'N') {
+        }
 
         Write-Host ""
         Write-Host 'Do you want to add the users to JumpCloud user groups during import?'
@@ -284,7 +297,8 @@ Function New-JCImportTemplate() {
 
         }
 
-        elseif ($ConfirmGroups -eq 'N') { }
+        elseif ($ConfirmGroups -eq 'N') {
+        }
 
 
         Write-Host ""
@@ -317,7 +331,8 @@ Function New-JCImportTemplate() {
 
         }
 
-        elseif ($ConfirmAttributes -eq 'N') { }
+        elseif ($ConfirmAttributes -eq 'N') {
+        }
 
         $CSVheader = New-Object psobject -Property $Csv
 
@@ -366,7 +381,8 @@ Function New-JCImportTemplate() {
             Invoke-Item -path "$ExportLocation/$FileName"
 
         }
-        if ($Open -eq 'N') { }
+        if ($Open -eq 'N') {
+        }
     }
 
 }
