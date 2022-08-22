@@ -2,7 +2,7 @@ function New-JCSettingsFile {
     [CmdletBinding()]
     param (
         [Parameter(
-            HelpMessage = 'To Force Re-Creation of the Config file, set the $force parameter to $tru'
+            HelpMessage = 'To Force Re-Creation of the Config file, set the $force parameter to $true'
         )]
         [switch]
         $force
