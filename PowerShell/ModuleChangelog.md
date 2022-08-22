@@ -1,10 +1,48 @@
-## 1.24.0
+## 2.0.0
 
-Release Date: August 10, 2022
+Release Date: June 27, 2022
 
 #### RELEASE NOTES
 
-This release modifies New-JCImportTemplate, Update and Import-JCUsersFromCSV to allow imports and updates with LDAP bind and MFA + EnrollmentDays to users
+```
+This release introduces Parallel processing functionality to several functions (Get-JCUser, Get-JCSystem, Get-JCSystemUser, Get-JCGroup, Get-JCSystemGroupMember, Get-JCUserGroupMember, Get-JCCommand, Get-JCCommandResult, Get-JCCommandTarget)
+
+Note: In order to use the parallel functionality, the feature requires PowerShell version 7 or higher
+```
+
+#### FEATURES:
+- This release adds parallel processing functionality to potentially alleviate long wait times for large scale operations
+  - Note: Feature requires PowerShell version 7 or higher
+  - This release adds parallel processing to the following functions:
+    - Get-JCUser
+    - Get-JCSystem
+    - Get-JCSystemUser
+    - Get-JCGroup
+    - Get-JCSystemGroupMember
+    - Get-JCUserGroupMember
+    - Get-JCCommand
+    - Get-JCCommandResult
+    - Get-JCCommandTarget
+- Added -ByCommandID and -CommandID to Get-JCCommandResult
+  - The added functionality will allow admins to search for all command results pertaining to a single command via the commandID or the workflowID
+  - When using the pipeline for inputting a command object to Get-JCCommandResult, use the -ByCommandID switch
+    - Example: $OrgCommandResults = Get-JCCommand | Get-JCCommandResult -ByCommandID
+  - When using the pipeline for inputting a commandResult object to Get-JCCommandResult, use the -ByID switch
+    - Example: $OrgCommandResults = Get-JCCommandResult | Get-JCCommandResult -ByID
+
+#### IMPROVEMENTS:
+
+- Adjusted output for Get-JCSystemGroupMember -ByID and Get-JCUserGroupMember -ByID to match the output of -GroupName
+- Removed individual hash functions in favor for dynamic hash function
+  - Replaced all references to old functions
+ - Added case-insensitivity to search endpoints Get-JCUser, Get-JCSystem, and Get-JCCommand
+      Example: command name 'List Users' = 'list users' or hostname 'thisPc' = 'ThisPC'
+
+
+#### BUG FIXES:
+
+N/A
+
 ## 1.23.4
 
 Release Date: July 25, 2022
@@ -12,6 +50,7 @@ Release Date: July 25, 2022
 #### RELEASE NOTES
 
 This release modifies New-JCCommandURL to convert Import-JCCommand url to raw github content to prevent changes to GitHub HTML from breaking Import-JCCommand function
+
 ## 1.23.3
 
 Release Date: July 20, 2022

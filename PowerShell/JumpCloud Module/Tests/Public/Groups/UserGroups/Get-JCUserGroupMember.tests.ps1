@@ -12,6 +12,6 @@ Describe -Tag:('JCUserGroupMember') 'Get-JCUserGroupMember 1.0' {
     }
     It 'Gets a User Groups membership -ByID' {
         $UserGroupMembers = Get-JCUserGroupMember -ByID $PesterParams_UserGroup.Id
-        $UserGroupMembers.to.id.Count | Should -BeGreaterThan 0
+        $UserGroupMembers.UserID.Count | Should -BeGreaterThan 0
     }
 }

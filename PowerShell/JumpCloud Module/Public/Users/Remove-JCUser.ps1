@@ -1,5 +1,4 @@
-function Remove-JCUser ()
-{
+function Remove-JCUser () {
     [CmdletBinding(DefaultParameterSetName = 'Username')]
 
     param
@@ -33,11 +32,11 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
         $force
     )
 
-    begin
-
-    {
+    begin {
         Write-Debug 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {Connect-JConline}
+        if ($JCAPIKEY.length -ne 40) {
+            Connect-JConline
+        }
 
         Write-Debug 'Populating API headers'
         $hdrs = @{
@@ -48,49 +47,39 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
         }
 
-        if ($JCOrgID)
-        {
+        if ($JCOrgID) {
             $hdrs.Add('x-org-id', "$($JCOrgID)")
         }
 
         $deletedArray = @()
 
-        if ($PSCmdlet.ParameterSetName -eq 'Username' )
-        {
-            $UserHash = Get-Hash_UserName_ID
+        if ($PSCmdlet.ParameterSetName -eq 'Username' ) {
+            $UserHash = Get-DynamicHash -Object User -returnProperties username
             $UserCount = ($UserHash).Count
             Write-Debug "Populated UserHash with $UserCount users"
         }
 
     }
-    process
-
-    {
-        if ($PSCmdlet.ParameterSetName -eq 'Username' )
-        {
-            if ($UserHash.ContainsKey($Username))
-            {
-                $UserID = $UserHash.Get_Item($Username)
+    process {
+        if ($PSCmdlet.ParameterSetName -eq 'Username' ) {
+            if ($UserHash.Values.username -contains ($Username)) {
+                $UserID = $UserHash.GetEnumerator().Where({ $_.Value.username -contains ($Username) }).Name
+            } else {
+                Throw "Username does not exist. Run 'Get-JCUser | Select-Object username' to see a list of all your JumpCloud users."
             }
-            else { Throw "Username does not exist. Run 'Get-JCUser | Select-Object username' to see a list of all your JumpCloud users."}
         }
 
-        if ($PSCmdlet.ParameterSetName -eq 'UserID' )
-        {
+        if ($PSCmdlet.ParameterSetName -eq 'UserID' ) {
             $Username = $UserID
         }
 
-        if (!$force)
-        {
-            try
-            {
+        if (!$force) {
+            try {
                 $URI = "$JCUrlBasePath/api/systemusers/$UserID"
                 Write-Warning "Are you sure you wish to delete user: $Username ?" -WarningAction Inquire
                 $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent:(Get-JCUserAgent)
                 $Status = 'Deleted'
-            }
-            catch
-            {
+            } catch {
                 $Status = $_.ErrorDetails
             }
 
@@ -103,16 +92,12 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
         }
 
-        if ($force)
-        {
-            try
-            {
+        if ($force) {
+            try {
                 $URI = "$JCUrlBasePath/api/systemusers/$UserID"
                 $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent:(Get-JCUserAgent)
                 $Status = 'Deleted'
-            }
-            catch
-            {
+            } catch {
                 $Status = $_.ErrorDetails
             }
 
@@ -128,8 +113,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
     }
 
-    end
-    {
+    end {
 
         return $deletedArray
 

@@ -98,6 +98,7 @@ Function Import-JCUsersFromCSV () {
 
             $CustomAttributes = $NewUsers | Get-Member | Where-Object Name -Like "*Attribute*" | Select-Object Name
 
+            $ExistingUserHash = Get-DynamicHash -Object User -returnProperties username, employeeIdentifier, email
 
             foreach ($attr in $CustomAttributes ) {
                 $UserUpdateParams.Add($attr.name, $attr.name)
@@ -106,10 +107,8 @@ Function Import-JCUsersFromCSV () {
             Write-Host ""
             Write-Host -BackgroundColor Green -ForegroundColor Black "Validating $($NewUsers.count) Usernames"
 
-            $ExistingUsernameCheck = Get-Hash_UserName_ID
-
             foreach ($User in $NewUsers) {
-                if ($ExistingUsernameCheck.ContainsKey($User.Username)) {
+                if ($ExistingUserHash.Values.Username -contains ($User.Username)) {
                     Write-Warning "A user with username: $($User.Username) already exists this user will not be created."
                 } else {
                     Write-Verbose "$($User.Username) does not exist"
@@ -132,11 +131,10 @@ Function Import-JCUsersFromCSV () {
 
             Write-Host -BackgroundColor Green -ForegroundColor Black "Validating $($NewUsers.count) Emails Addresses"
 
-            $ExistingEmailCheck = Get-Hash_Email_Username
 
             foreach ($User in $NewUsers) {
-                if ($ExistingEmailCheck.ContainsKey($User.email)) {
-                    Write-Warning "The user $($ExistingEmailCheck.($User.email)) has the email address: $($User.email) $($User.username) will not be created."
+                if ($ExistingUserHash.Values.Email -contains ($User.email)) {
+                    Write-Warning "The user $($ExistingUserHash.GetEnumerator().Where({$_.Value.email -contains $User.email}).username) has the email address: $($User.email) $($User.username) will not be created."
                 } else {
                     Write-Verbose "$($User.email) does not exist"
                 }
@@ -159,11 +157,9 @@ Function Import-JCUsersFromCSV () {
                 Write-Host ""
                 Write-Host -BackgroundColor Green -ForegroundColor Black "Validating $($employeeIdentifierCheck.employeeIdentifier.Count) employeeIdentifiers"
 
-                $ExistingEmployeeIdentifierCheck = Get-Hash_employeeIdentifier_username
-
                 foreach ($User in $employeeIdentifierCheck) {
-                    if ($ExistingEmployeeIdentifierCheck.ContainsKey($User.employeeIdentifier)) {
-                        Write-Warning "The user $($ExistingEmployeeIdentifierCheck.($User.employeeIdentifier)) has the employeeIdentifier: $($User.employeeIdentifier). User $($User.username) will not be created."
+                    if ($ExistingUserHash.Values.employeeIdentifier -contains ($User.employeeIdentifier)) {
+                        Write-Warning "The user $($ExistingUserHash.GetEnumerator().Where({$_.Value.employeeIdentifier -contains $User.employeeIdentifier}).username) has the employeeIdentifier: $($User.employeeIdentifier). User $($User.username) will not be created."
                     } else {
                         Write-Verbose "$($User.employeeIdentifier) does not exist"
                     }
@@ -186,12 +182,12 @@ Function Import-JCUsersFromCSV () {
             if ($SystemCount.count -gt 0) {
                 Write-Host ""
                 Write-Host -BackgroundColor Green -ForegroundColor Black "Validating $($SystemCount.count) Systems"
-                $SystemCheck = Get-Hash_SystemID_HostName
+                $SystemCheck = Get-DynamicHash -Object System -returnProperties hostname
 
                 foreach ($User in $SystemCount) {
                     if (($User.SystemID).length -gt 1) {
 
-                        if ($SystemCheck.ContainsKey($User.SystemID)) {
+                        if ($SystemCheck[$User.SystemID]) {
                             Write-Verbose "$($User.SystemID) exists"
                         } else {
                             Write-Warning "A system with SystemID: $($User.SystemID) does not exist and will not be bound to user $($User.Username)"
@@ -248,10 +244,11 @@ Function Import-JCUsersFromCSV () {
 
             if ($UniqueGroups.count -gt 0) {
                 Write-Host -BackgroundColor Green -ForegroundColor Black "Validating $($UniqueGroups.count) Groups"
-                $GroupCheck = Get-Hash_UserGroupName_ID
+                $GroupCheck = Get-DynamicHash -Object Group -GroupType User -returnProperties name
 
                 foreach ($GroupTest in $UniqueGroups) {
-                    if ($GroupCheck.ContainsKey($GroupTest.Value)) {
+
+                    if ($GroupCheck.Values.name -contains ($GroupTest.Value)) {
                         Write-Verbose "$($GroupTest.Value) exists"
                     } else {
                         Write-Host "The JumpCloud Group:" -NoNewLine
@@ -577,8 +574,6 @@ Function Import-JCUsersFromCSV () {
                         $Status = 'User Not Created'
                     }
 
-
-
                     try {
                         if ($UserAdd.ldapserver_id) {
 
@@ -610,7 +605,6 @@ Function Import-JCUsersFromCSV () {
 
                         #User is created
                         if ($UserAdd.SystemID) {
-
                             if ($UserAdd.Administrator) {
 
                                 Write-Verbose "Admin set"
@@ -702,7 +696,6 @@ Function Import-JCUsersFromCSV () {
                                 $UserGroupArrayList.Add($FormatGroupOutput) | Out-Null
                             }
                         }
-
                     } catch {
 
                     }
@@ -757,6 +750,3 @@ Function Import-JCUsersFromCSV () {
         return $ResultsArrayList
     }
 }
-
-# $PesterParams_ImportPath = "/Users/jworkman/Documents/GitHub/support/PowerShell/JumpCloud Module/Tests/Csv_Files/import"
-# Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/Ldap_Import.csv" -force

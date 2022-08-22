@@ -25,6 +25,7 @@ Get-JCCommand [-CommandID] <String[]> [-ByID] [<CommonParameters>]
 
 ## DESCRIPTION
 The Get-JCCommand function returns all information describing a JumpCloud command. To find the contents and payload of a specific command the -ByID Parameter must be used as this information is only accessible when using this Parameter.
+Note: String parameters are case-insensitive
 
 ## EXAMPLES
 
@@ -65,7 +66,7 @@ PS C:\> Get-JCCommand -launchType 'trigger' | Get-JCCommand -ByID
 
 Returns all information describing all JumpCloud commands with a launchType of 'trigger' by passing the -CommandID Parameter to the -ByID Parameter using the pipeline and Parameter Binding.
 
-Note that when running this command the time for the output to display will be directly proportionate to how many JumpCloud commands you have with a launchType of 'trigger'. The command 'Get-JCCommand -ByID' runs once for every JumpCloud command within your tenant with a launchType of 'trigger'.
+Note that when running this command the time for the output to display will be directly proportionate to how many JumpCloud commands you have with a launchType of 'trigger'. The command 'Get-JCCommand -ByID' runs once for every JumpCloud command within your tenant with a launchType of 'trigger'. LaunchType 'trigger' or 'Trigger' will return the same information due to case-insensitivity
 
 ### Example 6
 ```powershell

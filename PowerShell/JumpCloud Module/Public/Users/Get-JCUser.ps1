@@ -1,5 +1,4 @@
-Function Get-JCUser ()
-{
+Function Get-JCUser () {
     [CmdletBinding(DefaultParameterSetName = 'SearchFilter')]
 
     param
@@ -121,21 +120,17 @@ Function Get-JCUser ()
         [String]$manager,
 
         [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'A search filter to return users that are in an ACTIVATED, STAGED or SUSPENDED state')]
-        [ValidateSet('ACTIVATED','SUSPENDED','STAGED')]
         [String]$state,
 
         [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'The recovery email of the JumpCloud user you wish to search for.')]
         [String]$recoveryEmail
     )
 
-    DynamicParam
-    {
-        If ((Get-PSCallStack).Command -like '*MarkdownHelp')
-        {
+    DynamicParam {
+        If ((Get-PSCallStack).Command -like '*MarkdownHelp') {
             $filterDateProperty = 'created'
         }
-        if ($filterDateProperty)
-        {
+        if ($filterDateProperty) {
             # Create the dictionary
             $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
             # Set the dynamic parameters' name
@@ -178,128 +173,104 @@ Function Get-JCUser ()
 
     }
 
-    begin
-    {
+    begin {
         Write-Verbose 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) { Connect-JCOnline }
-
-        Write-Verbose 'Populating API headers'
-        $hdrs = @{
-
-            'Content-Type' = 'application/json'
-            'Accept'       = 'application/json'
-            'X-API-KEY'    = $JCAPIKEY
-
+        if ($JCAPIKEY.length -ne 40) {
+            Connect-JCOnline
         }
 
-        if ($JCOrgID)
-        {
-            $hdrs.Add('x-org-id', "$($JCOrgID)")
+        $Parallel = $JCConfig.parallel.Calculated
+
+        if ($Parallel) {
+            Write-Verbose 'Initilizing resultsArray'
+            $resultsArrayList = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
+        } else {
+            Write-Verbose 'Initilizing resultsArray'
+            $resultsArrayList = New-Object -TypeName System.Collections.ArrayList
         }
-
-        Write-Verbose 'Initilizing resultsArray'
-
-        $resultsArrayList = New-Object -TypeName System.Collections.ArrayList
 
         Write-Verbose "Parameter Set: $($PSCmdlet.ParameterSetName)"
 
     }
 
-    process
-    {
+    process {
         [int]$limit = '1000'
         Write-Verbose "Setting limit to $limit"
 
         [int]$skip = '0'
         Write-Verbose "Setting limit to $limit"
 
-        [int]$Counter = 0
+        switch ($PSCmdlet.ParameterSetName) {
+            SearchFilter {
 
-        switch ($PSCmdlet.ParameterSetName)
-        {
-            SearchFilter
-            {
+                if ($returnProperties) {
 
-                while ((($resultsArrayList.Results).Count) -ge $Counter)
-                {
-
-                    if ($returnProperties)
-                    {
-
-                        $Search = @{
-                            filter = @(
-                                @{
-                                }
-                            )
-                            limit  = $limit
-                            skip   = $skip
-                            fields = $returnProperties
-                        } #Initialize search
-
-                    }
-
-                    else
-                    {
-
-                        $Search = @{
-                            filter = @(
-                                @{
-
-                                }
-                            )
-                            limit  = $limit
-                            skip   = $skip
-
-                        } #Initialize search
-
-                    }
-
-                    foreach ($param in $PSBoundParameters.GetEnumerator())
-                    {
-                        if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }
-
-                        if ($param.value -is [Boolean])
-                        {
-                            (($Search.filter).GetEnumerator()).add($param.Key, $param.value)
-
-                            continue
-                        }
-
-                        if ($param.key -eq 'returnProperties')
-                        {
-                            continue
-                        }
-
-                        if ($param.key -eq 'filterDateProperty')
-                        {
-                            $DateProperty = $param.value
-
-                            continue
-                        }
-
-                        if ($param.key -eq 'dateFilter')
-                        {
-                            switch ($param.value)
-                            {
-                                before { $DateQuery = '$lt' }
-                                after { $DateQuery = '$gt' }
+                    $Search = @{
+                        filter = @(
+                            @{
                             }
+                        )
+                        limit  = $limit
+                        skip   = $skip
+                        fields = $returnProperties
+                    } #Initialize search
 
-                            continue
+                }
+
+                else {
+                    $Search = @{
+                        filter = @(
+                            @{
+                            }
+                        )
+                        limit  = $limit
+                        skip   = $skip
+
+                    } #Initialize search
+
+                }
+
+                foreach ($param in $PSBoundParameters.GetEnumerator()) {
+                    if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) {
+                        continue
+                    }
+
+                    if ($param.value -is [Boolean]) {
+                        (($Search.filter).GetEnumerator()).add($param.Key, $param.value)
+                        continue
+                    }
+                    if ($param.key -eq 'returnProperties') {
+                        continue
+                    }
+
+                    if ($param.key -eq 'filterDateProperty') {
+                        $DateProperty = $param.value
+
+                        continue
+                    }
+
+                    if ($param.key -eq 'dateFilter') {
+                        switch ($param.value) {
+                            before {
+                                $DateQuery = '$lt'
+                            }
+                            after {
+                                $DateQuery = '$gt'
+                            }
                         }
+                        continue
+                    }
 
-                        if ($param.key -eq 'recoveryEmail')
-                        {
-                            $recoveryEmail = $param.value
-                            continue
-                        }
+                    if ($param.key -eq 'recoveryEmail') {
+                        $recoveryEmail = $param.value
+                        continue
+                    }
 
-                        if ($param.key -eq 'date')
-                        {
-                            $Timestamp = Get-Date $param.Value -format o
+                    if ($param.key -eq 'date') {
+                        $Timestamp = Get-Date $param.Value -format o
 
-                            continue
-                        }
+                        continue
+                    }
 
                         # manager lookup
                         if ("manager" -eq $param.Key)
@@ -340,10 +311,11 @@ Function Get-JCUser ()
                                         $managerValue = $managerResults.id
                                     }
                                 }
-                                # Use class mailaddress to check if $param.value is email
-                                try {
-                                    $null = [mailaddress]$EmailAddress
-                                    # Search manager using email
+                                $managerResults = Search-JcSdkUser -Body:($managerSearch)
+                                # Set managerValue; this is a validated user id
+                                $managerValue = $managerResults.id
+                                # if no value was returned, then assume the case this is actually a username and search
+                                if (!$managerValue) {
                                     $managerSearch = @{
                                         filter = @{
                                             'and' = @(
@@ -353,7 +325,7 @@ Function Get-JCUser ()
                                         fields = 'email'
                                     }
                                     $managerResults = Search-JcSdkUser -Body:($managerSearch)
-                                    # Set managerValue; this is a validated user id
+                                    # Set managerValue from the matched username
                                     $managerValue = $managerResults.id
                                     if (!$managerValue){
                                         $managerSearch = @{
@@ -369,8 +341,10 @@ Function Get-JCUser ()
                                         $managerValue = $managerResults.id
                                     }
                                 }
-                                catch {
-                                    # search the username in the search endpoint
+                                $managerResults = Search-JcSdkUser -Body:($managerSearch)
+                                # Set managerValue; this is a validated user id
+                                $managerValue = $managerResults.id
+                                if (!$managerValue) {
                                     $managerSearch = @{
                                         filter = @{
                                             'and' = @(
@@ -383,13 +357,13 @@ Function Get-JCUser ()
                                     # Set managerValue from the matched username
                                     $managerValue = $managerResults.id
                                 }
-                                if ($managerValue) {
-                                    # if an ID was validated
-                                    ($Search.filter).GetEnumerator().add($param.Key, $managerValue)
-                                }
-                                else {
-                                    # if id was not validated, return value, let the API manage the error message
-                                    ($Search.filter).GetEnumerator().add($param.Key, $param.Value)
+                            } catch {
+                                # search the username in the search endpoint
+                                $managerSearch = @{
+                                    searchFilter = @{
+                                        searchTerm = @($param.Value)
+                                        fields     = @('username')
+                                    }
                                 }
                                 continue
                             }
@@ -402,91 +376,89 @@ Function Get-JCUser ()
                             {
                                 $stateValue = $param.Value
                             }
-                            else {
-                                $stateValue = ($param.Value).ToUpper()
+                            if ($managerValue) {
+                                # if an ID was validated
+                                ($Search.filter).GetEnumerator().add($param.Key, $managerValue)
+                            } else {
+                                # if id was not validated, return value, let the API manage the error message
+                                ($Search.filter).GetEnumerator().add($param.Key, $param.Value)
                             }
                             continue
                         }
-
-                        $Value = ($param.value).replace('*', '')
-
-                        if (($param.Value -match '.+?\*$') -and ($param.Value -match '^\*.+?'))
-                        {
-                            # Front and back wildcard
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "$Value" })
-                        }
-                        elseif ($param.Value -match '.+?\*$')
-                        {
-                            # Back wildcard
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "^$Value" })
-                        }
-                        elseif ($param.Value -match '^\*.+?')
-                        {
-                            # Front wild card
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "$Value`$" })
-                        }
-                        else
-                        {
-                            (($Search.filter).GetEnumerator()).add($param.Key, $Value)
-                        }
-
-                    } # End foreach
-
-                    if ($filterDateProperty)
-                    {
-                        (($Search.filter).GetEnumerator()).add($DateProperty, @{$DateQuery = $Timestamp })
                     }
-                    if ($recoveryEmail)
-                    {
-                        (($Search.filter).GetEnumerator()).add('recoveryEmail.address', $recoveryEmail )
+
+                    # case insensitve state param
+                    if ("state" -eq $param.Key) {
+                        if ($param.Value -cin @('ACTIVATED', 'SUSPENDED', 'STAGED')) {
+                            $stateValue = $param.Value
+                        } else {
+                            $stateValue = ($param.Value).ToUpper()
+                        }
+                        continue
                     }
-                    if ($stateValue)
-                    {
+
+                    $Value = ($param.value).replace('*', '')
+
+                    if (($param.Value -match '.+?\*$') -and ($param.Value -match '^\*.+?')) {
+                        # Front and back wildcard
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)$([regex]::Escape($Value))" })
+                    } elseif ($param.Value -match '.+?\*$') {
+                        # Back wildcard
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)^$([regex]::Escape($Value))" })
+                    } elseif ($param.Value -match '^\*.+?') {
+                        # Front wild card
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)$([regex]::Escape($Value))`$" })
+                    } elseif ($param.Value -match '^[-+]?\d+$') {
+                        # Check for integer value
+                            (($Search.filter).GetEnumerator()).add($param.Key, $([regex]::Escape($Value)))
+                    } else {
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)(^$([regex]::Escape($Value))`$)" })
+                    }
+
+                } # End foreach
+
+                if ($filterDateProperty) {
+                    (($Search.filter).GetEnumerator()).add($DateProperty, @{$DateQuery = $Timestamp })
+                }
+                if ($recoveryEmail) {
+                    (($Search.filter).GetEnumerator()).add('recoveryEmail.address', $recoveryEmail )
+                }
+                if ($stateValue) {
                         (($Search.filter).GetEnumerator()).add('state', $stateValue )
-                    }
+                }
 
-                    $SearchJSON = $Search | ConvertTo-Json -Compress -Depth 4
+                $SearchJSON = $Search | ConvertTo-Json -Compress -Depth 4
 
-                    Write-Debug $SearchJSON
+                Write-Debug $SearchJSON
 
-                    $URL = "$JCUrlBasePath/api/search/systemusers"
+                $URL = "$JCUrlBasePath/api/search/systemusers"
 
-                    $Results = Invoke-RestMethod -Method POST -Uri $Url -Header $hdrs -Body $SearchJSON -UserAgent:(Get-JCUserAgent)
-
-                    #Prints the results
-                    $null = $resultsArrayList.Add($Results)
-
-                    $Skip += $limit
-
-                    $Counter += $limit
-                } #End While
+                if ($Parallel) {
+                    $resultsArrayList = Get-JCResults -URL $URL -method "POST" -limit $limit -body $SearchJSON -Parallel $true
+                } else {
+                    $resultsArrayList = Get-JCResults -URL $URL -method "POST" -limit $limit -body $SearchJSON
+                }
 
             } #End search
 
-            ByID
-            {
+            ByID {
 
                 $URL = "$JCUrlBasePath/api/Systemusers/$Userid"
                 Write-Verbose $URL
-                $results = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
-                $null = $resultsArrayList.add($Results)
+                $resultsArrayList = Get-JCResults -URL $URL -method "GET" -limit $limit
             }
 
         } # End switch
     } # End process
 
-    end
-    {
+    end {
 
-        switch ($PSCmdlet.ParameterSetName)
-        {
-            SearchFilter
-            {
-                return $resultsArrayList.Results | Select-Object -Property *  -ExcludeProperty associatedTagCount
+        switch ($PSCmdlet.ParameterSetName) {
+            SearchFilter {
+                return $resultsArrayList | Select-Object -ExcludeProperty associatedTagCount, id, sshRootEnabled
             }
-            ByID
-            {
-                return $resultsArrayList | Select-Object -Property *  -ExcludeProperty associatedTagCount
+            ByID {
+                return $resultsArrayList | Select-Object -ExcludeProperty associatedTagCount
             }
         }
     }

@@ -3448,7 +3448,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Get-JCCommand function returns all information describing a JumpCloud command. To find the contents and payload of a specific command the -ByID Parameter must be used as this information is only accessible when using this Parameter.</maml:para>
+      <maml:para>The Get-JCCommand function returns all information describing a JumpCloud command. To find the contents and payload of a specific command the -ByID Parameter must be used as this information is only accessible when using this Parameter. Note: String parameters are case-insensitive</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -3777,7 +3777,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
         <dev:code>PS C:\&gt; Get-JCCommand -launchType 'trigger' | Get-JCCommand -ByID</dev:code>
         <dev:remarks>
           <maml:para>Returns all information describing all JumpCloud commands with a launchType of 'trigger' by passing the -CommandID Parameter to the -ByID Parameter using the pipeline and Parameter Binding.</maml:para>
-          <maml:para>Note that when running this command the time for the output to display will be directly proportionate to how many JumpCloud commands you have with a launchType of 'trigger'. The command 'Get-JCCommand -ByID' runs once for every JumpCloud command within your tenant with a launchType of 'trigger'.</maml:para>
+          <maml:para>Note that when running this command the time for the output to display will be directly proportionate to how many JumpCloud commands you have with a launchType of 'trigger'. The command 'Get-JCCommand -ByID' runs once for every JumpCloud command within your tenant with a launchType of 'trigger'. LaunchType 'trigger' or 'Trigger' will return the same information due to case-insensitivity</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
@@ -3810,7 +3810,33 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
     <command:syntax>
       <command:syntaxItem>
         <maml:name>Get-JCCommandResult</maml:name>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="_id, id">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
+          <maml:name>ByCommandID</maml:name>
+          <maml:description>
+            <maml:para>Use the -ByCommandID or -ByWorkflowID parameter when you want to query the results of a specific Command. The -ByCommandID or -ByWorkflowID SwitchParameter will set the ParameterSet to 'ByCommandID' which queries all JumpCloud Command Results for that particular Command.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName, ByValue)" position="named" aliases="WorkflowID">
+          <maml:name>CommandID</maml:name>
+          <maml:description>
+            <maml:para>The _id of the JumpCloud Command you wish to query.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Get-JCCommandResult</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName, ByValue)" position="0" aliases="_id, id">
           <maml:name>CommandResultID</maml:name>
           <maml:description>
             <maml:para>The _id of the JumpCloud Command Result you wish to query.</maml:para>
@@ -3837,72 +3863,6 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
       <command:syntaxItem>
         <maml:name>Get-JCCommandResult</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-          <maml:name>Limit</maml:name>
-          <maml:description>
-            <maml:para>How many command results to return in each API call.</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.Int32</command:parameterValue>
-          <dev:type>
-            <maml:name>System.Int32</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-          <maml:name>Skip</maml:name>
-          <maml:description>
-            <maml:para>The number of command results to skip over before returning results.</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.Int32</command:parameterValue>
-          <dev:type>
-            <maml:name>System.Int32</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-      </command:syntaxItem>
-      <command:syntaxItem>
-        <maml:name>Get-JCCommandResult</maml:name>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-          <maml:name>Limit</maml:name>
-          <maml:description>
-            <maml:para>How many command results to return in each API call.</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.Int32</command:parameterValue>
-          <dev:type>
-            <maml:name>System.Int32</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-          <maml:name>MaxResults</maml:name>
-          <maml:description>
-            <maml:para>The maximum number of results to return.</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.Int32</command:parameterValue>
-          <dev:type>
-            <maml:name>System.Int32</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-          <maml:name>Skip</maml:name>
-          <maml:description>
-            <maml:para>The number of command results to skip over before returning results.</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.Int32</command:parameterValue>
-          <dev:type>
-            <maml:name>System.Int32</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-      </command:syntaxItem>
-      <command:syntaxItem>
-        <maml:name>Get-JCCommandResult</maml:name>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>TotalCount</maml:name>
           <maml:description>
             <maml:para>A switch parameter to only return the number of command results.</maml:para>
@@ -3916,6 +3876,18 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
+        <maml:name>ByCommandID</maml:name>
+        <maml:description>
+          <maml:para>Use the -ByCommandID or -ByWorkflowID parameter when you want to query the results of a specific Command. The -ByCommandID or -ByWorkflowID SwitchParameter will set the ParameterSet to 'ByCommandID' which queries all JumpCloud Command Results for that particular Command.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Management.Automation.SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>ByID</maml:name>
         <maml:description>
@@ -3928,10 +3900,10 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
         </dev:type>
         <dev:defaultValue>False</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="_id, id">
-        <maml:name>CommandResultID</maml:name>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName, ByValue)" position="named" aliases="WorkflowID">
+        <maml:name>CommandID</maml:name>
         <maml:description>
-          <maml:para>The _id of the JumpCloud Command Result you wish to query.</maml:para>
+          <maml:para>The _id of the JumpCloud Command you wish to query.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
         <dev:type>
@@ -3940,26 +3912,14 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-        <maml:name>Limit</maml:name>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName, ByValue)" position="0" aliases="_id, id">
+        <maml:name>CommandResultID</maml:name>
         <maml:description>
-          <maml:para>How many command results to return in each API call.</maml:para>
+          <maml:para>The _id of the JumpCloud Command Result you wish to query.</maml:para>
         </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.Int32</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
         <dev:type>
-          <maml:name>System.Int32</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-        <maml:name>MaxResults</maml:name>
-        <maml:description>
-          <maml:para>The maximum number of results to return.</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.Int32</command:parameterValue>
-        <dev:type>
-          <maml:name>System.Int32</maml:name>
+          <maml:name>System.String</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -3976,23 +3936,19 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
         </dev:type>
         <dev:defaultValue>False</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-        <maml:name>Skip</maml:name>
-        <maml:description>
-          <maml:para>The number of command results to skip over before returning results.</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.Int32</command:parameterValue>
-        <dev:type>
-          <maml:name>System.Int32</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
     </command:parameters>
     <command:inputTypes>
       <command:inputType>
         <dev:type>
           <maml:name>System.String</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+      <command:inputType>
+        <dev:type>
+          <maml:name>System.Management.Automation.SwitchParameter</maml:name>
         </dev:type>
         <maml:description>
           <maml:para></maml:para>
@@ -6272,7 +6228,8 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Get-JCSystem function returns all information describing a JumpCloud system. By default this will return all Systems.</maml:para>
+      <maml:para>The Get-JCSystem function returns all information describing a JumpCloud system. By default this will return all Systems. </maml:para>
+      <maml:para>Note: String parameters are case-insensitive</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -6483,7 +6440,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
             <maml:para>Allows you to return select properties on JumpCloud system objects. Specifying what properties are returned can drastically increase the speed of the API call with a large data set. Valid properties that can be returned are: 'created', 'active', 'agentVersion', 'allowMultiFactorAuthentication', 'allowPublicKeyAuthentication', 'allowSshPasswordAuthentication', 'allowSshRootLogin', 'arch', 'created', 'displayName', 'hostname', 'lastContact', 'modifySSHDConfig', 'organization', 'os', 'remoteIP', 'serialNumber', 'sshdParams', 'systemTimezone', 'templateName', 'version'</maml:para>
           </maml:description>
           <command:parameterValueGroup>
-            <command:parameterValue required="false" command:variableLength="false">created</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">acknowledged</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">active</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">agentVersion</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">allowMultiFactorAuthentication</command:parameterValue>
@@ -6491,23 +6448,34 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
             <command:parameterValue required="false" command:variableLength="false">allowSshPasswordAuthentication</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">allowSshRootLogin</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">arch</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">azureAdJoined</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">connectionHistory</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">created</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">displayName</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">domainInfo</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">fde</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">fileSystem</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">hasServiceAccount</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">hostname</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">lastContact</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">mdm</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">modifySSHDConfig</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">networkInterfaces</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">organization</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">os</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">osFamily</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">provisionMetadata</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">remoteIP</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">serialNumber</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">serviceAccountState</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">sshdParams</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">systemTimezone</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">templateName</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">version</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">fde</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">systemInsights</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">hasServiceAccount</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">fileSystem</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">systemTimezone</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">systemToken</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">templateName</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">userMetrics</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">usernameHashes</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">version</command:parameterValue>
           </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
           <dev:type>
@@ -6990,6 +6958,13 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
           <maml:para>Returns all JumpCloud systems and the properties remoteIP and active. The default properties that return are lastContact and _id.</maml:para>
         </dev:remarks>
       </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 7 --------------------------</maml:title>
+        <dev:code>Get-JCSystem -hostname thisjchost</dev:code>
+        <dev:remarks>
+          <maml:para>Returns JumpCloud system with hostname 'thisjchost' NOTE: String parameters are case-insensitive. Hostname 'thisjchost' and 'thisJcHost' will return the same information.</maml:para>
+        </dev:remarks>
+      </command:example>
     </command:examples>
     <command:relatedLinks>
       <maml:navigationLink>
@@ -7381,7 +7356,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Get-JCUser function returns all information describing a JumpCloud user. By default it will return all Users.</maml:para>
+      <maml:para>The Get-JCUser function returns all information describing a JumpCloud user. By default it will return all Users. Note: String parameters are case-insensitive</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -7853,11 +7828,6 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
           <maml:description>
             <maml:para>A search filter to return users that are in an ACTIVATED or SUSPENDED state</maml:para>
           </maml:description>
-          <command:parameterValueGroup>
-            <command:parameterValue required="false" command:variableLength="false">ACTIVATED</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">SUSPENDED</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">STAGED</command:parameterValue>
-          </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
           <dev:type>
             <maml:name>System.String</maml:name>
@@ -8491,9 +8461,11 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
       </command:example>
       <command:example>
         <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>Get-JCUser -Username cclemons</dev:code>
+        <dev:code>Get-JCUser -Username cclemons
+Get-JCUser -Username cClemons</dev:code>
         <dev:remarks>
-          <maml:para>Returns the information describing the JumpCloud User with Username cclemons</maml:para>
+          <maml:para>Returns the information describing the JumpCloud User with Username cclemons or cCLemons (case-insensitive).</maml:para>
+          <maml:para>NOTE: String parameters are case-insensitive. Username cclemons and cClemons returns the same user information</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
@@ -14805,6 +14777,114 @@ Enter a value between 1 and 2:</dev:code>
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
+      <command:name>Set-JCSettingsFile</command:name>
+      <command:verb>Set</command:verb>
+      <command:noun>JCSettingsFile</command:noun>
+      <maml:description>
+        <maml:para>Updates the JumpCloud Module Settings File</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>The Set-JCSettingsFile function updates an the JumpCloud Module settings file.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Set-JCSettingsFile</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>moduleBannerMessageCount</maml:name>
+          <maml:description>
+            <maml:para>sets the messageCount settings for the moduleBanner feature</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.Management.Automation.PSObject</command:parameterValue>
+          <dev:type>
+            <maml:name>System.Management.Automation.PSObject</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>parallelOverride</maml:name>
+          <maml:description>
+            <maml:para>sets the Override settings for the parallel feature</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.Management.Automation.PSObject</command:parameterValue>
+          <dev:type>
+            <maml:name>System.Management.Automation.PSObject</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>moduleBannerMessageCount</maml:name>
+        <maml:description>
+          <maml:para>sets the messageCount settings for the moduleBanner feature</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Management.Automation.PSObject</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Management.Automation.PSObject</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>parallelOverride</maml:name>
+        <maml:description>
+          <maml:para>sets the Override settings for the parallel feature</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Management.Automation.PSObject</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Management.Automation.PSObject</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para></maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- Example 1 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Set-JCSettingsFile -ParallelOverride $true</dev:code>
+        <dev:remarks>
+          <maml:para>Disables parallel processing of results in the JumpCloud PowerShell Module</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version:</maml:linkText>
+        <maml:uri>https://github.com/TheJumpCloud/support/wiki/</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
       <command:name>Set-JCSystem</command:name>
       <command:verb>Set</command:verb>
       <command:noun>JCSystem</command:noun>
@@ -18398,7 +18478,7 @@ Enter a value between 1 and 2:</dev:code>
     <command:returnValues>
       <command:returnValue>
         <dev:type>
-          <maml:name>System.Object</maml:name>
+          <maml:name>System.Boolean</maml:name>
         </dev:type>
         <maml:description>
           <maml:para></maml:para>

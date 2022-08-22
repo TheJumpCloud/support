@@ -12,7 +12,7 @@
 RootModule = 'JumpCloud.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.24.0'
+ModuleVersion = '2.0.0'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -92,10 +92,10 @@ FunctionsToExport = 'Add-JCAssociation', 'Add-JCCommandTarget',
                'Remove-JCSystemGroupMember', 'Remove-JCSystemUser', 'Remove-JCUser', 
                'Remove-JCUserGroup', 'Remove-JCUserGroupMember', 
                'Send-JCPasswordReset', 'Set-JCCommand', 'Set-JCOrganization', 
-               'Set-JCRadiusReplyAttribute', 'Set-JCRadiusServer', 'Set-JCSystem', 
-               'Set-JCSystemUser', 'Set-JCUser', 'Set-JCUserGroupLDAP', 
-               'Update-JCModule', 'Update-JCUsersFromCSV', 'Get-JCEvent', 
-               'Get-JCEventCount'
+               'Set-JCRadiusReplyAttribute', 'Set-JCRadiusServer', 
+               'Set-JCSettingsFile', 'Set-JCSystem', 'Set-JCSystemUser', 'Set-JCUser', 
+               'Set-JCUserGroupLDAP', 'Update-JCModule', 'Update-JCUsersFromCSV', 
+               'Get-JCEvent', 'Get-JCEventCount'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()

@@ -104,7 +104,7 @@ Function New-JCImportTemplate() {
                 if ($JCAPIKEY.length -ne 40) {
                     Connect-JConline
                 }
-                $ExistingUsers = Get-Hash_ID_Username
+                $ExistingUsers = Get-DynamicHash -Object User -returnProperties username
             }
 
             elseif ($ConfirmUserPop -eq 'N') {
@@ -153,7 +153,6 @@ Function New-JCImportTemplate() {
 
         elseif ($ConfirmLDAPLocationAttributes -eq 'N') {
         }
-
 
         Write-Host "`nDo you want to add extended user location attributes available over JumpCloud LDAP to your users during import?"
         Write-Host 'Extended user location attributes include: ' -NoNewline
@@ -341,7 +340,7 @@ Function New-JCImportTemplate() {
 
             foreach ($User in $ExistingUsers.GetEnumerator()) {
                 $CSVUserAdd = $CSV
-                $CSVUserAdd.Username = $User.value
+                $CSVUserAdd.Username = $User.value.username
                 $UserObject = New-Object psobject -Property $CSVUserAdd
                 $CSVheader += $UserObject
             }

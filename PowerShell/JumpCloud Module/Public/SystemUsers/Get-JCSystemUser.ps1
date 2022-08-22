@@ -1,5 +1,4 @@
-function Get-JCSystemUser ()
-{
+function Get-JCSystemUser () {
     [CmdletBinding()]
 
     param
@@ -16,11 +15,11 @@ SystemID has an Alias of _id. This means you can leverage the PowerShell pipelin
         [String]$SystemID
     )
 
-    begin
-
-    {
+    begin {
         Write-Verbose 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {Connect-JConline}
+        if ($JCAPIKEY.length -ne 40) {
+            Connect-JConline
+        }
 
         Write-Verbose 'Populating API headers'
         $hdrs = @{
@@ -31,121 +30,145 @@ SystemID has an Alias of _id. This means you can leverage the PowerShell pipelin
 
         }
 
-        if ($JCOrgID)
-        {
+        if ($JCOrgID) {
             $hdrs.Add('x-org-id', "$($JCOrgID)")
         }
 
         [int]$limit = '100'
         Write-Verbose "Setting limit to $limit"
 
-        Write-Verbose 'Initilizing resultsArrayList and resultsArray'
-        $resultsArrayList = New-Object System.Collections.ArrayList
-        $resultsArray = @()
+        $Parallel = $JCConfig.parallel.Calculated
 
-        Write-Verbose 'Populating UserIDHash'
-        $UserIDHash = Get-Hash_ID_Username
-
-        Write-Verbose 'Populating SystemIDHash'
-        $SystemIDHash = Get-Hash_SystemID_HostName
-
-        Write-Verbose 'Populating DisplayNameHash'
-        $DisplayNameHash = Get-Hash_SystemID_DisplayName
-
-        Write-Verbose 'Populating SudoHash'
-        $SudoHash = Get-Hash_ID_Sudo
-
-    }
-
-    process
-    {
-        Write-Verbose 'Setting skip to zero'
-        [int]$skip = 0 #Do not change!
-
-        while (($resultsArray.results).Count -ge $skip)
-        {
-            $URI = "$JCUrlBasePath/api/v2/systems/$SystemID/users?sort=type,_id&limit=$limit&skip=$skip"
-
-            Write-Verbose $URI
-
-            $APIresults = Invoke-RestMethod -Method GET -Uri $URI -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent)
-
-            $skip += $limit
-            Write-Verbose "Setting skip to $skip"
-
-            $resultsArray += $APIresults
-
-            $count = ($resultsArray).Count
-            Write-Verbose "Results count equals $count"
+        if ($Parallel) {
+            $resultsArray = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
+            $resultsArrayList = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
+        } else {
+            Write-Verbose 'Initilizing resultsArrayList and resultsArray'
+            $resultsArrayList = New-Object System.Collections.ArrayList
+            $resultsArray = @()
         }
 
+        $UserHash = Get-DynamicHash -Object User -returnProperties username, sudo
+        $SystemHash = Get-DynamicHash -Object System -returnProperties hostname, displayName
+    }
 
-        $Hostname = $SystemIDHash.Get_Item($SystemID)
-        $DisplayName = $DisplayNameHash.Get_Item($SystemID)
+    process {
+        $limitURL = "{0}/api/v2/systems/{1}/users" -f $JCUrlBasePath, $SystemID
 
-        foreach ($result in $resultsArray)
-        {
-            $UserID = $result.id
-            $Username = $UserIDHash.Get_Item($UserID)
-            $Groups = $result.compiledAttributes.ldapGroups.name
+        Write-Verbose $limitURL
 
-            if (($result.paths.to).Count -eq $null)
-            {
-                $DirectBind = $true
-            }
-            elseif ((($result.paths.to).Count % 3 -eq 0))
-            {
-                $DirectBind = $false
-            }
-            else
-            {
-                $DirectBind = $true
-            }
+        if ($Parallel) {
+            $resultsArray = Get-JCResults -Url $limitURL -method "GET" -limit $limit -parallel $true
+        } else {
+            $resultsArray = Get-JCResults -Url $limitURL -method "GET" -limit $limit
+        }
 
-            if ($result.compiledAttributes.sudo.enabled -eq $true)
-            {
+        $count = ($resultsArray).Count
+        Write-Verbose "Results count equals $count"
 
-                $Admin = $true
-            }
-            else
-            {
 
-                $Sudo = $SudoHash.Get_Item($UserID)
+        $Hostname = $SystemHash.Get_Item($SystemID).hostname
+        $DisplayName = $SystemHash.Get_Item($SystemID).displayName
 
-                if ($Sudo -eq $true)
-                {
+        if ($Parallel) {
+            $resultsArray | ForEach-Object -Parallel {
+                $UserHash = $using:UserHash
+                $resultsArrayList = $using:resultsArrayList
+
+                $UserID = $_.id
+                $Username = $UserHash.Get_Item($UserID).username
+                $Groups = $_.compiledAttributes.ldapGroups.name
+
+                if ($null -eq ($_.paths.to).Count) {
+                    $DirectBind = $true
+                } elseif ((($_.paths.to).Count % 3 -eq 0)) {
+                    $DirectBind = $false
+                } else {
+                    $DirectBind = $true
+                }
+
+                if ($_.compiledAttributes.sudo.enabled -eq $true) {
 
                     $Admin = $true
+                } else {
+
+                    $Sudo = $UserHash.Get_Item($UserID).sudo
+
+                    if ($Sudo -eq $true) {
+
+                        $Admin = $true
+
+                    }
+
+                    else {
+                        $Admin = $false
+                    }
 
                 }
 
-                else
-                {
-                    $Admin = $false
+                $SystemUser = [pscustomobject]@{
+                    'DisplayName'   = $using:DisplayName
+                    'HostName'      = $using:Hostname
+                    'SystemID'      = $using:SystemID
+                    'Username'      = $Username
+                    'Administrator' = $Admin
+                    'DirectBind'    = $DirectBind
+                    'BindGroups'    = @($Groups)
                 }
 
+                $resultsArrayList.Add($SystemUser) | Out-Null
             }
+        } else {
+            foreach ($result in $resultsArray) {
+                $UserID = $result.id
+                $Username = $UserHash.Get_Item($UserID).username
+                $Groups = $result.compiledAttributes.ldapGroups.name
 
-            $SystemUser = [pscustomobject]@{
-                'DisplayName'   = $DisplayName
-                'HostName'      = $Hostname
-                'SystemID'      = $SystemID
-                'Username'      = $Username
-                'Administrator' = $Admin
-                'DirectBind'    = $DirectBind
-                'BindGroups'    = @($Groups)
+                if ($null -eq ($result.paths.to).Count) {
+                    $DirectBind = $true
+                } elseif ((($result.paths.to).Count % 3 -eq 0)) {
+                    $DirectBind = $false
+                } else {
+                    $DirectBind = $true
+                }
+
+                if ($result.compiledAttributes.sudo.enabled -eq $true) {
+
+                    $Admin = $true
+                } else {
+
+                    $Sudo = $UserHash.Get_Item($UserID).sudo
+
+                    if ($Sudo -eq $true) {
+
+                        $Admin = $true
+
+                    }
+
+                    else {
+                        $Admin = $false
+                    }
+
+                }
+
+                $SystemUser = [pscustomobject]@{
+                    'DisplayName'   = $DisplayName
+                    'HostName'      = $Hostname
+                    'SystemID'      = $SystemID
+                    'Username'      = $Username
+                    'Administrator' = $Admin
+                    'DirectBind'    = $DirectBind
+                    'BindGroups'    = @($Groups)
+                }
+
+                $resultsArrayList.Add($SystemUser) | Out-Null
+
             }
-
-            $resultsArrayList.Add($SystemUser) | Out-Null
-
         }
-
         $resultsArray = $null
-
     }
 
-    end
-    {
+    end {
         return $resultsArrayList
     }
 }

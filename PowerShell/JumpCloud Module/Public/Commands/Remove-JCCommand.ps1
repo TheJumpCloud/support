@@ -1,5 +1,5 @@
-Function Remove-JCCommand () #Ready for pester
-{
+Function Remove-JCCommand () {
+    #Ready for pester
     [CmdletBinding(DefaultParameterSetName = 'warn')]
 
     param
@@ -14,10 +14,11 @@ The CommandID will be the 24 character string populated for the _id field. Comma
         [Parameter(ParameterSetName = 'force', HelpMessage = 'A SwitchParameter which removes the warning message when removing a JumpCloud Command.')]
         [Switch]$force
     )
-    begin
-    {
+    begin {
         Write-Debug 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {Connect-JConline}
+        if ($JCAPIKEY.length -ne 40) {
+            Connect-JConline
+        }
 
         Write-Debug 'Populating API headers'
         $hdrs = @{
@@ -28,33 +29,25 @@ The CommandID will be the 24 character string populated for the _id field. Comma
 
         }
 
-        if ($JCOrgID)
-        {
+        if ($JCOrgID) {
             $hdrs.Add('x-org-id', "$($JCOrgID)")
         }
 
         $deletedArray = @()
-        $CommandNameHash = Get-Hash_ID_CommandName
+        $CommandNameHash = Get-DynamicHash -Object Command -returnProperties name
 
     }
-    process
-
-    {
-        if ($PSCmdlet.ParameterSetName -eq 'warn')
-
-        {
-            $CommandName = $CommandNameHash.Get_Item($CommandID)
+    process {
+        if ($PSCmdlet.ParameterSetName -eq 'warn') {
+            $CommandName = $CommandNameHash.Get_Item($CommandID).name
             Write-Warning "Are you sure you want to remove command: $CommandName ?" -WarningAction Inquire
 
-            try
-            {
+            try {
 
                 $URI = "$JCUrlBasePath/api/commands/$CommandID"
                 $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent:(Get-JCUserAgent)
                 $Status = 'Deleted'
-            }
-            catch
-            {
+            } catch {
                 $Status = $_.ErrorDetails
             }
 
@@ -69,19 +62,15 @@ The CommandID will be the 24 character string populated for the _id field. Comma
 
         }
 
-        elseif ($PSCmdlet.ParameterSetName -eq 'force')
-        {
+        elseif ($PSCmdlet.ParameterSetName -eq 'force') {
 
-            try
-            {
-                $CommandName = $CommandNameHash.Get_Item($CommandID)
+            try {
+                $CommandName = $CommandNameHash.Get_Item($CommandID).name
 
                 $URI = "$JCUrlBasePath/api/commands/$CommandID"
                 $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent:(Get-JCUserAgent)
                 $Status = 'Deleted'
-            }
-            catch
-            {
+            } catch {
                 $Status = $_.ErrorDetails
             }
 
@@ -98,8 +87,7 @@ The CommandID will be the 24 character string populated for the _id field. Comma
         }
     }
 
-    end
-    {
+    end {
 
         return $deletedArray
 

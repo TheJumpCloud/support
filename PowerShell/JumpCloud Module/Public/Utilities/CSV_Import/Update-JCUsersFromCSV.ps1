@@ -132,11 +132,11 @@ Function Update-JCUsersFromCSV () {
                 Write-Host ""
                 Write-Host -BackgroundColor Green -ForegroundColor Black "Validating $($employeeIdentifierCheck.employeeIdentifier.Count) employeeIdentifiers"
 
-                $ExistingEmployeeIdentifierCheck = Get-Hash_employeeIdentifier_username
+                $ExistingEmployeeIdentifierCheck = Get-DynamicHash -Object User -returnProperties username, employeeIdentifier
 
                 foreach ($User in $employeeIdentifierCheck) {
-                    if ($ExistingEmployeeIdentifierCheck.ContainsKey($User.employeeIdentifier)) {
-                        Write-Warning "The user $($ExistingEmployeeIdentifierCheck.($User.employeeIdentifier)) has the employeeIdentifier: $($User.employeeIdentifier). User $($User.username) will not be updated."
+                    if ($ExistingEmployeeIdentifierCheck.Values.employeeIdentifier -contains ($User.employeeIdentifier)) {
+                        Write-Warning "The user $($ExistingEmployeeIdentifierCheck.GetEnumerator().Where({$_.Value.employeeIdentifier -contains $User.employeeIdentifier}).username) has the employeeIdentifier: $($User.employeeIdentifier). User $($User.username) will not be updated."
                     } else {
                         Write-Verbose "$($User.employeeIdentifier) does not exist"
                     }
@@ -159,12 +159,12 @@ Function Update-JCUsersFromCSV () {
             if ($SystemCount.count -gt 0) {
                 Write-Host ""
                 Write-Host -BackgroundColor Green -ForegroundColor Black "Validating $($SystemCount.count) Systems"
-                $SystemCheck = Get-Hash_SystemID_HostName
+                $SystemCheck = Get-DynamicHash -Object System -returnProperties hostname
 
                 foreach ($User in $UpdateUsers) {
                     if (($User.SystemID).length -gt 1) {
 
-                        if ($SystemCheck.ContainsKey($User.SystemID)) {
+                        if ($SystemCheck[$User.SystemID]) {
                             Write-Verbose "$($User.SystemID) exists"
                         } else {
                             Write-Warning "A system with SystemID: $($User.SystemID) does not exist and will not be bound to user $($User.Username)"
@@ -209,7 +209,6 @@ Function Update-JCUsersFromCSV () {
                         $GroupArrayList.Add($CheckGroup) | Out-Null
 
                     }
-
                     else {
                     }
 
@@ -221,10 +220,10 @@ Function Update-JCUsersFromCSV () {
 
             if ($UniqueGroups.count -gt 0) {
                 Write-Host -BackgroundColor Green -ForegroundColor Black "Validating $($UniqueGroups.count) Groups"
-                $GroupCheck = Get-Hash_UserGroupName_ID
+                $GroupCheck = Get-DynamicHash -Object Group -GroupType User -returnProperties name
 
                 foreach ($GroupTest in $UniqueGroups) {
-                    if ($GroupCheck.ContainsKey($GroupTest.Value)) {
+                    if ($GroupCheck.Values.name -contains ($GroupTest.Value)) {
                         Write-Verbose "$($GroupTest.Value) exists"
                     } else {
                         Write-Host "The JumpCloud Group:" -NoNewLine

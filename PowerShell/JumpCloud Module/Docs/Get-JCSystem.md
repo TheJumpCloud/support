@@ -29,7 +29,9 @@ Get-JCSystem -SystemID <String> [-SystemFDEKey] -dateFilter <String> -date <Date
 ```
 
 ## DESCRIPTION
-The Get-JCSystem function returns all information describing a JumpCloud system. By default this will return all Systems.
+The Get-JCSystem function returns all information describing a JumpCloud system. By default this will return all Systems. 
+
+Note: String parameters are case-insensitive
 
 ## EXAMPLES
 
@@ -74,6 +76,14 @@ Get-JCSystem -returnProperties remoteIP, active
 ```
 
 Returns all JumpCloud systems and the properties remoteIP and active. The default properties that return are lastContact and _id.
+
+### Example 7
+```powershell
+Get-JCSystem -hostname thisjchost
+```
+
+Returns JumpCloud system with hostname 'thisjchost'
+NOTE: String parameters are case-insensitive. Hostname 'thisjchost' and 'thisJcHost' will return the same information.
 
 ## PARAMETERS
 
@@ -331,7 +341,7 @@ Valid properties that can be returned are: 'created', 'active', 'agentVersion', 
 Type: System.String[]
 Parameter Sets: SearchFilter
 Aliases:
-Accepted values: created, active, agentVersion, allowMultiFactorAuthentication, allowPublicKeyAuthentication, allowSshPasswordAuthentication, allowSshRootLogin, arch, created, displayName, hostname, lastContact, modifySSHDConfig, organization, os, remoteIP, serialNumber, sshdParams, systemTimezone, templateName, version, fde, systemInsights, hasServiceAccount, fileSystem
+Accepted values: acknowledged, active, agentVersion, allowMultiFactorAuthentication, allowPublicKeyAuthentication, allowSshPasswordAuthentication, allowSshRootLogin, arch, azureAdJoined, connectionHistory, created, displayName, domainInfo, fde, fileSystem, hasServiceAccount, hostname, lastContact, mdm, modifySSHDConfig, networkInterfaces, organization, os, osFamily, provisionMetadata, remoteIP, serialNumber, serviceAccountState, sshdParams, systemInsights, systemTimezone, systemToken, templateName, userMetrics, usernameHashes, version
 
 Required: False
 Position: Named

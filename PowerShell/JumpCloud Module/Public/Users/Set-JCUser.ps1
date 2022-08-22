@@ -339,7 +339,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
         $UpdatedUserArray = @()
 
         if ($PSCmdlet.ParameterSetName -ne 'ByID') {
-            $UserHash = Get-Hash_UserName_ID
+            $UserHash = Get-DynamicHash -Object User -returnProperties username
             $UserCount = ($UserHash).Count
             Write-Debug "Populated UserHash with $UserCount users"
         }
@@ -380,8 +380,8 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
         $body = @{ }
 
         if ($PSCmdlet.ParameterSetName -ne 'ByID') {
-            if ($UserHash.ContainsKey($Username)) {
-                $URL_ID = $UserHash.Get_Item($Username)
+            if ($UserHash.Values.username -contains ($Username)) {
+                $URL_ID = $UserHash.GetEnumerator().Where({ $_.Value.username -contains ($Username) }).Name
                 Write-Debug $URL_ID
             }
 
@@ -531,8 +531,8 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
         }
         if ($PSCmdlet.ParameterSetName -eq 'Username' -and !$NumberOfCustomAttributes) {
-            if ($UserHash.ContainsKey($Username)) {
-                $URL_ID = $UserHash.Get_Item($Username)
+            if ($UserHash.Values.username -contains ($Username)) {
+                $URL_ID = $UserHash.GetEnumerator().Where({ $_.Value.username -contains ($Username) }).Name
                 Write-Debug $URL_ID
 
                 $URL = "$JCUrlBasePath/api/Systemusers/$URL_ID"
@@ -694,8 +694,8 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
         }
 
         elseif ($PSCmdlet.ParameterSetName -eq 'Username' -and ($NumberOfCustomAttributes)) {
-            if ($UserHash.ContainsKey($Username)) {
-                $URL_ID = $UserHash.Get_Item($Username)
+            if ($UserHash.Values.username -contains ($Username)) {
+                $URL_ID = $UserHash.GetEnumerator().Where({ $_.Value.username -contains ($Username) }).Name
                 Write-Debug $URL_ID
 
                 $URL = "$JCUrlBasePath/api/Systemusers/$URL_ID"
@@ -936,8 +936,8 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
         }
 
         elseif ($PSCmdlet.ParameterSetName -eq 'RemoveAttribute') {
-            if ($UserHash.ContainsKey($Username)) {
-                $URL_ID = $UserHash.Get_Item($Username)
+            if ($UserHash.Values.username -contains ($Username)) {
+                $URL_ID = $UserHash.GetEnumerator().Where({ $_.Value.username -contains ($Username) }).Name
                 Write-Debug $URL_ID
 
                 $URL = "$JCUrlBasePath/api/Systemusers/$URL_ID"
@@ -1456,8 +1456,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
         }
     }
-    end
-    {
+    end {
         return $UpdatedUserArray
     }
 }
