@@ -11,7 +11,7 @@ mac
 ```
 set -euo pipefail
 
-declare -r REMOTE_DMG_URL="https://cdn.awsstg.jumpcloud.com/TheJumpCloud/jumpcloud-remote-assist-agent/latest/jumpcloud-assist-app.dmg"
+declare -r REMOTE_DMG_URL="https://cdn.jumpcloud.com/TheJumpCloud/jumpcloud-remote-assist-agent/v0.0.5/jumpcloud-assist-app.dmg"
 declare -r LOCAL_DMG_TMP_PATH="/tmp/jumpcloud-assist-app.dmg"
 declare -r APP_NAME="Jumpcloud Assist App"
 declare -r APP_FILENAME="$APP_NAME.app"
