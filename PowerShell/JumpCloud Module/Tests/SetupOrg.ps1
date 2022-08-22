@@ -2,8 +2,7 @@ Param(
     [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0)][ValidateNotNullOrEmpty()][System.String]$JumpCloudApiKey
     , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 1)][ValidateNotNullOrEmpty()][System.String]$JumpCloudApiKeyMsp
 )
-Try
-{
+Try {
     # Import JC Module
     Import-Module "$PSScriptRoot/../JumpCloud.psd1"
     # Authenticate to JumpCloud
@@ -14,8 +13,7 @@ Try
         VariableNamePrefixHash = 'PesterParamsHash_';
     }
     # Tear down org
-    Function Remove-Org
-    {
+    Function Remove-Org {
         Param(
             [switch]$Users
             , [switch]$Systems
@@ -27,8 +25,7 @@ Try
             , [switch]$RadiusServers
         )
         # Remove all users from an org
-        If ($Users)
-        {
+        If ($Users) {
             $NonExternallyManagedUsersToRemove = Get-JCUser | Where-Object { ($_.Email -like '*delete*' -or $_.Email -like '*pester*') -and -not $_.externally_managed }
             $RemoveNonExternallyManagedUsers = $NonExternallyManagedUsersToRemove | Remove-JCUser -force
             $ExternallyManagedUsersToRemove = Get-JCUser | Where-Object { ($_.Email -like '*delete*' -or $_.Email -like '*pester*') -and $_.externally_managed }
@@ -36,36 +33,29 @@ Try
             $RemoveExternallyManagedUsers = $ExternallyManagedUsersToRemove | Remove-JCUser -force
         }
         # Remove all systems from an org
-        If ($Systems)
-        {
+        If ($Systems) {
             $null = Get-JCSystem | Remove-JCSystem -force
         }
         # Remove all groups from an org
-        If ($Groups)
-        {
+        If ($Groups) {
             # TODO: if system group is assigned to MDM this will throw an error
             $null = Get-JCGroup | ForEach-Object {
-                If ($_.Type -eq 'system_group')
-                {
+                If ($_.Type -eq 'system_group') {
                     # write-host $_.Name
                     Remove-JCSystemGroup -GroupName:($_.Name) -force
-                }
-                elseif ($_.Type -eq 'user_group')
-                {
+                } elseif ($_.Type -eq 'user_group') {
                     # write-host $_.Name
                     Remove-JCUserGroup -GroupName:($_.Name) -force
                 }
             }
         }
         # Remove all Commands from an org
-        If ($Commands)
-        {
+        If ($Commands) {
             $null = Get-JCCommand | Remove-JCCommand -force
             $null = Get-JCCommandResult | Remove-JCCommandResult -force
         }
         # Remove all RadiusServers from an org
-        If ($RadiusServers)
-        {
+        If ($RadiusServers) {
             $null = Get-JCRadiusServer | Remove-JCRadiusServer -Force
         }
     }
@@ -99,32 +89,41 @@ Try
 
     $PesterParamsHash_Associations = @{
         PolicySystemGroupMembership   = $PesterParamsHash_BuildOrg.MultiplePolicy | ForEach-Object {
-            If (-not (Get-JCAssociation -Type:('policy') -Id:($_.id) -TargetType:('system_group') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.SystemGroup.id })) { New-JCAssociation -Type:('policy') -Id:($_.id) -TargetType:('system_group') -TargetId:($PesterParamsHash_BuildOrg.SystemGroup.id) -force; };
+            If (-not (Get-JCAssociation -Type:('policy') -Id:($_.id) -TargetType:('system_group') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.SystemGroup.id })) {
+                New-JCAssociation -Type:('policy') -Id:($_.id) -TargetType:('system_group') -TargetId:($PesterParamsHash_BuildOrg.SystemGroup.id) -force; 
+            };
         };
-        UserGroupMembership           = If (-not (Get-JCAssociation -Type:('user_group') -Id:($PesterParamsHash_BuildOrg.UserGroup.id) -TargetType:('user') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.User1.id })) { New-JCAssociation -Type:('user_group') -Id:($PesterParamsHash_BuildOrg.UserGroup.id) -TargetType:('user') -TargetId:($PesterParamsHash_BuildOrg.User1.id) -force; };
-        SystemUserMembership          = If (-not (Get-JCAssociation -Type:('system') -Id:($PesterParamsHash_BuildOrg.SystemLinux._id) -TargetType:('user') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.User1.id })) { New-JCAssociation -Type:('system') -Id:($PesterParamsHash_BuildOrg.SystemLinux._id) -TargetType:('user') -TargetId:($PesterParamsHash_BuildOrg.User1.id) -force; };
-        SystemPolicyMembership        = If (-not (Get-JCAssociation -Type:('system') -Id:($PesterParamsHash_BuildOrg.SystemLinux._id) -TargetType:('policy') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.SinglePolicy.id })) { New-JCAssociation -Type:('system') -Id:($PesterParamsHash_BuildOrg.SystemLinux._id) -TargetType:('policy') -TargetId:($PesterParamsHash_BuildOrg.SinglePolicy.id) -force; };
-        Command1SystemGroupMembership = If (-not (Get-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command1._id) -TargetType:('system_group') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.SystemGroup.id })) { New-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command1._id) -TargetType:('system_group') -TargetId:($PesterParamsHash_BuildOrg.SystemGroup.id) -force; };
-        Command2SystemGroupMembership = If (-not (Get-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command2._id) -TargetType:('system_group') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.SystemGroup.id })) { New-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command2._id) -TargetType:('system_group') -TargetId:($PesterParamsHash_BuildOrg.SystemGroup.id) -force; };
-        Command3SystemGroupMembership = If (-not (Get-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command3._id) -TargetType:('system_group') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.SystemGroup.id })) { New-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command3._id) -TargetType:('system_group') -TargetId:($PesterParamsHash_BuildOrg.SystemGroup.id) -force; };
+        UserGroupMembership           = If (-not (Get-JCAssociation -Type:('user_group') -Id:($PesterParamsHash_BuildOrg.UserGroup.id) -TargetType:('user') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.User1.id })) {
+            New-JCAssociation -Type:('user_group') -Id:($PesterParamsHash_BuildOrg.UserGroup.id) -TargetType:('user') -TargetId:($PesterParamsHash_BuildOrg.User1.id) -force; 
+        };
+        SystemUserMembership          = If (-not (Get-JCAssociation -Type:('system') -Id:($PesterParamsHash_BuildOrg.SystemLinux._id) -TargetType:('user') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.User1.id })) {
+            New-JCAssociation -Type:('system') -Id:($PesterParamsHash_BuildOrg.SystemLinux._id) -TargetType:('user') -TargetId:($PesterParamsHash_BuildOrg.User1.id) -force; 
+        };
+        SystemPolicyMembership        = If (-not (Get-JCAssociation -Type:('system') -Id:($PesterParamsHash_BuildOrg.SystemLinux._id) -TargetType:('policy') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.SinglePolicy.id })) {
+            New-JCAssociation -Type:('system') -Id:($PesterParamsHash_BuildOrg.SystemLinux._id) -TargetType:('policy') -TargetId:($PesterParamsHash_BuildOrg.SinglePolicy.id) -force; 
+        };
+        Command1SystemGroupMembership = If (-not (Get-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command1._id) -TargetType:('system_group') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.SystemGroup.id })) {
+            New-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command1._id) -TargetType:('system_group') -TargetId:($PesterParamsHash_BuildOrg.SystemGroup.id) -force; 
+        };
+        Command2SystemGroupMembership = If (-not (Get-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command2._id) -TargetType:('system_group') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.SystemGroup.id })) {
+            New-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command2._id) -TargetType:('system_group') -TargetId:($PesterParamsHash_BuildOrg.SystemGroup.id) -force; 
+        };
+        Command3SystemGroupMembership = If (-not (Get-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command3._id) -TargetType:('system_group') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.SystemGroup.id })) {
+            New-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command3._id) -TargetType:('system_group') -TargetId:($PesterParamsHash_BuildOrg.SystemGroup.id) -force; 
+        };
     }
     # Generate command results if they dont exist
-    If ([System.String]::IsNullOrEmpty($PesterParamsHash_BuildOrg.CommandResults) -or $PesterParamsHash_BuildOrg.CommandResults.Count -lt $PesterParams_CommandResultCount)
-    {
-        If (-not (Get-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command1._id) -TargetType:('system') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.SystemLinux._id }))
-        {
+    If ([System.String]::IsNullOrEmpty($PesterParamsHash_BuildOrg.CommandResults) -or $PesterParamsHash_BuildOrg.CommandResults.Count -lt $PesterParams_CommandResultCount) {
+        If (-not (Get-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command1._id) -TargetType:('system') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.SystemLinux._id })) {
             New-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command1._id) -TargetType:('system') -TargetId:($PesterParamsHash_BuildOrg.SystemLinux._id) -force
         };
-        For ($i = 1; $i -le $PesterParams_CommandResultCount; $i++)
-        {
+        For ($i = 1; $i -le $PesterParams_CommandResultCount; $i++) {
             Invoke-JCCommand -trigger:($PesterParamsHash_BuildOrg.Command1.trigger)
         }
-        While ((Get-JCCommandResult | Where-Object { $_.Name -eq $PesterParamsHash_BuildOrg.Command1.name }).Count -ge $PesterParams_CommandResultCount)
-        {
+        While ((Get-JCCommandResult | Where-Object { $_.Name -eq $PesterParamsHash_BuildOrg.Command1.name }).Count -ge $PesterParams_CommandResultCount) {
             Start-Sleep -Seconds:(1)
         }
-        If ((Get-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command1._id) -TargetType:('system') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.SystemLinux._id }))
-        {
+        If ((Get-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command1._id) -TargetType:('system') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.SystemLinux._id })) {
             Remove-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command1._id) -TargetType:('system') -TargetId:($PesterParamsHash_BuildOrg.SystemLinux._id) -force
         };
     }
@@ -134,9 +133,7 @@ Try
             Set-Variable -Name:("$($PesterParamsHash_VariableName.VariableNamePrefix)$($_.Name)") -Value:($_.Value) -Scope:('Global')
         }
     }
-}
-Catch
-{
+} Catch {
     Write-Error ($_.Exception)
     Write-Error ($_.FullyQualifiedErrorId)
     Write-Error ($_.ScriptStackTrace)

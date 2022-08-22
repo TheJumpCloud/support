@@ -365,7 +365,7 @@ Function Get-JCUser () {
                             }
                             continue
                         }
-                    }
+                    } # end manager lookup
 
                     # case insensitive state param
                     if ("state" -eq $param.Key) {
@@ -381,36 +381,35 @@ Function Get-JCUser () {
                         }
                         continue
                     }
+
+                    $Value = ($param.value).replace('*', '')
+
+                    if (($param.Value -match '.+?\*$') -and ($param.Value -match '^\*.+?')) {
+                        # Front and back wildcard
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)$([regex]::Escape($Value))" })
+                    } elseif ($param.Value -match '.+?\*$') {
+                        # Back wildcard
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)^$([regex]::Escape($Value))" })
+                    } elseif ($param.Value -match '^\*.+?') {
+                        # Front wild card
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)$([regex]::Escape($Value))`$" })
+                    } elseif ($param.Value -match '^[-+]?\d+$') {
+                        # Check for integer value
+                            (($Search.filter).GetEnumerator()).add($param.Key, $([regex]::Escape($Value)))
+                    } else {
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)(^$([regex]::Escape($Value))`$)" })
+                    }
                 } # End Foreach
 
-                # case insensitve state param
-                if ("state" -eq $param.Key) {
-                    if ($param.Value -cin @('ACTIVATED', 'SUSPENDED', 'STAGED')) {
-                        $stateValue = $param.Value
-                    } else {
-                        $stateValue = ($param.Value).ToUpper()
-                    }
-                    continue
-                }
-
-                $Value = ($param.value).replace('*', '')
-
-                if (($param.Value -match '.+?\*$') -and ($param.Value -match '^\*.+?')) {
-                    # Front and back wildcard
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)$([regex]::Escape($Value))" })
-                } elseif ($param.Value -match '.+?\*$') {
-                    # Back wildcard
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)^$([regex]::Escape($Value))" })
-                } elseif ($param.Value -match '^\*.+?') {
-                    # Front wild card
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)$([regex]::Escape($Value))`$" })
-                } elseif ($param.Value -match '^[-+]?\d+$') {
-                    # Check for integer value
-                            (($Search.filter).GetEnumerator()).add($param.Key, $([regex]::Escape($Value)))
-                } else {
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)(^$([regex]::Escape($Value))`$)" })
-                }
-
+                # # case insensitve state param
+                # if ("state" -eq $param.Key) {
+                #     if ($param.Value -cin @('ACTIVATED', 'SUSPENDED', 'STAGED')) {
+                #         $stateValue = $param.Value
+                #     } else {
+                #         $stateValue = ($param.Value).ToUpper()
+                #     }
+                #     continue
+                # }
                 if ($filterDateProperty) {
                     (($Search.filter).GetEnumerator()).add($DateProperty, @{$DateQuery = $Timestamp })
                 }
