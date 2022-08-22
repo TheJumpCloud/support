@@ -19,7 +19,7 @@ Function Get-JCCommandTarget {
             Connect-JConline
         }
 
-        $Parallel = $JCParallel
+        $Parallel = $JCConfig.parallel.Calculated
 
         if ($Parallel) {
             Write-Debug 'Initilizing resultsArray'
@@ -101,7 +101,7 @@ Function Get-JCCommandTarget {
                         # resultsArrayList generation
                         $CommandName = $CommandHash[$CommandID].name
                         $Trigger = $CommandHash[$CommandID].trigger
-                        $SystemID = $_.id
+                        $SystemID = $result.id
                         $Hostname = $SystemHash[$SystemID].hostname
                         $Displyname = $SystemHash[$SystemID].displayName
 
@@ -158,7 +158,7 @@ Function Get-JCCommandTarget {
                     foreach ($result in $RawResults) {
                         # resultsArrayList generation
                         $CommandName = $CommandHash[$CommandID].name
-                        $GroupID = $_.id
+                        $GroupID = $result.id
                         $GroupName = $SystemGroupNameHash[$GroupID].name
 
                         $Group = [pscustomobject]@{

@@ -1,5 +1,4 @@
-function Get-JCCommandResult ()
-{
+function Get-JCCommandResult () {
     [CmdletBinding(DefaultParameterSetName = 'ReturnAll')]
 
     param
@@ -21,10 +20,11 @@ function Get-JCCommandResult ()
         [Parameter(ParameterSetName = 'TotalCount', HelpMessage = 'A switch parameter to only return the number of command results.')]
         [Switch]$TotalCount
     )
-    begin
-    {
+    begin {
         Write-Verbose 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {Connect-JConline}
+        if ($JCAPIKEY.length -ne 40) {
+            Connect-JConline
+        }
 
         Write-Verbose 'Populating API headers'
         $hdrs = @{
@@ -33,60 +33,51 @@ function Get-JCCommandResult ()
             'Accept'       = 'application/json'
             'X-API-KEY'    = $JCAPIKEY
         }
-        if ($JCOrgID)
-        {
+        if ($JCOrgID) {
             $hdrs.Add('x-org-id', "$($JCOrgID)")
         }
 
-        $Parallel = $JCParallel
+        $Parallel = $JCConfig.parallel.Calculated
 
         if ($Parallel) {
             Write-Debug "Parallel set to True, PSVersion greater than 7"
             $resultsArray = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
             $resultsArrayList = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
-        }
-        else {
+        } else {
             Write-Verbose 'Initilizing resultsArraylist'
             $resultsArray = New-Object -TypeName System.Collections.ArrayList
             $resultsArrayList = New-Object -TypeName System.Collections.ArrayList
         }
         $limit = 100
     }
-    process
-    {
-        switch ($PSCmdlet.ParameterSetName)
-        {
-            TotalCount
-            {
+    process {
+        switch ($PSCmdlet.ParameterSetName) {
+            TotalCount {
                 $CountURL = "$JCUrlBasePath/api/commandresults?limit=1&skip=0"
                 $results = Invoke-RestMethod -Method GET -Uri  $CountURL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
                 $null = $resultsArrayList.Add($results.totalCount)
             }#End TotalCount
-            ReturnAll
-            {
+            ReturnAll {
                 $limitURL = "$JCUrlBasePath/api/commandresults"
                 if ($Parallel) {
                     $resultsArrayList = Get-JCResults -Url $limitURL -method "GET" -limit $limit -parallel $true
-                }
-                else {
+                } else {
                     $resultsArrayList = Get-JCResults -Url $limitURL -method "GET" -limit $limit
                 }
                 $count = ($resultsArrayList.Count)
                 Write-Verbose "Results count equals $count"
             }#End ReturnAll
-            ByCommandID 
-            {
+            ByCommandID {
                 # Gather all CommandResults
                 $limitURL = "$JCUrlBasePath/api/commandresults"
                 if ($Parallel) {
                     $resultsArray = Get-JCResults -Url $limitURL -method "GET" -limit $limit -parallel $true
-                }
-                else {
+                } else {
                     $resultsArray = Get-JCResults -Url $limitURL -method "GET" -limit $limit
                 }
 
                 # If -ByCommandID is specified and an object is piped into the function, the object will be converted to string
-                if ($CommandID -match "@{"){
+                if ($CommandID -match "@{") {
                     Write-Debug "Command from pipeline..."
                     $Match = Select-String "_id=(\S*)[};]" -inputobject $CommandID
                     # Get the CommandID via regex
@@ -104,7 +95,9 @@ function Get-JCCommandResult ()
                     $resultsArray | Foreach-Object -Parallel {
                         # If the workflowId for the CommandResult does not match the CommandID, skip
                         $CommandID = $using:CommandID
-                        if ($_.workflowId -ne $CommandID) { return }
+                        if ($_.workflowId -ne $CommandID) {
+                            return
+                        }
                         $resultsArrayList = $using:resultsArrayList
                         $URL = "$using:JCUrlBasePath/api/commandresults/$($_._id)"
                         $CommandResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $using:hdrs -MaximumRetryCount 5 -RetryIntervalSec 5 -UserAgent:$using:GetJCUserAgent
@@ -130,10 +123,11 @@ function Get-JCCommandResult ()
                     }
                     # After parallel loop is complete, sort final object by requestTime
                     $resultsArrayList = $resultsArrayList | Sort-Object -Property requestTime
-                }
-                else {
+                } else {
                     $resultsArray | Foreach-Object {
-                        if ($_.workflowId -ne $CommandID) { return }
+                        if ($_.workflowId -ne $CommandID) {
+                            return
+                        }
                         $URL = "$JCUrlBasePath/api/commandresults/$($_._id)"
                         $CommandResults = Get-JCResults -Method "GET" -URL $URL -limit $limit
 
@@ -158,14 +152,12 @@ function Get-JCCommandResult ()
                     }
                 }
             }#End ByCommandID
-            ByID
-            {
+            ByID {
                 $URL = "$JCUrlBasePath/api/commandresults/$CommandResultID"
                 Write-Verbose $URL
                 try {
                     $CommandResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
-                }
-                catch{
+                } catch {
                     throw $_
                 }
                 $FormattedResults = [PSCustomObject]@{
@@ -190,14 +182,20 @@ function Get-JCCommandResult ()
             }#End ByID
         }
     }
-    end
-    {
-        switch ($PSCmdlet.ParameterSetName)
-        {
-            ReturnAll {Return $resultsArrayList}
-            TotalCount {Return  $resultsArrayList }
-            ByCommandID {Return  $resultsArrayList }
-            ByID {Return  $resultsArrayList }
+    end {
+        switch ($PSCmdlet.ParameterSetName) {
+            ReturnAll {
+                Return $resultsArrayList
+            }
+            TotalCount {
+                Return  $resultsArrayList
+            }
+            ByCommandID {
+                Return  $resultsArrayList
+            }
+            ByID {
+                Return  $resultsArrayList
+            }
         }
     }
 }

@@ -15,7 +15,7 @@ Function Get-JCSystemGroupMember () {
             Connect-JConline
         }
 
-        $Parallel = $JCParallel
+        $Parallel = $JCConfig.parallel.Calculated
 
         if ($Parallel) {
             Write-Debug 'Initilizing resultsArray and results ArraryByID'

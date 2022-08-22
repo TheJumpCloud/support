@@ -179,7 +179,7 @@ Function Get-JCUser () {
             Connect-JCOnline
         }
 
-        $Parallel = $JCParallel
+        $Parallel = $JCConfig.parallel.Calculated
 
         if ($Parallel) {
             Write-Verbose 'Initilizing resultsArray'
@@ -365,20 +365,20 @@ Function Get-JCUser () {
                     $Value = ($param.value).replace('*', '')
 
                     if (($param.Value -match '.+?\*$') -and ($param.Value -match '^\*.+?')) {
-                            # Front and back wildcard
+                        # Front and back wildcard
                             (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)$([regex]::Escape($Value))" })
-                        } elseif ($param.Value -match '.+?\*$') {
-                            # Back wildcard
+                    } elseif ($param.Value -match '.+?\*$') {
+                        # Back wildcard
                             (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)^$([regex]::Escape($Value))" })
-                        } elseif ($param.Value -match '^\*.+?') {
-                            # Front wild card
+                    } elseif ($param.Value -match '^\*.+?') {
+                        # Front wild card
                             (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)$([regex]::Escape($Value))`$" })
-                        } elseif ($param.Value -match '^[-+]?\d+$') {
-                            # Check for integer value
+                    } elseif ($param.Value -match '^[-+]?\d+$') {
+                        # Check for integer value
                             (($Search.filter).GetEnumerator()).add($param.Key, $([regex]::Escape($Value)))
-                        } else {
+                    } else {
                             (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)(^$([regex]::Escape($Value))`$)" })
-                        }
+                    }
 
                 } # End foreach
 

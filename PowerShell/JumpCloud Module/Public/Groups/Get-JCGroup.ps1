@@ -32,7 +32,7 @@ Function Get-JCGroup () {
         [int]$limit = '100'
         Write-Debug "Setting limit to $limit"
 
-        $Parallel = $JCParallel
+        $Parallel = $JCConfig.parallel.Calculated
 
         Write-Debug 'Initilizing resultsArray'
         $resultsArray = @()

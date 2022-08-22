@@ -2,7 +2,7 @@ Describe -Tag:('Parallel') "Get-JCResults Parallel" {
     BeforeAll { Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null }
     BeforeEach {
         # Set global variable to run in parallel before each It block
-        $JCParallel = $true
+        Set-JCSettingsFile -parallelOverride $false
     }
     It "Returns all users in parallel" {
 
@@ -20,7 +20,7 @@ Describe -Tag:('Parallel') "Get-JCResults Parallel" {
         $ParallelUsers = Get-JCResults -Url $URL -method "POST" -body $SearchJSON -limit 1 -parallel $true
 
         # Ensure function runs in sequential
-        $JCParallel = $false
+        Set-JCSettingsFile -parallelOverride $true
         $SerialUsers = Get-JCUser
 
         $ParallelUsers.Count | Should -Be $SerialUsers.Count
@@ -48,7 +48,7 @@ Describe -Tag:('Parallel') "Get-JCResults Parallel" {
         $ParallelSystems = Get-JCResults -Url $URL -method "POST" -body $SearchJSON -limit 1 -parallel $true
 
         # Ensure function runs in sequential
-        $JCParallel = $false
+        Set-JCSettingsFile -parallelOverride $true
         $SerialSystems = Get-JCSystem
 
         $ParallelSystems.Count | Should -Be $SerialSystems.Count
@@ -80,7 +80,7 @@ Describe -Tag:('Parallel') "Get-JCResults Parallel" {
 
 
         # Ensure function runs in sequential
-        $JCParallel = $false
+        Set-JCSettingsFile -parallelOverride $true
         $SerialSystemGroupMembers = Get-JCSystemGroupMember -ByID $PesterParams_SystemGroup.Id
 
         $ParallelSystemGroupMembers.Count | Should -Be $SerialSystemGroupMembers.Count
@@ -111,7 +111,7 @@ Describe -Tag:('Parallel') "Get-JCResults Parallel" {
 
 
         # Ensure function runs in sequential
-        $JCParallel = $false
+        Set-JCSettingsFile -parallelOverride $true
         $SerialUserGroupMembers = Get-JCUserGroupMember -ByID $PesterParams_UserGroup.Id
 
         $ParallelUserGroupMembers.Count | Should -Be $SerialUserGroupMembers.Count
@@ -127,7 +127,7 @@ Describe -Tag:('Parallel') "Get-JCResults Parallel" {
         $ParallelGroups = Get-JCResults -Url $limitURL -method "GET" -limit 1 -parallel $true
 
         # Ensure function runs in Sequential
-        $JCParallel = $false
+        Set-JCSettingsFile -parallelOverride $true
         $SerialGroups = Get-JCGroup
 
         $SortedParallelGroups = $ParallelGroups | Sort-Object type, name | ConvertTo-Json
@@ -152,7 +152,7 @@ Describe -Tag:('Parallel') "Get-JCResults Parallel" {
         $ParallelCommands = Get-JCResults -Url $URL -method "POST" -body $SearchJSON -limit 1 -parallel $true
 
         # Ensure function runs in sequential
-        $JCParallel = $false
+        Set-JCSettingsFile -parallelOverride $true
         $SerialCommands = Get-JCCommand
 
         $ParallelCommands.Count | Should -Be $SerialCommands.Count
@@ -168,7 +168,7 @@ Describe -Tag:('Parallel') "Get-JCResults Parallel" {
         $ParallelCommandResults = Get-JCResults -Url $limitURL -method "GET" -limit 1 -parallel $true
 
         # Ensure function runs in sequential
-        $JCParallel = $false
+        Set-JCSettingsFile -parallelOverride $true
         $SerialCommandResults = Get-JCCommandResult
 
         $SortedParallelCommandResults = $ParallelCommandResults.name | Sort-Object
@@ -177,6 +177,6 @@ Describe -Tag:('Parallel') "Get-JCResults Parallel" {
         $SortedParallelCommandResults | Should -Be $SortedSerialCommandResults
     }
     AfterAll {
-        $JCParallel = $true
+        Set-JCSettingsFile -parallelOverride $false
     }
 }

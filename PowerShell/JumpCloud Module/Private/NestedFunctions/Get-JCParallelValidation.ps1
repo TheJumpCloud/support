@@ -6,8 +6,7 @@ Function Get-JCParallelValidation {
         if ($CurrentPSVersion -ge 7) {
             Write-Debug "PSVersion greater than 7"
             $ParallelValidation = $true
-        }
-        else {
+        } else {
             Write-Warning "The installed version of PowerShell does not support Parallel functionality. Consider updating to PowerShell 7 to use this feature."
             Write-Warning "Visit aka.ms/powershell-release?tag=stable for latest release"
             Write-Debug "Invalid Parallel, unsupported configuration"
