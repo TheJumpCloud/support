@@ -32,8 +32,9 @@ fi
 echo "Downloading JumpCloud Remote Assist installer"
 curl --silent --output "$LOCAL_DMG_TMP_PATH" "$REMOTE_DMG_URL" >/dev/null
 echo "Download complete"
-( # Run in a subshell to ensure cleanup
 VOLUME=$(hdiutil attach "$LOCAL_DMG_TMP_PATH" | grep -Eo '(\/Volumes\/.*)')
+
+( # Run in a subshell to ensure cleanup
 
 echo "Verifying installer signature"
 CODESIGN_OUT=$(codesign -dv --verbose=4 "$VOLUME/$APP_FILENAME" 2>&1)
