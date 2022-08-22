@@ -9,23 +9,20 @@ If (!(Get-PackageProvider -Name:('NuGet') -ListAvailable -ErrorAction:('Silently
 
 $PSDependencies = @{
     'PowerShellGet'          = @{Repository = 'PSGallery'; RequiredVersion = '3.0.12-beta' }
-    'PackageManagement'          = @{Repository = 'PSGallery'; RequiredVersion = '1.4.8.1' }
+    'PackageManagement'      = @{Repository = 'PSGallery'; RequiredVersion = '1.4.8.1' }
     'PSScriptAnalyzer'       = @{Repository = 'PSGallery'; RequiredVersion = '1.19.1' }
-    'PlatyPS'       = @{Repository = 'PSGallery'; RequiredVersion = '0.14.2' }
+    'PlatyPS'                = @{Repository = 'PSGallery'; RequiredVersion = '0.14.2' }
     'Pester'                 = @{Repository = 'PSGallery'; RequiredVersion = '5.3.3' }
     'AWS.Tools.Common'       = @{Repository = 'PSGallery'; RequiredVersion = '4.1.122' }
     'AWS.Tools.CodeArtifact' = @{Repository = 'PSGallery'; RequiredVersion = '4.1.122' }
 }
 
-foreach ($RequiredModule in $PSDependencies.Keys)
-{
-    If ([System.String]::IsNullOrEmpty((Get-InstalledModule | Where-Object { $_.Name -eq $RequiredModule })))
-        {
-            Write-Host("[status]Installing module: '$RequiredModule'; version: $($PSDependencies[$RequiredModule].RequiredVersion) from $($PSDependencies[$RequiredModule].Repository)")
-            Install-Module -Name $RequiredModule -Repository:($($PSDependencies[$RequiredModule].Repository)) -RequiredVersion:($($PSDependencies[$RequiredModule].RequiredVersion)) -AllowPrerelease -Force
-        }
-    If ([System.String]::IsNullOrEmpty((Get-Module | Where-Object { $_.Name -eq $RequiredModule })))
-    {
+foreach ($RequiredModule in $PSDependencies.Keys) {
+    If ([System.String]::IsNullOrEmpty((Get-InstalledModule | Where-Object { $_.Name -eq $RequiredModule }))) {
+        Write-Host("[status]Installing module: '$RequiredModule'; version: $($PSDependencies[$RequiredModule].RequiredVersion) from $($PSDependencies[$RequiredModule].Repository)")
+        Install-Module -Name $RequiredModule -Repository:($($PSDependencies[$RequiredModule].Repository)) -RequiredVersion:($($PSDependencies[$RequiredModule].RequiredVersion)) -AllowPrerelease -Force
+    }
+    If ([System.String]::IsNullOrEmpty((Get-Module | Where-Object { $_.Name -eq $RequiredModule }))) {
         Write-Host("[status]Importing module: '$RequiredModule'")
         Import-Module -Name:($RequiredModule) -Force -Global
     }
@@ -72,9 +69,7 @@ If (-not [System.String]::IsNullOrEmpty($Psd1)) {
                     # Unix Systems: Mac/ Linux
                     $LocalPSModulePath = $env:PSModulePath.split(':') | Where-Object { $_ -like '*.local/share*' }
                     Write-Host "Module Installation Path: $LocalPSModulePath"
-                }
-                elseif ($PowerShellModulesPaths -match 'documents')
-                {
+                } elseif ($PowerShellModulesPaths -match 'documents') {
                     # Windows Systems
                     $LocalPSModulePath = $env:PSModulePath.split(';') | Where-Object { $_ -like '*documents*' }
                     Write-Host "Module Installation Path: $LocalPSModulePath"

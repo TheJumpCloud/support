@@ -272,44 +272,24 @@ Function Get-JCUser () {
                         continue
                     }
 
-                        # manager lookup
-                        if ("manager" -eq $param.Key)
-                        {
-                            if ([System.String]::isNullOrEmpty($param.value)) {
-                                # If manager field is null skip
-                                continue
-                            }
-                            else {
-                                # First check if manager returns valid user with id
-                                # Regex match a userid
-                                $regexPattern = [Regex]'^[a-z0-9]{24}$'
-                                if (((Select-String -InputObject $param.Value -Pattern $regexPattern).Matches.value)::IsNullOrEmpty){
-                                    # if we have a 24 characterid, try to match the id using the search endpoint
-                                    $managerSearch = @{
-                                        filter = @{
-                                            'and' = @(
-                                                @{'id' = @{'$regex' = "(?i)(`^$($param.Value)`$)" } }
-                                            )
-                                        }
-                                        fields = 'id'
+                    # manager lookup
+                    if ("manager" -eq $param.Key) {
+                        if ([System.String]::isNullOrEmpty($param.value)) {
+                            # If manager field is null skip
+                            continue
+                        } else {
+                            # First check if manager returns valid user with id
+                            # Regex match a userid
+                            $regexPattern = [Regex]'^[a-z0-9]{24}$'
+                            if (((Select-String -InputObject $param.Value -Pattern $regexPattern).Matches.value)::IsNullOrEmpty) {
+                                # if we have a 24 characterid, try to match the id using the search endpoint
+                                $managerSearch = @{
+                                    filter = @{
+                                        'and' = @(
+                                            @{'id' = @{'$regex' = "(?i)(`^$($param.Value)`$)" } }
+                                        )
                                     }
-                                    $managerResults = Search-JcSdkUser -Body:($managerSearch)
-                                    # Set managerValue; this is a validated user id
-                                    $managerValue = $managerResults.id
-                                   # if no value was returned, then assume the case this is actually a username and search
-                                    if (!$managerValue){
-                                        $managerSearch = @{
-                                            filter = @{
-                                                'and' = @(
-                                                    @{'username' = @{'$regex' = "(?i)(`^$($param.Value)`$)" } }
-                                                )
-                                            }
-                                            fields = 'username'
-                                        }
-                                        $managerResults = Search-JcSdkUser -Body:($managerSearch)
-                                        # Set managerValue from the matched username
-                                        $managerValue = $managerResults.id
-                                    }
+                                    fields = 'id'
                                 }
                                 $managerResults = Search-JcSdkUser -Body:($managerSearch)
                                 # Set managerValue; this is a validated user id
@@ -319,30 +299,31 @@ Function Get-JCUser () {
                                     $managerSearch = @{
                                         filter = @{
                                             'and' = @(
-                                                @{'email' = @{'$regex' = "(?i)(`^$($param.Value)`$)" } }
+                                                @{'username' = @{'$regex' = "(?i)(`^$($param.Value)`$)" } }
                                             )
                                         }
-                                        fields = 'email'
+                                        fields = 'username'
                                     }
                                     $managerResults = Search-JcSdkUser -Body:($managerSearch)
                                     # Set managerValue from the matched username
                                     $managerValue = $managerResults.id
-                                    if (!$managerValue){
-                                        $managerSearch = @{
-                                            filter = @{
-                                                'and' = @(
-                                                    @{'username' = @{'$regex' = "(?i)(`^$($param.Value)`$)" } }
-                                                )
-                                            }
-                                            fields = 'username'
-                                        }
-                                        $managerResults = Search-JcSdkUser -Body:($managerSearch)
-                                        # Set managerValue from the matched username
-                                        $managerValue = $managerResults.id
+                                }
+                            }
+                            $managerResults = Search-JcSdkUser -Body:($managerSearch)
+                            # Set managerValue; this is a validated user id
+                            $managerValue = $managerResults.id
+                            # if no value was returned, then assume the case this is actually a username and search
+                            if (!$managerValue) {
+                                $managerSearch = @{
+                                    filter = @{
+                                        'and' = @(
+                                            @{'email' = @{'$regex' = "(?i)(`^$($param.Value)`$)" } }
+                                        )
                                     }
+                                    fields = 'email'
                                 }
                                 $managerResults = Search-JcSdkUser -Body:($managerSearch)
-                                # Set managerValue; this is a validated user id
+                                # Set managerValue from the matched username
                                 $managerValue = $managerResults.id
                                 if (!$managerValue) {
                                     $managerSearch = @{
@@ -357,65 +338,78 @@ Function Get-JCUser () {
                                     # Set managerValue from the matched username
                                     $managerValue = $managerResults.id
                                 }
-                            } catch {
-                                # search the username in the search endpoint
+                            }
+                            $managerResults = Search-JcSdkUser -Body:($managerSearch)
+                            # Set managerValue; this is a validated user id
+                            $managerValue = $managerResults.id
+                            if (!$managerValue) {
                                 $managerSearch = @{
-                                    searchFilter = @{
-                                        searchTerm = @($param.Value)
-                                        fields     = @('username')
+                                    filter = @{
+                                        'and' = @(
+                                            @{'username' = @{'$regex' = "(?i)(`^$($param.Value)`$)" } }
+                                        )
                                     }
+                                    fields = 'username'
                                 }
-                                continue
+                                $managerResults = Search-JcSdkUser -Body:($managerSearch)
+                                # Set managerValue from the matched username
+                                $managerValue = $managerResults.id
                             }
-                        }
-
-                        # case insensitive state param
-                        if ("state" -eq $param.Key)
-                        {
-                            if ($param.Value -cin @('ACTIVATED', 'SUSPENDED', 'STAGED'))
-                            {
-                                $stateValue = $param.Value
-                            }
-                            if ($managerValue) {
-                                # if an ID was validated
-                                ($Search.filter).GetEnumerator().add($param.Key, $managerValue)
-                            } else {
-                                # if id was not validated, return value, let the API manage the error message
-                                ($Search.filter).GetEnumerator().add($param.Key, $param.Value)
+                        } catch {
+                            # search the username in the search endpoint
+                            $managerSearch = @{
+                                searchFilter = @{
+                                    searchTerm = @($param.Value)
+                                    fields     = @('username')
+                                }
                             }
                             continue
                         }
                     }
 
-                    # case insensitve state param
+                    # case insensitive state param
                     if ("state" -eq $param.Key) {
                         if ($param.Value -cin @('ACTIVATED', 'SUSPENDED', 'STAGED')) {
                             $stateValue = $param.Value
+                        }
+                        if ($managerValue) {
+                            # if an ID was validated
+                                ($Search.filter).GetEnumerator().add($param.Key, $managerValue)
                         } else {
-                            $stateValue = ($param.Value).ToUpper()
+                            # if id was not validated, return value, let the API manage the error message
+                                ($Search.filter).GetEnumerator().add($param.Key, $param.Value)
                         }
                         continue
                     }
+                } # End Foreach
 
-                    $Value = ($param.value).replace('*', '')
-
-                    if (($param.Value -match '.+?\*$') -and ($param.Value -match '^\*.+?')) {
-                        # Front and back wildcard
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)$([regex]::Escape($Value))" })
-                    } elseif ($param.Value -match '.+?\*$') {
-                        # Back wildcard
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)^$([regex]::Escape($Value))" })
-                    } elseif ($param.Value -match '^\*.+?') {
-                        # Front wild card
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)$([regex]::Escape($Value))`$" })
-                    } elseif ($param.Value -match '^[-+]?\d+$') {
-                        # Check for integer value
-                            (($Search.filter).GetEnumerator()).add($param.Key, $([regex]::Escape($Value)))
+                # case insensitve state param
+                if ("state" -eq $param.Key) {
+                    if ($param.Value -cin @('ACTIVATED', 'SUSPENDED', 'STAGED')) {
+                        $stateValue = $param.Value
                     } else {
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)(^$([regex]::Escape($Value))`$)" })
+                        $stateValue = ($param.Value).ToUpper()
                     }
+                    continue
+                }
 
-                } # End foreach
+                $Value = ($param.value).replace('*', '')
+
+                if (($param.Value -match '.+?\*$') -and ($param.Value -match '^\*.+?')) {
+                    # Front and back wildcard
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)$([regex]::Escape($Value))" })
+                } elseif ($param.Value -match '.+?\*$') {
+                    # Back wildcard
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)^$([regex]::Escape($Value))" })
+                } elseif ($param.Value -match '^\*.+?') {
+                    # Front wild card
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)$([regex]::Escape($Value))`$" })
+                } elseif ($param.Value -match '^[-+]?\d+$') {
+                    # Check for integer value
+                            (($Search.filter).GetEnumerator()).add($param.Key, $([regex]::Escape($Value)))
+                } else {
+                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)(^$([regex]::Escape($Value))`$)" })
+                }
 
                 if ($filterDateProperty) {
                     (($Search.filter).GetEnumerator()).add($DateProperty, @{$DateQuery = $Timestamp })
@@ -438,19 +432,15 @@ Function Get-JCUser () {
                 } else {
                     $resultsArrayList = Get-JCResults -URL $URL -method "POST" -limit $limit -body $SearchJSON
                 }
-
-            } #End search
-
+            } # End search
             ByID {
 
                 $URL = "$JCUrlBasePath/api/Systemusers/$Userid"
                 Write-Verbose $URL
                 $resultsArrayList = Get-JCResults -URL $URL -method "GET" -limit $limit
             }
-
         } # End switch
-    } # End process
-
+    } #End process
     end {
 
         switch ($PSCmdlet.ParameterSetName) {
