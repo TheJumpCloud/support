@@ -349,8 +349,7 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
         $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/ImportExample_telephonyAttributes.csv" -force
         $UserImportInfo = Import-Csv "$PesterParams_ImportPath/ImportExample_telephonyAttributes.csv"
 
-        foreach ($User in $UserCSVImport)
-        {
+        foreach ($User in $UserCSVImport) {
             $NewUserInfo = Get-JCUser -username $User.username
             $ImportCheck = $UserImportInfo | Where-Object Username -EQ "$($User.username)"
 
@@ -372,8 +371,7 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
         $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/ImportExample_userInformationAttributes.csv" -force
         $UserImportInfo = Import-Csv "$PesterParams_ImportPath/ImportExample_userInformationAttributes.csv"
 
-        foreach ($User in $UserCSVImport)
-        {
+        foreach ($User in $UserCSVImport) {
             $NewUserInfo = Get-JCUser -username $User.username
             $ImportCheck = $UserImportInfo | Where-Object Username -EQ "$($User.username)"
 
@@ -399,8 +397,7 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
         $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/ImportExample_userLocationAttributes.csv" -force
         $UserImportInfo = Import-Csv "$PesterParams_ImportPath/ImportExample_userLocationAttributes.csv"
 
-        foreach ($User in $UserCSVImport)
-        {
+        foreach ($User in $UserCSVImport) {
             $NewUserInfo = Get-JCUser -username $User.username
             $ImportCheck = $UserImportInfo | Where-Object Username -EQ "$($User.username)"
 
@@ -425,8 +422,7 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
         $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/ImportExample_uid_guid.csv" -force
         $UserImportInfo = Import-Csv "$PesterParams_ImportPath/ImportExample_uid_guid.csv"
 
-        foreach ($User in $UserCSVImport)
-        {
+        foreach ($User in $UserCSVImport) {
             $NewUserInfo = Get-JCUser -username $User.username
             $ImportCheck = $UserImportInfo | Where-Object Username -EQ "$($User.username)"
 
@@ -441,8 +437,7 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
         $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/ImportExample_allNewAttributes.csv" -force
         $UserImportInfo = Import-Csv "$PesterParams_ImportPath/ImportExample_allNewAttributes.csv"
 
-        foreach ($User in $UserCSVImport)
-        {
+        foreach ($User in $UserCSVImport) {
             $NewUserInfo = Get-JCUser -username $User.username
             $ImportCheck = $UserImportInfo | Where-Object Username -EQ "$($User.username)"
 
@@ -487,8 +482,7 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
         $UserImportInfo = Import-Csv "$PesterParams_ImportPath/ImportExample_allNewAttributesAndAllCustom.csv"
         $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/ImportExample_allNewAttributesAndAllCustom.csv" -force
 
-        foreach ($User in $UserCSVImport)
-        {
+        foreach ($User in $UserCSVImport) {
             $NewUserInfo = Get-JCUser -username $User.username
             $ImportCheck = $UserImportInfo | Where-Object Username -EQ "$($User.username)"
 
@@ -543,4 +537,131 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
 
     }
 
+}
+Describe -Tag:('JCUsersFromCSV') 'MFA Import Tests' {
+    It "New User Created with MFA Required" {
+        # Setup Test
+        $user = New-RandomUser -Domain pleasedelete
+        $CSVDATA = @{
+            Username                       = $user.username
+            LastName                       = $user.LastName
+            FirstName                      = $user.FirstName
+            Email                          = $user.Email
+            enable_user_portal_multifactor = $true
+            EnrollmentDays                 = ''
+        }
+        $CSVFILE = $CSVDATA | Export-Csv "$PesterParams_ImportPath/MFA_Import.csv" -Force
+        Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/MFA_Import.csv" -force
+        # Test Imported User
+        $MFAUser = Get-JCUser $user.Username
+        $MFAUser.mfa.exclusion | Should -Be $True
+        $MFAUser.mfa.exclusionUntil | Should -BeOfType [datetime]
+        $MFAUser.mfa.configured | Should -Be $false
+    }
+    It "New User Created with MFA Required and Enrollment Period Specified" {
+        # Setup Test
+        $user = New-RandomUser -Domain pleasedelete
+        $today = Get-Date
+        $EnrollmentDays = 14
+        $CSVDATA = @{
+            Username                       = $user.username
+            LastName                       = $user.LastName
+            FirstName                      = $user.FirstName
+            Email                          = $user.Email
+            enable_user_portal_multifactor = $true
+            EnrollmentDays                 = $EnrollmentDays
+        }
+        $CSVFILE = $CSVDATA | Export-Csv "$PesterParams_ImportPath/MFA_Import.csv" -Force
+        # Sleep one second before importing span should be 14 days:
+        Start-Sleep 1
+        Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/MFA_Import.csv" -force
+        # Test Imported User
+        $MFAUser = Get-JCUser $user.Username
+        $MFAUser.mfa.exclusion | Should -Be $True
+        $MFAUser.mfa.exclusionUntil | Should -BeOfType [datetime]
+        $span = New-TimeSpan -Start $today -End $MFAUser.mfa.exclusionUntil
+        $span.Days | Should -Be $EnrollmentDays
+        $MFAUser.mfa.configured | Should -Be $false
+    }
+    It "Throw error if user create with invalid enrollment days" {
+        $user = New-RandomUser -Domain pleasedelete
+        $CSVDATA = @{
+            Username                       = $user.username
+            LastName                       = $user.LastName
+            FirstName                      = $user.FirstName
+            Email                          = $user.Email
+            enable_user_portal_multifactor = $true
+            EnrollmentDays                 = (Get-Date).addDays(14)
+        }
+        $CSVFILE = $CSVDATA | Export-Csv "$PesterParams_ImportPath/MFA_Import.csv" -Force
+        $ImportStatus = Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/MFA_Import.csv" -force
+        # Test Imported User
+        $ImportStatus.Status | Should -Match "Cannot bind parameter"
+    }
+    AfterAll {
+        Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
+    }
+}
+Describe -Tag:('JCUsersFromCSV') 'LDAP Import Tests' {
+    It "New User Created and bound to LDAP server" {
+        $ldapServer = Get-JcSdkLdapServer
+        $user = New-RandomUser -Domain pleasedelete
+        $CSVDATA = @{
+            Username          = $user.username
+            LastName          = $user.LastName
+            FirstName         = $user.FirstName
+            Email             = $user.Email
+            ldapserver_id     = $ldapServer.id
+            ldap_binding_user = ''
+        }
+        $CSVFILE = $CSVDATA | Export-Csv "$PesterParams_ImportPath/Ldap_Import.csv" -Force
+        $ImportStatus = Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/Ldap_Import.csv" -force
+        $LDAPUser = Get-JCuser $user.username
+        $LDAPUser | should -Not -BeNullOrEmpty
+        $ldapAssociation = Get-JCAssociation -Type user -Name $LDAPUser.username -TargetType ldap_server
+        $ldapAssociation | should -Not -BeNullOrEmpty
+        $LDAPUser.ldap_binding_user | should -Be $False
+    }
+    It "New User created, bound to LDAP server and set as an Ldap Binding User" {
+        $ldapServer = Get-JcSdkLdapServer
+        $user = New-RandomUser -Domain pleasedelete
+        $CSVDATA = @{
+            Username          = $user.username
+            LastName          = $user.LastName
+            FirstName         = $user.FirstName
+            Email             = $user.Email
+            ldapserver_id     = $ldapServer.id
+            ldap_binding_user = $true
+        }
+        $CSVFILE = $CSVDATA | Export-Csv "$PesterParams_ImportPath/Ldap_Import.csv" -Force
+        $ImportStatus = Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/Ldap_Import.csv" -force
+        $LDAPUser = Get-JCuser $user.username
+        $LDAPUser | should -Not -BeNullOrEmpty
+        $ldapAssociation = Get-JCAssociation -Type user -Name $LDAPUser.username -TargetType ldap_server
+        $ldapAssociation | should -Not -BeNullOrEmpty
+        $LDAPUser.ldap_binding_user | should -Be $true
+    }
+    It "throw error with invalid params on ldap import" {
+        $ldapServer = Get-JcSdkLdapServer
+        $user = New-RandomUser -Domain pleasedelete
+        $CSVDATA = @{
+            Username          = $user.username
+            LastName          = $user.LastName
+            FirstName         = $user.FirstName
+            Email             = $user.Email
+            ldapserver_id     = "$($ldapServer.id)"
+            ldap_binding_user = "yes"
+        }
+        $CSVFILE = $CSVDATA | Export-Csv "$PesterParams_ImportPath/Ldap_Import.csv" -Force
+        $importStatus = Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/Ldap_Import.csv" -force
+        $LDAPUser = Get-JCuser $user.username
+        $LDAPUser | should -Not -BeNullOrEmpty
+        $ldapAssociation = Get-JCAssociation -Type user -Name $LDAPUser.username -TargetType ldap_server
+        $ldapAssociation | should -Not -BeNullOrEmpty
+        $LDAPUser.ldap_binding_user | should -Be $false
+        $importStatus.LdapUserBind | Should -Match "not recognized as a valid Boolean"
+    }
+    AfterAll {
+        Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
+    }
 }

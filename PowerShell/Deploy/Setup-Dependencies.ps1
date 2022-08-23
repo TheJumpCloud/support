@@ -1,32 +1,30 @@
 Param(
-    [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 0)][System.String[]]$DependentModules = ('PowerShellGet', 'PackageManagement', 'PSScriptAnalyzer', 'PlatyPS', 'Pester', 'AWS.Tools.Installer')
-    , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 1)][System.String]$RequiredModulesRepo = 'PSGallery'
+    [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 0)][System.String]$RequiredModulesRepo = 'PSGallery'
 )
 # Install NuGet
 If (!(Get-PackageProvider -Name:('NuGet') -ListAvailable -ErrorAction:('SilentlyContinue'))) {
     Write-Host ('[status]Installing package provider NuGet');
     Install-PackageProvider -Name:('NuGet') -Scope:('CurrentUser') -Force
 }
-# Install dependent modules
-ForEach ($DependentModule In $DependentModules) {
-    # Check to see if the module is installed
-    If ([System.String]::IsNullOrEmpty((Get-InstalledModule | Where-Object { $_.Name -eq $DependentModule }))) {
-        Write-Host("[status]Installing module: '$DependentModule' from 'PSGallery'")
-        if ($DependentModule -eq 'PowerShellGet') {
-            Install-Module -Name $DependentModule -Repository:('PSGallery') -RequiredVersion '3.0.12-beta' -AllowPrerelease -Force
-        } elseif ($DependentModule -eq 'PSScriptAnalyzer') {
-            Install-Module -Name $DependentModule -Repository:('PSGallery') -RequiredVersion '1.19.1' -Force
-        } elseif ($DependentModule -eq 'AWS.Tools.Installer') {
-            Install-Module -Name $DependentModule -Repository:('PSGallery') -Force
-            Install-AWSToolsModule AWS.Tools.Common, AWS.Tools.CodeArtifact -CleanUp -Force
-        } else {
-            Install-Module -Repository:('PSGallery') -Force -Name:($DependentModule) -Scope:('CurrentUser') -AllowClobber
-        }
+
+$PSDependencies = @{
+    'PowerShellGet'          = @{Repository = 'PSGallery'; RequiredVersion = '3.0.12-beta' }
+    'PackageManagement'      = @{Repository = 'PSGallery'; RequiredVersion = '1.4.8.1' }
+    'PSScriptAnalyzer'       = @{Repository = 'PSGallery'; RequiredVersion = '1.19.1' }
+    'PlatyPS'                = @{Repository = 'PSGallery'; RequiredVersion = '0.14.2' }
+    'Pester'                 = @{Repository = 'PSGallery'; RequiredVersion = '5.3.3' }
+    'AWS.Tools.Common'       = @{Repository = 'PSGallery'; RequiredVersion = '4.1.122' }
+    'AWS.Tools.CodeArtifact' = @{Repository = 'PSGallery'; RequiredVersion = '4.1.122' }
+}
+
+foreach ($RequiredModule in $PSDependencies.Keys) {
+    If ([System.String]::IsNullOrEmpty((Get-InstalledModule | Where-Object { $_.Name -eq $RequiredModule }))) {
+        Write-Host("[status]Installing module: '$RequiredModule'; version: $($PSDependencies[$RequiredModule].RequiredVersion) from $($PSDependencies[$RequiredModule].Repository)")
+        Install-Module -Name $RequiredModule -Repository:($($PSDependencies[$RequiredModule].Repository)) -RequiredVersion:($($PSDependencies[$RequiredModule].RequiredVersion)) -AllowPrerelease -Force
     }
-    # Get-Module -Refresh -ListAvailable
-    If ([System.String]::IsNullOrEmpty((Get-Module | Where-Object { $_.Name -eq $DependentModule }))) {
-        Write-Host("[status]Importing module: '$DependentModule'")
-        Import-Module -Name:($DependentModule) -Force -Global
+    If ([System.String]::IsNullOrEmpty((Get-Module | Where-Object { $_.Name -eq $RequiredModule }))) {
+        Write-Host("[status]Importing module: '$RequiredModule'")
+        Import-Module -Name:($RequiredModule) -Force -Global
     }
 }
 ### TODO: Switch to CodeArtifact
@@ -72,7 +70,7 @@ If (-not [System.String]::IsNullOrEmpty($Psd1)) {
                     $LocalPSModulePath = $env:PSModulePath.split(':') | Where-Object { $_ -like '*.local/share*' }
                     Write-Host "Module Installation Path: $LocalPSModulePath"
                 } elseif ($PowerShellModulesPaths -match 'documents') {
-                    # Windows Ststems
+                    # Windows Systems
                     $LocalPSModulePath = $env:PSModulePath.split(';') | Where-Object { $_ -like '*documents*' }
                     Write-Host "Module Installation Path: $LocalPSModulePath"
                 }

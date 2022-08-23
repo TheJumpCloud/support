@@ -72,6 +72,7 @@ Function Update-JCUsersFromCSV () {
         $UserUpdateParams.Add("allow_public_key", "allow_public_key")
         $UserUpdateParams.Add("enable_managed_uid", "enable_managed_uid")
         $UserUpdateParams.Add("enable_user_portal_multifactor", "enable_user_portal_multifactor")
+        $UserUpdateParams.Add("EnrollmentDays", "EnrollmentDays")# MFA
         $UserUpdateParams.Add("externally_managed", "externally_managed")
         $UserUpdateParams.Add("external_dn", "external_dn")
         $UserUpdateParams.Add("external_source_type", "external_source_type")
@@ -97,7 +98,7 @@ Function Update-JCUsersFromCSV () {
 
             Write-Verbose 'Verifying JCAPI Key'
             if ($JCAPIKEY.length -ne 40) {
-                Connect-JConline 
+                Connect-JConline
             }
 
             $Banner = @"
@@ -111,7 +112,7 @@ Function Update-JCUsersFromCSV () {
 "@
 
             If (!(Get-PSCallStack | Where-Object { $_.Command -match 'Pester' })) {
-                Clear-Host 
+                Clear-Host
             }
             Write-Host $Banner -ForegroundColor Green
             Write-Host ""
@@ -169,7 +170,7 @@ Function Update-JCUsersFromCSV () {
                             Write-Warning "A system with SystemID: $($User.SystemID) does not exist and will not be bound to user $($User.Username)"
                         }
                     } else {
-                        Write-Verbose "No system" 
+                        Write-Verbose "No system"
                     }
                 }
 
@@ -208,8 +209,7 @@ Function Update-JCUsersFromCSV () {
                         $GroupArrayList.Add($CheckGroup) | Out-Null
 
                     }
-
-                    else { 
+                    else {
                     }
 
                 }
@@ -313,7 +313,14 @@ Function Update-JCUsersFromCSV () {
             $UpdateParams = @{ }
 
             foreach ($Param in $UpdateParamsRaw) {
-                if ($UserUpdateParams.$($Param.name)) {
+                if ($UserUpdateParams.$($Param.name) -eq "ldap_binding_user") {
+                    continue
+                } elseif ($UserUpdateParams.$($Param.name) -eq "ldapserver_id") {
+                    continue
+                } elseif ($UserUpdateParams.$($Param.name) -eq "enable_user_portal_multifactor") {
+                    $enable_mfa_boolean = [System.Convert]::ToBoolean($Param.value)
+                    $UpdateParams.Add($Param.name, $enable_mfa_boolean)
+                } elseif ($UserUpdateParams.$($Param.name)) {
                     $UpdateParams.Add($Param.name, $Param.value)
                 }
 
@@ -363,7 +370,36 @@ Function Update-JCUsersFromCSV () {
                         $Status = 'User does not exist'
                     }
 
-                    try { #User is created
+                    try {
+                        #User is created
+                        if ($UserUpdate.ldapserver_id) {
+
+                            try {
+                                $LdapAdd = Set-JcSdkLdapServerAssociation -LdapserverId $UserUpdate.ldapserver_id -id $NewUser._id -op "add" -type "user"
+                            } catch {
+                                $LdapBindStatus =
+                                if ($_.ErrorDetails) {
+                                    $_.ErrorDetails
+                                } elseif ($_.Exception) {
+                                    $_.Exception.Message
+                                }
+                            }
+                            try {
+                                $ldap_bind_boolean = [System.Convert]::ToBoolean($UserUpdate.ldap_binding_user)
+                                $ldap_bind = Set-JCUser -UserID $NewUser._id -ldap_binding_user $ldap_bind_boolean
+                                $LdapBindStatus = $ldap_bind.ldap_binding_user
+
+                            } catch {
+                                $LdapBindStatus =
+                                if ($_.ErrorDetails) {
+                                    $_.ErrorDetails
+                                } elseif ($_.Exception) {
+                                    $_.Exception.Message
+                                }
+                            }
+
+                        }
+
                         if ($UserUpdate.SystemID) {
 
                             if ($UserUpdate.Administrator) {
@@ -456,13 +492,13 @@ Function Update-JCUsersFromCSV () {
 
                     $FormattedResults = [PSCustomObject]@{
 
-                        'Username'  = $NewUser.username
-                        'Status'    = $Status
-                        'UserID'    = $NewUser._id
-                        'GroupsAdd' = $UserGroupArrayList
-                        'SystemID'  = $UserUpdate.SystemID
-                        'SystemAdd' = $SystemAddStatus
-
+                        'Username'     = $NewUser.username
+                        'Status'       = $Status
+                        'UserID'       = $NewUser._id
+                        'GroupsAdd'    = $UserGroupArrayList
+                        'SystemID'     = $UserUpdate.SystemID
+                        'SystemAdd'    = $SystemAddStatus
+                        'LdapUserBind' = $LdapBindStatus
                     }
 
 
@@ -475,13 +511,13 @@ Function Update-JCUsersFromCSV () {
 
                     $FormattedResults = [PSCustomObject]@{
 
-                        'Username'  = $UpdateParams.username
-                        'Status'    = $Status
-                        'UserID'    = $NewUser._id
-                        'GroupsAdd' = $UserGroupArrayList
-                        'SystemID'  = $UserUpdate.SystemID
-                        'SystemAdd' = $SystemAddStatus
-
+                        'Username'     = $UpdateParams.username
+                        'Status'       = $Status
+                        'UserID'       = $NewUser._id
+                        'GroupsAdd'    = $UserGroupArrayList
+                        'SystemID'     = $UserUpdate.SystemID
+                        'SystemAdd'    = $SystemAddStatus
+                        'LdapUserBind' = $LdapBindStatus
                     }
 
 
@@ -511,7 +547,35 @@ Function Update-JCUsersFromCSV () {
                     }
 
 
-                    try { #User is created
+                    try {
+                        #User is created
+                        if ($UserUpdate.ldapserver_id) {
+
+                            try {
+                                $LdapAdd = Set-JcSdkLdapServerAssociation -LdapserverId $UserUpdate.ldapserver_id -id $NewUser._id -op "add" -type "user"
+                            } catch {
+                                $LdapBindStatus =
+                                if ($_.ErrorDetails) {
+                                    $_.ErrorDetails
+                                } elseif ($_.Exception) {
+                                    $_.Exception.Message
+                                }
+                            }
+                            try {
+                                $ldap_bind_boolean = [System.Convert]::ToBoolean($UserUpdate.ldap_binding_user)
+                                $ldap_bind = Set-JCUser -UserID $NewUser._id -ldap_binding_user $ldap_bind_boolean
+                                $LdapBindStatus = $ldap_bind.ldap_binding_user
+
+                            } catch {
+                                $LdapBindStatus =
+                                if ($_.ErrorDetails) {
+                                    $_.ErrorDetails
+                                } elseif ($_.Exception) {
+                                    $_.Exception.Message
+                                }
+                            }
+
+                        }
                         if ($UserUpdate.SystemID) {
 
                             if ($UserUpdate.Administrator) {
@@ -611,12 +675,13 @@ Function Update-JCUsersFromCSV () {
 
                     $FormattedResults = [PSCustomObject]@{
 
-                        'Username'  = $NewUser.username
-                        'Status'    = $Status
-                        'UserID'    = $NewUser._id
-                        'GroupsAdd' = $UserGroupArrayList
-                        'SystemID'  = $UserUpdate.SystemID
-                        'SystemAdd' = $SystemAddStatus
+                        'Username'     = $NewUser.username
+                        'Status'       = $Status
+                        'UserID'       = $NewUser._id
+                        'GroupsAdd'    = $UserGroupArrayList
+                        'SystemID'     = $UserUpdate.SystemID
+                        'SystemAdd'    = $SystemAddStatus
+                        'LdapUserBind' = $LdapBindStatus
 
                     }
 
@@ -626,7 +691,11 @@ Function Update-JCUsersFromCSV () {
                 }
 
                 catch {
-                    $Status = "$($_.ErrorDetails)"
+                    If ($_.ErrorDetails) {
+                        $Status = $_.ErrorDetails
+                    } elseif ($_.Exception) {
+                        $Status = $_.Exception.Message
+                    }
 
                     if (-not (Get-JCUser -username $UpdateParams.username -returnProperties username)) {
                         $Status = 'User does not exist'
@@ -634,12 +703,13 @@ Function Update-JCUsersFromCSV () {
 
                     $FormattedResults = [PSCustomObject]@{
 
-                        'Username'  = $UpdateParams.username
-                        'Status'    = "$Status"
-                        'UserID'    = $NewUser._id
-                        'GroupsAdd' = $UserGroupArrayList
-                        'SystemID'  = $UserUpdate.SystemID
-                        'SystemAdd' = $SystemAddStatus
+                        'Username'     = $UpdateParams.username
+                        'Status'       = "$Status"
+                        'UserID'       = $NewUser._id
+                        'GroupsAdd'    = $UserGroupArrayList
+                        'SystemID'     = $UserUpdate.SystemID
+                        'SystemAdd'    = $SystemAddStatus
+                        'LdapUserBind' = $LdapBindStatus
 
                     }
 

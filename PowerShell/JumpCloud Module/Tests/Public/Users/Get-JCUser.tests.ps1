@@ -92,11 +92,41 @@ Describe -Tag:('JCUser') 'Get-JCUser 1.1' {
         $NewUser.manager | Should -Be $managerId
         Remove-JCUser -UserID $NewUser._id -force
     }
+    It "Searches a JumpCloud user by managerUsername & Email and should not return user with similar username" {
+        # Define two users who's username is contained by another user
+        $newUser1 = New-JCUser -username "jemartin" -firstname "je" -lastname "martin" -email "jemartin@$(get-random -Minimum 100 -Maximum 999)-deleteme.com"
+        $newUser2 = New-JCUser -username "emartin" -firstname "e" -lastname "martin" -email "emartin@$(get-random -Minimum 100 -Maximum 999)-deleteme.come"
+        $NewUser = New-RandomUser -Domain DeleteMe | New-JCUser -manager $newUser2.username
+        $NewUser = Get-JCUser -manager $newUser2.username
+        $NewUser = Get-JCUser -manager $newUser2.email
+        $NewUser.manager | Should -Be $newUser2.Id
+        $NewUser.manager | Should -Not -Be $newUser1.Id
+        # Remove all users from the test
+        Remove-JCUser -UserID $NewUser._id -force
+        Remove-JCUser -UserID $NewUser1._id -force
+        Remove-JCUser -UserID $NewUser2._id -force
+    }
+    It "Searches a JumpCloud user by managerUsername (Case Insensitive)" {
+        $managerUsername = $PesterParams_User1.username
+        $managerId = $PesterParams_User1.id
+        $NewUser = New-RandomUser -Domain DeleteMe | New-JCUser -manager $managerUsername
+        $NewUser = Get-JCUser -manager $($managerUsername.ToUpper())
+        $NewUser.manager | Should -Be $managerId
+        Remove-JCUser -UserID $NewUser._id -force
+    }
     It "Searches a JumpCloud user by managerEmail" {
         $managerEmail = $PesterParams_User1.email
         $managerId = $PesterParams_User1.id
         $NewUser = New-RandomUser -Domain DeleteMe | New-JCUser -manager $managerEmail
         $NewUser = Get-JCUser -manager $managerEmail
+        $NewUser.manager | Should -Be $managerId
+        Remove-JCUser -UserID $NewUser._id -force
+    }
+    It "Searches a JumpCloud user by managerEmail (Case Insensitive)" {
+        $managerEmail = $PesterParams_User1.email
+        $managerId = $PesterParams_User1.id
+        $NewUser = New-RandomUser -Domain DeleteMe | New-JCUser -manager $managerEmail
+        $NewUser = Get-JCUser -manager $($managerEmail.ToUpper())
         $NewUser.manager | Should -Be $managerId
         Remove-JCUser -UserID $NewUser._id -force
     }

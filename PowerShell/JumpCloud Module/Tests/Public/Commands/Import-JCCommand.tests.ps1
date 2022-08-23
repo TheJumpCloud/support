@@ -9,16 +9,4 @@ Describe -Tag:('JCCommand') 'Import-JCCommand 1.1' {
         Remove-JCCommand -CommandID $Command._id -force
 
     }
-
-    It "Imports a JumpCloud command from a short URL" {
-
-        $Command = Import-JCCommand -URL 'https://git.io/jccg-Mac-GetLoggedInUsers'
-
-        $Command.commandType | Should -Be 'mac'
-
-        Remove-JCCommand -CommandID $Command._id -force
-
-    }
-
-
 }

@@ -33,8 +33,8 @@ An example of this command is if  ```C:\windows\system32\notepad.exe``` is place
 
 To import this command into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
 
-```bash
-Import-JCCommand -URL 'https://git.io/Jv5ea'
+```
+Import-JCCommand -URL "https://github.com/TheJumpCloud/support/blob/master/PowerShell/JumpCloud%20Commands%20Gallery/Windows%20Commands/Windows%20-%20Run%20As%20Signed%20In%20User%20Template.md"
 ```
 
 #### Usage Notes

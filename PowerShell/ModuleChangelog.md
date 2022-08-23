@@ -43,6 +43,47 @@ Note: In order to use the parallel functionality, the feature requires PowerShel
 
 N/A
 
+## 1.23.4
+
+Release Date: July 25, 2022
+
+#### RELEASE NOTES
+
+This release modifies New-JCCommandURL to convert Import-JCCommand url to raw github content to prevent changes to GitHub HTML from breaking Import-JCCommand function
+
+## 1.23.3
+
+Release Date: July 20, 2022
+
+#### RELEASE NOTES
+
+This release modifies how the Manager Username Lookup works with Get-JCUser. Only usernames/ emails that match the full string of the search are now returned. In addition users set with Set-JCUser will correctly modify managers by email address.
+
+#### BUG FIXES:
+
+- Get-JCUser -Manager "someUser" could return multiple values if another user username: "User" exists in the Organization
+- Set-JCUser -Username "theUser" -Manager "someUser" could return multiple values if another user username: "User" exists in the Organization
+
+## 1.23.2
+
+Release Date: July 11, 2022
+
+#### RELEASE NOTES
+
+This release modifies how the Manager Username Lookup works with Get-JCUser. Only usernames/ emails that match the full string of the search are now returned
+
+#### BUG FIXES:
+
+- Get-JCUser -Manager "someUser" could return multiple values if another user username: "User" exists in the Organization
+
+## 1.23.1
+
+Release Date: July 7, 2022
+
+#### RELEASE NOTES
+
+This release adds validate to the Get-JCUser -State parameter set. It should now validate supplied acceptable values.
+Documentation for Get-JCCommand updated thanks to JumpCloud Community member: Ryan Bailey @rybai
 
 ## 1.23.0
 

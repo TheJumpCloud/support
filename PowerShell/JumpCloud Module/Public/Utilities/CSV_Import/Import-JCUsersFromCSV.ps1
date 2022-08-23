@@ -59,7 +59,8 @@ Function Import-JCUsersFromCSV () {
         $UserUpdateParams.Add("account_locked", "account_locked")
         $UserUpdateParams.Add("allow_public_key", "allow_public_key")
         $UserUpdateParams.Add("enable_managed_uid", "enable_managed_uid")
-        $UserUpdateParams.Add("enable_user_portal_multifactor", "enable_user_portal_multifactor")
+        $UserUpdateParams.Add("enable_user_portal_multifactor", "enable_user_portal_multifactor")# MFA
+        $UserUpdateParams.Add("EnrollmentDays", "EnrollmentDays")# MFA
         $UserUpdateParams.Add("externally_managed", "externally_managed")
         $UserUpdateParams.Add("ldap_binding_user", "ldap_binding_user")
         $UserUpdateParams.Add("passwordless_sudo", "passwordless_sudo")
@@ -129,6 +130,7 @@ Function Import-JCUsersFromCSV () {
             Write-Host ""
 
             Write-Host -BackgroundColor Green -ForegroundColor Black "Validating $($NewUsers.count) Emails Addresses"
+
 
             foreach ($User in $NewUsers) {
                 if ($ExistingUserHash.Values.Email -contains ($User.email)) {
@@ -245,6 +247,7 @@ Function Import-JCUsersFromCSV () {
                 $GroupCheck = Get-DynamicHash -Object Group -GroupType User -returnProperties name
 
                 foreach ($GroupTest in $UniqueGroups) {
+
                     if ($GroupCheck.Values.name -contains ($GroupTest.Value)) {
                         Write-Verbose "$($GroupTest.Value) exists"
                     } else {
@@ -333,9 +336,12 @@ Function Import-JCUsersFromCSV () {
             }
             $UpdateParamsRaw = $UserAdd.psobject.properties | Where-Object { ($_.Value -ne $Null) -and ($_.Value -ne "") } | Select-Object Name, Value
             $UpdateParams = @{ }
-
             foreach ($Param in $UpdateParamsRaw) {
-                if ($UserUpdateParams.$($Param.name)) {
+                if ($UserUpdateParams.$($Param.name) -eq "ldap_binding_user") {
+                    continue
+                } elseif ($UserUpdateParams.$($Param.name) -eq "ldapserver_id") {
+                    continue
+                } elseif ($UserUpdateParams.$($Param.name)) {
                     $UpdateParams.Add($Param.name, $Param.value)
                 }
 
@@ -388,6 +394,33 @@ Function Import-JCUsersFromCSV () {
 
                     try {
                         #User is created
+                        if ($UserAdd.ldapserver_id) {
+
+                            try {
+                                $LdapAdd = Set-JcSdkLdapServerAssociation -LdapserverId $UserAdd.ldapserver_id -id $NewUser._id -op "add" -type "user"
+                            } catch {
+                                $LdapBindStatus =
+                                if ($_.ErrorDetails) {
+                                    $_.ErrorDetails
+                                } elseif ($_.Exception) {
+                                    $_.Exception.Message
+                                }
+                            }
+                            try {
+                                $ldap_bind_boolean = [System.Convert]::ToBoolean($UserAdd.ldap_binding_user)
+                                $ldap_bind = Set-JCUser -UserID $NewUser._id -ldap_binding_user $ldap_bind_boolean
+                                $LdapBindStatus = $ldap_bind.ldap_binding_user
+
+                            } catch {
+                                $LdapBindStatus =
+                                if ($_.ErrorDetails) {
+                                    $_.ErrorDetails
+                                } elseif ($_.Exception) {
+                                    $_.Exception.Message
+                                }
+                            }
+                        }
+
                         if ($UserAdd.SystemID) {
 
                             if ($UserAdd.Administrator) {
@@ -480,12 +513,13 @@ Function Import-JCUsersFromCSV () {
 
                     $FormattedResults = [PSCustomObject]@{
 
-                        'Username'  = $NewUser.username
-                        'Status'    = $Status
-                        'UserID'    = $NewUser._id
-                        'GroupsAdd' = $UserGroupArrayList
-                        'SystemID'  = $UserAdd.SystemID
-                        'SystemAdd' = $SystemAddStatus
+                        'Username'     = $NewUser.username
+                        'Status'       = $Status
+                        'UserID'       = $NewUser._id
+                        'GroupsAdd'    = $UserGroupArrayList
+                        'SystemID'     = $UserAdd.SystemID
+                        'SystemAdd'    = $SystemAddStatus
+                        'LdapUserBind' = $LdapBindStatus
 
                     }
 
@@ -498,7 +532,7 @@ Function Import-JCUsersFromCSV () {
 
                         $Status = $_.ErrorDetails
                     } elseif ($_.Exception) {
-                        $Status = $_.Exception
+                        $Status = $_.Exception.Message
                     }
 
                     $FormattedResults = [PSCustomObject]@{
@@ -510,6 +544,7 @@ Function Import-JCUsersFromCSV () {
                         'GroupsAdd'      = $Null
                         'SystemID'       = $Null
                         'SystemAdd'      = $Null
+                        'LdapUserBind'   = $Null
 
                     }
 
@@ -539,11 +574,37 @@ Function Import-JCUsersFromCSV () {
                         $Status = 'User Not Created'
                     }
 
-
                     try {
+                        if ($UserAdd.ldapserver_id) {
+
+                            try {
+                                $LdapAdd = Set-JcSdkLdapServerAssociation -LdapserverId $UserAdd.ldapserver_id -id $NewUser._id -op "add" -type "user"
+                            } catch {
+                                $LdapBindStatus =
+                                if ($_.ErrorDetails) {
+                                    $_.ErrorDetails
+                                } elseif ($_.Exception) {
+                                    $_.Exception.Message
+                                }
+                            }
+                            try {
+                                $ldap_bind_boolean = [System.Convert]::ToBoolean($UserAdd.ldap_binding_user)
+                                $ldap_bind = Set-JCUser -UserID $NewUser._id -ldap_binding_user $ldap_bind_boolean
+                                $LdapBindStatus = $ldap_bind.ldap_binding_user
+
+                            } catch {
+                                $LdapBindStatus =
+                                if ($_.ErrorDetails) {
+                                    $_.ErrorDetails
+                                } elseif ($_.Exception) {
+                                    $_.Exception.Message
+                                }
+                            }
+
+                        }
+
                         #User is created
                         if ($UserAdd.SystemID) {
-
                             if ($UserAdd.Administrator) {
 
                                 Write-Verbose "Admin set"
@@ -641,12 +702,14 @@ Function Import-JCUsersFromCSV () {
 
                     $FormattedResults = [PSCustomObject]@{
 
-                        'Username'  = $NewUser.username
-                        'Status'    = $Status
-                        'UserID'    = $NewUser._id
-                        'GroupsAdd' = $UserGroupArrayList
-                        'SystemID'  = $UserAdd.SystemID
-                        'SystemAdd' = $SystemAddStatus
+                        'Username'     = $NewUser.username
+                        'Status'       = $Status
+                        'UserID'       = $NewUser._id
+                        'GroupsAdd'    = $UserGroupArrayList
+                        'SystemID'     = $UserAdd.SystemID
+                        'SystemAdd'    = $SystemAddStatus
+                        'LdapUserBind' = $LdapBindStatus
+
 
                     }
 
@@ -658,15 +721,19 @@ Function Import-JCUsersFromCSV () {
                 catch {
 
 
+                    If ($_.ErrorDetails) {
+                        $Status = $_.ErrorDetails
+                    } elseif ($_.Exception) {
+                        $Status = $_.Exception.Message
+                    }
                     $FormattedResults = [PSCustomObject]@{
-
-                        'Username'  = $UserAdd.username
-                        'Status'    = "$($_.ErrorDetails)"
-                        'UserID'    = $Null
-                        'GroupsAdd' = $Null
-                        'SystemID'  = $Null
-                        'SystemAdd' = $Null
-
+                        'Username'     = $UserAdd.username
+                        'Status'       = "$Status"
+                        'UserID'       = $Null
+                        'GroupsAdd'    = $Null
+                        'SystemID'     = $Null
+                        'SystemAdd'    = $Null
+                        'LdapUserBind' = $Null
                     }
 
 
