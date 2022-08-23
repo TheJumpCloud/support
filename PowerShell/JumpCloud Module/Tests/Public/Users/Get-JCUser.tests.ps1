@@ -94,8 +94,8 @@ Describe -Tag:('JCUser') 'Get-JCUser 1.1' {
     }
     It "Searches a JumpCloud user by managerUsername & Email and should not return user with similar username" {
         # Define two users who's username is contained by another user
-        $newUser1 = New-JCUser -username "jemartin" -firstname "je" -lastname "martin" -email "jemartin@deleteme.com"
-        $newUser2 = New-JCUser -username "emartin" -firstname "e" -lastname "martin" -email "emartin@deleteme.come"
+        $newUser1 = New-JCUser -username "jemartin" -firstname "je" -lastname "martin" -email "jemartin@$(get-random -Minimum 100 -Maximum 999)-deleteme.com"
+        $newUser2 = New-JCUser -username "emartin" -firstname "e" -lastname "martin" -email "emartin@$(get-random -Minimum 100 -Maximum 999)-deleteme.come"
         $NewUser = New-RandomUser -Domain DeleteMe | New-JCUser -manager $newUser2.username
         $NewUser = Get-JCUser -manager $newUser2.username
         $NewUser = Get-JCUser -manager $newUser2.email

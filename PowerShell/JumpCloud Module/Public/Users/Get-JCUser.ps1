@@ -120,6 +120,7 @@ Function Get-JCUser () {
         [String]$manager,
 
         [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'A search filter to return users that are in an ACTIVATED, STAGED or SUSPENDED state')]
+        [ValidateSet('ACTIVATED', 'SUSPENDED', 'STAGED')]
         [String]$state,
 
         [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'The recovery email of the JumpCloud user you wish to search for.')]
@@ -309,11 +310,10 @@ Function Get-JCUser () {
                                     $managerValue = $managerResults.id
                                 }
                             }
-                            $managerResults = Search-JcSdkUser -Body:($managerSearch)
-                            # Set managerValue; this is a validated user id
-                            $managerValue = $managerResults.id
-                            # if no value was returned, then assume the case this is actually a username and search
-                            if (!$managerValue) {
+                            # Use class mailaddress to check if $param.value is email
+                            try {
+                                $null = [mailaddress]$EmailAddress
+                                # Search manager using email
                                 $managerSearch = @{
                                     filter = @{
                                         'and' = @(
@@ -323,7 +323,7 @@ Function Get-JCUser () {
                                     fields = 'email'
                                 }
                                 $managerResults = Search-JcSdkUser -Body:($managerSearch)
-                                # Set managerValue from the matched username
+                                # Set managerValue; this is a validated user id
                                 $managerValue = $managerResults.id
                                 if (!$managerValue) {
                                     $managerSearch = @{
@@ -338,11 +338,8 @@ Function Get-JCUser () {
                                     # Set managerValue from the matched username
                                     $managerValue = $managerResults.id
                                 }
-                            }
-                            $managerResults = Search-JcSdkUser -Body:($managerSearch)
-                            # Set managerValue; this is a validated user id
-                            $managerValue = $managerResults.id
-                            if (!$managerValue) {
+                            } catch {
+                                # search the username in the search endpoint
                                 $managerSearch = @{
                                     filter = @{
                                         'and' = @(
@@ -355,29 +352,23 @@ Function Get-JCUser () {
                                 # Set managerValue from the matched username
                                 $managerValue = $managerResults.id
                             }
-                        } catch {
-                            # search the username in the search endpoint
-                            $managerSearch = @{
-                                searchFilter = @{
-                                    searchTerm = @($param.Value)
-                                    fields     = @('username')
-                                }
+                            if ($managerValue) {
+                                # if an ID was validated
+                                ($Search.filter).GetEnumerator().add($param.Key, $managerValue)
+                            } else {
+                                # if id was not validated, return value, let the API manage the error message
+                                ($Search.filter).GetEnumerator().add($param.Key, $param.Value)
                             }
                             continue
                         }
-                    } # end manager lookup
+                    }
 
                     # case insensitive state param
                     if ("state" -eq $param.Key) {
                         if ($param.Value -cin @('ACTIVATED', 'SUSPENDED', 'STAGED')) {
                             $stateValue = $param.Value
-                        }
-                        if ($managerValue) {
-                            # if an ID was validated
-                                ($Search.filter).GetEnumerator().add($param.Key, $managerValue)
                         } else {
-                            # if id was not validated, return value, let the API manage the error message
-                                ($Search.filter).GetEnumerator().add($param.Key, $param.Value)
+                            $stateValue = ($param.Value).ToUpper()
                         }
                         continue
                     }
@@ -399,17 +390,9 @@ Function Get-JCUser () {
                     } else {
                             (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)(^$([regex]::Escape($Value))`$)" })
                     }
-                } # End Foreach
 
-                # # case insensitve state param
-                # if ("state" -eq $param.Key) {
-                #     if ($param.Value -cin @('ACTIVATED', 'SUSPENDED', 'STAGED')) {
-                #         $stateValue = $param.Value
-                #     } else {
-                #         $stateValue = ($param.Value).ToUpper()
-                #     }
-                #     continue
-                # }
+                } # End foreach
+
                 if ($filterDateProperty) {
                     (($Search.filter).GetEnumerator()).add($DateProperty, @{$DateQuery = $Timestamp })
                 }
@@ -431,15 +414,19 @@ Function Get-JCUser () {
                 } else {
                     $resultsArrayList = Get-JCResults -URL $URL -method "POST" -limit $limit -body $SearchJSON
                 }
-            } # End search
+
+            } #End search
+
             ByID {
 
                 $URL = "$JCUrlBasePath/api/Systemusers/$Userid"
                 Write-Verbose $URL
                 $resultsArrayList = Get-JCResults -URL $URL -method "GET" -limit $limit
             }
+
         } # End switch
-    } #End process
+    } # End process
+
     end {
 
         switch ($PSCmdlet.ParameterSetName) {
