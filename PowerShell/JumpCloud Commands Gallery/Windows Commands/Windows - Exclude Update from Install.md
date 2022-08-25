@@ -1,4 +1,5 @@
 #### Name
+
 Windows - Exclude Update from Install | v1.0 JCCG
 
 #### commandType
@@ -8,7 +9,6 @@ windows
 #### Command
 
 ```
-
 ########################################################
 # To target a specific update, replace the <Update_KB_Article_Id> text with the target update KB ID.
 # Example: $kbArticleId = 'KB1234567'
@@ -54,10 +54,10 @@ exit 0
 
 This command will download the PSWindowsUpdate module and disable the Update that the user supplies
 
-### *Import This Command*
+#### *Import This Command*
 
 To import this command into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
 
 ```
-Import-JCCommand -URL 'https://github.com/TheJumpCloud/support/blob/UN-1200_hide_windows_update/PowerShell/JumpCloud%20Commands%20Gallery/Windows%20Commands/Windows%20-%20Exclude%20Update%20from%20Install.md'
+Import-JCCommand -URL 'https://github.com/TheJumpCloud/support/blob/master/PowerShell/JumpCloud%20Commands%20Gallery/Windows%20Commands/Windows%20-%20Exclude%20Update%20from%20Install.md'
 ```
