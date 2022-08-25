@@ -187,11 +187,34 @@ function Get-JCCommandResult () {
             Detailed {
                 $results = Get-JCCommandResult
                 if ($Parallel) {
-                    $CommandResultCopy = Get-Command Get-JCCommandResult
                     $results | Foreach-Object -Parallel {
                         $resultsArrayList = $using:resultsArrayList
-                        $result = & $using:CommandResultCopy -ID $_._id
-                        $null = $resultsArrayList.Add($result)
+                        $JCUrlBasePath = $using:JCUrlBasePath
+                        $URL = "$JCUrlBasePath/api/commandresults/$($_._id)"
+                        try {
+                            $CommandResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
+                        } catch {
+                            throw $_
+                        }
+                        $FormattedResults = [PSCustomObject]@{
+
+                            name               = $CommandResults.name
+                            command            = $CommandResults.command
+                            system             = $CommandResults.system
+                            systemId           = $CommandResults.systemId
+                            organization       = $CommandResults.organization
+                            workflowId         = $CommandResults.workflowId
+                            workflowInstanceId = $CommandResults.workflowInstanceId
+                            output             = $CommandResults.response.data.output
+                            exitCode           = $CommandResults.response.data.exitCode
+                            user               = $CommandResults.user
+                            sudo               = $CommandResults.sudo
+                            requestTime        = $CommandResults.requestTime
+                            responseTime       = $CommandResults.responseTime
+                            _id                = $CommandResults._id
+                            error              = $CommandResults.response.error
+                        }
+                        $null = $resultsArrayList.Add($FormattedResults)
                     }
                 } else {
                     $results | Foreach-Object {
