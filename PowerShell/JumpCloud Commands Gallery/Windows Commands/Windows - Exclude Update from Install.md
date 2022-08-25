@@ -59,5 +59,5 @@ This command will download the PSWindowsUpdate module and disable the Update tha
 To import this command into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
 
 ```
-Import-JCCommand -URL 'https://github.com/TheJumpCloud/support/blob/master/PowerShell/JumpCloud%20Commands%20Gallery/Windows%20Commands/Windows%20-%20Install%20Remote%20Assist.md'
+Import-JCCommand -URL 'https://github.com/TheJumpCloud/support/blob/UN-1200_hide_windows_update/PowerShell/JumpCloud%20Commands%20Gallery/Windows%20Commands/Windows%20-%20Exclude%20Update%20from%20Install.md'
 ```
