@@ -57,6 +57,27 @@ Describe -Tag:('JCCommandResult') "Get-JCCommandResult 2.0" {
         $CommandResults = Get-JCCommand | Get-JCCommandResult -ByCommandID
         $CommandResults | Should -Not -BeNullOrEmpty
     }
+    It "Get CommandResults -CommandID should return the same as Get-JCComand | Get-JCCommandResults -ByCommandID" {
+        $cmds = Get-JCCommand -name $PesterParams_Command1.Name
+        $CmdIDResults = Get-JCCommandResult -CommandID $PesterParams_Command1.id
+        $byCmdIDResults = Get-JCCommand -name $PesterParams_Command1.Name | Get-JCCommandResult -ByCommandID
+        # the two commands should return the same number of results
+        $CmdIDResults.count | Should -Be $byCmdIDResults.count
+        $cmdResultsByIDMembers = $CmdIDResults | GM | Where-Object { $_.MemberType -eq "NoteProperty" }
+        $cmdResultsDetailMembers = $byCmdIDResults | GM | Where-Object { $_.MemberType -eq "NoteProperty" }
+        # For Each CmdIDResults & byCmdIDResults, check that each matching command result id contains the exact same information
+        foreach ($byIdResult in $CmdIDResults) {
+            foreach ($detailedResult in $byCmdIDResults) {
+                if ($byIdResult._id -eq $detailedResult._id) {
+                    foreach ($byIdMember in $cmdResultsByIDMembers) {
+                        # "Checking $($byIdMember.Name) $($byIdResult.$($byIdMember.Name)) Should Be $($detailedResult.$($byIdMember.Name))"
+                        $($byIdResult.$($byIdMember.Name)) | Should -Be $($detailedResult.$($byIdMember.Name))
+                    }
+                }
+
+            }
+        }
+    }
     It "Tests the -Detail Parameter should return same data as piped -ById" {
         $cmdResults = Get-JCCommandResult
         $cmdResultsByID = Get-JCCommandResult | Get-JCCommandResult -ByID

@@ -14,15 +14,14 @@ function Get-JCCommandResult () {
         [Parameter(ValueFromPipeline, ParameterSetName = 'ByCommandID', HelpMessage = 'Use the -ByCommandID parameter when you want to query the results of a specific Command via pipeline. The -ByCommandID SwitchParameter will set the ParameterSet to ''ByCommandID'' which queries all JumpCloud Command Results for that particular Command.')]
         [Switch]$ByCommandID,
 
-        [Parameter(ParameterSetName = 'ByID', HelpMessage = 'Use the -ByID parameter when you want to query the contents of a specific Command Result or if the -CommandResultID is being passed over the pipeline to return the full contents of a JumpCloud Command Result. The -ByID SwitchParameter will set the ParameterSet to ''ByID'' which queries one JumpCloud Command Result at a time.')]
+        [Parameter(DontShow, ParameterSetName = 'ByID', HelpMessage = 'Use the -ByID parameter when you want to query the contents of a specific Command Result or if the -CommandResultID is being passed over the pipeline to return the full contents of a JumpCloud Command Result. The -ByID SwitchParameter will set the ParameterSet to ''ByID'' which queries one JumpCloud Command Result at a time.')]
         [Switch]$ByID,
 
-        [Parameter(ParameterSetName = 'TotalCount', HelpMessage = 'A switch parameter to only return the number of command results.')]
-        [Switch]$TotalCount,
-
         [Parameter(ParameterSetName = 'Detailed', HelpMessage = 'A switch parameter to return the detailed output of each command result')]
-        [Switch]$Detailed
+        [Switch]$Detailed,
 
+        [Parameter(ParameterSetName = 'TotalCount', HelpMessage = 'A switch parameter to only return the number of command results.')]
+        [Switch]$TotalCount
     )
     begin {
         Write-Verbose 'Verifying JCAPI Key'
