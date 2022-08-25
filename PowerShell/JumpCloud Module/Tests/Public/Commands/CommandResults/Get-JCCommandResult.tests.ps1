@@ -58,10 +58,29 @@ Describe -Tag:('JCCommandResult') "Get-JCCommandResult 2.0" {
         $CommandResults | Should -Not -BeNullOrEmpty
     }
     It "Tests the -Detail Parameter should return same data as piped -ById" {
-        $c = Get-JCCommandResult | Get-JCCommandResult -ByID
-        $d = Get-JCCommandResult -Detailed
-        $c.count | should -Be $d.count
-        $c.output | Should -not -BeNullOrEmpty
-        $d.output | Should -not -BeNullOrEmpty
+        $cmdResults = Get-JCCommandResult
+        $cmdResultsByID = Get-JCCommandResult | Get-JCCommandResult -ByID
+        $cmdResultsDetail = Get-JCCommandResult -Detailed
+        $origMembers = $cmdResults | GM | Where-Object { $_.MemberType -eq "NoteProperty" }
+        $cmdResultsByIDMembers = $cmdResultsByID | GM | Where-Object { $_.MemberType -eq "NoteProperty" }
+        $cmdResultsDetailMembers = $cmdResultsDetail | GM | Where-Object { $_.MemberType -eq "NoteProperty" }
+        # Test that the commandResults members (command, exitCode, name, requestTime, responseTime, sudo, system, systemId, user, workflowId, _id) are in the detailed results:
+        $origMembers.Name | Should -BeIn $cmdResultsByIDMembers.Name
+        $origMembers.Name | Should -BeIn $cmdResultsDetailMembers.Name
+        # Test that the detailed results should contain the same results as the list all endpoint
+        $cmdResultsByID.count | should -Be $cmdResults.count
+        $cmdResultsDetail.count | should -Be $cmdResults.count
+        # For Each cmdResultsByID & cmdResultsDetail, check that each matching command result id contains the exact same information
+        foreach ($byIdResult in $cmdResultsByID) {
+            foreach ($detailedResult in $cmdResultsDetail) {
+                if ($byIdResult._id -eq $detailedResult._id) {
+                    foreach ($byIdMember in $cmdResultsByIDMembers) {
+                        # "Checking $($byIdMember.Name) $($byIdResult.$($byIdMember.Name)) Should Be $($detailedResult.$($byIdMember.Name))"
+                        $($byIdResult.$($byIdMember.Name)) | Should -Be $($detailedResult.$($byIdMember.Name))
+                    }
+                }
+
+            }
+        }
     }
 }
