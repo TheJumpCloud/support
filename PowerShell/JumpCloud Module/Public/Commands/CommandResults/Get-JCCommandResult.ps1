@@ -7,18 +7,22 @@ function Get-JCCommandResult () {
         [Alias('_id', 'id')]
         [String]$CommandResultID,
 
-        [Parameter(ParameterSetName = 'ByID', HelpMessage = 'Use the -ByID parameter when you want to query the contents of a specific Command Result or if the -CommandResultID is being passed over the pipeline to return the full contents of a JumpCloud Command Result. The -ByID SwitchParameter will set the ParameterSet to ''ByID'' which queries one JumpCloud Command Result at a time.')]
-        [Switch]$ByID,
-
-        [Parameter(ValueFromPipeline, ParameterSetName = 'ByCommandID', HelpMessage = 'Use the -ByCommandID parameter when you want to query the results of a specific Command via pipeline. The -ByCommandID SwitchParameter will set the ParameterSet to ''ByCommandID'' which queries all JumpCloud Command Results for that particular Command.')]
-        [Switch]$ByCommandID,
-
         [Parameter(ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'ByCommandID', HelpMessage = 'The _id of the JumpCloud Command you wish to query.')]
         [Alias('WorkflowID')]
         [String]$CommandID,
 
+        [Parameter(ValueFromPipeline, ParameterSetName = 'ByCommandID', HelpMessage = 'Use the -ByCommandID parameter when you want to query the results of a specific Command via pipeline. The -ByCommandID SwitchParameter will set the ParameterSet to ''ByCommandID'' which queries all JumpCloud Command Results for that particular Command.')]
+        [Switch]$ByCommandID,
+
+        [Parameter(ParameterSetName = 'ByID', HelpMessage = 'Use the -ByID parameter when you want to query the contents of a specific Command Result or if the -CommandResultID is being passed over the pipeline to return the full contents of a JumpCloud Command Result. The -ByID SwitchParameter will set the ParameterSet to ''ByID'' which queries one JumpCloud Command Result at a time.')]
+        [Switch]$ByID,
+
         [Parameter(ParameterSetName = 'TotalCount', HelpMessage = 'A switch parameter to only return the number of command results.')]
-        [Switch]$TotalCount
+        [Switch]$TotalCount,
+
+        [Parameter(ParameterSetName = 'Detailed', HelpMessage = 'A switch parameter to return the detailed output of each command result')]
+        [Switch]$Detailed
+
     )
     begin {
         Write-Verbose 'Verifying JCAPI Key'
@@ -180,6 +184,21 @@ function Get-JCCommandResult () {
                 }
                 $null = $resultsArrayList.Add($FormattedResults)
             }#End ByID
+            Detailed {
+                $results = Get-JCCommandResult
+                if ($Parallel) {
+                    $results | Foreach-Object -Parallel {
+                        $resultsArrayList = $using:resultsArrayList
+                        $result = Get-JCCommandResult -ID $_._id
+                        $null = $resultsArrayList.Add($result)
+                    }
+                } else {
+                    $results | Foreach-Object {
+                        $result = Get-JCCommandResult -ID $_._id
+                        $null = $resultsArrayList.Add($result)
+                    }
+                }
+            }#End Detailed
         }
     }
     end {
@@ -195,6 +214,9 @@ function Get-JCCommandResult () {
             }
             ByID {
                 Return  $resultsArrayList
+            }
+            Detailed {
+                Return  $resultsarrayList
             }
         }
     }
