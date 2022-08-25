@@ -187,9 +187,10 @@ function Get-JCCommandResult () {
             Detailed {
                 $results = Get-JCCommandResult
                 if ($Parallel) {
+                    $CommandResultCopy = Get-Command Get-JCCommandResult
                     $results | Foreach-Object -Parallel {
                         $resultsArrayList = $using:resultsArrayList
-                        $result = Get-JCCommandResult -ID $_._id
+                        $result = & $using:CommandResultCopy -ID $_._id
                         $null = $resultsArrayList.Add($result)
                     }
                 } else {
