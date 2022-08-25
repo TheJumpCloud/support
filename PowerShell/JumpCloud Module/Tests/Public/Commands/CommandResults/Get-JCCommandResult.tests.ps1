@@ -57,4 +57,11 @@ Describe -Tag:('JCCommandResult') "Get-JCCommandResult 2.0" {
         $CommandResults = Get-JCCommand | Get-JCCommandResult -ByCommandID
         $CommandResults | Should -Not -BeNullOrEmpty
     }
+    It "Tests the -Detail Parameter should return same data as piped -ById" {
+        $c = Get-JCCommandResult | Get-JCCommandResult -ByID
+        $d = Get-JCCommandResult -Detailed
+        $c.count | should -Be $d.count
+        $c.output | Should -not -BeNullOrEmpty
+        $d.output | Should -not -BeNullOrEmpty
+    }
 }
