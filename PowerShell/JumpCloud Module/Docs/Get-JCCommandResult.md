@@ -24,12 +24,17 @@ Get-JCCommandResult [-CommandResultID] <String> [-ByID] [<CommonParameters>]
 
 ### ByCommandID
 ```
-Get-JCCommandResult [-ByCommandID] [-CommandID <String>] [<CommonParameters>]
+Get-JCCommandResult [-CommandID <String>] [-ByCommandID] [<CommonParameters>]
 ```
 
 ### TotalCount
 ```
 Get-JCCommandResult [-TotalCount] [<CommonParameters>]
+```
+
+### Detailed
+```
+Get-JCCommandResult [-Detailed] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -148,6 +153,21 @@ Required: True
 Position: 0
 Default value: None
 Accept pipeline input: True (ByPropertyName, ByValue)
+Accept wildcard characters: False
+```
+
+### -Detailed
+A switch parameter to return the detailed output of each command result
+
+```yaml
+Type: System.Management.Automation.SwitchParameter
+Parameter Sets: Detailed
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
