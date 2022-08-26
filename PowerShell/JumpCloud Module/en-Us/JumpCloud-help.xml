@@ -3848,17 +3848,6 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-          <maml:name>ByID</maml:name>
-          <maml:description>
-            <maml:para>Use the -ByID parameter when you want to query the contents of a specific Command Result or if the -CommandResultID is being passed over the pipeline to return the full contents of a JumpCloud Command Result. The -ByID SwitchParameter will set the ParameterSet to 'ByID' which queries one JumpCloud Command Result at a time.</maml:para>
-          </maml:description>
-          <dev:type>
-            <maml:name>System.Management.Automation.SwitchParameter</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>False</dev:defaultValue>
-        </command:parameter>
       </command:syntaxItem>
       <command:syntaxItem>
         <maml:name>Get-JCCommandResult</maml:name>
@@ -3894,18 +3883,6 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
         <maml:name>ByCommandID</maml:name>
         <maml:description>
           <maml:para>Use the -ByCommandID or -ByWorkflowID parameter when you want to query the results of a specific Command. The -ByCommandID or -ByWorkflowID SwitchParameter will set the ParameterSet to 'ByCommandID' which queries all JumpCloud Command Results for that particular Command.</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.Management.Automation.SwitchParameter</command:parameterValue>
-        <dev:type>
-          <maml:name>System.Management.Automation.SwitchParameter</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>False</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-        <maml:name>ByID</maml:name>
-        <maml:description>
-          <maml:para>Use the -ByID parameter when you want to query the contents of a specific Command Result or if the -CommandResultID is being passed over the pipeline to return the full contents of a JumpCloud Command Result. The -ByID SwitchParameter will set the ParameterSet to 'ByID' which queries one JumpCloud Command Result at a time.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.Management.Automation.SwitchParameter</command:parameterValue>
         <dev:type>
@@ -4013,38 +3990,38 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
       </command:example>
       <command:example>
         <maml:title>-------------------------- Example 3 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Get-JCCommandResult -CommandID 6307e611baab9f408ff17eb9</dev:code>
+        <dev:remarks>
+          <maml:para>Returns all JumpCloud Command Result corresponding to the JumpCloud Command with ID: '6307e611baab9f408ff17eb9'. Note that the command results output will be present in the output from this command.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 4 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Get-JCComand -Name "GetJCAgentLog" | Get-JCCommandResult -ByCommandID</dev:code>
+        <dev:remarks>
+          <maml:para>Returns all JumpCloud Commands with the name "GetJCAgentLog", and pipes the output to Get-JCComandResult. The "-ByCommandID" switch will flag the command to get the results for each commandID passed in. Multiple commands can be piped into the function.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 5 --------------------------</maml:title>
         <dev:code>PS C:\&gt; Get-JCCommandResult | Where-Object {$_.requestTime -GT (Get-Date).AddDays(-7) -and $_.exitCode -ne 0}</dev:code>
         <dev:remarks>
           <maml:para>Returns all JumpCloud Command Result that were run within the last seven days and that did not return an exitCode of '0'. Note an exitCode of zero generally represents a successful run of a command. This command returns all failed commands results for the past seven days.</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
-        <maml:title>-------------------------- Example 4 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCCommandResult | Where-Object requestTime -GT (Get-Date).AddHours(-1) |  Get-JCCommandResult -ByID  | Select-Object -ExpandProperty output</dev:code>
+        <maml:title>-------------------------- Example 6 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Get-JCCommandResult -Detailed | Where-Object requestTime -GT (Get-Date).AddHours(-1) | Select-Object -ExpandProperty output</dev:code>
         <dev:remarks>
           <maml:para>Returns the output for all JumpCloud Command results that were run within the last hour using the -ByID Parameter and Parameter Binding.</maml:para>
-          <maml:para>Note that when running this command the time for the output to display will be directly proportionate to how many JumpCloud commands that match the criteria. The command 'Get-JCCommandResult -ByID' runs once for every JumpCloud command result that matches the criteria Where-Object criteria.</maml:para>
+          <maml:para>Note that when running this command the time for the output to display will be directly proportionate to how many JumpCloud commands that match the criteria. The command 'Get-JCCommandResult -Detailed' runs once for every JumpCloud command result that matches the criteria Where-Object criteria.</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
-        <maml:title>-------------------------- Example 5 --------------------------</maml:title>
+        <maml:title>-------------------------- Example 7 --------------------------</maml:title>
         <dev:code>PS C:\&gt; Get-JCCommandResult -TotalCount</dev:code>
         <dev:remarks>
           <maml:para>Returns the total number of JumpCloud command results</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 6 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCCommandResult -Skip 100</dev:code>
-        <dev:remarks>
-          <maml:para>Skips returning the first 100 command results and only returns the results after 100. Command results are sorted by execution time.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 6 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCCommandResult -Skip 100 -MaxResults 10</dev:code>
-        <dev:remarks>
-          <maml:para>Skips returning the first 100 command results and only returns the 10 results after  the first 100 results. Command results are sorted by execution time.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>

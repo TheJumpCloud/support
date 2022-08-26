@@ -19,7 +19,7 @@ Get-JCCommandResult [<CommonParameters>]
 
 ### ByID
 ```
-Get-JCCommandResult [-CommandResultID] <String> [-ByID] [<CommonParameters>]
+Get-JCCommandResult [-CommandResultID] <String> [<CommonParameters>]
 ```
 
 ### ByCommandID
@@ -27,14 +27,14 @@ Get-JCCommandResult [-CommandResultID] <String> [-ByID] [<CommonParameters>]
 Get-JCCommandResult [-CommandID <String>] [-ByCommandID] [<CommonParameters>]
 ```
 
-### TotalCount
-```
-Get-JCCommandResult [-TotalCount] [<CommonParameters>]
-```
-
 ### Detailed
 ```
 Get-JCCommandResult [-Detailed] [<CommonParameters>]
+```
+
+### TotalCount
+```
+Get-JCCommandResult [-TotalCount] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -62,6 +62,7 @@ PS C:\> Get-JCCommandResult -CommandID 6307e611baab9f408ff17eb9
 ```
 
 Returns all JumpCloud Command Result corresponding to the JumpCloud Command with ID: '6307e611baab9f408ff17eb9'. Note that the command results output will be present in the output from this command.
+
 ### Example 4
 ```powershell
 PS C:\> Get-JCComand -Name "GetJCAgentLog" | Get-JCCommandResult -ByCommandID
@@ -106,22 +107,6 @@ Required: False
 Position: Named
 Default value: None
 Accept pipeline input: True (ByValue)
-Accept wildcard characters: False
-```
-
-### -ByID
-Use the -ByID parameter when you want to query the contents of a specific Command Result or if the -CommandResultID is being passed over the pipeline to return the full contents of a JumpCloud Command Result.
-The -ByID SwitchParameter will set the ParameterSet to 'ByID' which queries one JumpCloud Command Result at a time.
-
-```yaml
-Type: System.Management.Automation.SwitchParameter
-Parameter Sets: ByID
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
