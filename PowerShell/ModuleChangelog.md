@@ -29,6 +29,11 @@ Note: In order to use the parallel functionality, the feature requires PowerShel
     - Example: $OrgCommandResults = Get-JCCommand | Get-JCCommandResult -ByCommandID
   - When using the pipeline for inputting a commandResult object to Get-JCCommandResult, use the -ByID switch
     - Example: $OrgCommandResults = Get-JCCommandResult | Get-JCCommandResult -ByID
+- Case Insensitive Search added to Get-JCUser, Get-JCSystem, Get-JCCommand
+  - User, System, Command attributes can be searched without case sensitivity
+    - Example: Get-JCUser -username 'defaultadmin' ... This will return the user with username 'DefaultAdmin'
+    - Example: Get-JCSystem -displayname 'mac-jimmys-macbook' ... This will return the system with displayname 'Mac-Jimmys-MacBook'
+    - Example: Get-JCCommand -command "*disable*" ... This will return commands with some variation of the word 'Command/command' in the command body
 
 #### IMPROVEMENTS:
 

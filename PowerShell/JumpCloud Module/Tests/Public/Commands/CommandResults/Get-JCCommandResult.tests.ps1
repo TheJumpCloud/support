@@ -57,4 +57,51 @@ Describe -Tag:('JCCommandResult') "Get-JCCommandResult 2.0" {
         $CommandResults = Get-JCCommand | Get-JCCommandResult -ByCommandID
         $CommandResults | Should -Not -BeNullOrEmpty
     }
+    It "Get CommandResults -CommandID should return the same as Get-JCComand | Get-JCCommandResults -ByCommandID" {
+        $cmds = Get-JCCommand -name $PesterParams_Command1.Name
+        $CmdIDResults = Get-JCCommandResult -CommandID $PesterParams_Command1.id
+        $byCmdIDResults = Get-JCCommand -name $PesterParams_Command1.Name | Get-JCCommandResult -ByCommandID
+        # the two commands should return the same number of results
+        $CmdIDResults.count | Should -Be $byCmdIDResults.count
+        $cmdResultsByIDMembers = $CmdIDResults | GM | Where-Object { $_.MemberType -eq "NoteProperty" }
+        $cmdResultsDetailMembers = $byCmdIDResults | GM | Where-Object { $_.MemberType -eq "NoteProperty" }
+        # For Each CmdIDResults & byCmdIDResults, check that each matching command result id contains the exact same information
+        foreach ($byIdResult in $CmdIDResults) {
+            foreach ($detailedResult in $byCmdIDResults) {
+                if ($byIdResult._id -eq $detailedResult._id) {
+                    foreach ($byIdMember in $cmdResultsByIDMembers) {
+                        # "Checking $($byIdMember.Name) $($byIdResult.$($byIdMember.Name)) Should Be $($detailedResult.$($byIdMember.Name))"
+                        $($byIdResult.$($byIdMember.Name)) | Should -Be $($detailedResult.$($byIdMember.Name))
+                    }
+                }
+
+            }
+        }
+    }
+    It "Tests the -Detail Parameter should return same data as piped -ById" {
+        $cmdResults = Get-JCCommandResult
+        $cmdResultsByID = Get-JCCommandResult | Get-JCCommandResult -ByID
+        $cmdResultsDetail = Get-JCCommandResult -Detailed
+        $origMembers = $cmdResults | GM | Where-Object { $_.MemberType -eq "NoteProperty" }
+        $cmdResultsByIDMembers = $cmdResultsByID | GM | Where-Object { $_.MemberType -eq "NoteProperty" }
+        $cmdResultsDetailMembers = $cmdResultsDetail | GM | Where-Object { $_.MemberType -eq "NoteProperty" }
+        # Test that the commandResults members (command, exitCode, name, requestTime, responseTime, sudo, system, systemId, user, workflowId, _id) are in the detailed results:
+        $origMembers.Name | Should -BeIn $cmdResultsByIDMembers.Name
+        $origMembers.Name | Should -BeIn $cmdResultsDetailMembers.Name
+        # Test that the detailed results should contain the same results as the list all endpoint
+        $cmdResultsByID.count | should -Be $cmdResults.count
+        $cmdResultsDetail.count | should -Be $cmdResults.count
+        # For Each cmdResultsByID & cmdResultsDetail, check that each matching command result id contains the exact same information
+        foreach ($byIdResult in $cmdResultsByID) {
+            foreach ($detailedResult in $cmdResultsDetail) {
+                if ($byIdResult._id -eq $detailedResult._id) {
+                    foreach ($byIdMember in $cmdResultsByIDMembers) {
+                        # "Checking $($byIdMember.Name) $($byIdResult.$($byIdMember.Name)) Should Be $($detailedResult.$($byIdMember.Name))"
+                        $($byIdResult.$($byIdMember.Name)) | Should -Be $($detailedResult.$($byIdMember.Name))
+                    }
+                }
+
+            }
+        }
+    }
 }

@@ -19,12 +19,17 @@ Get-JCCommandResult [<CommonParameters>]
 
 ### ByID
 ```
-Get-JCCommandResult [-CommandResultID] <String> [-ByID] [<CommonParameters>]
+Get-JCCommandResult [-CommandResultID] <String> [<CommonParameters>]
 ```
 
 ### ByCommandID
 ```
-Get-JCCommandResult [-ByCommandID] [-CommandID <String>] [<CommonParameters>]
+Get-JCCommandResult [-CommandID <String>] [-ByCommandID] [<CommonParameters>]
+```
+
+### Detailed
+```
+Get-JCCommandResult [-Detailed] [<CommonParameters>]
 ```
 
 ### TotalCount
@@ -53,40 +58,40 @@ Returns a single JumpCloud Command Result with CommandResultID '5j09o6f23dan6f4n
 
 ### Example 3
 ```powershell
+PS C:\> Get-JCCommandResult -CommandID 6307e611baab9f408ff17eb9
+```
+
+Returns all JumpCloud Command Result corresponding to the JumpCloud Command with ID: '6307e611baab9f408ff17eb9'. Note that the command results output will be present in the output from this command.
+
+### Example 4
+```powershell
+PS C:\> Get-JCComand -Name "GetJCAgentLog" | Get-JCCommandResult -ByCommandID
+```
+
+Returns all JumpCloud Commands with the name "GetJCAgentLog", and pipes the output to Get-JCComandResult. The "-ByCommandID" switch will flag the command to get the results for each commandID passed in. Multiple commands can be piped into the function.
+
+### Example 5
+```powershell
 PS C:\> Get-JCCommandResult | Where-Object {$_.requestTime -GT (Get-Date).AddDays(-7) -and $_.exitCode -ne 0}
 ```
 
 Returns all JumpCloud Command Result that were run within the last seven days and that did not return an exitCode of '0'. Note an exitCode of zero generally represents a successful run of a command. This command returns all failed commands results for the past seven days.
 
-### Example 4
+### Example 6
 ```powershell
-PS C:\> Get-JCCommandResult | Where-Object requestTime -GT (Get-Date).AddHours(-1) |  Get-JCCommandResult -ByID  | Select-Object -ExpandProperty output
+PS C:\> Get-JCCommandResult -Detailed | Where-Object requestTime -GT (Get-Date).AddHours(-1) | Select-Object -ExpandProperty output
 ```
 
 Returns the output for all JumpCloud Command results that were run within the last hour using the -ByID Parameter and Parameter Binding.
 
-Note that when running this command the time for the output to display will be directly proportionate to how many JumpCloud commands that match the criteria. The command 'Get-JCCommandResult -ByID' runs once for every JumpCloud command result that matches the criteria Where-Object criteria.
+Note that when running this command the time for the output to display will be directly proportionate to how many JumpCloud commands that match the criteria. The command 'Get-JCCommandResult -Detailed' runs once for every JumpCloud command result that matches the criteria Where-Object criteria.
 
-### Example 5
+### Example 7
 ```powershell
 PS C:\> Get-JCCommandResult -TotalCount
 ```
 
 Returns the total number of JumpCloud command results
-
-### Example 6
-```powershell
-PS C:\> Get-JCCommandResult -Skip 100
-```
-
-Skips returning the first 100 command results and only returns the results after 100. Command results are sorted by execution time.
-
-### Example 6
-```powershell
-PS C:\> Get-JCCommandResult -Skip 100 -MaxResults 10
-```
-
-Skips returning the first 100 command results and only returns the 10 results after  the first 100 results. Command results are sorted by execution time.
 
 ## PARAMETERS
 
@@ -102,22 +107,6 @@ Required: False
 Position: Named
 Default value: None
 Accept pipeline input: True (ByValue)
-Accept wildcard characters: False
-```
-
-### -ByID
-Use the -ByID parameter when you want to query the contents of a specific Command Result or if the -CommandResultID is being passed over the pipeline to return the full contents of a JumpCloud Command Result.
-The -ByID SwitchParameter will set the ParameterSet to 'ByID' which queries one JumpCloud Command Result at a time.
-
-```yaml
-Type: System.Management.Automation.SwitchParameter
-Parameter Sets: ByID
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
@@ -148,6 +137,21 @@ Required: True
 Position: 0
 Default value: None
 Accept pipeline input: True (ByPropertyName, ByValue)
+Accept wildcard characters: False
+```
+
+### -Detailed
+A switch parameter to return the detailed output of each command result
+
+```yaml
+Type: System.Management.Automation.SwitchParameter
+Parameter Sets: Detailed
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
