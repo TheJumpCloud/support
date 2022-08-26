@@ -186,12 +186,13 @@ function Get-JCCommandResult () {
             Detailed {
                 $results = Get-JCCommandResult
                 if ($Parallel) {
+                    $UserAgent = Get-JCUserAgent
                     $results | Foreach-Object -Parallel {
                         $resultsArrayList = $using:resultsArrayList
                         $JCUrlBasePath = $using:JCUrlBasePath
                         $URL = "$JCUrlBasePath/api/commandresults/$($_._id)"
                         try {
-                            $CommandResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
+                            $CommandResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent:($using:UserAgent)
                         } catch {
                             throw $_
                         }
