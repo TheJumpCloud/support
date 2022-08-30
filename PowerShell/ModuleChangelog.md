@@ -1,3 +1,55 @@
+## 2.0.0
+
+Release Date: June 27, 2022
+
+#### RELEASE NOTES
+
+```
+This release introduces Parallel processing functionality to several functions (Get-JCUser, Get-JCSystem, Get-JCSystemUser, Get-JCGroup, Get-JCSystemGroupMember, Get-JCUserGroupMember, Get-JCCommand, Get-JCCommandResult, Get-JCCommandTarget)
+
+Note: In order to use the parallel functionality, the feature requires PowerShell version 7 or higher
+```
+
+#### FEATURES:
+
+- This release adds parallel processing functionality to potentially alleviate long wait times for large scale operations
+  - Note: Feature requires PowerShell version 7 or higher
+  - This release adds parallel processing to the following functions:
+    - Get-JCUser
+    - Get-JCSystem
+    - Get-JCSystemUser
+    - Get-JCGroup
+    - Get-JCSystemGroupMember
+    - Get-JCUserGroupMember
+    - Get-JCCommand
+    - Get-JCCommandResult
+    - Get-JCCommandTarget
+- Added -ByCommandID and -CommandID to Get-JCCommandResult
+  - The added functionality will allow admins to search for all command results pertaining to a single command via the commandID or the workflowID
+  - When using the pipeline for inputting a command object to Get-JCCommandResult, use the -ByCommandID switch
+    - Example: $OrgCommandResults = Get-JCCommand | Get-JCCommandResult -ByCommandID ... This will get all command results for commands that match the pipeline input
+    - Example: Get-JCCommandResult -CommandID 63091abcfe6657f38768ce12 ... This will return commandResults on systems from the command with ID 63091abcfe6657f38768ce12
+  - Changed the way command results return all information.
+    - Instead of running 'Get-JCCommandResult | Get-JCCommandResult -ById' to get full details of a command result. Simply run 'Get-JCCommandResult -Detailed'
+    - Example: $OrgCommandResults = Get-JCCommandResult -detailed
+- Case Insensitive Search added to Get-JCUser, Get-JCSystem, Get-JCCommand
+  - User, System, Command attributes can be searched without case sensitivity
+    - Example: Get-JCUser -username 'defaultadmin' ... This will return the user with username 'DefaultAdmin'
+    - Example: Get-JCSystem -displayname 'mac-jimmys-macbook' ... This will return the system with displayname 'Mac-Jimmys-MacBook'
+    - Example: Get-JCCommand -command "_disable_" ... This will return commands with some variation of the word 'Command/command' in the command body
+
+#### IMPROVEMENTS:
+
+- Adjusted output for Get-JCSystemGroupMember -ByID and Get-JCUserGroupMember -ByID to match the output of -GroupName
+- Removed individual hash functions in favor for dynamic hash function
+  - Replaced all references to old functions
+- Added case-insensitivity to search endpoints Get-JCUser, Get-JCSystem, and Get-JCCommand
+  Example: command name 'List Users' = 'list users' or hostname 'thisPc' = 'ThisPC'
+
+#### BUG FIXES:
+
+N/A
+
 ## 1.23.4
 
 Release Date: July 25, 2022
@@ -5,6 +57,7 @@ Release Date: July 25, 2022
 #### RELEASE NOTES
 
 This release modifies New-JCCommandURL to convert Import-JCCommand url to raw github content to prevent changes to GitHub HTML from breaking Import-JCCommand function
+
 ## 1.23.3
 
 Release Date: July 20, 2022

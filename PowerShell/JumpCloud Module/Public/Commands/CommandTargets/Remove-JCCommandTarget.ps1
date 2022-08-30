@@ -1,5 +1,4 @@
-Function Remove-JCCommandTarget
-{
+Function Remove-JCCommandTarget {
     [CmdletBinding(DefaultParameterSetName = 'SystemID')]
     param (
         [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'SystemID', Position = 0, HelpMessage = 'The id value of the JumpCloud command. Use the command ''Get-JCCommand | Select-Object _id, name'' to find the "_id" value for all the JumpCloud commands in your tenant.')]
@@ -19,13 +18,14 @@ Function Remove-JCCommandTarget
         $GroupID
     )
 
-    begin
-    {
+    begin {
 
         Write-Verbose "parameter set: $($PSCmdlet.ParameterSetName)"
 
         Write-Verbose 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {Connect-JConline}
+        if ($JCAPIKEY.length -ne 40) {
+            Connect-JConline
+        }
 
         Write-Verbose 'Populating API headers'
         $hdrs = @{
@@ -36,22 +36,20 @@ Function Remove-JCCommandTarget
 
         }
 
-        if ($JCOrgID)
-        {
+        if ($JCOrgID) {
             $hdrs.Add('x-org-id', "$($JCOrgID)")
         }
 
 
-        if ($PSCmdlet.ParameterSetName -eq 'GroupName')
-        {
+        if ($PSCmdlet.ParameterSetName -eq 'GroupName') {
 
             Write-Verbose 'Populating SystemGroupNameHash'
-            $SystemGroupNameHash = Get-Hash_SystemGroupName_ID
+            $SystemGroupNameHash = Get-DynamicHash -Object Group -GroupType System -returnProperties name
 
         }
 
         Write-Verbose 'Populating CommandNameHash'
-        $CommandNameHash = Get-Hash_CommandID_Name
+        $CommandNameHash = Get-DynamicHash -Object Command -returnProperties name
 
         Write-Verbose 'Initilizing RawResults and resultsArrayList'
         $resultsArray = @()
@@ -59,15 +57,12 @@ Function Remove-JCCommandTarget
 
     }
 
-    process
-    {
+    process {
 
 
-        switch ($PSCmdlet.ParameterSetName)
-        {
+        switch ($PSCmdlet.ParameterSetName) {
 
-            SystemID
-            {
+            SystemID {
 
                 $body = @{
 
@@ -79,10 +74,9 @@ Function Remove-JCCommandTarget
 
             } # end SystemID switch
 
-            GroupName
-            {
+            GroupName {
 
-                $GroupID = $SystemGroupNameHash.($GroupName)
+                $GroupID = $SystemGroupNameHash.GetEnumerator().Where({ $_.Value.name -contains ($GroupName) }).Name
 
                 $body = @{
 
@@ -94,8 +88,7 @@ Function Remove-JCCommandTarget
 
             } # end GroupName switch
 
-            GroupID
-            {
+            GroupID {
 
                 $body = @{
 
@@ -111,21 +104,18 @@ Function Remove-JCCommandTarget
         $jsonbody = $body | ConvertTo-Json
         $URL = "$JCUrlBasePath/api/v2/commands/$($CommandID)/associations"
 
-        try
-        {
+        try {
 
             $APIresults = Invoke-RestMethod -Method Post -Uri  $URL  -Header $hdrs -Body $jsonbody -UserAgent:(Get-JCUserAgent)
             $Status = 'Removed'
 
-        }
-        catch
-        {
+        } catch {
 
             $Status = $_.ErrorDetails
 
         }
 
-        $CommandName = $CommandNameHash.($CommandID)
+        $CommandName = $CommandNameHash[$CommandID].name
 
 
         $FormattedResults = [PSCustomObject]@{
@@ -143,8 +133,7 @@ Function Remove-JCCommandTarget
 
     } # end process
 
-    end
-    {
+    end {
 
         Return $resultsArray
     }

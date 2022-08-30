@@ -1,5 +1,4 @@
-Function Add-JCUserGroupMember ()
-{
+Function Add-JCUserGroupMember () {
     [CmdletBinding(DefaultParameterSetName = 'ByName')]
 
     param
@@ -45,11 +44,11 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
         [string]$UserID
 
     )
-    begin
-
-    {
+    begin {
         Write-Debug 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {Connect-JConline}
+        if ($JCAPIKEY.length -ne 40) {
+            Connect-JConline
+        }
 
         Write-Debug 'Populating API headers'
         $hdrs = @{
@@ -60,40 +59,34 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
         }
 
-        if ($JCOrgID)
-        {
+        if ($JCOrgID) {
             $hdrs.Add('x-org-id', "$($JCOrgID)")
         }
 
         Write-Debug 'Initilizing resultsArray'
         $resultsArray = @()
 
-        if ($PSCmdlet.ParameterSetName -eq 'ByName')
-        {
+        if ($PSCmdlet.ParameterSetName -eq 'ByName') {
             Write-Debug 'Populating GroupNameHash'
-            $GroupNameHash = Get-Hash_UserGroupName_ID
+            $GroupNameHash = Get-DynamicHash -Object Group -GroupType User -returnProperties name
 
             Write-Debug 'Populating UserNameHash'
-            $UserNameHash = Get-Hash_UserName_ID
+            $UserNameHash = Get-DynamicHash -Object User -returnProperties username
         }
 
     }
 
-    process
+    process {
 
-    {
+        if ($PSCmdlet.ParameterSetName -eq 'ByName') {
+            if ($GroupNameHash.Values.name -notcontains ($GroupName)) {
+                Throw "Group does not exist. Run 'Get-JCGroup -type User' to see a list of all your JumpCloud user groups."
+            }
 
-        if ($PSCmdlet.ParameterSetName -eq 'ByName')
-        {
-            if ($GroupNameHash.containsKey($GroupName)) {}
+            if ($UserNameHash.Values.username -contains ($Username)) {
 
-            else { Throw "Group does not exist. Run 'Get-JCGroup -type User' to see a list of all your JumpCloud user groups."}
-
-            if ($UserNameHash.containsKey($Username))
-            {
-
-                $GroupID = $GroupNameHash.Get_Item($GroupName)
-                $UserID = $UserNameHash.Get_Item($Username)
+                $GroupID = $GroupNameHash.GetEnumerator().Where({ $_.Value.name -contains ($GroupName) }).Name
+                $UserID = $UserNameHash.GetEnumerator().Where({ $_.Value.username -contains ($Username) }).Name
 
                 $body = @{
 
@@ -110,13 +103,10 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                 $GroupsURL = "$JCUrlBasePath/api/v2/usergroups/$GroupID/members"
                 Write-Debug $GroupsURL
 
-                try
-                {
+                try {
                     $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
                     $Status = 'Added'
-                }
-                catch
-                {
+                } catch {
                     $Status = $_.ErrorDetails
                 }
 
@@ -135,8 +125,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
             }
 
-            else
-            {
+            else {
 
                 $FormattedResults = [PSCustomObject]@{
 
@@ -154,15 +143,11 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
 
 
-        }
-        elseif ($PSCmdlet.ParameterSetName -eq 'ByID')
-
-        {
-            if (!$GroupID)
-            {
+        } elseif ($PSCmdlet.ParameterSetName -eq 'ByID') {
+            if (!$GroupID) {
                 Write-Debug 'Populating GroupNameHash'
-                $GroupNameHash = Get-Hash_UserGroupName_ID
-                $GroupID = $GroupNameHash.Get_Item($GroupName)
+                $GroupNameHash = Get-DynamicHash -Object Group -GroupType User -returnProperties name
+                $GroupID = $GroupNameHash.GetEnumerator().Where({ $_.Value.name -contains ($GroupName) }).Name
             }
 
             $body = @{
@@ -180,13 +165,10 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
             $GroupsURL = "$JCUrlBasePath/api/v2/usergroups/$GroupID/members"
             Write-Debug $GroupsURL
 
-            try
-            {
+            try {
                 $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
                 $Status = 'Added'
-            }
-            catch
-            {
+            } catch {
                 $Status = $_.ErrorDetails
             }
 
@@ -201,9 +183,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
         }
     }
 
-    end
-
-    {
+    end {
         return $resultsArray
     }
 }

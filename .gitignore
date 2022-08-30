@@ -4,3 +4,5 @@
 *test_results
 # Ignore support.wiki
 *support.wiki
+# Ignore Config
+/PowerShell/JumpCloud Module/Config.Json

@@ -42,13 +42,11 @@ Describe -Tag:('JCUser') 'Get-JCUser 1.1' {
     }
 
     It "Searches a JumpCloud user by firstname" {
-
         $firstname = New-RandomString -NumberOfChars 8
         $NewUser = New-RandomUser -Domain DeleteMe | New-JCUser -firstname $firstname
         $NewUser = Get-JCUser -firstname $firstname
         $NewUser.firstname | Should -Be $firstname
         Remove-JCUser -UserID $NewUser._id -force
-
     }
 
     It "Searches a JumpCloud user by email" {
@@ -96,8 +94,8 @@ Describe -Tag:('JCUser') 'Get-JCUser 1.1' {
     }
     It "Searches a JumpCloud user by managerUsername & Email and should not return user with similar username" {
         # Define two users who's username is contained by another user
-        $newUser1 = New-JCUser -username "jemartin" -firstname "je" -lastname "martin" -email "jemartin@deleteme.com"
-        $newUser2 = New-JCUser -username "emartin" -firstname "e" -lastname "martin" -email "emartin@deleteme.come"
+        $newUser1 = New-JCUser -username "jemartin" -firstname "je" -lastname "martin" -email "jemartin@$(get-random -Minimum 100 -Maximum 999)-deleteme.com"
+        $newUser2 = New-JCUser -username "emartin" -firstname "e" -lastname "martin" -email "emartin@$(get-random -Minimum 100 -Maximum 999)-deleteme.come"
         $NewUser = New-RandomUser -Domain DeleteMe | New-JCUser -manager $newUser2.username
         $NewUser = Get-JCUser -manager $newUser2.username
         $NewUser = Get-JCUser -manager $newUser2.email
@@ -412,8 +410,8 @@ Describe -Tag:('JCUser') "Get-JCUser 1.12" {
     It "Searches for a user by external_source_type" {
 
         $Newuser = New-RandomUser -domain "deleteme" | New-JCUser
-        $Random1 = $(Get-Random)
-        $Random2 = $(Get-Random)
+        $Random1 = "$(Get-Random)\+?|{[()^$.#"
+        $Random2 = "$(Get-Random)\+?|{[()^$.#"
         $SetUser = Set-JCUser -Username $Newuser.username -external_source_type "$Random1" -external_dn "$Random2"
         $SearchUser = Get-JCUser -external_source_type $Random1
         $RemoveUser = Remove-JCUser -UserID  $Newuser._id -force
@@ -425,8 +423,8 @@ Describe -Tag:('JCUser') "Get-JCUser 1.12" {
     It "Searches for a user by external_dn" {
 
         $Newuser = New-RandomUser -domain "deleteme" | New-JCUser
-        $Random1 = $(Get-Random)
-        $Random2 = $(Get-Random)
+        $Random1 = Get-Random
+        $Random2 = Get-Random
         $SetUser = Set-JCUser -Username $Newuser.username -external_source_type "$Random1" -external_dn "$Random2"
         $SearchUser = Get-JCUser -external_source_type $Random1
         $RemoveUser = Remove-JCUser -UserID  $Newuser._id -force
@@ -437,12 +435,88 @@ Describe -Tag:('JCUser') "Get-JCUser 1.12" {
     It "Searches for a user by external_dn and external_source_type" {
 
         $Newuser = New-RandomUser -domain "deleteme" | New-JCUser
-        $Random1 = $(Get-Random)
-        $Random2 = $(Get-Random)
+        $Random1 = Get-Random
+        $Random2 = Get-Random
         $SetUser = Set-JCUser -Username $Newuser.username -external_source_type "$Random1" -external_dn "$Random2"
         $SearchUser = Get-JCUser -external_source_type "$Random1" -external_dn "$Random2"
         $RemoveUser = Remove-JCUser -UserID  $Newuser._id -force
         $SearchUser._id | Should -Be $Newuser._id
 
+    }
+}
+
+Describe -Tag:('JCUser') "Case Insensitivity Tests" {
+    It "Searches parameters dynamically with mixed, lower special characters, and upper capitalization" {
+        $commandParameters = (GCM Get-JCUser).Parameters
+        $gmr = Get-JCUser -Username $PesterParams_User1.username | GM
+        # Get parameters that are not ID, ORGID and have a string following the param name
+        $parameters = $gmr | Where-Object { ($_.Definition -notmatch "organization") -And ($_.Definition -notmatch "id") -And ($_.Name -In $commandParameters.Keys) -And ($_.Definition -notmatch "bool") -and ($_.Definition -notmatch "manager") -and ($_.Definition -notmatch "external_dn") -and ($_.Definition -notmatch "external_source_type") }
+        foreach ($param in $parameters.Name) {
+            $string = ""
+            $searchPester = ""
+            # Get recoveryEmail address from hashtable
+            if ($param -eq "recoveryEmail") {
+                $string = $PesterParams_User1.$param.address.toLower()
+                $searchPester = $PesterParams_User1.$param.address
+            } else {
+                $string = $PesterParams_User1.$param.toLower()
+                $searchPester = $PesterParams_User1.$param
+            }
+            $defaultSearch = "Get-JCUser -$($param) `"$searchPester`""
+            $userSearchDefault = Invoke-Expression -Command:($defaultSearch)
+
+            $stringList = @()
+            $stringFinal = ""
+            # for i in string length, get the letters and capitalize ever other letter
+            for ($i = 0; $i -lt $string.length; $i++) {
+                <# Action that will repeat until the condition is met #>
+                $letter = $string.Substring($i, 1)
+                if ($i % 2 -eq 1) {
+                    $letter = $letter.TOUpper()
+                }
+                $stringList += ($letter)
+            }
+            foreach ($letter in $stringList) {
+                <# $letter is the current item #>
+                $stringFinal += $letter
+            }
+
+            $mixedCaseSearch = "Get-JCUser -$($param) `"$stringFinal`""
+            $lowerCaseSearch = "Get-JCUser -$($param) `"$($stringFinal.toLower())`""
+            $upperCaseSearch = "Get-JCUser -$($param) `"$($stringFinal.TOUpper())`""
+            $userSearchMixed = Invoke-Expression -Command:($mixedCaseSearch)
+            $userSearchLower = Invoke-Expression -Command:($lowerCaseSearch)
+            $userSearchUpper = Invoke-Expression -Command:($upperCaseSearch)
+            # DefaultSearch is the expression without text formatting
+
+            # Ids returned here should return the same results
+            $userSearchUpper._id | Should -Be $userSearchDefault._id
+            $userSearchLower._id | Should -Be $userSearchDefault._id
+            $userSearchMixed._id | Should -Be $userSearchDefault._id
+
+        }
+    }
+    It "Searches params after setting values to include special characters like \|{[()^$.#" {
+        $commandParameters = (GCM Get-JCUser).Parameters
+        $gmr = Get-JCUser -Username $PesterParams_User1.username | GM
+        # Get parameters that are not ID, ORGID and have a string following the param name
+        $parameters = $gmr | Where-Object { ($_.Definition -notmatch "organization") -And ($_.Definition -notmatch "id") -And ($_.Name -In $commandParameters.Keys) -And ($_.Definition -notmatch "bool") -and ($_.Definition -notmatch "manager") -and ($_.Definition -notmatch "external_dn") -and ($_.Definition -notmatch "external_source_type") }
+        $splat = @{}
+        foreach ($param in $parameters.Name) {
+            if (($param -ne "email") -and ($param -ne "username") -and ($param -ne "state") -and ($param -ne "recoveryEmail")) {
+                # Test for special characters
+                $paramInput = "$(New-RandomString -NumberOfChars 8)\|{[()^$.#"
+                $splat.Add($param, $paramInput)
+            }
+        }
+        $NewUser = "New-RandomUser -Domain DeleteMe | New-JCUser @splat"
+        $splat.add('username', (New-RandomString -numberofchars 8))
+        $NewUserInvoke = Invoke-Expression -Command:($NewUser)
+        foreach ($param in $splat.keys) {
+            $searchUser = "Get-JCUser -$($param) `"$($splat[$param])`""
+            $NewUserSearch = Invoke-Expression -Command:($searchUser)
+            $NewUserInvoke.$param | Should -Be $NewUserSearch.$param
+        }
+        Remove-JCUser -username $NewUserInvoke.username -force
     }
 }

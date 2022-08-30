@@ -1,5 +1,4 @@
-Function Send-JCPasswordReset
-{
+Function Send-JCPasswordReset {
     [CmdletBinding(DefaultParameterSetName = 'ByID')]
     param (
 
@@ -12,11 +11,12 @@ The UserID will be the 24 character string populated for the _id field.')]
         [System.String]$UserID
     )
 
-    begin
-    {
+    begin {
 
         Write-Verbose 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {Connect-JConline}
+        if ($JCAPIKEY.length -ne 40) {
+            Connect-JConline
+        }
 
         Write-Verbose 'Populating API headers'
         $hdrs = @{
@@ -27,8 +27,7 @@ The UserID will be the 24 character string populated for the _id field.')]
 
         }
 
-        if ($JCOrgID)
-        {
+        if ($JCOrgID) {
             $hdrs.Add('x-org-id', "$($JCOrgID)")
         }
 
@@ -38,10 +37,8 @@ The UserID will be the 24 character string populated for the _id field.')]
 
         Write-Verbose "Parameter Set: $($PSCmdlet.ParameterSetName)"
 
-        if ($PSCmdlet.ParameterSetName -ne 'ByID')
-
-        {
-            $UserHash = Get-Hash_UserName_ID
+        if ($PSCmdlet.ParameterSetName -ne 'ByID') {
+            $UserHash = Get-DynamicHash -Object User -returnProperties username
             $UserCount = ($UserHash).Count
             Write-Debug "Populated UserHash with $UserCount users"
         }
@@ -49,18 +46,14 @@ The UserID will be the 24 character string populated for the _id field.')]
 
     }
 
-    process
-    {
+    process {
 
-        switch ($PSCmdlet.ParameterSetName)
-        {
-            ByUsername
-            {
+        switch ($PSCmdlet.ParameterSetName) {
+            ByUsername {
 
-                try
-                {
+                try {
 
-                    $UserID = $UserHash.$username
+                    $UserID = $UserHash.GetEnumerator().Where({ $_.Value.username -contains ($username) }).Name
 
                     $Body = [ordered]@{
 
@@ -78,16 +71,13 @@ The UserID will be the 24 character string populated for the _id field.')]
 
                     $URL = "$JCUrlBasePath/api/systemusers/reactivate"
 
-                    try
-                    {
+                    try {
 
                         $SendInvite = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent)
 
                         $InviteStatus = 'Sent'
 
-                    }
-                    catch
-                    {
+                    } catch {
 
                         $InviteStatus = "Error $($_.ErrorDetails)"
 
@@ -104,9 +94,7 @@ The UserID will be the 24 character string populated for the _id field.')]
 
 
 
-                }
-                catch
-                {
+                } catch {
 
                     Write-Error "$($_.ErrorDetails)"
 
@@ -114,8 +102,7 @@ The UserID will be the 24 character string populated for the _id field.')]
 
 
             }
-            ByID
-            {
+            ByID {
 
                 $Body = [ordered]@{
 
@@ -133,16 +120,13 @@ The UserID will be the 24 character string populated for the _id field.')]
 
                 $URL = "$JCUrlBasePath/api/systemusers/reactivate"
 
-                try
-                {
+                try {
 
                     $SendInvite = Invoke-RestMethod -Method POST -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent)
 
                     $InviteStatus = 'Sent'
 
-                }
-                catch
-                {
+                } catch {
 
                     $InviteStatus = "Error $($_.ErrorDetails)"
 
@@ -165,8 +149,7 @@ The UserID will be the 24 character string populated for the _id field.')]
         }
     }
 
-    end
-    {
+    end {
 
         Return $resultsArrayList
 

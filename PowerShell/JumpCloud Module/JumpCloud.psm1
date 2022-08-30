@@ -1,17 +1,17 @@
 # Load all functions from public and private folders
 $Public = @( Get-ChildItem -Path "$PSScriptRoot/Public/*.ps1" -Recurse )
 $Private = @( Get-ChildItem -Path "$PSScriptRoot/Private/*.ps1" -Recurse)
-Foreach ($Import in @($Public + $Private))
-{
-    Try
-    {
+Foreach ($Import in @($Public + $Private)) {
+    Try {
         . $Import.FullName
-    }
-    Catch
-    {
+    } Catch {
         Write-Error -Message "Failed to import function $($Import.FullName): $_"
     }
 }
+
+# Check to see if parallel processing is available for the session
+$global:JCConfig = Get-JCSettingsFile
+
 # Set default values for function parameters
 $PSDefaultParameterValues['Invoke-RestMethod:ContentType'] = 'application/json; charset=utf-8'
 $PSDefaultParameterValues['Invoke-WebRequest:ContentType'] = 'application/json; charset=utf-8'
@@ -22,8 +22,7 @@ $PSDefaultParameterValues['Invoke-WebRequest:ContentType'] = 'application/json; 
 [System.Net.ServicePointManager]::DefaultConnectionLimit = 999999;
 [System.Net.ServicePointManager]::MaxServicePointIdleTime = 600000;
 [System.Net.ServicePointManager]::MaxServicePoints = 999999;
-If ($PSVersionTable.PSEdition -eq 'Core')
-{
+If ($PSVersionTable.PSEdition -eq 'Core') {
     $PSDefaultParameterValues['Invoke-RestMethod:SkipCertificateCheck'] = $true
     $PSDefaultParameterValues['Invoke-RestMethod:SkipHeaderValidation'] = $true
     $PSDefaultParameterValues['Invoke-RestMethod:MaximumRetryCount'] = 5
@@ -33,12 +32,9 @@ If ($PSVersionTable.PSEdition -eq 'Core')
     $PSDefaultParameterValues['Invoke-WebRequest:SkipHeaderValidation'] = $true
     $PSDefaultParameterValues['Invoke-WebRequest:MaximumRetryCount'] = 5
     $PSDefaultParameterValues['Invoke-WebRequest:RetryIntervalSec'] = 5
-}
-Else
-{
+} Else {
     #Ignore SSL errors / do not add policy if it exists
-    if (-Not [System.Net.ServicePointManager]::CertificatePolicy)
-    {
+    if (-Not [System.Net.ServicePointManager]::CertificatePolicy) {
         Add-Type @"
     using System.Net;
     using System.Security.Cryptography.X509Certificates;
@@ -66,12 +62,9 @@ Get-Command -Module:('JumpCloud.SDK.V2') -Name:("$($SystemInsightsPrefix)*") | F
     $FilterDescription = ($Help.parameters.parameter | Where-Object { $_.Name -eq 'filter' }).Description.Text
     $FilterNames = ($HelpDescription | Select-String -Pattern:([Regex]'(?<=\ `)(.*?)(?=\`)') -AllMatches).Matches.Value
     $Operators = ($FilterDescription -Replace ('Supported operators are: ', '')).Trim()
-    If ([System.String]::IsNullOrEmpty($HelpDescription) -or [System.String]::IsNullOrEmpty($FilterNames) -or [System.String]::IsNullOrEmpty($Operators))
-    {
+    If ([System.String]::IsNullOrEmpty($HelpDescription) -or [System.String]::IsNullOrEmpty($FilterNames) -or [System.String]::IsNullOrEmpty($Operators)) {
         Write-Error ('Get-JCSystemInsights parameter help info is missing.')
-    }
-    Else
-    {
+    } Else {
         $Filters = $FilterNames | ForEach-Object {
             $FilterName = $_
             $Operators | ForEach-Object {

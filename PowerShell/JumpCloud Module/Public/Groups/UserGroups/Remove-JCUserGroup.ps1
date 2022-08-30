@@ -1,5 +1,4 @@
-Function Remove-JCUserGroup ()
-{
+Function Remove-JCUserGroup () {
     [CmdletBinding(DefaultParameterSetName = 'warn')]
 
     param
@@ -27,11 +26,11 @@ Function Remove-JCUserGroup ()
         $force
     )
 
-    begin
-
-    {
+    begin {
         Write-Debug 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {Connect-JConline}
+        if ($JCAPIKEY.length -ne 40) {
+            Connect-JConline
+        }
 
         Write-Debug 'Populating API headers'
         $hdrs = @{
@@ -42,8 +41,7 @@ Function Remove-JCUserGroup ()
 
         }
 
-        if ($JCOrgID)
-        {
+        if ($JCOrgID) {
             $hdrs.Add('x-org-id', "$($JCOrgID)")
         }
 
@@ -52,25 +50,17 @@ Function Remove-JCUserGroup ()
 
 
         Write-Debug 'Populating GroupNameHash'
-        $GroupNameHash = Get-Hash_UserGroupName_ID
+        $GroupNameHash = Get-DynamicHash -Object Group -GroupType User -returnProperties name
 
 
     }
 
 
-    process
-
-    {
-        if ($PSCmdlet.ParameterSetName -eq 'warn')
-
-        {
-            ForEach ($Gname in $GroupName)
-
-            {
-                if ($GroupNameHash.containsKey($Gname))
-
-                {
-                    $GID = $GroupNameHash.Get_Item($Gname)
+    process {
+        if ($PSCmdlet.ParameterSetName -eq 'warn') {
+            ForEach ($Gname in $GroupName) {
+                if ($GroupNameHash.Values.names -contains ($Gname)) {
+                    $GID = $GroupNameHash.GetEnumerator().Where({ $_.Value.name -contains ($Gname) }).Name
 
                     Write-Warning "Are you sure you want to delete group: $Gname ?" -WarningAction Inquire
 
@@ -90,28 +80,22 @@ Function Remove-JCUserGroup ()
                     $resultsArray += $FormattedResults
                 }
 
-                else
-                {
+                else {
                     Throw "Group does not exist. Run 'Get-JCGroup -type User' to see a list of all your JumpCloud user groups."
                 }
             }
         }
 
-        if ($PSCmdlet.ParameterSetName -eq 'force')
-        {
-            ForEach ($Gname in $GroupName)
-            {
+        if ($PSCmdlet.ParameterSetName -eq 'force') {
+            ForEach ($Gname in $GroupName) {
 
-                $GID = $GroupNameHash.Get_Item($Gname)
+                $GID = $GroupNameHash.GetEnumerator().Where({ $_.Value.name -contains ($Gname) }).Name
 
-                try
-                {
+                try {
                     $URI = "$JCUrlBasePath/api/v2/usergroups/$GID"
                     $DeletedGroup = Invoke-RestMethod -Method DELETE -Uri $URI -Headers $hdrs -UserAgent:(Get-JCUserAgent)
                     $Status = 'Deleted'
-                }
-                catch
-                {
+                } catch {
                     $Status = $_.ErrorDetails
                 }
 
@@ -127,8 +111,7 @@ Function Remove-JCUserGroup ()
 
         }
     }
-    end
-    {
+    end {
         return $resultsArray
     }
 }
