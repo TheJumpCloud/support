@@ -10,7 +10,7 @@ windows
 
 ```
 ########################################################
-# PowerShell 5.1 or Newew required
+# PowerShell 5.1 or Newer required
 # To target a specific update, replace the <Update_KB_Article_Id> text with the target update KB ID.
 # Example: $kbArticleId = 'KB1234567'
 ########################################################
