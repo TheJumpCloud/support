@@ -23,7 +23,7 @@ Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
 Install-Module -Name PSWindowsUpdate -Force
     
 #Verify update has not already been installed ont he device
-$installedUpdate = Get-WindowsUpdate -IsInstalled -KBArticleID $kbArticleId
+$installedUpdate = (get-wmiobject -class win32_quickfixengineering).where({$_.HotFixID -eq "KB5012170"})
 if($installedUpdate) {
     Write-Output("Windows Update KB ID: $kbArticleId has already been installed on the device")
     exit 1
