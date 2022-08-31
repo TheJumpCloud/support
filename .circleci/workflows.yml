@@ -53,7 +53,7 @@ parameters:
   ManualModuleVersion:
     description: "When `true` the pipeline will use the Module Version specified in JumpCloud Module JumpCloud.psd1 file"
     type: boolean
-    default: false
+    default: true
 orbs:
   win: circleci/windows@2.4.1
 executors:
