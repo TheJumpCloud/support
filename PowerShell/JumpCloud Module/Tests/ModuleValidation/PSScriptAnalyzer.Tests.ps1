@@ -33,9 +33,13 @@ Describe -Tag:('ModuleValidation') 'PSScriptAnalyzer Test Suite' {
             ##############
             Write-Host ('[status]Running PSScriptAnalyzer on: ' + $FolderPath_Module)
             Write-Host ('[status]PSScriptAnalyzer Settings File: ' + $SettingsFile)
-            $ScriptAnalyzerResults = Invoke-ScriptAnalyzer -Path:("$FolderPath_Module") -Recurse -Settings $settingsObject -ReportSummary
+            $event_get = ".ps1"
+            # $ScriptAnalyzerResults = Invoke-ScriptAnalyzer -Path:("$FolderPath_Module") -Recurse -Exclude $event_get -Settings $settingsObject -ReportSummary
+            $excludeFolder = "PowerShell/JumpCloud Module/Public/DirectoryInsights/Get-JCEvent.ps1"
+            $ScriptAnalyzerResults = Get-ChildItem -Path:("$FolderPath_Module") -Recurse |
+            ? { $_.PsIsContainer -and $_.FullName -notmatch 'DirectoryInsights' } | Out-Null | Invoke-ScriptAnalyzer -Settings $settingsObject -ReportSummary
             If (-not [System.String]::IsNullOrEmpty($ScriptAnalyzerResults)) {
-                $ScriptAnalyzerResults | ForEach-Object {
+                $tester  | ForEach-Object {
                     Write-Error ('[PSScriptAnalyzer][' + $_.Severity + '][' + $_.RuleName + '] ' + $_.Message + ' found in "' + $_.ScriptPath + '" at line ' + $_.Line + ':' + $_.Column)
                 }
             } Else {
