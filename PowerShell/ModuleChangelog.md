@@ -1,3 +1,11 @@
+## 2.0.2
+
+Release Date: September 2, 2022
+
+#### RELEASE NOTES
+
+This patch fixes linting/formatting issues for PSModule code and added OTBS code formatting to Powershell files.
+
 ## 2.0.1
 
 Release Date: September 1, 2022
