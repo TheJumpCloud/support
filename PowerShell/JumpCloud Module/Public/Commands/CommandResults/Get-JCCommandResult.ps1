@@ -192,7 +192,7 @@ function Get-JCCommandResult () {
                         $JCUrlBasePath = $using:JCUrlBasePath
                         $URL = "$JCUrlBasePath/api/commandresults/$($_._id)"
                         try {
-                            $CommandResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $hdrs -UserAgent:($using:UserAgent)
+                            $CommandResults = Invoke-RestMethod -Method GET -Uri $URL -Headers $using:hdrs -UserAgent:($using:UserAgent)
                         } catch {
                             throw $_
                         }
