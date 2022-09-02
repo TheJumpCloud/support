@@ -1,21 +1,15 @@
 Describe -Tag:('JCAssociation') "Association Tests" {
-    function Get-JCAssociations
-    {
+    function Get-JCAssociations {
         # Generate possible associations
         $JCAssociationTypes = Get-JCType | Where-Object { $_.Category -eq 'JumpCloud' } # | Get-Random -Count 1 # remove when not testing
         $EmptySources = @()
-        ForEach ($JCAssociationType In $JCAssociationTypes)
-        {
+        ForEach ($JCAssociationType In $JCAssociationTypes) {
             $Source = Get-JCObject -Type:($JCAssociationType.TypeName.TypeNameSingular) | Select-Object -First 1 # | Get-Random
-            $AssociationDataSet = If ($Source)
-            {
-                ForEach ($TargetSingular In $Source.Targets.TargetSingular)
-                {
-                    If ( $TargetSingular -notin $EmptySources)
-                    {
+            $AssociationDataSet = If ($Source) {
+                ForEach ($TargetSingular In $Source.Targets.TargetSingular) {
+                    If ( $TargetSingular -notin $EmptySources) {
                         $Target = Get-JCObject -Type:($TargetSingular) | Get-Random -Count 1 # | Select-Object -First 1 # | Get-Random
-                        If ($Target)
-                        {
+                        If ($Target) {
                             @{
                                 'SourceType'  = $Source.TypeName.TypeNameSingular;
                                 'SourceId'    = $Source.($Source.ById);
@@ -27,9 +21,7 @@ Describe -Tag:('JCAssociation') "Association Tests" {
                                 'Target'      = $Target;
                                 'ValidRecord' = $true;
                             }
-                        }
-                        Else
-                        {
+                        } Else {
                             $EmptySources += $TargetSingular
                             @{
                                 'SourceType'  = $Source.TypeName.TypeNameSingular;
@@ -45,9 +37,7 @@ Describe -Tag:('JCAssociation') "Association Tests" {
                         }
                     }
                 }
-            }
-            Else
-            {
+            } Else {
                 $EmptySources += $JCAssociationType.TypeName.TypeNameSingular
                 $JCAssociationType.Targets | ForEach-Object {
                     @{
@@ -67,8 +57,7 @@ Describe -Tag:('JCAssociation') "Association Tests" {
         $ValidAssociationItems = $AssociationDataSet | Where-Object { $_.ValidRecord -and $_.SourceId -and $_.TargetId -and $_.TargetName }
         return $ValidAssociationItems
     }
-    function Get-JCAssociationTestCases
-    {
+    function Get-JCAssociationTestCases {
         # Generate Test Cases
         $DataSet = Get-JCAssociations
         # Check that target id is set, only test with valid param set
@@ -93,13 +82,11 @@ Describe -Tag:('JCAssociation') "Association Tests" {
             # Loop through generated associaion objects from Get-JCAssocitaions
             $DataSet | ForEach-Object {
                 # Either assign source and target vars by Name or Id
-                if ($ByType.ByType -eq "Name")
-                {
+                if ($ByType.ByType -eq "Name") {
                     $SourceByType = $_.SourceName
                     $TargetByType = $_.TargetName
                 }
-                if ($ByType.ByType -eq "Id")
-                {
+                if ($ByType.ByType -eq "Id") {
                     $SourceByType = $_.SourceId
                     $TargetByType = $_.TargetId
                 }
@@ -148,37 +135,27 @@ Describe -Tag:('JCAssociation') "Association Tests" {
     Context ('ID and Name Case Tests of Application Tests') {
         It '<TestDescription>' -TestCases:(Get-JCAssociationTestCases) {
             # Write-Host("#### Test Name: " + $TestDescription + " ####")
-            foreach ($value in $Commands.values)
-            {
+            foreach ($value in $Commands.values) {
                 Write-Host("Command: " + $value)
                 $Associations_Test = Invoke-Expression -Command:($value)
-                if ($TestType -eq "original")
-                {
+                if ($TestType -eq "original") {
                     Write-Host("original command: " + $value)
-                    if ($Associations_Test)
-                    {
+                    if ($Associations_Test) {
                         $Associations_Test = $Associations_Test | Remove-JCAssociation -Force
                         # Write-Host("Test action verb " + $TestType + " should be : " + $Associations_Test.Action)
                         "remove" | Should -Be ($Associations_Test.Action | Select-Object -Unique)
-                    }
-                    else
-                    {
+                    } else {
                         Write-Host("No Association Found")
                         $Associations_Test | Should -Be $null
                     }
-                }
-                else
-                {
+                } else {
                     Write-Host("Test Object" + $Associations_Test)
                     $Associations_Test | Should -Not -BeNullOrEmpty
                     ($Associations_Test | Measure-Object).Count | Should -BeGreaterThan 0
-                    If ($value -match '-Raw')
-                    {
+                    If ($value -match '-Raw') {
                         $TestParam.TargetId | Should -BeIn $Associations_Test.Id
                         $TestParam.TargetType | Should -BeIn $Associations_Test.Type
-                    }
-                    Else
-                    {
+                    } Else {
                         $TestParam.TargetId | Should -BeIn $Associations_Test.TargetId
                         $TestParam.TargetType | Should -BeIn $Associations_Test.TargetType
                         $TestParam.SourceId | Should -BeIn $Associations_Test.Id

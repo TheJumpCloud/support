@@ -1,7 +1,6 @@
 
 #Function to create a folder and any child folders
-Function Global:New-FolderRecursive
-{
+Function Global:New-FolderRecursive {
     [cmdletbinding(SupportsShouldProcess = $True)]
     Param(
         [string]$Path
@@ -19,8 +18,7 @@ Function Global:New-FolderRecursive
     # Normalize path deliminator based upon OS
     $NormalizedPath = $Path -replace ($RegEx_IncludePathDeliminator, $PathDeliminator)
     # Determine if the last part of the path contains a file extension
-    If ( (Split-Path -Path:($NormalizedPath) -Leaf) -match '\.[a-zA-Z0-9]+$')
-    {
+    If ( (Split-Path -Path:($NormalizedPath) -Leaf) -match '\.[a-zA-Z0-9]+$') {
         $NormalizedPath = Split-Path -Path:($NormalizedPath) -Parent
     }
     # Remove Deliminator from strings to do a comparison
@@ -32,18 +30,13 @@ Function Global:New-FolderRecursive
     $NormalizedPath = $NormalizedPath.Replace($CurrentLocation, '');
     # Split path into each folder
     $SplitFullPath = $NormalizedPath -split $RegEx_IncludePathDeliminator
-    ForEach ( $Directory In $SplitFullPath | Where-Object { $_ -and $_ -notin ($WindowsDeliminator, $UnixDeliminator) } )
-    {
+    ForEach ( $Directory In $SplitFullPath | Where-Object { $_ -and $_ -notin ($WindowsDeliminator, $UnixDeliminator) } ) {
         $PathPart += $Directory
         $NewPath = $PathPart -join $PathDeliminator
-        If ( !( Test-Path -Path:($NewPath) ))
-        {
-            If ($Force)
-            {
+        If ( !( Test-Path -Path:($NewPath) )) {
+            If ($Force) {
                 New-Item -ItemType:('directory') -Path:($NewPath) -Force
-            }
-            Else
-            {
+            } Else {
                 New-Item -ItemType:('directory') -Path:($NewPath)
             }
         }

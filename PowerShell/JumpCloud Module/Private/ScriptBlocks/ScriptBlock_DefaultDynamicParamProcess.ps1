@@ -16,19 +16,17 @@ $ScriptBlock_DefaultDynamicParamProcess = {
     )
     # For DynamicParam with a default value set that value
     $DynamicParams.Values |
-        Where-Object { $_.IsSet -and ($ScriptPSCmdlet.ParameterSetName -in $_.Attributes.ParameterSetName -or '__AllParameterSets' -in $_.Attributes.ParameterSetName) } |
-        ForEach-Object {
-            If (-not ([System.String]::IsNullOrEmpty($_.Value)))
-            {
-                $ScriptPsBoundParameters[$_.Name] = $_.Value
-            }
+    Where-Object { $_.IsSet -and ($ScriptPSCmdlet.ParameterSetName -in $_.Attributes.ParameterSetName -or '__AllParameterSets' -in $_.Attributes.ParameterSetName) } |
+    ForEach-Object {
+        If (-not ([System.String]::IsNullOrEmpty($_.Value))) {
+            $ScriptPsBoundParameters[$_.Name] = $_.Value
         }
+    }
     # Convert the DynamicParam inputs into new variables for the script to use
     $ScriptPsBoundParameters.GetEnumerator() |
-        ForEach-Object {
-            If (-not ([System.String]::IsNullOrEmpty($_.Value)))
-            {
-                Set-Variable -Name:($_.Key) -Value:($_.Value) -Force
-            }
+    ForEach-Object {
+        If (-not ([System.String]::IsNullOrEmpty($_.Value))) {
+            Set-Variable -Name:($_.Key) -Value:($_.Value) -Force
         }
+    }
 }

@@ -1,8 +1,7 @@
 Describe -Tag:('JCSystemGroup') 'New-JCSystemGroup 1.0' {
     BeforeAll {
         Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
-        If (Get-JCGroup -Type:('System') | Where-Object { $_.name -eq $PesterParams_SystemGroup.Name })
-        {
+        If (Get-JCGroup -Type:('System') | Where-Object { $_.name -eq $PesterParams_SystemGroup.Name }) {
             Remove-JCSystemGroup -GroupName:($PesterParams_SystemGroup.Name) -force
         }
     }

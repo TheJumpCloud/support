@@ -4,20 +4,17 @@
 .Example
     $PSBoundParameters | Out-DebugParameter | Write-Debug
 #>
-function Out-DebugParameter
-{
+function Out-DebugParameter {
     [CmdletBinding()]
     Param (
         [Parameter(ValueFromPipeline = $true, Mandatory = $true)]
         [AllowEmptyCollection()]
         $InputObject
     )
-    Begin
-    {
+    Begin {
         $CommonParameters = ([System.Management.Automation.PSCmdlet]::CommonParameters, [System.Management.Automation.PSCmdlet]::OptionalCommonParameters)
     }
-    Process
-    {
+    Process {
         $MyName = $MyInvocation.MyCommand.Name
         $CallStack = Get-PSCallStack
         $ParentScript = $CallStack[$CallStack.Command.IndexOf($MyName) + 1]

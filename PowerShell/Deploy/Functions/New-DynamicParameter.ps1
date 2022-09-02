@@ -1,5 +1,4 @@
-Function Global:New-DynamicParameter ()
-{
+Function Global:New-DynamicParameter () {
     <#
   .SYNOPSIS
    Expedites creating PowerShell cmdlet dynamic parameters.
@@ -156,133 +155,103 @@ Function Global:New-DynamicParameter ()
         [Parameter(ValueFromPipelineByPropertyName = $true)][ValidateNotNullOrEmpty()][System.String]$ValidatePattern = $null,
         [Parameter(ValueFromPipelineByPropertyName = $true)][ValidateNotNull()][System.Management.Automation.RuntimeDefinedParameterDictionary]$RuntimeParameterDictionary = $null
     )
-    Begin
-    {
-        If ($RuntimeParameterDictionary -eq $null)
-        {
+    Begin {
+        If ($RuntimeParameterDictionary -eq $null) {
             $RuntimeParameterDictionary = New-Object -TypeName System.Management.Automation.RuntimeDefinedParameterDictionary
         }
     }
-    Process
-    {
+    Process {
         # Create the collection of attributes
         $AttributeCollection = New-Object -TypeName System.Collections.ObjectModel.Collection[System.Attribute]
-        ForEach ($Set In $ParameterSets)
-        {
+        ForEach ($Set In $ParameterSets) {
             # Create and set the parameter's attributes
             $ParameterAttribute = New-Object -TypeName System.Management.Automation.PARAMETERAttribute
-            If (-not [System.String]::IsNullOrEmpty($Set))
-            {
+            If (-not [System.String]::IsNullOrEmpty($Set)) {
                 $ParameterAttribute.ParameterSetName = $Set
             }
-            If ($Position -ne $null)
-            {
+            If ($Position -ne $null) {
                 $ParameterAttribute.Position = $Position
             }
-            If ($Mandatory)
-            {
+            If ($Mandatory) {
                 $ParameterAttribute.Mandatory = $true
             }
-            If ($ValueFromPipeline)
-            {
+            If ($ValueFromPipeline) {
                 $ParameterAttribute.ValueFromPipeline = $true
             }
-            If ($ValueFromPipelineByPropertyName)
-            {
+            If ($ValueFromPipelineByPropertyName) {
                 $ParameterAttribute.ValueFromPipelineByPropertyName = $true
             }
-            If ($ValueFromRemainingArguments)
-            {
+            If ($ValueFromRemainingArguments) {
                 $ParameterAttribute.ValueFromRemainingArguments = $true
             }
-            If (-not [System.String]::IsNullOrEmpty($HelpMessage))
-            {
+            If (-not [System.String]::IsNullOrEmpty($HelpMessage)) {
                 $ParameterAttribute.HelpMessage = $HelpMessage
             }
-            If ($DontShow)
-            {
+            If ($DontShow) {
                 $ParameterAttribute.DontShow = $true
             }
             $AttributeCollection.Add($ParameterAttribute)
         }
-        If ($Alias.Length -gt 0)
-        {
+        If ($Alias.Length -gt 0) {
             $AliasAttribute = New-Object -TypeName System.Management.Automation.AliasAttribute($Alias)
             $AttributeCollection.Add($AliasAttribute)
         }
-        If ($ValidateSet.Length -gt 0)
-        {
+        If ($ValidateSet.Length -gt 0) {
             $ValidateSetAttribute = New-Object -TypeName System.Management.Automation.ValidateSetAttribute($ValidateSet)
             $AttributeCollection.Add($ValidateSetAttribute)
         }
-        If ($ValidateScript -ne $null)
-        {
+        If ($ValidateScript -ne $null) {
             $ValidateScriptAttribute = New-Object -TypeName System.Management.Automation.ValidateScriptAttribute($ValidateScript)
             $AttributeCollection.Add($ValidateScriptAttribute)
         }
-        If ($ValidateCount -ne $null -and $ValidateCount.Length -eq 2)
-        {
+        If ($ValidateCount -ne $null -and $ValidateCount.Length -eq 2) {
             $ValidateCountAttribute = New-Object -TypeName System.Management.Automation.ValidateCountAttribute($ValidateCount[0], $ValidateCount[1])
             $AttributeCollection.Add($ValidateCountAttribute)
         }
-        If ($ValidateLength -ne $null -and $ValidateLength -eq 2)
-        {
+        If ($ValidateLength -ne $null -and $ValidateLength -eq 2) {
             $ValidateLengthAttribute = New-Object -TypeName System.Management.Automation.ValidateLengthAttribute($ValidateLength[0], $ValidateLength[1])
             $AttributeCollection.Add($ValidateLengthAttribute)
         }
-        If (-not [System.String]::IsNullOrEmpty($ValidatePattern))
-        {
+        If (-not [System.String]::IsNullOrEmpty($ValidatePattern)) {
             $ValidatePatternAttribute = New-Object -TypeName System.Management.Automation.ValidatePatternAttribute($ValidatePattern)
             $AttributeCollection.Add($ValidatePatternAttribute)
         }
-        If ($ValidateRange -ne $null -and $ValidateRange.Length -eq 2)
-        {
+        If ($ValidateRange -ne $null -and $ValidateRange.Length -eq 2) {
             $ValidateRangeAttribute = New-Object -TypeName System.Management.Automation.ValidateRangeAttribute($ValidateRange)
             $AttributeCollection.Add($ValidateRangeAttribute)
         }
-        If ($ValidateNotNull)
-        {
+        If ($ValidateNotNull) {
             $NotNullAttribute = New-Object -TypeName System.Management.Automation.ValidateNotNullAttribute
             $AttributeCollection.Add($NotNullAttribute)
         }
-        If ($ValidateNotNullOrEmpty)
-        {
+        If ($ValidateNotNullOrEmpty) {
             $NotNullOrEmptyAttribute = New-Object -TypeName System.Management.Automation.ValidateNotNullOrEmptyAttribute
             $AttributeCollection.Add($NotNullOrEmptyAttribute)
         }
-        If ($AllowEmptyString)
-        {
+        If ($AllowEmptyString) {
             $AllowEmptyStringAttribute = New-Object -TypeName System.Management.Automation.AllowEmptyStringAttribute
             $AttributeCollection.Add($AllowEmptyStringAttribute)
         }
-        If ($AllowEmptyCollection)
-        {
+        If ($AllowEmptyCollection) {
             $AllowEmptyCollectionAttribute = New-Object -TypeName System.Management.Automation.AllowEmptyCollectionAttribute
             $AttributeCollection.Add($AllowEmptyCollectionAttribute)
         }
-        If ($AllowNull)
-        {
+        If ($AllowNull) {
             $AllowNullAttribute = New-Object -TypeName System.Management.Automation.AllowNullAttribute
             $AttributeCollection.Add($AllowNullAttribute)
         }
-        If (-not $RuntimeParameterDictionary.ContainsKey($Name))
-        {
+        If (-not $RuntimeParameterDictionary.ContainsKey($Name)) {
             $RuntimeParameter = New-Object -TypeName System.Management.Automation.RuntimeDefinedParameter($Name, $Type, $AttributeCollection)
             $RuntimeParameterDictionary.Add($Name, $RuntimeParameter)
-        }
-        Else
-        {
-            ForEach ($Attr In $AttributeCollection.GetEnumerator())
-            {
-                If (-not $RuntimeParameterDictionary.$Name.Attributes.Contains($Attr))
-                {
+        } Else {
+            ForEach ($Attr In $AttributeCollection.GetEnumerator()) {
+                If (-not $RuntimeParameterDictionary.$Name.Attributes.Contains($Attr)) {
                     $RuntimeParameterDictionary.$Name.Attributes.Add($Attr)
                 }
             }
         }
     }
-    End
-    {
+    End {
         Write-Output -InputObject $RuntimeParameterDictionary
     }
 }

@@ -1,6 +1,5 @@
 Describe -Tag:('ModuleValidation') 'Help File Tests' {
-    Function Get-HelpFilesTestCases
-    {
+    Function Get-HelpFilesTestCases {
         $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent
         $ModuleRootFullName = $ModuleRoot.FullName
         $Regex_FillInThe = '(\{\{)(.*?)(\}\})'
@@ -19,8 +18,7 @@ Describe -Tag:('ModuleValidation') 'Help File Tests' {
     }
     Context ('Validating help file fields have been populated') {
         It ('The file "<Path>" needs to be populated on line number "<LineNumber>" where "<Line>" exists.') -TestCases:(Get-HelpFilesTestCases) {
-            If ($Path)
-            {
+            If ($Path) {
                 $Path | Should -Not -FileContentMatch ($Regex_FillInThePester)
             }
         }

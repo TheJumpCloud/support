@@ -8,6 +8,7 @@
 # You can see the predefined PSScriptAnalyzer settings here:
 # https://github.com/PowerShell/PSScriptAnalyzer/tree/master/Engine/Settings
 @{
+
     # Only diagnostic records of the specified severity will be generated.
     # Uncomment the following line if you only want Errors and Warnings but
     # not Information diagnostic records.
@@ -20,9 +21,7 @@
         'PSPlaceCloseBrace',
         'PSUseConsistentWhitespace',
         'PSUseConsistentIndentation',
-        'PSAlignAssignmentStatement',
-        'PSUseCorrectCasing',
-        'PSUseSingularNouns'
+        'PSAlignAssignmentStatement'
     )
     # Do not analyze the following rules. Use ExcludeRules when you have
     # commented out the IncludeRules settings above and want to include all
@@ -43,7 +42,9 @@
         'PSAvoidUsingPlainTextForPassword',
         'PSAvoidUsingEmptyCatchBlock',
         'PSAvoidUsingCmdletAliases',
-        'PSShouldProcess'
+        'PSShouldProcess',
+        'PSUseCorrectCasing',
+        'PSUseSingularNouns'
     )
 
     # You can use rule configuration to configure rules that support it:
@@ -64,9 +65,9 @@
 
         PSUseConsistentIndentation = @{
             Enable              = $true
-            Kind                = 'space'
-            PipelineIndentation = 'IncreaseIndentationForFirstPipeline'
             IndentationSize     = 4
+            Kind                = 'space'
+            PipelineIndentation = 'NoIndentation'
         }
 
         PSUseConsistentWhitespace  = @{
@@ -85,13 +86,6 @@
         PSAlignAssignmentStatement = @{
             Enable         = $true
             CheckHashtable = $true
-        }
-
-        PSUseCorrectCasing         = @{
-            Enable = $true
-        }
-        PSUseSingularNouns         = @{
-            Enable = $true
         }
     }
 }

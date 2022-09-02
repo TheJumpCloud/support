@@ -1,5 +1,4 @@
-Function Set-JCCommand
-{
+Function Set-JCCommand {
     [CmdletBinding()]
 
     param (
@@ -35,17 +34,14 @@ The CommandID will be the 24 character string populated for the _id field.')]
 
     )
 
-    DynamicParam
-    {
-        If ((Get-PSCallStack).Command -like '*MarkdownHelp')
-        {
+    DynamicParam {
+        If ((Get-PSCallStack).Command -like '*MarkdownHelp') {
             $launchType = 'trigger'
         }
         $dict = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
 
 
-        If ($launchType -eq "trigger")
-        {
+        If ($launchType -eq "trigger") {
             $attr = New-Object System.Management.Automation.ParameterAttribute
             $attr.HelpMessage = "Enter a trigger name. Triggers must be unique"
             $attr.ValueFromPipelineByPropertyName = $true
@@ -61,11 +57,10 @@ The CommandID will be the 24 character string populated for the _id field.')]
 
     }
 
-    begin
-    {
+    begin {
 
         Write-Verbose 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {Connect-JConline}
+        if ($JCAPIKEY.length -ne 40) { Connect-JConline }
 
         $hdrs = @{
 
@@ -74,8 +69,7 @@ The CommandID will be the 24 character string populated for the _id field.')]
             'X-API-KEY'    = $JCAPIKEY
         }
 
-        if ($JCOrgID)
-        {
+        if ($JCOrgID) {
             $hdrs.Add('x-org-id', "$($JCOrgID)")
         }
 
@@ -86,13 +80,11 @@ The CommandID will be the 24 character string populated for the _id field.')]
 
     }
 
-    process
-    {
+    process {
 
         $body = @{}
 
-        foreach ($param in $PSBoundParameters.GetEnumerator())
-        {
+        foreach ($param in $PSBoundParameters.GetEnumerator()) {
 
             if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }
 
@@ -110,8 +102,7 @@ The CommandID will be the 24 character string populated for the _id field.')]
 
     }
 
-    end
-    {
+    end {
 
         Return $NewCommandsArray
 

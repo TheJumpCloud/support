@@ -1,5 +1,4 @@
-Function Remove-JCCommandResult ()
-{
+Function Remove-JCCommandResult () {
     [CmdletBinding(DefaultParameterSetName = 'warn')]
 
     param
@@ -15,11 +14,9 @@ The CommandResultID will be the 24 character string populated for the _id field.
         [Switch]$force
     )
 
-    begin
-
-    {
+    begin {
         Write-Debug 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {Connect-JConline}
+        if ($JCAPIKEY.length -ne 40) { Connect-JConline }
 
         Write-Debug 'Populating API headers'
         $hdrs = @{
@@ -30,20 +27,15 @@ The CommandResultID will be the 24 character string populated for the _id field.
 
         }
 
-        if ($JCOrgID)
-        {
+        if ($JCOrgID) {
             $hdrs.Add('x-org-id', "$($JCOrgID)")
         }
 
         Write-Debug 'Initilizing deleteArray'
         $deleteArray = @()
     }
-    process
-
-    {
-        if ($PSCmdlet.ParameterSetName -eq 'warn')
-
-        {
+    process {
+        if ($PSCmdlet.ParameterSetName -eq 'warn') {
             $URI = "$JCUrlBasePath/api/commandresults/$CommandResultID"
 
             $result = Get-JCcommandresult -ByID $CommandResultID | Select-Object -ExpandProperty Name #may need to modify this
@@ -55,8 +47,7 @@ The CommandResultID will be the 24 character string populated for the _id field.
             $deleteArray += $delete
         }
 
-        elseif ($PSCmdlet.ParameterSetName -eq 'force')
-        {
+        elseif ($PSCmdlet.ParameterSetName -eq 'force') {
 
             $URI = "$JCUrlBasePath/api/commandresults/$CommandResultID"
 
@@ -66,8 +57,7 @@ The CommandResultID will be the 24 character string populated for the _id field.
         }
     }
 
-    end
-    {
+    end {
 
         return $deleteArray
 

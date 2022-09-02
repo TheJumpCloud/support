@@ -30,27 +30,28 @@ Describe -Tag:('ModuleValidation') 'PSScriptAnalyzer Test Suite' {
                 IncludeRules = $SettingsFromFile.IncludeRules
                 Rules        = $SettingsFromFile.Rules
             }
-        }
-        ##############
-        Write-Host ('[status]Running PSScriptAnalyzer on: ' + $FolderPath_Module)
-        Write-Host ('[status]PSScriptAnalyzer Settings File: ' + $SettingsFile)
-        $ScriptAnalyzerResults = Invoke-ScriptAnalyzer -Path:("$FolderPath_Module") -Settings $settingsObject -ReportSummary
-        If (-not [System.String]::IsNullOrEmpty($ScriptAnalyzerResults)) {
-            $ScriptAnalyzerResults | ForEach-Object {
-                Write-Error ('[PSScriptAnalyzer][' + $_.Severity + '][' + $_.RuleName + '] ' + $_.Message + ' found in "' + $_.ScriptPath + '" at line ' + $_.Line + ':' + $_.Column)
+            ##############
+            Write-Host ('[status]Running PSScriptAnalyzer on: ' + $FolderPath_Module)
+            Write-Host ('[status]PSScriptAnalyzer Settings File: ' + $SettingsFile)
+            $ScriptAnalyzerResults = Invoke-ScriptAnalyzer -Path:("$FolderPath_Module") -Recurse -Settings $settingsObject -ReportSummary
+            If (-not [System.String]::IsNullOrEmpty($ScriptAnalyzerResults)) {
+                $ScriptAnalyzerResults | ForEach-Object {
+                    Write-Error ('[PSScriptAnalyzer][' + $_.Severity + '][' + $_.RuleName + '] ' + $_.Message + ' found in "' + $_.ScriptPath + '" at line ' + $_.Line + ':' + $_.Column)
+                }
+            } Else {
+                Write-Host ('[success]ScriptAnalyzer returned no results')
             }
-        } Else {
-            Write-Host ('[success]ScriptAnalyzer returned no results')
         }
-    }
-    It 'PSScriptAnalyzer Results should be null' {
-        $ScriptAnalyzerResults | Should -BeNullOrEmpty
-    }
-    It 'PSScriptAnalyzer SettingsFile should exist' {
-        Test-Path $SettingsFile | Should -Be $true
-    }
-    It 'PSScriptAnalyzer SettingsObject Should Not Be Null or Empty' {
-        $SettingsFromFile | Should -Not -BeNullOrEmpty
-        $settingsObject | Should -Not -BeNullOrEmpty
+        It 'PSScriptAnalyzer Results should be null' {
+            $ScriptAnalyzerResults | Should -BeNullOrEmpty
+        }
+        It 'PSScriptAnalyzer SettingsFile should exist' {
+            test-path $SettingsFile | Should -Be $true
+        }
+        It 'PSScriptAnalyzer SettingsObject Should Not Be Null or Empty' {
+            $SettingsFromFile | Should -Not -BeNullOrEmpty
+            $settingsObject | Should -Not -BeNullOrEmpty
+        }
+
     }
 }

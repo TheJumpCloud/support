@@ -18,43 +18,30 @@ Import-Module ($FilePath_Psd1) -Force -Global
 Write-Host ('[status]Installing module: PlatyPS')
 Install-Module -Repository:('PSGallery') -Name:('PlatyPS') -Force
 # Clear out existing docs
-If (-not [System.String]::IsNullOrEmpty($IncludeList))
-{
+If (-not [System.String]::IsNullOrEmpty($IncludeList)) {
     Remove-Item -Path:($FolderPath_Docs) -Recurse -Force -Include:($IncludeListMd)
-}
-Else
-{
+} Else {
     Remove-Item -Path:($FolderPath_Docs) -Recurse -Force
 }
 Remove-Item -Path:($FolderPath_enUS) -Recurse -Force
 # Create/update markdown help files using platyPS
 Write-Host ('[status]Creating/Updating help files')
-$Files = If (-not [System.String]::IsNullOrEmpty($IncludeList) -and [System.String]::IsNullOrEmpty($ExcludeList))
-{
+$Files = If (-not [System.String]::IsNullOrEmpty($IncludeList) -and [System.String]::IsNullOrEmpty($ExcludeList)) {
     Get-ChildItem -Path:($FolderPath_Public) -File -Recurse | Where-Object { $_.Extension -eq '.ps1' -and $_.Name -in $IncludeListPs1 }
-}
-ElseIf ([System.String]::IsNullOrEmpty($IncludeList) -and -not [System.String]::IsNullOrEmpty($ExcludeList))
-{
+} ElseIf ([System.String]::IsNullOrEmpty($IncludeList) -and -not [System.String]::IsNullOrEmpty($ExcludeList)) {
     Get-ChildItem -Path:($FolderPath_Public) -File -Recurse | Where-Object { $_.Extension -eq '.ps1' -and $_.Name -notin $ExcludeListMd }
-}
-ElseIf (-not [System.String]::IsNullOrEmpty($IncludeList) -and -not [System.String]::IsNullOrEmpty($ExcludeList))
-{
+} ElseIf (-not [System.String]::IsNullOrEmpty($IncludeList) -and -not [System.String]::IsNullOrEmpty($ExcludeList)) {
     Get-ChildItem -Path:($FolderPath_Public) -File -Recurse | Where-Object { $_.Extension -eq '.ps1' -and $_.Name -in $IncludeListPs1 -and $_.Name -notin $ExcludeListMd }
-}
-Else
-{
+} Else {
     Get-ChildItem -Path:($FolderPath_Public) -File -Recurse | Where-Object { $_.Extension -eq '.ps1' }
 }
 $Files | ForEach-Object {
     $FunctionName = $_.BaseName
     $FilePath_Md = $FolderPath_Docs + '/' + $FunctionName + '.md'
-    If (Test-Path -Path:($FilePath_Md))
-    {
+    If (Test-Path -Path:($FilePath_Md)) {
         # Write-Host ('Updating: ' + $FunctionName + '.md')
         Update-MarkdownHelp -Path:($FilePath_Md) -Force -ExcludeDontShow -UpdateInputOutput -UseFullTypeName
-    }
-    Else
-    {
+    } Else {
         # Write-Host ('Creating: ' + $FunctionName + '.md')
         New-MarkdownHelp  -Command:($FunctionName) -OutputFolder:($FolderPath_Docs) -Force -ExcludeDontShow -OnlineVersionUrl:($GitHubWikiUrl + $FunctionName) -UseFullTypeName
     }

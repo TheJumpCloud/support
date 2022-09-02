@@ -1,5 +1,4 @@
-function Get-JCPolicyResult ()
-{
+function Get-JCPolicyResult () {
     [CmdletBinding(DefaultParameterSetName = 'ByPolicyName')]
 
     param
@@ -27,9 +26,7 @@ function Get-JCPolicyResult ()
     )
 
 
-    begin
-
-    {
+    begin {
         Write-Verbose 'Verifying JCAPI Key'
         if ($JCAPIKEY.length -ne 40) { Connect-JCOnline }
 
@@ -40,8 +37,7 @@ function Get-JCPolicyResult ()
             'X-API-KEY'    = $JCAPIKEY
         }
 
-        if ($JCOrgID)
-        {
+        if ($JCOrgID) {
             $hdrs.Add('x-org-id', "$($JCOrgID)")
         }
 
@@ -49,21 +45,14 @@ function Get-JCPolicyResult ()
 
     }
 
-    process
-
-    {
-        switch ($PSCmdlet.ParameterSetName)
-        {
-            ByPolicyName
-            {
+    process {
+        switch ($PSCmdlet.ParameterSetName) {
+            ByPolicyName {
                 $Policy = Get-JCPolicy | Where-Object { $_.name -eq $PolicyName }
 
-                if ($Policy)
-                {
+                if ($Policy) {
                     $PolicyID = $Policy.id
-                }
-                Else
-                {
+                } Else {
                     Throw "Policy does not exist. Run 'Get-JCPolicy' to see a list of all your JumpCloud policies."
                 }
 

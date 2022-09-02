@@ -1,5 +1,4 @@
-Function New-JCUser ()
-{
+Function New-JCUser () {
 
     [CmdletBinding(DefaultParameterSetName = 'NoAttributes')]
     param
@@ -146,7 +145,7 @@ Function New-JCUser ()
         [nullable[bool]]$suspended,
 
         [Parameter(ValueFromPipelineByPropertyName = $True, HelpMessage = 'A string value for putting the account into a staged, activated or suspended state')]
-        [ValidateSet('STAGED','ACTIVATED','SUSPENDED')]
+        [ValidateSet('STAGED', 'ACTIVATED', 'SUSPENDED')]
         [string]
         $state,
 
@@ -163,25 +162,20 @@ Function New-JCUser ()
         [string]$recoveryEmail
 
     )
-    DynamicParam
-    {
+    DynamicParam {
         # Build parameter array
         $RuntimeParameterDictionary = New-Object -TypeName System.Management.Automation.RuntimeDefinedParameterDictionary
-        If ((Get-PSCallStack).Command -like '*MarkdownHelp')
-        {
+        If ((Get-PSCallStack).Command -like '*MarkdownHelp') {
             $enable_user_portal_multifactor = $true
             $NumberOfCustomAttributes = 2
         }
-        If ($enable_user_portal_multifactor)
-        {
+        If ($enable_user_portal_multifactor) {
             New-DynamicParameter -Name:('enrollmentDays') -Type:([Int]) -ValueFromPipelineByPropertyName -HelpMessage:('A dynamic parameter that can be set only if -enable_user_portal_multifactor is set to true. This will specify the enrollment period for users for enrolling into MFA via the users console. The default is 7 days if this value is not specified.') -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
         }
-        If ($NumberOfCustomAttributes)
-        {
+        If ($NumberOfCustomAttributes) {
             [int]$NewParams = 0
             [int]$ParamNumber = 1
-            While ($NewParams -ne $NumberOfCustomAttributes)
-            {
+            While ($NewParams -ne $NumberOfCustomAttributes) {
                 New-DynamicParameter -Name:("Attribute$ParamNumber`_name") -Type:([System.String]) -Mandatory -HelpMessage:('Enter an attribute name') -ValueFromPipelineByPropertyName -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
                 New-DynamicParameter -Name:("Attribute$ParamNumber`_value") -Type:([System.String]) -Mandatory -HelpMessage:('Enter an attribute value') -ValueFromPipelineByPropertyName -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
                 $NewParams++
@@ -190,8 +184,7 @@ Function New-JCUser ()
         }
         Return $RuntimeParameterDictionary
     }
-    begin
-    {
+    begin {
 
         Write-Debug 'Verifying JCAPI Key'
         if ($JCAPIKEY.length -ne 40) { Connect-JConline }
@@ -203,8 +196,7 @@ Function New-JCUser ()
             'X-API-KEY'    = $JCAPIKEY
         }
 
-        if ($JCOrgID)
-        {
+        if ($JCOrgID) {
             $hdrs.Add('x-org-id', "$($JCOrgID)")
         }
 
@@ -213,12 +205,9 @@ Function New-JCUser ()
         $NewUserArray = @()
     }
 
-    process
-    {
-        if ($enable_user_portal_multifactor)
-        {
-            switch ($enable_user_portal_multifactor)
-            {
+    process {
+        if ($enable_user_portal_multifactor) {
+            switch ($enable_user_portal_multifactor) {
                 'True' { [bool]$enable_user_portal_multifactor = $true }
                 '$True' { [bool]$enable_user_portal_multifactor = $true }
                 'False' { [bool]$enable_user_portal_multifactor = $false }
@@ -239,15 +228,13 @@ Function New-JCUser ()
 
         $CustomAttributeArrayList = New-Object System.Collections.ArrayList
 
-        foreach ($param in $PSBoundParameters.GetEnumerator())
-        {
+        foreach ($param in $PSBoundParameters.GetEnumerator()) {
             # Write-Host $param
             if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }
 
             if ($param.key -in ('_id', 'JCAPIKey', 'NumberOfCustomAttributes', 'EnrollmentDays')) { continue }
 
-            if ($param.Key -like 'Attribute*')
-            {
+            if ($param.Key -like 'Attribute*') {
                 $CustomAttribute = [pscustomobject]@{
 
                     CustomAttribute = ($Param.key).Split('_')[0]
@@ -261,14 +248,12 @@ Function New-JCUser ()
 
                 $NewAttributes = New-Object System.Collections.ArrayList
 
-                foreach ($A in $UniqueAttributes )
-                {
+                foreach ($A in $UniqueAttributes ) {
                     $Props = $CustomAttributeArrayList | Where-Object CustomAttribute -EQ $A.CustomAttribute
 
                     $obj = New-Object PSObject
 
-                    foreach ($Prop in $Props)
-                    {
+                    foreach ($Prop in $Props) {
                         $obj | Add-Member -MemberType NoteProperty -Name $Prop.type -Value $Prop.value
                     }
 
@@ -277,8 +262,7 @@ Function New-JCUser ()
                 continue
             }
 
-            if ($param.Key -like '*_number')
-            {
+            if ($param.Key -like '*_number') {
                 $Number = @{ }
                 $Number.Add("type", ($($param.Key -replace "_number", "")))
                 $Number.Add("number", $param.Value)
@@ -286,23 +270,19 @@ Function New-JCUser ()
                 continue
             }
 
-            if ($param.Key -like 'work_*')
-            {
+            if ($param.Key -like 'work_*') {
                 $WorkAddressParams.Add(($($param.Key -split "_", 2)[1]), $param.Value)
                 continue
             }
 
-            if ($param.Key -like 'home_*')
-            {
+            if ($param.Key -like 'home_*') {
                 $HomeAddressParams.Add(($($param.Key -split "_", 2)[1]), $param.Value)
                 continue
             }
 
-            if ($param.Key -eq 'enable_user_portal_multifactor')
-            {
+            if ($param.Key -eq 'enable_user_portal_multifactor') {
 
-                switch ($param.Value)
-                {
+                switch ($param.Value) {
                     'True' { [bool]$enable_user_portal_multifactor = $true }
                     '$True' { [bool]$enable_user_portal_multifactor = $true }
                     'False' { [bool]$enable_user_portal_multifactor = $false }
@@ -313,75 +293,29 @@ Function New-JCUser ()
                 continue
             }
             # Get the manager using manager username instead of userId
-            if ("manager" -eq $param.Key)
-            {
+            if ("manager" -eq $param.Key) {
                 if ([System.String]::isNullOrEmpty($param.Value)) {
                     # If manager field is null, skip
                     continue
-                }
-                else {
+                } else {
                     # First check if manager returns valid user with id
-                        # Regex match a userid
-                        $regexPattern = [Regex]'^[a-z0-9]{24}$'
-                        if (((Select-String -InputObject $param.Value -Pattern $regexPattern).Matches.value)::IsNullOrEmpty){
-                            # if we have a 24 characterid, try to match the id using the search endpoint
-                            $managerSearch = @{
-                                filter = @{
-                                    'and' = @(
-                                        @{'id' = @{'$regex' = "(?i)(`^$($param.Value)`$)" } }
-                                    )
-                                }
-                                fields = 'id'
+                    # Regex match a userid
+                    $regexPattern = [Regex]'^[a-z0-9]{24}$'
+                    if (((Select-String -InputObject $param.Value -Pattern $regexPattern).Matches.value)::IsNullOrEmpty) {
+                        # if we have a 24 characterid, try to match the id using the search endpoint
+                        $managerSearch = @{
+                            filter = @{
+                                'and' = @(
+                                    @{'id' = @{'$regex' = "(?i)(`^$($param.Value)`$)" } }
+                                )
                             }
-                            $managerResults = Search-JcSdkUser -Body:($managerSearch)
-                            # Set managerValue; this is a validated user id
-                            $managerValue = $managerResults.id
-                            # if no value was returned, then assume the case this is actually a username and search
-                            if (!$managerValue){
-                                $managerSearch = @{
-                                    filter = @{
-                                        'and' = @(
-                                            @{'username' = @{'$regex' = "(?i)(`^$($param.Value)`$)" } }
-                                        )
-                                    }
-                                    fields = 'username'
-                                }
-                                $managerResults = Search-JcSdkUser -Body:($managerSearch)
-                                # Set managerValue from the matched username
-                                $managerValue = $managerResults.id
-                            }
+                            fields = 'id'
                         }
-                        # Use class mailaddress to check if $param.value is email
-                        try {
-                            $null = [mailaddress]$EmailAddress
-                            $managerSearch = @{
-                                filter = @{
-                                    'and' = @(
-                                        @{'email' = @{'$regex' = "(?i)(`^$($param.Value)`$)" } }
-                                    )
-                                }
-                                fields = 'email'
-                            }
-                            $managerResults = Search-JcSdkUser -Body:($managerSearch)
-                            # Set managerValue; this is a validated user id
-                            $managerValue = $managerResults.id
-                            # if no value was returned, then assume the case this is actually a username and search
-                            if (!$managerValue){
-                                $managerSearch = @{
-                                    filter = @{
-                                        'and' = @(
-                                            @{'username' = @{'$regex' = "(?i)(`^$($param.Value)`$)" } }
-                                        )
-                                    }
-                                    fields = 'username'
-                                }
-                                $managerResults = Search-JcSdkUser -Body:($managerSearch)
-                                # Set managerValue from the matched username
-                                $managerValue = $managerResults.id
-                            }
-                        }
-                        catch {
-                            # search the username in the search endpoint
+                        $managerResults = Search-JcSdkUser -Body:($managerSearch)
+                        # Set managerValue; this is a validated user id
+                        $managerValue = $managerResults.id
+                        # if no value was returned, then assume the case this is actually a username and search
+                        if (!$managerValue) {
                             $managerSearch = @{
                                 filter = @{
                                     'and' = @(
@@ -394,18 +328,59 @@ Function New-JCUser ()
                             # Set managerValue from the matched username
                             $managerValue = $managerResults.id
                         }
+                    }
+                    # Use class mailaddress to check if $param.value is email
+                    try {
+                        $null = [mailaddress]$EmailAddress
+                        $managerSearch = @{
+                            filter = @{
+                                'and' = @(
+                                    @{'email' = @{'$regex' = "(?i)(`^$($param.Value)`$)" } }
+                                )
+                            }
+                            fields = 'email'
+                        }
+                        $managerResults = Search-JcSdkUser -Body:($managerSearch)
+                        # Set managerValue; this is a validated user id
+                        $managerValue = $managerResults.id
+                        # if no value was returned, then assume the case this is actually a username and search
+                        if (!$managerValue) {
+                            $managerSearch = @{
+                                filter = @{
+                                    'and' = @(
+                                        @{'username' = @{'$regex' = "(?i)(`^$($param.Value)`$)" } }
+                                    )
+                                }
+                                fields = 'username'
+                            }
+                            $managerResults = Search-JcSdkUser -Body:($managerSearch)
+                            # Set managerValue from the matched username
+                            $managerValue = $managerResults.id
+                        }
+                    } catch {
+                        # search the username in the search endpoint
+                        $managerSearch = @{
+                            filter = @{
+                                'and' = @(
+                                    @{'username' = @{'$regex' = "(?i)(`^$($param.Value)`$)" } }
+                                )
+                            }
+                            fields = 'username'
+                        }
+                        $managerResults = Search-JcSdkUser -Body:($managerSearch)
+                        # Set managerValue from the matched username
+                        $managerValue = $managerResults.id
+                    }
                     if ($managerValue) {
                         $body.add($param.Key, $managerValue)
-                    }
-                    else {
+                    } else {
                         $body.add($param.Key, $param.Value)
                     }
                     continue
                 }
             }
             # Convert recoveryEmail from string to an object
-            if ($param.Key -eq 'recoveryEmail')
-            {
+            if ($param.Key -eq 'recoveryEmail') {
                 $recoveryEmailAddress = @{
                     'address' = $recoveryEmail
                 }
@@ -417,34 +392,26 @@ Function New-JCUser ()
 
         }
 
-        if ($WorkAddressParams.Count -gt 1)
-        {
+        if ($WorkAddressParams.Count -gt 1) {
             $Addresses += $WorkAddressParams
         }
 
-        if ($HomeAddressParams.Count -gt 1)
-        {
+        if ($HomeAddressParams.Count -gt 1) {
             $Addresses += $HomeAddressParams
         }
 
-        if ($Addresses)
-        {
+        if ($Addresses) {
             $body.Add('addresses', $Addresses)
         }
 
-        if ($phoneNumbers)
-        {
+        if ($phoneNumbers) {
             $body.Add('phoneNumbers', $phoneNumbers)
         }
 
-        if ($enable_user_portal_multifactor -eq $True)
-        {
-            if ($PSBoundParameters['EnrollmentDays'])
-            {
+        if ($enable_user_portal_multifactor -eq $True) {
+            if ($PSBoundParameters['EnrollmentDays']) {
                 $exclusionUntil = (Get-Date).AddDays($PSBoundParameters['EnrollmentDays'])
-            }
-            else
-            {
+            } else {
                 $exclusionUntil = (Get-Date).AddDays(7)
             }
 
@@ -454,15 +421,12 @@ Function New-JCUser ()
             $body.Add('mfa', $mfa)
         }
 
-        if ((($suspended -eq $true) -And ($state -eq "STAGED")) -Or (($suspended -eq $true) -And ($state -eq "ACTIVATED")) -Or (($suspended -eq $false) -And ($state -eq "SUSPENDED"))){
+        if ((($suspended -eq $true) -And ($state -eq "STAGED")) -Or (($suspended -eq $true) -And ($state -eq "ACTIVATED")) -Or (($suspended -eq $false) -And ($state -eq "SUSPENDED"))) {
             throw "Cannot save conflicting state and suspended fields. (state=$state suspended=$suspended)"
-        }
-        elseif ($suspended -eq $true) {
+        } elseif ($suspended -eq $true) {
             $body['state'] = 'SUSPENDED'
-        }
-        else {
-            switch ($state)
-            {
+        } else {
+            switch ($state) {
                 SUSPENDED {
                     $body['suspended'] = $true
                 }
@@ -486,8 +450,7 @@ Function New-JCUser ()
         $NewUserArray += $NewUserInfo
 
     }
-    end
-    {
+    end {
         return $NewUserArray
     }
 }

@@ -11,8 +11,7 @@ $FolderPath_Docs = "$ModulePath/Docs"
 $FolderPath_enUS = "$ModulePath/$Locale"
 $FilePath_ModulePagePath = "$FolderPath_Docs/$ModuleName.md"
 Write-Host ("[status]Creating/Updating help files")
-Try
-{
+Try {
     Write-Host ("[status]Installing module: PlatyPS")
     Install-Module -Repository:('PSGallery') -Name:('PlatyPS') -Force
     # Import module
@@ -25,29 +24,23 @@ Try
     #########################################################
     ############### Adding Comment based help ###############
     #########################################################
-    If ($AddCommentBasedHelp)
-    {
+    If ($AddCommentBasedHelp) {
         $FolderPath_Public = "$ModulePath/Public"
         # Move the help contents from docs files to ps1 files
         $DocFiles = Get-ChildItem $FolderPath_Docs
         $DocFiles | ForEach-Object {
             $file = Get-ChildItem $FolderPath_Public -Filter ($_.BaseName + ".ps1") -Recurse
-            if ($file.FullName)
-            {
+            if ($file.FullName) {
                 $help = Get-Help -Name $_.BaseName
                 $content = Get-Content $file.FullName -Raw
-                if ($content -notlike "<#*")
-                {
+                if ($content -notlike "<#*") {
                     $synopsis = ".Synopsis`r`n" + ($help.Synopsis).Trim()
                     $description = ".Description`r`n" + ($help.description.text).Trim()
                     $examples = $help.examples.example | ForEach-Object {
                         $Example = $_
-                        $ExampleCode = If ($Example.code -like '*C:\>*')
-                        {
+                        $ExampleCode = If ($Example.code -like '*C:\>*') {
                             ($Example.code).split(">")[1]
-                        }
-                        Else
-                        {
+                        } Else {
                             $Example.code
                         }
                         (".Example`r`n" + ($ExampleCode).Trim() + "`r`n`r`n" + ($Example.remarks.text).Trim())
@@ -67,20 +60,16 @@ Try
     #########################################################
     #########################################################
     # If not exist create: .\Docs\about_$ModuleName.md
-    If (-not (Test-Path -Path:("$($FolderPath_Docs)/about_$($ModuleName).md")))
-    {
+    If (-not (Test-Path -Path:("$($FolderPath_Docs)/about_$($ModuleName).md"))) {
         Write-Host ("[status]Creating New-MarkdownAboutHelp")
         New-MarkdownAboutHelp -OutputFolder:($FolderPath_Docs) -AboutName:($ModuleName)
     }
     # Creating help files: .\Docs\*.md
     Write-Host ("[status]Creating help files: .\Docs\*.md")
-    Switch ($NewMarkdownHelpParamSet)
-    {
-        'FromCommand'
-        {
+    Switch ($NewMarkdownHelpParamSet) {
+        'FromCommand' {
             $Psd1.FunctionsToExport | ForEach-Object {
-                If (-not (Test-Path -Path:("$($FolderPath_Docs)/$($_).md")))
-                {
+                If (-not (Test-Path -Path:("$($FolderPath_Docs)/$($_).md"))) {
                     $parameters = @{
                         Command               = $_
                         Force                 = $true
@@ -98,8 +87,7 @@ Try
                 }
             }
         }
-        'FromModule'
-        {
+        'FromModule' {
             $parameters = @{
                 Module                = $ModuleName
                 Force                 = $true
@@ -119,8 +107,7 @@ Try
             }
             New-MarkdownHelp @parameters
         }
-        Default
-        {
+        Default {
             Write-Error ("Unknown `$NewMarkdownHelpParamSet value: $NewMarkdownHelpParamSet")
         }
     }
@@ -153,9 +140,7 @@ Try
     # Creating: .\en-Us\$ModuleName-help.xml and .\en-Us\about_$ModuleName.help.txt
     Write-Host ("[status]Creating: .\en-Us\$ModuleName-help.xml and .\en-Us\about_$ModuleName.help.txt")
     New-ExternalHelp -Path:($FolderPath_Docs) -OutputPath:($FolderPath_enUS) -Force # -ApplicableTag <String> -Encoding <Encoding> -MaxAboutWidth <Int32> -ErrorLogFile <String> -ShowProgress
-}
-Catch
-{
+} Catch {
     Write-Error ($_)
 }
 

@@ -1,8 +1,7 @@
 Describe -Tag:('JCRadiusServer') 'Set-JCRadiusServer Tests' {
     BeforeAll {
         $PesterParams_RadiusServer = Get-JCRadiusServer -Name:($PesterParams_RadiusServer.name)
-        If (-not $PesterParams_RadiusServer)
-        {
+        If (-not $PesterParams_RadiusServer) {
             $PesterParams_RadiusServer = New-JCRadiusServer @PesterParams_NewRadiusServer
         }
     }
@@ -36,8 +35,7 @@ Describe -Tag:('JCRadiusServer') 'Set-JCRadiusServer Tests' {
 Describe -Tag:('JCRadiusServer') 'Set-JCRadiusServer 1.15.3' {
     BeforeAll {
         $PesterParams_RadiusServer = Get-JCRadiusServer -Name:($PesterParams_RadiusServer.name)
-        If (-not $PesterParams_RadiusServer)
-        {
+        If (-not $PesterParams_RadiusServer) {
             $PesterParams_RadiusServer = New-JCRadiusServer @PesterParams_NewRadiusServer
         }
     }

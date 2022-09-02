@@ -18,13 +18,10 @@ $ScriptAnalyzerResults = Invoke-ScriptAnalyzer -Path:($FolderPath_Module) -Recur
 # #     $ScriptAnalyzerResults | Should BeNullOrEmpty
 # #     $? | Should Be $true
 # # }
-If ($ScriptAnalyzerResults)
-{
+If ($ScriptAnalyzerResults) {
     $ScriptAnalyzerResults
     Write-Error ('Go fix the ScriptAnalyzer results!')
-}
-Else
-{
+} Else {
     Write-Host ('[success]ScriptAnalyzer returned no results')
 }
 # #     }
