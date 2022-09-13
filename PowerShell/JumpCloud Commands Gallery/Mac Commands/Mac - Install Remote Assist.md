@@ -16,7 +16,7 @@ declare -r LOCAL_PKG_TMP_PATH="$(mktemp -d)/jumpcloud-remote-assist.pkg"
 
 function get_app_pid() {
     local -r APP_NAME=$1
-    ps -ef | awk "/$APP_NAME$/ {print \$2}"
+    ps -eo pid,comm | awk "/$APP_NAME$/ {print \$1}"
 }
 
 function kill_app_by_name() {
