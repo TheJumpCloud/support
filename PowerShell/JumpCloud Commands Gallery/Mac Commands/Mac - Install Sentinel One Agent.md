@@ -13,16 +13,11 @@ mac
 
 # VARS
 ###################################################
-#!/bin/bash
-
-# VARS
-###################################################
 export sentinelToken=YOURTOKEN
-
-
-###################################################
 filename=sentineloneagent.pkg
 DownloadURL=YOURDOWNLOADURL
+###################################################
+
 # Test if already installed
 if [[ -d /Applications/SentinelOne/ ]]
   then
@@ -70,8 +65,6 @@ echo $sentinelToken > /tmp/$TempFolder/com.sentinelone.registration-token
 #
 rm -r /tmp/$TempFolder
 echo "Deleted /tmp/$TempFolder"
-
-
 ```
 
 #### Description
