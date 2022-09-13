@@ -14,14 +14,14 @@ mac
 # VARS
 ###################################################
 export sentinelToken=YOURTOKEN
-filename=sentineloneagent.pkg
-DownloadURL=YOURDOWNLOADURL
+export filename=sentineloneagent.pkg
+export DownloadURL=YOURDOWNLOADURL
 ###################################################
 
 # Test if already installed
 if [[ -d /Applications/SentinelOne/ ]]
   then
-    echo "S1 Already Installed. Exiting..."
+    echo "Sentinel One Agent is Already Installed. Exiting..."
     exit 0
 fi
 
@@ -77,8 +77,6 @@ Specifically for this command:
 
 1. Download the Sentinel One Agent installer and host it at a URL that your devices can access. Set this URL to the "DownloadURL" of this script.
 2. Extend the command timeout to a value that makes sense in your environment. The suggested command timeout for an environment with average network speeds on devices with average computing power is 10 minutes. Note that the command may timeout with a 124 error code in the command result window if not extended, but the script will continue to run.
-3. It is recommended to set the Launch Event for the command to “Run As Repeating” with an interval of one hour.
-
 #### _Import This Command_
 
 To import this command into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
