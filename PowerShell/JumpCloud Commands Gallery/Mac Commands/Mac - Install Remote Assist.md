@@ -11,7 +11,7 @@ mac
 ```
 set -euo pipefail
 
-declare -r REMOTE_PKG_URL="https://cdn.awsstg.jumpcloud.com/TheJumpCloud/jumpcloud-remote-assist-agent/3966b49172e7823e41350b5b5fc31d14a1f5cbb5/jumpcloud-assist-app.pkg"
+declare -r REMOTE_PKG_URL="https://cdn.jumpcloud.com/TheJumpCloud/jumpcloud-remote-assist-agent/latest/jumpcloud-remote-assist.pkg"
 declare -r LOCAL_PKG_TMP_PATH="$(mktemp -d)/jumpcloud-remote-assist.pkg"
 
 function get_app_pid() {
