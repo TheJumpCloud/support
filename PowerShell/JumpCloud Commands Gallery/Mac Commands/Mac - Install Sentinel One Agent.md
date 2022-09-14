@@ -18,7 +18,7 @@ export filename=sentineloneagent.pkg
 export DownloadURL=YOURDOWNLOADURL
 ###################################################
 
-# Test if already installed
+# Check if already installed
 if [[ -d /Applications/SentinelOne/ ]]
   then
     echo "Sentinel One Agent is Already Installed. Exiting..."
@@ -58,11 +58,20 @@ fi
 #Set Token
 echo $sentinelToken > /tmp/$TempFolder/com.sentinelone.registration-token
 
-#Install Agent
-/usr/sbin/installer -pkg /tmp/$TempFolder/$PKGFile -target /Applications
+# Check signature and install
+check_pkg_sign=$(pkgutil --check-signature $PKGFile)
+if [[ $check_pkg_sign == *"AYE5J54KN"* ]] && [[ $check_pkg_sign == *"Status: signed by a developer certificate issued by Apple"* ]] && [[ $check_pkg_sign == *"Notarization: trusted by the Apple notary service"* ]]
+then
+    echo "Package is signed. Installing..."
+
+    # Install Agent
+    /usr/sbin/installer -pkg /tmp/$TempFolder/$PKGFile -target /Applications
+else
+    echo "Package is unsigned. Exiting..."
+    exit 1
+fi
 
 # Remove Temp Folder and download
-#
 rm -r /tmp/$TempFolder
 echo "Deleted /tmp/$TempFolder"
 ```
