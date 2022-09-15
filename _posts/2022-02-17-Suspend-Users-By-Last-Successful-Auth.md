@@ -55,18 +55,15 @@ The following parameters can be used with this function: `ReadOnly`, `CsvPath`, 
 
 `DaysSinceLogin` is the integer value to query user known login times against. The number of days set in this parameter are used to generate the date which determines suspension. The suspension date threshold is the date generated in the `jc-login-suspend-last-run.txt` file subtracted by the number of days set in this parameter. For example. If the `Get-JCLoginEvent` function was ran at Friday, August 6th, 2021 at 12:30:00 pm and the `DaysSinceLogin` parameter was set to 30, users who have not authenticated after Wednesday, July 7, 2021 at 12:30:00 pm would be suspended.
 
-
-
 ## Script
 
 ```powershell
-function Get-JcLoginEvent
-{
+function Get-JcLoginEvent {
     [CmdletBinding()]
     param (
         [Parameter(HelpMessage = "Set to true to print the number of users who would have been suspend, this will not suspend users")]
         [switch]
-        $ReadOnly = $false,
+        $ReadOnly,
         [Parameter(Mandatory = $true, HelpMessage = "Path to the CSV file. If no such CSV file exists, it will be created. If the CSV file does exist, it will be updated.")]
         [string]
         $CsvPath,
@@ -77,54 +74,45 @@ function Get-JcLoginEvent
         [datetime]
         $EndDate
     )
-    begin
-    {
+    begin {
+
         # Write date of last execution to a file
-        $CsvDirectory = Split-Path $CsvPath
-        if ( [System.String]::IsNullOrEmpty($EndDate) )
-        {
+        # $CsvDirectory = Split-Path $CsvPath
+        if ( [System.String]::IsNullOrEmpty($EndDate) ) {
             $EndDate = Get-Date
         }
-        New-Item -Path $CsvDirectory -Name "jc-login-suspend-last-run.txt" -Value $EndDate -Force
+        # New-Item -Path $CsvDirectory -Name "jc-login-suspend-last-run.txt" -Value $EndDate -Force
 
         # Check if CSV exists. If it does not, create an empty one.
-        If (Test-Path -Path $CsvPath -PathType Leaf)
-        {
+        If (Test-Path -Path $CsvPath -PathType Leaf) {
             Write-Debug "File found at location: $($CsvPath)."
-            [System.Collections.ArrayList]$CsvData = Import-Csv -Path $CsvPath
-        }
-        Else
-        {
+        } Else {
             Write-Debug "No file found at location: $($CsvPath). Creating file."
             [System.Collections.ArrayList]$CsvData = @()
         }
 
-        $UserList = Get-JcSdkUser
+        $users = Get-JCUser -returnProperties username
 
-        $DaysPerSpan = .5
-        $Span = New-TimeSpan -Start $StartDate -End $EndDate
+        # $DaysPerSpan = .5
+        # $Span = New-TimeSpan -Start $StartDate -End $EndDate
 
-        $Spans = @()
-        for ($i = 0; $i -lt $Span.Days; $i += ($DaysPerSpan))
-        {
-            $LoopStart = ($StartDate).AddDays($i)
-            $LoopEnd = ($StartDate).AddDays($i + $DaysPerSpan)
-            If ($LoopEnd -gt $EndDate)
-            {
-                $LoopEnd = $EndDate
-            }
-            $Spans += New-Object psobject -Property @{StartDate = $LoopStart; EndDate = $LoopEnd }
-        }
-        Write-Debug "$($Spans.Count) day interval(s) will be queried"
+        # $Spans = @()
+        # for ($i = 0; $i -lt $Span.Days; $i += ($DaysPerSpan)) {
+        #     $LoopStart = ($StartDate).AddDays($i)
+        #     $LoopEnd = ($StartDate).AddDays($i + $DaysPerSpan)
+        #     If ($LoopEnd -gt $EndDate) {
+        #         $LoopEnd = $EndDate
+        #     }
+        #     $Spans += New-Object psobject -Property @{StartDate = $LoopStart; EndDate = $LoopEnd }
+        # }
+        # Write-Debug "$($Spans.Count) day interval(s) will be queried"
     }
-    process
-    {
+    process {
         # Gather Directory Insights Data
         $EventTypes = (
-            "radius_auth",
+            "radius_auth_attempt",
             "sso_auth",
             "login_attempt",
-            "ldap_bind",
             "user_login_attempt"
         )
         $FilterFields = @(
@@ -132,96 +120,124 @@ function Get-JcLoginEvent
             "initiated_by",
             "event_type",
             "timestamp"
+            "sso_token_success"
         )
         Write-Debug "Collecting Directory Insights data for the following event types: $($EventTypes). This may take a moment."
         #$DirectoryInsightsData = Get-JcSdkEvent -Service all -StartTime $StartDate -SearchTermOr @{ "event_type" = $EventTypes }
 
+        $resultsArrayList = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
         $stopwatch = [system.diagnostics.stopwatch]::StartNew()
-        $ObjectJobs = @()
-        foreach ($span in $spans)
-        {
-            $Count = Get-JCEventCount -Service:('all') -StartTime:($($span.StartDate)) -endTime:($($span.EndDate)) -SearchTermOr @{ "event_type" = $EventTypes }
-            if ($Count -ge 1)
-            {
-                Write-Host "Returning $Count events between: $($span.StartDate) - $($span.EndDate)"
-                $ObjectJobs += start-ThreadJob -ScriptBlock:( { Param ($EventTypes, $span, $FilterFields)
-                        $ErrorActionPreference = 'Continue';
-                        $Result = Get-JCSDKEvent -Service:('all') -StartTime:($($span.StartDate)) -endTime:($($span.EndDate)) -SearchTermOr @{ "event_type" = $EventTypes } -Fields:($FilterFields)
-                        Return $Result
-                    }) -ArgumentList:($EventTypes, $span, $FilterFields) -StreamingHost:($Host) -ThrottleLimit:(30)
+        ### Systems START
+        $systemsJob = $users | Foreach-Object -ThrottleLimit 5 -Parallel {
+            $resultsArrayList = $using:resultsArrayList
+            $response = Get-JcSdkEvent -Service systems -StartTime $using:StartDate -EndTime $using:EndDate -SearchTermAnd @{"event_type" = $using:EventTypes; "username" = $_.username } -Fields $using:FilterFields -ErrorAction Ignore
+            # Write-Host "Searching $($_.username) | start: ($($using:StartDate)) end: ($($using:EndDate))"
+            if ($response) {
+                # normalize the date time formats
+                $response | ForEach-Object { $_.timestamp = Get-Date "$($_.timestamp)" }
+                $sortedResponse = $response | Sort-Object -property timestamp -Descending
+                foreach ($res in $sortedResponse) {
+                    If ($res.success -eq "True") {
+                        $resultsArrayList.Add($res)
+                        break
+                    }
+                }
             }
-        }
-        $ObjectJobStatus = Wait-Job -Id:($ObjectJobs.Id)
-        if ('Failed' -in $ObjectJobStatus.State)
-        {
-            # if failures in the jobs report & exit:
-            Write-Error "failed to query all data from Directory Insights"
-        }
-        $DirectoryInsightsData += $ObjectJobStatus | Where-Object { $_.state -eq 'Completed' } | Receive-Job
+        } -AsJob
+        ### SYSTEMS END
+        ### SSO START
+        # $resultsArrayList = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
+        $ssoJob = $users | Foreach-Object -ThrottleLimit 5 -Parallel {
+            $resultsArrayList = $using:resultsArrayList
+            $response = Get-JcSdkEvent -Service sso -StartTime $using:StartDate -EndTime $using:EndDate -SearchTermAnd @{"event_type" = $using:EventTypes; "initiated_by.username" = $_.username } -Fields $using:FilterFields -ErrorAction Ignore
+            # Write-Host "Searching $($_.username) | start: ($($using:StartDate)) end: ($($using:EndDate))"
+            if ($response) {
+                # normalize the date time formats
+                $response | ForEach-Object { $_.timestamp = Get-Date "$($_.timestamp)" }
+                $sortedResponse = $response | Sort-Object -property timestamp -Descending
+                foreach ($res in $sortedResponse) {
+                    If ($res.sso_token_success -eq 'True') {
+                        $resultsArrayList.Add($res)
+                        break
+                    }
+                }
+            }
+        } -AsJob
+        ### SSO END
+        ### Directory
+        # $resultsArrayList = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
+        $directoryJob = $users | Foreach-Object -ThrottleLimit 5 -Parallel {
+            $resultsArrayList = $using:resultsArrayList
+            $response = Get-JcSdkEvent -Service directory -StartTime $using:StartDate -EndTime $using:EndDate -SearchTermAnd @{"event_type" = $using:EventTypes; "initiated_by.username" = $_.username } -Fields $using:FilterFields -ErrorAction Ignore
+            # Write-Host "Searching $($_.username) | start: ($($using:StartDate)) end: ($($using:EndDate))"
+            if ($response) {
+                # normalize the date time formats
+                $response | ForEach-Object { $_.timestamp = Get-Date "$($_.timestamp)" }
+                $sortedResponse = $response | Sort-Object -property timestamp -Descending
+                foreach ($res in $sortedResponse) {
+                    If ($res.success -eq "True") {
+                        $resultsArrayList.Add($res)
+                        break
+                    }
+                }
+            }
+        } -AsJob
+        ### DIRECTORY END
+        ### RADIUS
+        # $resultsArrayList = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
+        $RadiusJob = $users | Foreach-Object -ThrottleLimit 5 -Parallel {
+            $resultsArrayList = $using:resultsArrayList
+            $response = Get-JcSdkEvent -Service radius -StartTime $using:StartDate -EndTime $using:EndDate -SearchTermAnd @{"event_type" = $using:EventTypes; "initiated_by.username" = $_.username } -Fields $using:FilterFields -ErrorAction Ignore
+            # Write-Host "Searching $($_.username) | start: ($($using:StartDate)) end: ($($using:EndDate))"
+            if ($response) {
+                # normalize the date time formats
+                $response | ForEach-Object { $_.timestamp = Get-Date "$($_.timestamp)" }
+                $sortedResponse = $response | Sort-Object -property timestamp -Descending
+                foreach ($res in $sortedResponse) {
+                    If ($res.success -eq "True") {
+                        $resultsArrayList.Add($res)
+                        break
+                    }
+                }
+            }
+        } -AsJob
+        ### RADIUS END
+        $systemsJob | Receive-Job -Wait
+        $ssoJob | Receive-Job -Wait
+        $directoryJob | Receive-Job -Wait
+        $RadiusJob | Receive-Job -Wait
         $stopwatch.Stop()
         $totalSecs = [math]::Round($stopwatch.Elapsed.TotalSeconds, 0)
-        Write-host "Events query took $totalSecs seconds to run"
+        Write-host "Events Data query took $totalSecs seconds to run"
 
-        ForEach ( $Event in $DirectoryInsightsData | Where-Object { ($_.success -eq 'true') -or ($Event.event_type -eq 'sso_auth') } )
-        {
-            # Check if the Event Type is "login_attempt". These events do not have the "username" as an initiated_by attribute and id must be used instead.
-            If ( $Event.event_type -in "login_attempt", "ldap_bind" )
-            {
-                # if username in current userlist
-                If ( $Event.initiated_by.username -in $UserList.username )
-                {
-                    # idIndex returns username from $event
-                    $IdIndex = $UserList.username.IndexOf($Event.initiated_by.username)
-                    # if event username matches existing username already in csv
-                    If ( $Event.initiated_by.username -in $CsvData.username )
-                    {
-                        # returns username from $event
-                        $RowIndex = $CsvData.username.IndexOf($Event.initiated_by.username)
-                        # update the timestamp for this user (latest auth)
-                        $CsvData[$RowIndex].timestamp = $Event.timestamp
+        foreach ($user in $users) {
+            $latestEventByUser = $resultsArrayList | Where-Object { $_.initiated_by.username -eq $user.Username } | Sort-Object -property timestamp -Descending | Select-Object -First 1
+            if ($latestEventByUser) {
+                # if new user to the csv
+                $CsvData.Add(
+                    [PSCustomObject]@{
+                        id        = $user._id;
+                        username  = $latestEventByUser.initiated_by.username;
+                        timestamp = $latestEventByUser.timestamp
                     }
-                    else
-                    {
-                        # if new user to the csv
-                        $CsvData.Add(
-                            [PSCustomObject]@{
-                                id        = $UserList[$IdIndex].id;
-                                username  = $Event.initiated_by.username;
-                                timestamp = $Event.timestamp
-                            }
-                        ) | Out-Null
+                ) | Out-Null
+            } else {
+                $CsvData.Add(
+                    [PSCustomObject]@{
+                        id        = $user._id;
+                        username  = $user.Username;
+                        timestamp = "NA"
                     }
-                }
-            }
-            else
-            {
-                If ( $Event.initiated_by.id -in $CsvData.id )
-                {
-                    $RowIndex = $CsvData.id.IndexOf($Event.initiated_by.id)
-                    $CsvData[$RowIndex].timestamp = $event.timestamp
-                }
-                else
-                {
-                    $CsvData.Add(
-                        [PSCustomObject]@{
-                            id        = $Event.initiated_by.id;
-                            username  = $Event.initiated_by.username;
-                            timestamp = $Event.timestamp
-                        }
-                    ) | Out-Null
-                }
+                ) | Out-Null
             }
         }
+
     }
-    end
-    {
-        if ( $ReadOnly )
-        {
+    end {
+        if ( $ReadOnly ) {
             $CsvData
-        }
-        else
-        {
-            $CsvData | Export-Csv $CsvPath
+        } else {
+            $CsvData | ConvertTo-CSV | Out-File -FilePath $CsvPath -Force
         }
     }
 }
