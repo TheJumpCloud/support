@@ -10,7 +10,7 @@ windows
 
 ```
 $siteToken="SITE TOKEN"
-$installerURL="SENTINEL ONE INSTALLER URL"
+$installerURL="https://path/to/url.exe"
 
 ############### Do Not Edit Below This Line ###############
 
