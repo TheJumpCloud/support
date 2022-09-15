@@ -11,12 +11,12 @@ mac
 ```bash
 #!/bin/bash
 
-# VARS
-###################################################
-export sentinelToken=YOURTOKEN
-export filename=sentineloneagent.pkg
-export DownloadURL=YOURDOWNLOADURL
-###################################################
+sentinelToken="YOURTOKEN"
+DownloadURL="https://path/to/url.pkg"
+
+############### Do Not Edit Below This Line ###############
+
+filename="sentineloneagent.pkg"
 
 # Check if already installed
 if [[ -d /Applications/SentinelOne/ ]]

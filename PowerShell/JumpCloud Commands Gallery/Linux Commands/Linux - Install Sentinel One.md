@@ -9,13 +9,22 @@ linux
 #### Command
 
 ```
-wget SENTINELONEFILEURL
+###################################################
+sentinelToken=YOURTOKEN
+filename=sentineloneagent.deb
+DownloadURL=https://path/to/url.deb
+###################################################
 
-apt install ./SentinelAgentFileName.deb
 
-/opt/sentinelone/bin/sentinelctl management token set site_token
+wget -O $filename $DownloadURL
+
+apt install ./$filename -y
+
+/opt/sentinelone/bin/sentinelctl management token set $sentinelToken
 
 /opt/sentinelone/bin/sentinelctl control start
+
+rm -f $filename
 ```
 
 #### Description
