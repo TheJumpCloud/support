@@ -16,7 +16,7 @@ DownloadURL=https://path/to/url.deb
 ###################################################
 
 
-wget -O $filename $DownloadURL
+curl -o $filename $DownloadURL
 
 apt install ./$filename -y
 

@@ -43,7 +43,6 @@ catch {
 Write-Host "Sentinel One Agent installer returned $($installerProcess.ExitCode)."
 
 exit $installerProcess.ExitCode
-
 ```
 
 #### Description
