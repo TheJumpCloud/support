@@ -8,7 +8,7 @@ mac
 
 #### Command
 
-```bash
+```
 #!/bin/bash
 
 sentinelToken="YOURTOKEN"

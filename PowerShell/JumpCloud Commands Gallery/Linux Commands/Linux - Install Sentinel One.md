@@ -9,6 +9,7 @@ linux
 #### Command
 
 ```
+#!/bin/bash
 ###################################################
 sentinelToken=YOURTOKEN
 filename=sentineloneagent.deb
@@ -20,11 +21,14 @@ curl -o $filename $DownloadURL
 
 apt install ./$filename -y
 
-/opt/sentinelone/bin/sentinelctl management token set $sentinelToken
-
-/opt/sentinelone/bin/sentinelctl control start
-
-rm -f $filename
+if [ -f /opt/sentinelone/bin/sentinelctl; then
+    echo “/opt/sentinelone/bin/sentinelctl found!”
+    /opt/sentinelone/bin/sentinelctl management token set $sentinelToken
+    /opt/sentinelone/bin/sentinelctl control start
+else
+    echo “/opt/sentinelone/bin/sentinelctl not found!”
+    exit 1
+fi
 ```
 
 #### Description
