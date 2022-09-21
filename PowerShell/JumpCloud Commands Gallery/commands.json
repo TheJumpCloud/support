@@ -9,7 +9,7 @@
   {
     "name": "Linux - Install Sentinel One | v1.0 JCCG",
     "type": "linux",
-    "command": "#!/bin/bash\n###################################################\nsentinelToken=YOURTOKEN\nfilename=sentineloneagent.deb\nDownloadURL=https://path/to/url.deb\n###################################################\n\n\ncurl -o $filename $DownloadURL\n\napt install ./$filename -y\n\nif [ -f /opt/sentinelone/bin/sentinelctl; then\n    echo \u201c/opt/sentinelone/bin/sentinelctl found!\u201d\n    /opt/sentinelone/bin/sentinelctl management token set $sentinelToken\n    /opt/sentinelone/bin/sentinelctl control start\nelse\n    echo \u201c/opt/sentinelone/bin/sentinelctl not found!\u201d\n    exit 1\nfi",
+    "command": "#!/bin/bash\n###################################################\nsentinelToken=\"YOURTOKEN\"\nfilename=\"sentineloneagent.deb\"\nDownloadURL=\"https://path/to/url.deb\"\n###################################################\n\n\ncurl -o $filename $DownloadURL\n\napt install ./$filename -y\n\nif [ -f /opt/sentinelone/bin/sentinelctl ]; then\n    echo \"/opt/sentinelone/bin/sentinelctl found!\"\n    /opt/sentinelone/bin/sentinelctl management token set $sentinelToken\n    /opt/sentinelone/bin/sentinelctl control start\nelse\n    echo \"/opt/sentinelone/bin/sentinelctl not found!\"\n    exit 1\nfi",
     "link": "https://github.com/TheJumpCloud/support/blob/master/PowerShell/JumpCloud%20Commands%20Gallery/Linux%20Commands/Linux%20-%20Install%20Sentinel%20One.md",
     "description": "Install Sentinel One agent"
   },
