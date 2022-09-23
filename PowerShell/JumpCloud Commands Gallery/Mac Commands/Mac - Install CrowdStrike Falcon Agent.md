@@ -11,6 +11,7 @@ mac
 ```bash
 #!/bin/bash
 DownloadUrl="https://path/to/url.pkg"
+CID="ENTER CID WITH CHECKSUM VALUE HERE"
 
 ############### Do Not Edit Below This Line ###############
 
@@ -29,6 +30,9 @@ cd /tmp/$TempFolder
 curl -o "$fileName" "$DownloadUrl"
 
 installer -verboseR -package "/tmp/$TempFolder/$fileName" -target /
+
+sudo /Applications/Falcon.app/Contents/Resources/falconctl license $CID
+echo "Validated license with checksum value: $CID"
 
 # Remove Temp Folder and download
 rm -r /tmp/$TempFolder
