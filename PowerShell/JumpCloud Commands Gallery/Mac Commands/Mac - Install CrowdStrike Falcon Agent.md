@@ -32,7 +32,7 @@ curl -o "$fileName" "$DownloadUrl"
 installer -verboseR -package "/tmp/$TempFolder/$fileName" -target /
 
 sudo /Applications/Falcon.app/Contents/Resources/falconctl license $CID
-echo "Validated license with checksum value: $CID"
+echo "Validated license with CID & checksum value: $CID"
 
 # Remove Temp Folder and download
 rm -r /tmp/$TempFolder
