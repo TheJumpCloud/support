@@ -1,4 +1,4 @@
-#### Name
+# Name
 
 Mac - Install Sentinel One Agent | v1.0 JCCG
 
