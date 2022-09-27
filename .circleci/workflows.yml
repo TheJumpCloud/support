@@ -175,6 +175,7 @@ jobs:
     docker:
       - image: cimg/python:3.10.5
     steps:
+      - validate-commands-gallery-headers
       - build-command-json
   Initial Setup:
     executor: win/default
@@ -298,6 +299,13 @@ jobs:
             # Post Draft Release
             ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -n "$TITLE" -b "$BODY" -delete -draft "$TAG" /root/project/PowerShell/
 commands:
+  validate-commands-gallery-headers:
+    steps:
+      - checkout
+      - run:
+          name: Validate Headers
+          command: |
+            python3 "./.circleci/scripts/validate_commands_gallery_md.py"
   build-command-json:
     steps:
       - add_ssh_keys:
