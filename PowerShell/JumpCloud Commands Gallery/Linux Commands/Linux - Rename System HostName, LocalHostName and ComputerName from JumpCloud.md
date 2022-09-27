@@ -10,10 +10,19 @@ linux
 
 ```
 #!/bin/bash
+################################################################################
+# This script will update the system hostname, localHostname & computerName to
+# match the value of this systems displayName in the JumpCloud console.
+# An API Key with read access is required to run this script.
+################################################################################
+
+# Set Read API KEY - Required to read "DisplayName" from console.jumpcloud.com
+API_KEY="yourReadWriteAPIKey"
+
+# ------- Do not modify below this line ------
+
 # Exit immediately on error
 set -e
-# Set Read/ Write Access API KEY
-API_KEY="yourReadWriteAPIKey"
 # Functions
 function validateVariable() {
     var=$1
