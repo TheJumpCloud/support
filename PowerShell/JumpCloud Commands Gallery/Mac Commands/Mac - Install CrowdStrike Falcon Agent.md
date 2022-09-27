@@ -10,7 +10,7 @@ mac
 
 ```bash
 #!/bin/bash
-DownloadUrl=""
+DownloadUrl="https://path/to/url.pkg"
 
 ############### Do Not Edit Below This Line ###############
 
