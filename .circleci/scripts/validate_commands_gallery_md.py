@@ -23,7 +23,7 @@ for part in pathParts:
         with open(filePath) as f:
             content = f.read();
             
-            # Iterate through list of headers then find it in the contents of the .md file
+            # Iterate through the list of headers then find it in the contents of the .md file
             for i in lstOfItems:
                 if("{}".format(i) in content ):
                     print("Validated validated content: " + content)

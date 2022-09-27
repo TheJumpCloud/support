@@ -303,7 +303,7 @@ commands:
     steps:
       - checkout
       - run:
-          name: Validate Headers
+          name: Validate Commands Gallery Headers
           command: |
             python3 "./.circleci/scripts/validate_commands_gallery_md.py"
   build-command-json:
