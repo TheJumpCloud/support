@@ -26,9 +26,9 @@ for part in pathParts:
             # Iterate through the list of headers then find it in the contents of the .md file
             for i in lstOfItems:
                 if("{}".format(i) in content ):
-                    print("Validated validated content: " + content)
+                    print("Validated validated content")
                 elif("#### _Import This Command_" in content):
-                    print("Validated validated content: " + content)
+                    print("Validated content")
                 else:
                     raise Exception("Header {} was not in the content".format(i) + content)
                     
