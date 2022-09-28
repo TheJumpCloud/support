@@ -326,9 +326,14 @@ commands:
             git config user.email "$CIRCLE_PROJECT_USERNAME@CircleJC.com"
             git config user.name "$CIRCLE_PROJECT_USERNAME"
             git add -A
-            git status
-            git commit -m "Updating Commands.json;[skip ci]"
-            git push origin "$CIRCLE_BRANCH"
+            status=$(git status)
+            regex="nothing to commit"
+            if [[ $status =~ $regex ]]; then
+              echo "Nothing in branch to commit"
+            else
+              git commit -m "Updating Commands.json;[skip ci]"
+              git push origin "$CIRCLE_BRANCH"
+            fi
   initial-setup:
     steps:
       - checkout
