@@ -66,6 +66,7 @@ Please note, there are specific rules for the hostname value. Hostnames must:
 - Be a maximum 63 characters in length
 - Contain no whitespace characters or periods
 - Contain only alphanumeric characters and hyphens '-'
+- Hostnames longer than 15 characters will result in a truncated NetBIOS name
 
 #### _Import This Command_
 
