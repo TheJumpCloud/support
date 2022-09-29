@@ -8,7 +8,7 @@ windows
 
 #### Command
 
-```powershell
+```
 # If PSModule RunAsUser is not installed, install it
 if ( -not (get-installedModule "RunAsUser" -ErrorAction SilentlyContinue)) {
     install-module RunAsUser -force

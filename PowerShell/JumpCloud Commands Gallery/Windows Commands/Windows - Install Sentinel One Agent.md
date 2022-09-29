@@ -9,7 +9,7 @@ windows
 #### Command
 
 ```
-$siteToken="SITE TOKEN"
+$siteToken="YOURTOKEN"
 $installerURL="https://path/to/url.exe"
 
 ############### Do Not Edit Below This Line ###############

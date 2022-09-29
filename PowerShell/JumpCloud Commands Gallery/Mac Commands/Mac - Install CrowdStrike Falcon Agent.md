@@ -30,10 +30,19 @@ curl -o "$fileName" "$DownloadUrl"
 
 installer -verboseR -package "/tmp/$TempFolder/$fileName" -target /
 
+# Validate the install and license status
+stats=$(/Applications/Falcon.app/Contents/Resources/falconctl stats > /dev/null 2>&1)
+statsStatus=$?
+if [[ $statsStatus == 0 ]]; then
+    echo "License was applied successfully"
+else
+    echo "License was not applied, please verify that the CrowdStrike Falcon MDM Settings profile is applied to this device"
+    exit 1
+fi
+
 # Remove Temp Folder and download
 rm -r /tmp/$TempFolder
 echo "Deleted /tmp/$TempFolder"
-
 ```
 
 #### Description

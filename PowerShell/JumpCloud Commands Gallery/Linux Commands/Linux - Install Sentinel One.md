@@ -11,9 +11,9 @@ linux
 ```
 #!/bin/bash
 ###################################################
-sentinelToken=YOURTOKEN
-filename=sentineloneagent.deb
-DownloadURL=https://path/to/url.deb
+sentinelToken="YOURTOKEN"
+filename="sentineloneagent.deb"
+DownloadURL="https://path/to/url.deb"
 ###################################################
 
 
@@ -21,12 +21,12 @@ curl -o $filename $DownloadURL
 
 apt install ./$filename -y
 
-if [ -f /opt/sentinelone/bin/sentinelctl; then
-    echo “/opt/sentinelone/bin/sentinelctl found!”
+if [ -f /opt/sentinelone/bin/sentinelctl ]; then
+    echo "/opt/sentinelone/bin/sentinelctl found!"
     /opt/sentinelone/bin/sentinelctl management token set $sentinelToken
     /opt/sentinelone/bin/sentinelctl control start
 else
-    echo “/opt/sentinelone/bin/sentinelctl not found!”
+    echo "/opt/sentinelone/bin/sentinelctl not found!"
     exit 1
 fi
 ```
@@ -35,7 +35,7 @@ fi
 
 Install Sentinel One agent
 
-#### *Import This Command*
+#### _Import This Command_
 
 To import this command into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
 
