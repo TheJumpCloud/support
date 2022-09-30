@@ -51,7 +51,13 @@ for part in pathParts:
                 elif(secTitle == 'commandType'):
                     cmd['type'] = secContent.lower()
                 elif(secTitle == 'Command'):
-                    cmd['command'] = secContent.replace('```', '').strip()
+                    scriptLang = re.search(r"```(\w+)", secContent)
+                    # if script language is specified, strip from contents, else just strip the backticks
+                    if (scriptLang):
+                        cmd['command'] = secContent.replace('```' + (scriptLang.group(1)), '').strip()
+                        cmd['command'] = cmd['command'].replace('```', '').strip()
+                    else:
+                        cmd['command'] = secContent.replace('```', '').strip()
                 elif(secTitle == 'Description'):
                     cmd['description'] = secContent
                 elif((secTitle == 'Import This Command')):
