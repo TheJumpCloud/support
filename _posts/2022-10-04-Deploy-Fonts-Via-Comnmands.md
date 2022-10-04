@@ -72,12 +72,13 @@ Get-ChildItem -Path "C:\Windows\Temp\Fonts" -Include '*.ttf', '*.ttc', '*.otf' -
     If (-not(Test-Path "C:\Windows\Fonts\$($_.Name)")) {
 
         $fileName = $_.Name
+        $filePath = $_.Fullname
         if ( -not (Test-Path -Path "C:\Windows\Fonts\$fileName") ) {
             Write-Host "Installing Font: $fileName"
             # Copy Font
-            Copy-Item -Path $fileName -Destination ("C:\Windows\Fonts\" + $_.Name) -Force
+            Copy-Item -Path $filePath -Destination ("C:\Windows\Fonts\" + $fileName) -Force
             # Register Font
-            New-ItemProperty -Name $_.Name -Path "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Fonts" -PropertyType string -Value $fileName -Force -ErrorAction SilentlyContinue | Out-Null
+            New-ItemProperty -Name $fileName -Path "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Fonts" -PropertyType string -Value $filePath -Force | Out-Null
         }
     }
 }
