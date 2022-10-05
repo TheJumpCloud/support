@@ -63,23 +63,51 @@ Windows PowerShell Script:
 $url = "yourPublicURLHere"
 
 ##########
+# Font Paths
+$fontsPath = "C:\Windows\Temp\Fonts"
+$systemFontsPath = "C:\Windows\Fonts"
+# Create temp Dir
+$fontsPathCheck = Test-Path -Path $fontsPath
+If (!($fontsPathCheck)) {
+    New-Item -ItemType Directory $fontsPath -Force
+}
 # Download the Font to a Temp Location in C:
 Invoke-WebRequest -Uri $url -OutFile "C:\Windows\Temp\Fonts.zip"
 # Unzip
 Expand-Archive "C:\Windows\Temp\Fonts.zip" -DestinationPath "C:\Windows\Temp\Fonts" -Force
+# Get the Fonts in Temp Dir
+$Fonts = Get-ChildItem $fontsPath -Include '*.ttf', '*.ttc', '*.otf' -recurse
 
-Get-ChildItem -Path "C:\Windows\Temp\Fonts" -Include '*.ttf', '*.ttc', '*.otf' -Recurse | ForEach-Object {
-    If (-not(Test-Path "C:\Windows\Fonts\$($_.Name)")) {
+foreach ($Font in $Fonts) {
+    # Font Vars
+    $FontFileName = $Font.Name
+    $FontFilePath = $Font.FullName
 
-        $fileName = $_.Name
-        $filePath = $_.Fullname
-        if ( -not (Test-Path -Path "C:\Windows\Fonts\$fileName") ) {
-            Write-Host "Installing Font: $fileName"
-            # Copy Font
-            Copy-Item -Path $filePath -Destination ("C:\Windows\Fonts\" + $fileName) -Force
-            # Register Font
-            New-ItemProperty -Name $fileName -Path "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Fonts" -PropertyType string -Value $filePath -Force | Out-Null
+    $targetPath = Join-Path $systemFontsPath $FontFileName
+    if (Test-Path -Path $targetPath) {
+        $FontFileName + " already installed"
+    } else {
+        "Installing font " + $FontFileName
+        # Get Font Type
+        $fontType = ($fontFile -split "\.")[-1]
+        # Set Name w/o dash
+        $FontName = $($FontFileName.replace('-', ' ')).replace(".$fontType", '')
+        if ($fontType -eq "ttf"){
+            $RegFontName = "$($FontName) (TrueType)"
         }
+        elseif ($fontFile -eq "otf"){
+            $RegFontName = "$($FontName) (OpenType)"
+        }
+        else {
+            $RegFontName = "$($FontName) (TrueType)"
+        }
+        Write-Host "Setting Reg Item Name: $RegFontName Value: $($FontFileName)"
+        Write-Host "Copying Font: $($FontFilePath) destination: $($systemFontsPath)"
+
+        # Set Registry Item
+        New-ItemProperty -Name $RegFontName -Path "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Fonts" -PropertyType string -Value $FontFileName -Force | out-null
+        # Copy Font
+        Copy-item $FontFilePath -Destination $systemFontsPath
     }
 }
 ```
