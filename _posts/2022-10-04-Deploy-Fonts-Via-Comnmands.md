@@ -76,7 +76,8 @@ Invoke-WebRequest -Uri $url -OutFile "C:\Windows\Temp\Fonts.zip"
 # Unzip
 Expand-Archive "C:\Windows\Temp\Fonts.zip" -DestinationPath "C:\Windows\Temp\Fonts" -Force
 # Get the Fonts in Temp Dir
-$Fonts = Get-ChildItem $fontsPath -Include '*.ttf', '*.ttc', '*.otf' -recurse
+# Ignore Hidden Files from MACOS compressed Dirs
+$Fonts = Get-ChildItem $fontsPath -Include '*.ttf', '*.ttc', '*.otf' -Recurse -Attributes !H -Exclude "._*"
 
 foreach ($Font in $Fonts) {
     # Font Vars
