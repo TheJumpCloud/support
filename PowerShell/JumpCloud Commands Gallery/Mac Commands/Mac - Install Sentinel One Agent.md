@@ -80,8 +80,6 @@ echo "Deleted /tmp/$TempFolder"
 
 This command will download and install the Sentinel One Agent to the device if it isn't already installed.
 
-In order to use this command, follow the instructions from the [Installing the Sentinel One Agent KB](https://support.jumpcloud.com/s/article/Installing-the-SentinelOne-Falcon-Agent)
-
 Specifically for this command:
 
 1. Download the Sentinel One Agent installer and host it at a URL that your devices can access. Set this URL to the "DownloadURL" of this script.
