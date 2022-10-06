@@ -1,6 +1,6 @@
 #### Name
 
-Mac - Install Install JumpCloud Password Manager App  | v1.0 JCCG
+Mac - Install JumpCloud Password Manager App | v1.0 JCCG
 
 #### commandType
 
@@ -182,7 +182,7 @@ if [ "$launch_app" = true ] ; then
     echo "JumpCloud Password Manager.app installed"
     currentUser=$( echo "show State:/Users/ConsoleUser" | scutil | awk '/Name :/ { print $3 }' )
     echo "Launching app for signed in user: $currentUser"
-    sudo -u "$currentUser" open -a "JumpCloud Password Manager" 
+    sudo -u "$currentUser" open -a "JumpCloud Password Manager"
 fi
 
 exit
@@ -192,7 +192,7 @@ exit
 
 This command will download and install the JumpCloud Password Manager to the device if it isn't already installed.
 
-#### *Import This Command*
+#### _Import This Command_
 
 To import this command into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
 
