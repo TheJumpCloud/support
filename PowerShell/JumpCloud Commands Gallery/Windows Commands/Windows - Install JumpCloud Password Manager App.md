@@ -42,9 +42,9 @@ if (-not(Test-Path -Path $installerTempLocation -PathType Leaf))
 
 Write-Output 'Installing Password Manger now, this may take a few minutes.'
 
-$Command = { 
+$Command = {
     $LaunchPasswordManager = $true
-    
+
     $installerTempLocation = 'C:\Windows\Temp\JumpCloud-Password-Manager-latest.exe'
 
     . $installerTempLocation
@@ -62,7 +62,7 @@ $Command = {
         {
 
             . "C:\Users\$($SignedInUserUsername)\AppData\Local\pwm\JumpCloud Password Manager.exe"
-       
+
         }
         catch
         {
