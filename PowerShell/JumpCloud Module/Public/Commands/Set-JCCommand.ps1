@@ -23,7 +23,7 @@ The CommandID will be the 24 character string populated for the _id field.')]
         $command,
 
         [Parameter(
-            ValueFromPipelineByPropertyName = $True, HelpMessage = 'The launch type of the command options are: trigger, manual, repeated, one-time.')]
+            ValueFromPipelineByPropertyName = $True, HelpMessage = 'The launch type of the command options are: trigger, manual')]
         [string]
         [ValidateSet('trigger', 'manual')]
         $launchType,
