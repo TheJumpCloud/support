@@ -1,10 +1,25 @@
 ## 2.0.2
 
-Release Date: September 2, 2022
+Release Date: October 12, 2022
 
 #### RELEASE NOTES
 
-This patch fixes linting/formatting issues for PSModule code and added OTBS code formatting to Powershell files.
+```
+- This release fixes an issue to Set-JCCommand where commandType, launchType, and timeout goes back to default values
+- This release fixes linting/formatting issues for PSModule code and added OTBS code formatting to Powershell files
+```
+
+#### FEATURES:
+
+N/A
+
+#### IMPROVEMENTS:
+
+N/A
+
+#### BUG FIXES:
+
+Bug fix for Set-JCCommand where commandType, launchType, and timeout gets changed to default values
 
 ## 2.0.1
 

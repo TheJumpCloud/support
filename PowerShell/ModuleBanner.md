@@ -7,7 +7,9 @@
 #### Banner Current
 
 ```
-This patch fixes linting/formatting issues for PSModule code and added OTBS code formatting to Powershell files.
+- This release fixes linting/formatting issues for PSModule code and added OTBS code formatting to Powershell files.
+
+- Bug fix for Set-JCCommand where commandType, launchType, and timeout gets changed to default values.
 ```
 
 #### Banner Old

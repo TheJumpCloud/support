@@ -33,3 +33,13 @@ Describe -Tag:('JCCommand') "Set-JCCommand 1.7" {
         $SetBack = Set-JCCommand -CommandID $PesterParams_Command3.id -timeout $CmdQuery.timeout
     }
 }
+Describe -Tag:('JCCommand') "Set-JCCommand 2.0.2" {
+    It "Updates the name of a command but not the timeout/ trigger" {
+        $CmdQuery = Get-JCCommand -CommandID $PesterParams_Command3.id
+        $CmdUpdate = Set-JCCommand -CommandID $PesterParams_Command3.id -name "update Test"
+        $CmdUpdate.timeout | Should -Be $CmdQuery.timeout
+        $CmdUpdate.launchType | Should -Be $CmdQuery.launchType
+        $SetBack = Set-JCCommand -CommandID $PesterParams_Command3.id -name $CmdQuery.Name
+    }
+}
+
