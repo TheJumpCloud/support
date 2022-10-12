@@ -99,6 +99,8 @@ This command will download and install the CrowdStrike Falcon Agent to the devic
 
 In order to use this command, follow the instructions from the [Installing the CrowdStrike Falcon Agent KB](https://support.jumpcloud.com/s/article/Installing-the-Crowdstrike-Falcon-Agent)
 
+[Richard Purves' blog post on Downloading Crowdstrike](https://richard-purves.com/2022/05/03/downloading-crowdstrike-via-api-for-fun-and-profit/) inspired this command template.
+
 Specifically for this command:
 
 1. Create a CrowdStrike API Client with the "SENSOR DOWNLOAD" Read scope and make note of the ClientID and ClientSecret. Refer to CrowdStrike's article [Getting Access to the CrowdStrike API](https://www.crowdstrike.com/blog/tech-center/get-access-falcon-apis/) for further information
