@@ -68,7 +68,7 @@ echo "Beginning CrowdStrike Sensor Download..."
 download=$( /usr/bin/curl -H "Accept: application/octet-stream" -H "Authorization: bearer $bearer" -o "$fileName" "$sensordl?id=$sensorsha")
 res=$?
 
-if test "$res" != "0"; then
+if [[ "$res" != "0" ]]; then
     echo "Download failed with: $res"
     echo "Cleaning up files..."
     rm -r /tmp/$TempFolder
