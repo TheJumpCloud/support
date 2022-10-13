@@ -22,7 +22,7 @@ The CommandID will be the 24 character string populated for the _id field.')]
         $command,
 
         [Parameter(
-            ValueFromPipelineByPropertyName = $True, HelpMessage = 'The launch type of the command options are: trigger, manual')]
+            ValueFromPipelineByPropertyName = $True, HelpMessage = 'The launch type of the command options are: trigger, manual, repeated, one-time., repeated, one-time.')]
         [string]
         [ValidateSet('trigger', 'manual')]
         $launchType,
@@ -79,31 +79,29 @@ The CommandID will be the 24 character string populated for the _id field.')]
         $NewCommandsArray = @()
     }
 
-    process
-    {
+    process {
 
         $body = @{}
 
         $getCommand = Get-JCCommand -commandId $CommandId
 
-        foreach ($param in $PSBoundParameters.GetEnumerator())
-        {
+        foreach ($param in $PSBoundParameters.GetEnumerator()) {
 
             if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }
 
             if ($param.key -eq 'CommandID', 'JCAPIKey') { continue }
-            
-            
+
+
             $body.add($param.Key, $param.Value)
         }
 
         if (!$PSBoundParameters.ContainsKey('timeout')) {
-            $body.Add("timeout", $getCommand.timeout)        
+            $body.Add("timeout", $getCommand.timeout)
         }
 
         if (!$PSBoundParameters.ContainsKey('launchType')) {
-            $body.Add("launchType",$getCommand.launchType)
-            $body.Add("trigger",$getCommand.trigger)
+            $body.Add("launchType", $getCommand.launchType)
+            $body.Add("trigger", $getCommand.trigger)
         }
         $body.add("commandType", $getCommand.commandType)
         # Include commandType to body
