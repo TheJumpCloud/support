@@ -20,12 +20,9 @@ param(
         ValueFromPipelineByPropertyName,
         Position = 0)]
     [ValidateScript( {
-            If (!($_ -ge ((Get-Date).Date).AddDays(-45)))
-            {
+            If (!($_ -ge ((Get-Date).Date).AddDays(-45))) {
                 Throw 'Value must be within 45 days of current date.'
-            }
-            Else
-            {
+            } Else {
                 $true
             }
         })]
@@ -36,12 +33,9 @@ param(
         ValueFromPipelineByPropertyName,
         Position = 1)]
     [ValidateScript( {
-            If (!($_ -ge ((Get-Date).Date).AddDays(-45)))
-            {
+            If (!($_ -ge ((Get-Date).Date).AddDays(-45))) {
                 Throw 'Value must be within 45 days of current date.'
-            }
-            Else
-            {
+            } Else {
                 $true
             }
         })]
@@ -55,8 +49,7 @@ param(
         Position = 0,
         HelpMessage = "Please enter your JumpCloud API key. This can be found in the JumpCloud admin console within 'API Settings' accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console.") ]
     [ValidateScript( {
-            If (($_).Length -ne 40)
-            {
+            If (($_).Length -ne 40) {
                 Throw "Please enter your API key. This can be found in the JumpCloud admin console within 'API Settings' accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console."
             }
 
@@ -67,8 +60,7 @@ param(
 
 )
 
-if (($endDate -le $startDate))
-{
+if (($endDate -le $startDate)) {
     Write-Error "End date must be later than start date"
     Exit
 }
@@ -80,10 +72,8 @@ $EventsArray = @()
 
 
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-$TimeIncrements = Do
-{
-    $startDate = Switch ($IncrementType)
-    {
+$TimeIncrements = Do {
+    $startDate = Switch ($IncrementType) {
         'hours' { (Get-Date -Date:($startDate)).AddHours($IncrementAmount) }
         'minutes' { (Get-Date -Date:($startDate)).AddMinutes($IncrementAmount) }
         'days' { (Get-Date -Date:($startDate)).AddDays($IncrementAmount) }
@@ -92,8 +82,7 @@ $TimeIncrements = Do
     (Get-Date -Date:($startDate) -Format s)
 }
 Until ($startDate -ge $endDate)
-For ($i = 1; $i -le $TimeIncrements.Length - 1; $i++)
-{
+For ($i = 1; $i -le $TimeIncrements.Length - 1; $i++) {
     $startTime = ($TimeIncrements[$i - 1])
     $endTime = ($TimeIncrements[$i])
     Write-Host ('Pulling events from ' + $startTime + ' to ' + $endTime)
@@ -101,8 +90,7 @@ For ($i = 1; $i -le $TimeIncrements.Length - 1; $i++)
     $url = $UrlTemplate -f $startTime, $endTime
     $hdrs = @{"X-API-KEY" = "$JumpCloudAPIKey" }
     $events = Invoke-RestMethod -Method GET -Uri $url -Header $hdrs
-    if ($events)
-    {
+    if ($events) {
         Write-Host ("$($events.count) " + 'events found in range ' + $startTime + ' to ' + $endTime )
         $EventsArray += $events
     }

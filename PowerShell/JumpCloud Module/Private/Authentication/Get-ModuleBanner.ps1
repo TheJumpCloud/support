@@ -1,5 +1,4 @@
-Function Get-ModuleBanner
-{
+Function Get-ModuleBanner {
     Param(
         $ModuleBannerUrl = 'https://github.com/TheJumpCloud/support/blob/master/PowerShell/ModuleBanner.md'
     )
@@ -18,26 +17,20 @@ Function Get-ModuleBanner
     $ModuleBannerPageContent = $ModuleBannerPage.Content
     # Get the body of the GitHub page
     $ModuleBanner_MarkDownBody = ($ModuleBannerPageContent | Select-String -Pattern:($Regex_Article)).Matches.Value
-    ForEach ($ModuleBanner_Section In $ModuleBanner_MarkDownBody -split ($Regex_H4_Start))
-    {
+    ForEach ($ModuleBanner_Section In $ModuleBanner_MarkDownBody -split ($Regex_H4_Start)) {
         # Get matching value
         $ModuleBanner_Section_Header = ($ModuleBanner_Section | Select-String -Pattern:($Regex_H4_Content)).Matches.Value
         $ModuleBanner_Section_Body = ($ModuleBanner_Section | Select-String -Pattern:($Regex_H4_Body)).Matches.Value
         $ModuleBanner_Section_HtmlTags = ($ModuleBanner_Section_Body | Select-String -AllMatches -Pattern:($Regex_HtmlTags)).Matches.Value
-        If (-not [System.String]::IsNullOrEmpty($ModuleBanner_Section_Header))
-        {
+        If (-not [System.String]::IsNullOrEmpty($ModuleBanner_Section_Header)) {
             # Validate the section headers found are in the expected list
-            If ($ModuleBanner_Section_Header -in $ModuleBanner_Headers)
-            {
+            If ($ModuleBanner_Section_Header -in $ModuleBanner_Headers) {
                 # Remove html tags from the body content
-                ForEach ($ModuleBanner_Section_HtmlTag In $ModuleBanner_Section_HtmlTags)
-                {
+                ForEach ($ModuleBanner_Section_HtmlTag In $ModuleBanner_Section_HtmlTags) {
                     $ModuleBanner_Section_Body = ($ModuleBanner_Section_Body.Replace($ModuleBanner_Section_HtmlTag, '')).Trim()
                 }
                 Add-Member -InputObject:($OutputObject) -MemberType:('NoteProperty') -Name:([System.String]$ModuleBanner_Section_Header) -Value:([System.String]$ModuleBanner_Section_Body)
-            }
-            Else
-            {
+            } Else {
                 Write-Error ('The Header found is not in the list of expected headers: ' + $ModuleBanner_Section_Header + ' -notin ' + ($ModuleBanner_Headers -join (', ')))
             }
         }

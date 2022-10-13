@@ -1,13 +1,11 @@
-Function New-JCDeploymentTemplate()
-{
+Function New-JCDeploymentTemplate() {
     [CmdletBinding()]
 
     param
     (
     )
 
-    begin
-    {
+    begin {
         $Banner = @'
        __                          ______ __                   __
       / /__  __ ____ ___   ____   / ____// /____   __  __ ____/ /
@@ -25,7 +23,7 @@ Function New-JCDeploymentTemplate()
         $Heading1 = 'The CSV file:'
         $Heading2 = 'Will be created within the directory:'
 
-        If (!(Get-PSCallStack | Where-Object {$_.Command -match 'Pester'})) {Clear-Host}
+        If (!(Get-PSCallStack | Where-Object { $_.Command -match 'Pester' })) { Clear-Host }
 
         Write-Host $Banner -ForegroundColor Green
         Write-Host $Heading1 -NoNewline
@@ -35,23 +33,19 @@ Function New-JCDeploymentTemplate()
         Write-Host ""
 
 
-        while ($ConfirmFile -ne 'Y' -and $ConfirmFile -ne 'N')
-        {
+        while ($ConfirmFile -ne 'Y' -and $ConfirmFile -ne 'N') {
             $ConfirmFile = Read-Host  "Enter Y to confirm or N to change $fileName output location" #Confirm .csv file location creation
         }
 
-        if ($ConfirmFile -eq 'Y')
-        {
+        if ($ConfirmFile -eq 'Y') {
 
             $ExportLocation = $pwd
         }
 
-        elseif ($ConfirmFile -eq 'N')
-        {
+        elseif ($ConfirmFile -eq 'N') {
             $ExportLocation = Read-Host "Enter the full path to the folder you wish to create $fileName in"
 
-            while (-not(Test-Path -Path $ExportLocation -PathType Container))
-            {
+            while (-not(Test-Path -Path $ExportLocation -PathType Container)) {
                 Write-Host -BackgroundColor Yellow -ForegroundColor Red "The location $ExportLocation does not exist. Try another"
                 $ExportLocation = Read-Host "Enter the full path to the folder you wish to create $fileName in"
 
@@ -64,18 +58,16 @@ Function New-JCDeploymentTemplate()
 
     }
 
-    process
-    {
+    process {
         $CSV = [ordered]@{
             SystemID = $null
         }
 
         $Done = $false
 
-        while ($Done -eq $false)
-        {
+        while ($Done -eq $false) {
 
-            If ((Get-PSCallStack).Command -notlike '*Pester*') {Clear-Host}
+            If ((Get-PSCallStack).Command -notlike '*Pester*') { Clear-Host }
 
             Write-Host $Banner -ForegroundColor Green
 
@@ -85,8 +77,7 @@ Function New-JCDeploymentTemplate()
 
             Write-Host "`n================ CURRENT DEPLOYMENT CSV TEMPLATE ================= `n"
 
-            foreach ($heading in $CSV.GetEnumerator())
-            {
+            foreach ($heading in $CSV.GetEnumerator()) {
                 Write-Host "$($heading.name)," -ForegroundColor Green -NoNewline
 
             }
@@ -94,35 +85,27 @@ Function New-JCDeploymentTemplate()
             Write-Host "`n`n================================================================== `n"
 
 
-            if ($CSV.count -gt 1)
-            {
+            if ($CSV.count -gt 1) {
                 Write-Host "Enter 'D' when DONE `n" -ForegroundColor Yellow
                 Write-Host "Enter 'C' to CLEAR the CURRENT DEPLOYMENT CSV TEMPLATE and start over`n" -ForegroundColor Yellow
             }
 
             $VariableName = Read-Host "ENTER the name of the system specific unique variables: "
 
-            switch ($VariableName)
-            {
+            switch ($VariableName) {
                 'D' { $Done = $true }
-                'C'
-                {
+                'C' {
                     $CSV = [ordered]@{
                         SystemID = $null
                     }
                 }
-                Default
-                {
-                    try
-                    {
-                        if ($VariableName -ne "")
-                        {
+                Default {
+                    try {
+                        if ($VariableName -ne "") {
                             $CSV.add($VariableName, $null)
                         }
 
-                    }
-                    catch
-                    {
+                    } catch {
                         Write-Verbose $_.ErrorDetails
                     }
                 }
@@ -134,20 +117,16 @@ Function New-JCDeploymentTemplate()
     }
 
 
-    end
-    {
+    end {
         $ExportPath = Test-Path ("$ExportLocation/$FileName")
-        if (!$ExportPath )
-        {
+        if (!$ExportPath ) {
             Write-Host ""
             $CSVheader | Export-Csv -path "$ExportLocation/$FileName" -NoTypeInformation
             Write-Host 'Creating file'  -NoNewline
             Write-Host " $fileName" -ForegroundColor Yellow -NoNewline
             Write-Host ' in the location' -NoNewline
             Write-Host " $ExportLocation" -ForegroundColor Yellow
-        }
-        else
-        {
+        } else {
             Write-Host ""
             Write-Warning "The file $fileName already exists do you want to overwrite it?" -WarningAction Inquire
             Write-Host ""
@@ -162,13 +141,11 @@ Function New-JCDeploymentTemplate()
         Write-Host "Do you want to open the file" -NoNewLine
         Write-Host " $FileName`?`n" -ForegroundColor Yellow
 
-        while ($Open -ne 'Y' -and $Open -ne 'N')
-        {
+        while ($Open -ne 'Y' -and $Open -ne 'N') {
             $Open = Read-Host  "Enter Y for Yes or N for No"
         }
 
-        if ($Open -eq 'Y')
-        {
+        if ($Open -eq 'Y') {
             Invoke-Item -path "$ExportLocation/$FileName"
 
             $Open = $null
@@ -180,13 +157,11 @@ Function New-JCDeploymentTemplate()
 
         Write-Host "`n(You will need to populate the SystemID column of $FileName with target system JumpCloud SystemIDs)`n"
 
-        while ($ConfirmSystem -ne 'Y' -and $ConfirmSystem -ne 'N')
-        {
+        while ($ConfirmSystem -ne 'Y' -and $ConfirmSystem -ne 'N') {
             $ConfirmSystem = Read-Host  "Enter Y for Yes or N for No"
         }
 
-        if ($ConfirmSystem -eq 'Y')
-        {
+        if ($ConfirmSystem -eq 'Y') {
 
 
             $ExistingSystems = Get-JCSystem -returnProperties hostname, displayName, os, version | Select-Object hostname, displayName, os, version, @{Name = 'SystemID'; Expression = { $_._id } }, lastContact
@@ -204,13 +179,11 @@ Function New-JCDeploymentTemplate()
 
             Write-Host " $SystemsCSV `?`n" -ForegroundColor Yellow
 
-            while ($Open -ne 'Y' -and $Open -ne 'N')
-            {
+            while ($Open -ne 'Y' -and $Open -ne 'N') {
                 $Open = Read-Host  "Enter Y for Yes or N for No"
             }
 
-            if ($Open -eq 'Y')
-            {
+            if ($Open -eq 'Y') {
                 Invoke-Item -path "$ExportLocation/$SystemsCSV"
                 $Open = $null
             }
@@ -222,13 +195,11 @@ Function New-JCDeploymentTemplate()
 
         Write-Host "`n(You will need the JumpCloud CommandID to use the Invoke-JCDeployment command)`n"
 
-        while ($ConfirmCommand -ne 'Y' -and $ConfirmCommand -ne 'N')
-        {
+        while ($ConfirmCommand -ne 'Y' -and $ConfirmCommand -ne 'N') {
             $ConfirmCommand = Read-Host  "Enter Y for Yes or N for No"
         }
 
-        if ($ConfirmCommand -eq 'Y')
-        {
+        if ($ConfirmCommand -eq 'Y') {
 
 
             $ExistingCommands = Get-JCCommand | Select-Object Name, CommandType, @{Name = 'CommandID'; Expression = { $_._id } }
@@ -246,13 +217,11 @@ Function New-JCDeploymentTemplate()
 
             Write-Host " $CommandsCSV `?`n" -ForegroundColor Yellow
 
-            while ($Open -ne 'Y' -and $Open -ne 'N')
-            {
+            while ($Open -ne 'Y' -and $Open -ne 'N') {
                 $Open = Read-Host  "Enter Y for Yes or N for No"
             }
 
-            if ($Open -eq 'Y')
-            {
+            if ($Open -eq 'Y') {
                 Invoke-Item -path "$ExportLocation/$CommandsCSV"
                 $Open = $null
 

@@ -1,23 +1,17 @@
-Function Get-DynamicParamRadiusServer
-{
+Function Get-DynamicParamRadiusServer {
     Param(
         [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'The verb of the command calling it. Different verbs will make different parameters required.')][ValidateSet('add', 'get', 'new', 'remove', 'set')][System.String]$Action
         , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'The type of the object.')][ValidateNotNullOrEmpty()][ValidateSet('command', 'ldap_server', 'policy', 'application', 'radius_server', 'system_group', 'system', 'user_group', 'user', 'g_suite', 'office_365')][Alias('TypeNameSingular')][System.String]$Type
         , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Bypass user prompts and dynamic ValidateSet.')][ValidateNotNullOrEmpty()][Switch]$Force
     )
-    Begin
-    {
-        $RuntimeParameterDictionary = If ($Type)
-        {
+    Begin {
+        $RuntimeParameterDictionary = If ($Type) {
             Get-JCCommonParameters -Force:($Force) -Action:($Action) -Type:($Type);
-        }
-        Else
-        {
+        } Else {
             Get-JCCommonParameters -Force:($Force) -Action:($Action);
         }
     }
-    Process
-    {
+    Process {
         # Define the new parameters
         $Param_newName = @{
             'Name'                            = 'newName';
@@ -72,8 +66,7 @@ Function Get-DynamicParamRadiusServer
             'HelpMessage'                     = 'The behavior when user accounts expire';
             'Position'                        = 8;
         }
-        If ($Action -in ('add', 'new'))
-        {
+        If ($Action -in ('add', 'new')) {
             $Param_networkSourceIp.Add('Mandatory', $true);
             $Param_sharedSecret.Add('Default', ( -join ((0x21, 0x40, 0x5e, 0x2a) + (0x23..0x26) + (0x30..0x39) + ( 0x41..0x5A) + ( 0x61..0x7A) | Get-Random -Count:(31) | ForEach-Object { [char]$_ }) ));
         }
@@ -85,33 +78,22 @@ Function Get-DynamicParamRadiusServer
             # Creating each parameter
             $VarName = $_.Name
             $VarValue = $_.Value
-            Try
-            {
-                If ($Action -in ('add', 'new') -and $_.Name -in ('Param_networkSourceIp', 'Param_sharedSecret'))
-                {
+            Try {
+                If ($Action -in ('add', 'new') -and $_.Name -in ('Param_networkSourceIp', 'Param_sharedSecret')) {
+                    New-DynamicParameter @VarValue | Out-Null
+                } ElseIf ($Action -in ('remove') -and $_.Name -notin ('Param_newName', 'Param_networkSourceIp', 'Param_sharedSecret', 'Param_mfa', 'Param_userLockoutAction', 'Param_userPasswordExpirationAction')) {
+                    New-DynamicParameter @VarValue | Out-Null
+                } ElseIf ($Action -in ('set') -and $_.Name -in ('Param_newName', 'Param_networkSourceIp', 'Param_sharedSecret', 'Param_mfa', 'Param_userLockoutAction', 'Param_userPasswordExpirationAction')) {
+                    New-DynamicParameter @VarValue | Out-Null
+                } ElseIf ($Action -eq 'get' -and $_.Name -notin ('Param_newName', 'Param_networkSourceIp', 'Param_sharedSecret', 'Param_mfa', 'Param_userLockoutAction', 'Param_userPasswordExpirationAction')) {
                     New-DynamicParameter @VarValue | Out-Null
                 }
-                ElseIf ($Action -in ('remove') -and $_.Name -notin ('Param_newName', 'Param_networkSourceIp', 'Param_sharedSecret', 'Param_mfa', 'Param_userLockoutAction', 'Param_userPasswordExpirationAction'))
-                {
-                    New-DynamicParameter @VarValue | Out-Null
-                }
-                ElseIf ($Action -in ('set') -and $_.Name -in ('Param_newName', 'Param_networkSourceIp', 'Param_sharedSecret', 'Param_mfa', 'Param_userLockoutAction', 'Param_userPasswordExpirationAction'))
-                {
-                    New-DynamicParameter @VarValue | Out-Null
-                }
-                ElseIf ($Action -eq 'get' -and $_.Name -notin ('Param_newName', 'Param_networkSourceIp', 'Param_sharedSecret', 'Param_mfa', 'Param_userLockoutAction', 'Param_userPasswordExpirationAction'))
-                {
-                    New-DynamicParameter @VarValue | Out-Null
-                }
-            }
-            Catch
-            {
+            } Catch {
                 Write-Error -Message:('Unable to create dynamic parameter:"' + $VarName.Replace($ParamVarPrefix, '') + '"; Error:' + $Error)
             }
         }
     }
-    End
-    {
+    End {
         Return $RuntimeParameterDictionary
     }
 }

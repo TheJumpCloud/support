@@ -1,23 +1,17 @@
-Function Get-JCCommonParameters
-{
+Function Get-JCCommonParameters {
     Param(
         [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'The RuntimeDefinedParameterDictionary to store variables.')][ValidateNotNullOrEmpty()][System.Management.Automation.RuntimeDefinedParameterDictionary]$RuntimeParameterDictionary = (New-Object -TypeName:([System.Management.Automation.RuntimeDefinedParameterDictionary]))
         , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'The type of the object.')][ValidateNotNullOrEmpty()][ValidateSet('command', 'ldap_server', 'policy', 'application', 'radius_server', 'system_group', 'system', 'user_group', 'user', 'g_suite', 'office_365', 'organization')][Alias('TypeNameSingular')][System.String]$Type
         , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'The verb of the command calling it. Different verbs will make different parameters required.')][ValidateSet('add', 'copy', 'get', 'new', 'remove', 'set')][System.String]$Action
         , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Bypass user prompts and dynamic ValidateSet.')][ValidateNotNullOrEmpty()][Switch]$Force
     )
-    Begin
-    {
+    Begin {
     }
-    Process
-    {
+    Process {
         # Get type list
-        $JCType = If ($Type)
-        {
+        $JCType = If ($Type) {
             Get-JCType -Type:($Type);
-        }
-        Else
-        {
+        } Else {
             Get-JCType;
         }
         # Define the new parameters
@@ -146,8 +140,7 @@ Function Get-JCCommonParameters
         #     $Param_Name.Add('Mandatory', $true);
         # }
         # Create another parameter set if an id or name is not required
-        If ($Action -eq 'get')
-        {
+        If ($Action -eq 'get') {
             $Param_Fields.ParameterSets += 'Default'
             $Param_Limit.ParameterSets += 'Default'
             $Param_Skip.ParameterSets += 'Default'
@@ -161,37 +154,27 @@ Function Get-JCCommonParameters
             # Creating each parameter
             $VarName = $_.Name
             $VarValue = $_.Value
-            Try
-            {
-                If ($Action -in ('add', 'new') -and $_.Name -in ('Param_Name')) # Can only add new objects by name
-                {
+            Try {
+                If ($Action -in ('add', 'new') -and $_.Name -in ('Param_Name')) {
+                    # Can only add new objects by name
+                    New-DynamicParameter @VarValue | Out-Null
+                } ElseIf ($Action -in ('remove') -and $_.Name -in ('Param_Id')) {
+                    # Can only remove objects by id
+                    New-DynamicParameter @VarValue | Out-Null
+                } ElseIf ($Action -in ('set') -and $_.Name -in ('Param_Id', 'Param_Name', 'Param_SearchBy', 'Param_SearchByValue' )) {
+                    # Can set or update objects by id or name
+                    New-DynamicParameter @VarValue | Out-Null
+                } ElseIf ($Action -eq 'get' -and $_.Name -in ('Param_Id', 'Param_Name', 'Param_SearchBy', 'Param_SearchByValue', 'Param_Fields', 'Param_Filter', 'Param_Limit', 'Param_Skip', 'Param_Paginate')) {
+                    New-DynamicParameter @VarValue | Out-Null
+                } ElseIf ($Action -in ('copy') -and $_.Name -in ('Param_Id', 'Param_Name')) {
                     New-DynamicParameter @VarValue | Out-Null
                 }
-                ElseIf ($Action -in ('remove') -and $_.Name -in ('Param_Id')) # Can only remove objects by id
-                {
-                    New-DynamicParameter @VarValue | Out-Null
-                }
-                ElseIf ($Action -in ('set') -and $_.Name -in ('Param_Id', 'Param_Name', 'Param_SearchBy', 'Param_SearchByValue' )) # Can set or update objects by id or name
-                {
-                    New-DynamicParameter @VarValue | Out-Null
-                }
-                ElseIf ($Action -eq 'get' -and $_.Name -in ('Param_Id', 'Param_Name', 'Param_SearchBy', 'Param_SearchByValue', 'Param_Fields', 'Param_Filter', 'Param_Limit', 'Param_Skip', 'Param_Paginate'))
-                {
-                    New-DynamicParameter @VarValue | Out-Null
-                }
-                ElseIf ($Action -in ('copy') -and $_.Name -in ('Param_Id', 'Param_Name'))
-                {
-                    New-DynamicParameter @VarValue | Out-Null
-                }
-            }
-            Catch
-            {
+            } Catch {
                 Write-Error -Message:('Unable to create dynamic parameter:"' + $VarName.Replace($ParamVarPrefix, '') + '"; Error:' + $Error)
             }
         }
     }
-    End
-    {
+    End {
         Return $RuntimeParameterDictionary
     }
 }

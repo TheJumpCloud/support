@@ -1,13 +1,11 @@
-Function Get-FunctionReport
-{
+Function Get-FunctionReport {
     Param([string[]]$Folder)
     # Get a list of all functions in the current runspace
     $CurrentFunctions = Get-ChildItem -Path:('function:')
     # Load all function files from the module
     $Files = Get-ChildItem -Path:($Folder) -Recurse | Where-Object { $_.Extension -eq '.ps1' }
     # Loop through each function file
-    $FunctionList = ForEach ($File In $Files)
-    {
+    $FunctionList = ForEach ($File In $Files) {
         $FileFullName = $File.FullName
         $FileName = $File.Name
         $FileBaseName = $File.BaseName

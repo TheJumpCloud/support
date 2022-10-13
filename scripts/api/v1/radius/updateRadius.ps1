@@ -3,7 +3,7 @@
 # updateRadius.ps1 - This script will use ipecho.net to compare your public     #
 # IP address with the IP address currently configured for your JumpCloud RADIUS #
 # server. If the IP address has changed, it will be updated.                    #
-#                                                                               # 
+#                                                                               #
 # Fill out the <API_KEY> and <RADIUS_ID> parameters with your information.      #
 #                                                                               #
 # This can be scheduled to run automatically in Windows Task Scheduler.         #
@@ -18,9 +18,9 @@ $ErrorActionPreference = 'Stop'
 
 # Enter the API Key below. This is found in the JumpCloud console by clicking your email address on the top-right and then "API Settings".
 $headers = @{
-    'Accept' = 'application/json'
+    'Accept'       = 'application/json'
     'Content-Type' = 'application/json'
-    'x-api-key' = '<API_KEY>'
+    'x-api-key'    = '<API_KEY>'
 }
 
 function Get-CurrentIp {

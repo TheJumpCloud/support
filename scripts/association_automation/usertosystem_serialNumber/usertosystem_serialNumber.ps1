@@ -28,16 +28,14 @@ $JCAPIKey = ""
 #endRegion Variables
 
 #region DataValidation
-if (! (Test-Path $AssociationCSVPath))
-{
+if (! (Test-Path $AssociationCSVPath)) {
     Write-Error "AssociationCSVPath value is not a correct please input full file path"
 
 }
 
 $ModuleCheck = Get-InstalledModule -Name JumpCloud
 
-if (!$ModuleCheck)
-{
+if (!$ModuleCheck) {
     Write-Error "The JumpCloud PowerShell module is not installed run the command: 'Install-Module JumpCloud -Scope CurrentUser -Force' to intsall the module and try again."
 
 }
@@ -50,8 +48,7 @@ $SystemAssociations = Import-Csv $AssociationCSVPath
 
 #region Functions
 
-function Associate-JCUsertoJCSystem
-{
+function Associate-JCUsertoJCSystem {
     [CmdletBinding()]
     param (
 
@@ -69,13 +66,11 @@ function Associate-JCUsertoJCSystem
 
     )
 
-    begin
-    {
+    begin {
         $resultsArray = @()
     }
 
-    process
-    {
+    process {
         $UserSystemBindInfo = @{
             "Username"      = $Username
             "serialNumber"  = $serialNumber
@@ -86,66 +81,53 @@ function Associate-JCUsertoJCSystem
 
         $JCSystemCheck = Get-JCSystem -serialNumber $serialNumber #Change here to search on something besides serialNumber
 
-        switch ($JCSystemCheck._id.count)
-        {
-            { $_ -eq 0 }
-            {
+        switch ($JCSystemCheck._id.count) {
+            { $_ -eq 0 } {
                 $UserSystemBindInfo.Log = "No action taken no system found with serialNumber: $($serialNumber)"
                 $UserSystemBindInfo.Status = "PENDING AGENT INSTALL"
             }
-            { $_ -eq 1 }
-            {
+            { $_ -eq 1 } {
                 $JCSystemID = $JCSystemCheck._id
 
                 $User = Get-JCUser -username $Username
 
-                if ($User._id.count -eq 1)
-                {
-                    if ($User.activated -eq $False)
-                    {
+                if ($User._id.count -eq 1) {
+                    if ($User.activated -eq $False) {
                         $UserSystemBindInfo.Log = "No action taken user: $username has not set a password and is in an inactive state."
                         $UserSystemBindInfo.Status = "PENDING USER ACTIVATION"
                         Continue
                     }
                 }
 
-                else
-                {
+                else {
                     $UserSystemBindInfo.Log = "No action taken no user found with username $username"
                     $UserSystemBindInfo.Status = "PENDING USER CREATION"
 
                     Continue
                 }
 
-                try
-                {
+                try {
                     $UserAdd = Add-JCSystemUser -SystemID $JCSystemID -UserID $User._id -Administrator $Administrator
 
-                    switch ($UserAdd.Status)
-                    {
-                        Added
-                        {
+                    switch ($UserAdd.Status) {
+                        Added {
                             $UserSystemBindInfo.Log = "User bound at $(Get-DAte -Format u)"
                             $UserSystemBindInfo.Status = "SUCCESS"
                         }
 
-                        '{"message":"Already Exists"}'
-                        {
+                        '{"message":"Already Exists"}' {
                             $UserSystemBindInfo.Log = "User already bound"
                             $UserSystemBindInfo.Status = "SUCCESS"
                         }
 
-                        Default
-                        {
+                        Default {
                             $UserSystemBindInfo.Log = "$($UserAdd.Status)"
                             $UserSystemBindInfo.Status = "SEE LOG"
                         }
                     }
 
 
-                }
-                catch
-                {
+                } catch {
                     $UserSystemBindInfo.Log = $_.ErrorDetails
                     $UserSystemBindInfo.Status = "FAIL"
 
@@ -153,13 +135,11 @@ function Associate-JCUsertoJCSystem
 
 
             }
-            { $_ -gt 1 }
-            {
+            { $_ -gt 1 } {
                 $UserSystemBindInfo.Log = "No action taken $($JCSystemCheck._id.count) systems found with serialNumber: $($serialNumber)"
                 $UserSystemBindInfo.Status = "PENDING DISPLYNAME RESOLUTION"
             }
-            Default
-            {
+            Default {
                 $UserSystemBindInfo.Log = "Default error"
                 $UserSystemBindInfo.Status = "FAIL"
             }
@@ -177,8 +157,7 @@ function Associate-JCUsertoJCSystem
         $resultsArray += $formattedResults
     }
 
-    end
-    {
+    end {
         return $resultsArray
     }
 }
@@ -190,17 +169,13 @@ $resultsArrayList = New-Object -TypeName System.Collections.ArrayList
 [int]$Counter = 0
 [int]$SystemCount = $SystemAssociations.serialNumber.Count
 
-foreach ($Association in $SystemAssociations)
-{
+foreach ($Association in $SystemAssociations) {
     $Counter ++
 
-    if ($Association.serialNumber -and $Association.Username -and $Association.Administrator)
-    {
+    if ($Association.serialNumber -and $Association.Username -and $Association.Administrator) {
 
-        if ($Association.Status -ne "Success")
-        {
-            try
-            {
+        if ($Association.Status -ne "Success") {
+            try {
                 $TargetAddProgressParams = @{
 
                     Activity        = "Attempting association between $($Association.Username) and $($Association.serialNumber)"
@@ -218,9 +193,7 @@ foreach ($Association in $SystemAssociations)
 
                 $Association.Log = $($Bind.Log)
 
-            }
-            catch
-            {
+            } catch {
                 $Association.Status = "Fail"
                 $Association.Log = $_.ErrorDetails
             }
@@ -228,7 +201,7 @@ foreach ($Association in $SystemAssociations)
 
     }
 
-    $null = $resultsArrayList.Add($Association) 
+    $null = $resultsArrayList.Add($Association)
 
 }
 

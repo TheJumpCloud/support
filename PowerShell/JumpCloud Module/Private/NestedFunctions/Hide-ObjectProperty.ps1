@@ -22,8 +22,7 @@ Get-Variable -Name:($HiddenProperties) |
 # Set the meta info to be hidden by default
 $Results += Hide-ObjectProperty -Object:($Result) -HiddenProperties:($HiddenProperties)
 #>
-Function Hide-ObjectProperty
-{
+Function Hide-ObjectProperty {
     [CmdletBinding()]
     Param(
         [Parameter(Mandatory = $true, Position = 0)][ValidateNotNullOrEmpty()][Object]$Object,
@@ -35,35 +34,28 @@ Function Hide-ObjectProperty
         $ObjectAllProperties = $_.PSObject.Properties.Name
         # Write-Host ('ObjectAllProperties:' + ($ObjectAllProperties -join ', ')) -BackgroundColor Gray -ForegroundColor Black
         # If current object has PSStandardMembers then get it's default set and add its hidden properties to PropertiesToHide
-        If ($_.PSStandardMembers)
-        {
+        If ($_.PSStandardMembers) {
             $ObjectShowProperties = $_.PSStandardMembers.DefaultDisplayPropertySet.ReferencedPropertyNames
-            $PropertiesToHide = @($HiddenProperties + ($ObjectAllProperties | Where-Object {$_ -notin $ObjectShowProperties -or $_ -in $HiddenProperties}) | Select-Object -Unique)
+            $PropertiesToHide = @($HiddenProperties + ($ObjectAllProperties | Where-Object { $_ -notin $ObjectShowProperties -or $_ -in $HiddenProperties }) | Select-Object -Unique)
             # Write-Host ('ObjectShowProperties:' + ($ObjectShowProperties -join ', ')) -BackgroundColor Yellow -ForegroundColor Black
-        }
-        Else
-        {
+        } Else {
             $PropertiesToHide = @($HiddenProperties)
         }
         # Get list of properties to show
-        $PropertiesToShow = $ObjectAllProperties | Where-Object {$_ -notin $PropertiesToHide}
+        $PropertiesToShow = $ObjectAllProperties | Where-Object { $_ -notin $PropertiesToHide }
         # Write-Host ('PropertiesToHide:' + ($PropertiesToHide -join ', ')) -BackgroundColor Yellow -ForegroundColor Black
         # Write-Host ('PropertiesToShow:' + ($PropertiesToShow -join ', ')) -BackgroundColor Green -ForegroundColor Black
         # Create the default property display set
-        If ($PropertiesToShow)
-        {
+        If ($PropertiesToShow) {
             $defaultDisplayPropertySet = New-Object System.Management.Automation.PSPropertySet('DefaultDisplayPropertySet', [System.String[]]$PropertiesToShow)
             $PSStandardMembers = [System.Management.Automation.PSMemberInfo[]]@($defaultDisplayPropertySet)
             # Add the list of standard members
             Add-Member -InputObject:($_) -MemberType:('MemberSet') -Name:('PSStandardMembers') -Value:($PSStandardMembers) -Force
-        }
-        Else
-        {
+        } Else {
             Throw ('By hiding "' + ($PropertiesToHide -join '", "') + '" there are no properties to show. At least one property must be visitable.')
         }
     }
-    If ($Object)
-    {
+    If ($Object) {
         Return $Object
     }
 }

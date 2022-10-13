@@ -1,17 +1,12 @@
-Function Global:New-JCModuleManifest
-{
+Function Global:New-JCModuleManifest {
     [cmdletbinding(SupportsShouldProcess = $True)]
     Param()
-    DynamicParam
-    {
+    DynamicParam {
         $Params = @()
         $NewModuleManifestParameterSets = (Get-Command -Name:('New-ModuleManifest')).ParameterSets
-        ForEach ($NewModuleManifestParameterSet In $NewModuleManifestParameterSets)
-        {
-            ForEach ($NewModuleManifestParam In $NewModuleManifestParameterSet.Parameters)
-            {
-                If ($NewModuleManifestParam.Name -notin @([System.Management.Automation.PSCmdlet]::CommonParameters + [System.Management.Automation.PSCmdlet]::OptionalCommonParameters))
-                {
+        ForEach ($NewModuleManifestParameterSet In $NewModuleManifestParameterSets) {
+            ForEach ($NewModuleManifestParam In $NewModuleManifestParameterSet.Parameters) {
+                If ($NewModuleManifestParam.Name -notin @([System.Management.Automation.PSCmdlet]::CommonParameters + [System.Management.Automation.PSCmdlet]::OptionalCommonParameters)) {
                     $Params += @{
                         'ParameterSets'                   = $NewModuleManifestParameterSet.Name;
                         'Name'                            = $NewModuleManifestParam.Name;
@@ -44,8 +39,7 @@ Function Global:New-JCModuleManifest
             New-Object PSObject -Property $_
         } | New-DynamicParameter
     }
-    Begin
-    {
+    Begin {
         # Create new variables for script
         $PsBoundParameters.GetEnumerator() | ForEach-Object { Set-Variable -Name:($_.Key) -Value:($_.Value) -Force }
         Write-Debug ('[CallFunction]' + $MyInvocation.MyCommand.Name + ' ' + ($PsBoundParameters.GetEnumerator() | Sort-Object Key | ForEach-Object { ('-' + $_.Key + ":('" + ($_.Value -join "','") + "')").Replace("'True'", '$True').Replace("'False'", '$False') }) )
@@ -53,12 +47,10 @@ Function Global:New-JCModuleManifest
         $CurrentErrorActionPreference = $ErrorActionPreference
         $ErrorActionPreference = 'Stop'
     }
-    Process
-    {
+    Process {
         # Create hash table to store variables
         $FunctionParameters = [ordered]@{ }
-        If (Test-Path -Path:($Path))
-        {
+        If (Test-Path -Path:($Path)) {
             $FilePath_psd1 = Get-Item -Path:($Path)
             $CurrentModuleManifest = Import-LocalizedData -BaseDirectory:($FilePath_psd1.DirectoryName) -FileName:($FilePath_psd1.BaseName)
             # Add input parameters from function in to hash table and filter out unnecessary parameters
@@ -66,12 +58,9 @@ Function Global:New-JCModuleManifest
             $PrivateDataPSData = $CurrentModuleManifest['PrivateData']['PSData']
             # New-ModuleManifest parameters that come from previous ModuleManifest PrivateData
             $PrivateDataPSData.GetEnumerator() | ForEach-Object {
-                If ($FunctionParameters.Contains($_.Key))
-                {
+                If ($FunctionParameters.Contains($_.Key)) {
                     $FunctionParameters[$_.Key] = $_.Value
-                }
-                Else
-                {
+                } Else {
                     $FunctionParameters.Add($_.Key, $_.Value) | Out-Null
                 }
             }
@@ -79,18 +68,13 @@ Function Global:New-JCModuleManifest
             $FunctionParameters.Remove('PrivateData') | Out-Null
             # Update values with values passed in from function
             $PsBoundParameters.GetEnumerator() | ForEach-Object {
-                If ($FunctionParameters.Contains($_.Key))
-                {
+                If ($FunctionParameters.Contains($_.Key)) {
                     $FunctionParameters[$_.Key] = $_.Value
-                }
-                Else
-                {
+                } Else {
                     $FunctionParameters.Add($_.Key, $_.Value) | Out-Null
                 }
             }
-        }
-        Else
-        {
+        } Else {
             Write-Warning ('Creating new module manifest. Please populate empty fields: ' + $Path)
             New-ModuleManifest -Path:($Path)
         }
@@ -98,16 +82,12 @@ Function Global:New-JCModuleManifest
         If ($DebugPreference -ne 'SilentlyContinue') { $FunctionParameters }
         New-ModuleManifest @FunctionParameters
     }
-    End
-    {
+    End {
         # Validate that the module manifest is valid
         $ModuleValid = Test-ModuleManifest -Path:($FilePath_psd1.FullName)
-        If ($ModuleValid)
-        {
+        If ($ModuleValid) {
             $ModuleValid
-        }
-        Else
-        {
+        } Else {
             $ModuleValid
             Write-Error ('ModuleManifest is invalid!')
         }

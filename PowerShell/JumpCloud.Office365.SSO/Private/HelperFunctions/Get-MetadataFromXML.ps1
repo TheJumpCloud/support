@@ -1,6 +1,5 @@
 
-function Get-MetadataFromXML
-{
+function Get-MetadataFromXML {
     [CmdletBinding()]
     param
     (
@@ -21,6 +20,6 @@ function Get-MetadataFromXML
         Domain      = $domain
         IDPUrl      = $IDPUrl
     }
-    
+
     Return $MetaData
 }

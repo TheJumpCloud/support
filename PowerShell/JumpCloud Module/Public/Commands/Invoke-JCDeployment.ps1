@@ -1,5 +1,4 @@
-Function Invoke-JCDeployment ()
-{
+Function Invoke-JCDeployment () {
     [CmdletBinding()]
 
     param
@@ -10,17 +9,15 @@ The CommandID will be the 24 character string populated for the _id field.')]
         [String]$CommandID,
 
         [Parameter(Mandatory, HelpMessage = 'The full path to the CSV deployment file. You can use tab complete to search for .csv files.')]
-        [ValidateScript( { Test-Path -Path $_ -PathType Leaf})]
+        [ValidateScript( { Test-Path -Path $_ -PathType Leaf })]
         [ValidatePattern( '\.csv$' )]
         [string]$CSVFilePath
     )
 
 
-    begin
-
-    {
+    begin {
         Write-Verbose 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {Connect-JConline}
+        if ($JCAPIKEY.length -ne 40) { Connect-JConline }
 
         Write-Verbose 'Populating API headers'
         $hdrs = @{
@@ -30,21 +27,18 @@ The CommandID will be the 24 character string populated for the _id field.')]
 
         }
 
-        if ($JCOrgID)
-        {
+        if ($JCOrgID) {
             $hdrs.Add('x-org-id', "$($JCOrgID)")
         }
 
         Write-Verbose 'Initializing resultsArray'
         $resultsArray = @()
 
-        try
-        {
+        try {
 
             $DeploymentCommand = Get-JCCommand -ByID $CommandID
 
-            if ( -not $DeploymentCommand)
-            {
+            if ( -not $DeploymentCommand) {
                 Write-Error "$CommandID is not a valid CommandID. Run command 'Get-JCCommand | Select name, _id' to see a list of your commands"
 
                 Exit
@@ -52,8 +46,7 @@ The CommandID will be the 24 character string populated for the _id field.')]
             }
         }
 
-        catch
-        {
+        catch {
             Write-Error "$CommandID is not a valid CommandID. Run command 'Get-JCCommand | Select name, _id' to see a list of your commands"
 
             Write-Error $_.ErrorDetails
@@ -64,8 +57,7 @@ The CommandID will be the 24 character string populated for the _id field.')]
 
         $Targets = Get-JCCommandTarget -CommandID $CommandID
 
-        if ($Targets.SystemID.count -gt 0)
-        {
+        if ($Targets.SystemID.count -gt 0) {
 
             Write-Host "`nDeployment command: '$($DeploymentCommand.name)' has $($Targets.SystemID.count) existing system associations.`n" -ForegroundColor Red
 
@@ -77,22 +69,18 @@ The CommandID will be the 24 character string populated for the _id field.')]
 
             $ConfirmPrompt = $false
 
-            while ($ConfirmPrompt -eq $false)
-            {
+            while ($ConfirmPrompt -eq $false) {
                 $ConfirmRemoval = Read-Host "Enter 'Y' to remove systems and continue enter 'N' to exit"
 
-                switch ($ConfirmRemoval)
-                {
-                    y {$ConfirmPrompt = $True}
-                    n
-                    {
+                switch ($ConfirmRemoval) {
+                    y { $ConfirmPrompt = $True }
+                    n {
 
                         Write-Output "Exited due to system associations"
                         Exit
 
                     }
-                    default
-                    {
+                    default {
                         write-warning "$ConfirmPrompt is not a valid choice"
                         Start-Sleep -Seconds 1
                         $ConfirmPrompt = $false
@@ -100,22 +88,19 @@ The CommandID will be the 24 character string populated for the _id field.')]
                 }
             }
 
-            if ($ConfirmPrompt -eq $True)
-            {
+            if ($ConfirmPrompt -eq $True) {
 
                 $GroupTargets = Get-JCCommandTarget -CommandID $CommandID -Groups
 
-                if ($GroupTargets.GroupID.count -gt 0)
-                {
+                if ($GroupTargets.GroupID.count -gt 0) {
 
-                    $GroupsRemove = $GroupTargets | % {Remove-JCCommandTarget -CommandID  $CommandID -GroupID $_.GroupID}
+                    $GroupsRemove = $GroupTargets | % { Remove-JCCommandTarget -CommandID  $CommandID -GroupID $_.GroupID }
 
                 }
 
                 $SystemTargets = Get-JCCommandTarget -CommandID $CommandID
 
-                if ($SystemTargets.SystemID.count -gt 0)
-                {
+                if ($SystemTargets.SystemID.count -gt 0) {
                     $SystemRemove = $SystemTargets   | Remove-JCCommandTarget -CommandID $CommandID
                 }
 
@@ -123,8 +108,7 @@ The CommandID will be the 24 character string populated for the _id field.')]
 
             $NoTargets = Get-JCCommandTarget -CommandID $CommandID
 
-            if ($NoTargets.SystemID.count -gt 0)
-            {
+            if ($NoTargets.SystemID.count -gt 0) {
 
                 Write-Error "`nDeployment command: '$($DeploymentCommand.name)' has $($NoTargets.SystemID.count) existing system associations. Exiting`n"
 
@@ -140,9 +124,7 @@ The CommandID will be the 24 character string populated for the _id field.')]
 
     }
 
-    process
-
-    {
+    process {
         $trigger = Get-Date -Format MMddyyTHHmmss
 
         # Get existing data, type, Shell from command
@@ -153,14 +135,13 @@ The CommandID will be the 24 character string populated for the _id field.')]
 
         $DeploymentInfo = Import-Csv $CSVFilePath
 
-        $Variables = $DeploymentInfo[0].psobject.Properties.Name | Where-Object {$_ -ne "SystemID"}
+        $Variables = $DeploymentInfo[0].psobject.Properties.Name | Where-Object { $_ -ne "SystemID" }
 
         [int]$NumberOfVariables = $Variables.Count
         [int]$ProgressCounter = 0
         [int]$SystemCount = $DeploymentInfo.SystemID.Count
 
-        foreach ($Target in $DeploymentInfo)
-        {
+        foreach ($Target in $DeploymentInfo) {
             $SingleResult = $Null
 
             $DeploymentParams = @{
@@ -174,8 +155,7 @@ The CommandID will be the 24 character string populated for the _id field.')]
 
             [int]$Counter = 1
 
-            foreach ($Var in $Variables)
-            {
+            foreach ($Var in $Variables) {
                 Write-Verbose "Adding PARAMETER: $Var with value $($Target | Select-Object -ExpandProperty $var) to DEPLOY COMMAND"
 
                 $DeploymentParams.Add("Variable" + $($Counter) + "_name", "$Var")
@@ -211,9 +191,7 @@ The CommandID will be the 24 character string populated for the _id field.')]
         $null = Set-JCSDKCommand -ID $CommandID -launchType manual -Command $ExistingCommand.Command1 -CommandType $ExistingCommand.CommandType -Shell $ExistingCommand.Shell -Name $ExistingCommand.Name
     }
 
-    end
-
-    {
+    end {
         return $resultsArray
     }
 }

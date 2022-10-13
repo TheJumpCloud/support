@@ -16,24 +16,21 @@ Describe -Tag:('JCBackupOrg') "Backup-JCOrganization" {
         # Get child items from the backup directory
         $backupChildItem = Get-ChildItem $Backup.backupLocation.FullName | Where-Object { $_ -notmatch 'Manifest' }
         # verify that the object backup files exist
-        foreach ($file in $backupChildItem | Where-Object { $_ -notmatch 'Association' })
-        {
+        foreach ($file in $backupChildItem | Where-Object { $_ -notmatch 'Association' }) {
             # Only valid target types should exist in the backup directory
             $file.BaseName -in $ValidTargetTypes | Should -BeTrue
         }
         # verify that each file is not null or empty
-        foreach ($item in $backupChildItem)
-        {
+        foreach ($item in $backupChildItem) {
             Get-Content $item.FullName -Raw | Should -Not -BeNullOrEmpty
         }
         # Check the Manifest file:
-        $manifest = Get-ChildItem $Backup.backupLocation.FullName | Where-Object { $_ -match 'Manifest' } 
+        $manifest = Get-ChildItem $Backup.backupLocation.FullName | Where-Object { $_ -match 'Manifest' }
         $manifestContent = Get-Content $manifest.Fullname | ConvertFrom-Json
         $manifestFiles = $manifestContent.result | Where-Object { $_ -notmatch 'Association' }
         # $manifestAssociationFiles = $manifestContent.result | Where-Object { $_ -match 'Association' }
 
-        foreach ($file in $manifestFiles)
-        {
+        foreach ($file in $manifestFiles) {
             # Manifest Results should contain valid types
             $file.type -in $ValidTargetTypes | Should -BeTrue
             # Backup Files should contain file sin results manifest
@@ -56,14 +53,12 @@ Describe -Tag:('JCBackupOrg') "Backup-JCOrganization" {
         # Get child items from the backup directory
         $backupChildItem = Get-ChildItem $Backup.BackupLocation.FullName | Where-Object { $_ -notmatch 'Manifest' }
         # verify that the object backup files exist
-        foreach ($file in $backupChildItem | Where-Object { $_ -notmatch 'Association' })
-        {
+        foreach ($file in $backupChildItem | Where-Object { $_ -notmatch 'Association' }) {
             # Only valid target types should exist in the backup directory
             $file.BaseName -in $ValidTargetTypes | Should -BeTrue
         }
         # verify that each file is not null or empty
-        foreach ($item in $backupChildItem)
-        {
+        foreach ($item in $backupChildItem) {
             # Files should be of type csv
             $item.extension | Should -Be ".csv"
             Get-Content $item.FullName -Raw | Should -Not -BeNullOrEmpty
@@ -74,8 +69,7 @@ Describe -Tag:('JCBackupOrg') "Backup-JCOrganization" {
         $manifestFiles = $manifestContent.result | Where-Object { $_ -notmatch 'Association' }
         # $manifestAssociationFiles = $manifestContent.result | Where-Object { $_ -match 'Association' }
 
-        foreach ($file in $manifestFiles)
-        {
+        foreach ($file in $manifestFiles) {
             # Manifest Results should contain valid types
             $file.type -in $ValidTargetTypes | Should -BeTrue
             # Backup Files should contain file sin results manifest

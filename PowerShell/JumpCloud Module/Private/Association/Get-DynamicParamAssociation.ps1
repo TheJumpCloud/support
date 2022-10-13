@@ -1,32 +1,23 @@
-Function Get-DynamicParamAssociation
-{
+Function Get-DynamicParamAssociation {
     Param(
         [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'The verb of the command calling it. Different verbs will make different parameters required.')][ValidateSet('add', 'copy', 'get', 'new', 'remove', 'set')][System.String]$Action
         , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'The type of the object.')][ValidateNotNullOrEmpty()][ValidateSet('command', 'ldap_server', 'policy', 'application', 'radius_server', 'system_group', 'system', 'user_group', 'user', 'g_suite', 'office_365')][Alias('TypeNameSingular')][System.String]$Type
         , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Bypass user prompts and dynamic ValidateSet.')][ValidateNotNullOrEmpty()][Switch]$Force
     )
-    Begin
-    {
-        $RuntimeParameterDictionary = If ($Type)
-        {
+    Begin {
+        $RuntimeParameterDictionary = If ($Type) {
             Get-JCCommonParameters -Force:($Force) -Action:($Action) -Type:($Type);
-        }
-        Else
-        {
+        } Else {
             Get-JCCommonParameters -Force:($Force) -Action:($Action);
         }
         # Get type list
-        $JCType = If ($Type)
-        {
+        $JCType = If ($Type) {
             Get-JCType -Type:($Type);
-        }
-        Else
-        {
+        } Else {
             Get-JCType;
         }
     }
-    Process
-    {
+    Process {
         # Define the new parameters
         $Param_Id = @{
             'Name'                            = 'Id';
@@ -180,37 +171,27 @@ Function Get-DynamicParamAssociation
             # Creating each parameter
             $VarName = $_.Name
             $VarValue = $_.Value
-            Try
-            {
-                If ($Action -in ('add', 'new') -and $_.Name -in ('Param_Id', 'Param_TargetType', 'Param_TargetId', 'Param_TargetName', 'Param_associationType', 'Param_Attributes'))
-                {
+            Try {
+                If ($Action -in ('add', 'new') -and $_.Name -in ('Param_Id', 'Param_TargetType', 'Param_TargetId', 'Param_TargetName', 'Param_associationType', 'Param_Attributes')) {
                     New-DynamicParameter @VarValue | Out-Null
-                }
-                ElseIf ($Action -in ('remove') -and $_.Name -in ('Param_Name', 'Param_TargetType', 'Param_TargetId', 'Param_TargetName', 'Param_associationType'))
-                {
+                } ElseIf ($Action -in ('remove') -and $_.Name -in ('Param_Name', 'Param_TargetType', 'Param_TargetId', 'Param_TargetName', 'Param_associationType')) {
                     New-DynamicParameter @VarValue | Out-Null
                 }
                 # ElseIf ($Action -in ('set') -and $_.Name -in (''))
                 # {
                 #     New-DynamicParameter @VarValue | Out-Null
                 # }
-                ElseIf ($Action -eq 'get' -and $_.Name -in ('Param_TargetType', 'Param_Raw', 'Param_Direct', 'Param_Indirect', 'Param_IncludeInfo', 'Param_IncludeNames', 'Param_IncludeVisualPath'))
-                {
+                ElseIf ($Action -eq 'get' -and $_.Name -in ('Param_TargetType', 'Param_Raw', 'Param_Direct', 'Param_Indirect', 'Param_IncludeInfo', 'Param_IncludeNames', 'Param_IncludeVisualPath')) {
+                    New-DynamicParameter @VarValue | Out-Null
+                } ElseIf ($Action -eq 'copy' -and $_.Name -in ('Param_TargetId', 'Param_TargetName', 'Param_RemoveExisting', 'Param_IncludeType', 'Param_ExcludeType')) {
                     New-DynamicParameter @VarValue | Out-Null
                 }
-                ElseIf ($Action -eq 'copy' -and $_.Name -in ('Param_TargetId', 'Param_TargetName', 'Param_RemoveExisting', 'Param_IncludeType', 'Param_ExcludeType'))
-                {
-                    New-DynamicParameter @VarValue | Out-Null
-                }
-            }
-            Catch
-            {
+            } Catch {
                 Write-Error -Message:('Unable to create dynamic parameter:"' + $VarName.Replace($ParamVarPrefix, '') + '"; Error:' + $Error)
             }
         }
     }
-    End
-    {
+    End {
         Return $RuntimeParameterDictionary
     }
 }

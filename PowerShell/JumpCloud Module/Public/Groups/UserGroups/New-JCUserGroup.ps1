@@ -1,5 +1,4 @@
-Function New-JCUserGroup ()
-{
+Function New-JCUserGroup () {
     [CmdletBinding()]
     param
     (
@@ -11,11 +10,9 @@ Function New-JCUserGroup ()
         $GroupName
     )
 
-    begin
-
-    {
+    begin {
         Write-Debug 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {Connect-JConline}
+        if ($JCAPIKEY.length -ne 40) { Connect-JConline }
 
         Write-Debug 'Populating API headers'
         $hdrs = @{
@@ -26,8 +23,7 @@ Function New-JCUserGroup ()
 
         }
 
-        if ($JCOrgID)
-        {
+        if ($JCOrgID) {
             $hdrs.Add('x-org-id', "$($JCOrgID)")
         }
 
@@ -36,24 +32,19 @@ Function New-JCUserGroup ()
 
     }
 
-    process
-    {
+    process {
 
-        foreach ($Group in $GroupName)
-        {
+        foreach ($Group in $GroupName) {
             $body = @{
                 'name' = $Group
             }
 
             $jsonbody = ConvertTo-Json $body
 
-            try
-            {
+            try {
                 $NewGroup = Invoke-RestMethod -Method POST -Uri $URI  -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent)
                 $Status = 'Created'
-            }
-            catch
-            {
+            } catch {
                 $Status = $_.ErrorDetails
             }
             $FormattedResults = [PSCustomObject]@{
@@ -67,8 +58,7 @@ Function New-JCUserGroup ()
         }
     }
 
-    end
-    {
+    end {
         return $NewGroupsArrary
     }
 }

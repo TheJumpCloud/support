@@ -1,0 +1,9 @@
+{
+  "spellright.language": ["en"],
+  "spellright.documentTypes": ["markdown", "latex", "plaintext"],
+  "editor.formatOnSave": true,
+  "powershell.codeFormatting.preset": "OTBS",
+  "powershell.scriptAnalysis.enable": true,
+  "files.trimTrailingWhitespace": true,
+  "powershell.scriptAnalysis.settingsPath": "PowerShell/JumpCloud Module/Tests/ModuleValidation/PSScriptAnalyzerSettings.psd1"
+}

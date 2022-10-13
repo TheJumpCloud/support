@@ -1,23 +1,17 @@
-function Test-MSOnline ()
-{
-    if (Get-Command Connect-MsolService -eq '$true'-ErrorAction SilentlyContinue)
-    {
-        Write-Debug -Message "MSOnline module loaded"         
+function Test-MSOnline () {
+    if (Get-Command Connect-MsolService -eq '$true'-ErrorAction SilentlyContinue) {
+        Write-Debug -Message "MSOnline module loaded"
     }
 
-    else
-    {
-        Write-Debug -Message "MSOnline module is not loaded" 
-        
-        try
-        {
+    else {
+        Write-Debug -Message "MSOnline module is not loaded"
+
+        try {
             Install-Module MSOnline -Scope CurrentUser -Force
-        }
-        catch
-        {
+        } catch {
             Return 1
         }
-       
+
     }
-   
+
 }

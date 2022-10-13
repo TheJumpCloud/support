@@ -17,11 +17,11 @@ $result = Invoke-Expression $command
 $body = "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
 
 if ($command) {
-$body = $result
+    $body = $result
 }
 
 # Associate values to output bindings by calling 'Push-OutputBinding'.
 Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
-    StatusCode = [HttpStatusCode]::OK
-    Body = $body
-})
+        StatusCode = [HttpStatusCode]::OK
+        Body       = $body
+    })

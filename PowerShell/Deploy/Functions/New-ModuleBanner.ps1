@@ -1,5 +1,4 @@
-Function Global:New-ModuleBanner
-{
+Function Global:New-ModuleBanner {
     Param(
         [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0)][ValidateNotNullOrEmpty()][System.String]$LatestVersion
         , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 1)][ValidateNotNullOrEmpty()][System.String]$BannerCurrent

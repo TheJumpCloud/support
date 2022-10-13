@@ -21,8 +21,7 @@ $JCUsers = Get-JCUser -returnProperties email
 
 $JCUsersHash = @{}
 
-ForEach ($User in $JCUsers)
-{
+ForEach ($User in $JCUsers) {
     $JCUsersHash.Add($User.email, $User._id)
 }
 
@@ -34,16 +33,12 @@ $Results = @()
 
 
 # Iterate through each Office 365 user
-ForEach ($Office365User in $Office365Users)
-{
+ForEach ($Office365User in $Office365Users) {
     # If the Office 365 user is also a JumpCloud user
-    if ($JCUsersHash.ContainsKey(($Office365User).UserprincipalName))
-    {
+    if ($JCUsersHash.ContainsKey(($Office365User).UserprincipalName)) {
         # Check to see if the Office 365 immutableID is equal to the JumpCloud _id
-        if ($Office365User.ImmutableID -ne $JCUsersHash.$($Office365User.UserprincipalName))
-        {
-            try
-            {
+        if ($Office365User.ImmutableID -ne $JCUsersHash.$($Office365User.UserprincipalName)) {
+            try {
                 # If these values are not equal update the Office 365 users immutableID to the JumpCloud _id
                 Set-MsolUser -UserPrincipalName $Office365User.UserprincipalName -ImmutableId $JCUsersHash.$($Office365User.UserprincipalName)
 
@@ -60,9 +55,7 @@ ForEach ($Office365User in $Office365Users)
                 # Add formatted results to results
                 $Results += $FormattedResults
 
-            }
-            catch
-            {
+            } catch {
                 # Error handling
                 $FormattedResults = [PSCustomObject]@{
 
