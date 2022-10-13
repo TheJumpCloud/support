@@ -1,5 +1,4 @@
-Function New-JCCommand
-{
+Function New-JCCommand {
     [CmdletBinding()]
 
     param (
@@ -23,16 +22,13 @@ Function New-JCCommand
 
     )
 
-    DynamicParam
-    {
-        If ((Get-PSCallStack).Command -like '*MarkdownHelp')
-        {
+    DynamicParam {
+        If ((Get-PSCallStack).Command -like '*MarkdownHelp') {
             $commandType = 'windows'
         }
         $dict = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
 
-        If ($commandType -eq "windows")
-        {
+        If ($commandType -eq "windows") {
             $attr = New-Object System.Management.Automation.ParameterAttribute
             $attr.HelpMessage = "Enter shell type"
             $attr.ValueFromPipelineByPropertyName = $true
@@ -43,12 +39,10 @@ Function New-JCCommand
             $dict.Add('shell', $param)
 
         }
-        If ((Get-PSCallStack).Command -like '*MarkdownHelp')
-        {
+        If ((Get-PSCallStack).Command -like '*MarkdownHelp') {
             $commandType = 'mac'
         }
-        If ($commandType -ne "windows")
-        {
+        If ($commandType -ne "windows") {
             $attr = New-Object System.Management.Automation.ParameterAttribute
             $attr.HelpMessage = "Only needed for Mac and Linux commands. If not entered Mac and Linux commands will default to the root users. If entering a user a UserID must be entered."
             $attr.ValueFromPipelineByPropertyName = $true
@@ -58,12 +52,10 @@ Function New-JCCommand
             $dict.Add('user', $param)
 
         }
-        If ((Get-PSCallStack).Command -like '*MarkdownHelp')
-        {
+        If ((Get-PSCallStack).Command -like '*MarkdownHelp') {
             $launchType = 'trigger'
         }
-        If ($launchType -eq "trigger")
-        {
+        If ($launchType -eq "trigger") {
             $attr = New-Object System.Management.Automation.ParameterAttribute
             $attr.HelpMessage = "Enter a trigger name. Triggers must be unique"
             $attr.ValueFromPipelineByPropertyName = $true
@@ -79,11 +71,10 @@ Function New-JCCommand
 
     }
 
-    begin
-    {
+    begin {
 
         Write-Verbose 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {Connect-JConline}
+        if ($JCAPIKEY.length -ne 40) { Connect-JConline }
 
         $hdrs = @{
 
@@ -92,8 +83,7 @@ Function New-JCCommand
             'X-API-KEY'    = $JCAPIKEY
         }
 
-        if ($JCOrgID)
-        {
+        if ($JCOrgID) {
             $hdrs.Add('x-org-id', "$($JCOrgID)")
         }
 
@@ -104,18 +94,14 @@ Function New-JCCommand
 
     }
 
-    process
-    {
+    process {
 
         Write-Verbose "commandType is $CommandType"
 
-        switch ($commandType)
-        {
-            mac
-            {
+        switch ($commandType) {
+            mac {
 
-                if ($PSBoundParameters["user"] -eq $null)
-                {
+                if ($PSBoundParameters["user"] -eq $null) {
                     $PSBoundParameters["user"] = "000000000000000000000000"
                 }
 
@@ -131,11 +117,9 @@ Function New-JCCommand
 
             }
 
-            windows
-            {
+            windows {
 
-                if ($PSBoundParameters["shell"] -eq $null)
-                {
+                if ($PSBoundParameters["shell"] -eq $null) {
                     $PSBoundParameters["shell"] = "powershell"`
 
                 }
@@ -152,11 +136,9 @@ Function New-JCCommand
 
             }
 
-            linux
-            {
+            linux {
 
-                if ($PSBoundParameters["user"] -eq $null)
-                {
+                if ($PSBoundParameters["user"] -eq $null) {
                     $PSBoundParameters["user"] = "000000000000000000000000"
                 }
 
@@ -172,16 +154,14 @@ Function New-JCCommand
 
             }
 
-            Default
-            {
+            Default {
                 Write-Host 'No Command Type'
                 break
             }
         }
 
 
-        if ($PSBoundParameters['launchType'] -eq 'trigger')
-        {
+        if ($PSBoundParameters['launchType'] -eq 'trigger') {
 
             $body.Add('trigger', $PSBoundParameters['trigger'])
 
@@ -195,8 +175,7 @@ Function New-JCCommand
 
     }
 
-    end
-    {
+    end {
 
         Return $NewCommandsArray
 

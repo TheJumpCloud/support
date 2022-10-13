@@ -1,17 +1,13 @@
-Function Get-JCOrganization
-{
+Function Get-JCOrganization {
     [CmdletBinding()]
     param ()
-    Begin
-    {
+    Begin {
         Connect-JCOnline -force | Out-Null
         $resultsArrayList = New-Object System.Collections.ArrayList
     }
-    Process
-    {
+    Process {
         $RawResults = Get-JCObject -Type:('organization') -Fields:('_id', 'displayName')
-        ForEach ($org In $RawResults)
-        {
+        ForEach ($org In $RawResults) {
             $MSPOrg = [PSCustomObject]@{
                 'OrgID'       = $org._id
                 'displayName' = $org.displayName
@@ -19,8 +15,7 @@ Function Get-JCOrganization
             $resultsArrayList.add($MSPOrg) | Out-Null
         }
     }
-    End
-    {
+    End {
         Return $resultsArrayList
     }
 }

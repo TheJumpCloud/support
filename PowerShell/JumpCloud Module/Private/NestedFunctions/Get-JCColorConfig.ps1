@@ -16,8 +16,7 @@ Returns object with the color values
     Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
     Write-Host ($BodyContent) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
 #>
-Function Get-JCColorConfig
-{
+Function Get-JCColorConfig {
     # Set color scheme
     Return [PSCustomObject]@{
         'BackgroundColor'             = 'Black'

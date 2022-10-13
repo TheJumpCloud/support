@@ -24,35 +24,27 @@ $AGENT_INSTALLER_URL = "https://s3.amazonaws.com/jumpcloud-windows-agent/product
 $AGENT_INSTALLER_PATH = "C:\windows\Temp\JumpCloudInstaller.exe"
 
 # JumpCloud Agent Installation Functions
-Function AgentIsOnFileSystem()
-{
+Function AgentIsOnFileSystem() {
     Test-Path -Path:(${AGENT_PATH} + '/' + ${AGENT_BINARY_NAME})
 }
-Function InstallAgent()
-{
+Function InstallAgent() {
     $params = ("${AGENT_INSTALLER_PATH}", "-k ${JumpCloudConnectKey}", "/VERYSILENT", "/NORESTART", "/NOCLOSEAPPLICATIONS", "/NORESTARTAPPLICATIONS", "/LOG=$env:TEMP\jcUpdate.log")
     Invoke-Expression "$params"
 }
-Function DownloadAgentInstaller()
-{
+Function DownloadAgentInstaller() {
     (New-Object System.Net.WebClient).DownloadFile("${AGENT_INSTALLER_URL}", "${AGENT_INSTALLER_PATH}")
 }
 
-Function CheckProgramInstalled($programName)
-{
+Function CheckProgramInstalled($programName) {
     $installed = (Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | Where-Object { $_.DisplayName -match $programName })
-    if (-not [System.String]::IsNullOrEmpty($installed))
-    {
+    if (-not [System.String]::IsNullOrEmpty($installed)) {
         return $true
-    }
-    else
-    {
+    } else {
         return $false
     }
 }
 
-Function DownloadLink($Link, $Path)
-{
+Function DownloadLink($Link, $Path) {
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     $WebClient = New-Object -TypeName:('System.Net.WebClient')
     $WebClient.DownloadFile("$Link", "$Path")
@@ -68,24 +60,20 @@ Function DownloadAndInstallAgent(
     , [System.String]$msvc2013x86Link
     , [System.String]$msvc2013x86File
     , [System.String]$msvc2013x86Install
-)
-{
-    If (!(CheckProgramInstalled("Microsoft Visual C\+\+ 2013 x64")))
-    {
+) {
+    If (!(CheckProgramInstalled("Microsoft Visual C\+\+ 2013 x64"))) {
         Write-Output "Downloading & Installing JCAgent prereq Visual C++ 2013 x64"
         DownloadLink -Link:($msvc2013x64Link) -Path:($TempPath + $msvc2013x64File)
         Invoke-Expression -Command:($msvc2013x64Install)
         Write-Output "JCAgent Visual C++ 2013 x64 prereq installed"
     }
-    If (!(CheckProgramInstalled("Microsoft Visual C\+\+ 2013 x86")))
-    {
+    If (!(CheckProgramInstalled("Microsoft Visual C\+\+ 2013 x86"))) {
         Write-Output 'Downloading & Installing JCAgent prereq Visual C++ 2013 x86'
         DownloadLink -Link:($msvc2013x86Link) -Path:($TempPath + $msvc2013x86File)
         Invoke-Expression -Command:($msvc2013x86Install)
         Write-Output 'JCAgent prereq installed'
     }
-    If (!(AgentIsOnFileSystem))
-    {
+    If (!(AgentIsOnFileSystem)) {
         Write-Output 'Downloading JCAgent Installer'
         # Download Installer
         DownloadAgentInstaller
@@ -95,12 +83,9 @@ Function DownloadAndInstallAgent(
         InstallAgent
 
     }
-    If (CheckProgramInstalled("Microsoft Visual C\+\+ 2013 x64") -and CheckProgramInstalled("Microsoft Visual C\+\+ 2013 x86") -and AgentIsOnFileSystem)
-    {
+    If (CheckProgramInstalled("Microsoft Visual C\+\+ 2013 x64") -and CheckProgramInstalled("Microsoft Visual C\+\+ 2013 x86") -and AgentIsOnFileSystem) {
         Write-Output 'JumpCloud Agent Installer Completed'
-    }
-    Else
-    {
+    } Else {
         Write-Output 'JumpCloud Agent Installer Failed'
     }
 }

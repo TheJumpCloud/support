@@ -8,50 +8,84 @@
 # You can see the predefined PSScriptAnalyzer settings here:
 # https://github.com/PowerShell/PSScriptAnalyzer/tree/master/Engine/Settings
 @{
+
     # Only diagnostic records of the specified severity will be generated.
     # Uncomment the following line if you only want Errors and Warnings but
     # not Information diagnostic records.
-    Severity = @('Error','Warning')
+    Severity     = @('Error', 'Warning', 'Information')
 
     # Analyze **only** the following rules. Use IncludeRules when you want
     # to invoke only a small subset of the default rules.
-    # IncludeRules = @('PSAvoidDefaultValueSwitchParameter',
-    #     'PSMisleadingBacktick',
-    #     'PSMissingModuleManifestField',
-    #     'PSReservedCmdletChar',
-    #     'PSReservedParams',
-    #     'PSShouldProcess',
-    #     'PSUseApprovedVerbs',
-    #     'PSAvoidUsingCmdletAliases',
-    #     'PSUseDeclaredVarsMoreThanAssignments',
-    #     'PSUseSingularNouns')
-
+    IncludeRules = @(
+        'PSPlaceOpenBrace',
+        'PSPlaceCloseBrace',
+        'PSUseConsistentWhitespace',
+        'PSUseConsistentIndentation',
+        'PSAlignAssignmentStatement'
+    )
     # Do not analyze the following rules. Use ExcludeRules when you have
     # commented out the IncludeRules settings above and want to include all
     # the default rules except for those you exclude below.
     # Note: if a rule is in both IncludeRules and ExcludeRules, the rule
     # will be excluded.
     ExcludeRules = @('PSReviewUnusedParameter',
-                    'PSUseDeclaredVarsMoreThanAssignments',
-                    'PSAvoidUsingWriteHost',
-                    'PSAvoidUsingInvokeExpression',
-                    'PSUseLiteralInitializerForHashtable',
-                    'PSUseProcessBlockForPipelineCommand',
-                    'PSUseShouldProcessForStateChangingFunctions',
-                    'PSAvoidGlobalVars',
-                    'PSAvoidUsingUsernameAndPasswordParams',
-                    'PSPossibleIncorrectComparisonWithNull',
-                    'PSAvoidUsingConvertToSecureStringWithPlainText',
-                    'PSAvoidUsingPlainTextForPassword',
-                    'PSAvoidUsingEmptyCatchBlock',
-                    'PSAvoidUsingCmdletAliases',
-                    'PSShouldProcess'
-                    )
+        'PSUseDeclaredVarsMoreThanAssignments',
+        'PSAvoidUsingWriteHost',
+        'PSAvoidUsingInvokeExpression',
+        'PSUseLiteralInitializerForHashtable',
+        'PSUseProcessBlockForPipelineCommand',
+        'PSUseShouldProcessForStateChangingFunctions',
+        'PSAvoidGlobalVars',
+        'PSAvoidUsingUsernameAndPasswordParams',
+        'PSPossibleIncorrectComparisonWithNull',
+        'PSAvoidUsingConvertToSecureStringWithPlainText',
+        'PSAvoidUsingPlainTextForPassword',
+        'PSAvoidUsingEmptyCatchBlock',
+        'PSAvoidUsingCmdletAliases',
+        'PSShouldProcess',
+        'PSUseCorrectCasing',
+        'PSUseSingularNouns'
+    )
 
     # You can use rule configuration to configure rules that support it:
-    #Rules = @{
-    #    PSAvoidUsingCmdletAliases = @{
-    #        Whitelist = @("cd")
-    #    }
-    #}
+    Rules        = @{
+        PSPlaceOpenBrace           = @{
+            Enable             = $true
+            OnSameLine         = $true
+            NewLineAfter       = $true
+            IgnoreOneLineBlock = $true
+        }
+
+        PSPlaceCloseBrace          = @{
+            Enable             = $true
+            NewLineAfter       = $false
+            IgnoreOneLineBlock = $true
+            NoEmptyLineBefore  = $false
+        }
+
+        PSUseConsistentIndentation = @{
+            Enable              = $true
+            IndentationSize     = 4
+            Kind                = 'space'
+            PipelineIndentation = 'NoIndentation'
+        }
+
+        PSUseConsistentWhitespace  = @{
+            Enable                                  = $true
+            CheckInnerBrace                         = $true
+            CheckOpenBrace                          = $true
+            CheckOpenParen                          = $true
+            CheckOperator                           = $false
+            CheckPipe                               = $true
+            CheckPipeForRedundantWhitespace         = $false
+            CheckSeparator                          = $true
+            CheckParameter                          = $false
+            IgnoreAssignmentOperatorInsideHashTable = $true
+        }
+
+        PSAlignAssignmentStatement = @{
+            Enable         = $true
+            CheckHashtable = $true
+        }
+    }
 }

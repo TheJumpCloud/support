@@ -98,7 +98,7 @@ Function Update-JCUsersFromCSV () {
 
             Write-Verbose 'Verifying JCAPI Key'
             if ($JCAPIKEY.length -ne 40) {
-                Connect-JConline
+                Connect-JCOnline
             }
 
             $Banner = @"
@@ -154,7 +154,7 @@ Function Update-JCUsersFromCSV () {
                 Write-Host -BackgroundColor Green -ForegroundColor Black "employeeIdentifier check complete"
             }
 
-            $SystemCount = $UpdateUsers.SystemID | Where-Object Length -gt 1 | Select-Object -unique
+            $SystemCount = $UpdateUsers.SystemID | Where-Object Length -GT 1 | Select-Object -Unique
 
             if ($SystemCount.count -gt 0) {
                 Write-Host ""
@@ -174,7 +174,7 @@ Function Update-JCUsersFromCSV () {
                     }
                 }
 
-                $Permissions = $UpdateUsers.Administrator | Where-Object Length -gt 1 | Select-Object -unique
+                $Permissions = $UpdateUsers.Administrator | Where-Object Length -GT 1 | Select-Object -Unique
 
                 foreach ($Value in $Permissions) {
 
@@ -208,8 +208,7 @@ Function Update-JCUsersFromCSV () {
 
                         $GroupArrayList.Add($CheckGroup) | Out-Null
 
-                    }
-                    else {
+                    } else {
                     }
 
                 }
@@ -226,8 +225,8 @@ Function Update-JCUsersFromCSV () {
                     if ($GroupCheck.Values.name -contains ($GroupTest.Value)) {
                         Write-Verbose "$($GroupTest.Value) exists"
                     } else {
-                        Write-Host "The JumpCloud Group:" -NoNewLine
-                        Write-Host " $($GroupTest.Value)" -ForegroundColor Yellow -NoNewLine
+                        Write-Host "The JumpCloud Group:" -NoNewline
+                        Write-Host " $($GroupTest.Value)" -ForegroundColor Yellow -NoNewline
                         Write-Host " does not exist. Users will not be added to this Group."
                     }
                 }
@@ -375,7 +374,7 @@ Function Update-JCUsersFromCSV () {
                         if ($UserUpdate.ldapserver_id) {
 
                             try {
-                                $LdapAdd = Set-JcSdkLdapServerAssociation -LdapserverId $UserUpdate.ldapserver_id -id $NewUser._id -op "add" -type "user"
+                                $LdapAdd = Set-JcSdkLdapServerAssociation -LdapserverId $UserUpdate.ldapserver_id -Id $NewUser._id -Op "add" -Type "user"
                             } catch {
                                 $LdapBindStatus =
                                 if ($_.ErrorDetails) {
@@ -552,7 +551,7 @@ Function Update-JCUsersFromCSV () {
                         if ($UserUpdate.ldapserver_id) {
 
                             try {
-                                $LdapAdd = Set-JcSdkLdapServerAssociation -LdapserverId $UserUpdate.ldapserver_id -id $NewUser._id -op "add" -type "user"
+                                $LdapAdd = Set-JcSdkLdapServerAssociation -LdapserverId $UserUpdate.ldapserver_id -Id $NewUser._id -Op "add" -Type "user"
                             } catch {
                                 $LdapBindStatus =
                                 if ($_.ErrorDetails) {

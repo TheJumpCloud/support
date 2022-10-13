@@ -1,6 +1,5 @@
 Describe -Tag:('ModuleValidation') 'Pester Files Tests' {
-    Function Get-PesterFilesTestCases
-    {
+    Function Get-PesterFilesTestCases {
         $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent.FullName
         $FolderTests = "$ModuleRoot/Tests"
         $FolderPublic = "$ModuleRoot/Public"
@@ -18,8 +17,7 @@ Describe -Tag:('ModuleValidation') 'Pester Files Tests' {
         It ('Validating Pester test file has been populated for "<FilePath>"') -TestCases:(Get-PesterFilesTestCases) {
             # $FilePath | Should -FileContentMatch '.*?'
             $FileContent = Get-Content -Path:($FilePath) -Raw
-            If ([System.String]::IsNullOrEmpty($FileContent))
-            {
+            If ([System.String]::IsNullOrEmpty($FileContent)) {
                 Write-Host("##vso[task.logissue type=warning;]" + 'The test file "' + $FilePath + '" has not been populated.')
                 Write-Warning ('The test file "' + $FilePath + '" has not been populated.')
             }

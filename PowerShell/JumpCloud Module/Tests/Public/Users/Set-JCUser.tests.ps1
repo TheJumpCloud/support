@@ -353,8 +353,7 @@ Describe -Tag:('JCUser') "Set-JCUser - CustomAttributes 1.0" {
         [string]$NewUserAttr = $NewUser.attributes.name | Sort-Object
         [string]$UpdatedUserAttr = $UpdatedUser.attributes.name | Sort-Object
         $match = if ($NewUserAttr -eq $UpdatedUserAttr) { $true }
-        else
-        {
+        else {
             $false
         }
         $match | Should -Be $true
@@ -367,8 +366,7 @@ Describe -Tag:('JCUser') "Set-JCUser - CustomAttributes 1.0" {
         [int]$UpdatedUserAttr = $UpdatedUser.attributes.name.count
         $NewUserAttr ++
         $match = if ($NewUserAttr -eq $UpdatedUserAttr) { $true }
-        else
-        {
+        else {
             $false
         }
         $match | Should -Be $true
@@ -381,8 +379,7 @@ Describe -Tag:('JCUser') "Set-JCUser - CustomAttributes 1.0" {
         [int]$UpdatedUserAttr = $UpdatedUser.attributes.name.count
         $UpdatedUserAttr++
         $match = if ($NewUserAttr -eq $UpdatedUserAttr) { $true }
-        else
-        {
+        else {
             $false
         }
         $match | Should -Be $true
@@ -1401,13 +1398,13 @@ Describe -Tag:('JCUser') "Set-JCUser with Suspend param 1.15 via pipeline" {
     It "Updates a user suspended -eq True " {
         $NewUser = New-RandomUser -domain pleasedelete"PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser
         # This is a conflicting and unsupport state/ suspended pairing
-        {$NewUser | Set-JCUser -suspended $True} | Should -Throw
+        { $NewUser | Set-JCUser -suspended $True } | Should -Throw
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
     It "Updates a user suspended -eq false " {
         $NewUser = New-RandomUser -domain pleasedelete"PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser -suspended $true
         # This is a conflicting and unsupport state/ suspended pairing
-        {$NewUser | Set-JCUser -suspended $false} | Should -Throw
+        { $NewUser | Set-JCUser -suspended $false } | Should -Throw
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
     It 'Updates a user state from SUSPENDED to ACTIVATED with suspended true should error' {

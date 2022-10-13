@@ -13,7 +13,7 @@ Describe -Tag "JCSettingsFile" -Name "New JCSettings Tests" {
     }
     it "settings file should contain properties with values, copy and write settings" {
         $newConfig = Get-JCSettingsFile -Raw
-        foreach ($parameter in $newConfig.psobject.Properties){
+        foreach ($parameter in $newConfig.psobject.Properties) {
             foreach ($subParameter in $parameter.Value.psobject.Properties) {
                 # Write-host "$($parameter.Name).$($subParameter.name)"
                 # Each subProperty should contain a value, copy and write property

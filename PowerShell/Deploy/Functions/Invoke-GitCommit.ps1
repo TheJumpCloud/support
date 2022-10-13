@@ -1,19 +1,15 @@
-Function Global:Invoke-GitCommit{
+Function Global:Invoke-GitCommit {
     param (
-    [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0)][ValidateNotNullOrEmpty()][string]$BranchName
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0)][ValidateNotNullOrEmpty()][string]$BranchName
     )
-    If ($BranchName -like 'refs/*/merge')
-    {
+    If ($BranchName -like 'refs/*/merge') {
         Write-Warning  ('Skipping commit because branch matched "merge": ' + $BranchName)
-    }
-    Else
-    {
+    } Else {
         #Logging
         $CommitMessage = 'Push to ' + $BranchName + ';[skip ci]'
         $UserEmail = 'CircleCI@FakeEmail.com'
         $UserName = 'CircleCI'
-        Function Invoke-Git
-        {
+        Function Invoke-Git {
             Param($Arguments)
             If ([environment]::OSVersion.Platform -eq 'Win32NT') { $env:GIT_REDIRECT_STDERR = '2>&1' }
             $LASTEXITCODE = 0
@@ -21,12 +17,10 @@ Function Global:Invoke-GitCommit{
             $Command = 'git ' + $Arguments
             Write-Host ('[GitCommand]' + $Command)
             Invoke-Expression -Command:($Command)
-            If ($LASTEXITCODE)
-            {
+            If ($LASTEXITCODE) {
                 Throw ('Git error, $LASTEXITCODE: ' + $LASTEXITCODE)
             }
-            If ($Error)
-            {
+            If ($Error) {
                 Throw ('Git error, $Error: ' + $Error)
             }
         }

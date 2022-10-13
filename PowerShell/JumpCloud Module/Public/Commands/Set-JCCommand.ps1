@@ -1,5 +1,4 @@
-Function Set-JCCommand
-{
+Function Set-JCCommand {
     [CmdletBinding()]
 
     param (
@@ -23,7 +22,7 @@ The CommandID will be the 24 character string populated for the _id field.')]
         $command,
 
         [Parameter(
-            ValueFromPipelineByPropertyName = $True, HelpMessage = 'The launch type of the command options are: trigger, manual, repeated, one-time.')]
+            ValueFromPipelineByPropertyName = $True, HelpMessage = 'The launch type of the command options are: trigger, manual, repeated, one-time., repeated, one-time.')]
         [string]
         [ValidateSet('trigger', 'manual')]
         $launchType,
@@ -35,17 +34,14 @@ The CommandID will be the 24 character string populated for the _id field.')]
 
     )
 
-    DynamicParam
-    {
-        If ((Get-PSCallStack).Command -like '*MarkdownHelp')
-        {
+    DynamicParam {
+        If ((Get-PSCallStack).Command -like '*MarkdownHelp') {
             $launchType = 'trigger'
         }
         $dict = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
 
 
-        If ($launchType -eq "trigger")
-        {
+        If ($launchType -eq "trigger") {
             $attr = New-Object System.Management.Automation.ParameterAttribute
             $attr.HelpMessage = "Enter a trigger name. Triggers must be unique"
             $attr.ValueFromPipelineByPropertyName = $true
@@ -61,11 +57,10 @@ The CommandID will be the 24 character string populated for the _id field.')]
 
     }
 
-    begin
-    {
+    begin {
 
         Write-Verbose 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {Connect-JConline}
+        if ($JCAPIKEY.length -ne 40) { Connect-JConline }
 
         $hdrs = @{
 
@@ -74,8 +69,7 @@ The CommandID will be the 24 character string populated for the _id field.')]
             'X-API-KEY'    = $JCAPIKEY
         }
 
-        if ($JCOrgID)
-        {
+        if ($JCOrgID) {
             $hdrs.Add('x-org-id', "$($JCOrgID)")
         }
 
@@ -83,35 +77,43 @@ The CommandID will be the 24 character string populated for the _id field.')]
 
         Write-Verbose 'Initilizing NewCommandsArray'
         $NewCommandsArray = @()
-
     }
 
-    process
-    {
+    process {
 
         $body = @{}
 
-        foreach ($param in $PSBoundParameters.GetEnumerator())
-        {
+        $getCommand = Get-JCCommand -commandId $CommandId
+
+        foreach ($param in $PSBoundParameters.GetEnumerator()) {
 
             if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }
 
             if ($param.key -eq 'CommandID', 'JCAPIKey') { continue }
 
-            $body.add($param.Key, $param.Value)
 
+            $body.add($param.Key, $param.Value)
         }
 
-        $jsonbody = $body | ConvertTo-Json
+        if (!$PSBoundParameters.ContainsKey('timeout')) {
+            $body.Add("timeout", $getCommand.timeout)
+        }
 
+        if (!$PSBoundParameters.ContainsKey('launchType')) {
+            $body.Add("launchType", $getCommand.launchType)
+            $body.Add("trigger", $getCommand.trigger)
+        }
+        $body.add("commandType", $getCommand.commandType)
+        # Include commandType to body
+
+        $jsonbody = $body | ConvertTo-Json
+        Write-Debug "Json  = $($jsonbody)"
         $NewCommand = Invoke-RestMethod -Uri $URL -Method PUT -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent)
 
         $NewCommandsArray += $NewCommand
-
     }
 
-    end
-    {
+    end {
 
         Return $NewCommandsArray
 

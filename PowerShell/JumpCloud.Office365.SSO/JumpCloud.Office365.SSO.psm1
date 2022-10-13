@@ -3,14 +3,10 @@ $Public = @( Get-ChildItem -Path "$PSScriptRoot\Public\*.ps1" )
 
 $Private = @( Get-ChildItem -Path "$PSScriptRoot\Private\*.ps1" -Recurse)
 
-Foreach ($Import in @($Public + $Private))
-{
-    Try
-    {
+Foreach ($Import in @($Public + $Private)) {
+    Try {
         . $Import.FullName
-    }
-    Catch
-    {
+    } Catch {
         Write-Error -Message "Failed to import function $($Import.FullName)"
     }
 }

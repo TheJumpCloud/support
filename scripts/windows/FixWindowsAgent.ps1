@@ -52,125 +52,93 @@ $INSTALLER_BINARY_NAMES = "JumpCloudInstaller.exe,JumpCloudInstaller.tmp"
 # Agent Installer Funcs
 #
 #########################################################################################
-Function DownloadAgentInstaller()
-{
+Function DownloadAgentInstaller() {
     (New-Object System.Net.WebClient).DownloadFile("${AGENT_INSTALLER_URL}", "${AGENT_INSTALLER_PATH}")
 }
 
-Function AgentInstallerExists()
-{
+Function AgentInstallerExists() {
     Test-Path ${AGENT_INSTALLER_PATH}
 }
 
-Function InstallAgent()
-{
+Function InstallAgent() {
     $params = ("${AGENT_INSTALLER_PATH}", "-k ${CONNECT_KEY}", "/VERYSILENT", "/NORESTART", "/SUPRESSMSGBOXES", "/NOCLOSEAPPLICATIONS", "/NORESTARTAPPLICATIONS", "/LOG=$env:TEMP\jcUpdate.log")
     Invoke-Expression "$params"
 }
 
-Function UninstallAgent()
-{
+Function UninstallAgent() {
     # Due to PowerShell's incredible weakness in dealing with paths containing SPACEs, we need to
     # to hard-code this path...
     $params = ('C:\Program?Files\JumpCloud\unins000.exe', "/VERYSILENT", "/SUPPRESSMSGBOXES")
     Invoke-Expression "$params"
 }
 
-Function KillInstaller()
-{
-    try
-    {
+Function KillInstaller() {
+    try {
         Stop-Process -processname ${INSTALLER_BINARY_NAMES} -ErrorAction Stop
-    }
-    catch
-    {
+    } catch {
         Write-Output "Could not kill JumpCloud installer processes"
     }
 }
 
-Function KillAgent()
-{
-    try
-    {
+Function KillAgent() {
+    try {
         Stop-Process -processname ${AGENT_BINARY_NAME} -ErrorAction Stop
-    }
-    catch
-    {
+    } catch {
         Write-Output "Could not kill running jumpcloud-agent process"
     }
 }
 
-Function InstallerIsRunning()
-{
-    try
-    {
+Function InstallerIsRunning() {
+    try {
         Get-Process ${INSTALLER_BINARY_NAMES} -ErrorAction Stop
         $true
-    }
-    catch
-    {
+    } catch {
         $false
     }
 }
 
-Function AgentIsRunning()
-{
-    try
-    {
+Function AgentIsRunning() {
+    try {
         Get-Process ${AGENT_BINARY_NAME} -ErrorAction Stop
         $true
-    }
-    catch
-    {
+    } catch {
         $false
     }
 }
 
-Function AgentIsOnFileSystem()
-{
+Function AgentIsOnFileSystem() {
     Test-Path ${AGENT_PATH}/${AGENT_BINARY_NAME}
 }
 
-Function DeleteAgent()
-{
-    try
-    {
+Function DeleteAgent() {
+    try {
         Remove-Item ${AGENT_PATH}/${AGENT_BINARY_NAME} -ErrorAction Stop
-    }
-    catch
-    {
+    } catch {
     }
 }
 
 
-Function InstallAgent()
-{
+Function InstallAgent() {
     $params = ("${AGENT_INSTALLER_PATH}", "-k ${JumpCloudConnectKey}", "/VERYSILENT", "/NORESTART", "/NOCLOSEAPPLICATIONS", "/NORESTARTAPPLICATIONS", "/LOG=$env:TEMP\jcUpdate.log")
     Invoke-Expression "$params"
 }
-Function DownloadAgentInstaller()
-{
+Function DownloadAgentInstaller() {
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     $WebClient = New-Object -TypeName:('System.Net.WebClient')
     $WebClient.DownloadFile("${AGENT_INSTALLER_URL}", "${AGENT_INSTALLER_PATH}")
     $WebClient.Dispose()
 }
 
-Function CheckProgramInstalled($programName)
-{
+Function CheckProgramInstalled($programName) {
     $installed = (Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | Where-Object { $_.DisplayName -match $programName })
-    if (-not [System.String]::IsNullOrEmpty($installed))
-    {
+    if (-not [System.String]::IsNullOrEmpty($installed)) {
         return $true
-    }
-    else
-    {
+    } else {
         return $false
     }
 }
 
-Function DownloadLink($Link, $Path)
-{
+Function DownloadLink($Link, $Path) {
 
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     $WebClient = New-Object -TypeName:('System.Net.WebClient')
@@ -188,24 +156,20 @@ Function DownloadAndInstallAgent(
     , [System.String]$msvc2013x86Link
     , [System.String]$msvc2013x86File
     , [System.String]$msvc2013x86Install
-)
-{
-    If (!(CheckProgramInstalled("Microsoft Visual C\+\+ 2013 x64")))
-    {
+) {
+    If (!(CheckProgramInstalled("Microsoft Visual C\+\+ 2013 x64"))) {
         Write-Output "Downloading & Installing JCAgent prereq Visual C++ 2013 x64"
         DownloadLink -Link:($msvc2013x64Link) -Path:($TempPath + $msvc2013x64File)
         Invoke-Expression -Command:($msvc2013x64Install)
         Write-Output "JCAgent Visual C++ 2013 x64 prereq installed"
     }
-    If (!(CheckProgramInstalled("Microsoft Visual C\+\+ 2013 x86")))
-    {
+    If (!(CheckProgramInstalled("Microsoft Visual C\+\+ 2013 x86"))) {
         Write-Output 'Downloading & Installing JCAgent prereq Visual C++ 2013 x86'
         DownloadLink -Link:($msvc2013x86Link) -Path:($TempPath + $msvc2013x86File)
         Invoke-Expression -Command:($msvc2013x86Install)
         Write-Output 'JCAgent prereq installed'
     }
-    If (!(AgentIsOnFileSystem))
-    {
+    If (!(AgentIsOnFileSystem)) {
         Write-Output 'Downloading JCAgent Installer'
         # Download Installer
         DownloadAgentInstaller
@@ -215,12 +179,9 @@ Function DownloadAndInstallAgent(
         InstallAgent
 
     }
-    If (CheckProgramInstalled("Microsoft Visual C\+\+ 2013 x64") -and CheckProgramInstalled("Microsoft Visual C\+\+ 2013 x86") -and AgentIsOnFileSystem)
-    {
+    If (CheckProgramInstalled("Microsoft Visual C\+\+ 2013 x64") -and CheckProgramInstalled("Microsoft Visual C\+\+ 2013 x86") -and AgentIsOnFileSystem) {
         Write-Output 'JumpCloud Agent Installer Completed'
-    }
-    Else
-    {
+    } Else {
         Write-Output 'JumpCloud Agent Installer Failed'
     }
 }
@@ -230,43 +191,30 @@ Function DownloadAndInstallAgent(
 # Service Manager Funcs
 #
 #########################################################################################
-Function AgentIsInServiceManager()
-{
-    try
-    {
+Function AgentIsInServiceManager() {
+    try {
         $services = Get-Service -Name "${AGENT_SERVICE_NAME}" -ErrorAction Stop
         $true
-    }
-    catch
-    {
+    } catch {
         $false
     }
 }
 
-Function RemoveAgentService()
-{
+Function RemoveAgentService() {
     $service = Get-WmiObject -Class Win32_Service -Filter "Name='${AGENT_SERVICE_NAME}'"
-    if ($service)
-    {
-        try
-        {
+    if ($service) {
+        try {
             $service.Delete()
-        }
-        catch
-        {
+        } catch {
             Write-Output "JumpCloud Agent Service Not Running"
         }
     }
 }
 
-Function RemoveEventLoggerKey()
-{
-    try
-    {
+Function RemoveEventLoggerKey() {
+    try {
         Remove-Item -Path "$EVENT_LOGGER_KEY_NAME" -ErrorAction Stop
-    }
-    catch
-    {
+    } catch {
         Write-Output "JumpCloud Agent Event Logger Key Not Present"
     }
 }
@@ -278,21 +226,18 @@ Function RemoveEventLoggerKey()
 # Work functions (uninstall, clean up, and reinstall)
 #
 ############################################################################################
-Function AgentIsInstalled()
-{
+Function AgentIsInstalled() {
     $inServiceMgr = AgentIsInServiceManager
     $onFileSystem = AgentIsOnFileSystem
 
     $inServiceMgr -Or $onFileSystem
 }
 
-Function CheckForAndUninstallExistingAgent()
-{
+Function CheckForAndUninstallExistingAgent() {
     #
     # Is the installer running/hung?
     #
-    if (InstallerIsRunning)
-    {
+    if (InstallerIsRunning) {
         # Yep, kill it
         KillInstaller
 
@@ -302,8 +247,7 @@ Function CheckForAndUninstallExistingAgent()
     #
     # Is the agent running/hung?
     #
-    if (AgentIsRunning)
-    {
+    if (AgentIsRunning) {
         # Yep, kill it
         KillAgent
 
@@ -313,8 +257,7 @@ Function CheckForAndUninstallExistingAgent()
     #
     # Is the agent still fully installed in both the service manager and on the file system?
     #
-    if (AgentIsInstalled)
-    {
+    if (AgentIsInstalled) {
         # Yep, try a normal uninstall
         UninstallAgent
 
@@ -322,16 +265,14 @@ Function CheckForAndUninstallExistingAgent()
     }
 }
 
-Function CleanUpAgentLeftovers()
-{
+Function CleanUpAgentLeftovers() {
     # Remove any remaining event logger key...
     RemoveEventLoggerKey
 
     #
     # Is the agent still in the service manager?
     #
-    if (AgentIsInServiceManager)
-    {
+    if (AgentIsInServiceManager) {
         # Try to remove it, though it probably won't remove because we may in the state
         # where the service is "marked for deletion" (requires reboot before further
         # modifications can be done on this service).
@@ -342,8 +283,7 @@ Function CleanUpAgentLeftovers()
     #
     # Is the agent still on the file system?
     #
-    if (AgentIsOnFileSystem)
-    {
+    if (AgentIsOnFileSystem) {
         # Yes, the installer was unsuccessful in removing it.
         DeleteAgent
 

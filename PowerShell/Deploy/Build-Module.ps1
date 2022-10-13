@@ -25,12 +25,11 @@ Write-Host ('[status]Check PowerShell Gallery for module version info')
 $PSGalleryInfo = Get-PSGalleryModuleVersion -Name:($ModuleName) -ReleaseType:($RELEASETYPE) #('Major', 'Minor', 'Patch')
 # Check to see if ManualModuleVersion parameter is set to true
 if ($ManualModuleVersion) {
-    $ManualModuleVersionRetrieval = Get-Content -Path:($FilePath_psd1) | Where-Object {$_ -like '*ModuleVersion*'}
+    $ManualModuleVersionRetrieval = Get-Content -Path:($FilePath_psd1) | Where-Object { $_ -like '*ModuleVersion*' }
     $SemanticRegex = [Regex]"[0-9]+.[0-9]+.[0-9]+"
     $SemeanticVersion = Select-String -InputObject $ManualModuleVersionRetrieval -pattern ($SemanticRegex)
     $ModuleVersion = $SemeanticVersion[0].Matches.Value
-}
-else {
+} else {
     $ModuleVersion = $PSGalleryInfo.NextVersion
 }
 Write-Host ('[status]PowerShell Gallery Name:' + $PSGalleryInfo.Name + ';CurrentVersion:' + $PSGalleryInfo.Version + '; NextVersion:' + $ModuleVersion )
@@ -46,8 +45,7 @@ New-JCModuleManifest -Path:($FilePath_psd1) `
 Write-Host ('[status]Updating module banner: "' + $FilePath_ModuleBanner + '"')
 $ModuleBanner = Get-Content -Path:($FilePath_ModuleBanner)
 $NewModuleBannerRecord = New-ModuleBanner -LatestVersion:($ModuleVersion) -BannerCurrent:('{{Fill in the Banner Current}}') -BannerOld:('{{Fill in the Banner Old}}')
-If (!(($ModuleBanner | Select-Object -Index 3) -match $ModuleVersion))
-{
+If (!(($ModuleBanner | Select-Object -Index 3) -match $ModuleVersion)) {
     $NewModuleBannerRecord.Trim() | Set-Content -Path:($FilePath_ModuleBanner) -Force
 }
 # EndRegion Updating module banner
@@ -55,8 +53,7 @@ If (!(($ModuleBanner | Select-Object -Index 3) -match $ModuleVersion))
 Write-Host ('[status]Updating module change log: "' + $FilePath_ModuleChangelog + '"')
 $ModuleChangelog = Get-Content -Path:($FilePath_ModuleChangelog)
 $NewModuleChangelogRecord = New-ModuleChangelog -LatestVersion:($ModuleVersion) -ReleaseNotes:('{{Fill in the Release Notes}}') -Features:('{{Fill in the Features}}') -Improvements:('{{Fill in the Improvements}}') -BugFixes('{{Fill in the Bug Fixes}}')
-If (!(($ModuleChangelog | Select-Object -First 1) -match $ModuleVersion))
-{
+If (!(($ModuleChangelog | Select-Object -First 1) -match $ModuleVersion)) {
     ($NewModuleChangelogRecord + ($ModuleChangelog | Out-String)).Trim() | Set-Content -Path:($FilePath_ModuleChangelog) -Force
 }
 # EndRegion Updating module change log

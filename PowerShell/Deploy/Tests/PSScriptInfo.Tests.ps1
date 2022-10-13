@@ -17,13 +17,10 @@ $ScriptFileInfoResults = Get-ChildItem -Path:($FolderPath_Public) -Recurse -File
 # #     $ScriptFileInfoResults | Should BeNullOrEmpty
 # #     $? | Should Be $true
 # # }
-If ($ScriptFileInfoResults)
-{
+If ($ScriptFileInfoResults) {
     $ScriptFileInfoResults
     Write-Error ('Go fix the ScriptFileInfo results!')
-}
-Else
-{
+} Else {
     Write-Host ('[success]ScriptFileInfo returned no results')
 }
 # #     }

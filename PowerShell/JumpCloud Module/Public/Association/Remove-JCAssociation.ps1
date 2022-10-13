@@ -1,32 +1,25 @@
-Function Remove-JCAssociation
-{
+Function Remove-JCAssociation {
     [CmdletBinding(DefaultParameterSetName = 'ById')]
     Param(
         [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'The type of the object.')][ValidateNotNullOrEmpty()][ValidateSet('command', 'ldap_server', 'policy', 'application', 'radius_server', 'system_group', 'system', 'user_group', 'user', 'g_suite', 'office_365')][Alias('TypeNameSingular')][System.String]$Type
         , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Bypass user prompts and dynamic ValidateSet.')][ValidateNotNullOrEmpty()][Switch]$Force
     )
-    DynamicParam
-    {
+    DynamicParam {
         $Action = 'remove'
-        $RuntimeParameterDictionary = If ($Type)
-        {
+        $RuntimeParameterDictionary = If ($Type) {
             Get-DynamicParamAssociation -Action:($Action) -Force:($Force) -Type:($Type)
-        }
-        Else
-        {
+        } Else {
             Get-DynamicParamAssociation -Action:($Action) -Force:($Force)
         }
         Return $RuntimeParameterDictionary
     }
-    Begin
-    {
+    Begin {
         Connect-JCOnline -force | Out-Null
         # Debug message for parameter call
         $PSBoundParameters | Out-DebugParameter | Write-Debug
         $Results = @()
     }
-    Process
-    {
+    Process {
         # For DynamicParam with a default value set that value and then convert the DynamicParam inputs into new variables for the script to use
         Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDynamicParamProcess) -ArgumentList:($PsBoundParameters, $PSCmdlet, $RuntimeParameterDictionary) -NoNewScope
         # Create hash table to store variables
@@ -38,8 +31,7 @@ Function Remove-JCAssociation
         # Run the command
         $Results += Invoke-JCAssociation @FunctionParameters
     }
-    End
-    {
+    End {
         Return $Results
     }
 }
