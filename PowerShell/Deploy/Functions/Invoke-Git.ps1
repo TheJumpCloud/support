@@ -1,5 +1,4 @@
-Function Global:Invoke-Git
-{
+Function Global:Invoke-Git {
     Param($Arguments)
     If ([environment]::OSVersion.Platform -eq 'Win32NT') { $env:GIT_REDIRECT_STDERR = '2>&1' }
     $LASTEXITCODE = 0
@@ -7,12 +6,10 @@ Function Global:Invoke-Git
     $Command = 'git ' + $Arguments
     Write-Host ('[GitCommand]' + $Command)
     Invoke-Expression -Command:($Command)
-    If ($LASTEXITCODE)
-    {
+    If ($LASTEXITCODE) {
         Throw ('Git error, $LASTEXITCODE: ' + $LASTEXITCODE)
     }
-    If ($Error)
-    {
+    If ($Error) {
         Throw ('Git error, $Error: ' + $Error)
     }
 }

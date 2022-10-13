@@ -16,12 +16,10 @@ Describe 'Get-JCEvent' -Tag:('JCEvent') {
         }
         # Create event records for tests
         Connect-JCOnline -force | Out-Null
-        For ($i = 1; $i -le 4; $i++)
-        {
+        For ($i = 1; $i -le 4; $i++) {
             $UserName = 'JCSystemUserTest-{0}' -f $i
             Write-Host ("Creating add/delete records for: $UserName")
-            If (Get-JCUser -username:($UserName))
-            {
+            If (Get-JCUser -username:($UserName)) {
                 Remove-JCUser -username:($UserName) -Force
             }
             New-JCUser -username:($UserName) -firstname:($UserName) -lastname:($UserName) -email:($UserName + '@DeleteMe.com')
@@ -39,8 +37,7 @@ Describe 'Get-JCEvent' -Tag:('JCEvent') {
         $eventTest = Get-JCEvent -Service:($ParamHash.Service) -StartTime:($ParamHash.StartTime) -EndTime:($ParamHash.EndTime) -Sort:($ParamHash.Sort) -SearchTermAnd:($ParamHash.SearchTermAnd)
         If ([System.String]::IsNullOrEmpty($eventTest)) {
             $eventTest | Should -Not -BeNullOrEmpty
-        }
-        Else {
+        } Else {
             # $eventTest = $eventTest
             $MostRecentRecord = ([System.DateTime]($eventTest | Select-Object -First 1).timestamp).ToUniversalTime()
             $OldestRecord = ([System.DateTime]($eventTest | Select-Object -Last 1).timestamp).ToUniversalTime()
@@ -58,8 +55,7 @@ Describe 'Get-JCEvent' -Tag:('JCEvent') {
         $eventTest = Get-JCEvent -Body:($ParamHash)
         If ([System.String]::IsNullOrEmpty($eventTest)) {
             $eventTest | Should -Not -BeNullOrEmpty
-        }
-        Else {
+        } Else {
             # $eventTest = $eventTest
             $MostRecentRecord = ([System.DateTime]($eventTest | Select-Object -First 1).timestamp).ToUniversalTime()
             $OldestRecord = ([System.DateTime]($eventTest | Select-Object -Last 1).timestamp).ToUniversalTime()

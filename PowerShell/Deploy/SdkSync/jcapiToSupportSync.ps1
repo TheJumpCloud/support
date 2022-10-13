@@ -78,43 +78,34 @@ $ScriptAnalyzerResults = @()
 $JumpCloudModulePath = "$PSScriptRoot/../JumpCloud Module"
 Get-Module -Refresh -ListAvailable -All | Out-Null
 $Modules = Get-Module -Name:($Psd1.RequiredModules | Where-Object { $_ -in $ApprovedFunctions.Keys })
-If (-not [System.String]::IsNullOrEmpty($Modules))
-{
-    ForEach ($Module In $Modules)
-    {
+If (-not [System.String]::IsNullOrEmpty($Modules)) {
+    ForEach ($Module In $Modules) {
         $ModuleName = $Module.Name
-        ForEach ($Function In $ApprovedFunctions.$ModuleName)
-        {
+        ForEach ($Function In $ApprovedFunctions.$ModuleName) {
             $FunctionName = $Function.Name
             $FunctionDestination = $Function.Destination
             $OutputPath = Join-Path -Path $JumpCloudModulePath -ChildPath $FunctionDestination #"$JumpCloudModulePath/$FunctionDestination"
             $Command = Get-Command -Name:($FunctionName)
-            foreach ($individualCommand in $Command)
-            {
+            foreach ($individualCommand in $Command) {
                 $CommandName = $individualCommand.Name
                 $NewCommandName = $CommandName.Replace($SdkPrefix, $JumpCloudModulePrefix)
                 Write-Host ("[STATUS] Building: $NewCommandName") -BackgroundColor:('Black') -ForegroundColor:('Magenta')
                 # Get content from sdk function
                 $CommandFilePath = $individualCommand.ScriptBlock.File
                 $CommandFilePathContent = Get-Content -Path:($CommandFilePath) -Raw
-                $FunctionContent = If ($CommandFilePath -like '*ProxyCmdletDefinitions.ps1')
-                {
+                $FunctionContent = If ($CommandFilePath -like '*ProxyCmdletDefinitions.ps1') {
                     <# When the autorest generated module has been installed and imported from the PSGallery all the
                     cmdlets will exist in a single ProxyCmdletDefinitions.ps1 file. We need to parse
                     out the specific function in order to gather the parts we need to copy over. #>
                     $ProxyContent = $CommandFilePathContent.Replace($MSCopyrightHeader, $Divider)
                     $ProxyContentSplit = $ProxyContent.Split("[SPLIT]")
-                    foreach ($functionSplit in $ProxyContentSplit)
-                    {
-                        if ($functionSplit -match "function $CommandName {")
-                        {
+                    foreach ($functionSplit in $ProxyContentSplit) {
+                        if ($functionSplit -match "function $CommandName {") {
                             # return the matched content
                             $functionSplit
                         }
                     }
-                }
-                Else
-                {
+                } Else {
                     <# When the autorest generated module has been imported from a local psd1 module the function will
                     remain in their individual files. #>
                     $CommandFilePathContent
@@ -125,8 +116,7 @@ If (-not [System.String]::IsNullOrEmpty($Modules))
                 $ParameterContent = ($Params.Matches.Value | Where-Object { $_ -notlike '*DontShow*' -and $_ -notlike '${Limit}' -and $_ -notlike '*${Skip}*' })
                 $OutputType = (($FunctionContent | Select-String -Pattern:([regex]'(\[OutputType)(.*?)(\]\s+)')).Matches.Value).TrimEnd()
                 $CmdletBinding = (($FunctionContent | Select-String -Pattern:([regex]'(\[CmdletBinding)(.*?)(\]\s+)')).Matches.Value).TrimEnd()
-                If (-not [System.String]::IsNullOrEmpty($PSScriptInfo))
-                {
+                If (-not [System.String]::IsNullOrEmpty($PSScriptInfo)) {
                     $PSScriptInfo = $PSScriptInfo.Replace($SdkPrefix, $JumpCloudModulePrefix)
                     $PSScriptInfo = $PSScriptInfo.Replace("$NewCommandName.md", "$FunctionName.md")
                 }
@@ -143,8 +133,7 @@ If (-not [System.String]::IsNullOrEmpty($Modules))
                 $ProcessContent += "$($IndentChar)$($IndentChar)`$Results = $($ModuleName)\$($CommandName) @PSBoundParameters"
                 # Build "End" block
                 $EndContent += "$($IndentChar)$($IndentChar)Return `$Results"
-                If (-not [System.String]::IsNullOrEmpty($BeginContent) -and -not [System.String]::IsNullOrEmpty($ProcessContent) -and -not [System.String]::IsNullOrEmpty($EndContent))
-                {
+                If (-not [System.String]::IsNullOrEmpty($BeginContent) -and -not [System.String]::IsNullOrEmpty($ProcessContent) -and -not [System.String]::IsNullOrEmpty($EndContent)) {
                     # Build "Function"
                     $NewScript = $FunctionTemplate -f $PSScriptInfo, $NewCommandName, $CmdletBinding, ($ParameterContent -join ",`n`n"), ($BeginContent -join "`n"), ($ProcessContent -join "`n"), ($EndContent -join "`n")
                     # Fix line endings
@@ -156,8 +145,7 @@ If (-not [System.String]::IsNullOrEmpty($Modules))
                     $NewScript | Out-File -FilePath:($OutputFilePath) -Force
                     # Validate script syntax
                     $ScriptAnalyzerResult = Invoke-ScriptAnalyzer -Path:($OutputFilePath) -Recurse -ExcludeRule PSShouldProcess, PSAvoidTrailingWhitespace, PSAvoidUsingWMICmdlet, PSAvoidUsingPlainTextForPassword, PSAvoidUsingUsernameAndPasswordParams, PSAvoidUsingInvokeExpression, PSUseDeclaredVarsMoreThanAssignments, PSUseSingularNouns, PSAvoidGlobalVars, PSUseShouldProcessForStateChangingFunctions, PSAvoidUsingWriteHost, PSAvoidUsingPositionalParameters
-                    If ($ScriptAnalyzerResult)
-                    {
+                    If ($ScriptAnalyzerResult) {
                         $ScriptAnalyzerResults += $ScriptAnalyzerResult
                     }
                 }
@@ -169,8 +157,6 @@ If (-not [System.String]::IsNullOrEmpty($Modules))
             }
         }
     }
-}
-Else
-{
+} Else {
     Write-Error ('No modules found!')
 }

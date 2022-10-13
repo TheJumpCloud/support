@@ -3,7 +3,7 @@
 ## Specify the System Group ID below.
 ##
 
-$systemGroupId="5f0dbb8a232e112ed957e40e"
+$systemGroupId = "5f0dbb8a232e112ed957e40e"
 
 $config = get-content 'C:\Program Files\JumpCloud\Plugins\Contrib\jcagent.conf'
 $regex = 'systemKey\":\"(\w+)\"'

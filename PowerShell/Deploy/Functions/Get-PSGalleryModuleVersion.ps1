@@ -1,13 +1,11 @@
-Function Global:Get-PSGalleryModuleVersion
-{
+Function Global:Get-PSGalleryModuleVersion {
     Param (
         [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0)][ValidateNotNullOrEmpty()][string]$Name,
         [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 1)][ValidateNotNullOrEmpty()][ValidateSet('Major', 'Minor', 'Patch', 'Manual')][string]$RELEASETYPE
     )
     # Check to see if module already exists to set version number
     $PowerShellGalleryModule = Find-Module -Repository:('PSGallery') -Name:($Name) -ErrorAction:('Ignore')
-    If ([string]::IsNullOrEmpty($PowerShellGalleryModule))
-    {
+    If ([string]::IsNullOrEmpty($PowerShellGalleryModule)) {
         $ModuleVersion = [PSCustomObject]@{
             'Name'    = $Name;
             'Version' = 'N/A';
@@ -15,15 +13,12 @@ Function Global:Get-PSGalleryModuleVersion
             'Minor'   = 'N/A';
             'Patch'   = 'N/A';
         }
-        $NextVersion = Switch ($RELEASETYPE)
-        {
+        $NextVersion = Switch ($RELEASETYPE) {
             'Major' { $ModuleVersion.Major = '1.0.0' }
             'Minor' { $ModuleVersion.Minor = '0.1.0' }
             'Patch' { $ModuleVersion.Patch = '0.0.1' }
         }
-    }
-    Else
-    {
+    } Else {
         $ModuleVersion = [PSCustomObject]@{
             'Name'    = $PowerShellGalleryModule.Name;
             'Version' = $PowerShellGalleryModule.Version;
@@ -31,16 +26,13 @@ Function Global:Get-PSGalleryModuleVersion
             'Minor'   = [int]($PowerShellGalleryModule.Version -split '\.')[1];
             'Patch'   = [int]($PowerShellGalleryModule.Version -split '\.')[2];
         }
-        Switch ($RELEASETYPE)
-        {
-            'Major'
-            {
+        Switch ($RELEASETYPE) {
+            'Major' {
                 $ModuleVersion.Major = $ModuleVersion.Major + 1
                 $ModuleVersion.Minor = 0
                 $ModuleVersion.Patch = 0
             }
-            'Minor'
-            {
+            'Minor' {
                 $ModuleVersion.Minor = $ModuleVersion.Minor + 1
                 $ModuleVersion.Patch = 0
             }
@@ -48,12 +40,9 @@ Function Global:Get-PSGalleryModuleVersion
         }
 
     }
-    if ($RELEASETYPE -eq 'Manual')
-    {
+    if ($RELEASETYPE -eq 'Manual') {
         $NextVersion = ($Psd1).ModuleVersion
-    }
-    Else
-    {
+    } Else {
         $NextVersion = ($ModuleVersion.Major, $ModuleVersion.Minor, $ModuleVersion.Patch) -join '.'
     }
     Add-Member -InputObject:($ModuleVersion) -MemberType:('NoteProperty') -Name:('NextVersion') -Value:($NextVersion)

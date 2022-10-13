@@ -6,7 +6,7 @@
 # Starting Variables
 $csvPath = './ManagedAppleDiscovery.csv'
 if ([string]::IsNullOrEmpty($JCAPIKEY) -Or [string]::IsNullOrEmpty($JumpCloudApiKey)) {
-    While ($JumpCloudApiKey.length -ne 40){
+    While ($JumpCloudApiKey.length -ne 40) {
         $JumpCloudApiKey = Read-Host -Prompt "Enter your JumpCloud API Key:"
     }
 }
@@ -31,8 +31,7 @@ if (-not(Test-Path -Path $csvPath -PathType Leaf)) {
     Write-Host ""
     Write-Host "################################################################################"
     Get-JCSdkUser | Select-Object ID, Email, ManagedAppleId | Export-Csv -Path $csvPath -Confirm
-}
-else {
+} else {
     Write-Host "################################################################################"
     Write-Host ""
     Write-Host "Existing file was located at $csvPath"
@@ -63,8 +62,8 @@ foreach ($user in $managedAppleIdUsers) {
     if ([String]::IsNullOrWhiteSpace($managedAppleId) -or [String]::IsNullOrWhiteSpace($jcUserEmail) -or [String]::IsNullOrWhiteSpace($jcUserId)) {
         # Write-Host "Row $($managedAppleIdUsers.indexOf($user)+2) contains a null value or whitespace"
         $skippedRows += [PSCustomObject]@{
-            row   = $($managedAppleIdUsers.indexOf($user) + 2);
-            email = $jcUserEmail;
+            row    = $($managedAppleIdUsers.indexOf($user) + 2);
+            email  = $jcUserEmail;
             reason = "Null value or whitespace"
         }
         continue
@@ -72,8 +71,8 @@ foreach ($user in $managedAppleIdUsers) {
     if (($managedAppleId -notmatch $emailRegex) -or ($jcUserEmail -notmatch $emailRegex)) {
         # Write-Host "Row $($managedAppleIdUsers.indexOf($user)+2) contains an invalid email address"
         $skippedRows += [PSCustomObject]@{
-            row   = $($managedAppleIdUsers.indexOf($user) + 2);
-            email = $jcUserEmail;
+            row    = $($managedAppleIdUsers.indexOf($user) + 2);
+            email  = $jcUserEmail;
             reason = "Invalid email address"
         }
         continue
@@ -81,20 +80,19 @@ foreach ($user in $managedAppleIdUsers) {
 
     if ((Get-JCSdkUser -Id $jcUserId | Select-Object ManagedAppleId) -notmatch $managedAppleId) {
         Set-JCSdkUser -Id $jcUserId -ManagedAppleId $managedAppleId | Out-Null
-    }
-    else {
+    } else {
         $skippedRows += [PSCustomObject]@{
-            row   = $($managedAppleIdUsers.indexOf($user) + 2);
-            email = $jcUserEmail;
+            row    = $($managedAppleIdUsers.indexOf($user) + 2);
+            email  = $jcUserEmail;
             reason = "ManagedAppleID already matches"
         }
         continue
     }
 }
-if ($skippedRows){
+if ($skippedRows) {
     Write-Host "$($skippedRows.values.count) rows were skipped"
     $view = Read-Host -Prompt "Press y to view skipped rows. Press any other key to cancel"
-    if ($view.ToLower() -eq 'y'){
+    if ($view.ToLower() -eq 'y') {
         Write-Host ($skippedRows | Format-Table | Out-String)
     }
 }

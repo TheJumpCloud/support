@@ -1,5 +1,4 @@
-Function New-RandomString ()
-{
+Function New-RandomString () {
     [CmdletBinding()]
 
     param(
@@ -11,16 +10,14 @@ Function New-RandomString ()
 
     )
     begin { }
-    process
-    {
+    process {
         $Random = -join ((65..90) + (97..122) | Get-Random -Count $NumberOfChars | ForEach-Object { [char]$_ })
     }
     end { Return $Random }
 
 
 }
-Function New-RandomUser  ()
-{
+Function New-RandomUser  () {
     [CmdletBinding(DefaultParameterSetName = 'NoAttributes')]
     param
     (
@@ -34,8 +31,7 @@ Function New-RandomUser  ()
 
     )
 
-    if (($PSCmdlet.ParameterSetName -eq 'NoAttributes'))
-    {
+    if (($PSCmdlet.ParameterSetName -eq 'NoAttributes')) {
         $username = -join ((65..90) + (97..122) | Get-Random -Count 8 | ForEach-Object { [char]$_ })
         $email = $username + "@$Domain.com"
 
@@ -50,8 +46,7 @@ Function New-RandomUser  ()
         $NewRandomUser = New-Object PSObject -Property $RandomUser
     }
 
-    if (($PSCmdlet.ParameterSetName -eq 'Attributes'))
-    {
+    if (($PSCmdlet.ParameterSetName -eq 'Attributes')) {
         $username = -join ((65..90) + (97..122) | Get-Random -Count 8 | ForEach-Object { [char]$_ })
         $email = $username + "@$Domain.com"
 
@@ -75,8 +70,7 @@ Function New-RandomUser  ()
 
     return $NewRandomUser
 }
-Function New-RandomUserCustom  ()
-{
+Function New-RandomUserCustom  () {
     [CmdletBinding(DefaultParameterSetName = 'NoAttributes')]
     param
     (
@@ -90,8 +84,7 @@ Function New-RandomUserCustom  ()
 
     )
 
-    if (($PSCmdlet.ParameterSetName -eq 'NoAttributes'))
-    {
+    if (($PSCmdlet.ParameterSetName -eq 'NoAttributes')) {
         $username = -join ((65..90) + (97..122) | Get-Random -Count 8 | ForEach-Object { [char]$_ })
         $email = $username + "@$Domain.com"
 
@@ -106,8 +99,7 @@ Function New-RandomUserCustom  ()
         $NewRandomUser = New-Object PSObject -Property $RandomUser
     }
 
-    if (($PSCmdlet.ParameterSetName -eq 'Attributes'))
-    {
+    if (($PSCmdlet.ParameterSetName -eq 'Attributes')) {
         $username = -join ((65..90) + (97..122) | Get-Random -Count 8 | ForEach-Object { [char]$_ })
         $email = $username + "@$Domain.com"
 
@@ -131,8 +123,7 @@ Function New-RandomUserCustom  ()
 
     return $NewRandomUser
 }
-Function New-RandomStringLower ()
-{
+Function New-RandomStringLower () {
     [CmdletBinding()]
     param(
 
@@ -143,8 +134,7 @@ Function New-RandomStringLower ()
 
     )
     begin { }
-    process
-    {
+    process {
         $Random = -join ((65..90) + (97..122) | Get-Random -Count $NumberOfChars | ForEach-Object { [char]$_ })
     }
     end { Return $Random.ToLower() }

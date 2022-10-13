@@ -1,5 +1,4 @@
-Function Invoke-JCApi
-{
+Function Invoke-JCApi {
     [CmdletBinding()]
     Param(
         [Parameter(Mandatory = $true, Position = 0)][ValidateNotNullOrEmpty()][string]$Url,
@@ -11,18 +10,15 @@ Function Invoke-JCApi
         [Parameter(Mandatory = $false, Position = 6)][ValidateNotNullOrEmpty()][bool]$Paginate = $false,
         [Parameter(Mandatory = $false, Position = 7)][ValidateNotNullOrEmpty()][switch]$ReturnCount
     )
-    Begin
-    {
+    Begin {
         # Debug message for parameter call
         $PSBoundParameters | Out-DebugParameter | Write-Debug
         # Populate $env:JCApiKey if its not set
-        If ([System.String]::IsNullOrEmpty($env:JCApiKey))
-        {
+        If ([System.String]::IsNullOrEmpty($env:JCApiKey)) {
             Connect-JCOnline -force | Out-Null
         }
         # Populate $env:JCOrgId if its not set
-        If (-not [System.String]::IsNullOrEmpty($env:JCApiKey) -and [System.String]::IsNullOrEmpty($env:JCOrgId) -and $Url -notlike '*/api/organizations*')
-        {
+        If (-not [System.String]::IsNullOrEmpty($env:JCApiKey) -and [System.String]::IsNullOrEmpty($env:JCOrgId) -and $Url -notlike '*/api/organizations*') {
             Set-JCOrganization -JumpCloudAPIKey:($env:JCApiKey) | Out-Null
         }
         #Set JC headers
@@ -33,160 +29,113 @@ Function Invoke-JCApi
             'x-org-id'     = "$($env:JCOrgId)";
         }
         # Organizations endpoint does not accept x-org-id in header
-        If ($Url -like '*/api/organizations*')
-        {
+        If ($Url -like '*/api/organizations*') {
             $Headers.Remove('x-org-id') | Out-Null
         }
     }
-    Process
-    {
-        Try
-        {
+    Process {
+        Try {
             $Results = @()
-            If ([System.String]::IsNullOrEmpty($JCUrlBasePath))
-            {
+            If ([System.String]::IsNullOrEmpty($JCUrlBasePath)) {
                 $JCUrlBasePath = 'https://console.jumpcloud.com'
             }
-            If ($Url -notlike ('*' + $JCUrlBasePath + '*'))
-            {
+            If ($Url -notlike ('*' + $JCUrlBasePath + '*')) {
                 $Url = $JCUrlBasePath + $Url
             }
-            If ($Url -like '*`?*')
-            {
+            If ($Url -like '*`?*') {
                 $SearchOperator = '&'
-            }
-            Else
-            {
+            } Else {
                 $SearchOperator = '?'
             }
             # Convert passed in body to json
-            If ($Body)
-            {
+            If ($Body) {
                 $ObjectBody = $Body | ConvertFrom-Json
-            }
-            Else
-            {
+            } Else {
                 $ObjectBody = ''
             }
             # Pagination
-            Do
-            {
+            Do {
                 $QueryStrings = @()
                 # Add fields
-                If ($Fields)
-                {
+                If ($Fields) {
                     $JoinedFields = ($Fields -join ' ')
-                    If ($ObjectBody.PSObject.Properties.name -eq 'fields')
-                    {
+                    If ($ObjectBody.PSObject.Properties.name -eq 'fields') {
                         $JoinedFields = $ObjectBody.fields
-                    }
-                    Else
-                    {
+                    } Else {
                         $ObjectBody = $ObjectBody | Select-Object *, @{Name = 'fields'; Expression = { $JoinedFields } }
                     }
                     If ($Url -notlike '*fields*') { $QueryStrings += 'fields=' + $JoinedFields }
                 }
                 # Add limit
-                If ($ObjectBody.PSObject.Properties.name -eq 'limit')
-                {
+                If ($ObjectBody.PSObject.Properties.name -eq 'limit') {
                     $ObjectBody.limit = $Limit
-                }
-                Else
-                {
+                } Else {
                     $ObjectBody = $ObjectBody | Select-Object *, @{Name = 'limit'; Expression = { $Limit } }
                 }
                 If ($Url -notlike '*limit*') { $QueryStrings += 'limit=' + $Limit }
                 # Add skip
-                If ($ObjectBody.PSObject.Properties.name -eq 'skip')
-                {
+                If ($ObjectBody.PSObject.Properties.name -eq 'skip') {
                     $ObjectBody.skip = $Skip
-                }
-                Else
-                {
+                } Else {
                     $ObjectBody = $ObjectBody | Select-Object *, @{Name = 'skip'; Expression = { $Skip } }
                 }
                 If ($Url -notlike '*skip*') { $QueryStrings += 'skip=' + $Skip }
                 # Build url query string and body
                 $ObjectBody = $ObjectBody | Select-Object -Property * -ExcludeProperty Length
                 $Body = $ObjectBody | ConvertTo-Json -Depth:(10) -Compress | Sort-Object
-                If ($QueryStrings)
-                {
+                If ($QueryStrings) {
                     $Uri = $Url + $SearchOperator + (($QueryStrings | Sort-Object) -join '&')
-                }
-                Else
-                {
+                } Else {
                     $Uri = $Url
                 }
                 # Run request
                 $UserAgent = Get-JCUserAgent
                 Write-Verbose ('Connecting to: ' + $Uri)
                 # PowerShell 5 won't let you send a GET with a body.
-                If ($Method -eq 'GET')
-                {
+                If ($Method -eq 'GET') {
                     Write-Debug("[CallFunction]: Invoke-WebRequest -Method:('$Method') -Headers:(@" + ($Headers | ConvertTo-Json -Compress).Replace(':', '=').Replace(',', ';') + ") -Uri:('$Uri') -UseBasicParsing -UserAgent:('$UserAgent')")
                     $RequestResult = Invoke-WebRequest -Method:($Method) -Headers:($Headers) -Uri:($Uri) -UserAgent:($UserAgent) -UseBasicParsing
-                }
-                Else
-                {
+                } Else {
                     Write-Debug("[CallFunction]: Invoke-WebRequest -Method:('$Method') -Headers:(@" + ($Headers | ConvertTo-Json -Compress).Replace(':', '=').Replace(',', ';') + ") -Uri:('$Uri') -UseBasicParsing -UserAgent:('$UserAgent') -Body:('$Body')")
                     $RequestResult = Invoke-WebRequest -Method:($Method) -Headers:($Headers) -Uri:($Uri) -UserAgent:($UserAgent) -Body:($Body) -UseBasicParsing
                 }
-                If ($RequestResult)
-                {
+                If ($RequestResult) {
                     $Result = $RequestResult.Content | ConvertFrom-Json
                     $httpMetaData = $RequestResult | Select-Object -Property:('*') -ExcludeProperty:('Content')
-                    If ($Result)
-                    {
+                    If ($Result) {
                         $ResultPopulated = $false
                         # Specific logic for v1 and v2 api specs
-                        If ($Url -like '*/api/*' -and ($Url -notlike '*/api/v2/*' -and $Result.PSObject.Properties.name -eq 'results'))
-                        {
+                        If ($Url -like '*/api/*' -and ($Url -notlike '*/api/v2/*' -and $Result.PSObject.Properties.name -eq 'results')) {
                             $ResultCount = ($Result.results | Measure-Object).Count
-                            If ($ResultCount -gt 0)
-                            {
+                            If ($ResultCount -gt 0) {
                                 $ResultPopulated = $true
-                                If ($ReturnCount)
-                                {
+                                If ($ReturnCount) {
                                     $ResultObjects = $Result
                                     $Paginate = $false
-                                }
-                                Else
-                                {
+                                } Else {
                                     $ResultObjects = $Result.results
                                 }
                             }
-                        }
-                        ElseIf ($Url -like '*/api/*' -and ($Url -like '*/api/v2/*' -or $Result.PSObject.Properties.name -ne 'results'))
-                        {
+                        } ElseIf ($Url -like '*/api/*' -and ($Url -like '*/api/v2/*' -or $Result.PSObject.Properties.name -ne 'results')) {
                             $ResultCount = ($Result | Measure-Object).Count
-                            If ($ResultCount -gt 0)
-                            {
+                            If ($ResultCount -gt 0) {
                                 $ResultPopulated = $true
-                                If ($ReturnCount)
-                                {
+                                If ($ReturnCount) {
                                     $ResultObjects = [PSCustomObject]@{'totalCount' = [int](($httpMetaData.Headers.'X-Total-Count') -join ','); 'results' = $Result; }
                                     $Paginate = $false
-                                }
-                                Else
-                                {
+                                } Else {
                                     $ResultObjects = $Result
                                 }
                             }
-                        }
-                        Else
-                        {
+                        } Else {
                             Write-Error ('Url is not a valid JumpCloud V1 or V2 endpoint')
                         }
-                        If ($ResultPopulated -eq $true)
-                        {
+                        If ($ResultPopulated -eq $true) {
                             $Skip += $ResultCount
                             $Results += $ResultObjects
                         }
-                    }
-                    Else
-                    {
-                        If ($Paginate)
-                        {
+                    } Else {
+                        If ($Paginate) {
                             $ResultCount = ($Result | Measure-Object).Count
                         }
                     }
@@ -195,19 +144,15 @@ Function Invoke-JCApi
             }
             While ($Paginate -and $ResultCount -eq $Limit)
             Write-Verbose ('Returned ' + [string]($Results | Measure-Object).Count + ' total results.')
-        }
-        Catch
-        {
+        } Catch {
             Invoke-Command -ScriptBlock:($ScriptBlock_TryCatchError) -ArgumentList:($_, $true) -NoNewScope
         }
     }
-    End
-    {
+    End {
         # List values to add to results
         $HiddenProperties = @('httpMetaData')
         # Validate that all fields passed into the function exist in the output
-        If ($Results)
-        {
+        If ($Results) {
             # Append meta info to each result record
             Get-Variable -Name:($HiddenProperties) |
             ForEach-Object {
@@ -219,14 +164,11 @@ Function Invoke-JCApi
             }
             # Validate results properties returned
             $Fields | ForEach-Object {
-                If ($_ -notin ($Results | ForEach-Object { $_.PSObject.Properties.Name } | Select-Object -Unique))
-                {
+                If ($_ -notin ($Results | ForEach-Object { $_.PSObject.Properties.Name } | Select-Object -Unique)) {
                     Write-Warning ('API output does not contain the field "' + $_ + '". Please refer to https://docs.jumpcloud.com for API endpoint field names.')
                 }
             }
-        }
-        Else
-        {
+        } Else {
             $Results += [PSCustomObject]@{
                 'NoContent'    = $null;
                 'httpMetaData' = $httpMetaData;

@@ -3,8 +3,7 @@ BeforeAll {
     $ErrorActionPreference = 'Stop' # Continue (Default), Ignore, Inquire, SilentlyContinue, Stop, Suspend
 }
 Describe -Tag:('JCSystemInsights') "Get-JCSystemInsights Tests" {
-    Function Get-JCSystemInsightsTestCases($System)
-    {
+    Function Get-JCSystemInsightsTestCases($System) {
         # Retrieve objects to test with
         $SystemInsightsPrefix = 'Get-JcSdkSystemInsight';
         $SystemInsightsDataSet = [Ordered]@{}
@@ -15,12 +14,9 @@ Describe -Tag:('JCSystemInsights') "Get-JCSystemInsights Tests" {
             $FilterDescription = ($Help.parameters.parameter | Where-Object { $_.Name -eq 'filter' }).Description.Text
             $FilterNames = ($HelpDescription | Select-String -Pattern:([Regex]'(?<=\ `)(.*?)(?=\`)') -AllMatches).Matches.Value
             $Operators = ($FilterDescription -Replace ('Supported operators are: ', '')).Trim()
-            If ([System.String]::IsNullOrEmpty($HelpDescription) -or [System.String]::IsNullOrEmpty($FilterNames) -or [System.String]::IsNullOrEmpty($Operators))
-            {
+            If ([System.String]::IsNullOrEmpty($HelpDescription) -or [System.String]::IsNullOrEmpty($FilterNames) -or [System.String]::IsNullOrEmpty($Operators)) {
                 Write-Error ('Get-JCSystemInsights parameter help info is missing.')
-            }
-            Else
-            {
+            } Else {
                 $Filters = $FilterNames | ForEach-Object {
                     $FilterName = $_
                     $Operators | ForEach-Object {

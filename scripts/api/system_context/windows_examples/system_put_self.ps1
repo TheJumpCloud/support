@@ -309,6 +309,6 @@ $headers = @{
     Authorization = "Signature keyId=`"system/$($systemKey)`",headers=`"request-line date`",algorithm=`"rsa-sha256`",signature=`"$($signature)`""
 }
 $Form = @{
-    'displayName'   = 'updated-system-name';
+    'displayName' = 'updated-system-name';
 } | ConvertTo-Json
 Invoke-RestMethod -Method PUT -Uri "https://console.jumpcloud.com/api/systems/$systemKey" -ContentType 'application/json' -Headers $headers -Body $Form

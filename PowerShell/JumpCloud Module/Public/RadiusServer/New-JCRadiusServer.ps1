@@ -1,32 +1,25 @@
-Function New-JCRadiusServer
-{
+Function New-JCRadiusServer {
     [CmdletBinding(DefaultParameterSetName = 'ByName')]
     Param(
         [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Bypass user prompts and dynamic ValidateSet.')][ValidateNotNullOrEmpty()][Switch]$Force
     )
-    DynamicParam
-    {
+    DynamicParam {
         $Action = 'new'
         $Type = 'radius_server'
-        $RuntimeParameterDictionary = If ($Type)
-        {
+        $RuntimeParameterDictionary = If ($Type) {
             Get-DynamicParamRadiusServer -Action:($Action) -Force:($Force) -Type:($Type)
-        }
-        Else
-        {
+        } Else {
             Get-DynamicParamRadiusServer -Action:($Action) -Force:($Force)
         }
         Return $RuntimeParameterDictionary
     }
-    Begin
-    {
+    Begin {
         Connect-JCOnline -force | Out-Null
         # Debug message for parameter call
         $PSBoundParameters | Out-DebugParameter | Write-Debug
         $Results = @()
     }
-    Process
-    {
+    Process {
         # For DynamicParam with a default value set that value and then convert the DynamicParam inputs into new variables for the script to use
         Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDynamicParamProcess) -ArgumentList:($PsBoundParameters, $PSCmdlet, $RuntimeParameterDictionary) -NoNewScope
         # Create hash table to store variables
@@ -39,8 +32,7 @@ Function New-JCRadiusServer
         # Run the command
         $Results += Invoke-JCRadiusServer @FunctionParameters
     }
-    End
-    {
+    End {
         Return $Results
     }
 }

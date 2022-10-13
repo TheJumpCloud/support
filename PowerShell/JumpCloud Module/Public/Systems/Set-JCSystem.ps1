@@ -1,5 +1,4 @@
-Function Set-JCSystem ()
-{
+Function Set-JCSystem () {
     [CmdletBinding()]
 
     param
@@ -35,9 +34,7 @@ Function Set-JCSystem ()
         $systemInsights
     )
 
-    begin
-
-    {
+    begin {
 
         Write-Debug 'Verifying JCAPI Key'
         if ($JCAPIKEY.length -ne 40) { Connect-JConline }
@@ -49,29 +46,24 @@ Function Set-JCSystem ()
             'X-API-KEY'    = $JCAPIKEY
         }
 
-        if ($JCOrgID)
-        {
+        if ($JCOrgID) {
             $hdrs.Add('x-org-id', "$($JCOrgID)")
         }
 
         $UpdatedSystems = @()
     }
 
-    process
-    {
+    process {
         $body = @{ }
 
-        foreach ($param in $PSBoundParameters.GetEnumerator())
-        {
+        foreach ($param in $PSBoundParameters.GetEnumerator()) {
 
             if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) { continue }
 
             if ($param.key -eq 'SystemID', 'JCAPIKey') { continue }
 
-            if ($param.key -eq 'systemInsights')
-            {
-                $state = switch ($systemInsights)
-                {
+            if ($param.key -eq 'systemInsights') {
+                $state = switch ($systemInsights) {
                     true { 'enabled' }
                     false { 'deferred' }
                 }
@@ -97,8 +89,7 @@ Function Set-JCSystem ()
         $UpdatedSystems += $System
     }
 
-    end
-    {
+    end {
         return $UpdatedSystems
 
     }

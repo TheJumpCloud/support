@@ -17,13 +17,10 @@ $ScriptBlock_TryCatchError = {
     Write-Debug ('Arguments: ' + ($CallStack.Arguments -join ' -> '))
     Write-Debug ('Location: ' + ($CallStack.Location -join ' -> '))
     # If it should be a terminating error
-    If ($BreakInd)
-    {
+    If ($BreakInd) {
         Throw ($ErrorObject)
         Break
-    }
-    Else
-    {
+    } Else {
         Write-Error ($ErrorObject)
     }
 }

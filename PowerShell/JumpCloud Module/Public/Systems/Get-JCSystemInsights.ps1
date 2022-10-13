@@ -31,8 +31,7 @@ Get systems that have a specific App on a specific system where the filter is a 
 .Link
 https://github.com/TheJumpCloud/support/wiki/Get-JCSystemInsights
 #>
-Function Get-JCSystemInsights
-{
+Function Get-JCSystemInsights {
     [CmdletBinding(DefaultParameterSetName = 'List', PositionalBinding = $false)]
     Param(
         [Parameter(Mandatory)]
@@ -41,23 +40,23 @@ Function Get-JCSystemInsights
         # See docs.jumpcloud.com for list of available table endpoints.
         # Use TAB to see a list of available tables ex: Get-JCSystemInsights -Table <TAB>
         # Output:
-        # Alf                    FirefoxAddon           Shadow                 
-        # AlfException           Group                  SharedFolder           
-        # AlfExplicitAuth        IeExtension            SharedResource         
-        # App                    InterfaceAddress       SharingPreference      
-        # AppCompatShim          InterfaceDetail        SipConfig              
-        # AuthorizedKey          KernelInfo             StartupItem            
-        # Battery                Launchd                SystemControl          
-        # BitlockerInfo          LoggedinUser           SystemInfo             
-        # BrowserPlugin          LogicalDrive           Uptime                 
-        # Certificate            ManagedPolicy          UsbDevice              
-        # ChromeExtension        Mount                  User                   
-        # Connectivity           OSVersion              UserGroup              
-        # Crash                  Patch                  UserSshKey             
-        # CupDestination         Program                WifiNetwork            
-        # DiskEncryption         PythonPackage          WifiStatus             
-        # DiskInfo               SafariExtension        WindowSecurityProduct  
-        # DnsResolver            ScheduledTask          
+        # Alf                    FirefoxAddon           Shadow
+        # AlfException           Group                  SharedFolder
+        # AlfExplicitAuth        IeExtension            SharedResource
+        # App                    InterfaceAddress       SharingPreference
+        # AppCompatShim          InterfaceDetail        SipConfig
+        # AuthorizedKey          KernelInfo             StartupItem
+        # Battery                Launchd                SystemControl
+        # BitlockerInfo          LoggedinUser           SystemInfo
+        # BrowserPlugin          LogicalDrive           Uptime
+        # Certificate            ManagedPolicy          UsbDevice
+        # ChromeExtension        Mount                  User
+        # Connectivity           OSVersion              UserGroup
+        # Crash                  Patch                  UserSshKey
+        # CupDestination         Program                WifiNetwork
+        # DiskEncryption         PythonPackage          WifiStatus
+        # DiskInfo               SafariExtension        WindowSecurityProduct
+        # DnsResolver            ScheduledTask
         # EtcHost                Service
         $Table,
 
@@ -71,7 +70,7 @@ Function Get-JCSystemInsights
         [System.String[]]
         # Supported values and operators are specified for each table.
         # See docs.jumpcloud.com and search for specific table for a list of available filter options.
-        # Use tab complete to see available filters. 
+        # Use tab complete to see available filters.
         $Filter,
 
         [Parameter(DontShow)]
@@ -79,25 +78,19 @@ Function Get-JCSystemInsights
         # Set to $true to return all results. This will overwrite any skip and limit parameter.
         $Paginate = $true
     )
-    Begin
-    {
+    Begin {
         Connect-JCOnline -force | Out-Null
         $CommandTemplate = "JumpCloud.SDK.V2\Get-JcSdkSystemInsight{0} @PSBoundParameters"
         $Results = @()
-        If (-not [System.String]::IsNullOrEmpty($PSBoundParameters.Filter))
-        {
+        If (-not [System.String]::IsNullOrEmpty($PSBoundParameters.Filter)) {
             $PSBoundParameters.Filter = $PSBoundParameters.Filter -replace (', ', ',') -join ','
         }
-        If (-not [System.String]::IsNullOrEmpty($PSBoundParameters.SystemId))
-        {
+        If (-not [System.String]::IsNullOrEmpty($PSBoundParameters.SystemId)) {
             $SystemIdFilter = $PSBoundParameters.SystemId | ForEach-Object {
                 $SystemIdFilterString = "system_id:eq:$($_)"
-                If (-not [System.String]::IsNullOrEmpty($PSBoundParameters.Filter))
-                {
+                If (-not [System.String]::IsNullOrEmpty($PSBoundParameters.Filter)) {
                     "$($SystemIdFilterString),$($PSBoundParameters.Filter)"
-                }
-                Else
-                {
+                } Else {
                     $SystemIdFilterString
                 }
             }
@@ -105,22 +98,17 @@ Function Get-JCSystemInsights
         $PSBoundParameters.Remove('Table') | Out-Null
         $PSBoundParameters.Remove('SystemId') | Out-Null
     }
-    Process
-    {
-        $Results = If (-not [System.String]::IsNullOrEmpty($SystemIdFilter))
-        {
+    Process {
+        $Results = If (-not [System.String]::IsNullOrEmpty($SystemIdFilter)) {
             $SystemIdFilter | ForEach-Object {
                 $PSBoundParameters.Filter = $_
                 Invoke-Expression -Command:($CommandTemplate -f $Table)
             }
-        }
-        Else
-        {
+        } Else {
             Invoke-Expression -Command:($CommandTemplate -f $Table)
         }
     }
-    End
-    {
+    End {
         Return $Results
     }
 }

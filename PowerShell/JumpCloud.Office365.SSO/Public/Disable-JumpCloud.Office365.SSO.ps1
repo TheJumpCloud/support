@@ -1,5 +1,4 @@
-function Disable-JumpCloud.Office365.SSO
-{
+function Disable-JumpCloud.Office365.SSO {
     [CmdletBinding(DefaultParameterSetName = 'domain')]
     param (
 
@@ -11,52 +10,41 @@ function Disable-JumpCloud.Office365.SSO
         [Parameter(Mandatory, ParameterSetName = 'domain')]
         [string]$Domain
     )
-    
-    begin
-    {
+
+    begin {
 
         $Test = Test-MSOnline
-        
+
     }
-    
-    process
-    {
-        if ($test -ne 1)
-        {
-            if ($PSCmdlet.ParameterSetName -eq 'xml')
-            {
+
+    process {
+        if ($test -ne 1) {
+            if ($PSCmdlet.ParameterSetName -eq 'xml') {
                 $Metadata = Get-MetaDataFromXML -XMLFilePath $XMLFilePath
                 $Domain = $Metadata.Domain
-                
-            } 
+
+            }
 
             Set-MsolDomainAuthentication -DomainName $Domain -Authentication "Managed" -ErrorAction SilentlyContinue -ErrorVariable ProcessError
 
-            if ($ProcessError)
-            {
+            if ($ProcessError) {
                 Connect-MsolService
-           
-                try
-                {
-                    Set-MsolDomainAuthentication -DomainName $Domain -Authentication "Managed"  
+
+                try {
+                    Set-MsolDomainAuthentication -DomainName $Domain -Authentication "Managed"
                     Write-Host "SSO disabled for domain: $Domain" -ForegroundColor Green
                     Write-Warning "It can take up to 20 minutes for the Office 365 sign in process to revert back to normal. You may return sign in errors during this time."
-                }
-                catch
-                {
+                } catch {
                     Return $_.ErrorDetails
                 }
 
-            }
-            else
-            {
+            } else {
                 Write-Host "SSO disabled for domain: $Domain" -ForegroundColor Green
                 Write-Warning "It can take up to 20 minutes for the Office 365 sign in process to revert back to normal. You may return sign in errors during this time."
             }
         }
     }
-    
-    end
-    {
+
+    end {
     }
 }

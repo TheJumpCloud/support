@@ -1,5 +1,5 @@
 .DS_Store
-.vscode
+.vscode/launch.json
 # Ignore Test Results Directory
 *test_results
 # Ignore support.wiki

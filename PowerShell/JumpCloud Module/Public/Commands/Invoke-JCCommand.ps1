@@ -1,5 +1,4 @@
-Function Invoke-JCCommand ()
-{
+Function Invoke-JCCommand () {
     [CmdletBinding(DefaultParameterSetName = 'NoVariables')]
 
     param
@@ -12,23 +11,19 @@ You can leverage the pipeline and Parameter Binding to populate the -trigger Par
         [int]$NumberOfVariables
     )
 
-    DynamicParam
-    {
+    DynamicParam {
         $ParameterSetName = $PSCmdlet.ParameterSetName
-        If ((Get-PSCallStack).Command -like '*MarkdownHelp')
-        {
+        If ((Get-PSCallStack).Command -like '*MarkdownHelp') {
             $ParameterSetName = 'Variables'
             $NumberOfVariables = 2
         }
-        If ($ParameterSetName -eq 'Variables')
-        {
+        If ($ParameterSetName -eq 'Variables') {
             $dict = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
 
             [int]$NewParams = 0
             [int]$ParamNumber = 1
 
-            while ($NewParams -ne $NumberOfVariables)
-            {
+            while ($NewParams -ne $NumberOfVariables) {
 
                 $attr = New-Object System.Management.Automation.ParameterAttribute
                 $attr.Mandatory = $true
@@ -58,9 +53,7 @@ You can leverage the pipeline and Parameter Binding to populate the -trigger Par
 
     }
 
-    begin
-
-    {
+    begin {
         Write-Verbose 'Verifying JCAPI Key'
         if ($JCAPIKEY.length -ne 40) { Connect-JCOnline }
 
@@ -72,8 +65,7 @@ You can leverage the pipeline and Parameter Binding to populate the -trigger Par
 
         }
 
-        if ($JCOrgID)
-        {
+        if ($JCOrgID) {
             $hdrs.Add('x-org-id', "$($JCOrgID)")
         }
 
@@ -84,23 +76,18 @@ You can leverage the pipeline and Parameter Binding to populate the -trigger Par
 
     }
 
-    process
+    process {
 
-    {
-
-        if ($PSCmdlet.ParameterSetName -eq 'Variables')
-        {
+        if ($PSCmdlet.ParameterSetName -eq 'Variables') {
 
             $Variables = @{ }
 
             $VariableArrayList = New-Object System.Collections.ArrayList
 
-            foreach ($param in $PSBoundParameters.GetEnumerator())
-            {
+            foreach ($param in $PSBoundParameters.GetEnumerator()) {
 
 
-                if ($param.Key -like "Variable*")
-                {
+                if ($param.Key -like "Variable*") {
                     $RawObject = [pscustomobject]@{
 
                         ObjectNumber = ($Param.key).Split('_')[0]
@@ -117,8 +104,7 @@ You can leverage the pipeline and Parameter Binding to populate the -trigger Par
 
             }
 
-            foreach ($O in  $UniqueVariables)
-            {
+            foreach ($O in  $UniqueVariables) {
                 $Props = $VariableArrayList | Where-Object ObjectNumber -EQ $O.ObjectNumber
 
                 $VariableName = $Props | Where-Object Type -EQ 'Name'
@@ -134,14 +120,12 @@ You can leverage the pipeline and Parameter Binding to populate the -trigger Par
         $URL = "$JCUrlBasePath/api/command/trigger/$trigger"
         Write-Verbose $URL
 
-        if ($Variables)
-        {
+        if ($Variables) {
             $CommandResults = Invoke-RestMethod -Method POST -Uri $URL -Headers $hdrs -Body:($Variables | ConvertTo-Json) -UserAgent:(Get-JCUserAgent)
 
         }
 
-        else
-        {
+        else {
             $CommandResults = Invoke-RestMethod -Method POST -Uri $URL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
 
         }
@@ -151,9 +135,7 @@ You can leverage the pipeline and Parameter Binding to populate the -trigger Par
 
     }
 
-    end
-
-    {
+    end {
         return $resultsArray
     }
 }

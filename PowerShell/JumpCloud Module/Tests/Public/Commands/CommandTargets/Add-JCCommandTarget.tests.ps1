@@ -2,13 +2,11 @@ Describe -Tag:('JCCommandTarget') 'Add-JCCommandTarget 1.3' {
     BeforeAll {
         Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
         $PesterParams_Command1 = Get-JCCommand -CommandID:($PesterParams_Command1.Id)
-        If (-not $PesterParams_Command1)
-        {
+        If (-not $PesterParams_Command1) {
             $PesterParams_Command1 = New-JCCommand @PesterParams_NewCommand1
         }
         $PesterParams_SystemGroup = Get-JCGroup -Type:('System') | Where-Object { $_.name -eq $PesterParams_SystemGroup.Name }
-        If (-not $PesterParams_SystemGroup)
-        {
+        If (-not $PesterParams_SystemGroup) {
             $PesterParams_SystemGroup = New-JCSystemGroup @PesterParams_NewSystemGroup
         }
     }
