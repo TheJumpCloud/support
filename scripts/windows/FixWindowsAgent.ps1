@@ -68,7 +68,7 @@ Function InstallAgent() {
 Function UninstallAgent() {
     # Due to PowerShell's incredible weakness in dealing with paths containing SPACEs, we need to
     # to hard-code this path...
-    $params = ('C:\Program?Files\JumpCloud\unins000.exe', "/VERYSILENT", "/SUPPRESSMSGBOXES")
+    $params = ("${env:ProgramFiles}\JumpCloud\unins000.exe", "/VERYSILENT", "/SUPPRESSMSGBOXES")
     Invoke-Expression "$params"
 }
 
@@ -182,7 +182,7 @@ Function DownloadAndInstallAgent(
     If (CheckProgramInstalled("Microsoft Visual C\+\+ 2013 x64") -and CheckProgramInstalled("Microsoft Visual C\+\+ 2013 x86") -and AgentIsOnFileSystem) {
         Write-Output 'JumpCloud Agent Installer Completed'
     } Else {
-        Write-Output 'JumpCloud Agent Installer Failed'
+        Write-Error 'JumpCloud Agent Installer Failed'
     }
 }
 
@@ -201,7 +201,7 @@ Function AgentIsInServiceManager() {
 }
 
 Function RemoveAgentService() {
-    $service = Get-WmiObject -Class Win32_Service -Filter "Name='${AGENT_SERVICE_NAME}'"
+    $service = Get-CimInstance -Class Win32_Service -Filter "Name='${AGENT_SERVICE_NAME}'"
     if ($service) {
         try {
             $service.Delete()
