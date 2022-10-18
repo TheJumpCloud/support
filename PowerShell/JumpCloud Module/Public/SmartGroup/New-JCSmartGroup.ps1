@@ -5,10 +5,10 @@ Function New-JCSmartGroup {
         [ValidateSet('System', 'User')]
         [System.String]
         ${GroupType},
-        [Parameter()]
+        [Parameter(ParameterSetName = "Name", Mandatory)]
         [System.String]
         ${Name},
-        [Parameter()]
+        [Parameter(ParameterSetName = "ID", Mandatory)]
         [System.String]
         ${ID}
     )
@@ -38,36 +38,87 @@ Function New-JCSmartGroup {
             Add-Member -InputObject $config -Type NoteProperty -Name SmartGroups -Value $object
         }
         # TODO: validate attribtues object if passed in:
-        # TODO: Create case for ID Param, if ID passed in, go get the group and add it to the Config.Json, instead of creating a group
     }
 
     process {
-        $group = Get-JCGroup -Type $GroupType -Name $Name -ErrorAction SilentlyContinue
-        # if group doesn't exist, create it.
-        #TODO: Turn into cases because that makes more sense
-        if (!$group -And $GroupType -eq 'User') {
-            $smartGroup = New-JCUserGroup -GroupName $Name
-            "Creating SmartGroup Record for Group $($smartGroup.id)"
-            $groupObject = [PSCustomObject]@{
-                ID         = $smartGroup.id
-                Name       = $smartGroup.Name
-                Attributes = @{}
-                Timestamp  = Get-Date
+        switch ($PSCmdlet.ParameterSetName) {
+            'ID' {
+                If ($id -in $config.SmartGroups."$($GroupType)Groups".PSObject.Properties.Name) {
+                    "Found ID in confifg already"
+                } else {
+                    switch ($GroupType) {
+                        'System' {
+                            $smartGroup = Get-JCSDKSystemGroup -ID $ID
+                            Add-Member -InputObject $config.SmartGroups.SystemGroups -Type NoteProperty -Name $smartGroup.id -Value $groupObject
+
+                        }
+                        'User' {
+                            $smartGroup = Get-JCSDKUserGroup -ID $ID
+                            Add-Member -InputObject $config.SmartGroups.UserGroups -Type NoteProperty -Name $smartGroup.id -Value $groupObject
+
+                        }
+                        Default {
+                        }
+                    }
+                }
             }
-            Add-Member -InputObject $config.SmartGroups.UserGroups -Type NoteProperty -Name $smartGroup.id -Value $groupObject
-            #TODO: Prompt for attributes
-        }
-        if (!$group -And $GroupType -eq 'System') {
-            $smartGroup = New-JCSystemGroup -GroupName $Name
-            "Creating SmartGroup Record for Group $($smartGroup.id)"
-            $groupObject = [PSCustomObject]@{
-                ID         = $smartGroup.id
-                Name       = $smartGroup.Name
-                Attributes = @{}
-                Timestamp  = Get-Date
+            'Name' {
+                $group = Get-JCGroup -Type $GroupType -Name $Name -ErrorAction SilentlyContinue
+                # if group doesn't exist, create it.
+                if (!$group) {
+                    switch ($GroupType) {
+                        'User' {
+                            $smartGroup = New-JCUserGroup -GroupName $Name
+                            "Creating SmartGroup Record for Group $($smartGroup.id)"
+                            $groupObject = [PSCustomObject]@{
+                                ID         = $smartGroup.id
+                                Name       = $smartGroup.Name
+                                Attributes = @{}
+                                Timestamp  = Get-Date
+                            }
+                            Add-Member -InputObject $config.SmartGroups.UserGroups -Type NoteProperty -Name $smartGroup.id -Value $groupObject
+                            #TODO: Prompt for attributes
+
+                        }
+                        'System' {
+                            $smartGroup = New-JCSystemGroup -GroupName $Name
+                            "Creating SmartGroup Record for Group $($smartGroup.id)"
+                            $groupObject = [PSCustomObject]@{
+                                ID         = $smartGroup.id
+                                Name       = $smartGroup.Name
+                                Attributes = @{}
+                                Timestamp  = Get-Date
+                            }
+                            Add-Member -InputObject $config.SmartGroups.SystemGroups -Type NoteProperty -Name $smartGroup.id -Value $groupObject
+                            #TODO: Prompt for attributes
+                        }
+                        Default {
+                        }
+                    }
+                } else {
+                    "Group already exists"
+                    If ($group.id -in $config.SmartGroups."$($GroupType)Groups".PSObject.Properties.Name) {
+                        "Found ID in confifg already"
+                    } else {
+                        switch ($GroupType) {
+                            'System' {
+                                $smartGroup = Get-JCSDKSystemGroup -ID $group.id
+                                Add-Member -InputObject $config.SmartGroups.SystemGroups -Type NoteProperty -Name $smartGroup.id -Value $groupObject
+
+                            }
+                            'User' {
+                                $smartGroup = Get-JCSDKUserGroup -ID $group.id
+                                Add-Member -InputObject $config.SmartGroups.UserGroups -Type NoteProperty -Name $smartGroup.id -Value $groupObject
+
+                            }
+                            Default {
+                            }
+                        }
+                    }
+                }
             }
-            Add-Member -InputObject $config.SmartGroups.SystemGroups -Type NoteProperty -Name $smartGroup.id -Value $groupObject
-            #TODO: Prompt for attributes
+            Default {
+            }
         }
     }
     end {
