@@ -75,7 +75,7 @@ Function New-JCSmartGroup {
                                 Name       = $smartGroup.Name
                                 Attributes = @{}
                                 Timestamp  = Get-Date
-                            }
+                            } | ConvertTo-Json
                             Add-Member -InputObject $config.SmartGroups.UserGroups -Type NoteProperty -Name $smartGroup.id -Value $groupObject
                             #TODO: Prompt for attributes
 
@@ -88,7 +88,7 @@ Function New-JCSmartGroup {
                                 Name       = $smartGroup.Name
                                 Attributes = @{}
                                 Timestamp  = Get-Date
-                            }
+                            } | ConvertTo-Json
                             Add-Member -InputObject $config.SmartGroups.SystemGroups -Type NoteProperty -Name $smartGroup.id -Value $groupObject
                             #TODO: Prompt for attributes
                         }
