@@ -58,7 +58,7 @@ Function Update-JCSmartGroup {
                 }
             }
             'Name' {
-                $SmartGroupDetails = Get-JCSmartGroup -GroupType $GroupType -ByName $Name
+                $SmartGroupDetails = Get-JCSmartGroup -GroupType $GroupType -GroupName $Name
                 # $group = Get-JCGroup -Type $GroupType -Name $Name -ErrorAction SilentlyContinue
                 switch ($GroupType) {
                     'System' {
