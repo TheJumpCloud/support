@@ -43,7 +43,7 @@ Function Update-JCSmartGroup {
     process {
         switch ($PSCmdlet.ParameterSetName) {
             'ID' {
-                $SmartGroupDetails = Get-JCSmartGroup -GroupType $GroupType -ID $ID
+                $SmartGroupDetails = Get-JCSmartGroup -GroupType $GroupType -ByID $ID
                 switch ($GroupType) {
                     'System' {
                         # TODO: Update Group Membership
@@ -58,7 +58,7 @@ Function Update-JCSmartGroup {
                 }
             }
             'Name' {
-                $SmartGroupDetails = Get-JCSmartGroup -GroupType $GroupType -Name $Name
+                $SmartGroupDetails = Get-JCSmartGroup -GroupType $GroupType -ByName $Name
                 # $group = Get-JCGroup -Type $GroupType -Name $Name -ErrorAction SilentlyContinue
                 switch ($GroupType) {
                     'System' {

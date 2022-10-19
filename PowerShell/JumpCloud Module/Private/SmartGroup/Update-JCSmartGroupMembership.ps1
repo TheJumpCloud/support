@@ -11,7 +11,7 @@ function Update-JCSmartGroupMembership {
         $ID
     )
     begin {
-        $SmartGroupDetails = Get-JCSmartGroup2 -GroupType $GroupType -ID $ID
+        $SmartGroupDetails = Get-JCSmartGroup -GroupType $GroupType -ByID $ID
 
         # Build Attribute string:
         $filterBuilder = @()
