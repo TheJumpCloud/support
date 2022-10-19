@@ -1,16 +1,18 @@
 function Get-JCSmartGroup () {
     [CmdletBinding(DefaultParameterSetName = 'ByGroup')]
     param (
-        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'ByGroup', Position = 0, HelpMessage = 'Group Type you want to return')]
+        [Parameter(Mandatory, ParameterSetName = 'ByGroup', HelpMessage = 'Group Type you want to return')]
         [ValidateSet('User', 'System')]
         [String]$GroupType,
-        [Parameter(ValueFromPipelineByPropertyName, HelpMessage = 'The name of the JumpCloud Group you want to return.')]
-        [String]$GroupName,
-        [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'ById', HelpMessage = 'The ID of the JumpCloud Group you want to return.')]
-        [Alias('_id', 'id')][String]$ByID
+        [Parameter(HelpMessage = 'The ID of the JumpCloud Group you want to return.')]
+        [String]$ByID,
+        [Parameter(HelpMessage = 'The name of the JumpCloud Group you want to return.')]
+        [String]$GroupName
+
     )
 
     begin {
+
         # Load JSON File
         # Config should be in /PowerShell/JumpCloudModule/Config.json
         $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent.FullName
@@ -26,20 +28,31 @@ function Get-JCSmartGroup () {
 
     }
     process {
-        #TODO: ForEach parameters
-        #TODO: Parameters
-        foreach ($param in $PSBoundParameters.GetEnumerator()) {
-
-        }
 
         if ($PSCmdlet.ParameterSetName -eq 'ByGroup') {
             #Write-Host "$($config.SmartGroups."$($GroupType)Groups".PSObject.Properties)"
-            $config.SmartGroups."$($GroupType)Groups".PSObject.Properties | foreach {
-                $resultsArray.Add($_.Value)
-            }
-        }
-    }end {
-        $resultsArray
-    }
+            if ($ById) {
+                $config.SmartGroups."$($GroupType)Groups".PSObject.Properties | foreach {
+                    if ($_.Value.ID -eq $ById) {
+                        $resultsArray.Add($_.Value)
+                    }
+                }
+            } elseif ($GroupName) {
+                $config.SmartGroups."$($GroupType)Groups".PSObject.Properties | foreach {
+                    if ($_.Value.Name -eq $GroupName) {
+                        $resultsArray.Add($_.Value)
+                    }
+                }
+            } else {
+                $config.SmartGroups."$($GroupType)Groups".PSObject.Properties | foreach {
+                    $resultsArray.Add($_.Value)
+                }
 
+            }
+
+        }
+
+    } end {
+        return $resultsArray
+    }
 }
