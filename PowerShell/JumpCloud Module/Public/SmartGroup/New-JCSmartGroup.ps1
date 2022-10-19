@@ -77,7 +77,8 @@ Function New-JCSmartGroup {
                                 Timestamp  = Get-Date
                             }
                             Add-Member -InputObject $config.SmartGroups.UserGroups -NotePropertyName $smartGroup.id -NotePropertyValue $groupObject
-                            #TODO: Prompt for attributes
+                            $attributes = New-JCSmartGroupPrompt -UserGroup
+                            $config.SmartGroups.UserGroups."$($smartGroup.id)".Attributes = $attributes
 
                         }
                         'System' {
@@ -91,29 +92,8 @@ Function New-JCSmartGroup {
                             }
                             Add-Member -InputObject $config.SmartGroups.SystemGroups -NotePropertyName $smartGroup.id -NotePropertyValue $groupObject
                             # array for attributes
-                            $array = @()
-                            Do {
-                                $array += New-JCSmartGroupPrompt -SystemGroup
-                                $ValidateTitle = "Would you like to add another attribute to the Smart Group"
-                                $ValidateMessage = "Current Attributes :`n $array"
-                                $YesChoice = New-Object System.Management.Automation.Host.ChoiceDescription "&Yes", "Yes"
-                                $NoChoice = New-Object System.Management.Automation.Host.ChoiceDescription "&No", "No"
-                                $quitChoice = New-Object System.Management.Automation.Host.ChoiceDescription "&Quit", "Quit"
-                                $options = [System.Management.Automation.Host.ChoiceDescription[]]($NoChoice, $YesChoice, $quitChoice)
-                                $finalChoice = $host.ui.PromptForChoice($ValidateTitle, $ValidateMessage, $options, 0)
-                            } until (($finalChoice -eq 0) -OR ($finalChoice -eq 2))
-
-                            $filterObject = [PSCustomObject]@{
-                                And = [PSCustomObject]@{}
-                                Or  = [PSCustomObject]@{}
-                            }
-
-                            foreach ($item in $array) {
-                                $1, $2 = $item -split ':', 2
-                                Add-Member -InputObject $filterObject.And -NotePropertyName $1 -NotePropertyValue $2
-                            }
-                            $config.SmartGroups.SystemGroups."$($smartGroup.id)".Attributes = $filterObject
-
+                            $attributes = New-JCSmartGroupPrompt -SystemGroup
+                            $config.SmartGroups.SystemGroups."$($smartGroup.id)".Attributes = $attributes
                         }
                         Default {
                         }
@@ -146,6 +126,7 @@ Function New-JCSmartGroup {
     }
     end {
         # Write out the new settings
+
         $config | ConvertTo-Json -Depth 99 | Out-File -FilePath $configFilePath
         # Update Global Variable
         $Global:JCConfig = Get-JCSettingsFile
