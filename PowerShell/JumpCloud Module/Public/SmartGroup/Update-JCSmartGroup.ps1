@@ -4,7 +4,6 @@ Function Update-JCSmartGroup {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory)]
-        [Parameter(ParameterSetName = "Name", Mandatory)]
         [ValidateSet('System', 'User')]
         [System.String]
         ${GroupType},
@@ -13,10 +12,7 @@ Function Update-JCSmartGroup {
         ${Name},
         [Parameter(ParameterSetName = "ID", Mandatory)]
         [System.String]
-        ${ID},
-        [Parameter(ParameterSetName = "All", Mandatory)]
-        [System.String]
-        ${All}
+        ${ID}
     )
     begin {
         if ($JCAPIKEY.length -ne 40) {
@@ -47,42 +43,36 @@ Function Update-JCSmartGroup {
     process {
         switch ($PSCmdlet.ParameterSetName) {
             'ID' {
-                If ($id -notin $config.SmartGroups."$($GroupType)Groups".PSObject.Properties.Name) {
-                    "ID Not found in confifg, please run New-JCSmartGroup with the desired name of your smart group"
-                } else {
-                    switch ($GroupType) {
-                        'System' {
-                            # TODO: Update Group Membership
-                        }
-                        'User' {
-                            # TODO: Update Group Membership
-                        }
-                        Default {
-                        }
+                $SmartGroupDetails = Get-JCSmartGroup -GroupType $GroupType -ID $ID
+                switch ($GroupType) {
+                    'System' {
+                        # TODO: Update Group Membership
+                        Update-JCSmartGroupMembership -GroupType System -ID $SmartGroupDetails.ID
+                    }
+                    'User' {
+                        Update-JCSmartGroupMembership -GroupType User -ID $SmartGroupDetails.ID
+                        # TODO: Update Group Membership
+                    }
+                    Default {
                     }
                 }
             }
             'Name' {
-                $group = Get-JCGroup -Type $GroupType -Name $Name -ErrorAction SilentlyContinue
-                # if group doesn't exist, create it.
-                if (!$group) {
-                    "Group not found in confifg, please run New-JCSmartGroup with the desired name of your smart group"
-                } else {
-                    "Group already exists"
-                    If ($group.id -in $config.SmartGroups."$($GroupType)Groups".PSObject.Properties.Name) {
-                        "Found ID in confifg already"
-                        switch ($GroupType) {
-                            'System' {
-                                # TODO: Update Group Membership
-                            }
-                            'User' {
-                                # TODO: Update Group Membership
-                            }
-                            Default {
-                            }
-                        }
+                $SmartGroupDetails = Get-JCSmartGroup -GroupType $GroupType -Name $Name
+                # $group = Get-JCGroup -Type $GroupType -Name $Name -ErrorAction SilentlyContinue
+                switch ($GroupType) {
+                    'System' {
+                        # TODO: Update Group Membership
+                        Update-JCSmartGroupMembership -GroupType System -ID $SmartGroupDetails.Id
+                    }
+                    'User' {
+                        # TODO: Update Group Membership
+                        Update-JCSmartGroupMembership -GroupType User -ID $SmartGroupDetails.Id
+                    }
+                    Default {
                     }
                 }
+
             }
             'All' {
                 Foreach ($GroupID in $($config.SmartGroups.SystemGroups.PSObject.Properties.Name)) {
@@ -100,7 +90,7 @@ Function Update-JCSmartGroup {
     }
     end {
         # Write out the new settings
-        $config | ConvertTo-Json | Out-File -FilePath $configFilePath
+        $config | ConvertTo-Json -Depth 99 | Out-File -FilePath $configFilePath
         # Update Global Variable
         $Global:JCConfig = Get-JCSettingsFile
     }

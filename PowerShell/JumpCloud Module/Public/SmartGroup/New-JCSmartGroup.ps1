@@ -75,8 +75,8 @@ Function New-JCSmartGroup {
                                 Name       = $smartGroup.Name
                                 Attributes = @{}
                                 Timestamp  = Get-Date
-                            } | ConvertTo-Json
-                            Add-Member -InputObject $config.SmartGroups.UserGroups -Type NoteProperty -Name $smartGroup.id -Value $groupObject
+                            }
+                            Add-Member -InputObject $config.SmartGroups.UserGroups -NotePropertyName $smartGroup.id -NotePropertyValue $groupObject
                             #TODO: Prompt for attributes
 
                         }
@@ -88,8 +88,8 @@ Function New-JCSmartGroup {
                                 Name       = $smartGroup.Name
                                 Attributes = @{}
                                 Timestamp  = Get-Date
-                            } | ConvertTo-Json
-                            Add-Member -InputObject $config.SmartGroups.SystemGroups -Type NoteProperty -Name $smartGroup.id -Value $groupObject
+                            }
+                            Add-Member -InputObject $config.SmartGroups.SystemGroups -NotePropertyName $smartGroup.id -NotePropertyValue $groupObject
                             #TODO: Prompt for attributes
                         }
                         Default {
@@ -123,7 +123,7 @@ Function New-JCSmartGroup {
     }
     end {
         # Write out the new settings
-        $config | ConvertTo-Json | Out-File -FilePath $configFilePath
+        $config | ConvertTo-Json -Depth 99 | Out-File -FilePath $configFilePath
         # Update Global Variable
         $Global:JCConfig = Get-JCSettingsFile
     }

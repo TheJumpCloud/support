@@ -92,7 +92,7 @@ function Set-JCSettingsFile {
 
     end {
         # Write out the new settings
-        $config | ConvertTo-Json | Out-File -FilePath $configFilePath
+        $config | ConvertTo-Json -Depth 99 | Out-File -FilePath $configFilePath
         # Update Global Variable
         $Global:JCConfig = Get-JCSettingsFile
     }

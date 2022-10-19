@@ -43,6 +43,6 @@ function Update-JCSettingsFile {
     }
 
     end {
-        $config | ConvertTo-Json | Out-File -FilePath $configFilePath
+        $config | ConvertTo-Json -Depth 99 | Out-File -FilePath $configFilePath
     }
 }
