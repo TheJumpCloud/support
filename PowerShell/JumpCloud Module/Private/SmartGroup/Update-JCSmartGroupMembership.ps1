@@ -43,25 +43,27 @@ function Update-JCSmartGroupMembership {
     }
     process {
         # For the group specified, go fetch system group membership
-        #TODO: update the groups
         switch ($GroupType) {
             'System' {
                 $existingMembers = Get-JcSdkSystemGroupMembership -GroupId $ID
-                foreach ($system in $systems) {
-                    # If Existing Member not in group, add
-                    if ($system.id -notin $existingMembers.Id) {
-                        Set-JcSdkSystemGroupMember -GroupId $ID -Op add -Id $system.id
-                    }
-                }
-                #TODO: remove system members if they do not match criteria
+                $addMembers = $systems.id | Where { $existingMembers.Id -notcontains $_ }
+                $removeMembers = $existingMembers.Id | Where { $systems.id -notcontains $_ }
+
+                $addMembers | ForEach-Object { Set-JcSdkUserGroupMember -GroupId $ID -Op add -Id $_ }
+                $removeMembers | ForEach-Object { Set-JcSdkUserGroupMember -GroupId $ID -Op remove -Id $_ }
             }
             'User' {
+                $existingMembers = Get-JcSdkuserGroupMembership -GroupId $ID
+                $addMembers = $users._id | Where { $existingMembers.Id -notcontains $_ }
+                $removeMembers = $existingMembers.Id | Where { $users._id -notcontains $_ }
 
+                $addMembers | ForEach-Object { Set-JcSdkUserGroupMember -GroupId $ID -Op add -Id $_ }
+                $removeMembers | ForEach-Object { Set-JcSdkUserGroupMember -GroupId $ID -Op remove -Id $_ }
             }
             Default {
             }
         }
-        # Look at the dynamicHash, do we need to update memebership?
-        # update membership
     }
 }
+
+
