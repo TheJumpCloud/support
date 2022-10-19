@@ -38,6 +38,7 @@ function New-JCSmartGroupPrompt {
                 # Gather user attributes that can be filtered/searched by
                 $ParameterList = (Get-Command -Name Get-JCUser).Parameters
                 $attributes = $ParameterList['returnProperties'].Attributes.ValidValues | Sort-Object
+
                 do {
                     # Get desired attribute
                     Write-Host "======================================" -ForeGroundColor Green
@@ -45,32 +46,53 @@ function New-JCSmartGroupPrompt {
                     Write-Host "======================================" -ForeGroundColor Green
                     for ($i = 0; $i -lt $attributes.Length; $i++) {
                         # List available attributes in host
-                        Write-Host "$($i): $($attributes[$i])"
+                        Write-Host "$($i+1): $($attributes[$i])"
                     }
                     do {
                         $AttributeChoice = Read-Host -Prompt "Enter the number corresponding with the attribute"
-                    } until ($attributes[$AttributeChoice])
+                    } until ($attributes[$AttributeChoice - 1])
 
                     # Store attribute
-                    $desiredAttribute = $attributes[$AttributeChoice]
+                    $desiredAttribute = $attributes[$AttributeChoice - 1]
 
-                    # Get desired conditional statement
+                    # Get desired conditional operator
+                    $operators = @('$eq', '$ne', '$gt ', '$gte', '$lt', '$lte')
                     Write-Host "======================================" -ForeGroundColor Green
-                    Write-Host "Please enter your conditional statement:" -ForeGroundColor Green
-                    Write-Host "Example: -eq 'Sales'" -ForeGroundColor Green
+                    Write-Host "Please select your conditional operator:" -ForeGroundColor Green
+                    Write-Host "======================================" -ForeGroundColor Green
+                    for ($i = 0; $i -lt $operators.Length; $i++) {
+                        # List available attributes in host
+                        Write-Host "$($i+1): $($operators[$i])"
+                    }
+                    do {
+                        $OperatorChoice = Read-Host -Prompt "Enter the number corresponding with the operator"
+                    } until ($operators[$OperatorChoice - 1])
+
+                    # Store conditional operator
+                    $desiredOperator = $operators[$OperatorChoice - 1]
+
+                    # Get desired conditional value
+                    Write-Host "======================================" -ForeGroundColor Green
+                    Write-Host "Please enter your conditional value:" -ForeGroundColor Green
+                    Write-Host "Ex: department `$eq Accounting" -ForeGroundColor Green
                     Write-Host "======================================" -ForeGroundColor Green
 
-                    $statement = Read-Host -Prompt "Finish the statement: $($desiredAttribute)"
+                    $desiredValue = Read-Host -Prompt "Finish the statement: $($desiredAttribute) $($desiredOperator)"
 
                     $ValidateTitle = "Is the following statement correct?"
-                    $ValidateMessage = "$($desiredAttribute) $($statement)"
+                    $ValidateMessage = "$($desiredAttribute) $($desiredOperator) $($desiredValue)"
                     $YesChoice = New-Object System.Management.Automation.Host.ChoiceDescription "&Yes", "Yes"
                     $NoChoice = New-Object System.Management.Automation.Host.ChoiceDescription "&No", "No"
-                    $options = [System.Management.Automation.Host.ChoiceDescription[]]($YesChoice, $NoChoice)
+                    $quitChoice = New-Object System.Management.Automation.Host.ChoiceDescription "&Quit", "Quit"
+                    $options = [System.Management.Automation.Host.ChoiceDescription[]]($YesChoice, $NoChoice, $quitChoice)
                     $finalChoice = $host.ui.PromptForChoice($ValidateTitle, $ValidateMessage, $options, 0)
-                } until ($finalChoice -eq 0)
+                } until (($finalChoice -eq 0) -OR ($finalChoice -eq 2))
 
-                return $ValidateMessage
+                if ($finalCHoice -eq 2) {
+                    exit
+                } else {
+                    return "$($desiredAttribute):$($desiredOperator):$($desiredValue)"
+                }
             }
 
             SystemGroup {
@@ -85,32 +107,53 @@ function New-JCSmartGroupPrompt {
                     Write-Host "======================================" -ForeGroundColor Green
                     for ($i = 0; $i -lt $attributes.Length; $i++) {
                         # List available attributes in host
-                        Write-Host "$($i): $($attributes[$i])"
+                        Write-Host "$($i+1): $($attributes[$i])"
                     }
                     do {
                         $AttributeChoice = Read-Host -Prompt "Enter the number corresponding with the attribute"
-                    } until ($attributes[$AttributeChoice])
+                    } until ($attributes[$AttributeChoice - 1])
 
                     # Store attribute
-                    $desiredAttribute = $attributes[$AttributeChoice]
+                    $desiredAttribute = $attributes[$AttributeChoice - 1]
 
-                    # Get desired conditional statement
+                    # Get desired conditional operator
+                    $operators = @('$eq', '$ne', '$gt ', '$gte', '$lt', '$lte')
                     Write-Host "======================================" -ForeGroundColor Green
-                    Write-Host "Please enter your conditional statement:" -ForeGroundColor Green
-                    Write-Host "Example: -eq 'macOS'" -ForeGroundColor Green
+                    Write-Host "Please select your conditional operator:" -ForeGroundColor Green
+                    Write-Host "======================================" -ForeGroundColor Green
+                    for ($i = 0; $i -lt $operators.Length; $i++) {
+                        # List available attributes in host
+                        Write-Host "$($i+1): $($operators[$i])"
+                    }
+                    do {
+                        $OperatorChoice = Read-Host -Prompt "Enter the number corresponding with the operator"
+                    } until ($operators[$OperatorChoice - 1])
+
+                    # Store conditional operator
+                    $desiredOperator = $operators[$OperatorChoice - 1]
+
+                    # Get desired conditional value
+                    Write-Host "======================================" -ForeGroundColor Green
+                    Write-Host "Please enter your conditional value:" -ForeGroundColor Green
+                    Write-Host "Ex: os `$eq macOS" -ForeGroundColor Green
                     Write-Host "======================================" -ForeGroundColor Green
 
-                    $statement = Read-Host -Prompt "Finish the statement: $($desiredAttribute)"
+                    $desiredValue = Read-Host -Prompt "Finish the statement: $($desiredAttribute) $($desiredOperator)"
 
                     $ValidateTitle = "Is the following statement correct?"
-                    $ValidateMessage = "$($desiredAttribute) $($statement)"
+                    $ValidateMessage = "$($desiredAttribute) $($desiredOperator) $($desiredValue)"
                     $YesChoice = New-Object System.Management.Automation.Host.ChoiceDescription "&Yes", "Yes"
                     $NoChoice = New-Object System.Management.Automation.Host.ChoiceDescription "&No", "No"
-                    $options = [System.Management.Automation.Host.ChoiceDescription[]]($YesChoice, $NoChoice)
+                    $quitChoice = New-Object System.Management.Automation.Host.ChoiceDescription "&Quit", "Quit"
+                    $options = [System.Management.Automation.Host.ChoiceDescription[]]($YesChoice, $NoChoice, $quitChoice)
                     $finalChoice = $host.ui.PromptForChoice($ValidateTitle, $ValidateMessage, $options, 0)
-                } until ($finalChoice -eq 0)
+                } until (($finalChoice -eq 0) -OR ($finalChoice -eq 2))
 
-                return $ValidateMessage
+                if ($finalCHoice -eq 2) {
+                    exit
+                } else {
+                    return "$($desiredAttribute):$($desiredOperator):$($desiredValue)"
+                }
             }
         }
     }
