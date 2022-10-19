@@ -56,7 +56,7 @@ function New-JCSmartGroupPrompt {
                     $desiredAttribute = $attributes[$AttributeChoice - 1]
 
                     # Get desired conditional operator
-                    $operators = @('$eq', '$ne', '$gt ', '$gte', '$lt', '$lte')
+                    $operators = @('eq', 'ne', 'gt ', 'gte', 'lt', 'lte')
                     Write-Host "======================================" -ForeGroundColor Green
                     Write-Host "Please select your conditional operator:" -ForeGroundColor Green
                     Write-Host "======================================" -ForeGroundColor Green
@@ -117,7 +117,7 @@ function New-JCSmartGroupPrompt {
                     $desiredAttribute = $attributes[$AttributeChoice - 1]
 
                     # Get desired conditional operator
-                    $operators = @('$eq', '$ne', '$gt ', '$gte', '$lt', '$lte')
+                    $operators = @('eq', 'ne', 'gt ', 'gte', 'lt', 'lte')
                     Write-Host "======================================" -ForeGroundColor Green
                     Write-Host "Please select your conditional operator:" -ForeGroundColor Green
                     Write-Host "======================================" -ForeGroundColor Green
