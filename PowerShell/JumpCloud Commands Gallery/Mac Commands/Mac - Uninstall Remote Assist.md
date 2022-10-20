@@ -28,7 +28,7 @@ function remove_app_by_name() {
         kill -s KILL "${PID}"
     fi
     
-    sudo rm -Rdf "/Applications/$1.app"
+    sudo rm -Rdf "/Applications/${APP_NAME}.app"
 }
 
 # Clean up installs having legacy name
