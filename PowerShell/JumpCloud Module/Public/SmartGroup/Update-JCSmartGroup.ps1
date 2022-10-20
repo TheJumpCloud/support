@@ -3,16 +3,19 @@
 Function Update-JCSmartGroup {
     [CmdletBinding()]
     param (
-        [Parameter(Mandatory)]
+        [Parameter()]
         [ValidateSet('System', 'User')]
         [System.String]
         ${GroupType},
-        [Parameter(ParameterSetName = "Name", Mandatory)]
+        [Parameter(ParameterSetName = "Name")]
         [System.String]
         ${Name},
-        [Parameter(ParameterSetName = "ID", Mandatory)]
+        [Parameter(ParameterSetName = "ID")]
         [System.String]
-        ${ID}
+        ${ID},
+        [Parameter(ParameterSetName = "All")]
+        [switch]
+        $All
     )
     begin {
         if ($JCAPIKEY.length -ne 40) {
@@ -63,11 +66,11 @@ Function Update-JCSmartGroup {
                 switch ($GroupType) {
                     'System' {
                         # TODO: Update Group Membership
-                        Update-JCSmartGroupMembership -GroupType System -ID $SmartGroupDetails.Id
+                        Update-JCSmartGroupMembership -GroupType System -ID $SmartGroupDetails.ID
                     }
                     'User' {
                         # TODO: Update Group Membership
-                        Update-JCSmartGroupMembership -GroupType User -ID $SmartGroupDetails.Id
+                        Update-JCSmartGroupMembership -GroupType User -ID $SmartGroupDetails.ID
                     }
                     Default {
                     }
@@ -75,13 +78,13 @@ Function Update-JCSmartGroup {
 
             }
             'All' {
-                Foreach ($GroupID in $($config.SmartGroups.SystemGroups.PSObject.Properties.Name)) {
-                    #TODO: Update GroupMembership
-
-                }
-                Foreach ($GroupID in $($config.SmartGroups.UserGroups.PSObject.Properties.Name)) {
-                    #TODO: Update GroupMembership
-
+                $SmartGroupDetails = Get-JCSmartGroup -All
+                foreach ($group in $SmartGroupDetails) {
+                    if ($group.GroupType -eq 'SystemGroup') {
+                        Update-JCSmartGroupMembership -Grouptype System -ID $group.ID
+                    } else {
+                        Update-JCSmartGroupMembership -Grouptype User -ID $group.ID
+                    }
                 }
             }
             Default {
