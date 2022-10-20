@@ -45,6 +45,8 @@ function Update-JCSmartGroupMembership {
                 }
             }
         }
+        # $searchJson = $search | ConvertTo-Json
+        # Write-Warning $searchJson
 
     }
     process {
@@ -64,10 +66,10 @@ function Update-JCSmartGroupMembership {
                 }
             }
             'User' {
-                $systems = Search-JcSdkUser -Body:($Search)
-                $existingMembers = Get-JcSdkuserGroupMembership -GroupId $ID
-                $addMembers = $users._id | Where { $existingMembers.Id -notcontains $_ }
-                $removeMembers = $existingMembers.Id | Where { $users._id -notcontains $_ }
+                $users = Search-JcSdkUser -Body:($Search)
+                $existingMembers = Get-JcSdkUserGroupMembership -GroupId $ID
+                $addMembers = $users.id | Where { $existingMembers.Id -notcontains $_ }
+                $removeMembers = $existingMembers.Id | Where { $users.id -notcontains $_ }
 
                 if ($addMembers.count -ne 0) {
                     $addMembers | ForEach-Object { Set-JcSdkUserGroupMember -GroupId $ID -Op add -Id $_ }

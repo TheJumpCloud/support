@@ -80,10 +80,11 @@ Function Update-JCSmartGroup {
             'All' {
                 $SmartGroupDetails = Get-JCSmartGroup -All
                 foreach ($group in $SmartGroupDetails) {
+                    # Write-Host "updating $($group.ID)"
                     if ($group.GroupType -eq 'SystemGroup') {
-                        Update-JCSmartGroupMembership -Grouptype System -ID $group.ID
+                        Update-JCSmartGroupMembership -Grouptype System -ID "$($group.ID)"
                     } else {
-                        Update-JCSmartGroupMembership -Grouptype User -ID $group.ID
+                        Update-JCSmartGroupMembership -Grouptype User -ID "$($group.ID)"
                     }
                 }
             }

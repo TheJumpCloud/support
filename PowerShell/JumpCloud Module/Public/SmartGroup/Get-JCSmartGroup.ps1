@@ -56,9 +56,12 @@ function Get-JCSmartGroup () {
 
                 $SystemGroups = Get-JCSmartGroup -GroupType System
                 $SystemGroups | Add-Member -NotePropertyName GroupType -NotePropertyValue SystemGroup
-
-                $resultsArray.Add($UserGroups)
-                $resultsArray.Add($SystemGroups)
+                foreach ($usrGroup in $UserGroups) {
+                    $resultsArray.Add($usrGroup)
+                }
+                foreach ($sysGroup in $SystemGroups) {
+                    $resultsArray.Add($sysGroup)
+                }
             }
         }
     } end {
