@@ -14,46 +14,81 @@ function Update-JCSmartGroupMembership {
         $SmartGroupDetails = Get-JCSmartGroup -GroupType $GroupType -ByID $ID
 
         # Build Attribute string:
-        $andFilters = @()
-        $orFilters = @()
-        $ands = $SmartGroupDetails.Attributes.And.PSobject.Properties.Name
-        $ors = $SmartGroupDetails.Attributes.Or.PSobject.Properties.Name
+        if ($SmartGroupDetails.Attributes.Custom.software) {
+            if ($SmartGroupDetails.Attributes.Custom.software.version) {
+                $windowsFilter = @(
+                    "name:eq:$($SmartGroupDetails.Attributes.Custom.software.windowsProgram)"
+                )
+                $macFilter = @(
+                    "name:eq:$(($SmartGroupDetails.Attributes.Custom.software.macApp))"
+                )
+                $windowsSystems = Get-JcSdkSystemInsightProgram -Filter $windowsFilter | Where-Object { $_.Version -eq $SmartGroupDetails.Attributes.Custom.software.version }
+                $macSystems = Get-JcSdkSystemInsightApp -Filter $macFilter | Where-Object { $_.BundleShortVersion -eq $SmartGroupDetails.Attributes.Custom.software.version }
+            } else {
+                $windowsFilter = @(
+                    "name:eq:$($SmartGroupDetails.Attributes.Custom.software.windowsProgram)"
+                )
+                $macFilter = @(
+                    "name:eq:$(($SmartGroupDetails.Attributes.Custom.software.macApp))"
+                )
+                $windowsSystems = Get-JcSdkSystemInsightProgram -Filter $windowsFilter
+                $macSystems = Get-JcSdkSystemInsightApp -Filter $macFilter
+            }
 
-        foreach ($And in $ands) {
-            $andFilters += "$($and):" + $SmartGroupDetails.Attributes.And."$and"
-        }
-        foreach ($Or in $ors) {
-            $orFilters += "$($Or):" + $SmartGroupDetails.Attributes.Or."$or"
-        }
-        if ($orFilters -And $andFilters) {
-            $Search = @{
-                filter = @{
-                    and = $andFilters
-                    or  = $orFilters
+            $systems = [pscustomobject]@{
+                Id = @()
+            }
+            foreach ($sys in $windowsSystems) {
+                $systems.Id += ($sys.SystemId)
+            }
+            foreach ($sys in $macSystems) {
+                $systems.Id += ($sys.SystemId)
+            }
+        } else {
+
+            $andFilters = @()
+            $orFilters = @()
+            $ands = $SmartGroupDetails.Attributes.And.PSobject.Properties.Name
+            $ors = $SmartGroupDetails.Attributes.Or.PSobject.Properties.Name
+
+            foreach ($And in $ands) {
+                $andFilters += "$($and):" + $SmartGroupDetails.Attributes.And."$and"
+            }
+            foreach ($Or in $ors) {
+                $orFilters += "$($Or):" + $SmartGroupDetails.Attributes.Or."$or"
+            }
+            if ($orFilters -And $andFilters) {
+                $Search = @{
+                    filter = @{
+                        and = $andFilters
+                        or  = $orFilters
+                    }
+                }
+            } elseif ($orFilters -And !$andFilters) {
+                $Search = @{
+                    filter = @{
+                        or = $orFilters
+                    }
+                }
+            } elseif (!$orFilters -And $andFilters) {
+                $Search = @{
+                    filter = @{
+                        and = $andFilters
+                    }
                 }
             }
-        } elseif ($orFilters -And !$andFilters) {
-            $Search = @{
-                filter = @{
-                    or = $orFilters
-                }
-            }
-        } elseif (!$orFilters -And $andFilters) {
-            $Search = @{
-                filter = @{
-                    and = $andFilters
-                }
-            }
+            # $searchJson = $search | ConvertTo-Json
+            # Write-Warning $searchJson
         }
-        # $searchJson = $search | ConvertTo-Json
-        # Write-Warning $searchJson
 
     }
     process {
         # For the group specified, go fetch system group membership
         switch ($GroupType) {
             'System' {
-                $systems = Search-JcSdkSystem -Body:($Search)
+                if (!$systems) {
+                    $systems = Search-JcSdkSystem -Body:($Search)
+                }
                 $existingMembers = Get-JcSdkSystemGroupMembership -GroupId $ID
                 $addMembers = $systems.id | Where { $existingMembers.Id -notcontains $_ }
                 $removeMembers = $existingMembers.Id | Where { $systems.id -notcontains $_ }
