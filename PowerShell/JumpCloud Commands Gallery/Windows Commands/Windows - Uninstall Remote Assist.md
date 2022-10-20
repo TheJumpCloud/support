@@ -9,7 +9,7 @@ windows
 #### Command
 
 ```
-$legacyUninstallerPath="C:\Program Files\JumpCloud\Jumpcloud Assist App\Uninstall Jumpcloud Assist App.exe" # TODO - verify JumpCloud path segment. This is not part of the current application path
+$legacyUninstallerPath="C:\Program Files\JumpCloud\Jumpcloud Assist App\Uninstall Jumpcloud Assist App.exe"
 $uninstallerPath="C:\Program Files\JumpCloud Remote Assist\Uninstall JumpCloud Remote Assist.exe"
 
 if ( Test-Path $legacyUninstallerPath ) {
