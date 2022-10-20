@@ -41,7 +41,7 @@ remove_app_by_name "JumpCloud Remote Assist"
 
 #### Description
 
-Removes the JumpCloud Remote Assist app on a Mac system.
+This command will remove the JumpCloud Remote Assist app on a Mac device.
 
 #### *Import This Command*
 
