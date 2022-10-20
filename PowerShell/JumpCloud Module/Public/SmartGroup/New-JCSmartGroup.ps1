@@ -37,7 +37,6 @@ Function New-JCSmartGroup {
             }
             Add-Member -InputObject $config -Type NoteProperty -Name SmartGroups -Value $object
         }
-        # TODO: validate attribtues object if passed in:
     }
 
     process {
@@ -50,14 +49,10 @@ Function New-JCSmartGroup {
                         'System' {
                             $smartGroup = Get-JCSDKSystemGroup -ID $ID
                             Add-Member -InputObject $config.SmartGroups.SystemGroups -Type NoteProperty -Name $smartGroup.id -Value $groupObject
-
                         }
                         'User' {
                             $smartGroup = Get-JCSDKUserGroup -ID $ID
                             Add-Member -InputObject $config.SmartGroups.UserGroups -Type NoteProperty -Name $smartGroup.id -Value $groupObject
-
-                        }
-                        Default {
                         }
                     }
                 }
@@ -95,8 +90,6 @@ Function New-JCSmartGroup {
                             $attributes = New-JCSmartGroupPrompt -SystemGroup
                             $config.SmartGroups.SystemGroups."$($smartGroup.id)".Attributes = $attributes
                         }
-                        Default {
-                        }
                     }
                 } else {
                     "Group already exists"
@@ -114,22 +107,26 @@ Function New-JCSmartGroup {
                                 Add-Member -InputObject $config.SmartGroups.UserGroups -Type NoteProperty -Name $smartGroup.id -Value $groupObject
 
                             }
-                            Default {
-                            }
                         }
                     }
                 }
-            }
-            Default {
             }
         }
     }
     end {
         # Write out the new settings
-
         $config | ConvertTo-Json -Depth 99 | Out-File -FilePath $configFilePath
         # Update Global Variable
         $Global:JCConfig = Get-JCSettingsFile
+        # Finally Update the group
+        switch ($GroupType) {
+            'System' {
+                Update-JCSmartGroup -GroupType System -ID "$($smartGroup.id)"
+            }
+            'User' {
+                Update-JCSmartGroup -GroupType User -ID "$($smartGroup.id)"
+            }
+        }
     }
 
 }

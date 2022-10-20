@@ -114,7 +114,8 @@ function New-JCSmartGroupPrompt {
                     }
 
                     $ValidateTitle = "Would you like to add another attribute to the Smart Group"
-                    $ValidateMessage = "Current Attributes :`n $filterObject"
+                    $jsonFilter = $filterObject | ConvertTo-Json
+                    $ValidateMessage = "Current Attributes :`n $jsonFilter"
                     $YesChoice = New-Object System.Management.Automation.Host.ChoiceDescription "&Yes", "Yes"
                     $NoChoice = New-Object System.Management.Automation.Host.ChoiceDescription "&No", "No"
                     $quitChoice = New-Object System.Management.Automation.Host.ChoiceDescription "&Quit", "Quit"
@@ -198,7 +199,8 @@ function New-JCSmartGroupPrompt {
                         # return "$($desiredAttribute):$($desiredOperator):$($desiredValue)"
                     }
                     $ValidateTitle = "Would you like to add another attribute to the Smart Group"
-                    $ValidateMessage = "Current Attributes :`n $filterObject"
+                    $jsonFilter = $filterObject | ConvertTo-Json
+                    $ValidateMessage = "Current Attributes :`n $jsonFilter"
                     $YesChoice = New-Object System.Management.Automation.Host.ChoiceDescription "&Yes", "Yes"
                     $NoChoice = New-Object System.Management.Automation.Host.ChoiceDescription "&No", "No"
                     $quitChoice = New-Object System.Management.Automation.Host.ChoiceDescription "&Quit", "Quit"
