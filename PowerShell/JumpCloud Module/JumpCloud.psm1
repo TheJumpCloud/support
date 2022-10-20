@@ -13,7 +13,12 @@ Foreach ($Import in @($Public + $Private)) {
 $global:JCConfig = Get-JCSettingsFile
 
 # Check to see if there are any SmartGroups configured
-$JCSmartGroups = Get-JCSmartGroup
+$JCSmartGroups = Get-JCSmartGroup -All
+
+# Update SmartGroups, if present
+if ($JCSmartGroups) {
+    Update-JCSmartGroup -All
+}
 
 # Set default values for function parameters
 $PSDefaultParameterValues['Invoke-RestMethod:ContentType'] = 'application/json; charset=utf-8'
