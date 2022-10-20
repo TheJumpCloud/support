@@ -221,7 +221,7 @@
     "type": "mac",
     "command": "#!/usr/bin/env bash\nset -euo pipefail\n\nfunction get_app_pid() {\n    local -r APP_NAME=$1\n    ps -eo pid,comm | awk \"/${APP_NAME}$/ {print \\$1}\"\n}\n\nfunction remove_app_by_name() {\n    local -r APP_NAME=$1\n    if PID=$(get_app_pid \"${APP_NAME}\") && [[ -n \"${PID}\" ]]; then\n        kill -s TERM \"${PID}\"\n        sleep 1\n    fi\n\n    if PID=$(get_app_pid \"${APP_NAME}\") && [[ -n \"${PID}\" ]]; then\n        kill -s KILL \"${PID}\"\n    fi\n    \n    sudo rm -Rdf \"/Applications/${APP_NAME}.app\"\n}\n\n# Clean up installs having legacy name\nremove_app_by_name \"Jumpcloud Assist App\"\n\n# Clean up installs\nremove_app_by_name \"JumpCloud Remote Assist\"",
     "link": "https://github.com/TheJumpCloud/support/blob/master/PowerShell/JumpCloud%20Commands%20Gallery/Mac%20Commands/Mac%20-%20Uninstall%20Remote%20Assist.md",
-    "description": "This command will remove the JumpCloud Remote Assist app on a Mac device."
+    "description": "Removes the JumpCloud Remote Assist app on a Mac system."
   },
   {
     "name": "Windows - AppX Removal Startup Script | v1.0 JCCG",
