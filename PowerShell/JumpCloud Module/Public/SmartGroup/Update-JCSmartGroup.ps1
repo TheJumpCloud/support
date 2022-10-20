@@ -49,12 +49,10 @@ Function Update-JCSmartGroup {
                 $SmartGroupDetails = Get-JCSmartGroup -GroupType $GroupType -ByID $ID
                 switch ($GroupType) {
                     'System' {
-                        # TODO: Update Group Membership
                         Update-JCSmartGroupMembership -GroupType System -ID $SmartGroupDetails.ID
                     }
                     'User' {
                         Update-JCSmartGroupMembership -GroupType User -ID $SmartGroupDetails.ID
-                        # TODO: Update Group Membership
                     }
                     Default {
                     }
@@ -65,11 +63,9 @@ Function Update-JCSmartGroup {
                 # $group = Get-JCGroup -Type $GroupType -Name $Name -ErrorAction SilentlyContinue
                 switch ($GroupType) {
                     'System' {
-                        # TODO: Update Group Membership
                         Update-JCSmartGroupMembership -GroupType System -ID $SmartGroupDetails.ID
                     }
                     'User' {
-                        # TODO: Update Group Membership
                         Update-JCSmartGroupMembership -GroupType User -ID $SmartGroupDetails.ID
                     }
                     Default {
