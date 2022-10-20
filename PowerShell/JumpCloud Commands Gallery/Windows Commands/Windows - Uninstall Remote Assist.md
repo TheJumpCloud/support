@@ -12,6 +12,19 @@ windows
 $legacyUninstallerPath="C:\Program Files\JumpCloud\Jumpcloud Assist App\Uninstall Jumpcloud Assist App.exe" # TODO - verify JumpCloud path segment. This is not part of the current application path
 $uninstallerPath="C:\Program Files\JumpCloud Remote Assist\Uninstall JumpCloud Remote Assist.exe"
 
+if ( Test-Path $legacyUninstallerPath ) {
+    Write-Host "Uninstalling legacy JumpCloud Remote Assist at " $legacyUninstallerPath
+    try {
+        $uninstallerProcess = Start-Process -FilePath $legacyUninstallerPath -Wait -PassThru -ArgumentList "/S"
+    }
+    catch {
+        Write-Error "Unable to uninstall legacy JumpCloud Remote Assist"
+        Write-Error $_
+        exit 1
+    }
+    Write-Host "Legacy JumpCloud Remote Assist uninstaller completed with exit code $($uninstallerProcess.ExitCode)"
+}
+
 if ( Test-Path $uninstallerPath ) {
     Write-Host "Uninstalling legacy JumpCloud Remote Assist at " $uninstallerPath
     try {
@@ -23,19 +36,6 @@ if ( Test-Path $uninstallerPath ) {
         exit 1
     }
     Write-Host "Legacy JumpCloud Remote Assist uninstaller completed with exit code $($uninstallerProcess.ExitCode)"
-}
-
-if ( Test-Path $uninstallerPath ) {
-    Write-Host "Uninstalling JumpCloud Remote Assist at " $uninstallerPath
-    try {
-        $uninstallerProcess = Start-Process -FilePath $uninstallerPath -Wait -PassThru -ArgumentList "/S"
-    }
-    catch {
-        Write-Error "Unable to uninstall legacy JumpCloud Remote Assist"
-        Write-Error $_
-        exit 1
-    }
-    Write-Host "JumpCloud Remote Assist uninstaller completed with exit code $($uninstallerProcess.ExitCode)"
 }
 
 ```
