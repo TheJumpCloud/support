@@ -12,6 +12,9 @@ Foreach ($Import in @($Public + $Private)) {
 # Check to see if parallel processing is available for the session
 $global:JCConfig = Get-JCSettingsFile
 
+# Check to see if there are any SmartGroups configured
+$JCSmartGroups = Get-JCSmartGroup
+
 # Set default values for function parameters
 $PSDefaultParameterValues['Invoke-RestMethod:ContentType'] = 'application/json; charset=utf-8'
 $PSDefaultParameterValues['Invoke-WebRequest:ContentType'] = 'application/json; charset=utf-8'
