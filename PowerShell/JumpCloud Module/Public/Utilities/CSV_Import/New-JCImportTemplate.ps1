@@ -74,7 +74,7 @@ Function New-JCImportTemplate() {
             $ConfirmUpdateVsNew = Read-Host  "Enter N for 'new users' or U for 'updating users'"
         }
 
-        if ($ConfirmUpdateVsNew -eq 'U' -and $PSCmdlet.ParameterSetName -eq 'force') {
+        if (($ConfirmUpdateVsNew -eq 'U' -and $PSCmdlet.ParameterSetName -eq 'force') -or ($ConfirmUpdateVsNew -eq 'N' -and $PSCmdlet.ParameterSetName -eq 'force')) {
             $CSV = [ordered]@{
                 Username                       = $null
                 FirstName                      = $null
@@ -128,13 +128,18 @@ Function New-JCImportTemplate() {
             }
             $fileName = 'JCUserUpdateImport_' + $date + '.csv'
             Write-Debug $fileName
-            $ExistingUsers = Get-DynamicHash -Object User -returnProperties username
-            $CSVheader = @()
-            foreach ($User in $ExistingUsers.GetEnumerator()) {
-                $CSVUserAdd = $CSV
-                $CSVUserAdd.Username = $User.value.username
-                $UserObject = New-Object psobject -Property $CSVUserAdd
-                $CSVheader += $UserObject
+            $CSVheader = New-Object psobject -Property $Csv
+
+
+            if ($ConfirmUpdateVsNew -eq 'U') {
+                $ExistingUsers = Get-DynamicHash -Object User -returnProperties username
+                $CSVheader = @()
+                foreach ($User in $ExistingUsers.GetEnumerator()) {
+                    $CSVUserAdd = $CSV
+                    $CSVUserAdd.Username = $User.value.username
+                    $UserObject = New-Object psobject -Property $CSVUserAdd
+                    $CSVheader += $UserObject
+                }
             }
         } elseif ($ConfirmUpdateVsNew) {
             if ($ConfirmUpdateVsNew -eq 'N') {
