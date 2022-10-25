@@ -15,6 +15,8 @@ function Update-JCSmartGroupMembership {
 
         # Build Attribute string:
         if ($SmartGroupDetails.Attributes.Custom.software) {
+            $customFlow = $true
+            Write-Warning "custom"
             if ($SmartGroupDetails.Attributes.Custom.software.version) {
                 $windowsFilter = @(
                     "name:eq:$($SmartGroupDetails.Attributes.Custom.software.windowsProgram)"
@@ -86,7 +88,8 @@ function Update-JCSmartGroupMembership {
         # For the group specified, go fetch system group membership
         switch ($GroupType) {
             'System' {
-                if (!$systems) {
+                if (!$customFlow) {
+                    # Write-Warning "gettin systems"
                     $systems = Search-JcSdkSystem -Body:($Search)
                 }
                 $existingMembers = Get-JcSdkSystemGroupMembership -GroupId $ID
