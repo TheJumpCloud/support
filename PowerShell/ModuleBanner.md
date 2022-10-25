@@ -7,7 +7,7 @@
 #### Banner Current
 
 ```
-- This release adds functionality to New-JCUserImportTemplate to populate CSV template for updating users with all the column headers using -Force param
+- This release adds functionality to New-JCUserImportTemplate to populate CSV template with all the column headers using -Force param
 ```
 
 #### Banner Old

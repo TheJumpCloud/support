@@ -5,7 +5,7 @@ Release Date: October 26, 2022
 #### RELEASE NOTES
 
 ```
-- This release adds functionality to New-JCUserImportTemplate to populate CSV template for updating users with all the column headers using -Force param
+- This release adds functionality to New-JCUserImportTemplate to populate CSV template with all the column headers using -Force param
 ```
 
 #### FEATURES:
@@ -14,7 +14,7 @@ N/A
 
 #### IMPROVEMENTS:
 
-- Added -Force switch parameter that populates New-JCImportTemplate with all headers when user update CSV is created
+- Added -Force switch parameter that populates New-JCImportTemplate with all headers when user update or new user CSV is created
 
 #### BUG FIXES:
 
