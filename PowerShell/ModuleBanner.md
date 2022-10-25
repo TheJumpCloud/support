@@ -1,19 +1,19 @@
 #### Latest Version
 
 ```
-2.0.2
+2.3.0
 ```
 
 #### Banner Current
 
 ```
-- This release fixes linting/formatting issues for PSModule code and added OTBS code formatting to Powershell files.
-
-- Bug fix for Set-JCCommand where commandType, launchType, and timeout gets changed to default values.
+- This release adds functionality to New-JCUserImportTemplate to populate CSV template for updating users with all the column headers using -Force param
 ```
 
 #### Banner Old
 
 ```
-* This release introduces Parallel processing functionality to several functions (Get-JCUser, Get-JCSystem, Get-JCSystemUser, Get-JCGroup, Get-JCSystemGroupMember, Get-JCUserGroupMember, Get-JCCommand, Get-JCCommandResult, Get-JCCommandTarget). This release modifies New-JCImportTemplate, Update and Import-JCUsersFromCSV to allow imports or updates with LDAP bind and MFA + EnrollmentDays to users
+- This release fixes linting/formatting issues for PSModule code and added OTBS code formatting to Powershell files.
+
+- Bug fix for Set-JCCommand where commandType, launchType, and timeout gets changed to default values.
 ```
