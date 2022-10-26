@@ -42,7 +42,6 @@ $ScriptRoot = Switch ($DeployFolder) {
 }
 $FolderPath_ModuleRootPath = (Get-Item -Path:($ScriptRoot)).Parent.FullName
 $GitHubWikiUrl = 'https://github.com/TheJumpCloud/support/wiki/'
-$FilePath_ModuleBanner = $FolderPath_ModuleRootPath + '/ModuleBanner.md'
 $FilePath_ModuleChangelog = $FolderPath_ModuleRootPath + '/ModuleChangelog.md'
 # Define required files and folders variables
 $RequiredFiles = ('LICENSE', 'psm1', 'psd1')
