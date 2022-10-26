@@ -1,4 +1,4 @@
-## 2.3.0
+## 2.1.0
 
 Release Date: October 26, 2022
 
@@ -19,6 +19,7 @@ N/A
 #### BUG FIXES:
 
 Bug fix for Set-JCCommand where commandType, launchType, and timeout gets changed to default values
+
 ## 2.0.2
 
 Release Date: October 12, 2022
