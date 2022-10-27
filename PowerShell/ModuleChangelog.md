@@ -1,3 +1,25 @@
+## 2.1.0
+
+Release Date: October 26, 2022
+
+#### RELEASE NOTES
+
+```
+- This release adds functionality to New-JCUserImportTemplate to populate CSV template with all the column headers using -Force param
+```
+
+#### FEATURES:
+
+N/A
+
+#### IMPROVEMENTS:
+
+- Added -Force switch parameter that populates New-JCImportTemplate with all headers when user update or new user CSV is created
+
+#### BUG FIXES:
+
+Bug fix for Set-JCCommand where commandType, launchType, and timeout gets changed to default values
+
 ## 2.0.2
 
 Release Date: October 12, 2022

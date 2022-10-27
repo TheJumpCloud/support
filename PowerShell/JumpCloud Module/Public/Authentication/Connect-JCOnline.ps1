@@ -136,7 +136,6 @@ Function Connect-JCOnline () {
                         # Update-JCModule depends on these resources being available, check if available then continue
                         $moduleSites = @(
                             'https://github.com/TheJumpCloud/support/blob/master/PowerShell/ModuleChangelog.md',
-                            'https://github.com/TheJumpCloud/support/blob/master/PowerShell/ModuleBanner.md',
                             'https://www.powershellgallery.com/packages/JumpCloud/'
                         )
                         $downRepo = @()
