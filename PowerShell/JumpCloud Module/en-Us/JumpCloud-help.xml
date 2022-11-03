@@ -6362,6 +6362,18 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>description</maml:name>
+          <maml:description>
+            <maml:para>A search filter to search systems by the description.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
           <maml:name>displayName</maml:name>
           <maml:description>
             <maml:para>A search filter to search systems by the displayName.</maml:para>
@@ -6692,6 +6704,18 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
         <maml:name>dateFilter</maml:name>
         <maml:description>
           <maml:para>Condition to filter date on.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>description</maml:name>
+        <maml:description>
+          <maml:para>A search filter to search systems by the description.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
         <dev:type>
@@ -14967,6 +14991,18 @@ Enter a value between 1 and 2:</dev:code>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>description</maml:name>
+          <maml:description>
+            <maml:para>The system description. String param to set system description</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
           <maml:name>displayName</maml:name>
           <maml:description>
             <maml:para>The system displayName. The displayName is set to the hostname of the system during agent installation. When the system hostname updates the displayName does not update.</maml:para>
@@ -15037,6 +15073,18 @@ Enter a value between 1 and 2:</dev:code>
         <command:parameterValue required="true" variableLength="false">System.Boolean</command:parameterValue>
         <dev:type>
           <maml:name>System.Boolean</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>description</maml:name>
+        <maml:description>
+          <maml:para>The system description. String param to set system description</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
