@@ -68,6 +68,8 @@ Function Get-JCObject {
                 }
                 # Loop through each item passed in and build UrlObject
                 ForEach ($SearchByValueItem In $SearchByValue) {
+
+
                     If (!($PSCmdlet.ParameterSetName -eq 'Default')) {
                         $QueryStrings = @()
                         $BodyParts = @()
@@ -85,6 +87,7 @@ Function Get-JCObject {
                             }
                         }
                         If ($SearchBy -eq 'ByName') {
+                            Write-Verbose $Type
                             # Add filters for exact match and wildcards
                             If ($SearchByValueItem -match '\*') {
                                 If ($JCType.SupportRegexFilter) {
@@ -93,8 +96,13 @@ Function Get-JCObject {
                                     Write-Error ('The endpoint ' + $UrlOut + ' does not support wildcards in the $SearchByValueItem. Please remove "*" from "' + $SearchByValueItem + '".')
                                 }
                             } Else {
-                                $QueryStrings += 'filter=' + $PropertyIdentifier + ':eq:' + $SearchByValueItem + '&fields=' + $JCType.ById
-                                $BodyParts += '"filter":[{"' + $PropertyIdentifier + '":"' + $SearchByValueItem + '"}]'
+                                if (($type -eq 'radius_server') -and ($PropertyIdentifier -eq 'name')) {
+                                    $QueryStrings += 'search[fields][0]=name&search[searchTerm]=' + $SearchByValueItem
+                                } else {
+                                    $QueryStrings += 'filter=' + $PropertyIdentifier + ':eq:' + $SearchByValueItem + '&fields=' + $JCType.ById
+                                    $BodyParts += '"filter":[{"' + $PropertyIdentifier + '":"' + $SearchByValueItem + '"}]'
+                                }
+
                             }
                         }
                     }
