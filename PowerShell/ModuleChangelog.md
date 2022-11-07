@@ -15,6 +15,7 @@ N/A
 #### IMPROVEMENTS:
 
 - Added -Force switch parameter that populates New-JCImportTemplate with all headers when user update or new user CSV is created
+- Additional reporting added to Backup-JCOrganization. If failed tasks are detected, the status of the function should report which tasks failed
 
 #### BUG FIXES:
 
