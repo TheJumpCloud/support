@@ -14,7 +14,8 @@ N/A
 
 #### IMPROVEMENTS:
 
-Description parameter added to Get and Set-JCSystem
+- Description parameter added to Get and Set-JCSystem
+- Added -Force switch parameter that populates New-JCImportTemplate with all headers when user update or new user CSV is created
 
 #### BUG FIXES:
 
