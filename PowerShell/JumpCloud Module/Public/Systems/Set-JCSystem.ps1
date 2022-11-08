@@ -13,6 +13,10 @@ Function Set-JCSystem () {
         [string]
         $displayName,
 
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The system description. String param to set system description')]
+        [string]
+        $description,
+
         [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A boolean $true/$false value to allow for ssh password authentication.')]
         [bool]
         $allowSshPasswordAuthentication,

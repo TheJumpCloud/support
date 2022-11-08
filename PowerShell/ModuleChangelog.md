@@ -1,11 +1,12 @@
 ## 2.1.0
 
-Release Date: October 26, 2022
+
+Release Date: October 28, 2022
 
 #### RELEASE NOTES
 
 ```
-- This release adds functionality to New-JCUserImportTemplate to populate CSV template with all the column headers using -Force param
+- This release adds description field parameter to Set-JCSystem and search by description to Get-JCSystem
 ```
 
 #### FEATURES:
@@ -14,30 +15,8 @@ N/A
 
 #### IMPROVEMENTS:
 
+- Description parameter added to Get and Set-JCSystem
 - Added -Force switch parameter that populates New-JCImportTemplate with all headers when user update or new user CSV is created
-
-#### BUG FIXES:
-
-Bug fix for Set-JCCommand where commandType, launchType, and timeout gets changed to default values
-
-## 2.0.2
-
-Release Date: October 12, 2022
-
-#### RELEASE NOTES
-
-```
-- This release fixes an issue to Set-JCCommand where commandType, launchType, and timeout goes back to default values
-- This release fixes linting/formatting issues for PSModule code and added OTBS code formatting to Powershell files
-```
-
-#### FEATURES:
-
-N/A
-
-#### IMPROVEMENTS:
-
-N/A
 
 #### BUG FIXES:
 

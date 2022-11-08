@@ -35,6 +35,13 @@ Function Get-JCSystem () {
         [Parameter(
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'SearchFilter',
+            HelpMessage = 'A search filter to search systems by the description.'
+        )]
+        [String]$description,
+
+        [Parameter(
+            ValueFromPipelineByPropertyName,
+            ParameterSetName = 'SearchFilter',
             HelpMessage = 'A search filter to search systems by the version.'
         )]
         [String]$version,
@@ -206,7 +213,7 @@ Function Get-JCSystem () {
     begin {
         Write-Verbose 'Verifying JCAPI Key'
         if ($JCAPIKEY.length -ne 40) {
-            Connect-JCOnline 
+            Connect-JCOnline
         }
 
         $Parallel = $JCConfig.parallel.Calculated
@@ -258,7 +265,7 @@ Function Get-JCSystem () {
 
                 foreach ($param in $PSBoundParameters.GetEnumerator()) {
                     if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) {
-                        continue 
+                        continue
                     }
                     if ($param.value -is [Boolean]) {
                         if ($param.key -eq 'parallel') {
@@ -281,10 +288,10 @@ Function Get-JCSystem () {
                     if ($param.key -eq 'dateFilter') {
                         switch ($param.value) {
                             before {
-                                $DateQuery = '$lt' 
+                                $DateQuery = '$lt'
                             }
                             after {
-                                $DateQuery = '$gt' 
+                                $DateQuery = '$gt'
                             }
                         }
                         continue
