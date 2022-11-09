@@ -161,6 +161,7 @@ Function Get-JCObject {
                     }
                     If ($JCType.TypeName.TypeNameSingular -in ('g_suite', 'office_365')) {
                         # Hacky logic to get g_suite and office_365 directories
+
                         If ($ReturnCount -eq $true) {
                             $Directory = $Result.results | Where-Object { $_.Type -eq $JCType.TypeName.TypeNameSingular }
                             $Result.totalCount = ($Directory | Measure-Object).Count
@@ -168,6 +169,7 @@ Function Get-JCObject {
                         } Else {
                             $Result = $Result | Where-Object { $_.Type -eq $JCType.TypeName.TypeNameSingular }
                         }
+
                     }
                     # Validate results
                     If ($Result -and $Result.PSObject.Properties.name -notcontains 'NoContent') {
@@ -182,10 +184,6 @@ Function Get-JCObject {
                     }
                 }
 
-                # if (($Type -eq 'g_suite') -or ($Type -eq 'office_365') -and $Result) {
-                #     Write-Verbose "This is the results "
-                #     $Results
-                # }
                 # Re-lookup object by id
                 If ($Results -and $SearchBy -eq 'ByName' -and $JCType.TypeName.TypeNameSingular -notin ('g_suite', 'office_365')) {
                     # Hacky logic to get g_suite and office_365 directories
@@ -198,7 +196,7 @@ Function Get-JCObject {
                     If ($Results) {
                         if (($Type -eq 'g_suite') -or ($Type -eq 'office_365')) {
                             foreach ($res in $Results) {
-
+                                Write-Host "Res $($res.name)"
                                 if ($res.name -eq $SearchByValueItem) {
                                     Write-Verbose "Results = $($Results)"
                                     $ById = $JCType.ById
@@ -220,7 +218,7 @@ Function Get-JCObject {
                                     Get-Variable -Name:($HiddenProperties) |
                                     ForEach-Object {
                                         $Variable = $_
-                                        $Results |
+                                        $res |
                                         ForEach-Object {
                                             Add-Member -InputObject:($_) -MemberType:('NoteProperty') -Name:($Variable.Name) -Value:($Variable.Value);
                                         }
