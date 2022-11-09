@@ -203,9 +203,7 @@ Function Get-JCObject {
                     If ($Results) {
                         if (($Type -eq 'g_suite') -or ($Type -eq 'office_365')) {
                             foreach ($res in $Results) {
-                                Write-Host "Res $($res.name)"
                                 if ($res.name -eq $SearchByValueItem) {
-                                    Write-Verbose "Results = $($Results)"
                                     $ById = $JCType.ById
                                     $ByName = $JCType.ByName
                                     $TypeName = $JCType.TypeName
@@ -237,7 +235,6 @@ Function Get-JCObject {
                                 }
                             }
                         } else {
-                            Write-Verbose "Results = $($Results)"
                             $ById = $JCType.ById
                             $ByName = $JCType.ByName
                             $TypeName = $JCType.TypeName
