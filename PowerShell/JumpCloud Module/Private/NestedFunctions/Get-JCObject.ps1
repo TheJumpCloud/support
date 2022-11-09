@@ -169,6 +169,13 @@ Function Get-JCObject {
                         } Else {
                             $Result = $Result | Where-Object { $_.Type -eq $JCType.TypeName.TypeNameSingular }
                         }
+                        # manual filter since the API doesn't support it
+                        foreach ($dirResult in $Result) {
+                            if ($dirResult.Name -eq $SearchByValueItem) {
+                                # if match on name, just API results to just be the single match
+                                $Result = $dirResult
+                            }
+                        }
 
                     }
                     # Validate results
