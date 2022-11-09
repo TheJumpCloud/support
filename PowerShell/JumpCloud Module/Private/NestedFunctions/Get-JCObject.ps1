@@ -39,8 +39,12 @@ Function Get-JCObject {
                     $SearchBy = $SearchBy
                     $SearchByValue = $SearchByValue
                     $PropertyIdentifier = Switch ($SearchBy) {
-                        'ById' { $JCType.ById };
-                        'ByName' { $JCType.ByName };
+                        'ById' {
+                            $JCType.ById
+                        };
+                        'ByName' {
+                            $JCType.ByName
+                        };
                     }
                 } ElseIf ($PSCmdlet.ParameterSetName -eq 'Default') {
                     # Populate url variables
@@ -107,8 +111,16 @@ Function Get-JCObject {
                         }
                     }
                     # Build url info
-                    $QueryString = If ($QueryStrings) { '?' + ($QueryStrings -join '&') } Else { $null };
-                    $Body = If ($BodyParts) { '{' + ($BodyParts -join ',') + '}' } Else { $null };
+                    $QueryString = If ($QueryStrings) {
+                        '?' + ($QueryStrings -join '&')
+                    } Else {
+                        $null
+                    };
+                    $Body = If ($BodyParts) {
+                        '{' + ($BodyParts -join ',') + '}'
+                    } Else {
+                        $null
+                    };
                     $UrlObject += [PSCustomObject]@{
                         'Type'              = $Type;
                         'SearchBy'          = $SearchBy;
@@ -138,20 +150,44 @@ Function Get-JCObject {
                     # $UrlFull= ([uri]::EscapeDataString($UrlFull)
                     # Build function parameters
                     $FunctionParameters = [ordered]@{ }
-                    If (-not ([System.String]::IsNullOrEmpty($UrlFull))) { $FunctionParameters.Add('Url', $UrlFull) }
-                    If (-not ([System.String]::IsNullOrEmpty($JCType.Method))) { $FunctionParameters.Add('Method', $JCType.Method) }
-                    If (-not ([System.String]::IsNullOrEmpty($Body))) { $FunctionParameters.Add('Body', $Body) }
-                    If (-not ([System.String]::IsNullOrEmpty($PsBoundParameters.Limit))) { $FunctionParameters.Add('Limit', $PsBoundParameters.Limit) }
-                    If (-not ([System.String]::IsNullOrEmpty($PsBoundParameters.Skip))) { $FunctionParameters.Add('Skip', $PsBoundParameters.Skip) }
+                    If (-not ([System.String]::IsNullOrEmpty($UrlFull))) {
+                        $FunctionParameters.Add('Url', $UrlFull)
+                    }
+                    If (-not ([System.String]::IsNullOrEmpty($JCType.Method))) {
+                        $FunctionParameters.Add('Method', $JCType.Method)
+                    }
+                    If (-not ([System.String]::IsNullOrEmpty($Body))) {
+                        $FunctionParameters.Add('Body', $Body)
+                    }
+                    If (-not ([System.String]::IsNullOrEmpty($PsBoundParameters.Limit))) {
+                        $FunctionParameters.Add('Limit', $PsBoundParameters.Limit)
+                    }
+                    If (-not ([System.String]::IsNullOrEmpty($PsBoundParameters.Skip))) {
+                        $FunctionParameters.Add('Skip', $PsBoundParameters.Skip)
+                    }
                     If ($ReturnHashTable) {
                         $Values = $FieldsReturned
-                        $Key = If ($PropertyIdentifier) { $PropertyIdentifier } Else { $JCType.ById }
-                        If (-not ([System.String]::IsNullOrEmpty($Key))) { $FunctionParameters.Add('Key', $Key) }
-                        If (-not ([System.String]::IsNullOrEmpty($Values))) { $FunctionParameters.Add('Values', $Values) }
+                        $Key = If ($PropertyIdentifier) {
+                            $PropertyIdentifier
+                        } Else {
+                            $JCType.ById
+                        }
+                        If (-not ([System.String]::IsNullOrEmpty($Key))) {
+                            $FunctionParameters.Add('Key', $Key)
+                        }
+                        If (-not ([System.String]::IsNullOrEmpty($Values))) {
+                            $FunctionParameters.Add('Values', $Values)
+                        }
                     } Else {
-                        If (-not ([System.String]::IsNullOrEmpty($FieldsReturned))) { $FunctionParameters.Add('Fields', $FieldsReturned) }
-                        If (-not ([System.String]::IsNullOrEmpty($PsBoundParameters.Paginate))) { $FunctionParameters.Add('Paginate', $PsBoundParameters.Paginate) }
-                        If ($ReturnCount -eq $true) { $FunctionParameters.Add('ReturnCount', $ReturnCount) }
+                        If (-not ([System.String]::IsNullOrEmpty($FieldsReturned))) {
+                            $FunctionParameters.Add('Fields', $FieldsReturned)
+                        }
+                        If (-not ([System.String]::IsNullOrEmpty($PsBoundParameters.Paginate))) {
+                            $FunctionParameters.Add('Paginate', $PsBoundParameters.Paginate)
+                        }
+                        If ($ReturnCount -eq $true) {
+                            $FunctionParameters.Add('ReturnCount', $ReturnCount)
+                        }
                     }
                     # Run command
                     $Result = If ($ReturnHashTable -eq $true) {
@@ -174,6 +210,8 @@ Function Get-JCObject {
                             if ($dirResult.Name -eq $SearchByValueItem) {
                                 # if match on name, just API results to just be the single match
                                 $Result = $dirResult
+                            } else {
+                                $result = $result | Where-Object { $_ –ne $dirResult }
                             }
                         }
 
@@ -201,71 +239,33 @@ Function Get-JCObject {
                     $Results = Get-JCObject @PsBoundParameters
                 } Else {
                     If ($Results) {
-                        if (($Type -eq 'g_suite') -or ($Type -eq 'office_365')) {
-                            foreach ($res in $Results) {
-                                Write-Host "Res $($res.name)"
-                                if ($res.name -eq $SearchByValueItem) {
-                                    Write-Verbose "Results = $($Results)"
-                                    $ById = $JCType.ById
-                                    $ByName = $JCType.ByName
-                                    $TypeName = $JCType.TypeName
-                                    $TypeNameSingular = $TypeName.TypeNameSingular
-                                    $TypeNamePlural = $TypeName.TypeNamePlural
-                                    $Targets = $JCType.Targets
-                                    $TargetSingular = $Targets.TargetSingular
-                                    $TargetPlural = $Targets.TargetPlural
-                                    $Table = $JCType.Table
-                                    # List values to add to results
-                                    $HiddenProperties = @('ById', 'ByName', 'TypeName', 'TypeNameSingular', 'TypeNamePlural', 'Targets', 'TargetSingular', 'TargetPlural')
-                                    If (-not [System.String]::IsNullOrEmpty($PsBoundParameters.Table)) {
-                                        $Table = $JCType.Table
-                                        $HiddenProperties += 'Table'
-                                    }
-                                    # Append meta info to each result record
-                                    Get-Variable -Name:($HiddenProperties) |
-                                    ForEach-Object {
-                                        $Variable = $_
-                                        $res |
-                                        ForEach-Object {
-                                            Add-Member -InputObject:($_) -MemberType:('NoteProperty') -Name:($Variable.Name) -Value:($Variable.Value);
-                                        }
-                                    }
-                                    # Set the meta info to be hidden by default
-                                    $Results = Hide-ObjectProperty -Object:($Results) -HiddenProperties:($HiddenProperties)
-                                } else {
-                                    Write-Warning "Directory name $($SearchByValueItem) not found"
-                                }
-                            }
-                        } else {
-                            Write-Verbose "Results = $($Results)"
-                            $ById = $JCType.ById
-                            $ByName = $JCType.ByName
-                            $TypeName = $JCType.TypeName
-                            $TypeNameSingular = $TypeName.TypeNameSingular
-                            $TypeNamePlural = $TypeName.TypeNamePlural
-                            $Targets = $JCType.Targets
-                            $TargetSingular = $Targets.TargetSingular
-                            $TargetPlural = $Targets.TargetPlural
+                        Write-Verbose "Results = $($Results)"
+                        $ById = $JCType.ById
+                        $ByName = $JCType.ByName
+                        $TypeName = $JCType.TypeName
+                        $TypeNameSingular = $TypeName.TypeNameSingular
+                        $TypeNamePlural = $TypeName.TypeNamePlural
+                        $Targets = $JCType.Targets
+                        $TargetSingular = $Targets.TargetSingular
+                        $TargetPlural = $Targets.TargetPlural
+                        $Table = $JCType.Table
+                        # List values to add to results
+                        $HiddenProperties = @('ById', 'ByName', 'TypeName', 'TypeNameSingular', 'TypeNamePlural', 'Targets', 'TargetSingular', 'TargetPlural')
+                        If (-not [System.String]::IsNullOrEmpty($PsBoundParameters.Table)) {
                             $Table = $JCType.Table
-                            # List values to add to results
-                            $HiddenProperties = @('ById', 'ByName', 'TypeName', 'TypeNameSingular', 'TypeNamePlural', 'Targets', 'TargetSingular', 'TargetPlural')
-                            If (-not [System.String]::IsNullOrEmpty($PsBoundParameters.Table)) {
-                                $Table = $JCType.Table
-                                $HiddenProperties += 'Table'
-                            }
-                            # Append meta info to each result record
-                            Get-Variable -Name:($HiddenProperties) |
-                            ForEach-Object {
-                                $Variable = $_
-                                $Results |
-                                ForEach-Object {
-                                    Add-Member -InputObject:($_) -MemberType:('NoteProperty') -Name:($Variable.Name) -Value:($Variable.Value);
-                                }
-                            }
-                            # Set the meta info to be hidden by default
-                            $Results = Hide-ObjectProperty -Object:($Results) -HiddenProperties:($HiddenProperties)
+                            $HiddenProperties += 'Table'
                         }
-
+                        # Append meta info to each result record
+                        Get-Variable -Name:($HiddenProperties) |
+                        ForEach-Object {
+                            $Variable = $_
+                            $Results |
+                            ForEach-Object {
+                                Add-Member -InputObject:($_) -MemberType:('NoteProperty') -Name:($Variable.Name) -Value:($Variable.Value);
+                            }
+                        }
+                        # Set the meta info to be hidden by default
+                        $Results = Hide-ObjectProperty -Object:($Results) -HiddenProperties:($HiddenProperties)
                     }
                 }
             } Else {
