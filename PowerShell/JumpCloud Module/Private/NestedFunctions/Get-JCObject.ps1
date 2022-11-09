@@ -87,8 +87,8 @@ Function Get-JCObject {
                             }
                         }
                         If ($SearchBy -eq 'ByName') {
-                            Write-Verbose $Type
                             # Add filters for exact match and wildcards
+                            $funcParams = [ordered]@{ }
                             If ($SearchByValueItem -match '\*') {
                                 If ($JCType.SupportRegexFilter) {
                                     $BodyParts += ('"filter":[{"' + $PropertyIdentifier + '":{"$regex": "(?i)(' + $SearchByValueItem.Replace('*', ')(.*?)(') + ')"}}]').Replace('()', '')
@@ -126,6 +126,7 @@ Function Get-JCObject {
                 ForEach ($UrlItem In $UrlObject) {
                     $UrlFull = $UrlItem.UrlFull
                     $Body = $UrlItem.Body
+                    Write-Verbose "Url item = $($UrlItem.SearchByValueItem)"
                     $SearchByValueItem = $UrlItem.SearchByValueItem
                     $SearchBy = $UrlItem.SearchBy
                     If ($SearchBy -eq 'ByName') {
@@ -180,6 +181,11 @@ Function Get-JCObject {
                         Write-Warning ('The search value is blank or no "' + $JCType.TypeName.TypeNamePlural + '" have been setup in your org. SearchValue:"' + $SearchByValueItem + '"')
                     }
                 }
+
+                # if (($Type -eq 'g_suite') -or ($Type -eq 'office_365') -and $Result) {
+                #     Write-Verbose "This is the results "
+                #     $Results
+                # }
                 # Re-lookup object by id
                 If ($Results -and $SearchBy -eq 'ByName' -and $JCType.TypeName.TypeNameSingular -notin ('g_suite', 'office_365')) {
                     # Hacky logic to get g_suite and office_365 directories
@@ -190,32 +196,71 @@ Function Get-JCObject {
                     $Results = Get-JCObject @PsBoundParameters
                 } Else {
                     If ($Results) {
-                        $ById = $JCType.ById
-                        $ByName = $JCType.ByName
-                        $TypeName = $JCType.TypeName
-                        $TypeNameSingular = $TypeName.TypeNameSingular
-                        $TypeNamePlural = $TypeName.TypeNamePlural
-                        $Targets = $JCType.Targets
-                        $TargetSingular = $Targets.TargetSingular
-                        $TargetPlural = $Targets.TargetPlural
-                        $Table = $JCType.Table
-                        # List values to add to results
-                        $HiddenProperties = @('ById', 'ByName', 'TypeName', 'TypeNameSingular', 'TypeNamePlural', 'Targets', 'TargetSingular', 'TargetPlural')
-                        If (-not [System.String]::IsNullOrEmpty($PsBoundParameters.Table)) {
-                            $Table = $JCType.Table
-                            $HiddenProperties += 'Table'
-                        }
-                        # Append meta info to each result record
-                        Get-Variable -Name:($HiddenProperties) |
-                        ForEach-Object {
-                            $Variable = $_
-                            $Results |
-                            ForEach-Object {
-                                Add-Member -InputObject:($_) -MemberType:('NoteProperty') -Name:($Variable.Name) -Value:($Variable.Value);
+                        if (($Type -eq 'g_suite') -or ($Type -eq 'office_365')) {
+                            foreach ($res in $Results) {
+
+                                if ($res.name -eq $SearchByValueItem) {
+                                    Write-Verbose "Results = $($Results)"
+                                    $ById = $JCType.ById
+                                    $ByName = $JCType.ByName
+                                    $TypeName = $JCType.TypeName
+                                    $TypeNameSingular = $TypeName.TypeNameSingular
+                                    $TypeNamePlural = $TypeName.TypeNamePlural
+                                    $Targets = $JCType.Targets
+                                    $TargetSingular = $Targets.TargetSingular
+                                    $TargetPlural = $Targets.TargetPlural
+                                    $Table = $JCType.Table
+                                    # List values to add to results
+                                    $HiddenProperties = @('ById', 'ByName', 'TypeName', 'TypeNameSingular', 'TypeNamePlural', 'Targets', 'TargetSingular', 'TargetPlural')
+                                    If (-not [System.String]::IsNullOrEmpty($PsBoundParameters.Table)) {
+                                        $Table = $JCType.Table
+                                        $HiddenProperties += 'Table'
+                                    }
+                                    # Append meta info to each result record
+                                    Get-Variable -Name:($HiddenProperties) |
+                                    ForEach-Object {
+                                        $Variable = $_
+                                        $Results |
+                                        ForEach-Object {
+                                            Add-Member -InputObject:($_) -MemberType:('NoteProperty') -Name:($Variable.Name) -Value:($Variable.Value);
+                                        }
+                                    }
+                                    # Set the meta info to be hidden by default
+                                    $Results = Hide-ObjectProperty -Object:($Results) -HiddenProperties:($HiddenProperties)
+                                } else {
+                                    Write-Warning "Directory name $($SearchByValueItem) not found"
+                                }
                             }
+                        } else {
+                            Write-Verbose "Results = $($Results)"
+                            $ById = $JCType.ById
+                            $ByName = $JCType.ByName
+                            $TypeName = $JCType.TypeName
+                            $TypeNameSingular = $TypeName.TypeNameSingular
+                            $TypeNamePlural = $TypeName.TypeNamePlural
+                            $Targets = $JCType.Targets
+                            $TargetSingular = $Targets.TargetSingular
+                            $TargetPlural = $Targets.TargetPlural
+                            $Table = $JCType.Table
+                            # List values to add to results
+                            $HiddenProperties = @('ById', 'ByName', 'TypeName', 'TypeNameSingular', 'TypeNamePlural', 'Targets', 'TargetSingular', 'TargetPlural')
+                            If (-not [System.String]::IsNullOrEmpty($PsBoundParameters.Table)) {
+                                $Table = $JCType.Table
+                                $HiddenProperties += 'Table'
+                            }
+                            # Append meta info to each result record
+                            Get-Variable -Name:($HiddenProperties) |
+                            ForEach-Object {
+                                $Variable = $_
+                                $Results |
+                                ForEach-Object {
+                                    Add-Member -InputObject:($_) -MemberType:('NoteProperty') -Name:($Variable.Name) -Value:($Variable.Value);
+                                }
+                            }
+                            # Set the meta info to be hidden by default
+                            $Results = Hide-ObjectProperty -Object:($Results) -HiddenProperties:($HiddenProperties)
                         }
-                        # Set the meta info to be hidden by default
-                        $Results = Hide-ObjectProperty -Object:($Results) -HiddenProperties:($HiddenProperties)
+
                     }
                 }
             } Else {
