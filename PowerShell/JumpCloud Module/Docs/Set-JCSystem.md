@@ -13,9 +13,10 @@ Updates an existing JumpCloud System
 ## SYNTAX
 
 ```
-Set-JCSystem [-SystemID] <String> [-displayName <String>] [-allowSshPasswordAuthentication <Boolean>]
- [-allowSshRootLogin <Boolean>] [-allowMultiFactorAuthentication <Boolean>]
- [-allowPublicKeyAuthentication <Boolean>] [-systemInsights <Boolean>] [<CommonParameters>]
+Set-JCSystem [-SystemID] <String> [-displayName <String>] [-description <String>]
+ [-allowSshPasswordAuthentication <Boolean>] [-allowSshRootLogin <Boolean>]
+ [-allowMultiFactorAuthentication <Boolean>] [-allowPublicKeyAuthentication <Boolean>]
+ [-systemInsights <Boolean>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -90,6 +91,21 @@ A boolean $true/$false value to allow for ssh root login.
 
 ```yaml
 Type: System.Boolean
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -description
+The system description. String param to set system description
+
+```yaml
+Type: System.String
 Parameter Sets: (All)
 Aliases:
 
