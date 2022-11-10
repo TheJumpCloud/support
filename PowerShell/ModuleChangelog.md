@@ -1,7 +1,6 @@
 ## 2.1.0
 
-
-Release Date: October 28, 2022
+Release Date: November 9, 2022
 
 #### RELEASE NOTES
 
@@ -21,7 +20,8 @@ N/A
 
 #### BUG FIXES:
 
-Bug fix for Set-JCCommand where commandType, launchType, and timeout gets changed to default values
+- Bug fix for Set-JCCommand where commandType, launchType, and timeout gets changed to default values
+- Bug fix for Get-JCObject where some endpoints(radius_server, cloud directory) output incorrect values
 
 ## 2.0.1
 

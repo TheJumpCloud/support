@@ -39,8 +39,12 @@ Function Get-JCObject {
                     $SearchBy = $SearchBy
                     $SearchByValue = $SearchByValue
                     $PropertyIdentifier = Switch ($SearchBy) {
-                        'ById' { $JCType.ById };
-                        'ByName' { $JCType.ByName };
+                        'ById' {
+                            $JCType.ById
+                        };
+                        'ByName' {
+                            $JCType.ByName
+                        };
                     }
                 } ElseIf ($PSCmdlet.ParameterSetName -eq 'Default') {
                     # Populate url variables
@@ -68,6 +72,8 @@ Function Get-JCObject {
                 }
                 # Loop through each item passed in and build UrlObject
                 ForEach ($SearchByValueItem In $SearchByValue) {
+
+
                     If (!($PSCmdlet.ParameterSetName -eq 'Default')) {
                         $QueryStrings = @()
                         $BodyParts = @()
@@ -86,6 +92,7 @@ Function Get-JCObject {
                         }
                         If ($SearchBy -eq 'ByName') {
                             # Add filters for exact match and wildcards
+                            $funcParams = [ordered]@{ }
                             If ($SearchByValueItem -match '\*') {
                                 If ($JCType.SupportRegexFilter) {
                                     $BodyParts += ('"filter":[{"' + $PropertyIdentifier + '":{"$regex": "(?i)(' + $SearchByValueItem.Replace('*', ')(.*?)(') + ')"}}]').Replace('()', '')
@@ -93,14 +100,27 @@ Function Get-JCObject {
                                     Write-Error ('The endpoint ' + $UrlOut + ' does not support wildcards in the $SearchByValueItem. Please remove "*" from "' + $SearchByValueItem + '".')
                                 }
                             } Else {
-                                $QueryStrings += 'filter=' + $PropertyIdentifier + ':eq:' + $SearchByValueItem + '&fields=' + $JCType.ById
-                                $BodyParts += '"filter":[{"' + $PropertyIdentifier + '":"' + $SearchByValueItem + '"}]'
+                                if (($type -eq 'radius_server') -and ($PropertyIdentifier -eq 'name')) {
+                                    $QueryStrings += 'search[fields][0]=name&search[searchTerm]=' + $SearchByValueItem
+                                } else {
+                                    $QueryStrings += 'filter=' + $PropertyIdentifier + ':eq:' + $SearchByValueItem + '&fields=' + $JCType.ById
+                                    $BodyParts += '"filter":[{"' + $PropertyIdentifier + '":"' + $SearchByValueItem + '"}]'
+                                }
+
                             }
                         }
                     }
                     # Build url info
-                    $QueryString = If ($QueryStrings) { '?' + ($QueryStrings -join '&') } Else { $null };
-                    $Body = If ($BodyParts) { '{' + ($BodyParts -join ',') + '}' } Else { $null };
+                    $QueryString = If ($QueryStrings) {
+                        '?' + ($QueryStrings -join '&')
+                    } Else {
+                        $null
+                    };
+                    $Body = If ($BodyParts) {
+                        '{' + ($BodyParts -join ',') + '}'
+                    } Else {
+                        $null
+                    };
                     $UrlObject += [PSCustomObject]@{
                         'Type'              = $Type;
                         'SearchBy'          = $SearchBy;
@@ -118,6 +138,7 @@ Function Get-JCObject {
                 ForEach ($UrlItem In $UrlObject) {
                     $UrlFull = $UrlItem.UrlFull
                     $Body = $UrlItem.Body
+                    Write-Verbose "Url item = $($UrlItem.SearchByValueItem)"
                     $SearchByValueItem = $UrlItem.SearchByValueItem
                     $SearchBy = $UrlItem.SearchBy
                     If ($SearchBy -eq 'ByName') {
@@ -129,20 +150,44 @@ Function Get-JCObject {
                     # $UrlFull= ([uri]::EscapeDataString($UrlFull)
                     # Build function parameters
                     $FunctionParameters = [ordered]@{ }
-                    If (-not ([System.String]::IsNullOrEmpty($UrlFull))) { $FunctionParameters.Add('Url', $UrlFull) }
-                    If (-not ([System.String]::IsNullOrEmpty($JCType.Method))) { $FunctionParameters.Add('Method', $JCType.Method) }
-                    If (-not ([System.String]::IsNullOrEmpty($Body))) { $FunctionParameters.Add('Body', $Body) }
-                    If (-not ([System.String]::IsNullOrEmpty($PsBoundParameters.Limit))) { $FunctionParameters.Add('Limit', $PsBoundParameters.Limit) }
-                    If (-not ([System.String]::IsNullOrEmpty($PsBoundParameters.Skip))) { $FunctionParameters.Add('Skip', $PsBoundParameters.Skip) }
+                    If (-not ([System.String]::IsNullOrEmpty($UrlFull))) {
+                        $FunctionParameters.Add('Url', $UrlFull)
+                    }
+                    If (-not ([System.String]::IsNullOrEmpty($JCType.Method))) {
+                        $FunctionParameters.Add('Method', $JCType.Method)
+                    }
+                    If (-not ([System.String]::IsNullOrEmpty($Body))) {
+                        $FunctionParameters.Add('Body', $Body)
+                    }
+                    If (-not ([System.String]::IsNullOrEmpty($PsBoundParameters.Limit))) {
+                        $FunctionParameters.Add('Limit', $PsBoundParameters.Limit)
+                    }
+                    If (-not ([System.String]::IsNullOrEmpty($PsBoundParameters.Skip))) {
+                        $FunctionParameters.Add('Skip', $PsBoundParameters.Skip)
+                    }
                     If ($ReturnHashTable) {
                         $Values = $FieldsReturned
-                        $Key = If ($PropertyIdentifier) { $PropertyIdentifier } Else { $JCType.ById }
-                        If (-not ([System.String]::IsNullOrEmpty($Key))) { $FunctionParameters.Add('Key', $Key) }
-                        If (-not ([System.String]::IsNullOrEmpty($Values))) { $FunctionParameters.Add('Values', $Values) }
+                        $Key = If ($PropertyIdentifier) {
+                            $PropertyIdentifier
+                        } Else {
+                            $JCType.ById
+                        }
+                        If (-not ([System.String]::IsNullOrEmpty($Key))) {
+                            $FunctionParameters.Add('Key', $Key)
+                        }
+                        If (-not ([System.String]::IsNullOrEmpty($Values))) {
+                            $FunctionParameters.Add('Values', $Values)
+                        }
                     } Else {
-                        If (-not ([System.String]::IsNullOrEmpty($FieldsReturned))) { $FunctionParameters.Add('Fields', $FieldsReturned) }
-                        If (-not ([System.String]::IsNullOrEmpty($PsBoundParameters.Paginate))) { $FunctionParameters.Add('Paginate', $PsBoundParameters.Paginate) }
-                        If ($ReturnCount -eq $true) { $FunctionParameters.Add('ReturnCount', $ReturnCount) }
+                        If (-not ([System.String]::IsNullOrEmpty($FieldsReturned))) {
+                            $FunctionParameters.Add('Fields', $FieldsReturned)
+                        }
+                        If (-not ([System.String]::IsNullOrEmpty($PsBoundParameters.Paginate))) {
+                            $FunctionParameters.Add('Paginate', $PsBoundParameters.Paginate)
+                        }
+                        If ($ReturnCount -eq $true) {
+                            $FunctionParameters.Add('ReturnCount', $ReturnCount)
+                        }
                     }
                     # Run command
                     $Result = If ($ReturnHashTable -eq $true) {
@@ -152,6 +197,7 @@ Function Get-JCObject {
                     }
                     If ($JCType.TypeName.TypeNameSingular -in ('g_suite', 'office_365')) {
                         # Hacky logic to get g_suite and office_365 directories
+
                         If ($ReturnCount -eq $true) {
                             $Directory = $Result.results | Where-Object { $_.Type -eq $JCType.TypeName.TypeNameSingular }
                             $Result.totalCount = ($Directory | Measure-Object).Count
@@ -159,6 +205,16 @@ Function Get-JCObject {
                         } Else {
                             $Result = $Result | Where-Object { $_.Type -eq $JCType.TypeName.TypeNameSingular }
                         }
+                        # manual filter since the API doesn't support it
+                        foreach ($dirResult in $Result) {
+                            if ($dirResult.Name -eq $SearchByValueItem) {
+                                # if match on name, just API results to just be the single match
+                                $Result = $dirResult
+                            } else {
+                                $result = $result | Where-Object { $_ –ne $dirResult }
+                            }
+                        }
+
                     }
                     # Validate results
                     If ($Result -and $Result.PSObject.Properties.name -notcontains 'NoContent') {
@@ -172,6 +228,7 @@ Function Get-JCObject {
                         Write-Warning ('The search value is blank or no "' + $JCType.TypeName.TypeNamePlural + '" have been setup in your org. SearchValue:"' + $SearchByValueItem + '"')
                     }
                 }
+
                 # Re-lookup object by id
                 If ($Results -and $SearchBy -eq 'ByName' -and $JCType.TypeName.TypeNameSingular -notin ('g_suite', 'office_365')) {
                     # Hacky logic to get g_suite and office_365 directories
@@ -182,6 +239,7 @@ Function Get-JCObject {
                     $Results = Get-JCObject @PsBoundParameters
                 } Else {
                     If ($Results) {
+                        Write-Verbose "Results = $($Results)"
                         $ById = $JCType.ById
                         $ByName = $JCType.ByName
                         $TypeName = $JCType.TypeName
