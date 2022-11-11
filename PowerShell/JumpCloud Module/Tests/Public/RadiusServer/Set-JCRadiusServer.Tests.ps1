@@ -36,7 +36,12 @@ Describe -Tag:('JCRadiusServer') 'Set-JCRadiusServer 1.15.3' {
     BeforeAll {
         $PesterParams_RadiusServer = Get-JCRadiusServer -Name:($PesterParams_RadiusServer.name)
         If (-not $PesterParams_RadiusServer) {
-            $PesterParams_RadiusServer = New-JCRadiusServer @PesterParams_NewRadiusServer
+            try {
+                $PesterParams_RadiusServer = New-JCRadiusServer @PesterParams_NewRadiusServer
+            } catch {
+                $PesterParams_NewRadiusServer.networkSourceIp = [IPAddress]::Parse([String](Get-Random)).IPAddressToString
+                $PesterParams_RadiusServer = New-JCRadiusServer @PesterParams_NewRadiusServer
+            }
         }
     }
     Context 'Set-JCRadiusServer params' {
