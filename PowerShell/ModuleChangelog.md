@@ -10,7 +10,7 @@ Release Date: November 9, 2022
 
 #### FEATURES:
 
-N/A
+Get/Set-JCSystem support for description field
 
 #### IMPROVEMENTS:
 
@@ -22,6 +22,7 @@ N/A
 
 - Bug fix for Set-JCCommand where commandType, launchType, and timeout gets changed to default values
 - Bug fix for Get-JCObject where some endpoints(radius_server, cloud directory) output incorrect values
+- Bug fix for Get-JCRadiusServer/ Set-JCRadiusServer where authID was being reset
 
 ## 2.0.1
 
