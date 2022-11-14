@@ -92,7 +92,6 @@ Function Get-JCObject {
                         }
                         If ($SearchBy -eq 'ByName') {
                             # Add filters for exact match and wildcards
-                            $funcParams = [ordered]@{ }
                             If ($SearchByValueItem -match '\*') {
                                 If ($JCType.SupportRegexFilter) {
                                     $BodyParts += ('"filter":[{"' + $PropertyIdentifier + '":{"$regex": "(?i)(' + $SearchByValueItem.Replace('*', ')(.*?)(') + ')"}}]').Replace('()', '')
