@@ -145,7 +145,7 @@ Function Get-JCSystem () {
         [Parameter(
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'SearchFilter',
-            HelpMessage = 'A parameter that can filter on the property ''created'' or ''lastContact''. Only inactive systems will be returned when using the lastContact filter. This parameter if used creates two more dynamic parameters ''dateFilter'' and ''date''. See EXAMPLE 5 above for full syntax.')]
+            HelpMessage = 'A parameter that can filter on the property ''created'' or ''lastContact''. This parameter if used creates two more dynamic parameters ''dateFilter'' and ''date''. See EXAMPLE 5 above for full syntax.')]
         [ValidateSet('created', 'lastContact')]
         [String]$filterDateProperty,
 
@@ -292,6 +292,9 @@ Function Get-JCSystem () {
                             }
                             after {
                                 $DateQuery = '$gt'
+
+                                # Workaround for querying by lastContact does not return active devices
+                                ($Search.filter) = @{ "or" = @(@{ "active" = $true }) }
                             }
                         }
                         continue
@@ -326,21 +329,82 @@ Function Get-JCSystem () {
                 } # End foreach
 
                 if ($filterDateProperty) {
-                    (($Search.filter).GetEnumerator()).add($DateProperty, @{$DateQuery = $Timestamp })
-                }
+                    if ($DateQuery -eq '$gt') {
+                        (($Search.filter).Item("or")) += @{$DateProperty = @{$DateQuery = $Timestamp } }
 
-                $SearchJSON = $Search | ConvertTo-Json -Compress -Depth 4
+                        $SearchJSON = $Search | ConvertTo-Json -Compress -Depth 4
+                        Write-Debug $SearchJSON
+                        $URL = "$JCUrlBasePath/api/search/systems"
 
-                Write-Debug $SearchJSON
+                        if ($Parallel) {
+                            $dateFilterList = Get-JCResults -URL $URL -method "POST" -limit $limit -body $SearchJSON -Parallel $true
+                        } else {
+                            $dateFilterList = Get-JCResults -URL $URL -method "POST" -limit $limit -body $SearchJSON
+                        }
 
-                $URL = "$JCUrlBasePath/api/search/systems"
+                        # Gather list of devices that match the date filter
+                        $dateFilterList = $dateFilterList | Select-Object -ExcludeProperty associatedTagCount, id, sshRootEnabled
 
-                if ($Parallel) {
-                    $resultsArrayList = Get-JCResults -URL $URL -method "POST" -limit $limit -body $SearchJSON -Parallel $true
+                        # Find and remove the date parameters from bound parameters
+                        $dateParameters = @("filterDateProperty", "dateFilter", "date")
+                        $UpdatedBoundParameters = $PSBoundParameters
+                        foreach ($dateParam in $dateParameters) {
+                            $UpdatedBoundParameters.GetEnumerator() | ForEach-Object {
+                                if ($_.key -match $dateParam) {
+                                    $UpdatedBoundParameters.Remove($_.key) | Out-Null
+                                }
+                            }
+                        }
+
+                        # Remove variables that interfere with recursive call
+                        $removeVariables = @("filterDateProperty")
+                        $removeVariables | Foreach-Object {
+                            Remove-Variable -Name $_ | Out-Null
+                        }
+
+                        # Use updated bound parameters to splat new query
+                        $otherSystemList = Get-JCSystem @UpdatedBoundParameters
+
+                        # if no results are returned from the new query, return nothing
+                        if (!$otherSystemList) {
+                            return $null
+                        } else {
+                            # iterate through lists to look for matches, return matches
+                            $otherSystemList | ForEach-Object {
+                                if ($dateFilterList._id -contains $_._id) {
+                                    $resultsArrayList.Add($_)
+                                }
+                            }
+                        }
+                        $resultsArrayList = $resultsArrayList | Sort-Object -Property lastContact -Descending
+                    } else {
+                        (($Search.filter).GetEnumerator()).add($DateProperty, @{$DateQuery = $Timestamp })
+
+                        $SearchJSON = $Search | ConvertTo-Json -Compress -Depth 4
+
+                        Write-Debug $SearchJSON
+
+                        $URL = "$JCUrlBasePath/api/search/systems"
+
+                        if ($Parallel) {
+                            $resultsArrayList = Get-JCResults -URL $URL -method "POST" -limit $limit -body $SearchJSON -Parallel $true
+                        } else {
+                            $resultsArrayList = Get-JCResults -URL $URL -method "POST" -limit $limit -body $SearchJSON
+                        }
+                    }
                 } else {
-                    $resultsArrayList = Get-JCResults -URL $URL -method "POST" -limit $limit -body $SearchJSON
-                }
+                    $SearchJSON = $Search | ConvertTo-Json -Compress -Depth 4
 
+                    Write-Debug $SearchJSON
+
+                    $URL = "$JCUrlBasePath/api/search/systems"
+
+                    if ($Parallel) {
+                        $resultsArrayList = Get-JCResults -URL $URL -method "POST" -limit $limit -body $SearchJSON -Parallel $true
+                    } else {
+                        $resultsArrayList = Get-JCResults -URL $URL -method "POST" -limit $limit -body $SearchJSON
+                    }
+                }
             } #End search
 
             ByID {
