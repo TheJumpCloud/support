@@ -376,6 +376,7 @@ Function Get-JCSystem () {
                                 }
                             }
                         }
+                        $resultsArrayList = $resultsArrayList | Sort-Object -Property lastContact -Descending
                     } else {
                         (($Search.filter).GetEnumerator()).add($DateProperty, @{$DateQuery = $Timestamp })
 
