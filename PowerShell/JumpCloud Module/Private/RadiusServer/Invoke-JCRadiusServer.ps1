@@ -25,7 +25,7 @@ Function Invoke-JCRadiusServer {
             If ($Action -in ('add', 'new')) {
                 $Method = 'POST'
                 # Build body to be sent to RadiusServers endpoint.
-                $JsonBody = '{"name":"' + $Name + '","networkSourceIp":"' + $networkSourceIp + '","sharedSecret":"' + $sharedSecret + '"}'
+                $JsonBody = '{"name":"' + $Name + '","networkSourceIp":"' + $networkSourceIp + '","sharedSecret":"' + $sharedSecret + '","authIdp":"' + $authIdp + '"}'
                 $Results = Invoke-JCApi -Method:($Method) -Url:($Uri_RadiusServers) -Body:($JsonBody)
             } Else {
                 $JCObject = Switch ($PSCmdlet.ParameterSetName) {
@@ -67,13 +67,28 @@ Function Invoke-JCRadiusServer {
                         $Uri_RadiusServers = $Uri_RadiusServers + '/' + $JCObject.($JCObject.ById)
                         $Method = 'PUT'
                         # Build Json body
-                        If (!($newName)) { $newName = $JCObject.($JCObject.ByName) }
-                        If (!($networkSourceIp)) { $networkSourceIp = $JCObject.networkSourceIp }
-                        If (!($sharedSecret)) { $sharedSecret = $JCObject.sharedSecret }
-                        If (!($mfa)) { $mfa = $JCObject.mfa }
-                        If (!($userLockoutAction)) { $userLockoutAction = $JCObject.userLockoutAction }
-                        If (!($userPasswordExpirationAction)) { $userPasswordExpirationAction = $JCObject.userPasswordExpirationAction }
-                        $JsonBody = '{"name":"' + $newName + '","networkSourceIp":"' + $networkSourceIp + '","sharedSecret":"' + $sharedSecret + '","mfa":"' + $mfa + '","userLockoutAction":"' + $userLockoutAction + '","userPasswordExpirationAction":"' + $userPasswordExpirationAction + '"}'
+                        If (!($newName)) {
+                            $newName = $JCObject.($JCObject.ByName)
+                        }
+                        If (!($networkSourceIp)) {
+                            $networkSourceIp = $JCObject.networkSourceIp
+                        }
+                        If (!($sharedSecret)) {
+                            $sharedSecret = $JCObject.sharedSecret
+                        }
+                        If (!($mfa)) {
+                            $mfa = $JCObject.mfa
+                        }
+                        If (!($userLockoutAction)) {
+                            $userLockoutAction = $JCObject.userLockoutAction
+                        }
+                        If (!($userPasswordExpirationAction)) {
+                            $userPasswordExpirationAction = $JCObject.userPasswordExpirationAction
+                        }
+                        If (!($authIdp)) {
+                            $authIdp = $JCObject.authIdp
+                        }
+                        $JsonBody = '{"name":"' + $newName + '","networkSourceIp":"' + $networkSourceIp + '","sharedSecret":"' + $sharedSecret + '","mfa":"' + $mfa + '","userLockoutAction":"' + $userLockoutAction + '","userPasswordExpirationAction":"' + $userPasswordExpirationAction + '","authIdp":"' + $authIdp + '"}'
                         $Results = Invoke-JCApi -Method:($Method) -Url:($Uri_RadiusServers) -Body:($JsonBody)
                     } Else {
                         Write-Error ('Unknown $Action specified.')

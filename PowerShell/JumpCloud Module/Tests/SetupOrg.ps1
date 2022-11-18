@@ -64,52 +64,53 @@ Try {
     # Setup org
     $PesterParamsHash_BuildOrg = @{
         # Newly created objects
-        User1          = New-JCUser @PesterParams_NewUser1
-        User2          = New-JCUser @PesterParams_NewUser2
-        UserGroup      = New-JCUserGroup @PesterParams_NewUserGroup
-        SystemGroup    = New-JCSystemGroup @PesterParams_NewSystemGroup
-        RadiusServer   = New-JCRadiusServer @PesterParams_NewRadiusServer
-        Command1       = New-JCCommand @PesterParams_NewCommand1
-        Command2       = New-JCCommand @PesterParams_NewCommand2
-        Command3       = New-JCCommand @PesterParams_NewCommand3
-        Command4       = New-JCCommand @PesterParams_NewCommand4
-        Command5       = New-JCCommand @PesterParams_NewCommand5
-        Command6       = New-JCCommand @PesterParams_NewCommand6
+        User1             = New-JCUser @PesterParams_NewUser1
+        User2             = New-JCUser @PesterParams_NewUser2
+        UserGroup         = New-JCUserGroup @PesterParams_NewUserGroup
+        SystemGroup       = New-JCSystemGroup @PesterParams_NewSystemGroup
+        RadiusServer      = New-JCRadiusServer @PesterParams_NewRadiusServer
+        RadiusAzureServer = New-JCRadiusServer @PesterParams_NewAzureRadiusServer
+        Command1          = New-JCCommand @PesterParams_NewCommand1
+        Command2          = New-JCCommand @PesterParams_NewCommand2
+        Command3          = New-JCCommand @PesterParams_NewCommand3
+        Command4          = New-JCCommand @PesterParams_NewCommand4
+        Command5          = New-JCCommand @PesterParams_NewCommand5
+        Command6          = New-JCCommand @PesterParams_NewCommand6
         # Get info for things that have already been setup within the org. TODO dynamically create these
         # Add systems: Windows, Mac, and Linux
         # Create 2 new policies and assign policy to system
-        Org            = Get-JCOrganization
-        SinglePolicy   = Get-JCPolicy -Name:($PesterParams_SinglePolicyList)
-        MultiplePolicy = Get-JCPolicy -Name:($PesterParams_MultiplePolicyList)
-        SystemLinux    = Get-JCSystem -displayName:($PesterParams_SystemNameLinux)
-        SystemMac      = Get-JCSystem -displayName:($PesterParams_SystemNameMac)
-        SystemWindows  = Get-JCSystem -displayName:($PesterParams_SystemNameWindows)
-        CommandResults = Get-JCCommandResult
+        Org               = Get-JCOrganization
+        SinglePolicy      = Get-JCPolicy -Name:($PesterParams_SinglePolicyList)
+        MultiplePolicy    = Get-JCPolicy -Name:($PesterParams_MultiplePolicyList)
+        SystemLinux       = Get-JCSystem -displayName:($PesterParams_SystemNameLinux)
+        SystemMac         = Get-JCSystem -displayName:($PesterParams_SystemNameMac)
+        SystemWindows     = Get-JCSystem -displayName:($PesterParams_SystemNameWindows)
+        CommandResults    = Get-JCCommandResult
     }
 
     $PesterParamsHash_Associations = @{
         PolicySystemGroupMembership   = $PesterParamsHash_BuildOrg.MultiplePolicy | ForEach-Object {
             If (-not (Get-JCAssociation -Type:('policy') -Id:($_.id) -TargetType:('system_group') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.SystemGroup.id })) {
-                New-JCAssociation -Type:('policy') -Id:($_.id) -TargetType:('system_group') -TargetId:($PesterParamsHash_BuildOrg.SystemGroup.id) -force; 
+                New-JCAssociation -Type:('policy') -Id:($_.id) -TargetType:('system_group') -TargetId:($PesterParamsHash_BuildOrg.SystemGroup.id) -force;
             };
         };
         UserGroupMembership           = If (-not (Get-JCAssociation -Type:('user_group') -Id:($PesterParamsHash_BuildOrg.UserGroup.id) -TargetType:('user') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.User1.id })) {
-            New-JCAssociation -Type:('user_group') -Id:($PesterParamsHash_BuildOrg.UserGroup.id) -TargetType:('user') -TargetId:($PesterParamsHash_BuildOrg.User1.id) -force; 
+            New-JCAssociation -Type:('user_group') -Id:($PesterParamsHash_BuildOrg.UserGroup.id) -TargetType:('user') -TargetId:($PesterParamsHash_BuildOrg.User1.id) -force;
         };
         SystemUserMembership          = If (-not (Get-JCAssociation -Type:('system') -Id:($PesterParamsHash_BuildOrg.SystemLinux._id) -TargetType:('user') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.User1.id })) {
-            New-JCAssociation -Type:('system') -Id:($PesterParamsHash_BuildOrg.SystemLinux._id) -TargetType:('user') -TargetId:($PesterParamsHash_BuildOrg.User1.id) -force; 
+            New-JCAssociation -Type:('system') -Id:($PesterParamsHash_BuildOrg.SystemLinux._id) -TargetType:('user') -TargetId:($PesterParamsHash_BuildOrg.User1.id) -force;
         };
         SystemPolicyMembership        = If (-not (Get-JCAssociation -Type:('system') -Id:($PesterParamsHash_BuildOrg.SystemLinux._id) -TargetType:('policy') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.SinglePolicy.id })) {
-            New-JCAssociation -Type:('system') -Id:($PesterParamsHash_BuildOrg.SystemLinux._id) -TargetType:('policy') -TargetId:($PesterParamsHash_BuildOrg.SinglePolicy.id) -force; 
+            New-JCAssociation -Type:('system') -Id:($PesterParamsHash_BuildOrg.SystemLinux._id) -TargetType:('policy') -TargetId:($PesterParamsHash_BuildOrg.SinglePolicy.id) -force;
         };
         Command1SystemGroupMembership = If (-not (Get-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command1._id) -TargetType:('system_group') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.SystemGroup.id })) {
-            New-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command1._id) -TargetType:('system_group') -TargetId:($PesterParamsHash_BuildOrg.SystemGroup.id) -force; 
+            New-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command1._id) -TargetType:('system_group') -TargetId:($PesterParamsHash_BuildOrg.SystemGroup.id) -force;
         };
         Command2SystemGroupMembership = If (-not (Get-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command2._id) -TargetType:('system_group') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.SystemGroup.id })) {
-            New-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command2._id) -TargetType:('system_group') -TargetId:($PesterParamsHash_BuildOrg.SystemGroup.id) -force; 
+            New-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command2._id) -TargetType:('system_group') -TargetId:($PesterParamsHash_BuildOrg.SystemGroup.id) -force;
         };
         Command3SystemGroupMembership = If (-not (Get-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command3._id) -TargetType:('system_group') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.SystemGroup.id })) {
-            New-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command3._id) -TargetType:('system_group') -TargetId:($PesterParamsHash_BuildOrg.SystemGroup.id) -force; 
+            New-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command3._id) -TargetType:('system_group') -TargetId:($PesterParamsHash_BuildOrg.SystemGroup.id) -force;
         };
     }
     # Generate command results if they dont exist

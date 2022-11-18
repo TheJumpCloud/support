@@ -41,10 +41,10 @@ Function Get-JCResults {
         try {
             if ($body) {
                 $ProgressPreference = "SilentlyContinue"
-                $response = Invoke-WebRequest -Method $method -Body $body -Uri $limitURL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
+                $response = Invoke-WebRequest -Method $method -Body $body -Uri $limitURL -Headers $hdrs -UserAgent:(Get-JCUserAgent) -UseBasicParsing
             } else {
                 $ProgressPreference = "SilentlyContinue"
-                $response = Invoke-WebRequest -Method $method -Uri $limitURL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
+                $response = Invoke-WebRequest -Method $method -Uri $limitURL -Headers $hdrs -UserAgent:(Get-JCUserAgent) -UseBasicParsing
             }
 
         } catch {
@@ -120,7 +120,7 @@ Function Get-JCResults {
                                 $updatedBody = $updatedBody | ConvertTo-Json -Compress -Depth 4
                             }
                             # Collect results and add to threadsafe array
-                            $response = Invoke-WebRequest -Method $using:method -Body $updatedBody -Uri $limitURL -Headers $using:hdrs -MaximumRetryCount 5 -RetryIntervalSec 5 -UserAgent:($using:GetJCUserAgent)
+                            $response = Invoke-WebRequest -Method $using:method -Body $updatedBody -Uri $limitURL -Headers $using:hdrs -MaximumRetryCount 5 -RetryIntervalSec 5 -UserAgent:($using:GetJCUserAgent) -UseBasicParsing
                         } catch {
                             # If error is encountered, add error object to threadsafe error array
                             $errorResults.Enqueue($_.ToString())
@@ -140,7 +140,7 @@ Function Get-JCResults {
                     } else {
                         try {
                             # Collect results and add to threadsafe array
-                            $response = Invoke-WebRequest -Method $using:method -Uri $limitURL -Headers $using:hdrs -MaximumRetryCount 5 -RetryIntervalSec 5 -UserAgent:($using:GetJCUserAgent)
+                            $response = Invoke-WebRequest -Method $using:method -Uri $limitURL -Headers $using:hdrs -MaximumRetryCount 5 -RetryIntervalSec 5 -UserAgent:($using:GetJCUserAgent) -UseBasicParsing
                         } catch {
                             # If error is encountered, add error object to threadsafe error array
                             $errorResults.Enqueue($_.ToString())
@@ -204,14 +204,14 @@ Function Get-JCResults {
                             $body = $body | ConvertTo-Json -Compress -Depth 4
                         }
                         $ProgressPreference = "SilentlyContinue"
-                        $response = Invoke-WebRequest -Method $method -Body $body -Uri $limitURL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
+                        $response = Invoke-WebRequest -Method $method -Body $body -Uri $limitURL -Headers $hdrs -UserAgent:(Get-JCUserAgent) -UseBasicParsing
                     } catch {
                         throw $_
                     }
                 } else {
                     try {
                         $ProgressPreference = "SilentlyContinue"
-                        $response = Invoke-WebRequest -Method $method -Uri $limitURL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
+                        $response = Invoke-WebRequest -Method $method -Uri $limitURL -Headers $hdrs -UserAgent:(Get-JCUserAgent) -UseBasicParsing
                     } catch {
                         throw $_
                     }

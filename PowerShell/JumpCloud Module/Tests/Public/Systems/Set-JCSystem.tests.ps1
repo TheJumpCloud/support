@@ -56,3 +56,20 @@ Describe -Tag:('JCSystem') 'Set-JCSystem 1.0' {
         $Update.systemInsights.state | Should -Be "enabled"
     }
 }
+Describe -Tag:('JCSystem') "Get-JCSystem 2.1.0" {
+    BeforeAll {
+        # Reset Description
+        $systems = Get-JCSystem | Where-Object { $_.description -ne "" }
+        foreach ($system in $systems) {
+            Set-JCSystem -SystemID $system._id -description ""
+        }
+    }
+    It "Gets/ Sets a JumpCloud system by description" {
+        $descriptionText = "Pester"
+        $systemBfore = Set-JCSystem -SystemID $($PesterParams_SystemWindows._id) -description $descriptionText
+        $FoundSystem = Get-JCSystem -description $descriptionText
+        $FoundSystem._id | Should -Be $($PesterParams_SystemWindows._id)
+        # Return system to
+        Set-JCSystem -SystemId $($PesterParams_SystemWindows._id) -description $systemBfore.description
+    }
+}

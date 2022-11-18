@@ -41,14 +41,6 @@ New-JCModuleManifest -Path:($FilePath_psd1) `
     -RootModule:((Get-Item -Path:($FilePath_psm1)).Name) `
     -ModuleVersion:($ModuleVersion)
 # EndRegion Building New-JCModuleManifest
-# Region Updating module banner
-Write-Host ('[status]Updating module banner: "' + $FilePath_ModuleBanner + '"')
-$ModuleBanner = Get-Content -Path:($FilePath_ModuleBanner)
-$NewModuleBannerRecord = New-ModuleBanner -LatestVersion:($ModuleVersion) -BannerCurrent:('{{Fill in the Banner Current}}') -BannerOld:('{{Fill in the Banner Old}}')
-If (!(($ModuleBanner | Select-Object -Index 3) -match $ModuleVersion)) {
-    $NewModuleBannerRecord.Trim() | Set-Content -Path:($FilePath_ModuleBanner) -Force
-}
-# EndRegion Updating module banner
 # Region Updating module change log
 Write-Host ('[status]Updating module change log: "' + $FilePath_ModuleChangelog + '"')
 $ModuleChangelog = Get-Content -Path:($FilePath_ModuleChangelog)

@@ -14,13 +14,13 @@ Returns all JumpCloud Systems within a JumpCloud tenant or a single JumpCloud Sy
 
 ### SearchFilter (Default)
 ```
-Get-JCSystem [[-hostname] <String>] [-displayName <String>] [-version <String>] [-templateName <String>]
- [-os <String>] [-remoteIP <String>] [-serialNumber <String>] [-arch <String>] [-agentVersion <String>]
- [-systemTimezone <String>] [-active <Boolean>] [-allowMultiFactorAuthentication <Boolean>]
- [-allowPublicKeyAuthentication <Boolean>] [-allowSshPasswordAuthentication <Boolean>]
- [-allowSshRootLogin <Boolean>] [-modifySSHDConfig <Boolean>] [-hasServiceAccount <Boolean>]
- [-filterDateProperty <String>] [-returnProperties <String[]>] -dateFilter <String> -date <DateTime>
- [<CommonParameters>]
+Get-JCSystem [[-hostname] <String>] [-displayName <String>] [-description <String>] [-version <String>]
+ [-templateName <String>] [-os <String>] [-remoteIP <String>] [-serialNumber <String>] [-arch <String>]
+ [-agentVersion <String>] [-systemTimezone <String>] [-active <Boolean>]
+ [-allowMultiFactorAuthentication <Boolean>] [-allowPublicKeyAuthentication <Boolean>]
+ [-allowSshPasswordAuthentication <Boolean>] [-allowSshRootLogin <Boolean>] [-modifySSHDConfig <Boolean>]
+ [-hasServiceAccount <Boolean>] [-filterDateProperty <String>] [-returnProperties <String[]>]
+ -dateFilter <String> -date <DateTime> [<CommonParameters>]
 ```
 
 ### ByID
@@ -220,6 +220,21 @@ Required: True
 Position: Named
 Default value: None
 Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -description
+A search filter to search systems by the description.
+
+```yaml
+Type: System.String
+Parameter Sets: SearchFilter
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 

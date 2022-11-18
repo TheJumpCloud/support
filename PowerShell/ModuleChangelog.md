@@ -1,25 +1,29 @@
-## 2.0.2
+## 2.1.0
 
-Release Date: October 12, 2022
+Release Date: November 9, 2022
 
 #### RELEASE NOTES
 
 ```
-- This release fixes an issue to Set-JCCommand where commandType, launchType, and timeout goes back to default values
-- This release fixes linting/formatting issues for PSModule code and added OTBS code formatting to Powershell files
+- This release adds description field parameter to Set-JCSystem and search by description to Get-JCSystem
 ```
 
 #### FEATURES:
 
-N/A
+Get/Set-JCSystem support for description field
 
 #### IMPROVEMENTS:
 
-N/A
+- Description parameter added to Get and Set-JCSystem
+- Added -Force switch parameter that populates New-JCImportTemplate with all headers when user update or new user CSV is created
+- Additional reporting added to Backup-JCOrganization. If failed tasks are detected, the status of the function should report which tasks failed
+- Get-JCSystem -filterDateProperty lastContact will now return active systems
 
 #### BUG FIXES:
 
-Bug fix for Set-JCCommand where commandType, launchType, and timeout gets changed to default values
+- Bug fix for Set-JCCommand where commandType, launchType, and timeout gets changed to default values
+- Bug fix for Get-JCObject where some endpoints(radius_server, cloud directory) output incorrect values
+- Bug fix for Get-JCRadiusServer/ Set-JCRadiusServer where authID was being reset
 
 ## 2.0.1
 
