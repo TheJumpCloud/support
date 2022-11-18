@@ -17,6 +17,7 @@ Get/Set-JCSystem support for description field
 - Description parameter added to Get and Set-JCSystem
 - Added -Force switch parameter that populates New-JCImportTemplate with all headers when user update or new user CSV is created
 - Additional reporting added to Backup-JCOrganization. If failed tasks are detected, the status of the function should report which tasks failed
+- Get-JCSystem -filterDateProperty lastContact will now return active systems
 
 #### BUG FIXES:
 
