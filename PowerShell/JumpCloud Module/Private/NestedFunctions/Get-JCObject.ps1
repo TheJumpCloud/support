@@ -210,7 +210,7 @@ Function Get-JCObject {
                                 # if match on name, just API results to just be the single match
                                 $Result = $dirResult
                             } else {
-                                $result = $result | Where-Object { $_ -ne $dirResult }
+                                $result = $result | Where-Object { $_ –ne $dirResult }
                             }
                         }
 
