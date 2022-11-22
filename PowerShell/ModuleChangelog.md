@@ -1,17 +1,3 @@
-## 2.1.1
-
-Release Date: November 22, 2022
-
-#### RELEASE NOTES
-
-```
-- Fixed an issue with Get-JCObject
-```
-
-#### BUG FIXES:
-
-- Removed an incorrect unicode character that was causing a failure with Importing the module, specifically with the Get-JCObject function
-
 ## 2.1.0
 
 Release Date: November 9, 2022
