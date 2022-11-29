@@ -12,15 +12,16 @@ Function Get-PipelinePositionBefore {
         $functionArray
     )
     begin {
+        $occursBefore = $false
 
     }
     process {
-        $occursBefore = $false
         for ($i = 0; $i -le $functionArray.count; $i++) {
-            $functionArray[$i].Function
             if (($functionArray[$i].Function -match $before) -and ($functionArray[$i + 1].Function -match $after)) {
-                $setAfterGet = $true
+                $occursBefore = $true
             }
+
+
         }
 
     }

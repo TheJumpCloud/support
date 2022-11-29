@@ -440,7 +440,7 @@ Function Get-JCSystem () {
         # finally determine pipeline info
         $pipelineLength, $functions = Get-PipelineDetails -line $MyInvocation.Line
         $setAfterGet = Get-PipelinePositionBefore -before "Get-JCSystem" -after "Set-JCSystem" -functionArray $functions
-        if (($PipelineLength -gt 1) -And ($setAfterGet)) {
+        if (($PipelineLength -gt 1) -And ($setAfterGet -eq $true)) {
             $SIstate = switch ($resultsArrayList.systemInsights.state) {
                 'enabled' {
                     $true
