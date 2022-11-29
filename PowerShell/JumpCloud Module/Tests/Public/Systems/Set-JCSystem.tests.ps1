@@ -56,7 +56,7 @@ Describe -Tag:('JCSystem') 'Set-JCSystem 1.0' {
         $Update.systemInsights.state | Should -Be "enabled"
     }
 }
-Describe -Tag:('JCSystem') "Get-JCSystem 2.1.0" {
+Describe -Tag:('JCSystem') "Get-JCSystem 2.1.0 & 2.1.2" {
     BeforeAll {
         # Reset Description
         $systems = Get-JCSystem | Where-Object { $_.description -ne "" }
@@ -69,7 +69,14 @@ Describe -Tag:('JCSystem') "Get-JCSystem 2.1.0" {
         $systemBfore = Set-JCSystem -SystemID $($PesterParams_SystemWindows._id) -description $descriptionText
         $FoundSystem = Get-JCSystem -description $descriptionText
         $FoundSystem._id | Should -Be $($PesterParams_SystemWindows._id)
-        # Return system to
+        # Return system to orig state
+        Set-JCSystem -SystemId $($PesterParams_SystemWindows._id) -description $systemBfore.description
+    }
+    It "Sets a System using a pipeline without throwing" {
+        $descriptionText = "Pester"
+        $systemBfore = Set-JCSystem -SystemID $($PesterParams_SystemWindows._id) -description $descriptionText
+        { Get-JCSystem -description $descriptionText | Set-JCSystem -description "Modified" } | Should -Not Throw
+        # Return system to orig state
         Set-JCSystem -SystemId $($PesterParams_SystemWindows._id) -description $systemBfore.description
     }
 }

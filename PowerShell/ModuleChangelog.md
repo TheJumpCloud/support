@@ -1,3 +1,17 @@
+## 2.1.2
+
+Release Date: November 22, 2022
+
+#### RELEASE NOTES
+
+```
+- Fixed an issue with passing pipeline data from Get-JCSystem to Set-JCsystem
+```
+
+#### BUG FIXES:
+
+- Set-JCSystem would throw error regarding systemInsights when using data passed via Get-JCSystem pipeline
+
 ## 2.1.1
 
 Release Date: November 22, 2022
