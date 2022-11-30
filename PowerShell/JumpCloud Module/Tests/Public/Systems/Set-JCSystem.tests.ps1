@@ -75,7 +75,7 @@ Describe -Tag:('JCSystem') "Get-JCSystem 2.1.0 & 2.1.2" {
     It "Sets a System using a pipeline without throwing" {
         $descriptionText = "Pester"
         $systemBfore = Set-JCSystem -SystemID $($PesterParams_SystemWindows._id) -description $descriptionText
-        { Get-JCSystem -description $descriptionText | Set-JCSystem -description "Modified" } | Should -Not Throw
+        { Get-JCSystem -description $descriptionText | Set-JCSystem -description "Modified" } | Should -Not -Throw
         # Return system to orig state
         Set-JCSystem -SystemId $($PesterParams_SystemWindows._id) -description $systemBfore.description
     }
