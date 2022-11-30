@@ -14,8 +14,9 @@ Function Get-PipelineDetails {
     Process {
         foreach ($pipe in $pipelines) {
             # trim whitespace
-            $pipe = $pipe.TrimStart(" ")
-            $functionName = $pipe -match '^([\S]+)'
+            $function = $pipe.replace('{', '').replace('}', '')
+            $function = $function.TrimStart(" ")
+            $functionName = $function -match '^([\S]+)'
             if ($matches) {
                 # add functionName $matches[0] and position
                 $funcArray += [PSCustomObject]@{
