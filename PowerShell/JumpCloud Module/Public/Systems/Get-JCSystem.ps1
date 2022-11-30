@@ -440,6 +440,25 @@ Function Get-JCSystem () {
     } # End process
 
     end {
+        # finally determine pipeline info
+        $pipelineLength, $functions = Get-PipelineDetails -line $MyInvocation.Line
+        $setAfterGet = Get-PipelinePositionBefore -before "Get-JCSystem" -after "Set-JCSystem" -functionArray $functions
+        if ($pipelineLength -gt 1) {
+            if (($resultsArrayList.Count -ne 0) -And ($setAfterGet -eq $true)) {
+                foreach ($item in $resultsArrayList) {
+                    $itemSysInsightsState = switch ($item.systemInsights.state) {
+                        'enabled' {
+                            $true
+                        }
+                        'deferred' {
+                            $false
+                        }
+                    }
+                    $item.systemInsights = $itemSysInsightsState
+                }
+            }
+        }
+
         switch ($PSCmdlet.ParameterSetName) {
             SearchFilter {
                 return $resultsArrayList | Select-Object -ExcludeProperty associatedTagCount, id, sshRootEnabled
