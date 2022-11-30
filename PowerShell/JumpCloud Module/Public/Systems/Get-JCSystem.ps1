@@ -343,7 +343,7 @@ Function Get-JCSystem () {
                         }
 
                         # Gather list of devices that match the date filter
-                        $dateFilterList = $dateFilterList | Select-Object -ExcludeProperty associatedTagCount, id, sshRootEnabled
+                        $dateFilterList = $dateFilterList | Select-Object -ExcludeProperty associatedTagCount, sshRootEnabled
 
                         # Find and remove the date parameters from bound parameters
                         $dateParameters = @("filterDateProperty", "dateFilter", "date")
@@ -461,7 +461,7 @@ Function Get-JCSystem () {
 
         switch ($PSCmdlet.ParameterSetName) {
             SearchFilter {
-                return $resultsArrayList | Select-Object -ExcludeProperty associatedTagCount, id, sshRootEnabled
+                return $resultsArrayList | Select-Object -ExcludeProperty associatedTagCount, sshRootEnabled
             }
             ByID {
                 return $resultsArrayList | Select-Object -ExcludeProperty associatedTagCount
