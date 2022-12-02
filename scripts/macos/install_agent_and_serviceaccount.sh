@@ -216,7 +216,7 @@ else
   # Install Rosetta2 for M1 (Apple Silicon) Macs
   installRosettaForM1
 
-  curl --silent --output /tmp/jumpcloud-agent.pkg "https://s3.amazonaws.com/jumpcloud-windows-agent/production/jumpcloud-agent.pkg" >/dev/null
+  curl --silent --output /tmp/jumpcloud-agent.pkg "https://cdn.jumpcloud.com/production/jumpcloud-agent.pkg" >/dev/null
   mkdir -p /opt/jc
   cat <<-EOF >/opt/jc/agentBootstrap.json
 {

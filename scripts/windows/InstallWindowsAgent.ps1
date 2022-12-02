@@ -20,7 +20,7 @@ $msvc2013x86Install = "$TempPath$msvc2013x86File /install /quiet /norestart"
 $msvc2013x64Install = "$TempPath$msvc2013x64File /install /quiet /norestart"
 $AGENT_PATH = "${env:ProgramFiles}\JumpCloud"
 $AGENT_BINARY_NAME = "JumpCloud-agent.exe"
-$AGENT_INSTALLER_URL = "https://s3.amazonaws.com/jumpcloud-windows-agent/production/JumpCloudInstaller.exe"
+$AGENT_INSTALLER_URL = "https://cdn.jumpcloud.com/production/JumpCloudInstaller.exe"
 $AGENT_INSTALLER_PATH = "C:\windows\Temp\JumpCloudInstaller.exe"
 
 # JumpCloud Agent Installation Functions
