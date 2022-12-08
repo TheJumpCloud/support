@@ -1,6 +1,6 @@
 #### Name
 
-Mac - Install JumpCloud Password Manager App | v1.0 JCCG
+Mac - Install JumpCloud Password Manager App | v1.1 JCCG
 
 #### commandType
 
@@ -11,9 +11,7 @@ mac
 ```
 #!/bin/bash
 
-# Set launch_app to false if you do not wish to launch the password manger after installation
-
-launch_app=true
+# This script will install password manager in Users/$user/Applications for all user accounts
 
 DownloadUrl="https://cdn.pwm.jumpcloud.com/DA/release/JumpCloud-Password-Manager-latest.dmg"
 
@@ -49,6 +47,8 @@ else
     fi
 
 fi
+
+
 
 #Create Temp Folder
 DATE=$(date '+%Y-%m-%d-%H-%M-%S')
@@ -120,29 +120,18 @@ cd ~
 
 echo "Located App: $AppName"
 
-# Test to ensure App is not already installed
-
-ExistingSearch=$(find "/Applications/" -name "$AppName" -depth 1)
-
-if [ -n "$ExistingSearch" ]; then
-
-    echo "$AppName already present in /Applications folder"
-    hdiutil detach $DMGMountPoint
-    echo "Used hdiutil to detach $DMGFile from $DMGMountPoint"
-    rm -r /tmp/$TempFolder
-    echo "Deleted /tmp/$TempFolder"
-    exit 1
-
-else
-
-    echo "$AppName not present in /Applications folder"
-fi
 
 DMGAppPath=$(find "$DMGVolume" -name "*.app" -depth 1)
 
-# Copy the contents of the DMG file to /Applications/
+
+for user in $(dscl . list /Users | grep -vE 'root|daemon|nobody|^_')
+do
+#Create ~/Applications folder
+mkdir /Users/$user/Applications
+
+# Copy the contents of the DMG file to /Users/$user/Applications/
 # Preserves all file attributes and ACLs
-cp -pPR "$DMGAppPath" /Applications/
+cp -pPR "$DMGAppPath" /Users/$user/Applications/
 
 err=$?
 if [ ${err} -ne 0 ]; then
@@ -154,7 +143,12 @@ if [ ${err} -ne 0 ]; then
     exit 1
 fi
 
-echo "Copied $DMGAppPath to /Applications"
+echo "Copied $DMGAppPath to /Users/$user/Applications"
+
+# Create an alias on desktop
+ln -s /Users/$user/Applications/JumpCloud\ Password\ Manager.app /Users/$user/Desktop/JumpCloud\ Password\ Manager.app
+done
+
 
 # Unmount the DMG file
 hdiutil detach $DMGMountPoint
@@ -171,19 +165,6 @@ rm -r /tmp/$TempFolder
 
 echo "Deleted /tmp/$TempFolder"
 
-# Launch App
-if [ "$launch_app" = true ] ; then
-    apptest=$("/Applications/JumpCloud Password Manager.app")
-    until [ -f $apptest ]
-    do
-        echo "JumpCloud Password Manager.app not installed"
-        sleep 5
-    done
-    echo "JumpCloud Password Manager.app installed"
-    currentUser=$( echo "show State:/Users/ConsoleUser" | scutil | awk '/Name :/ { print $3 }' )
-    echo "Launching app for signed in user: $currentUser"
-    sudo -u "$currentUser" open -a "JumpCloud Password Manager"
-fi
 
 exit
 ```
