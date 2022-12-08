@@ -126,27 +126,35 @@ DMGAppPath=$(find "$DMGVolume" -name "*.app" -depth 1)
 
 for user in $(dscl . list /Users | grep -vE 'root|daemon|nobody|^_')
 do
-#Create ~/Applications folder
-mkdir /Users/$user/Applications
+    if [[ -d /Users/$user ]]; then
+        # Create ~/Applications folder
+        if [[ ! -d /Users/$user/Applications ]]; then
+            mkdir /Users/$user/Applications
+        fi
+        if [[ -d /Users/$user/Applications/JumpCloud\ Password\ Manager.app ]]; then
+            # remove if exists
+            rm -rf /Users/$user/Applications/JumpCloud\ Password\ Manager.app
+        fi
 
-# Copy the contents of the DMG file to /Users/$user/Applications/
-# Preserves all file attributes and ACLs
-cp -pPR "$DMGAppPath" /Users/$user/Applications/
+        # Copy the contents of the DMG file to /Users/$user/Applications/
+        # Preserves all file attributes and ACLs
+        cp -pPR "$DMGAppPath" /Users/$user/Applications/
 
-err=$?
-if [ ${err} -ne 0 ]; then
-    echo "Could not copy $DMGAppPath Error: ${err}"
-    hdiutil detach $DMGMountPoint
-    echo "Used hdiutil to detach $DMGFile from $DMGMountPoint"
-    rm -r /tmp/$TempFolder
-    echo "Deleted /tmp/$TempFolder"
-    exit 1
-fi
+        err=$?
+        if [ ${err} -ne 0 ]; then
+            echo "Could not copy $DMGAppPath Error: ${err}"
+            hdiutil detach $DMGMountPoint
+            echo "Used hdiutil to detach $DMGFile from $DMGMountPoint"
+            rm -r /tmp/$TempFolder
+            echo "Deleted /tmp/$TempFolder"
+            exit 1
+        fi
 
-echo "Copied $DMGAppPath to /Users/$user/Applications"
+        echo "Copied $DMGAppPath to /Users/$user/Applications"
 
-# Create an alias on desktop
-ln -s /Users/$user/Applications/JumpCloud\ Password\ Manager.app /Users/$user/Desktop/JumpCloud\ Password\ Manager.app
+        # Create an alias on desktop
+        ln -s /Users/$user/Applications/JumpCloud\ Password\ Manager.app /Users/$user/Desktop/JumpCloud\ Password\ Manager.app
+    fi
 done
 
 
@@ -164,7 +172,6 @@ fi
 rm -r /tmp/$TempFolder
 
 echo "Deleted /tmp/$TempFolder"
-
 
 exit
 ```
