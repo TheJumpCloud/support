@@ -6,3 +6,10 @@
 *support.wiki
 # Ignore Config
 /PowerShell/JumpCloud Module/Config.Json
+# Ignore Radius Certs
+/scripts/automation/Radius/*/*.pem
+/scripts/automation/Radius/*/*.crt
+/scripts/automation/Radius/*/*.key
+/scripts/automation/Radius/*/*.csr
+/scripts/automation/Radius/*/*.pfx
+/scripts/automation/Radius/*/*.srl

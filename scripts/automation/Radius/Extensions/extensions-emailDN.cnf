@@ -1,0 +1,6 @@
+[req]
+req_extensions = v3_req
+[v3_req]
+keyUsage = digitalSignature
+extendedKeyUsage = clientAuth
+authorityInfoAccess = OCSP;URI:http://localhost:9000
