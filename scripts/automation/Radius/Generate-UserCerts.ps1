@@ -1,15 +1,5 @@
-# READ ONLY API KEY
-$JCAPIKEY = 'yourAPIKey'
-$JCORGID = 'yourOrgID'
-# JUMPCLOUD USER GROUP
-$JCUSERGROUP = '5f808a1bb544064831f7c9fd'
-
-# Cert Type Generation Options:
-# Chose One Of:
-# EmailSAN
-# EmailDn
-# UsernameCn (Default)
-$CertType = "UsernameCn"
+# Import Global Config:
+. "$psscriptroot/config.ps1"
 
 ################################################################################
 # Do not modify below
@@ -29,6 +19,7 @@ function get-GroupMembership {
         $limit = 100
         $headers = @{
             "x-api-key" = $JCAPIKEY
+            "x-org-id"  = $JCORGID
         }
         $paginate = $true
         $list = @()
@@ -62,6 +53,7 @@ function get-systemAssociation {
         $paginate = $true
         $headers = @{
             "x-api-key" = $JCAPIKEY
+            "x-org-id"  = $JCORGID
         }
         $list = @()
     }
@@ -90,6 +82,7 @@ function get-webjcuser {
     begin {
         $headers = @{
             "x-api-key" = $JCAPIKEY
+            "x-org-id"  = $JCORGID
         }
     }
     process {
@@ -113,18 +106,6 @@ function Generate-UserCert {
         [ValidateSet("EmailSAN", "EmailDn", "UsernameCN")]
         [system.String]
         $CertType,
-        # Specifies a path to one or more locations.
-        [Parameter(Mandatory = $true,
-            HelpMessage = "Path to one or more locations.")]
-        [ValidateNotNullOrEmpty()]
-        [string]
-        $CertOutputPath,
-        # Specifies a path to one or more locations.
-        [Parameter(Mandatory = $true,
-            HelpMessage = "Path to one or more locations.")]
-        [ValidateNotNullOrEmpty()]
-        [string]
-        $ExtensionPath,
         [Parameter(Mandatory = $true,
             HelpMessage = "Path to one or more locations.")]
         [ValidateNotNullOrEmpty()]
@@ -135,56 +116,84 @@ function Generate-UserCert {
         [ValidateNotNullOrEmpty()]
         [string]
         $rootCA,
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true,
+            HelpMessage = "User Object Containing, id, username, email")]
         [System.Object]
         $user
     )
     begin {
-
-
+        if (-Not (Test-Path -Path $rootCAKey)) {
+            Throw "RootCAKey could not be found in project direcotry, have you run Generate-Cert.ps1?"
+            exit 1
+        }
+        if (-Not (Test-Path -Path $rootCA)) {
+            Throw "RootCA could not be found in project direcotry, have you run Generate-Cert.ps1?"
+            exit 1
+        }
     }
     process {
-
-        #TODO: variable for OU/subj structure
+        # Set Extension Path
+        $ExtensionPath = "$psscriptroot/Extensions/extensions-$($CertType).cnf"
+        # Generate User Certificate Signing Request:
         $userCSR = "$psscriptroot/UserCerts/$($user.username)-cert-req.csr"
-        openssl req -nodes -new -key $rootCAKey -passin pass:$($JCORGID) -out "$($userCSR)" -subj "/C=US/ST=Virginia/L=Leesburg/O=61082856bc4bee4ea56d0dfa/OU=IT Department/CN=MyOrg.com"
+        openssl req -nodes -new -key $rootCAKey -passin pass:$($JCORGID) -out "$($userCSR)" -subj "/C=$($subj.countryCode)/ST=$($subj.stateCode)/L=$($subj.Locality)/O=$($JCORGID)/OU=$($subj.OrganizationUnit)/CN=$($subj.CommonName)"
+        # Set key, crt, pfx variables:
+        $userKey = "$psscriptroot/UserCerts/$($user.username)-$($CertType)-client-signed.key"
+        $userCert = "$psscriptroot/UserCerts/$($user.username)-$($CertType)-client-signed-cert.crt"
+        $userPfx = "$psscriptroot/UserCerts/$($user.username)-client-signed.pfx"
 
         switch ($CertType) {
             'EmailSAN' {
+                # replace extension subjectAltName
+                $extContent = Get-Content -Path $ExtensionPath -Raw
+                $extContent -replace ("subjectAltName.*", "subjectAltName = email:$($user.email)") | Set-Content -Path $ExtensionPath -NoNewline -Force
+                # Create Client cert with email in the subject distinguished name
+                openssl genrsa -out $userKey 2048 2>/dev/null
+                openssl req -new -key $userKey -out $userCSR -config $ExtensionPath -subj "$($userCSR)" -subj "/C=$($subj.countryCode)/ST=$($subj.stateCode)/L=$($subj.Locality)/O=$($JCORGID)/OU=$($subj.OrganizationUnit)" 2>/dev/null
+                openssl x509 -req -in $userCSR -CA $rootCA -CAkey $rootCAKey -days 30 -CAcreateserial -passin pass:$($JCORGID) -out $userCert -extfile $ExtensionPath 2>/dev/null
+
+                # Combine key and cert to create pfx file
+                openssl pkcs12 -export -out $userPfx -inkey $userKey -in $userCert -passout pass:$($JCORGID) 2>/dev/null
+
+                # Output
+                openssl x509 -noout -text -in $userCert 2>/dev/null
+                openssl pkcs12 -clcerts -nokeys -in $userPfx -passin pass:$($JCORGID) 2>/dev/null
             }
             'EmailDn' {
+                # Create Client cert with email in the subject distinguished name
+                openssl genrsa -out $userKey 2048 -noout
+                openssl req -new -key $userKey -out $userCsr -config $ExtensionPath -subj "$($userCSR)" -subj "/C=$($subj.countryCode)/ST=$($subj.stateCode)/L=$($subj.Locality)/O=$($JCORGID)/OU=$($subj.OrganizationUnit)/CN=/emailAddress=$($user.email)"
+                openssl x509 -req -in $userCsr -CA $rootCA -CAkey $rootCAKey -days 30 -passin pass:$($JCORGID) -CAcreateserial -out $userCert -extfile $ExtensionPath
+
+                # Combine key and cert to create pfx file
+                openssl pkcs12 -export -out $userPfx -inkey $userKey -in $userCert -passout pass:$($JCORGID)
+
+                # Output
+                openssl x509 -noout -text -in $userCert
+                openssl pkcs12 -clcerts -nokeys -in $userPfx -passin pass:$($JCORGID)
             }
             'UsernameCN' {
-                $userKey = "$psscriptroot/UserCerts/$($user.username)-client-signed.key"
-                $userCert = "$psscriptroot/UserCerts/$($user.username)-client-signed-cert.crt"
-                $userPfx = "$psscriptroot/UserCerts/$($user.username)-client-signed.pfx"
-
+                # Create Client cert with email in the subject distinguished name
                 openssl genrsa -out $userKey 2048
-                openssl req -new -key $userKey -out $userCSR -config $ExtensionPath -subj "/C=US/ST=Virginia/L=Leesburg/O=MyOrg/OU=Sales-Radius-Access/CN=$($user.username)"
+                openssl req -new -key $userKey -out $userCSR -config $ExtensionPath -subj "$($userCSR)" -subj "/C=$($subj.countryCode)/ST=$($subj.stateCode)/L=$($subj.Locality)/O=$($JCORGID)/OU=$($subj.OrganizationUnit)/CN=$($user.username)"
                 openssl x509 -req -in $userCSR -CA $rootCA -CAkey $rootCAKey -days 30 -CAcreateserial -passin pass:$($JCORGID) -out $userCert -extfile $ExtensionPath
 
                 # Combine key and cert to create pfx file
-                # openssl pkcs12 -export -out $userPfx -inkey $userKey -in $userCert -passout pass:$($JCORGID)# -legacy
                 openssl pkcs12 -export -out $userPfx -inkey $userKey -in $userCert -inkey $userKey -passout pass:$($JCORGID)
-                # -legacy
-                # openssl pkcs12 -export -out basicDemo-username-client-signed.pfx -inkey basicDemo-username-client-signed.key -in basicDemo-username-client-signed-cert.crt -passout pass:password
+
                 # Output
                 openssl x509 -noout -text -in $userCert
-
                 openssl pkcs12 -clcerts -nokeys -in $userPfx -passin pass:$($JCORGID)
-
-
-
-
-                # openssl x509 -req -in "$($userCSR)" -CA $rootCAK -CAkey $rootCAKey -days 30  -CAcreateserial -out $userCERT -subj "/C=US/ST=Colorado/L=Boulder/O=MyOrg/OU=Unit#1/CN=UserRoger" -extensions v3_req -extfile $ExtensionPath
-
-                # openssl x509 -in $userCERT -noout -text
-
             }
         }
 
     }
     end {
+        # Clean Up User Certs Directory remove non .crt files
+        $userCertFiles = Get-ChildItem -Path "$PSScriptRoot/UserCerts"
+        $userCertFiles | Where-Object { $_.Name -notmatch ".crt" } | ForEach-Object {
+            Remove-Item -path $_.fullname
+        }
 
     }
 }
@@ -194,21 +203,24 @@ function Generate-UserCert {
 
 # Get user membership of group
 $groupMembers = Get-GroupMembership -groupID $JCUSERGROUP
+if ($groupMembers) {
+    Write-Host "[status] Found $($groupmembers.count) users in Radius User Group"
+}
 # Get users associated with this system
 # $SystemAssociations = Get-systemAssociation -systemID $systemKey
 
 # Create UserCerts dir
 if (Test-Path "$PSScriptRoot/UserCerts") {
-    Write-Host "User Cert Directory Exists"
+    Write-Host "[status] User Cert Directory Exists"
 } else {
-    Write-Host "Creating User Cert Directory"
+    Write-Host "[status] Creating User Cert Directory"
     New-Item -ItemType Directory -Path "$PSScriptRoot/UserCerts"
 }
 
 # if user from group is on the system, continue with script:
 foreach ($user in $groupMembers) {
     # Create the User Certs
-    write-host $user.id
     $MatchedUser = get-webjcuser -userID $user.id
-    Generate-UserCert -CertType 'UsernameCN' -CertOutputPath "$psscriptroot/UserCerts" -ExtensionPath "$psscriptroot/Extensions/extensions-usernameCN.cnf" -user $MatchedUser -rootCAKey "$psscriptroot/Cert/selfsigned-ca-key.pem" -rootCA "$psscriptroot/Cert/selfsigned-ca-cert.pem"
+    write-host "Generating Cert for user: $($MatchedUser.username)"
+    Generate-UserCert -CertType $CertType -user $MatchedUser -rootCAKey "$psscriptroot/Cert/selfsigned-ca-key.pem" -rootCA "$psscriptroot/Cert/selfsigned-ca-cert.pem"
 }

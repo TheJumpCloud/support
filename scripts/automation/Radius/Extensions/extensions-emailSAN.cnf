@@ -13,4 +13,7 @@ CN = www.company.com
 [v3_req]
 keyUsage = digitalSignature
 extendedKeyUsage = clientAuth
+#For Client cert with email in the subject alternative name
+subjectAltName = email:username@domain.com
+
 authorityInfoAccess = OCSP;URI:http://localhost:9000
