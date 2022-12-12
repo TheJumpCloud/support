@@ -148,16 +148,16 @@ function Generate-UserCert {
                 $extContent = Get-Content -Path $ExtensionPath -Raw
                 $extContent -replace ("subjectAltName.*", "subjectAltName = email:$($user.email)") | Set-Content -Path $ExtensionPath -NoNewline -Force
                 # Create Client cert with email in the subject distinguished name
-                openssl genrsa -out $userKey 2048 2>/dev/null
-                openssl req -new -key $userKey -out $userCSR -config $ExtensionPath -subj "$($userCSR)" -subj "/C=$($subj.countryCode)/ST=$($subj.stateCode)/L=$($subj.Locality)/O=$($JCORGID)/OU=$($subj.OrganizationUnit)" 2>/dev/null
-                openssl x509 -req -in $userCSR -CA $rootCA -CAkey $rootCAKey -days 30 -CAcreateserial -passin pass:$($JCORGID) -out $userCert -extfile $ExtensionPath 2>/dev/null
+                openssl genrsa -out $userKey 2048
+                openssl req -new -key $userKey -out $userCSR -config $ExtensionPath -subj "$($userCSR)" -subj "/C=$($subj.countryCode)/ST=$($subj.stateCode)/L=$($subj.Locality)/O=$($JCORGID)/OU=$($subj.OrganizationUnit)"
+                openssl x509 -req -in $userCSR -CA $rootCA -CAkey $rootCAKey -days 30 -CAcreateserial -passin pass:$($JCORGID) -out $userCert -extfile $ExtensionPath
 
                 # Combine key and cert to create pfx file
-                openssl pkcs12 -export -out $userPfx -inkey $userKey -in $userCert -passout pass:$($JCORGID) 2>/dev/null
+                openssl pkcs12 -export -out $userPfx -inkey $userKey -in $userCert -passout pass:$($JCORGID)
 
                 # Output
-                openssl x509 -noout -text -in $userCert 2>/dev/null
-                openssl pkcs12 -clcerts -nokeys -in $userPfx -passin pass:$($JCORGID) 2>/dev/null
+                openssl x509 -noout -text -in $userCert
+                openssl pkcs12 -clcerts -nokeys -in $userPfx -passin pass:$($JCORGID)
             }
             'EmailDn' {
                 # Create Client cert with email in the subject distinguished name
