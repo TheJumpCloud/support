@@ -4,13 +4,15 @@ $JCAPIKEY = 'yourApiKey'
 $JCORGID = 'yourOrgId'
 # JUMPCLOUD USER GROUP
 $JCUSERGROUP = '635079e21490b90001eb275b'
-# Enter Cert Subject Headers:
+# USER CERT PASSWORD (user must enter this when importing cert)
+$JCUSERCERTPASS = 'secret1234!'
+# Enter Cert Subject Headers (do not enter strings with spaces)
 $Subj = [PSCustomObject]@{
     countryCode      = "US"
     stateCode        = "CO"
     Locality         = "Boulder"
     Organization     = "JumpCloud"
-    OrganizationUnit = "Solutions Architecture"
+    OrganizationUnit = "Solutions_Architecture"
     CommonName       = "JumpCloud.com"
 }
 
@@ -19,4 +21,4 @@ $Subj = [PSCustomObject]@{
 # EmailSAN
 # EmailDN
 # UsernameCn (Default)
-$CertType = "EmailSAN"
+$CertType = "UsernameCn"

@@ -63,7 +63,7 @@ With the certificate authority generated, the user certs can then be generated. 
 
 `./Generate-UserCerts.ps1`
 
-The script will go fetch all users found in the user group specified in `config.ps1`. For each user in the group, a certificate will be generated in the `/UserCerts` directory.
+The script will go fetch all users found in the user group specified in `config.ps1`. For each user in the group, a `.pfx` certificate will be generated in the `/UserCerts` directory.
 
 Each user will then need to install their respective certificate on their devices.
 

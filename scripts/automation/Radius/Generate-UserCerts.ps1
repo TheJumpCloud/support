@@ -153,11 +153,11 @@ function Generate-UserCert {
                 openssl x509 -req -in $userCSR -CA $rootCA -CAkey $rootCAKey -days 30 -CAcreateserial -passin pass:$($JCORGID) -out $userCert -extfile $ExtensionPath
 
                 # Combine key and cert to create pfx file
-                openssl pkcs12 -export -out $userPfx -inkey $userKey -in $userCert -passout pass:$($JCORGID)
+                openssl pkcs12 -export -out $userPfx -inkey $userKey -in $userCert -passout pass:$($JCUSERCERTPASS)
 
                 # Output
                 openssl x509 -noout -text -in $userCert
-                openssl pkcs12 -clcerts -nokeys -in $userPfx -passin pass:$($JCORGID)
+                openssl pkcs12 -clcerts -nokeys -in $userPfx -passin pass:$($JCUSERCERTPASS)
             }
             'EmailDn' {
                 # Create Client cert with email in the subject distinguished name
@@ -166,11 +166,11 @@ function Generate-UserCert {
                 openssl x509 -req -in $userCsr -CA $rootCA -CAkey $rootCAKey -days 30 -passin pass:$($JCORGID) -CAcreateserial -out $userCert -extfile $ExtensionPath
 
                 # Combine key and cert to create pfx file
-                openssl pkcs12 -export -out $userPfx -inkey $userKey -in $userCert -passout pass:$($JCORGID)
+                openssl pkcs12 -export -out $userPfx -inkey $userKey -in $userCert -passout pass:$($JCUSERCERTPASS)
 
                 # Output
                 openssl x509 -noout -text -in $userCert
-                openssl pkcs12 -clcerts -nokeys -in $userPfx -passin pass:$($JCORGID)
+                openssl pkcs12 -clcerts -nokeys -in $userPfx -passin pass:$($JCUSERCERTPASS)
             }
             'UsernameCN' {
                 # Create Client cert with email in the subject distinguished name
@@ -179,21 +179,21 @@ function Generate-UserCert {
                 openssl x509 -req -in $userCSR -CA $rootCA -CAkey $rootCAKey -days 30 -CAcreateserial -passin pass:$($JCORGID) -out $userCert -extfile $ExtensionPath
 
                 # Combine key and cert to create pfx file
-                openssl pkcs12 -export -out $userPfx -inkey $userKey -in $userCert -inkey $userKey -passout pass:$($JCORGID)
+                openssl pkcs12 -export -out $userPfx -inkey $userKey -in $userCert -inkey $userKey -passout pass:$($JCUSERCERTPASS)
 
                 # Output
                 openssl x509 -noout -text -in $userCert
-                openssl pkcs12 -clcerts -nokeys -in $userPfx -passin pass:$($JCORGID)
+                openssl pkcs12 -clcerts -nokeys -in $userPfx -passin pass:$($JCUSERCERTPASS)
             }
         }
 
     }
     end {
         # Clean Up User Certs Directory remove non .crt files
-        $userCertFiles = Get-ChildItem -Path "$PSScriptRoot/UserCerts"
-        $userCertFiles | Where-Object { $_.Name -notmatch ".crt" } | ForEach-Object {
-            Remove-Item -path $_.fullname
-        }
+        # $userCertFiles = Get-ChildItem -Path "$PSScriptRoot/UserCerts"
+        # $userCertFiles | Where-Object { $_.Name -notmatch ".crt" } | ForEach-Object {
+        #     Remove-Item -path $_.fullname
+        # }
 
     }
 }
