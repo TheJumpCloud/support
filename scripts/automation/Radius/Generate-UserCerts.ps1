@@ -7,6 +7,28 @@
 
 # functions
 ################################################################################
+function Get-OpenSSLVerion {
+    begin {
+        $version = openssl version
+        $dictionary = @{
+            LibreSSL = [version]"2.8.3"
+            OpenSSL  = [version]"3.0.0"
+        }
+        # Determine Libre or Open SSL:
+        if ($version -match "LibreSSL|OpenSSL") {
+            $Type = $Matches[0]
+            [version]$Version = (Select-String -InputObject $version -Pattern "([0-9]+)\.([0-9]+)\.([0-9]+)").matches.value
+        }
+    }
+    process {
+        if ($version -lt $dictionary[$Type]) {
+            Throw "The installed version of OpenSSL: $Type $Version, does not meet the requirements of this application, please install a later version of at least $Type $Version"
+            exit 1
+        } else {
+            Write-Host "$Type $Version is installed and meets required version for this application"
+        }
+    }
+}
 function get-GroupMembership {
     [CmdletBinding()]
     param (
@@ -200,6 +222,8 @@ function Generate-UserCert {
 
 # main
 ################################################################################
+# Validate OpenSSL Version
+Get-OpenSSLVerion
 
 # Get user membership of group
 $groupMembers = Get-GroupMembership -groupID $JCUSERGROUP
