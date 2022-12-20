@@ -12,6 +12,8 @@ if ( ([System.String]::IsNullOrEmpty($JCORGID)) -Or ($JCORGID.Length -ne 24) ) {
 # Do Not Edit Below:
 ################################################################################
 cd $PSSCRIPTROOT
+$opensslBinary = '/usr/local/Cellar/openssl@3/3.0.7/bin/openssl'
+
 # REM Generate Root Server Private Key and server certificate (self signed as CA)
 Write-Host "Generating Self Signed Root CA Certificate"
 if (test-path -path "$PSSCRIPTROOT/Cert") {
@@ -22,9 +24,9 @@ if (test-path -path "$PSSCRIPTROOT/Cert") {
 }
 $outKey = "$psscriptroot/Cert/selfsigned-ca-key.pem"
 $outCA = "$psscriptroot/Cert/selfsigned-ca-cert.pem"
-openssl req -x509 -newkey rsa:2048 -days 365 -keyout $outKey -out $outCA -passout pass:$($JCORGID) -subj "/C=$($Subj.countryCode)/ST=$($Subj.stateCode)/L=$($Subj.Locality)/O=$($Subj.Organization)/OU=$($Subj.OrganizationUnit)/CN=$($Subj.CommonName)"
+Invoke-Expression "$opensslBinary req -x509 -newkey rsa:2048 -days 365 -keyout $outKey -out $outCA -passout pass:$($JCORGID) -subj /C=$($Subj.countryCode)/ST=$($Subj.stateCode)/L=$($Subj.Locality)/O=$($Subj.Organization)/OU=$($Subj.OrganizationUnit)/CN=$($Subj.CommonName)"
 # REM PEM pass phrase: myorgpass
-openssl x509 -in $outCA -noout -text
+Invoke-Expression "$opensslBinary x509 -in $outCA -noout -text"
 # openssl x509 -in ca-cert.pem -noout -text
 # Update Extensions Distinguished Names:
 $exts = Get-ChildItem -Path "$PSSCRIPTROOT/Extensions"
