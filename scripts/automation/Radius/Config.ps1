@@ -9,6 +9,8 @@ $JCUSERCERTPASS = 'secret1234!'
 # USER CERT Validity Length (days)
 $JCUSERCERTVALIDITY = 365
 # OpenSSLBinary by default this is (openssl)
+# NOTE: If openssl does not work, try using the full path to the openssl file
+# Example: C:\Program Files\OpenSSL-Win64\bin\openssl.exe
 $opensslBinary = 'openssl'
 # Enter Cert Subject Headers (do not enter strings with spaces)
 $Subj = [PSCustomObject]@{
@@ -37,15 +39,14 @@ function Get-OpenSSLVersion {
     )
     begin {
         try {
-            $version = openssl version
+            $version = Invoke-Expression "$opensslBinary version"
         } catch {
-            Write-Host "OpenSSL was not found in PATH... attempting lookup via file path"
-            $OSPlatform = [System.Environment]::OSVersion.Platform
-            if ($OSPlatform -match "Win") {
-                $version = Invoke-Expression "C:\'Program Files'\OpenSSL-Win64\bin\openssl.exe version"
-            }
+            throw "Something went wrong... Could not find openssl or the path is incorrect. Please update the `$opensslBinary variable in the config.ps1 file to the correct path"
         }
+
+        # Required OpenSSL Version
         $OpenSSLVersion = [version]"3.0.0"
+
         # Determine Libre or Open SSL:
         if ($version -match "LibreSSL") {
             Throw "LibreSSL does not meet the requirements of this application, please install OpenSSL v3.0.0 or later"
