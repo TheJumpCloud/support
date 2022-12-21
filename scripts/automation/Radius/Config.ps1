@@ -10,7 +10,8 @@ $JCUSERCERTPASS = 'secret1234!'
 $JCUSERCERTVALIDITY = 365
 # OpenSSLBinary by default this is (openssl)
 # NOTE: If openssl does not work, try using the full path to the openssl file
-# Example: C:\Program Files\OpenSSL-Win64\bin\openssl.exe
+# Windows Example: C:\Program Files\OpenSSL-Win64\bin\openssl.exe
+# MacOS HomeBrew Example: '/usr/local/Cellar/openssl@3/3.0.7/bin/openssl'
 $opensslBinary = 'openssl'
 # Enter Cert Subject Headers (do not enter strings with spaces)
 $Subj = [PSCustomObject]@{
