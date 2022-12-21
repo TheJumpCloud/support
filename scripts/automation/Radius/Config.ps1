@@ -7,12 +7,12 @@ $JCUSERGROUP = '635079e21490b90001eb275b'
 # USER CERT PASSWORD (user must enter this when importing cert)
 $JCUSERCERTPASS = 'secret1234!'
 # USER CERT Validity Length (days)
-$JCUSERCERTVALIDITY = 365
+$JCUSERCERTVALIDITY = 90
 # OpenSSLBinary by default this is (openssl)
 # NOTE: If openssl does not work, try using the full path to the openssl file
 # Windows Example: C:\Program Files\OpenSSL-Win64\bin\openssl.exe
 # MacOS HomeBrew Example: '/usr/local/Cellar/openssl@3/3.0.7/bin/openssl'
-$opensslBinary = 'openssl'
+$opensslBinary = '/usr/local/Cellar/openssl@3/3.0.7/bin/openssl'
 # Enter Cert Subject Headers (do not enter strings with spaces)
 $Subj = [PSCustomObject]@{
     countryCode      = "US"
@@ -28,7 +28,11 @@ $Subj = [PSCustomObject]@{
 # EmailSAN
 # EmailDN
 # UsernameCn (Default)
-$CertType = "EmailSAN"
+$CertType = "UsernameCn"
+
+################################################################################
+# Do not modify below
+################################################################################
 
 # When we import this config, this function will run and validate the openSSL binary location
 function Get-OpenSSLVersion {
