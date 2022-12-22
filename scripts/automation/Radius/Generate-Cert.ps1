@@ -12,7 +12,6 @@ if ( ([System.String]::IsNullOrEmpty($JCORGID)) -Or ($JCORGID.Length -ne 24) ) {
 # Do Not Edit Below:
 ################################################################################
 cd $PSSCRIPTROOT
-$opensslBinary = '/usr/local/Cellar/openssl@3/3.0.7/bin/openssl'
 
 # REM Generate Root Server Private Key and server certificate (self signed as CA)
 Write-Host "Generating Self Signed Root CA Certificate"
