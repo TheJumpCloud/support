@@ -12,7 +12,7 @@ $JCUSERCERTVALIDITY = 90
 # NOTE: If openssl does not work, try using the full path to the openssl file
 # Windows Example: C:\Program Files\OpenSSL-Win64\bin\openssl.exe
 # MacOS HomeBrew Example: '/usr/local/Cellar/openssl@3/3.0.7/bin/openssl'
-$opensslBinary = '/usr/local/Cellar/openssl@3/3.0.7/bin/openssl'
+$opensslBinary = 'openssl'
 # Enter Cert Subject Headers (do not enter strings with spaces)
 $Subj = [PSCustomObject]@{
     countryCode      = "US"
