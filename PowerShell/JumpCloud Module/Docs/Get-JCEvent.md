@@ -15,8 +15,8 @@ Query the API for Directory Insights events
 ### GetExpanded (Default)
 ```
 Get-JCEvent -Service <String[]> -StartTime <DateTime> [-EndTime <DateTime>] [-Fields <String[]>]
- [-SearchAfter <String[]>] [-SearchTermAnd <Hashtable>] [-SearchTermOr <Hashtable>] [-Sort <String>] [-WhatIf]
- [-Confirm] [<CommonParameters>]
+ [-SearchAfter <String[]>] [-SearchTermAnd <Hashtable>] [-SearchTermNot <Hashtable>]
+ [-SearchTermOr <Hashtable>] [-Sort <String>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ### Get
@@ -150,6 +150,21 @@ Accept wildcard characters: False
 
 ### -SearchTermAnd
 TermConjunction represents a conjunction (and/or)NOTE: the validator limits what the operator can be, not the object for future-proof-ness and a list of sub-values
+
+```yaml
+Type: System.Collections.Hashtable
+Parameter Sets: GetExpanded
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -SearchTermNot
+TermConjunction represents a conjunction (and/or)NOTE: the validator limits what the operator can be, not the objectfor future-proof-nessand a list of sub-values
 
 ```yaml
 Type: System.Collections.Hashtable
