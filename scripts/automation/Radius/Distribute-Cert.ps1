@@ -1,6 +1,6 @@
 # Import Global Config:
 . "$psscriptroot/config.ps1"
-
+Connect-JCOnline $JCAPIKEY -force
 
 # Functions
 function New-JCCommandFile {
@@ -54,20 +54,25 @@ foreach ($association in $SystemUserAssociations) {
     # Find OS of System
     if ($SystemInfo.os -eq 'Mac OS X') {
         # Create new Command and upload the signed pfx
-        $CommandBody = @{
-            Name        = "$($UserInfo.username)-$($SystemInfo.displayName)-RadiusCert-Install"
-            Command     = "security import /tmp/$($UserInfo.username)-client-signed.pfx -k ~/Users/$($UserInfo.username)/Library/Keychains/login.keychain -P password"
-            launchType  = "trigger"
-            trigger     = "RadiusCert-Install"
-            commandType = "mac"
-            timeout     = 600
-            files       = (New-JCCommandFile -certFilePath $userPfx -FileName "$($UserInfo.username)-client-signed.pfx" -FileDestination "/tmp/$($UserInfo.username)-client-signed.pfx")
-        }
-        $NewCommand = New-JCSdkCommand $CommandBody
+        try {
+            $CommandBody = @{
+                Name        = "RadiusCert-Install:$($UserInfo.username):$($SystemInfo.displayName)"
+                Command     = "security import /tmp/$($UserInfo.username)-client-signed.pfx -k ~/Users/$($UserInfo.username)/Library/Keychains/login.keychain -P password"
+                launchType  = "trigger"
+                User        = "000000000000000000000000"
+                trigger     = "RadiusCertInstall"
+                commandType = "mac"
+                timeout     = 600
+                files       = (New-JCCommandFile -certFilePath $userPfx -FileName "$($UserInfo.username)-client-signed.pfx" -FileDestination "/tmp/$($UserInfo.username)-client-signed.pfx")
+            }
+            $NewCommand = New-JCSdkCommand @CommandBody
 
-        # Find newly created command and add system as target
-        $Command = Get-JCCommand -name "$($UserInfo.username)-$($SystemInfo.displayName)-RadiusCert-Install"
-        Add-JCCommandTarget -CommandID $Command._id -SystemID $SystemInfo._id | Out-Null
+            # Find newly created command and add system as target
+            $Command = Get-JCCommand -name "RadiusCert-Install:$($UserInfo.username):$($SystemInfo.displayName)"
+            Add-JCCommandTarget -CommandID $Command._id -SystemID $SystemInfo._id | Out-Null
+        } catch {
+            $_
+        }
         Write-Host "Successfully created $($Command.name): User - $($UserInfo.Username); System - $($SystemInfo.displayName)"
     } elseif ($SystemInfo.os -eq 'Windows') {
 
