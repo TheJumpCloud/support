@@ -85,15 +85,19 @@ security import /tmp/$($UserInfo.username)-client-signed.pfx -k /Users/$($UserIn
         try {
             $CommandBody = @{
                 Name        = "RadiusCert-Install:$($UserInfo.username):$($SystemInfo.displayName)"
-                #TODO: ADD CHECK FOR CURRENT USER MATCHING USER FOR CERTIFICATE, IF NOT CORRECT USER, EXIT WITH CODE AND MESSAGE
                 Command     = @"
-Install-Module RunAsUser -Force
-Import-Module RunAsUser -Force
-Expand-Archive -LiteralPath C:\Windows\Temp\$($UserInfo.username)-client-signed.zip -DestinationPath C:\Windows\Temp -Force
-`$password = ConvertTo-SecureString -String $JCUSERCERTPASS -AsPlainText -Force
-`$ScriptBlock = { Get-ChildItem -Path C:\Windows\Temp\$($UserInfo.username)-client-signed.pfx | Import-PfxCertificate -CertStoreLocation Cert:\CurrentUser\My -Password `$password }
-`$JSON = Invoke-AsCurrentUser -ScriptBlock `$ScriptBlock -CaptureOutput
-`$JSON | ConvertFrom-JSON
+if (`$env:username -eq $($UserInfo.Username)) {
+    Install-Module RunAsUser -Force
+    Import-Module RunAsUser -Force
+    Expand-Archive -LiteralPath C:\Windows\Temp\$($UserInfo.username)-client-signed.zip -DestinationPath C:\Windows\Temp -Force
+    `$password = ConvertTo-SecureString -String $JCUSERCERTPASS -AsPlainText -Force
+    `$ScriptBlock = { Get-ChildItem -Path C:\Windows\Temp\$($UserInfo.username)-client-signed.pfx | Import-PfxCertificate -CertStoreLocation Cert:\CurrentUser\My -Password `$password }
+    `$JSON = Invoke-AsCurrentUser -ScriptBlock `$ScriptBlock -CaptureOutput
+    `$JSON | ConvertFrom-JSON
+} else {
+    Write-Error "Current logged in user, `$env:username, does not match expected certificate user, please ensure $($UserInfo.Username) is signed in and retry."
+    exit 4
+}
 "@
                 launchType  = "trigger"
                 trigger     = "RadiusCertInstall"
