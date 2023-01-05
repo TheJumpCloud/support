@@ -76,7 +76,7 @@ security import /tmp/$($UserInfo.username)-client-signed.pfx -k /Users/$($UserIn
 
             # Find newly created command and add system as target
             $Command = Get-JCCommand -name "RadiusCert-Install:$($UserInfo.username):$($SystemInfo.displayName)"
-            Add-JCCommandTarget -CommandID:$Command._id -SystemID:$SystemInfo._id | Out-Null
+            Add-JCAssociation -Type:('command') -Id:("$($Command._id)") -TargetType:('system') -TargetID:("$($association.SystemID)")
         } catch {
             throw $_
         }
@@ -86,7 +86,8 @@ security import /tmp/$($UserInfo.username)-client-signed.pfx -k /Users/$($UserIn
             $CommandBody = @{
                 Name        = "RadiusCert-Install:$($UserInfo.username):$($SystemInfo.displayName)"
                 Command     = @"
-if (`$env:username -eq $($UserInfo.Username)) {
+`$CurrentUser = ((Get-WMIObject -ClassName Win32_ComputerSystem).Username).Split('\')[1]
+if (`$CurrentUser -eq "$($UserInfo.Username)") {
     if (-not(Get-InstalledModule -Name RunAsUser)) {
         Install-Module RunAsUser -Force
         Import-Module RunAsUser -Force
@@ -99,7 +100,7 @@ if (`$env:username -eq $($UserInfo.Username)) {
     `$JSON = Invoke-AsCurrentUser -ScriptBlock `$ScriptBlock -CaptureOutput
     `$JSON | ConvertFrom-JSON
 } else {
-    Write-Error "Current logged in user, `$env:username, does not match expected certificate user, please ensure $($UserInfo.Username) is signed in and retry."
+    Write-Error "Current logged in user, `$CurrentUser, does not match expected certificate user. Please ensure $($UserInfo.Username) is signed in and retry."
     exit 4
 }
 "@
@@ -114,8 +115,7 @@ if (`$env:username -eq $($UserInfo.Username)) {
 
             # Find newly created command and add system as target
             $Command = Get-JCCommand -name "RadiusCert-Install:$($UserInfo.username):$($SystemInfo.displayName)"
-
-            #TODO: ADD COMMAND-SYSTEM ASSOCIATIONS
+            Add-JCAssociation -Type:('command') -Id:("$($Command._id)") -TargetType:('system') -TargetID:("$($association.SystemID)") -Force | Out-Null
         } catch {
             throw $_
         }
