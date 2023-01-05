@@ -87,8 +87,12 @@ security import /tmp/$($UserInfo.username)-client-signed.pfx -k /Users/$($UserIn
                 Name        = "RadiusCert-Install:$($UserInfo.username):$($SystemInfo.displayName)"
                 Command     = @"
 if (`$env:username -eq $($UserInfo.Username)) {
-    Install-Module RunAsUser -Force
-    Import-Module RunAsUser -Force
+    if (-not(Get-InstalledModule -Name RunAsUser)) {
+        Install-Module RunAsUser -Force
+        Import-Module RunAsUser -Force
+    } else {
+        Import-Module RunAsUser -Force
+    }
     Expand-Archive -LiteralPath C:\Windows\Temp\$($UserInfo.username)-client-signed.zip -DestinationPath C:\Windows\Temp -Force
     `$password = ConvertTo-SecureString -String $JCUSERCERTPASS -AsPlainText -Force
     `$ScriptBlock = { Get-ChildItem -Path C:\Windows\Temp\$($UserInfo.username)-client-signed.pfx | Import-PfxCertificate -CertStoreLocation Cert:\CurrentUser\My -Password `$password }
