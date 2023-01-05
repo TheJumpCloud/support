@@ -16,7 +16,7 @@ function New-JCCommandFile {
             "x-org-id"  = $JCORGID
         }
         $body = @{
-            content     = $certFilePath
+            content     = [convert]::ToBase64String((Get-Content -Path $certFilePath -AsByteStream))
             name        = $FileName
             destination = $FileDestination
         }
@@ -54,62 +54,65 @@ foreach ($association in $SystemUserAssociations) {
     $userPfx = "$psscriptroot/UserCerts/$($UserInfo.username)-client-signed.pfx"
     $userPfxZip = "$psscriptroot/UserCerts/$($UserInfo.username)-client-signed.zip"
 
-    if (-not(Test-Path -Path $userPfxZip -PathType Leaf)) {
-        Compress-Archive -LiteralPath $userPfx -DestinationPath "$psscriptroot/UserCerts/$($UserInfo.username)-client-signed.zip"
-    } else {
-        # Find OS of System
-        if ($SystemInfo.os -eq 'Mac OS X') {
-            # Create new Command and upload the signed pfx
-            try {
-                $CommandBody = @{
-                    Name        = "RadiusCert-Install:$($UserInfo.username):$($SystemInfo.displayName)"
-                    Command     = @"
+    Compress-Archive -Path $userPfx -DestinationPath $userPfxZip -CompressionLevel NoCompression -Force
+    # Find OS of System
+    if ($SystemInfo.os -eq 'Mac OS X') {
+        # Create new Command and upload the signed pfx
+        try {
+            $CommandBody = @{
+                Name        = "RadiusCert-Install:$($UserInfo.username):$($SystemInfo.displayName)"
+                Command     = @"
 unzip /tmp/$($UserInfo.username)-client-signed.zip
 security import /tmp/$($UserInfo.username)-client-signed.pfx -k /Users/$($UserInfo.username)/Library/Keychains/login.keychain -P $JCUSERCERTPASS
 "@
-                    launchType  = "trigger"
-                    User        = "000000000000000000000000"
-                    trigger     = "RadiusCertInstall"
-                    commandType = "mac"
-                    timeout     = 600
-                    files       = (New-JCCommandFile -certFilePath $userPfxZip -FileName "$($UserInfo.username)-client-signed.zip" -FileDestination "/tmp/$($UserInfo.username)-client-signed.zip")
-                }
-                $NewCommand = New-JCSdkCommand @CommandBody
-
-                # Find newly created command and add system as target
-                $Command = Get-JCCommand -name "RadiusCert-Install:$($UserInfo.username):$($SystemInfo.displayName)"
-                Add-JCCommandTarget -CommandID:$Command._id -SystemID:$SystemInfo._id | Out-Null
-            } catch {
-                throw $_
+                launchType  = "trigger"
+                User        = "000000000000000000000000"
+                trigger     = "RadiusCertInstall"
+                commandType = "mac"
+                timeout     = 600
+                files       = (New-JCCommandFile -certFilePath $userPfxZip -FileName "$($UserInfo.username)-client-signed.zip" -FileDestination "/tmp/$($UserInfo.username)-client-signed.zip")
             }
-            Write-Host "Successfully created $($Command.name): User - $($UserInfo.Username); System - $($SystemInfo.displayName)"
-        } elseif ($SystemInfo.os -eq 'Windows') {
-            try {
-                $CommandBody = @{
-                    Name        = "RadiusCert-Install:$($UserInfo.username):$($SystemInfo.displayName)"
-                    Command     = @"
+            $NewCommand = New-JCSdkCommand @CommandBody
+
+            # Find newly created command and add system as target
+            $Command = Get-JCCommand -name "RadiusCert-Install:$($UserInfo.username):$($SystemInfo.displayName)"
+            Add-JCCommandTarget -CommandID:$Command._id -SystemID:$SystemInfo._id | Out-Null
+        } catch {
+            throw $_
+        }
+        Write-Host "Successfully created $($Command.name): User - $($UserInfo.Username); System - $($SystemInfo.displayName)"
+    } elseif ($SystemInfo.os -eq 'Windows') {
+        try {
+            $CommandBody = @{
+                Name        = "RadiusCert-Install:$($UserInfo.username):$($SystemInfo.displayName)"
+                #TODO: ADD CHECK FOR CURRENT USER MATCHING USER FOR CERTIFICATE, IF NOT CORRECT USER, EXIT WITH CODE AND MESSAGE
+                Command     = @"
 Install-Module RunAsUser -Force
 Import-Module RunAsUser -Force
-Expand-Archive -LiteralPath C:\Windows\Temp\$($UserInfo.username)-client-signed.zip -DestinationPath C:\Windows\Temp
-`$ScriptBlock = { Get-ChildItem -Path C:\Windows\Temp\$($UserInfo.username)-client-signed.pfx | Import-PfxCertificate -CertStoreLocation Cert:\CurrentUser\My -Password $JCUSERCERTPASS }
-Invoke-AsCurrentUser -ScriptBlock `$ScriptBlock
+Expand-Archive -LiteralPath C:\Windows\Temp\$($UserInfo.username)-client-signed.zip -DestinationPath C:\Windows\Temp -Force
+`$password = ConvertTo-SecureString -String $JCUSERCERTPASS -AsPlainText -Force
+`$ScriptBlock = { Get-ChildItem -Path C:\Windows\Temp\$($UserInfo.username)-client-signed.pfx | Import-PfxCertificate -CertStoreLocation Cert:\CurrentUser\My -Password `$password }
+`$JSON = Invoke-AsCurrentUser -ScriptBlock `$ScriptBlock -CaptureOutput
+`$JSON | ConvertFrom-JSON
 "@
-                    launchType  = "trigger"
-                    trigger     = "RadiusCertInstall"
-                    commandType = "windows"
-                    shell       = "powershell"
-                    timeout     = 600
-                    files       = (New-JCCommandFile -certFilePath $userPfxZip -FileName "$($UserInfo.username)-client-signed.zip" -FileDestination "C:\Windows\Temp\$($UserInfo.username)-client-signed.zip")
-                }
-                $NewCommand = New-JCSdkCommand @CommandBody
-
-                # Find newly created command and add system as target
-                $Command = Get-JCCommand -name "RadiusCert-Install:$($UserInfo.username):$($SystemInfo.displayName)"
-                Add-JCCommandTarget -CommandID:$Command._id -SystemID $SystemInfo._id | Out-Null
-            } catch {
-                throw $_
+                launchType  = "trigger"
+                trigger     = "RadiusCertInstall"
+                commandType = "windows"
+                shell       = "powershell"
+                timeout     = 600
+                files       = (New-JCCommandFile -certFilePath $userPfxZip -FileName "$($UserInfo.username)-client-signed.zip" -FileDestination "C:\Windows\Temp\$($UserInfo.username)-client-signed.zip")
             }
-            Write-Host "Successfully created $($Command.name): User - $($UserInfo.Username); System - $($SystemInfo.displayName)"
-        } else { continue }
-    }
+            $NewCommand = New-JCSdkCommand @CommandBody
+
+            # Find newly created command and add system as target
+            $Command = Get-JCCommand -name "RadiusCert-Install:$($UserInfo.username):$($SystemInfo.displayName)"
+
+            #TODO: ADD COMMAND-SYSTEM ASSOCIATIONS
+        } catch {
+            throw $_
+        }
+        Write-Host "Successfully created $($Command.name): User - $($UserInfo.Username); System - $($SystemInfo.displayName)"
+
+        #TODO: CREATE WATCHER FUNCTION TO MONITOR COMMAND RESULTS/STATUS
+    } else { continue }
 }
