@@ -89,18 +89,23 @@ security import /tmp/$($UserInfo.username)-client-signed.pfx -k /Users/$($UserIn
 `$CurrentUser = ((Get-WMIObject -ClassName Win32_ComputerSystem).Username).Split('\')[1]
 if (`$CurrentUser -eq "$($UserInfo.Username)") {
     if (-not(Get-InstalledModule -Name RunAsUser)) {
+        Write-Host "RunAsUser Module not installed, Installing..."
         Install-Module RunAsUser -Force
         Import-Module RunAsUser -Force
     } else {
+        Write-Host "RunAsUser Module installed, importing into session..."
         Import-Module RunAsUser -Force
     }
     Expand-Archive -LiteralPath C:\Windows\Temp\$($UserInfo.username)-client-signed.zip -DestinationPath C:\Windows\Temp -Force
     `$password = ConvertTo-SecureString -String $JCUSERCERTPASS -AsPlainText -Force
-    `$ScriptBlock = { Get-ChildItem -Path C:\Windows\Temp\$($UserInfo.username)-client-signed.pfx | Import-PfxCertificate -CertStoreLocation Cert:\CurrentUser\My -Password `$password }
+    `$ScriptBlock = { `$password = ConvertTo-SecureString -String "secret1234!" -AsPlainText -Force
+     Import-PfxCertificate -Password `$password -FilePath "C:\Windows\Temp\$($UserInfo.username)-client-signed.pfx" -CertStoreLocation Cert:\CurrentUser\My
+}
+     Write-Host "Importing Pfx Certificate for $($UserInfo.username)"
     `$JSON = Invoke-AsCurrentUser -ScriptBlock `$ScriptBlock -CaptureOutput
-    `$JSON | ConvertFrom-JSON
+    `$JSON
 } else {
-    Write-Error "Current logged in user, `$CurrentUser, does not match expected certificate user. Please ensure $($UserInfo.Username) is signed in and retry."
+    Write-Host "Current logged in user, `$CurrentUser, does not match expected certificate user. Please ensure $($UserInfo.Username) is signed in and retry."
     exit 4
 }
 "@
