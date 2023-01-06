@@ -30,9 +30,12 @@ $FailedCommandRuns = $CommandResults | Select-Object -ExcludeProperty command | 
 $SuccessfulCommandRuns | Export-Csv -Path "$PSScriptRoot/CommandResults/SuccessfulCommands.csv" -NoTypeInformation
 $FailedCommandRuns | Export-Csv -Path "$PSScriptRoot/CommandResults/FailedCommands.csv" -NoTypeInformation
 
+Write-Host "[info] Results will be constantly checked until all commands have been executed"
+Write-Host "[info] You may monitor the results by checking the CSV files located in the $PSScriptRoot/CommandResults folder"
+Write-Host "[info] This may take some time due to queued commands and device status"
 while ($ResultCount -lt $CommandCount) {
     # Gather Result information
-    $CommandResults = Get-JCCommandResult | Where-Object { $_.name -like "RadiusCert-Install*" }
+    $CommandResults = Get-JCCommandResult -Detailed | Where-Object { $_.name -like "RadiusCert-Install*" }
     $ResultCount = $CommandResults.Count
 
     # Check results

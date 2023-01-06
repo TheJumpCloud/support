@@ -124,12 +124,9 @@ if (`$CurrentUser -eq "$($UserInfo.Username)") {
         } catch {
             throw $_
         }
-        Write-Host "Successfully created $($Command.name): User - $($UserInfo.Username); System - $($SystemInfo.displayName)"
+        Write-Host "[status] Successfully created $($Command.name): User - $($UserInfo.Username); System - $($SystemInfo.displayName)"
     } else { continue }
 }
-
-# Get all Commands with the RadiusCertInstall trigger
-$RadiusCommands = Get-JCCommand | Where-Object trigger -Like 'RadiusCertInstall'
 
 # Invoke Commands
 Write-Host "[status] Invoking RadiusCert-Install Commands"
@@ -137,12 +134,12 @@ $confirmation = Read-Host "Are you sure you want to proceed? [y/n]"
 
 while ($confirmation -ne 'y') {
     if ($confirmation -eq 'n') {
-        Write-Host "[status] To invoke the commands at a later time, run the following function: Get-JCCommand | Where-Object trigger -Like 'RadiusCertInstall' | Invoke-JCCommand"
-        Write-Host "[status] Exiting script"
+        Write-Host "[status] To invoke the commands at a later time, run the following function: Invoke-JCCommand -trigger 'RadiusCertInstall'"
+        Write-Host "[status] Exiting..."
         exit
-    } elseif ($confirmation -eq 'y') {
-        $RadiusCommands | Invoke-JCCommand
-        Write-Host "[status] Commands Invoked"
-        Write-Host "[status] Run the Monitor-Commands.ps1 script to track command results and output results"
     }
 }
+[void](Invoke-JCCommand -trigger 'RadiusCertInstall')
+Write-Host "[status] Commands Invoked"
+Write-Host "[status] Run the Monitor-Commands.ps1 script to track command results and output results"
+Write-Host "[status] Exiting..."
