@@ -1,6 +1,20 @@
+## 2.1.3
+
+Release Date: January 5, 2023
+
+#### RELEASE NOTES
+
+```
+- Restored a missing id field for users and systems
+```
+
+#### BUG FIXES:
+
+- Get-JCSystem/ User functions were missing the .id data field on PowerShell versions 7+. This release restores this field. The .\_id filed is unaffected but you can choose to reference either $system.id or $system.\_id.
+
 ## 2.1.2
 
-Release Date: November 22, 2022
+Release Date: November 30, 2022
 
 #### RELEASE NOTES
 
