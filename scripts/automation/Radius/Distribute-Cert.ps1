@@ -80,7 +80,7 @@ security import /tmp/$($UserInfo.username)-client-signed.pfx -k /Users/$($UserIn
         } catch {
             throw $_
         }
-        Write-Host "Successfully created $($Command.name): User - $($UserInfo.Username); System - $($SystemInfo.displayName)"
+        Write-Host "[status] Successfully created $($Command.name): User - $($UserInfo.Username); System - $($SystemInfo.displayName)"
     } elseif ($SystemInfo.os -eq 'Windows') {
         try {
             $CommandBody = @{
@@ -125,7 +125,24 @@ if (`$CurrentUser -eq "$($UserInfo.Username)") {
             throw $_
         }
         Write-Host "Successfully created $($Command.name): User - $($UserInfo.Username); System - $($SystemInfo.displayName)"
-
-        #TODO: CREATE WATCHER FUNCTION TO MONITOR COMMAND RESULTS/STATUS
     } else { continue }
+}
+
+# Get all Commands with the RadiusCertInstall trigger
+$RadiusCommands = Get-JCCommand | Where-Object trigger -Like 'RadiusCertInstall'
+
+# Invoke Commands
+Write-Host "[status] Invoking RadiusCert-Install Commands"
+$confirmation = Read-Host "Are you sure you want to proceed? [y/n]"
+
+while ($confirmation -ne 'y') {
+    if ($confirmation -eq 'n') {
+        Write-Host "[status] To invoke the commands at a later time, run the following function: Get-JCCommand | Where-Object trigger -Like 'RadiusCertInstall' | Invoke-JCCommand"
+        Write-Host "[status] Exiting script"
+        exit
+    } elseif ($confirmation -eq 'y') {
+        $RadiusCommands | Invoke-JCCommand
+        Write-Host "[status] Commands Invoked"
+        Write-Host "[status] Run the Monitor-Commands.ps1 script to track command results and output results"
+    }
 }
