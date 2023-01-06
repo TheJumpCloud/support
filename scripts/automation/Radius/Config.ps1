@@ -44,7 +44,7 @@ function Get-OpenSSLVersion {
     )
     begin {
         try {
-            $version = Invoke-Expression "$opensslBinary version"
+            $version = Invoke-Expression "& '$opensslBinary' version"
         } catch {
             throw "Something went wrong... Could not find openssl or the path is incorrect. Please update the `$opensslBinary variable in the config.ps1 file to the correct path"
         }
@@ -57,6 +57,24 @@ function Get-OpenSSLVersion {
             Throw "LibreSSL does not meet the requirements of this application, please install OpenSSL v3.0.0 or later"
         } else {
             [version]$Version = (Select-String -InputObject $version -Pattern "([0-9]+)\.([0-9]+)\.([0-9]+)").matches.value
+        }
+
+        # Determine if windows:
+        if ([System.Environment]::OSVersion.Platform -match "Win") {
+            # If env variable exists, skip check for subsequent runs of ./config.ps1
+            if ($env:OPENSSL_MODULES) {
+                Write-Host "legacy.dll module set through environment variable"
+            } else {
+                # Try to point to the Legacy.dll file
+                $pathDirectory = (get-item $opensslBinary).Directory
+                $binItems = get-childItem $pathDirectory
+                if ("legacy.dll" -in $binItems.Name) {
+                    $env:OPENSSL_MODULES = $pathDirectory
+                } else {
+                    Throw "The required OpenSSL 'legacy.dll' file was not found in the bin path $PathDirectory. This is required to create certificates. `nIf this module file is located elsewhere, you may specify the path to that directory in this powershell session using this command: '`$env:OPENSSL_MODULES = C:/Path/To/Directory' "
+                }
+            }
+
         }
     }
     process {
