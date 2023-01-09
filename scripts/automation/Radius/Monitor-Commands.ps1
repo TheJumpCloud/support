@@ -2,8 +2,34 @@
 . "$psscriptroot/config.ps1"
 Connect-JCOnline $JCAPIKEY -Force
 
+function Get-JCQueuedCommands {
+    begin {
+        $headers = @{
+            "x-api-key" = $JCAPIKEY
+            "x-org-id"  = $JCORGID
+
+        }
+        $limit = [int]100
+        $skip = [int]0
+        $resultsArray = @()
+        $resultsArrayList = New-Object System.Collections.ArrayList
+    }
+    process {
+        while (($resultsArray.results).Count -ge $skip) {
+            $response = Invoke-RestMethod -Uri "https://console.jumpcloud.com/api/v2/queuedcommand/workflows?limit=$limit&skip=$skip" -Method GET -Headers $headers
+            $skip += $limit
+            $resultsArray += $response
+        }
+        $resultsArrayList.Add($resultsArray)
+    }
+    end {
+        return $resultsArrayList.Results
+    }
+}
+
 # Tracking Variables for results
 $SuccessfulCommandRuns = @()
+$QueuedCommandRuns = @()
 $FailedCommandRuns = @()
 
 # Create CommandResults dir
@@ -50,7 +76,7 @@ while ($ResultCount -lt $CommandCount) {
     $Completed = ($ResultCount / $CommandCount) * 100
 
     # Progress Bar
-    Write-Progress -Activity "Checking Command Results..." -Status "Progress:" -PercentComplete $Completed
+    Write-Progress -Activity "Checking Command Results..." -Status "$ResultCount / $CommandCount" -PercentComplete $Completed
 
     # Sleep 5 seconds
     Start-Sleep -Seconds 5
