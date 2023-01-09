@@ -76,7 +76,7 @@ security import /tmp/$($UserInfo.username)-client-signed.pfx -k /Users/$($UserIn
 
             # Find newly created command and add system as target
             $Command = Get-JCCommand -name "RadiusCert-Install:$($UserInfo.username):$($SystemInfo.displayName)"
-            Add-JCAssociation -Type:('command') -Id:("$($Command._id)") -TargetType:('system') -TargetID:("$($association.SystemID)")
+            Set-JcSdkCommandAssociation -CommandId:("$($Command._id)") -Op 'add' -Type:('system') -ID:("$($association.SystemID)") | Out-Null
         } catch {
             throw $_
         }
@@ -120,7 +120,7 @@ if (`$CurrentUser -eq "$($UserInfo.Username)") {
 
             # Find newly created command and add system as target
             $Command = Get-JCCommand -name "RadiusCert-Install:$($UserInfo.username):$($SystemInfo.displayName)"
-            Add-JCAssociation -Type:('command') -Id:("$($Command._id)") -TargetType:('system') -TargetID:("$($association.SystemID)") -Force | Out-Null
+            Set-JcSdkCommandAssociation -CommandId:("$($Command._id)") -Op 'add' -Type:('system') -ID:("$($association.SystemID)") | Out-Null
         } catch {
             throw $_
         }
