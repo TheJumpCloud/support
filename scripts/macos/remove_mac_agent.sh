@@ -6,12 +6,10 @@ fi
 
 # Remove Remote Assist App
 if [[ -d "/Applications/JumpCloud Remote Assist.app" ]];then
-  echo "Removing JumpCloud Remote Assist Application"
   rm -rf "/Applications/JumpCloud Remote Assist.app"
 fi
 # Remove Service Account App
 if [[ -d "/Applications/JumpCloudServiceAccount.app" ]];then
-  echo "Removing JumpCloud Service Account Application"
   rm -rf "/Applications/JumpCloudServiceAccount.app"
 fi
 
@@ -55,7 +53,6 @@ rm -rf /Applications/Jumpcloud.app
 
 # Remove opt/jc_user_ro directory and contents
 if [[ -d "/opt/jc_user_ro" ]];then
-  echo "Removing jc_user_ro directory"
   rm -rf "/opt/jc_user_ro"
 fi
 
@@ -66,13 +63,11 @@ jcAgents=$(find /Library/LaunchAgents -type f -iname "*jumpcloud*")
 # remove each matching daemon file
 for daemon in $jcDaemons
 do
-  echo "Removing $daemon"
   rm -rf $daemon
 done
 # remove each matching agent file
 for agent in $jcAgents
 do
-  echo "Removing $agent"
   rm -rf $agent
 done
 # verify no jumpcloud processes are still running. kill and straglers
