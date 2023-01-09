@@ -2,6 +2,47 @@
 
 The PowerShell automations in this directory are designed to help administrators generate user certificates for passwordless Radius Server Authentication.
 
+## Requirements
+
+This automation has been tested with OpenSSL 3.0.7 at the time of this writing. OpenSSL 3.x.x is required to generate the Radius Authentication certificates. The following items are required to use this automation workflow
+
+- PowerShell 7.x.x
+- OpenSSL 3.x.x (Tested with 3.0.7)
+
+### MacOS Requirements
+
+MacOS ships with a version of OpenSSL under the distribution name LibreSSL. LibreSSL is sufficient to generate the `usernameCN` and `emailDN` type certificates but not the `emailSAN` type certificate (due to the inclusion of x509 subject headers in the certificate body). As such a distribution of OpenSSL 3.x.x is required to run these scripts.
+
+To install the latest version of OpenSSL on mac, install the [Homebrew package manager](https://brew.sh/) and install the following [formulae](https://formulae.brew.sh/formula/openssl@3)
+
+Some packages or applications in MacOS will rely on the pre-configured LibreSSL distribution. To use the Homebrew version of OpenSSL in this project, simply change the `$openSSLBinary` variable to point to the Homebrew bin location ex:
+
+In `Config.ps1` change `$opensslBinary` to point to `'/usr/local/Cellar/openssl@3/3.0.7/bin/openssl'`
+$opensslBinary = '/usr/local/Cellar/openssl@3/3.0.7/bin/openssl'
+
+### Windows Requirements
+
+Windows does not typically ship with a preconfigured version of OpenSSL but a pre-compiled version of OpenSSL can be installed from [Shining Light Productions](https://slproweb.com/products/Win32OpenSSL.html). OpenSSL can of course be downloaded and configured from [source](https://www.openssl.org/source) if desired.
+
+If the pre-compiled version of OpenSSL was installed, the OpenSSL should be installed in `C:\Program Files\OpenSSL-Win64\bin\`. There should exist an `openssl.exe` in that directory. In addition there should also exist a `legacy.dll` file in that same directory.
+
+To set the required system environment variables for this automation
+
+- Open Control Panel
+- Select "Edit the system environment variables"
+- under the "System Properties" window and "Advanced" tab, select the "Environment Variables..." box
+- Under the "User Variables for yourAccount" Click the "New..." box
+  - Set the Variable Name to: `OPENSSL_MODULES`
+  - Set the Variable Value to: `C:\Program Files\OpenSSL-Win64\bin` or the location of the `legacy.dll` file included in your OpenSSL distribution
+  - Click "OK"
+- Under the "System variables" section scroll down to the "Path" variable, select it and click "Edit..."
+  - Add a new line entry for this variable and type `C:\Program Files\OpenSSL-Win64\bin` or the location of the `openssl.exe` file included in your OpenSSL distribution
+  - Click "OK"
+- Click "OK" to close and save the Environment Variables dialog box
+- Click "OK to close and save the System Properties dialog box
+
+The `openssl` command should be available in new PowerShell terminal windows.
+
 ## Setup
 
 To generate a set of Radius certificates. The two scripts `Generate-Cert.ps1` and `Generate-UserCerts.ps1` must be used. A configuration file `Config.ps1` must also be edited prior to running the cert generation scripts.
@@ -66,13 +107,3 @@ With the certificate authority generated, the user certs can then be generated. 
 The script will go fetch all users found in the user group specified in `config.ps1`. For each user in the group, a `.pfx` certificate will be generated in the `/UserCerts` directory.
 
 Each user will then need to install their respective certificate on their devices.
-
-### Windows specific instructions
-
-The PowerShell scripts in this directory reference the OpenSSL binary. In MacOS, this is installed by default. In Windows you may need to add an alias to the OpenSSL executable before running the certificate generation scripts.
-
-Your version of openssl may be installed elsewhere.
-
-```powershell
-Set-Alias "openssl" "C:\Program Files\OpenSSL-Win64\bin\openssl.exe"
-```
