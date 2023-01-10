@@ -151,7 +151,7 @@ $RadiusCommands | ForEach-Object {
         commandName          = $_.name
         commandPreviouslyRun = $true
         commandQueued        = $false
-        lastRun              = (Get-Date -Format o)
+        lastRun              = (Get-Date -Format o -AsUTC)
         resultTimestamp      = ""
         result               = ""
         exitCode             = ""
