@@ -1,6 +1,6 @@
 # Import Global Config:
 . "$psscriptroot/config.ps1"
-Connect-JCOnline $JCAPIKEY -Force
+Connect-JCOnline $JCAPIKEY -force
 
 # Begin Functions
 function Invoke-CommandRun {
@@ -72,9 +72,24 @@ $RetryCommands = @()
 # Get all Commands with the RadiusCertInstall trigger
 $RadiusCommands = Get-Content -Raw -Path "$PSScriptRoot/commands.json" | ConvertFrom-Json
 
+# Check to see if commands were previously run
+if ($RadiusCommands.commandPreviouslyRun -contains $false) {
+    $confirmation = Read-Host "[status] Commands have not been run previously, would you like to run them now? [y/n]"
+    while ($confirmation -ne 'y') {
+        if ($confirmation -eq 'n') {
+            break
+        }
+    }
+    $RadiusCommands | ForEach-Object {
+        if ($_.commandPreviouslyRun -eq $false) {
+            Invoke-CommandRun -commandID $_.commandId
+            $_.commandPreviouslyRun = $true
+            $_.lastRun = (Get-Date -Format o -AsUTC)
+        }
+    }
+}
 # Get all Command Results for the RadiusCommands
 $CommandResults = Get-JCCommandResult -Detailed | Where-Object { ($_.name -like "RadiusCert-Install*") -And ($_.workflowId -in $RadiusCommands.commandId) }
-$ResultCount = $CommandResults.Count
 
 # Check results
 $SuccessfulCommandRuns = $CommandResults | Select-Object -ExcludeProperty command | Where-Object { $_.exitCode -eq "0" }
@@ -97,7 +112,7 @@ $RadiusCommands | ForEach-Object {
         $currentTime = Get-Date -Format o
 
         # If the current time is greater than the lastRun timestamp by 1 hour (TTL expired), add to retryCommand array
-        if ($currentTime -ge $lastRun.AddHours(1)) {
+        if ($currentTime -ge $lastRun.AddDays(10)) {
             $RetryCommands += $_
         }
     } elseif ($_.commandId -in $FailedCommandRuns.workflowId) {
@@ -113,11 +128,9 @@ $RadiusCommands | ForEach-Object {
         $RetryCommands += $_
     }
 }
-
-Write-Host "[status] $($SuccessfulCommandRuns.Count) successful command executions and $($RetryCommands.Count) failures"
-
 # Output json object
-# $RadiusCommands | ForEach-Object { [PSCustomObject]$_ } | Format-Table -AutoSize
+$RadiusCommands | ForEach-Object { [PSCustomObject]$_ } | Format-Table -AutoSize
+Write-Host "[status] $($SuccessfulCommandRuns.Count) successful command executions and $($RetryCommands.Count) failures"
 
 # Prompt to rerun commands that have failed or expired
 $confirmation = Read-Host "Would you like to rerun failed commands and/or expired queued commands? [y/n]"
@@ -130,7 +143,7 @@ while ($confirmation -ne 'y') {
 
 # Cleanup old failed results
 Write-Host "[status] Cleaning up old command result failures"
-$FailedCommandRuns | Remove-JCCommandResult -Force | Out-Null
+$FailedCommandRuns | Remove-JCCommandResult -force | Out-Null
 
 # Retry commands
 $RetryCommands | ForEach-Object {
