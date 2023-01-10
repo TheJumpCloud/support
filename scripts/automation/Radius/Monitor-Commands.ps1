@@ -70,16 +70,8 @@ $SuccessfulCommandRuns = @()
 $QueuedCommandRuns = @()
 $FailedCommandRuns = @()
 
-# Create CommandResults dir
-if (Test-Path "$PSScriptRoot/CommandResults") {
-    Write-Host "[status] Command Results Directory Exists"
-} else {
-    Write-Host "[status] Creating Command Results Directory"
-    [void](New-Item -ItemType Directory -Path "$PSScriptRoot/CommandResults")
-}
-
 # Get all Commands with the RadiusCertInstall trigger
-$RadiusCommands = Get-JCCommand | Where-Object trigger -Like 'RadiusCertInstall'
+$RadiusCommands = Get-Content -Raw -Path "$PSScriptRoot/commands.json" | ConvertFrom-Json
 $CommandCount = $RadiusCommands.Count
 
 # Get all Command Results for the RadiusCommands
@@ -88,37 +80,25 @@ $ResultCount = $CommandResults.Count
 
 # Check results
 $SuccessfulCommandRuns = $CommandResults | Select-Object -ExcludeProperty command | Where-Object { $_.exitCode -eq "0" }
+$QueuedCommandRuns = Get-JCQueuedCommands
 $FailedCommandRuns = $CommandResults | Select-Object -ExcludeProperty command | Where-Object { $_.exitCode -eq "1" -or $_.exitCode -eq "4" }
 
-# Send Results to CSV
-$SuccessfulCommandRuns | Export-Csv -Path "$PSScriptRoot/CommandResults/SuccessfulCommands.csv" -NoTypeInformation
-$FailedCommandRuns | Export-Csv -Path "$PSScriptRoot/CommandResults/FailedCommands.csv" -NoTypeInformation
-
-Write-Host "[info] Results will be constantly checked until all commands have been executed"
-Write-Host "[info] You may monitor the results by checking the CSV files located in the $PSScriptRoot/CommandResults folder"
-Write-Host "[info] This may take some time due to queued commands and device status"
-while ($ResultCount -lt $CommandCount) {
-    # Gather Result information
-    $CommandResults = Get-JCCommandResult -Detailed | Where-Object { $_.name -like "RadiusCert-Install*" }
-    $ResultCount = $CommandResults.Count
-
-    # Check results
-    $SuccessfulCommandRuns = $CommandResults | Select-Object -ExcludeProperty command | Where-Object { $_.exitCode -eq "0" }
-    $FailedCommandRuns = $CommandResults | Select-Object -ExcludeProperty command | Where-Object { $_.exitCode -eq "1" -or $_.exitCode -eq "4" }
-
-    # Send Results to CSV
-    $SuccessfulCommandRuns | Export-Csv -Path "$PSScriptRoot/CommandResults/SuccessfulCommands.csv" -NoTypeInformation
-    $FailedCommandRuns | Export-Csv -Path "$PSScriptRoot/CommandResults/FailedCommands.csv" -NoTypeInformation
-
-    # Track % Completed
-    $Completed = ($ResultCount / $CommandCount) * 100
-
-    # Progress Bar
-    Write-Progress -Activity "Checking Command Results..." -Status "$ResultCount / $CommandCount" -PercentComplete $Completed
-
-    # Sleep 5 seconds
-    Start-Sleep -Seconds 5
+$RadiusCommands | ForEach-Object {
+    if ($_.commandId -in $SuccessfulCommandRuns.workflowId) {
+        $commandInfo = $SuccessfulCommandRuns | Where-Object workflowId -EQ $_.commandId
+        $_.resultTimeStamp = $commandInfo.responseTime
+        $_.result = $commandInfo.output
+        $_.exitCode = $commandInfo.exitCode
+    } elseif ($_.commandId -in $QueuedCommandRuns.command) {
+        $_.commandQueued = $true
+    } elseif ($_.commandId -in $FailedCommandRuns.workflowId) {
+        $commandInfo = $FailedCommandRuns | Where-Object workflowId -EQ $_.commandId
+        $_.resultTimeStamp = $commandInfo.responseTime
+        $_.result = $commandInfo.output
+        $_.exitCode = $commandInfo.exitCode
+    }
 }
 
-Write-Host "[status] All commands have been executed"
+$RadiusCommands | ConvertTo-Json | Out-File "$psscriptroot\commands.json"
+
 Write-Host "[status] $($SuccessfulCommandRuns.Count) successful command executions and $($FailedCommandRuns.Count) failures"
