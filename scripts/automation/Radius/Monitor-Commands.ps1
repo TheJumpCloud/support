@@ -75,7 +75,7 @@ $RadiusCommands = Get-Content -Raw -Path "$PSScriptRoot/commands.json" | Convert
 $CommandCount = $RadiusCommands.Count
 
 # Get all Command Results for the RadiusCommands
-$CommandResults = Get-JCCommandResult -Detailed | Where-Object { $_.name -like "RadiusCert-Install*" }
+$CommandResults = Get-JCCommandResult -Detailed | Where-Object { ($_.name -like "RadiusCert-Install*") -And ($_.workflowId -in $RadiusCommands.commandId) }
 $ResultCount = $CommandResults.Count
 
 # Check results

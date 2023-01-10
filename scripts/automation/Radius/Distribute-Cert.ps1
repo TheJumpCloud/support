@@ -62,8 +62,17 @@ foreach ($association in $SystemUserAssociations) {
             $CommandBody = @{
                 Name        = "RadiusCert-Install:$($UserInfo.username):$($SystemInfo.displayName)"
                 Command     = @"
-unzip /tmp/$($UserInfo.username)-client-signed.zip
-security import /tmp/$($UserInfo.username)-client-signed.pfx -k /Users/$($UserInfo.username)/Library/Keychains/login.keychain -P $JCUSERCERTPASS
+set -e
+unzip -o /tmp/$($UserInfo.username)-client-signed.zip -d /tmp
+currentUser=$(/usr/bin/stat -f%Su /dev/console)
+currentUserUID=$(id -u "$currentUser")
+if [[ $currentUser ==  $($UserInfo.username) ]]; then
+    /bin/launchctl asuser "$currentUserUID" sudo -iu "$currentUser" /usr/bin/security import /tmp/$($UserInfo.username)-client-signed.pfx -k /Users/$($UserInfo.username)/Library/Keychains/login.keychain -P $JCUSERCERTPASS
+else
+    echo "Current logged in user, $currentUser, does not match expected certificate user. Please ensure $($UserInfo.username) is signed in and retry"
+    exit 4
+fi
+
 "@
                 launchType  = "trigger"
                 User        = "000000000000000000000000"
@@ -75,6 +84,7 @@ security import /tmp/$($UserInfo.username)-client-signed.pfx -k /Users/$($UserIn
             $NewCommand = New-JCSdkCommand @CommandBody
 
             # Find newly created command and add system as target
+            # TODO: Condition for duplicate commands
             $Command = Get-JCCommand -name "RadiusCert-Install:$($UserInfo.username):$($SystemInfo.displayName)"
             Set-JcSdkCommandAssociation -CommandId:("$($Command._id)") -Op 'add' -Type:('system') -ID:("$($association.SystemID)") | Out-Null
         } catch {
@@ -125,7 +135,9 @@ if (`$CurrentUser -eq "$($UserInfo.Username)") {
             throw $_
         }
         Write-Host "[status] Successfully created $($Command.name): User - $($UserInfo.Username); System - $($SystemInfo.displayName)"
-    } else { continue }
+    } else {
+        continue
+    }
 }
 
 # Invoke Commands
