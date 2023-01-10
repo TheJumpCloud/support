@@ -60,8 +60,8 @@ foreach ($association in $SystemUserAssociations) {
         # Create new Command and upload the signed pfx
         try {
             $CommandBody = @{
-                Name        = "RadiusCert-Install:$($UserInfo.username):$($SystemInfo.displayName)"
-                Command     = @"
+                Name              = "RadiusCert-Install:$($UserInfo.username):$($SystemInfo.displayName)"
+                Command           = @"
 set -e
 unzip -o /tmp/$($UserInfo.username)-client-signed.zip -d /tmp
 currentUser=$(/usr/bin/stat -f%Su /dev/console)
@@ -74,19 +74,20 @@ else
 fi
 
 "@
-                launchType  = "trigger"
-                User        = "000000000000000000000000"
-                trigger     = "RadiusCertInstall"
-                commandType = "mac"
-                timeout     = 600
-                files       = (New-JCCommandFile -certFilePath $userPfxZip -FileName "$($UserInfo.username)-client-signed.zip" -FileDestination "/tmp/$($UserInfo.username)-client-signed.zip")
+                launchType        = "trigger"
+                User              = "000000000000000000000000"
+                trigger           = "RadiusCertInstall"
+                commandType       = "mac"
+                timeout           = 600
+                TimeToLiveSeconds = 864000
+                files             = (New-JCCommandFile -certFilePath $userPfxZip -FileName "$($UserInfo.username)-client-signed.zip" -FileDestination "/tmp/$($UserInfo.username)-client-signed.zip")
             }
-            $NewCommand = New-JCSdkCommand @CommandBody
+            $NewCommand = New-JcSdkCommand @CommandBody
 
             # Find newly created command and add system as target
             # TODO: Condition for duplicate commands
             $Command = Get-JCCommand -name "RadiusCert-Install:$($UserInfo.username):$($SystemInfo.displayName)"
-            Set-JcSdkCommandAssociation -CommandId:("$($Command._id)") -Op 'add' -Type:('system') -ID:("$($association.SystemID)") | Out-Null
+            Set-JcSdkCommandAssociation -CommandId:("$($Command._id)") -Op 'add' -Type:('system') -Id:("$($association.SystemID)") | Out-Null
         } catch {
             throw $_
         }
@@ -94,8 +95,8 @@ fi
     } elseif ($SystemInfo.os -eq 'Windows') {
         try {
             $CommandBody = @{
-                Name        = "RadiusCert-Install:$($UserInfo.username):$($SystemInfo.displayName)"
-                Command     = @"
+                Name              = "RadiusCert-Install:$($UserInfo.username):$($SystemInfo.displayName)"
+                Command           = @"
 `$CurrentUser = ((Get-WMIObject -ClassName Win32_ComputerSystem).Username).Split('\')[1]
 if (`$CurrentUser -eq "$($UserInfo.Username)") {
     if (-not(Get-InstalledModule -Name RunAsUser)) {
@@ -119,18 +120,19 @@ if (`$CurrentUser -eq "$($UserInfo.Username)") {
     exit 4
 }
 "@
-                launchType  = "trigger"
-                trigger     = "RadiusCertInstall"
-                commandType = "windows"
-                shell       = "powershell"
-                timeout     = 600
-                files       = (New-JCCommandFile -certFilePath $userPfxZip -FileName "$($UserInfo.username)-client-signed.zip" -FileDestination "C:\Windows\Temp\$($UserInfo.username)-client-signed.zip")
+                launchType        = "trigger"
+                trigger           = "RadiusCertInstall"
+                commandType       = "windows"
+                shell             = "powershell"
+                timeout           = 600
+                TimeToLiveSeconds = 864000
+                files             = (New-JCCommandFile -certFilePath $userPfxZip -FileName "$($UserInfo.username)-client-signed.zip" -FileDestination "C:\Windows\Temp\$($UserInfo.username)-client-signed.zip")
             }
-            $NewCommand = New-JCSdkCommand @CommandBody
+            $NewCommand = New-JcSdkCommand @CommandBody
 
             # Find newly created command and add system as target
             $Command = Get-JCCommand -name "RadiusCert-Install:$($UserInfo.username):$($SystemInfo.displayName)"
-            Set-JcSdkCommandAssociation -CommandId:("$($Command._id)") -Op 'add' -Type:('system') -ID:("$($association.SystemID)") | Out-Null
+            Set-JcSdkCommandAssociation -CommandId:("$($Command._id)") -Op 'add' -Type:('system') -Id:("$($association.SystemID)") | Out-Null
         } catch {
             throw $_
         }
@@ -143,24 +145,39 @@ if (`$CurrentUser -eq "$($UserInfo.Username)") {
 # Invoke Commands
 Write-Host "[status] Invoking RadiusCert-Install Commands"
 $confirmation = Read-Host "Are you sure you want to proceed? [y/n]"
+$CommandArray = @()
+$RadiusCommands = Get-JCCommand | Where-Object trigger -Like 'RadiusCertInstall'
+
 
 while ($confirmation -ne 'y') {
     if ($confirmation -eq 'n') {
-        Write-Host "[status] To invoke the commands at a later time, run the following function: Invoke-JCCommand -trigger 'RadiusCertInstall'"
+        Write-Host "[status] To invoke the commands at a later time, run the following script: $PSScriptRoot/Monitor-Commands.ps1"
         Write-Host "[status] Exiting..."
+
+        foreach ($command in $RadiusCommands) {
+            $CommandTable = [PSCustomObject]@{
+                commandId            = $command._id
+                commandName          = $command.name
+                commandPreviouslyRun = $false
+                commandQueued        = $false
+                lastRun              = ""
+                resultTimestamp      = ""
+                result               = ""
+                exitCode             = ""
+            }
+            $CommandArray += $CommandTable
+        }
+        $CommandArray | ConvertTo-Json | Out-File "$psscriptroot\commands.json"
         exit
     }
 }
 [void](Invoke-JCCommand -trigger 'RadiusCertInstall')
 Write-Host "[status] Commands Invoked"
 
-$RadiusCommands = Get-JCCommand | Where-Object trigger -Like 'RadiusCertInstall'
-$CommandArray = @()
-
 $RadiusCommands | ForEach-Object {
     $CommandTable = [PSCustomObject]@{
-        commandId            = $_._id
-        commandName          = $_.name
+        commandId            = $command._id
+        commandName          = $command.name
         commandPreviouslyRun = $true
         commandQueued        = $false
         lastRun              = (Get-Date -Format o -AsUTC)
