@@ -141,5 +141,25 @@ while ($confirmation -ne 'y') {
 }
 [void](Invoke-JCCommand -trigger 'RadiusCertInstall')
 Write-Host "[status] Commands Invoked"
+
+$RadiusCommands = Get-JCCommand | Where-Object trigger -Like 'RadiusCertInstall'
+$CommandArray = @()
+
+$RadiusCommands | ForEach-Object {
+    $CommandTable = [PSCustomObject]@{
+        commandId            = $_._id
+        commandName          = $_.name
+        commandPreviouslyRun = $true
+        commandQueued        = $false
+        lastRun              = (Get-Date -Format o)
+        resultTimestamp      = ""
+        result               = ""
+        exitCode             = ""
+    }
+    $CommandArray += $CommandTable
+}
+
+$CommandArray | ConvertTo-Json | Out-File "$psscriptroot\commands.json"
+
 Write-Host "[status] Run the Monitor-Commands.ps1 script to track command results and output results"
 Write-Host "[status] Exiting..."
