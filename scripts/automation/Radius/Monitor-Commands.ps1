@@ -89,7 +89,7 @@ if ($RadiusCommands.commandPreviouslyRun -contains $false) {
     }
 }
 # Get all Command Results for the RadiusCommands
-$CommandResults = Get-JCCommandResult -Detailed | Where-Object { ($_.name -like "RadiusCert-Install*") -And ($_.workflowId -in $RadiusCommands.commandId) }
+$CommandResults = Get-JCCommandResult -Detailed | Where-Object { ($_.name -like "RadiusCert-Install*") }
 
 # Check results
 $SuccessfulCommandRuns = $CommandResults | Select-Object -ExcludeProperty command | Where-Object { $_.exitCode -eq "0" }
@@ -105,16 +105,6 @@ $RadiusCommands | ForEach-Object {
         $_.resultTimeStamp = $commandInfo.responseTime
         $_.result = $commandInfo.output
         $_.exitCode = $commandInfo.exitCode
-    } elseif ($_.commandId -in $QueuedCommandRuns.command -or $_.commandQueued -eq $true) {
-        # Check if command exists in queuedCommands or previously had the commandQueued property set to true
-        $_.commandQueued = $true
-        $lastRun = $_.lastRun | Get-Date
-        $currentTime = Get-Date -Format o
-
-        # If the current time is greater than the lastRun timestamp by 1 hour (TTL expired), add to retryCommand array
-        if ($currentTime -ge $lastRun.AddDays(10)) {
-            $RetryCommands += $_
-        }
     } elseif ($_.commandId -in $FailedCommandRuns.workflowId) {
         # Check if command exists in failed command runs. if so, add to retryCommand array
         $commandInfo = $FailedCommandRuns | Where-Object workflowId -EQ $_.commandId
@@ -126,6 +116,16 @@ $RadiusCommands | ForEach-Object {
         $RetryCommands += $_
     } elseif ($_.exitCode -eq 0 -or $_.exitCode -eq 4) {
         $RetryCommands += $_
+    } elseif ($_.commandId -in $QueuedCommandRuns.command -or $_.commandQueued -eq $true) {
+        # Check if command exists in queuedCommands or previously had the commandQueued property set to true
+        $_.commandQueued = $true
+        $lastRun = $_.lastRun | Get-Date
+        $currentTime = Get-Date -Format o
+
+        # If the current time is greater than the lastRun timestamp by 1 hour (TTL expired), add to retryCommand array
+        if ($currentTime -ge $lastRun.AddDays(10)) {
+            $RetryCommands += $_
+        }
     }
 }
 # Output json object
