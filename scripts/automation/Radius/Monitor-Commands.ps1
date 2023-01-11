@@ -28,13 +28,30 @@ function Invoke-CommandRun {
     }
     end {
         if ($response.queueIds) {
-            Write-host "$CommandID triggered sucessfully"
+            Write-Host "$CommandID triggered sucessfully"
         } else {
             Throw "Command with ID: $commandID could not be triggered"
         }
 
     }
 
+}
+
+function Clear-JCQueuedCommand {
+    param (
+        [System.String]
+        $workflowId
+    )
+    process {
+        $headers = @{
+            'x-api-key' = $Env:JCApiKey
+            'x-org-id'  = $Env:JCOrgId
+        }
+        $response = Invoke-RestMethod -Uri "https://console.jumpcloud.com/api/v2/commandqueue/$workflowId" -Method DELETE -Headers $headers
+    }
+    end {
+        return $response
+    }
 }
 
 function Get-JCQueuedCommands {
@@ -47,18 +64,16 @@ function Get-JCQueuedCommands {
         $limit = [int]100
         $skip = [int]0
         $resultsArray = @()
-        $resultsArrayList = New-Object System.Collections.ArrayList
     }
     process {
         while (($resultsArray.results).Count -ge $skip) {
             $response = Invoke-RestMethod -Uri "https://console.jumpcloud.com/api/v2/queuedcommand/workflows?limit=$limit&skip=$skip" -Method GET -Headers $headers
             $skip += $limit
-            $resultsArray += $response
+            $resultsArray += $response.results
         }
-        $resultsArrayList.Add($resultsArray)
     }
     end {
-        return $resultsArrayList.Results
+        return $resultsArray
     }
 }
 
@@ -84,9 +99,9 @@ Function Update-CommandsObject {
             $CommandResults = Get-JCCommandResult -CommandID $command.commandId
             if ($commandResults) {
                 # write-host "$($commandResults.count) command results found for $($command.commandID)"
-                $lastCommandResult = $CommandResults | Sort-Object -property responseTime | Select-Object -Last 1
+                $lastCommandResult = $CommandResults | Sort-Object -Property responseTime | Select-Object -Last 1
                 # $lastCommandResultTimestamp.responseTime
-                $lastCommandResultTimestampUTC = Get-Date $lastCommandResult.responseTime -format o -AsUTC
+                $lastCommandResultTimestampUTC = Get-Date $lastCommandResult.responseTime -Format o -AsUTC
                 # update lastRun line
                 $command.commandPreviouslyRun = $true
                 $command.resultTimeStamp = $lastCommandResultTimestampUTC
@@ -96,7 +111,7 @@ Function Update-CommandsObject {
 
             if ($lastCommandResult.exitCode -eq 0) {
                 # Cleanup old failed results
-                $commandResults | Where-Object { $_._id -notin $lastCommandResult._id } | Remove-JCCommandResult -Force | Out-Null
+                $commandResults | Where-Object { $_._id -notin $lastCommandResult._id } | Remove-JCCommandResult -force | Out-Null
             }
         }
         # Then update the command queue status for every object
@@ -128,7 +143,7 @@ Function Invoke-CommandsRetry {
         $commandsObject = Get-Content -Raw -Path $jsonFile | ConvertFrom-Json
 
         $FailedCommands = $commandsObject | Where-Object { ($_.commandQueued -eq $false) -And ($_.exitCode -ne 0) }
-        write-host "$($failedCommands.count) commands will be re-run"
+        Write-Host "$($failedCommands.count) commands will be re-run"
     }
     process {
         # Prompt to rerun commands that have failed or expired
@@ -198,7 +213,7 @@ foreach ($command in $commandsObject) {
     }
     $command | Add-Member -Name "Status" -Type NoteProperty -Value $character
 }
-$commandsObject | ForEach-Object { [PSCustomObject]$_ } | Select-Object -Property commandName, commandPreviouslyRun, lastRun, commandQueued, resultTimestamp, exitCode, Status | Format-Table -AutoSize
+$commandsObject | ForEach-Object { [PSCustomObject]$_ } | Format-Table commandName, @{N = "commandPreviouslyRun"; E = { $_.commandPreviouslyRun }; align = 'center' }, lastRun, @{N = "commandQueued"; E = { $_.commandQueued }; align = 'center' }, resultTimestamp, @{N = "exitCode"; E = { $_.exitCode }; align = 'center' }, Status -AutoSize
 # break
 
 # # Get all Command Results for the RadiusCommands
