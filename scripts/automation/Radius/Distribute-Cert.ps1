@@ -180,7 +180,7 @@ while ($confirmation -ne 'y') {
 [void](Invoke-JCCommand -trigger 'RadiusCertInstall')
 Write-Host "[status] Commands Invoked"
 
-$RadiusCommands | ForEach-Object {
+foreach ($command in $RadiusCommands) {
     $CommandTable = [PSCustomObject]@{
         commandId            = $command._id
         commandName          = $command.name
