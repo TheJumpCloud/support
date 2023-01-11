@@ -13,6 +13,7 @@ if ( Test-Path $legacyUninstallerPath ) {
     }
     Write-Host "Legacy JumpCloud Remote Assist uninstaller completed with exit code $($uninstallerProcess.ExitCode)"
 }
+
 if ( Test-Path $uninstallerPath ) {
     Write-Host "Uninstalling JumpCloud Remote Assist at " $uninstallerPath
     try {

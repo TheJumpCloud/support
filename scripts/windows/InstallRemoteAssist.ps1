@@ -11,6 +11,7 @@ catch {
     Write-Host "Warning: TLS1.3 is not supported on this operating system, falling back to TLS1.2"
     [Net.ServicePointManager]::SecurityProtocol="Tls12"
 }
+
 try {
     $ProgressPreference = "SilentlyContinue"
     Invoke-WebRequest -Uri $installerURL -OutFile $installerTempLocation
@@ -20,6 +21,7 @@ catch {
     Write-Error $_
     exit 1
 }
+
 Write-Host "Download complete"
 if ( Test-Path $uninstallerPath ) {
     Write-Host "Uninstalling legacy JumpCloud Remote Assist at " $uninstallerPath
@@ -33,6 +35,7 @@ if ( Test-Path $uninstallerPath ) {
     }
     Write-Host "Legacy JumpCloud Remote Assist uninstaller completed with exit code $($uninstallerProcess.ExitCode)"
 }
+
 try {
     Write-Host "Verifying installer signature"
     $authenticode = Get-AuthenticodeSignature "$installerTempLocation"
