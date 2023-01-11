@@ -75,7 +75,7 @@ Function Update-CommandsObject {
         $QueuedCommandRuns = Get-JCQueuedCommands
     }
     process {
-        foreach ($command in $commandsObject) {
+        foreach ($command in $commandsObject | Where-Object { $_.commandID -notin $QueuedCommandRuns.command }) {
 
             $progress = $commandsObject.commandId.indexOf($command.commandId)
             $Completed = ($progress / $commandsObject.count) * 100
@@ -272,4 +272,4 @@ $commandsObject | ForEach-Object { [PSCustomObject]$_ } | Select-Object -Propert
 # $RadiusCommands | ConvertTo-Json | Out-File "$psscriptroot\commands.json"
 
 # Have the script call itself to update the json file
-. $PSCommandPath
+# . $PSCommandPath
