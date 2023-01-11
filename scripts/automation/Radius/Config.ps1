@@ -81,8 +81,6 @@ function Get-OpenSSLVersion {
         if ($version -lt $OpenSSLVersion) {
             Throw "The installed version of OpenSSL: OpenSSL $Version, does not meet the requirements of this application, please install a later version of at least $Type $Version"
             exit 1
-        } else {
-            Write-Host "OpenSSL $Version is installed and meets required version for this application"
         }
     }
 }
