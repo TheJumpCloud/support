@@ -75,8 +75,8 @@ Function Update-CommandsObject {
         $QueuedCommandRuns = Get-JCQueuedCommands
     }
     process {
+        # Update the Command Result status for commands no longer in queue
         foreach ($command in $commandsObject | Where-Object { $_.commandID -notin $QueuedCommandRuns.command }) {
-
             $progress = $commandsObject.commandId.indexOf($command.commandId)
             $Completed = ($progress / $commandsObject.count) * 100
             Write-Progress -Activity "Checking Radius Command Results" -Status "Progress:" -PercentComplete $Completed
@@ -98,6 +98,9 @@ Function Update-CommandsObject {
                 # Cleanup old failed results
                 $commandResults | Where-Object { $_._id -notin $lastCommandResult._id } | Remove-JCCommandResult -Force | Out-Null
             }
+        }
+        # Then update the command queue status for every object
+        foreach ($command in $commandsObject) {
             # update current command queued status
             if ($command.commandId -in $QueuedCommandRuns.command) {
                 $command.commandQueued = $true
