@@ -97,9 +97,15 @@ fi
             $CommandBody = @{
                 Name              = "RadiusCert-Install:$($UserInfo.username):$($SystemInfo.displayName)"
                 Command           = @"
+`$ErrorActionPreference = "Stop"
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+`$PkgProvider = Get-PackageProvider
+If ("Nuget" -notin `$PkgProvider.Name){
+    Install-PackageProvider -Name NuGet -Force
+}
 `$CurrentUser = ((Get-WMIObject -ClassName Win32_ComputerSystem).Username).Split('\')[1]
 if (`$CurrentUser -eq "$($UserInfo.Username)") {
-    if (-not(Get-InstalledModule -Name RunAsUser)) {
+    if (-not(Get-InstalledModule -Name RunAsUser -errorAction "SilentlyContinue")) {
         Write-Host "RunAsUser Module not installed, Installing..."
         Install-Module RunAsUser -Force
         Import-Module RunAsUser -Force
