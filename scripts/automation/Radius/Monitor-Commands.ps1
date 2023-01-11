@@ -211,7 +211,7 @@ foreach ($command in $commandsObject) {
     }
     $command | Add-Member -Name "Status" -Type NoteProperty -Value $character
 }
-$commandsObject | ForEach-Object { [PSCustomObject]$_ } | Select-Object -Property commandName, commandPreviouslyRun, lastRun, commandQueued, resultTimestamp, exitCode, Status | Format-Table -AutoSize
+$commandsObject | ForEach-Object { [PSCustomObject]$_ } | Format-Table commandName, @{N = "commandPreviouslyRun"; E = { $_.commandPreviouslyRun }; align = 'center' }, lastRun, @{N = "commandQueued"; E = { $_.commandQueued }; align = 'center' }, resultTimestamp, @{N = "exitCode"; E = { $_.exitCode }; align = 'center' }, Status -AutoSize
 # break
 
 # # Get all Command Results for the RadiusCommands
