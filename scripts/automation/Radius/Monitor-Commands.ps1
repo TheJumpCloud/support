@@ -187,8 +187,10 @@ foreach ($command in $commandsObject) {
         "$([char]0x1b)[92mOK"
     } elseif ($command.commandId -in $retryCommands) {
         "$([char]0x1b)[34mCOMMAND RE-SCHEDULED"
-    } elseif (($command.exitCode -eq "") -or ($command.commandQueued -eq $true)) {
+    } elseif (($command.exitCode -ne 0) -and ($command.commandQueued -eq $true)) {
         "$([char]0x1b)[93mPENDING"
+    } elseif (($command.exitCode -ne 0) -and ($command.commandQueued -eq $false)) {
+        "$([char]0x1b)[91mNOT SCHEDULED"
     } else {
         "$([char]0x1b)[91mFAILED"
     }
