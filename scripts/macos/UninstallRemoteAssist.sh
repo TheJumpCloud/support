@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# Mac - Uninstall Remote Assist | v1.0 JCCG
+# This command will remove the JumpCloud Remote Assist app on a Mac device.
+
 set -euo pipefail
 
 function get_app_pid() {

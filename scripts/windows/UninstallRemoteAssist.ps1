@@ -1,3 +1,9 @@
+###
+# Windows - Uninstall Remote Assist | v1.0 JCCG
+#
+# This command will remove the JumpCloud Remote Assist app on a Windows device.
+##
+
 $legacyUninstallerPath="C:\Program Files\JumpCloud\Jumpcloud Assist App\Uninstall Jumpcloud Assist App.exe"
 $uninstallerPath="C:\Program Files\JumpCloud Remote Assist\Uninstall JumpCloud Remote Assist.exe"
 

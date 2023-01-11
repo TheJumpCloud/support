@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# Mac - Install Remote Assist | v1.0 JCCG
+# Downloads and installs the JumpCloud Remote Assist app on a Mac system.
+
 set -euo pipefail
 
 declare -r REMOTE_PKG_URL="https://jumpcloud-windows-agent.s3.amazonaws.com/production/jumpcloud-remote-assist-agent.pkg"

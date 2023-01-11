@@ -1,3 +1,9 @@
+###
+# Windows - Install Remote Assist | v1.0 JCCG
+#
+# This command will download and install the JumpCloud Remote Assist app on a Windows device.
+##
+
 $uninstallerPath="C:\Program Files\JumpCloud\Jumpcloud Assist App\Uninstall Jumpcloud Assist App.exe"
 $installerURL="https://jumpcloud-windows-agent.s3.amazonaws.com/production/jumpcloud-remote-assist-agent.exe"
 $JumpCloudThumbprint="7A4844FBF481047BEDBB7A8054069C50E449D355"
