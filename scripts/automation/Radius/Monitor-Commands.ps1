@@ -27,9 +27,7 @@ function Invoke-CommandRun {
         $response = Invoke-RestMethod -Uri 'https://console.jumpcloud.com/api/runCommand' -Method POST -Headers $headers -ContentType 'application/json' -Body $body
     }
     end {
-        if ($response.queueIds) {
-            Write-Host "$CommandID triggered sucessfully"
-        } else {
+        if (!$response.queueIds) {
             Throw "Command with ID: $commandID could not be triggered"
         }
 
@@ -102,7 +100,6 @@ Function Update-CommandsObject {
                 $lastCommandResult = $CommandResults | Sort-Object -Property responseTime | Select-Object -Last 1
                 # $lastCommandResultTimestamp.responseTime
                 $lastCommandResultTimestampUTC = Get-Date $lastCommandResult.responseTime -Format o -AsUTC
-                # update lastRun line
                 $command.commandPreviouslyRun = $true
                 $command.resultTimeStamp = $lastCommandResultTimestampUTC
                 $command.result = $lastCommandResult.output
@@ -112,6 +109,9 @@ Function Update-CommandsObject {
             if ($lastCommandResult.exitCode -eq 0) {
                 # Cleanup old failed results
                 $commandResults | Where-Object { $_._id -notin $lastCommandResult._id } | Remove-JCCommandResult -force | Out-Null
+            } else {
+                # Cleanup old results, save most recent
+                $commandResults | Sort-Object responseTime -Descending | Select-Object -Skip 1 | Remove-JCCommandResult -force | Out-Null
             }
         }
         # Then update the command queue status for every object
@@ -139,7 +139,6 @@ Function Invoke-CommandsRetry {
     )
     begin {
         $RetryCommands = @()
-        $currentTime = Get-Date -Format o
         $commandsObject = Get-Content -Raw -Path $jsonFile | ConvertFrom-Json
 
         $FailedCommands = $commandsObject | Where-Object { ($_.commandQueued -eq $false) -And ($_.exitCode -ne 0) }
@@ -150,8 +149,7 @@ Function Invoke-CommandsRetry {
         $FailedCommands | ForEach-Object {
             try {
                 Invoke-CommandRun -commandID $_.commandId
-                # update last run timestamp & set command to queued
-                $_.lastRun = $currentTime
+                # set command to queued
                 $_.commandQueued = $true
                 $RetryCommands += $_.commandId
             } catch {
@@ -163,6 +161,67 @@ Function Invoke-CommandsRetry {
         # write out/ update jsonFile
         $commandsObject | ConvertTo-Json | Out-File $jsonFile
         return $RetryCommands
+    }
+}
+
+Function Get-CommandObjectTable {
+    [CmdletBinding()]
+    param (
+        [Parameter()]
+        [PSCustomObject]$retryCommands,
+        [Parameter()]
+        [string]$jsonFile,
+        [Parameter(ParameterSetName = 'Overview')]
+        [switch]$Overview,
+        [Parameter(ParameterSetName = 'Failed')]
+        [switch]$Failed
+    )
+    process {
+        switch ($PSCmdlet.ParameterSetName) {
+            Overview {
+                Write-Host "`n[Radius Cert Deployment Status - Overview]"
+                $commandsObject = Get-Content -Raw -Path $jsonFile | ConvertFrom-Json
+                foreach ($command in $commandsObject) {
+                    $character = if (($command.exitCode -eq 0)) {
+                        "$([char]0x1b)[92mOK"
+                    } elseif ($command.commandId -in $retryCommands) {
+                        "$([char]0x1b)[34mCOMMAND RE-SCHEDULED"
+                    } elseif (($command.exitCode -ne 0) -and ($command.commandQueued -eq $true)) {
+                        "$([char]0x1b)[93mPENDING"
+                    } elseif (($command.commandPreviouslyRun -eq $false) -and ($command.commandQueued -eq $false)) {
+                        "$([char]0x1b)[91mNOT SCHEDULED"
+                    } elseif (($command.exitCode -eq "") -and ($command.commandQueued -eq $false)) {
+                        "$([char]0x1b)[91mNOT SCHEDULED"
+                    } else {
+                        "$([char]0x1b)[91mFAILED"
+                    }
+                    $command | Add-Member -Name "Status" -Type NoteProperty -Value $character
+                }
+                $commandsObject | ForEach-Object { [PSCustomObject]$_ } | Format-Table commandName, @{N = "commandQueued"; E = { $_.commandQueued }; align = 'center' }, resultTimestamp, @{N = "exitCode"; E = { $_.exitCode }; align = 'center' }, Status -AutoSize
+            }
+            Failed {
+                Write-Host "`n[Radius Cert Deployment Status - Failed]"
+                $commandsObject = Get-Content -Raw -Path $jsonFile | ConvertFrom-Json
+                $failedCommands = $commandsObject | Where-Object { $_.commandId -in $retryCommands }
+                foreach ($command in $failedCommands) {
+                    $character = if (($command.exitCode -eq 0)) {
+                        "$([char]0x1b)[92mOK"
+                    } elseif ($command.commandId -in $retryCommands) {
+                        "$([char]0x1b)[34mCOMMAND RE-SCHEDULED"
+                    } elseif (($command.exitCode -ne 0) -and ($command.commandQueued -eq $true)) {
+                        "$([char]0x1b)[93mPENDING"
+                    } elseif (($command.commandPreviouslyRun -eq "") -and ($command.commandQueued -eq $false)) {
+                        "$([char]0x1b)[91mNOT SCHEDULED"
+                    } elseif (($command.exitCode -eq "") -and ($command.commandQueued -eq $false)) {
+                        "$([char]0x1b)[91mNOT SCHEDULED"
+                    } else {
+                        "$([char]0x1b)[91mFAILED"
+                    }
+                    $command | Add-Member -Name "Status" -Type NoteProperty -Value $character
+                }
+                $failedCommands | ForEach-Object { [PSCustomObject]$_ } | Format-Table commandName, @{N = "commandQueued"; E = { $_.commandQueued }; align = 'center' }, resultTimestamp, @{N = "exitCode"; E = { $_.exitCode }; align = 'center' }, Status -AutoSize
+            }
+        }
     }
 }
 # End Functions
@@ -180,6 +239,8 @@ $AvailableCommands = @()
 $SuccessfulCommandRuns = $CommandResults | Where-Object { $_.exitCode -eq "0" }
 $AvailableCommands = $CommandResults | Where-Object { ($_.exitCode -ne 0) -And ($_.commandQueued -eq $false) }
 
+Get-CommandObjectTable -Overview -jsonFile $jsonFile
+
 # Prompt to rerun commands that have failed or expired (if possible)
 If ($AvailableCommands) {
     $confirmation = Read-Host "Would you like to rerun failed/unrun commands and/or expired queued commands? [y/n]"
@@ -191,107 +252,7 @@ If ($AvailableCommands) {
     if ($confirmation -eq 'y') {
         # Retry commands
         $retryCommands = Invoke-CommandsRetry -jsonFile $jsonFile
+        Get-CommandObjectTable -jsonFile $jsonFile -retryCommands $retryCommands -Failed
     }
 }
 
-# display current json
-Write-Host "`n[Radius Cert Deployment Status]"
-$commandsObject = Get-Content -Raw -Path $jsonFile | ConvertFrom-Json
-foreach ($command in $commandsObject) {
-    $character = if (($command.exitCode -eq 0)) {
-        "$([char]0x1b)[92mOK"
-    } elseif ($command.commandId -in $retryCommands) {
-        "$([char]0x1b)[34mCOMMAND RE-SCHEDULED"
-    } elseif (($command.exitCode -ne 0) -and ($command.commandQueued -eq $true)) {
-        "$([char]0x1b)[93mPENDING"
-    } elseif (($command.lastRun -eq "") -and ($command.commandQueued -eq $false)) {
-        "$([char]0x1b)[91mNOT SCHEDULED"
-    } elseif (($command.exitCode -eq "") -and ($command.commandQueued -eq $false)) {
-        "$([char]0x1b)[91mNOT SCHEDULED"
-    } else {
-        "$([char]0x1b)[91mFAILED"
-    }
-    $command | Add-Member -Name "Status" -Type NoteProperty -Value $character
-}
-$commandsObject | ForEach-Object { [PSCustomObject]$_ } | Format-Table commandName, @{N = "commandPreviouslyRun"; E = { $_.commandPreviouslyRun }; align = 'center' }, lastRun, @{N = "commandQueued"; E = { $_.commandQueued }; align = 'center' }, resultTimestamp, @{N = "exitCode"; E = { $_.exitCode }; align = 'center' }, Status -AutoSize
-# break
-
-# # Get all Command Results for the RadiusCommands
-# $CommandResults = Get-JCCommandResult -Detailed | Where-Object { ($_.name -like "RadiusCert-Install*") }
-
-# # Check results
-# $SuccessfulCommandRuns = $CommandResults | Select-Object -ExcludeProperty command | Where-Object { $_.exitCode -eq "0" }
-# $QueuedCommandRuns = Get-JCQueuedCommands
-# $FailedCommandRuns = $CommandResults | Select-Object -ExcludeProperty command | Where-Object { $_.exitCode -eq "1" -or $_.exitCode -eq "4" }
-
-# # Update Commands.json with updated information
-# $RadiusCommands | ForEach-Object {
-#     if ($_.commandId -in $SuccessfulCommandRuns.workflowId) {
-#         # Check if command exists in successful command runs
-#         $commandInfo = $SuccessfulCommandRuns | Where-Object workflowId -EQ $_.commandId
-#         $_.commandQueued = $false
-#         $_.resultTimeStamp = $commandInfo.responseTime
-#         $_.result = $commandInfo.output
-#         $_.exitCode = $commandInfo.exitCode
-#     } elseif ($_.commandId -in $FailedCommandRuns.workflowId) {
-#         # Check if command exists in failed command runs. if so, add to retryCommand array
-#         $commandInfo = $FailedCommandRuns | Where-Object workflowId -EQ $_.commandId
-#         $_.commandQueued = $false
-#         $_.resultTimeStamp = $commandInfo.responseTime
-#         $_.result = $commandInfo.output
-#         $_.exitCode = $commandInfo.exitCode
-
-#         $RetryCommands += $_
-#     } elseif ($_.exitCode -eq 0 -or $_.exitCode -eq 4) {
-#         $RetryCommands += $_
-#     } elseif ($_.commandId -in $QueuedCommandRuns.command -or $_.commandQueued -eq $true) {
-#         # Check if command exists in queuedCommands or previously had the commandQueued property set to true
-#         $_.commandQueued = $true
-#         $lastRun = $_.lastRun | Get-Date
-#         $currentTime = Get-Date -Format o
-
-#         # If the current time is greater than the lastRun timestamp by 1 hour (TTL expired), add to retryCommand array
-#         if ($currentTime -ge $lastRun.AddDays(10)) {
-#             $RetryCommands += $_
-#         }
-#     }
-# }
-# # Output json object
-# $RadiusCommands | ForEach-Object { [PSCustomObject]$_ } | Format-Table -AutoSize
-# Write-Host "[status] $($SuccessfulCommandRuns.Count) successful command executions and $($RetryCommands.Count) failures"
-
-# # Prompt to rerun commands that have failed or expired
-# $confirmation = Read-Host "Would you like to rerun failed commands and/or expired queued commands? [y/n]"
-# while ($confirmation -ne 'y') {
-#     if ($confirmation -eq 'n') {
-#         $RadiusCommands | ConvertTo-Json | Out-File "$psscriptroot\commands.json"
-#         exit
-#     }
-# }
-
-# # Cleanup old failed results
-# Write-Host "[status] Cleaning up old command result failures"
-# $FailedCommandRuns | Remove-JCCommandResult -force | Out-Null
-
-# # Retry commands
-# $RetryCommands | ForEach-Object {
-#     if ($_.commandId -in $QueuedCommandRuns.command) {
-#         Write-Host "[status] Queued: $($_.commandName)"
-#     } else {
-#         Write-Host "[status] Running: $($_.commandName)"
-#         Invoke-CommandRun -commandID $_.commandId
-#     }
-# }
-
-# # Update the lastRun property for the commands
-# $RadiusCommands | ForEach-Object {
-#     if ($_.commandId -in $RetryCommands.commandId) {
-#         $_.lastRun = (Get-Date -Format o -AsUTC)
-#     }
-# }
-
-# # Update json file
-# $RadiusCommands | ConvertTo-Json | Out-File "$psscriptroot\commands.json"
-
-# Have the script call itself to update the json file
-# . $PSCommandPath
