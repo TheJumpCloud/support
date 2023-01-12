@@ -127,6 +127,7 @@ function Get-JCSystemApp () {
                     $resultsArray | Add-Member -MemberType NoteProperty -Name 'osFamily' -Value $os
                     $resultsArrayList.Add($resultsArray)
                 } elseif ($os -eq 'Windows') {
+                    $URL = "$JCUrlBasePath/api/v2/systeminsights/programs?filter=name:eq:$SoftwareName"
                     if ($Parallel) {
                         $resultsArray = Get-JCResults -URL $URL -Method "GET" -limit $limit -parallel $true
                     } else {
@@ -135,6 +136,7 @@ function Get-JCSystemApp () {
                     $resultsArray | Add-Member -MemberType NoteProperty -Name 'osFamily' -Value $os
                     $resultsArrayList.Add($resultsArray)
                 } elseif ($os -eq 'Linux') {
+                    $URL = "$JCUrlBasePath/api/v2/systeminsights/linux_packages?filter=name:eq:$SoftwareName"
                     if ($Parallel) {
                         $resultsArray = Get-JCResults -URL $URL -Method "GET" -limit $limit -parallel $true
                     } else {
