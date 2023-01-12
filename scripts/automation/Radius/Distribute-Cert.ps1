@@ -166,7 +166,6 @@ while ($confirmation -ne 'y') {
                 commandName          = $command.name
                 commandPreviouslyRun = $false
                 commandQueued        = $false
-                lastRun              = ""
                 resultTimestamp      = ""
                 result               = ""
                 exitCode             = ""
@@ -186,7 +185,6 @@ foreach ($command in $RadiusCommands) {
         commandName          = $command.name
         commandPreviouslyRun = $true
         commandQueued        = $false
-        lastRun              = (Get-Date -Format o -AsUTC)
         resultTimestamp      = ""
         result               = ""
         exitCode             = ""
