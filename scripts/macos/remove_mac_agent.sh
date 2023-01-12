@@ -4,6 +4,15 @@ if [[ $(id -u) -ne 0 ]]; then
   exit 1
 fi
 
+# Remove Remote Assist App
+if [[ -d "/Applications/JumpCloud Remote Assist.app" ]];then
+  rm -rf "/Applications/JumpCloud Remote Assist.app"
+fi
+# Remove Service Account App
+if [[ -d "/Applications/JumpCloudServiceAccount.app" ]];then
+  rm -rf "/Applications/JumpCloudServiceAccount.app"
+fi
+
 AGENT_UNINSTALL_SCRIPT="/opt/jc/bin/removeAgent"
 
 if [[ -f $AGENT_UNINSTALL_SCRIPT ]]; then
@@ -42,6 +51,25 @@ done
 rm /Library/LaunchAgents/com.jumpcloud.jcagent-tray.plist
 rm -rf /Applications/Jumpcloud.app
 
+# Remove opt/jc_user_ro directory and contents
+if [[ -d "/opt/jc_user_ro" ]];then
+  rm -rf "/opt/jc_user_ro"
+fi
+
+# get jumpcloud daemons and agents
+jcDaemons=$(find /Library/LaunchDaemons -type f -iname "*jumpcloud*")
+jcAgents=$(find /Library/LaunchAgents -type f -iname "*jumpcloud*")
+
+# remove each matching daemon file
+for daemon in $jcDaemons
+do
+  rm -rf $daemon
+done
+# remove each matching agent file
+for agent in $jcAgents
+do
+  rm -rf $agent
+done
 # verify no jumpcloud processes are still running. kill and straglers
 # implemented in response to desk case #28825.
 if (pgrep -fi "[j]umpcloud" &> /dev/null); then
