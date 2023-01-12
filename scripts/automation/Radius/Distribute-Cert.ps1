@@ -64,12 +64,12 @@ foreach ($association in $SystemUserAssociations) {
                 Command           = @"
 set -e
 unzip -o /tmp/$($UserInfo.username)-client-signed.zip -d /tmp
-currentUser=$(/usr/bin/stat -f%Su /dev/console)
-currentUserUID=$(id -u "$currentUser")
-if [[ $currentUser ==  $($UserInfo.username) ]]; then
-    /bin/launchctl asuser "$currentUserUID" sudo -iu "$currentUser" /usr/bin/security import /tmp/$($UserInfo.username)-client-signed.pfx -k /Users/$($UserInfo.username)/Library/Keychains/login.keychain -P $JCUSERCERTPASS
+currentUser=`$(/usr/bin/stat -f%Su /dev/console)
+currentUserUID=`$(id -u "`$currentUser")
+if [[ `$currentUser ==  $($UserInfo.username) ]]; then
+    /bin/launchctl asuser "`$currentUserUID" sudo -iu "`$currentUser" /usr/bin/security import /tmp/$($UserInfo.username)-client-signed.pfx -k /Users/$($UserInfo.username)/Library/Keychains/login.keychain -P $JCUSERCERTPASS
 else
-    echo "Current logged in user, $currentUser, does not match expected certificate user. Please ensure $($UserInfo.username) is signed in and retry"
+    echo "Current logged in user, `$currentUser, does not match expected certificate user. Please ensure $($UserInfo.username) is signed in and retry"
     exit 4
 fi
 
