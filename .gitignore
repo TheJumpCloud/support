@@ -12,4 +12,6 @@
 /scripts/automation/Radius/*/*.key
 /scripts/automation/Radius/*/*.csr
 /scripts/automation/Radius/*/*.pfx
+/scripts/automation/Radius/*/*.zip
 /scripts/automation/Radius/*/*.srl
+/scripts/automation/Radius/commands.json

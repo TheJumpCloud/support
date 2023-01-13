@@ -1,4 +1,4 @@
-# READ ONLY API KEY
+# READ/ WRITE API KEY
 $JCAPIKEY = 'yourApiKey'
 # JUMPCLOUD ORGID
 $JCORGID = 'yourOrgId'
@@ -10,7 +10,6 @@ $JCUSERCERTPASS = 'secret1234!'
 $JCUSERCERTVALIDITY = 90
 # OpenSSLBinary by default this is (openssl)
 # NOTE: If openssl does not work, try using the full path to the openssl file
-# Windows Example: C:\Program Files\OpenSSL-Win64\bin\openssl.exe
 # MacOS HomeBrew Example: '/usr/local/Cellar/openssl@3/3.0.7/bin/openssl'
 $opensslBinary = 'openssl'
 # Enter Cert Subject Headers (do not enter strings with spaces)
@@ -44,7 +43,7 @@ function Get-OpenSSLVersion {
     )
     begin {
         try {
-            $version = Invoke-Expression "$opensslBinary version"
+            $version = Invoke-Expression "& '$opensslBinary' version"
         } catch {
             throw "Something went wrong... Could not find openssl or the path is incorrect. Please update the `$opensslBinary variable in the config.ps1 file to the correct path"
         }
@@ -58,13 +57,29 @@ function Get-OpenSSLVersion {
         } else {
             [version]$Version = (Select-String -InputObject $version -Pattern "([0-9]+)\.([0-9]+)\.([0-9]+)").matches.value
         }
+
+        # Determine if windows:
+        if ([System.Environment]::OSVersion.Platform -match "Win") {
+            # If env variable exists, skip check for subsequent runs of ./config.ps1
+            if ($env:OPENSSL_MODULES) {
+                $binItems = Get-ChildItem -Path $env:OPENSSL_MODULES
+                if ("legacy.dll" -in $binItems.Name) {
+                    Write-Host "legacy.dll module set through environment variable"
+                } else {
+                    Throw "The required OpenSSL 'legacy.dll' file was not found in the bin path $PathDirectory. This is required to create certificates. `nIf this module file is located elsewhere, you may specify the path to that directory in this powershell session using this command: '`$env:OPENSSL_MODULES = C:/Path/To/Directory' "
+                }
+            } else {
+                # Try to point to the Legacy.dll file
+                Throw "The required OpenSSL 'legacy.dll' file is required for this project. This module file is required to create certificates. `nIf this module file is located elsewhere, you may specify the path to that directory in this powershell session using this command: '`$env:OPENSSL_MODULES = C:/Path/To/openSSL_Directory/' Where the legacy.dll file is in openSSL_Directory "
+
+            }
+
+        }
     }
     process {
         if ($version -lt $OpenSSLVersion) {
             Throw "The installed version of OpenSSL: OpenSSL $Version, does not meet the requirements of this application, please install a later version of at least $Type $Version"
             exit 1
-        } else {
-            Write-Host "OpenSSL $Version is installed and meets required version for this application"
         }
     }
 }
