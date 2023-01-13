@@ -256,3 +256,15 @@ If ($AvailableCommands) {
     }
 }
 
+################################################################################
+# If needed you can clear out your command queue with the following commands.
+# Copy and Paste these into a powershell terminal window to clear all queued
+# commands in your org.
+# $headers = @{
+#     "x-api-key" = $Env:JCApiKey
+#     "x-org-id"  = $Env:JCOrgId
+# }
+# $queuedCommands = Get-CommandQueue
+# foreach ($queue in $queuedCommands.id) {
+#     $response = Invoke-RestMethod -Uri "https://console.jumpcloud.com/api/v2/commandqueue/$($queue)" -Method DELETE -Headers $headers
+# }

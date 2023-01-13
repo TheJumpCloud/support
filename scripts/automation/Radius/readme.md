@@ -53,7 +53,7 @@ Before Running either the `Generate-Cert.ps1` and `Generate-UserCerts.ps1` scrip
 
 #### Set Your API Key ID
 
-Change the variable `$JCAPIKEY` to an [API Key](https://support.jumpcloud.com/s/article/jumpcloud-apis1) from an administrator in your JumpCloud Tenant. An administrator API Key with at least [read-only access](https://support.jumpcloud.com/support/s/article/JumpCloud-Roles) is required.
+Change the variable `$JCAPIKEY` to an [API Key](https://support.jumpcloud.com/s/article/jumpcloud-apis1) from an administrator in your JumpCloud Tenant. An administrator API Key with at least [read/write access](https://support.jumpcloud.com/support/s/article/JumpCloud-Roles) is required.
 
 #### Set Your Organization ID
 
@@ -80,15 +80,15 @@ Change the `$certType` variable to either `EmailSAN`, `EmailDN` or `UsernameCn`
 
 ### Certificate Authority Generation
 
-After setting environment variables in the `config.ps1` file. The `Generate-Cert.ps1` file should then be ran in order to generate the self-signed Radius authentication certificate.
+After setting environment variables in the `config.ps1` file. The `Generate-RootCert.ps1` file should then be ran in order to generate the self-signed Radius authentication certificate.
 
 In a PowerShell terminal or environment navigate to this directory:
 
 `cd "~/Path/To/support/scripts/automation/Radius/"`
 
-Run the `Generate-Cert.ps1` file
+Run the `Generate-RootCert.ps1` file
 
-`./Generate-Cert.ps1`
+`./Generate-RootCert.ps1`
 
 After successfully running the script the openssl extension files should each be updated with your subject headers set from the `config.ps1` file.
 
@@ -107,3 +107,86 @@ With the certificate authority generated, the user certs can then be generated. 
 The script will go fetch all users found in the user group specified in `config.ps1`. For each user in the group, a `.pfx` certificate will be generated in the `/UserCerts` directory.
 
 Each user will then need to install their respective certificate on their devices.
+
+## Certificate Distribution
+
+### Distribute Certificates
+
+After Generating all the user certificates, the `Distribute-UserCerts.ps1` file is used to create commands in the JumpCloud Console for distribution to end users.
+
+In a PowerShell terminal or environment navigate to this directory:
+
+`cd "~/Path/To/support/scripts/automation/Radius/"`
+
+Run the `Distribute-UserCerts.ps1` file
+
+`./Distribute-UserCerts.ps1`
+
+Commands will be generated in your JumpCloud Tenant for each user in the Radius User Group and their corresponding system associations. This script will prompt you to kick off the generated commands. If the commands are invoked, they should be queued for all users in the Radius User Group. These commands are queued with a TTL timeout of 10 days — meaning that if the end user device is offline when the command is queued, for 10 days, the command will sit in the JumpCLoud console and wait for the device to come online before attempting to run.
+
+### Monitor Certificate Deployment Status
+
+After creating the commands to distribute the certificates to users, you can view the overall progress of the deployment through the `Monitor-CertDeployment.ps1` script. This script will query the deployment status of each generated command and display a table of the command status. If a command is no longer queued (Either through cancellation or the TTL timeout of 10 days exceeded) or if the command failed (either through some standard error or end user not being logged in (exit code 4)) running the `Monitor-CertDeployment.ps1` script will prompt you to retry those dequeued or failed commands.
+
+Output for pending commands:
+![pending and successful commands](./images/monitor_pending.png)
+
+Output for re-running commands:
+![rerunning commands](./images/monitor_retry.png)
+
+### End User Experience
+
+After a user's certificate has been distributed to a system, those users can then connect to a radius network with certificate based authentication.
+
+### MacOS
+
+In MacOS a user simply needs to select the radius network from the wireless networks dialog prompt. An option to authenticate with a certificate should be presented. After selecting the user's certificate, the MacOS user is prompted to enter their system password. They can do this and select "Always Allow" or will otherwise be prompted to enter their password three times.
+
+### Windows
+
+In Windows, select the radius network from the wireless networks dialog prompt, an option to select a certificate should be displayed. Select the certificate which corresponds with the user on the device. Select "OK"
+
+![select network](./images/windows_select_network.png)
+
+Before Connecting, users can view the authentication source. Click "Connect" to connect to the network, no password is necessary.
+
+![select network](./images/windows_auth.png)
+
+### Troubleshooting
+
+#### Clearing Commands Queue
+
+If needed, you can clear out your entire commands queue. Copy and paste the following code to a PowerShell terminal window where you've already run `Connect-JCOnline`
+
+```powershell
+function Get-JCQueuedCommands {
+    begin {
+        $headers = @{
+            "x-api-key" = $Env:JCApiKey
+            "x-org-id"  = $Env:JCOrgId
+
+        }
+        $limit = [int]100
+        $skip = [int]0
+        $resultsArray = @()
+    }
+    process {
+        while (($resultsArray.results).Count -ge $skip) {
+            $response = Invoke-RestMethod -Uri "https://console.jumpcloud.com/api/v2/queuedcommand/workflows?limit=$limit&skip=$skip" -Method GET -Headers $headers
+            $skip += $limit
+            $resultsArray += $response.results
+        }
+    }
+    end {
+        return $resultsArray
+    }
+}
+$headers = @{
+    "x-api-key" = $Env:JCApiKey
+    "x-org-id"  = $Env:JCOrgId
+}
+$queuedCommands = Get-JCQueuedCommands
+foreach ($queue in $queuedCommands.id) {
+    $response = Invoke-RestMethod -Uri "https://console.jumpcloud.com/api/v2/commandqueue/$($queue)" -Method DELETE -Headers $headers
+}
+```
