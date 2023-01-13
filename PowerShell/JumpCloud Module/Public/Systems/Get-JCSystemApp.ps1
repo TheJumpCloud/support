@@ -64,6 +64,8 @@ function Get-JCSystemApp () {
                         $URL = "$JCUrlBasePath/api/v2/systeminsights/programs?filter=name:eq:$SoftwareName"
                     } elseif ($SystemID) {
                         $URL = "$JCUrlBasePath/api/v2/systeminsights/programs?filter=system_id:eq:$SystemID"
+                    } else {
+                        $URL = "$JCUrlBasePath/api/v2/systeminsights/programs"
                     }
                     Write-Debug $URL
                 }
@@ -83,6 +85,8 @@ function Get-JCSystemApp () {
                         $URL = "$JCUrlBasePath/api/v2/systeminsights/apps?filter=bundle_name:eq:$SoftwareName"
                     } elseif ($SystemID) {
                         $URL = "$JCUrlBasePath/api/v2/systeminsights/apps?filter=system_id:eq:$SystemID"
+                    } else {
+                        $URL = "$JCUrlBasePath/api/v2/systeminsights/apps"
                     }
                     Write-Debug $URL
                 }
@@ -102,6 +106,8 @@ function Get-JCSystemApp () {
                         $URL = "$JCUrlBasePath/api/v2/systeminsights/linux_packages?filter=name:eq:$SoftwareName"
                     } elseif ($SystemID) {
                         $URL = "$JCUrlBasePath/api/v2/systeminsights/linux_packages?filter=system_id:eq:$SystemID"
+                    } else {
+                        $URL = "$JCUrlBasePath/api/v2/systeminsights/linux_packages"
                     }
                     Write-Debug $URL
                 }
