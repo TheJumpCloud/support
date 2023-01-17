@@ -10,7 +10,9 @@ function Get-JCSystemApp () {
         [Parameter(Mandatory = $false, HelpMessage = 'The name of the application you want to search for ex. (JumpCloud-Agent, Slack)')]
         [string]$SoftwareName,
         [Parameter(Mandatory = $false, HelpMessage = 'The version of the application you want to search for ex. (1.1.2)')]
-        [string]$SoftwareVersion
+        [string]$SoftwareVersion,
+        [Parameter(Mandatory = $false, HelpMessage = 'Global search ex. (1.1.2)')]
+        [string]$Search
     )
 
     begin {
@@ -24,18 +26,36 @@ function Get-JCSystemApp () {
         if ($Parallel) {
             Write-Verbose 'Initilizing resultsArray'
             $resultsArrayList = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
+            $searchAppResultsList = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
         } else {
             Write-Verbose 'Initilizing resultsArray'
             $resultsArrayList = New-Object -TypeName System.Collections.ArrayList
+            $searchAppResultsList = New-Object -TypeName System.Collections.ArrayList
         }
     }
-
+    #TODO: Create a PR to add docs
     process {
         [int]$limit = '1000'
         Write-Verbose "Setting limit to $limit"
 
         [int]$skip = '0'
         Write-Verbose "Setting skip to $skip"
+        # Create a global search for all endpoints(Windows, Mac, Linux) and regex software name
+        if ($Search) {
+            # Get all the results
+            foreach ($x in @('programs', 'apps', 'linux_packages')) {
+                Write-Debug $x
+                $URL = "$JCUrlBasePath/api/v2/systeminsights/$($x)"
+                $searchAppResults = Get-JCResults -URL $URL -Method "GET" -limit $limit
+                $searchAppResultsList.Add($searchAppResults)
+            }
+            # Search for software name in the $searchAppResultsList
+            $searchAppResultsList | ForEach-Object {
+                $_ | Where-Object { $_.name -match $Search } | ForEach-Object {
+                    $resultsArrayList.Add($_)
+                }
+            }
+        }
         # If Parameter is SystemID then return all apps for that system
         if ($SystemId -or $SystemOs) {
             if ($SystemId) {
