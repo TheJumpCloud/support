@@ -6,8 +6,9 @@ The PowerShell automations in this directory are designed to help administrators
 
 This automation has been tested with OpenSSL 3.0.7 at the time of this writing. OpenSSL 3.x.x is required to generate the Radius Authentication certificates. The following items are required to use this automation workflow
 
-- PowerShell 7.x.x
+- PowerShell 7.x.x ([PowerShell 7](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell?view=powershell-7.3))
 - OpenSSL 3.x.x (Tested with 3.0.7)
+- [JumpCloud PowerShell Module](https://www.powershellgallery.com/packages/JumpCloud/2.1.3) 
 
 ### MacOS Requirements
 
@@ -45,11 +46,11 @@ The `openssl` command should be available in new PowerShell terminal windows.
 
 ## Setup
 
-To generate a set of Radius certificates. The two scripts `Generate-Cert.ps1` and `Generate-UserCerts.ps1` must be used. A configuration file `Config.ps1` must also be edited prior to running the cert generation scripts.
+To generate a set of Radius certificates. The two scripts `Generate-RootCert.ps1` and `Generate-UserCerts.ps1` must be used. A configuration file `Config.ps1` must also be edited prior to running the cert generation scripts.
 
 ### Set the Radius Config
 
-Before Running either the `Generate-Cert.ps1` and `Generate-UserCerts.ps1` scripts the environment variables for your JumpCloud Organization must first be set. Open the `config.ps1` file with a text editor.
+Before Running either the `Generate-RootCert.ps1` and `Generate-UserCerts.ps1` scripts the environment variables for your JumpCloud Organization must first be set. Open the `config.ps1` file with a text editor.
 
 #### Set Your API Key ID
 
