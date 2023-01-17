@@ -84,3 +84,10 @@ function Get-OpenSSLVersion {
     }
 }
 Get-OpenSSLVersion -opensslBinary $opensslBinary
+
+# Validate no spaces in $Subj
+foreach ($subjObj in $subj.psObject.Properties){
+    if ($subjObj.value -match " "){
+        throw "Subject Header: $($subjObj.Name):$($subjObj.value) Contains a space character. subject headers cannot contain spaces, please remove and re-run"
+    }
+}
