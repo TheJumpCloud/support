@@ -100,7 +100,6 @@ function Generate-UserCert {
     }
     process {
         # Set Extension Path
-        $opensslBinary = '/usr/local/Cellar/openssl@3/3.0.7/bin/openssl'
         $ExtensionPath = "$psscriptroot/Extensions/extensions-$($CertType).cnf"
         # User Certificate Signing Request:
         $userCSR = "$psscriptroot/UserCerts/$($user.username)-cert-req.csr"
