@@ -68,7 +68,9 @@ Function InstallAgent() {
 Function UninstallAgent() {
     # Due to PowerShell's incredible weakness in dealing with paths containing SPACEs, we need to
     # to hard-code this path...
-    $params = ("${env:ProgramFiles}\JumpCloud\unins000.exe", "/VERYSILENT", "/SUPPRESSMSGBOXES")
+    $uninstallPath = Resolve-Path -path "${env:ProgramFiles}\JumpCloud\unins000.exe"
+    $uninstallPath = $uninstallPath -replace " ", "`` "
+    $params = ("$uninstallPath", "/VERYSILENT", "/SUPPRESSMSGBOXES")
     Invoke-Expression "$params"
 }
 
