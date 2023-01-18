@@ -310,7 +310,7 @@ commands:
     steps:
       - add_ssh_keys:
           fingerprints:
-            - "d0:d7:40:1c:62:64:d4:68:e2:12:c5:b9:78:40:66:6b"
+            - "c9:0f:56:c9:00:42:98:3c:03:59:24:1e:a7:e7:08:7f"
       - checkout
       - run:
           name: Set URLs
@@ -413,7 +413,7 @@ commands:
       - checkout
       - add_ssh_keys:
           fingerprints:
-            - "d0:d7:40:1c:62:64:d4:68:e2:12:c5:b9:78:40:66:6b"
+            - "c9:0f:56:c9:00:42:98:3c:03:59:24:1e:a7:e7:08:7f"
       - attach_workspace:
           at: .
       - run:
@@ -427,7 +427,7 @@ commands:
       - checkout
       - add_ssh_keys:
           fingerprints:
-            - "d0:d7:40:1c:62:64:d4:68:e2:12:c5:b9:78:40:66:6b"
+            - "c9:0f:56:c9:00:42:98:3c:03:59:24:1e:a7:e7:08:7f"
       - attach_workspace:
           at: .
       - run:
