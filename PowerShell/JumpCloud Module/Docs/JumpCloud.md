@@ -2,7 +2,7 @@
 Module Name: JumpCloud
 Module Guid: 31c023d1-a901-48c4-90a3-082f91b31646
 Download Help Link: https://github.com/TheJumpCloud/support/wiki
-Help Version: 2.1.3
+Help Version: 2.2.0
 Locale: en-US
 ---
 
@@ -85,6 +85,9 @@ Return JumpCloud radius server information.
 
 ### [Get-JCSystem](Get-JCSystem.md)
 Returns all JumpCloud Systems within a JumpCloud tenant or a single JumpCloud System using the -ByID Parameter.
+
+### [Get-JCSystemApp](Get-JCSystemApp.md)
+{{ Fill in the Synopsis }}
 
 ### [Get-JCSystemGroupMember](Get-JCSystemGroupMember.md)
 Returns the System Group members of a JumpCloud System Group.
