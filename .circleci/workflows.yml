@@ -310,7 +310,7 @@ commands:
     steps:
       - add_ssh_keys:
           fingerprints:
-            - "89:e7:20:1b:b1:a2:c2:2e:b8:d6:34:2f:73:80:a6:70"
+            - "47:a7:42:75:1a:a5:0b:d5:5a:79:68:c4:99:8d:81:70"
       - checkout
       - run:
           name: Set URLs
@@ -413,7 +413,7 @@ commands:
       - checkout
       - add_ssh_keys:
           fingerprints:
-            - "89:e7:20:1b:b1:a2:c2:2e:b8:d6:34:2f:73:80:a6:70"
+            - "47:a7:42:75:1a:a5:0b:d5:5a:79:68:c4:99:8d:81:70"
       - attach_workspace:
           at: .
       - run:
@@ -427,7 +427,7 @@ commands:
       - checkout
       - add_ssh_keys:
           fingerprints:
-            - "89:e7:20:1b:b1:a2:c2:2e:b8:d6:34:2f:73:80:a6:70"
+            - "47:a7:42:75:1a:a5:0b:d5:5a:79:68:c4:99:8d:81:70"
       - attach_workspace:
           at: .
       - run:
@@ -607,5 +607,4 @@ commands:
           root: .
           paths:
             - .
-
 # VS Code Extension Version: 1.5.1
