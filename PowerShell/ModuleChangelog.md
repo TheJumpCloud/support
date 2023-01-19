@@ -5,20 +5,24 @@ Release Date: January 18, 2023
 #### RELEASE NOTES
 
 ```
-{{Fill in the Release Notes}}
+This release adds new function Get-JCSystemApp
 ```
 
 #### FEATURES:
 
-{{Fill in the Features}}
+* Get-JCSystemApp command enables search by:
+  - applications installed in a system
+  - applications installed from all the systems in a specifc OS
+  - SoftwareName
+  - SoftwareName and SoftwareVersion
 
 #### IMPROVEMENTS:
 
-{{Fill in the Improvements}}
+N/A
 
 #### BUG FIXES:
 
-{{Fill in the Bug Fixes}}
+N/A
 
 ## 2.1.3
 

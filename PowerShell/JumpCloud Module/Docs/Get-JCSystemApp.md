@@ -8,7 +8,7 @@ schema: 2.0.0
 # Get-JCSystemApp
 
 ## SYNOPSIS
-{{ Fill in the Synopsis }}
+Returns the System Apps installed to a JumpCloud System(s)
 
 ## SYNTAX
 
@@ -24,10 +24,28 @@ Get-JCSystemApp [[-SystemID] <String>] [[-SystemOS] <String>] [[-SoftwareName] <
 
 ### Example 1
 ```powershell
-PS C:\> {{ Add example code here }}
+PS C:\> Get-JCSystemApp -SystemId 'SystemId'
 ```
 
-{{ Add example description here }}
+Returns the applications installed in the system with the given -SystemId
+
+### Example 2
+```powershell
+PS C:\> Get-JCSystemApp -SystemOs 'MacOs'
+```
+
+Returns the 'MacOs' systems and all the applications installed for each system
+
+### Example 3
+```powershell
+PS C:\> Get-JCSystemApp -SystemOs 'MacOs' -SoftwareName 'JumpCloud-Agent'
+```
+### Example 4
+```powershell
+PS C:\> Get-JCSystemApp -SystemOs 'MacOs' -SoftwareName 'JumpCloud-Agent' -SoftwareVersion '1.12.5'
+```
+
+Returns the 'MacOs' systems that have a 'JumpCloud Agent' application with the version '1.12.5'
 
 ## PARAMETERS
 
@@ -80,7 +98,7 @@ Accept wildcard characters: False
 ```
 
 ### -SystemID
-The System Id of the system you want to search for applications
+The System Id of the JumpCloud system you want to search for applications
 
 ```yaml
 Type: System.String
