@@ -7054,7 +7054,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
       <command:verb>Get</command:verb>
       <command:noun>JCSystemApp</command:noun>
       <maml:description>
-        <maml:para>{{ Fill in the Synopsis }}</maml:para>
+        <maml:para>Returns the System Apps installed to a JumpCloud System(s)</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
@@ -7066,7 +7066,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
           <maml:name>SystemID</maml:name>
           <maml:description>
-            <maml:para>The System Id of the system you want to search for applications</maml:para>
+            <maml:para>The System Id of the JumpCloud system you want to search for applications</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
           <dev:type>
@@ -7170,7 +7170,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
         <maml:name>SystemID</maml:name>
         <maml:description>
-          <maml:para>The System Id of the system you want to search for applications</maml:para>
+          <maml:para>The System Id of the JumpCloud system you want to search for applications</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
         <dev:type>
@@ -7220,9 +7220,30 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
+        <dev:code>PS C:\&gt; Get-JCSystemApp -SystemId 'SystemId'</dev:code>
         <dev:remarks>
-          <maml:para>{{ Add example description here }}</maml:para>
+          <maml:para>Returns the applications installed in the system with the given -SystemId</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Get-JCSystemApp -SystemOs 'MacOs'</dev:code>
+        <dev:remarks>
+          <maml:para>Returns the 'MacOs' systems and all the applications installed for each system</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Get-JCSystemApp -SystemOs 'MacOs' -SoftwareName 'JumpCloud-Agent'</dev:code>
+        <dev:remarks>
+          <maml:para></maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 4 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Get-JCSystemApp -SystemOs 'MacOs' -SoftwareName 'JumpCloud-Agent' -SoftwareVersion '1.12.5'</dev:code>
+        <dev:remarks>
+          <maml:para>Returns the 'MacOs' systems that have a 'JumpCloud Agent' application with the version '1.12.5'</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
