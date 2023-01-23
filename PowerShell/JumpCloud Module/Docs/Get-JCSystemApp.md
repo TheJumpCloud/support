@@ -14,7 +14,7 @@ Returns the System Apps installed to a JumpCloud System(s)
 
 ```
 Get-JCSystemApp [[-SystemID] <String>] [[-SystemOS] <String>] [[-SoftwareName] <String>]
- [[-SoftwareVersion] <String>] [[-Search] <String>] [<CommonParameters>]
+ [[-SoftwareVersion] <String>] [-Search] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -55,12 +55,12 @@ Global search ex.
 (1.1.2)
 
 ```yaml
-Type: System.String
+Type: System.Management.Automation.SwitchParameter
 Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 4
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
