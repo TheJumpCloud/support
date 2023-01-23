@@ -59,8 +59,11 @@ function Get-JCSystemApp () {
             if ($SoftwareName) {
                 $searchAppResultsList | ForEach-Object {
                     $results = $_ | Where-Object { $_.name -match $SoftwareName }
-                    $resultsArrayList.Add($results)
+                    $results | ForEach-Object {
+                        $resultsArrayList.Add($_)
+                    }
                 }
+
             }
 
         } elseif ($SystemId -or $SystemOs) {
