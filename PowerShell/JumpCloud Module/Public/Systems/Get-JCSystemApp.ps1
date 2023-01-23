@@ -11,10 +11,9 @@ function Get-JCSystemApp () {
         [string]$SoftwareName,
         [Parameter(Mandatory = $false, HelpMessage = 'The version of the application you want to search for ex. (1.1.2)')]
         [string]$SoftwareVersion,
-        [Parameter(Mandatory = $false, HelpMessage = 'Search for a specific application by name to all systems in the org')]
-        [string]$Search
+        [Parameter(Mandatory = $false, HelpMessage = 'Search for a specific application by name from all systems in the org')]
+        [switch]$Search
     )
-
     begin {
         Write-Verbose 'Verifying JCAPI Key'
         if ($JCAPIKEY.length -ne 40) {
@@ -49,12 +48,14 @@ function Get-JCSystemApp () {
                 $searchAppResults = Get-JCResults -URL $URL -Method "GET" -limit $limit
                 $searchAppResultsList.Add($searchAppResults)
             }
-            # Search for software name in the $searchAppResultsList
-            $searchAppResultsList | ForEach-Object {
-                $_ | Where-Object { $_.name -match $Search } | ForEach-Object {
-                    $resultsArrayList.Add($_)
+            # Check for the parameter given
+            if ($SoftwareName) {
+                $searchAppResultsList | ForEach-Object {
+                    $results = $_ | Where-Object { $_.name -match $SoftwareName }
+                    $resultsArrayList.Add($results)
                 }
             }
+
         }
         # If Parameter is SystemID then return all apps for that system
         if ($SystemId -or $SystemOs) {
