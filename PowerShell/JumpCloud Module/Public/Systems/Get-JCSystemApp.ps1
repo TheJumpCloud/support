@@ -19,36 +19,43 @@ function Get-JCSystemApp () {
         if ($JCAPIKEY.length -ne 40) {
             Connect-JCOnline
         }
-
         $Parallel = $JCConfig.parallel.Calculated
-
+        $searchAppResultsList = New-Object -TypeName System.Collections.ArrayList
         if ($Parallel) {
             Write-Verbose 'Initilizing resultsArray'
             $resultsArrayList = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
-            $searchAppResultsList = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
         } else {
             Write-Verbose 'Initilizing resultsArray'
             $resultsArrayList = New-Object -TypeName System.Collections.ArrayList
-            $searchAppResultsList = New-Object -TypeName System.Collections.ArrayList
         }
     }
-    #TODO: Create a PR to add docs
     process {
         [int]$limit = '1000'
         Write-Verbose "Setting limit to $limit"
 
         [int]$skip = '0'
         Write-Verbose "Setting skip to $skip"
-        # Create a global search for all endpoints(Windows, Mac, Linux) and regex software name
+        $applicationArray = @('programs', 'apps', 'linux_packages')
+        # Search
         if ($Search) {
             # Get all the results
-            foreach ($x in @('programs', 'apps', 'linux_packages')) {
-                Write-Debug $x
-                $URL = "$JCUrlBasePath/api/v2/systeminsights/$($x)"
-                $searchAppResults = Get-JCResults -URL $URL -Method "GET" -limit $limit
-                $searchAppResultsList.Add($searchAppResults)
+            $applicationArray | ForEach-Object {
+                $URL = "$JCUrlBasePath/api/v2/systeminsights/$($_)"
+                Write-Verbose "Searching for $SoftwareName in $_"
+                if ($Parallel) {
+                    $searchAppResults = Get-JCResults -URL $URL -Method "GET" -limit $limit -parallel $true
+                } else {
+                    $searchAppResults = Get-JCResults -URL $URL -Method "GET" -limit $limit
+                }
+                # Add OS Family to results
+                if ($_ -eq 'programs') { $os = 'Windows' }
+                elseif ($_ -eq 'apps') { $os = 'MacOs' }
+                elseif ($_ -eq 'linux_packages') { $os = 'Linux' }
+                $searchAppResults | Add-Member -MemberType NoteProperty -Name 'osFamily' -Value $os
+                [void]$searchAppResultsList.Add($searchAppResults)
             }
-            # Check for the parameter given
+
+            # softwarename search
             if ($SoftwareName) {
                 $searchAppResultsList | ForEach-Object {
                     $results = $_ | Where-Object { $_.name -match $SoftwareName }
@@ -56,9 +63,7 @@ function Get-JCSystemApp () {
                 }
             }
 
-        }
-        # If Parameter is SystemID then return all apps for that system
-        if ($SystemId -or $SystemOs) {
+        } elseif ($SystemId -or $SystemOs) {
             if ($SystemId) {
                 $OSType = Get-JCSystem -ID $SystemID | Select-Object -ExpandProperty osFamily
             } elseif ($SystemOs) {
