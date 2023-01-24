@@ -82,4 +82,15 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
         { Get-JCsystemApp -SystemID $mac._id -SystemOS "windows" -SoftwareName "Chess" } | Should -Throw
         { Get-JCsystemApp -SystemID $mac._id -SystemOS "windows" -SoftwareName "Chess" -SoftwareVersion "1.2.3" } | Should -Throw
     }
+
+    It "Tests the exporability of a list of software apps" {
+        { Get-JCSystemApp -SystemOS linux | ConvertTo-Csv } | Should -Not -Throw
+        # Should return mac apps for all systems in the org
+        { Get-JCSystemApp -SystemOS macOS | ConvertTo-Csv } | Should -Not -Throw
+        # Should return windows programs for all systems in the org
+        { Get-JCSystemApp -SystemOS windows | ConvertTo-Csv } | Should -Not -Throw
+        { Get-JCSystemApp -SystemID $mac._id | ConvertTo-Csv } | Should -Not -Throw
+        { Get-JCSystemApp -SystemID $windows._id | ConvertTo-Csv } | Should -Not -Throw
+        { Get-JCSystemApp -SystemID $linux._id | ConvertTo-Csv } | Should -Not -Throw
+    }
 }
