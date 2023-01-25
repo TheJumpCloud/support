@@ -9,6 +9,13 @@ windows
 #### Command
 
 ```
+# If Nuget is not installed, go ahead and install it
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+$PkgProvider = Get-PackageProvider
+If ("Nuget" -notin $PkgProvider.Name){
+    Install-PackageProvider -Name NuGet -Force
+}
+
 # If PSModule RunAsUser is not installed, install it
 if ( -not (get-installedModule "RunAsUser" -ErrorAction SilentlyContinue)) {
     install-module RunAsUser -force
@@ -27,9 +34,9 @@ This template can be modified to target a command to run as the signed in user c
 
 Before running this command the **$Command** block must be populated.
 
-An example of this command is if  ```C:\windows\system32\notepad.exe``` is placed in the command block and executed against a system that has a signed in user session. Notepad will launch and show up for the signed in user. This will also work if the session is locked but still signed in. It however can only work when there is one signed in session like on most workstation SKU's of Windows.
+An example of this command is if `C:\windows\system32\notepad.exe` is placed in the command block and executed against a system that has a signed in user session. Notepad will launch and show up for the signed in user. This will also work if the session is locked but still signed in. It however can only work when there is one signed in session like on most workstation SKU's of Windows.
 
-#### *Import This Command*
+#### _Import This Command_
 
 To import this command into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
 
@@ -38,6 +45,8 @@ Import-JCCommand -URL "https://github.com/TheJumpCloud/support/blob/master/Power
 ```
 
 #### Usage Notes
+
+For module usage and license information, please visit the [runAsUser GitHub Project Page](https://github.com/KelvinTegelaar/RunAsUser)
 
 From the module readme:
 
@@ -59,7 +68,13 @@ if (-not(Test-Path -Path $outfile -PathType Leaf)) {
      catch {
          throw $_.Exception.Message
      }
- }
+}
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+# If Nuget is not installed, go ahead and install it
+$PkgProvider = Get-PackageProvider
+If ("Nuget" -notin $PkgProvider.Name){
+    Install-PackageProvider -Name NuGet -Force
+}
 
 # If PSModule RunAsUser is not installed, install it
 if ( -not (get-installedModule "RunAsUser" -ErrorAction SilentlyContinue)) {
