@@ -31,7 +31,7 @@ Get-JCSystem app function helps admins identify what applications/programs or li
 
 ### Example 1
 ```powershell
-PS C:\> Get-JCSystemApp -SystemId 'SystemId'
+PS C:\> Get-JCSystemApp -SystemId '6363237ec991136ae59892e4'
 ```
 
 Returns the applications installed in the system with the given -SystemId
