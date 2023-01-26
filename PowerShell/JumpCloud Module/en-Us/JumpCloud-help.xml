@@ -7077,7 +7077,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>SoftwareName</maml:name>
           <maml:description>
-            <maml:para>The name of the application you want to search for ex. (JumpCloud-Agent, Slack)</maml:para>
+            <maml:para>The name of the application you want to search for ex. (JumpCloud-Agent, Slack) SoftwareName will always query the 'name' property from system insights. Note, for macOS systems, '.app' will be applied</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
           <dev:type>
@@ -7113,7 +7113,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
           <maml:name>SystemOS</maml:name>
           <maml:description>
-            <maml:para>The type (windows, mac, linux) of the JumpCloud Command you wish to search ex. (Windows, Mac, Linux))</maml:para>
+            <maml:para>The type (windows, mac, linux) of the JumpCloud Command you wish to search ex. (Windows, macOs, Linux))</maml:para>
           </maml:description>
           <command:parameterValueGroup>
             <command:parameterValue required="false" command:variableLength="false">Windows</command:parameterValue>
@@ -7145,7 +7145,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>SoftwareName</maml:name>
         <maml:description>
-          <maml:para>The name of the application you want to search for ex. (JumpCloud-Agent, Slack)</maml:para>
+          <maml:para>The name of the application you want to search for ex. (JumpCloud-Agent, Slack) SoftwareName will always query the 'name' property from system insights. Note, for macOS systems, '.app' will be applied</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
         <dev:type>
@@ -7181,7 +7181,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
         <maml:name>SystemOS</maml:name>
         <maml:description>
-          <maml:para>The type (windows, mac, linux) of the JumpCloud Command you wish to search ex. (Windows, Mac, Linux))</maml:para>
+          <maml:para>The type (windows, mac, linux) of the JumpCloud Command you wish to search ex. (Windows, macOs, Linux))</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
         <dev:type>
