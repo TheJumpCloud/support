@@ -8,7 +8,7 @@ schema: 2.0.0
 # Get-JCSystemApp
 
 ## SYNOPSIS
-Returns the System Apps installed to a JumpCloud System(s)
+Returns the applications/programs/linux packages installed on JumpCloud managed system(s). This function queries separate system insights tables to get data for macOS/windows/linux devices.
 
 ## SYNTAX
 
