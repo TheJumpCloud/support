@@ -87,7 +87,7 @@ Return JumpCloud radius server information.
 Returns all JumpCloud Systems within a JumpCloud tenant or a single JumpCloud System using the -ByID Parameter.
 
 ### [Get-JCSystemApp](Get-JCSystemApp.md)
-Returns the System Apps installed to a JumpCloud System(s)
+Returns the applications/programs/linux packages installed on JumpCloud managed system(s). This function queries separate system insights tables to get data for macOS/windows/linux devices.
 
 ### [Get-JCSystemGroupMember](Get-JCSystemGroupMember.md)
 Returns the System Group members of a JumpCloud System Group.

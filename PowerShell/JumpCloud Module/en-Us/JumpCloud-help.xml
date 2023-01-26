@@ -7054,11 +7054,11 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
       <command:verb>Get</command:verb>
       <command:noun>JCSystemApp</command:noun>
       <maml:description>
-        <maml:para>Returns the System Apps installed to a JumpCloud System(s)</maml:para>
+        <maml:para>Returns the applications/programs/linux packages installed on JumpCloud managed system(s). This function queries separate system insights tables to get data for macOS/windows/linux devices.</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>Get-JCSystem app function enables admins to search what software is on their systems</maml:para>
+      <maml:para>Get-JCSystem app function helps admins identify what applications/programs or linux packages exist on their JumpCloud managed systems.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -7219,30 +7219,30 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCSystemApp -SystemId 'SystemId'</dev:code>
+        <dev:code>PS C:\&gt; Get-JCSystemApp -SystemId '6363237ec991136ae59892e4'</dev:code>
         <dev:remarks>
           <maml:para>Returns the applications installed in the system with the given -SystemId</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
         <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCSystemApp -SystemOs 'MacOs'</dev:code>
+        <dev:code>PS C:\&gt; Get-JCSystemApp -SystemOs 'macOS'</dev:code>
         <dev:remarks>
-          <maml:para>Returns the 'MacOs' systems and all the applications installed for each system</maml:para>
+          <maml:para>Returns the 'macOS' systems and all the applications installed for each system</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
         <maml:title>-------------------------- Example 3 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCSystemApp -SystemOs 'MacOs' -SoftwareName 'JumpCloud-Agent'</dev:code>
+        <dev:code>PS C:\&gt; Get-JCSystemApp -SystemOs 'macOS' -SoftwareName 'JumpCloud-Agent'</dev:code>
         <dev:remarks>
           <maml:para></maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
         <maml:title>-------------------------- Example 4 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCSystemApp -SystemOs 'MacOs' -SoftwareName 'JumpCloud-Agent' -SoftwareVersion '1.12.5'</dev:code>
+        <dev:code>PS C:\&gt; Get-JCSystemApp -SystemOs 'macOS' -SoftwareName 'JumpCloud-Agent' -SoftwareVersion '1.12.5'</dev:code>
         <dev:remarks>
-          <maml:para>Returns the 'MacOs' systems that have a 'JumpCloud Agent' application with the version '1.12.5'</maml:para>
+          <maml:para>Returns the 'macOS' systems that have a 'JumpCloud Agent' application with the version '1.12.5'</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
