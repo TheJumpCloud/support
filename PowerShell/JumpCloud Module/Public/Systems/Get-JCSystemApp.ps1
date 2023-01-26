@@ -67,15 +67,21 @@ function Get-JCSystemApp () {
                         }
                         'Darwin' {
                             # If Software title, version, and system ID are passed then return specific app
+                            # If $softwareName does not have .app at the end then add it
+                            if (-not $SoftwareName.EndsWith('.app')) {
+                                $SoftwareName = $SoftwareName + '.app'
+                            } else {
+                                Write-Debug "$($SoftwareName) already ends with .app"
+                            }
                             if ($SoftwareVersion -and $SoftwareName -and $SystemID) {
                                 # Handle Special Characters
                                 $SoftwareName = [System.Web.HttpUtility]::UrlEncode($SoftwareName)
-                                $URL = "$JCUrlBasePath/api/v2/systeminsights/apps?filter=system_id:eq:$SystemId&filter=bundle_name:eq:$SoftwareName&filter=bundle_short_version:eq:$SoftwareVersion"
+                                $URL = "$JCUrlBasePath/api/v2/systeminsights/apps?filter=system_id:eq:$SystemId&filter=name:eq:$SoftwareName&filter=bundle_short_version:eq:$SoftwareVersion"
 
                             } elseif ($SoftwareName -and $SystemID) {
                                 # Handle Special Characters
                                 $SoftwareName = [System.Web.HttpUtility]::UrlEncode($SoftwareName)
-                                $URL = "$JCUrlBasePath/api/v2/systeminsights/apps?filter=system_id:eq:$SystemID&filter=bundle_name:eq:$SoftwareName"
+                                $URL = "$JCUrlBasePath/api/v2/systeminsights/apps?filter=system_id:eq:$SystemID&filter=name:eq:$SoftwareName"
                             } elseif ($SystemID) {
                                 $URL = "$JCUrlBasePath/api/v2/systeminsights/apps?filter=system_id:eq:$SystemID"
                             }
@@ -129,15 +135,20 @@ function Get-JCSystemApp () {
                         }
                         'Darwin' {
                             # If Software title, version, and system ID are passed then return specific app
+                            if (-not $SoftwareName.EndsWith('.app')) {
+                                $SoftwareName = $SoftwareName + '.app'
+                            } else {
+                                Write-Debug "$($SoftwareName) already ends with .app"
+                            }
                             if ($SoftwareVersion -and $SoftwareName -and $SystemOS) {
                                 # Handle Special Characters
                                 $SoftwareName = [System.Web.HttpUtility]::UrlEncode($SoftwareName)
-                                $URL = "$JCUrlBasePath/api/v2/systeminsights/apps?filter=bundle_name:eq:$SoftwareName&filter=bundle_short_version:eq:$SoftwareVersion"
+                                $URL = "$JCUrlBasePath/api/v2/systeminsights/apps?filter=name:eq:$SoftwareName&filter=bundle_short_version:eq:$SoftwareVersion"
 
                             } elseif ($SoftwareName -and $SystemOS) {
                                 # Handle Special Characters
                                 $SoftwareName = [System.Web.HttpUtility]::UrlEncode($SoftwareName)
-                                $URL = "$JCUrlBasePath/api/v2/systeminsights/apps?&filter=bundle_name:eq:$SoftwareName"
+                                $URL = "$JCUrlBasePath/api/v2/systeminsights/apps?&filter=name:eq:$SoftwareName"
                             } elseif ($SystemOs) {
                                 # Add filter for system ID to $Search
                                 $URL = "$JCUrlBasePath/api/v2/systeminsights/apps"
@@ -168,15 +179,19 @@ function Get-JCSystemApp () {
                         $resultsArrayList = Get-JCResults -URL $URL -Method "GET" -limit $limit
                     }
                 } elseif ($SoftwareName ) {
-                    Write-Debug "SoftwareName: $SoftwareName"
                     $SoftwareName = [System.Web.HttpUtility]::UrlEncode($SoftwareName)
                     # Foreach Mac, Windows, Linux
                     foreach ($os in @('MacOs', 'Windows', 'Linux')) {
                         if ($os -eq 'MacOs') {
-                            if ($SoftwareVersion -and $SoftwareName) {
-                                $URL = "$JCUrlBasePath/api/v2/systeminsights/apps?filter=bundle_name:eq:$SoftwareName&filter=bundle_short_version:eq:$softwareVersion"
+                            if (-not $SoftwareName.EndsWith('.app')) {
+                                $SoftwareName = $SoftwareName + '.app'
                             } else {
-                                $URL = "$JCUrlBasePath/api/v2/systeminsights/apps?filter=bundle_name:eq:$SoftwareName"
+                                Write-Debug "$($SoftwareName) already ends with .app"
+                            }
+                            if ($SoftwareVersion -and $SoftwareName) {
+                                $URL = "$JCUrlBasePath/api/v2/systeminsights/apps?filter=name:eq:$SoftwareName&filter=bundle_short_version:eq:$softwareVersion"
+                            } else {
+                                $URL = "$JCUrlBasePath/api/v2/systeminsights/apps?filter=name:eq:$SoftwareName"
                             }
 
                             if ($Parallel) {

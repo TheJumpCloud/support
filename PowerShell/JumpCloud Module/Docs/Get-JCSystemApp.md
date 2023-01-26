@@ -129,7 +129,7 @@ Accept wildcard characters: False
 
 ### -SystemOS
 The type (windows, mac, linux) of the JumpCloud Command you wish to search ex.
-(Windows, Mac, Linux))
+(Windows, macOs, Linux))
 
 ```yaml
 Type: System.String
