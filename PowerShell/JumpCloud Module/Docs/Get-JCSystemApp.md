@@ -12,9 +12,16 @@ Returns the System Apps installed to a JumpCloud System(s)
 
 ## SYNTAX
 
+### All (Default)
 ```
-Get-JCSystemApp [[-SystemID] <String>] [[-SystemOS] <String>] [[-SoftwareName] <String>]
- [[-SoftwareVersion] <String>] [-Search] [<CommonParameters>]
+Get-JCSystemApp [-SystemID <String>] [-SystemOS <String>] [-SoftwareName <String>] [-SoftwareVersion <String>]
+ [<CommonParameters>]
+```
+
+### Search
+```
+Get-JCSystemApp [-SystemID <String>] [-SystemOS <String>] [-SoftwareName <String>] [-SoftwareVersion <String>]
+ [-Search] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -63,7 +70,7 @@ Global search ex.
 
 ```yaml
 Type: System.Management.Automation.SwitchParameter
-Parameter Sets: (All)
+Parameter Sets: Search
 Aliases:
 
 Required: False
@@ -83,7 +90,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 2
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -99,7 +106,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 3
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -114,7 +121,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 0
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -131,7 +138,7 @@ Aliases:
 Accepted values: Windows, MacOs, Linux
 
 Required: False
-Position: 1
+Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
