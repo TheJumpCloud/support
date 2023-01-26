@@ -18,7 +18,7 @@ Get-JCSystemApp [[-SystemID] <String>] [[-SystemOS] <String>] [[-SoftwareName] <
 ```
 
 ## DESCRIPTION
-{{ Fill in the Description }}
+Get-JCSystem app function enables admins to search what software is on their systems
 
 ## EXAMPLES
 
@@ -47,6 +47,13 @@ PS C:\> Get-JCSystemApp -SystemOs 'MacOs' -SoftwareName 'JumpCloud-Agent' -Softw
 ```
 
 Returns the 'MacOs' systems that have a 'JumpCloud Agent' application with the version '1.12.5'
+
+### Example 5
+```powershell
+PS C:\> Get-JCSystemApp -SoftwareName 'jumpcloud-agent' -Search
+```
+
+Returns any 'jumpcloud-agent' software installed in all the os systems
 
 ## PARAMETERS
 
