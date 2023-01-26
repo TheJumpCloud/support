@@ -135,7 +135,7 @@ The type (windows, mac, linux) of the JumpCloud Command you wish to search ex.
 Type: System.String
 Parameter Sets: (All)
 Aliases:
-Accepted values: Windows, MacOs, Linux
+Accepted values: Windows, macOS, Linux
 
 Required: False
 Position: Named
