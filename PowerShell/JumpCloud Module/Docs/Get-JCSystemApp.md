@@ -45,7 +45,7 @@ Returns the 'MacOs' systems and all the applications installed for each system
 
 ### Example 3
 ```powershell
-PS C:\> Get-JCSystemApp -SystemOs 'MacOs' -SoftwareName 'JumpCloud-Agent'
+PS C:\> Get-JCSystemApp -SystemOs 'macOS' -SoftwareName 'JumpCloud-Agent'
 ```
 
 ### Example 4
