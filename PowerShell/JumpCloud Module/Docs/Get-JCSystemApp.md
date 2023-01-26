@@ -53,7 +53,7 @@ PS C:\> Get-JCSystemApp -SystemOs 'macOS' -SoftwareName 'JumpCloud-Agent'
 PS C:\> Get-JCSystemApp -SystemOs 'macOS' -SoftwareName 'JumpCloud-Agent' -SoftwareVersion '1.12.5'
 ```
 
-Returns the 'MacOs' systems that have a 'JumpCloud Agent' application with the version '1.12.5'
+Returns the 'macOS' systems that have a 'JumpCloud Agent' application with the version '1.12.5'
 
 ### Example 5
 ```powershell
