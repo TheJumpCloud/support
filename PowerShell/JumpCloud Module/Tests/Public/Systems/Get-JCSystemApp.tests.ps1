@@ -6,6 +6,10 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
         $windows = $systems | Where-Object { $_.osFamily -match "windows" } | Select-Object -First 1
         $linux = $systems | Where-Object { $_.osFamily -match "linux" } | Select-Object -First 1
     }
+    IT "Returns all the software" {
+        $AllApps = Get-JCSystemApp
+        $AllApps | Should -Not -BeNullOrEmpty
+    }
 
     It "Tests that Get-JCSystemApp returns packages/apps/programs for all systems in the org" {
         # Should return linuxPackages for all systems in the org
@@ -37,5 +41,17 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
         # Using a version that doesn't exist should return nothing
         Get-JCSystemApp -SystemID $mac._id -SoftwareName "Chess" -SoftwareVersion "48.49.50.51" | Should -Be $null
         # TODO: Windows/ Linux Examples
+    }
+    # Create tests for Search
+    It "Tests for search given SystemOs and SoftwareName" {
+        # Chess is always installed on MacOS and it CAN NOT be removed no matter wha
+        { Get-JCSystemApp -Search -SoftwareName "Chess" | Should -Not -Throw }
+        { Get-JCSystemApp -Search -SoftwareName "Chess" -SystemOs "MacOs" | Should -Not -Throw }
+        # A null value version shouldn't be accepted
+        { Get-JCSystemApp -Search -SoftwareName "Chess" -SystemOs "" | Should -Throw }
+        # A null value version shouldn't be accepted
+        { Get-JCSystemApp -Search -SoftwareName "" -SystemOs "MacOs" | Should -Throw }
+        # Searching chess on MacOs should return a result
+        { Get-JCSystemApp -Search -SoftwareName "Chess" -SystemOs "MacOs" | Should -Not -Throw }
     }
 }
