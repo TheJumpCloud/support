@@ -43,7 +43,9 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
     }
     # Create tests for Search
     It "Tests for search given SystemOs and SoftwareName" {
-        # Chess is always installed on MacOS and it CAN NOT be removed no matter wha
+        # Chess is always installed on MacOS and it CAN NOT be removed no matter what
+        { Get-JCSystemApp -Search | Should -Throw }
+        { Get-JCSystemApp -Search -SoftwareName "Chess" -SystemID $mac.Id | Should -Not -Throw }
         { Get-JCSystemApp -Search -SoftwareName "Chess" | Should -Not -Throw }
         { Get-JCSystemApp -Search -SoftwareName "Chess" -SystemOs "MacOs" | Should -Not -Throw }
         # A null value version shouldn't be accepted

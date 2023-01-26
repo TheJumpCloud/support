@@ -65,8 +65,8 @@ Returns any 'jumpcloud-agent' software installed in all the os systems
 ## PARAMETERS
 
 ### -Search
-Global search ex.
-(1.1.2)
+Search for a specific application by from all systems in the org ex.
+(Get-JCSystemApp -Search -SoftwareName "JumpCloud-Agent")
 
 ```yaml
 Type: System.Management.Automation.SwitchParameter

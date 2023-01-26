@@ -11,7 +11,7 @@ function Get-JCSystemApp () {
         [string]$SoftwareName,
         [Parameter(Mandatory = $false, HelpMessage = 'The version of the application you want to search for ex. (1.1.2)')][ValidateNotNullorEmpty()]
         [string]$SoftwareVersion,
-        [Parameter(Mandatory = $false, ParameterSetName = "Search", HelpMessage = 'Search for a specific application by name from all systems in the org')]
+        [Parameter(Mandatory = $false, ParameterSetName = "Search", HelpMessage = 'Search for a specific application by from all systems in the org ex (Get-JCSystemApp -Search -SoftwareName "JumpCloud-Agent")')]
         [switch]$Search,
         [Parameter(DontShow, Mandatory = $false, ParameterSetName = "All", HelpMessage = 'Search for a specific application by name from all systems in the org')]
         [switch]$Software
@@ -46,6 +46,7 @@ function Get-JCSystemApp () {
                 if ($SystemId) {
                     Write-Debug "SystemId"
                     $OSType = Get-JCSystem -ID $SystemID | Select-Object -ExpandProperty osFamily
+                    # Handle error for if Get-JCSystem returns nothing
                     if ($OsType -eq 'MacOs') { $Ostype = 'Darwin' }
                     switch ($OSType) {
                         'Windows' {
@@ -317,6 +318,8 @@ function Get-JCSystemApp () {
                         }
                     }
 
+                } else {
+                    Write-Error "You must specify a software name and/or systemId when using -search"
                 }
             }
 
