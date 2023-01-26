@@ -69,9 +69,11 @@ function Get-JCSystemApp () {
                             # If Software title, version, and system ID are passed then return specific app
                             # If $softwareName does not have .app at the end then add it
                             if (-not $SoftwareName.EndsWith('.app')) {
-                                $SoftwareName = $SoftwareName + '.app'
-                            } else {
-                                Write-Debug "$($SoftwareName) already ends with .app"
+                                if ($SoftwareName.EndsWith('.App')) {
+                                    $SoftwareName = $SoftwareName.Replace('.App', '.app')
+                                } else {
+                                    $SoftwareName = "$SoftwareName.app"
+                                }
                             }
                             if ($SoftwareVersion -and $SoftwareName -and $SystemID) {
                                 # Handle Special Characters
@@ -136,9 +138,11 @@ function Get-JCSystemApp () {
                         'Darwin' {
                             # If Software title, version, and system ID are passed then return specific app
                             if (-not $SoftwareName.EndsWith('.app')) {
-                                $SoftwareName = $SoftwareName + '.app'
-                            } else {
-                                Write-Debug "$($SoftwareName) already ends with .app"
+                                if ($SoftwareName.EndsWith('.App')) {
+                                    $SoftwareName = $SoftwareName.Replace('.App', '.app')
+                                } else {
+                                    $SoftwareName = "$SoftwareName.app"
+                                }
                             }
                             if ($SoftwareVersion -and $SoftwareName -and $SystemOS) {
                                 # Handle Special Characters
@@ -184,56 +188,41 @@ function Get-JCSystemApp () {
                     foreach ($os in @('MacOs', 'Windows', 'Linux')) {
                         if ($os -eq 'MacOs') {
                             if (-not $SoftwareName.EndsWith('.app')) {
-                                $SoftwareName = $SoftwareName + '.app'
-                            } else {
-                                Write-Debug "$($SoftwareName) already ends with .app"
+                                if ($SoftwareName.EndsWith('.App')) {
+                                    $SoftwareName = $SoftwareName.Replace('.App', '.app')
+                                } else {
+                                    $SoftwareName = "$SoftwareName.app"
+                                }
                             }
                             if ($SoftwareVersion -and $SoftwareName) {
                                 $URL = "$JCUrlBasePath/api/v2/systeminsights/apps?filter=name:eq:$SoftwareName&filter=bundle_short_version:eq:$softwareVersion"
                             } else {
                                 $URL = "$JCUrlBasePath/api/v2/systeminsights/apps?filter=name:eq:$SoftwareName"
                             }
-
-                            if ($Parallel) {
-                                $resultsArray = Get-JCResults -URL $URL -Method "GET" -limit $limit -parallel $true
-                            } else {
-                                $resultsArray = Get-JCResults -URL $URL -Method "GET" -limit $limit
-                            }
-                            # If no results, skip to next OS
-                            if ($resultsArray.count -eq 0) {
-                                continue
-                            }
-                            $resultsArray | Add-Member -MemberType NoteProperty -Name 'osFamily' -Value $os
-                            $resultsArrayList.Add($resultsArray)
                         } elseif ($os -eq 'Windows') {
                             if ($SoftwareVersion -and $SoftwareName) {
                                 $URL = "$JCUrlBasePath/api/v2/systeminsights/programs?filter=name:eq:$SoftwareName&filter=version:eq:$softwareVersion"
                             } else {
                                 $URL = "$JCUrlBasePath/api/v2/systeminsights/programs?filter=name:eq:$SoftwareName"
                             }
-                            if ($Parallel) {
-                                $resultsArray = Get-JCResults -URL $URL -Method "GET" -limit $limit -parallel $true
-                            } else {
-                                $resultsArray = Get-JCResults -URL $URL -Method "GET" -limit $limit
-                            }
-                            if ($resultsArray.count -eq 0) { continue }
-                            $resultsArray | Add-Member -MemberType NoteProperty -Name 'osFamily' -Value $os
-                            $resultsArrayList.Add($resultsArray)
                         } elseif ($os -eq 'Linux') {
                             if ($SoftwareVersion -and $SoftwareName) {
                                 $URL = "$JCUrlBasePath/api/v2/systeminsights/linux_packages?filter=name:eq:$SoftwareName&filter=version:eq:$softwareVersion"
                             } else {
                                 $URL = "$JCUrlBasePath/api/v2/systeminsights/linux_packages?filter=name:eq:$SoftwareName"
                             }
-                            if ($Parallel) {
-                                $resultsArray = Get-JCResults -URL $URL -Method "GET" -limit $limit -parallel $true
-                            } else {
-                                $resultsArray = Get-JCResults -URL $URL -Method "GET" -limit $limit
-                            }
-                            if ($resultsArray.count -eq 0) { continue }
-                            $resultsArray | Add-Member -MemberType NoteProperty -Name 'osFamily' -Value $os
-                            $resultsArrayList.Add($resultsArray)
                         }
+                        if ($Parallel) {
+                            $resultsArray = Get-JCResults -URL $URL -Method "GET" -limit $limit -parallel $true
+                        } else {
+                            $resultsArray = Get-JCResults -URL $URL -Method "GET" -limit $limit
+                        }
+                        # If no results, skip to next OS
+                        if ($resultsArray.count -eq 0) {
+                            continue
+                        }
+                        $resultsArray | Add-Member -MemberType NoteProperty -Name 'osFamily' -Value $os
+                        $resultsArrayList.Add($resultsArray)
                     }
                 } else {
                     # Print all software
