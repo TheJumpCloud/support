@@ -38,7 +38,7 @@ Returns the applications installed in the system with the given -SystemId
 
 ### Example 2
 ```powershell
-PS C:\> Get-JCSystemApp -SystemOs 'MacOs'
+PS C:\> Get-JCSystemApp -SystemOs 'macOS'
 ```
 
 Returns the 'MacOs' systems and all the applications installed for each system
