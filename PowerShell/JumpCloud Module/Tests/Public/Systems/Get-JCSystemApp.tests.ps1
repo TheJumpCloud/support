@@ -1,12 +1,11 @@
 Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
-
     BeforeAll {
         $systems = Get-JCsystem
         $mac = $systems | Where-Object { $_.osFamily -match "darwin" } | Select-Object -First 1
         $windows = $systems | Where-Object { $_.osFamily -match "windows" } | Select-Object -First 1
         $linux = $systems | Where-Object { $_.osFamily -match "linux" } | Select-Object -First 1
     }
-    IT "Returns all the software" {
+    It "Returns all the software" {
         $AllApps = Get-JCSystemApp
         $AllApps | Should -Not -BeNullOrEmpty
     }
@@ -54,4 +53,63 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
         # Searching chess on MacOs should return a result
         { Get-JCSystemApp -Search -SoftwareName "Chess" -SystemOs "MacOs" | Should -Not -Throw }
     }
+
+    It "Tests the search functionatily of a software app" {
+        # results with no data should be null or empty
+        Get-JCSystemApp -SoftwareName "chess" | Should -BeNullOrEmpty
+        # when search is used to find an app the results should not be null or empty
+        Get-JCSystemApp -SoftwareName "chess" -Search | Should -Not -BeNullOrEmpty
+    }
+
+    It "Tests the search param with systemID" {
+
+        $apps = Get-JCSystemApp -Systemid $mac._id -SoftwareName "a" -search
+        $foundSystems = $apps.system_id | Select-Object -Unique
+        # if you specify a systemID and Search, results should not contain multiple systems
+        $foundSystems.count | should -Be 1
+    }
+    It "Tests the search param with SystemOS" {
+        $apps = Get-JCSystemApp -SystemOS "macos" -SoftwareName "a" -search
+        $foundSystems = $apps.system_id | Select-Object -Unique
+        # if you specify a systemOS and Search, results should not contain multiple systems
+        foreach ($system in $foundSystems) {
+            $foundSystem = Get-JCSystem -SystemID $system
+            $foundSystem.osfamily | Should -be 'darwin'
+        }
+    }
+
+    It "Tests compatability with the SDKs" {
+        $sdkChess = Get-JcSdkSystemInsightApp -filter @("system_id:eq:$($mac._id)", "bundle_name:eq:Chess")
+        $moduleChess = Get-JCSystemApp -SystemID $mac._id -SoftwareName "Chess"
+        $moduleChessSearch = Get-JCSystemApp -SystemID $mac._id -SoftwareName "chess" -Search
+        # SDK Results should look exactly like module results when exact name is specified
+        $sdkChess | Should -Be $moduleChess
+        # SDK Results should look exactly like module results when search is provided
+        $sdkChess | Should -Be $moduleChessSearch
+    }
+
+    It "Tests that incompatible parameters should not be used together" {
+        # -SoftwareVersion should not be specified with -Search
+        { Get-JCSystemApp -SoftwareName "chess" -Search -SoftwareVersion "3.1.2" } | Should -Throw
+        # -SystemOS should not be specified with -SystemID
+        { Get-JCsystemApp -SystemID $mac._id -SystemOS "windows" } | Should -Throw
+        { Get-JCsystemApp -SystemID $mac._id -SystemOS "windows" } | Should -Throw
+        { Get-JCsystemApp -SystemID $mac._id -SystemOS "windows" -SoftwareName "Chess" } | Should -Throw
+        { Get-JCsystemApp -SystemID $mac._id -SystemOS "windows" -SoftwareName "Chess" -SoftwareVersion "1.2.3" } | Should -Throw
+    }
+
+    It "Tests the exporability of a list of software apps" {
+        { Get-JCSystemApp -SystemOS linux | ConvertTo-Csv } | Should -Not -Throw
+        # Should return mac apps for all systems in the org
+        { Get-JCSystemApp -SystemOS macOS | ConvertTo-Csv } | Should -Not -Throw
+        # Should return windows programs for all systems in the org
+        { Get-JCSystemApp -SystemOS windows | ConvertTo-Csv } | Should -Not -Throw
+        { Get-JCSystemApp -SystemID $mac._id | ConvertTo-Csv } | Should -Not -Throw
+        { Get-JCSystemApp -SystemID $windows._id | ConvertTo-Csv } | Should -Not -Throw
+        { Get-JCSystemApp -SystemID $linux._id | ConvertTo-Csv } | Should -Not -Throw
+    }
+
 }
+
+
+
