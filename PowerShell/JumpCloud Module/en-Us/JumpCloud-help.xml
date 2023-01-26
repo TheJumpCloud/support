@@ -4247,6 +4247,18 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>SearchTermNot</maml:name>
+          <maml:description>
+            <maml:para>TermConjunction represents a conjunction (and/or)NOTE: the validator limits what the operator can be, not the objectfor future-proof-nessand a list of sub-values</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+          <dev:type>
+            <maml:name>System.Collections.Hashtable</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>SearchTermOr</maml:name>
           <maml:description>
             <maml:para>TermConjunction represents a conjunction (and/or)NOTE: the validator limits what the operator can be, not the object for future-proof-ness and a list of sub-values</maml:para>
@@ -4371,6 +4383,18 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
         <maml:name>SearchTermAnd</maml:name>
         <maml:description>
           <maml:para>TermConjunction represents a conjunction (and/or)NOTE: the validator limits what the operator can be, not the object for future-proof-ness and a list of sub-values</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Collections.Hashtable</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>SearchTermNot</maml:name>
+        <maml:description>
+          <maml:para>TermConjunction represents a conjunction (and/or)NOTE: the validator limits what the operator can be, not the objectfor future-proof-nessand a list of sub-values</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
         <dev:type>
@@ -4644,6 +4668,18 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>SearchTermNot</maml:name>
+          <maml:description>
+            <maml:para>TermConjunction represents a conjunction (and/or)NOTE: the validator limits what the operator can be, not the objectfor future-proof-nessand a list of sub-values</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+          <dev:type>
+            <maml:name>System.Collections.Hashtable</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>SearchTermOr</maml:name>
           <maml:description>
             <maml:para>TermConjunction represents a conjunction (and/or)NOTE: the validator limits what the operator can be, not the object for future-proof-ness and a list of sub-values</maml:para>
@@ -4768,6 +4804,18 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
         <maml:name>SearchTermAnd</maml:name>
         <maml:description>
           <maml:para>TermConjunction represents a conjunction (and/or)NOTE: the validator limits what the operator can be, not the object for future-proof-ness and a list of sub-values</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Collections.Hashtable</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>SearchTermNot</maml:name>
+        <maml:description>
+          <maml:para>TermConjunction represents a conjunction (and/or)NOTE: the validator limits what the operator can be, not the objectfor future-proof-nessand a list of sub-values</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
         <dev:type>

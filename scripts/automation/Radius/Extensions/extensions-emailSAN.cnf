@@ -1,0 +1,18 @@
+[req]
+req_extensions = v3_req
+distinguished_name = req_distinguished_name
+
+[req_distinguished_name]
+C = US
+ST = VA
+L = SomeCity
+O = MyCompany
+OU = MyDivision
+CN = www.company.com
+
+[v3_req]
+authorityKeyIdentifier = keyid:issuer
+keyUsage = digitalSignature
+extendedKeyUsage = clientAuth
+#For Client cert with email in the subject alternative name
+subjectAltName = email:username@domain.com

@@ -68,7 +68,9 @@ Function InstallAgent() {
 Function UninstallAgent() {
     # Due to PowerShell's incredible weakness in dealing with paths containing SPACEs, we need to
     # to hard-code this path...
-    $params = ("${env:ProgramFiles}\JumpCloud\unins000.exe", "/VERYSILENT", "/SUPPRESSMSGBOXES")
+    $uninstallPath = Resolve-Path -Path "${env:ProgramFiles}\JumpCloud\unins000.exe"
+    $uninstallPath = $uninstallPath -replace " ", "`` "
+    $params = ("$uninstallPath", "/VERYSILENT", "/SUPPRESSMSGBOXES")
     Invoke-Expression "$params"
 }
 
@@ -158,13 +160,13 @@ Function DownloadAndInstallAgent(
     , [System.String]$msvc2013x86Install
 ) {
     If (!(CheckProgramInstalled("Microsoft Visual C\+\+ 2013 x64"))) {
-        Write-Output "Downloading & Installing JCAgent prereq Visual C++ 2013 x64"
+        Write-Output "Downloading and Installing JCAgent prereq Visual C++ 2013 x64"
         DownloadLink -Link:($msvc2013x64Link) -Path:($TempPath + $msvc2013x64File)
         Invoke-Expression -Command:($msvc2013x64Install)
         Write-Output "JCAgent Visual C++ 2013 x64 prereq installed"
     }
     If (!(CheckProgramInstalled("Microsoft Visual C\+\+ 2013 x86"))) {
-        Write-Output 'Downloading & Installing JCAgent prereq Visual C++ 2013 x86'
+        Write-Output 'Downloading and Installing JCAgent prereq Visual C++ 2013 x86'
         DownloadLink -Link:($msvc2013x86Link) -Path:($TempPath + $msvc2013x86File)
         Invoke-Expression -Command:($msvc2013x86Install)
         Write-Output 'JCAgent prereq installed'

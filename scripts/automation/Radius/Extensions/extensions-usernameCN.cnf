@@ -1,0 +1,16 @@
+[req]
+req_extensions = v3_req
+distinguished_name = req_distinguished_name
+
+[req_distinguished_name]
+C = US
+ST = VA
+L = SomeCity
+O = MyCompany
+OU = MyDivision
+CN = www.company.com
+
+[v3_req]
+keyUsage = digitalSignature
+extendedKeyUsage = clientAuth
+authorityInfoAccess = OCSP;URI:http://localhost:9000

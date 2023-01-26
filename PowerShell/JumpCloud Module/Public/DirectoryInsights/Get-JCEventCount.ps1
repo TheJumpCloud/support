@@ -3,13 +3,13 @@
 Query the API for a count of matching events
 #### Sample Request
 ```
-curl -X POST 'https://api.jumpcloud.com/insights/directory/v1/events/count' -H 'Content-Type: application/json' -H 'x-api-key: {API_KEY}' --data '{\"service\": [\"all\"], \"start_time\": \"2021-07-14T23:00:00Z\", \"end_time\": \"2021-07-28T14:00:00Z\", \"sort\": \"DESC\", \"fields\": [\"timestamp\", \"event_type\", \"initiated_by\", \"success\", \"client_ip\", \"provider\", \"organization\"]}'
+curl -X POST 'https://api.jumpcloud.com/insights/directory/v1/events/count' -H 'Content-Type: application/json' -H 'x-api-key: REPLACE_KEY_VALUE' --data '{\"service\": [\"all\"], \"start_time\": \"2021-07-14T23:00:00Z\", \"end_time\": \"2021-07-28T14:00:00Z\", \"sort\": \"DESC\", \"fields\": [\"timestamp\", \"event_type\", \"initiated_by\", \"success\", \"client_ip\", \"provider\", \"organization\"]}'
 ```
 .Description
 Query the API for a count of matching events
 #### Sample Request
 ```
-curl -X POST 'https://api.jumpcloud.com/insights/directory/v1/events/count' -H 'Content-Type: application/json' -H 'x-api-key: {API_KEY}' --data '{\"service\": [\"all\"], \"start_time\": \"2021-07-14T23:00:00Z\", \"end_time\": \"2021-07-28T14:00:00Z\", \"sort\": \"DESC\", \"fields\": [\"timestamp\", \"event_type\", \"initiated_by\", \"success\", \"client_ip\", \"provider\", \"organization\"]}'
+curl -X POST 'https://api.jumpcloud.com/insights/directory/v1/events/count' -H 'Content-Type: application/json' -H 'x-api-key: REPLACE_KEY_VALUE' --data '{\"service\": [\"all\"], \"start_time\": \"2021-07-14T23:00:00Z\", \"end_time\": \"2021-07-28T14:00:00Z\", \"sort\": \"DESC\", \"fields\": [\"timestamp\", \"event_type\", \"initiated_by\", \"success\", \"client_ip\", \"provider\", \"organization\"]}'
 ```
 .Example
 PS C:\> Get-JCEventCount -Service:('all') -StartTime:((Get-date).AddDays(-30))
@@ -46,6 +46,7 @@ BODY <IEventQuery>: EventQuery is the users' command to search our auth logs
   [SearchAfter <String[]>]: Specific query to search after, see x-* response headers for next values
   [SearchTermAnd <ITermConjunction>]: TermConjunction represents a conjunction (and/or)         NOTE: the validator limits what the operator can be, not the object         for future-proof-ness         and a list of sub-values
     [(Any) <Object>]: This indicates any property can be added to this object.
+  [SearchTermNot <ITermConjunction>]: TermConjunction represents a conjunction (and/or)         NOTE: the validator limits what the operator can be, not the object         for future-proof-ness         and a list of sub-values
   [SearchTermOr <ITermConjunction>]: TermConjunction represents a conjunction (and/or)         NOTE: the validator limits what the operator can be, not the object         for future-proof-ness         and a list of sub-values
   [Sort <String>]: ASC or DESC order for timestamp
 .Link
@@ -95,6 +96,13 @@ Function Get-JCEventCount
     [System.Collections.Hashtable]
     # TermConjunction represents a conjunction (and/or)NOTE: the validator limits what the operator can be, not the objectfor future-proof-nessand a list of sub-values
     ${SearchTermAnd},
+
+    [Parameter(ParameterSetName='GetExpanded')]
+    [JumpCloud.SDK.DirectoryInsights.Category('Body')]
+    [JumpCloud.SDK.DirectoryInsights.Runtime.Info(PossibleTypes=([JumpCloud.SDK.DirectoryInsights.Models.ITermConjunction]))]
+    [System.Collections.Hashtable]
+    # TermConjunction represents a conjunction (and/or)NOTE: the validator limits what the operator can be, not the objectfor future-proof-nessand a list of sub-values
+    ${SearchTermNot},
 
     [Parameter(ParameterSetName='GetExpanded')]
     [JumpCloud.SDK.DirectoryInsights.Category('Body')]
