@@ -83,6 +83,7 @@ Accept wildcard characters: False
 ### -SoftwareName
 The name of the application you want to search for ex.
 (JumpCloud-Agent, Slack)
+SoftwareName will always query the 'name' property from system insights. Note, for macOS systems, '.app' will be applied
 
 ```yaml
 Type: System.String

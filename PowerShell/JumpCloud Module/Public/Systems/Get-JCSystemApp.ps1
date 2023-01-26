@@ -7,7 +7,7 @@ function Get-JCSystemApp () {
         [Parameter(Mandatory = $false , ValueFromPipelineByPropertyName, HelpMessage = 'The type (windows, mac, linux) of the JumpCloud Command you wish to search ex. (Windows, Mac, Linux))')]
         [ValidateSet('Windows', 'macOS', 'Linux')][ValidateNotNullorEmpty()]
         [string]$SystemOS,
-        [Parameter(Mandatory = $false, HelpMessage = 'The name of the application you want to search for ex. (JumpCloud-Agent, Slack)')][ValidateNotNullorEmpty()]
+        [Parameter(Mandatory = $false, HelpMessage = 'The name of the application you want to search for ex. (JumpCloud-Agent, Slack). SoftwareName will always query the "name" property from system insights. Note, for macOS systems, ".app" will be applied' )][ValidateNotNullorEmpty()]
         [string]$SoftwareName,
         [Parameter(Mandatory = $false, HelpMessage = 'The version of the application you want to search for ex. (1.1.2)')][ValidateNotNullorEmpty()]
         [string]$SoftwareVersion,
