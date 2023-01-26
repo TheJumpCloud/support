@@ -25,7 +25,7 @@ Get-JCSystemApp [-SystemID <String>] [-SystemOS <String>] [-SoftwareName <String
 ```
 
 ## DESCRIPTION
-Get-JCSystem app function enables admins to search what software is on their systems
+Get-JCSystem app function helps admins identify what applications/programs or linux packages exist on their JumpCloud managed systems.
 
 ## EXAMPLES
 
