@@ -7066,7 +7066,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Search</maml:name>
           <maml:description>
-            <maml:para>Search for a specific application by from all systems in the org ex. (Get-JCSystemApp -Search -SoftwareName "JumpCloud-Agent")</maml:para>
+            <maml:para>Search for a specific application by from all systems in the org ex. (Get-JCSystemApp -Search -SoftwareName "JumpCloud-Agent") THIS PARAMETER DOES NOT TAKE INPUT</maml:para>
           </maml:description>
           <dev:type>
             <maml:name>System.Management.Automation.SwitchParameter</maml:name>
@@ -7133,7 +7133,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Search</maml:name>
         <maml:description>
-          <maml:para>Search for a specific application by from all systems in the org ex. (Get-JCSystemApp -Search -SoftwareName "JumpCloud-Agent")</maml:para>
+          <maml:para>Search for a specific application by from all systems in the org ex. (Get-JCSystemApp -Search -SoftwareName "JumpCloud-Agent") THIS PARAMETER DOES NOT TAKE INPUT</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.Management.Automation.SwitchParameter</command:parameterValue>
         <dev:type>
