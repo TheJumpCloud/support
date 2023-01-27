@@ -11,7 +11,7 @@ function Get-JCSystemApp () {
         [string]$SoftwareName,
         [Parameter(Mandatory = $false, HelpMessage = 'The version of the application you want to search for ex. (1.1.2)')][ValidateNotNullorEmpty()]
         [string]$SoftwareVersion,
-        [Parameter(Mandatory = $false, ParameterSetName = "Search", HelpMessage = 'Search for a specific application by from all systems in the org ex (Get-JCSystemApp -Search -SoftwareName "JumpCloud-Agent")')]
+        [Parameter(Mandatory = $false, ParameterSetName = "Search", HelpMessage = 'Search for a specific application by from all systems in the org ex (Get-JCSystemApp -Search -SoftwareName "JumpCloud-Agent"). THIS PARAMETER DOES NOT TAKE INPUT')]
         [switch]$Search,
         [Parameter(DontShow, Mandatory = $false, ParameterSetName = "All", HelpMessage = 'Search for a specific application by name from all systems in the org')]
         [switch]$Software
@@ -188,15 +188,16 @@ function Get-JCSystemApp () {
                         if ($os -eq 'MacOs') {
                             if (-not $SoftwareName.EndsWith('.app')) {
                                 if ($SoftwareName.EndsWith('.App')) {
-                                    $SoftwareName = $SoftwareName.Replace('.App', '.app')
+                                    $MacSoftwareName = $SoftwareName
+                                    $MacSoftwareName = $MacSoftwareName.Replace('.App', '.app')
                                 } else {
-                                    $SoftwareName = "$SoftwareName.app"
+                                    $MacSoftwareName = "$MacSoftwareName.app"
                                 }
                             }
                             if ($SoftwareVersion -and $SoftwareName) {
-                                $URL = "$JCUrlBasePath/api/v2/systeminsights/apps?filter=name:eq:$SoftwareName&filter=bundle_short_version:eq:$softwareVersion"
+                                $URL = "$JCUrlBasePath/api/v2/systeminsights/apps?filter=name:eq:$MacSoftwareName&filter=bundle_short_version:eq:$softwareVersion"
                             } else {
-                                $URL = "$JCUrlBasePath/api/v2/systeminsights/apps?filter=name:eq:$SoftwareName"
+                                $URL = "$JCUrlBasePath/api/v2/systeminsights/apps?filter=name:eq:$MacSoftwareName"
                             }
                         } elseif ($os -eq 'Windows') {
                             if ($SoftwareVersion -and $SoftwareName) {
