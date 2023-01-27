@@ -46,7 +46,6 @@ function Get-JCSystemApp () {
                 if ($SystemId) {
                     Write-Debug "SystemId"
                     $OSType = Get-JCSystem -ID $SystemID | Select-Object -ExpandProperty osFamily
-                    # Handle error for if Get-JCSystem returns nothing
                     if ($OsType -eq 'MacOs') { $Ostype = 'Darwin' }
                     switch ($OSType) {
                         'Windows' {
@@ -120,7 +119,7 @@ function Get-JCSystemApp () {
                     Write-Debug "OS: $SystemOs"
                     switch ($OSType) {
                         'Windows' {
-                            # If Software title, version, and system ID are passed then return specific app
+                            # If Software title, version, and system OS are passed then return specific app
                             if ($SoftwareVersion -and $SoftwareName -and $SystemOS) {
                                 # Handle Special Characters
                                 $SoftwareName = [System.Web.HttpUtility]::UrlEncode($SoftwareName)
@@ -136,7 +135,7 @@ function Get-JCSystemApp () {
                             Write-Debug $URL
                         }
                         'Darwin' {
-                            # If Software title, version, and system ID are passed then return specific app
+                            # If Software title, version, and system OS are passed then return specific app
                             if (-not $SoftwareName.EndsWith('.app')) {
                                 if ($SoftwareName.EndsWith('.App')) {
                                     $SoftwareName = $SoftwareName.Replace('.App', '.app')
@@ -160,7 +159,7 @@ function Get-JCSystemApp () {
                             Write-Debug $URL
                         }
                         'Linux' {
-                            # If Software title, version, and system ID are passed then return specific app
+                            # If Software title, version, and system OS are passed then return specific app
                             if ($SoftwareVersion -and $SoftwareName -and $SystemOS) {
                                 # Handle Special Characters
                                 $SoftwareName = [System.Web.HttpUtility]::UrlEncode($SoftwareName)
@@ -182,9 +181,9 @@ function Get-JCSystemApp () {
                     } else {
                         $resultsArrayList = Get-JCResults -URL $URL -Method "GET" -limit $limit
                     }
-                } elseif ($SoftwareName ) {
+                } elseif ($SoftwareName) {
                     $SoftwareName = [System.Web.HttpUtility]::UrlEncode($SoftwareName)
-                    # Foreach Mac, Windows, Linux
+                    # Search each apps endpoint for software name
                     foreach ($os in @('MacOs', 'Windows', 'Linux')) {
                         if ($os -eq 'MacOs') {
                             if (-not $SoftwareName.EndsWith('.app')) {
@@ -225,7 +224,7 @@ function Get-JCSystemApp () {
                         $resultsArrayList.Add($resultsArray)
                     }
                 } else {
-                    # Print all software
+                    # Default/All
                     foreach ($os in @('programs', 'apps', 'linux_packages')) {
                         $URL = "$JCUrlBasePath/api/v2/systeminsights/$os"
                         if ($Parallel) {
@@ -245,9 +244,8 @@ function Get-JCSystemApp () {
                 }
 
             } Search {
-                # IF only software name and no system ID or OS or version
+                # Search for softwareName
                 if ($SoftwareName -and $Search) {
-                    # Check if other parameters are set
                     if ($SoftwareVersion) {
                         Write-Error 'You cannot specify a system ID or version when using -search for a software name'
                     } elseif ($SystemId) {
@@ -273,8 +271,6 @@ function Get-JCSystemApp () {
                             }
                         }
                     } elseif ($SystemOS) {
-                        # Get all the results if softwarename elseif softwarename and version
-
                         $applicationArray | ForEach-Object {
                             $URL = "$JCUrlBasePath/api/v2/systeminsights/$_"
                             Write-Verbose "Searching for $SoftwareName and $SystemOs in $_ "
