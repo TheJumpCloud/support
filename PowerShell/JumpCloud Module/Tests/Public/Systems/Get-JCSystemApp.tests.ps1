@@ -110,10 +110,13 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
         { Get-JCSystemApp -SystemID $windows._id | ConvertTo-Csv } | Should -Not -Throw
         { Get-JCSystemApp -SystemID $linux._id | ConvertTo-Csv } | Should -Not -Throw
     }
-    It "Tests macos functionatily to append .app to softwareTitles" {
-        Get-JCSystemApp -SystemID $mac._id -SoftwareTitle "chess.app" | Should -Not -BeNullOrEmpty
-        Get-JCSystemApp -SystemID $mac._id -SoftwareTitle "chess.App" | Should -Not -BeNullOrEmpty
-        Get-JCSystemApp -SystemID $mac._id -SoftwareTitle "chess" | Should -Not -BeNullOrEmpty
+    It "Tests macos functionatily to append .app to softwareName" {
+        Get-JCSystemApp -SystemID $mac._id -SoftwareName "Chess.app" | Should -Not -BeNullOrEmpty
+        Get-JCSystemApp -SystemID $mac._id -SoftwareName "Chess.App" | Should -Not -BeNullOrEmpty
+        Get-JCSystemApp -SystemID $mac._id -SoftwareName "Chess" | Should -Not -BeNullOrEmpty
+        Get-JCSystemApp -SystemID $mac._id -SoftwareName "chess.app" -search | Should -Not -BeNullOrEmpty
+        Get-JCSystemApp -SystemID $mac._id -SoftwareName "chess.App" -search | Should -Not -BeNullOrEmpty
+        Get-JCSystemApp -SystemID $mac._id -SoftwareName "chess" -search | Should -Not -BeNullOrEmpty
     }
 }
 
