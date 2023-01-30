@@ -100,7 +100,7 @@ Accept wildcard characters: False
 
 ### -SoftwareVersion
 The version of the application you want to search for ex.
-(1.1.2)
+1.1.2
 
 ```yaml
 Type: System.String
