@@ -4,12 +4,12 @@ function Get-JCSystemApp () {
 
         [Parameter(Mandatory = $false, HelpMessage = 'The System Id of the system you want to search for applications')][ValidateNotNullorEmpty()]
         [string]$SystemID,
-        [Parameter(Mandatory = $false , ValueFromPipelineByPropertyName, HelpMessage = 'The type (windows, mac, linux) of the JumpCloud Command you wish to search ex. (Windows, Mac, Linux))')]
+        [Parameter(Mandatory = $false , ValueFromPipelineByPropertyName, HelpMessage = 'The type (windows, macOS, linux) of the JumpCloud system you wish to search. Ex. (Windows, macOS, Linux))')]
         [ValidateSet('Windows', 'macOS', 'Linux')][ValidateNotNullorEmpty()]
         [string]$SystemOS,
-        [Parameter(Mandatory = $false, HelpMessage = 'The name of the application you want to search for ex. (JumpCloud-Agent, Slack). SoftwareName will always query the "name" property from system insights. Note, for macOS systems, ".app" will be applied' )][ValidateNotNullorEmpty()]
+        [Parameter(Mandatory = $false, HelpMessage = 'The name of the application you want to search for ex. (JumpCloud-Agent, Slack). SoftwareName will always query the "name" property from system insights. Note, for macOS systems, ".app" will be applied. This field is case sensitive.' )][ValidateNotNullorEmpty()]
         [string]$SoftwareName,
-        [Parameter(Mandatory = $false, HelpMessage = 'The version of the application you want to search for ex. (1.1.2)')][ValidateNotNullorEmpty()]
+        [Parameter(Mandatory = $false, HelpMessage = 'The version of the application you want to search for ex. 1.1.2')][ValidateNotNullorEmpty()]
         [string]$SoftwareVersion,
         [Parameter(Mandatory = $false, ParameterSetName = "Search", HelpMessage = "The Search parameter can be used in conjunction with the 'SoftwareName' parameter to perform a case-insensitive search for software. This is parameter switch is inherently slower than using just the 'softwareName' parameter but can be useful to identify the names of software titles on systems. If the exact name of a software title isn't known, the 'search' parameter can be used to find that name. Ex. Get-JCSoftwareApp -SystemID '63c9654cb357249876bfc05b' -SoftwareName 'chrome' -Search will attempt to perform a match for the term 'chrome' on all applications/ programs for the specified system. If a match, partial-match, case-insensitive match is found, it would be returned in the results. In this case, the 'name' of the software title is 'Google Chrome'. A subsequent search could be run to return all macOS systems which have 'Google Chrome' installed. Ex. Get-JCSystemApp -SystemOS macOS -softwareName 'Google Chrome', this would perform an exact match search for macOS systems that have google chrome which is substantially quicker than running: Get-JCSystemApp -SystemOS macOS -softwareName 'google chrome' -Search. The search parameter is a tool to help identify the 'name' attribute of software titles when searching bulk systems its recommended to not use the search parameter and instead specify the exact (case sensitive) name of the software title.")]
         [switch]$Search,
