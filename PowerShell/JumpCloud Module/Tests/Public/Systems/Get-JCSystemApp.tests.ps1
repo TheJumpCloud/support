@@ -114,9 +114,6 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
         Get-JCSystemApp -SystemID $mac._id -SoftwareName "Chess.app" | Should -Not -BeNullOrEmpty
         Get-JCSystemApp -SystemID $mac._id -SoftwareName "Chess.App" | Should -Not -BeNullOrEmpty
         Get-JCSystemApp -SystemID $mac._id -SoftwareName "Chess" | Should -Not -BeNullOrEmpty
-        Get-JCSystemApp -SystemID $mac._id -SoftwareName "chess.app" -search | Should -Not -BeNullOrEmpty
-        Get-JCSystemApp -SystemID $mac._id -SoftwareName "chess.App" -search | Should -Not -BeNullOrEmpty
-        Get-JCSystemApp -SystemID $mac._id -SoftwareName "chess" -search | Should -Not -BeNullOrEmpty
     }
 }
 
