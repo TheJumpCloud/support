@@ -1,5 +1,6 @@
 # Import Global Config:
 . "$psscriptroot/config.ps1"
+Connect-JCOnline $JCAPIKEY -force
 
 ################################################################################
 # Do not modify below
@@ -207,7 +208,8 @@ foreach ($user in $groupMembers) {
             Generate-UserCert -CertType $CertType -user $MatchedUser -rootCAKey "$psscriptroot/Cert/selfsigned-ca-key.pem" -rootCA "$psscriptroot/Cert/selfsigned-ca-cert.pem"
         }
     } else {
-        Write-Host "[status] $($MatchedUser.username) not found in users.json, generating cert"
+        Write-Host "[status] $($MatchedUser.username) not found in users.json"
+
         # Find user system associations
         $SystemUserAssociations = @()
         $SystemUserAssociations += (Get-JCAssociation -Type user -Id $MatchedUser.id -TargetType system | Select-Object @{N = 'SystemID'; E = { $_.targetId } })
@@ -230,10 +232,13 @@ foreach ($user in $groupMembers) {
             commandAssociations = @()
         }
 
-        Generate-UserCert -CertType $CertType -user $MatchedUser -rootCAKey "$psscriptroot/Cert/selfsigned-ca-key.pem" -rootCA "$psscriptroot/Cert/selfsigned-ca-cert.pem"
-
+        if (Test-Path -Path "$PSScriptRoot/UserCerts/$($MatchedUser.username)-client-signed.pfx") {
+            Write-Host "[status] $($MatchedUser.username) has certs generated... adding to users.json"
+        } else {
+            Generate-UserCert -CertType $CertType -user $MatchedUser -rootCAKey "$psscriptroot/Cert/selfsigned-ca-key.pem" -rootCA "$psscriptroot/Cert/selfsigned-ca-cert.pem"
+        }
         $userArray += $userTable
     }
 }
 
-$userArray | ConvertTo-Json -Depth 4 | Out-File "$psscriptroot\users.json"
+$userArray | ConvertTo-Json -Depth 6 | Out-File "$psscriptroot\users.json"
