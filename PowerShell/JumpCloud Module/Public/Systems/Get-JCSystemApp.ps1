@@ -11,10 +11,10 @@ function Get-JCSystemApp () {
         [string]$SoftwareName,
         [Parameter(Mandatory = $false, HelpMessage = 'The version of the application you want to search for ex. (1.1.2)')][ValidateNotNullorEmpty()]
         [string]$SoftwareVersion,
-        [Parameter(Mandatory = $false, ParameterSetName = "Search", HelpMessage = 'Search for a specific application by from all systems in the org ex (Get-JCSystemApp -Search -SoftwareName "JumpCloud-Agent"). THIS PARAMETER DOES NOT TAKE INPUT')]
+        [Parameter(Mandatory = $false, ParameterSetName = "Search", HelpMessage = "The Search parameter can be used in conjunction with the 'SoftwareName' parameter to perform a case-insensitive search for software. This is parameter switch is inherently slower than using just the 'softwareName' parameter but can be useful to identify the names of software titles on systems. If the exact name of a software title isn't known, the 'search' parameter can be used to find that name. Ex. Get-JCSoftwareApp -SystemID '63c9654cb357249876bfc05b' -SoftwareName 'chrome' -Search will attempt to perform a match for the term 'chrome' on all applications/ programs for the specified system. If a match, partial-match, case-insensitive match is found, it would be returned in the results. In this case, the 'name' of the software title is 'Google Chrome'. A subsequent search could be run to return all macOS systems which have 'Google Chrome' installed. Ex. Get-JCSystemApp -SystemOS macOS -softwareName 'Google Chrome', this would perform an exact match search for macOS systems that have google chrome which is substantially quicker than running: Get-JCSystemApp -SystemOS macOS -softwareName 'google chrome' -Search. The search parameter is a tool to help identify the 'name' attribute of software titles when searching bulk systems its recommended to not use the search parameter and instead specify the exact (case sensitive) name of the software title.")]
         [switch]$Search,
         [Parameter(DontShow, Mandatory = $false, ParameterSetName = "All", HelpMessage = 'Search for a specific application by name from all systems in the org')]
-        [switch]$Software
+        [switch]$SearchAllSystems
 
     )
     begin {
@@ -46,7 +46,6 @@ function Get-JCSystemApp () {
                 if ($SystemId) {
                     Write-Debug "SystemId"
                     $OSType = Get-JCSystem -ID $SystemID | Select-Object -ExpandProperty osFamily
-                    if ($OsType -eq 'MacOs') { $Ostype = 'Darwin' }
                     if ($SystemOS) { Throw "SystemID and SystemOS cannot be used together" }
                     switch ($OSType) {
                         'Windows' {
@@ -88,12 +87,12 @@ function Get-JCSystemApp () {
                                 if ($SoftwareVersion -and $SoftwareName -and $SystemId) {
                                     # Handle Special Characters
                                     $SoftwareName = [System.Web.HttpUtility]::UrlEncode($SoftwareName)
-                                    $URL = "$JCUrlBasePath/api/v2/systeminsights/apps?filter=name:eq:$SoftwareName&filter=bundle_short_version:eq:$SoftwareVersion"
+                                    $URL = "$JCUrlBasePath/api/v2/systeminsights/apps?filter=name:eq:$SoftwareName&filter=bundle_short_version:eq:$SoftwareVersion&filter=system_id:eq:$SystemID"
 
                                 } elseif ($SoftwareName -and $SystemId) {
                                     # Handle Special Characters
                                     $SoftwareName = [System.Web.HttpUtility]::UrlEncode($SoftwareName)
-                                    $URL = "$JCUrlBasePath/api/v2/systeminsights/apps?&filter=name:eq:$SoftwareName"
+                                    $URL = "$JCUrlBasePath/api/v2/systeminsights/apps?&filter=name:eq:$SoftwareName&filter=system_id:eq:$SystemID"
                                 }
                             }
                             Write-Debug $URL
@@ -264,7 +263,7 @@ function Get-JCSystemApp () {
 
             } Search {
                 # Search for softwareName
-                if ($SoftwareName -and $Search) {
+                if ($SoftwareName) {
                     if ($SoftwareVersion) {
                         Throw 'You cannot specify software version when using -search for a software name'
                     } elseif ($SystemId) {
@@ -331,7 +330,7 @@ function Get-JCSystemApp () {
 
                         }
                         $searchAppResultsList | ForEach-Object {
-                            $results = $_ | Where-Object { ($_.name -match $SoftwareName) -and ($_.osFamily -match $SystemOs) }
+                            $results = $_ | Where-Object { ($_.name -match $SoftwareName) }
                             $results | ForEach-Object {
                                 $resultsArrayList.Add($_)
                             }
