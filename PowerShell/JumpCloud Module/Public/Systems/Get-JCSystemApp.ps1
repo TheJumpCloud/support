@@ -9,7 +9,7 @@ function Get-JCSystemApp () {
         [string]$SystemOS,
         [Parameter(Mandatory = $false, HelpMessage = 'The name of the application you want to search for ex. (JumpCloud-Agent, Slack). SoftwareName will always query the "name" property from system insights. Note, for macOS systems, ".app" will be applied' )][ValidateNotNullorEmpty()]
         [string]$SoftwareName,
-        [Parameter(Mandatory = $false, HelpMessage = 'The version of the application you want to search for ex. (1.1.2)')][ValidateNotNullorEmpty()]
+        [Parameter(Mandatory = $false, HelpMessage = 'The version of the application you want to search for ex. 1.1.2')][ValidateNotNullorEmpty()]
         [string]$SoftwareVersion,
         [Parameter(Mandatory = $false, ParameterSetName = "Search", HelpMessage = 'Search for a specific application by from all systems in the org ex (Get-JCSystemApp -Search -SoftwareName "JumpCloud-Agent"). THIS PARAMETER DOES NOT TAKE INPUT')]
         [switch]$Search,
