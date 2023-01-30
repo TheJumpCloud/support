@@ -71,13 +71,20 @@ function Get-JCSystemApp () {
                             if ((!$SoftwareName) -and (!$SystemOs) -and (!$SoftwareVersion)) {
                                 # Add filter for system ID to $Search
                                 $URL = "$JCUrlBasePath/api/v2/systeminsights/apps"
-                            } elseif (-not $SoftwareName.EndsWith('.app')) {
-                                if ($SoftwareName.EndsWith('.App')) {
-                                    $SoftwareName = $SoftwareName.Replace('.App', '.app')
+                            }
+                            if ($SoftwareName) {
+                                # Check for .app at the end of the software name
+                                if (-not $SoftwareName.EndsWith('.app')) {
+                                    Write-Debug "Adding .app to $SoftwareName"
+                                    if ($SoftwareName.EndsWith('.App')) {
+                                        Write-Debug "Replacing .App with .app"
+                                        $SoftwareName = $SoftwareName.Replace('.App', '.app')
+                                    } else {
+                                        $SoftwareName = "$SoftwareName.app"
+                                    }
                                 } else {
-                                    $SoftwareName = "$SoftwareName.app"
+                                    Write-Debug "$SoftwareName already ends with .app"
                                 }
-
                                 if ($SoftwareVersion -and $SoftwareName -and $SystemId) {
                                     # Handle Special Characters
                                     $SoftwareName = [System.Web.HttpUtility]::UrlEncode($SoftwareName)
@@ -139,14 +146,21 @@ function Get-JCSystemApp () {
                         }
                         'Darwin' {
                             # If Software title, version, and system OS are passed then return specific app and not null
-                            if ((!$SoftwareName) -and (!$SystemId) -and (!$SoftwareVersion)) {
+                            if ((!$SoftwareName) -and (!$SoftwareVersion)) {
                                 # Add filter for system ID to $Search
                                 $URL = "$JCUrlBasePath/api/v2/systeminsights/apps"
-                            } elseif (-not $SoftwareName.EndsWith('.app')) {
-                                if ($SoftwareName.EndsWith('.App')) {
-                                    $SoftwareName = $SoftwareName.Replace('.App', '.app')
+                            }
+                            if ($SoftwareName) {
+                                if (-not $SoftwareName.EndsWith('.app')) {
+                                    Write-Debug "Adding .app to $SoftwareName"
+                                    if ($SoftwareName.EndsWith('.App')) {
+                                        Write-Debug "Replacing .App with .app"
+                                        $SoftwareName = $SoftwareName.Replace('.App', '.app')
+                                    } else {
+                                        $SoftwareName = "$SoftwareName.app"
+                                    }
                                 } else {
-                                    $SoftwareName = "$SoftwareName.app"
+                                    Write-Debug "$SoftwareName already ends with .app"
                                 }
 
                                 if ($SoftwareVersion -and $SoftwareName -and $SystemOS) {
