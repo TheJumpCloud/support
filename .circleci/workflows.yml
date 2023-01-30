@@ -32,7 +32,7 @@ parameters:
     description: "Release Type. Accepted values [ Major, Minor, Patch ]"
     type: enum
     enum: ["Major", "Minor", "Patch"]
-    default: "Patch"
+    default: "Minor"
   RequiredModulesRepo:
     description: "PowerShell Repository for JumpCloud SDKs"
     type: enum
@@ -310,7 +310,7 @@ commands:
     steps:
       - add_ssh_keys:
           fingerprints:
-            - "89:e7:20:1b:b1:a2:c2:2e:b8:d6:34:2f:73:80:a6:70"
+            - "c9:0f:56:c9:00:42:98:3c:03:59:24:1e:a7:e7:08:7f"
       - checkout
       - run:
           name: Set URLs
@@ -413,7 +413,7 @@ commands:
       - checkout
       - add_ssh_keys:
           fingerprints:
-            - "89:e7:20:1b:b1:a2:c2:2e:b8:d6:34:2f:73:80:a6:70"
+            - "c9:0f:56:c9:00:42:98:3c:03:59:24:1e:a7:e7:08:7f"
       - attach_workspace:
           at: .
       - run:
@@ -427,7 +427,7 @@ commands:
       - checkout
       - add_ssh_keys:
           fingerprints:
-            - "89:e7:20:1b:b1:a2:c2:2e:b8:d6:34:2f:73:80:a6:70"
+            - "c9:0f:56:c9:00:42:98:3c:03:59:24:1e:a7:e7:08:7f"
       - attach_workspace:
           at: .
       - run:
@@ -607,3 +607,4 @@ commands:
           root: .
           paths:
             - .
+# VS Code Extension Version: 1.5.1
