@@ -32,7 +32,7 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
     It "Tests that given a systemID, SoftwareName, SoftwareVersion, an app is returned" {
         # Chess is always installed on MacOS and it CAN NOT be removed no matter what
         $ChessApp = Get-JCSystemApp -SystemID $mac._id -SoftwareName "Chess"
-        { Get-JCSystemApp -SystemID $mac._id -SoftwareName "Chess" -SoftwareVersion $ChessApp.Bundle_short_version } | Should -Throw
+        Get-JCSystemApp -SystemID $mac._id -SoftwareName "Chess" -SoftwareVersion $ChessApp.Bundle_short_version
         # A null value version shouldn't be accepted
         { Get-JCSystemApp -SystemID $mac._id -SoftwareName "Chess" -SoftwareVersion "" } | Should -Throw
         # A null value Name shouldn't be accepted
@@ -66,13 +66,13 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
     It "Tests the search param with systemID" {
 
         $apps = Get-JCSystemApp -Systemid $mac._id -SoftwareName "a" -search
-        $foundSystems = $apps.systemid | Select-Object -Unique
+        $foundSystems = $apps.system_id | Select-Object -Unique
         # if you specify a systemID and Search, results should not contain multiple systems
         $foundSystems.count | should -Be 1
     }
     It "Tests the search param with SystemOS" {
         $apps = Get-JCSystemApp -SystemOS "macos" -SoftwareName "a" -search
-        $foundSystems = $apps.systemid | Select-Object -Unique
+        $foundSystems = $apps.system_id | Select-Object -Unique
         # if you specify a systemOS and Search, results should not contain multiple systems
         foreach ($system in $foundSystems) {
             $foundSystem = Get-JCSystem -SystemID $system

@@ -22,11 +22,15 @@ function Get-JCSystemApp () {
         if ($JCAPIKEY.length -ne 40) {
             Connect-JCOnline
         }
+        $Parallel = $JCConfig.parallel.Calculated
         $searchAppResultsList = New-Object -TypeName System.Collections.ArrayList
-
-        Write-Verbose 'Initilizing resultsArray'
-        $resultsArrayList = New-Object -TypeName System.Collections.ArrayList
-
+        if ($Parallel) {
+            Write-Verbose 'Initilizing resultsArray'
+            $resultsArrayList = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
+        } else {
+            Write-Verbose 'Initilizing resultsArray'
+            $resultsArrayList = New-Object -TypeName System.Collections.ArrayList
+        }
         Write-Verbose "Parameter Set: $($PSCmdlet.ParameterSetName)"
     }
     process {
@@ -39,67 +43,34 @@ function Get-JCSystemApp () {
 
         switch ($PSCmdlet.ParameterSetName) {
             All {
-                if ($SystemId -or $SystemOS) {
-                    if ($SystemID -and $SystemOS) {
-                        Throw "Cannot specify both SystemID and SystemOS"
-                    }
-
-                    if ($SystemID) {
-                        $OSType = Get-JcSdkSystem -ID $SystemID | Select-Object -ExpandProperty OSFamily
-                    } else {
-                        $OSType = $SystemOS
-                        if ($OSType -eq 'macOS') {
-                            $OSType = 'Darwin'
-                        }
-                    }
-                    Write-Debug "OSType: $OSType"
+                if ($SystemId) {
+                    Write-Debug "SystemId"
+                    $OSType = Get-JCSystem -ID $SystemID | Select-Object -ExpandProperty osFamily
+                    if ($SystemOS) { Throw "SystemID and SystemOS cannot be used together" }
                     switch ($OSType) {
                         'Windows' {
                             # If Software title, version, and system ID are passed then return specific app
-                            if ($SoftwareVersion -and $SoftwareName) {
+                            if ($SoftwareVersion -and $SoftwareName -and $SystemID) {
                                 # Handle Special Characters
                                 $SoftwareName = [System.Web.HttpUtility]::UrlEncode($SoftwareName)
-                                if ($SystemID) {
-                                    Get-JcSdkSystemInsightProgram -Filter @("system_id:eq:$SystemID", "name:eq:$SoftwareName", "version:eq:$SoftwareVersion") | ForEach-Object {
-                                        [void]$resultsArrayList.Add($_)
-                                    }
-                                } elseif ($SystemOS) {
-                                    Get-JcSdkSystemInsightProgram -Filter @("name:eq:$SoftwareName", "version:eq:$SoftwareVersion") | ForEach-Object {
-                                        [void]$resultsArrayList.Add($_)
-                                    }
-                                }
-                            } elseif ($SoftwareName) {
+                                $URL = "$JCUrlBasePath/api/v2/systeminsights/programs?filter=system_id:eq:$SystemId&filter=name:eq:$SoftwareName&filter=version:eq:$SoftwareVersion"
+
+                            } elseif ($SoftwareName -and $SystemID) {
                                 # Handle Special Characters
                                 $SoftwareName = [System.Web.HttpUtility]::UrlEncode($SoftwareName)
-                                if ($SystemID) {
-                                    Get-JcSdkSystemInsightProgram -Filter @("system_id:eq:$SystemID", "name:eq:$SoftwareName") | ForEach-Object {
-                                        [void]$resultsArrayList.Add($_)
-                                    }
-                                } elseif ($SystemOS) {
-                                    Get-JcSdkSystemInsightProgram -Filter @("name:eq:$SoftwareName") | ForEach-Object {
-                                        [void]$resultsArrayList.Add($_)
-                                    }
-                                }
+                                $URL = "$JCUrlBasePath/api/v2/systeminsights/programs?filter=system_id:eq:$SystemID&filter=name:eq:$SoftwareName"
                             } elseif ($SystemID) {
-                                if ($SoftwareVersion) {
-                                    Write-Error "Cannot search for software version on Windows without software name."
-                                } else {
-                                    Get-JcSdkSystemInsightProgram -Filter @("system_id:eq:$SystemID") | ForEach-Object {
-                                        [void]$resultsArrayList.Add($_)
-                                    }
-                                }
-                            } elseif ($SystemOS) {
-                                if ($SoftwareVersion) {
-                                    Write-Error "Cannot search for software version on Windows without software name."
-                                } else {
-                                    Get-JcSdkSystemInsightProgram | ForEach-Object {
-                                        [void]$resultsArrayList.Add($_)
-                                    }
-                                }
+                                $URL = "$JCUrlBasePath/api/v2/systeminsights/programs?filter=system_id:eq:$SystemID"
                             }
+                            Write-Debug $URL
                         }
                         'Darwin' {
-
+                            # If Software title, version, and system ID are passed then return specific app
+                            # If $softwareName does not have .app at the end then add it
+                            if ((!$SoftwareName) -and (!$SystemOs) -and (!$SoftwareVersion)) {
+                                # Add filter for system ID to $Search
+                                $URL = "$JCUrlBasePath/api/v2/systeminsights/apps"
+                            }
                             if ($SoftwareName) {
                                 # Check for .app at the end of the software name
                                 if (-not $SoftwareName.EndsWith('.app')) {
@@ -113,229 +84,255 @@ function Get-JCSystemApp () {
                                 } else {
                                     Write-Debug "$SoftwareName already ends with .app"
                                 }
-                            }
+                                if ($SoftwareVersion -and $SoftwareName -and $SystemId) {
+                                    # Handle Special Characters
+                                    $SoftwareName = [System.Web.HttpUtility]::UrlEncode($SoftwareName)
+                                    $URL = "$JCUrlBasePath/api/v2/systeminsights/apps?filter=name:eq:$SoftwareName&filter=bundle_short_version:eq:$SoftwareVersion&filter=system_id:eq:$SystemID"
 
-                            # If Software title, version, and system ID are passed then return specific app
-                            if ($SoftwareVersion -and $SoftwareName) {
-                                # Handle Special Characters
-                                Write-Debug "Trying to get app with name $SoftwareName and version $SoftwareVersion"
-                                $SoftwareName = [System.Web.HttpUtility]::UrlEncode($SoftwareName)
-                                if ($SystemID) {
-
-                                    Get-JcSdkSystemInsightApp -Filter @("system_id:eq:$SystemID", "name:eq:$SoftwareName", "bundle_short_version:eq:$SoftwareVersion") | ForEach-Object {
-                                        [void]$resultsArrayList.Add($_)
-                                    }
-                                } elseif ($SystemOS) {
-                                    Get-JcSdkSystemInsightApp -Filter @("name:eq:$SoftwareName", "bundle_short_version:eq:$SoftwareVersion") | ForEach-Object {
-                                        [void]$resultsArrayList.Add($_)
-                                    }
-                                }
-                            } elseif ($SoftwareName) {
-                                # Handle Special Characters
-                                $SoftwareName = [System.Web.HttpUtility]::UrlEncode($SoftwareName)
-                                if ($SystemID) {
-                                    Get-JcSdkSystemInsightApp -Filter @("system_id:eq:$SystemID", "name:eq:$SoftwareName") | ForEach-Object {
-                                        [void]$resultsArrayList.Add($_)
-                                    }
-                                } elseif ($SystemOS) {
-                                    Get-JcSdkSystemInsightApp -Filter @("name:eq:$SoftwareName") | ForEach-Object {
-                                        [void]$resultsArrayList.Add($_)
-                                    }
-                                }
-                            } elseif ($SystemID) {
-                                if ($SoftwareVersion) {
-                                    Write-Error "Cannot search for software version on MacOs without software name."
-                                } else {
-                                    Get-JcSdkSystemInsightApp -Filter @("system_id:eq:$SystemID") | ForEach-Object {
-                                        [void]$resultsArrayList.Add($_)
-                                    }
-                                }
-                            } elseif ($SystemOS) {
-                                if ($SoftwareVersion) {
-                                    Write-Error "Cannot search for software version on MacOs without software name."
-                                } else {
-                                    Get-JcSdkSystemInsightApp | ForEach-Object {
-                                        [void]$resultsArrayList.Add($_)
-                                    }
+                                } elseif ($SoftwareName -and $SystemId) {
+                                    # Handle Special Characters
+                                    $SoftwareName = [System.Web.HttpUtility]::UrlEncode($SoftwareName)
+                                    $URL = "$JCUrlBasePath/api/v2/systeminsights/apps?&filter=name:eq:$SoftwareName&filter=system_id:eq:$SystemID"
                                 }
                             }
-
+                            Write-Debug $URL
                         }
                         'Linux' {
+                            # If Software title, version and system ID are passed then return specific app
+                            if ($SoftwareVersion -and $SoftwareName -and $SystemID) {
+                                # Handle Special Characters
+                                $SoftwareName = [System.Web.HttpUtility]::UrlEncode($SoftwareName)
+                                $URL = "$JCUrlBasePath/api/v2/systeminsights/linux_packages?filter=system_id:eq:$SystemId&filter=name:eq:$SoftwareName&filter=version:eq:$SoftwareVersion&filter=system_id:eq:$SystemID"
 
-                            if ($SoftwareVersion -and $SoftwareName) {
+                            } elseif ($SoftwareName -and $SystemID) {
                                 # Handle Special Characters
                                 $SoftwareName = [System.Web.HttpUtility]::UrlEncode($SoftwareName)
-                                if ($SystemID) {
-                                    Get-JcSdkSystemInsightLinuxPackage -Filter @("system_id:eq:$SystemID", "name:eq:$SoftwareName", "version:eq:$SoftwareVersion") | ForEach-Object {
-                                        [void]$resultsArrayList.Add($_)
-                                    }
-                                } elseif ($SystemOS) {
-                                    Get-JcSdkSystemInsightLinuxPackage -Filter @("name:eq:$SoftwareName", "version:eq:$SoftwareVersion") | ForEach-Object {
-                                        [void]$resultsArrayList.Add($_)
-                                    }
-                                }
-                            } elseif ($SoftwareName) {
-                                # Handle Special Characters
-                                $SoftwareName = [System.Web.HttpUtility]::UrlEncode($SoftwareName)
-                                if ($SystemID) {
-                                    Get-JcSdkSystemInsightLinuxPackage -Filter @("system_id:eq:$SystemID", "name:eq:$SoftwareName") | ForEach-Object {
-                                        [void]$resultsArrayList.Add($_)
-                                    }
-                                } elseif ($SystemOS) {
-                                    Get-JcSdkSystemInsightLinuxPackage -Filter @("name:eq:$SoftwareName") | ForEach-Object {
-                                        [void]$resultsArrayList.Add($_)
-                                    }
-                                }
+                                $URL = "$JCUrlBasePath/api/v2/systeminsights/linux_packages?filter=system_id:eq:$SystemID&filter=name:eq:$SoftwareName"
                             } elseif ($SystemID) {
-                                if ($SoftwareVersion) {
-                                    Write-Error "Cannot search for software version on Linux without software name."
-                                } else {
-                                    Get-JcSdkSystemInsightLinuxPackage -Filter @("system_id:eq:$SystemID") | ForEach-Object {
-                                        [void]$resultsArrayList.Add($_)
-                                    }
-                                }
-
-                            } elseif ($SystemOS) {
-                                if ($SoftwareVersion) {
-                                    Write-Error "Cannot search for software version on Linux without software name."
-                                } else {
-                                    Get-JcSdkSystemInsightLinuxPackage | ForEach-Object {
-                                        [void]$resultsArrayList.Add($_)
-                                    }
-                                }
+                                $URL = "$JCUrlBasePath/api/v2/systeminsights/linux_packages?filter=system_id:eq:$SystemID"
                             }
+                            Write-Debug $URL
                         }
 
+                    }
+                    if ($Parallel) {
+                        $resultsArrayList = Get-JCResults -URL $URL -Method "GET" -limit $limit -parallel $true
+                    } else {
+                        $resultsArrayList = Get-JCResults -URL $URL -Method "GET" -limit $limit
+                    }
+
+                } elseif ($SystemOS) {
+                    $OSType = $SystemOS
+                    if ($OSType -eq 'MacOs') { $OSType = 'Darwin' } # OS Family for Mac is Darwin
+                    if ($SystemID) { Throw "SystemID and SystemOS cannot be used together" }
+                    Write-Debug "OS: $SystemOs"
+                    switch ($OSType) {
+                        'Windows' {
+                            # If Software title, version, and system OS are passed then return specific app
+                            if ($SoftwareVersion -and $SoftwareName -and $SystemOS) {
+                                # Handle Special Characters
+                                $SoftwareName = [System.Web.HttpUtility]::UrlEncode($SoftwareName)
+                                $URL = "$JCUrlBasePath/api/v2/systeminsights/programs?filter=name:eq:$SoftwareName&filter=version:eq:$SoftwareVersion"
+
+                            } elseif ($SoftwareName -and $SystemOS) {
+                                # Handle Special Characters
+                                $SoftwareName = [System.Web.HttpUtility]::UrlEncode($SoftwareName)
+                                $URL = "$JCUrlBasePath/api/v2/systeminsights/programs?filter=name:eq:$SoftwareName"
+                            } elseif ($SystemOs) {
+                                $URL = "$JCUrlBasePath/api/v2/systeminsights/programs"
+                            }
+                            Write-Debug $URL
+                        }
+                        'Darwin' {
+                            # If Software title, version, and system OS are passed then return specific app and not null
+                            if ((!$SoftwareName) -and (!$SoftwareVersion)) {
+                                # Add filter for system ID to $Search
+                                $URL = "$JCUrlBasePath/api/v2/systeminsights/apps"
+                            }
+                            if ($SoftwareName) {
+                                if (-not $SoftwareName.EndsWith('.app')) {
+                                    Write-Debug "Adding .app to $SoftwareName"
+                                    if ($SoftwareName.EndsWith('.App')) {
+                                        Write-Debug "Replacing .App with .app"
+                                        $SoftwareName = $SoftwareName.Replace('.App', '.app')
+                                    } else {
+                                        $SoftwareName = "$SoftwareName.app"
+                                    }
+                                } else {
+                                    Write-Debug "$SoftwareName already ends with .app"
+                                }
+
+                                if ($SoftwareVersion -and $SoftwareName -and $SystemOS) {
+                                    # Handle Special Characters
+                                    $SoftwareName = [System.Web.HttpUtility]::UrlEncode($SoftwareName)
+                                    $URL = "$JCUrlBasePath/api/v2/systeminsights/apps?filter=name:eq:$SoftwareName&filter=bundle_short_version:eq:$SoftwareVersion"
+
+                                } elseif ($SoftwareName -and $SystemOS) {
+                                    # Handle Special Characters
+                                    $SoftwareName = [System.Web.HttpUtility]::UrlEncode($SoftwareName)
+                                    $URL = "$JCUrlBasePath/api/v2/systeminsights/apps?&filter=name:eq:$SoftwareName"
+                                }
+                            }
+                            Write-Debug $URL
+                        }
+                        'Linux' {
+                            # If Software title, version, and system OS are passed then return specific app
+                            if ($SoftwareVersion -and $SoftwareName -and $SystemOS) {
+                                # Handle Special Characters
+                                $SoftwareName = [System.Web.HttpUtility]::UrlEncode($SoftwareName)
+                                $URL = "$JCUrlBasePath/api/v2/systeminsights/linux_packages?filter=name:eq:$SoftwareName&filter=version:eq:$SoftwareVersion"
+
+                            } elseif ($SoftwareName -and $SystemOS) {
+                                # Handle Special Characters
+                                $SoftwareName = [System.Web.HttpUtility]::UrlEncode($SoftwareName)
+                                $URL = "$JCUrlBasePath/api/v2/systeminsights/linux_packages?filter=name:eq:$SoftwareName"
+                            } elseif ($SystemOs) {
+                                $URL = "$JCUrlBasePath/api/v2/systeminsights/linux_packages"
+                            }
+                            Write-Debug $URL
+                        }
+
+                    }
+                    if ($Parallel) {
+                        $resultsArrayList = Get-JCResults -URL $URL -Method "GET" -limit $limit -parallel $true
+                    } else {
+                        $resultsArrayList = Get-JCResults -URL $URL -Method "GET" -limit $limit
                     }
                 } elseif ($SoftwareName) {
-                    # Loop through each OS and get the results
-                    Write-Debug "SoftwareName"
-                    foreach ($os in @('Windows', 'MacOs', 'Linux')) {
-                        if ($os -eq 'Windows') {
-                            Get-JcSdkSystemInsightProgram -Filter @("name:eq:$SoftwareName") | ForEach-Object {
-                                [void]$resultsArrayList.Add($_)
-                            }
-                        } elseif ($os -eq 'MacOs') {
+                    $SoftwareName = [System.Web.HttpUtility]::UrlEncode($SoftwareName)
+                    # Search each apps endpoint for software name
+                    foreach ($os in @('MacOs', 'Windows', 'Linux')) {
+                        if ($os -eq 'MacOs') {
                             if (-not $SoftwareName.EndsWith('.app')) {
-                                Write-Debug "Adding .app to $SoftwareName"
                                 if ($SoftwareName.EndsWith('.App')) {
-                                    Write-Debug "Replacing .App with .app"
-                                    $SoftwareName = $SoftwareName.Replace('.App', '.app')
+                                    $MacSoftwareName = $SoftwareName
+                                    $MacSoftwareName = $MacSoftwareName.Replace('.App', '.app')
                                 } else {
-                                    $SoftwareName = "$SoftwareName.app"
+                                    $MacSoftwareName = "$MacSoftwareName.app"
                                 }
+                            }
+                            if ($SoftwareVersion -and $SoftwareName) {
+                                $URL = "$JCUrlBasePath/api/v2/systeminsights/apps?filter=name:eq:$MacSoftwareName&filter=bundle_short_version:eq:$softwareVersion"
                             } else {
-                                Write-Debug "$SoftwareName already ends with .app"
+                                $URL = "$JCUrlBasePath/api/v2/systeminsights/apps?filter=name:eq:$MacSoftwareName"
                             }
-                            Get-JcSdkSystemInsightApp -Filter @("name:eq:$SoftwareName") | ForEach-Object {
-
-                                [void]$resultsArrayList.Add($_)
+                        } elseif ($os -eq 'Windows') {
+                            if ($SoftwareVersion -and $SoftwareName) {
+                                $URL = "$JCUrlBasePath/api/v2/systeminsights/programs?filter=name:eq:$SoftwareName&filter=version:eq:$softwareVersion"
+                            } else {
+                                $URL = "$JCUrlBasePath/api/v2/systeminsights/programs?filter=name:eq:$SoftwareName"
                             }
                         } elseif ($os -eq 'Linux') {
-                            Get-JcSdkSystemInsightLinuxPackage -Filter @("name:eq:$SoftwareName") | ForEach-Object {
-                                [void]$resultsArrayList.Add($_)
+                            if ($SoftwareVersion -and $SoftwareName) {
+                                $URL = "$JCUrlBasePath/api/v2/systeminsights/linux_packages?filter=name:eq:$SoftwareName&filter=version:eq:$softwareVersion"
+                            } else {
+                                $URL = "$JCUrlBasePath/api/v2/systeminsights/linux_packages?filter=name:eq:$SoftwareName"
                             }
                         }
+                        if ($Parallel) {
+                            $resultsArray = Get-JCResults -URL $URL -Method "GET" -limit $limit -parallel $true
+                        } else {
+                            $resultsArray = Get-JCResults -URL $URL -Method "GET" -limit $limit
+                        }
+                        # If no results, skip to next OS
+                        if ($resultsArray.count -eq 0) {
+                            continue
+                        }
+                        $resultsArray | Add-Member -MemberType NoteProperty -Name 'osFamily' -Value $os
+                        $resultsArrayList.Add($resultsArray)
                     }
-                }
-
-                else {
+                } else {
                     # Default/All
-                    Write-Debug "Test All"
-                    #TODO: Parallelize this
-                    foreach ($os in @('Windows', 'MacOs', 'Linux')) {
-                        if ($os -eq 'Windows') {
-                            Get-JcSdkSystemInsightProgram | ForEach-Object {
-                                [void]$resultsArrayList.Add($_)
-                            }
-                        } elseif ($os -eq 'MacOs') {
-                            Get-JcSdkSystemInsightApp | ForEach-Object {
-                                [void]$resultsArrayList.Add($_)
-                            }
-                        } elseif ($os -eq 'Linux') {
-                            Get-JcSdkSystemInsightLinuxPackage | ForEach-Object {
-                                [void]$resultsArrayList.Add($_)
-                            }
+                    foreach ($os in @('programs', 'apps', 'linux_packages')) {
+                        $URL = "$JCUrlBasePath/api/v2/systeminsights/$os"
+                        if ($Parallel) {
+                            $resultsArray = Get-JCResults -URL $URL -Method "GET" -limit $limit -parallel $true
+                        } else {
+                            $resultsArray = Get-JCResults -URL $URL -Method "GET" -limit $limit
                         }
+                        if ($resultsArray.count -eq 0) { continue }
+                        # Add OS Family to results
+                        if ($os -eq 'programs') { $os = 'Windows' }
+                        elseif ($os -eq 'apps') { $os = 'MacOs' }
+                        elseif ($os -eq 'linux_packages') { $os = 'Linux' }
+                        $resultsArray | Add-Member -MemberType NoteProperty -Name 'osFamily' -Value $os
+                        $resultsArrayList.Add($resultsArray)
 
                     }
                 }
+
             } Search {
                 # Search for softwareName
-                Write-Debug "Search $SoftwareName"
                 if ($SoftwareName) {
                     if ($SoftwareVersion) {
                         Throw 'You cannot specify software version when using -search for a software name'
                     } elseif ($SystemId) {
-                        $OSType = Get-JcSdkSystem -ID $SystemID | Select-Object -ExpandProperty OSFamily
-                        $OSType
-                        if ($OSType -eq 'Windows') {
-                            Get-JcSdkSystemInsightProgram -Filter @("system_id:eq:$SystemID") | ForEach-Object {
-                                [void]$searchAppResultsList.Add($_)
-                            }
-                        } elseif ($OSType -eq 'Darwin') {
-                            Get-JcSdkSystemInsightApp -Filter @("system_id:eq:$SystemID") | ForEach-Object {
-                                [void]$searchAppResultsList.Add($_)
-                            }
-                        } elseif ($OSType -eq 'Linux') {
-                            Get-JcSdkSystemInsightLinuxPackage -Filter @("system_id:eq:$SystemID") | ForEach-Object {
-                                [void]$searchAppResultsList.Add($_)
-                            }
-                        }
-                        $searchAppResultsList.Count
+                        $applicationArray | ForEach-Object {
 
+                            $URL = "$JCUrlBasePath/api/v2/systeminsights/$_"
+                            Write-Verbose "Searching for $SoftwareName and $SystemId in $_ "
+                            if ($Parallel) {
+                                $searchAppResults = Get-JCResults -URL $URL -Method "GET" -limit $limit -parallel $true
+                            } else {
+                                $searchAppResults = Get-JCResults -URL $URL -Method "GET" -limit $limit
+                            }
+                            # Add OS Family to results
+                            if ($_ -eq 'programs') { $os = 'Windows' }
+                            elseif ($_ -eq 'apps') { $os = 'MacOs' }
+                            elseif ($_ -eq 'linux_packages') { $os = 'Linux' }
+                            $searchAppResults | Add-Member -MemberType NoteProperty -Name 'osFamily' -Value $os
+                            [void]$searchAppResultsList.Add($searchAppResults)
+                        }
                         $searchAppResultsList | ForEach-Object {
-                            $results = $_ | Where-Object { ($_.name -match $SoftwareName) }
+                            $results = $_ | Where-Object { ($_.name -match $SoftwareName) -and ($_.System_id -match $SystemId) }
                             $results | ForEach-Object {
-                                [void]$resultsArrayList.Add($_)
+                                $resultsArrayList.Add($_)
                             }
                         }
                     } elseif ($SystemOS) {
-                        Write-Debug "SystemOS $SystemOS"
-                        if ($SystemOS -eq 'Windows') {
-                            Get-JcSdkSystemInsightProgram | ForEach-Object {
-                                [void]$searchAppResultsList.Add($_)
+                        $applicationArray | ForEach-Object {
+                            $URL = "$JCUrlBasePath/api/v2/systeminsights/$_"
+                            Write-Verbose "Searching for $SoftwareName and $SystemOs in $_ "
+                            if ($Parallel) {
+                                $searchAppResults = Get-JCResults -URL $URL -Method "GET" -limit $limit -parallel $true
+                            } else {
+                                $searchAppResults = Get-JCResults -URL $URL -Method "GET" -limit $limit
                             }
-                        } elseif ($SystemOS -eq 'MacOs') {
-                            Get-JcSdkSystemInsightApp  | ForEach-Object {
-                                [void]$searchAppResultsList.Add($_)
-                            }
-                        } elseif ($SystemOS -eq 'Linux') {
-                            Get-JcSdkSystemInsightLinuxPackage | ForEach-Object {
-                                [void]$searchAppResultsList.Add($_)
-                            }
+                            # Add OS Family to results
+                            if ($_ -eq 'programs') { $os = 'Windows' }
+                            elseif ($_ -eq 'apps') { $os = 'MacOs' }
+                            elseif ($_ -eq 'linux_packages') { $os = 'Linux' }
+                            $searchAppResults | Add-Member -MemberType NoteProperty -Name 'osFamily' -Value $os
+                            [void]$searchAppResultsList.Add($searchAppResults)
                         }
                         $searchAppResultsList | ForEach-Object {
-                            $results = $_ | Where-Object { ($_.name -match $SoftwareName) }
+                            $results = $_ | Where-Object { ($_.name -match $SoftwareName) -and ($_.osFamily -match $SystemOs) }
                             $results | ForEach-Object {
-                                [void]$resultsArrayList.Add($_)
+                                $resultsArrayList.Add($_)
                             }
                         }
                     } else {
-                        Write-Debug "Test All"
                         # Get all the results with only softwarename
-                        # Loop through each OS and get the results
-                        foreach ($os in @('Windows', 'MacOs', 'Linux')) {
-                            if ($os -eq 'Windows') {
-                                Get-JcSdkSystemInsightProgram | ForEach-Object {
-                                    [void]$searchAppResultsList.Add($_)
-                                }
-                            } elseif ($os -eq 'MacOs') {
-                                Get-JcSdkSystemInsightApp | ForEach-Object {
-                                    [void]$searchAppResultsList.Add($_)
-                                }
-                            } elseif ($os -eq 'Linux') {
-                                Get-JcSdkSystemInsightLinuxPackage | ForEach-Object {
-                                    [void]$searchAppResultsList.Add($_)
-                                }
+                        $applicationArray | ForEach-Object {
+                            $URL = "$JCUrlBasePath/api/v2/systeminsights/$_"
+                            Write-Verbose "Searching for $SoftwareName in $_ "
+                            if ($Parallel) {
+                                $searchAppResults = Get-JCResults -URL $URL -Method "GET" -limit $limit -parallel $true
+                            } else {
+                                $searchAppResults = Get-JCResults -URL $URL -Method "GET" -limit $limit
                             }
-                        }
+                            # Add OS Family to results
+                            if ($_ -eq 'programs') { $os = 'Windows' }
+                            elseif ($_ -eq 'apps') { $os = 'MacOs' }
+                            elseif ($_ -eq 'linux_packages') { $os = 'Linux' }
+                            $searchAppResults | Add-Member -MemberType NoteProperty -Name 'osFamily' -Value $os
+                            [void]$searchAppResultsList.Add($searchAppResults)
 
+                        }
                         $searchAppResultsList | ForEach-Object {
                             $results = $_ | Where-Object { ($_.name -match $SoftwareName) }
                             $results | ForEach-Object {
-                                [void]$resultsArrayList.Add($_)
+                                $resultsArrayList.Add($_)
                             }
                         }
                     }
@@ -346,6 +343,7 @@ function Get-JCSystemApp () {
             }
 
         }
+
     }
     end {
         switch ($PSCmdlet.ParameterSetName) {
@@ -358,3 +356,4 @@ function Get-JCSystemApp () {
         }
     }
 }
+
