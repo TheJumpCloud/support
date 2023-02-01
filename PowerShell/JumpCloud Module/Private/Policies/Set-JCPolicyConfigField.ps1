@@ -81,13 +81,12 @@ function Set-JCPolicyConfigField {
                     } While ($fieldValue -isnot [int])
                 }
                 'multi' {
-                    Write-Host 'yre'
                     $field.validation | FT | out-host
                     do {
                         $rownum = (Read-Host "Please enter the desired $($field.label) setting value (0 - $($field.validation.length - 1))")
                         $field.value = $rownum
 
-                    } While (0..[int]($field.validation.values.length -1) -notcontains $rownum)
+                    } While (0..[int]($field.validation.values.length - 1) -notcontains $rownum)
                 }
                 'table' {
                     if ($policyValues) {

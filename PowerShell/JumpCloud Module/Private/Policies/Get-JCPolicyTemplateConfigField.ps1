@@ -38,11 +38,11 @@ function Get-JCPolicyTemplateConfigField {
                     # Determine which one is an int
                     try {
                         [int]$val1 | Out-Null
-                        "$($val1) is an int in first position"
+                        # "$($val1) is an int in first position"
                         $validationObject += @{$field.DisplayOptions.Values.values[$i + $i] = $field.DisplayOptions.Values.values[$i + $i + 1] }
                     } catch {
                         [int]$val2 | Out-Null
-                        "$($val2) is an int in second position"
+                        # "$($val2) is an int in second position"
                         $validationObject += @{$field.DisplayOptions.Values.values[$i + $i + 1] = $field.DisplayOptions.Values.values[$i + $i] }
                     }
                 }
