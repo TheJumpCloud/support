@@ -210,7 +210,7 @@ function Get-JCSystemApp () {
                     }
                 } elseif ($SoftwareName) {
                     # Loop through each OS and get the results
-                    Write-Debug "SoftwareName"
+                    Write-Debug "SoftwareName only passed. Getting all software with name $SoftwareName"
                     foreach ($os in @('Windows', 'MacOs', 'Linux')) {
                         if ($os -eq 'Windows') {
                             Get-JcSdkSystemInsightProgram -Filter @("name:eq:$SoftwareName") | ForEach-Object {
@@ -242,24 +242,11 @@ function Get-JCSystemApp () {
 
                 else {
                     # Default/All
-                    Write-Debug "Test All"
-                    #TODO: Parallelize this
-                    foreach ($os in @('Windows', 'MacOs', 'Linux')) {
-                        if ($os -eq 'Windows') {
-                            Get-JcSdkSystemInsightProgram | ForEach-Object {
-                                [void]$resultsArrayList.Add($_)
-                            }
-                        } elseif ($os -eq 'MacOs') {
-                            Get-JcSdkSystemInsightApp | ForEach-Object {
-                                [void]$resultsArrayList.Add($_)
-                            }
-                        } elseif ($os -eq 'Linux') {
-                            Get-JcSdkSystemInsightLinuxPackage | ForEach-Object {
-                                [void]$resultsArrayList.Add($_)
-                            }
-                        }
+                    Write-Debug "Get All"
+                    $commands = @("Get-JcSdkSystemInsightProgram", "Get-JcSdkSystemInsightApp", "Get-JcSdkSystemInsightLinuxPackage")
 
-                    }
+                    $resultList = $commands | ForEach-Object -Parallel { & $_ }
+                    $searchAppResultsList.AddRange($resultList)
                 }
             } Search {
                 # Search for softwareName
@@ -313,31 +300,28 @@ function Get-JCSystemApp () {
                             }
                         }
                     } else {
-                        Write-Debug "Test All"
-                        # Get all the results with only softwarename
-                        # Loop through each OS and get the results
-                        foreach ($os in @('Windows', 'MacOs', 'Linux')) {
-                            if ($os -eq 'Windows') {
-                                Get-JcSdkSystemInsightProgram | ForEach-Object {
-                                    [void]$searchAppResultsList.Add($_)
-                                }
-                            } elseif ($os -eq 'MacOs') {
-                                Get-JcSdkSystemInsightApp | ForEach-Object {
-                                    [void]$searchAppResultsList.Add($_)
-                                }
-                            } elseif ($os -eq 'Linux') {
-                                Get-JcSdkSystemInsightLinuxPackage | ForEach-Object {
-                                    [void]$searchAppResultsList.Add($_)
-                                }
-                            }
-                        }
+                        $commands = @("Get-JcSdkSystemInsightProgram", "Get-JcSdkSystemInsightApp", "Get-JcSdkSystemInsightLinuxPackage")
+                        # $commands | ForEach-Object {
+                        #     Start-Job -ScriptBlock {
+                        #         param($command)
+                        #         & $command
+                        #     } -ArgumentList $_
+                        # }
+                        # Get-Job | Wait-Job | Receive-Job | ForEach-Object {
+                        #     [void]$searchAppResultsList.Add($_)
+                        # }
+                        $resultList = $commands | ForEach-Object -Parallel { & $_ }
+                        $searchAppResultsList.AddRange($resultList)
 
-                        $searchAppResultsList | ForEach-Object {
-                            $results = $_ | Where-Object { ($_.name -match $SoftwareName) }
-                            $results | ForEach-Object {
-                                [void]$resultsArrayList.Add($_)
-                            }
-                        }
+
+                        $filteredResults = $searchAppResultsList | Where-Object { ($_.name -match $SoftwareName) }
+                        $resultsArrayList = $filteredResults
+                        # $searchAppResultsList | ForEach-Object {
+                        #     $results = $_ | Where-Object { ($_.name -match $SoftwareName) }
+                        #     $results | ForEach-Object {
+                        #         [void]$resultsArrayList.Add($_)
+                        #     }
+                        # }
                     }
 
                 } else {
