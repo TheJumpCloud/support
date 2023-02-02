@@ -25,10 +25,8 @@ function Get-JCSystemApp () {
         $Parallel = $JCConfig.parallel.Calculated
 
         $searchAppResultsList = New-Object -TypeName System.Collections.ArrayList
-        $commands = @("Get-JcSdkSystemInsightProgram", "Get-JcSdkSystemInsightApp", "Get-JcSdkSystemInsightLinuxPackage")
-        Write-Verbose 'Initilizing resultsArray'
         $resultsArrayList = New-Object -TypeName System.Collections.ArrayList
-
+        $commands = @("Get-JcSdkSystemInsightProgram", "Get-JcSdkSystemInsightApp", "Get-JcSdkSystemInsightLinuxPackage")
         Write-Verbose "Parameter Set: $($PSCmdlet.ParameterSetName)"
     }
     process {
