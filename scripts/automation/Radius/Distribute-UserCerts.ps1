@@ -15,7 +15,7 @@ $userArray = Get-Content -Raw -Path "$PSScriptRoot/users.json" | ConvertFrom-Jso
 $Command = Get-JCCommand | Where-Object { $_.Name -like 'RadiusCert-Install*' }
 
 if ($Command.Count -ge 1) {
-    $confirmation = Read-Host "[status] Previous RadiusCert commands detected, would you like to delete existing commands to proceed? [y/n]"
+    $confirmation = Read-Host "[status] Previous RadiusCert commands detected, would you like to delete existing commands? [y/n]"
     while ($confirmation -ne 'n') {
         if ($confirmation -eq 'y') {
             Write-Host "[status] Removing $($Command.Count) commands"
@@ -188,7 +188,7 @@ while ($confirmation -ne 'y') {
     }
 }
 
-[void](Invoke-JCCommand -trigger 'RadiusCertInstall')
+$invokeCommands = Invoke-CommandsRetry -jsonFile "$psscriptroot\users.json"
 Write-Host "[status] Commands Invoked"
 
 # Set commandPreviouslyRun property to true
