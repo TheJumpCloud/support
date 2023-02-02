@@ -27,7 +27,9 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
     It "Tests that given a systemID, SoftwareName, an app is returned" {
         # Chess is always installed on MacOS and it CAN NOT be removed no matter what
         Get-JCSystemApp -SystemID $mac._id -SoftwareName "Chess"
-        # TODO: Windows/ Linux Examples
+        # Skip until both systems have system insights enabled in pester orgs
+        # Get-JCSystemApp -SystemID $linux._id -SoftwareName "Curl"
+        # Get-JCSystemApp -SystemID $windows._id -SoftwareName "Microsoft Edge"
     }
     It "Tests that given a systemID, SoftwareName, SoftwareVersion, an app is returned" {
         # Chess is always installed on MacOS and it CAN NOT be removed no matter what
@@ -42,7 +44,7 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
         # TODO: Windows/ Linux Examples
     }
     # Create tests for Search
-    It "Tests for search given SystemOs and SoftwareName" {
+    It "Tests for search given SystemOs and SoftwareName for MacOS Systems" {
         # Chess is always installed on MacOS and it CAN NOT be removed no matter what
         { Get-JCSystemApp -Search | Should -Throw }
         { Get-JCSystemApp -Search -SoftwareName "Chess" -SystemID $mac.Id | Should -Not -Throw }
@@ -54,6 +56,32 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
         { Get-JCSystemApp -Search -SoftwareName "" -SystemOs "MacOs" | Should -Throw }
         # Searching chess on MacOs should return a result
         { Get-JCSystemApp -Search -SoftwareName "Chess" -SystemOs "MacOs" | Should -Not -Throw }
+    }
+    It "Tests for search given SystemOs and SoftwareName for Linux Systems" -skip {
+        # Curl is always installed on linux
+        { Get-JCSystemApp -Search | Should -Throw }
+        { Get-JCSystemApp -Search -SoftwareName "Curl" -SystemID $linux._Id | Should -Not -Throw }
+        { Get-JCSystemApp -Search -SoftwareName "Curl" | Should -Not -Throw }
+        { Get-JCSystemApp -Search -SoftwareName "Curl" -SystemOs "linux" | Should -Not -Throw }
+        # A null value version shouldn't be accepted
+        { Get-JCSystemApp -Search -SoftwareName "Curl" -SystemOs "" | Should -Throw }
+        # A null value version shouldn't be accepted
+        { Get-JCSystemApp -Search -SoftwareName "" -SystemOs "linux" | Should -Throw }
+        # Searching Curl on linux should return a result
+        { Get-JCSystemApp -Search -SoftwareName "Curl" -SystemOs "linux" | Should -Not -Throw }
+    }
+    It "Tests for search given SystemOs and SoftwareName for Windows Systems" -skip {
+        # Microsoft Edge is always installed on windows
+        { Get-JCSystemApp -Search | Should -Throw }
+        { Get-JCSystemApp -Search -SoftwareName "Microsoft Edge" -SystemID $windows._Id | Should -Not -Throw }
+        { Get-JCSystemApp -Search -SoftwareName "Microsoft Edge" | Should -Not -Throw }
+        { Get-JCSystemApp -Search -SoftwareName "Microsoft Edge" -SystemOs "windows" | Should -Not -Throw }
+        # A null value version shouldn't be accepted
+        { Get-JCSystemApp -Search -SoftwareName "Microsoft Edge" -SystemOs "" | Should -Throw }
+        # A null value version shouldn't be accepted
+        { Get-JCSystemApp -Search -SoftwareName "" -SystemOs "windows" | Should -Throw }
+        # Searching Microsoft Edge on windows should return a result
+        { Get-JCSystemApp -Search -SoftwareName "Microsoft Edge" -SystemOs "windows" | Should -Not -Throw }
     }
 
     It "Tests the search functionatily of a software app" {
