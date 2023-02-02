@@ -300,7 +300,7 @@ Function Invoke-CommandsRetry {
                 continue
             } else {
                 $failedCommands = $finishedCommands | Where-Object exitCode -NE 0
-                if ($command.commandId -in $failedCommands.workflowId) {
+                if ($command.commandId -in $failedCommands.workflowId -or $command.commandPreviouslyRun -eq $false) {
                     try {
                         Invoke-CommandRun -commandID $command.commandId
                         Write-Host "[status] $([char]0x1b)[92mInvoking $($command.commandName)"
