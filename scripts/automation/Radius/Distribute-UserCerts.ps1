@@ -196,5 +196,5 @@ $userArray.commandAssociations | ForEach-Object { $_.commandPreviouslyRun = $tru
 
 $UserArray | ConvertTo-Json -Depth 6 | Out-File "$psscriptroot\users.json"
 
-Write-Host "[status] Run the Monitor-Commands.ps1 script to track command results and output results"
+Write-Host "[status] Run the $PSScriptRoot/Monitor-CertDeployment.ps1 script to track command results and output results"
 Write-Host "[status] Exiting..."
