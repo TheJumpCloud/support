@@ -13,7 +13,7 @@ $SystemHash = Get-JCSystem -returnProperties displayName, os
 
 if (Test-Path -Path "$PSScriptRoot/users.json" -PathType Leaf) {
     Write-Host "[status] Found user.json file"
-    $userArray = Get-Content -Raw -Path "$PSScriptRoot/users.json" | ConvertFrom-Json -Depth 4
+    $userArray = Get-Content -Raw -Path "$PSScriptRoot/users.json" | ConvertFrom-Json -Depth 6
 } else {
     Write-Host "[status] users.json file not found"
     $userArray = @()
