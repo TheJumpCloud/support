@@ -300,13 +300,17 @@ Function Invoke-CommandsRetry {
                 continue
             } else {
                 $failedCommands = $finishedCommands | Where-Object exitCode -NE 0
-                if ($command.commandId -in $failedCommands.workflowId -or $command.commandPreviouslyRun -eq $false) {
+                if (($command.commandId -in $failedCommands.workflowId) -or ($command.commandPreviouslyRun -eq $false) -or ($command.commandId -notin $QueuedCommands.command -and $command.commandId -notin $finishedCommands.workflowId)) {
                     try {
-                        Invoke-CommandRun -commandID $command.commandId
-                        Write-Host "[status] $([char]0x1b)[92mInvoking $($command.commandName)"
-                        # set command to queued
-                        $command.commandQueued = $true
-                        $RetryCommands += $command.commandId
+                        if (!(Get-JcSdkCommandAssociation -CommandId $command.commandId -Targets system)) {
+                            Write-Host "[status] $([char]0x1b)[91mNo system associations were found for $($command.commandName)"
+                        } else {
+                            Invoke-CommandRun -commandID $command.commandId
+                            Write-Host "[status] $([char]0x1b)[92mInvoking $($command.commandName)"
+                            # set command to queued
+                            $command.commandQueued = $true
+                            $RetryCommands += $command.commandId
+                        }
                     } catch {
                         Write-Error "$($command.commandId) could not be invoked"
                     }
@@ -338,6 +342,20 @@ Function Get-CommandObjectTable {
             Overview {
                 # Import the users.json file and get the commandAssociations
                 $commandsObject = Get-Content -Raw -Path $jsonFile | ConvertFrom-Json -Depth 6
+
+                # Clean up command results
+                $commandResults = Get-JCCommandResult | Where-Object name -Like "RadiusCert-Install*"
+                if ($commandResults) {
+                    $groupedCommandResults = $commandResults | Group-Object name, system | Sort-Object -Property responseTime -Descending
+                    $mostRecentCommandResults = $groupedCommandResults | ForEach-Object { $_.Group | Select-Object -First 1 | Select-Object _id }
+                    $commandResults | ForEach-Object {
+                        if ($_._id -in $mostRecentCommandResults._id) {
+                            return
+                        } else {
+                            Remove-JCCommandResult -CommandResultID $_._id -force | Out-Null
+                        }
+                    }
+                }
 
                 # Find all queued commands for organization
                 $QueuedCommands = Get-JCQueuedCommands
@@ -382,6 +400,20 @@ Function Get-CommandObjectTable {
 
                 $CommandObjectTable = @()
 
+                # Clean up command results
+                $commandResults = Get-JCCommandResult | Where-Object name -Like "RadiusCert-Install*"
+                if ($commandResults) {
+                    $groupedCommandResults = $commandResults | Group-Object name, system | Sort-Object -Property responseTime -Descending
+                    $mostRecentCommandResults = $groupedCommandResults | ForEach-Object { $_.Group | Select-Object -First 1 | Select-Object _id }
+                    $commandResults | ForEach-Object {
+                        if ($_._id -in $mostRecentCommandResults._id) {
+                            return
+                        } else {
+                            Remove-JCCommandResult -CommandResultID $_._id -force | Out-Null
+                        }
+                    }
+                }
+
                 # Iterate through all the associated commands
                 foreach ($command in $commandsObject.commandAssociations) {
                     # Check to see if the current command is pending/queued
@@ -412,7 +444,7 @@ Function Get-CommandObjectTable {
                             if (($finishedCommands.exitCode -eq 0)) {
                                 $character = "$([char]0x1b)[92mOK"
                                 # Remove successful systems from command associations
-                                Set-JcSdkCommandAssociation -CommandId:("$($command.commandId)") -Op 'remove' -Type:('system') -Id:("$($_.systemId)") | Out-Null
+                                Set-JcSdkCommandAssociation -CommandId:("$($command.commandId)") -Op 'remove' -Type:('system') -Id:("$($_.systemId)") -ErrorAction SilentlyContinue | Out-Null
                             } else {
                                 $character = "$([char]0x1b)[91mFAILED"
                             }
@@ -425,15 +457,23 @@ Function Get-CommandObjectTable {
                         }
                     }
 
-                    # Check the command attributes to see if the commands were scheduled
-                    if (($command.commandPreviouslyRun -eq $false) -and ($command.commandQueued -eq $false) -or ($command.commandQueued -eq $false)) {
-                        foreach ($system in $command.systems) {
+                    if ($CommandObjectTable.commandName -notcontains $command.commandName) {
+                        if (!(Get-JcSdkCommandAssociation -CommandId $command.commandId -Targets system)) {
                             $CommandTable = @{
                                 commandName       = $command.commandName
-                                systemDisplayName = $SystemHash | Where-Object _id -EQ $system.systemId | Select-Object -ExpandProperty displayName
-                                status            = "$([char]0x1b)[91mNOT SCHEDULED"
+                                systemDisplayName = $null
+                                status            = "$([char]0x1b)[91mNo system associations found"
                             }
                             $CommandObjectTable += $CommandTable
+                        } elseif (($command.commandPreviouslyRun -eq $false -and $command.commandQueued -eq $false) -or ($command.commandId -notin $QueuedCommands.command -and $command.commandId -notin $finishedCommands.workflowId)) {
+                            foreach ($system in $command.systems) {
+                                $CommandTable = @{
+                                    commandName       = $command.commandName
+                                    systemDisplayName = $SystemHash | Where-Object _id -EQ $system.systemId | Select-Object -ExpandProperty displayName
+                                    status            = "$([char]0x1b)[91mNOT SCHEDULED"
+                                }
+                                $CommandObjectTable += $CommandTable
+                            }
                         }
                     }
                 }
