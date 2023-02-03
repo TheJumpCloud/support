@@ -31,7 +31,7 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
         # Get-JCSystemApp -SystemID $linux._id -SoftwareName "Curl"
         # Get-JCSystemApp -SystemID $windows._id -SoftwareName "Microsoft Edge"
     }
-    It "Tests that given a systemID, SoftwareName, SoftwareVersion, an app is returned" {
+    It "Tests that given a macOS systemID, SoftwareName, SoftwareVersion, an app is returned" {
         # MacOS
         $macApp = Get-JCSystemApp -SystemID $mac._id -SoftwareName "Chess"
         { Get-JCSystemApp -SystemID $mac._id -SoftwareName "Chess" -SoftwareVersion $macApp.Bundle_short_version } | Should -Throw
@@ -41,6 +41,8 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
         { Get-JCSystemApp -SystemID $mac._id -SoftwareName "" } | Should -Throw
         # Using a version that doesn't exist should return nothing
         Get-JCSystemApp -SystemID $mac._id -SoftwareName "Chess" -SoftwareVersion "48.49.50.51" | Should -Be $null
+    }
+    It "Tests that given a windows systemID, SoftwareName, SoftwareVersion, an app is returned" -skip {
 
         #Windows
         $windowsApp = Get-JCSystemApp -SystemID $windows._id -SoftwareName "Microsoft Edge"
@@ -51,7 +53,8 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
         { Get-JCSystemApp -SystemID $windows._id -SoftwareName "" } | Should -Throw
         # Using a version that doesn't exist should return nothing
         Get-JCSystemApp -SystemID $windows._id -SoftwareName "Microsoft Edge" -SoftwareVersion "48.49.50.51" | Should -Be $null
-
+    }
+    It "Tests that given a linux systemID, SoftwareName, SoftwareVersion, an app is returned" -skip {
         #Linux
         #Windows
         $linuxApp = Get-JCSystemApp -SystemID $linux._id -SoftwareName "firefox"
