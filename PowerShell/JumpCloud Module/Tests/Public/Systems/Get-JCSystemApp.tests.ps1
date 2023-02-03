@@ -57,14 +57,14 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
     It "Tests that given a linux systemID, SoftwareName, SoftwareVersion, an app is returned" -skip {
         #Linux
         #Windows
-        $linuxApp = Get-JCSystemApp -SystemID $linux._id -SoftwareName "firefox"
-        { Get-JCSystemApp -SystemID $linux._id -SoftwareName "firefox" -SoftwareVersion $linuxApp.version } | Should -Throw
+        $linuxApp = Get-JCSystemApp -SystemID $linux._id -SoftwareName "curl"
+        { Get-JCSystemApp -SystemID $linux._id -SoftwareName "curl" -SoftwareVersion $linuxApp.version } | Should -Throw
         # A null value version shouldn't be accepted
-        { Get-JCSystemApp -SystemID $linux._id -SoftwareName "firefox" -SoftwareVersion "" } | Should -Throw
+        { Get-JCSystemApp -SystemID $linux._id -SoftwareName "curl" -SoftwareVersion "" } | Should -Throw
         # A null value Name shouldn't be accepted
         { Get-JCSystemApp -SystemID $linux._id -SoftwareName "" } | Should -Throw
         # Using a version that doesn't exist should return nothing
-        Get-JCSystemApp -SystemID $linux._id -SoftwareName "firefox" -SoftwareVersion "48.49.50.51" | Should -Be $null
+        Get-JCSystemApp -SystemID $linux._id -SoftwareName "curl" -SoftwareVersion "48.49.50.51" | Should -Be $null
     }
     # Create tests for Search
     It "Tests for search given SystemOs and SoftwareName for MacOS Systems" {
@@ -111,12 +111,14 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
         #Tests for each OS
         # results with no data should be null or empty
         Get-JCSystemApp -SoftwareName "chess" | Should -BeNullOrEmpty
-        Get-JCSystemApp -SoftwareName "microsoft edge" | Should -BeNullOrEmpty
-        Get-JCSystemApp -SoftwareName "firefox" | Should -BeNullOrEmpty
+        # TODO: add when system insights is on each system
+        # Get-JCSystemApp -SoftwareName "microsoft edge" | Should -BeNullOrEmpty
+        # Get-JCSystemApp -SoftwareName "curl" | Should -BeNullOrEmpty
         # when search is used to find an app the results should not be null or empty
         Get-JCSystemApp -SoftwareName "chess" -Search | Should -Not -BeNullOrEmpty
-        Get-JCSystemApp -SoftwareName "microsoft edge" -Search | Should -Not -BeNullOrEmpty
-        Get-JCSystemApp -SoftwareName "firefox" -Search | Should -Not -BeNullOrEmpty
+        # TODO: add when system insights is on each system
+        # Get-JCSystemApp -SoftwareName "microsoft edge" -Search | Should -Not -BeNullOrEmpty
+        # Get-JCSystemApp -SoftwareName "curl" -Search | Should -Not -BeNullOrEmpty
     }
 
     It "Tests the search param with systemID" {
