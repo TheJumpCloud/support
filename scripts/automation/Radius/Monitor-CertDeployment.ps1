@@ -12,7 +12,7 @@ $jsonFile = "$PSScriptRoot/users.json"
 
 # Show user selection
 do {
-    Show-Menu
+    Show-CertDeploymentMenu
     $selection = Read-Host "Please make a selection"
     switch ($selection) {
         '1' {
@@ -24,7 +24,7 @@ do {
         }
     }
     Pause
-} until ($selection.ToUpper() -eq 'Q')
+} until ($selection.ToUpper() -eq 'E')
 
 ################################################################################
 # If needed you can clear out your command queue with the following commands.
