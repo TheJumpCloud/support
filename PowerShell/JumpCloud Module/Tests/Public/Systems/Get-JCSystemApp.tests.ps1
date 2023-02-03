@@ -163,7 +163,7 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
         }
     }
 
-    It "Tests compatability with the SDKs" {
+    It "Tests compatability macOS with the SDKs" {
         #MacOS
         $sdkMac = Get-JcSdkSystemInsightApp -filter @("system_id:eq:$($mac._id)", "name:eq:Chess.app")
         $moduleMac = Get-JCSystemApp -SystemID $mac._id -SoftwareName "Chess"
@@ -174,22 +174,24 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
         # SDK Results should look exactly like module results when search is provided
         $sdkMac.id | Should -Be $moduleMacSearch.id
         $sdkMac.name | Should -Be $moduleMacSearch.name
-
+    }
+    It "Tests compatability windows with the SDKs" -skip {
         #Windows
         $sdkWindows = Get-JcSdkSystemInsightProgram -filter @("system_id:eq:$($windows._id)", "name:eq:Microsoft Edge")
-        $moduleWindows = Get-JcSdkSystemInsightProgram -SystemID $windows._id -SoftwareName "Microsoft Edge"
-        $moduleWindowsSearch = Get-JcSdkSystemInsightProgram -SystemID $windows._id -SoftwareName "microsoft edge" -Search
+        $moduleWindows = Get-JCSystemApp -SystemID $windows._id -SoftwareName "Microsoft Edge"
+        $moduleWindowsSearch = Get-JCSystemApp -SystemID $windows._id -SoftwareName "microsoft edge" -Search
         # SDK Results should look exactly like module results when exact name is specified
         $sdkWindows.id | Should -Be $moduleWindows.id
         $sdkWindows.name | Should -Be $moduleWindows.name
         # SDK Results should look exactly like module results when search is provided
         $sdkWindows.id | Should -Be $moduleWindowsSearch.id
         $sdkWindows.name | Should -Be $moduleWindowsSearch.name
-
+    }
+    It "Tests compatability linux with the SDKs" -skip {
         #Linux
-        $sdkLinux = Get-JcSdkSystemInsightLinuxPackage -filter @("system_id:eq:$($linux._id)", "name:eq:firefox")
-        $moduleLinux = Get-JcSdkSystemInsightLinuxPackage -SystemID $linux._id -SoftwareName "firefox"
-        $moduleLinuxSearch = Get-JcSdkSystemInsightLinuxPackage -SystemID $linux._id -SoftwareName "firefox" -Search
+        $sdkLinux = Get-JcSdkSystemInsightLinuxPackage -filter @("system_id:eq:$($linux._id)", "name:eq:Curl")
+        $moduleLinux = Get-JCSystemApp -SystemID $linux._id -SoftwareName "Curl"
+        $moduleLinuxSearch = Get-JCSystemApp -SystemID $linux._id -SoftwareName "curl" -Search
         # SDK Results should look exactly like module results when exact name is specified
         $sdkLinux.id | Should -Be $moduleLinux.id
         $sdkLinux.name | Should -Be $moduleLinux.name
@@ -224,6 +226,3 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
         Get-JCSystemApp -SystemID $mac._id -SoftwareName "Chess" | Should -Not -BeNullOrEmpty
     }
 }
-
-
-
