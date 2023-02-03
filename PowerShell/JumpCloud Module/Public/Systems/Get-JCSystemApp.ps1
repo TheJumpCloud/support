@@ -45,7 +45,7 @@ function Get-JCSystemApp () {
                     }
 
                     if ($SystemID) {
-                        $OSType = Get-JcSdkSystem -ID $SystemID | Select-Object -ExpandProperty OSFamily
+                        $OSType = Get-JcSdkSystem -ID $SystemID -Fields osfamily | Select-Object -ExpandProperty OSFamily
                     } else {
                         $OSType = $SystemOS
                         if ($OSType -eq 'macOS') {
