@@ -67,65 +67,41 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
     It "Tests for search given SystemOs and SoftwareName for MacOS Systems" {
         # Chess is always installed on MacOS and it CAN NOT be removed no matter what
         { Get-JCSystemApp -Search | Should -Throw }
-        { Get-JCSystemApp -Search -SoftwareName "Chess" -SystemID $mac.Id | Should -Not -Throw }
-        { Get-JCSystemApp -Search -SoftwareName "Chess" | Should -Not -Throw }
-        { Get-JCSystemApp -Search -SoftwareName "Chess" -SystemOs "MacOs" | Should -Not -Throw }
+        { Get-JCSystemApp -Search -SoftwareName "Chess" -SystemID $mac.Id } | should -Not -Throw
+        { Get-JCSystemApp -Search -SoftwareName "Chess" } | should -Not -Throw
+        { Get-JCSystemApp -Search -SoftwareName "Chess" -SystemOs "MacOs" } | should -Not -Throw
         # A null value version shouldn't be accepted
         { Get-JCSystemApp -Search -SoftwareName "Chess" -SystemOs "" | Should -Throw }
         # A null value version shouldn't be accepted
         { Get-JCSystemApp -Search -SoftwareName "" -SystemOs "MacOs" | Should -Throw }
         # Searching chess on MacOs should return a result
-        { Get-JCSystemApp -Search -SoftwareName "Chess" -SystemOs "MacOs" | Should -Not -Throw }
-
-        #Windows
-        { Get-JCSystemApp -Search | Should -Throw }
-        { Get-JCSystemApp -Search -SoftwareName "Microsoft Edge" -SystemID $windows.Id | Should -Not -Throw }
-        { Get-JCSystemApp -Search -SoftwareName "Microsoft Edge" | Should -Not -Throw }
-        { Get-JCSystemApp -Search -SoftwareName "Microsoft Edge" -SystemOs "windows" | Should -Not -Throw }
-        # A null value version shouldn't be accepted
-        { Get-JCSystemApp -Search -SoftwareName "Microsoft Edge" -SystemOs "" | Should -Throw }
-        # A null value version shouldn't be accepted
-        { Get-JCSystemApp -Search -SoftwareName "" -SystemOs "windows" | Should -Throw }
-        # Searching chess on MacOs should return a result
-        { Get-JCSystemApp -Search -SoftwareName "Microsoft Edge" -SystemOs "windows" | Should -Not -Throw }
-
-        #Linux
-        { Get-JCSystemApp -Search | Should -Throw }
-        { Get-JCSystemApp -Search -SoftwareName "firefox" -SystemID $linux.Id | Should -Not -Throw }
-        { Get-JCSystemApp -Search -SoftwareName "firefox" | Should -Not -Throw }
-        { Get-JCSystemApp -Search -SoftwareName "firefox" -SystemOs "linux" | Should -Not -Throw }
-        # A null value version shouldn't be accepted
-        { Get-JCSystemApp -Search -SoftwareName "firefox" -SystemOs "" | Should -Throw }
-        # A null value version shouldn't be accepted
-        { Get-JCSystemApp -Search -SoftwareName "" -SystemOs "linux" | Should -Throw }
-        # Searching chess on MacOs should return a result
-        { Get-JCSystemApp -Search -SoftwareName "firefox" -SystemOs "linux" | Should -Not -Throw }
+        { Get-JCSystemApp -Search -SoftwareName "Chess" -SystemOs "MacOs" } | should -Not -Throw
     }
     It "Tests for search given SystemOs and SoftwareName for Linux Systems" -skip {
         # Curl is always installed on linux
         { Get-JCSystemApp -Search | Should -Throw }
-        { Get-JCSystemApp -Search -SoftwareName "Curl" -SystemID $linux._Id | Should -Not -Throw }
-        { Get-JCSystemApp -Search -SoftwareName "Curl" | Should -Not -Throw }
-        { Get-JCSystemApp -Search -SoftwareName "Curl" -SystemOs "linux" | Should -Not -Throw }
+        { Get-JCSystemApp -Search -SoftwareName "Curl" -SystemID $linux._Id } | should -Not -Throw
+        { Get-JCSystemApp -Search -SoftwareName "Curl" } | should -Not -Throw
+        { Get-JCSystemApp -Search -SoftwareName "Curl" -SystemOs "linux" } | should -Not -Throw
         # A null value version shouldn't be accepted
         { Get-JCSystemApp -Search -SoftwareName "Curl" -SystemOs "" | Should -Throw }
         # A null value version shouldn't be accepted
         { Get-JCSystemApp -Search -SoftwareName "" -SystemOs "linux" | Should -Throw }
         # Searching Curl on linux should return a result
-        { Get-JCSystemApp -Search -SoftwareName "Curl" -SystemOs "linux" | Should -Not -Throw }
+        { Get-JCSystemApp -Search -SoftwareName "Curl" -SystemOs "linux" } | should -Not -Throw
     }
     It "Tests for search given SystemOs and SoftwareName for Windows Systems" -skip {
         # Microsoft Edge is always installed on windows
         { Get-JCSystemApp -Search | Should -Throw }
-        { Get-JCSystemApp -Search -SoftwareName "Microsoft Edge" -SystemID $windows._Id | Should -Not -Throw }
-        { Get-JCSystemApp -Search -SoftwareName "Microsoft Edge" | Should -Not -Throw }
-        { Get-JCSystemApp -Search -SoftwareName "Microsoft Edge" -SystemOs "windows" | Should -Not -Throw }
+        { Get-JCSystemApp -Search -SoftwareName "Microsoft Edge" -SystemID $windows._Id } | should -Not -Throw
+        { Get-JCSystemApp -Search -SoftwareName "Microsoft Edge" } | should -Not -Throw
+        { Get-JCSystemApp -Search -SoftwareName "Microsoft Edge" -SystemOs "windows" } | should -Not -Throw
         # A null value version shouldn't be accepted
         { Get-JCSystemApp -Search -SoftwareName "Microsoft Edge" -SystemOs "" | Should -Throw }
         # A null value version shouldn't be accepted
         { Get-JCSystemApp -Search -SoftwareName "" -SystemOs "windows" | Should -Throw }
         # Searching Microsoft Edge on windows should return a result
-        { Get-JCSystemApp -Search -SoftwareName "Microsoft Edge" -SystemOs "windows" | Should -Not -Throw }
+        { Get-JCSystemApp -Search -SoftwareName "Microsoft Edge" -SystemOs "windows" } | should -Not -Throw
     }
 
     It "Tests the search functionatily of a software app" {
@@ -158,8 +134,7 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
         $apps = Get-JCSystemApp -SystemOS "macos" -SoftwareName "a" -search
         $foundMacSystems = $apps.systemid | Select-Object -Unique
         # if you specify a systemOS and Search, results should not contain multiple systems
-        foreach ($system in $foundSystems)
-        {
+        foreach ($system in $foundSystems) {
             $foundMacSystems = Get-JCSystem -SystemID $system
             $foundMacSystems.osfamily | Should -be 'darwin'
         }
@@ -167,8 +142,7 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
         $apps = Get-JCSystemApp -SystemOS "windows" -SoftwareName "a" -search
         $foundWindowsSystems = $apps.systemid | Select-Object -Unique
         # if you specify a systemOS and Search, results should not contain multiple systems
-        foreach ($system in $foundWindowsSystems)
-        {
+        foreach ($system in $foundWindowsSystems) {
             $foundWindowsSystems = Get-JCSystem -SystemID $system
             $foundWindowsSystems.osfamily | Should -be 'windows'
         }
@@ -176,8 +150,7 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
         $apps = Get-JCSystemApp -SystemOS "linux" -SoftwareName "a" -search
         $foundLinuxSystems = $apps.systemid | Select-Object -Unique
         # if you specify a systemOS and Search, results should not contain multiple systems
-        foreach ($system in $foundLinuxSystems)
-        {
+        foreach ($system in $foundLinuxSystems) {
             $foundLinuxSystems = Get-JCSystem -SystemID $system
             $foundLinuxSystems.osfamily | Should -be 'windows'
         }
