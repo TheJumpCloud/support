@@ -132,7 +132,7 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
         $foundWindowsSystems.count | should -Be 1
         $foundLinuxSystems.count | should -Be 1
     }
-    It "Tests the search param with SystemOS" {
+    It "Tests the search param with macos SystemOS" {
         # MacOS
         $apps = Get-JCSystemApp -SystemOS "macos" -SoftwareName "a" -search
         $foundMacSystems = $apps.systemid | Select-Object -Unique
@@ -141,6 +141,8 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
             $foundMacSystems = Get-JCSystem -SystemID $system
             $foundMacSystems.osfamily | Should -be 'darwin'
         }
+    }
+    It "Tests the search param with windows SystemOS" {
         # Windows
         $apps = Get-JCSystemApp -SystemOS "windows" -SoftwareName "a" -search
         $foundWindowsSystems = $apps.systemid | Select-Object -Unique
@@ -149,13 +151,15 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
             $foundWindowsSystems = Get-JCSystem -SystemID $system
             $foundWindowsSystems.osfamily | Should -be 'windows'
         }
+    }
+    It "Tests the search param with linux SystemOS" {
         # Linux
         $apps = Get-JCSystemApp -SystemOS "linux" -SoftwareName "a" -search
         $foundLinuxSystems = $apps.systemid | Select-Object -Unique
         # if you specify a systemOS and Search, results should not contain multiple systems
         foreach ($system in $foundLinuxSystems) {
             $foundLinuxSystems = Get-JCSystem -SystemID $system
-            $foundLinuxSystems.osfamily | Should -be 'windows'
+            $foundLinuxSystems.osfamily | Should -be 'linux'
         }
     }
 

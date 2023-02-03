@@ -264,15 +264,21 @@ function Get-JCSystemApp () {
                         Switch ($OSType) {
                             "Windows" {
                                 $result = Get-JcSdkSystemInsightProgram -Filter @("system_id:eq:$SystemID")
-                                $searchAppResultsList.AddRange($result)
+                                if ($result) {
+                                    $searchAppResultsList.AddRange($result)
+                                }
                             }
                             "Darwin" {
                                 $result = Get-JcSdkSystemInsightApp -Filter @("system_id:eq:$SystemID")
-                                $searchAppResultsList.AddRange($result)
+                                if ($result) {
+                                    $searchAppResultsList.AddRange($result)
+                                }
                             }
                             "Linux" {
                                 $result = Get-JcSdkSystemInsightLinuxPackage -Filter @("system_id:eq:$SystemID")
-                                $searchAppResultsList.AddRange($result)
+                                if ($result) {
+                                    $searchAppResultsList.AddRange($result)
+                                }
                             }
                         }
 
@@ -282,13 +288,19 @@ function Get-JCSystemApp () {
                         Write-Debug "SystemOS $SystemOS"
                         if ($SystemOS -eq 'Windows') {
                             $result = Get-JcSdkSystemInsightProgram
-                            $searchAppResultsList.AddRange($result)
+                            if ($result) {
+                                $searchAppResultsList.AddRange($result)
+                            }
                         } elseif ($SystemOS -eq 'MacOs') {
                             $result = Get-JcSdkSystemInsightApp
-                            $searchAppResultsList.AddRange($result)
+                            if ($result) {
+                                $searchAppResultsList.AddRange($result)
+                            }
                         } elseif ($SystemOS -eq 'Linux') {
                             $result = Get-JcSdkSystemInsightLinuxPackage
-                            $searchAppResultsList.AddRange($result)
+                            if ($result) {
+                                $searchAppResultsList.AddRange($result)
+                            }
                         }
                         $filteredResults = $searchAppResultsList | Where-Object { ($_.name -match $SoftwareName) }
                         $resultsArrayList = $filteredResults
@@ -297,11 +309,15 @@ function Get-JCSystemApp () {
                         if ($Parallel) {
                             Write-Debug "Parallel"
                             $result = $commands | ForEach-Object -Parallel { & $_ }
-                            [void]$searchAppResultsList.AddRange($result)
+                            if ($result) {
+                                [void]$searchAppResultsList.AddRange($result)
+                            }
 
                         } else {
                             $result = $commands | ForEach-Object { & $_ }
-                            [void]$searchAppResultsList.AddRange($result)
+                            if ($result) {
+                                [void]$searchAppResultsList.AddRange($result)
+                            }
                         }
                         $filteredResults = $searchAppResultsList | Where-Object { ($_.name -match $SoftwareName) }
                         $resultsArrayList = $filteredResults
