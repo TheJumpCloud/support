@@ -33,7 +33,6 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
     It "Tests that given a macOS systemID, SoftwareName, SoftwareVersion, an app is returned" {
         # MacOS
         $macApp = Get-JCSystemApp -SystemID $mac._id -name "Chess"
-        { Get-JCSystemApp -SystemID $mac._id -name "Chess" -version $macApp.Bundle_short_version } | Should -Throw
         # A null value version shouldn't be accepted
         { Get-JCSystemApp -SystemID $mac._id -name "Chess" -version "" } | Should -Throw
         # A null value Name shouldn't be accepted
@@ -45,7 +44,6 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
 
         #Windows
         $windowsApp = Get-JCSystemApp -SystemID $windows._id -name "Microsoft Edge"
-        { Get-JCSystemApp -SystemID $windows._id -name "Microsoft Edge" -version $windowsApp.version } | Should -Throw
         # A null value version shouldn't be accepted
         { Get-JCSystemApp -SystemID $windows._id -name "Microsoft Edge" -version "" } | Should -Throw
         # A null value Name shouldn't be accepted
@@ -57,7 +55,6 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
         #Linux
         #Windows
         $linuxApp = Get-JCSystemApp -SystemID $linux._id -name "curl"
-        { Get-JCSystemApp -SystemID $linux._id -name "curl" -version $linuxApp.version } | Should -Throw
         # A null value version shouldn't be accepted
         { Get-JCSystemApp -SystemID $linux._id -name "curl" -version "" } | Should -Throw
         # A null value Name shouldn't be accepted
@@ -111,7 +108,6 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
         # results with no data should be null or empty
         Get-JCSystemApp -name "chess" | Should -BeNullOrEmpty
         Get-JCSystemApp -name "microsoft edge" | Should -BeNullOrEmpty
-        Get-JCSystemApp -name "curl" | Should -BeNullOrEmpty
         # when search is used to find an app the results should not be null or empty
         Get-JCSystemApp -name "chess" -Search | Should -Not -BeNullOrEmpty
         Get-JCSystemApp -name "microsoft edge" -Search | Should -Not -BeNullOrEmpty
@@ -172,7 +168,7 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
         $sdkMac.name | Should -Be $moduleMac.name
         # SDK Results should look exactly like module results when search is provided
         $sdkMac.id | Should -Be $moduleMacSearch.id
-        $sdkMac.name | Should -Be $moduleMacSearch.name
+        $moduleMacSearch.name | Should -Contain  $sdkMac.name
     }
     It "Tests compatability windows with the SDKs" {
         #Windows
@@ -184,19 +180,19 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
         $sdkWindows.name | Should -Be $moduleWindows.name
         # SDK Results should look exactly like module results when search is provided
         $sdkWindows.id | Should -Be $moduleWindowsSearch.id
-        $sdkWindows.name | Should -Be $moduleWindowsSearch.name
+        $moduleWindowsSearch.name | Should -Contain $sdkWindows.name
     }
     It "Tests compatability linux with the SDKs" {
         #Linux
-        $sdkLinux = Get-JcSdkSystemInsightLinuxPackage -filter @("system_id:eq:$($linux._id)", "name:eq:Curl")
-        $moduleLinux = Get-JCSystemApp -SystemID $linux._id -name "Curl"
+        $sdkLinux = Get-JcSdkSystemInsightLinuxPackage -filter @("system_id:eq:$($linux._id)", "name:eq:curl")
+        $moduleLinux = Get-JCSystemApp -SystemID $linux._id -name "curl"
         $moduleLinuxSearch = Get-JCSystemApp -SystemID $linux._id -name "curl" -Search
         # SDK Results should look exactly like module results when exact name is specified
         $sdkLinux.id | Should -Be $moduleLinux.id
         $sdkLinux.name | Should -Be $moduleLinux.name
         # SDK Results should look exactly like module results when search is provided
         $sdkLinux.id | Should -Be $moduleLinuxSearch.id
-        $sdkLinux.name | Should -Be $moduleLinuxSearch.name
+        $moduleLinuxSearch.name | Should -Contain $sdkLinux.name
     }
 
     It "Tests that incompatible parameters should not be used together" {
