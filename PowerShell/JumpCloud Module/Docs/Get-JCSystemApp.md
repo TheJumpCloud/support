@@ -14,14 +14,14 @@ Returns the applications/programs/linux packages installed on JumpCloud managed 
 
 ### All (Default)
 ```
-Get-JCSystemApp [-SystemID <String>] [-SystemOS <String>] [-SoftwareName <String>] [-SoftwareVersion <String>]
+Get-JCSystemApp [-SystemID <String>] [-SystemOS <String>] [-name <String>] [-version <String>]
  [<CommonParameters>]
 ```
 
 ### Search
 ```
-Get-JCSystemApp [-SystemID <String>] [-SystemOS <String>] [-SoftwareName <String>] [-SoftwareVersion <String>]
- [-Search] [<CommonParameters>]
+Get-JCSystemApp [-SystemID <String>] [-SystemOS <String>] [-name <String>] [-version <String>] [-Search]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -64,6 +64,21 @@ Returns any 'jumpcloud-agent' software installed in all the os systems
 
 ## PARAMETERS
 
+### -name
+The name of the application you want to search for ex. (JumpCloud-Agent, Slack). SoftwareName will always query the "name" property from system insights. Note, for macOS systems, ".app" will be applied. This field is case sensitive.
+
+```yaml
+Type: System.String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -Search
 Search for a specific application by from all systems in the org ex.
 (Get-JCSystemApp -Search -SoftwareName "JumpCloud-Agent")
@@ -72,39 +87,6 @@ THIS PARAMETER DOES NOT TAKE INPUT
 ```yaml
 Type: System.Management.Automation.SwitchParameter
 Parameter Sets: Search
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -SoftwareName
-The name of the application you want to search for ex.
-(JumpCloud-Agent, Slack)
-SoftwareName will always query the 'name' property from system insights. Note, for macOS systems, '.app' will be applied
-
-```yaml
-Type: System.String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -SoftwareVersion
-The version of the application you want to search for ex.
-1.1.2
-
-```yaml
-Type: System.String
-Parameter Sets: (All)
 Aliases:
 
 Required: False
@@ -143,6 +125,21 @@ Required: False
 Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -version
+The version of the application you want to search for ex. 1.1.2
+
+```yaml
+Type: System.String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
