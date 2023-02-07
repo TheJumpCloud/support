@@ -14,14 +14,12 @@ Returns the applications/programs/linux packages installed on JumpCloud managed 
 ## SYNTAX
 
 ### All (Default)
-
 ```
 Get-JCSystemApp [-SystemID <String>] [-SystemOS <String>] [-name <String>] [-version <String>]
  [<CommonParameters>]
 ```
 
 ### Search
-
 ```
 Get-JCSystemApp [-SystemID <String>] [-SystemOS <String>] [-name <String>] [-version <String>] [-Search]
  [<CommonParameters>]
@@ -158,7 +156,6 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
-
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
@@ -168,7 +165,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## OUTPUTS
 
 ### System.Object
-
 ## NOTES
 
 ## RELATED LINKS
