@@ -12,15 +12,27 @@ Import-Module "$psscriptroot/RadiusCertFunctions.ps1" -Force
 # Import the users.json file and convert to PSObject
 $userArray = Get-Content -Raw -Path "$PSScriptRoot/users.json" | ConvertFrom-Json -Depth 6
 # Check to see if previous commands exist
-$Command = Get-JCCommand | Where-Object { $_.Name -like 'RadiusCert-Install*' }
+$RadiusCertCommands = Get-JCCommand | Where-Object { $_.Name -like 'RadiusCert-Install*' }
 
-if ($Command.Count -ge 1) {
-    $confirmation = Read-Host "[status] Previous RadiusCert commands detected, would you like to delete existing commands? [y/n]"
-    while ($confirmation -ne 'n') {
-        if ($confirmation -eq 'y') {
-            Write-Host "[status] Removing $($Command.Count) commands"
+if ($RadiusCertCommands.Count -ge 1) {
+    Write-Host "[status] $([char]0x1b)[96mRadiusCert commands detected, please make a selection."
+    Write-Host "1: Press '1' to generate new commands for ALL users. $([char]0x1b)[96mNOTE: This will remove any existing commands"
+    Write-Host "2: Press '2' to generate new commands for NEW RADIUS users. $([char]0x1b)[96mNOTE: This will only generate commands for users who did not have a cert previously"
+    $confirmation = Read-Host "Please make a selection"
+    while ($confirmation -ne '2') {
+        if ($confirmation -eq '1') {
+            # Get queued commands
+            $queuedCommands = Get-JCQueuedCommands
+            # Clear any queued commands for old RadiusCert commands
+            foreach ($command in $RadiusCertCommands) {
+                if ($command._id -in $queuedCommands.command) {
+                    $queuedCommandInfo = $queuedCommands | Where-Object command -EQ $command._id
+                    Clear-JCQueuedCommand -workflowId $queuedCommandInfo.id
+                }
+            }
+            Write-Host "[status] Removing $($RadiusCertCommands.Count) commands"
             # Delete previous commands
-            $Command | Remove-JCCommand -force | Out-Null
+            $RadiusCertCommands | Remove-JCCommand -force | Out-Null
             # Clean up users.json array
             $userArray | ForEach-Object { $_.commandAssociations = @() }
             break
@@ -173,17 +185,13 @@ if (`$CurrentUser -eq "$($user.userName)") {
 }
 
 # Invoke Commands
-Write-Host "[status] Invoking RadiusCert-Install Commands"
-$confirmation = Read-Host "Are you sure you want to proceed? [y/n]"
-$CommandArray = @()
-$RadiusCommands = Get-JCCommand | Where-Object trigger -Like 'RadiusCertInstall'
-
+$confirmation = Read-Host "Would you like to invoke commands? [y/n]"
+$UserArray | ConvertTo-Json -Depth 6 | Out-File "$psscriptroot\users.json"
 
 while ($confirmation -ne 'y') {
     if ($confirmation -eq 'n') {
-        $UserArray | ConvertTo-Json -Depth 6 | Out-File "$psscriptroot\users.json"
-        Write-Host "[status] To invoke the commands at a later time, run the following script: $PSScriptRoot/Monitor-CertDeployment.ps1"
-        Write-Host "[status] Exiting..."
+        Write-Host "[status] To invoke the commands at a later time, select option '4' to monitor your User Certification Distribution"
+        Write-Host "[status] Returning to main menu"
         exit
     }
 }
@@ -196,5 +204,5 @@ $userArray.commandAssociations | ForEach-Object { $_.commandPreviouslyRun = $tru
 
 $UserArray | ConvertTo-Json -Depth 6 | Out-File "$psscriptroot\users.json"
 
-Write-Host "[status] Run the $PSScriptRoot/Monitor-CertDeployment.ps1 script to track command results and output results"
-Write-Host "[status] Exiting..."
+Write-Host "[status] Select option '4' to monitor your User Certification Distribution"
+Write-Host "[status] Returning to main menu"
