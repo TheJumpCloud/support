@@ -9,7 +9,7 @@ function Show-RadiusMainMenu {
     Write-Host "$([char]0x1b)[96mEdit the variables in Config.ps1 before continuing this script"
 
     Write-Host "1: Press '1' to generate your Root Certificate."
-    Write-Host "2: Press '2' to generate your User Certificate(s)."
+    Write-Host "2: Press '2' to generate/update your User Certificate(s)."
     Write-Host "3: Press '3' to distribute your User Certificate(s)."
     Write-Host "4: Press '4' to monitor your User Certification Distribution."
     Write-Host "Q: Press 'Q' to quit."
@@ -210,9 +210,9 @@ function Show-CertDeploymentMenu {
     Clear-Host
     Write-Host "================ $Title ================"
 
-    Write-Host "1: Press '1' to view overview results."
-    Write-Host "2: Press '2' to view detailed results."
-    Write-Host "3: Press '3' to invoke commands"
+    Write-Host "1: Press '1' to view results."
+    Write-Host "2: Press '2' to view failed command runs"
+    Write-Host "3: Press '3' to invoke/retry commands"
     Write-Host "E: Press 'E' to exit."
 }
 function Invoke-CommandRun {
@@ -319,7 +319,7 @@ Function Invoke-CommandsRetry {
                 if (($command.commandId -in $failedCommands.workflowId) -or ($command.commandPreviouslyRun -eq $false) -or ($command.commandId -notin $QueuedCommands.command -and $command.commandId -notin $finishedCommands.workflowId)) {
                     try {
                         if (!(Get-JcSdkCommandAssociation -CommandId $command.commandId -Targets system)) {
-                            Write-Host "[status] $([char]0x1b)[91mNo system associations were found for $($command.commandName)"
+                            continue
                         } else {
                             Invoke-CommandRun -commandID $command.commandId
                             Write-Host "[status] $([char]0x1b)[92mInvoking $($command.commandName)"
@@ -348,16 +348,22 @@ Function Get-CommandObjectTable {
         [PSCustomObject]$retryCommands,
         [Parameter()]
         [string]$jsonFile,
-        [Parameter(ParameterSetName = 'Overview')]
-        [switch]$Overview,
+        [Parameter(ParameterSetName = 'Failed')]
+        [switch]$Failed,
         [Parameter(ParameterSetName = 'Detailed')]
         [switch]$Detailed
     )
     process {
         switch ($PSCmdlet.ParameterSetName) {
-            Overview {
+            Failed {
                 # Import the users.json file and get the commandAssociations
                 $commandsObject = Get-Content -Raw -Path $jsonFile | ConvertFrom-Json -Depth 6
+                # Gather hash of system ids and displayNames
+                $SystemHash = Get-JCSystem -returnProperties displayName
+                # Find all the queued commands for organization
+                $QueuedCommands = Get-JCQueuedCommands
+
+                $CommandObjectTable = @()
 
                 # Clean up command results
                 $commandResults = Get-JCCommandResult | Where-Object name -Like "RadiusCert-Install*"
@@ -373,38 +379,31 @@ Function Get-CommandObjectTable {
                     }
                 }
 
-                # Find all queued commands for organization
-                $QueuedCommands = Get-JCQueuedCommands
-
-                $CommandObjectTable = @()
-
                 # Iterate through all the associated commands
                 foreach ($command in $commandsObject.commandAssociations) {
-                    # Check to see if the current command is pending/queued
-                    $queuedCommandInfo = $QueuedCommands | Where-Object command -EQ $command.commandId
-                    if ($queuedCommandInfo) {
-                        # If the command is queued, get the specific details of the queued workflow
-                        $pendingCommands = Get-JCQueuedCommands -workflow $queuedCommandInfo.id
-                    } else {
-                        # If the command is not queued, set the pending commands to null
-                        $pendingCommands = @()
+                    $finishedCommands = $commandResults | Where-Object workflowId -EQ $command.commandID | Sort-Object system, responsetime -Descending | Select-Object -Unique
+                    if ($finishedCommands) {
+                        # If there are finished command results, iterate through each and add to command object array
+                        $finishedCommands | ForEach-Object {
+                            if (($_.exitCode -ne 0)) {
+                                $character = "$([char]0x1b)[91mFAILED"
+                                $output = Get-JCCommandResult -id $_._id | Select-Object -ExpandProperty output
+                            } else {
+                                continue
+                            }
+                            $CommandTable = @{
+                                commandName       = $command.commandName
+                                systemDisplayName = $_.system
+                                status            = $character
+                                output            = $output
+                            }
+                            $CommandObjectTable += $CommandTable
+                        }
                     }
-                    # Check command results for finished instances
-                    $finishedCommands = Get-JCCommandResult -CommandID $command.commandID
-
-                    # Create command table
-                    $CommandTable = @{
-                        commandId   = $command.commandId
-                        commandName = $command.commandName
-                        pending     = $pendingCommands.count
-                        completed   = $finishedCommands.count
-                    }
-                    # Add command table to object array
-                    $CommandObjectTable += $CommandTable
                 }
                 # Display object array
-                Write-Host "`n[Radius Cert Deployment Status - Overview]"
-                $CommandObjectTable | ForEach-Object { [PSCustomObject]$_ } | Sort-Object pending -Descending | Format-Table commandId, commandName, pending, completed
+                Write-Host "`n[Radius Cert Deployment Status - Failed]"
+                $CommandObjectTable | ForEach-Object { [PSCustomObject]$_ } | Format-List commandName, systemDisplayName, status, output
             }
             Detailed {
                 # Import the users.json file and get the commandAssociations
@@ -453,7 +452,7 @@ Function Get-CommandObjectTable {
                     }
 
                     # Get finished command results for current command
-                    $finishedCommands = Get-JCCommandResult -CommandID $command.commandID | Sort-Object system, responsetime -Descending | Select-Object -Unique
+                    $finishedCommands = $commandResults | Where-Object workflowId -EQ $command.commandID | Sort-Object system, responsetime -Descending | Select-Object -Unique
                     if ($finishedCommands) {
                         # If there are finished command results, iterate through each and add to command object array
                         $finishedCommands | ForEach-Object {
