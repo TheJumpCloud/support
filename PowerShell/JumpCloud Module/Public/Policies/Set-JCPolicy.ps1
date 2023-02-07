@@ -61,10 +61,10 @@ function Set-JCPolicy {
 
 
 # Test with poilcy for registry settings
-# Set-JCPolicy -policyID 617086d01f2475214da91255
+Set-JCPolicy -policyID 617086d01f2475214da91255
 
 # Test with policy for multiple policy types
-Set-JCPolicy -policyID 6390c9107a57de0001bbe1b9
+# Set-JCPolicy -policyID 6390c9107a57de0001bbe1b9
 
 
 # $objectMap = New-Object System.Collections.IDictionary

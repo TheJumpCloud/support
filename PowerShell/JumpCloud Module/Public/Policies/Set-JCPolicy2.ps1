@@ -17,10 +17,10 @@ function Set-JCPolicy2 {
             # $paramObject
             $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
             # Foreach key in the supplied config file:
-            foreach ($key in $paramObject) {
+            foreach ($key in $object) {
                 # Skip create dynamic params for these not-writable properties:
                 # Set the dynamic parameters' name
-                # write-host "adding dynamic param: $key$($item) $($config[$key][$item]['value'].getType().Name)"
+                # write-host "adding dynamic param: $key$($item)"
                 $ParamName_Filter = "$($key.configFieldName)"
                 # Create the collection of attributes
                 $AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
@@ -34,6 +34,12 @@ function Set-JCPolicy2 {
                 $paramType = $($key.type)
                 if ($paramType -eq 'boolean') {
                     $arrSet = @("true", "false")
+                    $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($arrSet)
+                    $AttributeCollection.Add($ValidateSetAttribute)
+                }
+                if ($paramType -eq 'multi') {
+                    $paramType = 'string'
+                    $arrSet = $key.validation.values
                     $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($arrSet)
                     $AttributeCollection.Add($ValidateSetAttribute)
                 }
@@ -52,9 +58,10 @@ function Set-JCPolicy2 {
         }
     }
     begin {
+        $params = $PSBoundParameters
         $policy = Get-JcPolicy -Id $policyID
-
-        if (!$policyObject) {
+        write-host $params
+        if (!$policyObject -in $PSBoundParameters) {
             #Get stuff
             $object = Get-JCPolicyTemplateConfigField -templateID $policy.Template.Id
             if ($policy.values.value) {
@@ -64,7 +71,43 @@ function Set-JCPolicy2 {
             }
 
         } else {
-            $policyObjectshort = $policyObject | select configFieldID, configFieldName, value
+            # $body = [PSCustomObject]@{
+            #     name     = $policyName
+            #     template = $policyTemplateID
+            #     values   = @($policyValues)
+            # } | ConvertTo-Json -Depth 99
+            # return
+            $newObject = New-Object System.Collections.ArrayList
+            for ($i = 0; $i -lt $object.length; $i++) {
+                <# Action that will repeat until the condition is met #>
+                if ($object[$i].configFieldName -in $params.keys) {
+                    $keyName = $params.keys | where-object { $_ -eq $object[$i].configFieldName }
+                    write-host "Setting value from $($keyName)"
+                    $keyValue = $params.$KeyName
+                    if ($object[$i].type -eq 'multi') {
+                        $object[$i].value = $(($object[$i].validation | Where-Object { $_.Values -eq $keyValue }).keys)
+                    }
+                    $newObject.Add($object[$i])
+                } else {
+                    write-host "$($object[$i].configFieldName)"
+                    $object[$i].value = ($policy.values | Where-Object { $_.configFieldName -eq $object[$i].configFieldName }).value
+                    $newObject.Add($object[$i])
+                }
+
+                # foreach ($param in $params.keys) {
+                #     if ($object.configFieldName -eq $param) {
+                #         write-host "match found"
+                #         $fieldToSetFromParam = $object | Where-Object { $_.configFieldName -eq $param }
+                #         # set value
+                #         if ($fieldToSetFromParam.type -eq 'multi') {
+                #             $fieldToSetFromParam.value = ($fieldtosetfromparam.validation | Where-Object { $_.Values -eq $($params).$($param) }).keys
+                #             $newObject = $fieldToSetFromParam
+                #         }
+                #     }
+                # }
+            }
+
+            $policyObjectshort = $newObject | select configFieldID, configFieldName, value
 
         }
         # TODO: if policyObject is not specified or if it isn't complete, go get the template and rebuild
@@ -109,6 +152,9 @@ function Set-JCPolicy2 {
 
 # Test with policy for multiple policy types
 # Set-JCPolicy2 -policyID 5d681db345886d6f6267a656
+
+# Notification Policy
+Set-JCPolicy2 -policyID 6390c9107a57de0001bbe1b9 -AlertType None
 
 
 # $objectMap = New-Object System.Collections.IDictionary
