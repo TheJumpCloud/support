@@ -5,7 +5,7 @@ Release Date: February 7, 2023
 #### RELEASE NOTES
 
 ```
-This release adds new function Get-JCSystemApp which enables admins to search for 'x' system and 'y' version on all managed JumpCloud systems.
+This release adds new function Get-JCSystemApp which enables admins to search for 'x' software and 'y' version on specific device, devices in a specific os, or all managed JumpCloud devices.
 ```
 
 #### FEATURES:
