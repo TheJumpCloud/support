@@ -1,28 +1,19 @@
 ## 2.2.0
 
-Release Date: January 18, 2023
+Release Date: February 7, 2023
 
 #### RELEASE NOTES
 
 ```
-This release adds new function Get-JCSystemApp
+This release adds new function Get-JCSystemApp which enables admins to search for 'x' system and 'y' version on all managed JumpCloud systems.
 ```
 
 #### FEATURES:
 
-* Get-JCSystemApp command enables search by:
-  - applications installed in a system
-  - applications installed from all the systems in a specifc OS
-  - SoftwareName
-  - SoftwareName and SoftwareVersion
-
-#### IMPROVEMENTS:
-
-N/A
-
-#### BUG FIXES:
-
-N/A
+- Get-JCSystemApp command enables search by:
+  - applications installed in a specific system
+  - applications installed from all the systems specified by OS
+  - Software Name and or Version
 
 ## 2.1.3
 

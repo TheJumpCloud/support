@@ -101,6 +101,18 @@ workflows:
             - Initial Setup
             - Build Modules
           context: aws-credentials
+      - Invoke Git Commit:
+          requires:
+            - Initial Setup
+            - Build Help and Test Files
+            - Build Nuspec
+      - draft-github-release:
+          context: github-credentials-sa-releases
+          requires:
+            - Initial Setup
+            - Build Help and Test Files
+            - Build Nuspec
+            - Invoke Git Commit
       - Module Validation Tests:
           requires:
             - Initial Setup
@@ -108,11 +120,6 @@ workflows:
             - Build Nuspec
             - Invoke Git Commit
           context: aws-credentials
-      - Invoke Git Commit:
-          requires:
-            - Initial Setup
-            - Build Help and Test Files
-            - Build Nuspec
       - Pester Tests Windows:
           requires:
             - Initial Setup
@@ -149,6 +156,7 @@ workflows:
     jobs:
       - Prepare for release
       - draft-github-release:
+          context: github-credentials-sa-releases
           requires:
             - Prepare for release
       - Approve Module:
