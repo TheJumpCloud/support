@@ -16,9 +16,9 @@ do {
     $selection = Read-Host "Please make a selection"
     switch ($selection) {
         '1' {
-            Get-CommandObjectTable -Overview -jsonFile $jsonFile
-        } '2' {
             Get-CommandObjectTable -Detailed -jsonFile $jsonFile
+        } '2' {
+            Get-CommandObjectTable -Failed -jsonFile $jsonFile
         } '3' {
             $retryCommands = Invoke-CommandsRetry -jsonFile $jsonFile
         }
