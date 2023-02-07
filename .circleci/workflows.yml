@@ -106,13 +106,6 @@ workflows:
             - Initial Setup
             - Build Help and Test Files
             - Build Nuspec
-      - draft-github-release:
-          context: github-credentials-sa-releases
-          requires:
-            - Initial Setup
-            - Build Help and Test Files
-            - Build Nuspec
-            - Invoke Git Commit
       - Module Validation Tests:
           requires:
             - Initial Setup
