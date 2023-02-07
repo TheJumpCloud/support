@@ -1,7 +1,6 @@
 function Get-JCSystemApp () {
     [CmdletBinding(DefaultParameterSetName = 'All')]
     param (
-
         [Parameter(Mandatory = $false, HelpMessage = 'The System Id of the system you want to search for applications')][ValidateNotNullorEmpty()]
         [string]$SystemID,
         [Parameter(Mandatory = $false , ValueFromPipelineByPropertyName, HelpMessage = 'The type (windows, macOS, linux) of the JumpCloud system you wish to search. Ex. (Windows, macOS, Linux))')]
@@ -11,11 +10,10 @@ function Get-JCSystemApp () {
         [string]$name,
         [Parameter(Mandatory = $false, HelpMessage = 'The version of the application you want to search for ex. 1.1.2')][ValidateNotNullorEmpty()]
         [string]$version,
-        [Parameter(Mandatory = $false, ParameterSetName = "Search", HelpMessage = "The Search parameter can be used in conjunction with the 'SoftwareName' parameter to perform a case-insensitive search for software. This is parameter switch is inherently slower than using just the 'softwareName' parameter but can be useful to identify the names of software titles on systems. If the exact name of a software title isn't known, the 'search' parameter can be used to find that name. Ex. Get-JCSoftwareApp -SystemID '63c9654cb357249876bfc05b' -SoftwareName 'chrome' -Search will attempt to perform a match for the term 'chrome' on all applications/ programs for the specified system. If a match, partial-match, case-insensitive match is found, it would be returned in the results. In this case, the 'name' of the software title is 'Google Chrome'. A subsequent search could be run to return all macOS systems which have 'Google Chrome' installed. Ex. Get-JCSystemApp -SystemOS macOS -softwareName 'Google Chrome', this would perform an exact match search for macOS systems that have google chrome which is substantially quicker than running: Get-JCSystemApp -SystemOS macOS -softwareName 'google chrome' -Search. The search parameter is a tool to help identify the 'name' attribute of software titles when searching bulk systems its recommended to not use the search parameter and instead specify the exact (case sensitive) name of the software title.")]
+        [Parameter(Mandatory = $false, ParameterSetName = "Search", HelpMessage = "The Search parameter can be used in conjunction with the 'SoftwareName' parameter to perform a case-insensitive search for software. This is parameter switch is inherently slower than using just the 'softwareName' parameter but can be useful to identify the names of software titles on systems. If the exact name of a software title isn't known, the 'search' parameter can be used to find that name. Ex. Get-JCSoftwareApp -SystemID '63c9654cb357249876bfc05b' -name 'chrome' -Search will attempt to perform a match for the term 'chrome' on all applications/ programs for the specified system. If a match, partial-match, case-insensitive match is found, it would be returned in the results. In this case, the 'name' of the software title is 'Google Chrome'. A subsequent search could be run to return all macOS systems which have 'Google Chrome' installed. Ex. Get-JCSystemApp -SystemOS macOS -name 'Google Chrome', this would perform an exact match search for macOS systems that have google chrome which is substantially quicker than running: Get-JCSystemApp -SystemOS macOS -name 'google chrome' -Search. The search parameter is a tool to help identify the 'name' attribute of software titles when searching bulk systems its recommended to not use the search parameter and instead specify the exact (case sensitive) name of the software title.")]
         [switch]$Search,
         [Parameter(DontShow, Mandatory = $false, ParameterSetName = "All", HelpMessage = 'Search for a specific application by name from all systems in the org')]
         [switch]$SearchAllSystems
-
     )
     begin {
         Write-Verbose 'Verifying JCAPI Key'
@@ -23,7 +21,6 @@ function Get-JCSystemApp () {
             Connect-JCOnline
         }
         $Parallel = $JCConfig.parallel.Calculated
-
         $searchAppResultsList = New-Object -TypeName System.Collections.ArrayList
         $resultsArrayList = New-Object -TypeName System.Collections.ArrayList
         $commands = @("Get-JcSdkSystemInsightProgram", "Get-JcSdkSystemInsightApp", "Get-JcSdkSystemInsightLinuxPackage")
@@ -43,7 +40,7 @@ function Get-JCSystemApp () {
                     if ($SystemID -and $SystemOS) {
                         Throw "Cannot specify both SystemID and SystemOS"
                     }
-
+                    # Get the OS Type
                     if ($SystemID) {
                         $OSType = Get-JcSdkSystem -ID $SystemID -Fields osFamily | Select-Object -ExpandProperty OSFamily
                     } else {
@@ -53,9 +50,10 @@ function Get-JCSystemApp () {
                         }
                     }
                     Write-Debug "OSType: $OSType"
+                    # Switch for OS Type
                     switch ($OSType) {
+                        # Check whether a systemId or systemOS is used
                         'Windows' {
-                            # If Software title, version, and system ID are passed then return specific app
                             if ($version -and $name) {
 
 
@@ -160,10 +158,7 @@ function Get-JCSystemApp () {
 
                         }
                         'Linux' {
-
                             if ($version -and $name) {
-
-
                                 if ($SystemID) {
                                     Get-JcSdkSystemInsightLinuxPackage -Filter @("system_id:eq:$SystemID", "name:eq:$name", "version:eq:$version") | ForEach-Object {
                                         [void]$resultsArrayList.Add($_)
@@ -202,16 +197,24 @@ function Get-JCSystemApp () {
                                 }
                             }
                         }
-
                     }
+                    # IF no systemOs or systemID is passed with name
                 } elseif ($name) {
                     # Loop through each OS and get the results
-                    Write-Debug "SoftwareName only passed. Getting all software with name $name"
+                    Write-Debug "name and or version only passed. Getting all software with name $name"
+
                     foreach ($os in @('Windows', 'MacOs', 'Linux')) {
                         if ($os -eq 'Windows') {
-                            Get-JcSdkSystemInsightProgram -Filter @("name:eq:$name") | ForEach-Object {
-                                [void]$resultsArrayList.Add($_)
+                            if ($version) {
+                                Get-JcSdkSystemInsightProgram -Filter @("name:eq:$name", "version:eq:$version") | ForEach-Object {
+                                    [void]$resultsArrayList.Add($_)
+                                }
+                            } else {
+                                Get-JcSdkSystemInsightProgram -Filter @("name:eq:$name") | ForEach-Object {
+                                    [void]$resultsArrayList.Add($_)
+                                }
                             }
+
                         } elseif ($os -eq 'MacOs') {
                             $macOsSoftwareName = $name
                             $ending = $macOsSoftwareName.Substring($macOsSoftwareName.Length - 4)
@@ -222,19 +225,32 @@ function Get-JCSystemApp () {
                                 $macOsSoftwareName = "$macOsSoftwareName.app"
                                 Write-Debug "$macOsSoftwareName"
                             }
-                            Get-JcSdkSystemInsightApp -Filter @("name:eq:$macOsSoftwareName") | ForEach-Object {
+                            if ($version) {
+                                Get-JcSdkSystemInsightApp -Filter @("name:eq:$macOsSoftwareName", "bundle_short_version:eq:$version") | ForEach-Object {
+                                    [void]$resultsArrayList.Add($_)
+                                }
+                            } else {
+                                Get-JcSdkSystemInsightApp -Filter @("name:eq:$macOsSoftwareName") | ForEach-Object {
+                                    [void]$resultsArrayList.Add($_)
+                                }
+                            }
 
-                                [void]$resultsArrayList.Add($_)
-                            }
                         } elseif ($os -eq 'Linux') {
-                            Get-JcSdkSystemInsightLinuxPackage -Filter @("name:eq:$name") | ForEach-Object {
-                                [void]$resultsArrayList.Add($_)
+                            if ($version) {
+                                Get-JcSdkSystemInsightLinuxPackage -Filter @("name:eq:$name", "version:eq:$version") | ForEach-Object {
+                                    [void]$resultsArrayList.Add($_)
+                                }
+                            } else {
+                                Get-JcSdkSystemInsightLinuxPackage -Filter @("name:eq:$name") | ForEach-Object {
+                                    [void]$resultsArrayList.Add($_)
+                                }
                             }
+
                         }
                     }
-                }
-
+                } # End of name and or version only passed
                 else {
+                    # Get all software in all systems in the org
                     # Default/All
                     Write-Debug "Get All"
                     if ($Parallel) {
@@ -247,6 +263,7 @@ function Get-JCSystemApp () {
                     }
                 }
             } Search {
+                # Case-insensitive search
                 # Search for softwareName
                 Write-Debug "Search $name"
                 if ($name) {
@@ -274,7 +291,6 @@ function Get-JCSystemApp () {
                                 }
                             }
                         }
-
                         $filteredResults = $searchAppResultsList | Where-Object { ($_.name -match $name) }
                         $resultsArrayList = $filteredResults
                     } elseif ($SystemOS) {

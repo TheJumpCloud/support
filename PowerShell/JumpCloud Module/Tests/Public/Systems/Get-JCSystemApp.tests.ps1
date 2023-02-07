@@ -26,9 +26,18 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
 
     It "Tests that given a systemID, SoftwareName, an app is returned" {
         # Chess is always installed on MacOS and it CAN NOT be removed no matter what
-        Get-JCSystemApp -SystemID $mac._id -name "Chess"
-        Get-JCSystemApp -SystemID $linux._id -name "Curl"
-        Get-JCSystemApp -SystemID $windows._id -name "Microsoft Edge"
+        Get-JCSystemApp -SystemID $mac._id -name "Chess" | Should -Not -BeNullOrEmpty
+        Get-JCSystemApp -SystemID $linux._id -name "curl" | Should -Not -BeNullOrEmpty
+        Get-JCSystemApp -SystemID $windows._id -name "Microsoft Edge" | Should -Not -BeNullOrEmpty
+    }
+    It "Tests that given a name and version, app is returned" {
+        # Chess is always installed on MacOS and it CAN NOT be removed no matter what
+        $macApp = Get-JCSystemApp -SystemID $mac._id -name "Chess"
+        $linuxApp = Get-JCSystemApp -SystemID $linux._id -name "curl"
+        $windowsApp = Get-JCSystemApp -SystemID $windows._id -name "Microsoft Edge"
+        { Get-JCSystemApp -name "Chess" -version $macApp.bundleshortversion } | Should -Not -BeNullOrEmpty
+        { Get-JCSystemApp -name "curl" -version $linuxApp.version } | Should -Not -BeNullOrEmpty
+        { Get-JCSystemApp -name "Microsoft Edge" -version $windowsApp.version } | Should -Not -BeNullOrEmpty
     }
     It "Tests that given a macOS systemID, SoftwareName, SoftwareVersion, an app is returned" {
         # MacOS
