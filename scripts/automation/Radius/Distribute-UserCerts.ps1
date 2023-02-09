@@ -16,7 +16,7 @@ $RadiusCertCommands = Get-JCCommand | Where-Object { $_.Name -like 'RadiusCert-I
 
 if ($RadiusCertCommands.Count -ge 1) {
     Write-Host "[status] $([char]0x1b)[96mRadiusCert commands detected, please make a selection."
-    Write-Host "1: Press '1' to generate new commands for ALL users. $([char]0x1b)[96mNOTE: This will remove any existing commands"
+    Write-Host "1: Press '1' to generate new commands for ALL users. $([char]0x1b)[96mNOTE: This will remove any previously generated Radius User Certificate Commands titled 'RadiusCert-Install:*'"
     Write-Host "2: Press '2' to generate new commands for NEW RADIUS users. $([char]0x1b)[96mNOTE: This will only generate commands for users who did not have a cert previously"
     $confirmation = Read-Host "Please make a selection"
     while ($confirmation -ne '2') {
