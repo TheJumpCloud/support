@@ -175,7 +175,7 @@ else
      echo "System is running macOS ${osvers_major}.${osvers_minor}.${osvers_dot_version}."
      echo "No need to install Rosetta on this version of macOS."
    fi
- } 
+ }
 
   # require connect key
   if [ -z "$YOUR_CONNECT_KEY" ]; then
@@ -216,7 +216,7 @@ else
   # Install Rosetta2 for M1 (Apple Silicon) Macs
   installRosettaForM1
 
-  curl --silent --output /tmp/jumpcloud-agent.pkg "https://s3.amazonaws.com/jumpcloud-windows-agent/production/jumpcloud-agent.pkg" >/dev/null
+  curl --silent --output /tmp/jumpcloud-agent.pkg "https://cdn02.jumpcloud.com/production/jumpcloud-agent.pkg" >/dev/null
   mkdir -p /opt/jc
   cat <<-EOF >/opt/jc/agentBootstrap.json
 {
