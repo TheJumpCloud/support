@@ -306,17 +306,20 @@ Function Invoke-CommandsRetry {
         $RetryCommands = @()
         $commandsObject = Get-Content -Raw -Path $jsonFile | ConvertFrom-Json -Depth 6
         $queuedCommands = Get-JCQueuedCommands
-        $finishedCommands = Get-JCCommandResult | Where-Object name -Like "RadiusCert-Install*"
+        $commandResults = Get-JCCommandResult | Where-Object name -Like "RadiusCert-Install*"
+        $groupedCommandResults = $commandResults | Group-Object name, system | Sort-Object -Property responseTime -Descending
+        $mostRecentCommandResults = $groupedCommandResults | ForEach-Object { $_.Group | Select-Object -First 1 }
     }
     process {
         # Prompt to rerun commands that have failed or expired
         Foreach ($command in $commandsObject.commandAssociations) {
-            if ($command.commandId -in $queuedCommands.command) {
+            $failedCommands = $mostRecentCommandResults | Where-Object exitCode -NE 0
+
+            if ($queuedCommands.command -contains $command.commandId) {
                 Write-Host "[status] $($command.commandName) is currently $([char]0x1b)[93mPENDING"
                 continue
             } else {
-                $failedCommands = $finishedCommands | Where-Object exitCode -NE 0
-                if (($command.commandId -in $failedCommands.workflowId) -or ($command.commandPreviouslyRun -eq $false) -or ($command.commandId -notin $QueuedCommands.command -and $command.commandId -notin $finishedCommands.workflowId)) {
+                if (($failedCommands.workflowId -contains $command.commandId) -or ($command.commandPreviouslyRun -eq $false) -or ($QueuedCommands.command -notcontains $command.commandId -and $finishedCommands.workflowId -notcontains $command.commandId)) {
                     try {
                         if (!(Get-JcSdkCommandAssociation -CommandId $command.commandId -Targets system)) {
                             continue
@@ -369,7 +372,7 @@ Function Get-CommandObjectTable {
                 $commandResults = Get-JCCommandResult | Where-Object name -Like "RadiusCert-Install*"
                 if ($commandResults) {
                     $groupedCommandResults = $commandResults | Group-Object name, system | Sort-Object -Property responseTime -Descending
-                    $mostRecentCommandResults = $groupedCommandResults | ForEach-Object { $_.Group | Select-Object -First 1 | Select-Object _id }
+                    $mostRecentCommandResults = $groupedCommandResults | ForEach-Object { $_.Group | Select-Object -First 1 }
                     $commandResults | ForEach-Object {
                         if ($_._id -in $mostRecentCommandResults._id) {
                             return
@@ -381,7 +384,7 @@ Function Get-CommandObjectTable {
 
                 # Iterate through all the associated commands
                 foreach ($command in $commandsObject.commandAssociations) {
-                    $finishedCommands = $commandResults | Where-Object workflowId -EQ $command.commandID | Sort-Object system, responsetime -Descending | Select-Object -Unique
+                    $finishedCommands = $mostRecentCommandResults | Where-Object workflowId -EQ $command.commandID
                     if ($finishedCommands) {
                         # If there are finished command results, iterate through each and add to command object array
                         $finishedCommands | ForEach-Object {
@@ -419,7 +422,7 @@ Function Get-CommandObjectTable {
                 $commandResults = Get-JCCommandResult | Where-Object name -Like "RadiusCert-Install*"
                 if ($commandResults) {
                     $groupedCommandResults = $commandResults | Group-Object name, system | Sort-Object -Property responseTime -Descending
-                    $mostRecentCommandResults = $groupedCommandResults | ForEach-Object { $_.Group | Select-Object -First 1 | Select-Object _id }
+                    $mostRecentCommandResults = $groupedCommandResults | ForEach-Object { $_.Group | Select-Object -First 1 }
                     $commandResults | ForEach-Object {
                         if ($_._id -in $mostRecentCommandResults._id) {
                             return
@@ -452,7 +455,7 @@ Function Get-CommandObjectTable {
                     }
 
                     # Get finished command results for current command
-                    $finishedCommands = $commandResults | Where-Object workflowId -EQ $command.commandID | Sort-Object system, responsetime -Descending | Select-Object -Unique
+                    $finishedCommands = $mostRecentCommandResults | Where-Object workflowId -EQ $command.commandID
                     if ($finishedCommands) {
                         # If there are finished command results, iterate through each and add to command object array
                         $finishedCommands | ForEach-Object {
