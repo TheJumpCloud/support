@@ -20,7 +20,7 @@ function Set-JCPolicyConfigField {
     )
     begin {
         # TODO: validate templateID
-        # TODO: set this globablly
+        # TODO: set this globally
         $configMapping = @{
             checkbox       = 'boolean'
             singlelistbox  = 'exclude'
@@ -37,14 +37,18 @@ function Set-JCPolicyConfigField {
         # for each field in the object with a null value, prompt to enter the value
         # print policy value
         if ('table' -in $templateObject.type) {
-
+            # If custom registry table, display all rows
             $policyValues | Format-Table -Property @{label = "Row"; Expression = { $policyvalues.indexOf($_) } }, * | Out-Host
         } else {
+            # If not table, display just the row #, the name and value pairs
             $templateObject | Format-Table @{label = "Row"; expression = { $TemplateObject.indexof($_) } }, @{label = "Value"; expression = { $PolicyValues[$TemplateObject.indexof($_)] } }, Label | Out-Host
         }
-        # if ($policyValues) {
-        # }
 
+        #TODO: after showing the current values for the policy, prompt user if they want to update JUST one specific field by row:
+        # EX: enter the row # you wish to update: 1-9
+        # Then instead of prompting user to update each field in the template object, just update that single field.
+
+        # If no specific row was chosen, update all fields:
         foreach ($field in $templateObject) {
             switch ($field.type) {
                 'boolean' {
@@ -90,7 +94,6 @@ function Set-JCPolicyConfigField {
                 }
                 'table' {
                     if ($policyValues) {
-                        # TODO: Validate TYPE/ enum
                         # Determine action
                         $path = (Read-Host "Select an Action:`nModify (M) - edit existing rows`nAdd (A) - add new table rows`nRemove (R) - remove existing rows`nContinue (C) - save/ update policy`nEnter Action Choice: ")
                         switch ($path) {
@@ -101,6 +104,7 @@ function Set-JCPolicyConfigField {
                                 } While (0..[int]($policyValues.length - 1) -notcontains $rownum)
                                 $tableRow = New-CustomRegistryTableRow
                                 $policyValues[$rowNum] = $tableRow
+                                # TODO: is there a better way to do this vs. recursively calling this function?
                                 Set-JCPolicyConfigField -templateObject $templateObject -policyValues $policyValues -policyName $policyName -policyTemplateID $policyTemplateID
                             }
                             'A' {
@@ -108,6 +112,7 @@ function Set-JCPolicyConfigField {
                                 [System.Collections.ArrayList]$rows = $policyValues
                                 $tableRow = New-CustomRegistryTableRow
                                 $rows.Add($tableRow) | out-null
+                                # TODO: is there a better way to do this vs. recursively calling this function?
                                 Set-JCPolicyConfigField -templateObject $templateObject -policyValues $rows -policyName $policyName -policyTemplateID $policyTemplateID
 
                             }
@@ -120,6 +125,7 @@ function Set-JCPolicyConfigField {
                                 } While ($rowNum -isnot [int])
                                 $rows.RemoveAt($rowNum)
                                 write-host $rowNum
+                                # TODO: is there a better way to do this vs. recursively calling this function?
                                 Set-JCPolicyConfigField -templateObject $templateObject -policyValues $rows -policyName $policyName -policyTemplateID $policyTemplateID
 
                             }
@@ -143,20 +149,15 @@ function Set-JCPolicyConfigField {
                 Default {
                 }
             }
-            #TODO: validate other types
+            # TODO: validate other types (file, singleListBox)
+            # TODO: singleListBox templateID 62e2ae60ab9878000167ca7a (encrypted DNS over HTTPS)
+            # TODO: font policy, templateID 631f44bc2630c900017ed834
+            # TODO: custom MDM policy, templateID 5f21c4d3b544067fd53ba0af
         }
     }
     end {
-        # Return template config field
 
-        # TODO: return the whole enchilada
-
-        # $body = [PSCustomObject]@{
-        #     name     = $policyName
-        #     template = $policyTemplateID
-        #     values   = @($policyValues)
-        # } | ConvertTo-Json -Depth 99
-        # return
+        # TODO: return the new policy values here:
     }
 }
 

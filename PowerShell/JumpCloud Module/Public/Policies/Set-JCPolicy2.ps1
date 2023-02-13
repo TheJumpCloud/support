@@ -1,36 +1,32 @@
 function Set-JCPolicy2 {
     [CmdletBinding()]
     param (
-        [Parameter()]
+        [Parameter(Mandatory = $true)]
         [System.String]
+        # Specifies the PolicyID for the policy to be edited
         $policyID,
         [Parameter()]
         [System.object[]]
+        # Specifies the policy config fields to be passed into the policy (optional).
         $policyObject
     )
     DynamicParam {
         if ($policyID) {
             $policy = Get-JcPolicy -Id $policyID
-            # Write-Host "gettting dynamic policies"
             $object = Get-JCPolicyTemplateConfigField -templateID $policy.Template.Id
-            $paramObject = Get-JCPolicyConfigField -templateObject $object -policyValues $policy.values.value
             # $paramObject
+            $paramObject = Get-JCPolicyConfigField -templateObject $object -policyValues $policy.values.value
             $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
             # Foreach key in the supplied config file:
             foreach ($key in $object) {
-                # Skip create dynamic params for these not-writable properties:
                 # Set the dynamic parameters' name
                 # write-host "adding dynamic param: $key$($item)"
                 $ParamName_Filter = "$($key.configFieldName)"
                 # Create the collection of attributes
                 $AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
-                # If ValidateSet is specificed in the config file, set the value here:
-                # if ($config.($key.Name).($item.Name).validateSet) {
-                #     $arrSet = @($($config.($key.Name).($item.Name).'validateSet').split())
-                #     $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($arrSet)
-                #     $AttributeCollection.Add($ValidateSetAttribute)
-                # }
+                # If ValidateSet is specified in the config file, set the value here:
                 # If the type of value is a bool, create a custom validateSet attribute here:
+                # TODO: this should be a case statement list
                 $paramType = $($key.type)
                 if ($paramType -eq 'boolean') {
                     $arrSet = @("true", "false")
@@ -43,6 +39,8 @@ function Set-JCPolicy2 {
                     $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($arrSet)
                     $AttributeCollection.Add($ValidateSetAttribute)
                 }
+                # TODO: case for string types
+                # TODO: case for registry table types/ skip this param set
                 # Create and set the parameters' attributes
                 $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
                 $ParameterAttribute.Mandatory = $false
@@ -58,9 +56,12 @@ function Set-JCPolicy2 {
         }
     }
     begin {
+        # params used for dynamic param value setting
         $params = $PSBoundParameters
+        # TODO: can we use object from dynamicParam here instead?
         $policy = Get-JcPolicy -Id $policyID
-        write-host $params
+        # write-host $params
+        # If the policyObject from Get-JCPolicy/ Custom PSObject is not passed in, begin steps to ask user how to edit the policy
         if (!$policyObject -in $PSBoundParameters) {
             #Get stuff
             $object = Get-JCPolicyTemplateConfigField -templateID $policy.Template.Id
@@ -71,15 +72,10 @@ function Set-JCPolicy2 {
             }
 
         } else {
-            # $body = [PSCustomObject]@{
-            #     name     = $policyName
-            #     template = $policyTemplateID
-            #     values   = @($policyValues)
-            # } | ConvertTo-Json -Depth 99
-            # return
+            # Given this case, we assume that the dynamic parameter set was selected
             $newObject = New-Object System.Collections.ArrayList
             for ($i = 0; $i -lt $object.length; $i++) {
-                <# Action that will repeat until the condition is met #>
+                # If one of the dynamicParam config fields are passed in and is found in the policy template, set the new value:
                 if ($object[$i].configFieldName -in $params.keys) {
                     $keyName = $params.keys | where-object { $_ -eq $object[$i].configFieldName }
                     write-host "Setting value from $($keyName)"
@@ -89,24 +85,13 @@ function Set-JCPolicy2 {
                     }
                     $newObject.Add($object[$i])
                 } else {
+                    # Else if the dynamicParam for a config field is not specified, set the value from the existing policy value:
                     write-host "$($object[$i].configFieldName)"
                     $object[$i].value = ($policy.values | Where-Object { $_.configFieldName -eq $object[$i].configFieldName }).value
                     $newObject.Add($object[$i])
                 }
-
-                # foreach ($param in $params.keys) {
-                #     if ($object.configFieldName -eq $param) {
-                #         write-host "match found"
-                #         $fieldToSetFromParam = $object | Where-Object { $_.configFieldName -eq $param }
-                #         # set value
-                #         if ($fieldToSetFromParam.type -eq 'multi') {
-                #             $fieldToSetFromParam.value = ($fieldtosetfromparam.validation | Where-Object { $_.Values -eq $($params).$($param) }).keys
-                #             $newObject = $fieldToSetFromParam
-                #         }
-                #     }
-                # }
             }
-
+            # Set the policy value body
             $policyObjectshort = $newObject | select configFieldID, configFieldName, value
 
         }
@@ -123,13 +108,14 @@ function Set-JCPolicy2 {
         $headers.Add("x-api-key", $env:JCApiKey)
         $headers.Add("x-org-id", $env:JCOrgId)
         $headers.Add("content-type", "application/json")
+        # Name, TemplateID and Policy Values compose body
+        # Values object must contain all config fields
         $body = [PSCustomObject]@{
             name     = $policy.Name
             template = @{id = $policy.Template.Id }
             values   = @($policyObjectshort)
         } | ConvertTo-Json -Depth 99
         $response = Invoke-RestMethod -Uri "https://console.jumpcloud.com/api/v2/policies/$policyID" -Method PUT -Headers $headers -ContentType 'application/json' -Body $body
-        $response
     }
     end {
 

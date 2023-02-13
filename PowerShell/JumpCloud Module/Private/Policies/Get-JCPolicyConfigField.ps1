@@ -12,7 +12,7 @@ function Get-JCPolicyConfigField {
     )
     begin {
         # TODO: validate templateID
-        # TODO: set this globablly
+        # TODO: set this globally
         $configMapping = @{
             checkbox       = 'boolean'
             singlelistbox  = 'exclude'

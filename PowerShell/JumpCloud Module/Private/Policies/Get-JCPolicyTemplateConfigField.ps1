@@ -9,7 +9,7 @@ function Get-JCPolicyTemplateConfigField {
     begin {
         # TODO: validate templateID
         $template = Get-JcSdkPolicyTemplate -Id $templateID
-        # TODO: set this globablly
+        # TODO: set this globally
         $configMapping = @{
             checkbox       = 'boolean'
             singlelistbox  = 'exclude'
