@@ -13,18 +13,20 @@ $jsonFile = "$PSScriptRoot/users.json"
 # Show user selection
 do {
     Show-CertDeploymentMenu
-    $selection = Read-Host "Please make a selection"
-    switch ($selection) {
+    $option = Read-Host "Please make a selection"
+    switch ($option) {
         '1' {
             Get-CommandObjectTable -Detailed -jsonFile $jsonFile
+            Pause
         } '2' {
             Get-CommandObjectTable -Failed -jsonFile $jsonFile
+            Pause
         } '3' {
             $retryCommands = Invoke-CommandsRetry -jsonFile $jsonFile
+            Pause
         }
     }
-    Pause
-} until ($selection.ToUpper() -eq 'E')
+} until ($option.ToUpper() -eq 'E')
 
 ################################################################################
 # If needed you can clear out your command queue with the following commands.
