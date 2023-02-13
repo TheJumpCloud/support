@@ -30,5 +30,5 @@ do {
 # If needed you can clear out your command queue with the following commands.
 # Copy and Paste these into a powershell terminal window to clear all queued
 # commands in your org.
-# Import-Module scripts/automation/Radius/RadiusCertFunctions.ps1 -force
+# . "scripts/automation/Radius/RadiusCertFunctions.ps1"
 # Get-JCQueuedCommands | Foreach-Object { Clear-JCQueuedCommand -workflowId $_.id }
