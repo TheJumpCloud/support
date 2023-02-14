@@ -15,9 +15,10 @@ A CSV report of systems and their user associations (inactive and active). This 
 * Install the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Using-the-JumpCloud-PowerShell-Module)
 * Save the contents of the script example to a file on a system.
   * EX: ~/Report-Systems_To_User_Associations.ps1
-  * Edit the the `Global Configuration - Start` section with your APIKey, report file name, and user associations
+* Edit the the `Global Configuration - Start` section with your APIKey, report file name, and user associations
 * In a PowerShell terminal window run:
   * `~/Report-Systems_To_User_Associations.ps1`
+  * After a succesful run, the report CSV file will be saved in the current working directory
 
 ### Additional Information
 
