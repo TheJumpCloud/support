@@ -22,7 +22,10 @@ A CSV report of systems and their user associations (inactive and active). This 
 
 ### Additional Information
 
+Note: This script was updated 02/14/2023. The update included additional system information.
+
 This script will post a warning message when it finds an inactive user.
+
 
 ### Expected Output
 
