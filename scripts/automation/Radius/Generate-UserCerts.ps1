@@ -37,6 +37,7 @@ if (Test-Path "$PSScriptRoot/UserCerts") {
 foreach ($user in $groupMembers) {
     # Create the User Certs
     $MatchedUser = get-webjcuser -userID $user.id
+
     Write-Host "Generating Cert for user: $($MatchedUser.username)"
 
     if ($MatchedUser.id -in $userArray.userId) {
@@ -80,3 +81,4 @@ foreach ($user in $groupMembers) {
 }
 
 $userArray | ConvertTo-Json -Depth 6 | Out-File "$psscriptroot\users.json"
+

@@ -431,7 +431,7 @@ Function Get-JCUser () {
 
         switch ($PSCmdlet.ParameterSetName) {
             SearchFilter {
-                return $resultsArrayList | Select-Object -ExcludeProperty associatedTagCount, id, sshRootEnabled
+                return $resultsArrayList | Select-Object -ExcludeProperty associatedTagCount, sshRootEnabled
             }
             ByID {
                 return $resultsArrayList | Select-Object -ExcludeProperty associatedTagCount

@@ -1,6 +1,6 @@
 #### Name
 
-Mac - Install JumpCloud Password Manager App | v1.1 JCCG
+Mac - Install JumpCloud Password Manager App | v1.2 JCCG
 
 #### commandType
 
@@ -123,6 +123,7 @@ echo "Located App: $AppName"
 
 DMGAppPath=$(find "$DMGVolume" -name "*.app" -depth 1)
 
+userInstall=false
 
 for user in $(dscl . list /Users | grep -vE 'root|daemon|nobody|^_')
 do
@@ -150,6 +151,7 @@ do
             exit 1
         fi
 
+        userInstall=true
         echo "Copied $DMGAppPath to /Users/$user/Applications"
 
         # Create an alias on desktop
@@ -157,6 +159,12 @@ do
     fi
 done
 
+
+# Check if password manager is installed in /Applications; remove if we installed in user directory
+if [ -d /Applications/JumpCloud\ Password\ Manager.app ] && [ $userInstall = true ]; then
+    # remove if exists
+    rm -rf /Applications/JumpCloud\ Password\ Manager.app
+fi
 
 # Unmount the DMG file
 hdiutil detach $DMGMountPoint

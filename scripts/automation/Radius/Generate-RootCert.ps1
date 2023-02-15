@@ -21,8 +21,9 @@ if (test-path -path "$PSSCRIPTROOT/Cert") {
     write-host "Createing Cert Path"
     New-Item -ItemType Directory -Path "$PSSCRIPTROOT/Cert"
 }
-$outKey = "$psscriptroot/Cert/selfsigned-ca-key.pem"
-$outCA = "$psscriptroot/Cert/selfsigned-ca-cert.pem"
+$CertPath = Resolve-Path "$PSSCRIPTROOT/Cert"
+$outKey = "$CertPath/selfsigned-ca-key.pem"
+$outCA = "$CertPath/selfsigned-ca-cert.pem"
 Invoke-Expression "$opensslBinary req -x509 -newkey rsa:2048 -days 365 -keyout $outKey -out $outCA -passout pass:$($JCORGID) -subj /C=$($Subj.countryCode)/ST=$($Subj.stateCode)/L=$($Subj.Locality)/O=$($Subj.Organization)/OU=$($Subj.OrganizationUnit)/CN=$($Subj.CommonName)"
 # REM PEM pass phrase: myorgpass
 Invoke-Expression "$opensslBinary x509 -in $outCA -noout -text"
