@@ -1,5 +1,5 @@
 # Import Global Config:
-. "$psscriptroot/config.ps1"
+. "$JCScriptRoot/config.ps1"
 Connect-JCOnline $JCAPIKEY -force
 
 ################################################################################
@@ -7,10 +7,10 @@ Connect-JCOnline $JCAPIKEY -force
 ################################################################################
 
 # Import the functions
-Import-Module "$psscriptroot/RadiusCertFunctions.ps1" -Force
+Import-Module "$JCScriptRoot/Functions/JCRadiusCertDeployment.psm1" -DisableNameChecking -Force
 
 # Import the users.json file and convert to PSObject
-$userArray = Get-Content -Raw -Path "$PSScriptRoot/users.json" | ConvertFrom-Json -Depth 6
+$userArray = Get-Content -Raw -Path "$JCScriptRoot/users.json" | ConvertFrom-Json -Depth 6
 # Check to see if previous commands exist
 $RadiusCertCommands = Get-JCCommand | Where-Object { $_.Name -like 'RadiusCert-Install*' }
 
@@ -52,8 +52,8 @@ if ($RadiusCertCommands.Count -ge 1) {
 # Create commands for each user
 foreach ($user in $userArray) {
     # Get certificate and zip to upload to Commands
-    $userPfx = "$psscriptroot/UserCerts/$($user.userName)-client-signed.pfx"
-    $userPfxZip = "$psscriptroot/UserCerts/$($user.userName)-client-signed.zip"
+    $userPfx = "$JCScriptRoot/UserCerts/$($user.userName)-client-signed.pfx"
+    $userPfxZip = "$JCScriptRoot/UserCerts/$($user.userName)-client-signed.zip"
 
     Compress-Archive -Path $userPfx -DestinationPath $userPfxZip -CompressionLevel NoCompression -Force
     # Find OS of System
@@ -194,7 +194,7 @@ if (`$CurrentUser -eq "$($user.userName)") {
 
 # Invoke Commands
 $confirmation = Read-Host "Would you like to invoke commands? [y/n]"
-$UserArray | ConvertTo-Json -Depth 6 | Out-File "$psscriptroot\users.json"
+$UserArray | ConvertTo-Json -Depth 6 | Out-File "$JCScriptRoot\users.json"
 
 while ($confirmation -ne 'y') {
     if ($confirmation -eq 'n') {
@@ -204,13 +204,13 @@ while ($confirmation -ne 'y') {
     }
 }
 
-$invokeCommands = Invoke-CommandsRetry -jsonFile "$psscriptroot\users.json"
+$invokeCommands = Invoke-CommandsRetry -jsonFile "$JCScriptRoot\users.json"
 Write-Host "[status] Commands Invoked"
 
 # Set commandPreviouslyRun property to true
 $userArray.commandAssociations | ForEach-Object { $_.commandPreviouslyRun = $true }
 
-$UserArray | ConvertTo-Json -Depth 6 | Out-File "$psscriptroot\users.json"
+$UserArray | ConvertTo-Json -Depth 6 | Out-File "$JCScriptRoot\users.json"
 
 Write-Host "[status] Select option '4' to monitor your User Certification Distribution"
 Write-Host "[status] Returning to main menu"

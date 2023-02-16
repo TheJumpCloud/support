@@ -5,8 +5,11 @@ Connect-JCOnline $JCAPIKEY -force
 ################################################################################
 # Do not modify below
 ################################################################################
+# set script root
+$global:JCScriptRoot = $PSScriptRoot
+
 # Import the functions
-Import-Module "$psscriptroot/RadiusCertFunctions.ps1" -Force
+Import-Module "$JCScriptRoot/Functions/JCRadiusCertDeployment.psm1" -DisableNameChecking -Force
 
 # Show user selection
 do {
@@ -14,13 +17,13 @@ do {
     $selection = Read-Host "Please make a selection"
     switch ($selection) {
         '1' {
-            . "$psscriptroot/Generate-RootCert.ps1"
+            . "$JCScriptRoot/Functions/Public/Generate-RootCert.ps1"
         } '2' {
-            . "$psscriptroot/Generate-UserCerts.ps1"
+            . "$JCScriptRoot/Functions/Public/Generate-UserCerts.ps1"
         } '3' {
-            . "$psscriptroot/Distribute-UserCerts.ps1"
+            . "$JCScriptRoot/Functions/Public/Distribute-UserCerts.ps1"
         } '4' {
-            . "$psscriptroot/Monitor-CertDeployment.ps1"
+            . "$JCScriptRoot/Functions/Public/Monitor-CertDeployment.ps1"
         }
     }
     Pause

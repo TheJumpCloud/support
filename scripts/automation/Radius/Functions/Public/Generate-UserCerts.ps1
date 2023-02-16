@@ -1,5 +1,5 @@
 # Import Global Config:
-. "$psscriptroot/config.ps1"
+. "$JCScriptRoot/config.ps1"
 Connect-JCOnline $JCAPIKEY -force
 
 ################################################################################
@@ -7,13 +7,13 @@ Connect-JCOnline $JCAPIKEY -force
 ################################################################################
 
 # Import the functions
-Import-Module "$psscriptroot/RadiusCertFunctions.ps1" -Force
+Import-Module "$JCScriptRoot/Functions/JCRadiusCertDeployment.psm1" -DisableNameChecking -Force
 
 $SystemHash = Get-JCSystem -returnProperties displayName, os
 
-if (Test-Path -Path "$PSScriptRoot/users.json" -PathType Leaf) {
+if (Test-Path -Path "$JCScriptRoot/users.json" -PathType Leaf) {
     Write-Host "[status] Found user.json file"
-    $userArray = Get-Content -Raw -Path "$PSScriptRoot/users.json" | ConvertFrom-Json -Depth 6
+    $userArray = Get-Content -Raw -Path "$JCScriptRoot/users.json" | ConvertFrom-Json -Depth 6
 } else {
     Write-Host "[status] users.json file not found"
     $userArray = @()
@@ -26,11 +26,11 @@ if ($groupMembers) {
 }
 
 # Create UserCerts dir
-if (Test-Path "$PSScriptRoot/UserCerts") {
+if (Test-Path "$JCScriptRoot/UserCerts") {
     Write-Host "[status] User Cert Directory Exists"
 } else {
     Write-Host "[status] Creating User Cert Directory"
-    New-Item -ItemType Directory -Path "$PSScriptRoot/UserCerts"
+    New-Item -ItemType Directory -Path "$JCScriptRoot/UserCerts"
 }
 
 # if user from group is on the system, continue with script:
@@ -41,10 +41,10 @@ foreach ($user in $groupMembers) {
     Write-Host "Generating Cert for user: $($MatchedUser.username)"
 
     if ($MatchedUser.id -in $userArray.userId) {
-        if (Test-Path -Path "$PSScriptRoot/UserCerts/$($MatchedUser.username)-client-signed.pfx") {
+        if (Test-Path -Path "$JCScriptRoot/UserCerts/$($MatchedUser.username)-client-signed.pfx") {
             Write-Host "[status] $($MatchedUser.username) already has certs generated... skipping"
         } else {
-            Generate-UserCert -CertType $CertType -user $MatchedUser -rootCAKey "$psscriptroot/Cert/selfsigned-ca-key.pem" -rootCA "$psscriptroot/Cert/selfsigned-ca-cert.pem"
+            Generate-UserCert -JCORGID $JCORGID -JCUSERCERTVALIDITY $JCUSERCERTVALIDITY -CertType $CertType -user $MatchedUser -rootCAKey "$JCScriptRoot/Cert/selfsigned-ca-key.pem" -rootCA "$JCScriptRoot/Cert/selfsigned-ca-cert.pem"
         }
     } else {
         Write-Host "[status] $($MatchedUser.username) not found in users.json"
@@ -71,14 +71,14 @@ foreach ($user in $groupMembers) {
             commandAssociations = @()
         }
 
-        if (Test-Path -Path "$PSScriptRoot/UserCerts/$($MatchedUser.username)-client-signed.pfx") {
+        if (Test-Path -Path "$JCScriptRoot/UserCerts/$($MatchedUser.username)-client-signed.pfx") {
             Write-Host "[status] $($MatchedUser.username) has certs generated... adding to users.json"
         } else {
-            Generate-UserCert -CertType $CertType -user $MatchedUser -rootCAKey "$psscriptroot/Cert/selfsigned-ca-key.pem" -rootCA "$psscriptroot/Cert/selfsigned-ca-cert.pem"
+            Generate-UserCert -CertType $CertType -user $MatchedUser -rootCAKey "$JCScriptRoot/Cert/selfsigned-ca-key.pem" -rootCA "$JCScriptRoot/Cert/selfsigned-ca-cert.pem"
         }
         $userArray += $userTable
     }
 }
 
-$userArray | ConvertTo-Json -Depth 6 | Out-File "$psscriptroot\users.json"
+$userArray | ConvertTo-Json -Depth 6 | Out-File "$JCScriptRoot\users.json"
 

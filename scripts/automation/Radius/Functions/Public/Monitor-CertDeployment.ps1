@@ -1,14 +1,14 @@
 # Import Global Config:
-. "$psscriptroot/config.ps1"
+. "$JCScriptRoot/config.ps1"
 Connect-JCOnline $JCAPIKEY -force
 
 ################################################################################
 # Do not modify below
 ################################################################################
 # Import the functions
-Import-Module "$psscriptroot/RadiusCertFunctions.ps1" -Force
+Import-Module "$JCScriptRoot/Functions/JCRadiusCertDeployment.psm1" -DisableNameChecking -Force
 # Define jsonData file
-$jsonFile = "$PSScriptRoot/users.json"
+$jsonFile = "$JCScriptRoot/users.json"
 
 # Show user selection
 do {

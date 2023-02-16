@@ -2,7 +2,7 @@
 # Radius CBA-BYO Authentication UI
 
 # Edit the variables in Config.ps1 before running this script
-. "$psscriptRoot/Config.ps1"
+. "$JCScriptRoot/Config.ps1"
 
 if ( ([System.String]::IsNullOrEmpty($JCORGID)) -Or ($JCORGID.Length -ne 24) ) {
     throw "OrganizationID not specified, please update config.ps1"
@@ -11,17 +11,17 @@ if ( ([System.String]::IsNullOrEmpty($JCORGID)) -Or ($JCORGID.Length -ne 24) ) {
 ################################################################################
 # Do Not Edit Below:
 ################################################################################
-cd $PSSCRIPTROOT
+Set-Location $JCScriptRoot
 
 # REM Generate Root Server Private Key and server certificate (self signed as CA)
 Write-Host "Generating Self Signed Root CA Certificate"
-if (test-path -path "$PSSCRIPTROOT/Cert") {
-    write-host "Cert Path Exists"
+if (Test-Path -Path "$JCScriptRoot/Cert") {
+    Write-Host "Cert Path Exists"
 } else {
-    write-host "Createing Cert Path"
-    New-Item -ItemType Directory -Path "$PSSCRIPTROOT/Cert"
+    Write-Host "Createing Cert Path"
+    New-Item -ItemType Directory -Path "$JCScriptRoot/Cert"
 }
-$CertPath = Resolve-Path "$PSSCRIPTROOT/Cert"
+$CertPath = Resolve-Path "$JCScriptRoot/Cert"
 $outKey = "$CertPath/selfsigned-ca-key.pem"
 $outCA = "$CertPath/selfsigned-ca-cert.pem"
 Invoke-Expression "$opensslBinary req -x509 -newkey rsa:2048 -days 365 -keyout $outKey -out $outCA -passout pass:$($JCORGID) -subj /C=$($Subj.countryCode)/ST=$($Subj.stateCode)/L=$($Subj.Locality)/O=$($Subj.Organization)/OU=$($Subj.OrganizationUnit)/CN=$($Subj.CommonName)"
@@ -29,9 +29,9 @@ Invoke-Expression "$opensslBinary req -x509 -newkey rsa:2048 -days 365 -keyout $
 Invoke-Expression "$opensslBinary x509 -in $outCA -noout -text"
 # openssl x509 -in ca-cert.pem -noout -text
 # Update Extensions Distinguished Names:
-$exts = Get-ChildItem -Path "$PSSCRIPTROOT/Extensions"
+$exts = Get-ChildItem -Path "$JCScriptRoot/Extensions"
 foreach ($ext in $exts) {
-    write-host "Updating Subject Headers for $($ext.Name)"
+    Write-Host "Updating Subject Headers for $($ext.Name)"
     $extContent = Get-Content -Path $ext.FullName -Raw
     $reqDistinguishedName = "[req_distinguished_name]
 C = $($subj.countryCode)
