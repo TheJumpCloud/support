@@ -52,7 +52,11 @@ if ($RadiusCertCommands.Count -ge 1) {
 # Create commands for each user
 foreach ($user in $userArray) {
     # Get certificate and zip to upload to Commands
-    $userPfx = "$JCScriptRoot/UserCerts/$($user.userName)-client-signed.pfx"
+    $userCertFiles = Get-ChildItem -path "$JCScriptRoot/UserCerts" -Filter "$($user.userName)*"
+    # set crt and pfx filepaths
+    $userCrt = ($userCertFiles | Where-Object { $_.Name -match "crt" }).FullName
+    $userPfx = ($userCertFiles | Where-Object { $_.Name -match "pfx" }).FullName
+    # define .zip name
     $userPfxZip = "$JCScriptRoot/UserCerts/$($user.userName)-client-signed.zip"
 
     Compress-Archive -Path $userPfx -DestinationPath $userPfxZip -CompressionLevel NoCompression -Force
@@ -69,6 +73,13 @@ foreach ($user in $userArray) {
             continue
         }
 
+        # get certInfo for command:
+        $certInfo = Invoke-Expression "$opensslBinary x509 -in $($userCrt) -enddate -serial -subject -issuer -noout"
+        $certHash = @{}
+        $certInfo | ForEach-Object {
+            $property = $_ | ConvertFrom-StringData
+            $certHash += $property
+        }
         # Create new Command and upload the signed pfx
         try {
             $CommandBody = @{
@@ -78,8 +89,62 @@ set -e
 unzip -o /tmp/$($user.userName)-client-signed.zip -d /tmp
 currentUser=`$(/usr/bin/stat -f%Su /dev/console)
 currentUserUID=`$(id -u "`$currentUser")
+currentCertSN="$($certHash.serial)"
 if [[ `$currentUser ==  $($user.userName) ]]; then
-    /bin/launchctl asuser "`$currentUserUID" sudo -iu "`$currentUser" /usr/bin/security import /tmp/$($user.userName)-client-signed.pfx -k /Users/$($user.userName)/Library/Keychains/login.keychain -P $JCUSERCERTPASS
+    certs=`$(security find-certificate -a -c "$($user.userName)" -Z /Users/$($user.userName)/Library/Keychains/login.keychain)
+    regexSHA='SHA-1 hash: ([0-9A-F]{5,40})'
+    regexSN='"snbr"<blob>=0x([0-9A-F]{5,40})'
+    global_rematch() {
+        # Set local variables
+        local s=`$1 regex=`$2
+        # While string matches regex expression
+        while [[ `$s =~ `$regex ]]; do
+            # Echo out the match
+            echo "`${BASH_REMATCH[1]}"
+            # Remove the string
+            s=`${s#*"`${BASH_REMATCH[1]}"}
+        done
+    }
+    # Save results
+    # Get Text Results
+    textSHA=`$(global_rematch "`$certs" "`$regexSHA")
+    # Set as array for SHA results
+    arraySHA=(`$textSHA)
+    # Get Text Results
+    textSN=`$(global_rematch "`$certs" "`$regexSN")
+    # Set as array for SN results
+    arraySN=(`$textSN)
+    # set import var
+    import=true
+    if [[ `${#arraySN[@]} == `${#arraySHA[@]} ]]; then
+        len=`${#arraySN[@]}
+        for (( i=0; i<`$len; i++ )); do
+            if [[ `$currentCertSN == `${arraySN[`$i]} ]]; then
+                echo "Found Cert: SN; `${arraySN[`$i]} SHA: `${arraySHA[`$i]}"
+                # if cert is installed, no need to update
+                import=false
+            else
+                echo "Deleteing Old Radius Cert:"
+                echo "SN: `${arraySN[`$i]} SHA: `${arraySHA[`$i]}"
+                security delete-certificate -Z "`${arraySHA[`$i]}" /Users/$($user.userName)/Library/Keychains/login.keychain
+            fi
+        done
+
+    else
+        echo "array length mismatch, will not delete old certs"
+    fi
+
+    if [[ `$import == true ]]; then
+        /bin/launchctl asuser "`$currentUserUID" sudo -iu "`$currentUser" /usr/bin/security import /tmp/$($user.userName)-client-signed.pfx -k /Users/$($user.userName)/Library/Keychains/login.keychain -P $JCUSERCERTPASS
+        if [[ `$? -eq 0 ]]; then
+            echo "Import Success"
+        else
+            echo "import failed"
+            exit 4
+        fi
+    else
+        echo "cert already imported"
+    fi
 else
     echo "Current logged in user, `$currentUser, does not match expected certificate user. Please ensure $($user.userName) is signed in and retry"
     exit 4
