@@ -80,6 +80,7 @@ foreach ($user in $userArray) {
             $property = $_ | ConvertFrom-StringData
             $certHash += $property
         }
+        # TODO: is common name the same depending on the CertType?
         # Create new Command and upload the signed pfx
         try {
             $CommandBody = @{
@@ -124,7 +125,7 @@ if [[ `$currentUser ==  $($user.userName) ]]; then
                 # if cert is installed, no need to update
                 import=false
             else
-                echo "Deleteing Old Radius Cert:"
+                echo "Removing previously installed radius cert:"
                 echo "SN: `${arraySN[`$i]} SHA: `${arraySHA[`$i]}"
                 security delete-certificate -Z "`${arraySHA[`$i]}" /Users/$($user.userName)/Library/Keychains/login.keychain
             fi
@@ -144,6 +145,16 @@ if [[ `$currentUser ==  $($user.userName) ]]; then
         fi
     else
         echo "cert already imported"
+    fi
+
+    # Finally clean up files
+    if [[ -f "/tmp/$($user.userName)-client-signed.zip" ]]; then
+        echo "Removing Temp Zip"
+        rm "/tmp/$($user.userName)-client-signed.zip"
+    fi
+    if [[ -f "/tmp/$($user.userName)-client-signed.pfx" ]]; then
+        echo "Removing Temp Pfx"
+        rm "/tmp/$($user.userName)-client-signed.pfx"
     fi
 else
     echo "Current logged in user, `$currentUser, does not match expected certificate user. Please ensure $($user.userName) is signed in and retry"
