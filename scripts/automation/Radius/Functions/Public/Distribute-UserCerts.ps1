@@ -58,7 +58,14 @@ foreach ($user in $userArray) {
     $userPfx = ($userCertFiles | Where-Object { $_.Name -match "pfx" }).FullName
     # define .zip name
     $userPfxZip = "$JCScriptRoot/UserCerts/$($user.userName)-client-signed.zip"
-
+    # get certInfo for commands:
+    $certInfo = Invoke-Expression "$opensslBinary x509 -in $($userCrt) -enddate -serial -subject -issuer -noout"
+    $certHash = @{}
+    $certInfo | ForEach-Object {
+        $property = $_ | ConvertFrom-StringData
+        $certHash += $property
+    }
+    # Create the zip
     Compress-Archive -Path $userPfx -DestinationPath $userPfxZip -CompressionLevel NoCompression -Force
     # Find OS of System
     if ($user.systemAssociations.osFamily -contains 'Mac OS X') {
@@ -73,13 +80,6 @@ foreach ($user in $userArray) {
             continue
         }
 
-        # get certInfo for command:
-        $certInfo = Invoke-Expression "$opensslBinary x509 -in $($userCrt) -enddate -serial -subject -issuer -noout"
-        $certHash = @{}
-        $certInfo | ForEach-Object {
-            $property = $_ | ConvertFrom-StringData
-            $certHash += $property
-        }
         # TODO: is common name the same depending on the CertType?
         # Create new Command and upload the signed pfx
         try {
@@ -121,7 +121,7 @@ if [[ `$currentUser ==  $($user.userName) ]]; then
         len=`${#arraySN[@]}
         for (( i=0; i<`$len; i++ )); do
             if [[ `$currentCertSN == `${arraySN[`$i]} ]]; then
-                echo "Found Cert: SN; `${arraySN[`$i]} SHA: `${arraySHA[`$i]}"
+                echo "Found Cert: SN: `${arraySN[`$i]} SHA: `${arraySHA[`$i]}"
                 # if cert is installed, no need to update
                 import=false
             else
@@ -225,14 +225,33 @@ if (`$CurrentUser -eq "$($user.userName)") {
         Write-Host "RunAsUser Module installed, importing into session..."
         Import-Module RunAsUser -Force
     }
+
     Expand-Archive -LiteralPath C:\Windows\Temp\$($user.userName)-client-signed.zip -DestinationPath C:\Windows\Temp -Force
     `$password = ConvertTo-SecureString -String $JCUSERCERTPASS -AsPlainText -Force
-    `$ScriptBlock = { `$password = ConvertTo-SecureString -String "secret1234!" -AsPlainText -Force
-     Import-PfxCertificate -Password `$password -FilePath "C:\Windows\Temp\$($user.userName)-client-signed.pfx" -CertStoreLocation Cert:\CurrentUser\My
-}
-     Write-Host "Importing Pfx Certificate for $($user.userName)"
-    `$JSON = Invoke-AsCurrentUser -ScriptBlock `$ScriptBlock -CaptureOutput
-    `$JSON
+    `$ScriptBlockInstall = { `$password = ConvertTo-SecureString -String "secret1234!" -AsPlainText -Force
+    Import-PfxCertificate -Password `$password -FilePath "C:\Windows\Temp\$($user.userName)-client-signed.pfx" -CertStoreLocation Cert:\CurrentUser\My
+    }
+    # Get Current Certs As User
+    `$ScriptBlockCleanup = {
+        `$certs = Get-ChildItem Cert:\CurrentUser\My\
+
+        foreach (`$cert in `$certs){
+            if (`$cert.subject -match "$($user.userName)") {
+                if (`$(`$cert.serialNumber) -eq "$($certHash.serial)"){
+                    write-host "Found Cert:``nCert SN: `$(`$cert.serialNumber)"
+                } else {
+                    write-host "Removing Cert:``nCert SN: `$(`$cert.serialNumber)"
+                    Get-ChildItem "Cert:\CurrentUser\My\`$(`$cert.thumbprint)" | remove-item
+                }
+            }
+        }
+    }
+    Write-Host "Importing Pfx Certificate for $($user.userName)"
+    `$certInstall = Invoke-AsCurrentUser -ScriptBlock `$ScriptBlockInstall -CaptureOutput
+    `$certInstall
+    Write-Host "Cleaning Up Previously Installed Certs for $($user.userName)"
+    `$certCleanup = Invoke-AsCurrentUser -ScriptBlock `$ScriptBlockCleanup -CaptureOutput
+    `$certCleanup
 } else {
     Write-Host "Current logged in user, `$CurrentUser, does not match expected certificate user. Please ensure $($user.userName) is signed in and retry."
     exit 4
